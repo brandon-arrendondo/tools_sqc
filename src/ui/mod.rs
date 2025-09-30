@@ -292,22 +292,71 @@ impl TerminalUI {
                     "[ ] "
                 };
 
+                // Get relative path and filename
+                let relative_path = self.get_relative_path(&v.file_path);
+                let filename = std::path::Path::new(&v.file_path)
+                    .file_name()
+                    .unwrap_or_default()
+                    .to_string_lossy();
+
                 ListItem::new(vec![Line::from(vec![
                     Span::styled(checkbox, Style::default().fg(Color::Green)),
                     Span::styled(&v.rule_id, Style::default().fg(severity_color).add_modifier(Modifier::BOLD)),
                     Span::raw(" - "),
-                    Span::raw(&v.message),
+                    Span::styled(filename, Style::default().fg(Color::White)),
                     Span::raw(" ("),
+                    Span::styled(relative_path, Style::default().fg(Color::Gray)),
+                    Span::raw(":"),
                     Span::styled(format!("{}:{}", v.line, v.column), Style::default().fg(Color::Cyan)),
                     Span::raw(")"),
                 ])])
             })
             .collect();
 
-        let violations_title = if !self.preview_focused || !self.show_file_preview {
-            "[FOCUSED] Violations"
+        // Create dynamic violations title with current violation details
+        let violations_title = if let Some(selected_index) = self.selected_violation.selected() {
+            if let Some(violation) = self.violations.get(selected_index) {
+                let focus_indicator = if !self.preview_focused || !self.show_file_preview {
+                    "[FOCUSED] "
+                } else {
+                    ""
+                };
+
+                let relative_path = self.get_relative_path(&violation.file_path);
+                let filename = std::path::Path::new(&violation.file_path)
+                    .file_name()
+                    .unwrap_or_default()
+                    .to_string_lossy();
+
+                // Get rule description
+                let rule_description = if let Some(rule) = self.registry.get_rule(&violation.rule_id) {
+                    rule.description()
+                } else {
+                    "Unknown rule"
+                };
+
+                format!("{}Violations - {}: {} - {}:{} ({})",
+                    focus_indicator,
+                    violation.rule_id,
+                    rule_description,
+                    filename,
+                    violation.line,
+                    relative_path)
+            } else {
+                let focus_indicator = if !self.preview_focused || !self.show_file_preview {
+                    "[FOCUSED] "
+                } else {
+                    ""
+                };
+                format!("{}Violations", focus_indicator)
+            }
         } else {
-            "Violations - Tab to focus"
+            let focus_indicator = if !self.preview_focused || !self.show_file_preview {
+                "[FOCUSED] "
+            } else {
+                ""
+            };
+            format!("{}Violations", focus_indicator)
         };
 
         let violations_block = if !self.preview_focused || !self.show_file_preview {
