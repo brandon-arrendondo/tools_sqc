@@ -186,7 +186,7 @@ impl Pre31C {
         arg.contains("cout") || arg.contains("cin") // C++ style I/O
     }
 
-    fn find_argument_node(&self, call_node: &Node, arg_text: &str, source: &str) -> Option<Node> {
+    fn find_argument_node<'a>(&self, call_node: &'a Node<'a>, arg_text: &str, source: &str) -> Option<Node<'a>> {
         // Try to find the AST node corresponding to this argument
         if let Some(arguments) = call_node.child_by_field_name("arguments") {
             for i in 0..arguments.child_count() {

@@ -256,7 +256,7 @@ impl Arr39C {
         (text.contains(" + ") || text.contains(" - "))
     }
 
-    fn find_loop_condition(&self, node: &Node) -> Option<Node> {
+    fn find_loop_condition<'a>(&self, node: &'a Node<'a>) -> Option<Node<'a>> {
         // Find condition in while or for loop
         match node.kind() {
             "while_statement" => node.child_by_field_name("condition"),

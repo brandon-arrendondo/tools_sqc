@@ -22,7 +22,7 @@ impl CertRule for Dcl00C {
                 if let Some(init_declarator) = declarator_node.parent() {
                     if init_declarator.kind() == "init_declarator" {
                         // Check if variable has an initializer but no const qualifier
-                        if has_initializer(init_declarator) && !has_const_qualifier(node, source) {
+                        if has_initializer(&init_declarator) && !has_const_qualifier(node, source) {
                             let var_name = get_variable_name(&declarator_node, source);
                             let start_point = node.start_position();
 
@@ -85,7 +85,7 @@ impl CertRule for Dcl00C {
     }
 }
 
-fn find_declarator(node: &Node) -> Option<Node> {
+fn find_declarator<'a>(node: &'a Node<'a>) -> Option<Node<'a>> {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
             if child.kind() == "init_declarator" {

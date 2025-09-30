@@ -228,7 +228,7 @@ impl NonArrayPointerAnalyzer {
             if left.kind() == "identifier" {
                 let var_name = source[left.start_byte()..left.end_byte()].to_string();
                 let var_type = self.analyze_initializer_type(&right, source);
-                self.variable_types.insert(var_name, var_type);
+                self.variable_types.insert(var_name.clone(), var_type);
 
                 // Check for struct member pointer assignment
                 if right.kind() == "unary_expression" {

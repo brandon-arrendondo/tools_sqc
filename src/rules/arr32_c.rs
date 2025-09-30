@@ -162,7 +162,7 @@ fn has_nearby_bounds_check(node: &Node, source: &str) -> bool {
     false
 }
 
-fn get_binary_operator(node: &Node, source: &str) -> &str {
+fn get_binary_operator<'a>(node: &Node, source: &'a str) -> &'a str {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
             let child_text = &source[child.start_byte()..child.end_byte()];

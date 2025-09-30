@@ -1,8 +1,9 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode},
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+    tty::IsTty,
 };
 use ratatui::{
     backend::{Backend, CrosstermBackend},
@@ -41,21 +42,31 @@ impl TerminalUI {
     }
 
     pub fn run(&mut self) -> Result<()> {
-        enable_raw_mode()?;
+        // Check if stdout is a terminal before attempting to use interactive mode
+        if !io::stdout().is_tty() {
+            return Err(anyhow::anyhow!(
+                "Interactive mode requires a terminal. Please run without --interactive flag or from a proper terminal."
+            ));
+        }
+
+        enable_raw_mode().context("Failed to enable raw mode - ensure you're running in a proper terminal")?;
         let mut stdout = io::stdout();
-        execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
+        execute!(stdout, EnterAlternateScreen, EnableMouseCapture)
+            .context("Failed to setup terminal - ensure you're running in a proper terminal")?;
         let backend = CrosstermBackend::new(stdout);
-        let mut terminal = Terminal::new(backend)?;
+        let mut terminal = Terminal::new(backend)
+            .context("Failed to initialize terminal backend")?;
 
         let result = self.run_app(&mut terminal);
 
-        disable_raw_mode()?;
-        execute!(
+        // Always try to restore terminal state, even if there was an error
+        let _ = disable_raw_mode();
+        let _ = execute!(
             terminal.backend_mut(),
             LeaveAlternateScreen,
             DisableMouseCapture
-        )?;
-        terminal.show_cursor()?;
+        );
+        let _ = terminal.show_cursor();
 
         result
     }
@@ -112,7 +123,7 @@ impl TerminalUI {
                 Constraint::Min(10),
                 Constraint::Length(3),
             ])
-            .split(f.size());
+            .split(f.area());
 
         // Header
         let header = Paragraph::new(vec![
@@ -168,13 +179,13 @@ impl TerminalUI {
     }
 
     fn scan_repository(&mut self) -> Result<()> {
-        use crate::git::GitRepo;
+        use crate::git::ProjectSource;
         use crate::parser::CParser;
 
         self.violations.clear();
 
-        let git_repo = GitRepo::open(&self.repo_path)?;
-        let c_files = git_repo.get_c_files()?;
+        let project_source = ProjectSource::open(&self.repo_path)?;
+        let c_files = project_source.get_c_files()?;
         let mut parser = CParser::new()?;
 
         for file_path in c_files {

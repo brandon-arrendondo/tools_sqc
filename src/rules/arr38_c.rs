@@ -1,7 +1,6 @@
 use super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
-use std::collections::HashSet;
 
 pub struct Arr38C;
 

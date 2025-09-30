@@ -1,10 +1,6 @@
 use anyhow::{Context, Result};
-use tree_sitter::{Language, Parser, Tree};
+use tree_sitter::{Parser, Tree};
 use std::fs;
-
-extern "C" {
-    fn tree_sitter_c() -> Language;
-}
 
 pub struct CParser {
     parser: Parser,
@@ -13,8 +9,7 @@ pub struct CParser {
 impl CParser {
     pub fn new() -> Result<Self> {
         let mut parser = Parser::new();
-        let language = unsafe { tree_sitter_c() };
-        parser.set_language(&language)
+        parser.set_language(&tree_sitter_c::language())
             .context("Failed to set C language for parser")?;
 
         Ok(Self { parser })
