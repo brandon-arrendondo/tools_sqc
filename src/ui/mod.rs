@@ -7,26 +7,105 @@ use crossterm::{
 };
 use ratatui::{
     backend::{Backend, CrosstermBackend},
-    layout::{Alignment, Constraint, Direction, Layout},
+    layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style},
     text::{Line, Span},
-    widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
+    widgets::{Block, Borders, Clear, List, ListItem, ListState, Paragraph},
     Frame, Terminal,
 };
 use std::io;
 use std::fs;
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 use std::path::PathBuf;
 use sha2::{Sha256, Digest};
 
-use crate::manifest::RuleManifest;
+use crate::manifest::{RuleManifest, RuleConfig, Severity, RuleCategory};
 use crate::rules::{RuleRegistry, RuleViolation};
+use crate::suppression::SuppressionManager;
+
+#[derive(Clone, Copy, PartialEq)]
+enum SortMode {
+    Default,     // Order of operation (current setup)
+    ViolationId, // Sorted by violation ID alphabetically
+    FilePath,    // Sorted by path/filename alphabetically
+    FileName,    // Sorted by filename only alphabetically
+}
+
+#[derive(Clone, Copy, PartialEq)]
+enum Tab {
+    Violations,
+    Configuration,
+}
+
+impl SortMode {
+    fn name(&self) -> &str {
+        match self {
+            SortMode::Default => "Default",
+            SortMode::ViolationId => "Violation ID",
+            SortMode::FilePath => "File Path",
+            SortMode::FileName => "File Name",
+        }
+    }
+}
+
+#[derive(Clone)]
+struct ConfigItem {
+    rule_id: String,
+    config: RuleConfig,
+    level: usize,  // 0 for category, 1 for rule
+    is_category: bool,
+}
+
+#[derive(Clone)]
+enum GroupItem {
+    Group {
+        name: String,
+        expanded: bool,
+        items: Vec<GroupItem>,
+        level: usize,
+    },
+    Violation {
+        original_index: usize,
+        violation: RuleViolation,
+        level: usize,
+    },
+}
+
+impl GroupItem {
+    fn level(&self) -> usize {
+        match self {
+            GroupItem::Group { level, .. } => *level,
+            GroupItem::Violation { level, .. } => *level,
+        }
+    }
+
+    fn is_group(&self) -> bool {
+        matches!(self, GroupItem::Group { .. })
+    }
+}
+
+#[derive(Clone)]
+struct SuppressionSummary {
+    file_path: String,
+    violations: Vec<ViolationSuppression>,
+}
+
+#[derive(Clone)]
+struct ViolationSuppression {
+    rule_id: String,
+    line: usize,
+    code_preview: String,
+    hash: String,
+}
 
 pub struct TerminalUI {
     repo_path: String,
     manifest: RuleManifest,
     registry: RuleRegistry,
     violations: Vec<RuleViolation>,
+    sorted_violations: Vec<(usize, RuleViolation)>, // (original_index, violation)
+    grouped_items: Vec<GroupItem>, // Tree structure for grouping
+    flat_display_items: Vec<GroupItem>, // Flattened for display (only visible items)
     selected_violation: ListState,
     checked_violations: HashSet<usize>,
     show_save_dialog: bool,
@@ -34,6 +113,19 @@ pub struct TerminalUI {
     show_file_preview: bool,
     preview_focused: bool,
     preview_scroll_offset: usize,
+    sort_mode: SortMode,
+    sort_ascending: bool,
+    // Configuration tab fields
+    current_tab: Tab,
+    config_items: Vec<ConfigItem>,
+    selected_config: ListState,
+    config_groups_expanded: HashMap<String, bool>,
+    show_save_config_dialog: bool,
+    save_config_filename: String,
+    // Suppression dialog fields
+    show_suppression_dialog: bool,
+    suppression_summary: Vec<SuppressionSummary>,
+    uncommitted_files: Vec<String>,
 }
 
 impl TerminalUI {
@@ -42,11 +134,21 @@ impl TerminalUI {
         let mut selected_violation = ListState::default();
         selected_violation.select(Some(0));
 
+        let mut selected_config = ListState::default();
+        selected_config.select(Some(0));
+
+        // Build config items from manifest
+        let config_items = Self::build_config_items(&manifest);
+        let config_groups_expanded = Self::init_config_groups(&manifest);
+
         Ok(Self {
             repo_path: repo_path.to_string(),
             manifest,
             registry,
             violations: Vec::new(),
+            sorted_violations: Vec::new(),
+            grouped_items: Vec::new(),
+            flat_display_items: Vec::new(),
             selected_violation,
             checked_violations: HashSet::new(),
             show_save_dialog: false,
@@ -54,7 +156,94 @@ impl TerminalUI {
             show_file_preview: true, // Default to showing preview
             preview_focused: false, // Default focus on violations list
             preview_scroll_offset: 0,
+            sort_mode: SortMode::Default,
+            sort_ascending: true, // A-Z by default
+            current_tab: Tab::Violations,
+            config_items,
+            selected_config,
+            config_groups_expanded,
+            show_save_config_dialog: false,
+            save_config_filename: String::from("sqc-rules.toml"),
+            show_suppression_dialog: false,
+            suppression_summary: Vec::new(),
+            uncommitted_files: Vec::new(),
         })
+    }
+
+    fn build_config_items(manifest: &RuleManifest) -> Vec<ConfigItem> {
+        let mut items = Vec::new();
+        let mut grouped: HashMap<String, Vec<(String, RuleConfig)>> = HashMap::new();
+
+        // Group rules by category (prefix)
+        for (rule_id, config) in &manifest.rules {
+            let category = rule_id.split('-').next().unwrap_or(rule_id).to_string();
+            grouped.entry(category).or_insert_with(Vec::new).push((rule_id.clone(), config.clone()));
+        }
+
+        // Sort categories and build items
+        let mut categories: Vec<_> = grouped.keys().cloned().collect();
+        categories.sort();
+
+        for category in categories {
+            // Add category header
+            items.push(ConfigItem {
+                rule_id: category.clone(),
+                config: RuleConfig {
+                    enabled: true,
+                    severity: Severity::Medium,
+                    description: format!("{} Rules", category),
+                    category: RuleCategory::Rule,
+                    cert_id: String::new(),
+                    parameters: None,
+                },
+                level: 0,
+                is_category: true,
+            });
+
+            // Add sorted rules in this category
+            let mut rules = grouped.get(&category).unwrap().clone();
+            rules.sort_by(|a, b| a.0.cmp(&b.0));
+
+            for (rule_id, config) in rules {
+                items.push(ConfigItem {
+                    rule_id,
+                    config,
+                    level: 1,
+                    is_category: false,
+                });
+            }
+        }
+
+        items
+    }
+
+    fn init_config_groups(manifest: &RuleManifest) -> HashMap<String, bool> {
+        let mut groups = HashMap::new();
+
+        // Initialize all groups as collapsed
+        for rule_id in manifest.rules.keys() {
+            let category = rule_id.split('-').next().unwrap_or(rule_id).to_string();
+            groups.entry(category).or_insert(false);
+        }
+
+        groups
+    }
+
+    fn get_visible_config_items(&self) -> Vec<ConfigItem> {
+        let mut visible = Vec::new();
+
+        let mut skip_until_next_category = false;
+        for item in &self.config_items {
+            if item.is_category {
+                visible.push(item.clone());
+                let expanded = self.config_groups_expanded.get(&item.rule_id).copied().unwrap_or(false);
+                skip_until_next_category = !expanded;
+            } else if !skip_until_next_category {
+                visible.push(item.clone());
+            }
+        }
+
+        visible
     }
 
     pub fn run(&mut self) -> Result<()> {
@@ -115,16 +304,53 @@ impl TerminalUI {
                         }
                         _ => {}
                     }
+                } else if self.show_suppression_dialog {
+                    match key.code {
+                        KeyCode::Enter | KeyCode::Char('y') => {
+                            // Confirm suppression generation
+                            let _ = self.apply_suppressions(); // Ignore errors for now
+                            self.show_suppression_dialog = false;
+                        }
+                        KeyCode::Esc | KeyCode::Char('n') => {
+                            // Cancel suppression
+                            self.show_suppression_dialog = false;
+                        }
+                        _ => {}
+                    }
+                } else if self.show_save_config_dialog {
+                    match key.code {
+                        KeyCode::Enter => {
+                            // Save the configuration file
+                            let path = PathBuf::from(&self.save_config_filename);
+                            let _ = self.export_config(&path); // Ignore errors for now
+                            self.show_save_config_dialog = false;
+                        }
+                        KeyCode::Esc => {
+                            // Cancel the save dialog
+                            self.show_save_config_dialog = false;
+                        }
+                        KeyCode::Backspace => {
+                            // Remove last character from filename
+                            self.save_config_filename.pop();
+                        }
+                        KeyCode::Char(c) => {
+                            // Add character to filename
+                            self.save_config_filename.push(c);
+                        }
+                        _ => {}
+                    }
                 } else {
                     match key.code {
                         KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
                         KeyCode::Down => {
-                            if self.preview_focused && self.show_file_preview {
+                            if self.current_tab == Tab::Configuration {
+                                self.config_scroll_down();
+                            } else if self.preview_focused && self.show_file_preview {
                                 self.preview_scroll_down();
                             } else {
                                 let i = match self.selected_violation.selected() {
                                     Some(i) => {
-                                        if i >= self.violations.len().saturating_sub(1) {
+                                        if i >= self.flat_display_items.len().saturating_sub(1) {
                                             0
                                         } else {
                                             i + 1
@@ -138,13 +364,15 @@ impl TerminalUI {
                             }
                         }
                         KeyCode::Up => {
-                            if self.preview_focused && self.show_file_preview {
+                            if self.current_tab == Tab::Configuration {
+                                self.config_scroll_up();
+                            } else if self.preview_focused && self.show_file_preview {
                                 self.preview_scroll_up();
                             } else {
                                 let i = match self.selected_violation.selected() {
                                     Some(i) => {
                                         if i == 0 {
-                                            self.violations.len().saturating_sub(1)
+                                            self.flat_display_items.len().saturating_sub(1)
                                         } else {
                                             i - 1
                                         }
@@ -157,32 +385,77 @@ impl TerminalUI {
                             }
                         }
                         KeyCode::Char('s') => {
-                            // Trigger scan
-                            self.scan_repository()?;
+                            // Trigger scan (only in Violations tab)
+                            if self.current_tab == Tab::Violations {
+                                self.scan_repository()?;
+                            }
+                        }
+                        KeyCode::Char('i') => {
+                            // Ignore/suppress selected violations
+                            if self.current_tab == Tab::Violations && !self.checked_violations.is_empty() {
+                                self.initiate_suppression();
+                            }
                         }
                         KeyCode::Char(' ') => {
+                            if self.current_tab == Tab::Configuration {
+                                // Toggle rule enabled/disabled in Configuration tab
+                                self.toggle_config_item();
+                            } else {
                             // Toggle checkbox for selected violation
-                            if let Some(index) = self.selected_violation.selected() {
-                                if self.checked_violations.contains(&index) {
-                                    self.checked_violations.remove(&index);
-                                } else {
-                                    self.checked_violations.insert(index);
+                            if let Some(display_index) = self.selected_violation.selected() {
+                                if let Some(selected_item) = self.flat_display_items.get(display_index) {
+                                    if let GroupItem::Violation { original_index, .. } = selected_item {
+                                        if self.checked_violations.contains(original_index) {
+                                            self.checked_violations.remove(original_index);
+                                        } else {
+                                            self.checked_violations.insert(*original_index);
+                                        }
+                                    }
                                 }
+                            }
                             }
                         }
                         KeyCode::Char('e') => {
-                            // Show save dialog for exporting selected violations to CSV
-                            if !self.checked_violations.is_empty() {
-                                self.show_save_dialog = true;
+                            if self.current_tab == Tab::Configuration {
+                                // Show save dialog for exporting configuration
+                                self.show_save_config_dialog = true;
+                            } else {
+                                // Show save dialog for exporting selected violations to CSV
+                                if !self.checked_violations.is_empty() {
+                                    self.show_save_dialog = true;
+                                }
                             }
                         }
-                        KeyCode::Char('a') => {
-                            // Select all violations
-                            self.checked_violations = (0..self.violations.len()).collect();
+                        KeyCode::Char('a') | KeyCode::Char('A') => {
+                            if key.modifiers.contains(crossterm::event::KeyModifiers::SHIFT) {
+                                // Shift+A: Select all violations in current group (only for grouped modes)
+                                if self.sort_mode != SortMode::Default {
+                                    self.select_all_in_current_group();
+                                }
+                            } else {
+                                // Regular 'a': Select all violations (using original indices)
+                                self.checked_violations = self.flat_display_items
+                                    .iter()
+                                    .filter_map(|item| {
+                                        if let GroupItem::Violation { original_index, .. } = item {
+                                            Some(*original_index)
+                                        } else {
+                                            None
+                                        }
+                                    })
+                                    .collect();
+                            }
                         }
-                        KeyCode::Char('n') => {
-                            // Deselect all violations
-                            self.checked_violations.clear();
+                        KeyCode::Char('n') | KeyCode::Char('N') => {
+                            if key.modifiers.contains(crossterm::event::KeyModifiers::SHIFT) {
+                                // Shift+N: Deselect all violations in current group (only for grouped modes)
+                                if self.sort_mode != SortMode::Default {
+                                    self.deselect_all_in_current_group();
+                                }
+                            } else {
+                                // Regular 'n': Deselect all violations
+                                self.checked_violations.clear();
+                            }
                         }
                         KeyCode::Char('p') => {
                             // Toggle file preview
@@ -192,9 +465,61 @@ impl TerminalUI {
                             }
                         }
                         KeyCode::Tab => {
-                            // Switch focus between violations list and file preview
-                            if self.show_file_preview {
+                            // Switch focus between violations list and file preview (only in Violations tab)
+                            if self.current_tab == Tab::Violations && self.show_file_preview {
                                 self.preview_focused = !self.preview_focused;
+                            }
+                        }
+                        KeyCode::Char('c') => {
+                            // Switch to Configuration tab
+                            self.current_tab = Tab::Configuration;
+                            self.preview_focused = false;
+                        }
+                        KeyCode::Char('v') => {
+                            // Switch to Violations tab
+                            self.current_tab = Tab::Violations;
+                        }
+                        KeyCode::Char('1') => {
+                            // Sort by default order
+                            self.sort_mode = SortMode::Default;
+                            self.update_sort();
+                        }
+                        KeyCode::Char('2') => {
+                            // Sort by violation ID
+                            self.sort_mode = SortMode::ViolationId;
+                            self.update_sort();
+                        }
+                        KeyCode::Char('3') => {
+                            // Sort by file path
+                            self.sort_mode = SortMode::FilePath;
+                            self.update_sort();
+                        }
+                        KeyCode::Char('4') => {
+                            // Sort by filename only
+                            self.sort_mode = SortMode::FileName;
+                            self.update_sort();
+                        }
+                        KeyCode::Char('r') => {
+                            // Reverse sort direction
+                            self.sort_ascending = !self.sort_ascending;
+                            self.update_sort();
+                        }
+                        KeyCode::Left => {
+                            if self.current_tab == Tab::Configuration {
+                                // Collapse config group
+                                self.toggle_config_group(false);
+                            } else if !self.preview_focused {
+                                // Collapse group if focused on a group
+                                self.toggle_group_expand(false);
+                            }
+                        }
+                        KeyCode::Right => {
+                            if self.current_tab == Tab::Configuration {
+                                // Expand config group
+                                self.toggle_config_group(true);
+                            } else if !self.preview_focused {
+                                // Expand group if focused on a group
+                                self.toggle_group_expand(true);
                             }
                         }
                         _ => {}
@@ -233,6 +558,24 @@ impl TerminalUI {
             self.render_save_dialog(f);
             return;
         }
+
+        if self.show_save_config_dialog {
+            self.render_save_config_dialog(f);
+            return;
+        }
+
+        if self.show_suppression_dialog {
+            self.render_suppression_dialog(f);
+            return;
+        }
+
+        match self.current_tab {
+            Tab::Violations => self.render_violations_tab(f),
+            Tab::Configuration => self.render_configuration_tab(f),
+        }
+    }
+
+    fn render_violations_tab(&mut self, f: &mut Frame) {
 
         let chunks = if self.show_file_preview {
             // Split vertically: header, violations, preview, footer
@@ -275,80 +618,127 @@ impl TerminalUI {
 
         // Violations list
         let violations: Vec<ListItem> = self
-            .violations
+            .flat_display_items
             .iter()
-            .enumerate()
-            .map(|(index, v)| {
-                let severity_color = match v.severity {
-                    crate::manifest::Severity::Critical => Color::Red,
-                    crate::manifest::Severity::High => Color::LightRed,
-                    crate::manifest::Severity::Medium => Color::Yellow,
-                    crate::manifest::Severity::Low => Color::Blue,
-                };
+            .map(|item| {
+                match item {
+                    GroupItem::Group { name, expanded, level, .. } => {
+                        let indent = "  ".repeat(*level);
+                        let expand_indicator = if *expanded { "▼ " } else { "▶ " };
+                        ListItem::new(vec![Line::from(vec![
+                            Span::raw(indent),
+                            Span::styled(expand_indicator, Style::default().fg(Color::Yellow)),
+                            Span::styled(name, Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+                        ])])
+                    }
+                    GroupItem::Violation { original_index, violation, level } => {
+                        let severity_color = match violation.severity {
+                            crate::manifest::Severity::Critical => Color::Red,
+                            crate::manifest::Severity::High => Color::LightRed,
+                            crate::manifest::Severity::Medium => Color::Yellow,
+                            crate::manifest::Severity::Low => Color::Blue,
+                        };
 
-                let checkbox = if self.checked_violations.contains(&index) {
-                    "[✓] "
-                } else {
-                    "[ ] "
-                };
+                        let checkbox = if self.checked_violations.contains(original_index) {
+                            "[✓] "
+                        } else {
+                            "[ ] "
+                        };
 
-                // Get relative path and filename
-                let relative_path = self.get_relative_path(&v.file_path);
-                let filename = std::path::Path::new(&v.file_path)
-                    .file_name()
-                    .unwrap_or_default()
-                    .to_string_lossy();
+                        // Get relative path and filename
+                        let relative_path = self.get_relative_path(&violation.file_path);
+                        let filename = std::path::Path::new(&violation.file_path)
+                            .file_name()
+                            .unwrap_or_default()
+                            .to_string_lossy();
 
-                ListItem::new(vec![Line::from(vec![
-                    Span::styled(checkbox, Style::default().fg(Color::Green)),
-                    Span::styled(&v.rule_id, Style::default().fg(severity_color).add_modifier(Modifier::BOLD)),
-                    Span::raw(" - "),
-                    Span::styled(filename, Style::default().fg(Color::White)),
-                    Span::raw(" ("),
-                    Span::styled(relative_path, Style::default().fg(Color::Gray)),
-                    Span::raw(":"),
-                    Span::styled(format!("{}:{}", v.line, v.column), Style::default().fg(Color::Cyan)),
-                    Span::raw(")"),
-                ])])
+                        let indent = "  ".repeat(*level);
+
+                        ListItem::new(vec![Line::from(vec![
+                            Span::raw(indent),
+                            Span::styled(checkbox, Style::default().fg(Color::Green)),
+                            Span::styled(&violation.rule_id, Style::default().fg(severity_color).add_modifier(Modifier::BOLD)),
+                            Span::raw(" - "),
+                            Span::styled(filename, Style::default().fg(Color::White)),
+                            Span::raw(" ("),
+                            Span::styled(relative_path, Style::default().fg(Color::Gray)),
+                            Span::raw(":"),
+                            Span::styled(format!("{}:{}", violation.line, violation.column), Style::default().fg(Color::Cyan)),
+                            Span::raw(")"),
+                        ])])
+                    }
+                }
             })
             .collect();
 
         // Create dynamic violations title with current violation details
         let violations_title = if let Some(selected_index) = self.selected_violation.selected() {
-            if let Some(violation) = self.violations.get(selected_index) {
-                let focus_indicator = if !self.preview_focused || !self.show_file_preview {
-                    "[FOCUSED] "
+            if let Some(selected_item) = self.flat_display_items.get(selected_index) {
+                if let GroupItem::Violation { violation, .. } = selected_item {
+                    let focus_indicator = if !self.preview_focused || !self.show_file_preview {
+                        "[FOCUSED] "
+                    } else {
+                        ""
+                    };
+
+                    let relative_path = self.get_relative_path(&violation.file_path);
+                    let filename = std::path::Path::new(&violation.file_path)
+                        .file_name()
+                        .unwrap_or_default()
+                        .to_string_lossy();
+
+                    // Get rule description
+                    let rule_description = if let Some(rule) = self.registry.get_rule(&violation.rule_id) {
+                        rule.description()
+                    } else {
+                        "Unknown rule"
+                    };
+
+                    let sort_info = if self.sort_mode != SortMode::Default {
+                        format!(" [Sort: {} {}]",
+                            self.sort_mode.name(),
+                            if self.sort_ascending { "A-Z" } else { "Z-A" })
+                    } else {
+                        String::new()
+                    };
+
+                    format!("{}Violations{} - {}: {} - {}:{} ({})",
+                        focus_indicator,
+                        sort_info,
+                        violation.rule_id,
+                        rule_description,
+                        filename,
+                        violation.line,
+                        relative_path)
                 } else {
-                    ""
-                };
-
-                let relative_path = self.get_relative_path(&violation.file_path);
-                let filename = std::path::Path::new(&violation.file_path)
-                    .file_name()
-                    .unwrap_or_default()
-                    .to_string_lossy();
-
-                // Get rule description
-                let rule_description = if let Some(rule) = self.registry.get_rule(&violation.rule_id) {
-                    rule.description()
-                } else {
-                    "Unknown rule"
-                };
-
-                format!("{}Violations - {}: {} - {}:{} ({})",
-                    focus_indicator,
-                    violation.rule_id,
-                    rule_description,
-                    filename,
-                    violation.line,
-                    relative_path)
+                    let focus_indicator = if !self.preview_focused || !self.show_file_preview {
+                        "[FOCUSED] "
+                    } else {
+                        ""
+                    };
+                    let sort_info = if self.sort_mode != SortMode::Default {
+                        format!(" [Sort: {} {}]",
+                            self.sort_mode.name(),
+                            if self.sort_ascending { "A-Z" } else { "Z-A" })
+                    } else {
+                        String::new()
+                    };
+                    format!("{}Violations{}", focus_indicator, sort_info)
+                }
             } else {
                 let focus_indicator = if !self.preview_focused || !self.show_file_preview {
                     "[FOCUSED] "
                 } else {
                     ""
                 };
-                format!("{}Violations", focus_indicator)
+                let sort_info = if self.sort_mode != SortMode::Default {
+                    format!(" [Sort: {} {}]",
+                        self.sort_mode.name(),
+                        if self.sort_ascending { "A-Z" } else { "Z-A" })
+                } else {
+                    String::new()
+                };
+                format!("{}Violations{}", focus_indicator, sort_info)
             }
         } else {
             let focus_indicator = if !self.preview_focused || !self.show_file_preview {
@@ -356,7 +746,14 @@ impl TerminalUI {
             } else {
                 ""
             };
-            format!("{}Violations", focus_indicator)
+            let sort_info = if self.sort_mode != SortMode::Default {
+                format!(" [Sort: {} {}]",
+                    self.sort_mode.name(),
+                    if self.sort_ascending { "A-Z" } else { "Z-A" })
+            } else {
+                String::new()
+            };
+            format!("{}Violations{}", focus_indicator, sort_info)
         };
 
         let violations_block = if !self.preview_focused || !self.show_file_preview {
@@ -383,10 +780,39 @@ impl TerminalUI {
         }
 
         // Footer
-        let footer = Paragraph::new("(s)can, (e)xport, (space)select, (a)ll, (n)one, (p)review, (tab)focus, (q)/Esc quit")
-            .style(Style::default().fg(Color::White))
-            .alignment(Alignment::Center)
-            .block(Block::default().borders(Borders::ALL));
+        let footer = Paragraph::new(vec![
+            Line::from(vec![
+                Span::raw("("),
+                Span::styled("q", Style::default().fg(Color::Yellow)),
+                Span::raw(")uit | ("),
+                Span::styled("c", Style::default().fg(Color::Yellow)),
+                Span::raw(")onfiguration | ("),
+                Span::styled("s", Style::default().fg(Color::Yellow)),
+                Span::raw(")can | ("),
+                Span::styled("i", Style::default().fg(Color::Yellow)),
+                Span::raw(")gnore | ("),
+                Span::styled("e", Style::default().fg(Color::Yellow)),
+                Span::raw(")xport | "),
+                Span::styled("(space)", Style::default().fg(Color::Yellow)),
+                Span::raw("select | ("),
+                Span::styled("a", Style::default().fg(Color::Yellow)),
+                Span::raw(")ll | ("),
+                Span::styled("n", Style::default().fg(Color::Yellow)),
+                Span::raw(")one | ("),
+                Span::styled("p", Style::default().fg(Color::Yellow)),
+                Span::raw(")review | "),
+                Span::styled("(tab)", Style::default().fg(Color::Yellow)),
+                Span::raw("focus | ("),
+                Span::styled("1-4", Style::default().fg(Color::Yellow)),
+                Span::raw(")sort | ("),
+                Span::styled("r", Style::default().fg(Color::Yellow)),
+                Span::raw(")everse | "),
+                Span::styled("←→", Style::default().fg(Color::Yellow)),
+                Span::raw(" expand/collapse"),
+            ]),
+        ])
+        .style(Style::default().fg(Color::White))
+        .block(Block::default().borders(Borders::ALL));
 
         let footer_index = if self.show_file_preview { 3 } else { 2 };
         f.render_widget(footer, chunks[footer_index]);
@@ -435,9 +861,140 @@ impl TerminalUI {
         f.render_widget(dialog_paragraph, inner_area);
     }
 
+    fn render_save_config_dialog(&mut self, f: &mut Frame) {
+        let area = f.area();
+        let popup_area = Rect {
+            x: area.width / 4,
+            y: area.height / 2 - 3,
+            width: area.width / 2,
+            height: 6,
+        };
+
+        // Clear the background
+        f.render_widget(Clear, popup_area);
+
+        // Render popup border
+        let popup_block = Block::default()
+            .borders(Borders::ALL)
+            .title("Save Configuration")
+            .border_style(Style::default().fg(Color::Yellow));
+
+        f.render_widget(popup_block, popup_area);
+
+        let inner_area = Rect {
+            x: popup_area.x + 1,
+            y: popup_area.y + 1,
+            width: popup_area.width - 2,
+            height: popup_area.height - 2,
+        };
+
+        let dialog_text = vec![
+            Line::from("Enter filename (.toml):"),
+            Line::from(vec![
+                Span::styled(&self.save_config_filename, Style::default().fg(Color::Yellow)),
+                Span::styled("_", Style::default().fg(Color::Green)), // cursor
+            ]),
+            Line::from(""),
+            Line::from("Press Enter to save, Esc to cancel"),
+        ];
+
+        let dialog_paragraph = Paragraph::new(dialog_text)
+            .style(Style::default().fg(Color::White));
+
+        f.render_widget(dialog_paragraph, inner_area);
+    }
+
+    fn render_configuration_tab(&mut self, f: &mut Frame) {
+        let chunks = Layout::default()
+            .direction(Direction::Vertical)
+            .margin(1)
+            .constraints([
+                Constraint::Length(3), // Header
+                Constraint::Min(1),    // Config list
+                Constraint::Length(3), // Footer
+            ])
+            .split(f.area());
+
+        // Header
+        let header = Paragraph::new(vec![
+            Line::from("CERT C Rules Configuration"),
+            Line::from(format!("Total Rules: {} | Tab: Configuration", self.manifest.rules.len())),
+        ])
+        .style(Style::default().fg(Color::White))
+        .alignment(Alignment::Center)
+        .block(Block::default().borders(Borders::ALL).title("CERT C Compliance Checker"));
+
+        f.render_widget(header, chunks[0]);
+
+        // Configuration list
+        let visible_items = self.get_visible_config_items();
+        let config_items: Vec<ListItem> = visible_items
+            .iter()
+            .map(|item| {
+                if item.is_category {
+                    let expanded = self.config_groups_expanded.get(&item.rule_id).copied().unwrap_or(false);
+                    let indicator = if expanded { "▼ " } else { "▶ " };
+                    ListItem::new(vec![Line::from(vec![
+                        Span::styled(indicator, Style::default().fg(Color::Yellow)),
+                        Span::styled(&item.rule_id, Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)),
+                        Span::raw(" Rules"),
+                    ])])
+                } else {
+                    let checkbox = if item.config.enabled { "[✓] " } else { "[ ] " };
+                    let indent = "  ".repeat(item.level);
+                    let severity_color = match item.config.severity {
+                        Severity::Critical => Color::Red,
+                        Severity::High => Color::LightRed,
+                        Severity::Medium => Color::Yellow,
+                        Severity::Low => Color::Blue,
+                    };
+
+                    ListItem::new(vec![Line::from(vec![
+                        Span::raw(indent),
+                        Span::styled(checkbox, Style::default().fg(Color::Green)),
+                        Span::styled(&item.rule_id, Style::default().fg(severity_color)),
+                        Span::raw(" - "),
+                        Span::styled(&item.config.description, Style::default().fg(Color::Gray)),
+                    ])])
+                }
+            })
+            .collect();
+
+        let config_list = List::new(config_items)
+            .block(Block::default()
+                .borders(Borders::ALL)
+                .title("Rules Configuration"))
+            .highlight_style(Style::default().add_modifier(Modifier::REVERSED))
+            .highlight_symbol(">> ");
+
+        f.render_stateful_widget(config_list, chunks[1], &mut self.selected_config);
+
+        // Footer
+        let footer = Paragraph::new(vec![
+            Line::from(vec![
+                Span::raw("("),
+                Span::styled("q", Style::default().fg(Color::Yellow)),
+                Span::raw(")uit | ("),
+                Span::styled("v", Style::default().fg(Color::Yellow)),
+                Span::raw(")iolations | "),
+                Span::styled("(space)", Style::default().fg(Color::Yellow)),
+                Span::raw("toggle | ("),
+                Span::styled("e", Style::default().fg(Color::Yellow)),
+                Span::raw(")xport config | "),
+                Span::styled("←→", Style::default().fg(Color::Yellow)),
+                Span::raw(" expand/collapse"),
+            ]),
+        ])
+        .style(Style::default().fg(Color::White))
+        .block(Block::default().borders(Borders::ALL));
+
+        f.render_widget(footer, chunks[2]);
+    }
+
     fn render_file_preview(&mut self, f: &mut Frame, area: ratatui::layout::Rect) {
         if let Some(selected_index) = self.selected_violation.selected() {
-            if let Some(violation) = self.violations.get(selected_index) {
+            if let Some(selected_item) = self.flat_display_items.get(selected_index) {
+                if let GroupItem::Violation { violation, .. } = selected_item {
                 // Try to read and display the file content
                 match self.get_file_preview(&violation.file_path, violation.line) {
                     Ok(preview_lines) => {
@@ -490,8 +1047,18 @@ impl TerminalUI {
                         f.render_widget(error_paragraph, area);
                     }
                 }
+                } else {
+                    // Group selected, no preview
+                    let empty_paragraph = Paragraph::new("Select a violation to preview file")
+                        .block(Block::default()
+                            .borders(Borders::ALL)
+                            .title("File Preview"))
+                        .style(Style::default().fg(Color::Gray));
+
+                    f.render_widget(empty_paragraph, area);
+                }
             } else {
-                // No violation selected
+                // No item selected
                 let empty_paragraph = Paragraph::new("Select a violation to preview file")
                     .block(Block::default()
                         .borders(Borders::ALL)
@@ -586,6 +1153,420 @@ impl TerminalUI {
         self.preview_scroll_offset += 1;
     }
 
+    fn config_scroll_up(&mut self) {
+        let visible_items = self.get_visible_config_items();
+        let i = match self.selected_config.selected() {
+            Some(i) => {
+                if i == 0 {
+                    visible_items.len().saturating_sub(1)
+                } else {
+                    i - 1
+                }
+            }
+            None => 0,
+        };
+        self.selected_config.select(Some(i));
+    }
+
+    fn config_scroll_down(&mut self) {
+        let visible_items = self.get_visible_config_items();
+        let i = match self.selected_config.selected() {
+            Some(i) => {
+                if i >= visible_items.len().saturating_sub(1) {
+                    0
+                } else {
+                    i + 1
+                }
+            }
+            None => 0,
+        };
+        self.selected_config.select(Some(i));
+    }
+
+    fn toggle_config_item(&mut self) {
+        let visible_items = self.get_visible_config_items();
+        if let Some(selected_index) = self.selected_config.selected() {
+            if let Some(item) = visible_items.get(selected_index) {
+                if !item.is_category {
+                    // Find the actual config item in our list and toggle it
+                    for config_item in &mut self.config_items {
+                        if config_item.rule_id == item.rule_id {
+                            config_item.config.enabled = !config_item.config.enabled;
+                            // Also update the manifest in memory
+                            if let Some(manifest_config) = self.manifest.rules.get_mut(&item.rule_id) {
+                                manifest_config.enabled = config_item.config.enabled;
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn toggle_config_group(&mut self, expand: bool) {
+        let visible_items = self.get_visible_config_items();
+        if let Some(selected_index) = self.selected_config.selected() {
+            if let Some(item) = visible_items.get(selected_index) {
+                if item.is_category {
+                    self.config_groups_expanded.insert(item.rule_id.clone(), expand);
+                }
+            }
+        }
+    }
+
+    fn export_config(&self, path: &PathBuf) -> Result<()> {
+        // Build the TOML content
+        let toml_content = toml::to_string_pretty(&self.manifest)?;
+        fs::write(path, toml_content)?;
+        Ok(())
+    }
+
+    fn update_sort(&mut self) {
+        self.sorted_violations = self.violations
+            .iter()
+            .enumerate()
+            .map(|(idx, v)| (idx, v.clone()))
+            .collect();
+
+        match self.sort_mode {
+            SortMode::Default => {
+                // Keep original order - no sorting needed, no grouping
+                self.grouped_items = self.sorted_violations
+                    .iter()
+                    .map(|(original_index, violation)| GroupItem::Violation {
+                        original_index: *original_index,
+                        violation: violation.clone(),
+                        level: 0,
+                    })
+                    .collect();
+            }
+            SortMode::ViolationId => {
+                self.sorted_violations.sort_by(|a, b| {
+                    if self.sort_ascending {
+                        a.1.rule_id.cmp(&b.1.rule_id)
+                    } else {
+                        b.1.rule_id.cmp(&a.1.rule_id)
+                    }
+                });
+                self.group_by_violation_id();
+            }
+            SortMode::FilePath => {
+                let repo_path = &self.repo_path;
+                let sort_ascending = self.sort_ascending;
+                self.sorted_violations.sort_by(|a, b| {
+                    let path_a = get_relative_path_for(&a.1.file_path, repo_path);
+                    let path_b = get_relative_path_for(&b.1.file_path, repo_path);
+                    if sort_ascending {
+                        path_a.cmp(&path_b)
+                    } else {
+                        path_b.cmp(&path_a)
+                    }
+                });
+                self.group_by_file_path();
+            }
+            SortMode::FileName => {
+                let sort_ascending = self.sort_ascending;
+                self.sorted_violations.sort_by(|a, b| {
+                    let name_a = std::path::Path::new(&a.1.file_path)
+                        .file_name()
+                        .unwrap_or_default()
+                        .to_string_lossy();
+                    let name_b = std::path::Path::new(&b.1.file_path)
+                        .file_name()
+                        .unwrap_or_default()
+                        .to_string_lossy();
+                    if sort_ascending {
+                        name_a.cmp(&name_b)
+                    } else {
+                        name_b.cmp(&name_a)
+                    }
+                });
+                self.group_by_file_name();
+            }
+        }
+
+        // Update flat display items
+        self.flatten_groups();
+
+        // Reset selection to first item
+        if !self.flat_display_items.is_empty() {
+            self.selected_violation.select(Some(0));
+        }
+    }
+
+    fn group_by_violation_id(&mut self) {
+        use std::collections::BTreeMap;
+
+        let mut groups: BTreeMap<String, Vec<(usize, RuleViolation)>> = BTreeMap::new();
+
+        for (original_index, violation) in &self.sorted_violations {
+            // Extract category (e.g., "ARR" from "ARR30-C")
+            let category = violation.rule_id.split('-').next().unwrap_or(&violation.rule_id).to_string();
+            groups.entry(category).or_insert_with(Vec::new).push((*original_index, violation.clone()));
+        }
+
+        self.grouped_items = if self.sort_ascending {
+            groups.into_iter().collect::<Vec<_>>()
+        } else {
+            groups.into_iter().rev().collect::<Vec<_>>()
+        }.into_iter().map(|(category, violations)| {
+            GroupItem::Group {
+                name: category,
+                expanded: false,
+                items: violations.into_iter().map(|(original_index, violation)| {
+                    GroupItem::Violation {
+                        original_index,
+                        violation,
+                        level: 1,
+                    }
+                }).collect(),
+                level: 0,
+            }
+        }).collect();
+    }
+
+    fn group_by_file_path(&mut self) {
+        use std::collections::BTreeMap;
+
+        let mut path_groups: BTreeMap<String, Vec<(usize, RuleViolation)>> = BTreeMap::new();
+
+        for (original_index, violation) in &self.sorted_violations {
+            let path = get_relative_path_for(&violation.file_path, &self.repo_path);
+            let dir_path = std::path::Path::new(&path)
+                .parent()
+                .map(|p| p.to_string_lossy().to_string())
+                .unwrap_or_else(|| ".".to_string());
+
+            path_groups.entry(dir_path).or_insert_with(Vec::new).push((*original_index, violation.clone()));
+        }
+
+        self.grouped_items = if self.sort_ascending {
+            path_groups.into_iter().collect::<Vec<_>>()
+        } else {
+            path_groups.into_iter().rev().collect::<Vec<_>>()
+        }.into_iter().map(|(dir_path, violations)| {
+            GroupItem::Group {
+                name: dir_path,
+                expanded: false,
+                items: violations.into_iter().map(|(original_index, violation)| {
+                    GroupItem::Violation {
+                        original_index,
+                        violation,
+                        level: 1,
+                    }
+                }).collect(),
+                level: 0,
+            }
+        }).collect();
+    }
+
+    fn group_by_file_name(&mut self) {
+        use std::collections::BTreeMap;
+
+        let mut file_groups: BTreeMap<String, Vec<(usize, RuleViolation)>> = BTreeMap::new();
+
+        for (original_index, violation) in &self.sorted_violations {
+            let filename = std::path::Path::new(&violation.file_path)
+                .file_name()
+                .unwrap_or_default()
+                .to_string_lossy()
+                .to_string();
+
+            file_groups.entry(filename).or_insert_with(Vec::new).push((*original_index, violation.clone()));
+        }
+
+        self.grouped_items = if self.sort_ascending {
+            file_groups.into_iter().collect::<Vec<_>>()
+        } else {
+            file_groups.into_iter().rev().collect::<Vec<_>>()
+        }.into_iter().map(|(filename, violations)| {
+            GroupItem::Group {
+                name: filename,
+                expanded: false,
+                items: violations.into_iter().map(|(original_index, violation)| {
+                    GroupItem::Violation {
+                        original_index,
+                        violation,
+                        level: 1,
+                    }
+                }).collect(),
+                level: 0,
+            }
+        }).collect();
+    }
+
+    fn flatten_groups(&mut self) {
+        self.flat_display_items.clear();
+        self.flatten_groups_recursive(&self.grouped_items.clone());
+    }
+
+    fn flatten_groups_recursive(&mut self, items: &[GroupItem]) {
+        for item in items {
+            match item {
+                GroupItem::Group { name: _, expanded, items, level: _ } => {
+                    self.flat_display_items.push(item.clone());
+                    if *expanded {
+                        self.flatten_groups_recursive(items);
+                    }
+                }
+                GroupItem::Violation { .. } => {
+                    self.flat_display_items.push(item.clone());
+                }
+            }
+        }
+    }
+
+    fn toggle_group_expand(&mut self, expand: bool) {
+        if let Some(selected_index) = self.selected_violation.selected() {
+            let selected_item = self.flat_display_items.get(selected_index).cloned();
+            if let Some(selected_item) = selected_item {
+                if selected_item.is_group() {
+                    // Find the corresponding group in grouped_items and toggle it
+                    if let GroupItem::Group { name, level, .. } = &selected_item {
+                        self.update_grouped_items_expand(name, *level, expand);
+                    }
+                    self.flatten_groups();
+
+                    // Ensure selection remains valid
+                    if selected_index >= self.flat_display_items.len() {
+                        let new_index = self.flat_display_items.len().saturating_sub(1);
+                        self.selected_violation.select(Some(new_index));
+                    }
+                }
+            }
+        }
+    }
+
+
+    fn update_grouped_items_expand(&mut self, target_name: &str, target_level: usize, expand: bool) {
+        for item in &mut self.grouped_items {
+            if let GroupItem::Group { name, expanded, level, .. } = item {
+                if name == target_name && *level == target_level {
+                    *expanded = expand;
+                    break;
+                }
+            }
+        }
+    }
+
+    fn select_all_in_current_group(&mut self) {
+        if let Some(selected_index) = self.selected_violation.selected() {
+            let selected_item = self.flat_display_items.get(selected_index).cloned();
+            if let Some(selected_item) = selected_item {
+                match selected_item {
+                    GroupItem::Group { name, level, .. } => {
+                        // Selected item is a group - select all violations in this group
+                        self.select_violations_in_group(&name, level);
+                    }
+                    GroupItem::Violation { .. } => {
+                        // Selected item is a violation - find its parent group and select all in that group
+                        if let Some(parent_group) = self.find_parent_group_for_violation(selected_index) {
+                            self.select_violations_in_group(&parent_group.0, parent_group.1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn deselect_all_in_current_group(&mut self) {
+        if let Some(selected_index) = self.selected_violation.selected() {
+            let selected_item = self.flat_display_items.get(selected_index).cloned();
+            if let Some(selected_item) = selected_item {
+                match selected_item {
+                    GroupItem::Group { name, level, .. } => {
+                        // Selected item is a group - deselect all violations in this group
+                        self.deselect_violations_in_group(&name, level);
+                    }
+                    GroupItem::Violation { .. } => {
+                        // Selected item is a violation - find its parent group and deselect all in that group
+                        if let Some(parent_group) = self.find_parent_group_for_violation(selected_index) {
+                            self.deselect_violations_in_group(&parent_group.0, parent_group.1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn select_violations_in_group(&mut self, group_name: &str, group_level: usize) {
+        let mut violations_to_select = HashSet::new();
+        let mut inside_target_group = false;
+
+        for item in &self.flat_display_items {
+            match item {
+                GroupItem::Group { name, level, .. } => {
+                    if name == group_name && *level == group_level {
+                        inside_target_group = true;
+                    } else if *level <= group_level {
+                        // We've reached another group at the same or higher level, stop
+                        inside_target_group = false;
+                    }
+                }
+                GroupItem::Violation { original_index, .. } => {
+                    if inside_target_group {
+                        violations_to_select.insert(*original_index);
+                    }
+                }
+            }
+        }
+
+        // Add the violations to the checked set
+        for violation_index in violations_to_select {
+            self.checked_violations.insert(violation_index);
+        }
+    }
+
+    fn deselect_violations_in_group(&mut self, group_name: &str, group_level: usize) {
+        let mut violations_to_deselect = Vec::new();
+        let mut inside_target_group = false;
+
+        for item in &self.flat_display_items {
+            match item {
+                GroupItem::Group { name, level, .. } => {
+                    if name == group_name && *level == group_level {
+                        inside_target_group = true;
+                    } else if *level <= group_level {
+                        // We've reached another group at the same or higher level, stop
+                        inside_target_group = false;
+                    }
+                }
+                GroupItem::Violation { original_index, .. } => {
+                    if inside_target_group {
+                        violations_to_deselect.push(*original_index);
+                    }
+                }
+            }
+        }
+
+        // Remove the violations from the checked set
+        for violation_index in violations_to_deselect {
+            self.checked_violations.remove(&violation_index);
+        }
+    }
+
+    fn find_parent_group_for_violation(&self, violation_index: usize) -> Option<(String, usize)> {
+        let mut current_group: Option<(String, usize)> = None;
+
+        for (i, item) in self.flat_display_items.iter().enumerate() {
+            if i == violation_index {
+                return current_group;
+            }
+
+            match item {
+                GroupItem::Group { name, level, .. } => {
+                    current_group = Some((name.clone(), *level));
+                }
+                GroupItem::Violation { .. } => {
+                    // Continue - we're still looking for our target violation
+                }
+            }
+        }
+
+        None
+    }
+
     fn scan_repository(&mut self) -> Result<()> {
         use crate::git::ProjectSource;
         use crate::parser::CParser;
@@ -616,6 +1597,9 @@ impl TerminalUI {
         if !self.violations.is_empty() {
             self.selected_violation.select(Some(0));
         }
+
+        // Update sorting after loading violations
+        self.update_sort();
 
         Ok(())
     }
@@ -777,5 +1761,265 @@ impl TerminalUI {
         } else {
             file_path.split('/').last().unwrap_or(file_path).to_string()
         }
+    }
+
+    // Suppression functionality
+    fn initiate_suppression(&mut self) {
+        // Check for uncommitted changes
+        if let Ok(uncommitted) = self.check_git_status() {
+            self.uncommitted_files = uncommitted;
+        } else {
+            self.uncommitted_files.clear();
+        }
+
+        // Generate suppression summary
+        self.suppression_summary = self.generate_suppression_summary();
+
+        // Show the confirmation dialog
+        self.show_suppression_dialog = true;
+    }
+
+    fn check_git_status(&self) -> Result<Vec<String>> {
+        use std::process::Command;
+
+        let output = Command::new("git")
+            .args(&["status", "--porcelain"])
+            .current_dir(&self.repo_path)
+            .output()
+            .context("Failed to run git status")?;
+
+        let status = String::from_utf8_lossy(&output.stdout);
+        let mut uncommitted_files = Vec::new();
+
+        for line in status.lines() {
+            if !line.is_empty() {
+                let file_path = &line[3..]; // Skip the status flags
+                uncommitted_files.push(file_path.to_string());
+            }
+        }
+
+        Ok(uncommitted_files)
+    }
+
+    fn generate_suppression_summary(&self) -> Vec<SuppressionSummary> {
+        let mut summary_map: HashMap<String, Vec<ViolationSuppression>> = HashMap::new();
+
+        for &index in &self.checked_violations {
+            if let Some(violation) = self.violations.get(index) {
+                // Read the source file to get code context
+                if let Ok(source) = fs::read_to_string(&violation.file_path) {
+                    let code_lines: Vec<&str> = source.lines().collect();
+
+                    // Get the code preview (handle potential out-of-bounds)
+                    let code_preview = if violation.line > 0 && violation.line <= code_lines.len() {
+                        code_lines[violation.line - 1].trim().to_string()
+                    } else {
+                        "(line not found)".to_string()
+                    };
+
+                    // Calculate hash for the violation
+                    let hash = SuppressionManager::calculate_suppression_hash(
+                        &violation.rule_id,
+                        &code_preview
+                    );
+
+                    let violation_suppression = ViolationSuppression {
+                        rule_id: violation.rule_id.clone(),
+                        line: violation.line,
+                        code_preview,
+                        hash,
+                    };
+
+                    summary_map
+                        .entry(violation.file_path.clone())
+                        .or_insert_with(Vec::new)
+                        .push(violation_suppression);
+                }
+            }
+        }
+
+        summary_map
+            .into_iter()
+            .map(|(file_path, violations)| SuppressionSummary { file_path, violations })
+            .collect()
+    }
+
+    fn apply_suppressions(&self) -> Result<()> {
+        for summary in &self.suppression_summary {
+            self.add_suppressions_to_file(&summary.file_path, &summary.violations)?;
+        }
+        Ok(())
+    }
+
+    fn add_suppressions_to_file(&self, file_path: &str, violations: &[ViolationSuppression]) -> Result<()> {
+        // Read the current file content
+        let content = fs::read_to_string(file_path)?;
+        let mut lines: Vec<String> = content.lines().map(|s| s.to_string()).collect();
+
+        // Sort violations by line number in reverse order to avoid index shifting
+        let mut sorted_violations = violations.to_vec();
+        sorted_violations.sort_by(|a, b| b.line.cmp(&a.line));
+
+        // Get user information
+        let user_info = self.get_user_info();
+        let timestamp = chrono::Utc::now().format("%Y-%m-%d %H:%M:%S UTC");
+
+        for violation in sorted_violations {
+            if violation.line > 0 && violation.line <= lines.len() {
+                let suppression_comment = format!(
+                    "// SQC-SUPPRESS: {} HASH:{} JUSTIFICATION: \"Suppressed by {} on {}\"",
+                    violation.rule_id,
+                    violation.hash,
+                    user_info,
+                    timestamp
+                );
+
+                // Insert the suppression comment before the violation line
+                lines.insert(violation.line - 1, suppression_comment);
+            }
+        }
+
+        // Write the modified content back to the file
+        let new_content = lines.join("\n") + "\n";
+        fs::write(file_path, new_content)?;
+
+        Ok(())
+    }
+
+    fn get_user_info(&self) -> String {
+        // Try to get user from git config first
+        if let Ok(git_user) = self.get_git_user_email() {
+            return git_user;
+        }
+
+        // Fallback to system user
+        if let Ok(username) = std::env::var("USER") {
+            return username;
+        }
+
+        // Last resort
+        "unknown-user".to_string()
+    }
+
+    fn get_git_user_email(&self) -> Result<String> {
+        use std::process::Command;
+
+        let output = Command::new("git")
+            .args(&["config", "user.email"])
+            .current_dir(&self.repo_path)
+            .output()
+            .context("Failed to get git user email")?;
+
+        if output.status.success() {
+            let email = String::from_utf8_lossy(&output.stdout).trim().to_string();
+            if !email.is_empty() {
+                return Ok(email);
+            }
+        }
+
+        // Try git user.name as fallback
+        let output = Command::new("git")
+            .args(&["config", "user.name"])
+            .current_dir(&self.repo_path)
+            .output()
+            .context("Failed to get git user name")?;
+
+        if output.status.success() {
+            let name = String::from_utf8_lossy(&output.stdout).trim().to_string();
+            if !name.is_empty() {
+                return Ok(name);
+            }
+        }
+
+        Err(anyhow::anyhow!("No git user configured"))
+    }
+
+    fn render_suppression_dialog(&mut self, f: &mut Frame) {
+        use ratatui::layout::{Rect};
+
+        // Create a centered popup
+        let area = f.area();
+        let popup_area = Rect {
+            x: area.width / 6,
+            y: area.height / 6,
+            width: area.width * 2 / 3,
+            height: area.height * 2 / 3,
+        };
+
+        // Clear the background
+        f.render_widget(Clear, popup_area);
+
+        // Create the content
+        let mut content_lines = vec![
+            Line::from("Suppression Confirmation"),
+            Line::from(""),
+        ];
+
+        // Add warning about uncommitted files if any
+        if !self.uncommitted_files.is_empty() {
+            content_lines.push(Line::from(vec![
+                Span::styled("WARNING: ", Style::default().fg(Color::Red)),
+                Span::raw("Uncommitted changes detected in:"),
+            ]));
+
+            for file in &self.uncommitted_files {
+                content_lines.push(Line::from(format!("  - {}", file)));
+            }
+
+            content_lines.push(Line::from(""));
+            content_lines.push(Line::from("These files may have conflicts with suppression comments."));
+            content_lines.push(Line::from(""));
+        }
+
+        // Add suppression summary
+        content_lines.push(Line::from("The following violations will be suppressed:"));
+        content_lines.push(Line::from(""));
+
+        for summary in &self.suppression_summary {
+            content_lines.push(Line::from(format!("File: {}", summary.file_path)));
+
+            for violation in &summary.violations {
+                content_lines.push(Line::from(format!(
+                    "  - Line {}: {} ({})",
+                    violation.line,
+                    violation.rule_id,
+                    violation.code_preview.chars().take(60).collect::<String>()
+                )));
+            }
+
+            content_lines.push(Line::from(""));
+        }
+
+        content_lines.push(Line::from(""));
+        content_lines.push(Line::from(vec![
+            Span::styled("Press ", Style::default().fg(Color::White)),
+            Span::styled("Enter/y", Style::default().fg(Color::Green)),
+            Span::styled(" to confirm, ", Style::default().fg(Color::White)),
+            Span::styled("Esc/n", Style::default().fg(Color::Red)),
+            Span::styled(" to cancel", Style::default().fg(Color::White)),
+        ]));
+
+        let popup = Paragraph::new(content_lines)
+            .block(Block::default()
+                .title("Generate Suppression Comments")
+                .borders(Borders::ALL)
+                .border_style(Style::default().fg(Color::Yellow)))
+            .wrap(ratatui::widgets::Wrap { trim: true });
+
+        f.render_widget(popup, popup_area);
+    }
+}
+
+// Helper function to get relative path without borrowing self
+fn get_relative_path_for(file_path: &str, base_path: &str) -> String {
+    use std::path::Path;
+
+    let base_path_obj = Path::new(base_path);
+    let file_path_obj = Path::new(file_path);
+
+    if let Ok(relative) = file_path_obj.strip_prefix(base_path_obj) {
+        relative.to_string_lossy().to_string()
+    } else {
+        file_path.split('/').last().unwrap_or(file_path).to_string()
     }
 }
