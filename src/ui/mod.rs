@@ -390,6 +390,61 @@ impl TerminalUI {
                                 self.preview_scroll_offset = 0;
                             }
                         }
+                        KeyCode::PageUp => {
+                            if self.current_tab == Tab::Configuration {
+                                // Page up in configuration - move by 10 items
+                                for _ in 0..10 {
+                                    self.config_scroll_up();
+                                }
+                            } else if self.preview_focused && self.show_file_preview {
+                                // Page up in preview - scroll by 10 lines
+                                self.preview_scroll_offset = self.preview_scroll_offset.saturating_sub(10);
+                            } else {
+                                // Page up in violations list - move by 10 items or to the top
+                                let page_size = 10;
+                                let i = match self.selected_violation.selected() {
+                                    Some(i) => {
+                                        if i <= page_size {
+                                            0
+                                        } else {
+                                            i - page_size
+                                        }
+                                    }
+                                    None => 0,
+                                };
+                                self.selected_violation.select(Some(i));
+                                // Reset preview scroll when changing violations
+                                self.preview_scroll_offset = 0;
+                            }
+                        }
+                        KeyCode::PageDown => {
+                            if self.current_tab == Tab::Configuration {
+                                // Page down in configuration - move by 10 items
+                                for _ in 0..10 {
+                                    self.config_scroll_down();
+                                }
+                            } else if self.preview_focused && self.show_file_preview {
+                                // Page down in preview - scroll by 10 lines
+                                self.preview_scroll_offset += 10;
+                            } else {
+                                // Page down in violations list - move by 10 items or to the bottom
+                                let page_size = 10;
+                                let max_index = self.flat_display_items.len().saturating_sub(1);
+                                let i = match self.selected_violation.selected() {
+                                    Some(i) => {
+                                        if i + page_size >= max_index {
+                                            max_index
+                                        } else {
+                                            i + page_size
+                                        }
+                                    }
+                                    None => 0,
+                                };
+                                self.selected_violation.select(Some(i));
+                                // Reset preview scroll when changing violations
+                                self.preview_scroll_offset = 0;
+                            }
+                        }
                         KeyCode::Char('s') => {
                             // Trigger scan (only in Violations tab)
                             if self.current_tab == Tab::Violations {
@@ -499,26 +554,41 @@ impl TerminalUI {
                         KeyCode::Char('1') => {
                             // Sort by default order
                             self.sort_mode = SortMode::Default;
+                            if self.show_suppressed {
+                                self.update_combined_violations();
+                            }
                             self.update_sort();
                         }
                         KeyCode::Char('2') => {
                             // Sort by violation ID
                             self.sort_mode = SortMode::ViolationId;
+                            if self.show_suppressed {
+                                self.update_combined_violations();
+                            }
                             self.update_sort();
                         }
                         KeyCode::Char('3') => {
                             // Sort by file path
                             self.sort_mode = SortMode::FilePath;
+                            if self.show_suppressed {
+                                self.update_combined_violations();
+                            }
                             self.update_sort();
                         }
                         KeyCode::Char('4') => {
                             // Sort by filename only
                             self.sort_mode = SortMode::FileName;
+                            if self.show_suppressed {
+                                self.update_combined_violations();
+                            }
                             self.update_sort();
                         }
                         KeyCode::Char('r') => {
                             // Reverse sort direction
                             self.sort_ascending = !self.sort_ascending;
+                            if self.show_suppressed {
+                                self.update_combined_violations();
+                            }
                             self.update_sort();
                         }
                         KeyCode::Left => {
@@ -834,7 +904,10 @@ impl TerminalUI {
                 Span::styled("a", Style::default().fg(Color::Yellow)),
                 Span::raw(")ll | ("),
                 Span::styled("n", Style::default().fg(Color::Yellow)),
-                Span::raw(")one | ("),
+                Span::raw(")one"),
+            ]),
+            Line::from(vec![
+                Span::raw("("),
                 Span::styled("p", Style::default().fg(Color::Yellow)),
                 Span::raw(")review | ("),
                 Span::styled("h", Style::default().fg(Color::Yellow)),
@@ -846,7 +919,9 @@ impl TerminalUI {
                 Span::styled("r", Style::default().fg(Color::Yellow)),
                 Span::raw(")everse | "),
                 Span::styled("←→", Style::default().fg(Color::Yellow)),
-                Span::raw(" expand/collapse"),
+                Span::raw(" expand | "),
+                Span::styled("PgUp/PgDn", Style::default().fg(Color::Yellow)),
+                Span::raw(" page"),
             ]),
         ])
         .style(Style::default().fg(Color::White))
@@ -1477,9 +1552,55 @@ impl TerminalUI {
                         let new_index = self.flat_display_items.len().saturating_sub(1);
                         self.selected_violation.select(Some(new_index));
                     }
+                } else if !expand {
+                    // For left arrow on a child item, find and collapse the parent group
+                    if let Some(parent_index) = self.find_parent_group(selected_index) {
+                        if let Some(parent_item) = self.flat_display_items.get(parent_index).cloned() {
+                            if let GroupItem::Group { name, level, .. } = parent_item {
+                                // Collapse the parent group
+                                self.update_grouped_items_expand(&name, level, false);
+                                self.flatten_groups();
+
+                                // Find the parent group in the new flat list and select it
+                                for (i, item) in self.flat_display_items.iter().enumerate() {
+                                    if let GroupItem::Group { name: item_name, level: item_level, .. } = item {
+                                        if item_name == &name && item_level == &level {
+                                            self.selected_violation.select(Some(i));
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
+    }
+
+    fn find_parent_group(&self, child_index: usize) -> Option<usize> {
+        // Find the parent group by looking backwards from the child's position
+        if child_index == 0 {
+            return None;
+        }
+
+        // Get the child's level
+        let child_level = if let Some(child_item) = self.flat_display_items.get(child_index) {
+            child_item.level()
+        } else {
+            return None;
+        };
+
+        // Look backwards for the first group with a lower level
+        for i in (0..child_index).rev() {
+            if let Some(item) = self.flat_display_items.get(i) {
+                if item.is_group() && item.level() < child_level {
+                    return Some(i);
+                }
+            }
+        }
+
+        None
     }
 
 
@@ -2100,6 +2221,52 @@ impl TerminalUI {
         self.combined_violations.clear();
         self.combined_violations.extend(self.violations.iter().cloned());
         self.combined_violations.extend(self.suppressed_violations.iter().cloned());
+
+        // Sort the combined list according to current sort mode
+        match self.sort_mode {
+            SortMode::Default => {
+                // Keep original order - no additional sorting needed
+            }
+            SortMode::ViolationId => {
+                self.combined_violations.sort_by(|a, b| {
+                    if self.sort_ascending {
+                        a.rule_id.cmp(&b.rule_id)
+                    } else {
+                        b.rule_id.cmp(&a.rule_id)
+                    }
+                });
+            }
+            SortMode::FilePath => {
+                let repo_path = &self.repo_path;
+                let sort_ascending = self.sort_ascending;
+                self.combined_violations.sort_by(|a, b| {
+                    let path_a = get_relative_path_for(&a.file_path, repo_path);
+                    let path_b = get_relative_path_for(&b.file_path, repo_path);
+                    if sort_ascending {
+                        path_a.cmp(&path_b)
+                    } else {
+                        path_b.cmp(&path_a)
+                    }
+                });
+            }
+            SortMode::FileName => {
+                self.combined_violations.sort_by(|a, b| {
+                    let name_a = std::path::Path::new(&a.file_path)
+                        .file_name()
+                        .unwrap_or_default()
+                        .to_string_lossy();
+                    let name_b = std::path::Path::new(&b.file_path)
+                        .file_name()
+                        .unwrap_or_default()
+                        .to_string_lossy();
+                    if self.sort_ascending {
+                        name_a.cmp(&name_b)
+                    } else {
+                        name_b.cmp(&name_a)
+                    }
+                });
+            }
+        }
     }
 
     fn is_violation_suppressed(&self, violation: &RuleViolation) -> bool {
