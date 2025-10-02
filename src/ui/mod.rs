@@ -1,3 +1,5 @@
+use crate::prelude::*;
+
 use anyhow::{Context, Result};
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseEventKind},
@@ -21,7 +23,7 @@ use sha2::{Sha256, Digest};
 
 use crate::manifest::{RuleManifest, RuleConfig, Severity, RuleCategory};
 use crate::rules::{RuleRegistry, RuleViolation};
-use crate::suppression::SuppressionManager;
+use crate::analyze::suppression::SuppressionManager;
 
 #[derive(Clone, Copy, PartialEq)]
 enum SortMode {
@@ -892,36 +894,28 @@ impl TerminalUI {
                 Span::styled("q", Style::default().fg(Color::Yellow)),
                 Span::raw(")uit | ("),
                 Span::styled("c", Style::default().fg(Color::Yellow)),
-                Span::raw(")onfiguration | ("),
+                Span::raw(")onfig | ("),
                 Span::styled("s", Style::default().fg(Color::Yellow)),
-                Span::raw(")can | ("),
-                Span::styled("i", Style::default().fg(Color::Yellow)),
-                Span::raw(")gnore | ("),
-                Span::styled("e", Style::default().fg(Color::Yellow)),
-                Span::raw(")xport | "),
-                Span::styled("(space)", Style::default().fg(Color::Yellow)),
-                Span::raw("select | ("),
+                Span::raw(")can | SELECTION: ("),
+                Span::styled("<space>", Style::default().fg(Color::Yellow)),
+                Span::raw(")select, [("),
                 Span::styled("a", Style::default().fg(Color::Yellow)),
-                Span::raw(")ll | ("),
+                Span::raw(")ll OR ("),
                 Span::styled("n", Style::default().fg(Color::Yellow)),
-                Span::raw(")one"),
-            ]),
-            Line::from(vec![
-                Span::raw("("),
+                Span::raw(")one], [("),
+                Span::styled("i", Style::default().fg(Color::Yellow)),
+                Span::raw(")gnore OR ("),
+                Span::styled("e", Style::default().fg(Color::Yellow)),
+                Span::raw(")xport] | "),
+                Span::raw("VIEW: ("),
                 Span::styled("p", Style::default().fg(Color::Yellow)),
-                Span::raw(")review | ("),
-                Span::styled("h", Style::default().fg(Color::Yellow)),
-                Span::raw(")idden | "),
-                Span::styled("(tab)", Style::default().fg(Color::Yellow)),
-                Span::raw("focus | ("),
+                Span::raw(")review, ("),
+                Span::styled("<tab>", Style::default().fg(Color::Yellow)),
+                Span::raw(")focus, ("),
                 Span::styled("1-4", Style::default().fg(Color::Yellow)),
-                Span::raw(")sort | ("),
+                Span::raw(")sort, ("),
                 Span::styled("r", Style::default().fg(Color::Yellow)),
-                Span::raw(")everse | "),
-                Span::styled("←→", Style::default().fg(Color::Yellow)),
-                Span::raw(" expand | "),
-                Span::styled("PgUp/PgDn", Style::default().fg(Color::Yellow)),
-                Span::raw(" page"),
+                Span::raw(")everse |"),
             ]),
         ])
         .style(Style::default().fg(Color::White))
@@ -1374,8 +1368,8 @@ impl TerminalUI {
                 let repo_path = &self.repo_path;
                 let sort_ascending = self.sort_ascending;
                 self.sorted_violations.sort_by(|a, b| {
-                    let path_a = get_relative_path_for(&a.1.file_path, repo_path);
-                    let path_b = get_relative_path_for(&b.1.file_path, repo_path);
+                    let path_a = get_relative_path(&a.1.file_path, repo_path);
+                    let path_b = get_relative_path(&b.1.file_path, repo_path);
                     if sort_ascending {
                         path_a.cmp(&path_b)
                     } else {
@@ -1451,7 +1445,7 @@ impl TerminalUI {
         let mut path_groups: BTreeMap<String, Vec<(usize, RuleViolation)>> = BTreeMap::new();
 
         for (original_index, violation) in &self.sorted_violations {
-            let path = get_relative_path_for(&violation.file_path, &self.repo_path);
+            let path = get_relative_path(&violation.file_path, &self.repo_path);
             let dir_path = std::path::Path::new(&path)
                 .parent()
                 .map(|p| p.to_string_lossy().to_string())
@@ -1733,7 +1727,7 @@ impl TerminalUI {
     }
 
     fn scan_repository(&mut self) -> Result<()> {
-        use crate::git::ProjectSource;
+        use crate::files::ProjectSource;
         use crate::parser::CParser;
 
         self.violations.clear();
@@ -2240,8 +2234,8 @@ impl TerminalUI {
                 let repo_path = &self.repo_path;
                 let sort_ascending = self.sort_ascending;
                 self.combined_violations.sort_by(|a, b| {
-                    let path_a = get_relative_path_for(&a.file_path, repo_path);
-                    let path_b = get_relative_path_for(&b.file_path, repo_path);
+                    let path_a = get_relative_path(&a.file_path, repo_path);
+                    let path_b = get_relative_path(&b.file_path, repo_path);
                     if sort_ascending {
                         path_a.cmp(&path_b)
                     } else {
@@ -2280,16 +2274,3 @@ impl TerminalUI {
     }
 }
 
-// Helper function to get relative path without borrowing self
-fn get_relative_path_for(file_path: &str, base_path: &str) -> String {
-    use std::path::Path;
-
-    let base_path_obj = Path::new(base_path);
-    let file_path_obj = Path::new(file_path);
-
-    if let Ok(relative) = file_path_obj.strip_prefix(base_path_obj) {
-        relative.to_string_lossy().to_string()
-    } else {
-        file_path.split('/').last().unwrap_or(file_path).to_string()
-    }
-}

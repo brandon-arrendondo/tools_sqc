@@ -1,4 +1,4 @@
-use super::{CertRule, RuleViolation};
+use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
 use std::collections::HashMap;
