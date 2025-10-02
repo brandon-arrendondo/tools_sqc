@@ -103,6 +103,9 @@ pub struct TerminalUI {
     manifest: RuleManifest,
     registry: RuleRegistry,
     violations: Vec<RuleViolation>,
+    suppressed_violations: Vec<RuleViolation>, // Violations that are suppressed
+    show_suppressed: bool, // Toggle to show/hide suppressed violations
+    combined_violations: Vec<RuleViolation>, // Combined active + suppressed for display
     sorted_violations: Vec<(usize, RuleViolation)>, // (original_index, violation)
     grouped_items: Vec<GroupItem>, // Tree structure for grouping
     flat_display_items: Vec<GroupItem>, // Flattened for display (only visible items)
@@ -146,6 +149,9 @@ impl TerminalUI {
             manifest,
             registry,
             violations: Vec::new(),
+            suppressed_violations: Vec::new(),
+            show_suppressed: false,
+            combined_violations: Vec::new(),
             sorted_violations: Vec::new(),
             grouped_items: Vec::new(),
             flat_display_items: Vec::new(),
@@ -396,6 +402,17 @@ impl TerminalUI {
                                 self.initiate_suppression();
                             }
                         }
+                        KeyCode::Char('h') => {
+                            // Toggle hidden/suppressed violations visibility
+                            if self.current_tab == Tab::Violations {
+                                self.show_suppressed = !self.show_suppressed;
+                                if self.show_suppressed {
+                                    self.update_combined_violations();
+                                }
+                                self.update_display_violations();
+                                self.update_sort();
+                            }
+                        }
                         KeyCode::Char(' ') => {
                             if self.current_tab == Tab::Configuration {
                                 // Toggle rule enabled/disabled in Configuration tab
@@ -632,6 +649,8 @@ impl TerminalUI {
                         ])])
                     }
                     GroupItem::Violation { original_index, violation, level } => {
+                        let is_suppressed = self.show_suppressed && self.is_violation_suppressed(violation);
+
                         let severity_color = match violation.severity {
                             crate::manifest::Severity::Critical => Color::Red,
                             crate::manifest::Severity::High => Color::LightRed,
@@ -654,18 +673,35 @@ impl TerminalUI {
 
                         let indent = "  ".repeat(*level);
 
-                        ListItem::new(vec![Line::from(vec![
+                        let mut spans = vec![
                             Span::raw(indent),
                             Span::styled(checkbox, Style::default().fg(Color::Green)),
-                            Span::styled(&violation.rule_id, Style::default().fg(severity_color).add_modifier(Modifier::BOLD)),
+                        ];
+
+                        if is_suppressed {
+                            // Add suppression indicator
+                            spans.push(Span::styled("[S] ", Style::default().fg(Color::DarkGray)));
+                            // Use dimmed colors for suppressed violations
+                            spans.push(Span::styled(&violation.rule_id, Style::default().fg(Color::DarkGray).add_modifier(Modifier::DIM)));
+                        } else {
+                            spans.push(Span::styled(&violation.rule_id, Style::default().fg(severity_color).add_modifier(Modifier::BOLD)));
+                        }
+
+                        spans.extend(vec![
                             Span::raw(" - "),
-                            Span::styled(filename, Style::default().fg(Color::White)),
+                            Span::styled(filename, if is_suppressed { Style::default().fg(Color::DarkGray) } else { Style::default().fg(Color::White) }),
                             Span::raw(" ("),
                             Span::styled(relative_path, Style::default().fg(Color::Gray)),
                             Span::raw(":"),
                             Span::styled(format!("{}:{}", violation.line, violation.column), Style::default().fg(Color::Cyan)),
                             Span::raw(")"),
-                        ])])
+                        ]);
+
+                        if is_suppressed {
+                            spans.push(Span::styled(" [SUPPRESSED]", Style::default().fg(Color::DarkGray).add_modifier(Modifier::ITALIC)));
+                        }
+
+                        ListItem::new(vec![Line::from(spans)])
                     }
                 }
             })
@@ -800,7 +836,9 @@ impl TerminalUI {
                 Span::styled("n", Style::default().fg(Color::Yellow)),
                 Span::raw(")one | ("),
                 Span::styled("p", Style::default().fg(Color::Yellow)),
-                Span::raw(")review | "),
+                Span::raw(")review | ("),
+                Span::styled("h", Style::default().fg(Color::Yellow)),
+                Span::raw(")idden | "),
                 Span::styled("(tab)", Style::default().fg(Color::Yellow)),
                 Span::raw("focus | ("),
                 Span::styled("1-4", Style::default().fg(Color::Yellow)),
@@ -1223,7 +1261,13 @@ impl TerminalUI {
     }
 
     fn update_sort(&mut self) {
-        self.sorted_violations = self.violations
+        let active_violations = if self.show_suppressed {
+            &self.combined_violations
+        } else {
+            &self.violations
+        };
+
+        self.sorted_violations = active_violations
             .iter()
             .enumerate()
             .map(|(idx, v)| (idx, v.clone()))
@@ -1572,6 +1616,8 @@ impl TerminalUI {
         use crate::parser::CParser;
 
         self.violations.clear();
+        self.suppressed_violations.clear();
+        self.combined_violations.clear();
 
         let project_source = ProjectSource::open(&self.repo_path)?;
         let c_files = project_source.get_c_files()?;
@@ -1581,6 +1627,10 @@ impl TerminalUI {
             if let Ok((tree, source)) = parser.parse_file(&file_path) {
                 let root_node = tree.root_node();
 
+                // Extract suppressions from this file
+                let mut suppression_manager = SuppressionManager::new();
+                suppression_manager.extract_from_source(&file_path, &source);
+
                 for (rule_id, rule_config) in self.manifest.enabled_rules() {
                     if let Some(rule) = self.registry.get_rule(rule_id) {
                         let mut file_violations = rule.check(&root_node, &source);
@@ -1588,13 +1638,33 @@ impl TerminalUI {
                             violation.file_path = file_path.clone();
                             violation.severity = rule_config.severity.clone();
                         }
-                        self.violations.extend(file_violations);
+
+                        // Separate suppressed and active violations
+                        for violation in file_violations {
+                            if suppression_manager.should_suppress(
+                                &file_path,
+                                rule_id,
+                                violation.line,
+                                &source
+                            ).is_some() {
+                                // This violation is suppressed
+                                self.suppressed_violations.push(violation);
+                            } else {
+                                // This violation is active
+                                self.violations.push(violation);
+                            }
+                        }
                     }
                 }
             }
         }
 
-        if !self.violations.is_empty() {
+        // Update combined violations for toggle display
+        self.update_combined_violations();
+
+        self.update_display_violations();
+
+        if !self.get_active_violations().is_empty() {
             self.selected_violation.select(Some(0));
         }
 
@@ -2007,6 +2077,39 @@ impl TerminalUI {
             .wrap(ratatui::widgets::Wrap { trim: true });
 
         f.render_widget(popup, popup_area);
+    }
+
+    fn update_display_violations(&mut self) {
+        // This method is called when the show_suppressed toggle changes
+        // We need to rebuild the display items to reflect the new violation list
+        self.update_sort();
+    }
+
+    fn get_active_violations(&self) -> &Vec<RuleViolation> {
+        if self.show_suppressed {
+            // Show combined active and suppressed violations
+            &self.combined_violations
+        } else {
+            // Show only non-suppressed violations
+            &self.violations
+        }
+    }
+
+    fn update_combined_violations(&mut self) {
+        // Create combined list with active violations first, then suppressed
+        self.combined_violations.clear();
+        self.combined_violations.extend(self.violations.iter().cloned());
+        self.combined_violations.extend(self.suppressed_violations.iter().cloned());
+    }
+
+    fn is_violation_suppressed(&self, violation: &RuleViolation) -> bool {
+        // Check if this violation exists in the suppressed_violations list
+        self.suppressed_violations.iter().any(|suppressed| {
+            suppressed.rule_id == violation.rule_id &&
+            suppressed.file_path == violation.file_path &&
+            suppressed.line == violation.line &&
+            suppressed.column == violation.column
+        })
     }
 }
 
