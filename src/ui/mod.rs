@@ -891,7 +891,7 @@ impl TerminalUI {
         let footer = Paragraph::new(vec![
             Line::from(vec![
                 Span::raw("("),
-                Span::styled("q", Style::default().fg(Color::Yellow)),
+                Span::styled("q/<ESC>", Style::default().fg(Color::Yellow)),
                 Span::raw(")uit | ("),
                 Span::styled("c", Style::default().fg(Color::Yellow)),
                 Span::raw(")onfig | ("),
@@ -1080,16 +1080,18 @@ impl TerminalUI {
         let footer = Paragraph::new(vec![
             Line::from(vec![
                 Span::raw("("),
-                Span::styled("q", Style::default().fg(Color::Yellow)),
+                Span::styled("q/<ESC>", Style::default().fg(Color::Yellow)),
                 Span::raw(")uit | ("),
                 Span::styled("v", Style::default().fg(Color::Yellow)),
-                Span::raw(")iolations | "),
-                Span::styled("(space)", Style::default().fg(Color::Yellow)),
-                Span::raw("toggle | ("),
+                Span::raw(")iolations | SELECTION: ("),
+                Span::styled("<space>", Style::default().fg(Color::Yellow)),
+                Span::raw(")select, [("),
+                Span::styled("a", Style::default().fg(Color::Yellow)),
+                Span::raw(")ll OR ("),
+                Span::styled("n", Style::default().fg(Color::Yellow)),
+                Span::raw(")one] | ("),
                 Span::styled("e", Style::default().fg(Color::Yellow)),
-                Span::raw(")xport config | "),
-                Span::styled("←→", Style::default().fg(Color::Yellow)),
-                Span::raw(" expand/collapse"),
+                Span::raw(")xport |"),
             ]),
         ])
         .style(Style::default().fg(Color::White))
