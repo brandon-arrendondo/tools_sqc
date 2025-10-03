@@ -233,14 +233,28 @@ impl Err33C {
         if declarator.kind() == "pointer_declarator" {
             // For pointer declarations like FILE *file
             if let Some(inner_declarator) = declarator.child_by_field_name("declarator") {
-                return source[inner_declarator.start_byte()..inner_declarator.end_byte()].to_string();
+                return self.extract_variable_name_from_declarator(&inner_declarator, source);
             }
         } else if declarator.kind() == "identifier" {
             // For simple declarations like int var
             return source[declarator.start_byte()..declarator.end_byte()].to_string();
+        } else if declarator.kind() == "init_declarator" {
+            // Handle nested init_declarator
+            if let Some(inner_declarator) = declarator.child_by_field_name("declarator") {
+                return self.extract_variable_name_from_declarator(&inner_declarator, source);
+            }
         }
 
-        // Fallback: return the entire declarator text
+        // Fallback: search for identifier in children
+        for i in 0..declarator.child_count() {
+            if let Some(child) = declarator.child(i) {
+                if child.kind() == "identifier" {
+                    return source[child.start_byte()..child.end_byte()].to_string();
+                }
+            }
+        }
+
+        // Final fallback: return the entire declarator text
         source[declarator.start_byte()..declarator.end_byte()].to_string()
     }
 
@@ -264,7 +278,7 @@ impl Err33C {
             "vprintf" | "vfprintf" | "vsprintf" | "vsnprintf" |
 
             // Time functions
-            "time" | "mktime" | "clock" |
+            "time" | "mktime" | "clock" | "ctime" | "localtime" | "gmtime" | "asctime" |
 
             // System functions
             "system" | "atexit" | "signal" | "raise" |
@@ -363,6 +377,12 @@ impl Err33C {
             suggestion: "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();".to_string(),
         });
 
+        // Environment functions
+        info.insert("getenv", ErrorInfo {
+            description: "Returns NULL if environment variable not found".to_string(),
+            suggestion: "Check if (result == NULL) before using the returned string".to_string(),
+        });
+
         // Formatted I/O
         info.insert("printf", ErrorInfo {
             description: "Returns negative value on output error".to_string(),
@@ -371,6 +391,38 @@ impl Err33C {
         info.insert("snprintf", ErrorInfo {
             description: "Returns negative on error, or >= buffer size on truncation".to_string(),
             suggestion: "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();".to_string(),
+        });
+
+        // Time functions
+        info.insert("time", ErrorInfo {
+            description: "Returns (time_t)(-1) on failure".to_string(),
+            suggestion: "Check if (result == (time_t)(-1)) for time errors".to_string(),
+        });
+        info.insert("ctime", ErrorInfo {
+            description: "Returns NULL on error".to_string(),
+            suggestion: "Check if (result == NULL) before using time string".to_string(),
+        });
+        info.insert("localtime", ErrorInfo {
+            description: "Returns NULL on error".to_string(),
+            suggestion: "Check if (result == NULL) before using time structure".to_string(),
+        });
+        info.insert("gmtime", ErrorInfo {
+            description: "Returns NULL on error".to_string(),
+            suggestion: "Check if (result == NULL) before using time structure".to_string(),
+        });
+        info.insert("asctime", ErrorInfo {
+            description: "Returns NULL on error".to_string(),
+            suggestion: "Check if (result == NULL) before using time string".to_string(),
+        });
+
+        // File operations
+        info.insert("remove", ErrorInfo {
+            description: "Returns non-zero on failure".to_string(),
+            suggestion: "Check if (remove(filename) != 0) for deletion errors".to_string(),
+        });
+        info.insert("rename", ErrorInfo {
+            description: "Returns non-zero on failure".to_string(),
+            suggestion: "Check if (rename(oldname, newname) != 0) for rename errors".to_string(),
         });
 
         // System functions
@@ -609,6 +661,36 @@ impl Err33C {
             }
         }
 
+        // For getenv, ctime, localtime, gmtime, asctime - check for NULL return
+        if matches!(function_name, "getenv" | "ctime" | "localtime" | "gmtime" | "asctime") {
+            if text.contains(&format!("{} == NULL", var_name)) ||
+               text.contains(&format!("NULL == {}", var_name)) ||
+               text.contains(&format!("{} != NULL", var_name)) ||
+               text.contains(&format!("NULL != {}", var_name)) {
+                return true;
+            }
+        }
+
+        // For time - check for (time_t)(-1) return
+        if function_name == "time" {
+            if text.contains(&format!("{} == (time_t)(-1)", var_name)) ||
+               text.contains(&format!("(time_t)(-1) == {}", var_name)) ||
+               text.contains(&format!("{} == -1", var_name)) ||
+               text.contains(&format!("-1 == {}", var_name)) {
+                return true;
+            }
+        }
+
+        // For remove/rename - check for non-zero return
+        if matches!(function_name, "remove" | "rename") {
+            if text.contains(&format!("{} != 0", var_name)) ||
+               text.contains(&format!("0 != {}", var_name)) ||
+               text.contains(&format!("{} == 0", var_name)) ||
+               text.contains(&format!("0 == {}", var_name)) {
+                return true;
+            }
+        }
+
         false
     }
 
@@ -636,7 +718,6 @@ impl Err33C {
     fn is_in_error_handling_context(&self, node: &Node, source: &str) -> bool {
         let mut current = node.parent();
 
-        // Look up the AST to find error handling indicators
         for level in 0..5 {
             if let Some(parent) = current {
                 // Check if we're in an if statement that tests for errors
@@ -646,8 +727,23 @@ impl Err33C {
                         // Look for error checking patterns in the condition
                         if condition_text.contains("== NULL") || condition_text.contains("!= NULL") ||
                            condition_text.contains("< 0") || condition_text.contains("!= 0") ||
-                           condition_text.contains("== -1") || condition_text.contains("== EOF") {
+                           condition_text.contains("== -1") || condition_text.contains("== EOF") ||
+                           condition_text.contains("== (time_t)(-1)") {
                             return true;
+                        }
+                    }
+
+                    // Check if we're in the THEN block of an error condition
+                    if let Some(consequence) = parent.child_by_field_name("consequence") {
+                        if self.node_contains_or_is_ancestor(&consequence, node) {
+                            // We're in the then-block of an if statement, check if condition is error check
+                            if let Some(condition) = parent.child_by_field_name("condition") {
+                                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                                if condition_text.contains("== NULL") || condition_text.contains("< 0") ||
+                                   condition_text.contains("== -1") || condition_text.contains("== EOF") {
+                                    return true; // We're in error handling
+                                }
+                            }
                         }
                     }
                 }
@@ -666,12 +762,13 @@ impl Err33C {
                     }
                 }
 
-                // Look for explicit error handling keywords in parent context
-                let parent_text = &source[parent.start_byte()..parent.end_byte()];
-                if level <= 2 { // Only check close parents for keywords
+                // Look for explicit error handling keywords in close parent context
+                if level <= 2 {
+                    let parent_text = &source[parent.start_byte()..parent.end_byte()];
                     if parent_text.contains("stderr") || parent_text.contains("perror") ||
                        parent_text.contains("return -1") || parent_text.contains("exit(") ||
-                       parent_text.contains("goto error") || parent_text.contains("cleanup") {
+                       parent_text.contains("goto error") || parent_text.contains("cleanup") ||
+                       parent_text.contains("Failed to") || parent_text.contains("Error:") {
                         return true;
                     }
                 }
@@ -682,6 +779,12 @@ impl Err33C {
             }
         }
         false
+    }
+
+    /// Helper function to check if a node contains or is an ancestor of another node
+    fn node_contains_or_is_ancestor(&self, potential_ancestor: &Node, target: &Node) -> bool {
+        potential_ancestor.start_byte() <= target.start_byte() &&
+        potential_ancestor.end_byte() >= target.end_byte()
     }
 }
 
