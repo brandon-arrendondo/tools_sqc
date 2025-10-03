@@ -53,6 +53,9 @@ impl Err33C {
             "assignment_expression" => {
                 self.check_assignment(node, source, violations);
             }
+            "init_declarator" => {
+                self.check_init_declarator(node, source, violations);
+            }
             _ => {}
         }
 
@@ -69,6 +72,19 @@ impl Err33C {
             let function_name = &source[function_node.start_byte()..function_node.end_byte()];
 
             if self.is_error_returning_function(function_name) {
+                // Skip if this call is part of an assignment or declaration
+                // Those cases are handled by check_assignment and check_init_declarator
+                if self.is_call_in_assignment_or_declaration(node) {
+                    return;
+                }
+
+                // For printf/fprintf in error handling contexts, don't flag
+                if matches!(function_name, "printf" | "fprintf" | "sprintf" | "snprintf") {
+                    if self.is_in_error_handling_context(node, source) {
+                        return; // Skip flagging printf/fprintf in error contexts
+                    }
+                }
+
                 // Check if the return value is properly handled
                 if !self.is_return_value_checked(node, source) {
                     let start_point = node.start_position();
@@ -93,11 +109,31 @@ impl Err33C {
         }
     }
 
+    fn is_call_in_assignment_or_declaration(&self, call_node: &Node) -> bool {
+        let mut current = call_node.parent();
+        while let Some(parent) = current {
+            match parent.kind() {
+                "assignment_expression" | "init_declarator" => return true,
+                "expression_statement" | "compound_statement" | "function_definition" => break,
+                _ => {}
+            }
+            current = parent.parent();
+        }
+        false
+    }
+
     fn check_ignored_return_value(&self, stmt_node: &Node, call_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(function_node) = call_node.child_by_field_name("function") {
             let function_name = &source[function_node.start_byte()..function_node.end_byte()];
 
             if self.is_error_returning_function(function_name) {
+                // For printf/fprintf in error handling contexts, don't flag
+                if matches!(function_name, "printf" | "fprintf" | "sprintf" | "snprintf") {
+                    if self.is_in_error_handling_context(stmt_node, source) {
+                        return; // Skip flagging printf/fprintf in error contexts
+                    }
+                }
+
                 let start_point = stmt_node.start_position();
                 let call_text = &source[call_node.start_byte()..call_node.end_byte()];
 
@@ -151,6 +187,61 @@ impl Err33C {
                 }
             }
         }
+    }
+
+    fn check_init_declarator(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Handle pattern: TYPE *var = function_call();
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            if let Some(value) = node.child_by_field_name("value") {
+                if value.kind() == "call_expression" {
+                    if let Some(function_node) = value.child_by_field_name("function") {
+                        let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+
+                        // Extract variable name from declarator
+                        let var_name = self.extract_variable_name_from_declarator(&declarator, source);
+
+                        if self.is_error_returning_function(function_name) {
+                            // Check if the declared variable is later checked for errors
+                            if !self.is_variable_error_checked(node, &var_name, function_name, source) {
+                                let start_point = node.start_position();
+                                let call_text = &source[value.start_byte()..value.end_byte()];
+
+                                let error_info = self.get_error_info(function_name);
+
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::High,
+                                    message: format!(
+                                        "Return value of '{}' assigned to '{}' but not checked for errors: '{}' - {}",
+                                        function_name, var_name, call_text, error_info.description
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some(error_info.suggestion),
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn extract_variable_name_from_declarator(&self, declarator: &Node, source: &str) -> String {
+        // Handle different declarator patterns like *var, var, etc.
+        if declarator.kind() == "pointer_declarator" {
+            // For pointer declarations like FILE *file
+            if let Some(inner_declarator) = declarator.child_by_field_name("declarator") {
+                return source[inner_declarator.start_byte()..inner_declarator.end_byte()].to_string();
+            }
+        } else if declarator.kind() == "identifier" {
+            // For simple declarations like int var
+            return source[declarator.start_byte()..declarator.end_byte()].to_string();
+        }
+
+        // Fallback: return the entire declarator text
+        source[declarator.start_byte()..declarator.end_byte()].to_string()
     }
 
     fn is_error_returning_function(&self, function_name: &str) -> bool {
@@ -329,29 +420,21 @@ impl Err33C {
     /// The search is limited to the immediate scope and next 5 statements to avoid false positives
     /// from distant, unrelated checks.
     fn is_variable_error_checked(&self, assignment_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
-        println!("DEBUG: is_variable_error_checked called for var '{}' function '{}'", var_name, function_name);
         // Use new forward-looking algorithm
-        let result = self.find_error_checks_in_scope(assignment_node, var_name, function_name, source);
-        println!("DEBUG: is_variable_error_checked result: {}", result);
-        result
+        self.find_error_checks_in_scope(assignment_node, var_name, function_name, source)
     }
 
     /// Find error checks by looking forward from the assignment statement in the AST
     fn find_error_checks_in_scope(&self, assignment_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
-        println!("DEBUG: find_error_checks_in_scope called for var {} function {}", var_name, function_name);
-
         // Walk up the AST to find the function body
         let mut current = assignment_node.parent();
         while let Some(node) = current {
-            println!("DEBUG: Looking at parent node kind: {}", node.kind());
             if node.kind() == "compound_statement" {
-                println!("DEBUG: Found compound statement, searching forward");
                 // Found the function body, now search forward from the assignment position
                 return self.search_statements_for_error_checks(&node, assignment_node, var_name, function_name, source);
             }
             current = node.parent();
         }
-        println!("DEBUG: No compound statement found");
         false
     }
 
@@ -372,11 +455,7 @@ impl Err33C {
 
                 // Only look at statements that come after the assignment
                 if child.start_byte() > assignment_byte_start {
-                    let child_text = &source[child.start_byte()..child.end_byte()];
-                    println!("DEBUG: Checking statement: {} (kind: {})", child_text.trim(), child.kind());
-
                     if self.statement_contains_error_check(&child, var_name, function_name, source) {
-                        println!("DEBUG: Found error check for variable {}", var_name);
                         return true;
                     }
                     statements_checked += 1;
@@ -386,7 +465,6 @@ impl Err33C {
                 }
             }
         }
-        println!("DEBUG: No error check found for variable {}", var_name);
         false
     }
 
@@ -995,5 +1073,36 @@ void func() {
         assert!(violations.iter().any(|v| v.message.contains("malloc")));
         assert!(violations.iter().any(|v| v.message.contains("fopen")));
         assert!(violations.iter().any(|v| v.message.contains("fgets")));
+    }
+
+    #[test]
+    fn test_err33c_file_open_check_debug() {
+        let rule = Err33C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+void func() {
+    FILE *file = fopen("test.txt", "r");
+    if (file == NULL) {
+        fprintf(stderr, "Failed to open file\n");
+        return 1;
+    }
+    fclose(file);
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        // Print all violations for debugging
+        for violation in &violations {
+            println!("VIOLATION: {}", violation.message);
+        }
+
+        // Should not flag fopen since it's properly checked
+        let fopen_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("fopen"))
+            .collect();
+        assert!(fopen_violations.is_empty(), "Should not flag properly checked fopen");
     }
 }
