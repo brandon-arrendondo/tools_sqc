@@ -4,7 +4,7 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 
 ## Current Implementation Summary
 
-**Total Rules Implemented: 18/200+ (~9%)**
+**Total Rules Implemented: 19/200+ (~10%)**
 
 ### Implemented Rules by Category
 
@@ -23,8 +23,9 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 - ✅ EXP33-C: Do not read uninitialized memory
 - ✅ EXP34-C: Do not dereference null pointers
 
-#### Integers (INT) - 1/10 rules (10% complete)
+#### Integers (INT) - 2/10 rules (20% complete)
 - ✅ INT30-C: Ensure that unsigned integer operations do not wrap
+- ✅ INT32-C: Ensure that operations on signed integers do not result in overflow
 
 #### Memory Management (MEM) - 2/15 rules (13% complete)
 - ✅ MEM30-C: Do not access freed memory
@@ -80,7 +81,11 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 
 ### Phase 2: Major Security Impact (High Priority)
 
-5. **INT32-C**: Ensure that operations on signed integers do not result in overflow
+5. ✅ **INT32-C**: Ensure that operations on signed integers do not result in overflow (COMPLETED)
+   - **Impact**: Prevents integer overflow vulnerabilities
+   - **Difficulty**: Medium-High
+   - **Common violations**: Arithmetic operations, loop counters
+
 6. **ERR33-C**: Detect and handle standard library errors
 7. **MEM33-C**: Allocate and copy structures containing a flexible array member dynamically
 8. **CON30-C**: Clean up thread-specific storage
@@ -121,7 +126,7 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 - Concurrency rules need thread-aware analysis
 
 ## Last Updated
-October 2024
+October 2024 - Added INT32-C implementation
 
 ## References
 - SEI CERT C Coding Standard: https://wiki.sei.cmu.edu/confluence/display/c/SEI+CERT+C+Coding+Standard
