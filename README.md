@@ -1,14 +1,17 @@
 # SqC - Software Code Quality
 
-A terminal-based C code quality checker that validates compliance with SEI CERT Coding Standards for C.
+A comprehensive terminal-based static analysis tool that validates C code compliance with SEI CERT Coding Standards. SqC provides both interactive and command-line interfaces for analyzing C codebases, identifying security vulnerabilities, and ensuring adherence to industry-standard secure coding practices.
 
 ## Features
 
-- **CERT C Compliance**: Checks C code against SEI CERT coding standards
-- **Interactive Terminal UI**: Navigate violations with an ncurses-style interface
-- **Git Integration**: Analyzes C files in git repositories
-- **Configurable Rules**: Enable/disable rules via TOML manifest
-- **Extensible Architecture**: Easy to add new CERT C rules
+- **CERT C Compliance**: Validates code against 15 implemented SEI CERT C coding standards
+- **Interactive Terminal UI**: Navigate and review violations with a modern TUI built with ratatui
+- **Multiple Export Formats**: Export violations to CSV or XLSX for reporting and tracking
+- **Violation Suppression**: Suppress false positives with SHA-256 based suppression system
+- **Git Integration**: Seamlessly analyze C files in git repositories
+- **Configurable Rules**: Enable/disable rules via TOML manifest with per-rule severity settings
+- **Fast Analysis**: Tree-sitter based parsing for efficient code analysis
+- **Extensible Architecture**: Plugin-style rule system for easy addition of new CERT C rules
 
 ## Installation
 
@@ -41,6 +44,18 @@ cargo build --release
 
 # With custom manifest
 ./target/release/sqc /path/to/repo --manifest custom-rules.toml
+
+# Export violations to CSV
+./target/release/sqc /path/to/repo --export violations.csv
+
+# Export violations to Excel
+./target/release/sqc /path/to/repo --export-xlsx violations.xlsx
+
+# Generate suppression file for current violations
+./target/release/sqc /path/to/repo --generate-suppression
+
+# Use suppression file to filter false positives
+./target/release/sqc /path/to/repo --suppression .sqc-suppress.toml
 ```
 
 ## Configuration
@@ -71,32 +86,91 @@ cert_id = "STR31-C"
 
 ## Supported CERT C Rules
 
-Currently implemented rules:
+Currently implemented 15 CERT C rules:
 
+### Array Rules (ARR)
 - **ARR30-C**: Do not form or use out-of-bounds pointers or array subscripts
+- **ARR32-C**: Ensure size arguments for variable-length arrays are in a valid range
+- **ARR36-C**: Do not subtract or compare two pointers that do not refer to the same array
+- **ARR37-C**: Do not add or subtract an integer to a pointer to a non-array object
+- **ARR38-C**: Guarantee that library functions do not form invalid pointers
+- **ARR39-C**: Do not add or subtract a scaled integer to a pointer
+
+### Declaration Rules (DCL)
+- **DCL00-C**: Const-qualify immutable objects
+
+### Expression Rules (EXP)
+- **EXP33-C**: Do not read uninitialized memory
+
+### Integer Rules (INT)
+- **INT30-C**: Ensure that unsigned integer operations do not wrap
+
+### Memory Rules (MEM)
+- **MEM30-C**: Do not access freed memory
+
+### Preprocessor Rules (PRE)
+- **PRE30-C**: Do not create a universal character name through concatenation
+- **PRE31-C**: Avoid side effects in arguments to unsafe macros
+- **PRE32-C**: Do not use preprocessor directives in invocations of function-like macros
+
+### String Rules (STR)
 - **STR31-C**: Guarantee that storage for strings has sufficient space for character data and the null terminator
 
-Additional rules can be easily added by implementing the `CertRule` trait.
+Additional rules can be easily added by implementing the `CertRule` trait in the `src/rules/cert_c/` directory.
 
-## Interactive Controls
+## Interactive UI Controls
 
+### Navigation
+- `↑/↓` or `k/j` - Navigate violation list
+- `Page Up/Page Down` - Navigate by page
+- `Home/End` - Jump to first/last violation
+- `Enter` - View detailed violation information
+
+### Actions
 - `s` - Scan repository for violations
-- `↑/↓` - Navigate violation list
-- `q` - Quit
+- `e` - Export violations to CSV
+- `E` - Export violations to Excel (XLSX)
+- `x` - Suppress selected violation
+- `X` - Generate suppression file for all violations
+- `f` - Toggle file filter
+- `r` - Toggle rule filter
+- `q` - Quit application
+
+### Views
+- `Tab` - Switch between violations list and details view
+- `1-3` - Switch between different panel views
 
 ## Project Structure
 
 ```
 src/
-├── main.rs          # CLI entry point
-├── rules/           # CERT C rule implementations
-│   ├── mod.rs       # Rule registry and trait
-│   ├── arr30_c.rs   # ARR30-C implementation
-│   └── str31_c.rs   # STR31-C implementation
+├── main.rs          # CLI entry point and argument parsing
+├── prelude.rs       # Common imports and type definitions
+├── analyze/         # Core analysis engine
+│   ├── mod.rs       # Project analysis orchestration
+│   └── suppression.rs # Violation suppression system
+├── export/          # Export functionality
+│   └── mod.rs       # CSV and XLSX export implementations
+├── files/           # File and repository handling
+│   └── mod.rs       # Git integration and file discovery
 ├── manifest/        # Rule configuration system
-├── ui/              # Terminal interface
-├── git/             # Git repository integration
-└── parser/          # C code parsing with tree-sitter
+│   └── mod.rs       # TOML manifest parsing and validation
+├── parser/          # C code parsing
+│   └── mod.rs       # Tree-sitter C parser integration
+├── rules/           # CERT C rule implementations
+│   ├── mod.rs       # Rule trait and registry
+│   └── cert_c/      # Individual CERT C rule modules
+│       ├── arr30_c.rs, arr32_c.rs, ... # Array rules
+│       ├── dcl00_c.rs                  # Declaration rules
+│       ├── exp33_c.rs                  # Expression rules
+│       ├── int30_c.rs                  # Integer rules
+│       ├── mem30_c.rs                  # Memory rules
+│       ├── pre30_c.rs, pre31_c.rs, ... # Preprocessor rules
+│       └── str31_c.rs                  # String rules
+├── ui/              # Terminal user interface
+│   └── mod.rs       # Ratatui-based interactive UI
+└── utility/         # Helper functions
+    └── mod.rs       # Common utilities and helpers
 ```
 
 ## Adding New Rules
@@ -132,11 +206,63 @@ impl CertRule for Mem30C {
 
 ## Dependencies
 
-- `clap` - Command line argument parsing
-- `ratatui` - Terminal user interface
-- `tree-sitter` - C code parsing
-- `git2` - Git repository integration
-- `serde` & `toml` - Configuration management
+### Core Dependencies
+- `clap` (4.5) - Command line argument parsing
+- `ratatui` (0.28) - Modern terminal user interface
+- `crossterm` (0.28) - Cross-platform terminal manipulation
+
+### Analysis & Parsing
+- `tree-sitter` (0.22) - Fast incremental parsing
+- `tree-sitter-c` (0.21) - C language grammar
+- `regex` (1.10) - Pattern matching for rule implementations
+
+### Data Management
+- `git2` (0.19) - Git repository integration
+- `serde` (1.0) - Serialization framework
+- `toml` (0.8) - Configuration file parsing
+- `csv` (1.3) - CSV export functionality
+- `rust_xlsxwriter` (0.79) - Excel file generation
+
+### Utility
+- `anyhow` (1.0) - Error handling
+- `thiserror` (1.0) - Custom error types
+- `walkdir` (2.5) - Recursive directory traversal
+- `sha2` (0.10) - SHA-256 hashing for suppressions
+- `chrono` (0.4) - Date and time handling
+- `rfd` (0.14) - Native file dialogs
+
+## Suppression System
+
+SqC includes a sophisticated suppression system to handle false positives:
+
+### Creating Suppressions
+```bash
+# Generate suppression file for all current violations
+./target/release/sqc --generate-suppression
+
+# Or suppress individual violations in the interactive UI with 'x'
+```
+
+### Suppression File Format
+Suppressions are stored in `.sqc-suppress.toml` with SHA-256 hashes:
+```toml
+[[suppressions]]
+file = "src/example.c"
+rule = "ARR30-C"
+line = 42
+hash = "a1b2c3d4..."
+reason = "False positive: bounds check performed earlier"
+```
+
+## Contributing
+
+Contributions are welcome! To add a new CERT C rule:
+
+1. Create a new file in `src/rules/cert_c/` (e.g., `new_rule.rs`)
+2. Implement the `CertRule` trait
+3. Register the rule in `src/rules/cert_c/mod.rs`
+4. Add tests for your rule
+5. Update the manifest template with the new rule
 
 ## License
 

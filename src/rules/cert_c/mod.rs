@@ -6,6 +6,7 @@ pub mod arr38_c;
 pub mod arr39_c;
 pub mod dcl00_c;
 pub mod exp33_c;
+pub mod exp34_c;
 pub mod int30_c;
 pub mod mem30_c;
 pub mod pre30_c;
@@ -29,6 +30,7 @@ impl RuleRegistry {
         registry.register(Box::new(arr39_c::Arr39C));
         registry.register(Box::new(dcl00_c::Dcl00C));
         registry.register(Box::new(exp33_c::Exp33C));
+        registry.register(Box::new(exp34_c::Exp34C));
         registry.register(Box::new(int30_c::Int30C));
         registry.register(Box::new(mem30_c::Mem30C));
         registry.register(Box::new(pre30_c::Pre30C));
