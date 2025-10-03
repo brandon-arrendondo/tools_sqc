@@ -12,6 +12,14 @@
 //! - Non-zero error codes: fseek, fclose, etc.
 //! - Negative error indicators: printf, snprintf, etc.
 //! - Special cases: strtol (errno checking), etc.
+//!
+//! ## Context-Aware Exceptions:
+//! - Signal handlers: printf/fprintf return values often not checked in signal handlers
+//! - Cleanup contexts: fclose calls in error cleanup paths may not need return value checking
+//! - Error handling blocks: printf/fprintf used for error logging are typically acceptable
+//!
+//! The rule uses forward-looking AST analysis to find error checking patterns in subsequent
+//! statements after assignment, with sophisticated context detection to minimize false positives.
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
@@ -85,6 +93,16 @@ impl Err33C {
                     }
                 }
 
+                // Special handling for fclose in cleanup contexts
+                if function_name == "fclose" {
+                    // Find the containing statement for context analysis
+                    if let Some(stmt) = self.find_containing_statement(node) {
+                        if self.is_cleanup_fclose_context(&stmt, source) {
+                            return; // Don't flag cleanup fclose calls
+                        }
+                    }
+                }
+
                 // Check if the return value is properly handled
                 if !self.is_return_value_checked(node, source) {
                     let start_point = node.start_position();
@@ -127,6 +145,13 @@ impl Err33C {
             let function_name = &source[function_node.start_byte()..function_node.end_byte()];
 
             if self.is_error_returning_function(function_name) {
+                // Special handling for fclose in cleanup contexts
+                if function_name == "fclose" {
+                    if self.is_cleanup_fclose_context(stmt_node, source) {
+                        return; // Don't flag cleanup fclose calls
+                    }
+                }
+
                 // For printf/fprintf in error handling contexts, don't flag
                 if matches!(function_name, "printf" | "fprintf" | "sprintf" | "snprintf") {
                     if self.is_in_error_handling_context(stmt_node, source) {
@@ -510,9 +535,43 @@ impl Err33C {
                     if self.statement_contains_error_check(&child, var_name, function_name, source) {
                         return true;
                     }
+
+                    // Enhanced: Also check nested compound statements for error checks
+                    if child.kind() == "if_statement" || child.kind() == "compound_statement" {
+                        if self.search_nested_statements_for_error_checks(&child, var_name, function_name, source) {
+                            return true;
+                        }
+                    }
+
                     statements_checked += 1;
                     if statements_checked >= MAX_FORWARD_SEARCH {
                         break; // Limit search scope to avoid false positives
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Search through nested statements for error checking patterns (limited depth)
+    fn search_nested_statements_for_error_checks(&self, stmt_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+        // Recursive search in nested statements with limited depth
+        for i in 0..stmt_node.child_count() {
+            if let Some(child) = stmt_node.child(i) {
+                if child.kind() == "compound_statement" {
+                    // Search within the nested compound statement
+                    for j in 0..child.child_count() {
+                        if let Some(nested_child) = child.child(j) {
+                            if self.is_statement_node(&nested_child) {
+                                if self.statement_contains_error_check(&nested_child, var_name, function_name, source) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                } else if self.is_statement_node(&child) {
+                    if self.statement_contains_error_check(&child, var_name, function_name, source) {
+                        return true;
                     }
                 }
             }
@@ -714,12 +773,37 @@ impl Err33C {
         text.contains(&format!("{} >= sizeof", var_name))
     }
 
-    /// Check if a node appears to be in an error handling context
+    /// Check if a node appears to be in an error handling context.
+    ///
+    /// This function identifies contexts where certain functions (like printf/fprintf) are
+    /// used for error reporting or logging purposes, where return value checking is often
+    /// not required or practical. Detected contexts include:
+    ///
+    /// 1. Signal handler functions (identified by parameter patterns or naming)
+    /// 2. Error handling if-blocks (where condition tests for error states)
+    /// 3. Cleanup code sections (often containing fclose without return checking)
+    /// 4. Error reporting blocks (containing stderr output or error messages)
+    ///
+    /// Returns true if the node is in a context where stricter return value checking
+    /// can be relaxed, false otherwise.
     fn is_in_error_handling_context(&self, node: &Node, source: &str) -> bool {
         let mut current = node.parent();
 
         for level in 0..5 {
             if let Some(parent) = current {
+                // Check if we're inside a signal handler function
+                if parent.kind() == "function_definition" {
+                    if let Some(declarator) = parent.child_by_field_name("declarator") {
+                        let function_text = &source[declarator.start_byte()..declarator.end_byte()];
+                        // Signal handlers typically have (int sig) parameter
+                        if function_text.contains("signal_handler") ||
+                           function_text.contains("handler") ||
+                           (function_text.contains("(int sig") || function_text.contains("(int signal")) {
+                            return true; // Allow printf/fprintf in signal handlers
+                        }
+                    }
+                }
+
                 // Check if we're in an if statement that tests for errors
                 if parent.kind() == "if_statement" {
                     if let Some(condition) = parent.child_by_field_name("condition") {
@@ -742,6 +826,31 @@ impl Err33C {
                                 if condition_text.contains("== NULL") || condition_text.contains("< 0") ||
                                    condition_text.contains("== -1") || condition_text.contains("== EOF") {
                                     return true; // We're in error handling
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Enhanced cleanup context detection for fclose
+                if parent.kind() == "expression_statement" {
+                    let parent_text = &source[parent.start_byte()..parent.end_byte()];
+                    // Look for fclose in error cleanup contexts
+                    if parent_text.contains("fclose(") && level <= 2 {
+                        // Check if we're in an error handling block
+                        if let Some(compound_stmt) = parent.parent() {
+                            if compound_stmt.kind() == "compound_statement" {
+                                if let Some(if_stmt) = compound_stmt.parent() {
+                                    if if_stmt.kind() == "if_statement" {
+                                        if let Some(condition) = if_stmt.child_by_field_name("condition") {
+                                            let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                                            // If the condition checks for an error, fclose is likely cleanup
+                                            if condition_text.contains("< 0") || condition_text.contains("== NULL") ||
+                                               condition_text.contains("!= NULL") || condition_text.contains("== -1") {
+                                                return true;
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -785,6 +894,107 @@ impl Err33C {
     fn node_contains_or_is_ancestor(&self, potential_ancestor: &Node, target: &Node) -> bool {
         potential_ancestor.start_byte() <= target.start_byte() &&
         potential_ancestor.end_byte() >= target.end_byte()
+    }
+
+    /// Check if an fclose call is in a cleanup context where return value checking is less critical
+    fn is_cleanup_fclose_context(&self, stmt_node: &Node, source: &str) -> bool {
+        // Look for patterns indicating this is cleanup fclose:
+        // 1. fclose immediately followed by return
+        // 2. fclose in error handling block (after an error condition)
+        // 3. fclose after fprintf/fwrite failures
+
+        // Enhanced: Look for specific cleanup patterns in the immediate context
+        let stmt_text = &source[stmt_node.start_byte()..stmt_node.end_byte()];
+
+        // Check if fclose is in an error handling if-block
+        if let Some(if_stmt) = self.find_containing_if_statement(stmt_node) {
+            if let Some(condition) = if_stmt.child_by_field_name("condition") {
+                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+
+                // Check for fprintf/fwrite error conditions
+                if condition_text.contains("fprintf") &&
+                   (condition_text.contains("< 0") || condition_text.contains("== -1")) {
+                    return true;
+                }
+                if condition_text.contains("fwrite") &&
+                   (condition_text.contains("!= ") || condition_text.contains("< ")) {
+                    return true;
+                }
+
+                // General error condition patterns
+                if condition_text.contains("< 0") || condition_text.contains("== NULL") ||
+                   condition_text.contains("!= 0") || condition_text.contains("failed") ||
+                   condition_text.contains("Failed") {
+                    return true;
+                }
+            }
+        }
+
+        // Check if fclose is followed by return in the same compound statement
+        let mut current = stmt_node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "compound_statement" {
+                // More precise pattern: check statements after fclose for return
+                let fclose_byte_end = stmt_node.end_byte();
+
+                // Walk through subsequent statements in the compound statement
+                for i in 0..parent.child_count() {
+                    if let Some(child) = parent.child(i) {
+                        if child.start_byte() > fclose_byte_end {
+                            if child.kind() == "return_statement" {
+                                return true; // fclose followed by return
+                            }
+                            // If we hit a non-return statement, stop looking
+                            if self.is_statement_node(&child) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Fallback: text-based check for simple cases
+                let compound_text = &source[parent.start_byte()..parent.end_byte()];
+                if compound_text.contains("fclose(") && compound_text.contains("return") {
+                    // Look for pattern: fclose(...); return with minimal content in between
+                    let lines: Vec<&str> = compound_text.lines().collect();
+                    for i in 0..lines.len().saturating_sub(1) {
+                        if lines[i].contains("fclose(") &&
+                           (lines[i+1].trim().starts_with("return") ||
+                            (i + 2 < lines.len() && lines[i+2].trim().starts_with("return"))) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+            }
+            current = parent.parent();
+        }
+
+        false
+    }
+
+    /// Helper function to find containing if statement
+    fn find_containing_if_statement<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "if_statement" {
+                return Some(parent);
+            }
+            current = parent.parent();
+        }
+        None
+    }
+
+    /// Helper function to find containing statement
+    fn find_containing_statement<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if self.is_statement_node(&parent) {
+                return Some(parent);
+            }
+            current = parent.parent();
+        }
+        None
     }
 }
 
