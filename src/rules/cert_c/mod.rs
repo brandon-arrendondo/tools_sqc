@@ -5,6 +5,7 @@ pub mod arr37_c;
 pub mod arr38_c;
 pub mod arr39_c;
 pub mod dcl00_c;
+pub mod err33_c;
 pub mod exp33_c;
 pub mod exp34_c;
 pub mod fio30_c;
@@ -33,6 +34,7 @@ impl RuleRegistry {
         registry.register(Box::new(arr38_c::Arr38C));
         registry.register(Box::new(arr39_c::Arr39C));
         registry.register(Box::new(dcl00_c::Dcl00C));
+        registry.register(Box::new(err33_c::Err33C));
         registry.register(Box::new(exp33_c::Exp33C));
         registry.register(Box::new(exp34_c::Exp34C));
         registry.register(Box::new(fio30_c::Fio30C));
