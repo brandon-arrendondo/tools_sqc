@@ -4,7 +4,7 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 
 ## Current Implementation Summary
 
-**Total Rules Implemented: 14/200+ (~7%)**
+**Total Rules Implemented: 18/200+ (~9%)**
 
 ### Implemented Rules by Category
 
@@ -19,27 +19,32 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 #### Declarations and Initialization (DCL) - 1/15 rules (7% complete)
 - ✅ DCL00-C: Const-qualify immutable objects
 
-#### Expressions (EXP) - 1/15 rules (7% complete)
+#### Expressions (EXP) - 2/15 rules (13% complete)
 - ✅ EXP33-C: Do not read uninitialized memory
+- ✅ EXP34-C: Do not dereference null pointers
 
 #### Integers (INT) - 1/10 rules (10% complete)
 - ✅ INT30-C: Ensure that unsigned integer operations do not wrap
 
-#### Memory Management (MEM) - 1/15 rules (7% complete)
+#### Memory Management (MEM) - 2/15 rules (13% complete)
 - ✅ MEM30-C: Do not access freed memory
+- ✅ MEM31-C: Free dynamically allocated memory when no longer needed
 
 #### Preprocessor (PRE) - 3/10 rules (30% complete)
 - ✅ PRE30-C: Do not create a universal character name through concatenation
 - ✅ PRE31-C: Avoid side effects in arguments to unsafe macros
 - ✅ PRE32-C: Do not use preprocessor directives in invocations of function-like macros
 
-#### Characters and Strings (STR) - 1/12 rules (8% complete)
+#### Characters and Strings (STR) - 2/12 rules (17% complete)
+- ✅ STR30-C: Do not attempt to modify string literals
 - ✅ STR31-C: Guarantee that storage for strings has sufficient space
+
+#### Input Output (FIO) - 1/20 rules (5% complete)
+- ✅ FIO30-C: Exclude user input from format strings
 
 ### Unimplemented Categories (0% complete)
 
 #### Floating Point (FLP) - 0/8 rules
-#### Input Output (FIO) - 0/20 rules
 #### Environment (ENV) - 0/8 rules
 #### Signals (SIG) - 0/6 rules
 #### Error Handling (ERR) - 0/8 rules
@@ -53,22 +58,22 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 
 ### Phase 1: Critical Security Gaps (Immediate Priority)
 
-1. **EXP34-C**: Do not dereference null pointers
+1. ✅ **EXP34-C**: Do not dereference null pointers (COMPLETED)
    - **Impact**: Prevents crashes and potential code execution
    - **Difficulty**: Medium
    - **Common violations**: Functions returning NULL without checks
 
-2. **MEM31-C**: Free dynamically allocated memory when no longer needed
+2. ✅ **MEM31-C**: Free dynamically allocated memory when no longer needed (COMPLETED)
    - **Impact**: Prevents memory leaks
    - **Difficulty**: Medium
    - **Common violations**: Missing free() calls
 
-3. **STR30-C**: Do not attempt to modify string literals
+3. ✅ **STR30-C**: Do not attempt to modify string literals (COMPLETED)
    - **Impact**: Prevents undefined behavior
    - **Difficulty**: Easy
    - **Common violations**: Writing to string constants
 
-4. **FIO30-C**: Exclude user input from format strings
+4. ✅ **FIO30-C**: Exclude user input from format strings (COMPLETED)
    - **Impact**: Prevents format string attacks
    - **Difficulty**: Medium
    - **Common violations**: printf(user_input)
@@ -89,10 +94,10 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 
 ## Most Critical Missing Categories
 
-1. **Input/Output (FIO)** - Critical for preventing format string attacks and file handling vulnerabilities
+1. **Input/Output (FIO)** - 1 rule implemented, but many critical file handling vulnerabilities remain
 2. **Error Handling (ERR)** - Essential for robust security-conscious code
 3. **Concurrency (CON)** - Critical for thread-safe applications
-4. **Memory Management (MEM)** - Only 1 rule implemented, many critical rules missing
+4. **Memory Management (MEM)** - 2 rules implemented, many critical rules missing
 5. **Floating Point (FLP)** - Important for numerical security in calculations
 
 ## Implementation Notes
@@ -103,11 +108,11 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 - Solid preprocessor safety rules
 
 ### Critical Gaps
-- No null pointer dereference checking
-- Minimal memory management validation
-- No input validation for format strings
 - No error handling validation
 - No concurrency safety checks
+- Limited file I/O security validation
+- No integer overflow protection beyond unsigned types
+- No system call security validation
 
 ### Technical Considerations
 - Most rules require AST traversal with tree-sitter
