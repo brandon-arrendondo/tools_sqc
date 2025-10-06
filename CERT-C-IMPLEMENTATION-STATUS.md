@@ -4,7 +4,7 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 
 ## Current Implementation Summary
 
-**Total Rules Implemented: 20/200+ (~10%)**
+**Total Rules Implemented: 21/200+ (~10.5%)**
 
 ### Implemented Rules by Category
 
@@ -43,8 +43,9 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 - ✅ STR30-C: Do not attempt to modify string literals
 - ✅ STR31-C: Guarantee that storage for strings has sufficient space
 
-#### Input Output (FIO) - 1/20 rules (5% complete)
+#### Input Output (FIO) - 2/20 rules (10% complete)
 - ✅ FIO30-C: Exclude user input from format strings
+- ✅ FIO34-C: Distinguish between characters read from a file and EOF or WEOF
 
 ### Unimplemented Categories (0% complete)
 
@@ -132,7 +133,7 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 - Concurrency rules need thread-aware analysis
 
 ## Last Updated
-October 2024 - Added ERR33-C and INT32-C implementations
+October 2024 - Added ERR33-C, INT32-C, and FIO34-C implementations
 
 ## References
 - SEI CERT C Coding Standard: https://wiki.sei.cmu.edu/confluence/display/c/SEI+CERT+C+Coding+Standard

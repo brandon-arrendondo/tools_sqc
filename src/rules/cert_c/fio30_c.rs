@@ -1,3 +1,24 @@
+//! FIO30-C: Exclude user input from format strings
+//!
+//! This rule detects when user-controlled input is used as a format string
+//! in functions like printf, sprintf, fprintf, etc. Using user input as
+//! format strings can lead to format string vulnerabilities.
+//!
+//! VIOLATIONS:
+//! - printf(user_input)           // User input as format string
+//! - sprintf(buf, argv[1], data)  // Command line argument as format string
+//! - fprintf(file, getenv("FMT")) // Environment variable as format string
+//!
+//! COMPLIANT:
+//! - printf("%s", user_input)     // User input as data argument
+//! - sprintf(buf, "Data: %s", user_input)  // Literal format with user data
+//! - printf("Hello, World!")      // Literal format string
+//!
+//! The rule tracks data flow to identify user input sources including:
+//! - Command line arguments (argv)
+//! - Input functions (fgets, scanf, getenv, etc.)
+//! - Variables assigned from user input sources
+
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
@@ -170,33 +191,48 @@ impl FormatStringAnalyzer {
                     // Get the format string argument (usually first argument)
                     let format_arg_index = self.get_format_arg_index(&func_name);
                     let mut current_arg = 0;
+                    let mut format_string_node = None;
 
                     for i in 0..arguments.child_count() {
                         if let Some(arg) = arguments.child(i) {
-                            if arg.kind() != "," && arg.kind() != "(" && arg.kind() != ")" {
-                                if current_arg == format_arg_index {
-                                    if self.is_potentially_unsafe_format_string(&arg, source) {
-                                        let start_point = arg.start_position();
-                                        violations.push(RuleViolation {
-                                            rule_id: "FIO30-C".to_string(),
-                                            severity: Severity::Critical,
-                                            message: format!(
-                                                "User input used as format string in '{}()' call",
-                                                func_name
-                                            ),
-                                            file_path: String::new(),
-                                            line: start_point.row + 1,
-                                            column: start_point.column + 1,
-                                            suggestion: Some(format!(
-                                                "Use a literal format string: {}(\"%s\", user_input) instead of {}(user_input)",
-                                                func_name, func_name
-                                            )),
-                                        });
-                                    }
-                                    break;
-                                }
-                                current_arg += 1;
+                            // Skip punctuation and whitespace
+                            if matches!(arg.kind(), "," | "(" | ")") {
+                                continue;
                             }
+
+                            if current_arg == format_arg_index {
+                                format_string_node = Some(arg);
+                                break;
+                            }
+                            current_arg += 1;
+                        }
+                    }
+
+                    if let Some(format_arg) = format_string_node {
+                        // Special handling for sizeof expressions which are safe
+                        if format_arg.kind() == "sizeof_expression" {
+                            return; // sizeof expressions don't represent format strings
+                        }
+
+                        if self.is_potentially_unsafe_format_string(&format_arg, source) {
+                            let start_point = format_arg.start_position();
+                            let arg_text = &source[format_arg.start_byte()..format_arg.end_byte()];
+
+                            violations.push(RuleViolation {
+                                rule_id: "FIO30-C".to_string(),
+                                severity: Severity::Critical,
+                                message: format!(
+                                    "User input used as format string in '{}()' call: {}",
+                                    func_name, arg_text
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some(format!(
+                                    "Use a literal format string: {}(\"%s\", user_input) instead of {}(user_input)",
+                                    func_name, func_name
+                                )),
+                            });
                         }
                     }
                 }
@@ -215,8 +251,9 @@ impl FormatStringAnalyzer {
 
     fn get_format_arg_index(&self, func_name: &str) -> usize {
         match func_name {
-            "fprintf" | "fscanf" | "syslog" => 1, // Second argument is format string
-            _ => 0, // First argument is format string
+            "snprintf" | "vsnprintf" => 2, // Third argument is format string (buffer, size, format, ...)
+            "sprintf" | "vsprintf" | "sscanf" | "fprintf" | "fscanf" | "syslog" => 1, // Second argument is format string
+            _ => 0, // First argument is format string (printf, scanf, etc.)
         }
     }
 
@@ -264,9 +301,30 @@ impl FormatStringAnalyzer {
         }
     }
 
+    /// Determines if a node represents a potentially unsafe format string.
+    ///
+    /// Safe format strings include:
+    /// - String literals ("format %s")
+    /// - Concatenated string literals
+    /// - Variables known to contain only literal strings
+    ///
+    /// Unsafe format strings include:
+    /// - User input variables
+    /// - Function calls returning user-controlled data
+    /// - Array subscripts (especially argv[])
+    /// - Unknown or untracked variables
     fn is_potentially_unsafe_format_string(&self, node: &Node, source: &str) -> bool {
+        // Debug: Log the actual node kind to understand what we're dealing with
+        #[cfg(debug_assertions)]
+        eprintln!("DEBUG FIO30-C: Checking node kind: '{}' with text: '{}'",
+                 node.kind(),
+                 &source[node.start_byte()..node.end_byte()]);
+
         match node.kind() {
-            "string_literal" | "concatenated_string" => false, // Literal strings are safe
+            "string_literal" | "concatenated_string" | "string_content" => {
+                // Literal strings are always safe as format strings
+                false
+            }
             "identifier" => {
                 let var_name = get_node_text(node, source);
                 // Unsafe if it's user input and not in safe vars
@@ -294,7 +352,41 @@ impl FormatStringAnalyzer {
                 }
                 true // Conservative: assume unknown function calls could be unsafe
             }
-            _ => true // Conservative: assume unknown expressions could be unsafe
+            "binary_expression" | "conditional_expression" | "cast_expression" => {
+                // These could involve string operations, need deeper inspection
+                // For now, check if any child is potentially unsafe
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if self.is_potentially_unsafe_format_string(&child, source) {
+                            return true;
+                        }
+                    }
+                }
+                false
+            }
+            _ => {
+                // IMPORTANT: Check if this might be a string literal wrapped in another node
+                // Some AST structures wrap string literals in additional nodes
+                if node.child_count() == 1 {
+                    if let Some(child) = node.child(0) {
+                        if child.kind() == "string_literal" || child.kind() == "string_content" {
+                            return false; // It's a wrapped string literal, which is safe
+                        }
+                        // Recursively check the single child
+                        return self.is_potentially_unsafe_format_string(&child, source);
+                    }
+                }
+
+                // For safety, check the actual text content
+                let text = &source[node.start_byte()..node.end_byte()];
+                if text.starts_with('"') && text.ends_with('"') {
+                    // It looks like a string literal
+                    return false;
+                }
+
+                // Conservative: assume unknown expressions could be unsafe
+                true
+            }
         }
     }
 
@@ -501,5 +593,90 @@ int main(int argc, char *argv[]) {
         let violations = rule.check(&tree.root_node(), source);
 
         assert!(!violations.is_empty(), "Should detect assigned user input used as format string");
+    }
+
+    #[test]
+    fn test_fio30c_accepts_snprintf_with_literal_format() {
+        let rule = Fio30C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+void func() {
+    char buffer[100];
+    char product[50];
+    double price = 19.99;
+
+    // These should NOT trigger violations - literal format strings
+    snprintf(buffer, sizeof(buffer), "Product: %s - Price: $%.2f", product, price);
+    sprintf(buffer, "Test: %s", product);
+    printf("Value: %d\n", 42);
+    fprintf(stderr, "Error: %s\n", "message");
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        for v in &violations {
+            println!("Unexpected violation: {}", v.message);
+        }
+        assert!(violations.is_empty(), "Should not flag literal format strings");
+    }
+
+    #[test]
+    fn test_fio30c_detects_variable_format_strings() {
+        let rule = Fio30C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+void func() {
+    char user_format[100];
+    char buffer[200];
+
+    fgets(user_format, sizeof(user_format), stdin);
+
+    // This SHOULD trigger a violation - user input as format string
+    sprintf(buffer, user_format, "data");
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        assert!(!violations.is_empty(), "Should detect user input as format string");
+        assert!(violations.iter().any(|v| v.message.contains("User input used as format string")));
+    }
+
+    #[test]
+    fn test_fio30c_accepts_various_literal_formats() {
+        let rule = Fio30C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+void func() {
+    char buffer[200];
+
+    // All of these should be safe - they use literal format strings
+    printf("Simple message");
+    printf("Message with arg: %s", "literal");
+    snprintf(buffer, 200, "Complex format: %d %s %.2f", 42, "text", 3.14);
+    fprintf(stdout, "To stdout: %s", "message");
+    sprintf(buffer, "Formatted: %x", 255);
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        for v in &violations {
+            println!("Unexpected violation: {}", v.message);
+        }
+        assert!(violations.is_empty(), "Should accept all literal format strings");
     }
 }
