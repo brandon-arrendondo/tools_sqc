@@ -15,6 +15,7 @@ pub mod int30_c;
 pub mod int32_c;
 pub mod mem30_c;
 pub mod mem31_c;
+pub mod mem33_c;
 pub mod pre30_c;
 pub mod pre31_c;
 pub mod pre32_c;
@@ -46,6 +47,7 @@ impl RuleRegistry {
         registry.register(Box::new(int32_c::Int32C));
         registry.register(Box::new(mem30_c::Mem30C));
         registry.register(Box::new(mem31_c::Mem31C));
+        registry.register(Box::new(mem33_c::Mem33C::new()));
         registry.register(Box::new(pre30_c::Pre30C));
         registry.register(Box::new(pre31_c::Pre31C));
         registry.register(Box::new(pre32_c::Pre32C));
