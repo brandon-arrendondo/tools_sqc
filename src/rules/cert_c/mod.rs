@@ -1,3 +1,4 @@
+pub mod arr00_c;
 pub mod arr30_c;
 pub mod arr32_c;
 pub mod arr36_c;
@@ -28,6 +29,7 @@ impl RuleRegistry {
             rules: Vec::new(),
         };
 
+        registry.register(Box::new(arr00_c::Arr00C));
         registry.register(Box::new(arr30_c::Arr30C));
         registry.register(Box::new(arr32_c::Arr32C));
         registry.register(Box::new(arr36_c::Arr36C));
