@@ -159,6 +159,7 @@ Additional rules can be easily added by implementing the `CertRule` trait in the
 - `E` - Export violations to Excel (XLSX)
 - `x` - Suppress selected violation
 - `X` - Generate suppression file for all violations
+- `h` - Toggle hidden items (show/hide suppressed violations and clean files)
 - `f` - Toggle file filter
 - `r` - Toggle rule filter
 - `q` - Quit application

@@ -71,6 +71,10 @@ enum GroupItem {
         violation: RuleViolation,
         level: usize,
     },
+    CleanFile {
+        file_path: String,
+        level: usize,
+    },
 }
 
 impl GroupItem {
@@ -78,6 +82,7 @@ impl GroupItem {
         match self {
             GroupItem::Group { level, .. } => *level,
             GroupItem::Violation { level, .. } => *level,
+            GroupItem::CleanFile { level, .. } => *level,
         }
     }
 
@@ -106,7 +111,9 @@ pub struct TerminalUI {
     registry: RuleRegistry,
     violations: Vec<RuleViolation>,
     suppressed_violations: Vec<RuleViolation>, // Violations that are suppressed
+    clean_files: Vec<String>, // Files that were scanned but had no violations
     show_suppressed: bool, // Toggle to show/hide suppressed violations
+    show_clean_files: bool, // Toggle to show/hide files with no violations
     combined_violations: Vec<RuleViolation>, // Combined active + suppressed for display
     sorted_violations: Vec<(usize, RuleViolation)>, // (original_index, violation)
     grouped_items: Vec<GroupItem>, // Tree structure for grouping
@@ -152,7 +159,9 @@ impl TerminalUI {
             registry,
             violations: Vec::new(),
             suppressed_violations: Vec::new(),
+            clean_files: Vec::new(),
             show_suppressed: false,
+            show_clean_files: false,
             combined_violations: Vec::new(),
             sorted_violations: Vec::new(),
             grouped_items: Vec::new(),
@@ -460,9 +469,10 @@ impl TerminalUI {
                             }
                         }
                         KeyCode::Char('h') => {
-                            // Toggle hidden/suppressed violations visibility
+                            // Toggle hidden items visibility (suppressed violations and clean files)
                             if self.current_tab == Tab::Violations {
                                 self.show_suppressed = !self.show_suppressed;
+                                self.show_clean_files = !self.show_clean_files;
                                 if self.show_suppressed {
                                     self.update_combined_violations();
                                 }
@@ -775,6 +785,30 @@ impl TerminalUI {
 
                         ListItem::new(vec![Line::from(spans)])
                     }
+                    GroupItem::CleanFile { file_path, level } => {
+                        // Get relative path and filename
+                        let relative_path = self.get_relative_path(file_path);
+                        let filename = std::path::Path::new(file_path)
+                            .file_name()
+                            .unwrap_or_default()
+                            .to_string_lossy();
+
+                        let indent = "  ".repeat(*level);
+
+                        let spans = vec![
+                            Span::raw(indent),
+                            Span::styled("[✓] ", Style::default().fg(Color::Green)),
+                            Span::styled("CLEAN", Style::default().fg(Color::Green).add_modifier(Modifier::BOLD)),
+                            Span::raw(" - "),
+                            Span::styled(filename, Style::default().fg(Color::White)),
+                            Span::raw(" ("),
+                            Span::styled(relative_path, Style::default().fg(Color::Gray)),
+                            Span::raw(") "),
+                            Span::styled("[NO VIOLATIONS]", Style::default().fg(Color::Green).add_modifier(Modifier::ITALIC)),
+                        ];
+
+                        ListItem::new(vec![Line::from(spans)])
+                    }
                 }
             })
             .collect();
@@ -810,9 +844,27 @@ impl TerminalUI {
                         String::new()
                     };
 
-                    format!("{}Violations{} - {}: {} - {}:{} ({})",
+                    let hidden_info = if self.show_suppressed || self.show_clean_files {
+                        let mut items = Vec::new();
+                        if self.show_suppressed && !self.suppressed_violations.is_empty() {
+                            items.push(format!("{} suppressed", self.suppressed_violations.len()));
+                        }
+                        if self.show_clean_files && !self.clean_files.is_empty() {
+                            items.push(format!("{} clean", self.clean_files.len()));
+                        }
+                        if !items.is_empty() {
+                            format!(" [Hidden: {}]", items.join(", "))
+                        } else {
+                            String::new()
+                        }
+                    } else {
+                        String::new()
+                    };
+
+                    format!("{}Violations{}{} - {}: {} - {}:{} ({})",
                         focus_indicator,
                         sort_info,
+                        hidden_info,
                         violation.rule_id,
                         rule_description,
                         filename,
@@ -831,7 +883,23 @@ impl TerminalUI {
                     } else {
                         String::new()
                     };
-                    format!("{}Violations{}", focus_indicator, sort_info)
+                    let hidden_info = if self.show_suppressed || self.show_clean_files {
+                        let mut items = Vec::new();
+                        if self.show_suppressed && !self.suppressed_violations.is_empty() {
+                            items.push(format!("{} suppressed", self.suppressed_violations.len()));
+                        }
+                        if self.show_clean_files && !self.clean_files.is_empty() {
+                            items.push(format!("{} clean", self.clean_files.len()));
+                        }
+                        if !items.is_empty() {
+                            format!(" [Hidden: {}]", items.join(", "))
+                        } else {
+                            String::new()
+                        }
+                    } else {
+                        String::new()
+                    };
+                    format!("{}Violations{}{}", focus_indicator, sort_info, hidden_info)
                 }
             } else {
                 let focus_indicator = if !self.preview_focused || !self.show_file_preview {
@@ -846,7 +914,23 @@ impl TerminalUI {
                 } else {
                     String::new()
                 };
-                format!("{}Violations{}", focus_indicator, sort_info)
+                let hidden_info = if self.show_suppressed || self.show_clean_files {
+                    let mut items = Vec::new();
+                    if self.show_suppressed && !self.suppressed_violations.is_empty() {
+                        items.push(format!("{} suppressed", self.suppressed_violations.len()));
+                    }
+                    if self.show_clean_files && !self.clean_files.is_empty() {
+                        items.push(format!("{} clean", self.clean_files.len()));
+                    }
+                    if !items.is_empty() {
+                        format!(" [Hidden: {}]", items.join(", "))
+                    } else {
+                        String::new()
+                    }
+                } else {
+                    String::new()
+                };
+                format!("{}Violations{}{}", focus_indicator, sort_info, hidden_info)
             }
         } else {
             let focus_indicator = if !self.preview_focused || !self.show_file_preview {
@@ -861,7 +945,23 @@ impl TerminalUI {
             } else {
                 String::new()
             };
-            format!("{}Violations{}", focus_indicator, sort_info)
+            let hidden_info = if self.show_suppressed || self.show_clean_files {
+                let mut items = Vec::new();
+                if self.show_suppressed && !self.suppressed_violations.is_empty() {
+                    items.push(format!("{} suppressed", self.suppressed_violations.len()));
+                }
+                if self.show_clean_files && !self.clean_files.is_empty() {
+                    items.push(format!("{} clean", self.clean_files.len()));
+                }
+                if !items.is_empty() {
+                    format!(" [Hidden: {}]", items.join(", "))
+                } else {
+                    String::new()
+                }
+            } else {
+                String::new()
+            };
+            format!("{}Violations{}{}", focus_indicator, sort_info, hidden_info)
         };
 
         let violations_block = if !self.preview_focused || !self.show_file_preview {
@@ -1347,7 +1447,7 @@ impl TerminalUI {
         match self.sort_mode {
             SortMode::Default => {
                 // Keep original order - no sorting needed, no grouping
-                self.grouped_items = self.sorted_violations
+                let mut items: Vec<GroupItem> = self.sorted_violations
                     .iter()
                     .map(|(original_index, violation)| GroupItem::Violation {
                         original_index: *original_index,
@@ -1355,6 +1455,18 @@ impl TerminalUI {
                         level: 0,
                     })
                     .collect();
+
+                // Add clean files if they should be shown
+                if self.show_clean_files {
+                    for file_path in &self.clean_files {
+                        items.push(GroupItem::CleanFile {
+                            file_path: file_path.clone(),
+                            level: 0,
+                        });
+                    }
+                }
+
+                self.grouped_items = items;
             }
             SortMode::ViolationId => {
                 self.sorted_violations.sort_by(|a, b| {
@@ -1444,7 +1556,7 @@ impl TerminalUI {
     fn group_by_file_path(&mut self) {
         use std::collections::BTreeMap;
 
-        let mut path_groups: BTreeMap<String, Vec<(usize, RuleViolation)>> = BTreeMap::new();
+        let mut path_groups: BTreeMap<String, Vec<GroupItem>> = BTreeMap::new();
 
         for (original_index, violation) in &self.sorted_violations {
             let path = get_relative_path(&violation.file_path, &self.repo_path);
@@ -1453,24 +1565,38 @@ impl TerminalUI {
                 .map(|p| p.to_string_lossy().to_string())
                 .unwrap_or_else(|| ".".to_string());
 
-            path_groups.entry(dir_path).or_insert_with(Vec::new).push((*original_index, violation.clone()));
+            path_groups.entry(dir_path).or_insert_with(Vec::new).push(GroupItem::Violation {
+                original_index: *original_index,
+                violation: violation.clone(),
+                level: 1,
+            });
+        }
+
+        // Add clean files if they should be shown
+        if self.show_clean_files {
+            for file_path in &self.clean_files {
+                let path = get_relative_path(file_path, &self.repo_path);
+                let dir_path = std::path::Path::new(&path)
+                    .parent()
+                    .map(|p| p.to_string_lossy().to_string())
+                    .unwrap_or_else(|| ".".to_string());
+
+                path_groups.entry(dir_path).or_insert_with(Vec::new).push(GroupItem::CleanFile {
+                    file_path: file_path.clone(),
+                    level: 1,
+                });
+            }
         }
 
         self.grouped_items = if self.sort_ascending {
             path_groups.into_iter().collect::<Vec<_>>()
         } else {
             path_groups.into_iter().rev().collect::<Vec<_>>()
-        }.into_iter().map(|(dir_path, violations)| {
+        }.into_iter().map(|(dir_path, items)| {
             GroupItem::Group {
                 name: dir_path,
                 expanded: false,
-                items: violations.into_iter().map(|(original_index, violation)| {
-                    GroupItem::Violation {
-                        original_index,
-                        violation,
-                        level: 1,
-                    }
-                }).collect(),
+                items,
                 level: 0,
             }
         }).collect();
@@ -1526,6 +1652,9 @@ impl TerminalUI {
                     }
                 }
                 GroupItem::Violation { .. } => {
+                    self.flat_display_items.push(item.clone());
+                }
+                GroupItem::CleanFile { .. } => {
                     self.flat_display_items.push(item.clone());
                 }
             }
@@ -1626,6 +1755,9 @@ impl TerminalUI {
                             self.select_violations_in_group(&parent_group.0, parent_group.1);
                         }
                     }
+                    GroupItem::CleanFile { .. } => {
+                        // Clean files don't participate in group selection
+                    }
                 }
             }
         }
@@ -1645,6 +1777,9 @@ impl TerminalUI {
                         if let Some(parent_group) = self.find_parent_group_for_violation(selected_index) {
                             self.deselect_violations_in_group(&parent_group.0, parent_group.1);
                         }
+                    }
+                    GroupItem::CleanFile { .. } => {
+                        // Clean files don't participate in group selection
                     }
                 }
             }
@@ -1669,6 +1804,9 @@ impl TerminalUI {
                     if inside_target_group {
                         violations_to_select.insert(*original_index);
                     }
+                }
+                GroupItem::CleanFile { .. } => {
+                    // Clean files don't participate in selection
                 }
             }
         }
@@ -1698,6 +1836,9 @@ impl TerminalUI {
                         violations_to_deselect.push(*original_index);
                     }
                 }
+                GroupItem::CleanFile { .. } => {
+                    // Clean files don't participate in selection
+                }
             }
         }
 
@@ -1722,6 +1863,9 @@ impl TerminalUI {
                 GroupItem::Violation { .. } => {
                     // Continue - we're still looking for our target violation
                 }
+                GroupItem::CleanFile { .. } => {
+                    // Continue - clean files don't affect group hierarchy
+                }
             }
         }
 
@@ -1734,6 +1878,7 @@ impl TerminalUI {
 
         self.violations.clear();
         self.suppressed_violations.clear();
+        self.clean_files.clear();
         self.combined_violations.clear();
 
         let project_source = ProjectSource::open(&self.repo_path)?;
@@ -1748,6 +1893,8 @@ impl TerminalUI {
                 let mut suppression_manager = SuppressionManager::new();
                 suppression_manager.extract_from_source(&file_path, &source);
 
+                let mut file_has_violations = false;
+
                 for (rule_id, rule_config) in self.manifest.enabled_rules() {
                     if let Some(rule) = self.registry.get_rule(rule_id) {
                         let mut file_violations = rule.check(&root_node, &source);
@@ -1758,6 +1905,7 @@ impl TerminalUI {
 
                         // Separate suppressed and active violations
                         for violation in file_violations {
+                            file_has_violations = true;
                             if suppression_manager.should_suppress(
                                 &file_path,
                                 rule_id,
@@ -1772,6 +1920,11 @@ impl TerminalUI {
                             }
                         }
                     }
+                }
+
+                // If the file had no violations, add it to clean files
+                if !file_has_violations {
+                    self.clean_files.push(file_path);
                 }
             }
         }
