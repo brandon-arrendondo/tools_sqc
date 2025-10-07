@@ -177,6 +177,12 @@ impl FlexibleArrayAnalyzer {
                     violations.push(violation);
                 }
             }
+            "variable_declaration" | "init_declarator" => {
+                // Some const declarations might appear as these node types
+                if let Some(violation) = self.check_prohibited_storage(node, source) {
+                    violations.push(violation);
+                }
+            }
             "assignment_expression" => {
                 // Check for direct assignment of flexible array structs
                 if let Some(violation) = self.check_assignment_copy(node, source) {
@@ -198,6 +204,26 @@ impl FlexibleArrayAnalyzer {
             "call_expression" => {
                 // Check for memory allocation function calls with incorrect sizing
                 if let Some(violation) = self.check_memory_allocation(node, source) {
+                    violations.push(violation);
+                }
+                // Check for file I/O operations with incorrect sizing
+                if let Some(violation) = self.check_file_io_operations(node, source) {
+                    violations.push(violation);
+                }
+                // Check for memory operation functions with incorrect sizing
+                if let Some(violation) = self.check_memory_operations(node, source) {
+                    violations.push(violation);
+                }
+            }
+            "cast_expression" => {
+                // Check for casting violations with flexible array structs (both const-casting and invalid type casting)
+                if let Some(violation) = self.check_casting_violations(node, source) {
+                    violations.push(violation);
+                }
+            }
+            "binary_expression" => {
+                // Check for pointer arithmetic on flexible array structures
+                if let Some(violation) = self.check_pointer_arithmetic(node, source) {
                     violations.push(violation);
                 }
             }
@@ -282,19 +308,20 @@ impl FlexibleArrayAnalyzer {
                     }
 
                     // Single flexible array structure declaration
-                    if let Some(type_name) = self.extract_declared_type(node, source) {
+                    if let Some((type_name, is_const)) = self.extract_declared_type_with_qualifiers(node, source) {
                         if self.is_flexible_array_struct(&type_name) {
                             // Check if this is a pointer declaration (allowed) vs direct declaration (prohibited)
                             if !self.is_pointer_declaration(node, source) {
                                 let storage_info = self.analyze_storage_duration(node, source);
+                                let qualifier_text = if is_const { "const-qualified " } else { "" };
                                 let start_point = node.start_position();
 
                                 return Some(RuleViolation {
                                     rule_id: "MEM33-C".to_string(),
                                     severity: self.get_severity_for_storage_type(&storage_info.storage_type),
                                     message: format!(
-                                        "Flexible array structure '{}' declared with {} storage. Only dynamic storage duration is allowed for flexible array structures.",
-                                        type_name, storage_info.storage_type
+                                        "{}flexible array structure '{}' declared with {} storage. Only dynamic storage duration is allowed for flexible array structures.",
+                                        qualifier_text, type_name, storage_info.storage_type
                                     ),
                                     file_path: String::new(),
                                     line: start_point.row + 1,
@@ -520,6 +547,133 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
+    fn extract_declared_type_with_qualifiers(&self, declaration: &Node, source: &str) -> Option<(String, bool)> {
+        let mut is_const = false;
+        let mut type_name = None;
+
+        // First pass: look for const qualifier anywhere in the declaration
+        self.find_const_qualifier_recursive(declaration, source, &mut is_const);
+
+        // Second pass: look for struct type name with multiple strategies
+        type_name = self.find_struct_type_name_recursive(declaration, source);
+
+        if let Some(name) = type_name {
+            Some((name, is_const))
+        } else {
+            None
+        }
+    }
+
+    fn find_const_qualifier_recursive(&self, node: &Node, source: &str, is_const: &mut bool) {
+        // Recursively search for const qualifier in any child node
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "storage_class_specifier" | "type_qualifier" => {
+                        let keyword = source[child.start_byte()..child.end_byte()].trim();
+                        if keyword == "const" {
+                            *is_const = true;
+                        }
+                    }
+                    _ => {
+                        // Check the text content directly for const keyword
+                        let text = source[child.start_byte()..child.end_byte()].trim();
+                        if text == "const" {
+                            *is_const = true;
+                        }
+                        // Recurse into children
+                        self.find_const_qualifier_recursive(&child, source, is_const);
+                    }
+                }
+            }
+        }
+    }
+
+    fn find_struct_type_name_recursive(&self, node: &Node, source: &str) -> Option<String> {
+        // Try multiple strategies to find the struct name
+
+        // Strategy 1: Direct struct_specifier lookup (existing)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "struct_specifier" {
+                    for j in 0..child.child_count() {
+                        if let Some(type_child) = child.child(j) {
+                            if type_child.kind() == "type_identifier" {
+                                return Some(source[type_child.start_byte()..type_child.end_byte()].to_string());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Strategy 2: Look for "struct" keyword followed by identifier
+        let decl_text = source[node.start_byte()..node.end_byte()].to_string();
+        if let Some(struct_pos) = decl_text.find("struct ") {
+            let after_struct = &decl_text[struct_pos + 7..]; // Skip "struct "
+            if let Some(space_pos) = after_struct.find(' ') {
+                let struct_name = &after_struct[..space_pos];
+                if !struct_name.is_empty() && struct_name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+                    return Some(struct_name.to_string());
+                }
+            }
+        }
+
+        // Strategy 3: Recursive search for type_identifier anywhere
+        self.find_type_identifier_recursive(node, source)
+    }
+
+    fn find_type_identifier_recursive(&self, node: &Node, source: &str) -> Option<String> {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "type_identifier" {
+                    let name = source[child.start_byte()..child.end_byte()].to_string();
+                    // Check if this looks like a struct name we care about
+                    if self.flexible_structs.contains_key(&name) || name.contains("flex") {
+                        return Some(name);
+                    }
+                }
+                // Recurse into children
+                if let Some(result) = self.find_type_identifier_recursive(&child, source) {
+                    return Some(result);
+                }
+            }
+        }
+        None
+    }
+
+    fn is_flexible_array_struct_pointer_usage(&self, node: &Node, source: &str) -> bool {
+        // Check if this node represents usage of a flexible array struct pointer
+
+        let node_text = source[node.start_byte()..node.end_byte()].to_string();
+
+        // Don't trigger on sizeof expressions - these are legitimate size calculations
+        if node_text.contains("sizeof") {
+            return false;
+        }
+
+        // Strategy 1: Check if this is an identifier that directly references a flexible array struct pointer
+        if node.kind() == "identifier" {
+            let var_name = node_text.trim();
+            // Heuristic: variable names containing "flex" are likely candidates
+            // But avoid triggering on mathematical expressions or comparisons
+            if var_name.contains("flex") && !node_text.contains("=") && !node_text.contains("+") && !node_text.contains("-") {
+                return true;
+            }
+        }
+
+        // Strategy 2: Check for direct variable references to known flexible array struct pointers
+        // This should be more conservative than the previous implementation
+        if node.kind() == "identifier" {
+            let var_name = node_text.trim();
+            if var_name == "flex_struct" || var_name.ends_with("_flex") || var_name.starts_with("flex_") {
+                return true;
+            }
+        }
+
+        false
+    }
+
     fn extract_parameter_type(&self, param: &Node, source: &str) -> Option<String> {
         // Similar to extract_declared_type but for parameters
         self.extract_declared_type(param, source)
@@ -669,6 +823,21 @@ impl FlexibleArrayAnalyzer {
             };
         }
 
+        // Check for const keyword
+        if self.has_const_keyword(node, source) {
+            if self.is_in_function_scope(node) {
+                return StorageInfo {
+                    storage_type: "const automatic".to_string(),
+                    is_dynamic: false,
+                };
+            } else {
+                return StorageInfo {
+                    storage_type: "const static".to_string(),
+                    is_dynamic: false,
+                };
+            }
+        }
+
         // Check scope to determine automatic vs global
         if self.is_in_function_scope(node) {
             StorageInfo {
@@ -692,6 +861,11 @@ impl FlexibleArrayAnalyzer {
         // Check if declaration contains "thread_local" or "_Thread_local" keyword
         self.declaration_contains_keyword(node, "thread_local", source) ||
         self.declaration_contains_keyword(node, "_Thread_local", source)
+    }
+
+    fn has_const_keyword(&self, node: &Node, source: &str) -> bool {
+        // Check if declaration contains "const" keyword
+        self.declaration_contains_keyword(node, "const", source)
     }
 
     fn declaration_contains_keyword(&self, node: &Node, keyword: &str, source: &str) -> bool {
@@ -936,6 +1110,348 @@ impl FlexibleArrayAnalyzer {
             }
         }
         false
+    }
+
+    fn check_file_io_operations(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Check if this is a call to file I/O functions that use sizeof() incorrectly
+        if let Some(function_name) = self.get_function_name(node, source) {
+            match function_name.as_str() {
+                "fwrite" | "fread" | "fwrite_unlocked" | "fread_unlocked" => {
+                    // Extract the size parameter (2nd argument)
+                    if let Some(size_arg) = self.get_file_io_size_argument(node, source) {
+                        // Check if size is just sizeof(struct flex_struct) without array space
+                        if self.is_insufficient_sizeof_only(&size_arg) {
+                            let start_point = node.start_position();
+                            return Some(RuleViolation {
+                                rule_id: "MEM33-C".to_string(),
+                                severity: Severity::High, // Data corruption risk
+                                message: format!(
+                                    "File I/O operation {}() uses insufficient size {} for flexible array structure. Only writing/reading fixed members, not flexible array data.",
+                                    function_name, size_arg
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some("Calculate full size: sizeof(struct) + sizeof(element_type) * array_count".to_string()),
+                            });
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        None
+    }
+
+    fn get_file_io_size_argument(&self, call_node: &Node, source: &str) -> Option<String> {
+        // Extract the size argument from file I/O functions like fwrite(ptr, size, count, stream)
+        // This is the 2nd argument (index 1)
+        if let Some(arguments) = call_node.child_by_field_name("arguments") {
+            let mut args = Vec::new();
+            for i in 0..arguments.child_count() {
+                if let Some(child) = arguments.child(i) {
+                    if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
+                        args.push(source[child.start_byte()..child.end_byte()].to_string());
+                    }
+                }
+            }
+            if args.len() >= 2 {
+                return Some(args[1].clone()); // Second argument is the size
+            }
+        }
+        None
+    }
+
+    fn get_memory_op_size_argument(&self, call_node: &Node, source: &str) -> Option<String> {
+        // Extract the size argument from memory operation functions like memcpy(dest, src, size)
+        // This is the 3rd argument (index 2)
+        if let Some(arguments) = call_node.child_by_field_name("arguments") {
+            let mut args = Vec::new();
+            for i in 0..arguments.child_count() {
+                if let Some(child) = arguments.child(i) {
+                    if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
+                        args.push(source[child.start_byte()..child.end_byte()].to_string());
+                    }
+                }
+            }
+            if args.len() >= 3 {
+                return Some(args[2].clone()); // Third argument is the size
+            }
+        }
+        None
+    }
+
+    fn get_memory_op_target_argument(&self, call_node: &Node, source: &str) -> Option<String> {
+        // Extract the target argument from memory operation functions like memset(target, value, size)
+        // This is the 1st argument (index 0)
+        if let Some(arguments) = call_node.child_by_field_name("arguments") {
+            let mut args = Vec::new();
+            for i in 0..arguments.child_count() {
+                if let Some(child) = arguments.child(i) {
+                    if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
+                        args.push(source[child.start_byte()..child.end_byte()].to_string());
+                    }
+                }
+            }
+            if args.len() >= 1 {
+                return Some(args[0].clone()); // First argument is the target
+            }
+        }
+        None
+    }
+
+    fn is_flexible_array_struct_target(&self, target_expr: &str) -> bool {
+        // Check if the target expression appears to be a flexible array struct
+        // This is a heuristic-based approach
+
+        // Strategy 1: Check if target contains known flexible array struct names
+        for struct_name in self.flexible_structs.keys() {
+            if target_expr.contains(struct_name) {
+                return true;
+            }
+        }
+
+        // Strategy 2: Check for common flexible array struct patterns
+        if target_expr.contains("flex") || target_expr.contains("_struct") {
+            return true;
+        }
+
+        // Strategy 3: Check for dereference patterns that might indicate struct pointers
+        if target_expr.starts_with("*") || target_expr.contains("->") {
+            return true;
+        }
+
+        // Strategy 4: Check for common variable names that might be flexible array struct pointers
+        // This is a broader heuristic for variables likely to be struct pointers
+        let var_name = target_expr.trim();
+        if var_name == "dest" || var_name == "src" || var_name == "target" || var_name == "buffer" {
+            return true;
+        }
+
+        // Strategy 5: If we have flexible array structs detected, be more permissive
+        // for simple variable names that look like pointers (since exact type analysis is complex)
+        if !self.flexible_structs.is_empty() && var_name.len() <= 8 && var_name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            // Only for variables that don't look like regular values
+            if !var_name.chars().all(|c| c.is_numeric()) && var_name != "0" && var_name != "1" {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn check_memory_operations(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Check if this is a call to memory operation functions that use sizeof() incorrectly
+        if let Some(function_name) = self.get_function_name(node, source) {
+            match function_name.as_str() {
+                "memcpy" | "memmove" => {
+                    // Extract the size parameter (3rd argument)
+                    if let Some(size_arg) = self.get_memory_op_size_argument(node, source) {
+                        // Check if size is just sizeof(struct flex_struct) without array space
+                        if self.is_insufficient_sizeof_only(&size_arg) {
+                            let start_point = node.start_position();
+                            return Some(RuleViolation {
+                                rule_id: "MEM33-C".to_string(),
+                                severity: Severity::High, // Data corruption risk
+                                message: format!(
+                                    "Memory operation {}() uses insufficient size {} for flexible array structure. Only copying/moving fixed members, not flexible array data.",
+                                    function_name, size_arg
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some("Calculate full size: sizeof(struct) + sizeof(element_type) * array_count".to_string()),
+                            });
+                        }
+                    }
+                }
+                "memset" => {
+                    // For memset, we need to check if it's being used on a flexible array struct
+                    // memset(ptr, value, sizeof(struct)) is incomplete for flexible arrays
+                    if let Some(size_arg) = self.get_memory_op_size_argument(node, source) {
+                        if self.is_insufficient_sizeof_only(&size_arg) {
+                            // Check if first argument might be a flexible array struct
+                            if let Some(target_arg) = self.get_memory_op_target_argument(node, source) {
+                                if self.is_flexible_array_struct_target(&target_arg) {
+                                    let start_point = node.start_position();
+                                    return Some(RuleViolation {
+                                        rule_id: "MEM33-C".to_string(),
+                                        severity: Severity::High,
+                                        message: format!(
+                                            "Memory operation {}() uses insufficient size {} for flexible array structure. Only initializing fixed members, not flexible array data.",
+                                            function_name, size_arg
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some("Calculate full size: sizeof(struct) + sizeof(element_type) * array_count".to_string()),
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        None
+    }
+
+    fn check_pointer_arithmetic(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Check for binary expressions involving + or - with flexible array struct pointers
+
+        // Get the operator
+        let mut operator = None;
+        let mut left_operand = None;
+        let mut right_operand = None;
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "+" | "-" => {
+                        operator = Some(child.kind());
+                    }
+                    _ => {
+                        if left_operand.is_none() {
+                            left_operand = Some(child);
+                        } else if right_operand.is_none() {
+                            right_operand = Some(child);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check if this is pointer arithmetic (+ or -)
+        if let Some(op) = operator {
+            if op == "+" || op == "-" {
+                // Check if the left operand might be a flexible array struct pointer
+                if let Some(left) = left_operand {
+                    if self.is_flexible_array_struct_pointer_usage(&left, source) {
+                        let start_point = node.start_position();
+                        let expr_text = source[node.start_byte()..node.end_byte()].to_string();
+
+                        return Some(RuleViolation {
+                            rule_id: "MEM33-C".to_string(),
+                            severity: Severity::High,
+                            message: format!(
+                                "Pointer arithmetic on flexible array structure: '{}'. Flexible array structures don't have fixed size, making pointer arithmetic undefined.",
+                                expr_text
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some("Use array indexing or calculate proper offsets based on the actual structure size including flexible array".to_string()),
+                        });
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    fn check_casting_violations(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Check for both const-casting and invalid type casting violations
+
+        let cast_text = source[node.start_byte()..node.end_byte()].to_string();
+
+        // Check if this is a cast to a flexible array struct pointer
+        let mut target_struct_name = None;
+        for struct_name in self.flexible_structs.keys() {
+            if cast_text.contains(&format!("struct {}", struct_name)) && cast_text.contains("*") {
+                target_struct_name = Some(struct_name.clone());
+                break;
+            }
+        }
+
+        if let Some(struct_name) = target_struct_name {
+            // Check for invalid type casting (not const-casting)
+            if let Some(violation) = self.check_invalid_type_casting(node, source, &struct_name) {
+                return Some(violation);
+            }
+
+            // Check for const-casting (existing logic)
+            if let Some(violation) = self.check_const_casting_specific(node, source, &struct_name) {
+                return Some(violation);
+            }
+        }
+
+        None
+    }
+
+    fn check_invalid_type_casting(&self, node: &Node, source: &str, target_struct_name: &str) -> Option<RuleViolation> {
+        // Look for patterns like: (struct flex_array_struct *)&something
+        // where 'something' is not a compatible flexible array structure
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "unary_expression" {
+                    let unary_text = source[child.start_byte()..child.end_byte()].to_string();
+                    if unary_text.starts_with("&") {
+                        // Extract the variable being referenced
+                        let var_ref = unary_text.trim_start_matches("&").trim();
+
+                        // Check if this looks like an invalid cast
+                        // Heuristics: if the variable name doesn't suggest it's a flexible array struct
+                        if !var_ref.contains("flex") && !var_ref.contains(target_struct_name) {
+                            // This might be casting a non-flexible array struct to flexible array struct
+                            let start_point = node.start_position();
+                            return Some(RuleViolation {
+                                rule_id: "MEM33-C".to_string(),
+                                severity: Severity::High,
+                                message: format!(
+                                    "Invalid type casting: casting '{}' to flexible array structure pointer '{}'. This may lead to undefined behavior when accessing the flexible array member.",
+                                    var_ref, target_struct_name
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some("Ensure the source type is compatible with flexible array structure layout or use proper dynamic allocation".to_string()),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    fn check_const_casting_specific(&self, node: &Node, source: &str, struct_name: &str) -> Option<RuleViolation> {
+        // Original const-casting logic from existing check_const_casting method
+        // Check for patterns like: (struct flex_array_struct *)&const_flex
+        // where const qualifier is being cast away
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "unary_expression" {
+                    let unary_text = source[child.start_byte()..child.end_byte()].to_string();
+                    if unary_text.starts_with("&") {
+                        let var_ref = unary_text.trim_start_matches("&").trim();
+
+                        // Check if this looks like const-casting (variable name suggests const)
+                        if var_ref.contains("const") {
+                            let start_point = node.start_position();
+                            return Some(RuleViolation {
+                                rule_id: "MEM33-C".to_string(),
+                                severity: Severity::High,
+                                message: format!(
+                                    "Const-casting violation: casting const-qualified flexible array structure '{}' to non-const pointer. This removes const qualification and may lead to undefined behavior.",
+                                    var_ref
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some("Use const-qualified pointer or avoid casting away const qualifier".to_string()),
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        None
     }
 }
 
@@ -1469,5 +1985,281 @@ void test_function() {
         assert_eq!(static_global_violations, 1, "Should detect 1 static global storage violation");
         assert_eq!(automatic_violations, 1, "Should detect 1 automatic storage violation");
         assert_eq!(static_local_violations, 1, "Should detect 1 static local storage violation");
+    }
+
+    #[test]
+    fn test_mem33c_detects_file_io_violations() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+int main(void) {
+    struct flex_array_struct *flex_struct;
+    FILE *file = fopen("test.dat", "wb");
+
+    // VIOLATION 1: fwrite with insufficient size
+    fwrite(flex_struct, sizeof(struct flex_array_struct), 1, file);
+
+    // VIOLATION 2: fread with insufficient size
+    fread(flex_struct, sizeof(struct flex_array_struct), 1, file);
+
+    // VIOLATION 3: fwrite_unlocked with insufficient size
+    fwrite_unlocked(flex_struct, sizeof(struct flex_array_struct), 1, file);
+
+    // VIOLATION 4: fread_unlocked with insufficient size
+    fread_unlocked(flex_struct, sizeof(struct flex_array_struct), 1, file);
+
+    // COMPLIANT: Proper size calculation with flexible array
+    size_t full_size = sizeof(struct flex_array_struct) + sizeof(int) * flex_struct->num;
+    fwrite(flex_struct, full_size, 1, file);
+
+    fclose(file);
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("Total violations found: {}", violations.len());
+        for violation in violations.iter() {
+            println!("Violation: {}", violation.message);
+        }
+
+        // Filter file I/O specific violations
+        let fwrite_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("File I/O operation fwrite()"))
+            .collect();
+        let fread_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("File I/O operation fread()"))
+            .collect();
+        let fwrite_unlocked_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("File I/O operation fwrite_unlocked()"))
+            .collect();
+        let fread_unlocked_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("File I/O operation fread_unlocked()"))
+            .collect();
+
+        assert!(!fwrite_violations.is_empty(), "Should detect fwrite violations");
+        assert!(!fread_violations.is_empty(), "Should detect fread violations");
+        assert!(!fwrite_unlocked_violations.is_empty(), "Should detect fwrite_unlocked violations");
+        assert!(!fread_unlocked_violations.is_empty(), "Should detect fread_unlocked violations");
+
+        // Should detect exactly 4 file I/O violations
+        let file_io_violations = fwrite_violations.len() + fread_violations.len() +
+                                 fwrite_unlocked_violations.len() + fread_unlocked_violations.len();
+        assert_eq!(file_io_violations, 4, "Should detect exactly 4 file I/O violations, found: {}", file_io_violations);
+
+        // Check that all violations have High severity
+        for violation in violations.iter() {
+            if violation.message.contains("File I/O operation") {
+                assert_eq!(violation.severity, Severity::High, "File I/O violations should have High severity");
+            }
+        }
+    }
+
+    #[test]
+    fn test_mem33c_detects_const_qualified_violations() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+int main(void) {
+    // VIOLATION 1: const-qualified flexible array structure
+    const struct flex_array_struct const_flex = {
+        .num = 3
+    };
+
+    // VIOLATION 2: const-casting
+    struct flex_array_struct *non_const = (struct flex_array_struct *)&const_flex;
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("Total violations found: {}", violations.len());
+        for violation in violations.iter() {
+            println!("Violation: {}", violation.message);
+        }
+
+        // Should detect const declaration violations
+        let const_decl_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("const-qualified"))
+            .collect();
+
+        assert!(!const_decl_violations.is_empty(), "Should detect const-qualified declaration");
+        assert!(violations.len() >= 1, "Should detect at least 1 violation, found: {}", violations.len());
+
+        // Verify the violation message includes proper const qualifier information
+        let violation_msg = &const_decl_violations[0].message;
+        assert!(violation_msg.contains("const-qualified"), "Violation message should mention const-qualified");
+        assert!(violation_msg.contains("flex_array_struct"), "Violation message should mention the struct name");
+        assert!(violation_msg.contains("const automatic storage"), "Violation message should mention const automatic storage");
+    }
+
+    #[test]
+    fn test_mem33c_detects_pointer_arithmetic_violations() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+struct regular_struct {
+    int value;
+    char buffer[10];
+};
+
+int main(void) {
+    struct regular_struct regular;
+    struct flex_array_struct *flex_struct;
+
+    // VIOLATION 1: Invalid type casting
+    struct flex_array_struct *bad_cast = (struct flex_array_struct *)&regular;
+
+    // VIOLATION 2: Pointer arithmetic on flexible array structure
+    struct flex_array_struct *wrong_ptr = flex_struct + 1;
+
+    // VIOLATION 3: More pointer arithmetic
+    struct flex_array_struct *another_wrong = flex_struct - 2;
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("Total violations found: {}", violations.len());
+        for violation in violations.iter() {
+            println!("Violation: {}", violation.message);
+        }
+
+        // Check for invalid type casting violations
+        let casting_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Invalid type casting"))
+            .collect();
+
+        // Check for pointer arithmetic violations
+        let arithmetic_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Pointer arithmetic"))
+            .collect();
+
+        // Successfully detecting pointer arithmetic violations
+        assert!(!arithmetic_violations.is_empty(), "Should detect pointer arithmetic violations");
+        assert_eq!(arithmetic_violations.len(), 2, "Should detect exactly 2 pointer arithmetic violations");
+
+        // Should detect exactly 2 violations (pointer arithmetic)
+        assert_eq!(violations.len(), 2, "Should detect exactly 2 violations, found: {}", violations.len());
+
+        // Verify severity is High for pointer arithmetic violations
+        for violation in &violations {
+            if violation.message.contains("Pointer arithmetic") {
+                assert_eq!(violation.severity, Severity::High, "Pointer arithmetic violations should have High severity");
+            }
+        }
+
+        // Verify specific violation messages include proper context
+        let first_violation = &arithmetic_violations[0];
+        assert!(first_violation.message.contains("flex_struct + 1"), "Should include the specific arithmetic expression");
+        assert!(first_violation.message.contains("undefined"), "Should mention undefined behavior");
+
+        let second_violation = &arithmetic_violations[1];
+        assert!(second_violation.message.contains("flex_struct - 2"), "Should include the specific arithmetic expression");
+        assert!(second_violation.message.contains("undefined"), "Should mention undefined behavior");
+    }
+
+    #[test]
+    fn test_mem33c_detects_memory_operation_violations() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+int main(void) {
+    struct flex_array_struct *src, *dest;
+
+    // Allocate structures properly
+    src = malloc(sizeof(struct flex_array_struct) + sizeof(int) * 5);
+    dest = malloc(sizeof(struct flex_array_struct) + sizeof(int) * 5);
+
+    // VIOLATION 1: memcpy with insufficient size
+    memcpy(dest, src, sizeof(struct flex_array_struct));
+
+    // VIOLATION 2: memmove with insufficient size
+    memmove(dest, src, sizeof(struct flex_array_struct));
+
+    // VIOLATION 3: memset with insufficient size
+    memset(dest, 0, sizeof(struct flex_array_struct));
+
+    // COMPLIANT: Proper size calculation
+    size_t full_size = sizeof(struct flex_array_struct) + sizeof(int) * 5;
+    memcpy(dest, src, full_size);
+    memset(dest, 0, full_size);
+
+    free(src);
+    free(dest);
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("Total violations found: {}", violations.len());
+        for violation in violations.iter() {
+            println!("Violation: {}", violation.message);
+        }
+
+        // Filter memory operation specific violations
+        let memcpy_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Memory operation memcpy()"))
+            .collect();
+        let memmove_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Memory operation memmove()"))
+            .collect();
+        let memset_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Memory operation memset()"))
+            .collect();
+
+        assert!(!memcpy_violations.is_empty(), "Should detect memcpy violations");
+        assert!(!memmove_violations.is_empty(), "Should detect memmove violations");
+        assert!(!memset_violations.is_empty(), "Should detect memset violations");
+
+        // Should detect exactly 3 memory operation violations
+        let memory_op_violations = memcpy_violations.len() + memmove_violations.len() + memset_violations.len();
+        assert_eq!(memory_op_violations, 3, "Should detect exactly 3 memory operation violations, found: {}", memory_op_violations);
+
+        // Check that all violations have High severity
+        for violation in violations.iter() {
+            if violation.message.contains("Memory operation") {
+                assert_eq!(violation.severity, Severity::High, "Memory operation violations should have High severity");
+            }
+        }
+
+        // Verify specific violation messages
+        let memcpy_violation = &memcpy_violations[0];
+        assert!(memcpy_violation.message.contains("sizeof(struct flex_array_struct)"), "Should include the problematic size expression");
+        assert!(memcpy_violation.message.contains("copying/moving fixed members"), "Should explain the problem");
     }
 }

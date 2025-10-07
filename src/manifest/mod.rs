@@ -27,7 +27,7 @@ pub struct RuleConfig {
     pub parameters: Option<HashMap<String, String>>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Severity {
     Low,
     Medium,
