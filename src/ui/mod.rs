@@ -171,7 +171,7 @@ impl TerminalUI {
             selected_config,
             config_groups_expanded,
             show_save_config_dialog: false,
-            save_config_filename: String::from("sqc-rules.toml"),
+            save_config_filename: String::from("rules_templates/rules-all.toml"),
             show_suppression_dialog: false,
             suppression_summary: Vec::new(),
             uncommitted_files: Vec::new(),

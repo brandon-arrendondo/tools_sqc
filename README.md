@@ -60,7 +60,26 @@ cargo build --release
 
 ## Configuration
 
-Create a `sqc-rules.toml` file to configure which CERT C rules to apply:
+### Quick Start with Rule Templates
+
+Use the provided rule templates for easy configuration:
+
+```bash
+# Use all rules (complete rule set)
+sqc --config rules_templates/rules-all.toml /path/to/code
+
+# Test individual rules
+sqc --config rules_templates/MEM33-C.toml /path/to/code
+sqc --config rules_templates/ARR30-C.toml /path/to/code
+
+# Create custom rule sets
+cat rules_templates/MEM*.toml > memory_rules.toml
+sqc --config memory_rules.toml /path/to/code
+```
+
+### Custom Configuration
+
+Create a custom `sqc-rules.toml` file to configure which CERT C rules to apply:
 
 ```toml
 [metadata]
@@ -115,6 +134,14 @@ Currently implemented 15 CERT C rules:
 
 ### String Rules (STR)
 - **STR31-C**: Guarantee that storage for strings has sufficient space for character data and the null terminator
+
+### Rule Templates
+
+All supported rules are available as individual template files in the `rules_templates/` directory:
+- **Individual rule files**: Each rule has its own `.toml` file (e.g., `MEM33-C.toml`, `ARR30-C.toml`)
+- **Complete rule set**: `rules-all.toml` contains all rules in a single file
+- **Easy testing**: Test individual rules or create custom rule combinations
+- **Documentation**: See `rules_templates/README.md` for detailed usage instructions
 
 Additional rules can be easily added by implementing the `CertRule` trait in the `src/rules/cert_c/` directory.
 

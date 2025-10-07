@@ -35,7 +35,7 @@ fn main() -> Result<()> {
                 .short('m')
                 .help("Path to the rules manifest file")
                 .value_name("FILE")
-                .default_value("sqc-rules.toml"),
+                .default_value("rules_templates/rules-all.toml"),
         )
         .arg(
             Arg::new("interactive")

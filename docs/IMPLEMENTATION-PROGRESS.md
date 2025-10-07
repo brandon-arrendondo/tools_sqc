@@ -6,7 +6,7 @@
 1. ✅ **Analyzed existing rule structure and patterns** - Studied exp33_c.rs and mod.rs
 2. ✅ **Implemented EXP34-C rule struct and trait** - Created src/rules/cert_c/exp34_c.rs
 3. ✅ **Added EXP34-C to rule registry** - Updated src/rules/cert_c/mod.rs
-4. ✅ **Updated manifest template with new rule** - Added to sqc-rules.toml
+4. ✅ **Updated manifest template with new rule** - Added to rules_templates/rules-all.toml
 5. 🔄 **Test the implementation** - IN PROGRESS (compilation check needed)
 
 ### Implementation Details:
@@ -14,7 +14,7 @@
 #### Files Created/Modified:
 - ✅ `src/rules/cert_c/exp34_c.rs` - New rule implementation
 - ✅ `src/rules/cert_c/mod.rs` - Added module declaration and registry entry
-- ✅ `sqc-rules.toml` - Added EXP34-C configuration
+- ✅ `rules_templates/rules-all.toml` - Added EXP34-C configuration
 
 #### Rule Features Implemented:
 - **Null pointer detection patterns:**
