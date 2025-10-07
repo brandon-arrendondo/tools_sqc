@@ -13,6 +13,40 @@ struct FlexibleArrayInfo {
     struct_name: String,
     has_flexible_array: bool,
     declaration_line: usize,
+    is_valid_definition: bool, // New field to track if struct definition is valid
+}
+
+#[derive(Debug)]
+struct FlexibleArrayValidation {
+    flexible_member_count: usize,
+    flexible_member_positions: Vec<usize>,
+    total_field_count: usize,
+    last_field_is_flexible: bool,
+    violations: Vec<String>,
+}
+
+impl FlexibleArrayValidation {
+    fn new() -> Self {
+        Self {
+            flexible_member_count: 0,
+            flexible_member_positions: Vec::new(),
+            total_field_count: 0,
+            last_field_is_flexible: false,
+            violations: Vec::new(),
+        }
+    }
+
+    fn is_valid_flexible_struct(&self) -> bool {
+        // Valid flexible array struct: exactly 1 flexible member as last field, at least 2 total fields
+        self.flexible_member_count == 1 &&
+        self.last_field_is_flexible &&
+        self.total_field_count >= 2 &&
+        self.violations.is_empty()
+    }
+
+    fn has_violations(&self) -> bool {
+        !self.violations.is_empty()
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -88,58 +122,58 @@ impl FlexibleArrayAnalyzer {
 
     fn analyze_struct_for_flexible_array(&self, node: &Node, source: &str) -> Option<FlexibleArrayInfo> {
         let mut struct_name = String::new();
-        let mut has_flexible_array = false;
+        let mut validation_result = None;
 
-
-        // Find struct name and check for flexible array members
+        // Find struct name and validate flexible array layout
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-
                 match child.kind() {
                     "type_identifier" => {
                         struct_name = source[child.start_byte()..child.end_byte()].to_string();
                     }
                     "field_declaration_list" => {
-                        has_flexible_array = self.has_flexible_array_member(&child, source);
+                        validation_result = Some(self.validate_flexible_array_layout(&child, source));
                     }
                     _ => {}
                 }
             }
         }
 
-        if !struct_name.is_empty() && has_flexible_array {
+        if let Some(validation) = validation_result {
+            if !struct_name.is_empty() {
+                // Check for invalid struct layouts first
+                if validation.has_violations() {
+                    // Store invalid struct information for later violation reporting
+                    // We'll report these violations in a separate method
+                    return Some(FlexibleArrayInfo {
+                        struct_name: struct_name.clone(),
+                        has_flexible_array: false, // Mark as invalid
+                        declaration_line: node.start_position().row + 1,
+                        is_valid_definition: false,
+                    });
+                }
 
-            Some(FlexibleArrayInfo {
-                struct_name,
-                has_flexible_array: true,
-                declaration_line: node.start_position().row + 1,
-            })
-        } else {
-            None
-        }
-    }
-
-    fn has_flexible_array_member(&self, field_list: &Node, source: &str) -> bool {
-        // Look for array declarators with empty brackets as the last member
-        let mut last_field_is_flexible = false;
-        let mut field_count = 0;
-
-        for i in 0..field_list.child_count() {
-            if let Some(child) = field_list.child(i) {
-                if child.kind() == "field_declaration" {
-                    field_count += 1;
-                    // Check if this field is a flexible array (empty brackets [])
-                    if self.is_flexible_array_field(&child, source) {
-                        last_field_is_flexible = true;
-                    } else {
-                        last_field_is_flexible = false;
-                    }
+                // Valid flexible array struct
+                if validation.is_valid_flexible_struct() {
+                    return Some(FlexibleArrayInfo {
+                        struct_name,
+                        has_flexible_array: true,
+                        declaration_line: node.start_position().row + 1,
+                        is_valid_definition: true,
+                    });
                 }
             }
         }
 
-        // Flexible array must be the last member and struct must have at least one other member
-        field_count > 1 && last_field_is_flexible
+        None
+    }
+
+    fn has_flexible_array_member(&self, field_list: &Node, source: &str) -> bool {
+        // Enhanced validation for flexible array member requirements
+        let validation_result = self.validate_flexible_array_layout(field_list, source);
+
+        // Return true only if we have exactly one flexible array as the last member
+        validation_result.is_valid_flexible_struct()
     }
 
     fn is_flexible_array_field(&self, field: &Node, source: &str) -> bool {
@@ -163,6 +197,108 @@ impl FlexibleArrayAnalyzer {
             }
         }
         false
+    }
+
+    fn is_last_field_declaration(&self, field_list: &Node, current_index: usize) -> bool {
+        // Check if the current field declaration is the last one in the struct
+        for i in (current_index + 1)..field_list.child_count() {
+            if let Some(child) = field_list.child(i) {
+                if child.kind() == "field_declaration" {
+                    return false; // Found another field declaration after this one
+                }
+            }
+        }
+        true // No more field declarations found
+    }
+
+    fn validate_flexible_array_layout(&self, field_list: &Node, source: &str) -> FlexibleArrayValidation {
+        let mut validation = FlexibleArrayValidation::new();
+        let mut field_position = 0;
+
+        for i in 0..field_list.child_count() {
+            if let Some(child) = field_list.child(i) {
+                if child.kind() == "field_declaration" {
+                    validation.total_field_count += 1;
+                    field_position += 1;
+
+                    if self.is_flexible_array_field(&child, source) {
+                        validation.flexible_member_count += 1;
+                        validation.flexible_member_positions.push(field_position);
+
+                        // Check if this is the last field
+                        let is_last_field = self.is_last_field_declaration(field_list, i);
+                        if is_last_field {
+                            validation.last_field_is_flexible = true;
+                        } else {
+                            validation.violations.push(format!(
+                                "Flexible array member at position {} is not the last member",
+                                field_position
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+
+        // Validate flexible array member rules
+        if validation.flexible_member_count > 1 {
+            validation.violations.push(format!(
+                "Structure has {} flexible array members (maximum 1 allowed)",
+                validation.flexible_member_count
+            ));
+        }
+
+        if validation.flexible_member_count > 0 && validation.total_field_count == 1 {
+            validation.violations.push(
+                "Structure has only flexible array member (at least one fixed member required)".to_string()
+            );
+        }
+
+        validation
+    }
+
+    fn check_invalid_struct_definition(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        let mut struct_name = String::new();
+
+        // Find struct name
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "type_identifier" {
+                    struct_name = source[child.start_byte()..child.end_byte()].to_string();
+                    break;
+                }
+            }
+        }
+
+        // Find field declaration list and validate
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "field_declaration_list" {
+                    let validation = self.validate_flexible_array_layout(&child, source);
+
+                    if validation.has_violations() {
+                        let start_point = node.start_position();
+                        let violation_details = validation.violations.join("; ");
+
+                        return Some(RuleViolation {
+                            rule_id: "MEM33-C".to_string(),
+                            severity: Severity::Critical, // Critical because this won't compile
+                            message: format!(
+                                "Invalid flexible array structure definition '{}': {}. Flexible arrays must be the single last member of a struct.",
+                                if struct_name.is_empty() { "anonymous" } else { &struct_name },
+                                violation_details
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some("Ensure struct has at most one flexible array member as the final field".to_string()),
+                        });
+                    }
+                }
+            }
+        }
+
+        None
     }
 
     fn check_violations(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -224,6 +360,12 @@ impl FlexibleArrayAnalyzer {
             "binary_expression" => {
                 // Check for pointer arithmetic on flexible array structures
                 if let Some(violation) = self.check_pointer_arithmetic(node, source) {
+                    violations.push(violation);
+                }
+            }
+            "struct_specifier" => {
+                // Check for invalid struct definitions with multiple/misplaced flexible arrays
+                if let Some(violation) = self.check_invalid_struct_definition(node, source) {
                     violations.push(violation);
                 }
             }
@@ -2261,5 +2403,87 @@ int main(void) {
         let memcpy_violation = &memcpy_violations[0];
         assert!(memcpy_violation.message.contains("sizeof(struct flex_array_struct)"), "Should include the problematic size expression");
         assert!(memcpy_violation.message.contains("copying/moving fixed members"), "Should explain the problem");
+    }
+
+    #[test]
+    fn test_mem33c_detects_invalid_struct_definitions() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+// VIOLATION 1: Multiple flexible array members
+struct multiple_flex_arrays {
+    size_t count1;
+    int data1[];       // First flexible array
+    size_t count2;     // Invalid: member after flexible array
+    double data2[];    // Second flexible array (invalid)
+};
+
+// VIOLATION 2: Flexible array not as last member
+struct flex_not_last {
+    int values[];      // Flexible array not last
+    size_t count;      // Invalid: member after flexible array
+};
+
+// VIOLATION 3: Only flexible array member (no fixed members)
+struct only_flex {
+    int data[];        // Invalid: no fixed members before
+};
+
+// COMPLIANT: Valid flexible array struct
+struct valid_flex {
+    size_t count;
+    int data[];        // Correct: single flexible array as last member
+};
+
+int main(void) {
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("Total violations found: {}", violations.len());
+        for violation in violations.iter() {
+            println!("Violation: {}", violation.message);
+        }
+
+        // Filter invalid struct definition violations
+        let struct_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Invalid flexible array structure definition"))
+            .collect();
+
+        assert!(!struct_violations.is_empty(), "Should detect invalid struct definitions");
+
+        // Should detect exactly 3 invalid struct definitions
+        assert_eq!(struct_violations.len(), 3, "Should detect exactly 3 invalid struct definitions, found: {}", struct_violations.len());
+
+        // Check for specific violation types based on the actual output
+        let multiple_flex_violations: Vec<_> = struct_violations.iter()
+            .filter(|v| v.message.contains("2 flexible array members"))
+            .collect();
+        let not_last_violations: Vec<_> = struct_violations.iter()
+            .filter(|v| v.message.contains("not the last member") && !v.message.contains("2 flexible array members"))
+            .collect();
+        let only_flex_violations: Vec<_> = struct_violations.iter()
+            .filter(|v| v.message.contains("only flexible array member"))
+            .collect();
+
+        assert!(!multiple_flex_violations.is_empty(), "Should detect multiple flexible array violations");
+        assert!(!not_last_violations.is_empty(), "Should detect flexible array not last violations");
+        assert!(!only_flex_violations.is_empty(), "Should detect only flexible array violations");
+
+        // Check that all violations have Critical severity (compilation errors)
+        for violation in &struct_violations {
+            assert_eq!(violation.severity, Severity::Critical, "Invalid struct definitions should have Critical severity");
+        }
+
+        // Verify specific violation messages include struct names
+        let multiple_violation = &multiple_flex_violations[0];
+        assert!(multiple_violation.message.contains("multiple_flex_arrays"), "Should include the struct name");
+
+        let not_last_violation = &not_last_violations[0];
+        assert!(not_last_violation.message.contains("flex_not_last"), "Should include the struct name");
     }
 }
