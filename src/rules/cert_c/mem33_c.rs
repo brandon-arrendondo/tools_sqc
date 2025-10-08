@@ -64,6 +64,21 @@ struct StorageInfo {
     is_dynamic: bool,
 }
 
+#[derive(Debug)]
+struct UnionViolationInfo {
+    member_name: String,
+    line: usize,
+    column: usize,
+}
+
+#[derive(Debug)]
+struct FieldDeclarationInfo {
+    field_name: String,
+    type_name: String,
+    is_pointer: bool,
+    is_array: bool,
+}
+
 impl Mem33C {
     pub fn new() -> Self {
         Self {
@@ -426,10 +441,46 @@ impl FlexibleArrayAnalyzer {
                     violations.push(violation);
                 }
             }
+            "union_specifier" => {
+                // Check for unions containing flexible array structure members
+                if let Some(violation) = self.check_union_with_flexible_struct(node, source) {
+                    violations.push(violation);
+                }
+            }
             "struct_specifier" => {
                 // Check for invalid struct definitions with multiple/misplaced flexible arrays
                 if let Some(violation) = self.check_invalid_struct_definition(node, source) {
                     violations.push(violation);
+                }
+            }
+            "field_declaration" => {
+                // Check if this field declares a member using a flexible array struct type
+                if let Some(violation) = self.check_embedded_flexible_struct(node, source) {
+                    violations.push(violation);
+                }
+
+                // Check for anonymous unions within field declarations that contain flexible array structures
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "union_specifier" {
+                            // Anonymous union in field declaration
+                            if let Some(violation_info) = self.check_anonymous_union_with_flexible(&child, source) {
+                                let start_point = child.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: "MEM33-C".to_string(),
+                                    severity: Severity::High,
+                                    message: format!(
+                                        "Anonymous union in field declaration contains flexible array structure member '{}'. Unions require fixed-size members to share memory space.",
+                                        violation_info.member_name
+                                    ),
+                                    file_path: String::new(),
+                                    line: violation_info.line,
+                                    column: violation_info.column,
+                                    suggestion: Some("Use a pointer to the flexible array structure instead of embedding it directly in the union".to_string()),
+                                });
+                            }
+                        }
+                    }
                 }
             }
             _ => {}
@@ -1905,6 +1956,347 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
+    fn check_union_with_flexible_struct(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Check for unions containing flexible array structure members
+        // This is prohibited because unions require fixed-size members to share memory space
+
+        let mut union_name = String::new();
+        let mut field_list_node = None;
+
+        // Find union name and field list
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "type_identifier" => {
+                        union_name = source[child.start_byte()..child.end_byte()].to_string();
+                    }
+                    "field_declaration_list" => {
+                        field_list_node = Some(child);
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        if let Some(field_list) = field_list_node {
+            if let Some(violation_info) = self.check_union_members_for_flexible_structs(&field_list, source) {
+                let start_point = node.start_position();
+                return Some(RuleViolation {
+                    rule_id: "MEM33-C".to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Union '{}' contains flexible array structure member '{}'. Unions require fixed-size members to share memory space.",
+                        if union_name.is_empty() { "<anonymous>" } else { &union_name },
+                        violation_info.member_name
+                    ),
+                    file_path: String::new(),
+                    line: violation_info.line,
+                    column: violation_info.column,
+                    suggestion: Some("Use a pointer to the flexible array structure instead of embedding it directly in the union".to_string()),
+                });
+            }
+        }
+
+        None
+    }
+
+    fn check_union_members_for_flexible_structs(&self, field_list: &Node, source: &str) -> Option<UnionViolationInfo> {
+        // Analyze each field in the union to check for flexible array structures
+        for i in 0..field_list.child_count() {
+            if let Some(field) = field_list.child(i) {
+                match field.kind() {
+                    "field_declaration" => {
+                        if let Some(violation_info) = self.analyze_union_member(&field, source) {
+                            return Some(violation_info);
+                        }
+                    }
+                    "union_specifier" => {
+                        // Nested anonymous union
+                        if let Some(violation_info) = self.check_anonymous_union_with_flexible(&field, source) {
+                            return Some(violation_info);
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        None
+    }
+
+    fn analyze_union_member(&self, field_decl: &Node, source: &str) -> Option<UnionViolationInfo> {
+        // Extract type information from field declaration
+        let mut type_name = String::new();
+        let mut member_name = String::new();
+        let mut is_struct_type = false;
+        let mut is_pointer = false;
+
+        // First, check if this is a pointer declarator
+        for i in 0..field_decl.child_count() {
+            if let Some(child) = field_decl.child(i) {
+                if child.kind() == "pointer_declarator" {
+                    is_pointer = true;
+                    break;
+                }
+            }
+        }
+
+        // If it's a pointer, it's compliant (pointers to flexible array structs are allowed)
+        if is_pointer {
+            return None;
+        }
+
+        for i in 0..field_decl.child_count() {
+            if let Some(child) = field_decl.child(i) {
+                match child.kind() {
+                    "struct_specifier" => {
+                        // Extract struct type name
+                        is_struct_type = true;
+                        for j in 0..child.child_count() {
+                            if let Some(struct_child) = child.child(j) {
+                                if struct_child.kind() == "type_identifier" {
+                                    type_name = source[struct_child.start_byte()..struct_child.end_byte()].to_string();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    "type_identifier" => {
+                        if !is_struct_type {
+                            type_name = source[child.start_byte()..child.end_byte()].to_string();
+                        }
+                    }
+                    "field_identifier" => {
+                        member_name = source[child.start_byte()..child.end_byte()].to_string();
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        // Check if this type is a flexible array structure (only if not a pointer)
+        if self.is_flexible_array_struct(&type_name) {
+            let position = field_decl.start_position();
+            return Some(UnionViolationInfo {
+                member_name: if member_name.is_empty() {
+                    format!("<anonymous {}>", type_name)
+                } else {
+                    format!("{} ({})", member_name, type_name)
+                },
+                line: position.row + 1,
+                column: position.column + 1,
+            });
+        }
+
+        None
+    }
+
+    fn check_anonymous_union_with_flexible(&self, union_node: &Node, source: &str) -> Option<UnionViolationInfo> {
+        // Check for anonymous unions containing flexible array structures
+        for i in 0..union_node.child_count() {
+            if let Some(child) = union_node.child(i) {
+                if child.kind() == "field_declaration_list" {
+                    // Recursively check the nested union's fields
+                    return self.check_union_members_for_flexible_structs(&child, source);
+                }
+            }
+        }
+        None
+    }
+
+    fn check_embedded_flexible_struct(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Check if this field declaration embeds a flexible array structure
+
+        // Extract the field type and name
+        if let Some(field_info) = self.extract_field_declaration_info(node, source) {
+            // Check if the field type is a known flexible array structure
+            if self.is_flexible_array_struct(&field_info.type_name) {
+                // Check if this is a pointer (allowed) vs direct embedding (violation)
+                if !field_info.is_pointer {
+                    // Get parent structure context for better error messaging
+                    let parent_context = self.get_parent_structure_context(node, source);
+                    let start_point = node.start_position();
+
+                    let violation_type = if field_info.is_array {
+                        "Array of flexible array structures"
+                    } else {
+                        "Flexible array structure"
+                    };
+
+                    let suggestion = if field_info.is_array {
+                        format!("Use an array of pointers instead: 'struct {} *{}[];'", field_info.type_name, field_info.field_name)
+                    } else {
+                        format!("Use a pointer instead: 'struct {} *{};'", field_info.type_name, field_info.field_name)
+                    };
+
+                    return Some(RuleViolation {
+                        rule_id: "MEM33-C".to_string(),
+                        severity: Severity::Critical, // Critical: creates undefined memory layout
+                        message: format!(
+                            "{} '{}' embedded as member '{}' in {}. Flexible array structures cannot be embedded - they must be allocated dynamically.",
+                            violation_type,
+                            field_info.type_name,
+                            field_info.field_name,
+                            parent_context
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(suggestion),
+                    });
+                }
+            }
+
+            // Also check for anonymous/inline struct definitions with flexible arrays
+            if let Some(violation) = self.check_inline_flexible_struct(node, source, &field_info) {
+                return Some(violation);
+            }
+        }
+
+        None
+    }
+
+    fn extract_field_declaration_info(&self, field_node: &Node, source: &str) -> Option<FieldDeclarationInfo> {
+        let mut field_name = String::new();
+        let mut type_name = String::new();
+        let mut is_pointer = false;
+        let mut is_array = false;
+
+        for i in 0..field_node.child_count() {
+            if let Some(child) = field_node.child(i) {
+                match child.kind() {
+                    "struct_specifier" => {
+                        // Field type is a struct
+                        for j in 0..child.child_count() {
+                            if let Some(type_child) = child.child(j) {
+                                if type_child.kind() == "type_identifier" {
+                                    type_name = source[type_child.start_byte()..type_child.end_byte()].to_string();
+                                }
+                            }
+                        }
+                    }
+                    "type_identifier" => {
+                        if type_name.is_empty() {
+                            type_name = source[child.start_byte()..child.end_byte()].to_string();
+                        }
+                    }
+                    "field_identifier" => {
+                        field_name = source[child.start_byte()..child.end_byte()].to_string();
+                    }
+                    "pointer_declarator" => {
+                        is_pointer = true;
+                        // Extract field name from pointer declarator
+                        for j in 0..child.child_count() {
+                            if let Some(ptr_child) = child.child(j) {
+                                if ptr_child.kind() == "field_identifier" {
+                                    field_name = source[ptr_child.start_byte()..ptr_child.end_byte()].to_string();
+                                }
+                            }
+                        }
+                    }
+                    "array_declarator" => {
+                        is_array = true;
+                        // Extract field name from array declarator
+                        for j in 0..child.child_count() {
+                            if let Some(arr_child) = child.child(j) {
+                                if arr_child.kind() == "field_identifier" {
+                                    field_name = source[arr_child.start_byte()..arr_child.end_byte()].to_string();
+                                }
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        if !field_name.is_empty() || !type_name.is_empty() {
+            Some(FieldDeclarationInfo {
+                field_name: if field_name.is_empty() { "anonymous".to_string() } else { field_name },
+                type_name: if type_name.is_empty() { "unknown".to_string() } else { type_name },
+                is_pointer,
+                is_array,
+            })
+        } else {
+            None
+        }
+    }
+
+    fn get_parent_structure_context(&self, node: &Node, source: &str) -> String {
+        // Walk up the AST to find the parent struct/union and get its name
+        let mut current = node.parent();
+
+        while let Some(parent) = current {
+            match parent.kind() {
+                "struct_specifier" => {
+                    // Extract struct name
+                    for i in 0..parent.child_count() {
+                        if let Some(child) = parent.child(i) {
+                            if child.kind() == "type_identifier" {
+                                let name = source[child.start_byte()..child.end_byte()].to_string();
+                                return format!("struct '{}'", name);
+                            }
+                        }
+                    }
+                    return "anonymous struct".to_string();
+                }
+                "union_specifier" => {
+                    // Extract union name
+                    for i in 0..parent.child_count() {
+                        if let Some(child) = parent.child(i) {
+                            if child.kind() == "type_identifier" {
+                                let name = source[child.start_byte()..child.end_byte()].to_string();
+                                return format!("union '{}'", name);
+                            }
+                        }
+                    }
+                    return "anonymous union".to_string();
+                }
+                _ => current = parent.parent(),
+            }
+        }
+
+        "unknown structure".to_string()
+    }
+
+    fn check_inline_flexible_struct(&self, field_node: &Node, source: &str, field_info: &FieldDeclarationInfo) -> Option<RuleViolation> {
+        // Check for inline struct definitions that contain flexible arrays
+        // Pattern: struct { size_t num; int data[]; } field_name;
+
+        for i in 0..field_node.child_count() {
+            if let Some(child) = field_node.child(i) {
+                if child.kind() == "struct_specifier" {
+                    // Check if this inline struct has flexible array members
+                    for j in 0..child.child_count() {
+                        if let Some(struct_child) = child.child(j) {
+                            if struct_child.kind() == "field_declaration_list" {
+                                if self.has_flexible_array_member(&struct_child, source) {
+                                    let start_point = field_node.start_position();
+                                    let parent_context = self.get_parent_structure_context(field_node, source);
+
+                                    return Some(RuleViolation {
+                                        rule_id: "MEM33-C".to_string(),
+                                        severity: Severity::Critical,
+                                        message: format!(
+                                            "Inline struct definition with flexible array member embedded as field '{}' in {}. Inline flexible array structures cannot be embedded.",
+                                            field_info.field_name,
+                                            parent_context
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some("Define the flexible array structure separately and use a pointer to it".to_string()),
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
     fn check_casting_violations(&self, node: &Node, source: &str) -> Option<RuleViolation> {
         // Check for both const-casting and invalid type casting violations
 
@@ -3119,5 +3511,263 @@ int main(void) {
             .filter(|v| v.message.contains("proper_ptrs"))
             .collect();
         assert!(false_positives.is_empty(), "Should not flag compliant pointer arrays");
+    }
+
+    #[test]
+    fn test_mem33c_detects_union_violations() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+struct normal_struct {
+    int value;
+    char name[10];
+};
+
+// VIOLATION 1: Named union with flexible array structure member
+union mixed_union {
+    struct flex_array_struct flex_member;
+    struct normal_struct normal_member;
+    int simple_int;
+};
+
+// VIOLATION 2: Anonymous union with flexible array structure member
+struct container_struct {
+    int id;
+    union {
+        struct flex_array_struct flex_member;
+        struct normal_struct normal_member;
+    };
+};
+
+// VIOLATION 3: Nested anonymous unions
+struct complex_struct {
+    int header;
+    union outer_union {
+        union {
+            struct flex_array_struct inner_flex;
+            int inner_int;
+        };
+        struct normal_struct outer_normal;
+    } nested;
+};
+
+// COMPLIANT: Union with pointers to flexible array structures
+union pointer_union {
+    struct flex_array_struct *flex_ptr;
+    struct normal_struct *normal_ptr;
+    int *int_ptr;
+};
+
+// COMPLIANT: Union with only fixed-size members
+union fixed_union {
+    struct normal_struct normal_member;
+    int values[5];
+    double floating_val;
+};
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("=== UNION VIOLATIONS TEST ===");
+        println!("Total violations found: {}", violations.len());
+        for (i, violation) in violations.iter().enumerate() {
+            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+        }
+
+        // Filter union-specific violations
+        let union_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Union") && v.message.contains("flexible array structure"))
+            .collect();
+
+        let anonymous_union_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Anonymous union"))
+            .collect();
+
+        // Should detect union violations
+        assert!(!union_violations.is_empty(), "Should detect union violations");
+
+        // Should detect at least 3 union violations (named union + anonymous union + nested)
+        let total_union_related = union_violations.len() + anonymous_union_violations.len();
+        assert!(total_union_related >= 3,
+                "Should detect at least 3 union-related violations, found: {}",
+                total_union_related);
+
+        // Check for specific union types
+        let named_union_violations: Vec<_> = union_violations.iter()
+            .filter(|v| v.message.contains("Union 'mixed_union'"))
+            .collect();
+        assert!(!named_union_violations.is_empty(), "Should detect named union violation");
+
+        let container_union_violations: Vec<_> = anonymous_union_violations.iter()
+            .filter(|v| v.message.contains("Anonymous union"))
+            .collect();
+        assert!(!container_union_violations.is_empty(), "Should detect anonymous union violation");
+
+        // Verify severity
+        for violation in &union_violations {
+            assert_eq!(violation.severity, Severity::High,
+                      "Union violations should have High severity");
+        }
+
+        // Verify error messages mention memory space sharing
+        let memory_space_violations: Vec<_> = union_violations.iter()
+            .filter(|v| v.message.contains("share memory space"))
+            .collect();
+        assert!(!memory_space_violations.is_empty(),
+                "Should mention memory space sharing requirement");
+
+        // Verify suggestions include pointer usage
+        let pointer_suggestions: Vec<_> = union_violations.iter()
+            .filter(|v| v.suggestion.as_ref().map_or(false, |s| s.contains("pointer")))
+            .collect();
+        assert!(!pointer_suggestions.is_empty(),
+                "Should suggest using pointers instead");
+
+        // Verify that compliant patterns are not flagged
+        let false_positives: Vec<_> = union_violations.iter()
+            .filter(|v| v.message.contains("pointer_union") || v.message.contains("fixed_union"))
+            .collect();
+        assert!(false_positives.is_empty(), "Should not flag compliant unions");
+
+        // Check that member names are properly identified
+        let member_name_violations: Vec<_> = union_violations.iter()
+            .filter(|v| v.message.contains("flex_member"))
+            .collect();
+        assert!(!member_name_violations.is_empty(),
+                "Should identify specific member names in violations");
+    }
+
+    #[test]
+    fn test_mem33c_detects_embedded_flexible_struct_violations() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+// VIOLATION 1: Direct embedding of flexible array structure
+struct bad_container {
+    int id;
+    struct flex_array_struct embedded_flex;  // VIOLATION: embedded
+    char name[50];
+};
+
+// VIOLATION 2: Array of embedded flexible array structures
+struct array_container {
+    int count;
+    struct flex_array_struct flex_array[5];  // VIOLATION: array of embedded
+};
+
+// VIOLATION 3: Nested structure with embedded flexible array
+struct nested_bad {
+    struct inner_struct {
+        int value;
+        struct flex_array_struct nested_flex;  // VIOLATION: nested embedded
+    } inner;
+};
+
+// VIOLATION 4: Anonymous/inline struct with flexible array
+struct inline_bad {
+    int id;
+    struct {
+        size_t count;
+        int data[];  // VIOLATION: inline flexible array struct
+    } inline_flex;
+};
+
+// VIOLATION 5: Multiple levels of nesting
+struct deeply_nested {
+    struct level1 {
+        struct level2 {
+            struct flex_array_struct deep_flex;  // VIOLATION: deeply nested
+        } l2;
+    } l1;
+};
+
+// COMPLIANT: Using pointers to flexible array structures
+struct good_container {
+    int id;
+    struct flex_array_struct *flex_ptr;  // OK: pointer
+    struct flex_array_struct **flex_ptr_array;  // OK: array of pointers
+    char name[50];
+};
+
+int main(void) {
+    struct bad_container container;
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("=== EMBEDDED FLEXIBLE STRUCT TEST ===");
+        println!("Total violations found: {}", violations.len());
+        for (i, violation) in violations.iter().enumerate() {
+            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+        }
+
+        // Filter embedded structure violations
+        let embedded_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("embedded") || v.message.contains("Inline struct"))
+            .collect();
+
+        assert!(!embedded_violations.is_empty(), "Should detect embedded flexible array struct violations");
+
+        // Should detect at least 5 embedded violations
+        assert!(embedded_violations.len() >= 5, "Should detect at least 5 embedded violations, found: {}", embedded_violations.len());
+
+        // Check for specific violation types
+        let direct_embedded: Vec<_> = embedded_violations.iter()
+            .filter(|v| v.message.contains("embedded_flex"))
+            .collect();
+        let array_embedded: Vec<_> = embedded_violations.iter()
+            .filter(|v| v.message.contains("flex_array") || v.message.contains("Array of flexible"))
+            .collect();
+        let nested_embedded: Vec<_> = embedded_violations.iter()
+            .filter(|v| v.message.contains("nested_flex"))
+            .collect();
+        let inline_embedded: Vec<_> = embedded_violations.iter()
+            .filter(|v| v.message.contains("Inline struct") || v.message.contains("inline_flex"))
+            .collect();
+
+        assert!(!direct_embedded.is_empty(), "Should detect direct embedding");
+        assert!(!array_embedded.is_empty(), "Should detect array embedding");
+        assert!(!nested_embedded.is_empty(), "Should detect nested embedding");
+        assert!(!inline_embedded.is_empty(), "Should detect inline struct embedding");
+
+        // All embedded violations should have Critical severity
+        for violation in &embedded_violations {
+            assert_eq!(violation.severity, Severity::Critical,
+                       "Embedded violations should have Critical severity");
+        }
+
+        // Verify suggestions mention using pointers
+        let pointer_suggestions: Vec<_> = embedded_violations.iter()
+            .filter(|v| v.suggestion.as_ref().map_or(false, |s| s.contains("pointer")))
+            .collect();
+        assert!(!pointer_suggestions.is_empty(), "Should suggest using pointers");
+
+        // Verify parent context is included in error messages
+        let context_messages: Vec<_> = embedded_violations.iter()
+            .filter(|v| v.message.contains("struct '") || v.message.contains("anonymous"))
+            .collect();
+        assert!(!context_messages.is_empty(), "Should include parent structure context");
+
+        // Verify that compliant patterns are not flagged
+        let false_positives: Vec<_> = embedded_violations.iter()
+            .filter(|v| v.message.contains("good_container"))
+            .collect();
+        assert!(false_positives.is_empty(), "Should not flag compliant pointer usage");
     }
 }
