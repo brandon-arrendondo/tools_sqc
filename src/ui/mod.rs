@@ -677,43 +677,27 @@ impl TerminalUI {
     fn render_violations_tab(&mut self, f: &mut Frame) {
 
         let chunks = if self.show_file_preview {
-            // Split vertically: header, violations, preview, footer
+            // Split vertically: violations, preview, footer
             Layout::default()
                 .direction(Direction::Vertical)
                 .margin(1)
                 .constraints([
-                    Constraint::Length(3),     // Header
                     Constraint::Percentage(50), // Violations list
                     Constraint::Percentage(50), // File preview
-                    Constraint::Length(3),     // Footer
+                    Constraint::Length(5),     // Footer (2 lines)
                 ])
                 .split(f.area())
         } else {
-            // Original layout: header, violations, footer
+            // Original layout: violations, footer
             Layout::default()
                 .direction(Direction::Vertical)
                 .margin(1)
                 .constraints([
-                    Constraint::Length(3),     // Header
                     Constraint::Min(10),       // Violations list
-                    Constraint::Length(3),     // Footer
+                    Constraint::Length(5),     // Footer (2 lines)
                 ])
                 .split(f.area())
         };
-
-        // Header
-        let header = Paragraph::new(vec![
-            Line::from(vec![
-                Span::styled("SqC - Software Code Quality", Style::default().fg(Color::Green).add_modifier(Modifier::BOLD)),
-            ]),
-            Line::from(vec![
-                Span::raw("Repository: "),
-                Span::styled(&self.repo_path, Style::default().fg(Color::Yellow)),
-            ]),
-        ])
-        .block(Block::default().borders(Borders::ALL).title("CERT C Compliance Checker"));
-
-        f.render_widget(header, chunks[0]);
 
         // Violations list
         let violations: Vec<ListItem> = self
@@ -861,7 +845,8 @@ impl TerminalUI {
                         String::new()
                     };
 
-                    format!("{}Violations{}{} - {}: {} - {}:{} ({})",
+                    format!("SqC - Software Code Quality | Repository: {} | {}Violations{}{} - {}: {} - {}:{} ({})",
+                        self.repo_path,
                         focus_indicator,
                         sort_info,
                         hidden_info,
@@ -899,7 +884,7 @@ impl TerminalUI {
                     } else {
                         String::new()
                     };
-                    format!("{}Violations{}{}", focus_indicator, sort_info, hidden_info)
+                    format!("SqC - Software Code Quality | Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
                 }
             } else {
                 let focus_indicator = if !self.preview_focused || !self.show_file_preview {
@@ -930,7 +915,7 @@ impl TerminalUI {
                 } else {
                     String::new()
                 };
-                format!("{}Violations{}{}", focus_indicator, sort_info, hidden_info)
+                format!("SqC - Software Code Quality | Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
             }
         } else {
             let focus_indicator = if !self.preview_focused || !self.show_file_preview {
@@ -961,7 +946,7 @@ impl TerminalUI {
             } else {
                 String::new()
             };
-            format!("{}Violations{}{}", focus_indicator, sort_info, hidden_info)
+            format!("SqC - Software Code Quality | Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
         };
 
         let violations_block = if !self.preview_focused || !self.show_file_preview {
@@ -980,11 +965,11 @@ impl TerminalUI {
             .highlight_style(Style::default().add_modifier(Modifier::REVERSED))
             .highlight_symbol(">> ");
 
-        f.render_stateful_widget(violations_list, chunks[1], &mut self.selected_violation);
+        f.render_stateful_widget(violations_list, chunks[0], &mut self.selected_violation);
 
         // File preview panel (only if enabled)
         if self.show_file_preview {
-            self.render_file_preview(f, chunks[2]);
+            self.render_file_preview(f, chunks[1]);
         }
 
         // Footer
@@ -996,32 +981,38 @@ impl TerminalUI {
                 Span::styled("c", Style::default().fg(Color::Yellow)),
                 Span::raw(")onfig | ("),
                 Span::styled("s", Style::default().fg(Color::Yellow)),
-                Span::raw(")can | SELECTION: ("),
+                Span::raw(")can | ("),
+                Span::styled("h", Style::default().fg(Color::Yellow)),
+                Span::raw(")idden | ("),
+                Span::styled("f", Style::default().fg(Color::Yellow)),
+                Span::raw(")ilter | ("),
+                Span::styled("r", Style::default().fg(Color::Yellow)),
+                Span::raw(")ule filter"),
+            ]),
+            Line::from(vec![
+                Span::raw("SELECTION: ("),
                 Span::styled("<space>", Style::default().fg(Color::Yellow)),
-                Span::raw(")select, [("),
+                Span::raw(")select | ("),
                 Span::styled("a", Style::default().fg(Color::Yellow)),
                 Span::raw(")ll OR ("),
                 Span::styled("n", Style::default().fg(Color::Yellow)),
-                Span::raw(")one], [("),
-                Span::styled("i", Style::default().fg(Color::Yellow)),
-                Span::raw(")gnore OR ("),
+                Span::raw(")one | ("),
+                Span::styled("x", Style::default().fg(Color::Yellow)),
+                Span::raw(")suppress OR ("),
                 Span::styled("e", Style::default().fg(Color::Yellow)),
-                Span::raw(")xport] | "),
-                Span::raw("VIEW: ("),
+                Span::raw(")xport | VIEW: ("),
                 Span::styled("p", Style::default().fg(Color::Yellow)),
-                Span::raw(")review, ("),
+                Span::raw(")review | ("),
                 Span::styled("<tab>", Style::default().fg(Color::Yellow)),
-                Span::raw(")focus, ("),
+                Span::raw(")focus | ("),
                 Span::styled("1-4", Style::default().fg(Color::Yellow)),
-                Span::raw(")sort, ("),
-                Span::styled("r", Style::default().fg(Color::Yellow)),
-                Span::raw(")everse |"),
+                Span::raw(")sort"),
             ]),
         ])
         .style(Style::default().fg(Color::White))
-        .block(Block::default().borders(Borders::ALL));
+        .block(Block::default().borders(Borders::ALL).title("CERT C Compliance Checker"));
 
-        let footer_index = if self.show_file_preview { 3 } else { 2 };
+        let footer_index = if self.show_file_preview { 2 } else { 1 };
         f.render_widget(footer, chunks[footer_index]);
     }
 
