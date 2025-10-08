@@ -1523,8 +1523,14 @@ impl FlexibleArrayAnalyzer {
         if let Some((num_arg, size_arg)) = self.get_calloc_arguments(node, source) {
             let start_point = node.start_position();
 
-            // Pattern 1: calloc(1, sizeof(struct)) - insufficient
-            if num_arg.trim() == "1" && self.is_insufficient_sizeof_only(&size_arg) {
+            // Enhanced analysis - check context before flagging violations
+            let has_context_calculation = self.analyze_size_calculation_context(node, source, &size_arg);
+            if has_context_calculation {
+                return None; // Likely has proper size calculation
+            }
+
+            // Pattern 1: calloc(1, sizeof(struct)) - insufficient ONLY if clearly insufficient
+            if num_arg.trim() == "1" && self.is_definitely_insufficient_sizeof(&size_arg) {
                 return Some(RuleViolation {
                     rule_id: "MEM33-C".to_string(),
                     severity: Severity::High,
@@ -1539,8 +1545,8 @@ impl FlexibleArrayAnalyzer {
                 });
             }
 
-            // Pattern 2: calloc(sizeof(struct), count) - wrong parameter order/logic
-            if self.is_sizeof_struct_expression(&num_arg) {
+            // Pattern 2: calloc(sizeof(struct), count) - wrong parameter order
+            if self.is_sizeof_struct_expression(&num_arg) && !self.likely_has_additional_size_calculation(&num_arg) {
                 return Some(RuleViolation {
                     rule_id: "MEM33-C".to_string(),
                     severity: Severity::High,
@@ -1605,16 +1611,49 @@ impl FlexibleArrayAnalyzer {
     }
 
     fn get_calloc_arguments(&self, call_node: &Node, source: &str) -> Option<(String, String)> {
-        // Extract both arguments from calloc(num, size)
+        // Enhanced argument extraction that preserves complex expressions
         if let Some(arguments) = call_node.child_by_field_name("arguments") {
             let mut args = Vec::new();
+            let mut current_arg = String::new();
+            let mut paren_depth = 0;
+
             for i in 0..arguments.child_count() {
                 if let Some(child) = arguments.child(i) {
-                    if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
-                        args.push(source[child.start_byte()..child.end_byte()].to_string());
+                    let child_text = source[child.start_byte()..child.end_byte()].to_string();
+
+                    match child.kind() {
+                        "(" => {
+                            paren_depth += 1;
+                            current_arg.push_str(&child_text);
+                        }
+                        ")" => {
+                            paren_depth -= 1;
+                            current_arg.push_str(&child_text);
+                        }
+                        "," => {
+                            if paren_depth == 0 {
+                                // End of argument
+                                if !current_arg.trim().is_empty() {
+                                    args.push(current_arg.trim().to_string());
+                                }
+                                current_arg.clear();
+                            } else {
+                                // Comma inside parentheses, part of current argument
+                                current_arg.push_str(&child_text);
+                            }
+                        }
+                        _ => {
+                            current_arg.push_str(&child_text);
+                        }
                     }
                 }
             }
+
+            // Add the last argument
+            if !current_arg.trim().is_empty() {
+                args.push(current_arg.trim().to_string());
+            }
+
             if args.len() >= 2 {
                 return Some((args[0].clone(), args[1].clone()));
             }
@@ -1641,14 +1680,163 @@ impl FlexibleArrayAnalyzer {
     }
 
     fn is_insufficient_sizeof_only(&self, size_expr: &str) -> bool {
-        // Check if this is just sizeof(struct flex_struct) without additional space
-        // Look for patterns like "sizeof(struct flex_array_struct)" or "sizeof(*ptr)"
-        // without addition of flexible array space
-        if size_expr.starts_with("sizeof(") && !size_expr.contains("+") {
-            // Check if the sizeof target is a flexible array struct
-            return self.sizeof_targets_flexible_struct(size_expr);
+        // More sophisticated analysis of size expressions
+        let expr = size_expr.trim();
+
+        // Skip empty or obviously complex expressions
+        if expr.is_empty() || expr.len() > 200 {
+            return false;
         }
+
+        // Check for clearly insufficient patterns
+        if self.is_definitely_insufficient_sizeof(expr) {
+            return true;
+        }
+
+        // Check for likely sufficient patterns (even if we can't parse them fully)
+        if self.likely_has_additional_size_calculation(expr) {
+            return false;
+        }
+
+        // Conservative approach: if uncertain, don't flag as violation
         false
+    }
+
+    fn is_definitely_insufficient_sizeof(&self, expr: &str) -> bool {
+        // Only flag expressions that are clearly just sizeof(struct) with no additions
+
+        // Pattern 1: Exact match of sizeof(struct_name) with no operators
+        if expr.starts_with("sizeof(") && expr.ends_with(")") {
+            let _sizeof_content = &expr[7..expr.len()-1]; // Remove "sizeof(" and ")"
+
+            // Check if it's a simple struct reference with no arithmetic
+            if !expr.contains("+") && !expr.contains("-") && !expr.contains("*") &&
+               !expr.contains("/") && !expr.contains("&") && !expr.contains("|") {
+                // Make sure it targets a flexible array struct
+                return self.sizeof_targets_flexible_struct(expr);
+            }
+        }
+
+        false
+    }
+
+    fn likely_has_additional_size_calculation(&self, expr: &str) -> bool {
+        // Check for patterns that suggest additional size calculation
+
+        // Pattern 1: Contains arithmetic operators (likely calculating additional size)
+        if expr.contains("+") || expr.contains("*") {
+            return true;
+        }
+
+        // Pattern 2: Variable or function call (might contain proper calculation)
+        if expr.chars().any(|c| c.is_alphabetic()) && !expr.starts_with("sizeof(") {
+            return true;
+        }
+
+        // Pattern 3: Complex expressions with parentheses (beyond simple sizeof)
+        let paren_count = expr.chars().filter(|&c| c == '(').count();
+        if paren_count > 1 {
+            return true;
+        }
+
+        // Pattern 4: Multiple sizeof expressions (likely calculating total size)
+        if expr.matches("sizeof(").count() > 1 {
+            return true;
+        }
+
+        // Pattern 5: Contains common size calculation variable names
+        let size_keywords = ["size", "total", "count", "length", "bytes", "len"];
+        if size_keywords.iter().any(|&keyword| expr.to_lowercase().contains(keyword)) {
+            return true;
+        }
+
+        // Pattern 6: Check for known compliant patterns
+        if self.is_known_compliant_pattern(expr) {
+            return true;
+        }
+
+        false
+    }
+
+    fn is_known_compliant_pattern(&self, size_expr: &str) -> bool {
+        let expr = size_expr.to_lowercase();
+
+        // Common compliant patterns
+        let compliant_patterns = [
+            // Explicit addition patterns
+            "sizeof(struct", // followed by addition (handled by contains check)
+            "total_size",
+            "full_size",
+            "calculated_size",
+            "buffer_size",
+            // Function calls that calculate size
+            "calculate_size",
+            "get_size",
+            "size_of",
+            "malloc_size",
+            // Macro patterns
+            "flex_size",
+            "array_size",
+        ];
+
+        for pattern in &compliant_patterns {
+            if expr.contains(pattern) {
+                // Additional check: if it contains sizeof + arithmetic, it's likely compliant
+                if expr.contains("sizeof") && (expr.contains("+") || expr.contains("*")) {
+                    return true;
+                }
+                // Function calls or variables with size-related names
+                if !expr.starts_with("sizeof(") {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    fn analyze_size_calculation_context(&self, call_node: &Node, source: &str, size_arg: &str) -> bool {
+        // Analyze the context around the calloc call to detect valid size patterns
+
+        // Strategy 1: Look for size calculations in preceding statements
+        if let Some(preceding_calculation) = self.find_preceding_size_calculation(call_node, source) {
+            if preceding_calculation.contains(&size_arg.replace(" ", "")) {
+                return true; // Size is calculated in a previous statement
+            }
+        }
+
+        // Strategy 2: Check if size_arg is a function call or complex expression
+        if size_arg.contains("(") && size_arg.contains(")") && !size_arg.starts_with("sizeof(") {
+            return true; // Likely a function call that calculates proper size
+        }
+
+        // Strategy 3: Check for macro usage
+        if size_arg.chars().all(|c| c.is_uppercase() || c.is_numeric() || c == '_' || c == '(' || c == ')') {
+            return true; // Likely a macro that calculates size
+        }
+
+        false
+    }
+
+    fn find_preceding_size_calculation(&self, call_node: &Node, source: &str) -> Option<String> {
+        // Look for size calculations in the preceding 5-10 lines
+        let call_line = call_node.start_position().row;
+        let start_search = if call_line >= 10 { call_line - 10 } else { 0 };
+
+        // This is a simplified implementation - in practice, you'd want to parse the AST
+        // to find variable assignments that might contain size calculations
+        let lines: Vec<&str> = source.lines().collect();
+
+        for line_idx in start_search..call_line {
+            if line_idx < lines.len() {
+                let line = lines[line_idx];
+                if line.contains("sizeof") && (line.contains("+") || line.contains("*")) {
+                    return Some(line.to_string());
+                }
+            }
+        }
+
+        None
     }
 
     fn is_sizeof_struct_expression(&self, expr: &str) -> bool {
@@ -3769,5 +3957,95 @@ int main(void) {
             .filter(|v| v.message.contains("good_container"))
             .collect();
         assert!(false_positives.is_empty(), "Should not flag compliant pointer usage");
+    }
+
+    #[test]
+    fn test_mem33c_no_false_positives_for_compliant_calloc() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+size_t calculate_flex_size(size_t count) {
+    return sizeof(struct flex_array_struct) + sizeof(int) * count;
+}
+
+#define FLEX_SIZE(count) (sizeof(struct flex_array_struct) + sizeof(int) * (count))
+
+int main(void) {
+    // COMPLIANT: Direct size calculation
+    struct flex_array_struct *ptr1 = calloc(1,
+        sizeof(struct flex_array_struct) + sizeof(int) * 10);
+
+    // COMPLIANT: Variable-based calculation
+    size_t total_size = sizeof(struct flex_array_struct) + sizeof(int) * 5;
+    struct flex_array_struct *ptr2 = calloc(1, total_size);
+
+    // COMPLIANT: Function-based calculation
+    struct flex_array_struct *ptr3 = calloc(1, calculate_flex_size(8));
+
+    // COMPLIANT: Macro-based calculation
+    struct flex_array_struct *ptr4 = calloc(1, FLEX_SIZE(12));
+
+    // COMPLIANT: Multi-line calculation
+    size_t element_count = 15;
+    struct flex_array_struct *ptr5 = calloc(1,
+        sizeof(struct flex_array_struct) + element_count * sizeof(int));
+
+    // COMPLIANT: Complex expression
+    struct flex_array_struct *ptr6 = calloc(1,
+        sizeof(struct flex_array_struct) + (10 + 5) * sizeof(int));
+
+    // COMPLIANT: Variable with size-related name
+    size_t buffer_size = 1000;
+    struct flex_array_struct *ptr7 = calloc(1, buffer_size);
+
+    free(ptr1);
+    free(ptr2);
+    free(ptr3);
+    free(ptr4);
+    free(ptr5);
+    free(ptr6);
+    free(ptr7);
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("=== FALSE POSITIVE PREVENTION TEST ===");
+        println!("Total violations found: {}", violations.len());
+        for (i, violation) in violations.iter().enumerate() {
+            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+        }
+
+        // Should have NO violations for compliant calloc usage
+        let calloc_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("calloc"))
+            .collect();
+
+        assert!(calloc_violations.is_empty(),
+               "Should not flag compliant calloc usage as violations. Found: {:?}",
+               calloc_violations.iter().map(|v| &v.message).collect::<Vec<_>>());
+
+        // Allow automatic storage violations (expected for local variables)
+        // but verify that no calloc-specific false positives exist
+        let auto_storage_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("automatic storage"))
+            .collect();
+
+        // Automatic storage violations are expected for local variables
+        println!("Note: {} automatic storage violations found (expected for local variables)", auto_storage_violations.len());
+
+        // The key test is that no calloc violations are flagged
+        assert!(calloc_violations.is_empty(),
+               "Should not flag compliant calloc usage as violations. Found: {:?}",
+               calloc_violations.iter().map(|v| &v.message).collect::<Vec<_>>());
     }
 }
