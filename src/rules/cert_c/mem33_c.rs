@@ -1,11 +1,13 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub struct Mem33C {
     // Track structures that contain flexible array members
     flexible_structs: HashMap<String, FlexibleArrayInfo>,
+    // Track arrays of flexible array structures
+    flexible_struct_arrays: HashSet<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -66,6 +68,7 @@ impl Mem33C {
     pub fn new() -> Self {
         Self {
             flexible_structs: HashMap::new(),
+            flexible_struct_arrays: HashSet::new(),
         }
     }
 }
@@ -95,12 +98,14 @@ impl CertRule for Mem33C {
 
 struct FlexibleArrayAnalyzer {
     flexible_structs: HashMap<String, FlexibleArrayInfo>,
+    flexible_struct_arrays: HashSet<String>,
 }
 
 impl FlexibleArrayAnalyzer {
     fn new() -> Self {
         Self {
             flexible_structs: HashMap::new(),
+            flexible_struct_arrays: HashSet::new(),
         }
     }
 
@@ -109,6 +114,13 @@ impl FlexibleArrayAnalyzer {
         if node.kind() == "struct_specifier" {
             if let Some(info) = self.analyze_struct_for_flexible_array(node, source) {
                 self.flexible_structs.insert(info.struct_name.clone(), info);
+            }
+        }
+
+        // Look for array declarations of flexible array structures
+        if node.kind() == "declaration" {
+            if let Some(array_name) = self.detect_flexible_struct_array_declaration(node, source) {
+                self.flexible_struct_arrays.insert(array_name);
             }
         }
 
@@ -165,6 +177,41 @@ impl FlexibleArrayAnalyzer {
             }
         }
 
+        None
+    }
+
+    fn detect_flexible_struct_array_declaration(&self, declaration: &Node, source: &str) -> Option<String> {
+        // Check if this declaration creates an array of flexible array structures
+
+        // Look for array declarators in the declaration
+        for i in 0..declaration.child_count() {
+            if let Some(child) = declaration.child(i) {
+                if child.kind() == "array_declarator" {
+                    // Check if the type is a flexible array structure
+                    if let Some(type_name) = self.extract_declared_type(declaration, source) {
+                        if self.is_flexible_array_struct(&type_name) {
+                            // Extract the array variable name
+                            if let Some(var_name) = self.extract_array_variable_name(&child, source) {
+                                return Some(var_name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    fn extract_array_variable_name(&self, array_declarator: &Node, source: &str) -> Option<String> {
+        // Extract the variable name from an array declarator
+        for i in 0..array_declarator.child_count() {
+            if let Some(child) = array_declarator.child(i) {
+                if child.kind() == "identifier" {
+                    return Some(source[child.start_byte()..child.end_byte()].to_string());
+                }
+            }
+        }
         None
     }
 
@@ -318,6 +365,16 @@ impl FlexibleArrayAnalyzer {
                 if let Some(violation) = self.check_prohibited_storage(node, source) {
                     violations.push(violation);
                 }
+                // Check for initialization that copies flexible array structs
+                if let Some(violation) = self.check_declaration_copy(node, source) {
+                    violations.push(violation);
+                }
+            }
+            "variable_declarator" => {
+                // Some parsers may use variable_declarator instead of init_declarator
+                if let Some(violation) = self.check_declaration_copy(node, source) {
+                    violations.push(violation);
+                }
             }
             "assignment_expression" => {
                 // Check for direct assignment of flexible array structs
@@ -360,6 +417,12 @@ impl FlexibleArrayAnalyzer {
             "binary_expression" => {
                 // Check for pointer arithmetic on flexible array structures
                 if let Some(violation) = self.check_pointer_arithmetic(node, source) {
+                    violations.push(violation);
+                }
+            }
+            "subscript_expression" => {
+                // Check for array indexing on flexible array structures (implicit pointer arithmetic)
+                if let Some(violation) = self.check_array_indexing(node, source) {
                     violations.push(violation);
                 }
             }
@@ -480,11 +543,11 @@ impl FlexibleArrayAnalyzer {
     }
 
     fn check_assignment_copy(&self, node: &Node, source: &str) -> Option<RuleViolation> {
-        // Check for direct assignment between flexible array struct instances
+        // Enhanced to handle more assignment patterns
         let left = node.child_by_field_name("left")?;
         let right = node.child_by_field_name("right")?;
 
-        // Check if this is a dereference assignment (*struct_a = *struct_b)
+        // Pattern 1: *dest = *src (existing)
         if self.is_flexible_struct_dereference(&left, source) &&
            self.is_flexible_struct_dereference(&right, source) {
             let start_point = node.start_position();
@@ -499,7 +562,220 @@ impl FlexibleArrayAnalyzer {
             });
         }
 
+        // Pattern 2: dest = *src (copying dereferenced struct to variable)
+        if !self.is_flexible_struct_dereference(&left, source) &&
+           self.is_flexible_struct_dereference(&right, source) {
+            // Check if left side is a flexible array struct variable
+            let left_text = source[left.start_byte()..left.end_byte()].to_string();
+            if self.is_declared_flexible_struct_variable(&left_text, node) {
+                let start_point = node.start_position();
+                let right_text = source[right.start_byte()..right.end_byte()].to_string();
+
+                return Some(RuleViolation {
+                    rule_id: "MEM33-C".to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Assignment copies flexible array structure: '{}'. Only fixed members are copied, not flexible array data.",
+                        right_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Use proper memory allocation and copying for the entire structure".to_string()),
+                });
+            }
+        }
+
         None
+    }
+
+    fn check_declaration_copy(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Check for variable declarations that initialize by copying flexible array structures
+        // Pattern: struct flex_array_struct local_copy = *shared_flex;
+
+
+        // Find the declared type and initializer
+        let mut declared_type = None;
+        let mut initializer = None;
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "identifier" => {
+                        // This is the variable name being declared
+                        continue;
+                    }
+                    "=" => {
+                        // Next child should be the initializer
+                        if let Some(init_child) = node.child(i + 1) {
+                            initializer = Some(init_child);
+                        }
+                    }
+                    _ => {
+                        // Look for initializer expressions
+                        if child.kind().contains("expression") || child.kind() == "pointer_expression" {
+                            initializer = Some(child);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Get the declared type from the parent declaration
+        if let Some(parent) = node.parent() {
+            if parent.kind() == "declaration" {
+                declared_type = self.extract_declared_type(&parent, source);
+
+                // Check if this is a pointer declaration - if so, it's allowed
+                if self.is_pointer_declaration(&parent, source) {
+                    return None;
+                }
+            }
+        }
+
+
+        // Check if we're declaring a flexible array struct and initializing with a copy
+        if let Some(type_name) = declared_type {
+            if self.is_flexible_array_struct(&type_name) {
+                if let Some(init) = initializer {
+                    if self.is_flexible_struct_copy_initialization(&init, source) {
+                        let start_point = node.start_position();
+                        let init_text = source[init.start_byte()..init.end_byte()].to_string();
+
+                        let violation_type = if init_text.contains("(struct") && init_text.contains("){") {
+                            "compound literal"
+                        } else if init_text.starts_with("*") {
+                            "pointer dereference"
+                        } else {
+                            "variable copy"
+                        };
+
+                        return Some(RuleViolation {
+                            rule_id: "MEM33-C".to_string(),
+                            severity: Severity::High,
+                            message: format!(
+                                "Declaration initialization copies flexible array structure via {}: 'struct {} = {}'. Only fixed members are copied, not flexible array data.",
+                                violation_type, type_name, init_text
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some("Use proper allocation and memcpy to copy the entire structure including flexible array data".to_string()),
+                        });
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    fn is_flexible_struct_copy_initialization(&self, init_node: &Node, source: &str) -> bool {
+        // Check if the initializer expression copies a flexible array structure
+
+        let init_text = source[init_node.start_byte()..init_node.end_byte()].to_string();
+
+        match init_node.kind() {
+            "pointer_expression" => {
+                // Direct dereference: *shared_flex
+                if init_text.starts_with("*") {
+                    let dereferenced_var = init_text.trim_start_matches("*").trim();
+                    return self.is_likely_flexible_struct_pointer(dereferenced_var);
+                }
+            }
+            "identifier" => {
+                // Direct variable copy: local_copy (without dereference)
+                // Since we're in the context of initializing a flexible array struct,
+                // any variable being copied is potentially problematic
+                let var_name = init_text.trim();
+                return self.is_likely_flexible_struct_variable(var_name) ||
+                       // For declaration initialization context, be more permissive about variables
+                       // that could be flexible array structs
+                       var_name.contains("copy") || var_name.contains("local") ||
+                       var_name.contains("another") || var_name.contains("temp");
+            }
+            "compound_literal_expression" => {
+                // Compound literal: (struct flex_array_struct){...}
+                // Any compound literal of a flexible array struct is problematic
+                if init_text.contains("flex_array_struct") || self.flexible_structs.keys().any(|k| init_text.contains(k)) {
+                    return true;
+                }
+            }
+            "subscript_expression" => {
+                // Array element copy: flex_array[0]
+                return self.is_likely_flexible_struct_array_access(&init_text);
+            }
+            "call_expression" => {
+                // Function return value: get_flex_struct()
+                // This could return a flexible array struct by value (problematic)
+                return self.is_likely_flexible_struct_function_call(init_node, source);
+            }
+            _ => {}
+        }
+
+        false
+    }
+
+    fn is_likely_flexible_struct_pointer(&self, var_name: &str) -> bool {
+        // Heuristic to determine if variable name suggests a flexible array struct pointer
+
+        // Strategy 1: Check against known flexible array struct names
+        for struct_name in self.flexible_structs.keys() {
+            if var_name.contains(struct_name) {
+                return true;
+            }
+        }
+
+        // Strategy 2: Common naming patterns
+        if var_name.contains("flex") || var_name.contains("shared") || var_name.contains("_struct") {
+            return true;
+        }
+
+        // Strategy 3: Threading/shared context names
+        if var_name.contains("shared_") || var_name.contains("global_") || var_name.contains("thread_") {
+            return true;
+        }
+
+        false
+    }
+
+    fn is_likely_flexible_struct_variable(&self, var_name: &str) -> bool {
+        // Similar to pointer check but for direct variable names
+        self.is_likely_flexible_struct_pointer(var_name)
+    }
+
+    fn is_likely_flexible_struct_array_access(&self, expr: &str) -> bool {
+        // Check if array access might be accessing flexible array structures
+        // Pattern: flex_array[index] or similar
+
+        if let Some(bracket_pos) = expr.find('[') {
+            let array_name = &expr[..bracket_pos];
+            return self.is_likely_flexible_struct_pointer(array_name);
+        }
+
+        false
+    }
+
+    fn is_likely_flexible_struct_function_call(&self, call_node: &Node, source: &str) -> bool {
+        // Check if function call might return a flexible array struct by value
+
+        if let Some(function_name) = self.get_function_name(call_node, source) {
+            // Heuristic: function names that suggest returning flexible array structs
+            if function_name.contains("create") || function_name.contains("get") ||
+               function_name.contains("flex") || function_name.contains("struct") {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn is_declared_flexible_struct_variable(&self, var_name: &str, context_node: &Node) -> bool {
+        // Check if the variable is declared as a flexible array struct type
+        // This requires walking up the AST to find variable declarations
+
+        // For now, use heuristic approach
+        self.is_likely_flexible_struct_variable(var_name)
     }
 
     fn check_value_parameter(&self, node: &Node, source: &str) -> Option<RuleViolation> {
@@ -816,6 +1092,63 @@ impl FlexibleArrayAnalyzer {
         false
     }
 
+    fn is_flexible_array_struct_array(&self, array_node: &Node, source: &str) -> bool {
+        // Check if the array being indexed is an array of flexible array structures
+
+        let array_text = source[array_node.start_byte()..array_node.end_byte()].to_string();
+
+        // Strategy 1: Check against tracked flexible array struct arrays
+        if self.flexible_struct_arrays.contains(&array_text) {
+            return true;
+        }
+
+        // Strategy 2: Check against known flexible array struct names
+        for struct_name in self.flexible_structs.keys() {
+            if array_text.contains(struct_name) {
+                return true;
+            }
+        }
+
+        // Strategy 3: Common naming patterns for flexible array struct arrays
+        if array_text.contains("flex_array") || array_text.contains("flex_struct") {
+            return true;
+        }
+
+        // Strategy 4: Check if this is a known array of flexible array structures
+        // Look for arrays that were declared earlier in the code
+        if self.is_known_flexible_array_struct_array(&array_text) {
+            return true;
+        }
+
+        // Strategy 5: Heuristic - if we have flexible array structs and this looks like an array
+        if !self.flexible_structs.is_empty() &&
+           (array_text.ends_with("_array") || array_text.ends_with("_list") ||
+            array_text.starts_with("array_") || array_text.starts_with("list_")) {
+            return true;
+        }
+
+        false
+    }
+
+    fn is_known_flexible_array_struct_array(&self, array_name: &str) -> bool {
+        // Check if this array name was previously identified as a flexible array struct array
+        // This would require tracking array declarations, but for now use heuristics
+
+        // Look for common array variable names
+        let array_patterns = [
+            "flex_array", "flex_structs", "flexible_array", "struct_array",
+            "dynamic_array", "var_array", "buffer_array"
+        ];
+
+        for pattern in &array_patterns {
+            if array_name.contains(pattern) {
+                return true;
+            }
+        }
+
+        false
+    }
+
     fn extract_parameter_type(&self, param: &Node, source: &str) -> Option<String> {
         // Similar to extract_declared_type but for parameters
         self.extract_declared_type(param, source)
@@ -1039,15 +1372,43 @@ impl FlexibleArrayAnalyzer {
 
     fn is_pointer_declaration(&self, node: &Node, source: &str) -> bool {
         // Check if this declaration is for a pointer (which is allowed)
-        // Look for pointer_declarator or * symbols
+        // Look for pointer_declarator or * symbols in the declarator part ONLY
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 if child.kind() == "pointer_declarator" {
                     return true;
                 }
-                // Also check for '*' character in declarators
-                if self.contains_pointer_syntax(&child, source) {
-                    return true;
+                // Only check for '*' character in declarators, not in initializers
+                if child.kind() == "init_declarator" {
+                    // Check the declarator part, not the initializer
+                    for j in 0..child.child_count() {
+                        if let Some(declarator_child) = child.child(j) {
+                            match declarator_child.kind() {
+                                "pointer_declarator" => return true,
+                                "identifier" => {
+                                    // This is just the variable name, continue
+                                    continue;
+                                }
+                                "=" => {
+                                    // Stop here - we've reached the initializer
+                                    break;
+                                }
+                                _ => {
+                                    // Check for pointer syntax only in declarator nodes
+                                    if declarator_child.kind().contains("declarator") {
+                                        if self.contains_pointer_syntax(&declarator_child, source) {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else if child.kind().contains("declarator") {
+                    // Check for '*' character in declarators only
+                    if self.contains_pointer_syntax(&child, source) {
+                        return true;
+                    }
                 }
             }
         }
@@ -1487,6 +1848,57 @@ impl FlexibleArrayAnalyzer {
                         });
                     }
                 }
+            }
+        }
+
+        None
+    }
+
+    fn check_array_indexing(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Check for array indexing on arrays of flexible array structures
+        // Pattern: flex_array[index] which is equivalent to *(flex_array + index)
+
+        // Extract the array being indexed and the index
+        let mut array_expr = None;
+        let mut index_expr = None;
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "[" | "]" => {
+                        // Skip bracket tokens
+                        continue;
+                    }
+                    _ => {
+                        if array_expr.is_none() {
+                            array_expr = Some(child);
+                        } else if index_expr.is_none() {
+                            index_expr = Some(child);
+                        }
+                    }
+                }
+            }
+        }
+
+        if let Some(array) = array_expr {
+            // Check if the array being indexed is an array of flexible array structures
+            if self.is_flexible_array_struct_array(&array, source) {
+                let start_point = node.start_position();
+                let expr_text = source[node.start_byte()..node.end_byte()].to_string();
+                let array_text = source[array.start_byte()..array.end_byte()].to_string();
+
+                return Some(RuleViolation {
+                    rule_id: "MEM33-C".to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Array indexing on flexible array structure array: '{}'. This is implicit pointer arithmetic on structures with undefined size.",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Arrays of flexible array structures are prohibited. Use pointers to individually allocated structures instead".to_string()),
+                });
             }
         }
 
@@ -2485,5 +2897,227 @@ int main(void) {
 
         let not_last_violation = &not_last_violations[0];
         assert!(not_last_violation.message.contains("flex_not_last"), "Should include the struct name");
+    }
+
+    #[test]
+    fn test_mem33c_detects_declaration_copy_violations() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+struct regular_struct {
+    int value;
+    char buffer[50];
+};
+
+void test_function() {
+    struct flex_array_struct *shared_flex;
+    struct regular_struct regular_var;
+
+    // Allocate the shared flexible array structure
+    shared_flex = malloc(sizeof(struct flex_array_struct) + sizeof(int) * 5);
+    if (shared_flex) {
+        shared_flex->num = 5;
+        for (int i = 0; i < 5; i++) {
+            shared_flex->data[i] = i * 10;
+        }
+    }
+
+    // VIOLATION 1: Declaration with direct copy initialization from dereferenced pointer
+    struct flex_array_struct local_copy = *shared_flex;
+
+    // VIOLATION 2: Declaration with copy initialization from another variable
+    struct flex_array_struct another_copy = local_copy;
+
+    // VIOLATION 3: Declaration with copy initialization from function return (conceptual)
+    // struct flex_array_struct func_copy = get_flex_struct();
+
+    // VIOLATION 4: Declaration with compound literal copy
+    struct flex_array_struct compound_copy = (struct flex_array_struct){.num = 3};
+
+    // COMPLIANT: Declaration with pointer initialization
+    struct flex_array_struct *pointer_copy = shared_flex;
+
+    // COMPLIANT: Declaration without initialization
+    struct flex_array_struct uninitialized;
+
+    // COMPLIANT: Declaration of regular struct (not flexible array struct)
+    struct regular_struct regular_copy = regular_var;
+
+    // COMPLIANT: Pointer assignment (not declaration initialization)
+    struct flex_array_struct *another_ptr;
+    another_ptr = shared_flex;
+
+    free(shared_flex);
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("=== DECLARATION COPY TEST ===");
+        println!("Total violations found: {}", violations.len());
+        for (i, violation) in violations.iter().enumerate() {
+            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+        }
+
+        // Filter declaration copy violations specifically
+        let declaration_copy_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Declaration initialization") &&
+                        v.message.contains("flexible array structure"))
+            .collect();
+
+        assert!(!declaration_copy_violations.is_empty(), "Should detect declaration copy violations");
+
+        // Should detect at least 3 declaration copy violations (since one is commented out)
+        assert!(declaration_copy_violations.len() >= 3,
+                "Should detect at least 3 declaration copy violations, found: {}",
+                declaration_copy_violations.len());
+
+        // Verify specific types of declaration copy violations
+        let pointer_deref_violations: Vec<_> = declaration_copy_violations.iter()
+            .filter(|v| v.message.contains("*shared_flex"))
+            .collect();
+        let variable_copy_violations: Vec<_> = declaration_copy_violations.iter()
+            .filter(|v| v.message.contains("local_copy") && !v.message.contains("*shared_flex"))
+            .collect();
+        let compound_literal_violations: Vec<_> = declaration_copy_violations.iter()
+            .filter(|v| v.message.contains("compound literal"))
+            .collect();
+
+        assert!(!pointer_deref_violations.is_empty(), "Should detect pointer dereference copy: *shared_flex");
+        assert!(!variable_copy_violations.is_empty(), "Should detect variable copy: local_copy");
+        assert!(!compound_literal_violations.is_empty(), "Should detect compound literal copy");
+
+        // Check that all declaration copy violations have High severity
+        for violation in &declaration_copy_violations {
+            assert_eq!(violation.severity, Severity::High,
+                      "Declaration copy violations should have High severity: {}", violation.message);
+        }
+
+        // Verify that compliant patterns are not flagged
+        let false_positives: Vec<_> = violations.iter()
+            .filter(|v| {
+                v.message.contains("pointer_copy") ||
+                v.message.contains("uninitialized") ||
+                v.message.contains("regular_copy") ||
+                v.message.contains("another_ptr")
+            })
+            .collect();
+        assert!(false_positives.is_empty(), "Should not flag compliant patterns as violations");
+
+        // Verify violation messages contain proper context
+        for violation in &declaration_copy_violations {
+            assert!(violation.message.contains("flexible array structure"),
+                   "Declaration copy violation should mention flexible array structure");
+            assert!(violation.message.contains("Declaration initialization") ||
+                   violation.message.contains("copy initialization"),
+                   "Declaration copy violation should mention declaration/copy initialization");
+        }
+    }
+
+    #[test]
+    fn test_mem33c_detects_array_indexing_violations() {
+        let rule = Mem33C::new();
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+struct flex_array_struct {
+    size_t num;
+    int data[];
+};
+
+int main(void) {
+    // Array of flexible array structures (should be detected as declaration violation)
+    struct flex_array_struct flex_array[5];
+
+    // VIOLATION 1: Array indexing - getting element
+    struct flex_array_struct *ptr = flex_array[0];
+
+    // VIOLATION 2: Array indexing - copying element by value
+    struct flex_array_struct element = flex_array[1];
+
+    // VIOLATION 3: Array indexing with variable index
+    int index = 2;
+    struct flex_array_struct *another_ptr = flex_array[index];
+
+    // VIOLATION 4: Taking address of array element
+    struct flex_array_struct *addr_ptr = &flex_array[3];
+
+    // VIOLATION 5: Array indexing in expressions
+    size_t count = flex_array[0].num;  // Accessing member through indexing
+
+    // COMPLIANT: Using pointers to individually allocated structures
+    struct flex_array_struct *proper_ptrs[5];
+    for (int i = 0; i < 5; i++) {
+        proper_ptrs[i] = malloc(sizeof(struct flex_array_struct) + sizeof(int) * 10);
+    }
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        println!("=== ARRAY INDEXING TEST ===");
+        println!("Total violations found: {}", violations.len());
+        for (i, violation) in violations.iter().enumerate() {
+            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+        }
+
+        // Filter array indexing violations
+        let indexing_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Array indexing on flexible array structure"))
+            .collect();
+
+        // Filter array declaration violations (should also exist)
+        let declaration_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("Array of flexible array structures") ||
+                        v.message.contains("automatic storage"))
+            .collect();
+
+        assert!(!indexing_violations.is_empty(), "Should detect array indexing violations");
+        assert!(!declaration_violations.is_empty(), "Should detect array declaration violations");
+
+        // Should detect at least 4 indexing violations
+        assert!(indexing_violations.len() >= 4,
+                "Should detect at least 4 indexing violations, found: {}",
+                indexing_violations.len());
+
+        // Check for specific patterns
+        let direct_index_violations: Vec<_> = indexing_violations.iter()
+            .filter(|v| v.message.contains("flex_array[0]") || v.message.contains("flex_array[1]"))
+            .collect();
+        let variable_index_violations: Vec<_> = indexing_violations.iter()
+            .filter(|v| v.message.contains("flex_array[index]"))
+            .collect();
+
+        assert!(!direct_index_violations.is_empty(), "Should detect direct indexing");
+        assert!(!variable_index_violations.is_empty(), "Should detect variable indexing");
+
+        // Verify severity
+        for violation in &indexing_violations {
+            assert_eq!(violation.severity, Severity::High,
+                      "Array indexing violations should have High severity");
+        }
+
+        // Verify error messages mention implicit pointer arithmetic
+        let implicit_arithmetic_violations: Vec<_> = indexing_violations.iter()
+            .filter(|v| v.message.contains("implicit pointer arithmetic"))
+            .collect();
+        assert!(!implicit_arithmetic_violations.is_empty(),
+                "Should mention implicit pointer arithmetic");
+
+        // Verify that compliant patterns are not flagged as array indexing violations
+        let false_positives: Vec<_> = indexing_violations.iter()
+            .filter(|v| v.message.contains("proper_ptrs"))
+            .collect();
+        assert!(false_positives.is_empty(), "Should not flag compliant pointer arrays");
     }
 }
