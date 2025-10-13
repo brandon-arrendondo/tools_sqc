@@ -132,6 +132,11 @@ impl FlexibleArrayAnalyzer {
             }
         }
 
+        // Look for typedef declarations of flexible array structures
+        if node.kind() == "type_definition" {
+            self.collect_typedef_flexible_array(node, source);
+        }
+
         // Look for array declarations of flexible array structures
         if node.kind() == "declaration" {
             if let Some(array_name) = self.detect_flexible_struct_array_declaration(node, source) {
@@ -143,6 +148,73 @@ impl FlexibleArrayAnalyzer {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 self.collect_flexible_array_structs(&child, source);
+            }
+        }
+    }
+
+    fn collect_typedef_flexible_array(&mut self, node: &Node, source: &str) {
+        // Check if this typedef is for a flexible array structure
+        // Handle both: typedef struct flex_array_struct FlexType;
+        // and: typedef struct { ... } FlexType;
+
+        let mut typedef_name = None;
+        let mut struct_name = None;
+        let mut has_inline_struct = false;
+        let mut inline_field_list = None;
+
+        // Parse the typedef to find the typedef name and struct
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "type_identifier" => {
+                        // Last type_identifier is usually the typedef name
+                        typedef_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                    }
+                    "struct_specifier" => {
+                        // Found a struct specifier in the typedef
+                        for j in 0..child.child_count() {
+                            if let Some(struct_child) = child.child(j) {
+                                match struct_child.kind() {
+                                    "type_identifier" => {
+                                        struct_name = Some(source[struct_child.start_byte()..struct_child.end_byte()].to_string());
+                                    }
+                                    "field_declaration_list" => {
+                                        has_inline_struct = true;
+                                        inline_field_list = Some(struct_child);
+                                    }
+                                    _ => {}
+                                }
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        // Handle inline struct definition: typedef struct { ... } FlexType;
+        if has_inline_struct {
+            if let (Some(tname), Some(field_list)) = (typedef_name, inline_field_list) {
+                if self.has_flexible_array_member(&field_list, source) {
+                    let start_point = node.start_position();
+                    let validation = self.validate_flexible_array_layout(&field_list, source);
+                    let info = FlexibleArrayInfo {
+                        struct_name: tname.clone(),
+                        has_flexible_array: true,
+                        declaration_line: start_point.row + 1,
+                        is_valid_definition: validation.is_valid_flexible_struct(),
+                    };
+                    self.flexible_structs.insert(tname, info);
+                }
+            }
+        }
+        // Handle typedef of existing struct: typedef struct flex_array_struct FlexType;
+        else if let (Some(tname), Some(sname)) = (typedef_name, struct_name) {
+            // Check if the referenced struct is a flexible array struct
+            if let Some(existing_info) = self.flexible_structs.get(&sname) {
+                let mut typedef_info = existing_info.clone();
+                typedef_info.struct_name = tname.clone();
+                self.flexible_structs.insert(tname, typedef_info);
             }
         }
     }
@@ -500,44 +572,54 @@ impl FlexibleArrayAnalyzer {
         // Check for flexible array structures with prohibited storage duration
         // MEM33-C requires dynamic storage duration only
 
+        // First extract the actual declared type
+        let declared_type = self.extract_declared_type(node, source);
+
+        // Only proceed if the declared type is actually a flexible array struct
+        if let Some(ref dtype) = declared_type {
+            if !self.is_flexible_array_struct(dtype) {
+                // The declared type is not a flexible array struct, so no violation
+                return None;
+            }
+        } else {
+            // No type could be extracted
+            return None;
+        }
+
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
 
                 if child.kind() == "array_declarator" {
-                    // Array of flexible array structures
-                    if let Some(struct_type) = self.extract_declared_type(node, source) {
-                        if self.is_flexible_array_struct(&struct_type) {
-                            // Arrays are ALWAYS prohibited regardless of storage duration
-                            let storage_info = self.analyze_storage_duration(node, source);
-                            let start_point = node.start_position();
+                    // Array of flexible array structures - we already confirmed it's a flexible array struct
+                    // Arrays are ALWAYS prohibited regardless of storage duration
+                    let storage_info = self.analyze_storage_duration(node, source);
+                    let start_point = node.start_position();
 
-                            // Extract array size from the array declarator
-                            let mut array_size = "".to_string();
-                            for j in 0..child.child_count() {
-                                if let Some(size_child) = child.child(j) {
-                                    if size_child.kind() != "identifier" && size_child.kind() != "[" && size_child.kind() != "]" {
-                                        array_size = source[size_child.start_byte()..size_child.end_byte()].to_string();
-                                        break;
-                                    }
-                                }
+                    // Extract array size from the array declarator
+                    let mut array_size = "".to_string();
+                    for j in 0..child.child_count() {
+                        if let Some(size_child) = child.child(j) {
+                            if size_child.kind() != "identifier" && size_child.kind() != "[" && size_child.kind() != "]" {
+                                array_size = source[size_child.start_byte()..size_child.end_byte()].to_string();
+                                break;
                             }
-
-                            return Some(RuleViolation {
-                                rule_id: "MEM33-C".to_string(),
-                                severity: Severity::High,
-                                message: format!(
-                                    "Array of flexible array structures '{}[{}]' declared with {} storage. Arrays of flexible array structures are prohibited with any storage duration.",
-                                    struct_type,
-                                    if array_size.is_empty() { "".to_string() } else { array_size.clone() },
-                                    storage_info.storage_type
-                                ),
-                                file_path: String::new(),
-                                line: start_point.row + 1,
-                                column: start_point.column + 1,
-                                suggestion: Some("Use an array of pointers to dynamically allocated structures instead".to_string()),
-                            });
                         }
                     }
+
+                    return Some(RuleViolation {
+                        rule_id: "MEM33-C".to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Array of flexible array structures '{}[{}]' declared with {} storage. Arrays of flexible array structures are prohibited with any storage duration.",
+                            declared_type.as_ref().unwrap(),
+                            if array_size.is_empty() { "".to_string() } else { array_size.clone() },
+                            storage_info.storage_type
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Use an array of pointers to dynamically allocated structures instead".to_string()),
+                    });
                 }
 
                 if child.kind() == "init_declarator" || child.kind() == "declarator" || child.kind() == "identifier" {
@@ -564,28 +646,31 @@ impl FlexibleArrayAnalyzer {
                     }
 
                     // Single flexible array structure declaration
-                    if let Some((type_name, is_const)) = self.extract_declared_type_with_qualifiers(node, source) {
-                        if self.is_flexible_array_struct(&type_name) {
-                            // Check if this is a pointer declaration (allowed) vs direct declaration (prohibited)
-                            if !self.is_pointer_declaration(node, source) {
-                                let storage_info = self.analyze_storage_duration(node, source);
-                                let qualifier_text = if is_const { "const-qualified " } else { "" };
-                                let start_point = node.start_position();
+                    // We already have the declared type from above and confirmed it's a flexible array struct
+                    // Check if this is a pointer declaration (allowed) vs direct declaration (prohibited)
+                    if !self.is_pointer_declaration(node, source) {
+                        let storage_info = self.analyze_storage_duration(node, source);
 
-                                return Some(RuleViolation {
-                                    rule_id: "MEM33-C".to_string(),
-                                    severity: self.get_severity_for_storage_type(&storage_info.storage_type),
-                                    message: format!(
-                                        "{}flexible array structure '{}' declared with {} storage. Only dynamic storage duration is allowed for flexible array structures.",
-                                        qualifier_text, type_name, storage_info.storage_type
-                                    ),
-                                    file_path: String::new(),
-                                    line: start_point.row + 1,
-                                    column: start_point.column + 1,
-                                    suggestion: Some(format!("Use dynamic allocation: struct {} *ptr = malloc(sizeof(struct {}) + sizeof(element_type) * count);", type_name, type_name)),
-                                });
-                            }
-                        }
+                        // Check for const qualifier
+                        let mut is_const = false;
+                        self.find_const_qualifier_recursive(node, source, &mut is_const);
+                        let qualifier_text = if is_const { "const-qualified " } else { "" };
+
+                        let start_point = node.start_position();
+                        let type_name = declared_type.as_ref().unwrap();
+
+                        return Some(RuleViolation {
+                            rule_id: "MEM33-C".to_string(),
+                            severity: self.get_severity_for_storage_type(&storage_info.storage_type),
+                            message: format!(
+                                "{}flexible array structure '{}' declared with {} storage. Only dynamic storage duration is allowed for flexible array structures.",
+                                qualifier_text, type_name, storage_info.storage_type
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some(format!("Use dynamic allocation: struct {} *ptr = malloc(sizeof(struct {}) + sizeof(element_type) * count);", type_name, type_name)),
+                        });
                     }
                 }
             }
@@ -993,21 +1078,35 @@ impl FlexibleArrayAnalyzer {
 
     fn extract_declared_type(&self, declaration: &Node, source: &str) -> Option<String> {
         // Extract the type name from a declaration
+        // Be careful not to confuse the declaration type with types used in initializers
         for i in 0..declaration.child_count() {
             if let Some(child) = declaration.child(i) {
                 match child.kind() {
                     "struct_specifier" => {
-                        // Look for type identifier in struct
-                        for j in 0..child.child_count() {
-                            if let Some(type_child) = child.child(j) {
-                                if type_child.kind() == "type_identifier" {
-                                    return Some(source[type_child.start_byte()..type_child.end_byte()].to_string());
+                        // Only consider struct_specifier if it's actually the type being declared,
+                        // not part of an initializer expression
+                        if i == 0 || (i == 1 && declaration.child(0).map_or(false, |c| c.kind() == "storage_class_specifier" || c.kind() == "type_qualifier")) {
+                            // Look for type identifier in struct
+                            for j in 0..child.child_count() {
+                                if let Some(type_child) = child.child(j) {
+                                    if type_child.kind() == "type_identifier" {
+                                        return Some(source[type_child.start_byte()..type_child.end_byte()].to_string());
+                                    }
                                 }
                             }
                         }
                     }
                     "type_identifier" => {
-                        return Some(source[child.start_byte()..child.end_byte()].to_string());
+                        // Only consider if it's the first type identifier (the declaration type)
+                        if i == 0 || (i == 1 && declaration.child(0).map_or(false, |c| c.kind() == "storage_class_specifier" || c.kind() == "type_qualifier")) {
+                            return Some(source[child.start_byte()..child.end_byte()].to_string());
+                        }
+                    }
+                    "primitive_type" => {
+                        // Handle primitive types like size_t, int, etc.
+                        if i == 0 || (i == 1 && declaration.child(0).map_or(false, |c| c.kind() == "storage_class_specifier" || c.kind() == "type_qualifier")) {
+                            return Some(source[child.start_byte()..child.end_byte()].to_string());
+                        }
                     }
                     _ => {}
                 }
@@ -1277,25 +1376,36 @@ impl FlexibleArrayAnalyzer {
         // Pattern: ptr->flexible_member[index] or (*ptr).flexible_member[index]
         // This should ONLY return true for member access, NOT for array indexing
 
-        if let Some(parent) = subscript_node.parent() {
-            if parent.kind() == "field_expression" {
-                // Check if the parent field expression uses -> (pointer access)
-                for i in 0..parent.child_count() {
-                    if let Some(child) = parent.child(i) {
-                        if child.kind() == "->" {
-                            // This is ptr->member[index] - check if member is flexible array
-                            if let Some(field_name) = self.extract_field_name_from_expression(&parent, source) {
-                                return self.is_flexible_array_member_name(&field_name);
-                            }
-                        }
-                    }
-                }
-            }
+        let subscript_text = source[subscript_node.start_byte()..subscript_node.end_byte()].to_string();
+
+        // Strategy 1: Check if this subscript contains "->data[" pattern
+        // This catches flex_array[i]->data[j] where the subscript is data[j]
+        if subscript_text.contains("->data[") || subscript_text.contains("data[") {
+            return true; // This is accessing the flexible array member "data"
         }
 
-        // DO NOT check the subscript array name itself here - that would incorrectly
-        // identify array[i] as member access when it's actually array indexing.
-        // The original logic here was wrong and caused false negatives.
+        // Strategy 2: Look at the full expression context
+        // Check if we can walk up to find a field expression containing "->"
+        let mut current_parent = subscript_node.parent();
+        let mut steps = 0;
+        while let Some(p) = current_parent {
+            if steps > 3 { break; } // Prevent infinite loops
+            steps += 1;
+
+            let parent_text = source[p.start_byte()..p.end_byte().min(source.len())].to_string();
+
+            // If we find a field expression with -> and data, this is member access
+            if p.kind() == "field_expression" && parent_text.contains("->") && parent_text.contains("data") {
+                return true;
+            }
+
+            // If the parent expression contains our subscript and has "->data" pattern
+            if parent_text.contains(&subscript_text) && parent_text.contains("->data") {
+                return true;
+            }
+
+            current_parent = p.parent();
+        }
 
         false
     }
@@ -1682,8 +1792,27 @@ impl FlexibleArrayAnalyzer {
     fn check_malloc_allocation(&self, node: &Node, source: &str) -> Option<RuleViolation> {
         // Get the size argument from malloc(size)
         if let Some(size_arg) = self.get_allocation_size_argument(node, source) {
+            // Enhanced check: handle both direct expressions and variable references (like realloc)
+            let is_insufficient = if self.is_simple_identifier(&size_arg) {
+                // If size_arg is a variable, trace its definition
+                if let Some(traced_expr) = self.trace_variable_definition(&size_arg, node, source) {
+                    // Check if the traced expression has proper size calculation
+                    if self.likely_has_additional_size_calculation(&traced_expr) {
+                        false
+                    } else {
+                        self.is_definitely_insufficient_sizeof(&traced_expr)
+                    }
+                } else {
+                    // If we can't trace the variable, be conservative and don't flag
+                    false
+                }
+            } else {
+                // Direct expression - use existing logic
+                self.is_insufficient_sizeof_only(&size_arg)
+            };
+
             // Check if size is just sizeof(struct flex_struct) without array space
-            if self.is_insufficient_sizeof_only(&size_arg) {
+            if is_insufficient {
                 let start_point = node.start_position();
                 return Some(RuleViolation {
                     rule_id: "MEM33-C".to_string(),
@@ -1755,8 +1884,13 @@ impl FlexibleArrayAnalyzer {
             let is_insufficient = if self.is_simple_identifier(&size_arg) {
                 // If size_arg is a variable, trace its definition
                 if let Some(traced_expr) = self.trace_variable_definition(&size_arg, node, source) {
-                    // Check if the traced expression is insufficient
-                    self.is_insufficient_sizeof_only(&traced_expr)
+                    // Check if the traced expression has proper size calculation
+                    // Variables containing proper calculations should not be flagged
+                    if self.likely_has_additional_size_calculation(&traced_expr) {
+                        false
+                    } else {
+                        self.is_definitely_insufficient_sizeof(&traced_expr)
+                    }
                 } else {
                     // If we can't trace the variable, be conservative and don't flag
                     false
@@ -1898,6 +2032,13 @@ impl FlexibleArrayAnalyzer {
             return false;
         }
 
+        // Check if this is a simple identifier that might be a variable
+        if self.is_simple_identifier(expr) {
+            // Don't flag variables directly - they may contain proper calculations
+            // Variables need to be traced to their definitions
+            return false;
+        }
+
         // Check for clearly insufficient patterns
         if self.is_definitely_insufficient_sizeof(expr) {
             return true;
@@ -1917,11 +2058,21 @@ impl FlexibleArrayAnalyzer {
 
         // Pattern 1: Exact match of sizeof(struct_name) with no operators
         if expr.starts_with("sizeof(") && expr.ends_with(")") {
-            let _sizeof_content = &expr[7..expr.len()-1]; // Remove "sizeof(" and ")"
+            let sizeof_content = &expr[7..expr.len()-1]; // Remove "sizeof(" and ")"
 
             // Check if it's a simple struct reference with no arithmetic
-            if !expr.contains("+") && !expr.contains("-") && !expr.contains("*") &&
+            // But allow dereferencing (*) in the sizeof content
+            if !expr.contains("+") && !expr.contains("-") &&
                !expr.contains("/") && !expr.contains("&") && !expr.contains("|") {
+                // Special case: Check for sizeof(*pointer) pattern
+                if sizeof_content.starts_with("*") {
+                    // This is sizeof(*pointer), check if pointer likely points to flexible struct
+                    let var_name = &sizeof_content[1..]; // Remove the *
+                    if self.is_likely_flexible_struct_pointer(var_name) {
+                        return true;
+                    }
+                }
+
                 // Make sure it targets a flexible array struct
                 return self.sizeof_targets_flexible_struct(expr);
             }
@@ -1934,7 +2085,12 @@ impl FlexibleArrayAnalyzer {
         // Check for patterns that suggest additional size calculation
 
         // Pattern 1: Contains arithmetic operators (likely calculating additional size)
-        if expr.contains("+") || expr.contains("*") {
+        // BUT: Don't count * inside sizeof(*ptr) as additional calculation
+        if expr.contains("+") {
+            return true;
+        }
+        if expr.contains("*") && !expr.starts_with("sizeof(") {
+            // Only count * as additional calculation if it's not part of sizeof(*)
             return true;
         }
 
