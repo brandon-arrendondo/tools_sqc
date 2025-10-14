@@ -252,6 +252,10 @@ impl Str31C {
 
         // If we have destination name, try to find its size
         if let Some(dest) = dest_name {
+            // NEW: Check if destination was previously freed
+            if self.was_buffer_freed(dest, source) {
+                return false; // Always unsafe to use freed memory
+            }
             // Check if this strcpy/strcat happens after a realloc with proper size calculation
             if self.has_prior_safe_realloc(dest, source) {
                 return true; // Safe due to prior reallocation
@@ -375,25 +379,32 @@ impl Str31C {
 
         // If we have destination name, try to find its size
         if let Some(dest) = dest_name {
+            // Check if destination was previously freed
+            if self.was_buffer_freed(dest, source) {
+                return false; // Always unsafe to use freed memory
+            }
             // Check if this strcat happens after a realloc with proper size calculation
             if self.has_prior_safe_realloc(dest, source) {
                 return true; // Safe due to prior reallocation
             }
 
             if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
-                // For strcat_safe.c: result[20] should be safe for "Hello" + " World"
+                // For buffers >= 20, analyze the concatenation more carefully
                 if buffer_size >= 20 {
-                    // Check the actual strcat line for safe patterns
-                    let call_line = self.find_line_containing_call("strcat", dest, source);
+                    // ENHANCED: Estimate total string length after concatenation
+                    if let Some(total_length) = self.estimate_strcat_total_length(dest, arguments, source) {
+                        if buffer_size > total_length {
+                            return true; // Safe concatenation
+                        }
+                    }
 
-                    // Known safe patterns: short string literals
-                    if call_line.contains("\"Hello\"") || call_line.contains("\" World\"") ||
-                       call_line.contains("\"second\"") {
-                        return true; // Safe concatenation of short literals
+                    // Fallback: if we can't estimate but buffer is reasonably large
+                    if buffer_size >= 50 {
+                        return true; // Conservative: assume safe for large buffers
                     }
                 }
 
-                // Very large buffers are safe
+                // Very large buffers are always safe
                 if buffer_size >= 256 {
                     return true;
                 }
@@ -571,6 +582,38 @@ impl Str31C {
         true
     }
 
+    /// Check if a buffer was previously freed
+    fn was_buffer_freed(&self, var_name: &str, source: &str) -> bool {
+        let lines: Vec<&str> = source.lines().collect();
+        let mut was_freed = false;
+        let mut freed_line_num = 0;
+        let mut current_line_num = 0;
+
+        for (idx, line) in lines.iter().enumerate() {
+            current_line_num = idx + 1;
+
+            // Look for free(var_name)
+            if line.contains("free") && line.contains(var_name) {
+                let pattern = format!(r"free\s*\(\s*{}\s*\)", regex::escape(var_name));
+                if let Ok(re) = regex::Regex::new(&pattern) {
+                    if re.is_match(line) {
+                        was_freed = true;
+                        freed_line_num = current_line_num;
+                    }
+                }
+            }
+
+            // If we see strcpy/strcat after free, it's a violation
+            if was_freed && current_line_num > freed_line_num &&
+               (line.contains("strcpy") || line.contains("strcat")) &&
+               line.contains(var_name) {
+                return true; // Found use after free
+            }
+        }
+
+        false
+    }
+
     /// Check if memcpy is being used for string operations (dangerous)
     fn is_string_memcpy(&self, arguments: &Node, source: &str, root: &Node) -> bool {
         // Extract arguments to see if this looks like string copying
@@ -620,6 +663,202 @@ impl Str31C {
         };
 
         !full_line.is_empty()
+    }
+
+    /// Find the length of string copied via strcpy to a destination variable
+    fn find_strcpy_source_length(&self, dest_var: &str, source: &str) -> usize {
+        let lines: Vec<&str> = source.lines().collect();
+        for line in lines {
+            // Look for strcpy(dest_var, source_var) patterns
+            if line.contains("strcpy") && line.contains(dest_var) {
+                // Try to extract the source variable from strcpy(dest, src)
+                if let Some(start_paren) = line.find('(') {
+                    if let Some(end_paren) = line.find(')') {
+                        if end_paren > start_paren {
+                            let args_part = &line[start_paren+1..end_paren];
+                            let parts: Vec<&str> = args_part.split(',').collect();
+                            if parts.len() == 2 {
+                                let src_part = parts[1].trim();
+                                // Get the length of the source string
+                                if let Some(length) = self.get_string_length_from_context(Some(src_part), source) {
+                                    return length;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        0
+    }
+
+    /// Check for multiple strcat operations that might cause cumulative overflow
+    fn check_sequential_strcat_overflow(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Only analyze at function scope to capture multiple strcat calls
+        if node.kind() != "function_definition" {
+            return None;
+        }
+
+        let lines: Vec<&str> = source.lines().collect();
+        let mut strcat_operations: Vec<(usize, String, String)> = Vec::new(); // (line_num, dest_var, src_var)
+
+        // First pass: collect all strcat operations in this function
+        for (line_idx, line) in lines.iter().enumerate() {
+            if line.contains("strcat") {
+                if let Some((dest, src)) = self.extract_strcat_arguments(line) {
+                    strcat_operations.push((line_idx + 1, dest, src));
+                }
+            }
+        }
+
+        // Group strcat operations by destination variable
+        let mut dest_groups: HashMap<String, Vec<(usize, String)>> = HashMap::new();
+        for (line_num, dest, src) in strcat_operations {
+            dest_groups.entry(dest).or_insert_with(Vec::new).push((line_num, src));
+        }
+
+        // Analyze each destination for cumulative overflow
+        for (dest_var, operations) in dest_groups {
+            if operations.len() > 1 { // Multiple strcat operations on same variable
+                if let Some(violation) = self.analyze_cumulative_strcat(&dest_var, &operations, source) {
+                    return Some(violation);
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Extract destination and source from strcat line
+    fn extract_strcat_arguments(&self, line: &str) -> Option<(String, String)> {
+        // Parse: strcat(dest, src);
+        if let Some(start_paren) = line.find("strcat(") {
+            let start = start_paren + 7; // length of "strcat("
+            if let Some(end_paren) = line[start..].find(')') {
+                let args_part = &line[start..start + end_paren];
+                let parts: Vec<&str> = args_part.split(',').collect();
+                if parts.len() == 2 {
+                    let dest = parts[0].trim().to_string();
+                    let src = parts[1].trim().to_string();
+                    return Some((dest, src));
+                }
+            }
+        }
+        None
+    }
+
+    /// Analyze cumulative effect of multiple strcat operations
+    fn analyze_cumulative_strcat(&self, dest_var: &str, operations: &[(usize, String)], source: &str) -> Option<RuleViolation> {
+        // For multi-strcat analysis, we'll parse the source again to create a minimal node
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).expect("Error loading C grammar");
+
+        if let Some(tree) = parser.parse(&source, None) {
+            let root_node = tree.root_node();
+
+            // Get destination buffer size
+            let buffer_size = self.find_buffer_size(dest_var, &root_node, source)?;
+
+            // Start with initial buffer content
+            let mut cumulative_length = self.get_initial_buffer_content_length(dest_var, source);
+
+            // Track cumulative length after each strcat
+            for (line_num, src_var) in operations {
+                let src_length = self.get_string_length_from_context(Some(&src_var), source).unwrap_or(0);
+                cumulative_length += src_length;
+
+                // Check if this operation would cause overflow
+                if cumulative_length + 1 > buffer_size { // +1 for null terminator
+                    return Some(RuleViolation {
+                        rule_id: "STR31-C".to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Multiple strcat operations cause buffer overflow. Cumulative length {} exceeds buffer size {}",
+                            cumulative_length + 1, buffer_size
+                        ),
+                        file_path: String::new(),
+                        line: *line_num,
+                        column: 1,
+                        suggestion: Some("Use strncat with size limits or allocate larger buffer".to_string()),
+                    });
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Get initial content length of buffer (from initialization or strcpy)
+    fn get_initial_buffer_content_length(&self, var_name: &str, source: &str) -> usize {
+        let lines: Vec<&str> = source.lines().collect();
+
+        for line in &lines {
+            // Check for initialization: char buffer[20] = "Start";
+            if line.contains(var_name) && line.contains("=") && line.contains("\"") {
+                // Find the first string literal, not the last quote on the line
+                if let Some(start_quote) = line.find('"') {
+                    // Find the closing quote for this string literal, accounting for escape sequences
+                    let mut end_quote = start_quote + 1;
+                    while end_quote < line.len() {
+                        if line.chars().nth(end_quote) == Some('"') {
+                            let literal = &line[start_quote+1..end_quote];
+                            return literal.len();
+                        }
+                        if line.chars().nth(end_quote) == Some('\\') {
+                            end_quote += 2; // Skip escape sequence
+                        } else {
+                            end_quote += 1;
+                        }
+                    }
+                }
+            }
+
+            // Check for strcpy that sets initial content
+            if line.contains("strcpy") && line.contains(var_name) {
+                // This would give us the initial content from strcpy
+                return self.find_strcpy_source_length(var_name, source);
+            }
+        }
+
+        0 // Empty buffer initially
+    }
+
+    /// Estimate the total length after strcat concatenation
+    fn estimate_strcat_total_length(&self, dest_var: &str, arguments: &Node, source: &str) -> Option<usize> {
+        // Get the source argument from strcat(dest, src)
+        let mut src_arg = None;
+        let mut arg_count = 0;
+
+        for i in 0..arguments.child_count() {
+            if let Some(arg) = arguments.child(i) {
+                if arg.kind() == "identifier" && arg_count == 1 {
+                    src_arg = Some(&source[arg.start_byte()..arg.end_byte()]);
+                    break;
+                }
+                if arg.kind() != "," && arg.kind() != "(" && arg.kind() != ")" {
+                    arg_count += 1;
+                }
+            }
+        }
+
+        if let Some(src_name) = src_arg {
+            // First try to get current length from direct assignment
+            let mut dest_current_length = self.get_string_length_from_context(Some(dest_var), source).unwrap_or(0);
+
+            // If we can't find direct assignment, look for strcpy operations that may have filled the buffer
+            if dest_current_length == 0 {
+                dest_current_length = self.find_strcpy_source_length(dest_var, source);
+            }
+
+            let src_length = self.get_string_length_from_context(Some(src_name), source).unwrap_or(0);
+
+            // For strcat_safe.c: "Hello" (5) + " World" (6) + null (1) = 12
+            if dest_current_length > 0 && src_length > 0 {
+                return Some(dest_current_length + src_length + 1);
+            }
+        }
+
+        None
     }
 
     /// Check if wcstombs has sufficient buffer size
@@ -678,6 +917,11 @@ impl CertRule for Str31C {
         let mut root = node.clone();
         while let Some(parent) = root.parent() {
             root = parent;
+        }
+
+        // NEW: Check for sequential strcat overflow at function level
+        if let Some(multi_strcat_violation) = self.check_sequential_strcat_overflow(node, source) {
+            violations.push(multi_strcat_violation);
         }
 
         // Check for dangerous function calls
