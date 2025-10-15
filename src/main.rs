@@ -8,6 +8,7 @@ mod rules;
 mod manifest;
 mod utility;
 mod parser;
+mod progress;
 
 use crate::prelude::*;
 use clap::{Arg, Command};
@@ -17,6 +18,7 @@ use files::ProjectSource;
 use analyze::analyze_project;
 use export::export_all_violations;
 use analyze::handle_generate_suppression;
+use progress::CLIProgressReporter;
 
 fn main() -> Result<()> {
     let matches = Command::new("sqc")
@@ -85,9 +87,11 @@ fn main() -> Result<()> {
         println!("Analyzing {} at: {}", project_source.source_type(), path);
         println!("Using manifest: {}", manifest_path);
 
-        // Perform analysis
-        let violations = analyze_project(&project_source, &manifest)?;
-        println!("Found {} violations", violations.len());
+        // Create progress reporter for CLI
+        let progress_reporter = CLIProgressReporter::new();
+
+        // Perform analysis with progress reporting
+        let violations = analyze_project(&project_source, &manifest, Some(&progress_reporter))?;
 
         // Export to file if requested
         if let Some(export_path) = export_file {

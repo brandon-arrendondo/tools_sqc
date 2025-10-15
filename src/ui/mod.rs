@@ -24,6 +24,8 @@ use sha2::{Sha256, Digest};
 use crate::manifest::{RuleManifest, RuleConfig, Severity, RuleCategory};
 use crate::rules::{RuleRegistry, RuleViolation};
 use crate::analyze::suppression::SuppressionManager;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 
 #[derive(Clone, Copy, PartialEq)]
 enum SortMode {
@@ -138,6 +140,13 @@ pub struct TerminalUI {
     show_suppression_dialog: bool,
     suppression_summary: Vec<SuppressionSummary>,
     uncommitted_files: Vec<String>,
+    // Progress dialog fields
+    show_progress_dialog: bool,
+    progress_current_file: usize,
+    progress_total_files: usize,
+    progress_file_path: String,
+    progress_rule_id: String,
+    scan_cancellation: Arc<AtomicBool>,
 }
 
 impl TerminalUI {
@@ -184,6 +193,12 @@ impl TerminalUI {
             show_suppression_dialog: false,
             suppression_summary: Vec::new(),
             uncommitted_files: Vec::new(),
+            show_progress_dialog: false,
+            progress_current_file: 0,
+            progress_total_files: 0,
+            progress_file_path: String::new(),
+            progress_rule_id: String::new(),
+            scan_cancellation: Arc::new(AtomicBool::new(false)),
         })
     }
 
@@ -299,7 +314,17 @@ impl TerminalUI {
 
             match event::read()? {
                 Event::Key(key) => {
-                if self.show_save_dialog {
+                if self.show_progress_dialog {
+                    // Handle ESC key to cancel scan
+                    match key.code {
+                        KeyCode::Esc => {
+                            // Set cancellation flag
+                            self.scan_cancellation.store(true, Ordering::Relaxed);
+                            // Dialog will be hidden automatically when scan completes
+                        }
+                        _ => {}
+                    }
+                } else if self.show_save_dialog {
                     match key.code {
                         KeyCode::Enter => {
                             // Save the file (CSV or Excel based on extension)
@@ -459,7 +484,7 @@ impl TerminalUI {
                         KeyCode::Char('s') => {
                             // Trigger scan (only in Violations tab)
                             if self.current_tab == Tab::Violations {
-                                self.scan_repository()?;
+                                self.scan_repository(terminal)?;
                             }
                         }
                         KeyCode::Char('i') => {
@@ -653,6 +678,11 @@ impl TerminalUI {
     }
 
     fn ui(&mut self, f: &mut Frame) {
+        if self.show_progress_dialog {
+            self.render_progress_dialog(f);
+            return;
+        }
+
         if self.show_save_dialog {
             self.render_save_dialog(f);
             return;
@@ -1863,9 +1893,16 @@ impl TerminalUI {
         None
     }
 
-    fn scan_repository(&mut self) -> Result<()> {
+    fn scan_repository<B: Backend>(&mut self, terminal: &mut Terminal<B>) -> Result<()> {
         use crate::files::ProjectSource;
         use crate::parser::CParser;
+        use std::time::Duration;
+
+        // Reset cancellation flag
+        self.scan_cancellation.store(false, Ordering::Relaxed);
+
+        // Show progress dialog
+        self.show_progress_dialog = true;
 
         self.violations.clear();
         self.suppressed_violations.clear();
@@ -1874,19 +1911,68 @@ impl TerminalUI {
 
         let project_source = ProjectSource::open(&self.repo_path)?;
         let c_files = project_source.get_c_files()?;
+        let total_files = c_files.len();
         let mut parser = CParser::new()?;
 
-        for file_path in c_files {
-            if let Ok((tree, source)) = parser.parse_file(&file_path) {
+        self.progress_total_files = total_files;
+
+        for (file_idx, file_path) in c_files.iter().enumerate() {
+            // Check for cancellation before processing each file
+            if self.scan_cancellation.load(Ordering::Relaxed) {
+                break; // Exit early, keeping partial results
+            }
+
+            // Update progress state with full relative path
+            self.progress_current_file = file_idx + 1;
+            self.progress_file_path = file_path.clone();
+
+            // Redraw the UI to show progress
+            terminal.draw(|f| self.ui(f))?;
+
+            // Poll for ESC key press with very short timeout
+            if event::poll(Duration::from_millis(1))? {
+                if let Event::Key(key) = event::read()? {
+                    if key.code == KeyCode::Esc {
+                        self.scan_cancellation.store(true, Ordering::Relaxed);
+                        break;
+                    }
+                }
+            }
+
+            if let Ok((tree, source)) = parser.parse_file(file_path) {
                 let root_node = tree.root_node();
 
                 // Extract suppressions from this file
                 let mut suppression_manager = SuppressionManager::new();
-                suppression_manager.extract_from_source(&file_path, &source);
+                suppression_manager.extract_from_source(file_path, &source);
 
                 let mut file_has_violations = false;
 
-                for (rule_id, rule_config) in self.manifest.enabled_rules() {
+                // Collect enabled rules to avoid borrow checker issues with terminal.draw
+                let enabled_rules: Vec<(String, RuleConfig)> = self.manifest.enabled_rules()
+                    .map(|(id, config)| (id.clone(), config.clone()))
+                    .collect();
+
+                for (rule_id, rule_config) in &enabled_rules {
+                    // Check for cancellation between rules
+                    if self.scan_cancellation.load(Ordering::Relaxed) {
+                        break;
+                    }
+
+                    // Update current rule being checked
+                    self.progress_rule_id = rule_id.to_string();
+
+                    // Redraw UI and poll for ESC key during rule checking for better responsiveness
+                    terminal.draw(|f| self.ui(f))?;
+                    if event::poll(Duration::from_millis(1))? {
+                        if let Event::Key(key) = event::read()? {
+                            if key.code == KeyCode::Esc {
+                                self.scan_cancellation.store(true, Ordering::Relaxed);
+                                break;
+                            }
+                        }
+                    }
+
                     if let Some(rule) = self.registry.get_rule(rule_id) {
                         let mut file_violations = rule.check(&root_node, &source);
                         for violation in &mut file_violations {
@@ -1898,7 +1984,7 @@ impl TerminalUI {
                         for violation in file_violations {
                             file_has_violations = true;
                             if suppression_manager.should_suppress(
-                                &file_path,
+                                file_path,
                                 rule_id,
                                 violation.line,
                                 &source
@@ -1915,10 +2001,13 @@ impl TerminalUI {
 
                 // If the file had no violations, add it to clean files
                 if !file_has_violations {
-                    self.clean_files.push(file_path);
+                    self.clean_files.push(file_path.clone());
                 }
             }
         }
+
+        // Hide progress dialog
+        self.show_progress_dialog = false;
 
         // Update combined violations for toggle display
         self.update_combined_violations();
@@ -2338,6 +2427,66 @@ impl TerminalUI {
             .wrap(ratatui::widgets::Wrap { trim: true });
 
         f.render_widget(popup, popup_area);
+    }
+
+    fn render_progress_dialog(&mut self, f: &mut Frame) {
+        let area = f.area();
+        let popup_area = Rect {
+            x: area.width / 4,
+            y: area.height / 2 - 4,
+            width: area.width / 2,
+            height: 8,
+        };
+
+        // Clear the background
+        f.render_widget(Clear, popup_area);
+
+        // Render popup border
+        let popup_block = Block::default()
+            .borders(Borders::ALL)
+            .title("Scanning Repository...")
+            .border_style(Style::default().fg(Color::Yellow));
+
+        f.render_widget(popup_block, popup_area);
+
+        let inner_area = Rect {
+            x: popup_area.x + 1,
+            y: popup_area.y + 1,
+            width: popup_area.width - 2,
+            height: popup_area.height - 2,
+        };
+
+        let dialog_text = vec![
+            Line::from(""),
+            Line::from(vec![
+                Span::styled("File: ", Style::default().fg(Color::Cyan)),
+                Span::styled(
+                    format!("{} of {}", self.progress_current_file, self.progress_total_files),
+                    Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD)
+                ),
+            ]),
+            Line::from(vec![
+                Span::styled("  ", Style::default()),
+                Span::styled(&self.progress_file_path, Style::default().fg(Color::White)),
+            ]),
+            Line::from(""),
+            Line::from(vec![
+                Span::styled("Checking: ", Style::default().fg(Color::Cyan)),
+                Span::styled(&self.progress_rule_id, Style::default().fg(Color::Green)),
+            ]),
+            Line::from(""),
+            Line::from(vec![
+                Span::styled("Press ", Style::default().fg(Color::Gray)),
+                Span::styled("ESC", Style::default().fg(Color::Red).add_modifier(Modifier::BOLD)),
+                Span::styled(" to cancel...", Style::default().fg(Color::Gray)),
+            ]),
+        ];
+
+        let dialog_paragraph = Paragraph::new(dialog_text)
+            .style(Style::default().fg(Color::White))
+            .alignment(Alignment::Left);
+
+        f.render_widget(dialog_paragraph, inner_area);
     }
 
     fn update_display_violations(&mut self) {

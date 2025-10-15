@@ -5,33 +5,56 @@ use super::manifest::RuleManifest;
 use super::parser::CParser;
 use super::rules::{RuleRegistry, RuleViolation};
 use super::files::ProjectSource;
+use super::progress::ProgressReporter;
 use suppression::SuppressionManager;
 
 use anyhow::Result;
 use std::fs;
 
-pub fn analyze_project(project_source: &ProjectSource, manifest: &RuleManifest) -> Result<Vec<RuleViolation>> {
+pub fn analyze_project(
+    project_source: &ProjectSource,
+    manifest: &RuleManifest,
+    progress: Option<&dyn ProgressReporter>,
+) -> Result<Vec<RuleViolation>> {
     let mut violations = Vec::new();
     let registry = RuleRegistry::new();
     let c_files = project_source.get_c_files()?;
+    let total_files = c_files.len();
     let mut parser = CParser::new()?;
     let mut suppression_manager = SuppressionManager::new();
 
-    for file_path in c_files {
-        if let Ok((tree, source)) = parser.parse_file(&file_path) {
+    for (file_idx, file_path) in c_files.iter().enumerate() {
+        // Check for cancellation before processing each file
+        if let Some(reporter) = progress {
+            if reporter.is_cancelled() {
+                // Return partial results collected so far
+                break;
+            }
+        }
+
+        if let Ok((tree, source)) = parser.parse_file(file_path) {
             let root_node = tree.root_node();
 
             // Extract suppressions from the current file
-            suppression_manager.extract_from_source(&file_path, &source);
+            suppression_manager.extract_from_source(file_path, &source);
 
             for (rule_id, rule_config) in manifest.enabled_rules() {
+                // Check cancellation between rules
+                if let Some(reporter) = progress {
+                    if reporter.is_cancelled() {
+                        break;
+                    }
+                    // Report progress with current file and rule (full relative path)
+                    reporter.report_file(file_idx + 1, total_files, file_path, rule_id);
+                }
+
                 if let Some(rule) = registry.get_rule(rule_id) {
                     let mut file_violations = rule.check(&root_node, &source);
 
                     // Filter out suppressed violations
                     file_violations.retain(|violation| {
                         if let Some(suppression) = suppression_manager.should_suppress(
-                            &file_path,
+                            file_path,
                             rule_id,
                             violation.line,
                             &source
@@ -53,6 +76,11 @@ pub fn analyze_project(project_source: &ProjectSource, manifest: &RuleManifest) 
                 }
             }
         }
+    }
+
+    // Report completion
+    if let Some(reporter) = progress {
+        reporter.report_complete(violations.len());
     }
 
     Ok(violations)
