@@ -20,6 +20,7 @@ enum BufferSize {
     Static(usize),              // char arr[10]
     DynamicCalculated(usize),   // malloc(10 * sizeof(int))
     Dynamic(String),            // malloc(size) - variable expression
+    Symbolic(String),           // VLA: int arr[n] - symbolic size
     Unknown,
 }
 
@@ -40,15 +41,29 @@ enum OffsetValue {
     Unknown,
 }
 
+/// Represents a pointer alias mapping
+#[derive(Debug, Clone)]
+struct PointerAlias {
+    alias_name: String,          // The pointer variable name (e.g., "ptr", "int_array")
+    original_buffer: String,     // The original buffer name (e.g., "arr", "buffer")
+    element_size_bytes: Option<usize>, // Element size for cast pointers (e.g., 4 for int, 1 for char)
+}
+
 impl Arr30C {
     /// Analyze all buffer allocations in the source code
     fn analyze_buffer_allocations(&self, source: &str) -> HashMap<String, BufferInfo> {
         let mut buffers = HashMap::new();
         let lines: Vec<&str> = source.lines().collect();
 
+        // First pass: collect typedef information
+        let typedefs = self.analyze_typedefs(source);
+
+        // Also analyze struct member arrays declared with typedefs
+        self.analyze_struct_typedef_members(source, &typedefs, &mut buffers);
+
         for (line_idx, line) in lines.iter().enumerate() {
             // Pattern 1: Array declarations - type arr[SIZE]
-            if let Some(buffer) = self.parse_array_declaration(line, line_idx) {
+            if let Some(buffer) = self.parse_array_declaration(line, line_idx, &typedefs) {
                 buffers.insert(buffer.name.clone(), buffer);
             }
 
@@ -61,13 +76,231 @@ impl Arr30C {
             if let Some(buffer) = self.parse_calloc_allocation(line, line_idx) {
                 buffers.insert(buffer.name.clone(), buffer);
             }
+
+            // Pattern 4: realloc allocations - ptr = realloc(ptr, SIZE)
+            if let Some(buffer) = self.parse_realloc_allocation(line, line_idx) {
+                buffers.insert(buffer.name.clone(), buffer);
+            }
         }
 
         buffers
     }
 
+    /// Analyze pointer aliases in the source code
+    fn analyze_pointer_aliases(&self, source: &str, buffers: &HashMap<String, BufferInfo>) -> HashMap<String, PointerAlias> {
+        let mut aliases = HashMap::new();
+        let lines: Vec<&str> = source.lines().collect();
+
+        for line in lines.iter() {
+            // Pattern 1: Direct pointer assignment: int *ptr = arr;
+            if let Some(alias) = self.parse_direct_pointer_assignment(line, buffers) {
+                aliases.insert(alias.alias_name.clone(), alias);
+            }
+
+            // Pattern 2: Cast assignment: int *ptr = (int *)buffer;
+            if let Some(alias) = self.parse_cast_pointer_assignment(line, buffers) {
+                aliases.insert(alias.alias_name.clone(), alias);
+            }
+        }
+
+        aliases
+    }
+
+    /// Parse direct pointer assignments like: int *ptr = arr;
+    fn parse_direct_pointer_assignment(&self, line: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
+        // Pattern: type *ptr_name = buffer_name;
+        let pattern = r"\w+\s+\*\s*(\w+)\s*=\s*(\w+)\s*;";
+
+        if let Ok(re) = regex::Regex::new(pattern) {
+            if let Some(caps) = re.captures(line) {
+                if let (Some(ptr_match), Some(buf_match)) = (caps.get(1), caps.get(2)) {
+                    let ptr_name = ptr_match.as_str();
+                    let buf_name = buf_match.as_str();
+
+                    // Check if buf_name is a tracked buffer
+                    if buffers.contains_key(buf_name) {
+                        return Some(PointerAlias {
+                            alias_name: ptr_name.to_string(),
+                            original_buffer: buf_name.to_string(),
+                            element_size_bytes: None, // No type conversion
+                        });
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Parse cast pointer assignments like: int *int_array = (int *)buffer;
+    fn parse_cast_pointer_assignment(&self, line: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
+        // Pattern: type *ptr_name = (type *)buffer_name;
+        let pattern = r"(\w+)\s+\*\s*(\w+)\s*=\s*\(\s*\w+\s*\*\s*\)\s*(\w+)\s*;";
+
+        if let Ok(re) = regex::Regex::new(pattern) {
+            if let Some(caps) = re.captures(line) {
+                if let (Some(type_match), Some(ptr_match), Some(buf_match)) = (caps.get(1), caps.get(2), caps.get(3)) {
+                    let cast_type = type_match.as_str();
+                    let ptr_name = ptr_match.as_str();
+                    let buf_name = buf_match.as_str();
+
+                    // Check if buf_name is a tracked buffer
+                    if buffers.contains_key(buf_name) {
+                        // Determine element size based on cast type
+                        let elem_size = match cast_type {
+                            "char" => Some(1),
+                            "short" => Some(2),
+                            "int" => Some(4),
+                            "long" => Some(8),
+                            "float" => Some(4),
+                            "double" => Some(8),
+                            _ => None, // Unknown type - can't determine element size
+                        };
+
+                        return Some(PointerAlias {
+                            alias_name: ptr_name.to_string(),
+                            original_buffer: buf_name.to_string(),
+                            element_size_bytes: elem_size,
+                        });
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Analyze typedef declarations for array types
+    fn analyze_typedefs(&self, source: &str) -> HashMap<String, usize> {
+        let mut typedefs = HashMap::new();
+
+        // Pattern: typedef type TypeName[SIZE];
+        let typedef_pattern = r"typedef\s+(?:\w+\s+)*\w+\s+(\w+)\s*\[\s*(\d+)\s*\]";
+
+        if let Ok(re) = regex::Regex::new(typedef_pattern) {
+            for caps in re.captures_iter(source) {
+                if let (Some(typedef_name), Some(size_str)) = (caps.get(1), caps.get(2)) {
+                    if let Ok(size) = size_str.as_str().parse::<usize>() {
+                        typedefs.insert(typedef_name.as_str().to_string(), size);
+                    }
+                }
+            }
+        }
+
+        typedefs
+    }
+
+    /// Analyze struct/union members that use typedef array types
+    /// This handles cases like: struct { IntArray numbers; }
+    fn analyze_struct_typedef_members(&self, source: &str, typedefs: &HashMap<String, usize>, buffers: &mut HashMap<String, BufferInfo>) {
+        let lines: Vec<&str> = source.lines().collect();
+
+        for (line_idx, line) in lines.iter().enumerate() {
+            let trimmed = line.trim();
+
+            // Pattern: TypedefName member_name;
+            // Look for lines that match typedef usage inside structs/unions
+            if let Ok(re) = regex::Regex::new(r"^\s*(\w+)\s+(\w+)\s*;") {
+                if let Some(caps) = re.captures(trimmed) {
+                    if let (Some(type_match), Some(member_match)) = (caps.get(1), caps.get(2)) {
+                        let type_name = type_match.as_str();
+                        let member_name = member_match.as_str();
+
+                        // Check if this is a known typedef
+                        if let Some(&size) = typedefs.get(type_name) {
+                            // Add as a tracked buffer using the member name
+                            buffers.insert(
+                                member_name.to_string(),
+                                BufferInfo {
+                                    name: member_name.to_string(),
+                                    size: BufferSize::Static(size),
+                                    element_type: type_name.to_string(),
+                                    allocation_line: line_idx + 1,
+                                }
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Parse VLA (Variable Length Array) declarations: int arr[n];
+    fn parse_vla_declaration(&self, line: &str, line_idx: usize) -> Option<BufferInfo> {
+        // Pattern: type var[variable_name]
+        let vla_pattern = r"(?:const\s+)?(?:volatile\s+)?(?:unsigned\s+)?(?:signed\s+)?(\w+)\s+(\w+)\s*\[\s*([a-zA-Z_]\w*)\s*\]";
+
+        if let Ok(re) = regex::Regex::new(vla_pattern) {
+            if let Some(caps) = re.captures(line) {
+                if let (Some(var_name), Some(size_var)) = (caps.get(2), caps.get(3)) {
+                    // Make sure size_var is not a digit (which would be caught by regular parsing)
+                    let size_var_str = size_var.as_str();
+                    if !size_var_str.chars().all(|c| c.is_numeric()) {
+                        return Some(BufferInfo {
+                            name: var_name.as_str().to_string(),
+                            size: BufferSize::Symbolic(size_var_str.to_string()),
+                            element_type: caps.get(1).map(|m| m.as_str().to_string()).unwrap_or_else(|| "unknown".to_string()),
+                            allocation_line: line_idx + 1,
+                        });
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Parse typedef array usage: TypedefName var;
+    fn parse_typedef_usage(&self, line: &str, line_idx: usize, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
+        // Pattern 1: Direct typedef usage (e.g., "IntArray local_array = ...")
+        // Pattern 2: Struct member typedef usage (e.g., "    IntArray numbers;")
+
+        let patterns = [
+            r"^\s*(\w+)\s+(\w+)\s*[=;{]",  // TypedefName varname = ... or TypedefName varname; or = {
+        ];
+
+        for pattern in &patterns {
+            if let Ok(re) = regex::Regex::new(pattern) {
+                if let Some(caps) = re.captures(line) {
+                    if let (Some(type_match), Some(var_match)) = (caps.get(1), caps.get(2)) {
+                        let type_name = type_match.as_str();
+                        let var_name = var_match.as_str();
+
+                        // Filter out C keywords that might match the pattern
+                        let c_keywords = ["if", "for", "while", "switch", "return", "int", "char", "void", "float", "double", "struct", "union", "enum", "const", "static", "extern", "volatile", "unsigned", "signed", "long", "short"];
+                        if c_keywords.contains(&type_name) {
+                            continue;
+                        }
+
+                        // Check if type_name is a known typedef
+                        if let Some(&size) = typedefs.get(type_name) {
+                            return Some(BufferInfo {
+                                name: var_name.to_string(),
+                                size: BufferSize::Static(size),
+                                element_type: type_name.to_string(),
+                                allocation_line: line_idx + 1,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
     /// Parse array declarations like: int arr[10];
-    fn parse_array_declaration(&self, line: &str, line_idx: usize) -> Option<BufferInfo> {
+    fn parse_array_declaration(&self, line: &str, line_idx: usize, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
+        // First, check for VLA declarations: type var[variable]
+        if let Some(vla_info) = self.parse_vla_declaration(line, line_idx) {
+            return Some(vla_info);
+        }
+
+        // Check for typedef-based declarations: TypedefName var; or TypedefName var;
+        if let Some(typedef_info) = self.parse_typedef_usage(line, line_idx, typedefs) {
+            return Some(typedef_info);
+        }
+
         // Match patterns like: type var_name[SIZE];
         // Handle various types including pointers and function pointer arrays
         let patterns = [
@@ -184,6 +417,37 @@ impl Arr30C {
                     });
                 }
             }
+        }
+
+        None
+    }
+
+    /// Parse realloc allocations and extract size information
+    fn parse_realloc_allocation(&self, line: &str, line_idx: usize) -> Option<BufferInfo> {
+        if !line.contains("realloc") || !line.contains("=") {
+            return None;
+        }
+
+        let var_name = self.extract_variable_name_from_malloc(line)?;
+
+        // Extract realloc arguments: realloc(ptr, size)
+        let realloc_start = line.find("realloc(")?;
+        let args_start = realloc_start + 8;
+        let paren_end = line[args_start..].find(')')?;
+        let realloc_args = &line[args_start..args_start + paren_end];
+
+        // Parse the second argument (new size)
+        let parts: Vec<&str> = realloc_args.split(',').collect();
+        if parts.len() == 2 {
+            let new_size_expr = parts[1].trim();
+            let size = self.calculate_malloc_size(new_size_expr)?;
+
+            return Some(BufferInfo {
+                name: var_name,
+                size,
+                element_type: "unknown".to_string(),
+                allocation_line: line_idx + 1,
+            });
         }
 
         None
@@ -493,6 +757,7 @@ impl Arr30C {
             BufferSize::Static(s) => format!("size {}", s),
             BufferSize::DynamicCalculated(s) => format!("allocated size {}", s),
             BufferSize::Dynamic(expr) => format!("dynamic size ({})", expr),
+            BufferSize::Symbolic(var) => format!("VLA size ({})", var),
             BufferSize::Unknown => "unknown size".to_string(),
         };
 
@@ -509,31 +774,69 @@ impl Arr30C {
     }
 
     /// Check array subscript expressions with buffer size analysis
-    fn check_array_subscript(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_array_subscript(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         if let Some(array_name) = self.get_array_name_from_subscript(node, source) {
             if let Some(index) = self.get_subscript_index_value(node, source) {
-                if let Some(buffer_info) = buffers.get(&array_name) {
+                // Try to resolve alias first
+                let (actual_buffer_name, element_size_bytes) = if let Some(alias) = aliases.get(&array_name) {
+                    (alias.original_buffer.as_str(), alias.element_size_bytes)
+                } else {
+                    (array_name.as_str(), None)
+                };
+
+                if let Some(buffer_info) = buffers.get(actual_buffer_name) {
+                    // Calculate effective buffer size for cast pointers
+                    let effective_size = match &buffer_info.size {
+                        BufferSize::Static(size) | BufferSize::DynamicCalculated(size) => {
+                            if let Some(elem_bytes) = element_size_bytes {
+                                // For cast pointers, convert byte size to element count
+                                size / elem_bytes
+                            } else {
+                                *size
+                            }
+                        }
+                        _ => 0, // Will be handled separately below
+                    };
 
                     let is_violation = match &buffer_info.size {
-                        BufferSize::Static(size) | BufferSize::DynamicCalculated(size) => {
+                        BufferSize::Static(_size) | BufferSize::DynamicCalculated(_size) => {
                             match &index {
                                 IndexValue::Constant(idx) => {
                                     // Constant index access - check for negative indices OR out of bounds
-                                    *idx < 0 || (*idx as usize) >= *size
+                                    *idx < 0 || (*idx as usize) >= effective_size
                                 }
                                 IndexValue::Expression(_, Some(eval_idx)) => {
                                     // Expression evaluated to constant - check bounds
-                                    *eval_idx < 0 || (*eval_idx as usize) >= *size
+                                    *eval_idx < 0 || (*eval_idx as usize) >= effective_size
                                 }
                                 IndexValue::Expression(expr, None) => {
                                     // Expression with variable component - analyze it
-                                    self.check_expression_bounds(expr, *size)
+                                    self.check_expression_bounds(expr, effective_size)
                                 }
                                 IndexValue::Variable(_) => {
                                     // Variable index - check for bounds checking
-                                    !self.has_proper_bounds_check(node, source, *size)
+                                    !self.has_proper_bounds_check(node, source, effective_size)
+                                }
+                                IndexValue::Unknown => false,
+                            }
+                        }
+                        BufferSize::Symbolic(size_var) => {
+                            // VLA with symbolic size - check for provably out-of-bounds patterns
+                            match &index {
+                                IndexValue::Variable(var) => {
+                                    // Check if var == size_var (e.g., vla[n] when size is n)
+                                    // This is always out of bounds (valid range: 0 to n-1)
+                                    var == size_var
+                                }
+                                IndexValue::Expression(expr, _) => {
+                                    // Check for symbolic violations like "n + 5" when size is "n"
+                                    self.check_symbolic_bounds(expr, size_var)
+                                }
+                                IndexValue::Constant(idx) => {
+                                    // Negative index is always invalid
+                                    *idx < 0
                                 }
                                 IndexValue::Unknown => false,
                             }
@@ -599,19 +902,74 @@ impl Arr30C {
         false
     }
 
+    /// Check symbolic bounds for VLA expressions
+    /// Returns true if the expression is provably out of bounds
+    fn check_symbolic_bounds(&self, index_expr: &str, size_var: &str) -> bool {
+        let expr = index_expr.trim();
+
+        // Pattern 1: size_var + constant (where constant > 0)
+        // e.g., "n + 5" when size is "n" - ALWAYS out of bounds
+        if expr.contains('+') {
+            let parts: Vec<&str> = expr.split('+').collect();
+            if parts.len() == 2 {
+                let (part1, part2) = (parts[0].trim(), parts[1].trim());
+
+                // Check if one part is size_var and other is positive constant
+                if part1 == size_var {
+                    if let Ok(offset) = part2.parse::<isize>() {
+                        return offset > 0; // ALWAYS out of bounds
+                    }
+                } else if part2 == size_var {
+                    if let Ok(offset) = part1.parse::<isize>() {
+                        return offset > 0;
+                    }
+                }
+            }
+        }
+
+        // Pattern 2: index == size_var (e.g., vla[n] when size is n)
+        // This is out of bounds (valid range: 0 to n-1)
+        if expr == size_var {
+            return true;
+        }
+
+        // Pattern 3: size_var - constant (where constant < 0 would be a problem)
+        // e.g., "n - 1" when size is "n" is VALID (last element)
+        // We don't flag this as it's generally safe
+
+        false
+    }
+
     /// Check pointer arithmetic for bounds violations
-    fn check_pointer_arithmetic(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_pointer_arithmetic(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         if let Some((ptr_name, offset)) = self.extract_pointer_arithmetic(node, source) {
-            if let Some(buffer_info) = buffers.get(&ptr_name) {
+            // Try to resolve alias first
+            let (actual_buffer_name, element_size_bytes) = if let Some(alias) = aliases.get(&ptr_name) {
+                (alias.original_buffer.as_str(), alias.element_size_bytes)
+            } else {
+                (ptr_name.as_str(), None)
+            };
+
+            if let Some(buffer_info) = buffers.get(actual_buffer_name) {
                 match &buffer_info.size {
                     BufferSize::Static(size) | BufferSize::DynamicCalculated(size) => {
                         if let OffsetValue::Constant(off) = offset {
-                            if off >= *size {
+                            // Calculate effective buffer size in elements
+                            let effective_size = if let Some(elem_bytes) = element_size_bytes {
+                                // For cast pointers, convert byte size to element count
+                                // buffer is malloc(16), cast to int* (4 bytes) = 4 ints
+                                size / elem_bytes
+                            } else {
+                                // No cast, use size as-is
+                                *size
+                            };
+
+                            if off >= effective_size {
                                 let msg = format!(
-                                    "Pointer arithmetic moves {} elements beyond buffer bounds",
-                                    off
+                                    "Pointer arithmetic moves {} elements beyond buffer bounds (effective size: {})",
+                                    off, effective_size
                                 );
                                 violations.push(self.create_violation(node, &ptr_name, buffer_info, &msg));
                             }
@@ -680,7 +1038,7 @@ impl Arr30C {
     }
 
     /// Check pointer dereference for bounds violations
-    fn check_pointer_dereference(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_pointer_dereference(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, _aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
         let violations = Vec::new();
 
         // Get the pointer being dereferenced
@@ -721,7 +1079,8 @@ impl CertRule for Arr30C {
         // Analyze all buffer allocations once at root level
         if node.parent().is_none() {
             let buffer_info = self.analyze_buffer_allocations(source);
-            self.check_with_buffer_info(node, source, &buffer_info)
+            let pointer_aliases = self.analyze_pointer_aliases(source, &buffer_info);
+            self.check_with_buffer_info(node, source, &buffer_info, &pointer_aliases)
         } else {
             // This shouldn't happen as we control recursion, but handle gracefully
             Vec::new()
@@ -731,36 +1090,402 @@ impl CertRule for Arr30C {
 
 impl Arr30C {
     /// Internal recursive check function that carries buffer_info through the tree
-    fn check_with_buffer_info(&self, node: &Node, source: &str, buffer_info: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_with_buffer_info(&self, node: &Node, source: &str, buffer_info: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Check multiple violation patterns
+        // Clone the maps to allow modification during traversal
+        let mut local_buffers = buffer_info.clone();
+        let mut local_aliases = aliases.clone();
+
+        // Check multiple violation patterns BEFORE extracting declarations
+        // This ensures we use the parent's context for checking this node
         match node.kind() {
             "subscript_expression" => {
-                violations.extend(self.check_array_subscript(node, source, buffer_info));
+                violations.extend(self.check_array_subscript(node, source, &local_buffers, &local_aliases));
             }
             "assignment_expression" => {
                 if self.is_pointer_arithmetic_assignment(node, source) {
-                    violations.extend(self.check_pointer_arithmetic(node, source, buffer_info));
+                    violations.extend(self.check_pointer_arithmetic(node, source, &local_buffers, &local_aliases));
                 }
             }
             "pointer_expression" => {
-                violations.extend(self.check_pointer_dereference(node, source, buffer_info));
+                violations.extend(self.check_pointer_dereference(node, source, &local_buffers, &local_aliases));
             }
             "call_expression" => {
-                violations.extend(self.check_dangerous_function_call(node, source, buffer_info));
+                violations.extend(self.check_dangerous_function_call(node, source, &local_buffers));
             }
             _ => {}
         }
 
-        // Recursively check children with the same buffer_info
+        // Recursively check children, accumulating declarations as we go
+        // This ensures declarations are visible to subsequent siblings
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                violations.extend(self.check_with_buffer_info(&child, source, buffer_info));
+                // Extract declarations from this child if it's a declaration node
+                if child.kind() == "declaration" {
+                    if let Some(new_buffer) = self.extract_buffer_from_declaration(&child, source) {
+                        local_buffers.insert(new_buffer.name.clone(), new_buffer);
+                    }
+                    if let Some(new_alias) = self.extract_alias_from_declaration(&child, source, &local_buffers) {
+                        local_aliases.insert(new_alias.alias_name.clone(), new_alias);
+                    }
+                }
+
+                // Recursively check this child with the accumulated context
+                violations.extend(self.check_with_buffer_info(&child, source, &local_buffers, &local_aliases));
             }
         }
 
         violations
+    }
+
+    /// Extract buffer information from a declaration AST node
+    fn extract_buffer_from_declaration(&self, node: &Node, source: &str) -> Option<BufferInfo> {
+        // Look for declarator nodes that contain array or pointer declarations
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "init_declarator" => {
+                        // Handles: int arr[5] = {...};
+                        return self.extract_buffer_from_init_declarator(&child, source);
+                    }
+                    "array_declarator" => {
+                        // Handles: int arr[5];
+                        return self.extract_buffer_from_array_declarator(&child, source);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract buffer from init_declarator node (declarations with initializers)
+    fn extract_buffer_from_init_declarator(&self, node: &Node, source: &str) -> Option<BufferInfo> {
+        // First child is the declarator
+        let declarator = node.child(0)?;
+
+        if declarator.kind() == "array_declarator" {
+            return self.extract_buffer_from_array_declarator(&declarator, source);
+        } else if declarator.kind() == "pointer_declarator" {
+            // Check if this is a malloc/calloc assignment
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "call_expression" {
+                        return self.extract_buffer_from_malloc_call(&declarator, &child, source);
+                    }
+                }
+            }
+        } else if declarator.kind() == "identifier" {
+            // Simple identifier - could be typedef usage
+            let var_name = &source[declarator.start_byte()..declarator.end_byte()];
+
+            // Check if this declaration has an initializer that's a call_expression (malloc)
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "call_expression" {
+                        return self.extract_buffer_from_malloc_call(&declarator, &child, source);
+                    }
+                }
+            }
+
+            // Could be a typedef array - check parent declaration for type
+            if let Some(parent) = node.parent() {
+                if parent.kind() == "declaration" {
+                    return self.check_typedef_declaration(&parent, var_name, source);
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Extract buffer info from array_declarator
+    fn extract_buffer_from_array_declarator(&self, node: &Node, source: &str) -> Option<BufferInfo> {
+        // array_declarator has: declarator, "[", size, "]"
+        let mut var_name: Option<String> = None;
+        let mut size: Option<usize> = None;
+        let mut size_expr: Option<String> = None;
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "identifier" => {
+                        var_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                    }
+                    "number_literal" => {
+                        let size_str = &source[child.start_byte()..child.end_byte()];
+                        size = size_str.parse().ok();
+                    }
+                    "identifier" if i > 0 => {
+                        // This is the size expression (VLA)
+                        let expr = &source[child.start_byte()..child.end_byte()];
+                        size_expr = Some(expr.to_string());
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        let name = var_name?;
+        let line = node.start_position().row + 1;
+
+        if let Some(s) = size {
+            Some(BufferInfo {
+                name,
+                size: BufferSize::Static(s),
+                element_type: "unknown".to_string(),
+                allocation_line: line,
+            })
+        } else if let Some(expr) = size_expr {
+            Some(BufferInfo {
+                name,
+                size: BufferSize::Symbolic(expr),
+                element_type: "unknown".to_string(),
+                allocation_line: line,
+            })
+        } else {
+            None
+        }
+    }
+
+    /// Extract buffer from malloc/calloc call
+    fn extract_buffer_from_malloc_call(&self, declarator: &Node, call_node: &Node, source: &str) -> Option<BufferInfo> {
+        let var_name = if declarator.kind() == "pointer_declarator" {
+            // Navigate to the identifier within pointer_declarator
+            let mut found_name: Option<String> = None;
+            for i in 0..declarator.child_count() {
+                if let Some(child) = declarator.child(i) {
+                    if child.kind() == "identifier" {
+                        found_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                        break;
+                    }
+                }
+            }
+            found_name?
+        } else {
+            source[declarator.start_byte()..declarator.end_byte()].to_string()
+        };
+
+        // Get function name
+        let func_name_node = call_node.child(0)?;
+        let func_name = &source[func_name_node.start_byte()..func_name_node.end_byte()];
+
+        // Find argument_list
+        for i in 0..call_node.child_count() {
+            if let Some(child) = call_node.child(i) {
+                if child.kind() == "argument_list" {
+                    return self.parse_malloc_arguments(func_name, &child, source, &var_name, call_node.start_position().row + 1);
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Parse malloc/calloc arguments from argument_list node
+    fn parse_malloc_arguments(&self, func_name: &str, arg_list: &Node, source: &str, var_name: &str, line: usize) -> Option<BufferInfo> {
+        match func_name {
+            "malloc" => {
+                // Get first argument
+                for i in 0..arg_list.child_count() {
+                    if let Some(child) = arg_list.child(i) {
+                        if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
+                            let arg_text = &source[child.start_byte()..child.end_byte()];
+                            let size = self.calculate_malloc_size(arg_text)?;
+                            return Some(BufferInfo {
+                                name: var_name.to_string(),
+                                size,
+                                element_type: "unknown".to_string(),
+                                allocation_line: line,
+                            });
+                        }
+                    }
+                }
+            }
+            "calloc" => {
+                // Get first argument (count)
+                let mut args = Vec::new();
+                for i in 0..arg_list.child_count() {
+                    if let Some(child) = arg_list.child(i) {
+                        if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
+                            args.push(&source[child.start_byte()..child.end_byte()]);
+                        }
+                    }
+                }
+                if args.len() >= 2 {
+                    if let Some(count) = self.extract_numeric_value(args[0]) {
+                        if self.extract_sizeof_value(args[1]).is_some() {
+                            return Some(BufferInfo {
+                                name: var_name.to_string(),
+                                size: BufferSize::DynamicCalculated(count),
+                                element_type: "unknown".to_string(),
+                                allocation_line: line,
+                            });
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+        None
+    }
+
+    /// Check if a declaration uses a typedef array type
+    fn check_typedef_declaration(&self, decl_node: &Node, var_name: &str, source: &str) -> Option<BufferInfo> {
+        // Get type from declaration
+        for i in 0..decl_node.child_count() {
+            if let Some(child) = decl_node.child(i) {
+                if child.kind() == "type_identifier" {
+                    let type_name = &source[child.start_byte()..child.end_byte()];
+
+                    // Try to find typedef definition in source
+                    // This is a simplified check - full implementation would cache typedefs
+                    let typedef_pattern = format!(r"typedef\s+\w+\s+{}\s*\[\s*(\d+)\s*\]", regex::escape(type_name));
+                    if let Ok(re) = regex::Regex::new(&typedef_pattern) {
+                        if let Some(caps) = re.captures(source) {
+                            if let Some(size_str) = caps.get(1) {
+                                if let Ok(size) = size_str.as_str().parse::<usize>() {
+                                    return Some(BufferInfo {
+                                        name: var_name.to_string(),
+                                        size: BufferSize::Static(size),
+                                        element_type: type_name.to_string(),
+                                        allocation_line: decl_node.start_position().row + 1,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract pointer alias from declaration AST node
+    fn extract_alias_from_declaration(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
+        // Look for init_declarator with pointer assignment
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "init_declarator" {
+                    return self.extract_alias_from_init_declarator(&child, source, buffers);
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract alias from init_declarator
+    fn extract_alias_from_init_declarator(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
+        // First, check for cast expression (int *ptr = (int *)buffer)
+        let mut declarator_child: Option<Node> = None;
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "pointer_declarator" || child.kind() == "identifier" {
+                    declarator_child = Some(child);
+                } else if child.kind() == "cast_expression" {
+                    if let Some(decl) = declarator_child {
+                        return self.extract_alias_from_cast(&decl, &child, source, buffers);
+                    }
+                }
+            }
+        }
+
+        // Check for direct assignment (int *ptr = buffer)
+        if let Some(declarator) = node.child(0) {
+            // Look for assigned value
+            for i in 1..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "identifier" {
+                        let ptr_name = self.extract_identifier_from_declarator(&declarator, source)?;
+                        let buf_name = &source[child.start_byte()..child.end_byte()];
+
+                        if buffers.contains_key(buf_name) {
+                            return Some(PointerAlias {
+                                alias_name: ptr_name,
+                                original_buffer: buf_name.to_string(),
+                                element_size_bytes: None,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Extract alias from cast expression
+    fn extract_alias_from_cast(&self, declarator: &Node, cast_node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
+        let ptr_name = self.extract_identifier_from_declarator(declarator, source)?;
+
+        // Get cast type
+        let mut cast_type: Option<&str> = None;
+        let mut target: Option<&str> = None;
+
+        for i in 0..cast_node.child_count() {
+            if let Some(child) = cast_node.child(i) {
+                match child.kind() {
+                    "type_descriptor" => {
+                        // Extract type from type_descriptor
+                        for j in 0..child.child_count() {
+                            if let Some(type_node) = child.child(j) {
+                                if type_node.kind() == "primitive_type" {
+                                    cast_type = Some(&source[type_node.start_byte()..type_node.end_byte()]);
+                                }
+                            }
+                        }
+                    }
+                    "identifier" => {
+                        target = Some(&source[child.start_byte()..child.end_byte()]);
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        if let (Some(cast_t), Some(buf_name)) = (cast_type, target) {
+            if buffers.contains_key(buf_name) {
+                let elem_size = match cast_t {
+                    "char" => Some(1),
+                    "short" => Some(2),
+                    "int" => Some(4),
+                    "long" => Some(8),
+                    "float" => Some(4),
+                    "double" => Some(8),
+                    _ => None,
+                };
+
+                return Some(PointerAlias {
+                    alias_name: ptr_name,
+                    original_buffer: buf_name.to_string(),
+                    element_size_bytes: elem_size,
+                });
+            }
+        }
+
+        None
+    }
+
+    /// Extract identifier name from declarator
+    fn extract_identifier_from_declarator(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => {
+                Some(source[node.start_byte()..node.end_byte()].to_string())
+            }
+            "pointer_declarator" => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" {
+                            return Some(source[child.start_byte()..child.end_byte()].to_string());
+                        }
+                    }
+                }
+                None
+            }
+            _ => None,
+        }
     }
 
     /// Check for dangerous library function calls that can cause buffer overflows
@@ -988,6 +1713,7 @@ impl Arr30C {
             BufferSize::Static(s) => format!("size {}", s),
             BufferSize::DynamicCalculated(s) => format!("allocated size {}", s),
             BufferSize::Dynamic(expr) => format!("dynamic size ({})", expr),
+            BufferSize::Symbolic(var) => format!("VLA size ({})", var),
             BufferSize::Unknown => "unknown size".to_string(),
         };
 
