@@ -986,9 +986,12 @@ impl Arr30C {
     }
 
     /// Extract buffer allocation from assignment expression
-    /// Handles patterns like: array[i] = malloc(size * sizeof(type))
+    /// Handles patterns like:
+    /// - array[i] = malloc(size * sizeof(type))
+    /// - ptr = realloc(ptr, new_size)
+    /// - ptr = malloc(size)
     fn extract_buffer_from_assignment(&self, node: &Node, source: &str) -> Option<(String, BufferInfo)> {
-        // Check if this is an assignment with malloc/calloc on the right side
+        // Check if this is an assignment with malloc/calloc/realloc on the right side
         let mut left_node: Option<Node> = None;
         let mut right_node: Option<Node> = None;
         let mut found_assign = false;
@@ -1013,36 +1016,53 @@ impl Arr30C {
         let left = left_node?;
         let right = right_node?;
 
-        // Check if left side is a subscript expression (e.g., matrix[i])
-        if left.kind() != "subscript_expression" {
-            return None;
-        }
-
-        // Check if right side is malloc/calloc
+        // Check if right side is malloc/calloc/realloc
         let func_name_node = right.child(0)?;
         let func_name = &source[func_name_node.start_byte()..func_name_node.end_byte()];
 
-        if func_name != "malloc" && func_name != "calloc" {
+        if func_name != "malloc" && func_name != "calloc" && func_name != "realloc" {
             return None;
         }
 
-        // Extract the base array name from subscript
-        let base_array = self.get_base_array_from_subscript(&left, source)?;
+        // Handle subscript expressions (e.g., matrix[i])
+        if left.kind() == "subscript_expression" {
+            // Extract the base array name from subscript
+            let base_array = self.get_base_array_from_subscript(&left, source)?;
 
-        // Extract allocation size from malloc/calloc
-        let buffer_size = self.extract_malloc_size_from_call(&right, source)?;
+            // Extract allocation size from malloc/calloc/realloc
+            let buffer_size = self.extract_malloc_size_from_call(&right, source)?;
 
-        // Create a wildcard buffer name: base_array[*]
-        let buffer_name = format!("{}[*]", base_array);
+            // Create a wildcard buffer name: base_array[*]
+            let buffer_name = format!("{}[*]", base_array);
 
-        let buffer_info = BufferInfo {
-            name: buffer_name.clone(),
-            size: buffer_size,
-            element_type: "unknown".to_string(),
-            allocation_line: node.start_position().row + 1,
-        };
+            let buffer_info = BufferInfo {
+                name: buffer_name.clone(),
+                size: buffer_size,
+                element_type: "unknown".to_string(),
+                allocation_line: node.start_position().row + 1,
+            };
 
-        Some((buffer_name, buffer_info))
+            return Some((buffer_name, buffer_info));
+        }
+
+        // Handle simple identifier assignments (e.g., ptr = realloc(ptr, new_size))
+        if left.kind() == "identifier" {
+            let var_name = &source[left.start_byte()..left.end_byte()];
+
+            // Extract allocation size from malloc/calloc/realloc
+            let buffer_size = self.extract_malloc_size_from_call(&right, source)?;
+
+            let buffer_info = BufferInfo {
+                name: var_name.to_string(),
+                size: buffer_size,
+                element_type: "unknown".to_string(),
+                allocation_line: node.start_position().row + 1,
+            };
+
+            return Some((var_name.to_string(), buffer_info));
+        }
+
+        None
     }
 
     /// Get base array name from subscript expression (e.g., "matrix" from "matrix[i]")
@@ -1062,18 +1082,29 @@ impl Arr30C {
         Some(text.to_string())
     }
 
-    /// Extract malloc size from call expression
+    /// Extract malloc/realloc size from call expression
     fn extract_malloc_size_from_call(&self, node: &Node, source: &str) -> Option<BufferSize> {
+        // Get function name to determine which argument contains the size
+        let func_name_node = node.child(0)?;
+        let func_name = &source[func_name_node.start_byte()..func_name_node.end_byte()];
+
         // Find argument_list
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 if child.kind() == "argument_list" {
-                    // Get first non-delimiter child
+                    // For realloc, the size is the second argument
+                    // For malloc/calloc, the size is in the first argument
+                    let arg_index = if func_name == "realloc" { 1 } else { 0 };
+
+                    let mut current_arg = 0;
                     for j in 0..child.child_count() {
                         if let Some(arg) = child.child(j) {
                             if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
-                                let arg_text = &source[arg.start_byte()..arg.end_byte()];
-                                return self.calculate_malloc_size(arg_text);
+                                if current_arg == arg_index {
+                                    let arg_text = &source[arg.start_byte()..arg.end_byte()];
+                                    return self.calculate_malloc_size(arg_text);
+                                }
+                                current_arg += 1;
                             }
                         }
                     }
@@ -1244,6 +1275,7 @@ impl Arr30C {
                         }
                         _ => 0, // Will be handled separately below
                     };
+
 
                     let is_violation = match &buffer_info.size {
                         BufferSize::Static(_size) | BufferSize::DynamicCalculated(_size) => {
@@ -1564,10 +1596,20 @@ impl Arr30C {
                     }
                 }
 
-                // Track malloc assignments in loops (e.g., matrix[i] = malloc(...))
-                if child.kind() == "assignment_expression" {
-                    if let Some((buf_name, buf_info)) = self.extract_buffer_from_assignment(&child, source) {
-                        // Insert or update the wildcard buffer entry
+                // Track malloc/realloc assignments (e.g., matrix[i] = malloc(...) or ptr = realloc(ptr, size))
+                // Check both assignment_expression nodes and their parents (expression_statement)
+                let assignment_node = if child.kind() == "assignment_expression" {
+                    Some(child)
+                } else if child.kind() == "expression_statement" {
+                    // Look for assignment_expression child
+                    child.child(0).filter(|c| c.kind() == "assignment_expression")
+                } else {
+                    None
+                };
+
+                if let Some(assign_node) = assignment_node {
+                    if let Some((buf_name, buf_info)) = self.extract_buffer_from_assignment(&assign_node, source) {
+                        // Insert or update the buffer entry
                         local_buffers.insert(buf_name, buf_info);
                     }
                 }
@@ -1787,7 +1829,7 @@ impl Arr30C {
         None
     }
 
-    /// Parse malloc/calloc arguments from argument_list node
+    /// Parse malloc/calloc/realloc arguments from argument_list node
     fn parse_malloc_arguments(&self, func_name: &str, arg_list: &Node, source: &str, var_name: &str, line: usize) -> Option<BufferInfo> {
         match func_name {
             "malloc" => {
@@ -1805,6 +1847,26 @@ impl Arr30C {
                             });
                         }
                     }
+                }
+            }
+            "realloc" => {
+                // Get second argument (size) - first arg is the old pointer
+                let mut args = Vec::new();
+                for i in 0..arg_list.child_count() {
+                    if let Some(child) = arg_list.child(i) {
+                        if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
+                            args.push(&source[child.start_byte()..child.end_byte()]);
+                        }
+                    }
+                }
+                if args.len() >= 2 {
+                    let size = self.calculate_malloc_size(args[1])?;
+                    return Some(BufferInfo {
+                        name: var_name.to_string(),
+                        size,
+                        element_type: "unknown".to_string(),
+                        allocation_line: line,
+                    });
                 }
             }
             "calloc" => {
