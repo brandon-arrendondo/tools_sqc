@@ -3,7 +3,8 @@ use std::path::Path;
 use anyhow::{Context, Result};
 
 pub struct DirectorySource {
-    directory_path: String,
+    path: String,
+    is_file: bool,
 }
 
 impl DirectorySource {
@@ -12,19 +13,51 @@ impl DirectorySource {
         if !path_obj.exists() {
             return Err(anyhow::anyhow!("Path does not exist: {}", path));
         }
-        if !path_obj.is_dir() {
-            return Err(anyhow::anyhow!("Path is not a directory: {}", path));
+
+        let is_file = path_obj.is_file();
+        let is_dir = path_obj.is_dir();
+
+        if !is_file && !is_dir {
+            return Err(anyhow::anyhow!("Path is neither a file nor a directory: {}", path));
+        }
+
+        // If it's a file, verify it's a C file
+        if is_file {
+            if let Some(extension) = path_obj.extension() {
+                if extension != "c" && extension != "h" {
+                    return Err(anyhow::anyhow!("File must have .c or .h extension: {}", path));
+                }
+            } else {
+                return Err(anyhow::anyhow!("File must have .c or .h extension: {}", path));
+            }
         }
 
         Ok(Self {
-            directory_path: path.to_string(),
+            path: path.to_string(),
+            is_file,
         })
     }
 
     pub fn get_c_files(&self) -> Result<Vec<String>> {
         let mut c_files = Vec::new();
 
-        for entry in WalkDir::new(&self.directory_path)
+        // If it's a single file, just return that file
+        if self.is_file {
+            // Convert to absolute path
+            let path_obj = Path::new(&self.path);
+            if let Ok(abs_path) = path_obj.canonicalize() {
+                if let Some(path_str) = abs_path.to_str() {
+                    c_files.push(path_str.to_string());
+                }
+            } else {
+                // Fall back to the original path if canonicalize fails
+                c_files.push(self.path.clone());
+            }
+            return Ok(c_files);
+        }
+
+        // Otherwise, walk the directory
+        for entry in WalkDir::new(&self.path)
             .into_iter()
             .filter_map(|e| e.ok())
         {
@@ -51,6 +84,10 @@ impl DirectorySource {
     }
 
     pub fn get_root_path(&self) -> &str {
-        &self.directory_path
+        &self.path
+    }
+
+    pub fn is_file(&self) -> bool {
+        self.is_file
     }
 }

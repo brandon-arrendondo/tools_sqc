@@ -26,7 +26,7 @@ fn main() -> Result<()> {
         .version("0.1.0")
         .arg(
             Arg::new("path")
-                .help("Path to the directory or git repository to analyze")
+                .help("Path to the file, directory, or git repository to analyze")
                 .value_name("PATH")
                 .default_value(".")
                 .index(1),

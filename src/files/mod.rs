@@ -48,7 +48,13 @@ impl ProjectSource {
     pub fn source_type(&self) -> &str {
         match self {
             ProjectSource::Git(_) => "git repository",
-            ProjectSource::Directory(_) => "directory",
+            ProjectSource::Directory(dir_source) => {
+                if dir_source.is_file() {
+                    "file"
+                } else {
+                    "directory"
+                }
+            }
         }
     }
 }
