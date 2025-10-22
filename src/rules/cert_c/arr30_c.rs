@@ -1,3 +1,33 @@
+//! ARR30-C: Do not form or use out-of-bounds pointers or array subscripts
+//!
+//! This rule checker detects various patterns of out-of-bounds array access including:
+//! - Static array bounds violations
+//! - Dynamic allocation bounds violations
+//! - Pointer arithmetic beyond buffer bounds
+//! - Variable Length Array (VLA) violations
+//! - Function parameter array access without bounds checking
+//! - Recursive function array access
+//! - Dangerous library function usage (strcpy, sprintf, gets, etc.)
+//!
+//! # Known Limitations
+//!
+//! ## Macro Expansion
+//! This implementation does NOT expand C preprocessor macros before analysis.
+//! Array accesses that occur within macro expansions may not be detected.
+//!
+//! Example that may NOT be detected:
+//! ```c
+//! #define UNSAFE_ACCESS(arr, idx) arr[idx + 5]
+//! int data[8];
+//! UNSAFE_ACCESS(data, 6);  // Expands to data[11] - out of bounds!
+//! ```
+//!
+//! Proper detection would require:
+//! - Running the C preprocessor (cpp or clang -E) before parsing
+//! - Mapping violations back to original source locations via #line directives
+//!
+//! This is a complex feature that may be added in future versions.
+
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
@@ -50,125 +80,277 @@ struct PointerAlias {
 }
 
 impl Arr30C {
-    /// Analyze all buffer allocations in the source code
+    /// Analyze all buffer allocations in the source code using AST traversal
     fn analyze_buffer_allocations(&self, source: &str) -> HashMap<String, BufferInfo> {
         let mut buffers = HashMap::new();
-        let lines: Vec<&str> = source.lines().collect();
 
-        // First pass: collect typedef information
+        // Parse the source code into AST
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).expect("Error loading C grammar");
+
+        let tree = match parser.parse(source, None) {
+            Some(t) => t,
+            None => return buffers,
+        };
+
+        let root_node = tree.root_node();
+
+        // First pass: collect typedef information (still needed for typedef arrays)
         let typedefs = self.analyze_typedefs(source);
 
-        // Also analyze struct member arrays declared with typedefs
+        // Analyze struct member arrays declared with typedefs
         self.analyze_struct_typedef_members(source, &typedefs, &mut buffers);
 
-        for (line_idx, line) in lines.iter().enumerate() {
-            // Pattern 1: Array declarations - type arr[SIZE]
-            if let Some(buffer) = self.parse_array_declaration(line, line_idx, &typedefs) {
-                buffers.insert(buffer.name.clone(), buffer);
-            }
-
-            // Pattern 2: malloc allocations - ptr = malloc(SIZE)
-            if let Some(buffer) = self.parse_malloc_allocation(line, line_idx) {
-                buffers.insert(buffer.name.clone(), buffer);
-            }
-
-            // Pattern 3: calloc allocations - ptr = calloc(COUNT, SIZE)
-            if let Some(buffer) = self.parse_calloc_allocation(line, line_idx) {
-                buffers.insert(buffer.name.clone(), buffer);
-            }
-
-            // Pattern 4: realloc allocations - ptr = realloc(ptr, SIZE)
-            if let Some(buffer) = self.parse_realloc_allocation(line, line_idx) {
-                buffers.insert(buffer.name.clone(), buffer);
-            }
-        }
+        // Traverse AST to find all declarations
+        self.extract_buffers_from_ast(&root_node, source, &mut buffers, &typedefs);
 
         buffers
     }
 
-    /// Analyze pointer aliases in the source code
-    fn analyze_pointer_aliases(&self, source: &str, buffers: &HashMap<String, BufferInfo>) -> HashMap<String, PointerAlias> {
-        let mut aliases = HashMap::new();
-        let lines: Vec<&str> = source.lines().collect();
-
-        for line in lines.iter() {
-            // Pattern 1: Direct pointer assignment: int *ptr = arr;
-            if let Some(alias) = self.parse_direct_pointer_assignment(line, buffers) {
-                aliases.insert(alias.alias_name.clone(), alias);
+    /// Recursively extract buffer allocations from AST
+    fn extract_buffers_from_ast(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &mut HashMap<String, BufferInfo>,
+        typedefs: &HashMap<String, usize>
+    ) {
+        // Check if this node is a declaration
+        if node.kind() == "declaration" {
+            if let Some(buffer) = self.extract_buffer_from_declaration_with_typedefs(node, source, typedefs) {
+                // Handle realloc: keep existing buffer if it has smaller size
+                if let Some(existing) = buffers.get(&buffer.name) {
+                    match (&existing.size, &buffer.size) {
+                        (BufferSize::DynamicCalculated(old_size), BufferSize::DynamicCalculated(new_size)) => {
+                            if new_size < old_size {
+                                buffers.insert(buffer.name.clone(), buffer);
+                            }
+                        }
+                        _ => {
+                            buffers.insert(buffer.name.clone(), buffer);
+                        }
+                    }
+                } else {
+                    buffers.insert(buffer.name.clone(), buffer);
+                }
             }
 
-            // Pattern 2: Cast assignment: int *ptr = (int *)buffer;
-            if let Some(alias) = self.parse_cast_pointer_assignment(line, buffers) {
-                aliases.insert(alias.alias_name.clone(), alias);
+            // Also check for VLA declarations using typedef
+            // VLAs need special handling as they may not be caught by AST alone
+            if let Some(vla_buffer) = self.extract_vla_from_declaration(node, source, typedefs) {
+                buffers.insert(vla_buffer.name.clone(), vla_buffer);
             }
         }
+
+        // Check if this node is a struct_specifier to extract member arrays
+        if node.kind() == "struct_specifier" {
+            self.extract_struct_member_arrays(node, source, buffers);
+        }
+
+        // Recursively process children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.extract_buffers_from_ast(&child, source, buffers, typedefs);
+            }
+        }
+    }
+
+    /// Extract struct member arrays from struct_specifier node
+    /// Handles patterns like:
+    /// typedef struct {
+    ///     char name[10];    // Extracts "name" with size 10
+    ///     int scores[5];    // Extracts "scores" with size 5
+    /// } Student;
+    fn extract_struct_member_arrays(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &mut HashMap<String, BufferInfo>
+    ) {
+        // Find the field_declaration_list child node
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "field_declaration_list" {
+                    // Process each field_declaration within the list
+                    for j in 0..child.child_count() {
+                        if let Some(field) = child.child(j) {
+                            if field.kind() == "field_declaration" {
+                                // Extract array member from field_declaration
+                                if let Some(member_info) = self.extract_array_from_field_declaration(&field, source) {
+                                    buffers.insert(member_info.name.clone(), member_info);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Extract array information from a field_declaration node
+    /// Handles patterns like: char name[10]; or int scores[5];
+    fn extract_array_from_field_declaration(
+        &self,
+        node: &Node,
+        source: &str
+    ) -> Option<BufferInfo> {
+        // Look for array_declarator within the field_declaration
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "array_declarator" {
+                    // Extract member name and size from array_declarator
+                    let mut member_name: Option<String> = None;
+                    let mut array_size: Option<usize> = None;
+
+                    for j in 0..child.child_count() {
+                        if let Some(declarator_child) = child.child(j) {
+                            match declarator_child.kind() {
+                                "field_identifier" => {
+                                    // Struct member names use field_identifier
+                                    member_name = Some(source[declarator_child.start_byte()..declarator_child.end_byte()].to_string());
+                                }
+                                "identifier" if j == 0 => {
+                                    // Could also be a regular identifier in some cases
+                                    member_name = Some(source[declarator_child.start_byte()..declarator_child.end_byte()].to_string());
+                                }
+                                "number_literal" => {
+                                    // Array size
+                                    let size_str = &source[declarator_child.start_byte()..declarator_child.end_byte()];
+                                    array_size = size_str.parse().ok();
+                                }
+                                _ => {}
+                            }
+                        }
+                    }
+
+                    // If we found both name and size, create BufferInfo
+                    if let (Some(name), Some(size)) = (member_name, array_size) {
+                        return Some(BufferInfo {
+                            name,
+                            size: BufferSize::Static(size),
+                            element_type: "struct_member".to_string(),
+                            allocation_line: node.start_position().row + 1,
+                        });
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract VLA (Variable Length Array) from declaration node
+    fn extract_vla_from_declaration(
+        &self,
+        node: &Node,
+        source: &str,
+        _typedefs: &HashMap<String, usize>
+    ) -> Option<BufferInfo> {
+        // Look for array_declarator with identifier size (not number_literal)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "init_declarator" {
+                    // Check first child for array_declarator
+                    if let Some(declarator) = child.child(0) {
+                        if declarator.kind() == "array_declarator" {
+                            return self.extract_vla_from_array_declarator(&declarator, source);
+                        }
+                    }
+                } else if child.kind() == "array_declarator" {
+                    return self.extract_vla_from_array_declarator(&child, source);
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract VLA from array_declarator if size is symbolic
+    fn extract_vla_from_array_declarator(
+        &self,
+        node: &Node,
+        source: &str
+    ) -> Option<BufferInfo> {
+        let mut var_name: Option<String> = None;
+        let mut size_expr: Option<String> = None;
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "identifier" if i == 0 => {
+                        var_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                    }
+                    "identifier" if i > 0 => {
+                        // This is a symbolic size (VLA)
+                        let expr = &source[child.start_byte()..child.end_byte()];
+                        // Verify it's not a number
+                        if !expr.chars().all(|c| c.is_numeric()) {
+                            size_expr = Some(expr.to_string());
+                        }
+                    }
+                    "number_literal" => {
+                        // This is a static size, not a VLA
+                        return None;
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        if let (Some(name), Some(expr)) = (var_name, size_expr) {
+            Some(BufferInfo {
+                name,
+                size: BufferSize::Symbolic(expr),
+                element_type: "unknown".to_string(),
+                allocation_line: node.start_position().row + 1,
+            })
+        } else {
+            None
+        }
+    }
+
+    /// Analyze pointer aliases in the source code using AST traversal
+    fn analyze_pointer_aliases(&self, source: &str, buffers: &HashMap<String, BufferInfo>) -> HashMap<String, PointerAlias> {
+        let mut aliases = HashMap::new();
+
+        // Parse the source code into AST
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).expect("Error loading C grammar");
+
+        let tree = match parser.parse(source, None) {
+            Some(t) => t,
+            None => return aliases,
+        };
+
+        let root_node = tree.root_node();
+
+        // Traverse AST to find all pointer alias declarations
+        self.extract_aliases_from_ast(&root_node, source, buffers, &mut aliases);
 
         aliases
     }
 
-    /// Parse direct pointer assignments like: int *ptr = arr;
-    fn parse_direct_pointer_assignment(&self, line: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
-        // Pattern: type *ptr_name = buffer_name;
-        let pattern = r"\w+\s+\*\s*(\w+)\s*=\s*(\w+)\s*;";
-
-        if let Ok(re) = regex::Regex::new(pattern) {
-            if let Some(caps) = re.captures(line) {
-                if let (Some(ptr_match), Some(buf_match)) = (caps.get(1), caps.get(2)) {
-                    let ptr_name = ptr_match.as_str();
-                    let buf_name = buf_match.as_str();
-
-                    // Check if buf_name is a tracked buffer
-                    if buffers.contains_key(buf_name) {
-                        return Some(PointerAlias {
-                            alias_name: ptr_name.to_string(),
-                            original_buffer: buf_name.to_string(),
-                            element_size_bytes: None, // No type conversion
-                        });
-                    }
-                }
+    /// Recursively extract pointer aliases from AST
+    fn extract_aliases_from_ast(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+        aliases: &mut HashMap<String, PointerAlias>
+    ) {
+        // Check if this node is a declaration
+        if node.kind() == "declaration" {
+            if let Some(alias) = self.extract_alias_from_declaration(node, source, buffers) {
+                aliases.insert(alias.alias_name.clone(), alias);
             }
         }
 
-        None
-    }
-
-    /// Parse cast pointer assignments like: int *int_array = (int *)buffer;
-    fn parse_cast_pointer_assignment(&self, line: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
-        // Pattern: type *ptr_name = (type *)buffer_name;
-        let pattern = r"(\w+)\s+\*\s*(\w+)\s*=\s*\(\s*\w+\s*\*\s*\)\s*(\w+)\s*;";
-
-        if let Ok(re) = regex::Regex::new(pattern) {
-            if let Some(caps) = re.captures(line) {
-                if let (Some(type_match), Some(ptr_match), Some(buf_match)) = (caps.get(1), caps.get(2), caps.get(3)) {
-                    let cast_type = type_match.as_str();
-                    let ptr_name = ptr_match.as_str();
-                    let buf_name = buf_match.as_str();
-
-                    // Check if buf_name is a tracked buffer
-                    if buffers.contains_key(buf_name) {
-                        // Determine element size based on cast type
-                        let elem_size = match cast_type {
-                            "char" => Some(1),
-                            "short" => Some(2),
-                            "int" => Some(4),
-                            "long" => Some(8),
-                            "float" => Some(4),
-                            "double" => Some(8),
-                            _ => None, // Unknown type - can't determine element size
-                        };
-
-                        return Some(PointerAlias {
-                            alias_name: ptr_name.to_string(),
-                            original_buffer: buf_name.to_string(),
-                            element_size_bytes: elem_size,
-                        });
-                    }
-                }
+        // Recursively process children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.extract_aliases_from_ast(&child, source, buffers, aliases);
             }
         }
-
-        None
     }
+
 
     /// Analyze typedef declarations for array types
     fn analyze_typedefs(&self, source: &str) -> HashMap<String, usize> {
@@ -225,248 +407,11 @@ impl Arr30C {
         }
     }
 
-    /// Parse VLA (Variable Length Array) declarations: int arr[n];
-    fn parse_vla_declaration(&self, line: &str, line_idx: usize) -> Option<BufferInfo> {
-        // Pattern: type var[variable_name]
-        let vla_pattern = r"(?:const\s+)?(?:volatile\s+)?(?:unsigned\s+)?(?:signed\s+)?(\w+)\s+(\w+)\s*\[\s*([a-zA-Z_]\w*)\s*\]";
 
-        if let Ok(re) = regex::Regex::new(vla_pattern) {
-            if let Some(caps) = re.captures(line) {
-                if let (Some(var_name), Some(size_var)) = (caps.get(2), caps.get(3)) {
-                    // Make sure size_var is not a digit (which would be caught by regular parsing)
-                    let size_var_str = size_var.as_str();
-                    if !size_var_str.chars().all(|c| c.is_numeric()) {
-                        return Some(BufferInfo {
-                            name: var_name.as_str().to_string(),
-                            size: BufferSize::Symbolic(size_var_str.to_string()),
-                            element_type: caps.get(1).map(|m| m.as_str().to_string()).unwrap_or_else(|| "unknown".to_string()),
-                            allocation_line: line_idx + 1,
-                        });
-                    }
-                }
-            }
-        }
 
-        None
-    }
-
-    /// Parse typedef array usage: TypedefName var;
-    fn parse_typedef_usage(&self, line: &str, line_idx: usize, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
-        // Pattern 1: Direct typedef usage (e.g., "IntArray local_array = ...")
-        // Pattern 2: Struct member typedef usage (e.g., "    IntArray numbers;")
-
-        let patterns = [
-            r"^\s*(\w+)\s+(\w+)\s*[=;{]",  // TypedefName varname = ... or TypedefName varname; or = {
-        ];
-
-        for pattern in &patterns {
-            if let Ok(re) = regex::Regex::new(pattern) {
-                if let Some(caps) = re.captures(line) {
-                    if let (Some(type_match), Some(var_match)) = (caps.get(1), caps.get(2)) {
-                        let type_name = type_match.as_str();
-                        let var_name = var_match.as_str();
-
-                        // Filter out C keywords that might match the pattern
-                        let c_keywords = ["if", "for", "while", "switch", "return", "int", "char", "void", "float", "double", "struct", "union", "enum", "const", "static", "extern", "volatile", "unsigned", "signed", "long", "short"];
-                        if c_keywords.contains(&type_name) {
-                            continue;
-                        }
-
-                        // Check if type_name is a known typedef
-                        if let Some(&size) = typedefs.get(type_name) {
-                            return Some(BufferInfo {
-                                name: var_name.to_string(),
-                                size: BufferSize::Static(size),
-                                element_type: type_name.to_string(),
-                                allocation_line: line_idx + 1,
-                            });
-                        }
-                    }
-                }
-            }
-        }
-
-        None
-    }
-
-    /// Parse array declarations like: int arr[10];
-    fn parse_array_declaration(&self, line: &str, line_idx: usize, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
-        // First, check for VLA declarations: type var[variable]
-        if let Some(vla_info) = self.parse_vla_declaration(line, line_idx) {
-            return Some(vla_info);
-        }
-
-        // Check for typedef-based declarations: TypedefName var; or TypedefName var;
-        if let Some(typedef_info) = self.parse_typedef_usage(line, line_idx, typedefs) {
-            return Some(typedef_info);
-        }
-
-        // Match patterns like: type var_name[SIZE];
-        // Handle various types including pointers and function pointer arrays
-        let patterns = [
-            // Pattern 1: Full qualifier support - handles extern, static, const, volatile, restrict, thread_local, etc.
-            r"(?:extern\s+)?(?:static\s+)?(?:_Thread_local\s+)?(?:thread_local\s+)?(?:const\s+)?(?:volatile\s+)?(?:restrict\s+)?(?:unsigned\s+)?(?:signed\s+)?(\w+)\s+(?:restrict\s+)?(\w+)\s*\[\s*(\d+)\s*\]",
-
-            // Pattern 2: Struct/union with qualifiers
-            r"(?:extern\s+)?(?:static\s+)?(?:const\s+)?(?:volatile\s+)?(?:struct\s+\w+)\s+(\w+)\s*\[\s*(\d+)\s*\]",
-
-            // Pattern 3: Function pointer arrays with qualifiers: void (*name[SIZE])(...) or int (*name[SIZE])(...)
-            r"(?:static\s+)?(?:const\s+)?(\w+)\s+\(\s*\*\s*(\w+)\s*\[\s*(\d+)\s*\]\s*\)",
-
-            // Pattern 4: Member arrays inside struct/union with qualifiers
-            r"^\s+(?:const\s+)?(?:volatile\s+)?(?:unsigned\s+)?(\w+)\s+(\w+)\s*\[\s*(\d+)\s*\]\s*;",
-
-            // Pattern 5: Atomic and other C11 qualifiers
-            r"(?:_Atomic\s+)?(?:const\s+)?(?:volatile\s+)?(?:unsigned\s+)?(\w+)\s+(\w+)\s*\[\s*(\d+)\s*\]",
-        ];
-
-        for (pattern_idx, pattern) in patterns.iter().enumerate() {
-            if let Ok(re) = regex::Regex::new(pattern) {
-                if let Some(captures) = re.captures(line) {
-                    // Determine which pattern matched and extract name and size accordingly
-                    let (var_name, size_str) = if pattern_idx == 2 {
-                        // Pattern 2 (index 2): Function pointer array pattern
-                        (captures.get(1)?.as_str(), captures.get(2)?.as_str())
-                    } else if pattern_idx == 1 {
-                        // Pattern 1 (index 1): Struct array pattern with 2 capture groups
-                        (captures.get(1)?.as_str(), captures.get(2)?.as_str())
-                    } else if pattern_idx == 3 || captures.len() == 4 {
-                        // Pattern 3 (index 3): Member arrays OR Patterns 0, 4 with 3 capture groups
-                        (captures.get(2)?.as_str(), captures.get(3)?.as_str())
-                    } else {
-                        // Pattern 0 or 4: Regular array patterns with 3 capture groups
-                        (captures.get(2)?.as_str(), captures.get(3)?.as_str())
-                    };
-
-                    let size = size_str.parse().ok()?;
-
-                    let elem_type = if pattern_idx == 2 {
-                        "function_pointer"
-                    } else if pattern_idx == 1 {
-                        "unknown"
-                    } else if captures.len() == 4 {
-                        captures.get(1)?.as_str()
-                    } else {
-                        "unknown"
-                    };
-
-                    return Some(BufferInfo {
-                        name: var_name.to_string(),
-                        size: BufferSize::Static(size),
-                        element_type: elem_type.to_string(),
-                        allocation_line: line_idx + 1,
-                    });
-                }
-            }
-        }
-        None
-    }
-
-    /// Parse malloc allocations and extract size information
-    fn parse_malloc_allocation(&self, line: &str, line_idx: usize) -> Option<BufferInfo> {
-        if !line.contains("malloc") || !line.contains("=") {
-            return None;
-        }
-
-        let var_name = self.extract_variable_name_from_malloc(line)?;
-
-        // Extract malloc argument
-        let malloc_start = line.find("malloc(")?;
-        let args_start = malloc_start + 7;
-        let paren_end = line[args_start..].find(')')?;
-        let malloc_args = &line[args_start..args_start + paren_end];
-
-        let size = self.calculate_malloc_size(malloc_args)?;
-
-        Some(BufferInfo {
-            name: var_name,
-            size,
-            element_type: "unknown".to_string(),
-            allocation_line: line_idx + 1,
-        })
-    }
-
-    /// Parse calloc allocations
-    fn parse_calloc_allocation(&self, line: &str, line_idx: usize) -> Option<BufferInfo> {
-        if !line.contains("calloc") || !line.contains("=") {
-            return None;
-        }
-
-        let var_name = self.extract_variable_name_from_malloc(line)?;
-
-        // Extract calloc arguments: calloc(count, size)
-        let calloc_start = line.find("calloc(")?;
-        let args_start = calloc_start + 7;
-        let paren_end = line[args_start..].find(')')?;
-        let calloc_args = &line[args_start..args_start + paren_end];
-
-        // Parse count and size
-        let parts: Vec<&str> = calloc_args.split(',').collect();
-        if parts.len() == 2 {
-            let count = self.extract_numeric_value(parts[0].trim());
-            let size_expr = parts[1].trim();
-
-            if let Some(count_val) = count {
-                if self.extract_sizeof_value(size_expr).is_some() {
-                    // Store element count, not byte count
-                    return Some(BufferInfo {
-                        name: var_name,
-                        size: BufferSize::DynamicCalculated(count_val),
-                        element_type: "unknown".to_string(),
-                        allocation_line: line_idx + 1,
-                    });
-                }
-            }
-        }
-
-        None
-    }
-
-    /// Parse realloc allocations and extract size information
-    fn parse_realloc_allocation(&self, line: &str, line_idx: usize) -> Option<BufferInfo> {
-        if !line.contains("realloc") || !line.contains("=") {
-            return None;
-        }
-
-        let var_name = self.extract_variable_name_from_malloc(line)?;
-
-        // Extract realloc arguments: realloc(ptr, size)
-        let realloc_start = line.find("realloc(")?;
-        let args_start = realloc_start + 8;
-        let paren_end = line[args_start..].find(')')?;
-        let realloc_args = &line[args_start..args_start + paren_end];
-
-        // Parse the second argument (new size)
-        let parts: Vec<&str> = realloc_args.split(',').collect();
-        if parts.len() == 2 {
-            let new_size_expr = parts[1].trim();
-            let size = self.calculate_malloc_size(new_size_expr)?;
-
-            return Some(BufferInfo {
-                name: var_name,
-                size,
-                element_type: "unknown".to_string(),
-                allocation_line: line_idx + 1,
-            });
-        }
-
-        None
-    }
-
-    /// Extract variable name from malloc/calloc assignment
-    fn extract_variable_name_from_malloc(&self, line: &str) -> Option<String> {
-        // Match patterns like: type *var = malloc(...) or var = malloc(...)
-        let eq_pos = line.find('=')?;
-        let lhs = &line[..eq_pos];
-
-        // Extract the last identifier before =
-        let tokens: Vec<&str> = lhs.split_whitespace().collect();
-        let var_with_stars = tokens.last()?;
-
-        // Remove leading * characters
-        let var_name = var_with_stars.trim_start_matches('*').trim();
-
-        Some(var_name.to_string())
+    /// Extract numeric value from string
+    fn extract_numeric_value(&self, s: &str) -> Option<usize> {
+        s.trim().parse().ok()
     }
 
     /// Calculate size from malloc arguments
@@ -502,11 +447,6 @@ impl Arr30C {
         Some(BufferSize::Dynamic(trimmed.to_string()))
     }
 
-    /// Extract numeric value from string
-    fn extract_numeric_value(&self, s: &str) -> Option<usize> {
-        s.trim().parse().ok()
-    }
-
     /// Extract size from sizeof expression - using common type sizes
     fn extract_sizeof_value(&self, s: &str) -> Option<usize> {
         if !s.contains("sizeof") {
@@ -539,6 +479,14 @@ impl Arr30C {
     /// Get array name from subscript expression node
     fn get_array_name_from_subscript(&self, node: &Node, source: &str) -> Option<String> {
         let array_node = node.child(0)?;
+
+        // If the child is itself a subscript_expression, we need the full text
+        // For nested subscripts like matrix[0][5], this will return "matrix[0]"
+        if array_node.kind() == "subscript_expression" {
+            let text = &source[array_node.start_byte()..array_node.end_byte()];
+            return Some(text.to_string());
+        }
+
         let text = &source[array_node.start_byte()..array_node.end_byte()];
 
         // Check if this is member access (contains '.' or '->')
@@ -566,7 +514,7 @@ impl Arr30C {
 
     /// Get the subscript index value (constant or variable)
     fn get_subscript_index_value(&self, node: &Node, source: &str) -> Option<IndexValue> {
-        let index_node = get_subscript_index(node)?;
+        let index_node = self.get_subscript_index(node)?;
         let index_text = &source[index_node.start_byte()..index_node.end_byte()];
 
         // Try to parse as simple constant (now supports negative indices)
@@ -582,6 +530,11 @@ impl Arr30C {
         // Check if it's an arithmetic expression with variable
         if self.is_arithmetic_expression(index_text) {
             return Some(IndexValue::Expression(index_text.to_string(), None));
+        }
+
+        // Try to resolve variable to a constant value via simple constant propagation
+        if let Some(const_val) = self.try_resolve_variable_to_constant(index_text, node, source) {
+            return Some(IndexValue::Constant(const_val));
         }
 
         // It's a simple variable
@@ -676,6 +629,200 @@ impl Arr30C {
         expr.contains('+') || expr.contains('-') || expr.contains('*') || expr.contains('/')
     }
 
+    /// Attempt to resolve a variable to a constant through simple intraprocedural constant propagation
+    fn try_resolve_variable_to_constant(&self, var_name: &str, current_node: &Node, source: &str) -> Option<isize> {
+        // Check if this variable is a loop counter - if so, don't resolve to constant
+        // Loop counters change value during execution
+        if let Some(for_node) = self.find_containing_for_loop(current_node) {
+            if let Some(loop_var) = self.extract_loop_index_variable(&for_node, source) {
+                if loop_var == var_name {
+                    // This is a loop counter - don't resolve to its initial value
+                    return None;
+                }
+            }
+        }
+
+        // Find enclosing function
+        let func_node = self.find_enclosing_function(current_node)?;
+
+        // Search for assignments to var_name within this function
+        // Look for pattern: var_name = constant_literal
+        let func_text = &source[func_node.start_byte()..func_node.end_byte()];
+
+        // Regex pattern: var_name = digit+ OR var_name = -digit+
+        let pattern = format!(r"\b{}\s*=\s*(-?\d+)", regex::escape(var_name));
+        let re = regex::Regex::new(&pattern).ok()?;
+
+        if let Some(caps) = re.captures(func_text) {
+            if let Some(value_str) = caps.get(1) {
+                return value_str.as_str().parse::<isize>().ok();
+            }
+        }
+
+        None
+    }
+
+    /// Find the enclosing function definition for a given node
+    fn find_enclosing_function<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = node.parent();
+        while let Some(n) = current {
+            if n.kind() == "function_definition" {
+                return Some(n);
+            }
+            current = n.parent();
+        }
+        None
+    }
+
+    /// Check if a variable is a function parameter
+    fn is_function_parameter(&self, subscript_node: &Node, index_text: &str, source: &str) -> bool {
+        // Find enclosing function
+        if let Some(func_node) = self.find_enclosing_function(subscript_node) {
+            // Find parameter_list
+            for i in 0..func_node.child_count() {
+                if let Some(child) = func_node.child(i) {
+                    if child.kind() == "function_declarator" {
+                        // Look for parameter_list within function_declarator
+                        for j in 0..child.child_count() {
+                            if let Some(param_list) = child.child(j) {
+                                if param_list.kind() == "parameter_list" {
+                                    // Check if the index variable appears in parameter list
+                                    let param_text = &source[param_list.start_byte()..param_list.end_byte()];
+                                    // Match parameter name (handle both "type name" and "type name[]")
+                                    let param_pattern = format!(r"\b{}\b", regex::escape(index_text));
+                                    if let Ok(re) = regex::Regex::new(&param_pattern) {
+                                        return re.is_match(param_text);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if function has ANY bounds validation for a parameter
+    fn has_function_parameter_bounds_check(&self, func_node: &Node, param_name: &str, source: &str) -> bool {
+        let func_text = &source[func_node.start_byte()..func_node.end_byte()];
+
+        // Check for various bounds checking patterns:
+        // 1. if (param < size) or if (param >= size) return
+        // 2. Loop with param in condition: for (i = 0; i < size; i++)
+        // 3. Presence of size/length/count parameter
+
+        let bounds_patterns = [
+            format!(r"{}\s*<\s*\w+", regex::escape(param_name)),   // param < size
+            format!(r"\w+\s*>\s*{}", regex::escape(param_name)),   // size > param
+            format!(r"{}\s*>=\s*\w+", regex::escape(param_name)),  // param >= size (with return/check)
+            format!(r"if\s*\([^)]*{}", regex::escape(param_name)), // if statement with param
+        ];
+
+        for pattern in &bounds_patterns {
+            if let Ok(re) = regex::Regex::new(pattern) {
+                if re.is_match(func_text) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Check if array access is within a recursive function
+    fn is_recursive_array_access(&self, subscript_node: &Node, source: &str) -> bool {
+        // Find enclosing function
+        if let Some(func_node) = self.find_enclosing_function(subscript_node) {
+            // Get function name
+            for i in 0..func_node.child_count() {
+                if let Some(child) = func_node.child(i) {
+                    if child.kind() == "function_declarator" {
+                        // Get function name (first child of function_declarator)
+                        if let Some(name_node) = child.child(0) {
+                            let func_name = &source[name_node.start_byte()..name_node.end_byte()];
+
+                            // Search function body for calls to itself
+                            let func_text = &source[func_node.start_byte()..func_node.end_byte()];
+
+                            // Look for function calls in the body (skip the declaration part)
+                            // Pattern: function_name(
+                            let call_pattern = format!(r"{}\s*\(", regex::escape(func_name));
+                            if let Ok(re) = regex::Regex::new(&call_pattern) {
+                                // Count matches - if more than 1, it's recursive (declaration + call)
+                                let matches: Vec<_> = re.find_iter(func_text).collect();
+                                return matches.len() > 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a recursive function has dangerous index modification patterns
+    /// Returns true if recursion modifies indices in a way that will exceed bounds
+    fn has_recursive_index_modification(&self, subscript_node: &Node, index_text: &str, source: &str, array_size: usize) -> bool {
+        if !self.is_recursive_array_access(subscript_node, source) {
+            return false;
+        }
+
+        if let Some(func_node) = self.find_enclosing_function(subscript_node) {
+            let func_text = &source[func_node.start_byte()..func_node.end_byte()];
+
+            // Get function name for recursive call pattern
+            let func_name = match self.get_function_name(&func_node, source) {
+                Some(name) => name,
+                None => return false,
+            };
+
+            // Look for recursive calls with index modifications like: func(arr, index + 2, ...)
+            // Pattern: function_name(.*index \+ \d+
+            let modification_pattern = format!(r"{}\s*\([^)]*{}\s*\+\s*(\d+)", regex::escape(&func_name), regex::escape(index_text));
+            if let Ok(re) = regex::Regex::new(&modification_pattern) {
+                if let Some(caps) = re.captures(func_text) {
+                    if let Some(increment) = caps.get(1) {
+                        if let Ok(inc_val) = increment.as_str().parse::<usize>() {
+                            // Check if there's a depth limit
+                            // Look for patterns like: if (depth > N) return
+                            let depth_pattern = r"if\s*\(\s*\w+\s*>\s*(\d+)\s*\)";
+                            if let Ok(depth_re) = regex::Regex::new(depth_pattern) {
+                                if let Some(depth_caps) = depth_re.captures(func_text) {
+                                    if let Some(max_depth) = depth_caps.get(1) {
+                                        if let Ok(max_d) = max_depth.as_str().parse::<usize>() {
+                                            // Calculate maximum index: inc_val * max_d
+                                            // If this exceeds array_size, it's a violation
+                                            return inc_val * max_d >= array_size;
+                                        }
+                                    }
+                                }
+                            }
+                            // No depth limit found, or couldn't parse - flag as dangerous
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Get function name from function_definition node
+    fn get_function_name(&self, func_node: &Node, source: &str) -> Option<String> {
+        for i in 0..func_node.child_count() {
+            if let Some(child) = func_node.child(i) {
+                if child.kind() == "function_declarator" {
+                    if let Some(name_node) = child.child(0) {
+                        return Some(source[name_node.start_byte()..name_node.end_byte()].to_string());
+                    }
+                }
+            }
+        }
+        None
+    }
+
     /// Enhanced bounds check that considers actual buffer size
     fn has_proper_bounds_check(&self, node: &Node, source: &str, buffer_size: usize) -> bool {
         // Check loop-based bounds checking
@@ -697,7 +844,30 @@ impl Arr30C {
 
     /// Check if there's any form of dynamic bounds checking
     fn has_dynamic_bounds_check(&self, node: &Node, source: &str) -> bool {
-        has_bounds_check(node, "", source)
+        // Check for loop-based bounds checking
+        if let Some(for_node) = self.find_containing_for_loop(node) {
+            // Use empty string for index to do generic check
+            if self.check_for_loop_bounds_generic(&for_node, source) {
+                return true;
+            }
+        }
+
+        // Check for conditional bounds checking
+        if let Some(if_node) = self.find_containing_if_statement(node) {
+            if self.check_if_bounds_generic(&if_node, source) {
+                return true;
+            }
+        }
+
+        // Check for function-level bounds checking (parameter validation)
+        if let Some(func_node) = self.find_enclosing_function(node) {
+            let function_text = &source[func_node.start_byte()..func_node.end_byte()];
+            if function_text.contains("size") || function_text.contains("length") || function_text.contains("count") {
+                return true;
+            }
+        }
+
+        false
     }
 
     /// Find containing for loop
@@ -733,8 +903,41 @@ impl Arr30C {
             return true;
         }
 
-        // Generic bounds checking
-        check_for_loop_bounds(for_node, "", source)
+        // Extract the loop index variable name
+        let index_var = self.extract_loop_index_variable(for_node, source);
+        let index_text = index_var.as_deref().unwrap_or("");
+
+        // Check loop condition for safe bounds
+        for i in 0..for_node.child_count() {
+            if let Some(child) = for_node.child(i) {
+                if child.kind() == "binary_expression" || child.kind() == "comparison_expression" {
+                    let condition_text = &source[child.start_byte()..child.end_byte()];
+                    if self.condition_contains_safe_bounds(condition_text, index_text) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        // Also check inside parenthesized expressions
+        for i in 0..for_node.child_count() {
+            if let Some(child) = for_node.child(i) {
+                if child.kind() == "parenthesized_expression" {
+                    for j in 0..child.child_count() {
+                        if let Some(grandchild) = child.child(j) {
+                            if grandchild.kind() == "binary_expression" || grandchild.kind() == "comparison_expression" {
+                                let condition_text = &source[grandchild.start_byte()..grandchild.end_byte()];
+                                if self.condition_contains_safe_bounds(condition_text, index_text) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        false
     }
 
     /// Check if statement bounds against specific buffer size
@@ -747,6 +950,217 @@ impl Arr30C {
         }
 
         false
+    }
+
+    /// Extract the index variable name from a for loop
+    /// For loops like `for (int i = 0; i < 10; i++)`, extracts "i"
+    fn extract_loop_index_variable(&self, for_node: &Node, source: &str) -> Option<String> {
+        // Look for the loop initialization to find the index variable
+        for i in 0..for_node.child_count() {
+            if let Some(child) = for_node.child(i) {
+                // Look for declaration or assignment in loop init
+                if child.kind() == "declaration" {
+                    // Pattern: int i = 0
+                    for j in 0..child.child_count() {
+                        if let Some(declarator) = child.child(j) {
+                            if declarator.kind() == "init_declarator" {
+                                if let Some(identifier) = declarator.child(0) {
+                                    if identifier.kind() == "identifier" {
+                                        return Some(source[identifier.start_byte()..identifier.end_byte()].to_string());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else if child.kind() == "assignment_expression" {
+                    // Pattern: i = 0
+                    if let Some(left) = child.child(0) {
+                        if left.kind() == "identifier" {
+                            return Some(source[left.start_byte()..left.end_byte()].to_string());
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract buffer allocation from assignment expression
+    /// Handles patterns like: array[i] = malloc(size * sizeof(type))
+    fn extract_buffer_from_assignment(&self, node: &Node, source: &str) -> Option<(String, BufferInfo)> {
+        // Check if this is an assignment with malloc/calloc on the right side
+        let mut left_node: Option<Node> = None;
+        let mut right_node: Option<Node> = None;
+        let mut found_assign = false;
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "=" {
+                    found_assign = true;
+                } else if !found_assign {
+                    left_node = Some(child);
+                } else if child.kind() == "call_expression" {
+                    right_node = Some(child);
+                    break;
+                }
+            }
+        }
+
+        if !found_assign {
+            return None;
+        }
+
+        let left = left_node?;
+        let right = right_node?;
+
+        // Check if left side is a subscript expression (e.g., matrix[i])
+        if left.kind() != "subscript_expression" {
+            return None;
+        }
+
+        // Check if right side is malloc/calloc
+        let func_name_node = right.child(0)?;
+        let func_name = &source[func_name_node.start_byte()..func_name_node.end_byte()];
+
+        if func_name != "malloc" && func_name != "calloc" {
+            return None;
+        }
+
+        // Extract the base array name from subscript
+        let base_array = self.get_base_array_from_subscript(&left, source)?;
+
+        // Extract allocation size from malloc/calloc
+        let buffer_size = self.extract_malloc_size_from_call(&right, source)?;
+
+        // Create a wildcard buffer name: base_array[*]
+        let buffer_name = format!("{}[*]", base_array);
+
+        let buffer_info = BufferInfo {
+            name: buffer_name.clone(),
+            size: buffer_size,
+            element_type: "unknown".to_string(),
+            allocation_line: node.start_position().row + 1,
+        };
+
+        Some((buffer_name, buffer_info))
+    }
+
+    /// Get base array name from subscript expression (e.g., "matrix" from "matrix[i]")
+    fn get_base_array_from_subscript(&self, node: &Node, source: &str) -> Option<String> {
+        let array_node = node.child(0)?;
+        if array_node.kind() == "identifier" {
+            let text = &source[array_node.start_byte()..array_node.end_byte()];
+            return Some(text.to_string());
+        }
+        None
+    }
+
+    /// Get index text from subscript expression
+    fn get_subscript_index_text(&self, node: &Node, source: &str) -> Option<String> {
+        let index_node = self.get_subscript_index(node)?;
+        let text = &source[index_node.start_byte()..index_node.end_byte()];
+        Some(text.to_string())
+    }
+
+    /// Extract malloc size from call expression
+    fn extract_malloc_size_from_call(&self, node: &Node, source: &str) -> Option<BufferSize> {
+        // Find argument_list
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "argument_list" {
+                    // Get first non-delimiter child
+                    for j in 0..child.child_count() {
+                        if let Some(arg) = child.child(j) {
+                            if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                                let arg_text = &source[arg.start_byte()..arg.end_byte()];
+                                return self.calculate_malloc_size(arg_text);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Get buffer name from a subscript expression for lookup
+    /// For matrix[0], tries both "matrix[0]" and "matrix[*]"
+    /// Returns the wildcard pattern for now
+    fn get_subscript_buffer_name(&self, node: &Node, source: &str) -> Option<String> {
+        // Extract base array name
+        let base_name = self.get_base_array_from_subscript(node, source)?;
+
+        // Return wildcard pattern for lookup
+        Some(format!("{}[*]", base_name))
+    }
+
+    /// Check nested subscript expressions (multi-dimensional array access)
+    /// For matrix[i][j], checks both:
+    /// 1. Is i within bounds of matrix?
+    /// 2. Is j within bounds of matrix[i]?
+    fn check_nested_subscript(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Get the inner subscript node (matrix[i])
+        if let Some(inner_node) = node.child(0) {
+            if inner_node.kind() == "subscript_expression" {
+                // Step 1: Check the inner subscript bounds (matrix[i])
+                violations.extend(self.check_array_subscript(&inner_node, source, buffers, aliases));
+
+                // Step 2: Get the buffer name for the inner subscript result
+                // For matrix[0], this should look up "matrix[*]" in buffers
+                if let Some(inner_buffer_name) = self.get_subscript_buffer_name(&inner_node, source) {
+                    if let Some(inner_buffer) = buffers.get(&inner_buffer_name) {
+                        // Step 3: Check the outer index against the inner buffer's size
+                        if let Some(outer_index) = self.get_subscript_index_value(node, source) {
+                            let is_violation = match &inner_buffer.size {
+                                BufferSize::Static(size) | BufferSize::DynamicCalculated(size) => {
+                                    match &outer_index {
+                                        IndexValue::Constant(idx) => {
+                                            *idx < 0 || (*idx as usize) >= *size
+                                        }
+                                        IndexValue::Expression(_, Some(eval_idx)) => {
+                                            *eval_idx < 0 || (*eval_idx as usize) >= *size
+                                        }
+                                        IndexValue::Expression(expr, None) => {
+                                            self.check_expression_bounds(expr, *size)
+                                        }
+                                        IndexValue::Variable(_var) => {
+                                            // Check for bounds validation
+                                            !self.has_proper_bounds_check(node, source, *size)
+                                        }
+                                        IndexValue::Unknown => false,
+                                    }
+                                }
+                                _ => false,
+                            };
+
+                            if is_violation {
+                                // Get the full array name for error message
+                                let full_array_name = &source[inner_node.start_byte()..inner_node.end_byte()];
+
+                                let msg = match outer_index {
+                                    IndexValue::Constant(idx) =>
+                                        format!("Out-of-bounds array access at index {}", idx),
+                                    IndexValue::Expression(ref expr, Some(eval_idx)) =>
+                                        format!("Out-of-bounds array access: '{}' evaluates to {}", expr, eval_idx),
+                                    IndexValue::Expression(ref expr, None) =>
+                                        format!("Potentially unsafe array access with expression '{}'", expr),
+                                    IndexValue::Variable(ref var) =>
+                                        format!("Potentially unsafe array access with variable index '{}'", var),
+                                    IndexValue::Unknown =>
+                                        "Potentially unsafe array access".to_string(),
+                                };
+
+                                violations.push(self.create_violation(node, full_array_name, inner_buffer, &msg));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        violations
     }
 
     /// Create a violation record
@@ -777,8 +1191,39 @@ impl Arr30C {
     fn check_array_subscript(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
+        // Check if this is a nested subscript expression (e.g., matrix[0][5])
+        if let Some(child) = node.child(0) {
+            if child.kind() == "subscript_expression" {
+                // Delegate to nested subscript handler
+                return self.check_nested_subscript(node, source, buffers, aliases);
+            }
+        }
+
         if let Some(array_name) = self.get_array_name_from_subscript(node, source) {
             if let Some(index) = self.get_subscript_index_value(node, source) {
+                // Check for function parameter violations FIRST, even if buffer not tracked
+                // This handles cases like: void func(int arr[], int index) { arr[index]; }
+                if let IndexValue::Variable(ref var) = index {
+                    if self.is_function_parameter(node, var, source) {
+                        if let Some(func_node) = self.find_enclosing_function(node) {
+                            if !self.has_function_parameter_bounds_check(&func_node, var, source) {
+                                // Create a violation for unvalidated function parameter
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::High,
+                                    message: format!("Potentially unsafe array access with unvalidated function parameter index '{}'", var),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Add bounds checking for function parameter before using as array index.".to_string()),
+                                });
+                                return violations;
+                            }
+                        }
+                    }
+                }
+
                 // Try to resolve alias first
                 let (actual_buffer_name, element_size_bytes) = if let Some(alias) = aliases.get(&array_name) {
                     (alias.original_buffer.as_str(), alias.element_size_bytes)
@@ -815,9 +1260,24 @@ impl Arr30C {
                                     // Expression with variable component - analyze it
                                     self.check_expression_bounds(expr, effective_size)
                                 }
-                                IndexValue::Variable(_) => {
-                                    // Variable index - check for bounds checking
-                                    !self.has_proper_bounds_check(node, source, effective_size)
+                                IndexValue::Variable(var) => {
+                                    // First, check for recursive function with index modification
+                                    if self.has_recursive_index_modification(node, var, source, effective_size) {
+                                        true
+                                    } else if self.is_function_parameter(node, var, source) {
+                                        // Function parameters used as indices without bounds checking are high risk
+                                        // Check if the function has ANY bounds validation
+                                        if let Some(func_node) = self.find_enclosing_function(node) {
+                                            // Only flag if there's NO bounds checking for this parameter
+                                            !self.has_function_parameter_bounds_check(&func_node, var, source)
+                                        } else {
+                                            // Can't find function, conservatively flag
+                                            true
+                                        }
+                                    } else {
+                                        // Variable index - check for bounds checking
+                                        !self.has_proper_bounds_check(node, source, effective_size)
+                                    }
                                 }
                                 IndexValue::Unknown => false,
                             }
@@ -1037,33 +1497,6 @@ impl Arr30C {
         text.contains("+=") || (text.contains('=') && text.contains('+'))
     }
 
-    /// Check pointer dereference for bounds violations
-    fn check_pointer_dereference(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, _aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
-        let violations = Vec::new();
-
-        // Get the pointer being dereferenced
-        if let Some(ptr_node) = node.child(1) {
-            let ptr_text = &source[ptr_node.start_byte()..ptr_node.end_byte()];
-            let ptr_name = ptr_text.trim();
-
-            // Check if this pointer has been moved beyond its bounds via pointer arithmetic
-            // This requires tracking pointer modifications, which is complex
-            // For now, we check if the pointer exists in our buffer tracking
-            if buffers.contains_key(ptr_name) {
-                // Check if there's surrounding pointer arithmetic that moved it out of bounds
-                // This is a simplified check - full implementation would need data flow analysis
-                if let Some(parent) = node.parent() {
-                    let parent_text = &source[parent.start_byte()..parent.end_byte()];
-                    if parent_text.contains("+=") && parent_text.contains(ptr_name) {
-                        // Potential issue - but needs more sophisticated analysis
-                        // Skip for now to avoid false positives
-                    }
-                }
-            }
-        }
-
-        violations
-    }
 }
 
 impl CertRule for Arr30C {
@@ -1108,9 +1541,6 @@ impl Arr30C {
                     violations.extend(self.check_pointer_arithmetic(node, source, &local_buffers, &local_aliases));
                 }
             }
-            "pointer_expression" => {
-                violations.extend(self.check_pointer_dereference(node, source, &local_buffers, &local_aliases));
-            }
             "call_expression" => {
                 violations.extend(self.check_dangerous_function_call(node, source, &local_buffers));
             }
@@ -1124,10 +1554,21 @@ impl Arr30C {
                 // Extract declarations from this child if it's a declaration node
                 if child.kind() == "declaration" {
                     if let Some(new_buffer) = self.extract_buffer_from_declaration(&child, source) {
-                        local_buffers.insert(new_buffer.name.clone(), new_buffer);
+                        // Only insert if not already tracked (line-based analysis takes precedence for realloc tracking)
+                        if !local_buffers.contains_key(&new_buffer.name) {
+                            local_buffers.insert(new_buffer.name.clone(), new_buffer);
+                        }
                     }
                     if let Some(new_alias) = self.extract_alias_from_declaration(&child, source, &local_buffers) {
                         local_aliases.insert(new_alias.alias_name.clone(), new_alias);
+                    }
+                }
+
+                // Track malloc assignments in loops (e.g., matrix[i] = malloc(...))
+                if child.kind() == "assignment_expression" {
+                    if let Some((buf_name, buf_info)) = self.extract_buffer_from_assignment(&child, source) {
+                        // Insert or update the wildcard buffer entry
+                        local_buffers.insert(buf_name, buf_info);
                     }
                 }
 
@@ -1139,7 +1580,28 @@ impl Arr30C {
         violations
     }
 
-    /// Extract buffer information from a declaration AST node
+    /// Extract buffer information from a declaration AST node (with typedef support)
+    fn extract_buffer_from_declaration_with_typedefs(&self, node: &Node, source: &str, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
+        // Look for declarator nodes that contain array or pointer declarations
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "init_declarator" => {
+                        // Handles: int arr[5] = {...};
+                        return self.extract_buffer_from_init_declarator_with_typedefs(&child, source, typedefs);
+                    }
+                    "array_declarator" => {
+                        // Handles: int arr[5];
+                        return self.extract_buffer_from_array_declarator(&child, source);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract buffer information from a declaration AST node (without typedefs)
     fn extract_buffer_from_declaration(&self, node: &Node, source: &str) -> Option<BufferInfo> {
         // Look for declarator nodes that contain array or pointer declarations
         for i in 0..node.child_count() {
@@ -1160,8 +1622,8 @@ impl Arr30C {
         None
     }
 
-    /// Extract buffer from init_declarator node (declarations with initializers)
-    fn extract_buffer_from_init_declarator(&self, node: &Node, source: &str) -> Option<BufferInfo> {
+    /// Extract buffer from init_declarator node (declarations with initializers, with typedef support)
+    fn extract_buffer_from_init_declarator_with_typedefs(&self, node: &Node, source: &str, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
         // First child is the declarator
         let declarator = node.child(0)?;
 
@@ -1192,7 +1654,49 @@ impl Arr30C {
             // Could be a typedef array - check parent declaration for type
             if let Some(parent) = node.parent() {
                 if parent.kind() == "declaration" {
-                    return self.check_typedef_declaration(&parent, var_name, source);
+                    return self.check_typedef_declaration(&parent, var_name, source, typedefs);
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Extract buffer from init_declarator node (declarations with initializers, without typedefs)
+    fn extract_buffer_from_init_declarator(&self, node: &Node, source: &str) -> Option<BufferInfo> {
+        // First child is the declarator
+        let declarator = node.child(0)?;
+
+        if declarator.kind() == "array_declarator" {
+            return self.extract_buffer_from_array_declarator(&declarator, source);
+        } else if declarator.kind() == "pointer_declarator" {
+            // Check if this is a malloc/calloc assignment
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "call_expression" {
+                        return self.extract_buffer_from_malloc_call(&declarator, &child, source);
+                    }
+                }
+            }
+        } else if declarator.kind() == "identifier" {
+            // Simple identifier - could be typedef usage
+            let var_name = &source[declarator.start_byte()..declarator.end_byte()];
+
+            // Check if this declaration has an initializer that's a call_expression (malloc)
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "call_expression" {
+                        return self.extract_buffer_from_malloc_call(&declarator, &child, source);
+                    }
+                }
+            }
+
+            // Could be a typedef array - check parent declaration for type (fallback without typedef cache)
+            if let Some(parent) = node.parent() {
+                if parent.kind() == "declaration" {
+                    // Create empty typedefs map for fallback
+                    let empty_typedefs = HashMap::new();
+                    return self.check_typedef_declaration(&parent, var_name, source, &empty_typedefs);
                 }
             }
         }
@@ -1332,29 +1836,21 @@ impl Arr30C {
     }
 
     /// Check if a declaration uses a typedef array type
-    fn check_typedef_declaration(&self, decl_node: &Node, var_name: &str, source: &str) -> Option<BufferInfo> {
+    fn check_typedef_declaration(&self, decl_node: &Node, var_name: &str, source: &str, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
         // Get type from declaration
         for i in 0..decl_node.child_count() {
             if let Some(child) = decl_node.child(i) {
                 if child.kind() == "type_identifier" {
                     let type_name = &source[child.start_byte()..child.end_byte()];
 
-                    // Try to find typedef definition in source
-                    // This is a simplified check - full implementation would cache typedefs
-                    let typedef_pattern = format!(r"typedef\s+\w+\s+{}\s*\[\s*(\d+)\s*\]", regex::escape(type_name));
-                    if let Ok(re) = regex::Regex::new(&typedef_pattern) {
-                        if let Some(caps) = re.captures(source) {
-                            if let Some(size_str) = caps.get(1) {
-                                if let Ok(size) = size_str.as_str().parse::<usize>() {
-                                    return Some(BufferInfo {
-                                        name: var_name.to_string(),
-                                        size: BufferSize::Static(size),
-                                        element_type: type_name.to_string(),
-                                        allocation_line: decl_node.start_position().row + 1,
-                                    });
-                                }
-                            }
-                        }
+                    // Check if this type is in our cached typedefs
+                    if let Some(&size) = typedefs.get(type_name) {
+                        return Some(BufferInfo {
+                            name: var_name.to_string(),
+                            size: BufferSize::Static(size),
+                            element_type: type_name.to_string(),
+                            allocation_line: decl_node.start_position().row + 1,
+                        });
                     }
                 }
             }
@@ -1728,132 +2224,77 @@ impl Arr30C {
             suggestion: Some("Use safer alternatives like strncpy, strncat, snprintf, or fgets with proper size limits.".to_string()),
         }
     }
-}
 
-// Helper functions from original implementation (kept for compatibility)
-
-fn get_subscript_array<'a>(node: &'a Node<'a>) -> Option<Node<'a>> {
-    node.child(0)
-}
-
-fn get_subscript_index<'a>(node: &'a Node<'a>) -> Option<Node<'a>> {
-    for i in 0..node.child_count() {
-        if let Some(child) = node.child(i) {
-            if child.kind() != "[" && child.kind() != "]" && i > 0 {
-                return Some(child);
-            }
-        }
-    }
-    None
-}
-
-fn has_bounds_check(subscript_node: &Node, index_text: &str, source: &str) -> bool {
-    if has_loop_bounds_check(subscript_node, index_text, source) {
-        return true;
+    /// Get array node from subscript expression
+    fn get_subscript_array<'a>(&self, node: &'a Node<'a>) -> Option<Node<'a>> {
+        node.child(0)
     }
 
-    if has_conditional_bounds_check(subscript_node, index_text, source) {
-        return true;
-    }
-
-    if has_function_bounds_check(subscript_node, index_text, source) {
-        return true;
-    }
-
-    false
-}
-
-fn has_loop_bounds_check(subscript_node: &Node, index_text: &str, source: &str) -> bool {
-    let mut current = subscript_node.parent();
-
-    while let Some(node) = current {
-        if node.kind() == "for_statement" {
-            return check_for_loop_bounds(&node, index_text, source);
-        }
-        current = node.parent();
-    }
-    false
-}
-
-fn check_for_loop_bounds(for_node: &Node, index_text: &str, source: &str) -> bool {
-    for i in 0..for_node.child_count() {
-        if let Some(child) = for_node.child(i) {
-            if child.kind() == "binary_expression" || child.kind() == "comparison_expression" {
-                let condition_text = &source[child.start_byte()..child.end_byte()];
-                if condition_contains_safe_bounds(condition_text, index_text) {
-                    return true;
+    /// Get index node from subscript expression
+    fn get_subscript_index<'a>(&self, node: &'a Node<'a>) -> Option<Node<'a>> {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() != "[" && child.kind() != "]" && i > 0 {
+                    return Some(child);
                 }
             }
         }
+        None
     }
 
-    for i in 0..for_node.child_count() {
-        if let Some(child) = for_node.child(i) {
-            if child.kind() == "parenthesized_expression" {
-                for j in 0..child.child_count() {
-                    if let Some(grandchild) = child.child(j) {
-                        if grandchild.kind() == "binary_expression" || grandchild.kind() == "comparison_expression" {
-                            let condition_text = &source[grandchild.start_byte()..grandchild.end_byte()];
-                            if condition_contains_safe_bounds(condition_text, index_text) {
-                                return true;
-                            }
-                        }
+    /// Check if condition contains safe bounds (< operator, not <=)
+    fn condition_contains_safe_bounds(&self, condition_text: &str, index_text: &str) -> bool {
+        let trimmed_index = index_text.trim();
+
+        // Check for unsafe <= operator first - this is ALWAYS unsafe for array bounds
+        // because it allows accessing the element at index == size, which is out of bounds
+        if condition_text.contains(&format!("{} <=", trimmed_index)) {
+            return false;  // <= is ALWAYS unsafe for array bounds
+        }
+
+        // Check for safe < operator
+        if condition_text.contains(&format!("{} <", trimmed_index)) {
+            return true;
+        }
+
+        // Check for reverse condition: size > index (safe)
+        if condition_text.contains(&format!("> {}", trimmed_index)) {
+            // Make sure it's not >= (which would be unsafe)
+            return !condition_text.contains(&format!(">= {}", trimmed_index));
+        }
+
+        false
+    }
+
+    /// Generic loop bounds check (when index variable is unknown)
+    fn check_for_loop_bounds_generic(&self, for_node: &Node, source: &str) -> bool {
+        for i in 0..for_node.child_count() {
+            if let Some(child) = for_node.child(i) {
+                if child.kind() == "binary_expression" || child.kind() == "comparison_expression" {
+                    let condition_text = &source[child.start_byte()..child.end_byte()];
+                    // Look for any < operator (safe bounds check)
+                    if condition_text.contains(" < ") && !condition_text.contains(" <= ") {
+                        return true;
                     }
                 }
             }
         }
+        false
     }
 
-    false
-}
-
-fn condition_contains_safe_bounds(condition_text: &str, index_text: &str) -> bool {
-    let trimmed_index = index_text.trim();
-
-    if condition_text.contains(&format!("{} <", trimmed_index)) {
-        return !condition_text.contains(&format!("{} <=", trimmed_index));
-    }
-
-    if condition_text.contains(&format!("> {}", trimmed_index)) {
-        return !condition_text.contains(&format!(">= {}", trimmed_index));
-    }
-    false
-}
-
-fn has_conditional_bounds_check(subscript_node: &Node, index_text: &str, source: &str) -> bool {
-    let mut current = subscript_node.parent();
-
-    while let Some(node) = current {
-        if node.kind() == "if_statement" {
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if child.kind() == "parenthesized_expression" || child.kind() == "binary_expression" {
-                        let condition_text = &source[child.start_byte()..child.end_byte()];
-                        if condition_contains_safe_bounds(condition_text, index_text) {
-                            return true;
-                        }
+    /// Generic if bounds check (when index variable is unknown)
+    fn check_if_bounds_generic(&self, if_node: &Node, source: &str) -> bool {
+        for i in 0..if_node.child_count() {
+            if let Some(child) = if_node.child(i) {
+                if child.kind() == "parenthesized_expression" || child.kind() == "binary_expression" {
+                    let condition_text = &source[child.start_byte()..child.end_byte()];
+                    // Look for any < operator (safe bounds check)
+                    if condition_text.contains(" < ") && !condition_text.contains(" <= ") {
+                        return true;
                     }
                 }
             }
         }
-        current = node.parent();
+        false
     }
-
-    false
-}
-
-fn has_function_bounds_check(subscript_node: &Node, _index_text: &str, source: &str) -> bool {
-    let mut current = subscript_node.parent();
-
-    while let Some(node) = current {
-        if node.kind() == "function_definition" {
-            let function_text = &source[node.start_byte()..node.end_byte()];
-            if function_text.contains("size") || function_text.contains("length") || function_text.contains("count") {
-                return true;
-            }
-        }
-        current = node.parent();
-    }
-
-    false
 }
