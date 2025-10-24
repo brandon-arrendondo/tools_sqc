@@ -64,10 +64,20 @@ impl CertRule for Arr00C {
                 if let Some(violation) = check_dangerous_functions(node, source) {
                     violations.push(violation);
                 }
+                // Check for obviously wrong string operations (strcat/strcpy with literal too large)
+                if let Some(violation) = check_obvious_string_overflow(node, source) {
+                    violations.push(violation);
+                }
             }
             "for_statement" => {
                 // Check for loops with unvalidated bounds accessing arrays
                 if let Some(violation) = check_loop_array_access(node, source) {
+                    violations.push(violation);
+                }
+            }
+            "subscript_expression" => {
+                // Check for array access with unvalidated index
+                if let Some(violation) = check_subscript_bounds(node, source) {
                     violations.push(violation);
                 }
             }
@@ -374,6 +384,142 @@ fn check_dangerous_functions(node: &Node, source: &str) -> Option<RuleViolation>
     None
 }
 
+fn check_obvious_string_overflow(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for obviously wrong strcat/strcpy calls where the source is clearly too large
+    // This indicates fundamental misunderstanding of arrays
+    // Example: char buf[10]; strcat(buf, "This is way too long");
+
+    let function = node.child_by_field_name("function")?;
+    let func_text = &source[function.start_byte()..function.end_byte()];
+
+    // Only check strcat and strcpy
+    if func_text != "strcat" && func_text != "strcpy" {
+        return None;
+    }
+
+    // Get the arguments
+    let arguments = node.child_by_field_name("arguments")?;
+
+    // Extract destination and source arguments (skip parentheses and commas)
+    let mut args = Vec::new();
+    for i in 0..arguments.child_count() {
+        if let Some(child) = arguments.child(i) {
+            let kind = child.kind();
+            if kind != "," && kind != "(" && kind != ")" {
+                args.push(child);
+            }
+        }
+    }
+
+    if args.len() < 2 {
+        return None;
+    }
+
+    let dest = args[0];
+    let src = args[1];
+
+    // Get source length - either from string literal or from variable initialized with literal
+    let src_len = if src.kind() == "string_literal" {
+        // Direct string literal
+        let src_text = &source[src.start_byte()..src.end_byte()];
+        Some(src_text.trim_matches('"').len())
+    } else if src.kind() == "identifier" {
+        // Variable - try to find its initialization
+        let src_var_name = &source[src.start_byte()..src.end_byte()];
+        find_string_literal_length(src_var_name, node, source)
+    } else {
+        None
+    };
+
+    let src_len = match src_len {
+        Some(len) => len,
+        None => return None, // Can't determine source length
+    };
+
+    // Get destination identifier name
+    let dest_name = &source[dest.start_byte()..dest.end_byte()];
+
+    // Find the destination array declaration to get its size
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let call_position = node.start_byte();
+    let preceding_text = &source[function_start..call_position];
+
+    // Look for array declaration
+    if let Some(dest_size) = find_array_size(dest_name, preceding_text) {
+        // For strcat, we need space for existing content + new content + null terminator
+        // For strcpy, we need space for new content + null terminator
+        let required_space = if func_text == "strcat" {
+            // We need to estimate existing content, but for a simple check,
+            // just verify the source alone fits
+            src_len + 1 // +1 for null terminator
+        } else {
+            src_len + 1 // +1 for null terminator
+        };
+
+        if required_space > dest_size {
+            let start_point = node.start_position();
+            let src_display = &source[src.start_byte()..src.end_byte()];
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::Critical,
+                message: format!(
+                    "{}({}, {}) will overflow buffer. Source string is {} bytes but destination has only {} bytes.",
+                    func_text,
+                    dest_name,
+                    src_display,
+                    src_len,
+                    dest_size
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(format!(
+                    "Use safer alternatives like strncat/strncpy with proper size limits, or increase buffer size to at least {} bytes",
+                    required_space
+                )),
+            });
+        }
+    }
+
+    None
+}
+
+fn find_string_literal_length(var_name: &str, node: &Node, source: &str) -> Option<usize> {
+    // Find the variable declaration and extract string literal length
+    // Pattern: char *var = "literal"; or char var[] = "literal";
+
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let call_position = node.start_byte();
+    let preceding_text = &source[function_start..call_position];
+
+    // Look for variable initialization with string literal
+    // Simple pattern matching: var_name = "..."
+    let pattern = format!("{} =", var_name);
+    if let Some(init_pos) = preceding_text.rfind(&pattern) {
+        // Find the string literal after the =
+        let after_eq = &preceding_text[init_pos + pattern.len()..];
+
+        // Find the opening quote
+        if let Some(quote_start) = after_eq.find('"') {
+            // Find the closing quote (accounting for escaped quotes)
+            let mut i = quote_start + 1;
+            let chars: Vec<char> = after_eq.chars().collect();
+            while i < chars.len() {
+                if chars[i] == '"' && (i == 0 || chars[i-1] != '\\') {
+                    // Found closing quote
+                    let literal = &after_eq[quote_start + 1..i];
+                    return Some(literal.len());
+                }
+                i += 1;
+            }
+        }
+    }
+
+    None
+}
+
 fn check_loop_array_access(node: &Node, source: &str) -> Option<RuleViolation> {
     // Check for loops that use unvalidated/uninitialized variables as bounds when accessing arrays
     // Patterns:
@@ -555,6 +701,103 @@ fn is_uninitialized_variable(var_name: &str, preceding_text: &str) -> bool {
 
     // Variable is uninitialized if declared but not initialized
     !is_initialized
+}
+
+fn check_subscript_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for array subscript with unvalidated index
+    // Pattern: arr[index] where index comes from scanf or is a function parameter without validation
+
+    // Get the index expression from the subscript
+    let index_node = node.child_by_field_name("index")?;
+
+    // Check if index is an identifier (variable)
+    if index_node.kind() != "identifier" {
+        return None; // Only check variable indices for now
+    }
+
+    let index_var = &source[index_node.start_byte()..index_node.end_byte()];
+
+    // Find the containing function to check context
+    let function_node = find_containing_function(node)?;
+
+    // Get the function body text up to this point
+    let function_start = function_node.start_byte();
+    let subscript_position = node.start_byte();
+    let preceding_text = &source[function_start..subscript_position];
+
+    // Check if this is a function parameter (indicates it comes from caller without validation)
+    if is_function_parameter(&function_node, index_var, source) {
+        // Check if there's bounds validation before this subscript
+        if !has_bounds_validation(index_var, preceding_text) {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Array subscript uses function parameter '{}' without bounds checking. Caller could pass invalid index.",
+                    index_var
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(format!(
+                    "Add bounds checking for '{}' before using it as an array index",
+                    index_var
+                )),
+            });
+        }
+    }
+
+    // Check if the index variable comes from scanf without validation
+    if is_user_input_variable(index_var, preceding_text) && !has_bounds_validation(index_var, preceding_text) {
+        let start_point = node.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::High,
+            message: format!(
+                "Array subscript uses unvalidated user input '{}' from scanf(). This can cause out-of-bounds access.",
+                index_var
+            ),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some(format!(
+                "Validate '{}' against array bounds before using it as an index",
+                index_var
+            )),
+        });
+    }
+
+    None
+}
+
+fn has_bounds_validation(var_name: &str, preceding_text: &str) -> bool {
+    // Look for validation patterns like:
+    // if (index < 0 || index >= size)
+    // if (index < size)
+    // if (index >= 0 && index < size)
+
+    // Simple heuristic: look for the variable in a comparison context
+    // This is not perfect but catches common validation patterns
+    let patterns = [
+        format!("{} <", var_name),
+        format!("{} <=", var_name),
+        format!("{} >", var_name),
+        format!("{} >=", var_name),
+        format!("< {}", var_name),
+        format!("<= {}", var_name),
+        format!("> {}", var_name),
+        format!(">= {}", var_name),
+    ];
+
+    // Look for if statements containing these patterns
+    for pattern in &patterns {
+        if preceding_text.contains("if") && preceding_text.contains(pattern) {
+            return true;
+        }
+    }
+
+    false
 }
 
 fn check_pointer_arithmetic(node: &Node, source: &str) -> Option<RuleViolation> {
@@ -1307,5 +1550,49 @@ int main() {
             .filter(|v| v.message.contains("past the end") || v.message.contains("exceeds"))
             .collect();
         assert!(pointer_violations.is_empty(), "Should not flag valid pointer arithmetic");
+    }
+
+    #[test]
+    fn test_arr00c_detects_unvalidated_parameter_subscript() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+void update_array(int arr[], int index, int value) {
+    arr[index] = value;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        assert!(!violations.is_empty(), "Should detect unvalidated parameter as array index");
+        let subscript_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("parameter") && v.message.contains("index"))
+            .collect();
+        assert!(!subscript_violations.is_empty(), "Should detect parameter 'index' without bounds checking");
+    }
+
+    #[test]
+    fn test_arr00c_allows_validated_parameter_subscript() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+void update_array(int arr[], int size, int index, int value) {
+    if (index >= 0 && index < size) {
+        arr[index] = value;
+    }
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        // Should not flag because index is validated
+        let subscript_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("parameter") && v.message.contains("index"))
+            .collect();
+        assert!(subscript_violations.is_empty(), "Should not flag validated parameter");
     }
 }
