@@ -7,6 +7,8 @@
 //! - Variable Length Arrays (VLAs) with zero, negative, or unvalidated sizes
 //! - Use of gets() which has no bounds checking mechanism and is always unsafe
 //! - Using unvalidated user input as loop bounds for array access
+//! - Using uninitialized variables as loop bounds for array access
+//! - Pointer arithmetic that obviously exceeds array bounds
 //!
 //! Note: Other unsafe functions (strcpy, etc.) are better checked by ARR38-C
 
@@ -44,6 +46,10 @@ impl CertRule for Arr00C {
             "binary_expression" => {
                 // Check for array comparison with == or !=
                 if let Some(violation) = check_array_comparison(node, source) {
+                    violations.push(violation);
+                }
+                // Also check for pointer arithmetic that exceeds bounds
+                if let Some(violation) = check_pointer_arithmetic(node, source) {
                     violations.push(violation);
                 }
             }
@@ -369,8 +375,10 @@ fn check_dangerous_functions(node: &Node, source: &str) -> Option<RuleViolation>
 }
 
 fn check_loop_array_access(node: &Node, source: &str) -> Option<RuleViolation> {
-    // Check for loops that use unvalidated variables as bounds when accessing arrays
-    // Pattern: for (int i = 0; i < user_input; i++) { array[i] = ...; }
+    // Check for loops that use unvalidated/uninitialized variables as bounds when accessing arrays
+    // Patterns:
+    // 1. for (int i = 0; i < user_input; i++) { array[i] = ...; }
+    // 2. for (int i = 0; i < uninitialized_var; i++) { array[i] = ...; }
 
     // Get the loop condition to find the bound variable
     let condition = node.child_by_field_name("condition")?;
@@ -385,7 +393,7 @@ fn check_loop_array_access(node: &Node, source: &str) -> Option<RuleViolation> {
         return None;
     }
 
-    // Look backwards in the function to see if bound_var was populated from user input
+    // Look backwards in the function to see if bound_var was populated from user input or is uninitialized
     let function_node = find_containing_function(node)?;
     let loop_position = node.start_byte();
     let function_start = function_node.start_byte();
@@ -412,6 +420,25 @@ fn check_loop_array_access(node: &Node, source: &str) -> Option<RuleViolation> {
                 )),
             });
         }
+    }
+    // Check if the variable is uninitialized
+    else if is_uninitialized_variable(&bound_var, preceding_text) {
+        let start_point = node.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::High,
+            message: format!(
+                "Loop uses uninitialized variable '{}' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+                bound_var
+            ),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some(format!(
+                "Initialize '{}' to a valid value before using it in the loop",
+                bound_var
+            )),
+        });
     }
 
     None
@@ -494,6 +521,144 @@ fn has_validation_before_loop(var_name: &str, preceding_text: &str, loop_pos: us
     }
 
     false
+}
+
+fn is_uninitialized_variable(var_name: &str, preceding_text: &str) -> bool {
+    // Check if variable is declared but never initialized
+    // Look for patterns like: "int size;" without "size =" before the loop
+
+    // Check if variable is declared (simple heuristic)
+    let declaration_patterns = [
+        format!("int {};", var_name),
+        format!("int {} ;", var_name),
+        format!("size_t {};", var_name),
+        format!("unsigned {}", var_name),
+        format!("long {}", var_name),
+    ];
+
+    let is_declared = declaration_patterns.iter().any(|p| preceding_text.contains(p)) ||
+                      (preceding_text.contains("int") && preceding_text.contains(var_name) &&
+                       !preceding_text.contains(&format!("{}[", var_name))); // Not an array declaration
+
+    if !is_declared {
+        return false;
+    }
+
+    // Check if it's been assigned a value
+    let assignment_patterns = [
+        format!("{} =", var_name),
+        format!("{}=", var_name),
+        format!("&{}", var_name), // scanf with &var means it's initialized by input
+    ];
+
+    let is_initialized = assignment_patterns.iter().any(|p| preceding_text.contains(p));
+
+    // Variable is uninitialized if declared but not initialized
+    !is_initialized
+}
+
+fn check_pointer_arithmetic(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for pointer arithmetic that obviously exceeds array bounds
+    // Pattern: ptr = arr + offset  where offset > array_size
+
+    // binary_expression nodes have "left", "operator", and "right" fields
+    let operator_node = node.child_by_field_name("operator")?;
+    let operator = &source[operator_node.start_byte()..operator_node.end_byte()];
+
+    // Only check addition (+ creates a pointer offset)
+    if operator != "+" {
+        return None;
+    }
+
+    let left = node.child_by_field_name("left")?;
+    let right = node.child_by_field_name("right")?;
+
+    // Right side should be a number literal (constant offset)
+    if right.kind() != "number_literal" {
+        return None;
+    }
+
+    // Get the array name and offset
+    let array_name = &source[left.start_byte()..left.end_byte()];
+    let offset_text = &source[right.start_byte()..right.end_byte()];
+
+    // Parse the offset as a number
+    let offset: usize = match offset_text.parse() {
+        Ok(n) => n,
+        Err(_) => return None, // Not a constant offset
+    };
+
+    // Find the array declaration in the function body to get its size
+    let function_node = find_containing_function(node)?;
+
+    // Find the compound_statement (function body) within the function_definition
+    let mut body_start = function_node.start_byte();
+    for i in 0..function_node.child_count() {
+        if let Some(child) = function_node.child(i) {
+            if child.kind() == "compound_statement" {
+                // Skip the opening brace '{'
+                body_start = child.start_byte() + 1;
+                break;
+            }
+        }
+    }
+
+    let ptr_position = node.start_byte();
+    let preceding_text = &source[body_start..ptr_position];
+
+    // Look for array declaration: type array_name[SIZE]
+    if let Some(array_size) = find_array_size(array_name, preceding_text) {
+        // Check if offset exceeds the array size
+        // Note: arr + size (one past the end) is technically allowed but shouldn't be dereferenced
+        if offset > array_size {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Pointer arithmetic '{}' goes {} elements past the end of array '{}[{}]'. This exceeds array bounds.",
+                    &source[node.start_byte()..node.end_byte()],
+                    offset - array_size,
+                    array_name,
+                    array_size
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(format!(
+                    "Ensure pointer arithmetic stays within array bounds (0 to {})",
+                    array_size
+                )),
+            });
+        }
+    }
+
+    None
+}
+
+fn find_array_size(array_name: &str, preceding_text: &str) -> Option<usize> {
+    // Look for array declaration patterns: type array_name[SIZE] = ...
+    // Examples: int arr[5], char buf[100]
+
+    // Search for "array_name[" pattern to find the array declaration
+    let pattern = format!("{}[", array_name);
+    if let Some(pos) = preceding_text.rfind(&pattern) {
+        // Look for the closing bracket
+        let after_name = &preceding_text[pos..];
+        if let Some(bracket_start) = after_name.find('[') {
+            if let Some(bracket_end) = after_name.find(']') {
+                if bracket_end > bracket_start {
+                    let size_text = &after_name[bracket_start + 1..bracket_end].trim();
+                    // Try to parse as a number
+                    if let Ok(size) = size_text.parse::<usize>() {
+                        return Some(size);
+                    }
+                }
+            }
+        }
+    }
+
+    None
 }
 
 // ============================================================================
@@ -1019,5 +1184,128 @@ int main() {
             .filter(|v| v.message.contains("unvalidated"))
             .collect();
         assert!(input_violations.is_empty(), "Should not flag validated user input");
+    }
+
+    #[test]
+    fn test_arr00c_detects_uninitialized_loop_bound() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+int main() {
+    int size;
+    int arr[10];
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = i;
+    }
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        assert!(!violations.is_empty(), "Should detect uninitialized variable in loop");
+        let uninitialized_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("uninitialized") && v.message.contains("size"))
+            .collect();
+        assert!(!uninitialized_violations.is_empty(), "Should detect 'size' as uninitialized");
+    }
+
+    #[test]
+    fn test_arr00c_allows_initialized_loop_bound() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+int main() {
+    int size = 10;
+    int arr[10];
+
+    for (int i = 0; i < size; i++) {
+        arr[i] = i;
+    }
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        // Should not flag initialized variable
+        let uninitialized_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("uninitialized"))
+            .collect();
+        assert!(uninitialized_violations.is_empty(), "Should not flag initialized variable");
+    }
+
+    #[test]
+    fn test_arr00c_detects_pointer_past_end() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+int main() {
+    int arr[5] = {1, 2, 3, 4, 5};
+    int *ptr = arr;
+
+    ptr = arr + 10;  // Should trigger - way past end
+    *ptr = 100;
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        assert!(!violations.is_empty(), "Should detect pointer past array end");
+        let pointer_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("past the end") || v.message.contains("exceeds"))
+            .collect();
+        assert!(!pointer_violations.is_empty(), "Should detect pointer arithmetic violation");
+    }
+
+    #[test]
+    fn test_arr00c_allows_valid_pointer_arithmetic() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+int main() {
+    int arr[10] = {0};
+    int *ptr;
+
+    // Valid pointer arithmetic within bounds
+    ptr = arr + 5;
+    *ptr = 42;
+
+    // One past the end is allowed (but shouldn't dereference)
+    ptr = arr + 10;
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        // Should not flag valid pointer arithmetic (arr + 5 for arr[10])
+        // Note: arr + 10 is one-past-the-end which is allowed (just can't dereference)
+        let pointer_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("past the end") || v.message.contains("exceeds"))
+            .collect();
+        assert!(pointer_violations.is_empty(), "Should not flag valid pointer arithmetic");
     }
 }
