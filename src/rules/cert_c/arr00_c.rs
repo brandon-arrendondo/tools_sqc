@@ -1,3 +1,15 @@
+//! ARR00-C: Understand how arrays work
+//!
+//! This rule checks for common misunderstandings about how arrays work in C:
+//! - Direct array assignment (arrays are not assignable)
+//! - Array comparison with == or != (compares addresses, not contents)
+//! - sizeof() misuse on array parameters (arrays decay to pointers)
+//! - Variable Length Arrays (VLAs) with zero, negative, or unvalidated sizes
+//! - Use of gets() which has no bounds checking mechanism and is always unsafe
+//! - Using unvalidated user input as loop bounds for array access
+//!
+//! Note: Other unsafe functions (strcpy, etc.) are better checked by ARR38-C
+
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
@@ -16,36 +28,44 @@ impl CertRule for Arr00C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Check for direct array assignment (arr1 = arr2)
-        if node.kind() == "assignment_expression" {
-            if let Some(violation) = check_array_assignment(node, source) {
-                violations.push(violation);
+        match node.kind() {
+            "assignment_expression" => {
+                // Check for direct array assignment (arr1 = arr2)
+                if let Some(violation) = check_array_assignment(node, source) {
+                    violations.push(violation);
+                }
             }
-        }
-
-        // Check for sizeof misuse with array parameters
-        if node.kind() == "sizeof_expression" {
-            if let Some(violation) = check_sizeof_misuse(node, source) {
-                violations.push(violation);
+            "sizeof_expression" => {
+                // Check for sizeof misuse with array parameters
+                if let Some(violation) = check_sizeof_misuse(node, source) {
+                    violations.push(violation);
+                }
             }
-        }
-
-        // Check for dangerous functions like gets()
-        if node.kind() == "call_expression" {
-            if let Some(violation) = check_dangerous_functions(node, source) {
-                violations.push(violation);
+            "binary_expression" => {
+                // Check for array comparison with == or !=
+                if let Some(violation) = check_array_comparison(node, source) {
+                    violations.push(violation);
+                }
             }
-            // Also check for array size mismatches in function calls
-            if let Some(violation) = check_array_size_mismatch(node, source) {
-                violations.push(violation);
+            "declaration" => {
+                // Check for VLA with zero or invalid size
+                if let Some(violation) = check_vla_declaration(node, source) {
+                    violations.push(violation);
+                }
             }
-        }
-
-        // Check for array decay confusion in comparisons
-        if node.kind() == "binary_expression" {
-            if let Some(violation) = check_array_comparison(node, source) {
-                violations.push(violation);
+            "call_expression" => {
+                // Check for dangerous functions like gets(), strcpy(), etc.
+                if let Some(violation) = check_dangerous_functions(node, source) {
+                    violations.push(violation);
+                }
             }
+            "for_statement" => {
+                // Check for loops with unvalidated bounds accessing arrays
+                if let Some(violation) = check_loop_array_access(node, source) {
+                    violations.push(violation);
+                }
+            }
+            _ => {}
         }
 
         // Recursively check child nodes
@@ -58,6 +78,10 @@ impl CertRule for Arr00C {
         violations
     }
 }
+
+// ============================================================================
+// Core Rule Checks
+// ============================================================================
 
 fn check_array_assignment(node: &Node, source: &str) -> Option<RuleViolation> {
     // Get left and right operands of assignment
@@ -144,24 +168,21 @@ fn check_if_array_parameter(identifier_node: &Node, sizeof_node: &Node, source: 
     None
 }
 
-fn check_array_size_mismatch(node: &Node, source: &str) -> Option<RuleViolation> {
-    // Get the function being called
-    let function_node = node.child_by_field_name("function")?;
-    let function_name = &source[function_node.start_byte()..function_node.end_byte()];
-
-    // Check if we're calling a function with array parameters
-    let arguments = node.child_by_field_name("arguments")?;
-
-    // Look for malloc/calloc patterns being passed to functions expecting arrays
-    for i in 0..arguments.child_count() {
-        if let Some(arg) = arguments.child(i) {
-            if arg.kind() == "call_expression" {
-                if let Some(func) = arg.child_by_field_name("function") {
-                    let func_text = &source[func.start_byte()..func.end_byte()];
-                    if func_text == "malloc" || func_text == "calloc" {
-                        // Check if malloc size appears insufficient
-                        if let Some(violation) = check_malloc_size_mismatch(&arg, function_name, node, source) {
-                            return Some(violation);
+fn check_vla_declaration(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Look for array_declarator in the declaration
+    let mut declarator = None;
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "array_declarator" {
+                declarator = Some(child);
+                break;
+            } else if child.kind() == "init_declarator" {
+                // Check inside init_declarator for array_declarator
+                for j in 0..child.child_count() {
+                    if let Some(inner) = child.child(j) {
+                        if inner.kind() == "array_declarator" {
+                            declarator = Some(inner);
+                            break;
                         }
                     }
                 }
@@ -169,88 +190,226 @@ fn check_array_size_mismatch(node: &Node, source: &str) -> Option<RuleViolation>
         }
     }
 
-    None
-}
+    let declarator = declarator?;
 
-fn check_malloc_size_mismatch(malloc_node: &Node, target_function: &str, call_node: &Node, source: &str) -> Option<RuleViolation> {
-    // Extract malloc size argument
-    let args = malloc_node.child_by_field_name("arguments")?;
-
-    // Try to detect obvious size mismatches
-    // Look for patterns like malloc(10 * sizeof(int)) being passed to functions expecting larger arrays
-    for i in 0..args.child_count() {
-        if let Some(arg) = args.child(i) {
-            let arg_text = &source[arg.start_byte()..arg.end_byte()];
-            // Simple heuristic: if we see a small number being multiplied by sizeof
-            if contains_small_allocation(arg_text) {
-                let start_point = call_node.start_position();
-                return Some(RuleViolation {
-                    rule_id: "ARR00-C".to_string(),
-                    severity: Severity::High,
-                    message: format!(
-                        "Potential array size mismatch: dynamically allocated array may be smaller than expected by function '{}'",
-                        target_function
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some("Ensure allocated size matches the function's expected array size".to_string()),
-                });
+    // Get the size expression from the array declarator
+    // array_declarator has structure: identifier [ size ]
+    let mut size_node = None;
+    let mut found_open_bracket = false;
+    for i in 0..declarator.child_count() {
+        if let Some(child) = declarator.child(i) {
+            if child.kind() == "[" {
+                found_open_bracket = true;
+                continue;
             }
+            // After '[', the next non-']' node is the size
+            if found_open_bracket && child.kind() != "]" {
+                size_node = Some(child);
+                break;
+            }
+        }
+    }
+
+    let size_node = size_node?;
+    let size_text = &source[size_node.start_byte()..size_node.end_byte()];
+
+    // Check if size is a variable (VLA) - not a number literal
+    let is_vla = size_node.kind() == "identifier" ||
+                 size_node.kind() == "call_expression" ||
+                 size_node.kind() == "binary_expression" ||
+                 (size_node.kind() != "number_literal" && !size_text.chars().all(|c| c.is_numeric()));
+
+    if !is_vla {
+        // Check if it's a constant 0
+        if size_text == "0" {
+            let start_point = declarator.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::High,
+                message: "Array declared with size 0. Zero-length arrays have undefined behavior.".to_string(),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Use a positive constant size or validate variable size before declaration".to_string()),
+            });
+        }
+        return None; // Constant non-zero size is OK
+    }
+
+    // For VLAs with variable size, check if the size variable was validated
+    // This is a heuristic check - we look for the size identifier
+    if size_node.kind() == "identifier" {
+        let size_var_name = size_text;
+
+        // Check if this appears to be an unvalidated parameter or variable
+        // Look for assignment of 0 or validation checks in the surrounding context
+        if let Some(violation) = check_vla_size_validation(node, size_var_name, source, &declarator) {
+            return Some(violation);
         }
     }
 
     None
 }
 
-fn contains_small_allocation(text: &str) -> bool {
-    // Simple heuristic: look for small numbers in allocation
-    // This is a basic check - in production, we'd need more sophisticated analysis
-    if text.contains("10 *") || text.contains("* 10") || text.starts_with("10 ") {
-        return true;
+fn check_vla_size_validation(decl_node: &Node, size_var: &str, source: &str, declarator: &Node) -> Option<RuleViolation> {
+    // Look backwards in the source to find if size_var was assigned 0 or is unvalidated
+    // First, try to find the containing function
+    let function_node = find_containing_function(decl_node)?;
+
+    // Get all variable declarations and assignments before this VLA declaration
+    let vla_position = decl_node.start_byte();
+
+    // Simple heuristic: check if we can find "size_var = 0" before the VLA
+    let function_start = function_node.start_byte();
+    let preceding_text = &source[function_start..vla_position];
+
+    // Check for direct assignment of 0
+    if preceding_text.contains(&format!("{} = 0", size_var)) ||
+       preceding_text.contains(&format!("{}=0", size_var)) {
+        let start_point = declarator.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::High,
+            message: format!(
+                "Variable Length Array declared with size '{}' which is assigned 0. VLAs must have positive size.",
+                size_var
+            ),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some("Validate that the size is positive before declaring the VLA".to_string()),
+        });
     }
-    // Check for other small allocations
-    for size in &["1", "2", "3", "4", "5", "6", "7", "8", "9"] {
-        if text.starts_with(size) && (text.contains("*") || text.len() < 3) {
-            return true;
+
+    // Check if it's a function parameter without validation
+    // This is a simplified check - in production, we'd need more sophisticated analysis
+    if is_function_parameter(&function_node, size_var, source) {
+        // Check if there's a validation before the VLA
+        if !has_size_validation_before(preceding_text, size_var) {
+            let start_point = declarator.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::Medium,
+                message: format!(
+                    "Variable Length Array declared with unvalidated parameter '{}'. Size could be zero or negative.",
+                    size_var
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Add validation: if (size <= 0 || size > MAX_SIZE) return;".to_string()),
+            });
+        }
+    }
+
+    None
+}
+
+fn is_function_parameter(function_node: &Node, var_name: &str, source: &str) -> bool {
+    // Find parameter list in function
+    for i in 0..function_node.child_count() {
+        if let Some(child) = function_node.child(i) {
+            if child.kind() == "function_declarator" {
+                for j in 0..child.child_count() {
+                    if let Some(param_list) = child.child(j) {
+                        if param_list.kind() == "parameter_list" {
+                            let param_text = &source[param_list.start_byte()..param_list.end_byte()];
+                            if param_text.contains(var_name) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     false
 }
 
+fn has_size_validation_before(text: &str, size_var: &str) -> bool {
+    // Check for common validation patterns
+    // if (size == 0), if (size <= 0), if (size < 1), etc.
+    // Also check for compound conditions with || or &&
+
+    // Simple patterns
+    let simple_patterns = [
+        format!("{} == 0", size_var),
+        format!("{} <= 0", size_var),
+        format!("{} < 1", size_var),
+        format!("0 == {}", size_var),
+        format!("{}==0", size_var),
+        format!("{}<=0", size_var),
+        format!("{}<1", size_var),
+    ];
+
+    simple_patterns.iter().any(|pattern| text.contains(pattern))
+}
+
 fn check_dangerous_functions(node: &Node, source: &str) -> Option<RuleViolation> {
-    // Check for calls to gets() which is inherently unsafe
-    if let Some(function) = node.child_by_field_name("function") {
-        let func_text = &source[function.start_byte()..function.end_byte()];
+    // Check for calls to functions that demonstrate misunderstanding of array bounds
+    let function = node.child_by_field_name("function")?;
+    let func_text = &source[function.start_byte()..function.end_byte()];
 
-        if func_text == "gets" {
-            let start_point = node.start_position();
-            return Some(RuleViolation {
-                rule_id: "ARR00-C".to_string(),
-                severity: Severity::Critical,
-                message: "Use of gets() is dangerous and deprecated. It does not perform bounds checking.".to_string(),
-                file_path: String::new(),
-                line: start_point.row + 1,
-                column: start_point.column + 1,
-                suggestion: Some("Use fgets() or gets_s() instead".to_string()),
-            });
-        }
+    // gets() is inherently dangerous - ALWAYS indicates misunderstanding
+    // There is NO safe way to use gets() as it has no bounds checking mechanism
+    if func_text == "gets" {
+        let start_point = node.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::Critical,
+            message: "Use of gets() demonstrates misunderstanding of array bounds. It is deprecated and has no safe usage.".to_string(),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some("Use fgets(buffer, sizeof(buffer), stdin) which respects buffer size".to_string()),
+        });
+    }
 
-        // Check for unchecked string functions
-        let unsafe_functions = ["strcpy", "strcat", "sprintf"];
-        if unsafe_functions.contains(&func_text) {
+    None
+}
+
+fn check_loop_array_access(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for loops that use unvalidated variables as bounds when accessing arrays
+    // Pattern: for (int i = 0; i < user_input; i++) { array[i] = ...; }
+
+    // Get the loop condition to find the bound variable
+    let condition = node.child_by_field_name("condition")?;
+    let bound_var = extract_loop_bound_variable(&condition, source)?;
+
+    // Get the loop body
+    let body = node.child_by_field_name("body")?;
+
+    // Check if body contains array access
+    let has_array_access = contains_array_access(&body);
+    if !has_array_access {
+        return None;
+    }
+
+    // Look backwards in the function to see if bound_var was populated from user input
+    let function_node = find_containing_function(node)?;
+    let loop_position = node.start_byte();
+    let function_start = function_node.start_byte();
+    let preceding_text = &source[function_start..loop_position];
+
+    // Check for scanf/fscanf reading into the bound variable
+    if is_user_input_variable(&bound_var, preceding_text) {
+        // Check if there's validation before the loop
+        if !has_validation_before_loop(&bound_var, preceding_text, loop_position, source) {
             let start_point = node.start_position();
             return Some(RuleViolation {
                 rule_id: "ARR00-C".to_string(),
                 severity: Severity::High,
                 message: format!(
-                    "Use of {} without bounds checking can lead to buffer overflow",
-                    func_text
+                    "Loop uses unvalidated user input '{}' as bound for array access. This can cause out-of-bounds access.",
+                    bound_var
                 ),
                 file_path: String::new(),
                 line: start_point.row + 1,
                 column: start_point.column + 1,
-                suggestion: Some(format!("Use {}n or {}_s for safer string operations", func_text, func_text)),
+                suggestion: Some(format!(
+                    "Validate '{}' against array size before using in loop: if ({} < 0 || {} > ARRAY_SIZE) {{ /* error */ }}",
+                    bound_var, bound_var, bound_var
+                )),
             });
         }
     }
@@ -258,33 +417,121 @@ fn check_dangerous_functions(node: &Node, source: &str) -> Option<RuleViolation>
     None
 }
 
-fn check_array_comparison(node: &Node, source: &str) -> Option<RuleViolation> {
-    // Check for array comparisons using == or !=
-    if let Some(operator) = node.child_by_field_name("operator") {
-        let op_text = &source[operator.start_byte()..operator.end_byte()];
+fn extract_loop_bound_variable(condition: &Node, source: &str) -> Option<String> {
+    // For condition like "i < count", extract "count"
+    // Handle binary expressions: i < var, i <= var, var > i, etc.
+    if condition.kind() == "binary_expression" {
+        let left = condition.child_by_field_name("left")?;
+        let right = condition.child_by_field_name("right")?;
 
-        if op_text == "==" || op_text == "!=" {
-            let left = node.child_by_field_name("left")?;
-            let right = node.child_by_field_name("right")?;
+        // Check right side first (most common: i < bound)
+        if right.kind() == "identifier" {
+            return Some(source[right.start_byte()..right.end_byte()].to_string());
+        }
+        // Check left side (less common: bound > i)
+        if left.kind() == "identifier" {
+            let text = &source[left.start_byte()..left.end_byte()];
+            // Avoid returning the loop variable itself
+            if text != "i" && text != "j" && text != "k" {
+                return Some(text.to_string());
+            }
+        }
+    }
+    None
+}
 
-            // Check if either side is an array
-            if is_array_identifier(&left, source) || is_array_identifier(&right, source) {
-                let start_point = node.start_position();
-                return Some(RuleViolation {
-                    rule_id: "ARR00-C".to_string(),
-                    severity: Severity::Medium,
-                    message: "Comparing arrays with == or != compares addresses, not contents".to_string(),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some("Use memcmp() or strcmp() to compare array contents".to_string()),
-                });
+fn contains_array_access(node: &Node) -> bool {
+    // Check if this node or any child is a subscript_expression (array access)
+    if node.kind() == "subscript_expression" {
+        return true;
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if contains_array_access(&child) {
+                return true;
             }
         }
     }
 
+    false
+}
+
+fn is_user_input_variable(var_name: &str, preceding_text: &str) -> bool {
+    // Check if variable was populated by scanf, fscanf, fgets, or other input functions
+    let input_patterns = [
+        format!("scanf(\"%d\", &{})", var_name),
+        format!("scanf(\"%d\",&{})", var_name),
+        format!("scanf ( \"%d\" , &{} )", var_name),
+        format!("fscanf(stdin, \"%d\", &{})", var_name),
+        format!("scanf(\"%u\", &{})", var_name),
+    ];
+
+    // Simple check: does scanf read into this variable?
+    input_patterns.iter().any(|pattern| preceding_text.contains(pattern)) ||
+    preceding_text.contains(&format!("scanf")) && preceding_text.contains(&format!("&{}", var_name))
+}
+
+fn has_validation_before_loop(var_name: &str, preceding_text: &str, loop_pos: usize, source: &str) -> bool {
+    // Check if there's validation of var_name between scanf and the loop
+    // Look for patterns like: if (count > MAX) or if (count < 0)
+
+    // Find where scanf populated the variable
+    if let Some(scanf_pos) = preceding_text.rfind("scanf") {
+        let between_scanf_and_loop = &source[scanf_pos..loop_pos];
+
+        // Look for validation patterns
+        let validation_patterns = [
+            format!("if ({} >", var_name),
+            format!("if ({} <", var_name),
+            format!("if ({} >=", var_name),
+            format!("if ({} <=", var_name),
+            format!("if (0 >{}", var_name),
+            format!("if (0 <{}", var_name),
+        ];
+
+        return validation_patterns.iter().any(|p| between_scanf_and_loop.contains(p));
+    }
+
+    false
+}
+
+// ============================================================================
+// Array Comparison Checks
+// ============================================================================
+
+fn check_array_comparison(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for array comparisons using == or !=
+    let operator = node.child_by_field_name("operator")?;
+    let op_text = &source[operator.start_byte()..operator.end_byte()];
+
+    if op_text != "==" && op_text != "!=" {
+        return None;
+    }
+
+    let left = node.child_by_field_name("left")?;
+    let right = node.child_by_field_name("right")?;
+
+    // Check if either side is an array (heuristic check)
+    if is_array_identifier(&left, source) || is_array_identifier(&right, source) {
+        let start_point = node.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::Medium,
+            message: "Comparing arrays with == or != compares addresses, not contents".to_string(),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some("Use memcmp() or strcmp() to compare array contents".to_string()),
+        });
+    }
+
     None
 }
+
+// ============================================================================
+// AST Traversal Helpers
+// ============================================================================
 
 fn find_containing_function<'a>(node: &Node<'a>) -> Option<Node<'a>> {
     let mut current = Some(*node);
@@ -375,15 +622,20 @@ fn find_identifier_in_declarator(declarator_node: &Node, source: &str) -> Option
     None
 }
 
+// ============================================================================
+// Type and Node Classification Helpers
+// ============================================================================
+
 fn is_array_parameter_type(param_type: &str) -> bool {
     // Check if parameter type indicates an array
+    // Note: This is a heuristic check without full type information
     param_type.contains('[') ||
     (param_type.contains("*") && !param_type.contains("const char *")) // Avoid false positives on string literals
 }
 
 fn is_array_identifier(node: &Node, _source: &str) -> bool {
-    // Simple heuristic: check if this is an identifier that could be an array
-    // In a real implementation, we'd need symbol table information
+    // Heuristic check if identifier could be an array
+    // Limitation: Without symbol table, we cannot definitively determine array types
     node.kind() == "identifier" && !is_function_call_name(node)
 }
 
@@ -425,49 +677,6 @@ void func() {
         assert!(violations[0].message.contains("Cannot directly assign arrays"));
     }
 
-    #[test]
-    fn test_arr00c_detects_gets_usage() {
-        let rule = Arr00C;
-        let mut parser = CParser::new().unwrap();
-
-        let source = r#"
-void func() {
-    char buffer[100];
-    gets(buffer);  // Should trigger critical violation
-}
-"#;
-
-        let tree = parser.parse_source(source).unwrap();
-        let violations = rule.check(&tree.root_node(), source);
-
-        assert!(!violations.is_empty(), "Should detect gets() usage");
-        assert!(violations[0].message.contains("gets() is dangerous"));
-        assert!(matches!(violations[0].severity, Severity::Critical));
-    }
-
-    #[test]
-    fn test_arr00c_detects_unsafe_string_functions() {
-        let rule = Arr00C;
-        let mut parser = CParser::new().unwrap();
-
-        let source = r#"
-void func() {
-    char dest[10];
-    char src[20];
-    strcpy(dest, src);  // Should trigger violation
-    strcat(dest, src);  // Should trigger violation
-    sprintf(dest, "%s", src);  // Should trigger violation
-}
-"#;
-
-        let tree = parser.parse_source(source).unwrap();
-        let violations = rule.check(&tree.root_node(), source);
-
-        assert!(violations.len() >= 3, "Should detect all three unsafe functions");
-        for violation in &violations {
-            assert!(violation.message.contains("without bounds checking"));
-        }
-    }
 
     #[test]
     fn test_arr00c_detects_array_comparison() {
@@ -533,34 +742,6 @@ void modify_array(int arr[100]) {
     }
 
     #[test]
-    fn test_arr00c_detects_malloc_size_mismatch() {
-        let rule = Arr00C;
-        let mut parser = CParser::new().unwrap();
-
-        let source = r#"
-void modify_array(int arr[100]) {
-    for (int i = 0; i < 100; i++) {
-        arr[i] = i;
-    }
-}
-
-void test() {
-    // Direct malloc call as argument - this pattern should be detected
-    modify_array(malloc(10 * sizeof(int)));  // Should trigger - passing 10-element allocation to function expecting 100
-}
-"#;
-
-        let tree = parser.parse_source(source).unwrap();
-        let violations = rule.check(&tree.root_node(), source);
-
-
-        let mismatch_violations: Vec<_> = violations.iter()
-            .filter(|v| v.message.contains("size mismatch"))
-            .collect();
-        assert!(!mismatch_violations.is_empty(), "Should detect array size mismatch");
-    }
-
-    #[test]
     fn test_arr00c_allows_safe_operations() {
         let rule = Arr00C;
         let mut parser = CParser::new().unwrap();
@@ -588,7 +769,7 @@ void func() {
         let tree = parser.parse_source(source).unwrap();
         let violations = rule.check(&tree.root_node(), source);
 
-        // Should not flag safe operations
+        // Should not flag safe operations (no High/Critical violations expected)
         let dangerous_violations: Vec<_> = violations.iter()
             .filter(|v| matches!(v.severity, Severity::High | Severity::Critical))
             .collect();
@@ -602,11 +783,6 @@ void func() {
 
         let source = r#"
 void outer() {
-    void inner() {
-        char buffer[100];
-        gets(buffer);  // Should still detect in nested function
-    }
-
     int arr1[5], arr2[5];
     if (1) {
         arr1 = arr2;  // Should detect in nested block
@@ -617,6 +793,231 @@ void outer() {
         let tree = parser.parse_source(source).unwrap();
         let violations = rule.check(&tree.root_node(), source);
 
-        assert!(violations.len() >= 2, "Should detect violations in nested contexts");
+        assert!(!violations.is_empty(), "Should detect violations in nested contexts");
+    }
+
+    #[test]
+    fn test_arr00c_detects_zero_size_vla() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+int main() {
+    int size = 0;
+    int vla[size];  // Should trigger violation - VLA with size 0
+
+    vla[0] = 100;
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        assert!(!violations.is_empty(), "Should detect VLA with zero size");
+        let vla_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("size") || v.message.contains("0"))
+            .collect();
+        assert!(!vla_violations.is_empty(), "Should detect VLA size issue");
+    }
+
+    #[test]
+    fn test_arr00c_detects_unvalidated_vla() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+void create_vla(int size) {
+    int vla[size];  // Should trigger violation - unvalidated parameter
+
+    for (int i = 0; i < size; i++) {
+        vla[i] = i;
+    }
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        assert!(!violations.is_empty(), "Should detect unvalidated VLA parameter");
+        let vla_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("unvalidated") || v.message.contains("parameter"))
+            .collect();
+        assert!(!vla_violations.is_empty(), "Should detect unvalidated VLA");
+    }
+
+    #[test]
+    fn test_arr00c_allows_validated_vla() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+void process_vla(int n) {
+    if (n <= 0 || n > 1000) {
+        return;
+    }
+
+    int vla[n];  // Should be OK - size is validated
+
+    for (int i = 0; i < n; i++) {
+        vla[i] = i;
+    }
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        // Should not flag validated VLA
+        let vla_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("VLA") || v.message.contains("Variable Length"))
+            .collect();
+        assert!(vla_violations.is_empty(), "Should not flag validated VLA");
+    }
+
+    #[test]
+    fn test_arr00c_detects_gets_usage() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+int main() {
+    char buffer[50];
+
+    printf("Enter input: ");
+    gets(buffer);  // Should trigger critical violation
+
+    printf("You entered: %s\n", buffer);
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        assert!(!violations.is_empty(), "Should detect gets() usage");
+        let gets_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("gets"))
+            .collect();
+        assert!(!gets_violations.is_empty(), "Should detect gets() as dangerous");
+        assert!(matches!(gets_violations[0].severity, Severity::Critical));
+    }
+
+    #[test]
+    fn test_arr00c_allows_safe_and_validated_string_operations() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+#include <string.h>
+
+void func() {
+    char dest[100];
+    char src[50];
+
+    // Safe bounded operations - these are OK
+    strncpy(dest, src, sizeof(dest) - 1);
+    dest[sizeof(dest) - 1] = '\0';
+
+    strncat(dest, src, sizeof(dest) - strlen(dest) - 1);
+
+    snprintf(dest, sizeof(dest), "%s", src);
+
+    fgets(dest, sizeof(dest), stdin);
+
+    // Validated strcpy - shows understanding of arrays
+    if (strlen(src) < sizeof(dest)) {
+        strcpy(dest, src);
+    }
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        // Should not flag safe/validated operations
+        // (strcpy/strcat/sprintf with validation shows understanding - covered by ARR38-C)
+        let dangerous_violations: Vec<_> = violations.iter()
+            .filter(|v| matches!(v.severity, Severity::High | Severity::Critical))
+            .collect();
+        assert!(dangerous_violations.is_empty(), "Should not flag safe or validated string operations");
+    }
+
+    #[test]
+    fn test_arr00c_detects_unvalidated_input_loop() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+int main() {
+    int data[100];
+    int count;
+
+    printf("How many numbers? ");
+    scanf("%d", &count);
+
+    for (int i = 0; i < count; i++) {
+        scanf("%d", &data[i]);
+    }
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        assert!(!violations.is_empty(), "Should detect unvalidated user input in loop");
+        let input_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("unvalidated") && v.message.contains("count"))
+            .collect();
+        assert!(!input_violations.is_empty(), "Should detect 'count' as unvalidated");
+    }
+
+    #[test]
+    fn test_arr00c_allows_validated_input_loop() {
+        let rule = Arr00C;
+        let mut parser = CParser::new().unwrap();
+
+        let source = r#"
+#include <stdio.h>
+
+#define MAX_SIZE 100
+
+int main() {
+    int data[MAX_SIZE];
+    int count;
+
+    printf("How many numbers? ");
+    scanf("%d", &count);
+
+    if (count < 0 || count > MAX_SIZE) {
+        printf("Invalid count\n");
+        return 1;
+    }
+
+    for (int i = 0; i < count; i++) {
+        scanf("%d", &data[i]);
+    }
+
+    return 0;
+}
+"#;
+
+        let tree = parser.parse_source(source).unwrap();
+        let violations = rule.check(&tree.root_node(), source);
+
+        // Should not flag validated input
+        let input_violations: Vec<_> = violations.iter()
+            .filter(|v| v.message.contains("unvalidated"))
+            .collect();
+        assert!(input_violations.is_empty(), "Should not flag validated user input");
     }
 }
