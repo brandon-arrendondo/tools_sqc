@@ -102,6 +102,10 @@ impl CertRule for Arr00C {
                 }
             }
             "subscript_expression" => {
+                // Check for comma operator in subscript (incorrect 2D access)
+                if let Some(violation) = check_comma_in_subscript(node, source) {
+                    violations.push(violation);
+                }
                 // Check for reading from uninitialized array
                 if let Some(violation) = check_uninitialized_array_read(node, source) {
                     violations.push(violation);
@@ -424,6 +428,82 @@ fn check_dangerous_functions(node: &Node, source: &str) -> Option<RuleViolation>
             column: start_point.column + 1,
             suggestion: Some("Use fgets(buffer, sizeof(buffer), stdin) which respects buffer size".to_string()),
         });
+    }
+
+    // scanf/fscanf/sscanf with unbounded %s format specifier
+    if func_text == "scanf" || func_text == "fscanf" || func_text == "sscanf" {
+        // Get the arguments to check the format string
+        let arguments = node.child_by_field_name("arguments")?;
+
+        // Extract arguments (skip parentheses and commas)
+        let mut args = Vec::new();
+        for i in 0..arguments.child_count() {
+            if let Some(child) = arguments.child(i) {
+                let kind = child.kind();
+                if kind != "," && kind != "(" && kind != ")" {
+                    args.push(child);
+                }
+            }
+        }
+
+        // scanf(format, ...) - format is first arg
+        // fscanf(stream, format, ...) - format is second arg
+        // sscanf(str, format, ...) - format is second arg
+        let format_arg_index = if func_text == "scanf" { 0 } else { 1 };
+
+        if args.len() <= format_arg_index {
+            return None;
+        }
+
+        let format_arg = args[format_arg_index];
+        if format_arg.kind() == "string_literal" {
+            let format_text = &source[format_arg.start_byte()..format_arg.end_byte()];
+
+            // Check for unbounded %s (not %Ns where N is a number)
+            // Pattern: %s that is NOT preceded by a digit
+            if format_text.contains("%s") {
+                // Check if it's an unbounded %s (not like %10s)
+                // Look for %s that doesn't have a width specifier
+                let has_unbounded_s = format_text
+                    .match_indices("%s")
+                    .any(|(pos, _)| {
+                        // Check character before % (if exists)
+                        // If it's a digit, then we need to go back further to find the actual %
+                        if pos > 0 {
+                            let before_percent = &format_text[..pos];
+                            // Find the actual % position by checking if there are digits before %s
+                            if let Some(percent_pos) = before_percent.rfind('%') {
+                                let between = &before_percent[percent_pos + 1..];
+                                // If there are only digits between % and s, it's bounded like %10s
+                                !between.chars().all(|c| c.is_ascii_digit())
+                            } else {
+                                true // Shouldn't happen, but treat as unbounded
+                            }
+                        } else {
+                            true // %s at start of string
+                        }
+                    });
+
+                if has_unbounded_s {
+                    let start_point = node.start_position();
+                    return Some(RuleViolation {
+                        rule_id: "ARR00-C".to_string(),
+                        severity: Severity::Critical,
+                        message: format!(
+                            "Use of {}() with unbounded '%s' format specifier can overflow buffer. This demonstrates misunderstanding of array bounds.",
+                            func_text
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(format!(
+                            "Use a width specifier like '%Ns' where N is buffer size minus 1, e.g., {}(\"%9s\", buffer) for char buffer[10]",
+                            func_text
+                        )),
+                    });
+                }
+            }
+        }
     }
 
     None
@@ -1504,6 +1584,54 @@ fn check_use_after_free(node: &Node, source: &str) -> Option<RuleViolation> {
                 array_name, array_name, array_name
             )),
         });
+    }
+
+    None
+}
+
+fn check_comma_in_subscript(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for comma operator inside array subscript
+    // Pattern: arr[0,2] instead of arr[0][2]
+    // This is a common misunderstanding - the comma operator evaluates both expressions
+    // and returns the second one, so arr[0,2] is actually arr[2], not arr[0][2]
+
+    // Get the entire subscript expression text
+    let subscript_text = &source[node.start_byte()..node.end_byte()];
+
+    // Simple check: if there's a comma inside brackets, it's likely the error pattern
+    // Look for pattern: [something,something]
+    if let Some(bracket_start) = subscript_text.find('[') {
+        if let Some(bracket_end) = subscript_text.rfind(']') {
+            let inside_brackets = &subscript_text[bracket_start + 1..bracket_end];
+
+            // Check if there's a comma inside the brackets
+            if inside_brackets.contains(',') {
+                let array_node = node.child_by_field_name("argument");
+                let array_name = if let Some(arr) = array_node {
+                    &source[arr.start_byte()..arr.end_byte()]
+                } else {
+                    "array"
+                };
+
+                let start_point = node.start_position();
+                return Some(RuleViolation {
+                    rule_id: "ARR00-C".to_string(),
+                    severity: Severity::Critical,
+                    message: format!(
+                        "Incorrect multidimensional array access '{}'. The comma operator causes this to evaluate to the last expression only, not accessing element [i][j].",
+                        subscript_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(format!(
+                        "For 2D array access, use multiple subscripts like '{}[i][j]' instead of '{}[i,j]'",
+                        array_name,
+                        array_name
+                    )),
+                });
+            }
+        }
     }
 
     None
