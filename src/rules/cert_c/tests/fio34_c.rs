@@ -1,4 +1,6 @@
 use super::Fio34C;
+use crate::parser::CParser;
+use crate::rules::CertRule;
 
 #[test]
 fn test_fio34c_detects_char_assignment_from_getc() {
@@ -13,10 +15,9 @@ void test() {
 }
 "#;
 
-    let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_c::language()).unwrap();
-    let tree = parser.parse(source, None).unwrap();
     let rule = Fio34C::new();
+    let mut parser = CParser::new().unwrap();
+    let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
 
     assert!(!violations.is_empty(), "Should detect char assignment from getc");
@@ -35,10 +36,9 @@ void test() {
 }
 "#;
 
-    let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_c::language()).unwrap();
-    let tree = parser.parse(source, None).unwrap();
     let rule = Fio34C::new();
+    let mut parser = CParser::new().unwrap();
+    let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
 
     assert!(!violations.is_empty(), "Should detect char initialization from fgetc");
@@ -59,10 +59,9 @@ void test() {
 }
 "#;
 
-    let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_c::language()).unwrap();
-    let tree = parser.parse(source, None).unwrap();
     let rule = Fio34C::new();
+    let mut parser = CParser::new().unwrap();
+    let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
 
     assert!(!violations.is_empty(), "Should detect char in loop EOF check");
@@ -84,10 +83,9 @@ void test() {
 }
 "#;
 
-    let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_c::language()).unwrap();
-    let tree = parser.parse(source, None).unwrap();
     let rule = Fio34C::new();
+    let mut parser = CParser::new().unwrap();
+    let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
 
     assert!(violations.is_empty(), "Should accept int assignment from getc");
@@ -108,10 +106,9 @@ void test() {
 }
 "#;
 
-    let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_c::language()).unwrap();
-    let tree = parser.parse(source, None).unwrap();
     let rule = Fio34C::new();
+    let mut parser = CParser::new().unwrap();
+    let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
 
     for v in &violations {
@@ -133,10 +130,9 @@ void test() {
 }
 "#;
 
-    let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_c::language()).unwrap();
-    let tree = parser.parse(source, None).unwrap();
     let rule = Fio34C::new();
+    let mut parser = CParser::new().unwrap();
+    let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
 
     assert!(!violations.is_empty(), "Should detect char assignment from getchar");
@@ -158,10 +154,9 @@ void test() {
 }
 "#;
 
-    let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_c::language()).unwrap();
-    let tree = parser.parse(source, None).unwrap();
     let rule = Fio34C::new();
+    let mut parser = CParser::new().unwrap();
+    let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
 
     // This test may need adjustment based on how we handle wide characters
@@ -186,10 +181,9 @@ void test() {
 }
 "#;
 
-    let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_c::language()).unwrap();
-    let tree = parser.parse(source, None).unwrap();
     let rule = Fio34C::new();
+    let mut parser = CParser::new().unwrap();
+    let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
 
     // Should not flag ungetc EOF comparison as violation
