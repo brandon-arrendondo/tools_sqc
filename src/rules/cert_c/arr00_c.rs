@@ -52,6 +52,10 @@ impl CertRule for Arr00C {
                 if let Some(violation) = check_pointer_arithmetic(node, source) {
                     violations.push(violation);
                 }
+                // Check for pointer subtraction between different arrays
+                if let Some(violation) = check_pointer_subtraction(node, source) {
+                    violations.push(violation);
+                }
             }
             "declaration" => {
                 // Check for VLA with zero or invalid size
@@ -1518,18 +1522,40 @@ fn check_constant_out_of_bounds(node: &Node, source: &str) -> Option<RuleViolati
     }
 
     let index_text = &source[index_node.start_byte()..index_node.end_byte()];
-    let index_value: usize = match index_text.parse() {
-        Ok(n) => n,
-        Err(_) => return None,
-    };
 
-    // Get the array being accessed
+    // Get the array being accessed first (we'll need it for the error message)
     let array_node = node.child_by_field_name("argument")?;
     if array_node.kind() != "identifier" {
         return None; // Only check simple array identifiers for now
     }
 
     let array_name = &source[array_node.start_byte()..array_node.end_byte()];
+
+    // Check for negative index first (starts with -)
+    if index_text.starts_with('-') {
+        let start_point = node.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::Critical,
+            message: format!(
+                "Array subscript {} is negative. Array indices must be non-negative (0 or greater).",
+                index_text
+            ),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some(format!(
+                "Array '{}' requires a non-negative index. Negative indices access memory before the array.",
+                array_name
+            )),
+        });
+    }
+
+    // Parse as unsigned integer for positive bounds checking
+    let index_value: usize = match index_text.parse() {
+        Ok(n) => n,
+        Err(_) => return None,
+    };
 
     // Find the array declaration to get its size
     let function_node = find_containing_function(node)?;
@@ -1847,6 +1873,124 @@ fn check_pointer_arithmetic(node: &Node, source: &str) -> Option<RuleViolation> 
                     array_size
                 )),
             });
+        }
+    }
+
+    None
+}
+
+fn check_pointer_subtraction(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for pointer subtraction between pointers to different arrays
+    // Pattern: p1 - p2 where p1 and p2 point to different array objects
+    // This is undefined behavior in C
+
+    let operator_node = node.child_by_field_name("operator")?;
+    let operator = &source[operator_node.start_byte()..operator_node.end_byte()];
+
+    // Only check subtraction
+    if operator != "-" {
+        return None;
+    }
+
+    let left = node.child_by_field_name("left")?;
+    let right = node.child_by_field_name("right")?;
+
+    // Both sides should be identifiers (pointers/variables)
+    if left.kind() != "identifier" || right.kind() != "identifier" {
+        return None;
+    }
+
+    let left_name = &source[left.start_byte()..left.end_byte()];
+    let right_name = &source[right.start_byte()..right.end_byte()];
+
+    // If they're the same variable, it's fine (p - p = 0)
+    if left_name == right_name {
+        return None;
+    }
+
+    // Find the containing function to look up pointer origins
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let subtraction_position = node.start_byte();
+    let preceding_text = &source[function_start..subtraction_position];
+
+    // Try to determine what arrays these pointers point to
+    // Pattern: int *p1 = &arr1[...]; or int *p1 = arr1 + ...;
+    let left_array = find_pointer_source_array(left_name, preceding_text);
+    let right_array = find_pointer_source_array(right_name, preceding_text);
+
+    // If we can determine both source arrays and they're different, flag it
+    if let (Some(left_arr), Some(right_arr)) = (left_array, right_array) {
+        if left_arr != right_arr {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::Critical,
+                message: format!(
+                    "Subtracting pointers from different arrays ('{}' from '{}' and '{}' from '{}'). Pointer subtraction is only defined for pointers within the same array object.",
+                    left_name,
+                    left_arr,
+                    right_name,
+                    right_arr
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(
+                    "Only subtract pointers that point to elements within the same array object.".to_string()
+                ),
+            });
+        }
+    }
+
+    None
+}
+
+fn find_pointer_source_array(ptr_name: &str, preceding_text: &str) -> Option<String> {
+    // Try to find what array this pointer points to
+    // Patterns to look for:
+    // 1. int *p = &arr[...];
+    // 2. int *p = arr + ...;
+    // 3. int *p = arr;
+
+    // Look for the pointer declaration/assignment
+    let patterns = [
+        format!("{} = &", ptr_name),  // p = &arr[...]
+        format!("{} = ", ptr_name),   // p = arr or p = arr + ...
+        format!("*{} = &", ptr_name), // int *p = &arr[...]
+        format!("*{} = ", ptr_name),  // int *p = arr
+    ];
+
+    for pattern in &patterns {
+        if let Some(pos) = preceding_text.rfind(pattern) {
+            // Get text after the = sign
+            let after_eq = &preceding_text[pos + pattern.len()..];
+
+            // Skip whitespace
+            let after_eq = after_eq.trim_start();
+
+            // If it starts with &, skip it
+            let after_eq = if after_eq.starts_with('&') {
+                &after_eq[1..]
+            } else {
+                after_eq
+            };
+
+            // Extract the array name (up to '[', '+', ',', ';', or whitespace)
+            let mut end_pos = 0;
+            for (i, c) in after_eq.chars().enumerate() {
+                if c == '[' || c == '+' || c == ',' || c == ';' || c.is_whitespace() || c == ')' {
+                    end_pos = i;
+                    break;
+                }
+            }
+
+            if end_pos > 0 {
+                let array_name = &after_eq[..end_pos];
+                if !array_name.is_empty() && array_name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+                    return Some(array_name.to_string());
+                }
+            }
         }
     }
 
