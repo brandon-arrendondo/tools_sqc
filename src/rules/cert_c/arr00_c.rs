@@ -68,16 +68,54 @@ impl CertRule for Arr00C {
                 if let Some(violation) = check_obvious_string_overflow(node, source) {
                     violations.push(violation);
                 }
+                // Check for memcpy/memmove with wrong size
+                if let Some(violation) = check_memcpy_size_mismatch(node, source) {
+                    violations.push(violation);
+                }
+                // Check for memory operations with size exceeding buffer
+                if let Some(violation) = check_memory_operation_overflow(node, source) {
+                    violations.push(violation);
+                }
             }
             "for_statement" => {
+                // Check for loops exceeding malloc/realloc allocation size
+                if let Some(violation) = check_loop_exceeds_allocation(node, source) {
+                    violations.push(violation);
+                }
+                // Check for loops with bounds that exceed array size
+                if let Some(violation) = check_loop_bound_exceeds_array(node, source) {
+                    violations.push(violation);
+                }
                 // Check for loops with unvalidated bounds accessing arrays
                 if let Some(violation) = check_loop_array_access(node, source) {
                     violations.push(violation);
                 }
             }
+            "return_statement" => {
+                // Check for returning pointer to local array
+                if let Some(violation) = check_return_local_array(node, source) {
+                    violations.push(violation);
+                }
+            }
             "subscript_expression" => {
+                // Check for reading from uninitialized array
+                if let Some(violation) = check_uninitialized_array_read(node, source) {
+                    violations.push(violation);
+                }
+                // Check for array access after free
+                if let Some(violation) = check_use_after_free(node, source) {
+                    violations.push(violation);
+                }
+                // Check for array access with constant out-of-bounds index
+                if let Some(violation) = check_constant_out_of_bounds(node, source) {
+                    violations.push(violation);
+                }
                 // Check for array access with unvalidated index
                 if let Some(violation) = check_subscript_bounds(node, source) {
+                    violations.push(violation);
+                }
+                // Check for array access with boundary value index
+                if let Some(violation) = check_boundary_value_index(node, source) {
                     violations.push(violation);
                 }
             }
@@ -330,7 +368,10 @@ fn is_function_parameter(function_node: &Node, var_name: &str, source: &str) -> 
                     if let Some(param_list) = child.child(j) {
                         if param_list.kind() == "parameter_list" {
                             let param_text = &source[param_list.start_byte()..param_list.end_byte()];
-                            if param_text.contains(var_name) {
+                            // Check for word boundaries to avoid substring matches
+                            // Look for the parameter name as a complete word
+                            let words: Vec<&str> = param_text.split(|c: char| !c.is_alphanumeric() && c != '_').collect();
+                            if words.iter().any(|&word| word == var_name) {
                                 return true;
                             }
                         }
@@ -392,8 +433,11 @@ fn check_obvious_string_overflow(node: &Node, source: &str) -> Option<RuleViolat
     let function = node.child_by_field_name("function")?;
     let func_text = &source[function.start_byte()..function.end_byte()];
 
-    // Only check strcat and strcpy
-    if func_text != "strcat" && func_text != "strcpy" {
+    // Check strcat, strcpy, sprintf, and snprintf
+    let is_str_concat = func_text == "strcat" || func_text == "strcpy";
+    let is_sprintf = func_text == "sprintf" || func_text == "snprintf";
+
+    if !is_str_concat && !is_sprintf {
         return None;
     }
 
@@ -411,12 +455,31 @@ fn check_obvious_string_overflow(node: &Node, source: &str) -> Option<RuleViolat
         }
     }
 
-    if args.len() < 2 {
-        return None;
-    }
+    // For sprintf/snprintf: sprintf(dest, format, arg1, arg2, ...)
+    // For strcat/strcpy: strcat(dest, src)
+    let (dest, src) = if is_sprintf {
+        // sprintf: first arg is dest, third arg (index 2) is typically the string to format
+        // We'll check if there's a %s in the format string and use the next argument
+        if args.len() < 3 {
+            return None; // Need at least dest, format, and one argument
+        }
 
-    let dest = args[0];
-    let src = args[1];
+        // Check if format string contains %s
+        let format_arg = args[1];
+        let format_text = &source[format_arg.start_byte()..format_arg.end_byte()];
+
+        if !format_text.contains("%s") {
+            return None; // Only check simple %s formatting for now
+        }
+
+        (args[0], args[2]) // dest and first argument after format
+    } else {
+        // strcat/strcpy: standard dest, src
+        if args.len() < 2 {
+            return None;
+        }
+        (args[0], args[1])
+    };
 
     // Get source length - either from string literal or from variable initialized with literal
     let src_len = if src.kind() == "string_literal" {
@@ -485,6 +548,242 @@ fn check_obvious_string_overflow(node: &Node, source: &str) -> Option<RuleViolat
     None
 }
 
+fn check_memcpy_size_mismatch(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for memcpy/memmove where size argument uses wrong array
+    // Pattern: memcpy(dest, source, sizeof(source)) where dest is smaller than source
+    // This indicates misunderstanding of array bounds
+
+    let function = node.child_by_field_name("function")?;
+    let func_text = &source[function.start_byte()..function.end_byte()];
+
+    // Only check memcpy and memmove
+    if func_text != "memcpy" && func_text != "memmove" {
+        return None;
+    }
+
+    // Get the arguments
+    let arguments = node.child_by_field_name("arguments")?;
+
+    // Extract dest, src, and size arguments (skip parentheses and commas)
+    let mut args = Vec::new();
+    for i in 0..arguments.child_count() {
+        if let Some(child) = arguments.child(i) {
+            let kind = child.kind();
+            if kind != "," && kind != "(" && kind != ")" {
+                args.push(child);
+            }
+        }
+    }
+
+    if args.len() < 3 {
+        return None;
+    }
+
+    let dest = args[0];
+    let src = args[1];
+    let size_arg = args[2];
+
+    // Check if size argument is sizeof(something)
+    if size_arg.kind() != "sizeof_expression" {
+        return None; // Only check obvious sizeof misuse
+    }
+
+    // Extract what sizeof is applied to
+    let sizeof_arg = size_arg.child_by_field_name("value")?;
+    let sizeof_arg_text = &source[sizeof_arg.start_byte()..sizeof_arg.end_byte()];
+
+    // Get dest and src names
+    let dest_name = &source[dest.start_byte()..dest.end_byte()];
+    let src_name = &source[src.start_byte()..src.end_byte()];
+
+
+    // Find the containing function to look up array sizes
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let call_position = node.start_byte();
+    let preceding_text = &source[function_start..call_position];
+
+    // Check if sizeof is applied to the source when it should be dest
+    // Pattern: memcpy(dest, src, sizeof(src)) where sizeof(dest) < sizeof(src)
+    // Note: sizeof_arg_text may have parentheses like "(source)"
+    let sizeof_stripped = sizeof_arg_text.trim_matches('(').trim_matches(')').trim();
+
+    if sizeof_stripped == src_name {
+        // Get sizes of both arrays
+        let dest_size = find_array_size(dest_name, preceding_text)?;
+        let src_size = find_array_size(src_name, preceding_text)?;
+
+        if dest_size < src_size {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::Critical,
+                message: format!(
+                    "{}({}, {}, sizeof({})) will overflow destination. Destination array '{}' has {} elements but source '{}' has {} elements.",
+                    func_text,
+                    dest_name,
+                    src_name,
+                    src_name,
+                    dest_name,
+                    dest_size,
+                    src_name,
+                    src_size
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(format!(
+                    "Use sizeof({}) instead of sizeof({}) to avoid buffer overflow",
+                    dest_name,
+                    src_name
+                )),
+            });
+        }
+    }
+
+    None
+}
+
+fn check_memory_operation_overflow(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for memory operations (memset, memcpy, memmove) where the size argument
+    // exceeds the actual buffer size
+    // Pattern: int arr[5]; memset(arr, 0, 100); // 100 bytes > 5*sizeof(int) = 20 bytes
+
+    let function = node.child_by_field_name("function")?;
+    let func_text = &source[function.start_byte()..function.end_byte()];
+
+    // Check for memory operation functions
+    let is_memset = func_text == "memset";
+    let is_memcpy = func_text == "memcpy";
+    let is_memmove = func_text == "memmove";
+
+    if !is_memset && !is_memcpy && !is_memmove {
+        return None;
+    }
+
+    // Get the arguments
+    let arguments = node.child_by_field_name("arguments")?;
+
+    // Extract arguments (skip parentheses and commas)
+    let mut args = Vec::new();
+    for i in 0..arguments.child_count() {
+        if let Some(child) = arguments.child(i) {
+            let kind = child.kind();
+            if kind != "," && kind != "(" && kind != ")" {
+                args.push(child);
+            }
+        }
+    }
+
+    // memset(ptr, value, size) - check args[0] and args[2]
+    // memcpy(dest, src, size) - check args[0] and args[2]
+    // memmove(dest, src, size) - check args[0] and args[2]
+
+    if args.len() < 3 {
+        return None;
+    }
+
+    let buffer = args[0];
+    let size_arg = args[2];
+
+    // We're looking for constant literal size arguments
+    if size_arg.kind() != "number_literal" {
+        return None;
+    }
+
+    let size_text = &source[size_arg.start_byte()..size_arg.end_byte()];
+    let size_bytes: usize = size_text.parse().ok()?;
+
+    // Get buffer name
+    let buffer_name = &source[buffer.start_byte()..buffer.end_byte()];
+
+    // Find the containing function to look up array size
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let call_position = node.start_byte();
+    let preceding_text = &source[function_start..call_position];
+
+    // Try to find the array size
+    let array_size = find_array_size(buffer_name, preceding_text)?;
+
+    // Calculate actual buffer size in bytes
+    // We need to determine the element type to get sizeof
+    // For now, assume int (4 bytes) as default, but try to detect the type
+    let element_size = find_element_size(buffer_name, preceding_text);
+    let buffer_size_bytes = array_size * element_size;
+
+    if size_bytes > buffer_size_bytes {
+        let start_point = node.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::Critical,
+            message: format!(
+                "{}() call writes {} bytes to buffer '{}' which is only {} bytes ({} elements × {} bytes). This causes buffer overflow.",
+                func_text,
+                size_bytes,
+                buffer_name,
+                buffer_size_bytes,
+                array_size,
+                element_size
+            ),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some(format!(
+                "Use the actual buffer size: {}({}, ..., {}) or {}({}, ..., sizeof({}))",
+                func_text,
+                buffer_name,
+                buffer_size_bytes,
+                func_text,
+                buffer_name,
+                buffer_name
+            )),
+        });
+    }
+
+    None
+}
+
+fn find_element_size(var_name: &str, preceding_text: &str) -> usize {
+    // Try to determine the element type and return its size
+    // Pattern: type var_name[...]
+
+    // Common C type sizes (assuming typical 32/64-bit platforms)
+    let type_sizes = [
+        ("char", 1),
+        ("short", 2),
+        ("int", 4),
+        ("long", 8),
+        ("float", 4),
+        ("double", 8),
+        ("unsigned char", 1),
+        ("unsigned short", 2),
+        ("unsigned int", 4),
+        ("unsigned long", 8),
+        ("signed char", 1),
+        ("signed short", 2),
+        ("signed int", 4),
+        ("signed long", 8),
+    ];
+
+    let pattern = format!("{}[", var_name);
+
+    if let Some(pos) = preceding_text.rfind(&pattern) {
+        // Look backwards from the array name to find the type
+        let before_array = &preceding_text[..pos];
+
+        // Search for type keywords
+        for (type_name, size) in &type_sizes {
+            if before_array.ends_with(type_name) || before_array.ends_with(&format!("{} ", type_name)) {
+                return *size;
+            }
+        }
+    }
+
+    // Default to int (4 bytes) if we can't determine the type
+    4
+}
+
 fn find_string_literal_length(var_name: &str, node: &Node, source: &str) -> Option<usize> {
     // Find the variable declaration and extract string literal length
     // Pattern: char *var = "literal"; or char var[] = "literal";
@@ -517,6 +816,257 @@ fn find_string_literal_length(var_name: &str, node: &Node, source: &str) -> Opti
         }
     }
 
+    None
+}
+
+fn check_loop_exceeds_allocation(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for loops that exceed dynamically allocated memory size
+    // Pattern: arr = malloc(5 * sizeof(int)); for (i = 0; i < 10; i++) { arr[i] = ...; }
+    // or: arr = realloc(arr, 3 * sizeof(int)); for (i = 0; i < 5; i++) { arr[i] = ...; }
+
+    // Get the loop condition
+    let condition = node.child_by_field_name("condition")?;
+    if condition.kind() != "binary_expression" {
+        return None;
+    }
+
+    let operator_node = condition.child_by_field_name("operator")?;
+    let operator = &source[operator_node.start_byte()..operator_node.end_byte()];
+    let left = condition.child_by_field_name("left")?;
+    let right = condition.child_by_field_name("right")?;
+
+    // Extract loop variable and bound
+    let (loop_var, bound_node) = if left.kind() == "identifier" && right.kind() == "number_literal" {
+        (left, right)
+    } else if right.kind() == "identifier" && left.kind() == "number_literal" {
+        (right, left)
+    } else {
+        return None;
+    };
+
+    let loop_var_name = &source[loop_var.start_byte()..loop_var.end_byte()];
+    let bound_text = &source[bound_node.start_byte()..bound_node.end_byte()];
+    let loop_bound: usize = match bound_text.parse() {
+        Ok(n) => n,
+        Err(_) => return None,
+    };
+
+    // Get the loop body
+    let body = node.child_by_field_name("body")?;
+    let body_text = &source[body.start_byte()..body.end_byte()];
+
+    // Check if loop variable is used as array index
+    let subscript_pattern = format!("[{}]", loop_var_name);
+    if !body_text.contains(&subscript_pattern) {
+        return None;
+    }
+
+    // Extract array name
+    let array_name = extract_array_name_from_subscript(body_text, loop_var_name)?;
+
+    // Look for malloc/realloc calls for this pointer
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let loop_position = node.start_byte();
+    let preceding_text = &source[function_start..loop_position];
+
+    // Find the most recent malloc/realloc for this pointer
+    if let Some(alloc_size) = find_allocation_size(&array_name, preceding_text) {
+        // Check if loop bound exceeds allocation size
+        // For operator <, loop goes from 0 to bound-1
+        // For operator <=, loop goes from 0 to bound
+        let max_index = if operator == "<" {
+            loop_bound.saturating_sub(1)
+        } else if operator == "<=" {
+            loop_bound
+        } else {
+            return None; // Don't handle > or >= for now
+        };
+
+        if max_index >= alloc_size {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::Critical,
+                message: format!(
+                    "Loop accesses up to index {} but dynamically allocated array '{}' has size {}. This causes out-of-bounds access.",
+                    max_index, array_name, alloc_size
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(format!(
+                    "Ensure loop bound does not exceed allocated size. Change to '{} < {}' to match allocation size.",
+                    loop_var_name, alloc_size
+                )),
+            });
+        }
+    }
+
+    None
+}
+
+fn find_allocation_size(ptr_name: &str, preceding_text: &str) -> Option<usize> {
+    // Look for the most recent malloc/realloc call for this pointer
+    // Patterns: ptr = malloc(N * sizeof(...))  or  ptr = realloc(ptr, N * sizeof(...))
+
+    // Search for realloc first (more recent), then malloc
+    let realloc_pattern = format!("{} = realloc", ptr_name);
+    let malloc_pattern = format!("{} = malloc", ptr_name);
+
+    let realloc_pos = preceding_text.rfind(&realloc_pattern);
+    let malloc_pos = preceding_text.rfind(&malloc_pattern);
+
+    // Use whichever is more recent (appears later in the text)
+    let (pattern, pos) = match (malloc_pos, realloc_pos) {
+        (Some(m), Some(r)) => if r > m { ("realloc", r) } else { ("malloc", m) },
+        (Some(m), None) => ("malloc", m),
+        (None, Some(r)) => ("realloc", r),
+        (None, None) => return None,
+    };
+
+    // Extract the allocation size from the call
+    // Look for pattern: malloc(N * sizeof(...)) or malloc(N*sizeof(...))
+    let after_call = &preceding_text[pos..];
+    if let Some(paren_start) = after_call.find('(') {
+        if let Some(paren_end) = after_call.find(')') {
+            let args = &after_call[paren_start + 1..paren_end];
+
+            // Try to extract N from "N * sizeof(...)" or "N*sizeof(...)"
+            if args.contains("sizeof") {
+                // Split by * and take the first part (should be N)
+                let parts: Vec<&str> = args.split('*').collect();
+                if let Some(size_str) = parts.first() {
+                    let size_str = size_str.trim();
+                    if let Ok(size) = size_str.parse::<usize>() {
+                        return Some(size);
+                    }
+                }
+            }
+        }
+    }
+
+    None
+}
+
+fn check_loop_bound_exceeds_array(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for loops where the bound allows accessing out-of-bounds indices
+    // Pattern: for (int i = 0; i <= 10; i++) { arr[i] = ...; } where arr[10]
+    // The <= allows i to reach 10, which is out of bounds
+
+    // Get the loop condition to analyze the bound
+    let condition = node.child_by_field_name("condition")?;
+
+    // Parse the condition to extract loop variable and bound
+    if condition.kind() != "binary_expression" {
+        return None;
+    }
+
+    let operator_node = condition.child_by_field_name("operator")?;
+    let operator = &source[operator_node.start_byte()..operator_node.end_byte()];
+
+    let left = condition.child_by_field_name("left")?;
+    let right = condition.child_by_field_name("right")?;
+
+    // Determine loop variable and bound
+    let (loop_var, bound_node, is_inclusive) = if left.kind() == "identifier" && right.kind() == "number_literal" {
+        let inclusive = operator == "<=" || operator == ">=";
+        (left, right, inclusive)
+    } else if right.kind() == "identifier" && left.kind() == "number_literal" {
+        let inclusive = operator == ">=" || operator == "<=";
+        (right, left, inclusive)
+    } else {
+        return None;
+    };
+
+    // Only care about inclusive bounds for now (<=)
+    if !is_inclusive {
+        return None;
+    }
+
+    let loop_var_name = &source[loop_var.start_byte()..loop_var.end_byte()];
+    let bound_text = &source[bound_node.start_byte()..bound_node.end_byte()];
+    let bound_value: usize = match bound_text.parse() {
+        Ok(n) => n,
+        Err(_) => return None,
+    };
+
+    // Get the loop body
+    let body = node.child_by_field_name("body")?;
+
+    // Look for array access using the loop variable: arr[loop_var]
+    let body_text = &source[body.start_byte()..body.end_byte()];
+    let subscript_pattern = format!("[{}]", loop_var_name);
+
+    if !body_text.contains(&subscript_pattern) {
+        return None; // No array access with this loop variable
+    }
+
+    // Find arrays being accessed in the loop body
+    // Look for pattern: array_name[loop_var]
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let loop_position = node.start_byte();
+    let preceding_text = &source[function_start..loop_position];
+
+    // Try to find array declarations and check if bound exceeds array size
+    // Parse body_text to find identifiers before [loop_var]
+    if let Some(array_name) = extract_array_name_from_subscript(body_text, loop_var_name) {
+        if let Some(array_size) = find_array_size(&array_name, preceding_text) {
+            // Check if loop bound allows out-of-bounds access
+            // For arr[10] with size 10, valid indices are 0-9
+            // If loop is i <= 10, then i can be 10, which is out of bounds
+            if bound_value >= array_size {
+                let start_point = node.start_position();
+                return Some(RuleViolation {
+                    rule_id: "ARR00-C".to_string(),
+                    severity: Severity::Critical,
+                    message: format!(
+                        "Loop bound allows index {} but array '{}' has size {}. Valid indices are 0-{}. Using '<=' instead of '<' causes off-by-one error.",
+                        bound_value, array_name, array_size, array_size - 1
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(format!(
+                        "Change loop condition to '{} < {}' instead of '{} <= {}'",
+                        loop_var_name, bound_value, loop_var_name, bound_value
+                    )),
+                });
+            }
+        }
+    }
+
+    None
+}
+
+fn extract_array_name_from_subscript(body_text: &str, loop_var: &str) -> Option<String> {
+    // Find pattern: identifier[loop_var]
+    let pattern = format!("[{}]", loop_var);
+    if let Some(pos) = body_text.find(&pattern) {
+        // Look backwards from '[' to find the identifier
+        let before_bracket = &body_text[..pos];
+
+        // Find the last identifier before the bracket
+        let mut end = before_bracket.len();
+        while end > 0 && before_bracket.chars().nth(end - 1).map_or(false, |c| c.is_whitespace()) {
+            end -= 1;
+        }
+
+        let mut start = end;
+        while start > 0 {
+            let ch = before_bracket.chars().nth(start - 1)?;
+            if ch.is_alphanumeric() || ch == '_' {
+                start -= 1;
+            } else {
+                break;
+            }
+        }
+
+        if start < end {
+            return Some(before_bracket[start..end].to_string());
+        }
+    }
     None
 }
 
@@ -673,6 +1223,11 @@ fn is_uninitialized_variable(var_name: &str, preceding_text: &str) -> bool {
     // Check if variable is declared but never initialized
     // Look for patterns like: "int size;" without "size =" before the loop
 
+    // First, check if this is a constant (all uppercase or #define) - constants are always initialized
+    if var_name.chars().all(|c| c.is_uppercase() || c == '_' || c.is_numeric()) {
+        return false; // Likely a constant/macro
+    }
+
     // Check if variable is declared (simple heuristic)
     let declaration_patterns = [
         format!("int {};", var_name),
@@ -771,6 +1326,242 @@ fn check_subscript_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
     None
 }
 
+fn check_uninitialized_array_read(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for reading from an uninitialized array
+    // Pattern: int arr[10]; ... printf("%d", arr[i]);
+    // The array is declared but never written to before being read
+
+    // Only flag uninitialized reads that occur inside loops
+    // Single element accesses are less critical (might be intentional undefined behavior check)
+    if !is_inside_loop(node) {
+        return None;
+    }
+
+    // Get the array being accessed
+    let array_node = node.child_by_field_name("argument")?;
+    if array_node.kind() != "identifier" {
+        return None;
+    }
+
+    let array_name = &source[array_node.start_byte()..array_node.end_byte()];
+
+    // Check if this is a read (not a write)
+    // If the subscript is on the left side of an assignment, it's a write
+    if is_write_context(node) {
+        return None; // Writing to array, not reading
+    }
+
+    // Look backwards in the function to check if array was initialized
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let subscript_position = node.start_byte();
+    let preceding_text = &source[function_start..subscript_position];
+
+    // Check if array is declared as a local array (not parameter)
+    let array_decl_pattern = format!("{}[", array_name);
+    if !preceding_text.contains(&array_decl_pattern) {
+        return None; // Not a local array, might be a parameter
+    }
+
+    // Check if it's a function parameter (parameters can be passed initialized)
+    if is_function_parameter(&function_node, array_name, source) {
+        return None; // Function parameters are assumed to be initialized by caller
+    }
+
+    // Check if array has been initialized (has assignment or initializer)
+    // Look for patterns:
+    // 1. Declaration with initializer: int arr[10] = {...}
+    // 2. Assignment: arr[i] = ...
+    let init_with_braces = format!("{}[", array_name);
+    if let Some(decl_pos) = preceding_text.rfind(&init_with_braces) {
+        let after_decl = &preceding_text[decl_pos..];
+        // Check if declaration has an initializer (= {...)
+        if after_decl.contains("=") && after_decl.find('=').unwrap() < after_decl.find(';').unwrap_or(usize::MAX) {
+            return None; // Array has initializer
+        }
+    }
+
+    // Check if there are any writes to the array before this read
+    let write_pattern = format!("{}[", array_name);
+    let mut found_write = false;
+
+    // Simple heuristic: look for array_name[...] = on the left side of assignment
+    for line in preceding_text.lines() {
+        if line.contains(&write_pattern) && line.contains('=') {
+            // Check if the array subscript comes before the =
+            if let Some(bracket_pos) = line.find(&write_pattern) {
+                if let Some(eq_pos) = line.find('=') {
+                    // Make sure it's not ==, !=, <=, >=
+                    let is_assignment = !line[..eq_pos].ends_with('!')
+                        && !line[..eq_pos].ends_with('<')
+                        && !line[..eq_pos].ends_with('>')
+                        && !line[eq_pos..].starts_with("==");
+
+                    if bracket_pos < eq_pos && is_assignment {
+                        found_write = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    if !found_write {
+        let start_point = node.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::Critical,
+            message: format!(
+                "Reading from uninitialized array '{}' inside a loop. Array was declared but never initialized before being read.",
+                array_name
+            ),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some(format!(
+                "Initialize array '{}' before reading: int {}[N] = {{0}}; or assign values before use",
+                array_name, array_name
+            )),
+        });
+    }
+
+    None
+}
+
+fn is_inside_loop(node: &Node) -> bool {
+    // Walk up the tree to see if we're inside a loop
+    let mut current = node.parent();
+    while let Some(parent) = current {
+        match parent.kind() {
+            "for_statement" | "while_statement" | "do_statement" => {
+                return true;
+            }
+            "function_definition" => {
+                // Reached function boundary, stop
+                return false;
+            }
+            _ => {
+                current = parent.parent();
+            }
+        }
+    }
+    false
+}
+
+fn is_write_context(node: &Node) -> bool {
+    // Check if this subscript expression is on the left side of an assignment
+    if let Some(parent) = node.parent() {
+        if parent.kind() == "assignment_expression" {
+            // Check if this node is the left side
+            if let Some(left) = parent.child_by_field_name("left") {
+                return left.id() == node.id();
+            }
+        }
+    }
+    false
+}
+
+fn check_use_after_free(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for array/pointer access after free()
+    // Pattern: free(ptr); ... ptr[i] = value;
+
+    // Get the array being accessed
+    let array_node = node.child_by_field_name("argument")?;
+    if array_node.kind() != "identifier" {
+        return None; // Only check simple identifiers
+    }
+
+    let array_name = &source[array_node.start_byte()..array_node.end_byte()];
+
+    // Look backwards in the function to see if this pointer was freed
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let subscript_position = node.start_byte();
+    let preceding_text = &source[function_start..subscript_position];
+
+    // Check if free(array_name) appears before this access
+    let free_pattern = format!("free({})", array_name);
+    let free_pattern_space = format!("free ({})", array_name); // Some code has space after free
+
+    if preceding_text.contains(&free_pattern) || preceding_text.contains(&free_pattern_space) {
+        let start_point = node.start_position();
+        return Some(RuleViolation {
+            rule_id: "ARR00-C".to_string(),
+            severity: Severity::Critical,
+            message: format!(
+                "Array/pointer '{}' is accessed after being freed. This is use-after-free, causing undefined behavior.",
+                array_name
+            ),
+            file_path: String::new(),
+            line: start_point.row + 1,
+            column: start_point.column + 1,
+            suggestion: Some(format!(
+                "Do not access '{}' after calling free(). Set pointer to NULL after freeing: free({}); {} = NULL;",
+                array_name, array_name, array_name
+            )),
+        });
+    }
+
+    None
+}
+
+fn check_constant_out_of_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for array access with a constant literal index that exceeds bounds
+    // Pattern: arr[5] where arr is declared as arr[5] or smaller
+
+    // Get the index expression from the subscript
+    let index_node = node.child_by_field_name("index")?;
+
+    // Check if index is a number literal (constant)
+    if index_node.kind() != "number_literal" {
+        return None; // Only check constant indices
+    }
+
+    let index_text = &source[index_node.start_byte()..index_node.end_byte()];
+    let index_value: usize = match index_text.parse() {
+        Ok(n) => n,
+        Err(_) => return None,
+    };
+
+    // Get the array being accessed
+    let array_node = node.child_by_field_name("argument")?;
+    if array_node.kind() != "identifier" {
+        return None; // Only check simple array identifiers for now
+    }
+
+    let array_name = &source[array_node.start_byte()..array_node.end_byte()];
+
+    // Find the array declaration to get its size
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let subscript_position = node.start_byte();
+    let preceding_text = &source[function_start..subscript_position];
+
+    if let Some(array_size) = find_array_size(array_name, preceding_text) {
+        // Check if index is out of bounds (valid indices are 0 to size-1)
+        if index_value >= array_size {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::Critical,
+                message: format!(
+                    "Array subscript {} is out of bounds for array '{}[{}]'. Valid indices are 0 to {}.",
+                    index_value, array_name, array_size, array_size - 1
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(format!(
+                    "Use a valid index in the range [0, {}] for array '{}'",
+                    array_size - 1, array_name
+                )),
+            });
+        }
+    }
+
+    None
+}
+
 fn has_bounds_validation(var_name: &str, preceding_text: &str) -> bool {
     // Look for validation patterns like:
     // if (index < 0 || index >= size)
@@ -798,6 +1589,189 @@ fn has_bounds_validation(var_name: &str, preceding_text: &str) -> bool {
     }
 
     false
+}
+
+fn check_boundary_value_index(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for array subscript using a variable initialized to boundary values
+    // Pattern: unsigned int idx = UINT_MAX; ... arr[idx]
+    // This indicates misunderstanding of safe array indexing
+
+    // Get the index expression from the subscript
+    let index_node = node.child_by_field_name("index")?;
+
+    // Check if index is an identifier (variable)
+    if index_node.kind() != "identifier" {
+        return None; // Only check variable indices
+    }
+
+    let index_var = &source[index_node.start_byte()..index_node.end_byte()];
+
+    // Find the containing function to check context
+    let function_node = find_containing_function(node)?;
+    let function_start = function_node.start_byte();
+    let subscript_position = node.start_byte();
+    let preceding_text = &source[function_start..subscript_position];
+
+    // Check if this variable was initialized to a boundary value
+    if let Some(boundary_value) = is_initialized_to_boundary_value(index_var, preceding_text) {
+        // Check if there's validation before using as array index
+        if !has_bounds_validation(index_var, preceding_text) {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "ARR00-C".to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Array subscript uses variable '{}' initialized to boundary value '{}' without bounds checking. This can cause overflow or out-of-bounds access.",
+                    index_var,
+                    boundary_value
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(format!(
+                    "Validate '{}' against array bounds before using it as an index, or avoid initializing indices to boundary values",
+                    index_var
+                )),
+            });
+        }
+    }
+
+    None
+}
+
+fn is_initialized_to_boundary_value(var_name: &str, preceding_text: &str) -> Option<&'static str> {
+    // Check if variable was initialized to a boundary value
+    // Patterns:
+    // unsigned int idx = UINT_MAX;
+    // int idx = INT_MAX;
+    // size_t idx = SIZE_MAX;
+
+    let boundary_values = [
+        "UINT_MAX",
+        "INT_MAX",
+        "SIZE_MAX",
+        "ULONG_MAX",
+        "LONG_MAX",
+        "ULLONG_MAX",
+        "LLONG_MAX",
+    ];
+
+    // Look for variable declaration/initialization
+    let var_pattern = format!("{} =", var_name);
+    if let Some(init_pos) = preceding_text.rfind(&var_pattern) {
+        let after_eq = &preceding_text[init_pos..];
+
+        // Check if any boundary value appears in the initialization
+        for &boundary in &boundary_values {
+            if after_eq.contains(boundary) {
+                // Make sure it's before a semicolon (part of the same statement)
+                if let Some(semicolon_pos) = after_eq.find(';') {
+                    let init_statement = &after_eq[..semicolon_pos];
+                    if init_statement.contains(boundary) {
+                        return Some(boundary);
+                    }
+                }
+            }
+        }
+    }
+
+    None
+}
+
+fn check_return_local_array(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Check for returning pointer to local stack array
+    // Pattern: return local_array; where local_array is declared in function
+
+    // Get the return value - must be a SINGLE direct identifier, not part of an expression
+    // We want to match "return array_name;" but not "return expr" or "return func()" or "return;"
+
+    // Count meaningful children (non-punctuation)
+    let meaningful_children: Vec<Node> = (0..node.child_count())
+        .filter_map(|i| node.child(i))
+        .filter(|child| {
+            let kind = child.kind();
+            kind != "return" && kind != ";" // Skip keywords and punctuation
+        })
+        .collect();
+
+    // Must have exactly one meaningful child, and it must be an identifier
+    if meaningful_children.len() != 1 || meaningful_children[0].kind() != "identifier" {
+        return None;
+    }
+
+    let return_node = meaningful_children[0];
+    let return_var = &source[return_node.start_byte()..return_node.end_byte()];
+
+    // Additional safety: ignore common non-array identifiers
+    if return_var == "NULL" || return_var.parse::<i32>().is_ok() {
+        return None;
+    }
+
+    // Find the containing function
+    let function_node = find_containing_function(node)?;
+
+    // Search for local array declaration with this name
+    let function_text = &source[function_node.start_byte()..function_node.end_byte()];
+
+    // Look for pattern: type name[size] where name matches return_var
+    // Need to check for word boundaries to avoid false positives like "size" matching "s<i>ze"
+    let array_pattern = format!("{}[", return_var);
+
+    if !function_text.contains(&array_pattern) {
+        return None;
+    }
+
+    // Make sure it's not a parameter (parameters are before the opening brace)
+    let body_start = function_text.find('{')?;
+    let params_section = &function_text[..body_start];
+
+    // If the array is in the parameters section, it's not a local array
+    if params_section.contains(&array_pattern) {
+        return None;
+    }
+
+    // Additionally, check that this is actually a declaration in the function body
+    // Look for pattern "type varname[" to confirm it's a local array declaration
+    let body_section = &function_text[body_start..];
+
+    // Check for common array declaration patterns
+    let type_keywords = ["int", "char", "float", "double", "long", "short", "unsigned", "signed", "size_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t"];
+    let has_array_declaration = type_keywords.iter().any(|&type_kw| {
+        let decl_pattern = format!("{} {}", type_kw, array_pattern);
+        body_section.contains(&decl_pattern) || body_section.contains(&format!("{} *{}", type_kw, array_pattern.trim_end_matches('[')))
+    });
+
+    if !has_array_declaration {
+        return None;
+    }
+
+    // It's a local array being returned
+    let line = source[..return_node.start_byte()]
+        .chars()
+        .filter(|&c| c == '\n')
+        .count()
+        + 1;
+    let column = source[..return_node.start_byte()]
+        .lines()
+        .last()
+        .map(|l| l.len())
+        .unwrap_or(0)
+        + 1;
+
+    Some(RuleViolation {
+        rule_id: "ARR00-C".to_string(),
+        severity: Severity::Critical,
+        message: format!(
+            "Returning pointer to local array '{}' which will be destroyed when function returns, creating a dangling pointer.",
+            return_var
+        ),
+        file_path: String::new(),
+        line,
+        column,
+        suggestion: Some(format!(
+            "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
+        )),
+    })
 }
 
 fn check_pointer_arithmetic(node: &Node, source: &str) -> Option<RuleViolation> {
@@ -882,23 +1856,42 @@ fn check_pointer_arithmetic(node: &Node, source: &str) -> Option<RuleViolation> 
 fn find_array_size(array_name: &str, preceding_text: &str) -> Option<usize> {
     // Look for array declaration patterns: type array_name[SIZE] = ...
     // Examples: int arr[5], char buf[100]
+    // Need to distinguish declarations from subscript usage
 
-    // Search for "array_name[" pattern to find the array declaration
+    // Search for all occurrences of "array_name[" pattern
     let pattern = format!("{}[", array_name);
-    if let Some(pos) = preceding_text.rfind(&pattern) {
-        // Look for the closing bracket
-        let after_name = &preceding_text[pos..];
+    let mut search_start = 0;
+
+    while let Some(pos) = preceding_text[search_start..].find(&pattern) {
+        let absolute_pos = search_start + pos;
+        let after_name = &preceding_text[absolute_pos..];
+
         if let Some(bracket_start) = after_name.find('[') {
             if let Some(bracket_end) = after_name.find(']') {
                 if bracket_end > bracket_start {
-                    let size_text = &after_name[bracket_start + 1..bracket_end].trim();
+                    let size_text = after_name[bracket_start + 1..bracket_end].trim();
+
                     // Try to parse as a number
                     if let Ok(size) = size_text.parse::<usize>() {
-                        return Some(size);
+                        // Check if this looks like a declaration, not a subscript usage
+                        // Look backwards for type keywords
+                        let before_name = &preceding_text[..absolute_pos];
+                        let type_keywords = ["int", "char", "float", "double", "long", "short",
+                                            "unsigned", "signed", "size_t", "void", "struct"];
+
+                        // Look at the last ~50 characters before the array name
+                        let check_range = if before_name.len() > 50 { &before_name[before_name.len() - 50..] } else { before_name };
+
+                        // If we find a type keyword nearby, it's likely a declaration
+                        if type_keywords.iter().any(|&kw| check_range.contains(kw)) {
+                            return Some(size);
+                        }
                     }
                 }
             }
         }
+
+        search_start = absolute_pos + pattern.len();
     }
 
     None
@@ -920,8 +1913,18 @@ fn check_array_comparison(node: &Node, source: &str) -> Option<RuleViolation> {
     let left = node.child_by_field_name("left")?;
     let right = node.child_by_field_name("right")?;
 
-    // Check if either side is an array (heuristic check)
-    if is_array_identifier(&left, source) || is_array_identifier(&right, source) {
+    // Get the text of both sides
+    let left_text = &source[left.start_byte()..left.end_byte()];
+    let right_text = &source[right.start_byte()..right.end_byte()];
+
+    // Don't flag comparisons with NULL (null checks are valid)
+    if left_text == "NULL" || right_text == "NULL" {
+        return None;
+    }
+
+    // Check if BOTH sides are arrays (comparing two arrays)
+    // Comparing array with NULL or other values is fine
+    if is_array_identifier(&left, source) && is_array_identifier(&right, source) {
         let start_point = node.start_position();
         return Some(RuleViolation {
             rule_id: "ARR00-C".to_string(),
@@ -1041,10 +2044,28 @@ fn is_array_parameter_type(param_type: &str) -> bool {
     (param_type.contains("*") && !param_type.contains("const char *")) // Avoid false positives on string literals
 }
 
-fn is_array_identifier(node: &Node, _source: &str) -> bool {
+fn is_array_identifier(node: &Node, source: &str) -> bool {
     // Heuristic check if identifier could be an array
     // Limitation: Without symbol table, we cannot definitively determine array types
-    node.kind() == "identifier" && !is_function_call_name(node)
+    // Only flag if we have strong evidence it's an array
+
+    if node.kind() != "identifier" || is_function_call_name(node) {
+        return false;
+    }
+
+    let identifier_name = &source[node.start_byte()..node.end_byte()];
+
+    // Check if this identifier is used with subscripts elsewhere (strong evidence of array)
+    // Look for the pattern "identifier[" in the containing function
+    if let Some(function_node) = find_containing_function(node) {
+        let function_text = &source[function_node.start_byte()..function_node.end_byte()];
+        let array_pattern = format!("{}[", identifier_name);
+        if function_text.contains(&array_pattern) {
+            return true;
+        }
+    }
+
+    false
 }
 
 fn is_subscript(node: &Node) -> bool {
