@@ -391,6 +391,72 @@ fn is_function_parameter(function_node: &Node, var_name: &str, source: &str) -> 
     false
 }
 
+fn is_loop_variable(var_name: &str, preceding_text: &str) -> bool {
+    // Check if the variable is defined in a for loop initialization
+    // Look for patterns like: for (type varname = ...; ...; ...)
+
+    // Search for "for" statements and check if they contain our variable in the init section
+    // Use a simple but effective approach: look for the variable name between "for (" and the first ";"
+
+    let mut in_for_init = false;
+    let mut paren_depth = 0;
+    let mut chars = preceding_text.chars().peekable();
+    let mut current_word = String::new();
+    let mut for_init_content = String::new();
+
+    while let Some(ch) = chars.next() {
+        // Check for "for" keyword
+        current_word.push(ch);
+        if current_word.len() > 3 {
+            current_word.remove(0);
+        }
+
+        if current_word == "for" {
+            // Check if next non-whitespace char is '('
+            let remaining: String = chars.clone().collect();
+            if remaining.trim_start().starts_with('(') {
+                in_for_init = true;
+                for_init_content.clear();
+                paren_depth = 0;
+                continue;
+            }
+        }
+
+        if in_for_init {
+            if ch == '(' {
+                paren_depth += 1;
+                if paren_depth > 1 {
+                    for_init_content.push(ch);
+                }
+            } else if ch == ')' {
+                paren_depth -= 1;
+                if paren_depth > 0 {
+                    for_init_content.push(ch);
+                }
+            } else if ch == ';' && paren_depth == 1 {
+                // End of for loop init section
+                // Check if our variable name appears in the init content
+                // Split by whitespace and special chars to find exact word matches
+                let words: Vec<&str> = for_init_content
+                    .split(|c: char| !c.is_alphanumeric() && c != '_')
+                    .filter(|s| !s.is_empty())
+                    .collect();
+
+                if words.contains(&var_name) {
+                    return true;
+                }
+
+                in_for_init = false;
+                for_init_content.clear();
+            } else if paren_depth >= 1 {
+                for_init_content.push(ch);
+            }
+        }
+    }
+
+    false
+}
+
 fn has_size_validation_before(text: &str, size_var: &str) -> bool {
     // Check for common validation patterns
     // if (size == 0), if (size <= 0), if (size < 1), etc.
@@ -1179,6 +1245,11 @@ fn check_loop_array_access(node: &Node, source: &str) -> Option<RuleViolation> {
     let function_start = function_node.start_byte();
     let preceding_text = &source[function_start..loop_position];
 
+    // Check if bound_var is a function parameter - if so, it's the caller's responsibility
+    if is_function_parameter(&function_node, &bound_var, source) {
+        return None; // Function parameters are assumed to be valid
+    }
+
     // Check for scanf/fscanf reading into the bound variable
     if is_user_input_variable(&bound_var, preceding_text) {
         // Check if there's validation before the loop
@@ -1364,6 +1435,12 @@ fn check_subscript_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
     let subscript_position = node.start_byte();
     let preceding_text = &source[function_start..subscript_position];
 
+    // Check if index_var is a loop variable (defined in a for loop)
+    // Pattern: for (...; index_var ...; ...) or for (... index_var = ...
+    if is_loop_variable(index_var, preceding_text) {
+        return None; // Loop variables are assumed to be bounded by the loop condition
+    }
+
     // Check if this is a function parameter (indicates it comes from caller without validation)
     if is_function_parameter(&function_node, index_var, source) {
         // Check if there's bounds validation before this subscript
@@ -1534,15 +1611,32 @@ fn is_inside_loop(node: &Node) -> bool {
 
 fn is_write_context(node: &Node) -> bool {
     // Check if this subscript expression is on the left side of an assignment
-    if let Some(parent) = node.parent() {
-        if parent.kind() == "assignment_expression" {
-            // Check if this node is the left side
-            if let Some(left) = parent.child_by_field_name("left") {
-                return left.id() == node.id();
+    // This needs to handle nested subscripts like matrix[i][j] = value
+    // where matrix[i] is part of a write even though its parent is subscript_expression
+
+    let mut current = *node;
+
+    // Walk up the tree while we're in subscript expressions
+    loop {
+        if let Some(parent) = current.parent() {
+            if parent.kind() == "assignment_expression" {
+                // Check if current node (or its ancestor subscript) is the left side
+                if let Some(left) = parent.child_by_field_name("left") {
+                    return left.id() == current.id();
+                }
+                return false;
+            } else if parent.kind() == "subscript_expression" {
+                // Keep walking up through nested subscripts
+                current = parent;
+            } else {
+                // Hit a different node type, not a write context
+                return false;
             }
+        } else {
+            // No parent, not a write context
+            return false;
         }
     }
-    false
 }
 
 fn check_use_after_free(node: &Node, source: &str) -> Option<RuleViolation> {
@@ -1595,41 +1689,60 @@ fn check_comma_in_subscript(node: &Node, source: &str) -> Option<RuleViolation> 
     // This is a common misunderstanding - the comma operator evaluates both expressions
     // and returns the second one, so arr[0,2] is actually arr[2], not arr[0][2]
 
-    // Get the entire subscript expression text
+    // Get the full subscript text (including brackets)
     let subscript_text = &source[node.start_byte()..node.end_byte()];
 
-    // Simple check: if there's a comma inside brackets, it's likely the error pattern
-    // Look for pattern: [something,something]
-    if let Some(bracket_start) = subscript_text.find('[') {
-        if let Some(bracket_end) = subscript_text.rfind(']') {
-            let inside_brackets = &subscript_text[bracket_start + 1..bracket_end];
+    // Check if it matches the pattern of having a comma in the subscript
+    // Look for [...,...] pattern
+    if let Some(open_bracket) = subscript_text.find('[') {
+        if let Some(close_bracket) = subscript_text.rfind(']') {
+            let inside_brackets = &subscript_text[open_bracket+1..close_bracket];
 
-            // Check if there's a comma inside the brackets
+            // Check if there's a comma in the subscript content
             if inside_brackets.contains(',') {
-                let array_node = node.child_by_field_name("argument");
-                let array_name = if let Some(arr) = array_node {
-                    &source[arr.start_byte()..arr.end_byte()]
-                } else {
-                    "array"
-                };
+                // Make sure it's not a function call like arr[func(a,b)]
+                // Count parentheses - if balanced at 0 and no open paren before comma, it's the comma operator
+                let mut paren_depth = 0;
+                let mut found_comma_at_depth_zero = false;
 
-                let start_point = node.start_position();
-                return Some(RuleViolation {
-                    rule_id: "ARR00-C".to_string(),
-                    severity: Severity::Critical,
-                    message: format!(
-                        "Incorrect multidimensional array access '{}'. The comma operator causes this to evaluate to the last expression only, not accessing element [i][j].",
-                        subscript_text
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some(format!(
-                        "For 2D array access, use multiple subscripts like '{}[i][j]' instead of '{}[i,j]'",
-                        array_name,
-                        array_name
-                    )),
-                });
+                for ch in inside_brackets.chars() {
+                    match ch {
+                        '(' => paren_depth += 1,
+                        ')' => paren_depth -= 1,
+                        ',' if paren_depth == 0 => {
+                            found_comma_at_depth_zero = true;
+                            break;
+                        }
+                        _ => {}
+                    }
+                }
+
+                if found_comma_at_depth_zero {
+                    let array_node = node.child_by_field_name("argument");
+                    let array_name = if let Some(arr) = array_node {
+                        &source[arr.start_byte()..arr.end_byte()]
+                    } else {
+                        "array"
+                    };
+
+                    let start_point = node.start_position();
+                    return Some(RuleViolation {
+                        rule_id: "ARR00-C".to_string(),
+                        severity: Severity::Critical,
+                        message: format!(
+                            "Incorrect multidimensional array access '{}'. The comma operator causes this to evaluate to the last expression only, not accessing element [i][j].",
+                            subscript_text
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(format!(
+                            "For 2D array access, use multiple subscripts like '{}[i][j]' instead of '{}[i,j]'",
+                            array_name,
+                            array_name
+                        )),
+                    });
+                }
             }
         }
     }
