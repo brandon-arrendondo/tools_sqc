@@ -12,21 +12,31 @@
 //! # Known Limitations
 //!
 //! ## Macro Expansion
-//! This implementation does NOT expand C preprocessor macros before analysis.
-//! Array accesses that occur within macro expansions may not be detected.
+//! This implementation partially supports C preprocessor macros:
 //!
-//! Example that may NOT be detected:
+//! **Supported:**
+//! - Macro constants in array size declarations are resolved:
+//!   ```c
+//!   #define SIZE 10
+//!   int arr[SIZE];  // SIZE is resolved to 10
+//!   ```
+//!
+//! **NOT Supported:**
+//! - Function-like macros that generate array accesses are NOT expanded.
+//!   These appear as function calls to the parser, not as array subscripts.
+//!
+//! Example that will NOT be detected:
 //! ```c
 //! #define UNSAFE_ACCESS(arr, idx) arr[idx + 5]
 //! int data[8];
-//! UNSAFE_ACCESS(data, 6);  // Expands to data[11] - out of bounds!
+//! UNSAFE_ACCESS(data, 6);  // Parser sees a function call, not data[11]
 //! ```
 //!
 //! Proper detection would require:
 //! - Running the C preprocessor (cpp or clang -E) before parsing
 //! - Mapping violations back to original source locations via #line directives
 //!
-//! This is a complex feature that may be added in future versions.
+//! This is a complex architectural change that may be added in future versions.
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
@@ -95,16 +105,46 @@ impl Arr30C {
 
         let root_node = tree.root_node();
 
-        // First pass: collect typedef information (still needed for typedef arrays)
+        // First pass: collect macro constants (#define NAME VALUE)
+        let macros = self.extract_macro_constants(&root_node, source);
+
+        // Second pass: collect typedef information (still needed for typedef arrays)
         let typedefs = self.analyze_typedefs(source);
 
         // Analyze struct member arrays declared with typedefs
         self.analyze_struct_typedef_members(source, &typedefs, &mut buffers);
 
         // Traverse AST to find all declarations
-        self.extract_buffers_from_ast(&root_node, source, &mut buffers, &typedefs);
+        self.extract_buffers_from_ast(&root_node, source, &mut buffers, &typedefs, &macros);
 
         buffers
+    }
+
+    /// Extract macro constants from preprocessor directives
+    /// Returns a HashMap of macro name to its integer value
+    fn extract_macro_constants(&self, root: &Node, source: &str) -> HashMap<String, i64> {
+        let mut macros = HashMap::new();
+
+        let mut cursor = root.walk();
+
+        for child in root.children(&mut cursor) {
+            if child.kind() == "preproc_def" {
+                // #define NAME VALUE
+                if let Some(name_node) = child.child_by_field_name("name") {
+                    if let Some(value_node) = child.child_by_field_name("value") {
+                        let name = &source[name_node.start_byte()..name_node.end_byte()];
+                        let value_str = &source[value_node.start_byte()..value_node.end_byte()];
+
+                        // Try to parse as integer
+                        if let Ok(value) = value_str.trim().parse::<i64>() {
+                            macros.insert(name.to_string(), value);
+                        }
+                    }
+                }
+            }
+        }
+
+        macros
     }
 
     /// Recursively extract buffer allocations from AST
@@ -113,54 +153,99 @@ impl Arr30C {
         node: &Node,
         source: &str,
         buffers: &mut HashMap<String, BufferInfo>,
-        typedefs: &HashMap<String, usize>
+        typedefs: &HashMap<String, usize>,
+        macros: &HashMap<String, i64>
     ) {
         // Check if this node is a declaration
         if node.kind() == "declaration" {
-            if let Some(buffer) = self.extract_buffer_from_declaration_with_typedefs(node, source, typedefs) {
+            if let Some(mut buffer) = self.extract_buffer_from_declaration_with_typedefs(node, source, typedefs) {
+                // Try to resolve macro constants in buffer size
+                if let BufferSize::Symbolic(ref sym) = buffer.size {
+                    if let Some(&value) = macros.get(sym) {
+                        buffer.size = BufferSize::Static(value as usize);
+                    }
+                }
+
                 // Handle realloc: keep existing buffer if it has smaller size
                 if let Some(existing) = buffers.get(&buffer.name) {
                     match (&existing.size, &buffer.size) {
                         (BufferSize::DynamicCalculated(old_size), BufferSize::DynamicCalculated(new_size)) => {
                             if new_size < old_size {
-                                buffers.insert(buffer.name.clone(), buffer);
+                                buffers.insert(buffer.name.clone(), buffer.clone());
                             }
                         }
                         _ => {
-                            buffers.insert(buffer.name.clone(), buffer);
+                            buffers.insert(buffer.name.clone(), buffer.clone());
                         }
                     }
                 } else {
-                    buffers.insert(buffer.name.clone(), buffer);
+                    buffers.insert(buffer.name.clone(), buffer.clone());
                 }
+
+                // For multidimensional arrays, extract inner dimensions
+                self.extract_multidimensional_buffers(node, &buffer.name, source, buffers);
             }
 
             // Also check for VLA declarations using typedef
             // VLAs need special handling as they may not be caught by AST alone
-            if let Some(vla_buffer) = self.extract_vla_from_declaration(node, source, typedefs) {
-                buffers.insert(vla_buffer.name.clone(), vla_buffer);
+            if let Some(mut vla_buffer) = self.extract_vla_from_declaration(node, source, typedefs) {
+                // Try to resolve macro constants in VLA buffer size
+                if let BufferSize::Symbolic(ref sym) = vla_buffer.size {
+                    if let Some(&value) = macros.get(sym) {
+                        vla_buffer.size = BufferSize::Static(value as usize);
+                    }
+                }
+
+                // Only insert if not already in map (prefer the already-resolved version)
+                if !buffers.contains_key(&vla_buffer.name) {
+                    buffers.insert(vla_buffer.name.clone(), vla_buffer);
+                }
             }
         }
 
-        // Check if this node is a struct_specifier to extract member arrays
-        if node.kind() == "struct_specifier" {
+        // Check if this node is a struct_specifier or union_specifier to extract member arrays
+        if node.kind() == "struct_specifier" || node.kind() == "union_specifier" {
             self.extract_struct_member_arrays(node, source, buffers);
+        }
+
+        // Check for assignment expressions with malloc (e.g., matrix[i] = malloc(...))
+        // This handles dynamic allocations inside loops
+        if node.kind() == "assignment_expression" || node.kind() == "expression_statement" {
+            let assign_node = if node.kind() == "assignment_expression" {
+                Some(*node)
+            } else if node.kind() == "expression_statement" {
+                // Look for assignment_expression child
+                node.child(0).filter(|c| c.kind() == "assignment_expression")
+            } else {
+                None
+            };
+
+            if let Some(assign) = assign_node {
+                if let Some((buf_name, buf_info)) = self.extract_buffer_from_assignment(&assign, source) {
+                    // Insert wildcard buffers from malloc assignments
+                    buffers.insert(buf_name, buf_info);
+                }
+            }
         }
 
         // Recursively process children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.extract_buffers_from_ast(&child, source, buffers, typedefs);
+                self.extract_buffers_from_ast(&child, source, buffers, typedefs, macros);
             }
         }
     }
 
-    /// Extract struct member arrays from struct_specifier node
+    /// Extract member arrays from struct_specifier or union_specifier node
     /// Handles patterns like:
     /// typedef struct {
     ///     char name[10];    // Extracts "name" with size 10
     ///     int scores[5];    // Extracts "scores" with size 5
     /// } Student;
+    /// typedef union {
+    ///     char bytes[4];    // Extracts "bytes" with size 4
+    ///     int value;
+    /// } Data;
     fn extract_struct_member_arrays(
         &self,
         node: &Node,
@@ -426,10 +511,13 @@ impl Arr30C {
         // Pattern 2: COUNT * sizeof(TYPE) - malloc(5 * sizeof(int))
         // Store the COUNT (number of elements), not the byte size
         if trimmed.contains('*') && trimmed.contains("sizeof") {
-            let parts: Vec<&str> = trimmed.split('*').collect();
-            if parts.len() == 2 {
-                let count = self.extract_numeric_value(parts[0].trim());
-                let _sizeof_val = self.extract_sizeof_value(parts[1].trim());
+            // Split only on the first '*' to handle cases like "3 * sizeof(int*)"
+            if let Some(mult_pos) = trimmed.find('*') {
+                let count_str = &trimmed[..mult_pos].trim();
+                let sizeof_str = &trimmed[mult_pos + 1..].trim();
+
+                let count = self.extract_numeric_value(count_str);
+                let _sizeof_val = self.extract_sizeof_value(sizeof_str);
 
                 if let Some(c) = count {
                     // Store element count, not byte count
@@ -944,8 +1032,16 @@ impl Arr30C {
     fn check_if_bounds_against_size(&self, if_node: &Node, source: &str, size: usize) -> bool {
         let if_text = &source[if_node.start_byte()..if_node.end_byte()];
 
-        // Look for patterns like: if (idx < SIZE)
+        // Look for patterns like: if (idx < SIZE) or if (idx < 3)
         if if_text.contains(&format!("< {}", size)) {
+            return true;
+        }
+
+        // Also check for macro-based bounds (e.g., "< ROWS", "< COLS")
+        // Look for common comparison patterns that indicate bounds checking
+        if if_text.contains("< ") && (if_text.contains(">=") || if_text.contains("&&")) {
+            // Pattern like: if (idx >= 0 && idx < SOMETHING)
+            // This is a proper bounds check even if we don't know the exact value of SOMETHING
             return true;
         }
 
@@ -1636,7 +1732,32 @@ impl Arr30C {
                         // Handles: int arr[5];
                         return self.extract_buffer_from_array_declarator(&child, source);
                     }
+                    // For function pointer arrays like void (*functions[3])(void)
+                    // the array_declarator is nested inside function_declarator
+                    "function_declarator" | "pointer_declarator" => {
+                        // Recursively search for array_declarator
+                        if let Some(buffer) = self.find_array_declarator_in_node(&child, source) {
+                            return Some(buffer);
+                        }
+                    }
                     _ => {}
+                }
+            }
+        }
+        None
+    }
+
+    /// Recursively search for array_declarator in a node tree
+    fn find_array_declarator_in_node(&self, node: &Node, source: &str) -> Option<BufferInfo> {
+        if node.kind() == "array_declarator" {
+            return self.extract_buffer_from_array_declarator(node, source);
+        }
+
+        // Recursively search children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(buffer) = self.find_array_declarator_in_node(&child, source) {
+                    return Some(buffer);
                 }
             }
         }
@@ -1671,6 +1792,10 @@ impl Arr30C {
 
         if declarator.kind() == "array_declarator" {
             return self.extract_buffer_from_array_declarator(&declarator, source);
+        } else if declarator.kind() == "function_declarator" {
+            // For function pointer arrays like: void (*functions[3])(void) = {...}
+            // the array_declarator is nested inside function_declarator
+            return self.find_array_declarator_in_node(&declarator, source);
         } else if declarator.kind() == "pointer_declarator" {
             // Check if this is a malloc/calloc assignment
             for i in 0..node.child_count() {
@@ -1747,8 +1872,21 @@ impl Arr30C {
     }
 
     /// Extract buffer info from array_declarator
+    /// For multidimensional arrays, extracts the INNERMOST dimension (the base array)
+    /// The caller is responsible for extracting outer dimensions
     fn extract_buffer_from_array_declarator(&self, node: &Node, source: &str) -> Option<BufferInfo> {
-        // array_declarator has: declarator, "[", size, "]"
+        // Check if first child is a nested array_declarator (multidimensional array)
+        if let Some(first_child) = node.child(0) {
+            if first_child.kind() == "array_declarator" {
+                // This is a multidimensional array like int matrix[3][4]
+                // The nested array_declarator contains the outer dimension (3)
+                // This node contains the inner dimension (4)
+                // We should extract from the nested one to get the base buffer
+                return self.extract_buffer_from_array_declarator(&first_child, source);
+            }
+        }
+
+        // Single-dimensional array or innermost dimension of multidimensional array
         let mut var_name: Option<String> = None;
         let mut size: Option<usize> = None;
         let mut size_expr: Option<String> = None;
@@ -1757,16 +1895,23 @@ impl Arr30C {
             if let Some(child) = node.child(i) {
                 match child.kind() {
                     "identifier" => {
-                        var_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                        if var_name.is_none() {
+                            var_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                        } else if i > 0 {
+                            // This is the size expression (VLA)
+                            let expr = &source[child.start_byte()..child.end_byte()];
+                            size_expr = Some(expr.to_string());
+                        }
                     }
                     "number_literal" => {
                         let size_str = &source[child.start_byte()..child.end_byte()];
                         size = size_str.parse().ok();
                     }
-                    "identifier" if i > 0 => {
-                        // This is the size expression (VLA)
-                        let expr = &source[child.start_byte()..child.end_byte()];
-                        size_expr = Some(expr.to_string());
+                    // Handle complex declarators (function pointers, nested pointers, etc.)
+                    "function_declarator" | "pointer_declarator" | "parenthesized_declarator" => {
+                        if var_name.is_none() {
+                            var_name = self.extract_identifier_from_declarator(&child, source);
+                        }
                     }
                     _ => {}
                 }
@@ -1795,20 +1940,87 @@ impl Arr30C {
         }
     }
 
+    /// Extract multidimensional array buffers
+    /// For int matrix[3][4], creates:
+    /// - "matrix" with size 3 (already created by extract_buffer_from_array_declarator)
+    /// - "matrix[*]" with size 4 (created here for inner dimension checking)
+    fn extract_multidimensional_buffers(&self, decl_node: &Node, base_name: &str, source: &str, buffers: &mut HashMap<String, BufferInfo>) {
+        // Find the array_declarator in the declaration
+        for i in 0..decl_node.child_count() {
+            if let Some(child) = decl_node.child(i) {
+                if child.kind() == "array_declarator" || child.kind() == "init_declarator" {
+                    // Found the declarator - extract inner dimensions
+                    self.extract_inner_dimensions(&child, base_name, source, buffers);
+                    return;
+                }
+            }
+        }
+    }
+
+    /// Recursively extract inner dimensions from array_declarator nodes
+    /// For int matrix[3][4], when called on the outer array_declarator:
+    /// - Creates "matrix[*]" with size 4
+    fn extract_inner_dimensions(&self, node: &Node, base_name: &str, source: &str, buffers: &mut HashMap<String, BufferInfo>) {
+        if node.kind() == "init_declarator" {
+            // Skip to the declarator child
+            if let Some(declarator) = node.child(0) {
+                self.extract_inner_dimensions(&declarator, base_name, source, buffers);
+            }
+            return;
+        }
+
+        if node.kind() != "array_declarator" {
+            return;
+        }
+
+        // Check if first child is a nested array_declarator
+        if let Some(first_child) = node.child(0) {
+            if first_child.kind() == "array_declarator" {
+                // This node represents an outer dimension
+                // Extract the size from THIS node (the outer dimension in the AST)
+                if let Some(size) = self.extract_array_size(node, source) {
+                    // Create wildcard entry
+                    let wildcard_name = format!("{}[*]", base_name);
+                    let line = node.start_position().row + 1;
+
+                    buffers.insert(wildcard_name, BufferInfo {
+                        name: base_name.to_string(),
+                        size,
+                        element_type: "array_element".to_string(),
+                        allocation_line: line,
+                    });
+                }
+
+                // Continue recursing for deeper dimensions (e.g., int arr[2][3][4])
+                self.extract_inner_dimensions(&first_child, base_name, source, buffers);
+            }
+        }
+    }
+
+    /// Extract the size from an array_declarator node
+    fn extract_array_size(&self, node: &Node, source: &str) -> Option<BufferSize> {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "number_literal" {
+                    let size_str = &source[child.start_byte()..child.end_byte()];
+                    if let Ok(size) = size_str.parse::<usize>() {
+                        return Some(BufferSize::Static(size));
+                    }
+                } else if child.kind() == "identifier" && i > 0 {
+                    // VLA with symbolic size
+                    let expr = &source[child.start_byte()..child.end_byte()];
+                    return Some(BufferSize::Symbolic(expr.to_string()));
+                }
+            }
+        }
+        None
+    }
+
     /// Extract buffer from malloc/calloc call
     fn extract_buffer_from_malloc_call(&self, declarator: &Node, call_node: &Node, source: &str) -> Option<BufferInfo> {
         let var_name = if declarator.kind() == "pointer_declarator" {
-            // Navigate to the identifier within pointer_declarator
-            let mut found_name: Option<String> = None;
-            for i in 0..declarator.child_count() {
-                if let Some(child) = declarator.child(i) {
-                    if child.kind() == "identifier" {
-                        found_name = Some(source[child.start_byte()..child.end_byte()].to_string());
-                        break;
-                    }
-                }
-            }
-            found_name?
+            // Navigate to the identifier within pointer_declarator (may be nested for double pointers)
+            self.find_identifier_in_declarator(declarator, source)?
         } else {
             source[declarator.start_byte()..declarator.end_byte()].to_string()
         };
@@ -1822,6 +2034,24 @@ impl Arr30C {
             if let Some(child) = call_node.child(i) {
                 if child.kind() == "argument_list" {
                     return self.parse_malloc_arguments(func_name, &child, source, &var_name, call_node.start_position().row + 1);
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Recursively find identifier within a declarator (handles nested pointer_declarators)
+    fn find_identifier_in_declarator(&self, node: &Node, source: &str) -> Option<String> {
+        if node.kind() == "identifier" {
+            return Some(source[node.start_byte()..node.end_byte()].to_string());
+        }
+
+        // Recursively search children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(name) = self.find_identifier_in_declarator(&child, source) {
+                    return Some(name);
                 }
             }
         }
@@ -2032,11 +2262,16 @@ impl Arr30C {
             "identifier" => {
                 Some(source[node.start_byte()..node.end_byte()].to_string())
             }
-            "pointer_declarator" => {
+            "pointer_declarator" | "array_declarator" | "function_declarator" | "parenthesized_declarator" => {
+                // Recursively search for identifier in complex declarators
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
                         if child.kind() == "identifier" {
                             return Some(source[child.start_byte()..child.end_byte()].to_string());
+                        }
+                        // Recursively search in nested declarators
+                        if let Some(id) = self.extract_identifier_from_declarator(&child, source) {
+                            return Some(id);
                         }
                     }
                 }
