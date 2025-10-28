@@ -19,6 +19,7 @@
 //! - Input functions (fgets, scanf, getenv, etc.)
 //! - Variables assigned from user input sources
 
+use super::ast_utils;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
@@ -140,7 +141,7 @@ impl FormatStringAnalyzer {
                             } else if self.is_safe_value(&value, source) {
                                 self.safe_vars.insert(var_name);
                             } else if value.kind() == "identifier" {
-                                let source_var = get_node_text(&value, source);
+                                let source_var = ast_utils::get_node_text_owned(&value, source);
                                 if self.user_input_vars.contains(&source_var) {
                                     self.user_input_vars.insert(var_name);
                                 } else if self.safe_vars.contains(&source_var) {
@@ -160,7 +161,7 @@ impl FormatStringAnalyzer {
             node.child_by_field_name("right")
         ) {
             if left.kind() == "identifier" {
-                let var_name = get_node_text(&left, source);
+                let var_name = ast_utils::get_node_text_owned(&left, source);
 
                 if self.is_user_input_source(&right, source) {
                     self.user_input_vars.insert(var_name.clone());
@@ -169,7 +170,7 @@ impl FormatStringAnalyzer {
                     self.safe_vars.insert(var_name.clone());
                     self.user_input_vars.remove(&var_name);
                 } else if right.kind() == "identifier" {
-                    let source_var = get_node_text(&right, source);
+                    let source_var = ast_utils::get_node_text_owned(&right, source);
                     if self.user_input_vars.contains(&source_var) {
                         self.user_input_vars.insert(var_name.clone());
                         self.safe_vars.remove(&var_name);
@@ -184,7 +185,7 @@ impl FormatStringAnalyzer {
 
     fn check_format_string_call(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(function) = node.child_by_field_name("function") {
-            let func_name = get_node_text(&function, source);
+            let func_name = ast_utils::get_node_text_owned(&function, source);
 
             if self.is_format_string_function(&func_name) {
                 if let Some(arguments) = node.child_by_field_name("arguments") {
@@ -261,7 +262,7 @@ impl FormatStringAnalyzer {
         match node.kind() {
             "call_expression" => {
                 if let Some(function) = node.child_by_field_name("function") {
-                    let func_name = get_node_text(&function, source);
+                    let func_name = ast_utils::get_node_text_owned(&function, source);
                     return matches!(func_name.as_str(),
                         "fgets" | "gets" | "getline" | "getdelim" | "fgetc" | "getc" | "getchar" |
                         "fread" | "read" | "recv" | "recvfrom" | "recvmsg" |
@@ -274,14 +275,14 @@ impl FormatStringAnalyzer {
                 // Check if this is accessing argv or environment variables
                 if let Some(array) = node.child(0) {
                     if array.kind() == "identifier" {
-                        let array_name = get_node_text(&array, source);
+                        let array_name = ast_utils::get_node_text_owned(&array, source);
                         return self.user_input_vars.contains(&array_name) || array_name == "argv";
                     }
                 }
                 false
             }
             "identifier" => {
-                let var_name = get_node_text(node, source);
+                let var_name = ast_utils::get_node_text_owned(node, source);
                 self.user_input_vars.contains(&var_name)
             }
             _ => false
@@ -294,7 +295,7 @@ impl FormatStringAnalyzer {
             "number_literal" => true,
             "char_literal" => true,
             "identifier" => {
-                let var_name = get_node_text(node, source);
+                let var_name = ast_utils::get_node_text_owned(node, source);
                 self.safe_vars.contains(&var_name)
             }
             _ => false
@@ -326,7 +327,7 @@ impl FormatStringAnalyzer {
                 false
             }
             "identifier" => {
-                let var_name = get_node_text(node, source);
+                let var_name = ast_utils::get_node_text_owned(node, source);
                 // Unsafe if it's user input and not in safe vars
                 self.user_input_vars.contains(&var_name) ||
                 (!self.safe_vars.contains(&var_name) && self.could_be_user_input(&var_name))
@@ -335,7 +336,7 @@ impl FormatStringAnalyzer {
                 // Array access could be user input (e.g., argv[1])
                 if let Some(array) = node.child(0) {
                     if array.kind() == "identifier" {
-                        let array_name = get_node_text(&array, source);
+                        let array_name = ast_utils::get_node_text_owned(&array, source);
                         return self.user_input_vars.contains(&array_name) || array_name == "argv";
                     }
                 }
@@ -344,7 +345,7 @@ impl FormatStringAnalyzer {
             "call_expression" => {
                 // Function calls that return strings could be unsafe
                 if let Some(function) = node.child_by_field_name("function") {
-                    let func_name = get_node_text(&function, source);
+                    let func_name = ast_utils::get_node_text_owned(&function, source);
                     // Functions that typically return user-controlled data
                     return matches!(func_name.as_str(),
                         "fgets" | "gets" | "getline" | "getenv" | "getpwnam" | "readline"
@@ -406,7 +407,7 @@ impl FormatStringAnalyzer {
 
     fn get_function_name(&self, declarator: &Node, source: &str) -> String {
         match declarator.kind() {
-            "identifier" => get_node_text(declarator, source),
+            "identifier" => ast_utils::get_node_text_owned(declarator, source),
             "function_declarator" => {
                 if let Some(declarator) = declarator.child_by_field_name("declarator") {
                     self.get_function_name(&declarator, source)
@@ -418,7 +419,7 @@ impl FormatStringAnalyzer {
                 for i in 0..declarator.child_count() {
                     if let Some(child) = declarator.child(i) {
                         if child.kind() == "identifier" {
-                            return get_node_text(&child, source);
+                            return ast_utils::get_node_text_owned(&child, source);
                         }
                         let nested_name = self.get_function_name(&child, source);
                         if nested_name != "unknown" {
@@ -433,12 +434,12 @@ impl FormatStringAnalyzer {
 
     fn get_variable_name(&self, declarator: &Node, source: &str) -> String {
         match declarator.kind() {
-            "identifier" => get_node_text(declarator, source),
+            "identifier" => ast_utils::get_node_text_owned(declarator, source),
             "pointer_declarator" | "array_declarator" => {
                 for i in 0..declarator.child_count() {
                     if let Some(child) = declarator.child(i) {
                         if child.kind() == "identifier" {
-                            return get_node_text(&child, source);
+                            return ast_utils::get_node_text_owned(&child, source);
                         }
                         let nested_name = self.get_variable_name(&child, source);
                         if nested_name != "unknown" {
@@ -451,10 +452,6 @@ impl FormatStringAnalyzer {
             _ => "unknown".to_string()
         }
     }
-}
-
-fn get_node_text(node: &Node, source: &str) -> String {
-    source[node.start_byte()..node.end_byte()].to_string()
 }
 
 #[cfg(test)]

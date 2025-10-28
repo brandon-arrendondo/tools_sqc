@@ -1,3 +1,4 @@
+use super::ast_utils;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
@@ -23,7 +24,7 @@ impl CertRule for Dcl00C {
                     if init_declarator.kind() == "init_declarator" {
                         // Check if variable has an initializer but no const qualifier
                         if has_initializer(&init_declarator) && !has_const_qualifier(node, source) {
-                            let var_name = get_variable_name(&declarator_node, source);
+                            let var_name = ast_utils::get_identifier_from_declarator(&declarator_node, source);
                             let start_point = node.start_position();
 
                             // Check if this is a candidate for const qualification
@@ -53,7 +54,7 @@ impl CertRule for Dcl00C {
                 if let Some(value) = node.child_by_field_name("value") {
                     if is_string_literal(&value, source) && is_pointer_declarator(&declarator) {
                         if !has_const_in_pointer_type(node, source) {
-                            let var_name = get_variable_name(&declarator, source);
+                            let var_name = ast_utils::get_identifier_from_declarator(&declarator, source);
                             let start_point = node.start_position();
 
                             violations.push(RuleViolation {
@@ -107,23 +108,6 @@ fn has_const_qualifier(node: &Node, source: &str) -> bool {
     text.contains("const")
 }
 
-fn get_variable_name(declarator: &Node, source: &str) -> String {
-    // Handle different declarator types
-    if declarator.kind() == "identifier" {
-        return source[declarator.start_byte()..declarator.end_byte()].to_string();
-    }
-
-    // Look for identifier in pointer or array declarators
-    for i in 0..declarator.child_count() {
-        if let Some(child) = declarator.child(i) {
-            if child.kind() == "identifier" {
-                return source[child.start_byte()..child.end_byte()].to_string();
-            }
-        }
-    }
-
-    "unknown".to_string()
-}
 
 fn is_const_candidate(node: &Node, var_name: &str, source: &str) -> bool {
     // Simple heuristic: check if it looks like a constant value

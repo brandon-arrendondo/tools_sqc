@@ -1,3 +1,6 @@
+// Common AST utilities for all CERT C rules
+pub mod ast_utils;
+
 pub mod arr00_c;
 pub mod arr30_c;
 pub mod arr32_c;

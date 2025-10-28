@@ -1,3 +1,4 @@
+use super::ast_utils;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
@@ -121,7 +122,7 @@ impl StringLiteralAnalyzer {
                             violations
                         );
                     } else if array.kind() == "identifier" {
-                        let var_name = get_node_text(&array, source);
+                        let var_name = ast_utils::get_node_text_owned(&array, source);
                         if self.string_literal_vars.contains(&var_name) {
                             self.flag_violation(
                                 node,
@@ -148,7 +149,7 @@ impl StringLiteralAnalyzer {
 
             // Track new assignments
             if left.kind() == "identifier" {
-                let var_name = get_node_text(&left, source);
+                let var_name = ast_utils::get_node_text_owned(&left, source);
                 if self.is_string_literal(&right, source) {
                     self.string_literal_vars.insert(var_name);
                 } else {
@@ -161,7 +162,7 @@ impl StringLiteralAnalyzer {
 
     fn check_function_call(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(function) = node.child_by_field_name("function") {
-            let func_name = get_node_text(&function, source);
+            let func_name = ast_utils::get_node_text_owned(&function, source);
 
             // Check for functions that modify their arguments
             if is_string_modifying_function(&func_name) {
@@ -180,7 +181,7 @@ impl StringLiteralAnalyzer {
                                             violations
                                         );
                                     } else if arg.kind() == "identifier" {
-                                        let var_name = get_node_text(&arg, source);
+                                        let var_name = ast_utils::get_node_text_owned(&arg, source);
                                         if self.string_literal_vars.contains(&var_name) {
                                             self.flag_violation(
                                                 node,
@@ -215,7 +216,7 @@ impl StringLiteralAnalyzer {
                                     violations
                                 );
                             } else if array.kind() == "identifier" {
-                                let var_name = get_node_text(&array, source);
+                                let var_name = ast_utils::get_node_text_owned(&array, source);
                                 if self.string_literal_vars.contains(&var_name) {
                                     self.flag_violation(
                                         node,
@@ -270,13 +271,13 @@ impl StringLiteralAnalyzer {
 
     fn get_variable_name(&self, declarator: &Node, source: &str) -> String {
         match declarator.kind() {
-            "identifier" => get_node_text(declarator, source),
+            "identifier" => ast_utils::get_node_text_owned(declarator, source),
             "pointer_declarator" | "array_declarator" => {
                 // Look for the identifier in declarators
                 for i in 0..declarator.child_count() {
                     if let Some(child) = declarator.child(i) {
                         if child.kind() == "identifier" {
-                            return get_node_text(&child, source);
+                            return ast_utils::get_node_text_owned(&child, source);
                         }
                         // Recursively search in nested declarators
                         let nested_name = self.get_variable_name(&child, source);
@@ -303,10 +304,6 @@ impl StringLiteralAnalyzer {
             suggestion: Some("Use a modifiable array instead of a string literal".to_string()),
         });
     }
-}
-
-fn get_node_text(node: &Node, source: &str) -> String {
-    source[node.start_byte()..node.end_byte()].to_string()
 }
 
 fn is_string_modifying_function(func_name: &str) -> bool {

@@ -1,4 +1,5 @@
 use super::super::{CertRule, RuleViolation};
+use super::ast_utils;
 use crate::manifest::Severity;
 use tree_sitter::Node;
 use std::collections::HashSet;
@@ -67,8 +68,8 @@ impl NullPointerAnalyzer {
                     node.child_by_field_name("right")
                 ) {
                     if left.kind() == "identifier" {
-                        let var_name = get_node_text(&left, source);
-                        let right_text = get_node_text(&right, source);
+                        let var_name = ast_utils::get_node_text_owned(&left, source);
+                        let right_text = ast_utils::get_node_text_owned(&right, source);
 
                         // Check if assigning NULL, 0, or function that can return null
                         if is_null_value(&right_text) || is_nullable_function_call(&right, source) {
@@ -109,7 +110,7 @@ impl NullPointerAnalyzer {
 
                         // Check if initialized to null or a nullable function
                         if let Some(value) = child.child_by_field_name("value") {
-                            let value_text = get_node_text(&value, source);
+                            let value_text = ast_utils::get_node_text_owned(&value, source);
                             if is_null_value(&value_text) || is_nullable_function_call(&value, source) {
                                 self.potentially_null_vars.insert(var_name);
                             }
@@ -134,9 +135,9 @@ impl NullPointerAnalyzer {
                     condition.child_by_field_name("operator"),
                     condition.child_by_field_name("right")
                 ) {
-                    let op_text = get_node_text(&operator, source);
-                    let left_text = get_node_text(&left, source);
-                    let right_text = get_node_text(&right, source);
+                    let op_text = ast_utils::get_node_text_owned(&operator, source);
+                    let left_text = ast_utils::get_node_text_owned(&left, source);
+                    let right_text = ast_utils::get_node_text_owned(&right, source);
 
                     // Check for null comparison patterns
                     if op_text == "!=" || op_text == "==" {
@@ -154,14 +155,14 @@ impl NullPointerAnalyzer {
                 // Pattern: !ptr
                 if let Some(operand) = condition.child_by_field_name("argument") {
                     if operand.kind() == "identifier" {
-                        let var_name = get_node_text(&operand, source);
+                        let var_name = ast_utils::get_node_text_owned(&operand, source);
                         self.null_checked_vars.insert(var_name);
                     }
                 }
             }
             "identifier" => {
                 // Pattern: if (ptr) - checks that ptr is not null
-                let var_name = get_node_text(condition, source);
+                let var_name = ast_utils::get_node_text_owned(condition, source);
                 self.null_checked_vars.insert(var_name);
             }
             _ => {}
@@ -174,7 +175,7 @@ impl NullPointerAnalyzer {
                 // Direct pointer dereference: *ptr
                 if let Some(argument) = node.child_by_field_name("argument") {
                     if argument.kind() == "identifier" {
-                        let var_name = get_node_text(&argument, source);
+                        let var_name = ast_utils::get_node_text_owned(&argument, source);
                         if self.is_unsafe_dereference(&var_name) {
                             let start_point = node.start_position();
                             violations.push(RuleViolation {
@@ -198,7 +199,7 @@ impl NullPointerAnalyzer {
                 // The subscript expression has the array as the first child (child 0)
                 if let Some(array) = node.child(0) {
                     if array.kind() == "identifier" {
-                        let var_name = get_node_text(&array, source);
+                        let var_name = ast_utils::get_node_text_owned(&array, source);
                         if self.is_unsafe_dereference(&var_name) {
                             let start_point = node.start_position();
                             violations.push(RuleViolation {
@@ -221,7 +222,7 @@ impl NullPointerAnalyzer {
                 // Structure/union member access: ptr->member or (*ptr).member
                 if let Some(argument) = node.child_by_field_name("argument") {
                     if argument.kind() == "identifier" {
-                        let var_name = get_node_text(&argument, source);
+                        let var_name = ast_utils::get_node_text_owned(&argument, source);
                         if self.is_unsafe_dereference(&var_name) {
                             let start_point = node.start_position();
                             violations.push(RuleViolation {
@@ -243,7 +244,7 @@ impl NullPointerAnalyzer {
             "call_expression" => {
                 // Check function calls that commonly cause null pointer dereferences
                 if let Some(function) = node.child_by_field_name("function") {
-                    let func_name = get_node_text(&function, source);
+                    let func_name = ast_utils::get_node_text_owned(&function, source);
                     if is_deref_function(&func_name) {
                         // Check arguments for potentially null pointers
                         if let Some(args) = node.child_by_field_name("arguments") {
@@ -267,7 +268,7 @@ impl NullPointerAnalyzer {
         for i in 0..args.child_count() {
             if let Some(arg) = args.child(i) {
                 if arg.kind() == "identifier" {
-                    let var_name = get_node_text(&arg, source);
+                    let var_name = ast_utils::get_node_text_owned(&arg, source);
                     if self.is_unsafe_dereference(&var_name) {
                         let start_point = arg.start_position();
                         violations.push(RuleViolation {
@@ -294,31 +295,9 @@ impl NullPointerAnalyzer {
     }
 }
 
-fn get_node_text(node: &Node, source: &str) -> String {
-    source[node.start_byte()..node.end_byte()].to_string()
-}
-
+// Using ast_utils for common functions
 fn get_identifier_name(declarator: &Node, source: &str) -> String {
-    match declarator.kind() {
-        "identifier" => get_node_text(declarator, source),
-        "pointer_declarator" | "array_declarator" => {
-            // Look for the identifier in pointer/array declarators
-            for i in 0..declarator.child_count() {
-                if let Some(child) = declarator.child(i) {
-                    if child.kind() == "identifier" {
-                        return get_node_text(&child, source);
-                    }
-                    // Recursively search in nested declarators
-                    let nested_name = get_identifier_name(&child, source);
-                    if nested_name != "unknown" {
-                        return nested_name;
-                    }
-                }
-            }
-            "unknown".to_string()
-        }
-        _ => "unknown".to_string(),
-    }
+    ast_utils::get_identifier_from_declarator(declarator, source)
 }
 
 fn is_null_value(text: &str) -> bool {
@@ -332,7 +311,7 @@ fn is_nullable_function_call(node: &Node, source: &str) -> bool {
     }
 
     if let Some(function) = node.child_by_field_name("function") {
-        let func_name = get_node_text(&function, source);
+        let func_name = ast_utils::get_node_text_owned(&function, source);
         // Common functions that can return NULL
         matches!(func_name.as_str(),
             "malloc" | "calloc" | "realloc" | "strstr" | "strchr" | "strrchr" |

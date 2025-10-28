@@ -1,3 +1,4 @@
+use super::ast_utils;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
@@ -145,7 +146,7 @@ impl PointerAnalyzer {
                 if child.kind() == "init_declarator" {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
                         if let Some(value) = child.child_by_field_name("value") {
-                            let var_name = get_identifier_from_declarator(&declarator, source);
+                            let var_name = ast_utils::get_identifier_from_declarator(&declarator, source);
                             let array_base = self.extract_array_base(&value, source);
                             if !var_name.is_empty() && !array_base.is_empty() {
                                 self.variable_arrays.insert(var_name, array_base);
@@ -246,26 +247,6 @@ fn get_operator(node: &Node, source: &str) -> Option<String> {
     None
 }
 
-fn get_identifier_from_declarator(declarator: &Node, source: &str) -> String {
-    match declarator.kind() {
-        "identifier" => source[declarator.start_byte()..declarator.end_byte()].to_string(),
-        "pointer_declarator" | "array_declarator" => {
-            for i in 0..declarator.child_count() {
-                if let Some(child) = declarator.child(i) {
-                    if child.kind() == "identifier" {
-                        return source[child.start_byte()..child.end_byte()].to_string();
-                    }
-                    let nested = get_identifier_from_declarator(&child, source);
-                    if !nested.is_empty() {
-                        return nested;
-                    }
-                }
-            }
-            String::new()
-        }
-        _ => String::new(),
-    }
-}
 
 #[cfg(test)]
 #[path = "tests/arr36_c.rs"]

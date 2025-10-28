@@ -1,3 +1,4 @@
+use super::ast_utils;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::Severity;
 use tree_sitter::Node;
@@ -143,7 +144,7 @@ impl MemoryLeakAnalyzer {
             node.child_by_field_name("right")
         ) {
             if left.kind() == "identifier" {
-                let var_name = get_node_text(&left, source);
+                let var_name = ast_utils::get_node_text_owned(&left, source);
 
                 // Check if this variable was previously allocated
                 let was_allocated = self.allocated_memory.contains_key(&var_name);
@@ -170,7 +171,7 @@ impl MemoryLeakAnalyzer {
                     });
                 } else if right.kind() == "identifier" {
                     // Check if assigning allocated pointer to another variable
-                    let right_var = get_node_text(&right, source);
+                    let right_var = ast_utils::get_node_text_owned(&right, source);
                     if self.allocated_memory.contains_key(&right_var) {
                         // Transfer ownership
                         if let Some(alloc_info) = self.allocated_memory.get(&right_var).cloned() {
@@ -178,7 +179,7 @@ impl MemoryLeakAnalyzer {
                             // The original variable still holds the allocation until freed
                         }
                     }
-                } else if right.kind() == "null" || get_node_text(&right, source) == "NULL" {
+                } else if right.kind() == "null" || ast_utils::get_node_text_owned(&right, source) == "NULL" {
                     // Setting to NULL doesn't free memory, potential leak if not freed before
                     // If the variable was allocated and not freed, it's a leak
                     if was_allocated && !self.freed_memory.contains(&var_name) {
@@ -194,7 +195,7 @@ impl MemoryLeakAnalyzer {
 
     fn process_call(&mut self, node: &Node, source: &str) {
         if let Some(function) = node.child_by_field_name("function") {
-            let func_name = get_node_text(&function, source);
+            let func_name = ast_utils::get_node_text_owned(&function, source);
 
             if func_name == "free" {
                 // Process free() call
@@ -202,7 +203,7 @@ impl MemoryLeakAnalyzer {
                     for i in 0..arguments.child_count() {
                         if let Some(arg) = arguments.child(i) {
                             if arg.kind() == "identifier" {
-                                let var_name = get_node_text(&arg, source);
+                                let var_name = ast_utils::get_node_text_owned(&arg, source);
                                 self.freed_memory.insert(var_name.clone());
                                 // Also mark any aliases as freed
                                 let vars_to_free: Vec<String> = self.allocated_memory
@@ -237,7 +238,7 @@ impl MemoryLeakAnalyzer {
                         if let Some(arg) = arguments.child(i) {
                             if arg.kind() != "," && arg.kind() != "(" && arg.kind() != ")" {
                                 if arg_count == 0 && arg.kind() == "identifier" {
-                                    first_arg = get_node_text(&arg, source);
+                                    first_arg = ast_utils::get_node_text_owned(&arg, source);
                                 }
                                 arg_count += 1;
                             }
@@ -262,7 +263,7 @@ impl MemoryLeakAnalyzer {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 if child.kind() == "identifier" {
-                    let var_name = get_node_text(&child, source);
+                    let var_name = ast_utils::get_node_text_owned(&child, source);
                     if self.allocated_memory.contains_key(&var_name) {
                         self.escaped_memory.insert(var_name);
                     }
@@ -277,7 +278,7 @@ impl MemoryLeakAnalyzer {
     fn is_allocation_call(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&function, source);
+                let func_name = ast_utils::get_node_text_owned(&function, source);
                 return matches!(func_name.as_str(), "malloc" | "calloc" | "realloc" | "strdup" | "strndup");
             }
         }
@@ -287,7 +288,7 @@ impl MemoryLeakAnalyzer {
     fn get_allocation_type(&self, node: &Node, source: &str) -> String {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                return get_node_text(&function, source);
+                return ast_utils::get_node_text_owned(&function, source);
             }
         }
         "unknown".to_string()
@@ -295,12 +296,12 @@ impl MemoryLeakAnalyzer {
 
     fn get_variable_name(&self, declarator: &Node, source: &str) -> String {
         match declarator.kind() {
-            "identifier" => get_node_text(declarator, source),
+            "identifier" => ast_utils::get_node_text_owned(declarator, source),
             "pointer_declarator" | "array_declarator" => {
                 for i in 0..declarator.child_count() {
                     if let Some(child) = declarator.child(i) {
                         if child.kind() == "identifier" {
-                            return get_node_text(&child, source);
+                            return ast_utils::get_node_text_owned(&child, source);
                         }
                         let nested_name = self.get_variable_name(&child, source);
                         if nested_name != "unknown" {
@@ -332,10 +333,6 @@ impl MemoryLeakAnalyzer {
             }
         }
     }
-}
-
-fn get_node_text(node: &Node, source: &str) -> String {
-    source[node.start_byte()..node.end_byte()].to_string()
 }
 
 #[cfg(test)]

@@ -1,0 +1,443 @@
+// Common AST utilities for CERT C rules
+// This module provides reusable functions for navigating and extracting information from the C AST
+
+use tree_sitter::Node;
+
+// ============================================================================
+// Node Text Extraction
+// ============================================================================
+
+/// Extract the text content of a node from the source code
+pub fn get_node_text<'a>(node: &Node, source: &'a str) -> &'a str {
+    &source[node.start_byte()..node.end_byte()]
+}
+
+/// Extract the text content of a node as an owned String
+pub fn get_node_text_owned(node: &Node, source: &str) -> String {
+    source[node.start_byte()..node.end_byte()].to_string()
+}
+
+// ============================================================================
+// AST Navigation
+// ============================================================================
+
+/// Find the containing function definition for a given node
+/// Returns the function_definition node that contains the given node
+pub fn find_containing_function<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+    let mut current = Some(*node);
+    while let Some(n) = current {
+        if n.kind() == "function_definition" {
+            return Some(n);
+        }
+        current = n.parent();
+    }
+    None
+}
+
+/// Check if a node is inside a loop (for, while, or do-while)
+pub fn is_inside_loop(node: &Node) -> bool {
+    let mut current = node.parent();
+    while let Some(parent) = current {
+        match parent.kind() {
+            "for_statement" | "while_statement" | "do_statement" => return true,
+            "function_definition" => return false, // Stop at function boundary
+            _ => current = parent.parent(),
+        }
+    }
+    false
+}
+
+/// Check if a node is inside a conditional statement (if, else if, switch)
+pub fn is_inside_conditional(node: &Node) -> bool {
+    let mut current = node.parent();
+    while let Some(parent) = current {
+        match parent.kind() {
+            "if_statement" | "switch_statement" => return true,
+            "function_definition" => return false, // Stop at function boundary
+            _ => current = parent.parent(),
+        }
+    }
+    false
+}
+
+// ============================================================================
+// Identifier Extraction from Declarators
+// ============================================================================
+
+/// Extract identifier name from a declarator node
+/// Handles simple identifiers, pointer declarators, and array declarators
+///
+/// Examples:
+/// - int x           -> "x"
+/// - int *ptr        -> "ptr"
+/// - int arr[10]     -> "arr"
+/// - int **ptr       -> "ptr"
+/// - int (*fn)(int)  -> "fn"
+pub fn get_identifier_from_declarator(declarator: &Node, source: &str) -> String {
+    match declarator.kind() {
+        "identifier" => get_node_text_owned(declarator, source),
+        "pointer_declarator" | "array_declarator" | "function_declarator" | "parenthesized_declarator" => {
+            // Recursively search for the identifier
+            for i in 0..declarator.child_count() {
+                if let Some(child) = declarator.child(i) {
+                    if child.kind() == "identifier" {
+                        return get_node_text_owned(&child, source);
+                    }
+                    let nested = get_identifier_from_declarator(&child, source);
+                    if !nested.is_empty() {
+                        return nested;
+                    }
+                }
+            }
+            String::new()  // Return empty string for consistency with original implementations
+        }
+        _ => String::new()  // Return empty string for consistency with original implementations
+    }
+}
+
+/// Find identifier in a declarator node, returns Option instead of "unknown" string
+pub fn find_identifier_in_declarator(declarator: &Node, source: &str) -> Option<String> {
+    // Recursively find identifier in declarator
+    for i in 0..declarator.child_count() {
+        if let Some(child) = declarator.child(i) {
+            if child.kind() == "identifier" {
+                return Some(get_node_text_owned(&child, source));
+            } else if matches!(child.kind(), "array_declarator" | "pointer_declarator" | "function_declarator" | "parenthesized_declarator") {
+                if let Some(id) = find_identifier_in_declarator(&child, source) {
+                    return Some(id);
+                }
+            }
+        }
+    }
+    None
+}
+
+// ============================================================================
+// Function Parameter Extraction
+// ============================================================================
+
+/// Extract function parameters as (name, full_type) tuples
+/// Returns None if the function has no parameters or parameter list not found
+pub fn get_function_parameters(function_node: &Node, source: &str) -> Option<Vec<(String, String)>> {
+    // Find the parameter list
+    for i in 0..function_node.child_count() {
+        if let Some(child) = function_node.child(i) {
+            if child.kind() == "function_declarator" {
+                return extract_parameters(&child, source);
+            }
+        }
+    }
+    None
+}
+
+/// Extract parameters from a function declarator node
+fn extract_parameters(declarator_node: &Node, source: &str) -> Option<Vec<(String, String)>> {
+    let mut parameters = Vec::new();
+
+    // Find parameter_list node
+    for i in 0..declarator_node.child_count() {
+        if let Some(child) = declarator_node.child(i) {
+            if child.kind() == "parameter_list" {
+                // Extract each parameter
+                for j in 0..child.child_count() {
+                    if let Some(param) = child.child(j) {
+                        if param.kind() == "parameter_declaration" {
+                            if let Some((name, param_type)) = extract_parameter_info(&param, source) {
+                                parameters.push((name, param_type));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if parameters.is_empty() {
+        None
+    } else {
+        Some(parameters)
+    }
+}
+
+/// Extract parameter information (name and type) from a parameter declaration
+fn extract_parameter_info(param_node: &Node, source: &str) -> Option<(String, String)> {
+    let param_text = get_node_text(param_node, source);
+
+    // Look for declarator pattern
+    for i in 0..param_node.child_count() {
+        if let Some(child) = param_node.child(i) {
+            if matches!(child.kind(), "array_declarator" | "pointer_declarator" | "function_declarator") {
+                // Found array, pointer, or function pointer parameter
+                if let Some(identifier) = find_identifier_in_declarator(&child, source) {
+                    return Some((identifier, param_text.to_string()));
+                }
+            } else if child.kind() == "identifier" {
+                // Simple parameter
+                let name = get_node_text(&child, source);
+                return Some((name.to_string(), param_text.to_string()));
+            }
+        }
+    }
+
+    None
+}
+
+/// Check if a variable name appears in the function's parameter list
+pub fn is_function_parameter(function_node: &Node, var_name: &str, source: &str) -> bool {
+    // Find parameter list in function
+    for i in 0..function_node.child_count() {
+        if let Some(child) = function_node.child(i) {
+            if child.kind() == "function_declarator" {
+                for j in 0..child.child_count() {
+                    if let Some(param_list) = child.child(j) {
+                        if param_list.kind() == "parameter_list" {
+                            let param_text = get_node_text(&param_list, source);
+                            // Check for word boundaries to avoid substring matches
+                            let words: Vec<&str> = param_text
+                                .split(|c: char| !c.is_alphanumeric() && c != '_')
+                                .collect();
+                            if words.iter().any(|&word| word == var_name) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    false
+}
+
+// ============================================================================
+// Type Checking Utilities
+// ============================================================================
+
+/// Check if a parameter type string indicates an array parameter
+pub fn is_array_parameter_type(param_type: &str) -> bool {
+    param_type.contains('[') ||
+    (param_type.contains('*') && !param_type.contains("const char *"))
+}
+
+/// Check if a type string represents a pointer type
+pub fn is_pointer_type(type_str: &str) -> bool {
+    type_str.contains('*')
+}
+
+/// Check if a type string represents a signed integer type
+pub fn is_signed_type(type_str: &str) -> bool {
+    matches!(
+        type_str.trim(),
+        "int" | "short" | "long" | "char" | "signed" |
+        "signed int" | "signed short" | "signed long" | "signed char" |
+        "int8_t" | "int16_t" | "int32_t" | "int64_t" |
+        "ptrdiff_t" | "ssize_t"
+    )
+}
+
+/// Check if a type string represents an unsigned integer type
+pub fn is_unsigned_type(type_str: &str) -> bool {
+    type_str.contains("unsigned") ||
+    matches!(
+        type_str.trim(),
+        "size_t" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" |
+        "uintptr_t" | "uintmax_t"
+    )
+}
+
+// ============================================================================
+// Operator Extraction
+// ============================================================================
+
+/// Extract the operator from a binary expression node
+pub fn get_binary_operator<'a>(node: &Node, source: &'a str) -> Option<&'a str> {
+    // The operator is usually a child of the binary expression
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            let kind = child.kind();
+            // Check if this is an operator token
+            if matches!(kind,
+                "+" | "-" | "*" | "/" | "%" |
+                "==" | "!=" | "<" | ">" | "<=" | ">=" |
+                "&&" | "||" | "&" | "|" | "^" | "<<" | ">>" |
+                "=" | "+=" | "-=" | "*=" | "/=" | "%=" |
+                "&=" | "|=" | "^=" | "<<=" | ">>="
+            ) {
+                return Some(get_node_text(&child, source));
+            }
+        }
+    }
+    None
+}
+
+// ============================================================================
+// Array Size Extraction
+// ============================================================================
+
+/// Find array size from declaration in preceding text
+/// Looks for patterns like: type array_name[size]
+/// Returns the size if found and it's a constant
+pub fn find_array_size(array_name: &str, preceding_text: &str) -> Option<usize> {
+    // Look for array declaration pattern: array_name[number]
+    let pattern = format!("{}[", array_name);
+
+    if let Some(pos) = preceding_text.rfind(&pattern) {
+        // Extract the size between [ and ]
+        let after_bracket = &preceding_text[pos + pattern.len()..];
+        if let Some(close_bracket) = after_bracket.find(']') {
+            let size_str = after_bracket[..close_bracket].trim();
+
+            // Try to parse as a number
+            if let Ok(size) = size_str.parse::<usize>() {
+                return Some(size);
+            }
+
+            // Try to handle simple arithmetic expressions like 2*3 or 10+5
+            if size_str.contains('*') {
+                let parts: Vec<&str> = size_str.split('*').collect();
+                if parts.len() == 2 {
+                    if let (Ok(a), Ok(b)) = (parts[0].trim().parse::<usize>(), parts[1].trim().parse::<usize>()) {
+                        return Some(a * b);
+                    }
+                }
+            }
+        }
+    }
+
+    None
+}
+
+/// Get the size of a C type in bytes
+/// This is a best-effort approximation for common types
+pub fn get_type_size(type_name: &str) -> usize {
+    match type_name.trim() {
+        "char" | "signed char" | "unsigned char" | "int8_t" | "uint8_t" => 1,
+        "short" | "signed short" | "unsigned short" | "int16_t" | "uint16_t" => 2,
+        "int" | "signed int" | "unsigned int" | "int32_t" | "uint32_t" | "float" => 4,
+        "long" | "signed long" | "unsigned long" | "long long" | "signed long long" |
+        "unsigned long long" | "int64_t" | "uint64_t" | "double" | "size_t" | "ptrdiff_t" => 8,
+        "long double" => 16,
+        t if t.ends_with('*') => 8, // Pointer size on 64-bit
+        _ => 4, // Default to int size
+    }
+}
+
+// ============================================================================
+// Context Analysis
+// ============================================================================
+
+/// Check if a subscript expression is on the left side of an assignment (write context)
+/// Handles nested subscripts like matrix[i][j] = value
+pub fn is_write_context(node: &Node) -> bool {
+    let mut current = *node;
+
+    // Walk up the tree while we're in subscript expressions
+    loop {
+        if let Some(parent) = current.parent() {
+            if parent.kind() == "assignment_expression" {
+                // Check if current node (or its ancestor subscript) is the left side
+                if let Some(left) = parent.child_by_field_name("left") {
+                    return left.id() == current.id();
+                }
+                return false;
+            } else if parent.kind() == "subscript_expression" {
+                // Keep walking up through nested subscripts
+                current = parent;
+            } else {
+                // Hit a different node type, not a write context
+                return false;
+            }
+        } else {
+            // No parent, not a write context
+            return false;
+        }
+    }
+}
+
+/// Check if a node is part of a sizeof expression
+pub fn is_in_sizeof(node: &Node) -> bool {
+    let mut current = node.parent();
+    while let Some(parent) = current {
+        if parent.kind() == "sizeof_expression" {
+            return true;
+        }
+        if parent.kind() == "function_definition" {
+            return false;
+        }
+        current = parent.parent();
+    }
+    false
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tree_sitter::Parser;
+
+    fn parse_c_code(code: &str) -> (tree_sitter::Tree, String) {
+        let mut parser = Parser::new();
+        let language = tree_sitter_c::language();
+        parser.set_language(&language).unwrap();
+        let tree = parser.parse(code, None).unwrap();
+        (tree, code.to_string())
+    }
+
+    #[test]
+    fn test_get_node_text() {
+        let (tree, source) = parse_c_code("int x = 5;");
+        let root = tree.root_node();
+        let text = get_node_text(&root, &source);
+        assert_eq!(text, "int x = 5;");
+    }
+
+    #[test]
+    fn test_find_containing_function() {
+        let (tree, _source) = parse_c_code("void foo() { int x = 5; }");
+        let root = tree.root_node();
+
+        // Find the declaration node (int x = 5)
+        let func_def = root.child(0).unwrap();
+        assert_eq!(func_def.kind(), "function_definition");
+
+        // Find a node inside the function
+        let compound_stmt = func_def.child_by_field_name("body").unwrap();
+        let decl = compound_stmt.child(1).unwrap(); // Skip opening brace
+
+        let containing_func = find_containing_function(&decl);
+        assert!(containing_func.is_some());
+        assert_eq!(containing_func.unwrap().kind(), "function_definition");
+    }
+
+    #[test]
+    fn test_find_array_size() {
+        let text = "int main() { int arr[10]; }";
+        let size = find_array_size("arr", text);
+        assert_eq!(size, Some(10));
+    }
+
+    #[test]
+    fn test_is_signed_type() {
+        assert!(is_signed_type("int"));
+        assert!(is_signed_type("signed int"));
+        assert!(is_signed_type("int32_t"));
+        assert!(!is_signed_type("unsigned int"));
+        assert!(!is_signed_type("size_t"));
+    }
+
+    #[test]
+    fn test_is_unsigned_type() {
+        assert!(is_unsigned_type("unsigned int"));
+        assert!(is_unsigned_type("size_t"));
+        assert!(is_unsigned_type("uint32_t"));
+        assert!(!is_unsigned_type("int"));
+        assert!(!is_unsigned_type("signed int"));
+    }
+
+    #[test]
+    fn test_get_type_size() {
+        assert_eq!(get_type_size("char"), 1);
+        assert_eq!(get_type_size("short"), 2);
+        assert_eq!(get_type_size("int"), 4);
+        assert_eq!(get_type_size("long"), 8);
+        assert_eq!(get_type_size("int *"), 8);
+    }
+}
