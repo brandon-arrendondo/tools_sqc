@@ -16,9 +16,12 @@ impl CertRule for Arr32C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Look for variable length array declarations
+        // Look for variable length array declarations (LOCAL declarations, not function parameters)
         if node.kind() == "array_declarator" {
-            if let Some(size_node) = node.child_by_field_name("size") {
+            // Skip if this is a function parameter (handled separately below)
+            if is_function_parameter(node) {
+                // Don't check function parameters here - they're handled in the parameter_declaration check
+            } else if let Some(size_node) = node.child_by_field_name("size") {
                 let start_point = node.start_position();
 
                 // Check if this is a VLA (size is not a constant)
@@ -45,20 +48,26 @@ impl CertRule for Arr32C {
         }
 
         // Look for function parameters that might be used as VLA sizes
+        // Note: VLA parameters are safe if the caller validates the size.
+        // We only flag VLA parameters that have suspicious patterns (like expressions).
+        // We DON'T flag simple VLA parameters like array[n] or matrix[rows][cols]
+        // because these are considered acceptable if the caller validates before calling.
         if node.kind() == "parameter_declaration" {
             if let Some(declarator) = node.child_by_field_name("declarator") {
                 if declarator.kind() == "array_declarator" {
                     if let Some(size_node) = declarator.child_by_field_name("size") {
-                        let start_point = node.start_position();
                         let size_text = &source[size_node.start_byte()..size_node.end_byte()];
 
-                        // Check if this looks like an unchecked parameter
-                        if is_identifier_node(&size_node) {
+                        // Only flag if the size is a complex expression (not just a simple parameter)
+                        // Simple parameters like array[n] are acceptable VLA parameters
+                        // if the caller validates n before calling
+                        if is_problematic_vla_parameter(&size_node, source) {
+                            let start_point = node.start_position();
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 severity: Severity::Medium,
                                 message: format!(
-                                    "Function parameter used as VLA size '{}' without validation. Consider adding bounds checking.",
+                                    "Function parameter VLA size '{}' uses complex expression. Ensure callers validate the size.",
                                     size_text
                                 ),
                                 file_path: String::new(),
@@ -144,8 +153,53 @@ fn contains_identifier(node: &Node, _source: &str) -> bool {
     false
 }
 
+/// Check if a VLA parameter size is problematic
+/// Simple parameter references (like array[n]) are acceptable VLA parameters
+/// Complex expressions are potentially problematic
+fn is_problematic_vla_parameter(size_node: &Node, _source: &str) -> bool {
+    match size_node.kind() {
+        // Simple identifiers are OK for VLA parameters (e.g., array[n])
+        "identifier" => false,
+        // Complex expressions in VLA parameters are problematic
+        "binary_expression" | "call_expression" | "unary_expression" => true,
+        _ => false,
+    }
+}
+
+/// Check if an array_declarator is part of a function parameter
+fn is_function_parameter(array_decl: &Node) -> bool {
+    let mut current = array_decl.parent();
+    while let Some(parent) = current {
+        if parent.kind() == "parameter_declaration" {
+            return true;
+        }
+        // Stop searching if we hit a function definition or declaration
+        if parent.kind() == "function_definition" || parent.kind() == "declaration" {
+            return false;
+        }
+        current = parent.parent();
+    }
+    false
+}
+
 fn has_nearby_bounds_check(node: &Node, source: &str) -> bool {
-    // Simple heuristic: look in the surrounding context for bounds checking patterns
+    // Get the variable name being used as VLA size
+    let var_name = &source[node.start_byte()..node.end_byte()];
+
+    // Find the enclosing function to search for validation
+    let function_node = find_enclosing_function(node);
+    if let Some(func) = function_node {
+        // Get all statements in the function before the VLA declaration
+        let vla_line = node.start_position().row;
+        let func_body = find_function_body(&func);
+
+        if let Some(body) = func_body {
+            // Search for bounds checking patterns in statements before the VLA
+            return has_prior_validation(&body, source, var_name, vla_line);
+        }
+    }
+
+    // Fallback: check immediate context (grandparent)
     if let Some(parent) = node.parent() {
         if let Some(grandparent) = parent.parent() {
             let context = &source[grandparent.start_byte()..grandparent.end_byte()];
@@ -157,6 +211,83 @@ fn has_nearby_bounds_check(node: &Node, source: &str) -> bool {
                     context.contains("< ") ||
                     context.contains("MAX_") ||
                     context.contains("SIZE_MAX"));
+        }
+    }
+    false
+}
+
+/// Find the enclosing function definition for a node
+fn find_enclosing_function<'a>(node: &'a Node) -> Option<Node<'a>> {
+    let mut current = node.parent();
+    while let Some(parent) = current {
+        if parent.kind() == "function_definition" {
+            return Some(parent);
+        }
+        current = parent.parent();
+    }
+    None
+}
+
+/// Find the compound_statement (body) of a function
+fn find_function_body<'a>(func_node: &'a Node) -> Option<Node<'a>> {
+    for i in 0..func_node.child_count() {
+        if let Some(child) = func_node.child(i) {
+            if child.kind() == "compound_statement" {
+                return Some(child);
+            }
+        }
+    }
+    None
+}
+
+/// Check if there's validation for a variable before a given line
+fn has_prior_validation(body_node: &Node, source: &str, var_name: &str, vla_line: usize) -> bool {
+    // Search through statements in the function body
+    for i in 0..body_node.child_count() {
+        if let Some(stmt) = body_node.child(i) {
+            let stmt_line = stmt.start_position().row;
+
+            // Only check statements BEFORE the VLA declaration
+            if stmt_line >= vla_line {
+                break;
+            }
+
+            // Check if this statement validates the variable
+            if stmt.kind() == "if_statement" {
+                let stmt_text = &source[stmt.start_byte()..stmt.end_byte()];
+
+                // Look for validation patterns involving the variable
+                if stmt_text.contains(var_name) {
+                    // Pattern 1: Direct bounds checking (size < MAX, size == 0, etc.)
+                    if stmt_text.contains("== 0") ||
+                       stmt_text.contains("!= 0") ||
+                       stmt_text.contains("> ") ||
+                       stmt_text.contains("< ") ||
+                       stmt_text.contains(">=") ||
+                       stmt_text.contains("<=") ||
+                       stmt_text.contains("MAX_") ||
+                       stmt_text.contains("SIZE_MAX") {
+                        return true;
+                    }
+
+                    // Pattern 2: Function call validation (e.g., if (!is_safe_size(var)))
+                    // Look for patterns like: if (!func_name(var, ...)) { return/break; }
+                    if (stmt_text.contains("!") || stmt_text.contains("== false")) &&
+                       stmt_text.contains("(") {
+                        // Check if the if-statement body contains return/break (early exit pattern)
+                        if stmt_text.contains("return") || stmt_text.contains("break") {
+                            return true;
+                        }
+                    }
+
+                    // Pattern 3: Positive function call validation (e.g., if (is_valid(var)))
+                    // with proper handling in else or subsequent code
+                    if stmt_text.contains("(") && !stmt_text.contains("!") {
+                        // This is a positive check - assume it's validation if it's checking the variable
+                        return true;
+                    }
+                }
+            }
         }
     }
     false
