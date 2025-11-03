@@ -159,21 +159,54 @@ impl PointerAnalyzer {
     }
 
     fn extract_array_base(&self, node: &Node, source: &str) -> String {
-        match node.kind() {
+        let result = match node.kind() {
             "identifier" => {
                 source[node.start_byte()..node.end_byte()].to_string()
             }
-            "unary_expression" => {
-                // Handle &array[0] or &array
+            "field_expression" => {
+                // Handle struct.member or union.member - capture full path
+                // This ensures u.int_array and u.float_array are distinct
+                source[node.start_byte()..node.end_byte()].to_string()
+            }
+            "cast_expression" => {
+                // Handle cast expressions like (int *)malloc(...) - unwrap to get the underlying value
+                if let Some(value) = node.child_by_field_name("value") {
+                    self.extract_array_base(&value, source)
+                } else {
+                    String::new()
+                }
+            }
+            "call_expression" => {
+                // Handle function calls like malloc(), calloc(), aligned_alloc()
+                // Each call is treated as a distinct allocation
+                // Use byte position to make each call unique, even if they have identical text
+                format!("{}@{}", &source[node.start_byte()..node.end_byte()], node.start_byte())
+            }
+            "compound_literal_expression" => {
+                // Handle compound literals like (int[]){1, 2, 3}
+                // Each compound literal creates a distinct object
+                // Use byte position to make each one unique, even if they have identical content
+                format!("{}@{}", &source[node.start_byte()..node.end_byte()], node.start_byte())
+            }
+            "string_literal" => {
+                // Handle string literals like "Hello" and "World"
+                // Each string literal creates a distinct array object
+                // Use byte position to make each one unique, even if they have identical text
+                format!("{}@{}", &source[node.start_byte()..node.end_byte()], node.start_byte())
+            }
+            "pointer_expression" | "unary_expression" => {
+                // Handle &array[0] or &array (pointer_expression is used by tree-sitter for &)
                 if let Some(argument) = node.child_by_field_name("argument") {
                     match argument.kind() {
                         "identifier" => source[argument.start_byte()..argument.end_byte()].to_string(),
+                        "field_expression" => {
+                            // Handle &struct.member
+                            source[argument.start_byte()..argument.end_byte()].to_string()
+                        }
                         "subscript_expression" => {
-                            if let Some(array) = argument.child_by_field_name("argument") {
-                                source[array.start_byte()..array.end_byte()].to_string()
-                            } else {
-                                String::new()
-                            }
+                            // For subscript expressions, we need to find the deepest base array
+                            // This handles &matrix[i][j] by extracting "matrix" rather than "matrix[i]"
+                            self.extract_deepest_base(&argument, source)
                         }
                         _ => String::new(),
                     }
@@ -182,11 +215,31 @@ impl PointerAnalyzer {
                 }
             }
             "subscript_expression" => {
+                // Handle array subscripts like arrays[0], arrays[1]
+                // Use the full expression to distinguish between different sub-arrays
+                // This is important for multidimensional arrays where arrays[0] and arrays[1]
+                // are different arrays even though they share the same base
+                source[node.start_byte()..node.end_byte()].to_string()
+            }
+            _ => String::new(),
+        };
+        result
+    }
+
+    fn extract_deepest_base(&self, node: &Node, source: &str) -> String {
+        // Recursively extract the deepest base array from nested subscript expressions
+        // For matrix[i][j], this returns "matrix"
+        // For matrix[i], this returns "matrix"
+        match node.kind() {
+            "subscript_expression" => {
                 if let Some(array) = node.child_by_field_name("argument") {
-                    source[array.start_byte()..array.end_byte()].to_string()
+                    self.extract_deepest_base(&array, source)
                 } else {
                     String::new()
                 }
+            }
+            "identifier" => {
+                source[node.start_byte()..node.end_byte()].to_string()
             }
             _ => String::new(),
         }
@@ -198,8 +251,16 @@ impl PointerAnalyzer {
                 let var_name = source[node.start_byte()..node.end_byte()].to_string();
                 self.variable_arrays.get(&var_name).cloned()
             }
-            "unary_expression" => {
-                // Handle &variable patterns
+            "cast_expression" => {
+                // Handle cast expressions like (int *)ptr - unwrap to get the underlying value
+                if let Some(value) = node.child_by_field_name("value") {
+                    self.get_pointer_info(&value, source)
+                } else {
+                    None
+                }
+            }
+            "pointer_expression" | "unary_expression" => {
+                // Handle &variable patterns (pointer_expression is used by tree-sitter for &)
                 if let Some(argument) = node.child_by_field_name("argument") {
                     match argument.kind() {
                         "identifier" => {
@@ -208,12 +269,8 @@ impl PointerAnalyzer {
                         }
                         "field_expression" => {
                             // Handle &struct.member
-                            if let Some(argument_inner) = argument.child_by_field_name("argument") {
-                                let struct_name = source[argument_inner.start_byte()..argument_inner.end_byte()].to_string();
-                                Some(format!("{}_struct", struct_name))
-                            } else {
-                                None
-                            }
+                            let field_path = source[argument.start_byte()..argument.end_byte()].to_string();
+                            Some(field_path)
                         }
                         _ => None,
                     }
@@ -222,13 +279,13 @@ impl PointerAnalyzer {
                 }
             }
             "field_expression" => {
-                // Handle struct.member access
-                if let Some(argument) = node.child_by_field_name("argument") {
-                    let struct_name = source[argument.start_byte()..argument.end_byte()].to_string();
-                    Some(format!("{}_struct", struct_name))
-                } else {
-                    None
-                }
+                // Handle struct.member or union.member access
+                // Extract full path to distinguish between different members
+                let var_name = source[node.start_byte()..node.end_byte()].to_string();
+                self.variable_arrays.get(&var_name).cloned().or_else(|| {
+                    // If not in our tracking map, use the field expression itself as the identifier
+                    Some(var_name)
+                })
             }
             _ => None,
         }

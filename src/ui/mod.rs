@@ -179,7 +179,7 @@ impl TerminalUI {
             checked_violations: HashSet::new(),
             show_save_dialog: false,
             save_filename: String::from("violations.xlsx"),
-            show_file_preview: true, // Default to showing preview
+            show_file_preview: false, // Default to not showing preview
             preview_focused: false, // Default focus on violations list
             preview_scroll_offset: 0,
             sort_mode: SortMode::Default,
@@ -510,10 +510,16 @@ impl TerminalUI {
                                 // Toggle rule enabled/disabled in Configuration tab
                                 self.toggle_config_item();
                             } else {
-                            // Toggle checkbox for selected violation
+                            // Check if it's a group item - if so, toggle expand/collapse
                             if let Some(display_index) = self.selected_violation.selected() {
                                 if let Some(selected_item) = self.flat_display_items.get(display_index) {
-                                    if let GroupItem::Violation { original_index, .. } = selected_item {
+                                    if selected_item.is_group() {
+                                        // Toggle group expansion
+                                        if let GroupItem::Group { expanded, .. } = selected_item {
+                                            self.toggle_group_expand(!expanded);
+                                        }
+                                    } else if let GroupItem::Violation { original_index, .. } = selected_item {
+                                        // Toggle checkbox for selected violation
                                         if self.checked_violations.contains(original_index) {
                                             self.checked_violations.remove(original_index);
                                         } else {
@@ -875,7 +881,7 @@ impl TerminalUI {
                         String::new()
                     };
 
-                    format!("SqC - Software Code Quality | Repository: {} | {}Violations{}{} - {}: {} - {}:{} ({})",
+                    format!("Repository: {} | {}Violations{}{} - {}: {} - {}:{} ({})",
                         self.repo_path,
                         focus_indicator,
                         sort_info,
@@ -914,7 +920,7 @@ impl TerminalUI {
                     } else {
                         String::new()
                     };
-                    format!("SqC - Software Code Quality | Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
+                    format!("Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
                 }
             } else {
                 let focus_indicator = if !self.preview_focused || !self.show_file_preview {
@@ -945,7 +951,7 @@ impl TerminalUI {
                 } else {
                     String::new()
                 };
-                format!("SqC - Software Code Quality | Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
+                format!("Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
             }
         } else {
             let focus_indicator = if !self.preview_focused || !self.show_file_preview {
@@ -976,7 +982,7 @@ impl TerminalUI {
             } else {
                 String::new()
             };
-            format!("SqC - Software Code Quality | Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
+            format!("Repository: {} | {}Violations{}{}", self.repo_path, focus_indicator, sort_info, hidden_info)
         };
 
         let violations_block = if !self.preview_focused || !self.show_file_preview {
@@ -1006,7 +1012,7 @@ impl TerminalUI {
         let footer = Paragraph::new(vec![
             Line::from(vec![
                 Span::raw("("),
-                Span::styled("q/<ESC>", Style::default().fg(Color::Yellow)),
+                Span::styled("<ESC>/q", Style::default().fg(Color::Yellow)),
                 Span::raw(")uit | ("),
                 Span::styled("c", Style::default().fg(Color::Yellow)),
                 Span::raw(")onfig | ("),
@@ -1030,7 +1036,10 @@ impl TerminalUI {
                 Span::styled("x", Style::default().fg(Color::Yellow)),
                 Span::raw(")suppress OR ("),
                 Span::styled("e", Style::default().fg(Color::Yellow)),
-                Span::raw(")xport | VIEW: ("),
+                Span::raw(")xport"),
+            ]),
+            Line::from(vec![
+                Span::raw("VIEW: ("),
                 Span::styled("p", Style::default().fg(Color::Yellow)),
                 Span::raw(")review | ("),
                 Span::styled("<tab>", Style::default().fg(Color::Yellow)),
@@ -1040,7 +1049,7 @@ impl TerminalUI {
             ]),
         ])
         .style(Style::default().fg(Color::White))
-        .block(Block::default().borders(Borders::ALL).title("CERT C Compliance Checker"));
+        .block(Block::default().borders(Borders::ALL).title("SqC - Software Code Quality"));
 
         let footer_index = if self.show_file_preview { 2 } else { 1 };
         f.render_widget(footer, chunks[footer_index]);
@@ -1349,7 +1358,7 @@ impl TerminalUI {
         let i = match self.selected_violation.selected() {
             Some(i) => {
                 if i == 0 {
-                    self.violations.len().saturating_sub(1)
+                    self.flat_display_items.len().saturating_sub(1)
                 } else {
                     i - 1
                 }
@@ -1362,7 +1371,7 @@ impl TerminalUI {
     fn scroll_down(&mut self) {
         let i = match self.selected_violation.selected() {
             Some(i) => {
-                if i >= self.violations.len().saturating_sub(1) {
+                if i >= self.flat_display_items.len().saturating_sub(1) {
                     0
                 } else {
                     i + 1
