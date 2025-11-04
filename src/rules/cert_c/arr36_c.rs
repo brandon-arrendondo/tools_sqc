@@ -129,6 +129,9 @@ impl PointerAnalyzer {
             "declaration" => {
                 self.process_declaration(node, source);
             }
+            "parameter_declaration" => {
+                self.process_parameter(node, source);
+            }
             _ => {}
         }
 
@@ -154,6 +157,19 @@ impl PointerAnalyzer {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    fn process_parameter(&mut self, node: &Node, source: &str) {
+        // For function parameters, each parameter is treated as a distinct pointer
+        // We track them using their parameter name as a unique identifier
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            let param_name = ast_utils::get_identifier_from_declarator(&declarator, source);
+            if !param_name.is_empty() {
+                // Use the parameter name itself as the "array base" to make it unique
+                // This ensures parameters are only equal to themselves
+                self.variable_arrays.insert(param_name.clone(), format!("param:{}", param_name));
             }
         }
     }
@@ -194,6 +210,15 @@ impl PointerAnalyzer {
                 // Use byte position to make each one unique, even if they have identical text
                 format!("{}@{}", &source[node.start_byte()..node.end_byte()], node.start_byte())
             }
+            "binary_expression" => {
+                // Handle pointer arithmetic like arr + size or ptr - offset
+                // The base array is determined by the left operand
+                if let Some(left) = node.child_by_field_name("left") {
+                    self.extract_array_base(&left, source)
+                } else {
+                    String::new()
+                }
+            }
             "pointer_expression" | "unary_expression" => {
                 // Handle &array[0] or &array (pointer_expression is used by tree-sitter for &)
                 if let Some(argument) = node.child_by_field_name("argument") {
@@ -201,7 +226,13 @@ impl PointerAnalyzer {
                         "identifier" => source[argument.start_byte()..argument.end_byte()].to_string(),
                         "field_expression" => {
                             // Handle &struct.member
-                            source[argument.start_byte()..argument.end_byte()].to_string()
+                            // Extract just the struct instance part to allow comparisons between
+                            // different members of the same struct (ARR36-C-EX1)
+                            if let Some(base) = argument.child_by_field_name("argument") {
+                                source[base.start_byte()..base.end_byte()].to_string()
+                            } else {
+                                source[argument.start_byte()..argument.end_byte()].to_string()
+                            }
                         }
                         "subscript_expression" => {
                             // For subscript expressions, we need to find the deepest base array
