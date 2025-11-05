@@ -121,6 +121,7 @@ impl Err33C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some(error_info.suggestion),
+                    ..Default::default()
                     });
                 }
             }
@@ -175,6 +176,7 @@ impl Err33C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some(error_info.suggestion),
+                ..Default::default()
                 });
             }
         }
@@ -206,6 +208,7 @@ impl Err33C {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some(error_info.suggestion),
+                            ..Default::default()
                             });
                         }
                     }
@@ -244,6 +247,7 @@ impl Err33C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some(error_info.suggestion),
+                                ..Default::default()
                                 });
                             }
                         }

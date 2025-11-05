@@ -17,6 +17,34 @@ pub struct RuleViolation {
     pub line: usize,
     pub column: usize,
     pub suggestion: Option<String>,
+    /// Indicates if this violation requires manual investigation by the user.
+    /// Used for ambiguous cases where the tool cannot definitively determine if it's a violation.
+    /// `None` or `Some(false)` means it's a definite violation.
+    /// `Some(true)` means it requires manual review.
+    #[doc(hidden)]
+    pub requires_manual_review: Option<bool>,
+}
+
+impl Default for RuleViolation {
+    fn default() -> Self {
+        Self {
+            rule_id: String::new(),
+            severity: crate::manifest::Severity::Low,
+            message: String::new(),
+            file_path: String::new(),
+            line: 0,
+            column: 0,
+            suggestion: None,
+            requires_manual_review: None,
+        }
+    }
+}
+
+impl RuleViolation {
+    /// Returns true if this violation requires manual review
+    pub fn needs_manual_review(&self) -> bool {
+        self.requires_manual_review.unwrap_or(false)
+    }
 }
 
 pub struct RuleRegistry {

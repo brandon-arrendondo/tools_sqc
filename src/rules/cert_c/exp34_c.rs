@@ -189,6 +189,7 @@ impl NullPointerAnalyzer {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some(format!("Check if '{}' is not NULL before dereferencing", var_name)),
+                                ..Default::default()
                             });
                         }
                     }
@@ -213,6 +214,7 @@ impl NullPointerAnalyzer {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some(format!("Check if '{}' is not NULL before array access", var_name)),
+                                ..Default::default()
                             });
                         }
                     }
@@ -236,6 +238,7 @@ impl NullPointerAnalyzer {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some(format!("Check if '{}' is not NULL before member access", var_name)),
+                                ..Default::default()
                             });
                         }
                     }
@@ -282,6 +285,7 @@ impl NullPointerAnalyzer {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some(format!("Check if '{}' is not NULL before passing to function", var_name)),
+                            ..Default::default()
                         });
                     }
                 }

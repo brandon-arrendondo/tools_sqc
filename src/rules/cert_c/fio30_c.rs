@@ -233,6 +233,7 @@ impl FormatStringAnalyzer {
                                     "Use a literal format string: {}(\"%s\", user_input) instead of {}(user_input)",
                                     func_name, func_name
                                 )),
+                                ..Default::default()
                             });
                         }
                     }

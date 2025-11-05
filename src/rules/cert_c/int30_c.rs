@@ -93,6 +93,7 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -120,6 +121,7 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add underflow check: if (a < b) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -147,6 +149,7 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -173,6 +176,7 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add shift overflow check before shifting".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -199,6 +203,7 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check before compound assignment".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -225,6 +230,7 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add underflow check before compound assignment".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -251,6 +257,7 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check before compound assignment".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -277,6 +284,7 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add shift overflow check before compound assignment".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -308,6 +316,7 @@ impl Int30C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Add bounds checking before increment/decrement".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -353,6 +362,7 @@ impl Int30C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Check for overflow: if (count > SIZE_MAX / size) { /* handle error */ }".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -379,6 +389,7 @@ impl Int30C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Add overflow check before allocation".to_string()),
+        ..Default::default()
         });
     }
 

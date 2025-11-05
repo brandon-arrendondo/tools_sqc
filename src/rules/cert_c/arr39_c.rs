@@ -68,6 +68,7 @@ impl Arr39C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Remove sizeof() or use unscaled integer arithmetic".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -95,6 +96,7 @@ impl Arr39C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Use unscaled integer increment without sizeof()".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -137,6 +139,7 @@ impl Arr39C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Use array element count instead of sizeof() in pointer arithmetic".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -160,6 +163,7 @@ impl Arr39C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Remove '* sizeof(wchar_t)' multiplication".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -187,6 +191,7 @@ impl Arr39C {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some("Use char* pointer to avoid scaling or remove extra scaling".to_string()),
+                            ..Default::default()
                             });
                         }
                         break; // Only check first argument for destination pointer

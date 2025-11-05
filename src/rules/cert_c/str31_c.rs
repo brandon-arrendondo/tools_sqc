@@ -780,6 +780,7 @@ impl Str31C {
                         line: *line_num,
                         column: 1,
                         suggestion: Some("Use strncat with size limits or allocate larger buffer".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -941,6 +942,7 @@ impl CertRule for Str31C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Use fgets() with explicit buffer size instead".to_string()),
+                        ..Default::default()
                         });
                     }
 
@@ -956,6 +958,7 @@ impl CertRule for Str31C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Use strncpy() with explicit size limit or verify buffer size".to_string()),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -973,6 +976,7 @@ impl CertRule for Str31C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Use strncat() with size limit or track remaining buffer space".to_string()),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -990,6 +994,7 @@ impl CertRule for Str31C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Use snprintf() with explicit buffer size".to_string()),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -1005,6 +1010,7 @@ impl CertRule for Str31C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Use vsnprintf() with explicit buffer size".to_string()),
+                        ..Default::default()
                         });
                     }
 
@@ -1020,6 +1026,7 @@ impl CertRule for Str31C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Use width specifier with %s (e.g., %99s) or use fgets()".to_string()),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -1037,6 +1044,7 @@ impl CertRule for Str31C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Use size-1 as limit and explicitly null-terminate, or use strlcpy()".to_string()),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -1054,6 +1062,7 @@ impl CertRule for Str31C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Use strcpy/strncpy or memcpy with size+1 for null terminator".to_string()),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -1071,6 +1080,7 @@ impl CertRule for Str31C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Use larger buffer or wcstombs_s with size limit".to_string()),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -1092,6 +1102,7 @@ impl CertRule for Str31C {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Add explicit bounds checking or use standard string functions with size limits".to_string()),
+            ..Default::default()
             });
         }
 
@@ -1110,6 +1121,7 @@ impl CertRule for Str31C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Increase array size to accommodate expected string length plus null terminator".to_string()),
+                        ..Default::default()
                         });
                     }
                 }

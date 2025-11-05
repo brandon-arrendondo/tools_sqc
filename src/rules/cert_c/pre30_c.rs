@@ -59,6 +59,7 @@ impl Pre30C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Avoid token concatenation that creates universal character names (\\uXXXX or \\UXXXXXXXX)".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -87,6 +88,7 @@ impl Pre30C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use complete universal character names instead of concatenating fragments".to_string()),
+                ..Default::default()
                 });
             }
         }

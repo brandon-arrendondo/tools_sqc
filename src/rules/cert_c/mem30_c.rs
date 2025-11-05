@@ -243,6 +243,7 @@ impl MemoryAnalyzer {
                             line: op.line,
                             column: 1,
                             suggestion: Some("Do not access memory after freeing it. Set pointer to NULL after free().".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -273,6 +274,7 @@ impl MemoryAnalyzer {
                             line: op.line,
                             column: 1,
                             suggestion: Some("Set pointer to NULL after freeing to prevent double-free.".to_string()),
+                        ..Default::default()
                         });
                     } else {
                         freed_vars.insert(op.variable.clone());
@@ -322,6 +324,7 @@ impl MemoryAnalyzer {
                                                         line: start_point.row + 1,
                                                         column: start_point.column + 1,
                                                         suggestion: Some("Use temporary variable for realloc result and check for NULL before assignment".to_string()),
+                                                    ..Default::default()
                                                     });
                                                 }
                                             }
@@ -366,6 +369,7 @@ impl MemoryAnalyzer {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Save pointer->next before freeing pointer".to_string()),
+                    ..Default::default()
                     });
                 }
             }

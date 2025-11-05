@@ -41,6 +41,7 @@ impl CertRule for Arr32C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Add bounds checking: if (size == 0 || size > MAX_ARRAY) { /* handle error */ }".to_string()),
+                            ..Default::default()
                         });
                     }
                 }
@@ -74,6 +75,7 @@ impl CertRule for Arr32C {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some("Validate the size parameter before using it for VLA declaration".to_string()),
+                                ..Default::default()
                             });
                         }
                     }

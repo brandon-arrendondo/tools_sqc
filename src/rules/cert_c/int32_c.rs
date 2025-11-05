@@ -106,6 +106,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -133,6 +134,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check: if ((b < 0 && a > INT_MAX + b) || (b > 0 && a < INT_MIN + b)) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -160,6 +162,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check using complex multiplication overflow detection".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -193,6 +196,7 @@ impl Int32C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Add check: if (dividend == INT_MIN && divisor == -1) { /* handle error */ }".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -223,6 +227,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add check: if (dividend == INT_MIN && divisor == -1) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -251,6 +256,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add check: if (value == INT_MIN) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -277,6 +283,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Validate shift amount and check for overflow before shifting".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -303,6 +310,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check before compound assignment".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -329,6 +337,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check before compound assignment".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -355,6 +364,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add overflow check before compound assignment".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -383,6 +393,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add check before assignment: if (left == INT_MIN && right == -1) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -411,6 +422,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add check before assignment: if (left == INT_MIN && right == -1) { /* handle error */ }".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -437,6 +449,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Validate shift amount and check for overflow before assignment".to_string()),
+                    ..Default::default()
                     });
                 }
             }
@@ -468,6 +481,7 @@ impl Int32C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Add bounds checking before increment/decrement".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -509,6 +523,7 @@ impl Int32C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Validate arithmetic operations before passing to allocation functions".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -539,6 +554,7 @@ impl Int32C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Validate size calculations before passing to memory functions".to_string()),
+                    ..Default::default()
                     });
                 }
             }

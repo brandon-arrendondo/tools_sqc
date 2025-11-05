@@ -31,12 +31,23 @@ impl CertRule for Arr37C {
 
 impl Arr37C {
     fn check_node(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+        let node_text = &source[node.start_byte()..node.end_byte()];
+
         match node.kind() {
             "binary_expression" => {
                 self.check_pointer_arithmetic(node, source, analyzer, violations);
             }
             "update_expression" => {
                 self.check_pointer_increment_decrement(node, source, analyzer, violations);
+            }
+            "assignment_expression" => {
+                // Check if this is a compound assignment (+=, -=)
+                if node_text.contains("+=") || node_text.contains("-=") {
+                    self.check_compound_assignment(node, source, analyzer, violations);
+                }
+            }
+            "subscript_expression" => {
+                self.check_subscript_on_non_array(node, source, analyzer, violations);
             }
             "for_statement" => {
                 self.check_for_loop_pointer_arithmetic(node, source, analyzer, violations);
@@ -60,7 +71,40 @@ impl Arr37C {
                         // Check if this is pointer arithmetic (pointer +/- integer)
                         if self.is_pointer_arithmetic(&left, &right, source, analyzer) {
                             let pointer_name = self.get_pointer_name(&left, source);
-                            if analyzer.is_non_array_pointer(&pointer_name) {
+
+                            // Check for ambiguous parameters first
+                            if analyzer.is_ambiguous_parameter(&pointer_name) {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: format!(
+                                        "Pointer arithmetic on ambiguous parameter '{}'. Cannot determine if it points to an array or single object",
+                                        pointer_name
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Document whether parameter is array or single object, or use explicit array syntax".to_string()),
+                                    requires_manual_review: Some(true),
+                                    ..Default::default()
+                                });
+                            } else if analyzer.is_struct_member_pointer(&pointer_name) {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Critical,
+                                    message: format!(
+                                        "Pointer arithmetic on struct member pointer '{}'. Pointer arithmetic on struct members is undefined behavior",
+                                        pointer_name
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
+                                    ..Default::default()
+                                });
+                            } else if analyzer.is_non_array_pointer(&pointer_name) {
                                 let start_point = node.start_position();
                                 violations.push(RuleViolation {
                                     rule_id: self.rule_id().to_string(),
@@ -73,6 +117,7 @@ impl Arr37C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Use array indexing or ensure pointer refers to an array".to_string()),
+                                    ..Default::default()
                                 });
                             }
                         }
@@ -86,9 +131,40 @@ impl Arr37C {
     fn check_pointer_increment_decrement(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
         if let Some(argument) = node.child_by_field_name("argument") {
             let pointer_name = self.get_pointer_name(&argument, source);
-            if analyzer.is_non_array_pointer(&pointer_name) {
-                let start_point = node.start_position();
-                let op_text = &source[node.start_byte()..node.end_byte()];
+            let start_point = node.start_position();
+            let op_text = &source[node.start_byte()..node.end_byte()];
+
+            // Check for ambiguous parameters first
+            if analyzer.is_ambiguous_parameter(&pointer_name) {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::Medium,
+                    message: format!(
+                        "Increment/decrement operation '{}' on ambiguous parameter '{}'. Cannot determine if it points to an array or single object",
+                        op_text, pointer_name
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Document whether parameter is array or single object, or use explicit array syntax".to_string()),
+                    requires_manual_review: Some(true),
+                    ..Default::default()
+                });
+            } else if analyzer.is_struct_member_pointer(&pointer_name) {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::Critical,
+                    message: format!(
+                        "Increment/decrement operation '{}' on struct member pointer '{}'. Pointer arithmetic on struct members is undefined behavior",
+                        op_text, pointer_name
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
+                    ..Default::default()
+                });
+            } else if analyzer.is_non_array_pointer(&pointer_name) {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: Severity::High,
@@ -100,7 +176,127 @@ impl Arr37C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use array indexing or ensure pointer refers to an array".to_string()),
+                    ..Default::default()
                 });
+            }
+        }
+    }
+
+    fn check_compound_assignment(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+        // Check for patterns like: ptr += n, ptr -= n
+        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+            // Get the operator
+            let full_text = &source[node.start_byte()..node.end_byte()];
+            if full_text.contains("+=") || full_text.contains("-=") {
+                let pointer_name = self.get_pointer_name(&left, source);
+                let start_point = node.start_position();
+                let op_text = &source[node.start_byte()..node.end_byte()];
+
+                // Check for ambiguous parameters first
+                if analyzer.is_ambiguous_parameter(&pointer_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Medium,
+                        message: format!(
+                            "Compound assignment '{}' on ambiguous parameter '{}'. Cannot determine if it points to an array or single object",
+                            op_text, pointer_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Document whether parameter is array or single object, or use explicit array syntax".to_string()),
+                        requires_manual_review: Some(true),
+                        ..Default::default()
+                    });
+                } else if analyzer.is_struct_member_pointer(&pointer_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Critical,
+                        message: format!(
+                            "Compound assignment '{}' on struct member pointer '{}'. Pointer arithmetic on struct members is undefined behavior",
+                            op_text, pointer_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
+                        ..Default::default()
+                    });
+                } else if analyzer.is_non_array_pointer(&pointer_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Compound assignment '{}' on non-array pointer '{}'",
+                            op_text, pointer_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Use array indexing or ensure pointer refers to an array".to_string()),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+    }
+
+    fn check_subscript_on_non_array(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+        // Check for patterns like: ptr[index] where ptr is not an array pointer
+        // subscript_expression has "argument" (the base pointer/array) and "index" fields
+        if let Some(argument) = node.child_by_field_name("argument") {
+            let pointer_name = self.get_pointer_name(&argument, source);
+
+            // Only check if we have a named variable (not an expression)
+            if pointer_name != "unknown" && !pointer_name.is_empty() {
+                let start_point = node.start_position();
+                let subscript_text = &source[node.start_byte()..node.end_byte()];
+
+                // Check for ambiguous parameters first
+                if analyzer.is_ambiguous_parameter(&pointer_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Medium,
+                        message: format!(
+                            "Subscript operation '{}' on ambiguous parameter '{}'. Cannot determine if it points to an array or single object",
+                            subscript_text, pointer_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Document whether parameter is array or single object, or use explicit pointer dereference".to_string()),
+                        requires_manual_review: Some(true),
+                        ..Default::default()
+                    });
+                } else if analyzer.is_struct_member_pointer(&pointer_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Critical,
+                        message: format!(
+                            "Subscript operation '{}' on struct member pointer '{}'. Pointer arithmetic on struct members is undefined behavior",
+                            subscript_text, pointer_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
+                        ..Default::default()
+                    });
+                } else if analyzer.is_non_array_pointer(&pointer_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Subscript operation '{}' on non-array pointer '{}'. Subscript notation implies array access",
+                            subscript_text, pointer_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Only use subscript notation on array pointers, not pointers to single objects".to_string()),
+                        ..Default::default()
+                    });
+                }
             }
         }
     }
@@ -126,6 +322,7 @@ impl Arr37C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Access struct members individually or use an array within the struct".to_string()),
+                            ..Default::default()
                         });
                     }
                 }
@@ -164,6 +361,7 @@ enum VariableType {
     Array,
     NonArray,
     StructMemberPointer,
+    AmbiguousParameter,
     Unknown,
 }
 
@@ -182,6 +380,9 @@ impl NonArrayPointerAnalyzer {
             }
             "assignment_expression" => {
                 self.process_assignment(node, source);
+            }
+            "parameter_declaration" => {
+                self.process_parameter(node, source);
             }
             _ => {}
         }
@@ -225,9 +426,22 @@ impl NonArrayPointerAnalyzer {
     }
 
     fn process_assignment(&mut self, node: &Node, source: &str) {
+        // Skip compound assignments (+=, -=, etc.) as they don't change the pointer type
+        let node_text = &source[node.start_byte()..node.end_byte()];
+        if node_text.contains("+=") || node_text.contains("-=") || node_text.contains("*=") || node_text.contains("/=") {
+            return;
+        }
+
         if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
             if left.kind() == "identifier" {
                 let var_name = source[left.start_byte()..left.end_byte()].to_string();
+
+                // Skip binary expressions (like ptr = ptr + 1) as they don't change the pointer type
+                // The actual pointer arithmetic will be caught by check_pointer_arithmetic
+                if right.kind() == "binary_expression" {
+                    return;
+                }
+
                 let var_type = self.analyze_initializer_type(&right, source);
                 self.variable_types.insert(var_name.clone(), var_type);
 
@@ -243,6 +457,21 @@ impl NonArrayPointerAnalyzer {
         }
     }
 
+    fn process_parameter(&mut self, node: &Node, source: &str) {
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            let param_name = ast_utils::get_identifier_from_declarator(&declarator, source);
+            if !param_name.is_empty() && self.is_pointer_parameter(&declarator) {
+                self.variable_types.insert(param_name, VariableType::AmbiguousParameter);
+            }
+        }
+    }
+
+    fn is_pointer_parameter(&self, declarator: &Node) -> bool {
+        // Check if this is a pointer parameter (pointer_declarator)
+        // These are ambiguous because we can't tell if they point to a single object or an array
+        declarator.kind() == "pointer_declarator"
+    }
+
     fn analyze_initializer_type(&self, node: &Node, source: &str) -> VariableType {
         match node.kind() {
             "identifier" => {
@@ -254,12 +483,13 @@ impl NonArrayPointerAnalyzer {
                     VariableType::Unknown
                 }
             }
-            "unary_expression" => {
+            "unary_expression" | "pointer_expression" => {
                 // Handle &array, &variable patterns
+                // pointer_expression is used by tree-sitter for address-of operations
                 if let Some(argument) = node.child_by_field_name("argument") {
                     match argument.kind() {
                         "identifier" => VariableType::NonArray, // &variable
-                        "subscript_expression" => VariableType::Array, // &array[0]
+                        "subscript_expression" => VariableType::NonArray, // &array[0] is pointer to single element
                         "field_expression" => VariableType::StructMemberPointer, // &struct.member
                         _ => VariableType::Unknown,
                     }
@@ -268,6 +498,14 @@ impl NonArrayPointerAnalyzer {
                 }
             }
             "subscript_expression" => VariableType::Array,
+            "cast_expression" => {
+                // For cast expressions like (type *)ptr, analyze the value being cast
+                if let Some(value) = node.child_by_field_name("value") {
+                    self.analyze_initializer_type(&value, source)
+                } else {
+                    VariableType::Unknown
+                }
+            }
             _ => VariableType::Unknown,
         }
     }
@@ -279,6 +517,10 @@ impl NonArrayPointerAnalyzer {
     fn is_struct_member_pointer(&self, var_name: &str) -> bool {
         self.struct_member_pointers.contains_key(var_name) ||
         matches!(self.variable_types.get(var_name), Some(VariableType::StructMemberPointer))
+    }
+
+    fn is_ambiguous_parameter(&self, var_name: &str) -> bool {
+        matches!(self.variable_types.get(var_name), Some(VariableType::AmbiguousParameter))
     }
 
     fn is_pointer_variable(&self, var_name: &str) -> bool {

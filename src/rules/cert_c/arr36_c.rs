@@ -79,6 +79,7 @@ impl Arr36C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Ensure both pointers refer to the same array before subtraction".to_string()),
+                        ..Default::default()
                     });
                 }
             }
@@ -105,6 +106,7 @@ impl Arr36C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Ensure both pointers refer to the same array before comparison".to_string()),
+                        ..Default::default()
                     });
                 }
             }

@@ -308,6 +308,7 @@ impl Fio34C {
                 "Use 'int' instead of 'char' to store the result of '{}' and properly check for EOF",
                 function_name
             )),
+        ..Default::default()
         });
     }
 
@@ -330,6 +331,7 @@ impl Fio34C {
                 "Declare variable as 'int' instead of 'char' to properly handle EOF from '{}'",
                 function_name
             )),
+        ..Default::default()
         });
     }
 
@@ -349,6 +351,7 @@ impl Fio34C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Store result in 'int' (or 'wint_t' for wide chars) before comparing with EOF/WEOF".to_string()),
+        ..Default::default()
         });
     }
 
@@ -368,6 +371,7 @@ impl Fio34C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Use 'int' for the loop variable to properly detect EOF".to_string()),
+        ..Default::default()
         });
     }
 }

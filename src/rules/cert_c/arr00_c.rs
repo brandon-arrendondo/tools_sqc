@@ -169,6 +169,7 @@ fn check_array_assignment(node: &Node, source: &str) -> Option<RuleViolation> {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Use memcpy() or a loop to copy array elements".to_string()),
+            ..Default::default()
             });
         }
     }
@@ -223,6 +224,7 @@ fn check_if_array_parameter(identifier_node: &Node, sizeof_node: &Node, source: 
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Pass array size as a separate parameter or use a different method to track array size".to_string()),
+            ..Default::default()
             });
         }
     }
@@ -293,6 +295,7 @@ fn check_vla_declaration(node: &Node, source: &str) -> Option<RuleViolation> {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Use a positive constant size or validate variable size before declaration".to_string()),
+            ..Default::default()
             });
         }
         return None; // Constant non-zero size is OK
@@ -340,6 +343,7 @@ fn check_vla_size_validation(decl_node: &Node, size_var: &str, source: &str, dec
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Validate that the size is positive before declaring the VLA".to_string()),
+        ..Default::default()
         });
     }
 
@@ -360,6 +364,7 @@ fn check_vla_size_validation(decl_node: &Node, size_var: &str, source: &str, dec
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Add validation: if (size <= 0 || size > MAX_SIZE) return;".to_string()),
+            ..Default::default()
             });
         }
     }
@@ -493,6 +498,7 @@ fn check_dangerous_functions(node: &Node, source: &str) -> Option<RuleViolation>
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Use fgets(buffer, sizeof(buffer), stdin) which respects buffer size".to_string()),
+        ..Default::default()
         });
     }
 
@@ -566,6 +572,7 @@ fn check_dangerous_functions(node: &Node, source: &str) -> Option<RuleViolation>
                             "Use a width specifier like '%Ns' where N is buffer size minus 1, e.g., {}(\"%9s\", buffer) for char buffer[10]",
                             func_text
                         )),
+                    ..Default::default()
                     });
                 }
             }
@@ -691,6 +698,7 @@ fn check_obvious_string_overflow(node: &Node, source: &str) -> Option<RuleViolat
                     "Use safer alternatives like strncat/strncpy with proper size limits, or increase buffer size to at least {} bytes",
                     required_space
                 )),
+            ..Default::default()
             });
         }
     }
@@ -787,6 +795,7 @@ fn check_memcpy_size_mismatch(node: &Node, source: &str) -> Option<RuleViolation
                     dest_name,
                     src_name
                 )),
+            ..Default::default()
             });
         }
     }
@@ -888,6 +897,7 @@ fn check_memory_operation_overflow(node: &Node, source: &str) -> Option<RuleViol
                 buffer_name,
                 buffer_name
             )),
+        ..Default::default()
         });
     }
 
@@ -1049,6 +1059,7 @@ fn check_loop_exceeds_allocation(node: &Node, source: &str) -> Option<RuleViolat
                     "Ensure loop bound does not exceed allocated size. Change to '{} < {}' to match allocation size.",
                     loop_var_name, alloc_size
                 )),
+            ..Default::default()
             });
         }
     }
@@ -1182,6 +1193,7 @@ fn check_loop_bound_exceeds_array(node: &Node, source: &str) -> Option<RuleViola
                         "Change loop condition to '{} < {}' instead of '{} <= {}'",
                         loop_var_name, bound_value, loop_var_name, bound_value
                     )),
+                ..Default::default()
                 });
             }
         }
@@ -1269,6 +1281,7 @@ fn check_loop_array_access(node: &Node, source: &str) -> Option<RuleViolation> {
                     "Validate '{}' against array size before using in loop: if ({} < 0 || {} > ARRAY_SIZE) {{ /* error */ }}",
                     bound_var, bound_var, bound_var
                 )),
+            ..Default::default()
             });
         }
     }
@@ -1289,6 +1302,7 @@ fn check_loop_array_access(node: &Node, source: &str) -> Option<RuleViolation> {
                 "Initialize '{}' to a valid value before using it in the loop",
                 bound_var
             )),
+        ..Default::default()
         });
     }
 
@@ -1460,6 +1474,7 @@ fn check_subscript_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
                     "Add bounds checking for '{}' before using it as an array index",
                     index_var
                 )),
+            ..Default::default()
             });
         }
     }
@@ -1481,6 +1496,7 @@ fn check_subscript_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
                 "Validate '{}' against array bounds before using it as an index",
                 index_var
             )),
+        ..Default::default()
         });
     }
 
@@ -1583,6 +1599,7 @@ fn check_uninitialized_array_read(node: &Node, source: &str) -> Option<RuleViola
                 "Initialize array '{}' before reading: int {}[N] = {{0}}; or assign values before use",
                 array_name, array_name
             )),
+        ..Default::default()
         });
     }
 
@@ -1677,6 +1694,7 @@ fn check_use_after_free(node: &Node, source: &str) -> Option<RuleViolation> {
                 "Do not access '{}' after calling free(). Set pointer to NULL after freeing: free({}); {} = NULL;",
                 array_name, array_name, array_name
             )),
+        ..Default::default()
         });
     }
 
@@ -1741,6 +1759,7 @@ fn check_comma_in_subscript(node: &Node, source: &str) -> Option<RuleViolation> 
                             array_name,
                             array_name
                         )),
+                    ..Default::default()
                     });
                 }
             }
@@ -1789,6 +1808,7 @@ fn check_constant_out_of_bounds(node: &Node, source: &str) -> Option<RuleViolati
                 "Array '{}' requires a non-negative index. Negative indices access memory before the array.",
                 array_name
             )),
+        ..Default::default()
         });
     }
 
@@ -1822,6 +1842,7 @@ fn check_constant_out_of_bounds(node: &Node, source: &str) -> Option<RuleViolati
                     "Use a valid index in the range [0, {}] for array '{}'",
                     array_size - 1, array_name
                 )),
+            ..Default::default()
             });
         }
     }
@@ -1899,6 +1920,7 @@ fn check_boundary_value_index(node: &Node, source: &str) -> Option<RuleViolation
                     "Validate '{}' against array bounds before using it as an index, or avoid initializing indices to boundary values",
                     index_var
                 )),
+            ..Default::default()
             });
         }
     }
@@ -2038,6 +2060,7 @@ fn check_return_local_array(node: &Node, source: &str) -> Option<RuleViolation> 
         suggestion: Some(format!(
             "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
         )),
+        ..Default::default()
     })
 }
 
@@ -2113,6 +2136,7 @@ fn check_pointer_arithmetic(node: &Node, source: &str) -> Option<RuleViolation> 
                     "Ensure pointer arithmetic stays within array bounds (0 to {})",
                     array_size
                 )),
+            ..Default::default()
             });
         }
     }
@@ -2180,6 +2204,7 @@ fn check_pointer_subtraction(node: &Node, source: &str) -> Option<RuleViolation>
                 suggestion: Some(
                     "Only subtract pointers that point to elements within the same array object.".to_string()
                 ),
+            ..Default::default()
             });
         }
     }
@@ -2319,6 +2344,7 @@ fn check_array_comparison(node: &Node, source: &str) -> Option<RuleViolation> {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Use memcmp() or strcmp() to compare array contents".to_string()),
+        ..Default::default()
         });
     }
 

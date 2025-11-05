@@ -70,6 +70,7 @@ impl Pre31C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Move side effects outside macro call or use inline function".to_string()),
+                        ..Default::default()
                         });
                     }
                 }

@@ -124,6 +124,7 @@ impl Arr38C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use element count instead of sizeof() for wide character functions".to_string()),
+                    ..Default::default()
                 });
             }
         }
@@ -147,6 +148,7 @@ impl Arr38C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use character count instead of sizeof() for wide string functions".to_string()),
+                    ..Default::default()
                 });
             }
         }
@@ -170,6 +172,7 @@ impl Arr38C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Check for potential overflow in calloc arguments".to_string()),
+                    ..Default::default()
                 });
             }
         }
@@ -192,6 +195,7 @@ impl Arr38C {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Ensure size calculation matches actual buffer size".to_string()),
+                ..Default::default()
             });
         }
     }
@@ -212,6 +216,7 @@ impl Arr38C {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Ensure memset size does not exceed buffer size".to_string()),
+                ..Default::default()
             });
         }
     }
@@ -232,6 +237,7 @@ impl Arr38C {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Verify comparison size matches actual data size".to_string()),
+                ..Default::default()
             });
         }
     }
@@ -252,6 +258,7 @@ impl Arr38C {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Consider using sizeof(buffer) - 1 for string functions".to_string()),
+                ..Default::default()
             });
         }
     }
@@ -270,6 +277,7 @@ impl Arr38C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some(format!("Replace '{}' with safer bounded alternative", function_name)),
+            ..Default::default()
         });
     }
 

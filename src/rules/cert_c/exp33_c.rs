@@ -114,6 +114,7 @@ impl UninitializedVariableAnalyzer {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some(format!("Initialize '{}' before use", var_name)),
+                        ..Default::default()
                     });
                 }
             }

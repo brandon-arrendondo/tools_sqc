@@ -302,6 +302,7 @@ impl StringLiteralAnalyzer {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Use a modifiable array instead of a string literal".to_string()),
+        ..Default::default()
         });
     }
 }

@@ -19,6 +19,10 @@ void func(void) {
 
     let tree = parser.parse_source(source).unwrap();
     let violations = rule.check(&tree.root_node(), source);
+    eprintln!("DEBUG: Found {} violations", violations.len());
+    for v in &violations {
+        eprintln!("DEBUG: Violation - {}", v.message);
+    }
     assert!(!violations.is_empty(), "Should detect pointer arithmetic on non-array object");
     assert!(violations.iter().any(|v| v.message.contains("non-array pointer")));
 }

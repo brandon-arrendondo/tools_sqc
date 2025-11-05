@@ -40,6 +40,7 @@ impl CertRule for Dcl00C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some(format!("Add 'const' qualifier: const {} = ...", var_name)),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -68,6 +69,7 @@ impl CertRule for Dcl00C {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some("Use 'const char*' for string literals".to_string()),
+                            ..Default::default()
                             });
                         }
                     }

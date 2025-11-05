@@ -426,6 +426,7 @@ impl FlexibleArrayAnalyzer {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Ensure struct has at most one flexible array member as the final field".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -549,6 +550,7 @@ impl FlexibleArrayAnalyzer {
                                     line: violation_info.line,
                                     column: violation_info.column,
                                     suggestion: Some("Use a pointer to the flexible array structure instead of embedding it directly in the union".to_string()),
+                                ..Default::default()
                                 });
                             }
                         }
@@ -619,6 +621,7 @@ impl FlexibleArrayAnalyzer {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Use an array of pointers to dynamically allocated structures instead".to_string()),
+                    ..Default::default()
                     });
                 }
 
@@ -641,6 +644,7 @@ impl FlexibleArrayAnalyzer {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some("Use an array of pointers to dynamically allocated structures instead".to_string()),
+                            ..Default::default()
                             });
                         }
                     }
@@ -670,6 +674,7 @@ impl FlexibleArrayAnalyzer {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some(format!("Use dynamic allocation: struct {} *ptr = malloc(sizeof(struct {}) + sizeof(element_type) * count);", type_name, type_name)),
+                        ..Default::default()
                         });
                     }
                 }
@@ -695,6 +700,7 @@ impl FlexibleArrayAnalyzer {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Use memcpy() to copy the structure and its flexible array member".to_string()),
+            ..Default::default()
             });
         }
 
@@ -718,6 +724,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use proper memory allocation and copying for the entire structure".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -797,6 +804,7 @@ impl FlexibleArrayAnalyzer {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Use proper allocation and memcpy to copy the entire structure including flexible array data".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -930,6 +938,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Change parameter to pointer type".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -968,6 +977,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Allocate the structure dynamically using malloc() with proper size calculation".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -1825,6 +1835,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use: malloc(sizeof(struct) + sizeof(element_type) * array_count)".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -1855,6 +1866,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use: calloc(1, sizeof(struct) + sizeof(element_type) * count)".to_string()),
+                ..Default::default()
                 });
             }
 
@@ -1871,6 +1883,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use: calloc(1, sizeof(struct) + sizeof(element_type) * count)".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -1913,6 +1926,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use: realloc(ptr, sizeof(struct) + sizeof(element_type) * array_count)".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -2393,6 +2407,7 @@ impl FlexibleArrayAnalyzer {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some("Calculate full size: sizeof(struct) + sizeof(element_type) * array_count".to_string()),
+                            ..Default::default()
                             });
                         }
                     }
@@ -2521,6 +2536,7 @@ impl FlexibleArrayAnalyzer {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some("Calculate full size: sizeof(struct) + sizeof(element_type) * array_count".to_string()),
+                            ..Default::default()
                             });
                         }
                     }
@@ -2545,6 +2561,7 @@ impl FlexibleArrayAnalyzer {
                                         line: start_point.row + 1,
                                         column: start_point.column + 1,
                                         suggestion: Some("Calculate full size: sizeof(struct) + sizeof(element_type) * array_count".to_string()),
+                                    ..Default::default()
                                     });
                                 }
                             }
@@ -2602,6 +2619,7 @@ impl FlexibleArrayAnalyzer {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Use array indexing or calculate proper offsets based on the actual structure size including flexible array".to_string()),
+                        ..Default::default()
                         });
                     }
                 }
@@ -2670,6 +2688,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Arrays of flexible array structures are prohibited. Use pointers to individually allocated structures instead".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -2714,6 +2733,7 @@ impl FlexibleArrayAnalyzer {
                     line: violation_info.line,
                     column: violation_info.column,
                     suggestion: Some("Use a pointer to the flexible array structure instead of embedding it directly in the union".to_string()),
+                ..Default::default()
                 });
             }
         }
@@ -2863,6 +2883,7 @@ impl FlexibleArrayAnalyzer {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some(suggestion),
+                    ..Default::default()
                     });
                 }
             }
@@ -3006,6 +3027,7 @@ impl FlexibleArrayAnalyzer {
                                         line: start_point.row + 1,
                                         column: start_point.column + 1,
                                         suggestion: Some("Define the flexible array structure separately and use a pointer to it".to_string()),
+                                    ..Default::default()
                                     });
                                 }
                             }
@@ -3075,6 +3097,7 @@ impl FlexibleArrayAnalyzer {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some("Ensure the source type is compatible with flexible array structure layout or use proper dynamic allocation".to_string()),
+                            ..Default::default()
                             });
                         }
                     }
@@ -3111,6 +3134,7 @@ impl FlexibleArrayAnalyzer {
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some("Use const-qualified pointer or avoid casting away const qualifier".to_string()),
+                            ..Default::default()
                             });
                         }
                     }

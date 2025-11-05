@@ -89,6 +89,15 @@ struct PointerAlias {
     element_size_bytes: Option<usize>, // Element size for cast pointers (e.g., 4 for int, 1 for char)
 }
 
+/// Represents a function-like macro that might involve array access
+#[derive(Debug, Clone)]
+struct FunctionMacro {
+    name: String,
+    params: Vec<String>,
+    body: String,
+    line: usize,
+}
+
 impl Arr30C {
     /// Analyze all buffer allocations in the source code using AST traversal
     fn analyze_buffer_allocations(&self, source: &str) -> HashMap<String, BufferInfo> {
@@ -140,6 +149,53 @@ impl Arr30C {
                             macros.insert(name.to_string(), value);
                         }
                     }
+                }
+            }
+        }
+
+        macros
+    }
+
+    /// Extract function-like macros from preprocessor directives
+    /// Returns a HashMap of macro name to FunctionMacro info
+    fn extract_function_macros(&self, root: &Node, source: &str) -> HashMap<String, FunctionMacro> {
+        let mut macros = HashMap::new();
+
+        let mut cursor = root.walk();
+
+        for child in root.children(&mut cursor) {
+            if child.kind() == "preproc_function_def" {
+                // #define NAME(params) body
+                if let Some(name_node) = child.child_by_field_name("name") {
+                    let name = &source[name_node.start_byte()..name_node.end_byte()];
+
+                    // Extract parameters
+                    let mut params = Vec::new();
+                    if let Some(params_node) = child.child_by_field_name("parameters") {
+                        let mut param_cursor = params_node.walk();
+                        for param_child in params_node.children(&mut param_cursor) {
+                            if param_child.kind() == "identifier" {
+                                let param_name = &source[param_child.start_byte()..param_child.end_byte()];
+                                params.push(param_name.to_string());
+                            }
+                        }
+                    }
+
+                    // Extract body
+                    let body = if let Some(value_node) = child.child_by_field_name("value") {
+                        source[value_node.start_byte()..value_node.end_byte()].to_string()
+                    } else {
+                        String::new()
+                    };
+
+                    let line = child.start_position().row + 1;
+
+                    macros.insert(name.to_string(), FunctionMacro {
+                        name: name.to_string(),
+                        params,
+                        body,
+                        line,
+                    });
                 }
             }
         }
@@ -1311,6 +1367,7 @@ impl Arr30C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Ensure array access is within allocated bounds. Add explicit bounds checking.".to_string()),
+            ..Default::default()
         }
     }
 
@@ -1344,6 +1401,7 @@ impl Arr30C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Add bounds checking for function parameter before using as array index.".to_string()),
+                                ..Default::default()
                                 });
                                 return violations;
                             }
@@ -1641,7 +1699,8 @@ impl CertRule for Arr30C {
         if node.parent().is_none() {
             let buffer_info = self.analyze_buffer_allocations(source);
             let pointer_aliases = self.analyze_pointer_aliases(source, &buffer_info);
-            self.check_with_buffer_info(node, source, &buffer_info, &pointer_aliases)
+            let function_macros = self.extract_function_macros(node, source);
+            self.check_with_buffer_info(node, source, &buffer_info, &pointer_aliases, &function_macros)
         } else {
             // This shouldn't happen as we control recursion, but handle gracefully
             Vec::new()
@@ -1651,7 +1710,7 @@ impl CertRule for Arr30C {
 
 impl Arr30C {
     /// Internal recursive check function that carries buffer_info through the tree
-    fn check_with_buffer_info(&self, node: &Node, source: &str, buffer_info: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
+    fn check_with_buffer_info(&self, node: &Node, source: &str, buffer_info: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>, function_macros: &HashMap<String, FunctionMacro>) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // Clone the maps to allow modification during traversal
@@ -1671,6 +1730,7 @@ impl Arr30C {
             }
             "call_expression" => {
                 violations.extend(self.check_dangerous_function_call(node, source, &local_buffers));
+                violations.extend(self.check_macro_invocation(node, source, &local_buffers, function_macros));
             }
             _ => {}
         }
@@ -1711,7 +1771,7 @@ impl Arr30C {
                 }
 
                 // Recursively check this child with the accumulated context
-                violations.extend(self.check_with_buffer_info(&child, source, &local_buffers, &local_aliases));
+                violations.extend(self.check_with_buffer_info(&child, source, &local_buffers, &local_aliases, function_macros));
             }
         }
 
@@ -2302,6 +2362,63 @@ impl Arr30C {
         violations
     }
 
+    /// Check for macro invocations that might involve array access
+    /// Since macros are not expanded, we flag them for manual review if they:
+    /// 1. Match a known function-like macro definition
+    /// 2. Take arguments that include tracked buffer names
+    fn check_macro_invocation(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, function_macros: &HashMap<String, FunctionMacro>) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Get the function/macro name
+        if let Some(func_name_node) = node.child(0) {
+            let func_name = &source[func_name_node.start_byte()..func_name_node.end_byte()];
+
+            // Check if this matches a known function-like macro
+            if let Some(macro_info) = function_macros.get(func_name) {
+                // Check if the macro body contains array subscript syntax
+                if macro_info.body.contains('[') && macro_info.body.contains(']') {
+                    // Get the arguments to see if any are tracked buffers
+                    if let Some(args) = self.get_function_arguments(node, source) {
+                        let mut involves_buffer = false;
+                        for arg in &args {
+                            let arg_name = arg.trim();
+                            if buffers.contains_key(arg_name) {
+                                involves_buffer = true;
+                                break;
+                            }
+                        }
+
+                        // If the macro involves array syntax and operates on a tracked buffer,
+                        // flag it for manual review
+                        if involves_buffer || !args.is_empty() {
+                            let start_point = node.start_position();
+                            violations.push(RuleViolation {
+                                rule_id: "ARR30-C".to_string(),
+                                severity: Severity::Medium,
+                                message: format!(
+                                    "Macro '{}' may generate array access that cannot be statically analyzed. Macro body: '{}'. Manual review required to ensure bounds safety",
+                                    func_name,
+                                    macro_info.body
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some(format!(
+                                    "Manually verify that macro expansion does not create out-of-bounds access. Macro defined at line {}",
+                                    macro_info.line
+                                )),
+                                requires_manual_review: Some(true),
+                                ..Default::default()
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        violations
+    }
+
     /// Check strcpy calls for buffer overflow potential
     fn check_strcpy(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
@@ -2519,6 +2636,7 @@ impl Arr30C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Use safer alternatives like strncpy, strncat, snprintf, or fgets with proper size limits.".to_string()),
+            ..Default::default()
         }
     }
 

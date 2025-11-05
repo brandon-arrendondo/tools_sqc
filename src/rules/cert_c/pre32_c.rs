@@ -73,6 +73,7 @@ impl Pre32C {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Move preprocessor directives outside the function call using conditional compilation".to_string()),
+            ..Default::default()
             });
         }
 
@@ -95,6 +96,7 @@ impl Pre32C {
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some("Use conditional compilation to wrap the entire function call".to_string()),
+                        ..Default::default()
                         });
                     }
                 }

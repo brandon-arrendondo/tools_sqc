@@ -329,6 +329,7 @@ impl MemoryLeakAnalyzer {
                     line: alloc_info.line,
                     column: alloc_info.column,
                     suggestion: Some(format!("Add 'free({})' before the variable goes out of scope", var_name)),
+                    ..Default::default()
                 });
             }
         }
