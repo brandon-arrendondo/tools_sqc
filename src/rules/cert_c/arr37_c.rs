@@ -104,6 +104,22 @@ impl Arr37C {
                                     suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
                                     ..Default::default()
                                 });
+                            } else if analyzer.is_unknown_pointer(&pointer_name) {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: format!(
+                                        "Pointer arithmetic on pointer '{}' with unknown origin. Cannot determine if it points to an array or single object",
+                                        pointer_name
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Verify the pointer refers to an array before performing arithmetic, or document the allocation size".to_string()),
+                                    requires_manual_review: Some(true),
+                                    ..Default::default()
+                                });
                             } else if analyzer.is_non_array_pointer(&pointer_name) {
                                 let start_point = node.start_position();
                                 violations.push(RuleViolation {
@@ -164,6 +180,21 @@ impl Arr37C {
                     suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
                     ..Default::default()
                 });
+            } else if analyzer.is_unknown_pointer(&pointer_name) {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::Medium,
+                    message: format!(
+                        "Increment/decrement operation '{}' on pointer '{}' with unknown origin. Cannot determine if it points to an array or single object",
+                        op_text, pointer_name
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Verify the pointer refers to an array before performing arithmetic, or document the allocation size".to_string()),
+                    requires_manual_review: Some(true),
+                    ..Default::default()
+                });
             } else if analyzer.is_non_array_pointer(&pointer_name) {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
@@ -220,6 +251,21 @@ impl Arr37C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
+                        ..Default::default()
+                    });
+                } else if analyzer.is_unknown_pointer(&pointer_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Medium,
+                        message: format!(
+                            "Compound assignment '{}' on pointer '{}' with unknown origin. Cannot determine if it points to an array or single object",
+                            op_text, pointer_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Verify the pointer refers to an array before performing arithmetic, or document the allocation size".to_string()),
+                        requires_manual_review: Some(true),
                         ..Default::default()
                     });
                 } else if analyzer.is_non_array_pointer(&pointer_name) {
@@ -280,6 +326,21 @@ impl Arr37C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
+                        ..Default::default()
+                    });
+                } else if analyzer.is_unknown_pointer(&pointer_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Medium,
+                        message: format!(
+                            "Subscript operation '{}' on pointer '{}' with unknown origin. Cannot determine if it points to an array or single object",
+                            subscript_text, pointer_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Verify the pointer refers to an array before using subscript notation, or document the allocation size".to_string()),
+                        requires_manual_review: Some(true),
                         ..Default::default()
                     });
                 } else if analyzer.is_non_array_pointer(&pointer_name) {
@@ -521,6 +582,10 @@ impl NonArrayPointerAnalyzer {
 
     fn is_ambiguous_parameter(&self, var_name: &str) -> bool {
         matches!(self.variable_types.get(var_name), Some(VariableType::AmbiguousParameter))
+    }
+
+    fn is_unknown_pointer(&self, var_name: &str) -> bool {
+        matches!(self.variable_types.get(var_name), Some(VariableType::Unknown))
     }
 
     fn is_pointer_variable(&self, var_name: &str) -> bool {
