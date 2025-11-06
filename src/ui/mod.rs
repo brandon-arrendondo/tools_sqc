@@ -207,7 +207,7 @@ impl TerminalUI {
         let mut grouped: HashMap<String, Vec<(String, RuleConfig)>> = HashMap::new();
 
         // Group rules by category (prefix)
-        for (rule_id, config) in &manifest.rules {
+        for (rule_id, config) in &manifest.rules.cert_c {
             let category = rule_id.split('-').next().unwrap_or(rule_id).to_string();
             grouped.entry(category).or_insert_with(Vec::new).push((rule_id.clone(), config.clone()));
         }
@@ -253,7 +253,7 @@ impl TerminalUI {
         let mut groups = HashMap::new();
 
         // Initialize all groups as collapsed
-        for rule_id in manifest.rules.keys() {
+        for rule_id in manifest.rules.cert_c.keys() {
             let category = rule_id.split('-').next().unwrap_or(rule_id).to_string();
             groups.entry(category).or_insert(false);
         }
@@ -1155,7 +1155,7 @@ impl TerminalUI {
         // Header
         let header = Paragraph::new(vec![
             Line::from("CERT C Rules Configuration"),
-            Line::from(format!("Total Rules: {} | Tab: Configuration", self.manifest.rules.len())),
+            Line::from(format!("Total Rules: {} | Tab: Configuration", self.manifest.rules.cert_c.len())),
         ])
         .style(Style::default().fg(Color::White))
         .alignment(Alignment::Center)
@@ -1432,7 +1432,7 @@ impl TerminalUI {
                         if config_item.rule_id == item.rule_id {
                             config_item.config.enabled = !config_item.config.enabled;
                             // Also update the manifest in memory
-                            if let Some(manifest_config) = self.manifest.rules.get_mut(&item.rule_id) {
+                            if let Some(manifest_config) = self.manifest.get_rule_mut(&item.rule_id) {
                                 manifest_config.enabled = config_item.config.enabled;
                             }
                             break;

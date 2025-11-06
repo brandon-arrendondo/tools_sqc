@@ -6,7 +6,12 @@ use anyhow::{Context, Result};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RuleManifest {
     pub metadata: ManifestMetadata,
-    pub rules: HashMap<String, RuleConfig>,
+    pub rules: RuleNamespaces,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RuleNamespaces {
+    pub cert_c: HashMap<String, RuleConfig>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -53,20 +58,24 @@ impl RuleManifest {
     }
 
     pub fn enabled_rules(&self) -> impl Iterator<Item = (&String, &RuleConfig)> {
-        self.rules.iter().filter(|(_, config)| config.enabled)
+        self.rules.cert_c.iter().filter(|(_, config)| config.enabled)
     }
 
     pub fn get_rule(&self, rule_id: &str) -> Option<&RuleConfig> {
-        self.rules.get(rule_id)
+        self.rules.cert_c.get(rule_id)
+    }
+
+    pub fn get_rule_mut(&mut self, rule_id: &str) -> Option<&mut RuleConfig> {
+        self.rules.cert_c.get_mut(rule_id)
     }
 }
 
 impl Default for RuleManifest {
     fn default() -> Self {
-        let mut rules = HashMap::new();
+        let mut cert_c_rules = HashMap::new();
 
         // Example CERT C rules
-        rules.insert("ARR30-C".to_string(), RuleConfig {
+        cert_c_rules.insert("ARR30-C".to_string(), RuleConfig {
             enabled: true,
             severity: Severity::High,
             description: "Do not form or use out-of-bounds pointers or array subscripts".to_string(),
@@ -75,7 +84,7 @@ impl Default for RuleManifest {
             parameters: None,
         });
 
-        rules.insert("STR31-C".to_string(), RuleConfig {
+        cert_c_rules.insert("STR31-C".to_string(), RuleConfig {
             enabled: true,
             severity: Severity::Medium,
             description: "Guarantee that storage for strings has sufficient space for character data and the null terminator".to_string(),
@@ -91,7 +100,9 @@ impl Default for RuleManifest {
                 description: Some("Default set of CERT C rules and recommendations".to_string()),
                 cert_version: "2016".to_string(),
             },
-            rules,
+            rules: RuleNamespaces {
+                cert_c: cert_c_rules,
+            },
         }
     }
 }
