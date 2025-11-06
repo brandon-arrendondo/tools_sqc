@@ -72,23 +72,9 @@ impl Arr37C {
                         if self.is_pointer_arithmetic(&left, &right, source, analyzer) {
                             let pointer_name = self.get_pointer_name(&left, source);
 
-                            // Check for ambiguous parameters first
+                            // Skip ambiguous parameters (function parameters) - can't determine statically
                             if analyzer.is_ambiguous_parameter(&pointer_name) {
-                                let start_point = node.start_position();
-                                violations.push(RuleViolation {
-                                    rule_id: self.rule_id().to_string(),
-                                    severity: Severity::Medium,
-                                    message: format!(
-                                        "Pointer arithmetic on ambiguous parameter '{}'. Cannot determine if it points to an array or single object",
-                                        pointer_name
-                                    ),
-                                    file_path: String::new(),
-                                    line: start_point.row + 1,
-                                    column: start_point.column + 1,
-                                    suggestion: Some("Document whether parameter is array or single object, or use explicit array syntax".to_string()),
-                                    requires_manual_review: Some(true),
-                                    ..Default::default()
-                                });
+                                // Don't flag parameters - they could be arrays or single objects
                             } else if analyzer.is_struct_member_pointer(&pointer_name) {
                                 let start_point = node.start_position();
                                 violations.push(RuleViolation {
@@ -150,22 +136,9 @@ impl Arr37C {
             let start_point = node.start_position();
             let op_text = &source[node.start_byte()..node.end_byte()];
 
-            // Check for ambiguous parameters first
+            // Skip ambiguous parameters (function parameters) - can't determine statically
             if analyzer.is_ambiguous_parameter(&pointer_name) {
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: Severity::Medium,
-                    message: format!(
-                        "Increment/decrement operation '{}' on ambiguous parameter '{}'. Cannot determine if it points to an array or single object",
-                        op_text, pointer_name
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some("Document whether parameter is array or single object, or use explicit array syntax".to_string()),
-                    requires_manual_review: Some(true),
-                    ..Default::default()
-                });
+                // Don't flag parameters - they could be arrays or single objects
             } else if analyzer.is_struct_member_pointer(&pointer_name) {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
@@ -223,22 +196,9 @@ impl Arr37C {
                 let start_point = node.start_position();
                 let op_text = &source[node.start_byte()..node.end_byte()];
 
-                // Check for ambiguous parameters first
+                // Skip ambiguous parameters (function parameters) - can't determine statically
                 if analyzer.is_ambiguous_parameter(&pointer_name) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::Medium,
-                        message: format!(
-                            "Compound assignment '{}' on ambiguous parameter '{}'. Cannot determine if it points to an array or single object",
-                            op_text, pointer_name
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Document whether parameter is array or single object, or use explicit array syntax".to_string()),
-                        requires_manual_review: Some(true),
-                        ..Default::default()
-                    });
+                    // Don't flag parameters - they could be arrays or single objects
                 } else if analyzer.is_struct_member_pointer(&pointer_name) {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -298,22 +258,9 @@ impl Arr37C {
                 let start_point = node.start_position();
                 let subscript_text = &source[node.start_byte()..node.end_byte()];
 
-                // Check for ambiguous parameters first
+                // Skip ambiguous parameters (function parameters) - can't determine statically
                 if analyzer.is_ambiguous_parameter(&pointer_name) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::Medium,
-                        message: format!(
-                            "Subscript operation '{}' on ambiguous parameter '{}'. Cannot determine if it points to an array or single object",
-                            subscript_text, pointer_name
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Document whether parameter is array or single object, or use explicit pointer dereference".to_string()),
-                        requires_manual_review: Some(true),
-                        ..Default::default()
-                    });
+                    // Don't flag parameters - they could be arrays or single objects
                 } else if analyzer.is_struct_member_pointer(&pointer_name) {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -396,7 +343,8 @@ impl Arr37C {
         let right_text = &source[right.start_byte()..right.end_byte()];
 
         // Check if left is a pointer and right is an integer
-        let left_is_pointer = analyzer.is_pointer_variable(left_text) || left.kind() == "identifier";
+        // Only consider it pointer arithmetic if the left side is actually a known pointer variable
+        let left_is_pointer = left.kind() == "identifier" && analyzer.is_pointer_variable(left_text);
         let right_is_integer = right_text.chars().all(|c| c.is_ascii_digit()) || right.kind() == "number_literal";
 
         left_is_pointer && right_is_integer
@@ -463,22 +411,25 @@ impl NonArrayPointerAnalyzer {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
                         let var_name = ast_utils::get_identifier_from_declarator(&declarator, source);
 
-                        // Determine if this is an array declaration
+                        // Determine if this is an array or pointer declaration
+                        // Only track arrays and pointers - skip non-pointer variables entirely
                         let var_type = if declarator.kind() == "array_declarator" {
-                            VariableType::Array
+                            Some(VariableType::Array)
                         } else if declarator.kind() == "pointer_declarator" {
                             // Check if initialized with array reference
                             if let Some(value) = child.child_by_field_name("value") {
-                                self.analyze_initializer_type(&value, source)
+                                Some(self.analyze_initializer_type(&value, source))
                             } else {
-                                VariableType::Unknown
+                                Some(VariableType::Unknown)
                             }
                         } else {
-                            VariableType::NonArray
+                            None  // Not a pointer or array, skip it
                         };
 
                         if !var_name.is_empty() {
-                            self.variable_types.insert(var_name, var_type);
+                            if let Some(var_type) = var_type {
+                                self.variable_types.insert(var_name, var_type);
+                            }
                         }
                     }
                 }
