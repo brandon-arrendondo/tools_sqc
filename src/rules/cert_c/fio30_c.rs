@@ -21,7 +21,7 @@
 
 use super::ast_utils;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::HashSet;
 
@@ -34,6 +34,18 @@ impl CertRule for Fio30C {
 
     fn description(&self) -> &'static str {
         "Exclude user input from format strings"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "FIO30-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

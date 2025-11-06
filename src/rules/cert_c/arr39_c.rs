@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 
 pub struct Arr39C;
@@ -11,6 +11,18 @@ impl CertRule for Arr39C {
 
     fn description(&self) -> &'static str {
         "Do not add or subtract a scaled integer to a pointer"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "ARR39-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

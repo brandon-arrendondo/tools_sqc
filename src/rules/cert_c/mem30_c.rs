@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::{HashMap, HashSet};
 
@@ -12,6 +12,18 @@ impl CertRule for Mem30C {
 
     fn description(&self) -> &'static str {
         "Do not access freed memory"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Critical
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "MEM30-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

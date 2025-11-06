@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::HashMap;
 
@@ -909,6 +909,18 @@ impl CertRule for Str31C {
 
     fn description(&self) -> &'static str {
         "Guarantee that storage for strings has sufficient space for character data and the null terminator"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "STR31-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

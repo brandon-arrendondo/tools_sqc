@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 
 pub struct Pre30C;
@@ -11,6 +11,18 @@ impl CertRule for Pre30C {
 
     fn description(&self) -> &'static str {
         "Do not create a universal character name through concatenation"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "PRE30-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

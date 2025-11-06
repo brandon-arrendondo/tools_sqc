@@ -13,7 +13,7 @@
 //! Note: Other unsafe functions (strcpy, etc.) are better checked by ARR38-C
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 
 pub struct Arr00C;
@@ -24,7 +24,19 @@ impl CertRule for Arr00C {
     }
 
     fn description(&self) -> &'static str {
-        "Understand how arrays work"
+        "Understand how arrays are used"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Recommendation
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "ARR00-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

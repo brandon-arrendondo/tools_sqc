@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 
 pub struct Int30C;
@@ -11,6 +11,18 @@ impl CertRule for Int30C {
 
     fn description(&self) -> &'static str {
         "Ensure that unsigned integer operations do not wrap"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "INT30-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

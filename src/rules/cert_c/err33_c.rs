@@ -22,7 +22,7 @@
 //! statements after assignment, with sophisticated context detection to minimize false positives.
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::HashMap;
 
@@ -35,6 +35,18 @@ impl CertRule for Err33C {
 
     fn description(&self) -> &'static str {
         "Detect and handle standard library errors"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "ERR33-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

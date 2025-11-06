@@ -1,6 +1,6 @@
 use super::ast_utils;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 
 pub struct Dcl00C;
@@ -12,6 +12,18 @@ impl CertRule for Dcl00C {
 
     fn description(&self) -> &'static str {
         "Const-qualify immutable objects"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Recommendation
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "DCL00-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

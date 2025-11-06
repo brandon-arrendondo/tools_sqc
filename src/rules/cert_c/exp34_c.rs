@@ -1,6 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use super::ast_utils;
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::HashSet;
 
@@ -13,6 +13,18 @@ impl CertRule for Exp34C {
 
     fn description(&self) -> &'static str {
         "Do not dereference null pointers"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "EXP34-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

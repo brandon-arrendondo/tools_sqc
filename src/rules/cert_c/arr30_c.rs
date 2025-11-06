@@ -39,7 +39,7 @@
 //! This is a complex architectural change that may be added in future versions.
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::HashMap;
 
@@ -96,6 +96,41 @@ struct FunctionMacro {
     params: Vec<String>,
     body: String,
     line: usize,
+}
+
+impl CertRule for Arr30C {
+    fn rule_id(&self) -> &'static str {
+        "ARR30-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Do not form or use out-of-bounds pointers or array subscripts"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "ARR30-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        // Analyze all buffer allocations once at root level
+        if node.parent().is_none() {
+            let buffer_info = self.analyze_buffer_allocations(source);
+            let pointer_aliases = self.analyze_pointer_aliases(source, &buffer_info);
+            let function_macros = self.extract_function_macros(node, source);
+            self.check_with_buffer_info(node, source, &buffer_info, &pointer_aliases, &function_macros)
+        } else {
+            // This shouldn't happen as we control recursion, but handle gracefully
+            Vec::new()
+        }
+    }
 }
 
 impl Arr30C {
@@ -1685,28 +1720,6 @@ impl Arr30C {
 
 }
 
-impl CertRule for Arr30C {
-    fn rule_id(&self) -> &'static str {
-        "ARR30-C"
-    }
-
-    fn description(&self) -> &'static str {
-        "Do not form or use out-of-bounds pointers or array subscripts"
-    }
-
-    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
-        // Analyze all buffer allocations once at root level
-        if node.parent().is_none() {
-            let buffer_info = self.analyze_buffer_allocations(source);
-            let pointer_aliases = self.analyze_pointer_aliases(source, &buffer_info);
-            let function_macros = self.extract_function_macros(node, source);
-            self.check_with_buffer_info(node, source, &buffer_info, &pointer_aliases, &function_macros)
-        } else {
-            // This shouldn't happen as we control recursion, but handle gracefully
-            Vec::new()
-        }
-    }
-}
 
 impl Arr30C {
     /// Internal recursive check function that carries buffer_info through the tree

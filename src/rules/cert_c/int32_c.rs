@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 
 pub struct Int32C;
@@ -11,6 +11,18 @@ impl CertRule for Int32C {
 
     fn description(&self) -> &'static str {
         "Ensure that operations on signed integers do not result in overflow"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "INT32-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

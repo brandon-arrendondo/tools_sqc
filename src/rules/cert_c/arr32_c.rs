@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 
 pub struct Arr32C;
@@ -11,6 +11,18 @@ impl CertRule for Arr32C {
 
     fn description(&self) -> &'static str {
         "Ensure size arguments for variable length arrays are in a valid range"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "ARR32-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

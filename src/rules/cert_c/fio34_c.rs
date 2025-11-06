@@ -18,7 +18,7 @@
 //! - while ((c = getc()) != EOF) where c is int
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 
 pub struct Fio34C;
@@ -36,6 +36,18 @@ impl CertRule for Fio34C {
 
     fn description(&self) -> &'static str {
         "Distinguish between characters read from a file and EOF or WEOF"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "FIO34-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

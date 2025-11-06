@@ -1,6 +1,6 @@
 use super::ast_utils;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::HashMap;
 
@@ -13,6 +13,18 @@ impl CertRule for Arr37C {
 
     fn description(&self) -> &'static str {
         "Do not add or subtract an integer to a pointer to a non-array object"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "ARR37-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

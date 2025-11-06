@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::{HashMap, HashSet};
 
@@ -95,6 +95,18 @@ impl CertRule for Mem33C {
 
     fn description(&self) -> &'static str {
         "Allocate and copy structures containing a flexible array member dynamically"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "MEM33-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

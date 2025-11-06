@@ -5,6 +5,9 @@ use tree_sitter::Node;
 pub trait CertRule {
     fn rule_id(&self) -> &'static str;
     fn description(&self) -> &'static str;
+    fn severity(&self) -> crate::manifest::Severity;
+    fn category(&self) -> crate::manifest::RuleCategory;
+    fn cert_id(&self) -> &'static str;
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation>;
 }
 

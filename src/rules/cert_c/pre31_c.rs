@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::Severity;
+use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::HashSet;
 
@@ -12,6 +12,18 @@ impl CertRule for Pre31C {
 
     fn description(&self) -> &'static str {
         "Avoid side effects in arguments to unsafe macros"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "PRE31-C"
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
