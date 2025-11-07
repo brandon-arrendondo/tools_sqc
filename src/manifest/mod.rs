@@ -25,10 +25,10 @@ pub struct ManifestMetadata {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RuleConfig {
     pub enabled: bool,
-    pub severity: Severity,
-    pub description: String,
-    pub category: RuleCategory,
-    pub cert_id: String,
+    pub severity: Option<Severity>,  // Optional: falls back to rule's default severity if not specified
+    pub description: Option<String>,  // Optional: falls back to rule's default description if not specified
+    pub category: Option<RuleCategory>,  // Optional: falls back to rule's default category if not specified
+    pub cert_id: Option<String>,  // Optional: falls back to rule's default cert_id if not specified
     pub parameters: Option<HashMap<String, String>>,
 }
 
@@ -74,22 +74,22 @@ impl Default for RuleManifest {
     fn default() -> Self {
         let mut cert_c_rules = HashMap::new();
 
-        // Example CERT C rules
+        // Example CERT C rules - only enabled flag is set, other fields come from rule implementation
         cert_c_rules.insert("ARR30-C".to_string(), RuleConfig {
             enabled: true,
-            severity: Severity::High,
-            description: "Do not form or use out-of-bounds pointers or array subscripts".to_string(),
-            category: RuleCategory::Rule,
-            cert_id: "ARR30-C".to_string(),
+            severity: None,  // Use rule's default severity
+            description: None,  // Use rule's default description
+            category: None,  // Use rule's default category
+            cert_id: None,  // Use rule's default cert_id
             parameters: None,
         });
 
         cert_c_rules.insert("STR31-C".to_string(), RuleConfig {
             enabled: true,
-            severity: Severity::Medium,
-            description: "Guarantee that storage for strings has sufficient space for character data and the null terminator".to_string(),
-            category: RuleCategory::Rule,
-            cert_id: "STR31-C".to_string(),
+            severity: None,  // Use rule's default severity
+            description: None,  // Use rule's default description
+            category: None,  // Use rule's default category
+            cert_id: None,  // Use rule's default cert_id
             parameters: None,
         });
 
