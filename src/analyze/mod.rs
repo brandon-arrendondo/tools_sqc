@@ -70,7 +70,9 @@ pub fn analyze_project(
 
                     for violation in &mut file_violations {
                         violation.file_path = file_path.clone();
-                        violation.severity = rule_config.severity.clone();
+                        // Use config severity if specified, otherwise use rule's default severity
+                        violation.severity = rule_config.severity.clone()
+                            .unwrap_or_else(|| rule.severity());
                     }
                     violations.extend(file_violations);
                 }
