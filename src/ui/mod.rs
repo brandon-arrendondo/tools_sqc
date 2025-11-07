@@ -4,7 +4,7 @@ use anyhow::{Context, Result};
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseEventKind},
     execute,
-    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+    terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen, SetTitle},
     tty::IsTty,
 };
 use ratatui::{
@@ -222,10 +222,10 @@ impl TerminalUI {
                 rule_id: category.clone(),
                 config: RuleConfig {
                     enabled: true,
-                    severity: Severity::Medium,
-                    description: format!("{} Rules", category),
-                    category: RuleCategory::Rule,
-                    cert_id: String::new(),
+                    severity: None,  // Categories don't have severity
+                    description: Some(format!("{} Rules", category)),
+                    category: Some(RuleCategory::Rule),
+                    cert_id: None,
                     parameters: None,
                 },
                 level: 0,
@@ -288,7 +288,7 @@ impl TerminalUI {
 
         enable_raw_mode().context("Failed to enable raw mode - ensure you're running in a proper terminal")?;
         let mut stdout = io::stdout();
-        execute!(stdout, EnterAlternateScreen, EnableMouseCapture)
+        execute!(stdout, SetTitle("sqc - Software Code Quality"), EnterAlternateScreen, EnableMouseCapture)
             .context("Failed to setup terminal - ensure you're running in a proper terminal")?;
         let backend = CrosstermBackend::new(stdout);
         let mut terminal = Terminal::new(backend)
@@ -1049,7 +1049,15 @@ impl TerminalUI {
             ]),
         ])
         .style(Style::default().fg(Color::White))
-        .block(Block::default().borders(Borders::ALL).title("SqC - Software Code Quality"));
+        .block(Block::default().borders(Borders::ALL).title(
+            ratatui::text::Line::from(vec![
+                Span::styled("✓", Style::default().fg(Color::Green)),
+                Span::styled("{", Style::default().fg(Color::Cyan)),
+                Span::raw("SQC"),
+                Span::styled("}", Style::default().fg(Color::Cyan)),
+                Span::raw(" - Software Code Quality"),
+            ])
+        ));
 
         let footer_index = if self.show_file_preview { 2 } else { 1 };
         f.render_widget(footer, chunks[footer_index]);
@@ -1152,14 +1160,21 @@ impl TerminalUI {
             ])
             .split(f.area());
 
-        // Header
+        // Header with icon
         let header = Paragraph::new(vec![
-            Line::from("CERT C Rules Configuration"),
+            Line::from(vec![
+                Span::styled("✓", Style::default().fg(Color::Green).add_modifier(Modifier::BOLD)),
+                Span::raw(" "),
+                Span::styled("{", Style::default().fg(Color::Cyan)),
+                Span::styled("SQC", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+                Span::styled("}", Style::default().fg(Color::Cyan)),
+            ]),
+            Line::from("Software Code Quality"),
             Line::from(format!("Total Rules: {} | Tab: Configuration", self.manifest.rules.cert_c.len())),
         ])
         .style(Style::default().fg(Color::White))
         .alignment(Alignment::Center)
-        .block(Block::default().borders(Borders::ALL).title("CERT C Compliance Checker"));
+        .block(Block::default().borders(Borders::ALL));
 
         f.render_widget(header, chunks[0]);
 
@@ -1179,19 +1194,32 @@ impl TerminalUI {
                 } else {
                     let checkbox = if item.config.enabled { "[✓] " } else { "[ ] " };
                     let indent = "  ".repeat(item.level);
-                    let severity_color = match item.config.severity {
+
+                    // Get severity from config if specified, otherwise from rule default
+                    let severity = item.config.severity.clone()
+                        .or_else(|| self.registry.get_rule(&item.rule_id).map(|r| r.severity()))
+                        .unwrap_or(Severity::Medium);
+
+                    let severity_color = match severity {
                         Severity::Critical => Color::Red,
                         Severity::High => Color::LightRed,
                         Severity::Medium => Color::Yellow,
                         Severity::Low => Color::Blue,
                     };
 
+                    // Get description from config if specified, otherwise from rule default
+                    let description = item.config.description.as_ref()
+                        .map(|s| s.as_str())
+                        .or_else(|| self.registry.get_rule(&item.rule_id).map(|r| r.description()))
+                        .unwrap_or("No description")
+                        .to_string();
+
                     ListItem::new(vec![Line::from(vec![
                         Span::raw(indent),
                         Span::styled(checkbox, Style::default().fg(Color::Green)),
                         Span::styled(&item.rule_id, Style::default().fg(severity_color)),
                         Span::raw(" - "),
-                        Span::styled(&item.config.description, Style::default().fg(Color::Gray)),
+                        Span::styled(description, Style::default().fg(Color::Gray)),
                     ])])
                 }
             })
@@ -1986,7 +2014,9 @@ impl TerminalUI {
                         let mut file_violations = rule.check(&root_node, &source);
                         for violation in &mut file_violations {
                             violation.file_path = file_path.clone();
-                            violation.severity = rule_config.severity.clone();
+                            // Use config severity if specified, otherwise use rule's default severity
+                            violation.severity = rule_config.severity.clone()
+                                .unwrap_or_else(|| rule.severity());
                         }
 
                         // Separate suppressed and active violations
