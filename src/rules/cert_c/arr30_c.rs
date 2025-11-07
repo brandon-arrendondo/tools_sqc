@@ -43,6 +43,15 @@ use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
 use std::collections::HashMap;
 
+// Import shared utility functions
+use super::ast_utils::{
+    find_containing_function,
+    find_identifier_in_declarator,
+    is_function_parameter,
+    find_containing_for_loop,
+    find_containing_if_statement,
+};
+
 pub struct Arr30C;
 
 /// Information about a buffer (array or dynamically allocated memory)
@@ -812,7 +821,7 @@ impl Arr30C {
     fn try_resolve_variable_to_constant(&self, var_name: &str, current_node: &Node, source: &str) -> Option<isize> {
         // Check if this variable is a loop counter - if so, don't resolve to constant
         // Loop counters change value during execution
-        if let Some(for_node) = self.find_containing_for_loop(current_node) {
+        if let Some(for_node) = find_containing_for_loop(current_node) {
             if let Some(loop_var) = self.extract_loop_index_variable(&for_node, source) {
                 if loop_var == var_name {
                     // This is a loop counter - don't resolve to its initial value
@@ -822,7 +831,7 @@ impl Arr30C {
         }
 
         // Find enclosing function
-        let func_node = self.find_enclosing_function(current_node)?;
+        let func_node = find_containing_function(current_node)?;
 
         // Search for assignments to var_name within this function
         // Look for pattern: var_name = constant_literal
@@ -841,46 +850,9 @@ impl Arr30C {
         None
     }
 
-    /// Find the enclosing function definition for a given node
-    fn find_enclosing_function<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
-        let mut current = node.parent();
-        while let Some(n) = current {
-            if n.kind() == "function_definition" {
-                return Some(n);
-            }
-            current = n.parent();
-        }
-        None
-    }
+    // Removed: find_enclosing_function - now using ast_utils::find_containing_function
 
-    /// Check if a variable is a function parameter
-    fn is_function_parameter(&self, subscript_node: &Node, index_text: &str, source: &str) -> bool {
-        // Find enclosing function
-        if let Some(func_node) = self.find_enclosing_function(subscript_node) {
-            // Find parameter_list
-            for i in 0..func_node.child_count() {
-                if let Some(child) = func_node.child(i) {
-                    if child.kind() == "function_declarator" {
-                        // Look for parameter_list within function_declarator
-                        for j in 0..child.child_count() {
-                            if let Some(param_list) = child.child(j) {
-                                if param_list.kind() == "parameter_list" {
-                                    // Check if the index variable appears in parameter list
-                                    let param_text = &source[param_list.start_byte()..param_list.end_byte()];
-                                    // Match parameter name (handle both "type name" and "type name[]")
-                                    let param_pattern = format!(r"\b{}\b", regex::escape(index_text));
-                                    if let Ok(re) = regex::Regex::new(&param_pattern) {
-                                        return re.is_match(param_text);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        false
-    }
+    // Removed: is_function_parameter - now using ast_utils::is_function_parameter with find_containing_function
 
     /// Check if function has ANY bounds validation for a parameter
     fn has_function_parameter_bounds_check(&self, func_node: &Node, param_name: &str, source: &str) -> bool {
@@ -912,7 +884,7 @@ impl Arr30C {
     /// Check if array access is within a recursive function
     fn is_recursive_array_access(&self, subscript_node: &Node, source: &str) -> bool {
         // Find enclosing function
-        if let Some(func_node) = self.find_enclosing_function(subscript_node) {
+        if let Some(func_node) = find_containing_function(subscript_node) {
             // Get function name
             for i in 0..func_node.child_count() {
                 if let Some(child) = func_node.child(i) {
@@ -947,7 +919,7 @@ impl Arr30C {
             return false;
         }
 
-        if let Some(func_node) = self.find_enclosing_function(subscript_node) {
+        if let Some(func_node) = find_containing_function(subscript_node) {
             let func_text = &source[func_node.start_byte()..func_node.end_byte()];
 
             // Get function name for recursive call pattern
@@ -1005,14 +977,14 @@ impl Arr30C {
     /// Enhanced bounds check that considers actual buffer size
     fn has_proper_bounds_check(&self, node: &Node, source: &str, buffer_size: usize) -> bool {
         // Check loop-based bounds checking
-        if let Some(for_node) = self.find_containing_for_loop(node) {
+        if let Some(for_node) = find_containing_for_loop(node) {
             if self.check_for_loop_bounds_against_size(&for_node, source, buffer_size) {
                 return true;
             }
         }
 
         // Check conditional bounds checking
-        if let Some(if_node) = self.find_containing_if_statement(node) {
+        if let Some(if_node) = find_containing_if_statement(node) {
             if self.check_if_bounds_against_size(&if_node, source, buffer_size) {
                 return true;
             }
@@ -1024,7 +996,7 @@ impl Arr30C {
     /// Check if there's any form of dynamic bounds checking
     fn has_dynamic_bounds_check(&self, node: &Node, source: &str) -> bool {
         // Check for loop-based bounds checking
-        if let Some(for_node) = self.find_containing_for_loop(node) {
+        if let Some(for_node) = find_containing_for_loop(node) {
             // Use empty string for index to do generic check
             if self.check_for_loop_bounds_generic(&for_node, source) {
                 return true;
@@ -1032,14 +1004,14 @@ impl Arr30C {
         }
 
         // Check for conditional bounds checking
-        if let Some(if_node) = self.find_containing_if_statement(node) {
+        if let Some(if_node) = find_containing_if_statement(node) {
             if self.check_if_bounds_generic(&if_node, source) {
                 return true;
             }
         }
 
         // Check for function-level bounds checking (parameter validation)
-        if let Some(func_node) = self.find_enclosing_function(node) {
+        if let Some(func_node) = find_containing_function(node) {
             let function_text = &source[func_node.start_byte()..func_node.end_byte()];
             if function_text.contains("size") || function_text.contains("length") || function_text.contains("count") {
                 return true;
@@ -1050,28 +1022,8 @@ impl Arr30C {
     }
 
     /// Find containing for loop
-    fn find_containing_for_loop<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
-        let mut current = node.parent();
-        while let Some(n) = current {
-            if n.kind() == "for_statement" {
-                return Some(n);
-            }
-            current = n.parent();
-        }
-        None
-    }
-
-    /// Find containing if statement
-    fn find_containing_if_statement<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
-        let mut current = node.parent();
-        while let Some(n) = current {
-            if n.kind() == "if_statement" {
-                return Some(n);
-            }
-            current = n.parent();
-        }
-        None
-    }
+    // Removed: find_containing_for_loop - now using ast_utils::find_containing_for_loop
+    // Removed: find_containing_if_statement - now using ast_utils::find_containing_if_statement
 
     /// Check for loop bounds against specific buffer size
     fn check_for_loop_bounds_against_size(&self, for_node: &Node, source: &str, size: usize) -> bool {
@@ -1423,8 +1375,8 @@ impl Arr30C {
                 // Check for function parameter violations FIRST, even if buffer not tracked
                 // This handles cases like: void func(int arr[], int index) { arr[index]; }
                 if let IndexValue::Variable(ref var) = index {
-                    if self.is_function_parameter(node, var, source) {
-                        if let Some(func_node) = self.find_enclosing_function(node) {
+                    if let Some(func_node) = find_containing_function(node) {
+                        if is_function_parameter(&func_node, var, source) {
                             if !self.has_function_parameter_bounds_check(&func_node, var, source) {
                                 // Create a violation for unvalidated function parameter
                                 let start_point = node.start_position();
@@ -1485,15 +1437,14 @@ impl Arr30C {
                                     // First, check for recursive function with index modification
                                     if self.has_recursive_index_modification(node, var, source, effective_size) {
                                         true
-                                    } else if self.is_function_parameter(node, var, source) {
+                                    } else if let Some(func_node) = find_containing_function(node) {
                                         // Function parameters used as indices without bounds checking are high risk
                                         // Check if the function has ANY bounds validation
-                                        if let Some(func_node) = self.find_enclosing_function(node) {
+                                        if is_function_parameter(&func_node, var, source) {
                                             // Only flag if there's NO bounds checking for this parameter
                                             !self.has_function_parameter_bounds_check(&func_node, var, source)
                                         } else {
-                                            // Can't find function, conservatively flag
-                                            true
+                                            false
                                         }
                                     } else {
                                         // Variable index - check for bounds checking
@@ -1983,7 +1934,7 @@ impl Arr30C {
                     // Handle complex declarators (function pointers, nested pointers, etc.)
                     "function_declarator" | "pointer_declarator" | "parenthesized_declarator" => {
                         if var_name.is_none() {
-                            var_name = self.extract_identifier_from_declarator(&child, source);
+                            var_name = find_identifier_in_declarator(&child, source);
                         }
                     }
                     _ => {}
@@ -2259,7 +2210,7 @@ impl Arr30C {
             for i in 1..node.child_count() {
                 if let Some(child) = node.child(i) {
                     if child.kind() == "identifier" {
-                        let ptr_name = self.extract_identifier_from_declarator(&declarator, source)?;
+                        let ptr_name = find_identifier_in_declarator(&declarator, source)?;
                         let buf_name = &source[child.start_byte()..child.end_byte()];
 
                         if buffers.contains_key(buf_name) {
@@ -2279,7 +2230,7 @@ impl Arr30C {
 
     /// Extract alias from cast expression
     fn extract_alias_from_cast(&self, declarator: &Node, cast_node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
-        let ptr_name = self.extract_identifier_from_declarator(declarator, source)?;
+        let ptr_name = find_identifier_in_declarator(declarator, source)?;
 
         // Get cast type
         let mut cast_type: Option<&str> = None;
@@ -2329,30 +2280,7 @@ impl Arr30C {
         None
     }
 
-    /// Extract identifier name from declarator
-    fn extract_identifier_from_declarator(&self, node: &Node, source: &str) -> Option<String> {
-        match node.kind() {
-            "identifier" => {
-                Some(source[node.start_byte()..node.end_byte()].to_string())
-            }
-            "pointer_declarator" | "array_declarator" | "function_declarator" | "parenthesized_declarator" => {
-                // Recursively search for identifier in complex declarators
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        if child.kind() == "identifier" {
-                            return Some(source[child.start_byte()..child.end_byte()].to_string());
-                        }
-                        // Recursively search in nested declarators
-                        if let Some(id) = self.extract_identifier_from_declarator(&child, source) {
-                            return Some(id);
-                        }
-                    }
-                }
-                None
-            }
-            _ => None,
-        }
-    }
+    // Removed: extract_identifier_from_declarator - now using ast_utils::find_identifier_in_declarator
 
     /// Check for dangerous library function calls that can cause buffer overflows
     fn check_dangerous_function_call(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {

@@ -15,6 +15,26 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
+use super::ast_utils::{
+    find_containing_function,
+    get_function_parameters,
+    find_identifier_in_declarator,
+    is_array_parameter_type,
+    is_inside_loop,
+    is_write_context,
+    is_function_parameter,
+};
+use super::variable_analysis::{
+    is_user_input_variable,
+    has_validation_before_loop,
+    is_uninitialized_variable,
+    has_bounds_validation,
+};
+use super::size_analysis::{
+    find_allocation_size,
+    find_element_size,
+    find_string_literal_length,
+};
 
 pub struct Arr00C;
 
@@ -384,29 +404,7 @@ fn check_vla_size_validation(decl_node: &Node, size_var: &str, source: &str, dec
     None
 }
 
-fn is_function_parameter(function_node: &Node, var_name: &str, source: &str) -> bool {
-    // Find parameter list in function
-    for i in 0..function_node.child_count() {
-        if let Some(child) = function_node.child(i) {
-            if child.kind() == "function_declarator" {
-                for j in 0..child.child_count() {
-                    if let Some(param_list) = child.child(j) {
-                        if param_list.kind() == "parameter_list" {
-                            let param_text = &source[param_list.start_byte()..param_list.end_byte()];
-                            // Check for word boundaries to avoid substring matches
-                            // Look for the parameter name as a complete word
-                            let words: Vec<&str> = param_text.split(|c: char| !c.is_alphanumeric() && c != '_').collect();
-                            if words.iter().any(|&word| word == var_name) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    false
-}
+// is_function_parameter() - now imported from ast_utils
 
 fn is_loop_variable(var_name: &str, preceding_text: &str) -> bool {
     // Check if the variable is defined in a for loop initialization
@@ -916,80 +914,9 @@ fn check_memory_operation_overflow(node: &Node, source: &str) -> Option<RuleViol
     None
 }
 
-fn find_element_size(var_name: &str, preceding_text: &str) -> usize {
-    // Try to determine the element type and return its size
-    // Pattern: type var_name[...]
-
-    // Common C type sizes (assuming typical 32/64-bit platforms)
-    let type_sizes = [
-        ("char", 1),
-        ("short", 2),
-        ("int", 4),
-        ("long", 8),
-        ("float", 4),
-        ("double", 8),
-        ("unsigned char", 1),
-        ("unsigned short", 2),
-        ("unsigned int", 4),
-        ("unsigned long", 8),
-        ("signed char", 1),
-        ("signed short", 2),
-        ("signed int", 4),
-        ("signed long", 8),
-    ];
-
-    let pattern = format!("{}[", var_name);
-
-    if let Some(pos) = preceding_text.rfind(&pattern) {
-        // Look backwards from the array name to find the type
-        let before_array = &preceding_text[..pos];
-
-        // Search for type keywords
-        for (type_name, size) in &type_sizes {
-            if before_array.ends_with(type_name) || before_array.ends_with(&format!("{} ", type_name)) {
-                return *size;
-            }
-        }
-    }
-
-    // Default to int (4 bytes) if we can't determine the type
-    4
-}
-
-fn find_string_literal_length(var_name: &str, node: &Node, source: &str) -> Option<usize> {
-    // Find the variable declaration and extract string literal length
-    // Pattern: char *var = "literal"; or char var[] = "literal";
-
-    let function_node = find_containing_function(node)?;
-    let function_start = function_node.start_byte();
-    let call_position = node.start_byte();
-    let preceding_text = &source[function_start..call_position];
-
-    // Look for variable initialization with string literal
-    // Simple pattern matching: var_name = "..."
-    let pattern = format!("{} =", var_name);
-    if let Some(init_pos) = preceding_text.rfind(&pattern) {
-        // Find the string literal after the =
-        let after_eq = &preceding_text[init_pos + pattern.len()..];
-
-        // Find the opening quote
-        if let Some(quote_start) = after_eq.find('"') {
-            // Find the closing quote (accounting for escaped quotes)
-            let mut i = quote_start + 1;
-            let chars: Vec<char> = after_eq.chars().collect();
-            while i < chars.len() {
-                if chars[i] == '"' && (i == 0 || chars[i-1] != '\\') {
-                    // Found closing quote
-                    let literal = &after_eq[quote_start + 1..i];
-                    return Some(literal.len());
-                }
-                i += 1;
-            }
-        }
-    }
-
-    None
-}
+// Size analysis functions - now imported from size_analysis module:
+// - find_element_size()
+// - find_string_literal_length()
 
 fn check_loop_exceeds_allocation(node: &Node, source: &str) -> Option<RuleViolation> {
     // Check for loops that exceed dynamically allocated memory size
@@ -1079,48 +1006,7 @@ fn check_loop_exceeds_allocation(node: &Node, source: &str) -> Option<RuleViolat
     None
 }
 
-fn find_allocation_size(ptr_name: &str, preceding_text: &str) -> Option<usize> {
-    // Look for the most recent malloc/realloc call for this pointer
-    // Patterns: ptr = malloc(N * sizeof(...))  or  ptr = realloc(ptr, N * sizeof(...))
-
-    // Search for realloc first (more recent), then malloc
-    let realloc_pattern = format!("{} = realloc", ptr_name);
-    let malloc_pattern = format!("{} = malloc", ptr_name);
-
-    let realloc_pos = preceding_text.rfind(&realloc_pattern);
-    let malloc_pos = preceding_text.rfind(&malloc_pattern);
-
-    // Use whichever is more recent (appears later in the text)
-    let (pattern, pos) = match (malloc_pos, realloc_pos) {
-        (Some(m), Some(r)) => if r > m { ("realloc", r) } else { ("malloc", m) },
-        (Some(m), None) => ("malloc", m),
-        (None, Some(r)) => ("realloc", r),
-        (None, None) => return None,
-    };
-
-    // Extract the allocation size from the call
-    // Look for pattern: malloc(N * sizeof(...)) or malloc(N*sizeof(...))
-    let after_call = &preceding_text[pos..];
-    if let Some(paren_start) = after_call.find('(') {
-        if let Some(paren_end) = after_call.find(')') {
-            let args = &after_call[paren_start + 1..paren_end];
-
-            // Try to extract N from "N * sizeof(...)" or "N*sizeof(...)"
-            if args.contains("sizeof") {
-                // Split by * and take the first part (should be N)
-                let parts: Vec<&str> = args.split('*').collect();
-                if let Some(size_str) = parts.first() {
-                    let size_str = size_str.trim();
-                    if let Ok(size) = size_str.parse::<usize>() {
-                        return Some(size);
-                    }
-                }
-            }
-        }
-    }
-
-    None
-}
+// find_allocation_size() - now imported from size_analysis module
 
 fn check_loop_bound_exceeds_array(node: &Node, source: &str) -> Option<RuleViolation> {
     // Check for loops where the bound allows accessing out-of-bounds indices
@@ -1361,83 +1247,10 @@ fn contains_array_access(node: &Node) -> bool {
     false
 }
 
-fn is_user_input_variable(var_name: &str, preceding_text: &str) -> bool {
-    // Check if variable was populated by scanf, fscanf, fgets, or other input functions
-    let input_patterns = [
-        format!("scanf(\"%d\", &{})", var_name),
-        format!("scanf(\"%d\",&{})", var_name),
-        format!("scanf ( \"%d\" , &{} )", var_name),
-        format!("fscanf(stdin, \"%d\", &{})", var_name),
-        format!("scanf(\"%u\", &{})", var_name),
-    ];
-
-    // Simple check: does scanf read into this variable?
-    input_patterns.iter().any(|pattern| preceding_text.contains(pattern)) ||
-    preceding_text.contains(&format!("scanf")) && preceding_text.contains(&format!("&{}", var_name))
-}
-
-fn has_validation_before_loop(var_name: &str, preceding_text: &str, loop_pos: usize, source: &str) -> bool {
-    // Check if there's validation of var_name between scanf and the loop
-    // Look for patterns like: if (count > MAX) or if (count < 0)
-
-    // Find where scanf populated the variable
-    if let Some(scanf_pos) = preceding_text.rfind("scanf") {
-        let between_scanf_and_loop = &source[scanf_pos..loop_pos];
-
-        // Look for validation patterns
-        let validation_patterns = [
-            format!("if ({} >", var_name),
-            format!("if ({} <", var_name),
-            format!("if ({} >=", var_name),
-            format!("if ({} <=", var_name),
-            format!("if (0 >{}", var_name),
-            format!("if (0 <{}", var_name),
-        ];
-
-        return validation_patterns.iter().any(|p| between_scanf_and_loop.contains(p));
-    }
-
-    false
-}
-
-fn is_uninitialized_variable(var_name: &str, preceding_text: &str) -> bool {
-    // Check if variable is declared but never initialized
-    // Look for patterns like: "int size;" without "size =" before the loop
-
-    // First, check if this is a constant (all uppercase or #define) - constants are always initialized
-    if var_name.chars().all(|c| c.is_uppercase() || c == '_' || c.is_numeric()) {
-        return false; // Likely a constant/macro
-    }
-
-    // Check if variable is declared (simple heuristic)
-    let declaration_patterns = [
-        format!("int {};", var_name),
-        format!("int {} ;", var_name),
-        format!("size_t {};", var_name),
-        format!("unsigned {}", var_name),
-        format!("long {}", var_name),
-    ];
-
-    let is_declared = declaration_patterns.iter().any(|p| preceding_text.contains(p)) ||
-                      (preceding_text.contains("int") && preceding_text.contains(var_name) &&
-                       !preceding_text.contains(&format!("{}[", var_name))); // Not an array declaration
-
-    if !is_declared {
-        return false;
-    }
-
-    // Check if it's been assigned a value
-    let assignment_patterns = [
-        format!("{} =", var_name),
-        format!("{}=", var_name),
-        format!("&{}", var_name), // scanf with &var means it's initialized by input
-    ];
-
-    let is_initialized = assignment_patterns.iter().any(|p| preceding_text.contains(p));
-
-    // Variable is uninitialized if declared but not initialized
-    !is_initialized
-}
+// Variable analysis functions - now imported from variable_analysis module:
+// - is_user_input_variable()
+// - has_validation_before_loop()
+// - is_uninitialized_variable()
 
 fn check_subscript_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
     // Check for array subscript with unvalidated index
@@ -1618,55 +1431,8 @@ fn check_uninitialized_array_read(node: &Node, source: &str) -> Option<RuleViola
     None
 }
 
-fn is_inside_loop(node: &Node) -> bool {
-    // Walk up the tree to see if we're inside a loop
-    let mut current = node.parent();
-    while let Some(parent) = current {
-        match parent.kind() {
-            "for_statement" | "while_statement" | "do_statement" => {
-                return true;
-            }
-            "function_definition" => {
-                // Reached function boundary, stop
-                return false;
-            }
-            _ => {
-                current = parent.parent();
-            }
-        }
-    }
-    false
-}
-
-fn is_write_context(node: &Node) -> bool {
-    // Check if this subscript expression is on the left side of an assignment
-    // This needs to handle nested subscripts like matrix[i][j] = value
-    // where matrix[i] is part of a write even though its parent is subscript_expression
-
-    let mut current = *node;
-
-    // Walk up the tree while we're in subscript expressions
-    loop {
-        if let Some(parent) = current.parent() {
-            if parent.kind() == "assignment_expression" {
-                // Check if current node (or its ancestor subscript) is the left side
-                if let Some(left) = parent.child_by_field_name("left") {
-                    return left.id() == current.id();
-                }
-                return false;
-            } else if parent.kind() == "subscript_expression" {
-                // Keep walking up through nested subscripts
-                current = parent;
-            } else {
-                // Hit a different node type, not a write context
-                return false;
-            }
-        } else {
-            // No parent, not a write context
-            return false;
-        }
-    }
-}
+// is_inside_loop() - now imported from ast_utils
+// is_write_context() - now imported from ast_utils
 
 fn check_use_after_free(node: &Node, source: &str) -> Option<RuleViolation> {
     // Check for array/pointer access after free()
@@ -1862,34 +1628,7 @@ fn check_constant_out_of_bounds(node: &Node, source: &str) -> Option<RuleViolati
     None
 }
 
-fn has_bounds_validation(var_name: &str, preceding_text: &str) -> bool {
-    // Look for validation patterns like:
-    // if (index < 0 || index >= size)
-    // if (index < size)
-    // if (index >= 0 && index < size)
-
-    // Simple heuristic: look for the variable in a comparison context
-    // This is not perfect but catches common validation patterns
-    let patterns = [
-        format!("{} <", var_name),
-        format!("{} <=", var_name),
-        format!("{} >", var_name),
-        format!("{} >=", var_name),
-        format!("< {}", var_name),
-        format!("<= {}", var_name),
-        format!("> {}", var_name),
-        format!(">= {}", var_name),
-    ];
-
-    // Look for if statements containing these patterns
-    for pattern in &patterns {
-        if preceding_text.contains("if") && preceding_text.contains(pattern) {
-            return true;
-        }
-    }
-
-    false
-}
+// has_bounds_validation() - now imported from variable_analysis module
 
 fn check_boundary_value_index(node: &Node, source: &str) -> Option<RuleViolation> {
     // Check for array subscript using a variable initialized to boundary values
@@ -2366,106 +2105,16 @@ fn check_array_comparison(node: &Node, source: &str) -> Option<RuleViolation> {
 // ============================================================================
 // AST Traversal Helpers
 // ============================================================================
-
-fn find_containing_function<'a>(node: &Node<'a>) -> Option<Node<'a>> {
-    let mut current = Some(*node);
-    while let Some(n) = current {
-        if n.kind() == "function_definition" {
-            return Some(n);
-        }
-        current = n.parent();
-    }
-    None
-}
-
-fn get_function_parameters(function_node: &Node, source: &str) -> Option<Vec<(String, String)>> {
-    // Find the parameter list
-    for i in 0..function_node.child_count() {
-        if let Some(child) = function_node.child(i) {
-            if child.kind() == "function_declarator" {
-                return extract_parameters(&child, source);
-            }
-        }
-    }
-    None
-}
-
-fn extract_parameters(declarator_node: &Node, source: &str) -> Option<Vec<(String, String)>> {
-    let mut parameters = Vec::new();
-
-    // Find parameter_list node
-    for i in 0..declarator_node.child_count() {
-        if let Some(child) = declarator_node.child(i) {
-            if child.kind() == "parameter_list" {
-                // Extract each parameter
-                for j in 0..child.child_count() {
-                    if let Some(param) = child.child(j) {
-                        if param.kind() == "parameter_declaration" {
-                            if let Some((name, param_type)) = extract_parameter_info(&param, source) {
-                                parameters.push((name, param_type));
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if parameters.is_empty() {
-        None
-    } else {
-        Some(parameters)
-    }
-}
-
-fn extract_parameter_info(param_node: &Node, source: &str) -> Option<(String, String)> {
-    let param_text = &source[param_node.start_byte()..param_node.end_byte()];
-
-    // Look for array declarator pattern
-    for i in 0..param_node.child_count() {
-        if let Some(child) = param_node.child(i) {
-            if child.kind() == "array_declarator" || child.kind() == "pointer_declarator" {
-                // Found array or pointer parameter
-                if let Some(identifier) = find_identifier_in_declarator(&child, source) {
-                    return Some((identifier, param_text.to_string()));
-                }
-            } else if child.kind() == "identifier" {
-                // Simple parameter
-                let name = &source[child.start_byte()..child.end_byte()];
-                return Some((name.to_string(), param_text.to_string()));
-            }
-        }
-    }
-
-    None
-}
-
-fn find_identifier_in_declarator(declarator_node: &Node, source: &str) -> Option<String> {
-    // Recursively find identifier in declarator
-    for i in 0..declarator_node.child_count() {
-        if let Some(child) = declarator_node.child(i) {
-            if child.kind() == "identifier" {
-                return Some(source[child.start_byte()..child.end_byte()].to_string());
-            } else if child.kind() == "array_declarator" || child.kind() == "pointer_declarator" {
-                if let Some(id) = find_identifier_in_declarator(&child, source) {
-                    return Some(id);
-                }
-            }
-        }
-    }
-    None
-}
-
+// Function Navigation and Parameter Extraction
+// Now imported from ast_utils:
+// - find_containing_function()
+// - get_function_parameters()
+// - find_identifier_in_declarator()
+// - is_array_parameter_type()
 // ============================================================================
+
 // Type and Node Classification Helpers
 // ============================================================================
-
-fn is_array_parameter_type(param_type: &str) -> bool {
-    // Check if parameter type indicates an array
-    // Note: This is a heuristic check without full type information
-    param_type.contains('[') ||
-    (param_type.contains("*") && !param_type.contains("const char *")) // Avoid false positives on string literals
-}
 
 fn is_array_identifier(node: &Node, source: &str) -> bool {
     // Heuristic check if identifier could be an array

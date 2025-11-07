@@ -1,5 +1,7 @@
-// Common AST utilities for all CERT C rules
+// Common utilities for all CERT C rules
 pub mod ast_utils;
+pub mod variable_analysis;
+pub mod size_analysis;
 
 pub mod arr00_c;
 pub mod arr30_c;

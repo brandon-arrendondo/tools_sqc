@@ -368,6 +368,62 @@ pub fn is_in_sizeof(node: &Node) -> bool {
     false
 }
 
+// ============================================================================
+// Control Flow Navigation Utilities
+// ============================================================================
+
+/// Find the containing for loop statement for a given node
+///
+/// # Arguments
+/// * `node` - The starting node to search from
+///
+/// # Returns
+/// The for_statement node that contains the given node, or None if not found
+///
+/// # Examples
+/// ```ignore
+/// // When checking a subscript inside a for loop
+/// if let Some(for_loop) = find_containing_for_loop(&subscript_node) {
+///     // Analyze loop bounds
+/// }
+/// ```
+pub fn find_containing_for_loop<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+    let mut current = node.parent();
+    while let Some(n) = current {
+        if n.kind() == "for_statement" {
+            return Some(n);
+        }
+        current = n.parent();
+    }
+    None
+}
+
+/// Find the containing if statement for a given node
+///
+/// # Arguments
+/// * `node` - The starting node to search from
+///
+/// # Returns
+/// The if_statement node that contains the given node, or None if not found
+///
+/// # Examples
+/// ```ignore
+/// // When checking if array access is within a bounds check
+/// if let Some(if_stmt) = find_containing_if_statement(&subscript_node) {
+///     // Check if condition validates bounds
+/// }
+/// ```
+pub fn find_containing_if_statement<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+    let mut current = node.parent();
+    while let Some(n) = current {
+        if n.kind() == "if_statement" {
+            return Some(n);
+        }
+        current = n.parent();
+    }
+    None
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
