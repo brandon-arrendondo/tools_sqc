@@ -1,0 +1,37 @@
+id: POS47-C
+type: rule
+category: POS
+number: 47
+metadata:
+  title: Do not use threads that can be canceled asynchronously
+  description: 'In threading, pthreads can optionally be set to cancel immediately
+    or defer until a specific cancellation point. Canceling asynchronously (immediately)
+    is dangerous, however, because most threads are in fact not safe to cancel immediately.
+
+
+    TheIEEE standards pagestates that
+
+
+    Canceling asynchronously would follow the same route as passing a signal into
+    the thread to kill it, posing problems similar to those inCON37-C. Do not call
+    signal() in a multithreaded program, which is strongly related toSIG02-C. Avoid
+    using signals to implement normal functionality. POS44-C and SIG02-C expand on
+    the dangers of canceling a thread suddenly, which can create adata race condition.'
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Oct 31, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/POS47-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/POS47-C.+Do+not+use+threads+that+can+be+canceled+asynchronously
+  cwe: []
+  related_rules: []
+  related_recommendations: []

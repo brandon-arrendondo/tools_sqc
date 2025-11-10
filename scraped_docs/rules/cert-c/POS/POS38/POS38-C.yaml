@@ -1,0 +1,40 @@
+id: POS38-C
+type: rule
+category: POS
+number: 38
+metadata:
+  title: Beware of race conditions when using fork and file descriptors
+  description: "When forking a child process, file descriptors are copied to the child\
+    \ process, which can result in concurrent operations on the file. Concurrent operations\
+    \ on the same file can cause data to be read or written in a nondeterministic\
+    \ order, creating race conditions and unpredictable behavior.\n\nIn this example,\
+    \ the programmer wishes to open a file, read a character, fork, and then have\
+    \ both parent and child process read the second character of the file independently.\
+    \ However, because both processes share a file descriptor, one process might get\
+    \ the second character, and one might get the third. Furthermore, there is no\
+    \ guarantee the reads are atomic—the processes might get unpredictable results. Regardless\
+    \ of what the programmer is trying to accomplish with this code, this code is\
+    \ incorrect because it contains a race condition.\n\nchar c;\npid_t pid;\n\nint\
+    \ fd = open(filename, O_RDWR);\nif (fd == -1) {\n  /* Handle error */\n}\nread(fd,\
+    \ &c, 1);\nprintf(\"root process:%c\\n\",c);\n\npid = fork();\nif (pid == -1)\
+    \ {\n  /* Handle error */\n}\n\nif (pid == 0) { /*child*/\n  read(fd, &c, 1);\n\
+    \  printf(\"child:%c\\n\",c);\n}\nelse { /*parent*/\n  read(fd, &c, 1);\n  printf(\"\
+    parent:%c\\n\",c);\n}"
+  severity: Medium
+  likelihood: Unlikely
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 05, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/POS38-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/POS38-C.+Beware+of+race+conditions+when+using+fork+and+file+descriptors
+  cwe: []
+  related_rules: []
+  related_recommendations: []

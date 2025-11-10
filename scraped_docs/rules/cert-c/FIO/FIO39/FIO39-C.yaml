@@ -1,0 +1,38 @@
+id: FIO39-C
+type: recommendation
+category: FIO
+number: 39
+metadata:
+  title: Do not alternately input and output from a stream without an intervening
+    flush or positioning call
+  description: 'The C Standard, 7.23.5.3, paragraph 7 [ISO/IEC 9899:2024], places
+    the following restrictions on update streams:
+
+
+    The following scenarios can result inundefined behavior. (Seeundefined behavior
+    156.)
+
+
+    Consequently, a call tofseek(),fflush(), orfsetpos()is necessary between input
+    and output to the same stream. SeeERR07-C. Prefer functions that support error
+    checking over equivalent functions that don''tfor more information on whyfseek()is
+    preferred overrewind().'
+  severity: Low
+  likelihood: Likely
+  priority: P6
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Aug 06, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/FIO39-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/FIO39-C.+Do+not+alternately+input+and+output+from+a+stream+without+an+intervening+flush+or+positioning+call
+  cwe:
+  - CWE-664
+  related_rules: []
+  related_recommendations: []

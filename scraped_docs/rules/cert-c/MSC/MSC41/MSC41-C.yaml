@@ -1,0 +1,43 @@
+id: MSC41-C
+type: rule
+category: MSC
+number: 41
+metadata:
+  title: Never hard code sensitive information
+  description: 'Hard coding sensitive information, such as passwords or encryption
+    keys can expose the information to attackers. Anyone who has access to the executable
+    or dynamic library files can examine them for strings or other critical data,
+    revealing the sensitive information. Leaking data protected byInternational Traffic
+    in Arms Regulations(ITAR) or theHealth Insurance Portability and Accountability
+    Act (HIPAA) can also have legal consequences. Consequently, programs must not
+    hard code sensitive information.
+
+
+    Hard coding sensitive information also increases the need to manage and accommodate
+    changes to the code. For example, changing a hard-coded password in a deployed
+    program may require distribution of a patch[Chess 2007].
+
+
+    This noncompliant code example must authenticate to a remote service with a code,
+    using theauthenticate()function declared below. It passes the authentication code
+    to this function as a string literal.'
+  severity: High
+  likelihood: Probable
+  priority: P6
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Oct 31, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/MSC41-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/MSC41-C.+Never+hard+code+sensitive+information
+  cwe:
+  - CWE-259
+  - CWE-798
+  related_rules: []
+  related_recommendations: []

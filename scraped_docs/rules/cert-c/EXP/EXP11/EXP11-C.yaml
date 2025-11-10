@@ -1,0 +1,42 @@
+id: EXP11-C
+type: recommendation
+category: EXP
+number: 11
+metadata:
+  title: Do not make assumptions regarding the layout of structures with bit-fields
+  description: 'The internal representations of bit-field structures have several
+    properties (such as internal padding) that areimplementation-defined. Additionally,
+    bit-field structures have several implementation-defined constraints:
+
+
+    Consequently, it is impossible to write portable safe code that makes assumptions
+    regarding the layout of bit-field structure members.
+
+
+    Bit-fields can be used to allow flags or other integer values with small ranges
+    to be packed together to save storage space. Bit-fields can improve the storage
+    efficiency of structures. Compilers typically allocate consecutive bit-field structure
+    members into the sameint-sized storage, as long as they fit completely into that
+    storage unit. However, the order of allocation within a storage unit is implementation-defined.
+    Someimplementationsareright-to-left: the first member occupies the low-order position
+    of the storage unit. Others areleft-to-right: the first member occupies the high-order
+    position of the storage unit. Calculations that depend on the order of bits within
+    a storage unit may produce different results on different implementations.'
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 20, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/EXP11-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/EXP11-C.+Do+not+make+assumptions+regarding+the+layout+of+structures+with+bit-fields
+  cwe: []
+  related_rules: []
+  related_recommendations: []

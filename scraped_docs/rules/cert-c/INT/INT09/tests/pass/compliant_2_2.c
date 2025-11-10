@@ -1,0 +1,1 @@
+enum Color { red=4, orange, yellow, green, blue, indigo, violet };

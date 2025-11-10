@@ -1,0 +1,169 @@
+id: CON08-C
+type: recommendation
+category: CON
+number: 8
+metadata:
+  title: Do not assume that a group of calls to independently atomic methods is atomic
+  description: "A consistent locking policy guarantees that multiple threads cannot\
+    \ simultaneously access or modify shared data. When two or more operations must\
+    \ be performed as a single atomic operation, a consistent locking policy must\
+    \ be implemented using some form of locking, such as a mutex. In the absence of\
+    \ such a policy, the code is susceptible to race conditions.When presented with\
+    \ a set of operations, where each is guaranteed to be atomic, it is tempting to\
+    \ assume that a single operation consisting of individually-atomic operations\
+    \ is guaranteed to be collectively atomic without additional locking. A grouping\
+    \ of calls to such methods requires additional synchronization for the group.Compound\
+    \ operations on shared variables are also non-atomic. SeeCON07-C. Ensure that\
+    \ compound operations on shared variables are atomicfor more information.Noncompliant\
+    \ Code ExampleThis noncompliant code example stores two integers atomically. It\
+    \ also provides atomic methods to obtain their sum and product. All methods are\
+    \ locked with the same mutex to provide their atomicity.#include <threads.h>\n\
+    #include <stdio.h>\n#include <stdbool.h>\n \nstatic int a = 0;\nstatic int b =\
+    \ 0;\nmtx_t lock;\n \nbool init_mutex(int type) {\n  /* Validate type */\n  if\
+    \ (thrd_success != mtx_init(&lock, type)) {\n    return false;  /* Report error\
+    \ */\n  }\n  return true;\n}\n\nvoid set_values(int new_a, int new_b) {\n  if\
+    \ (thrd_success != mtx_lock(&lock)) {\n    /* Handle error */\n  }\n  a = new_a;\n\
+    \  b = new_b;\n  if (thrd_success != mtx_unlock(&lock)) {\n    /* Handle error\
+    \ */\n  }\n}\n\nint get_sum(void) {\n  if (thrd_success != mtx_lock(&lock)) {\n\
+    \    /* Handle error */\n  }\n  int sum = a + b;\n  if (thrd_success != mtx_unlock(&lock))\
+    \ {\n    /* Handle error */\n  }\n  return sum;\n}\n  \nint get_product(void)\
+    \ {\n  if (thrd_success != mtx_lock(&lock)) {\n    /* Handle error */\n  }\n \
+    \ int product = a * b;\n  if (thrd_success != mtx_unlock(&lock)) {\n    /* Handle\
+    \ error */\n  }\n  return product;\n}\n\n/* Can be called by multiple threads\
+    \ */\nvoid multiply_monomials(int x1, int x2) {\n  printf(\"(x + %d)(x + %d)\\\
+    n\", x1, x2);\n  set_values( x1, x2);\n  printf(\"= x^2 + %dx + %d\\n\", get_sum(),\
+    \ get_product());\n}Unfortunately, themultiply_monomials()function is still subject\
+    \ to race conditions, despite relying exclusively on atomic function calls. It\
+    \ is quite possible forget_sum()andget_product()to work with different numbers\
+    \ than the ones that were set byset_values(). It is even possible forget_sum()to\
+    \ operate with different numbers thanget_product().Compliant SolutionThis compliant\
+    \ solution locks themultiply_monomials()function with the same mutex lock that\
+    \ is used by the other functions.For this code to work, the mutex must be recursive.\
+    \ This is accomplished by making it recursive in theinit_mutex()function.#include\
+    \ <threads.h>\n#include <stdio.h>\n#include <stdbool.h>\n\nextern void set_values(int,\
+    \ int);\nextern int get_sum(void);\nextern int get_product(void);\n\nmtx_t lock;\n\
+     \nbool init_mutex(int type) {\n  /* Validate type */\n  if (thrd_success != mtx_init(&lock,\
+    \ type | mtx_recursive)) {\n    return false;  /* Report error */\n  }\n  return\
+    \ true;\n}\n\n/* Can be called by multiple threads */\nvoid multiply_monomials(int\
+    \ x1, int x2) {\n  if (thrd_success != mtx_lock(&lock)) {\n    /* Handle error\
+    \ */\n  }\n  set_values( x1, x2);\n  int sum = get_sum();\n  int product = get_product();\n\
+    \  if (thrd_success != mtx_unlock(&lock)) {\n    /* Handle error */\n  }\n\n \
+    \ printf(\"(x + %d)(x + %d)\\n\", x1, x2);\n  printf(\"= x^2 + %dx + %d\\n\",\
+    \ sum, product);\n}Noncompliant Code ExampleFunction chaining is a useful design\
+    \ pattern for building an object and setting its optional fields. The output of\
+    \ one function serves as an argument (typically the last) in the next function.\
+    \ However, if accessed concurrently, a thread may observe shared fields to contain\
+    \ inconsistent values. This noncompliant code example demonstrates a race condition\
+    \ that can occur when multiple threads can variables with no thread protection.#include\
+    \ <threads.h>\n#include <stdio.h>\n\ntypedef struct currency_s {\n  int quarters;\n\
+    \  int dimes;\n  int nickels;\n  int pennies;\n} currency_t;\n \ncurrency_t *set_quarters(int\
+    \ quantity, currency_t *currency) {\n  currency->quarters += quantity;\n  return\
+    \ currency;\n}\ncurrency_t *set_dimes(int quantity, currency_t *currency) {\n\
+    \  currency->dimes += quantity;\n  return currency;\n} \ncurrency_t *set_nickels(int\
+    \ quantity, currency_t *currency) {\n  currency->nickels += quantity;\n  return\
+    \ currency;\n}\ncurrency_t *set_pennies(int quantity, currency_t *currency) {\n\
+    \  currency->pennies += quantity;\n  return currency;\n}\n \nint init_45_cents(void\
+    \ *currency) {\n  currency_t *c = set_quarters(1, set_dimes(2, currency));\n \
+    \ /* Validate values are correct */\n  return 0;\n}\nint init_60_cents(void* currency)\
+    \ {\n  currency_t *c = set_quarters(2, set_dimes(1, currency));\n  /* Validate\
+    \ values are correct */\n  return 0;\n}\n \nint main(void) {\n  thrd_t thrd1;\n\
+    \  thrd_t thrd2;\n  currency_t currency = {0, 0, 0, 0};\n \n  if (thrd_success\
+    \ != thrd_create(&thrd1, init_45_cents, &currency)) {\n    /* Handle error */\n\
+    \  }\n  if (thrd_success != thrd_create(&thrd2, init_60_cents, &currency)) {\n\
+    \    /* Handle error */\n  }\n  if (thrd_success != thrd_join(thrd1, NULL)) {\n\
+    \    /* Handle error */\n  }\n  if (thrd_success != thrd_join(thrd2, NULL)) {\n\
+    \    /* Handle error */\n  }\n \n  printf(\"%d quarters, %d dimes, %d nickels,\
+    \ %d pennies\\n\",\n         currency.quarters, currency.dimes, currency.nickels,\
+    \ currency.pennies);\n  return 0;\n}In this noncompliant code example, the program\
+    \ constructs a currencystructand starts two threads that use method chaining to\
+    \ set the optional values of the structure. This example code might result in\
+    \ the currencystructbeing left in an inconsistent state, for example, with two\
+    \ quarters and one dime or one quarter andtwodimes.Noncompliant Code ExampleThis\
+    \ code remains unsafe even if it uses a mutex on thesetfunctions to guard modification\
+    \ of the currency:#include <threads.h>\n#include <stdio.h>\n\ntypedef struct currency_s\
+    \ {\n  int quarters;\n  int dimes;\n  int nickels;\n  int pennies;\n  mtx_t lock;\n\
+    } currency_t;\n \ncurrency_t *set_quarters(int quantity, currency_t *currency)\
+    \ {\n  if (thrd_success != mtx_lock(&currency->lock)) {\n    /* Handle error */\n\
+    \  }\n  currency->quarters += quantity;\n  if (thrd_success != mtx_unlock(&currency->lock))\
+    \ {\n    /* Handle error */\n  }\n  return currency;\n}\ncurrency_t *set_dimes(int\
+    \ quantity, currency_t *currency) {\n  if (thrd_success != mtx_lock(&currency->lock))\
+    \ {\n    /* Handle error */\n  }\n  currency->dimes += quantity;\n  if (thrd_success\
+    \ != mtx_unlock(&currency->lock)) {\n    /* Handle error */\n  }\n  return currency;\n\
+    }\ncurrency_t *set_nickels(int quantity, currency_t *currency) {\n  if (thrd_success\
+    \ != mtx_lock(&currency->lock)) {\n    /* Handle error */\n  }\n  currency->nickels\
+    \ += quantity;\n  if (thrd_success != mtx_unlock(&currency->lock)) {\n    /* Handle\
+    \ error */\n  }\n  return currency;\n}\ncurrency_t *set_pennies(int quantity,\
+    \ currency_t *currency) {\n  if (thrd_success != mtx_lock(&currency->lock)) {\n\
+    \    /* Handle error */\n  }\n  currency->pennies += quantity;\n  if (thrd_success\
+    \ != mtx_unlock(&currency->lock)) {\n    /* Handle error */\n  }\n  return currency;\n\
+    }\n \nint init_45_cents(void *currency) {\n  currency_t *c = set_quarters(1, set_dimes(2,\
+    \ currency));\n  /* Validate values are correct */\n  return 0;\n}\nint init_60_cents(void*\
+    \ currency) {\n  currency_t *c = set_quarters(2, set_dimes(1, currency));\n  /*\
+    \ Validate values are correct */\n  return 0;\n}\n \nint main(void) {\n  int result;\n\
+    \  thrd_t thrd1;\n  thrd_t thrd2;\n  currency_t currency = {0, 0, 0, 0};\n \n\
+    \  if (thrd_success != mtx_init(&currency.lock, mtx_plain)) {\n    /* Handle error\
+    \ */\n  }\n  if (thrd_success != thrd_create(&thrd1, init_45_cents, &currency))\
+    \ {\n    /* Handle error */\n  }\n  if (thrd_success != thrd_create(&thrd2, init_60_cents,\
+    \ &currency)) {\n    /* Handle error */\n  }\n  \n  if (thrd_success != thrd_join(thrd1,\
+    \ NULL)) {\n    /* Handle error */\n  }\n  if (thrd_success != thrd_join(thrd2,\
+    \ NULL)) {\n    /* Handle error */\n  }\n \n  printf(\"%d quarters, %d dimes,\
+    \ %d nickels, %d pennies\\n\",\n         currency.quarters, currency.dimes, currency.nickels,\
+    \ currency.pennies);\n \n  mtx_destroy( &currency.lock);\n  return 0;\n}Compliant\
+    \ SolutionThis compliant solution uses a mutex, but instead of guarding thesetfunctions,\
+    \ it guards theinitfunctions, which are invoked at thread creation.#include <threads.h>\n\
+    #include <stdio.h>\ntypedef struct currency_s {\n  int quarters;\n  int dimes;\n\
+    \  int nickels;\n  int pennies;\n  mtx_t lock;\n} currency_t;\n \ncurrency_t *set_quarters(int\
+    \ quantity, currency_t *currency) {\n  currency->quarters += quantity;\n  return\
+    \ currency;\n}\ncurrency_t *set_dimes(int quantity, currency_t *currency) {\n\
+    \  currency->dimes += quantity;\n  return currency;\n}\ncurrency_t *set_nickels(int\
+    \ quantity, currency_t *currency) {\n  currency->nickels += quantity;\n  return\
+    \ currency;\n} \ncurrency_t *set_pennies(int quantity, currency_t *currency) {\n\
+    \  currency->pennies += quantity;\n  return currency;\n}\n \nint init_45_cents(void\
+    \ *currency) {\n  currency_t *c = (currency_t *)currency;\n  if (thrd_success\
+    \ != mtx_lock(&c->lock)) {\n    /* Handle error */\n  }\n  set_quarters(1, set_dimes(2,\
+    \ currency));\n  if (thrd_success != mtx_unlock(&c->lock)) {\n    /* Handle error\
+    \ */\n  }\n  return 0;\n}\nint init_60_cents(void *currency) {\n  currency_t *c\
+    \ = (currency_t *)currency;\n  if (thrd_success != mtx_lock(&c->lock)) {\n   \
+    \ /* Handle error */\n  }\n  set_quarters(2, set_dimes(1, currency));\n  if (thrd_success\
+    \ != mtx_unlock(&c->lock)) {\n    /* Handle error */\n  }\n  return 0;\n}\n \n\
+    int main(void) {\n  int result;\n  thrd_t thrd1;\n  thrd_t thrd2;\n  currency_t\
+    \ currency = {0, 0, 0, 0};\n \n  if (thrd_success != mtx_init(&currency.lock,\
+    \ mtx_plain)) {\n    /* Handle error */\n  }\n  if (thrd_success != thrd_create(&thrd1,\
+    \ init_45_cents, &currency)) {\n    /* Handle error */\n  }\n  if (thrd_success\
+    \ != thrd_create(&thrd2, init_60_cents, &currency)) {\n    /* Handle error */\n\
+    \  }\n \n  if (thrd_success != thrd_join(thrd1, NULL)) {\n    /* Handle error\
+    \ */\n  }\n  if (thrd_success != thrd_join(thrd2, NULL)) {\n    /* Handle error\
+    \ */\n  }\n \n  printf(\"%d quarters, %d dimes, %d nickels, %d pennies\\n\",\n\
+    \         currency.quarters, currency.dimes, currency.nickels, currency.pennies);\n\
+    \ \n  mtx_destroy(&currency.lock);\n  return 0;\n}Consequently this compliant\
+    \ solution is thread-safe, and will always print out the same number of quarters\
+    \ as dimes.Risk AssessmentFailure to ensure the atomicity of two or more operations\
+    \ that must be performed as a single atomic operation can result in race conditions\
+    \ in multithreaded applications.RuleSeverityLikelihoodDetectableRepairablePriorityLevelCON08-CLowProbableNoNoP2L3Related\
+    \ GuidelinesCERT Oracle Secure Coding Standard for JavaVNA03-J. Do not assume\
+    \ that a group of calls to independently atomic methods is atomicVNA04-J. Ensure\
+    \ that calls to chained methods are atomicMITRE CWECWE-362, Concurrent execution\
+    \ using shared resource with improper synchronization (\"race condition\")CWE-366,Race\
+    \ condition within a threadCWE-662, Improper synchronizationBibliography[ISO/IEC\
+    \ 9899:2011]Subclause 7.26, \"Threads <threads.h>\""
+  severity: Low
+  likelihood: Probable
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Unknown
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/CON08-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/CON08-C.+Do+not+assume+that+a+group+of+calls+to+independently+atomic+methods+is+atomic
+  cwe:
+  - CWE-362
+  - CWE-366
+  - CWE-662
+  related_rules: []
+  related_recommendations: []

@@ -1,0 +1,43 @@
+id: CON06-C
+type: recommendation
+category: CON
+number: 6
+metadata:
+  title: Ensure that every mutex outlives the data it protects
+  description: 'Programs must not use instance locks to protect static shared data
+    because instance locks are ineffective when two or more instances of the class
+    are created. Consequently, failure to use a static lock object leaves the shared
+    state unprotected against concurrent access. Lock objects for classes that can
+    interact with untrusted code must also be private and final, as shown in ruleLCK00-J.
+    Use private final lock objects to synchronize classes that may interact with untrusted
+    code.
+
+
+    This noncompliant code example attempts to guard access to the staticcounterfield
+    using a non-static lock object. When twoRunnabletasks are started, they create
+    two instances of the lock object and lock on each instance separately.
+
+
+    publicfinalclassCountBoxesimplementsRunnable {privatestaticvolatileintcounter;//
+    ...privatefinalObject lock =newObject();@Overridepublicvoidrun() {synchronized(lock)
+    {counter++;// ...}}publicstaticvoidmain(String[] args) {for(inti =0; i <2; i++)
+    {newThread(newCountBoxes()).start();}}}'
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Unknown
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/CON06-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/CON06-C.+Ensure+that+every+mutex+outlives+the+data+it+protects
+  cwe:
+  - CWE-667
+  related_rules: []
+  related_recommendations: []

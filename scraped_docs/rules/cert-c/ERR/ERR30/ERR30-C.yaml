@@ -1,0 +1,39 @@
+id: ERR30-C
+type: rule
+category: ERR
+number: 30
+metadata:
+  title: Take care when reading errno
+  description: 'The value oferrnois initialized to zero at program startup, but it
+    is never subsequently set to zero by any C standard library function. The value
+    oferrnomay be set to nonzero by a C standard library function call whether or
+    not there is an error, provided the use oferrnois not documented in the description
+    of the function. It is meaningful for a program to inspect the contents oferrnoonly
+    after an error might have occurred. More precisely,errnois meaningful only after
+    a library function that setserrnoon error has returned an error code.
+
+
+    According to Question 20.4 of C-FAQ [Summit 2005],
+
+
+    Note thatatoi()is not required to set the value oferrno.'
+  severity: Medium
+  likelihood: Probable
+  priority: P12
+  level: L1
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Oct 29, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/ERR30-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/ERR30-C.+Take+care+when+reading+errno
+  cwe:
+  - CWE-456
+  - CWE-248
+  related_rules: []
+  related_recommendations: []

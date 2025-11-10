@@ -1,0 +1,38 @@
+id: SIG30-C
+type: rule
+category: SIG
+number: 30
+metadata:
+  title: Call only asynchronous-safe functions within signal handlers
+  description: 'Call onlyasynchronous-safe functionswithin signal handlers. Forstrictly
+    conformingprograms, only the C standard library functionsabort(),_Exit(),quick_exit(),
+    andsignal()can be safely called from within a signal handler.
+
+
+    The C Standard, 7.14.1.1, paragraph 5 [ISO/IEC 9899:2024], states that if the
+    signal occurs other than as the result of calling theabort()orraise()function,
+    the behavior isundefinedif
+
+
+    Implementations may define a list of additional asynchronous-safe functions. These
+    functions can also be called within a signal handler. This restriction applies
+    to library functions as well as application-defined functions.'
+  severity: High
+  likelihood: Likely
+  priority: P18
+  level: L1
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 05, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/SIG30-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/SIG30-C.+Call+only+asynchronous-safe+functions+within+signal+handlers
+  cwe:
+  - CWE-479
+  related_rules: []
+  related_recommendations: []

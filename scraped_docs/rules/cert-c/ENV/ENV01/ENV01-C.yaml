@@ -1,0 +1,35 @@
+id: ENV01-C
+type: recommendation
+category: ENV
+number: 1
+metadata:
+  title: Do not make assumptions about the size of an environment variable
+  description: "Do not make any assumptions about the size of environment variables\
+    \ because an adversary might have full control over the environment. If the environment\
+    \ variable needs to be stored, the length of the associated string should be calculated\
+    \ and the storage dynamically allocated (seeSTR31-C. Guarantee that storage for\
+    \ strings has sufficient space for character data and the null terminator).\n\n\
+    This noncompliant code example copies the string returned bygetenv()into a fixed-size\
+    \ buffer:\n\nvoid f() {\n  char path[PATH_MAX]; /* Requires PATH_MAX to be defined\
+    \ */\n  strcpy(path, getenv(\"PATH\"));\n  /* Use path */\n}"
+  severity: High
+  likelihood: Likely
+  priority: P9
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Jul 24, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/ENV01-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/ENV01-C.+Do+not+make+assumptions+about+the+size+of+an+environment+variable
+  cwe:
+  - CWE-119
+  - CWE-123
+  - CWE-125
+  related_rules: []
+  related_recommendations: []

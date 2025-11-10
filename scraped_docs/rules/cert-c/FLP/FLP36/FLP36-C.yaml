@@ -1,0 +1,37 @@
+id: FLP36-C
+type: rule
+category: FLP
+number: 36
+metadata:
+  title: Preserve precision when converting integral values to floating-point type
+  description: 'Narrower arithmetic types can be cast to wider types without any effect
+    on the magnitude of numeric values. However, whereas integer types represent exact
+    values, floating-point types have limited precision. The C Standard, 6.3.1.4 paragraph
+    3 [ISO/IEC 9899:2024], states
+
+
+    Conversion from integral types to floating-point types without sufficient precision
+    can lead to loss of precision (loss of least significant bits). No runtime exception
+    occurs despite the loss.
+
+
+    In this noncompliant example, a large value of typelong intis converted to a value
+    of typefloatwithout ensuring it is representable in the type:'
+  severity: Low
+  likelihood: Unlikely
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Oct 29, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/FLP36-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/FLP36-C.+Preserve+precision+when+converting+integral+values+to+floating-point+type
+  cwe: []
+  related_rules: []
+  related_recommendations: []

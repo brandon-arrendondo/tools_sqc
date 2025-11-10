@@ -1,0 +1,39 @@
+id: CON03-C
+type: recommendation
+category: CON
+number: 3
+metadata:
+  title: Ensure visibility when accessing shared variables
+  description: "Reading a shared primitive variable in one thread may not yield the\
+    \ value of the most recent write to the variable from another thread. Consequently,\
+    \ the thread may observe a stale value of the shared variable. To ensure the visibility\
+    \ of the most recent update, the write to the variable musthappen beforethe read\
+    \ (C Standard, subclause 5.1.2.4, paragraph 18 [ISO/IEC 9899:2011]). Atomic operations—other\
+    \ than relaxed atomic operations—trivially satisfy the happens before relationship.\
+    \ Where atomic operations are inappropriate, protecting both reads and writes\
+    \ with a mutex also satisfies the happens before relationship.\n\nThis noncompliant\
+    \ code example uses ashutdown()method to set the non-volatiledoneflag that is\
+    \ checked in therun()method.\n\nfinal class ControlledStop implements Runnable\
+    \ {\n  private boolean done = false;\n \n  @Override public void run() {\n   \
+    \ while (!done) {\n      try {\n        // ...\n        Thread.currentThread().sleep(1000);\
+    \ // Do something\n      } catch(InterruptedException ie) { \n        Thread.currentThread().interrupt();\
+    \ // Reset interrupted status\n      } \n    } \t \n  }\n\n  public void shutdown()\
+    \ {\n    done = true;\n  }\n}"
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Jul 24, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/CON03-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/CON03-C.+Ensure+visibility+when+accessing+shared+variables
+  cwe: []
+  related_rules: []
+  related_recommendations: []

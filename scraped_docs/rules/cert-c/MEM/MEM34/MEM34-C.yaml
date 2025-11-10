@@ -1,0 +1,36 @@
+id: MEM34-C
+type: rule
+category: MEM
+number: 34
+metadata:
+  title: Only free memory allocated dynamically
+  description: 'The C Standard, Annex J (184) [ISO/IEC 9899:2024], states that the
+    behavior of a program isundefinedwhen
+
+
+    See alsoundefined behavior 184.
+
+
+    Freeing memory that is not allocated dynamically can result in heap corruption
+    and other serious errors. Do not callfree()on a pointer other than one returned
+    by a standard memory allocation function, such asmalloc(),calloc(),realloc(),
+    oraligned_alloc().'
+  severity: High
+  likelihood: Likely
+  priority: P9
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Aug 06, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/MEM34-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/MEM34-C.+Only+free+memory+allocated+dynamically
+  cwe:
+  - CWE-590
+  related_rules: []
+  related_recommendations: []

@@ -1,0 +1,37 @@
+id: CON50-C
+type: recommendation
+category: CON
+number: 50
+metadata:
+  title: PP. Do not destroy a mutex while it is locked
+  description: 'Mutex objects are used to protect shared data from being concurrently
+    accessed. If a mutex object is destroyed while a thread is blocked waiting for
+    the lock,critical sectionsand shared data are no longer protected.
+
+
+    The C++ Standard, [thread.mutex.class], paragraph 5 [ISO/IEC 14882-2014], states
+    the following:
+
+
+    Similar wording exists forstd::recursive_mutex,std::timed_mutex,std::recursive_timed_mutex,
+    andstd::shared_timed_mutex. These statements imply that destroying a mutex object
+    while a thread is waiting on it isundefined behavior.'
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Jun 25, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/CON50-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/cplusplus/CON50-CPP.+Do+not+destroy+a+mutex+while+it+is+locked
+  cwe:
+  - CWE-667
+  related_rules: []
+  related_recommendations: []

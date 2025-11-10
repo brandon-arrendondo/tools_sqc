@@ -1,0 +1,36 @@
+id: PRE12-C
+type: recommendation
+category: PRE
+number: 12
+metadata:
+  title: Do not define unsafe macros
+  description: "Anunsafe function-like macrois one that, when expanded, evaluates\
+    \ its argument more than once or does not evaluate it at all. Contrasted with\
+    \ function calls, which always evaluate each of their arguments exactly once,\
+    \ unsafe function-like macros often have unexpected and surprising effects and\
+    \ lead to subtle, hard-to-find defects (seePRE31-C. Avoid side effects in arguments\
+    \ to unsafe macros). Consequently, everyfunction-like macroshould evaluate each\
+    \ of its arguments exactly once. Alternatively and preferably, defining function-like\
+    \ macros should be avoided in favor of inline functions (seePRE00-C. Prefer inline\
+    \ or static functions to function-like macros).\n\nThe most severe problem withunsafe\
+    \ function-like macrosis side effects of macro arguments, as shown in this noncompliant\
+    \ code example:\n\n#define ABS(x) (((x) < 0) ? -(x) : (x))\n\nvoid f(int n) {\n\
+    \  int m;\n  m = ABS(++n);\n  /* ... */\n}"
+  severity: Low
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 19, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/PRE12-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/PRE12-C.+Do+not+define+unsafe+macros
+  cwe: []
+  related_rules: []
+  related_recommendations: []

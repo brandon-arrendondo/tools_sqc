@@ -1,0 +1,1 @@
+p = malloc(sizeof(gadget)); /* Imminent problem */

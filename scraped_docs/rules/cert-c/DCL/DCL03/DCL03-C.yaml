@@ -1,0 +1,37 @@
+id: DCL03-C
+type: recommendation
+category: DCL
+number: 3
+metadata:
+  title: Use a static assertion to test the value of a constant expression
+  description: 'Assertions are a valuable diagnostic tool for finding and eliminating
+    software defects that may result invulnerabilities(seeMSC11-C. Incorporate diagnostic
+    tests using assertions). The runtimeassert()macro has some limitations, however,
+    in that it incurs a runtime overhead and because it callsabort(). Consequently,
+    the runtimeassert()macro is useful only for identifying incorrect assumptions
+    and not for runtime error checking. As a result, runtime assertions are generally
+    unsuitable for server programs or embedded systems.
+
+
+    Static assertion is a new facility in the C Standard. It takes the form
+
+
+    static_assert(constant-expression, string-literal);'
+  severity: Low
+  likelihood: Unlikely
+  priority: P3
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Jul 02, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/DCL03-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/DCL03-C.+Use+a+static+assertion+to+test+the+value+of+a+constant+expression
+  cwe: []
+  related_rules: []
+  related_recommendations: []

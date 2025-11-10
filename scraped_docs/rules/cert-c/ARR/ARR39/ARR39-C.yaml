@@ -1,0 +1,45 @@
+id: ARR39-C
+type: rule
+category: ARR
+number: 39
+metadata:
+  title: Do not add or subtract a scaled integer to a pointer
+  description: 'Pointer arithmetic is appropriate only when the pointer argument refers
+    to an array (seeARR37-C. Do not add or subtract an integer to a pointer to a non-array
+    object), including an array of bytes. When performing pointer arithmetic, the
+    size of the value to add to or subtract from a pointer is automatically scaled
+    to the size of the type of the referenced array object. Adding or subtracting
+    a scaled integer value to or from a pointer is invalid because it may yield a
+    pointer that does not point to an element within or one past the end of the array.
+    (SeeARR30-C. Do not form or use out-of-bounds pointers or array subscripts.)
+
+
+    Adding a pointer to an array of a type other than character to the result of thesizeofoperator
+    oroffsetofmacro, which returns a size and an offset, respectively, violates this
+    rule. However, adding an array pointer to the number of array elements, for example,
+    by using thearr[sizeof(arr)/sizeof(arr[0])])idiom, is allowed provided thatarrrefers
+    to an array and not a pointer.
+
+
+    In this noncompliant code example,sizeof(buf)is added to the arraybuf. This example is
+    noncompliant becausesizeof(buf)is scaled byintand then scaled again when added
+    tobuf.'
+  severity: High
+  likelihood: Probable
+  priority: P6
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 05, 2025
+implementation:
+  status: implemented
+  file: src/rules/cert-c/ARR/ARR39/arr39_c.rs
+testing:
+  status: tested
+  test_file: src/rules/cert-c/ARR/ARR39/test_arr39_c.rs
+  external_tests: ~/tools_sqc_testcases/ARR39-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/ARR39-C.+Do+not+add+or+subtract+a+scaled+integer+to+a+pointer
+  cwe:
+  - CWE-468
+  related_rules: []
+  related_recommendations: []

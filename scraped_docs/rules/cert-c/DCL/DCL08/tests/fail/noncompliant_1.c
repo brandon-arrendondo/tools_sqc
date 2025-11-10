@@ -1,0 +1,1 @@
+enum { IN_STR_LEN=18, OUT_STR_LEN=20 };

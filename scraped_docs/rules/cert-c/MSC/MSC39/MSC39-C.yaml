@@ -1,0 +1,40 @@
+id: MSC39-C
+type: rule
+category: MSC
+number: 39
+metadata:
+  title: Do not call va_arg() on a va_list that has an indeterminate value
+  description: "Variadic functions access their variable arguments by usingva_start()to\
+    \ initialize an object of typeva_list, iteratively invoking theva_arg()macro,\
+    \ and finally callingva_end(). Theva_listmay be passed as an argument to another\
+    \ function, but callingva_arg()within that function causes theva_listto have anindeterminate\
+    \ valuein the calling function. As a result, attempting to read variable arguments\
+    \ without reinitializing theva_listcan haveunexpected behavior. According to the\
+    \ C Standard, 7.16, paragraph 3 [ISO/IEC 9899:2024],\n\nThis noncompliant code\
+    \ example attempts to check that none of its variable arguments are zero by passing\
+    \ ava_listto helper functioncontains_zero(). After the call tocontains_zero(),\
+    \ the value ofapisindeterminate.\n\n#include <stdarg.h>\n#include <stdio.h>\n\
+     \nint contains_zero(size_t count, va_list ap) {\n  for (size_t i = 1; i < count;\
+    \ ++i) {\n    if (va_arg(ap, double) == 0.0) {\n      return 1;\n    }\n  }\n\
+    \  return 0;\n}\n\nint print_reciprocals(size_t count, ...) {\n  va_list ap; \
+    \ \n  va_start(ap, count);\n\n  if (contains_zero(count, ap)) {\n    va_end(ap);\n\
+    \    return 1;\n  }\n\n  for (size_t i = 0; i < count; ++i) {\n    printf(\"%f\
+    \ \", 1.0 / va_arg(ap, double));\n  }\n\n  va_end(ap);\n  return 0;\n}"
+  severity: Low
+  likelihood: Unlikely
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Aug 31, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/MSC39-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/MSC39-C.+Do+not+call+va_arg%28%29+on+a+va_list+that+has+an+indeterminate+value
+  cwe: []
+  related_rules: []
+  related_recommendations: []

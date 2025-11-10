@@ -1,0 +1,40 @@
+id: MEM12-C
+type: recommendation
+category: MEM
+number: 12
+metadata:
+  title: Consider using a goto chain when leaving a function on error when using and
+    releasing resources
+  description: 'Many functions require the allocation of multiple resources. Failing
+    and returning somewhere in the middle of this function without freeing all of
+    the allocated resources could produce a memory leak. It is a common error to forget
+    to free one (or all) of the resources in this manner, so agotochain is the simplest
+    and cleanest way to organize exits while preserving the order of freed resources.
+
+
+    In this noncompliant example, exit code is written for every instance in which
+    the function can terminate prematurely. Notice how failing to closefin2produces
+    a resource leak, leaving an open file descriptor.
+
+
+    Please note that these examples assumeerrno_tandNOERRto be defined, as recommended inDCL09-C.
+    Declare functions that return errno with a return type of errno_t. An equivalent
+    compatible example would defineerrno_tas anintandNOERRas zero.'
+  severity: Low
+  likelihood: Probable
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Aug 31, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/MEM12-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+goto+chain+when+leaving+a+function+on+error+when+using+and+releasing+resources
+  cwe: []
+  related_rules: []
+  related_recommendations: []

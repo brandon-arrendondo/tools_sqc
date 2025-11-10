@@ -1,0 +1,39 @@
+id: DCL39-C
+type: rule
+category: DCL
+number: 39
+metadata:
+  title: Avoid information leakage when passing a structure across a trust boundary
+  description: 'The C Standard, 6.7.3.2, discusses the layout of structure fields.
+    It specifies that non-bit-field members are aligned in animplementation-definedmanner
+    and that there may be padding within or at the end of a structure. Furthermore,
+    initializing the members of the structure does not guarantee initialization of the
+    padding bytes. The C Standard, 6.2.6.1, paragraph 6 [ISO/IEC 9899:2024], states
+
+
+    Additionally, the storage units in which a bit-field resides may also have padding
+    bits. For an object with automatic storage duration, these padding bits do not
+    take on specific values and can contribute to leaking sensitive information.
+
+
+    When passing a pointer to a structure across a trust boundary to a different trusted
+    domain, the programmer must ensure that the padding bytes and bit-field storage
+    unit padding bits of such a structure do not contain sensitive information.'
+  severity: Low
+  likelihood: Unlikely
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Aug 06, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/DCL39-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/DCL39-C.+Avoid+information+leakage+when+passing+a+structure+across+a+trust+boundary
+  cwe: []
+  related_rules: []
+  related_recommendations: []

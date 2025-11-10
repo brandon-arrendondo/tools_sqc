@@ -1,0 +1,34 @@
+id: WIN30-C
+type: recommendation
+category: WIN
+number: 30
+metadata:
+  title: Properly pair allocation and deallocation functions
+  description: 'Windows provides several APIs for allocating memory.  While some of
+    these functions have converged over time, it is still important to always properly
+    pair allocations and deallocations.  The following table shows the proper pairings.
+
+
+    AllocatorDeallocatormalloc()free()realloc()free()LocalAlloc()LocalFree()LocalReAlloc()LocalFree()GlobalAlloc()GlobalFree()GlobalReAlloc()GlobalFree()VirtualAlloc()VirtualFree()VirtualAllocEx()VirtualFreeEx()VirtualAllocExNuma()VirtualFreeEx()AllocateUserPhysicalPages()FreeUserPhysicalPages()AllocateUserPhysicalPagesNuma()FreeUserPhysicalPages()HeapAlloc()HeapFree()HeapReAlloc()HeapFree()
+
+
+    In this example, theFormatMessage()function allocates a buffer and stores it in
+    thebufparameter.  From the documentation ofFORMAT_MESSAGE_ALLOCATE_BUFFER[MSDN]:'
+  severity: Low
+  likelihood: Probable
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 06, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/WIN30-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/WIN30-C.+Properly+pair+allocation+and+deallocation+functions
+  cwe: []
+  related_rules: []
+  related_recommendations: []
