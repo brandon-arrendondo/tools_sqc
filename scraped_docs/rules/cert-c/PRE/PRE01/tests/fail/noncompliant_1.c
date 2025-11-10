@@ -1,0 +1,1 @@
+#define CUBE(I) (I * I * I)

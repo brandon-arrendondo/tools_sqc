@@ -1,0 +1,40 @@
+id: DCL09-C
+type: recommendation
+category: DCL
+number: 9
+metadata:
+  title: Declare functions that return errno with a return type of errno_t
+  description: 'When developing new code, declare functions that returnerrnowith a
+    return type oferrno_t.  Many existing functions that returnerrnoare declared as
+    returning a value of typeint. It is semantically unclear by inspecting the function
+    declaration or prototype if these functions return an error status or a value
+    or, worse, some combination of the two. (SeeERR02-C. Avoid in-band error indicators.)
+
+
+    C11 Annex K  introduced the new typeerrno_tthat is defined to be typeintinerrno.hand
+    elsewhere. Many of the functions defined in C11 Annex K return values of this
+    type. Theerrno_ttype should be used as the type of an object that may contain
+    only values that might be found inerrno. For example, a function that returns
+    the value oferrnoshould be declared as having the return typeerrno_t.
+
+
+    This recommendation depends on C11 Annex K being implemented. The following code
+    can be added to remove this dependency:'
+  severity: Low
+  likelihood: Unlikely
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 19, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/DCL09-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/DCL09-C.+Declare+functions+that+return+errno+with+a+return+type+of+errno_t
+  cwe: []
+  related_rules: []
+  related_recommendations: []

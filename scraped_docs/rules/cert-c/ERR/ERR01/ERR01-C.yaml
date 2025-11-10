@@ -1,0 +1,38 @@
+id: ERR01-C
+type: recommendation
+category: ERR
+number: 1
+metadata:
+  title: Use ferror() rather than errno to check for FILE stream errors
+  description: "Useferror()rather thanerrnoto check whether an error has occurred\
+    \ on a file stream (for example, after a long chain ofstdiocalls). Theferror()function\
+    \ tests the error indicator for a specified stream and returns nonzero if and\
+    \ only if the error indicator is set for the stream.\n\nManyimplementationsof\
+    \ thestdiopackage adjust their behavior slightly ifstdoutis a terminal. To make\
+    \ the determination, these implementations perform some operation that fails (withENOTTY)\
+    \ ifstdoutis not a terminal. Although the output operation goes on to complete\
+    \ successfully,errnostill containsENOTTY. This behavior can be mildly confusing,\
+    \ but it is not strictly incorrect because it is meaningful for a program to inspect\
+    \ the contents oferrnoonly after an error has been reported. More precisely,errnois\
+    \ meaningful only after a library function that setserrnoon error has returned\
+    \ an error code.\n\nerrno = 0;\nprintf(\"This\\n\");\nprintf(\"is\\n\");\nprintf(\"\
+    a\\n\");\nprintf(\"test.\\n\");\nif (errno != 0) {\n  fprintf(stderr, \"printf\
+    \ failed: %s\\n\", strerror(errno));\n}"
+  severity: Low
+  likelihood: Probable
+  priority: P6
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 20, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/ERR01-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/ERR01-C.+Use+ferror%28%29+rather+than+errno+to+check+for+FILE+stream+errors
+  cwe: []
+  related_rules: []
+  related_recommendations: []

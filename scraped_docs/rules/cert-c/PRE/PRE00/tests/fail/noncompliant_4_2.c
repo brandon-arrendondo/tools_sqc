@@ -1,0 +1,1 @@
+Called g, count = 0.

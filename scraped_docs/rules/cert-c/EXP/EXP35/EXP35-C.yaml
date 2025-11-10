@@ -1,0 +1,45 @@
+id: EXP35-C
+type: rule
+category: EXP
+number: 35
+metadata:
+  title: Do not modify objects with temporary lifetime
+  description: 'The C11 Standard [ISO/IEC 9899:2011] introduced a new term:temporary
+    lifetime. This term still remains in the C23 Standard. Modifying an object with
+    temporary lifetime isundefined behavior. According to subclause 6.2.4, paragraph
+    8 [ISO/IEC 9899:2024]
+
+
+    This definition differs from the C99 Standard (which defines modifying the result
+    of a function call or accessing it after the next sequence point as undefined
+    behavior) because a temporary object''s lifetime ends when the evaluation containing
+    the full expression or full declarator ends, so the result of a function call
+    can be accessed. This extension to the lifetime of a temporary also removes a
+    quiet change to C90 and improves compatibility with C++.
+
+
+    C functions may not return arrays; however, functions can return a pointer to
+    an array or astructorunionthat contains arrays.Consequently, in any version of
+    C, if a function call returns by value astructorunioncontaining an array, do not
+    modify those arrays within the expression containing the function call.In C99
+    and older, do not access an array returned by a function after the next sequence
+    point or after the evaluation of the containing full expression or full declarator
+    ends.'
+  severity: Low
+  likelihood: Probable
+  priority: P6
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 06, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/EXP35-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/EXP35-C.+Do+not+modify+objects+with+temporary+lifetime
+  cwe: []
+  related_rules: []
+  related_recommendations: []

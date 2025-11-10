@@ -1,0 +1,45 @@
+id: POS49-C
+type: recommendation
+category: POS
+number: 49
+metadata:
+  title: When data must be accessed by multiple threads, provide a mutex and guarantee
+    no adjacent data is also accessed
+  description: 'When multiple threads must access or make modifications to a common
+    variable, they may also inadvertently access other variables adjacent in memory.
+    This is an artifact of variables being stored compactly, with one byte possibly
+    holding multiple variables, and is a common optimization on word-addressed machines.
+    Bit-fields are especially prone to this behavior because compliers are allowed
+    to store multiple bit-fields in one addressable byte or word. This implies that
+    race conditions may exist not just on a variable accessed by multiple threads
+    but also on other variables sharing the same byte or word address. This recommendation
+    is a specific instance ofCON32-C. Prevent data races when accessing bit-fields
+    from multiple threadsusing POSIX threads.
+
+
+    A common tool for preventing race conditions in concurrent programming is the
+    mutex. When properly observed by all threads, a mutex can provide safe and secure
+    access to a common variable; however, it guarantees nothing with regard to other
+    variables that might be accessed when a common variable is accessed.
+
+
+    Unfortunately, there is no portable way to determine which adjacent variables
+    may be stored along with a certain variable.'
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Oct 31, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/POS49-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/POS49-C.+When+data+must+be+accessed+by+multiple+threads%2C+provide+a+mutex+and+guarantee+no+adjacent+data+is+also+accessed
+  cwe: []
+  related_rules: []
+  related_recommendations: []

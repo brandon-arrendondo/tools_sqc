@@ -1,0 +1,32 @@
+id: FIO40-C
+type: recommendation
+category: FIO
+number: 40
+metadata:
+  title: Reset strings on fgets()  or fgetws() failure
+  description: "If either of the C Standardfgets()orfgetws()functions fail, the contents\
+    \ of the array being written isindeterminate. (Seeundefined behavior 175.)  It\
+    \ is necessary to reset the string to a known value to avoid errors on subsequent\
+    \ string manipulation functions.\n\nIn this noncompliant code example, an error\
+    \ flag is set iffgets()fails. However,bufis not reset and has indeterminate contents:\n\
+    \n#include <stdio.h>\n \nenum { BUFFER_SIZE = 1024 };\nvoid func(FILE *file) {\n\
+    \  char buf[BUFFER_SIZE];\n\n  if (fgets(buf, sizeof(buf), file) == NULL) {\n\
+    \    /* Set error flag and continue */\n  }\n}"
+  severity: Low
+  likelihood: Probable
+  priority: P6
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 06, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/FIO40-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/FIO40-C.+Reset+strings+on+fgets%28%29++or+fgetws%28%29+failure
+  cwe: []
+  related_rules: []
+  related_recommendations: []

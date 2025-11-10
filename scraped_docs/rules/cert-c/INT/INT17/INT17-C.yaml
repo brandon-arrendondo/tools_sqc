@@ -1,0 +1,34 @@
+id: INT17-C
+type: recommendation
+category: INT
+number: 17
+metadata:
+  title: Define integer constants in an implementation-independent manner
+  description: "Integer constants are often used as masks or specific bit values.\
+    \ Frequently, these constants are expressed in hexadecimal form to indicate to\
+    \ the programmer how the data might be represented in the machine. However, hexadecimal\
+    \ integer constants are frequently used in a nonportable manner.\n\nIn this pedagogical\
+    \ noncompliant code example, theflipbits()function complements the value stored\
+    \ inxby performing a bitwise exclusive OR against a mask with all bits set to\
+    \ 1. Forimplementationswhereunsigned longis represented by a 32-bit value, each\
+    \ bit ofxis correctly complemented.\n\n/* (Incorrect) Set all bits in mask to\
+    \ 1 */\nconst unsigned long mask = 0xFFFFFFFF;\n\nunsigned long flipbits(unsigned\
+    \ long x) {\n  return x ^ mask;\n}"
+  severity: High
+  likelihood: Probable
+  priority: P6
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Jul 24, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/INT17-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/INT17-C.+Define+integer+constants+in+an+implementation-independent+manner
+  cwe: []
+  related_rules: []
+  related_recommendations: []

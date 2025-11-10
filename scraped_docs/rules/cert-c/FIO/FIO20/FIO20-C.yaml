@@ -1,0 +1,37 @@
+id: FIO20-C
+type: recommendation
+category: FIO
+number: 20
+metadata:
+  title: Avoid unintentional truncation when using fgets() or fgetws()
+  description: "Thefgets()andfgetws()functions are typically used to read a newline-terminated\
+    \ line of input from a stream. Both functions read at most one less than the number\
+    \ of narrow or wide characters specified by an argumentnfrom a stream to a string.\
+    \ Truncation errors can occur ifn - 1is less than the number of characters appearing\
+    \ in the input string prior to the new-line narrow or wide character (which is\
+    \ retained) or after end-of-file.  This can result in the accidental truncation\
+    \ of user input.\n\nThis noncompliant code example copies the input string into\
+    \ a buffer, and assumes it captured all of the user's input.\n\n#include <stdbool.h>\n\
+    #include <stdio.h>\n \nbool get_data(char *buffer, int size) {\n  if (fgets(buffer,\
+    \ size, stdin)) {\n    return true;\n  }\n  return false;\n}\n \nvoid func(void)\
+    \ {\n  char buf[8];\n  if (get_data(buf, sizeof(buf))) {\n    printf(\"The user\
+    \ input %s\\n\", buf);\n  } else {\n    printf(\"Error getting data from the user\\\
+    n\");\n  }\n}"
+  severity: Medium
+  likelihood: Likely
+  priority: P12
+  level: L1
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Jul 24, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/FIO20-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=87152445
+  cwe: []
+  related_rules: []
+  related_recommendations: []

@@ -1,0 +1,41 @@
+id: SIG34-C
+type: rule
+category: SIG
+number: 34
+metadata:
+  title: Do not call signal() from within interruptible signal handlers
+  description: 'A signal handler should not reassert its desire to handle its own
+    signal. This is often done onnonpersistentplatforms—that is, platforms that, upon
+    receiving a signal, reset the handler for the signal to SIG_DFL before calling
+    the bound signal handler. Callingsignal()under these conditions presents a race
+    condition. (SeeSIG01-C. Understand implementation-specific details regarding signal
+    handler persistence.)
+
+
+    A signal handler may callsignal()only if it does not need to beasynchronous-safe(that
+    is, if all relevant signals are masked so that the handler cannot be interrupted).
+
+
+    On nonpersistent platforms, this noncompliant code example contains a race window,
+    starting when the host environment resets the signal and ending when the handler
+    callssignal(). During that time, a second signal sent to the program will trigger
+    the default signal behavior, consequently defeating the persistent behavior implied
+    by the call tosignal()from within the handler to reassert the binding.'
+  severity: Low
+  likelihood: Unlikely
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Unknown
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/SIG34-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/SIG34-C.+Do+not+call+signal%28%29+from+within+interruptible+signal+handlers
+  cwe: []
+  related_rules: []
+  related_recommendations: []

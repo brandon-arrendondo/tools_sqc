@@ -1,0 +1,1 @@
+#define INCREMOD(x, max) ((x) = ((x) + 1) % (max))

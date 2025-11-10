@@ -1,0 +1,41 @@
+id: POS48-C
+type: rule
+category: POS
+number: 48
+metadata:
+  title: Do not unlock or destroy another POSIX thread's mutex
+  description: "Mutexes are used to protect shared data structures being accessed\
+    \ concurrently. The thread that locks the mutex owns it, and the owning thread\
+    \ should be the only thread to unlock the mutex. If the mutex is destroyed while\
+    \ still in use, critical sections and shared data are no longer protected. This\
+    \ rule is a specific instance ofCON31-C. Do not unlock or destroy another thread's\
+    \ mutexusing POSIX threads.\n\nIn this noncompliant code example, a race condition\
+    \ exists between a cleanup and a worker thread. The cleanup thread destroys the\
+    \ lock, which it believes is no longer in use. If there is a heavy load on the\
+    \ system, the worker thread that held the lock can take longer than expected.\
+    \ If the lock is destroyed before the worker thread has completed modifying the\
+    \ shared data, the program may exhibit unexpected behavior.\n\npthread_mutex_t\
+    \ theLock;\nint data;\n\nint cleanupAndFinish(void) {\n  int result;\n  if ((result\
+    \ = pthread_mutex_destroy(&theLock)) != 0) {\n    /* Handle error */\n  }\n  data++;\n\
+    \  return data;\n}\n\nvoid worker(int value) {\n  if ((result = pthread_mutex_lock(&theLock))\
+    \ != 0) {\n    /* Handle error */\n  }\n  data += value;\n  if ((result = pthread_mutex_unlock(&theLock))\
+    \ != 0) {\n    /* Handle error */\n  }\n}"
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 05, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/POS48-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/POS48-C.+Do+not+unlock+or+destroy+another+POSIX+thread%27s+mutex
+  cwe:
+  - CWE-667
+  related_rules: []
+  related_recommendations: []

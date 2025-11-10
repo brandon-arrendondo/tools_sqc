@@ -1,0 +1,45 @@
+id: FLP02-C
+type: recommendation
+category: FLP
+number: 2
+metadata:
+  title: Avoid using floating-point numbers when precise computation is needed
+  description: 'Computers can represent only a finite number of digits. It is therefore
+    impossible to precisely represent repeating binary-representation values such
+    as 1/3 or 1/5 with the most common floating-point representation: binary floating
+    point.
+
+
+    When precise computation is necessary, use alternative representations that can
+    accurately represent the values. For example, if you are performing arithmetic
+    on decimal values and need an exact decimal rounding, represent the values in
+    binary-coded decimal instead of using floating-point values. Another option is
+    decimal floating-point arithmetic, as specified by ANSI/IEEE 754-2007. ISO/IEC
+    WG14 has drafted a proposal to add support for decimal floating-point arithmetic
+    to the C language [ISO/IEC DTR 24732].
+
+
+    When precise computation is necessary, carefully and methodically estimate the
+    maximum cumulative error of the computations, regardless of whether decimal or
+    binary is used, to ensure that the resulting error is within tolerances. Consider
+    using numerical analysis to properly understand the problem. An introduction can
+    be found in David Goldberg''s "What Every Computer Scientist Should Know about
+    Floating-Point Arithmetic" [Goldberg 1991].'
+  severity: Low
+  likelihood: Probable
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 20, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/FLP02-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/FLP02-C.+Avoid+using+floating-point+numbers+when+precise+computation+is+needed
+  cwe: []
+  related_rules: []
+  related_recommendations: []

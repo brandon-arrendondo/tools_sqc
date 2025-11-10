@@ -1,0 +1,36 @@
+id: SIG00-C
+type: recommendation
+category: SIG
+number: 0
+metadata:
+  title: Mask signals handled by noninterruptible signal handlers
+  description: 'A signal is a mechanism for transferring control that is typically
+    used to notify a process that an event has occurred. That process can then respond
+    to the event accordingly. The C Standard provides functions for sending and handling
+    signals within a C program.
+
+
+    Processes handle signals by registering a signal handler using thesignal()function,
+    which is specified as
+
+
+    void (*signal(int sig, void (*func)(int)))(int);'
+  severity: High
+  likelihood: Likely
+  priority: P9
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 20, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/SIG00-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/SIG00-C.+Mask+signals+handled+by+noninterruptible+signal+handlers
+  cwe:
+  - CWE-662
+  related_rules: []
+  related_recommendations: []

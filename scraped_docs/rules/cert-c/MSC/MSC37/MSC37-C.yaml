@@ -1,0 +1,35 @@
+id: MSC37-C
+type: rule
+category: MSC
+number: 37
+metadata:
+  title: Ensure that control never reaches the end of a non-void function
+  description: "If control reaches the closing curly brace (}) of a non-voidfunction\
+    \ without evaluating areturnstatement, using the return value of the function\
+    \ call isundefined behavior.(Seeundefined behavior 86.)\n\nIn this noncompliant\
+    \ code example, control reaches the end of thecheckpass()function when the two\
+    \ strings passed tostrcmp()are not equal, resulting in undefined behavior. Many\
+    \ compilers will generate code for thecheckpass()function, returning various values\
+    \ along the execution path where noreturnstatement is defined.\n\n#include <string.h>\n\
+    #include <stdio.h>\n \nint checkpass(const char *password) {\n  if (strcmp(password,\
+    \ \"pass\") == 0) {\n    return 1;\n  }\n}\n\nvoid func(const char *userinput)\
+    \ {\n  if (checkpass(userinput)) {\n    printf(\"Success\\n\");\n  }\n}"
+  severity: High
+  likelihood: Unlikely
+  priority: P6
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Aug 31, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/MSC37-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/MSC37-C.+Ensure+that+control+never+reaches+the+end+of+a+non-void+function
+  cwe:
+  - CWE-758
+  related_rules: []
+  related_recommendations: []

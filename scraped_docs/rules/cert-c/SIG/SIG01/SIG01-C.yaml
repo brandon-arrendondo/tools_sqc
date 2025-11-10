@@ -1,0 +1,32 @@
+id: SIG01-C
+type: recommendation
+category: SIG
+number: 1
+metadata:
+  title: Understand implementation-specific details regarding signal handler persistence
+  description: "Thesignal()function hasimplementation-definedbehavior and behaves\
+    \ differently on Windows, for example, than it does on many UNIX systems.\n\n\
+    The following code example shows this behavior:\n\n#include <stdio.h>\n#include\
+    \ <signal.h>\n\nvolatile sig_atomic_t e_flag = 0;\n\nvoid handler(int signum)\
+    \ {\n  e_flag = 1;\n}\n\nint main(void) {\n  if (signal(SIGINT, handler) == SIG_ERR)\
+    \ {\n    /* Handle error */\n  }\n  while (!e_flag) {}\n  puts(\"Escaped from\
+    \ first while ()\");\n  e_flag = 0;\n  while (!e_flag) {}\n  puts(\"Escaped from\
+    \ second while ()\");\n  return 0;\n}"
+  severity: Low
+  likelihood: Unlikely
+  priority: P1
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 20, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/SIG01-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/SIG01-C.+Understand+implementation-specific+details+regarding+signal+handler+persistence
+  cwe: []
+  related_rules: []
+  related_recommendations: []

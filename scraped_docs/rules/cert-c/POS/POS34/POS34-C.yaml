@@ -1,0 +1,44 @@
+id: POS34-C
+type: rule
+category: POS
+number: 34
+metadata:
+  title: Do not call putenv() with a pointer to an automatic variable as the argument
+  description: 'The POSIX functionputenv()is used to set environment variable values.
+    Theputenv()function does not create a copy of the string supplied to it as an
+    argument; rather, it inserts a pointer to the string into the environment array.
+    If a pointer to a buffer of automatic storage duration is supplied as an argument
+    toputenv(), the memory allocated for that buffer may be overwritten when the containing
+    function returns and stack memory is recycled. This behavior is noted in the Open
+    Group Base Specifications, Issue 6 [Open Group 2004]:
+
+
+    The actual problem occurs when passing apointerto an automatic variable toputenv().
+    An automatic pointer to a static buffer would work as intended.
+
+
+    In this noncompliant code example, a pointer to a buffer of automatic storage
+    duration is used as an argument toputenv()[Dowd 2006]. TheTESTenvironment variable
+    may take on an unintended value if it is accessed afterfunc()has returned and
+    the stack frame containingenvhas been recycled.'
+  severity: High
+  likelihood: Unlikely
+  priority: P6
+  level: L2
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Oct 31, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/POS34-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/POS34-C.+Do+not+call+putenv%28%29+with+a+pointer+to+an+automatic+variable+as+the+argument
+  cwe:
+  - CWE-252
+  - CWE-253
+  - CWE-391
+  related_rules: []
+  related_recommendations: []

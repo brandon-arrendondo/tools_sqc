@@ -1,0 +1,37 @@
+id: MEM31-C
+type: rule
+category: MEM
+number: 31
+metadata:
+  title: Free dynamically allocated memory when no longer needed
+  description: "Before the lifetime of the last pointer that stores the return value\
+    \ of a call to a standard memory allocation function has ended, it must be matched\
+    \ by a call tofree()with that pointer value.\n\nIn this noncompliant example,\
+    \ the object allocated by the call tomalloc()is not freed before the end of the\
+    \ lifetime of the last pointertext_bufferreferring to the object:\n\n#include\
+    \ <stdlib.h>\n \nenum { BUFFER_SIZE = 32 };\n\nint f(void) {\n  char *text_buffer\
+    \ = (char *)malloc(BUFFER_SIZE); \n  if (text_buffer == NULL) {\n    return -1;\n\
+    \  }\n  return 0;\n}"
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Aug 06, 2025
+implementation:
+  status: implemented
+  file: src/rules/cert-c/MEM/MEM31/mem31_c.rs
+testing:
+  status: tested
+  test_file: src/rules/cert-c/MEM/MEM31/test_mem31_c.rs
+  external_tests: ~/tools_sqc_testcases/MEM31-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/MEM31-C.+Free+dynamically+allocated+memory+when+no+longer+needed
+  cwe:
+  - CWE-401
+  - CWE-404
+  - CWE-459
+  - CWE-771
+  - CWE-772
+  related_rules: []
+  related_recommendations: []

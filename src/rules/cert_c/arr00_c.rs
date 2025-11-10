@@ -1862,6 +1862,13 @@ fn check_pointer_arithmetic(node: &Node, source: &str) -> Option<RuleViolation> 
     }
 
     let ptr_position = node.start_byte();
+
+    // Ensure body_start is before ptr_position
+    // If not, the pointer usage is before the function body (e.g., in parameters)
+    if body_start > ptr_position {
+        return None;
+    }
+
     let preceding_text = &source[body_start..ptr_position];
 
     // Look for array declaration: type array_name[SIZE]

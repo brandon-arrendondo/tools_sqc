@@ -1,0 +1,45 @@
+id: FIO02-C
+type: recommendation
+category: FIO
+number: 2
+metadata:
+  title: Canonicalize path names originating from tainted sources
+  description: 'Path names, directory names, and file names may contain characters
+    that makevalidationdifficult and inaccurate. Furthermore, any path name component
+    can be a symbolic link, which further obscures the actual location or identity
+    of a file. To simplify file name validation, it is recommended that names be translated
+    into theircanonicalform. Canonicalizing file names makes it much easier to verify
+    a path, directory, or file name by making it easier to compare names.
+
+
+    Because the canonical form can vary between operating systems and file systems,
+    it is best to use operating-system-specific mechanisms for canonicalization.
+
+
+    As an illustration, here is a function that ensures that a path name refers to
+    a file in the user''s home directory on POSIX systems:'
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Aug 21, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/FIO02-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/FIO02-C.+Canonicalize+path+names+originating+from+tainted+sources
+  cwe:
+  - CWE-22
+  - CWE-23
+  - CWE-28
+  - CWE-40
+  - CWE-41
+  - CWE-59
+  - CWE-73
+  related_rules: []
+  related_recommendations: []

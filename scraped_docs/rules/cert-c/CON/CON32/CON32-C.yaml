@@ -1,0 +1,45 @@
+id: CON32-C
+type: recommendation
+category: CON
+number: 32
+metadata:
+  title: Prevent data races when accessing bit-fields from multiple threads
+  description: 'When accessing a bit-field, a thread may inadvertently access a separate
+    bit-field in adjacent memory. This is because compilers are required to store
+    multiple adjacent bit-fields in one storage unit whenever they fit. Consequently,
+    data races may exist not just on a bit-field accessed by multiple threads but
+    also on other bit-fields sharing the same byte or word.  A similar problem is discussed
+    inCON43-C. Do not allow data races in multithreaded code, but the issue described
+    by this rule can be harder to diagnose because it may not be obvious that the
+    same memory location is being modified by multiple threads.
+
+
+    One approach for preventing data races in concurrent programming is to use a mutex.
+    When properly observed by all threads, a mutex can provide safe and secure access
+    to a shared object. However, mutexes provide no guarantees with regard to other
+    objects that might be accessed when the mutex is not controlled by the accessing
+    thread. Unfortunately, there is no portable way to determine which adjacent bit-fields
+    may be stored along with the desired bit-field.
+
+
+    Another approach is to insert a non-bit-field member between any two bit-fields
+    to ensure that each bit-field is the only one accessed within its storage unit.
+    This technique effectively guarantees that no two bit-fields are accessed simultaneously.'
+  severity: Medium
+  likelihood: Probable
+  priority: P4
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 06, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/CON32-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/CON32-C.+Prevent+data+races+when+accessing+bit-fields+from+multiple+threads
+  cwe: []
+  related_rules: []
+  related_recommendations: []

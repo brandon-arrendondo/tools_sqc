@@ -1,0 +1,34 @@
+id: DCL05-C
+type: recommendation
+category: DCL
+number: 5
+metadata:
+  title: Use typedefs of non-pointer types only
+  description: "Using type definitions (typedef) can often improve code readability.\
+    \ However, type definitions to pointer types can make it more difficult to writeconst-correct\
+    \ code because theconstqualifier will be applied to the pointer type, not to the\
+    \ underlying declared type.\n\nThe following type definition improves readability\
+    \ at the expense of introducing aconst-correctness issue. In this example, theconstqualifier\
+    \ applies to thetypedefinstead of to the underlying object type. Consequently,funcdoes\
+    \ not take a pointer to aconst struct objbut instead takes aconstpointer to astruct\
+    \ obj.\n\nstruct obj {\n  int i;\n  float f;\n};\ntypedef struct obj *ObjectPtr;\n\
+     \nvoid func(const ObjectPtr o) {\n  /* Can actually modify o's contents, against\
+    \ expectations */\n}"
+  severity: Low
+  likelihood: Unlikely
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: May 19, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/DCL05-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/DCL05-C.+Use+typedefs+of+non-pointer+types+only
+  cwe: []
+  related_rules: []
+  related_recommendations: []

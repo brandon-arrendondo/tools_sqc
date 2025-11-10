@@ -1,0 +1,35 @@
+id: ENV30-C
+type: recommendation
+category: ENV
+number: 30
+metadata:
+  title: Do not modify the object referenced by the return value of certain functions
+  description: 'Some functions return a pointer to an object that cannot be modified
+    without causingundefined behavior. These functions includegetenv(),setlocale(),localeconv(),asctime(),
+    andstrerror(). In such cases, the function call results must be treated as beingconst-qualified.
+
+
+    The C Standard, 7.24.4.6, paragraph 4 [ISO/IEC 9899:2024], definesgetenv()as follows:
+
+
+    If the string returned bygetenv()must be altered, a local copy should be created.
+    Altering the string returned bygetenv()isundefined behavior. (Seeundefined behavior
+    189.)'
+  severity: Low
+  likelihood: Probable
+  priority: P2
+  level: L3
+  cert_version: 2016 Edition (Wiki)
+  last_modified: Sep 04, 2025
+implementation:
+  status: not_implemented
+  file: null
+testing:
+  status: not_tested
+  test_file: null
+  external_tests: ~/tools_sqc_testcases/ENV30-C/
+references:
+  wiki: https://wiki.sei.cmu.edu/confluence/display/c/ENV30-C.+Do+not+modify+the+object+referenced+by+the+return+value+of+certain+functions
+  cwe: []
+  related_rules: []
+  related_recommendations: []
