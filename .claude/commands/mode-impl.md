@@ -19,8 +19,8 @@ fi
 ### Step 2: Context
 
 You are now in **IMPLEMENTATION MODE**:
-- **UNLOCKED**: Rule implementations (`*_c.rs`), utility files (`utils/*.rs`)
-- **LOCKED**: C test files (`*/tests/*.c`), Rust unit tests (`tests/*.rs`)
+- **UNLOCKED**: Rule implementations (`*_c.rs`), utility files (`src/utility/cert_c/*.rs`), mod.rs files
+- **LOCKED**: C test files (`*/tests/*.c`)
 
 ### Step 3: Wait for user guidance
 
@@ -37,12 +37,20 @@ Examples of what to expect:
 Each rule follows this pattern:
 ```
 src/rules/cert_c/CATEGORY/RULE-ID/
-├── RULE-ID.yaml       # Rich metadata (read-only reference)
-├── RULE-ID.toml       # Runtime config (can edit enabled flag)
+├── RULE-ID.toml       # Metadata, config, and references (can edit)
 ├── rule_id.rs         # Implementation (EDIT THIS)
 └── tests/
     ├── fail/*.c       # Should trigger violations (READ-ONLY)
     └── pass/*.c       # Should NOT trigger violations (READ-ONLY)
+```
+
+Utilities are located at:
+```
+src/utility/cert_c/
+├── ast_utils.rs       # AST traversal helpers (can edit)
+├── size_analysis.rs   # Buffer size analysis (can edit)
+├── variable_analysis.rs  # Variable tracking (can edit)
+└── mod.rs
 ```
 
 ### Important Notes

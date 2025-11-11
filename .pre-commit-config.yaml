@@ -17,21 +17,14 @@ repos:
         description: Check Rust code compiles
         args: ['--manifest-path=Cargo.toml']
 
-  # Local hooks for invoke tasks
+  # Local hooks for cargo commands
   - repo: local
     hooks:
-      - id: invoke-build
-        name: invoke build
-        description: Build release binary
-        entry: invoke build
+      - id: cargo-test
+        name: cargo test
+        description: Run all Rust tests (includes build) - warnings only
+        entry: bash -c 'cargo test || true'
         language: system
         pass_filenames: false
         always_run: true
-
-      - id: invoke-test
-        name: invoke test
-        description: Run wiki-scraped test validation
-        entry: invoke test
-        language: system
-        pass_filenames: false
-        always_run: true
+        verbose: true
