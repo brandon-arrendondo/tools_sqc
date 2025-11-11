@@ -1,0 +1,12 @@
+/*
+ * Rule: DCL30-C
+ * Source: wiki
+ * Status: PASS - Should NOT trigger DCL30-C violation
+ */
+
+void this_is_OK(void) {
+  const char c_str[] = "Everything OK";
+  const char *p = c_str;
+  /* ... */
+}
+/* p is inaccessible outside the scope of string c_str */

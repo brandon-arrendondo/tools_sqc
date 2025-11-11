@@ -1,1 +1,0 @@
-#if _POSIX_VERSION >= 200809L || defined (linux)

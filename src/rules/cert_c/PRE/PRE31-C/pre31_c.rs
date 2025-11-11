@@ -1,0 +1,267 @@
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{Severity, RuleCategory};
+use tree_sitter::Node;
+use std::collections::HashSet;
+
+pub struct Pre31C;
+
+impl CertRule for Pre31C {
+    fn rule_id(&self) -> &'static str {
+        "PRE31-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Avoid side effects in arguments to unsafe macros"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "PRE31-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        self.check_node(node, source, &mut violations);
+
+        violations
+    }
+}
+
+impl Pre31C {
+    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        match node.kind() {
+            "call_expression" => {
+                self.check_macro_call(node, source, violations);
+            }
+            _ => {}
+        }
+
+        // Recursively check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_node(&child, source, violations);
+            }
+        }
+    }
+
+    fn check_macro_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if let Some(function_node) = node.child_by_field_name("function") {
+            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+
+            // Check if this is a potentially unsafe macro
+            if self.is_unsafe_macro(function_name) {
+                let args = self.get_function_arguments(node, source);
+
+                // Check each argument for side effects
+                for (i, arg) in args.iter().enumerate() {
+                    if self.has_side_effects(arg, node, source) {
+                        let start_point = node.start_position();
+
+                        let severity = if function_name == "assert" {
+                            Severity::Medium // assert is disabled in release builds
+                        } else {
+                            Severity::High
+                        };
+
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity,
+                            message: format!(
+                                "Unsafe macro '{}' called with side effect in argument {}: '{}'",
+                                function_name, i + 1, arg
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some("Move side effects outside macro call or use inline function".to_string()),
+                        ..Default::default()
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    fn is_unsafe_macro(&self, function_name: &str) -> bool {
+        // Known unsafe macros that evaluate arguments multiple times or not at all
+        let unsafe_macros: HashSet<&str> = [
+            // Common mathematical macros
+            "ABS", "abs", "MAX", "max", "MIN", "min",
+            // Standard library macros
+            "assert", "getc", "putc", "getwc", "putwc",
+            // Custom macros that commonly use multiple evaluation
+            "SWAP", "swap", "CLAMP", "clamp",
+            // Macros that might not evaluate arguments
+            "NDEBUG", "DEBUG",
+            // Common utility macros
+            "SAFE_FREE", "SAFE_DELETE",
+            // Conditional macros
+            "IF_DEBUG", "WHEN", "UNLESS",
+        ].iter().cloned().collect();
+
+        unsafe_macros.contains(function_name) ||
+        // Heuristic: macros with ALL_CAPS names are likely unsafe
+        (function_name.chars().all(|c| c.is_uppercase() || c == '_') && function_name.len() > 2)
+    }
+
+    fn has_side_effects(&self, arg: &str, context_node: &Node, source: &str) -> bool {
+        // Check for various types of side effects in the argument
+
+        // Direct side effect operators
+        if arg.contains("++") || arg.contains("--") ||
+           arg.contains("+=") || arg.contains("-=") ||
+           arg.contains("*=") || arg.contains("/=") ||
+           arg.contains("%=") || arg.contains("&=") ||
+           arg.contains("|=") || arg.contains("^=") ||
+           arg.contains("<<=") || arg.contains(">>=") {
+            return true;
+        }
+
+        // Assignment operator
+        if self.contains_assignment(arg) {
+            return true;
+        }
+
+        // Function calls that might have side effects
+        if self.contains_function_call_with_side_effects(arg) {
+            return true;
+        }
+
+        // Volatile access
+        if arg.contains("volatile") {
+            return true;
+        }
+
+        // I/O operations
+        if self.contains_io_operations(arg) {
+            return true;
+        }
+
+        // Check for more complex expressions using AST analysis
+        if let Some(arg_node) = self.find_argument_node(context_node, arg, source) {
+            return self.analyze_node_for_side_effects(&arg_node, source);
+        }
+
+        false
+    }
+
+    fn contains_assignment(&self, arg: &str) -> bool {
+        // Look for assignment that's not part of a comparison
+        let assignment_pos = arg.find('=');
+        if let Some(pos) = assignment_pos {
+            // Make sure it's not == or != or >= or <=
+            let before = if pos > 0 { arg.chars().nth(pos - 1) } else { None };
+            let after = arg.chars().nth(pos + 1);
+
+            match (before, after) {
+                (Some('!'), _) | (Some('='), _) | (Some('<'), _) | (Some('>'), _) => false,
+                (_, Some('=')) => false,
+                _ => true,
+            }
+        } else {
+            false
+        }
+    }
+
+    fn contains_function_call_with_side_effects(&self, arg: &str) -> bool {
+        // Known functions that have side effects
+        let side_effect_functions = [
+            "printf", "fprintf", "sprintf", "scanf", "fscanf", "sscanf",
+            "malloc", "calloc", "realloc", "free",
+            "fopen", "fclose", "fread", "fwrite", "fgetc", "fputc",
+            "getchar", "putchar", "gets", "puts",
+            "rand", "srand", "time",
+            "exit", "abort", "system",
+        ];
+
+        for func in &side_effect_functions {
+            if arg.contains(&format!("{}(", func)) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn contains_io_operations(&self, arg: &str) -> bool {
+        // Look for I/O related operations
+        arg.contains("printf") || arg.contains("scanf") ||
+        arg.contains("getc") || arg.contains("putc") ||
+        arg.contains("fread") || arg.contains("fwrite") ||
+        arg.contains("cout") || arg.contains("cin") // C++ style I/O
+    }
+
+    fn find_argument_node<'a>(&self, call_node: &'a Node<'a>, arg_text: &str, source: &str) -> Option<Node<'a>> {
+        // Try to find the AST node corresponding to this argument
+        if let Some(arguments) = call_node.child_by_field_name("arguments") {
+            for i in 0..arguments.child_count() {
+                if let Some(child) = arguments.child(i) {
+                    if child.kind() != "," {
+                        let node_text = &source[child.start_byte()..child.end_byte()];
+                        if node_text.trim() == arg_text.trim() {
+                            return Some(child);
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    fn analyze_node_for_side_effects(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "update_expression" => true, // ++, --
+            "assignment_expression" => true, // =, +=, etc.
+            "call_expression" => {
+                // Check if it's a function call that might have side effects
+                if let Some(func_node) = node.child_by_field_name("function") {
+                    let func_name = &source[func_node.start_byte()..func_node.end_byte()];
+                    self.contains_function_call_with_side_effects(func_name)
+                } else {
+                    false
+                }
+            }
+            _ => {
+                // Recursively check child nodes
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if self.analyze_node_for_side_effects(&child, source) {
+                            return true;
+                        }
+                    }
+                }
+                false
+            }
+        }
+    }
+
+    fn get_function_arguments(&self, node: &Node, source: &str) -> Vec<String> {
+        let mut args = Vec::new();
+
+        if let Some(arguments) = node.child_by_field_name("arguments") {
+            for i in 0..arguments.child_count() {
+                if let Some(child) = arguments.child(i) {
+                    if child.kind() != "," {
+                        let arg_text = source[child.start_byte()..child.end_byte()].to_string();
+                        args.push(arg_text.trim().to_string());
+                    }
+                }
+            }
+        }
+
+        args
+    }
+}
+
+// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
+// #[cfg(test)]
+// #[path = "tests/pre31_c.rs"]
+// mod tests;

@@ -1,0 +1,19 @@
+/*
+ * Rule: EXP47-C
+ * Source: wiki
+ * Status: FAIL - Should trigger EXP47-C violation
+ */
+
+#include <stdarg.h>
+ 
+void func(const char *cp, ...) {
+  va_list ap;  
+  va_start(ap, cp);
+  int val = va_arg(ap, int);
+  // ...
+  va_end(ap);
+}
+ 
+void f(void) {
+  func("The only argument");
+}

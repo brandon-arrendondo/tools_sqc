@@ -1,1 +1,0 @@
-#define MALLOC(type) ((type *)malloc(sizeof(type)))

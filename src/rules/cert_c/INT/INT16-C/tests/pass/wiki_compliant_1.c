@@ -1,0 +1,13 @@
+/*
+ * Rule: INT16-C
+ * Source: wiki
+ * Status: PASS - Should NOT trigger INT16-C violation
+ */
+
+int value;
+
+if (scanf("%d", &value) == 1) {
+  if (value % 2 != 0) {
+    /* Take action if value is odd */
+  }
+}

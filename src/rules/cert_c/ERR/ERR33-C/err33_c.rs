@@ -1,0 +1,1026 @@
+//! ERR33-C: Detect and handle standard library errors
+//!
+//! This rule ensures that return values from standard library functions that can indicate
+//! errors are properly checked. The implementation uses AST analysis to detect:
+//!
+//! 1. Assignment patterns: `ptr = malloc(size)` followed by `if (ptr == NULL)`
+//! 2. Direct usage patterns: `if (fopen("file", "r") != NULL)`
+//! 3. Ignored return values: `malloc(size);` (standalone call)
+//!
+//! ## Supported Error Patterns:
+//! - NULL pointer returns: malloc, calloc, fopen, fgets, etc.
+//! - Non-zero error codes: fseek, fclose, etc.
+//! - Negative error indicators: printf, snprintf, etc.
+//! - Special cases: strtol (errno checking), etc.
+//!
+//! ## Context-Aware Exceptions:
+//! - Signal handlers: printf/fprintf return values often not checked in signal handlers
+//! - Cleanup contexts: fclose calls in error cleanup paths may not need return value checking
+//! - Error handling blocks: printf/fprintf used for error logging are typically acceptable
+//!
+//! The rule uses forward-looking AST analysis to find error checking patterns in subsequent
+//! statements after assignment, with sophisticated context detection to minimize false positives.
+
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{Severity, RuleCategory};
+use tree_sitter::Node;
+use std::collections::HashMap;
+
+pub struct Err33C;
+
+impl CertRule for Err33C {
+    fn rule_id(&self) -> &'static str {
+        "ERR33-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Detect and handle standard library errors"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "ERR33-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+        self.check_node(node, source, &mut violations);
+        violations
+    }
+}
+
+impl Err33C {
+    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        match node.kind() {
+            "call_expression" => {
+                self.check_function_call(node, source, violations);
+            }
+            "expression_statement" => {
+                // Check if this is a standalone function call that ignores return value
+                if let Some(child) = node.child(0) {
+                    if child.kind() == "call_expression" {
+                        self.check_ignored_return_value(node, &child, source, violations);
+                    }
+                }
+            }
+            "assignment_expression" => {
+                self.check_assignment(node, source, violations);
+            }
+            "init_declarator" => {
+                self.check_init_declarator(node, source, violations);
+            }
+            _ => {}
+        }
+
+        // Recursively check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_node(&child, source, violations);
+            }
+        }
+    }
+
+    fn check_function_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if let Some(function_node) = node.child_by_field_name("function") {
+            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+
+            if self.is_error_returning_function(function_name) {
+                // Skip if this call is part of an assignment or declaration
+                // Those cases are handled by check_assignment and check_init_declarator
+                if self.is_call_in_assignment_or_declaration(node) {
+                    return;
+                }
+
+                // For printf/fprintf in error handling contexts, don't flag
+                if matches!(function_name, "printf" | "fprintf" | "sprintf" | "snprintf") {
+                    if self.is_in_error_handling_context(node, source) {
+                        return; // Skip flagging printf/fprintf in error contexts
+                    }
+                }
+
+                // Special handling for fclose in cleanup contexts
+                if function_name == "fclose" {
+                    // Find the containing statement for context analysis
+                    if let Some(stmt) = self.find_containing_statement(node) {
+                        if self.is_cleanup_fclose_context(&stmt, source) {
+                            return; // Don't flag cleanup fclose calls
+                        }
+                    }
+                }
+
+                // Check if the return value is properly handled
+                if !self.is_return_value_checked(node, source) {
+                    let start_point = node.start_position();
+                    let call_text = &source[node.start_byte()..node.end_byte()];
+
+                    let error_info = self.get_error_info(function_name);
+
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Return value of '{}' not checked: '{}' - {}",
+                            function_name, call_text, error_info.description
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(error_info.suggestion),
+                    ..Default::default()
+                    });
+                }
+            }
+        }
+    }
+
+    fn is_call_in_assignment_or_declaration(&self, call_node: &Node) -> bool {
+        let mut current = call_node.parent();
+        while let Some(parent) = current {
+            match parent.kind() {
+                "assignment_expression" | "init_declarator" => return true,
+                "expression_statement" | "compound_statement" | "function_definition" => break,
+                _ => {}
+            }
+            current = parent.parent();
+        }
+        false
+    }
+
+    fn check_ignored_return_value(&self, stmt_node: &Node, call_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if let Some(function_node) = call_node.child_by_field_name("function") {
+            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+
+            if self.is_error_returning_function(function_name) {
+                // Special handling for fclose in cleanup contexts
+                if function_name == "fclose" {
+                    if self.is_cleanup_fclose_context(stmt_node, source) {
+                        return; // Don't flag cleanup fclose calls
+                    }
+                }
+
+                // For printf/fprintf in error handling contexts, don't flag
+                if matches!(function_name, "printf" | "fprintf" | "sprintf" | "snprintf") {
+                    if self.is_in_error_handling_context(stmt_node, source) {
+                        return; // Skip flagging printf/fprintf in error contexts
+                    }
+                }
+
+                let start_point = stmt_node.start_position();
+                let call_text = &source[call_node.start_byte()..call_node.end_byte()];
+
+                let error_info = self.get_error_info(function_name);
+
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Return value of '{}' ignored: '{}' - {}",
+                        function_name, call_text, error_info.description
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(error_info.suggestion),
+                ..Default::default()
+                });
+            }
+        }
+    }
+
+    fn check_assignment(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+            if right.kind() == "call_expression" {
+                if let Some(function_node) = right.child_by_field_name("function") {
+                    let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+                    let var_name = &source[left.start_byte()..left.end_byte()];
+
+                    if self.is_error_returning_function(function_name) {
+                        // Check if the assigned variable is later checked for errors
+                        if !self.is_variable_error_checked(node, var_name, function_name, source) {
+                            let start_point = node.start_position();
+                            let call_text = &source[right.start_byte()..right.end_byte()];
+
+                            let error_info = self.get_error_info(function_name);
+
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: Severity::High,
+                                message: format!(
+                                    "Return value of '{}' assigned to '{}' but not checked for errors: '{}' - {}",
+                                    function_name, var_name, call_text, error_info.description
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some(error_info.suggestion),
+                            ..Default::default()
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn check_init_declarator(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Handle pattern: TYPE *var = function_call();
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            if let Some(value) = node.child_by_field_name("value") {
+                if value.kind() == "call_expression" {
+                    if let Some(function_node) = value.child_by_field_name("function") {
+                        let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+
+                        // Extract variable name from declarator
+                        let var_name = self.extract_variable_name_from_declarator(&declarator, source);
+
+                        if self.is_error_returning_function(function_name) {
+                            // Check if the declared variable is later checked for errors
+                            if !self.is_variable_error_checked(node, &var_name, function_name, source) {
+                                let start_point = node.start_position();
+                                let call_text = &source[value.start_byte()..value.end_byte()];
+
+                                let error_info = self.get_error_info(function_name);
+
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::High,
+                                    message: format!(
+                                        "Return value of '{}' assigned to '{}' but not checked for errors: '{}' - {}",
+                                        function_name, var_name, call_text, error_info.description
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some(error_info.suggestion),
+                                ..Default::default()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn extract_variable_name_from_declarator(&self, declarator: &Node, source: &str) -> String {
+        // Handle different declarator patterns like *var, var, etc.
+        if declarator.kind() == "pointer_declarator" {
+            // For pointer declarations like FILE *file
+            if let Some(inner_declarator) = declarator.child_by_field_name("declarator") {
+                return self.extract_variable_name_from_declarator(&inner_declarator, source);
+            }
+        } else if declarator.kind() == "identifier" {
+            // For simple declarations like int var
+            return source[declarator.start_byte()..declarator.end_byte()].to_string();
+        } else if declarator.kind() == "init_declarator" {
+            // Handle nested init_declarator
+            if let Some(inner_declarator) = declarator.child_by_field_name("declarator") {
+                return self.extract_variable_name_from_declarator(&inner_declarator, source);
+            }
+        }
+
+        // Fallback: search for identifier in children
+        for i in 0..declarator.child_count() {
+            if let Some(child) = declarator.child(i) {
+                if child.kind() == "identifier" {
+                    return source[child.start_byte()..child.end_byte()].to_string();
+                }
+            }
+        }
+
+        // Final fallback: return the entire declarator text
+        source[declarator.start_byte()..declarator.end_byte()].to_string()
+    }
+
+    fn is_error_returning_function(&self, function_name: &str) -> bool {
+        matches!(function_name,
+            // Memory management
+            "malloc" | "calloc" | "realloc" | "aligned_alloc" |
+
+            // File I/O
+            "fopen" | "freopen" | "fseek" | "ftell" | "fsetpos" | "fgetpos" |
+            "fread" | "fwrite" | "fflush" | "fclose" | "remove" | "rename" |
+            "tmpfile" | "tmpnam" | "fgets" | "fputs" | "fgetc" | "fputc" | "ungetc" |
+
+            // String/locale functions
+            "setlocale" | "strtol" | "strtoul" | "strtoll" | "strtoull" |
+            "strtof" | "strtod" | "strtold" | "strftime" | "mbstowcs" | "wcstombs" |
+            "gets" | // deprecated but still needs checking
+
+            // Formatted I/O
+            "printf" | "fprintf" | "sprintf" | "snprintf" | "scanf" | "fscanf" | "sscanf" |
+            "vprintf" | "vfprintf" | "vsprintf" | "vsnprintf" |
+
+            // Time functions
+            "time" | "mktime" | "clock" | "ctime" | "localtime" | "gmtime" | "asctime" |
+
+            // System functions
+            "system" | "atexit" | "signal" | "raise" |
+
+            // Character classification that can fail
+            "mblen" | "mbtowc" | "wctomb" |
+
+            // Math functions that set errno
+            "acos" | "asin" | "atan" | "atan2" | "cos" | "sin" | "tan" |
+            "acosh" | "asinh" | "atanh" | "cosh" | "sinh" | "tanh" |
+            "exp" | "exp2" | "expm1" | "log" | "log10" | "log1p" | "log2" |
+            "pow" | "sqrt" | "cbrt" | "hypot" | "fabs" | "fmod" | "remainder" |
+            "ceil" | "floor" | "trunc" | "round" | "nearbyint" | "rint" |
+
+            // Environment
+            "getenv"
+        )
+    }
+
+    fn get_error_info(&self, function_name: &str) -> ErrorInfo {
+        let functions_info = self.get_function_error_info();
+        functions_info.get(function_name).cloned().unwrap_or_else(|| {
+            ErrorInfo {
+                description: "Can return error indicator".to_string(),
+                suggestion: "Check return value for errors".to_string(),
+            }
+        })
+    }
+
+    fn get_function_error_info(&self) -> HashMap<&'static str, ErrorInfo> {
+        let mut info = HashMap::new();
+
+        // Memory management
+        info.insert("malloc", ErrorInfo {
+            description: "Returns NULL on allocation failure".to_string(),
+            suggestion: "Check if (ptr == NULL) before using the allocated memory".to_string(),
+        });
+        info.insert("calloc", ErrorInfo {
+            description: "Returns NULL on allocation failure".to_string(),
+            suggestion: "Check if (ptr == NULL) before using the allocated memory".to_string(),
+        });
+        info.insert("realloc", ErrorInfo {
+            description: "Returns NULL on reallocation failure".to_string(),
+            suggestion: "Use temporary pointer: new_ptr = realloc(ptr, size); if (new_ptr == NULL) handle_error();".to_string(),
+        });
+
+        // File I/O
+        info.insert("fopen", ErrorInfo {
+            description: "Returns NULL if file cannot be opened".to_string(),
+            suggestion: "Check if (file == NULL) before using the file pointer".to_string(),
+        });
+        info.insert("fseek", ErrorInfo {
+            description: "Returns non-zero on failure".to_string(),
+            suggestion: "Check if (fseek(file, offset, whence) != 0) for seek errors".to_string(),
+        });
+        info.insert("ftell", ErrorInfo {
+            description: "Returns -1L on failure".to_string(),
+            suggestion: "Check if (pos == -1L) for position errors".to_string(),
+        });
+        info.insert("fread", ErrorInfo {
+            description: "Returns number of items read, may be less than requested".to_string(),
+            suggestion: "Check if (items_read == expected_items) or handle partial reads".to_string(),
+        });
+        info.insert("fwrite", ErrorInfo {
+            description: "Returns number of items written, may be less than requested".to_string(),
+            suggestion: "Check if (items_written == expected_items) for write errors".to_string(),
+        });
+        info.insert("fgets", ErrorInfo {
+            description: "Returns NULL on error or EOF".to_string(),
+            suggestion: "Check if (fgets(buffer, size, file) != NULL) before using buffer".to_string(),
+        });
+        info.insert("fclose", ErrorInfo {
+            description: "Returns non-zero on error".to_string(),
+            suggestion: "Check if (fclose(file) != 0) for close errors".to_string(),
+        });
+        info.insert("fputs", ErrorInfo {
+            description: "Returns EOF on error".to_string(),
+            suggestion: "Check if (fputs(str, file) == EOF) for write errors".to_string(),
+        });
+        info.insert("fgetc", ErrorInfo {
+            description: "Returns EOF on error or end of file".to_string(),
+            suggestion: "Check if (c = fgetc(file)) != EOF and distinguish from actual EOF".to_string(),
+        });
+        info.insert("fputc", ErrorInfo {
+            description: "Returns EOF on error".to_string(),
+            suggestion: "Check if (fputc(c, file) == EOF) for write errors".to_string(),
+        });
+
+        // String/locale functions
+        info.insert("setlocale", ErrorInfo {
+            description: "Returns NULL if locale cannot be set".to_string(),
+            suggestion: "Check if (setlocale(category, locale) == NULL) for locale errors".to_string(),
+        });
+        info.insert("strtol", ErrorInfo {
+            description: "Sets errno on overflow/underflow, uses endptr for parsing errors".to_string(),
+            suggestion: "Check errno and endptr: errno = 0; val = strtol(str, &endptr, base); if (errno != 0 || endptr == str) handle_error();".to_string(),
+        });
+
+        // Environment functions
+        info.insert("getenv", ErrorInfo {
+            description: "Returns NULL if environment variable not found".to_string(),
+            suggestion: "Check if (result == NULL) before using the returned string".to_string(),
+        });
+
+        // Formatted I/O
+        info.insert("printf", ErrorInfo {
+            description: "Returns negative value on output error".to_string(),
+            suggestion: "Check if (printf(...) < 0) for output errors".to_string(),
+        });
+        info.insert("snprintf", ErrorInfo {
+            description: "Returns negative on error, or >= buffer size on truncation".to_string(),
+            suggestion: "Check result: int ret = snprintf(buf, size, fmt, ...); if (ret < 0 || ret >= size) handle_error();".to_string(),
+        });
+
+        // Time functions
+        info.insert("time", ErrorInfo {
+            description: "Returns (time_t)(-1) on failure".to_string(),
+            suggestion: "Check if (result == (time_t)(-1)) for time errors".to_string(),
+        });
+        info.insert("ctime", ErrorInfo {
+            description: "Returns NULL on error".to_string(),
+            suggestion: "Check if (result == NULL) before using time string".to_string(),
+        });
+        info.insert("localtime", ErrorInfo {
+            description: "Returns NULL on error".to_string(),
+            suggestion: "Check if (result == NULL) before using time structure".to_string(),
+        });
+        info.insert("gmtime", ErrorInfo {
+            description: "Returns NULL on error".to_string(),
+            suggestion: "Check if (result == NULL) before using time structure".to_string(),
+        });
+        info.insert("asctime", ErrorInfo {
+            description: "Returns NULL on error".to_string(),
+            suggestion: "Check if (result == NULL) before using time string".to_string(),
+        });
+
+        // File operations
+        info.insert("remove", ErrorInfo {
+            description: "Returns non-zero on failure".to_string(),
+            suggestion: "Check if (remove(filename) != 0) for deletion errors".to_string(),
+        });
+        info.insert("rename", ErrorInfo {
+            description: "Returns non-zero on failure".to_string(),
+            suggestion: "Check if (rename(oldname, newname) != 0) for rename errors".to_string(),
+        });
+
+        // System functions
+        info.insert("system", ErrorInfo {
+            description: "Returns -1 on failure to execute command".to_string(),
+            suggestion: "Check if (system(command) == -1) for execution errors".to_string(),
+        });
+
+        info
+    }
+
+    fn is_return_value_checked(&self, node: &Node, source: &str) -> bool {
+        // Check if this function call is part of a condition or assignment
+        if let Some(parent) = node.parent() {
+            match parent.kind() {
+                // Direct assignment
+                "assignment_expression" => {
+                    if let Some(left) = parent.child_by_field_name("left") {
+                        let var_name = &source[left.start_byte()..left.end_byte()];
+                        // Check if the variable is later checked
+                        return self.is_variable_checked_in_context(&parent, var_name, source);
+                    }
+                }
+                // Used in a condition
+                "if_statement" | "while_statement" | "for_statement" | "conditional_expression" |
+                "binary_expression" | "unary_expression" | "parenthesized_expression" => {
+                    return true;
+                }
+                // Used in return statement
+                "return_statement" => {
+                    return true;
+                }
+                _ => {}
+            }
+        }
+        false
+    }
+
+    /// Checks if a variable assigned from an error-returning function is properly checked for errors.
+    ///
+    /// This function searches forward in the AST from the assignment point to find error checking
+    /// patterns in subsequent statements. It looks for:
+    /// - NULL pointer checks for pointer-returning functions (malloc, fopen, fgets, etc.)
+    /// - Non-zero return value checks for status-returning functions (fclose, fseek, etc.)
+    /// - Negative value checks for size/count-returning functions (printf, snprintf, etc.)
+    ///
+    /// The search is limited to the immediate scope and next 5 statements to avoid false positives
+    /// from distant, unrelated checks.
+    fn is_variable_error_checked(&self, assignment_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+        // Use new forward-looking algorithm
+        self.find_error_checks_in_scope(assignment_node, var_name, function_name, source)
+    }
+
+    /// Find error checks by looking forward from the assignment statement in the AST
+    fn find_error_checks_in_scope(&self, assignment_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+        // Walk up the AST to find the function body
+        let mut current = assignment_node.parent();
+        while let Some(node) = current {
+            if node.kind() == "compound_statement" {
+                // Found the function body, now search forward from the assignment position
+                return self.search_statements_for_error_checks(&node, assignment_node, var_name, function_name, source);
+            }
+            current = node.parent();
+        }
+        false
+    }
+
+
+    /// Search through statements in a compound statement for error checking patterns
+    fn search_statements_for_error_checks(&self, compound_stmt: &Node, assignment_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+        let assignment_byte_start = assignment_node.start_byte();
+        let mut statements_checked = 0;
+        const MAX_FORWARD_SEARCH: usize = 5; // Limit search to next 5 statements
+
+        // Walk through all child statements in the compound statement
+        for i in 0..compound_stmt.child_count() {
+            if let Some(child) = compound_stmt.child(i) {
+                // Skip non-statement nodes (like braces)
+                if !self.is_statement_node(&child) {
+                    continue;
+                }
+
+                // Only look at statements that come after the assignment
+                if child.start_byte() > assignment_byte_start {
+                    if self.statement_contains_error_check(&child, var_name, function_name, source) {
+                        return true;
+                    }
+
+                    // Enhanced: Also check nested compound statements for error checks
+                    if child.kind() == "if_statement" || child.kind() == "compound_statement" {
+                        if self.search_nested_statements_for_error_checks(&child, var_name, function_name, source) {
+                            return true;
+                        }
+                    }
+
+                    statements_checked += 1;
+                    if statements_checked >= MAX_FORWARD_SEARCH {
+                        break; // Limit search scope to avoid false positives
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Search through nested statements for error checking patterns (limited depth)
+    fn search_nested_statements_for_error_checks(&self, stmt_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+        // Recursive search in nested statements with limited depth
+        for i in 0..stmt_node.child_count() {
+            if let Some(child) = stmt_node.child(i) {
+                if child.kind() == "compound_statement" {
+                    // Search within the nested compound statement
+                    for j in 0..child.child_count() {
+                        if let Some(nested_child) = child.child(j) {
+                            if self.is_statement_node(&nested_child) {
+                                if self.statement_contains_error_check(&nested_child, var_name, function_name, source) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                } else if self.is_statement_node(&child) {
+                    if self.statement_contains_error_check(&child, var_name, function_name, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a node represents a statement
+    fn is_statement_node(&self, node: &Node) -> bool {
+        matches!(node.kind(),
+            "expression_statement" | "if_statement" | "while_statement" |
+            "for_statement" | "return_statement" | "break_statement" |
+            "continue_statement" | "compound_statement" | "declaration" |
+            "init_declarator"
+        )
+    }
+
+
+    /// Check if a single statement contains error checking for the variable
+    fn statement_contains_error_check(&self, stmt_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+        // For if statements, check the condition
+        if stmt_node.kind() == "if_statement" {
+            if let Some(condition) = stmt_node.child_by_field_name("condition") {
+                return self.find_error_check_in_context(&condition, var_name, function_name, source);
+            }
+        }
+
+        // For other statements, check the entire statement
+        self.find_error_check_in_context(stmt_node, var_name, function_name, source)
+    }
+
+
+    fn is_variable_checked_in_context(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        // Look in parent scopes for error checking
+        let mut current = node.parent();
+        for _ in 0..3 { // Check up to 3 levels up
+            if let Some(parent) = current {
+                if self.contains_error_check(&parent, var_name, source) {
+                    return true;
+                }
+                current = parent.parent();
+            } else {
+                break;
+            }
+        }
+        false
+    }
+
+    fn find_error_check_in_context(&self, node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+        let text = &source[node.start_byte()..node.end_byte()];
+
+        // Check for NULL pointer checks (more comprehensive patterns)
+        if matches!(function_name, "malloc" | "calloc" | "realloc" | "fopen" | "fgets" | "tmpfile") {
+            // Direct comparisons
+            if text.contains(&format!("{} == NULL", var_name)) ||
+               text.contains(&format!("NULL == {}", var_name)) ||
+               text.contains(&format!("{} != NULL", var_name)) ||
+               text.contains(&format!("NULL != {}", var_name)) {
+                return true;
+            }
+
+            // Implicit boolean checks
+            if text.contains(&format!("if ({})", var_name)) ||
+               text.contains(&format!("if ({} )", var_name)) ||
+               text.contains(&format!("if({})", var_name)) ||
+               text.contains(&format!("!{}", var_name)) ||
+               text.contains(&format!("if (!{})", var_name)) {
+                return true;
+            }
+
+            // Assignment with check in same expression
+            if text.contains(&format!("({} = ", var_name)) &&
+               (text.contains("!= NULL") || text.contains("== NULL")) {
+                return true;
+            }
+        }
+
+        // For printf/fprintf - skip if in error handling context
+        if matches!(function_name, "printf" | "fprintf" | "sprintf" | "snprintf") {
+            if self.is_in_error_handling_context(node, source) {
+                return true; // Accept printf/fprintf in error contexts
+            }
+
+            // Otherwise check for explicit return value checking
+            if text.contains(&format!("{} < 0", var_name)) ||
+               text.contains(&format!("0 > {}", var_name)) ||
+               text.contains(&format!("{} >= sizeof", var_name)) {
+                return true;
+            }
+        }
+
+        // For fclose/fseek - check for non-zero return
+        if matches!(function_name, "fclose" | "fseek" | "fflush") {
+            if text.contains(&format!("{} != 0", var_name)) ||
+               text.contains(&format!("0 != {}", var_name)) ||
+               text.contains(&format!("{} == 0", var_name)) ||
+               text.contains(&format!("0 == {}", var_name)) {
+                return true;
+            }
+        }
+
+        // For ftell - check for -1L return
+        if function_name == "ftell" {
+            if text.contains(&format!("{} == -1", var_name)) ||
+               text.contains(&format!("-1 == {}", var_name)) ||
+               text.contains(&format!("{} == -1L", var_name)) ||
+               text.contains(&format!("-1L == {}", var_name)) {
+                return true;
+            }
+        }
+
+        // For fread/fwrite - check if result equals expected
+        if matches!(function_name, "fread" | "fwrite") {
+            if text.contains(&format!("{} ==", var_name)) ||
+               text.contains(&format!("{} !=", var_name)) ||
+               text.contains(&format!("{} <", var_name)) ||
+               text.contains(&format!("{} >", var_name)) {
+                return true;
+            }
+        }
+
+        // For strtol family - check errno and endptr
+        if matches!(function_name, "strtol" | "strtoul" | "strtoll" | "strtoull" | "strtod" | "strtof" | "strtold") {
+            if text.contains("errno") || text.contains("endptr") {
+                return true;
+            }
+        }
+
+        // For setlocale - check for NULL return
+        if function_name == "setlocale" {
+            if text.contains(&format!("{} == NULL", var_name)) ||
+               text.contains(&format!("NULL == {}", var_name)) ||
+               text.contains(&format!("{} != NULL", var_name)) ||
+               text.contains(&format!("NULL != {}", var_name)) {
+                return true;
+            }
+        }
+
+        // For system - check for -1 return
+        if function_name == "system" {
+            if text.contains(&format!("{} == -1", var_name)) ||
+               text.contains(&format!("-1 == {}", var_name)) ||
+               text.contains(&format!("{} != -1", var_name)) ||
+               text.contains(&format!("-1 != {}", var_name)) {
+                return true;
+            }
+        }
+
+        // For getenv, ctime, localtime, gmtime, asctime - check for NULL return
+        if matches!(function_name, "getenv" | "ctime" | "localtime" | "gmtime" | "asctime") {
+            if text.contains(&format!("{} == NULL", var_name)) ||
+               text.contains(&format!("NULL == {}", var_name)) ||
+               text.contains(&format!("{} != NULL", var_name)) ||
+               text.contains(&format!("NULL != {}", var_name)) {
+                return true;
+            }
+        }
+
+        // For time - check for (time_t)(-1) return
+        if function_name == "time" {
+            if text.contains(&format!("{} == (time_t)(-1)", var_name)) ||
+               text.contains(&format!("(time_t)(-1) == {}", var_name)) ||
+               text.contains(&format!("{} == -1", var_name)) ||
+               text.contains(&format!("-1 == {}", var_name)) {
+                return true;
+            }
+        }
+
+        // For remove/rename - check for non-zero return
+        if matches!(function_name, "remove" | "rename") {
+            if text.contains(&format!("{} != 0", var_name)) ||
+               text.contains(&format!("0 != {}", var_name)) ||
+               text.contains(&format!("{} == 0", var_name)) ||
+               text.contains(&format!("0 == {}", var_name)) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn contains_error_check(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        let text = &source[node.start_byte()..node.end_byte()];
+
+        // Look for common error checking patterns
+        text.contains(&format!("{} == NULL", var_name)) ||
+        text.contains(&format!("NULL == {}", var_name)) ||
+        text.contains(&format!("{} != NULL", var_name)) ||
+        text.contains(&format!("NULL != {}", var_name)) ||
+        text.contains(&format!("!{}", var_name)) ||
+        text.contains(&format!("if ({})", var_name)) ||
+        text.contains(&format!("if({}", var_name)) ||
+        text.contains(&format!("{} < 0", var_name)) ||
+        text.contains(&format!("0 > {}", var_name)) ||
+        text.contains(&format!("{} != 0", var_name)) ||
+        text.contains(&format!("0 != {}", var_name)) ||
+        text.contains(&format!("{} == -1", var_name)) ||
+        text.contains(&format!("-1 == {}", var_name)) ||
+        text.contains(&format!("{} >= sizeof", var_name))
+    }
+
+    /// Check if a node appears to be in an error handling context.
+    ///
+    /// This function identifies contexts where certain functions (like printf/fprintf) are
+    /// used for error reporting or logging purposes, where return value checking is often
+    /// not required or practical. Detected contexts include:
+    ///
+    /// 1. Signal handler functions (identified by parameter patterns or naming)
+    /// 2. Error handling if-blocks (where condition tests for error states)
+    /// 3. Cleanup code sections (often containing fclose without return checking)
+    /// 4. Error reporting blocks (containing stderr output or error messages)
+    ///
+    /// Returns true if the node is in a context where stricter return value checking
+    /// can be relaxed, false otherwise.
+    fn is_in_error_handling_context(&self, node: &Node, source: &str) -> bool {
+        let mut current = node.parent();
+
+        for level in 0..5 {
+            if let Some(parent) = current {
+                // Check if we're inside a signal handler function
+                if parent.kind() == "function_definition" {
+                    if let Some(declarator) = parent.child_by_field_name("declarator") {
+                        let function_text = &source[declarator.start_byte()..declarator.end_byte()];
+                        // Signal handlers typically have (int sig) parameter
+                        if function_text.contains("signal_handler") ||
+                           function_text.contains("handler") ||
+                           (function_text.contains("(int sig") || function_text.contains("(int signal")) {
+                            return true; // Allow printf/fprintf in signal handlers
+                        }
+                    }
+                }
+
+                // Check if we're in an if statement that tests for errors
+                if parent.kind() == "if_statement" {
+                    if let Some(condition) = parent.child_by_field_name("condition") {
+                        let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                        // Look for error checking patterns in the condition
+                        if condition_text.contains("== NULL") || condition_text.contains("!= NULL") ||
+                           condition_text.contains("< 0") || condition_text.contains("!= 0") ||
+                           condition_text.contains("== -1") || condition_text.contains("== EOF") ||
+                           condition_text.contains("== (time_t)(-1)") {
+                            return true;
+                        }
+                    }
+
+                    // Check if we're in the THEN block of an error condition
+                    if let Some(consequence) = parent.child_by_field_name("consequence") {
+                        if self.node_contains_or_is_ancestor(&consequence, node) {
+                            // We're in the then-block of an if statement, check if condition is error check
+                            if let Some(condition) = parent.child_by_field_name("condition") {
+                                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                                if condition_text.contains("== NULL") || condition_text.contains("< 0") ||
+                                   condition_text.contains("== -1") || condition_text.contains("== EOF") {
+                                    return true; // We're in error handling
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Enhanced cleanup context detection for fclose
+                if parent.kind() == "expression_statement" {
+                    let parent_text = &source[parent.start_byte()..parent.end_byte()];
+                    // Look for fclose in error cleanup contexts
+                    if parent_text.contains("fclose(") && level <= 2 {
+                        // Check if we're in an error handling block
+                        if let Some(compound_stmt) = parent.parent() {
+                            if compound_stmt.kind() == "compound_statement" {
+                                if let Some(if_stmt) = compound_stmt.parent() {
+                                    if if_stmt.kind() == "if_statement" {
+                                        if let Some(condition) = if_stmt.child_by_field_name("condition") {
+                                            let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                                            // If the condition checks for an error, fclose is likely cleanup
+                                            if condition_text.contains("< 0") || condition_text.contains("== NULL") ||
+                                               condition_text.contains("!= NULL") || condition_text.contains("== -1") {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Check if we're in the else clause of an error check
+                if parent.kind() == "else_clause" {
+                    if let Some(if_stmt) = parent.parent() {
+                        if if_stmt.kind() == "if_statement" {
+                            if let Some(condition) = if_stmt.child_by_field_name("condition") {
+                                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                                if condition_text.contains("!= NULL") || condition_text.contains(">= 0") {
+                                    return true; // This is likely an error handling else clause
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Look for explicit error handling keywords in close parent context
+                if level <= 2 {
+                    let parent_text = &source[parent.start_byte()..parent.end_byte()];
+                    if parent_text.contains("stderr") || parent_text.contains("perror") ||
+                       parent_text.contains("return -1") || parent_text.contains("exit(") ||
+                       parent_text.contains("goto error") || parent_text.contains("cleanup") ||
+                       parent_text.contains("Failed to") || parent_text.contains("Error:") {
+                        return true;
+                    }
+                }
+
+                current = parent.parent();
+            } else {
+                break;
+            }
+        }
+        false
+    }
+
+    /// Helper function to check if a node contains or is an ancestor of another node
+    fn node_contains_or_is_ancestor(&self, potential_ancestor: &Node, target: &Node) -> bool {
+        potential_ancestor.start_byte() <= target.start_byte() &&
+        potential_ancestor.end_byte() >= target.end_byte()
+    }
+
+    /// Check if an fclose call is in a cleanup context where return value checking is less critical
+    fn is_cleanup_fclose_context(&self, stmt_node: &Node, source: &str) -> bool {
+        // Look for patterns indicating this is cleanup fclose:
+        // 1. fclose immediately followed by return
+        // 2. fclose in error handling block (after an error condition)
+        // 3. fclose after fprintf/fwrite failures
+
+        // Enhanced: Look for specific cleanup patterns in the immediate context
+        let stmt_text = &source[stmt_node.start_byte()..stmt_node.end_byte()];
+
+        // Check if fclose is in an error handling if-block
+        if let Some(if_stmt) = self.find_containing_if_statement(stmt_node) {
+            if let Some(condition) = if_stmt.child_by_field_name("condition") {
+                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+
+                // Check for fprintf/fwrite error conditions
+                if condition_text.contains("fprintf") &&
+                   (condition_text.contains("< 0") || condition_text.contains("== -1")) {
+                    return true;
+                }
+                if condition_text.contains("fwrite") &&
+                   (condition_text.contains("!= ") || condition_text.contains("< ")) {
+                    return true;
+                }
+
+                // General error condition patterns
+                if condition_text.contains("< 0") || condition_text.contains("== NULL") ||
+                   condition_text.contains("!= 0") || condition_text.contains("failed") ||
+                   condition_text.contains("Failed") {
+                    return true;
+                }
+            }
+        }
+
+        // Check if fclose is followed by return in the same compound statement
+        let mut current = stmt_node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "compound_statement" {
+                // More precise pattern: check statements after fclose for return
+                let fclose_byte_end = stmt_node.end_byte();
+
+                // Walk through subsequent statements in the compound statement
+                for i in 0..parent.child_count() {
+                    if let Some(child) = parent.child(i) {
+                        if child.start_byte() > fclose_byte_end {
+                            if child.kind() == "return_statement" {
+                                return true; // fclose followed by return
+                            }
+                            // If we hit a non-return statement, stop looking
+                            if self.is_statement_node(&child) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // Fallback: text-based check for simple cases
+                let compound_text = &source[parent.start_byte()..parent.end_byte()];
+                if compound_text.contains("fclose(") && compound_text.contains("return") {
+                    // Look for pattern: fclose(...); return with minimal content in between
+                    let lines: Vec<&str> = compound_text.lines().collect();
+                    for i in 0..lines.len().saturating_sub(1) {
+                        if lines[i].contains("fclose(") &&
+                           (lines[i+1].trim().starts_with("return") ||
+                            (i + 2 < lines.len() && lines[i+2].trim().starts_with("return"))) {
+                            return true;
+                        }
+                    }
+                }
+                break;
+            }
+            current = parent.parent();
+        }
+
+        false
+    }
+
+    /// Helper function to find containing if statement
+    fn find_containing_if_statement<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "if_statement" {
+                return Some(parent);
+            }
+            current = parent.parent();
+        }
+        None
+    }
+
+    /// Helper function to find containing statement
+    fn find_containing_statement<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if self.is_statement_node(&parent) {
+                return Some(parent);
+            }
+            current = parent.parent();
+        }
+        None
+    }
+}
+
+#[derive(Debug, Clone)]
+struct ErrorInfo {
+    description: String,
+    suggestion: String,
+}
+
+// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
+// #[cfg(test)]
+// #[path = "tests/err33_c.rs"]
+// mod tests;

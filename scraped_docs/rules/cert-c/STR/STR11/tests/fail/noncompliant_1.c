@@ -1,1 +1,0 @@
-const char s[3] = "abc";
