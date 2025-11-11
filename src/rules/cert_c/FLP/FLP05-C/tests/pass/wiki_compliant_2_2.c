@@ -1,7 +1,7 @@
 /*
  * Rule: FLP05-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP05-C violation
+ * Status: PASS - Compliant solution
  */
 
 Original    : 3.333333e-01

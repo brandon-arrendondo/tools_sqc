@@ -1,7 +1,7 @@
 /*
  * Rule: FLP30-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP30-C violation
+ * Status: PASS - Compliant solution
  */
 
 void func(void) {

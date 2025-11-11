@@ -44,7 +44,7 @@ use tree_sitter::Node;
 use std::collections::HashMap;
 
 // Import shared utility functions
-use super::ast_utils::{
+use crate::utility::cert_c::ast_utils::{
     find_containing_function,
     find_identifier_in_declarator,
     is_function_parameter,

@@ -15,7 +15,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;
-use super::ast_utils::{
+use crate::utility::cert_c::ast_utils::{
     find_containing_function,
     get_function_parameters,
     find_identifier_in_declarator,
@@ -24,13 +24,13 @@ use super::ast_utils::{
     is_write_context,
     is_function_parameter,
 };
-use super::variable_analysis::{
+use crate::utility::cert_c::variable_analysis::{
     is_user_input_variable,
     has_validation_before_loop,
     is_uninitialized_variable,
     has_bounds_validation,
 };
-use super::size_analysis::{
+use crate::utility::cert_c::size_analysis::{
     find_allocation_size,
     find_element_size,
     find_string_literal_length,

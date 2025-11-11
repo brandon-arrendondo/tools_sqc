@@ -1,7 +1,7 @@
 /*
  * Rule: FLP37-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP37-C violation
+ * Status: PASS - Compliant solution
  */
 
 #include <stdbool.h>

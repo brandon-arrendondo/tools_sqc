@@ -1,7 +1,7 @@
 /*
  * Rule: FLP02-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP02-C violation
+ * Status: PASS - Compliant solution
  */
 
 array[0] = 10.100000 and total is 10.100000

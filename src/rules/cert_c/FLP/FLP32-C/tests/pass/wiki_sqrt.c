@@ -1,7 +1,7 @@
 /*
  * Rule: FLP32-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP32-C violation
+ * Status: PASS - Compliant solution
  */
 
 #include <math.h>

@@ -1,7 +1,7 @@
 /*
  * Rule: FLP04-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP04-C violation
+ * Status: PASS - Compliant solution
  */
 
 float currentBalance; /* User's cash balance */

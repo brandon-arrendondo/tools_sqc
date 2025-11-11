@@ -19,7 +19,7 @@
 //! - Input functions (fgets, scanf, getenv, etc.)
 //! - Variables assigned from user input sources
 
-use super::ast_utils;
+use crate::utility::cert_c::ast_utils;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
 use tree_sitter::Node;

@@ -1,7 +1,7 @@
 /*
  * Rule: FLP03-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP03-C violation
+ * Status: PASS - Compliant solution
  */
 
 void fp_usingSEH(void) {

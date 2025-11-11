@@ -1,7 +1,7 @@
 /*
  * Rule: FLP06-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP06-C violation
+ * Status: PASS - Compliant solution
  */
 
 void func(void) {

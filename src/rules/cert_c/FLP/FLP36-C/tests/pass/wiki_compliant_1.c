@@ -1,7 +1,7 @@
 /*
  * Rule: FLP36-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP36-C violation
+ * Status: PASS - Compliant solution
  */
 
 #include <assert.h>

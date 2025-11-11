@@ -1,8 +1,4 @@
-// Common utilities for all CERT C rules
-pub mod utils;
-pub use utils::ast_utils;
-pub use utils::size_analysis;
-pub use utils::variable_analysis;
+// Common utilities for all CERT C rules are in crate::utility::cert_c
 
 // Implemented rules with nested structure
 #[path = "ARR/ARR00-C/arr00_c.rs"]
@@ -126,5 +122,4 @@ impl RuleRegistry {
 
 // Integration tests module
 #[cfg(test)]
-#[path = "tests/integration.rs"]
 mod integration;

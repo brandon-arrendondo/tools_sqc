@@ -9,15 +9,15 @@ Because floating-point numbers represent real numbers, it is often mistakenly
 assumed that they can represent any simple fraction exactly. Floating-point
 numbers are subject to representational limitations just as integers are, and
 binary floating-point numbers cannot represent all real numbers exactly, even if
-they can be represented in a small number of decimal digits. In addition,
-because floating-point numbers can represent large values, it is often
-mistakenly assumed that they can represent all significant digits of those
+they can be represented in a small number of decimal digits.
+In addition, because floating-point numbers can represent large values, it is
+often mistakenly assumed that they can represent all significant digits of those
 values. To gain a large dynamic range, floating-point numbers maintain a fixed
 number of precision bits (also called the significand) and an exponent, which
-limit the number of significant digits they can represent. Different
-implementations have different precision limitations, and to keep code portable,
-floating-point variables must not be used as the loop induction variable. See
-Goldberg's work for an introduction to this topic [Goldberg 1991].
+limit the number of significant digits they can represent.
+Different implementations have different precision limitations, and to keep code
+portable, floating-point variables must not be used as the loop induction
+variable. See Goldberg's work for an introduction to this topic [Goldberg 1991].
 """
 severity = "Low"
 likelihood = "Probable"
@@ -31,3 +31,4 @@ enabled = false
 
 [references]
 wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FLP30-C.+Do+not+use+floating-point+variables+as+loop+counters"
+cwe = []

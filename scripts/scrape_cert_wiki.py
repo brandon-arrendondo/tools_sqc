@@ -6,21 +6,21 @@ This script:
 1. Fetches all rule and recommendation categories from the main wiki page
 2. Extracts individual items (rules/recommendations) from each category
 3. Parses each page for content and metadata
-4. Generates YAML metadata only
+4. Generates TOML metadata files (preserving existing files)
 5. Implements rate limiting to be respectful of the wiki
 
 Usage:
-    python3 scripts/scrape_cert_wiki.py [--delay SECONDS] [--output DIR] [--type rule|rec|all]
+    python3 scripts/scrape_cert_wiki.py [--delay SECONDS] [--output DIR] [--type rule|rec|all] [--force]
 """
 
 import re
 import os
 import sys
 import time
-import yaml
 import json
 import argparse
 import requests
+import textwrap
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 from dataclasses import dataclass, asdict
@@ -33,15 +33,9 @@ BASE_URL = "https://wiki.sei.cmu.edu"
 WIKI_BASE = f"{BASE_URL}/confluence/display/c"
 DEFAULT_DELAY = 3.0  # Seconds between requests (conservative - no robots.txt found)
 USER_AGENT = "CERT-C-Scraper/1.0 (Educational Purpose)"
-SCHEMA_VERSION = "1.0.0"  # Version of the YAML structure format
 
-# Output configuration
-BASE_OUTPUT_DIR = "scraped_docs"
-RULES_SUBDIR = "rules"
-CERT_C_SUBDIR = "cert-c"
-
-# Computed paths
-OUTPUT_DIR = os.path.join(BASE_OUTPUT_DIR, RULES_SUBDIR, CERT_C_SUBDIR)
+# Output configuration - directly to src/rules/cert_c/
+BASE_OUTPUT_DIR = "src/rules/cert_c"
 
 # Category mapping - will be populated dynamically from wiki
 # Format: {"CAT": ("number", "Category Name")}
@@ -73,11 +67,6 @@ class ItemMetadata:
 
     # Content
     description: str = ""
-
-    # Implementation status (from existing code)
-    implemented: bool = False
-    documented: bool = False
-    tested: bool = False
 
     def __post_init__(self):
         if self.cwe is None:
@@ -260,7 +249,7 @@ class WikiScraper:
         # Extract main content
         content = soup.find('div', id='main-content')
         if not content:
-            return item
+            return (item, [], [])
 
         # Extract description (first paragraph or section before first heading)
         desc_parts = []
@@ -331,17 +320,6 @@ class WikiScraper:
                             if related_id not in item.related_rules:
                                 item.related_rules.append(related_id)
                 break  # Only process first "Related" section
-
-        # Check implementation status from existing code
-        file_name = item_id.lower().replace('-c', '_c')
-        impl_file = Path(f"src/rules/cert_c/{file_name}.rs")
-        test_file = Path(f"src/rules/cert_c/tests/{file_name}.rs")
-        doc_file1 = Path(f"docs/cert-c-rules/{item_id}.md")
-        doc_file2 = Path(f"docs/cert-c-rules/{item_id.lower()}.md")
-
-        item.implemented = impl_file.exists()
-        item.tested = test_file.exists()
-        item.documented = doc_file1.exists() or doc_file2.exists()
 
         # Extract code examples
         non_compliant, compliant = extract_code_examples(content, item_id)
@@ -455,16 +433,12 @@ def sanitize_filename(name: str) -> str:
 
 
 def save_code_examples(item_id: str, category: str, non_compliant: List[Tuple[str, str]], compliant: List[Tuple[str, str]], output_dir: str):
-    """Save code examples as test files"""
+    """Save code examples as test files with proper header comments"""
     if not non_compliant and not compliant:
         return
 
-    # Extract rule number without -C suffix for directory name
-    # ARR30-C -> ARR30
-    rule_dir_name = item_id.replace('-C', '')
-
-    # Create nested test directories: ARR/ARR30/tests/fail and ARR/ARR30/tests/pass
-    tests_dir = Path(output_dir) / category / rule_dir_name / "tests"
+    # Create nested test directories: ARR/ARR30-C/tests/fail and ARR/ARR30-C/tests/pass
+    tests_dir = Path(output_dir) / category / item_id / "tests"
     fail_dir = tests_dir / "fail"
     pass_dir = tests_dir / "pass"
 
@@ -473,64 +447,179 @@ def save_code_examples(item_id: str, category: str, non_compliant: List[Tuple[st
 
     # Save non-compliant examples
     for example_name, code in non_compliant:
-        filename = f"{example_name}.c"
+        filename = f"wiki_{example_name}.c"
         filepath = fail_dir / filename
-        filepath.write_text(code)
+
+        # Add header comment
+        header = f"""/*
+ * Rule: {item_id}
+ * Source: wiki
+ * Status: FAIL - Should trigger {item_id} violation
+ */
+
+"""
+        full_content = header + code
+        filepath.write_text(full_content)
         print(f"    ✓ Saved non-compliant example: {filepath}")
 
     # Save compliant examples
     for example_name, code in compliant:
-        filename = f"{example_name}.c"
+        filename = f"wiki_{example_name}.c"
         filepath = pass_dir / filename
-        filepath.write_text(code)
+
+        # Add header comment
+        header = f"""/*
+ * Rule: {item_id}
+ * Source: wiki
+ * Status: PASS - Compliant solution
+ */
+
+"""
+        full_content = header + code
+        filepath.write_text(full_content)
         print(f"    ✓ Saved compliant example: {filepath}")
 
 
-def generate_yaml_metadata(item: ItemMetadata, output_path: Path):
-    """Generate YAML metadata file for a rule or recommendation"""
+def wrap_description(text: str, width: int = 80) -> str:
+    """Wrap text to specified width while preserving paragraph breaks"""
+    if not text:
+        return ""
 
-    # Extract rule number without -C suffix for directory name
-    rule_dir_name = item.id.replace('-C', '')
+    # Clean unicode artifacts
+    text = text.replace('\xa0', ' ')
 
-    yaml_content = {
-        "id": item.id,
-        "type": item.item_type,  # "rule" or "recommendation"
-        "category": item.category,
-        "number": item.number,
-        "metadata": {
-            "title": item.title,
-            "description": item.description,  # Full description, no truncation
-            "severity": item.severity or "Unknown",
-            "likelihood": item.likelihood or "Unknown",
-            "priority": item.priority or "Unknown",
-            "level": item.level or "Unknown",
-            "cert_version": item.cert_version or "Unknown",
-            "last_modified": item.last_modified or "Unknown"
-        },
-        "implementation": {
-            "status": "implemented" if item.implemented else "not_implemented",
-            "file": os.path.join("src", RULES_SUBDIR, CERT_C_SUBDIR, item.category, rule_dir_name, f"{item.id.lower().replace('-c', '_c')}.rs") if item.implemented else None
-        },
-        "testing": {
-            "status": "tested" if item.tested else "not_tested",
-            "test_file": os.path.join("src", RULES_SUBDIR, CERT_C_SUBDIR, item.category, rule_dir_name, f"test_{item.id.lower().replace('-c', '_c')}.rs") if item.tested else None,
-            "external_tests": f"~/tools_sqc_testcases/{item.id}/"
-        },
-        "references": {
-            "wiki": item.wiki_url,
-            "cwe": item.cwe,
-            "related_rules": item.related_rules,
-            "related_recommendations": item.related_recommendations
-        }
-    }
+    paragraphs = text.split('\n\n')
+    wrapped_paragraphs = []
 
+    for para in paragraphs:
+        # Remove existing line breaks within paragraph
+        para = ' '.join(para.split())
+        # Wrap to width
+        wrapped = textwrap.fill(para, width=width)
+        wrapped_paragraphs.append(wrapped)
+
+    return '\n'.join(wrapped_paragraphs)
+
+
+def parse_existing_toml_date(toml_path: Path) -> Optional[str]:
+    """Extract last_modified date from existing TOML file"""
+    try:
+        with open(toml_path, 'r') as f:
+            content = f.read()
+            # Look for last_modified = "..." line
+            match = re.search(r'last_modified\s*=\s*"([^"]+)"', content)
+            if match:
+                return match.group(1)
+    except Exception as e:
+        print(f"    ⚠ Could not read existing TOML: {e}")
+    return None
+
+
+def compare_dates(date1: Optional[str], date2: Optional[str]) -> int:
+    """
+    Compare two date strings in format "Month DD, YYYY"
+    Returns: -1 if date1 < date2, 0 if equal, 1 if date1 > date2, 0 if can't compare
+    """
+    if not date1 or not date2:
+        return 0
+
+    try:
+        from datetime import datetime
+        d1 = datetime.strptime(date1, "%b %d, %Y")
+        d2 = datetime.strptime(date2, "%b %d, %Y")
+        if d1 < d2:
+            return -1
+        elif d1 > d2:
+            return 1
+        else:
+            return 0
+    except:
+        # If we can't parse, assume they're different to be safe
+        return 0 if date1 == date2 else 1
+
+
+def generate_toml_metadata(item: ItemMetadata, output_path: Path, force: bool = False):
+    """
+    Generate TOML metadata file for a rule or recommendation.
+
+    If the file exists and force=False, only update if wiki content is newer.
+    """
+
+    # Check if file already exists
+    if output_path.exists() and not force:
+        # Check if wiki content is newer
+        existing_date = parse_existing_toml_date(output_path)
+        wiki_date = item.last_modified
+
+        if existing_date and wiki_date:
+            comparison = compare_dates(wiki_date, existing_date)
+            if comparison <= 0:
+                # Wiki content is same or older than existing TOML
+                print(f"    ⊙ TOML up-to-date: {output_path} (wiki: {wiki_date}, local: {existing_date})")
+                return
+            else:
+                # Wiki content is newer
+                print(f"    ↻ Wiki updated: {wiki_date} > {existing_date}, regenerating...")
+        else:
+            # Can't compare dates, skip to be safe
+            print(f"    ⊙ TOML exists: {output_path} (use --force to overwrite)")
+            return
+
+    # Wrap description for readability
+    wrapped_desc = wrap_description(item.description, width=80)
+
+    # Build TOML content manually for better control
+    toml_lines = []
+
+    # Metadata section
+    toml_lines.append("[metadata]")
+    toml_lines.append(f'id = "{item.id}"')
+    toml_lines.append(f'type = "{item.item_type}"')
+    toml_lines.append(f'category = "{item.category}"')
+    toml_lines.append(f'number = {item.number}')
+    toml_lines.append(f'title = "{item.title}"')
+
+    # Description with multi-line string
+    if wrapped_desc:
+        toml_lines.append('description = """')
+        toml_lines.append(wrapped_desc)
+        toml_lines.append('"""')
+    else:
+        toml_lines.append('description = ""')
+
+    toml_lines.append(f'severity = "{item.severity or "Unknown"}"')
+    toml_lines.append(f'likelihood = "{item.likelihood or "Unknown"}"')
+    toml_lines.append(f'priority = "{item.priority or "Unknown"}"')
+    toml_lines.append(f'level = "{item.level or "Unknown"}"')
+    toml_lines.append(f'cert_version = "{item.cert_version or "Unknown"}"')
+    toml_lines.append(f'last_modified = "{item.last_modified or "Unknown"}"')
+    toml_lines.append("")
+
+    # Rules section (enabled = false by default for new rules)
+    toml_lines.append(f'[rules.cert_c.{item.id}]')
+    toml_lines.append('enabled = false')
+    toml_lines.append("")
+
+    # References section
+    toml_lines.append("[references]")
+    toml_lines.append(f'wiki = "{item.wiki_url}"')
+
+    if item.cwe:
+        cwe_list = ', '.join([f'"{cwe}"' for cwe in item.cwe])
+        toml_lines.append(f'cwe = [{cwe_list}]')
+    else:
+        toml_lines.append('cwe = []')
+
+    toml_lines.append("")
+
+    # Write to file
     with open(output_path, 'w') as f:
-        yaml.dump(yaml_content, f, default_flow_style=False, sort_keys=False, allow_unicode=True)
+        f.write('\n'.join(toml_lines))
 
 
 def main():
     """Main execution function"""
-    parser = argparse.ArgumentParser(description='Scrape CERT C wiki and generate YAML metadata')
+    parser = argparse.ArgumentParser(description='Scrape CERT C wiki and generate TOML metadata')
     parser.add_argument('--delay', type=float, default=DEFAULT_DELAY,
                         help=f'Delay between requests in seconds (default: {DEFAULT_DELAY})')
     parser.add_argument('--output', type=str, default=BASE_OUTPUT_DIR,
@@ -539,15 +628,18 @@ def main():
                         help='Specific categories to scrape (e.g., ARR MEM), default: all')
     parser.add_argument('--type', choices=['rule', 'rec', 'all'], default='all',
                         help='Scrape rules, recommendations, or both (default: all)')
+    parser.add_argument('--force', action='store_true',
+                        help='Force overwrite existing TOML files')
     args = parser.parse_args()
 
     print("=" * 60)
-    print("CERT C Wiki Scraper - YAML Only")
+    print("CERT C Wiki Scraper - TOML Generation")
     print("=" * 60)
     print(f"Rate limit: {args.delay}s between requests")
     print(f"  (Note: No robots.txt found - using conservative default)")
     print(f"Output directory: {args.output}")
     print(f"Scraping: {args.type}")
+    print(f"Force overwrite: {args.force}")
     print()
 
     # Create scraper
@@ -596,9 +688,12 @@ def main():
 
     # Parse each item
     print("=" * 60)
-    print("Parsing individual pages and generating YAML...")
+    print("Parsing individual pages and generating TOML...")
     print("=" * 60)
     parsed_items = []
+    skipped_items = []
+    new_items = []
+    updated_items = []
 
     for i, (item_type, category, item_id, title, url) in enumerate(all_items, 1):
         print(f"[{i}/{len(all_items)}] Parsing {item_type} {item_id}...")
@@ -613,26 +708,36 @@ def main():
 
             parsed_items.append(item)
 
-            # Create directory structure organized by category with nested rule directories
-            # Structure: scraped_docs/rules/cert-c/ARR/ARR30/ARR30-C.yaml
-            base_output_dir = os.path.join(args.output, RULES_SUBDIR, CERT_C_SUBDIR)
-
-            # Extract rule number without -C suffix for directory name
-            # ARR30-C -> ARR30
-            rule_dir_name = item.id.replace('-C', '')
-
-            rule_dir = Path(base_output_dir) / item.category / rule_dir_name
+            # Create directory structure: src/rules/cert_c/ARR/ARR30-C/ARR30-C.toml
+            rule_dir = Path(args.output) / item.category / item.id
             rule_dir.mkdir(parents=True, exist_ok=True)
 
-            # Generate YAML - filename keeps -C suffix for CERT C identification
-            yaml_filename = item.id + '.yaml'
-            yaml_path = rule_dir / yaml_filename
-            generate_yaml_metadata(item, yaml_path)
-            print(f"  ✓ Generated YAML: {yaml_path}")
+            # Generate TOML - filename matches rule ID
+            toml_filename = item.id + '.toml'
+            toml_path = rule_dir / toml_filename
 
-            # Save code examples as test files
+            # Track state before generation
+            is_new = not toml_path.exists()
+            existing_date = parse_existing_toml_date(toml_path) if not is_new else None
+
+            generate_toml_metadata(item, toml_path, force=args.force)
+
+            # Track results
+            if is_new:
+                new_items.append(item_id)
+                print(f"  ✓ Generated new TOML: {toml_path}")
+            elif args.force:
+                updated_items.append(item_id)
+                print(f"  ✓ Force updated TOML: {toml_path}")
+            elif existing_date and item.last_modified and compare_dates(item.last_modified, existing_date) > 0:
+                updated_items.append(item_id)
+                print(f"  ✓ Updated TOML: {toml_path}")
+            else:
+                skipped_items.append(item_id)
+
+            # Save code examples as test files (always update these)
             if non_compliant or compliant:
-                save_code_examples(item.id, item.category, non_compliant, compliant, base_output_dir)
+                save_code_examples(item.id, item.category, non_compliant, compliant, args.output)
         else:
             print(f"  ✗ Failed to parse {item_id}")
 
@@ -641,6 +746,9 @@ def main():
     print("✅ SCRAPING COMPLETE!")
     print("=" * 60)
     print(f"Scraped {len(parsed_items)} items")
+    print(f"  - New TOML files: {len(new_items)}")
+    print(f"  - Updated (wiki newer): {len(updated_items)}")
+    print(f"  - Unchanged (skipped): {len(skipped_items)}")
 
     # Count by type
     rules_count = sum(1 for item in parsed_items if item.item_type == "rule")
@@ -649,11 +757,24 @@ def main():
     print(f"  - Recommendations: {rec_count}")
 
     print(f"Output directory: {args.output}")
+
+    if new_items:
+        print()
+        print("New rules added:")
+        for rule_id in new_items:
+            print(f"  - {rule_id}")
+
+    if updated_items:
+        print()
+        print("Rules updated (wiki content newer):")
+        for rule_id in updated_items:
+            print(f"  - {rule_id}")
+
     print()
     print("Next steps:")
-    print("1. Review generated YAML files")
-    print("2. Validate content against wiki")
-    print("3. Use YAML metadata for tooling/documentation generation")
+    print("1. Review generated TOML files")
+    print("2. Run: cargo build  # Regenerates rules-all.toml")
+    print("3. Implement rules as needed")
 
 
 if __name__ == "__main__":

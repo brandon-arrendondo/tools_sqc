@@ -1,7 +1,7 @@
 /*
  * Rule: FLP34-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP34-C violation
+ * Status: PASS - Compliant solution
  */
 
 #include <float.h>

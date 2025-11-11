@@ -1,7 +1,7 @@
 /*
  * Rule: FLP07-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FLP07-C violation
+ * Status: PASS - Compliant solution
  */
 
 float calc_percentage(float value) {

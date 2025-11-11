@@ -18,6 +18,23 @@ pub fn analyze_project(
 ) -> Result<Vec<RuleViolation>> {
     let mut violations = Vec::new();
     let registry = RuleRegistry::new();
+
+    // Validate that all enabled rules are implemented
+    let mut unimplemented_rules = Vec::new();
+    for (rule_id, _) in manifest.enabled_rules() {
+        if registry.get_rule(rule_id).is_none() {
+            unimplemented_rules.push(rule_id.clone());
+        }
+    }
+
+    if !unimplemented_rules.is_empty() {
+        eprintln!("Warning: The following rules are enabled in manifest but not implemented:");
+        for rule_id in &unimplemented_rules {
+            eprintln!("  - {}", rule_id);
+        }
+        eprintln!("These rules will be skipped during analysis.\n");
+    }
+
     let c_files = project_source.get_c_files()?;
     let total_files = c_files.len();
     let mut parser = CParser::new()?;
@@ -48,6 +65,7 @@ pub fn analyze_project(
                     reporter.report_file(file_idx + 1, total_files, file_path, rule_id);
                 }
 
+                // Check if rule is implemented
                 if let Some(rule) = registry.get_rule(rule_id) {
                     let mut file_violations = rule.check(&root_node, &source);
 
@@ -76,6 +94,7 @@ pub fn analyze_project(
                     }
                     violations.extend(file_violations);
                 }
+                // Note: Unimplemented rules are already warned about at the start of analysis
             }
         }
     }
