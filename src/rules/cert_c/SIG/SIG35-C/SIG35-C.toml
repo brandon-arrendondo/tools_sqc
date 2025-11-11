@@ -1,8 +1,30 @@
-[rule]
+[metadata]
 id = "SIG35-C"
+type = "rule"
 category = "SIG"
-enabled = false
-ignore_patterns = []
+number = 35
+title = "Do not return from a computational exception signal handler"
+description = """
+According to the C Standard, 7.14.1.1 paragraph 3 [ISO/IEC 9899:2024], if a
+signal handler returns when it has been entered as a result of a computational
+exception (that is, with the value of its argument ofSIGFPE,SIGILL,SIGSEGV, or
+any other implementation-defined value corresponding to such an exception)
+returns, then the behavior isundefined. (Seeundefined behavior 130.) The
+Portable Operating System Interface (POSIX®), Base Specifications, Issue 7 [IEEE
+Std 1003.1:2013], addsSIGBUSto the list of computational exception signal
+handlers: Do not return fromSIGFPE,SIGILL,SIGSEGV, or any other implementation-
+defined value corresponding to a computational exception, such asSIGBUSon POSIX
+systems, regardless of how the signal was generated.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P1"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create sig35-c.rs with check_sig35-c function
+[rules.cert_c.SIG35-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/SIG35-C.+Do+not+return+from+a+computational+exception+signal+handler"

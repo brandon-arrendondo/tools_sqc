@@ -1,8 +1,25 @@
-[rule]
+[metadata]
 id = "FIO44-C"
+type = "recommendation"
 category = "FIO"
-enabled = false
-ignore_patterns = []
+number = 44
+title = "Only use values for fsetpos() that are returned from fgetpos()"
+description = """
+The C Standard, 7.23.9.3 paragraph 2 [ISO/IEC 9899:2024], defines the following
+behavior forfsetpos(): Invoking thefsetpos()function with any other values
+forposisundefined behavior 181. This noncompliant code example attempts to read
+three values from a file and then set the file position pointer back to the
+beginning of the file:
+"""
+severity = "Medium"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create fio44-c.rs with check_fio44-c function
+[rules.cert_c.FIO44-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=87152071"

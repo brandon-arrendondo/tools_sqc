@@ -1,8 +1,32 @@
-[rule]
+[metadata]
 id = "POS36-C"
+type = "rule"
 category = "POS"
-enabled = false
-ignore_patterns = []
+number = 36
+title = "Observe correct revocation order while relinquishing privileges"
+description = """
+In case of set-user-ID and set-group-ID programs, when the effective user ID and
+group ID are different from those of the real user, it is important to drop not
+only the user-level privileges but also the group privileges. While doing so,
+the order of revocation must be correct. POSIX definessetgid()to have the
+following behavior [Open Group 2004]: This noncompliant code example drops
+privileges to those of the real user and similarly drops the group privileges.
+However, the order is incorrect because thesetgid()function must be run with
+superuser privileges, but the call tosetuid()leaves the effective user ID as
+nonzero. As a result, if a vulnerability is discovered in the program that
+allows for the execution of arbitrary code, an attacker can regain the original
+group privileges.
+"""
+severity = "High"
+likelihood = "Probable"
+priority = "P18"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create pos36-c.rs with check_pos36-c function
+[rules.cert_c.POS36-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/POS36-C.+Observe+correct+revocation+order+while+relinquishing+privileges"
+cwe = ["CWE-696"]

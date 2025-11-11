@@ -1,8 +1,29 @@
 [metadata]
-name = "INT30-C Rule Configuration"
-version = "1.0.0"
-description = "Configuration for INT30-C: Ensure that unsigned integer operations do not wrap"
-cert_version = "2016"
+id = "INT30-C"
+type = "rule"
+category = "INT"
+number = 30
+title = "Ensure that unsigned integer operations do not wrap"
+description = """
+The C Standard, 6.2.5, paragraph 11 [ISO/IEC 9899:2024], states This behavior is
+more informally calledunsigned integer wrapping. Unsigned integer operations can
+wrap if the resulting value cannot be represented by the underlying
+representation of the integer. The following table indicates which operators can
+result in wrapping:
+OperatorWrapOperatorWrapOperatorWrapOperatorWrap+Yes-=Yes<<Yes<No-
+Yes*=Yes>>No>No*Yes/=No&No>=No/No%=No|No<=No%No<<=Yes^No==No++Yes>>=No~No!=No--
+Yes&=No!No&&No=No|=Noun +No||No+=Yes^=Noun -Yes?:No
+"""
+severity = "High"
+likelihood = "Likely"
+priority = "P9"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
 
 [rules.cert_c.INT30-C]
 enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/INT30-C.+Ensure+that+unsigned+integer+operations+do+not+wrap"
+cwe = ["CWE-190", "CWE-131", "CWE-191", "CWE-680"]

@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "STR03-C"
+type = "recommendation"
 category = "STR"
-enabled = false
-ignore_patterns = []
+number = 3
+title = "Do not inadvertently truncate a string"
+description = """
+Alternative functions that limit the number of bytes copied are often
+recommended to mitigate buffer overflowvulnerabilities. Examples include These
+functions truncate strings that exceed the specified limits. Additionally, some
+functions, such asstrncpy(), do not guarantee that the resulting character
+sequence is null-terminated. (SeeSTR32-C. Do not pass a non-null-terminated
+character sequence to a library function that expects a string.) Unintentional
+truncation results in a loss of data and in some cases leads to software
+vulnerabilities.
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jul 24, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create str03-c.rs with check_str03-c function
+[rules.cert_c.STR03-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/STR03-C.+Do+not+inadvertently+truncate+a+string"
+cwe = ["CWE-170", "CWE-464"]

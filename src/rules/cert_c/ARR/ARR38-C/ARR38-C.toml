@@ -1,8 +1,32 @@
 [metadata]
-name = "ARR38-C Rule Configuration"
-version = "1.0.0"
-description = "Configuration for ARR38-C: Guarantee that library functions do not form invalid pointers"
-cert_version = "2016"
+id = "ARR38-C"
+type = "rule"
+category = "ARR"
+number = 38
+title = "Guarantee that library functions do not form invalid pointers"
+description = """
+C library functions that make changes to arrays or objects take at least two
+arguments: a pointer to the array or object and an integer indicating the number
+of elements or bytes to be manipulated. For the purposes of this rule, the
+element count of a pointer is the size of the object to which it points,
+expressed by the number of elements that are valid to access. Supplying
+arguments to such a function might cause the function to form a pointer that
+does not point into or just past the end of the object, resulting inundefined
+behavior. Annex J of the C Standard [ISO/IEC 9899:2024] states that it is
+undefined behavior if the "pointer passed to a library function array parameter
+does not have a value such that all address computations and object accesses are
+valid." (Seeundefined behavior108.) In the following code,
+"""
+severity = "High"
+likelihood = "Likely"
+priority = "P9"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 31, 2025"
 
 [rules.cert_c.ARR38-C]
 enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ARR38-C.+Guarantee+that+library+functions+do+not+form+invalid+pointers"
+cwe = ["CWE-121", "CWE-805", "CWE-119", "CWE-123", "CWE-125", "CWE-129"]

@@ -1,8 +1,35 @@
-[rule]
+[metadata]
 id = "DCL40-C"
+type = "rule"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 40
+title = "Do not create incompatible declarations of the same function or object"
+description = """
+Two or more incompatible declarations of the same function or object must not
+appear in the same program because they result inundefined behavior. The C
+Standard, 6.2.7, mentions that two types may be distinct yet compatible and
+addresses preciselywhen two distinct types are compatible. The C Standard
+identifies four situations in whichundefined behavior (UB)may arise as a result
+of incompatible declarations of the same function or object:
+UBDescriptionCode14Two declarations of the same object or function specify types
+that are not compatible (6.2.7).All noncompliant code in this guideline30Two
+identifiers differ only in nonsignificant characters (6.4.2.1).Excessively Long
+Identifiers36An object has its stored value accessed other than by an lvalue of
+an allowable type (6.5).Incompatible Object DeclarationsIncompatible Array
+Declarations37A function is defined with a type that is not compatible with the
+type (of the expression) pointed to by the expression that denotes the called
+function (6.5.2.2).Incompatible Function DeclarationsExcessively Long
+Identifiers
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl40-c.rs with check_dcl40-c function
+[rules.cert_c.DCL40-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL40-C.+Do+not+create+incompatible+declarations+of+the+same+function+or+object"

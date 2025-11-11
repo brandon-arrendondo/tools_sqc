@@ -1,8 +1,33 @@
-[rule]
+[metadata]
 id = "STR32-C"
+type = "rule"
 category = "STR"
-enabled = false
-ignore_patterns = []
+number = 32
+title = "Do not pass a non-null-terminated character sequence to a library function that expects a string"
+description = """
+Many library functions accept a string or wide string argument with the
+constraint that the string they receive is properly null-terminated. Passing a
+character sequence or wide character sequence that is not null-terminated to
+such a function can result in accessing memory that is outside the bounds of the
+object. Do not pass a character sequence or wide character sequence that is not
+null-terminated to a library function that expects a string or wide string
+argument. This code example is noncompliant because the character
+sequencec_strwill not be null-terminated when passed as an argument
+toprintf().(SeeSTR11-C. Do not specify the bound of a character array
+initialized with a string literalon how to properly initialize character
+arrays.) #include <stdio.h> void func(void) { char c_str[3] = "abc";
+printf("%s\n", c_str); }
+"""
+severity = "High"
+likelihood = "Probable"
+priority = "P12"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create str32-c.rs with check_str32-c function
+[rules.cert_c.STR32-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/STR32-C.+Do+not+pass+a+non-null-terminated+character+sequence+to+a+library+function+that+expects+a+string"
+cwe = ["CWE-119", "CWE-123", "CWE-125", "CWE-170"]

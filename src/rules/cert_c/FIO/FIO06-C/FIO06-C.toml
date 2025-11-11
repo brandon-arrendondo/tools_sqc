@@ -1,8 +1,32 @@
-[rule]
+[metadata]
 id = "FIO06-C"
+type = "recommendation"
 category = "FIO"
-enabled = false
-ignore_patterns = []
+number = 6
+title = "Create files with appropriate access permissions"
+description = """
+Creating a file with insufficiently restrictive access permissions may allow an
+unprivileged user to access that file. Although access permissions are heavily
+dependent on the file system, many file-creation functions provide mechanisms to
+set (or at least influence) access permissions. When these functions are used to
+create files, appropriate access permissions should be specified to prevent
+unintended access. When setting access permissions, it is important to make sure
+that an attacker cannot alter them. (SeeFIO15-C. Ensure that file operations are
+performed in a secure directory.) Thefopen()function does not allow the
+programmer to explicitly specify file access permissions. In this noncompliant
+code example, if the call tofopen()creates a new file, the access permissions
+areimplementation-defined:
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jun 16, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create fio06-c.rs with check_fio06-c function
+[rules.cert_c.FIO06-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FIO06-C.+Create+files+with+appropriate+access+permissions"
+cwe = ["CWE-276", "CWE-279", "CWE-732"]

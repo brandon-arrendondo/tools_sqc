@@ -1,8 +1,23 @@
-[rule]
+[metadata]
 id = "EXP40-C"
+type = "rule"
 category = "EXP"
-enabled = false
-ignore_patterns = []
+number = 40
+title = "Do not modify constant objects"
+description = """
+The C Standard, 6.7.4, paragraph 7 [ISO/IEC 9899:2024], states See alsoundefined
+behavior 61. There are existing compilerimplementationsthat allowconst-qualified
+objects to be modified without generating a warning message.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create exp40-c.rs with check_exp40-c function
+[rules.cert_c.EXP40-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP40-C.+Do+not+modify+constant+objects"

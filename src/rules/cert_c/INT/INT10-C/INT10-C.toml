@@ -1,8 +1,27 @@
-[rule]
+[metadata]
 id = "INT10-C"
+type = "recommendation"
 category = "INT"
-enabled = false
-ignore_patterns = []
+number = 10
+title = "Do not assume a positive remainder when using the % operator"
+description = """
+In C89 (and historical K&Rimplementations), the meaning of the remainder
+operator for negative operands wasimplementation-defined. This behavior was
+changed in C99, and the change remains in C11. Because not all C compilers are
+strictly C-conforming, programmers cannot rely on the behavior of the%operator
+if they need to run on a wide range of platforms with many different compilers.
+The C Standard, subclause 6.5.5 [ISO/IEC 9899:2011], states:
+"""
+severity = "High"
+likelihood = "Unlikely"
+priority = "P3"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create int10-c.rs with check_int10-c function
+[rules.cert_c.INT10-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=87152120"
+cwe = ["CWE-682", "CWE-129"]

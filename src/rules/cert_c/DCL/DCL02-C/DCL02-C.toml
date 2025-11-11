@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "DCL02-C"
+type = "recommendation"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 2
+title = "Use visually distinct identifiers"
+description = """
+Use visually distinct identifiers with meaningful names to eliminate errors
+resulting from misreading the spelling of an identifier during the development
+and review of code. An identifier can denote an object; a function; a tag or a
+member of a structure, union, or enumeration; a typedef name; a label name; a
+macro name; or a macro parameter. Depending on the fonts used, certain
+characters appear visually similar or even identical: CharacterSimilar Character
+s0(zero)O(capitalo),Q(capitalq),D(capitald)1(one)I(capitali),l(lowercaseL)2(two)
+Z(capitalz)5(five)S(capitals)8(eight)B(capitalb)n(lowercaseN)h(lowercaseH)m(lowe
+rcaseM)rn(lowercaseR, lowercaseN)
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P3"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 19, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl02-c.rs with check_dcl02-c function
+[rules.cert_c.DCL02-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL02-C.+Use+visually+distinct+identifiers"

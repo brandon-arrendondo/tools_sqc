@@ -1,8 +1,27 @@
-[rule]
+[metadata]
 id = "MEM02-C"
+type = "recommendation"
 category = "MEM"
-enabled = false
-ignore_patterns = []
+number = 2
+title = "Immediately cast the result of a memory allocation function call into a pointer to the allocated type"
+description = """
+An object of typevoid *is a generic data pointer. It can point to any data
+object. For any incomplete or object typeT, C permits implicit conversion fromT
+*tovoid *or fromvoid *toT *. C Standard memory allocation
+functionsaligned_alloc(),malloc(),calloc(), andrealloc()usevoid *to declare
+parameters and return types of functions designed to work for objects of
+different types. For example, the C library declaresmalloc()as void
+*malloc(size_t);
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P3"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create mem02-c.rs with check_mem02-c function
+[rules.cert_c.MEM02-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/MEM02-C.+Immediately+cast+the+result+of+a+memory+allocation+function+call+into+a+pointer+to+the+allocated+type"

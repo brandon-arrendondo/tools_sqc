@@ -1,8 +1,35 @@
-[rule]
+[metadata]
 id = "API03-C"
+type = "recommendation"
 category = "API"
-enabled = false
-ignore_patterns = []
+number = 3
+title = "Create consistent interfaces and capabilities across related functions"
+description = """
+Related functions, such as those that make up a library, should provide
+consistent and usable interfaces. Ralph Waldo Emerson said, "A foolish
+consistency is the hobgoblin of little minds," but inconsistencies in functional
+interfaces or behavior can lead to erroneous use, so we understand this to be a
+"wise consistency." One aspect of providing a consistent interface is to provide
+a consistent and usable error-checking mechanism. For more information,
+seeAPI04-C. Provide a consistent and usable error-checking mechanism. It is not
+necessary to go beyond the standard C library to find examples of inconsistent
+interfaces: the standard library is a fusion of multiple libraries with various
+styles and levels of rigor. For example, thefputs()defined in the C Standard,
+subclause 7.21.7.4, is closely related to thefprintf()defined in subclause
+7.21.6.1. However,fputs()'s file handle is at the end, andfprintf()'s is at the
+beginning, as shown by their function declarations: int fputs(const char *
+restrict s, FILE * restrict stream); int fprintf(FILE * restrict stream, const
+char * restrict format, ...);
+"""
+severity = "Medium"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create api03-c.rs with check_api03-c function
+[rules.cert_c.API03-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/API03-C.+Create+consistent+interfaces+and+capabilities+across+related+functions"

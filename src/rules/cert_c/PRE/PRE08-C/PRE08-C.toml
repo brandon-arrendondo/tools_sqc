@@ -1,8 +1,25 @@
-[rule]
+[metadata]
 id = "PRE08-C"
+type = "recommendation"
 category = "PRE"
-enabled = false
-ignore_patterns = []
+number = 8
+title = "Guarantee that header file names are unique"
+description = """
+Make sure that included header file names are unique. According to the C
+Standard, subclause 6.10.2, paragraph 5 [ISO/IEC 9899:2011], This means that To
+guarantee that header file names are unique, all included files should differ
+(in a case-insensitive manner) in their first eight characters or in their (one-
+character) file extension.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 19, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create pre08-c.rs with check_pre08-c function
+[rules.cert_c.PRE08-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/PRE08-C.+Guarantee+that+header+file+names+are+unique"

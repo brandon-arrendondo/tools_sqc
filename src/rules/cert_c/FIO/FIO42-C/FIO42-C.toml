@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "FIO42-C"
+type = "recommendation"
 category = "FIO"
-enabled = false
-ignore_patterns = []
+number = 42
+title = "Close files when they are no longer needed"
+description = """
+A call to thefopen()orfreopen()function must be matched with a call
+tofclose()before the lifetime of the last pointer that stores the return value
+of the call has ended or before normal program termination, whichever occurs
+first. In general, this rule should also be applied to other functions with open
+and close resources, such as the POSIXopen()andclose()functions, or the
+Microsoft WindowsCreateFile()andCloseHandle()functions. This code example is
+noncompliant because the file opened by the call tofopen()is not closed before
+functionfunc()returns:
+"""
+severity = "Medium"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create fio42-c.rs with check_fio42-c function
+[rules.cert_c.FIO42-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FIO42-C.+Close+files+when+they+are+no+longer+needed"
+cwe = ["CWE-404", "CWE-459", "CWE-772", "CWE-773", "CWE-775", "CWE-403", "CWE-771"]

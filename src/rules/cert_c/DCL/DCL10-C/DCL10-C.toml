@@ -1,8 +1,33 @@
-[rule]
+[metadata]
 id = "DCL10-C"
+type = "recommendation"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 10
+title = "Maintain the contract between the writer and caller of variadic functions"
+description = """
+Variadic functions accept a variable number of arguments but are problematic.
+Variadic functions define an implicit contract between the function writer and
+the function user that allows the function to determine the number of arguments
+passed in any particular invocation. Failure to enforce this contract may result
+inundefined behavior. Seeundefined behavior 141of Appendix J of the C Standard.
+In the following code example, the variadic functionaverage()calculates the
+average value of the positive integer arguments passed to the function [Seacord
+2013]. The function processes arguments until it encounters an argument with the
+value ofva_eol(-1). enum { va_eol = -1 }; unsigned int average(int first, ...) {
+unsigned int count = 0; unsigned int sum = 0; int i = first; va_list args;
+va_start(args, first); while (i != va_eol) { sum += i; count++; i = va_arg(args,
+int); } va_end(args); return(count ? (sum / count) : 0); }
+"""
+severity = "High"
+likelihood = "Probable"
+priority = "P6"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 19, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl10-c.rs with check_dcl10-c function
+[rules.cert_c.DCL10-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL10-C.+Maintain+the+contract+between+the+writer+and+caller+of+variadic+functions"
+cwe = ["CWE-628"]

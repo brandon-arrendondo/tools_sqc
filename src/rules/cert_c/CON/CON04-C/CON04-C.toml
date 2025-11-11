@@ -1,8 +1,34 @@
-[rule]
+[metadata]
 id = "CON04-C"
+type = "recommendation"
 category = "CON"
-enabled = false
-ignore_patterns = []
+number = 4
+title = "Join or detach threads even if their exit status is unimportant"
+description = """
+Thethrd_detach()function is used to tell the underlying system that resources
+allocated to a particular thread can be reclaimed once it terminates. This
+function should be used when a thread's exit status is not required by other
+threads (and no other thread needs to usethrd_join()to wait for it to complete).
+Whenever a thread terminates without detaching, the thread's stack is
+deallocated, but some other resources, including the thread ID and exit status,
+are left until it is destroyed by eitherthrd_join()orthrd_detach(). These
+resources can be vital for systems with limited resources and can lead to
+various "resource unavailable" errors, depending on which critical resource gets
+used up first. For example, if the system has a limit (either per-process or
+system wide) on the number of thread IDs it can keep track of, failure to
+release the thread ID of a terminated thread may lead tothrd_create() being
+unable tocreate another thread. This noncompliant code example shows a pool of
+threads that are not exited correctly:
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create con04-c.rs with check_con04-c function
+[rules.cert_c.CON04-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/CON04-C.+Join+or+detach+threads+even+if+their+exit+status+is+unimportant"

@@ -1,8 +1,32 @@
-[rule]
+[metadata]
 id = "WIN01-C"
+type = "recommendation"
 category = "WIN"
-enabled = false
-ignore_patterns = []
+number = 1
+title = "Do not forcibly terminate execution"
+description = """
+When a thread terminates under normal conditions, thread-specific resources such
+as the initial stack space and thread-specificHANDLEobjects are released
+automatically by the system and notifications are sent to other parts of the
+application, such asDLL_THREAD_DETACHmessages being sent to DLLs. However, if a
+thread is forcibly terminated by callingTerminateThread(), the cleanup and
+notifications do not have the chance to run. MSDN states On some platforms (such
+as Microsoft Windows XP and Microsoft Windows Server 2003), the thread's initial
+stack is not freed, causing a resource leak. Processes behave similar to
+threads, and so share the same concerns. Do not use
+theTerminateThread()orTerminateProcess()APIs. Instead, you should prefer to exit
+threads and processes by returning from the entrypoint, by callingExitThread(),
+or by callingExitProcess().
+"""
+severity = "High"
+likelihood = "Likely"
+priority = "P18"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create win01-c.rs with check_win01-c function
+[rules.cert_c.WIN01-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/WIN01-C.+Do+not+forcibly+terminate+execution"

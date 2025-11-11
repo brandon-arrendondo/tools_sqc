@@ -1,8 +1,28 @@
-[rule]
+[metadata]
 id = "PRE13-C"
+type = "recommendation"
 category = "PRE"
-enabled = false
-ignore_patterns = []
+number = 13
+title = "Use the Standard predefined macros to test for versions and features."
+description = """
+The C Standard defines a set of predefined macros (see subclause 6.10.8) to help
+the user determine if theimplementationbeing used is aconformingimplementation,
+and if so, to which version of the C Standard it conforms. These macros can also
+help the user to determine which of the standard features are implemented. The
+following tables list these macros and indicate in which version of the C
+Standard they were introduced. The following macros are required: Macro NameC90C
+99C11__STDC__✓✓✓__STDC_HOSTED__✓✓__STDC_VERSION__1✓✓__DATE__✓✓✓__FILE__✓✓✓__LINE
+__✓✓✓__TIME__✓✓✓
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 31, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create pre13-c.rs with check_pre13-c function
+[rules.cert_c.PRE13-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=87151942"

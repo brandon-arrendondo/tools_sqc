@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "EXP37-C"
+type = "rule"
 category = "EXP"
-enabled = false
-ignore_patterns = []
+number = 37
+title = "Call functions with the correct number and type of arguments"
+description = """
+Do not call a function with the wrong number or type of arguments. The C
+Standard identifies two distinct situations in whichundefined behavior(UB) may
+arise as a result of invoking a function using a declaration that is
+incompatible with its definition or by supplying incorrect types or numbers of
+arguments: UBDescription25A pointer is used to call a function whose type is not
+compatible with the referenced type (6.3.2.3).37A function is defined with a
+type that is not compatible with the type (of the expression) pointed to by the
+expression that denotes the called function (6.5.2.2).
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create exp37-c.rs with check_exp37-c function
+[rules.cert_c.EXP37-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP37-C.+Call+functions+with+the+correct+number+and+type+of+arguments"
+cwe = ["CWE-628", "CWE-685", "CWE-686"]

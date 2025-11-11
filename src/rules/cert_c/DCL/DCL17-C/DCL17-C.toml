@@ -1,8 +1,32 @@
-[rule]
+[metadata]
 id = "DCL17-C"
+type = "recommendation"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 17
+title = "Beware of miscompiled volatile-qualified variables"
+description = """
+As described in depth in ruleDCL22-C. Use volatile for data that cannot be
+cached, avolatile-qualified variable "shall be evaluated strictly according to
+the rules of the abstract machine" [ISO/IEC 9899:2011]. In other words,
+thevolatilequalifier is used to instruct the compiler to not make caching
+optimizations about a variable. However, as demonstrated in "Volatiles Are
+Miscompiled, and What to Do about It" [Eide and Regehr], all tested compilers
+generated some percentage of incorrect compiled code with regard
+tovolatileaccesses. Therefore, it is necessary to know how your compiler behaves
+when the standardvolatilebehavior is required. The authors also provide a
+workaround that eliminates some or all of these errors. As demonstrated in Eide
+and Regehr's work, the following code example compiles incorrectly using GCC
+4.3.0 for IA32 and the-Osoptimization flag:
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 19, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl17-c.rs with check_dcl17-c function
+[rules.cert_c.DCL17-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL17-C.+Beware+of+miscompiled+volatile-qualified+variables"

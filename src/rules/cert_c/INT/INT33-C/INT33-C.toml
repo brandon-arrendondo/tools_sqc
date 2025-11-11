@@ -1,8 +1,25 @@
-[rule]
+[metadata]
 id = "INT33-C"
+type = "rule"
 category = "INT"
-enabled = false
-ignore_patterns = []
+number = 33
+title = "Ensure that division and remainder operations do not result in divide-by-zero errors"
+description = """
+The C Standard identifies the following condition under which division and
+remainder operations result inundefined behavior (UB): UBDescription41The value
+of the second operand of the/or%operator is zero (6.5.5). Ensure that division
+and remainder operations do not result in divide-by-zero errors.
+"""
+severity = "Low"
+likelihood = "Likely"
+priority = "P6"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create int33-c.rs with check_int33-c function
+[rules.cert_c.INT33-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/INT33-C.+Ensure+that+division+and+remainder+operations+do+not+result+in+divide-by-zero+errors"
+cwe = ["CWE-369", "CWE-682"]

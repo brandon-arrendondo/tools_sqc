@@ -1,8 +1,33 @@
-[rule]
+[metadata]
 id = "POS51-C"
+type = "recommendation"
 category = "POS"
-enabled = false
-ignore_patterns = []
+number = 51
+title = "Avoid deadlock with POSIX threads by locking in predefined order"
+description = """
+Mutexes are often used to prevent multiple threads from accessing critical
+resources at the same time. Sometimes, when locking mutexes, multiple threads
+hold each other's lock, and the program consequently deadlocks. There are four
+requirements for deadlock: Deadlock requires all four conditions, so to prevent
+deadlock, prevent any one of the four conditions. This guideline recommends
+locking the mutexes in a predefined order to prevent circular wait. This rule is
+a specific instance ofCON35-C. Avoid deadlock by locking in predefined
+orderusing POSIX threads. This noncompliant code example has behavior that
+depends on the runtime environment and the platform's scheduler. However, with
+proper timing, themain()function will deadlock when runningthr1andthr2,
+wherethr1tries to lockba2's mutex, whilethr2tries to lock onba1's mutex in
+thedeposit()function, and the program will not progress.
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 31, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create pos51-c.rs with check_pos51-c function
+[rules.cert_c.POS51-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/POS51-C.+Avoid+deadlock+with+POSIX+threads+by+locking+in+predefined+order"
+cwe = ["CWE-764"]

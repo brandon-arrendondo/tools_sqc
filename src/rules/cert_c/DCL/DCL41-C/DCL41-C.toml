@@ -1,8 +1,28 @@
-[rule]
+[metadata]
 id = "DCL41-C"
+type = "rule"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 41
+title = "Do not declare variables inside a switch statement before the first case label"
+description = """
+According to the C Standard, 6.8.5.3, paragraph 4 [ISO/IEC 9899:2024], If a
+programmer declares variables, initializes them before the first case statement,
+and then tries to use them inside any of the case statements, those variables
+will have scope inside theswitchblock but will not be initialized and will
+consequently contain indeterminate values. Reading such values also
+violatesEXP33-C. Do not read uninitialized memory. This noncompliant code
+example declares variables and contains executable statements before the first
+case label within theswitchstatement:
+"""
+severity = "Medium"
+likelihood = "Unlikely"
+priority = "P6"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 06, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl41-c.rs with check_dcl41-c function
+[rules.cert_c.DCL41-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL41-C.+Do+not+declare+variables+inside+a+switch+statement+before+the+first+case+label"

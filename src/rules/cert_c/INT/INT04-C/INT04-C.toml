@@ -1,8 +1,38 @@
-[rule]
+[metadata]
 id = "INT04-C"
+type = "recommendation"
 category = "INT"
-enabled = false
-ignore_patterns = []
+number = 4
+title = "Enforce limits on integer values originating from tainted sources"
+description = """
+All integer values originating fromtainted sourcesshould be evaluated to
+determine if they have identifiable upper and lower bounds. If so, these limits
+should be enforced by the interface. Restricting the input of excessively large
+or small integers helps prevent overflow, truncation, and other type range
+errors. Furthermore, it is easier to find and correct input problems than it is
+to trace internal errors back to faulty inputs. In this noncompliant code
+example,lengthis the value of a user-defined (and thus potentially untrusted)
+environment variable whose value is used to determine the size of a dynamically
+allocated array,table. In compliance withINT30-C. Ensure that unsigned integer
+operations do not wrap, the code preventsunsigned integer wrappingbut does not
+impose any upper bound on the size of the array, making it possible for the user
+to cause the program to use an excessive amount of memory. char**
+create_table(void) { const char* const lenstr = getenv("TABLE_SIZE"); const
+size_t length = lenstr ? strtoul(lenstr, NULL, 10) : 0; if (length > SIZE_MAX /
+sizeof(char *)) return NULL; /* Indicate error to caller */ const size_t
+table_size = length * sizeof(char *); char** const table = (char
+**)malloc(table_size); if (table == NULL) return NULL; /* Indicate error to
+caller */ /* Initialize table... */ return table; }
+"""
+severity = "High"
+likelihood = "Probable"
+priority = "P12"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create int04-c.rs with check_int04-c function
+[rules.cert_c.INT04-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/INT04-C.+Enforce+limits+on+integer+values+originating+from+tainted+sources"

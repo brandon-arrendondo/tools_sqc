@@ -1,8 +1,27 @@
-[rule]
+[metadata]
 id = "SIG01-C"
+type = "recommendation"
 category = "SIG"
-enabled = false
-ignore_patterns = []
+number = 1
+title = "Understand implementation-specific details regarding signal handler persistence"
+description = """
+Thesignal()function hasimplementation-definedbehavior and behaves differently on
+Windows, for example, than it does on many UNIX systems. The following code
+example shows this behavior: #include <stdio.h> #include <signal.h> volatile
+sig_atomic_t e_flag = 0; void handler(int signum) { e_flag = 1; } int main(void)
+{ if (signal(SIGINT, handler) == SIG_ERR) { /* Handle error */ } while (!e_flag)
+{} puts("Escaped from first while ()"); e_flag = 0; while (!e_flag) {}
+puts("Escaped from second while ()"); return 0; }
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P1"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create sig01-c.rs with check_sig01-c function
+[rules.cert_c.SIG01-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/SIG01-C.+Understand+implementation-specific+details+regarding+signal+handler+persistence"

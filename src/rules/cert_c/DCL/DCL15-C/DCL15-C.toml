@@ -1,8 +1,24 @@
-[rule]
+[metadata]
 id = "DCL15-C"
+type = "recommendation"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 15
+title = "Declare file-scope objects or functions that do not need external linkage as static"
+description = """
+If a file-scope object or a function does not need to be visible outside of the
+file, it should be hidden by being declared asstatic. This practice creates more
+modular code and limits pollution of the global name space. Subclause 6.2.2 of
+the C Standard [ISO/IEC 9899:2011] states: and
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P1"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 19, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl15-c.rs with check_dcl15-c function
+[rules.cert_c.DCL15-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL15-C.+Declare+file-scope+objects+or+functions+that+do+not+need+external+linkage+as+static"

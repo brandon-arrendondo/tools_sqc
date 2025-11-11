@@ -1,8 +1,31 @@
-[rule]
+[metadata]
 id = "WIN04-C"
+type = "recommendation"
 category = "WIN"
-enabled = false
-ignore_patterns = []
+number = 4
+title = "Consider encrypting function pointers"
+description = """
+If an attacker can overwrite memory containing function pointers, they may be
+able to execute arbitrary code. To mitigate the effects of such attacks,
+pointers to functions can be encrypted at runtime on the basis of some
+characteristics of the execution process so that only a running process will be
+able to decode them. This is only required for stored function pointers stored
+to writable memory, including the stack. The Microsoft SDL [Microsoft 2012]
+recommends encoding long-lived pointers in your code. This noncompliant code
+example assigns the address of theprintf()function to thelog_fnfunction pointer,
+which can be allocated in the stack or data segment: int (*log_fn)(const char *,
+...) = printf; /* ... */ log_fn("foo");
+"""
+severity = "High"
+likelihood = "Unlikely"
+priority = "P3"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create win04-c.rs with check_win04-c function
+[rules.cert_c.WIN04-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/WIN04-C.+Consider+encrypting+function+pointers"
+cwe = ["CWE-311", "CWE-319"]

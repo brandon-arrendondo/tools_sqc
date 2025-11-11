@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "ENV02-C"
+type = "recommendation"
 category = "ENV"
-enabled = false
-ignore_patterns = []
+number = 2
+title = "Beware of multiple environment variables with the same effective name"
+description = """
+Thegetenv()function searches an environment list for a string that matches a
+specified name and returns a pointer to a string associated with the matched
+list member. Subclause 7.22.4.6 of the C Standard [ISO/IEC 9899:2011] states:
+Depending on theimplementation, multiple environment variables with the same
+name may be allowed and can cause unexpected results if a program cannot
+consistently choose the same value. The GNU glibc library addresses this issue
+ingetenv()andsetenv()by always using the first variable it encounters and
+ignoring the rest. However, it is unwise to rely on this behavior.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create env02-c.rs with check_env02-c function
+[rules.cert_c.ENV02-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ENV02-C.+Beware+of+multiple+environment+variables+with+the+same+effective+name"
+cwe = ["CWE-462", "CWE-807"]

@@ -1,8 +1,24 @@
-[rule]
+[metadata]
 id = "FLP07-C"
+type = "recommendation"
 category = "FLP"
-enabled = false
-ignore_patterns = []
+number = 7
+title = "Cast the return value of a function that returns a floating-point type"
+description = """
+Cast the return value of a function that returns a floating point type to ensure
+predictable program execution. Subclause 6.8.6.4, paragraph 3, of the C Standard
+[ISO/IEC 9899:2011] states: This paragraph is annotated (footnote 160) as
+follows:
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create flp07-c.rs with check_flp07-c function
+[rules.cert_c.FLP07-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FLP07-C.+Cast+the+return+value+of+a+function+that+returns+a+floating-point+type"

@@ -1,8 +1,26 @@
-[rule]
+[metadata]
 id = "DCL21-C"
+type = "recommendation"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 21
+title = "Understand the storage of compound literals"
+description = """
+Subclause 6.5.2.5 of the C Standard [ISO/IEC 9899:2011] defines a compound
+literal as The storage for this object is either static (if the compound literal
+occurs at file scope) or automatic (if the compound literal occurs at block
+scope), and the storage duration is associated with its immediate enclosing
+block. For example, in the function void func(void) { int *ip =
+(int[4]){1,2,3,4}; /* ... */ }
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P1"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl21-c.rs with check_dcl21-c function
+[rules.cert_c.DCL21-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL21-C.+Understand+the+storage+of+compound+literals"

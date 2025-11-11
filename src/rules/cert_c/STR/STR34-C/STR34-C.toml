@@ -1,8 +1,31 @@
-[rule]
+[metadata]
 id = "STR34-C"
+type = "rule"
 category = "STR"
-enabled = false
-ignore_patterns = []
+number = 34
+title = "Cast characters to unsigned char before converting to larger integer sizes"
+description = """
+Signed character data must be converted tounsigned charbefore being assigned or
+converted to a larger signed type. This rule applies to bothsigned charand
+(plain)charcharacters on implementations wherecharis defined to have the same
+range, representation, and behaviors assigned char. However, this rule is
+applicable only in cases where the character data may contain values that can be
+misinterpreted as negative numbers. For example, if thechartype is represented
+by a two's complement 8-bit value, any character value greater than +127 is
+interpreted as a negative value. This rule is a generalization ofSTR37-C.
+Arguments to character-handling functions must be representable as an unsigned
+char.
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P8"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jun 05, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create str34-c.rs with check_str34-c function
+[rules.cert_c.STR34-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/STR34-C.+Cast+characters+to+unsigned+char+before+converting+to+larger+integer+sizes"
+cwe = ["CWE-704"]

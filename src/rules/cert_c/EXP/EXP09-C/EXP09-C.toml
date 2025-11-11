@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "EXP09-C"
+type = "recommendation"
 category = "EXP"
-enabled = false
-ignore_patterns = []
+number = 9
+title = "Use sizeof to determine the size of a type or variable"
+description = """
+Do not hard code the size of a type into an application. Because of alignment,
+padding, and differences in basic types (e.g., 32-bit versus 64-bit pointers),
+the size of most types can vary between compilers and even versions of the same
+compiler. Using thesizeofoperator to determine sizes improves the clarity of
+what is meant and ensures that changes between compilers or versions will not
+affect the code. Type alignment requirements can also affect the size of
+structures. For example, the size of the following structure isimplementation-
+defined: struct s { int i; double d; };
+"""
+severity = "High"
+likelihood = "Unlikely"
+priority = "P6"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create exp09-c.rs with check_exp09-c function
+[rules.cert_c.EXP09-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP09-C.+Use+sizeof+to+determine+the+size+of+a+type+or+variable"
+cwe = ["CWE-805"]

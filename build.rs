@@ -68,27 +68,33 @@ fn generate_rules_all_toml() {
         // Sort by rule ID for consistent output
         toml_files.sort();
 
-        // Combine all TOML files
+        // Combine all TOML files - extract only the rules.cert_c section
         let mut combined_content = String::new();
         combined_content.push_str("# Auto-generated file - do not edit directly\n");
         combined_content.push_str(&format!("# Generated from individual rule manifests in {}\n", ruleset_name));
-        combined_content.push_str("# To modify, edit the individual TOML files and rebuild\n\n");
+        combined_content.push_str("# To modify, edit the individual TOML files and rebuild\n");
+        combined_content.push_str("# Full metadata is in individual rule TOML files\n\n");
 
         for toml_path in &toml_files {
-            // Add source comment
-            let relative_path = toml_path
-                .strip_prefix(&ruleset_dir)
-                .unwrap_or(toml_path);
-            combined_content.push_str(&format!("# Source: {}\n", relative_path.display()));
-
-            // Read and append content
+            // Read full content
             match fs::read_to_string(toml_path) {
                 Ok(content) => {
-                    combined_content.push_str(&content);
-                    if !content.ends_with('\n') {
+                    // Extract only the [rules.cert_c.RULE-ID] section
+                    if let Some(start_idx) = content.find("[rules.cert_c.") {
+                        let section_content = &content[start_idx..];
+
+                        // Find the end of this section (next section or end of file)
+                        let end_idx = section_content.find("\n[")
+                            .map(|i| i + 1)
+                            .unwrap_or(section_content.len());
+
+                        let rule_section = &section_content[..end_idx];
+                        combined_content.push_str(rule_section);
+                        if !rule_section.ends_with('\n') {
+                            combined_content.push('\n');
+                        }
                         combined_content.push('\n');
                     }
-                    combined_content.push('\n');
                 }
                 Err(e) => {
                     eprintln!("Warning: Failed to read {}: {}", toml_path.display(), e);

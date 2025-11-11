@@ -1,8 +1,31 @@
-[rule]
+[metadata]
 id = "MSC38-C"
+type = "rule"
 category = "MSC"
-enabled = false
-ignore_patterns = []
+number = 38
+title = "Do not treat a predefined identifier as an object if it might only be implemented as a macro"
+description = """
+The C Standard, 7.1.4 paragraph 1, [ISO/IEC 9899:2024] states However, the C
+Standard enumerates specific exceptions in which the behavior of accessing an
+object or function expanded to be a standard library macro definition
+isundefined. The macros
+areassert,errno,math_errhandling,setjmp,va_arg,va_copy,va_end, andva_start.
+These cases are described byundefined behaviors138,139,140,141, and143.
+Programmers must not suppress these macros to access the underlying object or
+function. In this noncompliant code example, the standardassert()macro is
+suppressed in an attempt to pass it as a function pointer to
+theexecute_handler()function. Attempting to suppress theassert()macro
+isundefined behavior.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create msc38-c.rs with check_msc38-c function
+[rules.cert_c.MSC38-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/MSC38-C.+Do+not+treat+a+predefined+identifier+as+an+object+if+it+might+only+be+implemented+as+a+macro"

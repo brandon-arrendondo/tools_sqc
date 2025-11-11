@@ -1,8 +1,26 @@
-[rule]
+[metadata]
 id = "EXP36-C"
+type = "rule"
 category = "EXP"
-enabled = false
-ignore_patterns = []
+number = 36
+title = "Do not cast pointers into more strictly aligned pointer types"
+description = """
+Do not convert a pointer value to a pointer type that is more strictly aligned
+than the referenced type. Different alignments are possible for different types
+of objects. If the type-checking system is overridden by an explicit cast or the
+pointer is converted to a void pointer (void *) and then to a different type,
+the alignment of an object may be changed. The C Standard, 6.3.2.3, paragraph 7
+[ISO/IEC 9899:2024], states Seeundefined behavior 24.
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create exp36-c.rs with check_exp36-c function
+[rules.cert_c.EXP36-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP36-C.+Do+not+cast+pointers+into+more+strictly+aligned+pointer+types"

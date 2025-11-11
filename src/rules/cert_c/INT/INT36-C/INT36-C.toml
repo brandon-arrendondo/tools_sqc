@@ -1,8 +1,26 @@
-[rule]
+[metadata]
 id = "INT36-C"
+type = "rule"
 category = "INT"
-enabled = false
-ignore_patterns = []
+number = 36
+title = "Converting a pointer to integer or integer to pointer"
+description = """
+Although programmers often use integers and pointers interchangeably in C,
+pointer-to-integer and integer-to-pointer conversions areimplementation-defined.
+Conversions between integers and pointers can have undesired consequences
+depending on theimplementation. According to the C Standard, subclause 6.3.2.3
+[ISO/IEC 9899:2024],
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 31, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create int36-c.rs with check_int36-c function
+[rules.cert_c.INT36-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/INT36-C.+Converting+a+pointer+to+integer+or+integer+to+pointer"
+cwe = ["CWE-587", "CWE-704", "CWE-758", "CWE-119", "CWE-466"]

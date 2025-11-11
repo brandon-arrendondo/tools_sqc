@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "DCL08-C"
+type = "recommendation"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 8
+title = "Properly encode relationships in constant definitions"
+description = """
+If a relation exists between constants, you should encode the relationship in
+the definitions. Do not give two independent definitions, because a maintainer
+may fail to preserve that relationship when modifying the code. As a corollary,
+do not encode an impermanent or false relationship between constants, because
+future modifications may result in an incorrect definition for the dependent
+constant. In this noncompliant code example, the definition forOUT_STR_LENmust
+always be two greater than the definition ofIN_STR_LEN. The following
+definitions fail to embody this relationship: enum { IN_STR_LEN=18,
+OUT_STR_LEN=20 };
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P1"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 19, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl08-c.rs with check_dcl08-c function
+[rules.cert_c.DCL08-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL08-C.+Properly+encode+relationships+in+constant+definitions"

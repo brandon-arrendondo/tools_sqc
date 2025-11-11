@@ -1,8 +1,28 @@
-[rule]
+[metadata]
 id = "FIO13-C"
+type = "recommendation"
 category = "FIO"
-enabled = false
-ignore_patterns = []
+number = 13
+title = "Never push back anything other than one read character"
+description = """
+Subclause 7.21.7.10 of the C Standard [ISO/IEC 9899:2011] definesungetc()as
+follows: Consequently, multiple calls toungetc()on the same stream must be
+separated by a call to a read function or a file-positioning function (which
+will discard any data pushed byungetc()). Likewise, forungetwc(), C guarantees
+only one wide character of pushback (subclause 7.29.3.10). Consequently,
+multiple calls toungetwc()on the same stream must be separated by a call to a
+read function or a file-positioning function (which will discard any data pushed
+byungetwc()).
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create fio13-c.rs with check_fio13-c function
+[rules.cert_c.FIO13-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FIO13-C.+Never+push+back+anything+other+than+one+read+character"

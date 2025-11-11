@@ -1,8 +1,25 @@
-[rule]
+[metadata]
 id = "ENV31-C"
+type = "recommendation"
 category = "ENV"
-enabled = false
-ignore_patterns = []
+number = 31
+title = "Do not rely on an environment pointer following an operation that may invalidate it"
+description = """
+Some implementations provide a nonportable environment pointer that is valid
+whenmain()is called but may be invalidated by operations that modify the
+environment. The C Standard, J.5.2 [ISO/IEC 9899:2024], states Consequently,
+under ahosted environmentsupporting this common extension, it is possible to
+access the environment through a modified form ofmain():
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create env31-c.rs with check_env31-c function
+[rules.cert_c.ENV31-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ENV31-C.+Do+not+rely+on+an+environment+pointer+following+an+operation+that+may+invalidate+it"

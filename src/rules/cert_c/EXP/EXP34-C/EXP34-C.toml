@@ -1,8 +1,31 @@
 [metadata]
-name = "EXP34-C Rule Configuration"
-version = "1.0.0"
-description = "Configuration for EXP34-C: Do not dereference null pointers"
-cert_version = "2016"
+id = "EXP34-C"
+type = "rule"
+category = "EXP"
+number = 34
+title = "Do not dereference null pointers"
+description = """
+Dereferencing a null pointer isundefined behavior. On many platforms,
+dereferencing a null pointer results inabnormal program termination, but this is
+not required by the standard. See "Clever Attack Exploits Fully-Patched Linux
+Kernel" [Goodin 2009] for an example of a code executionexploitthat resulted
+from a null pointer dereference. This noncompliant code example is derived from
+a real-world example taken from a vulnerable version of thelibpnglibrary as
+deployed on a popular ARM-based cell phone [Jack 2007]. Thelibpnglibrary allows
+applications to read, create, and manipulate PNG (Portable Network Graphics)
+raster image files. Thelibpnglibrary implements its own wrapper tomalloc()that
+returns a null pointer on error or on being passed a 0-byte-length argument.
+"""
+severity = "High"
+likelihood = "Likely"
+priority = "P18"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
 
 [rules.cert_c.EXP34-C]
 enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP34-C.+Do+not+dereference+null+pointers"
+cwe = ["CWE-476", "CWE-690", "CWE-252"]

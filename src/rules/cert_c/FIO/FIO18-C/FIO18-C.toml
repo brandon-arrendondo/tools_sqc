@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "FIO18-C"
+type = "recommendation"
 category = "FIO"
-enabled = false
-ignore_patterns = []
+number = 18
+title = "Never expect fwrite() to terminate the writing process at a null character"
+description = """
+The C Standard, subclause 7.21.8.2 [ISO/IEC 9899:2011], defines
+thefwrite()function as follows: The definition does not state that
+thefwrite()function will stop copying characters into the file if a null
+character is encountered. Therefore, when writing a null-terminated byte string
+to a file using thefwrite()function, always use the length of the string plus 1
+(to account for the null character) as thenmembparameter. In this noncompliant
+code example, the size of the buffer is stored insize1, butsize2number of
+characters are written to the file. Ifsize2is greater thansize1,write()will not
+stop copying characters at the null character.
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create fio18-c.rs with check_fio18-c function
+[rules.cert_c.FIO18-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FIO18-C.+Never+expect+fwrite%28%29+to+terminate+the+writing+process+at+a+null+character"

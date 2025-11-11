@@ -1,8 +1,32 @@
 [metadata]
-name = "MEM30-C Rule Configuration"
-version = "1.0.0"
-description = "Configuration for MEM30-C: Do not access freed memory"
-cert_version = "2016"
+id = "MEM30-C"
+type = "rule"
+category = "MEM"
+number = 30
+title = "Do not access freed memory"
+description = """
+Evaluating a pointer—including dereferencing the pointer, using it as an operand
+of an arithmetic operation, type casting it, and using it as the right-hand side
+of an assignment—into memory that has been deallocated by a memory management
+function isundefined behavior 183. Pointers to memory that has been deallocated
+are calleddangling pointers. Accessing a dangling pointer can result in
+exploitablevulnerabilities. According to the C Standard, using the value of a
+pointer that refers to space deallocated by a call to
+thefree()orrealloc()function is undefined behavior. (Seeundefined behavior 183.)
+Reading a pointer to deallocated memory isundefined behavior 183because the
+pointer value isindeterminateand might be atrap representation. Fetching a trap
+representation might perform a hardware trap (but is not required to).
+"""
+severity = "High"
+likelihood = "Likely"
+priority = "P9"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
 
 [rules.cert_c.MEM30-C]
 enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/MEM30-C.+Do+not+access+freed+memory"
+cwe = ["CWE-416", "CWE-672", "CWE-666", "CWE-758", "CWE-415", "CWE-456"]

@@ -1,8 +1,30 @@
-[rule]
+[metadata]
 id = "DCL36-C"
+type = "rule"
 category = "DCL"
-enabled = false
-ignore_patterns = []
+number = 36
+title = "Do not declare an identifier with conflicting linkage classifications"
+description = """
+Linkage can make an identifier declared in different scopes or declared multiple
+times within the same scope refer to the same object or function. Identifiers
+are classified asexternally linked,internally linked, ornot linked. These three
+kinds of linkage have the following characteristics [Kirch-Prinz 2002]:
+According to the C Standard, 6.2.2 paragraph 3 [ISO/IEC 9899:2024], linkage is
+determined as follows: Use of an identifier (within one translation unit)
+classified as both internally and externally linked isundefined behavior. (See
+alsoundefined behavior 8.) A translation unit includes the source file together
+with its headers and all source files included via the preprocessing
+directive#include.
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P8"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create dcl36-c.rs with check_dcl36-c function
+[rules.cert_c.DCL36-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL36-C.+Do+not+declare+an+identifier+with+conflicting+linkage+classifications"

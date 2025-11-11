@@ -1,8 +1,29 @@
-[rule]
+[metadata]
 id = "API04-C"
+type = "recommendation"
 category = "API"
-enabled = false
-ignore_patterns = []
+number = 4
+title = "Provide a consistent and usable error-checking mechanism"
+description = """
+Functions should provide consistent and usable error-checking mechanisms.
+Complex interfaces are sometimes ignored by programmers, resulting in code that
+is not error checked. Inconsistent interfaces are frequently misused and
+difficult to use, resulting in lower-quality code and higher development costs.
+Thestrlcpy()function copies a null-terminated source string to a destination
+array. It is designed to be a safer, more consistent, and less error-prone
+replacement forstrcpy(). Thestrlcpy()function returns the total length of the
+string it tried to create (the length of the source string).
+"""
+severity = "Medium"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jul 02, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create api04-c.rs with check_api04-c function
+[rules.cert_c.API04-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/API04-C.+Provide+a+consistent+and+usable+error-checking+mechanism"
+cwe = ["CWE-754"]

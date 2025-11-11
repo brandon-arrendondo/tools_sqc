@@ -1,8 +1,31 @@
-[rule]
+[metadata]
 id = "ENV33-C"
+type = "recommendation"
 category = "ENV"
-enabled = false
-ignore_patterns = []
+number = 33
+title = "Do not call system()"
+description = """
+The C Standardsystem()function executes a specified command by invoking
+animplementation-definedcommand processor, such as a UNIX shell orCMD.EXEin
+Microsoft Windows. The POSIXpopen()and Windows_popen()functions also invoke a
+command processor but create a pipe between the calling program and the executed
+command, returning a pointer to a stream that can be used to either read from or
+write to the pipe [IEEE Std 1003.1:2013]. Use of thesystem()function can result
+in exploitablevulnerabilities, in the worst case allowing execution of arbitrary
+system commands. Situations in which calls tosystem()have high risk include the
+following: Do not invoke a command processor viasystem()or equivalent functions
+to execute a command.
+"""
+severity = "High"
+likelihood = "Probable"
+priority = "P12"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create env33-c.rs with check_env33-c function
+[rules.cert_c.ENV33-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=87152177"
+cwe = ["CWE-88", "CWE-676", "CWE-78"]

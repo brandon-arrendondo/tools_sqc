@@ -1,8 +1,27 @@
-[rule]
+[metadata]
 id = "ERR32-C"
+type = "rule"
 category = "ERR"
-enabled = false
-ignore_patterns = []
+number = 32
+title = "Do not rely on indeterminate values of errno"
+description = """
+According to the C Standard Annex J.2 (133) [ISO/IEC 9899:2024], the behavior of
+a program isundefinedwhen Seeundefined behavior 133. A signal handler is allowed
+to callsignal();if that fails,signal()returnsSIG_ERRand setserrnoto a positive
+value. However, if the event that caused a signal was external (not the result
+of the program callingabort()orraise()), the only functions the signal handler
+may call are_Exit()orabort(), or it may callsignal()on the signal currently
+being handled; ifsignal()fails, the value oferrnoisindeterminate.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P3"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
 
-# Note: This rule is not yet implemented
-# To implement: Create err32-c.rs with check_err32-c function
+[rules.cert_c.ERR32-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ERR32-C.+Do+not+rely+on+indeterminate+values+of+errno"
