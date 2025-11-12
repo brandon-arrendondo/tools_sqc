@@ -93,13 +93,22 @@ Has implementation - needs verification and test coverage review
 
 ## Implementation Plan
 
+**Design Principles:**
+- **DRY (Don't Repeat Yourself):** Extract common patterns into utility functions
+- **KISS (Keep It Simple, Stupid):** Prefer simple, clear solutions over complex ones
+- **Modular:** Create reusable components in `src/utility/cert_c/`
+- **Encapsulated:** Keep rule-specific logic in rule file, shared logic in utilities
+
+**Utility Access:** This mode unlocks `src/utility/cert_c/*.rs` for creating/modifying shared utilities.
+
+
 **Use rule-scoped mode for surgical focus:**
 ```bash
 # Architect runs:
-./scripts/claude_mode_impl_rule.sh ERR33-C
+./scripts/claude_mode_impl_rule_utils.sh ERR33-C
 
 # Claude runs:
-/mode-impl-rule ERR33-C
+/mode-impl-rule-utils ERR33-C
 ```
 
 **Implementation File:** `rules/cert_c/ERR/ERR33-C/err33_c.rs`
@@ -170,7 +179,7 @@ cargo test --lib
 
 - This is a **high-priority rule** (P27 from CERT C)
 - Wiki page is the authoritative source
-- Use `/mode-impl-rule ERR33-C` for surgical focus
+- Use `/mode-impl-rule-utils ERR33-C` for surgical focus
 - All test files must be in `tests/fail/` and `tests/pass/`
 
 ---
