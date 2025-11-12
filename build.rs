@@ -148,20 +148,15 @@ fn generate_rules_all_toml() -> Result<()> {
         }
 
         // Write combined file
-        match File::create(&output_path) {
-            Ok(mut file) => {
-                if let Err(e) = file.write_all(combined_content.as_bytes()) {
-                    eprintln!("Error writing {}: {}", output_path.display(), e);
-                } else {
-                    println!("cargo:rerun-if-changed={}", ruleset_dir.display());
-                    println!("Generated {} rules-all.toml with {} rule manifests",
-                             ruleset_name, toml_files.len());
-                }
-            }
-            Err(e) => {
-                eprintln!("Error creating {}: {}", output_path.display(), e);
-            }
-        }
+        let mut file = File::create(&output_path)
+            .context(format!("Failed to create rules-all.toml at {}", output_path.display()))?;
+
+        file.write_all(combined_content.as_bytes())
+            .context(format!("Failed to write rules-all.toml to {}", output_path.display()))?;
+
+        println!("cargo:rerun-if-changed={}", ruleset_dir.display());
+        println!("Generated {} rules-all.toml with {} rule manifests",
+                 ruleset_name, toml_files.len());
     }
 
     Ok(())
@@ -256,13 +251,8 @@ fn generate_integration_tests() -> Result<()> {
             let rule_snake = rule_id.to_lowercase().replace('-', "_");
             let rule_test_file = tests_dir.join(format!("{}_tests.rs", rule_snake));
 
-            let mut rule_file = match File::create(&rule_test_file) {
-                Ok(f) => f,
-                Err(e) => {
-                    eprintln!("Warning: Failed to create test file for {}: {}", rule_id, e);
-                    continue;
-                }
-            };
+            let mut rule_file = File::create(&rule_test_file)
+                .context(format!("Failed to create test file for {}: {}", rule_id, rule_test_file.display()))?;
 
             // Write per-rule file header (no use statements - they're in the main file)
             writeln!(rule_file, "// Auto-generated tests for {}", rule_id)?;
@@ -294,15 +284,13 @@ fn generate_integration_tests() -> Result<()> {
                     let test_path = test_file.path();
 
                     if test_path.extension().map_or(false, |e| e == "c") {
-                        if let Err(e) = generate_test_function(
+                        generate_test_function(
                             &mut rule_file,
                             rule_id,
                             category_name,
                             &test_path,
                             "fail"
-                        ) {
-                            eprintln!("Warning: Failed to generate test for {:?}: {}", test_path, e);
-                        }
+                        ).context(format!("Failed to generate test for {:?}", test_path))?;
                     }
                 }
             }
@@ -330,15 +318,13 @@ fn generate_integration_tests() -> Result<()> {
                     let test_path = test_file.path();
 
                     if test_path.extension().map_or(false, |e| e == "c") {
-                        if let Err(e) = generate_test_function(
+                        generate_test_function(
                             &mut rule_file,
                             rule_id,
                             category_name,
                             &test_path,
                             "pass"
-                        ) {
-                            eprintln!("Warning: Failed to generate test for {:?}: {}", test_path, e);
-                        }
+                        ).context(format!("Failed to generate test for {:?}", test_path))?;
                     }
                 }
             }
