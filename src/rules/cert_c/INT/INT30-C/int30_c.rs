@@ -169,7 +169,7 @@ impl Int30C {
     }
 
     fn check_left_shift(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(_right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
             let left_type = self.infer_type(&left, source);
 
             if self.is_unsigned_type(&left_type) {
@@ -388,7 +388,7 @@ impl Int30C {
         }
     }
 
-    fn flag_allocation_overflow(&self, node: &Node, source: &str, function_name: &str, size_arg: &str, violations: &mut Vec<RuleViolation>) {
+    fn flag_allocation_overflow(&self, node: &Node, _source: &str, function_name: &str, size_arg: &str, violations: &mut Vec<RuleViolation>) {
         let start_point = node.start_position();
         violations.push(RuleViolation {
             rule_id: self.rule_id().to_string(),

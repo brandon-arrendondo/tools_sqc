@@ -926,7 +926,7 @@ impl FlexibleArrayAnalyzer {
         false
     }
 
-    fn is_declared_flexible_struct_variable(&self, var_name: &str, context_node: &Node) -> bool {
+    fn is_declared_flexible_struct_variable(&self, var_name: &str, _context_node: &Node) -> bool {
         // Check if the variable is declared as a flexible array struct type
         // This requires walking up the AST to find variable declarations
 
@@ -1322,7 +1322,7 @@ impl FlexibleArrayAnalyzer {
         false
     }
 
-    fn is_pointer_based_field_access(&self, field_expr: &Node, source: &str) -> bool {
+    fn is_pointer_based_field_access(&self, field_expr: &Node, _source: &str) -> bool {
         // Check if this field expression is accessing a member of a pointer
         // (ptr->member vs array[i].member)
 
@@ -1618,7 +1618,7 @@ impl FlexibleArrayAnalyzer {
         false
     }
 
-    fn is_flexible_struct_dereference(&self, node: &Node, source: &str) -> bool {
+    fn is_flexible_struct_dereference(&self, node: &Node, _source: &str) -> bool {
         // Check if this is a dereference of what might be a flexible array struct
         if node.kind() == "pointer_expression" {
             // This is a simple heuristic - in a full implementation we'd need type analysis
@@ -1627,7 +1627,7 @@ impl FlexibleArrayAnalyzer {
         false
     }
 
-    fn is_pointer_parameter(&self, param: &Node, source: &str) -> bool {
+    fn is_pointer_parameter(&self, param: &Node, _source: &str) -> bool {
         // Check if parameter declaration includes pointer syntax
         for i in 0..param.child_count() {
             if let Some(child) = param.child(i) {
@@ -3120,7 +3120,7 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn check_const_casting_specific(&self, node: &Node, source: &str, struct_name: &str) -> Option<RuleViolation> {
+    fn check_const_casting_specific(&self, node: &Node, source: &str, _struct_name: &str) -> Option<RuleViolation> {
         // Original const-casting logic from existing check_const_casting method
         // Check for patterns like: (struct flex_array_struct *)&const_flex
         // where const qualifier is being cast away

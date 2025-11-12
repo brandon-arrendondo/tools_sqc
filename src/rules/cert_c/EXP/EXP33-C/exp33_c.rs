@@ -134,7 +134,7 @@ impl UninitializedVariableAnalyzer {
                 // Track assignments that initialize variables
                 if let Some(left) = node.child_by_field_name("left") {
                     if left.kind() == "identifier" {
-                        let var_name = source[left.start_byte()..left.end_byte()].to_string();
+                        let _var_name = source[left.start_byte()..left.end_byte()].to_string();
                         // This is a simplified approach - in reality we'd need more sophisticated tracking
                     }
                 }

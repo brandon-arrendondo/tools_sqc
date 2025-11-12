@@ -158,7 +158,7 @@ impl MemoryAnalyzer {
     fn process_assignment(&mut self, node: &Node, source: &str) {
         // Check for assignments that might involve freed memory
         if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
-            let left_var = self.extract_variable_name(&left, source);
+            let _left_var = self.extract_variable_name(&left, source);
             let right_var = self.extract_variable_name(&right, source);
 
             // Check if assigning from a freed pointer
@@ -177,7 +177,7 @@ impl MemoryAnalyzer {
         }
     }
 
-    fn process_memory_access_function(&mut self, node: &Node, source: &str, function_name: &str) {
+    fn process_memory_access_function(&mut self, node: &Node, source: &str, _function_name: &str) {
         // Check if function arguments reference freed memory
         if let Some(arguments) = node.child_by_field_name("arguments") {
             for i in 0..arguments.child_count() {
@@ -202,7 +202,7 @@ impl MemoryAnalyzer {
         }
     }
 
-    fn check_function_arguments_for_freed_memory(&mut self, node: &Node, source: &str, function_name: &str) {
+    fn check_function_arguments_for_freed_memory(&mut self, node: &Node, source: &str, _function_name: &str) {
         if let Some(arguments) = node.child_by_field_name("arguments") {
             for i in 0..arguments.child_count() {
                 if let Some(arg) = arguments.child(i) {
@@ -234,7 +234,7 @@ impl MemoryAnalyzer {
         self.check_loop_free_patterns(node, source, violations);
     }
 
-    fn check_use_after_free(&self, violations: &mut Vec<RuleViolation>, source: &str) {
+    fn check_use_after_free(&self, violations: &mut Vec<RuleViolation>, _source: &str) {
         let mut freed_vars: HashSet<String> = HashSet::new();
 
         for op in &self.memory_operations {
@@ -268,7 +268,7 @@ impl MemoryAnalyzer {
         }
     }
 
-    fn check_double_free(&self, violations: &mut Vec<RuleViolation>, source: &str) {
+    fn check_double_free(&self, violations: &mut Vec<RuleViolation>, _source: &str) {
         let mut freed_vars: HashSet<String> = HashSet::new();
 
         for op in &self.memory_operations {

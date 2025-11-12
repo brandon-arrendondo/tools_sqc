@@ -248,7 +248,7 @@ impl Int32C {
 
     fn check_negation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(argument) = node.child_by_field_name("argument") {
-            let arg_text = &source[argument.start_byte()..argument.end_byte()];
+            let _arg_text = &source[argument.start_byte()..argument.end_byte()];
             let arg_type = self.infer_type(&argument, source);
 
             // Check for negation of signed integers, especially -INT_MIN which causes overflow
@@ -276,7 +276,7 @@ impl Int32C {
     }
 
     fn check_left_shift(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(_right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
             let left_type = self.infer_type(&left, source);
 
             if self.is_signed_type(&left_type) {

@@ -254,7 +254,7 @@ impl Arr38C {
         }
     }
 
-    fn check_string_size_parameter(&self, args: &[String], node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_string_size_parameter(&self, args: &[String], node: &Node, _source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
         let size_arg = &args[2];
 
         if self.is_sizeof_expression(size_arg) {
@@ -275,7 +275,7 @@ impl Arr38C {
         }
     }
 
-    fn check_unbounded_string_function(&self, args: &[String], node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_unbounded_string_function(&self, _args: &[String], node: &Node, _source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
         // These functions are inherently dangerous without bounds checking
         let start_point = node.start_position();
         violations.push(RuleViolation {

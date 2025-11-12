@@ -87,7 +87,7 @@ impl Str31C {
     }
 
     /// Find #define constants used in array declarations
-    fn find_define_constant(&self, var_name: &str, root: &Node, source: &str) -> Option<usize> {
+    fn find_define_constant(&self, var_name: &str, _root: &Node, source: &str) -> Option<usize> {
         let lines: Vec<&str> = source.lines().collect();
         let mut defines = HashMap::new();
 
@@ -615,7 +615,7 @@ impl Str31C {
     }
 
     /// Check if memcpy is being used for string operations (dangerous)
-    fn is_string_memcpy(&self, arguments: &Node, source: &str, root: &Node) -> bool {
+    fn is_string_memcpy(&self, arguments: &Node, source: &str, _root: &Node) -> bool {
         // Extract arguments to see if this looks like string copying
         let mut dest_name = None;
         let mut src_name = None;

@@ -214,8 +214,8 @@ impl Arr39C {
     }
 
     fn is_pointer_scaled_arithmetic(&self, left: &Node, right: &Node, source: &str) -> bool {
-        let left_text = &source[left.start_byte()..left.end_byte()];
-        let right_text = &source[right.start_byte()..right.end_byte()];
+        let _left_text = &source[left.start_byte()..left.end_byte()];
+        let _right_text = &source[right.start_byte()..right.end_byte()];
 
         // Check if left is likely a pointer and right contains scaling
         let left_is_pointer = self.looks_like_pointer_node(left, source);
@@ -248,7 +248,7 @@ impl Arr39C {
     fn looks_like_pointer_node(&self, node: &Node, source: &str) -> bool {
         match node.kind() {
             "identifier" => {
-                let text = &source[node.start_byte()..node.end_byte()];
+                let _text = &source[node.start_byte()..node.end_byte()];
                 self.looks_like_pointer(node, source)
             }
             "binary_expression" => {

@@ -1346,7 +1346,7 @@ impl TerminalUI {
         }
     }
 
-    fn get_file_preview(&self, file_path: &str, target_line: usize) -> Result<Vec<Line>> {
+    fn get_file_preview(&self, file_path: &str, target_line: usize) -> Result<Vec<Line<'_>>> {
         let content = fs::read_to_string(file_path)?;
         let lines: Vec<&str> = content.lines().collect();
 
