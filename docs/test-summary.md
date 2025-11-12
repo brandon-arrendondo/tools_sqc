@@ -1,11 +1,11 @@
 # CERT C Rules Test Summary
 
-**Generated:** 2025-11-12 15:44:18
+**Generated:** 2025-11-12 17:32:26
 
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 23 (8.1%)
+- **Implemented Rules:** 25 (8.8%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -108,7 +108,7 @@
   - 🔶 [ERR06-C](#rule-err06c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ⚫ [ERR00-C](#rule-err00c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [ERR32-C](#rule-err32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [EXP](#category-exp) (2 implemented / 31 total)
+- [EXP](#category-exp) (3 implemented / 31 total)
   - 🔶 [EXP40-C](#rule-exp40c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP47-C](#rule-exp47c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [EXP37-C](#rule-exp37c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
@@ -129,7 +129,7 @@
   - 🔶 [EXP30-C](#rule-exp30c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - ✅ [EXP33-C](#rule-exp33c) - Implemented: Pass 34/50 (68.0%)
   - 🔶 [EXP16-C](#rule-exp16c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
-  - 🔶 [EXP15-C](#rule-exp15c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [EXP15-C](#rule-exp15c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [EXP32-C](#rule-exp32c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP09-C](#rule-exp09c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ✅ [EXP34-C](#rule-exp34c) - Implemented: Pass 27/46 (58.7%)
@@ -241,7 +241,7 @@
   - 🔶 [MSC32-C](#rule-msc32c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [MSC41-C](#rule-msc41c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [MSC39-C](#rule-msc39c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-- [POS](#category-pos) (0 implemented / 20 total)
+- [POS](#category-pos) (1 implemented / 20 total)
   - 🔶 [POS51-C](#rule-pos51c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS35-C](#rule-pos35c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [POS44-C](#rule-pos44c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -259,7 +259,7 @@
   - 🔶 [POS52-C](#rule-pos52c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS50-C](#rule-pos50c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [POS34-C](#rule-pos34c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [POS54-C](#rule-pos54c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [POS54-C](#rule-pos54c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [POS01-C](#rule-pos01c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [POS53-C](#rule-pos53c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
 - [PRE](#category-pre) (3 implemented / 16 total)
@@ -4359,7 +4359,7 @@ being handled; ifsignal()fails, the value oferrnoisindeterminate.
 
 <a id="category-exp"></a>
 
-**Implementation Status:** 2 / 31 rules (6.5%)
+**Implementation Status:** 3 / 31 rules (9.7%)
 
 ### 🔶 EXP40-C - Not Implemented (has tests)
 
@@ -5097,7 +5097,7 @@ vulnerability. /* First the options that are allowed only for root */ if (getuid
 
 ---
 
-### 🔶 EXP15-C - Not Implemented (has tests)
+### ✅ EXP15-C - Implemented
 
 <a id="rule-exp15c"></a>
 
@@ -5110,15 +5110,15 @@ anifstatement: if (a == b); { /* ... */ }
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_exp15_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_exp15_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_exp15_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_exp15_c_pass_wiki_compliant_1`
 
 ---
 
@@ -9190,7 +9190,7 @@ count; ++i) { printf("%f ", 1.0 / va_arg(ap, double)); } va_end(ap); return 0; }
 
 <a id="category-pos"></a>
 
-**Implementation Status:** 0 / 20 rules (0.0%)
+**Implementation Status:** 1 / 20 rules (5.0%)
 
 ### 🔶 POS51-C - Not Implemented (has tests)
 
@@ -9811,7 +9811,7 @@ stack frame containingenvhas been recycled.
 
 ---
 
-### 🔶 POS54-C - Not Implemented (has tests)
+### ✅ POS54-C - Implemented
 
 <a id="rule-pos54c"></a>
 
@@ -9838,15 +9838,15 @@ aFILEobjectNULLENOMEMposix_memalign()0NonzeroUnchanged
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_posix.c` → `test_pos54_c_fail_wiki_posix`
+- ✅ PASS `wiki_posix.c` → `test_pos54_c_fail_wiki_posix`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_posix.c` → `test_pos54_c_pass_wiki_posix`
+- ✅ PASS `wiki_posix.c` → `test_pos54_c_pass_wiki_posix`
 
 ---
 
@@ -11995,13 +11995,13 @@ result.
 | DCL | 31 | 1 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 1 | 88 | 8.0 |
-| EXP | 31 | 2 | 236 | 7.6 |
+| EXP | 31 | 3 | 236 | 7.6 |
 | FIO | 35 | 2 | 200 | 5.7 |
 | FLP | 13 | 0 | 40 | 3.1 |
 | INT | 23 | 2 | 238 | 10.3 |
 | MEM | 17 | 3 | 244 | 14.4 |
 | MSC | 8 | 0 | 30 | 3.8 |
-| POS | 20 | 0 | 55 | 2.8 |
+| POS | 20 | 1 | 55 | 2.8 |
 | PRE | 16 | 3 | 189 | 11.8 |
 | SIG | 7 | 0 | 314 | 44.9 |
 | STR | 16 | 2 | 185 | 11.6 |
