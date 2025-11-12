@@ -28,6 +28,9 @@ pub mod dcl00_c;
 #[path = "ERR/ERR33-C/err33_c.rs"]
 pub mod err33_c;
 
+#[path = "EXP/EXP15-C/exp15_c.rs"]
+pub mod exp15_c;
+
 #[path = "EXP/EXP33-C/exp33_c.rs"]
 pub mod exp33_c;
 
@@ -54,6 +57,9 @@ pub mod mem31_c;
 
 #[path = "MEM/MEM33-C/mem33_c.rs"]
 pub mod mem33_c;
+
+#[path = "POS/POS54-C/pos54_c.rs"]
+pub mod pos54_c;
 
 #[path = "PRE/PRE30-C/pre30_c.rs"]
 pub mod pre30_c;
@@ -87,6 +93,7 @@ impl RuleRegistry {
         registry.register(Box::new(arr39_c::Arr39C));
         registry.register(Box::new(dcl00_c::Dcl00C));
         registry.register(Box::new(err33_c::Err33C));
+        registry.register(Box::new(exp15_c::Exp15C));
         registry.register(Box::new(exp33_c::Exp33C));
         registry.register(Box::new(exp34_c::Exp34C));
         registry.register(Box::new(fio30_c::Fio30C));
@@ -96,6 +103,7 @@ impl RuleRegistry {
         registry.register(Box::new(mem30_c::Mem30C));
         registry.register(Box::new(mem31_c::Mem31C));
         registry.register(Box::new(mem33_c::Mem33C::new()));
+        registry.register(Box::new(pos54_c::Pos54C));
         registry.register(Box::new(pre30_c::Pre30C));
         registry.register(Box::new(pre31_c::Pre31C));
         registry.register(Box::new(pre32_c::Pre32C));
