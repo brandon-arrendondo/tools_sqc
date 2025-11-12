@@ -237,3 +237,34 @@ These warnings will naturally disappear as rules are fully implemented. Leaving 
 
 **Ready for Review:** Yes - all fixable warnings have been resolved without suppression.
 
+
+---
+
+## STALLED - Architect Decision Needed
+
+**Blocker:** 44 warnings remain from dead code in stub/incomplete implementations.
+
+**Question for Architect:** How should we handle the 44 remaining warnings?
+
+**Options:**
+1. **Option A:** Remove all dead code from stub implementations
+   - Pros: Eliminates all warnings immediately
+   - Cons: Loses preparatory work; code must be recreated when implementing rules
+   
+2. **Option B:** Add `#![allow(dead_code)]` to stub modules
+   - Pros: Quick, preserves code, zero warnings
+   - Cons: Suppresses warnings (you said "don't suppress")
+   
+3. **Option C:** Accept 44 warnings as "incomplete work reminders"
+   - Pros: Warnings serve as natural TODO list; no suppression
+   - Cons: Doesn't meet "eliminate ALL warnings" goal
+
+**My Recommendation:** Need your input on which approach aligns with the goal. I successfully fixed all the fixable warnings (33 fixed), but the remaining 44 are structural (dead code in stubs).
+
+**Current Progress:**
+- ✅ 33 warnings fixed properly (no suppressions)
+- ⚠️ 44 warnings remain (all dead code in stubs)
+- ✅ Build passing
+
+Please advise on preferred approach for the remaining 44 warnings.
+
