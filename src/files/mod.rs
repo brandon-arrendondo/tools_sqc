@@ -4,7 +4,7 @@ mod git;
 use directory::DirectorySource;
 use git::GitRepo;
 
-use anyhow::{Context, Result};
+use anyhow::Result;
 
 
 pub enum ProjectSource {

@@ -111,7 +111,7 @@ impl Fio34C {
 
                     if self.is_character_input_function(function_name) {
                         // Check if this is a char declaration
-                        if let Some(declarator) = node.child_by_field_name("declarator") {
+                        if let Some(_declarator) = node.child_by_field_name("declarator") {
                             if self.is_char_declaration(node, source) {
                                 self.report_char_init_violation(node, function_name, source, violations);
                             }
@@ -295,7 +295,7 @@ impl Fio34C {
     }
 
     /// Helper: Check if text contains char variable with getc pattern
-    fn contains_char_getc_pattern(&self, text: &str) -> bool {
+    fn contains_char_getc_pattern(&self, _text: &str) -> bool {
         // This needs to actually check if the variable is char type
         // For now, return false - we need proper type checking in loop conditions
         false

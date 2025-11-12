@@ -200,7 +200,7 @@ impl Arr37C {
 
     fn check_compound_assignment(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
         // Check for patterns like: ptr += n, ptr -= n
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(_right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
             // Get the operator
             let full_text = &source[node.start_byte()..node.end_byte()];
             if full_text.contains("+=") || full_text.contains("-=") {

@@ -920,7 +920,7 @@ impl Err33C {
         // 3. fclose after fprintf/fwrite failures
 
         // Enhanced: Look for specific cleanup patterns in the immediate context
-        let stmt_text = &source[stmt_node.start_byte()..stmt_node.end_byte()];
+        let _stmt_text = &source[stmt_node.start_byte()..stmt_node.end_byte()];
 
         // Check if fclose is in an error handling if-block
         if let Some(if_stmt) = self.find_containing_if_statement(stmt_node) {
