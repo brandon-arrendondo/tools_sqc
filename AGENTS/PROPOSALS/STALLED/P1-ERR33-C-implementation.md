@@ -1,6 +1,6 @@
 # P1-ERR33-C - Detect and handle standard library errors
 
-**Status:** STAGED (awaiting adversarial review)
+**Status:** STALLED (2 failing tests need fixes)
 **Priority:** P1 (High - P27 from CERT C)
 **Created:** 2025-11-12
 **Category:** ERR
@@ -263,20 +263,33 @@ Test Results: **48/51 passing (94.1%)**
 1. Ensure NULL checks reference the correct variable (not just any NULL check)
 2. Detect dangerous realloc pattern (overwrite-then-check)
 
-**Phase 3: Decision Point**
+**Phase 3: BLOCKED - Must Fix Failing Tests**
 
-Given the high pass rate (94.1%) and complexity of the remaining edge cases, I'm recommending:
-- **Move to STAGED** for architect review of fix strategy
-- Two edge cases documented with clear root causes
-- Implementation is production-ready for 94% of cases
-- Edge case fixes can be addressed based on architect feedback
+@architect: BLOCKED - 94% pass rate is insufficient for static analysis tool. Need 100% accuracy.
 
-**Recommendation:** Mark as STAGED, architect can decide:
-- Accept 94% as sufficient for now
-- Request specific fix approach for edge cases
-- Prioritize fixing these vs implementing other P27 rules first
+**Two failing tests must be fixed before moving forward:**
 
-**Status Update:** READY FOR STAGING
+**1. Fix `wiki_calloc.c` - Wrong Variable Checked**
+- **Problem:** Code checks `if (tmp2 == NULL)` instead of `if (start == NULL)`
+- **Fix Strategy:** Enhance `find_error_check_in_context()` to verify the checked variable matches the assigned variable
+- **Implementation:** Add variable name matching to NULL check detection
+- **Estimated:** 1-2 hours
+
+**2. Fix `wiki_realloc.c` - Dangerous Realloc Pattern**
+- **Problem:** `p = realloc(p, size); if (p == NULL)` is dangerous (loses original pointer if realloc fails)
+- **Fix Strategy:** Detect when realloc assigns to same variable it's reading from
+- **Implementation:** Special case for realloc to flag same-variable pattern
+- **Estimated:** 2-3 hours
+
+**Total Estimated Time to Unblock:** 3-5 hours
+
+**Proposed Fix Approach:**
+1. Modify `find_error_check_in_context()` lines 639-770 to verify variable name matches
+2. Add `check_dangerous_realloc_pattern()` method to detect `p = realloc(p, ...)`
+3. Run tests to verify fixes
+4. Ensure no new false positives introduced
+
+**Status Update:** STALLED - Waiting to implement fixes for 100% pass rate
 
 ---
 
