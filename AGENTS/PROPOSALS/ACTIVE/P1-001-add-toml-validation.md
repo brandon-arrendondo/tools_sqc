@@ -209,16 +209,23 @@ fn validate_rule_metadata(category: &str, rule_id: &str, metadata: &RuleMetadata
 ## Open Questions for Architect
 
 1. **Schema strictness:** Start strict and loosen, or start lenient and tighten?
+@architect: start strict
 2. **Existing invalid TOML:** Fix all before merging, or allow warnings initially?
+@architect allow warnings until we finalize - work through this with me directly during implementation
 3. **Schema versioning:** Should TOML files include schema version field?
+@architect: yes, especially if we have a toml schema that we can validate against - especially important for the individual rules toml files
 4. **Canonical source:** Which codebase owns schema definition (scraper vs build.rs)?
+@architect: this codebase -> consider a distinct validation toml for rules, that lives separately for required metadata fields and other values that matter for that specific rule
 5. **Optional fields:** What should be required vs optional? Need architect input.
+@architect: lets decide during implementation
 
 ## Architect Comments
 
-@architect: [Pending review and approval]
+@architect: APPROVED
 
 @agent: QUESTION - Should we use the schema from `scrapers/generate_tests_from_wiki.py` as the canonical source, or define it fresh in Rust?
+
+@architect: There is no scrapers/generate_tests_from_wiki.py folder/file? What are you referring to? Discuss during implementation
 
 ---
 

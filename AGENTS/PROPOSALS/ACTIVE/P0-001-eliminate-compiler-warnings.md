@@ -48,6 +48,8 @@ $ cargo build 2>&1 | grep "^warning:" | wc -l
 ### Phase 2: Suppress Stub Rule Warnings (2-4 hours)
 For the 261 unimplemented stub rules, add module-level suppression:
 
+@architect: There are no stub .rs files for the unimplemented rules?
+
 ```rust
 // At the top of each stub rule file:
 #![allow(dead_code)]
@@ -146,13 +148,15 @@ None. This is purely a code change to existing files.
 
 ## Architect Comments
 
-@architect: [Pending review and approval]
-
+@architect: APPROVED
 **Questions for Architect:**
-1. Should we aim for 0 warnings or is <5 acceptable?
+1. Should we aim for 0 warnings or is <5 acceptable? @architect: less than 5 is fine, but aim for 0 unless
 2. Should we add CI check to fail on new warnings after this is fixed?
+@architect: no, expect warnings to be maintained
 3. Prefer module-level `#![allow(...)]` or crate-level `#[allow(...)]` on each item?
+@architect: discuss this when starting implementation
 4. Any specific warning types that should NEVER be suppressed?
+@architect Shouldnt be supressing any warnings for now
 
 ---
 

@@ -175,13 +175,16 @@ None. Uses existing `anyhow::Context` already imported in build.rs.
 
 ## Architect Comments
 
-@architect: [Pending review and approval]
-
+@architect: APPROVED
 **Questions for Architect:**
 1. Should we add retry logic for transient I/O errors, or just fail fast?
+@architect: fail fast
 2. Is it acceptable to fail builds on test file generation errors, or should tests be optional?
+@architect: unit tests will eventually be required for pre-commit - so we should fail on test file generation errors
 3. Should we add a "dry-run" mode for build.rs to validate without writing?
+@architect dont see the need
 4. Any specific errors that should remain warnings instead of fatal?
+@architect: I will know it when I see it
 
 ---
 
