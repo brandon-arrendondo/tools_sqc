@@ -196,12 +196,39 @@ impl Err33C {
 
     fn check_assignment(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+            // Skip assignments to dereferenced pointers like *ptr = func()
+            // These are output parameters where the caller is responsible for checking the stored value
+            if left.kind() == "pointer_expression" {
+                return;
+            }
+
             if right.kind() == "call_expression" {
                 if let Some(function_node) = right.child_by_field_name("function") {
                     let function_name = &source[function_node.start_byte()..function_node.end_byte()];
                     let var_name = &source[left.start_byte()..left.end_byte()];
 
                     if self.is_error_returning_function(function_name) {
+                        // Special check for dangerous realloc pattern: p = realloc(p, size)
+                        if function_name == "realloc" && self.is_dangerous_realloc_pattern(&right, var_name, source) {
+                            let start_point = node.start_position();
+                            let call_text = &source[right.start_byte()..right.end_byte()];
+
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: Severity::High,
+                                message: format!(
+                                    "Dangerous realloc pattern: '{}' - assigning realloc result to the same pointer it's reallocating. If realloc fails, the original pointer is lost, causing a memory leak.",
+                                    call_text
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some("Use a temporary pointer: 'temp = realloc(p, size); if (temp == NULL) { /* handle error */ } p = temp;'".to_string()),
+                            ..Default::default()
+                            });
+                            return; // Don't perform the regular error check
+                        }
+
                         // Check if the assigned variable is later checked for errors
                         if !self.is_variable_error_checked(node, var_name, function_name, source) {
                             let start_point = node.start_position();
@@ -231,36 +258,48 @@ impl Err33C {
 
     fn check_init_declarator(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Handle pattern: TYPE *var = function_call();
+        // Also handle: TYPE *var = (TYPE*)function_call(); (with cast)
         if let Some(declarator) = node.child_by_field_name("declarator") {
             if let Some(value) = node.child_by_field_name("value") {
-                if value.kind() == "call_expression" {
-                    if let Some(function_node) = value.child_by_field_name("function") {
-                        let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+                // Handle cast_expression wrapping the call
+                let call_node = if value.kind() == "cast_expression" {
+                    value.child_by_field_name("value")
+                } else if value.kind() == "call_expression" {
+                    Some(value)
+                } else {
+                    None
+                };
 
-                        // Extract variable name from declarator
-                        let var_name = self.extract_variable_name_from_declarator(&declarator, source);
+                if let Some(call) = call_node {
+                    if call.kind() == "call_expression" {
+                        if let Some(function_node) = call.child_by_field_name("function") {
+                            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
 
-                        if self.is_error_returning_function(function_name) {
-                            // Check if the declared variable is later checked for errors
-                            if !self.is_variable_error_checked(node, &var_name, function_name, source) {
-                                let start_point = node.start_position();
-                                let call_text = &source[value.start_byte()..value.end_byte()];
+                            // Extract variable name from declarator
+                            let var_name = self.extract_variable_name_from_declarator(&declarator, source);
 
-                                let error_info = self.get_error_info(function_name);
+                            if self.is_error_returning_function(function_name) {
+                                // Check if the declared variable is later checked for errors
+                                if !self.is_variable_error_checked(node, &var_name, function_name, source) {
+                                    let start_point = node.start_position();
+                                    let call_text = &source[value.start_byte()..value.end_byte()];
 
-                                violations.push(RuleViolation {
-                                    rule_id: self.rule_id().to_string(),
-                                    severity: Severity::High,
-                                    message: format!(
-                                        "Return value of '{}' assigned to '{}' but not checked for errors: '{}' - {}",
-                                        function_name, var_name, call_text, error_info.description
-                                    ),
-                                    file_path: String::new(),
-                                    line: start_point.row + 1,
-                                    column: start_point.column + 1,
-                                    suggestion: Some(error_info.suggestion),
-                                ..Default::default()
-                                });
+                                    let error_info = self.get_error_info(function_name);
+
+                                    violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        severity: Severity::High,
+                                        message: format!(
+                                            "Return value of '{}' assigned to '{}' but not checked for errors: '{}' - {}",
+                                            function_name, var_name, call_text, error_info.description
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some(error_info.suggestion),
+                                    ..Default::default()
+                                    });
+                                }
                             }
                         }
                     }
@@ -641,15 +680,12 @@ impl Err33C {
 
         // Check for NULL pointer checks (more comprehensive patterns)
         if matches!(function_name, "malloc" | "calloc" | "realloc" | "fopen" | "fgets" | "tmpfile") {
-            // Direct comparisons
-            if text.contains(&format!("{} == NULL", var_name)) ||
-               text.contains(&format!("NULL == {}", var_name)) ||
-               text.contains(&format!("{} != NULL", var_name)) ||
-               text.contains(&format!("NULL != {}", var_name)) {
+            // Use AST-based verification for NULL checks to ensure we're checking the right variable
+            if self.contains_null_check_for_variable(node, var_name, source) {
                 return true;
             }
 
-            // Implicit boolean checks
+            // Implicit boolean checks (still use string matching for these simpler patterns)
             if text.contains(&format!("if ({})", var_name)) ||
                text.contains(&format!("if ({} )", var_name)) ||
                text.contains(&format!("if({})", var_name)) ||
@@ -769,14 +805,73 @@ impl Err33C {
         false
     }
 
-    fn contains_error_check(&self, node: &Node, var_name: &str, source: &str) -> bool {
-        let text = &source[node.start_byte()..node.end_byte()];
+    /// Check for the dangerous realloc pattern where the same variable is both the argument and the assignment target.
+    /// Pattern: p = realloc(p, size) - if realloc fails and returns NULL, the original pointer p is lost.
+    fn is_dangerous_realloc_pattern(&self, call_node: &Node, assigned_var: &str, source: &str) -> bool {
+        // Get the arguments to realloc
+        if let Some(arguments) = call_node.child_by_field_name("arguments") {
+            // realloc takes (ptr, size), we need to check if the first argument is the same as assigned_var
+            for i in 0..arguments.child_count() {
+                if let Some(arg) = arguments.child(i) {
+                    if arg.kind() == "identifier" {
+                        let arg_text = &source[arg.start_byte()..arg.end_byte()];
+                        // If the first argument to realloc is the same variable being assigned to, it's dangerous
+                        if arg_text == assigned_var {
+                            return true;
+                        }
+                        // Only check the first argument (the pointer being reallocated)
+                        break;
+                    }
+                }
+            }
+        }
+        false
+    }
 
-        // Look for common error checking patterns
-        text.contains(&format!("{} == NULL", var_name)) ||
-        text.contains(&format!("NULL == {}", var_name)) ||
-        text.contains(&format!("{} != NULL", var_name)) ||
-        text.contains(&format!("NULL != {}", var_name)) ||
+    /// Check if a node contains a NULL check for a specific variable using AST analysis.
+    /// This is more precise than string matching as it verifies the actual variable name in the comparison.
+    fn contains_null_check_for_variable(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        // Recursively search for binary_expression nodes that compare the variable to NULL
+        if node.kind() == "binary_expression" {
+            if let Some(operator) = node.child_by_field_name("operator") {
+                let op_text = &source[operator.start_byte()..operator.end_byte()];
+
+                // Check if this is a NULL comparison operator
+                if matches!(op_text, "==" | "!=") {
+                    if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+                        let left_text = &source[left.start_byte()..left.end_byte()];
+                        let right_text = &source[right.start_byte()..right.end_byte()];
+
+                        // Check if one side is our variable and the other is NULL
+                        if (left_text == var_name && right_text == "NULL") ||
+                           (right_text == var_name && left_text == "NULL") {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recursively check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.contains_null_check_for_variable(&child, var_name, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    fn contains_error_check(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        // Use AST-based checking for NULL comparisons to ensure we're checking the right variable
+        if self.contains_null_check_for_variable(node, var_name, source) {
+            return true;
+        }
+
+        // For non-NULL checks, still use string matching
+        let text = &source[node.start_byte()..node.end_byte()];
         text.contains(&format!("!{}", var_name)) ||
         text.contains(&format!("if ({})", var_name)) ||
         text.contains(&format!("if({}", var_name)) ||
