@@ -35,6 +35,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Exp15C;
@@ -104,7 +105,7 @@ impl Exp15C {
             // Check if there's a semicolon on the same line after the condition
             if self.has_semicolon_on_same_line(node, condition_end_line, source) {
                 let start_point = node.start_position();
-                let statement_text = &source[node.start_byte()..node.end_byte()];
+                let statement_text = get_node_text(node, source);
 
                 // Get just the first line for clearer error message
                 let first_line = statement_text.lines().next().unwrap_or(statement_text);
@@ -147,7 +148,7 @@ impl Exp15C {
                     let child_line = child.start_position().row;
                     if child_line == condition_end_line {
                         // Check if this expression_statement is empty (just a semicolon)
-                        let child_text = &source[child.start_byte()..child.end_byte()];
+                        let child_text = get_node_text(&child, source);
                         if child_text.trim() == ";" {
                             return true;
                         }
