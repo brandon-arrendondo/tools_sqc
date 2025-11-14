@@ -246,6 +246,39 @@ cargo test --lib
 
 ---
 
+## Refactoring Assessment (2025-11-14)
+
+### Claude Code (via /work-active)
+
+**Issue Analysis:**
+
+The 3 failing tests require **new detection logic implementation**, not just DRY refactoring:
+
+1. **wiki_noncompliant_1.c**: Needs detection of `do { c = getchar(); } while (c != EOF)` pattern
+2. **testcases_no_eof_check.c**: Needs detection of EOF checks without `feof()` calls
+3. **testcases_no_error_check.c**: Needs detection of EOF checks without `ferror()` calls
+
+**Complexity:**
+- Requires understanding FIO34-C rule semantics deeply
+- Need to implement new AST pattern matching for these specific violations
+- Estimated effort: 4-8 hours for implementation + testing
+
+**Recommendation:**
+- This is NOT a simple DRY refactoring task
+- Requires significant new implementation work
+- Should be treated as incomplete implementation, not refactoring
+- Needs architect decision on priority vs other work
+
+**DRY Issues (Secondary):**
+- 18 manual text extractions to fix AFTER implementation is complete
+- Can be addressed once violation detection is working
+
+**Status:** DEFERRED - Requires significant implementation work beyond refactoring scope
+
+@architect: FIO34-C needs implementation completion (3 missing violation patterns) before DRY refactoring can be applied. Recommend deprioritizing vs completing other P1 rules that only need refactoring.
+
+---
+
 ## Verification
 
 @architect: [Pending verification after implementation]
