@@ -267,3 +267,34 @@ Created `src/rules/cert_c/EXP/EXP15-C/exp15_c.rs` (165 lines):
 - Otherwise implementation is good quality
 
 **Status:** MOVED TO ACTIVE for minor utility usage fix (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Phase 1: Replace Manual Text Extractions (Completed)**
+
+Updated `src/rules/cert_c/EXP/EXP15-C/exp15_c.rs`:
+- ✅ Replaced 2 manual text extractions with `get_node_text()` from ast_utils.rs
+  - Line 107: statement text extraction
+  - Line 150: child text extraction
+- Minimal changes - clean, focused implementation already
+
+**Phase 2: Verification (Completed)**
+
+Test Results: ✅ **2/2 passing (100%)** - No regressions
+- `test_exp15_c_fail_wiki_noncompliant_1` - PASS
+- `test_exp15_c_pass_wiki_compliant_1` - PASS
+
+Build: ✅ Clean (no errors)
+
+**Summary:**
+- Eliminated all DRY violations in EXP15-C
+- Only 2 text extractions to fix (cleanest rule so far)
+- Maintained 100% test pass rate
+- Zero regressions
+- Implementation quality: Excellent
+
+**Status:** Ready for STAGED
