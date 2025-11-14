@@ -29,6 +29,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 use std::collections::HashMap;
 
@@ -67,7 +68,7 @@ impl Pos30C {
         // Look for readlink() calls
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = &source[function.start_byte()..function.end_byte()];
+                let func_name = get_node_text(&function, source);
                 if func_name == "readlink" {
                     self.check_readlink_call(node, source, violations);
                 }
@@ -107,7 +108,7 @@ impl Pos30C {
 
         // Third argument is size - get full text including expressions like sizeof(buf)-1
         let size_arg = &arg_nodes[2];
-        let size_text = &source[size_arg.start_byte()..size_arg.end_byte()];
+        let size_text = get_node_text(&size_arg, source);
 
         // Check if it's sizeof(buf) or bufsize without -1
         // Violations:
