@@ -303,3 +303,37 @@ Created `src/rules/cert_c/API/API02-C/api02_c.rs` (236 lines)
 - Refactor to use common utilities throughout
 
 **Status:** MOVED TO ACTIVE for DRY/KISS refactoring (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Phase 1: Refactor API02-C (Completed)**
+
+Updated `src/rules/cert_c/API/API02-C/api02_c.rs`:
+- ✅ Replaced 4 manual text extractions with `get_node_text()` from ast_utils.rs
+  - Line 156 → 158: Type text extraction
+  - Line 198 → 184: Size_t type checking
+  - Lines 209-210 → 195-196: Violation reporting (param and decl text)
+- ✅ Removed duplicate `has_pointer_declarator()` function (15 lines)
+- ✅ Now uses `is_pointer_declarator()` from declarator_utils.rs
+- File reduced: 230 lines → 215 lines (15 lines removed, 6.5% reduction)
+
+**Phase 2: Verification (Completed)**
+
+Test Results: ✅ **2/2 passing (100%)** - No regressions
+- `test_api02_c_fail_wiki_noncompliant_1` - PASS
+- `test_api02_c_pass_wiki_compliant_1` - PASS
+
+Build: ✅ Clean (no errors, only pre-existing warnings)
+
+**Summary:**
+- Eliminated all DRY violations in API02-C
+- Reused declarator_utils.rs created for API01-C
+- Reduced code size by 6.5%
+- Maintained 100% test pass rate
+- Zero regressions
+
+**Status:** Ready for STAGED
