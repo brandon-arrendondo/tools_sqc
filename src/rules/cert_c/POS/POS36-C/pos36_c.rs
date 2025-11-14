@@ -23,6 +23,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Pos36C;
@@ -124,7 +125,7 @@ impl Pos36C {
     fn collect_priv_calls(&self, node: &Node, source: &str, calls: &mut Vec<PrivCall>) {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = &source[function.start_byte()..function.end_byte()];
+                let func_name = get_node_text(&function, source);
 
                 if func_name == "setuid" {
                     calls.push(PrivCall {

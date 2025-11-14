@@ -1,6 +1,6 @@
 # CERT C Rules Test Summary
 
-**Generated:** 2025-11-14 11:41:58
+**Generated:** 2025-11-14 11:43:38
 
 ## Overview
 
@@ -247,14 +247,14 @@
   - 🔶 [POS44-C](#rule-pos44c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS04-C](#rule-pos04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS47-C](#rule-pos47c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
-  - ✅ [POS30-C](#rule-pos30c) - Implemented: Pass 3/3 (100.0%)
+  - ✅ [POS30-C](#rule-pos30c) - Implemented: Pass 0/3 (0.0%) [3 not run]
   - ✅ [POS37-C](#rule-pos37c) - Implemented: Pass 0/3 (0.0%) [3 not run]
   - 🔶 [POS49-C](#rule-pos49c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [POS05-C](#rule-pos05c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS02-C](#rule-pos02c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS39-C](#rule-pos39c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS38-C](#rule-pos38c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
-  - ✅ [POS36-C](#rule-pos36c) - Implemented: Pass 0/2 (0.0%) [2 not run]
+  - ✅ [POS36-C](#rule-pos36c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [POS48-C](#rule-pos48c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS52-C](#rule-pos52c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS50-C](#rule-pos50c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
@@ -9387,16 +9387,16 @@ readlink("/usr/bin/perl", buf, sizeof(buf)); buf[len] = '\0';
 
 **Test Coverage:** 3 tests (2 fail, 1 pass)
 
-**Test Results:** 3/3 passed (100.0%)
+**Test Results:** 0/3 passed (0.0%), 3 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `wiki_noncompliant_1.c` → `test_pos30_c_fail_wiki_noncompliant_1`
-- ✅ PASS `wiki_noncompliant_2_2.c` → `test_pos30_c_fail_wiki_noncompliant_2_2`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_pos30_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_2_2.c` → `test_pos30_c_fail_wiki_noncompliant_2_2`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `wiki_compliant_1.c` → `test_pos30_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_pos30_c_pass_wiki_compliant_1`
 
 ---
 
@@ -9645,15 +9645,15 @@ group privileges.
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_pos36_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_pos36_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_pos36_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_pos36_c_pass_wiki_compliant_1`
 
 ---
 
