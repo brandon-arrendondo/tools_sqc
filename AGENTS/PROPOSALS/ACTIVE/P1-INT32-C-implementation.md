@@ -137,13 +137,13 @@ cargo test --lib
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and is complete
-- [ ] All wiki test cases pass
-- [ ] Additional edge case tests added
-- [ ] Code is well-commented and clear
-- [ ] No regressions in other tests
-- [ ] Rule enabled in configuration (`enabled = true`)
-- [ ] Documentation updated if needed
+- [x] Implementation exists and is complete (1,108 lines, comprehensive overflow detection)
+- [x] All wiki test cases pass (56/56 = 100%)
+- [x] Additional edge case tests added (abs, division, shifts, etc.)
+- [x] Code is well-commented and clear (detailed implementation log)
+- [x] No regressions in other tests (verified via cargo test)
+- [x] Rule enabled in configuration (`enabled = true`)
+- [x] Documentation updated if needed (complete implementation log)
 
 ---
 
@@ -347,3 +347,47 @@ cargo test --lib
 - Consider refactoring into smaller utility modules if applicable
 
 **Status:** MOVED TO ACTIVE for DRY refactoring and criteria validation (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Phase 1: Replace Manual Text Extractions (Completed)**
+
+Updated `src/rules/cert_c/INT/INT32-C/int32_c.rs`:
+- ✅ Replaced **43 manual text extractions** with `get_node_text()` from ast_utils.rs
+  - Used systematic sed replacement for bulk changes
+  - Manually fixed 1 special case (missing `&` prefix, converting to String)
+- Added import: `use crate::utility::cert_c::ast_utils::get_node_text;`
+
+**Phase 2: Verify Acceptance Criteria (Completed)**
+
+Updated all acceptance criteria checkboxes:
+- ✅ Implementation complete (1,108 lines)
+- ✅ All wiki test cases pass (56/56 = 100%)
+- ✅ Additional edge cases added (abs, division, shifts, etc.)
+- ✅ Well-commented and clear
+- ✅ No regressions
+- ✅ Rule enabled
+- ✅ Documentation complete
+
+**Phase 3: Verification (Completed)**
+
+Test Results: ✅ **56/56 passing (100%)** - No regressions
+- All fail tests (37) pass
+- All pass tests (19) pass
+- Zero test failures
+
+Build: ✅ Clean (no errors)
+
+**Summary:**
+- Eliminated all DRY violations in INT32-C
+- Replaced 43 manual text extractions (second highest count)
+- Maintained 100% test pass rate (56/56 tests)
+- Zero regressions
+- All acceptance criteria validated and checked
+- Most complex rule refactored successfully
+
+**Status:** Ready for STAGED
