@@ -1,6 +1,6 @@
 # CERT C Rules Test Summary
 
-**Generated:** 2025-11-14 11:40:25
+**Generated:** 2025-11-14 11:41:58
 
 ## Overview
 
@@ -192,7 +192,7 @@
   - 🔶 [FLP34-C](#rule-flp34c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
 - [INT](#category-int) (3 implemented / 23 total)
   - 🔶 [INT36-C](#rule-int36c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
-  - ✅ [INT32-C](#rule-int32c) - Implemented: Pass 56/56 (100.0%)
+  - ✅ [INT32-C](#rule-int32c) - Implemented: Pass 0/56 (0.0%) [56 not run]
   - 🔶 [INT01-C](#rule-int01c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [INT12-C](#rule-int12c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [INT15-C](#rule-int15c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
@@ -247,7 +247,7 @@
   - 🔶 [POS44-C](#rule-pos44c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS04-C](#rule-pos04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS47-C](#rule-pos47c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
-  - ✅ [POS30-C](#rule-pos30c) - Implemented: Pass 0/3 (0.0%) [3 not run]
+  - ✅ [POS30-C](#rule-pos30c) - Implemented: Pass 3/3 (100.0%)
   - ✅ [POS37-C](#rule-pos37c) - Implemented: Pass 0/3 (0.0%) [3 not run]
   - 🔶 [POS49-C](#rule-pos49c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [POS05-C](#rule-pos05c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -7203,69 +7203,69 @@ operations can result in overflow.
 
 **Test Coverage:** 56 tests (37 fail, 19 pass)
 
-**Test Results:** 56/56 passed (100.0%)
+**Test Results:** 0/56 passed (0.0%), 56 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `testcases_abs_min.c` → `test_int32_c_fail_testcases_abs_min`
-- ✅ PASS `testcases_accum_var.c` → `test_int32_c_fail_testcases_accum_var`
-- ✅ PASS `testcases_add_basic.c` → `test_int32_c_fail_testcases_add_basic`
-- ✅ PASS `testcases_add_neg.c` → `test_int32_c_fail_testcases_add_neg`
-- ✅ PASS `testcases_array_calc.c` → `test_int32_c_fail_testcases_array_calc`
-- ✅ PASS `testcases_avg_calc.c` → `test_int32_c_fail_testcases_avg_calc`
-- ✅ PASS `testcases_bitshift.c` → `test_int32_c_fail_testcases_bitshift`
-- ✅ PASS `testcases_buf_size.c` → `test_int32_c_fail_testcases_buf_size`
-- ✅ PASS `testcases_compound.c` → `test_int32_c_fail_testcases_compound`
-- ✅ PASS `testcases_coord_calc.c` → `test_int32_c_fail_testcases_coord_calc`
-- ✅ PASS `testcases_decr_min.c` → `test_int32_c_fail_testcases_decr_min`
-- ✅ PASS `testcases_div_min.c` → `test_int32_c_fail_testcases_div_min`
-- ✅ PASS `testcases_fact_calc.c` → `test_int32_c_fail_testcases_fact_calc`
-- ✅ PASS `testcases_func_add.c` → `test_int32_c_fail_testcases_func_add`
-- ✅ PASS `testcases_hash_calc.c` → `test_int32_c_fail_testcases_hash_calc`
-- ✅ PASS `testcases_incr_max.c` → `test_int32_c_fail_testcases_incr_max`
-- ✅ PASS `testcases_loop_over.c` → `test_int32_c_fail_testcases_loop_over`
-- ✅ PASS `testcases_mul_basic.c` → `test_int32_c_fail_testcases_mul_basic`
-- ✅ PASS `testcases_mul_neg.c` → `test_int32_c_fail_testcases_mul_neg`
-- ✅ PASS `testcases_neg_min.c` → `test_int32_c_fail_testcases_neg_min`
-- ✅ PASS `testcases_pow_calc.c` → `test_int32_c_fail_testcases_pow_calc`
-- ✅ PASS `testcases_ptr_arith.c` → `test_int32_c_fail_testcases_ptr_arith`
-- ✅ PASS `testcases_range_calc.c` → `test_int32_c_fail_testcases_range_calc`
-- ✅ PASS `testcases_shift_neg.c` → `test_int32_c_fail_testcases_shift_neg`
-- ✅ PASS `testcases_shift_over.c` → `test_int32_c_fail_testcases_shift_over`
-- ✅ PASS `testcases_size_mult.c` → `test_int32_c_fail_testcases_size_mult`
-- ✅ PASS `testcases_sub_basic.c` → `test_int32_c_fail_testcases_sub_basic`
-- ✅ PASS `testcases_sub_neg.c` → `test_int32_c_fail_testcases_sub_neg`
-- ✅ PASS `testcases_sum_array.c` → `test_int32_c_fail_testcases_sum_array`
-- ✅ PASS `testcases_time_calc.c` → `test_int32_c_fail_testcases_time_calc`
-- ✅ PASS `wiki_noncompliant_1.c` → `test_int32_c_fail_wiki_noncompliant_1`
-- ✅ PASS `wiki_noncompliant_2.c` → `test_int32_c_fail_wiki_noncompliant_2`
-- ✅ PASS `wiki_noncompliant_3.c` → `test_int32_c_fail_wiki_noncompliant_3`
-- ✅ PASS `wiki_noncompliant_4.c` → `test_int32_c_fail_wiki_noncompliant_4`
-- ✅ PASS `wiki_noncompliant_5.c` → `test_int32_c_fail_wiki_noncompliant_5`
-- ✅ PASS `wiki_noncompliant_6.c` → `test_int32_c_fail_wiki_noncompliant_6`
-- ✅ PASS `wiki_noncompliant_7.c` → `test_int32_c_fail_wiki_noncompliant_7`
+- ⏭️ NOT RUN `testcases_abs_min.c` → `test_int32_c_fail_testcases_abs_min`
+- ⏭️ NOT RUN `testcases_accum_var.c` → `test_int32_c_fail_testcases_accum_var`
+- ⏭️ NOT RUN `testcases_add_basic.c` → `test_int32_c_fail_testcases_add_basic`
+- ⏭️ NOT RUN `testcases_add_neg.c` → `test_int32_c_fail_testcases_add_neg`
+- ⏭️ NOT RUN `testcases_array_calc.c` → `test_int32_c_fail_testcases_array_calc`
+- ⏭️ NOT RUN `testcases_avg_calc.c` → `test_int32_c_fail_testcases_avg_calc`
+- ⏭️ NOT RUN `testcases_bitshift.c` → `test_int32_c_fail_testcases_bitshift`
+- ⏭️ NOT RUN `testcases_buf_size.c` → `test_int32_c_fail_testcases_buf_size`
+- ⏭️ NOT RUN `testcases_compound.c` → `test_int32_c_fail_testcases_compound`
+- ⏭️ NOT RUN `testcases_coord_calc.c` → `test_int32_c_fail_testcases_coord_calc`
+- ⏭️ NOT RUN `testcases_decr_min.c` → `test_int32_c_fail_testcases_decr_min`
+- ⏭️ NOT RUN `testcases_div_min.c` → `test_int32_c_fail_testcases_div_min`
+- ⏭️ NOT RUN `testcases_fact_calc.c` → `test_int32_c_fail_testcases_fact_calc`
+- ⏭️ NOT RUN `testcases_func_add.c` → `test_int32_c_fail_testcases_func_add`
+- ⏭️ NOT RUN `testcases_hash_calc.c` → `test_int32_c_fail_testcases_hash_calc`
+- ⏭️ NOT RUN `testcases_incr_max.c` → `test_int32_c_fail_testcases_incr_max`
+- ⏭️ NOT RUN `testcases_loop_over.c` → `test_int32_c_fail_testcases_loop_over`
+- ⏭️ NOT RUN `testcases_mul_basic.c` → `test_int32_c_fail_testcases_mul_basic`
+- ⏭️ NOT RUN `testcases_mul_neg.c` → `test_int32_c_fail_testcases_mul_neg`
+- ⏭️ NOT RUN `testcases_neg_min.c` → `test_int32_c_fail_testcases_neg_min`
+- ⏭️ NOT RUN `testcases_pow_calc.c` → `test_int32_c_fail_testcases_pow_calc`
+- ⏭️ NOT RUN `testcases_ptr_arith.c` → `test_int32_c_fail_testcases_ptr_arith`
+- ⏭️ NOT RUN `testcases_range_calc.c` → `test_int32_c_fail_testcases_range_calc`
+- ⏭️ NOT RUN `testcases_shift_neg.c` → `test_int32_c_fail_testcases_shift_neg`
+- ⏭️ NOT RUN `testcases_shift_over.c` → `test_int32_c_fail_testcases_shift_over`
+- ⏭️ NOT RUN `testcases_size_mult.c` → `test_int32_c_fail_testcases_size_mult`
+- ⏭️ NOT RUN `testcases_sub_basic.c` → `test_int32_c_fail_testcases_sub_basic`
+- ⏭️ NOT RUN `testcases_sub_neg.c` → `test_int32_c_fail_testcases_sub_neg`
+- ⏭️ NOT RUN `testcases_sum_array.c` → `test_int32_c_fail_testcases_sum_array`
+- ⏭️ NOT RUN `testcases_time_calc.c` → `test_int32_c_fail_testcases_time_calc`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_int32_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_int32_c_fail_wiki_noncompliant_2`
+- ⏭️ NOT RUN `wiki_noncompliant_3.c` → `test_int32_c_fail_wiki_noncompliant_3`
+- ⏭️ NOT RUN `wiki_noncompliant_4.c` → `test_int32_c_fail_wiki_noncompliant_4`
+- ⏭️ NOT RUN `wiki_noncompliant_5.c` → `test_int32_c_fail_wiki_noncompliant_5`
+- ⏭️ NOT RUN `wiki_noncompliant_6.c` → `test_int32_c_fail_wiki_noncompliant_6`
+- ⏭️ NOT RUN `wiki_noncompliant_7.c` → `test_int32_c_fail_wiki_noncompliant_7`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `testcases_abs_check.c` → `test_int32_c_pass_testcases_abs_check`
-- ✅ PASS `testcases_add_check.c` → `test_int32_c_pass_testcases_add_check`
-- ✅ PASS `testcases_array_idx.c` → `test_int32_c_pass_testcases_array_idx`
-- ✅ PASS `testcases_div_check.c` → `test_int32_c_pass_testcases_div_check`
-- ✅ PASS `testcases_incr_check.c` → `test_int32_c_pass_testcases_incr_check`
-- ✅ PASS `testcases_mul_check.c` → `test_int32_c_pass_testcases_mul_check`
-- ✅ PASS `testcases_neg_check.c` → `test_int32_c_pass_testcases_neg_check`
-- ✅ PASS `testcases_shift_check.c` → `test_int32_c_pass_testcases_shift_check`
-- ✅ PASS `testcases_size_calc.c` → `test_int32_c_pass_testcases_size_calc`
-- ✅ PASS `testcases_sub_check.c` → `test_int32_c_pass_testcases_sub_check`
-- ✅ PASS `wiki_c23_checked_integers.c` → `test_int32_c_pass_wiki_c23_checked_integers`
-- ✅ PASS `wiki_compliant_1.c` → `test_int32_c_pass_wiki_compliant_1`
-- ✅ PASS `wiki_compliant_10.c` → `test_int32_c_pass_wiki_compliant_10`
-- ✅ PASS `wiki_compliant_11.c` → `test_int32_c_pass_wiki_compliant_11`
-- ✅ PASS `wiki_compliant_3.c` → `test_int32_c_pass_wiki_compliant_3`
-- ✅ PASS `wiki_compliant_5.c` → `test_int32_c_pass_wiki_compliant_5`
-- ✅ PASS `wiki_compliant_6.c` → `test_int32_c_pass_wiki_compliant_6`
-- ✅ PASS `wiki_compliant_8.c` → `test_int32_c_pass_wiki_compliant_8`
-- ✅ PASS `wiki_compliant_9.c` → `test_int32_c_pass_wiki_compliant_9`
+- ⏭️ NOT RUN `testcases_abs_check.c` → `test_int32_c_pass_testcases_abs_check`
+- ⏭️ NOT RUN `testcases_add_check.c` → `test_int32_c_pass_testcases_add_check`
+- ⏭️ NOT RUN `testcases_array_idx.c` → `test_int32_c_pass_testcases_array_idx`
+- ⏭️ NOT RUN `testcases_div_check.c` → `test_int32_c_pass_testcases_div_check`
+- ⏭️ NOT RUN `testcases_incr_check.c` → `test_int32_c_pass_testcases_incr_check`
+- ⏭️ NOT RUN `testcases_mul_check.c` → `test_int32_c_pass_testcases_mul_check`
+- ⏭️ NOT RUN `testcases_neg_check.c` → `test_int32_c_pass_testcases_neg_check`
+- ⏭️ NOT RUN `testcases_shift_check.c` → `test_int32_c_pass_testcases_shift_check`
+- ⏭️ NOT RUN `testcases_size_calc.c` → `test_int32_c_pass_testcases_size_calc`
+- ⏭️ NOT RUN `testcases_sub_check.c` → `test_int32_c_pass_testcases_sub_check`
+- ⏭️ NOT RUN `wiki_c23_checked_integers.c` → `test_int32_c_pass_wiki_c23_checked_integers`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_int32_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_10.c` → `test_int32_c_pass_wiki_compliant_10`
+- ⏭️ NOT RUN `wiki_compliant_11.c` → `test_int32_c_pass_wiki_compliant_11`
+- ⏭️ NOT RUN `wiki_compliant_3.c` → `test_int32_c_pass_wiki_compliant_3`
+- ⏭️ NOT RUN `wiki_compliant_5.c` → `test_int32_c_pass_wiki_compliant_5`
+- ⏭️ NOT RUN `wiki_compliant_6.c` → `test_int32_c_pass_wiki_compliant_6`
+- ⏭️ NOT RUN `wiki_compliant_8.c` → `test_int32_c_pass_wiki_compliant_8`
+- ⏭️ NOT RUN `wiki_compliant_9.c` → `test_int32_c_pass_wiki_compliant_9`
 
 ---
 
@@ -9387,16 +9387,16 @@ readlink("/usr/bin/perl", buf, sizeof(buf)); buf[len] = '\0';
 
 **Test Coverage:** 3 tests (2 fail, 1 pass)
 
-**Test Results:** 0/3 passed (0.0%), 3 not run
+**Test Results:** 3/3 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_pos30_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2_2.c` → `test_pos30_c_fail_wiki_noncompliant_2_2`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_pos30_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2_2.c` → `test_pos30_c_fail_wiki_noncompliant_2_2`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_pos30_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_pos30_c_pass_wiki_compliant_1`
 
 ---
 
