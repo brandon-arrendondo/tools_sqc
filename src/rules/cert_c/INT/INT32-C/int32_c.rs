@@ -1,5 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Int32C;
@@ -110,7 +111,7 @@ impl Int32C {
 
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -142,15 +143,15 @@ impl Int32C {
                 }
 
                 // Skip if both operands are constants (compiler handles these)
-                let left_text = &source[left.start_byte()..left.end_byte()];
-                let right_text = &source[right.start_byte()..right.end_byte()];
+                let left_text = get_node_text(&left, source);
+                let right_text = get_node_text(&right, source);
                 if self.is_constant_expression(left_text) && self.is_constant_expression(right_text) {
                     return; // Safe - constant expression
                 }
 
                 if !self.has_overflow_check_subtraction(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -182,8 +183,8 @@ impl Int32C {
                 }
 
                 // Skip if using wider type (cast to long long before multiplication)
-                let left_text = &source[left.start_byte()..left.end_byte()];
-                let right_text = &source[right.start_byte()..right.end_byte()];
+                let left_text = get_node_text(&left, source);
+                let right_text = get_node_text(&right, source);
                 if (left_text.contains("long long") || right_text.contains("long long")) ||
                    (left_text.starts_with("(signed long long)") || left_text.starts_with("(long long)") ||
                     right_text.starts_with("(signed long long)") || right_text.starts_with("(long long)")) {
@@ -192,7 +193,7 @@ impl Int32C {
 
                 if !self.has_overflow_check_multiplication(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -214,8 +215,8 @@ impl Int32C {
 
     fn check_division(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
-            let left_text = &source[left.start_byte()..left.end_byte()];
-            let right_text = &source[right.start_byte()..right.end_byte()];
+            let left_text = get_node_text(&left, source);
+            let right_text = get_node_text(&right, source);
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
@@ -237,7 +238,7 @@ impl Int32C {
 
                 if (has_explicit_risk || is_variable_division) && !self.has_division_overflow_check(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -259,8 +260,8 @@ impl Int32C {
 
     fn check_modulo(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
-            let left_text = &source[left.start_byte()..left.end_byte()];
-            let right_text = &source[right.start_byte()..right.end_byte()];
+            let left_text = get_node_text(&left, source);
+            let right_text = get_node_text(&right, source);
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
@@ -276,7 +277,7 @@ impl Int32C {
 
                 if (has_explicit_risk || is_variable_modulo) && !self.has_modulo_overflow_check(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -298,14 +299,14 @@ impl Int32C {
 
     fn check_negation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(argument) = node.child_by_field_name("argument") {
-            let _arg_text = &source[argument.start_byte()..argument.end_byte()];
+            let _arg_text = get_node_text(&argument, source);
             let arg_type = self.infer_type(&argument, source);
 
             // Check for negation of signed integers, especially -INT_MIN which causes overflow
             if self.is_signed_type(&arg_type) {
                 if !self.has_negation_overflow_check(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -332,7 +333,7 @@ impl Int32C {
             if self.is_signed_type(&left_type) {
                 if !self.has_shift_overflow_check(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -359,7 +360,7 @@ impl Int32C {
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -386,7 +387,7 @@ impl Int32C {
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -413,7 +414,7 @@ impl Int32C {
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -435,14 +436,14 @@ impl Int32C {
 
     fn check_compound_division(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
-            let left_text = &source[left.start_byte()..left.end_byte()];
-            let right_text = &source[right.start_byte()..right.end_byte()];
+            let left_text = get_node_text(&left, source);
+            let right_text = get_node_text(&right, source);
 
             if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source)) &&
                (right_text == "-1" || right_text.contains("-1")) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -464,14 +465,14 @@ impl Int32C {
 
     fn check_compound_modulo(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
-            let left_text = &source[left.start_byte()..left.end_byte()];
-            let right_text = &source[right.start_byte()..right.end_byte()];
+            let left_text = get_node_text(&left, source);
+            let right_text = get_node_text(&right, source);
 
             if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source)) &&
                (right_text == "-1" || right_text.contains("-1")) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -498,7 +499,7 @@ impl Int32C {
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(&node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -532,7 +533,7 @@ impl Int32C {
                 if operator == "++" || operator == "--" {
                     if !self.has_overflow_check_update(node, source) {
                         let start_point = node.start_position();
-                        let expr_text = &source[node.start_byte()..node.end_byte()];
+                        let expr_text = get_node_text(&node, source);
 
                         let message = if operator == "++" {
                             format!("Signed integer increment '{}' may overflow at INT_MAX", expr_text)
@@ -558,7 +559,7 @@ impl Int32C {
 
     fn check_function_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(function_node) = node.child_by_field_name("function") {
-            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+            let function_name = get_node_text(&function_node, source);
 
             // Check for functions that commonly receive arithmetic expressions that might overflow
             match function_name {
@@ -636,7 +637,7 @@ impl Int32C {
         // because the absolute value of the minimum signed integer cannot be represented
         if !self.has_abs_overflow_check(node, source) {
             let start_point = node.start_position();
-            let expr_text = &source[node.start_byte()..node.end_byte()];
+            let expr_text = get_node_text(&node, source);
 
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
@@ -655,7 +656,7 @@ impl Int32C {
     }
 
     fn infer_type(&self, node: &Node, source: &str) -> String {
-        let text = &source[node.start_byte()..node.end_byte()];
+        let text = get_node_text(&node, source);
 
         // Look for explicit unsigned type indicators first
         if text.contains("unsigned") || text.contains("size_t") || text.contains("uint") {
@@ -715,7 +716,7 @@ impl Int32C {
             if parent.kind() == "function_definition" {
                 // Look in function parameters
                 if let Some(params) = parent.child_by_field_name("parameters") {
-                    let params_text = &source[params.start_byte()..params.end_byte()];
+                    let params_text = get_node_text(&params, source);
                     if params_text.contains("unsigned") && params_text.contains(var_name) {
                         return Some("unsigned".to_string());
                     }
@@ -734,7 +735,7 @@ impl Int32C {
         current = node.parent();
         while let Some(parent) = current {
             if parent.kind() == "declaration" {
-                let decl_text = &source[parent.start_byte()..parent.end_byte()];
+                let decl_text = get_node_text(&parent, source);
                 if decl_text.contains(var_name) {
                     if decl_text.contains("unsigned") {
                         return Some("unsigned".to_string());
@@ -756,7 +757,7 @@ impl Int32C {
     }
 
     fn could_be_int_min(&self, node: &Node, source: &str) -> bool {
-        let text = &source[node.start_byte()..node.end_byte()];
+        let text = get_node_text(&node, source);
         text.contains("INT_MIN") ||
         (text.starts_with("min") && (text.contains("val") || text.contains("num")))
     }
@@ -797,7 +798,7 @@ impl Int32C {
                     // Convert initializer to text and check if it's safe
                     // Safe patterns: i = 0, i = 1, etc. (small constants)
                     // Unsafe patterns: i = INT_MAX - 2, etc.
-                    let init_text = &source[initializer.start_byte()..initializer.end_byte()];
+                    let init_text = get_node_text(&initializer, source);
                     if init_text.contains("INT_MAX") || init_text.contains("LONG_MAX") ||
                        init_text.contains("INT_MIN") || init_text.contains("LONG_MIN") {
                         return false; // Unsafe - loop starts near limits
@@ -975,7 +976,7 @@ impl Int32C {
                 // Get the operator
                 for i in 0..parent.child_count() {
                     if let Some(child) = parent.child(i) {
-                        let text = &source[child.start_byte()..child.end_byte()];
+                        let text = get_node_text(&child, source);
                         // Check if this is a comparison operator
                         if matches!(text, ">" | "<" | ">=" | "<=" | "==" | "!=") {
                             return true;
@@ -1004,7 +1005,7 @@ impl Int32C {
         while let Some(parent) = current {
             if parent.kind() == "function_definition" {
                 // Search the entire function body for the patterns
-                let func_text = &source[parent.start_byte()..parent.end_byte()];
+                let func_text = get_node_text(&parent, source);
                 return patterns.iter().all(|pattern| func_text.contains(pattern));
             }
             current = parent.parent();
@@ -1019,7 +1020,7 @@ impl Int32C {
         while let Some(parent) = current {
             if parent.kind() == "function_definition" {
                 // Search the entire function body for the patterns
-                let func_text = &source[parent.start_byte()..parent.end_byte()];
+                let func_text = get_node_text(&parent, source);
                 return patterns.iter().all(|pattern| func_text.contains(pattern));
             }
             current = parent.parent();
@@ -1030,7 +1031,7 @@ impl Int32C {
     fn has_surrounding_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
         if let Some(parent) = node.parent() {
             if let Some(grandparent) = parent.parent() {
-                let context = &source[grandparent.start_byte()..grandparent.end_byte()];
+                let context = get_node_text(&grandparent, source);
                 return patterns.iter().all(|pattern| context.contains(pattern));
             }
         }
@@ -1040,7 +1041,7 @@ impl Int32C {
     fn get_operator(&self, node: &Node, source: &str) -> Option<String> {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                let text = &source[child.start_byte()..child.end_byte()];
+                let text = get_node_text(&child, source);
                 if matches!(text, "+" | "-" | "*" | "/" | "%" | "<<" | ">>") {
                     return Some(text.to_string());
                 }
@@ -1052,7 +1053,7 @@ impl Int32C {
     fn get_assignment_operator(&self, node: &Node, source: &str) -> Option<String> {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                let text = &source[child.start_byte()..child.end_byte()];
+                let text = get_node_text(&child, source);
                 if matches!(text, "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=") {
                     return Some(text.to_string());
                 }
@@ -1064,7 +1065,7 @@ impl Int32C {
     fn get_unary_operator(&self, node: &Node, source: &str) -> Option<String> {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                let text = &source[child.start_byte()..child.end_byte()];
+                let text = get_node_text(&child, source);
                 if matches!(text, "-" | "+" | "!" | "~") {
                     return Some(text.to_string());
                 }
@@ -1074,7 +1075,7 @@ impl Int32C {
     }
 
     fn get_update_operator(&self, node: &Node, source: &str) -> String {
-        let text = &source[node.start_byte()..node.end_byte()];
+        let text = get_node_text(&node, source);
         if text.contains("++") {
             "++".to_string()
         } else if text.contains("--") {
@@ -1091,7 +1092,7 @@ impl Int32C {
             for i in 0..arguments.child_count() {
                 if let Some(child) = arguments.child(i) {
                     if child.kind() != "," {
-                        let arg_text = source[child.start_byte()..child.end_byte()].to_string();
+                        let arg_text = get_node_text(&child, source).to_string();
                         args.push(arg_text.trim().to_string());
                     }
                 }
