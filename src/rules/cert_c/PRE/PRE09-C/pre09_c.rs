@@ -1,0 +1,101 @@
+//! PRE09-C: Do not replace secure functions with less secure functions through macro definitions
+//!
+//! Don't use #define to replace secure standard library functions (like vsnprintf)
+//! with less secure versions (like vsprintf).
+//!
+//! ## Examples:
+//!
+//! **Non-compliant:**
+//! ```c
+//! #define vsnprintf(buf, size, fmt, list) vsprintf(buf, fmt, list)
+//! ```
+//!
+//! **Compliant:**
+//! ```c
+//! #ifndef __USE_ISOC11
+//!   #include "my_stdio.h"  // Conditional inclusion, not macro replacement
+//! #endif
+//! ```
+
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{Severity, RuleCategory};
+use tree_sitter::Node;
+
+pub struct Pre09C;
+
+// List of secure functions that should not be replaced
+const SECURE_FUNCTIONS: &[&str] = &[
+    "vsnprintf",
+    "snprintf",
+    "vsnprintf_s",
+    "snprintf_s",
+    "strncpy_s",
+    "strncat_s",
+    "memcpy_s",
+    "memmove_s",
+];
+
+impl CertRule for Pre09C {
+    fn rule_id(&self) -> &'static str {
+        "PRE09-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Do not replace secure functions with less secure functions through macro definitions"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "PRE09-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+        self.check_node(node, source, &mut violations);
+        violations
+    }
+}
+
+impl Pre09C {
+    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Look for #define directives
+        if node.kind() == "preproc_function_def" {
+            if let Some(name_node) = node.child_by_field_name("name") {
+                let macro_name = &source[name_node.start_byte()..name_node.end_byte()];
+
+                // Check if it's replacing a secure function
+                if SECURE_FUNCTIONS.contains(&macro_name) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Macro definition replaces secure function '{}' - may introduce vulnerabilities",
+                            macro_name
+                        ),
+                        file_path: String::new(),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        suggestion: Some(
+                            "Use conditional compilation (#ifndef) or wrapper functions instead of macro replacement".to_string()
+                        ),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_node(&child, source, violations);
+            }
+        }
+    }
+}

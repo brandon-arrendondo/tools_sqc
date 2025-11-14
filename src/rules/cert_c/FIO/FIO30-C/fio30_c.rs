@@ -127,6 +127,9 @@ impl FormatStringAnalyzer {
                 self.process_assignment(node, source);
             }
             "call_expression" => {
+                // Check for string manipulation functions that propagate taint
+                self.process_string_manipulation_call(node, source);
+                // Check for format string vulnerabilities
                 self.check_format_string_call(node, source, violations);
             }
             _ => {}
@@ -190,7 +193,210 @@ impl FormatStringAnalyzer {
                         self.safe_vars.insert(var_name.clone());
                         self.user_input_vars.remove(&var_name);
                     }
+                } else if right.kind() == "call_expression" {
+                    // Check if call returns tainted data
+                    if self.call_returns_tainted_data(&right, source) {
+                        self.user_input_vars.insert(var_name.clone());
+                        self.safe_vars.remove(&var_name);
+                    }
+                } else if self.expression_contains_taint(&right, source) {
+                    // Check if expression contains any tainted data
+                    self.user_input_vars.insert(var_name.clone());
+                    self.safe_vars.remove(&var_name);
                 }
+            }
+        }
+    }
+
+    /// Process string manipulation calls like strcpy, strcat, sprintf that propagate taint
+    fn process_string_manipulation_call(&mut self, node: &Node, source: &str) {
+        if let Some(function) = node.child_by_field_name("function") {
+            let func_name = ast_utils::get_node_text_owned(&function, source);
+
+            // Handle functions that write user input to their first argument
+            if matches!(func_name.as_str(), "fgets" | "gets" | "getline" | "fread" | "read") {
+                if let Some(arguments) = node.child_by_field_name("arguments") {
+                    let args = self.extract_arguments(&arguments, source);
+                    if !args.is_empty() {
+                        // First argument receives user input
+                        if let Some(dest_name) = self.get_base_variable(&args[0], source) {
+                            self.user_input_vars.insert(dest_name.clone());
+                            self.safe_vars.remove(&dest_name);
+                        }
+                    }
+                }
+            }
+
+            // Handle scanf family - all arguments after format string receive user input
+            if matches!(func_name.as_str(), "scanf" | "fscanf" | "sscanf") {
+                if let Some(arguments) = node.child_by_field_name("arguments") {
+                    let args = self.extract_arguments(&arguments, source);
+                    // scanf/fscanf: first arg is format, rest are pointers to receive input
+                    // sscanf: first two args are string and format, rest are pointers
+                    let start_index = if func_name == "sscanf" { 2 } else { 1 };
+                    for i in start_index..args.len() {
+                        if let Some(dest_name) = self.get_base_variable(&args[i], source) {
+                            self.user_input_vars.insert(dest_name.clone());
+                            self.safe_vars.remove(&dest_name);
+                        }
+                    }
+                }
+            }
+
+            // Handle strcpy, strcat, sprintf, snprintf - first arg gets tainted if source is tainted
+            if matches!(func_name.as_str(), "strcpy" | "strcat" | "sprintf" | "snprintf" | "strncpy" | "strncat") {
+                if let Some(arguments) = node.child_by_field_name("arguments") {
+                    let args = self.extract_arguments(&arguments, source);
+
+                    if !args.is_empty() {
+                        let dest_arg = &args[0];
+
+                        // Check if any source arguments are tainted
+                        let mut any_source_tainted = false;
+                        for i in 1..args.len() {
+                            if self.is_tainted_argument(&args[i], source) {
+                                any_source_tainted = true;
+                                break;
+                            }
+                        }
+
+                        if any_source_tainted {
+                            // Mark destination as tainted
+                            if let Some(dest_name) = self.get_base_variable(dest_arg, source) {
+                                self.user_input_vars.insert(dest_name.clone());
+                                self.safe_vars.remove(&dest_name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check if an argument expression contains tainted data
+    fn is_tainted_argument(&self, arg: &Node, source: &str) -> bool {
+        match arg.kind() {
+            "identifier" => {
+                let var_name = ast_utils::get_node_text_owned(arg, source);
+                self.user_input_vars.contains(&var_name)
+            }
+            "subscript_expression" => {
+                if let Some(array) = arg.child(0) {
+                    if array.kind() == "identifier" {
+                        let array_name = ast_utils::get_node_text_owned(&array, source);
+                        return self.user_input_vars.contains(&array_name) || array_name == "argv";
+                    }
+                }
+                false
+            }
+            "call_expression" => {
+                self.is_user_input_source(arg, source)
+            }
+            _ => {
+                // Recursively check children
+                for i in 0..arg.child_count() {
+                    if let Some(child) = arg.child(i) {
+                        if self.is_tainted_argument(&child, source) {
+                            return true;
+                        }
+                    }
+                }
+                false
+            }
+        }
+    }
+
+    /// Extract base variable name from an expression (handles array access, pointer deref)
+    fn get_base_variable(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(ast_utils::get_node_text_owned(node, source)),
+            "subscript_expression" | "pointer_expression" => {
+                if let Some(base) = node.child(0) {
+                    self.get_base_variable(&base, source)
+                } else {
+                    None
+                }
+            }
+            _ => None
+        }
+    }
+
+    /// Extract arguments from an argument list
+    fn extract_arguments<'a>(&self, arguments: &'a Node, source: &str) -> Vec<Node<'a>> {
+        let mut args = Vec::new();
+        for i in 0..arguments.child_count() {
+            if let Some(arg) = arguments.child(i) {
+                if !matches!(arg.kind(), "," | "(" | ")") {
+                    args.push(arg);
+                }
+            }
+        }
+        args
+    }
+
+    /// Check if a call expression returns tainted data
+    fn call_returns_tainted_data(&self, call_node: &Node, source: &str) -> bool {
+        if let Some(function) = call_node.child_by_field_name("function") {
+            let func_name = ast_utils::get_node_text_owned(&function, source);
+
+            // User input functions
+            if matches!(func_name.as_str(),
+                "fgets" | "gets" | "getline" | "getdelim" | "fgetc" | "getc" | "getchar" |
+                "fread" | "read" | "recv" | "recvfrom" | "recvmsg" |
+                "getenv" | "getpwnam" | "getpwuid" | "getgrnam" | "getgrgid"
+            ) {
+                return true;
+            }
+
+            // Check if any arguments are tainted (function might return based on tainted input)
+            if let Some(arguments) = call_node.child_by_field_name("arguments") {
+                for arg in self.extract_arguments(&arguments, source) {
+                    if self.is_tainted_argument(&arg, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if an expression contains any tainted data
+    fn expression_contains_taint(&self, expr: &Node, source: &str) -> bool {
+        match expr.kind() {
+            "identifier" => {
+                let var_name = ast_utils::get_node_text_owned(expr, source);
+                self.user_input_vars.contains(&var_name)
+            }
+            "subscript_expression" => {
+                if let Some(array) = expr.child(0) {
+                    if array.kind() == "identifier" {
+                        let array_name = ast_utils::get_node_text_owned(&array, source);
+                        if self.user_input_vars.contains(&array_name) || array_name == "argv" {
+                            return true;
+                        }
+                    }
+                }
+                // Also check if index is tainted
+                if let Some(index) = expr.child(1) {
+                    if self.expression_contains_taint(&index, source) {
+                        return true;
+                    }
+                }
+                false
+            }
+            "call_expression" => {
+                self.call_returns_tainted_data(expr, source)
+            }
+            _ => {
+                // Recursively check children
+                for i in 0..expr.child_count() {
+                    if let Some(child) = expr.child(i) {
+                        if self.expression_contains_taint(&child, source) {
+                            return true;
+                        }
+                    }
+                }
+                false
             }
         }
     }
@@ -256,18 +462,18 @@ impl FormatStringAnalyzer {
 
     fn is_format_string_function(&self, func_name: &str) -> bool {
         matches!(func_name,
-            "printf" | "fprintf" | "sprintf" | "snprintf" |
-            "vprintf" | "vfprintf" | "vsprintf" | "vsnprintf" |
+            "printf" | "fprintf" | "sprintf" | "snprintf" | "dprintf" |
+            "vprintf" | "vfprintf" | "vsprintf" | "vsnprintf" | "vdprintf" |
             "scanf" | "fscanf" | "sscanf" |
-            "syslog" | "err" | "errx" | "warn" | "warnx"
+            "syslog" | "err" | "errx" | "warn" | "warnx" | "error"
         )
     }
 
     fn get_format_arg_index(&self, func_name: &str) -> usize {
         match func_name {
             "snprintf" | "vsnprintf" => 2, // Third argument is format string (buffer, size, format, ...)
-            "sprintf" | "vsprintf" | "sscanf" | "fprintf" | "fscanf" | "syslog" => 1, // Second argument is format string
-            _ => 0, // First argument is format string (printf, scanf, etc.)
+            "sprintf" | "vsprintf" | "sscanf" | "fprintf" | "fscanf" | "vfprintf" | "syslog" | "dprintf" | "vdprintf" => 1, // Second argument is format string
+            _ => 0, // First argument is format string (printf, scanf, vprintf, etc.)
         }
     }
 
@@ -350,10 +556,18 @@ impl FormatStringAnalyzer {
                 if let Some(array) = node.child(0) {
                     if array.kind() == "identifier" {
                         let array_name = ast_utils::get_node_text_owned(&array, source);
-                        return self.user_input_vars.contains(&array_name) || array_name == "argv";
+                        if self.user_input_vars.contains(&array_name) || array_name == "argv" {
+                            return true;
+                        }
                     }
                 }
-                true // Conservative: assume array access could be unsafe
+                // Also check if the index is tainted (e.g., formats[tainted_index])
+                if let Some(index) = node.child(1) {
+                    if self.expression_contains_taint(&index, source) {
+                        return true; // Tainted index means we can't trust the result
+                    }
+                }
+                false // Safe if array and index are both untainted
             }
             "call_expression" => {
                 // Function calls that return strings could be unsafe
