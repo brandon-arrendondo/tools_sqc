@@ -19,6 +19,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Pre09C;
@@ -68,7 +69,7 @@ impl Pre09C {
         // Look for #define directives
         if node.kind() == "preproc_function_def" {
             if let Some(name_node) = node.child_by_field_name("name") {
-                let macro_name = &source[name_node.start_byte()..name_node.end_byte()];
+                let macro_name = get_node_text(&name_node, source);
 
                 // Check if it's replacing a secure function
                 if SECURE_FUNCTIONS.contains(&macro_name) {
