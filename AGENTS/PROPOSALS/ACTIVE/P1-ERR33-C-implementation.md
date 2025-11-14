@@ -402,3 +402,51 @@ Test Results: 51/51 passing (100%)
 - Consider breaking up into smaller, more focused functions
 
 **Status:** MOVED TO ACTIVE for DRY refactoring (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Phase 1: Remove Duplicate Functions (Completed)**
+
+Removed duplicate functions and replaced with utilities from `ast_utils.rs`:
+- ✅ Removed `extract_variable_name_from_declarator()` (29 lines)
+  - Replaced call at line 280 with `get_identifier_from_declarator()` from ast_utils.rs
+- ✅ Removed `find_containing_if_statement()` (10 lines)
+  - Replaced call at line 1022 with utility version from ast_utils.rs
+
+**Phase 2: Replace Manual Text Extractions (Completed)**
+
+Systematically replaced all manual text extractions:
+- ✅ Replaced **30 instances** of `&source[node.start_byte()..node.end_byte()]`
+- ✅ Now uses `get_node_text()` from ast_utils.rs throughout
+- Used sed script for systematic bulk replacement to avoid errors
+
+**Phase 3: Verification (Completed)**
+
+Test Results: ✅ **51/51 passing (100%)** - No regressions
+- All fail tests (35) pass
+- All pass tests (16) pass
+- Zero test failures
+- Zero false positives or negatives
+
+Build: ✅ Clean (no errors, only pre-existing warnings)
+
+File Metrics:
+- Before: 1,121 lines (34 functions)
+- After: 1,092 lines (32 functions)
+- Reduction: 29 lines (2.6% reduction)
+- Duplicate functions eliminated: 2
+- Manual text extractions eliminated: 30
+
+**Summary:**
+- Eliminated all DRY violations in ERR33-C
+- Removed 39 lines of duplicate code
+- Replaced 30 manual text extractions with utility calls
+- Maintained 100% test pass rate (51/51 tests)
+- Zero regressions
+- File remains complex (1,092 lines, 32 functions) but no longer duplicates utilities
+
+**Status:** Ready for STAGED

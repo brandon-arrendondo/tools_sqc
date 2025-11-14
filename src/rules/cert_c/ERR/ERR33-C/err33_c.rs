@@ -23,6 +23,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::{get_node_text, get_identifier_from_declarator, find_containing_if_statement};
 use tree_sitter::Node;
 use std::collections::HashMap;
 
@@ -89,7 +90,7 @@ impl Err33C {
 
     fn check_function_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(function_node) = node.child_by_field_name("function") {
-            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+            let function_name = get_node_text(&function_node, source);
 
             if self.is_error_returning_function(function_name) {
                 // Skip if this call is part of an assignment or declaration
@@ -118,7 +119,7 @@ impl Err33C {
                 // Check if the return value is properly handled
                 if !self.is_return_value_checked(node, source) {
                     let start_point = node.start_position();
-                    let call_text = &source[node.start_byte()..node.end_byte()];
+                    let call_text = get_node_text(&node, source);
 
                     let error_info = self.get_error_info(function_name);
 
@@ -155,7 +156,7 @@ impl Err33C {
 
     fn check_ignored_return_value(&self, stmt_node: &Node, call_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(function_node) = call_node.child_by_field_name("function") {
-            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+            let function_name = get_node_text(&function_node, source);
 
             if self.is_error_returning_function(function_name) {
                 // Special handling for fclose in cleanup contexts
@@ -173,7 +174,7 @@ impl Err33C {
                 }
 
                 let start_point = stmt_node.start_position();
-                let call_text = &source[call_node.start_byte()..call_node.end_byte()];
+                let call_text = get_node_text(&call_node, source);
 
                 let error_info = self.get_error_info(function_name);
 
@@ -204,14 +205,14 @@ impl Err33C {
 
             if right.kind() == "call_expression" {
                 if let Some(function_node) = right.child_by_field_name("function") {
-                    let function_name = &source[function_node.start_byte()..function_node.end_byte()];
-                    let var_name = &source[left.start_byte()..left.end_byte()];
+                    let function_name = get_node_text(&function_node, source);
+                    let var_name = get_node_text(&left, source);
 
                     if self.is_error_returning_function(function_name) {
                         // Special check for dangerous realloc pattern: p = realloc(p, size)
                         if function_name == "realloc" && self.is_dangerous_realloc_pattern(&right, var_name, source) {
                             let start_point = node.start_position();
-                            let call_text = &source[right.start_byte()..right.end_byte()];
+                            let call_text = get_node_text(&right, source);
 
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
@@ -232,7 +233,7 @@ impl Err33C {
                         // Check if the assigned variable is later checked for errors
                         if !self.is_variable_error_checked(node, var_name, function_name, source) {
                             let start_point = node.start_position();
-                            let call_text = &source[right.start_byte()..right.end_byte()];
+                            let call_text = get_node_text(&right, source);
 
                             let error_info = self.get_error_info(function_name);
 
@@ -273,16 +274,16 @@ impl Err33C {
                 if let Some(call) = call_node {
                     if call.kind() == "call_expression" {
                         if let Some(function_node) = call.child_by_field_name("function") {
-                            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+                            let function_name = get_node_text(&function_node, source);
 
                             // Extract variable name from declarator
-                            let var_name = self.extract_variable_name_from_declarator(&declarator, source);
+                            let var_name = get_identifier_from_declarator(&declarator, source);
 
                             if self.is_error_returning_function(function_name) {
                                 // Check if the declared variable is later checked for errors
                                 if !self.is_variable_error_checked(node, &var_name, function_name, source) {
                                     let start_point = node.start_position();
-                                    let call_text = &source[value.start_byte()..value.end_byte()];
+                                    let call_text = get_node_text(&value, source);
 
                                     let error_info = self.get_error_info(function_name);
 
@@ -306,36 +307,6 @@ impl Err33C {
                 }
             }
         }
-    }
-
-    fn extract_variable_name_from_declarator(&self, declarator: &Node, source: &str) -> String {
-        // Handle different declarator patterns like *var, var, etc.
-        if declarator.kind() == "pointer_declarator" {
-            // For pointer declarations like FILE *file
-            if let Some(inner_declarator) = declarator.child_by_field_name("declarator") {
-                return self.extract_variable_name_from_declarator(&inner_declarator, source);
-            }
-        } else if declarator.kind() == "identifier" {
-            // For simple declarations like int var
-            return source[declarator.start_byte()..declarator.end_byte()].to_string();
-        } else if declarator.kind() == "init_declarator" {
-            // Handle nested init_declarator
-            if let Some(inner_declarator) = declarator.child_by_field_name("declarator") {
-                return self.extract_variable_name_from_declarator(&inner_declarator, source);
-            }
-        }
-
-        // Fallback: search for identifier in children
-        for i in 0..declarator.child_count() {
-            if let Some(child) = declarator.child(i) {
-                if child.kind() == "identifier" {
-                    return source[child.start_byte()..child.end_byte()].to_string();
-                }
-            }
-        }
-
-        // Final fallback: return the entire declarator text
-        source[declarator.start_byte()..declarator.end_byte()].to_string()
     }
 
     fn is_error_returning_function(&self, function_name: &str) -> bool {
@@ -521,7 +492,7 @@ impl Err33C {
                 // Direct assignment
                 "assignment_expression" => {
                     if let Some(left) = parent.child_by_field_name("left") {
-                        let var_name = &source[left.start_byte()..left.end_byte()];
+                        let var_name = get_node_text(&left, source);
                         // Check if the variable is later checked
                         return self.is_variable_checked_in_context(&parent, var_name, source);
                     }
@@ -676,7 +647,7 @@ impl Err33C {
     }
 
     fn find_error_check_in_context(&self, node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
-        let text = &source[node.start_byte()..node.end_byte()];
+        let text = get_node_text(&node, source);
 
         // Check for NULL pointer checks (more comprehensive patterns)
         if matches!(function_name, "malloc" | "calloc" | "realloc" | "fopen" | "fgets" | "tmpfile") {
@@ -814,7 +785,7 @@ impl Err33C {
             for i in 0..arguments.child_count() {
                 if let Some(arg) = arguments.child(i) {
                     if arg.kind() == "identifier" {
-                        let arg_text = &source[arg.start_byte()..arg.end_byte()];
+                        let arg_text = get_node_text(&arg, source);
                         // If the first argument to realloc is the same variable being assigned to, it's dangerous
                         if arg_text == assigned_var {
                             return true;
@@ -834,13 +805,13 @@ impl Err33C {
         // Recursively search for binary_expression nodes that compare the variable to NULL
         if node.kind() == "binary_expression" {
             if let Some(operator) = node.child_by_field_name("operator") {
-                let op_text = &source[operator.start_byte()..operator.end_byte()];
+                let op_text = get_node_text(&operator, source);
 
                 // Check if this is a NULL comparison operator
                 if matches!(op_text, "==" | "!=") {
                     if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
-                        let left_text = &source[left.start_byte()..left.end_byte()];
-                        let right_text = &source[right.start_byte()..right.end_byte()];
+                        let left_text = get_node_text(&left, source);
+                        let right_text = get_node_text(&right, source);
 
                         // Check if one side is our variable and the other is NULL
                         if (left_text == var_name && right_text == "NULL") ||
@@ -871,7 +842,7 @@ impl Err33C {
         }
 
         // For non-NULL checks, still use string matching
-        let text = &source[node.start_byte()..node.end_byte()];
+        let text = get_node_text(&node, source);
         text.contains(&format!("!{}", var_name)) ||
         text.contains(&format!("if ({})", var_name)) ||
         text.contains(&format!("if({}", var_name)) ||
@@ -905,7 +876,7 @@ impl Err33C {
                 // Check if we're inside a signal handler function
                 if parent.kind() == "function_definition" {
                     if let Some(declarator) = parent.child_by_field_name("declarator") {
-                        let function_text = &source[declarator.start_byte()..declarator.end_byte()];
+                        let function_text = get_node_text(&declarator, source);
                         // Signal handlers typically have (int sig) parameter
                         if function_text.contains("signal_handler") ||
                            function_text.contains("handler") ||
@@ -918,7 +889,7 @@ impl Err33C {
                 // Check if we're in an if statement that tests for errors
                 if parent.kind() == "if_statement" {
                     if let Some(condition) = parent.child_by_field_name("condition") {
-                        let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                        let condition_text = get_node_text(&condition, source);
                         // Look for error checking patterns in the condition
                         if condition_text.contains("== NULL") || condition_text.contains("!= NULL") ||
                            condition_text.contains("< 0") || condition_text.contains("!= 0") ||
@@ -933,7 +904,7 @@ impl Err33C {
                         if self.node_contains_or_is_ancestor(&consequence, node) {
                             // We're in the then-block of an if statement, check if condition is error check
                             if let Some(condition) = parent.child_by_field_name("condition") {
-                                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                                let condition_text = get_node_text(&condition, source);
                                 if condition_text.contains("== NULL") || condition_text.contains("< 0") ||
                                    condition_text.contains("== -1") || condition_text.contains("== EOF") {
                                     return true; // We're in error handling
@@ -945,7 +916,7 @@ impl Err33C {
 
                 // Enhanced cleanup context detection for fclose
                 if parent.kind() == "expression_statement" {
-                    let parent_text = &source[parent.start_byte()..parent.end_byte()];
+                    let parent_text = get_node_text(&parent, source);
                     // Look for fclose in error cleanup contexts
                     if parent_text.contains("fclose(") && level <= 2 {
                         // Check if we're in an error handling block
@@ -954,7 +925,7 @@ impl Err33C {
                                 if let Some(if_stmt) = compound_stmt.parent() {
                                     if if_stmt.kind() == "if_statement" {
                                         if let Some(condition) = if_stmt.child_by_field_name("condition") {
-                                            let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                                            let condition_text = get_node_text(&condition, source);
                                             // If the condition checks for an error, fclose is likely cleanup
                                             if condition_text.contains("< 0") || condition_text.contains("== NULL") ||
                                                condition_text.contains("!= NULL") || condition_text.contains("== -1") {
@@ -973,7 +944,7 @@ impl Err33C {
                     if let Some(if_stmt) = parent.parent() {
                         if if_stmt.kind() == "if_statement" {
                             if let Some(condition) = if_stmt.child_by_field_name("condition") {
-                                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                                let condition_text = get_node_text(&condition, source);
                                 if condition_text.contains("!= NULL") || condition_text.contains(">= 0") {
                                     return true; // This is likely an error handling else clause
                                 }
@@ -984,7 +955,7 @@ impl Err33C {
 
                 // Look for explicit error handling keywords in close parent context
                 if level <= 2 {
-                    let parent_text = &source[parent.start_byte()..parent.end_byte()];
+                    let parent_text = get_node_text(&parent, source);
                     if parent_text.contains("stderr") || parent_text.contains("perror") ||
                        parent_text.contains("return -1") || parent_text.contains("exit(") ||
                        parent_text.contains("goto error") || parent_text.contains("cleanup") ||
@@ -1015,12 +986,12 @@ impl Err33C {
         // 3. fclose after fprintf/fwrite failures
 
         // Enhanced: Look for specific cleanup patterns in the immediate context
-        let _stmt_text = &source[stmt_node.start_byte()..stmt_node.end_byte()];
+        let _stmt_text = get_node_text(&stmt_node, source);
 
         // Check if fclose is in an error handling if-block
-        if let Some(if_stmt) = self.find_containing_if_statement(stmt_node) {
+        if let Some(if_stmt) = find_containing_if_statement(stmt_node) {
             if let Some(condition) = if_stmt.child_by_field_name("condition") {
-                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                let condition_text = get_node_text(&condition, source);
 
                 // Check for fprintf/fwrite error conditions
                 if condition_text.contains("fprintf") &&
@@ -1064,7 +1035,7 @@ impl Err33C {
                 }
 
                 // Fallback: text-based check for simple cases
-                let compound_text = &source[parent.start_byte()..parent.end_byte()];
+                let compound_text = get_node_text(&parent, source);
                 if compound_text.contains("fclose(") && compound_text.contains("return") {
                     // Look for pattern: fclose(...); return with minimal content in between
                     let lines: Vec<&str> = compound_text.lines().collect();
