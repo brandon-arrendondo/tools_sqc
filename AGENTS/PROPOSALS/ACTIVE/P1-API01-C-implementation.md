@@ -296,3 +296,51 @@ Created `src/rules/cert_c/API/API01-C/api01_c.rs` (246 lines)
 - Refactor to use common utilities throughout
 
 **Status:** MOVED TO ACTIVE for DRY/KISS refactoring (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Phase 1: Create Declarator Utilities (Completed)**
+
+Created `src/utility/cert_c/declarator_utils.rs` (148 lines):
+- `has_declarator_of_kind(node, target_kind)` - Generic recursive declarator checker
+- `is_array_declarator(node)` - Check for array declarators
+- `is_pointer_declarator(node)` - Check for pointer declarators
+- `is_function_declarator(node)` - Check for function pointer declarators
+- Comprehensive unit tests (6 test cases)
+
+**Rationale:** Avoid monolithic utility files. Declarator analysis is a distinct concern from general AST utilities.
+
+**Phase 2: Refactor API01-C (Completed)**
+
+Updated `src/rules/cert_c/API/API01-C/api01_c.rs`:
+- ✅ Replaced 4 manual text extractions with `get_node_text()` from ast_utils.rs
+  - Lines 134 → 136: Type checking
+  - Lines 174 → 158: Type checking (pointer field)
+  - Lines 213-214 → 179-180: Violation reporting
+  - Lines 217-221 → 183-187: Struct name extraction
+- ✅ Removed duplicate `is_array_declarator()` function (16 lines)
+- ✅ Removed duplicate `is_pointer_declarator()` function (16 lines)
+- ✅ Now uses utility functions from declarator_utils.rs
+- File reduced: 246 lines → 198 lines (48 lines removed, 20% reduction)
+
+**Phase 3: Verification (Completed)**
+
+Test Results: ✅ **3/3 passing (100%)** - No regressions
+- `test_api01_c_fail_wiki_noncompliant_1` - PASS
+- `test_api01_c_pass_wiki_compliant_1` - PASS
+- `test_api01_c_pass_wiki_compliant_2` - PASS
+
+Build: ✅ Clean (no errors, only pre-existing warnings)
+
+**Summary:**
+- Created reusable declarator utilities for entire codebase
+- Eliminated all DRY violations in API01-C
+- Reduced code size by 20%
+- Maintained 100% test pass rate
+- Zero regressions
+
+**Status:** Ready for STAGED
