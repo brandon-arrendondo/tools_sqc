@@ -231,3 +231,17 @@ cargo test --lib
 - Replace text extraction with `get_node_text()` from `ast_utils.rs`
 
 **Status:** MOVED TO ACTIVE - Missing documentation (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Completed:**
+- ✅ Replaced 1 manual text extraction with `get_node_text()`
+- ✅ Added import: `use crate::utility::cert_c::ast_utils::get_node_text;`
+- ✅ Tests: 2/2 passing (100%), zero regressions
+- ⚠️ **Implementation log still missing** (original implementer never documented)
+
+**Status:** DRY refactoring complete, implementation log needed for full approval
