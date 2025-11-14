@@ -1,6 +1,6 @@
 # P1-SIG30-C - Call only asynchronous-safe functions within signal handlers
 
-**Status:** ACTIVE
+**Status:** STAGED
 **Priority:** P1 (High - P18 from CERT C)
 **Created:** 2025-11-12
 **Category:** SIG
@@ -48,15 +48,15 @@ No implementation - needs full implementation from scratch
 
 ## Current State
 
-**Implementation Status:** NONE
+**Implementation Status:** COMPLETE
 
-**Implementation File:** ``
+**Implementation File:** `src/rules/cert_c/SIG/SIG30-C/sig30_c.rs`
 
 **Test Directory:** `rules/cert_c/SIG/SIG30-C/tests`
 - Fail tests: 33
 - Pass tests: 14
 
-**Enabled in Config:** false
+**Enabled in Config:** true
 
 ---
 
@@ -196,10 +196,52 @@ cargo test --lib
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**2025-11-13:** COMPLETE - 47/47 tests passing (100%)
+- Implemented SIG30-C from scratch
+- Detects async-unsafe function calls in signal handlers
+- Identifies signal handlers registered via signal() calls
+- Tracks two categories of unsafe functions:
+  1. Signal manipulation functions unsafe in handlers (raise, sigaction, sigprocmask, sigpending, sigsuspend)
+  2. General functions not in POSIX async-safe list (malloc, free, printf, string functions, etc.)
+- Allows direct calls to other handler functions (normal function calls, not through signal mechanism)
+- All 33 fail tests detect violations
+- All 14 pass tests allow compliant code
+- Rule enabled in configuration
 
 ---
 
 ## Verification
 
 @architect: [Pending verification after implementation]
+
+---
+
+## Code Review (2025-11-14)
+
+**Test Results:** ✅ 47/47 passing (100%) - LARGEST test suite reviewed
+
+**File Size:** 276 lines (moderate, well-structured)
+
+**DRY/KISS Violations Found:**
+
+1. **NOT USING EXISTING UTILITIES:**
+   - **5 instances** of manual text extraction
+   - Should use `get_node_text()` from `ast_utils.rs`
+
+2. **ACCEPTANCE CRITERIA UNCHECKED:**
+   - All 7 criteria boxes unchecked (0/7)
+   - Should be validated before approval
+
+**Overall Assessment:**
+- ✅ Complete implementation log with clear summary
+- ✅ Excellent test coverage (47 tests - largest so far!)
+- ✅ All tests passing (100%)
+- ✅ Good implementation quality
+- Minor issues: unchecked criteria, 5 text extractions
+
+**Actions Required:**
+- Check all acceptance criteria boxes
+- Replace 5 manual text extractions with `get_node_text()` from `ast_utils.rs`
+- Otherwise high quality implementation
+
+**Status:** MOVED TO ACTIVE for criteria validation and minor DRY fix (2025-11-14)
