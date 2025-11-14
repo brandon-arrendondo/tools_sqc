@@ -1,6 +1,12 @@
 // Common utilities for all CERT C rules are in crate::utility::cert_c
 
 // Implemented rules with nested structure
+#[path = "API/API01-C/api01_c.rs"]
+pub mod api01_c;
+
+#[path = "API/API02-C/api02_c.rs"]
+pub mod api02_c;
+
 #[path = "ARR/ARR00-C/arr00_c.rs"]
 pub mod arr00_c;
 
@@ -43,6 +49,12 @@ pub mod fio30_c;
 #[path = "FIO/FIO34-C/fio34_c.rs"]
 pub mod fio34_c;
 
+#[path = "FIO/FIO37-C/fio37_c.rs"]
+pub mod fio37_c;
+
+#[path = "INT/INT18-C/int18_c.rs"]
+pub mod int18_c;
+
 #[path = "INT/INT30-C/int30_c.rs"]
 pub mod int30_c;
 
@@ -58,6 +70,18 @@ pub mod mem31_c;
 #[path = "MEM/MEM33-C/mem33_c.rs"]
 pub mod mem33_c;
 
+#[path = "MSC/MSC32-C/msc32_c.rs"]
+pub mod msc32_c;
+
+#[path = "POS/POS30-C/pos30_c.rs"]
+pub mod pos30_c;
+
+#[path = "POS/POS36-C/pos36_c.rs"]
+pub mod pos36_c;
+
+#[path = "POS/POS37-C/pos37_c.rs"]
+pub mod pos37_c;
+
 #[path = "POS/POS54-C/pos54_c.rs"]
 pub mod pos54_c;
 
@@ -67,14 +91,25 @@ pub mod pre30_c;
 #[path = "PRE/PRE31-C/pre31_c.rs"]
 pub mod pre31_c;
 
+#[path = "PRE/PRE09-C/pre09_c.rs"]
+pub mod pre09_c;
+
 #[path = "PRE/PRE32-C/pre32_c.rs"]
 pub mod pre32_c;
-
 #[path = "STR/STR30-C/str30_c.rs"]
 pub mod str30_c;
 
 #[path = "STR/STR31-C/str31_c.rs"]
 pub mod str31_c;
+
+#[path = "STR/STR38-C/str38_c.rs"]
+pub mod str38_c;
+
+#[path = "SIG/SIG30-C/sig30_c.rs"]
+pub mod sig30_c;
+
+#[path = "SIG/SIG31-C/sig31_c.rs"]
+pub mod sig31_c;
 
 use super::{CertRule, RuleRegistry};
 
@@ -84,6 +119,8 @@ impl RuleRegistry {
             rules: Vec::new(),
         };
 
+        registry.register(Box::new(api01_c::Api01C));
+        registry.register(Box::new(api02_c::Api02C));
         registry.register(Box::new(arr00_c::Arr00C));
         registry.register(Box::new(arr30_c::Arr30C));
         registry.register(Box::new(arr32_c::Arr32C));
@@ -98,17 +135,29 @@ impl RuleRegistry {
         registry.register(Box::new(exp34_c::Exp34C));
         registry.register(Box::new(fio30_c::Fio30C));
         registry.register(Box::new(fio34_c::Fio34C::new()));
+        registry.register(Box::new(fio37_c::Fio37C));
+        registry.register(Box::new(int18_c::Int18C));
         registry.register(Box::new(int30_c::Int30C));
         registry.register(Box::new(int32_c::Int32C));
         registry.register(Box::new(mem30_c::Mem30C));
         registry.register(Box::new(mem31_c::Mem31C));
         registry.register(Box::new(mem33_c::Mem33C::new()));
+        registry.register(Box::new(msc32_c::Msc32C));
+        registry.register(Box::new(pos30_c::Pos30C));
+        registry.register(Box::new(pos36_c::Pos36C));
+        registry.register(Box::new(pos37_c::Pos37C));
         registry.register(Box::new(pos54_c::Pos54C));
         registry.register(Box::new(pre30_c::Pre30C));
         registry.register(Box::new(pre31_c::Pre31C));
+        registry.register(Box::new(pre09_c::Pre09C));
         registry.register(Box::new(pre32_c::Pre32C));
         registry.register(Box::new(str30_c::Str30C));
+        registry.register(Box::new(sig31_c::Sig31C));
         registry.register(Box::new(str31_c::Str31C));
+        registry.register(Box::new(str38_c::Str38C));
+        registry.register(Box::new(sig30_c::Sig30C));
+        registry.register(Box::new(win01_c::Win01C));
+        registry.register(Box::new(win02_c::Win02C));
 
         registry
     }
@@ -131,3 +180,9 @@ impl RuleRegistry {
 // Integration tests module
 #[cfg(test)]
 mod integration;
+
+#[path = "WIN/WIN01-C/win01_c.rs"]
+pub mod win01_c;
+
+#[path = "WIN/WIN02-C/win02_c.rs"]
+pub mod win02_c;

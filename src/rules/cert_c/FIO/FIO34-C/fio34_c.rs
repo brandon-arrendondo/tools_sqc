@@ -72,6 +72,9 @@ impl Fio34C {
             "while_statement" | "do_statement" | "for_statement" => {
                 self.check_loop_condition(node, source, violations);
             }
+            "cast_expression" => {
+                self.check_cast_expression(node, source, violations);
+            }
             _ => {}
         }
 
@@ -94,6 +97,24 @@ impl Fio34C {
                         // Check if the left side is a char type variable
                         if self.is_char_type_variable(&left, source) {
                             self.report_char_assignment_violation(node, function_name, source, violations);
+                        }
+                        // Check if it's a wide char function assigned to wchar_t (should be wint_t)
+                        if self.is_wide_character_function(function_name) && self.is_wchar_type_variable(&left, source) {
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: self.severity(),
+                                message: format!(
+                                    "Variable assigned from {}() should be wint_t, not wchar_t",
+                                    function_name
+                                ),
+                                file_path: String::new(),
+                                line: node.start_position().row + 1,
+                                column: node.start_position().column + 1,
+                                suggestion: Some(
+                                    "Use wint_t to properly distinguish WEOF from valid wide characters".to_string()
+                                ),
+                                ..Default::default()
+                            });
                         }
                     }
                 }
@@ -191,6 +212,21 @@ impl Fio34C {
                             if self.is_char_type_variable(&left, source) {
                                 self.report_loop_condition_violation(parent, source, violations);
                             }
+                            // Check if it's a wide char function assigned to wchar_t
+                            if self.is_wide_character_function(function_name) && self.is_wchar_type_variable(&left, source) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: self.severity(),
+                                    message: "Loop condition assigns wide character function to wchar_t instead of wint_t".to_string(),
+                                    file_path: String::new(),
+                                    line: parent.start_position().row + 1,
+                                    column: parent.start_position().column + 1,
+                                    suggestion: Some(
+                                        "Use wint_t to properly distinguish WEOF from valid wide characters".to_string()
+                                    ),
+                                    ..Default::default()
+                                });
+                            }
                         }
                     }
                 }
@@ -243,6 +279,64 @@ impl Fio34C {
             current = parent.parent();
         }
         false
+    }
+
+    /// Helper: Check if a variable is of wchar_t type (should be wint_t for getwc)
+    fn is_wchar_type_variable(&self, node: &Node, source: &str) -> bool {
+        let var_name = &source[node.start_byte()..node.end_byte()];
+
+        // Walk up to find the declaration
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "function_definition" || parent.kind() == "compound_statement" {
+                // Search for wchar_t declarations in this scope
+                let scope_text = &source[parent.start_byte()..parent.end_byte()];
+                if scope_text.contains(&format!("wchar_t {}", var_name)) {
+                    return true;
+                }
+                break;
+            }
+            current = parent.parent();
+        }
+        false
+    }
+
+    /// Check for casts to char of character input function results
+    fn check_cast_expression(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Look for (char)getc(...) or (char)fgetc(...) etc.
+        if let Some(type_node) = node.child_by_field_name("type") {
+            let type_text = &source[type_node.start_byte()..type_node.end_byte()];
+
+            // Check if casting to char type
+            if type_text.contains("char") && !type_text.contains("*") {
+                // Check if the value being cast is from a character input function
+                if let Some(value) = node.child_by_field_name("value") {
+                    if value.kind() == "call_expression" {
+                        if let Some(function) = value.child_by_field_name("function") {
+                            let function_name = &source[function.start_byte()..function.end_byte()];
+
+                            if self.is_character_input_function(function_name) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: self.severity(),
+                                    message: format!(
+                                        "Casting {}() result to char loses EOF distinction",
+                                        function_name
+                                    ),
+                                    file_path: String::new(),
+                                    line: node.start_position().row + 1,
+                                    column: node.start_position().column + 1,
+                                    suggestion: Some(
+                                        "Store result in int variable before comparison with EOF".to_string()
+                                    ),
+                                    ..Default::default()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /// Helper: Check if this is a char declaration

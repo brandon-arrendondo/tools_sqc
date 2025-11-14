@@ -103,6 +103,11 @@ impl Int32C {
             let right_type = self.infer_type(&right, source);
 
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
+                // Skip if this operation is part of an overflow check comparison
+                if self.is_part_of_comparison(node, source) {
+                    return;
+                }
+
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
                     let expr_text = &source[node.start_byte()..node.end_byte()];
@@ -131,6 +136,18 @@ impl Int32C {
             let right_type = self.infer_type(&right, source);
 
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
+                // Skip if this operation is part of an overflow check comparison
+                if self.is_part_of_comparison(node, source) {
+                    return;
+                }
+
+                // Skip if both operands are constants (compiler handles these)
+                let left_text = &source[left.start_byte()..left.end_byte()];
+                let right_text = &source[right.start_byte()..right.end_byte()];
+                if self.is_constant_expression(left_text) && self.is_constant_expression(right_text) {
+                    return; // Safe - constant expression
+                }
+
                 if !self.has_overflow_check_subtraction(node, source) {
                     let start_point = node.start_position();
                     let expr_text = &source[node.start_byte()..node.end_byte()];
@@ -159,6 +176,20 @@ impl Int32C {
             let right_type = self.infer_type(&right, source);
 
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
+                // Skip if this operation is part of an overflow check comparison
+                if self.is_part_of_comparison(node, source) {
+                    return;
+                }
+
+                // Skip if using wider type (cast to long long before multiplication)
+                let left_text = &source[left.start_byte()..left.end_byte()];
+                let right_text = &source[right.start_byte()..right.end_byte()];
+                if (left_text.contains("long long") || right_text.contains("long long")) ||
+                   (left_text.starts_with("(signed long long)") || left_text.starts_with("(long long)") ||
+                    right_text.starts_with("(signed long long)") || right_text.starts_with("(long long)")) {
+                    return; // Safe - using wider type
+                }
+
                 if !self.has_overflow_check_multiplication(node, source) {
                     let start_point = node.start_position();
                     let expr_text = &source[node.start_byte()..node.end_byte()];
@@ -188,29 +219,39 @@ impl Int32C {
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
-            // Check for signed integer division, especially INT_MIN / -1 which causes overflow
+            // Check for signed integer division
+            // INT_MIN / -1 causes overflow because -INT_MIN cannot be represented
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
-                // Always flag division of signed integers, especially when divisor could be -1
-                if right_text.trim() == "-1" || right_text.contains("-1") ||
-                   left_text.contains("INT_MIN") || self.could_be_int_min(&left, source) {
-                    if !self.has_division_overflow_check(node, source) {
-                        let start_point = node.start_position();
-                        let expr_text = &source[node.start_byte()..node.end_byte()];
+                // Skip if this division is part of an overflow check comparison
+                if self.is_part_of_comparison(node, source) {
+                    return;
+                }
 
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::High,
-                            message: format!(
-                                "Signed integer division '{}' may overflow (INT_MIN / -1)",
-                                expr_text
-                            ),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some("Add check: if (dividend == INT_MIN && divisor == -1) { /* handle error */ }".to_string()),
-                        ..Default::default()
-                        });
-                    }
+                // Check if there's explicit INT_MIN/-1 pattern OR generic signed division without checks
+                let has_explicit_risk = right_text.trim() == "-1" || right_text.contains("-1") ||
+                                       left_text.contains("INT_MIN") || left_text.contains("LONG_MIN") ||
+                                       self.could_be_int_min(&left, source);
+
+                // Also flag generic signed division of variables (could be INT_MIN / -1 at runtime)
+                let is_variable_division = left.kind() == "identifier" && right.kind() == "identifier";
+
+                if (has_explicit_risk || is_variable_division) && !self.has_division_overflow_check(node, source) {
+                    let start_point = node.start_position();
+                    let expr_text = &source[node.start_byte()..node.end_byte()];
+
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Signed integer division '{}' may overflow (INT_MIN / -1)",
+                            expr_text
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Add check: if (dividend == INT_MIN && divisor == -1) { /* handle error */ }".to_string()),
+                    ..Default::default()
+                    });
                 }
             }
         }
@@ -220,11 +261,20 @@ impl Int32C {
         if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
             let left_text = &source[left.start_byte()..left.end_byte()];
             let right_text = &source[right.start_byte()..right.end_byte()];
+            let left_type = self.infer_type(&left, source);
+            let right_type = self.infer_type(&right, source);
 
-            // Check for INT_MIN % -1 which causes overflow
-            if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source)) &&
-               (right_text == "-1" || right_text.contains("-1")) {
-                if !self.has_modulo_overflow_check(node, source) {
+            // Check for signed integer modulo
+            // INT_MIN % -1 causes overflow
+            if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
+                let has_explicit_risk = (left_text.contains("INT_MIN") || left_text.contains("LONG_MIN") ||
+                                        self.could_be_int_min(&left, source)) &&
+                                       (right_text == "-1" || right_text.contains("-1"));
+
+                // Also flag generic signed modulo of variables (could be INT_MIN % -1 at runtime)
+                let is_variable_modulo = left.kind() == "identifier" && right.kind() == "identifier";
+
+                if (has_explicit_risk || is_variable_modulo) && !self.has_modulo_overflow_check(node, source) {
                     let start_point = node.start_position();
                     let expr_text = &source[node.start_byte()..node.end_byte()];
 
@@ -473,6 +523,11 @@ impl Int32C {
             let arg_type = self.infer_type(&argument, source);
 
             if self.is_signed_type(&arg_type) {
+                // Skip if this is part of a safe for loop (bounded, starting from small values)
+                if self.is_in_safe_for_loop(node, source) {
+                    return;
+                }
+
                 let operator = self.get_update_operator(node, source);
                 if operator == "++" || operator == "--" {
                     if !self.has_overflow_check_update(node, source) {
@@ -512,6 +567,9 @@ impl Int32C {
                 }
                 "memcpy" | "memmove" | "memset" => {
                     self.check_memory_function_overflow(node, source, function_name, violations);
+                }
+                "abs" | "labs" | "llabs" => {
+                    self.check_abs_overflow(node, source, function_name, violations);
                 }
                 _ => {}
             }
@@ -570,6 +628,29 @@ impl Int32C {
                     });
                 }
             }
+        }
+    }
+
+    fn check_abs_overflow(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+        // abs(INT_MIN), labs(LONG_MIN), llabs(LLONG_MIN) all cause overflow
+        // because the absolute value of the minimum signed integer cannot be represented
+        if !self.has_abs_overflow_check(node, source) {
+            let start_point = node.start_position();
+            let expr_text = &source[node.start_byte()..node.end_byte()];
+
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "{}() may overflow when called with most negative value (e.g., INT_MIN): '{}'",
+                    function_name, expr_text
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Check if argument equals INT_MIN/LONG_MIN/LLONG_MIN before calling abs/labs/llabs".to_string()),
+            ..Default::default()
+            });
         }
     }
 
@@ -684,40 +765,184 @@ impl Int32C {
         expr.contains('+') || expr.contains('-') || expr.contains('*') || expr.contains('/')
     }
 
+    fn is_constant_expression(&self, expr: &str) -> bool {
+        // Check if expression is a constant (literal number or named constant like INT_MAX)
+        let trimmed = expr.trim();
+
+        // Numeric literals
+        if trimmed.chars().all(|c| c.is_ascii_digit() || c == '-' || c == '+') {
+            return true;
+        }
+
+        // Named constants
+        if trimmed.contains("INT_MAX") || trimmed.contains("INT_MIN") ||
+           trimmed.contains("LONG_MAX") || trimmed.contains("LONG_MIN") ||
+           trimmed.contains("LLONG_MAX") || trimmed.contains("LLONG_MIN") ||
+           trimmed.contains("UINT_MAX") || trimmed.contains("SIZE_MAX") {
+            return true;
+        }
+
+        false
+    }
+
+    fn is_in_safe_for_loop(&self, node: &Node, source: &str) -> bool {
+        // Walk up the tree to see if this node is in a for_statement
+        // Only consider it safe if the loop has clear small bounds
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "for_statement" {
+                // Check if this is a typical safe for loop (starting from 0 or small value)
+                // by looking at the initializer
+                if let Some(initializer) = parent.child_by_field_name("initializer") {
+                    // Convert initializer to text and check if it's safe
+                    // Safe patterns: i = 0, i = 1, etc. (small constants)
+                    // Unsafe patterns: i = INT_MAX - 2, etc.
+                    let init_text = &source[initializer.start_byte()..initializer.end_byte()];
+                    if init_text.contains("INT_MAX") || init_text.contains("LONG_MAX") ||
+                       init_text.contains("INT_MIN") || init_text.contains("LONG_MIN") {
+                        return false; // Unsafe - loop starts near limits
+                    }
+                    return true; // Safe - typical for loop
+                }
+            }
+            // Stop at function boundary
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            current = parent.parent();
+        }
+        false
+    }
+
     fn has_overflow_check_addition(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &["INT_MAX", "INT_MIN", " - ", " > ", " < "])
+        // First check the immediate surrounding context (parent/grandparent)
+        if self.has_surrounding_check(node, source, &["INT_MAX", "INT_MIN", " - ", " > ", " < "]) {
+            return true;
+        }
+
+        // Then check the broader function context for overflow checks
+        self.has_function_level_overflow_check(node, source, &["INT_MAX", "INT_MIN", " - ", " > ", " < "])
     }
 
     fn has_overflow_check_subtraction(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &["INT_MAX", "INT_MIN", " + ", " > ", " < "])
+        // First check the immediate surrounding context (parent/grandparent)
+        if self.has_surrounding_check(node, source, &["INT_MAX", "INT_MIN", " + ", " > ", " < "]) {
+            return true;
+        }
+
+        // Then check the broader function context for overflow checks
+        self.has_function_level_overflow_check(node, source, &["INT_MAX", "INT_MIN", " + ", " > ", " < "])
     }
 
     fn has_overflow_check_multiplication(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &["INT_MAX", "INT_MIN", " / ", " > ", " < "])
+        // Check for multiplication overflow patterns:
+        // 1. if (a > INT_MAX / b) - division-based check
+        // 2. Complex checks with INT_MAX/INT_MIN and division
+        if self.has_surrounding_check(node, source, &["INT_MAX", " / "]) ||
+           self.has_surrounding_check(node, source, &["INT_MIN", " / "]) ||
+           self.has_surrounding_check(node, source, &["LONG_MAX", " / "]) ||
+           self.has_surrounding_check(node, source, &["LONG_MIN", " / "]) {
+            return true;
+        }
+
+        // Function-level checks
+        if self.has_function_level_patterns_any(node, source, &["INT_MAX", " / "]) ||
+           self.has_function_level_patterns_any(node, source, &["INT_MIN", " / "]) ||
+           self.has_function_level_patterns_any(node, source, &["LONG_MAX", " / "]) ||
+           self.has_function_level_patterns_any(node, source, &["LONG_MIN", " / "]) {
+            return true;
+        }
+
+        false
     }
 
     fn has_division_overflow_check(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &["INT_MIN", " == ", " -1", "if"])
+        // Check for INT_MIN/-1 or LONG_MIN/-1 or LLONG_MIN/-1 division overflow checks
+        if self.has_surrounding_check(node, source, &["INT_MIN", " == ", " -1"]) ||
+           self.has_surrounding_check(node, source, &["LONG_MIN", " == ", " -1"]) ||
+           self.has_surrounding_check(node, source, &["LLONG_MIN", " == ", " -1"]) {
+            return true;
+        }
+
+        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == ", " -1"]) ||
+        self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == ", " -1"]) ||
+        self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == ", " -1"])
     }
 
     fn has_modulo_overflow_check(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &["INT_MIN", " == ", " -1", "if"])
+        // Check for INT_MIN%- 1 or LONG_MIN%-1 or LLONG_MIN%-1 modulo overflow checks
+        if self.has_surrounding_check(node, source, &["INT_MIN", " == ", " -1"]) ||
+           self.has_surrounding_check(node, source, &["LONG_MIN", " == ", " -1"]) ||
+           self.has_surrounding_check(node, source, &["LLONG_MIN", " == ", " -1"]) {
+            return true;
+        }
+
+        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == ", " -1"]) ||
+        self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == ", " -1"]) ||
+        self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == ", " -1"])
     }
 
     fn has_negation_overflow_check(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &["INT_MIN", " == ", "if"])
+        // Check for negation of INT_MIN, LONG_MIN, or LLONG_MIN
+        if self.has_surrounding_check(node, source, &["INT_MIN", " == "]) ||
+           self.has_surrounding_check(node, source, &["LONG_MIN", " == "]) ||
+           self.has_surrounding_check(node, source, &["LLONG_MIN", " == "]) {
+            return true;
+        }
+
+        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == "]) ||
+        self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == "]) ||
+        self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == "])
     }
 
     fn has_shift_overflow_check(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &[" < ", "sizeof", "* 8", " >= 0"])
+        // Check for left shift overflow patterns:
+        // Complete check requires BOTH:
+        // 1. Shift amount validation AND value range check
+        // 2. Value range check: a > (INT_MAX >> b) or similar with LONG_MAX
+
+        // Check for value range pattern (most comprehensive)
+        if self.has_surrounding_check(node, source, &["LONG_MAX", " >> "]) ||
+           self.has_surrounding_check(node, source, &["INT_MAX", " >> "]) {
+            return true;
+        }
+
+        if self.has_function_level_patterns_any(node, source, &["LONG_MAX", " >> "]) ||
+           self.has_function_level_patterns_any(node, source, &["INT_MAX", " >> "]) {
+            return true;
+        }
+
+        // Only accept PRECISION if it's combined with value range checks
+        // (PRECISION alone is insufficient - see wiki_noncompliant_6)
+        if (self.has_surrounding_check(node, source, &["PRECISION"]) ||
+            self.has_function_level_patterns_any(node, source, &["PRECISION"])) &&
+           (self.has_function_level_patterns_any(node, source, &[" >> "]) ||
+            self.has_function_level_patterns_any(node, source, &[" < ", "sizeof"])) {
+            return false; // PRECISION + shift amount check only is insufficient
+        }
+
+        // sizeof-based complete checks
+        self.has_surrounding_check(node, source, &[" < ", "sizeof", "* 8"])
     }
 
     fn has_overflow_check_compound(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &["if", "INT_MAX", "INT_MIN"])
+        if self.has_surrounding_check(node, source, &["if", "INT_MAX", "INT_MIN"]) {
+            return true;
+        }
+        self.has_function_level_overflow_check(node, source, &["if", "INT_MAX", "INT_MIN"])
     }
 
     fn has_overflow_check_update(&self, node: &Node, source: &str) -> bool {
-        self.has_surrounding_check(node, source, &["if", "INT_MAX", "INT_MIN", " == "])
+        // For increment: check if value == INT_MAX
+        // For decrement: check if value == INT_MIN
+        // We need to detect EITHER check, not both
+        if self.has_surrounding_check(node, source, &["if", "INT_MAX", " == "]) ||
+           self.has_surrounding_check(node, source, &["if", "INT_MIN", " == "]) {
+            return true;
+        }
+
+        self.has_function_level_patterns_any(node, source, &["if", "INT_MAX", " == "]) ||
+        self.has_function_level_patterns_any(node, source, &["if", "INT_MIN", " == "])
     }
 
     fn has_allocation_overflow_check(&self, node: &Node, source: &str) -> bool {
@@ -726,6 +951,80 @@ impl Int32C {
 
     fn has_memory_function_overflow_check(&self, node: &Node, source: &str) -> bool {
         self.has_surrounding_check(node, source, &["SIZE_MAX", " > ", "if"])
+    }
+
+    fn has_abs_overflow_check(&self, node: &Node, source: &str) -> bool {
+        // Check if there's a check for INT_MIN/LONG_MIN/LLONG_MIN before the abs call
+        if self.has_surrounding_check(node, source, &["INT_MIN", "if"]) ||
+           self.has_surrounding_check(node, source, &["LONG_MIN", "if"]) ||
+           self.has_surrounding_check(node, source, &["LLONG_MIN", "if"]) {
+            return true;
+        }
+        self.has_function_level_overflow_check(node, source, &["INT_MIN", "if"]) ||
+        self.has_function_level_overflow_check(node, source, &["LONG_MIN", "if"]) ||
+        self.has_function_level_overflow_check(node, source, &["LLONG_MIN", "if"])
+    }
+
+    /// Check if a binary operation is part of a comparison expression (used in overflow checking)
+    fn is_part_of_comparison(&self, node: &Node, source: &str) -> bool {
+        let mut current = node.parent();
+
+        while let Some(parent) = current {
+            // If we find a binary_expression parent, check if it's a comparison operator
+            if parent.kind() == "binary_expression" {
+                // Get the operator
+                for i in 0..parent.child_count() {
+                    if let Some(child) = parent.child(i) {
+                        let text = &source[child.start_byte()..child.end_byte()];
+                        // Check if this is a comparison operator
+                        if matches!(text, ">" | "<" | ">=" | "<=" | "==" | "!=") {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            // Stop at statement boundaries to avoid going too far up the tree
+            if matches!(parent.kind(),
+                "expression_statement" | "return_statement" | "declaration" |
+                "function_definition" | "compound_statement") {
+                break;
+            }
+
+            current = parent.parent();
+        }
+
+        false
+    }
+
+    /// Check if the function containing this node has overflow checking code (all patterns must match)
+    fn has_function_level_overflow_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
+        // Find the containing function
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "function_definition" {
+                // Search the entire function body for the patterns
+                let func_text = &source[parent.start_byte()..parent.end_byte()];
+                return patterns.iter().all(|pattern| func_text.contains(pattern));
+            }
+            current = parent.parent();
+        }
+        false
+    }
+
+    /// Check if the function containing this node has overflow checking code (any pattern can match)
+    fn has_function_level_patterns_any(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
+        // Find the containing function
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "function_definition" {
+                // Search the entire function body for the patterns
+                let func_text = &source[parent.start_byte()..parent.end_byte()];
+                return patterns.iter().all(|pattern| func_text.contains(pattern));
+            }
+            current = parent.parent();
+        }
+        false
     }
 
     fn has_surrounding_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {

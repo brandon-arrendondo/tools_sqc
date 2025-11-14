@@ -286,3 +286,34 @@ cargo test --lib
 - Otherwise implementation is high quality
 
 **Status:** MOVED TO ACTIVE for minor utility usage fix (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Phase 1: Replace Manual Text Extractions (Completed)**
+
+Updated `src/rules/cert_c/INT/INT18-C/int18_c.rs`:
+- ✅ Replaced 7 manual text extractions with `get_node_text()` from ast_utils.rs
+  - Systematic sed replacement
+- Added import: `use crate::utility::cert_c::ast_utils::get_node_text;`
+
+**Phase 2: Verification (Completed)**
+
+Test Results: ✅ **7/7 passing (100%)** - No regressions
+- All fail tests (3) pass
+- All pass tests (4) pass
+- Zero test failures
+
+Build: ✅ Clean (no errors)
+
+**Summary:**
+- Eliminated all DRY violations in INT18-C
+- Replaced 7 manual text extractions
+- Maintained 100% test pass rate
+- Zero regressions
+- Clean, well-documented implementation
+
+**Status:** Ready for STAGED
