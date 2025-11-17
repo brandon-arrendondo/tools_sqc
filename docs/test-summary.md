@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 48 (17.0%)
+- **Implemented Rules:** 49 (17.3%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -174,12 +174,12 @@
   - 🔶 [FIO24-C](#rule-fio24c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ⚫ [FIO14-C](#rule-fio14c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [FIO22-C](#rule-fio22c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [FLP](#category-flp) (0 implemented / 13 total)
+- [FLP](#category-flp) (1 implemented / 13 total)
   - 🔶 [FLP02-C](#rule-flp02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [FLP36-C](#rule-flp36c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [FLP07-C](#rule-flp07c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [FLP37-C](#rule-flp37c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-  - 🔶 [FLP30-C](#rule-flp30c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
+  - ✅ [FLP30-C](#rule-flp30c) - Implemented: Pass 4/4 (100.0%)
   - 🔶 [FLP06-C](#rule-flp06c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [FLP04-C](#rule-flp04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ⚫ [FLP01-C](#rule-flp01c) - Not Implemented (no tests): Pass 0/0 (N/A)
@@ -6715,7 +6715,7 @@ implicitly operate on such objects (such asprintf(),perror(), andgetc()).
 
 <a id="category-flp"></a>
 
-**Implementation Status:** 0 / 13 rules (0.0%)
+**Implementation Status:** 1 / 13 rules (7.7%)
 
 ### 🔶 FLP02-C - Not Implemented (has tests)
 
@@ -6853,7 +6853,7 @@ equivalent.
 
 ---
 
-### 🔶 FLP30-C - Not Implemented (has tests)
+### ✅ FLP30-C - Implemented
 
 <a id="rule-flp30c"></a>
 
@@ -6875,17 +6875,17 @@ variable. See Goldberg's work for an introduction to this topic [Goldberg 1991].
 
 **Test Coverage:** 4 tests (2 fail, 2 pass)
 
-**Test Results:** 0/4 passed (0.0%), 4 not run
+**Test Results:** 4/4 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_flp30_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_flp30_c_fail_wiki_noncompliant_2`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_flp30_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2.c` → `test_flp30_c_fail_wiki_noncompliant_2`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_flp30_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_flp30_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_1.c` → `test_flp30_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_flp30_c_pass_wiki_compliant_2`
 
 ---
 
@@ -11995,7 +11995,7 @@ result.
 | ERR | 11 | 1 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
-| FLP | 13 | 0 | 40 | 3.1 |
+| FLP | 13 | 1 | 40 | 3.1 |
 | INT | 23 | 3 | 238 | 10.3 |
 | MEM | 17 | 3 | 244 | 14.4 |
 | MSC | 8 | 1 | 30 | 3.8 |
