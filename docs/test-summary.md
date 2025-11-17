@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 43 (15.2%)
+- **Implemented Rules:** 44 (15.5%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -29,7 +29,7 @@
   - ✅ [ARR32-C](#rule-arr32c) - Implemented: Pass 62/62 (100.0%)
   - 🔶 [ARR02-C](#rule-arr02c) - Not Implemented (has tests): Pass 0/82 (0.0%) [82 not run]
   - ✅ [ARR39-C](#rule-arr39c) - Implemented: Pass 32/46 (69.6%)
-- [CON](#category-con) (1 implemented / 23 total)
+- [CON](#category-con) (2 implemented / 23 total)
   - 🔶 [CON07-C](#rule-con07c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [CON39-C](#rule-con39c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON09-C](#rule-con09c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
@@ -50,7 +50,7 @@
   - 🔶 [CON08-C](#rule-con08c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
   - 🔶 [CON43-C](#rule-con43c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
   - 🔶 [CON33-C](#rule-con33c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-  - 🔶 [CON30-C](#rule-con30c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
+  - ✅ [CON30-C](#rule-con30c) - Implemented: Pass 3/3 (100.0%)
   - 🔶 [CON35-C](#rule-con35c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON32-C](#rule-con32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
 - [DCL](#category-dcl) (1 implemented / 31 total)
@@ -1452,7 +1452,7 @@ byintand then scaled again when added tobuf.
 
 <a id="category-con"></a>
 
-**Implementation Status:** 1 / 23 rules (4.3%)
+**Implementation Status:** 2 / 23 rules (8.7%)
 
 ### 🔶 CON07-C - Not Implemented (has tests)
 
@@ -2430,7 +2430,7 @@ POSIXmbrtoc16(),c16rtomb(),mbrtoc32(),c32rtomb()Do not call with a nullmbstate_t
 
 ---
 
-### 🔶 CON30-C - Not Implemented (has tests)
+### ✅ CON30-C - Implemented
 
 <a id="rule-con30c"></a>
 
@@ -2463,16 +2463,16 @@ return 0; }
 
 **Test Coverage:** 3 tests (1 fail, 2 pass)
 
-**Test Results:** 0/3 passed (0.0%), 3 not run
+**Test Results:** 3/3 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_con30_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_con30_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_con30_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_con30_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_1.c` → `test_con30_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_con30_c_pass_wiki_compliant_2`
 
 ---
 
@@ -11989,7 +11989,7 @@ result.
 |----------|-------|-------------|-------|----------------|
 | API | 9 | 5 | 62 | 6.9 |
 | ARR | 9 | 7 | 490 | 54.4 |
-| CON | 23 | 1 | 75 | 3.3 |
+| CON | 23 | 2 | 75 | 3.3 |
 | DCL | 31 | 1 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 1 | 88 | 8.0 |

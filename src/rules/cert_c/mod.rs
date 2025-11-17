@@ -40,6 +40,9 @@ pub mod arr39_c;
 #[path = "CON/CON04-C/con04_c.rs"]
 pub mod con04_c;
 
+#[path = "CON/CON30-C/con30_c.rs"]
+pub mod con30_c;
+
 #[path = "DCL/DCL00-C/dcl00_c.rs"]
 pub mod dcl00_c;
 
@@ -142,6 +145,7 @@ impl RuleRegistry {
         registry.register(Box::new(arr38_c::Arr38C));
         registry.register(Box::new(arr39_c::Arr39C));
         registry.register(Box::new(con04_c::Con04C));
+        registry.register(Box::new(con30_c::Con30C));
         registry.register(Box::new(dcl00_c::Dcl00C));
         registry.register(Box::new(err33_c::Err33C));
         registry.register(Box::new(exp15_c::Exp15C));
