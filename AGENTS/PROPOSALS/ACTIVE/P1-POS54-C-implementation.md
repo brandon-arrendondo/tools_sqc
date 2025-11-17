@@ -298,3 +298,16 @@ Created `src/rules/cert_c/POS/POS54-C/pos54_c.rs` (252 lines)
 - Otherwise implementation is complete and ready
 
 **Status:** MOVED TO ACTIVE for minor utility usage fix (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Completed:**
+- ✅ Replaced 5 manual text extractions with `get_node_text()`
+- ✅ Tests: 2/2 passing (100%), zero regressions
+- ✅ Added import: `use crate::utility::cert_c::ast_utils::get_node_text;`
+
+**Status:** DRY refactoring complete
