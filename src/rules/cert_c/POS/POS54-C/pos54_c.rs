@@ -36,6 +36,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Pos54C;
@@ -88,7 +89,7 @@ impl Pos54C {
         // Look for call expressions
         if node.kind() == "call_expression" {
             if let Some(function_node) = node.child_by_field_name("function") {
-                let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+                let function_name = get_node_text(&function_node, source);
 
                 if Self::is_posix_error_function(function_name) {
                     // Check if this call is part of an assignment
@@ -96,7 +97,7 @@ impl Pos54C {
                         if parent.kind() == "init_declarator" {
                             // Pattern: type var = func();
                             if let Some(declarator) = parent.child_by_field_name("declarator") {
-                                let var_name = &source[declarator.start_byte()..declarator.end_byte()];
+                                let var_name = get_node_text(&declarator, source);
 
                                 // Search forward for error check
                                 if !self.find_error_check_in_context(&parent, var_name, function_name, source) {
@@ -106,7 +107,7 @@ impl Pos54C {
                         } else if parent.kind() == "assignment_expression" {
                             // Pattern: var = func();
                             if let Some(left) = parent.child_by_field_name("left") {
-                                let var_name = &source[left.start_byte()..left.end_byte()];
+                                let var_name = get_node_text(&left, source);
 
                                 // Search forward for error check
                                 if !self.find_error_check_in_context(&parent, var_name, function_name, source) {
@@ -192,7 +193,7 @@ impl Pos54C {
         // Look for if statements
         if node.kind() == "if_statement" {
             if let Some(condition) = node.child_by_field_name("condition") {
-                let condition_text = &source[condition.start_byte()..condition.end_byte()];
+                let condition_text = get_node_text(&condition, source);
 
                 // Check for NULL check (fmemopen, open_memstream)
                 if Self::is_posix_null_error_function(function_name) {
@@ -229,7 +230,7 @@ impl Pos54C {
 
     fn report_violation(&self, node: &Node, function_name: &str, source: &str, violations: &mut Vec<RuleViolation>) {
         let start_point = node.start_position();
-        let call_text = &source[node.start_byte()..node.end_byte()];
+        let call_text = get_node_text(&node, source);
 
         violations.push(RuleViolation {
             rule_id: self.rule_id().to_string(),
