@@ -24,6 +24,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 use std::collections::{HashSet, HashMap};
 
@@ -76,7 +77,7 @@ impl Sig31C {
     fn collect_handlers(&self, node: &Node, source: &str, handlers: &mut HashSet<String>) {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = &source[function.start_byte()..function.end_byte()];
+                let func_name = get_node_text(&function, source);
 
                 if func_name == "signal" || func_name == "sigaction" {
                     if let Some(args) = node.child_by_field_name("arguments") {
@@ -105,10 +106,10 @@ impl Sig31C {
             if let Some(left) = node.child_by_field_name("left") {
                 if left.kind() == "field_expression" {
                     if let Some(field) = left.child_by_field_name("field") {
-                        let field_name = &source[field.start_byte()..field.end_byte()];
+                        let field_name = get_node_text(&field, source);
                         if field_name == "sa_handler" {
                             if let Some(right) = node.child_by_field_name("right") {
-                                let handler_name = &source[right.start_byte()..right.end_byte()];
+                                let handler_name = get_node_text(&right, source);
                                 if !handler_name.starts_with("SIG_")
                                     && handler_name != "NULL"
                                     && handler_name != "0"
@@ -136,7 +137,7 @@ impl Sig31C {
             if let Some(child) = args_node.child(i) {
                 let kind = child.kind();
                 if kind != "," && kind != "(" && kind != ")" {
-                    let arg_text = source[child.start_byte()..child.end_byte()].to_string();
+                    let arg_text = get_node_text(&child, source).to_string();
                     arguments.push(arg_text);
                 }
             }
@@ -154,7 +155,7 @@ impl Sig31C {
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
                     if child.kind() == "declaration" {
-                        let decl_text = &source[child.start_byte()..child.end_byte()];
+                        let decl_text = get_node_text(&child, source);
 
                         // Parse type - check if it's safe
                         // Safe types: ONLY volatile sig_atomic_t, atomic_* types
@@ -183,7 +184,7 @@ impl Sig31C {
     fn extract_var_names(&self, declarator: &Node, source: &str, vars: &mut HashMap<String, bool>, is_safe: bool) {
         match declarator.kind() {
             "identifier" => {
-                let var_name = &source[declarator.start_byte()..declarator.end_byte()];
+                let var_name = get_node_text(&declarator, source);
                 vars.insert(var_name.to_string(), is_safe);
             }
             "init_declarator" => {
@@ -201,7 +202,7 @@ impl Sig31C {
                 for i in 0..declarator.child_count() {
                     if let Some(child) = declarator.child(i) {
                         if child.kind() == "identifier" {
-                            let var_name = &source[child.start_byte()..child.end_byte()];
+                            let var_name = get_node_text(&child, source);
                             vars.insert(var_name.to_string(), is_safe);
                         } else if child.kind() != "," {
                             self.extract_var_names(&child, source, vars, is_safe);
@@ -235,7 +236,7 @@ impl Sig31C {
     fn get_function_name_text(&self, declarator: &Node, source: &str) -> Option<String> {
         if declarator.kind() == "function_declarator" {
             if let Some(inner) = declarator.child_by_field_name("declarator") {
-                let text = &source[inner.start_byte()..inner.end_byte()];
+                let text = get_node_text(&inner, source);
                 return Some(text.to_string());
             }
         }
@@ -247,7 +248,7 @@ impl Sig31C {
         }
 
         if declarator.kind() == "identifier" {
-            let text = &source[declarator.start_byte()..declarator.end_byte()];
+            let text = get_node_text(&declarator, source);
             return Some(text.to_string());
         }
 
@@ -280,7 +281,7 @@ impl Sig31C {
     fn extract_local_var_names(&self, declarator: &Node, source: &str, locals: &mut HashSet<String>) {
         match declarator.kind() {
             "identifier" => {
-                let var_name = &source[declarator.start_byte()..declarator.end_byte()];
+                let var_name = get_node_text(&declarator, source);
                 locals.insert(var_name.to_string());
             }
             "init_declarator" => {
@@ -297,7 +298,7 @@ impl Sig31C {
                 for i in 0..declarator.child_count() {
                     if let Some(child) = declarator.child(i) {
                         if child.kind() == "identifier" {
-                            let var_name = &source[child.start_byte()..child.end_byte()];
+                            let var_name = get_node_text(&child, source);
                             locals.insert(var_name.to_string());
                         } else if child.kind() != "," {
                             self.extract_local_var_names(&child, source, locals);
@@ -311,7 +312,7 @@ impl Sig31C {
     fn check_for_global_access(&self, node: &Node, source: &str, handler_name: &str, global_vars: &HashMap<String, bool>, local_vars: &HashSet<String>, violations: &mut Vec<RuleViolation>) {
         // Check for identifier references AND field_expression (for struct member access)
         if node.kind() == "identifier" {
-            let id_name = &source[node.start_byte()..node.end_byte()];
+            let id_name = get_node_text(&node, source);
 
             // Skip if it's a local variable
             if local_vars.contains(id_name) {
@@ -346,7 +347,7 @@ impl Sig31C {
             // For struct member access like global_signal_state.signal_history[0]
             // Check if the base object is a global variable
             if let Some(argument) = node.child_by_field_name("argument") {
-                let base_text = &source[argument.start_byte()..argument.end_byte()];
+                let base_text = get_node_text(&argument, source);
 
                 // Extract just the identifier (handle cases like "(*ptr)" or just "var")
                 let base_id = if base_text.starts_with('(') && base_text.ends_with(')') {
@@ -398,7 +399,7 @@ impl Sig31C {
         while let Some(parent) = current {
             if parent.kind() == "call_expression" {
                 if let Some(function) = parent.child_by_field_name("function") {
-                    let func_name = &source[function.start_byte()..function.end_byte()];
+                    let func_name = get_node_text(&function, source);
 
                     // List of async-signal-safe functions from POSIX
                     // https://man7.org/linux/man-pages/man7/signal-safety.7.html

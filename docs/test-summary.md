@@ -1,6 +1,6 @@
 # CERT C Rules Test Summary
 
-**Generated:** 2025-11-14 15:50:33
+**Generated:** 2025-11-17 08:07:46
 
 ## Overview
 
@@ -281,9 +281,9 @@
   - 🔶 [PRE12-C](#rule-pre12c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
 - [SIG](#category-sig) (2 implemented / 7 total)
   - 🔶 [SIG01-C](#rule-sig01c) - Not Implemented (has tests): Pass 0/47 (0.0%) [47 not run]
-  - ✅ [SIG30-C](#rule-sig30c) - Implemented: Pass 47/47 (100.0%)
+  - ✅ [SIG30-C](#rule-sig30c) - Implemented: Pass 0/47 (0.0%) [47 not run]
   - 🔶 [SIG34-C](#rule-sig34c) - Not Implemented (has tests): Pass 0/44 (0.0%) [44 not run]
-  - ✅ [SIG31-C](#rule-sig31c) - Implemented: Pass 0/43 (0.0%) [43 not run]
+  - ✅ [SIG31-C](#rule-sig31c) - Implemented: Pass 43/43 (100.0%)
   - 🔶 [SIG35-C](#rule-sig35c) - Not Implemented (has tests): Pass 0/43 (0.0%) [43 not run]
   - 🔶 [SIG00-C](#rule-sig00c) - Not Implemented (has tests): Pass 0/44 (0.0%) [44 not run]
   - 🔶 [SIG02-C](#rule-sig02c) - Not Implemented (has tests): Pass 0/46 (0.0%) [46 not run]
@@ -10673,60 +10673,60 @@ functions as well as application-defined functions.
 
 **Test Coverage:** 47 tests (33 fail, 14 pass)
 
-**Test Results:** 47/47 passed (100.0%)
+**Test Results:** 0/47 passed (0.0%), 47 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `testcases_unsafe_atexit_functions.c` → `test_sig30_c_fail_testcases_unsafe_atexit_functions`
-- ✅ PASS `testcases_unsafe_complex_handler.c` → `test_sig30_c_fail_testcases_unsafe_complex_handler`
-- ✅ PASS `testcases_unsafe_data_structures.c` → `test_sig30_c_fail_testcases_unsafe_data_structures`
-- ✅ PASS `testcases_unsafe_directory_ops.c` → `test_sig30_c_fail_testcases_unsafe_directory_ops`
-- ✅ PASS `testcases_unsafe_environment_functions.c` → `test_sig30_c_fail_testcases_unsafe_environment_functions`
-- ✅ PASS `testcases_unsafe_error_handling.c` → `test_sig30_c_fail_testcases_unsafe_error_handling`
-- ✅ PASS `testcases_unsafe_file_io.c` → `test_sig30_c_fail_testcases_unsafe_file_io`
-- ✅ PASS `testcases_unsafe_formatting_functions.c` → `test_sig30_c_fail_testcases_unsafe_formatting_functions`
-- ✅ PASS `testcases_unsafe_library_calls.c` → `test_sig30_c_fail_testcases_unsafe_library_calls`
-- ✅ PASS `testcases_unsafe_locale_functions.c` → `test_sig30_c_fail_testcases_unsafe_locale_functions`
-- ✅ PASS `testcases_unsafe_logging_functions.c` → `test_sig30_c_fail_testcases_unsafe_logging_functions`
-- ✅ PASS `testcases_unsafe_malloc_free.c` → `test_sig30_c_fail_testcases_unsafe_malloc_free`
-- ✅ PASS `testcases_unsafe_math_functions.c` → `test_sig30_c_fail_testcases_unsafe_math_functions`
-- ✅ PASS `testcases_unsafe_message_queues.c` → `test_sig30_c_fail_testcases_unsafe_message_queues`
-- ✅ PASS `testcases_unsafe_network_functions.c` → `test_sig30_c_fail_testcases_unsafe_network_functions`
-- ✅ PASS `testcases_unsafe_printf.c` → `test_sig30_c_fail_testcases_unsafe_printf`
-- ✅ PASS `testcases_unsafe_process_control.c` → `test_sig30_c_fail_testcases_unsafe_process_control`
-- ✅ PASS `testcases_unsafe_random_functions.c` → `test_sig30_c_fail_testcases_unsafe_random_functions`
-- ✅ PASS `testcases_unsafe_regex_functions.c` → `test_sig30_c_fail_testcases_unsafe_regex_functions`
-- ✅ PASS `testcases_unsafe_resource_limits.c` → `test_sig30_c_fail_testcases_unsafe_resource_limits`
-- ✅ PASS `testcases_unsafe_shared_memory.c` → `test_sig30_c_fail_testcases_unsafe_shared_memory`
-- ✅ PASS `testcases_unsafe_signal_manipulation.c` → `test_sig30_c_fail_testcases_unsafe_signal_manipulation`
-- ✅ PASS `testcases_unsafe_stdio_extensions.c` → `test_sig30_c_fail_testcases_unsafe_stdio_extensions`
-- ✅ PASS `testcases_unsafe_string_functions.c` → `test_sig30_c_fail_testcases_unsafe_string_functions`
-- ✅ PASS `testcases_unsafe_terminal_functions.c` → `test_sig30_c_fail_testcases_unsafe_terminal_functions`
-- ✅ PASS `testcases_unsafe_thread_sync.c` → `test_sig30_c_fail_testcases_unsafe_thread_sync`
-- ✅ PASS `testcases_unsafe_time_functions.c` → `test_sig30_c_fail_testcases_unsafe_time_functions`
-- ✅ PASS `testcases_unsafe_timer_functions.c` → `test_sig30_c_fail_testcases_unsafe_timer_functions`
-- ✅ PASS `testcases_unsafe_user_group_functions.c` → `test_sig30_c_fail_testcases_unsafe_user_group_functions`
-- ✅ PASS `testcases_unsafe_wide_char_functions.c` → `test_sig30_c_fail_testcases_unsafe_wide_char_functions`
-- ✅ PASS `wiki_longjmp.c` → `test_sig30_c_fail_wiki_longjmp`
-- ✅ PASS `wiki_noncompliant_1.c` → `test_sig30_c_fail_wiki_noncompliant_1`
-- ✅ PASS `wiki_raise.c` → `test_sig30_c_fail_wiki_raise`
+- ⏭️ NOT RUN `testcases_unsafe_atexit_functions.c` → `test_sig30_c_fail_testcases_unsafe_atexit_functions`
+- ⏭️ NOT RUN `testcases_unsafe_complex_handler.c` → `test_sig30_c_fail_testcases_unsafe_complex_handler`
+- ⏭️ NOT RUN `testcases_unsafe_data_structures.c` → `test_sig30_c_fail_testcases_unsafe_data_structures`
+- ⏭️ NOT RUN `testcases_unsafe_directory_ops.c` → `test_sig30_c_fail_testcases_unsafe_directory_ops`
+- ⏭️ NOT RUN `testcases_unsafe_environment_functions.c` → `test_sig30_c_fail_testcases_unsafe_environment_functions`
+- ⏭️ NOT RUN `testcases_unsafe_error_handling.c` → `test_sig30_c_fail_testcases_unsafe_error_handling`
+- ⏭️ NOT RUN `testcases_unsafe_file_io.c` → `test_sig30_c_fail_testcases_unsafe_file_io`
+- ⏭️ NOT RUN `testcases_unsafe_formatting_functions.c` → `test_sig30_c_fail_testcases_unsafe_formatting_functions`
+- ⏭️ NOT RUN `testcases_unsafe_library_calls.c` → `test_sig30_c_fail_testcases_unsafe_library_calls`
+- ⏭️ NOT RUN `testcases_unsafe_locale_functions.c` → `test_sig30_c_fail_testcases_unsafe_locale_functions`
+- ⏭️ NOT RUN `testcases_unsafe_logging_functions.c` → `test_sig30_c_fail_testcases_unsafe_logging_functions`
+- ⏭️ NOT RUN `testcases_unsafe_malloc_free.c` → `test_sig30_c_fail_testcases_unsafe_malloc_free`
+- ⏭️ NOT RUN `testcases_unsafe_math_functions.c` → `test_sig30_c_fail_testcases_unsafe_math_functions`
+- ⏭️ NOT RUN `testcases_unsafe_message_queues.c` → `test_sig30_c_fail_testcases_unsafe_message_queues`
+- ⏭️ NOT RUN `testcases_unsafe_network_functions.c` → `test_sig30_c_fail_testcases_unsafe_network_functions`
+- ⏭️ NOT RUN `testcases_unsafe_printf.c` → `test_sig30_c_fail_testcases_unsafe_printf`
+- ⏭️ NOT RUN `testcases_unsafe_process_control.c` → `test_sig30_c_fail_testcases_unsafe_process_control`
+- ⏭️ NOT RUN `testcases_unsafe_random_functions.c` → `test_sig30_c_fail_testcases_unsafe_random_functions`
+- ⏭️ NOT RUN `testcases_unsafe_regex_functions.c` → `test_sig30_c_fail_testcases_unsafe_regex_functions`
+- ⏭️ NOT RUN `testcases_unsafe_resource_limits.c` → `test_sig30_c_fail_testcases_unsafe_resource_limits`
+- ⏭️ NOT RUN `testcases_unsafe_shared_memory.c` → `test_sig30_c_fail_testcases_unsafe_shared_memory`
+- ⏭️ NOT RUN `testcases_unsafe_signal_manipulation.c` → `test_sig30_c_fail_testcases_unsafe_signal_manipulation`
+- ⏭️ NOT RUN `testcases_unsafe_stdio_extensions.c` → `test_sig30_c_fail_testcases_unsafe_stdio_extensions`
+- ⏭️ NOT RUN `testcases_unsafe_string_functions.c` → `test_sig30_c_fail_testcases_unsafe_string_functions`
+- ⏭️ NOT RUN `testcases_unsafe_terminal_functions.c` → `test_sig30_c_fail_testcases_unsafe_terminal_functions`
+- ⏭️ NOT RUN `testcases_unsafe_thread_sync.c` → `test_sig30_c_fail_testcases_unsafe_thread_sync`
+- ⏭️ NOT RUN `testcases_unsafe_time_functions.c` → `test_sig30_c_fail_testcases_unsafe_time_functions`
+- ⏭️ NOT RUN `testcases_unsafe_timer_functions.c` → `test_sig30_c_fail_testcases_unsafe_timer_functions`
+- ⏭️ NOT RUN `testcases_unsafe_user_group_functions.c` → `test_sig30_c_fail_testcases_unsafe_user_group_functions`
+- ⏭️ NOT RUN `testcases_unsafe_wide_char_functions.c` → `test_sig30_c_fail_testcases_unsafe_wide_char_functions`
+- ⏭️ NOT RUN `wiki_longjmp.c` → `test_sig30_c_fail_wiki_longjmp`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_sig30_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_raise.c` → `test_sig30_c_fail_wiki_raise`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `testcases_async_safe_logging.c` → `test_sig30_c_pass_testcases_async_safe_logging`
-- ✅ PASS `testcases_atomic_operations_only.c` → `test_sig30_c_pass_testcases_atomic_operations_only`
-- ✅ PASS `testcases_errno_preservation.c` → `test_sig30_c_pass_testcases_errno_preservation`
-- ✅ PASS `testcases_immediate_exit_handler.c` → `test_sig30_c_pass_testcases_immediate_exit_handler`
-- ✅ PASS `testcases_minimal_handler.c` → `test_sig30_c_pass_testcases_minimal_handler`
-- ✅ PASS `testcases_safe_flag_handler.c` → `test_sig30_c_pass_testcases_safe_flag_handler`
-- ✅ PASS `testcases_self_pipe_trick.c` → `test_sig30_c_pass_testcases_self_pipe_trick`
-- ✅ PASS `testcases_signal_counting.c` → `test_sig30_c_pass_testcases_signal_counting`
-- ✅ PASS `testcases_signal_mask_safe.c` → `test_sig30_c_pass_testcases_signal_mask_safe`
-- ✅ PASS `testcases_signalfd_safe.c` → `test_sig30_c_pass_testcases_signalfd_safe`
-- ✅ PASS `testcases_write_only_handler.c` → `test_sig30_c_pass_testcases_write_only_handler`
-- ✅ PASS `wiki_compliant_1.c` → `test_sig30_c_pass_wiki_compliant_1`
-- ✅ PASS `wiki_compliant_2.c` → `test_sig30_c_pass_wiki_compliant_2`
-- ✅ PASS `wiki_compliant_3.c` → `test_sig30_c_pass_wiki_compliant_3`
+- ⏭️ NOT RUN `testcases_async_safe_logging.c` → `test_sig30_c_pass_testcases_async_safe_logging`
+- ⏭️ NOT RUN `testcases_atomic_operations_only.c` → `test_sig30_c_pass_testcases_atomic_operations_only`
+- ⏭️ NOT RUN `testcases_errno_preservation.c` → `test_sig30_c_pass_testcases_errno_preservation`
+- ⏭️ NOT RUN `testcases_immediate_exit_handler.c` → `test_sig30_c_pass_testcases_immediate_exit_handler`
+- ⏭️ NOT RUN `testcases_minimal_handler.c` → `test_sig30_c_pass_testcases_minimal_handler`
+- ⏭️ NOT RUN `testcases_safe_flag_handler.c` → `test_sig30_c_pass_testcases_safe_flag_handler`
+- ⏭️ NOT RUN `testcases_self_pipe_trick.c` → `test_sig30_c_pass_testcases_self_pipe_trick`
+- ⏭️ NOT RUN `testcases_signal_counting.c` → `test_sig30_c_pass_testcases_signal_counting`
+- ⏭️ NOT RUN `testcases_signal_mask_safe.c` → `test_sig30_c_pass_testcases_signal_mask_safe`
+- ⏭️ NOT RUN `testcases_signalfd_safe.c` → `test_sig30_c_pass_testcases_signalfd_safe`
+- ⏭️ NOT RUN `testcases_write_only_handler.c` → `test_sig30_c_pass_testcases_write_only_handler`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_sig30_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_sig30_c_pass_wiki_compliant_2`
+- ⏭️ NOT RUN `wiki_compliant_3.c` → `test_sig30_c_pass_wiki_compliant_3`
 
 ---
 
@@ -10831,56 +10831,56 @@ header<stdint.h>.
 
 **Test Coverage:** 43 tests (31 fail, 12 pass)
 
-**Test Results:** 0/43 passed (0.0%), 43 not run
+**Test Results:** 43/43 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `testcases_authentication_session.c` → `test_sig31_c_fail_testcases_authentication_session`
-- ⏭️ NOT RUN `testcases_circular_buffer_access.c` → `test_sig31_c_fail_testcases_circular_buffer_access`
-- ⏭️ NOT RUN `testcases_complex_struct_access.c` → `test_sig31_c_fail_testcases_complex_struct_access`
-- ⏭️ NOT RUN `testcases_database_connection.c` → `test_sig31_c_fail_testcases_database_connection`
-- ⏭️ NOT RUN `testcases_dynamic_memory_access.c` → `test_sig31_c_fail_testcases_dynamic_memory_access`
-- ⏭️ NOT RUN `testcases_error_state_access.c` → `test_sig31_c_fail_testcases_error_state_access`
-- ⏭️ NOT RUN `testcases_file_descriptor_access.c` → `test_sig31_c_fail_testcases_file_descriptor_access`
-- ⏭️ NOT RUN `testcases_file_scope_variable.c` → `test_sig31_c_fail_testcases_file_scope_variable`
-- ⏭️ NOT RUN `testcases_filesystem_state.c` → `test_sig31_c_fail_testcases_filesystem_state`
-- ⏭️ NOT RUN `testcases_global_array_access.c` → `test_sig31_c_fail_testcases_global_array_access`
-- ⏭️ NOT RUN `testcases_global_cache_access.c` → `test_sig31_c_fail_testcases_global_cache_access`
-- ⏭️ NOT RUN `testcases_global_config_access.c` → `test_sig31_c_fail_testcases_global_config_access`
-- ⏭️ NOT RUN `testcases_global_flags_access.c` → `test_sig31_c_fail_testcases_global_flags_access`
-- ⏭️ NOT RUN `testcases_global_registry_access.c` → `test_sig31_c_fail_testcases_global_registry_access`
-- ⏭️ NOT RUN `testcases_linked_list_access.c` → `test_sig31_c_fail_testcases_linked_list_access`
-- ⏭️ NOT RUN `testcases_logging_state_access.c` → `test_sig31_c_fail_testcases_logging_state_access`
-- ⏭️ NOT RUN `testcases_network_connection_state.c` → `test_sig31_c_fail_testcases_network_connection_state`
-- ⏭️ NOT RUN `testcases_performance_metrics.c` → `test_sig31_c_fail_testcases_performance_metrics`
-- ⏭️ NOT RUN `testcases_process_control_structures.c` → `test_sig31_c_fail_testcases_process_control_structures`
-- ⏭️ NOT RUN `testcases_resource_pool_access.c` → `test_sig31_c_fail_testcases_resource_pool_access`
-- ⏭️ NOT RUN `testcases_shared_counters.c` → `test_sig31_c_fail_testcases_shared_counters`
-- ⏭️ NOT RUN `testcases_shared_data_access.c` → `test_sig31_c_fail_testcases_shared_data_access`
-- ⏭️ NOT RUN `testcases_shared_hash_table.c` → `test_sig31_c_fail_testcases_shared_hash_table`
-- ⏭️ NOT RUN `testcases_shared_queue_system.c` → `test_sig31_c_fail_testcases_shared_queue_system`
-- ⏭️ NOT RUN `testcases_signal_handler_state.c` → `test_sig31_c_fail_testcases_signal_handler_state`
-- ⏭️ NOT RUN `testcases_state_machine_access.c` → `test_sig31_c_fail_testcases_state_machine_access`
-- ⏭️ NOT RUN `testcases_static_variable_access.c` → `test_sig31_c_fail_testcases_static_variable_access`
-- ⏭️ NOT RUN `testcases_string_buffer_access.c` → `test_sig31_c_fail_testcases_string_buffer_access`
-- ⏭️ NOT RUN `testcases_thread_shared_data.c` → `test_sig31_c_fail_testcases_thread_shared_data`
-- ⏭️ NOT RUN `testcases_timing_information.c` → `test_sig31_c_fail_testcases_timing_information`
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_sig31_c_fail_wiki_noncompliant_1`
+- ✅ PASS `testcases_authentication_session.c` → `test_sig31_c_fail_testcases_authentication_session`
+- ✅ PASS `testcases_circular_buffer_access.c` → `test_sig31_c_fail_testcases_circular_buffer_access`
+- ✅ PASS `testcases_complex_struct_access.c` → `test_sig31_c_fail_testcases_complex_struct_access`
+- ✅ PASS `testcases_database_connection.c` → `test_sig31_c_fail_testcases_database_connection`
+- ✅ PASS `testcases_dynamic_memory_access.c` → `test_sig31_c_fail_testcases_dynamic_memory_access`
+- ✅ PASS `testcases_error_state_access.c` → `test_sig31_c_fail_testcases_error_state_access`
+- ✅ PASS `testcases_file_descriptor_access.c` → `test_sig31_c_fail_testcases_file_descriptor_access`
+- ✅ PASS `testcases_file_scope_variable.c` → `test_sig31_c_fail_testcases_file_scope_variable`
+- ✅ PASS `testcases_filesystem_state.c` → `test_sig31_c_fail_testcases_filesystem_state`
+- ✅ PASS `testcases_global_array_access.c` → `test_sig31_c_fail_testcases_global_array_access`
+- ✅ PASS `testcases_global_cache_access.c` → `test_sig31_c_fail_testcases_global_cache_access`
+- ✅ PASS `testcases_global_config_access.c` → `test_sig31_c_fail_testcases_global_config_access`
+- ✅ PASS `testcases_global_flags_access.c` → `test_sig31_c_fail_testcases_global_flags_access`
+- ✅ PASS `testcases_global_registry_access.c` → `test_sig31_c_fail_testcases_global_registry_access`
+- ✅ PASS `testcases_linked_list_access.c` → `test_sig31_c_fail_testcases_linked_list_access`
+- ✅ PASS `testcases_logging_state_access.c` → `test_sig31_c_fail_testcases_logging_state_access`
+- ✅ PASS `testcases_network_connection_state.c` → `test_sig31_c_fail_testcases_network_connection_state`
+- ✅ PASS `testcases_performance_metrics.c` → `test_sig31_c_fail_testcases_performance_metrics`
+- ✅ PASS `testcases_process_control_structures.c` → `test_sig31_c_fail_testcases_process_control_structures`
+- ✅ PASS `testcases_resource_pool_access.c` → `test_sig31_c_fail_testcases_resource_pool_access`
+- ✅ PASS `testcases_shared_counters.c` → `test_sig31_c_fail_testcases_shared_counters`
+- ✅ PASS `testcases_shared_data_access.c` → `test_sig31_c_fail_testcases_shared_data_access`
+- ✅ PASS `testcases_shared_hash_table.c` → `test_sig31_c_fail_testcases_shared_hash_table`
+- ✅ PASS `testcases_shared_queue_system.c` → `test_sig31_c_fail_testcases_shared_queue_system`
+- ✅ PASS `testcases_signal_handler_state.c` → `test_sig31_c_fail_testcases_signal_handler_state`
+- ✅ PASS `testcases_state_machine_access.c` → `test_sig31_c_fail_testcases_state_machine_access`
+- ✅ PASS `testcases_static_variable_access.c` → `test_sig31_c_fail_testcases_static_variable_access`
+- ✅ PASS `testcases_string_buffer_access.c` → `test_sig31_c_fail_testcases_string_buffer_access`
+- ✅ PASS `testcases_thread_shared_data.c` → `test_sig31_c_fail_testcases_thread_shared_data`
+- ✅ PASS `testcases_timing_information.c` → `test_sig31_c_fail_testcases_timing_information`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_sig31_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `testcases_atomic_operations_only.c` → `test_sig31_c_pass_testcases_atomic_operations_only`
-- ⏭️ NOT RUN `testcases_flag_only_handler.c` → `test_sig31_c_pass_testcases_flag_only_handler`
-- ⏭️ NOT RUN `testcases_isolated_handler_state.c` → `test_sig31_c_pass_testcases_isolated_handler_state`
-- ⏭️ NOT RUN `testcases_minimal_signal_handling.c` → `test_sig31_c_pass_testcases_minimal_signal_handling`
-- ⏭️ NOT RUN `testcases_no_shared_access.c` → `test_sig31_c_pass_testcases_no_shared_access`
-- ⏭️ NOT RUN `testcases_self_pipe_trick.c` → `test_sig31_c_pass_testcases_self_pipe_trick`
-- ⏭️ NOT RUN `testcases_sig_atomic_only.c` → `test_sig31_c_pass_testcases_sig_atomic_only`
-- ⏭️ NOT RUN `testcases_signal_masking_protection.c` → `test_sig31_c_pass_testcases_signal_masking_protection`
-- ⏭️ NOT RUN `testcases_signal_synchronization.c` → `test_sig31_c_pass_testcases_signal_synchronization`
-- ⏭️ NOT RUN `testcases_signalfd_safe_access.c` → `test_sig31_c_pass_testcases_signalfd_safe_access`
-- ⏭️ NOT RUN `wiki_lock_free_atomic_access.c` → `test_sig31_c_pass_wiki_lock_free_atomic_access`
-- ⏭️ NOT RUN `wiki_writingvolatile_sig_atomic_t.c` → `test_sig31_c_pass_wiki_writingvolatile_sig_atomic_t`
+- ✅ PASS `testcases_atomic_operations_only.c` → `test_sig31_c_pass_testcases_atomic_operations_only`
+- ✅ PASS `testcases_flag_only_handler.c` → `test_sig31_c_pass_testcases_flag_only_handler`
+- ✅ PASS `testcases_isolated_handler_state.c` → `test_sig31_c_pass_testcases_isolated_handler_state`
+- ✅ PASS `testcases_minimal_signal_handling.c` → `test_sig31_c_pass_testcases_minimal_signal_handling`
+- ✅ PASS `testcases_no_shared_access.c` → `test_sig31_c_pass_testcases_no_shared_access`
+- ✅ PASS `testcases_self_pipe_trick.c` → `test_sig31_c_pass_testcases_self_pipe_trick`
+- ✅ PASS `testcases_sig_atomic_only.c` → `test_sig31_c_pass_testcases_sig_atomic_only`
+- ✅ PASS `testcases_signal_masking_protection.c` → `test_sig31_c_pass_testcases_signal_masking_protection`
+- ✅ PASS `testcases_signal_synchronization.c` → `test_sig31_c_pass_testcases_signal_synchronization`
+- ✅ PASS `testcases_signalfd_safe_access.c` → `test_sig31_c_pass_testcases_signalfd_safe_access`
+- ✅ PASS `wiki_lock_free_atomic_access.c` → `test_sig31_c_pass_wiki_lock_free_atomic_access`
+- ✅ PASS `wiki_writingvolatile_sig_atomic_t.c` → `test_sig31_c_pass_wiki_writingvolatile_sig_atomic_t`
 
 ---
 
