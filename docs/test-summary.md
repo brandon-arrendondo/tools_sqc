@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 55 (19.4%)
+- **Implemented Rules:** 56 (19.8%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -212,14 +212,14 @@
   - 🔶 [INT09-C](#rule-int09c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [INT02-C](#rule-int02c) - Not Implemented (has tests): Pass 0/9 (0.0%) [9 not run]
   - ✅ [INT30-C](#rule-int30c) - Implemented: Pass 0/47 (0.0%) [47 not run]
-- [MEM](#category-mem) (3 implemented / 17 total)
+- [MEM](#category-mem) (4 implemented / 17 total)
   - 🔶 [MEM03-C](#rule-mem03c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - ✅ [MEM31-C](#rule-mem31c) - Implemented: Pass 0/100 (0.0%) [100 not run]
   - 🔶 [MEM02-C](#rule-mem02c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
   - ✅ [MEM33-C](#rule-mem33c) - Implemented: Pass 0/46 (0.0%) [46 not run]
   - ✅ [MEM30-C](#rule-mem30c) - Implemented: Pass 0/48 (0.0%) [48 not run]
   - 🔶 [MEM01-C](#rule-mem01c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-  - 🔶 [MEM00-C](#rule-mem00c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [MEM00-C](#rule-mem00c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [MEM05-C](#rule-mem05c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [MEM12-C](#rule-mem12c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [MEM04-C](#rule-mem04c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
@@ -8152,7 +8152,7 @@ Yes&=No!No&&No=No|=Noun +No||No+=Yes^=Noun -Yes?:No
 
 <a id="category-mem"></a>
 
-**Implementation Status:** 3 / 17 rules (17.6%)
+**Implementation Status:** 4 / 17 rules (23.5%)
 
 ### 🔶 MEM03-C - Not Implemented (has tests)
 
@@ -8531,7 +8531,7 @@ thenmessageis freed twice, resulting in a double-free vulnerability. char
 
 ---
 
-### 🔶 MEM00-C - Not Implemented (has tests)
+### ✅ MEM00-C - Implemented
 
 <a id="rule-mem00c"></a>
 
@@ -11997,7 +11997,7 @@ result.
 | FIO | 35 | 3 | 200 | 5.7 |
 | FLP | 13 | 1 | 40 | 3.1 |
 | INT | 23 | 4 | 238 | 10.3 |
-| MEM | 17 | 3 | 244 | 14.4 |
+| MEM | 17 | 4 | 244 | 14.4 |
 | MSC | 8 | 1 | 30 | 3.8 |
 | POS | 20 | 5 | 55 | 2.8 |
 | PRE | 16 | 4 | 189 | 11.8 |
