@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 44 (15.5%)
+- **Implemented Rules:** 45 (15.9%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -29,8 +29,8 @@
   - ✅ [ARR30-C](#rule-arr30c) - Implemented: Pass 50/61 (82.0%)
   - ✅ [ARR37-C](#rule-arr37c) - Implemented: Pass 37/43 (86.0%)
   - ✅ [ARR38-C](#rule-arr38c) - Implemented: Pass 15/50 (30.0%)
-- [CON](#category-con) (0 implemented / 23 total)
-  - 🔶 [CON01-C](#rule-con01c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+- [CON](#category-con) (1 implemented / 23 total)
+  - ✅ [CON01-C](#rule-con01c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [CON30-C](#rule-con30c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON05-C](#rule-con05c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON31-C](#rule-con31c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -1452,9 +1452,9 @@ valid." (Seeundefined behavior108.) In the following code,
 
 <a id="category-con"></a>
 
-**Implementation Status:** 0 / 23 rules (0.0%)
+**Implementation Status:** 1 / 23 rules (4.3%)
 
-### 🔶 CON01-C - Not Implemented (has tests)
+### ✅ CON01-C - Implemented
 
 <a id="rule-con01c"></a>
 
@@ -1479,15 +1479,15 @@ mutex type isimplementation-defined.
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_con01_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_con01_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_con01_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_con01_c_pass_wiki_compliant_1`
 
 ---
 
@@ -11989,7 +11989,7 @@ result.
 |----------|-------|-------------|-------|----------------|
 | API | 9 | 6 | 62 | 6.9 |
 | ARR | 9 | 8 | 490 | 54.4 |
-| CON | 23 | 0 | 75 | 3.3 |
+| CON | 23 | 1 | 75 | 3.3 |
 | DCL | 31 | 1 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 1 | 88 | 8.0 |
