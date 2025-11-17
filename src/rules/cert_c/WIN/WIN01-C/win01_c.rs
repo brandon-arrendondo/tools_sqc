@@ -17,6 +17,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Win01C;
@@ -53,7 +54,7 @@ impl Win01C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = &source[function.start_byte()..function.end_byte()];
+                let func_name = get_node_text(&function, source);
 
                 if func_name == "TerminateThread" {
                     violations.push(RuleViolation {
