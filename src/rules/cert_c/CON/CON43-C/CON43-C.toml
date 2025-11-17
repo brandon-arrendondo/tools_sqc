@@ -1,0 +1,36 @@
+[metadata]
+id = "CON43-C"
+type = "recommendation"
+category = "CON"
+number = 43
+title = "Do not allow data races in multithreaded code"
+description = """
+When multiple threads can read or modify the same data, use synchronization
+techniques to avoid software flaws that can lead to securityvulnerabilities.Data
+racescan often result inabnormal terminationordenial of service, but it is
+possible for them to result in more serious vulnerabilities. The C Standard,
+section 5.1.2.5, paragraph 35 [ISO/IEC 9899:2024], says: Assume this simplified
+code is part of a multithreaded bank system. Threads callcredit()anddebit()as
+money is deposited into and withdrawn from the single account. Because the
+addition and subtraction operations are not atomic, it is possible that two
+operations can occur concurrently, but only the result of one would be
+saved—despite declaring theaccount_balancevolatile. For example, an attacker can
+credit the account with a sum of money and make a large number of small debits
+concurrently. Some of the debits might not affect the account balance because of
+the race condition, so the attacker is effectively creating money. static
+volatile int account_balance; void debit(int amount) { account_balance -=
+amount; } void credit(int amount) { account_balance += amount; }
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
+
+[rules.cert_c.CON43-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/CON43-C.+Do+not+allow+data+races+in+multithreaded+code"
+cwe = ["CWE-366"]

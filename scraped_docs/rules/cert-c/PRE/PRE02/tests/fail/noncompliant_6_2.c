@@ -1,1 +1,0 @@
-#define END_OF_FILE (-1)

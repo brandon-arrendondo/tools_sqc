@@ -1,0 +1,29 @@
+[metadata]
+id = "EXP30-C"
+type = "rule"
+category = "EXP"
+number = 30
+title = "Do not depend on the order of evaluation for side effects"
+description = """
+Evaluation of an expression may produceside effects. At specific points during
+execution, known assequence points, all side effects of previous evaluations are
+complete, and no side effects of subsequent evaluations have yet taken place. Do
+not depend on the order of evaluation for side effects unless there is an
+intervening sequence point. The C Standard, 6.5, paragraph 2 [ISO/IEC
+9899:2024], states This requirement must be met for each allowable ordering of
+the subexpressions of a full expression; otherwise, the behavior isundefined.
+(Seeundefined behavior 34.)
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P8"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
+
+[rules.cert_c.EXP30-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP30-C.+Do+not+depend+on+the+order+of+evaluation+for+side+effects"
+cwe = ["CWE-758"]

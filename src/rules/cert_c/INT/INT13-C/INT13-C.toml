@@ -1,0 +1,32 @@
+[metadata]
+id = "INT13-C"
+type = "recommendation"
+category = "INT"
+number = 13
+title = "Use bitwise operators only on unsigned operands"
+description = """
+Bitwise operators include the complement operator~, bitwise shift
+operators>>and<<, bitwise AND operator&, bitwise exclusive OR operator^, bitwise
+inclusive OR operator|and compound assignment operators >>=, <<=, &=, ^= and |=.
+Bitwise operators should be used only with unsigned integer operands, as the
+results of bitwise operations on signed integers areimplementation-defined. The
+C11 standard, section 6.5, paragraph 4[ISO/IEC 9899:2011], states: Furthermore,
+the bitwise shift operators << and>>are undefined under many circumstances, and
+are implementation-defined for signed integers for more circumstances; see
+ruleINT34-C. Do not shift an expression by a negative number of bits or by
+greater than or equal to the number of bits that exist in the operandfor more
+information.
+"""
+severity = "High"
+likelihood = "Unlikely"
+priority = "P6"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 29, 2025"
+
+[rules.cert_c.INT13-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/INT13-C.+Use+bitwise+operators+only+on+unsigned+operands"
+cwe = ["CWE-682"]

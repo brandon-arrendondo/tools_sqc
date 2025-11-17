@@ -1,0 +1,33 @@
+[metadata]
+id = "INT05-C"
+type = "recommendation"
+category = "INT"
+number = 5
+title = "Do not use input functions to convert character data if they cannot handle all possible inputs"
+description = """
+Do not use functions that input characters and convert them to integers if the
+functions cannot handle all possible inputs. For example, formatted input
+functions such asscanf(),fscanf(),vscanf(), andvfscanf()can be used to read
+string data fromstdinor (in the cases offscanf()andvfscanf()) other input
+streams. These functions work fine for valid integer values but lack robust
+error handling for invalid values. Alternatively, input character data as a
+null-terminated byte string and convert to an integer value usingstrtol()or a
+related function. (SeeERR34-C. Detect errors when converting a string to a
+number.) This noncompliant code example uses thescanf()function to read a string
+fromstdinand convert it to along. Thescanf()andfscanf()functions haveundefined
+behaviorif the value of the result of this operation cannot be represented as an
+integer.
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P8"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
+
+[rules.cert_c.INT05-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/INT05-C.+Do+not+use+input+functions+to+convert+character+data+if+they+cannot+handle+all+possible+inputs"
+cwe = ["CWE-192", "CWE-197"]

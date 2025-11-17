@@ -1,0 +1,27 @@
+[metadata]
+id = "DCL30-C"
+type = "rule"
+category = "DCL"
+number = 30
+title = "Declare objects with appropriate storage durations"
+description = """
+Every object has a storage duration that determines its
+lifetime:static,thread,automatic, orallocated. According to the C Standard,
+6.2.4, paragraph 2 [ISO/IEC 9899:2024], Do not attempt to access an object
+outside of its lifetime. Attempting to do so isundefined behaviorand can lead to
+an exploitablevulnerability. (See alsoundefined behavior 9in the C Standard,
+Annex J.)
+"""
+severity = "High"
+likelihood = "Probable"
+priority = "P6"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jul 02, 2025"
+
+[rules.cert_c.DCL30-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL30-C.+Declare+objects+with+appropriate+storage+durations"
+cwe = ["CWE-562"]

@@ -1,0 +1,32 @@
+[metadata]
+id = "ERR06-C"
+type = "recommendation"
+category = "ERR"
+number = 6
+title = "Understand the termination behavior of assert() and abort()"
+description = """
+The C Standard, subclause 7.2.1.1 [ISO/IEC 9899:2011], definesassert()to have
+the following behavior: Becauseassert()callsabort(), cleanup functions
+registered withatexit()are not called. If the intention of the programmer is to
+properly clean up in the case of a failed assertion, then runtime assertions
+should be replaced with static assertions where possible. (SeeDCL03-C. Use a
+static assertion to test the value of a constant expression.) When the assertion
+is based on runtime data, theassertshould be replaced with a runtime check that
+implements the adopted error strategy (seeERR00-C. Adopt and implement a
+consistent and comprehensive error-handling policy). SeeERR04-C. Choose an
+appropriate termination strategyfor more information on program termination
+strategies andMSC11-C. Incorporate diagnostic tests using assertionsfor more
+information on using theassert()macro.
+"""
+severity = "Medium"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
+
+[rules.cert_c.ERR06-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/pages/viewpage.action?pageId=87152296"

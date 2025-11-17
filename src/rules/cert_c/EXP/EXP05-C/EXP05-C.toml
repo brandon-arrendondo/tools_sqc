@@ -1,0 +1,32 @@
+[metadata]
+id = "EXP05-C"
+type = "recommendation"
+category = "EXP"
+number = 5
+title = "Do not cast away a const qualification"
+description = """
+Do not cast away aconstqualification on an object of pointer type. Casting away
+theconstqualification allows a program to modify the object referred to by the
+pointer, which may result inundefined behavior. Seeundefined behavior 61in
+Appendix J of the C Standard. As an illustration, the C Standard [ISO/IEC
+9899:2011] provides a footnote (subclause 6.7.3, paragraph 4):
+Theremove_spaces()function in this noncompliant code example accepts a pointer
+to a stringstrand a string lengthslenand removes the space character from the
+string by shifting the remaining characters toward the front of the string. The
+functionremove_spaces()is passed aconstcharpointer as an argument.
+Theconstqualification is cast away, and then the contents of the string are
+modified.
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
+
+[rules.cert_c.EXP05-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP05-C.+Do+not+cast+away+a+const+qualification"
+cwe = ["CWE-704"]

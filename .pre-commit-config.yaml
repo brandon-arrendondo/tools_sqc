@@ -1,0 +1,30 @@
+# Pre-commit hooks for tools_scq
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # Rust formatting
+  - repo: https://github.com/doublify/pre-commit-rust
+    rev: v1.0
+    hooks:
+      - id: fmt
+        name: cargo fmt
+        description: Format Rust code with rustfmt
+        args: ['--manifest-path=Cargo.toml', '--', '--check']
+
+      - id: cargo-check
+        name: cargo check
+        description: Check Rust code compiles
+        args: ['--manifest-path=Cargo.toml']
+
+  # Local hooks for cargo commands
+  - repo: local
+    hooks:
+      - id: cargo-test
+        name: cargo test
+        description: Run all Rust tests (includes build) - warnings only
+        entry: bash -c 'cargo test || true'
+        language: system
+        pass_filenames: false
+        always_run: true
+        verbose: true

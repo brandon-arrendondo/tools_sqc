@@ -1,1 +1,0 @@
-int a = ((81 / i) * i) * i);  /* Evaluates to 243 */

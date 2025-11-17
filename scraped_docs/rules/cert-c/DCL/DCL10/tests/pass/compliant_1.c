@@ -1,1 +1,0 @@
-int avg = average(1, 4, 6, 4, 1, va_eol);

@@ -1,0 +1,28 @@
+[metadata]
+id = "STR09-C"
+type = "recommendation"
+category = "STR"
+number = 9
+title = "Don't assume numeric values for expressions with type plain character"
+description = """
+For portable applications, use only the assignment=operator, the equality
+operators==and!=, and the unary&operator on plain-character-typed or plain-wide-
+character-typed expressions. This practice is recommended because the C Standard
+requires only the digit characters (0–9) to have consecutive numerical values.
+Consequently, operations that rely on expected values for plain-character- or
+plain-wide-character-typed expressions can lead to unexpected behavior. However,
+because of the requirement for digit characters, other operators can be used for
+them according to the following restrictions:
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
+
+[rules.cert_c.STR09-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/STR09-C.+Don%27t+assume+numeric+values+for+expressions+with+type+plain+character"

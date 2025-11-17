@@ -1,0 +1,28 @@
+[metadata]
+id = "PRE30-C"
+type = "rule"
+category = "PRE"
+number = 30
+title = "Do not create a universal character name through concatenation"
+description = """
+The C Standard supports universal character names that may be used in
+identifiers, character constants, and string literals to designate characters
+that are not in the basic character set. The universal character
+name\Unnnnnnnndesignates the character whose 8-digit short identifier (as
+specified by ISO/IEC 10646) isnnnnnnnn. Similarly, the universal character
+name\unnnndesignates the character whose 4-digit short identifier isnnnn(and
+whose 8-digit short identifier is0000nnnn). The C Standard, 5.1.1.2, paragraph 4
+[ISO/IEC 9899:2024], says See alsoundefined behavior 3.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
+
+[rules.cert_c.PRE30-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/PRE30-C.+Do+not+create+a+universal+character+name+through+concatenation"

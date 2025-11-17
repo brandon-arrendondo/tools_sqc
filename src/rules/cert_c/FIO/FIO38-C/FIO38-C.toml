@@ -1,0 +1,23 @@
+[metadata]
+id = "FIO38-C"
+type = "recommendation"
+category = "FIO"
+number = 38
+title = "Do not copy a FILE object"
+description = """
+According to the C Standard, 7.23.3, paragraph 6 [ISO/IEC 9899:2024],
+Consequently, do not copy aFILEobject. This noncompliant code example can fail
+because a by-value copy ofstdoutis being used in the call tofputs():
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
+
+[rules.cert_c.FIO38-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FIO38-C.+Do+not+copy+a+FILE+object"

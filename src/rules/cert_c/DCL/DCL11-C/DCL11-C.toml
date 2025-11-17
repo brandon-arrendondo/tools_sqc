@@ -1,0 +1,37 @@
+[metadata]
+id = "DCL11-C"
+type = "recommendation"
+category = "DCL"
+number = 11
+title = "Understand the type issues associated with variadic functions"
+description = """
+The variable parameters of a variadic function—that is, those that correspond
+with the position of the ellipsis—are interpreted by theva_arg()macro.
+Theva_arg()macro is used to extract the next argument from an initialized
+argument list within the body of a variadic function implementation. The size of
+each parameter is determined by the specified type. If the type is inconsistent
+with the corresponding argument, the behavior isundefinedand may result in
+misinterpreted data or an alignment error (seeEXP36-C. Do not cast pointers into
+more strictly aligned pointer types). The variable arguments to a variadic
+function are not checked for type by the compiler. As a result, the programmer
+is responsible for ensuring that they are compatible with the corresponding
+parameter after the default argument promotions: The Cprintf()function is
+implemented as a variadic function. This noncompliant code example swaps its
+null-terminated byte string and integer parameters with respect to how they are
+specified in the format string. Consequently, the integer is interpreted as a
+pointer to a null-terminated byte string and dereferenced, which will likely
+cause the program toabnormally terminate. Note that theerror_messagepointer is
+likewise interpreted as an integer.
+"""
+severity = "High"
+likelihood = "Probable"
+priority = "P12"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 19, 2025"
+
+[rules.cert_c.DCL11-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL11-C.+Understand+the+type+issues+associated+with+variadic+functions"

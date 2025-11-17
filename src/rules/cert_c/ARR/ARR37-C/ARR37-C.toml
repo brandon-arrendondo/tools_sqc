@@ -1,0 +1,25 @@
+[metadata]
+id = "ARR37-C"
+type = "rule"
+category = "ARR"
+number = 37
+title = "Do not add or subtract an integer to a pointer to a non-array object"
+description = """
+Pointer arithmetic must be performed only on pointers that reference elements of
+array objects. The C Standard, 6.5.7 [ISO/IEC 9899:2024], states the following
+about pointer arithmetic: This noncompliant code example attempts to access
+structure members using pointer arithmetic. This practice is dangerous because
+structure members are not guaranteed to be contiguous.
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P8"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
+
+[rules.cert_c.ARR37-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ARR37-C.+Do+not+add+or+subtract+an+integer+to+a+pointer+to+a+non-array+object"

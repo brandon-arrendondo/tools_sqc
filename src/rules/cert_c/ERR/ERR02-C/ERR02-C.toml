@@ -1,0 +1,30 @@
+[metadata]
+id = "ERR02-C"
+type = "recommendation"
+category = "ERR"
+number = 2
+title = "Avoid in-band error indicators"
+description = """
+Avoidin-band error indicatorswhile designing interfaces. This practice is
+commonly used by C library functions but is not recommended. One example from
+the C Standard of a troublesome in-band error indicator isEOF(seeFIO34-C.
+Distinguish between characters read from a file and EOF or WEOF). Another
+problematic use of in-band error indicators from the C Standard involving
+thesize_tandtime_ttypes is described by This noncompliant code example is from
+the Linux Kernel Mailing List archive site, although similar examples are
+common: int i; ssize_t count = 0; for (i = 0; i < 9; ++i) { count += sprintf(
+buf + count, "%02x ", ((u8 *)&slreg_num)[i] ); } count += sprintf(buf + count,
+"\n");
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P1"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jun 17, 2025"
+
+[rules.cert_c.ERR02-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ERR02-C.+Avoid+in-band+error+indicators"

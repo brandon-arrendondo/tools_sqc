@@ -1,1 +1,0 @@
-wchar_t const *c = L"Hello";

@@ -1,0 +1,31 @@
+[metadata]
+id = "DCL07-C"
+type = "recommendation"
+category = "DCL"
+number = 7
+title = "Include the appropriate type information in function declarators"
+description = """
+Function declarators must be declared with the appropriate type information,
+including a return type and parameter list. If type information is not properly
+specified in a function declarator, the compiler cannot properly check function
+type information. When using standard library calls, the easiest (and preferred)
+way to obtain function declarators with appropriate type information is to
+include the appropriate header file. Attempting to compile a program with a
+function declarator that does not include the appropriate type information
+typically generates a warning but does not prevent program compilation. These
+warnings should be resolved. (SeeMSC00-C. Compile cleanly at high warning
+levels.) This noncompliant code example uses theidentifier-listform for
+parameter declarations:
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jul 21, 2025"
+
+[rules.cert_c.DCL07-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/DCL07-C.+Include+the+appropriate+type+information+in+function+declarators"

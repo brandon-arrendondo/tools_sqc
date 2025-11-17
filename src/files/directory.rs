@@ -1,6 +1,6 @@
 use walkdir::WalkDir;
 use std::path::Path;
-use anyhow::{Context, Result};
+use anyhow::Result;
 
 pub struct DirectorySource {
     path: String,

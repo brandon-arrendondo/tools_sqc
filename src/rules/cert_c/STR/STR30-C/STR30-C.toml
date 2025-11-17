@@ -1,0 +1,35 @@
+[metadata]
+id = "STR30-C"
+type = "rule"
+category = "STR"
+number = 30
+title = "Do not attempt to modify string literals"
+description = """
+According to the C Standard, 6.4.5, paragraph 3 [ISO/IEC 9899:2024]: At compile
+time, string literals are used to create an array of static storage duration of
+sufficient length to contain the character sequence and a terminating null
+character. String literals are usually referred to by a pointer to (or array of)
+characters. Ideally, they should be assigned only to pointers to (or arrays
+of)const charorconst wchar_t. It is unspecified whether these arrays of string
+literals are distinct from each other. The behavior isundefinedif a program
+attempts to modify any portion of a string literal. Modifying a string literal
+frequently results in an access violation because string literals are typically
+stored in read-only memory. (Seeundefined behavior 32.) Avoid assigning a string
+literal to a pointer to non-constor casting a string literal to a pointer to
+non-const. For the purposes of this rule, a pointer to (or array
+of)constcharacters must be treated as a string literal. Similarly, the returned
+value of the following library functions must be treated as a string literal if
+the first argument is a string literal:
+"""
+severity = "Low"
+likelihood = "Likely"
+priority = "P6"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Sep 09, 2025"
+
+[rules.cert_c.STR30-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/STR30-C.+Do+not+attempt+to+modify+string+literals"

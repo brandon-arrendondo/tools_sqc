@@ -1,0 +1,33 @@
+[metadata]
+id = "FLP06-C"
+type = "recommendation"
+category = "FLP"
+number = 6
+title = "Convert integers to floating point for floating-point operations"
+description = """
+Using integer arithmetic to calculate a value for assignment to a floating-point
+variable may lead to loss of information. This problem can be avoided by
+converting one of the integers in the expression to a floating type.
+When converting integers to floating-point values, and vice versa, it is
+important to carry out proper range checks to avoid undefined behavior
+(seeFLP34-C. Ensure that floating-point conversions are within range of the new
+type).
+In this noncompliant code example, the division and multiplication operations
+take place on integers and are then converted to floating point. Consequently,
+floating-point variablesd,e, andfare not initialized correctly because the
+operations take place before the values are converted to floating-point values.
+The results are truncated to the nearest integer or may overflow.
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
+
+[rules.cert_c.FLP06-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FLP06-C.+Convert+integers+to+floating+point+for+floating-point+operations"
+cwe = ["CWE-681", "CWE-682"]

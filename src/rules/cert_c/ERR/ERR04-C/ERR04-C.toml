@@ -1,0 +1,36 @@
+[metadata]
+id = "ERR04-C"
+type = "recommendation"
+category = "ERR"
+number = 4
+title = "Choose an appropriate termination strategy"
+description = """
+Some errors, such as out-of-range values, might be the result of erroneous user
+input. Interactive programs typically handle such errors by rejecting the input
+and prompting the user for an acceptable value. Servers reject invalid user
+input by indicating an error to the client while at the same time continuing to
+service other clients' valid requests. Allrobustprograms must be prepared to
+gracefully handle resource exhaustion, such as low memory or disk space
+conditions, at a minimum by preventing the loss of user data kept in volatile
+storage. Interactive programs may give the user the option to save data on an
+alternative medium, whereas network servers may respond by reducing throughput
+or otherwise degrading the quality of service. However, when certain kinds of
+errors are detected, such as irrecoverable logic errors, rather than risk data
+corruption by continuing to execute in an indeterminate state, the appropriate
+strategy may be for the system to quickly shut down, allowing the operator to
+start it afresh in a determinate state. ISO/IEC TR 24772:2013, Section 6.39,
+"Termination Strategy [REU]," [ISO/IEC TR 24772:2013], says: And
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
+
+[rules.cert_c.ERR04-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ERR04-C.+Choose+an+appropriate+termination+strategy"
+cwe = ["CWE-705"]

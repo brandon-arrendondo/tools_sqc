@@ -1,0 +1,39 @@
+[metadata]
+id = "ENV32-C"
+type = "recommendation"
+category = "ENV"
+number = 32
+title = "All exit handlers must return normally"
+description = """
+The C Standard provides three functions that cause an application to terminate
+normally:_Exit(),exit(), andquick_exit(). These are collectively calledexit
+functions. When theexit()function is called, or control transfers out of
+themain()entry point function, functions registered withatexit()are called (but
+notat_quick_exit()). When thequick_exit()function is called, functions
+registered withat_quick_exit()(but notatexit()) are called. These functions are
+collectively calledexit handlers. When the_Exit()function is called, no exit
+handlers or signal handlers are called. Exit handlers must terminate by
+returning. It is important and potentially safety-critical for all exit handlers
+to be allowed to perform their cleanup actions. This is particularly true
+because the application programmer does not always know about handlers that may
+have been installed by support libraries. Two specific issues include nested
+calls to an exit function and terminating a call to anexithandler by
+invokinglongjmp. A nested call to an exit function isundefined behavior.
+(Seeundefined behavior 187.) This behavior can occur only when an exit function
+is invoked from an exit handler or when an exit function is called from within a
+signal handler. (SeeSIG30-C. Call only asynchronous-safe functions within signal
+handlers.)
+"""
+severity = "Medium"
+likelihood = "Likely"
+priority = "P12"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
+
+[rules.cert_c.ENV32-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ENV32-C.+All+exit+handlers+must+return+normally"
+cwe = ["CWE-705"]
