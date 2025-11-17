@@ -1,3 +1,16 @@
+---
+rule_id: ARR00-C
+priority: P2
+status: active
+assigned_to: TRISTAN
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - ARR
+---
+
 # P2-ARR00-C - ARR00-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** true
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/ARR00-C
+https://wiki.sei.cmu.edu/confluence/display/c/ARR00-C.+Understand+how+arrays+work
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify ARR00-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

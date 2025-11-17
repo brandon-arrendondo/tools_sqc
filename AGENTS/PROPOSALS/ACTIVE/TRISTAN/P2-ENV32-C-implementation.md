@@ -1,3 +1,16 @@
+---
+rule_id: ENV32-C
+priority: P2
+status: active
+assigned_to: TRISTAN
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - ENV
+---
+
 # P2-ENV32-C - ENV32-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/ENV32-C
+https://wiki.sei.cmu.edu/confluence/display/c/ENV32-C.+All+exit+handlers+must+return+normally
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify ENV32-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

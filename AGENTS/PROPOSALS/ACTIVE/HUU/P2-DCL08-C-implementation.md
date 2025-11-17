@@ -1,3 +1,16 @@
+---
+rule_id: DCL08-C
+priority: P2
+status: active
+assigned_to: HUU
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - DCL
+---
+
 # P2-DCL08-C - DCL08-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/DCL08-C
+https://wiki.sei.cmu.edu/confluence/display/c/DCL08-C.+Properly+encode+relationships+in+constant+definitions
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify DCL08-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

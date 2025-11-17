@@ -1,3 +1,16 @@
+---
+rule_id: WIN30-C
+priority: P2
+status: active
+assigned_to: ERIC
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - WIN
+---
+
 # P2-WIN30-C - WIN30-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/WIN30-C
+https://wiki.sei.cmu.edu/confluence/display/c/WIN30-C.+Properly+pair+allocation+and+deallocation+functions
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify WIN30-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

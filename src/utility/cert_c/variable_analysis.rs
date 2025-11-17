@@ -28,8 +28,10 @@ pub fn is_user_input_variable(var_name: &str, preceding_text: &str) -> bool {
     ];
 
     // Simple check: does scanf read into this variable?
-    input_patterns.iter().any(|pattern| preceding_text.contains(pattern)) ||
-    preceding_text.contains("scanf") && preceding_text.contains(&format!("&{}", var_name))
+    input_patterns
+        .iter()
+        .any(|pattern| preceding_text.contains(pattern))
+        || preceding_text.contains("scanf") && preceding_text.contains(&format!("&{}", var_name))
 }
 
 /// Check if a variable has validation between input and usage
@@ -48,7 +50,12 @@ pub fn is_user_input_variable(var_name: &str, preceding_text: &str) -> bool {
 /// let code = "scanf(\"%d\", &count); if (count > MAX) { exit(1); } for (int i = 0; i < count; i++)";
 /// assert!(has_validation_before_loop("count", code, 50, code));
 /// ```
-pub fn has_validation_before_loop(var_name: &str, preceding_text: &str, loop_pos: usize, source: &str) -> bool {
+pub fn has_validation_before_loop(
+    var_name: &str,
+    preceding_text: &str,
+    loop_pos: usize,
+    source: &str,
+) -> bool {
     // Check if there's validation of var_name between scanf and the loop
     // Look for patterns like: if (count > MAX) or if (count < 0)
 
@@ -66,7 +73,9 @@ pub fn has_validation_before_loop(var_name: &str, preceding_text: &str, loop_pos
             format!("if (0 <{}", var_name),
         ];
 
-        return validation_patterns.iter().any(|p| between_scanf_and_loop.contains(p));
+        return validation_patterns
+            .iter()
+            .any(|p| between_scanf_and_loop.contains(p));
     }
 
     false
@@ -94,7 +103,10 @@ pub fn is_uninitialized_variable(var_name: &str, preceding_text: &str) -> bool {
     // Look for patterns like: "int size;" without "size =" before the loop
 
     // First, check if this is a constant (all uppercase or #define) - constants are always initialized
-    if var_name.chars().all(|c| c.is_uppercase() || c == '_' || c.is_numeric()) {
+    if var_name
+        .chars()
+        .all(|c| c.is_uppercase() || c == '_' || c.is_numeric())
+    {
         return false; // Likely a constant/macro
     }
 
@@ -107,9 +119,12 @@ pub fn is_uninitialized_variable(var_name: &str, preceding_text: &str) -> bool {
         format!("long {}", var_name),
     ];
 
-    let is_declared = declaration_patterns.iter().any(|p| preceding_text.contains(p)) ||
-                      (preceding_text.contains("int") && preceding_text.contains(var_name) &&
-                       !preceding_text.contains(&format!("{}[", var_name))); // Not an array declaration
+    let is_declared = declaration_patterns
+        .iter()
+        .any(|p| preceding_text.contains(p))
+        || (preceding_text.contains("int")
+            && preceding_text.contains(var_name)
+            && !preceding_text.contains(&format!("{}[", var_name))); // Not an array declaration
 
     if !is_declared {
         return false;
@@ -122,7 +137,9 @@ pub fn is_uninitialized_variable(var_name: &str, preceding_text: &str) -> bool {
         format!("&{}", var_name), // scanf with &var means it's initialized by input
     ];
 
-    let is_initialized = assignment_patterns.iter().any(|p| preceding_text.contains(p));
+    let is_initialized = assignment_patterns
+        .iter()
+        .any(|p| preceding_text.contains(p));
 
     // Variable is uninitialized if declared but not initialized
     !is_initialized

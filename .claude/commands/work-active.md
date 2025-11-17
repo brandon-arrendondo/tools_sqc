@@ -2,6 +2,22 @@
 
 You are now in **PROPOSAL IMPLEMENTATION MODE**. Your mission is to work through proposals in `AGENTS/PROPOSALS/ACTIVE/` one by one, implementing the changes described.
 
+### Step 0: Verify Pre-commit and Branch Safety
+
+**CRITICAL: Verify pre-commit hooks are installed and branch is safe!**
+
+```bash
+# Verify pre-commit is installed (will auto-install hooks if missing)
+scripts/work_active_helpers.sh verify-precommit
+```
+
+```bash
+# Check current branch - do NOT commit directly to master/main
+git branch --show-current
+```
+
+If on master/main, you MUST create a feature branch before proceeding. The pre-commit hooks include `no-commit-to-branch` which will block direct commits to master/main.
+
 ### Step 1: Scan for Active Proposals
 
 First, check for nested subdirectories in ACTIVE:
@@ -18,17 +34,13 @@ ls -d AGENTS/PROPOSALS/ACTIVE/*/ 2>/dev/null
 4. Ignore all other subdirectories and the root ACTIVE directory
 
 ```bash
-# Count proposals per subdirectory (run for each discovered directory)
-for dir in AGENTS/PROPOSALS/ACTIVE/*/; do
-    name=$(basename "$dir")
-    count=$(ls "$dir"/*.md 2>/dev/null | wc -l)
-    echo "$name: $count proposals"
-done
+# Count proposals per subdirectory (uses helper to avoid escaping issues)
+scripts/work_active_helpers.sh count-subdirs
 ```
 
 **After user selects their subdirectory:**
 ```bash
-ls -1 AGENTS/PROPOSALS/ACTIVE/{SELECTED_SUBDIRECTORY}/
+scripts/work_active_helpers.sh list-proposals {SELECTED_SUBDIRECTORY}
 ```
 
 **If NO nested subdirectories exist (flat structure):**
@@ -80,6 +92,42 @@ grep "@architect" AGENTS/PROPOSALS/ACTIVE/P0-001-*.md
 ```
 
 If no approval marker found, STOP and alert architect.
+
+### Step 4.5: Create Feature Branch and Lock Files
+
+**Before making ANY changes:**
+
+1. **Create a work session branch (run ONCE per session, after selecting subdirectory):**
+```bash
+scripts/work_active_helpers.sh create-branch {SELECTED_SUBDIRECTORY}
+# Example: scripts/work_active_helpers.sh create-branch TRISTAN
+# Creates: claude-work-active-TRISTAN-20251117
+```
+
+This branch is for ALL proposals you work on in this session within the selected subdirectory.
+
+2. **Extract the rule ID from the current proposal:**
+```bash
+scripts/work_active_helpers.sh extract-rule-id {PROPOSAL_FILE}.md
+```
+
+3. **Lock all non-related files to prevent accidental edits:**
+```bash
+scripts/work_active_helpers.sh lock-rule {RULE_ID}
+# Example: scripts/work_active_helpers.sh lock-rule MEM05-C
+# This makes all other rule files read-only
+# Only src/rules/cert_c/{CATEGORY}/{RULE_ID}/ will be writable
+```
+
+**IMPORTANT:** File locking ensures you only modify the assigned rule's implementation. If you need to edit shared utilities, use:
+```bash
+scripts/work_active_helpers.sh lock-rule-utils {RULE_ID}
+```
+
+When done with ALL proposals in this session, reset permissions with:
+```bash
+scripts/work_active_helpers.sh unlock-all
+```
 
 ### Step 5: Implement the Proposal
 

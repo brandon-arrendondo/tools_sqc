@@ -23,8 +23,8 @@
 //! }
 //! ```
 
+use crate::manifest::{RuleCategory, Severity};
 use crate::rules::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
@@ -138,6 +138,9 @@ mod tests {
         let rule = Api04C;
         let violations = rule.check(&root_node, source);
 
-        assert!(violations.is_empty(), "strcpy_m should not trigger violation");
+        assert!(
+            violations.is_empty(),
+            "strcpy_m should not trigger violation"
+        );
     }
 }

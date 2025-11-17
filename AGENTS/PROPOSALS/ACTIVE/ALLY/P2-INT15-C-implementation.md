@@ -1,3 +1,16 @@
+---
+rule_id: INT15-C
+priority: P2
+status: active
+assigned_to: ALLY
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - INT
+---
+
 # P2-INT15-C - INT15-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/INT15-C
+https://wiki.sei.cmu.edu/confluence/display/c/INT15-C.+Use+intmax_t+or+uintmax_t+for+formatted+IO+on+programmer-defined+integer+types
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify INT15-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

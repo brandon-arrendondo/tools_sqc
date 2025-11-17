@@ -1,3 +1,16 @@
+---
+rule_id: MEM04-C
+priority: P2
+status: active
+assigned_to: BRANDON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - MEM
+---
+
 # P2-MEM04-C - MEM04-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C
+https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify MEM04-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

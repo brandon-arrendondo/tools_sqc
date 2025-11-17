@@ -1,7 +1,7 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use std::collections::{HashMap, HashSet};
+use tree_sitter::Node;
 
 pub struct Mem33C {
     // Track structures that contain flexible array members
@@ -40,10 +40,10 @@ impl FlexibleArrayValidation {
 
     fn is_valid_flexible_struct(&self) -> bool {
         // Valid flexible array struct: exactly 1 flexible member as last field, at least 2 total fields
-        self.flexible_member_count == 1 &&
-        self.last_field_is_flexible &&
-        self.total_field_count >= 2 &&
-        self.violations.is_empty()
+        self.flexible_member_count == 1
+            && self.last_field_is_flexible
+            && self.total_field_count >= 2
+            && self.violations.is_empty()
     }
 
     fn has_violations(&self) -> bool {
@@ -180,7 +180,8 @@ impl FlexibleArrayAnalyzer {
                 match child.kind() {
                     "type_identifier" => {
                         // Last type_identifier is usually the typedef name
-                        typedef_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                        typedef_name =
+                            Some(source[child.start_byte()..child.end_byte()].to_string());
                     }
                     "struct_specifier" => {
                         // Found a struct specifier in the typedef
@@ -188,7 +189,11 @@ impl FlexibleArrayAnalyzer {
                             if let Some(struct_child) = child.child(j) {
                                 match struct_child.kind() {
                                     "type_identifier" => {
-                                        struct_name = Some(source[struct_child.start_byte()..struct_child.end_byte()].to_string());
+                                        struct_name = Some(
+                                            source[struct_child.start_byte()
+                                                ..struct_child.end_byte()]
+                                                .to_string(),
+                                        );
                                     }
                                     "field_declaration_list" => {
                                         has_inline_struct = true;
@@ -231,7 +236,11 @@ impl FlexibleArrayAnalyzer {
         }
     }
 
-    fn analyze_struct_for_flexible_array(&self, node: &Node, source: &str) -> Option<FlexibleArrayInfo> {
+    fn analyze_struct_for_flexible_array(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> Option<FlexibleArrayInfo> {
         let mut struct_name = String::new();
         let mut validation_result = None;
 
@@ -243,7 +252,8 @@ impl FlexibleArrayAnalyzer {
                         struct_name = source[child.start_byte()..child.end_byte()].to_string();
                     }
                     "field_declaration_list" => {
-                        validation_result = Some(self.validate_flexible_array_layout(&child, source));
+                        validation_result =
+                            Some(self.validate_flexible_array_layout(&child, source));
                     }
                     _ => {}
                 }
@@ -279,7 +289,11 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn detect_flexible_struct_array_declaration(&self, declaration: &Node, source: &str) -> Option<String> {
+    fn detect_flexible_struct_array_declaration(
+        &self,
+        declaration: &Node,
+        source: &str,
+    ) -> Option<String> {
         // Check if this declaration creates an array of flexible array structures
 
         // Look for array declarators in the declaration
@@ -290,7 +304,8 @@ impl FlexibleArrayAnalyzer {
                     if let Some(type_name) = self.extract_declared_type(declaration, source) {
                         if self.is_flexible_array_struct(&type_name) {
                             // Extract the array variable name
-                            if let Some(var_name) = self.extract_array_variable_name(&child, source) {
+                            if let Some(var_name) = self.extract_array_variable_name(&child, source)
+                            {
                                 return Some(var_name);
                             }
                         }
@@ -332,7 +347,8 @@ impl FlexibleArrayAnalyzer {
                         if let Some(bracket) = child.child(j) {
                             if bracket.kind() == "[" || bracket.kind() == "]" {
                                 // Look for empty array size (no size between brackets)
-                                let bracket_content = source[child.start_byte()..child.end_byte()].to_string();
+                                let bracket_content =
+                                    source[child.start_byte()..child.end_byte()].to_string();
                                 if bracket_content.ends_with("[]") {
                                     return true;
                                 }
@@ -357,7 +373,11 @@ impl FlexibleArrayAnalyzer {
         true // No more field declarations found
     }
 
-    fn validate_flexible_array_layout(&self, field_list: &Node, source: &str) -> FlexibleArrayValidation {
+    fn validate_flexible_array_layout(
+        &self,
+        field_list: &Node,
+        source: &str,
+    ) -> FlexibleArrayValidation {
         let mut validation = FlexibleArrayValidation::new();
         let mut field_position = 0;
 
@@ -396,7 +416,8 @@ impl FlexibleArrayAnalyzer {
 
         if validation.flexible_member_count > 0 && validation.total_field_count == 1 {
             validation.violations.push(
-                "Structure has only flexible array member (at least one fixed member required)".to_string()
+                "Structure has only flexible array member (at least one fixed member required)"
+                    .to_string(),
             );
         }
 
@@ -450,7 +471,6 @@ impl FlexibleArrayAnalyzer {
 
     fn check_violations(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-
 
         // Check for various violation patterns
         match node.kind() {
@@ -549,7 +569,9 @@ impl FlexibleArrayAnalyzer {
                     if let Some(child) = node.child(i) {
                         if child.kind() == "union_specifier" {
                             // Anonymous union in field declaration
-                            if let Some(violation_info) = self.check_anonymous_union_with_flexible(&child, source) {
+                            if let Some(violation_info) =
+                                self.check_anonymous_union_with_flexible(&child, source)
+                            {
                                 let start_point = child.start_position();
                                 violations.push(RuleViolation {
                                     rule_id: "MEM33-C".to_string(),
@@ -602,7 +624,6 @@ impl FlexibleArrayAnalyzer {
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-
                 if child.kind() == "array_declarator" {
                     // Array of flexible array structures - we already confirmed it's a flexible array struct
                     // Arrays are ALWAYS prohibited regardless of storage duration
@@ -613,8 +634,12 @@ impl FlexibleArrayAnalyzer {
                     let mut array_size = "".to_string();
                     for j in 0..child.child_count() {
                         if let Some(size_child) = child.child(j) {
-                            if size_child.kind() != "identifier" && size_child.kind() != "[" && size_child.kind() != "]" {
-                                array_size = source[size_child.start_byte()..size_child.end_byte()].to_string();
+                            if size_child.kind() != "identifier"
+                                && size_child.kind() != "["
+                                && size_child.kind() != "]"
+                            {
+                                array_size = source[size_child.start_byte()..size_child.end_byte()]
+                                    .to_string();
                                 break;
                             }
                         }
@@ -637,14 +662,22 @@ impl FlexibleArrayAnalyzer {
                     });
                 }
 
-                if child.kind() == "init_declarator" || child.kind() == "declarator" || child.kind() == "identifier" {
+                if child.kind() == "init_declarator"
+                    || child.kind() == "declarator"
+                    || child.kind() == "identifier"
+                {
                     // Check if this is an array declarator (legacy code for nested cases)
                     if let Some(array_info) = self.check_array_declarator(&child, source) {
-                        if array_info.is_array && self.is_flexible_array_struct(&array_info.base_type) {
+                        if array_info.is_array
+                            && self.is_flexible_array_struct(&array_info.base_type)
+                        {
                             // This is an array of flexible array structures - VIOLATION!
                             let storage_info = self.analyze_storage_duration(node, source);
                             let start_point = node.start_position();
-                            let array_size_display = array_info.array_size.clone().unwrap_or_else(|| "[]".to_string());
+                            let array_size_display = array_info
+                                .array_size
+                                .clone()
+                                .unwrap_or_else(|| "[]".to_string());
                             return Some(RuleViolation {
                                 rule_id: "MEM33-C".to_string(),
                                 severity: Severity::High,
@@ -701,8 +734,9 @@ impl FlexibleArrayAnalyzer {
         let right = node.child_by_field_name("right")?;
 
         // Pattern 1: *dest = *src (existing)
-        if self.is_flexible_struct_dereference(&left, source) &&
-           self.is_flexible_struct_dereference(&right, source) {
+        if self.is_flexible_struct_dereference(&left, source)
+            && self.is_flexible_struct_dereference(&right, source)
+        {
             let start_point = node.start_position();
             return Some(RuleViolation {
                 rule_id: "MEM33-C".to_string(),
@@ -717,8 +751,9 @@ impl FlexibleArrayAnalyzer {
         }
 
         // Pattern 2: dest = *src (copying dereferenced struct to variable)
-        if !self.is_flexible_struct_dereference(&left, source) &&
-           self.is_flexible_struct_dereference(&right, source) {
+        if !self.is_flexible_struct_dereference(&left, source)
+            && self.is_flexible_struct_dereference(&right, source)
+        {
             // Check if left side is a flexible array struct variable
             let left_text = source[left.start_byte()..left.end_byte()].to_string();
             if self.is_declared_flexible_struct_variable(&left_text, node) {
@@ -748,7 +783,6 @@ impl FlexibleArrayAnalyzer {
         // Check for variable declarations that initialize by copying flexible array structures
         // Pattern: struct flex_array_struct local_copy = *shared_flex;
 
-
         // Find the declared type and initializer
         let mut declared_type = None;
         let mut initializer = None;
@@ -768,7 +802,9 @@ impl FlexibleArrayAnalyzer {
                     }
                     _ => {
                         // Look for initializer expressions
-                        if child.kind().contains("expression") || child.kind() == "pointer_expression" {
+                        if child.kind().contains("expression")
+                            || child.kind() == "pointer_expression"
+                        {
                             initializer = Some(child);
                         }
                     }
@@ -788,7 +824,6 @@ impl FlexibleArrayAnalyzer {
             }
         }
 
-
         // Check if we're declaring a flexible array struct and initializing with a copy
         if let Some(type_name) = declared_type {
             if self.is_flexible_array_struct(&type_name) {
@@ -797,13 +832,14 @@ impl FlexibleArrayAnalyzer {
                         let start_point = node.start_position();
                         let init_text = source[init.start_byte()..init.end_byte()].to_string();
 
-                        let violation_type = if init_text.contains("(struct") && init_text.contains("){") {
-                            "compound literal"
-                        } else if init_text.starts_with("*") {
-                            "pointer dereference"
-                        } else {
-                            "variable copy"
-                        };
+                        let violation_type =
+                            if init_text.contains("(struct") && init_text.contains("){") {
+                                "compound literal"
+                            } else if init_text.starts_with("*") {
+                                "pointer dereference"
+                            } else {
+                                "variable copy"
+                            };
 
                         return Some(RuleViolation {
                             rule_id: "MEM33-C".to_string(),
@@ -853,7 +889,9 @@ impl FlexibleArrayAnalyzer {
             "compound_literal_expression" => {
                 // Compound literal: (struct flex_array_struct){...}
                 // Any compound literal of a flexible array struct is problematic
-                if init_text.contains("flex_array_struct") || self.flexible_structs.keys().any(|k| init_text.contains(k)) {
+                if init_text.contains("flex_array_struct")
+                    || self.flexible_structs.keys().any(|k| init_text.contains(k))
+                {
                     return true;
                 }
             }
@@ -883,12 +921,16 @@ impl FlexibleArrayAnalyzer {
         }
 
         // Strategy 2: Common naming patterns
-        if var_name.contains("flex") || var_name.contains("shared") || var_name.contains("_struct") {
+        if var_name.contains("flex") || var_name.contains("shared") || var_name.contains("_struct")
+        {
             return true;
         }
 
         // Strategy 3: Threading/shared context names
-        if var_name.contains("shared_") || var_name.contains("global_") || var_name.contains("thread_") {
+        if var_name.contains("shared_")
+            || var_name.contains("global_")
+            || var_name.contains("thread_")
+        {
             return true;
         }
 
@@ -917,8 +959,11 @@ impl FlexibleArrayAnalyzer {
 
         if let Some(function_name) = self.get_function_name(call_node, source) {
             // Heuristic: function names that suggest returning flexible array structs
-            if function_name.contains("create") || function_name.contains("get") ||
-               function_name.contains("flex") || function_name.contains("struct") {
+            if function_name.contains("create")
+                || function_name.contains("get")
+                || function_name.contains("flex")
+                || function_name.contains("struct")
+            {
                 return true;
             }
         }
@@ -937,7 +982,8 @@ impl FlexibleArrayAnalyzer {
     fn check_value_parameter(&self, node: &Node, source: &str) -> Option<RuleViolation> {
         // Check if parameter is a flexible array struct passed by value
         if let Some(type_name) = self.extract_parameter_type(node, source) {
-            if self.is_flexible_array_struct(&type_name) && !self.is_pointer_parameter(node, source) {
+            if self.is_flexible_array_struct(&type_name) && !self.is_pointer_parameter(node, source)
+            {
                 let start_point = node.start_position();
                 return Some(RuleViolation {
                     rule_id: "MEM33-C".to_string(),
@@ -950,7 +996,7 @@ impl FlexibleArrayAnalyzer {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Change parameter to pointer type".to_string()),
-                ..Default::default()
+                    ..Default::default()
                 });
             }
         }
@@ -1013,7 +1059,11 @@ impl FlexibleArrayAnalyzer {
                                     for k in 0..type_child.child_count() {
                                         if let Some(struct_child) = type_child.child(k) {
                                             if struct_child.kind() == "type_identifier" {
-                                                return Some(source[struct_child.start_byte()..struct_child.end_byte()].to_string());
+                                                return Some(
+                                                    source[struct_child.start_byte()
+                                                        ..struct_child.end_byte()]
+                                                        .to_string(),
+                                                );
                                             }
                                         }
                                     }
@@ -1026,7 +1076,10 @@ impl FlexibleArrayAnalyzer {
                         for j in 0..child.child_count() {
                             if let Some(struct_child) = child.child(j) {
                                 if struct_child.kind() == "type_identifier" {
-                                    return Some(source[struct_child.start_byte()..struct_child.end_byte()].to_string());
+                                    return Some(
+                                        source[struct_child.start_byte()..struct_child.end_byte()]
+                                            .to_string(),
+                                    );
                                 }
                             }
                         }
@@ -1049,7 +1102,9 @@ impl FlexibleArrayAnalyzer {
                     // Check each initializer in the list
                     for j in 0..child.child_count() {
                         if let Some(init_child) = child.child(j) {
-                            if init_child.kind() == "initializer_pair" || init_child.kind() == "field_initializer" {
+                            if init_child.kind() == "initializer_pair"
+                                || init_child.kind() == "field_initializer"
+                            {
                                 // Check if this is initializing a field named 'data' (common flexible array name)
                                 // or if it has array initializer syntax
                                 if self.is_flexible_array_initializer(&init_child, source) {
@@ -1075,7 +1130,10 @@ impl FlexibleArrayAnalyzer {
                     "field_designator" => {
                         // Check if field name suggests flexible array (e.g., "data", "buffer", etc.)
                         let field_text = &source[child.start_byte()..child.end_byte()];
-                        if field_text.contains("data") || field_text.contains("buffer") || field_text.contains("array") {
+                        if field_text.contains("data")
+                            || field_text.contains("buffer")
+                            || field_text.contains("array")
+                        {
                             // Check if the value is an initializer list
                             for j in 0..node.child_count() {
                                 if let Some(value_child) = node.child(j) {
@@ -1107,12 +1165,21 @@ impl FlexibleArrayAnalyzer {
                     "struct_specifier" => {
                         // Only consider struct_specifier if it's actually the type being declared,
                         // not part of an initializer expression
-                        if i == 0 || (i == 1 && declaration.child(0).map_or(false, |c| c.kind() == "storage_class_specifier" || c.kind() == "type_qualifier")) {
+                        if i == 0
+                            || (i == 1
+                                && declaration.child(0).map_or(false, |c| {
+                                    c.kind() == "storage_class_specifier"
+                                        || c.kind() == "type_qualifier"
+                                }))
+                        {
                             // Look for type identifier in struct
                             for j in 0..child.child_count() {
                                 if let Some(type_child) = child.child(j) {
                                     if type_child.kind() == "type_identifier" {
-                                        return Some(source[type_child.start_byte()..type_child.end_byte()].to_string());
+                                        return Some(
+                                            source[type_child.start_byte()..type_child.end_byte()]
+                                                .to_string(),
+                                        );
                                     }
                                 }
                             }
@@ -1120,13 +1187,25 @@ impl FlexibleArrayAnalyzer {
                     }
                     "type_identifier" => {
                         // Only consider if it's the first type identifier (the declaration type)
-                        if i == 0 || (i == 1 && declaration.child(0).map_or(false, |c| c.kind() == "storage_class_specifier" || c.kind() == "type_qualifier")) {
+                        if i == 0
+                            || (i == 1
+                                && declaration.child(0).map_or(false, |c| {
+                                    c.kind() == "storage_class_specifier"
+                                        || c.kind() == "type_qualifier"
+                                }))
+                        {
                             return Some(source[child.start_byte()..child.end_byte()].to_string());
                         }
                     }
                     "primitive_type" => {
                         // Handle primitive types like size_t, int, etc.
-                        if i == 0 || (i == 1 && declaration.child(0).map_or(false, |c| c.kind() == "storage_class_specifier" || c.kind() == "type_qualifier")) {
+                        if i == 0
+                            || (i == 1
+                                && declaration.child(0).map_or(false, |c| {
+                                    c.kind() == "storage_class_specifier"
+                                        || c.kind() == "type_qualifier"
+                                }))
+                        {
                             return Some(source[child.start_byte()..child.end_byte()].to_string());
                         }
                     }
@@ -1137,7 +1216,11 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn extract_declared_type_with_qualifiers(&self, declaration: &Node, source: &str) -> Option<(String, bool)> {
+    fn extract_declared_type_with_qualifiers(
+        &self,
+        declaration: &Node,
+        source: &str,
+    ) -> Option<(String, bool)> {
         let mut is_const = false;
         let mut type_name = None;
 
@@ -1189,7 +1272,10 @@ impl FlexibleArrayAnalyzer {
                     for j in 0..child.child_count() {
                         if let Some(type_child) = child.child(j) {
                             if type_child.kind() == "type_identifier" {
-                                return Some(source[type_child.start_byte()..type_child.end_byte()].to_string());
+                                return Some(
+                                    source[type_child.start_byte()..type_child.end_byte()]
+                                        .to_string(),
+                                );
                             }
                         }
                     }
@@ -1203,7 +1289,9 @@ impl FlexibleArrayAnalyzer {
             let after_struct = &decl_text[struct_pos + 7..]; // Skip "struct "
             if let Some(space_pos) = after_struct.find(' ') {
                 let struct_name = &after_struct[..space_pos];
-                if !struct_name.is_empty() && struct_name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+                if !struct_name.is_empty()
+                    && struct_name.chars().all(|c| c.is_alphanumeric() || c == '_')
+                {
                     return Some(struct_name.to_string());
                 }
             }
@@ -1247,7 +1335,11 @@ impl FlexibleArrayAnalyzer {
             let var_name = node_text.trim();
             // Heuristic: variable names containing "flex" are likely candidates
             // But avoid triggering on mathematical expressions or comparisons
-            if var_name.contains("flex") && !node_text.contains("=") && !node_text.contains("+") && !node_text.contains("-") {
+            if var_name.contains("flex")
+                && !node_text.contains("=")
+                && !node_text.contains("+")
+                && !node_text.contains("-")
+            {
                 return true;
             }
         }
@@ -1256,7 +1348,10 @@ impl FlexibleArrayAnalyzer {
         // This should be more conservative than the previous implementation
         if node.kind() == "identifier" {
             let var_name = node_text.trim();
-            if var_name == "flex_struct" || var_name.ends_with("_flex") || var_name.starts_with("flex_") {
+            if var_name == "flex_struct"
+                || var_name.ends_with("_flex")
+                || var_name.starts_with("flex_")
+            {
                 return true;
             }
         }
@@ -1363,11 +1458,10 @@ impl FlexibleArrayAnalyzer {
         }
 
         // Check for explicit flexible array naming patterns
-        array_name.contains("flex") && (
-            array_name.contains("array") ||
-            array_name.contains("struct") ||
-            array_name.contains("_arr")
-        )
+        array_name.contains("flex")
+            && (array_name.contains("array")
+                || array_name.contains("struct")
+                || array_name.contains("_arr"))
     }
 
     fn is_clearly_struct_array_pattern(&self, array_text: &str) -> bool {
@@ -1375,8 +1469,11 @@ impl FlexibleArrayAnalyzer {
         // Be conservative to avoid false positives
 
         // Pattern 1: Variable names that explicitly indicate arrays
-        if array_text.ends_with("_array") || array_text.ends_with("_list") ||
-           array_text.starts_with("array_") || array_text.starts_with("list_") {
+        if array_text.ends_with("_array")
+            || array_text.ends_with("_list")
+            || array_text.starts_with("array_")
+            || array_text.starts_with("list_")
+        {
             return true;
         }
 
@@ -1398,7 +1495,8 @@ impl FlexibleArrayAnalyzer {
         // Pattern: ptr->flexible_member[index] or (*ptr).flexible_member[index]
         // This should ONLY return true for member access, NOT for array indexing
 
-        let subscript_text = source[subscript_node.start_byte()..subscript_node.end_byte()].to_string();
+        let subscript_text =
+            source[subscript_node.start_byte()..subscript_node.end_byte()].to_string();
 
         // Strategy 1: Check if this subscript contains "->data[" pattern
         // This catches flex_array[i]->data[j] where the subscript is data[j]
@@ -1411,13 +1509,18 @@ impl FlexibleArrayAnalyzer {
         let mut current_parent = subscript_node.parent();
         let mut steps = 0;
         while let Some(p) = current_parent {
-            if steps > 3 { break; } // Prevent infinite loops
+            if steps > 3 {
+                break;
+            } // Prevent infinite loops
             steps += 1;
 
             let parent_text = source[p.start_byte()..p.end_byte().min(source.len())].to_string();
 
             // If we find a field expression with -> and data, this is member access
-            if p.kind() == "field_expression" && parent_text.contains("->") && parent_text.contains("data") {
+            if p.kind() == "field_expression"
+                && parent_text.contains("->")
+                && parent_text.contains("data")
+            {
                 return true;
             }
 
@@ -1443,11 +1546,12 @@ impl FlexibleArrayAnalyzer {
         }
 
         // Pattern 1: Variable names suggesting pointer usage
-        if variable_name.ends_with("_ptr") ||
-           variable_name.ends_with("_pointer") ||
-           variable_name.starts_with("ptr_") ||
-           variable_name.contains("malloc") ||
-           variable_name.contains("alloc") {
+        if variable_name.ends_with("_ptr")
+            || variable_name.ends_with("_pointer")
+            || variable_name.starts_with("ptr_")
+            || variable_name.contains("malloc")
+            || variable_name.contains("alloc")
+        {
             return true;
         }
 
@@ -1456,7 +1560,11 @@ impl FlexibleArrayAnalyzer {
         self.find_allocation_context(variable_name, source)
     }
 
-    fn extract_field_name_from_expression(&self, field_expr: &Node, source: &str) -> Option<String> {
+    fn extract_field_name_from_expression(
+        &self,
+        field_expr: &Node,
+        source: &str,
+    ) -> Option<String> {
         // Extract the field name from a field expression
         for i in 0..field_expr.child_count() {
             if let Some(child) = field_expr.child(i) {
@@ -1471,15 +1579,15 @@ impl FlexibleArrayAnalyzer {
     fn is_flexible_array_member_name(&self, member_name: &str) -> bool {
         // Check if this member name suggests a flexible array member
         // Common naming patterns for flexible array members
-        member_name == "data" ||
-        member_name == "items" ||
-        member_name == "elements" ||
-        member_name == "buffer" ||
-        member_name == "array" ||
-        member_name.ends_with("_data") ||
-        member_name.ends_with("_items") ||
-        member_name.ends_with("_array") ||
-        member_name.ends_with("_buffer")
+        member_name == "data"
+            || member_name == "items"
+            || member_name == "elements"
+            || member_name == "buffer"
+            || member_name == "array"
+            || member_name.ends_with("_data")
+            || member_name.ends_with("_items")
+            || member_name.ends_with("_array")
+            || member_name.ends_with("_buffer")
     }
 
     fn find_allocation_context(&self, variable_name: &str, source: &str) -> bool {
@@ -1488,9 +1596,10 @@ impl FlexibleArrayAnalyzer {
         let lines: Vec<&str> = source.lines().collect();
 
         for line in lines {
-            if line.contains(variable_name) &&
-               (line.contains("malloc") || line.contains("calloc")) &&
-               (line.contains("sizeof") || line.contains("size")) {
+            if line.contains(variable_name)
+                && (line.contains("malloc") || line.contains("calloc"))
+                && (line.contains("sizeof") || line.contains("size"))
+            {
                 return true;
             }
         }
@@ -1503,8 +1612,13 @@ impl FlexibleArrayAnalyzer {
 
         // Look for common array variable names
         let array_patterns = [
-            "flex_array", "flex_structs", "flexible_array", "struct_array",
-            "dynamic_array", "var_array", "buffer_array"
+            "flex_array",
+            "flex_structs",
+            "flexible_array",
+            "struct_array",
+            "dynamic_array",
+            "var_array",
+            "buffer_array",
         ];
 
         for pattern in &array_patterns {
@@ -1521,20 +1635,29 @@ impl FlexibleArrayAnalyzer {
         self.extract_declared_type(param, source)
     }
 
-    fn check_array_declarator(&self, declarator_node: &Node, source: &str) -> Option<ArrayDeclaratorInfo> {
+    fn check_array_declarator(
+        &self,
+        declarator_node: &Node,
+        source: &str,
+    ) -> Option<ArrayDeclaratorInfo> {
         // Check if this is an array declarator and extract information
         for i in 0..declarator_node.child_count() {
             if let Some(child) = declarator_node.child(i) {
-
                 if child.kind() == "array_declarator" {
                     // This is an array declarator
                     // Extract the array size from the brackets
                     let mut array_size = None;
                     for j in 0..child.child_count() {
                         if let Some(size_child) = child.child(j) {
-                            if size_child.kind() != "identifier" && size_child.kind() != "[" && size_child.kind() != "]" {
+                            if size_child.kind() != "identifier"
+                                && size_child.kind() != "["
+                                && size_child.kind() != "]"
+                            {
                                 // This could be the array size expression
-                                array_size = Some(source[size_child.start_byte()..size_child.end_byte()].to_string());
+                                array_size = Some(
+                                    source[size_child.start_byte()..size_child.end_byte()]
+                                        .to_string(),
+                                );
                             } else if size_child.kind() == "[" || size_child.kind() == "]" {
                                 // Handle empty array [] case
                                 if array_size.is_none() {
@@ -1545,13 +1668,17 @@ impl FlexibleArrayAnalyzer {
                     }
 
                     // Get the base type from the parent declaration or sibling nodes
-                    if let Some(base_type) = self.extract_declared_type_from_declaration_parent(declarator_node, source) {
+                    if let Some(base_type) =
+                        self.extract_declared_type_from_declaration_parent(declarator_node, source)
+                    {
                         return Some(ArrayDeclaratorInfo {
                             base_type,
                             is_array: true,
                             array_size,
                         });
-                    } else if let Some(base_type) = self.extract_type_from_sibling_in_declaration(declarator_node, source) {
+                    } else if let Some(base_type) =
+                        self.extract_type_from_sibling_in_declaration(declarator_node, source)
+                    {
                         return Some(ArrayDeclaratorInfo {
                             base_type,
                             is_array: true,
@@ -1566,7 +1693,11 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn extract_declared_type_from_declaration_parent(&self, declarator_node: &Node, source: &str) -> Option<String> {
+    fn extract_declared_type_from_declaration_parent(
+        &self,
+        declarator_node: &Node,
+        source: &str,
+    ) -> Option<String> {
         // Walk up to find the parent declaration node and extract the type
         let mut current = declarator_node.parent();
         while let Some(node) = current {
@@ -1579,7 +1710,11 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn extract_type_from_sibling_in_declaration(&self, declarator_node: &Node, source: &str) -> Option<String> {
+    fn extract_type_from_sibling_in_declaration(
+        &self,
+        declarator_node: &Node,
+        source: &str,
+    ) -> Option<String> {
         // If the array_declarator is a direct child of declaration, look for struct_specifier sibling
         if let Some(parent) = declarator_node.parent() {
             if parent.kind() == "declaration" {
@@ -1591,7 +1726,10 @@ impl FlexibleArrayAnalyzer {
                             for j in 0..sibling.child_count() {
                                 if let Some(type_child) = sibling.child(j) {
                                     if type_child.kind() == "type_identifier" {
-                                        return Some(source[type_child.start_byte()..type_child.end_byte()].to_string());
+                                        return Some(
+                                            source[type_child.start_byte()..type_child.end_byte()]
+                                                .to_string(),
+                                        );
                                     }
                                 }
                             }
@@ -1701,8 +1839,8 @@ impl FlexibleArrayAnalyzer {
 
     fn has_thread_local_keyword(&self, node: &Node, source: &str) -> bool {
         // Check if declaration contains "thread_local" or "_Thread_local" keyword
-        self.declaration_contains_keyword(node, "thread_local", source) ||
-        self.declaration_contains_keyword(node, "_Thread_local", source)
+        self.declaration_contains_keyword(node, "thread_local", source)
+            || self.declaration_contains_keyword(node, "_Thread_local", source)
     }
 
     fn has_const_keyword(&self, node: &Node, source: &str) -> bool {
@@ -1735,7 +1873,6 @@ impl FlexibleArrayAnalyzer {
         }
         false
     }
-
 
     fn is_pointer_declaration(&self, node: &Node, source: &str) -> bool {
         // Check if this declaration is for a pointer (which is allowed)
@@ -1790,9 +1927,9 @@ impl FlexibleArrayAnalyzer {
 
     fn get_severity_for_storage_type(&self, storage_type: &str) -> Severity {
         match storage_type {
-            "global" | "static global" => Severity::High,      // Global violations are serious
-            "automatic" => Severity::Medium,                   // Automatic storage (existing)
-            "static local" | "thread" => Severity::High,      // Other prohibited storage
+            "global" | "static global" => Severity::High, // Global violations are serious
+            "automatic" => Severity::Medium,              // Automatic storage (existing)
+            "static local" | "thread" => Severity::High,  // Other prohibited storage
             _ => Severity::Medium,
         }
     }
@@ -1860,7 +1997,8 @@ impl FlexibleArrayAnalyzer {
             let start_point = node.start_position();
 
             // Enhanced analysis - check context before flagging violations
-            let has_context_calculation = self.analyze_size_calculation_context(node, source, &size_arg);
+            let has_context_calculation =
+                self.analyze_size_calculation_context(node, source, &size_arg);
             if has_context_calculation {
                 return None; // Likely has proper size calculation
             }
@@ -1883,7 +2021,9 @@ impl FlexibleArrayAnalyzer {
             }
 
             // Pattern 2: calloc(sizeof(struct), count) - wrong parameter order
-            if self.is_sizeof_struct_expression(&num_arg) && !self.likely_has_additional_size_calculation(&num_arg) {
+            if self.is_sizeof_struct_expression(&num_arg)
+                && !self.likely_has_additional_size_calculation(&num_arg)
+            {
                 return Some(RuleViolation {
                     rule_id: "MEM33-C".to_string(),
                     severity: Severity::High,
@@ -2084,12 +2224,16 @@ impl FlexibleArrayAnalyzer {
 
         // Pattern 1: Exact match of sizeof(struct_name) with no operators
         if expr.starts_with("sizeof(") && expr.ends_with(")") {
-            let sizeof_content = &expr[7..expr.len()-1]; // Remove "sizeof(" and ")"
+            let sizeof_content = &expr[7..expr.len() - 1]; // Remove "sizeof(" and ")"
 
             // Check if it's a simple struct reference with no arithmetic
             // But allow dereferencing (*) in the sizeof content
-            if !expr.contains("+") && !expr.contains("-") &&
-               !expr.contains("/") && !expr.contains("&") && !expr.contains("|") {
+            if !expr.contains("+")
+                && !expr.contains("-")
+                && !expr.contains("/")
+                && !expr.contains("&")
+                && !expr.contains("|")
+            {
                 // Special case: Check for sizeof(*pointer) pattern
                 if sizeof_content.starts_with("*") {
                     // This is sizeof(*pointer), check if pointer likely points to flexible struct
@@ -2139,7 +2283,11 @@ impl FlexibleArrayAnalyzer {
 
         // Pattern 5: Contains common size calculation variable names (but not sizeof)
         let size_keywords = ["size", "total", "count", "length", "bytes", "len"];
-        if size_keywords.iter().any(|&keyword| expr.to_lowercase().contains(keyword)) && !expr.starts_with("sizeof(") {
+        if size_keywords
+            .iter()
+            .any(|&keyword| expr.to_lowercase().contains(keyword))
+            && !expr.starts_with("sizeof(")
+        {
             return true;
         }
 
@@ -2188,11 +2336,17 @@ impl FlexibleArrayAnalyzer {
         false
     }
 
-    fn analyze_size_calculation_context(&self, call_node: &Node, source: &str, size_arg: &str) -> bool {
+    fn analyze_size_calculation_context(
+        &self,
+        call_node: &Node,
+        source: &str,
+        size_arg: &str,
+    ) -> bool {
         // Analyze the context around the calloc call to detect valid size patterns
 
         // Strategy 1: Look for size calculations in preceding statements
-        if let Some(preceding_calculation) = self.find_preceding_size_calculation(call_node, source) {
+        if let Some(preceding_calculation) = self.find_preceding_size_calculation(call_node, source)
+        {
             if preceding_calculation.contains(&size_arg.replace(" ", "")) {
                 return true; // Size is calculated in a previous statement
             }
@@ -2204,9 +2358,12 @@ impl FlexibleArrayAnalyzer {
         }
 
         // Strategy 3: Check for macro usage (must contain at least one uppercase letter and not be just numbers)
-        if size_arg.chars().any(|c| c.is_uppercase()) &&
-           size_arg.chars().all(|c| c.is_uppercase() || c.is_numeric() || c == '_' || c == '(' || c == ')') &&
-           !size_arg.chars().all(|c| c.is_numeric()) {
+        if size_arg.chars().any(|c| c.is_uppercase())
+            && size_arg
+                .chars()
+                .all(|c| c.is_uppercase() || c.is_numeric() || c == '_' || c == '(' || c == ')')
+            && !size_arg.chars().all(|c| c.is_numeric())
+        {
             return true; // Likely a macro that calculates size
         }
 
@@ -2234,7 +2391,12 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn trace_variable_definition(&self, var_name: &str, scope_node: &Node, source: &str) -> Option<String> {
+    fn trace_variable_definition(
+        &self,
+        var_name: &str,
+        scope_node: &Node,
+        source: &str,
+    ) -> Option<String> {
         // Search backwards from the realloc call for the variable's definition
         // and extract the initialization/assignment expression
 
@@ -2243,13 +2405,19 @@ impl FlexibleArrayAnalyzer {
         // Strategy 1: Search in the same function scope for variable declarations
         // Look for patterns like: type var_name = expression; or var_name = expression;
         if let Some(function_node) = self.find_containing_function(scope_node) {
-            if let Some(assignment_expr) = self.find_variable_assignment_in_function(&function_node, var_name_trimmed, source) {
+            if let Some(assignment_expr) =
+                self.find_variable_assignment_in_function(&function_node, var_name_trimmed, source)
+            {
                 return Some(assignment_expr);
             }
         }
 
         // Strategy 2: Search in the immediate preceding statements
-        if let Some(assignment_expr) = self.find_variable_assignment_in_preceding_statements(scope_node, var_name_trimmed, source) {
+        if let Some(assignment_expr) = self.find_variable_assignment_in_preceding_statements(
+            scope_node,
+            var_name_trimmed,
+            source,
+        ) {
             return Some(assignment_expr);
         }
 
@@ -2272,10 +2440,19 @@ impl FlexibleArrayAnalyzer {
         }
 
         // Check for operators or other complex expression indicators
-        if trimmed.contains('+') || trimmed.contains('-') || trimmed.contains('*') ||
-           trimmed.contains('/') || trimmed.contains('(') || trimmed.contains(')') ||
-           trimmed.contains('[') || trimmed.contains(']') || trimmed.contains('.') ||
-           trimmed.contains("->") || trimmed.contains(' ') || trimmed.contains('\t') {
+        if trimmed.contains('+')
+            || trimmed.contains('-')
+            || trimmed.contains('*')
+            || trimmed.contains('/')
+            || trimmed.contains('(')
+            || trimmed.contains(')')
+            || trimmed.contains('[')
+            || trimmed.contains(']')
+            || trimmed.contains('.')
+            || trimmed.contains("->")
+            || trimmed.contains(' ')
+            || trimmed.contains('\t')
+        {
             return false;
         }
 
@@ -2295,12 +2472,22 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn find_variable_assignment_in_function(&self, function_node: &Node, var_name: &str, source: &str) -> Option<String> {
+    fn find_variable_assignment_in_function(
+        &self,
+        function_node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> Option<String> {
         // Search through the function body for variable assignments
         self.traverse_for_variable_assignment(function_node, var_name, source)
     }
 
-    fn find_variable_assignment_in_preceding_statements(&self, scope_node: &Node, var_name: &str, source: &str) -> Option<String> {
+    fn find_variable_assignment_in_preceding_statements(
+        &self,
+        scope_node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> Option<String> {
         // Look for variable assignments in the 10 lines preceding the realloc call
         let scope_line = scope_node.start_position().row;
         let start_search = if scope_line >= 10 { scope_line - 10 } else { 0 };
@@ -2323,19 +2510,28 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn traverse_for_variable_assignment(&self, node: &Node, var_name: &str, source: &str) -> Option<String> {
+    fn traverse_for_variable_assignment(
+        &self,
+        node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> Option<String> {
         // Recursively traverse the AST to find variable assignments
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 match child.kind() {
                     "declaration" | "init_declarator" | "assignment_expression" => {
-                        if let Some(assignment_expr) = self.check_node_for_variable_assignment(&child, var_name, source) {
+                        if let Some(assignment_expr) =
+                            self.check_node_for_variable_assignment(&child, var_name, source)
+                        {
                             return Some(assignment_expr);
                         }
                     }
                     _ => {
                         // Recursively search in child nodes
-                        if let Some(assignment_expr) = self.traverse_for_variable_assignment(&child, var_name, source) {
+                        if let Some(assignment_expr) =
+                            self.traverse_for_variable_assignment(&child, var_name, source)
+                        {
                             return Some(assignment_expr);
                         }
                     }
@@ -2345,7 +2541,12 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn check_node_for_variable_assignment(&self, node: &Node, var_name: &str, source: &str) -> Option<String> {
+    fn check_node_for_variable_assignment(
+        &self,
+        node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> Option<String> {
         // Check if this node contains an assignment to the specified variable
         let node_text = source[node.start_byte()..node.end_byte()].to_string();
 
@@ -2517,7 +2718,10 @@ impl FlexibleArrayAnalyzer {
 
         // Strategy 5: If we have flexible array structs detected, be more permissive
         // for simple variable names that look like pointers (since exact type analysis is complex)
-        if !self.flexible_structs.is_empty() && var_name.len() <= 8 && var_name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        if !self.flexible_structs.is_empty()
+            && var_name.len() <= 8
+            && var_name.chars().all(|c| c.is_alphanumeric() || c == '_')
+        {
             // Only for variables that don't look like regular values
             if !var_name.chars().all(|c| c.is_numeric()) && var_name != "0" && var_name != "1" {
                 return true;
@@ -2559,7 +2763,9 @@ impl FlexibleArrayAnalyzer {
                     if let Some(size_arg) = self.get_memory_op_size_argument(node, source) {
                         if self.is_insufficient_sizeof_only(&size_arg) {
                             // Check if first argument might be a flexible array struct
-                            if let Some(target_arg) = self.get_memory_op_target_argument(node, source) {
+                            if let Some(target_arg) =
+                                self.get_memory_op_target_argument(node, source)
+                            {
                                 if self.is_flexible_array_struct_target(&target_arg) {
                                     let start_point = node.start_position();
                                     return Some(RuleViolation {
@@ -2731,7 +2937,9 @@ impl FlexibleArrayAnalyzer {
         }
 
         if let Some(field_list) = field_list_node {
-            if let Some(violation_info) = self.check_union_members_for_flexible_structs(&field_list, source) {
+            if let Some(violation_info) =
+                self.check_union_members_for_flexible_structs(&field_list, source)
+            {
                 let start_point = node.start_position();
                 return Some(RuleViolation {
                     rule_id: "MEM33-C".to_string(),
@@ -2753,7 +2961,11 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn check_union_members_for_flexible_structs(&self, field_list: &Node, source: &str) -> Option<UnionViolationInfo> {
+    fn check_union_members_for_flexible_structs(
+        &self,
+        field_list: &Node,
+        source: &str,
+    ) -> Option<UnionViolationInfo> {
         // Analyze each field in the union to check for flexible array structures
         for i in 0..field_list.child_count() {
             if let Some(field) = field_list.child(i) {
@@ -2765,7 +2977,9 @@ impl FlexibleArrayAnalyzer {
                     }
                     "union_specifier" => {
                         // Nested anonymous union
-                        if let Some(violation_info) = self.check_anonymous_union_with_flexible(&field, source) {
+                        if let Some(violation_info) =
+                            self.check_anonymous_union_with_flexible(&field, source)
+                        {
                             return Some(violation_info);
                         }
                     }
@@ -2807,7 +3021,9 @@ impl FlexibleArrayAnalyzer {
                         for j in 0..child.child_count() {
                             if let Some(struct_child) = child.child(j) {
                                 if struct_child.kind() == "type_identifier" {
-                                    type_name = source[struct_child.start_byte()..struct_child.end_byte()].to_string();
+                                    type_name = source
+                                        [struct_child.start_byte()..struct_child.end_byte()]
+                                        .to_string();
                                     break;
                                 }
                             }
@@ -2843,7 +3059,11 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn check_anonymous_union_with_flexible(&self, union_node: &Node, source: &str) -> Option<UnionViolationInfo> {
+    fn check_anonymous_union_with_flexible(
+        &self,
+        union_node: &Node,
+        source: &str,
+    ) -> Option<UnionViolationInfo> {
         // Check for anonymous unions containing flexible array structures
         for i in 0..union_node.child_count() {
             if let Some(child) = union_node.child(i) {
@@ -2876,9 +3096,15 @@ impl FlexibleArrayAnalyzer {
                     };
 
                     let suggestion = if field_info.is_array {
-                        format!("Use an array of pointers instead: 'struct {} *{}[];'", field_info.type_name, field_info.field_name)
+                        format!(
+                            "Use an array of pointers instead: 'struct {} *{}[];'",
+                            field_info.type_name, field_info.field_name
+                        )
                     } else {
-                        format!("Use a pointer instead: 'struct {} *{};'", field_info.type_name, field_info.field_name)
+                        format!(
+                            "Use a pointer instead: 'struct {} *{};'",
+                            field_info.type_name, field_info.field_name
+                        )
                     };
 
                     return Some(RuleViolation {
@@ -2909,7 +3135,11 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn extract_field_declaration_info(&self, field_node: &Node, source: &str) -> Option<FieldDeclarationInfo> {
+    fn extract_field_declaration_info(
+        &self,
+        field_node: &Node,
+        source: &str,
+    ) -> Option<FieldDeclarationInfo> {
         let mut field_name = String::new();
         let mut type_name = String::new();
         let mut is_pointer = false;
@@ -2923,7 +3153,9 @@ impl FlexibleArrayAnalyzer {
                         for j in 0..child.child_count() {
                             if let Some(type_child) = child.child(j) {
                                 if type_child.kind() == "type_identifier" {
-                                    type_name = source[type_child.start_byte()..type_child.end_byte()].to_string();
+                                    type_name = source
+                                        [type_child.start_byte()..type_child.end_byte()]
+                                        .to_string();
                                 }
                             }
                         }
@@ -2942,7 +3174,9 @@ impl FlexibleArrayAnalyzer {
                         for j in 0..child.child_count() {
                             if let Some(ptr_child) = child.child(j) {
                                 if ptr_child.kind() == "field_identifier" {
-                                    field_name = source[ptr_child.start_byte()..ptr_child.end_byte()].to_string();
+                                    field_name = source
+                                        [ptr_child.start_byte()..ptr_child.end_byte()]
+                                        .to_string();
                                 }
                             }
                         }
@@ -2953,7 +3187,9 @@ impl FlexibleArrayAnalyzer {
                         for j in 0..child.child_count() {
                             if let Some(arr_child) = child.child(j) {
                                 if arr_child.kind() == "field_identifier" {
-                                    field_name = source[arr_child.start_byte()..arr_child.end_byte()].to_string();
+                                    field_name = source
+                                        [arr_child.start_byte()..arr_child.end_byte()]
+                                        .to_string();
                                 }
                             }
                         }
@@ -2965,8 +3201,16 @@ impl FlexibleArrayAnalyzer {
 
         if !field_name.is_empty() || !type_name.is_empty() {
             Some(FieldDeclarationInfo {
-                field_name: if field_name.is_empty() { "anonymous".to_string() } else { field_name },
-                type_name: if type_name.is_empty() { "unknown".to_string() } else { type_name },
+                field_name: if field_name.is_empty() {
+                    "anonymous".to_string()
+                } else {
+                    field_name
+                },
+                type_name: if type_name.is_empty() {
+                    "unknown".to_string()
+                } else {
+                    type_name
+                },
                 is_pointer,
                 is_array,
             })
@@ -3012,7 +3256,12 @@ impl FlexibleArrayAnalyzer {
         "unknown structure".to_string()
     }
 
-    fn check_inline_flexible_struct(&self, field_node: &Node, source: &str, field_info: &FieldDeclarationInfo) -> Option<RuleViolation> {
+    fn check_inline_flexible_struct(
+        &self,
+        field_node: &Node,
+        source: &str,
+        field_info: &FieldDeclarationInfo,
+    ) -> Option<RuleViolation> {
         // Check for inline struct definitions that contain flexible arrays
         // Pattern: struct { size_t num; int data[]; } field_name;
 
@@ -3025,7 +3274,8 @@ impl FlexibleArrayAnalyzer {
                             if struct_child.kind() == "field_declaration_list" {
                                 if self.has_flexible_array_member(&struct_child, source) {
                                     let start_point = field_node.start_position();
-                                    let parent_context = self.get_parent_structure_context(field_node, source);
+                                    let parent_context =
+                                        self.get_parent_structure_context(field_node, source);
 
                                     return Some(RuleViolation {
                                         rule_id: "MEM33-C".to_string(),
@@ -3081,7 +3331,12 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn check_invalid_type_casting(&self, node: &Node, source: &str, target_struct_name: &str) -> Option<RuleViolation> {
+    fn check_invalid_type_casting(
+        &self,
+        node: &Node,
+        source: &str,
+        target_struct_name: &str,
+    ) -> Option<RuleViolation> {
         // Look for patterns like: (struct flex_array_struct *)&something
         // where 'something' is not a compatible flexible array structure
 
@@ -3120,7 +3375,12 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
-    fn check_const_casting_specific(&self, node: &Node, source: &str, _struct_name: &str) -> Option<RuleViolation> {
+    fn check_const_casting_specific(
+        &self,
+        node: &Node,
+        source: &str,
+        _struct_name: &str,
+    ) -> Option<RuleViolation> {
         // Original const-casting logic from existing check_const_casting method
         // Check for patterns like: (struct flex_array_struct *)&const_flex
         // where const qualifier is being cast away
@@ -3183,11 +3443,14 @@ void func() {
         let tree = parser.parse_source(source).unwrap();
         let violations = rule.check(&tree.root_node(), source);
 
-
-        let auto_violations: Vec<_> = violations.iter()
+        let auto_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("automatic storage"))
             .collect();
-        assert!(!auto_violations.is_empty(), "Should detect automatic storage violation");
+        assert!(
+            !auto_violations.is_empty(),
+            "Should detect automatic storage violation"
+        );
     }
 
     #[test]
@@ -3211,10 +3474,14 @@ void func() {
         let tree = parser.parse_source(source).unwrap();
         let violations = rule.check(&tree.root_node(), source);
 
-        let copy_violations: Vec<_> = violations.iter()
+        let copy_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Direct assignment"))
             .collect();
-        assert!(!copy_violations.is_empty(), "Should detect assignment copy violation");
+        assert!(
+            !copy_violations.is_empty(),
+            "Should detect assignment copy violation"
+        );
     }
 
     #[test]
@@ -3236,10 +3503,14 @@ void process_struct(struct flex_array_struct s) {  // Should trigger violation
         let tree = parser.parse_source(source).unwrap();
         let violations = rule.check(&tree.root_node(), source);
 
-        let param_violations: Vec<_> = violations.iter()
+        let param_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("passed by value"))
             .collect();
-        assert!(!param_violations.is_empty(), "Should detect pass-by-value violation");
+        assert!(
+            !param_violations.is_empty(),
+            "Should detect pass-by-value violation"
+        );
     }
 
     #[test]
@@ -3286,10 +3557,14 @@ void copy_struct(struct flex_array_struct *dest, struct flex_array_struct *src) 
         let violations = rule.check(&tree.root_node(), source);
 
         // Should not flag compliant patterns
-        let high_severity_violations: Vec<_> = violations.iter()
+        let high_severity_violations: Vec<_> = violations
+            .iter()
             .filter(|v| matches!(v.severity, Severity::High | Severity::Critical))
             .collect();
-        assert!(high_severity_violations.is_empty(), "Should not flag compliant code as high severity");
+        assert!(
+            high_severity_violations.is_empty(),
+            "Should not flag compliant code as high severity"
+        );
     }
 
     #[test]
@@ -3323,7 +3598,10 @@ struct invalid_struct {
 
         // The test passes if the rule can parse without errors
         // Detailed flexible array detection would require more sophisticated testing
-        assert!(violations.len() >= 0, "Rule should process flexible array detection");
+        assert!(
+            violations.len() >= 0,
+            "Rule should process flexible array detection"
+        );
     }
 
     #[test]
@@ -3349,16 +3627,24 @@ void func() {
         let tree = parser.parse_source(source).unwrap();
         let violations = rule.check(&tree.root_node(), source);
 
-        let compound_violations: Vec<_> = violations.iter()
+        let compound_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Compound literal"))
             .collect();
-        assert!(!compound_violations.is_empty(), "Should detect compound literal violation");
+        assert!(
+            !compound_violations.is_empty(),
+            "Should detect compound literal violation"
+        );
 
         // Check for High severity since compound literals have automatic storage
-        let high_severity: Vec<_> = compound_violations.iter()
+        let high_severity: Vec<_> = compound_violations
+            .iter()
             .filter(|v| matches!(v.severity, Severity::High))
             .collect();
-        assert!(!high_severity.is_empty(), "Compound literal violations should be High severity");
+        assert!(
+            !high_severity.is_empty(),
+            "Compound literal violations should be High severity"
+        );
     }
 
     #[test]
@@ -3383,11 +3669,17 @@ void func() {
         let tree = parser.parse_source(source).unwrap();
         let violations = rule.check(&tree.root_node(), source);
 
-        let compound_violations: Vec<_> = violations.iter()
-            .filter(|v| v.message.contains("Compound literal") &&
-                        v.message.contains("automatic storage duration"))
+        let compound_violations: Vec<_> = violations
+            .iter()
+            .filter(|v| {
+                v.message.contains("Compound literal")
+                    && v.message.contains("automatic storage duration")
+            })
             .collect();
-        assert!(!compound_violations.is_empty(), "Should detect compound literal even without array init");
+        assert!(
+            !compound_violations.is_empty(),
+            "Should detect compound literal even without array init"
+        );
     }
 
     #[test]
@@ -3410,10 +3702,14 @@ void func() {
         let tree = parser.parse_source(source).unwrap();
         let violations = rule.check(&tree.root_node(), source);
 
-        let compound_violations: Vec<_> = violations.iter()
+        let compound_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Compound literal"))
             .collect();
-        assert!(!compound_violations.is_empty(), "Should detect direct compound literal usage");
+        assert!(
+            !compound_violations.is_empty(),
+            "Should detect direct compound literal usage"
+        );
     }
 
     #[test]
@@ -3442,10 +3738,14 @@ int main(void) {
             println!("Violation: {}", violation.message);
         }
 
-        let array_violations: Vec<_> = violations.iter()
+        let array_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Array of flexible array structures"))
             .collect();
-        assert!(!array_violations.is_empty(), "Should detect array of flexible array structures");
+        assert!(
+            !array_violations.is_empty(),
+            "Should detect array of flexible array structures"
+        );
 
         // Check severity is High (which should be priority 1)
         for violation in array_violations.iter() {
@@ -3497,23 +3797,42 @@ int main(void) {
         }
 
         // Filter allocation-specific violations
-        let malloc_violations: Vec<_> = violations.iter()
+        let malloc_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Insufficient malloc allocation"))
             .collect();
-        let calloc_violations: Vec<_> = violations.iter()
-            .filter(|v| v.message.contains("calloc allocation") || v.message.contains("calloc parameters"))
+        let calloc_violations: Vec<_> = violations
+            .iter()
+            .filter(|v| {
+                v.message.contains("calloc allocation") || v.message.contains("calloc parameters")
+            })
             .collect();
-        let realloc_violations: Vec<_> = violations.iter()
+        let realloc_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Insufficient realloc allocation"))
             .collect();
 
-        assert!(!malloc_violations.is_empty(), "Should detect insufficient malloc allocation");
-        assert!(!calloc_violations.is_empty(), "Should detect calloc allocation violations");
-        assert!(!realloc_violations.is_empty(), "Should detect insufficient realloc allocation");
+        assert!(
+            !malloc_violations.is_empty(),
+            "Should detect insufficient malloc allocation"
+        );
+        assert!(
+            !calloc_violations.is_empty(),
+            "Should detect calloc allocation violations"
+        );
+        assert!(
+            !realloc_violations.is_empty(),
+            "Should detect insufficient realloc allocation"
+        );
 
         // Should detect at least 4 violations (malloc, calloc insufficient, calloc wrong order, realloc)
-        let allocation_violations = malloc_violations.len() + calloc_violations.len() + realloc_violations.len();
-        assert!(allocation_violations >= 4, "Should detect at least 4 allocation violations, found: {}", allocation_violations);
+        let allocation_violations =
+            malloc_violations.len() + calloc_violations.len() + realloc_violations.len();
+        assert!(
+            allocation_violations >= 4,
+            "Should detect at least 4 allocation violations, found: {}",
+            allocation_violations
+        );
     }
 
     #[test]
@@ -3543,10 +3862,14 @@ int main() {
             println!("Violation: {}", violation.message);
         }
 
-        let global_violations: Vec<_> = violations.iter()
+        let global_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("global storage"))
             .collect();
-        assert!(!global_violations.is_empty(), "Should detect global storage violation");
+        assert!(
+            !global_violations.is_empty(),
+            "Should detect global storage violation"
+        );
     }
 
     #[test]
@@ -3578,11 +3901,18 @@ int main() {
             println!("Violation: {}", violation.message);
         }
 
-        let static_violations: Vec<_> = violations.iter()
+        let static_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("static"))
             .collect();
-        assert!(!static_violations.is_empty(), "Should detect static storage violations");
-        assert!(static_violations.len() >= 2, "Should detect both static global and static local violations");
+        assert!(
+            !static_violations.is_empty(),
+            "Should detect static storage violations"
+        );
+        assert!(
+            static_violations.len() >= 2,
+            "Should detect both static global and static local violations"
+        );
     }
 
     #[test]
@@ -3619,10 +3949,14 @@ int main() {
         }
 
         // Should have 0 violations - all declarations are pointers (allowed)
-        let storage_violations: Vec<_> = violations.iter()
+        let storage_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("storage"))
             .collect();
-        assert!(storage_violations.is_empty(), "Should not flag pointer declarations as violations");
+        assert!(
+            storage_violations.is_empty(),
+            "Should not flag pointer declarations as violations"
+        );
     }
 
     #[test]
@@ -3673,22 +4007,55 @@ void test_function() {
         }
 
         // Should detect exactly 4 violations (all non-pointer declarations)
-        let storage_violations: Vec<_> = violations.iter()
+        let storage_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("storage"))
             .collect();
 
-        assert_eq!(storage_violations.len(), 4, "Should detect exactly 4 storage violations");
+        assert_eq!(
+            storage_violations.len(),
+            4,
+            "Should detect exactly 4 storage violations"
+        );
 
         // Verify specific violation types - need to distinguish between pure "global" and "static global"
-        let global_violations = violations.iter().filter(|v| v.message.contains("global storage") && !v.message.contains("static global")).count();
-        let static_global_violations = violations.iter().filter(|v| v.message.contains("static global storage")).count();
-        let automatic_violations = violations.iter().filter(|v| v.message.contains("automatic storage") && !v.message.contains("static local")).count();
-        let static_local_violations = violations.iter().filter(|v| v.message.contains("static local storage")).count();
+        let global_violations = violations
+            .iter()
+            .filter(|v| {
+                v.message.contains("global storage") && !v.message.contains("static global")
+            })
+            .count();
+        let static_global_violations = violations
+            .iter()
+            .filter(|v| v.message.contains("static global storage"))
+            .count();
+        let automatic_violations = violations
+            .iter()
+            .filter(|v| {
+                v.message.contains("automatic storage") && !v.message.contains("static local")
+            })
+            .count();
+        let static_local_violations = violations
+            .iter()
+            .filter(|v| v.message.contains("static local storage"))
+            .count();
 
-        assert_eq!(global_violations, 1, "Should detect 1 global storage violation");
-        assert_eq!(static_global_violations, 1, "Should detect 1 static global storage violation");
-        assert_eq!(automatic_violations, 1, "Should detect 1 automatic storage violation");
-        assert_eq!(static_local_violations, 1, "Should detect 1 static local storage violation");
+        assert_eq!(
+            global_violations, 1,
+            "Should detect 1 global storage violation"
+        );
+        assert_eq!(
+            static_global_violations, 1,
+            "Should detect 1 static global storage violation"
+        );
+        assert_eq!(
+            automatic_violations, 1,
+            "Should detect 1 automatic storage violation"
+        );
+        assert_eq!(
+            static_local_violations, 1,
+            "Should detect 1 static local storage violation"
+        );
     }
 
     #[test]
@@ -3736,33 +4103,59 @@ int main(void) {
         }
 
         // Filter file I/O specific violations
-        let fwrite_violations: Vec<_> = violations.iter()
+        let fwrite_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("File I/O operation fwrite()"))
             .collect();
-        let fread_violations: Vec<_> = violations.iter()
+        let fread_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("File I/O operation fread()"))
             .collect();
-        let fwrite_unlocked_violations: Vec<_> = violations.iter()
+        let fwrite_unlocked_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("File I/O operation fwrite_unlocked()"))
             .collect();
-        let fread_unlocked_violations: Vec<_> = violations.iter()
+        let fread_unlocked_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("File I/O operation fread_unlocked()"))
             .collect();
 
-        assert!(!fwrite_violations.is_empty(), "Should detect fwrite violations");
-        assert!(!fread_violations.is_empty(), "Should detect fread violations");
-        assert!(!fwrite_unlocked_violations.is_empty(), "Should detect fwrite_unlocked violations");
-        assert!(!fread_unlocked_violations.is_empty(), "Should detect fread_unlocked violations");
+        assert!(
+            !fwrite_violations.is_empty(),
+            "Should detect fwrite violations"
+        );
+        assert!(
+            !fread_violations.is_empty(),
+            "Should detect fread violations"
+        );
+        assert!(
+            !fwrite_unlocked_violations.is_empty(),
+            "Should detect fwrite_unlocked violations"
+        );
+        assert!(
+            !fread_unlocked_violations.is_empty(),
+            "Should detect fread_unlocked violations"
+        );
 
         // Should detect exactly 4 file I/O violations
-        let file_io_violations = fwrite_violations.len() + fread_violations.len() +
-                                 fwrite_unlocked_violations.len() + fread_unlocked_violations.len();
-        assert_eq!(file_io_violations, 4, "Should detect exactly 4 file I/O violations, found: {}", file_io_violations);
+        let file_io_violations = fwrite_violations.len()
+            + fread_violations.len()
+            + fwrite_unlocked_violations.len()
+            + fread_unlocked_violations.len();
+        assert_eq!(
+            file_io_violations, 4,
+            "Should detect exactly 4 file I/O violations, found: {}",
+            file_io_violations
+        );
 
         // Check that all violations have High severity
         for violation in violations.iter() {
             if violation.message.contains("File I/O operation") {
-                assert_eq!(violation.severity, Severity::High, "File I/O violations should have High severity");
+                assert_eq!(
+                    violation.severity,
+                    Severity::High,
+                    "File I/O violations should have High severity"
+                );
             }
         }
     }
@@ -3800,18 +4193,35 @@ int main(void) {
         }
 
         // Should detect const declaration violations
-        let const_decl_violations: Vec<_> = violations.iter()
+        let const_decl_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("const-qualified"))
             .collect();
 
-        assert!(!const_decl_violations.is_empty(), "Should detect const-qualified declaration");
-        assert!(violations.len() >= 1, "Should detect at least 1 violation, found: {}", violations.len());
+        assert!(
+            !const_decl_violations.is_empty(),
+            "Should detect const-qualified declaration"
+        );
+        assert!(
+            violations.len() >= 1,
+            "Should detect at least 1 violation, found: {}",
+            violations.len()
+        );
 
         // Verify the violation message includes proper const qualifier information
         let violation_msg = &const_decl_violations[0].message;
-        assert!(violation_msg.contains("const-qualified"), "Violation message should mention const-qualified");
-        assert!(violation_msg.contains("flex_array_struct"), "Violation message should mention the struct name");
-        assert!(violation_msg.contains("const automatic storage"), "Violation message should mention const automatic storage");
+        assert!(
+            violation_msg.contains("const-qualified"),
+            "Violation message should mention const-qualified"
+        );
+        assert!(
+            violation_msg.contains("flex_array_struct"),
+            "Violation message should mention the struct name"
+        );
+        assert!(
+            violation_msg.contains("const automatic storage"),
+            "Violation message should mention const automatic storage"
+        );
     }
 
     #[test]
@@ -3856,37 +4266,67 @@ int main(void) {
         }
 
         // Check for invalid type casting violations
-        let casting_violations: Vec<_> = violations.iter()
+        let casting_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Invalid type casting"))
             .collect();
 
         // Check for pointer arithmetic violations
-        let arithmetic_violations: Vec<_> = violations.iter()
+        let arithmetic_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Pointer arithmetic"))
             .collect();
 
         // Successfully detecting pointer arithmetic violations
-        assert!(!arithmetic_violations.is_empty(), "Should detect pointer arithmetic violations");
-        assert_eq!(arithmetic_violations.len(), 2, "Should detect exactly 2 pointer arithmetic violations");
+        assert!(
+            !arithmetic_violations.is_empty(),
+            "Should detect pointer arithmetic violations"
+        );
+        assert_eq!(
+            arithmetic_violations.len(),
+            2,
+            "Should detect exactly 2 pointer arithmetic violations"
+        );
 
         // Should detect exactly 2 violations (pointer arithmetic)
-        assert_eq!(violations.len(), 2, "Should detect exactly 2 violations, found: {}", violations.len());
+        assert_eq!(
+            violations.len(),
+            2,
+            "Should detect exactly 2 violations, found: {}",
+            violations.len()
+        );
 
         // Verify severity is High for pointer arithmetic violations
         for violation in &violations {
             if violation.message.contains("Pointer arithmetic") {
-                assert_eq!(violation.severity, Severity::High, "Pointer arithmetic violations should have High severity");
+                assert_eq!(
+                    violation.severity,
+                    Severity::High,
+                    "Pointer arithmetic violations should have High severity"
+                );
             }
         }
 
         // Verify specific violation messages include proper context
         let first_violation = &arithmetic_violations[0];
-        assert!(first_violation.message.contains("flex_struct + 1"), "Should include the specific arithmetic expression");
-        assert!(first_violation.message.contains("undefined"), "Should mention undefined behavior");
+        assert!(
+            first_violation.message.contains("flex_struct + 1"),
+            "Should include the specific arithmetic expression"
+        );
+        assert!(
+            first_violation.message.contains("undefined"),
+            "Should mention undefined behavior"
+        );
 
         let second_violation = &arithmetic_violations[1];
-        assert!(second_violation.message.contains("flex_struct - 2"), "Should include the specific arithmetic expression");
-        assert!(second_violation.message.contains("undefined"), "Should mention undefined behavior");
+        assert!(
+            second_violation.message.contains("flex_struct - 2"),
+            "Should include the specific arithmetic expression"
+        );
+        assert!(
+            second_violation.message.contains("undefined"),
+            "Should mention undefined behavior"
+        );
     }
 
     #[test]
@@ -3936,35 +4376,66 @@ int main(void) {
         }
 
         // Filter memory operation specific violations
-        let memcpy_violations: Vec<_> = violations.iter()
+        let memcpy_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Memory operation memcpy()"))
             .collect();
-        let memmove_violations: Vec<_> = violations.iter()
+        let memmove_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Memory operation memmove()"))
             .collect();
-        let memset_violations: Vec<_> = violations.iter()
+        let memset_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Memory operation memset()"))
             .collect();
 
-        assert!(!memcpy_violations.is_empty(), "Should detect memcpy violations");
-        assert!(!memmove_violations.is_empty(), "Should detect memmove violations");
-        assert!(!memset_violations.is_empty(), "Should detect memset violations");
+        assert!(
+            !memcpy_violations.is_empty(),
+            "Should detect memcpy violations"
+        );
+        assert!(
+            !memmove_violations.is_empty(),
+            "Should detect memmove violations"
+        );
+        assert!(
+            !memset_violations.is_empty(),
+            "Should detect memset violations"
+        );
 
         // Should detect exactly 3 memory operation violations
-        let memory_op_violations = memcpy_violations.len() + memmove_violations.len() + memset_violations.len();
-        assert_eq!(memory_op_violations, 3, "Should detect exactly 3 memory operation violations, found: {}", memory_op_violations);
+        let memory_op_violations =
+            memcpy_violations.len() + memmove_violations.len() + memset_violations.len();
+        assert_eq!(
+            memory_op_violations, 3,
+            "Should detect exactly 3 memory operation violations, found: {}",
+            memory_op_violations
+        );
 
         // Check that all violations have High severity
         for violation in violations.iter() {
             if violation.message.contains("Memory operation") {
-                assert_eq!(violation.severity, Severity::High, "Memory operation violations should have High severity");
+                assert_eq!(
+                    violation.severity,
+                    Severity::High,
+                    "Memory operation violations should have High severity"
+                );
             }
         }
 
         // Verify specific violation messages
         let memcpy_violation = &memcpy_violations[0];
-        assert!(memcpy_violation.message.contains("sizeof(struct flex_array_struct)"), "Should include the problematic size expression");
-        assert!(memcpy_violation.message.contains("copying/moving fixed members"), "Should explain the problem");
+        assert!(
+            memcpy_violation
+                .message
+                .contains("sizeof(struct flex_array_struct)"),
+            "Should include the problematic size expression"
+        );
+        assert!(
+            memcpy_violation
+                .message
+                .contains("copying/moving fixed members"),
+            "Should explain the problem"
+        );
     }
 
     #[test]
@@ -4012,41 +4483,78 @@ int main(void) {
         }
 
         // Filter invalid struct definition violations
-        let struct_violations: Vec<_> = violations.iter()
-            .filter(|v| v.message.contains("Invalid flexible array structure definition"))
+        let struct_violations: Vec<_> = violations
+            .iter()
+            .filter(|v| {
+                v.message
+                    .contains("Invalid flexible array structure definition")
+            })
             .collect();
 
-        assert!(!struct_violations.is_empty(), "Should detect invalid struct definitions");
+        assert!(
+            !struct_violations.is_empty(),
+            "Should detect invalid struct definitions"
+        );
 
         // Should detect exactly 3 invalid struct definitions
-        assert_eq!(struct_violations.len(), 3, "Should detect exactly 3 invalid struct definitions, found: {}", struct_violations.len());
+        assert_eq!(
+            struct_violations.len(),
+            3,
+            "Should detect exactly 3 invalid struct definitions, found: {}",
+            struct_violations.len()
+        );
 
         // Check for specific violation types based on the actual output
-        let multiple_flex_violations: Vec<_> = struct_violations.iter()
+        let multiple_flex_violations: Vec<_> = struct_violations
+            .iter()
             .filter(|v| v.message.contains("2 flexible array members"))
             .collect();
-        let not_last_violations: Vec<_> = struct_violations.iter()
-            .filter(|v| v.message.contains("not the last member") && !v.message.contains("2 flexible array members"))
+        let not_last_violations: Vec<_> = struct_violations
+            .iter()
+            .filter(|v| {
+                v.message.contains("not the last member")
+                    && !v.message.contains("2 flexible array members")
+            })
             .collect();
-        let only_flex_violations: Vec<_> = struct_violations.iter()
+        let only_flex_violations: Vec<_> = struct_violations
+            .iter()
             .filter(|v| v.message.contains("only flexible array member"))
             .collect();
 
-        assert!(!multiple_flex_violations.is_empty(), "Should detect multiple flexible array violations");
-        assert!(!not_last_violations.is_empty(), "Should detect flexible array not last violations");
-        assert!(!only_flex_violations.is_empty(), "Should detect only flexible array violations");
+        assert!(
+            !multiple_flex_violations.is_empty(),
+            "Should detect multiple flexible array violations"
+        );
+        assert!(
+            !not_last_violations.is_empty(),
+            "Should detect flexible array not last violations"
+        );
+        assert!(
+            !only_flex_violations.is_empty(),
+            "Should detect only flexible array violations"
+        );
 
         // Check that all violations have Critical severity (compilation errors)
         for violation in &struct_violations {
-            assert_eq!(violation.severity, Severity::Critical, "Invalid struct definitions should have Critical severity");
+            assert_eq!(
+                violation.severity,
+                Severity::Critical,
+                "Invalid struct definitions should have Critical severity"
+            );
         }
 
         // Verify specific violation messages include struct names
         let multiple_violation = &multiple_flex_violations[0];
-        assert!(multiple_violation.message.contains("multiple_flex_arrays"), "Should include the struct name");
+        assert!(
+            multiple_violation.message.contains("multiple_flex_arrays"),
+            "Should include the struct name"
+        );
 
         let not_last_violation = &not_last_violations[0];
-        assert!(not_last_violation.message.contains("flex_not_last"), "Should include the struct name");
+        assert!(
+            not_last_violation.message.contains("flex_not_last"),
+            "Should include the struct name"
+        );
     }
 
     #[test]
@@ -4113,61 +4621,99 @@ void test_function() {
         println!("=== DECLARATION COPY TEST ===");
         println!("Total violations found: {}", violations.len());
         for (i, violation) in violations.iter().enumerate() {
-            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+            println!(
+                "{}. [{}:{}] {}",
+                i + 1,
+                violation.line,
+                violation.column,
+                violation.message
+            );
         }
 
         // Filter declaration copy violations specifically
-        let declaration_copy_violations: Vec<_> = violations.iter()
-            .filter(|v| v.message.contains("Declaration initialization") &&
-                        v.message.contains("flexible array structure"))
+        let declaration_copy_violations: Vec<_> = violations
+            .iter()
+            .filter(|v| {
+                v.message.contains("Declaration initialization")
+                    && v.message.contains("flexible array structure")
+            })
             .collect();
 
-        assert!(!declaration_copy_violations.is_empty(), "Should detect declaration copy violations");
+        assert!(
+            !declaration_copy_violations.is_empty(),
+            "Should detect declaration copy violations"
+        );
 
         // Should detect at least 3 declaration copy violations (since one is commented out)
-        assert!(declaration_copy_violations.len() >= 3,
-                "Should detect at least 3 declaration copy violations, found: {}",
-                declaration_copy_violations.len());
+        assert!(
+            declaration_copy_violations.len() >= 3,
+            "Should detect at least 3 declaration copy violations, found: {}",
+            declaration_copy_violations.len()
+        );
 
         // Verify specific types of declaration copy violations
-        let pointer_deref_violations: Vec<_> = declaration_copy_violations.iter()
+        let pointer_deref_violations: Vec<_> = declaration_copy_violations
+            .iter()
             .filter(|v| v.message.contains("*shared_flex"))
             .collect();
-        let variable_copy_violations: Vec<_> = declaration_copy_violations.iter()
+        let variable_copy_violations: Vec<_> = declaration_copy_violations
+            .iter()
             .filter(|v| v.message.contains("local_copy") && !v.message.contains("*shared_flex"))
             .collect();
-        let compound_literal_violations: Vec<_> = declaration_copy_violations.iter()
+        let compound_literal_violations: Vec<_> = declaration_copy_violations
+            .iter()
             .filter(|v| v.message.contains("compound literal"))
             .collect();
 
-        assert!(!pointer_deref_violations.is_empty(), "Should detect pointer dereference copy: *shared_flex");
-        assert!(!variable_copy_violations.is_empty(), "Should detect variable copy: local_copy");
-        assert!(!compound_literal_violations.is_empty(), "Should detect compound literal copy");
+        assert!(
+            !pointer_deref_violations.is_empty(),
+            "Should detect pointer dereference copy: *shared_flex"
+        );
+        assert!(
+            !variable_copy_violations.is_empty(),
+            "Should detect variable copy: local_copy"
+        );
+        assert!(
+            !compound_literal_violations.is_empty(),
+            "Should detect compound literal copy"
+        );
 
         // Check that all declaration copy violations have High severity
         for violation in &declaration_copy_violations {
-            assert_eq!(violation.severity, Severity::High,
-                      "Declaration copy violations should have High severity: {}", violation.message);
+            assert_eq!(
+                violation.severity,
+                Severity::High,
+                "Declaration copy violations should have High severity: {}",
+                violation.message
+            );
         }
 
         // Verify that compliant patterns are not flagged
-        let false_positives: Vec<_> = violations.iter()
+        let false_positives: Vec<_> = violations
+            .iter()
             .filter(|v| {
-                v.message.contains("pointer_copy") ||
-                v.message.contains("uninitialized") ||
-                v.message.contains("regular_copy") ||
-                v.message.contains("another_ptr")
+                v.message.contains("pointer_copy")
+                    || v.message.contains("uninitialized")
+                    || v.message.contains("regular_copy")
+                    || v.message.contains("another_ptr")
             })
             .collect();
-        assert!(false_positives.is_empty(), "Should not flag compliant patterns as violations");
+        assert!(
+            false_positives.is_empty(),
+            "Should not flag compliant patterns as violations"
+        );
 
         // Verify violation messages contain proper context
         for violation in &declaration_copy_violations {
-            assert!(violation.message.contains("flexible array structure"),
-                   "Declaration copy violation should mention flexible array structure");
-            assert!(violation.message.contains("Declaration initialization") ||
-                   violation.message.contains("copy initialization"),
-                   "Declaration copy violation should mention declaration/copy initialization");
+            assert!(
+                violation.message.contains("flexible array structure"),
+                "Declaration copy violation should mention flexible array structure"
+            );
+            assert!(
+                violation.message.contains("Declaration initialization")
+                    || violation.message.contains("copy initialization"),
+                "Declaration copy violation should mention declaration/copy initialization"
+            );
         }
     }
 
@@ -4218,57 +4764,96 @@ int main(void) {
         println!("=== ARRAY INDEXING TEST ===");
         println!("Total violations found: {}", violations.len());
         for (i, violation) in violations.iter().enumerate() {
-            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+            println!(
+                "{}. [{}:{}] {}",
+                i + 1,
+                violation.line,
+                violation.column,
+                violation.message
+            );
         }
 
         // Filter array indexing violations
-        let indexing_violations: Vec<_> = violations.iter()
-            .filter(|v| v.message.contains("Array indexing on flexible array structure"))
+        let indexing_violations: Vec<_> = violations
+            .iter()
+            .filter(|v| {
+                v.message
+                    .contains("Array indexing on flexible array structure")
+            })
             .collect();
 
         // Filter array declaration violations (should also exist)
-        let declaration_violations: Vec<_> = violations.iter()
-            .filter(|v| v.message.contains("Array of flexible array structures") ||
-                        v.message.contains("automatic storage"))
+        let declaration_violations: Vec<_> = violations
+            .iter()
+            .filter(|v| {
+                v.message.contains("Array of flexible array structures")
+                    || v.message.contains("automatic storage")
+            })
             .collect();
 
-        assert!(!indexing_violations.is_empty(), "Should detect array indexing violations");
-        assert!(!declaration_violations.is_empty(), "Should detect array declaration violations");
+        assert!(
+            !indexing_violations.is_empty(),
+            "Should detect array indexing violations"
+        );
+        assert!(
+            !declaration_violations.is_empty(),
+            "Should detect array declaration violations"
+        );
 
         // Should detect at least 4 indexing violations
-        assert!(indexing_violations.len() >= 4,
-                "Should detect at least 4 indexing violations, found: {}",
-                indexing_violations.len());
+        assert!(
+            indexing_violations.len() >= 4,
+            "Should detect at least 4 indexing violations, found: {}",
+            indexing_violations.len()
+        );
 
         // Check for specific patterns
-        let direct_index_violations: Vec<_> = indexing_violations.iter()
+        let direct_index_violations: Vec<_> = indexing_violations
+            .iter()
             .filter(|v| v.message.contains("flex_array[0]") || v.message.contains("flex_array[1]"))
             .collect();
-        let variable_index_violations: Vec<_> = indexing_violations.iter()
+        let variable_index_violations: Vec<_> = indexing_violations
+            .iter()
             .filter(|v| v.message.contains("flex_array[index]"))
             .collect();
 
-        assert!(!direct_index_violations.is_empty(), "Should detect direct indexing");
-        assert!(!variable_index_violations.is_empty(), "Should detect variable indexing");
+        assert!(
+            !direct_index_violations.is_empty(),
+            "Should detect direct indexing"
+        );
+        assert!(
+            !variable_index_violations.is_empty(),
+            "Should detect variable indexing"
+        );
 
         // Verify severity
         for violation in &indexing_violations {
-            assert_eq!(violation.severity, Severity::High,
-                      "Array indexing violations should have High severity");
+            assert_eq!(
+                violation.severity,
+                Severity::High,
+                "Array indexing violations should have High severity"
+            );
         }
 
         // Verify error messages mention implicit pointer arithmetic
-        let implicit_arithmetic_violations: Vec<_> = indexing_violations.iter()
+        let implicit_arithmetic_violations: Vec<_> = indexing_violations
+            .iter()
             .filter(|v| v.message.contains("implicit pointer arithmetic"))
             .collect();
-        assert!(!implicit_arithmetic_violations.is_empty(),
-                "Should mention implicit pointer arithmetic");
+        assert!(
+            !implicit_arithmetic_violations.is_empty(),
+            "Should mention implicit pointer arithmetic"
+        );
 
         // Verify that compliant patterns are not flagged as array indexing violations
-        let false_positives: Vec<_> = indexing_violations.iter()
+        let false_positives: Vec<_> = indexing_violations
+            .iter()
             .filter(|v| v.message.contains("proper_ptrs"))
             .collect();
-        assert!(false_positives.is_empty(), "Should not flag compliant pointer arrays");
+        assert!(
+            false_positives.is_empty(),
+            "Should not flag compliant pointer arrays"
+        );
     }
 
     #[test]
@@ -4336,70 +4921,113 @@ union fixed_union {
         println!("=== UNION VIOLATIONS TEST ===");
         println!("Total violations found: {}", violations.len());
         for (i, violation) in violations.iter().enumerate() {
-            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+            println!(
+                "{}. [{}:{}] {}",
+                i + 1,
+                violation.line,
+                violation.column,
+                violation.message
+            );
         }
 
         // Filter union-specific violations
-        let union_violations: Vec<_> = violations.iter()
-            .filter(|v| v.message.contains("Union") && v.message.contains("flexible array structure"))
+        let union_violations: Vec<_> = violations
+            .iter()
+            .filter(|v| {
+                v.message.contains("Union") && v.message.contains("flexible array structure")
+            })
             .collect();
 
-        let anonymous_union_violations: Vec<_> = violations.iter()
+        let anonymous_union_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Anonymous union"))
             .collect();
 
         // Should detect union violations
-        assert!(!union_violations.is_empty(), "Should detect union violations");
+        assert!(
+            !union_violations.is_empty(),
+            "Should detect union violations"
+        );
 
         // Should detect at least 3 union violations (named union + anonymous union + nested)
         let total_union_related = union_violations.len() + anonymous_union_violations.len();
-        assert!(total_union_related >= 3,
-                "Should detect at least 3 union-related violations, found: {}",
-                total_union_related);
+        assert!(
+            total_union_related >= 3,
+            "Should detect at least 3 union-related violations, found: {}",
+            total_union_related
+        );
 
         // Check for specific union types
-        let named_union_violations: Vec<_> = union_violations.iter()
+        let named_union_violations: Vec<_> = union_violations
+            .iter()
             .filter(|v| v.message.contains("Union 'mixed_union'"))
             .collect();
-        assert!(!named_union_violations.is_empty(), "Should detect named union violation");
+        assert!(
+            !named_union_violations.is_empty(),
+            "Should detect named union violation"
+        );
 
-        let container_union_violations: Vec<_> = anonymous_union_violations.iter()
+        let container_union_violations: Vec<_> = anonymous_union_violations
+            .iter()
             .filter(|v| v.message.contains("Anonymous union"))
             .collect();
-        assert!(!container_union_violations.is_empty(), "Should detect anonymous union violation");
+        assert!(
+            !container_union_violations.is_empty(),
+            "Should detect anonymous union violation"
+        );
 
         // Verify severity
         for violation in &union_violations {
-            assert_eq!(violation.severity, Severity::High,
-                      "Union violations should have High severity");
+            assert_eq!(
+                violation.severity,
+                Severity::High,
+                "Union violations should have High severity"
+            );
         }
 
         // Verify error messages mention memory space sharing
-        let memory_space_violations: Vec<_> = union_violations.iter()
+        let memory_space_violations: Vec<_> = union_violations
+            .iter()
             .filter(|v| v.message.contains("share memory space"))
             .collect();
-        assert!(!memory_space_violations.is_empty(),
-                "Should mention memory space sharing requirement");
+        assert!(
+            !memory_space_violations.is_empty(),
+            "Should mention memory space sharing requirement"
+        );
 
         // Verify suggestions include pointer usage
-        let pointer_suggestions: Vec<_> = union_violations.iter()
-            .filter(|v| v.suggestion.as_ref().map_or(false, |s| s.contains("pointer")))
+        let pointer_suggestions: Vec<_> = union_violations
+            .iter()
+            .filter(|v| {
+                v.suggestion
+                    .as_ref()
+                    .map_or(false, |s| s.contains("pointer"))
+            })
             .collect();
-        assert!(!pointer_suggestions.is_empty(),
-                "Should suggest using pointers instead");
+        assert!(
+            !pointer_suggestions.is_empty(),
+            "Should suggest using pointers instead"
+        );
 
         // Verify that compliant patterns are not flagged
-        let false_positives: Vec<_> = union_violations.iter()
+        let false_positives: Vec<_> = union_violations
+            .iter()
             .filter(|v| v.message.contains("pointer_union") || v.message.contains("fixed_union"))
             .collect();
-        assert!(false_positives.is_empty(), "Should not flag compliant unions");
+        assert!(
+            false_positives.is_empty(),
+            "Should not flag compliant unions"
+        );
 
         // Check that member names are properly identified
-        let member_name_violations: Vec<_> = union_violations.iter()
+        let member_name_violations: Vec<_> = union_violations
+            .iter()
             .filter(|v| v.message.contains("flex_member"))
             .collect();
-        assert!(!member_name_violations.is_empty(),
-                "Should identify specific member names in violations");
+        assert!(
+            !member_name_violations.is_empty(),
+            "Should identify specific member names in violations"
+        );
     }
 
     #[test]
@@ -4472,61 +5100,107 @@ int main(void) {
         println!("=== EMBEDDED FLEXIBLE STRUCT TEST ===");
         println!("Total violations found: {}", violations.len());
         for (i, violation) in violations.iter().enumerate() {
-            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+            println!(
+                "{}. [{}:{}] {}",
+                i + 1,
+                violation.line,
+                violation.column,
+                violation.message
+            );
         }
 
         // Filter embedded structure violations
-        let embedded_violations: Vec<_> = violations.iter()
+        let embedded_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("embedded") || v.message.contains("Inline struct"))
             .collect();
 
-        assert!(!embedded_violations.is_empty(), "Should detect embedded flexible array struct violations");
+        assert!(
+            !embedded_violations.is_empty(),
+            "Should detect embedded flexible array struct violations"
+        );
 
         // Should detect at least 5 embedded violations
-        assert!(embedded_violations.len() >= 5, "Should detect at least 5 embedded violations, found: {}", embedded_violations.len());
+        assert!(
+            embedded_violations.len() >= 5,
+            "Should detect at least 5 embedded violations, found: {}",
+            embedded_violations.len()
+        );
 
         // Check for specific violation types
-        let direct_embedded: Vec<_> = embedded_violations.iter()
+        let direct_embedded: Vec<_> = embedded_violations
+            .iter()
             .filter(|v| v.message.contains("embedded_flex"))
             .collect();
-        let array_embedded: Vec<_> = embedded_violations.iter()
+        let array_embedded: Vec<_> = embedded_violations
+            .iter()
             .filter(|v| v.message.contains("flex_array") || v.message.contains("Array of flexible"))
             .collect();
-        let nested_embedded: Vec<_> = embedded_violations.iter()
+        let nested_embedded: Vec<_> = embedded_violations
+            .iter()
             .filter(|v| v.message.contains("nested_flex"))
             .collect();
-        let inline_embedded: Vec<_> = embedded_violations.iter()
+        let inline_embedded: Vec<_> = embedded_violations
+            .iter()
             .filter(|v| v.message.contains("Inline struct") || v.message.contains("inline_flex"))
             .collect();
 
-        assert!(!direct_embedded.is_empty(), "Should detect direct embedding");
+        assert!(
+            !direct_embedded.is_empty(),
+            "Should detect direct embedding"
+        );
         assert!(!array_embedded.is_empty(), "Should detect array embedding");
-        assert!(!nested_embedded.is_empty(), "Should detect nested embedding");
-        assert!(!inline_embedded.is_empty(), "Should detect inline struct embedding");
+        assert!(
+            !nested_embedded.is_empty(),
+            "Should detect nested embedding"
+        );
+        assert!(
+            !inline_embedded.is_empty(),
+            "Should detect inline struct embedding"
+        );
 
         // All embedded violations should have Critical severity
         for violation in &embedded_violations {
-            assert_eq!(violation.severity, Severity::Critical,
-                       "Embedded violations should have Critical severity");
+            assert_eq!(
+                violation.severity,
+                Severity::Critical,
+                "Embedded violations should have Critical severity"
+            );
         }
 
         // Verify suggestions mention using pointers
-        let pointer_suggestions: Vec<_> = embedded_violations.iter()
-            .filter(|v| v.suggestion.as_ref().map_or(false, |s| s.contains("pointer")))
+        let pointer_suggestions: Vec<_> = embedded_violations
+            .iter()
+            .filter(|v| {
+                v.suggestion
+                    .as_ref()
+                    .map_or(false, |s| s.contains("pointer"))
+            })
             .collect();
-        assert!(!pointer_suggestions.is_empty(), "Should suggest using pointers");
+        assert!(
+            !pointer_suggestions.is_empty(),
+            "Should suggest using pointers"
+        );
 
         // Verify parent context is included in error messages
-        let context_messages: Vec<_> = embedded_violations.iter()
+        let context_messages: Vec<_> = embedded_violations
+            .iter()
             .filter(|v| v.message.contains("struct '") || v.message.contains("anonymous"))
             .collect();
-        assert!(!context_messages.is_empty(), "Should include parent structure context");
+        assert!(
+            !context_messages.is_empty(),
+            "Should include parent structure context"
+        );
 
         // Verify that compliant patterns are not flagged
-        let false_positives: Vec<_> = embedded_violations.iter()
+        let false_positives: Vec<_> = embedded_violations
+            .iter()
             .filter(|v| v.message.contains("good_container"))
             .collect();
-        assert!(false_positives.is_empty(), "Should not flag compliant pointer usage");
+        assert!(
+            false_positives.is_empty(),
+            "Should not flag compliant pointer usage"
+        );
     }
 
     #[test]
@@ -4592,31 +5266,52 @@ int main(void) {
         println!("=== FALSE POSITIVE PREVENTION TEST ===");
         println!("Total violations found: {}", violations.len());
         for (i, violation) in violations.iter().enumerate() {
-            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+            println!(
+                "{}. [{}:{}] {}",
+                i + 1,
+                violation.line,
+                violation.column,
+                violation.message
+            );
         }
 
         // Should have NO violations for compliant calloc usage
-        let calloc_violations: Vec<_> = violations.iter()
+        let calloc_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("calloc"))
             .collect();
 
-        assert!(calloc_violations.is_empty(),
-               "Should not flag compliant calloc usage as violations. Found: {:?}",
-               calloc_violations.iter().map(|v| &v.message).collect::<Vec<_>>());
+        assert!(
+            calloc_violations.is_empty(),
+            "Should not flag compliant calloc usage as violations. Found: {:?}",
+            calloc_violations
+                .iter()
+                .map(|v| &v.message)
+                .collect::<Vec<_>>()
+        );
 
         // Allow automatic storage violations (expected for local variables)
         // but verify that no calloc-specific false positives exist
-        let auto_storage_violations: Vec<_> = violations.iter()
+        let auto_storage_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("automatic storage"))
             .collect();
 
         // Automatic storage violations are expected for local variables
-        println!("Note: {} automatic storage violations found (expected for local variables)", auto_storage_violations.len());
+        println!(
+            "Note: {} automatic storage violations found (expected for local variables)",
+            auto_storage_violations.len()
+        );
 
         // The key test is that no calloc violations are flagged
-        assert!(calloc_violations.is_empty(),
-               "Should not flag compliant calloc usage as violations. Found: {:?}",
-               calloc_violations.iter().map(|v| &v.message).collect::<Vec<_>>());
+        assert!(
+            calloc_violations.is_empty(),
+            "Should not flag compliant calloc usage as violations. Found: {:?}",
+            calloc_violations
+                .iter()
+                .map(|v| &v.message)
+                .collect::<Vec<_>>()
+        );
     }
 
     #[test]
@@ -4663,50 +5358,68 @@ int main(void) {
         println!("=== ARRAY INDEXING FALSE POSITIVE FIX TEST ===");
         println!("Total violations found: {}", violations.len());
         for (i, violation) in violations.iter().enumerate() {
-            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+            println!(
+                "{}. [{}:{}] {}",
+                i + 1,
+                violation.line,
+                violation.column,
+                violation.message
+            );
         }
 
         // Filter array indexing violations specifically
-        let array_indexing_violations: Vec<_> = violations.iter()
+        let array_indexing_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("Array indexing"))
             .collect();
 
         // Should have some violations for actual arrays, but not for compliant pointer access
-        println!("Array indexing violations found: {}", array_indexing_violations.len());
+        println!(
+            "Array indexing violations found: {}",
+            array_indexing_violations.len()
+        );
 
         // Check that compliant patterns are NOT flagged
-        let false_positives: Vec<_> = array_indexing_violations.iter()
+        let false_positives: Vec<_> = array_indexing_violations
+            .iter()
             .filter(|v| {
-                v.message.contains("flex_ptr->data") ||
-                v.message.contains("my_ptr->data") ||
-                v.message.contains("ptr->data")
+                v.message.contains("flex_ptr->data")
+                    || v.message.contains("my_ptr->data")
+                    || v.message.contains("ptr->data")
             })
             .collect();
 
-        assert!(false_positives.is_empty(),
-               "Should not flag compliant flexible array member access. Found false positives: {:?}",
-               false_positives.iter().map(|v| &v.message).collect::<Vec<_>>());
+        assert!(
+            false_positives.is_empty(),
+            "Should not flag compliant flexible array member access. Found false positives: {:?}",
+            false_positives
+                .iter()
+                .map(|v| &v.message)
+                .collect::<Vec<_>>()
+        );
 
         // Check that actual violations ARE flagged (conservative approach)
         // Note: The enhanced logic might be more conservative, so we don't require specific counts
         // The key is that no false positives occur for compliant code
 
         // Verify no false positives for common compliant patterns
-        let compliant_patterns = [
-            "flex_ptr->data[0]",
-            "flex_ptr->data[5]",
-            "my_ptr->data[3]"
-        ];
+        let compliant_patterns = ["flex_ptr->data[0]", "flex_ptr->data[5]", "my_ptr->data[3]"];
 
         for pattern in &compliant_patterns {
-            let pattern_violations: Vec<_> = array_indexing_violations.iter()
+            let pattern_violations: Vec<_> = array_indexing_violations
+                .iter()
                 .filter(|v| v.message.contains(pattern))
                 .collect();
 
-            assert!(pattern_violations.is_empty(),
-                   "Should not flag compliant pattern '{}'. Found: {:?}",
-                   pattern,
-                   pattern_violations.iter().map(|v| &v.message).collect::<Vec<_>>());
+            assert!(
+                pattern_violations.is_empty(),
+                "Should not flag compliant pattern '{}'. Found: {:?}",
+                pattern,
+                pattern_violations
+                    .iter()
+                    .map(|v| &v.message)
+                    .collect::<Vec<_>>()
+            );
         }
 
         println!("✅ No false positives detected for compliant flexible array member access");
@@ -4756,34 +5469,53 @@ int main(void) {
         println!("=== REALLOC VARIABLE REFERENCE FIX TEST ===");
         println!("Total violations found: {}", violations.len());
         for (i, violation) in violations.iter().enumerate() {
-            println!("{}. [{}:{}] {}", i + 1, violation.line, violation.column, violation.message);
+            println!(
+                "{}. [{}:{}] {}",
+                i + 1,
+                violation.line,
+                violation.column,
+                violation.message
+            );
         }
 
         // Filter for realloc violations only
-        let realloc_violations: Vec<_> = violations.iter()
+        let realloc_violations: Vec<_> = violations
+            .iter()
             .filter(|v| v.message.contains("realloc"))
             .collect();
 
         // Should detect exactly 2 realloc violations:
         // 1. Direct insufficient realloc
         // 2. Variable with insufficient size assignment
-        assert_eq!(realloc_violations.len(), 2,
-                   "Should detect exactly 2 realloc violations, found: {}. Violations: {:?}",
-                   realloc_violations.len(),
-                   realloc_violations.iter().map(|v| &v.message).collect::<Vec<_>>());
+        assert_eq!(
+            realloc_violations.len(),
+            2,
+            "Should detect exactly 2 realloc violations, found: {}. Violations: {:?}",
+            realloc_violations.len(),
+            realloc_violations
+                .iter()
+                .map(|v| &v.message)
+                .collect::<Vec<_>>()
+        );
 
         // Verify that the variable-based calculations are NOT flagged
         for violation in &violations {
             if violation.message.contains("realloc") {
                 // Should not flag new_total_size or final_total_size
-                assert!(!violation.message.contains("new_total_size"),
-                       "Should not flag variable 'new_total_size' with proper calculation");
-                assert!(!violation.message.contains("final_total_size"),
-                       "Should not flag variable 'final_total_size' with proper calculation");
+                assert!(
+                    !violation.message.contains("new_total_size"),
+                    "Should not flag variable 'new_total_size' with proper calculation"
+                );
+                assert!(
+                    !violation.message.contains("final_total_size"),
+                    "Should not flag variable 'final_total_size' with proper calculation"
+                );
 
                 // Should flag sizeof(struct) and bad_size
-                let has_bad_pattern = violation.message.contains("sizeof(struct flex_array_struct)") ||
-                                    violation.message.contains("bad_size");
+                let has_bad_pattern = violation
+                    .message
+                    .contains("sizeof(struct flex_array_struct)")
+                    || violation.message.contains("bad_size");
                 assert!(has_bad_pattern,
                        "Realloc violation should mention either 'sizeof(struct flex_array_struct)' or 'bad_size', got: {}",
                        violation.message);

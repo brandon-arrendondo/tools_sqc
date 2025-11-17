@@ -1,8 +1,8 @@
-use crate::utility::cert_c::ast_utils;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils;
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Arr37C;
 
@@ -42,7 +42,13 @@ impl CertRule for Arr37C {
 }
 
 impl Arr37C {
-    fn check_node(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &NonArrayPointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let node_text = &source[node.start_byte()..node.end_byte()];
 
         match node.kind() {
@@ -75,11 +81,20 @@ impl Arr37C {
         }
     }
 
-    fn check_pointer_arithmetic(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+    fn check_pointer_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &NonArrayPointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = get_operator(node, source) {
             match operator.as_str() {
                 "+" | "-" => {
-                    if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+                    if let (Some(left), Some(right)) = (
+                        node.child_by_field_name("left"),
+                        node.child_by_field_name("right"),
+                    ) {
                         // Check if this is pointer arithmetic (pointer +/- integer)
                         if self.is_pointer_arithmetic(&left, &right, source, analyzer) {
                             let pointer_name = self.get_pointer_name(&left, source);
@@ -142,7 +157,13 @@ impl Arr37C {
         }
     }
 
-    fn check_pointer_increment_decrement(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+    fn check_pointer_increment_decrement(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &NonArrayPointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(argument) = node.child_by_field_name("argument") {
             let pointer_name = self.get_pointer_name(&argument, source);
             let start_point = node.start_position();
@@ -191,16 +212,27 @@ impl Arr37C {
                     file_path: String::new(),
                     line: start_point.row + 1,
                     column: start_point.column + 1,
-                    suggestion: Some("Use array indexing or ensure pointer refers to an array".to_string()),
+                    suggestion: Some(
+                        "Use array indexing or ensure pointer refers to an array".to_string(),
+                    ),
                     ..Default::default()
                 });
             }
         }
     }
 
-    fn check_compound_assignment(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_assignment(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &NonArrayPointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check for patterns like: ptr += n, ptr -= n
-        if let (Some(left), Some(_right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(_right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             // Get the operator
             let full_text = &source[node.start_byte()..node.end_byte()];
             if full_text.contains("+=") || full_text.contains("-=") {
@@ -251,7 +283,9 @@ impl Arr37C {
                         file_path: String::new(),
                         line: start_point.row + 1,
                         column: start_point.column + 1,
-                        suggestion: Some("Use array indexing or ensure pointer refers to an array".to_string()),
+                        suggestion: Some(
+                            "Use array indexing or ensure pointer refers to an array".to_string(),
+                        ),
                         ..Default::default()
                     });
                 }
@@ -259,7 +293,13 @@ impl Arr37C {
         }
     }
 
-    fn check_subscript_on_non_array(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+    fn check_subscript_on_non_array(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &NonArrayPointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check for patterns like: ptr[index] where ptr is not an array pointer
         // subscript_expression has "argument" (the base pointer/array) and "index" fields
         if let Some(argument) = node.child_by_field_name("argument") {
@@ -321,7 +361,13 @@ impl Arr37C {
         }
     }
 
-    fn check_for_loop_pointer_arithmetic(&self, node: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+    fn check_for_loop_pointer_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &NonArrayPointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check for patterns like: for (ptr = &struct.member; ptr <= &struct.other_member; ptr++)
         if let Some(update) = node.child_by_field_name("update") {
             if update.kind() == "update_expression" {
@@ -350,14 +396,22 @@ impl Arr37C {
         }
     }
 
-    fn is_pointer_arithmetic(&self, left: &Node, right: &Node, source: &str, analyzer: &NonArrayPointerAnalyzer) -> bool {
+    fn is_pointer_arithmetic(
+        &self,
+        left: &Node,
+        right: &Node,
+        source: &str,
+        analyzer: &NonArrayPointerAnalyzer,
+    ) -> bool {
         let left_text = &source[left.start_byte()..left.end_byte()];
         let right_text = &source[right.start_byte()..right.end_byte()];
 
         // Check if left is a pointer and right is an integer
         // Only consider it pointer arithmetic if the left side is actually a known pointer variable
-        let left_is_pointer = left.kind() == "identifier" && analyzer.is_pointer_variable(left_text);
-        let right_is_integer = right_text.chars().all(|c| c.is_ascii_digit()) || right.kind() == "number_literal";
+        let left_is_pointer =
+            left.kind() == "identifier" && analyzer.is_pointer_variable(left_text);
+        let right_is_integer =
+            right_text.chars().all(|c| c.is_ascii_digit()) || right.kind() == "number_literal";
 
         left_is_pointer && right_is_integer
     }
@@ -421,7 +475,8 @@ impl NonArrayPointerAnalyzer {
             if let Some(child) = node.child(i) {
                 if child.kind() == "init_declarator" {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
-                        let var_name = ast_utils::get_identifier_from_declarator(&declarator, source);
+                        let var_name =
+                            ast_utils::get_identifier_from_declarator(&declarator, source);
 
                         // Determine if this is an array or pointer declaration
                         // Only track arrays and pointers - skip non-pointer variables entirely
@@ -435,7 +490,7 @@ impl NonArrayPointerAnalyzer {
                                 Some(VariableType::Unknown)
                             }
                         } else {
-                            None  // Not a pointer or array, skip it
+                            None // Not a pointer or array, skip it
                         };
 
                         if !var_name.is_empty() {
@@ -452,11 +507,18 @@ impl NonArrayPointerAnalyzer {
     fn process_assignment(&mut self, node: &Node, source: &str) {
         // Skip compound assignments (+=, -=, etc.) as they don't change the pointer type
         let node_text = &source[node.start_byte()..node.end_byte()];
-        if node_text.contains("+=") || node_text.contains("-=") || node_text.contains("*=") || node_text.contains("/=") {
+        if node_text.contains("+=")
+            || node_text.contains("-=")
+            || node_text.contains("*=")
+            || node_text.contains("/=")
+        {
             return;
         }
 
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             if left.kind() == "identifier" {
                 let var_name = source[left.start_byte()..left.end_byte()].to_string();
 
@@ -473,7 +535,8 @@ impl NonArrayPointerAnalyzer {
                 if right.kind() == "unary_expression" {
                     if let Some(argument) = right.child_by_field_name("argument") {
                         if argument.kind() == "field_expression" {
-                            self.struct_member_pointers.insert(var_name, "struct_member".to_string());
+                            self.struct_member_pointers
+                                .insert(var_name, "struct_member".to_string());
                         }
                     }
                 }
@@ -485,7 +548,8 @@ impl NonArrayPointerAnalyzer {
         if let Some(declarator) = node.child_by_field_name("declarator") {
             let param_name = ast_utils::get_identifier_from_declarator(&declarator, source);
             if !param_name.is_empty() && self.is_pointer_parameter(&declarator) {
-                self.variable_types.insert(param_name, VariableType::AmbiguousParameter);
+                self.variable_types
+                    .insert(param_name, VariableType::AmbiguousParameter);
             }
         }
     }
@@ -512,7 +576,7 @@ impl NonArrayPointerAnalyzer {
                 // pointer_expression is used by tree-sitter for address-of operations
                 if let Some(argument) = node.child_by_field_name("argument") {
                     match argument.kind() {
-                        "identifier" => VariableType::NonArray, // &variable
+                        "identifier" => VariableType::NonArray,           // &variable
                         "subscript_expression" => VariableType::NonArray, // &array[0] is pointer to single element
                         "field_expression" => VariableType::StructMemberPointer, // &struct.member
                         _ => VariableType::Unknown,
@@ -535,20 +599,32 @@ impl NonArrayPointerAnalyzer {
     }
 
     fn is_non_array_pointer(&self, var_name: &str) -> bool {
-        matches!(self.variable_types.get(var_name), Some(VariableType::NonArray))
+        matches!(
+            self.variable_types.get(var_name),
+            Some(VariableType::NonArray)
+        )
     }
 
     fn is_struct_member_pointer(&self, var_name: &str) -> bool {
-        self.struct_member_pointers.contains_key(var_name) ||
-        matches!(self.variable_types.get(var_name), Some(VariableType::StructMemberPointer))
+        self.struct_member_pointers.contains_key(var_name)
+            || matches!(
+                self.variable_types.get(var_name),
+                Some(VariableType::StructMemberPointer)
+            )
     }
 
     fn is_ambiguous_parameter(&self, var_name: &str) -> bool {
-        matches!(self.variable_types.get(var_name), Some(VariableType::AmbiguousParameter))
+        matches!(
+            self.variable_types.get(var_name),
+            Some(VariableType::AmbiguousParameter)
+        )
     }
 
     fn is_unknown_pointer(&self, var_name: &str) -> bool {
-        matches!(self.variable_types.get(var_name), Some(VariableType::Unknown))
+        matches!(
+            self.variable_types.get(var_name),
+            Some(VariableType::Unknown)
+        )
     }
 
     fn is_pointer_variable(&self, var_name: &str) -> bool {
@@ -567,7 +643,6 @@ fn get_operator(node: &Node, source: &str) -> Option<String> {
     }
     None
 }
-
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
 // #[cfg(test)]

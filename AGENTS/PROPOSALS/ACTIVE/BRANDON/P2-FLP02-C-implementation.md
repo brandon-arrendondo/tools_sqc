@@ -1,3 +1,16 @@
+---
+rule_id: FLP02-C
+priority: P2
+status: active
+assigned_to: BRANDON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - FLP
+---
+
 # P2-FLP02-C - FLP02-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FLP02-C
+https://wiki.sei.cmu.edu/confluence/display/c/FLP02-C.+Avoid+using+floating-point+numbers+when+precise+computation+is+needed
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify FLP02-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

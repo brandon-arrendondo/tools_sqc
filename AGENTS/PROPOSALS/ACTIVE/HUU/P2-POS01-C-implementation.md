@@ -1,3 +1,16 @@
+---
+rule_id: POS01-C
+priority: P2
+status: active
+assigned_to: HUU
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - POS
+---
+
 # P2-POS01-C - POS01-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/POS01-C
+https://wiki.sei.cmu.edu/confluence/display/c/POS01-C.+Check+for+the+existence+of+links+when+dealing+with+files
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify POS01-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

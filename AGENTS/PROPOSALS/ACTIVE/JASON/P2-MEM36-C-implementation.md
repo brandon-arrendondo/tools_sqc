@@ -1,3 +1,16 @@
+---
+rule_id: MEM36-C
+priority: P2
+status: active
+assigned_to: JASON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - MEM
+---
+
 # P2-MEM36-C - MEM36-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/MEM36-C
+https://wiki.sei.cmu.edu/confluence/display/c/MEM36-C.+Do+not+modify+the+alignment+of+objects+by+calling+realloc()
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify MEM36-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

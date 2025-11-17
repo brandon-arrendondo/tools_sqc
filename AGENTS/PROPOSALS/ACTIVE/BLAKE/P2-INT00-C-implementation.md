@@ -1,3 +1,16 @@
+---
+rule_id: INT00-C
+priority: P2
+status: active
+assigned_to: BLAKE
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - INT
+---
+
 # P2-INT00-C - INT00-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/INT00-C
+https://wiki.sei.cmu.edu/confluence/display/c/INT00-C.+Understand+the+data+model+used+by+your+implementation(s)
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify INT00-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

@@ -1,3 +1,16 @@
+---
+rule_id: MEM12-C
+priority: P2
+status: active
+assigned_to: BRANDON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - MEM
+---
+
 # P2-MEM12-C - MEM12-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C
+https://wiki.sei.cmu.edu/confluence/display/c/MEM12-C.+Consider+using+a+goto+chain+when+leaving+a+function+on+error+when+using+and+releasing+resources
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify MEM12-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use std::collections::HashMap;
-use sha2::{Sha256, Digest};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Suppression {
@@ -14,10 +14,7 @@ pub struct Suppression {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum SuppressionFingerprint {
     /// Hash of the exact code being suppressed
-    CodeHash {
-        hash: String,
-        lines: (usize, usize),
-    },
+    CodeHash { hash: String, lines: (usize, usize) },
 
     /// AST-based semantic fingerprint
     AstSignature {
@@ -55,7 +52,11 @@ impl Suppression {
             let line_count = Self::extract_line_count(comment).unwrap_or(1);
             let pattern = Self::extract_pattern(comment);
             let checksum = Self::calculate_checksum(source, line_number + 1, line_count);
-            SuppressionFingerprint::NextLines { line_count, pattern, checksum }
+            SuppressionFingerprint::NextLines {
+                line_count,
+                pattern,
+                checksum,
+            }
         } else {
             // Default to code hash for the next line
             let lines = (line_number + 1, line_number + 1);
@@ -83,13 +84,19 @@ impl Suppression {
 
                 // Extract the code and calculate hash including rule ID
                 let code = Self::extract_lines(source, lines.0, lines.1 - lines.0 + 1);
-                let current_hash = SuppressionManager::calculate_suppression_hash(&self.rule_id, &code);
+                let current_hash =
+                    SuppressionManager::calculate_suppression_hash(&self.rule_id, &code);
                 current_hash == *hash
             }
 
-            SuppressionFingerprint::NextLines { line_count, pattern, checksum } => {
+            SuppressionFingerprint::NextLines {
+                line_count,
+                pattern,
+                checksum,
+            } => {
                 // Verify checksum of the suppressed lines
-                let current_checksum = Self::calculate_checksum(source, violation_line, *line_count);
+                let current_checksum =
+                    Self::calculate_checksum(source, violation_line, *line_count);
                 if current_checksum != *checksum {
                     return false;
                 }
@@ -103,7 +110,10 @@ impl Suppression {
                 }
             }
 
-            SuppressionFingerprint::AstSignature { signature, node_type: _ } => {
+            SuppressionFingerprint::AstSignature {
+                signature,
+                node_type: _,
+            } => {
                 // Would need AST comparison here
                 // For now, just check if signature appears in nearby code
                 let context = Self::extract_lines(source, violation_line.saturating_sub(2), 5);
@@ -126,7 +136,8 @@ impl Suppression {
     }
 
     fn extract_lines(source: &str, start_line: usize, count: usize) -> String {
-        source.lines()
+        source
+            .lines()
             .skip(start_line.saturating_sub(1))
             .take(count)
             .collect::<Vec<_>>()
@@ -177,9 +188,14 @@ impl Suppression {
     }
 
     fn extract_justification(comment: &str) -> Option<String> {
-        let re = regex::Regex::new(r#"JUSTIFICATION:\s*"([^"]+)"|JUSTIFICATION:\s*(.+?)(?:\s+[A-Z]+:|$)"#).ok()?;
+        let re = regex::Regex::new(
+            r#"JUSTIFICATION:\s*"([^"]+)"|JUSTIFICATION:\s*(.+?)(?:\s+[A-Z]+:|$)"#,
+        )
+        .ok()?;
         re.captures(comment).and_then(|cap| {
-            cap.get(1).or(cap.get(2)).map(|m| m.as_str().trim().to_string())
+            cap.get(1)
+                .or(cap.get(2))
+                .map(|m| m.as_str().trim().to_string())
         })
     }
 
@@ -195,7 +211,9 @@ impl Suppression {
 
     fn extract_line_count(comment: &str) -> Option<usize> {
         let re = regex::Regex::new(r"LINES:(\d+)").ok()?;
-        re.captures(comment)?.get(1).and_then(|m| m.as_str().parse().ok())
+        re.captures(comment)?
+            .get(1)
+            .and_then(|m| m.as_str().parse().ok())
     }
 
     fn extract_review_date(comment: &str) -> Option<String> {
@@ -227,26 +245,41 @@ impl SuppressionManager {
         for (line_num, line) in source.lines().enumerate() {
             let trimmed = line.trim();
             if trimmed.starts_with("//") || trimmed.starts_with("/*") {
-                if let Some(suppression) = Suppression::parse_from_comment(trimmed, line_num, source) {
+                if let Some(suppression) =
+                    Suppression::parse_from_comment(trimmed, line_num, source)
+                {
                     file_suppressions.push(suppression);
                 }
             }
         }
 
         if !file_suppressions.is_empty() {
-            self.suppressions.insert(file_path.to_string(), file_suppressions);
+            self.suppressions
+                .insert(file_path.to_string(), file_suppressions);
         }
     }
 
     /// Check if a violation should be suppressed
-    pub fn should_suppress(&self, file_path: &str, rule_id: &str, line: usize, source: &str) -> Option<&Suppression> {
-        self.suppressions.get(file_path)?
+    pub fn should_suppress(
+        &self,
+        file_path: &str,
+        rule_id: &str,
+        line: usize,
+        source: &str,
+    ) -> Option<&Suppression> {
+        self.suppressions
+            .get(file_path)?
             .iter()
             .find(|s| s.rule_id == rule_id && s.is_valid(source, line))
     }
 
     /// Generate a suppression comment for a violation
-    pub fn generate_suppression_comment(rule_id: &str, source: &str, line: usize, justification: &str) -> String {
+    pub fn generate_suppression_comment(
+        rule_id: &str,
+        source: &str,
+        line: usize,
+        justification: &str,
+    ) -> String {
         let code_line = source.lines().nth(line.saturating_sub(1)).unwrap_or("");
         let hash = Self::calculate_suppression_hash(rule_id, code_line);
 
@@ -275,7 +308,8 @@ mod tests {
 
     #[test]
     fn test_parse_suppression() {
-        let comment = "// SQC-SUPPRESS: ARR30-C HASH:a3f5d2b1 JUSTIFICATION: \"Bounds checked by caller\"";
+        let comment =
+            "// SQC-SUPPRESS: ARR30-C HASH:a3f5d2b1 JUSTIFICATION: \"Bounds checked by caller\"";
         let source = "int arr[5];\narr[10] = 0;";
 
         let suppression = Suppression::parse_from_comment(comment, 0, source).unwrap();

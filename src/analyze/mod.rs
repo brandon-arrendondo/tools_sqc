@@ -1,11 +1,10 @@
-
 pub mod suppression;
 
+use super::files::ProjectSource;
 use super::manifest::RuleManifest;
 use super::parser::CParser;
-use super::rules::{RuleRegistry, RuleViolation};
-use super::files::ProjectSource;
 use super::progress::ProgressReporter;
+use super::rules::{RuleRegistry, RuleViolation};
 use suppression::SuppressionManager;
 
 use anyhow::Result;
@@ -75,11 +74,13 @@ pub fn analyze_project(
                             file_path,
                             rule_id,
                             violation.line,
-                            &source
+                            &source,
                         ) {
                             // Log that violation was suppressed (optional)
-                            eprintln!("Suppressed {} at {}:{} - Justification: {}",
-                                     rule_id, file_path, violation.line, suppression.justification);
+                            eprintln!(
+                                "Suppressed {} at {}:{} - Justification: {}",
+                                rule_id, file_path, violation.line, suppression.justification
+                            );
                             false
                         } else {
                             true
@@ -89,7 +90,9 @@ pub fn analyze_project(
                     for violation in &mut file_violations {
                         violation.file_path = file_path.clone();
                         // Use config severity if specified, otherwise use rule's default severity
-                        violation.severity = rule_config.severity.clone()
+                        violation.severity = rule_config
+                            .severity
+                            .clone()
                             .unwrap_or_else(|| rule.severity());
                     }
                     violations.extend(file_violations);
@@ -106,7 +109,6 @@ pub fn analyze_project(
 
     Ok(violations)
 }
-
 
 pub fn handle_generate_suppression(spec: &str) -> Result<()> {
     // Parse the specification: FILE:LINE:RULE or FILE:LINE-LINE:RULE
@@ -138,17 +140,26 @@ pub fn handle_generate_suppression(spec: &str) -> Result<()> {
             eprintln!("Error: Invalid line range format. Use LINE-LINE");
             return Ok(());
         }
-        let start: usize = range_parts[0].parse().map_err(|_| {
-            eprintln!("Error: Invalid start line number");
-        }).unwrap_or(0);
-        let end: usize = range_parts[1].parse().map_err(|_| {
-            eprintln!("Error: Invalid end line number");
-        }).unwrap_or(0);
+        let start: usize = range_parts[0]
+            .parse()
+            .map_err(|_| {
+                eprintln!("Error: Invalid start line number");
+            })
+            .unwrap_or(0);
+        let end: usize = range_parts[1]
+            .parse()
+            .map_err(|_| {
+                eprintln!("Error: Invalid end line number");
+            })
+            .unwrap_or(0);
         (start, end)
     } else {
-        let line: usize = line_spec.parse().map_err(|_| {
-            eprintln!("Error: Invalid line number");
-        }).unwrap_or(0);
+        let line: usize = line_spec
+            .parse()
+            .map_err(|_| {
+                eprintln!("Error: Invalid line number");
+            })
+            .unwrap_or(0);
         (line, line)
     };
 
@@ -160,7 +171,10 @@ pub fn handle_generate_suppression(spec: &str) -> Result<()> {
     // Extract the code lines
     let lines: Vec<&str> = source.lines().collect();
     if start_line > lines.len() || end_line > lines.len() {
-        eprintln!("Error: Line numbers exceed file length (file has {} lines)", lines.len());
+        eprintln!(
+            "Error: Line numbers exceed file length (file has {} lines)",
+            lines.len()
+        );
         return Ok(());
     }
 
@@ -171,7 +185,10 @@ pub fn handle_generate_suppression(spec: &str) -> Result<()> {
     let hash = SuppressionManager::calculate_suppression_hash(rule_id, &code);
 
     // Generate the suppression comment
-    println!("Generated suppression comment for {}:{}:{}", file_path, line_spec, rule_id);
+    println!(
+        "Generated suppression comment for {}:{}:{}",
+        file_path, line_spec, rule_id
+    );
     println!();
     println!("Code being suppressed:");
     for (i, line) in code_lines.iter().enumerate() {
@@ -181,11 +198,18 @@ pub fn handle_generate_suppression(spec: &str) -> Result<()> {
 
     if start_line == end_line {
         println!("Add this comment BEFORE line {}:", start_line);
-        println!("// SQC-SUPPRESS: {} HASH:{} JUSTIFICATION: \"TODO: Add justification\"", rule_id, hash);
+        println!(
+            "// SQC-SUPPRESS: {} HASH:{} JUSTIFICATION: \"TODO: Add justification\"",
+            rule_id, hash
+        );
     } else {
         println!("Add this comment BEFORE line {}:", start_line);
-        println!("// SQC-SUPPRESS: {} LINES:{} HASH:{} JUSTIFICATION: \"TODO: Add justification\"",
-                rule_id, end_line - start_line + 1, hash);
+        println!(
+            "// SQC-SUPPRESS: {} LINES:{} HASH:{} JUSTIFICATION: \"TODO: Add justification\"",
+            rule_id,
+            end_line - start_line + 1,
+            hash
+        );
     }
     println!();
     println!("Note: Replace 'TODO: Add justification' with an actual explanation of why this violation is acceptable.");
@@ -204,5 +228,3 @@ pub fn get_code_snippet(file_path: &str, line_number: usize) -> Result<String> {
         Ok("(line not found)".to_string())
     }
 }
-
-

@@ -76,7 +76,10 @@ pub fn is_inside_conditional(node: &Node) -> bool {
 pub fn get_identifier_from_declarator(declarator: &Node, source: &str) -> String {
     match declarator.kind() {
         "identifier" => get_node_text_owned(declarator, source),
-        "pointer_declarator" | "array_declarator" | "function_declarator" | "parenthesized_declarator" => {
+        "pointer_declarator"
+        | "array_declarator"
+        | "function_declarator"
+        | "parenthesized_declarator" => {
             // Recursively search for the identifier
             for i in 0..declarator.child_count() {
                 if let Some(child) = declarator.child(i) {
@@ -89,9 +92,9 @@ pub fn get_identifier_from_declarator(declarator: &Node, source: &str) -> String
                     }
                 }
             }
-            String::new()  // Return empty string for consistency with original implementations
+            String::new() // Return empty string for consistency with original implementations
         }
-        _ => String::new()  // Return empty string for consistency with original implementations
+        _ => String::new(), // Return empty string for consistency with original implementations
     }
 }
 
@@ -102,7 +105,13 @@ pub fn find_identifier_in_declarator(declarator: &Node, source: &str) -> Option<
         if let Some(child) = declarator.child(i) {
             if child.kind() == "identifier" {
                 return Some(get_node_text_owned(&child, source));
-            } else if matches!(child.kind(), "array_declarator" | "pointer_declarator" | "function_declarator" | "parenthesized_declarator") {
+            } else if matches!(
+                child.kind(),
+                "array_declarator"
+                    | "pointer_declarator"
+                    | "function_declarator"
+                    | "parenthesized_declarator"
+            ) {
                 if let Some(id) = find_identifier_in_declarator(&child, source) {
                     return Some(id);
                 }
@@ -118,7 +127,10 @@ pub fn find_identifier_in_declarator(declarator: &Node, source: &str) -> Option<
 
 /// Extract function parameters as (name, full_type) tuples
 /// Returns None if the function has no parameters or parameter list not found
-pub fn get_function_parameters(function_node: &Node, source: &str) -> Option<Vec<(String, String)>> {
+pub fn get_function_parameters(
+    function_node: &Node,
+    source: &str,
+) -> Option<Vec<(String, String)>> {
     // Find the parameter list
     for i in 0..function_node.child_count() {
         if let Some(child) = function_node.child(i) {
@@ -142,7 +154,8 @@ fn extract_parameters(declarator_node: &Node, source: &str) -> Option<Vec<(Strin
                 for j in 0..child.child_count() {
                     if let Some(param) = child.child(j) {
                         if param.kind() == "parameter_declaration" {
-                            if let Some((name, param_type)) = extract_parameter_info(&param, source) {
+                            if let Some((name, param_type)) = extract_parameter_info(&param, source)
+                            {
                                 parameters.push((name, param_type));
                             }
                         }
@@ -166,7 +179,10 @@ fn extract_parameter_info(param_node: &Node, source: &str) -> Option<(String, St
     // Look for declarator pattern
     for i in 0..param_node.child_count() {
         if let Some(child) = param_node.child(i) {
-            if matches!(child.kind(), "array_declarator" | "pointer_declarator" | "function_declarator") {
+            if matches!(
+                child.kind(),
+                "array_declarator" | "pointer_declarator" | "function_declarator"
+            ) {
                 // Found array, pointer, or function pointer parameter
                 if let Some(identifier) = find_identifier_in_declarator(&child, source) {
                     return Some((identifier, param_text.to_string()));
@@ -214,8 +230,7 @@ pub fn is_function_parameter(function_node: &Node, var_name: &str, source: &str)
 
 /// Check if a parameter type string indicates an array parameter
 pub fn is_array_parameter_type(param_type: &str) -> bool {
-    param_type.contains('[') ||
-    (param_type.contains('*') && !param_type.contains("const char *"))
+    param_type.contains('[') || (param_type.contains('*') && !param_type.contains("const char *"))
 }
 
 /// Check if a type string represents a pointer type
@@ -227,21 +242,31 @@ pub fn is_pointer_type(type_str: &str) -> bool {
 pub fn is_signed_type(type_str: &str) -> bool {
     matches!(
         type_str.trim(),
-        "int" | "short" | "long" | "char" | "signed" |
-        "signed int" | "signed short" | "signed long" | "signed char" |
-        "int8_t" | "int16_t" | "int32_t" | "int64_t" |
-        "ptrdiff_t" | "ssize_t"
+        "int"
+            | "short"
+            | "long"
+            | "char"
+            | "signed"
+            | "signed int"
+            | "signed short"
+            | "signed long"
+            | "signed char"
+            | "int8_t"
+            | "int16_t"
+            | "int32_t"
+            | "int64_t"
+            | "ptrdiff_t"
+            | "ssize_t"
     )
 }
 
 /// Check if a type string represents an unsigned integer type
 pub fn is_unsigned_type(type_str: &str) -> bool {
-    type_str.contains("unsigned") ||
-    matches!(
-        type_str.trim(),
-        "size_t" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" |
-        "uintptr_t" | "uintmax_t"
-    )
+    type_str.contains("unsigned")
+        || matches!(
+            type_str.trim(),
+            "size_t" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" | "uintptr_t" | "uintmax_t"
+        )
 }
 
 // ============================================================================
@@ -255,12 +280,36 @@ pub fn get_binary_operator<'a>(node: &Node, source: &'a str) -> Option<&'a str> 
         if let Some(child) = node.child(i) {
             let kind = child.kind();
             // Check if this is an operator token
-            if matches!(kind,
-                "+" | "-" | "*" | "/" | "%" |
-                "==" | "!=" | "<" | ">" | "<=" | ">=" |
-                "&&" | "||" | "&" | "|" | "^" | "<<" | ">>" |
-                "=" | "+=" | "-=" | "*=" | "/=" | "%=" |
-                "&=" | "|=" | "^=" | "<<=" | ">>="
+            if matches!(
+                kind,
+                "+" | "-"
+                    | "*"
+                    | "/"
+                    | "%"
+                    | "=="
+                    | "!="
+                    | "<"
+                    | ">"
+                    | "<="
+                    | ">="
+                    | "&&"
+                    | "||"
+                    | "&"
+                    | "|"
+                    | "^"
+                    | "<<"
+                    | ">>"
+                    | "="
+                    | "+="
+                    | "-="
+                    | "*="
+                    | "/="
+                    | "%="
+                    | "&="
+                    | "|="
+                    | "^="
+                    | "<<="
+                    | ">>="
             ) {
                 return Some(get_node_text(&child, source));
             }
@@ -295,7 +344,10 @@ pub fn find_array_size(array_name: &str, preceding_text: &str) -> Option<usize> 
             if size_str.contains('*') {
                 let parts: Vec<&str> = size_str.split('*').collect();
                 if parts.len() == 2 {
-                    if let (Ok(a), Ok(b)) = (parts[0].trim().parse::<usize>(), parts[1].trim().parse::<usize>()) {
+                    if let (Ok(a), Ok(b)) = (
+                        parts[0].trim().parse::<usize>(),
+                        parts[1].trim().parse::<usize>(),
+                    ) {
                         return Some(a * b);
                     }
                 }
@@ -313,11 +365,11 @@ pub fn get_type_size(type_name: &str) -> usize {
         "char" | "signed char" | "unsigned char" | "int8_t" | "uint8_t" => 1,
         "short" | "signed short" | "unsigned short" | "int16_t" | "uint16_t" => 2,
         "int" | "signed int" | "unsigned int" | "int32_t" | "uint32_t" | "float" => 4,
-        "long" | "signed long" | "unsigned long" | "long long" | "signed long long" |
-        "unsigned long long" | "int64_t" | "uint64_t" | "double" | "size_t" | "ptrdiff_t" => 8,
+        "long" | "signed long" | "unsigned long" | "long long" | "signed long long"
+        | "unsigned long long" | "int64_t" | "uint64_t" | "double" | "size_t" | "ptrdiff_t" => 8,
         "long double" => 16,
         t if t.ends_with('*') => 8, // Pointer size on 64-bit
-        _ => 4, // Default to int size
+        _ => 4,                     // Default to int size
     }
 }
 

@@ -1,8 +1,8 @@
-use crate::utility::cert_c::ast_utils;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils;
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Str30C;
 
@@ -115,14 +115,19 @@ impl StringLiteralAnalyzer {
                 }
                 false
             }
-            _ => false
+            _ => false,
         }
     }
 
-    fn process_assignment(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn process_assignment(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
-            node.child_by_field_name("right")
+            node.child_by_field_name("right"),
         ) {
             // Check if assigning to a string literal element
             if left.kind() == "subscript_expression" {
@@ -131,15 +136,18 @@ impl StringLiteralAnalyzer {
                         self.flag_violation(
                             node,
                             "Attempting to modify a string literal through array subscript",
-                            violations
+                            violations,
                         );
                     } else if array.kind() == "identifier" {
                         let var_name = ast_utils::get_node_text_owned(&array, source);
                         if self.string_literal_vars.contains(&var_name) {
                             self.flag_violation(
                                 node,
-                                &format!("Attempting to modify string literal through variable '{}'", var_name),
-                                violations
+                                &format!(
+                                    "Attempting to modify string literal through variable '{}'",
+                                    var_name
+                                ),
+                                violations,
                             );
                         }
                     }
@@ -153,7 +161,7 @@ impl StringLiteralAnalyzer {
                         self.flag_violation(
                             node,
                             "Attempting to modify a string literal through pointer dereference",
-                            violations
+                            violations,
                         );
                     }
                 }
@@ -172,7 +180,12 @@ impl StringLiteralAnalyzer {
         }
     }
 
-    fn check_function_call(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_function_call(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(function) = node.child_by_field_name("function") {
             let func_name = ast_utils::get_node_text_owned(&function, source);
 
@@ -189,8 +202,11 @@ impl StringLiteralAnalyzer {
                                     if self.is_string_literal(&arg, source) {
                                         self.flag_violation(
                                             node,
-                                            &format!("Passing string literal as destination to '{}'", func_name),
-                                            violations
+                                            &format!(
+                                                "Passing string literal as destination to '{}'",
+                                                func_name
+                                            ),
+                                            violations,
                                         );
                                     } else if arg.kind() == "identifier" {
                                         let var_name = ast_utils::get_node_text_owned(&arg, source);
@@ -213,7 +229,12 @@ impl StringLiteralAnalyzer {
         }
     }
 
-    fn check_array_modification(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_array_modification(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check if this subscript expression is on the left side of an assignment
         if let Some(parent) = node.parent() {
             if parent.kind() == "assignment_expression" {
@@ -225,7 +246,7 @@ impl StringLiteralAnalyzer {
                                 self.flag_violation(
                                     node,
                                     "Attempting to modify a string literal through array subscript",
-                                    violations
+                                    violations,
                                 );
                             } else if array.kind() == "identifier" {
                                 let var_name = ast_utils::get_node_text_owned(&array, source);
@@ -244,7 +265,12 @@ impl StringLiteralAnalyzer {
         }
     }
 
-    fn check_pointer_modification(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_pointer_modification(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check if this pointer expression is on the left side of an assignment
         if let Some(parent) = node.parent() {
             if parent.kind() == "assignment_expression" {
@@ -277,7 +303,7 @@ impl StringLiteralAnalyzer {
                     false
                 }
             }
-            _ => false
+            _ => false,
         }
     }
 
@@ -300,7 +326,7 @@ impl StringLiteralAnalyzer {
                 }
                 "unknown".to_string()
             }
-            _ => "unknown".to_string()
+            _ => "unknown".to_string(),
         }
     }
 
@@ -314,16 +340,33 @@ impl StringLiteralAnalyzer {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Use a modifiable array instead of a string literal".to_string()),
-        ..Default::default()
+            ..Default::default()
         });
     }
 }
 
 fn is_string_modifying_function(func_name: &str) -> bool {
-    matches!(func_name,
-        "strcpy" | "strncpy" | "strcat" | "strncat" | "sprintf" | "snprintf" |
-        "vsprintf" | "vsnprintf" | "gets" | "fgets" | "scanf" | "fscanf" | "sscanf" |
-        "strtok" | "memcpy" | "memmove" | "memset" | "bcopy" | "bzero"
+    matches!(
+        func_name,
+        "strcpy"
+            | "strncpy"
+            | "strcat"
+            | "strncat"
+            | "sprintf"
+            | "snprintf"
+            | "vsprintf"
+            | "vsnprintf"
+            | "gets"
+            | "fgets"
+            | "scanf"
+            | "fscanf"
+            | "sscanf"
+            | "strtok"
+            | "memcpy"
+            | "memmove"
+            | "memset"
+            | "bcopy"
+            | "bzero"
     )
 }
 

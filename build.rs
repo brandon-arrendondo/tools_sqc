@@ -1,10 +1,10 @@
+use anyhow::{Context, Result};
+use serde::Deserialize;
+use std::collections::HashMap;
 use std::fs::{self, File};
 use std::io::Write;
 use std::path::PathBuf;
 use walkdir::WalkDir;
-use anyhow::{Context, Result};
-use serde::Deserialize;
-use std::collections::HashMap;
 
 #[derive(Deserialize)]
 struct RuleConfig {
@@ -72,7 +72,10 @@ fn generate_rules_all_toml() -> Result<()> {
         let ruleset_name = match ruleset_dir.file_name() {
             Some(name) => name.to_string_lossy().to_string(),
             None => {
-                eprintln!("Warning: Invalid ruleset directory path: {}", ruleset_dir.display());
+                eprintln!(
+                    "Warning: Invalid ruleset directory path: {}",
+                    ruleset_dir.display()
+                );
                 continue;
             }
         };
@@ -85,22 +88,26 @@ fn generate_rules_all_toml() -> Result<()> {
             .filter_map(|e| match e {
                 Ok(entry) => Some(entry),
                 Err(err) => {
-                    eprintln!("Warning: Skipping entry in {}: {}", ruleset_dir.display(), err);
+                    eprintln!(
+                        "Warning: Skipping entry in {}: {}",
+                        ruleset_dir.display(),
+                        err
+                    );
                     None
                 }
             })
             .filter(|e| {
                 e.path().is_file()
                     && e.path().extension().map_or(false, |ext| ext == "toml")
-                    && e.path()
-                        .file_name()
-                        .and_then(|name| name.to_str())
-                        .map_or(false, |name_str| {
+                    && e.path().file_name().and_then(|name| name.to_str()).map_or(
+                        false,
+                        |name_str| {
                             // Match pattern like ARR30-C.toml, but exclude rules-all.toml
                             name_str != "rules-all.toml"
                                 && name_str.contains('-')
                                 && !name_str.starts_with('.')
-                        })
+                        },
+                    )
             })
             .map(|e| e.path().to_path_buf())
             .collect();
@@ -116,7 +123,10 @@ fn generate_rules_all_toml() -> Result<()> {
         // Combine all TOML files - extract only the rules.cert_c section
         let mut combined_content = String::new();
         combined_content.push_str("# Auto-generated file - do not edit directly\n");
-        combined_content.push_str(&format!("# Generated from individual rule manifests in {}\n", ruleset_name));
+        combined_content.push_str(&format!(
+            "# Generated from individual rule manifests in {}\n",
+            ruleset_name
+        ));
         combined_content.push_str("# To modify, edit the individual TOML files and rebuild\n");
         combined_content.push_str("# Full metadata is in individual rule TOML files\n\n");
 
@@ -129,7 +139,8 @@ fn generate_rules_all_toml() -> Result<()> {
                         let section_content = &content[start_idx..];
 
                         // Find the end of this section (next section or end of file)
-                        let end_idx = section_content.find("\n[")
+                        let end_idx = section_content
+                            .find("\n[")
                             .map(|i| i + 1)
                             .unwrap_or(section_content.len());
 
@@ -148,29 +159,35 @@ fn generate_rules_all_toml() -> Result<()> {
         }
 
         // Write combined file
-        let mut file = File::create(&output_path)
-            .context(format!("Failed to create rules-all.toml at {}", output_path.display()))?;
+        let mut file = File::create(&output_path).context(format!(
+            "Failed to create rules-all.toml at {}",
+            output_path.display()
+        ))?;
 
         file.write_all(combined_content.as_bytes())
-            .context(format!("Failed to write rules-all.toml to {}", output_path.display()))?;
+            .context(format!(
+                "Failed to write rules-all.toml to {}",
+                output_path.display()
+            ))?;
 
         println!("cargo:rerun-if-changed={}", ruleset_dir.display());
-        println!("Generated {} rules-all.toml with {} rule manifests",
-                 ruleset_name, toml_files.len());
+        println!(
+            "Generated {} rules-all.toml with {} rule manifests",
+            ruleset_name,
+            toml_files.len()
+        );
     }
 
     Ok(())
 }
 
 fn generate_integration_tests() -> Result<()> {
-    let out_dir = std::env::var("OUT_DIR")
-        .context("OUT_DIR environment variable not set")?;
+    let out_dir = std::env::var("OUT_DIR").context("OUT_DIR environment variable not set")?;
     let out_dir_path = PathBuf::from(&out_dir);
 
     // Create tests subdirectory
     let tests_dir = out_dir_path.join("tests");
-    fs::create_dir_all(&tests_dir)
-        .context("Failed to create tests directory")?;
+    fs::create_dir_all(&tests_dir).context("Failed to create tests directory")?;
 
     // Track all rule modules for the main file
     let mut rule_modules = Vec::new();
@@ -199,7 +216,10 @@ fn generate_integration_tests() -> Result<()> {
         let category_name = match category_path.file_name().and_then(|n| n.to_str()) {
             Some(name) => name,
             None => {
-                eprintln!("Warning: Skipping category with invalid path: {}", category_path.display());
+                eprintln!(
+                    "Warning: Skipping category with invalid path: {}",
+                    category_path.display()
+                );
                 continue;
             }
         };
@@ -236,7 +256,10 @@ fn generate_integration_tests() -> Result<()> {
             let rule_id = match rule_path.file_name().and_then(|n| n.to_str()) {
                 Some(id) => id,
                 None => {
-                    eprintln!("Warning: Skipping rule with invalid path: {}", rule_path.display());
+                    eprintln!(
+                        "Warning: Skipping rule with invalid path: {}",
+                        rule_path.display()
+                    );
                     continue;
                 }
             };
@@ -251,8 +274,11 @@ fn generate_integration_tests() -> Result<()> {
             let rule_snake = rule_id.to_lowercase().replace('-', "_");
             let rule_test_file = tests_dir.join(format!("{}_tests.rs", rule_snake));
 
-            let mut rule_file = File::create(&rule_test_file)
-                .context(format!("Failed to create test file for {}: {}", rule_id, rule_test_file.display()))?;
+            let mut rule_file = File::create(&rule_test_file).context(format!(
+                "Failed to create test file for {}: {}",
+                rule_id,
+                rule_test_file.display()
+            ))?;
 
             // Write per-rule file header (no use statements - they're in the main file)
             writeln!(rule_file, "// Auto-generated tests for {}", rule_id)?;
@@ -267,7 +293,10 @@ fn generate_integration_tests() -> Result<()> {
                 let fail_entries = match fs::read_dir(&fail_dir) {
                     Ok(entries) => entries,
                     Err(e) => {
-                        eprintln!("Warning: Could not read fail directory for {}: {}", rule_id, e);
+                        eprintln!(
+                            "Warning: Could not read fail directory for {}: {}",
+                            rule_id, e
+                        );
                         continue;
                     }
                 };
@@ -289,8 +318,9 @@ fn generate_integration_tests() -> Result<()> {
                             rule_id,
                             category_name,
                             &test_path,
-                            "fail"
-                        ).context(format!("Failed to generate test for {:?}", test_path))?;
+                            "fail",
+                        )
+                        .context(format!("Failed to generate test for {:?}", test_path))?;
                     }
                 }
             }
@@ -301,7 +331,10 @@ fn generate_integration_tests() -> Result<()> {
                 let pass_entries = match fs::read_dir(&pass_dir) {
                     Ok(entries) => entries,
                     Err(e) => {
-                        eprintln!("Warning: Could not read pass directory for {}: {}", rule_id, e);
+                        eprintln!(
+                            "Warning: Could not read pass directory for {}: {}",
+                            rule_id, e
+                        );
                         continue;
                     }
                 };
@@ -323,8 +356,9 @@ fn generate_integration_tests() -> Result<()> {
                             rule_id,
                             category_name,
                             &test_path,
-                            "pass"
-                        ).context(format!("Failed to generate test for {:?}", test_path))?;
+                            "pass",
+                        )
+                        .context(format!("Failed to generate test for {:?}", test_path))?;
                     }
                 }
             }
@@ -333,15 +367,18 @@ fn generate_integration_tests() -> Result<()> {
 
     // Generate main integration_tests.rs with module includes using include!()
     let dest_path = out_dir_path.join("integration_tests.rs");
-    let mut main_file = File::create(&dest_path)
-        .context("Failed to create integration_tests.rs")?;
+    let mut main_file =
+        File::create(&dest_path).context("Failed to create integration_tests.rs")?;
 
     writeln!(main_file, "// Auto-generated test includes")?;
     writeln!(main_file, "// DO NOT EDIT - Generated by build.rs\n")?;
     writeln!(main_file, "#[cfg(test)]")?;
     writeln!(main_file, "mod generated_tests {{")?;
     writeln!(main_file, "    use crate::parser::CParser;")?;
-    writeln!(main_file, "    use crate::rules::{{CertRule, RuleRegistry}};")?;
+    writeln!(
+        main_file,
+        "    use crate::rules::{{CertRule, RuleRegistry}};"
+    )?;
     writeln!(main_file, "    use std::path::Path;\n")?;
 
     // Sort for consistent output
@@ -349,7 +386,11 @@ fn generate_integration_tests() -> Result<()> {
 
     for rule_module in &rule_modules {
         // Use include!() to inline the test file contents
-        writeln!(main_file, "    include!(concat!(env!(\"OUT_DIR\"), \"/tests/{}_tests.rs\"));", rule_module)?;
+        writeln!(
+            main_file,
+            "    include!(concat!(env!(\"OUT_DIR\"), \"/tests/{}_tests.rs\"));",
+            rule_module
+        )?;
     }
 
     writeln!(main_file, "}}")?;
@@ -364,26 +405,30 @@ fn generate_test_function(
     rule_id: &str,
     category: &str,
     test_path: &std::path::Path,
-    test_type: &str  // "fail" or "pass"
+    test_type: &str, // "fail" or "pass"
 ) -> Result<()> {
     // Convert rule_id to snake_case for function name
     let rule_snake = rule_id.to_lowercase().replace('-', "_");
 
     // Get test file name without extension
-    let test_file_stem = test_path.file_stem()
+    let test_file_stem = test_path
+        .file_stem()
         .and_then(|s| s.to_str())
         .context("Invalid test file name")?;
     let test_name_safe = test_file_stem.replace('-', "_").replace('.', "_");
 
     // Generate test function name: test_arr00_c_fail_wiki_noncompliant_1
-    let test_fn_name = format!("test_{}_{}_{}",  rule_snake, test_type, test_name_safe);
+    let test_fn_name = format!("test_{}_{}_{}", rule_snake, test_type, test_name_safe);
 
     // Get relative path from project root
-    let test_filename = test_path.file_name()
+    let test_filename = test_path
+        .file_name()
         .and_then(|n| n.to_str())
         .context("Invalid test filename")?;
-    let relative_path = format!("src/rules/cert_c/{}/{}/tests/{}/{}",
-        category, rule_id, test_type, test_filename);
+    let relative_path = format!(
+        "src/rules/cert_c/{}/{}/tests/{}/{}",
+        category, rule_id, test_type, test_filename
+    );
 
     // Check if rule is implemented by reading the TOML file
     let toml_path = format!("src/rules/cert_c/{}/{}/{}.toml", category, rule_id, rule_id);
@@ -397,19 +442,37 @@ fn generate_test_function(
     }
     writeln!(f, "fn {}() {{", test_fn_name)?;
     writeln!(f, "    let registry = RuleRegistry::new();")?;
-    writeln!(f, "    let rule = registry.get_rule(\"{}\").expect(\"Rule {} not found in registry\");",
-        rule_id, rule_id)?;
+    writeln!(
+        f,
+        "    let rule = registry.get_rule(\"{}\").expect(\"Rule {} not found in registry\");",
+        rule_id, rule_id
+    )?;
     writeln!(f, "    ")?;
-    writeln!(f, "    let test_path = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"{}\");",
-        relative_path)?;
+    writeln!(
+        f,
+        "    let test_path = Path::new(env!(\"CARGO_MANIFEST_DIR\")).join(\"{}\");",
+        relative_path
+    )?;
     writeln!(f, "    let source = std::fs::read_to_string(&test_path)")?;
-    writeln!(f, "        .unwrap_or_else(|e| panic!(\"Failed to read {{:?}}: {{}}\", test_path, e));")?;
+    writeln!(
+        f,
+        "        .unwrap_or_else(|e| panic!(\"Failed to read {{:?}}: {{}}\", test_path, e));"
+    )?;
     writeln!(f, "    ")?;
-    writeln!(f, "    let mut parser = CParser::new().expect(\"Failed to create parser\");")?;
+    writeln!(
+        f,
+        "    let mut parser = CParser::new().expect(\"Failed to create parser\");"
+    )?;
     writeln!(f, "    let tree = parser.parse_source(&source)")?;
-    writeln!(f, "        .unwrap_or_else(|e| panic!(\"Failed to parse {{:?}}: {{}}\", test_path, e));")?;
+    writeln!(
+        f,
+        "        .unwrap_or_else(|e| panic!(\"Failed to parse {{:?}}: {{}}\", test_path, e));"
+    )?;
     writeln!(f, "    ")?;
-    writeln!(f, "    let violations = rule.check(&tree.root_node(), &source);")?;
+    writeln!(
+        f,
+        "    let violations = rule.check(&tree.root_node(), &source);"
+    )?;
     writeln!(f, "    ")?;
 
     if test_type == "fail" {
@@ -417,11 +480,19 @@ fn generate_test_function(
         writeln!(f, "    ")?;
         writeln!(f, "    // Record result for report generation")?;
         writeln!(f, "    // For fail tests: we expect violations to be detected (detected_violation should be true)")?;
-        writeln!(f, "    super::record_test_result(\"{}\", detected_violation, true);", test_fn_name)?;
+        writeln!(
+            f,
+            "    super::record_test_result(\"{}\", detected_violation, true);",
+            test_fn_name
+        )?;
         writeln!(f, "    ")?;
         writeln!(f, "    assert!(")?;
         writeln!(f, "        detected_violation,")?;
-        writeln!(f, "        \"[{}] Expected violation in {{:?}} but found none\",", rule_id)?;
+        writeln!(
+            f,
+            "        \"[{}] Expected violation in {{:?}} but found none\",",
+            rule_id
+        )?;
         writeln!(f, "        test_path.file_name().unwrap()")?;
         writeln!(f, "    );")?;
     } else {
@@ -429,13 +500,24 @@ fn generate_test_function(
         writeln!(f, "    ")?;
         writeln!(f, "    // Record result for report generation")?;
         writeln!(f, "    // For pass tests: we expect NO violations to be detected (no_violation should be true)")?;
-        writeln!(f, "    super::record_test_result(\"{}\", no_violation, false);", test_fn_name)?;
+        writeln!(
+            f,
+            "    super::record_test_result(\"{}\", no_violation, false);",
+            test_fn_name
+        )?;
         writeln!(f, "    ")?;
         writeln!(f, "    assert!(")?;
         writeln!(f, "        no_violation,")?;
-        writeln!(f, "        \"[{}] Unexpected violation in {{:?}}: {{}}\",", rule_id)?;
+        writeln!(
+            f,
+            "        \"[{}] Unexpected violation in {{:?}}: {{}}\",",
+            rule_id
+        )?;
         writeln!(f, "        test_path.file_name().unwrap(),")?;
-        writeln!(f, "        violations.first().map(|v| &v.message).unwrap_or(&String::from(\"unknown\"))")?;
+        writeln!(
+            f,
+            "        violations.first().map(|v| &v.message).unwrap_or(&String::from(\"unknown\"))"
+        )?;
         writeln!(f, "    );")?;
     }
 

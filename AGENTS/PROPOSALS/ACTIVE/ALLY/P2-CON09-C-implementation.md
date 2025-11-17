@@ -1,3 +1,16 @@
+---
+rule_id: CON09-C
+priority: P2
+status: active
+assigned_to: ALLY
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - CON
+---
+
 # P2-CON09-C - CON09-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/CON09-C
+https://wiki.sei.cmu.edu/confluence/display/c/CON09-C.+Avoid+the+ABA+problem+when+using+lock-free+algorithms
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify CON09-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

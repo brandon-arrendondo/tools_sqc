@@ -1,7 +1,7 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use std::collections::{HashMap, HashSet};
+use tree_sitter::Node;
 
 pub struct Mem30C;
 
@@ -148,7 +148,8 @@ impl MemoryAnalyzer {
                             node_start: node.start_byte(),
                             node_end: node.end_byte(),
                         });
-                        self.variable_states.insert(var_name, MemoryState::Allocated);
+                        self.variable_states
+                            .insert(var_name, MemoryState::Allocated);
                     }
                 }
             }
@@ -157,7 +158,10 @@ impl MemoryAnalyzer {
 
     fn process_assignment(&mut self, node: &Node, source: &str) {
         // Check for assignments that might involve freed memory
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let _left_var = self.extract_variable_name(&left, source);
             let right_var = self.extract_variable_name(&right, source);
 
@@ -202,7 +206,12 @@ impl MemoryAnalyzer {
         }
     }
 
-    fn check_function_arguments_for_freed_memory(&mut self, node: &Node, source: &str, _function_name: &str) {
+    fn check_function_arguments_for_freed_memory(
+        &mut self,
+        node: &Node,
+        source: &str,
+        _function_name: &str,
+    ) {
         if let Some(arguments) = node.child_by_field_name("arguments") {
             for i in 0..arguments.child_count() {
                 if let Some(arg) = arguments.child(i) {
@@ -285,8 +294,11 @@ impl MemoryAnalyzer {
                             file_path: String::new(),
                             line: op.line,
                             column: 1,
-                            suggestion: Some("Set pointer to NULL after freeing to prevent double-free.".to_string()),
-                        ..Default::default()
+                            suggestion: Some(
+                                "Set pointer to NULL after freeing to prevent double-free."
+                                    .to_string(),
+                            ),
+                            ..Default::default()
                         });
                     } else {
                         freed_vars.insert(op.variable.clone());
@@ -305,11 +317,17 @@ impl MemoryAnalyzer {
         self.check_realloc_pattern(node, source, violations);
     }
 
-    fn check_realloc_pattern(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_realloc_pattern(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         match node.kind() {
             "call_expression" => {
                 if let Some(function_node) = node.child_by_field_name("function") {
-                    let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+                    let function_name =
+                        &source[function_node.start_byte()..function_node.end_byte()];
 
                     if function_name == "realloc" {
                         // Look for dangerous realloc patterns
@@ -322,7 +340,8 @@ impl MemoryAnalyzer {
                                     if let Some(arguments) = node.child_by_field_name("arguments") {
                                         if let Some(first_arg) = arguments.child(0) {
                                             if first_arg.kind() != "," {
-                                                let source_var = self.extract_variable_name(&first_arg, source);
+                                                let source_var =
+                                                    self.extract_variable_name(&first_arg, source);
                                                 if realloc_target == source_var {
                                                     let start_point = node.start_position();
                                                     violations.push(RuleViolation {
@@ -359,12 +378,22 @@ impl MemoryAnalyzer {
         }
     }
 
-    fn check_loop_free_patterns(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_loop_free_patterns(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for linked list free patterns
         self.check_linked_list_free(node, source, violations);
     }
 
-    fn check_linked_list_free(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_linked_list_free(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if node.kind() == "for_statement" || node.kind() == "while_statement" {
             let loop_text = &source[node.start_byte()..node.end_byte()];
 
@@ -376,12 +405,14 @@ impl MemoryAnalyzer {
                     violations.push(RuleViolation {
                         rule_id: "MEM30-C".to_string(),
                         severity: Severity::High,
-                        message: "Potential use-after-free in loop: accessing freed pointer's members".to_string(),
+                        message:
+                            "Potential use-after-free in loop: accessing freed pointer's members"
+                                .to_string(),
                         file_path: String::new(),
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Save pointer->next before freeing pointer".to_string()),
-                    ..Default::default()
+                        ..Default::default()
                     });
                 }
             }
@@ -416,9 +447,7 @@ impl MemoryAnalyzer {
 
     fn extract_variable_name(&self, node: &Node, source: &str) -> String {
         match node.kind() {
-            "identifier" => {
-                source[node.start_byte()..node.end_byte()].to_string()
-            }
+            "identifier" => source[node.start_byte()..node.end_byte()].to_string(),
             "pointer_expression" => {
                 // Handle *ptr
                 if let Some(argument) = node.child_by_field_name("argument") {
@@ -443,7 +472,7 @@ impl MemoryAnalyzer {
                     String::new()
                 }
             }
-            _ => String::new()
+            _ => String::new(),
         }
     }
 }

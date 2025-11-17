@@ -1,3 +1,16 @@
+---
+rule_id: INT16-C
+priority: P2
+status: active
+assigned_to: BRANDON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - INT
+---
+
 # P2-INT16-C - INT16-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/INT16-C
+https://wiki.sei.cmu.edu/confluence/display/c/INT16-C.+Do+not+make+assumptions+about+representation+of+signed+integers
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify INT16-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

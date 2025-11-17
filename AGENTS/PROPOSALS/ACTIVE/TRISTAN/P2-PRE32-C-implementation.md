@@ -1,3 +1,16 @@
+---
+rule_id: PRE32-C
+priority: P2
+status: active
+assigned_to: TRISTAN
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - PRE
+---
+
 # P2-PRE32-C - PRE32-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** true
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/PRE32-C
+https://wiki.sei.cmu.edu/confluence/display/c/PRE32-C.+Do+not+use+preprocessor+directives+in+invocations+of+function-like+macros
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify PRE32-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

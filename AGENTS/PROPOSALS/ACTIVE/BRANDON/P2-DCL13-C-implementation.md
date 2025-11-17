@@ -1,3 +1,16 @@
+---
+rule_id: DCL13-C
+priority: P2
+status: active
+assigned_to: BRANDON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - DCL
+---
+
 # P2-DCL13-C - DCL13-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/DCL13-C
+https://wiki.sei.cmu.edu/confluence/display/c/DCL13-C.+Declare+function+parameters+that+are+pointers+to+values+not+changed+by+the+function+as+const
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify DCL13-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

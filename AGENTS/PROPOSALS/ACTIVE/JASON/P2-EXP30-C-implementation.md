@@ -1,3 +1,16 @@
+---
+rule_id: EXP30-C
+priority: P2
+status: active
+assigned_to: JASON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - EXP
+---
+
 # P2-EXP30-C - EXP30-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/EXP30-C
+https://wiki.sei.cmu.edu/confluence/display/c/EXP30-C.+Do+not+depend+on+the+order+of+evaluation+for+side+effects
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify EXP30-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

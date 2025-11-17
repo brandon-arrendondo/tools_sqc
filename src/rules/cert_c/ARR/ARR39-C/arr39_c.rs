@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use tree_sitter::Node;
 
 pub struct Arr39C;
@@ -60,10 +60,18 @@ impl Arr39C {
         }
     }
 
-    fn check_pointer_arithmetic(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_pointer_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = self.get_operator(node, source) {
             if operator == "+" || operator == "-" {
-                if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+                if let (Some(left), Some(right)) = (
+                    node.child_by_field_name("left"),
+                    node.child_by_field_name("right"),
+                ) {
                     // Check if this is pointer + scaled_integer or pointer - scaled_integer
                     if self.is_pointer_scaled_arithmetic(&left, &right, source) {
                         let start_point = node.start_position();
@@ -88,12 +96,22 @@ impl Arr39C {
         }
     }
 
-    fn check_assignment_arithmetic(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_assignment_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = self.get_assignment_operator(node, source) {
             if operator == "+=" || operator == "-=" {
-                if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+                if let (Some(left), Some(right)) = (
+                    node.child_by_field_name("left"),
+                    node.child_by_field_name("right"),
+                ) {
                     // Check if this is pointer += scaled_integer
-                    if self.is_scaled_integer_expression(&right, source) && self.looks_like_pointer(&left, source) {
+                    if self.is_scaled_integer_expression(&right, source)
+                        && self.looks_like_pointer(&left, source)
+                    {
                         let start_point = node.start_position();
                         let expr_text = &source[node.start_byte()..node.end_byte()];
 
@@ -116,14 +134,24 @@ impl Arr39C {
         }
     }
 
-    fn check_function_call_scaling(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_function_call_scaling(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = &source[function_node.start_byte()..function_node.end_byte()];
 
             // Check specific functions that commonly have scaling issues
             match function_name {
                 "fgetws" | "fputws" => {
-                    self.check_wide_string_function_scaling(node, source, function_name, violations);
+                    self.check_wide_string_function_scaling(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                    );
                 }
                 "memset" | "memcpy" | "memmove" => {
                     self.check_memory_function_scaling(node, source, function_name, violations);
@@ -133,11 +161,17 @@ impl Arr39C {
         }
     }
 
-    fn check_loop_pointer_arithmetic(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_loop_pointer_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for patterns like: while (ptr < (buf + sizeof(buf)))
         let node_text = &source[node.start_byte()..node.end_byte()];
 
-        if node_text.contains("sizeof(") && (node_text.contains(" + ") || node_text.contains(" - ")) {
+        if node_text.contains("sizeof(") && (node_text.contains(" + ") || node_text.contains(" - "))
+        {
             // Look for pointer comparison with sizeof scaling
             if let Some(condition) = self.find_loop_condition(node) {
                 if self.has_scaled_pointer_comparison(&condition, source) {
@@ -158,7 +192,13 @@ impl Arr39C {
         }
     }
 
-    fn check_wide_string_function_scaling(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_wide_string_function_scaling(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         for (i, arg) in args.iter().enumerate() {
@@ -181,7 +221,13 @@ impl Arr39C {
         }
     }
 
-    fn check_memory_function_scaling(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_memory_function_scaling(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(arguments) = node.child_by_field_name("arguments") {
             // Look for patterns in the first argument (destination pointer arithmetic)
             for i in 0..arguments.child_count() {
@@ -228,21 +274,21 @@ impl Arr39C {
         let text = &source[node.start_byte()..node.end_byte()];
 
         // Common scaled integer patterns
-        text.contains("sizeof(") ||
-        text.contains("offsetof(") ||
-        (text.contains("*") && (text.contains("sizeof") || text.contains("wcslen"))) ||
-        text.contains("wcslen(") && text.contains("sizeof(wchar_t)")
+        text.contains("sizeof(")
+            || text.contains("offsetof(")
+            || (text.contains("*") && (text.contains("sizeof") || text.contains("wcslen")))
+            || text.contains("wcslen(") && text.contains("sizeof(wchar_t)")
     }
 
     fn looks_like_pointer(&self, node: &Node, source: &str) -> bool {
         let text = &source[node.start_byte()..node.end_byte()];
 
         // Simple heuristics for pointer identification
-        text.ends_with("_ptr") ||
-        text.ends_with("*") ||
-        text.contains("buf") ||
-        text.contains("array") ||
-        text.contains("ptr")
+        text.ends_with("_ptr")
+            || text.ends_with("*")
+            || text.contains("buf")
+            || text.contains("array")
+            || text.contains("ptr")
     }
 
     fn looks_like_pointer_node(&self, node: &Node, source: &str) -> bool {
@@ -255,22 +301,25 @@ impl Arr39C {
                 // Could be pointer arithmetic
                 true
             }
-            _ => false
+            _ => false,
         }
     }
 
     fn is_scaled_offset_pattern(&self, text: &str) -> bool {
-        (text.contains("offsetof(") && text.contains("*")) ||
-        (text.contains("offsetof(") && text.contains("sizeof("))
+        (text.contains("offsetof(") && text.contains("*"))
+            || (text.contains("offsetof(") && text.contains("sizeof("))
     }
 
     fn has_scaled_pointer_comparison(&self, node: &Node, source: &str) -> bool {
         let text = &source[node.start_byte()..node.end_byte()];
 
         // Look for patterns like: ptr < (buf + sizeof(buf))
-        text.contains("sizeof(") &&
-        (text.contains(" < ") || text.contains(" <= ") || text.contains(" > ") || text.contains(" >= ")) &&
-        (text.contains(" + ") || text.contains(" - "))
+        text.contains("sizeof(")
+            && (text.contains(" < ")
+                || text.contains(" <= ")
+                || text.contains(" > ")
+                || text.contains(" >= "))
+            && (text.contains(" + ") || text.contains(" - "))
     }
 
     fn find_loop_condition<'a>(&self, node: &'a Node<'a>) -> Option<Node<'a>> {
@@ -278,7 +327,7 @@ impl Arr39C {
         match node.kind() {
             "while_statement" => node.child_by_field_name("condition"),
             "for_statement" => node.child_by_field_name("condition"),
-            _ => None
+            _ => None,
         }
     }
 

@@ -27,9 +27,9 @@
 //! - Report violations if RNG called without prior seed
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Msc32C;
 

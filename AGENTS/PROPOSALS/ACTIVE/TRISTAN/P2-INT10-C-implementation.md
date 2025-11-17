@@ -1,3 +1,16 @@
+---
+rule_id: INT10-C
+priority: P2
+status: active
+assigned_to: TRISTAN
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - INT
+---
+
 # P2-INT10-C - INT10-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/INT10-C
+https://wiki.sei.cmu.edu/confluence/display/c/INT10-C.+Do+not+assume+a+positive+remainder+when+using+the+%+operator
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify INT10-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

@@ -33,11 +33,11 @@
 //! }
 //! ```
 
+use crate::manifest::{RuleCategory, Severity};
 use crate::rules::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Api05C;
 
@@ -86,7 +86,12 @@ impl Api05C {
         }
     }
 
-    fn check_function_declarator(&self, declarator: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_function_declarator(
+        &self,
+        declarator: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Find function_declarator nodes
         if declarator.kind() == "function_declarator" {
             if let Some(params) = declarator.child_by_field_name("parameters") {
@@ -100,7 +105,12 @@ impl Api05C {
         }
     }
 
-    fn check_parameters(&self, params_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_parameters(
+        &self,
+        params_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check if this uses K&R style (semicolon in parameter list)
         let params_text = get_node_text(params_node, source);
         if params_text.contains(';') {
@@ -135,7 +145,13 @@ impl Api05C {
         // Check each parameter for conformant array issues
         for (idx, param_node) in param_nodes.iter().enumerate() {
             let declared_names: HashSet<_> = param_names[..idx].iter().cloned().collect();
-            self.check_parameter_conformance(param_node, source, &declared_names, has_size_t_param, violations);
+            self.check_parameter_conformance(
+                param_node,
+                source,
+                &declared_names,
+                has_size_t_param,
+                violations,
+            );
         }
     }
 
@@ -185,7 +201,8 @@ impl Api05C {
                     column: declarator.start_position().column + 1,
                     suggestion: Some(
                         "Use conformant array parameter syntax (e.g., 'char p[n]') \
-                        with the size parameter declared before the array".to_string()
+                        with the size parameter declared before the array"
+                            .to_string(),
                     ),
                     ..Default::default()
                 });
@@ -205,8 +222,11 @@ impl Api05C {
                 if let Some(type_node) = param.child_by_field_name("type") {
                     let type_text = get_node_text(&type_node, source);
                     // Only flag basic types that are commonly used as buffers
-                    if type_text.contains("char") || type_text.contains("void") ||
-                       type_text.contains("unsigned") || type_text.contains("int") {
+                    if type_text.contains("char")
+                        || type_text.contains("void")
+                        || type_text.contains("unsigned")
+                        || type_text.contains("int")
+                    {
                         return true;
                     }
                 }
@@ -242,11 +262,13 @@ impl Api05C {
                 let size_text = get_node_text(&size_node, source).trim();
 
                 // Check if size is a variable (identifier)
-                if size_node.kind() == "identifier" ||
-                   (size_node.kind() == "subscript_expression" &&
-                    size_node.named_child_count() > 0 &&
-                    size_node.named_child(0).map_or(false, |n| n.kind() == "identifier")) {
-
+                if size_node.kind() == "identifier"
+                    || (size_node.kind() == "subscript_expression"
+                        && size_node.named_child_count() > 0
+                        && size_node
+                            .named_child(0)
+                            .map_or(false, |n| n.kind() == "identifier"))
+                {
                     // Extract variable name
                     let var_name = if size_node.kind() == "identifier" {
                         size_text.to_string()
@@ -308,7 +330,10 @@ mod tests {
         let rule = Api05C;
         let violations = rule.check(&root_node, source);
 
-        assert!(!violations.is_empty(), "Should detect forward reference to n");
+        assert!(
+            !violations.is_empty(),
+            "Should detect forward reference to n"
+        );
         assert_eq!(violations[0].rule_id, "API05-C");
     }
 
@@ -328,7 +353,10 @@ mod tests {
         let rule = Api05C;
         let violations = rule.check(&root_node, source);
 
-        assert!(violations.is_empty(), "Should not trigger for backward reference");
+        assert!(
+            violations.is_empty(),
+            "Should not trigger for backward reference"
+        );
     }
 
     #[test]

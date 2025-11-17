@@ -19,11 +19,11 @@
 //! - Input functions (fgets, scanf, getenv, etc.)
 //! - Variables assigned from user input sources
 
-use crate::utility::cert_c::ast_utils;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils;
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Fio30C;
 
@@ -83,7 +83,12 @@ impl FormatStringAnalyzer {
         }
     }
 
-    fn analyze_function(&mut self, func_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn analyze_function(
+        &mut self,
+        func_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // First, check if this is main() function and mark argv as user input
         if let Some(declarator) = func_node.child_by_field_name("declarator") {
             let func_name = self.get_function_name(&declarator, source);
@@ -173,7 +178,7 @@ impl FormatStringAnalyzer {
     fn process_assignment(&mut self, node: &Node, source: &str) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
-            node.child_by_field_name("right")
+            node.child_by_field_name("right"),
         ) {
             if left.kind() == "identifier" {
                 let var_name = ast_utils::get_node_text_owned(&left, source);
@@ -214,7 +219,10 @@ impl FormatStringAnalyzer {
             let func_name = ast_utils::get_node_text_owned(&function, source);
 
             // Handle functions that write user input to their first argument
-            if matches!(func_name.as_str(), "fgets" | "gets" | "getline" | "fread" | "read") {
+            if matches!(
+                func_name.as_str(),
+                "fgets" | "gets" | "getline" | "fread" | "read"
+            ) {
                 if let Some(arguments) = node.child_by_field_name("arguments") {
                     let args = self.extract_arguments(&arguments, source);
                     if !args.is_empty() {
@@ -244,7 +252,10 @@ impl FormatStringAnalyzer {
             }
 
             // Handle strcpy, strcat, sprintf, snprintf - first arg gets tainted if source is tainted
-            if matches!(func_name.as_str(), "strcpy" | "strcat" | "sprintf" | "snprintf" | "strncpy" | "strncat") {
+            if matches!(
+                func_name.as_str(),
+                "strcpy" | "strcat" | "sprintf" | "snprintf" | "strncpy" | "strncat"
+            ) {
                 if let Some(arguments) = node.child_by_field_name("arguments") {
                     let args = self.extract_arguments(&arguments, source);
 
@@ -289,9 +300,7 @@ impl FormatStringAnalyzer {
                 }
                 false
             }
-            "call_expression" => {
-                self.is_user_input_source(arg, source)
-            }
+            "call_expression" => self.is_user_input_source(arg, source),
             _ => {
                 // Recursively check children
                 for i in 0..arg.child_count() {
@@ -317,7 +326,7 @@ impl FormatStringAnalyzer {
                     None
                 }
             }
-            _ => None
+            _ => None,
         }
     }
 
@@ -340,10 +349,25 @@ impl FormatStringAnalyzer {
             let func_name = ast_utils::get_node_text_owned(&function, source);
 
             // User input functions
-            if matches!(func_name.as_str(),
-                "fgets" | "gets" | "getline" | "getdelim" | "fgetc" | "getc" | "getchar" |
-                "fread" | "read" | "recv" | "recvfrom" | "recvmsg" |
-                "getenv" | "getpwnam" | "getpwuid" | "getgrnam" | "getgrgid"
+            if matches!(
+                func_name.as_str(),
+                "fgets"
+                    | "gets"
+                    | "getline"
+                    | "getdelim"
+                    | "fgetc"
+                    | "getc"
+                    | "getchar"
+                    | "fread"
+                    | "read"
+                    | "recv"
+                    | "recvfrom"
+                    | "recvmsg"
+                    | "getenv"
+                    | "getpwnam"
+                    | "getpwuid"
+                    | "getgrnam"
+                    | "getgrgid"
             ) {
                 return true;
             }
@@ -384,9 +408,7 @@ impl FormatStringAnalyzer {
                 }
                 false
             }
-            "call_expression" => {
-                self.call_returns_tainted_data(expr, source)
-            }
+            "call_expression" => self.call_returns_tainted_data(expr, source),
             _ => {
                 // Recursively check children
                 for i in 0..expr.child_count() {
@@ -401,7 +423,12 @@ impl FormatStringAnalyzer {
         }
     }
 
-    fn check_format_string_call(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_format_string_call(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(function) = node.child_by_field_name("function") {
             let func_name = ast_utils::get_node_text_owned(&function, source);
 
@@ -461,18 +488,35 @@ impl FormatStringAnalyzer {
     }
 
     fn is_format_string_function(&self, func_name: &str) -> bool {
-        matches!(func_name,
-            "printf" | "fprintf" | "sprintf" | "snprintf" | "dprintf" |
-            "vprintf" | "vfprintf" | "vsprintf" | "vsnprintf" | "vdprintf" |
-            "scanf" | "fscanf" | "sscanf" |
-            "syslog" | "err" | "errx" | "warn" | "warnx" | "error"
+        matches!(
+            func_name,
+            "printf"
+                | "fprintf"
+                | "sprintf"
+                | "snprintf"
+                | "dprintf"
+                | "vprintf"
+                | "vfprintf"
+                | "vsprintf"
+                | "vsnprintf"
+                | "vdprintf"
+                | "scanf"
+                | "fscanf"
+                | "sscanf"
+                | "syslog"
+                | "err"
+                | "errx"
+                | "warn"
+                | "warnx"
+                | "error"
         )
     }
 
     fn get_format_arg_index(&self, func_name: &str) -> usize {
         match func_name {
             "snprintf" | "vsnprintf" => 2, // Third argument is format string (buffer, size, format, ...)
-            "sprintf" | "vsprintf" | "sscanf" | "fprintf" | "fscanf" | "vfprintf" | "syslog" | "dprintf" | "vdprintf" => 1, // Second argument is format string
+            "sprintf" | "vsprintf" | "sscanf" | "fprintf" | "fscanf" | "vfprintf" | "syslog"
+            | "dprintf" | "vdprintf" => 1, // Second argument is format string
             _ => 0, // First argument is format string (printf, scanf, vprintf, etc.)
         }
     }
@@ -482,10 +526,25 @@ impl FormatStringAnalyzer {
             "call_expression" => {
                 if let Some(function) = node.child_by_field_name("function") {
                     let func_name = ast_utils::get_node_text_owned(&function, source);
-                    return matches!(func_name.as_str(),
-                        "fgets" | "gets" | "getline" | "getdelim" | "fgetc" | "getc" | "getchar" |
-                        "fread" | "read" | "recv" | "recvfrom" | "recvmsg" |
-                        "getenv" | "getpwnam" | "getpwuid" | "getgrnam" | "getgrgid"
+                    return matches!(
+                        func_name.as_str(),
+                        "fgets"
+                            | "gets"
+                            | "getline"
+                            | "getdelim"
+                            | "fgetc"
+                            | "getc"
+                            | "getchar"
+                            | "fread"
+                            | "read"
+                            | "recv"
+                            | "recvfrom"
+                            | "recvmsg"
+                            | "getenv"
+                            | "getpwnam"
+                            | "getpwuid"
+                            | "getgrnam"
+                            | "getgrgid"
                     );
                 }
                 false
@@ -504,7 +563,7 @@ impl FormatStringAnalyzer {
                 let var_name = ast_utils::get_node_text_owned(node, source);
                 self.user_input_vars.contains(&var_name)
             }
-            _ => false
+            _ => false,
         }
     }
 
@@ -517,7 +576,7 @@ impl FormatStringAnalyzer {
                 let var_name = ast_utils::get_node_text_owned(node, source);
                 self.safe_vars.contains(&var_name)
             }
-            _ => false
+            _ => false,
         }
     }
 
@@ -536,9 +595,11 @@ impl FormatStringAnalyzer {
     fn is_potentially_unsafe_format_string(&self, node: &Node, source: &str) -> bool {
         // Debug: Log the actual node kind to understand what we're dealing with
         #[cfg(debug_assertions)]
-        eprintln!("DEBUG FIO30-C: Checking node kind: '{}' with text: '{}'",
-                 node.kind(),
-                 &source[node.start_byte()..node.end_byte()]);
+        eprintln!(
+            "DEBUG FIO30-C: Checking node kind: '{}' with text: '{}'",
+            node.kind(),
+            &source[node.start_byte()..node.end_byte()]
+        );
 
         match node.kind() {
             "string_literal" | "concatenated_string" | "string_content" => {
@@ -548,8 +609,8 @@ impl FormatStringAnalyzer {
             "identifier" => {
                 let var_name = ast_utils::get_node_text_owned(node, source);
                 // Unsafe if it's user input and not in safe vars
-                self.user_input_vars.contains(&var_name) ||
-                (!self.safe_vars.contains(&var_name) && self.could_be_user_input(&var_name))
+                self.user_input_vars.contains(&var_name)
+                    || (!self.safe_vars.contains(&var_name) && self.could_be_user_input(&var_name))
             }
             "subscript_expression" => {
                 // Array access could be user input (e.g., argv[1])
@@ -574,7 +635,8 @@ impl FormatStringAnalyzer {
                 if let Some(function) = node.child_by_field_name("function") {
                     let func_name = ast_utils::get_node_text_owned(&function, source);
                     // Functions that typically return user-controlled data
-                    return matches!(func_name.as_str(),
+                    return matches!(
+                        func_name.as_str(),
                         "fgets" | "gets" | "getline" | "getenv" | "getpwnam" | "readline"
                     );
                 }
@@ -621,15 +683,15 @@ impl FormatStringAnalyzer {
     fn could_be_user_input(&self, var_name: &str) -> bool {
         // Heuristic: variables with certain names are likely to contain user input
         let name_lower = var_name.to_lowercase();
-        name_lower.contains("input") ||
-        name_lower.contains("user") ||
-        name_lower.contains("argv") ||
-        name_lower.contains("arg") ||
-        name_lower.contains("buf") ||
-        name_lower.contains("buffer") ||
-        name_lower.contains("line") ||
-        name_lower.contains("cmd") ||
-        name_lower.contains("command")
+        name_lower.contains("input")
+            || name_lower.contains("user")
+            || name_lower.contains("argv")
+            || name_lower.contains("arg")
+            || name_lower.contains("buf")
+            || name_lower.contains("buffer")
+            || name_lower.contains("line")
+            || name_lower.contains("cmd")
+            || name_lower.contains("command")
     }
 
     fn get_function_name(&self, declarator: &Node, source: &str) -> String {
@@ -676,7 +738,7 @@ impl FormatStringAnalyzer {
                 }
                 "unknown".to_string()
             }
-            _ => "unknown".to_string()
+            _ => "unknown".to_string(),
         }
     }
 }

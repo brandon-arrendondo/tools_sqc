@@ -1,3 +1,16 @@
+---
+rule_id: API09-C
+priority: P2
+status: active
+assigned_to: JASON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - API
+---
+
 # P2-API09-C - API09-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/API09-C
+https://wiki.sei.cmu.edu/confluence/display/c/API09-C.+Compatible+values+should+have+the+same+type
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify API09-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

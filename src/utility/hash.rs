@@ -1,6 +1,6 @@
-use sha2::{Sha256, Digest};
-use std::fs;
 use anyhow::Result;
+use sha2::{Digest, Sha256};
+use std::fs;
 
 pub fn calculate_file_hash(file_path: &str) -> Result<String> {
     let content = fs::read(file_path)?;

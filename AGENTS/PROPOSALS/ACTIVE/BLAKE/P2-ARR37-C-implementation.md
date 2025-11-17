@@ -1,3 +1,16 @@
+---
+rule_id: ARR37-C
+priority: P2
+status: active
+assigned_to: BLAKE
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - ARR
+---
+
 # P2-ARR37-C - ARR37-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** true
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/ARR37-C
+https://wiki.sei.cmu.edu/confluence/display/c/ARR37-C.+Do+not+add+or+subtract+an+integer+to+a+pointer+to+a+non-array+object
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify ARR37-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

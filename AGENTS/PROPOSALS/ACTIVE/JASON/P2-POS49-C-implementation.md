@@ -1,3 +1,16 @@
+---
+rule_id: POS49-C
+priority: P2
+status: active
+assigned_to: JASON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - POS
+---
+
 # P2-POS49-C - POS49-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/POS49-C
+https://wiki.sei.cmu.edu/confluence/display/c/POS49-C.+When+data+must+be+accessed+by+multiple+threads,+provide+a+mutex+and+guarantee+no+adjacent+data+is+also+accessed
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify POS49-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

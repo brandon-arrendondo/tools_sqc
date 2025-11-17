@@ -18,9 +18,9 @@
 //! - while ((c = getc()) != EOF) where c is int
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use tree_sitter::Node;
 
 pub struct Fio34C;
 
@@ -93,7 +93,10 @@ impl Fio34C {
 
     /// Check for char variables being assigned from getc/fgetc/getchar
     fn check_assignment(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             if right.kind() == "call_expression" {
                 if let Some(function) = right.child_by_field_name("function") {
                     let function_name = get_node_text(&function, source);
@@ -101,10 +104,17 @@ impl Fio34C {
                     if self.is_character_input_function(function_name) {
                         // Check if the left side is a char type variable
                         if self.is_char_type_variable(&left, source) {
-                            self.report_char_assignment_violation(node, function_name, source, violations);
+                            self.report_char_assignment_violation(
+                                node,
+                                function_name,
+                                source,
+                                violations,
+                            );
                         }
                         // Check if it's a wide char function assigned to wchar_t (should be wint_t)
-                        if self.is_wide_character_function(function_name) && self.is_wchar_type_variable(&left, source) {
+                        if self.is_wide_character_function(function_name)
+                            && self.is_wchar_type_variable(&left, source)
+                        {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 severity: self.severity(),
@@ -128,7 +138,12 @@ impl Fio34C {
     }
 
     /// Check for char variables being initialized from getc/fgetc/getchar
-    fn check_init_declarator(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_init_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check for pattern: char c = getc(file);
         if let Some(value) = node.child_by_field_name("value") {
             if value.kind() == "call_expression" {
@@ -139,7 +154,12 @@ impl Fio34C {
                         // Check if this is a char declaration
                         if let Some(_declarator) = node.child_by_field_name("declarator") {
                             if self.is_char_declaration(node, source) {
-                                self.report_char_init_violation(node, function_name, source, violations);
+                                self.report_char_init_violation(
+                                    node,
+                                    function_name,
+                                    source,
+                                    violations,
+                                );
                             }
                         }
                     }
@@ -182,12 +202,18 @@ impl Fio34C {
         }
     }
 
-    fn check_loop_condition_pattern(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_loop_condition_pattern(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let node_text = get_node_text(node, source);
 
         // Look for assignment within condition
         if node.kind() == "parenthesized_expression" {
-            if let Some(inner) = node.child(1) {  // Skip the opening paren
+            if let Some(inner) = node.child(1) {
+                // Skip the opening paren
                 self.check_loop_condition_pattern(&inner, source, violations);
             }
         } else if node.kind() == "binary_expression" {
@@ -202,13 +228,22 @@ impl Fio34C {
     }
 
     /// Check if an assignment expression in a loop condition uses a char variable
-    fn check_assignment_expression_for_char(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>, parent: &Node) {
+    fn check_assignment_expression_for_char(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        parent: &Node,
+    ) {
         if node.kind() == "parenthesized_expression" {
             if let Some(inner) = node.child(1) {
                 self.check_assignment_expression_for_char(&inner, source, violations, parent);
             }
         } else if node.kind() == "assignment_expression" {
-            if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+            if let (Some(left), Some(right)) = (
+                node.child_by_field_name("left"),
+                node.child_by_field_name("right"),
+            ) {
                 if right.kind() == "call_expression" {
                     if let Some(function) = right.child_by_field_name("function") {
                         let function_name = get_node_text(&function, source);
@@ -218,7 +253,9 @@ impl Fio34C {
                                 self.report_loop_condition_violation(parent, source, violations);
                             }
                             // Check if it's a wide char function assigned to wchar_t
-                            if self.is_wide_character_function(function_name) && self.is_wchar_type_variable(&left, source) {
+                            if self.is_wide_character_function(function_name)
+                                && self.is_wchar_type_variable(&left, source)
+                            {
                                 violations.push(RuleViolation {
                                     rule_id: self.rule_id().to_string(),
                                     severity: self.severity(),
@@ -242,7 +279,10 @@ impl Fio34C {
     /// Character input functions that read from streams
     /// These should have results stored in int variables before EOF comparison
     fn is_character_input_function(&self, name: &str) -> bool {
-        matches!(name, "getc" | "fgetc" | "getchar" | "getwc" | "fgetwc" | "getwchar")
+        matches!(
+            name,
+            "getc" | "fgetc" | "getchar" | "getwc" | "fgetwc" | "getwchar"
+        )
     }
 
     /// Character manipulation functions that return status codes
@@ -273,10 +313,11 @@ impl Fio34C {
             if parent.kind() == "function_definition" || parent.kind() == "compound_statement" {
                 // Search for char declarations in this scope
                 let scope_text = get_node_text(&parent, source);
-                if scope_text.contains(&format!("char {}", var_name)) ||
-                   scope_text.contains(&format!("char *{}", var_name)) ||
-                   scope_text.contains(&format!("unsigned char {}", var_name)) ||
-                   scope_text.contains(&format!("signed char {}", var_name)) {
+                if scope_text.contains(&format!("char {}", var_name))
+                    || scope_text.contains(&format!("char *{}", var_name))
+                    || scope_text.contains(&format!("unsigned char {}", var_name))
+                    || scope_text.contains(&format!("signed char {}", var_name))
+                {
                     return true;
                 }
                 break;
@@ -307,7 +348,12 @@ impl Fio34C {
     }
 
     /// Check for casts to char of character input function results
-    fn check_cast_expression(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_cast_expression(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for (char)getc(...) or (char)fgetc(...) etc.
         if let Some(type_node) = node.child_by_field_name("type") {
             let type_text = get_node_text(&type_node, source);
@@ -332,7 +378,8 @@ impl Fio34C {
                                     line: node.start_position().row + 1,
                                     column: node.start_position().column + 1,
                                     suggestion: Some(
-                                        "Store result in int variable before comparison with EOF".to_string()
+                                        "Store result in int variable before comparison with EOF"
+                                            .to_string(),
                                     ),
                                     ..Default::default()
                                 });
@@ -401,7 +448,13 @@ impl Fio34C {
     }
 
     /// Report violation for char assignment from getc/fgetc
-    fn report_char_assignment_violation(&self, node: &Node, function_name: &str, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn report_char_assignment_violation(
+        &self,
+        node: &Node,
+        function_name: &str,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let start_point = node.start_position();
         let node_text = get_node_text(node, source);
 
@@ -424,7 +477,13 @@ impl Fio34C {
     }
 
     /// Report violation for char initialization from getc/fgetc
-    fn report_char_init_violation(&self, node: &Node, function_name: &str, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn report_char_init_violation(
+        &self,
+        node: &Node,
+        function_name: &str,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let start_point = node.start_position();
         let node_text = get_node_text(node, source);
 
@@ -442,12 +501,17 @@ impl Fio34C {
                 "Declare variable as 'int' instead of 'char' to properly handle EOF from '{}'",
                 function_name
             )),
-        ..Default::default()
+            ..Default::default()
         });
     }
 
     /// Report violation for direct EOF comparison
-    fn report_direct_comparison_violation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn report_direct_comparison_violation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let start_point = node.start_position();
         let node_text = get_node_text(node, source);
 
@@ -461,13 +525,21 @@ impl Fio34C {
             file_path: String::new(),
             line: start_point.row + 1,
             column: start_point.column + 1,
-            suggestion: Some("Store result in 'int' (or 'wint_t' for wide chars) before comparing with EOF/WEOF".to_string()),
-        ..Default::default()
+            suggestion: Some(
+                "Store result in 'int' (or 'wint_t' for wide chars) before comparing with EOF/WEOF"
+                    .to_string(),
+            ),
+            ..Default::default()
         });
     }
 
     /// Report violation for loop condition pattern
-    fn report_loop_condition_violation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn report_loop_condition_violation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let start_point = node.start_position();
         let node_text = get_node_text(node, source);
 
@@ -482,12 +554,17 @@ impl Fio34C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Use 'int' for the loop variable to properly detect EOF".to_string()),
-        ..Default::default()
+            ..Default::default()
         });
     }
 
     /// Check for EOF comparison without feof()/ferror() verification
-    fn check_eof_without_verification(&self, func_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_eof_without_verification(
+        &self,
+        func_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for patterns like: while ((c = getchar()) != EOF) without feof/ferror
         let has_eof_comparison = self.has_eof_comparison_in_loop(func_node, source);
         let has_feof_call = self.has_feof_or_ferror_call(func_node, source);
@@ -544,7 +621,10 @@ impl Fio34C {
         // Check for patterns like: (c = getchar()) != EOF or c != EOF
         if node_text.contains("EOF") || node_text.contains("WEOF") {
             // Also check for character input function calls
-            if node_text.contains("getchar") || node_text.contains("getc") || node_text.contains("fgetc") {
+            if node_text.contains("getchar")
+                || node_text.contains("getc")
+                || node_text.contains("fgetc")
+            {
                 return true;
             }
             // Check if there's any getchar/getc/fgetc call in the loop body
@@ -587,7 +667,12 @@ impl Fio34C {
     }
 
     /// Find and report loops with EOF comparisons
-    fn find_and_report_eof_loops(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn find_and_report_eof_loops(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         match node.kind() {
             "while_statement" | "do_statement" | "for_statement" => {
                 if self.loop_compares_to_eof(node, source) {
@@ -606,7 +691,12 @@ impl Fio34C {
     }
 
     /// Report violation for EOF comparison without feof/ferror verification
-    fn report_eof_verification_violation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn report_eof_verification_violation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let start_point = node.start_position();
         let node_text = get_node_text(node, source);
         // Get just the first line for clearer message
