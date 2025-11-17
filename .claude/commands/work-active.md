@@ -4,10 +4,36 @@ You are now in **PROPOSAL IMPLEMENTATION MODE**. Your mission is to work through
 
 ### Step 1: Scan for Active Proposals
 
-First, check what proposals are in the ACTIVE directory:
+First, check for nested subdirectories in ACTIVE:
 
 ```bash
-ls -1 AGENTS/PROPOSALS/ACTIVE/
+# Check for subdirectories
+ls -d AGENTS/PROPOSALS/ACTIVE/*/ 2>/dev/null
+```
+
+**If nested subdirectories exist:**
+1. List all discovered subdirectories and count proposals in each
+2. **ASK THE USER** which subdirectory they want to focus on
+3. Work ONLY on proposals within the selected subdirectory
+4. Ignore all other subdirectories and the root ACTIVE directory
+
+```bash
+# Count proposals per subdirectory (run for each discovered directory)
+for dir in AGENTS/PROPOSALS/ACTIVE/*/; do
+    name=$(basename "$dir")
+    count=$(ls "$dir"/*.md 2>/dev/null | wc -l)
+    echo "$name: $count proposals"
+done
+```
+
+**After user selects their subdirectory:**
+```bash
+ls -1 AGENTS/PROPOSALS/ACTIVE/{SELECTED_SUBDIRECTORY}/
+```
+
+**If NO nested subdirectories exist (flat structure):**
+```bash
+ls -1 AGENTS/PROPOSALS/ACTIVE/*.md 2>/dev/null
 ```
 
 If no proposals are found:
@@ -31,14 +57,18 @@ cat AGENTS/PROPOSALS/README.md | head -100
 
 ### Step 3: Select Next Proposal
 
-Pick the **highest priority** proposal from ACTIVE:
+Pick the **highest priority** proposal from your selected subdirectory (or root ACTIVE if no subdirectories):
 1. Sort by priority: P0 (critical) > P1 (high) > P2 (medium) > P3 (low)
 2. Within same priority, pick oldest (FIFO)
 3. If architect has specified a particular proposal, work on that one
 
 Read the proposal thoroughly:
 ```bash
-cat AGENTS/PROPOSALS/ACTIVE/P0-001-eliminate-compiler-warnings.md
+# For root ACTIVE (no subdirectories):
+cat AGENTS/PROPOSALS/ACTIVE/{PROPOSAL_FILE}.md
+
+# For subdirectory (when working in selected team directory):
+cat AGENTS/PROPOSALS/ACTIVE/{SELECTED_SUBDIRECTORY}/{PROPOSAL_FILE}.md
 ```
 
 ### Step 4: Verify Architect Approval
@@ -146,9 +176,16 @@ When all acceptance criteria are met:
 
 3. **Move to STAGED:**
    ```bash
-   git mv AGENTS/PROPOSALS/ACTIVE/P0-001-eliminate-compiler-warnings.md \
-           AGENTS/PROPOSALS/STAGED/P0-001-eliminate-compiler-warnings.md
+   # From root ACTIVE:
+   git mv AGENTS/PROPOSALS/ACTIVE/{PROPOSAL_FILE}.md \
+           AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md
+
+   # From subdirectory:
+   git mv AGENTS/PROPOSALS/ACTIVE/{SELECTED_SUBDIRECTORY}/{PROPOSAL_FILE}.md \
+           AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md
    ```
+
+   **Note:** Completed proposals always move to the common STAGED directory (not into subdirectories).
 
 4. **Commit:**
    ```bash
