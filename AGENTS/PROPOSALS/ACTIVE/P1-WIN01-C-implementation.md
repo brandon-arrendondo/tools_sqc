@@ -218,3 +218,15 @@ cargo test --lib
 **DRY:** 1 manual text extraction (minimal)
 
 **Status:** MOVED TO ACTIVE - Missing documentation (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Completed:**
+- ✅ Replaced 1 manual text extraction with `get_node_text()`
+- ✅ Tests: 2/2 passing (100%), zero regressions
+
+**Status:** DRY refactoring complete
