@@ -1,6 +1,6 @@
 # CERT C Rules Test Summary
 
-**Generated:** 2025-11-17 08:07:46
+**Generated:** 2025-11-17 08:32:10
 
 ## Overview
 
@@ -283,13 +283,13 @@
   - 🔶 [SIG01-C](#rule-sig01c) - Not Implemented (has tests): Pass 0/47 (0.0%) [47 not run]
   - ✅ [SIG30-C](#rule-sig30c) - Implemented: Pass 0/47 (0.0%) [47 not run]
   - 🔶 [SIG34-C](#rule-sig34c) - Not Implemented (has tests): Pass 0/44 (0.0%) [44 not run]
-  - ✅ [SIG31-C](#rule-sig31c) - Implemented: Pass 43/43 (100.0%)
+  - ✅ [SIG31-C](#rule-sig31c) - Implemented: Pass 0/43 (0.0%) [43 not run]
   - 🔶 [SIG35-C](#rule-sig35c) - Not Implemented (has tests): Pass 0/43 (0.0%) [43 not run]
   - 🔶 [SIG00-C](#rule-sig00c) - Not Implemented (has tests): Pass 0/44 (0.0%) [44 not run]
   - 🔶 [SIG02-C](#rule-sig02c) - Not Implemented (has tests): Pass 0/46 (0.0%) [46 not run]
 - [STR](#category-str) (3 implemented / 16 total)
   - 🔶 [STR00-C](#rule-str00c) - Not Implemented (has tests): Pass 0/40 (0.0%) [40 not run]
-  - ✅ [STR38-C](#rule-str38c) - Implemented: Pass 0/5 (0.0%) [5 not run]
+  - ✅ [STR38-C](#rule-str38c) - Implemented: Pass 5/5 (100.0%)
   - ✅ [STR31-C](#rule-str31c) - Implemented: Pass 0/58 (0.0%) [58 not run]
   - 🔶 [STR06-C](#rule-str06c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [STR04-C](#rule-str04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -10831,56 +10831,56 @@ header<stdint.h>.
 
 **Test Coverage:** 43 tests (31 fail, 12 pass)
 
-**Test Results:** 43/43 passed (100.0%)
+**Test Results:** 0/43 passed (0.0%), 43 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `testcases_authentication_session.c` → `test_sig31_c_fail_testcases_authentication_session`
-- ✅ PASS `testcases_circular_buffer_access.c` → `test_sig31_c_fail_testcases_circular_buffer_access`
-- ✅ PASS `testcases_complex_struct_access.c` → `test_sig31_c_fail_testcases_complex_struct_access`
-- ✅ PASS `testcases_database_connection.c` → `test_sig31_c_fail_testcases_database_connection`
-- ✅ PASS `testcases_dynamic_memory_access.c` → `test_sig31_c_fail_testcases_dynamic_memory_access`
-- ✅ PASS `testcases_error_state_access.c` → `test_sig31_c_fail_testcases_error_state_access`
-- ✅ PASS `testcases_file_descriptor_access.c` → `test_sig31_c_fail_testcases_file_descriptor_access`
-- ✅ PASS `testcases_file_scope_variable.c` → `test_sig31_c_fail_testcases_file_scope_variable`
-- ✅ PASS `testcases_filesystem_state.c` → `test_sig31_c_fail_testcases_filesystem_state`
-- ✅ PASS `testcases_global_array_access.c` → `test_sig31_c_fail_testcases_global_array_access`
-- ✅ PASS `testcases_global_cache_access.c` → `test_sig31_c_fail_testcases_global_cache_access`
-- ✅ PASS `testcases_global_config_access.c` → `test_sig31_c_fail_testcases_global_config_access`
-- ✅ PASS `testcases_global_flags_access.c` → `test_sig31_c_fail_testcases_global_flags_access`
-- ✅ PASS `testcases_global_registry_access.c` → `test_sig31_c_fail_testcases_global_registry_access`
-- ✅ PASS `testcases_linked_list_access.c` → `test_sig31_c_fail_testcases_linked_list_access`
-- ✅ PASS `testcases_logging_state_access.c` → `test_sig31_c_fail_testcases_logging_state_access`
-- ✅ PASS `testcases_network_connection_state.c` → `test_sig31_c_fail_testcases_network_connection_state`
-- ✅ PASS `testcases_performance_metrics.c` → `test_sig31_c_fail_testcases_performance_metrics`
-- ✅ PASS `testcases_process_control_structures.c` → `test_sig31_c_fail_testcases_process_control_structures`
-- ✅ PASS `testcases_resource_pool_access.c` → `test_sig31_c_fail_testcases_resource_pool_access`
-- ✅ PASS `testcases_shared_counters.c` → `test_sig31_c_fail_testcases_shared_counters`
-- ✅ PASS `testcases_shared_data_access.c` → `test_sig31_c_fail_testcases_shared_data_access`
-- ✅ PASS `testcases_shared_hash_table.c` → `test_sig31_c_fail_testcases_shared_hash_table`
-- ✅ PASS `testcases_shared_queue_system.c` → `test_sig31_c_fail_testcases_shared_queue_system`
-- ✅ PASS `testcases_signal_handler_state.c` → `test_sig31_c_fail_testcases_signal_handler_state`
-- ✅ PASS `testcases_state_machine_access.c` → `test_sig31_c_fail_testcases_state_machine_access`
-- ✅ PASS `testcases_static_variable_access.c` → `test_sig31_c_fail_testcases_static_variable_access`
-- ✅ PASS `testcases_string_buffer_access.c` → `test_sig31_c_fail_testcases_string_buffer_access`
-- ✅ PASS `testcases_thread_shared_data.c` → `test_sig31_c_fail_testcases_thread_shared_data`
-- ✅ PASS `testcases_timing_information.c` → `test_sig31_c_fail_testcases_timing_information`
-- ✅ PASS `wiki_noncompliant_1.c` → `test_sig31_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `testcases_authentication_session.c` → `test_sig31_c_fail_testcases_authentication_session`
+- ⏭️ NOT RUN `testcases_circular_buffer_access.c` → `test_sig31_c_fail_testcases_circular_buffer_access`
+- ⏭️ NOT RUN `testcases_complex_struct_access.c` → `test_sig31_c_fail_testcases_complex_struct_access`
+- ⏭️ NOT RUN `testcases_database_connection.c` → `test_sig31_c_fail_testcases_database_connection`
+- ⏭️ NOT RUN `testcases_dynamic_memory_access.c` → `test_sig31_c_fail_testcases_dynamic_memory_access`
+- ⏭️ NOT RUN `testcases_error_state_access.c` → `test_sig31_c_fail_testcases_error_state_access`
+- ⏭️ NOT RUN `testcases_file_descriptor_access.c` → `test_sig31_c_fail_testcases_file_descriptor_access`
+- ⏭️ NOT RUN `testcases_file_scope_variable.c` → `test_sig31_c_fail_testcases_file_scope_variable`
+- ⏭️ NOT RUN `testcases_filesystem_state.c` → `test_sig31_c_fail_testcases_filesystem_state`
+- ⏭️ NOT RUN `testcases_global_array_access.c` → `test_sig31_c_fail_testcases_global_array_access`
+- ⏭️ NOT RUN `testcases_global_cache_access.c` → `test_sig31_c_fail_testcases_global_cache_access`
+- ⏭️ NOT RUN `testcases_global_config_access.c` → `test_sig31_c_fail_testcases_global_config_access`
+- ⏭️ NOT RUN `testcases_global_flags_access.c` → `test_sig31_c_fail_testcases_global_flags_access`
+- ⏭️ NOT RUN `testcases_global_registry_access.c` → `test_sig31_c_fail_testcases_global_registry_access`
+- ⏭️ NOT RUN `testcases_linked_list_access.c` → `test_sig31_c_fail_testcases_linked_list_access`
+- ⏭️ NOT RUN `testcases_logging_state_access.c` → `test_sig31_c_fail_testcases_logging_state_access`
+- ⏭️ NOT RUN `testcases_network_connection_state.c` → `test_sig31_c_fail_testcases_network_connection_state`
+- ⏭️ NOT RUN `testcases_performance_metrics.c` → `test_sig31_c_fail_testcases_performance_metrics`
+- ⏭️ NOT RUN `testcases_process_control_structures.c` → `test_sig31_c_fail_testcases_process_control_structures`
+- ⏭️ NOT RUN `testcases_resource_pool_access.c` → `test_sig31_c_fail_testcases_resource_pool_access`
+- ⏭️ NOT RUN `testcases_shared_counters.c` → `test_sig31_c_fail_testcases_shared_counters`
+- ⏭️ NOT RUN `testcases_shared_data_access.c` → `test_sig31_c_fail_testcases_shared_data_access`
+- ⏭️ NOT RUN `testcases_shared_hash_table.c` → `test_sig31_c_fail_testcases_shared_hash_table`
+- ⏭️ NOT RUN `testcases_shared_queue_system.c` → `test_sig31_c_fail_testcases_shared_queue_system`
+- ⏭️ NOT RUN `testcases_signal_handler_state.c` → `test_sig31_c_fail_testcases_signal_handler_state`
+- ⏭️ NOT RUN `testcases_state_machine_access.c` → `test_sig31_c_fail_testcases_state_machine_access`
+- ⏭️ NOT RUN `testcases_static_variable_access.c` → `test_sig31_c_fail_testcases_static_variable_access`
+- ⏭️ NOT RUN `testcases_string_buffer_access.c` → `test_sig31_c_fail_testcases_string_buffer_access`
+- ⏭️ NOT RUN `testcases_thread_shared_data.c` → `test_sig31_c_fail_testcases_thread_shared_data`
+- ⏭️ NOT RUN `testcases_timing_information.c` → `test_sig31_c_fail_testcases_timing_information`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_sig31_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `testcases_atomic_operations_only.c` → `test_sig31_c_pass_testcases_atomic_operations_only`
-- ✅ PASS `testcases_flag_only_handler.c` → `test_sig31_c_pass_testcases_flag_only_handler`
-- ✅ PASS `testcases_isolated_handler_state.c` → `test_sig31_c_pass_testcases_isolated_handler_state`
-- ✅ PASS `testcases_minimal_signal_handling.c` → `test_sig31_c_pass_testcases_minimal_signal_handling`
-- ✅ PASS `testcases_no_shared_access.c` → `test_sig31_c_pass_testcases_no_shared_access`
-- ✅ PASS `testcases_self_pipe_trick.c` → `test_sig31_c_pass_testcases_self_pipe_trick`
-- ✅ PASS `testcases_sig_atomic_only.c` → `test_sig31_c_pass_testcases_sig_atomic_only`
-- ✅ PASS `testcases_signal_masking_protection.c` → `test_sig31_c_pass_testcases_signal_masking_protection`
-- ✅ PASS `testcases_signal_synchronization.c` → `test_sig31_c_pass_testcases_signal_synchronization`
-- ✅ PASS `testcases_signalfd_safe_access.c` → `test_sig31_c_pass_testcases_signalfd_safe_access`
-- ✅ PASS `wiki_lock_free_atomic_access.c` → `test_sig31_c_pass_wiki_lock_free_atomic_access`
-- ✅ PASS `wiki_writingvolatile_sig_atomic_t.c` → `test_sig31_c_pass_wiki_writingvolatile_sig_atomic_t`
+- ⏭️ NOT RUN `testcases_atomic_operations_only.c` → `test_sig31_c_pass_testcases_atomic_operations_only`
+- ⏭️ NOT RUN `testcases_flag_only_handler.c` → `test_sig31_c_pass_testcases_flag_only_handler`
+- ⏭️ NOT RUN `testcases_isolated_handler_state.c` → `test_sig31_c_pass_testcases_isolated_handler_state`
+- ⏭️ NOT RUN `testcases_minimal_signal_handling.c` → `test_sig31_c_pass_testcases_minimal_signal_handling`
+- ⏭️ NOT RUN `testcases_no_shared_access.c` → `test_sig31_c_pass_testcases_no_shared_access`
+- ⏭️ NOT RUN `testcases_self_pipe_trick.c` → `test_sig31_c_pass_testcases_self_pipe_trick`
+- ⏭️ NOT RUN `testcases_sig_atomic_only.c` → `test_sig31_c_pass_testcases_sig_atomic_only`
+- ⏭️ NOT RUN `testcases_signal_masking_protection.c` → `test_sig31_c_pass_testcases_signal_masking_protection`
+- ⏭️ NOT RUN `testcases_signal_synchronization.c` → `test_sig31_c_pass_testcases_signal_synchronization`
+- ⏭️ NOT RUN `testcases_signalfd_safe_access.c` → `test_sig31_c_pass_testcases_signalfd_safe_access`
+- ⏭️ NOT RUN `wiki_lock_free_atomic_access.c` → `test_sig31_c_pass_wiki_lock_free_atomic_access`
+- ⏭️ NOT RUN `wiki_writingvolatile_sig_atomic_t.c` → `test_sig31_c_pass_wiki_writingvolatile_sig_atomic_t`
 
 ---
 
@@ -11200,18 +11200,18 @@ earlier than anticipated, resulting in the truncation of the wide string.
 
 **Test Coverage:** 5 tests (3 fail, 2 pass)
 
-**Test Results:** 0/5 passed (0.0%), 5 not run
+**Test Results:** 5/5 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_narrow_strings_with_wide_string_functions.c` → `test_str38_c_fail_wiki_narrow_strings_with_wide_string_functions`
-- ⏭️ NOT RUN `wiki_strlen.c` → `test_str38_c_fail_wiki_strlen`
-- ⏭️ NOT RUN `wiki_wide_strings_with_narrow_string_functions.c` → `test_str38_c_fail_wiki_wide_strings_with_narrow_string_functions`
+- ✅ PASS `wiki_narrow_strings_with_wide_string_functions.c` → `test_str38_c_fail_wiki_narrow_strings_with_wide_string_functions`
+- ✅ PASS `wiki_strlen.c` → `test_str38_c_fail_wiki_strlen`
+- ✅ PASS `wiki_wide_strings_with_narrow_string_functions.c` → `test_str38_c_fail_wiki_wide_strings_with_narrow_string_functions`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_str38_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_str38_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_1.c` → `test_str38_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_str38_c_pass_wiki_compliant_2`
 
 ---
 

@@ -218,3 +218,16 @@ cargo test --lib
 **DRY:** 4 manual text extractions
 
 **Status:** MOVED TO ACTIVE - Missing documentation (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Completed:**
+- ✅ Replaced 4 manual text extractions with `get_node_text()` (2 sed + 2 manual)
+- ✅ Tests: 5/5 passing (100%), zero regressions
+- ✅ Added import: `use crate::utility::cert_c::ast_utils::get_node_text;`
+
+**Status:** DRY refactoring complete

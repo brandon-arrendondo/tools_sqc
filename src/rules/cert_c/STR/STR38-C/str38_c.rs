@@ -19,6 +19,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 use std::collections::HashMap;
 
@@ -100,7 +101,7 @@ impl Str38C {
     fn collect_var_types(&self, node: &Node, source: &str, types: &mut HashMap<String, VarType>) {
         if node.kind() == "declaration" {
             // Look for wchar_t or char declarations
-            let decl_text = &source[node.start_byte()..node.end_byte()];
+            let decl_text = get_node_text(&node, source);
 
             if decl_text.contains("wchar_t") {
                 // Extract variable names
@@ -142,7 +143,7 @@ impl Str38C {
 
     fn get_identifier(&self, node: &Node, source: &str) -> Option<String> {
         if node.kind() == "identifier" {
-            return Some(source[node.start_byte()..node.end_byte()].to_string());
+            return Some(get_node_text(node, source).to_string());
         }
 
         // Recurse to find identifier
@@ -159,7 +160,7 @@ impl Str38C {
     fn check_calls(&self, node: &Node, source: &str, types: &HashMap<String, VarType>, violations: &mut Vec<RuleViolation>) {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = &source[function.start_byte()..function.end_byte()];
+                let func_name = get_node_text(&function, source);
 
                 // Check if it's a narrow or wide function
                 let is_narrow = NARROW_FUNCTIONS.contains(&func_name);
@@ -225,7 +226,7 @@ impl Str38C {
         for i in 0..args.child_count() {
             if let Some(child) = args.child(i) {
                 if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
-                    return Some(source[child.start_byte()..child.end_byte()].to_string());
+                    return Some(get_node_text(&child, source).to_string());
                 }
             }
         }
