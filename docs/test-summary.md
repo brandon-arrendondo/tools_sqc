@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 52 (18.4%)
+- **Implemented Rules:** 53 (18.7%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -106,7 +106,7 @@
   - ✅ [ERR06-C](#rule-err06c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - ⚫ [ERR00-C](#rule-err00c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [ERR32-C](#rule-err32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [EXP](#category-exp) (4 implemented / 31 total)
+- [EXP](#category-exp) (5 implemented / 31 total)
   - 🔶 [EXP40-C](#rule-exp40c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP47-C](#rule-exp47c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [EXP37-C](#rule-exp37c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
@@ -117,7 +117,7 @@
   - 🔶 [EXP44-C](#rule-exp44c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [EXP03-C](#rule-exp03c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP14-C](#rule-exp14c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-  - 🔶 [EXP20-C](#rule-exp20c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
+  - ✅ [EXP20-C](#rule-exp20c) - Implemented: Pass 0/8 (0.0%) [8 not run]
   - 🔶 [EXP45-C](#rule-exp45c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - ✅ [EXP10-C](#rule-exp10c) - Implemented: Pass 0/3 (0.0%) [3 not run]
   - 🔶 [EXP36-C](#rule-exp36c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
@@ -4357,7 +4357,7 @@ being handled; ifsignal()fails, the value oferrnoisindeterminate.
 
 <a id="category-exp"></a>
 
-**Implementation Status:** 4 / 31 rules (12.9%)
+**Implementation Status:** 5 / 31 rules (16.1%)
 
 ### 🔶 EXP40-C - Not Implemented (has tests)
 
@@ -4707,7 +4707,7 @@ integer types smaller thanintmay have unexpected results.
 
 ---
 
-### 🔶 EXP20-C - Not Implemented (has tests)
+### ✅ EXP20-C - Implemented
 
 <a id="rule-exp20c"></a>
 
@@ -11993,7 +11993,7 @@ result.
 | DCL | 31 | 3 | 173 | 5.6 |
 | ENV | 8 | 2 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |
-| EXP | 31 | 4 | 236 | 7.6 |
+| EXP | 31 | 5 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
 | FLP | 13 | 1 | 40 | 3.1 |
 | INT | 23 | 3 | 238 | 10.3 |
