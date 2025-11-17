@@ -26,6 +26,7 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 use std::collections::HashSet;
 
@@ -77,7 +78,7 @@ impl Sig30C {
         // Look for signal(SIGXXX, handler_func) calls
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = &source[function.start_byte()..function.end_byte()];
+                let func_name = get_node_text(&function, source);
 
                 if func_name == "signal" || func_name == "sigaction" {
                     // Get the handler function name (second argument for signal())
@@ -126,7 +127,7 @@ impl Sig30C {
             if let Some(child) = args_node.child(i) {
                 let kind = child.kind();
                 if kind != "," && kind != "(" && kind != ")" {
-                    let arg_text = source[child.start_byte()..child.end_byte()].to_string();
+                    let arg_text = get_node_text(&child, source).to_string();
                     arguments.push(arg_text);
                 }
             }
@@ -162,7 +163,7 @@ impl Sig30C {
         // Handle function_declarator -> identifier
         if declarator.kind() == "function_declarator" {
             if let Some(inner) = declarator.child_by_field_name("declarator") {
-                let text = &source[inner.start_byte()..inner.end_byte()];
+                let text = get_node_text(&inner, source);
                 return Some(text.to_string());
             }
         }
@@ -176,7 +177,7 @@ impl Sig30C {
 
         // If it's already an identifier
         if declarator.kind() == "identifier" {
-            let text = &source[declarator.start_byte()..declarator.end_byte()];
+            let text = get_node_text(&declarator, source);
             return Some(text.to_string());
         }
 
@@ -190,7 +191,7 @@ impl Sig30C {
     fn check_calls_in_handler(&self, node: &Node, source: &str, handler_name: &str, all_handlers: &HashSet<String>, violations: &mut Vec<RuleViolation>) {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = &source[function.start_byte()..function.end_byte()];
+                let func_name = get_node_text(&function, source);
 
                 if self.is_unsafe_function(func_name, handler_name, all_handlers) {
                     violations.push(RuleViolation {
