@@ -49,17 +49,41 @@ Implement or verify ERR06-C with 100% test pass rate and DRY compliance.
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-17 - Implementation Complete
+
+**Files Created/Modified:**
+- `src/rules/cert_c/ERR/ERR06-C/err06_c.rs` - New implementation (~200 lines)
+- `src/rules/cert_c/ERR/ERR06-C/ERR06-C.toml` - Enabled rule
+- `src/rules/cert_c/mod.rs` - Registered module
+
+**Implementation Details:**
+- Scans for atexit() or at_quick_exit() calls to detect cleanup handler registration
+- Flags assert() calls when cleanup handlers are registered
+- assert() calls abort() which bypasses atexit cleanup functions
+- Suggests replacing with explicit error checking (if → exit())
+
+**Test Results:**
+- Unit tests: 3/3 passing (100%)
+  - test_assert_with_atexit: PASS
+  - test_exit_with_atexit: PASS
+  - test_assert_without_atexit: PASS
+
+**DRY Compliance:**
+- Uses `get_node_text()` from shared ast_utils
+- Follows established CertRule trait pattern
+- Standard RuleViolation structure with suggestions
+
+**Commit:** 81b2bcf
 
 ---
 
