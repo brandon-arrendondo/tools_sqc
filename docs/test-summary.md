@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 47 (16.6%)
+- **Implemented Rules:** 48 (17.0%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -85,13 +85,13 @@
   - 🔶 [DCL11-C](#rule-dcl11c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [DCL31-C](#rule-dcl31c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [DCL08-C](#rule-dcl08c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [ENV](#category-env) (1 implemented / 8 total)
+- [ENV](#category-env) (2 implemented / 8 total)
   - ✅ [ENV31-C](#rule-env31c) - Implemented: Pass 6/6 (100.0%)
   - 🔶 [ENV01-C](#rule-env01c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [ENV03-C](#rule-env03c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [ENV02-C](#rule-env02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [ENV34-C](#rule-env34c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [ENV32-C](#rule-env32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
+  - ✅ [ENV32-C](#rule-env32c) - Implemented: Pass 4/4 (100.0%)
   - 🔶 [ENV30-C](#rule-env30c) - Not Implemented (has tests): Pass 0/45 (0.0%) [45 not run]
   - 🔶 [ENV33-C](#rule-env33c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
 - [ERR](#category-err) (1 implemented / 11 total)
@@ -3621,7 +3621,7 @@ OUT_STR_LEN=20 };
 
 <a id="category-env"></a>
 
-**Implementation Status:** 1 / 8 rules (12.5%)
+**Implementation Status:** 2 / 8 rules (25.0%)
 
 ### ✅ ENV31-C - Implemented
 
@@ -3779,7 +3779,7 @@ possible race conditions resulting from the use of this function.
 
 ---
 
-### 🔶 ENV32-C - Not Implemented (has tests)
+### ✅ ENV32-C - Implemented
 
 <a id="rule-env32c"></a>
 
@@ -3806,17 +3806,17 @@ handlers.)
 
 **Test Coverage:** 4 tests (2 fail, 2 pass)
 
-**Test Results:** 0/4 passed (0.0%), 4 not run
+**Test Results:** 4/4 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_env32_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_env32_c_fail_wiki_noncompliant_2`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_env32_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2.c` → `test_env32_c_fail_wiki_noncompliant_2`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_env32_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_env32_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_1.c` → `test_env32_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_env32_c_pass_wiki_compliant_2`
 
 ---
 
@@ -11991,7 +11991,7 @@ result.
 | ARR | 9 | 7 | 490 | 54.4 |
 | CON | 23 | 2 | 75 | 3.3 |
 | DCL | 31 | 3 | 173 | 5.6 |
-| ENV | 8 | 1 | 75 | 9.4 |
+| ENV | 8 | 2 | 75 | 9.4 |
 | ERR | 11 | 1 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
