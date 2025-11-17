@@ -1,3 +1,16 @@
+---
+rule_id: EXP20-C
+priority: P2
+status: active
+assigned_to: TRISTAN
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - EXP
+---
+
 # P2-EXP20-C - EXP20-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/EXP20-C
+https://wiki.sei.cmu.edu/confluence/display/c/EXP20-C.+Perform+explicit+tests+to+determine+success,+true+and+false,+and+equality
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify EXP20-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

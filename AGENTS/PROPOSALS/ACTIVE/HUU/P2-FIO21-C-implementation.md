@@ -1,3 +1,16 @@
+---
+rule_id: FIO21-C
+priority: P2
+status: active
+assigned_to: HUU
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - FIO
+---
+
 # P2-FIO21-C - FIO21-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FIO21-C
+https://wiki.sei.cmu.edu/confluence/display/c/FIO21-C.+Do+not+create+temporary+files+in+shared+directories
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify FIO21-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

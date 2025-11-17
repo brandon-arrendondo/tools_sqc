@@ -26,7 +26,7 @@
 //! - Report violation if no verification
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
@@ -77,7 +77,12 @@ impl CertRule for Pos37C {
 }
 
 impl Pos37C {
-    fn check_privilege_drop(&self, scope: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_privilege_drop(
+        &self,
+        scope: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Find setuid(getuid()) or setuid(getgid()) calls (privilege drops)
         let mut drop_calls = Vec::new();
         self.find_priv_drops(scope, source, &mut drop_calls);

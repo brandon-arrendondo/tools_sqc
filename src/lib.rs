@@ -13,10 +13,10 @@ pub mod utility;
 
 // Prelude for common types and functions
 pub mod prelude {
-    pub use anyhow::{Context, Result};
     pub use crate::files::ProjectSource;
     pub use crate::manifest::{RuleManifest, Severity};
     pub use crate::rules::{CertRule, RuleRegistry, RuleViolation};
     pub use crate::utility::files::get_relative_path;
     pub use crate::utility::hash::calculate_file_hash;
+    pub use anyhow::{Context, Result};
 }

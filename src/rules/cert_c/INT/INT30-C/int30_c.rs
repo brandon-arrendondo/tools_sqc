@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use tree_sitter::Node;
 
 pub struct Int30C;
@@ -60,7 +60,12 @@ impl Int30C {
         }
     }
 
-    fn check_binary_operation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_binary_operation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = self.get_operator(node, source) {
             match operator.as_str() {
                 "+" => self.check_addition(node, source, violations),
@@ -72,7 +77,12 @@ impl Int30C {
         }
     }
 
-    fn check_assignment_operation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_assignment_operation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = self.get_assignment_operator(node, source) {
             match operator.as_str() {
                 "+=" => self.check_compound_addition(node, source, violations),
@@ -85,7 +95,10 @@ impl Int30C {
     }
 
     fn check_addition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
@@ -104,8 +117,11 @@ impl Int30C {
                         file_path: String::new(),
                         line: start_point.row + 1,
                         column: start_point.column + 1,
-                        suggestion: Some("Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }".to_string()),
-                    ..Default::default()
+                        suggestion: Some(
+                            "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+                                .to_string(),
+                        ),
+                        ..Default::default()
                     });
                 }
             }
@@ -113,7 +129,10 @@ impl Int30C {
     }
 
     fn check_subtraction(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
@@ -132,8 +151,10 @@ impl Int30C {
                         file_path: String::new(),
                         line: start_point.row + 1,
                         column: start_point.column + 1,
-                        suggestion: Some("Add underflow check: if (a < b) { /* handle error */ }".to_string()),
-                    ..Default::default()
+                        suggestion: Some(
+                            "Add underflow check: if (a < b) { /* handle error */ }".to_string(),
+                        ),
+                        ..Default::default()
                     });
                 }
             }
@@ -141,7 +162,10 @@ impl Int30C {
     }
 
     fn check_multiplication(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
@@ -169,7 +193,10 @@ impl Int30C {
     }
 
     fn check_left_shift(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(_right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(_right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_type = self.infer_type(&left, source);
 
             if self.is_unsigned_type(&left_type) {
@@ -188,14 +215,19 @@ impl Int30C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Add shift overflow check before shifting".to_string()),
-                    ..Default::default()
+                        ..Default::default()
                     });
                 }
             }
         }
     }
 
-    fn check_compound_addition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_addition(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source);
 
@@ -222,7 +254,12 @@ impl Int30C {
         }
     }
 
-    fn check_compound_subtraction(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_subtraction(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source);
 
@@ -249,7 +286,12 @@ impl Int30C {
         }
     }
 
-    fn check_compound_multiplication(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_multiplication(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source);
 
@@ -276,7 +318,12 @@ impl Int30C {
         }
     }
 
-    fn check_compound_left_shift(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_left_shift(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source);
 
@@ -303,7 +350,12 @@ impl Int30C {
         }
     }
 
-    fn check_increment_decrement(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_increment_decrement(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(argument) = node.child_by_field_name("argument") {
             let arg_type = self.infer_type(&argument, source);
 
@@ -315,9 +367,15 @@ impl Int30C {
                         let expr_text = &source[node.start_byte()..node.end_byte()];
 
                         let message = if operator == "++" {
-                            format!("Unsigned integer increment '{}' may wrap at maximum value", expr_text)
+                            format!(
+                                "Unsigned integer increment '{}' may wrap at maximum value",
+                                expr_text
+                            )
                         } else {
-                            format!("Unsigned integer decrement '{}' may wrap at zero", expr_text)
+                            format!(
+                                "Unsigned integer decrement '{}' may wrap at zero",
+                                expr_text
+                            )
                         };
 
                         violations.push(RuleViolation {
@@ -327,8 +385,10 @@ impl Int30C {
                             file_path: String::new(),
                             line: start_point.row + 1,
                             column: start_point.column + 1,
-                            suggestion: Some("Add bounds checking before increment/decrement".to_string()),
-                        ..Default::default()
+                            suggestion: Some(
+                                "Add bounds checking before increment/decrement".to_string(),
+                            ),
+                            ..Default::default()
                         });
                     }
                 }
@@ -349,13 +409,25 @@ impl Int30C {
         }
     }
 
-    fn check_allocation_overflow(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_allocation_overflow(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         match function_name {
             "malloc" => {
                 if !args.is_empty() && self.contains_multiplication(&args[0]) {
-                    self.flag_allocation_overflow(node, source, function_name, &args[0], violations);
+                    self.flag_allocation_overflow(
+                        node,
+                        source,
+                        function_name,
+                        &args[0],
+                        violations,
+                    );
                 }
             }
             "calloc" => {
@@ -381,14 +453,27 @@ impl Int30C {
             }
             "realloc" => {
                 if !args.is_empty() && self.contains_multiplication(&args[1]) {
-                    self.flag_allocation_overflow(node, source, function_name, &args[1], violations);
+                    self.flag_allocation_overflow(
+                        node,
+                        source,
+                        function_name,
+                        &args[1],
+                        violations,
+                    );
                 }
             }
             _ => {}
         }
     }
 
-    fn flag_allocation_overflow(&self, node: &Node, _source: &str, function_name: &str, size_arg: &str, violations: &mut Vec<RuleViolation>) {
+    fn flag_allocation_overflow(
+        &self,
+        node: &Node,
+        _source: &str,
+        function_name: &str,
+        size_arg: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let start_point = node.start_position();
         violations.push(RuleViolation {
             rule_id: self.rule_id().to_string(),
@@ -401,7 +486,7 @@ impl Int30C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Add overflow check before allocation".to_string()),
-        ..Default::default()
+            ..Default::default()
         });
     }
 

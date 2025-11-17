@@ -1,3 +1,16 @@
+---
+rule_id: STR37-C
+priority: P2
+status: active
+assigned_to: BLAKE
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - STR
+---
+
 # P2-STR37-C - STR37-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/STR37-C
+https://wiki.sei.cmu.edu/confluence/display/c/STR37-C.+Arguments+to+character-handling+functions+must+be+representable+as+an+unsigned+char
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify STR37-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

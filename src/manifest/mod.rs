@@ -1,7 +1,7 @@
+use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs;
-use anyhow::{Context, Result};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RuleManifest {
@@ -25,10 +25,10 @@ pub struct ManifestMetadata {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RuleConfig {
     pub enabled: bool,
-    pub severity: Option<Severity>,  // Optional: falls back to rule's default severity if not specified
-    pub description: Option<String>,  // Optional: falls back to rule's default description if not specified
-    pub category: Option<RuleCategory>,  // Optional: falls back to rule's default category if not specified
-    pub cert_id: Option<String>,  // Optional: falls back to rule's default cert_id if not specified
+    pub severity: Option<Severity>, // Optional: falls back to rule's default severity if not specified
+    pub description: Option<String>, // Optional: falls back to rule's default description if not specified
+    pub category: Option<RuleCategory>, // Optional: falls back to rule's default category if not specified
+    pub cert_id: Option<String>, // Optional: falls back to rule's default cert_id if not specified
     pub parameters: Option<HashMap<String, String>>,
 }
 
@@ -58,7 +58,10 @@ impl RuleManifest {
     }
 
     pub fn enabled_rules(&self) -> impl Iterator<Item = (&String, &RuleConfig)> {
-        self.rules.cert_c.iter().filter(|(_, config)| config.enabled)
+        self.rules
+            .cert_c
+            .iter()
+            .filter(|(_, config)| config.enabled)
     }
 
     pub fn get_rule(&self, rule_id: &str) -> Option<&RuleConfig> {
@@ -75,23 +78,29 @@ impl Default for RuleManifest {
         let mut cert_c_rules = HashMap::new();
 
         // Example CERT C rules - only enabled flag is set, other fields come from rule implementation
-        cert_c_rules.insert("ARR30-C".to_string(), RuleConfig {
-            enabled: true,
-            severity: None,  // Use rule's default severity
-            description: None,  // Use rule's default description
-            category: None,  // Use rule's default category
-            cert_id: None,  // Use rule's default cert_id
-            parameters: None,
-        });
+        cert_c_rules.insert(
+            "ARR30-C".to_string(),
+            RuleConfig {
+                enabled: true,
+                severity: None,    // Use rule's default severity
+                description: None, // Use rule's default description
+                category: None,    // Use rule's default category
+                cert_id: None,     // Use rule's default cert_id
+                parameters: None,
+            },
+        );
 
-        cert_c_rules.insert("STR31-C".to_string(), RuleConfig {
-            enabled: true,
-            severity: None,  // Use rule's default severity
-            description: None,  // Use rule's default description
-            category: None,  // Use rule's default category
-            cert_id: None,  // Use rule's default cert_id
-            parameters: None,
-        });
+        cert_c_rules.insert(
+            "STR31-C".to_string(),
+            RuleConfig {
+                enabled: true,
+                severity: None,    // Use rule's default severity
+                description: None, // Use rule's default description
+                category: None,    // Use rule's default category
+                cert_id: None,     // Use rule's default cert_id
+                parameters: None,
+            },
+        );
 
         Self {
             metadata: ManifestMetadata {

@@ -37,7 +37,7 @@
 //! - Report violation if pattern detected
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use crate::utility::cert_c::declarator_utils::{is_array_declarator, is_pointer_declarator};
 use tree_sitter::Node;
@@ -87,7 +87,12 @@ impl Api01C {
         }
     }
 
-    fn check_struct_layout(&self, struct_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_struct_layout(
+        &self,
+        struct_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Get the field_declaration_list
         let field_list = match struct_node.child_by_field_name("body") {
             Some(body) => body,

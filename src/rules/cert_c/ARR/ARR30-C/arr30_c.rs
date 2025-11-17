@@ -39,17 +39,14 @@
 //! This is a complex architectural change that may be added in future versions.
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 // Import shared utility functions
 use crate::utility::cert_c::ast_utils::{
-    find_containing_function,
-    find_identifier_in_declarator,
-    is_function_parameter,
-    find_containing_for_loop,
-    find_containing_if_statement,
+    find_containing_for_loop, find_containing_function, find_containing_if_statement,
+    find_identifier_in_declarator, is_function_parameter,
 };
 
 pub struct Arr30C;
@@ -66,17 +63,17 @@ struct BufferInfo {
 /// Represents the size of a buffer
 #[derive(Debug, Clone)]
 enum BufferSize {
-    Static(usize),              // char arr[10]
-    DynamicCalculated(usize),   // malloc(10 * sizeof(int))
-    Dynamic(String),            // malloc(size) - variable expression
-    Symbolic(String),           // VLA: int arr[n] - symbolic size
+    Static(usize),            // char arr[10]
+    DynamicCalculated(usize), // malloc(10 * sizeof(int))
+    Dynamic(String),          // malloc(size) - variable expression
+    Symbolic(String),         // VLA: int arr[n] - symbolic size
     Unknown,
 }
 
 /// Represents an index value that can be constant or variable
 #[derive(Debug)]
 enum IndexValue {
-    Constant(isize),  // Changed from usize to support negative indices
+    Constant(isize),                   // Changed from usize to support negative indices
     Expression(String, Option<isize>), // Expression text and evaluated constant if possible
     Variable(String),
     Unknown,
@@ -93,8 +90,8 @@ enum OffsetValue {
 /// Represents a pointer alias mapping
 #[derive(Debug, Clone)]
 struct PointerAlias {
-    alias_name: String,          // The pointer variable name (e.g., "ptr", "int_array")
-    original_buffer: String,     // The original buffer name (e.g., "arr", "buffer")
+    alias_name: String,      // The pointer variable name (e.g., "ptr", "int_array")
+    original_buffer: String, // The original buffer name (e.g., "arr", "buffer")
     element_size_bytes: Option<usize>, // Element size for cast pointers (e.g., 4 for int, 1 for char)
 }
 
@@ -134,7 +131,13 @@ impl CertRule for Arr30C {
             let buffer_info = self.analyze_buffer_allocations(source);
             let pointer_aliases = self.analyze_pointer_aliases(source, &buffer_info);
             let function_macros = self.extract_function_macros(node, source);
-            self.check_with_buffer_info(node, source, &buffer_info, &pointer_aliases, &function_macros)
+            self.check_with_buffer_info(
+                node,
+                source,
+                &buffer_info,
+                &pointer_aliases,
+                &function_macros,
+            )
         } else {
             // This shouldn't happen as we control recursion, but handle gracefully
             Vec::new()
@@ -149,7 +152,9 @@ impl Arr30C {
 
         // Parse the source code into AST
         let mut parser = tree_sitter::Parser::new();
-        parser.set_language(&tree_sitter_c::language()).expect("Error loading C grammar");
+        parser
+            .set_language(&tree_sitter_c::language())
+            .expect("Error loading C grammar");
 
         let tree = match parser.parse(source, None) {
             Some(t) => t,
@@ -219,7 +224,8 @@ impl Arr30C {
                         let mut param_cursor = params_node.walk();
                         for param_child in params_node.children(&mut param_cursor) {
                             if param_child.kind() == "identifier" {
-                                let param_name = &source[param_child.start_byte()..param_child.end_byte()];
+                                let param_name =
+                                    &source[param_child.start_byte()..param_child.end_byte()];
                                 params.push(param_name.to_string());
                             }
                         }
@@ -234,12 +240,15 @@ impl Arr30C {
 
                     let line = child.start_position().row + 1;
 
-                    macros.insert(name.to_string(), FunctionMacro {
-                        name: name.to_string(),
-                        params,
-                        body,
-                        line,
-                    });
+                    macros.insert(
+                        name.to_string(),
+                        FunctionMacro {
+                            name: name.to_string(),
+                            params,
+                            body,
+                            line,
+                        },
+                    );
                 }
             }
         }
@@ -254,11 +263,13 @@ impl Arr30C {
         source: &str,
         buffers: &mut HashMap<String, BufferInfo>,
         typedefs: &HashMap<String, usize>,
-        macros: &HashMap<String, i64>
+        macros: &HashMap<String, i64>,
     ) {
         // Check if this node is a declaration
         if node.kind() == "declaration" {
-            if let Some(mut buffer) = self.extract_buffer_from_declaration_with_typedefs(node, source, typedefs) {
+            if let Some(mut buffer) =
+                self.extract_buffer_from_declaration_with_typedefs(node, source, typedefs)
+            {
                 // Try to resolve macro constants in buffer size
                 if let BufferSize::Symbolic(ref sym) = buffer.size {
                     if let Some(&value) = macros.get(sym) {
@@ -269,7 +280,10 @@ impl Arr30C {
                 // Handle realloc: keep existing buffer if it has smaller size
                 if let Some(existing) = buffers.get(&buffer.name) {
                     match (&existing.size, &buffer.size) {
-                        (BufferSize::DynamicCalculated(old_size), BufferSize::DynamicCalculated(new_size)) => {
+                        (
+                            BufferSize::DynamicCalculated(old_size),
+                            BufferSize::DynamicCalculated(new_size),
+                        ) => {
                             if new_size < old_size {
                                 buffers.insert(buffer.name.clone(), buffer.clone());
                             }
@@ -288,7 +302,8 @@ impl Arr30C {
 
             // Also check for VLA declarations using typedef
             // VLAs need special handling as they may not be caught by AST alone
-            if let Some(mut vla_buffer) = self.extract_vla_from_declaration(node, source, typedefs) {
+            if let Some(mut vla_buffer) = self.extract_vla_from_declaration(node, source, typedefs)
+            {
                 // Try to resolve macro constants in VLA buffer size
                 if let BufferSize::Symbolic(ref sym) = vla_buffer.size {
                     if let Some(&value) = macros.get(sym) {
@@ -315,13 +330,16 @@ impl Arr30C {
                 Some(*node)
             } else if node.kind() == "expression_statement" {
                 // Look for assignment_expression child
-                node.child(0).filter(|c| c.kind() == "assignment_expression")
+                node.child(0)
+                    .filter(|c| c.kind() == "assignment_expression")
             } else {
                 None
             };
 
             if let Some(assign) = assign_node {
-                if let Some((buf_name, buf_info)) = self.extract_buffer_from_assignment(&assign, source) {
+                if let Some((buf_name, buf_info)) =
+                    self.extract_buffer_from_assignment(&assign, source)
+                {
                     // Insert wildcard buffers from malloc assignments
                     buffers.insert(buf_name, buf_info);
                 }
@@ -350,7 +368,7 @@ impl Arr30C {
         &self,
         node: &Node,
         source: &str,
-        buffers: &mut HashMap<String, BufferInfo>
+        buffers: &mut HashMap<String, BufferInfo>,
     ) {
         // Find the field_declaration_list child node
         for i in 0..node.child_count() {
@@ -361,7 +379,9 @@ impl Arr30C {
                         if let Some(field) = child.child(j) {
                             if field.kind() == "field_declaration" {
                                 // Extract array member from field_declaration
-                                if let Some(member_info) = self.extract_array_from_field_declaration(&field, source) {
+                                if let Some(member_info) =
+                                    self.extract_array_from_field_declaration(&field, source)
+                                {
                                     buffers.insert(member_info.name.clone(), member_info);
                                 }
                             }
@@ -377,7 +397,7 @@ impl Arr30C {
     fn extract_array_from_field_declaration(
         &self,
         node: &Node,
-        source: &str
+        source: &str,
     ) -> Option<BufferInfo> {
         // Look for array_declarator within the field_declaration
         for i in 0..node.child_count() {
@@ -392,15 +412,24 @@ impl Arr30C {
                             match declarator_child.kind() {
                                 "field_identifier" => {
                                     // Struct member names use field_identifier
-                                    member_name = Some(source[declarator_child.start_byte()..declarator_child.end_byte()].to_string());
+                                    member_name = Some(
+                                        source[declarator_child.start_byte()
+                                            ..declarator_child.end_byte()]
+                                            .to_string(),
+                                    );
                                 }
                                 "identifier" if j == 0 => {
                                     // Could also be a regular identifier in some cases
-                                    member_name = Some(source[declarator_child.start_byte()..declarator_child.end_byte()].to_string());
+                                    member_name = Some(
+                                        source[declarator_child.start_byte()
+                                            ..declarator_child.end_byte()]
+                                            .to_string(),
+                                    );
                                 }
                                 "number_literal" => {
                                     // Array size
-                                    let size_str = &source[declarator_child.start_byte()..declarator_child.end_byte()];
+                                    let size_str = &source[declarator_child.start_byte()
+                                        ..declarator_child.end_byte()];
                                     array_size = size_str.parse().ok();
                                 }
                                 _ => {}
@@ -428,7 +457,7 @@ impl Arr30C {
         &self,
         node: &Node,
         source: &str,
-        _typedefs: &HashMap<String, usize>
+        _typedefs: &HashMap<String, usize>,
     ) -> Option<BufferInfo> {
         // Look for array_declarator with identifier size (not number_literal)
         for i in 0..node.child_count() {
@@ -449,11 +478,7 @@ impl Arr30C {
     }
 
     /// Extract VLA from array_declarator if size is symbolic
-    fn extract_vla_from_array_declarator(
-        &self,
-        node: &Node,
-        source: &str
-    ) -> Option<BufferInfo> {
+    fn extract_vla_from_array_declarator(&self, node: &Node, source: &str) -> Option<BufferInfo> {
         let mut var_name: Option<String> = None;
         let mut size_expr: Option<String> = None;
 
@@ -493,12 +518,18 @@ impl Arr30C {
     }
 
     /// Analyze pointer aliases in the source code using AST traversal
-    fn analyze_pointer_aliases(&self, source: &str, buffers: &HashMap<String, BufferInfo>) -> HashMap<String, PointerAlias> {
+    fn analyze_pointer_aliases(
+        &self,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> HashMap<String, PointerAlias> {
         let mut aliases = HashMap::new();
 
         // Parse the source code into AST
         let mut parser = tree_sitter::Parser::new();
-        parser.set_language(&tree_sitter_c::language()).expect("Error loading C grammar");
+        parser
+            .set_language(&tree_sitter_c::language())
+            .expect("Error loading C grammar");
 
         let tree = match parser.parse(source, None) {
             Some(t) => t,
@@ -519,7 +550,7 @@ impl Arr30C {
         node: &Node,
         source: &str,
         buffers: &HashMap<String, BufferInfo>,
-        aliases: &mut HashMap<String, PointerAlias>
+        aliases: &mut HashMap<String, PointerAlias>,
     ) {
         // Check if this node is a declaration
         if node.kind() == "declaration" {
@@ -535,7 +566,6 @@ impl Arr30C {
             }
         }
     }
-
 
     /// Analyze typedef declarations for array types
     fn analyze_typedefs(&self, source: &str) -> HashMap<String, usize> {
@@ -559,7 +589,12 @@ impl Arr30C {
 
     /// Analyze struct/union members that use typedef array types
     /// This handles cases like: struct { IntArray numbers; }
-    fn analyze_struct_typedef_members(&self, source: &str, typedefs: &HashMap<String, usize>, buffers: &mut HashMap<String, BufferInfo>) {
+    fn analyze_struct_typedef_members(
+        &self,
+        source: &str,
+        typedefs: &HashMap<String, usize>,
+        buffers: &mut HashMap<String, BufferInfo>,
+    ) {
         let lines: Vec<&str> = source.lines().collect();
 
         for (line_idx, line) in lines.iter().enumerate() {
@@ -583,7 +618,7 @@ impl Arr30C {
                                     size: BufferSize::Static(size),
                                     element_type: type_name.to_string(),
                                     allocation_line: line_idx + 1,
-                                }
+                                },
                             );
                         }
                     }
@@ -591,8 +626,6 @@ impl Arr30C {
             }
         }
     }
-
-
 
     /// Extract numeric value from string
     fn extract_numeric_value(&self, s: &str) -> Option<usize> {
@@ -694,7 +727,8 @@ impl Arr30C {
 
         // Handle regular cases like arr[i], ptr[j]
         // Extract the base identifier
-        let identifier = text.split(|c: char| !c.is_alphanumeric() && c != '_')
+        let identifier = text
+            .split(|c: char| !c.is_alphanumeric() && c != '_')
             .find(|s| !s.is_empty())?;
 
         Some(identifier.to_string())
@@ -712,7 +746,10 @@ impl Arr30C {
 
         // Try to evaluate as expression
         if let Some(eval_val) = self.evaluate_index_expression(index_text, source) {
-            return Some(IndexValue::Expression(index_text.to_string(), Some(eval_val)));
+            return Some(IndexValue::Expression(
+                index_text.to_string(),
+                Some(eval_val),
+            ));
         }
 
         // Check if it's an arithmetic expression with variable
@@ -818,7 +855,12 @@ impl Arr30C {
     }
 
     /// Attempt to resolve a variable to a constant through simple intraprocedural constant propagation
-    fn try_resolve_variable_to_constant(&self, var_name: &str, current_node: &Node, source: &str) -> Option<isize> {
+    fn try_resolve_variable_to_constant(
+        &self,
+        var_name: &str,
+        current_node: &Node,
+        source: &str,
+    ) -> Option<isize> {
         // Check if this variable is a loop counter - if so, don't resolve to constant
         // Loop counters change value during execution
         if let Some(for_node) = find_containing_for_loop(current_node) {
@@ -855,7 +897,12 @@ impl Arr30C {
     // Removed: is_function_parameter - now using ast_utils::is_function_parameter with find_containing_function
 
     /// Check if function has ANY bounds validation for a parameter
-    fn has_function_parameter_bounds_check(&self, func_node: &Node, param_name: &str, source: &str) -> bool {
+    fn has_function_parameter_bounds_check(
+        &self,
+        func_node: &Node,
+        param_name: &str,
+        source: &str,
+    ) -> bool {
         let func_text = &source[func_node.start_byte()..func_node.end_byte()];
 
         // Check for various bounds checking patterns:
@@ -864,9 +911,9 @@ impl Arr30C {
         // 3. Presence of size/length/count parameter
 
         let bounds_patterns = [
-            format!(r"{}\s*<\s*\w+", regex::escape(param_name)),   // param < size
-            format!(r"\w+\s*>\s*{}", regex::escape(param_name)),   // size > param
-            format!(r"{}\s*>=\s*\w+", regex::escape(param_name)),  // param >= size (with return/check)
+            format!(r"{}\s*<\s*\w+", regex::escape(param_name)), // param < size
+            format!(r"\w+\s*>\s*{}", regex::escape(param_name)), // size > param
+            format!(r"{}\s*>=\s*\w+", regex::escape(param_name)), // param >= size (with return/check)
             format!(r"if\s*\([^)]*{}", regex::escape(param_name)), // if statement with param
         ];
 
@@ -914,7 +961,13 @@ impl Arr30C {
 
     /// Check if a recursive function has dangerous index modification patterns
     /// Returns true if recursion modifies indices in a way that will exceed bounds
-    fn has_recursive_index_modification(&self, subscript_node: &Node, index_text: &str, source: &str, array_size: usize) -> bool {
+    fn has_recursive_index_modification(
+        &self,
+        subscript_node: &Node,
+        index_text: &str,
+        source: &str,
+        array_size: usize,
+    ) -> bool {
         if !self.is_recursive_array_access(subscript_node, source) {
             return false;
         }
@@ -930,7 +983,11 @@ impl Arr30C {
 
             // Look for recursive calls with index modifications like: func(arr, index + 2, ...)
             // Pattern: function_name(.*index \+ \d+
-            let modification_pattern = format!(r"{}\s*\([^)]*{}\s*\+\s*(\d+)", regex::escape(&func_name), regex::escape(index_text));
+            let modification_pattern = format!(
+                r"{}\s*\([^)]*{}\s*\+\s*(\d+)",
+                regex::escape(&func_name),
+                regex::escape(index_text)
+            );
             if let Ok(re) = regex::Regex::new(&modification_pattern) {
                 if let Some(caps) = re.captures(func_text) {
                     if let Some(increment) = caps.get(1) {
@@ -966,7 +1023,9 @@ impl Arr30C {
             if let Some(child) = func_node.child(i) {
                 if child.kind() == "function_declarator" {
                     if let Some(name_node) = child.child(0) {
-                        return Some(source[name_node.start_byte()..name_node.end_byte()].to_string());
+                        return Some(
+                            source[name_node.start_byte()..name_node.end_byte()].to_string(),
+                        );
                     }
                 }
             }
@@ -1013,7 +1072,10 @@ impl Arr30C {
         // Check for function-level bounds checking (parameter validation)
         if let Some(func_node) = find_containing_function(node) {
             let function_text = &source[func_node.start_byte()..func_node.end_byte()];
-            if function_text.contains("size") || function_text.contains("length") || function_text.contains("count") {
+            if function_text.contains("size")
+                || function_text.contains("length")
+                || function_text.contains("count")
+            {
                 return true;
             }
         }
@@ -1026,7 +1088,12 @@ impl Arr30C {
     // Removed: find_containing_if_statement - now using ast_utils::find_containing_if_statement
 
     /// Check for loop bounds against specific buffer size
-    fn check_for_loop_bounds_against_size(&self, for_node: &Node, source: &str, size: usize) -> bool {
+    fn check_for_loop_bounds_against_size(
+        &self,
+        for_node: &Node,
+        source: &str,
+        size: usize,
+    ) -> bool {
         let loop_text = &source[for_node.start_byte()..for_node.end_byte()];
 
         // Look for patterns like: i < SIZE or i < 10
@@ -1056,8 +1123,11 @@ impl Arr30C {
                 if child.kind() == "parenthesized_expression" {
                     for j in 0..child.child_count() {
                         if let Some(grandchild) = child.child(j) {
-                            if grandchild.kind() == "binary_expression" || grandchild.kind() == "comparison_expression" {
-                                let condition_text = &source[grandchild.start_byte()..grandchild.end_byte()];
+                            if grandchild.kind() == "binary_expression"
+                                || grandchild.kind() == "comparison_expression"
+                            {
+                                let condition_text =
+                                    &source[grandchild.start_byte()..grandchild.end_byte()];
                                 if self.condition_contains_safe_bounds(condition_text, index_text) {
                                     return true;
                                 }
@@ -1105,7 +1175,10 @@ impl Arr30C {
                             if declarator.kind() == "init_declarator" {
                                 if let Some(identifier) = declarator.child(0) {
                                     if identifier.kind() == "identifier" {
-                                        return Some(source[identifier.start_byte()..identifier.end_byte()].to_string());
+                                        return Some(
+                                            source[identifier.start_byte()..identifier.end_byte()]
+                                                .to_string(),
+                                        );
                                     }
                                 }
                             }
@@ -1129,7 +1202,11 @@ impl Arr30C {
     /// - array[i] = malloc(size * sizeof(type))
     /// - ptr = realloc(ptr, new_size)
     /// - ptr = malloc(size)
-    fn extract_buffer_from_assignment(&self, node: &Node, source: &str) -> Option<(String, BufferInfo)> {
+    fn extract_buffer_from_assignment(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> Option<(String, BufferInfo)> {
         // Check if this is an assignment with malloc/calloc/realloc on the right side
         let mut left_node: Option<Node> = None;
         let mut right_node: Option<Node> = None;
@@ -1268,18 +1345,30 @@ impl Arr30C {
     /// For matrix[i][j], checks both:
     /// 1. Is i within bounds of matrix?
     /// 2. Is j within bounds of matrix[i]?
-    fn check_nested_subscript(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
+    fn check_nested_subscript(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+        aliases: &HashMap<String, PointerAlias>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // Get the inner subscript node (matrix[i])
         if let Some(inner_node) = node.child(0) {
             if inner_node.kind() == "subscript_expression" {
                 // Step 1: Check the inner subscript bounds (matrix[i])
-                violations.extend(self.check_array_subscript(&inner_node, source, buffers, aliases));
+                violations.extend(self.check_array_subscript(
+                    &inner_node,
+                    source,
+                    buffers,
+                    aliases,
+                ));
 
                 // Step 2: Get the buffer name for the inner subscript result
                 // For matrix[0], this should look up "matrix[*]" in buffers
-                if let Some(inner_buffer_name) = self.get_subscript_buffer_name(&inner_node, source) {
+                if let Some(inner_buffer_name) = self.get_subscript_buffer_name(&inner_node, source)
+                {
                     if let Some(inner_buffer) = buffers.get(&inner_buffer_name) {
                         // Step 3: Check the outer index against the inner buffer's size
                         if let Some(outer_index) = self.get_subscript_index_value(node, source) {
@@ -1307,22 +1396,36 @@ impl Arr30C {
 
                             if is_violation {
                                 // Get the full array name for error message
-                                let full_array_name = &source[inner_node.start_byte()..inner_node.end_byte()];
+                                let full_array_name =
+                                    &source[inner_node.start_byte()..inner_node.end_byte()];
 
                                 let msg = match outer_index {
-                                    IndexValue::Constant(idx) =>
-                                        format!("Out-of-bounds array access at index {}", idx),
-                                    IndexValue::Expression(ref expr, Some(eval_idx)) =>
-                                        format!("Out-of-bounds array access: '{}' evaluates to {}", expr, eval_idx),
-                                    IndexValue::Expression(ref expr, None) =>
-                                        format!("Potentially unsafe array access with expression '{}'", expr),
-                                    IndexValue::Variable(ref var) =>
-                                        format!("Potentially unsafe array access with variable index '{}'", var),
-                                    IndexValue::Unknown =>
-                                        "Potentially unsafe array access".to_string(),
+                                    IndexValue::Constant(idx) => {
+                                        format!("Out-of-bounds array access at index {}", idx)
+                                    }
+                                    IndexValue::Expression(ref expr, Some(eval_idx)) => format!(
+                                        "Out-of-bounds array access: '{}' evaluates to {}",
+                                        expr, eval_idx
+                                    ),
+                                    IndexValue::Expression(ref expr, None) => format!(
+                                        "Potentially unsafe array access with expression '{}'",
+                                        expr
+                                    ),
+                                    IndexValue::Variable(ref var) => format!(
+                                        "Potentially unsafe array access with variable index '{}'",
+                                        var
+                                    ),
+                                    IndexValue::Unknown => {
+                                        "Potentially unsafe array access".to_string()
+                                    }
                                 };
 
-                                violations.push(self.create_violation(node, full_array_name, inner_buffer, &msg));
+                                violations.push(self.create_violation(
+                                    node,
+                                    full_array_name,
+                                    inner_buffer,
+                                    &msg,
+                                ));
                             }
                         }
                     }
@@ -1334,7 +1437,13 @@ impl Arr30C {
     }
 
     /// Create a violation record
-    fn create_violation(&self, node: &Node, array_name: &str, buffer_info: &BufferInfo, message: &str) -> RuleViolation {
+    fn create_violation(
+        &self,
+        node: &Node,
+        array_name: &str,
+        buffer_info: &BufferInfo,
+        message: &str,
+    ) -> RuleViolation {
         let start_point = node.start_position();
 
         let size_info = match &buffer_info.size {
@@ -1348,18 +1457,29 @@ impl Arr30C {
         RuleViolation {
             rule_id: self.rule_id().to_string(),
             severity: Severity::High,
-            message: format!("{}: Buffer '{}' with {} (allocated at line {})",
-                           message, array_name, size_info, buffer_info.allocation_line),
+            message: format!(
+                "{}: Buffer '{}' with {} (allocated at line {})",
+                message, array_name, size_info, buffer_info.allocation_line
+            ),
             file_path: String::new(),
             line: start_point.row + 1,
             column: start_point.column + 1,
-            suggestion: Some("Ensure array access is within allocated bounds. Add explicit bounds checking.".to_string()),
+            suggestion: Some(
+                "Ensure array access is within allocated bounds. Add explicit bounds checking."
+                    .to_string(),
+            ),
             ..Default::default()
         }
     }
 
     /// Check array subscript expressions with buffer size analysis
-    fn check_array_subscript(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
+    fn check_array_subscript(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+        aliases: &HashMap<String, PointerAlias>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // Check if this is a nested subscript expression (e.g., matrix[0][5])
@@ -1397,11 +1517,12 @@ impl Arr30C {
                 }
 
                 // Try to resolve alias first
-                let (actual_buffer_name, element_size_bytes) = if let Some(alias) = aliases.get(&array_name) {
-                    (alias.original_buffer.as_str(), alias.element_size_bytes)
-                } else {
-                    (array_name.as_str(), None)
-                };
+                let (actual_buffer_name, element_size_bytes) =
+                    if let Some(alias) = aliases.get(&array_name) {
+                        (alias.original_buffer.as_str(), alias.element_size_bytes)
+                    } else {
+                        (array_name.as_str(), None)
+                    };
 
                 if let Some(buffer_info) = buffers.get(actual_buffer_name) {
                     // Calculate effective buffer size for cast pointers
@@ -1416,7 +1537,6 @@ impl Arr30C {
                         }
                         _ => 0, // Will be handled separately below
                     };
-
 
                     let is_violation = match &buffer_info.size {
                         BufferSize::Static(_size) | BufferSize::DynamicCalculated(_size) => {
@@ -1435,14 +1555,21 @@ impl Arr30C {
                                 }
                                 IndexValue::Variable(var) => {
                                     // First, check for recursive function with index modification
-                                    if self.has_recursive_index_modification(node, var, source, effective_size) {
+                                    if self.has_recursive_index_modification(
+                                        node,
+                                        var,
+                                        source,
+                                        effective_size,
+                                    ) {
                                         true
                                     } else if let Some(func_node) = find_containing_function(node) {
                                         // Function parameters used as indices without bounds checking are high risk
                                         // Check if the function has ANY bounds validation
                                         if is_function_parameter(&func_node, var, source) {
                                             // Only flag if there's NO bounds checking for this parameter
-                                            !self.has_function_parameter_bounds_check(&func_node, var, source)
+                                            !self.has_function_parameter_bounds_check(
+                                                &func_node, var, source,
+                                            )
                                         } else {
                                             false
                                         }
@@ -1487,18 +1614,29 @@ impl Arr30C {
 
                     if is_violation {
                         let msg = match index {
-                            IndexValue::Constant(idx) =>
-                                format!("Out-of-bounds array access at index {}", idx),
-                            IndexValue::Expression(ref expr, Some(eval_idx)) =>
-                                format!("Out-of-bounds array access: '{}' evaluates to {}", expr, eval_idx),
-                            IndexValue::Expression(ref expr, None) =>
-                                format!("Potentially unsafe array access with expression '{}'", expr),
-                            IndexValue::Variable(ref var) =>
-                                format!("Potentially unsafe array access with variable index '{}'", var),
-                            IndexValue::Unknown =>
-                                "Potentially unsafe array access".to_string(),
+                            IndexValue::Constant(idx) => {
+                                format!("Out-of-bounds array access at index {}", idx)
+                            }
+                            IndexValue::Expression(ref expr, Some(eval_idx)) => format!(
+                                "Out-of-bounds array access: '{}' evaluates to {}",
+                                expr, eval_idx
+                            ),
+                            IndexValue::Expression(ref expr, None) => format!(
+                                "Potentially unsafe array access with expression '{}'",
+                                expr
+                            ),
+                            IndexValue::Variable(ref var) => format!(
+                                "Potentially unsafe array access with variable index '{}'",
+                                var
+                            ),
+                            IndexValue::Unknown => "Potentially unsafe array access".to_string(),
                         };
-                        violations.push(self.create_violation(node, &array_name, buffer_info, &msg));
+                        violations.push(self.create_violation(
+                            node,
+                            &array_name,
+                            buffer_info,
+                            &msg,
+                        ));
                     }
                 }
             }
@@ -1573,16 +1711,23 @@ impl Arr30C {
     }
 
     /// Check pointer arithmetic for bounds violations
-    fn check_pointer_arithmetic(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>) -> Vec<RuleViolation> {
+    fn check_pointer_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+        aliases: &HashMap<String, PointerAlias>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         if let Some((ptr_name, offset)) = self.extract_pointer_arithmetic(node, source) {
             // Try to resolve alias first
-            let (actual_buffer_name, element_size_bytes) = if let Some(alias) = aliases.get(&ptr_name) {
-                (alias.original_buffer.as_str(), alias.element_size_bytes)
-            } else {
-                (ptr_name.as_str(), None)
-            };
+            let (actual_buffer_name, element_size_bytes) =
+                if let Some(alias) = aliases.get(&ptr_name) {
+                    (alias.original_buffer.as_str(), alias.element_size_bytes)
+                } else {
+                    (ptr_name.as_str(), None)
+                };
 
             if let Some(buffer_info) = buffers.get(actual_buffer_name) {
                 match &buffer_info.size {
@@ -1603,7 +1748,12 @@ impl Arr30C {
                                     "Pointer arithmetic moves {} elements beyond buffer bounds (effective size: {})",
                                     off, effective_size
                                 );
-                                violations.push(self.create_violation(node, &ptr_name, buffer_info, &msg));
+                                violations.push(self.create_violation(
+                                    node,
+                                    &ptr_name,
+                                    buffer_info,
+                                    &msg,
+                                ));
                             }
                         }
                     }
@@ -1616,7 +1766,11 @@ impl Arr30C {
     }
 
     /// Extract pointer arithmetic information from assignment
-    fn extract_pointer_arithmetic(&self, node: &Node, source: &str) -> Option<(String, OffsetValue)> {
+    fn extract_pointer_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> Option<(String, OffsetValue)> {
         let text = &source[node.start_byte()..node.end_byte()];
 
         // Pattern: ptr += offset
@@ -1668,13 +1822,18 @@ impl Arr30C {
         let text = &source[node.start_byte()..node.end_byte()];
         text.contains("+=") || (text.contains('=') && text.contains('+'))
     }
-
 }
-
 
 impl Arr30C {
     /// Internal recursive check function that carries buffer_info through the tree
-    fn check_with_buffer_info(&self, node: &Node, source: &str, buffer_info: &HashMap<String, BufferInfo>, aliases: &HashMap<String, PointerAlias>, function_macros: &HashMap<String, FunctionMacro>) -> Vec<RuleViolation> {
+    fn check_with_buffer_info(
+        &self,
+        node: &Node,
+        source: &str,
+        buffer_info: &HashMap<String, BufferInfo>,
+        aliases: &HashMap<String, PointerAlias>,
+        function_macros: &HashMap<String, FunctionMacro>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // Clone the maps to allow modification during traversal
@@ -1685,16 +1844,31 @@ impl Arr30C {
         // This ensures we use the parent's context for checking this node
         match node.kind() {
             "subscript_expression" => {
-                violations.extend(self.check_array_subscript(node, source, &local_buffers, &local_aliases));
+                violations.extend(self.check_array_subscript(
+                    node,
+                    source,
+                    &local_buffers,
+                    &local_aliases,
+                ));
             }
             "assignment_expression" => {
                 if self.is_pointer_arithmetic_assignment(node, source) {
-                    violations.extend(self.check_pointer_arithmetic(node, source, &local_buffers, &local_aliases));
+                    violations.extend(self.check_pointer_arithmetic(
+                        node,
+                        source,
+                        &local_buffers,
+                        &local_aliases,
+                    ));
                 }
             }
             "call_expression" => {
                 violations.extend(self.check_dangerous_function_call(node, source, &local_buffers));
-                violations.extend(self.check_macro_invocation(node, source, &local_buffers, function_macros));
+                violations.extend(self.check_macro_invocation(
+                    node,
+                    source,
+                    &local_buffers,
+                    function_macros,
+                ));
             }
             _ => {}
         }
@@ -1711,7 +1885,9 @@ impl Arr30C {
                             local_buffers.insert(new_buffer.name.clone(), new_buffer);
                         }
                     }
-                    if let Some(new_alias) = self.extract_alias_from_declaration(&child, source, &local_buffers) {
+                    if let Some(new_alias) =
+                        self.extract_alias_from_declaration(&child, source, &local_buffers)
+                    {
                         local_aliases.insert(new_alias.alias_name.clone(), new_alias);
                     }
                 }
@@ -1722,20 +1898,30 @@ impl Arr30C {
                     Some(child)
                 } else if child.kind() == "expression_statement" {
                     // Look for assignment_expression child
-                    child.child(0).filter(|c| c.kind() == "assignment_expression")
+                    child
+                        .child(0)
+                        .filter(|c| c.kind() == "assignment_expression")
                 } else {
                     None
                 };
 
                 if let Some(assign_node) = assignment_node {
-                    if let Some((buf_name, buf_info)) = self.extract_buffer_from_assignment(&assign_node, source) {
+                    if let Some((buf_name, buf_info)) =
+                        self.extract_buffer_from_assignment(&assign_node, source)
+                    {
                         // Insert or update the buffer entry
                         local_buffers.insert(buf_name, buf_info);
                     }
                 }
 
                 // Recursively check this child with the accumulated context
-                violations.extend(self.check_with_buffer_info(&child, source, &local_buffers, &local_aliases, function_macros));
+                violations.extend(self.check_with_buffer_info(
+                    &child,
+                    source,
+                    &local_buffers,
+                    &local_aliases,
+                    function_macros,
+                ));
             }
         }
 
@@ -1743,14 +1929,21 @@ impl Arr30C {
     }
 
     /// Extract buffer information from a declaration AST node (with typedef support)
-    fn extract_buffer_from_declaration_with_typedefs(&self, node: &Node, source: &str, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
+    fn extract_buffer_from_declaration_with_typedefs(
+        &self,
+        node: &Node,
+        source: &str,
+        typedefs: &HashMap<String, usize>,
+    ) -> Option<BufferInfo> {
         // Look for declarator nodes that contain array or pointer declarations
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 match child.kind() {
                     "init_declarator" => {
                         // Handles: int arr[5] = {...};
-                        return self.extract_buffer_from_init_declarator_with_typedefs(&child, source, typedefs);
+                        return self.extract_buffer_from_init_declarator_with_typedefs(
+                            &child, source, typedefs,
+                        );
                     }
                     "array_declarator" => {
                         // Handles: int arr[5];
@@ -1810,7 +2003,12 @@ impl Arr30C {
     }
 
     /// Extract buffer from init_declarator node (declarations with initializers, with typedef support)
-    fn extract_buffer_from_init_declarator_with_typedefs(&self, node: &Node, source: &str, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
+    fn extract_buffer_from_init_declarator_with_typedefs(
+        &self,
+        node: &Node,
+        source: &str,
+        typedefs: &HashMap<String, usize>,
+    ) -> Option<BufferInfo> {
         // First child is the declarator
         let declarator = node.child(0)?;
 
@@ -1887,7 +2085,12 @@ impl Arr30C {
                 if parent.kind() == "declaration" {
                     // Create empty typedefs map for fallback
                     let empty_typedefs = HashMap::new();
-                    return self.check_typedef_declaration(&parent, var_name, source, &empty_typedefs);
+                    return self.check_typedef_declaration(
+                        &parent,
+                        var_name,
+                        source,
+                        &empty_typedefs,
+                    );
                 }
             }
         }
@@ -1898,7 +2101,11 @@ impl Arr30C {
     /// Extract buffer info from array_declarator
     /// For multidimensional arrays, extracts the INNERMOST dimension (the base array)
     /// The caller is responsible for extracting outer dimensions
-    fn extract_buffer_from_array_declarator(&self, node: &Node, source: &str) -> Option<BufferInfo> {
+    fn extract_buffer_from_array_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> Option<BufferInfo> {
         // Check if first child is a nested array_declarator (multidimensional array)
         if let Some(first_child) = node.child(0) {
             if first_child.kind() == "array_declarator" {
@@ -1920,7 +2127,8 @@ impl Arr30C {
                 match child.kind() {
                     "identifier" => {
                         if var_name.is_none() {
-                            var_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                            var_name =
+                                Some(source[child.start_byte()..child.end_byte()].to_string());
                         } else if i > 0 {
                             // This is the size expression (VLA)
                             let expr = &source[child.start_byte()..child.end_byte()];
@@ -1968,7 +2176,13 @@ impl Arr30C {
     /// For int matrix[3][4], creates:
     /// - "matrix" with size 3 (already created by extract_buffer_from_array_declarator)
     /// - "matrix[*]" with size 4 (created here for inner dimension checking)
-    fn extract_multidimensional_buffers(&self, decl_node: &Node, base_name: &str, source: &str, buffers: &mut HashMap<String, BufferInfo>) {
+    fn extract_multidimensional_buffers(
+        &self,
+        decl_node: &Node,
+        base_name: &str,
+        source: &str,
+        buffers: &mut HashMap<String, BufferInfo>,
+    ) {
         // Find the array_declarator in the declaration
         for i in 0..decl_node.child_count() {
             if let Some(child) = decl_node.child(i) {
@@ -1984,7 +2198,13 @@ impl Arr30C {
     /// Recursively extract inner dimensions from array_declarator nodes
     /// For int matrix[3][4], when called on the outer array_declarator:
     /// - Creates "matrix[*]" with size 4
-    fn extract_inner_dimensions(&self, node: &Node, base_name: &str, source: &str, buffers: &mut HashMap<String, BufferInfo>) {
+    fn extract_inner_dimensions(
+        &self,
+        node: &Node,
+        base_name: &str,
+        source: &str,
+        buffers: &mut HashMap<String, BufferInfo>,
+    ) {
         if node.kind() == "init_declarator" {
             // Skip to the declarator child
             if let Some(declarator) = node.child(0) {
@@ -2007,12 +2227,15 @@ impl Arr30C {
                     let wildcard_name = format!("{}[*]", base_name);
                     let line = node.start_position().row + 1;
 
-                    buffers.insert(wildcard_name, BufferInfo {
-                        name: base_name.to_string(),
-                        size,
-                        element_type: "array_element".to_string(),
-                        allocation_line: line,
-                    });
+                    buffers.insert(
+                        wildcard_name,
+                        BufferInfo {
+                            name: base_name.to_string(),
+                            size,
+                            element_type: "array_element".to_string(),
+                            allocation_line: line,
+                        },
+                    );
                 }
 
                 // Continue recursing for deeper dimensions (e.g., int arr[2][3][4])
@@ -2041,7 +2264,12 @@ impl Arr30C {
     }
 
     /// Extract buffer from malloc/calloc call
-    fn extract_buffer_from_malloc_call(&self, declarator: &Node, call_node: &Node, source: &str) -> Option<BufferInfo> {
+    fn extract_buffer_from_malloc_call(
+        &self,
+        declarator: &Node,
+        call_node: &Node,
+        source: &str,
+    ) -> Option<BufferInfo> {
         let var_name = if declarator.kind() == "pointer_declarator" {
             // Navigate to the identifier within pointer_declarator (may be nested for double pointers)
             self.find_identifier_in_declarator(declarator, source)?
@@ -2057,7 +2285,13 @@ impl Arr30C {
         for i in 0..call_node.child_count() {
             if let Some(child) = call_node.child(i) {
                 if child.kind() == "argument_list" {
-                    return self.parse_malloc_arguments(func_name, &child, source, &var_name, call_node.start_position().row + 1);
+                    return self.parse_malloc_arguments(
+                        func_name,
+                        &child,
+                        source,
+                        &var_name,
+                        call_node.start_position().row + 1,
+                    );
                 }
             }
         }
@@ -2084,7 +2318,14 @@ impl Arr30C {
     }
 
     /// Parse malloc/calloc/realloc arguments from argument_list node
-    fn parse_malloc_arguments(&self, func_name: &str, arg_list: &Node, source: &str, var_name: &str, line: usize) -> Option<BufferInfo> {
+    fn parse_malloc_arguments(
+        &self,
+        func_name: &str,
+        arg_list: &Node,
+        source: &str,
+        var_name: &str,
+        line: usize,
+    ) -> Option<BufferInfo> {
         match func_name {
             "malloc" => {
                 // Get first argument
@@ -2152,7 +2393,13 @@ impl Arr30C {
     }
 
     /// Check if a declaration uses a typedef array type
-    fn check_typedef_declaration(&self, decl_node: &Node, var_name: &str, source: &str, typedefs: &HashMap<String, usize>) -> Option<BufferInfo> {
+    fn check_typedef_declaration(
+        &self,
+        decl_node: &Node,
+        var_name: &str,
+        source: &str,
+        typedefs: &HashMap<String, usize>,
+    ) -> Option<BufferInfo> {
         // Get type from declaration
         for i in 0..decl_node.child_count() {
             if let Some(child) = decl_node.child(i) {
@@ -2175,7 +2422,12 @@ impl Arr30C {
     }
 
     /// Extract pointer alias from declaration AST node
-    fn extract_alias_from_declaration(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
+    fn extract_alias_from_declaration(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Option<PointerAlias> {
         // Look for init_declarator with pointer assignment
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
@@ -2188,7 +2440,12 @@ impl Arr30C {
     }
 
     /// Extract alias from init_declarator
-    fn extract_alias_from_init_declarator(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
+    fn extract_alias_from_init_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Option<PointerAlias> {
         // First, check for cast expression (int *ptr = (int *)buffer)
         let mut declarator_child: Option<Node> = None;
 
@@ -2229,7 +2486,13 @@ impl Arr30C {
     }
 
     /// Extract alias from cast expression
-    fn extract_alias_from_cast(&self, declarator: &Node, cast_node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Option<PointerAlias> {
+    fn extract_alias_from_cast(
+        &self,
+        declarator: &Node,
+        cast_node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Option<PointerAlias> {
         let ptr_name = find_identifier_in_declarator(declarator, source)?;
 
         // Get cast type
@@ -2244,7 +2507,8 @@ impl Arr30C {
                         for j in 0..child.child_count() {
                             if let Some(type_node) = child.child(j) {
                                 if type_node.kind() == "primitive_type" {
-                                    cast_type = Some(&source[type_node.start_byte()..type_node.end_byte()]);
+                                    cast_type =
+                                        Some(&source[type_node.start_byte()..type_node.end_byte()]);
                                 }
                             }
                         }
@@ -2283,7 +2547,12 @@ impl Arr30C {
     // Removed: extract_identifier_from_declarator - now using ast_utils::find_identifier_in_declarator
 
     /// Check for dangerous library function calls that can cause buffer overflows
-    fn check_dangerous_function_call(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_dangerous_function_call(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // Get function name
@@ -2307,7 +2576,13 @@ impl Arr30C {
     /// Since macros are not expanded, we flag them for manual review if they:
     /// 1. Match a known function-like macro definition
     /// 2. Take arguments that include tracked buffer names
-    fn check_macro_invocation(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>, function_macros: &HashMap<String, FunctionMacro>) -> Vec<RuleViolation> {
+    fn check_macro_invocation(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+        function_macros: &HashMap<String, FunctionMacro>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // Get the function/macro name
@@ -2361,7 +2636,12 @@ impl Arr30C {
     }
 
     /// Check strcpy calls for buffer overflow potential
-    fn check_strcpy(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_strcpy(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // strcpy(dest, src) - arguments are in argument_list node
@@ -2388,13 +2668,18 @@ impl Arr30C {
 
                     // If we know both sizes, check if source is larger
                     if let Some(src_s) = src_size {
-                        if let BufferSize::Static(dest_s) | BufferSize::DynamicCalculated(dest_s) = dest_info.size {
+                        if let BufferSize::Static(dest_s) | BufferSize::DynamicCalculated(dest_s) =
+                            dest_info.size
+                        {
                             if src_s > dest_s {
                                 violations.push(self.create_library_violation(
                                     node,
                                     dest_name,
                                     dest_info,
-                                    &format!("strcpy may overflow: source size {} > destination size {}", src_s, dest_s)
+                                    &format!(
+                                        "strcpy may overflow: source size {} > destination size {}",
+                                        src_s, dest_s
+                                    ),
                                 ));
                                 return violations;
                             }
@@ -2408,7 +2693,7 @@ impl Arr30C {
                             node,
                             dest_name,
                             dest_info,
-                            "strcpy with unknown source size can cause buffer overflow"
+                            "strcpy with unknown source size can cause buffer overflow",
                         ));
                     }
                 }
@@ -2419,7 +2704,12 @@ impl Arr30C {
     }
 
     /// Check strcat calls for buffer overflow potential
-    fn check_strcat(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_strcat(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         if let Some(args) = self.get_function_arguments(node, source) {
@@ -2432,7 +2722,7 @@ impl Arr30C {
                         node,
                         dest_name,
                         dest_info,
-                        "strcat can cause buffer overflow without length checks"
+                        "strcat can cause buffer overflow without length checks",
                     ));
                 }
             }
@@ -2442,7 +2732,12 @@ impl Arr30C {
     }
 
     /// Check memcpy/memmove calls for buffer overflow potential
-    fn check_memcpy(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_memcpy(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // memcpy(dest, src, count)
@@ -2472,13 +2767,18 @@ impl Arr30C {
 
                     // Check if count exceeds destination size
                     if let Some(c) = count {
-                        if let BufferSize::Static(dest_s) | BufferSize::DynamicCalculated(dest_s) = dest_info.size {
+                        if let BufferSize::Static(dest_s) | BufferSize::DynamicCalculated(dest_s) =
+                            dest_info.size
+                        {
                             if c > dest_s {
                                 violations.push(self.create_library_violation(
                                     node,
                                     dest_name,
                                     dest_info,
-                                    &format!("memcpy copies {} bytes into {}-byte buffer", c, dest_s)
+                                    &format!(
+                                        "memcpy copies {} bytes into {}-byte buffer",
+                                        c, dest_s
+                                    ),
                                 ));
                             }
                         }
@@ -2491,7 +2791,12 @@ impl Arr30C {
     }
 
     /// Check sprintf calls (always potentially unsafe)
-    fn check_sprintf(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_sprintf(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         if let Some(args) = self.get_function_arguments(node, source) {
@@ -2503,7 +2808,7 @@ impl Arr30C {
                         node,
                         dest_name,
                         dest_info,
-                        "sprintf can cause buffer overflow; use snprintf instead"
+                        "sprintf can cause buffer overflow; use snprintf instead",
                     ));
                 }
             }
@@ -2513,7 +2818,12 @@ impl Arr30C {
     }
 
     /// Check gets calls (always unsafe)
-    fn check_gets(&self, node: &Node, source: &str, buffers: &HashMap<String, BufferInfo>) -> Vec<RuleViolation> {
+    fn check_gets(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         if let Some(args) = self.get_function_arguments(node, source) {
@@ -2525,7 +2835,7 @@ impl Arr30C {
                         node,
                         dest_name,
                         dest_info,
-                        "gets is inherently unsafe and can cause buffer overflow"
+                        "gets is inherently unsafe and can cause buffer overflow",
                     ));
                 }
             }
@@ -2543,7 +2853,10 @@ impl Arr30C {
                     let mut args = Vec::new();
                     for j in 0..child.child_count() {
                         if let Some(arg_node) = child.child(j) {
-                            if arg_node.kind() != "(" && arg_node.kind() != ")" && arg_node.kind() != "," {
+                            if arg_node.kind() != "("
+                                && arg_node.kind() != ")"
+                                && arg_node.kind() != ","
+                            {
                                 let arg_text = &source[arg_node.start_byte()..arg_node.end_byte()];
                                 args.push(arg_text.to_string());
                             }
@@ -2557,7 +2870,13 @@ impl Arr30C {
     }
 
     /// Create a violation for dangerous library function
-    fn create_library_violation(&self, node: &Node, buffer_name: &str, buffer_info: &BufferInfo, message: &str) -> RuleViolation {
+    fn create_library_violation(
+        &self,
+        node: &Node,
+        buffer_name: &str,
+        buffer_info: &BufferInfo,
+        message: &str,
+    ) -> RuleViolation {
         let start_point = node.start_position();
 
         let size_info = match &buffer_info.size {
@@ -2605,7 +2924,7 @@ impl Arr30C {
         // Check for unsafe <= operator first - this is ALWAYS unsafe for array bounds
         // because it allows accessing the element at index == size, which is out of bounds
         if condition_text.contains(&format!("{} <=", trimmed_index)) {
-            return false;  // <= is ALWAYS unsafe for array bounds
+            return false; // <= is ALWAYS unsafe for array bounds
         }
 
         // Check for safe < operator
@@ -2642,7 +2961,8 @@ impl Arr30C {
     fn check_if_bounds_generic(&self, if_node: &Node, source: &str) -> bool {
         for i in 0..if_node.child_count() {
             if let Some(child) = if_node.child(i) {
-                if child.kind() == "parenthesized_expression" || child.kind() == "binary_expression" {
+                if child.kind() == "parenthesized_expression" || child.kind() == "binary_expression"
+                {
                     let condition_text = &source[child.start_byte()..child.end_byte()];
                     // Look for any < operator (safe bounds check)
                     if condition_text.contains(" < ") && !condition_text.contains(" <= ") {

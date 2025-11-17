@@ -1,3 +1,16 @@
+---
+rule_id: INT01-C
+priority: P2
+status: active
+assigned_to: TRISTAN
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - INT
+---
+
 # P2-INT01-C - INT01-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/INT01-C
+https://wiki.sei.cmu.edu/confluence/display/c/INT01-C.+Use+size_t+or+rsize_t+for+all+integer+values+representing+the+size+of+an+object
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify INT01-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

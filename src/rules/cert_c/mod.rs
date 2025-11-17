@@ -1,6 +1,9 @@
 // Common utilities for all CERT C rules are in crate::utility::cert_c
 
 // Implemented rules with nested structure
+#[path = "API/API00-C/api00_c.rs"]
+pub mod api00_c;
+
 #[path = "API/API01-C/api01_c.rs"]
 pub mod api01_c;
 
@@ -121,10 +124,9 @@ use super::{CertRule, RuleRegistry};
 
 impl RuleRegistry {
     pub fn new() -> Self {
-        let mut registry = Self {
-            rules: Vec::new(),
-        };
+        let mut registry = Self { rules: Vec::new() };
 
+        registry.register(Box::new(api00_c::Api00C));
         registry.register(Box::new(api01_c::Api01C));
         registry.register(Box::new(api02_c::Api02C));
         registry.register(Box::new(api04_c::Api04C));
@@ -175,7 +177,8 @@ impl RuleRegistry {
     }
 
     pub fn get_rule(&self, rule_id: &str) -> Option<&dyn CertRule> {
-        self.rules.iter()
+        self.rules
+            .iter()
             .find(|rule| rule.rule_id() == rule_id)
             .map(|rule| rule.as_ref())
     }

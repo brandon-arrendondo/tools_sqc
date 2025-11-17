@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use tree_sitter::Node;
 
 pub struct Arr32C;
@@ -219,12 +219,12 @@ fn has_nearby_bounds_check(node: &Node, source: &str) -> bool {
             let context = &source[grandparent.start_byte()..grandparent.end_byte()];
 
             // Look for common bounds checking patterns
-            return context.contains("if") &&
-                   (context.contains("== 0") ||
-                    context.contains("> ") ||
-                    context.contains("< ") ||
-                    context.contains("MAX_") ||
-                    context.contains("SIZE_MAX"));
+            return context.contains("if")
+                && (context.contains("== 0")
+                    || context.contains("> ")
+                    || context.contains("< ")
+                    || context.contains("MAX_")
+                    || context.contains("SIZE_MAX"));
         }
     }
     false
@@ -273,21 +273,23 @@ fn has_prior_validation(body_node: &Node, source: &str, var_name: &str, vla_line
                 // Look for validation patterns involving the variable
                 if stmt_text.contains(var_name) {
                     // Pattern 1: Direct bounds checking (size < MAX, size == 0, etc.)
-                    if stmt_text.contains("== 0") ||
-                       stmt_text.contains("!= 0") ||
-                       stmt_text.contains("> ") ||
-                       stmt_text.contains("< ") ||
-                       stmt_text.contains(">=") ||
-                       stmt_text.contains("<=") ||
-                       stmt_text.contains("MAX_") ||
-                       stmt_text.contains("SIZE_MAX") {
+                    if stmt_text.contains("== 0")
+                        || stmt_text.contains("!= 0")
+                        || stmt_text.contains("> ")
+                        || stmt_text.contains("< ")
+                        || stmt_text.contains(">=")
+                        || stmt_text.contains("<=")
+                        || stmt_text.contains("MAX_")
+                        || stmt_text.contains("SIZE_MAX")
+                    {
                         return true;
                     }
 
                     // Pattern 2: Function call validation (e.g., if (!is_safe_size(var)))
                     // Look for patterns like: if (!func_name(var, ...)) { return/break; }
-                    if (stmt_text.contains("!") || stmt_text.contains("== false")) &&
-                       stmt_text.contains("(") {
+                    if (stmt_text.contains("!") || stmt_text.contains("== false"))
+                        && stmt_text.contains("(")
+                    {
                         // Check if the if-statement body contains return/break (early exit pattern)
                         if stmt_text.contains("return") || stmt_text.contains("break") {
                             return true;

@@ -28,10 +28,10 @@
 //! - Check if result is used to index buffer without error check
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Pos30C;
 
@@ -114,9 +114,10 @@ impl Pos30C {
         // Violations:
         // 1. sizeof(buf) without - 1
         // 2. Plain variable (bufsize) - assumes full size used
-        let is_violation =
-            (size_text.contains("sizeof") && !size_text.contains("-")) ||
-            (!size_text.contains("sizeof") && !size_text.contains("-") && !size_text.chars().all(|c| c.is_digit(10)));
+        let is_violation = (size_text.contains("sizeof") && !size_text.contains("-"))
+            || (!size_text.contains("sizeof")
+                && !size_text.contains("-")
+                && !size_text.chars().all(|c| c.is_digit(10)));
 
         if is_violation {
             // VIOLATION: using full buffer size without subtracting 1

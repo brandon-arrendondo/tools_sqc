@@ -4,8 +4,8 @@
 //! element sizes, and string literal lengths. These are used for bounds checking and
 //! buffer overflow detection.
 
-use tree_sitter::Node;
 use super::ast_utils::find_containing_function;
+use tree_sitter::Node;
 
 /// Determine the element size of an array based on its type declaration
 ///
@@ -54,7 +54,9 @@ pub fn find_element_size(var_name: &str, preceding_text: &str) -> usize {
 
         // Search for type keywords
         for (type_name, size) in &type_sizes {
-            if before_array.ends_with(type_name) || before_array.ends_with(&format!("{} ", type_name)) {
+            if before_array.ends_with(type_name)
+                || before_array.ends_with(&format!("{} ", type_name))
+            {
                 return *size;
             }
         }
@@ -102,7 +104,7 @@ pub fn find_string_literal_length(var_name: &str, node: &Node, source: &str) -> 
             let mut i = quote_start + 1;
             let chars: Vec<char> = after_eq.chars().collect();
             while i < chars.len() {
-                if chars[i] == '"' && (i == 0 || chars[i-1] != '\\') {
+                if chars[i] == '"' && (i == 0 || chars[i - 1] != '\\') {
                     // Found closing quote
                     let literal = &after_eq[quote_start + 1..i];
                     return Some(literal.len());
@@ -145,7 +147,13 @@ pub fn find_allocation_size(ptr_name: &str, preceding_text: &str) -> Option<usiz
 
     // Use whichever is more recent (appears later in the text)
     let (_pattern, pos) = match (malloc_pos, realloc_pos) {
-        (Some(m), Some(r)) => if r > m { ("realloc", r) } else { ("malloc", m) },
+        (Some(m), Some(r)) => {
+            if r > m {
+                ("realloc", r)
+            } else {
+                ("malloc", m)
+            }
+        }
         (Some(m), None) => ("malloc", m),
         (None, Some(r)) => ("realloc", r),
         (None, None) => return None,

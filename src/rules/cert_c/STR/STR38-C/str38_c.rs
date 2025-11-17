@@ -18,25 +18,23 @@
 //! ```
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Str38C;
 
 // Narrow string functions (work on char*)
 const NARROW_FUNCTIONS: &[&str] = &[
-    "strlen", "strcpy", "strncpy", "strcat", "strncat",
-    "strcmp", "strncmp", "strchr", "strstr", "strdup",
-    "sprintf", "snprintf", "sscanf",
+    "strlen", "strcpy", "strncpy", "strcat", "strncat", "strcmp", "strncmp", "strchr", "strstr",
+    "strdup", "sprintf", "snprintf", "sscanf",
 ];
 
 // Wide string functions (work on wchar_t*)
 const WIDE_FUNCTIONS: &[&str] = &[
-    "wcslen", "wcscpy", "wcsncpy", "wcscat", "wcsncat",
-    "wcscmp", "wcsncmp", "wcschr", "wcsstr", "wcsdup",
-    "swprintf", "swscanf",
+    "wcslen", "wcscpy", "wcsncpy", "wcscat", "wcsncat", "wcscmp", "wcsncmp", "wcschr", "wcsstr",
+    "wcsdup", "swprintf", "swscanf",
 ];
 
 impl CertRule for Str38C {
@@ -131,7 +129,10 @@ impl Str38C {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
                         return self.get_identifier(&declarator, source);
                     }
-                } else if child.kind() == "array_declarator" || child.kind() == "pointer_declarator" || child.kind() == "identifier" {
+                } else if child.kind() == "array_declarator"
+                    || child.kind() == "pointer_declarator"
+                    || child.kind() == "identifier"
+                {
                     if let Some(name) = self.get_identifier(&child, source) {
                         return Some(name);
                     }
@@ -157,7 +158,13 @@ impl Str38C {
         None
     }
 
-    fn check_calls(&self, node: &Node, source: &str, types: &HashMap<String, VarType>, violations: &mut Vec<RuleViolation>) {
+    fn check_calls(
+        &self,
+        node: &Node,
+        source: &str,
+        types: &HashMap<String, VarType>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
@@ -175,14 +182,18 @@ impl Str38C {
                             for (var_name, var_type) in types {
                                 if arg_text.contains(var_name) {
                                     let mismatch = match (is_narrow, var_type) {
-                                        (true, VarType::Wide) => true,  // narrow func on wide var
+                                        (true, VarType::Wide) => true,    // narrow func on wide var
                                         (false, VarType::Narrow) => true, // wide func on narrow var (is_wide must be true)
                                         _ => false,
                                     };
 
                                     if mismatch {
                                         let expected = if is_narrow { "wide" } else { "narrow" };
-                                        let actual = if matches!(var_type, VarType::Wide) { "wide" } else { "narrow" };
+                                        let actual = if matches!(var_type, VarType::Wide) {
+                                            "wide"
+                                        } else {
+                                            "narrow"
+                                        };
 
                                         violations.push(RuleViolation {
                                             rule_id: self.rule_id().to_string(),

@@ -3,7 +3,6 @@ use walkdir::WalkDir;
 
 use anyhow::{Context, Result};
 
-
 pub struct GitRepo {
     repo: Repository,
     repo_path: String,
@@ -48,16 +47,15 @@ impl GitRepo {
         let mut status_options = StatusOptions::new();
         status_options.include_untracked(true);
 
-        let statuses = self.repo.statuses(Some(&mut status_options))
+        let statuses = self
+            .repo
+            .statuses(Some(&mut status_options))
             .context("Failed to get repository status")?;
 
         for entry in statuses.iter() {
             let flags = entry.status();
             if flags.intersects(
-                Status::WT_MODIFIED
-                | Status::WT_NEW
-                | Status::INDEX_MODIFIED
-                | Status::INDEX_NEW
+                Status::WT_MODIFIED | Status::WT_NEW | Status::INDEX_MODIFIED | Status::INDEX_NEW,
             ) {
                 if let Some(path) = entry.path() {
                     if path.ends_with(".c") || path.ends_with(".h") {

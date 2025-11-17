@@ -34,7 +34,7 @@
 //! - Report violation if semicolon found on control statement line
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
@@ -131,7 +131,12 @@ impl Exp15C {
     }
 
     /// Check if there's a semicolon on the same line as the condition ends
-    fn has_semicolon_on_same_line(&self, statement_node: &Node, condition_end_line: usize, source: &str) -> bool {
+    fn has_semicolon_on_same_line(
+        &self,
+        statement_node: &Node,
+        condition_end_line: usize,
+        source: &str,
+    ) -> bool {
         // Walk through all children of the statement to find a semicolon
         for i in 0..statement_node.child_count() {
             if let Some(child) = statement_node.child(i) {

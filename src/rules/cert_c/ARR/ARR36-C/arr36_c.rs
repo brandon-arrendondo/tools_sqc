@@ -1,8 +1,8 @@
-use crate::utility::cert_c::ast_utils;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils;
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Arr36C;
 
@@ -42,7 +42,13 @@ impl CertRule for Arr36C {
 }
 
 impl Arr36C {
-    fn check_node(&self, node: &Node, source: &str, analyzer: &PointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &PointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         match node.kind() {
             "binary_expression" => {
                 self.check_binary_expression(node, source, analyzer, violations);
@@ -58,7 +64,13 @@ impl Arr36C {
         }
     }
 
-    fn check_binary_expression(&self, node: &Node, source: &str, analyzer: &PointerAnalyzer, violations: &mut Vec<RuleViolation>) {
+    fn check_binary_expression(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &PointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = get_operator(node, source) {
             match operator.as_str() {
                 "-" => {
@@ -72,8 +84,17 @@ impl Arr36C {
         }
     }
 
-    fn check_pointer_subtraction(&self, node: &Node, source: &str, analyzer: &PointerAnalyzer, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+    fn check_pointer_subtraction(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &PointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_info = analyzer.get_pointer_info(&left, source);
             let right_info = analyzer.get_pointer_info(&right, source);
 
@@ -98,8 +119,17 @@ impl Arr36C {
         }
     }
 
-    fn check_pointer_comparison(&self, node: &Node, source: &str, analyzer: &PointerAnalyzer, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+    fn check_pointer_comparison(
+        &self,
+        node: &Node,
+        source: &str,
+        analyzer: &PointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_info = analyzer.get_pointer_info(&left, source);
             let right_info = analyzer.get_pointer_info(&right, source);
 
@@ -163,7 +193,8 @@ impl PointerAnalyzer {
                 if child.kind() == "init_declarator" {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
                         if let Some(value) = child.child_by_field_name("value") {
-                            let var_name = ast_utils::get_identifier_from_declarator(&declarator, source);
+                            let var_name =
+                                ast_utils::get_identifier_from_declarator(&declarator, source);
                             let array_base = self.extract_array_base(&value, source);
                             if !var_name.is_empty() && !array_base.is_empty() {
                                 self.variable_arrays.insert(var_name, array_base);
@@ -183,16 +214,15 @@ impl PointerAnalyzer {
             if !param_name.is_empty() {
                 // Use the parameter name itself as the "array base" to make it unique
                 // This ensures parameters are only equal to themselves
-                self.variable_arrays.insert(param_name.clone(), format!("param:{}", param_name));
+                self.variable_arrays
+                    .insert(param_name.clone(), format!("param:{}", param_name));
             }
         }
     }
 
     fn extract_array_base(&self, node: &Node, source: &str) -> String {
         let result = match node.kind() {
-            "identifier" => {
-                source[node.start_byte()..node.end_byte()].to_string()
-            }
+            "identifier" => source[node.start_byte()..node.end_byte()].to_string(),
             "field_expression" => {
                 // Handle struct.member or union.member - capture full path
                 // This ensures u.int_array and u.float_array are distinct
@@ -210,19 +240,31 @@ impl PointerAnalyzer {
                 // Handle function calls like malloc(), calloc(), aligned_alloc()
                 // Each call is treated as a distinct allocation
                 // Use byte position to make each call unique, even if they have identical text
-                format!("{}@{}", &source[node.start_byte()..node.end_byte()], node.start_byte())
+                format!(
+                    "{}@{}",
+                    &source[node.start_byte()..node.end_byte()],
+                    node.start_byte()
+                )
             }
             "compound_literal_expression" => {
                 // Handle compound literals like (int[]){1, 2, 3}
                 // Each compound literal creates a distinct object
                 // Use byte position to make each one unique, even if they have identical content
-                format!("{}@{}", &source[node.start_byte()..node.end_byte()], node.start_byte())
+                format!(
+                    "{}@{}",
+                    &source[node.start_byte()..node.end_byte()],
+                    node.start_byte()
+                )
             }
             "string_literal" => {
                 // Handle string literals like "Hello" and "World"
                 // Each string literal creates a distinct array object
                 // Use byte position to make each one unique, even if they have identical text
-                format!("{}@{}", &source[node.start_byte()..node.end_byte()], node.start_byte())
+                format!(
+                    "{}@{}",
+                    &source[node.start_byte()..node.end_byte()],
+                    node.start_byte()
+                )
             }
             "binary_expression" => {
                 // Handle pointer arithmetic like arr + size or ptr - offset
@@ -237,7 +279,9 @@ impl PointerAnalyzer {
                 // Handle &array[0] or &array (pointer_expression is used by tree-sitter for &)
                 if let Some(argument) = node.child_by_field_name("argument") {
                     match argument.kind() {
-                        "identifier" => source[argument.start_byte()..argument.end_byte()].to_string(),
+                        "identifier" => {
+                            source[argument.start_byte()..argument.end_byte()].to_string()
+                        }
                         "field_expression" => {
                             // Handle &struct.member
                             // Extract just the struct instance part to allow comparisons between
@@ -283,9 +327,7 @@ impl PointerAnalyzer {
                     String::new()
                 }
             }
-            "identifier" => {
-                source[node.start_byte()..node.end_byte()].to_string()
-            }
+            "identifier" => source[node.start_byte()..node.end_byte()].to_string(),
             _ => String::new(),
         }
     }
@@ -309,12 +351,14 @@ impl PointerAnalyzer {
                 if let Some(argument) = node.child_by_field_name("argument") {
                     match argument.kind() {
                         "identifier" => {
-                            let var_name = source[argument.start_byte()..argument.end_byte()].to_string();
+                            let var_name =
+                                source[argument.start_byte()..argument.end_byte()].to_string();
                             Some(var_name) // The variable itself acts as the "array"
                         }
                         "field_expression" => {
                             // Handle &struct.member
-                            let field_path = source[argument.start_byte()..argument.end_byte()].to_string();
+                            let field_path =
+                                source[argument.start_byte()..argument.end_byte()].to_string();
                             Some(field_path)
                         }
                         _ => None,
@@ -348,7 +392,6 @@ fn get_operator(node: &Node, source: &str) -> Option<String> {
     }
     None
 }
-
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
 // #[cfg(test)]

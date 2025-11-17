@@ -1,3 +1,16 @@
+---
+rule_id: FLP05-C
+priority: P2
+status: active
+assigned_to: HUU
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - FLP
+---
+
 # P2-FLP05-C - FLP05-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FLP05-C
+https://wiki.sei.cmu.edu/confluence/display/c/FLP05-C.+Do+not+use+denormalized+numbers
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify FLP05-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED
