@@ -49,17 +49,41 @@ Implement or verify EXP10-C with 100% test pass rate and DRY compliance.
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-17 - Implementation Complete
+
+**Files Created/Modified:**
+- `src/rules/cert_c/EXP/EXP10-C/exp10_c.rs` - New implementation (~245 lines)
+- `src/rules/cert_c/EXP/EXP10-C/EXP10-C.toml` - Enabled rule
+- `src/rules/cert_c/mod.rs` - Registered module
+
+**Implementation Details:**
+- Detects binary expressions with multiple function calls (unsequenced side effects)
+- Detects subscript expressions with multiple function calls
+- Flags complex call patterns where evaluation order is unspecified
+- Counts function calls recursively in expression subtrees
+
+**Test Results:**
+- Unit tests: 3/3 passing (100%)
+  - test_multiple_function_calls_in_binary_expr: PASS
+  - test_separated_function_calls: PASS
+  - test_single_function_call: PASS
+
+**DRY Compliance:**
+- Uses `get_node_text()` from shared ast_utils
+- Follows established CertRule trait pattern
+- Standard RuleViolation structure with suggestions
+
+**Commit:** fa1de88
 
 ---
 
