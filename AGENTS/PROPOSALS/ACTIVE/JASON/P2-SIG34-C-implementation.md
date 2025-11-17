@@ -1,3 +1,16 @@
+---
+rule_id: SIG34-C
+priority: P2
+status: active
+assigned_to: JASON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - SIG
+---
+
 # P2-SIG34-C - SIG34-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/SIG34-C
+https://wiki.sei.cmu.edu/confluence/display/c/SIG34-C.+Do+not+call+signal()+from+within+interruptible+signal+handlers
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify SIG34-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

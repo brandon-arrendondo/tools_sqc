@@ -1,4 +1,3 @@
-
 // Helper function to get relative path without borrowing self
 pub fn get_relative_path(file_path: &str, base_path: &str) -> String {
     use std::path::Path;

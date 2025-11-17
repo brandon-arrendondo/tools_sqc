@@ -1,3 +1,16 @@
+---
+rule_id: EXP03-C
+priority: P2
+status: active
+assigned_to: ALLY
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - EXP
+---
+
 # P2-EXP03-C - EXP03-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/EXP03-C
+https://wiki.sei.cmu.edu/confluence/display/c/EXP03-C.+Do+not+assume+the+size+of+a+structure+is+the+sum+of+the+sizes+of+its+members
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify EXP03-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

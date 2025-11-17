@@ -1,13 +1,13 @@
 //! Common imports used throughout the SQC project
 
 // Re-export commonly used types and traits
+pub use crate::manifest::RuleManifest;
 pub use crate::rules::{RuleRegistry, RuleViolation};
-pub use crate::manifest::{RuleManifest};
-pub use crate::utility::hash::calculate_file_hash;
 pub use crate::utility::files::get_relative_path;
+pub use crate::utility::hash::calculate_file_hash;
 
 // Re-export common error handling
-pub use anyhow::{Result, Error};
+pub use anyhow::{Error, Result};
 
 // Re-export common standard library items
 pub use std::collections::HashMap;

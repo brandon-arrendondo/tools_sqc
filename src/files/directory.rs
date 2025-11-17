@@ -1,6 +1,6 @@
-use walkdir::WalkDir;
-use std::path::Path;
 use anyhow::Result;
+use std::path::Path;
+use walkdir::WalkDir;
 
 pub struct DirectorySource {
     path: String,
@@ -18,17 +18,26 @@ impl DirectorySource {
         let is_dir = path_obj.is_dir();
 
         if !is_file && !is_dir {
-            return Err(anyhow::anyhow!("Path is neither a file nor a directory: {}", path));
+            return Err(anyhow::anyhow!(
+                "Path is neither a file nor a directory: {}",
+                path
+            ));
         }
 
         // If it's a file, verify it's a C file
         if is_file {
             if let Some(extension) = path_obj.extension() {
                 if extension != "c" && extension != "h" {
-                    return Err(anyhow::anyhow!("File must have .c or .h extension: {}", path));
+                    return Err(anyhow::anyhow!(
+                        "File must have .c or .h extension: {}",
+                        path
+                    ));
                 }
             } else {
-                return Err(anyhow::anyhow!("File must have .c or .h extension: {}", path));
+                return Err(anyhow::anyhow!(
+                    "File must have .c or .h extension: {}",
+                    path
+                ));
             }
         }
 
@@ -57,10 +66,7 @@ impl DirectorySource {
         }
 
         // Otherwise, walk the directory
-        for entry in WalkDir::new(&self.path)
-            .into_iter()
-            .filter_map(|e| e.ok())
-        {
+        for entry in WalkDir::new(&self.path).into_iter().filter_map(|e| e.ok()) {
             let path = entry.path();
             if let Some(extension) = path.extension() {
                 if extension == "c" || extension == "h" {

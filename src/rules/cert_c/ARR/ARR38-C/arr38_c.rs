@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use tree_sitter::Node;
 
 pub struct Arr38C;
@@ -51,7 +51,12 @@ impl Arr38C {
         }
     }
 
-    fn check_library_function_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_library_function_call(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = &source[function_node.start_byte()..function_node.end_byte()];
 
@@ -76,7 +81,13 @@ impl Arr38C {
         }
     }
 
-    fn check_memory_function(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_memory_function(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         match function_name {
@@ -99,25 +110,49 @@ impl Arr38C {
         }
     }
 
-    fn check_string_function(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_string_function(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         match function_name {
             "strncpy" | "strncat" | "strncmp" => {
                 if args.len() >= 3 {
-                    self.check_string_size_parameter(&args, node, source, function_name, violations);
+                    self.check_string_size_parameter(
+                        &args,
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                    );
                 }
             }
             "strcpy" | "strcat" => {
                 if args.len() >= 2 {
-                    self.check_unbounded_string_function(&args, node, source, function_name, violations);
+                    self.check_unbounded_string_function(
+                        &args,
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                    );
                 }
             }
             _ => {}
         }
     }
 
-    fn check_wide_memory_function(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_wide_memory_function(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         if args.len() >= 3 {
@@ -142,7 +177,13 @@ impl Arr38C {
         }
     }
 
-    fn check_wide_string_function(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_wide_string_function(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         if function_name.contains("wcsn") && args.len() >= 3 {
@@ -159,14 +200,23 @@ impl Arr38C {
                     file_path: String::new(),
                     line: start_point.row + 1,
                     column: start_point.column + 1,
-                    suggestion: Some("Use character count instead of sizeof() for wide string functions".to_string()),
+                    suggestion: Some(
+                        "Use character count instead of sizeof() for wide string functions"
+                            .to_string(),
+                    ),
                     ..Default::default()
                 });
             }
         }
     }
 
-    fn check_allocation_function(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_allocation_function(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         if function_name == "calloc" && args.len() >= 2 {
@@ -183,14 +233,23 @@ impl Arr38C {
                     file_path: String::new(),
                     line: start_point.row + 1,
                     column: start_point.column + 1,
-                    suggestion: Some("Check for potential overflow in calloc arguments".to_string()),
+                    suggestion: Some(
+                        "Check for potential overflow in calloc arguments".to_string(),
+                    ),
                     ..Default::default()
                 });
             }
         }
     }
 
-    fn check_memory_copy_size(&self, args: &[String], node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_memory_copy_size(
+        &self,
+        args: &[String],
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let size_arg = &args[2];
 
         // Check for common dangerous patterns
@@ -212,7 +271,14 @@ impl Arr38C {
         }
     }
 
-    fn check_memory_set_size(&self, args: &[String], node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_memory_set_size(
+        &self,
+        args: &[String],
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let size_arg = &args[2];
 
         if self.is_excessive_size_for_memset(size_arg, &args[0], source) {
@@ -233,7 +299,14 @@ impl Arr38C {
         }
     }
 
-    fn check_memory_compare_size(&self, args: &[String], node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_memory_compare_size(
+        &self,
+        args: &[String],
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let size_arg = &args[2];
 
         if self.is_dangerous_size_calculation(size_arg, source) {
@@ -254,7 +327,14 @@ impl Arr38C {
         }
     }
 
-    fn check_string_size_parameter(&self, args: &[String], node: &Node, _source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_string_size_parameter(
+        &self,
+        args: &[String],
+        node: &Node,
+        _source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let size_arg = &args[2];
 
         if self.is_sizeof_expression(size_arg) {
@@ -275,7 +355,14 @@ impl Arr38C {
         }
     }
 
-    fn check_unbounded_string_function(&self, _args: &[String], node: &Node, _source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_unbounded_string_function(
+        &self,
+        _args: &[String],
+        node: &Node,
+        _source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // These functions are inherently dangerous without bounds checking
         let start_point = node.start_position();
         violations.push(RuleViolation {
@@ -323,18 +410,23 @@ impl Arr38C {
         size_expr.contains("+ 1") ||  // off-by-one errors
         size_expr.contains("* sizeof") ||  // double scaling
         size_expr.contains("sizeof(") && size_expr.contains("*") ||  // multiplication with sizeof
-        size_expr.contains("nchars + 1")  // specific pattern from examples
+        size_expr.contains("nchars + 1") // specific pattern from examples
     }
 
-    fn is_excessive_size_for_memset(&self, size_expr: &str, _target_expr: &str, _source: &str) -> bool {
+    fn is_excessive_size_for_memset(
+        &self,
+        size_expr: &str,
+        _target_expr: &str,
+        _source: &str,
+    ) -> bool {
         // Simple heuristic: check for obviously wrong patterns
         size_expr.contains("+ 1") && size_expr.contains("nchars")
     }
 
     fn could_cause_overflow(&self, count_expr: &str, size_expr: &str, _source: &str) -> bool {
         // Check for potential overflow in calloc
-        (count_expr.contains("SIZE_MAX") || count_expr.contains("UINT_MAX")) ||
-        (size_expr.contains("SIZE_MAX") || size_expr.contains("UINT_MAX"))
+        (count_expr.contains("SIZE_MAX") || count_expr.contains("UINT_MAX"))
+            || (size_expr.contains("SIZE_MAX") || size_expr.contains("UINT_MAX"))
     }
 }
 

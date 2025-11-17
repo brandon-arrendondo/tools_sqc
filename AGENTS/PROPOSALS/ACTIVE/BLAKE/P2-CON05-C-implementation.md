@@ -1,3 +1,16 @@
+---
+rule_id: CON05-C
+priority: P2
+status: active
+assigned_to: BLAKE
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - CON
+---
+
 # P2-CON05-C - CON05-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/CON05-C
+https://wiki.sei.cmu.edu/confluence/display/c/CON05-C.+Do+not+perform+operations+that+can+block+while+holding+a+lock
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify CON05-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

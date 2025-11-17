@@ -1,8 +1,8 @@
-use crate::utility::cert_c::ast_utils;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils;
 use std::collections::{HashMap, HashSet};
+use tree_sitter::Node;
 
 pub struct Mem31C;
 
@@ -72,7 +72,12 @@ impl MemoryLeakAnalyzer {
         }
     }
 
-    fn analyze_function(&mut self, func_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn analyze_function(
+        &mut self,
+        func_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(body) = func_node.child_by_field_name("body") {
             // First pass: collect all memory operations
             self.analyze_node(&body, source);
@@ -135,11 +140,14 @@ impl MemoryLeakAnalyzer {
                             if self.is_allocation_call(&value, source) {
                                 let pos = value.start_position();
                                 let alloc_type = self.get_allocation_type(&value, source);
-                                self.allocated_memory.insert(var_name.clone(), AllocInfo {
-                                    line: pos.row + 1,
-                                    column: pos.column + 1,
-                                    alloc_type,
-                                });
+                                self.allocated_memory.insert(
+                                    var_name.clone(),
+                                    AllocInfo {
+                                        line: pos.row + 1,
+                                        column: pos.column + 1,
+                                        alloc_type,
+                                    },
+                                );
                             }
                         }
                     }
@@ -153,7 +161,7 @@ impl MemoryLeakAnalyzer {
     fn process_assignment(&mut self, node: &Node, source: &str) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
-            node.child_by_field_name("right")
+            node.child_by_field_name("right"),
         ) {
             if left.kind() == "identifier" {
                 let var_name = ast_utils::get_node_text_owned(&left, source);
@@ -169,18 +177,22 @@ impl MemoryLeakAnalyzer {
                         // Since we can't track the old allocation separately, we'll generate a violation now
                         if let Some(old_alloc) = self.allocated_memory.get(&var_name) {
                             // We'll mark this as leaked by creating a unique name for the old allocation
-                            let leaked_name = format!("{}@{}:{}", var_name, old_alloc.line, old_alloc.column);
+                            let leaked_name =
+                                format!("{}@{}:{}", var_name, old_alloc.line, old_alloc.column);
                             self.allocated_memory.insert(leaked_name, old_alloc.clone());
                         }
                     }
 
                     let pos = right.start_position();
                     let alloc_type = self.get_allocation_type(&right, source);
-                    self.allocated_memory.insert(var_name.clone(), AllocInfo {
-                        line: pos.row + 1,
-                        column: pos.column + 1,
-                        alloc_type,
-                    });
+                    self.allocated_memory.insert(
+                        var_name.clone(),
+                        AllocInfo {
+                            line: pos.row + 1,
+                            column: pos.column + 1,
+                            alloc_type,
+                        },
+                    );
                 } else if right.kind() == "identifier" {
                     // Check if assigning allocated pointer to another variable
                     let right_var = ast_utils::get_node_text_owned(&right, source);
@@ -191,12 +203,15 @@ impl MemoryLeakAnalyzer {
                             // The original variable still holds the allocation until freed
                         }
                     }
-                } else if right.kind() == "null" || ast_utils::get_node_text_owned(&right, source) == "NULL" {
+                } else if right.kind() == "null"
+                    || ast_utils::get_node_text_owned(&right, source) == "NULL"
+                {
                     // Setting to NULL doesn't free memory, potential leak if not freed before
                     // If the variable was allocated and not freed, it's a leak
                     if was_allocated && !self.freed_memory.contains(&var_name) {
                         if let Some(old_alloc) = self.allocated_memory.get(&var_name) {
-                            let leaked_name = format!("{}@{}:{}", var_name, old_alloc.line, old_alloc.column);
+                            let leaked_name =
+                                format!("{}@{}:{}", var_name, old_alloc.line, old_alloc.column);
                             self.allocated_memory.insert(leaked_name, old_alloc.clone());
                         }
                     }
@@ -218,11 +233,15 @@ impl MemoryLeakAnalyzer {
                                 let var_name = ast_utils::get_node_text_owned(&arg, source);
                                 self.freed_memory.insert(var_name.clone());
                                 // Also mark any aliases as freed
-                                let vars_to_free: Vec<String> = self.allocated_memory
+                                let vars_to_free: Vec<String> = self
+                                    .allocated_memory
                                     .iter()
                                     .filter_map(|(k, v)| {
-                                        if let Some(original) = self.allocated_memory.get(&var_name) {
-                                            if v.line == original.line && v.column == original.column {
+                                        if let Some(original) = self.allocated_memory.get(&var_name)
+                                        {
+                                            if v.line == original.line
+                                                && v.column == original.column
+                                            {
                                                 Some(k.clone())
                                             } else {
                                                 None
@@ -291,7 +310,10 @@ impl MemoryLeakAnalyzer {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = ast_utils::get_node_text_owned(&function, source);
-                return matches!(func_name.as_str(), "malloc" | "calloc" | "realloc" | "strdup" | "strndup");
+                return matches!(
+                    func_name.as_str(),
+                    "malloc" | "calloc" | "realloc" | "strdup" | "strndup"
+                );
             }
         }
         false
@@ -323,7 +345,7 @@ impl MemoryLeakAnalyzer {
                 }
                 "unknown".to_string()
             }
-            _ => "unknown".to_string()
+            _ => "unknown".to_string(),
         }
     }
 
@@ -340,7 +362,10 @@ impl MemoryLeakAnalyzer {
                     file_path: String::new(),
                     line: alloc_info.line,
                     column: alloc_info.column,
-                    suggestion: Some(format!("Add 'free({})' before the variable goes out of scope", var_name)),
+                    suggestion: Some(format!(
+                        "Add 'free({})' before the variable goes out of scope",
+                        var_name
+                    )),
                     ..Default::default()
                 });
             }

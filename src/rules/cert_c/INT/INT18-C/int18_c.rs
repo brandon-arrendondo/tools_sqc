@@ -28,10 +28,10 @@
 //! - Report violation if arithmetic happens in smaller type
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Int18C;
 
@@ -190,9 +190,17 @@ impl Int18C {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 let kind = child.kind();
-                if kind == "+" || kind == "-" || kind == "*" || kind == "/" ||
-                   kind == "<" || kind == ">" || kind == "<=" || kind == ">=" ||
-                   kind == "==" || kind == "!=" {
+                if kind == "+"
+                    || kind == "-"
+                    || kind == "*"
+                    || kind == "/"
+                    || kind == "<"
+                    || kind == ">"
+                    || kind == "<="
+                    || kind == ">="
+                    || kind == "=="
+                    || kind == "!="
+                {
                     return kind.to_string();
                 }
             }
@@ -321,12 +329,7 @@ impl Int18C {
         var_name.contains("count") || var_name.contains("size") || var_name.contains("_modified")
     }
 
-    fn report_violation(
-        &self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
+    fn report_violation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         let expr_text = get_node_text(&node, source);
 
         violations.push(RuleViolation {

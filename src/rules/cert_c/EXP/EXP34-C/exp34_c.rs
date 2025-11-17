@@ -1,8 +1,8 @@
 use super::super::{CertRule, RuleViolation};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Exp34C;
 
@@ -64,7 +64,12 @@ impl NullPointerAnalyzer {
         }
     }
 
-    fn analyze_function_body(&mut self, body: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn analyze_function_body(
+        &mut self,
+        body: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Collect function parameters (they could be null if they're pointers)
         if let Some(parent) = body.parent() {
             if parent.kind() == "function_definition" {
@@ -94,14 +99,16 @@ impl NullPointerAnalyzer {
                             // Extract parameter name and check if it looks like a pointer
                             let param_text = ast_utils::get_node_text_owned(&param, source);
 
-                            if let Some(param_declarator) = param.child_by_field_name("declarator") {
+                            if let Some(param_declarator) = param.child_by_field_name("declarator")
+                            {
                                 let param_name = get_identifier_name(&param_declarator, source);
                                 // Mark as potentially null if it's a pointer or if the type suggests pointer/function pointer
                                 // (e.g., contains '*', or is a typedef that might be a pointer/function pointer)
                                 if is_pointer_declarator(&param_declarator) ||
                                    param_text.contains('*') ||
                                    param_text.contains("_t ") ||  // Common typedef pattern
-                                   param_text.contains("_ptr") {
+                                   param_text.contains("_ptr")
+                                {
                                     self.potentially_null_vars.insert(param_name);
                                 }
                             }
@@ -126,7 +133,8 @@ impl NullPointerAnalyzer {
                 if let Some(var_name) = self.get_null_check_var(&condition, source) {
                     if let Some(consequence) = node.child_by_field_name("consequence") {
                         // Check the condition to see if it's checking FOR null or AGAINST null
-                        let condition_checks_for_null = !self.is_null_safe_in_then_branch(&condition, &var_name, source);
+                        let condition_checks_for_null =
+                            !self.is_null_safe_in_then_branch(&condition, &var_name, source);
 
                         if condition_checks_for_null {
                             // Pattern: if (ptr == NULL) { ... }
@@ -158,7 +166,7 @@ impl NullPointerAnalyzer {
             "assignment_expression" => {
                 if let (Some(left), Some(right)) = (
                     node.child_by_field_name("left"),
-                    node.child_by_field_name("right")
+                    node.child_by_field_name("right"),
                 ) {
                     if left.kind() == "identifier" {
                         let var_name = ast_utils::get_node_text_owned(&left, source);
@@ -198,7 +206,9 @@ impl NullPointerAnalyzer {
                         // Check if initialized to null or a nullable function
                         if let Some(value) = child.child_by_field_name("value") {
                             let value_text = ast_utils::get_node_text_owned(&value, source);
-                            if is_null_value(&value_text) || is_nullable_function_call(&value, source) {
+                            if is_null_value(&value_text)
+                                || is_nullable_function_call(&value, source)
+                            {
                                 self.potentially_null_vars.insert(var_name);
                             }
                         } else {
@@ -232,7 +242,7 @@ impl NullPointerAnalyzer {
             "binary_expression" => {
                 if let (Some(left), Some(right)) = (
                     condition.child_by_field_name("left"),
-                    condition.child_by_field_name("right")
+                    condition.child_by_field_name("right"),
                 ) {
                     let left_text = ast_utils::get_node_text_owned(&left, source);
                     let right_text = ast_utils::get_node_text_owned(&right, source);
@@ -264,7 +274,10 @@ impl NullPointerAnalyzer {
 
     /// Check if a block contains error handling (return, exit, throw, goto, or any statement suggesting error handling)
     fn contains_early_return(&self, node: &Node) -> bool {
-        if matches!(node.kind(), "return_statement" | "break_statement" | "continue_statement" | "goto_statement") {
+        if matches!(
+            node.kind(),
+            "return_statement" | "break_statement" | "continue_statement" | "goto_statement"
+        ) {
             return true;
         }
 
@@ -316,7 +329,7 @@ impl NullPointerAnalyzer {
                 if let (Some(left), Some(operator), Some(right)) = (
                     condition.child_by_field_name("left"),
                     condition.child_by_field_name("operator"),
-                    condition.child_by_field_name("right")
+                    condition.child_by_field_name("right"),
                 ) {
                     let op_text = ast_utils::get_node_text_owned(&operator, source);
                     let left_text = ast_utils::get_node_text_owned(&left, source);
@@ -371,7 +384,10 @@ impl NullPointerAnalyzer {
                                 file_path: String::new(),
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
-                                suggestion: Some(format!("Check if '{}' is not NULL before dereferencing", var_name)),
+                                suggestion: Some(format!(
+                                    "Check if '{}' is not NULL before dereferencing",
+                                    var_name
+                                )),
                                 ..Default::default()
                             });
                         }
@@ -445,7 +461,10 @@ impl NullPointerAnalyzer {
                                 file_path: String::new(),
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
-                                suggestion: Some(format!("Check if '{}' is not NULL before calling", func_name)),
+                                suggestion: Some(format!(
+                                    "Check if '{}' is not NULL before calling",
+                                    func_name
+                                )),
                                 ..Default::default()
                             });
                         }
@@ -472,7 +491,12 @@ impl NullPointerAnalyzer {
         }
     }
 
-    fn check_function_arguments(&self, args: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_function_arguments(
+        &self,
+        args: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         for i in 0..args.child_count() {
             if let Some(arg) = args.child(i) {
                 if arg.kind() == "identifier" {
@@ -489,7 +513,10 @@ impl NullPointerAnalyzer {
                             file_path: String::new(),
                             line: start_point.row + 1,
                             column: start_point.column + 1,
-                            suggestion: Some(format!("Check if '{}' is not NULL before passing to function", var_name)),
+                            suggestion: Some(format!(
+                                "Check if '{}' is not NULL before passing to function",
+                                var_name
+                            )),
                             ..Default::default()
                         });
                     }
@@ -504,7 +531,12 @@ impl NullPointerAnalyzer {
     }
 
     /// Check if a dereference at a specific AST node is unsafe, considering local null-checks
-    fn is_unsafe_dereference_at_node(&self, var_name: &str, deref_node: &Node, source: &str) -> bool {
+    fn is_unsafe_dereference_at_node(
+        &self,
+        var_name: &str,
+        deref_node: &Node,
+        source: &str,
+    ) -> bool {
         // First check if it's potentially unsafe based on global analysis
         if !self.is_unsafe_dereference(var_name) {
             return false;
@@ -513,10 +545,10 @@ impl NullPointerAnalyzer {
         // Now check if this dereference is within a null-guarded scope
         // Walk up the AST to find if we're inside an if-statement that null-checks this variable
         if self.is_in_null_guarded_scope(var_name, deref_node, source) {
-            return false;  // Safe within this guarded scope
+            return false; // Safe within this guarded scope
         }
 
-        true  // Unsafe dereference
+        true // Unsafe dereference
     }
 
     /// Check if a node is within an if-statement that guards against null for the given variable
@@ -530,7 +562,8 @@ impl NullPointerAnalyzer {
                 if let Some(condition) = parent.child_by_field_name("condition") {
                     if let Some(checked_var) = self.get_null_check_var(&condition, source) {
                         if checked_var == var_name {
-                            let is_safe_in_consequence = self.is_null_safe_in_then_branch(&condition, var_name, source);
+                            let is_safe_in_consequence =
+                                self.is_null_safe_in_then_branch(&condition, var_name, source);
 
                             // Check if we're in the consequence (true branch)
                             if let Some(consequence) = parent.child_by_field_name("consequence") {
@@ -559,7 +592,8 @@ impl NullPointerAnalyzer {
                         if checked_var == var_name {
                             // Found a null check for this variable
                             // Determine what kind of check this is by examining the condition more carefully
-                            let is_safe_in_then = self.is_null_safe_in_then_branch(&condition, var_name, source);
+                            let is_safe_in_then =
+                                self.is_null_safe_in_then_branch(&condition, var_name, source);
 
                             // Check if we're in the consequence (then) branch
                             if let Some(consequence) = parent.child_by_field_name("consequence") {
@@ -584,13 +618,13 @@ impl NullPointerAnalyzer {
             current = parent.parent();
         }
 
-        false  // Not in a guarded scope
+        false // Not in a guarded scope
     }
 
     /// Check if child_node is within (descendant of) parent_node
     fn node_is_within(&self, parent_node: &Node, child_node: &Node) -> bool {
-        parent_node.start_byte() <= child_node.start_byte() &&
-        parent_node.end_byte() >= child_node.end_byte()
+        parent_node.start_byte() <= child_node.start_byte()
+            && parent_node.end_byte() >= child_node.end_byte()
     }
 
     /// Determine if a variable is null-safe in the THEN branch of an if-statement
@@ -602,11 +636,18 @@ impl NullPointerAnalyzer {
 
     /// Recursively analyze a condition to determine if variable is safe
     /// negated=true means we're inside a logical NOT
-    fn analyze_condition_for_safety(&self, node: &Node, var_name: &str, source: &str, negated: bool) -> bool {
+    fn analyze_condition_for_safety(
+        &self,
+        node: &Node,
+        var_name: &str,
+        source: &str,
+        negated: bool,
+    ) -> bool {
         match node.kind() {
             "parenthesized_expression" => {
                 // Unwrap parentheses
-                if let Some(child) = node.child(1) { // child 0 is '(', child 1 is expression
+                if let Some(child) = node.child(1) {
+                    // child 0 is '(', child 1 is expression
                     return self.analyze_condition_for_safety(&child, var_name, source, negated);
                 }
             }
@@ -616,7 +657,9 @@ impl NullPointerAnalyzer {
                     let op_text = ast_utils::get_node_text_owned(&operator, source);
                     if op_text == "!" {
                         if let Some(argument) = node.child_by_field_name("argument") {
-                            return self.analyze_condition_for_safety(&argument, var_name, source, !negated);
+                            return self.analyze_condition_for_safety(
+                                &argument, var_name, source, !negated,
+                            );
                         }
                     }
                 }
@@ -640,18 +683,30 @@ impl NullPointerAnalyzer {
                         }
                         "&&" => {
                             // Both must be true for safety
-                            if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
-                                let left_safe = self.analyze_condition_for_safety(&left, var_name, source, negated);
-                                let right_safe = self.analyze_condition_for_safety(&right, var_name, source, negated);
+                            if let (Some(left), Some(right)) = (
+                                node.child_by_field_name("left"),
+                                node.child_by_field_name("right"),
+                            ) {
+                                let left_safe = self
+                                    .analyze_condition_for_safety(&left, var_name, source, negated);
+                                let right_safe = self.analyze_condition_for_safety(
+                                    &right, var_name, source, negated,
+                                );
                                 // Safe if either check confirms safety
                                 return left_safe || right_safe;
                             }
                         }
                         "||" => {
                             // Either can be true
-                            if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
-                                let left_safe = self.analyze_condition_for_safety(&left, var_name, source, negated);
-                                let right_safe = self.analyze_condition_for_safety(&right, var_name, source, negated);
+                            if let (Some(left), Some(right)) = (
+                                node.child_by_field_name("left"),
+                                node.child_by_field_name("right"),
+                            ) {
+                                let left_safe = self
+                                    .analyze_condition_for_safety(&left, var_name, source, negated);
+                                let right_safe = self.analyze_condition_for_safety(
+                                    &right, var_name, source, negated,
+                                );
                                 // Safe only if both confirm safety
                                 return left_safe && right_safe;
                             }
@@ -675,13 +730,16 @@ impl NullPointerAnalyzer {
 
     /// Check if a binary expression compares the variable to NULL
     fn is_null_comparison(&self, binary_expr: &Node, var_name: &str, source: &str) -> bool {
-        if let (Some(left), Some(right)) = (binary_expr.child_by_field_name("left"), binary_expr.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            binary_expr.child_by_field_name("left"),
+            binary_expr.child_by_field_name("right"),
+        ) {
             let left_text = ast_utils::get_node_text_owned(&left, source);
             let right_text = ast_utils::get_node_text_owned(&right, source);
 
             // Check if one side is the variable and the other is NULL
-            (left_text == var_name && is_null_value(&right_text)) ||
-            (right_text == var_name && is_null_value(&left_text))
+            (left_text == var_name && is_null_value(&right_text))
+                || (right_text == var_name && is_null_value(&left_text))
         } else {
             false
         }
@@ -706,12 +764,33 @@ fn is_nullable_function_call(node: &Node, source: &str) -> bool {
     if let Some(function) = node.child_by_field_name("function") {
         let func_name = ast_utils::get_node_text_owned(&function, source);
         // Common functions that can return NULL
-        matches!(func_name.as_str(),
-            "malloc" | "calloc" | "realloc" | "strstr" | "strchr" | "strrchr" |
-            "fopen" | "fdopen" | "freopen" | "tmpfile" | "popen" |
-            "getenv" | "setlocale" | "strtok" | "bsearch" |
-            "fgets" | "gets" | "strdup" | "strndup" | "strpbrk" |
-            "memchr" | "localtime" | "gmtime" | "asctime" | "ctime"
+        matches!(
+            func_name.as_str(),
+            "malloc"
+                | "calloc"
+                | "realloc"
+                | "strstr"
+                | "strchr"
+                | "strrchr"
+                | "fopen"
+                | "fdopen"
+                | "freopen"
+                | "tmpfile"
+                | "popen"
+                | "getenv"
+                | "setlocale"
+                | "strtok"
+                | "bsearch"
+                | "fgets"
+                | "gets"
+                | "strdup"
+                | "strndup"
+                | "strpbrk"
+                | "memchr"
+                | "localtime"
+                | "gmtime"
+                | "asctime"
+                | "ctime"
         )
     } else {
         false
@@ -741,11 +820,30 @@ fn is_pointer_declarator(declarator: &Node) -> bool {
 
 fn is_deref_function(func_name: &str) -> bool {
     // Functions that are known to dereference their pointer arguments
-    matches!(func_name,
-        "strlen" | "strcpy" | "strcat" | "strcmp" | "strchr" | "strstr" |
-        "sprintf" | "fprintf" | "printf" | "scanf" | "fscanf" |
-        "fread" | "fwrite" | "fgets" | "fputs" | "fputc" | "fgetc" |
-        "memcpy" | "memmove" | "memset" | "memcmp" | "free"
+    matches!(
+        func_name,
+        "strlen"
+            | "strcpy"
+            | "strcat"
+            | "strcmp"
+            | "strchr"
+            | "strstr"
+            | "sprintf"
+            | "fprintf"
+            | "printf"
+            | "scanf"
+            | "fscanf"
+            | "fread"
+            | "fwrite"
+            | "fgets"
+            | "fputs"
+            | "fputc"
+            | "fgetc"
+            | "memcpy"
+            | "memmove"
+            | "memset"
+            | "memcmp"
+            | "free"
     )
 }
 

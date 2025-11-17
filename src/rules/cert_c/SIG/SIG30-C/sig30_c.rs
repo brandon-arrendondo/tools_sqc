@@ -25,10 +25,10 @@
 //! ```
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Sig30C;
 
@@ -92,7 +92,8 @@ impl Sig30C {
                             if !handler_name.starts_with("SIG_")
                                 && handler_name != "NULL"
                                 && handler_name != "0"
-                                && !handler_name.is_empty() {
+                                && !handler_name.is_empty()
+                            {
                                 handlers.insert(handler_name.to_string());
                             }
                         }
@@ -136,7 +137,13 @@ impl Sig30C {
         arguments
     }
 
-    fn check_node(&self, node: &Node, source: &str, handlers: &HashSet<String>, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        handlers: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check if this is a function definition that's a signal handler
         if node.kind() == "function_definition" {
             if let Some(declarator) = node.child_by_field_name("declarator") {
@@ -144,7 +151,9 @@ impl Sig30C {
                     if handlers.contains(&func_name) {
                         // This is a signal handler - check for unsafe calls
                         if let Some(body) = node.child_by_field_name("body") {
-                            self.check_handler_body(&body, source, &func_name, handlers, violations);
+                            self.check_handler_body(
+                                &body, source, &func_name, handlers, violations,
+                            );
                         }
                     }
                 }
@@ -184,11 +193,25 @@ impl Sig30C {
         None
     }
 
-    fn check_handler_body(&self, body: &Node, source: &str, handler_name: &str, all_handlers: &HashSet<String>, violations: &mut Vec<RuleViolation>) {
+    fn check_handler_body(
+        &self,
+        body: &Node,
+        source: &str,
+        handler_name: &str,
+        all_handlers: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         self.check_calls_in_handler(body, source, handler_name, all_handlers, violations);
     }
 
-    fn check_calls_in_handler(&self, node: &Node, source: &str, handler_name: &str, all_handlers: &HashSet<String>, violations: &mut Vec<RuleViolation>) {
+    fn check_calls_in_handler(
+        &self,
+        node: &Node,
+        source: &str,
+        handler_name: &str,
+        all_handlers: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
@@ -225,7 +248,12 @@ impl Sig30C {
     /// Check if a function is NOT async-signal-safe
     /// handler_name is the signal handler we're currently checking
     /// all_handlers is the set of all known handler functions (calling them directly is OK)
-    fn is_unsafe_function(&self, func_name: &str, handler_name: &str, all_handlers: &HashSet<String>) -> bool {
+    fn is_unsafe_function(
+        &self,
+        func_name: &str,
+        handler_name: &str,
+        all_handlers: &HashSet<String>,
+    ) -> bool {
         // Special case: calling another signal handler function directly is OK
         // (it's just a normal function call, not going through signal mechanism)
         if all_handlers.contains(func_name) {
@@ -249,27 +277,118 @@ impl Sig30C {
         // List of SAFE functions (anything not in this list is generally unsafe)
         const ASYNC_SAFE_FUNCTIONS: &[&str] = &[
             // C Standard async-safe functions
-            "abort", "_Exit", "quick_exit", "signal",
-
+            "abort",
+            "_Exit",
+            "quick_exit",
+            "signal",
             // POSIX async-safe functions (partial list from common functions)
-            "_exit", "accept", "access", "alarm", "bind", "cfgetispeed", "cfgetospeed",
-            "cfsetispeed", "cfsetospeed", "chdir", "chmod", "chown", "clock_gettime",
-            "close", "connect", "dup", "dup2", "execl", "execle", "execv", "execve",
-            "execvp", "fchmod", "fchown", "fcntl", "fdatasync", "fork", "fstat",
-            "fsync", "ftruncate", "getegid", "geteuid", "getgid", "getgroups",
-            "getpeername", "getpgrp", "getpid", "getppid", "getsockname", "getsockopt",
-            "getuid", "kill", "link", "listen", "lseek", "lstat", "mkdir", "mkfifo",
-            "open", "pathconf", "pause", "pipe", "poll", "posix_trace_event",
-            "pselect", "read", "readlink", "recv", "recvfrom", "recvmsg",
-            "rename", "rmdir", "select", "sem_post", "send", "sendmsg", "sendto",
-            "setgid", "setpgid", "setsid", "setsockopt", "setuid", "shutdown",
-            "sigaddset", "sigdelset", "sigemptyset", "sigfillset",
-            "sigismember", "sigpause", "sigqueue",
-            "sigset", "sleep", "socket", "socketpair", "stat", "symlink",
-            "sysconf", "tcdrain", "tcflow", "tcflush", "tcgetattr", "tcgetpgrp",
-            "tcsendbreak", "tcsetattr", "tcsetpgrp", "time", "timer_getoverrun",
-            "timer_gettime", "timer_settime", "times", "umask", "uname", "unlink",
-            "utime", "wait", "waitpid", "write",
+            "_exit",
+            "accept",
+            "access",
+            "alarm",
+            "bind",
+            "cfgetispeed",
+            "cfgetospeed",
+            "cfsetispeed",
+            "cfsetospeed",
+            "chdir",
+            "chmod",
+            "chown",
+            "clock_gettime",
+            "close",
+            "connect",
+            "dup",
+            "dup2",
+            "execl",
+            "execle",
+            "execv",
+            "execve",
+            "execvp",
+            "fchmod",
+            "fchown",
+            "fcntl",
+            "fdatasync",
+            "fork",
+            "fstat",
+            "fsync",
+            "ftruncate",
+            "getegid",
+            "geteuid",
+            "getgid",
+            "getgroups",
+            "getpeername",
+            "getpgrp",
+            "getpid",
+            "getppid",
+            "getsockname",
+            "getsockopt",
+            "getuid",
+            "kill",
+            "link",
+            "listen",
+            "lseek",
+            "lstat",
+            "mkdir",
+            "mkfifo",
+            "open",
+            "pathconf",
+            "pause",
+            "pipe",
+            "poll",
+            "posix_trace_event",
+            "pselect",
+            "read",
+            "readlink",
+            "recv",
+            "recvfrom",
+            "recvmsg",
+            "rename",
+            "rmdir",
+            "select",
+            "sem_post",
+            "send",
+            "sendmsg",
+            "sendto",
+            "setgid",
+            "setpgid",
+            "setsid",
+            "setsockopt",
+            "setuid",
+            "shutdown",
+            "sigaddset",
+            "sigdelset",
+            "sigemptyset",
+            "sigfillset",
+            "sigismember",
+            "sigpause",
+            "sigqueue",
+            "sigset",
+            "sleep",
+            "socket",
+            "socketpair",
+            "stat",
+            "symlink",
+            "sysconf",
+            "tcdrain",
+            "tcflow",
+            "tcflush",
+            "tcgetattr",
+            "tcgetpgrp",
+            "tcsendbreak",
+            "tcsetattr",
+            "tcsetpgrp",
+            "time",
+            "timer_getoverrun",
+            "timer_gettime",
+            "timer_settime",
+            "times",
+            "umask",
+            "uname",
+            "unlink",
+            "utime",
+            "wait",
+            "waitpid",
+            "write",
         ];
 
         !ASYNC_SAFE_FUNCTIONS.contains(&func_name)

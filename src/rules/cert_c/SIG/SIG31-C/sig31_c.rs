@@ -23,10 +23,10 @@
 //! ```
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
-use std::collections::{HashSet, HashMap};
 
 pub struct Sig31C;
 
@@ -88,7 +88,8 @@ impl Sig31C {
                             if !handler_name.starts_with("SIG_")
                                 && handler_name != "NULL"
                                 && handler_name != "0"
-                                && !handler_name.is_empty() {
+                                && !handler_name.is_empty()
+                            {
                                 handlers.insert(handler_name.to_string());
                             }
                         }
@@ -113,7 +114,8 @@ impl Sig31C {
                                 if !handler_name.starts_with("SIG_")
                                     && handler_name != "NULL"
                                     && handler_name != "0"
-                                    && !handler_name.is_empty() {
+                                    && !handler_name.is_empty()
+                                {
                                     handlers.insert(handler_name.to_string());
                                 }
                             }
@@ -160,15 +162,19 @@ impl Sig31C {
                         // Parse type - check if it's safe
                         // Safe types: ONLY volatile sig_atomic_t, atomic_* types
                         // Everything else (int, struct, arrays, etc.) is UNSAFE
-                        let is_safe = (decl_text.contains("volatile") && decl_text.contains("sig_atomic_t"))
+                        let is_safe = (decl_text.contains("volatile")
+                            && decl_text.contains("sig_atomic_t"))
                             || decl_text.contains("atomic_");
 
                         // Extract ALL declarators (handles init_declarator, pointer_declarator, etc.)
                         for j in 0..child.child_count() {
                             if let Some(decl_child) = child.child(j) {
                                 let kind = decl_child.kind();
-                                if kind == "init_declarator" || kind == "pointer_declarator"
-                                    || kind == "array_declarator" || kind == "identifier" {
+                                if kind == "init_declarator"
+                                    || kind == "pointer_declarator"
+                                    || kind == "array_declarator"
+                                    || kind == "identifier"
+                                {
                                     self.extract_var_names(&decl_child, source, &mut vars, is_safe);
                                 }
                             }
@@ -181,7 +187,13 @@ impl Sig31C {
         vars
     }
 
-    fn extract_var_names(&self, declarator: &Node, source: &str, vars: &mut HashMap<String, bool>, is_safe: bool) {
+    fn extract_var_names(
+        &self,
+        declarator: &Node,
+        source: &str,
+        vars: &mut HashMap<String, bool>,
+        is_safe: bool,
+    ) {
         match declarator.kind() {
             "identifier" => {
                 let var_name = get_node_text(&declarator, source);
@@ -213,13 +225,26 @@ impl Sig31C {
         }
     }
 
-    fn check_node(&self, node: &Node, source: &str, handlers: &HashSet<String>, global_vars: &HashMap<String, bool>, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        handlers: &HashSet<String>,
+        global_vars: &HashMap<String, bool>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if node.kind() == "function_definition" {
             if let Some(declarator) = node.child_by_field_name("declarator") {
                 if let Some(func_name) = self.get_function_name_text(&declarator, source) {
                     if handlers.contains(&func_name) {
                         if let Some(body) = node.child_by_field_name("body") {
-                            self.check_handler_body(&body, source, &func_name, global_vars, violations);
+                            self.check_handler_body(
+                                &body,
+                                source,
+                                &func_name,
+                                global_vars,
+                                violations,
+                            );
                         }
                     }
                 }
@@ -255,12 +280,26 @@ impl Sig31C {
         None
     }
 
-    fn check_handler_body(&self, body: &Node, source: &str, handler_name: &str, global_vars: &HashMap<String, bool>, violations: &mut Vec<RuleViolation>) {
+    fn check_handler_body(
+        &self,
+        body: &Node,
+        source: &str,
+        handler_name: &str,
+        global_vars: &HashMap<String, bool>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Collect all local variables declared in this handler
         let mut local_vars = HashSet::new();
         self.collect_local_vars(body, source, &mut local_vars);
 
-        self.check_for_global_access(body, source, handler_name, global_vars, &local_vars, violations);
+        self.check_for_global_access(
+            body,
+            source,
+            handler_name,
+            global_vars,
+            &local_vars,
+            violations,
+        );
     }
 
     fn collect_local_vars(&self, node: &Node, source: &str, locals: &mut HashSet<String>) {
@@ -278,7 +317,12 @@ impl Sig31C {
         }
     }
 
-    fn extract_local_var_names(&self, declarator: &Node, source: &str, locals: &mut HashSet<String>) {
+    fn extract_local_var_names(
+        &self,
+        declarator: &Node,
+        source: &str,
+        locals: &mut HashSet<String>,
+    ) {
         match declarator.kind() {
             "identifier" => {
                 let var_name = get_node_text(&declarator, source);
@@ -309,14 +353,22 @@ impl Sig31C {
         }
     }
 
-    fn check_for_global_access(&self, node: &Node, source: &str, handler_name: &str, global_vars: &HashMap<String, bool>, local_vars: &HashSet<String>, violations: &mut Vec<RuleViolation>) {
+    fn check_for_global_access(
+        &self,
+        node: &Node,
+        source: &str,
+        handler_name: &str,
+        global_vars: &HashMap<String, bool>,
+        local_vars: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check for identifier references AND field_expression (for struct member access)
         if node.kind() == "identifier" {
             let id_name = get_node_text(&node, source);
 
             // Skip if it's a local variable
             if local_vars.contains(id_name) {
-                return;  // Don't recurse into this identifier
+                return; // Don't recurse into this identifier
             }
 
             // Skip if this identifier is used as an argument to an async-signal-safe function
@@ -351,7 +403,9 @@ impl Sig31C {
 
                 // Extract just the identifier (handle cases like "(*ptr)" or just "var")
                 let base_id = if base_text.starts_with('(') && base_text.ends_with(')') {
-                    &base_text[1..base_text.len()-1].trim_start_matches('*').trim()
+                    &base_text[1..base_text.len() - 1]
+                        .trim_start_matches('*')
+                        .trim()
                 } else {
                     base_text.trim_start_matches('*').trim()
                 };
@@ -386,7 +440,14 @@ impl Sig31C {
         // Recurse
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_for_global_access(&child, source, handler_name, global_vars, local_vars, violations);
+                self.check_for_global_access(
+                    &child,
+                    source,
+                    handler_name,
+                    global_vars,
+                    local_vars,
+                    violations,
+                );
             }
         }
     }
@@ -404,12 +465,37 @@ impl Sig31C {
                     // List of async-signal-safe functions from POSIX
                     // https://man7.org/linux/man-pages/man7/signal-safety.7.html
                     let async_safe_funcs = [
-                        "write", "read", "_exit", "_Exit", "abort", "raise",
-                        "signal", "sigaction", "sigaddset", "sigdelset", "sigemptyset",
-                        "sigfillset", "sigismember", "sigpending", "sigprocmask",
-                        "sigsuspend", "kill", "pause", "sleep", "alarm",
-                        "getpid", "getppid", "getuid", "geteuid", "getgid", "getegid",
-                        "close", "dup", "dup2", "fcntl", "pipe",
+                        "write",
+                        "read",
+                        "_exit",
+                        "_Exit",
+                        "abort",
+                        "raise",
+                        "signal",
+                        "sigaction",
+                        "sigaddset",
+                        "sigdelset",
+                        "sigemptyset",
+                        "sigfillset",
+                        "sigismember",
+                        "sigpending",
+                        "sigprocmask",
+                        "sigsuspend",
+                        "kill",
+                        "pause",
+                        "sleep",
+                        "alarm",
+                        "getpid",
+                        "getppid",
+                        "getuid",
+                        "geteuid",
+                        "getgid",
+                        "getegid",
+                        "close",
+                        "dup",
+                        "dup2",
+                        "fcntl",
+                        "pipe",
                     ];
 
                     if async_safe_funcs.contains(&func_name) {

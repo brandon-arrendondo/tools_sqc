@@ -1,7 +1,7 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Pre32C;
 
@@ -60,13 +60,24 @@ impl Pre32C {
             if self.is_potentially_macro_function(function_name) {
                 // Check arguments for preprocessor directives
                 if let Some(arguments) = node.child_by_field_name("arguments") {
-                    self.check_arguments_for_directives(&arguments, source, function_name, violations);
+                    self.check_arguments_for_directives(
+                        &arguments,
+                        source,
+                        function_name,
+                        violations,
+                    );
                 }
             }
         }
     }
 
-    fn check_arguments_for_directives(&self, arguments: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_arguments_for_directives(
+        &self,
+        arguments: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Get the full text of the arguments section
         let args_text = &source[arguments.start_byte()..arguments.end_byte()];
 
@@ -102,13 +113,17 @@ impl Pre32C {
                             severity: Severity::High,
                             message: format!(
                                 "Argument to '{}' contains preprocessor directive: '{}'",
-                                function_name, arg_text.trim()
+                                function_name,
+                                arg_text.trim()
                             ),
                             file_path: String::new(),
                             line: start_point.row + 1,
                             column: start_point.column + 1,
-                            suggestion: Some("Use conditional compilation to wrap the entire function call".to_string()),
-                        ..Default::default()
+                            suggestion: Some(
+                                "Use conditional compilation to wrap the entire function call"
+                                    .to_string(),
+                            ),
+                            ..Default::default()
                         });
                     }
                 }
@@ -120,40 +135,27 @@ impl Pre32C {
         // Standard library functions that may be implemented as macros
         let std_lib_functions: HashSet<&str> = [
             // String functions
-            "memcpy", "memmove", "memset", "memcmp", "memchr",
-            "strcpy", "strncpy", "strcat", "strncat", "strcmp", "strncmp",
-            "strchr", "strrchr", "strpbrk", "strspn", "strcspn", "strstr", "strtok",
-            "strlen",
-
-            // Character functions
-            "isalnum", "isalpha", "isblank", "iscntrl", "isdigit", "isgraph",
-            "islower", "isprint", "ispunct", "isspace", "isupper", "isxdigit",
-            "tolower", "toupper",
-
+            "memcpy", "memmove", "memset", "memcmp", "memchr", "strcpy", "strncpy", "strcat",
+            "strncat", "strcmp", "strncmp", "strchr", "strrchr", "strpbrk", "strspn", "strcspn",
+            "strstr", "strtok", "strlen", // Character functions
+            "isalnum", "isalpha", "isblank", "iscntrl", "isdigit", "isgraph", "islower", "isprint",
+            "ispunct", "isspace", "isupper", "isxdigit", "tolower", "toupper",
             // I/O functions
-            "getc", "putc", "getchar", "putchar", "fgetc", "fputc",
-            "getwc", "putwc", "fgetwc", "fputwc",
-            "printf", "fprintf", "sprintf", "snprintf",
-            "scanf", "fscanf", "sscanf",
-
+            "getc", "putc", "getchar", "putchar", "fgetc", "fputc", "getwc", "putwc", "fgetwc",
+            "fputwc", "printf", "fprintf", "sprintf", "snprintf", "scanf", "fscanf", "sscanf",
             // Math functions
-            "abs", "labs", "llabs", "fabs", "fabsf", "fabsl",
-            "sqrt", "sqrtf", "sqrtl", "pow", "powf", "powl",
-            "sin", "cos", "tan", "asin", "acos", "atan", "atan2",
-            "exp", "log", "log10", "ceil", "floor", "fmod",
-
-            // Memory allocation
-            "malloc", "calloc", "realloc", "free",
-
-            // Assertion
-            "assert",
-
-            // Wide character functions
-            "wmemcpy", "wmemmove", "wmemset", "wmemcmp", "wmemchr",
-            "wcscpy", "wcsncpy", "wcscat", "wcsncat", "wcscmp", "wcsncmp",
-            "wcschr", "wcsrchr", "wcspbrk", "wcsspn", "wcscspn", "wcsstr", "wcstok",
-            "wcslen",
-        ].iter().cloned().collect();
+            "abs", "labs", "llabs", "fabs", "fabsf", "fabsl", "sqrt", "sqrtf", "sqrtl", "pow",
+            "powf", "powl", "sin", "cos", "tan", "asin", "acos", "atan", "atan2", "exp", "log",
+            "log10", "ceil", "floor", "fmod", // Memory allocation
+            "malloc", "calloc", "realloc", "free",   // Assertion
+            "assert", // Wide character functions
+            "wmemcpy", "wmemmove", "wmemset", "wmemcmp", "wmemchr", "wcscpy", "wcsncpy", "wcscat",
+            "wcsncat", "wcscmp", "wcsncmp", "wcschr", "wcsrchr", "wcspbrk", "wcsspn", "wcscspn",
+            "wcsstr", "wcstok", "wcslen",
+        ]
+        .iter()
+        .cloned()
+        .collect();
 
         std_lib_functions.contains(function_name) ||
         // Any function could potentially be a macro, so we should be conservative
@@ -164,9 +166,8 @@ impl Pre32C {
     fn contains_preprocessor_directives(&self, text: &str) -> bool {
         // Look for preprocessor directive patterns
         let directives = [
-            "#define", "#undef", "#include", "#if", "#ifdef", "#ifndef",
-            "#else", "#elif", "#endif", "#error", "#warning", "#pragma",
-            "#line",
+            "#define", "#undef", "#include", "#if", "#ifdef", "#ifndef", "#else", "#elif",
+            "#endif", "#error", "#warning", "#pragma", "#line",
         ];
 
         for directive in &directives {

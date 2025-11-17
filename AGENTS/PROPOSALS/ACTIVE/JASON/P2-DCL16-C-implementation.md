@@ -1,3 +1,16 @@
+---
+rule_id: DCL16-C
+priority: P2
+status: active
+assigned_to: JASON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - DCL
+---
+
 # P2-DCL16-C - DCL16-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/DCL16-C
+https://wiki.sei.cmu.edu/confluence/display/c/DCL16-C.+Use+"L,"+not+"l,"+to+indicate+a+long+value
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify DCL16-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

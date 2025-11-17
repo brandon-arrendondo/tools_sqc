@@ -3,28 +3,51 @@
 # Run manually: pre-commit run --all-files
 
 repos:
-  # Rust formatting
-  - repo: https://github.com/doublify/pre-commit-rust
-    rev: v1.0
+  # Branch protection
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
     hooks:
-      - id: fmt
-        name: cargo fmt
-        description: Format Rust code with rustfmt
-        args: ['--manifest-path=Cargo.toml', '--', '--check']
+      - id: no-commit-to-branch
+        name: protect master/main
+        description: Prevent direct commits to master or main branches
+        args: ['--branch', 'master', '--branch', 'main']
+  # Local hooks for Rust
 
-      - id: cargo-check
-        name: cargo check
-        description: Check Rust code compiles
-        args: ['--manifest-path=Cargo.toml']
-
-  # Local hooks for cargo commands
   - repo: local
     hooks:
-      - id: cargo-test
-        name: cargo test
-        description: Run all Rust tests (includes build) - warnings only
-        entry: bash -c 'cargo test || true'
+      - id: reset-file-permissions
+        name: reset file permissions
+        description: Unlock all files before running checks
+        entry: bash -c 'scripts/work_active_helpers.sh unlock-all 2>&1'
         language: system
         pass_filenames: false
         always_run: true
         verbose: true
+
+      - id: cargo-fmt
+        name: cargo fmt (auto-fix)
+        description: Format Rust code with rustfmt
+        entry: bash -c 'cargo fmt --all 2>&1 && echo "✅ Formatting complete"'
+        language: system
+        pass_filenames: false
+        types: [rust]
+        verbose: true
+
+      - id: cargo-check
+        name: cargo check
+        description: Check Rust code compiles
+        entry: bash -c 'cargo check 2>&1'
+        language: system
+        pass_filenames: false
+        types: [rust]
+        verbose: true
+
+      - id: cargo-test
+        name: cargo test
+        description: Run all Rust tests (includes build) - warnings only
+        entry: bash -c 'cargo test 2>&1 || true'
+        language: system
+        pass_filenames: false
+        verbose: true
+
+

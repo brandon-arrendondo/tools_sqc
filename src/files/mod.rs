@@ -6,7 +6,6 @@ use git::GitRepo;
 
 use anyhow::Result;
 
-
 pub enum ProjectSource {
     Git(GitRepo),
     Directory(DirectorySource),

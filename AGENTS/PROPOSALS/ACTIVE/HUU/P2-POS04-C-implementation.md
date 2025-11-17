@@ -1,3 +1,16 @@
+---
+rule_id: POS04-C
+priority: P2
+status: active
+assigned_to: HUU
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - POS
+---
+
 # P2-POS04-C - POS04-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/POS04-C
+https://wiki.sei.cmu.edu/confluence/display/c/POS04-C.+Avoid+using+PTHREAD_MUTEX_NORMAL+type+mutex+locks
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify POS04-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

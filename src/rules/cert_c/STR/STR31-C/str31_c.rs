@@ -1,7 +1,7 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Str31C;
 
@@ -65,7 +65,11 @@ impl Str31C {
     }
 
     /// Get string literal length from a variable name or direct analysis
-    fn get_string_length_from_context(&self, var_name: Option<&str>, source: &str) -> Option<usize> {
+    fn get_string_length_from_context(
+        &self,
+        var_name: Option<&str>,
+        source: &str,
+    ) -> Option<usize> {
         if let Some(name) = var_name {
             // Look for variable assignments like: char name[] = "string";
             let lines: Vec<&str> = source.lines().collect();
@@ -75,7 +79,7 @@ impl Str31C {
                     if let Some(start) = line.find('"') {
                         if let Some(end) = line.rfind('"') {
                             if end > start {
-                                let literal = &line[start+1..end];
+                                let literal = &line[start + 1..end];
                                 return Some(literal.len());
                             }
                         }
@@ -144,9 +148,12 @@ impl Str31C {
 
         // Look for malloc assignments with strlen + 1
         for line in &lines {
-            if line.contains(var_name) && line.contains("=") &&
-               (line.contains("malloc") || line.contains("calloc")) &&
-               line.contains("strlen") && line.contains("+ 1") {
+            if line.contains(var_name)
+                && line.contains("=")
+                && (line.contains("malloc") || line.contains("calloc"))
+                && line.contains("strlen")
+                && line.contains("+ 1")
+            {
                 return Some(usize::MAX); // Safe dynamic allocation
             }
         }
@@ -155,7 +162,10 @@ impl Str31C {
         for line in &lines {
             if line.contains(var_name) && line.contains("=") && line.contains("malloc") {
                 // Pattern: buffer = malloc(10);
-                let pattern = format!(r"{}\s*=\s*malloc\s*\(\s*(\d+)\s*\)", regex::escape(var_name));
+                let pattern = format!(
+                    r"{}\s*=\s*malloc\s*\(\s*(\d+)\s*\)",
+                    regex::escape(var_name)
+                );
                 if let Ok(re) = regex::Regex::new(&pattern) {
                     if let Some(captures) = re.captures(line) {
                         if let Ok(size) = captures[1].parse::<usize>() {
@@ -206,14 +216,18 @@ impl Str31C {
         let mut found_realloc = false;
 
         for line in lines {
-            if line.contains(var_name) && line.contains("realloc") &&
-               (line.contains("strlen") || line.contains("new_size")) {
+            if line.contains(var_name)
+                && line.contains("realloc")
+                && (line.contains("strlen") || line.contains("new_size"))
+            {
                 found_realloc = true;
             }
 
             // If we find the realloc before the strcpy/strcat, it's likely safe
-            if found_realloc && (line.contains("strcpy") || line.contains("strcat")) &&
-               line.contains(var_name) {
+            if found_realloc
+                && (line.contains("strcpy") || line.contains("strcat"))
+                && line.contains(var_name)
+            {
                 return true;
             }
         }
@@ -281,7 +295,10 @@ impl Str31C {
                         return false; // Always dangerous
                     }
 
-                    if src_name.contains("env_value") || src_name == "getenv" || src_name == "env_value" {
+                    if src_name.contains("env_value")
+                        || src_name == "getenv"
+                        || src_name == "env_value"
+                    {
                         // Environment variables can be unlimited size
                         return false; // Always dangerous
                     }
@@ -303,14 +320,18 @@ impl Str31C {
                         return false; // Source array is larger than destination
                     }
                     // Try to get string length from variable context
-                    if let Some(src_len) = self.get_string_length_from_context(Some(src_name), source) {
+                    if let Some(src_len) =
+                        self.get_string_length_from_context(Some(src_name), source)
+                    {
                         if buffer_size > src_len {
                             return true; // Buffer has room for string + null terminator
                         }
                     }
                     // Check for known safe patterns
                     let src_lower = src_name.to_lowercase();
-                    if (src_lower.contains("hello") || src_lower.contains("world")) && buffer_size >= 20 {
+                    if (src_lower.contains("hello") || src_lower.contains("world"))
+                        && buffer_size >= 20
+                    {
                         return true; // Known safe pattern from test cases
                     }
 
@@ -331,7 +352,8 @@ impl Str31C {
 
                 // Even smaller buffers might be okay if source is a short literal
                 if let Some(src_len) = source_length {
-                    if buffer_size > src_len + 1 {  // +1 for null terminator
+                    if buffer_size > src_len + 1 {
+                        // +1 for null terminator
                         return true;
                     }
                 }
@@ -392,7 +414,9 @@ impl Str31C {
                 // For buffers >= 20, analyze the concatenation more carefully
                 if buffer_size >= 20 {
                     // ENHANCED: Estimate total string length after concatenation
-                    if let Some(total_length) = self.estimate_strcat_total_length(dest, arguments, source) {
+                    if let Some(total_length) =
+                        self.estimate_strcat_total_length(dest, arguments, source)
+                    {
                         if buffer_size > total_length {
                             return true; // Safe concatenation
                         }
@@ -448,7 +472,9 @@ impl Str31C {
                         let literal_chars = fmt_clean.len() - fmt_clean.matches('%').count() * 2; // rough estimate
 
                         // For simple formats with %d and short literal text, 50 chars should be plenty
-                        if literal_chars < 30 && (fmt_clean.contains("%d") || fmt_clean.contains("%s")) {
+                        if literal_chars < 30
+                            && (fmt_clean.contains("%d") || fmt_clean.contains("%s"))
+                        {
                             return true;
                         }
                     }
@@ -494,19 +520,22 @@ impl Str31C {
             // Detect patterns like:
             // while (source[i] != '\0') { dest[i] = source[i]; i++; }
             // for (int i = 0; source[i]; i++) { dest[i] = source[i]; }
-            if (loop_text.contains("!= '\\0'") || loop_text.contains("!= 0") ||
-                loop_text.contains("*src") || loop_text.contains("*source")) &&
-               (loop_text.contains("[i]") || loop_text.contains("++")) {
-
+            if (loop_text.contains("!= '\\0'")
+                || loop_text.contains("!= 0")
+                || loop_text.contains("*src")
+                || loop_text.contains("*source"))
+                && (loop_text.contains("[i]") || loop_text.contains("++"))
+            {
                 // Check for bounds checking
-                if !loop_text.contains("< ") &&
-                   !loop_text.contains("<=") &&
-                   !loop_text.contains("sizeof") &&
-                   !loop_text.contains("size") &&
-                   !loop_text.contains("len") &&
-                   !loop_text.contains("count") &&
-                   !loop_text.contains("max") &&
-                   !loop_text.contains("limit") {
+                if !loop_text.contains("< ")
+                    && !loop_text.contains("<=")
+                    && !loop_text.contains("sizeof")
+                    && !loop_text.contains("size")
+                    && !loop_text.contains("len")
+                    && !loop_text.contains("count")
+                    && !loop_text.contains("max")
+                    && !loop_text.contains("limit")
+                {
                     return true; // Dangerous: no bounds check
                 }
             }
@@ -514,12 +543,15 @@ impl Str31C {
             // Also check for array indexing patterns without bounds
             if loop_text.contains("[") && loop_text.contains("]") && loop_text.contains("++") {
                 // Look for array-to-array copying patterns
-                if (loop_text.contains("dest[") || loop_text.contains("buffer[")) &&
-                   (loop_text.contains("src[") || loop_text.contains("source[")) {
-
+                if (loop_text.contains("dest[") || loop_text.contains("buffer["))
+                    && (loop_text.contains("src[") || loop_text.contains("source["))
+                {
                     // Check if there's any bounds checking
-                    if !loop_text.contains("< ") && !loop_text.contains("<=") &&
-                       !loop_text.contains("sizeof") && !loop_text.contains("size") {
+                    if !loop_text.contains("< ")
+                        && !loop_text.contains("<=")
+                        && !loop_text.contains("sizeof")
+                        && !loop_text.contains("size")
+                    {
                         return true; // No bounds check detected
                     }
                 }
@@ -531,12 +563,16 @@ impl Str31C {
             let loop_text = &source[node.start_byte()..node.end_byte()];
 
             // Pattern: while (*p) { *dest++ = *src++; }
-            if loop_text.contains("*") && loop_text.contains("++") &&
-               (loop_text.contains("dest") || loop_text.contains("buffer")) {
-
+            if loop_text.contains("*")
+                && loop_text.contains("++")
+                && (loop_text.contains("dest") || loop_text.contains("buffer"))
+            {
                 // Check for bounds checking
-                if !loop_text.contains("&&") && !loop_text.contains("size") &&
-                   !loop_text.contains("end") && !loop_text.contains("limit") {
+                if !loop_text.contains("&&")
+                    && !loop_text.contains("size")
+                    && !loop_text.contains("end")
+                    && !loop_text.contains("limit")
+                {
                     return true; // Dangerous pointer arithmetic without bounds
                 }
             }
@@ -604,9 +640,11 @@ impl Str31C {
             }
 
             // If we see strcpy/strcat after free, it's a violation
-            if was_freed && current_line_num > freed_line_num &&
-               (line.contains("strcpy") || line.contains("strcat")) &&
-               line.contains(var_name) {
+            if was_freed
+                && current_line_num > freed_line_num
+                && (line.contains("strcpy") || line.contains("strcat"))
+                && line.contains(var_name)
+            {
                 return true; // Found use after free
             }
         }
@@ -642,9 +680,13 @@ impl Str31C {
             let dest_lower = dest.to_lowercase();
             let src_lower = src.to_lowercase();
 
-            if dest_lower.contains("str") || dest_lower.contains("buf") ||
-               src_lower.contains("str") || src_lower.contains("buf") ||
-               dest_lower.contains("msg") || src_lower.contains("msg") {
+            if dest_lower.contains("str")
+                || dest_lower.contains("buf")
+                || src_lower.contains("str")
+                || src_lower.contains("buf")
+                || dest_lower.contains("msg")
+                || src_lower.contains("msg")
+            {
                 return true;
             }
         }
@@ -675,12 +717,14 @@ impl Str31C {
                 if let Some(start_paren) = line.find('(') {
                     if let Some(end_paren) = line.find(')') {
                         if end_paren > start_paren {
-                            let args_part = &line[start_paren+1..end_paren];
+                            let args_part = &line[start_paren + 1..end_paren];
                             let parts: Vec<&str> = args_part.split(',').collect();
                             if parts.len() == 2 {
                                 let src_part = parts[1].trim();
                                 // Get the length of the source string
-                                if let Some(length) = self.get_string_length_from_context(Some(src_part), source) {
+                                if let Some(length) =
+                                    self.get_string_length_from_context(Some(src_part), source)
+                                {
                                     return length;
                                 }
                             }
@@ -714,13 +758,19 @@ impl Str31C {
         // Group strcat operations by destination variable
         let mut dest_groups: HashMap<String, Vec<(usize, String)>> = HashMap::new();
         for (line_num, dest, src) in strcat_operations {
-            dest_groups.entry(dest).or_insert_with(Vec::new).push((line_num, src));
+            dest_groups
+                .entry(dest)
+                .or_insert_with(Vec::new)
+                .push((line_num, src));
         }
 
         // Analyze each destination for cumulative overflow
         for (dest_var, operations) in dest_groups {
-            if operations.len() > 1 { // Multiple strcat operations on same variable
-                if let Some(violation) = self.analyze_cumulative_strcat(&dest_var, &operations, source) {
+            if operations.len() > 1 {
+                // Multiple strcat operations on same variable
+                if let Some(violation) =
+                    self.analyze_cumulative_strcat(&dest_var, &operations, source)
+                {
                     return Some(violation);
                 }
             }
@@ -748,10 +798,17 @@ impl Str31C {
     }
 
     /// Analyze cumulative effect of multiple strcat operations
-    fn analyze_cumulative_strcat(&self, dest_var: &str, operations: &[(usize, String)], source: &str) -> Option<RuleViolation> {
+    fn analyze_cumulative_strcat(
+        &self,
+        dest_var: &str,
+        operations: &[(usize, String)],
+        source: &str,
+    ) -> Option<RuleViolation> {
         // For multi-strcat analysis, we'll parse the source again to create a minimal node
         let mut parser = tree_sitter::Parser::new();
-        parser.set_language(&tree_sitter_c::language()).expect("Error loading C grammar");
+        parser
+            .set_language(&tree_sitter_c::language())
+            .expect("Error loading C grammar");
 
         if let Some(tree) = parser.parse(&source, None) {
             let root_node = tree.root_node();
@@ -764,11 +821,14 @@ impl Str31C {
 
             // Track cumulative length after each strcat
             for (line_num, src_var) in operations {
-                let src_length = self.get_string_length_from_context(Some(&src_var), source).unwrap_or(0);
+                let src_length = self
+                    .get_string_length_from_context(Some(&src_var), source)
+                    .unwrap_or(0);
                 cumulative_length += src_length;
 
                 // Check if this operation would cause overflow
-                if cumulative_length + 1 > buffer_size { // +1 for null terminator
+                if cumulative_length + 1 > buffer_size {
+                    // +1 for null terminator
                     return Some(RuleViolation {
                         rule_id: "STR31-C".to_string(),
                         severity: Severity::High,
@@ -802,7 +862,7 @@ impl Str31C {
                     let mut end_quote = start_quote + 1;
                     while end_quote < line.len() {
                         if line.chars().nth(end_quote) == Some('"') {
-                            let literal = &line[start_quote+1..end_quote];
+                            let literal = &line[start_quote + 1..end_quote];
                             return literal.len();
                         }
                         if line.chars().nth(end_quote) == Some('\\') {
@@ -825,7 +885,12 @@ impl Str31C {
     }
 
     /// Estimate the total length after strcat concatenation
-    fn estimate_strcat_total_length(&self, dest_var: &str, arguments: &Node, source: &str) -> Option<usize> {
+    fn estimate_strcat_total_length(
+        &self,
+        dest_var: &str,
+        arguments: &Node,
+        source: &str,
+    ) -> Option<usize> {
         // Get the source argument from strcat(dest, src)
         let mut src_arg = None;
         let mut arg_count = 0;
@@ -844,14 +909,18 @@ impl Str31C {
 
         if let Some(src_name) = src_arg {
             // First try to get current length from direct assignment
-            let mut dest_current_length = self.get_string_length_from_context(Some(dest_var), source).unwrap_or(0);
+            let mut dest_current_length = self
+                .get_string_length_from_context(Some(dest_var), source)
+                .unwrap_or(0);
 
             // If we can't find direct assignment, look for strcpy operations that may have filled the buffer
             if dest_current_length == 0 {
                 dest_current_length = self.find_strcpy_source_length(dest_var, source);
             }
 
-            let src_length = self.get_string_length_from_context(Some(src_name), source).unwrap_or(0);
+            let src_length = self
+                .get_string_length_from_context(Some(src_name), source)
+                .unwrap_or(0);
 
             // For strcat_safe.c: "Hello" (5) + " World" (6) + null (1) = 12
             if dest_current_length > 0 && src_length > 0 {
@@ -1017,12 +1086,15 @@ impl CertRule for Str31C {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::High,
-                            message: "Use of vsprintf() is dangerous as it has no bounds checking.".to_string(),
+                            message: "Use of vsprintf() is dangerous as it has no bounds checking."
+                                .to_string(),
                             file_path: String::new(),
                             line: start_point.row + 1,
                             column: start_point.column + 1,
-                            suggestion: Some("Use vsnprintf() with explicit buffer size".to_string()),
-                        ..Default::default()
+                            suggestion: Some(
+                                "Use vsnprintf() with explicit buffer size".to_string(),
+                            ),
+                            ..Default::default()
                         });
                     }
 

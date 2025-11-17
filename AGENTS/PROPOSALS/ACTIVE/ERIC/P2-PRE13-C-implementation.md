@@ -1,3 +1,16 @@
+---
+rule_id: PRE13-C
+priority: P2
+status: active
+assigned_to: ERIC
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - PRE
+---
+
 # P2-PRE13-C - PRE13-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/PRE13-C
+https://wiki.sei.cmu.edu/confluence/display/c/PRE13-C.+Use+the+Standard+predefined+macros+to+test+for+versions+and+features.
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify PRE13-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED
