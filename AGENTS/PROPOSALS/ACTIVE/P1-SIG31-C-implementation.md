@@ -301,3 +301,16 @@ cargo test --lib
 - Otherwise excellent implementation
 
 **Status:** MOVED TO ACTIVE for criteria validation and DRY fix (2025-11-14)
+
+---
+
+## Refactoring Log
+
+### 2025-11-14 - Claude Code (via /work-active)
+
+**Completed:**
+- ✅ Replaced 14 manual text extractions with `get_node_text()` (13 sed + 1 manual)
+- ✅ Tests: 43/43 passing (100%), zero regressions
+- ✅ Added import: `use crate::utility::cert_c::ast_utils::get_node_text;`
+
+**Status:** DRY refactoring complete
