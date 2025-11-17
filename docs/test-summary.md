@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 45 (15.9%)
+- **Implemented Rules:** 46 (16.3%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -53,7 +53,7 @@
   - ✅ [CON30-C](#rule-con30c) - Implemented: Pass 3/3 (100.0%)
   - 🔶 [CON35-C](#rule-con35c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON32-C](#rule-con32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [DCL](#category-dcl) (2 implemented / 31 total)
+- [DCL](#category-dcl) (3 implemented / 31 total)
   - 🔶 [DCL16-C](#rule-dcl16c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ✅ [DCL00-C](#rule-dcl00c) - Implemented: Pass 31/42 (73.8%)
   - 🔶 [DCL09-C](#rule-dcl09c) - Not Implemented (has tests): Pass 0/1 (0.0%) [1 not run]
@@ -63,7 +63,7 @@
   - 🔶 [DCL07-C](#rule-dcl07c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [DCL30-C](#rule-dcl30c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
   - 🔶 [DCL13-C](#rule-dcl13c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
-  - 🔶 [DCL39-C](#rule-dcl39c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
+  - ✅ [DCL39-C](#rule-dcl39c) - Implemented: Pass 3/8 (37.5%)
   - 🔶 [DCL03-C](#rule-dcl03c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - ✅ [DCL06-C](#rule-dcl06c) - Implemented: Pass 7/7 (100.0%)
   - 🔶 [DCL23-C](#rule-dcl23c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
@@ -2552,7 +2552,7 @@ simultaneously.
 
 <a id="category-dcl"></a>
 
-**Implementation Status:** 2 / 31 rules (6.5%)
+**Implementation Status:** 3 / 31 rules (9.7%)
 
 ### 🔶 DCL16-C - Not Implemented (has tests)
 
@@ -2887,7 +2887,7 @@ Visible only in the function */ /* ... */ }
 
 ---
 
-### 🔶 DCL39-C - Not Implemented (has tests)
+### ✅ DCL39-C - Implemented
 
 <a id="rule-dcl39c"></a>
 
@@ -2908,21 +2908,21 @@ information.
 
 **Test Coverage:** 8 tests (3 fail, 5 pass)
 
-**Test Results:** 0/8 passed (0.0%), 8 not run
+**Test Results:** 3/8 passed (37.5%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_memset.c` → `test_dcl39_c_fail_wiki_memset`
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl39_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_3.c` → `test_dcl39_c_fail_wiki_noncompliant_3`
+- ❌ FAIL `wiki_memset.c` → `test_dcl39_c_fail_wiki_memset`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl39_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_3.c` → `test_dcl39_c_fail_wiki_noncompliant_3`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl39_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_5.c` → `test_dcl39_c_pass_wiki_compliant_5`
-- ⏭️ NOT RUN `wiki_padding_bytes.c` → `test_dcl39_c_pass_wiki_padding_bytes`
-- ⏭️ NOT RUN `wiki_structure_packinggcc.c` → `test_dcl39_c_pass_wiki_structure_packinggcc`
-- ⏭️ NOT RUN `wiki_structure_packingmicrosoft_visual_studio.c` → `test_dcl39_c_pass_wiki_structure_packingmicrosoft_visual_studio`
+- ✅ PASS `wiki_compliant_1.c` → `test_dcl39_c_pass_wiki_compliant_1`
+- ❌ FAIL `wiki_compliant_5.c` → `test_dcl39_c_pass_wiki_compliant_5`
+- ❌ FAIL `wiki_padding_bytes.c` → `test_dcl39_c_pass_wiki_padding_bytes`
+- ❌ FAIL `wiki_structure_packinggcc.c` → `test_dcl39_c_pass_wiki_structure_packinggcc`
+- ❌ FAIL `wiki_structure_packingmicrosoft_visual_studio.c` → `test_dcl39_c_pass_wiki_structure_packingmicrosoft_visual_studio`
 
 ---
 
@@ -11990,7 +11990,7 @@ result.
 | API | 9 | 5 | 62 | 6.9 |
 | ARR | 9 | 7 | 490 | 54.4 |
 | CON | 23 | 2 | 75 | 3.3 |
-| DCL | 31 | 2 | 173 | 5.6 |
+| DCL | 31 | 3 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 1 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
