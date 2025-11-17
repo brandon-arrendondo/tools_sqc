@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 51 (18.0%)
+- **Implemented Rules:** 52 (18.4%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -106,7 +106,7 @@
   - ✅ [ERR06-C](#rule-err06c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - ⚫ [ERR00-C](#rule-err00c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [ERR32-C](#rule-err32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [EXP](#category-exp) (3 implemented / 31 total)
+- [EXP](#category-exp) (4 implemented / 31 total)
   - 🔶 [EXP40-C](#rule-exp40c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP47-C](#rule-exp47c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [EXP37-C](#rule-exp37c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
@@ -119,7 +119,7 @@
   - 🔶 [EXP14-C](#rule-exp14c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP20-C](#rule-exp20c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [EXP45-C](#rule-exp45c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
-  - 🔶 [EXP10-C](#rule-exp10c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
+  - ✅ [EXP10-C](#rule-exp10c) - Implemented: Pass 0/3 (0.0%) [3 not run]
   - 🔶 [EXP36-C](#rule-exp36c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [EXP12-C](#rule-exp12c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP43-C](#rule-exp43c) - Not Implemented (has tests): Pass 0/12 (0.0%) [12 not run]
@@ -4357,7 +4357,7 @@ being handled; ifsignal()fails, the value oferrnoisindeterminate.
 
 <a id="category-exp"></a>
 
-**Implementation Status:** 3 / 31 rules (9.7%)
+**Implementation Status:** 4 / 31 rules (12.9%)
 
 ### 🔶 EXP40-C - Not Implemented (has tests)
 
@@ -4775,7 +4775,7 @@ such asEXP30-C. Do not depend on the order of evaluation for side effects.
 
 ---
 
-### 🔶 EXP10-C - Not Implemented (has tests)
+### ✅ EXP10-C - Implemented
 
 <a id="rule-exp10c"></a>
 
@@ -11993,7 +11993,7 @@ result.
 | DCL | 31 | 3 | 173 | 5.6 |
 | ENV | 8 | 2 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |
-| EXP | 31 | 3 | 236 | 7.6 |
+| EXP | 31 | 4 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
 | FLP | 13 | 1 | 40 | 3.1 |
 | INT | 23 | 3 | 238 | 10.3 |
