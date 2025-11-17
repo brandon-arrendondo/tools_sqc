@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 42 (14.8%)
+- **Implemented Rules:** 43 (15.2%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -29,7 +29,7 @@
   - ✅ [ARR32-C](#rule-arr32c) - Implemented: Pass 62/62 (100.0%)
   - 🔶 [ARR02-C](#rule-arr02c) - Not Implemented (has tests): Pass 0/82 (0.0%) [82 not run]
   - ✅ [ARR39-C](#rule-arr39c) - Implemented: Pass 32/46 (69.6%)
-- [CON](#category-con) (0 implemented / 23 total)
+- [CON](#category-con) (1 implemented / 23 total)
   - 🔶 [CON07-C](#rule-con07c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [CON39-C](#rule-con39c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON09-C](#rule-con09c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
@@ -45,7 +45,7 @@
   - 🔶 [CON36-C](#rule-con36c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ⚫ [CON06-C](#rule-con06c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [CON05-C](#rule-con05c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-  - 🔶 [CON04-C](#rule-con04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [CON04-C](#rule-con04c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [CON40-C](#rule-con40c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [CON08-C](#rule-con08c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
   - 🔶 [CON43-C](#rule-con43c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
@@ -1452,7 +1452,7 @@ byintand then scaled again when added tobuf.
 
 <a id="category-con"></a>
 
-**Implementation Status:** 0 / 23 rules (0.0%)
+**Implementation Status:** 1 / 23 rules (4.3%)
 
 ### 🔶 CON07-C - Not Implemented (has tests)
 
@@ -2111,7 +2111,7 @@ lock are also blocked.
 
 ---
 
-### 🔶 CON04-C - Not Implemented (has tests)
+### ✅ CON04-C - Implemented
 
 <a id="rule-con04c"></a>
 
@@ -2134,15 +2134,15 @@ threads that are not exited correctly:
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_con04_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_con04_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_con04_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_con04_c_pass_wiki_compliant_1`
 
 ---
 
@@ -11989,7 +11989,7 @@ result.
 |----------|-------|-------------|-------|----------------|
 | API | 9 | 5 | 62 | 6.9 |
 | ARR | 9 | 7 | 490 | 54.4 |
-| CON | 23 | 0 | 75 | 3.3 |
+| CON | 23 | 1 | 75 | 3.3 |
 | DCL | 31 | 1 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 1 | 88 | 8.0 |
