@@ -1,0 +1,75 @@
+are there any rules not in CERT-C that predate misra for embedded codebases that i should include in this tool?
+ 
+Great question! Yes, there are several embedded safety practices that predate MISRA and should be included. Let me search for historical embedded coding standards and practices:Now let me search for more embedded coding practices:Perfect! Now I have comprehensive information. Let me compile this for you:
+Pre-MISRA Embedded Coding Rules You Should Include
+Yes! There are several important embedded coding practices that predate MISRA (which started in 1998) and should definitely be in your tool:
+1. The Power of 10 Rules (NASA JPL, 2006)
+Created by Gerard J. Holzmann at NASA's Jet Propulsion Laboratory, these 10 rules are intended to eliminate C coding practices that make code difficult to review or statically analyze and are a complement to MISRA C guidelines:
+Restrict control flow - Avoid complex flow constructs like goto and recursion
+Fixed loop bounds - All loops must have fixed upper bounds (prevents runaway code)
+No dynamic memory after init - Do not use dynamic memory allocation after initialization
+Function size limits - No function should be longer than what can be printed on a single sheet of paper (typically ~60 lines)
+Assertion density - The code's assertion density should average minimally two assertions per function
+Limited scope - Declare all data objects at the smallest possible level of scope to reduce amount of code that can access a variable
+Check return values - Check the return value of all non-void functions
+Limited preprocessor use - Limit preprocessor use to file inclusion and simple macros
+Limited pointer complexity - Limit pointer use (max 2 levels of dereferencing)
+Compiler warnings + static analysis - Compile with all warnings enabled; use static analysis tools
+2. JPL Institutional Coding Standard (2009)
+The JPL standard was based on two sources: MISRA-C:2004 and the Power of Ten rules, but it also addresses software risks related to multi-threaded software that neither of those addressed.
+Key additions beyond Power of 10:
+Multi-threading/Concurrency rules:
+Use IPC messages for task communication; callbacks should be avoided
+Task synchronization shall not be performed through task delays
+Data objects in shared memory should have a single owning task with explicit ownership transfer
+Avoid semaphores/locks; if used, avoid nested use
+Use memory protection, safety margins, and barrier patterns
+Other important rules:
+No selective value assignments to elements of an enum list (except first or all)
+Use typedefs that indicate size and signedness (I32, U16, etc.) instead of basic types
+Make order of evaluation in compound expressions explicit with parentheses
+Boolean expressions shall have no side effects
+No more than two levels of indirection per declaration
+Do not hide dereference operations in macros or typedefs
+Non-constant function pointers should not be used
+3. BARR-C Embedded C Coding Standard
+Barr Group's Embedded C Coding Standard was developed to minimize bugs in firmware by focusing on practical rules that keep bugs out, while improving maintainability and portability. BARR-C:2018 has been fully harmonized with MISRA C:2012 in its stylistic rules.
+While BARR-C is harmonized with MISRA now, it contains many practical embedded rules that are freely implementable, including:
+Proper use of the volatile keyword for hardware registers and variables accessed by ISRs
+File naming and organization conventions
+Comment standards
+Specific brace placement rules selected to reduce bugs
+4. Earlier Embedded Standards Referenced by JPL
+The JPL standard consulted numerous earlier standards including: Spencer's 10 commandments from 1991, Nuclear Regulatory Commission from 1995 (22 rules), Original MISRA rules from 1997, Software System Safety Handbook from 1999 (34 rules), European Space Agency coding rules from 2000 (123 rules), and Goddard Flight Software Branch coding standard from 2000 (100 rules).
+Recommended Rules to Include in Your Tool
+Based on this research, here are the categories of rules you can freely implement that predate or complement MISRA:
+Core Safety Rules (Pre-MISRA)
+✅ No dynamic memory allocation after initialization
+✅ No recursion
+✅ Fixed upper bounds on all loops
+✅ No goto, setjmp, longjmp
+✅ Check all function return values
+✅ Check function parameter validity
+✅ Use assertions liberally (2+ per function)
+✅ Limit function size (~60 lines max)
+✅ Limit function parameters (~6 max)
+✅ Limited pointer complexity (2 levels max)
+Embedded-Specific Rules
+✅ Use sized types (uint32_t, int16_t) not int/short/long
+✅ Proper use of volatile keyword
+✅ No non-constant function pointers
+✅ Memory barriers and safety margins
+✅ Limited preprocessor use (no token pasting, no variadic macros)
+✅ Explicit order of evaluation (use parentheses)
+✅ No side effects in boolean expressions
+✅ Smallest possible scope for all declarations
+Multi-threading Safety (JPL-specific)
+✅ IPC-based task communication (not shared memory)
+✅ No task delays for synchronization
+✅ Single-owner model for shared data
+✅ Avoid or strictly control semaphore use
+All of these rules are freely implementable without MISRA licensing because they either:
+Predate MISRA (Power of 10, JPL, etc.)
+Are general embedded best practices
+Come from open/public domain standards
+You can call your tool an "Embedded Safety C Checker" or "Critical Systems C Analyzer" and include all of these rules legitimately!
