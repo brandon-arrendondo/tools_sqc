@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 54 (19.1%)
+- **Implemented Rules:** 55 (19.4%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -188,10 +188,10 @@
   - ⚫ [FLP00-C](#rule-flp00c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [FLP32-C](#rule-flp32c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [FLP34-C](#rule-flp34c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [INT](#category-int) (3 implemented / 23 total)
+- [INT](#category-int) (4 implemented / 23 total)
   - 🔶 [INT36-C](#rule-int36c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
   - ✅ [INT32-C](#rule-int32c) - Implemented: Pass 0/56 (0.0%) [56 not run]
-  - 🔶 [INT01-C](#rule-int01c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
+  - ✅ [INT01-C](#rule-int01c) - Implemented: Pass 0/3 (0.0%) [3 not run]
   - 🔶 [INT12-C](#rule-int12c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [INT15-C](#rule-int15c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
   - 🔶 [INT14-C](#rule-int14c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
@@ -7143,7 +7143,7 @@ Paragraph 2 of the same subclause says,
 
 <a id="category-int"></a>
 
-**Implementation Status:** 3 / 23 rules (13.0%)
+**Implementation Status:** 4 / 23 rules (17.4%)
 
 ### 🔶 INT36-C - Not Implemented (has tests)
 
@@ -7267,7 +7267,7 @@ operations can result in overflow.
 
 ---
 
-### 🔶 INT01-C - Not Implemented (has tests)
+### ✅ INT01-C - Implemented
 
 <a id="rule-int01c"></a>
 
@@ -11996,7 +11996,7 @@ result.
 | EXP | 31 | 6 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
 | FLP | 13 | 1 | 40 | 3.1 |
-| INT | 23 | 3 | 238 | 10.3 |
+| INT | 23 | 4 | 238 | 10.3 |
 | MEM | 17 | 3 | 244 | 14.4 |
 | MSC | 8 | 1 | 30 | 3.8 |
 | POS | 20 | 5 | 55 | 2.8 |
