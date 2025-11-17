@@ -1,3 +1,16 @@
+---
+rule_id: POS34-C
+priority: P2
+status: active
+assigned_to: TRISTAN
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - POS
+---
+
 # P2-POS34-C - POS34-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/POS34-C
+https://wiki.sei.cmu.edu/confluence/display/c/POS34-C.+Do+not+call+putenv()+with+a+pointer+to+an+automatic+variable+as+the+argument
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify POS34-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

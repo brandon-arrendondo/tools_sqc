@@ -1,24 +1,24 @@
 pub mod prelude;
 
-mod ui;
 mod analyze;
 mod export;
 mod files;
-mod rules;
 mod manifest;
-mod utility;
 mod parser;
 mod progress;
+mod rules;
+mod ui;
+mod utility;
 
 use crate::prelude::*;
 use clap::{Arg, Command};
 
-use ui::TerminalUI;
-use files::ProjectSource;
 use analyze::analyze_project;
-use export::export_all_violations;
 use analyze::handle_generate_suppression;
+use export::export_all_violations;
+use files::ProjectSource;
 use progress::CLIProgressReporter;
+use ui::TerminalUI;
 
 fn main() -> Result<()> {
     let matches = Command::new("sqc")
@@ -102,7 +102,3 @@ fn main() -> Result<()> {
 
     Ok(())
 }
-
-
-
-

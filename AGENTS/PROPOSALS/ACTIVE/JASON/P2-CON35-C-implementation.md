@@ -1,3 +1,16 @@
+---
+rule_id: CON35-C
+priority: P2
+status: active
+assigned_to: JASON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - CON
+---
+
 # P2-CON35-C - CON35-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/CON35-C
+https://wiki.sei.cmu.edu/confluence/display/c/CON35-C.+Avoid+deadlock+by+locking+in+a+predefined+order
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify CON35-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

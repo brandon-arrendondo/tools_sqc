@@ -1,3 +1,16 @@
+---
+rule_id: FIO17-C
+priority: P2
+status: active
+assigned_to: JASON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - FIO
+---
+
 # P2-FIO17-C - FIO17-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FIO17-C
+https://wiki.sei.cmu.edu/confluence/display/c/FIO17-C.+Do+not+rely+on+an+ending+null+character+when+using+fread()
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify FIO17-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

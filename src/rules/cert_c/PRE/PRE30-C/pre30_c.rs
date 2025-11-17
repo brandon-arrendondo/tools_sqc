@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use tree_sitter::Node;
 
 pub struct Pre30C;
@@ -54,7 +54,12 @@ impl Pre30C {
         }
     }
 
-    fn check_macro_definition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_macro_definition(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let macro_text = &source[node.start_byte()..node.end_byte()];
 
         // Look for token concatenation (##) that might create universal character names
@@ -77,7 +82,12 @@ impl Pre30C {
         }
     }
 
-    fn check_macro_invocation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_macro_invocation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check for macro calls that might involve UCN concatenation
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = &source[function_node.start_byte()..function_node.end_byte()];
@@ -130,24 +140,30 @@ impl Pre30C {
         // Check various patterns that could form UCNs when concatenated
 
         // Pattern 1: \u + digits
-        if left.ends_with("\\u") && right.chars().all(|c| c.is_ascii_hexdigit()) && right.len() <= 4 {
+        if left.ends_with("\\u") && right.chars().all(|c| c.is_ascii_hexdigit()) && right.len() <= 4
+        {
             return true;
         }
 
         // Pattern 2: \U + digits
-        if left.ends_with("\\U") && right.chars().all(|c| c.is_ascii_hexdigit()) && right.len() <= 8 {
+        if left.ends_with("\\U") && right.chars().all(|c| c.is_ascii_hexdigit()) && right.len() <= 8
+        {
             return true;
         }
 
         // Pattern 3: partial UCN + remaining digits
-        if left.starts_with("\\u") && left.len() < 6 && right.chars().all(|c| c.is_ascii_hexdigit()) {
+        if left.starts_with("\\u") && left.len() < 6 && right.chars().all(|c| c.is_ascii_hexdigit())
+        {
             let total_len = left.len() - 2 + right.len(); // -2 for \u
             if total_len == 4 {
                 return true;
             }
         }
 
-        if left.starts_with("\\U") && left.len() < 10 && right.chars().all(|c| c.is_ascii_hexdigit()) {
+        if left.starts_with("\\U")
+            && left.len() < 10
+            && right.chars().all(|c| c.is_ascii_hexdigit())
+        {
             let total_len = left.len() - 2 + right.len(); // -2 for \U
             if total_len == 8 {
                 return true;
@@ -168,13 +184,21 @@ impl Pre30C {
                 if let Some(&next_ch) = chars.peek() {
                     if next_ch == 'u' {
                         chars.next(); // consume 'u'
-                        let hex_count = chars.by_ref().take(4).filter(|c| c.is_ascii_hexdigit()).count();
+                        let hex_count = chars
+                            .by_ref()
+                            .take(4)
+                            .filter(|c| c.is_ascii_hexdigit())
+                            .count();
                         if hex_count == 4 {
                             return true;
                         }
                     } else if next_ch == 'U' {
                         chars.next(); // consume 'U'
-                        let hex_count = chars.by_ref().take(8).filter(|c| c.is_ascii_hexdigit()).count();
+                        let hex_count = chars
+                            .by_ref()
+                            .take(8)
+                            .filter(|c| c.is_ascii_hexdigit())
+                            .count();
                         if hex_count == 8 {
                             return true;
                         }
@@ -189,7 +213,10 @@ impl Pre30C {
         // Check if macro arguments suggest UCN concatenation
 
         // Look for known dangerous macro patterns
-        if macro_name.contains("assign") || macro_name.contains("concat") || macro_name.contains("join") {
+        if macro_name.contains("assign")
+            || macro_name.contains("concat")
+            || macro_name.contains("join")
+        {
             for arg in args {
                 if self.looks_like_ucn_fragment(arg) {
                     return true;
@@ -199,8 +226,8 @@ impl Pre30C {
 
         // Check for patterns where multiple args might form UCNs
         if args.len() >= 2 {
-            for i in 0..args.len()-1 {
-                if self.could_form_ucn(&args[i], &args[i+1]) {
+            for i in 0..args.len() - 1 {
+                if self.could_form_ucn(&args[i], &args[i + 1]) {
                     return true;
                 }
             }
@@ -213,11 +240,12 @@ impl Pre30C {
         let cleaned = arg.trim();
 
         // Check for partial UCN patterns
-        cleaned.starts_with("\\u") && cleaned.len() < 6 ||
-        cleaned.starts_with("\\U") && cleaned.len() < 10 ||
-        cleaned.ends_with("\\u") ||
-        cleaned.ends_with("\\U") ||
-        (cleaned.chars().all(|c| c.is_ascii_hexdigit()) && (cleaned.len() == 2 || cleaned.len() == 4))
+        cleaned.starts_with("\\u") && cleaned.len() < 6
+            || cleaned.starts_with("\\U") && cleaned.len() < 10
+            || cleaned.ends_with("\\u")
+            || cleaned.ends_with("\\U")
+            || (cleaned.chars().all(|c| c.is_ascii_hexdigit())
+                && (cleaned.len() == 2 || cleaned.len() == 4))
     }
 
     fn get_macro_arguments(&self, node: &Node, source: &str) -> Vec<String> {

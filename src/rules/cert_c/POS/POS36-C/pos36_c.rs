@@ -22,7 +22,7 @@
 //! - Report violation if setuid() appears before setgid()
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
@@ -76,7 +76,12 @@ impl CertRule for Pos36C {
 }
 
 impl Pos36C {
-    fn check_privilege_order(&self, scope: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_privilege_order(
+        &self,
+        scope: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Collect all setuid() and setgid() calls in order
         let mut calls = Vec::new();
         self.collect_priv_calls(scope, source, &mut calls);
@@ -109,12 +114,14 @@ impl Pos36C {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: Severity::High,
-                    message: "setuid() called without setgid() - incomplete privilege revocation".to_string(),
+                    message: "setuid() called without setgid() - incomplete privilege revocation"
+                        .to_string(),
                     file_path: String::new(),
                     line: setuid_call.line,
                     column: setuid_call.column,
                     suggestion: Some(
-                        "Call setgid() before setuid() to drop both group and user privileges".to_string()
+                        "Call setgid() before setuid() to drop both group and user privileges"
+                            .to_string(),
                     ),
                     ..Default::default()
                 });

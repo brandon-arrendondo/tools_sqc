@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
@@ -62,7 +62,12 @@ impl Int32C {
         }
     }
 
-    fn check_binary_operation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_binary_operation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = self.get_operator(node, source) {
             match operator.as_str() {
                 "+" => self.check_addition(node, source, violations),
@@ -76,7 +81,12 @@ impl Int32C {
         }
     }
 
-    fn check_assignment_operation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_assignment_operation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = self.get_assignment_operator(node, source) {
             match operator.as_str() {
                 "+=" => self.check_compound_addition(node, source, violations),
@@ -90,7 +100,12 @@ impl Int32C {
         }
     }
 
-    fn check_unary_operation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_unary_operation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(operator) = self.get_unary_operator(node, source) {
             if operator == "-" {
                 self.check_negation(node, source, violations);
@@ -99,7 +114,10 @@ impl Int32C {
     }
 
     fn check_addition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
@@ -132,7 +150,10 @@ impl Int32C {
     }
 
     fn check_subtraction(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
@@ -145,7 +166,8 @@ impl Int32C {
                 // Skip if both operands are constants (compiler handles these)
                 let left_text = get_node_text(&left, source);
                 let right_text = get_node_text(&right, source);
-                if self.is_constant_expression(left_text) && self.is_constant_expression(right_text) {
+                if self.is_constant_expression(left_text) && self.is_constant_expression(right_text)
+                {
                     return; // Safe - constant expression
                 }
 
@@ -172,7 +194,10 @@ impl Int32C {
     }
 
     fn check_multiplication(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_type = self.infer_type(&left, source);
             let right_type = self.infer_type(&right, source);
 
@@ -185,9 +210,12 @@ impl Int32C {
                 // Skip if using wider type (cast to long long before multiplication)
                 let left_text = get_node_text(&left, source);
                 let right_text = get_node_text(&right, source);
-                if (left_text.contains("long long") || right_text.contains("long long")) ||
-                   (left_text.starts_with("(signed long long)") || left_text.starts_with("(long long)") ||
-                    right_text.starts_with("(signed long long)") || right_text.starts_with("(long long)")) {
+                if (left_text.contains("long long") || right_text.contains("long long"))
+                    || (left_text.starts_with("(signed long long)")
+                        || left_text.starts_with("(long long)")
+                        || right_text.starts_with("(signed long long)")
+                        || right_text.starts_with("(long long)"))
+                {
                     return; // Safe - using wider type
                 }
 
@@ -214,7 +242,10 @@ impl Int32C {
     }
 
     fn check_division(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_text = get_node_text(&left, source);
             let right_text = get_node_text(&right, source);
             let left_type = self.infer_type(&left, source);
@@ -229,14 +260,19 @@ impl Int32C {
                 }
 
                 // Check if there's explicit INT_MIN/-1 pattern OR generic signed division without checks
-                let has_explicit_risk = right_text.trim() == "-1" || right_text.contains("-1") ||
-                                       left_text.contains("INT_MIN") || left_text.contains("LONG_MIN") ||
-                                       self.could_be_int_min(&left, source);
+                let has_explicit_risk = right_text.trim() == "-1"
+                    || right_text.contains("-1")
+                    || left_text.contains("INT_MIN")
+                    || left_text.contains("LONG_MIN")
+                    || self.could_be_int_min(&left, source);
 
                 // Also flag generic signed division of variables (could be INT_MIN / -1 at runtime)
-                let is_variable_division = left.kind() == "identifier" && right.kind() == "identifier";
+                let is_variable_division =
+                    left.kind() == "identifier" && right.kind() == "identifier";
 
-                if (has_explicit_risk || is_variable_division) && !self.has_division_overflow_check(node, source) {
+                if (has_explicit_risk || is_variable_division)
+                    && !self.has_division_overflow_check(node, source)
+                {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
 
@@ -259,7 +295,10 @@ impl Int32C {
     }
 
     fn check_modulo(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_text = get_node_text(&left, source);
             let right_text = get_node_text(&right, source);
             let left_type = self.infer_type(&left, source);
@@ -268,14 +307,18 @@ impl Int32C {
             // Check for signed integer modulo
             // INT_MIN % -1 causes overflow
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
-                let has_explicit_risk = (left_text.contains("INT_MIN") || left_text.contains("LONG_MIN") ||
-                                        self.could_be_int_min(&left, source)) &&
-                                       (right_text == "-1" || right_text.contains("-1"));
+                let has_explicit_risk = (left_text.contains("INT_MIN")
+                    || left_text.contains("LONG_MIN")
+                    || self.could_be_int_min(&left, source))
+                    && (right_text == "-1" || right_text.contains("-1"));
 
                 // Also flag generic signed modulo of variables (could be INT_MIN % -1 at runtime)
-                let is_variable_modulo = left.kind() == "identifier" && right.kind() == "identifier";
+                let is_variable_modulo =
+                    left.kind() == "identifier" && right.kind() == "identifier";
 
-                if (has_explicit_risk || is_variable_modulo) && !self.has_modulo_overflow_check(node, source) {
+                if (has_explicit_risk || is_variable_modulo)
+                    && !self.has_modulo_overflow_check(node, source)
+                {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
 
@@ -318,8 +361,10 @@ impl Int32C {
                         file_path: String::new(),
                         line: start_point.row + 1,
                         column: start_point.column + 1,
-                        suggestion: Some("Add check: if (value == INT_MIN) { /* handle error */ }".to_string()),
-                    ..Default::default()
+                        suggestion: Some(
+                            "Add check: if (value == INT_MIN) { /* handle error */ }".to_string(),
+                        ),
+                        ..Default::default()
                     });
                 }
             }
@@ -327,7 +372,10 @@ impl Int32C {
     }
 
     fn check_left_shift(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(_right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+        if let (Some(left), Some(_right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_type = self.infer_type(&left, source);
 
             if self.is_signed_type(&left_type) {
@@ -353,7 +401,12 @@ impl Int32C {
         }
     }
 
-    fn check_compound_addition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_addition(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source);
 
@@ -372,15 +425,22 @@ impl Int32C {
                         file_path: String::new(),
                         line: start_point.row + 1,
                         column: start_point.column + 1,
-                        suggestion: Some("Add overflow check before compound assignment".to_string()),
-                    ..Default::default()
+                        suggestion: Some(
+                            "Add overflow check before compound assignment".to_string(),
+                        ),
+                        ..Default::default()
                     });
                 }
             }
         }
     }
 
-    fn check_compound_subtraction(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_subtraction(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source);
 
@@ -407,7 +467,12 @@ impl Int32C {
         }
     }
 
-    fn check_compound_multiplication(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_multiplication(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source);
 
@@ -434,13 +499,22 @@ impl Int32C {
         }
     }
 
-    fn check_compound_division(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+    fn check_compound_division(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_text = get_node_text(&left, source);
             let right_text = get_node_text(&right, source);
 
-            if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source)) &&
-               (right_text == "-1" || right_text.contains("-1")) {
+            if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source))
+                && (right_text == "-1" || right_text.contains("-1"))
+            {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -463,13 +537,22 @@ impl Int32C {
         }
     }
 
-    fn check_compound_modulo(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        if let (Some(left), Some(right)) = (node.child_by_field_name("left"), node.child_by_field_name("right")) {
+    fn check_compound_modulo(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
             let left_text = get_node_text(&left, source);
             let right_text = get_node_text(&right, source);
 
-            if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source)) &&
-               (right_text == "-1" || right_text.contains("-1")) {
+            if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source))
+                && (right_text == "-1" || right_text.contains("-1"))
+            {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -492,7 +575,12 @@ impl Int32C {
         }
     }
 
-    fn check_compound_left_shift(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_compound_left_shift(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source);
 
@@ -519,7 +607,12 @@ impl Int32C {
         }
     }
 
-    fn check_increment_decrement(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_increment_decrement(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(argument) = node.child_by_field_name("argument") {
             let arg_type = self.infer_type(&argument, source);
 
@@ -536,9 +629,15 @@ impl Int32C {
                         let expr_text = get_node_text(&node, source);
 
                         let message = if operator == "++" {
-                            format!("Signed integer increment '{}' may overflow at INT_MAX", expr_text)
+                            format!(
+                                "Signed integer increment '{}' may overflow at INT_MAX",
+                                expr_text
+                            )
                         } else {
-                            format!("Signed integer decrement '{}' may overflow at INT_MIN", expr_text)
+                            format!(
+                                "Signed integer decrement '{}' may overflow at INT_MIN",
+                                expr_text
+                            )
                         };
 
                         violations.push(RuleViolation {
@@ -548,8 +647,10 @@ impl Int32C {
                             file_path: String::new(),
                             line: start_point.row + 1,
                             column: start_point.column + 1,
-                            suggestion: Some("Add bounds checking before increment/decrement".to_string()),
-                        ..Default::default()
+                            suggestion: Some(
+                                "Add bounds checking before increment/decrement".to_string(),
+                            ),
+                            ..Default::default()
                         });
                     }
                 }
@@ -577,7 +678,13 @@ impl Int32C {
         }
     }
 
-    fn check_allocation_overflow(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_allocation_overflow(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         for (i, arg) in args.iter().enumerate() {
@@ -588,19 +695,30 @@ impl Int32C {
                     severity: Severity::High,
                     message: format!(
                         "{}() argument {} contains arithmetic that may overflow: '{}'",
-                        function_name, i + 1, arg
+                        function_name,
+                        i + 1,
+                        arg
                     ),
                     file_path: String::new(),
                     line: start_point.row + 1,
                     column: start_point.column + 1,
-                    suggestion: Some("Validate arithmetic operations before passing to allocation functions".to_string()),
-                ..Default::default()
+                    suggestion: Some(
+                        "Validate arithmetic operations before passing to allocation functions"
+                            .to_string(),
+                    ),
+                    ..Default::default()
                 });
             }
         }
     }
 
-    fn check_memory_function_overflow(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_memory_function_overflow(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let args = self.get_function_arguments(node, source);
 
         // Check size arguments for arithmetic that might overflow
@@ -612,7 +730,9 @@ impl Int32C {
 
         for &idx in &size_arg_indices {
             if let Some(arg) = args.get(idx) {
-                if self.contains_arithmetic(arg) && !self.has_memory_function_overflow_check(node, source) {
+                if self.contains_arithmetic(arg)
+                    && !self.has_memory_function_overflow_check(node, source)
+                {
                     let start_point = node.start_position();
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -624,15 +744,24 @@ impl Int32C {
                         file_path: String::new(),
                         line: start_point.row + 1,
                         column: start_point.column + 1,
-                        suggestion: Some("Validate size calculations before passing to memory functions".to_string()),
-                    ..Default::default()
+                        suggestion: Some(
+                            "Validate size calculations before passing to memory functions"
+                                .to_string(),
+                        ),
+                        ..Default::default()
                     });
                 }
             }
         }
     }
 
-    fn check_abs_overflow(&self, node: &Node, source: &str, function_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_abs_overflow(
+        &self,
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // abs(INT_MIN), labs(LONG_MIN), llabs(LLONG_MIN) all cause overflow
         // because the absolute value of the minimum signed integer cannot be represented
         if !self.has_abs_overflow_check(node, source) {
@@ -674,7 +803,11 @@ impl Int32C {
         }
 
         // Look for explicit signed type indicators
-        if text.contains("signed") || text.contains("int") || text.contains("short") || text.contains("long") {
+        if text.contains("signed")
+            || text.contains("int")
+            || text.contains("short")
+            || text.contains("long")
+        {
             return "signed".to_string();
         }
 
@@ -701,7 +834,11 @@ impl Int32C {
         }
 
         // Variable names that suggest signed integers
-        if text.starts_with("i") || text.contains("signed") || text.contains("count") || text.contains("index") {
+        if text.starts_with("i")
+            || text.contains("signed")
+            || text.contains("count")
+            || text.contains("index")
+        {
             return "signed".to_string();
         }
 
@@ -709,7 +846,12 @@ impl Int32C {
         "signed".to_string()
     }
 
-    fn find_variable_declaration(&self, node: &Node, source: &str, var_name: &str) -> Option<String> {
+    fn find_variable_declaration(
+        &self,
+        node: &Node,
+        source: &str,
+        var_name: &str,
+    ) -> Option<String> {
         // Look for the function that contains this node
         let mut current = node.parent();
         while let Some(parent) = current {
@@ -752,14 +894,15 @@ impl Int32C {
     }
 
     fn is_signed_type(&self, type_str: &str) -> bool {
-        type_str == "signed" || type_str == "int" ||
-        (type_str != "unsigned" && type_str != "size_t" && !type_str.contains("uint"))
+        type_str == "signed"
+            || type_str == "int"
+            || (type_str != "unsigned" && type_str != "size_t" && !type_str.contains("uint"))
     }
 
     fn could_be_int_min(&self, node: &Node, source: &str) -> bool {
         let text = get_node_text(&node, source);
-        text.contains("INT_MIN") ||
-        (text.starts_with("min") && (text.contains("val") || text.contains("num")))
+        text.contains("INT_MIN")
+            || (text.starts_with("min") && (text.contains("val") || text.contains("num")))
     }
 
     fn contains_arithmetic(&self, expr: &str) -> bool {
@@ -771,15 +914,23 @@ impl Int32C {
         let trimmed = expr.trim();
 
         // Numeric literals
-        if trimmed.chars().all(|c| c.is_ascii_digit() || c == '-' || c == '+') {
+        if trimmed
+            .chars()
+            .all(|c| c.is_ascii_digit() || c == '-' || c == '+')
+        {
             return true;
         }
 
         // Named constants
-        if trimmed.contains("INT_MAX") || trimmed.contains("INT_MIN") ||
-           trimmed.contains("LONG_MAX") || trimmed.contains("LONG_MIN") ||
-           trimmed.contains("LLONG_MAX") || trimmed.contains("LLONG_MIN") ||
-           trimmed.contains("UINT_MAX") || trimmed.contains("SIZE_MAX") {
+        if trimmed.contains("INT_MAX")
+            || trimmed.contains("INT_MIN")
+            || trimmed.contains("LONG_MAX")
+            || trimmed.contains("LONG_MIN")
+            || trimmed.contains("LLONG_MAX")
+            || trimmed.contains("LLONG_MIN")
+            || trimmed.contains("UINT_MAX")
+            || trimmed.contains("SIZE_MAX")
+        {
             return true;
         }
 
@@ -799,8 +950,11 @@ impl Int32C {
                     // Safe patterns: i = 0, i = 1, etc. (small constants)
                     // Unsafe patterns: i = INT_MAX - 2, etc.
                     let init_text = get_node_text(&initializer, source);
-                    if init_text.contains("INT_MAX") || init_text.contains("LONG_MAX") ||
-                       init_text.contains("INT_MIN") || init_text.contains("LONG_MIN") {
+                    if init_text.contains("INT_MAX")
+                        || init_text.contains("LONG_MAX")
+                        || init_text.contains("INT_MIN")
+                        || init_text.contains("LONG_MIN")
+                    {
                         return false; // Unsafe - loop starts near limits
                     }
                     return true; // Safe - typical for loop
@@ -822,7 +976,11 @@ impl Int32C {
         }
 
         // Then check the broader function context for overflow checks
-        self.has_function_level_overflow_check(node, source, &["INT_MAX", "INT_MIN", " - ", " > ", " < "])
+        self.has_function_level_overflow_check(
+            node,
+            source,
+            &["INT_MAX", "INT_MIN", " - ", " > ", " < "],
+        )
     }
 
     fn has_overflow_check_subtraction(&self, node: &Node, source: &str) -> bool {
@@ -832,25 +990,31 @@ impl Int32C {
         }
 
         // Then check the broader function context for overflow checks
-        self.has_function_level_overflow_check(node, source, &["INT_MAX", "INT_MIN", " + ", " > ", " < "])
+        self.has_function_level_overflow_check(
+            node,
+            source,
+            &["INT_MAX", "INT_MIN", " + ", " > ", " < "],
+        )
     }
 
     fn has_overflow_check_multiplication(&self, node: &Node, source: &str) -> bool {
         // Check for multiplication overflow patterns:
         // 1. if (a > INT_MAX / b) - division-based check
         // 2. Complex checks with INT_MAX/INT_MIN and division
-        if self.has_surrounding_check(node, source, &["INT_MAX", " / "]) ||
-           self.has_surrounding_check(node, source, &["INT_MIN", " / "]) ||
-           self.has_surrounding_check(node, source, &["LONG_MAX", " / "]) ||
-           self.has_surrounding_check(node, source, &["LONG_MIN", " / "]) {
+        if self.has_surrounding_check(node, source, &["INT_MAX", " / "])
+            || self.has_surrounding_check(node, source, &["INT_MIN", " / "])
+            || self.has_surrounding_check(node, source, &["LONG_MAX", " / "])
+            || self.has_surrounding_check(node, source, &["LONG_MIN", " / "])
+        {
             return true;
         }
 
         // Function-level checks
-        if self.has_function_level_patterns_any(node, source, &["INT_MAX", " / "]) ||
-           self.has_function_level_patterns_any(node, source, &["INT_MIN", " / "]) ||
-           self.has_function_level_patterns_any(node, source, &["LONG_MAX", " / "]) ||
-           self.has_function_level_patterns_any(node, source, &["LONG_MIN", " / "]) {
+        if self.has_function_level_patterns_any(node, source, &["INT_MAX", " / "])
+            || self.has_function_level_patterns_any(node, source, &["INT_MIN", " / "])
+            || self.has_function_level_patterns_any(node, source, &["LONG_MAX", " / "])
+            || self.has_function_level_patterns_any(node, source, &["LONG_MIN", " / "])
+        {
             return true;
         }
 
@@ -859,41 +1023,44 @@ impl Int32C {
 
     fn has_division_overflow_check(&self, node: &Node, source: &str) -> bool {
         // Check for INT_MIN/-1 or LONG_MIN/-1 or LLONG_MIN/-1 division overflow checks
-        if self.has_surrounding_check(node, source, &["INT_MIN", " == ", " -1"]) ||
-           self.has_surrounding_check(node, source, &["LONG_MIN", " == ", " -1"]) ||
-           self.has_surrounding_check(node, source, &["LLONG_MIN", " == ", " -1"]) {
+        if self.has_surrounding_check(node, source, &["INT_MIN", " == ", " -1"])
+            || self.has_surrounding_check(node, source, &["LONG_MIN", " == ", " -1"])
+            || self.has_surrounding_check(node, source, &["LLONG_MIN", " == ", " -1"])
+        {
             return true;
         }
 
-        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == ", " -1"]) ||
-        self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == ", " -1"]) ||
-        self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == ", " -1"])
+        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == ", " -1"])
+            || self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == ", " -1"])
+            || self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == ", " -1"])
     }
 
     fn has_modulo_overflow_check(&self, node: &Node, source: &str) -> bool {
         // Check for INT_MIN%- 1 or LONG_MIN%-1 or LLONG_MIN%-1 modulo overflow checks
-        if self.has_surrounding_check(node, source, &["INT_MIN", " == ", " -1"]) ||
-           self.has_surrounding_check(node, source, &["LONG_MIN", " == ", " -1"]) ||
-           self.has_surrounding_check(node, source, &["LLONG_MIN", " == ", " -1"]) {
+        if self.has_surrounding_check(node, source, &["INT_MIN", " == ", " -1"])
+            || self.has_surrounding_check(node, source, &["LONG_MIN", " == ", " -1"])
+            || self.has_surrounding_check(node, source, &["LLONG_MIN", " == ", " -1"])
+        {
             return true;
         }
 
-        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == ", " -1"]) ||
-        self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == ", " -1"]) ||
-        self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == ", " -1"])
+        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == ", " -1"])
+            || self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == ", " -1"])
+            || self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == ", " -1"])
     }
 
     fn has_negation_overflow_check(&self, node: &Node, source: &str) -> bool {
         // Check for negation of INT_MIN, LONG_MIN, or LLONG_MIN
-        if self.has_surrounding_check(node, source, &["INT_MIN", " == "]) ||
-           self.has_surrounding_check(node, source, &["LONG_MIN", " == "]) ||
-           self.has_surrounding_check(node, source, &["LLONG_MIN", " == "]) {
+        if self.has_surrounding_check(node, source, &["INT_MIN", " == "])
+            || self.has_surrounding_check(node, source, &["LONG_MIN", " == "])
+            || self.has_surrounding_check(node, source, &["LLONG_MIN", " == "])
+        {
             return true;
         }
 
-        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == "]) ||
-        self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == "]) ||
-        self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == "])
+        self.has_function_level_patterns_any(node, source, &["INT_MIN", " == "])
+            || self.has_function_level_patterns_any(node, source, &["LONG_MIN", " == "])
+            || self.has_function_level_patterns_any(node, source, &["LLONG_MIN", " == "])
     }
 
     fn has_shift_overflow_check(&self, node: &Node, source: &str) -> bool {
@@ -903,22 +1070,25 @@ impl Int32C {
         // 2. Value range check: a > (INT_MAX >> b) or similar with LONG_MAX
 
         // Check for value range pattern (most comprehensive)
-        if self.has_surrounding_check(node, source, &["LONG_MAX", " >> "]) ||
-           self.has_surrounding_check(node, source, &["INT_MAX", " >> "]) {
+        if self.has_surrounding_check(node, source, &["LONG_MAX", " >> "])
+            || self.has_surrounding_check(node, source, &["INT_MAX", " >> "])
+        {
             return true;
         }
 
-        if self.has_function_level_patterns_any(node, source, &["LONG_MAX", " >> "]) ||
-           self.has_function_level_patterns_any(node, source, &["INT_MAX", " >> "]) {
+        if self.has_function_level_patterns_any(node, source, &["LONG_MAX", " >> "])
+            || self.has_function_level_patterns_any(node, source, &["INT_MAX", " >> "])
+        {
             return true;
         }
 
         // Only accept PRECISION if it's combined with value range checks
         // (PRECISION alone is insufficient - see wiki_noncompliant_6)
-        if (self.has_surrounding_check(node, source, &["PRECISION"]) ||
-            self.has_function_level_patterns_any(node, source, &["PRECISION"])) &&
-           (self.has_function_level_patterns_any(node, source, &[" >> "]) ||
-            self.has_function_level_patterns_any(node, source, &[" < ", "sizeof"])) {
+        if (self.has_surrounding_check(node, source, &["PRECISION"])
+            || self.has_function_level_patterns_any(node, source, &["PRECISION"]))
+            && (self.has_function_level_patterns_any(node, source, &[" >> "])
+                || self.has_function_level_patterns_any(node, source, &[" < ", "sizeof"]))
+        {
             return false; // PRECISION + shift amount check only is insufficient
         }
 
@@ -937,13 +1107,14 @@ impl Int32C {
         // For increment: check if value == INT_MAX
         // For decrement: check if value == INT_MIN
         // We need to detect EITHER check, not both
-        if self.has_surrounding_check(node, source, &["if", "INT_MAX", " == "]) ||
-           self.has_surrounding_check(node, source, &["if", "INT_MIN", " == "]) {
+        if self.has_surrounding_check(node, source, &["if", "INT_MAX", " == "])
+            || self.has_surrounding_check(node, source, &["if", "INT_MIN", " == "])
+        {
             return true;
         }
 
-        self.has_function_level_patterns_any(node, source, &["if", "INT_MAX", " == "]) ||
-        self.has_function_level_patterns_any(node, source, &["if", "INT_MIN", " == "])
+        self.has_function_level_patterns_any(node, source, &["if", "INT_MAX", " == "])
+            || self.has_function_level_patterns_any(node, source, &["if", "INT_MIN", " == "])
     }
 
     fn has_allocation_overflow_check(&self, node: &Node, source: &str) -> bool {
@@ -956,14 +1127,15 @@ impl Int32C {
 
     fn has_abs_overflow_check(&self, node: &Node, source: &str) -> bool {
         // Check if there's a check for INT_MIN/LONG_MIN/LLONG_MIN before the abs call
-        if self.has_surrounding_check(node, source, &["INT_MIN", "if"]) ||
-           self.has_surrounding_check(node, source, &["LONG_MIN", "if"]) ||
-           self.has_surrounding_check(node, source, &["LLONG_MIN", "if"]) {
+        if self.has_surrounding_check(node, source, &["INT_MIN", "if"])
+            || self.has_surrounding_check(node, source, &["LONG_MIN", "if"])
+            || self.has_surrounding_check(node, source, &["LLONG_MIN", "if"])
+        {
             return true;
         }
-        self.has_function_level_overflow_check(node, source, &["INT_MIN", "if"]) ||
-        self.has_function_level_overflow_check(node, source, &["LONG_MIN", "if"]) ||
-        self.has_function_level_overflow_check(node, source, &["LLONG_MIN", "if"])
+        self.has_function_level_overflow_check(node, source, &["INT_MIN", "if"])
+            || self.has_function_level_overflow_check(node, source, &["LONG_MIN", "if"])
+            || self.has_function_level_overflow_check(node, source, &["LLONG_MIN", "if"])
     }
 
     /// Check if a binary operation is part of a comparison expression (used in overflow checking)
@@ -986,9 +1158,14 @@ impl Int32C {
             }
 
             // Stop at statement boundaries to avoid going too far up the tree
-            if matches!(parent.kind(),
-                "expression_statement" | "return_statement" | "declaration" |
-                "function_definition" | "compound_statement") {
+            if matches!(
+                parent.kind(),
+                "expression_statement"
+                    | "return_statement"
+                    | "declaration"
+                    | "function_definition"
+                    | "compound_statement"
+            ) {
                 break;
             }
 
@@ -999,7 +1176,12 @@ impl Int32C {
     }
 
     /// Check if the function containing this node has overflow checking code (all patterns must match)
-    fn has_function_level_overflow_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
+    fn has_function_level_overflow_check(
+        &self,
+        node: &Node,
+        source: &str,
+        patterns: &[&str],
+    ) -> bool {
         // Find the containing function
         let mut current = node.parent();
         while let Some(parent) = current {
@@ -1014,7 +1196,12 @@ impl Int32C {
     }
 
     /// Check if the function containing this node has overflow checking code (any pattern can match)
-    fn has_function_level_patterns_any(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
+    fn has_function_level_patterns_any(
+        &self,
+        node: &Node,
+        source: &str,
+        patterns: &[&str],
+    ) -> bool {
         // Find the containing function
         let mut current = node.parent();
         while let Some(parent) = current {

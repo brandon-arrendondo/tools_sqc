@@ -1,3 +1,16 @@
+---
+rule_id: FIO41-C
+priority: P2
+status: active
+assigned_to: ERIC
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - FIO
+---
+
 # P2-FIO41-C - FIO41-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FIO41-C
+https://wiki.sei.cmu.edu/confluence/display/c/FIO41-C.+Do+not+call+getc(),+putc(),+getwc(),+or+putwc()+with+a+stream+argument+that+has+side+effects
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify FIO41-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

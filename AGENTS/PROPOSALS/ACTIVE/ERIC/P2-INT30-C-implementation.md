@@ -1,3 +1,16 @@
+---
+rule_id: INT30-C
+priority: P2
+status: active
+assigned_to: ERIC
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - INT
+---
+
 # P2-INT30-C - INT30-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** true
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/INT30-C
+https://wiki.sei.cmu.edu/confluence/display/c/INT30-C.+Ensure+that+unsigned+integer+operations+do+not+wrap
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify INT30-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

@@ -1,3 +1,16 @@
+---
+rule_id: ARR36-C
+priority: P2
+status: active
+assigned_to: ALLY
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - ARR
+---
+
 # P2-ARR36-C - ARR36-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** true
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/ARR36-C
+https://wiki.sei.cmu.edu/confluence/display/c/ARR36-C.+Do+not+subtract+or+compare+two+pointers+that+do+not+refer+to+the+same+array
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify ARR36-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

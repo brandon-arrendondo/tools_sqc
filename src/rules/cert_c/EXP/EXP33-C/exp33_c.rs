@@ -1,7 +1,7 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Exp33C;
 
@@ -61,7 +61,12 @@ impl UninitializedVariableAnalyzer {
         }
     }
 
-    fn analyze_function_body(&mut self, body: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn analyze_function_body(
+        &mut self,
+        body: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         self.collect_variable_info(body, source);
         self.check_variable_usage(body, source, violations);
     }
@@ -110,10 +115,10 @@ impl UninitializedVariableAnalyzer {
                 let var_name = source[node.start_byte()..node.end_byte()].to_string();
 
                 // Check if this is a potentially uninitialized variable usage
-                if self.declared_vars.contains(&var_name) &&
-                   !self.initialized_vars.contains(&var_name) &&
-                   self.is_variable_read(node, source) {
-
+                if self.declared_vars.contains(&var_name)
+                    && !self.initialized_vars.contains(&var_name)
+                    && self.is_variable_read(node, source)
+                {
                     let start_point = node.start_position();
                     violations.push(RuleViolation {
                         rule_id: "EXP33-C".to_string(),

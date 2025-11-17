@@ -35,7 +35,7 @@
 //! - Report violation if no error check found
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
@@ -100,7 +100,12 @@ impl Pos54C {
                                 let var_name = get_node_text(&declarator, source);
 
                                 // Search forward for error check
-                                if !self.find_error_check_in_context(&parent, var_name, function_name, source) {
+                                if !self.find_error_check_in_context(
+                                    &parent,
+                                    var_name,
+                                    function_name,
+                                    source,
+                                ) {
                                     self.report_violation(node, function_name, source, violations);
                                 }
                             }
@@ -110,7 +115,12 @@ impl Pos54C {
                                 let var_name = get_node_text(&left, source);
 
                                 // Search forward for error check
-                                if !self.find_error_check_in_context(&parent, var_name, function_name, source) {
+                                if !self.find_error_check_in_context(
+                                    &parent,
+                                    var_name,
+                                    function_name,
+                                    source,
+                                ) {
                                     self.report_violation(node, function_name, source, violations);
                                 }
                             }
@@ -129,7 +139,13 @@ impl Pos54C {
     }
 
     /// Search for error checks in subsequent statements
-    fn find_error_check_in_context(&self, start_node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+    fn find_error_check_in_context(
+        &self,
+        start_node: &Node,
+        var_name: &str,
+        function_name: &str,
+        source: &str,
+    ) -> bool {
         // Get the parent statement
         let mut current_opt = Some(start_node.clone());
         while let Some(current) = current_opt.as_ref() {
@@ -189,7 +205,13 @@ impl Pos54C {
     }
 
     /// Check if a statement contains an error check for the variable
-    fn statement_checks_error(&self, node: &Node, var_name: &str, function_name: &str, source: &str) -> bool {
+    fn statement_checks_error(
+        &self,
+        node: &Node,
+        var_name: &str,
+        function_name: &str,
+        source: &str,
+    ) -> bool {
         // Look for if statements
         if node.kind() == "if_statement" {
             if let Some(condition) = node.child_by_field_name("condition") {
@@ -197,19 +219,25 @@ impl Pos54C {
 
                 // Check for NULL check (fmemopen, open_memstream)
                 if Self::is_posix_null_error_function(function_name) {
-                    if condition_text.contains(var_name) &&
-                       (condition_text.contains("== NULL") || condition_text.contains("!= NULL") ||
-                        condition_text.contains("==NULL") || condition_text.contains("!=NULL") ||
-                        format!("!{}", var_name) == condition_text.trim()) {
+                    if condition_text.contains(var_name)
+                        && (condition_text.contains("== NULL")
+                            || condition_text.contains("!= NULL")
+                            || condition_text.contains("==NULL")
+                            || condition_text.contains("!=NULL")
+                            || format!("!{}", var_name) == condition_text.trim())
+                    {
                         return true;
                     }
                 }
 
                 // Check for non-zero check (posix_memalign)
                 if Self::is_posix_nonzero_error_function(function_name) {
-                    if condition_text.contains(var_name) &&
-                       (condition_text.contains("!= 0") || condition_text.contains("== 0") ||
-                        condition_text.contains("!=0") || condition_text.contains("==0")) {
+                    if condition_text.contains(var_name)
+                        && (condition_text.contains("!= 0")
+                            || condition_text.contains("== 0")
+                            || condition_text.contains("!=0")
+                            || condition_text.contains("==0"))
+                    {
                         return true;
                     }
                 }
@@ -228,7 +256,13 @@ impl Pos54C {
         false
     }
 
-    fn report_violation(&self, node: &Node, function_name: &str, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn report_violation(
+        &self,
+        node: &Node,
+        function_name: &str,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let start_point = node.start_position();
         let call_text = get_node_text(&node, source);
 

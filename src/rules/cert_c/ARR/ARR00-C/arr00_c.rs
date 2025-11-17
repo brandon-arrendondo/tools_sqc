@@ -13,28 +13,19 @@
 //! Note: Other unsafe functions (strcpy, etc.) are better checked by ARR38-C
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::{
-    find_containing_function,
-    get_function_parameters,
-    find_identifier_in_declarator,
-    is_array_parameter_type,
-    is_inside_loop,
-    is_write_context,
-    is_function_parameter,
-};
-use crate::utility::cert_c::variable_analysis::{
-    is_user_input_variable,
-    has_validation_before_loop,
-    is_uninitialized_variable,
-    has_bounds_validation,
+    find_containing_function, find_identifier_in_declarator, get_function_parameters,
+    is_array_parameter_type, is_function_parameter, is_inside_loop, is_write_context,
 };
 use crate::utility::cert_c::size_analysis::{
-    find_allocation_size,
-    find_element_size,
-    find_string_literal_length,
+    find_allocation_size, find_element_size, find_string_literal_length,
 };
+use crate::utility::cert_c::variable_analysis::{
+    has_bounds_validation, has_validation_before_loop, is_uninitialized_variable,
+    is_user_input_variable,
+};
+use tree_sitter::Node;
 
 pub struct Arr00C;
 
@@ -201,7 +192,7 @@ fn check_array_assignment(node: &Node, source: &str) -> Option<RuleViolation> {
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some("Use memcpy() or a loop to copy array elements".to_string()),
-            ..Default::default()
+                ..Default::default()
             });
         }
     }
@@ -232,7 +223,11 @@ fn check_sizeof_misuse(node: &Node, source: &str) -> Option<RuleViolation> {
     None
 }
 
-fn check_if_array_parameter(identifier_node: &Node, sizeof_node: &Node, source: &str) -> Option<RuleViolation> {
+fn check_if_array_parameter(
+    identifier_node: &Node,
+    sizeof_node: &Node,
+    source: &str,
+) -> Option<RuleViolation> {
     let identifier_name = &source[identifier_node.start_byte()..identifier_node.end_byte()];
 
     // Find the containing function
@@ -310,10 +305,10 @@ fn check_vla_declaration(node: &Node, source: &str) -> Option<RuleViolation> {
     let size_text = &source[size_node.start_byte()..size_node.end_byte()];
 
     // Check if size is a variable (VLA) - not a number literal
-    let is_vla = size_node.kind() == "identifier" ||
-                 size_node.kind() == "call_expression" ||
-                 size_node.kind() == "binary_expression" ||
-                 (size_node.kind() != "number_literal" && !size_text.chars().all(|c| c.is_numeric()));
+    let is_vla = size_node.kind() == "identifier"
+        || size_node.kind() == "call_expression"
+        || size_node.kind() == "binary_expression"
+        || (size_node.kind() != "number_literal" && !size_text.chars().all(|c| c.is_numeric()));
 
     if !is_vla {
         // Check if it's a constant 0
@@ -322,12 +317,16 @@ fn check_vla_declaration(node: &Node, source: &str) -> Option<RuleViolation> {
             return Some(RuleViolation {
                 rule_id: "ARR00-C".to_string(),
                 severity: Severity::High,
-                message: "Array declared with size 0. Zero-length arrays have undefined behavior.".to_string(),
+                message: "Array declared with size 0. Zero-length arrays have undefined behavior."
+                    .to_string(),
                 file_path: String::new(),
                 line: start_point.row + 1,
                 column: start_point.column + 1,
-                suggestion: Some("Use a positive constant size or validate variable size before declaration".to_string()),
-            ..Default::default()
+                suggestion: Some(
+                    "Use a positive constant size or validate variable size before declaration"
+                        .to_string(),
+                ),
+                ..Default::default()
             });
         }
         return None; // Constant non-zero size is OK
@@ -340,7 +339,8 @@ fn check_vla_declaration(node: &Node, source: &str) -> Option<RuleViolation> {
 
         // Check if this appears to be an unvalidated parameter or variable
         // Look for assignment of 0 or validation checks in the surrounding context
-        if let Some(violation) = check_vla_size_validation(node, size_var_name, source, &declarator) {
+        if let Some(violation) = check_vla_size_validation(node, size_var_name, source, &declarator)
+        {
             return Some(violation);
         }
     }
@@ -348,7 +348,12 @@ fn check_vla_declaration(node: &Node, source: &str) -> Option<RuleViolation> {
     None
 }
 
-fn check_vla_size_validation(decl_node: &Node, size_var: &str, source: &str, declarator: &Node) -> Option<RuleViolation> {
+fn check_vla_size_validation(
+    decl_node: &Node,
+    size_var: &str,
+    source: &str,
+    declarator: &Node,
+) -> Option<RuleViolation> {
     // Look backwards in the source to find if size_var was assigned 0 or is unvalidated
     // First, try to find the containing function
     let function_node = find_containing_function(decl_node)?;
@@ -361,8 +366,9 @@ fn check_vla_size_validation(decl_node: &Node, size_var: &str, source: &str, dec
     let preceding_text = &source[function_start..vla_position];
 
     // Check for direct assignment of 0
-    if preceding_text.contains(&format!("{} = 0", size_var)) ||
-       preceding_text.contains(&format!("{}=0", size_var)) {
+    if preceding_text.contains(&format!("{} = 0", size_var))
+        || preceding_text.contains(&format!("{}=0", size_var))
+    {
         let start_point = declarator.start_position();
         return Some(RuleViolation {
             rule_id: "ARR00-C".to_string(),
@@ -546,25 +552,23 @@ fn check_dangerous_functions(node: &Node, source: &str) -> Option<RuleViolation>
             if format_text.contains("%s") {
                 // Check if it's an unbounded %s (not like %10s)
                 // Look for %s that doesn't have a width specifier
-                let has_unbounded_s = format_text
-                    .match_indices("%s")
-                    .any(|(pos, _)| {
-                        // Check character before % (if exists)
-                        // If it's a digit, then we need to go back further to find the actual %
-                        if pos > 0 {
-                            let before_percent = &format_text[..pos];
-                            // Find the actual % position by checking if there are digits before %s
-                            if let Some(percent_pos) = before_percent.rfind('%') {
-                                let between = &before_percent[percent_pos + 1..];
-                                // If there are only digits between % and s, it's bounded like %10s
-                                !between.chars().all(|c| c.is_ascii_digit())
-                            } else {
-                                true // Shouldn't happen, but treat as unbounded
-                            }
+                let has_unbounded_s = format_text.match_indices("%s").any(|(pos, _)| {
+                    // Check character before % (if exists)
+                    // If it's a digit, then we need to go back further to find the actual %
+                    if pos > 0 {
+                        let before_percent = &format_text[..pos];
+                        // Find the actual % position by checking if there are digits before %s
+                        if let Some(percent_pos) = before_percent.rfind('%') {
+                            let between = &before_percent[percent_pos + 1..];
+                            // If there are only digits between % and s, it's bounded like %10s
+                            !between.chars().all(|c| c.is_ascii_digit())
                         } else {
-                            true // %s at start of string
+                            true // Shouldn't happen, but treat as unbounded
                         }
-                    });
+                    } else {
+                        true // %s at start of string
+                    }
+                });
 
                 if has_unbounded_s {
                     let start_point = node.start_position();
@@ -764,7 +768,6 @@ fn check_memcpy_size_mismatch(node: &Node, source: &str) -> Option<RuleViolation
     let dest_name = &source[dest.start_byte()..dest.end_byte()];
     let src_name = &source[src.start_byte()..src.end_byte()];
 
-
     // Find the containing function to look up array sizes
     let function_node = find_containing_function(node)?;
     let function_start = function_node.start_byte();
@@ -935,7 +938,8 @@ fn check_loop_exceeds_allocation(node: &Node, source: &str) -> Option<RuleViolat
     let right = condition.child_by_field_name("right")?;
 
     // Extract loop variable and bound
-    let (loop_var, bound_node) = if left.kind() == "identifier" && right.kind() == "number_literal" {
+    let (loop_var, bound_node) = if left.kind() == "identifier" && right.kind() == "number_literal"
+    {
         (left, right)
     } else if right.kind() == "identifier" && left.kind() == "number_literal" {
         (right, left)
@@ -1028,15 +1032,16 @@ fn check_loop_bound_exceeds_array(node: &Node, source: &str) -> Option<RuleViola
     let right = condition.child_by_field_name("right")?;
 
     // Determine loop variable and bound
-    let (loop_var, bound_node, is_inclusive) = if left.kind() == "identifier" && right.kind() == "number_literal" {
-        let inclusive = operator == "<=" || operator == ">=";
-        (left, right, inclusive)
-    } else if right.kind() == "identifier" && left.kind() == "number_literal" {
-        let inclusive = operator == ">=" || operator == "<=";
-        (right, left, inclusive)
-    } else {
-        return None;
-    };
+    let (loop_var, bound_node, is_inclusive) =
+        if left.kind() == "identifier" && right.kind() == "number_literal" {
+            let inclusive = operator == "<=" || operator == ">=";
+            (left, right, inclusive)
+        } else if right.kind() == "identifier" && left.kind() == "number_literal" {
+            let inclusive = operator == ">=" || operator == "<=";
+            (right, left, inclusive)
+        } else {
+            return None;
+        };
 
     // Only care about inclusive bounds for now (<=)
     if !is_inclusive {
@@ -1109,7 +1114,12 @@ fn extract_array_name_from_subscript(body_text: &str, loop_var: &str) -> Option<
 
         // Find the last identifier before the bracket
         let mut end = before_bracket.len();
-        while end > 0 && before_bracket.chars().nth(end - 1).map_or(false, |c| c.is_whitespace()) {
+        while end > 0
+            && before_bracket
+                .chars()
+                .nth(end - 1)
+                .map_or(false, |c| c.is_whitespace())
+        {
             end -= 1;
         }
 
@@ -1305,7 +1315,9 @@ fn check_subscript_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
     }
 
     // Check if the index variable comes from scanf without validation
-    if is_user_input_variable(index_var, preceding_text) && !has_bounds_validation(index_var, preceding_text) {
+    if is_user_input_variable(index_var, preceding_text)
+        && !has_bounds_validation(index_var, preceding_text)
+    {
         let start_point = node.start_position();
         return Some(RuleViolation {
             rule_id: "ARR00-C".to_string(),
@@ -1378,7 +1390,9 @@ fn check_uninitialized_array_read(node: &Node, source: &str) -> Option<RuleViola
     if let Some(decl_pos) = preceding_text.rfind(&init_with_braces) {
         let after_decl = &preceding_text[decl_pos..];
         // Check if declaration has an initializer (= {...)
-        if after_decl.contains("=") && after_decl.find('=').unwrap() < after_decl.find(';').unwrap_or(usize::MAX) {
+        if after_decl.contains("=")
+            && after_decl.find('=').unwrap() < after_decl.find(';').unwrap_or(usize::MAX)
+        {
             return None; // Array has initializer
         }
     }
@@ -1492,7 +1506,7 @@ fn check_comma_in_subscript(node: &Node, source: &str) -> Option<RuleViolation> 
     // Look for [...,...] pattern
     if let Some(open_bracket) = subscript_text.find('[') {
         if let Some(close_bracket) = subscript_text.rfind(']') {
-            let inside_brackets = &subscript_text[open_bracket+1..close_bracket];
+            let inside_brackets = &subscript_text[open_bracket + 1..close_bracket];
 
             // Check if there's a comma in the subscript content
             if inside_brackets.contains(',') {
@@ -1775,10 +1789,18 @@ fn check_return_local_array(node: &Node, source: &str) -> Option<RuleViolation> 
     let body_section = &function_text[body_start..];
 
     // Check for common array declaration patterns
-    let type_keywords = ["int", "char", "float", "double", "long", "short", "unsigned", "signed", "size_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t"];
+    let type_keywords = [
+        "int", "char", "float", "double", "long", "short", "unsigned", "signed", "size_t",
+        "uint8_t", "uint16_t", "uint32_t", "uint64_t",
+    ];
     let has_array_declaration = type_keywords.iter().any(|&type_kw| {
         let decl_pattern = format!("{} {}", type_kw, array_pattern);
-        body_section.contains(&decl_pattern) || body_section.contains(&format!("{} *{}", type_kw, array_pattern.trim_end_matches('[')))
+        body_section.contains(&decl_pattern)
+            || body_section.contains(&format!(
+                "{} *{}",
+                type_kw,
+                array_pattern.trim_end_matches('[')
+            ))
     });
 
     if !has_array_declaration {
@@ -2011,7 +2033,9 @@ fn find_pointer_source_array(ptr_name: &str, preceding_text: &str) -> Option<Str
 
             if end_pos > 0 {
                 let array_name = &after_eq[..end_pos];
-                if !array_name.is_empty() && array_name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+                if !array_name.is_empty()
+                    && array_name.chars().all(|c| c.is_alphanumeric() || c == '_')
+                {
                     return Some(array_name.to_string());
                 }
             }
@@ -2044,11 +2068,17 @@ fn find_array_size(array_name: &str, preceding_text: &str) -> Option<usize> {
                         // Check if this looks like a declaration, not a subscript usage
                         // Look backwards for type keywords
                         let before_name = &preceding_text[..absolute_pos];
-                        let type_keywords = ["int", "char", "float", "double", "long", "short",
-                                            "unsigned", "signed", "size_t", "void", "struct"];
+                        let type_keywords = [
+                            "int", "char", "float", "double", "long", "short", "unsigned",
+                            "signed", "size_t", "void", "struct",
+                        ];
 
                         // Look at the last ~50 characters before the array name
-                        let check_range = if before_name.len() > 50 { &before_name[before_name.len() - 50..] } else { before_name };
+                        let check_range = if before_name.len() > 50 {
+                            &before_name[before_name.len() - 50..]
+                        } else {
+                            before_name
+                        };
 
                         // If we find a type keyword nearby, it's likely a declaration
                         if type_keywords.iter().any(|&kw| check_range.contains(kw)) {
@@ -2102,7 +2132,7 @@ fn check_array_comparison(node: &Node, source: &str) -> Option<RuleViolation> {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some("Use memcmp() or strcmp() to compare array contents".to_string()),
-        ..Default::default()
+            ..Default::default()
         });
     }
 

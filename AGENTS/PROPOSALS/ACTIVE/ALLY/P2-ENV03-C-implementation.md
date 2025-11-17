@@ -1,3 +1,16 @@
+---
+rule_id: ENV03-C
+priority: P2
+status: active
+assigned_to: ALLY
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - ENV
+---
+
 # P2-ENV03-C - ENV03-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/ENV03-C
+https://wiki.sei.cmu.edu/confluence/display/c/ENV03-C.+Sanitize+the+environment+when+invoking+external+programs
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify ENV03-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

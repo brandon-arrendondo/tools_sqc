@@ -1,3 +1,16 @@
+---
+rule_id: FIO46-C
+priority: P2
+status: active
+assigned_to: ALLY
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - FIO
+---
+
 # P2-FIO46-C - FIO46-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FIO46-C
+https://wiki.sei.cmu.edu/confluence/display/c/FIO46-C.+Do+not+access+a+closed+file
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify FIO46-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

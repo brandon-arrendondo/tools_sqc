@@ -30,10 +30,10 @@
 //! - Report violation if found
 
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Fio37C;
 

@@ -1,7 +1,7 @@
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
-use tree_sitter::Node;
+use crate::manifest::{RuleCategory, Severity};
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Pre31C;
 
@@ -76,13 +76,18 @@ impl Pre31C {
                             severity,
                             message: format!(
                                 "Unsafe macro '{}' called with side effect in argument {}: '{}'",
-                                function_name, i + 1, arg
+                                function_name,
+                                i + 1,
+                                arg
                             ),
                             file_path: String::new(),
                             line: start_point.row + 1,
                             column: start_point.column + 1,
-                            suggestion: Some("Move side effects outside macro call or use inline function".to_string()),
-                        ..Default::default()
+                            suggestion: Some(
+                                "Move side effects outside macro call or use inline function"
+                                    .to_string(),
+                            ),
+                            ..Default::default()
                         });
                     }
                 }
@@ -94,18 +99,37 @@ impl Pre31C {
         // Known unsafe macros that evaluate arguments multiple times or not at all
         let unsafe_macros: HashSet<&str> = [
             // Common mathematical macros
-            "ABS", "abs", "MAX", "max", "MIN", "min",
+            "ABS",
+            "abs",
+            "MAX",
+            "max",
+            "MIN",
+            "min",
             // Standard library macros
-            "assert", "getc", "putc", "getwc", "putwc",
+            "assert",
+            "getc",
+            "putc",
+            "getwc",
+            "putwc",
             // Custom macros that commonly use multiple evaluation
-            "SWAP", "swap", "CLAMP", "clamp",
+            "SWAP",
+            "swap",
+            "CLAMP",
+            "clamp",
             // Macros that might not evaluate arguments
-            "NDEBUG", "DEBUG",
+            "NDEBUG",
+            "DEBUG",
             // Common utility macros
-            "SAFE_FREE", "SAFE_DELETE",
+            "SAFE_FREE",
+            "SAFE_DELETE",
             // Conditional macros
-            "IF_DEBUG", "WHEN", "UNLESS",
-        ].iter().cloned().collect();
+            "IF_DEBUG",
+            "WHEN",
+            "UNLESS",
+        ]
+        .iter()
+        .cloned()
+        .collect();
 
         unsafe_macros.contains(function_name) ||
         // Heuristic: macros with ALL_CAPS names are likely unsafe
@@ -116,12 +140,19 @@ impl Pre31C {
         // Check for various types of side effects in the argument
 
         // Direct side effect operators
-        if arg.contains("++") || arg.contains("--") ||
-           arg.contains("+=") || arg.contains("-=") ||
-           arg.contains("*=") || arg.contains("/=") ||
-           arg.contains("%=") || arg.contains("&=") ||
-           arg.contains("|=") || arg.contains("^=") ||
-           arg.contains("<<=") || arg.contains(">>=") {
+        if arg.contains("++")
+            || arg.contains("--")
+            || arg.contains("+=")
+            || arg.contains("-=")
+            || arg.contains("*=")
+            || arg.contains("/=")
+            || arg.contains("%=")
+            || arg.contains("&=")
+            || arg.contains("|=")
+            || arg.contains("^=")
+            || arg.contains("<<=")
+            || arg.contains(">>=")
+        {
             return true;
         }
 
@@ -158,7 +189,11 @@ impl Pre31C {
         let assignment_pos = arg.find('=');
         if let Some(pos) = assignment_pos {
             // Make sure it's not == or != or >= or <=
-            let before = if pos > 0 { arg.chars().nth(pos - 1) } else { None };
+            let before = if pos > 0 {
+                arg.chars().nth(pos - 1)
+            } else {
+                None
+            };
             let after = arg.chars().nth(pos + 1);
 
             match (before, after) {
@@ -174,12 +209,9 @@ impl Pre31C {
     fn contains_function_call_with_side_effects(&self, arg: &str) -> bool {
         // Known functions that have side effects
         let side_effect_functions = [
-            "printf", "fprintf", "sprintf", "scanf", "fscanf", "sscanf",
-            "malloc", "calloc", "realloc", "free",
-            "fopen", "fclose", "fread", "fwrite", "fgetc", "fputc",
-            "getchar", "putchar", "gets", "puts",
-            "rand", "srand", "time",
-            "exit", "abort", "system",
+            "printf", "fprintf", "sprintf", "scanf", "fscanf", "sscanf", "malloc", "calloc",
+            "realloc", "free", "fopen", "fclose", "fread", "fwrite", "fgetc", "fputc", "getchar",
+            "putchar", "gets", "puts", "rand", "srand", "time", "exit", "abort", "system",
         ];
 
         for func in &side_effect_functions {
@@ -193,13 +225,22 @@ impl Pre31C {
 
     fn contains_io_operations(&self, arg: &str) -> bool {
         // Look for I/O related operations
-        arg.contains("printf") || arg.contains("scanf") ||
-        arg.contains("getc") || arg.contains("putc") ||
-        arg.contains("fread") || arg.contains("fwrite") ||
-        arg.contains("cout") || arg.contains("cin") // C++ style I/O
+        arg.contains("printf")
+            || arg.contains("scanf")
+            || arg.contains("getc")
+            || arg.contains("putc")
+            || arg.contains("fread")
+            || arg.contains("fwrite")
+            || arg.contains("cout")
+            || arg.contains("cin") // C++ style I/O
     }
 
-    fn find_argument_node<'a>(&self, call_node: &'a Node<'a>, arg_text: &str, source: &str) -> Option<Node<'a>> {
+    fn find_argument_node<'a>(
+        &self,
+        call_node: &'a Node<'a>,
+        arg_text: &str,
+        source: &str,
+    ) -> Option<Node<'a>> {
         // Try to find the AST node corresponding to this argument
         if let Some(arguments) = call_node.child_by_field_name("arguments") {
             for i in 0..arguments.child_count() {
@@ -218,7 +259,7 @@ impl Pre31C {
 
     fn analyze_node_for_side_effects(&self, node: &Node, source: &str) -> bool {
         match node.kind() {
-            "update_expression" => true, // ++, --
+            "update_expression" => true,     // ++, --
             "assignment_expression" => true, // =, +=, etc.
             "call_expression" => {
                 // Check if it's a function call that might have side effects

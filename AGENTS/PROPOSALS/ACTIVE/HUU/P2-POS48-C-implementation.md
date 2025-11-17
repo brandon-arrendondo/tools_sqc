@@ -1,3 +1,16 @@
+---
+rule_id: POS48-C
+priority: P2
+status: active
+assigned_to: HUU
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - POS
+---
+
 # P2-POS48-C - POS48-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/POS48-C
+https://wiki.sei.cmu.edu/confluence/display/c/POS48-C.+Do+not+unlock+or+destroy+another+POSIX+thread's+mutex
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify POS48-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

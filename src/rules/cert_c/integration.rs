@@ -8,9 +8,9 @@
 //
 // Historical inline tests (with embedded C strings) are preserved in tests/inline/ for reference.
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
-use std::collections::BTreeMap;
 use std::sync::Mutex;
 
 lazy_static::lazy_static! {
@@ -26,10 +26,13 @@ struct TestResult {
 // Record a test result
 pub fn record_test_result(test_name: &str, passed: bool, expected_to_fail: bool) {
     let mut results = TEST_RESULTS.lock().unwrap();
-    results.insert(test_name.to_string(), TestResult {
-        passed,
-        expected_to_fail,
-    });
+    results.insert(
+        test_name.to_string(),
+        TestResult {
+            passed,
+            expected_to_fail,
+        },
+    );
 }
 
 // Generate test summary report AFTER running tests
@@ -64,7 +67,8 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
             continue;
         }
 
-        let category_name = category_path.file_name()
+        let category_name = category_path
+            .file_name()
             .and_then(|n| n.to_str())
             .unwrap_or("Unknown")
             .to_string();
@@ -82,15 +86,19 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                 continue;
             }
 
-            let rule_id = rule_path.file_name()
+            let rule_id = rule_path
+                .file_name()
                 .and_then(|n| n.to_str())
                 .unwrap_or("Unknown")
                 .to_string();
 
             // Read TOML metadata
             let toml_path = rule_path.join(format!("{}.toml", rule_id));
-            let (title, description, is_enabled) = if let Ok(content) = fs::read_to_string(&toml_path) {
-                let title = content.lines()
+            let (title, description, is_enabled) = if let Ok(content) =
+                fs::read_to_string(&toml_path)
+            {
+                let title = content
+                    .lines()
                     .find(|line| line.trim().starts_with("title = "))
                     .and_then(|line| line.split('=').nth(1))
                     .map(|s| s.trim().trim_matches('"').to_string())
@@ -129,9 +137,11 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                         if test_file.path().extension().map_or(false, |e| e == "c") {
                             let file_name = test_file.file_name().to_string_lossy().to_string();
                             let test_name = file_name.trim_end_matches(".c");
-                            let func_name = format!("test_{}_fail_{}",
+                            let func_name = format!(
+                                "test_{}_fail_{}",
                                 rule_id.to_lowercase().replace("-", "_"),
-                                test_name.replace("-", "_").replace(".", "_"));
+                                test_name.replace("-", "_").replace(".", "_")
+                            );
 
                             let result = results.get(&func_name).cloned();
                             fail_tests.push(TestCaseInfo {
@@ -149,9 +159,11 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                         if test_file.path().extension().map_or(false, |e| e == "c") {
                             let file_name = test_file.file_name().to_string_lossy().to_string();
                             let test_name = file_name.trim_end_matches(".c");
-                            let func_name = format!("test_{}_pass_{}",
+                            let func_name = format!(
+                                "test_{}_pass_{}",
                                 rule_id.to_lowercase().replace("-", "_"),
-                                test_name.replace("-", "_").replace(".", "_"));
+                                test_name.replace("-", "_").replace(".", "_")
+                            );
 
                             let result = results.get(&func_name).cloned();
                             pass_tests.push(TestCaseInfo {
@@ -183,7 +195,8 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                 pass_tests,
             };
 
-            categories.entry(category_name.clone())
+            categories
+                .entry(category_name.clone())
                 .or_insert_with(Vec::new)
                 .push(rule_info);
         }
@@ -192,26 +205,31 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
     // Generate markdown report
     let mut report = String::new();
     report.push_str("# CERT C Rules Test Summary\n\n");
-    report.push_str(&format!("**Generated:** {}\n\n", chrono::Local::now().format("%Y-%m-%d %H:%M:%S")));
 
     report.push_str("## Overview\n\n");
     report.push_str(&format!("- **Total Rules:** {}\n", total_rules));
-    report.push_str(&format!("- **Implemented Rules:** {} ({:.1}%)\n",
+    report.push_str(&format!(
+        "- **Implemented Rules:** {} ({:.1}%)\n",
         implemented_rules,
-        (implemented_rules as f64 / total_rules as f64) * 100.0));
+        (implemented_rules as f64 / total_rules as f64) * 100.0
+    ));
     report.push_str(&format!("- **Total Test Cases:** {}\n", total_tests));
-    report.push_str(&format!("- **Average Tests per Rule:** {:.1}\n\n",
-        total_tests as f64 / total_rules as f64));
+    report.push_str(&format!(
+        "- **Average Tests per Rule:** {:.1}\n\n",
+        total_tests as f64 / total_rules as f64
+    ));
 
     // Table of Contents
     report.push_str("## Table of Contents\n\n");
     for (category, rules) in &categories {
         let implemented_count = rules.iter().filter(|r| r.is_enabled).count();
-        report.push_str(&format!("- [{}](#category-{}) ({} implemented / {} total)\n",
+        report.push_str(&format!(
+            "- [{}](#category-{}) ({} implemented / {} total)\n",
             category,
             category.to_lowercase(),
             implemented_count,
-            rules.len()));
+            rules.len()
+        ));
         for rule in rules {
             let (passed, total, not_run) = calculate_rule_metrics(rule);
             let status_icon = if rule.is_enabled {
@@ -231,7 +249,12 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
             };
 
             let pass_rate = if total > 0 {
-                format!("{}/{} ({:.1}%)", passed, total, (passed as f64 / total as f64) * 100.0)
+                format!(
+                    "{}/{} ({:.1}%)",
+                    passed,
+                    total,
+                    (passed as f64 / total as f64) * 100.0
+                )
             } else {
                 "0/0 (N/A)".to_string()
             };
@@ -240,13 +263,15 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 String::new()
             };
-            report.push_str(&format!("  - {} [{}](#rule-{}) - {}: Pass {}{}\n",
+            report.push_str(&format!(
+                "  - {} [{}](#rule-{}) - {}: Pass {}{}\n",
                 status_icon,
                 rule.id,
                 rule.id.to_lowercase().replace("-", ""),
                 status_text,
                 pass_rate,
-                not_run_str));
+                not_run_str
+            ));
         }
     }
     report.push_str("\n");
@@ -254,13 +279,18 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
     // Detailed sections by category
     for (category, rules) in &categories {
         report.push_str(&format!("## Category: {}\n\n", category));
-        report.push_str(&format!("<a id=\"category-{}\"></a>\n\n", category.to_lowercase()));
+        report.push_str(&format!(
+            "<a id=\"category-{}\"></a>\n\n",
+            category.to_lowercase()
+        ));
 
         let implemented_count = rules.iter().filter(|r| r.is_enabled).count();
-        report.push_str(&format!("**Implementation Status:** {} / {} rules ({:.1}%)\n\n",
+        report.push_str(&format!(
+            "**Implementation Status:** {} / {} rules ({:.1}%)\n\n",
             implemented_count,
             rules.len(),
-            (implemented_count as f64 / rules.len() as f64) * 100.0));
+            (implemented_count as f64 / rules.len() as f64) * 100.0
+        ));
 
         for rule in rules {
             let (passed, total, not_run) = calculate_rule_metrics(rule);
@@ -282,19 +312,29 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                 "Not Implemented (no tests)"
             };
 
-            report.push_str(&format!("### {} {} - {}\n\n", status_icon, rule.id, status_text));
-            report.push_str(&format!("<a id=\"rule-{}\"></a>\n\n", rule.id.to_lowercase().replace("-", "")));
+            report.push_str(&format!(
+                "### {} {} - {}\n\n",
+                status_icon, rule.id, status_text
+            ));
+            report.push_str(&format!(
+                "<a id=\"rule-{}\"></a>\n\n",
+                rule.id.to_lowercase().replace("-", "")
+            ));
             report.push_str(&format!("**Title:** {}\n\n", rule.title));
             report.push_str(&format!("**Description:** {}\n\n", rule.description));
-            report.push_str(&format!("**Test Coverage:** {} tests ({} fail, {} pass)\n\n",
+            report.push_str(&format!(
+                "**Test Coverage:** {} tests ({} fail, {} pass)\n\n",
                 test_count,
                 rule.fail_tests.len(),
-                rule.pass_tests.len()));
+                rule.pass_tests.len()
+            ));
 
             if total > 0 {
                 let pass_rate = (passed as f64 / total as f64) * 100.0;
-                report.push_str(&format!("**Test Results:** {}/{} passed ({:.1}%)",
-                    passed, total, pass_rate));
+                report.push_str(&format!(
+                    "**Test Results:** {}/{} passed ({:.1}%)",
+                    passed, total, pass_rate
+                ));
                 if not_run > 0 {
                     report.push_str(&format!(", {} not run", not_run));
                 }
@@ -305,9 +345,11 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                 report.push_str("#### Fail Tests (Should Detect Violations)\n\n");
                 for test in &rule.fail_tests {
                     let test_name = test.name.trim_end_matches(".c");
-                    let func_name = format!("test_{}_fail_{}",
+                    let func_name = format!(
+                        "test_{}_fail_{}",
                         rule.id.to_lowercase().replace("-", "_"),
-                        test_name.replace("-", "_").replace(".", "_"));
+                        test_name.replace("-", "_").replace(".", "_")
+                    );
 
                     let status = if let Some(result) = &test.result {
                         if result.passed {
@@ -328,9 +370,11 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                 report.push_str("#### Pass Tests (Should NOT Detect Violations)\n\n");
                 for test in &rule.pass_tests {
                     let test_name = test.name.trim_end_matches(".c");
-                    let func_name = format!("test_{}_pass_{}",
+                    let func_name = format!(
+                        "test_{}_pass_{}",
                         rule.id.to_lowercase().replace("-", "_"),
-                        test_name.replace("-", "_").replace(".", "_"));
+                        test_name.replace("-", "_").replace(".", "_")
+                    );
 
                     let status = if let Some(result) = &test.result {
                         if result.passed {
@@ -358,10 +402,19 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
 
     for (category, rules) in &categories {
         let implemented = rules.iter().filter(|r| r.is_enabled).count();
-        let tests: usize = rules.iter().map(|r| r.fail_tests.len() + r.pass_tests.len()).sum();
+        let tests: usize = rules
+            .iter()
+            .map(|r| r.fail_tests.len() + r.pass_tests.len())
+            .sum();
         let avg = tests as f64 / rules.len() as f64;
-        report.push_str(&format!("| {} | {} | {} | {} | {:.1} |\n",
-            category, rules.len(), implemented, tests, avg));
+        report.push_str(&format!(
+            "| {} | {} | {} | {} | {:.1} |\n",
+            category,
+            rules.len(),
+            implemented,
+            tests,
+            avg
+        ));
     }
     report.push_str("\n");
 

@@ -1,6 +1,6 @@
+use std::io::{self, Write};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
-use std::io::{self, Write};
 
 /// Trait for reporting progress during analysis
 pub trait ProgressReporter: Send + Sync {

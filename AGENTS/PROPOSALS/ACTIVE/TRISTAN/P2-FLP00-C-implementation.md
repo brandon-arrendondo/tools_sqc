@@ -1,3 +1,16 @@
+---
+rule_id: FLP00-C
+priority: P2
+status: active
+assigned_to: TRISTAN
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - FLP
+---
+
 # P2-FLP00-C - FLP00-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FLP00-C
+https://wiki.sei.cmu.edu/confluence/display/c/FLP00-C.+Understand+the+limitations+of+floating-point+numbers
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify FLP00-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED

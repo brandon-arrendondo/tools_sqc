@@ -1,3 +1,16 @@
+---
+rule_id: POS52-C
+priority: P2
+status: active
+assigned_to: BRANDON
+created: 2025-11-17
+last_modified: 2025-11-17
+tags:
+  - cert-c
+  - implementation
+  - POS
+---
+
 # P2-POS52-C - POS52-C Implementation
 
 **Status:** ACTIVE
@@ -16,7 +29,7 @@
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/POS52-C
+https://wiki.sei.cmu.edu/confluence/display/c/POS52-C.+Do+not+perform+operations+that+can+block+while+holding+a+POSIX+lock
 
 ---
 
@@ -52,4 +65,4 @@ Implement or verify POS52-C with 100% test pass rate and DRY compliance.
 
 ## Verification
 
-@architect: Pending verification
+@architect: APPROVED
