@@ -1,0 +1,28 @@
+[metadata]
+id = "FLP03-C"
+type = "recommendation"
+category = "FLP"
+number = 3
+title = "Detect and handle floating-point errors"
+description = """
+Errors during floating-point operations are often neglected by programmers who
+instead focus on validating operands before an operation. Errors that occur
+during floating-point operations are admittedly difficult to determine and
+diagnose, but the benefits of doing so often outweigh the costs. This
+recommendation suggests ways to capture errors during floating-point operations.
+The following code exhibits undefined behavior:
+int j = 0; int iResult = 1 / j;
+"""
+severity = "Low"
+likelihood = "Probable"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 29, 2025"
+
+[rules.cert_c.FLP03-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FLP03-C.+Detect+and+handle+floating-point+errors"
+cwe = ["CWE-369"]

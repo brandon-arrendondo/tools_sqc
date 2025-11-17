@@ -1,0 +1,30 @@
+[metadata]
+id = "FIO09-C"
+type = "recommendation"
+category = "FIO"
+number = 9
+title = "Be careful with binary data when transferring data across systems"
+description = """
+Portability is a concern when using thefread()andfwrite()functions across
+multiple, heterogeneous systems. In particular, it is never guaranteed that
+reading or writing of scalar data types such as integers, let alone aggregate
+types such as arrays or structures, will preserve the representation or value of
+the data. Implementations may differ in structure padding, floating-point model,
+number of bits per byte, endianness, and other attributes that cause binary data
+formats to be incompatible. This noncompliant code example reads data from a
+file stream into a data structure: struct myData { char c; long l; }; /* ... */
+FILE *file; struct myData data; /* Initialize file */ if (fread(&data,
+sizeof(struct myData), 1, file) < sizeof(struct myData)) { /* Handle error */ }
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
+
+[rules.cert_c.FIO09-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FIO09-C.+Be+careful+with+binary+data+when+transferring+data+across+systems"

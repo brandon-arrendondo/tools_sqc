@@ -1,0 +1,34 @@
+[metadata]
+id = "STR01-C"
+type = "recommendation"
+category = "STR"
+number = 1
+title = "Adopt and implement a consistent plan for managing strings"
+description = """
+There are two basic approaches for managing strings in C programs: the first is
+to maintain strings in statically allocated arrays; the second is to dynamically
+allocate memory as required. Each approach has advantages and disadvantages.
+However, it generally makes sense to select a single approach to managing
+strings and apply it consistently across a project. Otherwise, the decision is
+left to individual programmers who are likely to make different, inconsistent
+choices. Statically allocated strings assume a fixed-size character array,
+meaning that it is impossible to add data after the buffer is filled. Because
+the static approach discards excess data, actual program data can be lost.
+Consequently, the resulting string must be fully validated. Dynamically
+allocated buffers dynamically resize as additional memory is required. Dynamic
+approaches scale better and do not discard excess data. The major disadvantage
+is that, if inputs are not limited, they can exhaust memory on a machine and
+consequently be used indenial-of-serviceattacks.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P1"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jun 16, 2025"
+
+[rules.cert_c.STR01-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/STR01-C.+Adopt+and+implement+a+consistent+plan+for+managing+strings"

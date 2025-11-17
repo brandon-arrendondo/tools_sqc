@@ -1,0 +1,24 @@
+[metadata]
+id = "MEM33-C"
+type = "rule"
+category = "MEM"
+number = 33
+title = "Allocate and copy structures containing a flexible array member dynamically"
+description = """
+The C Standard, 6.7.3.2, paragraph 20 [ISO/IEC 9899:2024], says The following is
+an example of a structure that contains a flexible array member: struct
+flex_array_struct { int num; int data[]; };
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 31, 2025"
+
+[rules.cert_c.MEM33-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/MEM33-C.++Allocate+and+copy+structures+containing+a+flexible+array+member+dynamically"
+cwe = ["CWE-401"]

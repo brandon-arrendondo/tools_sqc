@@ -1,2 +1,0 @@
-extern int *global_symbol_definition_lookup_table_a;
-extern int *global_symbol_definition_lookup_table_b;

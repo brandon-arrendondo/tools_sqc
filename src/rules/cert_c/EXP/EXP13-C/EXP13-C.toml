@@ -1,0 +1,29 @@
+[metadata]
+id = "EXP13-C"
+type = "recommendation"
+category = "EXP"
+number = 13
+title = "Treat relational and equality operators as if they were nonassociative"
+description = """
+The relational and equality operators are left-associative in C. Consequently,
+C, unlike many other languages, allows chaining of relational and equality
+operators. Subclause 6.5.8, footnote 107, of the C Standard [ISO/IEC 9899:2011],
+says: These operators areleft-associative, which means the leftmost comparison
+is performed first, and the result is compared with the rightmost comparison.
+This syntax allows a programmer to write an expression (particularly an
+expression used as a condition) that can be easily misinterpreted. Although this
+noncompliant code example compiles correctly, it is unlikely that it means what
+the author of the code intended:
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P3"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Unknown"
+
+[rules.cert_c.EXP13-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP13-C.+Treat+relational+and+equality+operators+as+if+they+were+nonassociative"

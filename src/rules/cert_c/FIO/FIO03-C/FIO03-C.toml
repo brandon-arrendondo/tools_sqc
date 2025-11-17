@@ -1,0 +1,29 @@
+[metadata]
+id = "FIO03-C"
+type = "recommendation"
+category = "FIO"
+number = 3
+title = "Do not make assumptions about fopen() and file creation"
+description = """
+The Cfopen()function is used to open an existing file or create a new one. The
+C11 version of thefopen()function provides a mode flag,x, that provides the
+mechanism needed to determine if the file that is to be opened exists. Not using
+this mode flag can lead to a program overwriting or accessing an unintended
+file. In this noncompliant code example, the file referenced byfile_nameis
+opened for writing. This example is noncompliant if the programmer's intent was
+to create a new file, but the referenced file already exists. char *file_name;
+FILE *fp; /* Initialize file_name */ fp = fopen(file_name, "w"); if (!fp) { /*
+Handle error */ }
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Jun 16, 2025"
+
+[rules.cert_c.FIO03-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/FIO03-C.+Do+not+make+assumptions+about+fopen%28%29+and+file+creation"

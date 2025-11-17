@@ -1,0 +1,28 @@
+[metadata]
+id = "MEM31-C"
+type = "rule"
+category = "MEM"
+number = 31
+title = "Free dynamically allocated memory when no longer needed"
+description = """
+Before the lifetime of the last pointer that stores the return value of a call
+to a standard memory allocation function has ended, it must be matched by a call
+tofree()with that pointer value. In this noncompliant example, the object
+allocated by the call tomalloc()is not freed before the end of the lifetime of
+the last pointertext_bufferreferring to the object: #include <stdlib.h> enum {
+BUFFER_SIZE = 32 }; int f(void) { char *text_buffer = (char
+*)malloc(BUFFER_SIZE); if (text_buffer == NULL) { return -1; } return 0; }
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P4"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
+
+[rules.cert_c.MEM31-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/MEM31-C.+Free+dynamically+allocated+memory+when+no+longer+needed"
+cwe = ["CWE-401", "CWE-404", "CWE-459", "CWE-771", "CWE-772"]

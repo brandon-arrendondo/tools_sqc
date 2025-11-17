@@ -6,6 +6,14 @@ description = "Software Code Quality - CERT C compliance checker"
 authors = ["Eric Buehler <eric.buehler@bissell.com>"]
 license = "MIT OR Apache-2.0"
 
+[lib]
+name = "sqc"
+path = "src/lib.rs"
+
+[[bin]]
+name = "sqc"
+path = "src/main.rs"
+
 [dependencies]
 clap = { version = "4.5", features = ["derive"] }
 serde = { version = "1.0", features = ["derive"] }
@@ -27,6 +35,12 @@ rust_xlsxwriter = "0.79"
 
 [dev-dependencies]
 tempfile = "3.14"
+ctor = "0.2"
+lazy_static = "1.4"
 
 [build-dependencies]
 winres = "0.1"
+walkdir = "2.5"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+anyhow = "1.0"

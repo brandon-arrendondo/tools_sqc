@@ -1,0 +1,39 @@
+[metadata]
+id = "POS54-C"
+type = "recommendation"
+category = "POS"
+number = 54
+title = "Detect and handle POSIX library errors"
+description = """
+All standard library functions, including I/O functions and memory allocation
+functions, return either a valid value or a value of the correct return type
+that indicates an error (for example, −1 or a null pointer). Assuming that all
+calls to such functions will succeed and failing to check the return value for
+an indication of an error is a dangerous practice that may lead
+tounexpectedorundefined behaviorwhen an error occurs. It is essential that
+programs detect and appropriately handle all errors in accordance with an error-
+handling policy, as discussed inERR00-C. Adopt and implement a consistent and
+comprehensive error-handling policy. In addition to the C standard library
+functions mentioned inERR33-C. Detect and handle standard library errors, the
+following functions defined in POSIX require error checking (list is not all-
+inclusive). The successful completion or failure of each of the standard library
+functions listed in the following table shall be determined either by comparing
+the function’s return value with the value listed in the column labeled “Error
+Return” or by calling one of the library functions mentioned in the footnotes to
+the same column. FunctionSuccessful ReturnError Returnerrnofmemopen()Pointer to
+aFILEobjectNULLENOMEMopen_memstream()Pointer to
+aFILEobjectNULLENOMEMposix_memalign()0NonzeroUnchanged
+"""
+severity = "High"
+likelihood = "Likely"
+priority = "P27"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 05, 2025"
+
+[rules.cert_c.POS54-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/POS54-C.+Detect+and+handle+POSIX+library+errors"
+cwe = ["CWE-252", "CWE-253", "CWE-391"]

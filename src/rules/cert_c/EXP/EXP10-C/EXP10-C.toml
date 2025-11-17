@@ -1,0 +1,32 @@
+[metadata]
+id = "EXP10-C"
+type = "recommendation"
+category = "EXP"
+number = 10
+title = "Do not depend on the order of evaluation of subexpressions or the order in which side effects take place"
+description = """
+The order of evaluation of subexpressions and the order in whichside effectstake
+place are frequently defined asunspecified behaviorby the C Standard.
+Counterintuitively,unspecified behaviorin behavior for which the standard
+provides two or more possibilities and imposes no further requirements on which
+is chosen in any instance. Consequently, unspecified behavior can be a
+portability issue because differentimplementationscan make different choices. If
+dynamic scheduling is used, however, there may not be a fixed-code execution
+sequence over the life of a process. Operations that can be executed in
+different sequences may in fact be executed in a different order. According to
+the C Standard, subclause 6.5 [ISO/IEC 9899:2011], Following are specific
+examples of situations in which the order of evaluation of subexpressions or the
+order in whichside effectstake place is unspecified:
+"""
+severity = "Medium"
+likelihood = "Probable"
+priority = "P8"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "May 20, 2025"
+
+[rules.cert_c.EXP10-C]
+enabled = false
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/EXP10-C.+Do+not+depend+on+the+order+of+evaluation+of+subexpressions+or+the+order+in+which+side+effects+take+place"

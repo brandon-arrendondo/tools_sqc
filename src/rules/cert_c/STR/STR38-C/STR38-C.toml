@@ -1,0 +1,32 @@
+[metadata]
+id = "STR38-C"
+type = "rule"
+category = "STR"
+number = 38
+title = "Do not confuse narrow and wide character strings and functions"
+description = """
+Passing narrow string arguments to wide string functions or wide string
+arguments to narrow string functions can lead tounexpectedandundefined behavior
+151. Scaling problems are likely because of the difference in size between wide
+and narrow characters. (SeeARR39-C. Do not add or subtract a scaled integer to a
+pointer.)Because wide strings are terminated by a null wide character and can
+contain null bytes, determining the length is also problematic.
+Becausewchar_tandcharare distinct types, many compilers will produce a warning
+diagnostic if an inappropriate function is used. (SeeMSC00-C. Compile cleanly at
+high warning levels.) This noncompliant code example incorrectly uses
+thestrncpy()function in an attempt to copy up to 10 wide characters. However,
+because wide characters can contain null bytes, the copy operation may end
+earlier than anticipated, resulting in the truncation of the wide string.
+"""
+severity = "High"
+likelihood = "Likely"
+priority = "P18"
+level = "L1"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Aug 06, 2025"
+
+[rules.cert_c.STR38-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/STR38-C.+Do+not+confuse+narrow+and+wide+character+strings+and+functions"

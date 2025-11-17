@@ -1,1 +1,0 @@
-int id_0; /* (Numeric digit zero) */

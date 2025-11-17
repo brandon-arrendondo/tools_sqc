@@ -1,1 +1,0 @@
-inline int incremod(int *x, int max) {*x = (*x + 1) % max;}

@@ -1,0 +1,34 @@
+[metadata]
+id = "ARR32-C"
+type = "rule"
+category = "ARR"
+number = 32
+title = "Ensure size arguments for variable length arrays are in a valid range"
+description = """
+Variable length arrays (VLAs), a conditionally supported language feature, are
+essentially the same as traditional C arrays except that they are declared with
+a size that is not a constant integer expression and can be declared only at
+block scope or function prototype scope and no linkage. When supported, a
+variable length array can be declared { /* Block scope */ char vla[size]; }
+where the integer expressionsizeand the declaration ofvlaare both evaluated at
+runtime. If the size argument supplied to a variable length array is not a
+positive integer value, the behavior is undefined. (Seeundefined behavior 72.)
+Additionally, if the magnitude of the argument is excessive, the program may
+behave in an unexpected way. An attacker may be able to leverage this behavior
+to overwrite critical program data [Griffiths 2006].The programmer must ensure
+that size arguments to variable length arrays, especially those derived from
+untrusted data, are in a valid range.
+"""
+severity = "High"
+likelihood = "Probable"
+priority = "P6"
+level = "L2"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Oct 29, 2025"
+
+[rules.cert_c.ARR32-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/ARR32-C.+Ensure+size+arguments+for+variable+length+arrays+are+in+a+valid+range"
+cwe = ["CWE-758", "CWE-129", "CWE-188", "CWE-119"]

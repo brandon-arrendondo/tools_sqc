@@ -1,0 +1,173 @@
+//! POS37-C: Ensure that privilege relinquishment is successful
+//!
+//! After calling setuid() to permanently drop privileges, verify that privileges
+//! were actually dropped by attempting to regain them (setuid(0)). If regaining
+//! succeeds, privileges were not properly dropped.
+//!
+//! ## Examples:
+//!
+//! **Non-compliant:**
+//! ```c
+//! setuid(getuid());  // Drop privileges - but what if it failed?
+//! // Code runs, potentially still with elevated privileges
+//! ```
+//!
+//! **Compliant:**
+//! ```c
+//! setuid(getuid());  // Drop privileges
+//! if (setuid(0) != -1) {  // Try to regain - should fail
+//!     // ERROR: privileges not dropped!
+//! }
+//! ```
+//!
+//! ## Detection Strategy:
+//! - Find setuid() calls that drop privileges (setuid(getuid()))
+//! - Check if followed by verification attempt (setuid(0))
+//! - Report violation if no verification
+
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{Severity, RuleCategory};
+use crate::utility::cert_c::ast_utils::get_node_text;
+use tree_sitter::Node;
+
+pub struct Pos37C;
+
+impl CertRule for Pos37C {
+    fn rule_id(&self) -> &'static str {
+        "POS37-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Ensure that privilege relinquishment is successful"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "POS37-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Check function bodies and file-level code
+        if node.kind() == "function_definition" {
+            if let Some(body) = node.child_by_field_name("body") {
+                self.check_privilege_drop(&body, source, &mut violations);
+            }
+        } else if node.kind() == "translation_unit" {
+            self.check_privilege_drop(node, source, &mut violations);
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                violations.extend(self.check(&child, source));
+            }
+        }
+
+        violations
+    }
+}
+
+impl Pos37C {
+    fn check_privilege_drop(&self, scope: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Find setuid(getuid()) or setuid(getgid()) calls (privilege drops)
+        let mut drop_calls = Vec::new();
+        self.find_priv_drops(scope, source, &mut drop_calls);
+
+        // For each drop, check if there's a verification check afterward
+        for drop_call in &drop_calls {
+            if !self.has_verification_check(scope, source, drop_call.line) {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: "setuid() called to drop privileges without verifying success - privileges may not be relinquished".to_string(),
+                    file_path: String::new(),
+                    line: drop_call.line,
+                    column: drop_call.column,
+                    suggestion: Some(
+                        "After setuid(getuid()), verify privileges were dropped: if (setuid(0) != -1) { /* handle error */ }".to_string()
+                    ),
+                    ..Default::default()
+                });
+            }
+        }
+    }
+
+    fn find_priv_drops(&self, node: &Node, source: &str, drops: &mut Vec<PrivDrop>) {
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&function, source);
+
+                if func_name == "setuid" {
+                    // Check if argument is getuid() or getgid()
+                    if let Some(args) = node.child_by_field_name("arguments") {
+                        let args_text = get_node_text(&args, source);
+                        if args_text.contains("getuid") || args_text.contains("getgid") {
+                            drops.push(PrivDrop {
+                                line: node.start_position().row + 1,
+                                column: node.start_position().column + 1,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.find_priv_drops(&child, source, drops);
+            }
+        }
+    }
+
+    fn has_verification_check(&self, scope: &Node, source: &str, drop_line: usize) -> bool {
+        // Look for setuid(0) calls after the drop line
+        self.find_verification(scope, source, drop_line)
+    }
+
+    fn find_verification(&self, node: &Node, source: &str, after_line: usize) -> bool {
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&function, source);
+
+                if func_name == "setuid" {
+                    let line = node.start_position().row + 1;
+                    if line > after_line {
+                        // Check if argument is 0 (trying to regain root)
+                        if let Some(args) = node.child_by_field_name("arguments") {
+                            let args_text = get_node_text(&args, source);
+                            if args_text.contains("0") && !args_text.contains("getuid") {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.find_verification(&child, source, after_line) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+}
+
+struct PrivDrop {
+    line: usize,
+    column: usize,
+}
