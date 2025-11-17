@@ -7,6 +7,9 @@ pub mod api01_c;
 #[path = "API/API02-C/api02_c.rs"]
 pub mod api02_c;
 
+#[path = "API/API04-C/api04_c.rs"]
+pub mod api04_c;
+
 #[path = "ARR/ARR00-C/arr00_c.rs"]
 pub mod arr00_c;
 
@@ -121,6 +124,7 @@ impl RuleRegistry {
 
         registry.register(Box::new(api01_c::Api01C));
         registry.register(Box::new(api02_c::Api02C));
+        registry.register(Box::new(api04_c::Api04C));
         registry.register(Box::new(arr00_c::Arr00C));
         registry.register(Box::new(arr30_c::Arr30C));
         registry.register(Box::new(arr32_c::Arr32C));
