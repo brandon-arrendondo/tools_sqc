@@ -112,6 +112,9 @@ pub mod pos36_c;
 #[path = "POS/POS37-C/pos37_c.rs"]
 pub mod pos37_c;
 
+#[path = "POS/POS39-C/pos39_c.rs"]
+pub mod pos39_c;
+
 #[path = "POS/POS54-C/pos54_c.rs"]
 pub mod pos54_c;
 
@@ -184,6 +187,7 @@ impl RuleRegistry {
         registry.register(Box::new(pos30_c::Pos30C));
         registry.register(Box::new(pos36_c::Pos36C));
         registry.register(Box::new(pos37_c::Pos37C));
+        registry.register(Box::new(pos39_c::Pos39C));
         registry.register(Box::new(pos54_c::Pos54C));
         registry.register(Box::new(pre30_c::Pre30C));
         registry.register(Box::new(pre31_c::Pre31C));
