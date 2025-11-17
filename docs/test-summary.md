@@ -1,6 +1,6 @@
 # CERT C Rules Test Summary
 
-**Generated:** 2025-11-17 08:50:07
+**Generated:** 2025-11-17 08:51:25
 
 ## Overview
 
@@ -308,8 +308,8 @@
   - 🔶 [WIN04-C](#rule-win04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [WIN30-C](#rule-win30c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [WIN03-C](#rule-win03c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
-  - ✅ [WIN02-C](#rule-win02c) - Implemented: Pass 0/2 (0.0%) [2 not run]
-  - ✅ [WIN01-C](#rule-win01c) - Implemented: Pass 2/2 (100.0%)
+  - ✅ [WIN02-C](#rule-win02c) - Implemented: Pass 2/2 (100.0%)
+  - ✅ [WIN01-C](#rule-win01c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [WIN00-C](#rule-win00c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
 
 ## Category: API
@@ -11904,15 +11904,15 @@ CloseHandle(pi.hThread); CloseHandle(pi.hProcess); } }
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_win02_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_win02_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_solution.c` → `test_win02_c_pass_wiki_compliant_solution`
+- ✅ PASS `wiki_compliant_solution.c` → `test_win02_c_pass_wiki_compliant_solution`
 
 ---
 
@@ -11937,15 +11937,15 @@ or by callingExitProcess().
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 2/2 passed (100.0%)
+**Test Results:** 0/2 passed (0.0%), 2 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `wiki_noncompliant_1.c` → `test_win01_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_win01_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `wiki_compliant_1.c` → `test_win01_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_win01_c_pass_wiki_compliant_1`
 
 ---
 
