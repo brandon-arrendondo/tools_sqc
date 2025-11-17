@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 46 (16.3%)
+- **Implemented Rules:** 47 (16.6%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -85,8 +85,8 @@
   - 🔶 [DCL11-C](#rule-dcl11c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [DCL31-C](#rule-dcl31c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [DCL08-C](#rule-dcl08c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [ENV](#category-env) (0 implemented / 8 total)
-  - 🔶 [ENV31-C](#rule-env31c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
+- [ENV](#category-env) (1 implemented / 8 total)
+  - ✅ [ENV31-C](#rule-env31c) - Implemented: Pass 6/6 (100.0%)
   - 🔶 [ENV01-C](#rule-env01c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [ENV03-C](#rule-env03c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [ENV02-C](#rule-env02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
@@ -3621,9 +3621,9 @@ OUT_STR_LEN=20 };
 
 <a id="category-env"></a>
 
-**Implementation Status:** 0 / 8 rules (0.0%)
+**Implementation Status:** 1 / 8 rules (12.5%)
 
-### 🔶 ENV31-C - Not Implemented (has tests)
+### ✅ ENV31-C - Implemented
 
 <a id="rule-env31c"></a>
 
@@ -3637,19 +3637,19 @@ access the environment through a modified form ofmain():
 
 **Test Coverage:** 6 tests (2 fail, 4 pass)
 
-**Test Results:** 0/6 passed (0.0%), 6 not run
+**Test Results:** 6/6 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_posix.c` → `test_env31_c_fail_wiki_posix`
-- ⏭️ NOT RUN `wiki_windows.c` → `test_env31_c_fail_wiki_windows`
+- ✅ PASS `wiki_posix.c` → `test_env31_c_fail_wiki_posix`
+- ✅ PASS `wiki_windows.c` → `test_env31_c_fail_wiki_windows`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_3.c` → `test_env31_c_pass_wiki_compliant_3`
-- ⏭️ NOT RUN `wiki_compliant_4_2.c` → `test_env31_c_pass_wiki_compliant_4_2`
-- ⏭️ NOT RUN `wiki_posix.c` → `test_env31_c_pass_wiki_posix`
-- ⏭️ NOT RUN `wiki_windows.c` → `test_env31_c_pass_wiki_windows`
+- ✅ PASS `wiki_compliant_3.c` → `test_env31_c_pass_wiki_compliant_3`
+- ✅ PASS `wiki_compliant_4_2.c` → `test_env31_c_pass_wiki_compliant_4_2`
+- ✅ PASS `wiki_posix.c` → `test_env31_c_pass_wiki_posix`
+- ✅ PASS `wiki_windows.c` → `test_env31_c_pass_wiki_windows`
 
 ---
 
@@ -11991,7 +11991,7 @@ result.
 | ARR | 9 | 7 | 490 | 54.4 |
 | CON | 23 | 2 | 75 | 3.3 |
 | DCL | 31 | 3 | 173 | 5.6 |
-| ENV | 8 | 0 | 75 | 9.4 |
+| ENV | 8 | 1 | 75 | 9.4 |
 | ERR | 11 | 1 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |

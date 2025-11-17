@@ -52,6 +52,9 @@ pub mod dcl06_c;
 #[path = "DCL/DCL39-C/dcl39_c.rs"]
 pub mod dcl39_c;
 
+#[path = "ENV/ENV31-C/env31_c.rs"]
+pub mod env31_c;
+
 #[path = "ERR/ERR33-C/err33_c.rs"]
 pub mod err33_c;
 
@@ -155,6 +158,7 @@ impl RuleRegistry {
         registry.register(Box::new(dcl00_c::Dcl00C));
         registry.register(Box::new(dcl06_c::Dcl06C));
         registry.register(Box::new(dcl39_c::Dcl39C));
+        registry.register(Box::new(env31_c::Env31C));
         registry.register(Box::new(err33_c::Err33C));
         registry.register(Box::new(exp15_c::Exp15C));
         registry.register(Box::new(exp33_c::Exp33C));
