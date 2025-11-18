@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 50 (17.7%)
+- **Implemented Rules:** 51 (18.0%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -33,7 +33,7 @@
   - 🔶 [CON04-C](#rule-con04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON39-C](#rule-con39c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON09-C](#rule-con09c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - ✅ [CON05-C](#rule-con05c) - Implemented: Pass 2/2 (100.0%)
+  - ✅ [CON05-C](#rule-con05c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON34-C](#rule-con34c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [CON31-C](#rule-con31c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON50-C](#rule-con50c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
@@ -53,7 +53,7 @@
   - 🔶 [CON40-C](#rule-con40c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [CON30-C](#rule-con30c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON36-C](#rule-con36c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-- [DCL](#category-dcl) (4 implemented / 31 total)
+- [DCL](#category-dcl) (5 implemented / 31 total)
   - 🔶 [DCL04-C](#rule-dcl04c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [DCL11-C](#rule-dcl11c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [DCL15-C](#rule-dcl15c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -71,7 +71,7 @@
   - 🔶 [DCL38-C](#rule-dcl38c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL36-C](#rule-dcl36c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ✅ [DCL01-C](#rule-dcl01c) - Implemented: Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [DCL10-C](#rule-dcl10c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
+  - ✅ [DCL10-C](#rule-dcl10c) - Implemented: Pass 4/4 (100.0%)
   - 🔶 [DCL40-C](#rule-dcl40c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
   - 🔶 [DCL39-C](#rule-dcl39c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [DCL12-C](#rule-dcl12c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
@@ -1569,15 +1569,15 @@ lock are also blocked.
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 2/2 passed (100.0%)
+**Test Results:** 0/2 passed (0.0%), 2 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `wiki_noncompliant_1.c` → `test_con05_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_con05_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `wiki_block_while_not_locked.c` → `test_con05_c_pass_wiki_block_while_not_locked`
+- ⏭️ NOT RUN `wiki_block_while_not_locked.c` → `test_con05_c_pass_wiki_block_while_not_locked`
 
 ---
 
@@ -2552,7 +2552,7 @@ threads to determine whether they should resume upon receiving the notification.
 
 <a id="category-dcl"></a>
 
-**Implementation Status:** 4 / 31 rules (12.9%)
+**Implementation Status:** 5 / 31 rules (16.1%)
 
 ### 🔶 DCL04-C - Not Implemented (has tests)
 
@@ -3111,7 +3111,7 @@ local buffer.
 
 ---
 
-### 🔶 DCL10-C - Not Implemented (has tests)
+### ✅ DCL10-C - Implemented
 
 <a id="rule-dcl10c"></a>
 
@@ -3132,17 +3132,17 @@ int); } va_end(args); return(count ? (sum / count) : 0); }
 
 **Test Coverage:** 4 tests (2 fail, 2 pass)
 
-**Test Results:** 0/4 passed (0.0%), 4 not run
+**Test Results:** 4/4 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl10_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_dcl10_c_fail_wiki_noncompliant_2`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl10_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2.c` → `test_dcl10_c_fail_wiki_noncompliant_2`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl10_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_dcl10_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_1.c` → `test_dcl10_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_dcl10_c_pass_wiki_compliant_2`
 
 ---
 
@@ -11990,7 +11990,7 @@ thebufparameter. From the documentation ofFORMAT_MESSAGE_ALLOCATE_BUFFER[MSDN]:
 | API | 9 | 7 | 62 | 6.9 |
 | ARR | 9 | 8 | 490 | 54.4 |
 | CON | 23 | 1 | 75 | 3.3 |
-| DCL | 31 | 4 | 173 | 5.6 |
+| DCL | 31 | 5 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
