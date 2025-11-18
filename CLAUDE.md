@@ -62,3 +62,24 @@ cargo build
 cargo test --package sqc --lib -- rules::cert_c::RULE_ID::tests
 cargo fmt
 ```
+
+## Git Commit Rules (CRITICAL)
+
+**EXPLICITLY DENIED:**
+- `git commit --no-verify` - NEVER use this flag. Pre-commit hooks MUST pass. Only humans can skip hooks.
+- `Co-Authored-By: Claude` - NEVER add Claude as co-author. This is a corporate repository.
+- Any hook-skipping flags (`--no-gpg-sign`, etc.)
+
+**REQUIRED:**
+- All pre-commit hooks must pass before commit succeeds
+- If hooks fail, FIX the underlying issue (don't bypass)
+- Standard commit message format without AI attribution
+
+**Example Commit:**
+```bash
+git add files...
+git commit -m "P2-RULE-ID: Implementation complete
+
+- Brief description of changes
+- Test results"
+```
