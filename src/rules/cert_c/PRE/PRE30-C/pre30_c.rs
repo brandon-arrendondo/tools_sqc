@@ -265,8 +265,3 @@ impl Pre30C {
         args
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/pre30_c.rs"]
-// mod tests;
