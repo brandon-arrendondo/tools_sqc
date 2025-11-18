@@ -9,10 +9,10 @@
 // 3. Match format specifiers against actual argument types
 // 4. Flag violations when types don't match (e.g., %s with int, %d with long long)
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use tree_sitter::Node;
 
 pub struct Dcl11C;
 
@@ -22,7 +22,12 @@ impl Dcl11C {
     }
 
     /// Check a node and all its descendants for violations
-    fn check_node<'a>(&self, node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_node<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for printf-family function calls
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
@@ -45,16 +50,30 @@ impl Dcl11C {
 
     /// Check if function name is a printf-family function
     fn is_printf_family(&self, name: &str) -> bool {
-        matches!(name,
-            "printf" | "fprintf" | "sprintf" | "snprintf" |
-            "vprintf" | "vfprintf" | "vsprintf" | "vsnprintf" |
-            "wprintf" | "fwprintf" | "swprintf"
+        matches!(
+            name,
+            "printf"
+                | "fprintf"
+                | "sprintf"
+                | "snprintf"
+                | "vprintf"
+                | "vfprintf"
+                | "vsprintf"
+                | "vsnprintf"
+                | "wprintf"
+                | "fwprintf"
+                | "swprintf"
         )
     }
 
     /// Check a printf-family function call for type mismatches
-    fn check_printf_call<'a>(&self, call_node: &Node<'a>, source: &'a str,
-                            func_name: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_printf_call<'a>(
+        &self,
+        call_node: &Node<'a>,
+        source: &'a str,
+        func_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if let Some(args) = call_node.child_by_field_name("arguments") {
             let arg_nodes = self.extract_arguments(&args, source);
 
@@ -63,7 +82,11 @@ impl Dcl11C {
             }
 
             // First argument should be format string (except for fprintf which has file first)
-            let format_idx = if func_name.starts_with('f') && func_name != "fwprintf" { 1 } else { 0 };
+            let format_idx = if func_name.starts_with('f') && func_name != "fwprintf" {
+                1
+            } else {
+                0
+            };
 
             if arg_nodes.len() <= format_idx {
                 return;
@@ -147,7 +170,7 @@ impl Dcl11C {
         // Check if it's a string literal
         if text.starts_with('"') && text.ends_with('"') {
             // Remove quotes and unescape
-            let content = &text[1..text.len()-1];
+            let content = &text[1..text.len() - 1];
             return Some(content.to_string());
         }
 
@@ -339,8 +362,8 @@ impl Dcl11C {
             ("double", "float") => true,
             ("int", "short") => true,
             ("int", "signed char") => true,
-            ("long", "int") => false, // Size mismatch
-            ("long long", "int") => false, // Size mismatch
+            ("long", "int") => false,       // Size mismatch
+            ("long long", "int") => false,  // Size mismatch
             ("long long", "long") => false, // Size mismatch
             _ => false,
         }

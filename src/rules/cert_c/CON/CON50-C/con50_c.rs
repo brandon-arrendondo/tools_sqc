@@ -10,10 +10,10 @@
 // 3. Verify if all threads are joined before function exit
 // 4. Flag violation if mutex may be destroyed while threads are still running
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use tree_sitter::Node;
 
 pub struct Con50C;
 
@@ -23,7 +23,12 @@ impl Con50C {
     }
 
     /// Check a node and all its descendants for violations
-    fn check_node<'a>(&self, node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_node<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for function definitions
         if node.kind() == "function_definition" {
             self.check_function(node, source, violations);
@@ -38,7 +43,12 @@ impl Con50C {
     }
 
     /// Check a function for mutex lifetime issues
-    fn check_function<'a>(&self, func_node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_function<'a>(
+        &self,
+        func_node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Find local mutex variables
         let local_mutexes = self.find_local_mutexes(func_node, source);
 
@@ -54,7 +64,9 @@ impl Con50C {
                 // Check if all threads are joined before function exit
                 if !self.all_threads_joined(func_node, source, &thread_vars) {
                     // Find the mutex declaration for reporting
-                    if let Some(decl_node) = self.find_mutex_declaration(func_node, source, mutex_name) {
+                    if let Some(decl_node) =
+                        self.find_mutex_declaration(func_node, source, mutex_name)
+                    {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             line: decl_node.start_position().row + 1,
@@ -89,8 +101,13 @@ impl Con50C {
     }
 
     /// Recursively collect mutex declarations
-    fn collect_mutex_declarations<'a>(&self, node: &Node<'a>, source: &'a str,
-                                     mutexes: &mut Vec<String>, is_static: bool) {
+    fn collect_mutex_declarations<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        mutexes: &mut Vec<String>,
+        is_static: bool,
+    ) {
         if node.kind() == "declaration" {
             // Check for static storage class
             let mut is_static_decl = is_static;
@@ -169,8 +186,12 @@ impl Con50C {
     }
 
     /// Find threads that are created with this mutex
-    fn find_threads_using_mutex<'a>(&self, func_node: &Node<'a>, source: &'a str,
-                                   mutex_name: &str) -> Vec<String> {
+    fn find_threads_using_mutex<'a>(
+        &self,
+        func_node: &Node<'a>,
+        source: &'a str,
+        mutex_name: &str,
+    ) -> Vec<String> {
         let mut thread_vars = Vec::new();
 
         if let Some(body) = func_node.child_by_field_name("body") {
@@ -181,8 +202,13 @@ impl Con50C {
     }
 
     /// Collect thread variables that receive the mutex
-    fn collect_thread_creations<'a>(&self, node: &Node<'a>, source: &'a str,
-                                   mutex_name: &str, thread_vars: &mut Vec<String>) {
+    fn collect_thread_creations<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        mutex_name: &str,
+        thread_vars: &mut Vec<String>,
+    ) {
         // Look for thread creation patterns:
         // - std::thread threads[N] or std::thread t;
         // - threads[i] = std::thread(func, ..., &mutex)
@@ -195,8 +221,9 @@ impl Con50C {
                 let right_text = get_node_text(&right, source);
 
                 // Check if mutex is passed to thread
-                if right_text.contains(mutex_name) &&
-                   (right_text.contains("std::thread") || right_text.contains("thread(")) {
+                if right_text.contains(mutex_name)
+                    && (right_text.contains("std::thread") || right_text.contains("thread("))
+                {
                     // Get the thread variable name
                     if let Some(left) = node.child_by_field_name("left") {
                         if let Some(thread_var) = self.extract_thread_var_name(&left, source) {
@@ -209,8 +236,9 @@ impl Con50C {
             // Also check init declarator value
             if let Some(value) = node.child_by_field_name("value") {
                 let value_text = get_node_text(&value, source);
-                if value_text.contains(mutex_name) &&
-                   (value_text.contains("std::thread") || value_text.contains("thread(")) {
+                if value_text.contains(mutex_name)
+                    && (value_text.contains("std::thread") || value_text.contains("thread("))
+                {
                     if let Some(declarator) = node.child_by_field_name("declarator") {
                         if let Some(thread_var) = self.get_declarator_id(&declarator, source) {
                             thread_vars.push(thread_var.to_string());
@@ -281,7 +309,12 @@ impl Con50C {
                     // Found first argument
                     let arg_text = get_node_text(&child, source);
                     // Extract variable name (remove & or *)
-                    return Some(arg_text.trim_start_matches('&').trim_start_matches('*').trim());
+                    return Some(
+                        arg_text
+                            .trim_start_matches('&')
+                            .trim_start_matches('*')
+                            .trim(),
+                    );
                 }
             }
         }
@@ -289,8 +322,12 @@ impl Con50C {
     }
 
     /// Check if all threads are joined before function exit
-    fn all_threads_joined<'a>(&self, func_node: &Node<'a>, source: &'a str,
-                             thread_vars: &[String]) -> bool {
+    fn all_threads_joined<'a>(
+        &self,
+        func_node: &Node<'a>,
+        source: &'a str,
+        thread_vars: &[String],
+    ) -> bool {
         // Look for .join() calls or pthread_join/thrd_join for each thread
         let mut joined_threads = Vec::new();
 
@@ -312,15 +349,20 @@ impl Con50C {
     }
 
     /// Collect all thread join operations
-    fn collect_joined_threads<'a>(&self, node: &Node<'a>, source: &'a str,
-                                  joined: &mut Vec<String>) {
+    fn collect_joined_threads<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        joined: &mut Vec<String>,
+    ) {
         // Look for .join() calls or pthread_join/thrd_join
         if node.kind() == "call_expression" {
             let call_text = get_node_text(node, source);
 
-            if call_text.contains(".join()") ||
-               call_text.contains("pthread_join") ||
-               call_text.contains("thrd_join") {
+            if call_text.contains(".join()")
+                || call_text.contains("pthread_join")
+                || call_text.contains("thrd_join")
+            {
                 joined.push(call_text.to_string());
             }
         }
@@ -334,8 +376,12 @@ impl Con50C {
     }
 
     /// Find mutex declaration node
-    fn find_mutex_declaration<'a>(&self, func_node: &Node<'a>, source: &'a str,
-                                 mutex_name: &str) -> Option<Node<'a>> {
+    fn find_mutex_declaration<'a>(
+        &self,
+        func_node: &Node<'a>,
+        source: &'a str,
+        mutex_name: &str,
+    ) -> Option<Node<'a>> {
         if let Some(body) = func_node.child_by_field_name("body") {
             return self.find_declaration_by_name(&body, source, mutex_name);
         }
@@ -343,8 +389,12 @@ impl Con50C {
     }
 
     /// Recursively find declaration by name
-    fn find_declaration_by_name<'a>(&self, node: &Node<'a>, source: &'a str,
-                                   name: &str) -> Option<Node<'a>> {
+    fn find_declaration_by_name<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        name: &str,
+    ) -> Option<Node<'a>> {
         if node.kind() == "declaration" {
             // Check if this declares our variable
             for i in 0..node.child_count() {

@@ -144,11 +144,7 @@ impl Api09C {
     }
 
     /// Get function name and return type
-    fn get_function_info(
-        &self,
-        function_node: &Node,
-        source: &str,
-    ) -> Option<(String, String)> {
+    fn get_function_info(&self, function_node: &Node, source: &str) -> Option<(String, String)> {
         let mut return_type = String::new();
         let mut func_name = String::new();
 
@@ -338,7 +334,8 @@ impl Api09C {
                         }
                         "init_declarator" => {
                             if let Some(declarator) = child.child_by_field_name("declarator") {
-                                if let Some(var_name) = self.get_declarator_name(&declarator, source)
+                                if let Some(var_name) =
+                                    self.get_declarator_name(&declarator, source)
                                 {
                                     declarators.push((var_name, child.start_position().row + 1));
                                 }
@@ -352,8 +349,10 @@ impl Api09C {
             // Check if this is a signed type used for size accumulation
             if self.is_signed_size_type(&type_name) {
                 for (var_name, line) in declarators {
-                    if matches!(var_name.as_str(), "pos" | "count" | "total" | "bytes" | "size")
-                    {
+                    if matches!(
+                        var_name.as_str(),
+                        "pos" | "count" | "total" | "bytes" | "size"
+                    ) {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::Low,

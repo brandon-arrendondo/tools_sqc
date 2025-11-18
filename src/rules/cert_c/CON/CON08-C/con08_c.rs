@@ -58,8 +58,8 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 use std::collections::HashSet;
+use tree_sitter::Node;
 
 pub struct Con08C;
 
@@ -133,7 +133,12 @@ impl Con08C {
     ) {
         // Look for function definitions
         if node.kind() == "function_definition" {
-            self.check_function_for_grouped_atomic_calls(node, source, atomic_functions, violations);
+            self.check_function_for_grouped_atomic_calls(
+                node,
+                source,
+                atomic_functions,
+                violations,
+            );
         }
 
         // Recursively check child nodes
@@ -151,7 +156,8 @@ impl Con08C {
         atomic_functions: &HashSet<String>,
         violations: &mut Vec<RuleViolation>,
     ) {
-        let func_name = self.get_function_name(function_node, source)
+        let func_name = self
+            .get_function_name(function_node, source)
             .unwrap_or_else(|| "<unknown>".to_string());
 
         // Skip if this is already an atomic function (it's okay for atomic functions to exist)
@@ -190,7 +196,9 @@ impl Con08C {
             let has_mutex = self.uses_mutex_lock(&body, source);
 
             // Check if any of the called functions are atomic
-            let calls_atomic_funcs = relevant_calls.iter().any(|name| atomic_functions.contains(name));
+            let calls_atomic_funcs = relevant_calls
+                .iter()
+                .any(|name| atomic_functions.contains(name));
 
             // Violation if:
             // 1. Calls multiple functions AND doesn't wrap them in mutex
@@ -217,10 +225,17 @@ impl Con08C {
     }
 
     fn is_safe_function(&self, name: &str) -> bool {
-        matches!(name,
-            "printf" | "fprintf" | "sprintf" | "snprintf" |
-            "thrd_create" | "thrd_join" | "thrd_detach" |
-            "mtx_init" | "mtx_destroy"
+        matches!(
+            name,
+            "printf"
+                | "fprintf"
+                | "sprintf"
+                | "snprintf"
+                | "thrd_create"
+                | "thrd_join"
+                | "thrd_detach"
+                | "mtx_init"
+                | "mtx_destroy"
         )
     }
 
@@ -232,12 +247,7 @@ impl Con08C {
         calls
     }
 
-    fn collect_all_function_calls(
-        &self,
-        node: &Node,
-        source: &str,
-        calls: &mut Vec<String>,
-    ) {
+    fn collect_all_function_calls(&self, node: &Node, source: &str, calls: &mut Vec<String>) {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func, source).to_string();
@@ -250,7 +260,8 @@ impl Con08C {
                 self.collect_all_function_calls(&child, source, calls);
             }
         }
-    }    fn get_function_name(&self, function_node: &Node, source: &str) -> Option<String> {
+    }
+    fn get_function_name(&self, function_node: &Node, source: &str) -> Option<String> {
         for i in 0..function_node.child_count() {
             if let Some(child) = function_node.child(i) {
                 if child.kind() == "function_declarator" {
@@ -283,7 +294,10 @@ impl Con08C {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func, source);
-                if matches!(func_name, "mtx_lock" | "mtx_unlock" | "pthread_mutex_lock" | "pthread_mutex_unlock") {
+                if matches!(
+                    func_name,
+                    "mtx_lock" | "mtx_unlock" | "pthread_mutex_lock" | "pthread_mutex_unlock"
+                ) {
                     return true;
                 }
             }

@@ -68,8 +68,8 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 use std::collections::{HashMap, HashSet};
+use tree_sitter::Node;
 
 pub struct Con32C;
 
@@ -109,7 +109,11 @@ impl CertRule for Con32C {
 
 impl Con32C {
     /// Collect struct names that contain bit-fields and their bit-field member names
-    fn collect_bitfield_structs(&self, node: &Node, source: &str) -> HashMap<String, HashSet<String>> {
+    fn collect_bitfield_structs(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> HashMap<String, HashSet<String>> {
         let mut bitfield_structs = HashMap::new();
         self.find_bitfield_structs(node, source, &mut bitfield_structs);
         bitfield_structs
@@ -241,7 +245,8 @@ impl Con32C {
         bitfield_structs: &HashMap<String, HashSet<String>>,
         violations: &mut Vec<RuleViolation>,
     ) {
-        let func_name = self.get_function_name(function_node, source)
+        let func_name = self
+            .get_function_name(function_node, source)
             .unwrap_or_else(|| "<unknown>".to_string());
 
         // Check if this looks like a thread function (has void* parameter or named "thread*")
@@ -296,7 +301,12 @@ impl Con32C {
         None
     }
 
-    fn is_potential_thread_function(&self, function_node: &Node, source: &str, func_name: &str) -> bool {
+    fn is_potential_thread_function(
+        &self,
+        function_node: &Node,
+        source: &str,
+        func_name: &str,
+    ) -> bool {
         // Check if function name suggests it's a thread function
         if func_name.to_lowercase().contains("thread") {
             return true;
@@ -329,7 +339,10 @@ impl Con32C {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func, source);
-                if matches!(func_name, "mtx_lock" | "mtx_unlock" | "pthread_mutex_lock" | "pthread_mutex_unlock") {
+                if matches!(
+                    func_name,
+                    "mtx_lock" | "mtx_unlock" | "pthread_mutex_lock" | "pthread_mutex_unlock"
+                ) {
                     return true;
                 }
             }

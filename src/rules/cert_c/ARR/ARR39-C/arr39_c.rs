@@ -118,7 +118,8 @@ impl Arr39C {
                     if self.is_scaled_integer_expression(&right, source)
                         && self.looks_like_pointer(&left, source)
                         && !self.is_char_pointer(&left, source)  // Char pointers are allowed
-                        && !left_text.to_lowercase().contains("byte")  // Byte pointers are allowed
+                        && !left_text.to_lowercase().contains("byte")
+                    // Byte pointers are allowed
                     {
                         let start_point = node.start_position();
                         let expr_text = &source[node.start_byte()..node.end_byte()];
@@ -159,7 +160,8 @@ impl Arr39C {
             if self.is_scaled_integer_expression(&index, source)
                 && self.looks_like_pointer_node(&argument, source)
                 && !self.is_char_pointer(&argument, source)
-                && !arg_text.to_lowercase().contains("byte")  // Byte pointers are allowed
+                && !arg_text.to_lowercase().contains("byte")
+            // Byte pointers are allowed
             {
                 let start_point = node.start_position();
                 let expr_text = &source[node.start_byte()..node.end_byte()];
@@ -174,8 +176,10 @@ impl Arr39C {
                     file_path: String::new(),
                     line: start_point.row + 1,
                     column: start_point.column + 1,
-                    suggestion: Some("Use unscaled index or element count instead of sizeof()".to_string()),
-                ..Default::default()
+                    suggestion: Some(
+                        "Use unscaled index or element count instead of sizeof()".to_string(),
+                    ),
+                    ..Default::default()
                 });
             }
         }
@@ -315,14 +319,16 @@ impl Arr39C {
         let right_is_scaled = self.is_scaled_integer_expression(&right, source);
 
         // If it's a char pointer (by naming or cast), byte arithmetic is correct (not a violation)
-        if left_is_pointer && (self.is_char_pointer(left, source) || left_text.to_lowercase().contains("byte")) {
+        if left_is_pointer
+            && (self.is_char_pointer(left, source) || left_text.to_lowercase().contains("byte"))
+        {
             return false;
         }
 
         // Special case: generic pointer name with offset/skip variable suggests intentional byte arithmetic
         // This is a heuristic to avoid false positives when char* pointers are used
         if left_text == "ptr" && (right_text == "skip" || right_text == "offset") {
-            return false;  // Likely intentional byte-level arithmetic
+            return false; // Likely intentional byte-level arithmetic
         }
 
         left_is_pointer && right_is_scaled
@@ -378,7 +384,7 @@ impl Arr39C {
             || text.contains("src")    // Common pointer name
             || text.contains("message") // Common pointer/buffer name
             || text.contains("record")  // Common pointer name
-            || text.contains("append")  // Common in string operations
+            || text.contains("append") // Common in string operations
     }
 
     fn is_char_pointer(&self, node: &Node, source: &str) -> bool {
@@ -389,7 +395,8 @@ impl Arr39C {
         let mut current = node.clone();
 
         // Walk up the tree to find casts
-        for _ in 0..5 {  // Check up to 5 levels up
+        for _ in 0..5 {
+            // Check up to 5 levels up
             if let Some(parent) = current.parent() {
                 let parent_text = &source[parent.start_byte()..parent.end_byte()];
 
@@ -399,8 +406,8 @@ impl Arr39C {
                         || parent_text.contains("unsigned char*")
                         || parent_text.contains("signed char *")
                         || parent_text.contains("signed char*")
-                        // But NOT if it's casting TO a char* from something else
-                        // We need to check the actual type declarator
+                    // But NOT if it's casting TO a char* from something else
+                    // We need to check the actual type declarator
                     {
                         // Check type declarator specifically
                         if let Some(type_node) = parent.child_by_field_name("type") {
@@ -437,7 +444,7 @@ impl Arr39C {
             "cast_expression" => {
                 // Cast expressions are often pointers
                 let text = &source[node.start_byte()..node.end_byte()];
-                text.contains("*")  // Has pointer in cast
+                text.contains("*") // Has pointer in cast
             }
             _ => false,
         }
