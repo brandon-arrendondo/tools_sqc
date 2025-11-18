@@ -43,6 +43,18 @@ pub mod arr39_c;
 #[path = "DCL/DCL00-C/dcl00_c.rs"]
 pub mod dcl00_c;
 
+#[path = "DCL/DCL01-C/dcl01_c.rs"]
+pub mod dcl01_c;
+
+#[path = "DCL/DCL03-C/dcl03_c.rs"]
+pub mod dcl03_c;
+
+#[path = "DCL/DCL13-C/dcl13_c.rs"]
+pub mod dcl13_c;
+
+#[path = "ERR/ERR07-C/err07_c.rs"]
+pub mod err07_c;
+
 #[path = "ERR/ERR33-C/err33_c.rs"]
 pub mod err33_c;
 
@@ -143,6 +155,10 @@ impl RuleRegistry {
         registry.register(Box::new(arr38_c::Arr38C));
         registry.register(Box::new(arr39_c::Arr39C));
         registry.register(Box::new(dcl00_c::Dcl00C));
+        registry.register(Box::new(dcl01_c::Dcl01C));
+        registry.register(Box::new(dcl03_c::Dcl03C));
+        registry.register(Box::new(dcl13_c::Dcl13C));
+        registry.register(Box::new(err07_c::Err07C));
         registry.register(Box::new(err33_c::Err33C));
         registry.register(Box::new(exp15_c::Exp15C));
         registry.register(Box::new(exp33_c::Exp33C));

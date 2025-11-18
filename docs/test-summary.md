@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 43 (15.2%)
+- **Implemented Rules:** 47 (16.6%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -25,7 +25,7 @@
   - ✅ [ARR01-C](#rule-arr01c) - Implemented: Pass 63/65 (96.9%)
   - ✅ [ARR30-C](#rule-arr30c) - Implemented: Pass 50/61 (82.0%)
   - ✅ [ARR39-C](#rule-arr39c) - Implemented: Pass 32/46 (69.6%)
-  - ✅ [ARR38-C](#rule-arr38c) - Implemented: Pass 15/50 (30.0%)
+  - ✅ [ARR38-C](#rule-arr38c) - Implemented: Pass 19/50 (38.0%)
   - ✅ [ARR37-C](#rule-arr37c) - Implemented: Pass 37/43 (86.0%)
   - 🔶 [ARR02-C](#rule-arr02c) - Not Implemented (has tests): Pass 0/82 (0.0%) [82 not run]
   - ✅ [ARR00-C](#rule-arr00c) - Implemented: Pass 39/39 (100.0%)
@@ -53,11 +53,11 @@
   - 🔶 [CON40-C](#rule-con40c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [CON30-C](#rule-con30c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON07-C](#rule-con07c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [DCL](#category-dcl) (1 implemented / 31 total)
+- [DCL](#category-dcl) (4 implemented / 31 total)
   - 🔶 [DCL23-C](#rule-dcl23c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [DCL03-C](#rule-dcl03c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
+  - ✅ [DCL03-C](#rule-dcl03c) - Implemented: Pass 3/3 (100.0%)
   - 🔶 [DCL02-C](#rule-dcl02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [DCL13-C](#rule-dcl13c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
+  - ✅ [DCL13-C](#rule-dcl13c) - Implemented: Pass 5/5 (100.0%)
   - 🔶 [DCL08-C](#rule-dcl08c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [DCL30-C](#rule-dcl30c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
   - 🔶 [DCL19-C](#rule-dcl19c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
@@ -69,7 +69,7 @@
   - 🔶 [DCL16-C](#rule-dcl16c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL10-C](#rule-dcl10c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [DCL20-C](#rule-dcl20c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [DCL01-C](#rule-dcl01c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
+  - ✅ [DCL01-C](#rule-dcl01c) - Implemented: Pass 4/4 (100.0%)
   - 🔶 [DCL11-C](#rule-dcl11c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [DCL39-C](#rule-dcl39c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [DCL31-C](#rule-dcl31c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
@@ -94,12 +94,12 @@
   - 🔶 [ENV32-C](#rule-env32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [ENV31-C](#rule-env31c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [ENV01-C](#rule-env01c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
-- [ERR](#category-err) (1 implemented / 11 total)
+- [ERR](#category-err) (2 implemented / 11 total)
   - 🔶 [ERR05-C](#rule-err05c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
   - 🔶 [ERR01-C](#rule-err01c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ✅ [ERR33-C](#rule-err33c) - Implemented: Pass 51/51 (100.0%)
   - 🔶 [ERR34-C](#rule-err34c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [ERR07-C](#rule-err07c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
+  - ✅ [ERR07-C](#rule-err07c) - Implemented: Pass 6/6 (100.0%)
   - 🔶 [ERR02-C](#rule-err02c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
   - ⚫ [ERR00-C](#rule-err00c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [ERR04-C](#rule-err04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -1140,7 +1140,7 @@ valid." (Seeundefined behavior108.) In the following code,
 
 **Test Coverage:** 50 tests (35 fail, 15 pass)
 
-**Test Results:** 15/50 passed (30.0%)
+**Test Results:** 19/50 passed (38.0%)
 
 #### Fail Tests (Should Detect Violations)
 
@@ -1149,7 +1149,7 @@ valid." (Seeundefined behavior108.) In the following code,
 - ❌ FAIL `testcases_calloc_memset_exceed.c` → `test_arr38_c_fail_testcases_calloc_memset_exceed`
 - ❌ FAIL `testcases_fgets_oversize.c` → `test_arr38_c_fail_testcases_fgets_oversize`
 - ❌ FAIL `testcases_fread_wrong_count.c` → `test_arr38_c_fail_testcases_fread_wrong_count`
-- ❌ FAIL `testcases_fwrite_wrong_count.c` → `test_arr38_c_fail_testcases_fwrite_wrong_count`
+- ✅ PASS `testcases_fwrite_wrong_count.c` → `test_arr38_c_fail_testcases_fwrite_wrong_count`
 - ❌ FAIL `testcases_memchr_overrun.c` → `test_arr38_c_fail_testcases_memchr_overrun`
 - ❌ FAIL `testcases_memcmp_first_short.c` → `test_arr38_c_fail_testcases_memcmp_first_short`
 - ❌ FAIL `testcases_memcpy_src_short.c` → `test_arr38_c_fail_testcases_memcpy_src_short`
@@ -1171,10 +1171,10 @@ valid." (Seeundefined behavior108.) In the following code,
 - ❌ FAIL `testcases_wcsncpy_overflow.c` → `test_arr38_c_fail_testcases_wcsncpy_overflow`
 - ❌ FAIL `testcases_wmemchr_overrun.c` → `test_arr38_c_fail_testcases_wmemchr_overrun`
 - ❌ FAIL `testcases_wmemcmp_overflow.c` → `test_arr38_c_fail_testcases_wmemcmp_overflow`
-- ❌ FAIL `testcases_wmemcpy_sizeof.c` → `test_arr38_c_fail_testcases_wmemcpy_sizeof`
-- ❌ FAIL `testcases_wmemset_byte_count.c` → `test_arr38_c_fail_testcases_wmemset_byte_count`
+- ✅ PASS `testcases_wmemcpy_sizeof.c` → `test_arr38_c_fail_testcases_wmemcpy_sizeof`
+- ✅ PASS `testcases_wmemset_byte_count.c` → `test_arr38_c_fail_testcases_wmemset_byte_count`
 - ❌ FAIL `testcases_wrong_type_scale.c` → `test_arr38_c_fail_testcases_wrong_type_scale`
-- ❌ FAIL `wiki_element_count.c` → `test_arr38_c_fail_wiki_element_count`
+- ✅ PASS `wiki_element_count.c` → `test_arr38_c_fail_wiki_element_count`
 - ❌ FAIL `wiki_heartbleed.c` → `test_arr38_c_fail_wiki_heartbleed`
 - ❌ FAIL `wiki_one_pointer_two_integers.c` → `test_arr38_c_fail_wiki_one_pointer_two_integers`
 - ❌ FAIL `wiki_pointer_integer.c` → `test_arr38_c_fail_wiki_pointer_integer`
@@ -2552,7 +2552,7 @@ data in a multithreaded contextCWE-667, Improper lockingBibliography[ISO/IEC
 
 <a id="category-dcl"></a>
 
-**Implementation Status:** 1 / 31 rules (3.2%)
+**Implementation Status:** 4 / 31 rules (12.9%)
 
 ### 🔶 DCL23-C - Not Implemented (has tests)
 
@@ -2579,7 +2579,7 @@ alsoundefined behavior 14of Annex J.) Further, according to subclause 6.4.2.1,
 
 ---
 
-### 🔶 DCL03-C - Not Implemented (has tests)
+### ✅ DCL03-C - Implemented
 
 <a id="rule-dcl03c"></a>
 
@@ -2597,16 +2597,16 @@ expression, string-literal);
 
 **Test Coverage:** 3 tests (1 fail, 2 pass)
 
-**Test Results:** 0/3 passed (0.0%), 3 not run
+**Test Results:** 3/3 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl03_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl03_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl03_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_dcl03_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_1.c` → `test_dcl03_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_dcl03_c_pass_wiki_compliant_2`
 
 ---
 
@@ -2642,7 +2642,7 @@ rcaseM)rn(lowercaseR, lowercaseN)
 
 ---
 
-### 🔶 DCL13-C - Not Implemented (has tests)
+### ✅ DCL13-C - Implemented
 
 <a id="rule-dcl13c"></a>
 
@@ -2658,18 +2658,18 @@ Visible only in the function */ /* ... */ }
 
 **Test Coverage:** 5 tests (3 fail, 2 pass)
 
-**Test Results:** 0/5 passed (0.0%), 5 not run
+**Test Results:** 5/5 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl13_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2_2.c` → `test_dcl13_c_fail_wiki_noncompliant_2_2`
-- ⏭️ NOT RUN `wiki_noncompliant_3.c` → `test_dcl13_c_fail_wiki_noncompliant_3`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl13_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2_2.c` → `test_dcl13_c_fail_wiki_noncompliant_2_2`
+- ✅ PASS `wiki_noncompliant_3.c` → `test_dcl13_c_fail_wiki_noncompliant_3`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl13_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_dcl13_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_1.c` → `test_dcl13_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_dcl13_c_pass_wiki_compliant_2`
 
 ---
 
@@ -3025,7 +3025,7 @@ holds true in both the declaration and definition sections (which should match).
 
 ---
 
-### 🔶 DCL01-C - Not Implemented (has tests)
+### ✅ DCL01-C - Implemented
 
 <a id="rule-dcl01c"></a>
 
@@ -3045,17 +3045,17 @@ local buffer.
 
 **Test Coverage:** 4 tests (2 fail, 2 pass)
 
-**Test Results:** 0/4 passed (0.0%), 4 not run
+**Test Results:** 4/4 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl01_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_code_example.c` → `test_dcl01_c_fail_wiki_noncompliant_code_example`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl01_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_code_example.c` → `test_dcl01_c_fail_wiki_noncompliant_code_example`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl01_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_dcl01_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_1.c` → `test_dcl01_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_dcl01_c_pass_wiki_compliant_2`
 
 ---
 
@@ -3931,7 +3931,7 @@ PATH_MAX to be defined */ strcpy(path, getenv("PATH")); /* Use path */ }
 
 <a id="category-err"></a>
 
-**Implementation Status:** 1 / 11 rules (9.1%)
+**Implementation Status:** 2 / 11 rules (18.2%)
 
 ### 🔶 ERR05-C - Not Implemented (has tests)
 
@@ -4121,7 +4121,7 @@ representation for a particular implementation.
 
 ---
 
-### 🔶 ERR07-C - Not Implemented (has tests)
+### ✅ ERR07-C - Implemented
 
 <a id="rule-err07c"></a>
 
@@ -4140,19 +4140,19 @@ errorctimeasctime/localtimeUndefined behavior iflocaltimefails
 
 **Test Coverage:** 6 tests (3 fail, 3 pass)
 
-**Test Results:** 0/6 passed (0.0%), 6 not run
+**Test Results:** 6/6 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_atoi.c` → `test_err07_c_fail_wiki_atoi`
-- ⏭️ NOT RUN `wiki_rewind.c` → `test_err07_c_fail_wiki_rewind`
-- ⏭️ NOT RUN `wiki_setbuf.c` → `test_err07_c_fail_wiki_setbuf`
+- ✅ PASS `wiki_atoi.c` → `test_err07_c_fail_wiki_atoi`
+- ✅ PASS `wiki_rewind.c` → `test_err07_c_fail_wiki_rewind`
+- ✅ PASS `wiki_setbuf.c` → `test_err07_c_fail_wiki_setbuf`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_fseek.c` → `test_err07_c_pass_wiki_fseek`
-- ⏭️ NOT RUN `wiki_setvbuf.c` → `test_err07_c_pass_wiki_setvbuf`
-- ⏭️ NOT RUN `wiki_strtol.c` → `test_err07_c_pass_wiki_strtol`
+- ✅ PASS `wiki_fseek.c` → `test_err07_c_pass_wiki_fseek`
+- ✅ PASS `wiki_setvbuf.c` → `test_err07_c_pass_wiki_setvbuf`
+- ✅ PASS `wiki_strtol.c` → `test_err07_c_pass_wiki_strtol`
 
 ---
 
@@ -11990,9 +11990,9 @@ or by callingExitProcess().
 | API | 9 | 5 | 62 | 6.9 |
 | ARR | 9 | 8 | 490 | 54.4 |
 | CON | 23 | 0 | 75 | 3.3 |
-| DCL | 31 | 1 | 173 | 5.6 |
+| DCL | 31 | 4 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
-| ERR | 11 | 1 | 88 | 8.0 |
+| ERR | 11 | 2 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
 | FLP | 13 | 0 | 40 | 3.1 |
