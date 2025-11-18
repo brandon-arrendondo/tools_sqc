@@ -394,6 +394,3 @@ fn get_operator(node: &Node, source: &str) -> Option<String> {
 }
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/arr36_c.rs"]
-// mod tests;

@@ -371,6 +371,3 @@ fn is_string_modifying_function(func_name: &str) -> bool {
 }
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/str30_c.rs"]
-// mod tests;

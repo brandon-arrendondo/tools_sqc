@@ -2191,6 +2191,3 @@ fn is_function_call_name(node: &Node) -> bool {
 }
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/arr00_c.rs"]
-// mod tests;

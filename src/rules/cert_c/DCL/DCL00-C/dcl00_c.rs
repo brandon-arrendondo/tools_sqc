@@ -170,6 +170,3 @@ fn has_const_in_pointer_type(node: &Node, source: &str) -> bool {
 }
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/dcl00_c.rs"]
-// mod tests;

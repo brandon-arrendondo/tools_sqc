@@ -204,6 +204,3 @@ impl Pre32C {
 }
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/pre32_c.rs"]
-// mod tests;
