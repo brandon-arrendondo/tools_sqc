@@ -24,7 +24,8 @@ scripts/work_active_helpers.sh lock-rule-utils RULE_ID
 
 # 2. Implement rule (only rule files are writable)
 # - Create src/rules/cert_c/CATEGORY/RULE_ID/rule_id.rs
-# - Write tests
+# - IMPORTANT: Do NOT add embedded unit tests (no #[cfg(test)] modules)
+# - Test cases come from .c files in tests/ directory (auto-generated)
 
 # 3. Unlock before registration
 scripts/work_active_helpers.sh unlock-all
@@ -33,6 +34,19 @@ scripts/work_active_helpers.sh unlock-all
 # 5. Build and test
 # 6. Commit and move proposal to STAGED
 ```
+
+### Implementation Rules (CRITICAL)
+
+**NEVER add embedded unit tests in rule implementation files:**
+- ❌ NO `#[cfg(test)]` modules in `src/rules/cert_c/*/*/*.rs` files
+- ❌ NO inline test functions with hardcoded C code snippets
+- ✅ Test cases come from `.c` files in `tests/` directory (auto-generated into Rust tests)
+- ✅ If no test cases exist for a rule, implement WITHOUT tests (this is acceptable)
+
+**Why:**
+- Embedded tests are redundant (same stub pattern with different hardcoded C)
+- Poor separation of responsibilities (implementation vs. testing)
+- Test infrastructure auto-generates tests from `.c` files
 
 ### Key Commands
 - `lock-rule-utils RULE_ID` - Focus on single rule, lock all other files

@@ -49,17 +49,39 @@ Implement or verify ERR00-C with 100% test pass rate and DRY compliance.
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [ ] All test cases pass (100% pass rate) - NO TEST CASES EXIST
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-17 - STALLED: Missing Test Cases
+
+@architect: BLOCKED - No test cases exist for ERR00-C
+
+**Issue:**
+- No .c test files in tests/ directory for ERR00-C
+- Cannot verify correctness without test cases
+- Build succeeds, implementation is functional, but untested
+
+**Current Implementation:**
+- Detects unchecked return values from error-prone functions (fopen, malloc, etc.)
+- Detects ignored return values from standalone function calls
+- Uses get_node_text() and follows DRY principles
+- Rule registered and enabled in configuration
+
+**Needs:**
+- Test cases (.c files) to be added to tests/ directory for ERR00-C
+- OR architect decision to proceed without test cases for recommendation-level rules
+
+**Files Modified:**
+- src/rules/cert_c/ERR/ERR00-C/err00_c.rs (implementation)
+- src/rules/cert_c/mod.rs (registration)
+- src/rules/cert_c/ERR/ERR00-C/ERR00-C.toml (enabled)
 
 ---
 
