@@ -40,7 +40,7 @@ impl Con40C {
         if node.kind() == "declaration" {
             if let Some(type_node) = node.child_by_field_name("type") {
                 let type_text = get_node_text(&type_node, source);
-                
+
                 // Check for atomic types
                 if type_text.contains("atomic_") || type_text.contains("_Atomic") {
                     // Find the declarator(s)
@@ -93,8 +93,8 @@ impl Con40C {
     }
 
     /// Check all expressions for multiple references to atomic variables
-    fn check_expressions<'a>(&self, node: &Node<'a>, source: &'a str, 
-                            atomic_vars: &HashMap<String, bool>, 
+    fn check_expressions<'a>(&self, node: &Node<'a>, source: &'a str,
+                            atomic_vars: &HashMap<String, bool>,
                             violations: &mut Vec<RuleViolation>) {
         // Check if this is an expression node
         let is_expression = matches!(node.kind(),
@@ -172,7 +172,7 @@ impl Con40C {
         if node.kind() == "assignment_expression" {
             if let Some(op) = node.child_by_field_name("operator") {
                 let op_text = get_node_text(&op, source);
-                
+
                 // Check for compound assignment operators
                 if op_text != "=" {
                     // This is a compound assignment - check if it's operating on our var

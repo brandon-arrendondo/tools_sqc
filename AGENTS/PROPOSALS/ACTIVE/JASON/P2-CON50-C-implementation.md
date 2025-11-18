@@ -59,7 +59,51 @@ Implement or verify CON50-C with 100% test pass rate and DRY compliance.
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Implementation Date:** 2025-11-18
+
+### Detection Strategy
+
+CON50-C detects when a mutex with automatic storage duration (local variable) is passed to threads that may still be running when the function exits, causing the mutex to be destroyed while potentially locked.
+
+**Key Detection Points:**
+1. **Local Mutex Tracking**: Finds mutex variables with automatic storage (not static/global)
+2. **Thread Usage Analysis**: Detects when mutex is passed to thread creation functions
+3. **Join Verification**: Checks if all threads are joined before function return
+4. **Lifetime Violation**: Reports when mutex may be destroyed while threads are running
+
+**Patterns Detected:**
+- `std::mutex m;` (local) passed to `std::thread(..., &m)` without joining
+- `pthread_mutex_t m;` passed to `pthread_create()` without `pthread_join()`
+- `mtx_t m;` passed to `thrd_create()` without `thrd_join()`
+
+**Safe Patterns:**
+- Static/global mutex (lifetime extends beyond function)
+- All threads joined before function return
+- Mutex not shared with threads
+
+### Build & Test Status
+
+✅ **Code compiles successfully** (`cargo build --lib`)
+✅ **Module registered** in `src/rules/cert_c/mod.rs`
+✅ **Rule enabled** in `CON50-C.toml`
+✅ **Uses DRY utilities** (`get_node_text()` from `ast_utils`)
+
+**Test Files Available:**
+- `tests/fail/wiki_noncompliant_1.c` - Local mutex without join
+- `tests/pass/wiki_compliant_1.c` - Global mutex (safe)
+- `tests/pass/wiki_compliant_2.c` - Local mutex with join (safe)
+
+**Implementation Notes:**
+- Handles C++ `std::mutex` and `std::thread` patterns
+- Handles pthread patterns (`pthread_mutex_t`, `pthread_create`, `pthread_join`)
+- Handles C11 threads patterns (`mtx_t`, `thrd_create`, `thrd_join`)
+- Smart detection of thread arrays (`threads[i]`)
+- Verifies join operations before flagging violation
+
+**Next Steps:**
+- Run integration tests when test framework is fixed
+- Verify all 3 test cases behave as expected
+- May need refinement based on test results
 
 ---
 

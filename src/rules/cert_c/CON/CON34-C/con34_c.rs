@@ -19,7 +19,7 @@
 //!     /* Handle error */
 //!   }
 //! }
-//! 
+//!
 //! int main(void) {
 //!   int val = 1;  // Automatic (local) variable
 //!   thrd_t tid;
@@ -119,7 +119,7 @@ impl Con34C {
                 }
             }
         }
-        
+
         // Check for OpenMP parallel regions
         if node.kind() == "compound_statement" {
             self.check_openmp_parallel_region(node, source, violations);
@@ -141,7 +141,7 @@ impl Con34C {
     ) {
         // thrd_create(thrd_t *thr, thrd_start_t func, void *arg)
         // We need to check the third argument (arg) - the data pointer, NOT the function pointer
-        
+
         if let Some(args) = call_node.child_by_field_name("arguments") {
             let mut arg_list = Vec::new();
 
@@ -158,26 +158,26 @@ impl Con34C {
             if arg_list.len() >= 3 {
                 let arg_node = arg_list[2];
                 let arg_text = get_node_text(&arg_node, source);
-                
+
                 // Check various problematic patterns
-                let is_violation = 
+                let is_violation =
                     self.is_address_of_local_var(&arg_node, source, call_node) ||
-                    (self.is_pointer_parameter(&arg_node, source, call_node) && 
+                    (self.is_pointer_parameter(&arg_node, source, call_node) &&
                      !self.is_allocated_pointer(&arg_text, call_node, source) &&
                      !self.is_likely_allocated_param(&arg_text)) ||
-                    (arg_node.kind() == "identifier" && 
+                    (arg_node.kind() == "identifier" &&
                      !self.is_static_variable(&arg_text, call_node, source) &&
                      !self.is_allocated_pointer(&arg_text, call_node, source) &&
                      !self.is_likely_allocated_param(&arg_text) &&
                      !arg_text.starts_with("&"));
-                
+
                 if is_violation {
                     let message = if self.is_address_of_local_var(&arg_node, source, call_node) {
                         format!("Passing address of automatic (local) variable to thrd_create()")
                     } else {
                         format!("Passing '{}' to thrd_create() may reference automatic storage", arg_text)
                     };
-                    
+
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: Severity::Medium,
@@ -203,7 +203,7 @@ impl Con34C {
     ) {
         // tss_set() within a function that also calls thrd_create() is problematic
         // ONLY if the value being set is not retrieved with tss_get before passing to the thread
-        
+
         // Find the enclosing function
         if let Some(function) = self.find_enclosing_function(call_node) {
             // Check if this function also creates threads
@@ -214,7 +214,7 @@ impl Con34C {
                     // This is compliant - using tss_get to retrieve allocated storage
                     return;
                 }
-                
+
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: Severity::Medium,
@@ -240,21 +240,21 @@ impl Con34C {
                 if get_node_text(&operator, source) == "&" {
                     if let Some(argument) = node.child_by_field_name("argument") {
                         let var_name = get_node_text(&argument, source).to_string();
-                        
+
                         // Check if this variable is a local (automatic) variable
                         return self.is_local_variable(&var_name, context, source);
                     }
                 }
             }
         }
-        
+
         false
     }
 
     fn is_pointer_parameter(&self, node: &Node, source: &str, context: &Node) -> bool {
         // Extract the base identifier from the node (might be wrapped in casts, etc.)
         let var_name = self.extract_base_identifier(node, source);
-        
+
         if let Some(var_name) = var_name {
             // Find the enclosing function
             if let Some(function) = self.find_enclosing_function(context) {
@@ -262,7 +262,7 @@ impl Con34C {
                 return self.is_pointer_param_of_function(&function, &var_name, source);
             }
         }
-        
+
         false
     }
 
@@ -271,14 +271,14 @@ impl Con34C {
         if node.kind() == "identifier" {
             return Some(get_node_text(node, source).to_string());
         }
-        
+
         // Handle cast expressions: (type)var
         if node.kind() == "cast_expression" {
             if let Some(value) = node.child_by_field_name("value") {
                 return self.extract_base_identifier(&value, source);
             }
         }
-        
+
         // Handle parenthesized expressions: (var)
         if node.kind() == "parenthesized_expression" {
             for i in 0..node.child_count() {
@@ -289,7 +289,7 @@ impl Con34C {
                 }
             }
         }
-        
+
         // Recursively search for identifier in child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
@@ -298,7 +298,7 @@ impl Con34C {
                 }
             }
         }
-        
+
         None
     }
 
@@ -315,7 +315,7 @@ impl Con34C {
     fn is_static_variable(&self, var_name: &str, _context: &Node, source: &str) -> bool {
         // This is a simplified check - ideally we'd search the whole tree
         // For now, just check if the variable name suggests it's a static/global
-        source.contains(&format!("static {} ", var_name)) || 
+        source.contains(&format!("static {} ", var_name)) ||
         source.contains(&format!("static int *{}", var_name)) ||
         source.contains(&format!("static void *{}", var_name))
     }
@@ -401,7 +401,7 @@ impl Con34C {
         if node.kind() == "parameter_declaration" {
             // Get the full text of the parameter declaration
             let param_text = get_node_text(node, source);
-            
+
             // Simple heuristic: if it contains * and the param name, it's likely a pointer parameter
             if param_text.contains('*') && param_text.contains(param_name) {
                 // Double-check by finding the declarator
@@ -433,13 +433,13 @@ impl Con34C {
             if let Some(body) = function.child_by_field_name("body") {
                 return self.find_local_declaration(&body, var_name, source);
             }
-            
+
             // Check function parameters
             if self.is_function_parameter(&function, var_name, source) {
                 return true;
             }
         }
-        
+
         false
     }
 
@@ -456,7 +456,7 @@ impl Con34C {
                             is_static = true;
                         }
                     }
-                    
+
                     if child.kind() == "init_declarator" {
                         if let Some(declarator) = child.child_by_field_name("declarator") {
                             if let Some(name) = self.get_identifier_name(&declarator, source) {
@@ -545,12 +545,12 @@ impl Con34C {
 
     fn find_enclosing_function<'a>(&self, node: &'a Node) -> Option<Node<'a>> {
         let mut current = *node;
-        
+
         loop {
             if current.kind() == "function_definition" {
                 return Some(current);
             }
-            
+
             match current.parent() {
                 Some(parent) => current = parent,
                 None => return None,
@@ -621,13 +621,13 @@ impl Con34C {
     ) {
         // Check if this compound statement is preceded by an OpenMP parallel pragma
         let start_byte = compound_stmt.start_byte();
-        
+
         // Check the source text before this compound statement for #pragma omp parallel
         if start_byte > 0 {
             // Look back up to 200 characters for the pragma
             let start_search = if start_byte > 200 { start_byte - 200 } else { 0 };
             let preceding_text = &source[start_search..start_byte];
-            
+
             // Check if this section contains an OpenMP parallel pragma without private clause
             if preceding_text.contains("#pragma omp parallel") && !preceding_text.contains("private(") {
                 // Make sure the pragma is close to this compound statement (not from earlier code)
@@ -653,12 +653,12 @@ impl Con34C {
     ) {
         // Find variables declared outside this parallel region that are accessed inside
         // For simplicity, look for common patterns like j++ in loops
-        
+
         // Get the function containing this region
         if let Some(function) = self.find_enclosing_function(region) {
             // Get function-local variables
             let local_vars = self.find_local_vars_before_node(&function, region, source);
-            
+
             // Check if any of these are modified in the parallel region
             for var in &local_vars {
                 if self.is_var_modified_in_node(region, var, source) {
@@ -684,12 +684,12 @@ impl Con34C {
 
     fn find_local_vars_before_node(&self, function: &Node, before_node: &Node, source: &str) -> Vec<String> {
         let mut vars = Vec::new();
-        
+
         if let Some(body) = function.child_by_field_name("body") {
             let target_start = before_node.start_byte();
             self.collect_local_vars_before(&body, target_start, source, &mut vars);
         }
-        
+
         vars
     }
 
@@ -698,7 +698,7 @@ impl Con34C {
         if node.start_byte() >= before_byte {
             return;
         }
-        
+
         if node.kind() == "declaration" {
             // Check if it's NOT static
             let mut is_static = false;
@@ -711,7 +711,7 @@ impl Con34C {
                             is_static = true;
                         }
                     }
-                    
+
                     if child.kind() == "init_declarator" {
                         if let Some(declarator) = child.child_by_field_name("declarator") {
                             if let Some(name) = self.get_identifier_name(&declarator, source) {
