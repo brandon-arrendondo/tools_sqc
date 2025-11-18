@@ -717,5 +717,3 @@ impl Fio34C {
         });
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/

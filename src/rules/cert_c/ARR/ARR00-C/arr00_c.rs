@@ -2189,5 +2189,3 @@ fn is_function_call_name(node: &Node) -> bool {
         false
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
