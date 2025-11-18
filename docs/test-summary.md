@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 57 (20.1%)
+- **Implemented Rules:** 58 (20.5%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -239,12 +239,12 @@
   - 🔶 [MSC30-C](#rule-msc30c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [MSC41-C](#rule-msc41c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [MSC33-C](#rule-msc33c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-- [POS](#category-pos) (4 implemented / 20 total)
+- [POS](#category-pos) (5 implemented / 20 total)
   - 🔶 [POS04-C](#rule-pos04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS34-C](#rule-pos34c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [POS49-C](#rule-pos49c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [POS02-C](#rule-pos02c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-  - 🔶 [POS01-C](#rule-pos01c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
+  - ✅ [POS01-C](#rule-pos01c) - Implemented: Pass 3/3 (100.0%)
   - 🔶 [POS44-C](#rule-pos44c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS47-C](#rule-pos47c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - ✅ [POS36-C](#rule-pos36c) - Implemented: Pass 0/2 (0.0%) [2 not run]
@@ -276,7 +276,7 @@
   - 🔶 [PRE13-C](#rule-pre13c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [PRE00-C](#rule-pre00c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - ✅ [PRE31-C](#rule-pre31c) - Implemented: Pass 0/48 (0.0%) [48 not run]
-  - ✅ [PRE07-C](#rule-pre07c) - Implemented: Pass 1/4 (25.0%) [3 not run]
+  - ✅ [PRE07-C](#rule-pre07c) - Implemented: Pass 0/4 (0.0%) [4 not run]
 - [SIG](#category-sig) (2 implemented / 7 total)
   - 🔶 [SIG34-C](#rule-sig34c) - Not Implemented (has tests): Pass 0/44 (0.0%) [44 not run]
   - 🔶 [SIG00-C](#rule-sig00c) - Not Implemented (has tests): Pass 0/44 (0.0%) [44 not run]
@@ -9188,7 +9188,7 @@ the terminating null character, the array size of the string appears sufficient.
 
 <a id="category-pos"></a>
 
-**Implementation Status:** 4 / 20 rules (20.0%)
+**Implementation Status:** 5 / 20 rules (25.0%)
 
 ### 🔶 POS04-C - Not Implemented (has tests)
 
@@ -9330,7 +9330,7 @@ thebind()system call to bind to these ports.
 
 ---
 
-### 🔶 POS01-C - Not Implemented (has tests)
+### ✅ POS01-C - Implemented
 
 <a id="rule-pos01c"></a>
 
@@ -9354,16 +9354,16 @@ which the user of the application is not privileged.
 
 **Test Coverage:** 3 tests (1 fail, 2 pass)
 
-**Test Results:** 0/3 passed (0.0%), 3 not run
+**Test Results:** 3/3 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_pos01_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_pos01_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_linux_21126_freebsd_solaris_10_posix1_2008o_nofollow.c` → `test_pos01_c_pass_wiki_linux_21126_freebsd_solaris_10_posix1_2008o_nofollow`
-- ⏭️ NOT RUN `wiki_lstat_fopen_fstat.c` → `test_pos01_c_pass_wiki_lstat_fopen_fstat`
+- ✅ PASS `wiki_linux_21126_freebsd_solaris_10_posix1_2008o_nofollow.c` → `test_pos01_c_pass_wiki_linux_21126_freebsd_solaris_10_posix1_2008o_nofollow`
+- ✅ PASS `wiki_lstat_fopen_fstat.c` → `test_pos01_c_pass_wiki_lstat_fopen_fstat`
 
 ---
 
@@ -10560,11 +10560,11 @@ the value of a now??/ a++;
 
 **Test Coverage:** 4 tests (2 fail, 2 pass)
 
-**Test Results:** 1/4 passed (25.0%), 3 not run
+**Test Results:** 0/4 passed (0.0%), 4 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `wiki_noncompliant_1.c` → `test_pre07_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_pre07_c_fail_wiki_noncompliant_1`
 - ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_pre07_c_fail_wiki_noncompliant_2`
 
 #### Pass Tests (Should NOT Detect Violations)
@@ -11999,7 +11999,7 @@ or by callingExitProcess().
 | INT | 23 | 3 | 238 | 10.3 |
 | MEM | 17 | 3 | 244 | 14.4 |
 | MSC | 8 | 1 | 30 | 3.8 |
-| POS | 20 | 4 | 55 | 2.8 |
+| POS | 20 | 5 | 55 | 2.8 |
 | PRE | 16 | 5 | 189 | 11.8 |
 | SIG | 7 | 2 | 314 | 44.9 |
 | STR | 16 | 4 | 185 | 11.6 |
