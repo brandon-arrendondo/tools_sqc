@@ -431,6 +431,3 @@ impl Arr38C {
 }
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/arr38_c.rs"]
-// mod tests;

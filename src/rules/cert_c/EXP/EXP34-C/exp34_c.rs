@@ -848,6 +848,3 @@ fn is_deref_function(func_name: &str) -> bool {
 }
 
 // DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/exp34_c.rs"]
-// mod tests;
