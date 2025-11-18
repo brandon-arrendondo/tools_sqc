@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 51 (18.0%)
+- **Implemented Rules:** 52 (18.4%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -53,7 +53,7 @@
   - 🔶 [CON41-C](#rule-con41c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON50-C](#rule-con50c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON30-C](#rule-con30c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
-- [DCL](#category-dcl) (5 implemented / 31 total)
+- [DCL](#category-dcl) (6 implemented / 31 total)
   - 🔶 [DCL41-C](#rule-dcl41c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL10-C](#rule-dcl10c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [DCL06-C](#rule-dcl06c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
@@ -65,7 +65,7 @@
   - 🔶 [DCL09-C](#rule-dcl09c) - Not Implemented (has tests): Pass 0/1 (0.0%) [1 not run]
   - ✅ [DCL03-C](#rule-dcl03c) - Implemented: Pass 0/3 (0.0%) [3 not run]
   - 🔶 [DCL11-C](#rule-dcl11c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
-  - ✅ [DCL05-C](#rule-dcl05c) - Implemented: Pass 4/6 (66.7%)
+  - ✅ [DCL05-C](#rule-dcl05c) - Implemented: Pass 0/6 (0.0%) [6 not run]
   - 🔶 [DCL17-C](#rule-dcl17c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [DCL12-C](#rule-dcl12c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [DCL21-C](#rule-dcl21c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -80,7 +80,7 @@
   - 🔶 [DCL22-C](#rule-dcl22c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL20-C](#rule-dcl20c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [DCL30-C](#rule-dcl30c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
-  - 🔶 [DCL19-C](#rule-dcl19c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
+  - ✅ [DCL19-C](#rule-dcl19c) - Implemented: Pass 6/6 (100.0%)
   - 🔶 [DCL39-C](#rule-dcl39c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [DCL31-C](#rule-dcl31c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - ✅ [DCL01-C](#rule-dcl01c) - Implemented: Pass 0/4 (0.0%) [4 not run]
@@ -2552,7 +2552,7 @@ return 0; }
 
 <a id="category-dcl"></a>
 
-**Implementation Status:** 5 / 31 rules (16.1%)
+**Implementation Status:** 6 / 31 rules (19.4%)
 
 ### 🔶 DCL41-C - Not Implemented (has tests)
 
@@ -2928,19 +2928,19 @@ modify o's contents, against expectations */ }
 
 **Test Coverage:** 6 tests (3 fail, 3 pass)
 
-**Test Results:** 4/6 passed (66.7%)
+**Test Results:** 0/6 passed (0.0%), 6 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl05_c_fail_wiki_noncompliant_1`
-- ✅ PASS `wiki_noncompliant_4.c` → `test_dcl05_c_fail_wiki_noncompliant_4`
-- ❌ FAIL `wiki_windows.c` → `test_dcl05_c_fail_wiki_windows`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl05_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_4.c` → `test_dcl05_c_fail_wiki_noncompliant_4`
+- ⏭️ NOT RUN `wiki_windows.c` → `test_dcl05_c_fail_wiki_windows`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `wiki_compliant_1.c` → `test_dcl05_c_pass_wiki_compliant_1`
-- ✅ PASS `wiki_compliant_4.c` → `test_dcl05_c_pass_wiki_compliant_4`
-- ❌ FAIL `wiki_windows.c` → `test_dcl05_c_pass_wiki_windows`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl05_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_4.c` → `test_dcl05_c_pass_wiki_compliant_4`
+- ⏭️ NOT RUN `wiki_windows.c` → `test_dcl05_c_pass_wiki_windows`
 
 ---
 
@@ -3447,7 +3447,7 @@ Annex J.)
 
 ---
 
-### 🔶 DCL19-C - Not Implemented (has tests)
+### ✅ DCL19-C - Implemented
 
 <a id="rule-dcl19c"></a>
 
@@ -3463,19 +3463,19 @@ if this variable exceeds a maximum value:
 
 **Test Coverage:** 6 tests (3 fail, 3 pass)
 
-**Test Results:** 0/6 passed (0.0%), 6 not run
+**Test Results:** 6/6 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_function_declaration.c` → `test_dcl19_c_fail_wiki_function_declaration`
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl19_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_dcl19_c_fail_wiki_noncompliant_2`
+- ✅ PASS `wiki_function_declaration.c` → `test_dcl19_c_fail_wiki_function_declaration`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl19_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2.c` → `test_dcl19_c_fail_wiki_noncompliant_2`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl19_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_dcl19_c_pass_wiki_compliant_2`
-- ⏭️ NOT RUN `wiki_compliant_3.c` → `test_dcl19_c_pass_wiki_compliant_3`
+- ✅ PASS `wiki_compliant_1.c` → `test_dcl19_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_2.c` → `test_dcl19_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_3.c` → `test_dcl19_c_pass_wiki_compliant_3`
 
 ---
 
@@ -11990,7 +11990,7 @@ or by callingExitProcess().
 | API | 9 | 5 | 62 | 6.9 |
 | ARR | 9 | 9 | 490 | 54.4 |
 | CON | 23 | 2 | 75 | 3.3 |
-| DCL | 31 | 5 | 173 | 5.6 |
+| DCL | 31 | 6 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
