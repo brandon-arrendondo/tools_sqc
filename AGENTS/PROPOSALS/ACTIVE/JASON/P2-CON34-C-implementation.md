@@ -59,7 +59,59 @@ Implement or verify CON34-C with 100% test pass rate and DRY compliance.
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-18 - Claude Code (via /work-active)
+
+**Phase 1: Analysis & Implementation (Completed)**
+- Read CERT C wiki page for CON34-C
+- Analyzed test cases:
+  - Fail cases: automatic storage duration, thread-specific storage, OpenMP parallel without private
+  - Pass cases: static storage, allocated storage, thread-specific with tss_get, OpenMP with private
+- Created `src/rules/cert_c/CON/CON34-C/con34_c.rs` implementing detection logic:
+  - Detects `thrd_create()` calls with automatic storage pointers
+  - Detects pointer parameters passed to threads (may reference automatic storage)
+  - Detects `tss_set()` in functions creating threads without `tss_get()`
+  - Detects OpenMP `#pragma omp parallel` regions without `private()` clause
+  - Uses heuristics to avoid false positives on heap-allocated pointers
+- Registered rule in `src/rules/cert_c/mod.rs`
+- Enabled rule in `src/rules/cert_c/CON/CON34-C/CON34-C.toml`
+
+**Build Status:** ✅ PASSING
+```
+cargo build
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.83s
+```
+
+**Test Status:** ✅ 8/8 PASSING (100%)
+```
+running 8 tests
+test rules::cert_c::integration::generated_tests::test_con34_c_fail_wiki_automatic_storage_duration ... ok
+test rules::cert_c::integration::generated_tests::test_con34_c_fail_wiki_openmpparallel ... ok
+test rules::cert_c::integration::generated_tests::test_con34_c_fail_wiki_thread_specific_storage ... ok
+test rules::cert_c::integration::generated_tests::test_con34_c_pass_wiki_allocated_storage_duration ... ok
+test rules::cert_c::integration::generated_tests::test_con34_c_pass_wiki_openmpparallel_private ... ok
+test rules::cert_c::integration::generated_tests::test_con34_c_pass_wiki_static_storage_duration ... ok
+test rules::cert_c::integration::generated_tests::test_con34_c_pass_wiki_thread_local_storage_windows_visual_studio ... ok
+test rules::cert_c::integration::generated_tests::test_con34_c_pass_wiki_thread_specific_storage ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 2758 filtered out
+```
+
+**Implementation Details:**
+- Detects address-of local variables passed to `thrd_create()`
+- Identifies pointer parameters that may reference automatic storage
+- Checks for thread-specific storage misuse patterns
+- Detects OpenMP parallel regions with shared variables needing `private()` clause
+- Uses shared utilities (get_node_text) for DRY compliance
+- Provides clear violation messages and suggestions
+
+**Acceptance Criteria Status:**
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
+
+**Next Steps:** Ready for staging and adversarial review
 
 ---
 
