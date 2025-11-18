@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 51 (18.0%)
+- **Implemented Rules:** 52 (18.4%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -106,7 +106,7 @@
   - 🔶 [ERR06-C](#rule-err06c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [ERR30-C](#rule-err30c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
   - 🔶 [ERR32-C](#rule-err32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [EXP](#category-exp) (7 implemented / 31 total)
+- [EXP](#category-exp) (8 implemented / 31 total)
   - 🔶 [EXP36-C](#rule-exp36c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - ✅ [EXP07-C](#rule-exp07c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP39-C](#rule-exp39c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
@@ -114,7 +114,7 @@
   - ✅ [EXP15-C](#rule-exp15c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP47-C](#rule-exp47c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [EXP45-C](#rule-exp45c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
-  - ✅ [EXP12-C](#rule-exp12c) - Implemented: Pass 2/2 (100.0%)
+  - ✅ [EXP12-C](#rule-exp12c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP32-C](#rule-exp32c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ✅ [EXP00-C](#rule-exp00c) - Implemented: Pass 0/4 (0.0%) [4 not run]
   - 🔶 [EXP30-C](#rule-exp30c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
@@ -131,7 +131,7 @@
   - 🔶 [EXP40-C](#rule-exp40c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP03-C](#rule-exp03c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ✅ [EXP33-C](#rule-exp33c) - Implemented: Pass 0/50 (0.0%) [50 not run]
-  - 🔶 [EXP13-C](#rule-exp13c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [EXP13-C](#rule-exp13c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [EXP10-C](#rule-exp10c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [EXP02-C](#rule-exp02c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP14-C](#rule-exp14c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -4357,7 +4357,7 @@ being handled; ifsignal()fails, the value oferrnoisindeterminate.
 
 <a id="category-exp"></a>
 
-**Implementation Status:** 7 / 31 rules (22.6%)
+**Implementation Status:** 8 / 31 rules (25.8%)
 
 ### 🔶 EXP36-C - Not Implemented (has tests)
 
@@ -4604,15 +4604,15 @@ return typevoid.
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 2/2 passed (100.0%)
+**Test Results:** 0/2 passed (0.0%), 2 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `wiki_noncompliant_1.c` → `test_exp12_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_exp12_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `wiki_compliant_1.c` → `test_exp12_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_exp12_c_pass_wiki_compliant_1`
 
 ---
 
@@ -5203,7 +5203,7 @@ currently stored in stack memory.
 
 ---
 
-### 🔶 EXP13-C - Not Implemented (has tests)
+### ✅ EXP13-C - Implemented
 
 <a id="rule-exp13c"></a>
 
@@ -5221,15 +5221,15 @@ the author of the code intended:
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_exp13_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_exp13_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_exp13_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_exp13_c_pass_wiki_compliant_1`
 
 ---
 
@@ -11993,7 +11993,7 @@ or by callingExitProcess().
 | DCL | 31 | 4 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |
-| EXP | 31 | 7 | 236 | 7.6 |
+| EXP | 31 | 8 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
 | FLP | 13 | 0 | 40 | 3.1 |
 | INT | 23 | 3 | 238 | 10.3 |

@@ -70,6 +70,9 @@ pub mod exp07_c;
 #[path = "EXP/EXP12-C/exp12_c.rs"]
 pub mod exp12_c;
 
+#[path = "EXP/EXP13-C/exp13_c.rs"]
+pub mod exp13_c;
+
 #[path = "EXP/EXP15-C/exp15_c.rs"]
 pub mod exp15_c;
 
@@ -176,6 +179,7 @@ impl RuleRegistry {
         registry.register(Box::new(exp05_c::Exp05C));
         registry.register(Box::new(exp07_c::Exp07C));
         registry.register(Box::new(exp12_c::Exp12C));
+        registry.register(Box::new(exp13_c::Exp13C));
         registry.register(Box::new(exp15_c::Exp15C));
         registry.register(Box::new(exp33_c::Exp33C));
         registry.register(Box::new(exp34_c::Exp34C));
