@@ -113,15 +113,24 @@ scripts/work_active_helpers.sh extract-rule-id {PROPOSAL_FILE}.md
 
 3. **Lock all non-related files to prevent accidental edits:**
 ```bash
-scripts/work_active_helpers.sh lock-rule {RULE_ID}
-# Example: scripts/work_active_helpers.sh lock-rule MEM05-C
-# This makes all other rule files read-only
-# Only src/rules/cert_c/{CATEGORY}/{RULE_ID}/ will be writable
+# Implementation mode: Locks everything except rule implementation files
+scripts/work_active_helpers.sh lock-for-impl {RULE_ID}
+# Example: scripts/work_active_helpers.sh lock-for-impl MEM05-C
 ```
 
-**IMPORTANT:** File locking ensures you only modify the assigned rule's implementation. If you need to edit shared utilities, use:
+**IMPORTANT:**
+- **Implementation mode**: Test files are LOCKED (chmod 000) - cannot read or write
+- Get test case examples from the proposal markdown, NOT from locked test files
+- File locking uses chmod 000 which blocks even AI tools from accessing files
+- Lock scope configured in `.claude/lock-list.yaml` (default: `src/` directory)
+
+**Alternative modes:**
 ```bash
-scripts/work_active_helpers.sh lock-rule-utils {RULE_ID}
+# Test editing mode: Locks everything except test files (for fixing test cases)
+scripts/work_active_helpers.sh lock-for-test {RULE_ID}
+
+# Manual mode: Specify exact files to unlock
+scripts/work_active_helpers.sh lock-except "file1.rs" "file2.toml"
 ```
 
 When done with ALL proposals in this session, reset permissions with:
