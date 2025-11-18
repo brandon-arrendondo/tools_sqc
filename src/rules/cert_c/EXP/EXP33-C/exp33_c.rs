@@ -202,8 +202,3 @@ fn get_identifier_name(declarator: &Node, source: &str) -> String {
         _ => "unknown".to_string(),
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/exp33_c.rs"]
-// mod tests;
