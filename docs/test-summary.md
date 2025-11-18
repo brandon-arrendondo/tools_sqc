@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 49 (17.3%)
+- **Implemented Rules:** 50 (17.7%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -22,18 +22,18 @@
 - [ARR](#category-arr) (8 implemented / 9 total)
   - 🔶 [ARR02-C](#rule-arr02c) - Not Implemented (has tests): Pass 0/82 (0.0%) [82 not run]
   - ✅ [ARR30-C](#rule-arr30c) - Implemented: Pass 0/61 (0.0%) [61 not run]
-  - ✅ [ARR37-C](#rule-arr37c) - Implemented: Pass 39/43 (90.7%)
+  - ✅ [ARR37-C](#rule-arr37c) - Implemented: Pass 0/43 (0.0%) [43 not run]
   - ✅ [ARR01-C](#rule-arr01c) - Implemented: Pass 0/65 (0.0%) [65 not run]
   - ✅ [ARR36-C](#rule-arr36c) - Implemented: Pass 0/42 (0.0%) [42 not run]
   - ✅ [ARR39-C](#rule-arr39c) - Implemented: Pass 0/46 (0.0%) [46 not run]
   - ✅ [ARR38-C](#rule-arr38c) - Implemented: Pass 0/50 (0.0%) [50 not run]
   - ✅ [ARR32-C](#rule-arr32c) - Implemented: Pass 0/62 (0.0%) [62 not run]
   - ✅ [ARR00-C](#rule-arr00c) - Implemented: Pass 0/39 (0.0%) [39 not run]
-- [CON](#category-con) (0 implemented / 23 total)
+- [CON](#category-con) (1 implemented / 23 total)
   - 🔶 [CON04-C](#rule-con04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON39-C](#rule-con39c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON09-C](#rule-con09c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [CON05-C](#rule-con05c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [CON05-C](#rule-con05c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [CON34-C](#rule-con34c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [CON31-C](#rule-con31c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON50-C](#rule-con50c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
@@ -895,56 +895,56 @@ structure members are not guaranteed to be contiguous.
 
 **Test Coverage:** 43 tests (31 fail, 12 pass)
 
-**Test Results:** 39/43 passed (90.7%)
+**Test Results:** 0/43 passed (0.0%), 43 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `testcases_aligned_single.c` → `test_arr37_c_fail_testcases_aligned_single`
-- ✅ PASS `testcases_atomic_single.c` → `test_arr37_c_fail_testcases_atomic_single`
-- ✅ PASS `testcases_bitfield_struct.c` → `test_arr37_c_fail_testcases_bitfield_struct`
-- ✅ PASS `testcases_calloc_single.c` → `test_arr37_c_fail_testcases_calloc_single`
-- ✅ PASS `testcases_char_var.c` → `test_arr37_c_fail_testcases_char_var`
-- ✅ PASS `testcases_complex_type.c` → `test_arr37_c_fail_testcases_complex_type`
-- ✅ PASS `testcases_const_single.c` → `test_arr37_c_fail_testcases_const_single`
-- ✅ PASS `testcases_decrement_single.c` → `test_arr37_c_fail_testcases_decrement_single`
-- ✅ PASS `testcases_enum_var.c` → `test_arr37_c_fail_testcases_enum_var`
-- ✅ PASS `testcases_flexible_array_wrong.c` → `test_arr37_c_fail_testcases_flexible_array_wrong`
-- ✅ PASS `testcases_global_single.c` → `test_arr37_c_fail_testcases_global_single`
-- ✅ PASS `testcases_malloc_single.c` → `test_arr37_c_fail_testcases_malloc_single`
-- ✅ PASS `testcases_nested_struct.c` → `test_arr37_c_fail_testcases_nested_struct`
-- ✅ PASS `testcases_param_single.c` → `test_arr37_c_fail_testcases_param_single`
-- ✅ PASS `testcases_pointer_offset.c` → `test_arr37_c_fail_testcases_pointer_offset`
-- ✅ PASS `testcases_pointer_to_pointer.c` → `test_arr37_c_fail_testcases_pointer_to_pointer`
-- ✅ PASS `testcases_register_hint.c` → `test_arr37_c_fail_testcases_register_hint`
-- ✅ PASS `testcases_restrict_single.c` → `test_arr37_c_fail_testcases_restrict_single`
-- ✅ PASS `testcases_single_var_add.c` → `test_arr37_c_fail_testcases_single_var_add`
-- ✅ PASS `testcases_single_var_increment.c` → `test_arr37_c_fail_testcases_single_var_increment`
-- ✅ PASS `testcases_static_single.c` → `test_arr37_c_fail_testcases_static_single`
-- ✅ PASS `testcases_struct_iterate.c` → `test_arr37_c_fail_testcases_struct_iterate`
-- ✅ PASS `testcases_struct_members.c` → `test_arr37_c_fail_testcases_struct_members`
-- ✅ PASS `testcases_struct_padding.c` → `test_arr37_c_fail_testcases_struct_padding`
-- ✅ PASS `testcases_subtract_from_single.c` → `test_arr37_c_fail_testcases_subtract_from_single`
-- ✅ PASS `testcases_thread_local.c` → `test_arr37_c_fail_testcases_thread_local`
-- ✅ PASS `testcases_typedef_single.c` → `test_arr37_c_fail_testcases_typedef_single`
-- ✅ PASS `testcases_union_members.c` → `test_arr37_c_fail_testcases_union_members`
-- ✅ PASS `testcases_vla_single.c` → `test_arr37_c_fail_testcases_vla_single`
-- ✅ PASS `testcases_volatile_single.c` → `test_arr37_c_fail_testcases_volatile_single`
-- ✅ PASS `wiki_noncompliant_1.c` → `test_arr37_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `testcases_aligned_single.c` → `test_arr37_c_fail_testcases_aligned_single`
+- ⏭️ NOT RUN `testcases_atomic_single.c` → `test_arr37_c_fail_testcases_atomic_single`
+- ⏭️ NOT RUN `testcases_bitfield_struct.c` → `test_arr37_c_fail_testcases_bitfield_struct`
+- ⏭️ NOT RUN `testcases_calloc_single.c` → `test_arr37_c_fail_testcases_calloc_single`
+- ⏭️ NOT RUN `testcases_char_var.c` → `test_arr37_c_fail_testcases_char_var`
+- ⏭️ NOT RUN `testcases_complex_type.c` → `test_arr37_c_fail_testcases_complex_type`
+- ⏭️ NOT RUN `testcases_const_single.c` → `test_arr37_c_fail_testcases_const_single`
+- ⏭️ NOT RUN `testcases_decrement_single.c` → `test_arr37_c_fail_testcases_decrement_single`
+- ⏭️ NOT RUN `testcases_enum_var.c` → `test_arr37_c_fail_testcases_enum_var`
+- ⏭️ NOT RUN `testcases_flexible_array_wrong.c` → `test_arr37_c_fail_testcases_flexible_array_wrong`
+- ⏭️ NOT RUN `testcases_global_single.c` → `test_arr37_c_fail_testcases_global_single`
+- ⏭️ NOT RUN `testcases_malloc_single.c` → `test_arr37_c_fail_testcases_malloc_single`
+- ⏭️ NOT RUN `testcases_nested_struct.c` → `test_arr37_c_fail_testcases_nested_struct`
+- ⏭️ NOT RUN `testcases_param_single.c` → `test_arr37_c_fail_testcases_param_single`
+- ⏭️ NOT RUN `testcases_pointer_offset.c` → `test_arr37_c_fail_testcases_pointer_offset`
+- ⏭️ NOT RUN `testcases_pointer_to_pointer.c` → `test_arr37_c_fail_testcases_pointer_to_pointer`
+- ⏭️ NOT RUN `testcases_register_hint.c` → `test_arr37_c_fail_testcases_register_hint`
+- ⏭️ NOT RUN `testcases_restrict_single.c` → `test_arr37_c_fail_testcases_restrict_single`
+- ⏭️ NOT RUN `testcases_single_var_add.c` → `test_arr37_c_fail_testcases_single_var_add`
+- ⏭️ NOT RUN `testcases_single_var_increment.c` → `test_arr37_c_fail_testcases_single_var_increment`
+- ⏭️ NOT RUN `testcases_static_single.c` → `test_arr37_c_fail_testcases_static_single`
+- ⏭️ NOT RUN `testcases_struct_iterate.c` → `test_arr37_c_fail_testcases_struct_iterate`
+- ⏭️ NOT RUN `testcases_struct_members.c` → `test_arr37_c_fail_testcases_struct_members`
+- ⏭️ NOT RUN `testcases_struct_padding.c` → `test_arr37_c_fail_testcases_struct_padding`
+- ⏭️ NOT RUN `testcases_subtract_from_single.c` → `test_arr37_c_fail_testcases_subtract_from_single`
+- ⏭️ NOT RUN `testcases_thread_local.c` → `test_arr37_c_fail_testcases_thread_local`
+- ⏭️ NOT RUN `testcases_typedef_single.c` → `test_arr37_c_fail_testcases_typedef_single`
+- ⏭️ NOT RUN `testcases_union_members.c` → `test_arr37_c_fail_testcases_union_members`
+- ⏭️ NOT RUN `testcases_vla_single.c` → `test_arr37_c_fail_testcases_vla_single`
+- ⏭️ NOT RUN `testcases_volatile_single.c` → `test_arr37_c_fail_testcases_volatile_single`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_arr37_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `testcases_array_arithmetic.c` → `test_arr37_c_pass_testcases_array_arithmetic`
-- ✅ PASS `testcases_array_parameter.c` → `test_arr37_c_pass_testcases_array_parameter`
-- ❌ FAIL `testcases_calloc_array.c` → `test_arr37_c_pass_testcases_calloc_array`
-- ✅ PASS `testcases_direct_member_access.c` → `test_arr37_c_pass_testcases_direct_member_access`
-- ✅ PASS `testcases_flexible_array_member.c` → `test_arr37_c_pass_testcases_flexible_array_member`
-- ❌ FAIL `testcases_malloc_array.c` → `test_arr37_c_pass_testcases_malloc_array`
-- ✅ PASS `testcases_multidim_array.c` → `test_arr37_c_pass_testcases_multidim_array`
-- ✅ PASS `testcases_string_array.c` → `test_arr37_c_pass_testcases_string_array`
-- ✅ PASS `testcases_struct_with_array.c` → `test_arr37_c_pass_testcases_struct_with_array`
-- ❌ FAIL `testcases_vla_array.c` → `test_arr37_c_pass_testcases_vla_array`
-- ✅ PASS `wiki_compliant_1.c` → `test_arr37_c_pass_wiki_compliant_1`
-- ❌ FAIL `wiki_compliant_2.c` → `test_arr37_c_pass_wiki_compliant_2`
+- ⏭️ NOT RUN `testcases_array_arithmetic.c` → `test_arr37_c_pass_testcases_array_arithmetic`
+- ⏭️ NOT RUN `testcases_array_parameter.c` → `test_arr37_c_pass_testcases_array_parameter`
+- ⏭️ NOT RUN `testcases_calloc_array.c` → `test_arr37_c_pass_testcases_calloc_array`
+- ⏭️ NOT RUN `testcases_direct_member_access.c` → `test_arr37_c_pass_testcases_direct_member_access`
+- ⏭️ NOT RUN `testcases_flexible_array_member.c` → `test_arr37_c_pass_testcases_flexible_array_member`
+- ⏭️ NOT RUN `testcases_malloc_array.c` → `test_arr37_c_pass_testcases_malloc_array`
+- ⏭️ NOT RUN `testcases_multidim_array.c` → `test_arr37_c_pass_testcases_multidim_array`
+- ⏭️ NOT RUN `testcases_string_array.c` → `test_arr37_c_pass_testcases_string_array`
+- ⏭️ NOT RUN `testcases_struct_with_array.c` → `test_arr37_c_pass_testcases_struct_with_array`
+- ⏭️ NOT RUN `testcases_vla_array.c` → `test_arr37_c_pass_testcases_vla_array`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_arr37_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_arr37_c_pass_wiki_compliant_2`
 
 ---
 
@@ -1452,7 +1452,7 @@ expensive operation with arrays).
 
 <a id="category-con"></a>
 
-**Implementation Status:** 0 / 23 rules (0.0%)
+**Implementation Status:** 1 / 23 rules (4.3%)
 
 ### 🔶 CON04-C - Not Implemented (has tests)
 
@@ -1545,7 +1545,7 @@ Standardatomic_compare_exchangegeneric functions.
 
 ---
 
-### 🔶 CON05-C - Not Implemented (has tests)
+### ✅ CON05-C - Implemented
 
 <a id="rule-con05c"></a>
 
@@ -1569,15 +1569,15 @@ lock are also blocked.
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_con05_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_con05_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_block_while_not_locked.c` → `test_con05_c_pass_wiki_block_while_not_locked`
+- ✅ PASS `wiki_block_while_not_locked.c` → `test_con05_c_pass_wiki_block_while_not_locked`
 
 ---
 
@@ -11989,7 +11989,7 @@ thebufparameter. From the documentation ofFORMAT_MESSAGE_ALLOCATE_BUFFER[MSDN]:
 |----------|-------|-------------|-------|----------------|
 | API | 9 | 7 | 62 | 6.9 |
 | ARR | 9 | 8 | 490 | 54.4 |
-| CON | 23 | 0 | 75 | 3.3 |
+| CON | 23 | 1 | 75 | 3.3 |
 | DCL | 31 | 4 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |

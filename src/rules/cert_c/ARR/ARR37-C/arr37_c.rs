@@ -551,8 +551,7 @@ impl NonArrayPointerAnalyzer {
                 // Check what kind of parameter this is
                 if declarator.kind() == "array_declarator" {
                     // Parameter declared as array (e.g., int param[])
-                    self.variable_types
-                        .insert(param_name, VariableType::Array);
+                    self.variable_types.insert(param_name, VariableType::Array);
                 } else if self.is_pointer_parameter(&declarator) {
                     // Parameter is a pointer - treat as NonArray (conservative approach)
                     // This means we'll flag pointer arithmetic on parameters unless we can prove it's an array
