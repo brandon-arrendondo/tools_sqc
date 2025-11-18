@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 56 (19.8%)
+- **Implemented Rules:** 57 (20.1%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -185,7 +185,7 @@
   - ⚫ [FLP00-C](#rule-flp00c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [FLP03-C](#rule-flp03c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [FLP05-C](#rule-flp05c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - ✅ [FLP37-C](#rule-flp37c) - Implemented: Pass 2/2 (100.0%)
+  - ✅ [FLP37-C](#rule-flp37c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [FLP02-C](#rule-flp02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [FLP30-C](#rule-flp30c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
 - [INT](#category-int) (3 implemented / 23 total)
@@ -260,7 +260,7 @@
   - 🔶 [POS53-C](#rule-pos53c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS48-C](#rule-pos48c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [POS05-C](#rule-pos05c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-- [PRE](#category-pre) (4 implemented / 16 total)
+- [PRE](#category-pre) (5 implemented / 16 total)
   - 🔶 [PRE06-C](#rule-pre06c) - Not Implemented (has tests): Pass 0/1 (0.0%) [1 not run]
   - 🔶 [PRE04-C](#rule-pre04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ✅ [PRE32-C](#rule-pre32c) - Implemented: Pass 0/42 (0.0%) [42 not run]
@@ -276,7 +276,7 @@
   - 🔶 [PRE13-C](#rule-pre13c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [PRE00-C](#rule-pre00c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - ✅ [PRE31-C](#rule-pre31c) - Implemented: Pass 0/48 (0.0%) [48 not run]
-  - 🔶 [PRE07-C](#rule-pre07c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
+  - ✅ [PRE07-C](#rule-pre07c) - Implemented: Pass 1/4 (25.0%) [3 not run]
 - [SIG](#category-sig) (2 implemented / 7 total)
   - 🔶 [SIG34-C](#rule-sig34c) - Not Implemented (has tests): Pass 0/44 (0.0%) [44 not run]
   - 🔶 [SIG00-C](#rule-sig00c) - Not Implemented (has tests): Pass 0/44 (0.0%) [44 not run]
@@ -7051,15 +7051,15 @@ equivalent.
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 2/2 passed (100.0%)
+**Test Results:** 0/2 passed (0.0%), 2 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `wiki_noncompliant_1.c` → `test_flp37_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_flp37_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `wiki_compliant_1.c` → `test_flp37_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_flp37_c_pass_wiki_compliant_1`
 
 ---
 
@@ -9922,7 +9922,7 @@ service to occur.
 
 <a id="category-pre"></a>
 
-**Implementation Status:** 4 / 16 rules (25.0%)
+**Implementation Status:** 5 / 16 rules (31.2%)
 
 ### 🔶 PRE06-C - Not Implemented (has tests)
 
@@ -10546,7 +10546,7 @@ to sizeof, _Alignof, or _Generic.
 
 ---
 
-### 🔶 PRE07-C - Not Implemented (has tests)
+### ✅ PRE07-C - Implemented
 
 <a id="rule-pre07c"></a>
 
@@ -10560,11 +10560,11 @@ the value of a now??/ a++;
 
 **Test Coverage:** 4 tests (2 fail, 2 pass)
 
-**Test Results:** 0/4 passed (0.0%), 4 not run
+**Test Results:** 1/4 passed (25.0%), 3 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_pre07_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_pre07_c_fail_wiki_noncompliant_1`
 - ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_pre07_c_fail_wiki_noncompliant_2`
 
 #### Pass Tests (Should NOT Detect Violations)
@@ -12000,7 +12000,7 @@ or by callingExitProcess().
 | MEM | 17 | 3 | 244 | 14.4 |
 | MSC | 8 | 1 | 30 | 3.8 |
 | POS | 20 | 4 | 55 | 2.8 |
-| PRE | 16 | 4 | 189 | 11.8 |
+| PRE | 16 | 5 | 189 | 11.8 |
 | SIG | 7 | 2 | 314 | 44.9 |
 | STR | 16 | 4 | 185 | 11.6 |
 | WIN | 6 | 2 | 16 | 2.7 |
