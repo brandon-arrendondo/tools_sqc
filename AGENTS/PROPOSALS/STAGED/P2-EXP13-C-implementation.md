@@ -13,7 +13,7 @@ tags:
 
 # P2-EXP13-C - EXP13-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED (awaiting adversarial review)
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** BRANDON
@@ -49,17 +49,19 @@ Implement or verify EXP13-C with 100% test pass rate and DRY compliance.
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-18 - Claude Code (via /work-active)
+
+Implemented EXP13-C to detect chained relational/equality operators (e.g., `a < b < c`) which are misleading due to left-associativity. Detects binary expressions with relational/equality operators that have similar operators as operands, suggesting use of explicit logical operators instead. Uses shared utilities for DRY compliance. All tests pass (100% rate: 2/2).
 
 ---
 
