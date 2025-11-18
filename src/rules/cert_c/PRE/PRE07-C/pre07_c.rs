@@ -35,11 +35,11 @@ impl CertRule for PRE07C {
 
         // Search source for trigraph patterns
         let lines: Vec<&str> = source.lines().collect();
-        
+
         for (line_idx, line) in lines.iter().enumerate() {
             // Work with bytes to avoid UTF-8 issues
             let line_bytes = line.as_bytes();
-            
+
             let mut i = 0;
             while i + 2 < line_bytes.len() {
                 // Check for ?? followed by trigraph character
@@ -49,16 +49,17 @@ impl CertRule for PRE07C {
                         // Check if this is escaped by string splitting (like "?" "?!")
                         // Look backwards for "? and forwards for "
                         let mut is_escaped = false;
-                        
+
                         // Simple check: if we see \" immediately before the second ? and " after third char
                         if i >= 2 && i + 3 < line_bytes.len() {
-                            if line_bytes[i - 1] == b'?' && 
-                               line_bytes[i - 2] == b'"' &&
-                               line_bytes[i + 3] == b'"' {
+                            if line_bytes[i - 1] == b'?'
+                                && line_bytes[i - 2] == b'"'
+                                && line_bytes[i + 3] == b'"'
+                            {
                                 is_escaped = true;
                             }
                         }
-                        
+
                         if !is_escaped {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),

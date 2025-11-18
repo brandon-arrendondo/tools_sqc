@@ -83,7 +83,13 @@ impl POS01C {
         false
     }
 
-    fn check_open_calls_recursive(&self, node: &Node, source: &str, has_lstat: bool, violations: &mut Vec<RuleViolation>) {
+    fn check_open_calls_recursive(
+        &self,
+        node: &Node,
+        source: &str,
+        has_lstat: bool,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if node.kind() == "call_expression" {
             // Check if this is an open() call
             let mut cursor = node.walk();
@@ -97,7 +103,7 @@ impl POS01C {
                         is_open = true;
                     }
                 }
-                
+
                 // Check arguments for O_NOFOLLOW
                 if child.kind() == "argument_list" {
                     has_nofollow = self.has_nofollow_flag(&child, source);
