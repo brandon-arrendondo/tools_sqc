@@ -846,5 +846,3 @@ fn is_deref_function(func_name: &str) -> bool {
             | "free"
     )
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/

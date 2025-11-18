@@ -476,5 +476,3 @@ impl MemoryAnalyzer {
         }
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/

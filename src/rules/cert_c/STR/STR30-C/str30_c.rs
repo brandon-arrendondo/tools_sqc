@@ -369,5 +369,3 @@ fn is_string_modifying_function(func_name: &str) -> bool {
             | "bzero"
     )
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/

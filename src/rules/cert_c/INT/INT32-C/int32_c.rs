@@ -1289,5 +1289,3 @@ impl Int32C {
         args
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/

@@ -202,5 +202,3 @@ impl Pre32C {
         false
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/

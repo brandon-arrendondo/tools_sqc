@@ -429,5 +429,3 @@ impl Arr38C {
             || (size_expr.contains("SIZE_MAX") || size_expr.contains("UINT_MAX"))
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
