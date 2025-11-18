@@ -56,12 +56,12 @@ impl Dcl07C {
         // { ... }
         //
         // The key is that there are declarations between the declarator and the body
-        
+
         if let Some(declarator) = func_node.child_by_field_name("declarator") {
             // Check if there are parameter declarations after the declarator
             let mut found_declarations_after_declarator = false;
             let declarator_end = declarator.end_byte();
-            
+
             // Look for declarations between declarator and body
             for i in 0..func_node.child_count() {
                 if let Some(child) = func_node.child(i) {
@@ -76,7 +76,7 @@ impl Dcl07C {
                     }
                 }
             }
-            
+
             if found_declarations_after_declarator {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
@@ -97,12 +97,12 @@ impl Dcl07C {
         // Look for: fn_ptr = add;
         // Where fn_ptr is declared as: int (*fn_ptr)(int, int);
         // But add is: int add(int, int, int);
-        
+
         if let Some(right) = assign_node.child_by_field_name("right") {
             // Check if right side is an identifier (function name)
             if right.kind() == "identifier" {
                 let func_name = get_node_text(&right, source);
-                
+
                 // Get the left side (function pointer variable)
                 if let Some(left) = assign_node.child_by_field_name("left") {
                     // Find the function pointer declaration
@@ -143,7 +143,7 @@ impl Dcl07C {
         } else {
             return None;
         };
-        
+
         // Search backwards for declaration
         let root = self.get_root(context);
         self.find_declaration_params(&root, source, var_name)
@@ -216,7 +216,7 @@ impl Dcl07C {
     /// Count parameters in a parameter_list node
     fn count_parameters<'a>(&self, params_node: &Node<'a>, source: &'a str) -> usize {
         let mut count = 0;
-        
+
         for i in 0..params_node.child_count() {
             if let Some(child) = params_node.child(i) {
                 if child.kind() == "parameter_declaration" {
@@ -226,7 +226,7 @@ impl Dcl07C {
                 }
             }
         }
-        
+
         // If we didn't find any parameter_declaration nodes, count commas + 1
         if count == 0 {
             let text = get_node_text(params_node, source);
@@ -235,7 +235,7 @@ impl Dcl07C {
                 count = text.matches(',').count() + 1;
             }
         }
-        
+
         count
     }
 

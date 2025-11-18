@@ -70,12 +70,13 @@ CON40-C detects when an atomic variable is referenced multiple times within a si
 2. **Expression Analysis**: Scans all expressions (binary, assignment, conditional, etc.)
 3. **Reference Counting**: Counts how many times each atomic variable appears in an expression
 4. **Safe Patterns**: Excludes compound assignments (+=, ^=, etc.) which are atomic operations
+5. **Load-Modify-Store Detection**: Detects atomic_load() + atomic_store() patterns on same variable
 
 **Violations Detected:**
 - `n * (n + 1) / 2` where `n` is `atomic_int` - two reads, not atomic together
 - Any expression with 2+ references to same atomic variable
+- Load-modify-store patterns: `atomic_load(&flag)` ... `atomic_store(&flag, value)`
 - Excludes: `flag ^= 1` (compound assignment is atomic)
-- Excludes: Separate `atomic_load()` and `atomic_store()` in different statements
 
 ### Build & Test Status
 
@@ -84,22 +85,37 @@ CON40-C detects when an atomic variable is referenced multiple times within a si
 ✅ **Rule enabled** in `CON40-C.toml`
 ✅ **Uses DRY utilities** (`get_node_text()` from `ast_utils`)
 
-**Test Files Available:**
-- `tests/fail/wiki_noncompliant_2.c` - atomic_int used twice (n * (n+1) / 2)
-- `tests/fail/wiki_atomic_bool.c` - atomic_bool separate operations (actually compliant)
-- `tests/pass/wiki_compliant_2.c` - regular int, not atomic
-- `tests/pass/wiki_compound_assignment.c` - compound ^= operator (safe)
+**Test Status:** ✅ 4/4 PASSING (100%)
+```
+running 4 tests
+test rules::cert_c::integration::generated_tests::test_con40_c_pass_wiki_compliant_2 ... ok
+test rules::cert_c::integration::generated_tests::test_con40_c_pass_wiki_compound_assignment ... ok
+test rules::cert_c::integration::generated_tests::test_con40_c_fail_wiki_noncompliant_2 ... ok
+test rules::cert_c::integration::generated_tests::test_con40_c_fail_wiki_atomic_bool ... ok
 
-**Implementation Notes:**
-- Algorithm walks AST collecting atomic variables into HashMap
-- For each expression node, counts variable references
-- Reports violation when count >= 2 (unless safe compound assignment)
-- Smart enough to recognize `atomic_load(&flag)` as function call (single atomic op)
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 2762 filtered out
+```
 
-**Next Steps:**
-- Run integration tests when test framework is fixed
-- Verify all 4 test cases behave as expected
-- May need refinement if test failures occur
+**Test Files:**
+- `tests/fail/wiki_noncompliant_2.c` - atomic_int used twice (n * (n+1) / 2) ✅
+- `tests/fail/wiki_atomic_bool.c` - atomic_bool load-modify-store pattern ✅
+- `tests/pass/wiki_compliant_2.c` - regular int, not atomic ✅
+- `tests/pass/wiki_compound_assignment.c` - compound ^= operator (safe) ✅
+
+**Implementation Fix Applied:**
+- Enhanced detection to identify load-modify-store patterns
+- Added `check_load_modify_store()` method to scan functions for atomic_load/atomic_store pairs
+- Now correctly detects non-atomic compound operations across multiple statements
+- Fixed wiki_atomic_bool test case which was previously failing
+
+**Acceptance Criteria:**
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
+
+**Status:** Ready for staging and adversarial review
 
 ---
 

@@ -4,23 +4,19 @@
  * Status: PASS - Should NOT trigger CON50-C violation
  */
 
-#include <mutex>
-#include <thread>
+#include <pthread.h>
 
-const size_t maxThreads = 10;
-
-void do_work(size_t i, std::mutex *pm) {
-  std::lock_guard<std::mutex> lk(*pm);
-
-  // Access data protected by the lock.
+void *thread_func(void *arg) {
+    pthread_mutex_t *m = (pthread_mutex_t *)arg;
+    pthread_mutex_lock(m);
+    /* Access shared data */
+    pthread_mutex_unlock(m);
+    return NULL;
 }
 
-std::mutex m;
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;  /* Global mutex - safe */
 
-void start_threads() {
-  std::thread threads[maxThreads];
-
-  for (size_t i = 0; i < maxThreads; ++i) {
-    threads[i] = std::thread(do_work, i, &m);
-  }
+void start_thread(void) {
+    pthread_t thread;
+    pthread_create(&thread, NULL, thread_func, &m);
 }
