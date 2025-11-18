@@ -742,8 +742,3 @@ impl FormatStringAnalyzer {
         }
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/fio30_c.rs"]
-// mod tests;
