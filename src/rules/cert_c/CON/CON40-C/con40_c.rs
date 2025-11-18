@@ -32,6 +32,9 @@ impl Con40C {
 
         // Check expressions for multiple references to same atomic var
         self.check_expressions(node, source, &atomic_vars, violations);
+
+        // Check for load-modify-store patterns
+        self.check_load_modify_store(node, source, &atomic_vars, violations);
     }
 
     /// Collect all atomic variable declarations
@@ -192,6 +195,128 @@ impl Con40C {
         }
 
         false
+    }
+
+    /// Check for load-modify-store patterns using atomic_load/atomic_store
+    fn check_load_modify_store<'a>(&self, node: &Node<'a>, source: &'a str,
+                                   atomic_vars: &HashMap<String, bool>,
+                                   violations: &mut Vec<RuleViolation>) {
+        // Only check function definitions
+        if node.kind() != "function_definition" {
+            // Recurse into children
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    self.check_load_modify_store(&child, source, atomic_vars, violations);
+                }
+            }
+            return;
+        }
+
+        // Get the function body
+        let body = match node.child_by_field_name("body") {
+            Some(b) => b,
+            None => return,
+        };
+
+        // Look for atomic_load calls followed by atomic_store on the same variable
+        let mut loads: HashMap<String, Node> = HashMap::new();
+        let mut stores: HashMap<String, Node> = HashMap::new();
+
+        self.collect_atomic_operations(&body, source, atomic_vars, &mut loads, &mut stores);
+
+        // Check if any variable has both load and store in the same function
+        for (var_name, load_node) in &loads {
+            if stores.contains_key(var_name) {
+                // This is a potential load-modify-store pattern
+                // Report violation at the load site
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    line: load_node.start_position().row + 1,
+                    column: load_node.start_position().column + 1,
+                    message: format!(
+                        "Non-atomic load-modify-store pattern detected on atomic variable '{}' - use atomic operations or mutex protection",
+                        var_name
+                    ),
+                    severity: self.severity(),
+                    file_path: String::new(),
+                    suggestion: Some("Consider using atomic_fetch_* operations or wrap with mutex locks".to_string()),
+                    requires_manual_review: None,
+                });
+            }
+        }
+
+        // Continue recursing for nested functions
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_load_modify_store(&child, source, atomic_vars, violations);
+            }
+        }
+    }
+
+    /// Collect atomic_load and atomic_store operations
+    fn collect_atomic_operations<'a>(&self, node: &Node<'a>, source: &'a str,
+                                     atomic_vars: &HashMap<String, bool>,
+                                     loads: &mut HashMap<String, Node<'a>>,
+                                     stores: &mut HashMap<String, Node<'a>>) {
+        // Look for call expressions
+        if node.kind() == "call_expression" {
+            if let Some(func_node) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&func_node, source);
+
+                // Check for atomic_load
+                if func_name == "atomic_load" {
+                    // Get the argument - should be &flag or similar
+                    if let Some(args) = node.child_by_field_name("arguments") {
+                        if let Some(var_name) = self.extract_atomic_var_from_args(&args, source, atomic_vars) {
+                            loads.insert(var_name.to_string(), *node);
+                        }
+                    }
+                }
+
+                // Check for atomic_store
+                if func_name == "atomic_store" {
+                    if let Some(args) = node.child_by_field_name("arguments") {
+                        if let Some(var_name) = self.extract_atomic_var_from_args(&args, source, atomic_vars) {
+                            stores.insert(var_name.to_string(), *node);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recurse into children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_atomic_operations(&child, source, atomic_vars, loads, stores);
+            }
+        }
+    }
+
+    /// Extract atomic variable name from function arguments like &flag
+    fn extract_atomic_var_from_args<'a>(&self, args_node: &Node<'a>, source: &'a str,
+                                        atomic_vars: &HashMap<String, bool>) -> Option<&'a str> {
+        // Iterate through arguments
+        for i in 0..args_node.child_count() {
+            if let Some(arg) = args_node.child(i) {
+                // Look for address-of expressions: &flag
+                if arg.kind() == "pointer_expression" {
+                    if let Some(operand) = arg.child_by_field_name("argument") {
+                        let var_name = get_node_text(&operand, source);
+                        if atomic_vars.contains_key(var_name) {
+                            return Some(var_name);
+                        }
+                    }
+                }
+                // Also check for direct identifiers
+                if arg.kind() == "identifier" {
+                    let var_name = get_node_text(&arg, source);
+                    if atomic_vars.contains_key(var_name) {
+                        return Some(var_name);
+                    }
+                }
+            }
+        }
+        None
     }
 }
 

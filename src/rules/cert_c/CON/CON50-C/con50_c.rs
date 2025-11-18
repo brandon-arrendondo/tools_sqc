@@ -41,7 +41,7 @@ impl Con50C {
     fn check_function<'a>(&self, func_node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
         // Find local mutex variables
         let local_mutexes = self.find_local_mutexes(func_node, source);
-        
+
         if local_mutexes.is_empty() {
             return;
         }
@@ -49,7 +49,7 @@ impl Con50C {
         // For each local mutex, check if it's used with threads
         for mutex_name in &local_mutexes {
             let thread_vars = self.find_threads_using_mutex(func_node, source, mutex_name);
-            
+
             if !thread_vars.is_empty() {
                 // Check if all threads are joined before function exit
                 if !self.all_threads_joined(func_node, source, &thread_vars) {
@@ -80,21 +80,21 @@ impl Con50C {
     /// Find all local mutex variables in a function
     fn find_local_mutexes<'a>(&self, func_node: &Node<'a>, source: &'a str) -> Vec<String> {
         let mut mutexes = Vec::new();
-        
+
         if let Some(body) = func_node.child_by_field_name("body") {
             self.collect_mutex_declarations(&body, source, &mut mutexes, false);
         }
-        
+
         mutexes
     }
 
     /// Recursively collect mutex declarations
-    fn collect_mutex_declarations<'a>(&self, node: &Node<'a>, source: &'a str, 
+    fn collect_mutex_declarations<'a>(&self, node: &Node<'a>, source: &'a str,
                                      mutexes: &mut Vec<String>, is_static: bool) {
         if node.kind() == "declaration" {
             // Check for static storage class
             let mut is_static_decl = is_static;
-            
+
             // Look for storage class specifier
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
@@ -106,11 +106,11 @@ impl Con50C {
                     }
                 }
             }
-            
+
             // Check if type is a mutex
             if let Some(type_node) = node.child_by_field_name("type") {
                 let type_text = get_node_text(&type_node, source);
-                
+
                 // Check for mutex types (C++: std::mutex, pthread: pthread_mutex_t, C11: mtx_t)
                 if type_text.contains("mutex") || type_text.contains("mtx_t") {
                     // Only collect if not static
@@ -169,14 +169,14 @@ impl Con50C {
     }
 
     /// Find threads that are created with this mutex
-    fn find_threads_using_mutex<'a>(&self, func_node: &Node<'a>, source: &'a str, 
+    fn find_threads_using_mutex<'a>(&self, func_node: &Node<'a>, source: &'a str,
                                    mutex_name: &str) -> Vec<String> {
         let mut thread_vars = Vec::new();
-        
+
         if let Some(body) = func_node.child_by_field_name("body") {
             self.collect_thread_creations(&body, source, mutex_name, &mut thread_vars);
         }
-        
+
         thread_vars
     }
 
@@ -188,14 +188,14 @@ impl Con50C {
         // - threads[i] = std::thread(func, ..., &mutex)
         // - pthread_create(&thread, NULL, func, &mutex)
         // - thrd_create(&thread, func, &mutex)
-        
+
         if node.kind() == "assignment_expression" || node.kind() == "init_declarator" {
             // Check if right side creates thread with mutex
             if let Some(right) = node.child_by_field_name("right") {
                 let right_text = get_node_text(&right, source);
-                
+
                 // Check if mutex is passed to thread
-                if right_text.contains(mutex_name) && 
+                if right_text.contains(mutex_name) &&
                    (right_text.contains("std::thread") || right_text.contains("thread(")) {
                     // Get the thread variable name
                     if let Some(left) = node.child_by_field_name("left") {
@@ -205,7 +205,7 @@ impl Con50C {
                     }
                 }
             }
-            
+
             // Also check init declarator value
             if let Some(value) = node.child_by_field_name("value") {
                 let value_text = get_node_text(&value, source);
@@ -219,12 +219,12 @@ impl Con50C {
                 }
             }
         }
-        
+
         // Look for pthread_create or thrd_create calls
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func, source);
-                
+
                 if func_name == "pthread_create" || func_name == "thrd_create" {
                     // Check if mutex is passed in arguments
                     if let Some(args) = node.child_by_field_name("arguments") {
@@ -289,36 +289,36 @@ impl Con50C {
     }
 
     /// Check if all threads are joined before function exit
-    fn all_threads_joined<'a>(&self, func_node: &Node<'a>, source: &'a str, 
+    fn all_threads_joined<'a>(&self, func_node: &Node<'a>, source: &'a str,
                              thread_vars: &[String]) -> bool {
         // Look for .join() calls or pthread_join/thrd_join for each thread
         let mut joined_threads = Vec::new();
-        
+
         if let Some(body) = func_node.child_by_field_name("body") {
             self.collect_joined_threads(&body, source, &mut joined_threads);
         }
-        
+
         // Check if all threads are joined
         for thread_var in thread_vars {
             // Extract base name (threads[i] -> threads)
             let base_name = thread_var.split('[').next().unwrap_or(thread_var);
-            
+
             if !joined_threads.iter().any(|j| j.contains(base_name)) {
                 return false;
             }
         }
-        
+
         true
     }
 
     /// Collect all thread join operations
-    fn collect_joined_threads<'a>(&self, node: &Node<'a>, source: &'a str, 
+    fn collect_joined_threads<'a>(&self, node: &Node<'a>, source: &'a str,
                                   joined: &mut Vec<String>) {
         // Look for .join() calls or pthread_join/thrd_join
         if node.kind() == "call_expression" {
             let call_text = get_node_text(node, source);
-            
-            if call_text.contains(".join()") || 
+
+            if call_text.contains(".join()") ||
                call_text.contains("pthread_join") ||
                call_text.contains("thrd_join") {
                 joined.push(call_text.to_string());

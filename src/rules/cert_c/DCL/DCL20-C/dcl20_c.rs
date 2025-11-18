@@ -29,7 +29,7 @@ impl Dcl20C {
                 self.check_function_declarator(&declarator, source, violations);
             }
         }
-        
+
         // Check function declarations (prototypes)
         if node.kind() == "declaration" {
             // Look for function declarators in the declaration
@@ -88,12 +88,12 @@ impl Dcl20C {
     /// Check if parameter list is empty (no void)
     fn has_empty_parameters<'a>(&self, params: &Node<'a>, source: &'a str) -> bool {
         let params_text = get_node_text(params, source).trim();
-        
+
         // Check if it's literally just ()
         if params_text == "()" {
             return true;
         }
-        
+
         // Check if there are any parameter_declaration children
         let mut has_params = false;
         for i in 0..params.child_count() {
@@ -114,13 +114,13 @@ impl Dcl20C {
                 }
             }
         }
-        
+
         // If no parameters found and not explicitly void, it's a violation
         if !has_params {
             // Double check the text doesn't contain void
             return !params_text.contains("void");
         }
-        
+
         false
     }
 }

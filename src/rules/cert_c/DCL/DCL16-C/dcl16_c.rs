@@ -25,11 +25,11 @@ impl Dcl16C {
         // Look for number literals
         if node.kind() == "number_literal" {
             let text = get_node_text(node, source);
-            
+
             // Check for lowercase 'l' or 'll' suffix
             if self.has_lowercase_long_suffix(text) {
                 let suggested = self.fix_lowercase_suffix(text);
-                
+
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     line: node.start_position().row + 1,
@@ -61,7 +61,7 @@ impl Dcl16C {
     fn has_lowercase_long_suffix(&self, text: &str) -> bool {
         // Remove any unsigned suffix first
         let text = text.trim_end_matches('u').trim_end_matches('U');
-        
+
         // Check for lowercase 'l' or 'll' at the end
         text.ends_with("ll") || (text.ends_with('l') && !text.ends_with('L'))
     }
@@ -69,7 +69,7 @@ impl Dcl16C {
     /// Fix lowercase suffix to uppercase
     fn fix_lowercase_suffix(&self, text: &str) -> String {
         let mut result = text.to_string();
-        
+
         // Handle unsigned suffix
         let has_u_suffix = result.ends_with('u') || result.ends_with('U');
         let u_suffix = if has_u_suffix {
@@ -79,19 +79,19 @@ impl Dcl16C {
         } else {
             None
         };
-        
+
         // Replace lowercase 'l' with 'L'
         if result.ends_with("ll") {
             result = result[..result.len() - 2].to_string() + "LL";
         } else if result.ends_with('l') {
             result = result[..result.len() - 1].to_string() + "L";
         }
-        
+
         // Restore unsigned suffix
         if let Some(u) = u_suffix {
             result.push(u);
         }
-        
+
         result
     }
 }
