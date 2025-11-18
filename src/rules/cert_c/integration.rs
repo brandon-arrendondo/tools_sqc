@@ -6,7 +6,6 @@
 // 2. Run: cargo build (regenerates tests)
 // 3. Run: cargo test (executes all tests including the new one)
 //
-// Historical inline tests (with embedded C strings) are preserved in tests/inline/ for reference.
 
 use std::collections::BTreeMap;
 use std::fs;

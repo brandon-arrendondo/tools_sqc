@@ -73,6 +73,8 @@ struct FormatStringAnalyzer {
     user_input_vars: HashSet<String>,
     // Track variables that are safe (known constants)
     safe_vars: HashSet<String>,
+    // Track function parameters (which should be treated as potentially tainted for format strings)
+    function_parameters: HashSet<String>,
 }
 
 impl FormatStringAnalyzer {
@@ -80,6 +82,7 @@ impl FormatStringAnalyzer {
         Self {
             user_input_vars: HashSet::new(),
             safe_vars: HashSet::new(),
+            function_parameters: HashSet::new(),
         }
     }
 
@@ -95,10 +98,29 @@ impl FormatStringAnalyzer {
             if func_name == "main" {
                 self.mark_main_parameters(&declarator, source);
             }
+            // Mark all function parameters (they could be tainted from callers)
+            self.mark_function_parameters(&declarator, source);
         }
 
         if let Some(body) = func_node.child_by_field_name("body") {
             self.analyze_node(&body, source, violations);
+        }
+    }
+
+    fn mark_function_parameters(&mut self, declarator: &Node, source: &str) {
+        // Look for function parameters and track them
+        if let Some(params) = declarator.child_by_field_name("parameters") {
+            for i in 0..params.child_count() {
+                if let Some(param) = params.child(i) {
+                    if param.kind() == "parameter_declaration" {
+                        if let Some(param_declarator) = param.child_by_field_name("declarator") {
+                            let param_name = self.get_variable_name(&param_declarator, source);
+                            // Mark as function parameter (potentially tainted)
+                            self.function_parameters.insert(param_name);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -290,6 +312,7 @@ impl FormatStringAnalyzer {
             "identifier" => {
                 let var_name = ast_utils::get_node_text_owned(arg, source);
                 self.user_input_vars.contains(&var_name)
+                    || self.function_parameters.contains(&var_name)
             }
             "subscript_expression" => {
                 if let Some(array) = arg.child(0) {
@@ -319,14 +342,34 @@ impl FormatStringAnalyzer {
     fn get_base_variable(&self, node: &Node, source: &str) -> Option<String> {
         match node.kind() {
             "identifier" => Some(ast_utils::get_node_text_owned(node, source)),
-            "subscript_expression" | "pointer_expression" => {
+            "subscript_expression" | "pointer_expression" | "unary_expression" => {
+                // Handle &var, *var, var[index], etc.
                 if let Some(base) = node.child(0) {
+                    // Skip operators like '&', '*'
+                    if base.kind() == "&" || base.kind() == "*" {
+                        if let Some(actual_base) = node.child(1) {
+                            return self.get_base_variable(&actual_base, source);
+                        }
+                    }
                     self.get_base_variable(&base, source)
+                } else if let Some(arg) = node.child_by_field_name("argument") {
+                    // For unary expressions with named 'argument' field
+                    self.get_base_variable(&arg, source)
                 } else {
                     None
                 }
             }
-            _ => None,
+            _ => {
+                // For any other node type, try to find an identifier child
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" {
+                            return Some(ast_utils::get_node_text_owned(&child, source));
+                        }
+                    }
+                }
+                None
+            }
         }
     }
 
@@ -517,6 +560,12 @@ impl FormatStringAnalyzer {
             "snprintf" | "vsnprintf" => 2, // Third argument is format string (buffer, size, format, ...)
             "sprintf" | "vsprintf" | "sscanf" | "fprintf" | "fscanf" | "vfprintf" | "syslog"
             | "dprintf" | "vdprintf" => 1, // Second argument is format string
+            // BSD/POSIX err/errx have an initial exit/status code, then format string
+            "err" | "errx" => 1,
+            // warn/warnx take the format string as first argument
+            "warn" | "warnx" => 0,
+            // GNU error(int status, int errnum, const char *format, ...) => format at index 2
+            "error" => 2,
             _ => 0, // First argument is format string (printf, scanf, vprintf, etc.)
         }
     }
@@ -591,16 +640,9 @@ impl FormatStringAnalyzer {
     /// - User input variables
     /// - Function calls returning user-controlled data
     /// - Array subscripts (especially argv[])
-    /// - Unknown or untracked variables
+    /// - Function parameters (conservative approach)
+    /// - Unknown or untracked variables matching suspicious patterns
     fn is_potentially_unsafe_format_string(&self, node: &Node, source: &str) -> bool {
-        // Debug: Log the actual node kind to understand what we're dealing with
-        #[cfg(debug_assertions)]
-        eprintln!(
-            "DEBUG FIO30-C: Checking node kind: '{}' with text: '{}'",
-            node.kind(),
-            &source[node.start_byte()..node.end_byte()]
-        );
-
         match node.kind() {
             "string_literal" | "concatenated_string" | "string_content" => {
                 // Literal strings are always safe as format strings
@@ -608,13 +650,25 @@ impl FormatStringAnalyzer {
             }
             "identifier" => {
                 let var_name = ast_utils::get_node_text_owned(node, source);
-                // Unsafe if it's user input and not in safe vars
-                self.user_input_vars.contains(&var_name)
-                    || (!self.safe_vars.contains(&var_name) && self.could_be_user_input(&var_name))
+                // Unsafe if it's user input
+                if self.user_input_vars.contains(&var_name) {
+                    return true;
+                }
+                // Explicitly safe variables are allowed
+                if self.safe_vars.contains(&var_name) {
+                    return false;
+                }
+                // Function parameters should be treated as potentially tainted for format strings
+                // This is conservative but prevents vulnerabilities
+                if self.function_parameters.contains(&var_name) {
+                    return true;
+                }
+                // For other variables, use heuristic
+                self.could_be_user_input(&var_name)
             }
             "subscript_expression" => {
                 // Array access could be user input (e.g., argv[1])
-                if let Some(array) = node.child(0) {
+                if let Some(array) = node.child_by_field_name("argument") {
                     if array.kind() == "identifier" {
                         let array_name = ast_utils::get_node_text_owned(&array, source);
                         if self.user_input_vars.contains(&array_name) || array_name == "argv" {
@@ -623,7 +677,7 @@ impl FormatStringAnalyzer {
                     }
                 }
                 // Also check if the index is tainted (e.g., formats[tainted_index])
-                if let Some(index) = node.child(1) {
+                if let Some(index) = node.child_by_field_name("index") {
                     if self.expression_contains_taint(&index, source) {
                         return true; // Tainted index means we can't trust the result
                     }
@@ -682,16 +736,38 @@ impl FormatStringAnalyzer {
 
     fn could_be_user_input(&self, var_name: &str) -> bool {
         // Heuristic: variables with certain names are likely to contain user input
+        // Balance between catching vulnerabilities and avoiding false positives
         let name_lower = var_name.to_lowercase();
-        name_lower.contains("input")
-            || name_lower.contains("user")
+
+        // Strong indicators of user input
+        if name_lower.contains("user_input")
+            || name_lower.contains("user_data")
             || name_lower.contains("argv")
-            || name_lower.contains("arg")
-            || name_lower.contains("buf")
-            || name_lower.contains("buffer")
-            || name_lower.contains("line")
+            || name_lower.contains("getenv")
+            || name_lower.contains("stdin")
+        {
+            return true;
+        }
+
+        // Exclude common CONST pattern names (uppercase with _ pattern suggests const)
+        // But keep lowercase variants suspicious (e.g., global_format vs INFO_FORMAT)
+        if var_name.chars().filter(|c| c.is_uppercase()).count() > var_name.len() / 2
+            && var_name.contains('_')
+        {
+            // Looks like a CONST_STYLE_NAME, probably safe
+            return false;
+        }
+
+        // Check for suspicious patterns in non-const-style names
+        name_lower.contains("user")
+            || (name_lower.contains("input") && !name_lower.starts_with("max_input"))
             || name_lower.contains("cmd")
             || name_lower.contains("command")
+            || (name_lower.contains("format")
+                && !var_name.chars().next().unwrap_or('a').is_uppercase())
+            || (name_lower.contains("buf") && name_lower.contains("user"))
+            || (name_lower.contains("msg")
+                && (name_lower.contains("user") || name_lower.contains("error")))
     }
 
     fn get_function_name(&self, declarator: &Node, source: &str) -> String {
@@ -742,8 +818,3 @@ impl FormatStringAnalyzer {
         }
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/fio30_c.rs"]
-// mod tests;
