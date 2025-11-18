@@ -100,6 +100,9 @@ pub mod fio34_c;
 #[path = "FIO/FIO37-C/fio37_c.rs"]
 pub mod fio37_c;
 
+#[path = "FLP/FLP37-C/flp37_c.rs"]
+pub mod flp37_c;
+
 #[path = "INT/INT18-C/int18_c.rs"]
 pub mod int18_c;
 
@@ -201,6 +204,7 @@ impl RuleRegistry {
         registry.register(Box::new(fio30_c::Fio30C));
         registry.register(Box::new(fio34_c::Fio34C::new()));
         registry.register(Box::new(fio37_c::Fio37C));
+        registry.register(Box::new(flp37_c::FLP37C));
         registry.register(Box::new(int18_c::Int18C));
         registry.register(Box::new(int30_c::Int30C));
         registry.register(Box::new(int32_c::Int32C));

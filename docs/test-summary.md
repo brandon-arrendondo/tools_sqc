@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 55 (19.4%)
+- **Implemented Rules:** 56 (19.8%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -71,7 +71,7 @@
   - ✅ [DCL21-C](#rule-dcl21c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL37-C](#rule-dcl37c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
   - 🔶 [DCL07-C](#rule-dcl07c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
-  - ✅ [DCL38-C](#rule-dcl38c) - Implemented: Pass 2/2 (100.0%)
+  - ✅ [DCL38-C](#rule-dcl38c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL18-C](#rule-dcl18c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL02-C](#rule-dcl02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [DCL40-C](#rule-dcl40c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
@@ -174,7 +174,7 @@
   - ⚫ [FIO14-C](#rule-fio14c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [FIO20-C](#rule-fio20c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [FIO40-C](#rule-fio40c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-- [FLP](#category-flp) (0 implemented / 13 total)
+- [FLP](#category-flp) (1 implemented / 13 total)
   - 🔶 [FLP34-C](#rule-flp34c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [FLP36-C](#rule-flp36c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - ⚫ [FLP01-C](#rule-flp01c) - Not Implemented (no tests): Pass 0/0 (N/A)
@@ -185,7 +185,7 @@
   - ⚫ [FLP00-C](#rule-flp00c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [FLP03-C](#rule-flp03c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [FLP05-C](#rule-flp05c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-  - 🔶 [FLP37-C](#rule-flp37c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [FLP37-C](#rule-flp37c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [FLP02-C](#rule-flp02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [FLP30-C](#rule-flp30c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
 - [INT](#category-int) (3 implemented / 23 total)
@@ -3125,15 +3125,15 @@ with defined behavior. However, some restrictions apply:
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 2/2 passed (100.0%)
+**Test Results:** 0/2 passed (0.0%), 2 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl38_c_fail_wiki_noncompliant_1`
+- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl38_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `wiki_compliant_1.c` → `test_dcl38_c_pass_wiki_compliant_1`
+- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl38_c_pass_wiki_compliant_1`
 
 ---
 
@@ -6715,7 +6715,7 @@ and continue */ } }
 
 <a id="category-flp"></a>
 
-**Implementation Status:** 0 / 13 rules (0.0%)
+**Implementation Status:** 1 / 13 rules (7.7%)
 
 ### 🔶 FLP34-C - Not Implemented (has tests)
 
@@ -7023,7 +7023,7 @@ point numbers when precise computation is neededfor more information.
 
 ---
 
-### 🔶 FLP37-C - Not Implemented (has tests)
+### ✅ FLP37-C - Implemented
 
 <a id="rule-flp37c"></a>
 
@@ -7051,15 +7051,15 @@ equivalent.
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_flp37_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_flp37_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_flp37_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_flp37_c_pass_wiki_compliant_1`
 
 ---
 
@@ -11995,7 +11995,7 @@ or by callingExitProcess().
 | ERR | 11 | 2 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
-| FLP | 13 | 0 | 40 | 3.1 |
+| FLP | 13 | 1 | 40 | 3.1 |
 | INT | 23 | 3 | 238 | 10.3 |
 | MEM | 17 | 3 | 244 | 14.4 |
 | MSC | 8 | 1 | 30 | 3.8 |
