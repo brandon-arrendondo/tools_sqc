@@ -19,15 +19,21 @@ scripts/work_active_helpers.sh list-proposals SUBDIR
 
 ### For EACH Rule Implementation
 ```bash
-# 1. Lock to specific rule
-scripts/work_active_helpers.sh lock-rule-utils RULE_ID
+# 1. Lock all files except the specific rule you're implementing
+scripts/work_active_helpers.sh lock-for-impl RULE_ID
 
-# 2. Implement rule (only rule files are writable)
-# - Create src/rules/cert_c/CATEGORY/RULE_ID/rule_id.rs
+# Alternative: Manual mode (specify exact files)
+# scripts/work_active_helpers.sh lock-except \
+#   "src/rules/cert_c/CATEGORY/RULE_ID/rule_id_c.rs" \
+#   "src/rules/cert_c/CATEGORY/RULE_ID/RULE_ID.toml"
+
+# 2. Implement rule (only unlocked files are writable)
+# - Create src/rules/cert_c/CATEGORY/RULE_ID/rule_id_c.rs
 # - IMPORTANT: Do NOT add embedded unit tests (no #[cfg(test)] modules)
 # - Test cases come from .c files in tests/ directory (auto-generated)
+# - Test files are LOCKED (chmod 000) - read test examples from proposal markdown
 
-# 3. Unlock before registration
+# 3. Unlock before registration in mod.rs
 scripts/work_active_helpers.sh unlock-all
 
 # 4. Register in mod.rs and enable in TOML
@@ -49,14 +55,24 @@ scripts/work_active_helpers.sh unlock-all
 - Test infrastructure auto-generates tests from `.c` files
 
 ### Key Commands
-- `lock-rule-utils RULE_ID` - Focus on single rule, lock all other files
-- `unlock-all` - Restore write permissions
+- `lock-for-impl RULE_ID` - Lock all except rule implementation (tests LOCKED)
+- `lock-for-test RULE_ID` - Lock all except rule test files (impl LOCKED)
+- `lock-except FILE1 FILE2...` - Manual mode: lock all except specified files
+- `unlock-all` - Restore write permissions in configured dirs
 - `extract-rule-id FILE` - Get rule ID from proposal filename
 
+### Lock Configuration
+- Lock scope configured in `.claude/lock-list.yaml`
+- Default: locks all files in `src/` directory
+- Exclusions: `.git/`, `target/`, `tmp/`, `scripts/`
+- Test files are LOCKED during implementation (chmod 000 - no read or write)
+- Get test case context from proposal markdown, NOT from locked test files
+
 ### Why This Matters
-- Prevents accidental modifications to shared infrastructure
-- Enforces single-rule focus
+- Prevents accidental modifications to test files and shared infrastructure
+- Enforces single-rule focus through file-level access control
 - Maintains code isolation during development
+- chmod 000 protection blocks even AI tools from modifying locked files
 
 **If this workflow wasn't followed earlier in the session, start following it NOW.**
 
