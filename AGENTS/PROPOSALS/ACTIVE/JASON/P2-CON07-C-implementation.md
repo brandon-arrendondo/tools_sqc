@@ -59,7 +59,58 @@ Implement or verify CON07-C with 100% test pass rate and DRY compliance.
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-18 - Claude Code (via /work-active)
+
+**Phase 1: Analysis & Implementation (Completed)**
+- Read CERT C wiki page for CON07-C
+- Analyzed test cases:
+  - `tests/fail/wiki_addition_of_primitives.c`: Non-atomic compound operations on static variables `a` and `b`
+  - `tests/pass/wiki_mutex.c`: Uses mutex locks for synchronization (compliant)
+  - `tests/pass/wiki_atomic_struct.c`: Uses atomic struct operations (compliant)
+  - `tests/pass/wiki_atomic_compare_exchange_weak.c`: Uses atomic compare-and-exchange (compliant)
+- Created `src/rules/cert_c/CON/CON07-C/con07_c.rs` implementing detection logic:
+  - Collects all static variables from translation unit
+  - Detects functions accessing multiple static variables without synchronization
+  - Detects compound assignment operations (+=, -=, ++, etc.) on static variables
+  - Exempts functions using mutex locks (mtx_lock/mtx_unlock)
+  - Exempts functions using atomic operations (atomic_*)
+  - Exempts initialization functions (names containing "init")
+- Registered rule in `src/rules/cert_c/mod.rs`
+- Enabled rule in `src/rules/cert_c/CON/CON07-C/CON07-C.toml`
+
+**Build Status:** ✅ PASSING
+```
+cargo build
+   Compiling sqc v0.1.0 (/home/parkerj/tools_sqc)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.92s
+```
+
+**Test Status:** ✅ 4/4 PASSING (100%)
+```
+running 4 tests
+test rules::cert_c::integration::generated_tests::test_con07_c_fail_wiki_addition_of_primitives ... ok
+test rules::cert_c::integration::generated_tests::test_con07_c_pass_wiki_atomic_compare_exchange_weak ... ok
+test rules::cert_c::integration::generated_tests::test_con07_c_pass_wiki_atomic_struct ... ok
+test rules::cert_c::integration::generated_tests::test_con07_c_pass_wiki_mutex ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 2758 filtered out
+```
+
+**Implementation Details:**
+- Detects compound operations on shared static variables
+- Identifies non-atomic access patterns (multiple variable reads/writes)
+- Checks for compound assignment operators (+=, -=, *=, /=, %=, <<=, >>=, ^=, |=, ++, --)
+- Correctly handles both simple declarations (`static int a;`) and initialized declarations (`static int a = 0;`)
+- Provides clear violation messages with suggestions to use mutex locks or atomic operations
+
+**Acceptance Criteria Status:**
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
+
+**Next Steps:** Ready for staging and adversarial review
 
 ---
 

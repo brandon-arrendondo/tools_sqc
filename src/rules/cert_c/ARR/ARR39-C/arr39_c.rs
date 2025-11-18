@@ -113,7 +113,7 @@ impl Arr39C {
                     node.child_by_field_name("right"),
                 ) {
                     let left_text = &source[left.start_byte()..left.end_byte()];
-                    
+
                     // Check if this is pointer += scaled_integer
                     if self.is_scaled_integer_expression(&right, source)
                         && self.looks_like_pointer(&left, source)
@@ -154,9 +154,9 @@ impl Arr39C {
             node.child_by_field_name("index"),
         ) {
             let arg_text = &source[argument.start_byte()..argument.end_byte()];
-            
+
             // Check if index is a scaled value (from sizeof or byte-related variable)
-            if self.is_scaled_integer_expression(&index, source) 
+            if self.is_scaled_integer_expression(&index, source)
                 && self.looks_like_pointer_node(&argument, source)
                 && !self.is_char_pointer(&argument, source)
                 && !arg_text.to_lowercase().contains("byte")  // Byte pointers are allowed
@@ -383,16 +383,16 @@ impl Arr39C {
 
     fn is_char_pointer(&self, node: &Node, source: &str) -> bool {
         // Check if this is a char-type pointer (which is allowed to use byte arithmetic)
-        
+
         // For an identifier, we need to look at its declaration or most recent cast
         // This is a simplified heuristic - we look for cast expressions in the parent chain
         let mut current = node.clone();
-        
+
         // Walk up the tree to find casts
         for _ in 0..5 {  // Check up to 5 levels up
             if let Some(parent) = current.parent() {
                 let parent_text = &source[parent.start_byte()..parent.end_byte()];
-                
+
                 // Check for char* casts
                 if parent.kind() == "cast_expression" {
                     if parent_text.contains("unsigned char *")
@@ -414,13 +414,13 @@ impl Arr39C {
                         }
                     }
                 }
-                
+
                 current = parent;
             } else {
                 break;
             }
         }
-        
+
         false
     }
 
