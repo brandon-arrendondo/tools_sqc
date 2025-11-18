@@ -164,7 +164,11 @@ impl Arr30C {
         let root_node = tree.root_node();
 
         // First pass: collect macro constants (#define NAME VALUE)
-        let macros = self.extract_macro_constants(&root_node, source);
+        let mut macros = self.extract_macro_constants(&root_node, source);
+
+        // Also collect enum constants (enum { NAME = VALUE })
+        let enums = self.extract_enum_constants(&root_node, source);
+        macros.extend(enums); // Merge enums into macros for unified constant resolution
 
         // Second pass: collect typedef information (still needed for typedef arrays)
         let typedefs = self.analyze_typedefs(source);
@@ -203,6 +207,48 @@ impl Arr30C {
         }
 
         macros
+    }
+
+    /// Extract enum constants from enum declarations
+    /// Returns a HashMap of enum constant name to its integer value
+    fn extract_enum_constants(&self, root: &Node, source: &str) -> HashMap<String, i64> {
+        let mut enums = HashMap::new();
+
+        let mut cursor = root.walk();
+
+        for child in root.children(&mut cursor) {
+            // Look for enum_specifier nodes
+            if child.kind() == "enum_specifier" {
+                // Extract enumerators from the enum body
+                if let Some(body) = child.child_by_field_name("body") {
+                    let mut enum_cursor = body.walk();
+                    let mut current_value: i64 = 0;
+
+                    for enumerator in body.children(&mut enum_cursor) {
+                        if enumerator.kind() == "enumerator" {
+                            // Get the enumerator name
+                            if let Some(name_node) = enumerator.child_by_field_name("name") {
+                                let name = &source[name_node.start_byte()..name_node.end_byte()];
+
+                                // Check if it has an explicit value
+                                if let Some(value_node) = enumerator.child_by_field_name("value") {
+                                    let value_str = &source[value_node.start_byte()..value_node.end_byte()];
+                                    if let Ok(value) = value_str.trim().parse::<i64>() {
+                                        current_value = value;
+                                    }
+                                }
+
+                                // Store the enum constant
+                                enums.insert(name.to_string(), current_value);
+                                current_value += 1; // Auto-increment for next enumerator
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        enums
     }
 
     /// Extract function-like macros from preprocessor directives
@@ -910,10 +956,24 @@ impl Arr30C {
         // 2. Loop with param in condition: for (i = 0; i < size; i++)
         // 3. Presence of size/length/count parameter
 
+        // IMPORTANT: Check for OFF-BY-ONE errors first!
+        // Pattern: if (size < param) is WRONG - should be if (size <= param)
+        // This is an off-by-one error common in realloc/resize code
+        let off_by_one_pattern =
+            format!(r"\bif\s*\(\s*\w+\s*<\s*{}\s*\)", regex::escape(param_name));
+        if let Ok(re) = regex::Regex::new(&off_by_one_pattern) {
+            if re.is_match(func_text) {
+                // Found "if (size < param)" pattern - this is INSUFFICIENT bounds checking
+                // It should be "if (size <= param)" to properly handle the case where size == param
+                return false;
+            }
+        }
+
         let bounds_patterns = [
             format!(r"{}\s*<\s*\w+", regex::escape(param_name)), // param < size
             format!(r"\w+\s*>\s*{}", regex::escape(param_name)), // size > param
             format!(r"{}\s*>=\s*\w+", regex::escape(param_name)), // param >= size (with return/check)
+            format!(r"\w+\s*<=\s*{}", regex::escape(param_name)), // size <= param (correct for realloc)
             format!(r"if\s*\([^)]*{}", regex::escape(param_name)), // if statement with param
         ];
 
@@ -1571,7 +1631,12 @@ impl Arr30C {
                                                 &func_node, var, source,
                                             )
                                         } else {
-                                            false
+                                            // Local variable (e.g., loop variable) - check for proper bounds checking
+                                            !self.has_proper_bounds_check(
+                                                node,
+                                                source,
+                                                effective_size,
+                                            )
                                         }
                                     } else {
                                         // Variable index - check for bounds checking
@@ -1765,6 +1830,189 @@ impl Arr30C {
         violations
     }
 
+    /// Check for pointer arithmetic in return statements
+    /// Detects patterns like: return buffer + index (where index can be negative)
+    fn check_return_pointer_arithmetic(
+        &self,
+        return_node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+        aliases: &HashMap<String, PointerAlias>,
+    ) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Look for binary_expression children (e.g., "buffer + offset")
+        for i in 0..return_node.child_count() {
+            if let Some(child) = return_node.child(i) {
+                if child.kind() == "binary_expression" {
+                    // Check if this is pointer arithmetic (buffer + offset or offset + buffer)
+                    if let Some((left_name, right_name)) = self.extract_binary_expr_operands(&child, source) {
+
+                        // Try both orders: buffer + offset OR offset + buffer
+                        let mut buffer_name = None;
+                        let mut offset_name = None;
+
+                        // Check if left is buffer and right is offset
+                        let left_actual = if let Some(alias) = aliases.get(&left_name) {
+                            alias.original_buffer.as_str()
+                        } else {
+                            left_name.as_str()
+                        };
+
+                        if buffers.contains_key(left_actual) {
+                            buffer_name = Some(left_actual);
+                            offset_name = Some(right_name.as_str());
+                        } else {
+                            // Check if right is buffer and left is offset
+                            let right_actual = if let Some(alias) = aliases.get(&right_name) {
+                                alias.original_buffer.as_str()
+                            } else {
+                                right_name.as_str()
+                            };
+
+                            if buffers.contains_key(right_actual) {
+                                buffer_name = Some(right_actual);
+                                offset_name = Some(left_name.as_str());
+                            }
+                        }
+
+                        if let (Some(_buf), Some(off)) = (buffer_name, offset_name) {
+                            // Check if offset is a signed function parameter without lower bound check
+                            if let Some(func_node) = find_containing_function(return_node) {
+                                // Extract the function_declarator from within the function_definition
+                                // (it may be nested inside a pointer_declarator for pointer return types)
+                                if let Some(func_declarator) = self.find_function_declarator(&func_node) {
+                                    // Find the parameter_list in the function_declarator
+                                    for j in 0..func_declarator.child_count() {
+                                        if let Some(param_list) = func_declarator.child(j) {
+                                            if param_list.kind() == "parameter_list" {
+                                                // Check each parameter declaration
+                                                for k in 0..param_list.child_count() {
+                                                    if let Some(param_decl) = param_list.child(k) {
+                                                        if param_decl.kind() == "parameter_declaration" {
+                                                            let param_text = &source[param_decl.start_byte()..param_decl.end_byte()];
+                                                            // Check if this parameter matches our offset name
+                                                            if param_text.contains(off) {
+                                                                // Check if the type is signed (int, long, ssize_t, etc.)
+                                                                let is_signed = param_text.contains("int ") && !param_text.contains("unsigned") && !param_text.contains("size_t");
+
+                                                                if is_signed {
+                                                                    // Check if it has a lower bound check (>= 0)
+                                                                    if !self.has_lower_bound_check(&func_node, off, source) {
+                                                                        let start_point = child.start_position();
+                                                                        violations.push(RuleViolation {
+                                                                            rule_id: self.rule_id().to_string(),
+                                                                            severity: Severity::High,
+                                                                            message: format!(
+                                                                                "Pointer arithmetic with signed parameter '{}' that lacks lower bound check (>= 0). Negative values cause undefined behavior.",
+                                                                                off
+                                                                            ),
+                                                                            file_path: String::new(),
+                                                                            line: start_point.row + 1,
+                                                                            column: start_point.column + 1,
+                                                                            suggestion: Some(format!(
+                                                                                "Add check: if ({} >= 0 && {} < size)",
+                                                                                off, off
+                                                                            )),
+                                                                            ..Default::default()
+                                                                        });
+                                                                    }
+                                                                }
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        violations
+    }
+
+    /// Find the function_declarator node within a function_definition
+    /// Handles both direct children and nested cases (e.g., pointer return types)
+    fn find_function_declarator<'a>(&self, func_def_node: &'a Node) -> Option<Node<'a>> {
+        for i in 0..func_def_node.child_count() {
+            if let Some(child) = func_def_node.child(i) {
+                if child.kind() == "function_declarator" {
+                    return Some(child);
+                } else if child.kind() == "pointer_declarator" {
+                    // For pointer return types like int *f(...), the function_declarator is nested
+                    for j in 0..child.child_count() {
+                        if let Some(nested) = child.child(j) {
+                            if nested.kind() == "function_declarator" {
+                                return Some(nested);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract operands from binary expression (e.g., "buffer + offset")
+    /// Returns (left_operand, right_operand) if both are identifiers
+    fn extract_binary_expr_operands(&self, node: &Node, source: &str) -> Option<(String, String)> {
+        // Look for pattern: identifier + identifier
+        let mut left_name = None;
+        let mut right_name = None;
+        let mut found_plus = false;
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "identifier" if left_name.is_none() => {
+                        left_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                    }
+                    "+" => {
+                        found_plus = true;
+                    }
+                    "identifier" if found_plus && right_name.is_none() => {
+                        right_name = Some(source[child.start_byte()..child.end_byte()].to_string());
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        if let (Some(left), Some(right)) = (left_name, right_name) {
+            Some((left, right))
+        } else {
+            None
+        }
+    }
+
+    /// Check if a function parameter has a lower bound check (>= 0 or > -1)
+    fn has_lower_bound_check(&self, func_node: &Node, param_name: &str, source: &str) -> bool {
+        let func_text = &source[func_node.start_byte()..func_node.end_byte()];
+
+        // Look for patterns like: if (param >= 0) or if (param > -1) or if (0 <= param)
+        let lower_bound_patterns = [
+            format!(r"{}\s*>=\s*0", regex::escape(param_name)),
+            format!(r"{}\s*>\s*-1", regex::escape(param_name)),
+            format!(r"0\s*<=\s*{}", regex::escape(param_name)),
+        ];
+
+        for pattern in &lower_bound_patterns {
+            if let Ok(re) = regex::Regex::new(pattern) {
+                if re.is_match(func_text) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
     /// Extract pointer arithmetic information from assignment
     fn extract_pointer_arithmetic(
         &self,
@@ -1868,6 +2116,15 @@ impl Arr30C {
                     source,
                     &local_buffers,
                     function_macros,
+                ));
+            }
+            "return_statement" => {
+                // Check for pointer arithmetic in return statements like: return buffer + offset
+                violations.extend(self.check_return_pointer_arithmetic(
+                    node,
+                    source,
+                    &local_buffers,
+                    &local_aliases,
                 ));
             }
             _ => {}
