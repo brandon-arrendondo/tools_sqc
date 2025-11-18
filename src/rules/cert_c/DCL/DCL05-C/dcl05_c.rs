@@ -58,8 +58,9 @@ fn check_typedef_declarations(node: &Node, source: &str, violations: &mut Vec<Ru
         // Check if this typedef defines a pointer type
         if is_pointer_typedef(node, source) {
             // Extract the typedef name for better error message
-            let typedef_name = extract_typedef_name(node, source).unwrap_or_else(|| "unknown".to_string());
-            
+            let typedef_name =
+                extract_typedef_name(node, source).unwrap_or_else(|| "unknown".to_string());
+
             violations.push(RuleViolation {
                 rule_id: "DCL05-C".to_string(),
                 file_path: "".to_string(),
@@ -130,17 +131,20 @@ fn check_complex_function_pointers(node: &Node, source: &str, violations: &mut V
     // Look for function declarations with complex function pointer parameters or return types
     if node.kind() == "function_declarator" || node.kind() == "declaration" {
         let text = get_node_text(node, source);
-        
+
         // Detect complex function pointer syntax: contains (* and multiple parentheses
         if is_complex_function_pointer_syntax(&text) {
             violations.push(RuleViolation {
                 rule_id: "DCL05-C".to_string(),
                 file_path: "".to_string(),
-                message: "Complex function pointer declaration should use typedef for clarity".to_string(),
+                message: "Complex function pointer declaration should use typedef for clarity"
+                    .to_string(),
                 line: node.start_position().row + 1,
                 column: node.start_position().column,
                 severity: Severity::Medium,
-                suggestion: Some("Use typedef to simplify complex function pointer declarations".to_string()),
+                suggestion: Some(
+                    "Use typedef to simplify complex function pointer declarations".to_string(),
+                ),
                 requires_manual_review: Some(false),
             });
         }
@@ -158,11 +162,10 @@ fn is_complex_function_pointer_syntax(text: &str) -> bool {
     // Complex function pointer has pattern like: void (*signal(int, void (*)(int)))(int);
     // Look for (*...)(  pattern which indicates function pointer return type
     let has_func_ptr_return = text.contains("(*") && text.matches('(').count() >= 3;
-    
+
     // Also check for function pointers in parameter lists without typedef
     // Pattern: void (*)(int) - unnamed function pointer parameter
     let has_unnamed_func_ptr = text.contains("(*)(");
-    
+
     has_func_ptr_return || has_unnamed_func_ptr
 }
-
