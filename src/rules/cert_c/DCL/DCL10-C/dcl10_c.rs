@@ -162,10 +162,7 @@ impl Dcl10C {
     }
 
     fn is_sentinel_value(&self, text: &str) -> bool {
-        matches!(
-            text,
-            "va_eol" | "VA_EOL" | "NULL" | "0" | "-1" | "SENTINEL"
-        )
+        matches!(text, "va_eol" | "VA_EOL" | "NULL" | "0" | "-1" | "SENTINEL")
     }
 
     fn collect_arguments(&self, arguments_node: &Node, source: &str) -> Vec<String> {
@@ -220,7 +217,9 @@ impl Dcl10C {
                             // Precision
                             '.' => {
                                 i += 1;
-                                while i < chars.len() && (chars[i].is_ascii_digit() || chars[i] == '*') {
+                                while i < chars.len()
+                                    && (chars[i].is_ascii_digit() || chars[i] == '*')
+                                {
                                     i += 1;
                                 }
                             }

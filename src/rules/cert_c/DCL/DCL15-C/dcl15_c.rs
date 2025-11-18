@@ -40,7 +40,12 @@ impl CertRule for Dcl15C {
 }
 
 impl Dcl15C {
-    fn check_translation_unit(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_translation_unit(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Only check children of translation_unit (file scope)
         if node.kind() == "translation_unit" {
             for i in 0..node.child_count() {

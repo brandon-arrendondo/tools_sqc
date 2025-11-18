@@ -59,7 +59,49 @@ Implement or verify DCL20-C with 100% test pass rate and DRY compliance.
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Implementation Date:** 2025-11-18
+
+### Detection Strategy
+
+DCL20-C detects function declarations and definitions with empty parameter lists `()` instead of explicit `(void)`, which in C allows any number of arguments without type checking.
+
+**Key Detection Points:**
+1. **Function Definitions**: Checks all function definitions for empty `()`
+2. **Function Declarations**: Checks all function prototypes for empty `()`
+3. **Void Verification**: Ensures `(void)` is used instead of empty list
+
+**Violations Detected:**
+- `void foo()` - empty parameter list allows any arguments
+- `void bar();` - declaration without explicit void
+- Function can be called with arguments that aren't checked
+
+**Safe Patterns:**
+- `void foo(void)` - explicit no arguments
+- `void bar(void);` - declaration with explicit void
+- Compiler will reject `foo(3)` calls
+
+### Build & Test Status
+
+✅ **Code compiles successfully** (`cargo build --lib`)
+✅ **Module registered** in `src/rules/cert_c/mod.rs`
+✅ **Rule enabled** in `DCL20-C.toml`
+✅ **Uses DRY utilities** (`get_node_text()` from `ast_utils`)
+
+**Test Files Available:**
+- `tests/fail/wiki_ambiguous_interface.c` - Empty () parameter list
+- `tests/fail/wiki_information_outflow.c` - Empty () allows argument passing
+- `tests/pass/wiki_ambiguous_interface.c` - Explicit (void)
+- `tests/pass/wiki_information_outflow.c` - Proper (void) specification
+
+**Implementation Notes:**
+- Checks both function_definition and declaration nodes
+- Handles nested declarators (pointer_declarator, etc.)
+- Verifies parameter list is truly empty vs containing void
+- Prevents implicit argument passing security issues
+
+**Next Steps:**
+- Run integration tests when test framework is fixed
+- Verify all 4 test cases pass
 
 ---
 
