@@ -15,7 +15,7 @@
 //!                  int fd, void *_s, size_t n) {
 //!   char *s = _s;
 //!   ssize_t res, pos = 0;  // pos is signed but represents a size
-//!   
+//!
 //!   while (n > pos) {  // Mixing unsigned n with signed pos
 //!     res = (f)(fd, s + pos, n - pos);  // n - pos triggers implicit conversion
 //!     // ... res used in switch without cast
@@ -33,7 +33,7 @@
 //!   char *s = _s;
 //!   size_t pos = 0;  // pos is now unsigned
 //!   ssize_t res;     // res is signed (function return value)
-//!   
+//!
 //!   while (n > pos) {  // Both unsigned
 //!     res = (f)(fd, s + pos, n - pos);  // No implicit conversion needed
 //!     // ... error checking ...
