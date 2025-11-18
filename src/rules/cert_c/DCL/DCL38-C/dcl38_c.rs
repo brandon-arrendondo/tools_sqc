@@ -51,14 +51,19 @@ impl DCL38C {
             self.check_node_recursive(&child, source, violations);
         }
     }
-    fn check_struct_for_fake_flexible_array(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+    fn check_struct_for_fake_flexible_array(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> Option<RuleViolation> {
         let mut cursor = node.walk();
-        
+
         for child in node.children(&mut cursor) {
             if child.kind() == "field_declaration_list" {
                 // Get all field declarations
                 let mut field_cursor = child.walk();
-                let fields: Vec<_> = child.children(&mut field_cursor)
+                let fields: Vec<_> = child
+                    .children(&mut field_cursor)
                     .filter(|c| c.kind() == "field_declaration")
                     .collect();
 

@@ -76,7 +76,8 @@ impl ENV30C {
             let mut cursor = node.walk();
             for child in node.children(&mut cursor) {
                 if child.kind() == "init_declarator" {
-                    if let Some((var_name, func_name)) = self.extract_protected_init(&child, source) {
+                    if let Some((var_name, func_name)) = self.extract_protected_init(&child, source)
+                    {
                         protected_vars.insert(var_name, func_name);
                     }
                 }
@@ -154,7 +155,9 @@ impl ENV30C {
             let mut cursor = node.walk();
             let children: Vec<_> = node.children(&mut cursor).collect();
             if let Some(left) = children.first() {
-                if let Some((var_name, func_name)) = self.get_protected_var_ref(left, source, protected_vars) {
+                if let Some((var_name, func_name)) =
+                    self.get_protected_var_ref(left, source, protected_vars)
+                {
                     let start = node.start_position();
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -183,7 +186,9 @@ impl ENV30C {
                         if child.kind() == "argument_list" {
                             let mut arg_cursor = child.walk();
                             for arg in child.children(&mut arg_cursor) {
-                                if let Some((var_name, orig_func)) = self.get_protected_var_ref(&arg, source, protected_vars) {
+                                if let Some((var_name, orig_func)) =
+                                    self.get_protected_var_ref(&arg, source, protected_vars)
+                                {
                                     let start = node.start_position();
                                     violations.push(RuleViolation {
                                         rule_id: self.rule_id().to_string(),
@@ -229,7 +234,8 @@ impl ENV30C {
             "subscript_expression" | "pointer_expression" | "field_expression" => {
                 let mut cursor = node.walk();
                 for child in node.children(&mut cursor) {
-                    if let Some(result) = self.get_protected_var_ref(&child, source, protected_vars) {
+                    if let Some(result) = self.get_protected_var_ref(&child, source, protected_vars)
+                    {
                         return Some(result);
                     }
                 }
@@ -243,8 +249,16 @@ impl ENV30C {
     fn is_modification_function(&self, name: &str) -> bool {
         matches!(
             name,
-            "strcpy" | "strncpy" | "strcat" | "strncat" | "sprintf" | "snprintf" |
-            "memcpy" | "memmove" | "memset" | "strtok"
+            "strcpy"
+                | "strncpy"
+                | "strcat"
+                | "strncat"
+                | "sprintf"
+                | "snprintf"
+                | "memcpy"
+                | "memmove"
+                | "memset"
+                | "strtok"
         )
     }
 
@@ -255,7 +269,7 @@ impl ENV30C {
     }
     fn check_protected_assignment(&self, node: &Node, source: &str) -> Option<RuleViolation> {
         let mut cursor = node.walk();
-        
+
         // Get the left side (what's being assigned to)
         let mut left_expr = None;
         for child in node.children(&mut cursor) {
@@ -378,8 +392,16 @@ impl ENV30C {
     fn is_protected_function(&self, name: &str) -> bool {
         matches!(
             name,
-            "getenv" | "localeconv" | "setlocale" | "strerror" | "asctime" | 
-            "ctime" | "gmtime" | "localtime" | "getdate" | "getlogin"
+            "getenv"
+                | "localeconv"
+                | "setlocale"
+                | "strerror"
+                | "asctime"
+                | "ctime"
+                | "gmtime"
+                | "localtime"
+                | "getdate"
+                | "getlogin"
         )
     }
 }
