@@ -1,10 +1,10 @@
 ---
 rule_id: ERR32-C
 priority: P2
-status: active
+status: staged
 assigned_to: JASON
 created: 2025-11-17
-last_modified: 2025-11-17
+last_modified: 2025-11-18
 tags:
   - cert-c
   - implementation
@@ -13,7 +13,7 @@ tags:
 
 # P2-ERR32-C - ERR32-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED (awaiting adversarial review)
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** JASON
