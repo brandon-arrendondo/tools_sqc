@@ -228,6 +228,9 @@ pub mod sig30_c;
 #[path = "SIG/SIG31-C/sig31_c.rs"]
 pub mod sig31_c;
 
+#[path = "SIG/SIG35-C/sig35_c.rs"]
+pub mod sig35_c;
+
 use super::{CertRule, RuleRegistry};
 
 impl RuleRegistry {
@@ -310,6 +313,7 @@ impl RuleRegistry {
         registry.register(Box::new(str38_c::Str38C));
         registry.register(Box::new(sig30_c::Sig30C));
         registry.register(Box::new(sig01_c::Sig01C));
+        registry.register(Box::new(sig35_c::Sig35C));
         registry.register(Box::new(win01_c::Win01C));
         registry.register(Box::new(win02_c::Win02C));
 
