@@ -320,8 +320,3 @@ fn get_binary_operator<'a>(node: &Node, source: &'a str) -> &'a str {
     }
     ""
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/arr32_c.rs"]
-// mod tests;

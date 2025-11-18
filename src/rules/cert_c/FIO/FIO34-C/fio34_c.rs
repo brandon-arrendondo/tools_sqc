@@ -717,8 +717,3 @@ impl Fio34C {
         });
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/fio34_c.rs"]
-// mod tests;

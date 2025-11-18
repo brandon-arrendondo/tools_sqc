@@ -1,0 +1,329 @@
+//! DCL06-C: Use meaningful symbolic constants to represent literal values
+//!
+//! Magic numbers (literal values) obscure code intent and create maintenance risks.
+//! Use named symbolic constants (enums, const, macros) instead of embedding literals.
+//!
+//! ## Examples:
+//!
+//! **Non-compliant:**
+//! ```c
+//! char buffer[256];
+//! fgets(buffer, 256, stdin);  // Magic number repeated
+//!
+//! if (age >= 18) { ... }       // Unclear meaning
+//! ```
+//!
+//! **Compliant:**
+//! ```c
+//! enum { BUFFER_SIZE = 256 };
+//! char buffer[BUFFER_SIZE];
+//! fgets(buffer, sizeof(buffer), stdin);
+//!
+//! enum { ADULT_AGE = 18 };
+//! if (age >= ADULT_AGE) { ... }
+//! ```
+
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::{HashMap, HashSet};
+use tree_sitter::Node;
+
+pub struct Dcl06C;
+
+/// Tracks literal occurrences for duplicate detection
+#[derive(Debug, Clone)]
+struct LiteralInfo {
+    value: String,
+    line: usize,
+    column: usize,
+    context: String,
+}
+
+impl CertRule for Dcl06C {
+    fn rule_id(&self) -> &'static str {
+        "DCL06-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Use meaningful symbolic constants to represent literal values"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Low
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Recommendation
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "DCL06-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Track literal occurrences to detect magic numbers
+        let mut literal_occurrences: HashMap<String, Vec<LiteralInfo>> = HashMap::new();
+        let mut array_sizes: Vec<LiteralInfo> = Vec::new();
+
+        self.analyze_literals(node, source, &mut literal_occurrences, &mut array_sizes);
+
+        // Check for sizeof usage on arrays
+        let sizeof_arrays = self.find_sizeof_usages(node, source);
+
+        // Check for magic numbers (single or repeated occurrences)
+        for (literal_value, occurrences) in &literal_occurrences {
+            // Skip common acceptable values
+            if self.is_acceptable_literal(literal_value) {
+                continue;
+            }
+
+            // Flag any occurrence of non-trivial literal
+            let first = &occurrences[0];
+            let message = if occurrences.len() >= 2 {
+                format!(
+                    "Magic number '{}' appears {} times. Consider using a symbolic constant.",
+                    literal_value,
+                    occurrences.len()
+                )
+            } else if literal_value.starts_with('"') {
+                format!(
+                    "String literal {} should use a symbolic constant.",
+                    literal_value
+                )
+            } else {
+                format!(
+                    "Magic number '{}' should use a symbolic constant.",
+                    literal_value
+                )
+            };
+
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                message,
+                severity: self.severity(),
+                line: first.line,
+                column: first.column,
+                file_path: String::new(),
+                suggestion: Some(format!(
+                    "Define a constant: enum {{ CONSTANT_NAME = {} }};",
+                    literal_value
+                )),
+                requires_manual_review: None,
+            });
+        }
+
+        // Check for magic numbers in array declarations
+        // Only flag if sizeof() is not used on that array
+        for array_size in &array_sizes {
+            if !self.is_acceptable_literal(&array_size.value) {
+                // context contains the array name
+                let array_name = &array_size.context;
+
+                // Don't flag if sizeof is used on this array
+                if !array_name.is_empty() && sizeof_arrays.contains(array_name) {
+                    continue;
+                }
+
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    message: format!(
+                        "Array size '{}' should use a symbolic constant instead of magic number.",
+                        array_size.value
+                    ),
+                    severity: self.severity(),
+                    line: array_size.line,
+                    column: array_size.column,
+                    file_path: String::new(),
+                    suggestion: Some(format!(
+                        "Define a constant: enum {{ ARRAY_SIZE = {} }};",
+                        array_size.value
+                    )),
+                    requires_manual_review: None,
+                });
+            }
+        }
+
+        violations
+    }
+}
+
+impl Dcl06C {
+    /// Analyze AST for literal values
+    fn analyze_literals(
+        &self,
+        node: &Node,
+        source: &str,
+        occurrences: &mut HashMap<String, Vec<LiteralInfo>>,
+        array_sizes: &mut Vec<LiteralInfo>,
+    ) {
+        let kind = node.kind();
+
+        // Check for array declarator with numeric size
+        if kind == "array_declarator" {
+            if let Some(size_node) = self.find_array_size(node) {
+                if size_node.kind() == "number_literal" {
+                    let value = get_node_text(&size_node, source).to_string();
+                    // Extract array name to check for sizeof usage
+                    let array_name = self.extract_array_name(node, source);
+                    array_sizes.push(LiteralInfo {
+                        value,
+                        line: size_node.start_position().row + 1,
+                        column: size_node.start_position().column + 1,
+                        context: array_name.unwrap_or_default(),
+                    });
+                }
+            }
+        }
+
+        // Track number literals in various contexts
+        if kind == "number_literal" {
+            let value = get_node_text(node, source).to_string();
+
+            // Determine context
+            let context = self.get_literal_context(node);
+
+            // Only track literals in suspicious contexts
+            if self.is_suspicious_context(&context) {
+                let info = LiteralInfo {
+                    value: value.clone(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    context,
+                };
+
+                occurrences.entry(value).or_default().push(info);
+            }
+        }
+
+        // Note: String literals are generally acceptable in context (error messages, etc.)
+        // so we don't flag them to avoid false positives
+
+        // Recurse through children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.analyze_literals(&child, source, occurrences, array_sizes);
+            }
+        }
+    }
+
+    /// Extract array name from array declarator
+    fn extract_array_name(&self, array_decl: &Node, source: &str) -> Option<String> {
+        // Look for identifier in the declarator
+        for i in 0..array_decl.child_count() {
+            if let Some(child) = array_decl.child(i) {
+                if child.kind() == "identifier" {
+                    return Some(get_node_text(&child, source).to_string());
+                }
+            }
+        }
+        None
+    }
+
+    /// Find the size expression in an array declarator
+    fn find_array_size<'a>(&self, array_decl: &'a Node<'a>) -> Option<Node<'a>> {
+        // Array declarator structure: declarator '[' size? ']'
+        for i in 0..array_decl.child_count() {
+            if let Some(child) = array_decl.child(i) {
+                // Skip declarator and brackets
+                if child.kind() != "[" && child.kind() != "]" {
+                    // This could be the declarator (identifier) or the size
+                    if child.kind() == "number_literal"
+                        || child.kind() == "identifier"
+                        || child.kind() == "binary_expression"
+                    {
+                        // If it's a number literal, this is the size
+                        if child.kind() == "number_literal" {
+                            return Some(child);
+                        }
+                    }
+                }
+            }
+        }
+        // Check for nested structure
+        for i in 0..array_decl.child_count() {
+            if let Some(child) = array_decl.child(i) {
+                if child.kind() == "number_literal" {
+                    return Some(child);
+                }
+            }
+        }
+        None
+    }
+
+    /// Get the context where a literal appears
+    fn get_literal_context(&self, node: &Node) -> String {
+        if let Some(parent) = node.parent() {
+            match parent.kind() {
+                "binary_expression" => "comparison".to_string(),
+                "call_expression" => "function_argument".to_string(),
+                "argument_list" => "function_argument".to_string(),
+                "assignment_expression" => "assignment".to_string(),
+                "init_declarator" => "initialization".to_string(),
+                "array_declarator" => "array_size".to_string(),
+                "for_statement" => "loop".to_string(),
+                "while_statement" => "loop".to_string(),
+                _ => "other".to_string(),
+            }
+        } else {
+            "unknown".to_string()
+        }
+    }
+
+    /// Check if context is suspicious for magic numbers
+    fn is_suspicious_context(&self, context: &str) -> bool {
+        matches!(
+            context,
+            "comparison" | "function_argument" | "loop" | "assignment"
+        )
+    }
+
+    /// Check if a literal value is acceptable (common non-magic values)
+    fn is_acceptable_literal(&self, value: &str) -> bool {
+        // Acceptable values: 0, 1, -1, 2 (and their variations)
+        let trimmed = value.trim();
+
+        // Handle negative numbers
+        if trimmed.starts_with('-') {
+            let positive = &trimmed[1..];
+            return positive == "1" || positive == "0";
+        }
+
+        // Common acceptable values
+        matches!(trimmed, "0" | "1" | "2" | "0x0" | "0x1" | "0x2")
+    }
+
+    /// Find all sizeof() usages and return the variable names
+    fn find_sizeof_usages(&self, node: &Node, source: &str) -> HashSet<String> {
+        let mut sizeof_vars = HashSet::new();
+        self.collect_sizeof_usages(node, source, &mut sizeof_vars);
+        sizeof_vars
+    }
+
+    /// Recursively collect sizeof usages
+    fn collect_sizeof_usages(&self, node: &Node, source: &str, sizeof_vars: &mut HashSet<String>) {
+        if node.kind() == "sizeof_expression" {
+            // Look for the argument to sizeof
+            let text = get_node_text(node, source);
+            // Extract identifier from sizeof(identifier)
+            if let Some(start) = text.find('(') {
+                if let Some(end) = text.rfind(')') {
+                    let inner = text[start + 1..end].trim();
+                    // Could be an identifier
+                    if !inner.is_empty() && !inner.contains(' ') {
+                        sizeof_vars.insert(inner.to_string());
+                    }
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_sizeof_usages(&child, source, sizeof_vars);
+            }
+        }
+    }
+}
