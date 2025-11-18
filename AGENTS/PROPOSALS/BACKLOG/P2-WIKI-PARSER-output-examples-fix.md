@@ -42,12 +42,16 @@ The wiki parser is:
 **Current Issues:**
 - Invalid test files cause test failures for correct implementations
 - MSC32-C shows 83% pass rate (5/6) when actual code tests are 100% (5/5)
+- SIG01-C wiki_noncompliant_1.c and wiki_unix.c contain only handler definitions with no signal() call
+  - Wiki examples have missing code (likely signal() call in main) that wasn't scraped
+  - Results in 2 test failures (45/47 pass) for a correct implementation
 - Developers waste time debugging "failing" tests that aren't real code
 - Test coverage metrics are polluted with invalid tests
 
 **Potential Scope:**
 - May affect multiple rules across all categories
 - Need to audit all `*_2.c`, `*_3.c` etc. files to verify they contain actual code
+- Need to audit wiki_*.c files for incomplete code examples
 - Output/validation examples should be in documentation, not test directories
 
 ---
