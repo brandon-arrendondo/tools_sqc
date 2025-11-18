@@ -49,17 +49,32 @@ Implement or verify SIG35-C with 100% test pass rate and DRY compliance.
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-18 - Claude Code (via /work-active)
+**Implementation Complete:**
+- Created `src/rules/cert_c/SIG/SIG35-C/sig35_c.rs` with full implementation
+- Detects handlers for computational exception signals: SIGFPE, SIGILL, SIGSEGV, SIGBUS, SIGTRAP
+- Supports both `signal()` and `sigaction()` registration patterns
+- Flags handlers that contain explicit `return` statements
+- Flags handlers that don't call termination functions (abort, _Exit, quick_exit, exit)
+- Registered in `src/rules/cert_c/mod.rs`
+- Enabled in `SIG35-C.toml`
+
+**Test Results:**
+- ✅ 43/43 tests passing (100% pass rate)
+- ✅ All fail cases detected correctly
+- ✅ All pass cases accepted correctly
+
+**Build Status:** ✅ PASSING
 
 ---
 
