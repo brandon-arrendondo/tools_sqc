@@ -1,10 +1,10 @@
 ---
 rule_id: API07-C
 priority: P2
-status: active
+status: staged
 assigned_to: BLAKE
 created: 2025-11-17
-last_modified: 2025-11-17
+last_modified: 2025-11-18
 tags:
   - cert-c
   - implementation
@@ -13,7 +13,7 @@ tags:
 
 # P2-API07-C - API07-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED (awaiting review)
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** BLAKE
@@ -49,17 +49,35 @@ Implement or verify API07-C with 100% test pass rate and DRY compliance.
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate - 2/2 tests passing)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-18 - Claude Code (via /work-active)
+
+**Phase 1: Research and Planning**
+- Studied CERT C wiki page for API07-C
+- Rule focus: Enforce type safety, specifically detecting unsafe `strncpy()` usage
+- Analyzed test cases: FAIL (strncpy) vs PASS (strncpy_s)
+
+**Phase 2: Implementation**
+- Created `src/rules/cert_c/API/API07-C/api07_c.rs`
+- Implemented detection logic for `strncpy()` calls
+- Uses shared utility `get_node_text()` for DRY compliance
+
+**Phase 3: Integration**
+- Registered in `src/rules/cert_c/mod.rs`
+- Enabled in `API07-C.toml`
+
+**Phase 4: Testing**
+- Build: ✅ Successful
+- Tests: ✅ 2/2 passed (100%)
 
 ---
 
