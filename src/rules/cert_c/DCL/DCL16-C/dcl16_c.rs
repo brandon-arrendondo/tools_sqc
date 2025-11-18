@@ -8,10 +8,10 @@
 // 2. Check if they end with lowercase 'l' or 'll'
 // 3. Flag violations and suggest using uppercase 'L' or 'LL'
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use tree_sitter::Node;
 
 pub struct Dcl16C;
 
@@ -21,7 +21,12 @@ impl Dcl16C {
     }
 
     /// Check a node and all its descendants for violations
-    fn check_node<'a>(&self, node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_node<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for number literals
         if node.kind() == "number_literal" {
             let text = get_node_text(node, source);

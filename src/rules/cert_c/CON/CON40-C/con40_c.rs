@@ -11,11 +11,11 @@
 //    - Same atomic var appears 2+ times in binary/assignment expressions
 //    - Excluding compound assignments (+=, ^=, etc.) which are thread-safe
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Con40C;
 
@@ -25,7 +25,12 @@ impl Con40C {
     }
 
     /// Check a node and all its descendants for violations
-    fn check_node<'a>(&self, node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_node<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Track atomic variables in scope
         let mut atomic_vars = HashMap::new();
         self.collect_atomic_vars(node, source, &mut atomic_vars);
@@ -38,7 +43,12 @@ impl Con40C {
     }
 
     /// Collect all atomic variable declarations
-    fn collect_atomic_vars<'a>(&self, node: &Node<'a>, source: &'a str, atomic_vars: &mut HashMap<String, bool>) {
+    fn collect_atomic_vars<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        atomic_vars: &mut HashMap<String, bool>,
+    ) {
         // Check if this is an atomic variable declaration
         if node.kind() == "declaration" {
             if let Some(type_node) = node.child_by_field_name("type") {
@@ -96,13 +106,22 @@ impl Con40C {
     }
 
     /// Check all expressions for multiple references to atomic variables
-    fn check_expressions<'a>(&self, node: &Node<'a>, source: &'a str,
-                            atomic_vars: &HashMap<String, bool>,
-                            violations: &mut Vec<RuleViolation>) {
+    fn check_expressions<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        atomic_vars: &HashMap<String, bool>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check if this is an expression node
-        let is_expression = matches!(node.kind(),
-            "binary_expression" | "assignment_expression" | "call_expression" |
-            "conditional_expression" | "unary_expression" | "parenthesized_expression"
+        let is_expression = matches!(
+            node.kind(),
+            "binary_expression"
+                | "assignment_expression"
+                | "call_expression"
+                | "conditional_expression"
+                | "unary_expression"
+                | "parenthesized_expression"
         );
 
         if is_expression {
@@ -143,14 +162,19 @@ impl Con40C {
     }
 
     /// Count references to atomic variables within an expression
-    fn count_var_references<'a>(&self, node: &Node<'a>, source: &'a str,
-                                atomic_vars: &HashMap<String, bool>,
-                                var_counts: &mut HashMap<String, Vec<Node<'a>>>) {
+    fn count_var_references<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        atomic_vars: &HashMap<String, bool>,
+        var_counts: &mut HashMap<String, Vec<Node<'a>>>,
+    ) {
         // If this is an identifier, check if it's an atomic var
         if node.kind() == "identifier" {
             let var_name = get_node_text(node, source);
             if atomic_vars.contains_key(var_name) {
-                var_counts.entry(var_name.to_string())
+                var_counts
+                    .entry(var_name.to_string())
                     .or_insert_with(Vec::new)
                     .push(*node);
             }
@@ -198,9 +222,13 @@ impl Con40C {
     }
 
     /// Check for load-modify-store patterns using atomic_load/atomic_store
-    fn check_load_modify_store<'a>(&self, node: &Node<'a>, source: &'a str,
-                                   atomic_vars: &HashMap<String, bool>,
-                                   violations: &mut Vec<RuleViolation>) {
+    fn check_load_modify_store<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        atomic_vars: &HashMap<String, bool>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Only check function definitions
         if node.kind() != "function_definition" {
             // Recurse into children
@@ -254,10 +282,14 @@ impl Con40C {
     }
 
     /// Collect atomic_load and atomic_store operations
-    fn collect_atomic_operations<'a>(&self, node: &Node<'a>, source: &'a str,
-                                     atomic_vars: &HashMap<String, bool>,
-                                     loads: &mut HashMap<String, Node<'a>>,
-                                     stores: &mut HashMap<String, Node<'a>>) {
+    fn collect_atomic_operations<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        atomic_vars: &HashMap<String, bool>,
+        loads: &mut HashMap<String, Node<'a>>,
+        stores: &mut HashMap<String, Node<'a>>,
+    ) {
         // Look for call expressions
         if node.kind() == "call_expression" {
             if let Some(func_node) = node.child_by_field_name("function") {
@@ -267,7 +299,9 @@ impl Con40C {
                 if func_name == "atomic_load" {
                     // Get the argument - should be &flag or similar
                     if let Some(args) = node.child_by_field_name("arguments") {
-                        if let Some(var_name) = self.extract_atomic_var_from_args(&args, source, atomic_vars) {
+                        if let Some(var_name) =
+                            self.extract_atomic_var_from_args(&args, source, atomic_vars)
+                        {
                             loads.insert(var_name.to_string(), *node);
                         }
                     }
@@ -276,7 +310,9 @@ impl Con40C {
                 // Check for atomic_store
                 if func_name == "atomic_store" {
                     if let Some(args) = node.child_by_field_name("arguments") {
-                        if let Some(var_name) = self.extract_atomic_var_from_args(&args, source, atomic_vars) {
+                        if let Some(var_name) =
+                            self.extract_atomic_var_from_args(&args, source, atomic_vars)
+                        {
                             stores.insert(var_name.to_string(), *node);
                         }
                     }
@@ -293,8 +329,12 @@ impl Con40C {
     }
 
     /// Extract atomic variable name from function arguments like &flag
-    fn extract_atomic_var_from_args<'a>(&self, args_node: &Node<'a>, source: &'a str,
-                                        atomic_vars: &HashMap<String, bool>) -> Option<&'a str> {
+    fn extract_atomic_var_from_args<'a>(
+        &self,
+        args_node: &Node<'a>,
+        source: &'a str,
+        atomic_vars: &HashMap<String, bool>,
+    ) -> Option<&'a str> {
         // Iterate through arguments
         for i in 0..args_node.child_count() {
             if let Some(arg) = args_node.child(i) {

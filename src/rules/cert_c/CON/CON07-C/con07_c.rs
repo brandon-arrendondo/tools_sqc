@@ -200,7 +200,8 @@ impl Con07C {
         static_vars: &[String],
         violations: &mut Vec<RuleViolation>,
     ) {
-        let func_name = self.get_function_name(function_node, source)
+        let func_name = self
+            .get_function_name(function_node, source)
             .unwrap_or_else(|| "<unknown>".to_string());
 
         // Skip initialization functions (they run before threading typically)
@@ -286,7 +287,10 @@ impl Con07C {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func, source);
-                if matches!(func_name, "mtx_lock" | "mtx_unlock" | "pthread_mutex_lock" | "pthread_mutex_unlock") {
+                if matches!(
+                    func_name,
+                    "mtx_lock" | "mtx_unlock" | "pthread_mutex_lock" | "pthread_mutex_unlock"
+                ) {
                     return true;
                 }
             }
@@ -332,7 +336,12 @@ impl Con07C {
         false
     }
 
-    fn find_static_var_accesses(&self, node: &Node, source: &str, static_vars: &[String]) -> Vec<String> {
+    fn find_static_var_accesses(
+        &self,
+        node: &Node,
+        source: &str,
+        static_vars: &[String],
+    ) -> Vec<String> {
         let mut accesses = Vec::new();
         self.collect_static_var_accesses(node, source, static_vars, &mut accesses);
         accesses.sort();
@@ -366,7 +375,10 @@ impl Con07C {
         if node.kind() == "assignment_expression" {
             if let Some(operator) = node.child_by_field_name("operator") {
                 let op_text = get_node_text(&operator, source);
-                if matches!(op_text, "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|=") {
+                if matches!(
+                    op_text,
+                    "+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "&=" | "^=" | "|="
+                ) {
                     // Check if left side is the var_name
                     if let Some(left) = node.child_by_field_name("left") {
                         if get_node_text(&left, source) == var_name {

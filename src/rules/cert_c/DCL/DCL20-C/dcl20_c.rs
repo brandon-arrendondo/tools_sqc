@@ -9,10 +9,10 @@
 // 2. Check if parameter list is empty ()
 // 3. Flag violations and suggest using (void)
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use tree_sitter::Node;
 
 pub struct Dcl20C;
 
@@ -22,7 +22,12 @@ impl Dcl20C {
     }
 
     /// Check a node and all its descendants for violations
-    fn check_node<'a>(&self, node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_node<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check function definitions
         if node.kind() == "function_definition" {
             if let Some(declarator) = node.child_by_field_name("declarator") {
@@ -45,7 +50,12 @@ impl Dcl20C {
     }
 
     /// Check a function declarator for empty parameter list
-    fn check_function_declarator<'a>(&self, declarator: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_function_declarator<'a>(
+        &self,
+        declarator: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Find the function_declarator node
         if declarator.kind() == "function_declarator" {
             if let Some(params) = declarator.child_by_field_name("parameters") {
@@ -74,7 +84,12 @@ impl Dcl20C {
     }
 
     /// Check declaration for function declarators
-    fn check_declaration_for_function<'a>(&self, decl: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_declaration_for_function<'a>(
+        &self,
+        decl: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for function_declarator in the declaration
         for i in 0..decl.child_count() {
             if let Some(child) = decl.child(i) {

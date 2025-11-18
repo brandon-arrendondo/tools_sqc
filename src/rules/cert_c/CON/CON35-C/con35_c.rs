@@ -142,12 +142,7 @@ impl Con35C {
     }
 
     /// Check if a function has a locking order mechanism
-    fn has_ordering_mechanism(
-        &self,
-        func_node: Node,
-        source: &str,
-        lock_calls: &[Node],
-    ) -> bool {
+    fn has_ordering_mechanism(&self, func_node: Node, source: &str, lock_calls: &[Node]) -> bool {
         // Look for common ordering patterns:
         // 1. Comparison before locking (e.g., if (a->id < b->id))
         // 2. Pointer comparison to determine order

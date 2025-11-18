@@ -102,12 +102,7 @@ impl CertRule for Con34C {
 }
 
 impl Con34C {
-    fn check_node(
-        &self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
+    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Check for thrd_create() calls
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
@@ -160,22 +155,24 @@ impl Con34C {
                 let arg_text = get_node_text(&arg_node, source);
 
                 // Check various problematic patterns
-                let is_violation =
-                    self.is_address_of_local_var(&arg_node, source, call_node) ||
-                    (self.is_pointer_parameter(&arg_node, source, call_node) &&
-                     !self.is_allocated_pointer(&arg_text, call_node, source) &&
-                     !self.is_likely_allocated_param(&arg_text)) ||
-                    (arg_node.kind() == "identifier" &&
-                     !self.is_static_variable(&arg_text, call_node, source) &&
-                     !self.is_allocated_pointer(&arg_text, call_node, source) &&
-                     !self.is_likely_allocated_param(&arg_text) &&
-                     !arg_text.starts_with("&"));
+                let is_violation = self.is_address_of_local_var(&arg_node, source, call_node)
+                    || (self.is_pointer_parameter(&arg_node, source, call_node)
+                        && !self.is_allocated_pointer(&arg_text, call_node, source)
+                        && !self.is_likely_allocated_param(&arg_text))
+                    || (arg_node.kind() == "identifier"
+                        && !self.is_static_variable(&arg_text, call_node, source)
+                        && !self.is_allocated_pointer(&arg_text, call_node, source)
+                        && !self.is_likely_allocated_param(&arg_text)
+                        && !arg_text.starts_with("&"));
 
                 if is_violation {
                     let message = if self.is_address_of_local_var(&arg_node, source, call_node) {
                         format!("Passing address of automatic (local) variable to thrd_create()")
                     } else {
-                        format!("Passing '{}' to thrd_create() may reference automatic storage", arg_text)
+                        format!(
+                            "Passing '{}' to thrd_create() may reference automatic storage",
+                            arg_text
+                        )
                     };
 
                     violations.push(RuleViolation {
@@ -186,7 +183,8 @@ impl Con34C {
                         line: call_node.start_position().row + 1,
                         column: call_node.start_position().column + 1,
                         suggestion: Some(
-                            "Use static or heap-allocated storage for data shared between threads".to_string()
+                            "Use static or heap-allocated storage for data shared between threads"
+                                .to_string(),
                         ),
                         ..Default::default()
                     });
@@ -315,15 +313,18 @@ impl Con34C {
     fn is_static_variable(&self, var_name: &str, _context: &Node, source: &str) -> bool {
         // This is a simplified check - ideally we'd search the whole tree
         // For now, just check if the variable name suggests it's a static/global
-        source.contains(&format!("static {} ", var_name)) ||
-        source.contains(&format!("static int *{}", var_name)) ||
-        source.contains(&format!("static void *{}", var_name))
+        source.contains(&format!("static {} ", var_name))
+            || source.contains(&format!("static int *{}", var_name))
+            || source.contains(&format!("static void *{}", var_name))
     }
 
     fn is_likely_allocated_param(&self, var_name: &str) -> bool {
         // Heuristic: parameters named 'value', 'v', 'data', 'buffer', 'mem' are often heap-allocated
         // This is a pragmatic workaround for lack of inter-procedural analysis
-        matches!(var_name, "value" | "v" | "data" | "buffer" | "mem" | "ptr" | "p")
+        matches!(
+            var_name,
+            "value" | "v" | "data" | "buffer" | "mem" | "ptr" | "p"
+        )
     }
 
     fn find_malloc_assignment(&self, node: &Node, var_name: &str, source: &str) -> bool {
@@ -383,7 +384,12 @@ impl Con34C {
         false
     }
 
-    fn is_pointer_param_of_function(&self, function: &Node, param_name: &str, source: &str) -> bool {
+    fn is_pointer_param_of_function(
+        &self,
+        function: &Node,
+        param_name: &str,
+        source: &str,
+    ) -> bool {
         // Find the parameter list
         for i in 0..function.child_count() {
             if let Some(child) = function.child(i) {
@@ -625,11 +631,17 @@ impl Con34C {
         // Check the source text before this compound statement for #pragma omp parallel
         if start_byte > 0 {
             // Look back up to 200 characters for the pragma
-            let start_search = if start_byte > 200 { start_byte - 200 } else { 0 };
+            let start_search = if start_byte > 200 {
+                start_byte - 200
+            } else {
+                0
+            };
             let preceding_text = &source[start_search..start_byte];
 
             // Check if this section contains an OpenMP parallel pragma without private clause
-            if preceding_text.contains("#pragma omp parallel") && !preceding_text.contains("private(") {
+            if preceding_text.contains("#pragma omp parallel")
+                && !preceding_text.contains("private(")
+            {
                 // Make sure the pragma is close to this compound statement (not from earlier code)
                 let lines: Vec<&str> = preceding_text.lines().collect();
                 if let Some(last_few_lines) = lines.iter().rev().take(3).find(|line| {
@@ -682,7 +694,12 @@ impl Con34C {
         }
     }
 
-    fn find_local_vars_before_node(&self, function: &Node, before_node: &Node, source: &str) -> Vec<String> {
+    fn find_local_vars_before_node(
+        &self,
+        function: &Node,
+        before_node: &Node,
+        source: &str,
+    ) -> Vec<String> {
         let mut vars = Vec::new();
 
         if let Some(body) = function.child_by_field_name("body") {
@@ -693,7 +710,13 @@ impl Con34C {
         vars
     }
 
-    fn collect_local_vars_before(&self, node: &Node, before_byte: usize, source: &str, vars: &mut Vec<String>) {
+    fn collect_local_vars_before(
+        &self,
+        node: &Node,
+        before_byte: usize,
+        source: &str,
+        vars: &mut Vec<String>,
+    ) {
         // Don't traverse into the target node itself
         if node.start_byte() >= before_byte {
             return;

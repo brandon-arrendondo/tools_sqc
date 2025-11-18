@@ -10,11 +10,11 @@
 // 2. Find function calls where the function is not declared
 // 3. Find function pointer assignments where signature doesn't match
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
-use crate::manifest::{Severity, RuleCategory};
+use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Dcl07C;
 
@@ -24,7 +24,12 @@ impl Dcl07C {
     }
 
     /// Check a node and all its descendants for violations
-    fn check_node<'a>(&self, node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_node<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check for K&R style function definitions
         if node.kind() == "function_definition" {
             self.check_kr_style_function(node, source, violations);
@@ -49,7 +54,12 @@ impl Dcl07C {
     }
 
     /// Check for K&R style function definitions (old identifier-list form)
-    fn check_kr_style_function<'a>(&self, func_node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_kr_style_function<'a>(
+        &self,
+        func_node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // K&R style has form:
         // int max(a, b)
         // int a, b;
@@ -93,7 +103,12 @@ impl Dcl07C {
     }
 
     /// Check for function pointer assignments with mismatched signatures
-    fn check_function_pointer_assignment<'a>(&self, assign_node: &Node<'a>, source: &'a str, violations: &mut Vec<RuleViolation>) {
+    fn check_function_pointer_assignment<'a>(
+        &self,
+        assign_node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Look for: fn_ptr = add;
         // Where fn_ptr is declared as: int (*fn_ptr)(int, int);
         // But add is: int add(int, int, int);
@@ -106,9 +121,13 @@ impl Dcl07C {
                 // Get the left side (function pointer variable)
                 if let Some(left) = assign_node.child_by_field_name("left") {
                     // Find the function pointer declaration
-                    if let Some(ptr_params) = self.find_function_pointer_params(&left, source, assign_node) {
+                    if let Some(ptr_params) =
+                        self.find_function_pointer_params(&left, source, assign_node)
+                    {
                         // Find the actual function definition
-                        if let Some(func_params) = self.find_function_definition_params(func_name, source, assign_node) {
+                        if let Some(func_params) =
+                            self.find_function_definition_params(func_name, source, assign_node)
+                        {
                             // Compare parameter counts
                             if ptr_params != func_params {
                                 violations.push(RuleViolation {
@@ -136,7 +155,12 @@ impl Dcl07C {
     }
 
     /// Find parameter count from function pointer declaration
-    fn find_function_pointer_params<'a>(&self, var_node: &Node<'a>, source: &'a str, context: &Node<'a>) -> Option<usize> {
+    fn find_function_pointer_params<'a>(
+        &self,
+        var_node: &Node<'a>,
+        source: &'a str,
+        context: &Node<'a>,
+    ) -> Option<usize> {
         // Get variable name
         let var_name = if var_node.kind() == "identifier" {
             get_node_text(var_node, source)
@@ -159,7 +183,12 @@ impl Dcl07C {
     }
 
     /// Find declaration and count parameters
-    fn find_declaration_params<'a>(&self, node: &Node<'a>, source: &'a str, var_name: &str) -> Option<usize> {
+    fn find_declaration_params<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        var_name: &str,
+    ) -> Option<usize> {
         if node.kind() == "declaration" {
             // Check if this declares our variable
             let decl_text = get_node_text(node, source);
@@ -183,7 +212,11 @@ impl Dcl07C {
     }
 
     /// Count parameters in a function pointer declaration
-    fn count_params_in_declaration<'a>(&self, decl_node: &Node<'a>, source: &'a str) -> Option<usize> {
+    fn count_params_in_declaration<'a>(
+        &self,
+        decl_node: &Node<'a>,
+        source: &'a str,
+    ) -> Option<usize> {
         // Look for parameter_list in the declaration
         for i in 0..decl_node.child_count() {
             if let Some(child) = decl_node.child(i) {
@@ -240,13 +273,23 @@ impl Dcl07C {
     }
 
     /// Find function definition and count parameters
-    fn find_function_definition_params<'a>(&self, func_name: &str, source: &'a str, context: &Node<'a>) -> Option<usize> {
+    fn find_function_definition_params<'a>(
+        &self,
+        func_name: &str,
+        source: &'a str,
+        context: &Node<'a>,
+    ) -> Option<usize> {
         let root = self.get_root(context);
         self.search_function_definition(&root, source, func_name)
     }
 
     /// Search for function definition by name
-    fn search_function_definition<'a>(&self, node: &Node<'a>, source: &'a str, func_name: &str) -> Option<usize> {
+    fn search_function_definition<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        func_name: &str,
+    ) -> Option<usize> {
         if node.kind() == "function_definition" {
             if let Some(declarator) = node.child_by_field_name("declarator") {
                 if let Some(name) = self.get_function_name(&declarator, source) {

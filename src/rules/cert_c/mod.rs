@@ -88,8 +88,23 @@ pub mod dcl16_c;
 #[path = "DCL/DCL20-C/dcl20_c.rs"]
 pub mod dcl20_c;
 
+#[path = "DCL/DCL37-C/dcl37_c.rs"]
+pub mod dcl37_c;
+
+#[path = "DCL/DCL40-C/dcl40_c.rs"]
+pub mod dcl40_c;
+
+#[path = "ENV/ENV01-C/env01_c.rs"]
+pub mod env01_c;
+
+#[path = "ENV/ENV02-C/env02_c.rs"]
+pub mod env02_c;
+
 #[path = "ERR/ERR07-C/err07_c.rs"]
 pub mod err07_c;
+
+#[path = "ERR/ERR32-C/err32_c.rs"]
+pub mod err32_c;
 
 #[path = "ERR/ERR33-C/err33_c.rs"]
 pub mod err33_c;
@@ -207,7 +222,12 @@ impl RuleRegistry {
         registry.register(Box::new(dcl13_c::Dcl13C));
         registry.register(Box::new(dcl16_c::Dcl16C));
         registry.register(Box::new(dcl20_c::Dcl20C));
+        registry.register(Box::new(dcl37_c::Dcl37C));
+        registry.register(Box::new(dcl40_c::Dcl40C::new()));
+        registry.register(Box::new(env01_c::Env01C));
+        registry.register(Box::new(env02_c::Env02C::new()));
         registry.register(Box::new(err07_c::Err07C));
+        registry.register(Box::new(err32_c::Err32C));
         registry.register(Box::new(err33_c::Err33C));
         registry.register(Box::new(exp15_c::Exp15C));
         registry.register(Box::new(exp33_c::Exp33C));

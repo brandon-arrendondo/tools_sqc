@@ -763,9 +763,11 @@ impl FormatStringAnalyzer {
             || (name_lower.contains("input") && !name_lower.starts_with("max_input"))
             || name_lower.contains("cmd")
             || name_lower.contains("command")
-            || (name_lower.contains("format") && !var_name.chars().next().unwrap_or('a').is_uppercase())
+            || (name_lower.contains("format")
+                && !var_name.chars().next().unwrap_or('a').is_uppercase())
             || (name_lower.contains("buf") && name_lower.contains("user"))
-            || (name_lower.contains("msg") && (name_lower.contains("user") || name_lower.contains("error")))
+            || (name_lower.contains("msg")
+                && (name_lower.contains("user") || name_lower.contains("error")))
     }
 
     fn get_function_name(&self, declarator: &Node, source: &str) -> String {
