@@ -85,6 +85,9 @@ pub mod exp34_c;
 #[path = "EXP/EXP35-C/exp35_c.rs"]
 pub mod exp35_c;
 
+#[path = "EXP/EXP36-C/exp36_c.rs"]
+pub mod exp36_c;
+
 #[path = "FIO/FIO30-C/fio30_c.rs"]
 pub mod fio30_c;
 
@@ -187,6 +190,7 @@ impl RuleRegistry {
         registry.register(Box::new(exp33_c::Exp33C));
         registry.register(Box::new(exp34_c::Exp34C));
         registry.register(Box::new(exp35_c::Exp35C));
+        registry.register(Box::new(exp36_c::Exp36C));
         registry.register(Box::new(fio30_c::Fio30C));
         registry.register(Box::new(fio34_c::Fio34C::new()));
         registry.register(Box::new(fio37_c::Fio37C));

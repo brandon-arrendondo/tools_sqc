@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 53 (18.7%)
+- **Implemented Rules:** 54 (19.1%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -106,8 +106,8 @@
   - 🔶 [ERR06-C](#rule-err06c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [ERR30-C](#rule-err30c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
   - 🔶 [ERR32-C](#rule-err32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [EXP](#category-exp) (9 implemented / 31 total)
-  - 🔶 [EXP36-C](#rule-exp36c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
+- [EXP](#category-exp) (10 implemented / 31 total)
+  - ✅ [EXP36-C](#rule-exp36c) - Implemented: Pass 6/6 (100.0%)
   - ✅ [EXP07-C](#rule-exp07c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [EXP39-C](#rule-exp39c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [EXP46-C](#rule-exp46c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -4357,9 +4357,9 @@ being handled; ifsignal()fails, the value oferrnoisindeterminate.
 
 <a id="category-exp"></a>
 
-**Implementation Status:** 9 / 31 rules (29.0%)
+**Implementation Status:** 10 / 31 rules (32.3%)
 
-### 🔶 EXP36-C - Not Implemented (has tests)
+### ✅ EXP36-C - Implemented
 
 <a id="rule-exp36c"></a>
 
@@ -4374,19 +4374,19 @@ the alignment of an object may be changed. The C Standard, 6.3.2.3, paragraph 7
 
 **Test Coverage:** 6 tests (3 fail, 3 pass)
 
-**Test Results:** 0/6 passed (0.0%), 6 not run
+**Test Results:** 6/6 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_exp36_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_exp36_c_fail_wiki_noncompliant_2`
-- ⏭️ NOT RUN `wiki_noncompliant_3.c` → `test_exp36_c_fail_wiki_noncompliant_3`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_exp36_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2.c` → `test_exp36_c_fail_wiki_noncompliant_2`
+- ✅ PASS `wiki_noncompliant_3.c` → `test_exp36_c_fail_wiki_noncompliant_3`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_2.c` → `test_exp36_c_pass_wiki_compliant_2`
-- ⏭️ NOT RUN `wiki_compliant_3.c` → `test_exp36_c_pass_wiki_compliant_3`
-- ⏭️ NOT RUN `wiki_intermediate_object.c` → `test_exp36_c_pass_wiki_intermediate_object`
+- ✅ PASS `wiki_compliant_2.c` → `test_exp36_c_pass_wiki_compliant_2`
+- ✅ PASS `wiki_compliant_3.c` → `test_exp36_c_pass_wiki_compliant_3`
+- ✅ PASS `wiki_intermediate_object.c` → `test_exp36_c_pass_wiki_intermediate_object`
 
 ---
 
@@ -11993,7 +11993,7 @@ or by callingExitProcess().
 | DCL | 31 | 4 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |
-| EXP | 31 | 9 | 236 | 7.6 |
+| EXP | 31 | 10 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
 | FLP | 13 | 0 | 40 | 3.1 |
 | INT | 23 | 3 | 238 | 10.3 |
