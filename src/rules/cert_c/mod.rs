@@ -10,6 +10,9 @@ pub mod api01_c;
 #[path = "API/API02-C/api02_c.rs"]
 pub mod api02_c;
 
+#[path = "API/API03-C/api03_c.rs"]
+pub mod api03_c;
+
 #[path = "API/API04-C/api04_c.rs"]
 pub mod api04_c;
 
@@ -39,6 +42,9 @@ pub mod arr38_c;
 
 #[path = "ARR/ARR39-C/arr39_c.rs"]
 pub mod arr39_c;
+
+#[path = "CON/CON01-C/con01_c.rs"]
+pub mod con01_c;
 
 #[path = "CON/CON04-C/con04_c.rs"]
 pub mod con04_c;
@@ -258,6 +264,7 @@ impl RuleRegistry {
         registry.register(Box::new(api00_c::Api00C));
         registry.register(Box::new(api01_c::Api01C));
         registry.register(Box::new(api02_c::Api02C));
+        registry.register(Box::new(api03_c::Api03C));
         registry.register(Box::new(api04_c::Api04C));
         registry.register(Box::new(api05_c::Api05C));
         registry.register(Box::new(arr00_c::Arr00C));
@@ -268,6 +275,7 @@ impl RuleRegistry {
         registry.register(Box::new(arr37_c::Arr37C));
         registry.register(Box::new(arr38_c::Arr38C));
         registry.register(Box::new(arr39_c::Arr39C));
+        registry.register(Box::new(con01_c::Con01C));
         registry.register(Box::new(con04_c::Con04C));
         registry.register(Box::new(con30_c::Con30C));
         registry.register(Box::new(dcl00_c::Dcl00C));
