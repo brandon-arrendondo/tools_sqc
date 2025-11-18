@@ -55,7 +55,7 @@ impl CertRule for Con43C {
 fn check_static_volatile(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
     if node.kind() == "declaration" {
         let text = get_node_text(node, source);
-        
+
         // Check if this is a static volatile variable
         if text.contains("static") && text.contains("volatile") {
             // Extract variable name
@@ -123,9 +123,10 @@ fn has_synchronization_nearby(node: &Node, source: &str) -> bool {
         if parent.kind() == "function_definition" {
             // Check if function uses synchronization primitives
             let text = get_node_text(&parent, source);
-            if text.contains("mtx_lock") || 
-               text.contains("atomic_") || 
-               text.contains("pthread_mutex") {
+            if text.contains("mtx_lock")
+                || text.contains("atomic_")
+                || text.contains("pthread_mutex")
+            {
                 return true;
             }
             break;
@@ -180,4 +181,3 @@ fn get_switch_condition<'a>(node: &'a Node) -> Option<Node<'a>> {
     }
     None
 }
-

@@ -32,11 +32,11 @@ impl CertRule for DCL19C {
 
         if node.kind() == "translation_unit" {
             let mut cursor = node.walk();
-            
+
             // First pass: collect all function definitions
             let mut defined_functions = std::collections::HashMap::new();
             let mut called_functions = std::collections::HashSet::new();
-            
+
             for child in node.children(&mut cursor) {
                 match child.kind() {
                     "declaration" => {
@@ -53,12 +53,12 @@ impl CertRule for DCL19C {
                     _ => {}
                 }
             }
-            
+
             // Second pass: collect all function calls
             for child in node.children(&mut cursor) {
                 self.collect_function_calls(&child, source, &mut called_functions);
             }
-            
+
             // Check: if a function is defined (non-static) AND called within same file,
             // it should be static
             for (func_name, (func_node, is_static)) in &defined_functions {
@@ -86,7 +86,12 @@ impl CertRule for DCL19C {
 }
 
 impl DCL19C {
-    fn collect_function_calls(&self, node: &Node, source: &str, calls: &mut std::collections::HashSet<String>) {
+    fn collect_function_calls(
+        &self,
+        node: &Node,
+        source: &str,
+        calls: &mut std::collections::HashSet<String>,
+    ) {
         if node.kind() == "call_expression" {
             let mut cursor = node.walk();
             for child in node.children(&mut cursor) {
@@ -96,14 +101,14 @@ impl DCL19C {
                 }
             }
         }
-        
+
         // Recurse into children
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
             self.collect_function_calls(&child, source, calls);
         }
     }
-    
+
     fn is_static_function(&self, node: &Node, source: &str) -> bool {
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
@@ -177,7 +182,7 @@ impl DCL19C {
         // Only flag non-static function definitions
         if !is_static {
             let start = node.start_position();
-            
+
             // Get function name for better error message
             let function_name = self.get_function_name_str(node, source);
 
@@ -214,7 +219,8 @@ impl DCL19C {
         for child in node.children(&mut cursor) {
             if child.kind() == "identifier" {
                 return get_node_text(&child, source).to_string();
-            } else if child.kind() == "pointer_declarator" || child.kind() == "function_declarator" {
+            } else if child.kind() == "pointer_declarator" || child.kind() == "function_declarator"
+            {
                 let name = self.extract_function_name(&child, source);
                 if name != "function" {
                     return name;

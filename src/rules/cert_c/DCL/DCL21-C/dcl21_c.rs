@@ -46,7 +46,9 @@ impl DCL21C {
                 // Check if the operand is a cast or type initialization (compound literal pattern)
                 let mut cursor = node.walk();
                 for child in node.children(&mut cursor) {
-                    if child.kind() == "cast_expression" || child.kind() == "compound_literal_expression" {
+                    if child.kind() == "cast_expression"
+                        || child.kind() == "compound_literal_expression"
+                    {
                         // Check if inside a loop
                         if self.is_inside_loop(node) {
                             let start = node.start_position();
