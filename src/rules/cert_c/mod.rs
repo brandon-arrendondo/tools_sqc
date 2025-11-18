@@ -222,6 +222,9 @@ pub mod str38_c;
 #[path = "STR/STR00-C/str00_c.rs"]
 pub mod str00_c;
 
+#[path = "STR/STR34-C/str34_c.rs"]
+pub mod str34_c;
+
 #[path = "SIG/SIG01-C/sig01_c.rs"]
 pub mod sig01_c;
 
@@ -315,6 +318,7 @@ impl RuleRegistry {
         registry.register(Box::new(str31_c::Str31C));
         registry.register(Box::new(str38_c::Str38C));
         registry.register(Box::new(str00_c::Str00C));
+        registry.register(Box::new(str34_c::Str34C));
         registry.register(Box::new(sig30_c::Sig30C));
         registry.register(Box::new(sig01_c::Sig01C));
         registry.register(Box::new(sig35_c::Sig35C));
