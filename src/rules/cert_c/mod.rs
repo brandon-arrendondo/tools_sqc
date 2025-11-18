@@ -19,6 +19,9 @@ pub mod api04_c;
 #[path = "API/API05-C/api05_c.rs"]
 pub mod api05_c;
 
+#[path = "API/API09-C/api09_c.rs"]
+pub mod api09_c;
+
 #[path = "ARR/ARR00-C/arr00_c.rs"]
 pub mod arr00_c;
 
@@ -52,6 +55,27 @@ pub mod con04_c;
 #[path = "CON/CON30-C/con30_c.rs"]
 pub mod con30_c;
 
+#[path = "CON/CON07-C/con07_c.rs"]
+pub mod con07_c;
+
+#[path = "CON/CON08-C/con08_c.rs"]
+pub mod con08_c;
+
+#[path = "CON/CON32-C/con32_c.rs"]
+pub mod con32_c;
+
+#[path = "CON/CON34-C/con34_c.rs"]
+pub mod con34_c;
+
+#[path = "CON/CON35-C/con35_c.rs"]
+pub mod con35_c;
+
+#[path = "CON/CON40-C/con40_c.rs"]
+pub mod con40_c;
+
+#[path = "CON/CON50-C/con50_c.rs"]
+pub mod con50_c;
+
 #[path = "DCL/DCL00-C/dcl00_c.rs"]
 pub mod dcl00_c;
 
@@ -79,11 +103,38 @@ pub mod dcl01_c;
 #[path = "DCL/DCL03-C/dcl03_c.rs"]
 pub mod dcl03_c;
 
+#[path = "DCL/DCL07-C/dcl07_c.rs"]
+pub mod dcl07_c;
+
+#[path = "DCL/DCL11-C/dcl11_c.rs"]
+pub mod dcl11_c;
+
 #[path = "DCL/DCL13-C/dcl13_c.rs"]
 pub mod dcl13_c;
 
+#[path = "DCL/DCL16-C/dcl16_c.rs"]
+pub mod dcl16_c;
+
+#[path = "DCL/DCL20-C/dcl20_c.rs"]
+pub mod dcl20_c;
+
+#[path = "DCL/DCL37-C/dcl37_c.rs"]
+pub mod dcl37_c;
+
+#[path = "DCL/DCL40-C/dcl40_c.rs"]
+pub mod dcl40_c;
+
+#[path = "ENV/ENV01-C/env01_c.rs"]
+pub mod env01_c;
+
+#[path = "ENV/ENV02-C/env02_c.rs"]
+pub mod env02_c;
+
 #[path = "ERR/ERR07-C/err07_c.rs"]
 pub mod err07_c;
+
+#[path = "ERR/ERR32-C/err32_c.rs"]
+pub mod err32_c;
 
 #[path = "ERR/ERR33-C/err33_c.rs"]
 pub mod err33_c;
@@ -276,6 +327,7 @@ impl RuleRegistry {
         registry.register(Box::new(api03_c::Api03C));
         registry.register(Box::new(api04_c::Api04C));
         registry.register(Box::new(api05_c::Api05C));
+        registry.register(Box::new(api09_c::Api09C));
         registry.register(Box::new(arr00_c::Arr00C));
         registry.register(Box::new(arr01_c::Arr01C));
         registry.register(Box::new(arr30_c::Arr30C));
@@ -287,6 +339,14 @@ impl RuleRegistry {
         registry.register(Box::new(con01_c::Con01C));
         registry.register(Box::new(con04_c::Con04C));
         registry.register(Box::new(con30_c::Con30C));
+        registry.register(Box::new(con07_c::Con07C));
+        registry.register(Box::new(con07_c::Con07C));
+        registry.register(Box::new(con08_c::Con08C));
+        registry.register(Box::new(con32_c::Con32C));
+        registry.register(Box::new(con34_c::Con34C));
+        registry.register(Box::new(con35_c::Con35C));
+        registry.register(Box::new(con40_c::Con40C));
+        registry.register(Box::new(con50_c::Con50C));
         registry.register(Box::new(dcl00_c::Dcl00C));
         registry.register(Box::new(dcl06_c::Dcl06C));
         registry.register(Box::new(dcl39_c::Dcl39C));
@@ -296,8 +356,17 @@ impl RuleRegistry {
         registry.register(Box::new(err06_c::Err06C));
         registry.register(Box::new(dcl01_c::Dcl01C));
         registry.register(Box::new(dcl03_c::Dcl03C));
+        registry.register(Box::new(dcl07_c::Dcl07C));
+        registry.register(Box::new(dcl11_c::Dcl11C));
         registry.register(Box::new(dcl13_c::Dcl13C));
+        registry.register(Box::new(dcl16_c::Dcl16C));
+        registry.register(Box::new(dcl20_c::Dcl20C));
+        registry.register(Box::new(dcl37_c::Dcl37C));
+        registry.register(Box::new(dcl40_c::Dcl40C::new()));
+        registry.register(Box::new(env01_c::Env01C));
+        registry.register(Box::new(env02_c::Env02C::new()));
         registry.register(Box::new(err07_c::Err07C));
+        registry.register(Box::new(err32_c::Err32C));
         registry.register(Box::new(err33_c::Err33C));
         registry.register(Box::new(exp00_c::Exp00C));
         registry.register(Box::new(exp05_c::Exp05C));
