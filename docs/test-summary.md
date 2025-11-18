@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 47 (16.6%)
+- **Implemented Rules:** 48 (17.0%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -106,7 +106,7 @@
   - 🔶 [ERR06-C](#rule-err06c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [ERR30-C](#rule-err30c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
   - 🔶 [ERR32-C](#rule-err32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
-- [EXP](#category-exp) (3 implemented / 31 total)
+- [EXP](#category-exp) (4 implemented / 31 total)
   - 🔶 [EXP36-C](#rule-exp36c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [EXP07-C](#rule-exp07c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP39-C](#rule-exp39c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
@@ -116,7 +116,7 @@
   - 🔶 [EXP45-C](#rule-exp45c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [EXP12-C](#rule-exp12c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [EXP32-C](#rule-exp32c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
-  - 🔶 [EXP00-C](#rule-exp00c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
+  - ✅ [EXP00-C](#rule-exp00c) - Implemented: Pass 4/4 (100.0%)
   - 🔶 [EXP30-C](#rule-exp30c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
   - 🔶 [EXP05-C](#rule-exp05c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [EXP11-C](#rule-exp11c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
@@ -4357,7 +4357,7 @@ being handled; ifsignal()fails, the value oferrnoisindeterminate.
 
 <a id="category-exp"></a>
 
-**Implementation Status:** 3 / 31 rules (9.7%)
+**Implementation Status:** 4 / 31 rules (12.9%)
 
 ### 🔶 EXP36-C - Not Implemented (has tests)
 
@@ -4643,7 +4643,7 @@ qualified reference, resulting inundefined behavior 62:
 
 ---
 
-### 🔶 EXP00-C - Not Implemented (has tests)
+### ✅ EXP00-C - Implemented
 
 <a id="rule-exp00c"></a>
 
@@ -4659,17 +4659,17 @@ this noncompliant code example is to test the least significant bit ofx:
 
 **Test Coverage:** 4 tests (3 fail, 1 pass)
 
-**Test Results:** 0/4 passed (0.0%), 4 not run
+**Test Results:** 4/4 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_exp00_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2_2.c` → `test_exp00_c_fail_wiki_noncompliant_2_2`
-- ⏭️ NOT RUN `wiki_noncompliant_3_3.c` → `test_exp00_c_fail_wiki_noncompliant_3_3`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_exp00_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2_2.c` → `test_exp00_c_fail_wiki_noncompliant_2_2`
+- ✅ PASS `wiki_noncompliant_3_3.c` → `test_exp00_c_fail_wiki_noncompliant_3_3`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_exp00_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_exp00_c_pass_wiki_compliant_1`
 
 ---
 
@@ -11993,7 +11993,7 @@ or by callingExitProcess().
 | DCL | 31 | 4 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |
-| EXP | 31 | 3 | 236 | 7.6 |
+| EXP | 31 | 4 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
 | FLP | 13 | 0 | 40 | 3.1 |
 | INT | 23 | 3 | 238 | 10.3 |
