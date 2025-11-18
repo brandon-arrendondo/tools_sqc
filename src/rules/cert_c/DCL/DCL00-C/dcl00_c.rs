@@ -168,8 +168,3 @@ fn has_const_in_pointer_type(node: &Node, source: &str) -> bool {
     let text = &source[node.start_byte()..node.end_byte()];
     text.contains("const char") || text.contains("char const")
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/dcl00_c.rs"]
-// mod tests;
