@@ -53,7 +53,7 @@
   - 🔶 [CON41-C](#rule-con41c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON50-C](#rule-con50c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON30-C](#rule-con30c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
-- [DCL](#category-dcl) (7 implemented / 31 total)
+- [DCL](#category-dcl) (8 implemented / 31 total)
   - 🔶 [DCL41-C](#rule-dcl41c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL10-C](#rule-dcl10c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [DCL06-C](#rule-dcl06c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
@@ -71,7 +71,7 @@
   - ✅ [DCL21-C](#rule-dcl21c) - Implemented: Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL37-C](#rule-dcl37c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
   - 🔶 [DCL07-C](#rule-dcl07c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
-  - 🔶 [DCL38-C](#rule-dcl38c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [DCL38-C](#rule-dcl38c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [DCL18-C](#rule-dcl18c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [DCL02-C](#rule-dcl02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [DCL40-C](#rule-dcl40c) - Not Implemented (has tests): Pass 0/10 (0.0%) [10 not run]
@@ -85,12 +85,12 @@
   - 🔶 [DCL31-C](#rule-dcl31c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - ✅ [DCL01-C](#rule-dcl01c) - Implemented: Pass 0/4 (0.0%) [4 not run]
   - ✅ [DCL13-C](#rule-dcl13c) - Implemented: Pass 0/5 (0.0%) [5 not run]
-- [ENV](#category-env) (1 implemented / 8 total)
+- [ENV](#category-env) (0 implemented / 8 total)
   - 🔶 [ENV03-C](#rule-env03c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [ENV34-C](#rule-env34c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [ENV33-C](#rule-env33c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
   - 🔶 [ENV31-C](#rule-env31c) - Not Implemented (has tests): Pass 0/6 (0.0%) [6 not run]
-  - ✅ [ENV30-C](#rule-env30c) - Implemented: Pass 13/45 (28.9%)
+  - 🔶 [ENV30-C](#rule-env30c) - Not Implemented (has tests): Pass 0/45 (0.0%) [45 not run]
   - 🔶 [ENV32-C](#rule-env32c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [ENV02-C](#rule-env02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [ENV01-C](#rule-env01c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
@@ -2552,7 +2552,7 @@ return 0; }
 
 <a id="category-dcl"></a>
 
-**Implementation Status:** 7 / 31 rules (22.6%)
+**Implementation Status:** 8 / 31 rules (25.8%)
 
 ### 🔶 DCL41-C - Not Implemented (has tests)
 
@@ -3106,7 +3106,7 @@ parameter declarations:
 
 ---
 
-### 🔶 DCL38-C - Not Implemented (has tests)
+### ✅ DCL38-C - Implemented
 
 <a id="rule-dcl38c"></a>
 
@@ -3125,15 +3125,15 @@ with defined behavior. However, some restrictions apply:
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_dcl38_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_dcl38_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_dcl38_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_dcl38_c_pass_wiki_compliant_1`
 
 ---
 
@@ -3621,7 +3621,7 @@ Visible only in the function */ /* ... */ }
 
 <a id="category-env"></a>
 
-**Implementation Status:** 1 / 8 rules (12.5%)
+**Implementation Status:** 0 / 8 rules (0.0%)
 
 ### 🔶 ENV03-C - Not Implemented (has tests)
 
@@ -3753,7 +3753,7 @@ access the environment through a modified form ofmain():
 
 ---
 
-### ✅ ENV30-C - Implemented
+### 🔶 ENV30-C - Not Implemented (has tests)
 
 <a id="rule-env30c"></a>
 
@@ -3770,58 +3770,58 @@ created. Altering the string returned bygetenv()isundefined behavior.
 
 **Test Coverage:** 45 tests (32 fail, 13 pass)
 
-**Test Results:** 13/45 passed (28.9%)
+**Test Results:** 0/45 passed (0.0%), 45 not run
 
 #### Fail Tests (Should Detect Violations)
 
-- ❌ FAIL `testcases_additional_violations_1.c` → `test_env30_c_fail_testcases_additional_violations_1`
-- ❌ FAIL `testcases_additional_violations_2.c` → `test_env30_c_fail_testcases_additional_violations_2`
-- ❌ FAIL `testcases_additional_violations_3.c` → `test_env30_c_fail_testcases_additional_violations_3`
-- ❌ FAIL `testcases_additional_violations_4.c` → `test_env30_c_fail_testcases_additional_violations_4`
-- ❌ FAIL `testcases_additional_violations_5.c` → `test_env30_c_fail_testcases_additional_violations_5`
-- ❌ FAIL `testcases_additional_violations_6.c` → `test_env30_c_fail_testcases_additional_violations_6`
-- ❌ FAIL `testcases_advanced_modification_patterns.c` → `test_env30_c_fail_testcases_advanced_modification_patterns`
-- ❌ FAIL `testcases_asctime_ctime_modification.c` → `test_env30_c_fail_testcases_asctime_ctime_modification`
-- ❌ FAIL `testcases_configuration_violations.c` → `test_env30_c_fail_testcases_configuration_violations`
-- ❌ FAIL `testcases_database_violations.c` → `test_env30_c_fail_testcases_database_violations`
-- ❌ FAIL `testcases_display_violations.c` → `test_env30_c_fail_testcases_display_violations`
-- ❌ FAIL `testcases_encoding_violations.c` → `test_env30_c_fail_testcases_encoding_violations`
-- ❌ FAIL `testcases_environment_manipulation.c` → `test_env30_c_fail_testcases_environment_manipulation`
-- ❌ FAIL `testcases_file_operations_violations.c` → `test_env30_c_fail_testcases_file_operations_violations`
-- ❌ FAIL `testcases_final_violations_1.c` → `test_env30_c_fail_testcases_final_violations_1`
-- ❌ FAIL `testcases_final_violations_2.c` → `test_env30_c_fail_testcases_final_violations_2`
-- ❌ FAIL `testcases_final_violations_3.c` → `test_env30_c_fail_testcases_final_violations_3`
-- ❌ FAIL `testcases_final_violations_4.c` → `test_env30_c_fail_testcases_final_violations_4`
-- ❌ FAIL `testcases_format_violations.c` → `test_env30_c_fail_testcases_format_violations`
-- ❌ FAIL `testcases_getenv_direct_modification.c` → `test_env30_c_fail_testcases_getenv_direct_modification`
-- ❌ FAIL `testcases_localeconv_modification.c` → `test_env30_c_fail_testcases_localeconv_modification`
-- ❌ FAIL `testcases_logging_violations.c` → `test_env30_c_fail_testcases_logging_violations`
-- ❌ FAIL `testcases_multiple_function_violations.c` → `test_env30_c_fail_testcases_multiple_function_violations`
-- ❌ FAIL `testcases_network_violations.c` → `test_env30_c_fail_testcases_network_violations`
-- ❌ FAIL `testcases_parsing_violations.c` → `test_env30_c_fail_testcases_parsing_violations`
-- ❌ FAIL `testcases_security_violations.c` → `test_env30_c_fail_testcases_security_violations`
-- ❌ FAIL `testcases_setlocale_modification.c` → `test_env30_c_fail_testcases_setlocale_modification`
-- ❌ FAIL `testcases_strerror_modification.c` → `test_env30_c_fail_testcases_strerror_modification`
-- ❌ FAIL `testcases_thread_safety_violations.c` → `test_env30_c_fail_testcases_thread_safety_violations`
-- ❌ FAIL `testcases_validation_violations.c` → `test_env30_c_fail_testcases_validation_violations`
-- ❌ FAIL `wiki_getenv.c` → `test_env30_c_fail_wiki_getenv`
-- ❌ FAIL `wiki_localeconv.c` → `test_env30_c_fail_wiki_localeconv`
+- ⏭️ NOT RUN `testcases_additional_violations_1.c` → `test_env30_c_fail_testcases_additional_violations_1`
+- ⏭️ NOT RUN `testcases_additional_violations_2.c` → `test_env30_c_fail_testcases_additional_violations_2`
+- ⏭️ NOT RUN `testcases_additional_violations_3.c` → `test_env30_c_fail_testcases_additional_violations_3`
+- ⏭️ NOT RUN `testcases_additional_violations_4.c` → `test_env30_c_fail_testcases_additional_violations_4`
+- ⏭️ NOT RUN `testcases_additional_violations_5.c` → `test_env30_c_fail_testcases_additional_violations_5`
+- ⏭️ NOT RUN `testcases_additional_violations_6.c` → `test_env30_c_fail_testcases_additional_violations_6`
+- ⏭️ NOT RUN `testcases_advanced_modification_patterns.c` → `test_env30_c_fail_testcases_advanced_modification_patterns`
+- ⏭️ NOT RUN `testcases_asctime_ctime_modification.c` → `test_env30_c_fail_testcases_asctime_ctime_modification`
+- ⏭️ NOT RUN `testcases_configuration_violations.c` → `test_env30_c_fail_testcases_configuration_violations`
+- ⏭️ NOT RUN `testcases_database_violations.c` → `test_env30_c_fail_testcases_database_violations`
+- ⏭️ NOT RUN `testcases_display_violations.c` → `test_env30_c_fail_testcases_display_violations`
+- ⏭️ NOT RUN `testcases_encoding_violations.c` → `test_env30_c_fail_testcases_encoding_violations`
+- ⏭️ NOT RUN `testcases_environment_manipulation.c` → `test_env30_c_fail_testcases_environment_manipulation`
+- ⏭️ NOT RUN `testcases_file_operations_violations.c` → `test_env30_c_fail_testcases_file_operations_violations`
+- ⏭️ NOT RUN `testcases_final_violations_1.c` → `test_env30_c_fail_testcases_final_violations_1`
+- ⏭️ NOT RUN `testcases_final_violations_2.c` → `test_env30_c_fail_testcases_final_violations_2`
+- ⏭️ NOT RUN `testcases_final_violations_3.c` → `test_env30_c_fail_testcases_final_violations_3`
+- ⏭️ NOT RUN `testcases_final_violations_4.c` → `test_env30_c_fail_testcases_final_violations_4`
+- ⏭️ NOT RUN `testcases_format_violations.c` → `test_env30_c_fail_testcases_format_violations`
+- ⏭️ NOT RUN `testcases_getenv_direct_modification.c` → `test_env30_c_fail_testcases_getenv_direct_modification`
+- ⏭️ NOT RUN `testcases_localeconv_modification.c` → `test_env30_c_fail_testcases_localeconv_modification`
+- ⏭️ NOT RUN `testcases_logging_violations.c` → `test_env30_c_fail_testcases_logging_violations`
+- ⏭️ NOT RUN `testcases_multiple_function_violations.c` → `test_env30_c_fail_testcases_multiple_function_violations`
+- ⏭️ NOT RUN `testcases_network_violations.c` → `test_env30_c_fail_testcases_network_violations`
+- ⏭️ NOT RUN `testcases_parsing_violations.c` → `test_env30_c_fail_testcases_parsing_violations`
+- ⏭️ NOT RUN `testcases_security_violations.c` → `test_env30_c_fail_testcases_security_violations`
+- ⏭️ NOT RUN `testcases_setlocale_modification.c` → `test_env30_c_fail_testcases_setlocale_modification`
+- ⏭️ NOT RUN `testcases_strerror_modification.c` → `test_env30_c_fail_testcases_strerror_modification`
+- ⏭️ NOT RUN `testcases_thread_safety_violations.c` → `test_env30_c_fail_testcases_thread_safety_violations`
+- ⏭️ NOT RUN `testcases_validation_violations.c` → `test_env30_c_fail_testcases_validation_violations`
+- ⏭️ NOT RUN `wiki_getenv.c` → `test_env30_c_fail_wiki_getenv`
+- ⏭️ NOT RUN `wiki_localeconv.c` → `test_env30_c_fail_wiki_localeconv`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ✅ PASS `testcases_comprehensive_safe_usage.c` → `test_env30_c_pass_testcases_comprehensive_safe_usage`
-- ✅ PASS `testcases_safe_error_recovery.c` → `test_env30_c_pass_testcases_safe_error_recovery`
-- ✅ PASS `testcases_safe_getenv_usage.c` → `test_env30_c_pass_testcases_safe_getenv_usage`
-- ✅ PASS `testcases_safe_localeconv_usage.c` → `test_env30_c_pass_testcases_safe_localeconv_usage`
-- ✅ PASS `testcases_safe_multiple_functions.c` → `test_env30_c_pass_testcases_safe_multiple_functions`
-- ✅ PASS `testcases_safe_platform_usage.c` → `test_env30_c_pass_testcases_safe_platform_usage`
-- ✅ PASS `testcases_safe_setlocale_usage.c` → `test_env30_c_pass_testcases_safe_setlocale_usage`
-- ✅ PASS `testcases_safe_strerror_usage.c` → `test_env30_c_pass_testcases_safe_strerror_usage`
-- ✅ PASS `testcases_safe_thread_usage.c` → `test_env30_c_pass_testcases_safe_thread_usage`
-- ✅ PASS `testcases_safe_time_functions.c` → `test_env30_c_pass_testcases_safe_time_functions`
-- ✅ PASS `wiki_getenv_environment_not_modified.c` → `test_env30_c_pass_wiki_getenv_environment_not_modified`
-- ✅ PASS `wiki_getenv_modifying_the_environment_in_posix.c` → `test_env30_c_pass_wiki_getenv_modifying_the_environment_in_posix`
-- ✅ PASS `wiki_localeconv_copy.c` → `test_env30_c_pass_wiki_localeconv_copy`
+- ⏭️ NOT RUN `testcases_comprehensive_safe_usage.c` → `test_env30_c_pass_testcases_comprehensive_safe_usage`
+- ⏭️ NOT RUN `testcases_safe_error_recovery.c` → `test_env30_c_pass_testcases_safe_error_recovery`
+- ⏭️ NOT RUN `testcases_safe_getenv_usage.c` → `test_env30_c_pass_testcases_safe_getenv_usage`
+- ⏭️ NOT RUN `testcases_safe_localeconv_usage.c` → `test_env30_c_pass_testcases_safe_localeconv_usage`
+- ⏭️ NOT RUN `testcases_safe_multiple_functions.c` → `test_env30_c_pass_testcases_safe_multiple_functions`
+- ⏭️ NOT RUN `testcases_safe_platform_usage.c` → `test_env30_c_pass_testcases_safe_platform_usage`
+- ⏭️ NOT RUN `testcases_safe_setlocale_usage.c` → `test_env30_c_pass_testcases_safe_setlocale_usage`
+- ⏭️ NOT RUN `testcases_safe_strerror_usage.c` → `test_env30_c_pass_testcases_safe_strerror_usage`
+- ⏭️ NOT RUN `testcases_safe_thread_usage.c` → `test_env30_c_pass_testcases_safe_thread_usage`
+- ⏭️ NOT RUN `testcases_safe_time_functions.c` → `test_env30_c_pass_testcases_safe_time_functions`
+- ⏭️ NOT RUN `wiki_getenv_environment_not_modified.c` → `test_env30_c_pass_wiki_getenv_environment_not_modified`
+- ⏭️ NOT RUN `wiki_getenv_modifying_the_environment_in_posix.c` → `test_env30_c_pass_wiki_getenv_modifying_the_environment_in_posix`
+- ⏭️ NOT RUN `wiki_localeconv_copy.c` → `test_env30_c_pass_wiki_localeconv_copy`
 
 ---
 
@@ -11990,8 +11990,8 @@ or by callingExitProcess().
 | API | 9 | 5 | 62 | 6.9 |
 | ARR | 9 | 9 | 490 | 54.4 |
 | CON | 23 | 2 | 75 | 3.3 |
-| DCL | 31 | 7 | 173 | 5.6 |
-| ENV | 8 | 1 | 75 | 9.4 |
+| DCL | 31 | 8 | 173 | 5.6 |
+| ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 2 | 88 | 8.0 |
 | EXP | 31 | 3 | 236 | 7.6 |
 | FIO | 35 | 3 | 200 | 5.7 |
