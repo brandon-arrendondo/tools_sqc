@@ -183,7 +183,7 @@ mod tests {
 void func(void) {
     static volatile int **ipp;
     static int *ip;
-    
+
     ipp = &ip;
 }
 "#;
@@ -202,7 +202,7 @@ void func(void) {
 void func(void) {
     static volatile int **ipp;
     static volatile int *ip;
-    
+
     ipp = &ip;
 }
 "#;
