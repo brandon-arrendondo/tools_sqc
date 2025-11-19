@@ -140,6 +140,21 @@ scripts/work_active_helpers.sh unlock-all
 
 ### Step 5: Implement the Proposal
 
+**The proposal is your source of truth - read it first:**
+
+```bash
+# Read the ENTIRE proposal before starting
+cat AGENTS/PROPOSALS/ACTIVE/{SELECTED_SUBDIRECTORY}/{PROPOSAL_FILE}.md
+```
+
+Follow the proposal sections in order:
+1. **Implementation Constraints** - Critical rules (NO embedded tests, NO test edits)
+2. **Required Workflow Steps** - Helper script commands (lock/unlock, registration)
+3. **Task** - What to implement
+4. **Acceptance Criteria** - Definition of done
+
+**CRITICAL:** Re-read the proposal after any long work session or context compaction.
+
 Follow the **Implementation Plan** section of the proposal:
 
 **DO:**

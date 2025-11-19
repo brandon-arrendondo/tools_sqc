@@ -17,6 +17,16 @@ scripts/work_active_helpers.sh verify-precommit
 scripts/work_active_helpers.sh list-proposals SUBDIR
 ```
 
+**IMPORTANT: On every continuation (especially after context compaction):**
+- ALWAYS re-read your current active proposal before continuing work
+- Verify you're following the Implementation Constraints section
+- Check Implementation Log to see what's already been completed
+
+```bash
+# Re-read current proposal (replace with actual file path)
+cat AGENTS/PROPOSALS/ACTIVE/{SELECTED_SUBDIR}/{CURRENT_PROPOSAL}.md
+```
+
 ### For EACH Rule Implementation
 ```bash
 # 1. Lock all files except the specific rule you're implementing

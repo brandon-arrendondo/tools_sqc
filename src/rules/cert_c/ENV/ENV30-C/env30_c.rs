@@ -405,15 +405,3 @@ impl ENV30C {
         )
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_env30_c() {
-        let rule = ENV30C;
-        assert_eq!(rule.rule_id(), "ENV30-C");
-        assert_eq!(rule.cert_id(), "ENV30");
-    }
-}
