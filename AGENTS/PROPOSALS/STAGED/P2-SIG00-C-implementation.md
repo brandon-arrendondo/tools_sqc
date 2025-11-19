@@ -1,10 +1,10 @@
 ---
 rule_id: SIG00-C
 priority: P2
-status: active
+status: staged
 assigned_to: HUU
 created: 2025-11-17
-last_modified: 2025-11-17
+last_modified: 2025-11-19
 tags:
   - cert-c
   - implementation
@@ -13,10 +13,10 @@ tags:
 
 # P2-SIG00-C - SIG00-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** HUU
+**Assigned To:** CLAUDE
 **Category:** SIG
 **Estimated Effort:** 10-30 hours
 
@@ -193,7 +193,34 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### Research Phase
+- Studied CERT C wiki for SIG00-C
+- Key requirement: Mask signals during handler execution to prevent race conditions
+- Violation: Using signal() without masking or sigaction() without proper sa_mask configuration
+- Compliant: Using sigaction() with sigemptyset() and sigaddset() to configure sa_mask
+
+### Implementation
+- Created `src/rules/cert_c/SIG/SIG00-C/sig00_c.rs` (202 lines)
+- Detects calls to signal() function (inherently unsafe for noninterruptible handlers)
+- Detects sigaction() calls without apparent signal masking
+- Heuristic check: searches for preceding sigaddset() calls in same scope
+- Uses `get_node_text()` for DRY compliance
+
+### Key Features
+- High severity for signal() usage (no masking capability)
+- Medium severity for sigaction() without apparent masking (heuristic detection)
+- Recursive scope traversal to find sigaddset() calls
+- Helpful suggestions for proper signal masking patterns
+
+### Testing
+- Build passed successfully
+- cargo fmt applied successfully
+- cargo test passed
+- Pre-commit hooks passed
+- 0 tests (no test cases exist for this rule)
+
+### Commits
+- 40d2a53: P2-SIG00-C: Implementation complete
 
 ---
 
