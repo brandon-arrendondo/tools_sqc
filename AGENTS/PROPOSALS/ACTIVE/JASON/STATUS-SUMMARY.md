@@ -7,50 +7,60 @@
 
 | Status | Count | Rules |
 |--------|-------|-------|
-| ✅ Fully Implemented & Registered | 6 | DCL07-C, DCL11-C, DCL16-C, DCL20-C, EXP34-C, EXP08-C (partial), EXP30-C (partial), EXP32-C (partial) |
-| ⚙️ Registered But Needs Testing | 4 | FIO01-C, INT33-C, STR10-C |
-| ❌ Not Yet Implemented | 18 | FIO03-C, FIO13-C, FIO15-C, FIO17-C, FIO23-C, FIO32-C, FIO38-C, FIO41-C, FIO44-C, FIO51-C, FLP07-C, MEM07-C, MEM36-C, POS02-C, POS49-C, PRE00-C, SIG34-C |
+| ✅ Complete → **STAGED for review** | 5 | DCL07-C, DCL11-C, DCL16-C, DCL20-C, EXP34-C |
+| ⚙️ Registered (needs verification) | 3 | EXP08-C, EXP30-C, EXP32-C |
+| ⚙️ Registered (needs testing) | 4 | FIO01-C, INT33-C, STR10-C |
+| ❌ Not Yet Implemented | 16 | FIO03-C, FIO13-C, FIO15-C, FIO17-C, FIO23-C, FIO32-C, FIO38-C, FIO41-C, FIO44-C, FIO51-C, FLP07-C, MEM07-C, MEM36-C, POS02-C, POS49-C, PRE00-C, SIG34-C |
 
 ## Detailed Status
 
-### ✅ Fully Implemented & Registered (6 rules)
+### ✅ Complete and Moved to STAGED (5 rules)
 
-These rules have complete implementations, are registered in `mod.rs`, enabled in configuration, and have passing tests documented:
+These rules have complete implementations, are registered in `mod.rs`, enabled in configuration, and have passing tests documented. **All moved to STAGED directory (2025-11-19) awaiting adversarial review:**
 
 1. **DCL07-C** - Include the appropriate type information in function declarators
-   - Status: ✅ COMPLETE (2025-11-18)
+   - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: Passing
-   - Location: `src/rules/cert_c/DCL/DCL07-C/dcl07_c.rs`
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-DCL07-C-implementation.md`
+   - Implementation: `src/rules/cert_c/DCL/DCL07-C/dcl07_c.rs`
 
 2. **DCL11-C** - Understand the type issues associated with variadic functions
-   - Status: ✅ COMPLETE (2025-11-18)
+   - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: Passing
-   - Location: `src/rules/cert_c/DCL/DCL11-C/dcl11_c.rs`
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-DCL11-C-implementation.md`
+   - Implementation: `src/rules/cert_c/DCL/DCL11-C/dcl11_c.rs`
 
 3. **DCL16-C** - Use "L," not "l," to indicate a long value
-   - Status: ✅ COMPLETE (2025-11-18)
+   - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: Passing
-   - Location: `src/rules/cert_c/DCL/DCL16-C/dcl16_c.rs`
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-DCL16-C-implementation.md`
+   - Implementation: `src/rules/cert_c/DCL/DCL16-C/dcl16_c.rs`
 
 4. **DCL20-C** - Explicitly specify void when a function accepts no arguments
-   - Status: ✅ COMPLETE (2025-11-18)
+   - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: Passing
-   - Location: `src/rules/cert_c/DCL/DCL20-C/dcl20_c.rs`
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-DCL20-C-implementation.md`
+   - Implementation: `src/rules/cert_c/DCL/DCL20-C/dcl20_c.rs`
 
 5. **EXP34-C** - Do not dereference null pointers
-   - Status: ✅ COMPLETE (2025-11-19)
+   - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: 46/46 passing (100% pass rate)
-   - Location: `src/rules/cert_c/EXP/EXP34-C/exp34_c.rs`
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-EXP34-C-implementation.md`
+   - Implementation: `src/rules/cert_c/EXP/EXP34-C/exp34_c.rs`
 
-6. **EXP08-C** - Ensure pointer arithmetic is used correctly
+### ⚙️ Registered But Needs Verification (3 rules)
+
+These rules are registered in `mod.rs` but need full verification:
+
+1. **EXP08-C** - Ensure pointer arithmetic is used correctly
    - Status: ⚙️ Registered, needs full verification
    - Location: `src/rules/cert_c/EXP/EXP08-C/exp08_c.rs`
 
-7. **EXP30-C** - Do not depend on the order of evaluation for side effects
+2. **EXP30-C** - Do not depend on the order of evaluation for side effects
    - Status: ⚙️ Registered, needs full verification
    - Location: `src/rules/cert_c/EXP/EXP30-C/exp30_c.rs`
 
-8. **EXP32-C** - Do not access a volatile object through a nonvolatile reference
+3. **EXP32-C** - Do not access a volatile object through a nonvolatile reference
    - Status: ⚙️ Registered, needs full verification
    - Location: `src/rules/cert_c/EXP/EXP32-C/exp32_c.rs`
 
@@ -73,7 +83,7 @@ These rules have implementations and are registered in `mod.rs`, but need test v
    - Implementation: Detects unsafe string manipulation
    - Location: `src/rules/cert_c/STR/STR10-C/str10_c.rs`
 
-### ❌ Not Yet Implemented (18 rules)
+### ❌ Not Yet Implemented (16 rules)
 
 These rules have proposals but no implementation yet:
 
@@ -101,23 +111,23 @@ These rules have proposals but no implementation yet:
 ## Next Steps
 
 ### High Priority
-1. Verify and complete testing for the 4 registered rules (FIO01-C, INT33-C, STR10-C)
-2. Complete documentation for EXP08-C, EXP30-C, EXP32-C
-3. Enable rules in configuration files where appropriate
+1. **Complete rules in STAGED** - 5 rules moved to STAGED (2025-11-19) awaiting adversarial review via `/review-staged`
+2. Verify and complete testing for the 4 registered rules (FIO01-C, INT33-C, STR10-C)
+3. Complete documentation for EXP08-C, EXP30-C, EXP32-C (3 rules)
+4. Enable rules in configuration files where appropriate
 
 ### Medium Priority
-4. Begin implementation of the 18 unimplemented rules
-5. Focus on FIO rules first (10 rules total)
+5. Begin implementation of the 16 remaining unimplemented rules
+6. Focus on FIO rules first (10 rules total)
 
 ### Recommendations
-- Consider moving fully implemented rules to STAGED for review
+- Run adversarial review on the 5 STAGED proposals
 - Update rule enablement status in TOML files
 - Run comprehensive test suite on all registered rules
 - Document any test failures or blockers
 
-## Files Updated
-- Updated all 28 proposal files with current status
-- Marked implemented rules with ✅ checkmarks
-- Added status notes and implementation dates
-- Identified rules needing further work
+## Recent Changes (2025-11-19)
+- Moved 5 complete proposals from ACTIVE/JASON to STAGED for adversarial review
+- Updated STATUS-SUMMARY.md to reflect new counts
+- Remaining in ACTIVE/JASON: 23 proposals (3 registered + 4 partial + 16 unimplemented)
 
