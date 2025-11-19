@@ -1,6 +1,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
+use std::collections::HashSet;
 use tree_sitter::Node;
 
 pub struct Dcl17C;
@@ -29,251 +30,226 @@ impl CertRule for Dcl17C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Check for direct access to volatile variables
-        // Direct access can be miscompiled; should use function wrappers
-        if is_direct_volatile_access(node, source) {
-            let var_name = ast_utils::get_node_text(node, source);
-            let start_point = node.start_position();
-
-            violations.push(RuleViolation {
-                rule_id: self.rule_id().to_string(),
-                severity: self.severity(),
-                message: format!(
-                    "Direct access to volatile variable '{}' may be miscompiled. Use function wrappers for volatile accesses",
-                    var_name
-                ),
-                file_path: String::new(),
-                line: start_point.row + 1,
-                column: start_point.column + 1,
-                suggestion: Some(
-                    "Wrap volatile accesses in functions: vol_read(volatile T *p) { return *p; }"
-                        .to_string(),
-                ),
-                ..Default::default()
-            });
+        // Only check at translation unit level (root node)
+        if node.kind() != "translation_unit" {
+            return violations;
         }
+
+        // Pass 1: Collect all volatile variable names
+        let volatile_vars = collect_volatile_variables(node, source);
+
+        // Pass 2: Find direct accesses to volatile variables
+        find_direct_volatile_accesses(node, source, &volatile_vars, &mut violations);
 
         violations
     }
 }
 
-/// Checks if a node represents a direct access to a volatile variable
-/// Direct accesses should be wrapped in function calls to avoid compiler bugs
-fn is_direct_volatile_access(node: &Node, source: &str) -> bool {
-    // Check if this is an identifier in an expression context
-    if node.kind() != "identifier" {
-        return false;
-    }
-
-    // Get the variable name
-    let var_name = ast_utils::get_node_text(node, source);
-
-    // Check if parent context suggests this is a direct access
-    let parent = match node.parent() {
-        Some(p) => p,
-        None => return false,
-    };
-
-    // If the identifier is part of a function call, it's likely wrapped (compliant)
-    if is_within_function_call(node) {
-        return false;
-    }
-
-    // If the identifier is being addressed (&var), it might be for a wrapper function
-    if parent.kind() == "unary_expression" {
-        let operator = parent.child_by_field_name("operator");
-        if let Some(op) = operator {
-            let op_text = ast_utils::get_node_text(&op, source);
-            if op_text == "&" {
-                return false; // Taking address for function wrapper
-            }
-        }
-    }
-
-    // Check if this variable is declared as volatile
-    if !is_variable_volatile(&var_name, node, source) {
-        return false;
-    }
-
-    // Check if this is a direct read or write context
-    is_direct_access_context(node)
-}
-
-/// Checks if a node is within a function call (indicates wrapped access)
-fn is_within_function_call(node: &Node) -> bool {
-    let mut current = node.parent();
-    while let Some(parent) = current {
-        if parent.kind() == "call_expression" {
-            // Check if node is the function name being called
-            if let Some(func) = parent.child_by_field_name("function") {
-                if func.id() == node.id() {
-                    return false; // This is the function name, not an argument
-                }
-            }
-            return true; // Node is within function call arguments
-        }
-        current = parent.parent();
-    }
-    false
-}
-
-/// Checks if a variable is declared with volatile qualifier
-fn is_variable_volatile(var_name: &str, node: &Node, source: &str) -> bool {
-    // Walk up the tree to find the translation unit (root)
-    let mut current = Some(*node);
-    while let Some(n) = current {
-        if n.kind() == "translation_unit" {
-            return find_volatile_declaration(&n, var_name, source);
-        }
-        current = n.parent();
-    }
-    false
-}
-
-/// Searches for a volatile declaration of the given variable
-fn find_volatile_declaration(root: &Node, var_name: &str, source: &str) -> bool {
-    // Search for declarations in the translation unit
+/// Collects names of all volatile-qualified variables declared in the file
+fn collect_volatile_variables<'a>(root: &Node, source: &'a str) -> HashSet<&'a str> {
+    let mut volatile_vars = HashSet::new();
     let mut cursor = root.walk();
-    let mut stack = vec![*root];
 
-    while let Some(node) = stack.pop() {
-        if node.kind() == "declaration" {
-            if has_volatile_qualifier(&node, source) {
-                // Check if this declaration includes our variable
-                if declaration_includes_variable(&node, var_name, source) {
-                    return true;
-                }
-            }
-        }
-
-        // Add children to stack for traversal
-        cursor.reset(node);
-        if cursor.goto_first_child() {
-            loop {
-                stack.push(cursor.node());
-                if !cursor.goto_next_sibling() {
-                    break;
-                }
+    // Walk through all declarations in translation unit
+    for child in root.children(&mut cursor) {
+        if child.kind() == "declaration" {
+            if has_volatile_qualifier(&child, source) {
+                // Extract variable name(s) from this declaration
+                collect_declarator_names(&child, source, &mut volatile_vars);
             }
         }
     }
-    false
+
+    volatile_vars
 }
 
 /// Checks if a declaration has the volatile qualifier
 fn has_volatile_qualifier(decl_node: &Node, source: &str) -> bool {
     let mut cursor = decl_node.walk();
-    cursor.reset(*decl_node);
-
-    if cursor.goto_first_child() {
-        loop {
-            let child = cursor.node();
-            if child.kind() == "type_qualifier" {
-                let text = ast_utils::get_node_text(&child, source);
-                if text == "volatile" {
-                    return true;
-                }
+    for child in decl_node.children(&mut cursor) {
+        if child.kind() == "type_qualifier" {
+            let text = ast_utils::get_node_text(&child, source);
+            if text == "volatile" {
+                return true;
             }
-            if !cursor.goto_next_sibling() {
-                break;
+        }
+        // Also check within storage_class_specifier or type_specifier
+        if child.kind() == "storage_class_specifier" || child.kind() == "primitive_type" {
+            if has_volatile_qualifier(&child, source) {
+                return true;
             }
         }
     }
     false
 }
 
-/// Checks if a declaration node declares the given variable
-fn declaration_includes_variable(decl_node: &Node, var_name: &str, source: &str) -> bool {
+/// Extracts variable names from declarators in a declaration
+fn collect_declarator_names<'a>(decl_node: &Node, source: &'a str, names: &mut HashSet<&'a str>) {
     let mut cursor = decl_node.walk();
-    cursor.reset(*decl_node);
-
-    if cursor.goto_first_child() {
-        loop {
-            let child = cursor.node();
-            if child.kind() == "init_declarator" || child.kind() == "identifier" {
-                let text = extract_variable_name(&child, source);
-                if text == var_name {
-                    return true;
+    for child in decl_node.children(&mut cursor) {
+        match child.kind() {
+            "init_declarator" => {
+                if let Some(declarator) = child.child_by_field_name("declarator") {
+                    if let Some(name) = extract_identifier_name(&declarator, source) {
+                        names.insert(name);
+                    }
                 }
             }
-            if !cursor.goto_next_sibling() {
-                break;
+            "identifier" => {
+                let name = ast_utils::get_node_text(&child, source);
+                names.insert(name);
+            }
+            "pointer_declarator" => {
+                if let Some(name) = extract_identifier_name(&child, source) {
+                    names.insert(name);
+                }
+            }
+            _ => {}
+        }
+    }
+}
+
+/// Extracts the identifier name from a declarator node
+fn extract_identifier_name<'a>(declarator: &Node, source: &'a str) -> Option<&'a str> {
+    match declarator.kind() {
+        "identifier" => Some(ast_utils::get_node_text(declarator, source)),
+        "pointer_declarator" | "array_declarator" | "function_declarator" => {
+            if let Some(child_declarator) = declarator.child_by_field_name("declarator") {
+                extract_identifier_name(&child_declarator, source)
+            } else {
+                // Try to find identifier child
+                let mut cursor = declarator.walk();
+                for child in declarator.children(&mut cursor) {
+                    if child.kind() == "identifier" {
+                        return Some(ast_utils::get_node_text(&child, source));
+                    }
+                    if let Some(name) = extract_identifier_name(&child, source) {
+                        return Some(name);
+                    }
+                }
+                None
+            }
+        }
+        _ => None,
+    }
+}
+
+/// Finds all direct accesses to volatile variables (not wrapped in function calls)
+fn find_direct_volatile_accesses(
+    node: &Node,
+    source: &str,
+    volatile_vars: &HashSet<&str>,
+    violations: &mut Vec<RuleViolation>,
+) {
+    // Check if this identifier is a volatile variable being accessed directly
+    if node.kind() == "identifier" {
+        let var_name = ast_utils::get_node_text(node, source);
+
+        if volatile_vars.contains(var_name) {
+            // Check if this is a direct access (not wrapped in function call)
+            if is_direct_access(node, source) {
+                let start_point = node.start_position();
+                violations.push(RuleViolation {
+                    rule_id: "DCL17-C".to_string(),
+                    severity: Severity::Medium,
+                    message: format!(
+                        "Direct access to volatile variable '{}' may be miscompiled. Wrap volatile accesses in functions",
+                        var_name
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Use wrapper functions: int vol_read(volatile int *p) { return *p; }".to_string()
+                    ),
+                    ..Default::default()
+                });
             }
         }
     }
+
+    // Recursively check children
+    let mut cursor = node.walk();
+    for child in node.children(&mut cursor) {
+        find_direct_volatile_accesses(&child, source, volatile_vars, violations);
+    }
+}
+
+/// Determines if an identifier access is "direct" (not wrapped in a function call)
+fn is_direct_access(node: &Node, _source: &str) -> bool {
+    // Walk up to find the context
+    let mut current = node.parent();
+
+    while let Some(parent) = current {
+        match parent.kind() {
+            // If we're taking the address of the variable (&var), this might be for a wrapper
+            "unary_expression" => {
+                if let Some(operator) = parent.child_by_field_name("operator") {
+                    if operator.kind() == "&" {
+                        // Check if this address-of is being passed to a function
+                        if let Some(grandparent) = parent.parent() {
+                            if grandparent.kind() == "argument_list" {
+                                // &var is passed to function - this is wrapped access (compliant)
+                                return false;
+                            }
+                        }
+                    }
+                }
+                // Dereference (*ptr) is direct access
+                current = parent.parent();
+            }
+
+            // If we're in a function call argument list, check if we're the function name
+            // or an argument
+            "call_expression" => {
+                // Check if our node is the function being called
+                if let Some(function) = parent.child_by_field_name("function") {
+                    if is_ancestor_of(&function, node) {
+                        // We ARE the function name, not an argument - direct access
+                        return true;
+                    }
+                }
+                // We're an argument to a function call - NOT direct access
+                return false;
+            }
+
+            // These contexts indicate direct access
+            "assignment_expression"
+            | "update_expression"
+            | "binary_expression"
+            | "init_declarator"
+            | "return_statement"
+            | "for_statement"
+            | "while_statement"
+            | "if_statement"
+            | "switch_statement" => {
+                return true;
+            }
+
+            // Pointer dereference expression
+            "pointer_expression" => {
+                // Check if this is dereferencing a function call result
+                if let Some(argument) = parent.child_by_field_name("argument") {
+                    if argument.kind() == "call_expression" {
+                        // *func() - func returns a pointer, dereferencing it
+                        return false;
+                    }
+                }
+                current = parent.parent();
+            }
+
+            _ => {
+                current = parent.parent();
+            }
+        }
+    }
+
+    // Default: if we reached root without finding a clear context, consider it direct
     false
 }
 
-/// Extracts the variable name from a declarator node
-fn extract_variable_name<'a>(node: &Node, source: &'a str) -> &'a str {
-    if node.kind() == "identifier" {
-        return ast_utils::get_node_text(node, source);
-    }
-
-    // For init_declarator, find the identifier child
-    let mut cursor = node.walk();
-    cursor.reset(*node);
-
-    if cursor.goto_first_child() {
-        loop {
-            let child = cursor.node();
-            if child.kind() == "identifier" {
-                return ast_utils::get_node_text(&child, source);
-            }
-            if child.kind() == "init_declarator" || child.kind() == "pointer_declarator" {
-                let result = extract_variable_name(&child, source);
-                if !result.is_empty() {
-                    return result;
-                }
-            }
-            if !cursor.goto_next_sibling() {
-                break;
-            }
-        }
-    }
-    ""
-}
-
-/// Checks if the node is in a direct access context (assignment, comparison, etc.)
-fn is_direct_access_context(node: &Node) -> bool {
-    let parent = match node.parent() {
-        Some(p) => p,
-        None => return false,
-    };
-
-    match parent.kind() {
-        // Direct assignment contexts
-        "assignment_expression" | "update_expression" => true,
-        // Direct comparison or arithmetic
-        "binary_expression" | "relational_expression" => true,
-        // Direct initialization
-        "init_declarator" => true,
-        // For loop increment/condition
-        "for_statement" => {
-            // Check if this is in the initializer, condition, or increment
-            if let Some(init) = parent.child_by_field_name("initializer") {
-                if is_ancestor(&init, node) {
-                    return true;
-                }
-            }
-            if let Some(cond) = parent.child_by_field_name("condition") {
-                if is_ancestor(&cond, node) {
-                    return true;
-                }
-            }
-            if let Some(update) = parent.child_by_field_name("update") {
-                if is_ancestor(&update, node) {
-                    return true;
-                }
-            }
-            false
-        }
-        _ => false,
-    }
-}
-
-/// Checks if ancestor is an ancestor of descendant in the AST
-fn is_ancestor(ancestor: &Node, descendant: &Node) -> bool {
+/// Checks if `ancestor` is an ancestor of `descendant` in the tree
+fn is_ancestor_of(ancestor: &Node, descendant: &Node) -> bool {
     let mut current = Some(*descendant);
     while let Some(node) = current {
         if node.id() == ancestor.id() {

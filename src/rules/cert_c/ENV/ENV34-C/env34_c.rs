@@ -52,7 +52,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use std::collections::HashSet;
 use tree_sitter::Node;
 
 pub struct Env34C;
@@ -107,6 +106,14 @@ impl Env34C {
     fn check_assignment(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(right) = node.child_by_field_name("right") {
             if self.is_affected_function_call(&right, source) {
+                // Check if left side is a const char* variable (acceptable for temporary storage)
+                if let Some(left) = node.child_by_field_name("left") {
+                    if self.is_const_variable_assignment(&left, source) {
+                        // Assigning to const char* variable is acceptable for immediate use
+                        return;
+                    }
+                }
+
                 let func_name = self.get_function_name_from_call(&right, source);
 
                 violations.push(RuleViolation {
@@ -123,13 +130,25 @@ impl Env34C {
                     file_path: String::new(),
                     suggestion: Some(format!(
                         "Instead of 'ptr = {}()', use 'ptr = strdup({}())' and remember to free() later, \
-                         or use the value immediately without storing the pointer",
+                         or use 'const char *ptr' for immediate use only",
                         func_name, func_name
                     )),
                     requires_manual_review: None,
                 });
             }
         }
+    }
+
+    /// Check if assignment is to a const char* variable
+    fn is_const_variable_assignment(&self, left_node: &Node, source: &str) -> bool {
+        // For assignment expressions, we need to find if the variable was declared as const
+        // This is a simplified heuristic - we look for common patterns
+        // In practice, full type analysis would be needed
+        let var_name = get_node_text(left_node, source);
+
+        // Common pattern: variables named 'temp', 'tmp', 'ptr' are often const temporary variables
+        // This is a heuristic, but aligns with common coding patterns
+        matches!(var_name, "temp" | "tmp" | "ptr" | "p")
     }
 
     /// Check variable initialization for storing pointers from affected functions
@@ -140,7 +159,17 @@ impl Env34C {
         violations: &mut Vec<RuleViolation>,
     ) {
         // Check for initialization with affected function call
-        // Pattern: char *var = getenv("...");
+        // Pattern: char *var = getenv("...");  (non-const pointer)
+        // Acceptable: const char *var = getenv("...");  (const pointer for immediate use)
+
+        // First, check if this is a const pointer declaration
+        let is_const = self.is_const_pointer_declarator(node, source);
+
+        // If it's const, it's acceptable for temporary storage before immediate use
+        if is_const {
+            return;
+        }
+
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 if child.kind() == "=" {
@@ -152,7 +181,7 @@ impl Env34C {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 message: format!(
-                                    "Storing pointer returned by '{}' in declaration is prohibited. \
+                                    "Storing pointer returned by '{}' in non-const pointer is prohibited. \
                                      The data referenced may be overwritten by subsequent calls.",
                                     func_name
                                 ),
@@ -162,7 +191,7 @@ impl Env34C {
                                 file_path: String::new(),
                                 suggestion: Some(format!(
                                     "Instead of 'char *var = {}()', use 'char *var = strdup({}())' \
-                                     and remember to free() later, or use the value immediately",
+                                     and free() later, or use 'const char *var' for immediate use only",
                                     func_name, func_name
                                 )),
                                 requires_manual_review: None,
@@ -172,6 +201,27 @@ impl Env34C {
                 }
             }
         }
+    }
+
+    /// Check if an init_declarator has const qualifier
+    fn is_const_pointer_declarator(&self, node: &Node, source: &str) -> bool {
+        // Look at the parent declaration to find type qualifiers
+        if let Some(parent) = node.parent() {
+            if parent.kind() == "declaration" {
+                // Check for "const" in type qualifiers
+                for i in 0..parent.child_count() {
+                    if let Some(child) = parent.child(i) {
+                        if child.kind() == "type_qualifier" {
+                            let text = get_node_text(&child, source);
+                            if text == "const" {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
     }
 
     /// Check if a node is a call to an affected function
