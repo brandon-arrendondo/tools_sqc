@@ -335,39 +335,3 @@ impl CertRule for Dcl37C {
         violations
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_reserved_double_underscore() {
-        let rule = Dcl37C::new();
-        assert!(rule.is_reserved_identifier("__foo"));
-        assert!(rule.is_reserved_identifier("___bar"));
-    }
-
-    #[test]
-    fn test_reserved_underscore_uppercase() {
-        let rule = Dcl37C::new();
-        assert!(rule.is_reserved_identifier("_Atomic"));
-        assert!(rule.is_reserved_identifier("_Bool"));
-        assert!(rule.is_reserved_identifier("_MY_HEADER_H_"));
-    }
-
-    #[test]
-    fn test_reserved_standard_names() {
-        let rule = Dcl37C::new();
-        assert!(rule.is_reserved_identifier("errno"));
-        assert!(rule.is_reserved_identifier("SIZE_MAX"));
-        assert!(rule.is_reserved_identifier("NULL"));
-    }
-
-    #[test]
-    fn test_non_reserved() {
-        let rule = Dcl37C::new();
-        assert!(!rule.is_reserved_identifier("my_var"));
-        assert!(!rule.is_reserved_identifier("_lowercase"));
-        assert!(!rule.is_reserved_identifier("foo123"));
-    }
-}

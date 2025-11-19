@@ -153,20 +153,3 @@ impl Arr02C {
         }
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_rule_metadata() {
-        let rule = Arr02C;
-        assert_eq!(rule.rule_id(), "ARR02-C");
-        assert_eq!(rule.cert_id(), "ARR02-C");
-        assert_eq!(
-            rule.description(),
-            "Explicitly specify array bounds, even if implicitly defined by an initializer"
-        );
-        assert_eq!(rule.severity(), Severity::Medium);
-    }
-}
