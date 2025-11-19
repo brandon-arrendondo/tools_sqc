@@ -1,0 +1,498 @@
+//! FIO05-C: Identify files using multiple file attributes
+//!
+//! Files can often be identified by attributes other than the file name, such as by
+//! comparing file ownership or creation time. Information about a file that has been
+//! created and closed can be stored and then used to validate the identity of the
+//! file when it is reopened.
+//!
+//! Comparing multiple attributes of the file increases the likelihood that the
+//! reopened file is the same file that had been previously operated on.
+//!
+//! ## Violations:
+//!
+//! **Noncompliant Code Example (Reopen):**
+//! ```c
+//! char *file_name;
+//! FILE *fd = fopen(file_name, "w");
+//! if (fd == NULL) { /* Handle error */ }
+//! /* Write to file */
+//! fclose(fd);
+//! fd = NULL;
+//! /* Race condition window - attacker can switch file */
+//! fd = fopen(file_name, "r");  // VIOLATION: Reopening by name only
+//! if (fd == NULL) { /* Handle error */ }
+//! /* Read from file */
+//! fclose(fd);
+//! ```
+//!
+//! ## Compliant Solutions:
+//!
+//! **Compliant Solution (POSIX Device/I-node):**
+//! ```c
+//! struct stat orig_st;
+//! struct stat new_st;
+//! char *file_name;
+//!
+//! int fd = open(file_name, O_WRONLY);
+//! if (fd == -1) { /* Handle error */ }
+//! /* Write to file */
+//! if (fstat(fd, &orig_st) == -1) { /* Handle error */ }
+//! close(fd);
+//!
+//! fd = open(file_name, O_RDONLY);
+//! if (fd == -1) { /* Handle error */ }
+//! if (fstat(fd, &new_st) == -1) { /* Handle error */ }
+//!
+//! if ((orig_st.st_dev != new_st.st_dev) ||
+//!     (orig_st.st_ino != new_st.st_ino)) {
+//!   /* File was tampered with! */
+//! }
+//! ```
+//!
+//! **Compliant Solution (Open Only Once):**
+//! ```c
+//! int fd = open(file_name, O_RDWR);
+//! if (fd == -1) { /* Handle error */ }
+//! /* Write to file */
+//! /* Read from file (no close/reopen needed) */
+//! close(fd);
+//! ```
+
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils;
+use std::collections::{HashMap, HashSet};
+use tree_sitter::Node;
+
+pub struct Fio05C;
+
+impl CertRule for Fio05C {
+    fn rule_id(&self) -> &'static str {
+        "FIO05-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Identify files using multiple file attributes"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Recommendation
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "FIO05-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Analyze global scope (translation_unit) for file reopen violations
+        if node.kind() == "translation_unit" {
+            let mut analyzer = FileReopenAnalyzer::new();
+            analyzer.analyze_scope(node, source, &mut violations);
+            return violations;
+        }
+
+        // Analyze each function for file reopen violations
+        if node.kind() == "function_definition" {
+            let mut analyzer = FileReopenAnalyzer::new();
+            analyzer.analyze_scope(node, source, &mut violations);
+        }
+
+        // Recursively check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                violations.extend(self.check(&child, source));
+            }
+        }
+
+        violations
+    }
+}
+
+/// Tracks file operations to detect unsafe reopen patterns
+struct FileReopenAnalyzer {
+    /// Track file operations: filename -> list of operations
+    file_operations: HashMap<String, Vec<FileOperation>>,
+    /// Track fstat() calls and their associated file descriptors
+    fstat_calls: HashSet<String>,
+    /// Track file attribute comparisons (st_dev, st_ino, etc.)
+    has_attribute_comparison: bool,
+}
+
+#[derive(Clone, Debug)]
+struct FileOperation {
+    op_type: OpType,
+    filename: String,
+    fd_var: Option<String>, // File descriptor or FILE* variable
+    line: usize,
+    column: usize,
+    node_id: usize,
+}
+
+#[derive(Clone, Debug, PartialEq)]
+enum OpType {
+    Open,
+    Close,
+    Fstat,
+}
+
+impl FileReopenAnalyzer {
+    fn new() -> Self {
+        Self {
+            file_operations: HashMap::new(),
+            fstat_calls: HashSet::new(),
+            has_attribute_comparison: false,
+        }
+    }
+
+    fn analyze_scope(
+        &mut self,
+        scope_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // First pass: collect all file operations
+        // For functions, look in body; for translation_unit, analyze the whole node
+        if scope_node.kind() == "function_definition" {
+            if let Some(body) = scope_node.child_by_field_name("body") {
+                self.collect_operations(&body, source);
+            }
+        } else {
+            // Global scope (translation_unit) - analyze entire scope
+            self.collect_operations(scope_node, source);
+        }
+
+        // Second pass: detect violations
+        self.detect_reopen_violations(violations);
+    }
+
+    fn collect_operations(&mut self, node: &Node, source: &str) {
+        match node.kind() {
+            "call_expression" => {
+                self.process_call(node, source);
+            }
+            "assignment_expression" => {
+                // Check for fopen() assigned to a variable
+                self.process_assignment(node, source);
+            }
+            "declaration" => {
+                // Check for declarations with fopen() initializers
+                self.process_declaration(node, source);
+            }
+            "binary_expression" => {
+                // Check for file attribute comparisons (st_dev, st_ino)
+                self.check_attribute_comparison(node, source);
+            }
+            _ => {}
+        }
+
+        // Recursively process children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_operations(&child, source);
+            }
+        }
+    }
+
+    fn process_call(&mut self, node: &Node, source: &str) {
+        if let Some(function) = node.child_by_field_name("function") {
+            let func_name = ast_utils::get_node_text_owned(&function, source);
+
+            match func_name.as_str() {
+                "fopen" | "open" => {
+                    self.process_open_call(node, source, &func_name);
+                }
+                "fclose" | "close" => {
+                    self.process_close_call(node, source, &func_name);
+                }
+                "fstat" | "stat" | "lstat" => {
+                    self.process_fstat_call(node, source, &func_name);
+                }
+                _ => {}
+            }
+        }
+    }
+
+    fn process_assignment(&mut self, node: &Node, source: &str) {
+        if let Some(right) = node.child_by_field_name("right") {
+            if right.kind() == "call_expression" {
+                if let Some(function) = right.child_by_field_name("function") {
+                    let func_name = ast_utils::get_node_text_owned(&function, source);
+                    if func_name == "fopen" || func_name == "open" {
+                        // Get the variable being assigned
+                        if let Some(left) = node.child_by_field_name("left") {
+                            let var_name = ast_utils::get_node_text_owned(&left, source);
+                            self.process_open_call_with_var(
+                                &right,
+                                source,
+                                &func_name,
+                                Some(var_name),
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn process_declaration(&mut self, node: &Node, source: &str) {
+        // Handle declarations like: FILE *fd = fopen(...)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "init_declarator" {
+                    // Get the declarator (variable name)
+                    if let Some(declarator) = child.child_by_field_name("declarator") {
+                        let var_name = self.extract_identifier_name(&declarator, source);
+
+                        // Get the value (initializer)
+                        if let Some(value) = child.child_by_field_name("value") {
+                            if value.kind() == "call_expression" {
+                                if let Some(function) = value.child_by_field_name("function") {
+                                    let func_name =
+                                        ast_utils::get_node_text_owned(&function, source);
+                                    if func_name == "fopen" || func_name == "open" {
+                                        self.process_open_call_with_var(
+                                            &value,
+                                            source,
+                                            &func_name,
+                                            Some(var_name),
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn extract_identifier_name(&self, declarator: &Node, source: &str) -> String {
+        // Handle different declarator types (pointer_declarator, identifier, etc.)
+        match declarator.kind() {
+            "identifier" => ast_utils::get_node_text_owned(declarator, source),
+            "pointer_declarator" | "array_declarator" | "function_declarator" => {
+                // Recursively find the identifier
+                for i in 0..declarator.child_count() {
+                    if let Some(child) = declarator.child(i) {
+                        if child.kind() == "identifier" {
+                            return ast_utils::get_node_text_owned(&child, source);
+                        }
+                        let name = self.extract_identifier_name(&child, source);
+                        if !name.is_empty() {
+                            return name;
+                        }
+                    }
+                }
+                String::new()
+            }
+            _ => String::new(),
+        }
+    }
+
+    fn process_open_call(&mut self, node: &Node, source: &str, func_name: &str) {
+        self.process_open_call_with_var(node, source, func_name, None);
+    }
+
+    fn process_open_call_with_var(
+        &mut self,
+        node: &Node,
+        source: &str,
+        func_name: &str,
+        fd_var: Option<String>,
+    ) {
+        if let Some(arguments) = node.child_by_field_name("arguments") {
+            // Extract filename argument (first argument for both fopen and open)
+            if let Some(filename_node) = self.get_first_argument(&arguments) {
+                let filename = ast_utils::get_node_text_owned(&filename_node, source);
+
+                let op = FileOperation {
+                    op_type: OpType::Open,
+                    filename: filename.clone(),
+                    fd_var,
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    node_id: node.id(),
+                };
+
+                self.file_operations
+                    .entry(filename)
+                    .or_insert_with(Vec::new)
+                    .push(op);
+            }
+        }
+    }
+
+    fn process_close_call(&mut self, node: &Node, source: &str, _func_name: &str) {
+        if let Some(arguments) = node.child_by_field_name("arguments") {
+            // Get the file descriptor/FILE* being closed
+            if let Some(fd_node) = self.get_first_argument(&arguments) {
+                let fd_var = ast_utils::get_node_text_owned(&fd_node, source);
+
+                // Try to match this close with a previous open by fd_var
+                // We'll mark this as a close operation for the associated filename
+                for (filename, ops) in &mut self.file_operations {
+                    // Find the most recent open with matching fd_var
+                    if let Some(last_open) = ops.iter().rev().find(|op| {
+                        op.op_type == OpType::Open
+                            && op.fd_var.as_ref().map(|v| v == &fd_var).unwrap_or(false)
+                    }) {
+                        let close_op = FileOperation {
+                            op_type: OpType::Close,
+                            filename: filename.clone(),
+                            fd_var: Some(fd_var.clone()),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            node_id: node.id(),
+                        };
+                        ops.push(close_op);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    fn process_fstat_call(&mut self, node: &Node, source: &str, func_name: &str) {
+        if let Some(arguments) = node.child_by_field_name("arguments") {
+            // fstat(fd, &buf) - first argument is file descriptor
+            if let Some(fd_node) = self.get_first_argument(&arguments) {
+                let fd_var = ast_utils::get_node_text_owned(&fd_node, source);
+                self.fstat_calls.insert(fd_var.clone());
+
+                // Also track as an fstat operation for analysis
+                for (filename, ops) in &mut self.file_operations {
+                    if let Some(last_open) = ops.iter().rev().find(|op| {
+                        op.op_type == OpType::Open
+                            && op.fd_var.as_ref().map(|v| v == &fd_var).unwrap_or(false)
+                    }) {
+                        let fstat_op = FileOperation {
+                            op_type: OpType::Fstat,
+                            filename: filename.clone(),
+                            fd_var: Some(fd_var),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            node_id: node.id(),
+                        };
+                        ops.push(fstat_op);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    fn check_attribute_comparison(&mut self, node: &Node, source: &str) {
+        // Look for comparisons involving st_dev, st_ino, st_mode, etc.
+        let text = ast_utils::get_node_text_owned(node, source);
+
+        if text.contains("st_dev")
+            || text.contains("st_ino")
+            || text.contains("st_mode")
+            || text.contains("st_uid")
+            || text.contains("st_gid")
+        {
+            self.has_attribute_comparison = true;
+        }
+    }
+
+    fn get_first_argument<'a>(&self, arguments: &'a Node) -> Option<Node<'a>> {
+        for i in 0..arguments.child_count() {
+            if let Some(arg) = arguments.child(i) {
+                if !matches!(arg.kind(), "," | "(" | ")") {
+                    return Some(arg);
+                }
+            }
+        }
+        None
+    }
+
+    fn detect_reopen_violations(&self, violations: &mut Vec<RuleViolation>) {
+        // Check each filename for reopen patterns
+        for (filename, ops) in &self.file_operations {
+            // Look for pattern: Open -> Close -> Open (without proper fstat checks)
+            self.check_reopen_pattern(filename, ops, violations);
+        }
+    }
+
+    fn check_reopen_pattern(
+        &self,
+        filename: &str,
+        ops: &[FileOperation],
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Track state: looking for Open -> Close -> Open sequences
+        let mut i = 0;
+        while i < ops.len() {
+            if ops[i].op_type == OpType::Open {
+                let first_open = &ops[i];
+
+                // Look for a subsequent close
+                let mut j = i + 1;
+                while j < ops.len() {
+                    if ops[j].op_type == OpType::Close {
+                        let close_op = &ops[j];
+
+                        // Check if this close matches the open (same fd_var)
+                        let is_matching_close = first_open.fd_var.is_some()
+                            && close_op.fd_var.is_some()
+                            && first_open.fd_var == close_op.fd_var;
+
+                        if is_matching_close {
+                            // Look for a subsequent reopen of the same file
+                            let mut k = j + 1;
+                            while k < ops.len() {
+                                if ops[k].op_type == OpType::Open && ops[k].filename == *filename {
+                                    // Found a reopen! Check if there's proper validation
+                                    let has_fstat_between = self.has_fstat_between(i, k, ops);
+
+                                    if !has_fstat_between && !self.has_attribute_comparison {
+                                        // VIOLATION: Reopening file without proper validation
+                                        violations.push(RuleViolation {
+                                            rule_id: "FIO05-C".to_string(),
+                                            severity: Severity::Medium,
+                                            message: format!(
+                                                "File reopened using filename '{}' without verifying file attributes (st_dev, st_ino)",
+                                                filename
+                                            ),
+                                            file_path: String::new(),
+                                            line: ops[k].line,
+                                            column: ops[k].column,
+                                            suggestion: Some(
+                                                "Use fstat() to check st_dev and st_ino before and after reopening, or avoid closing and reopening the file".to_string()
+                                            ),
+                                            ..Default::default()
+                                        });
+                                    }
+
+                                    // Move to next potential violation
+                                    i = k;
+                                    break;
+                                }
+                                k += 1;
+                            }
+                            break;
+                        }
+                    }
+                    j += 1;
+                }
+            }
+            i += 1;
+        }
+    }
+
+    fn has_fstat_between(&self, start_idx: usize, end_idx: usize, ops: &[FileOperation]) -> bool {
+        // Check if there's an fstat operation between start and end indices
+        for i in start_idx..=end_idx.min(ops.len() - 1) {
+            if ops[i].op_type == OpType::Fstat {
+                return true;
+            }
+        }
+        false
+    }
+}
