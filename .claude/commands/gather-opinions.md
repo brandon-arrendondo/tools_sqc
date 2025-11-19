@@ -46,6 +46,8 @@ Before reviewing proposals, I need to understand what perspective you want me to
 
 **Which persona should I adopt?**
 
+**ARCHITECT: REGARDLESS OF PERSONA, ALWAYS PERFORM AN EXAMINATION DURING THIS ANALYSIS IN AN ADVERSARIAL WAY, AND ALWAYS LOOK FOR DRY (Dont repeat yourself) and KISS (Keep it simple stupid) violations. Specific focus area is shared utility usage**
+
 ---
 
 ### Step 2: Identify Reviewer
@@ -170,6 +172,8 @@ scripts/review_helpers.sh add-opinion \
   "{SELECTED_PERSONA}" \
   "{OPINION}" \
   "{COMMENT}"
+
+**ARCHITECT: YOUR COMMENT SHOULD ALWAYS BE CLEAR AND PROVIDE ENOUGH CONTEXT FOR A DEEPER DIVE INTO SPECIFICS** 
 
 # Example:
 # scripts/review_helpers.sh add-opinion \
