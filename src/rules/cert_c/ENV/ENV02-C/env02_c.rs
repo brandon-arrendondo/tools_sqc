@@ -51,31 +51,54 @@ impl Env02C {
 
                 if func_name == "putenv" || func_name == "setenv" {
                     if let Some(arguments) = node.child_by_field_name("arguments") {
-                        let mut cursor = arguments.walk();
-                        for child in arguments.children(&mut cursor) {
-                            if let Some(env_name) = self.get_env_name(&child, source) {
-                                let lowercase_name = env_name.to_lowercase();
-                                let mut env_vars = self.env_vars.borrow_mut();
-
-                                if let Some(prev_name) = env_vars.get(&lowercase_name) {
-                                    if prev_name != &env_name {
-                                        violations.push(RuleViolation {
-                                            rule_id: "ENV02-C".to_string(),
-                                            severity: Severity::Medium,
-                                            line: node.start_position().row + 1,
-                                            column: node.start_position().column + 1,
-                                            message: format!(
-                                                "Environment variable '{}' differs only in case from '{}'",
-                                                env_name, prev_name
-                                            ),
-                                            file_path: String::new(),
-                                            suggestion: Some("Use consistent casing for environment variable names".to_string()),
-                                            requires_manual_review: Some(false),
-                                        });
-                                    }
-                                } else {
-                                    env_vars.insert(lowercase_name, env_name);
+                        let env_name_opt = if func_name == "setenv" {
+                            // setenv("NAME", "value", overwrite) - first argument is the name
+                            let mut cursor = arguments.walk();
+                            let mut result = None;
+                            for child in arguments.children(&mut cursor) {
+                                if child.kind() == "string_literal" {
+                                    let content = get_node_text(&child, source);
+                                    let content = content.trim_matches('"');
+                                    result = Some(content.to_string());
+                                    break;
                                 }
+                            }
+                            result
+                        } else {
+                            // putenv("NAME=value") - extract name before '='
+                            let mut cursor = arguments.walk();
+                            let mut result = None;
+                            for child in arguments.children(&mut cursor) {
+                                if let Some(name) = self.get_env_name(&child, source) {
+                                    result = Some(name);
+                                    break;
+                                }
+                            }
+                            result
+                        };
+
+                        if let Some(env_name) = env_name_opt {
+                            let lowercase_name = env_name.to_lowercase();
+                            let mut env_vars = self.env_vars.borrow_mut();
+
+                            if let Some(prev_name) = env_vars.get(&lowercase_name) {
+                                if prev_name != &env_name {
+                                    violations.push(RuleViolation {
+                                        rule_id: "ENV02-C".to_string(),
+                                        severity: Severity::Medium,
+                                        line: node.start_position().row + 1,
+                                        column: node.start_position().column + 1,
+                                        message: format!(
+                                            "Environment variable '{}' differs only in case from '{}'",
+                                            env_name, prev_name
+                                        ),
+                                        file_path: String::new(),
+                                        suggestion: Some("Use consistent casing for environment variable names".to_string()),
+                                        requires_manual_review: Some(false),
+                                    });
+                                }
+                            } else {
+                                env_vars.insert(lowercase_name, env_name);
                             }
                         }
                     }
@@ -144,7 +167,7 @@ mod tests {
             }
         "#;
 
-        let mut parser = CParser::new();
+        let mut parser = CParser::new().unwrap();
         let tree = parser.parse_source(code).unwrap();
         let rule = Env02C::new();
         let violations = rule.check(&tree.root_node(), code);
@@ -160,7 +183,7 @@ mod tests {
             }
         "#;
 
-        let mut parser = CParser::new();
+        let mut parser = CParser::new().unwrap();
         let tree = parser.parse_source(code).unwrap();
         let rule = Env02C::new();
         let violations = rule.check(&tree.root_node(), code);
