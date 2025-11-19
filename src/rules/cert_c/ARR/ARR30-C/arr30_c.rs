@@ -232,7 +232,8 @@ impl Arr30C {
 
                                 // Check if it has an explicit value
                                 if let Some(value_node) = enumerator.child_by_field_name("value") {
-                                    let value_str = &source[value_node.start_byte()..value_node.end_byte()];
+                                    let value_str =
+                                        &source[value_node.start_byte()..value_node.end_byte()];
                                     if let Ok(value) = value_str.trim().parse::<i64>() {
                                         current_value = value;
                                     }
@@ -1846,8 +1847,9 @@ impl Arr30C {
             if let Some(child) = return_node.child(i) {
                 if child.kind() == "binary_expression" {
                     // Check if this is pointer arithmetic (buffer + offset or offset + buffer)
-                    if let Some((left_name, right_name)) = self.extract_binary_expr_operands(&child, source) {
-
+                    if let Some((left_name, right_name)) =
+                        self.extract_binary_expr_operands(&child, source)
+                    {
                         // Try both orders: buffer + offset OR offset + buffer
                         let mut buffer_name = None;
                         let mut offset_name = None;
@@ -1881,7 +1883,9 @@ impl Arr30C {
                             if let Some(func_node) = find_containing_function(return_node) {
                                 // Extract the function_declarator from within the function_definition
                                 // (it may be nested inside a pointer_declarator for pointer return types)
-                                if let Some(func_declarator) = self.find_function_declarator(&func_node) {
+                                if let Some(func_declarator) =
+                                    self.find_function_declarator(&func_node)
+                                {
                                     // Find the parameter_list in the function_declarator
                                     for j in 0..func_declarator.child_count() {
                                         if let Some(param_list) = func_declarator.child(j) {
@@ -1889,17 +1893,29 @@ impl Arr30C {
                                                 // Check each parameter declaration
                                                 for k in 0..param_list.child_count() {
                                                     if let Some(param_decl) = param_list.child(k) {
-                                                        if param_decl.kind() == "parameter_declaration" {
-                                                            let param_text = &source[param_decl.start_byte()..param_decl.end_byte()];
+                                                        if param_decl.kind()
+                                                            == "parameter_declaration"
+                                                        {
+                                                            let param_text = &source[param_decl
+                                                                .start_byte()
+                                                                ..param_decl.end_byte()];
                                                             // Check if this parameter matches our offset name
                                                             if param_text.contains(off) {
                                                                 // Check if the type is signed (int, long, ssize_t, etc.)
-                                                                let is_signed = param_text.contains("int ") && !param_text.contains("unsigned") && !param_text.contains("size_t");
+                                                                let is_signed = param_text
+                                                                    .contains("int ")
+                                                                    && !param_text
+                                                                        .contains("unsigned")
+                                                                    && !param_text
+                                                                        .contains("size_t");
 
                                                                 if is_signed {
                                                                     // Check if it has a lower bound check (>= 0)
-                                                                    if !self.has_lower_bound_check(&func_node, off, source) {
-                                                                        let start_point = child.start_position();
+                                                                    if !self.has_lower_bound_check(
+                                                                        &func_node, off, source,
+                                                                    ) {
+                                                                        let start_point =
+                                                                            child.start_position();
                                                                         violations.push(RuleViolation {
                                                                             rule_id: self.rule_id().to_string(),
                                                                             severity: Severity::High,
