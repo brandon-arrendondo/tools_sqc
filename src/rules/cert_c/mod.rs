@@ -403,6 +403,9 @@ pub mod pre31_c;
 #[path = "PRE/PRE07-C/pre07_c.rs"]
 pub mod pre07_c;
 
+#[path = "PRE/PRE08-C/pre08_c.rs"]
+pub mod pre08_c;
+
 #[path = "PRE/PRE09-C/pre09_c.rs"]
 pub mod pre09_c;
 
@@ -581,6 +584,7 @@ impl RuleRegistry {
         registry.register(Box::new(pre30_c::Pre30C));
         registry.register(Box::new(pre31_c::Pre31C));
         registry.register(Box::new(pre07_c::PRE07C));
+        registry.register(Box::new(pre08_c::Pre08C::new()));
         registry.register(Box::new(pre09_c::Pre09C));
         registry.register(Box::new(pre05_c::Pre05C));
         registry.register(Box::new(pre32_c::Pre32C));
