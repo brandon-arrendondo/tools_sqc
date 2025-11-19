@@ -247,6 +247,9 @@ pub mod exp33_c;
 #[path = "EXP/EXP43-C/exp43_c.rs"]
 pub mod exp43_c;
 
+#[path = "EXP/EXP44-C/exp44_c.rs"]
+pub mod exp44_c;
+
 #[path = "EXP/EXP34-C/exp34_c.rs"]
 pub mod exp34_c;
 
