@@ -115,6 +115,9 @@ pub mod env32_c;
 #[path = "ENV/ENV33-C/env33_c.rs"]
 pub mod env33_c;
 
+#[path = "ENV/ENV34-C/env34_c.rs"]
+pub mod env34_c;
+
 #[path = "ERR/ERR00-C/err00_c.rs"]
 pub mod err00_c;
 
@@ -419,6 +422,7 @@ impl RuleRegistry {
         registry.register(Box::new(env31_c::Env31C));
         registry.register(Box::new(env32_c::Env32C));
         registry.register(Box::new(env33_c::Env33C));
+        registry.register(Box::new(env34_c::Env34C));
         registry.register(Box::new(err00_c::Err00C));
         registry.register(Box::new(err06_c::Err06C));
         registry.register(Box::new(dcl01_c::Dcl01C));
