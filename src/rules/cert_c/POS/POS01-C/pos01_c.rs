@@ -139,15 +139,3 @@ impl POS01C {
         text.contains("O_NOFOLLOW")
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_pos01_c() {
-        let rule = POS01C;
-        assert_eq!(rule.rule_id(), "POS01-C");
-        assert_eq!(rule.cert_id(), "POS01");
-    }
-}

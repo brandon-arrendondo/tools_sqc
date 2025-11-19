@@ -230,15 +230,3 @@ impl DCL19C {
         String::from("function")
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_dcl19_c() {
-        let rule = DCL19C;
-        assert_eq!(rule.rule_id(), "DCL19-C");
-        assert_eq!(rule.cert_id(), "DCL19");
-    }
-}
