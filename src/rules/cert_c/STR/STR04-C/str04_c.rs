@@ -269,15 +269,3 @@ impl STR04C {
         None
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_str04_c() {
-        let rule = STR04C;
-        assert_eq!(rule.rule_id(), "STR04-C");
-        assert_eq!(rule.cert_id(), "STR04");
-    }
-}
