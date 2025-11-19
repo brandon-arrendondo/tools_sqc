@@ -11,7 +11,7 @@
   - 11 pass cases
 - **Implementation**: Pre-existing, fully functional
 - **Rule**: Do not subtract or compare two pointers that do not refer to the same array
-- **Key Features**: 
+- **Key Features**:
   - Tracks array origins for pointers
   - Detects cross-array pointer arithmetic
   - Validates pointer comparisons between different arrays
@@ -30,7 +30,7 @@
   - Supports: atomic_compare_exchange_*, CAS, __sync_*_compare_and_swap
 
 #### 3. CON31-C - New Implementation ✅
-- **Status**: Implementation Complete  
+- **Status**: Implementation Complete
 - **Test Results**: 4/4 tests passing (100%)
   - 1 fail case (mutex destroyed in thread)
   - 1 pass case (mutex destroyed after joins)
@@ -129,7 +129,7 @@ Finished `dev` profile [unoptimized + debuginfo] target(s)
 $ cargo test --lib con09
 test result: ok. 4 passed; 0 failed; 0 ignored
 
-$ cargo test --lib con31  
+$ cargo test --lib con31
 test result: ok. 4 passed; 0 failed; 0 ignored
 
 $ cargo test --lib arr36
