@@ -193,7 +193,37 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-19 - Implementation Complete
+
+**No Existing Implementation**
+- Checked `src/rules/cert_c/STR/STR05-C/` - no str05_c.rs found
+
+**CERT C Wiki Research**
+- Rule: Use pointers to const when referring to string literals
+- Key requirement: String literals are immutable, should be declared with const-qualified pointee type
+- Wiki URL: https://wiki.sei.cmu.edu/confluence/display/c/STR05-C.+Use+pointers+to+const+when+referring+to+string+literals
+
+**Implementation Created** (`src/rules/cert_c/STR/STR05-C/str05_c.rs`)
+- 230 lines total
+- Detection patterns:
+  1. Pointer declarations initialized with string literals
+  2. Checks if pointee type is const-qualified (e.g., `const char *` vs `char *`)
+  3. Distinguishes pointers from arrays (arrays are allowed to be mutable)
+- Uses `get_node_text()` for DRY compliance
+- Tree-sitter AST traversal with recursive `check_node()` pattern
+- Severity: Low (const-poisoning concern)
+
+**Registration and Enablement**
+- Added to `src/rules/cert_c/mod.rs` (lines 429-430, line 613)
+- Enabled in `src/rules/cert_c/STR/STR05-C/STR05-C.toml` (enabled = true)
+- Enabled in `src/rules/cert_c/rules-all.toml` (line 1071, enabled = true)
+
+**Build Results**
+- `cargo build`: ✅ Success (fixed String type mismatch: added `.to_string()`)
+- `cargo test`: ✅ Success - 0 tests (no test cases exist for STR05-C)
+
+**Commits**
+- a107275: P2-STR05-C: Implementation complete
 
 ---
 
