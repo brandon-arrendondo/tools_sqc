@@ -238,7 +238,7 @@ mod tests {
             }
         "#;
 
-        let mut parser = CParser::new();
+        let mut parser = CParser::new().unwrap();
         let tree = parser.parse_source(code).unwrap();
         let rule = Dcl40C::new();
         let violations = rule.check(&tree.root_node(), code);
@@ -254,7 +254,7 @@ mod tests {
             }
         "#;
 
-        let mut parser = CParser::new();
+        let mut parser = CParser::new().unwrap();
         let tree = parser.parse_source(code).unwrap();
         let rule = Dcl40C::new();
         let violations = rule.check(&tree.root_node(), code);
@@ -270,7 +270,7 @@ mod tests {
             }
         "#;
 
-        let mut parser = CParser::new();
+        let mut parser = CParser::new().unwrap();
         let tree = parser.parse_source(code).unwrap();
         let rule = Dcl40C::new();
         let violations = rule.check(&tree.root_node(), code);
@@ -286,7 +286,7 @@ mod tests {
             }
         "#;
 
-        let mut parser = CParser::new();
+        let mut parser = CParser::new().unwrap();
         let tree = parser.parse_source(code).unwrap();
         let rule = Dcl40C::new();
         let violations = rule.check(&tree.root_node(), code);
