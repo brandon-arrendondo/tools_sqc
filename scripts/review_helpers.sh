@@ -113,7 +113,8 @@ analyze_coverage() {
             continue
         fi
 
-        local review_count=$(grep -c "^  - reviewer:" "$proposal" 2>/dev/null || echo "0")
+        local review_count=$(grep -c "^  - reviewer:" "$proposal" 2>/dev/null | tr -d '\n')
+        review_count=${review_count:-0}
 
         if [ "$review_count" -eq 0 ]; then
             coverage_0=$((coverage_0 + 1))
@@ -168,9 +169,12 @@ analyze_opinions() {
         fi
 
         # Count opinions by type
-        local lg=$(grep -c "opinion: LOOKS_GOOD" "$proposal" 2>/dev/null || echo "0")
-        local nr=$(grep -c "opinion: NEEDS_REVIEW" "$proposal" 2>/dev/null || echo "0")
-        local bl=$(grep -c "opinion: BLOCKED" "$proposal" 2>/dev/null || echo "0")
+        local lg=$(grep -c "opinion: LOOKS_GOOD" "$proposal" 2>/dev/null | tr -d '\n')
+        lg=${lg:-0}
+        local nr=$(grep -c "opinion: NEEDS_REVIEW" "$proposal" 2>/dev/null | tr -d '\n')
+        nr=${nr:-0}
+        local bl=$(grep -c "opinion: BLOCKED" "$proposal" 2>/dev/null | tr -d '\n')
+        bl=${bl:-0}
 
         looks_good=$((looks_good + lg))
         needs_review=$((needs_review + nr))
@@ -197,24 +201,28 @@ analyze_opinions() {
             continue
         fi
 
-        local review_count=$(grep -c "^  - reviewer:" "$proposal" 2>/dev/null || echo "0")
+        local review_count=$(grep -c "^  - reviewer:" "$proposal" 2>/dev/null | tr -d '\n')
+        review_count=${review_count:-0}
 
         if [ "$review_count" -lt 2 ]; then
             continue  # Skip proposals without enough reviews
         fi
 
-        local lg=$(grep -c "opinion: LOOKS_GOOD" "$proposal" 2>/dev/null || echo "0")
-        local nr=$(grep -c "opinion: NEEDS_REVIEW" "$proposal" 2>/dev/null || echo "0")
-        local bl=$(grep -c "opinion: BLOCKED" "$proposal" 2>/dev/null || echo "0")
+        local lg=$(grep -c "opinion: LOOKS_GOOD" "$proposal" 2>/dev/null | tr -d '\n')
+        lg=${lg:-0}
+        local nr=$(grep -c "opinion: NEEDS_REVIEW" "$proposal" 2>/dev/null | tr -d '\n')
+        nr=${nr:-0}
+        local bl=$(grep -c "opinion: BLOCKED" "$proposal" 2>/dev/null | tr -d '\n')
+        bl=${bl:-0}
 
         # Strong consensus: all same opinion
         if [ "$lg" -eq "$review_count" ] || [ "$nr" -eq "$review_count" ] || [ "$bl" -eq "$review_count" ]; then
-            ((strong_consensus++))
+            strong_consensus=$((strong_consensus + 1))
         # Weak consensus: majority opinion (>50%)
         elif [ "$lg" -gt $((review_count / 2)) ] || [ "$nr" -gt $((review_count / 2)) ] || [ "$bl" -gt $((review_count / 2)) ]; then
-            ((weak_consensus++))
+            weak_consensus=$((weak_consensus + 1))
         else
-            ((no_consensus++))
+            no_consensus=$((no_consensus + 1))
         fi
     done
 
@@ -239,15 +247,19 @@ list_by_consensus() {
         fi
 
         local basename=$(basename "$proposal")
-        local review_count=$(grep -c "^  - reviewer:" "$proposal" 2>/dev/null || echo "0")
+        local review_count=$(grep -c "^  - reviewer:" "$proposal" 2>/dev/null | tr -d '\n')
+        review_count=${review_count:-0}
 
         if [ "$review_count" -lt 2 ] && [ "$filter" != "blocked" ]; then
             continue  # Skip unless looking for blocked
         fi
 
-        local lg=$(grep -c "opinion: LOOKS_GOOD" "$proposal" 2>/dev/null || echo "0")
-        local nr=$(grep -c "opinion: NEEDS_REVIEW" "$proposal" 2>/dev/null || echo "0")
-        local bl=$(grep -c "opinion: BLOCKED" "$proposal" 2>/dev/null || echo "0")
+        local lg=$(grep -c "opinion: LOOKS_GOOD" "$proposal" 2>/dev/null | tr -d '\n')
+        lg=${lg:-0}
+        local nr=$(grep -c "opinion: NEEDS_REVIEW" "$proposal" 2>/dev/null | tr -d '\n')
+        nr=${nr:-0}
+        local bl=$(grep -c "opinion: BLOCKED" "$proposal" 2>/dev/null | tr -d '\n')
+        bl=${bl:-0}
 
         case "$filter" in
             strong)
