@@ -629,6 +629,7 @@ impl RuleRegistry {
         registry.register(Box::new(win01_c::Win01C));
         registry.register(Box::new(win02_c::Win02C));
         registry.register(Box::new(win03_c::Win03C::new()));
+        registry.register(Box::new(win30_c::Win30C::new()));
 
         registry
     }
@@ -661,3 +662,6 @@ pub mod win02_c;
 
 #[path = "WIN/WIN03-C/win03_c.rs"]
 pub mod win03_c;
+
+#[path = "WIN/WIN30-C/win30_c.rs"]
+pub mod win30_c;
