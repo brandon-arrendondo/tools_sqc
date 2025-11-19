@@ -346,6 +346,9 @@ pub mod msc37_c;
 #[path = "MSC/MSC38-C/msc38_c.rs"]
 pub mod msc38_c;
 
+#[path = "MSC/MSC39-C/msc39_c.rs"]
+pub mod msc39_c;
+
 #[path = "MSC/MSC32-C/msc32_c.rs"]
 pub mod msc32_c;
 
@@ -544,6 +547,7 @@ impl RuleRegistry {
         registry.register(Box::new(msc30_c::Msc30C::new()));
         registry.register(Box::new(msc37_c::Msc37C::new()));
         registry.register(Box::new(msc38_c::Msc38C::new()));
+        registry.register(Box::new(msc39_c::Msc39C::new()));
         registry.register(Box::new(msc32_c::Msc32C));
         registry.register(Box::new(pos01_c::POS01C));
         registry.register(Box::new(pos05_c::Pos05C));
