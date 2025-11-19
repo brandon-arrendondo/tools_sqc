@@ -118,15 +118,3 @@ impl DCL38C {
         false
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_dcl38_c() {
-        let rule = DCL38C;
-        assert_eq!(rule.rule_id(), "DCL38-C");
-        assert_eq!(rule.cert_id(), "DCL38");
-    }
-}

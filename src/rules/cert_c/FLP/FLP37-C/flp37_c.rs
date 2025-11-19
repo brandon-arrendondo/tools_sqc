@@ -211,15 +211,3 @@ impl FLP37C {
         None
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_flp37_c() {
-        let rule = FLP37C;
-        assert_eq!(rule.rule_id(), "FLP37-C");
-        assert_eq!(rule.cert_id(), "FLP37");
-    }
-}

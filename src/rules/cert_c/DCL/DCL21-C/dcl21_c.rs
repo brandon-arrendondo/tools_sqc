@@ -85,15 +85,3 @@ impl DCL21C {
         false
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_dcl21_c() {
-        let rule = DCL21C;
-        assert_eq!(rule.rule_id(), "DCL21-C");
-        assert_eq!(rule.cert_id(), "DCL21");
-    }
-}

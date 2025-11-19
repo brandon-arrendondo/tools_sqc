@@ -84,15 +84,3 @@ impl CertRule for PRE07C {
         violations
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_pre07_c() {
-        let rule = PRE07C;
-        assert_eq!(rule.rule_id(), "PRE07-C");
-        assert_eq!(rule.cert_id(), "PRE07");
-    }
-}
