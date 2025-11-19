@@ -277,6 +277,9 @@ pub mod fio34_c;
 #[path = "FIO/FIO05-C/fio05_c.rs"]
 pub mod fio05_c;
 
+#[path = "FIO/FIO06-C/fio06_c.rs"]
+pub mod fio06_c;
+
 #[path = "FIO/FIO08-C/fio08_c.rs"]
 pub mod fio08_c;
 
