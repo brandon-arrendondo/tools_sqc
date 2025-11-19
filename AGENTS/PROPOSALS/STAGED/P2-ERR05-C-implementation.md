@@ -59,7 +59,30 @@ Implement or verify ERR05-C with 100% test pass rate and DRY compliance.
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-18 - Claude Code (via /work-active)
+
+**Phase 1: Verification (Completed)**
+- Found existing implementation in [src/rules/cert_c/ERR/ERR05-C/err05_c.rs](src/rules/cert_c/ERR/ERR05-C/err05_c.rs:1)
+- Implementation already registered in [mod.rs:124-125](src/rules/cert_c/mod.rs:124-125) and [registry:430](src/rules/cert_c/mod.rs:430)
+- Rule enabled in [ERR05-C.toml:20](src/rules/cert_c/ERR/ERR05-C/ERR05-C.toml:20)
+
+**Phase 2: Testing (Completed)**
+- Build succeeded: `cargo build` ✅
+- Tests: **100% pass rate (5/5)** ✅
+  - test_err05_c_fail_wiki_noncompliant_1 ✅
+  - test_err05_c_pass_wiki_return_value ✅
+  - test_err05_c_pass_wiki_global_error_indicator ✅
+  - test_err05_c_pass_wiki_setjmpandlongjmp ✅
+  - test_err05_c_pass_wiki_address_argument ✅
+
+**Acceptance Criteria Status:**
+- [x] Implementation exists and compiles ✅
+- [x] All test cases pass (100% pass rate) ✅
+- [x] Uses get_node_text() and other shared utilities (DRY compliance) ✅
+- [x] Rule enabled in configuration ✅
+- [x] Implementation documented with comments ✅
+
+**Status:** Implementation complete and verified. Ready for adversarial review.
 
 ---
 
