@@ -184,6 +184,7 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 ## Acceptance Criteria
 
 - [ ] Implementation exists and compiles
+- [ ] Module registered in src/rules/cert_c/mod.rs
 - [ ] All test cases pass (100% pass rate)
 - [ ] Uses get_node_text() and other shared utilities (DRY compliance)
 - [ ] Rule enabled in configuration
@@ -193,7 +194,11 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Last Updated:** 2025-11-19
+
+**Status:** ❌ NOT YET IMPLEMENTED
+
+This rule has not been implemented yet. Implementation file should be created at `src/rules/cert_c/FIO/FIO03-C/fio03_c.rs`.
 
 ---
 

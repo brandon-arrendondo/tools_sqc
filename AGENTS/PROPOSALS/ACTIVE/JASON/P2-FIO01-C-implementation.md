@@ -183,17 +183,22 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] Module registered in src/rules/cert_c/mod.rs
+- [ ] All test cases pass (100% pass rate) - needs verification
+- [ ] Uses get_node_text() and other shared utilities (DRY compliance) - needs verification
+- [ ] Rule enabled in configuration - needs enablement
+- [ ] Implementation documented with comments - needs documentation
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Last Updated:** 2025-11-19
+
+**Status:** ⚙️ REGISTERED - Implementation exists but needs testing and documentation
+
+Implementation file exists at `src/rules/cert_c/FIO/FIO01-C/fio01_c.rs` and is registered in mod.rs. The rule detects TOCTOU (Time-of-check Time-of-use) vulnerabilities when files are opened with `fopen()` and then operated on by name using `remove()` or `chmod()`. Implementation needs test verification and documentation update.
 
 ---
 
