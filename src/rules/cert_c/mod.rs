@@ -628,6 +628,7 @@ impl RuleRegistry {
         registry.register(Box::new(sig35_c::Sig35C));
         registry.register(Box::new(win01_c::Win01C));
         registry.register(Box::new(win02_c::Win02C));
+        registry.register(Box::new(win03_c::Win03C::new()));
 
         registry
     }
@@ -657,3 +658,6 @@ pub mod win01_c;
 
 #[path = "WIN/WIN02-C/win02_c.rs"]
 pub mod win02_c;
+
+#[path = "WIN/WIN03-C/win03_c.rs"]
+pub mod win03_c;
