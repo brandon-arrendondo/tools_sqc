@@ -121,6 +121,9 @@ pub mod env34_c;
 #[path = "ERR/ERR00-C/err00_c.rs"]
 pub mod err00_c;
 
+#[path = "ERR/ERR01-C/err01_c.rs"]
+pub mod err01_c;
+
 #[path = "ERR/ERR05-C/err05_c.rs"]
 pub mod err05_c;
 
