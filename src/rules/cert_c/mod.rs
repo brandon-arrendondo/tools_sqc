@@ -193,6 +193,9 @@ pub mod err32_c;
 #[path = "ERR/ERR33-C/err33_c.rs"]
 pub mod err33_c;
 
+#[path = "ERR/ERR34-C/err34_c.rs"]
+pub mod err34_c;
+
 #[path = "EXP/EXP00-C/exp00_c.rs"]
 pub mod exp00_c;
 
@@ -451,6 +454,7 @@ impl RuleRegistry {
         registry.register(Box::new(err07_c::Err07C));
         registry.register(Box::new(err32_c::Err32C));
         registry.register(Box::new(err33_c::Err33C));
+        registry.register(Box::new(err34_c::Err34C));
         registry.register(Box::new(exp00_c::Exp00C));
         registry.register(Box::new(exp05_c::Exp05C));
         registry.register(Box::new(exp07_c::Exp07C));
