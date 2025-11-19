@@ -30,62 +30,56 @@ add_opinion() {
     local date=$(date +%Y-%m-%d)
     local timestamp=$(date -Iseconds)
 
-    # Check if reviews section exists
-    if ! grep -q "^reviews:" "$proposal_file"; then
-        # Find where to insert reviews section (after YAML front matter or before first ##)
-        # Insert after the status/priority block, before first ## section
-
-        # Create reviews section
-        local reviews_section="
-reviews:
-  - reviewer: $reviewer
-    persona: $persona
-    date: $date
-    timestamp: $timestamp
-    opinion: $opinion
-    comment: \"$comment\"
-"
-
-        # Find insertion point (after front matter, before first ##)
-        local insert_line=$(grep -n "^## " "$proposal_file" | head -1 | cut -d: -f1)
-
-        if [ -z "$insert_line" ]; then
-            # No ## found, append to end
-            echo "$reviews_section" >> "$proposal_file"
-        else
-            # Insert before first ##
-            {
-                head -n $((insert_line - 1)) "$proposal_file"
-                echo "$reviews_section"
-                tail -n +$insert_line "$proposal_file"
-            } > "${proposal_file}.tmp"
-            mv "${proposal_file}.tmp" "$proposal_file"
-        fi
+    # Check if YAML frontmatter exists (file starts with ---)
+    if ! head -1 "$proposal_file" | grep -q "^---$"; then
+        # No frontmatter - create it with reviews section
+        {
+            echo "---"
+            echo "reviews:"
+            echo "  - reviewer: $reviewer"
+            echo "    persona: $persona"
+            echo "    date: $date"
+            echo "    timestamp: $timestamp"
+            echo "    opinion: $opinion"
+            echo "    comment: \"$comment\""
+            echo "---"
+            echo ""
+            cat "$proposal_file"
+        } > "${proposal_file}.tmp"
+        mv "${proposal_file}.tmp" "$proposal_file"
     else
-        # Append to existing reviews section
-        local review_entry="  - reviewer: $reviewer
-    persona: $persona
-    date: $date
-    timestamp: $timestamp
-    opinion: $opinion
-    comment: \"$comment\""
+        # Frontmatter exists - find closing ---
+        local closing_line=$(tail -n +2 "$proposal_file" | grep -n "^---$" | head -1 | cut -d: -f1)
+        closing_line=$((closing_line + 1))  # Adjust for tail offset
 
-        # Find last line of reviews section
-        local reviews_start=$(grep -n "^reviews:" "$proposal_file" | cut -d: -f1)
-        local next_section=$(tail -n +$((reviews_start + 1)) "$proposal_file" | grep -n "^[a-z_]*:" | head -1 | cut -d: -f1)
-
-        if [ -n "$next_section" ]; then
-            # Insert before next section
-            local insert_at=$((reviews_start + next_section))
+        # Check if reviews section exists in frontmatter
+        if ! head -n $((closing_line - 1)) "$proposal_file" | grep -q "^reviews:"; then
+            # No reviews section - add it before closing ---
             {
-                head -n $((insert_at - 1)) "$proposal_file"
-                echo "$review_entry"
-                tail -n +$insert_at "$proposal_file"
+                head -n $((closing_line - 1)) "$proposal_file"
+                echo "reviews:"
+                echo "  - reviewer: $reviewer"
+                echo "    persona: $persona"
+                echo "    date: $date"
+                echo "    timestamp: $timestamp"
+                echo "    opinion: $opinion"
+                echo "    comment: \"$comment\""
+                tail -n +$closing_line "$proposal_file"
             } > "${proposal_file}.tmp"
             mv "${proposal_file}.tmp" "$proposal_file"
         else
-            # Append to end of file
-            echo "$review_entry" >> "$proposal_file"
+            # Reviews section exists - append to it before closing ---
+            {
+                head -n $((closing_line - 1)) "$proposal_file"
+                echo "  - reviewer: $reviewer"
+                echo "    persona: $persona"
+                echo "    date: $date"
+                echo "    timestamp: $timestamp"
+                echo "    opinion: $opinion"
+                echo "    comment: \"$comment\""
+                tail -n +$closing_line "$proposal_file"
+            } > "${proposal_file}.tmp"
+            mv "${proposal_file}.tmp" "$proposal_file"
         fi
     fi
 
@@ -275,12 +269,12 @@ list_by_consensus() {
                 fi
                 ;;
             weak)
-                # Majority opinion
-                if [ "$lg" -gt $((review_count / 2)) ]; then
+                # Majority opinion (>50% but not unanimous)
+                if [ "$lg" -gt $((review_count / 2)) ] && [ "$lg" -lt "$review_count" ]; then
                     echo "✅ $basename (majority LOOKS_GOOD: $lg/$review_count)"
-                elif [ "$nr" -gt $((review_count / 2)) ]; then
+                elif [ "$nr" -gt $((review_count / 2)) ] && [ "$nr" -lt "$review_count" ]; then
                     echo "⚠️  $basename (majority NEEDS_REVIEW: $nr/$review_count)"
-                elif [ "$bl" -gt $((review_count / 2)) ]; then
+                elif [ "$bl" -gt $((review_count / 2)) ] && [ "$bl" -lt "$review_count" ]; then
                     echo "🛑 $basename (majority BLOCKED: $bl/$review_count)"
                 fi
                 ;;
