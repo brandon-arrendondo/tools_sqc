@@ -19,8 +19,14 @@ pub mod api04_c;
 #[path = "API/API05-C/api05_c.rs"]
 pub mod api05_c;
 
+#[path = "API/API07-C/api07_c.rs"]
+pub mod api07_c;
+
 #[path = "API/API09-C/api09_c.rs"]
 pub mod api09_c;
+
+#[path = "API/API10-C/api10_c.rs"]
+pub mod api10_c;
 
 #[path = "ARR/ARR00-C/arr00_c.rs"]
 pub mod arr00_c;
@@ -58,8 +64,14 @@ pub mod con43_c;
 #[path = "CON/CON01-C/con01_c.rs"]
 pub mod con01_c;
 
+#[path = "CON/CON03-C/con03_c.rs"]
+pub mod con03_c;
+
 #[path = "CON/CON04-C/con04_c.rs"]
 pub mod con04_c;
+
+#[path = "CON/CON05-C/con05_c.rs"]
+pub mod con05_c;
 
 #[path = "CON/CON30-C/con30_c.rs"]
 pub mod con30_c;
@@ -100,8 +112,17 @@ pub mod env31_c;
 #[path = "ENV/ENV32-C/env32_c.rs"]
 pub mod env32_c;
 
+#[path = "ENV/ENV33-C/env33_c.rs"]
+pub mod env33_c;
+
+#[path = "ENV/ENV34-C/env34_c.rs"]
+pub mod env34_c;
+
 #[path = "ERR/ERR00-C/err00_c.rs"]
 pub mod err00_c;
+
+#[path = "ERR/ERR05-C/err05_c.rs"]
+pub mod err05_c;
 
 #[path = "ERR/ERR06-C/err06_c.rs"]
 pub mod err06_c;
@@ -127,17 +148,26 @@ pub mod dcl38_c;
 #[path = "DCL/DCL07-C/dcl07_c.rs"]
 pub mod dcl07_c;
 
+#[path = "DCL/DCL10-C/dcl10_c.rs"]
+pub mod dcl10_c;
+
 #[path = "DCL/DCL11-C/dcl11_c.rs"]
 pub mod dcl11_c;
 
 #[path = "DCL/DCL13-C/dcl13_c.rs"]
 pub mod dcl13_c;
 
+#[path = "DCL/DCL15-C/dcl15_c.rs"]
+pub mod dcl15_c;
+
 #[path = "ENV/ENV30-C/env30_c.rs"]
 pub mod env30_c;
 
 #[path = "DCL/DCL16-C/dcl16_c.rs"]
 pub mod dcl16_c;
+
+#[path = "DCL/DCL17-C/dcl17_c.rs"]
+pub mod dcl17_c;
 
 #[path = "DCL/DCL20-C/dcl20_c.rs"]
 pub mod dcl20_c;
@@ -163,6 +193,9 @@ pub mod err32_c;
 #[path = "ERR/ERR33-C/err33_c.rs"]
 pub mod err33_c;
 
+#[path = "ERR/ERR34-C/err34_c.rs"]
+pub mod err34_c;
+
 #[path = "EXP/EXP00-C/exp00_c.rs"]
 pub mod exp00_c;
 
@@ -181,8 +214,17 @@ pub mod exp13_c;
 #[path = "EXP/EXP10-C/exp10_c.rs"]
 pub mod exp10_c;
 
+#[path = "EXP/EXP11-C/exp11_c.rs"]
+pub mod exp11_c;
+
 #[path = "EXP/EXP15-C/exp15_c.rs"]
 pub mod exp15_c;
+
+#[path = "EXP/EXP09-C/exp09_c.rs"]
+pub mod exp09_c;
+
+#[path = "EXP/EXP14-C/exp14_c.rs"]
+pub mod exp14_c;
 
 #[path = "EXP/EXP20-C/exp20_c.rs"]
 pub mod exp20_c;
@@ -202,11 +244,20 @@ pub mod exp35_c;
 #[path = "EXP/EXP36-C/exp36_c.rs"]
 pub mod exp36_c;
 
+#[path = "EXP/EXP40-C/exp40_c.rs"]
+pub mod exp40_c;
+
+#[path = "EXP/EXP42-C/exp42_c.rs"]
+pub mod exp42_c;
+
 #[path = "FIO/FIO30-C/fio30_c.rs"]
 pub mod fio30_c;
 
 #[path = "FIO/FIO34-C/fio34_c.rs"]
 pub mod fio34_c;
+
+#[path = "FIO/FIO05-C/fio05_c.rs"]
+pub mod fio05_c;
 
 #[path = "FIO/FIO08-C/fio08_c.rs"]
 pub mod fio08_c;
@@ -363,7 +414,9 @@ impl RuleRegistry {
         registry.register(Box::new(api03_c::Api03C));
         registry.register(Box::new(api04_c::Api04C));
         registry.register(Box::new(api05_c::Api05C));
+        registry.register(Box::new(api07_c::Api07C));
         registry.register(Box::new(api09_c::Api09C));
+        registry.register(Box::new(api10_c::Api10C));
         registry.register(Box::new(arr00_c::Arr00C));
         registry.register(Box::new(arr01_c::Arr01C));
         registry.register(Box::new(arr02_c::Arr02C));
@@ -376,9 +429,10 @@ impl RuleRegistry {
         registry.register(Box::new(con39_c::Con39C));
         registry.register(Box::new(con43_c::Con43C));
         registry.register(Box::new(con01_c::Con01C));
+        registry.register(Box::new(con03_c::Con03C));
         registry.register(Box::new(con04_c::Con04C));
+        registry.register(Box::new(con05_c::Con05C));
         registry.register(Box::new(con30_c::Con30C));
-        registry.register(Box::new(con07_c::Con07C));
         registry.register(Box::new(con07_c::Con07C));
         registry.register(Box::new(con08_c::Con08C));
         registry.register(Box::new(con32_c::Con32C));
@@ -391,7 +445,10 @@ impl RuleRegistry {
         registry.register(Box::new(dcl39_c::Dcl39C));
         registry.register(Box::new(env31_c::Env31C));
         registry.register(Box::new(env32_c::Env32C));
+        registry.register(Box::new(env33_c::Env33C));
+        registry.register(Box::new(env34_c::Env34C));
         registry.register(Box::new(err00_c::Err00C));
+        registry.register(Box::new(err05_c::Err05C));
         registry.register(Box::new(err06_c::Err06C));
         registry.register(Box::new(dcl01_c::Dcl01C));
         registry.register(Box::new(dcl03_c::Dcl03C));
@@ -400,10 +457,13 @@ impl RuleRegistry {
         registry.register(Box::new(dcl21_c::DCL21C));
         registry.register(Box::new(dcl38_c::DCL38C));
         registry.register(Box::new(dcl07_c::Dcl07C));
+        registry.register(Box::new(dcl10_c::Dcl10C));
         registry.register(Box::new(dcl11_c::Dcl11C));
         registry.register(Box::new(dcl13_c::Dcl13C));
+        registry.register(Box::new(dcl15_c::Dcl15C));
         registry.register(Box::new(env30_c::ENV30C));
         registry.register(Box::new(dcl16_c::Dcl16C));
+        registry.register(Box::new(dcl17_c::Dcl17C));
         registry.register(Box::new(dcl20_c::Dcl20C));
         registry.register(Box::new(dcl37_c::Dcl37C));
         registry.register(Box::new(dcl40_c::Dcl40C::new()));
@@ -412,21 +472,28 @@ impl RuleRegistry {
         registry.register(Box::new(err07_c::Err07C));
         registry.register(Box::new(err32_c::Err32C));
         registry.register(Box::new(err33_c::Err33C));
+        registry.register(Box::new(err34_c::Err34C));
         registry.register(Box::new(exp00_c::Exp00C));
         registry.register(Box::new(exp05_c::Exp05C));
         registry.register(Box::new(exp07_c::Exp07C));
         registry.register(Box::new(exp12_c::Exp12C));
         registry.register(Box::new(exp13_c::Exp13C));
         registry.register(Box::new(exp10_c::Exp10C));
+        registry.register(Box::new(exp11_c::Exp11C));
         registry.register(Box::new(exp15_c::Exp15C));
+        registry.register(Box::new(exp09_c::Exp09C));
+        registry.register(Box::new(exp14_c::Exp14C));
         registry.register(Box::new(exp20_c::Exp20C));
         registry.register(Box::new(exp33_c::Exp33C));
         registry.register(Box::new(exp34_c::Exp34C));
         registry.register(Box::new(exp35_c::Exp35C));
         registry.register(Box::new(exp36_c::Exp36C));
+        registry.register(Box::new(exp40_c::Exp40C));
+        registry.register(Box::new(exp42_c::Exp42C));
         registry.register(Box::new(exp43_c::Exp43C));
         registry.register(Box::new(fio30_c::Fio30C));
         registry.register(Box::new(fio34_c::Fio34C::new()));
+        registry.register(Box::new(fio05_c::Fio05C));
         registry.register(Box::new(fio08_c::Fio08C));
         registry.register(Box::new(fio10_c::Fio10C));
         registry.register(Box::new(fio18_c::Fio18C));

@@ -310,10 +310,8 @@ impl Arr37C {
                 let start_point = node.start_position();
                 let subscript_text = &source[node.start_byte()..node.end_byte()];
 
-                // Skip ambiguous parameters (function parameters) - can't determine statically
-                if analyzer.is_ambiguous_parameter(&pointer_name) {
-                    // Don't flag parameters - they could be arrays or single objects
-                } else if analyzer.is_struct_member_pointer(&pointer_name) {
+                // Check what type of pointer this is
+                if analyzer.is_struct_member_pointer(&pointer_name) {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: Severity::Critical,
@@ -481,6 +479,8 @@ impl NonArrayPointerAnalyzer {
                         // Determine if this is an array or pointer declaration
                         // Only track arrays and pointers - skip non-pointer variables entirely
                         let var_type = if declarator.kind() == "array_declarator" {
+                            // Check if this is a VLA (variable length array)
+                            // VLAs have non-constant size expressions
                             Some(VariableType::Array)
                         } else if declarator.kind() == "pointer_declarator" {
                             // Check if initialized with array reference
@@ -547,9 +547,17 @@ impl NonArrayPointerAnalyzer {
     fn process_parameter(&mut self, node: &Node, source: &str) {
         if let Some(declarator) = node.child_by_field_name("declarator") {
             let param_name = ast_utils::get_identifier_from_declarator(&declarator, source);
-            if !param_name.is_empty() && self.is_pointer_parameter(&declarator) {
-                self.variable_types
-                    .insert(param_name, VariableType::AmbiguousParameter);
+            if !param_name.is_empty() {
+                // Check what kind of parameter this is
+                if declarator.kind() == "array_declarator" {
+                    // Parameter declared as array (e.g., int param[])
+                    self.variable_types.insert(param_name, VariableType::Array);
+                } else if self.is_pointer_parameter(&declarator) {
+                    // Parameter is a pointer - treat as NonArray (conservative approach)
+                    // This means we'll flag pointer arithmetic on parameters unless we can prove it's an array
+                    self.variable_types
+                        .insert(param_name, VariableType::NonArray);
+                }
             }
         }
     }
@@ -587,14 +595,64 @@ impl NonArrayPointerAnalyzer {
             }
             "subscript_expression" => VariableType::Array,
             "cast_expression" => {
-                // For cast expressions like (type *)ptr, analyze the value being cast
-                if let Some(value) = node.child_by_field_name("value") {
-                    self.analyze_initializer_type(&value, source)
-                } else {
-                    VariableType::Unknown
-                }
+                // For cast expressions like (unsigned int *)f - treat as NonArray unless proven otherwise
+                // We can't reliably track through casts, so mark as NonArray to be safe
+                VariableType::NonArray
+            }
+            "call_expression" => {
+                // Check for malloc/calloc/realloc patterns
+                self.analyze_allocation_call(node, source)
             }
             _ => VariableType::Unknown,
+        }
+    }
+
+    fn analyze_allocation_call(&self, node: &Node, source: &str) -> VariableType {
+        // Get function name
+        if let Some(function) = node.child_by_field_name("function") {
+            let func_name = source[function.start_byte()..function.end_byte()].to_string();
+
+            match func_name.as_str() {
+                "malloc" | "realloc" => {
+                    // malloc(sizeof(T)) -> NonArray (single object)
+                    // malloc(N * sizeof(T)) -> Array
+                    if let Some(arguments) = node.child_by_field_name("arguments") {
+                        let arg_text =
+                            source[arguments.start_byte()..arguments.end_byte()].to_string();
+                        // If there's multiplication or multiple sizeof calls, it's an array
+                        if arg_text.contains('*') {
+                            VariableType::Array
+                        } else {
+                            // Single sizeof -> single object
+                            VariableType::NonArray
+                        }
+                    } else {
+                        VariableType::NonArray
+                    }
+                }
+                "calloc" => {
+                    // calloc(N, sizeof(T)) -> treat as Array unless N==1
+                    if let Some(arguments) = node.child_by_field_name("arguments") {
+                        let arg_text =
+                            source[arguments.start_byte()..arguments.end_byte()].to_string();
+                        // Remove parentheses and split by comma
+                        let cleaned = arg_text.trim_matches(&['(', ')', ' '][..]);
+                        let args: Vec<&str> = cleaned.split(',').map(|s| s.trim()).collect();
+                        // If first arg is 1, it's a single object allocation
+                        if args.len() >= 1 && args[0] == "1" {
+                            VariableType::NonArray
+                        } else {
+                            // Otherwise it's an array
+                            VariableType::Array
+                        }
+                    } else {
+                        VariableType::Array
+                    }
+                }
+                _ => VariableType::Unknown,
+            }
+        } else {
+            VariableType::Unknown
         }
     }
 
