@@ -460,14 +460,45 @@ Analyzed all 4 failing tests to understand root causes:
 - Infrastructure improvements are correct but don't solve Test 1 (needs macro resolution)
 - Tests 2-4 require new detection features
 
+**Phase 2: While-Loop Pointer Increment Detection (Completed)**
+
+**Implementation:**
+1. Added `while_statement` case to `check_with_buffer_info()` match statement
+2. Created `check_while_loop_pointer_increment()` function (~70 lines)
+   - Extracts while loop condition and body
+   - Detects pointer increment operators (`++`, `--`)
+   - Checks for bounds checking in condition (size, length, count, comparison operators)
+   - Flags unbounded loops that increment pointers
+3. Created `extract_incremented_pointers()` helper (~20 lines)
+   - Parses loop body for increment patterns
+   - Extracts pointer variable names
+
+**Test Results:**
+- **Before:** 57/61 passing (93%)
+- **After:** 58/61 passing (95%)
+- **Test Fixed:** ✅ wiki_dereferencing_past_the_end_pointer
+
+**Remaining 3 Failures (5%):**
+1. ❌ wiki_apparently_accessible_out_of_range_index (multidimensional arrays) - requires macro resolution
+2. ❌ wiki_null_pointer_arithmetic (NULL detection after malloc)
+3. ❌ wiki_pointer_past_flexible_array_member (flexible arrays)
+
+**Summary of Session 3 Progress:**
+- **Starting Point:** 57/61 tests passing (93%)
+- **Current Status:** 58/61 tests passing (95%)
+- **Fixes Applied:**
+  1. Infrastructure improvements (multidimensional array support)
+  2. While-loop pointer increment detection
+- **Tests Fixed:** +1 (wiki_dereferencing_past_the_end_pointer)
+
 **Next Steps:**
-- Implement Test 2 (NULL pointer) OR Test 3 (while-loop) - both are achievable
-- Test 1 requires macro resolution infrastructure (complex, may defer)
-- Test 4 requires flexible array tracking (medium complexity)
+- Test 2 (NULL pointer) OR Test 4 (flexible arrays) - both achievable
+- Test 1 requires macro resolution infrastructure (complex, may defer to future work)
 
 **Time Investment (Session 3):**
 - Analysis and infrastructure fixes: ~2 hours
-- Remaining: Tests 2-4 implementation
+- While-loop detection implementation: ~1 hour
+- **Total Session 3:** ~3 hours
 
 ---
 
