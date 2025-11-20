@@ -1957,6 +1957,109 @@ impl Arr30C {
         violations
     }
 
+    /// Check while loops for unbounded pointer increment
+    /// Detects patterns like: while (*ptr != delim) *dest++ = *src++;
+    fn check_while_loop_pointer_increment(
+        &self,
+        while_node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Extract the while loop body
+        let mut loop_body_text = String::new();
+        let mut condition_text = String::new();
+
+        for i in 0..while_node.child_count() {
+            if let Some(child) = while_node.child(i) {
+                match child.kind() {
+                    "parenthesized_expression" | "condition_clause" => {
+                        condition_text = source[child.start_byte()..child.end_byte()].to_string();
+                    }
+                    "compound_statement" | "expression_statement" => {
+                        loop_body_text = source[child.start_byte()..child.end_byte()].to_string();
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        // Check if loop body contains pointer increment (ptr++ or *ptr++)
+        let has_pointer_increment = loop_body_text.contains("++") || loop_body_text.contains("--");
+
+        if !has_pointer_increment {
+            return violations; // No pointer increment, safe
+        }
+
+        // Check if there's bounds checking in the condition
+        // Safe patterns: size check, length check, null check with counter, etc.
+        let has_bounds_check = condition_text.contains("< ")
+            || condition_text.contains("> ")
+            || condition_text.contains("<=")
+            || condition_text.contains(">=")
+            || condition_text.contains("size")
+            || condition_text.contains("length")
+            || condition_text.contains("count")
+            || condition_text.contains("len");
+
+        if !has_bounds_check {
+            // Unbounded pointer increment detected
+            // Extract pointer names from the increment operations
+            let pointer_names = self.extract_incremented_pointers(&loop_body_text);
+
+            // Check if any of these pointers are buffers we're tracking
+            for ptr_name in pointer_names {
+                // Check if this matches a tracked buffer or is used for array access
+                if buffers.contains_key(&ptr_name)
+                    || loop_body_text.contains(&format!("*{}", ptr_name))
+                {
+                    let start_point = while_node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Unbounded while loop with pointer increment. Loop increments '{}' without size/length bounds checking.",
+                            ptr_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Add bounds checking to while condition (e.g., counter < max_size)".to_string()
+                        ),
+                        ..Default::default()
+                    });
+                    break; // Only report once per while loop
+                }
+            }
+        }
+
+        violations
+    }
+
+    /// Extract pointer names that are being incremented in the loop body
+    /// Looks for patterns like ptr++, ++ptr, *ptr++, etc.
+    fn extract_incremented_pointers(&self, loop_body: &str) -> Vec<String> {
+        let mut pointers = Vec::new();
+
+        // Simple regex-like matching for identifier++
+        for word in loop_body.split_whitespace() {
+            if word.contains("++") {
+                // Extract the identifier before ++
+                let clean = word.trim_start_matches('*').trim_start_matches('(');
+                if let Some(idx) = clean.find("++") {
+                    let ptr_name = clean[..idx].trim().to_string();
+                    if !ptr_name.is_empty() && !ptr_name.contains(';') && !ptr_name.contains(')') {
+                        pointers.push(ptr_name);
+                    }
+                }
+            }
+        }
+
+        pointers
+    }
+
     /// Find the function_declarator node within a function_definition
     /// Handles both direct children and nested cases (e.g., pointer return types)
     fn find_function_declarator<'a>(&self, func_def_node: &'a Node) -> Option<Node<'a>> {
@@ -2145,6 +2248,14 @@ impl Arr30C {
                     source,
                     &local_buffers,
                     &local_aliases,
+                ));
+            }
+            "while_statement" => {
+                // Check for unbounded pointer increment in while loops
+                violations.extend(self.check_while_loop_pointer_increment(
+                    node,
+                    source,
+                    &local_buffers,
                 ));
             }
             _ => {}
