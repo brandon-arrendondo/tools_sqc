@@ -13,12 +13,12 @@ tags:
 
 # P2-ARR30-C - ARR30-C Implementation
 
-**Status:** STALLED
+**Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** TRISTAN
 **Category:** ARR
-**Estimated Effort:** 10-30 hours
+**Estimated Effort:** 10-30 hours (32-48 additional for remaining 4 tests)
 
 ## CERT C Rule Information
 

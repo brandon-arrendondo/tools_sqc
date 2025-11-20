@@ -13,12 +13,12 @@ tags:
 
 # P2-DCL05-C - DCL05-C Implementation
 
-**Status:** STALLED
+**Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** TRISTAN
 **Category:** DCL
-**Estimated Effort:** 10-30 hours
+**Estimated Effort:** 10-30 hours (8-12 additional for preprocessing)
 
 ## CERT C Rule Information
 
