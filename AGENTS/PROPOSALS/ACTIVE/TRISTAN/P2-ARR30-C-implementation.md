@@ -397,6 +397,78 @@ All require advanced features beyond current scope:
 **Status:**
 - 🛑 **REMAINS IN STALLED** - 100% pass rate required (currently 93%)
 
+### 2025-11-20 - Claude Code (Session 3) - Active Implementation
+
+**Moved from STALLED to ACTIVE** per user request: "plenty of compute time left, so lets tackle both DCL05 and ARR30"
+
+**Phase 1: Deep Analysis of Remaining 4 Failures (In Progress)**
+
+Analyzed all 4 failing tests to understand root causes:
+
+**Test 1: wiki_apparently_accessible_out_of_range_index.c**
+- **Violation**: Matrix declared as `matrix[ROWS][COLS]` = `matrix[7][5]`, loops use swapped dimensions `i < COLS` (5), `j < ROWS` (7)
+- **Access**: `matrix[i][j]` where i=0-4, j=0-6, but valid range is i=0-6, j=0-4
+- **Root Cause**: Loop uses `j < ROWS` (7) but inner dimension is COLS (5), allowing j=5,6 which exceeds bounds
+- **Required Fix**: Macro resolution in loop bounds - need to:
+  1. Resolve that ROWS=7 and COLS=5 from `#define` directives
+  2. Parse loop condition `j < ROWS` to extract comparison value "ROWS"
+  3. Resolve "ROWS" → 7
+  4. Compare 7 to buffer size 5 and detect mismatch
+- **Complexity**: HIGH - requires passing macros HashMap through checking phase and enhancing bounds checking
+- **Status**: Deferred (requires significant refactoring)
+
+**Test 2: wiki_null_pointer_arithmetic.c**
+- **Violation**: `malloc()` can return NULL, error check exists but doesn't return/exit, then `buffer + offset` does pointer arithmetic on potentially NULL
+- **Root Cause**: No control flow tracking after malloc to detect NULL path fall-through
+- **Required Fix**:
+  1. Detect malloc/calloc/realloc calls
+  2. Track if there's a NULL check (if statement)
+  3. Analyze if NULL path returns/exits or falls through
+  4. Flag pointer arithmetic on potentially-NULL variables
+- **Complexity**: MEDIUM-HIGH
+- **Status**: Ready to implement
+
+**Test 3: wiki_dereferencing_past_the_end_pointer.c**
+- **Violation**: Unbounded while loop `while (*pwszTemp != L'\\') *pwszServerName++ = *pwszTemp++;` lacks bounds checking
+- **Root Cause**: While loops with pointer increment not currently detected
+- **Required Fix**:
+  1. Add while_statement detection to check_with_buffer_info()
+  2. Detect pointer increment patterns (`ptr++`, `*ptr++`)
+  3. Check for bounds validation against buffer size
+- **Complexity**: MEDIUM
+- **Status**: Ready to implement
+
+**Test 4: wiki_pointer_past_flexible_array_member.c**
+- **Violation**: Struct with flexible array member `char buf[]`, malloc allocates only `sizeof(struct S)` without space for buf, then arithmetic on buf
+- **Root Cause**: Flexible array members not tracked, allocation size not validated
+- **Required Fix**:
+  1. Detect structs with flexible array members (zero-length array `[]` at end)
+  2. Track malloc size for these structs
+  3. Detect when allocation is insufficient (only sizeof struct, no extra space)
+  4. Flag arithmetic on flexible member when allocation is insufficient
+- **Complexity**: MEDIUM-HIGH
+- **Status**: Ready to implement
+
+**Infrastructure Improvements Applied:**
+1. ✅ Enhanced `get_base_array_from_subscript()` to recursively extract base names from nested subscripts
+   - Fixes lookup of "matrix[*]" buffer for `matrix[i][j]` expressions
+2. ✅ Fixed `extract_inner_dimensions()` to extract INNER dimension size instead of OUTER
+   - For `matrix[7][5]`, creates `matrix[*]` with size 5 (correct inner dimension)
+
+**Test Results After Infrastructure Fixes:**
+- Still 57/61 passing (93%) - no new tests fixed yet
+- Infrastructure improvements are correct but don't solve Test 1 (needs macro resolution)
+- Tests 2-4 require new detection features
+
+**Next Steps:**
+- Implement Test 2 (NULL pointer) OR Test 3 (while-loop) - both are achievable
+- Test 1 requires macro resolution infrastructure (complex, may defer)
+- Test 4 requires flexible array tracking (medium complexity)
+
+**Time Investment (Session 3):**
+- Analysis and infrastructure fixes: ~2 hours
+- Remaining: Tests 2-4 implementation
+
 ---
 
 ## Verification

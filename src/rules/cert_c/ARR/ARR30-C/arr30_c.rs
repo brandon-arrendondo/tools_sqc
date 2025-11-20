@@ -1348,6 +1348,10 @@ impl Arr30C {
         if array_node.kind() == "identifier" {
             let text = &source[array_node.start_byte()..array_node.end_byte()];
             return Some(text.to_string());
+        } else if array_node.kind() == "subscript_expression" {
+            // Nested subscript - recursively get the base name
+            // For matrix[i][j], this recursively extracts "matrix"
+            return self.get_base_array_from_subscript(&array_node, source);
         }
         None
     }
@@ -2494,8 +2498,9 @@ impl Arr30C {
         if let Some(first_child) = node.child(0) {
             if first_child.kind() == "array_declarator" {
                 // This node represents an outer dimension
-                // Extract the size from THIS node (the outer dimension in the AST)
-                if let Some(size) = self.extract_array_size(node, source) {
+                // Extract the size from the INNER dimension for the wildcard entry
+                // For matrix[7][5], we want matrix[*] to have size 5 (inner dimension)
+                if let Some(size) = self.extract_array_size(&first_child, source) {
                     // Create wildcard entry
                     let wildcard_name = format!("{}[*]", base_name);
                     let line = node.start_position().row + 1;
