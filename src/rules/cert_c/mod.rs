@@ -298,6 +298,9 @@ pub mod fio10_c;
 #[path = "FIO/FIO18-C/fio18_c.rs"]
 pub mod fio18_c;
 
+#[path = "FIO/FIO19-C/fio19_c.rs"]
+pub mod fio19_c;
+
 #[path = "FIO/FIO20-C/fio20_c.rs"]
 pub mod fio20_c;
 
@@ -318,6 +321,9 @@ pub mod flp00_c;
 
 #[path = "FLP/FLP30-C/flp30_c.rs"]
 pub mod flp30_c;
+
+#[path = "FLP/FLP01-C/flp01_c.rs"]
+pub mod flp01_c;
 
 #[path = "INT/INT01-C/int01_c.rs"]
 pub mod int01_c;
@@ -537,6 +543,7 @@ impl RuleRegistry {
         registry.register(Box::new(fio08_c::Fio08C));
         registry.register(Box::new(fio10_c::Fio10C));
         registry.register(Box::new(fio18_c::Fio18C));
+        registry.register(Box::new(fio19_c::Fio19C));
         registry.register(Box::new(fio20_c::Fio20C));
         registry.register(Box::new(fio42_c::Fio42C));
         registry.register(Box::new(fio45_c::Fio45C));
@@ -544,6 +551,7 @@ impl RuleRegistry {
         registry.register(Box::new(flp37_c::FLP37C));
         registry.register(Box::new(flp00_c::Flp00C));
         registry.register(Box::new(flp30_c::Flp30C));
+        registry.register(Box::new(flp01_c::Flp01C));
         registry.register(Box::new(int01_c::Int01C));
         registry.register(Box::new(int09_c::Int09C));
         registry.register(Box::new(int10_c::Int10C));
