@@ -3,7 +3,7 @@
 ## Overview
 
 - **Total Rules:** 283
-- **Implemented Rules:** 45 (15.9%)
+- **Implemented Rules:** 47 (16.6%)
 - **Total Test Cases:** 2710
 - **Average Tests per Rule:** 9.6
 
@@ -29,7 +29,7 @@
   - ✅ [ARR30-C](#rule-arr30c) - Implemented: Pass 50/61 (82.0%)
   - ✅ [ARR37-C](#rule-arr37c) - Implemented: Pass 37/43 (86.0%)
   - ✅ [ARR38-C](#rule-arr38c) - Implemented: Pass 15/50 (30.0%)
-- [CON](#category-con) (1 implemented / 23 total)
+- [CON](#category-con) (3 implemented / 23 total)
   - ✅ [CON01-C](#rule-con01c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [CON30-C](#rule-con30c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON05-C](#rule-con05c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
@@ -38,7 +38,7 @@
   - 🔶 [CON38-C](#rule-con38c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - ⚫ [CON06-C](#rule-con06c) - Not Implemented (no tests): Pass 0/0 (N/A)
   - 🔶 [CON43-C](#rule-con43c) - Not Implemented (has tests): Pass 0/7 (0.0%) [7 not run]
-  - 🔶 [CON02-C](#rule-con02c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
+  - ✅ [CON02-C](#rule-con02c) - Implemented: Pass 4/4 (100.0%)
   - 🔶 [CON40-C](#rule-con40c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [CON08-C](#rule-con08c) - Not Implemented (has tests): Pass 0/5 (0.0%) [5 not run]
   - 🔶 [CON09-C](#rule-con09c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
@@ -49,7 +49,7 @@
   - 🔶 [CON03-C](#rule-con03c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
   - 🔶 [CON39-C](#rule-con39c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON34-C](#rule-con34c) - Not Implemented (has tests): Pass 0/8 (0.0%) [8 not run]
-  - 🔶 [CON36-C](#rule-con36c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
+  - ✅ [CON36-C](#rule-con36c) - Implemented: Pass 2/2 (100.0%)
   - 🔶 [CON04-C](#rule-con04c) - Not Implemented (has tests): Pass 0/2 (0.0%) [2 not run]
   - 🔶 [CON41-C](#rule-con41c) - Not Implemented (has tests): Pass 0/3 (0.0%) [3 not run]
   - 🔶 [CON07-C](#rule-con07c) - Not Implemented (has tests): Pass 0/4 (0.0%) [4 not run]
@@ -1452,7 +1452,7 @@ valid." (Seeundefined behavior108.) In the following code,
 
 <a id="category-con"></a>
 
-**Implementation Status:** 1 / 23 rules (4.3%)
+**Implementation Status:** 3 / 23 rules (13.0%)
 
 ### ✅ CON01-C - Implemented
 
@@ -1742,7 +1742,7 @@ amount; } void credit(int amount) { account_balance += amount; }
 
 ---
 
-### 🔶 CON02-C - Not Implemented (has tests)
+### ✅ CON02-C - Implemented
 
 <a id="rule-con02c"></a>
 
@@ -1770,17 +1770,17 @@ primitives.
 
 **Test Coverage:** 4 tests (2 fail, 2 pass)
 
-**Test Results:** 0/4 passed (0.0%), 4 not run
+**Test Results:** 4/4 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_con02_c_fail_wiki_noncompliant_1`
-- ⏭️ NOT RUN `wiki_noncompliant_2.c` → `test_con02_c_fail_wiki_noncompliant_2`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_con02_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_2.c` → `test_con02_c_fail_wiki_noncompliant_2`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_con02_c_pass_wiki_compliant_1`
-- ⏭️ NOT RUN `wiki_critical_section_windows.c` → `test_con02_c_pass_wiki_critical_section_windows`
+- ✅ PASS `wiki_compliant_1.c` → `test_con02_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_critical_section_windows.c` → `test_con02_c_pass_wiki_critical_section_windows`
 
 ---
 
@@ -2252,7 +2252,7 @@ Noncompliant Code Example (Automatic Storage Duration)
 
 ---
 
-### 🔶 CON36-C - Not Implemented (has tests)
+### ✅ CON36-C - Implemented
 
 <a id="rule-con36c"></a>
 
@@ -2282,15 +2282,15 @@ threads to determine whether they should resume upon receiving the notification.
 
 **Test Coverage:** 2 tests (1 fail, 1 pass)
 
-**Test Results:** 0/2 passed (0.0%), 2 not run
+**Test Results:** 2/2 passed (100.0%)
 
 #### Fail Tests (Should Detect Violations)
 
-- ⏭️ NOT RUN `wiki_noncompliant_1.c` → `test_con36_c_fail_wiki_noncompliant_1`
+- ✅ PASS `wiki_noncompliant_1.c` → `test_con36_c_fail_wiki_noncompliant_1`
 
 #### Pass Tests (Should NOT Detect Violations)
 
-- ⏭️ NOT RUN `wiki_compliant_1.c` → `test_con36_c_pass_wiki_compliant_1`
+- ✅ PASS `wiki_compliant_1.c` → `test_con36_c_pass_wiki_compliant_1`
 
 ---
 
@@ -11989,7 +11989,7 @@ result.
 |----------|-------|-------------|-------|----------------|
 | API | 9 | 6 | 62 | 6.9 |
 | ARR | 9 | 8 | 490 | 54.4 |
-| CON | 23 | 1 | 75 | 3.3 |
+| CON | 23 | 3 | 75 | 3.3 |
 | DCL | 31 | 1 | 173 | 5.6 |
 | ENV | 8 | 0 | 75 | 9.4 |
 | ERR | 11 | 1 | 88 | 8.0 |
