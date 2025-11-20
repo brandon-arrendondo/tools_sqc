@@ -283,6 +283,9 @@ pub mod fio06_c;
 #[path = "FIO/FIO08-C/fio08_c.rs"]
 pub mod fio08_c;
 
+#[path = "FIO/FIO09-C/fio09_c.rs"]
+pub mod fio09_c;
+
 #[path = "FIO/FIO10-C/fio10_c.rs"]
 pub mod fio10_c;
 
@@ -516,6 +519,7 @@ impl RuleRegistry {
         registry.register(Box::new(fio34_c::Fio34C::new()));
         registry.register(Box::new(fio05_c::Fio05C));
         registry.register(Box::new(fio08_c::Fio08C));
+        registry.register(Box::new(fio09_c::Fio09C));
         registry.register(Box::new(fio10_c::Fio10C));
         registry.register(Box::new(fio18_c::Fio18C));
         registry.register(Box::new(fio20_c::Fio20C));
