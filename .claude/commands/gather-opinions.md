@@ -46,7 +46,7 @@ Before reviewing proposals, I need to understand what perspective you want me to
 
 **Which persona should I adopt?**
 
-**ARCHITECT: REGARDLESS OF PERSONA, ALWAYS PERFORM AN EXAMINATION DURING THIS ANALYSIS IN AN ADVERSARIAL WAY, AND ALWAYS LOOK FOR DRY (Dont repeat yourself) and KISS (Keep it simple stupid) violations. Specific focus area is shared utility usage**
+**ARCHITECT: REGARDLESS OF PERSONA, ALWAYS PERFORM AN EXAMINATION DURING THIS ANALYSIS IN AN ADVERSARIAL WAY, AND ALWAYS LOOK FOR DRY (Dont repeat yourself) and KISS (Keep it simple stupid) violations. Specific focus area is shared utility usage - all rules need to ensure that their error message is clearly and cleanly populated out**
 
 ---
 

@@ -13,10 +13,10 @@ tags:
 
 # P2-DCL05-C - DCL05-C Implementation
 
-**Status:** ACTIVE
+**Status:** STALLED
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** HUU
+**Assigned To:** TRISTAN
 **Category:** DCL
 **Estimated Effort:** 10-30 hours
 
@@ -183,11 +183,11 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [ ] All test cases pass (67% - 4/6, requires 100% to move to STAGED)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
@@ -246,9 +246,45 @@ test result: FAILED. 4 passed; 2 failed
 **Commits:**
 - `8330c51` - P2-DCL05-C: Implement DCL05-C rule (66.7% test pass rate - 4/6, Windows tests require preprocessing)
 
+### 2025-11-19 - Unstall Attempt (67% Pass Rate - Rejected)
+
+**Verification:**
+- ✅ Implementation exists at src/rules/cert_c/DCL/DCL05-C/dcl05_c.rs (~180 lines)
+- ⚠️ cargo test: 4/6 tests pass (67%)
+  - ✅ wiki_noncompliant_1 (pass)
+  - ✅ wiki_noncompliant_4 (pass)
+  - ✅ wiki_compliant_1 (pass)
+  - ✅ wiki_compliant_4 (pass)
+  - ❌ wiki_windows (fail) - requires Windows.h preprocessing
+  - ❌ wiki_windows (pass) - requires Windows.h preprocessing
+- ✅ Confirmed DRY compliance (uses get_node_text())
+- ✅ Confirmed registration and enablement
+- **Decision:** REMAINS IN STALLED - 100% pass rate required
+
+**Rationale for STALLED:**
+- Strict 100% pass rate policy enforced
+- 67% represents solid core functionality but does not meet acceptance criteria
+- Remaining 33% (2 tests) require advanced features:
+  - C preprocessor integration to expand `#include <Windows.h>`
+  - Cross-file type analysis to resolve `typedef LONG *PLONG` from external header
+  - This is beyond single-file AST analysis scope
+- Estimated 8-12 hours additional work needed to implement preprocessing infrastructure
+
+**Core Detection Works:**
+- Detects `typedef struct obj *ObjectPtr;` (pointer typedef)
+- Detects complex function pointer declarations
+- Handles in-file typedef analysis
+
+**Limitation:**
+- Cannot analyze types from external headers (Windows.h)
+- Would require preprocessing infrastructure (project-wide effort)
+
+**Status:**
+- 🛑 **REMAINS IN STALLED** - 100% pass rate required (currently 67%)
+
 ---
 
 ## Verification
 
 @architect: APPROVED
-@implementer: PARTIAL - 66.7% test pass rate (4/6), Windows tests require preprocessing
+@implementer: PARTIAL - 67% test pass rate (4/6), requires preprocessing for 100%
