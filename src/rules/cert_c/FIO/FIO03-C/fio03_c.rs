@@ -42,15 +42,15 @@ impl CertRule for Fio03C {
                                 if arg.kind() == "string_literal" {
                                     let mode_text = get_node_text(&arg, source);
                                     let mode_value = mode_text.trim().trim_matches('"');
-                                    
+
                                     // Check for write modes without exclusive creation flag
-                                    let is_unsafe_write_mode = (mode_value == "w" 
-                                        || mode_value == "w+" 
-                                        || mode_value == "wb" 
+                                    let is_unsafe_write_mode = (mode_value == "w"
+                                        || mode_value == "w+"
+                                        || mode_value == "wb"
                                         || mode_value == "w+b"
                                         || mode_value == "wb+")
                                         && !mode_value.contains('x');
-                                    
+
                                     if is_unsafe_write_mode {
                                         violations.push(RuleViolation {
                                             rule_id: self.rule_id().to_string(),
@@ -72,7 +72,7 @@ impl CertRule for Fio03C {
                     }
                 }
             }
-        }        // Recursively check child nodes
+        } // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 violations.extend(self.check(&child, source));
