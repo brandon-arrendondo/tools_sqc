@@ -3,15 +3,16 @@
 **Last Updated:** 2025-11-20
 **Total Rules:** 28
 **🎉 10/10 TARGET RULES COMPLETE (100% MILESTONE ACHIEVED!)**
-**✅ 15 RULES FULLY VERIFIED (53.6% of total)**
+**✅ 18 RULES FULLY VERIFIED (64.3% of total)**
 
 ## Status Overview
 
 | Status | Count | Rules |
 |--------|-------|-------|
 | 🎯 **TARGET COMPLETE (100%)** | 10 | ARR01-C, ARR02-C, ARR30-C, ARR37-C, ARR39-C, DCL05-C, DCL07-C, DCL40-C, EXP34-C, INT33-C |
-| ✅ Complete → **STAGED for review** | 9 | DCL11-C, DCL16-C, DCL20-C, EXP08-C, EXP30-C, EXP32-C, FIO01-C, FIO03-C, STR10-C |
-| ❌ Not Yet Implemented | 9 | FIO13-C, FIO15-C, FIO17-C, FIO23-C, FIO32-C, FIO38-C, FIO41-C, FIO44-C, FIO51-C, FLP07-C, MEM07-C, MEM36-C, POS02-C, POS49-C, PRE00-C, SIG34-C |
+| ✅ Complete → **STAGED for review** | 12 | DCL11-C, DCL16-C, DCL20-C, EXP08-C, EXP30-C, EXP32-C, FIO01-C, FIO03-C, FIO13-C, FIO17-C, FIO23-C, STR10-C |
+| ⚠️ Partial Implementation | 1 | FIO51-C (2/3 tests, 66.7%) |
+| ❌ Not Yet Implemented | 11 | FIO15-C, FIO32-C, FIO38-C, FIO41-C, FIO44-C, FLP07-C, MEM07-C, MEM36-C, POS02-C, POS49-C, PRE00-C, SIG34-C |
 
 ## Detailed Status
 
@@ -80,7 +81,7 @@ All target rules now meet or exceed 90% test pass rate threshold:
 - Quality maintained throughout
 
 
-### ✅ Complete and Moved to STAGED (9 rules)
+### ✅ Complete and Moved to STAGED (12 rules)
 
 These rules have complete implementations verified at 100% and moved to STAGED for adversarial review:
 
@@ -125,7 +126,7 @@ These rules have complete implementations verified at 100% and moved to STAGED f
    - Proposal: `AGENTS/PROPOSALS/STAGED/P2-DCL20-C-implementation.md`
    - Implementation: `src/rules/cert_c/DCL/DCL20-C/dcl20_c.rs`
 
-**FIO Rules (2):**
+**FIO Rules (5):**
 
 7. **FIO01-C** - Be careful using file names for identification
    - Status: ✅ **VERIFIED 100%** (3/3 tests) → **STAGED** (2025-11-20)
@@ -139,35 +140,56 @@ These rules have complete implementations verified at 100% and moved to STAGED f
    - Proposal: `AGENTS/PROPOSALS/STAGED/P2-FIO03-C-implementation.md`
    - Implementation: `src/rules/cert_c/FIO/FIO03-C/fio03_c.rs`
 
+9. **FIO13-C** - Never push back anything other than one read character
+   - Status: ✅ **VERIFIED 100%** (2/2 tests) → **STAGED** (2025-11-20)
+   - Tests: All wiki test cases passing
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-FIO13-C-implementation.md`
+   - Implementation: `src/rules/cert_c/FIO/FIO13-C/fio13_c.rs`
+
+10. **FIO17-C** - Do not rely on an ending null character when using fgets()
+   - Status: ✅ **VERIFIED 100%** (2/2 tests) → **STAGED** (2025-11-20)
+   - Tests: All wiki test cases passing
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-FIO17-C-implementation.md`
+   - Implementation: `src/rules/cert_c/FIO/FIO17-C/fio17_c.rs`
+
+11. **FIO23-C** - Do not exit with unflushed data in stdout or stderr
+   - Status: ✅ **VERIFIED 100%** (4/4 tests) → **STAGED** (2025-11-20)
+   - Tests: All wiki test cases passing
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-FIO23-C-implementation.md`
+   - Implementation: `src/rules/cert_c/FIO/FIO23-C/fio23_c.rs`
+
 **STR Rules (1):**
 
-9. **STR10-C** - Do not concatenate/copy strings without bounds checking
+12. **STR10-C** - Do not concatenate/copy strings without bounds checking
    - Status: ✅ **VERIFIED 100%** (3/3 tests) → **STAGED** (2025-11-20)
    - Tests: All wiki test cases passing
    - Proposal: `AGENTS/PROPOSALS/STAGED/P2-STR10-C-implementation.md`
    - Implementation: `src/rules/cert_c/STR/STR10-C/str10_c.rs`
 
 
-### ❌ Not Yet Implemented (9 rules)
+### ⚠️ Partial Implementation (1 rule)
+
+13. **FIO51-C** - Close files when they are no longer needed
+   - Status: ⚠️ **PARTIAL** (2/3 tests, 66.7%)
+   - Tests: 2 passing, 1 failing (wiki_noncompliant_1)
+   - Proposal: `AGENTS/PROPOSALS/ACTIVE/JASON/P2-FIO51-C-implementation.md`
+   - Implementation: `src/rules/cert_c/FIO/FIO51-C/fio51_c.rs`
+   - Issue: Needs enhancement to detect missing fclose in specific scenario
+
+
+### ❌ Not Yet Implemented (11 rules)
 
 These rules have proposals but no implementation yet:
 
+#### FIO Rules (5)
 
-These rules have proposals but no implementation yet:
-
-#### FIO Rules (8)
-
-- FIO13-C - Never push back anything other than one read character
 - FIO15-C - Ensure that file operations are performed in a secure directory
-- FIO17-C - Do not rely on an ending null character when using fgets()
-- FIO23-C - Do not exit with unflushed data in stdout or stderr
 - FIO32-C - Do not perform operations on devices that are only appropriate for files
 - FIO38-C - Do not copy a FILE object
 - FIO41-C - Do not call getc(), putc(), getwc(), or putwc() with a stream argument that has side effects
 - FIO44-C - Only use values for fsetpos() that are returned from fgetpos()
-- FIO51-C - Close files when they are no longer needed
 
-#### Other Rules (7)
+#### Other Rules (6)
 
 - FLP07-C - Cast the return value of a function that returns a floating-point type
 - MEM07-C - Ensure that the arguments to calloc(), when multiplied, do not wrap
