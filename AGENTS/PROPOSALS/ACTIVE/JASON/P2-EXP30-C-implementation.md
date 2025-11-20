@@ -185,20 +185,28 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 - [x] Implementation exists and compiles
 - [x] Module registered in src/rules/cert_c/mod.rs
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [ ] All test cases pass (7/8 passing, 1 failure requires interprocedural analysis)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration  
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-**Last Updated:** 2025-11-19
+**Last Updated:** 2025-11-20
 
-**Status:** ⚙️ REGISTERED BUT NOT FULLY IMPLEMENTED
+**Status:** ⚠️ MOSTLY COMPLETE (1 test case requires additional work)
 
-Implementation file exists at `src/rules/cert_c/EXP/EXP30-C/exp30_c.rs` and is registered in mod.rs, but implementation log and test status need to be verified.
+### 2025-11-20 - Claude (Implementation Session)
+- Verified implementation at `src/rules/cert_c/EXP/EXP30-C/exp30_c.rs`
+- Rule already registered in mod.rs
+- Test results: 7 passing, 1 failing
+  - Failing test: `wiki_noncompliant_3.c` - requires interprocedural analysis for global variable side effects
+  - Test involves function calls `a()` and `b()` both accessing global variable `glob`
+  - Current implementation detects local variable conflicts but not global state changes across function calls
+- Implementation uses HashSet to track modified/read variables
+- Recommendation: Mark this test as out-of-scope for current implementation or implement interprocedural analysis in future enhancement
 
 ---
 
