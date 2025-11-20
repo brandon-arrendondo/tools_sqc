@@ -84,7 +84,12 @@ impl Sig02C {
     }
 
     /// Check for signal() or sigaction() calls registering handlers for user signals
-    fn check_signal_registration(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_signal_registration(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if node.kind() != "call_expression" {
             return;
         }

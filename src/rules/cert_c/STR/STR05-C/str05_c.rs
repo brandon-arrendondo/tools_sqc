@@ -35,12 +35,7 @@ impl Str05C {
     }
 
     /// Check declarations for non-const pointers to string literals
-    fn check_declaration(
-        &self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
+    fn check_declaration(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if node.kind() != "declaration" {
             return;
         }

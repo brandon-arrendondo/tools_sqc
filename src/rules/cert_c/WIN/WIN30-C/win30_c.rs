@@ -55,8 +55,13 @@ impl Win30C {
             let function_name = get_node_text(&function_node, source);
 
             match &function_name[..] {
-                "free" | "LocalFree" | "GlobalFree" | "VirtualFree" | "VirtualFreeEx"
-                | "HeapFree" | "FreeUserPhysicalPages" => {
+                "free"
+                | "LocalFree"
+                | "GlobalFree"
+                | "VirtualFree"
+                | "VirtualFreeEx"
+                | "HeapFree"
+                | "FreeUserPhysicalPages" => {
                     self.check_deallocation_usage(&function_name, node, source, violations);
                 }
                 _ => {}
