@@ -62,12 +62,18 @@ impl Exp30C {
         if let Some(args) = node.child_by_field_name("arguments") {
             let mut modified_vars = HashSet::new();
             let mut read_vars = HashSet::new();
+            let mut function_calls: Vec<Node> = Vec::new();
 
             // Collect all arguments
             for i in 0..args.child_count() {
                 if let Some(arg) = args.child(i) {
                     if arg.kind() == "," {
                         continue;
+                    }
+
+                    // Track function calls for global side effect analysis
+                    if arg.kind() == "call_expression" {
+                        function_calls.push(arg);
                     }
 
                     // Check if this argument modifies a variable (++, --, or assignment)
@@ -104,7 +110,60 @@ impl Exp30C {
                     ..Default::default()
                 });
             }
+
+            // Check if multiple function calls in arguments might have side effects
+            // This detects cases like c(a(), b()) where both a() and b() might modify globals
+            if function_calls.len() >= 2 {
+                // Check if any function calls could potentially have side effects
+                // (we conservatively assume they might modify global state)
+                let has_potential_side_effects = function_calls.iter().any(|call| {
+                    // If we can't prove it's side-effect-free, assume it might have side effects
+                    !self.is_known_pure_function(call, source)
+                });
+
+                if has_potential_side_effects {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: self.severity(),
+                        message: format!(
+                            "Multiple function calls with potential side effects in unsequenced arguments"
+                        ),
+                        file_path: String::new(),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        suggestion: Some(
+                            "Evaluate function calls in separate statements to guarantee ordering".to_string(),
+                        ),
+                        ..Default::default()
+                    });
+                }
+            }
         }
+    }
+
+    /// Check if a function is known to be pure (no side effects)
+    /// This is conservative - we assume unknown functions might have side effects
+    fn is_known_pure_function(&self, call_node: &Node, source: &str) -> bool {
+        if let Some(func) = call_node.child_by_field_name("function") {
+            let func_name = ast_utils::get_node_text(&func, source);
+            
+            // Known pure functions (read-only, no global state modification)
+            let pure_functions = [
+                "abs", "labs", "llabs", "fabs", "fabsf", "fabsl",
+                "ceil", "floor", "round", "trunc",
+                "sqrt", "sqrtf", "sqrtl",
+                "sin", "cos", "tan", "asin", "acos", "atan", "atan2",
+                "sinh", "cosh", "tanh",
+                "exp", "log", "log10", "log2",
+                "pow", "fmod", "fmax", "fmin",
+                "strlen", "strcmp", "strncmp", "strchr", "strstr",
+                "isalpha", "isdigit", "isalnum", "isspace", "isupper", "islower",
+                "toupper", "tolower",
+            ];
+            
+            return pure_functions.contains(&func_name);
+        }
+        false
     }
 
     /// Check an expression for unsequenced side effects (e.g., i + b[++i])
