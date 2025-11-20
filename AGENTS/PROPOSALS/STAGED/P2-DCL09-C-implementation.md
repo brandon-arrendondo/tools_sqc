@@ -193,7 +193,24 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-19 - Claude Code (via /work-active)
+
+**Status:** COMPLETE - All tests passing
+
+**Implementation:**
+- ✅ Created `src/rules/cert_c/DCL/DCL09-C/dcl09_c.rs`
+- ✅ Registered in `src/rules/cert_c/mod.rs` (lines 151-152, 475)
+- ✅ Enabled in `DCL09-C.toml`
+- ✅ Build succeeds
+- ✅ 1/1 test passes (100%)
+
+**Test Results:**
+- PASS: `test_dcl09_c_pass_wiki_posix` ✅
+
+**Implementation Details:**
+- Detects functions returning errno/errno constants with return type int
+- Checks for errno constants (EINVAL, EIO, ENOENT, etc.) in return statements
+- Recommends using errno_t return type for clarity
 
 ---
 
