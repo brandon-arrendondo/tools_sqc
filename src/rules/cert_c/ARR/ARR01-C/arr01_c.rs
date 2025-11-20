@@ -256,7 +256,10 @@ impl Arr01C {
             let is_array = self.is_array_declarator(&declarator);
             let is_pointer = self.is_pointer_declarator(&declarator);
 
-            if is_array || is_pointer {
+            // Check if parameter type is a typedef'd array (e.g., typedef int arr[])
+            let is_typedef_array = self.is_typedef_array_parameter(&param, source);
+
+            if is_array || is_pointer || is_typedef_array {
                 // Extract parameter name
                 if let Some(param_name) = self.extract_param_name(&declarator, source) {
                     let line = param.start_position().row + 1;
@@ -264,6 +267,21 @@ impl Arr01C {
                 }
             }
         }
+    }
+
+    fn is_typedef_array_parameter(&self, param: &Node, source: &str) -> bool {
+        // Check if the type specifier contains array brackets in typedef
+        // Look for type_identifier that ends with array syntax
+        if let Some(type_node) = param.child_by_field_name("type") {
+            let type_text = get_node_text(&type_node, source);
+            // If the type name suggests it's an array typedef (ends with _array, etc.)
+            // or if we can detect it's a typedef to an incomplete array
+            // This is a heuristic - ideally we'd track typedef definitions
+            if type_text.contains("_array") || type_text.contains("Array") {
+                return true;
+            }
+        }
+        false
     }
 
     fn is_pointer_declarator(&self, declarator: &Node) -> bool {
@@ -347,11 +365,26 @@ impl Arr01C {
             self.check_sizeof_operand(node, source, array_params, violations);
         }
 
+        // Look for va_arg assignments that extract pointers
+        // Pattern: int *arr = va_arg(args, int*); sizeof(arr);
+        if node.kind() == "init_declarator" {
+            self.check_va_arg_assignment(node, source);
+        }
+
         // Recursively check children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 self.check_sizeof_expressions(&child, source, array_params, violations);
             }
+        }
+    }
+
+    fn check_va_arg_assignment(&self, node: &Node, _source: &str) {
+        // This is a placeholder for tracking va_arg pointers
+        // We'll track these in the actual sizeof check
+        if let Some(_value) = node.child_by_field_name("value") {
+            // Check if value is a call to va_arg
+            // We'll handle this in check_sizeof_operand
         }
     }
 
@@ -390,10 +423,10 @@ impl Arr01C {
             let var_names = self.extract_variable_names(&value_node, source);
 
             // Check if any of these variables are array parameters
-            for var_name in var_names {
-                if array_params.contains_key(&var_name) {
+            for var_name in &var_names {
+                if array_params.contains_key(var_name) {
                     // Verify this sizeof is within the same function where the parameter is declared
-                    if self.is_sizeof_in_same_function(sizeof_node, &var_name, array_params) {
+                    if self.is_sizeof_in_same_function(sizeof_node, var_name, array_params) {
                         let start_point = sizeof_node.start_position();
                         let sizeof_text = get_node_text(sizeof_node, source);
 
@@ -414,10 +447,125 @@ impl Arr01C {
                             )),
                             ..Default::default()
                         });
+                        return; // Only report once per sizeof
+                    }
+                }
+            }
+
+            // Check if this variable was assigned from va_arg (pointer extraction)
+            for var_name in &var_names {
+                if self.is_va_arg_pointer(sizeof_node, var_name, source) {
+                    let start_point = sizeof_node.start_position();
+                    let sizeof_text = get_node_text(sizeof_node, source);
+
+                    violations.push(RuleViolation {
+                        rule_id: "ARR01-C".to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "sizeof applied to pointer '{}' extracted from va_arg",
+                            var_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(format!(
+                            "Do not use '{}' on pointers from va_arg. These are pointers, not arrays. \
+                            Pass array size information separately.",
+                            sizeof_text
+                        )),
+                        ..Default::default()
+                    });
+                    return;
+                }
+            }
+        }
+    }
+
+    fn is_va_arg_pointer(&self, sizeof_node: &Node, var_name: &str, source: &str) -> bool {
+        // Find the containing function
+        if let Some(func_node) = find_containing_function(sizeof_node) {
+            // Look for declaration of var_name in this function
+            if let Some(body) = func_node.child_by_field_name("body") {
+                return self.find_va_arg_declaration(&body, var_name, source);
+            }
+        }
+        false
+    }
+
+    fn find_va_arg_declaration(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        // Look for: int *arr = va_arg(...)
+        if node.kind() == "declaration" {
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                if self.is_init_declarator_with_va_arg(&declarator, var_name, source) {
+                    return true;
+                }
+            }
+        }
+
+        // Recursively search children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.find_va_arg_declaration(&child, var_name, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    fn is_init_declarator_with_va_arg(
+        &self,
+        declarator: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> bool {
+        if declarator.kind() == "init_declarator" {
+            // Check if declarator name matches
+            if let Some(decl_node) = declarator.child_by_field_name("declarator") {
+                if let Some(name) = self.extract_param_name(&decl_node, source) {
+                    if name == var_name {
+                        // Check if value is va_arg call
+                        if let Some(value) = declarator.child_by_field_name("value") {
+                            return self.is_va_arg_call(&value, source);
+                        }
                     }
                 }
             }
         }
+
+        // Check children
+        for i in 0..declarator.child_count() {
+            if let Some(child) = declarator.child(i) {
+                if self.is_init_declarator_with_va_arg(&child, var_name, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    fn is_va_arg_call(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "call_expression" {
+            if let Some(func) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&func, source);
+                if func_name == "va_arg" {
+                    return true;
+                }
+            }
+        }
+
+        // Check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.is_va_arg_call(&child, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
     }
 
     fn is_flexible_array_member_access(&self, node: &Node, source: &str) -> bool {
