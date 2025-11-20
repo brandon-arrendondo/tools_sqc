@@ -183,17 +183,34 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-20 - Claude Code (via /work-active)
+
+**Implementation Complete**
+
+- Created `src/rules/cert_c/INT/INT07-C/int07_c.rs` with full implementation
+- Rule detects plain `char` variables used in numeric contexts:
+  - Arithmetic operations (+, -, *, /, %)
+  - Comparison operations (<, <=, >, >=, ==, !=)
+  - Assignment with numeric literals
+  - Unary operations (++, --, unary +/-)
+- Registered in `src/rules/cert_c/mod.rs`
+- Enabled in both `INT07-C.toml` and `rules-all.toml`
+- Tests passing: 2/2 (100% pass rate)
+  - `test_int07_c_fail_wiki_noncompliant_1`: ✅ Correctly detected violation
+  - `test_int07_c_pass_wiki_compliant_1`: ✅ Correctly allowed compliant code
+- Commit: e815abc - "P2-INT07-C: Implementation complete"
+
+**Status:** STAGED (ready for adversarial review)
 
 ---
 
