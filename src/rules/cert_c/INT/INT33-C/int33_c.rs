@@ -111,9 +111,14 @@ impl Int33C {
                 return;
             }
 
-            // Check if divisor is a variable that might be zero
-            // Look for preceding null check
-            if right.kind() == "identifier" || right.kind() == "field_expression" {
+            // Check if divisor is a variable, array element, field, or function call that might be zero
+            // Look for preceding check
+            if right.kind() == "identifier"
+                || right.kind() == "field_expression"
+                || right.kind() == "subscript_expression"  // Array/pointer subscript like divisors[i]
+                || right.kind() == "call_expression"
+            // Function calls like get_divisor()
+            {
                 if !self.is_divisor_checked(node, &right, source) {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -163,8 +168,12 @@ impl Int33C {
                 return;
             }
 
-            // Check if divisor is a variable that might be zero
-            if right.kind() == "identifier" || right.kind() == "field_expression" {
+            // Check if divisor is a variable, array element, field, or function call that might be zero
+            if right.kind() == "identifier"
+                || right.kind() == "field_expression"
+                || right.kind() == "subscript_expression"
+                || right.kind() == "call_expression"
+            {
                 if !self.is_divisor_checked(node, &right, source) {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -251,6 +260,17 @@ impl Int33C {
                                     return true;
                                 }
                             }
+                        }
+                    }
+                }
+
+                // Check for do-while loops that validate input
+                if child.kind() == "do_statement" {
+                    // Check if the condition checks for zero
+                    if let Some(condition) = child.child_by_field_name("condition") {
+                        if self.checks_for_zero(&condition, var_name, source) {
+                            // The loop ensures variable is not zero after loop
+                            return true;
                         }
                     }
                 }
