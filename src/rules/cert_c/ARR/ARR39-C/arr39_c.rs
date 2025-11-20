@@ -218,7 +218,36 @@ impl Arr39C {
         source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        // Look for patterns like: while (ptr < (buf + sizeof(buf)))
+        // Check if loop condition uses sizeof(array) as upper bound
+        // Pattern: for (i = 0; i < sizeof(data); i++) { ptr[i] or *(ptr+i) }
+        if let Some(condition) = self.find_loop_condition(node) {
+            let condition_text = &source[condition.start_byte()..condition.end_byte()];
+
+            // Check if sizeof is used as loop bound
+            if condition_text.contains("sizeof(") {
+                // Find the loop body
+                if let Some(body) = self.find_loop_body(node) {
+                    // Check if body uses pointer arithmetic or subscripting
+                    if self.has_pointer_operations_in_loop(&body, source) {
+                        let start_point = condition.start_position();
+
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::High,
+                            message: "Loop uses sizeof() as bound (byte count) but performs pointer arithmetic (element-based), causing double scaling".to_string(),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some("Use array element count (sizeof(array)/sizeof(array[0])) instead of sizeof(array) in loop bound".to_string()),
+                            ..Default::default()
+                        });
+                        return; // Only report once per loop
+                    }
+                }
+            }
+        }
+
+        // Original check: Look for patterns like: while (ptr < (buf + sizeof(buf)))
         let node_text = &source[node.start_byte()..node.end_byte()];
 
         if node_text.contains("sizeof(") && (node_text.contains(" + ") || node_text.contains(" - "))
@@ -241,6 +270,78 @@ impl Arr39C {
                 }
             }
         }
+    }
+
+    fn find_loop_body<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        match node.kind() {
+            "for_statement" => node.child_by_field_name("body"),
+            "while_statement" => node.child_by_field_name("body"),
+            "do_statement" => node.child_by_field_name("body"),
+            _ => None,
+        }
+    }
+
+    fn has_pointer_operations_in_loop(&self, body: &Node, source: &str) -> bool {
+        // Check for pointer arithmetic (ptr + i, ptr - i) or subscripting (ptr[i])
+        self.check_node_for_pointer_ops(body, source)
+    }
+
+    fn check_node_for_pointer_ops(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "subscript_expression" => {
+                // Found ptr[i] pattern
+                if let Some(argument) = node.child_by_field_name("argument") {
+                    // Check if the argument looks like a pointer (not char*)
+                    if self.looks_like_pointer_node(&argument, source)
+                        && !self.is_char_pointer(&argument, source)
+                    {
+                        return true;
+                    }
+                }
+            }
+            "binary_expression" => {
+                // Check for pointer +/- operations
+                if let Some(operator_node) = node.child_by_field_name("operator") {
+                    let op = &source[operator_node.start_byte()..operator_node.end_byte()];
+                    if op == "+" || op == "-" {
+                        if let Some(left) = node.child_by_field_name("left") {
+                            if self.looks_like_pointer_node(&left, source) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            "pointer_expression" => {
+                // Check for *(ptr + i) pattern
+                if let Some(argument) = node.child_by_field_name("argument") {
+                    if argument.kind() == "binary_expression" {
+                        if let Some(operator_node) = argument.child_by_field_name("operator") {
+                            let op = &source[operator_node.start_byte()..operator_node.end_byte()];
+                            if (op == "+" || op == "-") {
+                                if let Some(left) = argument.child_by_field_name("left") {
+                                    if self.looks_like_pointer_node(&left, source) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.check_node_for_pointer_ops(&child, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
     }
 
     fn check_wide_string_function_scaling(

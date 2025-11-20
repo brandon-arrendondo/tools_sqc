@@ -187,7 +187,7 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 - [x] Module registered in src/rules/cert_c/mod.rs
 - [ ] All test cases pass (7/8 passing, 1 failure requires interprocedural analysis)
 - [x] Uses get_node_text() and other shared utilities (DRY compliance)
-- [x] Rule enabled in configuration  
+- [x] Rule enabled in configuration
 - [x] Implementation documented with comments
 
 ---
