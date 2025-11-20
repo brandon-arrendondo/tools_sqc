@@ -3,15 +3,14 @@
 **Last Updated:** 2025-11-20
 **Total Rules:** 28
 **🎉 10/10 TARGET RULES COMPLETE (100% MILESTONE ACHIEVED!)**
+**✅ 15 RULES FULLY VERIFIED (53.6% of total)**
 
 ## Status Overview
 
 | Status | Count | Rules |
 |--------|-------|-------|
 | 🎯 **TARGET COMPLETE (100%)** | 10 | ARR01-C, ARR02-C, ARR30-C, ARR37-C, ARR39-C, DCL05-C, DCL07-C, DCL40-C, EXP34-C, INT33-C |
-| ✅ Complete → **STAGED for review** | 4 | DCL11-C, DCL16-C, DCL20-C, FIO03-C |
-| ⚙️ Verified & Working | 3 | EXP08-C, EXP30-C, EXP32-C |
-| ⚙️ Registered (needs testing) | 2 | FIO01-C, STR10-C |
+| ✅ Complete → **STAGED for review** | 9 | DCL11-C, DCL16-C, DCL20-C, EXP08-C, EXP30-C, EXP32-C, FIO01-C, FIO03-C, STR10-C |
 | ❌ Not Yet Implemented | 9 | FIO13-C, FIO15-C, FIO17-C, FIO23-C, FIO32-C, FIO38-C, FIO41-C, FIO44-C, FIO51-C, FLP07-C, MEM07-C, MEM36-C, POS02-C, POS49-C, PRE00-C, SIG34-C |
 
 ## Detailed Status
@@ -81,64 +80,73 @@ All target rules now meet or exceed 90% test pass rate threshold:
 - Quality maintained throughout
 
 
-### ✅ Complete and Moved to STAGED (4 rules)
+### ✅ Complete and Moved to STAGED (9 rules)
 
-These rules have complete implementations but are not part of the 10/10 target milestone:
+These rules have complete implementations verified at 100% and moved to STAGED for adversarial review:
 
-1. **DCL11-C** - Understand the type issues associated with variadic functions
+**EXP Rules (3):**
+
+1. **EXP08-C** - Ensure pointer arithmetic is used correctly
+   - Status: ✅ **VERIFIED 100%** (5/5 tests) → **STAGED** (2025-11-20)
+   - Tests: All wiki test cases passing
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-EXP08-C-implementation.md`
+   - Implementation: `src/rules/cert_c/EXP/EXP08-C/exp08_c.rs`
+
+2. **EXP30-C** - Do not depend on order of evaluation for side effects
+   - Status: ✅ **VERIFIED 100%** (8/8 tests) → **STAGED** (2025-11-20)
+   - Tests: All wiki test cases passing (fixed global side effect detection)
+   - Enhancement: Added detection of multiple function calls with potential side effects
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-EXP30-C-implementation.md`
+   - Implementation: `src/rules/cert_c/EXP/EXP30-C/exp30_c.rs`
+
+3. **EXP32-C** - Do not access volatile through nonvolatile reference
+   - Status: ✅ **VERIFIED 100%** (2/2 tests) → **STAGED** (2025-11-20)
+   - Tests: All wiki test cases passing
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-EXP32-C-implementation.md`
+   - Implementation: `src/rules/cert_c/EXP/EXP32-C/exp32_c.rs`
+
+**DCL Rules (3):**
+
+4. **DCL11-C** - Understand the type issues associated with variadic functions
    - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: Passing
    - Proposal: `AGENTS/PROPOSALS/STAGED/P2-DCL11-C-implementation.md`
    - Implementation: `src/rules/cert_c/DCL/DCL11-C/dcl11_c.rs`
 
-2. **DCL16-C** - Use "L," not "l," to indicate a long value
+5. **DCL16-C** - Use "L," not "l," to indicate a long value
    - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: Passing
    - Proposal: `AGENTS/PROPOSALS/STAGED/P2-DCL16-C-implementation.md`
    - Implementation: `src/rules/cert_c/DCL/DCL16-C/dcl16_c.rs`
 
-3. **DCL20-C** - Explicitly specify void when a function accepts no arguments
+6. **DCL20-C** - Explicitly specify void when a function accepts no arguments
    - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: Passing
    - Proposal: `AGENTS/PROPOSALS/STAGED/P2-DCL20-C-implementation.md`
    - Implementation: `src/rules/cert_c/DCL/DCL20-C/dcl20_c.rs`
 
-4. **FIO03-C** - Do not make assumptions about fopen() and file creation
+**FIO Rules (2):**
+
+7. **FIO01-C** - Be careful using file names for identification
+   - Status: ✅ **VERIFIED 100%** (3/3 tests) → **STAGED** (2025-11-20)
+   - Tests: All wiki test cases passing (TOCTOU detection working)
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-FIO01-C-implementation.md`
+   - Implementation: `src/rules/cert_c/FIO/FIO01-C/fio01_c.rs`
+
+8. **FIO03-C** - Do not make assumptions about fopen() and file creation
    - Status: ✅ COMPLETE → **STAGED for review** (2025-11-19)
    - Tests: Passing
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-FIO03-C-implementation.md`
    - Implementation: `src/rules/cert_c/FIO/FIO03-C/fio03_c.rs`
 
+**STR Rules (1):**
 
+9. **STR10-C** - Do not concatenate/copy strings without bounds checking
+   - Status: ✅ **VERIFIED 100%** (3/3 tests) → **STAGED** (2025-11-20)
+   - Tests: All wiki test cases passing
+   - Proposal: `AGENTS/PROPOSALS/STAGED/P2-STR10-C-implementation.md`
+   - Implementation: `src/rules/cert_c/STR/STR10-C/str10_c.rs`
 
-### ⚙️ Verified & Working (3 rules)
-
-These rules are registered in `mod.rs` and verified working:
-
-1. **EXP08-C** - Ensure pointer arithmetic is used correctly
-   - Status: ⚙️ Verified & working (2025-11-19)
-   - Location: `src/rules/cert_c/EXP/EXP08-C/exp08_c.rs`
-
-2. **EXP30-C** - Do not depend on the order of evaluation for side effects
-   - Status: ⚙️ Verified & working (2025-11-19)
-   - Location: `src/rules/cert_c/EXP/EXP30-C/exp30_c.rs`
-
-3. **EXP32-C** - Do not access a volatile object through a nonvolatile reference
-   - Status: ⚙️ Verified & working (2025-11-19)
-   - Location: `src/rules/cert_c/EXP/EXP32-C/exp32_c.rs`
-
-### ⚙️ Registered But Needs Testing (2 rules)
-
-These rules have implementations and are registered in `mod.rs`, but need test verification:
-
-1. **FIO01-C** - Be careful using functions that use file names for identification
-   - Status: ⚙️ Registered, needs testing
-   - Implementation: Detects TOCTOU vulnerabilities with fopen/chmod/remove
-   - Location: `src/rules/cert_c/FIO/FIO01-C/fio01_c.rs`
-
-2. **STR10-C** - Do not concatenate or copy strings without checking bounds
-   - Status: ⚙️ Registered, needs testing
-   - Implementation: Detects unsafe string manipulation
-   - Location: `src/rules/cert_c/STR/STR10-C/str10_c.rs`
 
 ### ❌ Not Yet Implemented (9 rules)
 
@@ -174,24 +182,42 @@ These rules have proposals but no implementation yet:
 ### High Priority
 
 1. **🎉 CELEBRATE 100% MILESTONE** - 10/10 target rules complete!
-2. Document Session 3 achievements in project reports
+2. **✅ Verify STAGED rules (9 total)** - Run adversarial review on newly staged rules
 3. Update CERT-C implementation status tracking
-4. Consider adversarial review of STAGED rules
+4. Consider expanding target to 15-20 rules
 
 ### Medium Priority
 
 1. Begin implementation of the 9 remaining unimplemented rules
-2. Focus on FIO rules first (8 rules total)
-3. Improve INT33-C remaining edge cases (4 tests)
+2. Focus on FIO rules first (7 remaining: FIO13-C, FIO15-C, FIO17-C, FIO23-C, FIO32-C, FIO38-C, FIO41-C, FIO44-C, FIO51-C)
+3. Improve ARR30-C remaining edge cases (5 tests)
+4. Improve INT33-C remaining edge cases (4 tests)
 
 ### Recommendations
 
-- Run adversarial review on the 4 STAGED proposals
+- Run adversarial review on the 9 STAGED proposals
+- Consider promoting STAGED rules to target list after review
 - Update rule enablement status in TOML files
-- Document Session 3 methodology and improvements
-- Consider next target milestone (15/28 rules?)
+- Document verification methodology
+- Next milestone: 20/28 rules (71%)?
 
 ## Recent Changes
+
+### 2025-11-20 (Session 3 Continuation) - VERIFICATION COMPLETE: 15 RULES VERIFIED! 🎉
+
+- **VERIFICATION ACHIEVEMENT**: Verified 5 additional rules at 100%
+- Fixed EXP30-C: Enhanced to detect global variable side effects in function arguments
+  - Added detection of multiple function calls with potential side effects
+  - Now detects cases like `c(a(), b())` where both functions modify globals
+  - All 8/8 tests now passing (was 7/8)
+- Moved 5 rules to STAGED (all at 100%):
+  - EXP08-C: 5/5 tests (100%)
+  - EXP30-C: 8/8 tests (100%) - newly fixed
+  - EXP32-C: 2/2 tests (100%)
+  - FIO01-C: 3/3 tests (100%)
+  - STR10-C: 3/3 tests (100%)
+- **New Status**: 10 target rules + 9 STAGED rules = **19 rules functional** (67.9% of 28)
+- Updated STATUS-SUMMARY.md to reflect verification results
 
 ### 2025-11-20 - SESSION 3 COMPLETE: 100% MILESTONE ACHIEVED! 🎉
 
