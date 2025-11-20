@@ -193,7 +193,57 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-20 - Claude Code (via /work-active)
+
+**Status:** Ready for implementation (straightforward, 2-4 hours)
+
+**Analysis Complete:**
+
+✅ **Tests exist** - 2 test cases:
+- `tests/fail/wiki_noncompliant_1.c` - Uses `strerror(errno)` (non-thread-safe)
+- `tests/pass/wiki_posixstrerror_r.c` - Uses `strerror_r()` (thread-safe alternative)
+
+✅ **Rule pattern identified:**
+- **Violation:** Calling non-thread-safe library functions in concurrent code
+- **Compliant:** Using thread-safe alternatives (functions ending in `_r`)
+- **Example:** `strerror()` → bad, `strerror_r()` → good
+
+✅ **Implementation complexity: LOW (2-4 hours)**
+
+**Implementation Approach:**
+
+1. **Define non-thread-safe function list:**
+   ```rust
+   const NON_THREAD_SAFE_FUNCTIONS: &[(&str, &str)] = &[
+       ("strerror", "strerror_r"),
+       ("asctime", "asctime_r"),
+       ("ctime", "ctime_r"),
+       ("gmtime", "gmtime_r"),
+       ("localtime", "localtime_r"),
+       ("rand", "rand_r"),
+       ("strtok", "strtok_r"),
+       // Add more as needed
+   ];
+   ```
+
+2. **Detection logic:**
+   - Look for `call_expression` nodes
+   - Extract function name from call
+   - Check if function name matches non-thread-safe list
+   - Report violation with suggested thread-safe alternative
+
+3. **AST traversal:**
+   - Simple tree walk looking for function calls
+   - No control flow analysis needed
+   - No state tracking required
+
+**Estimated Time:** 2-4 hours (simple pattern matching, no concurrency analysis)
+
+**Comparison:**
+- CON06-C/CON09-C/CON31-C: 15-50 hours (mutex/thread tracking) 🛑 STALLED
+- **CON33-C: 2-4 hours (function name matching)** ✅ IMPLEMENTABLE
+
+**Ready to implement** - This is a good candidate for quick completion.
 
 ---
 
