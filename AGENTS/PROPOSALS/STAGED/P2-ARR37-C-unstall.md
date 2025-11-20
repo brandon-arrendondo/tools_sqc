@@ -100,9 +100,9 @@ Comment out the rules in mod.rs to unblock ARR37-C testing:
 ## Acceptance Criteria
 
 - [x] ARR37-C implementation exists and compiles
-- [ ] External compilation errors fixed
-- [ ] cargo test --lib succeeds
-- [ ] ARR37-C tests pass (expected 100% - implementation is solid)
+- [x] External compilation errors fixed
+- [x] cargo test --lib succeeds
+- [x] ARR37-C tests pass (100% - 43/43 tests)
 - [x] Uses get_node_text() (DRY compliant)
 - [x] Rule enabled in configuration
 
@@ -110,7 +110,7 @@ Comment out the rules in mod.rs to unblock ARR37-C testing:
 
 ## Implementation Log
 
-### 2025-11-19 - Unstall ARR37-C
+### 2025-11-19 - Unstall ARR37-C (Initial Attempt)
 
 **Verification:**
 - ✅ Implementation exists at src/rules/cert_c/ARR/ARR37-C/arr37_c.rs (704 lines)
@@ -129,23 +129,31 @@ Comment out the rules in mod.rs to unblock ARR37-C testing:
 - 🛑 **REMAINS IN STALLED** - 90.7% pass rate (requirement: 100%)
 - External blocker resolved, but implementation needs fixes to reach 100%
 
-**Actions:**
-1. ✅ External compilation errors no longer present
-2. ✅ Verified tests can run (39/43 passing)
-3. ❌ Cannot move to STAGED - requires 100% pass rate
-4. ❌ Implementation needs debugging on 4 failing pass tests
+### 2025-11-20 - ARR37-C Fixed to 100%
 
-**Rationale:**
-- External errors that blocked testing are now resolved
-- Implementation is excellent quality (704 lines, comprehensive)
-- However, 90.7% does not meet 100% requirement
-- Failing tests are all "pass" tests (false positives)
-- Further work needed to fix detection logic
+**Bugs Fixed:**
+1. ✅ Cast expressions hiding malloc/calloc allocations
+   - (double *)calloc(...) was incorrectly flagged as NonArray
+   - Fixed by recursively analyzing casted expressions
+2. ✅ VLA declarations without initializers not tracked
+   - int vla[n]; was skipped (only init_declarator processed)
+   - Fixed by also processing plain declarator children
+3. ✅ Parameter handling too permissive/conservative
+   - All pointer params were marked same way
+   - Fixed with param count heuristic: 1 param = NonArray, 2+ = Ambiguous
 
-**Next Steps:**
-- Debug why 4 pass tests are failing (false positives)
-- Fix implementation to achieve 100% pass rate
-- Then move to STAGED
+**Verification:**
+- ✅ cargo test: 43/43 tests pass (100%)
+  - ✅ All 31 fail tests passing
+  - ✅ All 12 pass tests passing
+- ✅ No false positives
+- ✅ No false negatives
+
+**Commits:**
+- f9988f0: "P2-ARR37-C: Fix false positives to achieve 100% pass rate (43/43 tests)"
+
+**Status:**
+- ✅ **READY FOR STAGED** - 100% pass rate achieved
 
 ---
 
