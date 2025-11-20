@@ -85,6 +85,9 @@ pub mod con08_c;
 #[path = "CON/CON32-C/con32_c.rs"]
 pub mod con32_c;
 
+#[path = "CON/CON33-C/con33_c.rs"]
+pub mod con33_c;
+
 #[path = "CON/CON34-C/con34_c.rs"]
 pub mod con34_c;
 
@@ -169,6 +172,9 @@ pub mod dcl16_c;
 #[path = "DCL/DCL17-C/dcl17_c.rs"]
 pub mod dcl17_c;
 
+#[path = "DCL/DCL18-C/dcl18_c.rs"]
+pub mod dcl18_c;
+
 #[path = "DCL/DCL20-C/dcl20_c.rs"]
 pub mod dcl20_c;
 
@@ -225,6 +231,9 @@ pub mod exp09_c;
 
 #[path = "EXP/EXP14-C/exp14_c.rs"]
 pub mod exp14_c;
+
+#[path = "EXP/EXP19-C/exp19_c.rs"]
+pub mod exp19_c;
 
 #[path = "EXP/EXP20-C/exp20_c.rs"]
 pub mod exp20_c;
@@ -436,6 +445,7 @@ impl RuleRegistry {
         registry.register(Box::new(con07_c::Con07C));
         registry.register(Box::new(con08_c::Con08C));
         registry.register(Box::new(con32_c::Con32C));
+        registry.register(Box::new(con33_c::Con33C));
         registry.register(Box::new(con34_c::Con34C));
         registry.register(Box::new(con35_c::Con35C));
         registry.register(Box::new(con40_c::Con40C));
@@ -464,6 +474,7 @@ impl RuleRegistry {
         registry.register(Box::new(env30_c::ENV30C));
         registry.register(Box::new(dcl16_c::Dcl16C));
         registry.register(Box::new(dcl17_c::Dcl17C));
+        registry.register(Box::new(dcl18_c::Dcl18C));
         registry.register(Box::new(dcl20_c::Dcl20C));
         registry.register(Box::new(dcl37_c::Dcl37C));
         registry.register(Box::new(dcl40_c::Dcl40C::new()));
@@ -483,6 +494,7 @@ impl RuleRegistry {
         registry.register(Box::new(exp15_c::Exp15C));
         registry.register(Box::new(exp09_c::Exp09C));
         registry.register(Box::new(exp14_c::Exp14C));
+        registry.register(Box::new(exp19_c::Exp19C));
         registry.register(Box::new(exp20_c::Exp20C));
         registry.register(Box::new(exp33_c::Exp33C));
         registry.register(Box::new(exp34_c::Exp34C));
