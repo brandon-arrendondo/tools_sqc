@@ -111,13 +111,17 @@ impl Int33C {
                 return;
             }
 
-            // Check if divisor is a variable, array element, field, or function call that might be zero
+            // Check if divisor is a variable, array element, field, expression, pointer dereference, or function call that might be zero
             // Look for preceding check
             if right.kind() == "identifier"
                 || right.kind() == "field_expression"
                 || right.kind() == "subscript_expression"  // Array/pointer subscript like divisors[i]
-                || right.kind() == "call_expression"
-            // Function calls like get_divisor()
+                || right.kind() == "call_expression" // Function calls like get_divisor()
+                || right.kind() == "binary_expression" // Expressions like (a - b)
+                || right.kind() == "parenthesized_expression" // Parenthesized expressions
+                || right.kind() == "pointer_expression" // Pointer dereference like *ptr
+                || right.kind() == "unary_expression"
+            // Other unary expressions
             {
                 if !self.is_divisor_checked(node, &right, source) {
                     violations.push(RuleViolation {
@@ -168,11 +172,15 @@ impl Int33C {
                 return;
             }
 
-            // Check if divisor is a variable, array element, field, or function call that might be zero
+            // Check if divisor is a variable, array element, field, expression, pointer dereference, or function call that might be zero
             if right.kind() == "identifier"
                 || right.kind() == "field_expression"
                 || right.kind() == "subscript_expression"
                 || right.kind() == "call_expression"
+                || right.kind() == "binary_expression"
+                || right.kind() == "parenthesized_expression"
+                || right.kind() == "pointer_expression"
+                || right.kind() == "unary_expression"
             {
                 if !self.is_divisor_checked(node, &right, source) {
                     violations.push(RuleViolation {
@@ -198,13 +206,20 @@ impl Int33C {
 
     /// Check if a divisor has been validated as non-zero
     fn is_divisor_checked(&self, div_node: &Node, divisor: &Node, source: &str) -> bool {
-        let divisor_name = ast_utils::get_node_text(divisor, source);
+        let divisor_text = ast_utils::get_node_text(divisor, source);
+
+        // Extract base variable name from complex expressions
+        let base_var_name = self.extract_base_variable(divisor, source);
 
         // Find the containing function
         if let Some(func) = ast_utils::find_containing_function(&div_node) {
             if let Some(body) = func.child_by_field_name("body") {
                 // Check if there's an early return or error handling for zero divisor
-                if self.has_early_return_for_zero(&body, divisor_name, source, div_node) {
+                // Check both the full expression and the base variable
+                if self.has_early_return_for_zero(&body, &divisor_text, source, div_node)
+                    || (base_var_name != divisor_text
+                        && self.has_early_return_for_zero(&body, &base_var_name, source, div_node))
+                {
                     return true;
                 }
             }
@@ -216,7 +231,10 @@ impl Int33C {
             // Look for if statements that check the divisor
             if node.kind() == "if_statement" {
                 if let Some(condition) = node.child_by_field_name("condition") {
-                    if self.checks_for_zero(&condition, divisor_name, source) {
+                    if self.checks_for_zero(&condition, &divisor_text, source)
+                        || (base_var_name != divisor_text
+                            && self.checks_for_zero(&condition, &base_var_name, source))
+                    {
                         // Check if we're in the else branch or the consequence after a zero check
                         if self.is_in_safe_branch(&node, div_node) {
                             return true;
@@ -229,6 +247,39 @@ impl Int33C {
         }
 
         false
+    }
+
+    /// Extract the base variable name from an expression
+    /// For example: (-step) -> step, (*ptr) -> ptr, frac->denominator -> denominator
+    fn extract_base_variable(&self, node: &Node, source: &str) -> String {
+        match node.kind() {
+            "identifier" => ast_utils::get_node_text(node, source).to_string(),
+            "parenthesized_expression" => {
+                // Look inside parentheses
+                if let Some(child) = node.named_child(0) {
+                    self.extract_base_variable(&child, source)
+                } else {
+                    ast_utils::get_node_text(node, source).to_string()
+                }
+            }
+            "unary_expression" | "pointer_expression" => {
+                // For unary like (-step) or (*ptr), extract the argument
+                if let Some(argument) = node.child_by_field_name("argument") {
+                    self.extract_base_variable(&argument, source)
+                } else {
+                    ast_utils::get_node_text(node, source).to_string()
+                }
+            }
+            "field_expression" => {
+                // For field like frac->denominator, extract the field name
+                if let Some(field) = node.child_by_field_name("field") {
+                    ast_utils::get_node_text(&field, source).to_string()
+                } else {
+                    ast_utils::get_node_text(node, source).to_string()
+                }
+            }
+            _ => ast_utils::get_node_text(node, source).to_string(),
+        }
     }
 
     /// Check if there's an early return or exit when divisor is zero
