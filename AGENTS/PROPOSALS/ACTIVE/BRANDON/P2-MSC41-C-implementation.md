@@ -193,7 +193,48 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Date:** 2025-11-21
+**Status:** ✅ COMPLETED
+
+### Implementation Summary
+Successfully implemented MSC41-C to detect hard-coded sensitive information (passwords, keys, credentials) in source code. The rule detects two main patterns:
+1. String literals passed to sensitive functions (authentication, crypto, database functions)
+2. String literals assigned to variables with sensitive names
+
+### Implementation Details
+- **File Created:** `src/rules/cert_c/MSC/MSC41-C/msc41_c.rs` (271 lines)
+- **Detection Logic:**
+  - Identifies sensitive functions by keyword matching (auth, password, key, encrypt, database, etc.)
+  - For calls to sensitive functions: Flags ANY non-empty string literal argument
+  - For variable declarations: Flags string literals assigned to sensitively-named variables
+  - Uses heuristics for standalone string literals that look like credentials
+- **Key Insights:**
+  - Context matters: Any string passed to `authenticate()` is sensitive, regardless of content
+  - Simple pattern: "correct code" in `authenticate("correct code")` is a violation
+  - Variable names like "password", "apikey", "secret" combined with string literals are violations
+- **Utilities Used:** `get_node_text()` from `src/utility/cert_c/ast_utils.rs` (DRY compliance)
+
+### Test Results
+```
+test rules::cert_c::integration::generated_tests::test_msc41_c_fail_wiki_hard_coded_database_password ... ok
+test rules::cert_c::integration::generated_tests::test_msc41_c_pass_wiki_c23memset_explicit ... ok
+
+test result: ok. 2 passed; 0 failed
+```
+
+**Pass Rate:** 100% (2/2 tests passing)
+
+### Configuration
+- **Enabled:** Yes (`enabled = true` in MSC41-C.toml)
+- **Registered:** Yes (added to mod.rs and RuleRegistry)
+- **Severity:** High
+- **Priority:** P6
+- **Category:** Rule
+
+### Files Modified
+1. `src/rules/cert_c/MSC/MSC41-C/msc41_c.rs` (created, 271 lines)
+2. `src/rules/cert_c/MSC/MSC41-C/MSC41-C.toml` (enabled rule)
+3. `src/rules/cert_c/mod.rs` (registered module and rule)
 
 ---
 
