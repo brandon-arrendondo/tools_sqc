@@ -166,11 +166,192 @@ impl Dcl40C {
         }
     }
 
+    /// Check object declarations for incompatibilities
+    fn check_object_declaration(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            // Skip function declarators - handled separately
+            if self.is_function_declarator(&declarator) {
+                return;
+            }
+
+            // Get variable name
+            if let Some(name) = self.get_variable_name(&declarator, source) {
+                // Check for excessively long identifiers (C requires at least 31 significant chars)
+                // Check if THIS name is >= 31 chars OR conflicts with any >= 31 char identifier
+                let needs_check = name.len() >= 31;
+
+                if needs_check {
+                    // Get prefix to check (first 31 chars)
+                    let prefix_len = std::cmp::min(31, name.len());
+                    let prefix = &name[..prefix_len];
+                    let object_decls = self.object_decls.borrow();
+                    let function_decls = self.function_decls.borrow();
+
+                    // Check against other objects
+                    for (other_name, _) in object_decls.iter() {
+                        if other_name != &name && other_name.len() >= 31 {
+                            let other_prefix_len = std::cmp::min(31, other_name.len());
+                            let other_prefix = &other_name[..other_prefix_len];
+                            if prefix == other_prefix {
+                                violations.push(RuleViolation {
+                                    rule_id: "DCL40-C".to_string(),
+                                    severity: Severity::High,
+                                    line: node.start_position().row + 1,
+                                    column: node.start_position().column + 1,
+                                    message: format!(
+                                        "Identifier '{}' shares first 31 characters with '{}', may cause undefined behavior",
+                                        name, other_name
+                                    ),
+                                    file_path: String::new(),
+                                    suggestion: Some("Use identifiers that differ within the first 31 characters".to_string()),
+                                    requires_manual_review: Some(false),
+                                });
+                            }
+                        }
+                    }
+
+                    // Check against functions too
+                    for (func_name, _) in function_decls.iter() {
+                        if func_name != &name && func_name.len() >= 31 {
+                            let func_prefix_len = std::cmp::min(31, func_name.len());
+                            let func_prefix = &func_name[..func_prefix_len];
+                            if prefix == func_prefix {
+                                violations.push(RuleViolation {
+                                    rule_id: "DCL40-C".to_string(),
+                                    severity: Severity::High,
+                                    line: node.start_position().row + 1,
+                                    column: node.start_position().column + 1,
+                                    message: format!(
+                                        "Identifier '{}' shares first 31 characters with function '{}', may cause undefined behavior",
+                                        name, func_name
+                                    ),
+                                    file_path: String::new(),
+                                    suggestion: Some("Use identifiers that differ within the first 31 characters".to_string()),
+                                    requires_manual_review: Some(false),
+                                });
+                            }
+                        }
+                    }
+                }
+
+                // Get type information
+                let type_info = self.get_object_type(node, &declarator, source);
+
+                let mut object_decls = self.object_decls.borrow_mut();
+                if let Some(prev_type) = object_decls.get(&name) {
+                    // Check for incompatible types
+                    if prev_type != &type_info {
+                        violations.push(RuleViolation {
+                            rule_id: "DCL40-C".to_string(),
+                            severity: Severity::High,
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            message: format!(
+                                "Incompatible declarations of object '{}': types '{}' and '{}'",
+                                name, prev_type, type_info
+                            ),
+                            file_path: String::new(),
+                            suggestion: Some(
+                                "Ensure all declarations of the same object have identical types"
+                                    .to_string(),
+                            ),
+                            requires_manual_review: Some(false),
+                        });
+                    }
+                } else {
+                    // First declaration - store it
+                    object_decls.insert(name, type_info);
+                }
+            }
+        }
+    }
+
+    /// Get variable name from declarator
+    fn get_variable_name(&self, declarator: &Node, source: &str) -> Option<String> {
+        match declarator.kind() {
+            "identifier" => Some(get_node_text(declarator, source).to_string()),
+            "pointer_declarator" | "array_declarator" | "init_declarator" => {
+                if let Some(inner) = declarator.child_by_field_name("declarator") {
+                    self.get_variable_name(&inner, source)
+                } else {
+                    // Try to find identifier child
+                    for i in 0..declarator.child_count() {
+                        if let Some(child) = declarator.child(i) {
+                            if child.kind() == "identifier" {
+                                return Some(get_node_text(&child, source).to_string());
+                            }
+                            if let Some(name) = self.get_variable_name(&child, source) {
+                                return Some(name);
+                            }
+                        }
+                    }
+                    None
+                }
+            }
+            _ => {
+                // Search for identifier in children
+                for i in 0..declarator.child_count() {
+                    if let Some(child) = declarator.child(i) {
+                        if child.kind() == "identifier" {
+                            return Some(get_node_text(&child, source).to_string());
+                        }
+                    }
+                }
+                None
+            }
+        }
+    }
+
+    /// Get object type as a normalized string
+    fn get_object_type(&self, decl_node: &Node, declarator: &Node, source: &str) -> String {
+        let base_type = self.get_return_type(decl_node, source);
+        let declarator_type = self.get_declarator_type(declarator, source);
+
+        // Normalize: treat int[] and int* as incompatible for extern declarations
+        format!("{}{}", base_type, declarator_type)
+    }
+
+    /// Get type modifier from declarator (*, [], etc.)
+    fn get_declarator_type(&self, declarator: &Node, source: &str) -> String {
+        match declarator.kind() {
+            "pointer_declarator" => {
+                let inner = if let Some(inner) = declarator.child_by_field_name("declarator") {
+                    self.get_declarator_type(&inner, source)
+                } else {
+                    String::new()
+                };
+                format!("*{}", inner)
+            }
+            "array_declarator" => {
+                let inner = if let Some(inner) = declarator.child_by_field_name("declarator") {
+                    self.get_declarator_type(&inner, source)
+                } else {
+                    String::new()
+                };
+                format!("{}[]", inner)
+            }
+            "init_declarator" => {
+                if let Some(inner) = declarator.child_by_field_name("declarator") {
+                    self.get_declarator_type(&inner, source)
+                } else {
+                    String::new()
+                }
+            }
+            _ => String::new(),
+        }
+    }
+
     /// Check declarations
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         match node.kind() {
             "declaration" => {
                 self.check_function_declaration(node, source, violations);
+                self.check_object_declaration(node, source, violations);
             }
             "function_definition" => {
                 self.check_function_declaration(node, source, violations);

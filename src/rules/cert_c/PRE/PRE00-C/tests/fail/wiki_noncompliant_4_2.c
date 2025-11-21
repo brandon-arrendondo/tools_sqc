@@ -4,4 +4,12 @@
  * Status: FAIL - Should trigger PRE00-C violation
  */
 
-Called g, count = 0.
+#include <stdio.h>
+
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
+
+void func(void) {
+  int x = 5, y = 10;
+  // VIOLATION: Function-like macro instead of inline function
+  printf("%d\n", MAX(x, y));
+}

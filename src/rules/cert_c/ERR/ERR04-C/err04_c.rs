@@ -147,9 +147,28 @@ impl Err04C {
     fn is_file_io_function(&self, name: &str) -> bool {
         matches!(
             name.trim(),
-            "fopen" | "fclose" | "fprintf" | "fwrite" | "fputs" | "fputc" | "fread" | "fgets"
-                | "fgetc" | "fscanf" | "fseek" | "ftell" | "freopen" | "fflush" | "setvbuf"
-                | "ungetc" | "feof" | "ferror" | "clearerr" | "rewind" | "fsetpos" | "fgetpos"
+            "fopen"
+                | "fclose"
+                | "fprintf"
+                | "fwrite"
+                | "fputs"
+                | "fputc"
+                | "fread"
+                | "fgets"
+                | "fgetc"
+                | "fscanf"
+                | "fseek"
+                | "ftell"
+                | "freopen"
+                | "fflush"
+                | "setvbuf"
+                | "ungetc"
+                | "feof"
+                | "ferror"
+                | "clearerr"
+                | "rewind"
+                | "fsetpos"
+                | "fgetpos"
         )
     }
 

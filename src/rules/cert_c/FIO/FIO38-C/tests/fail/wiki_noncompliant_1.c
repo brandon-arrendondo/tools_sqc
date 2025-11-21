@@ -5,11 +5,16 @@
  */
 
 #include <stdio.h>
- 
+#include <string.h>
+
 int main(void) {
-  FILE my_stdout = *stdout;
+  FILE my_stdout;
+
+  // VIOLATION: Copying FILE object using memcpy
+  memcpy(&my_stdout, stdout, sizeof(FILE));
+
   if (fputs("Hello, World!\n", &my_stdout) == EOF) {
-    /* Handle error */
+    return 1;
   }
   return 0;
 }
