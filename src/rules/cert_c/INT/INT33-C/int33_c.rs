@@ -211,6 +211,14 @@ impl Int33C {
         // Extract base variable name from complex expressions
         let base_var_name = self.extract_base_variable(divisor, source);
 
+        // For struct field accesses like frac->denominator, check if there's validation
+        // in the struct's initialization or constructor function
+        if divisor.kind() == "field_expression" {
+            if self.is_struct_field_validated(divisor, source) {
+                return true;
+            }
+        }
+
         // Find the containing function
         if let Some(func) = ast_utils::find_containing_function(&div_node) {
             if let Some(body) = func.child_by_field_name("body") {
@@ -432,6 +440,57 @@ impl Int33C {
                                 {
                                     return true;
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Check if a struct field is validated for non-zero in a constructor/setter
+    /// This provides basic inter-procedural analysis for struct invariants
+    fn is_struct_field_validated(&self, field_expr: &Node, source: &str) -> bool {
+        // Extract the field name from expressions like frac->denominator or obj.field
+        if let Some(field) = field_expr.child_by_field_name("field") {
+            let field_name = ast_utils::get_node_text(&field, source);
+
+            // Look for validation patterns in the source file where this field (or abbreviated name) is checked for zero
+            // For example, parameter "denom" might represent field "denominator"
+            // Also check common abbreviations
+            let mut possible_names = vec![field_name.to_string()];
+
+            // Add common abbreviations (e.g., "denominator" -> "denom", "numerator" -> "num")
+            if field_name.len() > 5 {
+                possible_names.push(field_name[..4].to_string()); // First 4 chars
+                possible_names.push(field_name[..5].to_string()); // First 5 chars
+            }
+
+            // Search for any of these names being checked against zero with error handling
+            let lines: Vec<&str> = source.lines().collect();
+            for possible_name in &possible_names {
+                for (idx, line) in lines.iter().enumerate() {
+                    // Check if this line validates the name for zero
+                    if (line.contains(&format!("{} == 0", possible_name))
+                        || line.contains(&format!("{} != 0", possible_name))
+                        || line.contains(&format!("0 == {}", possible_name)))
+                        && (line.contains("if") || line.contains("IF"))
+                    {
+                        // Look in the next few lines for error handling (return/exit/abort)
+                        for check_idx in idx..std::cmp::min(idx + 10, lines.len()) {
+                            let check_line = lines[check_idx];
+                            if check_line.contains("return false")
+                                || check_line.contains("return NULL")
+                                || check_line.contains("return -1")
+                                || check_line.contains("return 0")
+                                || check_line.contains("exit(")
+                                || check_line.contains("abort(")
+                                || check_line.contains("Error:")
+                                || check_line.contains("printf(\"Error")
+                            {
+                                return true;
                             }
                         }
                     }
