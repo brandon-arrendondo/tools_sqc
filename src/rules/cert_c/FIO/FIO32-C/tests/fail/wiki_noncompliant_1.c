@@ -5,7 +5,7 @@
  */
 
 #include <stdio.h>
- 
+
 void func(void) {
   FILE *file;
   // VIOLATION: Using fseek on a device file
