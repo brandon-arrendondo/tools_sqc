@@ -1,45 +1,45 @@
 ---
-rule_id: MSC41-C
+rule_id: INT16-C
 priority: P2
-status: active
+status: staged
 assigned_to: BRANDON
 created: 2025-11-17
-last_modified: 2025-11-17
+last_modified: 2025-11-20
 tags:
   - cert-c
   - implementation
-  - MSC
+  - INT
 ---
 
-# P2-MSC41-C - MSC41-C Implementation
+# P2-INT16-C - INT16-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** BRANDON
-**Category:** MSC
+**Category:** INT
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** MSC41-C
+**Rule ID:** INT16-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/MSC41-C.+Never+hard+code+sensitive+information
+https://wiki.sei.cmu.edu/confluence/display/c/INT16-C.+Do+not+make+assumptions+about+representation+of+signed+integers
 
 ---
 
 ## Task
 
-Implement or verify MSC41-C with 100% test pass rate and DRY compliance.
+Implement or verify INT16-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for MSC41-C
-2. Check if implementation exists in `src/rules/cert_c/MSC/MSC41-C/`
+1. Study the CERT C wiki page for INT16-C
+2. Check if implementation exists in `src/rules/cert_c/INT/INT16-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -183,17 +183,44 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-20 - Implementation Complete
+
+**Implementation Details:**
+- Created `src/rules/cert_c/INT/INT16-C/int16_c.rs` (374 lines)
+- Rule detects bitwise operations (&, |, ^, <<, >>, ~) on signed integer variables
+- Tracks signed integer declarations (int, short, long, signed char)
+- Does NOT flag operations on unsigned integers (safe for bit manipulation)
+- Uses AST traversal to find binary and unary bitwise operations
+- Registered in `src/rules/cert_c/mod.rs`
+- Enabled in `src/rules/cert_c/INT/INT16-C/INT16-C.toml`
+
+**Test Results:**
+- All tests passed: 3/3
+  - `test_int16_c_fail_wiki_noncompliant_1` ✓
+  - `test_int16_c_pass_wiki_compliant_1` ✓
+  - `test_int16_c_pass_wiki_compliant_2` ✓
+
+**Implementation Approach:**
+- Based on INT07-C pattern (track variables, detect usage in specific contexts)
+- Tracks signed integer variable declarations in HashMap
+- Checks all binary_expression and unary_expression nodes for bitwise operators
+- Reports violation when signed integer variable is used as operand
+
+**Git Commit:**
+- Commit: 0b86cbb
+- Message: "P2-INT16-C: Implementation complete"
+
+**Status:** COMPLETED - All acceptance criteria met
 
 ---
 

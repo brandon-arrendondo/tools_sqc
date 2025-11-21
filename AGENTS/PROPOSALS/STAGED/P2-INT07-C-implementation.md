@@ -1,5 +1,5 @@
 ---
-rule_id: INT16-C
+rule_id: INT07-C
 priority: P2
 status: active
 assigned_to: BRANDON
@@ -11,7 +11,7 @@ tags:
   - INT
 ---
 
-# P2-INT16-C - INT16-C Implementation
+# P2-INT07-C - INT07-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
@@ -22,24 +22,24 @@ tags:
 
 ## CERT C Rule Information
 
-**Rule ID:** INT16-C
+**Rule ID:** INT07-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/INT16-C.+Do+not+make+assumptions+about+representation+of+signed+integers
+https://wiki.sei.cmu.edu/confluence/display/c/INT07-C.+Use+only+explicitly+signed+or+unsigned+char+type+for+numeric+values
 
 ---
 
 ## Task
 
-Implement or verify INT16-C with 100% test pass rate and DRY compliance.
+Implement or verify INT07-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for INT16-C
-2. Check if implementation exists in `src/rules/cert_c/INT/INT16-C/`
+1. Study the CERT C wiki page for INT07-C
+2. Check if implementation exists in `src/rules/cert_c/INT/INT07-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -183,17 +183,34 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-20 - Claude Code (via /work-active)
+
+**Implementation Complete**
+
+- Created `src/rules/cert_c/INT/INT07-C/int07_c.rs` with full implementation
+- Rule detects plain `char` variables used in numeric contexts:
+  - Arithmetic operations (+, -, *, /, %)
+  - Comparison operations (<, <=, >, >=, ==, !=)
+  - Assignment with numeric literals
+  - Unary operations (++, --, unary +/-)
+- Registered in `src/rules/cert_c/mod.rs`
+- Enabled in both `INT07-C.toml` and `rules-all.toml`
+- Tests passing: 2/2 (100% pass rate)
+  - `test_int07_c_fail_wiki_noncompliant_1`: ✅ Correctly detected violation
+  - `test_int07_c_pass_wiki_compliant_1`: ✅ Correctly allowed compliant code
+- Commit: e815abc - "P2-INT07-C: Implementation complete"
+
+**Status:** STAGED (ready for adversarial review)
 
 ---
 

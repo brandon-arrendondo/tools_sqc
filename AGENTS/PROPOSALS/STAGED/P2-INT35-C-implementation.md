@@ -1,45 +1,45 @@
 ---
-rule_id: FIO06-C
+rule_id: INT35-C
 priority: P2
-status: active
-assigned_to: ERIC
+status: staged
+assigned_to: BRANDON
 created: 2025-11-17
-last_modified: 2025-11-17
+last_modified: 2025-11-20
 tags:
   - cert-c
   - implementation
-  - FIO
+  - INT
 ---
 
-# P2-FIO06-C - FIO06-C Implementation
+# P2-INT35-C - INT35-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
-**Category:** FIO
+**Assigned To:** BRANDON
+**Category:** INT
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** FIO06-C
+**Rule ID:** INT35-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
-**Currently Enabled:** false
+**Currently Enabled:** true
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FIO06-C.+Create+files+with+appropriate+access+permissions
+https://wiki.sei.cmu.edu/confluence/display/c/INT35-C.+Use+correct+integer+precisions
 
 ---
 
 ## Task
 
-Implement or verify FIO06-C with 100% test pass rate and DRY compliance.
+Implement or verify INT35-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for FIO06-C
-2. Check if implementation exists in `src/rules/cert_c/FIO/FIO06-C/`
+1. Study the CERT C wiki page for INT35-C
+2. Check if implementation exists in `src/rules/cert_c/INT/INT35-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -183,17 +183,63 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Date:** 2025-11-20
+**Status:** ✅ COMPLETED
+
+### Implementation Summary
+Successfully implemented INT35-C to detect the `sizeof(...) * CHAR_BIT` anti-pattern when calculating integer precision. The rule identifies when code incorrectly assumes precision equals size by using this pattern, which fails on platforms with padding bits.
+
+### Implementation Details
+- **File Created:** `src/rules/cert_c/INT/INT35-C/int35_c.rs` (149 lines)
+- **Detection Logic:**
+  - Traverses AST for `binary_expression` nodes with multiplication operator
+  - Checks for `sizeof(...)` expression in left or right operand
+  - Checks for `CHAR_BIT` identifier in the opposite operand
+  - Detects both `sizeof(...) * CHAR_BIT` and `CHAR_BIT * sizeof(...)` patterns
+- **Helper Methods:**
+  - `is_sizeof_expression()`: Identifies sizeof expressions
+  - `is_char_bit()`: Identifies CHAR_BIT references
+- **Utilities Used:** `get_node_text()` from `src/utility/cert_c/ast_utils.rs` (DRY compliance)
+
+### Test Results
+```
+test rules::cert_c::integration::generated_tests::test_int35_c_fail_wiki_noncompliant_1 ... ok
+test rules::cert_c::integration::generated_tests::test_int35_c_pass_wiki_c23 ... ok
+test rules::cert_c::integration::generated_tests::test_int35_c_pass_wiki_popcount ... ok
+test rules::cert_c::integration::generated_tests::test_int35_c_pass_wiki_popcount_2 ... ok
+test rules::cert_c::integration::generated_tests::test_int35_c_pass_wiki_popcount_3 ... ok
+
+test result: ok. 5 passed; 0 failed
+```
+
+**Pass Rate:** 100% (5/5 tests passing)
+
+### Configuration
+- **Enabled:** Yes (`enabled = true` in INT35-C.toml)
+- **Registered:** Yes (added to mod.rs and RuleRegistry)
+- **Severity:** Low
+- **Category:** Rule
+
+### Files Modified
+1. `src/rules/cert_c/INT/INT35-C/int35_c.rs` (created)
+2. `src/rules/cert_c/INT/INT35-C/INT35-C.toml` (enabled rule)
+3. `src/rules/cert_c/mod.rs` (registered module and rule)
+4. `src/rules/cert_c/rules-all.toml` (auto-generated)
+
+### Commit
+- **Hash:** 0c0e41c
+- **Message:** "P2-INT35-C: Implementation complete"
+- **Date:** 2025-11-20
 
 ---
 
