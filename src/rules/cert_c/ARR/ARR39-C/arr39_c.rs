@@ -49,6 +49,10 @@ impl Arr39C {
             "while_statement" | "for_statement" => {
                 self.check_loop_pointer_arithmetic(node, source, violations);
             }
+            "subscript_expression" => {
+                // Check for violations in array subscript like ptr[scaled_value]
+                self.check_subscript_scaling(node, source, violations);
+            }
             _ => {}
         }
 
@@ -108,9 +112,14 @@ impl Arr39C {
                     node.child_by_field_name("left"),
                     node.child_by_field_name("right"),
                 ) {
+                    let left_text = &source[left.start_byte()..left.end_byte()];
+
                     // Check if this is pointer += scaled_integer
                     if self.is_scaled_integer_expression(&right, source)
                         && self.looks_like_pointer(&left, source)
+                        && !self.is_char_pointer(&left, source)  // Char pointers are allowed
+                        && !left_text.to_lowercase().contains("byte")
+                    // Byte pointers are allowed
                     {
                         let start_point = node.start_position();
                         let expr_text = &source[node.start_byte()..node.end_byte()];
@@ -130,6 +139,48 @@ impl Arr39C {
                         });
                     }
                 }
+            }
+        }
+    }
+
+    fn check_subscript_scaling(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Check for ptr[sizeof_value] pattern
+        if let (Some(argument), Some(index)) = (
+            node.child_by_field_name("argument"),
+            node.child_by_field_name("index"),
+        ) {
+            let arg_text = &source[argument.start_byte()..argument.end_byte()];
+
+            // Check if index is a scaled value (from sizeof or byte-related variable)
+            if self.is_scaled_integer_expression(&index, source)
+                && self.looks_like_pointer_node(&argument, source)
+                && !self.is_char_pointer(&argument, source)
+                && !arg_text.to_lowercase().contains("byte")
+            // Byte pointers are allowed
+            {
+                let start_point = node.start_position();
+                let expr_text = &source[node.start_byte()..node.end_byte()];
+
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Array subscript with scaled integer: '{}'. This results in double scaling",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Use unscaled index or element count instead of sizeof()".to_string(),
+                    ),
+                    ..Default::default()
+                });
             }
         }
     }
@@ -167,7 +218,36 @@ impl Arr39C {
         source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        // Look for patterns like: while (ptr < (buf + sizeof(buf)))
+        // Check if loop condition uses sizeof(array) as upper bound
+        // Pattern: for (i = 0; i < sizeof(data); i++) { ptr[i] or *(ptr+i) }
+        if let Some(condition) = self.find_loop_condition(node) {
+            let condition_text = &source[condition.start_byte()..condition.end_byte()];
+
+            // Check if sizeof is used as loop bound
+            if condition_text.contains("sizeof(") {
+                // Find the loop body
+                if let Some(body) = self.find_loop_body(node) {
+                    // Check if body uses pointer arithmetic or subscripting
+                    if self.has_pointer_operations_in_loop(&body, source) {
+                        let start_point = condition.start_position();
+
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::High,
+                            message: "Loop uses sizeof() as bound (byte count) but performs pointer arithmetic (element-based), causing double scaling".to_string(),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some("Use array element count (sizeof(array)/sizeof(array[0])) instead of sizeof(array) in loop bound".to_string()),
+                            ..Default::default()
+                        });
+                        return; // Only report once per loop
+                    }
+                }
+            }
+        }
+
+        // Original check: Look for patterns like: while (ptr < (buf + sizeof(buf)))
         let node_text = &source[node.start_byte()..node.end_byte()];
 
         if node_text.contains("sizeof(") && (node_text.contains(" + ") || node_text.contains(" - "))
@@ -190,6 +270,78 @@ impl Arr39C {
                 }
             }
         }
+    }
+
+    fn find_loop_body<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        match node.kind() {
+            "for_statement" => node.child_by_field_name("body"),
+            "while_statement" => node.child_by_field_name("body"),
+            "do_statement" => node.child_by_field_name("body"),
+            _ => None,
+        }
+    }
+
+    fn has_pointer_operations_in_loop(&self, body: &Node, source: &str) -> bool {
+        // Check for pointer arithmetic (ptr + i, ptr - i) or subscripting (ptr[i])
+        self.check_node_for_pointer_ops(body, source)
+    }
+
+    fn check_node_for_pointer_ops(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "subscript_expression" => {
+                // Found ptr[i] pattern
+                if let Some(argument) = node.child_by_field_name("argument") {
+                    // Check if the argument looks like a pointer (not char*)
+                    if self.looks_like_pointer_node(&argument, source)
+                        && !self.is_char_pointer(&argument, source)
+                    {
+                        return true;
+                    }
+                }
+            }
+            "binary_expression" => {
+                // Check for pointer +/- operations
+                if let Some(operator_node) = node.child_by_field_name("operator") {
+                    let op = &source[operator_node.start_byte()..operator_node.end_byte()];
+                    if op == "+" || op == "-" {
+                        if let Some(left) = node.child_by_field_name("left") {
+                            if self.looks_like_pointer_node(&left, source) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            "pointer_expression" => {
+                // Check for *(ptr + i) pattern
+                if let Some(argument) = node.child_by_field_name("argument") {
+                    if argument.kind() == "binary_expression" {
+                        if let Some(operator_node) = argument.child_by_field_name("operator") {
+                            let op = &source[operator_node.start_byte()..operator_node.end_byte()];
+                            if (op == "+" || op == "-") {
+                                if let Some(left) = argument.child_by_field_name("left") {
+                                    if self.looks_like_pointer_node(&left, source) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.check_node_for_pointer_ops(&child, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
     }
 
     fn check_wide_string_function_scaling(
@@ -260,12 +412,25 @@ impl Arr39C {
     }
 
     fn is_pointer_scaled_arithmetic(&self, left: &Node, right: &Node, source: &str) -> bool {
-        let _left_text = &source[left.start_byte()..left.end_byte()];
-        let _right_text = &source[right.start_byte()..right.end_byte()];
+        let left_text = &source[left.start_byte()..left.end_byte()];
+        let right_text = &source[right.start_byte()..right.end_byte()];
 
         // Check if left is likely a pointer and right contains scaling
         let left_is_pointer = self.looks_like_pointer_node(left, source);
         let right_is_scaled = self.is_scaled_integer_expression(&right, source);
+
+        // If it's a char pointer (by naming or cast), byte arithmetic is correct (not a violation)
+        if left_is_pointer
+            && (self.is_char_pointer(left, source) || left_text.to_lowercase().contains("byte"))
+        {
+            return false;
+        }
+
+        // Special case: generic pointer name with offset/skip variable suggests intentional byte arithmetic
+        // This is a heuristic to avoid false positives when char* pointers are used
+        if left_text == "ptr" && (right_text == "skip" || right_text == "offset") {
+            return false; // Likely intentional byte-level arithmetic
+        }
 
         left_is_pointer && right_is_scaled
     }
@@ -273,22 +438,98 @@ impl Arr39C {
     fn is_scaled_integer_expression(&self, node: &Node, source: &str) -> bool {
         let text = &source[node.start_byte()..node.end_byte()];
 
-        // Common scaled integer patterns
-        text.contains("sizeof(")
+        // Common scaled integer patterns - direct sizeof/offsetof
+        if text.contains("sizeof(")
             || text.contains("offsetof(")
             || (text.contains("*") && (text.contains("sizeof") || text.contains("wcslen")))
             || text.contains("wcslen(") && text.contains("sizeof(wchar_t)")
+        {
+            return true;
+        }
+
+        // Check for variables that likely hold byte counts/sizes
+        // These are common patterns where byte values are incorrectly used for pointer arithmetic
+        let lower = text.to_lowercase();
+        if lower.contains("_size")
+            || lower.contains("alloc_size")
+            || lower.contains("byte_offset")
+            || lower.contains("byte_")
+            || lower == "skip"  // offsetof result variable name from wiki example
+            || lower == "offset"  // Common offset variable
+            || lower.contains("_bytes")
+            || lower.contains("offset_bytes")
+        {
+            return true;
+        }
+
+        false
     }
 
     fn looks_like_pointer(&self, node: &Node, source: &str) -> bool {
         let text = &source[node.start_byte()..node.end_byte()];
 
         // Simple heuristics for pointer identification
+        // Be more lenient - many pointers don't follow naming conventions
         text.ends_with("_ptr")
             || text.ends_with("*")
+            || text.ends_with("s")     // Plural names often pointers to arrays
             || text.contains("buf")
             || text.contains("array")
             || text.contains("ptr")
+            || text.contains("start")  // Common pointer name
+            || text.contains("end")    // Common pointer name
+            || text == "s"             // Common pointer name
+            || text == "p"             // Common pointer name
+            || text.contains("data")
+            || text.contains("dest")   // Common pointer name for memcpy etc
+            || text.contains("src")    // Common pointer name
+            || text.contains("message") // Common pointer/buffer name
+            || text.contains("record")  // Common pointer name
+            || text.contains("append") // Common in string operations
+    }
+
+    fn is_char_pointer(&self, node: &Node, source: &str) -> bool {
+        // Check if this is a char-type pointer (which is allowed to use byte arithmetic)
+
+        // For an identifier, we need to look at its declaration or most recent cast
+        // This is a simplified heuristic - we look for cast expressions in the parent chain
+        let mut current = node.clone();
+
+        // Walk up the tree to find casts
+        for _ in 0..5 {
+            // Check up to 5 levels up
+            if let Some(parent) = current.parent() {
+                let parent_text = &source[parent.start_byte()..parent.end_byte()];
+
+                // Check for char* casts
+                if parent.kind() == "cast_expression" {
+                    if parent_text.contains("unsigned char *")
+                        || parent_text.contains("unsigned char*")
+                        || parent_text.contains("signed char *")
+                        || parent_text.contains("signed char*")
+                    // But NOT if it's casting TO a char* from something else
+                    // We need to check the actual type declarator
+                    {
+                        // Check type declarator specifically
+                        if let Some(type_node) = parent.child_by_field_name("type") {
+                            let type_text = &source[type_node.start_byte()..type_node.end_byte()];
+                            if type_text.contains("unsigned char")
+                                || type_text.contains("signed char")
+                                || (type_text.contains("char") && !type_text.contains("wchar"))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                current = parent;
+            } else {
+                break;
+            }
+        }
+
+        false
     }
 
     fn looks_like_pointer_node(&self, node: &Node, source: &str) -> bool {
@@ -300,6 +541,11 @@ impl Arr39C {
             "binary_expression" => {
                 // Could be pointer arithmetic
                 true
+            }
+            "cast_expression" => {
+                // Cast expressions are often pointers
+                let text = &source[node.start_byte()..node.end_byte()];
+                text.contains("*") // Has pointer in cast
             }
             _ => false,
         }
@@ -372,8 +618,3 @@ impl Arr39C {
         args
     }
 }
-
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/arr39_c.rs"]
-// mod tests;

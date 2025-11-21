@@ -1,0 +1,562 @@
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils;
+use tree_sitter::Node;
+
+pub struct Int33C;
+
+impl CertRule for Int33C {
+    fn rule_id(&self) -> &'static str {
+        "INT33-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Ensure that division and remainder operations do not result in divide-by-zero errors"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "INT33-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Check for division or modulo operations
+        if node.kind() == "binary_expression" {
+            if let Some(operator) = ast_utils::get_binary_operator(node, source) {
+                if operator == "/" || operator == "%" {
+                    self.check_division_safety(node, source, &mut violations);
+                }
+            }
+        }
+
+        // Check for compound assignment operators
+        if node.kind() == "assignment_expression" {
+            if let Some(right) = node.child_by_field_name("right") {
+                let right_text = ast_utils::get_node_text(&right, source);
+                // Check for /= or %=
+                if right_text.starts_with("=") {
+                    // This is handled by the operator field
+                } else {
+                    // Check the operator itself
+                    for i in 0..node.child_count() {
+                        if let Some(child) = node.child(i) {
+                            if child.kind() == "/=" || child.kind() == "%=" {
+                                self.check_compound_assignment_safety(
+                                    node,
+                                    source,
+                                    &mut violations,
+                                );
+                                break;
+                            }
+                            let text = ast_utils::get_node_text(&child, source);
+                            if text == "/=" || text == "%=" {
+                                self.check_compound_assignment_safety(
+                                    node,
+                                    source,
+                                    &mut violations,
+                                );
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recursively check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                violations.extend(self.check(&child, source));
+            }
+        }
+
+        violations
+    }
+}
+
+impl Int33C {
+    /// Check if a division or modulo operation is safe
+    fn check_division_safety(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let Some(right) = node.child_by_field_name("right") {
+            let right_text = ast_utils::get_node_text(&right, source);
+
+            // Check for direct division by zero
+            if right_text == "0" {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: "Division or modulo by zero literal".to_string(),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(
+                        "Ensure divisor is not zero before performing operation".to_string(),
+                    ),
+                    ..Default::default()
+                });
+                return;
+            }
+
+            // Check if divisor is a variable, array element, field, expression, pointer dereference, or function call that might be zero
+            // Look for preceding check
+            if right.kind() == "identifier"
+                || right.kind() == "field_expression"
+                || right.kind() == "subscript_expression"  // Array/pointer subscript like divisors[i]
+                || right.kind() == "call_expression" // Function calls like get_divisor()
+                || right.kind() == "binary_expression" // Expressions like (a - b)
+                || right.kind() == "parenthesized_expression" // Parenthesized expressions
+                || right.kind() == "pointer_expression" // Pointer dereference like *ptr
+                || right.kind() == "unary_expression"
+            // Other unary expressions
+            {
+                if !self.is_divisor_checked(node, &right, source) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: self.severity(),
+                        message: format!(
+                            "Division or modulo by '{}' without checking for zero",
+                            right_text
+                        ),
+                        file_path: String::new(),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        suggestion: Some(format!(
+                            "Check if '{}' is not zero before division",
+                            right_text
+                        )),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+    }
+
+    /// Check if a compound assignment (/= or %=) is safe
+    fn check_compound_assignment_safety(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let Some(right) = node.child_by_field_name("right") {
+            let right_text = ast_utils::get_node_text(&right, source);
+
+            // Check for direct division by zero
+            if right_text == "0" {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: "Compound assignment with zero divisor".to_string(),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(
+                        "Ensure divisor is not zero before performing operation".to_string(),
+                    ),
+                    ..Default::default()
+                });
+                return;
+            }
+
+            // Check if divisor is a variable, array element, field, expression, pointer dereference, or function call that might be zero
+            if right.kind() == "identifier"
+                || right.kind() == "field_expression"
+                || right.kind() == "subscript_expression"
+                || right.kind() == "call_expression"
+                || right.kind() == "binary_expression"
+                || right.kind() == "parenthesized_expression"
+                || right.kind() == "pointer_expression"
+                || right.kind() == "unary_expression"
+            {
+                if !self.is_divisor_checked(node, &right, source) {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: self.severity(),
+                        message: format!(
+                            "Compound assignment with '{}' without checking for zero",
+                            right_text
+                        ),
+                        file_path: String::new(),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        suggestion: Some(format!(
+                            "Check if '{}' is not zero before division",
+                            right_text
+                        )),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+    }
+
+    /// Check if a divisor has been validated as non-zero
+    fn is_divisor_checked(&self, div_node: &Node, divisor: &Node, source: &str) -> bool {
+        let divisor_text = ast_utils::get_node_text(divisor, source);
+
+        // Extract base variable name from complex expressions
+        let base_var_name = self.extract_base_variable(divisor, source);
+
+        // For struct field accesses like frac->denominator, check if there's validation
+        // in the struct's initialization or constructor function
+        if divisor.kind() == "field_expression" {
+            if self.is_struct_field_validated(divisor, source) {
+                return true;
+            }
+        }
+
+        // Find the containing function
+        if let Some(func) = ast_utils::find_containing_function(&div_node) {
+            if let Some(body) = func.child_by_field_name("body") {
+                // Check if there's an early return or error handling for zero divisor
+                // Check both the full expression and the base variable
+                if self.has_early_return_for_zero(&body, &divisor_text, source, div_node)
+                    || (base_var_name != divisor_text
+                        && self.has_early_return_for_zero(&body, &base_var_name, source, div_node))
+                {
+                    return true;
+                }
+            }
+        }
+
+        // Find the containing statement or block
+        let mut current = div_node.parent();
+        while let Some(node) = current {
+            // Look for if statements that check the divisor
+            if node.kind() == "if_statement" {
+                if let Some(condition) = node.child_by_field_name("condition") {
+                    if self.checks_for_zero(&condition, &divisor_text, source)
+                        || (base_var_name != divisor_text
+                            && self.checks_for_zero(&condition, &base_var_name, source))
+                    {
+                        // Check if we're in the else branch or the consequence after a zero check
+                        if self.is_in_safe_branch(&node, div_node) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            current = node.parent();
+        }
+
+        false
+    }
+
+    /// Extract the base variable name from an expression
+    /// For example: (-step) -> step, (*ptr) -> ptr, frac->denominator -> denominator
+    fn extract_base_variable(&self, node: &Node, source: &str) -> String {
+        match node.kind() {
+            "identifier" => ast_utils::get_node_text(node, source).to_string(),
+            "parenthesized_expression" => {
+                // Look inside parentheses
+                if let Some(child) = node.named_child(0) {
+                    self.extract_base_variable(&child, source)
+                } else {
+                    ast_utils::get_node_text(node, source).to_string()
+                }
+            }
+            "unary_expression" | "pointer_expression" => {
+                // For unary like (-step) or (*ptr), extract the argument
+                if let Some(argument) = node.child_by_field_name("argument") {
+                    self.extract_base_variable(&argument, source)
+                } else {
+                    ast_utils::get_node_text(node, source).to_string()
+                }
+            }
+            "field_expression" => {
+                // For field like frac->denominator, extract the field name
+                if let Some(field) = node.child_by_field_name("field") {
+                    ast_utils::get_node_text(&field, source).to_string()
+                } else {
+                    ast_utils::get_node_text(node, source).to_string()
+                }
+            }
+            _ => ast_utils::get_node_text(node, source).to_string(),
+        }
+    }
+
+    /// Check if there's an early return or exit when divisor is zero
+    fn has_early_return_for_zero(
+        &self,
+        scope: &Node,
+        var_name: &str,
+        source: &str,
+        div_node: &Node,
+    ) -> bool {
+        // Walk through statements before the division
+        let div_line = div_node.start_position().row;
+
+        for i in 0..scope.named_child_count() {
+            if let Some(child) = scope.named_child(i) {
+                let child_line = child.start_position().row;
+
+                // Only check statements before the division
+                if child_line >= div_line {
+                    break;
+                }
+
+                if child.kind() == "if_statement" {
+                    if let Some(condition) = child.child_by_field_name("condition") {
+                        if self.checks_for_zero(&condition, var_name, source) {
+                            // Check if the consequence has return/exit
+                            if let Some(consequence) = child.child_by_field_name("consequence") {
+                                if self.has_return_or_exit(&consequence, source) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Check for do-while loops that validate input
+                if child.kind() == "do_statement" {
+                    // Check if the condition checks for zero
+                    if let Some(condition) = child.child_by_field_name("condition") {
+                        if self.checks_for_zero(&condition, var_name, source) {
+                            // The loop ensures variable is not zero after loop
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Check if a branch contains return or exit
+    fn has_return_or_exit(&self, node: &Node, source: &str) -> bool {
+        let text = ast_utils::get_node_text(node, source);
+
+        if text.contains("return") || text.contains("exit") || text.contains("abort") {
+            return true;
+        }
+
+        // Also check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "return_statement"
+                    || child.kind() == "break_statement"
+                    || child.kind() == "continue_statement"
+                {
+                    return true;
+                }
+                if self.has_return_or_exit(&child, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Check if division node is in a safe branch (e.g., in the body after a zero check)
+    fn is_in_safe_branch(&self, if_node: &Node, div_node: &Node) -> bool {
+        // Check if div_node is a descendant of the if_statement's consequence
+        if let Some(consequence) = if_node.child_by_field_name("consequence") {
+            if self.is_descendant(&consequence, div_node) {
+                return true;
+            }
+        }
+
+        // Check if there's an alternative (else) branch
+        if let Some(alternative) = if_node.child_by_field_name("alternative") {
+            if self.is_descendant(&alternative, div_node) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Check if target is a descendant of node
+    fn is_descendant(&self, node: &Node, target: &Node) -> bool {
+        if node.id() == target.id() {
+            return true;
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.is_descendant(&child, target) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Check if a condition expression checks for zero
+    fn checks_for_zero(&self, condition: &Node, var_name: &str, source: &str) -> bool {
+        let condition_text = ast_utils::get_node_text(condition, source);
+
+        // Look for patterns like:
+        // - var == 0
+        // - var != 0
+        // - 0 == var
+        // - !var
+        // - var (truthy check)
+
+        // Simple text-based check for common patterns
+        if condition_text.contains(&format!("{} == 0", var_name))
+            || condition_text.contains(&format!("{} != 0", var_name))
+            || condition_text.contains(&format!("0 == {}", var_name))
+            || condition_text.contains(&format!("0 != {}", var_name))
+            || condition_text.contains(&format!("!{}", var_name))
+        {
+            return true;
+        }
+
+        // Also recursively check child nodes
+        for i in 0..condition.child_count() {
+            if let Some(child) = condition.child(i) {
+                if child.kind() == "binary_expression" {
+                    if let Some(operator) = ast_utils::get_binary_operator(&child, source) {
+                        if operator == "==" || operator == "!=" {
+                            let left = child.child_by_field_name("left");
+                            let right = child.child_by_field_name("right");
+
+                            if let (Some(l), Some(r)) = (left, right) {
+                                let left_text = ast_utils::get_node_text(&l, source);
+                                let right_text = ast_utils::get_node_text(&r, source);
+
+                                if (left_text == var_name && right_text == "0")
+                                    || (right_text == var_name && left_text == "0")
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Check if a struct field is validated for non-zero in a constructor/setter
+    /// This provides basic inter-procedural analysis for struct invariants
+    fn is_struct_field_validated(&self, field_expr: &Node, source: &str) -> bool {
+        // Extract the field name from expressions like frac->denominator or obj.field
+        if let Some(field) = field_expr.child_by_field_name("field") {
+            let field_name = ast_utils::get_node_text(&field, source);
+
+            // Look for validation patterns in the source file where this field (or abbreviated name) is checked for zero
+            // For example, parameter "denom" might represent field "denominator"
+            // Also check common abbreviations
+            let mut possible_names = vec![field_name.to_string()];
+
+            // Add common abbreviations (e.g., "denominator" -> "denom", "numerator" -> "num")
+            if field_name.len() > 5 {
+                possible_names.push(field_name[..4].to_string()); // First 4 chars
+                possible_names.push(field_name[..5].to_string()); // First 5 chars
+            }
+
+            // Search for any of these names being checked against zero with error handling
+            let lines: Vec<&str> = source.lines().collect();
+            for possible_name in &possible_names {
+                for (idx, line) in lines.iter().enumerate() {
+                    // Check if this line validates the name for zero
+                    if (line.contains(&format!("{} == 0", possible_name))
+                        || line.contains(&format!("{} != 0", possible_name))
+                        || line.contains(&format!("0 == {}", possible_name)))
+                        && (line.contains("if") || line.contains("IF"))
+                    {
+                        // Look in the next few lines for error handling (return/exit/abort)
+                        for check_idx in idx..std::cmp::min(idx + 10, lines.len()) {
+                            let check_line = lines[check_idx];
+                            if check_line.contains("return false")
+                                || check_line.contains("return NULL")
+                                || check_line.contains("return -1")
+                                || check_line.contains("return 0")
+                                || check_line.contains("exit(")
+                                || check_line.contains("abort(")
+                                || check_line.contains("Error:")
+                                || check_line.contains("printf(\"Error")
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        false
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parse_c_code(source: &str) -> tree_sitter::Tree {
+        let mut parser = tree_sitter::Parser::new();
+        parser
+            .set_language(&tree_sitter_c::language())
+            .expect("Error loading C grammar");
+        parser.parse(source, None).expect("Error parsing C code")
+    }
+
+    #[test]
+    fn test_direct_zero_division() {
+        let code = r#"
+int main() {
+    int x = 10;
+    int result = x / 0;
+    return 0;
+}
+"#;
+        let tree = parse_c_code(code);
+        let rule = Int33C;
+        let violations = rule.check(&tree.root_node(), code);
+        assert!(
+            !violations.is_empty(),
+            "Should detect direct division by zero"
+        );
+    }
+
+    #[test]
+    fn test_unchecked_division() {
+        let code = r#"
+void func(int a, int b) {
+    int result = a / b;
+}
+"#;
+        let tree = parse_c_code(code);
+        let rule = Int33C;
+        let violations = rule.check(&tree.root_node(), code);
+        assert!(!violations.is_empty(), "Should detect unchecked division");
+    }
+
+    #[test]
+    fn test_checked_division() {
+        let code = r#"
+void func(int a, int b) {
+    if (b != 0) {
+        int result = a / b;
+    }
+}
+"#;
+        let tree = parse_c_code(code);
+        let rule = Int33C;
+        let violations = rule.check(&tree.root_node(), code);
+        assert!(violations.is_empty(), "Should not flag checked division");
+    }
+}
