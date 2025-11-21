@@ -152,8 +152,10 @@ impl Dcl39C {
                             if arg.starts_with('&') {
                                 let var_name = arg[1..].trim().to_string();
                                 // Check if this is a known struct variable that wasn't zeroed
-                                if let Some(info) = struct_vars.get(&var_name) {
-                                    if !info.is_zeroed && !zeroed_vars.contains(&var_name) {
+                                if let Some(_info) = struct_vars.get(&var_name) {
+                                    // Only check zeroed_vars (memset calls anywhere in function)
+                                    // Don't check info.is_zeroed (which was set at declaration time)
+                                    if !zeroed_vars.contains(&var_name) {
                                         violations.push(RuleViolation {
                                             rule_id: self.rule_id().to_string(),
                                             message: format!(

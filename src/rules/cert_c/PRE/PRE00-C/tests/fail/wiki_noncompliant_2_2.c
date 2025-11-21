@@ -4,4 +4,10 @@
  * Status: FAIL - Should trigger PRE00-C violation
  */
 
-int a = 81 / ((++i) * (++i) * (++i));
+#define SQUARE(X) ((X) * (X))
+
+void func(void) {
+  int i = 2;
+  // VIOLATION: Function-like macro used instead of inline function
+  int a = SQUARE(++i);
+}
