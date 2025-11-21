@@ -471,32 +471,46 @@ impl NonArrayPointerAnalyzer {
     fn process_declaration(&mut self, node: &Node, source: &str) {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if child.kind() == "init_declarator" {
-                    if let Some(declarator) = child.child_by_field_name("declarator") {
-                        let var_name =
-                            ast_utils::get_identifier_from_declarator(&declarator, source);
+                // Handle both init_declarator (with initialization) and plain declarator (without)
+                let (declarator_node, has_init) = if child.kind() == "init_declarator" {
+                    (child.child_by_field_name("declarator"), true)
+                } else if child.kind() == "array_declarator"
+                    || child.kind() == "pointer_declarator"
+                    || child.kind() == "identifier"
+                {
+                    // Plain declarator without initialization
+                    (Some(child), false)
+                } else {
+                    (None, false)
+                };
 
-                        // Determine if this is an array or pointer declaration
-                        // Only track arrays and pointers - skip non-pointer variables entirely
-                        let var_type = if declarator.kind() == "array_declarator" {
-                            // Check if this is a VLA (variable length array)
-                            // VLAs have non-constant size expressions
-                            Some(VariableType::Array)
-                        } else if declarator.kind() == "pointer_declarator" {
-                            // Check if initialized with array reference
+                if let Some(declarator) = declarator_node {
+                    let var_name = ast_utils::get_identifier_from_declarator(&declarator, source);
+
+                    // Determine if this is an array or pointer declaration
+                    // Only track arrays and pointers - skip non-pointer variables entirely
+                    let var_type = if declarator.kind() == "array_declarator" {
+                        // Arrays (including VLAs) are always tracked as Array type
+                        Some(VariableType::Array)
+                    } else if declarator.kind() == "pointer_declarator" {
+                        // Pointers: check initialization if present
+                        if has_init {
                             if let Some(value) = child.child_by_field_name("value") {
                                 Some(self.analyze_initializer_type(&value, source))
                             } else {
                                 Some(VariableType::Unknown)
                             }
                         } else {
-                            None // Not a pointer or array, skip it
-                        };
+                            // Uninitialized pointer
+                            Some(VariableType::Unknown)
+                        }
+                    } else {
+                        None // Not a pointer or array, skip it
+                    };
 
-                        if !var_name.is_empty() {
-                            if let Some(var_type) = var_type {
-                                self.variable_types.insert(var_name, var_type);
-                            }
+                    if !var_name.is_empty() {
+                        if let Some(var_type) = var_type {
+                            self.variable_types.insert(var_name, var_type);
                         }
                     }
                 }
@@ -553,8 +567,8 @@ impl NonArrayPointerAnalyzer {
                     // Parameter declared as array (e.g., int param[])
                     self.variable_types.insert(param_name, VariableType::Array);
                 } else if self.is_pointer_parameter(&declarator) {
-                    // Parameter is a pointer - treat as NonArray (conservative approach)
-                    // This means we'll flag pointer arithmetic on parameters unless we can prove it's an array
+                    // Parameter is a pointer - treat as NonArray
+                    // This is conservative but avoids false negatives
                     self.variable_types
                         .insert(param_name, VariableType::NonArray);
                 }
@@ -595,9 +609,15 @@ impl NonArrayPointerAnalyzer {
             }
             "subscript_expression" => VariableType::Array,
             "cast_expression" => {
-                // For cast expressions like (unsigned int *)f - treat as NonArray unless proven otherwise
-                // We can't reliably track through casts, so mark as NonArray to be safe
-                VariableType::NonArray
+                // For cast expressions, look at what's being cast
+                // Common pattern: (type *)malloc(...) should be analyzed based on malloc
+                if let Some(value) = node.child_by_field_name("value") {
+                    // Recursively analyze the casted value
+                    self.analyze_initializer_type(&value, source)
+                } else {
+                    // Can't determine what's being cast
+                    VariableType::Unknown
+                }
             }
             "call_expression" => {
                 // Check for malloc/calloc/realloc patterns
