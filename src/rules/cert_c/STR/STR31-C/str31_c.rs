@@ -462,29 +462,47 @@ impl Str31C {
         // If we have destination name, try to find its size
         if let Some(dest) = dest_name {
             if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
-                // If buffer is reasonably sized, consider it safe for typical sprintf usage
-                // sprintf_safe.c uses buffer[50] which should be safe
-                if buffer_size >= 50 {
-                    // Additional check: if the format string is simple and buffer is large enough
-                    if let Some(fmt) = format_string {
-                        // Count literal characters and format specifiers
-                        let fmt_clean = fmt.trim_matches('"');
-                        let literal_chars = fmt_clean.len() - fmt_clean.matches('%').count() * 2; // rough estimate
+                // Check the format string for unbounded format specifiers
+                if let Some(fmt) = format_string {
+                    let fmt_clean = fmt.trim_matches('"');
 
-                        // For simple formats with %d and short literal text, 50 chars should be plenty
-                        if literal_chars < 30
-                            && (fmt_clean.contains("%d") || fmt_clean.contains("%s"))
-                        {
+                    // If format contains %s (unbounded string), be careful
+                    if fmt_clean.contains("%s") {
+                        // For very small buffers, definitely unsafe
+                        if buffer_size < 50 {
+                            return false;
+                        }
+                        // For buffers 50-255, be conservative
+                        if buffer_size >= 50 && buffer_size < 256 {
+                            // Single %s with short format might be ok
+                            let s_count = fmt_clean.matches("%s").count();
+                            let literal_chars =
+                                fmt_clean.len() - fmt_clean.matches('%').count() * 2;
+                            if s_count == 1 && literal_chars < 20 {
+                                return true; // Allow single %s with short format
+                            }
+                            return false;
+                        }
+                        // Very large buffers suggest programmer accounted for expansion
+                        if buffer_size >= 256 {
                             return true;
                         }
                     }
-                    return true; // Conservative: buffers >= 50 are generally safe for typical sprintf
+
+                    // For formats with only fixed-size specifiers (%d, %c, etc.)
+                    let literal_chars = fmt_clean.len() - fmt_clean.matches('%').count() * 2;
+                    let estimated_size = literal_chars
+                        + (fmt_clean.matches("%d").count() * 11)
+                        + (fmt_clean.matches("%c").count() * 1)
+                        + 1; // null terminator
+
+                    if buffer_size >= estimated_size {
+                        return true;
+                    }
                 }
 
-                // Very large buffers are always safe
-                if buffer_size >= 256 {
-                    return true;
-                }
+                // If no format string found or couldn't analyze, be conservative
+                return false;
             }
         }
 
