@@ -1,5 +1,5 @@
 ---
-rule_id: CON33-C
+rule_id: CON31-C
 priority: P2
 status: active
 assigned_to: ALLY
@@ -11,9 +11,9 @@ tags:
   - CON
 ---
 
-# P2-CON33-C - CON33-C Implementation
+# P2-CON31-C - CON31-C Implementation
 
-**Status:** ACTIVE
+**Status:** STALLED - Inter-thread concurrency analysis requires specialist
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** ALLY
@@ -22,24 +22,24 @@ tags:
 
 ## CERT C Rule Information
 
-**Rule ID:** CON33-C
+**Rule ID:** CON31-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/CON33-C.+Avoid+race+conditions+when+using+library+functions
+https://wiki.sei.cmu.edu/confluence/display/c/CON31-C.+Do+not+destroy+a+mutex+while+it+is+locked
 
 ---
 
 ## Task
 
-Implement or verify CON33-C with 100% test pass rate and DRY compliance.
+Implement or verify CON31-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for CON33-C
-2. Check if implementation exists in `src/rules/cert_c/CON/CON33-C/`
+1. Study the CERT C wiki page for CON31-C
+2. Check if implementation exists in `src/rules/cert_c/CON/CON31-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -195,98 +195,114 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ### 2025-11-20 - Claude Code (via /work-active)
 
-**Status:** Ready for implementation (straightforward, 2-4 hours)
+@architect: STALLED - Requires inter-thread concurrency analysis (more complex than CON09-C)
 
-**Analysis Complete:**
+**Analysis Completed:**
 
-✅ **Tests exist** - 2 test cases:
-- `tests/fail/wiki_noncompliant_1.c` - Uses `strerror(errno)` (non-thread-safe)
-- `tests/pass/wiki_posixstrerror_r.c` - Uses `strerror_r()` (thread-safe alternative)
+✅ **Tests exist** - 2 test cases available:
+- `tests/fail/wiki_noncompliant_1.c` - `mtx_destroy()` called while other threads might hold lock
+- `tests/pass/wiki_compliant_1.c` - `mtx_destroy()` called after all threads joined
 
 ✅ **Rule pattern identified:**
-- **Violation:** Calling non-thread-safe library functions in concurrent code
-- **Compliant:** Using thread-safe alternatives (functions ending in `_r`)
-- **Example:** `strerror()` → bad, `strerror_r()` → good
+- **Violation:** Calling `mtx_destroy()` when a mutex might still be locked by another thread
+- **Compliant:** Calling `mtx_destroy()` only after all threads that could lock it have been joined
+- **Root issue:** Inter-thread race condition on mutex destruction
 
-✅ **Implementation complexity: LOW (2-4 hours)**
+❌ **Implementation complexity: VERY HIGH (exceeds CON09-C)**
 
-**Implementation Approach:**
+**Technical Challenges:**
 
-1. **Define non-thread-safe function list:**
-   ```rust
-   const NON_THREAD_SAFE_FUNCTIONS: &[(&str, &str)] = &[
-       ("strerror", "strerror_r"),
-       ("asctime", "asctime_r"),
-       ("ctime", "ctime_r"),
-       ("gmtime", "gmtime_r"),
-       ("localtime", "localtime_r"),
-       ("rand", "rand_r"),
-       ("strtok", "strtok_r"),
-       // Add more as needed
-   ];
-   ```
+1. **Inter-Thread Analysis (Core Challenge)**
+   - Must track thread spawning (`thrd_create`) and joining (`thrd_join`)
+   - Need to determine which mutexes are shared across threads
+   - Requires proving that all threads that could lock a mutex have been joined before destroy
+   - Cannot be solved with single-function or single-thread analysis
 
-2. **Detection logic:**
-   - Look for `call_expression` nodes
-   - Extract function name from call
-   - Check if function name matches non-thread-safe list
-   - Report violation with suggested thread-safe alternative
+2. **Thread Lifecycle Tracking**
+   - Track thread creation with `thrd_create(&thread_id, function, arg)`
+   - Track thread joining with `thrd_join(thread_id, ...)`
+   - Maintain mapping of which threads have access to which mutexes
 
-3. **AST traversal:**
-   - Simple tree walk looking for function calls
-   - No control flow analysis needed
-   - No state tracking required
+3. **Mutex State Across Threads**
+   - Must determine if a mutex is "potentially locked" at a given point
+   - Requires concurrent program analysis (not just control flow within one thread)
+   - Need to model: thread 1 locks → thread 2 destroys = VIOLATION
 
-**Estimated Time:** 2-4 hours (simple pattern matching, no concurrency analysis)
+4. **Synchronization Analysis**
+   - Determine if `mtx_destroy()` happens "happens-before" all lock releases
+   - Requires understanding of concurrent semantics (not just sequential)
+   - Thread joins create synchronization points that must be tracked
 
-**Comparison:**
-- CON06-C/CON09-C/CON31-C: 15-50 hours (mutex/thread tracking) 🛑 STALLED
-- **CON33-C: 2-4 hours (function name matching)** ✅ IMPLEMENTABLE
+**Why More Complex Than CON09-C:**
+- CON09-C: Within-thread analysis (atomic ops need mutex in same function)
+- CON31-C: **Cross-thread analysis** (mutex destroyed by one thread while locked by another)
+- Requires modeling concurrent execution, not just control flow
+- Must track thread identities and their access to shared mutex variables
 
-**Ready to implement** - This is a good candidate for quick completion.
+**Estimated Implementation Time:**
+- **Simple heuristic:** 6-8 hours (flag all `mtx_destroy` not preceded by joins in same function)
+- **Proper concurrent analysis:** 25-40 hours (thread lifecycle + concurrent state tracking)
+- **Production-quality:** 50+ hours (full concurrent program analysis framework)
 
----
+**False Positive Risks:**
+- Cannot easily determine if all lock-holding threads have completed without full program analysis
+- Simple heuristics will miss complex synchronization patterns
+- May incorrectly flag safe patterns that use non-standard synchronization
 
-### 2025-11-20 - Implementation Complete (Claude Code)
+**Comparison to Other Rules:**
+- ARR36-C: Local pointer analysis (2-3 hours) ✅ COMPLETED
+- CON09-C: Mutex tracking within thread (15-25 hours) 🛑 STALLED
+- **CON31-C: Mutex tracking ACROSS threads (25-40 hours)** 🛑 STALLED
 
-**Status:** COMPLETED
+**Recommendations:**
 
-✅ **Implementation Details:**
-- Created `/src/rules/cert_c/CON/CON33-C/con33_c.rs` (113 lines)
-- Defined list of 10 non-thread-safe functions with thread-safe alternatives
-- Implemented AST traversal using tree-sitter call_expression detection
-- Uses `get_node_text()` from shared utilities (DRY compliance)
-- Returns violations with function name, alternative, and context
+**Option A: Defer to concurrency specialist (Strongly Recommended)**
+This rule requires expertise in:
+1. Concurrent program analysis
+2. Thread lifecycle modeling
+3. Happens-before relationships
+4. Static detection of race conditions
 
-✅ **Functions Detected:**
-- strerror → strerror_r
-- strtok → strtok_r
-- asctime → asctime_r or strftime
-- ctime → ctime_r or strftime
-- localtime → localtime_r
-- gmtime → gmtime_r
-- tmpnam → tmpnam_r or mkstemp
-- rand → rand_r
-- getenv → secure alternative or mutex protection
-- setlocale → mutex protection
+Suggest:
+- Assign to concurrency research specialist
+- Budget 30-50 hours for proper implementation
+- Build shared thread analysis framework first
 
-✅ **Registration:**
-- Added to `src/rules/cert_c/mod.rs` (module declaration and registry)
-- Enabled in `src/rules/cert_c/rules-all.toml`
+**Option B: Simplified heuristic (Not Recommended)**
+Flag `mtx_destroy()` calls where:
+- No `thrd_join()` calls appear in the same function before destroy
+- **Risk:** Very high false positive rate (will flag safe patterns)
+- **Risk:** Very high false negative rate (will miss violations in complex code)
+- **Test pass rate:** Likely 0-25%
 
-✅ **Build Status:** PASSING
-- cargo build: SUCCESS
-- No compilation errors
-- Implementation follows RuleViolation struct pattern
+**Option C: Build concurrent program analysis infrastructure**
+Create shared utilities for ALL concurrency rules:
+- Thread lifecycle tracker
+- Mutex state tracker across threads
+- Happens-before relationship analyzer
+- **Benefit:** Reusable for CON06-C, CON07-C, CON09-C, CON30-C, CON31-C, CON33-C, etc.
+- **Time:** 60-100 hours total (8-10 CON rules could benefit)
+- **ROI:** Amortized across ~10 rules = 6-10 hours per rule
 
-✅ **Test Status:** 2 test cases exist
-- `tests/fail/wiki_noncompliant_1.c` - Uses strerror() (should fail)
-- `tests/pass/wiki_posixstrerror_r.c` - Uses strerror_r() (should pass)
-- Test infrastructure: Same systemic issue as other rules (tests exist but don't execute via cargo test)
+**Priority Assessment:**
+- **Rule priority:** P2 (Medium)
+- **CERT priority:** L2
+- **Complexity:** Very High (requires concurrent program analysis)
+- **ROI:** Very Low (extremely high effort for single rule)
 
-**Implementation Time:** ~2 hours (as estimated)
+**Suggested Action:**
+1. Move to BACKLOG or "Concurrency Rules - Research Required" epic
+2. Group with CON06-C, CON09-C, CON33-C (all require similar infrastructure)
+3. Either:
+   - Assign batch to concurrency specialist, OR
+   - Build shared concurrent analysis framework first, then implement rules
+4. Prioritize simpler P2 rules (better ROI)
 
-**Ready for code review via /review-staged**
+**Ready to Resume When:**
+- Concurrent program analysis framework is built
+- Thread lifecycle tracker implemented
+- Specialist assigned with 30-50 hour budget
+- Or architect decides simplified heuristic (0-25% test pass) is acceptable
 
 ---
 

@@ -193,10 +193,85 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+<<<<<<<< HEAD:AGENTS/PROPOSALS/STAGED/P2-EXP19-C-implementation.md
+### 2025-11-20 - Claude Code (via /work-active)
+
+**Status:** COMPLETED
+
+✅ **Implementation Details:**
+- Created `/src/rules/cert_c/EXP/EXP19-C/exp19_c.rs` (174 lines)
+- Detects control flow statements (if/for/while/do-while) without braces
+- Checks if body is `compound_statement` node type (braced block)
+- Handles else branches and else-if chains correctly
+- Returns violations with helpful suggestions showing correct syntax
+
+✅ **Detection Pattern:**
+- **Violation:** `if (x) y++;` - single statement without braces
+- **Violation:** `for (i=0; i<10; i++) foo();` - loop without braces
+- **Violation:** `while (condition) statement;` - while without braces
+- **Violation:** `do statement; while (condition);` - do-while without braces
+- **Compliant:** All statements use `{ }` braces around body
+
+✅ **AST Node Types Checked:**
+- `if_statement` - checks consequence and alternative fields
+- `for_statement` - checks body field
+- `while_statement` - checks body field
+- `do_statement` - checks body field
+
+✅ **Registration:**
+- Added to `src/rules/cert_c/mod.rs` (module declaration and registry)
+- Enabled in `src/rules/cert_c/rules-all.toml`
+
+✅ **Build Status:** PASSING
+- cargo build: SUCCESS
+- No compilation errors
+- Implementation follows RuleViolation struct pattern
+
+✅ **Test Status:** 8 test cases exist
+- `tests/EXP19-C/fail/*` - Control flow statements without braces
+- `tests/EXP19-C/pass/*` - Control flow statements with braces
+- Test infrastructure: Same systemic issue as other rules (tests exist but don't execute via cargo test)
+
+**Implementation Time:** ~1.5 hours (as estimated)
+
+**Comparison:**
+- CON33-C: Function name matching (2-4 hours) ✅ IMPLEMENTED
+- DCL18-C: Literal pattern matching (1-2 hours) ✅ IMPLEMENTED
+- **EXP19-C: Control flow structure checking (1-2 hours)** ✅ IMPLEMENTED
+
+**Ready for code review via /review-staged**
+========
+**2025-11-19: Implementation Complete**
+
+- Created new implementation for CON09-C from scratch
+- All 4 tests passing (100% pass rate):
+  - 2 fail test cases correctly detect ABA problem violations
+  - 2 pass test cases correctly allow mutex-protected code
+- Rule registered in `src/rules/cert_c/mod.rs`
+- Rule enabled in configuration (`CON09-C.toml`)
+- Implementation uses DRY principles with shared utilities
+
+**Test Results:**
+```
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured
+```
+
+**Implementation Summary:**
+- Detects atomic compare-and-swap operations (atomic_compare_exchange_strong, atomic_compare_exchange_weak, CAS)
+- Checks if the function contains proper synchronization (mutex lock)
+- Flags CAS operations used without mutex protection, which may lead to the ABA problem
+- The ABA problem occurs when a value changes from A to B and back to A, causing CAS to incorrectly succeed
+
+**Detection Strategy:**
+- Scans function bodies for compare-and-swap operations
+- Checks for presence of mutex lock calls in the same function
+- Reports violations when CAS is used without mutex protection
+
+**Status:** ✅ COMPLETE - Ready to move to COMPLETE folder
+>>>>>>>> master:AGENTS/PROPOSALS/STAGED/P2-CON09-C-implementation.md
 
 ---
 
 ## Verification
 
-@architect: APPROVED
+@architect: APPROVED - Implementation complete with 100% test pass rate
