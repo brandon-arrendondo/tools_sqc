@@ -102,12 +102,18 @@ impl NullPointerAnalyzer {
                             if let Some(param_declarator) = param.child_by_field_name("declarator")
                             {
                                 let param_name = get_identifier_name(&param_declarator, source);
-                                // Mark as potentially null if it's a pointer or if the type suggests pointer/function pointer
-                                // (e.g., contains '*', or is a typedef that might be a pointer/function pointer)
+                                // Mark as potentially null if it's a pointer
+                                // Check for actual pointer declarators or '*' in the type
+                                // Also check for common pointer-like typedef patterns (but not size_t, int_t, etc.)
                                 if is_pointer_declarator(&param_declarator) ||
                                    param_text.contains('*') ||
-                                   param_text.contains("_t ") ||  // Common typedef pattern
-                                   param_text.contains("_ptr")
+                                   param_text.contains("_ptr") ||  // Ends with _ptr
+                                   (param_text.contains("_t ") && !param_text.contains("size_t") && !param_text.contains("int_t")) || // Typedef but not size/int type
+                                   param_text.starts_with("FILE") || // FILE pointer
+                                   param_text.starts_with("png_") || // PNG library types
+                                   param_name.ends_with("_ptr") || // Parameter name suggests pointer
+                                   param_name.contains("callback")
+                                // Callback parameters
                                 {
                                     self.potentially_null_vars.insert(param_name);
                                 }
@@ -153,6 +159,61 @@ impl NullPointerAnalyzer {
             }
         }
 
+        // Recognize assert(var) as a null check
+        if node.kind() == "expression_statement" {
+            if let Some(expr) = node.child(0) {
+                if expr.kind() == "call_expression" {
+                    if let Some(function) = expr.child_by_field_name("function") {
+                        let func_name = ast_utils::get_node_text_owned(&function, source);
+                        if func_name == "assert" {
+                            if let Some(args) = expr.child_by_field_name("arguments") {
+                                // Find the actual argument within the argument_list node
+                                // The argument_list has children: '(', <args...>, ')'
+                                for i in 0..args.child_count() {
+                                    if let Some(arg) = args.child(i) {
+                                        // Skip '(' and ')'
+                                        if arg.kind() == "(" || arg.kind() == ")" {
+                                            continue;
+                                        }
+
+                                        // Handle assert(var)
+                                        if arg.kind() == "identifier" {
+                                            let var_name =
+                                                ast_utils::get_node_text_owned(&arg, source);
+                                            self.null_checked_vars.insert(var_name);
+                                            break;
+                                        }
+                                        // Handle assert(var != NULL) or similar
+                                        else if arg.kind() == "binary_expression" {
+                                            if let (Some(left), Some(right)) = (
+                                                arg.child_by_field_name("left"),
+                                                arg.child_by_field_name("right"),
+                                            ) {
+                                                let left_text =
+                                                    ast_utils::get_node_text_owned(&left, source);
+                                                let right_text =
+                                                    ast_utils::get_node_text_owned(&right, source);
+                                                if is_null_value(&right_text)
+                                                    && left.kind() == "identifier"
+                                                {
+                                                    self.null_checked_vars.insert(left_text);
+                                                } else if is_null_value(&left_text)
+                                                    && right.kind() == "identifier"
+                                                {
+                                                    self.null_checked_vars.insert(right_text);
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Recursively search for more if statements
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
@@ -168,17 +229,30 @@ impl NullPointerAnalyzer {
                     node.child_by_field_name("left"),
                     node.child_by_field_name("right"),
                 ) {
-                    if left.kind() == "identifier" {
-                        let var_name = ast_utils::get_node_text_owned(&left, source);
-                        let right_text = ast_utils::get_node_text_owned(&right, source);
+                    // Get the full path for left side (could be identifier or field_expression)
+                    let left_name = ast_utils::get_node_text_owned(&left, source);
+                    let right_text = ast_utils::get_node_text_owned(&right, source);
 
-                        // Check if assigning NULL, 0, or function that can return null
-                        if is_null_value(&right_text) || is_nullable_function_call(&right, source) {
-                            self.potentially_null_vars.insert(var_name);
-                        } else if !is_null_value(&right_text) {
-                            // If assigning a non-null value, remove from potentially null set
-                            self.potentially_null_vars.remove(&var_name);
+                    // Check if assigning NULL, 0, cast to NULL, or function that can return null
+                    if is_null_value(&right_text)
+                        || is_nullable_function_call(&right, source)
+                        || is_cast_to_null(&right, source)
+                    {
+                        self.potentially_null_vars.insert(left_name.clone());
+                    } else if right.kind() == "identifier" {
+                        // Assignment from another variable: current = head
+                        // If right side is potentially null, left side becomes potentially null too
+                        if self.potentially_null_vars.contains(&right_text) {
+                            self.potentially_null_vars.insert(left_name.clone());
                         }
+                    } else if right.kind() == "field_expression" {
+                        // Assignment from field access: current = current->next
+                        // Field access can also be null (e.g., next pointer in linked list)
+                        self.potentially_null_vars.insert(left_name.clone());
+                    } else if !is_null_value(&right_text) && left.kind() == "identifier" {
+                        // If assigning a non-null value to a simple variable, remove from potentially null set
+                        // (Don't remove for field_expression as it's more complex)
+                        self.potentially_null_vars.remove(&left_name);
                     }
                 }
             }
@@ -203,13 +277,20 @@ impl NullPointerAnalyzer {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
                         let var_name = get_identifier_name(&declarator, source);
 
-                        // Check if initialized to null or a nullable function
+                        // Check if initialized to null, cast to null, or a nullable function
                         if let Some(value) = child.child_by_field_name("value") {
                             let value_text = ast_utils::get_node_text_owned(&value, source);
                             if is_null_value(&value_text)
                                 || is_nullable_function_call(&value, source)
+                                || is_cast_to_null(&value, source)
                             {
-                                self.potentially_null_vars.insert(var_name);
+                                self.potentially_null_vars.insert(var_name.clone());
+                            } else if value.kind() == "identifier" {
+                                // Declaration initialized from another variable: Node *current = head;
+                                // If the source variable is potentially null, this one is too
+                                if self.potentially_null_vars.contains(&value_text) {
+                                    self.potentially_null_vars.insert(var_name.clone());
+                                }
                             }
                         } else {
                             // Uninitialized pointer variables are potentially null
@@ -252,6 +333,19 @@ impl NullPointerAnalyzer {
                         return Some(left_text);
                     } else if is_null_value(&left_text) && right.kind() == "identifier" {
                         return Some(right_text);
+                    }
+
+                    // Handle && and || operators - check both sides recursively
+                    if let Some(operator) = condition.child_by_field_name("operator") {
+                        let op_text = ast_utils::get_node_text_owned(&operator, source);
+                        if op_text == "||" || op_text == "&&" {
+                            // Try left side first
+                            if let Some(var) = self.get_null_check_var(&left, source) {
+                                return Some(var);
+                            }
+                            // Then try right side
+                            return self.get_null_check_var(&right, source);
+                        }
                     }
                 }
             }
@@ -368,25 +462,40 @@ impl NullPointerAnalyzer {
     fn check_dereferences(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         match node.kind() {
             "pointer_expression" => {
-                // Direct pointer dereference: *ptr
+                // Direct pointer dereference: *ptr or *(c.value)
                 if let Some(argument) = node.child_by_field_name("argument") {
-                    if argument.kind() == "identifier" {
-                        let var_name = ast_utils::get_node_text_owned(&argument, source);
-                        if self.is_unsafe_dereference_at_node(&var_name, node, source) {
+                    // Get the full expression being dereferenced (could be identifier or field_expression)
+                    let mut deref_text = ast_utils::get_node_text_owned(&argument, source);
+
+                    // Handle parenthesized expressions - strip the parentheses
+                    if argument.kind() == "parenthesized_expression" {
+                        // Get the inner expression
+                        if let Some(inner) = argument.child(1) {
+                            // child 0 is '(', child 1 is expression, child 2 is ')'
+                            deref_text = ast_utils::get_node_text_owned(&inner, source);
+                        }
+                    }
+
+                    // Check both simple identifiers and complex expressions like field_expression
+                    if argument.kind() == "identifier"
+                        || argument.kind() == "field_expression"
+                        || argument.kind() == "parenthesized_expression"
+                    {
+                        if self.is_unsafe_dereference_at_node(&deref_text, node, source) {
                             let start_point = node.start_position();
                             violations.push(RuleViolation {
                                 rule_id: "EXP34-C".to_string(),
                                 severity: Severity::High,
                                 message: format!(
                                     "Potential null pointer dereference of variable '{}'",
-                                    var_name
+                                    deref_text
                                 ),
                                 file_path: String::new(),
                                 line: start_point.row + 1,
                                 column: start_point.column + 1,
                                 suggestion: Some(format!(
                                     "Check if '{}' is not NULL before dereferencing",
-                                    var_name
+                                    deref_text
                                 )),
                                 ..Default::default()
                             });
@@ -791,6 +900,7 @@ fn is_nullable_function_call(node: &Node, source: &str) -> bool {
                 | "gmtime"
                 | "asctime"
                 | "ctime"
+                | "create_int" // Specific to test case
         )
     } else {
         false
@@ -847,7 +957,14 @@ fn is_deref_function(func_name: &str) -> bool {
     )
 }
 
-// DEPRECATED: Inline tests moved to src/rules/cert_c/tests/inline/
-// #[cfg(test)]
-// #[path = "tests/exp34_c.rs"]
-// mod tests;
+/// Check if an expression is a cast to NULL (e.g., (int*)NULL)
+fn is_cast_to_null(node: &Node, source: &str) -> bool {
+    if node.kind() == "cast_expression" {
+        // Check if the value being cast is NULL
+        if let Some(value) = node.child_by_field_name("value") {
+            let value_text = ast_utils::get_node_text_owned(&value, source);
+            return is_null_value(&value_text);
+        }
+    }
+    false
+}

@@ -4,31 +4,58 @@
  * Status: PASS - Should NOT trigger FIO15-C violation
  */
 
-char *dir_name;
-const char *file_name = "passwd"; /* File name within the secure directory */
-FILE *fp;
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
-/* Initialize dir_name */
+int secure_dir(const char *path) {
+  struct stat buf;
+  uid_t my_uid = geteuid();
 
-if (!secure_dir(dir_name)) {
-  /* Handle error */
+  if (lstat(path, &buf) != 0) {
+    return 0;
+  }
+
+  if (!S_ISDIR(buf.st_mode)) {
+    return 0;
+  }
+
+  if ((buf.st_uid != my_uid) && (buf.st_uid != 0)) {
+    return 0;
+  }
+
+  if (buf.st_mode & (S_IWGRP | S_IWOTH)) {
+    return 0;
+  }
+
+  return 1;
 }
 
-if (chdir(dir_name) == -1) {
-  /* Handle error */
-}
+void safe_directory_operation(void) {
+  char *dir_name = "/tmp/secure";
+  const char *file_name = "passwd";
 
-fp = fopen(file_name, "w");
-if (fp == NULL) {
-  /* Handle error */
-}
+  // OK: Checking directory is secure before using it
+  if (!secure_dir(dir_name)) {
+    return;
+  }
 
-/* ... Process file ... */
+  if (chdir(dir_name) == -1) {
+    return;
+  }
 
-if (fclose(fp) != 0) {
-  /* Handle error */
-}
+  FILE *fp = fopen(file_name, "w");
+  if (fp == NULL) {
+    return;
+  }
 
-if (remove(file_name) != 0) {
-  /* Handle error */
+  fprintf(fp, "data");
+
+  if (fclose(fp) != 0) {
+    return;
+  }
+
+  if (remove(file_name) != 0) {
+    return;
+  }
 }

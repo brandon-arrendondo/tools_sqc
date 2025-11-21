@@ -1,27 +1,117 @@
-## Review Staged Proposals (Interactive Code Review)
+## Review Staged Proposals (Master Opinion & Final Decisions)
 
-You are now in **ADVERSARIAL CODE REVIEW MODE**. Your mission is to work with the architect in a paired-programming style session to review proposals in `AGENTS/PROPOSALS/STAGED/`, looking for issues, bugs, and improvements.
+You are now in **MASTER REVIEW MODE**. Your mission is to synthesize gathered opinions from team reviewers and work with the architect to make final decisions on proposal disposition.
 
-### Overview: Paired Code Review
+### Overview: Two-Phase Review System
 
-This is a **highly interactive session** with the architect. Think of it as:
-- Architect = Pilot (makes decisions)
-- Claude = Co-pilot (spots issues, suggests improvements, asks questions)
+**Phase 1: `/gather-opinions` (PREREQUISITE)**
+- Multiple team members independently review all STAGED proposals
+- Each adopts a persona (Security Auditor, Performance Engineer, etc.)
+- Opinions recorded in proposal frontmatter
+- Distributed, autonomous, parallel execution
+
+**Phase 2: `/review-staged` (THIS COMMAND)**
+- ONE architect runs this after Phase 1 completes
+- Synthesizes all gathered opinions
+- Makes final decisions (COMPLETE, ACTIVE, STALLED)
+- Interactive session with architect
 
 **Your role:**
-- Point out potential problems
-- Ask clarifying questions
-- Test edge cases
-- Challenge assumptions
-- Verify completeness
-- **Be adversarial but constructive**
+- Present opinion summaries for each proposal
+- Identify consensus and disagreements
+- Verify critical issues flagged by reviewers
+- Ask architect for final decision
+- Execute decision (move proposal)
 
 **Architect's role:**
-- Decide whether issues are blockers or acceptable
-- Approve final state (COMPLETE) or request changes (back to ACTIVE)
-- Provide context you might be missing
+- Weigh gathered opinions
+- Make final calls on disagreements
+- Approve COMPLETE or request changes (ACTIVE/STALLED)
+- Provide tiebreaking decisions
 
-### Step 1: Scan for Staged Proposals
+---
+
+### Step 0: Verify Prerequisites
+
+**Check that Phase 1 is complete:**
+
+```bash
+# Analyze review coverage
+scripts/review_helpers.sh analyze-coverage
+```
+
+**Expected output:**
+```
+=== Review Coverage Analysis ===
+Total proposals in STAGED: 93
+
+Coverage:
+  3+ reviewers: 45 proposals (good coverage)
+  2 reviewers: 30 proposals (minimal coverage)
+  1 reviewer: 15 proposals (needs more opinions)
+  0 reviewers: 3 proposals (NOT REVIEWED)
+```
+
+**If coverage is insufficient:**
+- ⚠️  Proposals with 0-1 reviewers should get more opinions before final review
+- ✅ Proposals with 2+ reviewers are ready for master review
+- Ask architect: "Proceed with proposals that have 2+ reviewers? Or wait for more coverage?"
+
+**Analyze gathered opinions:**
+
+```bash
+# Opinion distribution and consensus analysis
+scripts/review_helpers.sh analyze-opinions
+```
+
+**Expected output:**
+```
+=== Opinion Analysis ===
+Total proposals: 93
+Total opinions: 245
+
+Opinion Distribution:
+  ✅ LOOKS_GOOD: 160 opinions (65%)
+  ⚠️  NEEDS_REVIEW: 65 opinions (27%)
+  🛑 BLOCKED: 20 opinions (8%)
+
+Consensus (among proposals with 2+ reviews):
+  Strong agreement (all same): 38 proposals
+  Weak agreement (majority): 35 proposals
+  Disagreement: 20 proposals (needs architect decision)
+```
+
+---
+
+### Step 1: Prioritize Review Queue
+
+**Ask architect which category to process first:**
+
+1. **🛑 BLOCKED Proposals** (Critical issues flagged)
+   ```bash
+   scripts/review_helpers.sh list-by-consensus blocked
+   ```
+
+2. **❓ Disagreements** (Split opinions, needs tiebreaker)
+   ```bash
+   scripts/review_helpers.sh list-by-consensus none
+   ```
+
+3. **⚠️  Weak Consensus** (Majority opinion, but dissent)
+   ```bash
+   scripts/review_helpers.sh list-by-consensus weak
+   ```
+
+4. **✅ Strong Consensus** (All reviewers agree, quick verification)
+   ```bash
+   scripts/review_helpers.sh list-by-consensus strong
+   ```
+
+**Recommendation:** Start with BLOCKED, then Disagreements, then Weak, then Strong.
+
+---
+
+### Step 1.5: Scan for Staged Proposals (Legacy)
 
 Check what's ready for review:
 
@@ -34,16 +124,183 @@ If no proposals are staged:
 - Suggest running `/work-active` if there are ACTIVE proposals
 - Wait for architect's instructions
 
-### Step 2: Select Proposal to Review
+### Step 2: Review Each Proposal (with Gathered Opinions)
 
-Ask architect which proposal to review, or pick the oldest:
+For each proposal in the selected category, follow this flow:
+
+#### A. Present Opinion Summary
+
+**Read proposal and extract opinions:**
 
 ```bash
-# Example
-cat AGENTS/PROPOSALS/STAGED/P0-001-eliminate-compiler-warnings.md
+cat AGENTS/PROPOSALS/STAGED/P1-FIO37-C-implementation.md
 ```
 
-### Step 3: Understand the Original Proposal
+**Present opinions to architect:**
+
+```
+Proposal: P1-FIO37-C-implementation.md
+Rule: FIO37-C - Do not assume that fgets() or fgetws() returns a nonempty string
+Priority: P1
+Category: FIO
+
+=== Gathered Opinions (3 reviewers) ===
+
+1. alice-smith (Security Auditor) - 2025-11-19
+   Opinion: ⚠️  NEEDS_REVIEW
+   Comment: "Line 142: unwrap() on user input creates panic vector.
+            Use proper error handling with ? operator."
+
+2. bob-jones (Performance Engineer) - 2025-11-19
+   Opinion: ✅ LOOKS_GOOD
+   Comment: "O(n) complexity appropriate. No unnecessary allocations.
+            Clean implementation."
+
+3. carol-davis (Test Quality Reviewer) - 2025-11-19
+   Opinion: ✅ LOOKS_GOOD
+   Comment: "Test coverage comprehensive. All edge cases covered.
+            Tests use appropriate assertions."
+
+Consensus: WEAK_AGREEMENT (2/3 LOOKS_GOOD)
+Flagged Issues:
+  - Security concern: unwrap() on line 142 (alice-smith)
+
+Commit: abc1234 (referenced in Implementation Log)
+```
+
+#### B. Quick Verification
+
+**Verify critical flagged issues:**
+
+```bash
+# If security issue flagged, check the code
+git show abc1234 -- src/rules/cert_c/FIO/FIO37-C/fio37_c.rs | grep -A5 -B5 "unwrap()"
+```
+
+**Run acceptance criteria checks (if automated):**
+
+```bash
+cargo test --package sqc --lib -- rules::cert_c::fio::fio37_c::tests
+```
+
+#### C. Interactive Decision
+
+**Ask architect:**
+
+```
+Based on gathered opinions:
+- 2/3 reviewers say LOOKS_GOOD
+- 1 security concern about unwrap() on line 142
+- Tests pass, coverage good
+- Performance acceptable
+
+Options:
+1. ACCEPT → Move to COMPLETE (acceptable risk, or false positive)
+2. REQUEST_CHANGES → Move to ACTIVE (unwrap() needs fixing)
+3. STALL → Move to STALLED (need more context/decision)
+4. SKIP → Review later (defer decision)
+5. ASK_REVIEWER → Ping alice-smith for clarification on unwrap()
+
+Your decision? [1-5]:
+```
+
+#### D. Execute Decision
+
+Based on architect's choice:
+
+**Option 1: ACCEPT → COMPLETE**
+```bash
+scripts/review_helpers.sh move-to-complete P1-FIO37-C-implementation.md
+
+git commit -m "Review: P1-FIO37-C moved to COMPLETE
+
+Master decision: ACCEPT with known risk
+Consensus: 2/3 LOOKS_GOOD (Security, Performance, Tests)
+Rationale: unwrap() reviewed, false positive (internal state, not user input)
+Verification: Tests pass, no regression"
+```
+
+**Option 2: REQUEST_CHANGES → ACTIVE**
+```bash
+scripts/review_helpers.sh move-to-active P1-FIO37-C-implementation.md
+
+# Update proposal with issues found
+echo "
+
+## Review Feedback (Master Review 2025-11-19)
+
+**Decision:** REQUEST_CHANGES
+
+**Issues to address:**
+1. Security: Line 142 unwrap() needs error handling (flagged by alice-smith)
+   - Use ? operator or proper match statement
+   - Add test for error case
+
+**Reviewers:**
+- alice-smith (Security Auditor): NEEDS_REVIEW
+- bob-jones (Performance Engineer): LOOKS_GOOD
+- carol-davis (Test Quality Reviewer): LOOKS_GOOD
+" >> AGENTS/PROPOSALS/ACTIVE/P1-FIO37-C-implementation.md
+
+git commit -m "Review: P1-FIO37-C moved back to ACTIVE
+
+Issues found: unwrap() on line 142 needs error handling
+Action: Assign back to implementer for fixes
+Reviewers: 2/3 approve, 1 security concern"
+```
+
+**Option 3: STALL → STALLED**
+```bash
+scripts/review_helpers.sh move-to-stalled P1-FIO37-C-implementation.md
+
+git commit -m "Review: P1-FIO37-C moved to STALLED
+
+Needs architect decision on unwrap() usage
+Context needed: Is line 142 internal state or user input?
+Blocked pending clarification"
+```
+
+---
+
+### Step 3: Batch Processing (Optional)
+
+**For proposals with strong consensus + no flags:**
+
+If you have many proposals with unanimous LOOKS_GOOD and no critical issues:
+
+```bash
+# List strong consensus proposals
+scripts/review_helpers.sh list-by-consensus strong | grep "all LOOKS_GOOD"
+```
+
+**Ask architect:**
+```
+Found 38 proposals with:
+  - 3+ reviewers, all LOOKS_GOOD
+  - High confidence across all personas
+  - No critical flags
+  - Automated verification passed
+
+Batch accept these? [y/N]
+```
+
+**If yes, batch process:**
+```bash
+for proposal in $(scripts/review_helpers.sh list-by-consensus strong | grep "all LOOKS_GOOD" | awk '{print $2}'); do
+  scripts/review_helpers.sh move-to-complete "$proposal"
+done
+
+git commit -m "Review: Batch accept 38 proposals with strong consensus
+
+All had 3+ unanimous LOOKS_GOOD opinions
+No critical issues flagged
+Automated verification passed
+Efficiency: 38 proposals in 15 minutes"
+```
+
+---
+
+### Step 3.5: Understand the Original Proposal (Legacy Deep Dive)
 
 Read the proposal thoroughly:
 

@@ -1,0 +1,229 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2024 BISSELL Homecare, Inc.
+
+//! ERR01-C: Use ferror() rather than errno to check for FILE stream errors
+//!
+//! This rule detects when errno is checked after FILE stream operations.
+//! The correct approach is to use ferror() to check for errors on FILE streams,
+//! as errno may retain values from earlier operations even if subsequent calls succeed.
+//!
+//! CERT C reference:
+//! https://wiki.sei.cmu.edu/confluence/display/c/ERR01-C.+Use+ferror()+rather+than+errno+to+check+for+FILE+stream+errors
+
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
+use std::cell::RefCell;
+use tree_sitter::Node;
+
+#[derive(Debug)]
+pub struct Err01C {
+    // Track FILE stream function calls
+    file_stream_functions_seen: RefCell<bool>,
+}
+
+impl Err01C {
+    pub fn new() -> Self {
+        Err01C {
+            file_stream_functions_seen: RefCell::new(false),
+        }
+    }
+
+    /// Check if a function is a FILE stream operation
+    fn is_file_stream_function(&self, name: &str) -> bool {
+        matches!(
+            name,
+            "printf"
+                | "fprintf"
+                | "sprintf"
+                | "snprintf"
+                | "vprintf"
+                | "vfprintf"
+                | "vsprintf"
+                | "vsnprintf"
+                | "scanf"
+                | "fscanf"
+                | "sscanf"
+                | "vscanf"
+                | "vfscanf"
+                | "vsscanf"
+                | "fgetc"
+                | "fgets"
+                | "getc"
+                | "getchar"
+                | "gets"
+                | "fputc"
+                | "fputs"
+                | "putc"
+                | "putchar"
+                | "puts"
+                | "ungetc"
+                | "fread"
+                | "fwrite"
+                | "fseek"
+                | "ftell"
+                | "rewind"
+                | "fgetpos"
+                | "fsetpos"
+                | "fflush"
+                | "fclose"
+                | "fopen"
+                | "freopen"
+                | "setbuf"
+                | "setvbuf"
+        )
+    }
+
+    /// Check if an identifier is errno
+    fn is_errno(&self, node: &Node, source: &str) -> bool {
+        node.kind() == "identifier" && get_node_text(node, source) == "errno"
+    }
+
+    /// Check for errno in an expression
+    fn contains_errno(&self, node: &Node, source: &str) -> bool {
+        if self.is_errno(node, source) {
+            return true;
+        }
+
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            if self.contains_errno(&child, source) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Check if a statement is checking errno
+    fn is_errno_check(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "if_statement" | "while_statement" | "do_statement" | "for_statement" => {
+                if let Some(condition) = node.child_by_field_name("condition") {
+                    return self.contains_errno(&condition, source);
+                }
+            }
+            "binary_expression" | "unary_expression" | "parenthesized_expression" => {
+                return self.contains_errno(node, source);
+            }
+            _ => {}
+        }
+
+        false
+    }
+
+    /// Process a call expression
+    fn check_call_expression(&self, node: &Node, source: &str) {
+        if node.kind() != "call_expression" {
+            return;
+        }
+
+        if let Some(function) = node.child_by_field_name("function") {
+            let func_name = get_node_text(&function, source);
+
+            if self.is_file_stream_function(func_name) {
+                *self.file_stream_functions_seen.borrow_mut() = true;
+            }
+        }
+    }
+
+    /// Check for errno usage after FILE stream operations
+    fn check_errno_usage(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Check if this statement checks errno
+        if self.is_errno_check(node, source) && *self.file_stream_functions_seen.borrow() {
+            violations.push(RuleViolation {
+                rule_id: "ERR01-C".to_string(),
+                severity: Severity::Low,
+                line: node.start_position().row + 1,
+                column: node.start_position().column + 1,
+                message: "errno is checked after FILE stream operations; use ferror() instead"
+                    .to_string(),
+                file_path: String::new(),
+                suggestion: Some(
+                    "Use ferror() to check for errors on FILE streams instead of checking errno"
+                        .to_string(),
+                ),
+                requires_manual_review: Some(false),
+            });
+        }
+    }
+
+    /// Process a function definition (reset state for each function)
+    fn process_function(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if node.kind() != "function_definition" {
+            return;
+        }
+
+        // Reset state for this function
+        *self.file_stream_functions_seen.borrow_mut() = false;
+
+        // Traverse the function body
+        if let Some(body) = node.child_by_field_name("body") {
+            self.traverse_block(&body, source, violations);
+        }
+    }
+
+    /// Traverse a block of code
+    fn traverse_block(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            // Check for FILE stream function calls
+            self.check_call_expression(&child, source);
+
+            // Check for errno usage
+            self.check_errno_usage(&child, source, violations);
+
+            // Recurse into nested blocks
+            if child.kind() == "compound_statement" {
+                self.traverse_block(&child, source, violations);
+            } else {
+                // Recurse into child nodes
+                let mut child_cursor = child.walk();
+                for grandchild in child.children(&mut child_cursor) {
+                    if grandchild.kind() == "call_expression" {
+                        self.check_call_expression(&grandchild, source);
+                    }
+                }
+            }
+        }
+    }
+
+    /// Recursively traverse AST
+    fn traverse(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        self.process_function(node, source, violations);
+
+        // Recurse into children
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.traverse(&child, source, violations);
+        }
+    }
+}
+
+impl CertRule for Err01C {
+    fn rule_id(&self) -> &'static str {
+        "ERR01-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Use ferror() rather than errno to check for FILE stream errors"
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Low
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "ERR01-C"
+    }
+
+    fn check(&self, root: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+        self.traverse(root, source, &mut violations);
+        violations
+    }
+}
