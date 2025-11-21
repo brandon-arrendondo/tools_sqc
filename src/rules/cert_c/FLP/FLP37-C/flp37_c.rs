@@ -5,9 +5,9 @@ use crate::utility::cert_c::ast_utils::get_node_text;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
-pub struct FLP37C;
+pub struct Flp37C;
 
-impl CertRule for FLP37C {
+impl CertRule for Flp37C {
     fn rule_id(&self) -> &'static str {
         "FLP37-C"
     }
@@ -42,7 +42,7 @@ impl CertRule for FLP37C {
     }
 }
 
-impl FLP37C {
+impl Flp37C {
     fn collect_float_structs(
         &self,
         node: &Node,
