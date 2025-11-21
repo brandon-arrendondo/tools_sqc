@@ -409,6 +409,9 @@ pub mod pos30_c;
 #[path = "POS/POS36-C/pos36_c.rs"]
 pub mod pos36_c;
 
+#[path = "PRE/PRE10-C/pre10_c.rs"]
+pub mod pre10_c;
+
 #[path = "POS/POS37-C/pos37_c.rs"]
 pub mod pos37_c;
 
@@ -452,6 +455,9 @@ pub mod str38_c;
 
 #[path = "STR/STR00-C/str00_c.rs"]
 pub mod str00_c;
+
+#[path = "STR/STR03-C/str03_c.rs"]
+pub mod str03_c;
 
 #[path = "STR/STR34-C/str34_c.rs"]
 pub mod str34_c;
@@ -610,6 +616,7 @@ impl RuleRegistry {
         registry.register(Box::new(pos34_c::Pos34C));
         registry.register(Box::new(pos30_c::Pos30C));
         registry.register(Box::new(pos36_c::Pos36C));
+        registry.register(Box::new(pre10_c::Pre10C));
         registry.register(Box::new(pos37_c::Pos37C));
         registry.register(Box::new(pos39_c::Pos39C));
         registry.register(Box::new(pos47_c::Pos47C));
@@ -626,6 +633,7 @@ impl RuleRegistry {
         registry.register(Box::new(str31_c::Str31C));
         registry.register(Box::new(str38_c::Str38C));
         registry.register(Box::new(str00_c::Str00C));
+        registry.register(Box::new(str03_c::Str03C));
         registry.register(Box::new(str34_c::Str34C));
         registry.register(Box::new(sig30_c::Sig30C));
         registry.register(Box::new(sig01_c::Sig01C));
