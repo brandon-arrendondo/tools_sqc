@@ -52,7 +52,7 @@ impl Pos49C {
             // Check if this is accessing a bit-field member
             if let Some(field) = node.child_by_field_name("field") {
                 let field_name = &source[field.start_byte()..field.end_byte()];
-                
+
                 // Check if this field access is part of an assignment or expression
                 if let Some(parent) = node.parent() {
                     if matches!(parent.kind(), "assignment_expression" | "update_expression") {
@@ -93,18 +93,18 @@ impl Pos49C {
             if parent.kind() == "compound_statement" {
                 let node_pos = node.start_byte();
                 let stmt_text = &source[parent.start_byte()..parent.end_byte()];
-                
+
                 // Simple heuristic: check if we're between lock and unlock calls
                 // Find text before this node in the statement
                 let before_text = &source[parent.start_byte()..node_pos];
                 let after_text = &source[node_pos..parent.end_byte()];
-                
+
                 // Check if there's a mutex_lock before and mutex_unlock after
-                let has_lock_before = before_text.contains("pthread_mutex_lock") || 
-                                      before_text.contains("mutex_lock");
-                let has_unlock_after = after_text.contains("pthread_mutex_unlock") ||
-                                       after_text.contains("mutex_unlock");
-                
+                let has_lock_before = before_text.contains("pthread_mutex_lock")
+                    || before_text.contains("mutex_lock");
+                let has_unlock_after = after_text.contains("pthread_mutex_unlock")
+                    || after_text.contains("mutex_unlock");
+
                 return has_lock_before && has_unlock_after;
             }
             current = parent.parent();

@@ -14,7 +14,7 @@ void f(const char *fileName) {
     return;
   }
   // Use file...
-  
+
   // VIOLATION: Terminate without closing file
   exit(1);
 }

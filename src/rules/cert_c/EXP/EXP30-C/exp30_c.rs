@@ -149,16 +149,11 @@ impl Exp30C {
 
             // Known pure functions (read-only, no global state modification)
             let pure_functions = [
-                "abs", "labs", "llabs", "fabs", "fabsf", "fabsl",
-                "ceil", "floor", "round", "trunc",
-                "sqrt", "sqrtf", "sqrtl",
-                "sin", "cos", "tan", "asin", "acos", "atan", "atan2",
-                "sinh", "cosh", "tanh",
-                "exp", "log", "log10", "log2",
-                "pow", "fmod", "fmax", "fmin",
-                "strlen", "strcmp", "strncmp", "strchr", "strstr",
-                "isalpha", "isdigit", "isalnum", "isspace", "isupper", "islower",
-                "toupper", "tolower",
+                "abs", "labs", "llabs", "fabs", "fabsf", "fabsl", "ceil", "floor", "round",
+                "trunc", "sqrt", "sqrtf", "sqrtl", "sin", "cos", "tan", "asin", "acos", "atan",
+                "atan2", "sinh", "cosh", "tanh", "exp", "log", "log10", "log2", "pow", "fmod",
+                "fmax", "fmin", "strlen", "strcmp", "strncmp", "strchr", "strstr", "isalpha",
+                "isdigit", "isalnum", "isspace", "isupper", "islower", "toupper", "tolower",
             ];
 
             return pure_functions.contains(&func_name);

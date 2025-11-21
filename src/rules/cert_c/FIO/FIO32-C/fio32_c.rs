@@ -39,7 +39,7 @@ impl Fio32C {
         if node.kind() == "call_expression" {
             if let Some(func_node) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func_node, source);
-                
+
                 // Check for operations like fseek, ftell on device files
                 if func_name == "fseek" || func_name == "ftell" || func_name == "rewind" {
                     // Check if the file being operated on is a device file

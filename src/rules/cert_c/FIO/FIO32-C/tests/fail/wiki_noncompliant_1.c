@@ -6,15 +6,17 @@
 
 #include <stdio.h>
  
-void func(const char *file_name) {
+void func(void) {
   FILE *file;
-  if ((file = fopen(file_name, "wb")) == NULL) {
-    /* Handle error */
+  // VIOLATION: Using fseek on a device file
+  if ((file = fopen("/dev/tty", "wb")) == NULL) {
+    return;
   }
 
-  /* Operate on the file */
+  // VIOLATION: fseek is inappropriate for device files
+  fseek(file, 0, SEEK_SET);
 
   if (fclose(file) == EOF) {
-    /* Handle error */
+    return;
   }
 }

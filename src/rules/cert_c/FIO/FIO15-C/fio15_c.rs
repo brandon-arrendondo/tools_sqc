@@ -44,11 +44,16 @@ impl Fio15C {
                         if let Some(first_arg) = args.named_child(0) {
                             let path = get_node_text(&first_arg, source);
                             // Check for operations in /tmp or other world-writable directories
-                            if path.contains("/tmp") && !self.has_security_check_before(node, source) {
+                            if path.contains("/tmp")
+                                && !self.has_security_check_before(node, source)
+                            {
                                 violations.push(RuleViolation {
                                     rule_id: self.rule_id().to_string(),
                                     severity: self.severity(),
-                                    message: format!("File operation in potentially insecure directory {}", path),
+                                    message: format!(
+                                        "File operation in potentially insecure directory {}",
+                                        path
+                                    ),
                                     file_path: String::new(),
                                     line: node.start_position().row + 1,
                                     column: node.start_position().column + 1,

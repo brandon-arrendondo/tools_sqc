@@ -40,7 +40,10 @@ impl Sig34C {
             if let Some(declarator) = node.child_by_field_name("declarator") {
                 let func_text = get_node_text(&declarator, source);
                 // Check if this looks like a signal handler (takes int parameter)
-                if func_text.contains("int") || func_text.contains("signum") || func_text.contains("sig") {
+                if func_text.contains("int")
+                    || func_text.contains("signum")
+                    || func_text.contains("sig")
+                {
                     // Check for signal() calls within this function
                     if let Some(body) = node.child_by_field_name("body") {
                         self.check_for_signal_calls(&body, source, violations);
@@ -56,7 +59,12 @@ impl Sig34C {
         }
     }
 
-    fn check_for_signal_calls(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_for_signal_calls(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if node.kind() == "call_expression" {
             if let Some(func_node) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func_node, source);
@@ -64,7 +72,8 @@ impl Sig34C {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: self.severity(),
-                        message: "signal() called from within signal handler; this is not safe".to_string(),
+                        message: "signal() called from within signal handler; this is not safe"
+                            .to_string(),
                         file_path: String::new(),
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,
