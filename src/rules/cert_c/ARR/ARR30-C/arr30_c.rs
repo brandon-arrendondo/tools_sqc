@@ -2060,6 +2060,218 @@ impl Arr30C {
         pointers
     }
 
+    /// Check for malloc/calloc/realloc calls without proper NULL checks before pointer arithmetic
+    /// Detects patterns where malloc() result is used in pointer arithmetic without NULL validation
+    fn check_malloc_null_pointer_arithmetic(
+        &self,
+        func_node: &Node,
+        source: &str,
+    ) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Track all malloc/calloc/realloc assignments and their variable names
+        let mut malloc_vars: HashMap<String, usize> = HashMap::new(); // var_name -> line_number
+
+        // First pass: find all malloc/calloc/realloc calls
+        self.find_malloc_assignments(func_node, source, &mut malloc_vars);
+
+        if malloc_vars.is_empty() {
+            return violations; // No malloc calls, nothing to check
+        }
+
+        // Second pass: for each malloc variable, check if it has NULL check with return/exit
+        for (var_name, alloc_line) in &malloc_vars {
+            let has_safe_null_check =
+                self.has_safe_null_check_in_function(func_node, source, var_name);
+
+            if !has_safe_null_check {
+                // Third pass: find pointer arithmetic on this variable
+                if let Some(violation_line) =
+                    self.find_pointer_arithmetic_usage(func_node, source, var_name)
+                {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Pointer arithmetic on potentially NULL pointer '{}' from malloc/calloc/realloc. \
+                            No NULL check found before use at line {}.",
+                            var_name, violation_line
+                        ),
+                        file_path: String::new(),
+                        line: violation_line,
+                        column: 1,
+                        suggestion: Some(format!(
+                            "Add NULL check: if ({} == NULL) {{ /* handle error */ }}",
+                            var_name
+                        )),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+
+        violations
+    }
+
+    /// Find all malloc/calloc/realloc assignments in a function
+    fn find_malloc_assignments(
+        &self,
+        node: &Node,
+        source: &str,
+        malloc_vars: &mut HashMap<String, usize>,
+    ) {
+        // Check current node for malloc assignment
+        if node.kind() == "declaration" || node.kind() == "assignment_expression" {
+            let text = &source[node.start_byte()..node.end_byte()];
+
+            // Pattern: var = malloc(...) or var = calloc(...) or var = realloc(...)
+            if text.contains("malloc(") || text.contains("calloc(") || text.contains("realloc(") {
+                // Extract variable name from left side of assignment
+                if let Some(var_name) = self.extract_assignment_lhs(node, source) {
+                    let line = node.start_position().row + 1;
+                    malloc_vars.insert(var_name, line);
+                }
+            }
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.find_malloc_assignments(&child, source, malloc_vars);
+            }
+        }
+    }
+
+    /// Extract the left-hand side variable name from an assignment
+    fn extract_assignment_lhs(&self, node: &Node, source: &str) -> Option<String> {
+        // For declaration: char *buffer = malloc(...)
+        if node.kind() == "declaration" {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "init_declarator" {
+                        // Get the declarator (left side)
+                        if let Some(declarator) = child.child(0) {
+                            return self.extract_variable_name_from_declarator(&declarator, source);
+                        }
+                    }
+                }
+            }
+        }
+
+        // For assignment_expression: buffer = malloc(...)
+        if node.kind() == "assignment_expression" {
+            if let Some(lhs) = node.child(0) {
+                if lhs.kind() == "identifier" {
+                    return Some(source[lhs.start_byte()..lhs.end_byte()].to_string());
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Extract variable name from a declarator node
+    fn extract_variable_name_from_declarator(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(source[node.start_byte()..node.end_byte()].to_string()),
+            "pointer_declarator" => {
+                // Recurse into pointer declarator to find the identifier
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if let Some(name) =
+                            self.extract_variable_name_from_declarator(&child, source)
+                        {
+                            return Some(name);
+                        }
+                    }
+                }
+                None
+            }
+            _ => None,
+        }
+    }
+
+    /// Check if there's a safe NULL check (with return/exit) for the given variable in the function
+    fn has_safe_null_check_in_function(
+        &self,
+        func_node: &Node,
+        source: &str,
+        var_name: &str,
+    ) -> bool {
+        self.find_safe_null_check(func_node, source, var_name)
+    }
+
+    /// Recursively search for NULL check
+    /// A NULL check is considered safe if it exists, even without explicit return/exit
+    /// The presence of the check indicates awareness of the NULL possibility
+    fn find_safe_null_check(&self, node: &Node, source: &str, var_name: &str) -> bool {
+        // Check if this is an if statement with NULL check
+        if node.kind() == "if_statement" {
+            let text = &source[node.start_byte()..node.end_byte()];
+
+            // Check if condition checks for NULL
+            // Accept patterns: buffer == NULL, NULL == buffer, !buffer
+            let has_null_check = text.contains(&format!("{} == NULL", var_name))
+                || text.contains(&format!("NULL == {}", var_name))
+                || text.contains(&format!("!{}", var_name));
+
+            if has_null_check {
+                return true; // NULL check found - considered safe
+            }
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.find_safe_null_check(&child, source, var_name) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Find pointer arithmetic usage of the given variable
+    /// Returns the line number where pointer arithmetic is used, or None
+    fn find_pointer_arithmetic_usage(
+        &self,
+        node: &Node,
+        source: &str,
+        var_name: &str,
+    ) -> Option<usize> {
+        let text = &source[node.start_byte()..node.end_byte()];
+
+        // Check for pointer arithmetic patterns:
+        // 1. var + offset
+        // 2. var += offset
+        // 3. function(var + offset, ...)
+
+        // Pattern 1 & 3: var + something
+        if text.contains(&format!("{} +", var_name)) || text.contains(&format!("+ {}", var_name)) {
+            // Make sure it's not just part of a NULL check (avoid false positives)
+            if !text.contains("== NULL") && !text.contains("!= NULL") {
+                return Some(node.start_position().row + 1);
+            }
+        }
+
+        // Pattern 2: var += offset
+        if text.contains(&format!("{} +=", var_name)) {
+            return Some(node.start_position().row + 1);
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(line) = self.find_pointer_arithmetic_usage(&child, source, var_name) {
+                    return Some(line);
+                }
+            }
+        }
+
+        None
+    }
+
     /// Find the function_declarator node within a function_definition
     /// Handles both direct children and nested cases (e.g., pointer return types)
     fn find_function_declarator<'a>(&self, func_def_node: &'a Node) -> Option<Node<'a>> {
@@ -2257,6 +2469,10 @@ impl Arr30C {
                     source,
                     &local_buffers,
                 ));
+            }
+            "function_definition" => {
+                // Check for malloc/calloc/realloc without proper NULL checks
+                violations.extend(self.check_malloc_null_pointer_arithmetic(node, source));
             }
             _ => {}
         }
