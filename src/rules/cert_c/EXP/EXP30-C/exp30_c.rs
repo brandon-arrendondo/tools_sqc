@@ -146,7 +146,7 @@ impl Exp30C {
     fn is_known_pure_function(&self, call_node: &Node, source: &str) -> bool {
         if let Some(func) = call_node.child_by_field_name("function") {
             let func_name = ast_utils::get_node_text(&func, source);
-            
+
             // Known pure functions (read-only, no global state modification)
             let pure_functions = [
                 "abs", "labs", "llabs", "fabs", "fabsf", "fabsl",
@@ -160,7 +160,7 @@ impl Exp30C {
                 "isalpha", "isdigit", "isalnum", "isspace", "isupper", "islower",
                 "toupper", "tolower",
             ];
-            
+
             return pure_functions.contains(&func_name);
         }
         false

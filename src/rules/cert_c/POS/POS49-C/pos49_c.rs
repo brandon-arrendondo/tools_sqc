@@ -28,10 +28,13 @@ impl CertRule for Pos49C {
     fn check(&self, root: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Simple heuristic: if source has bit fields (":") and threading patterns, flag it
-        if self.has_bit_fields(source) && self.has_potential_thread_access(source) {
-            self.check_node(root, source, &mut violations);
+        // Only check if source has bit fields and threading patterns
+        if !self.has_bit_fields(source) || !self.has_potential_thread_access(source) {
+            return violations;
         }
+
+        // Find all bit-field accesses that are NOT protected by mutex
+        self.check_node(root, source, &mut violations);
 
         violations
     }
@@ -44,21 +47,34 @@ impl Pos49C {
     }
 
     fn check_node<'a>(&self, node: &Node<'a>, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Look for field_declaration nodes that contain ":"
-        if node.kind() == "field_declaration" {
-            let text = &source[node.start_byte()..node.end_byte()];
-            if text.contains(':') && !text.contains("::") {
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: self.severity(),
-                    message: "Bit-field in struct may be accessed from multiple threads without mutex protection".to_string(),
-                    file_path: String::new(),
-                    line: node.start_position().row + 1,
-                    column: node.start_position().column + 1,
-                    suggestion: Some("Use separate bytes/integers or protect with mutex".to_string()),
-                    requires_manual_review: Some(true),
-                    ..Default::default()
-                });
+        // Look for field_expression (member access like "flags.flag1 = 1")
+        if node.kind() == "field_expression" {
+            // Check if this is accessing a bit-field member
+            if let Some(field) = node.child_by_field_name("field") {
+                let field_name = &source[field.start_byte()..field.end_byte()];
+                
+                // Check if this field access is part of an assignment or expression
+                if let Some(parent) = node.parent() {
+                    if matches!(parent.kind(), "assignment_expression" | "update_expression") {
+                        // Check if this access is protected by a mutex
+                        if !self.is_within_mutex_lock(node, source) {
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: self.severity(),
+                                message: format!(
+                                    "Bit-field '{}' may be accessed from multiple threads without mutex protection",
+                                    field_name
+                                ),
+                                file_path: String::new(),
+                                line: node.start_position().row + 1,
+                                column: node.start_position().column + 1,
+                                suggestion: Some("Protect bit-field access with pthread_mutex_lock/unlock".to_string()),
+                                requires_manual_review: Some(true),
+                                ..Default::default()
+                            });
+                        }
+                    }
+                }
             }
         }
 
@@ -67,6 +83,33 @@ impl Pos49C {
         for child in node.children(&mut cursor) {
             self.check_node(&child, source, violations);
         }
+    }
+
+    fn is_within_mutex_lock(&self, node: &Node, source: &str) -> bool {
+        // Check if this node is between pthread_mutex_lock and pthread_mutex_unlock
+        // Get the containing compound_statement or function
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "compound_statement" {
+                let node_pos = node.start_byte();
+                let stmt_text = &source[parent.start_byte()..parent.end_byte()];
+                
+                // Simple heuristic: check if we're between lock and unlock calls
+                // Find text before this node in the statement
+                let before_text = &source[parent.start_byte()..node_pos];
+                let after_text = &source[node_pos..parent.end_byte()];
+                
+                // Check if there's a mutex_lock before and mutex_unlock after
+                let has_lock_before = before_text.contains("pthread_mutex_lock") || 
+                                      before_text.contains("mutex_lock");
+                let has_unlock_after = after_text.contains("pthread_mutex_unlock") ||
+                                       after_text.contains("mutex_unlock");
+                
+                return has_lock_before && has_unlock_after;
+            }
+            current = parent.parent();
+        }
+        false
     }
 
     fn has_potential_thread_access(&self, source: &str) -> bool {
