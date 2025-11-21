@@ -183,17 +183,63 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-21 - Claude Code (via /work-active)
+
+**Implementation Complete - 100% Test Pass Rate**
+
+**Phase 1: Analysis and Research**
+- Studied CERT C wiki for CON38-C
+- Reviewed rule requirements: Prevent deadlocks when using condition variables
+- Key insight: `cnd_signal()` with shared condition variable is unsafe, but safe with unique per-thread condition variables
+- Examined existing CON rule implementations for pattern reference
+
+**Phase 2: Implementation**
+- Created `src/rules/cert_c/CON/CON38-C/con38_c.rs`
+- Detection strategy:
+  - Flag `cnd_signal()` calls with simple/shared condition variables
+  - Skip flagging when condition variable is array-indexed (indicates unique per-thread)
+  - Supports both C11 (`cnd_signal`) and POSIX (`pthread_cond_signal`)
+- Uses shared utilities: `get_node_text()` for DRY compliance
+
+**Phase 3: Registration and Configuration**
+- Registered rule in `src/rules/cert_c/mod.rs`:
+  - Added module declaration at line 97-98
+  - Added registry entry at line 454
+- Enabled rule in `CON38-C.toml` (set `enabled = true`)
+
+**Phase 4: Testing and Refinement**
+- Initial implementation flagged all `cnd_signal()` calls (too strict)
+- Analyzed test cases:
+  - FAIL: `cnd_signal(&cond)` - shared condition variable ✓
+  - PASS: `cnd_signal(&cond[index])` - unique per-thread ✗ (incorrectly flagged)
+- Refined implementation to detect array subscript access
+- Added `contains_subscript()` helper to recursively check for array indexing
+- All tests passing after refinement
+
+**Test Results:**
+```
+test_con38_c_pass_wiki_cnd_broadcast ... ok
+test_con38_c_pass_wiki_windows_condition_variables ... ok
+test_con38_c_fail_wiki_cnd_signal ... ok
+test_con38_c_pass_wiki_usingcnd_signalwith_a_unique_condition_variable_per_thread ... ok
+```
+
+**Build Status:** ✅ PASSING
+**Test Status:** ✅ 4/4 tests passing (100% pass rate)
+**DRY Compliance:** ✅ Uses `get_node_text()` utility
+
+**Commits:**
+- P2-CON38-C: Implementation complete with 100% test pass rate
 
 ---
 
