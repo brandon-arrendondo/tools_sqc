@@ -1,10 +1,10 @@
 ---
 rule_id: PRE13-C
 priority: P2
-status: active
-assigned_to: ERIC
+status: staged
+assigned_to: TRISTAN
 created: 2025-11-17
-last_modified: 2025-11-17
+last_modified: 2025-11-19
 tags:
   - cert-c
   - implementation
@@ -13,10 +13,10 @@ tags:
 
 # P2-PRE13-C - PRE13-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
+**Assigned To:** CLAUDE
 **Category:** PRE
 **Estimated Effort:** 10-30 hours
 
@@ -193,7 +193,34 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### Research Phase
+- Studied CERT C wiki for PRE13-C
+- Key requirement: Use `defined()` before testing standard predefined macro values
+- Violation: Testing macro values (e.g., `#if __STDC__ == 1`) without checking if defined
+- Compliant: Always use `defined()` first (e.g., `#if defined(__STDC__) && (__STDC__ == 1)`)
+
+### Implementation
+- Created `src/rules/cert_c/PRE/PRE13-C/pre13_c.rs` (194 lines)
+- Checks preprocessor conditionals: `preproc_if` and `preproc_elif`
+- Detects use of standard macros without `defined()` wrapper
+- Standard macros tracked: `__STDC__`, `__STDC_VERSION__`, `__STDC_HOSTED__`, `__STDC_LIB_EXT1__`, and 10 others
+- Uses `get_node_text()` for DRY compliance
+
+### Key Features
+- Checks both `#if` and `#elif` directives
+- Detects direct use of standard macros in conditions
+- Verifies presence of `defined(MACRO)` pattern (with or without space)
+- Reports only once per condition even if multiple macros are used incorrectly
+- Provides helpful suggestions with compliant pattern
+
+### Testing
+- Build passed successfully
+- cargo fmt applied successfully
+- cargo test passed (0 tests - no test cases exist for this rule)
+- Pre-commit hooks passed
+
+### Commits
+- c4fd18f: P2-PRE13-C: Implementation complete
 
 ---
 

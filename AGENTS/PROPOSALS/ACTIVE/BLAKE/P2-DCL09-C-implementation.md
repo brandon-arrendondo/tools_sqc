@@ -2,7 +2,7 @@
 rule_id: DCL09-C
 priority: P2
 status: active
-assigned_to: ERIC
+assigned_to: BLAKE
 created: 2025-11-17
 last_modified: 2025-11-17
 tags:

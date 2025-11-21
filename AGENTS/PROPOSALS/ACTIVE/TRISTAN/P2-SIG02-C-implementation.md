@@ -2,7 +2,7 @@
 rule_id: SIG02-C
 priority: P2
 status: active
-assigned_to: ERIC
+assigned_to: TRISTAN
 created: 2025-11-17
 last_modified: 2025-11-17
 tags:
@@ -193,7 +193,36 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-19 - Implementation Complete
+
+**No Existing Implementation**
+- Checked `src/rules/cert_c/SIG/SIG02-C/` - no sig02_c.rs found
+
+**CERT C Wiki Research**
+- Rule: Avoid using signals to implement normal functionality
+- Key requirement: Signals should only be for abnormal events, not normal IPC/synchronization
+- Wiki URL: https://wiki.sei.cmu.edu/confluence/display/c/SIG02-C.+Avoid+using+signals+to+implement+normal+functionality
+
+**Implementation Created** (`src/rules/cert_c/SIG/SIG02-C/sig02_c.rs`)
+- 197 lines total
+- Detection patterns:
+  1. `kill()` calls with user signals (SIGUSR1, SIGUSR2) - High severity
+  2. `signal()` or `sigaction()` registering handlers for user signals - Medium severity
+  3. `raise()` calls with user signals - Medium severity
+- Uses `get_node_text()` for DRY compliance
+- Tree-sitter AST traversal with recursive `check_node()` pattern
+
+**Registration and Enablement**
+- Added to `src/rules/cert_c/mod.rs` (lines 447-448, line 615)
+- Enabled in `src/rules/cert_c/SIG/SIG02-C/SIG02-C.toml` (enabled = true)
+- Enabled in `src/rules/cert_c/rules-all.toml` (line 1031, enabled = true)
+
+**Build Results**
+- `cargo build`: ✅ Success
+- `cargo test`: ✅ Success - 0 tests (no test cases exist for SIG02-C)
+
+**Commits**
+- 13d0a77: P2-SIG02-C: Implementation complete
 
 ---
 

@@ -1,10 +1,10 @@
 ---
 rule_id: PRE11-C
 priority: P2
-status: active
-assigned_to: ERIC
+status: staged
+assigned_to: TRISTAN
 created: 2025-11-17
-last_modified: 2025-11-17
+last_modified: 2025-11-19
 tags:
   - cert-c
   - implementation
@@ -13,10 +13,10 @@ tags:
 
 # P2-PRE11-C - PRE11-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
+**Assigned To:** CLAUDE
 **Category:** PRE
 **Estimated Effort:** 10-30 hours
 
@@ -193,7 +193,40 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### Research Phase
+- Studied CERT C wiki for PRE11-C
+- Key requirement: Macro definitions should not end with semicolons
+- Trailing semicolons in macros create null statements or interfere with control flow
+- Applies to both object-like macros (#define FOO value;) and function-like macros (#define BAR(x) expr;)
+
+### Implementation
+- Created `src/rules/cert_c/PRE/PRE11-C/pre11_c.rs` (137 lines after formatting)
+- Checks both `preproc_def` (object-like) and `preproc_function_def` (function-like) nodes
+- Uses `get_node_text()` for DRY compliance
+- Extracts macro value text, trims whitespace, and checks if it ends with `;`
+- Provides descriptive violation messages with macro name
+
+### Key Features
+- Handles both macro types (object-like and function-like)
+- Extracts macro name for better error messages
+- Recursive AST traversal pattern
+- Proper error handling for macros without values
+
+### Error Encountered and Fixed
+- Initial implementation had type mismatch error with `get_node_text()` return type
+- Attempted to use `unwrap_or_else(|| String::from("(unknown)"))` for fallback macro name
+- Error: `get_node_text()` returns `&str`, but closure returned `String`
+- **Fix**: Changed to if-let expression with string literal `"(unknown)"` instead of Option methods
+- This ensures both branches return `&str` type
+
+### Testing
+- Build passed successfully after type error fix
+- cargo fmt applied successfully
+- cargo test passed (0 tests - no test cases exist for this rule)
+- Pre-commit hooks passed
+
+### Commits
+- 5c25b3e: P2-PRE11-C: Implementation complete
 
 ---
 

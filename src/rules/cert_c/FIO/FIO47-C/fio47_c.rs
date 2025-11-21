@@ -1,0 +1,485 @@
+//! FIO47-C: Use valid format strings
+//!
+//! The formatted output functions (fprintf(), printf(), sprintf(), snprintf(), etc.)
+//! convert, format, and print their arguments under control of a format string.
+//! Invalid format strings can lead to undefined behavior, memory corruption, or
+//! abnormal program termination.
+//!
+//! ## Common Mistakes:
+//! - Incorrect argument count for the format string
+//! - Invalid conversion specifiers
+//! - Incompatible flag-specifier combinations
+//! - Incompatible length modifier-specifier combinations
+//! - Type mismatches between arguments and conversion specifiers
+//!
+//! ## Examples:
+//!
+//! **Non-compliant:**
+//! ```c
+//! const char *error_msg = "Resource not available";
+//! int error_type = 3;
+//! printf("Error (type %s): %d\n", error_type, error_msg);
+//! // %s expects pointer, gets int; %d expects int, gets pointer
+//! ```
+//!
+//! **Compliant:**
+//! ```c
+//! const char *error_msg = "Resource not available";
+//! int error_type = 3;
+//! printf("Error (type %d): %s\n", error_type, error_msg);
+//! ```
+
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
+use tree_sitter::Node;
+
+pub struct Fio47C;
+
+impl Fio47C {
+    pub fn new() -> Self {
+        Self
+    }
+
+    /// List of printf-family functions that take format strings
+    const PRINTF_FUNCTIONS: &'static [&'static str] = &[
+        "printf",
+        "fprintf",
+        "sprintf",
+        "snprintf",
+        "vprintf",
+        "vfprintf",
+        "vsprintf",
+        "vsnprintf",
+        "dprintf",
+        "vdprintf",
+    ];
+
+    /// List of scanf-family functions that take format strings
+    const SCANF_FUNCTIONS: &'static [&'static str] =
+        &["scanf", "fscanf", "sscanf", "vscanf", "vfscanf", "vsscanf"];
+
+    /// Check if a function name is a printf-family function
+    fn is_printf_family(&self, name: &str) -> bool {
+        Self::PRINTF_FUNCTIONS.contains(&name)
+    }
+
+    /// Check if a function name is a scanf-family function
+    fn is_scanf_family(&self, name: &str) -> bool {
+        Self::SCANF_FUNCTIONS.contains(&name)
+    }
+
+    /// Check if a function name is a format string function
+    fn is_format_function(&self, name: &str) -> bool {
+        self.is_printf_family(name) || self.is_scanf_family(name)
+    }
+
+    /// Extract format string from a call expression
+    /// Returns the format string if it's a string literal, None otherwise
+    fn extract_format_string<'a>(
+        &self,
+        call_node: &Node,
+        source: &'a str,
+        function_name: &str,
+    ) -> Option<&'a str> {
+        if let Some(args) = call_node.child_by_field_name("arguments") {
+            // For fprintf/fscanf, format string is second argument
+            // For printf/sprintf/scanf, format string is first argument
+            let format_arg_index =
+                if function_name.starts_with('f') && !function_name.starts_with("fopen") {
+                    1 // fprintf, fscanf, etc. - skip FILE* argument
+                } else {
+                    0 // printf, sprintf, scanf, etc.
+                };
+
+            let mut arg_count = 0;
+            for i in 0..args.child_count() {
+                if let Some(child) = args.child(i) {
+                    // Skip commas and whitespace
+                    if child.kind() == "," || child.kind() == "comment" {
+                        continue;
+                    }
+
+                    if arg_count == format_arg_index {
+                        // Check if this is a string literal
+                        if child.kind() == "string_literal" {
+                            let text = get_node_text(&child, source);
+                            // Remove quotes
+                            if text.len() >= 2 {
+                                return Some(&text[1..text.len() - 1]);
+                            }
+                        } else if child.kind() == "concatenated_string" {
+                            // Handle concatenated string literals
+                            let text = get_node_text(&child, source);
+                            return Some(text);
+                        }
+                        // If format string is not a literal, we can't validate it
+                        return None;
+                    }
+                    arg_count += 1;
+                }
+            }
+        }
+        None
+    }
+
+    /// Count the number of format specifiers in a format string
+    /// Returns (specifier_count, errors)
+    fn count_format_specifiers(&self, format_string: &str) -> (usize, Vec<String>) {
+        let mut count = 0;
+        let mut errors = Vec::new();
+        let mut chars = format_string.chars().peekable();
+
+        while let Some(ch) = chars.next() {
+            if ch == '%' {
+                if let Some(&next) = chars.peek() {
+                    if next == '%' {
+                        // %% is an escaped percent sign, not a format specifier
+                        chars.next();
+                        continue;
+                    }
+
+                    // This is a format specifier, parse it
+                    if let Some(error) = self.parse_format_specifier(&mut chars, format_string) {
+                        errors.push(error);
+                    }
+                    count += 1;
+                }
+            }
+        }
+
+        (count, errors)
+    }
+
+    /// Parse a single format specifier and validate it
+    /// Returns Some(error) if the format specifier is invalid
+    fn parse_format_specifier(
+        &self,
+        chars: &mut std::iter::Peekable<std::str::Chars>,
+        _format_string: &str,
+    ) -> Option<String> {
+        let mut flags = String::new();
+        let mut length_modifier = String::new();
+
+        // Parse flags: -, +, space, #, 0, '
+        while let Some(&ch) = chars.peek() {
+            match ch {
+                '-' | '+' | ' ' | '#' | '0' | '\'' => {
+                    flags.push(ch);
+                    chars.next();
+                }
+                _ => break,
+            }
+        }
+
+        // Parse width
+        while let Some(&ch) = chars.peek() {
+            if ch.is_ascii_digit() || ch == '*' {
+                chars.next();
+            } else {
+                break;
+            }
+        }
+
+        // Parse precision
+        if let Some(&'.') = chars.peek() {
+            chars.next();
+            while let Some(&ch) = chars.peek() {
+                if ch.is_ascii_digit() || ch == '*' {
+                    chars.next();
+                } else {
+                    break;
+                }
+            }
+        }
+
+        // Parse length modifier: hh, h, l, ll, j, z, t, L
+        if let Some(&ch) = chars.peek() {
+            match ch {
+                'h' => {
+                    chars.next();
+                    if let Some(&'h') = chars.peek() {
+                        chars.next();
+                        length_modifier = "hh".to_string();
+                    } else {
+                        length_modifier = "h".to_string();
+                    }
+                }
+                'l' => {
+                    chars.next();
+                    if let Some(&'l') = chars.peek() {
+                        chars.next();
+                        length_modifier = "ll".to_string();
+                    } else {
+                        length_modifier = "l".to_string();
+                    }
+                }
+                'j' | 'z' | 't' | 'L' => {
+                    length_modifier.push(ch);
+                    chars.next();
+                }
+                _ => {}
+            }
+        }
+
+        // Parse conversion specifier
+        if let Some(specifier) = chars.next() {
+            // Validate conversion specifier
+            if !self.is_valid_conversion_specifier(specifier) {
+                return Some(format!("Invalid conversion specifier: %{}", specifier));
+            }
+
+            // Validate flag combinations
+            if let Some(error) =
+                self.validate_flag_combinations(&flags, specifier, &length_modifier)
+            {
+                return Some(error);
+            }
+
+            // Validate length modifier combinations
+            if let Some(error) = self.validate_length_modifier(specifier, &length_modifier) {
+                return Some(error);
+            }
+        } else {
+            return Some("Incomplete format specifier".to_string());
+        }
+
+        None
+    }
+
+    /// Check if a character is a valid conversion specifier
+    fn is_valid_conversion_specifier(&self, ch: char) -> bool {
+        matches!(
+            ch,
+            'd' | 'i'
+                | 'o'
+                | 'u'
+                | 'x'
+                | 'X'
+                | 'f'
+                | 'F'
+                | 'e'
+                | 'E'
+                | 'g'
+                | 'G'
+                | 'a'
+                | 'A'
+                | 'c'
+                | 's'
+                | 'p'
+                | 'n'
+                | '%'
+        )
+    }
+
+    /// Validate flag combinations with conversion specifiers
+    fn validate_flag_combinations(
+        &self,
+        flags: &str,
+        specifier: char,
+        _length_modifier: &str,
+    ) -> Option<String> {
+        // Check for invalid flag combinations
+
+        // ' (grouping) flag is invalid with %d
+        if flags.contains('\'') && specifier == 'd' {
+            return Some(format!(
+                "Invalid combination: ' (grouping) flag with %{} specifier",
+                specifier
+            ));
+        }
+
+        // + or space flags are invalid with %o, %u, %x, %X
+        if (flags.contains('+') || flags.contains(' '))
+            && matches!(specifier, 'o' | 'u' | 'x' | 'X')
+        {
+            return Some(format!(
+                "Invalid combination: +/space flag with %{} specifier",
+                specifier
+            ));
+        }
+
+        // # flag with %c, %s, %d, %i, %u is invalid
+        if flags.contains('#') && matches!(specifier, 'c' | 's' | 'd' | 'i' | 'u') {
+            return Some(format!(
+                "Invalid combination: # flag with %{} specifier",
+                specifier
+            ));
+        }
+
+        None
+    }
+
+    /// Validate length modifier combinations with conversion specifiers
+    fn validate_length_modifier(&self, specifier: char, length_modifier: &str) -> Option<String> {
+        if length_modifier.is_empty() {
+            return None;
+        }
+
+        // Float specifiers (f, e, g, a, F, E, G, A) are invalid with h, hh, l, ll
+        if matches!(specifier, 'f' | 'F' | 'e' | 'E' | 'g' | 'G' | 'a' | 'A')
+            && matches!(length_modifier, "h" | "hh" | "l" | "ll")
+        {
+            return Some(format!(
+                "Invalid combination: {} length modifier with %{} specifier",
+                length_modifier, specifier
+            ));
+        }
+
+        // %s and %c should not have length modifiers (except 'l' for wide chars)
+        if matches!(specifier, 's' | 'c')
+            && !matches!(length_modifier, "l")
+            && !length_modifier.is_empty()
+        {
+            return Some(format!(
+                "Invalid combination: {} length modifier with %{} specifier",
+                length_modifier, specifier
+            ));
+        }
+
+        // %n should not have any length modifiers
+        if specifier == 'n' && !length_modifier.is_empty() {
+            return Some(format!(
+                "Invalid combination: {} length modifier with %n specifier",
+                length_modifier
+            ));
+        }
+
+        None
+    }
+
+    /// Count actual arguments passed to the function (excluding format string)
+    fn count_arguments(&self, call_node: &Node, function_name: &str) -> usize {
+        if let Some(args) = call_node.child_by_field_name("arguments") {
+            let mut count: usize = 0;
+            for i in 0..args.child_count() {
+                if let Some(child) = args.child(i) {
+                    // Skip commas and whitespace
+                    if child.kind() == "," || child.kind() == "comment" {
+                        continue;
+                    }
+                    count += 1;
+                }
+            }
+
+            // Subtract 1 for the format string itself
+            // For fprintf/fscanf, also subtract 1 for the FILE* argument
+            if function_name.starts_with('f') && !function_name.starts_with("fopen") {
+                count = count.saturating_sub(2);
+            } else {
+                count = count.saturating_sub(1);
+            }
+
+            count
+        } else {
+            0
+        }
+    }
+}
+
+impl CertRule for Fio47C {
+    fn rule_id(&self) -> &'static str {
+        "FIO47-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Use valid format strings"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::High
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "FIO47-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+        self.check_node(node, source, &mut violations);
+        violations
+    }
+}
+
+impl Fio47C {
+    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Check for call expressions
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let function_name = get_node_text(&function, source);
+
+                if self.is_format_function(function_name) {
+                    self.check_format_call(node, source, function_name, violations);
+                }
+            }
+        }
+
+        // Recursively check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_node(&child, source, violations);
+            }
+        }
+    }
+
+    fn check_format_call(
+        &self,
+        call_node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Extract format string if it's a literal
+        if let Some(format_string) = self.extract_format_string(call_node, source, function_name) {
+            // Count format specifiers and validate format string
+            let (specifier_count, format_errors) = self.count_format_specifiers(format_string);
+            let has_format_errors = !format_errors.is_empty();
+
+            // Report format string syntax errors
+            for error in format_errors {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: format!("Invalid format string in {}(): {}", function_name, error),
+                    file_path: String::new(),
+                    line: call_node.start_position().row + 1,
+                    column: call_node.start_position().column + 1,
+                    suggestion: Some(
+                        "Review format string syntax according to C standard".to_string(),
+                    ),
+                    ..Default::default()
+                });
+            }
+
+            // Count actual arguments
+            let arg_count = self.count_arguments(call_node, function_name);
+
+            // Check if argument count matches specifier count
+            // Note: This is a simplified check - it doesn't account for * width/precision
+            // which consume additional arguments
+            if specifier_count != arg_count && !has_format_errors {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: format!(
+                        "Argument count mismatch in {}(): format string expects {} arguments but {} provided",
+                        function_name, specifier_count, arg_count
+                    ),
+                    file_path: String::new(),
+                    line: call_node.start_position().row + 1,
+                    column: call_node.start_position().column + 1,
+                    suggestion: Some(
+                        "Ensure the number of arguments matches format specifiers".to_string()
+                    ),
+                    ..Default::default()
+                });
+            }
+        }
+        // If format string is not a literal, we cannot validate it statically
+        // This is acceptable - we only check what we can analyze
+    }
+}

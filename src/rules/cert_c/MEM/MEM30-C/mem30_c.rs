@@ -1,5 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
@@ -90,7 +91,7 @@ impl MemoryAnalyzer {
 
     fn process_function_call(&mut self, node: &Node, source: &str) {
         if let Some(function_node) = node.child_by_field_name("function") {
-            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+            let function_name = get_node_text(&function_node, source);
 
             match function_name {
                 "free" => {
@@ -326,8 +327,7 @@ impl MemoryAnalyzer {
         match node.kind() {
             "call_expression" => {
                 if let Some(function_node) = node.child_by_field_name("function") {
-                    let function_name =
-                        &source[function_node.start_byte()..function_node.end_byte()];
+                    let function_name = get_node_text(&function_node, source);
 
                     if function_name == "realloc" {
                         // Look for dangerous realloc patterns
@@ -395,7 +395,7 @@ impl MemoryAnalyzer {
         violations: &mut Vec<RuleViolation>,
     ) {
         if node.kind() == "for_statement" || node.kind() == "while_statement" {
-            let loop_text = &source[node.start_byte()..node.end_byte()];
+            let loop_text = get_node_text(node, source);
 
             // Look for patterns like: p = p->next after free(p)
             if loop_text.contains("free(") && loop_text.contains("->next") {
@@ -447,7 +447,7 @@ impl MemoryAnalyzer {
 
     fn extract_variable_name(&self, node: &Node, source: &str) -> String {
         match node.kind() {
-            "identifier" => source[node.start_byte()..node.end_byte()].to_string(),
+            "identifier" => get_node_text(node, source).to_string(),
             "pointer_expression" => {
                 // Handle *ptr
                 if let Some(argument) = node.child_by_field_name("argument") {

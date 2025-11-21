@@ -1,5 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use std::collections::HashSet;
 use tree_sitter::Node;
 
@@ -54,7 +55,7 @@ impl Pre31C {
 
     fn check_macro_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(function_node) = node.child_by_field_name("function") {
-            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+            let function_name = get_node_text(&function_node, source);
 
             // Check if this is a potentially unsafe macro
             if self.is_unsafe_macro(function_name) {
@@ -246,7 +247,7 @@ impl Pre31C {
             for i in 0..arguments.child_count() {
                 if let Some(child) = arguments.child(i) {
                     if child.kind() != "," {
-                        let node_text = &source[child.start_byte()..child.end_byte()];
+                        let node_text = get_node_text(&child, source);
                         if node_text.trim() == arg_text.trim() {
                             return Some(child);
                         }
@@ -264,7 +265,7 @@ impl Pre31C {
             "call_expression" => {
                 // Check if it's a function call that might have side effects
                 if let Some(func_node) = node.child_by_field_name("function") {
-                    let func_name = &source[func_node.start_byte()..func_node.end_byte()];
+                    let func_name = get_node_text(&func_node, source);
                     self.contains_function_call_with_side_effects(func_name)
                 } else {
                     false
@@ -291,7 +292,7 @@ impl Pre31C {
             for i in 0..arguments.child_count() {
                 if let Some(child) = arguments.child(i) {
                     if child.kind() != "," {
-                        let arg_text = source[child.start_byte()..child.end_byte()].to_string();
+                        let arg_text = get_node_text(&child, source).to_string();
                         args.push(arg_text.trim().to_string());
                     }
                 }
