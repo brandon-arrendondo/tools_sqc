@@ -1,5 +1,5 @@
 ---
-rule_id: MEM04-C
+rule_id: MSC41-C
 priority: P2
 status: active
 assigned_to: BRANDON
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - MEM
+  - MSC
 ---
 
-# P2-MEM04-C - MEM04-C Implementation
+# P2-MSC41-C - MSC41-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** BRANDON
-**Category:** MEM
+**Category:** MSC
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** MEM04-C
+**Rule ID:** MSC41-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/MEM04-C.+Beware+of+zero-length+allocations
+https://wiki.sei.cmu.edu/confluence/display/c/MSC41-C.+Never+hard+code+sensitive+information
 
 ---
 
 ## Task
 
-Implement or verify MEM04-C with 100% test pass rate and DRY compliance.
+Implement or verify MSC41-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for MEM04-C
-2. Check if implementation exists in `src/rules/cert_c/MEM/MEM04-C/`
+1. Study the CERT C wiki page for MSC41-C
+2. Check if implementation exists in `src/rules/cert_c/MSC/MSC41-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,7 +193,48 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Date:** 2025-11-21
+**Status:** ✅ COMPLETED
+
+### Implementation Summary
+Successfully implemented MSC41-C to detect hard-coded sensitive information (passwords, keys, credentials) in source code. The rule detects two main patterns:
+1. String literals passed to sensitive functions (authentication, crypto, database functions)
+2. String literals assigned to variables with sensitive names
+
+### Implementation Details
+- **File Created:** `src/rules/cert_c/MSC/MSC41-C/msc41_c.rs` (271 lines)
+- **Detection Logic:**
+  - Identifies sensitive functions by keyword matching (auth, password, key, encrypt, database, etc.)
+  - For calls to sensitive functions: Flags ANY non-empty string literal argument
+  - For variable declarations: Flags string literals assigned to sensitively-named variables
+  - Uses heuristics for standalone string literals that look like credentials
+- **Key Insights:**
+  - Context matters: Any string passed to `authenticate()` is sensitive, regardless of content
+  - Simple pattern: "correct code" in `authenticate("correct code")` is a violation
+  - Variable names like "password", "apikey", "secret" combined with string literals are violations
+- **Utilities Used:** `get_node_text()` from `src/utility/cert_c/ast_utils.rs` (DRY compliance)
+
+### Test Results
+```
+test rules::cert_c::integration::generated_tests::test_msc41_c_fail_wiki_hard_coded_database_password ... ok
+test rules::cert_c::integration::generated_tests::test_msc41_c_pass_wiki_c23memset_explicit ... ok
+
+test result: ok. 2 passed; 0 failed
+```
+
+**Pass Rate:** 100% (2/2 tests passing)
+
+### Configuration
+- **Enabled:** Yes (`enabled = true` in MSC41-C.toml)
+- **Registered:** Yes (added to mod.rs and RuleRegistry)
+- **Severity:** High
+- **Priority:** P6
+- **Category:** Rule
+
+### Files Modified
+1. `src/rules/cert_c/MSC/MSC41-C/msc41_c.rs` (created, 271 lines)
+2. `src/rules/cert_c/MSC/MSC41-C/MSC41-C.toml` (enabled rule)
+3. `src/rules/cert_c/mod.rs` (registered module and rule)
 
 ---
 

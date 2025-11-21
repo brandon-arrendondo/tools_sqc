@@ -1,5 +1,5 @@
 ---
-rule_id: EXP47-C
+rule_id: FLP04-C
 priority: P2
 status: active
 assigned_to: BRANDON
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - EXP
+  - FLP
 ---
 
-# P2-EXP47-C - EXP47-C Implementation
+# P2-FLP04-C - FLP04-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** BRANDON
-**Category:** EXP
+**Category:** FLP
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** EXP47-C
+**Rule ID:** FLP04-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/EXP47-C.+Do+not+call+va_arg+with+an+argument+of+the+incorrect+type
+https://wiki.sei.cmu.edu/confluence/display/c/FLP04-C.+Check+floating-point+inputs+for+exceptional+values
 
 ---
 
 ## Task
 
-Implement or verify EXP47-C with 100% test pass rate and DRY compliance.
+Implement or verify FLP04-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for EXP47-C
-2. Check if implementation exists in `src/rules/cert_c/EXP/EXP47-C/`
+1. Study the CERT C wiki page for FLP04-C
+2. Check if implementation exists in `src/rules/cert_c/FLP/FLP04-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -183,17 +183,44 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-20 - Claude Code (via /work-active)
+**Implementation Complete**
+
+1. **Studied CERT C Rule FLP04-C**
+   - Rule detects unvalidated floating-point inputs from scanf/fscanf
+   - Exceptional values (NaN, infinity) can corrupt data
+   - Validation required: isinf() and isnan() checks
+
+2. **Implemented Rule Logic** (src/rules/cert_c/FLP/FLP04-C/flp04_c.rs)
+   - Detects scanf, fscanf, sscanf with float format specifiers (%f, %lf, %e, %g, %a)
+   - Extracts variable names from pointer expressions (&var)
+   - Tracks float input variables within each function
+   - Checks for validation with isinf()/isnan()/fpclassify()
+   - Flags usage without validation
+   - Uses shared utilities (get_node_text)
+
+3. **Registration and Configuration**
+   - Added module declaration in src/rules/cert_c/mod.rs (line 319-320)
+   - Registered in rule registry (line 542)
+   - Enabled in FLP04-C.toml and rules-all.toml
+
+4. **Testing**
+   - Test results: 2/2 passing (100% pass rate)
+     - test_flp04_c_fail_wiki_noncompliant_1: PASSED (detects scanf without validation)
+     - test_flp04_c_pass_wiki_compliant_1: PASSED (allows with validation)
+   - Build successful with no errors
+
+5. **Commit**: 683c6b1 "P2-FLP04-C: Implementation complete"
 
 ---
 

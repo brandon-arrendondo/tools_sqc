@@ -1,45 +1,45 @@
 ---
-rule_id: ERR01-C
+rule_id: MEM35-C
 priority: P2
 status: active
-assigned_to: ERIC
+assigned_to: BRANDON
 created: 2025-11-17
 last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - ERR
+  - MEM
 ---
 
-# P2-ERR01-C - ERR01-C Implementation
+# P2-MEM35-C - MEM35-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
-**Category:** ERR
+**Assigned To:** BRANDON
+**Category:** MEM
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** ERR01-C
+**Rule ID:** MEM35-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/ERR01-C.+Use+ferror()+rather+than+errno+to+check+for+FILE+stream+errors
+https://wiki.sei.cmu.edu/confluence/display/c/MEM35-C.+Allocate+sufficient+memory+for+an+object
 
 ---
 
 ## Task
 
-Implement or verify ERR01-C with 100% test pass rate and DRY compliance.
+Implement or verify MEM35-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for ERR01-C
-2. Check if implementation exists in `src/rules/cert_c/ERR/ERR01-C/`
+1. Study the CERT C wiki page for MEM35-C
+2. Check if implementation exists in `src/rules/cert_c/MEM/MEM35-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,7 +193,50 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Date:** 2025-11-21
+**Status:** ✅ COMPLETED
+
+### Implementation Summary
+Successfully implemented MEM35-C to detect insufficient memory allocation patterns. The rule detects two main categories of violations:
+1. Using sizeof(pointer) instead of sizeof(*pointer) or sizeof(type)
+2. Type mismatches in array allocations (e.g., `long *p = malloc(len * sizeof(int))`)
+
+### Implementation Details
+- **File Created:** `src/rules/cert_c/MEM/MEM35-C/mem35_c.rs` (268 lines)
+- **Detection Logic:**
+  - Recursively traverses AST looking for memory allocation calls (malloc, calloc, realloc, aligned_alloc)
+  - For sizeof(pointer) violations: Checks if sizeof argument is a simple pointer variable name (not dereferenced, not a type)
+  - For type mismatch violations: Extracts target type from either init_declarator or cast_expression, compares with sizeof argument
+  - Correctly allows `sizeof(*ptr)` as the proper pattern (not a violation)
+- **Key Insights:**
+  - Cast expressions in assignments: `p = (long *)malloc(...)` - extracts type from cast
+  - Dereference pattern: `sizeof(*ptr)` is CORRECT and should not be flagged
+  - Type comparison: Normalizes and compares base types, allows compatible types
+- **Utilities Used:** `get_node_text()` from `src/utility/cert_c/ast_utils.rs` (DRY compliance)
+
+### Test Results
+```
+test rules::cert_c::integration::generated_tests::test_mem35_c_fail_wiki_integer ... ok
+test rules::cert_c::integration::generated_tests::test_mem35_c_fail_wiki_pointer ... ok
+test rules::cert_c::integration::generated_tests::test_mem35_c_pass_wiki_integer ... ok
+test rules::cert_c::integration::generated_tests::test_mem35_c_pass_wiki_pointer ... ok
+
+test result: ok. 4 passed; 0 failed
+```
+
+**Pass Rate:** 100% (4/4 tests passing)
+
+### Configuration
+- **Enabled:** Yes (`enabled = true` in MEM35-C.toml)
+- **Registered:** Yes (added to mod.rs and RuleRegistry)
+- **Severity:** High
+- **Priority:** P6
+- **Category:** Rule
+
+### Files Modified
+1. `src/rules/cert_c/MEM/MEM35-C/mem35_c.rs` (created, 268 lines)
+2. `src/rules/cert_c/MEM/MEM35-C/MEM35-C.toml` (enabled rule)
+3. `src/rules/cert_c/mod.rs` (registered module and rule)
 
 ---
 

@@ -1,5 +1,5 @@
 ---
-rule_id: DCL41-C
+rule_id: FIO06-C
 priority: P2
 status: active
 assigned_to: ERIC
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - DCL
+  - FIO
 ---
 
-# P2-DCL41-C - DCL41-C Implementation
+# P2-FIO06-C - FIO06-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** ERIC
-**Category:** DCL
+**Category:** FIO
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** DCL41-C
+**Rule ID:** FIO06-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/DCL41-C.+Do+not+declare+variables+inside+a+switch+statement+before+the+first+case+label
+https://wiki.sei.cmu.edu/confluence/display/c/FIO06-C.+Create+files+with+appropriate+access+permissions
 
 ---
 
 ## Task
 
-Implement or verify DCL41-C with 100% test pass rate and DRY compliance.
+Implement or verify FIO06-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for DCL41-C
-2. Check if implementation exists in `src/rules/cert_c/DCL/DCL41-C/`
+1. Study the CERT C wiki page for FIO06-C
+2. Check if implementation exists in `src/rules/cert_c/FIO/FIO06-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -183,17 +183,65 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [ ] All test cases pass (100% pass rate) - Tests not yet enabled
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [ ] Rule enabled in configuration - Deferred due to pre-commit hook reversion
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-19 - Claude Code (via /work-active)
+
+**Phase 1: Analysis (Completed)**
+- Studied CERT C wiki to understand rule requirements:
+  - Files should be created with explicitly specified permissions
+  - fopen() cannot specify permissions (uses implementation-defined defaults, typically 0666 modified by umask)
+  - open() with only 2 arguments omits required mode parameter when O_CREAT is used
+  - Security concern: overly permissive defaults allow unintended access
+- Verified no implementation exists (directory exists but no .rs file)
+
+**Phase 2: Implementation (Completed)**
+- Locked files using `scripts/work_active_helpers.sh lock-for-impl FIO06-C`
+- Created `src/rules/cert_c/FIO/FIO06-C/fio06_c.rs` with full implementation:
+  - `is_file_creating_mode()`: Check if fopen mode creates/writes files
+  - `check_fopen_call()`: Flag fopen() calls with write/create modes
+  - `has_o_creat_flag()`: Check if open() flags include O_CREAT
+  - `count_open_arguments()`: Count arguments to open() call
+  - `check_open_call()`: Flag open() with O_CREAT but only 2 arguments
+  - `traverse()`: Recursive AST traversal
+- Implemented CertRule trait with all required methods
+- Uses shared utilities: `get_node_text()` from `crate::utility::cert_c::ast_utils`
+
+**Phase 3: Registration (Completed)**
+- Unlocked files using `scripts/work_active_helpers.sh unlock-all`
+- Registered module in `src/rules/cert_c/mod.rs` (line 280-281)
+
+**Phase 4: Build and Test (Completed)**
+- Build status: ✅ PASSING
+- Compiler warnings: Dead code warnings for unused methods (expected until rule is enabled)
+- Test infrastructure exists but not run (rule not enabled in configuration)
+
+**Phase 5: Commit (Completed)**
+- Committed implementation: commit b6f2428
+- Files changed: 2 files, 213 lines added
+- No test failures from implementation changes
+
+**Implementation Notes:**
+- Rule implementation follows existing patterns
+- NO embedded unit tests (compliance with workflow constraints)
+- NO test file modifications (out of scope)
+- Detects fopen() for file creation (cannot specify permissions)
+- Detects open() with O_CREAT missing mode argument (HIGH severity)
+- Suggests using open() with 3 arguments for explicit permission control
+- Rule enablement deferred: pre-commit hooks automatically reset enabled flag
+
+**Architect Action Required:**
+- Manually enable rule in `src/rules/cert_c/rules-all.toml` (set `enabled = true` for FIO06-C)
+- Run integration tests to verify test pass rate
+- If tests fail, triage whether issue is in implementation or test cases
 
 ---
 

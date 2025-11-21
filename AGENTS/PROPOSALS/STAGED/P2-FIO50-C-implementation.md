@@ -1,5 +1,5 @@
 ---
-rule_id: INT35-C
+rule_id: FIO50-C
 priority: P2
 status: active
 assigned_to: BRANDON
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - INT
+  - FIO
 ---
 
-# P2-INT35-C - INT35-C Implementation
+# P2-FIO50-C - FIO50-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** BRANDON
-**Category:** INT
+**Category:** FIO
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** INT35-C
+**Rule ID:** FIO50-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/INT35-C.+Use+correct+integer+precisions
+https://wiki.sei.cmu.edu/confluence/display/c/FIO50-C.+PP.+Do+not+alternately+input+and+output+from+a+file+stream+without+an+intervening+positioning+call
 
 ---
 
 ## Task
 
-Implement or verify INT35-C with 100% test pass rate and DRY compliance.
+Implement or verify FIO50-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for INT35-C
-2. Check if implementation exists in `src/rules/cert_c/INT/INT35-C/`
+1. Study the CERT C wiki page for FIO50-C
+2. Check if implementation exists in `src/rules/cert_c/FIO/FIO50-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -183,17 +183,51 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-20 - Claude Code (via /work-active)
+**Implementation Complete**
+
+1. **Studied CERT C Rule FIO50-C/CPP**
+   - Wiki page for C rule doesn't exist (it's primarily a C++ rule)
+   - Analyzed C++ version (FIO50-CPP) for requirements
+   - Key requirement: No alternating I/O without positioning calls
+
+2. **Discovered C++ Test Cases**
+   - Test cases use C++ std::fstream and stream operators
+   - Need to detect both C (fread/fwrite) and C++ (<</>>) patterns
+   - Updated implementation to support both languages
+
+3. **Implemented Rule Logic** (src/rules/cert_c/FIO/FIO50-C/fio50_c.rs)
+   - Tracks file operations on FILE* streams and C++ streams
+   - Detects C functions: fread, fwrite, fscanf, fprintf, etc.
+   - Detects C++ operators: << (output), >> (input)
+   - Detects positioning: fflush, fseek, fsetpos, rewind (C) and seekg/seekp (C++)
+   - Identifies violations when operations alternate without positioning
+   - Uses shared utilities (get_node_text)
+
+4. **Registration and Configuration**
+   - Added module declaration in src/rules/cert_c/mod.rs (line 304-305)
+   - Registered in rule registry (line 531)
+   - Enabled in FIO50-C.toml configuration
+
+5. **Testing**
+   - Tests auto-generated from C++ test files
+   - Test results: 2/2 passing (100% pass rate)
+     - test_fio50_c_fail_wiki_noncompliant_1: PASSED (detects <</>>) without seekg)
+     - test_fio50_c_pass_wiki_compliant_1: PASSED (allows seekg between ops)
+   - Build successful with no errors
+   - All pre-commit hooks passed
+
+6. **Commit**: e33ff35 "P2-FIO50-C: Implementation complete"
 
 ---
 
