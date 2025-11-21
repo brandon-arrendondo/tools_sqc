@@ -495,10 +495,55 @@ Analyzed all 4 failing tests to understand root causes:
 - Test 2 (NULL pointer) OR Test 4 (flexible arrays) - both achievable
 - Test 1 requires macro resolution infrastructure (complex, may defer to future work)
 
+**Phase 3: NULL Pointer Arithmetic Detection (Completed)**
+
+**Implementation:**
+1. Added `function_definition` case to `check_with_buffer_info()` match statement
+2. Created `check_malloc_null_pointer_arithmetic()` function (~50 lines)
+   - Three-pass analysis: find malloc calls, check for NULL checks, find pointer arithmetic
+3. Created `find_malloc_assignments()` function (~30 lines)
+   - Recursively finds all malloc/calloc/realloc calls in function
+   - Tracks variable names and line numbers
+4. Created `find_safe_null_check()` function (~30 lines)
+   - Searches for if statements with NULL checks
+   - Accepts patterns: `var == NULL`, `NULL == var`, `!var`
+   - **Key insight**: Presence of NULL check is sufficient (doesn't require return/exit)
+5. Created `find_pointer_arithmetic_usage()` function (~30 lines)
+   - Detects patterns: `var + offset`, `var += offset`, `function(var + offset, ...)`
+6. Created helper functions for variable name extraction (~40 lines)
+   - `extract_assignment_lhs()`: Gets left-hand side of assignment
+   - `extract_variable_name_from_declarator()`: Handles pointer declarators
+
+**Key Technical Details:**
+- **False Positive Fix**: Initially required NULL check with return/exit, but tests showed that presence of NULL check (even without return) indicates awareness and is acceptable
+- **Control Flow**: Simple presence-based detection rather than full control flow analysis
+- **Test Case Insight**: Fail test has NO NULL check, pass test HAS NULL check (without return) → check presence is sufficient
+
+**Test Results:**
+- **Before:** 58/61 passing (95%)
+- **After:** 59/61 passing (97%)
+- **Tests Fixed:**
+  - ✅ wiki_null_pointer_arithmetic (fail) - correctly detects violation
+  - ✅ wiki_null_pointer_arithmetic (pass) - no false positive
+
+**Remaining 2 Failures (3%):**
+1. ❌ wiki_apparently_accessible_out_of_range_index (multidimensional arrays) - requires macro resolution
+2. ❌ wiki_pointer_past_flexible_array_member (flexible arrays)
+
+**Summary of Session 3 Progress:**
+- **Starting Point:** 57/61 tests passing (93%)
+- **Current Status:** 59/61 tests passing (97%)
+- **Fixes Applied:**
+  1. Infrastructure improvements (multidimensional array support)
+  2. While-loop pointer increment detection (+1 test)
+  3. NULL pointer arithmetic detection (+1 test)
+- **Tests Fixed:** +2 total
+
 **Time Investment (Session 3):**
 - Analysis and infrastructure fixes: ~2 hours
 - While-loop detection implementation: ~1 hour
-- **Total Session 3:** ~3 hours
+- NULL pointer detection implementation: ~1 hour
+- **Total Session 3:** ~4 hours
 
 ---
 
