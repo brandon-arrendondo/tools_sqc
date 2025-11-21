@@ -8,6 +8,6 @@ float calc_percentage(float value) {
 void float_routine(void) {
   float value = 99.0f;
   long double percentage;
-  
+
   percentage = (long double) calc_percentage(value);  // OK: Explicit cast at call site
 }

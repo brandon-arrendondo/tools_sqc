@@ -38,8 +38,12 @@ impl Fio41C {
         if node.kind() == "call_expression" {
             if let Some(func_node) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func_node, source);
-                
-                if func_name == "getc" || func_name == "putc" || func_name == "getwc" || func_name == "putwc" {
+
+                if func_name == "getc"
+                    || func_name == "putc"
+                    || func_name == "getwc"
+                    || func_name == "putwc"
+                {
                     // Check if the stream argument is a function call (has side effects)
                     if let Some(args) = node.child_by_field_name("arguments") {
                         // Look for stream argument

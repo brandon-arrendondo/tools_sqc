@@ -4,6 +4,13 @@
  * Status: FAIL - Should trigger FIO15-C violation
  */
 
-% cd /tmp/app/ 
-% rm -rf tmpdir
-% ln -s /etc tmpdir
+#include <stdio.h>
+
+void unsafe_file_operation(void) {
+  // VIOLATION: Creating file in /tmp without checking if it's a secure directory
+  FILE *fp = fopen("/tmp/appdata/config.txt", "w");
+  if (fp) {
+    fprintf(fp, "sensitive data");
+    fclose(fp);
+  }
+}

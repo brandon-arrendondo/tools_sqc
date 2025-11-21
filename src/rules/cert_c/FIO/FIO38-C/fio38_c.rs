@@ -39,7 +39,7 @@ impl Fio38C {
         if node.kind() == "call_expression" {
             if let Some(func_node) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func_node, source);
-                
+
                 if func_name == "memcpy" || func_name == "memmove" {
                     // Check if copying a FILE object
                     if let Some(args) = node.child_by_field_name("arguments") {

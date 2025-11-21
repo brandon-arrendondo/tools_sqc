@@ -4,22 +4,25 @@
  * Status: FAIL - Should trigger FIO15-C violation
  */
 
-char *file_name;
-FILE *fp;
+#include <stdio.h>
+#include <stdlib.h>
 
-/* Initialize file_name */
+void process_file(void) {
+  FILE *fp;
 
-fp = fopen(file_name, "w");
-if (fp == NULL) {
-  /* Handle error */
-}
+  // VIOLATION: Using /tmp directly without security checks
+  fp = fopen("/tmp/myfile", "w");
+  if (fp == NULL) {
+    return;
+  }
 
-/* ... Process file ... */
+  fprintf(fp, "data");
 
-if (fclose(fp) != 0) {
-  /* Handle error */
-}
+  if (fclose(fp) != 0) {
+    return;
+  }
 
-if (remove(file_name) != 0) {
-  /* Handle error */
+  if (remove("/tmp/myfile") != 0) {
+    return;
+  }
 }

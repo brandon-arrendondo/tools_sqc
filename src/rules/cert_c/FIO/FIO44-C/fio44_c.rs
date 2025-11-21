@@ -28,20 +28,25 @@ impl CertRule for Fio44C {
 
     fn check(&self, root: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        
+
         // Track fpos_t variables and whether they were initialized by fgetpos
         let mut fpos_vars = std::collections::HashMap::new();
         self.track_fpos_vars(root, source, &mut fpos_vars);
-        
+
         // Check fsetpos calls
         self.check_fsetpos_calls(root, source, &fpos_vars, &mut violations);
-        
+
         violations
     }
 }
 
 impl Fio44C {
-    fn track_fpos_vars(&self, node: &Node, source: &str, fpos_vars: &mut std::collections::HashMap<String, bool>) {
+    fn track_fpos_vars(
+        &self,
+        node: &Node,
+        source: &str,
+        fpos_vars: &mut std::collections::HashMap<String, bool>,
+    ) {
         // Look for fpos_t declarations
         if node.kind() == "declaration" {
             let decl_text = get_node_text(node, source);
@@ -54,7 +59,7 @@ impl Fio44C {
                 }
             }
         }
-        
+
         // Look for fgetpos calls
         if node.kind() == "call_expression" {
             if let Some(func_node) = node.child_by_field_name("function") {
@@ -72,15 +77,21 @@ impl Fio44C {
                 }
             }
         }
-        
+
         // Recurse
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
             self.track_fpos_vars(&child, source, fpos_vars);
         }
     }
-    
-    fn check_fsetpos_calls(&self, node: &Node, source: &str, fpos_vars: &std::collections::HashMap<String, bool>, violations: &mut Vec<RuleViolation>) {
+
+    fn check_fsetpos_calls(
+        &self,
+        node: &Node,
+        source: &str,
+        fpos_vars: &std::collections::HashMap<String, bool>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         if node.kind() == "call_expression" {
             if let Some(func_node) = node.child_by_field_name("function") {
                 if get_node_text(&func_node, source) == "fsetpos" {
@@ -88,7 +99,7 @@ impl Fio44C {
                         if let Some(second_arg) = args.named_child(1) {
                             let arg_text = get_node_text(&second_arg, source);
                             let var_name = arg_text.trim_start_matches('&').trim();
-                            
+
                             // Check if this fpos_t was initialized by fgetpos
                             if let Some(&initialized) = fpos_vars.get(var_name) {
                                 if !initialized {
@@ -123,19 +134,19 @@ impl Fio44C {
                 }
             }
         }
-        
+
         // Recurse
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
             self.check_fsetpos_calls(&child, source, fpos_vars, violations);
         }
     }
-    
+
     fn get_identifier<'a>(&self, node: &Node<'a>, source: &'a str) -> Option<&'a str> {
         if node.kind() == "identifier" {
             return Some(get_node_text(node, source));
         }
-        
+
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
             if let Some(ident) = self.get_identifier(&child, source) {

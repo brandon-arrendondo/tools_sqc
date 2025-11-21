@@ -91,11 +91,11 @@ impl Pos02C {
         // More lenient check: look for privilege dropping anywhere in the source
         // This is because the privilege drop might be in the calling function
         let full_source = source;
-        
+
         // Check for privilege-dropping calls anywhere in the source
-        full_source.contains("setuid") ||
-        full_source.contains("setgid") ||
-        full_source.contains("seteuid") ||
-        full_source.contains("setegid")
+        full_source.contains("setuid")
+            || full_source.contains("setgid")
+            || full_source.contains("seteuid")
+            || full_source.contains("setegid")
     }
 }
