@@ -183,17 +183,49 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (No test files exist - acceptable per project guidelines)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-21 - Claude Code (via /work-active)
+
+**Implementation Complete - No Test Cases Available**
+
+**Phase 1: Analysis and Research**
+- Studied CERT C wiki for ERR04-C
+- Reviewed rule requirements: Choose appropriate termination strategy
+- Key insight: `abort()` and `_Exit()` don't flush buffered I/O or close file descriptors
+- Detection strategy: Flag `abort()`/`_Exit()` calls within functions that perform file I/O
+
+**Phase 2: Implementation**
+- Created `src/rules/cert_c/ERR/ERR04-C/err04_c.rs`
+- Detection logic:
+  - Find all `abort()` or `_Exit()` calls
+  - Traverse AST to find containing function
+  - Check if function contains file I/O operations (fopen, fprintf, fwrite, etc.)
+  - Report violation if both conditions met
+- Uses shared utilities: `get_node_text()` for DRY compliance
+
+**Phase 3: Registration and Configuration**
+- Registered rule in `src/rules/cert_c/mod.rs`:
+  - Added module declaration at line 130-131
+  - Added registry entry at line 468
+- Enabled rule in `ERR04-C.toml` (set `enabled = true`)
+
+**Phase 4: Testing**
+- Verified no test directory exists: `tests/ERR04-C/` not found
+- This is acceptable per project guidelines: "If no test cases exist for a rule, implement WITHOUT tests"
+- Build successful with no compilation errors
+
+**Build Status:** ✅ PASSING
+**Test Status:** N/A (No test cases exist for this rule)
+**DRY Compliance:** ✅ Uses `get_node_text()` utility
 
 ---
 
