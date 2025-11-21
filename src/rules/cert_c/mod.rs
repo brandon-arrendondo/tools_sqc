@@ -379,6 +379,9 @@ pub mod mem31_c;
 #[path = "MEM/MEM33-C/mem33_c.rs"]
 pub mod mem33_c;
 
+#[path = "MEM/MEM35-C/mem35_c.rs"]
+pub mod mem35_c;
+
 #[path = "MSC/MSC32-C/msc32_c.rs"]
 pub mod msc32_c;
 
@@ -581,6 +584,7 @@ impl RuleRegistry {
         registry.register(Box::new(mem30_c::Mem30C));
         registry.register(Box::new(mem31_c::Mem31C));
         registry.register(Box::new(mem33_c::Mem33C::new()));
+        registry.register(Box::new(mem35_c::Mem35C::new()));
         registry.register(Box::new(msc32_c::Msc32C));
         registry.register(Box::new(pos01_c::POS01C));
         registry.register(Box::new(pos05_c::Pos05C));

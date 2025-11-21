@@ -193,7 +193,50 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Date:** 2025-11-21
+**Status:** ✅ COMPLETED
+
+### Implementation Summary
+Successfully implemented MEM35-C to detect insufficient memory allocation patterns. The rule detects two main categories of violations:
+1. Using sizeof(pointer) instead of sizeof(*pointer) or sizeof(type)
+2. Type mismatches in array allocations (e.g., `long *p = malloc(len * sizeof(int))`)
+
+### Implementation Details
+- **File Created:** `src/rules/cert_c/MEM/MEM35-C/mem35_c.rs` (268 lines)
+- **Detection Logic:**
+  - Recursively traverses AST looking for memory allocation calls (malloc, calloc, realloc, aligned_alloc)
+  - For sizeof(pointer) violations: Checks if sizeof argument is a simple pointer variable name (not dereferenced, not a type)
+  - For type mismatch violations: Extracts target type from either init_declarator or cast_expression, compares with sizeof argument
+  - Correctly allows `sizeof(*ptr)` as the proper pattern (not a violation)
+- **Key Insights:**
+  - Cast expressions in assignments: `p = (long *)malloc(...)` - extracts type from cast
+  - Dereference pattern: `sizeof(*ptr)` is CORRECT and should not be flagged
+  - Type comparison: Normalizes and compares base types, allows compatible types
+- **Utilities Used:** `get_node_text()` from `src/utility/cert_c/ast_utils.rs` (DRY compliance)
+
+### Test Results
+```
+test rules::cert_c::integration::generated_tests::test_mem35_c_fail_wiki_integer ... ok
+test rules::cert_c::integration::generated_tests::test_mem35_c_fail_wiki_pointer ... ok
+test rules::cert_c::integration::generated_tests::test_mem35_c_pass_wiki_integer ... ok
+test rules::cert_c::integration::generated_tests::test_mem35_c_pass_wiki_pointer ... ok
+
+test result: ok. 4 passed; 0 failed
+```
+
+**Pass Rate:** 100% (4/4 tests passing)
+
+### Configuration
+- **Enabled:** Yes (`enabled = true` in MEM35-C.toml)
+- **Registered:** Yes (added to mod.rs and RuleRegistry)
+- **Severity:** High
+- **Priority:** P6
+- **Category:** Rule
+
+### Files Modified
+1. `src/rules/cert_c/MEM/MEM35-C/mem35_c.rs` (created, 268 lines)
+2. `src/rules/cert_c/MEM/MEM35-C/MEM35-C.toml` (enabled rule)
+3. `src/rules/cert_c/mod.rs` (registered module and rule)
 
 ---
 
