@@ -1,16 +1,16 @@
 /*
  * Rule: FLP07-C
  * Source: wiki
- * Status: PASS - Compliant solution
+ * Status: PASS - Compliant solution - cast at call site
  */
 
 float calc_percentage(float value) {
-  return (float)(value * 0.1f);
+  return value * 0.1f;
 }
 
 void float_routine(void) {
   float value = 99.0f;
   long double percentage;
 
-  percentage = calc_percentage(value);
+  percentage = (long double) calc_percentage(value);  // Explicit cast at call site
 }
