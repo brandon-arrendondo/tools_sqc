@@ -334,6 +334,9 @@ pub mod flp34_c;
 #[path = "FLP/FLP36-C/flp36_c.rs"]
 pub mod flp36_c;
 
+#[path = "INT/INT00-C/int00_c.rs"]
+pub mod int00_c;
+
 #[path = "INT/INT01-C/int01_c.rs"]
 pub mod int01_c;
 
@@ -564,6 +567,7 @@ impl RuleRegistry {
         registry.register(Box::new(flp01_c::Flp01C));
         registry.register(Box::new(flp34_c::Flp34C));
         registry.register(Box::new(flp36_c::Flp36C));
+        registry.register(Box::new(int00_c::Int00C));
         registry.register(Box::new(int01_c::Int01C));
         registry.register(Box::new(int09_c::Int09C));
         registry.register(Box::new(int10_c::Int10C));
