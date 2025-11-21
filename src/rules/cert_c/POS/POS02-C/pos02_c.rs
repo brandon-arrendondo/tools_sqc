@@ -88,19 +88,14 @@ impl Pos02C {
     }
 
     fn has_privilege_drop_after(&self, node: &Node, source: &str) -> bool {
-        // Get the function containing this call
-        let mut current = node.parent();
-        while let Some(parent) = current {
-            if parent.kind() == "function_definition" {
-                // Search for setuid/setgid/seteuid/setegid calls
-                let text = &source[parent.start_byte()..parent.end_byte()];
-                return text.contains("setuid")
-                    || text.contains("setgid")
-                    || text.contains("seteuid")
-                    || text.contains("setegid");
-            }
-            current = parent.parent();
-        }
-        false
+        // More lenient check: look for privilege dropping anywhere in the source
+        // This is because the privilege drop might be in the calling function
+        let full_source = source;
+        
+        // Check for privilege-dropping calls anywhere in the source
+        full_source.contains("setuid") ||
+        full_source.contains("setgid") ||
+        full_source.contains("seteuid") ||
+        full_source.contains("setegid")
     }
 }

@@ -316,6 +316,21 @@ pub mod fio23_c;
 #[path = "FIO/FIO51-C/fio51_c.rs"]
 pub mod fio51_c;
 
+#[path = "FIO/FIO15-C/fio15_c.rs"]
+pub mod fio15_c;
+
+#[path = "FIO/FIO32-C/fio32_c.rs"]
+pub mod fio32_c;
+
+#[path = "FIO/FIO38-C/fio38_c.rs"]
+pub mod fio38_c;
+
+#[path = "FIO/FIO41-C/fio41_c.rs"]
+pub mod fio41_c;
+
+#[path = "FIO/FIO44-C/fio44_c.rs"]
+pub mod fio44_c;
+
 #[path = "FLP/FLP37-C/flp37_c.rs"]
 pub mod flp37_c;
 
@@ -426,6 +441,10 @@ pub mod pre05_c;
 
 #[path = "PRE/PRE32-C/pre32_c.rs"]
 pub mod pre32_c;
+
+#[path = "PRE/PRE00-C/pre00_c.rs"]
+pub mod pre00_c;
+
 #[path = "STR/STR30-C/str30_c.rs"]
 pub mod str30_c;
 
@@ -458,6 +477,9 @@ pub mod sig31_c;
 
 #[path = "SIG/SIG35-C/sig35_c.rs"]
 pub mod sig35_c;
+
+#[path = "SIG/SIG34-C/sig34_c.rs"]
+pub mod sig34_c;
 
 use super::{CertRule, RuleRegistry};
 
@@ -565,6 +587,11 @@ impl RuleRegistry {
         registry.register(Box::new(fio17_c::Fio17C));
         registry.register(Box::new(fio23_c::Fio23C));
         registry.register(Box::new(fio51_c::Fio51C));
+        registry.register(Box::new(fio15_c::Fio15C));
+        registry.register(Box::new(fio32_c::Fio32C));
+        registry.register(Box::new(fio38_c::Fio38C));
+        registry.register(Box::new(fio41_c::Fio41C));
+        registry.register(Box::new(fio44_c::Fio44C));
         registry.register(Box::new(flp37_c::Flp37C));
         registry.register(Box::new(flp07_c::Flp07C));
         registry.register(Box::new(flp00_c::Flp00C));
@@ -602,6 +629,7 @@ impl RuleRegistry {
         registry.register(Box::new(pre09_c::Pre09C));
         registry.register(Box::new(pre05_c::Pre05C));
         registry.register(Box::new(pre32_c::Pre32C));
+        registry.register(Box::new(pre00_c::Pre00C));
         registry.register(Box::new(str30_c::Str30C));
         registry.register(Box::new(str04_c::STR04C));
         registry.register(Box::new(sig31_c::Sig31C));
@@ -613,6 +641,7 @@ impl RuleRegistry {
         registry.register(Box::new(sig30_c::Sig30C));
         registry.register(Box::new(sig01_c::Sig01C));
         registry.register(Box::new(sig35_c::Sig35C));
+        registry.register(Box::new(sig34_c::Sig34C));
         registry.register(Box::new(win01_c::Win01C));
         registry.register(Box::new(win02_c::Win02C));
 
