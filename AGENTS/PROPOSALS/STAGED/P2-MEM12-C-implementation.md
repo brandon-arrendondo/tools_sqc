@@ -193,7 +193,55 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+**Date:** 2025-11-21
+**Status:** ✅ COMPLETED
+
+### Implementation Summary
+Successfully implemented MEM12-C to detect resource leaks when error paths don't release all acquired resources. The rule tracks resource allocations and deallocations with line numbers, checking if return statements leak resources that were allocated before but not freed before the return.
+
+### Implementation Details
+- **File Created:** `src/rules/cert_c/MEM/MEM12-C/mem12_c.rs` (269 lines)
+- **Detection Logic:**
+  - Traverses AST for function definitions and analyzes their bodies
+  - Tracks allocations (fopen, malloc, calloc, realloc, open, socket) with line numbers
+  - Tracks deallocations (fclose, free, close) with line numbers
+  - For each return statement, finds resources allocated before it
+  - Only considers deallocations that occur BEFORE the return (not after)
+  - Flags violations when multiple resources exist and some aren't freed
+- **Key Insight:**
+  - Initial implementation incorrectly used ALL deallocations in the function
+  - Fixed by filtering deallocations to only those occurring before each return
+  - This properly detects leaks where later code (unreachable from early return) frees resources
+- **Utilities Used:** `get_node_text()` from `src/utility/cert_c/ast_utils.rs` (DRY compliance)
+
+### Test Results
+```
+test rules::cert_c::integration::generated_tests::test_mem12_c_fail_wiki_posix ... ok
+test rules::cert_c::integration::generated_tests::test_mem12_c_pass_wiki_posix_goto_chain ... ok
+test rules::cert_c::integration::generated_tests::test_mem12_c_pass_wiki_posix_nested_ifs ... ok
+test rules::cert_c::integration::generated_tests::test_mem12_c_pass_wiki_copy_processfrom_linux_kernel ... ok
+
+test result: ok. 4 passed; 0 failed
+```
+
+**Pass Rate:** 100% (4/4 tests passing)
+
+### Configuration
+- **Enabled:** Yes (`enabled = true` in MEM12-C.toml)
+- **Registered:** Yes (added to mod.rs and RuleRegistry)
+- **Severity:** Low
+- **Category:** Rule
+
+### Files Modified
+1. `src/rules/cert_c/MEM/MEM12-C/mem12_c.rs` (created, 269 lines)
+2. `src/rules/cert_c/MEM/MEM12-C/MEM12-C.toml` (enabled rule)
+3. `src/rules/cert_c/mod.rs` (registered module and rule)
+4. `src/rules/cert_c/rules-all.toml` (auto-generated)
+
+### Commit
+- **Hash:** ba7fac4
+- **Message:** "P2-MEM12-C: Implementation complete"
+- **Date:** 2025-11-21
 
 ---
 
