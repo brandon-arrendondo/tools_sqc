@@ -2,7 +2,7 @@
 rule_id: STR06-C
 priority: P2
 status: active
-assigned_to: ALLY
+assigned_to: TRISTAN
 created: 2025-11-17
 last_modified: 2025-11-17
 tags:
@@ -193,7 +193,38 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-19 - Implementation Complete
+
+**No Existing Implementation**
+- Checked `src/rules/cert_c/STR/STR06-C/` - no str06_c.rs found
+
+**CERT C Wiki Research**
+- Rule: Do not assume that strtok() leaves the parse string unchanged
+- Key requirement: strtok() modifies input by replacing delimiters with null bytes
+- Wiki URL: https://wiki.sei.cmu.edu/confluence/display/c/STR06-C.+Do+not+assume+that+strtok%28%29+leaves+the+parse+string+unchanged
+- CWE: CWE-464 (Addition of Data Structure Sentinel)
+
+**Implementation Created** (`src/rules/cert_c/STR/STR06-C/str06_c.rs`)
+- 215 lines total
+- Detection patterns:
+  1. strtok() with string literals - Medium severity (undefined behavior)
+  2. strtok() with getenv() result - Medium severity (corrupts environment)
+  3. strtok() with function returns - Low severity (heuristic warning)
+- Uses `get_node_text()` for DRY compliance
+- Tree-sitter AST traversal with recursive `check_node()` pattern
+- Checks first argument only (NULL is used for subsequent calls)
+
+**Registration and Enablement**
+- Added to `src/rules/cert_c/mod.rs` (lines 432-433, line 617)
+- Enabled in `src/rules/cert_c/STR/STR06-C/STR06-C.toml` (enabled = true)
+- Enabled in `src/rules/cert_c/rules-all.toml` (line 1075, enabled = true)
+
+**Build Results**
+- `cargo build`: ✅ Success
+- `cargo test`: ✅ Success - 0 tests (no test cases exist for STR06-C)
+
+**Commits**
+- 8cd3910: P2-STR06-C: Implementation complete
 
 ---
 

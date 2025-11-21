@@ -58,7 +58,6 @@ struct BufferInfo {
     size: BufferSize,
     element_type: String,
     allocation_line: usize,
-    from_malloc: bool, // True if allocated with malloc/calloc/realloc (needs NULL check)
 }
 
 /// Represents the size of a buffer
@@ -129,16 +128,24 @@ impl CertRule for Arr30C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         // Analyze all buffer allocations once at root level
         if node.parent().is_none() {
-            let (buffer_info, macros) = self.analyze_buffer_allocations(source);
+            let buffer_info = self.analyze_buffer_allocations(source);
             let pointer_aliases = self.analyze_pointer_aliases(source, &buffer_info);
             let function_macros = self.extract_function_macros(node, source);
+            let flexible_array_structs = self.find_flexible_array_structs(node, source);
+
+            // Extract macro constants for loop bound resolution
+            let mut macro_constants = self.extract_macro_constants(node, source);
+            let enum_constants = self.extract_enum_constants(node, source);
+            macro_constants.extend(enum_constants);
+
             self.check_with_buffer_info(
                 node,
                 source,
                 &buffer_info,
                 &pointer_aliases,
                 &function_macros,
-                &macros,
+                &flexible_array_structs,
+                &macro_constants,
             )
         } else {
             // This shouldn't happen as we control recursion, but handle gracefully
@@ -149,10 +156,7 @@ impl CertRule for Arr30C {
 
 impl Arr30C {
     /// Analyze all buffer allocations in the source code using AST traversal
-    fn analyze_buffer_allocations(
-        &self,
-        source: &str,
-    ) -> (HashMap<String, BufferInfo>, HashMap<String, i64>) {
+    fn analyze_buffer_allocations(&self, source: &str) -> HashMap<String, BufferInfo> {
         let mut buffers = HashMap::new();
 
         // Parse the source code into AST
@@ -163,7 +167,7 @@ impl Arr30C {
 
         let tree = match parser.parse(source, None) {
             Some(t) => t,
-            None => return (buffers, HashMap::new()),
+            None => return buffers,
         };
 
         let root_node = tree.root_node();
@@ -184,7 +188,7 @@ impl Arr30C {
         // Traverse AST to find all declarations
         self.extract_buffers_from_ast(&root_node, source, &mut buffers, &typedefs, &macros);
 
-        (buffers, macros)
+        buffers
     }
 
     /// Extract macro constants from preprocessor directives
@@ -496,7 +500,6 @@ impl Arr30C {
                             size: BufferSize::Static(size),
                             element_type: "struct_member".to_string(),
                             allocation_line: node.start_position().row + 1,
-                            from_malloc: false, // Static array in struct
                         });
                     }
                 }
@@ -564,7 +567,6 @@ impl Arr30C {
                 size: BufferSize::Symbolic(expr),
                 element_type: "unknown".to_string(),
                 allocation_line: node.start_position().row + 1,
-                from_malloc: false, // VLA, not from malloc
             })
         } else {
             None
@@ -672,7 +674,6 @@ impl Arr30C {
                                     size: BufferSize::Static(size),
                                     element_type: type_name.to_string(),
                                     allocation_line: line_idx + 1,
-                                    from_malloc: false, // Static array via typedef
                                 },
                             );
                         }
@@ -1108,11 +1109,16 @@ impl Arr30C {
         node: &Node,
         source: &str,
         buffer_size: usize,
-        macros: &HashMap<String, i64>,
+        macro_constants: &HashMap<String, i64>,
     ) -> bool {
         // Check loop-based bounds checking
         if let Some(for_node) = find_containing_for_loop(node) {
-            if self.check_for_loop_bounds_against_size(&for_node, source, buffer_size, macros) {
+            if self.check_for_loop_bounds_against_size(
+                &for_node,
+                source,
+                buffer_size,
+                macro_constants,
+            ) {
                 return true;
             }
         }
@@ -1168,7 +1174,7 @@ impl Arr30C {
         for_node: &Node,
         source: &str,
         size: usize,
-        macros: &HashMap<String, i64>,
+        macro_constants: &HashMap<String, i64>,
     ) -> bool {
         let loop_text = &source[for_node.start_byte()..for_node.end_byte()];
 
@@ -1177,48 +1183,30 @@ impl Arr30C {
             return true;
         }
 
-        // Also check for macro names that resolve to the size
-        // This handles cases like: for (i = 0; i < ARRAY_SIZE; i++) where ARRAY_SIZE == size
-        for (macro_name, &macro_value) in macros {
-            if macro_value as usize == size && loop_text.contains(&format!("< {}", macro_name)) {
-                return true;
-            }
-        }
+        // Extract the loop index variable name
+        let index_var = self.extract_loop_index_variable(for_node, source);
+        let index_text = index_var.as_deref().unwrap_or("");
 
-        // Generic bounds check: look for any < comparison
-        // This handles dynamic cases like: for (i = 0; i < count; i++)
-        // But we need to be careful about dimension confusion in multidimensional arrays
-        //
-        // Strategy: Accept generic < only if we haven't found a macro-based bound that DOESN'T match
-        // For example, if loop says "j < ROWS" and ROWS=7 but size=5, reject it
+        // Check loop condition for safe bounds
         for i in 0..for_node.child_count() {
             if let Some(child) = for_node.child(i) {
                 if child.kind() == "binary_expression" || child.kind() == "comparison_expression" {
                     let condition_text = &source[child.start_byte()..child.end_byte()];
 
-                    // Check if the condition uses a macro that doesn't match our size
-                    // Extract potential macro name after < operator
-                    if let Some(idx) = condition_text.find('<') {
-                        let after_op = &condition_text[idx + 1..].trim_start();
-                        // Check if what follows is a known macro
-                        for (macro_name, &macro_value) in macros {
-                            if after_op.starts_with(macro_name) {
-                                // Found a macro in the condition
-                                if macro_value as usize != size {
-                                    // Macro resolves to wrong value - REJECT
-                                    return false;
-                                } else {
-                                    // Macro resolves to correct value - ACCEPT
-                                    return true;
-                                }
-                            }
+                    // Check for macro constants in condition (e.g., "j < ROWS")
+                    if let Some(macro_size) = self
+                        .extract_and_resolve_macro_from_condition(condition_text, macro_constants)
+                    {
+                        // Compare resolved macro value to actual buffer size
+                        // If macro value >= buffer size, this is a violation (e.g., j < 7 but buffer is 5)
+                        if macro_size > size as i64 {
+                            return false; // Bounds check exists but is WRONG - flag as violation
+                        } else {
+                            return true; // Bounds check is correct
                         }
                     }
 
-                    // No macro found or doesn't match our checks - use generic bounds check
-                    // Check for < but NOT <= (which would be an off-by-one error)
-                    // Use word boundaries to avoid matching <= or <<
-                    if condition_text.contains(" < ") && !condition_text.contains("<<") {
+                    if self.condition_contains_safe_bounds(condition_text, index_text) {
                         return true;
                     }
                 }
@@ -1236,7 +1224,24 @@ impl Arr30C {
                             {
                                 let condition_text =
                                     &source[grandchild.start_byte()..grandchild.end_byte()];
-                                // REMOVED: Generic bounds check that doesn't verify the actual size
+
+                                // Check for macro constants
+                                if let Some(macro_size) = self
+                                    .extract_and_resolve_macro_from_condition(
+                                        condition_text,
+                                        macro_constants,
+                                    )
+                                {
+                                    if macro_size > size as i64 {
+                                        return false; // Wrong bounds
+                                    } else {
+                                        return true; // Correct bounds
+                                    }
+                                }
+
+                                if self.condition_contains_safe_bounds(condition_text, index_text) {
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -1245,6 +1250,53 @@ impl Arr30C {
         }
 
         false
+    }
+
+    /// Extract and resolve macro constant from loop condition
+    /// For "j < ROWS", extracts "ROWS" and resolves to its value
+    fn extract_and_resolve_macro_from_condition(
+        &self,
+        condition_text: &str,
+        macro_constants: &HashMap<String, i64>,
+    ) -> Option<i64> {
+        // Look for pattern: variable < MACRO or variable <= MACRO
+        // Handle both "< MACRO" and "<MACRO" (with or without space)
+
+        // Try "<= " pattern first (more specific)
+        if let Some(pos) = condition_text.find("<=") {
+            let after_op = &condition_text[pos + 2..].trim_start();
+            let macro_name: String = after_op
+                .chars()
+                .take_while(|c| c.is_alphanumeric() || *c == '_')
+                .collect();
+
+            if !macro_name.is_empty() {
+                if let Some(&value) = macro_constants.get(&macro_name) {
+                    // For <=, the effective size is value + 1
+                    return Some(value + 1);
+                }
+            }
+        }
+
+        // Try "< " pattern
+        if let Some(pos) = condition_text.find('<') {
+            // Skip if this is <=
+            if condition_text.chars().nth(pos + 1) != Some('=') {
+                let after_op = &condition_text[pos + 1..].trim_start();
+                let macro_name: String = after_op
+                    .chars()
+                    .take_while(|c| c.is_alphanumeric() || *c == '_')
+                    .collect();
+
+                if !macro_name.is_empty() {
+                    if let Some(&value) = macro_constants.get(&macro_name) {
+                        return Some(value);
+                    }
+                }
+            }
+        }
+
+        None
     }
 
     /// Check if statement bounds against specific buffer size
@@ -1362,7 +1414,6 @@ impl Arr30C {
                 size: buffer_size,
                 element_type: "unknown".to_string(),
                 allocation_line: node.start_position().row + 1,
-                from_malloc: true, // This buffer comes from malloc/calloc/realloc
             };
 
             return Some((buffer_name, buffer_info));
@@ -1380,7 +1431,6 @@ impl Arr30C {
                 size: buffer_size,
                 element_type: "unknown".to_string(),
                 allocation_line: node.start_position().row + 1,
-                from_malloc: true, // This buffer comes from malloc/calloc/realloc
             };
 
             return Some((var_name.to_string(), buffer_info));
@@ -1395,6 +1445,10 @@ impl Arr30C {
         if array_node.kind() == "identifier" {
             let text = &source[array_node.start_byte()..array_node.end_byte()];
             return Some(text.to_string());
+        } else if array_node.kind() == "subscript_expression" {
+            // Nested subscript - recursively get the base name
+            // For matrix[i][j], this recursively extracts "matrix"
+            return self.get_base_array_from_subscript(&array_node, source);
         }
         None
     }
@@ -1459,7 +1513,7 @@ impl Arr30C {
         source: &str,
         buffers: &HashMap<String, BufferInfo>,
         aliases: &HashMap<String, PointerAlias>,
-        macros: &HashMap<String, i64>,
+        macro_constants: &HashMap<String, i64>,
     ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
@@ -1472,7 +1526,7 @@ impl Arr30C {
                     source,
                     buffers,
                     aliases,
-                    macros,
+                    macro_constants,
                 ));
 
                 // Step 2: Get the buffer name for the inner subscript result
@@ -1497,7 +1551,10 @@ impl Arr30C {
                                         IndexValue::Variable(_var) => {
                                             // Check for bounds validation
                                             !self.has_proper_bounds_check(
-                                                node, source, *size, macros,
+                                                node,
+                                                source,
+                                                *size,
+                                                macro_constants,
                                             )
                                         }
                                         IndexValue::Unknown => false,
@@ -1591,7 +1648,7 @@ impl Arr30C {
         source: &str,
         buffers: &HashMap<String, BufferInfo>,
         aliases: &HashMap<String, PointerAlias>,
-        macros: &HashMap<String, i64>,
+        macro_constants: &HashMap<String, i64>,
     ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
@@ -1599,7 +1656,13 @@ impl Arr30C {
         if let Some(child) = node.child(0) {
             if child.kind() == "subscript_expression" {
                 // Delegate to nested subscript handler
-                return self.check_nested_subscript(node, source, buffers, aliases, macros);
+                return self.check_nested_subscript(
+                    node,
+                    source,
+                    buffers,
+                    aliases,
+                    macro_constants,
+                );
             }
         }
 
@@ -1689,7 +1752,7 @@ impl Arr30C {
                                                 node,
                                                 source,
                                                 effective_size,
-                                                macros,
+                                                macro_constants,
                                             )
                                         }
                                     } else {
@@ -1698,7 +1761,7 @@ impl Arr30C {
                                             node,
                                             source,
                                             effective_size,
-                                            macros,
+                                            macro_constants,
                                         )
                                     }
                                 }
@@ -1854,43 +1917,6 @@ impl Arr30C {
                 };
 
             if let Some(buffer_info) = buffers.get(actual_buffer_name) {
-                // NEW: Check if this buffer comes from malloc and needs NULL validation
-                if buffer_info.from_malloc {
-                    if !self.has_null_check_before_use(node, actual_buffer_name, source) {
-                        let start_point = node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::High,
-                            message: format!(
-                                "Pointer arithmetic on '{}' without NULL check after malloc/calloc/realloc",
-                                actual_buffer_name
-                            ),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some(format!(
-                                "Add NULL check: if ({} == NULL) {{ /* handle error */ }} before using '{}'",
-                                actual_buffer_name, actual_buffer_name
-                            )),
-                            ..Default::default()
-                        });
-                        // Early return - don't check bounds if we already flagged NULL check issue
-                        return violations;
-                    }
-                }
-
-                // Only check bounds violations for assignment expressions, not simple binary expressions
-                // This avoids false positives on "ptr = data + size" which is valid for past-the-end pointers
-                let is_assignment = node.kind() == "assignment_expression"
-                    || node
-                        .parent()
-                        .map_or(false, |p| p.kind() == "assignment_expression");
-
-                if !is_assignment {
-                    // Skip bounds checking for simple binary expressions used in other contexts
-                    return violations;
-                }
-
                 match &buffer_info.size {
                     BufferSize::Static(size) | BufferSize::DynamicCalculated(size) => {
                         if let OffsetValue::Constant(off) = offset {
@@ -1924,39 +1950,6 @@ impl Arr30C {
         }
 
         violations
-    }
-
-    /// Check if there's a NULL check for a pointer before its use
-    /// Searches backwards from the current node to find if there's an if statement checking for NULL
-    fn has_null_check_before_use(&self, node: &Node, ptr_name: &str, source: &str) -> bool {
-        // Find the containing function
-        if let Some(func_node) = find_containing_function(node) {
-            let func_text = &source[func_node.start_byte()..func_node.end_byte()];
-
-            // Look for NULL check patterns:
-            // 1. if (ptr == NULL)
-            // 2. if (ptr != NULL)
-            // 3. if (!ptr)
-            // 4. if (ptr)
-            // 5. if (NULL == ptr)
-
-            let patterns = [
-                format!("{} == NULL", ptr_name),
-                format!("{} != NULL", ptr_name),
-                format!("NULL == {}", ptr_name),
-                format!("NULL != {}", ptr_name),
-                format!("!{}", ptr_name),
-            ];
-
-            // Check if any NULL check pattern exists in the function before the current usage
-            for pattern in &patterns {
-                if func_text.contains(pattern) {
-                    return true;
-                }
-            }
-        }
-
-        false
     }
 
     /// Check for pointer arithmetic in return statements
@@ -2081,291 +2074,492 @@ impl Arr30C {
         violations
     }
 
-    /// Check for pointer increment in loop condition followed by dereference in body
-    /// This catches patterns like:
-    /// 1. while (ptr++ != end) { *ptr ... } - increment in condition, dereference in body
-    /// 2. while (...) { *ptr++ ... } - increment as part of dereference (post-increment dereference)
-    /// Both are dangerous as they may access past-the-end
-    fn check_loop_increment_dereference(
+    /// Check while loops for unbounded pointer increment
+    /// Detects patterns like: while (*ptr != delim) *dest++ = *src++;
+    fn check_while_loop_pointer_increment(
         &self,
-        loop_node: &Node,
+        while_node: &Node,
         source: &str,
+        buffers: &HashMap<String, BufferInfo>,
     ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Pattern 1: Look for pointer increment in CONDITION followed by dereference in body
-        let mut incremented_in_condition = Vec::new();
+        // Extract the while loop body
+        let mut loop_body_text = String::new();
+        let mut condition_text = String::new();
 
-        // Find the condition part of the loop ONLY
-        for i in 0..loop_node.child_count() {
-            if let Some(child) = loop_node.child(i) {
-                match loop_node.kind() {
-                    "while_statement" => {
-                        // Only check the parenthesized_expression (the condition)
-                        if child.kind() == "parenthesized_expression" {
-                            self.find_increment_expressions(
-                                &child,
-                                source,
-                                &mut incremented_in_condition,
-                            );
-                        }
+        for i in 0..while_node.child_count() {
+            if let Some(child) = while_node.child(i) {
+                match child.kind() {
+                    "parenthesized_expression" | "condition_clause" => {
+                        condition_text = source[child.start_byte()..child.end_byte()].to_string();
+                    }
+                    "compound_statement" | "expression_statement" => {
+                        loop_body_text = source[child.start_byte()..child.end_byte()].to_string();
                     }
                     _ => {}
                 }
             }
         }
 
-        // Check if pointers incremented in condition are dereferenced in body
-        for ptr_name in &incremented_in_condition {
-            if self.has_pointer_dereference_in_subtree(loop_node, source, ptr_name) {
-                let start_point = loop_node.start_position();
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: Severity::High,
-                    message: format!(
-                        "Pointer '{}' incremented in loop condition then dereferenced in body - may access past-the-end",
-                        ptr_name
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some(format!(
-                        "Move increment out of condition: while ({} != end) {{ ... {}++; }}",
-                        ptr_name, ptr_name
-                    )),
-                    ..Default::default()
-                });
-            }
+        // Check if loop body contains pointer increment (ptr++ or *ptr++)
+        let has_pointer_increment = loop_body_text.contains("++") || loop_body_text.contains("--");
+
+        if !has_pointer_increment {
+            return violations; // No pointer increment, safe
         }
 
-        // Pattern 2: Look for *ptr++ in loop body WITHOUT bounds check for ptr in condition
-        if loop_node.kind() == "while_statement" {
-            violations.extend(self.check_pointer_increment_without_bounds(loop_node, source));
+        // Check if there's bounds checking in the condition
+        // Safe patterns: size check, length check, null check with counter, etc.
+        let has_bounds_check = condition_text.contains("< ")
+            || condition_text.contains("> ")
+            || condition_text.contains("<=")
+            || condition_text.contains(">=")
+            || condition_text.contains("size")
+            || condition_text.contains("length")
+            || condition_text.contains("count")
+            || condition_text.contains("len");
+
+        if !has_bounds_check {
+            // Unbounded pointer increment detected
+            // Extract pointer names from the increment operations
+            let pointer_names = self.extract_incremented_pointers(&loop_body_text);
+
+            // Check if any of these pointers are buffers we're tracking
+            for ptr_name in pointer_names {
+                // Check if this matches a tracked buffer or is used for array access
+                if buffers.contains_key(&ptr_name)
+                    || loop_body_text.contains(&format!("*{}", ptr_name))
+                {
+                    let start_point = while_node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Unbounded while loop with pointer increment. Loop increments '{}' without size/length bounds checking.",
+                            ptr_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Add bounds checking to while condition (e.g., counter < max_size)".to_string()
+                        ),
+                        ..Default::default()
+                    });
+                    break; // Only report once per while loop
+                }
+            }
         }
 
         violations
     }
 
-    /// Check for *ptr++ or *++ptr patterns where increment and dereference happen together
-    fn check_increment_dereference_patterns(
-        &self,
-        node: &Node,
-        source: &str,
-    ) -> Vec<RuleViolation> {
-        let mut violations = Vec::new();
+    /// Extract pointer names that are being incremented in the loop body
+    /// Looks for patterns like ptr++, ++ptr, *ptr++, etc.
+    fn extract_incremented_pointers(&self, loop_body: &str) -> Vec<String> {
+        let mut pointers = Vec::new();
 
-        // Look for pointer_expression (*ptr) that contains an update_expression (ptr++ or ++ptr)
-        if node.kind() == "pointer_expression" {
-            // Check if any child is an update_expression
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if child.kind() == "update_expression" {
-                        // Found *ptr++ or *++ptr pattern
-                        let text = &source[node.start_byte()..node.end_byte()];
-                        let start_point = node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::High,
-                            message: format!(
-                                "Pointer increment within dereference expression '{}' - may access past-the-end",
-                                text
-                            ),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some(
-                                "Separate dereference and increment: val = *ptr; ptr++;".to_string()
-                            ),
-                            ..Default::default()
-                        });
+        // Simple regex-like matching for identifier++
+        for word in loop_body.split_whitespace() {
+            if word.contains("++") {
+                // Extract the identifier before ++
+                let clean = word.trim_start_matches('*').trim_start_matches('(');
+                if let Some(idx) = clean.find("++") {
+                    let ptr_name = clean[..idx].trim().to_string();
+                    if !ptr_name.is_empty() && !ptr_name.contains(';') && !ptr_name.contains(')') {
+                        pointers.push(ptr_name);
                     }
                 }
             }
         }
 
-        // Recurse into children
+        pointers
+    }
+
+    /// Check for malloc/calloc/realloc calls without proper NULL checks before pointer arithmetic
+    /// Detects patterns where malloc() result is used in pointer arithmetic without NULL validation
+    fn check_malloc_null_pointer_arithmetic(
+        &self,
+        func_node: &Node,
+        source: &str,
+    ) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Track all malloc/calloc/realloc assignments and their variable names
+        let mut malloc_vars: HashMap<String, usize> = HashMap::new(); // var_name -> line_number
+
+        // First pass: find all malloc/calloc/realloc calls
+        self.find_malloc_assignments(func_node, source, &mut malloc_vars);
+
+        if malloc_vars.is_empty() {
+            return violations; // No malloc calls, nothing to check
+        }
+
+        // Second pass: for each malloc variable, check if it has NULL check with return/exit
+        for (var_name, alloc_line) in &malloc_vars {
+            let has_safe_null_check =
+                self.has_safe_null_check_in_function(func_node, source, var_name);
+
+            if !has_safe_null_check {
+                // Third pass: find pointer arithmetic on this variable
+                if let Some(violation_line) =
+                    self.find_pointer_arithmetic_usage(func_node, source, var_name)
+                {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Pointer arithmetic on potentially NULL pointer '{}' from malloc/calloc/realloc. \
+                            No NULL check found before use at line {}.",
+                            var_name, violation_line
+                        ),
+                        file_path: String::new(),
+                        line: violation_line,
+                        column: 1,
+                        suggestion: Some(format!(
+                            "Add NULL check: if ({} == NULL) {{ /* handle error */ }}",
+                            var_name
+                        )),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+
+        violations
+    }
+
+    /// Find all malloc/calloc/realloc assignments in a function
+    fn find_malloc_assignments(
+        &self,
+        node: &Node,
+        source: &str,
+        malloc_vars: &mut HashMap<String, usize>,
+    ) {
+        // Check current node for malloc assignment
+        if node.kind() == "declaration" || node.kind() == "assignment_expression" {
+            let text = &source[node.start_byte()..node.end_byte()];
+
+            // Pattern: var = malloc(...) or var = calloc(...) or var = realloc(...)
+            if text.contains("malloc(") || text.contains("calloc(") || text.contains("realloc(") {
+                // Extract variable name from left side of assignment
+                if let Some(var_name) = self.extract_assignment_lhs(node, source) {
+                    let line = node.start_position().row + 1;
+                    malloc_vars.insert(var_name, line);
+                }
+            }
+        }
+
+        // Recursively check children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                violations.extend(self.check_increment_dereference_patterns(&child, source));
+                self.find_malloc_assignments(&child, source, malloc_vars);
             }
         }
-
-        violations
     }
 
-    /// Check for *ptr++ patterns in while loop body without corresponding bounds check
-    /// Unsafe: while (condition_not_involving_ptr) { *ptr++ }
-    /// Safe: while (ptr < end && ...) { *ptr++ }
-    fn check_pointer_increment_without_bounds(
-        &self,
-        loop_node: &Node,
-        source: &str,
-    ) -> Vec<RuleViolation> {
-        let mut violations = Vec::new();
-
-        // Find the loop condition and body
-        let mut condition_node = None;
-        let mut body_node = None;
-
-        for i in 0..loop_node.child_count() {
-            if let Some(child) = loop_node.child(i) {
-                if child.kind() == "parenthesized_expression" {
-                    condition_node = Some(child);
-                } else if child.kind() == "compound_statement"
-                    || child.kind() == "expression_statement"
-                {
-                    body_node = Some(child);
-                }
-            }
-        }
-
-        if let Some(body) = body_node {
-            // Find all *ptr++ patterns in the body
-            let mut increment_deref_ptrs = Vec::new();
-            self.find_pointer_increment_dereference_in_subtree(
-                &body,
-                source,
-                &mut increment_deref_ptrs,
-            );
-
-            // For each pointer found, check if there's a bounds check in the condition
-            for ptr_name in increment_deref_ptrs {
-                if let Some(cond) = condition_node {
-                    let condition_text = &source[cond.start_byte()..cond.end_byte()];
-
-                    // Check if the pointer appears in a comparison in the condition
-                    // Look for patterns like: ptr < end, ptr != end, ptr <= end, etc.
-                    if !condition_text.contains(&ptr_name)
-                        || !self.has_comparison_operator(condition_text)
-                    {
-                        // No bounds check for this pointer
-                        let start_point = loop_node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::High,
-                            message: format!(
-                                "Pointer '{}' incremented and dereferenced in loop body without bounds check in condition",
-                                ptr_name
-                            ),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some(format!(
-                                "Add bounds check to condition: while ({} < end && ...) {{ ... }}",
-                                ptr_name
-                            )),
-                            ..Default::default()
-                        });
-                    }
-                }
-            }
-        }
-
-        violations
-    }
-
-    /// Check if a string contains comparison operators
-    fn has_comparison_operator(&self, text: &str) -> bool {
-        text.contains('<') || text.contains('>') || text.contains("==") || text.contains("!=")
-    }
-
-    /// Find *ptr++ or *++ptr patterns (where increment and dereference happen together)
-    fn find_pointer_increment_dereference_in_subtree(
-        &self,
-        node: &Node,
-        source: &str,
-        result: &mut Vec<String>,
-    ) {
-        // Look for pointer_expression (*ptr) that contains an update_expression (ptr++ or ++ptr)
-        if node.kind() == "pointer_expression" {
+    /// Extract the left-hand side variable name from an assignment
+    fn extract_assignment_lhs(&self, node: &Node, source: &str) -> Option<String> {
+        // For declaration: char *buffer = malloc(...)
+        if node.kind() == "declaration" {
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
-                    if child.kind() == "update_expression" {
-                        // Found *ptr++ or *++ptr pattern
-                        // Extract the pointer name from the update_expression
-                        for j in 0..child.child_count() {
-                            if let Some(id_node) = child.child(j) {
-                                if id_node.kind() == "identifier" {
-                                    let ptr_name =
-                                        &source[id_node.start_byte()..id_node.end_byte()];
-                                    result.push(ptr_name.to_string());
-                                }
-                            }
+                    if child.kind() == "init_declarator" {
+                        // Get the declarator (left side)
+                        if let Some(declarator) = child.child(0) {
+                            return self.extract_variable_name_from_declarator(&declarator, source);
                         }
                     }
                 }
             }
         }
 
-        // Recurse into children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.find_pointer_increment_dereference_in_subtree(&child, source, result);
+        // For assignment_expression: buffer = malloc(...)
+        if node.kind() == "assignment_expression" {
+            if let Some(lhs) = node.child(0) {
+                if lhs.kind() == "identifier" {
+                    return Some(source[lhs.start_byte()..lhs.end_byte()].to_string());
+                }
             }
         }
+
+        None
     }
 
-    /// Find pointer increment expressions (ptr++, ++ptr) in a node tree (for condition checking)
-    fn find_increment_expressions(&self, node: &Node, source: &str, result: &mut Vec<String>) {
-        if node.kind() == "update_expression" {
-            // Check if it's a pointer increment (++ operator)
-            let text = &source[node.start_byte()..node.end_byte()];
-            if text.contains("++") {
-                // Extract the identifier being incremented
+    /// Extract variable name from a declarator node
+    fn extract_variable_name_from_declarator(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(source[node.start_byte()..node.end_byte()].to_string()),
+            "pointer_declarator" => {
+                // Recurse into pointer declarator to find the identifier
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
-                        if child.kind() == "identifier" {
-                            let id = &source[child.start_byte()..child.end_byte()];
-                            result.push(id.to_string());
+                        if let Some(name) =
+                            self.extract_variable_name_from_declarator(&child, source)
+                        {
+                            return Some(name);
                         }
                     }
                 }
+                None
             }
-        }
-
-        // Recurse into children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                // Don't recurse into the loop body (compound_statement) - only check condition
-                if child.kind() != "compound_statement" {
-                    self.find_increment_expressions(&child, source, result);
-                }
-            }
+            _ => None,
         }
     }
 
-    /// Check if a pointer is dereferenced in a subtree (looks for *ptr_name)
-    fn has_pointer_dereference_in_subtree(
+    /// Check if there's a safe NULL check (with return/exit) for the given variable in the function
+    fn has_safe_null_check_in_function(
         &self,
-        node: &Node,
+        func_node: &Node,
         source: &str,
-        ptr_name: &str,
+        var_name: &str,
     ) -> bool {
-        // Check if this is a pointer_expression (*ptr)
-        if node.kind() == "pointer_expression" {
-            // Check if it dereferences our pointer
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if child.kind() == "identifier" {
-                        let id = &source[child.start_byte()..child.end_byte()];
-                        if id == ptr_name {
-                            return true;
-                        }
-                    }
-                }
+        self.find_safe_null_check(func_node, source, var_name)
+    }
+
+    /// Recursively search for NULL check
+    /// A NULL check is considered safe if it exists, even without explicit return/exit
+    /// The presence of the check indicates awareness of the NULL possibility
+    fn find_safe_null_check(&self, node: &Node, source: &str, var_name: &str) -> bool {
+        // Check if this is an if statement with NULL check
+        if node.kind() == "if_statement" {
+            let text = &source[node.start_byte()..node.end_byte()];
+
+            // Check if condition checks for NULL
+            // Accept patterns: buffer == NULL, NULL == buffer, !buffer
+            let has_null_check = text.contains(&format!("{} == NULL", var_name))
+                || text.contains(&format!("NULL == {}", var_name))
+                || text.contains(&format!("!{}", var_name));
+
+            if has_null_check {
+                return true; // NULL check found - considered safe
             }
         }
 
-        // Recurse into children
+        // Recursively check children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if self.has_pointer_dereference_in_subtree(&child, source, ptr_name) {
+                if self.find_safe_null_check(&child, source, var_name) {
                     return true;
                 }
             }
         }
 
         false
+    }
+
+    /// Find pointer arithmetic usage of the given variable
+    /// Returns the line number where pointer arithmetic is used, or None
+    fn find_pointer_arithmetic_usage(
+        &self,
+        node: &Node,
+        source: &str,
+        var_name: &str,
+    ) -> Option<usize> {
+        let text = &source[node.start_byte()..node.end_byte()];
+
+        // Check for pointer arithmetic patterns:
+        // 1. var + offset
+        // 2. var += offset
+        // 3. function(var + offset, ...)
+
+        // Pattern 1 & 3: var + something
+        if text.contains(&format!("{} +", var_name)) || text.contains(&format!("+ {}", var_name)) {
+            // Make sure it's not just part of a NULL check (avoid false positives)
+            if !text.contains("== NULL") && !text.contains("!= NULL") {
+                return Some(node.start_position().row + 1);
+            }
+        }
+
+        // Pattern 2: var += offset
+        if text.contains(&format!("{} +=", var_name)) {
+            return Some(node.start_position().row + 1);
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(line) = self.find_pointer_arithmetic_usage(&child, source, var_name) {
+                    return Some(line);
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Find all structs with flexible array members
+    /// Returns HashMap of struct_name -> flexible_member_name
+    fn find_flexible_array_structs(&self, root: &Node, source: &str) -> HashMap<String, String> {
+        let mut flexible_structs = HashMap::new();
+        self.collect_flexible_array_structs(root, source, &mut flexible_structs);
+        flexible_structs
+    }
+
+    /// Recursively collect structs with flexible array members
+    fn collect_flexible_array_structs(
+        &self,
+        node: &Node,
+        source: &str,
+        flexible_structs: &mut HashMap<String, String>,
+    ) {
+        // Look for struct_specifier nodes
+        if node.kind() == "struct_specifier" {
+            // Try to extract struct name and check for flexible array member
+            if let Some(name_node) = node.child_by_field_name("name") {
+                let struct_name = &source[name_node.start_byte()..name_node.end_byte()];
+
+                // Check if struct has a field_declaration_list
+                if let Some(body_node) = node.child_by_field_name("body") {
+                    // Look for last field - if it's an array with no size, it's flexible
+                    if let Some(flexible_member) =
+                        self.find_flexible_array_member(&body_node, source)
+                    {
+                        flexible_structs.insert(struct_name.to_string(), flexible_member);
+                    }
+                }
+            }
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_flexible_array_structs(&child, source, flexible_structs);
+            }
+        }
+    }
+
+    /// Find flexible array member in a struct body (field_declaration_list)
+    /// Returns the member name if found
+    fn find_flexible_array_member(&self, body_node: &Node, source: &str) -> Option<String> {
+        // Get the last field_declaration
+        let mut last_field = None;
+        for i in 0..body_node.child_count() {
+            if let Some(child) = body_node.child(i) {
+                if child.kind() == "field_declaration" {
+                    last_field = Some(child);
+                }
+            }
+        }
+
+        // Check if last field is a flexible array (array with no size)
+        if let Some(field) = last_field {
+            let field_text = &source[field.start_byte()..field.end_byte()];
+
+            // Flexible array pattern: identifier[] with no size
+            if field_text.contains("[]") {
+                // Extract the identifier before []
+                // Pattern: type identifier[];
+                if let Some(bracket_pos) = field_text.rfind("[]") {
+                    let before_bracket = &field_text[..bracket_pos];
+                    // Find the last identifier before []
+                    if let Some(identifier) = before_bracket.split_whitespace().last() {
+                        return Some(identifier.trim_end_matches('[').to_string());
+                    }
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Find identifier in a node
+    fn find_identifier_in_node(&self, node: &Node, source: &str) -> Option<String> {
+        if node.kind() == "identifier" {
+            return Some(source[node.start_byte()..node.end_byte()].to_string());
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(id) = self.find_identifier_in_node(&child, source) {
+                    return Some(id);
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Check for insufficient malloc of flexible array structs
+    /// Detects pointer arithmetic on flexible array members
+    fn check_flexible_array_malloc(
+        &self,
+        func_node: &Node,
+        source: &str,
+        flexible_array_structs: &HashMap<String, String>,
+    ) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        if flexible_array_structs.is_empty() {
+            return violations; // No flexible array structs
+        }
+
+        // Find ALL pointer arithmetic on flexible array members
+        // (This is suspicious because it requires proper allocation)
+        for (struct_name, member_name) in flexible_array_structs {
+            if let Some(violation_line) =
+                self.find_any_flexible_member_arithmetic(func_node, source, member_name)
+            {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Pointer arithmetic on flexible array member '{}'. \
+                        Ensure struct '{}' is allocated with extra space: malloc(sizeof(struct {}) + n * sizeof(...))",
+                        member_name, struct_name, struct_name
+                    ),
+                    file_path: String::new(),
+                    line: violation_line,
+                    column: 1,
+                    suggestion: Some(format!(
+                        "Verify allocation includes space for flexible array: malloc(sizeof(struct {}) + array_size * sizeof(element))",
+                        struct_name
+                    )),
+                    ..Default::default()
+                });
+            }
+        }
+
+        violations
+    }
+
+    /// Find while loops with increment in condition - unsafe pattern with flexible arrays
+    /// Pattern: while (ptr++ != ...) or while (ptr-- != ...)
+    fn find_any_flexible_member_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+        _member_name: &str,
+    ) -> Option<usize> {
+        // Look for while loops with increment/decrement in the condition
+        if node.kind() == "while_statement" {
+            // Get the condition part of the while loop
+            if let Some(condition_node) = node.child_by_field_name("condition") {
+                let condition_text =
+                    &source[condition_node.start_byte()..condition_node.end_byte()];
+
+                // Check if the condition contains increment or decrement operators
+                // This is the unsafe pattern when combined with flexible array members
+                if condition_text.contains("++") || condition_text.contains("--") {
+                    return Some(node.start_position().row + 1);
+                }
+            }
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(line) =
+                    self.find_any_flexible_member_arithmetic(&child, source, _member_name)
+                {
+                    return Some(line);
+                }
+            }
+        }
+
+        None
     }
 
     /// Find the function_declarator node within a function_definition
@@ -2493,42 +2687,10 @@ impl Arr30C {
             }
         }
 
-        // NEW: Pattern: ptr + offset (binary expression, e.g., in function call argument)
-        // This handles cases like memcpy(buffer + offset, ...)
-        if node.kind() == "binary_expression" {
-            if let Some(left) = node.child_by_field_name("left") {
-                if let Some(right) = node.child_by_field_name("right") {
-                    let ptr_name = source[left.start_byte()..left.end_byte()]
-                        .trim()
-                        .to_string();
-                    let offset_str = source[right.start_byte()..right.end_byte()].trim();
-
-                    let offset = if let Ok(const_val) = offset_str.parse::<usize>() {
-                        OffsetValue::Constant(const_val)
-                    } else {
-                        OffsetValue::Variable(offset_str.to_string())
-                    };
-
-                    return Some((ptr_name, offset));
-                }
-            }
-        }
-
         None
     }
 
     /// Check if assignment is pointer arithmetic
-    /// Check if a binary expression is pointer arithmetic (ptr + offset or ptr - offset)
-    fn is_pointer_arithmetic_expression(&self, node: &Node, source: &str) -> bool {
-        // Check if this is a binary expression with + or - operator
-        if node.kind() != "binary_expression" {
-            return false;
-        }
-
-        let text = &source[node.start_byte()..node.end_byte()];
-        text.contains(" + ") || text.contains(" - ")
-    }
-
     fn is_pointer_arithmetic_assignment(&self, node: &Node, source: &str) -> bool {
         let text = &source[node.start_byte()..node.end_byte()];
         text.contains("+=") || (text.contains('=') && text.contains('+'))
@@ -2544,7 +2706,8 @@ impl Arr30C {
         buffer_info: &HashMap<String, BufferInfo>,
         aliases: &HashMap<String, PointerAlias>,
         function_macros: &HashMap<String, FunctionMacro>,
-        macros: &HashMap<String, i64>,
+        flexible_array_structs: &HashMap<String, String>, // struct_name -> flexible_member_name
+        macro_constants: &HashMap<String, i64>, // macro_name -> value (for loop bound resolution)
     ) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
@@ -2561,21 +2724,8 @@ impl Arr30C {
                     source,
                     &local_buffers,
                     &local_aliases,
-                    macros,
+                    macro_constants,
                 ));
-            }
-            "binary_expression" => {
-                // Check for pointer arithmetic in binary expressions (e.g., buffer + offset)
-                // This catches cases like memcpy(buffer + offset, ...) where pointer arithmetic
-                // is used as a function argument
-                if self.is_pointer_arithmetic_expression(node, source) {
-                    violations.extend(self.check_pointer_arithmetic(
-                        node,
-                        source,
-                        &local_buffers,
-                        &local_aliases,
-                    ));
-                }
             }
             "assignment_expression" => {
                 if self.is_pointer_arithmetic_assignment(node, source) {
@@ -2605,9 +2755,23 @@ impl Arr30C {
                     &local_aliases,
                 ));
             }
-            "while_statement" | "for_statement" => {
-                // Check for pointer increment in condition + dereference in body pattern
-                violations.extend(self.check_loop_increment_dereference(node, source));
+            "while_statement" => {
+                // Check for unbounded pointer increment in while loops
+                violations.extend(self.check_while_loop_pointer_increment(
+                    node,
+                    source,
+                    &local_buffers,
+                ));
+            }
+            "function_definition" => {
+                // Check for malloc/calloc/realloc without proper NULL checks
+                violations.extend(self.check_malloc_null_pointer_arithmetic(node, source));
+                // Check for insufficient malloc of flexible array structs
+                violations.extend(self.check_flexible_array_malloc(
+                    node,
+                    source,
+                    flexible_array_structs,
+                ));
             }
             _ => {}
         }
@@ -2660,7 +2824,8 @@ impl Arr30C {
                     &local_buffers,
                     &local_aliases,
                     function_macros,
-                    macros,
+                    flexible_array_structs,
+                    macro_constants,
                 ));
             }
         }
@@ -2899,7 +3064,6 @@ impl Arr30C {
                 size: BufferSize::Static(s),
                 element_type: "unknown".to_string(),
                 allocation_line: line,
-                from_malloc: false, // Static array declaration
             })
         } else if let Some(expr) = size_expr {
             Some(BufferInfo {
@@ -2907,7 +3071,6 @@ impl Arr30C {
                 size: BufferSize::Symbolic(expr),
                 element_type: "unknown".to_string(),
                 allocation_line: line,
-                from_malloc: false, // VLA declaration
             })
         } else {
             None
@@ -2964,10 +3127,12 @@ impl Arr30C {
         // Check if first child is a nested array_declarator
         if let Some(first_child) = node.child(0) {
             if first_child.kind() == "array_declarator" {
-                // This node represents an outer dimension
-                // Extract the size from THIS node (the outer dimension in the AST)
+                // This node represents an outer dimension (e.g., [COLS] in matrix[ROWS][COLS])
+                // Extract the size from THIS node (the outer/rightmost dimension)
+                // For matrix[ROWS][COLS], the AST is: array_declarator[COLS] -> array_declarator[ROWS]
+                // We want the COLS dimension (rightmost), which is in the current node
                 if let Some(mut size) = self.extract_array_size(node, source) {
-                    // Resolve macros in symbolic size
+                    // Resolve macro constants in buffer size
                     if let BufferSize::Symbolic(ref sym) = size {
                         if let Some(&value) = macros.get(sym) {
                             size = BufferSize::Static(value as usize);
@@ -2985,7 +3150,6 @@ impl Arr30C {
                             size,
                             element_type: "array_element".to_string(),
                             allocation_line: line,
-                            from_malloc: false, // Multidimensional array element
                         },
                     );
                 }
@@ -3091,7 +3255,6 @@ impl Arr30C {
                                 size,
                                 element_type: "unknown".to_string(),
                                 allocation_line: line,
-                                from_malloc: true, // malloc allocation
                             });
                         }
                     }
@@ -3114,7 +3277,6 @@ impl Arr30C {
                         size,
                         element_type: "unknown".to_string(),
                         allocation_line: line,
-                        from_malloc: true, // realloc allocation
                     });
                 }
             }
@@ -3136,7 +3298,6 @@ impl Arr30C {
                                 size: BufferSize::DynamicCalculated(count),
                                 element_type: "unknown".to_string(),
                                 allocation_line: line,
-                                from_malloc: true, // calloc allocation
                             });
                         }
                     }
@@ -3168,7 +3329,6 @@ impl Arr30C {
                             size: BufferSize::Static(size),
                             element_type: type_name.to_string(),
                             allocation_line: decl_node.start_position().row + 1,
-                            from_malloc: false, // Static typedef array
                         });
                     }
                 }
