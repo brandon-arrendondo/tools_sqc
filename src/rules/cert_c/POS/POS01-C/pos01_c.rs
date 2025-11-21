@@ -4,9 +4,9 @@ use crate::rules::cert_c::CertRule;
 use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
-pub struct POS01C;
+pub struct Pos01C;
 
-impl CertRule for POS01C {
+impl CertRule for Pos01C {
     fn rule_id(&self) -> &'static str {
         "POS01-C"
     }
@@ -44,7 +44,7 @@ impl CertRule for POS01C {
     }
 }
 
-impl POS01C {
+impl Pos01C {
     fn check_functions(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if node.kind() == "function_definition" {
             // Check this function for open() without proper protection

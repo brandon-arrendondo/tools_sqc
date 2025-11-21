@@ -4,22 +4,22 @@
  * Status: FAIL - Should trigger FIO32-C violation
  */
 
-#include <Windows.h>
- 
-void func(const TCHAR *file_name) {
-  HANDLE hFile = CreateFile(
-    file_name,
-    GENERIC_READ | GENERIC_WRITE, 0, 
-    NULL, OPEN_EXISTING,
-    FILE_ATTRIBUTE_NORMAL, NULL
-  );
-  if (hFile == INVALID_HANDLE_VALUE) {
-    /* Handle error */
-  } else if (GetFileType(hFile) != FILE_TYPE_DISK) {
-    /* Handle error */
-    CloseHandle(hFile);
-  } else {
-    /* Operate on the file */
-    CloseHandle(hFile);
+#include <stdio.h>
+
+void func(void) {
+  FILE *file;
+
+  // VIOLATION: Using device file without checking file type
+  if ((file = fopen("/dev/console", "r")) == NULL) {
+    return;
   }
+
+  // VIOLATION: ftell is inappropriate for device files
+  long pos = ftell(file);
+  if (pos == -1L) {
+    fclose(file);
+    return;
+  }
+
+  fclose(file);
 }
