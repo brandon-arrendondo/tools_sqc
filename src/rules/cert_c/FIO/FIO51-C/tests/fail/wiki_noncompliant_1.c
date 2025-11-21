@@ -4,16 +4,17 @@
  * Status: FAIL - Should trigger FIO51-C violation
  */
 
-#include <exception>
-#include <fstream>
-#include <string>
+#include <stdio.h>
+#include <stdlib.h>
 
-void f(const std::string &fileName) {
-  std::fstream file(fileName);
-  if (!file.is_open()) {
+void f(const char *fileName) {
+  FILE *file = fopen(fileName, "r");
+  if (file == NULL) {
     // Handle error
     return;
   }
-  // ...
-  std::terminate();
+  // Use file...
+
+  // VIOLATION: Terminate without closing file
+  exit(1);
 }

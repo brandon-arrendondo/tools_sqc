@@ -82,6 +82,11 @@ impl Arr02C {
                 // This has an initializer, check the declarator part
                 if let Some(declarator) = node.child_by_field_name("declarator") {
                     self.check_array_declarator(&declarator, source, violations);
+
+                    // Also check if initializer has too many elements
+                    if let Some(value) = node.child_by_field_name("value") {
+                        self.check_initializer_size(&declarator, &value, source, violations);
+                    }
                 }
             }
             "array_declarator" => {
@@ -151,5 +156,87 @@ impl Arr02C {
                 }
             }
         }
+    }
+
+    /// Check if an initializer has too many elements for the declared array size
+    fn check_initializer_size(
+        &self,
+        declarator: &Node,
+        initializer: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Get the array size from the declarator
+        if let Some(array_size) = self.extract_array_size(declarator, source) {
+            // Count initializer elements
+            if let Some(init_count) = self.count_initializer_elements(initializer) {
+                if init_count > array_size {
+                    let line = declarator.start_position().row + 1;
+                    let column = declarator.start_position().column + 1;
+                    let text = get_node_text(declarator, source);
+
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: self.severity(),
+                        file_path: String::new(),
+                        line,
+                        column,
+                        message: format!(
+                            "Array '{}' of size {} has {} initializers (excess elements)",
+                            text, array_size, init_count
+                        ),
+                        suggestion: Some(format!(
+                            "Either increase array size to {} or reduce number of initializers",
+                            init_count
+                        )),
+                        requires_manual_review: None,
+                    });
+                }
+            }
+        }
+    }
+
+    /// Extract the explicit size from an array declarator
+    fn extract_array_size(&self, node: &Node, source: &str) -> Option<usize> {
+        if node.kind() == "array_declarator" {
+            if let Some(size_node) = node.child_by_field_name("size") {
+                let size_text = get_node_text(&size_node, source);
+                // Try to parse as integer
+                if let Ok(size) = size_text.parse::<usize>() {
+                    return Some(size);
+                }
+            }
+        }
+        None
+    }
+
+    /// Count the number of elements in an initializer list
+    fn count_initializer_elements(&self, node: &Node) -> Option<usize> {
+        if node.kind() == "initializer_list" {
+            let mut count = 0;
+            let mut cursor = node.walk();
+
+            for child in node.children(&mut cursor) {
+                match child.kind() {
+                    // Count actual initializer expressions
+                    "number_literal" | "string_literal" | "char_literal" | "identifier"
+                    | "binary_expression" | "unary_expression" | "call_expression"
+                    | "initializer_list" => {
+                        count += 1;
+                    }
+                    // Ignore punctuation
+                    "," | "{" | "}" => {}
+                    // For other nodes, check if they're expressions
+                    _ => {
+                        if child.kind().contains("expression") {
+                            count += 1;
+                        }
+                    }
+                }
+            }
+
+            return Some(count);
+        }
+        None
     }
 }
