@@ -29,6 +29,7 @@ impl Dcl07C {
         node: &Node<'a>,
         source: &'a str,
         violations: &mut Vec<RuleViolation>,
+        declarations: &HashMap<String, usize>,
     ) {
         // Check for K&R style function definitions
         if node.kind() == "function_definition" {
@@ -37,7 +38,7 @@ impl Dcl07C {
 
         // Check for function calls without declarations
         if node.kind() == "call_expression" {
-            // Skip for now - would need whole-program analysis
+            self.check_function_call(node, source, violations, declarations);
         }
 
         // Check for function pointer mismatches
@@ -48,7 +49,113 @@ impl Dcl07C {
         // Recurse into children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
+                self.check_node(&child, source, violations, declarations);
+            }
+        }
+    }
+
+    /// Check for function calls without proper declarations
+    fn check_function_call<'a>(
+        &self,
+        call_node: &Node<'a>,
+        source: &'a str,
+        violations: &mut Vec<RuleViolation>,
+        declarations: &HashMap<String, usize>,
+    ) {
+        // Get function name
+        if let Some(func) = call_node.child_by_field_name("function") {
+            let func_name = get_node_text(&func, source);
+
+            // Skip standard library functions
+            if self.is_standard_function(func_name) {
+                return;
+            }
+
+            // Check if function was declared before this call
+            if !declarations.contains_key(func_name) {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    line: call_node.start_position().row + 1,
+                    column: call_node.start_position().column + 1,
+                    message: format!(
+                        "Function '{}' called without prior declaration or prototype",
+                        func_name
+                    ),
+                    severity: self.severity(),
+                    file_path: String::new(),
+                    suggestion: Some(format!(
+                        "Declare function '{}' before calling it, or include appropriate header",
+                        func_name
+                    )),
+                    requires_manual_review: None,
+                });
+            }
+        }
+    }
+
+    /// Check if a function is a standard library function
+    fn is_standard_function(&self, name: &str) -> bool {
+        // Don't skip standard functions - they should still be declared properly!
+        // The rule requires ALL functions to have proper declarations.
+        false
+    }
+
+    /// Collect all function declarations and definitions
+    fn collect_declarations<'a>(&self, node: &Node<'a>, source: &'a str) -> HashMap<String, usize> {
+        let mut declarations = HashMap::new();
+        self.collect_declarations_recursive(node, source, &mut declarations);
+        declarations
+    }
+
+    /// Recursively collect function declarations
+    fn collect_declarations_recursive<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &'a str,
+        declarations: &mut HashMap<String, usize>,
+    ) {
+        // Check for function definitions
+        if node.kind() == "function_definition" {
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                if let Some(name) = self.get_function_name(&declarator, source) {
+                    let line = node.start_position().row;
+                    declarations.insert(name.to_string(), line);
+                }
+            }
+        }
+
+        // Check for function declarations
+        if node.kind() == "declaration" {
+            // Look for function declarator in this declaration
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "function_declarator" {
+                        if let Some(name) = self.get_function_name(&child, source) {
+                            let line = node.start_position().row;
+                            declarations.insert(name.to_string(), line);
+                        }
+                    } else if child.kind() == "init_declarator" {
+                        // Check inside init_declarator
+                        for j in 0..child.child_count() {
+                            if let Some(grandchild) = child.child(j) {
+                                if grandchild.kind() == "function_declarator" {
+                                    if let Some(name) = self.get_function_name(&grandchild, source)
+                                    {
+                                        let line = node.start_position().row;
+                                        declarations.insert(name.to_string(), line);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recurse into children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_declarations_recursive(&child, source, declarations);
             }
         }
     }
@@ -392,7 +499,12 @@ impl CertRule for Dcl07C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+
+        // First pass: collect all function declarations and definitions
+        let declarations = self.collect_declarations(node, source);
+
+        // Second pass: check for violations
+        self.check_node(node, source, &mut violations, &declarations);
         violations
     }
 }
