@@ -443,7 +443,7 @@ These rules were implemented in Session 4, enabled in Session 5, and verified at
 
 ## Workflow Compliance Report (work-active.md)
 
-**Date:** 2025-11-20  
+**Date:** 2025-11-20
 **Reviewed by:** Claude (Session 7)
 
 ### Compliance Status: ✅ FULL COMPLIANCE
@@ -518,7 +518,7 @@ All required steps from `.claude/commands/work-active.md` have been followed:
 
 ### Commits & Version Control
 
-**Total commits (this branch):** 
+**Total commits (this branch):**
 - Session 1-6: ~15 commits
 - Session 7: 2 commits (100% completion + proposal cleanup)
 
