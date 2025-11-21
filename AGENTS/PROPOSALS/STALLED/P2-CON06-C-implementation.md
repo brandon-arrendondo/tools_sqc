@@ -13,7 +13,7 @@ tags:
 
 # P2-CON06-C - CON06-C Implementation
 
-**Status:** ACTIVE
+**Status:** STALLED - Blocked on missing tests and incorrect TOML
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** ALLY
@@ -193,32 +193,58 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-**2025-11-19: Cannot Complete - No Test Cases Available**
+### 2025-11-20 - Claude Code (via /work-active)
 
-@architect: BLOCKED - No test infrastructure for CON06-C
+@architect: BLOCKED - Cannot implement CON06-C due to critical issues
 
-**Issue:** No test cases exist for this rule
-- Searched for `tests/CON06-C/` directory - not found
-- Searched project-wide for test infrastructure - not present
-- Implementation cannot be verified without test cases (per proposal requirements)
+**Issues Discovered:**
 
-**Status:** STALLED - Awaiting test case creation
+1. **No implementation file exists**
+   - Expected: `src/rules/cert_c/CON/CON06-C/con06_c.rs`
+   - Actual: File does not exist
+   - Status: Rule stub only (TOML file present)
+
+2. **No test files exist**
+   - Expected: `.c` test files in `src/rules/cert_c/CON/CON06-C/tests/`
+   - Actual: No tests directory exists
+   - Test summary shows: "Not Implemented (no tests): Pass 0/0 (N/A)"
+   - **Cannot implement without test guidance**
+
+3. **TOML contains incorrect Java code**
+   - File: `src/rules/cert_c/CON/CON06-C/CON06-C.toml`
+   - Issue: Description contains Java code (classes, Runnable, synchronized blocks)
+   - Expected: C code examples with pthread mutexes
+   - Quote from TOML: "publicfinalclassCountBoxesimplementsRunnable", "synchronized(lock)"
+   - This appears to be content from a Java rule (possibly CON06-J) incorrectly placed in C TOML
+
+**Impact:**
+- Cannot implement rule without test cases to validate correctness
+- Cannot determine expected behavior from TOML (has wrong language)
+- Proposal workflow requires implementing to pass existing tests, but no tests exist
+
+**Recommendations:**
+
+**Option A: Create test files (Preferred)**
+1. Research CERT C wiki for CON06-C: https://wiki.sei.cmu.edu/confluence/display/c/CON06-C.+Ensure+that+every+mutex+outlives+the+data+it+protects
+2. Create `.c` test files in `src/rules/cert_c/CON/CON06-C/tests/fail/` and `.../pass/`
+3. Update TOML description with correct C examples (pthread mutexes, not Java synchronized)
+4. Resume implementation once tests exist
+
+**Option B: Mark as Java-only rule**
+If CON06-C only applies to Java (not C), then:
+1. Remove from CERT C ruleset
+2. Or mark as N/A for C implementation
+
+**Option C: Reference implementation**
+Point to similar implemented concurrency rule (e.g., CON07-C, CON08-C) that has tests and could serve as template
 
 **Next Steps:**
-1. Create test cases in appropriate test directory
-2. Include both pass and fail test scenarios
-3. Resume implementation once tests are available
-
-**Rule Complexity:** CON06-C requires detecting when mutexes outlive the data they protect, which is a complex lifetime analysis problem. This rule typically requires:
-- Tracking mutex and data declarations and their scopes
-- Identifying which mutexes protect which data (requires annotation or heuristics)
-- Comparing lifetimes to ensure mutex outlives protected data
-- Handling static vs automatic storage duration
-
-**Recommendation:** Create test cases before implementation to clarify expected behavior.
+- Architect to create test files OR clarify if rule applies to C
+- Once tests exist and TOML is corrected, resume implementation
+- Moving proposal to STALLED/
 
 ---
 
 ## Verification
 
-@architect: STALLED - No test infrastructure available
+@architect: APPROVED

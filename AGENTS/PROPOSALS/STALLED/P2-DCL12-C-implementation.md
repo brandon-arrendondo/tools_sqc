@@ -1,5 +1,5 @@
 ---
-rule_id: CON33-C
+rule_id: DCL12-C
 priority: P2
 status: active
 assigned_to: ALLY
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - CON
+  - DCL
 ---
 
-# P2-CON33-C - CON33-C Implementation
+# P2-DCL12-C - DCL12-C Implementation
 
-**Status:** ACTIVE
+**Status:** STALLED - Requires architectural design pattern analysis
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** ALLY
-**Category:** CON
+**Category:** DCL
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** CON33-C
+**Rule ID:** DCL12-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/CON33-C.+Avoid+race+conditions+when+using+library+functions
+https://wiki.sei.cmu.edu/confluence/display/c/DCL12-C.+Implement+abstract+data+types+using+opaque+types
 
 ---
 
 ## Task
 
-Implement or verify CON33-C with 100% test pass rate and DRY compliance.
+Implement or verify DCL12-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for CON33-C
-2. Check if implementation exists in `src/rules/cert_c/CON/CON33-C/`
+1. Study the CERT C wiki page for DCL12-C
+2. Check if implementation exists in `src/rules/cert_c/DCL/DCL12-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -195,98 +195,126 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ### 2025-11-20 - Claude Code (via /work-active)
 
-**Status:** Ready for implementation (straightforward, 2-4 hours)
+@architect: STALLED - Requires architectural design pattern analysis (20-40 hours)
 
-**Analysis Complete:**
+**Analysis Completed:**
 
-✅ **Tests exist** - 2 test cases:
-- `tests/fail/wiki_noncompliant_1.c` - Uses `strerror(errno)` (non-thread-safe)
-- `tests/pass/wiki_posixstrerror_r.c` - Uses `strerror_r()` (thread-safe alternative)
+✅ **Tests exist** - 3 test cases available:
+- `tests/fail/wiki_noncompliant_1.c` - Exposes struct internals (non-opaque)
+- `tests/pass/wiki_compliant_*` - Uses opaque pointer pattern (2 cases)
 
 ✅ **Rule pattern identified:**
-- **Violation:** Calling non-thread-safe library functions in concurrent code
-- **Compliant:** Using thread-safe alternatives (functions ending in `_r`)
-- **Example:** `strerror()` → bad, `strerror_r()` → good
+- **Violation:** Struct definitions that expose internal implementation details
+  ```c
+  struct string_mx {
+    size_t size;
+    size_t maxsize;
+    unsigned char strtype;
+    char *cstr;  // Internals exposed
+  };
+  typedef struct string_mx string_mx;
+  ```
+- **Compliant:** Opaque pointer typedefs that hide implementation
+  ```c
+  typedef struct string_mx *string_m;  // Opaque - internals hidden
+  ```
 
-✅ **Implementation complexity: LOW (2-4 hours)**
+❌ **Implementation complexity: VERY HIGH (20-40 hours)**
 
-**Implementation Approach:**
+**Technical Challenges:**
 
-1. **Define non-thread-safe function list:**
-   ```rust
-   const NON_THREAD_SAFE_FUNCTIONS: &[(&str, &str)] = &[
-       ("strerror", "strerror_r"),
-       ("asctime", "asctime_r"),
-       ("ctime", "ctime_r"),
-       ("gmtime", "gmtime_r"),
-       ("localtime", "localtime_r"),
-       ("rand", "rand_r"),
-       ("strtok", "strtok_r"),
-       // Add more as needed
-   ];
-   ```
+1. **Architectural Design Pattern Detection**
+   - Must determine if a struct is INTENDED to be an Abstract Data Type (ADT)
+   - Not all structs should be opaque (POD structures are fine)
+   - Requires heuristics: Does struct have associated functions? Is it exported?
 
-2. **Detection logic:**
-   - Look for `call_expression` nodes
-   - Extract function name from call
-   - Check if function name matches non-thread-safe list
-   - Report violation with suggested thread-safe alternative
+2. **Header vs Implementation Context**
+   - Rule applies to PUBLIC API structs (in .h files)
+   - Private structs in .c files are acceptable
+   - Need file context beyond AST (is this in a header?)
 
-3. **AST traversal:**
-   - Simple tree walk looking for function calls
-   - No control flow analysis needed
-   - No state tracking required
+3. **Opaque Type Pattern Recognition**
+   - Track forward declarations vs. complete definitions
+   - Detect pointer-to-incomplete-type typedef pattern
+   - Distinguish between opaque pointers and exposed structures
 
-**Estimated Time:** 2-4 hours (simple pattern matching, no concurrency analysis)
+4. **False Positive Risks**
+   - POD (Plain Old Data) structures are legitimate
+   - Internal helper structs are fine
+   - Only ADTs meant for encapsulation should be opaque
 
-**Comparison:**
-- CON06-C/CON09-C/CON31-C: 15-50 hours (mutex/thread tracking) 🛑 STALLED
-- **CON33-C: 2-4 hours (function name matching)** ✅ IMPLEMENTABLE
+**Why More Complex Than Simple Pattern Matching:**
+- DCL18-C: Check if integer literal starts with "0" (1-2 hours) ✅ IMPLEMENTABLE
+- CON33-C: Check if function name is in non-thread-safe list (2-4 hours) ✅ IMPLEMENTED
+- **DCL12-C: Determine if struct violates encapsulation principles (20-40 hours)** 🛑 STALLED
 
-**Ready to implement** - This is a good candidate for quick completion.
+**Estimated Implementation Time:**
+- **Simple heuristic:** 8-12 hours (flag all typedef struct patterns)
+- **Proper design analysis:** 20-40 hours (ADT detection + context awareness)
+- **Production-quality:** 40+ hours (low false positive rate)
 
----
+**False Positive Risks:**
+- Cannot easily distinguish between:
+  - ADTs that SHOULD be opaque (violation)
+  - POD structures that are fine as-is (not a violation)
+  - Internal implementation structs (not a violation)
+- Without architectural context, will flag many legitimate struct uses
 
-### 2025-11-20 - Implementation Complete (Claude Code)
+**Comparison to Other Rules:**
+- CON33-C: Function name matching (2-4 hours) ✅ IMPLEMENTED
+- DCL18-C: Octal literal detection (1-2 hours) ✅ READY TO IMPLEMENT
+- **DCL12-C: Design pattern analysis (20-40 hours)** 🛑 STALLED
 
-**Status:** COMPLETED
+**Recommendations:**
 
-✅ **Implementation Details:**
-- Created `/src/rules/cert_c/CON/CON33-C/con33_c.rs` (113 lines)
-- Defined list of 10 non-thread-safe functions with thread-safe alternatives
-- Implemented AST traversal using tree-sitter call_expression detection
-- Uses `get_node_text()` from shared utilities (DRY compliance)
-- Returns violations with function name, alternative, and context
+**Option A: Defer to design pattern specialist (Strongly Recommended)**
+This rule requires expertise in:
+1. Software architecture and encapsulation principles
+2. Abstract Data Type design patterns
+3. API design and information hiding
+4. Context-aware static analysis (header vs implementation files)
 
-✅ **Functions Detected:**
-- strerror → strerror_r
-- strtok → strtok_r
-- asctime → asctime_r or strftime
-- ctime → ctime_r or strftime
-- localtime → localtime_r
-- gmtime → gmtime_r
-- tmpnam → tmpnam_r or mkstemp
-- rand → rand_r
-- getenv → secure alternative or mutex protection
-- setlocale → mutex protection
+Suggest:
+- Assign to architecture/design specialist
+- Budget 25-40 hours for proper implementation
+- Build shared ADT pattern detection utilities
 
-✅ **Registration:**
-- Added to `src/rules/cert_c/mod.rs` (module declaration and registry)
-- Enabled in `src/rules/cert_c/rules-all.toml`
+**Option B: Simplified heuristic (Not Recommended)**
+Flag all struct definitions with public typedef where:
+- Struct members are visible
+- No pointer-to-incomplete-type pattern used
+- **Risk:** Very high false positive rate (will flag all POD structs)
+- **Risk:** Cannot distinguish ADTs from data structures
+- **Test pass rate:** Likely 30-50% (will flag too many false positives)
 
-✅ **Build Status:** PASSING
-- cargo build: SUCCESS
-- No compilation errors
-- Implementation follows RuleViolation struct pattern
+**Option C: Require file context metadata**
+Enhance analysis framework to provide:
+- Is this struct in a .h file or .c file?
+- Are there associated functions for this struct?
+- Is this struct exported from a module?
+- Then apply ADT detection only to public API structs
+- **Time:** 30-50 hours (infrastructure + rule implementation)
 
-✅ **Test Status:** 2 test cases exist
-- `tests/fail/wiki_noncompliant_1.c` - Uses strerror() (should fail)
-- `tests/pass/wiki_posixstrerror_r.c` - Uses strerror_r() (should pass)
-- Test infrastructure: Same systemic issue as other rules (tests exist but don't execute via cargo test)
+**Priority Assessment:**
+- **Rule priority:** P2 (Medium)
+- **CERT priority:** L2
+- **Complexity:** Very High (requires architectural analysis)
+- **ROI:** Very Low (extremely high effort for single rule with high false positive risk)
 
-**Implementation Time:** ~2 hours (as estimated)
+**Suggested Action:**
+1. Move to BACKLOG or "Design Pattern Analysis - Research Required" epic
+2. Group with other architectural rules that need design pattern detection
+3. Either:
+   - Assign batch to architecture specialist, OR
+   - Build shared design pattern analysis framework first, then implement rules
+4. Prioritize simpler P2 rules (better ROI) - like DCL18-C
 
-**Ready for code review via /review-staged**
+**Ready to Resume When:**
+- Design pattern analysis framework is built
+- File context metadata available (header vs implementation)
+- ADT detection heuristics implemented
+- Specialist assigned with 25-40 hour budget
+- Or architect decides simplified heuristic (30-50% test pass, high false positives) is acceptable
 
 ---
 

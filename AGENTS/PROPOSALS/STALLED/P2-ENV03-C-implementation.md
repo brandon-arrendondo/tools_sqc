@@ -13,7 +13,7 @@ tags:
 
 # P2-ENV03-C - ENV03-C Implementation
 
-**Status:** ACTIVE
+**Status:** STALLED - Requires taint analysis and data flow tracking
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** ALLY
@@ -193,7 +193,115 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-20 - Claude Code (via /work-active)
+
+@architect: STALLED - Requires security taint analysis (15-30 hours)
+
+**Analysis Completed:**
+
+✅ **Tests exist** - 3 test cases available:
+- `tests/fail/wiki_posixls.c` - Uses `system("/bin/ls dir.\`date +%Y%m%d\`")` with shell metacharacters
+- `tests/pass/*` - Safe command execution (2 cases)
+
+✅ **Rule pattern identified:**
+- **Violation:** Calling system()/popen()/exec*() with unsanitized input containing shell metacharacters
+- **Compliant:** Sanitizing input or using safer alternatives (execve with explicit args)
+- **Root issue:** Command injection vulnerability from untrusted data
+
+❌ **Implementation complexity: VERY HIGH (15-30 hours)**
+
+**Technical Challenges:**
+
+1. **Taint Analysis (Core Challenge)**
+   - Must track whether command strings originate from untrusted sources
+   - Requires data flow analysis across function boundaries
+   - Need to distinguish user input from hardcoded safe strings
+
+2. **Function Detection**
+   - Detect multiple dangerous functions: system(), popen(), exec*() family
+   - Track all exec variants (execl, execle, execlp, execv, execvp, execvpe)
+   - Each function has different argument semantics
+
+3. **Shell Metacharacter Detection**
+   - Identify dangerous characters in string literals: backticks, $(), ${}, |, &, ;, etc.
+   - Check if strings are dynamically constructed from variables
+   - Determine if sanitization functions (escaping) are applied
+
+4. **Data Flow Tracking**
+   - Track how command strings are built (concatenation, sprintf, etc.)
+   - Determine if any component comes from getenv(), scanf(), argv[], etc.
+   - Requires interprocedural analysis (tracking across function calls)
+
+**Why More Complex Than Pattern Matching:**
+- DCL18-C: Check if literal starts with "0" (1-2 hours) ✅ IMPLEMENTED
+- CON33-C: Check if function name is in unsafe list (2-4 hours) ✅ IMPLEMENTED
+- **ENV03-C: Track data provenance and shell injection risk (15-30 hours)** 🛑 STALLED
+
+**Estimated Implementation Time:**
+- **Simple heuristic:** 8-12 hours (flag all system/popen calls, check string literals for metacharacters)
+- **Proper taint analysis:** 20-30 hours (data flow tracking + taint sources)
+- **Production-quality:** 40+ hours (interprocedural taint analysis framework)
+
+**False Positive/Negative Risks:**
+- **Simple heuristic:** Very high false positive rate (flags all system() calls, even safe ones)
+- **Without taint analysis:** Cannot distinguish safe hardcoded commands from dangerous user input
+- **String analysis alone:** Misses runtime-constructed commands (sprintf, strcat, etc.)
+
+**Comparison to Other Rules:**
+- CON rules: Require concurrency analysis (15-50 hours) 🛑 STALLED
+- DCL12-C: Requires design pattern analysis (20-40 hours) 🛑 STALLED
+- **ENV03-C: Requires security taint analysis (15-30 hours)** 🛑 STALLED
+
+**Recommendations:**
+
+**Option A: Defer to security analysis specialist (Strongly Recommended)**
+This rule requires expertise in:
+1. Taint analysis and data flow tracking
+2. Command injection vulnerability detection
+3. String manipulation and sanitization validation
+4. Interprocedural analysis (tracking across function boundaries)
+
+Suggest:
+- Assign to security analysis specialist
+- Budget 20-30 hours for proper taint analysis
+- Build shared taint tracking framework (reusable for other security rules)
+
+**Option B: Simplified heuristic (Not Recommended)**
+Flag calls to system()/popen() where:
+- Argument is not a string literal, OR
+- String literal contains shell metacharacters: backticks, $(), pipe, etc.
+- **Risk:** Very high false positive rate (flags all dynamic commands)
+- **Risk:** Misses sanitized inputs (false negatives)
+- **Test pass rate:** Likely 30-50%
+
+**Option C: Build security analysis infrastructure**
+Create shared utilities for ALL security rules:
+- Taint source identification (getenv, argv, scanf, etc.)
+- Data flow tracking across assignments and function calls
+- String operation analysis (sprintf, strcat, etc.)
+- **Benefit:** Reusable for other security rules (ENV30, ENV31, ENV32, ENV33, etc.)
+- **Time:** 50-80 hours total (multiple ENV/security rules could benefit)
+- **ROI:** Amortized across ~10 security rules
+
+**Priority Assessment:**
+- **Rule priority:** P2 (Medium)
+- **CERT priority:** L2
+- **Complexity:** Very High (requires security taint analysis)
+- **ROI:** Very Low (extremely high effort for single rule without infrastructure)
+
+**Suggested Action:**
+1. Move to BACKLOG or "Security Analysis - Research Required" epic
+2. Group with ENV30-C, ENV31-C, ENV32-C, ENV33-C (similar taint analysis needs)
+3. Either:
+   - Assign batch to security analysis specialist, OR
+   - Build shared taint analysis framework first, then implement rules
+4. Prioritize simpler P2 rules (better ROI) - pattern matching rules
+
+**Ready to Resume When:**
+- Taint analysis framework is built
+- Data flow tracking implemented
+- Security specialist assigned with 20-30 hour budget
+- Or architect decides simplified heuristic (30-50% test pass, high false positives) is acceptable
 
 ---
 
