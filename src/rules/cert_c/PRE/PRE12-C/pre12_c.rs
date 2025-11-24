@@ -13,7 +13,7 @@ impl CertRule for Pre12C {
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
     fn cert_id(&self) -> &'static str { "PRE12-C" }
-    
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
@@ -26,7 +26,7 @@ impl Pre12C {
         // Look for preprocessor macro definitions
         if node.kind() == "preproc_function_def" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Skip macros using __extension__ (GCC extension that handles evaluation correctly)
             if text.contains("__extension__") {
                 // Recursively check children
@@ -36,12 +36,12 @@ impl Pre12C {
                 }
                 return;
             }
-            
+
             // Check if macro uses parameters multiple times in definition
             // Extract parameter names from #define NAME(param1, param2)
             if let Some(params) = self.extract_macro_params(&text) {
                 let definition = text.split(')').skip(1).collect::<String>();
-                
+
                 // Check if any parameter appears more than once in the definition
                 for param in params {
                     // Count occurrences of parameter as standalone identifier
@@ -51,7 +51,7 @@ impl Pre12C {
                             count += 1;
                         }
                     }
-                    
+
                     if count > 1 {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
@@ -68,17 +68,17 @@ impl Pre12C {
                 }
             }
         }
-        
+
         // Also detect expanded macro patterns: expressions with multiple side-effects
         // Pattern: (expr) ? -(expr) : (expr) where expr has side effects like ++n
         if node.kind() == "assignment_expression" || node.kind() == "conditional_expression" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Check for increment/decrement operators appearing multiple times
             if text.contains("++") || text.contains("--") {
                 // Count occurrences of side-effect operators
                 let inc_count = text.matches("++").count() + text.matches("--").count();
-                
+
                 // If there are 3+ occurrences, it's likely from macro expansion
                 if inc_count >= 3 && (text.contains('?') || text.contains(':')) {
                     violations.push(RuleViolation {
@@ -101,7 +101,7 @@ impl Pre12C {
             self.check_node(&child, source, violations);
         }
     }
-    
+
     fn extract_macro_params(&self, text: &str) -> Option<Vec<String>> {
         // Extract params from #define NAME(param1, param2) definition
         if let Some(start) = text.find('(') {

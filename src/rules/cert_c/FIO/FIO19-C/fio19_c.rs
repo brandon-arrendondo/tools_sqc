@@ -13,7 +13,7 @@ impl CertRule for Fio19C {
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
     fn cert_id(&self) -> &'static str { "FIO19-C" }
-    
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
@@ -27,7 +27,7 @@ impl Fio19C {
         // Pattern: variable = ftell(fp) where variable is used with malloc
         if node.kind() == "call_expression" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Check for ftell but not ftello (ftello is acceptable when used properly)
             if text.contains("ftell(") && !text.contains("ftello(") {
                 violations.push(RuleViolation {

@@ -43,37 +43,37 @@ impl CertRule for Dcl22C {
 
 impl Dcl22C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Look for casts where the operand uses the address-of operator on an array  
+        // Look for casts where the operand uses the address-of operator on an array
         if node.kind() == "cast_expression" {
             // Get the cast type and operand
             if let Some(type_node) = node.child_by_field_name("type") {
                 let type_text = get_node_text(&type_node, source);
-                
+
                 if let Some(operand) = node.child_by_field_name("value") {
                     let operand_text = get_node_text(&operand, source);
-                    
+
                     // Check for (T **)&array pattern
                     if type_text.contains("**") && operand_text.trim().starts_with('&') {
                         // Extract the identifier
                         let identifier = operand_text.trim_start_matches('&').trim();
-                        
+
                         // Check if this is an array by looking for its declaration
                         if self.is_array_identifier(identifier, source) {
                             // The key insight from comparing test cases:
                             // Compliant has volatile in BOTH declaration AND cast
                             // Noncompliant has volatile in NEITHER
                             // But the noncompliant one should be flagged!
-                            // 
+                            //
                             // So it's not about matching - it's about having volatile at all?
                             // OR: it's about the ABSENCE of volatile being the problem?
                             //
                             // Wait - maybe the rule is: you CAN'T cast array to ** safely
                             // UNLESS you use volatile to signal intent?
                             // So: no volatile = violation, with volatile = OK?
-                            
-                            let has_volatile = type_text.contains("volatile") && 
+
+                            let has_volatile = type_text.contains("volatile") &&
                                               self.declaration_has_volatile(identifier, source);
-                            
+
                             if !has_volatile {
                                 violations.push(RuleViolation {
                                     rule_id: self.rule_id().to_string(),
@@ -104,7 +104,7 @@ impl Dcl22C {
             self.check_node(&child, source, violations);
         }
     }
-    
+
     fn is_array_identifier(&self, identifier: &str, source: &str) -> bool {
         // Check if identifier is declared as an array
         for line in source.lines() {
@@ -114,7 +114,7 @@ impl Dcl22C {
         }
         false
     }
-    
+
     fn declaration_has_volatile(&self, identifier: &str, source: &str) -> bool {
         // Check if the array declaration has volatile qualifier
         for line in source.lines() {

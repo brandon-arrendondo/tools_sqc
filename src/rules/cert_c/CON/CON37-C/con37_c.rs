@@ -43,12 +43,12 @@ impl CertRule for Con37C {
             has_thread_creation: false,
             has_signal_call: false,
         };
-        
+
         let mut signal_positions = Vec::new();
         checker.scan_node(node, source, &mut signal_positions);
-        
+
         let mut violations = Vec::new();
-        
+
         // If we found both signal() and thread creation, report violations
         if checker.has_thread_creation && checker.has_signal_call {
             for (line, column) in signal_positions {
@@ -69,7 +69,7 @@ impl CertRule for Con37C {
                 });
             }
         }
-        
+
         violations
     }
 }
@@ -79,7 +79,7 @@ impl Con37C {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source).trim();
-                
+
                 // Check for signal() call
                 if func_name == "signal" {
                     self.has_signal_call = true;
@@ -88,7 +88,7 @@ impl Con37C {
                         node.start_position().column + 1
                     ));
                 }
-                
+
                 // Check for thread creation functions
                 if matches!(
                     func_name,

@@ -22,9 +22,9 @@ impl CertRule for Dcl23C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         let mut identifiers: HashMap<String, Vec<(String, usize, usize)>> = HashMap::new();
-        
+
         self.collect_identifiers(node, source, &mut identifiers);
-        
+
         for (_base, variants) in identifiers.iter() {
             if variants.len() > 1 && self.variants_too_similar(&variants) {
                 for (name, line, col) in variants {
@@ -66,7 +66,7 @@ impl Dcl23C {
             self.collect_identifiers(&child, source, ids);
         }
     }
-    
+
     fn find_identifier_info(&self, node: &Node, source: &str) -> Option<(String, usize, usize)> {
         if node.kind() == "identifier" {
             let name = get_node_text(node, source).to_string();
@@ -81,13 +81,13 @@ impl Dcl23C {
         }
         None
     }
-    
+
     fn variants_too_similar(&self, variants: &[(String, usize, usize)]) -> bool {
         if variants.len() < 2 { return false; }
         let first = &variants[0].0;
         let min_len = variants.iter().map(|(n,_,_)| n.len()).min().unwrap_or(0);
         if min_len < 2 { return false; }
-        
+
         let mut prefix_len = 0;
         for i in 0..min_len {
             let ch = first.chars().nth(i).unwrap();
@@ -95,7 +95,7 @@ impl Dcl23C {
                 prefix_len = i + 1;
             } else { break; }
         }
-        
+
         prefix_len as f64 / min_len as f64 >= 0.7
     }
 }

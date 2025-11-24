@@ -13,7 +13,7 @@ impl CertRule for Exp37C {
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
     fn cert_id(&self) -> &'static str { "EXP37-C" }
-    
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
@@ -26,7 +26,7 @@ impl Exp37C {
         // Check for log2() with complex numbers (not creal)
         if node.kind() == "call_expression" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // log2() doesn't support complex numbers directly
             if text.starts_with("log2(") && !text.contains("creal(") {
                 // Check if context has complex number declarations
@@ -44,7 +44,7 @@ impl Exp37C {
                     });
                 }
             }
-            
+
             // Check for open() without mode parameter when O_CREAT is used
             if text.starts_with("open(") && text.contains("O_CREAT") {
                 // Count commas to check argument count
@@ -63,11 +63,11 @@ impl Exp37C {
                 }
             }
         }
-        
+
         // Check for old-style function declarations without parameter types
         if node.kind() == "declaration" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Pattern: function_name(); with empty parens (K&R style)
             if text.contains("()") && !text.contains("void") {
                 // Exclude function pointers and actual function definitions
@@ -87,7 +87,7 @@ impl Exp37C {
                     }
                 }
             }
-            
+
             // Check for variadic function declarations without proper header
             if text.contains("...") && !text.contains("#include") {
                 // Check if it's a declaration (not definition)
@@ -104,7 +104,7 @@ impl Exp37C {
                     });
                 }
             }
-            
+
             // Check for function pointer with wrong signature
             if text.contains("(*fp)()") || (text.contains("(*fp)") && text.contains("()")) {
                 violations.push(RuleViolation {

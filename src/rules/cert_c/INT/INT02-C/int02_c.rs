@@ -13,7 +13,7 @@ impl CertRule for Int02C {
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
     fn cert_id(&self) -> &'static str { "INT02-C" }
-    
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
@@ -26,17 +26,17 @@ impl Int02C {
         // Look for binary comparisons between signed and unsigned integers
         if node.kind() == "binary_expression" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Check for comparison operators
-            if text.contains("<") || text.contains(">") || text.contains("<=") || text.contains(">=") || 
+            if text.contains("<") || text.contains(">") || text.contains("<=") || text.contains(">=") ||
                text.contains("==") || text.contains("!=") {
-                
+
                 // Look for patterns where one operand might be signed and other unsigned
                 let has_signed_pattern = text.contains("si ") || text.contains(" si");
                 let has_unsigned_pattern = text.contains("ui ") || text.contains(" ui");
-                
+
                 let has_cast = text.contains("(int)") || text.contains("(unsigned");
-                
+
                 if has_signed_pattern && has_unsigned_pattern && !has_cast {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -51,11 +51,11 @@ impl Int02C {
                 }
             }
         }
-        
+
         // Check declarations with bitwise NOT on small types
         if node.kind() == "declaration" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Pattern: uint8_t result = ( ~value ) >> shift WITHOUT explicit cast
             if (text.contains("uint8_t") || text.contains("int8_t")) && text.contains("~") {
                 // Check if there's NO explicit cast to uint8_t/int8_t after the ~
@@ -72,7 +72,7 @@ impl Int02C {
                     });
                 }
             }
-            
+
             // Check for unsigned short multiplication
             if text.contains("unsigned short") && text.contains("*") && !text.contains("(unsigned int)") {
                 violations.push(RuleViolation {
@@ -87,17 +87,17 @@ impl Int02C {
                 });
             }
         }
-        
+
         // Check for loops comparing char with unsigned char
         if node.kind() == "for_statement" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Get lines before the loop to check declarations
             let lines_before = source.lines().take(node.start_position().row).collect::<Vec<_>>().join("\n");
-            
+
             // Pattern: char i (signed) compared with unsigned char max (unsigned)
             // NOT: unsigned char i with unsigned char max (both unsigned - OK)
-            if text.contains("char i") && !text.contains("unsigned char i") && 
+            if text.contains("char i") && !text.contains("unsigned char i") &&
                lines_before.contains("unsigned char max") && text.contains("<") {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
@@ -111,15 +111,15 @@ impl Int02C {
                 });
             }
         }
-        
+
         // Check for assignments with unsigned short multiplication
         if node.kind() == "assignment_expression" || node.kind() == "init_declarator" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Pattern: unsigned int z = x * y where x, y are unsigned short WITHOUT cast
             let lines_before = source.lines().take(node.start_position().row).collect::<Vec<_>>().join("\n");
-            
-            if text.contains("*") && lines_before.contains("unsigned short") && 
+
+            if text.contains("*") && lines_before.contains("unsigned short") &&
                !text.contains("(unsigned int)") && !text.contains("(unsigned long)") {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),

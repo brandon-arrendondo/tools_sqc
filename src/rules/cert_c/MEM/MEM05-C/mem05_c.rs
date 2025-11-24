@@ -13,7 +13,7 @@ impl CertRule for Mem05C {
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
     fn cert_id(&self) -> &'static str { "MEM05-C" }
-    
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
@@ -26,7 +26,7 @@ impl Mem05C {
         // Look for array declarations with variable size (VLA)
         if node.kind() == "declaration" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Check for array declaration pattern: type name[variable]
             // VLAs have a non-constant size in brackets
             if text.contains("[") && text.contains("]") && !text.contains("malloc") {
@@ -34,7 +34,7 @@ impl Mem05C {
                 if let Some(start) = text.find("[") {
                     if let Some(end) = text.find("]") {
                         let size_expr = &text[start+1..end].trim();
-                        
+
                         // If size is not a numeric constant, it's a VLA
                         if !size_expr.is_empty() && !size_expr.chars().all(|c| c.is_numeric()) {
                             violations.push(RuleViolation {
@@ -52,11 +52,11 @@ impl Mem05C {
                 }
             }
         }
-        
+
         // Check for recursive functions (potential stack overflow)
         if node.kind() == "function_definition" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Extract function name from declaration
             if let Some(func_name) = self.extract_function_name(node, source) {
                 // Check if function calls itself (simple recursion detection)
@@ -85,7 +85,7 @@ impl Mem05C {
             self.check_node(&child, source, violations);
         }
     }
-    
+
     fn extract_function_name(&self, node: &Node, source: &str) -> Option<String> {
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {

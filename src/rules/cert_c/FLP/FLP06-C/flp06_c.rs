@@ -13,7 +13,7 @@ impl CertRule for Flp06C {
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
     fn cert_id(&self) -> &'static str { "FLP06-C" }
-    
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
@@ -26,7 +26,7 @@ impl Flp06C {
         // Look for declarations: float/double var = expression;
         if node.kind() == "declaration" {
             let decl_text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Must be float or double declaration
             if (decl_text.contains("float") || decl_text.contains("double")) && decl_text.contains(" = ") {
                 // Extract expression after =, before ; or comment
@@ -36,21 +36,21 @@ impl Flp06C {
                     .split("/*").next().unwrap_or("")
                     .split("//").next().unwrap_or("")
                     .trim();
-                
+
                 // Check if it has arithmetic operation
-                let has_arithmetic = expr.contains('/') || 
+                let has_arithmetic = expr.contains('/') ||
                                     expr.contains('*') ||
                                     expr.contains('+') ||
                                     expr.contains('-');
-                
+
                 if has_arithmetic {
                     // Check for floating-point indicators
-                    let has_float_literal = expr.contains('.') || 
-                                           expr.contains('f') || 
+                    let has_float_literal = expr.contains('.') ||
+                                           expr.contains('f') ||
                                            expr.contains('F');
-                    let has_cast = expr.contains("(float)") || 
+                    let has_cast = expr.contains("(float)") ||
                                   expr.contains("(double)");
-                    
+
                     // Violation: arithmetic without floating-point conversion
                     if !has_float_literal && !has_cast {
                         violations.push(RuleViolation {
