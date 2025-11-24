@@ -193,7 +193,30 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### Implementation Phase
+1. **Studied CERT C Wiki**: Reviewed EXP46-C requirements for detecting bitwise operators with Boolean-like operands
+2. **Created New Implementation**: Implemented from scratch at `src/rules/cert_c/EXP/EXP46-C/exp46_c.rs` (217 lines)
+3. **Verified DRY Compliance**: Uses `get_node_text()` from `crate::utility::cert_c::ast_utils`
+
+### Implementation Details
+- **Detection Target**: Bitwise operators (&, |, ^) used with Boolean-like expressions
+- **Boolean-like Expressions**: Results from relational operators (<, >, <=, >=) and equality operators (==, !=)
+- **Detection Strategy**:
+  - Traverses binary_expression nodes
+  - Identifies bitwise operators
+  - Checks if left/right operands are Boolean-like expressions
+  - Looks through parenthesized expressions recursively
+- **Violation Messages**: Suggests using logical operators (&&, ||) instead of bitwise operators
+
+### Registration and Enablement
+4. **Registered in mod.rs**: Lines 316-317 (module declaration) and line 742 (registry registration)
+5. **Enabled Rule**: `rules-all.toml` line 487 changed to `enabled = true`
+6. **Build Status**: Compiles successfully with only pre-existing warnings
+
+### Test Status
+- No test cases exist yet for EXP46-C (this is acceptable per guidelines)
+- Rule implementation follows established patterns from other EXP rules
+- **Severity**: Low (logic error that may cause incorrect behavior but not immediate security risk)
 
 ---
 
