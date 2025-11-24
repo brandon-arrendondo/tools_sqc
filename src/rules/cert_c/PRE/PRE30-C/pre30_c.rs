@@ -1,5 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Pre30C;
@@ -60,7 +61,7 @@ impl Pre30C {
         source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        let macro_text = &source[node.start_byte()..node.end_byte()];
+        let macro_text = get_node_text(node, source);
 
         // Look for token concatenation (##) that might create universal character names
         if macro_text.contains("##") {
@@ -90,7 +91,7 @@ impl Pre30C {
     ) {
         // Check for macro calls that might involve UCN concatenation
         if let Some(function_node) = node.child_by_field_name("function") {
-            let function_name = &source[function_node.start_byte()..function_node.end_byte()];
+            let function_name = get_node_text(&function_node, source);
 
             // Get the arguments to check for UCN patterns
             let args = self.get_macro_arguments(node, source);
@@ -255,7 +256,7 @@ impl Pre30C {
             for i in 0..arguments.child_count() {
                 if let Some(child) = arguments.child(i) {
                     if child.kind() != "," {
-                        let arg_text = source[child.start_byte()..child.end_byte()].to_string();
+                        let arg_text = get_node_text(&child, source).to_string();
                         args.push(arg_text);
                     }
                 }

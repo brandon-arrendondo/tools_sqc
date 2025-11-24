@@ -1,6 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils;
 use tree_sitter::Node;
 
 pub struct Int34C;
@@ -15,7 +15,7 @@ impl CertRule for Int34C {
     }
 
     fn severity(&self) -> Severity {
-        Severity::High
+        Severity::Medium
     }
 
     fn category(&self) -> RuleCategory {
@@ -28,63 +28,123 @@ impl CertRule for Int34C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+
+        // Check for left-shift and right-shift operations
+        if node.kind() == "binary_expression" {
+            if let Some(operator) = ast_utils::get_binary_operator(node, source) {
+                if operator == "<<" || operator == ">>" {
+                    self.check_shift_operation(node, source, &operator, &mut violations);
+                }
+            }
+        }
+
+        // Recursively check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                violations.extend(self.check(&child, source));
+            }
+        }
+
         violations
     }
 }
 
 impl Int34C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check for shift expressions
-        if node.kind() == "binary_expression" {
-            if let Some(op) = node.child_by_field_name("operator") {
-                let op_text = get_node_text(&op, source);
+    /// Check if a shift operation is safe
+    fn check_shift_operation(
+        &self,
+        node: &Node,
+        source: &str,
+        operator: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let left = node.child_by_field_name("left");
+        let right = node.child_by_field_name("right");
 
-                // Check for shift operators
-                if matches!(op_text.trim(), "<<" | ">>") {
-                    // Get the shift amount (right operand)
-                    if let Some(right) = node.child_by_field_name("right") {
-                        let shift_amount = get_node_text(&right, source).trim().to_string();
+        if let (Some(left_node), Some(right_node)) = (left, right) {
+            let right_text = ast_utils::get_node_text(&right_node, source);
+            let left_text = ast_utils::get_node_text(&left_node, source);
 
-                        // Skip if shift amount is a literal constant (not a variable)
-                        let is_constant = self.is_literal_constant(&shift_amount);
+            // Check if this is an unsigned type operation
+            // Unsigned shifts have defined behavior in most cases
+            if self.is_likely_unsigned(&left_text, &left_node, source) {
+                // For unsigned types, be more lenient
+                // Only require validation for left-shifts (which can cause issues)
+                if operator == "<<" {
+                    if !self.is_shift_amount_validated(node, &right_node, source) {
+                        self.report_violation(
+                            node,
+                            left_text.to_string(),
+                            right_text.to_string(),
+                            source,
+                            violations,
+                        );
+                    }
+                }
+                // Right-shifts on unsigned are generally safe
+            } else {
+                // For signed types or unknown types, require validation for both left and right shifts
+                if !self.is_shift_amount_validated(node, &right_node, source) {
+                    self.report_violation(
+                        node,
+                        left_text.to_string(),
+                        right_text.to_string(),
+                        source,
+                        violations,
+                    );
+                }
+            }
+        }
+    }
 
-                        // Skip if both operands are function parameters AND it's a right shift
-                        // (left shifts always need validation even for parameters)
-                        let is_safe_param_pattern = op_text.trim() == ">>"
-                            && if let Some(left) = node.child_by_field_name("left") {
-                                let left_operand = get_node_text(&left, source).trim().to_string();
-                                self.are_function_parameters(
-                                    node,
-                                    &left_operand,
-                                    &shift_amount,
-                                    source,
-                                )
-                            } else {
-                                false
-                            };
+    fn report_violation(
+        &self,
+        node: &Node,
+        _left_text: String,
+        right_text: String,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let operation = ast_utils::get_node_text(node, source);
 
-                        // Only check for validation if not a constant and not a safe parameter pattern
-                        if !is_constant && !is_safe_param_pattern {
-                            // Check if there's validation for the shift amount
-                            if !self.has_shift_validation(node, &shift_amount, source) {
-                                violations.push(RuleViolation {
-                                rule_id: self.rule_id().to_string(),
-                                message: format!(
-                                    "Shift operation without validation of shift amount '{}'. \
-                                     Shift amount must be non-negative and less than operand bit width",
-                                    shift_amount
-                                ),
-                                severity: self.severity(),
-                                line: node.start_position().row + 1,
-                                column: node.start_position().column + 1,
-                                file_path: String::new(),
-                                suggestion: Some(format!(
-                                    "Add validation before shift: if ({} >= 0 && {} < bit_width_of_operand)",
-                                    shift_amount, shift_amount
-                                )),
-                                requires_manual_review: None,
-                            });
+        violations.push(RuleViolation {
+            rule_id: self.rule_id().to_string(),
+            severity: self.severity(),
+            message: format!(
+                "Shift operation '{}' by '{}' without validating shift amount is non-negative and within type width",
+                operation, right_text
+            ),
+            file_path: String::new(),
+            line: node.start_position().row + 1,
+            column: node.start_position().column + 1,
+            suggestion: Some(format!(
+                "Check that '{}' is >= 0 and < the bit width of the operand before shifting",
+                right_text
+            )),
+            ..Default::default()
+        });
+    }
+
+    /// Check if the operand is likely an unsigned type
+    fn is_likely_unsigned(&self, var_name: &str, node: &Node, source: &str) -> bool {
+        // Check common naming conventions for unsigned variables
+        if var_name.starts_with("ui_")
+            || var_name.starts_with("u_")
+            || var_name.starts_with("unsigned_")
+        {
+            return true;
+        }
+
+        // Try to find the variable declaration
+        if let Some(func) = ast_utils::find_containing_function(node) {
+            // Check function parameters
+            if let Some(params) = func.child_by_field_name("parameters") {
+                for i in 0..params.named_child_count() {
+                    if let Some(param) = params.named_child(i) {
+                        if param.kind() == "parameter_declaration" {
+                            let param_text = ast_utils::get_node_text(&param, source);
+                            if param_text.contains(var_name) && param_text.contains("unsigned") {
+                                return true;
                             }
                         }
                     }
@@ -92,134 +152,175 @@ impl Int34C {
             }
         }
 
-        // Recursively check children
-        let mut cursor = node.walk();
-        for child in node.children(&mut cursor) {
-            self.check_node(&child, source, violations);
-        }
-    }
-
-    /// Check if there's validation for the shift amount
-    fn has_shift_validation(&self, shift_node: &Node, shift_amount: &str, source: &str) -> bool {
-        // First, check if shift is inside an else block with validation in if condition
-        if self.is_in_validated_else_block(shift_node, shift_amount, source) {
-            return true;
-        }
-
-        // Find the containing scope
-        let mut current = shift_node.parent();
-        let mut scope: Option<Node> = None;
-
-        while let Some(node) = current {
-            if matches!(
-                node.kind(),
-                "compound_statement" | "function_definition" | "translation_unit"
-            ) {
-                scope = Some(node);
-                break;
-            }
-            current = node.parent();
-        }
-
-        if let Some(scope_node) = scope {
-            // Look for validation BEFORE the shift
-            return self.find_shift_validation_in_scope(
-                &scope_node,
-                shift_node.start_position().row,
-                shift_amount,
-                source,
-            );
-        }
-
         false
     }
 
-    /// Check if shift is inside an else block with validation in if condition
-    fn is_in_validated_else_block(
+    /// Check if shift amount has been validated
+    fn is_shift_amount_validated(
         &self,
         shift_node: &Node,
-        shift_amount: &str,
+        shift_amount: &Node,
         source: &str,
     ) -> bool {
-        let mut current = shift_node.parent();
+        let shift_var = ast_utils::get_node_text(shift_amount, source);
 
+        // Find the containing function
+        if let Some(func) = ast_utils::find_containing_function(&shift_node) {
+            if let Some(body) = func.child_by_field_name("body") {
+                // Check if there's validation before the shift
+                if self.has_validation_check(&body, &shift_var, source, shift_node) {
+                    return true;
+                }
+            }
+        }
+
+        // Check parent if statement
+        let mut current = shift_node.parent();
         while let Some(node) = current {
-            // Check if we're in an if_statement
             if node.kind() == "if_statement" {
-                // Check if shift is in the else branch
-                if let Some(else_clause) = node.child_by_field_name("alternative") {
-                    // Check if shift is a descendant of the else clause
-                    if self.is_descendant_of(&else_clause, shift_node) {
-                        // Check the if condition for validation
-                        if let Some(condition) = node.child_by_field_name("condition") {
-                            let cond_text = get_node_text(&condition, source);
-                            if cond_text.contains(shift_amount)
-                                && self.is_shift_bound_check(&cond_text, shift_amount)
-                            {
-                                return true;
-                            }
+                if let Some(condition) = node.child_by_field_name("condition") {
+                    if self.checks_shift_bounds(&condition, &shift_var, source) {
+                        // Check if we're in the safe branch (else or consequence after validation)
+                        if self.is_in_safe_branch(&node, shift_node) {
+                            return true;
                         }
                     }
                 }
             }
-
             current = node.parent();
         }
 
         false
     }
 
-    /// Check if target is a descendant of ancestor
-    fn is_descendant_of(&self, ancestor: &Node, target: &Node) -> bool {
-        if ancestor.id() == target.id() {
-            return true;
-        }
+    /// Check if there's a validation check in the scope before the shift
+    fn has_validation_check(
+        &self,
+        scope: &Node,
+        var_name: &str,
+        source: &str,
+        shift_node: &Node,
+    ) -> bool {
+        let shift_line = shift_node.start_position().row;
 
-        let mut cursor = ancestor.walk();
-        for child in ancestor.children(&mut cursor) {
-            if self.is_descendant_of(&child, target) {
-                return true;
+        for i in 0..scope.named_child_count() {
+            if let Some(child) = scope.named_child(i) {
+                let child_line = child.start_position().row;
+
+                // Only check statements before the shift
+                if child_line >= shift_line {
+                    break;
+                }
+
+                if child.kind() == "if_statement" {
+                    if let Some(condition) = child.child_by_field_name("condition") {
+                        if self.checks_shift_bounds(&condition, var_name, source) {
+                            // Check if the consequence has return/exit
+                            if let Some(consequence) = child.child_by_field_name("consequence") {
+                                if self.has_return_or_error_handling(&consequence, source) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
         false
     }
 
-    /// Find shift validation in scope before the shift operation
-    fn find_shift_validation_in_scope(
-        &self,
-        scope: &Node,
-        shift_line: usize,
-        shift_amount: &str,
-        source: &str,
-    ) -> bool {
-        let mut cursor = scope.walk();
-        for child in scope.children(&mut cursor) {
-            // Only check statements that come BEFORE the shift
-            if child.start_position().row < shift_line {
-                if child.kind() == "if_statement" {
-                    if let Some(condition) = child.child_by_field_name("condition") {
-                        let cond_text = get_node_text(&condition, source);
+    /// Check if a condition validates shift bounds
+    fn checks_shift_bounds(&self, condition: &Node, var_name: &str, source: &str) -> bool {
+        let condition_text = ast_utils::get_node_text(condition, source);
 
-                        // Check for validation patterns:
-                        // - shift_amount >= PRECISION(...)
-                        // - shift_amount >= sizeof(...) * CHAR_BIT
-                        // - shift_amount >= <numeric constant>
-                        // - shift_amount < PRECISION(...)
-                        // - shift_amount < sizeof(...) * CHAR_BIT
-                        // - shift_amount < <numeric constant>
-                        if cond_text.contains(shift_amount) {
-                            if self.is_shift_bound_check(&cond_text, shift_amount) {
-                                return true;
+        // Look for patterns like:
+        // - var < 0
+        // - var < PRECISION(...)
+        // - var >= PRECISION(...)
+        // - var >= 32
+        // - var < 32
+        // - var < sizeof(type) * CHAR_BIT
+
+        // Check for negative validation
+        let has_negative_check = condition_text.contains(&format!("{} < 0", var_name))
+            || condition_text.contains(&format!("0 > {}", var_name))
+            || condition_text.contains(&format!("{} >= 0", var_name))
+            || condition_text.contains(&format!("0 <= {}", var_name));
+
+        // Check for width/precision validation
+        let has_width_check = condition_text.contains(&format!("{} <", var_name))
+            || condition_text.contains(&format!("{} >=", var_name))
+            || condition_text.contains("PRECISION")
+            || condition_text.contains("CHAR_BIT")
+            || condition_text.contains("_MAX");
+
+        // For thorough validation, we need both checks (or a combined check)
+        // But we'll accept either for now to avoid false positives
+        if has_negative_check || has_width_check {
+            return true;
+        }
+
+        // Also check child binary expressions more carefully
+        for i in 0..condition.child_count() {
+            if let Some(child) = condition.child(i) {
+                if child.kind() == "binary_expression" {
+                    if let Some(operator) = ast_utils::get_binary_operator(&child, source) {
+                        if operator == "<"
+                            || operator == ">"
+                            || operator == "<="
+                            || operator == ">="
+                        {
+                            let left = child.child_by_field_name("left");
+                            let right = child.child_by_field_name("right");
+
+                            if let (Some(l), Some(r)) = (left, right) {
+                                let left_text = ast_utils::get_node_text(&l, source);
+                                let right_text = ast_utils::get_node_text(&r, source);
+
+                                // Check if this compares our variable with bounds
+                                if left_text == var_name || right_text == var_name {
+                                    // Check for width-related constants or expressions
+                                    if right_text.contains("PRECISION")
+                                        || right_text.contains("CHAR_BIT")
+                                        || right_text.contains("MAX")
+                                        || left_text.contains("PRECISION")
+                                        || left_text.contains("CHAR_BIT")
+                                        || left_text.contains("MAX")
+                                        || right_text == "0"
+                                        || left_text == "0"
+                                    {
+                                        return true;
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
+        }
 
-            // Recursively search in child scopes that come before the shift
-            if child.start_position().row < shift_line {
-                if self.find_shift_validation_in_scope(&child, shift_line, shift_amount, source) {
+        false
+    }
+
+    /// Check if branch contains return or error handling
+    fn has_return_or_error_handling(&self, node: &Node, source: &str) -> bool {
+        let text = ast_utils::get_node_text(node, source);
+
+        if text.contains("return") || text.contains("error") || text.contains("exit") {
+            return true;
+        }
+
+        // Check for return/exit statements
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "return_statement"
+                    || child.kind() == "break_statement"
+                    || child.kind() == "continue_statement"
+                {
+                    return true;
+                }
+                if self.has_return_or_error_handling(&child, source) {
                     return true;
                 }
             }
@@ -228,84 +329,87 @@ impl Int34C {
         false
     }
 
-    /// Check if a condition is a proper shift bound check
-    fn is_shift_bound_check(&self, condition: &str, shift_amount: &str) -> bool {
-        // Look for patterns that validate shift bounds:
-        // - shift_amount >= PRECISION(...)
-        // - shift_amount >= bit_width
-        // - shift_amount < bit_width
-        // - PRECISION(...) > shift_amount
-        // - etc.
-
-        // Check for PRECISION macro (indicates bit width checking)
-        if condition.contains("PRECISION") && condition.contains(shift_amount) {
-            return true;
-        }
-
-        // Check for sizeof(...) * CHAR_BIT pattern
-        if condition.contains("sizeof")
-            && condition.contains("CHAR_BIT")
-            && condition.contains(shift_amount)
-        {
-            return true;
-        }
-
-        // Check for comparison with numeric constants representing bit widths
-        // (e.g., shift_amount < 32, shift_amount < 64)
-        if condition.contains(shift_amount) {
-            let has_comparison = condition.contains(">=")
-                || condition.contains(">")
-                || condition.contains("<=")
-                || condition.contains("<");
-            let has_numeric = condition.chars().any(|c| c.is_ascii_digit());
-
-            if has_comparison && has_numeric {
+    /// Check if shift operation is in a safe branch
+    fn is_in_safe_branch(&self, if_node: &Node, shift_node: &Node) -> bool {
+        // Check if shift_node is in the consequence or alternative
+        if let Some(consequence) = if_node.child_by_field_name("consequence") {
+            if self.is_descendant(&consequence, shift_node) {
                 return true;
             }
         }
 
-        // Check for INT_MAX, UINT_MAX, etc.
-        if (condition.contains("MAX") || condition.contains("MIN"))
-            && condition.contains(shift_amount)
-        {
+        if let Some(alternative) = if_node.child_by_field_name("alternative") {
+            if self.is_descendant(&alternative, shift_node) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Check if target is a descendant of node
+    fn is_descendant(&self, node: &Node, target: &Node) -> bool {
+        if node.id() == target.id() {
             return true;
         }
 
-        false
-    }
-
-    /// Check if a value is a literal constant
-    fn is_literal_constant(&self, value: &str) -> bool {
-        // Check if it's a numeric literal
-        value.chars().all(|c| c.is_ascii_digit())
-    }
-
-    /// Check if both operands are function parameters
-    fn are_function_parameters(
-        &self,
-        node: &Node,
-        left_operand: &str,
-        right_operand: &str,
-        source: &str,
-    ) -> bool {
-        // Find the containing function
-        let mut current = node.parent();
-        while let Some(parent) = current {
-            if parent.kind() == "function_definition" {
-                // Get function parameters
-                if let Some(declarator) = parent.child_by_field_name("declarator") {
-                    let declarator_text = get_node_text(&declarator, source);
-                    // Check if both operands appear in the parameter list
-                    if declarator_text.contains(left_operand)
-                        && declarator_text.contains(right_operand)
-                    {
-                        return true;
-                    }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.is_descendant(&child, target) {
+                    return true;
                 }
-                break;
             }
-            current = parent.parent();
         }
+
         false
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parse_c_code(source: &str) -> tree_sitter::Tree {
+        let mut parser = tree_sitter::Parser::new();
+        parser
+            .set_language(&tree_sitter_c::language())
+            .expect("Error loading C grammar");
+        parser.parse(source, None).expect("Error parsing C code")
+    }
+
+    #[test]
+    fn test_unchecked_shift() {
+        let code = r#"
+void func(unsigned int a, unsigned int b) {
+    unsigned int result = a << b;
+}
+"#;
+        let tree = parse_c_code(code);
+        let rule = Int34C;
+        let violations = rule.check(&tree.root_node(), code);
+        assert!(!violations.is_empty(), "Should detect unchecked shift");
+    }
+
+    #[test]
+    fn test_validated_shift() {
+        let code = r#"
+#include <limits.h>
+void func(unsigned int a, unsigned int b) {
+    unsigned int result = 0;
+    if (b >= 32) {
+        /* Handle error */
+    } else {
+        result = a << b;
+    }
+}
+"#;
+        let tree = parse_c_code(code);
+        let rule = Int34C;
+        let violations = rule.check(&tree.root_node(), code);
+        assert!(
+            violations.is_empty(),
+            "Should not flag validated shift: {:?}",
+            violations
+        );
     }
 }

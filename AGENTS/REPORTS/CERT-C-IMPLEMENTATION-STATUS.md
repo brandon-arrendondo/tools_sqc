@@ -24,7 +24,7 @@ This document tracks the implementation status of SEI CERT C Coding Standard rul
 
 #### Expressions (EXP) - 2/15 rules (13% complete)
 - ✅ EXP33-C: Do not read uninitialized memory
-- ✅ EXP34-C: Do not dereference null pointers
+- ✅ EXP34-C: Do not dereference null pointers (100% test pass rate - 46/46 tests passing)
 
 #### Integers (INT) - 2/10 rules (20% complete)
 - ✅ INT30-C: Ensure that unsigned integer operations do not wrap

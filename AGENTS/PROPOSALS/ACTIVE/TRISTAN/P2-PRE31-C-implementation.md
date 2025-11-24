@@ -1,10 +1,10 @@
 ---
 rule_id: PRE31-C
 priority: P2
-status: active
-assigned_to: ERIC
+status: staged
+assigned_to: TRISTAN
 created: 2025-11-17
-last_modified: 2025-11-17
+last_modified: 2025-11-19
 tags:
   - cert-c
   - implementation
@@ -13,10 +13,10 @@ tags:
 
 # P2-PRE31-C - PRE31-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
+**Assigned To:** CLAUDE
 **Category:** PRE
 **Estimated Effort:** 10-30 hours
 
@@ -193,7 +193,32 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### Verification Phase
+- Implementation already existed in `src/rules/cert_c/PRE/PRE31-C/pre31_c.rs`
+- Rule was already enabled and registered
+- Detected DRY compliance violation: direct byte slicing instead of get_node_text()
+
+### Refactoring for DRY Compliance
+- Replaced `&source[node.start_byte()..node.end_byte()]` with `get_node_text(node, source)` (4 instances)
+- Added import: `use crate::utility::cert_c::ast_utils::get_node_text;`
+- No functional changes - purely refactoring for consistency
+
+### Implementation Details
+- Detects side effects in arguments to unsafe macros
+- Unsafe macros: those that evaluate arguments multiple times or not at all
+- Checks for: ++/--, assignments, function calls with side effects, I/O operations, volatile access
+- Heuristic: ALL_CAPS macros are likely unsafe
+- 304 lines of comprehensive side effect detection logic
+
+### Testing
+- Build passed successfully after refactoring
+- cargo fmt applied successfully
+- cargo test passed
+- Pre-commit hooks passed
+- Verified no regressions introduced
+
+### Commits
+- de16495: P2-PRE31-C: Refactor for DRY compliance
 
 ---
 
