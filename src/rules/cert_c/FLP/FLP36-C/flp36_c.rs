@@ -5,14 +5,14 @@ use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 
-pub struct Dcl38C;
+pub struct Flp36C;
 
-impl CertRule for Dcl38C {
-    fn rule_id(&self) -> &'static str { "DCL38-C" }
+impl CertRule for Flp36C {
+    fn rule_id(&self) -> &'static str { "FLP36-C" }
     fn description(&self) -> &'static str { "TODO" }
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
-    fn cert_id(&self) -> &'static str { "DCL38-C" }
+    fn cert_id(&self) -> &'static str { "FLP36-C" }
     fn check(&self, _node: &Node, _source: &str) -> Vec<RuleViolation> {
         // TODO: Implement
         Vec::new()

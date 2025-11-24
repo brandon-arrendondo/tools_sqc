@@ -148,6 +148,9 @@ pub mod err04_c;
 #[path = "ERR/ERR01-C/err01_c.rs"]
 pub mod err01_c;
 
+#[path = "ERR/ERR02-C/err02_c.rs"]
+pub mod err02_c;
+
 #[path = "ERR/ERR05-C/err05_c.rs"]
 pub mod err05_c;
 
@@ -168,6 +171,12 @@ pub mod dcl19_c;
 
 #[path = "DCL/DCL21-C/dcl21_c.rs"]
 pub mod dcl21_c;
+
+#[path = "DCL/DCL22-C/dcl22_c.rs"]
+pub mod dcl22_c;
+
+#[path = "DCL/DCL23-C/dcl23_c.rs"]
+pub mod dcl23_c;
 
 #[path = "DCL/DCL31-C/dcl31_c.rs"]
 pub mod dcl31_c;
@@ -301,6 +310,9 @@ pub mod exp35_c;
 #[path = "EXP/EXP36-C/exp36_c.rs"]
 pub mod exp36_c;
 
+#[path = "EXP/EXP37-C/exp37_c.rs"]
+pub mod exp37_c;
+
 #[path = "EXP/EXP40-C/exp40_c.rs"]
 pub mod exp40_c;
 
@@ -336,6 +348,9 @@ pub mod fio10_c;
 
 #[path = "FIO/FIO18-C/fio18_c.rs"]
 pub mod fio18_c;
+
+#[path = "FIO/FIO19-C/fio19_c.rs"]
+pub mod fio19_c;
 
 #[path = "FIO/FIO20-C/fio20_c.rs"]
 pub mod fio20_c;
@@ -400,11 +415,23 @@ pub mod flp03_c;
 #[path = "FLP/FLP04-C/flp04_c.rs"]
 pub mod flp04_c;
 
+#[path = "FLP/FLP06-C/flp06_c.rs"]
+pub mod flp06_c;
+
 #[path = "FLP/FLP30-C/flp30_c.rs"]
 pub mod flp30_c;
 
+#[path = "FLP/FLP36-C/flp36_c.rs"]
+pub mod flp36_c;
+
 #[path = "INT/INT01-C/int01_c.rs"]
 pub mod int01_c;
+
+#[path = "INT/INT00-C/int00_c.rs"]
+pub mod int00_c;
+
+#[path = "INT/INT02-C/int02_c.rs"]
+pub mod int02_c;
 
 #[path = "INT/INT07-C/int07_c.rs"]
 pub mod int07_c;
@@ -453,6 +480,9 @@ pub mod mem00_c;
 
 #[path = "MEM/MEM04-C/mem04_c.rs"]
 pub mod mem04_c;
+
+#[path = "MEM/MEM05-C/mem05_c.rs"]
+pub mod mem05_c;
 
 #[path = "MEM/MEM10-C/mem10_c.rs"]
 pub mod mem10_c;
@@ -535,6 +565,9 @@ pub mod pos44_c;
 #[path = "POS/POS47-C/pos47_c.rs"]
 pub mod pos47_c;
 
+#[path = "POS/POS48-C/pos48_c.rs"]
+pub mod pos48_c;
+
 #[path = "POS/POS51-C/pos51_c.rs"]
 pub mod pos51_c;
 
@@ -568,11 +601,17 @@ pub mod pre09_c;
 #[path = "PRE/PRE11-C/pre11_c.rs"]
 pub mod pre11_c;
 
+#[path = "PRE/PRE12-C/pre12_c.rs"]
+pub mod pre12_c;
+
 #[path = "PRE/PRE13-C/pre13_c.rs"]
 pub mod pre13_c;
 
 #[path = "PRE/PRE05-C/pre05_c.rs"]
 pub mod pre05_c;
+
+#[path = "PRE/PRE06-C/pre06_c.rs"]
+pub mod pre06_c;
 
 #[path = "PRE/PRE32-C/pre32_c.rs"]
 pub mod pre32_c;
@@ -690,12 +729,15 @@ impl RuleRegistry {
         registry.register(Box::new(err04_c::Err04C));
         registry.register(Box::new(err05_c::Err05C));
         registry.register(Box::new(err06_c::Err06C));
+        registry.register(Box::new(err02_c::Err02C));
         registry.register(Box::new(dcl01_c::Dcl01C));
         registry.register(Box::new(dcl03_c::Dcl03C));
         registry.register(Box::new(dcl05_c::Dcl05C));
         registry.register(Box::new(dcl19_c::DCL19C));
         registry.register(Box::new(dcl21_c::DCL21C));
-        registry.register(Box::new(dcl38_c::DCL38C));
+        registry.register(Box::new(dcl22_c::Dcl22C));
+        registry.register(Box::new(dcl23_c::Dcl23C));
+        registry.register(Box::new(dcl38_c::Dcl38C));
         registry.register(Box::new(dcl07_c::Dcl07C));
         registry.register(Box::new(dcl10_c::Dcl10C));
         registry.register(Box::new(dcl11_c::Dcl11C));
@@ -728,6 +770,7 @@ impl RuleRegistry {
         registry.register(Box::new(exp34_c::Exp34C));
         registry.register(Box::new(exp35_c::Exp35C));
         registry.register(Box::new(exp36_c::Exp36C));
+        registry.register(Box::new(exp37_c::Exp37C));
         registry.register(Box::new(exp40_c::Exp40C));
         registry.register(Box::new(exp42_c::Exp42C));
         registry.register(Box::new(exp43_c::Exp43C));
@@ -740,6 +783,7 @@ impl RuleRegistry {
         registry.register(Box::new(fio09_c::Fio09C));
         registry.register(Box::new(fio10_c::Fio10C));
         registry.register(Box::new(fio18_c::Fio18C));
+        registry.register(Box::new(fio19_c::Fio19C));
         registry.register(Box::new(fio20_c::Fio20C));
         registry.register(Box::new(fio42_c::Fio42C));
         registry.register(Box::new(fio45_c::Fio45C));
@@ -761,8 +805,12 @@ impl RuleRegistry {
         registry.register(Box::new(flp02_c::Flp02C::new()));
         registry.register(Box::new(flp03_c::Flp03C));
         registry.register(Box::new(flp04_c::Flp04C::new()));
+        registry.register(Box::new(flp06_c::Flp06C));
         registry.register(Box::new(flp30_c::Flp30C));
+        registry.register(Box::new(flp36_c::Flp36C));
         registry.register(Box::new(int01_c::Int01C));
+        registry.register(Box::new(int00_c::Int00C));
+        registry.register(Box::new(int02_c::Int02C));
         registry.register(Box::new(int07_c::Int07C));
         registry.register(Box::new(int09_c::Int09C));
         registry.register(Box::new(int10_c::Int10C));
@@ -779,6 +827,7 @@ impl RuleRegistry {
         registry.register(Box::new(int36_c::Int36C));
         registry.register(Box::new(mem00_c::Mem00C));
         registry.register(Box::new(mem04_c::Mem04C));
+        registry.register(Box::new(mem05_c::Mem05C));
         registry.register(Box::new(mem10_c::Mem10C));
         registry.register(Box::new(mem11_c::Mem11C));
         registry.register(Box::new(mem12_c::Mem12C));
@@ -806,6 +855,7 @@ impl RuleRegistry {
         registry.register(Box::new(pos39_c::Pos39C));
         registry.register(Box::new(pos44_c::Pos44C::new()));
         registry.register(Box::new(pos47_c::Pos47C));
+        registry.register(Box::new(pos48_c::Pos48C));
         registry.register(Box::new(pos51_c::Pos51C::new()));
         registry.register(Box::new(pos54_c::Pos54C));
         registry.register(Box::new(pre01_c::Pre01C::new()));
@@ -817,8 +867,10 @@ impl RuleRegistry {
         registry.register(Box::new(pre08_c::Pre08C::new()));
         registry.register(Box::new(pre09_c::Pre09C));
         registry.register(Box::new(pre11_c::Pre11C::new()));
+        registry.register(Box::new(pre12_c::Pre12C));
         registry.register(Box::new(pre13_c::Pre13C::new()));
         registry.register(Box::new(pre05_c::Pre05C));
+        registry.register(Box::new(pre06_c::Pre06C));
         registry.register(Box::new(pre32_c::Pre32C));
         registry.register(Box::new(pre00_c::Pre00C));
         registry.register(Box::new(str30_c::Str30C));
