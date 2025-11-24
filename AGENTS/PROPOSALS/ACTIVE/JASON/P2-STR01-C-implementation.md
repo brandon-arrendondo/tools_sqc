@@ -200,3 +200,28 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 ## Verification
 
 @architect: APPROVED
+
+---
+
+## Status Update: NOT IMPLEMENTABLE
+
+**Date:** 2025-11-24
+**Status:** STALLED - Not suitable for static analysis
+
+### Reason:
+STR01-C is a recommendation to "adopt and implement a consistent plan for managing strings" (static vs dynamic allocation). This is a project-wide architectural policy decision, not a per-violation check.
+
+The rule requires:
+1. Analysis of string management patterns across the entire codebase
+2. Detection of inconsistency in approach (some static, some dynamic)
+3. Project-level policy enforcement
+
+This is beyond the scope of per-file static analysis. No test cases exist because there are no specific violations to detect.
+
+### Recommendation:
+- Move to STALLED/Not Implementable
+- Consider this rule complete for JASON batch (13/14 implementable rules = 100%)
+- Document as architectural/policy rule requiring manual review
+
+**JASON Batch Status: 13/14 rules implemented (100% of implementable rules)**
+
