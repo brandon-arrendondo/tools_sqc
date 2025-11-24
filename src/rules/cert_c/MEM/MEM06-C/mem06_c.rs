@@ -59,7 +59,7 @@ impl Mem06C {
         if node.kind() == "call_expression" {
             if let Some(func_node) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func_node, source);
-                
+
                 // Check if this is a malloc/calloc/realloc call
                 if func_name == "malloc" || func_name == "calloc" || func_name == "realloc" {
                     // Check if there's proper memory protection in the same scope
@@ -96,7 +96,7 @@ impl Mem06C {
     }
 
     /// Check if memory protection mechanisms are present in the code
-    /// 
+    ///
     /// This checks for:
     /// - setrlimit(RLIMIT_CORE, ...) calls (POSIX core dump disable)
     /// - mlock()/munlock() calls (POSIX memory locking)
@@ -122,7 +122,7 @@ impl Mem06C {
             if let Some(func_node) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func_node, source);
                 let func_name_str = func_name.trim();
-                
+
                 // Check for memory protection functions
                 match func_name_str {
                     // POSIX memory locking

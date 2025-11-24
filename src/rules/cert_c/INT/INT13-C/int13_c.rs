@@ -44,7 +44,7 @@ impl Int13C {
         if node.kind() == "binary_expression" {
             if let Some(operator_node) = node.child_by_field_name("operator") {
                 let operator = get_node_text(&operator_node, source);
-                
+
                 // Check if this is a bitwise operator
                 if self.is_bitwise_operator(operator.trim()) {
                     // Check if operands are signed
@@ -71,12 +71,12 @@ impl Int13C {
                 }
             }
         }
-        
+
         // Check for unary bitwise complement operator: ~
         if node.kind() == "unary_expression" {
             if let Some(operator_node) = node.child_by_field_name("operator") {
                 let operator = get_node_text(&operator_node, source);
-                
+
                 if operator.trim() == "~" {
                     if let Some(argument) = node.child_by_field_name("argument") {
                         if self.is_potentially_signed(&argument, source) {
@@ -143,7 +143,7 @@ impl Int13C {
     /// Find variable declaration and check if it's signed
     fn find_variable_declaration(&self, identifier: &Node, source: &str) -> bool {
         let var_name = get_node_text(identifier, source);
-        
+
         // Walk up the tree to find declarations
         let mut current = identifier.parent();
         while let Some(parent) = current {
@@ -155,7 +155,7 @@ impl Int13C {
             }
             current = parent.parent();
         }
-        
+
         // If not found, conservatively assume signed
         true
     }
@@ -217,7 +217,7 @@ impl Int13C {
         if declarator.kind() == "identifier" {
             return get_node_text(declarator, source).to_string();
         }
-        
+
         // Handle pointer declarators, array declarators, etc.
         let mut cursor = declarator.walk();
         for child in declarator.children(&mut cursor) {
@@ -225,7 +225,7 @@ impl Int13C {
                 return get_node_text(&child, source).to_string();
             }
         }
-        
+
         String::new()
     }
 
@@ -241,7 +241,7 @@ impl Int13C {
                 return self.is_signed_type(&child, source);
             }
         }
-        
+
         // If no explicit type found, default to signed (int is signed by default)
         true
     }
@@ -250,12 +250,12 @@ impl Int13C {
     fn is_signed_type(&self, type_node: &Node, source: &str) -> bool {
         let type_text = get_node_text(type_node, source);
         let type_text = type_text.trim();
-        
+
         // Check for explicit unsigned
         if type_text.contains("unsigned") {
             return false;
         }
-        
+
         // Signed types (without unsigned keyword)
         if type_text.contains("int")
             || type_text.contains("char")
@@ -266,7 +266,7 @@ impl Int13C {
             // (plain char is implementation-defined, but we'll flag it)
             return true;
         }
-        
+
         // Default: assume signed if uncertain
         true
     }

@@ -78,7 +78,7 @@ impl Pos50C {
         // pthread_create(pthread_t *thread, const pthread_attr_t *attr,
         //               void *(*start_routine)(void *), void *arg)
         // The 4th argument (arg) is what we're interested in
-        
+
         if let Some(args) = node.child_by_field_name("arguments") {
             if let Some(arg_node) = self.get_fourth_argument(&args) {
                 // Check if it's an address-of operator on a local/thread-local variable
@@ -90,7 +90,7 @@ impl Pos50C {
                         line: position.row + 1,
                         column: position.column + 1,
                         file_path: String::new(),
-                        message: 
+                        message:
                             "Passing address of automatic or thread-local storage to pthread_create(). \
                             The thread may outlive the variable's lifetime, causing undefined behavior."
                                 .to_string(),
@@ -137,7 +137,7 @@ impl Pos50C {
                 }
             }
         }
-        
+
         // Also check if node contains a pointer expression that references local variable
         // This handles cases where the AST structure is different
         let node_text = get_node_text(node, source);
@@ -152,7 +152,7 @@ impl Pos50C {
                 return self.is_local_or_thread_local(&var_name, pthread_node, source);
             }
         }
-        
+
         false
     }
 
@@ -251,7 +251,7 @@ impl Pos50C {
             if child.kind() == "declaration" {
                 // Check for __thread storage class specifier
                 let has_thread_local = self.has_thread_local_specifier(&child, source);
-                
+
                 // Check if this declaration declares our variable
                 let mut decl_cursor = child.walk();
                 for decl_child in child.children(&mut decl_cursor) {
