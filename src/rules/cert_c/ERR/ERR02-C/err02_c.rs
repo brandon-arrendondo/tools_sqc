@@ -1,18 +1,28 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 Ryan Urchick
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use tree_sitter::Node;
 
 pub struct Err02C;
 
 impl CertRule for Err02C {
-    fn rule_id(&self) -> &'static str { "ERR02-C" }
-    fn description(&self) -> &'static str { "Avoid in-band error indicators" }
-    fn severity(&self) -> Severity { Severity::Medium }
-    fn category(&self) -> RuleCategory { RuleCategory::Rule }
-    fn cert_id(&self) -> &'static str { "ERR02-C" }
+    fn rule_id(&self) -> &'static str {
+        "ERR02-C"
+    }
+    fn description(&self) -> &'static str {
+        "Avoid in-band error indicators"
+    }
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+    fn cert_id(&self) -> &'static str {
+        "ERR02-C"
+    }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();

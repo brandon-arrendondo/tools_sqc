@@ -1,18 +1,28 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 Ryan Urchick
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use tree_sitter::Node;
 
 pub struct Int02C;
 
 impl CertRule for Int02C {
-    fn rule_id(&self) -> &'static str { "INT02-C" }
-    fn description(&self) -> &'static str { "Understand integer conversion rules" }
-    fn severity(&self) -> Severity { Severity::Medium }
-    fn category(&self) -> RuleCategory { RuleCategory::Rule }
-    fn cert_id(&self) -> &'static str { "INT02-C" }
+    fn rule_id(&self) -> &'static str {
+        "INT02-C"
+    }
+    fn description(&self) -> &'static str {
+        "Understand integer conversion rules"
+    }
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+    fn cert_id(&self) -> &'static str {
+        "INT02-C"
+    }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
@@ -28,9 +38,13 @@ impl Int02C {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
 
             // Check for comparison operators
-            if text.contains("<") || text.contains(">") || text.contains("<=") || text.contains(">=") ||
-               text.contains("==") || text.contains("!=") {
-
+            if text.contains("<")
+                || text.contains(">")
+                || text.contains("<=")
+                || text.contains(">=")
+                || text.contains("==")
+                || text.contains("!=")
+            {
                 // Look for patterns where one operand might be signed and other unsigned
                 let has_signed_pattern = text.contains("si ") || text.contains(" si");
                 let has_unsigned_pattern = text.contains("ui ") || text.contains(" ui");
@@ -44,7 +58,8 @@ impl Int02C {
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,
                         file_path: String::new(),
-                        message: "Comparison between signed and unsigned integers without cast".to_string(),
+                        message: "Comparison between signed and unsigned integers without cast"
+                            .to_string(),
                         suggestion: Some("Cast one operand to match signedness".to_string()),
                         requires_manual_review: None,
                     });
@@ -66,7 +81,9 @@ impl Int02C {
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,
                         file_path: String::new(),
-                        message: "Bitwise operation on small integer type subject to integer promotion".to_string(),
+                        message:
+                            "Bitwise operation on small integer type subject to integer promotion"
+                                .to_string(),
                         suggestion: Some("Cast result explicitly to intended type".to_string()),
                         requires_manual_review: None,
                     });
@@ -74,7 +91,10 @@ impl Int02C {
             }
 
             // Check for unsigned short multiplication
-            if text.contains("unsigned short") && text.contains("*") && !text.contains("(unsigned int)") {
+            if text.contains("unsigned short")
+                && text.contains("*")
+                && !text.contains("(unsigned int)")
+            {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: self.severity(),
@@ -93,20 +113,30 @@ impl Int02C {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
 
             // Get lines before the loop to check declarations
-            let lines_before = source.lines().take(node.start_position().row).collect::<Vec<_>>().join("\n");
+            let lines_before = source
+                .lines()
+                .take(node.start_position().row)
+                .collect::<Vec<_>>()
+                .join("\n");
 
             // Pattern: char i (signed) compared with unsigned char max (unsigned)
             // NOT: unsigned char i with unsigned char max (both unsigned - OK)
-            if text.contains("char i") && !text.contains("unsigned char i") &&
-               lines_before.contains("unsigned char max") && text.contains("<") {
+            if text.contains("char i")
+                && !text.contains("unsigned char i")
+                && lines_before.contains("unsigned char max")
+                && text.contains("<")
+            {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: self.severity(),
                     line: node.start_position().row + 1,
                     column: node.start_position().column + 1,
                     file_path: String::new(),
-                    message: "Loop compares signed char with unsigned char; signedness mismatch".to_string(),
-                    suggestion: Some("Use consistent signedness for loop variable and limit".to_string()),
+                    message: "Loop compares signed char with unsigned char; signedness mismatch"
+                        .to_string(),
+                    suggestion: Some(
+                        "Use consistent signedness for loop variable and limit".to_string(),
+                    ),
                     requires_manual_review: None,
                 });
             }
@@ -117,10 +147,17 @@ impl Int02C {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
 
             // Pattern: unsigned int z = x * y where x, y are unsigned short WITHOUT cast
-            let lines_before = source.lines().take(node.start_position().row).collect::<Vec<_>>().join("\n");
+            let lines_before = source
+                .lines()
+                .take(node.start_position().row)
+                .collect::<Vec<_>>()
+                .join("\n");
 
-            if text.contains("*") && lines_before.contains("unsigned short") &&
-               !text.contains("(unsigned int)") && !text.contains("(unsigned long)") {
+            if text.contains("*")
+                && lines_before.contains("unsigned short")
+                && !text.contains("(unsigned int)")
+                && !text.contains("(unsigned long)")
+            {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: self.severity(),

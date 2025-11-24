@@ -85,14 +85,18 @@ impl Con37C {
                     self.has_signal_call = true;
                     signal_positions.push((
                         node.start_position().row + 1,
-                        node.start_position().column + 1
+                        node.start_position().column + 1,
                     ));
                 }
 
                 // Check for thread creation functions
                 if matches!(
                     func_name,
-                    "thrd_create" | "pthread_create" | "CreateThread" | "_beginthread" | "_beginthreadex"
+                    "thrd_create"
+                        | "pthread_create"
+                        | "CreateThread"
+                        | "_beginthread"
+                        | "_beginthreadex"
                 ) {
                     self.has_thread_creation = true;
                 }

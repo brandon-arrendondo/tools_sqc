@@ -1,18 +1,28 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 Ryan Urchick
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use tree_sitter::Node;
 
 pub struct Mem05C;
 
 impl CertRule for Mem05C {
-    fn rule_id(&self) -> &'static str { "MEM05-C" }
-    fn description(&self) -> &'static str { "Avoid large stack allocations" }
-    fn severity(&self) -> Severity { Severity::Medium }
-    fn category(&self) -> RuleCategory { RuleCategory::Rule }
-    fn cert_id(&self) -> &'static str { "MEM05-C" }
+    fn rule_id(&self) -> &'static str {
+        "MEM05-C"
+    }
+    fn description(&self) -> &'static str {
+        "Avoid large stack allocations"
+    }
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+    fn cert_id(&self) -> &'static str {
+        "MEM05-C"
+    }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
@@ -33,7 +43,7 @@ impl Mem05C {
                 // Extract the part in brackets
                 if let Some(start) = text.find("[") {
                     if let Some(end) = text.find("]") {
-                        let size_expr = &text[start+1..end].trim();
+                        let size_expr = &text[start + 1..end].trim();
 
                         // If size is not a numeric constant, it's a VLA
                         if !size_expr.is_empty() && !size_expr.chars().all(|c| c.is_numeric()) {
@@ -70,8 +80,11 @@ impl Mem05C {
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
                             file_path: String::new(),
-                            message: "Recursive function can cause excessive stack allocation".to_string(),
-                            suggestion: Some("Consider iterative approach or limit recursion depth".to_string()),
+                            message: "Recursive function can cause excessive stack allocation"
+                                .to_string(),
+                            suggestion: Some(
+                                "Consider iterative approach or limit recursion depth".to_string(),
+                            ),
                             requires_manual_review: None,
                         });
                     }
@@ -93,7 +106,12 @@ impl Mem05C {
                 let mut inner_cursor = child.walk();
                 for inner_child in child.children(&mut inner_cursor) {
                     if inner_child.kind() == "identifier" {
-                        return Some(inner_child.utf8_text(source.as_bytes()).unwrap_or("").to_string());
+                        return Some(
+                            inner_child
+                                .utf8_text(source.as_bytes())
+                                .unwrap_or("")
+                                .to_string(),
+                        );
                     }
                 }
             }
