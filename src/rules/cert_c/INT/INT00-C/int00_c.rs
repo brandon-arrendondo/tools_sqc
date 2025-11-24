@@ -13,7 +13,7 @@ impl CertRule for Int00C {
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
     fn cert_id(&self) -> &'static str { "INT00-C" }
-    
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
@@ -25,7 +25,7 @@ impl Int00C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if node.kind() == "call_expression" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Check for fscanf/scanf with format specifier mismatch
             if text.contains("fscanf") || text.contains("scanf") {
                 // Look for %ld with &int_var or %d with &long_var patterns
@@ -44,11 +44,11 @@ impl Int00C {
                 }
             }
         }
-        
+
         // Check for unsafe casts like (unsigned long)uint * uint
         if node.kind() == "assignment_expression" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Pattern: c = (unsigned long)a * b where multiplication happens after cast
             // This is unsafe because the multiplication happens at unsigned int precision
             if text.contains("(unsigned long)") && text.contains("*") && !text.contains("uintmax_t") {

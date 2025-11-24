@@ -13,7 +13,7 @@ impl CertRule for Err02C {
     fn severity(&self) -> Severity { Severity::Medium }
     fn category(&self) -> RuleCategory { RuleCategory::Rule }
     fn cert_id(&self) -> &'static str { "ERR02-C" }
-    
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
@@ -26,7 +26,7 @@ impl Err02C {
         // Check for function declarations using ssize_t (in-band error indicator)
         if node.kind() == "declaration" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // ssize_t is problematic - uses negative for errors, positive for data
             if text.contains("ssize_t") && text.contains("(") {
                 violations.push(RuleViolation {
@@ -41,12 +41,12 @@ impl Err02C {
                 });
             }
         }
-        
+
         // Look for sprintf/snprintf calls where return value is used for accumulation
         // Pattern: count += sprintf(...) without error checking
         if node.kind() == "assignment_expression" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-            
+
             // Check for += with sprintf
             if text.contains("+=") && (text.contains("sprintf") || text.contains("snprintf")) {
                 violations.push(RuleViolation {

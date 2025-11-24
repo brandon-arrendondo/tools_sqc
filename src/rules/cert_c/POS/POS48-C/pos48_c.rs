@@ -18,22 +18,22 @@ impl CertRule for Pos48C {
 
     fn check(&self, _node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        
+
         // Check for pthread_mutex_destroy followed by access to shared data
         // without proper thread synchronization
         let lines: Vec<&str> = source.lines().collect();
         let mut found_destroy_line = None;
         let mut has_wait_before_destroy = false;
-        
+
         for (i, line) in lines.iter().enumerate() {
             if line.contains("wait_for_all_threads") {
                 has_wait_before_destroy = true;
             }
-            
+
             if line.contains("pthread_mutex_destroy") {
                 found_destroy_line = Some(i);
             }
-            
+
             // After destroy, check if there's data access
             if let Some(destroy_line) = found_destroy_line {
                 if i > destroy_line {
@@ -59,7 +59,7 @@ impl CertRule for Pos48C {
                 }
             }
         }
-        
+
         violations
     }
 }
