@@ -112,6 +112,9 @@ pub mod con38_c;
 #[path = "CON/CON40-C/con40_c.rs"]
 pub mod con40_c;
 
+#[path = "CON/CON41-C/con41_c.rs"]
+pub mod con41_c;
+
 #[path = "CON/CON50-C/con50_c.rs"]
 pub mod con50_c;
 
