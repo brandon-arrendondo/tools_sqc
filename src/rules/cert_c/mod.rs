@@ -169,6 +169,9 @@ pub mod dcl19_c;
 #[path = "DCL/DCL21-C/dcl21_c.rs"]
 pub mod dcl21_c;
 
+#[path = "DCL/DCL30-C/dcl30_c.rs"]
+pub mod dcl30_c;
+
 #[path = "DCL/DCL31-C/dcl31_c.rs"]
 pub mod dcl31_c;
 
