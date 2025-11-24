@@ -5,16 +5,15 @@
  */
 
 #include <stdio.h>
- 
-void func(const char *file_name) {
-  FILE *fptr;
 
-  int c = getc(fptr = fopen(file_name, "r"));
-  if (feof(fptr) || ferror(fptr)) {
-    /* Handle error */
-  }
+FILE *get_stream(void) {
+  return stdin;
+}
 
-  if (fclose(fptr) == EOF) {
-    /* Handle error */
+void func(void) {
+  // VIOLATION: getc() with stream argument that has side effects
+  int c = getc(get_stream());
+  if (c == EOF) {
+    return;
   }
 }

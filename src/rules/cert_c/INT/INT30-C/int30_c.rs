@@ -1,5 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Int30C;
@@ -105,7 +106,7 @@ impl Int30C {
             if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -139,7 +140,7 @@ impl Int30C {
             if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
                 if !self.has_overflow_check_subtraction(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -172,7 +173,7 @@ impl Int30C {
             if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
                 if !self.has_overflow_check_multiplication(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -202,7 +203,7 @@ impl Int30C {
             if self.is_unsigned_type(&left_type) {
                 if !self.has_shift_overflow_check(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -234,7 +235,7 @@ impl Int30C {
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -266,7 +267,7 @@ impl Int30C {
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -298,7 +299,7 @@ impl Int30C {
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -330,7 +331,7 @@ impl Int30C {
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = &source[node.start_byte()..node.end_byte()];
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -364,7 +365,7 @@ impl Int30C {
                 if operator == "++" || operator == "--" {
                     if !self.has_overflow_check_update(node, source) {
                         let start_point = node.start_position();
-                        let expr_text = &source[node.start_byte()..node.end_byte()];
+                        let expr_text = get_node_text(node, source);
 
                         let message = if operator == "++" {
                             format!(
@@ -492,7 +493,7 @@ impl Int30C {
 
     fn infer_type(&self, node: &Node, source: &str) -> String {
         // Simple type inference based on patterns
-        let text = &source[node.start_byte()..node.end_byte()];
+        let text = get_node_text(node, source);
 
         // Look for explicit unsigned indicators
         if text.contains("unsigned") || text.contains("size_t") || text.contains("uint") {
@@ -602,7 +603,7 @@ impl Int30C {
     }
 
     fn get_update_operator(&self, node: &Node, source: &str) -> String {
-        let text = &source[node.start_byte()..node.end_byte()];
+        let text = get_node_text(node, source);
         if text.contains("++") {
             "++".to_string()
         } else if text.contains("--") {
