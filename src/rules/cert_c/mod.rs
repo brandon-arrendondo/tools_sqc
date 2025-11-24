@@ -589,6 +589,9 @@ pub mod pre08_c;
 #[path = "PRE/PRE09-C/pre09_c.rs"]
 pub mod pre09_c;
 
+// #[path = "PRE/PRE10-C/pre10_c.rs"]
+// pub mod pre10_c;  // Not implemented yet
+
 #[path = "PRE/PRE11-C/pre11_c.rs"]
 pub mod pre11_c;
 
@@ -867,6 +870,7 @@ impl RuleRegistry {
         registry.register(Box::new(sig02_c::Sig02C::new()));
         registry.register(Box::new(sig35_c::Sig35C));
         registry.register(Box::new(sig34_c::Sig34C));
+        registry.register(Box::new(win00_c::Win00C));
         registry.register(Box::new(win01_c::Win01C));
         registry.register(Box::new(win02_c::Win02C));
         registry.register(Box::new(win03_c::Win03C::new()));
@@ -894,6 +898,9 @@ impl RuleRegistry {
 // Integration tests module
 #[cfg(test)]
 mod integration;
+
+#[path = "WIN/WIN00-C/win00_c.rs"]
+pub mod win00_c;
 
 #[path = "WIN/WIN01-C/win01_c.rs"]
 pub mod win01_c;
