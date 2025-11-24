@@ -427,6 +427,9 @@ pub mod int10_c;
 #[path = "INT/INT12-C/int12_c.rs"]
 pub mod int12_c;
 
+#[path = "INT/INT13-C/int13_c.rs"]
+pub mod int13_c;
+
 #[path = "INT/INT14-C/int14_c.rs"]
 pub mod int14_c;
 
@@ -776,6 +779,7 @@ impl RuleRegistry {
         registry.register(Box::new(int09_c::Int09C));
         registry.register(Box::new(int10_c::Int10C));
         registry.register(Box::new(int12_c::Int12C));
+        registry.register(Box::new(int13_c::Int13C));
         registry.register(Box::new(int14_c::Int14C));
         registry.register(Box::new(int16_c::Int16C));
         registry.register(Box::new(int17_c::Int17C));

@@ -40,7 +40,7 @@ impl Fio21C {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
-                
+
                 match func_name.trim() {
                     "tmpfile" => {
                         // tmpfile() creates files in shared /tmp directory
@@ -90,7 +90,7 @@ impl Fio21C {
                         if let Some(arguments) = node.child_by_field_name("arguments") {
                             if let Some(first_arg) = arguments.named_child(0) {
                                 let arg_text = get_node_text(&first_arg, source);
-                                
+
                                 // Check for common temp directory patterns or temp file naming
                                 if arg_text.contains("/tmp/") 
                                     || arg_text.contains("/var/tmp/")
@@ -98,7 +98,8 @@ impl Fio21C {
                                     || arg_text.contains("tmpnam")
                                     || arg_text.contains("tempnam")
                                     || (arg_text.contains("file_name") && !arg_text.contains("\"")) // variable named file_name (not string literal)
-                                    || self.is_in_function_with_tmpnam(node, source) {
+                                    || self.is_in_function_with_tmpnam(node, source)
+                                {
                                     let position = node.start_position();
                                     violations.push(RuleViolation {
                                         rule_id: self.rule_id().to_string(),

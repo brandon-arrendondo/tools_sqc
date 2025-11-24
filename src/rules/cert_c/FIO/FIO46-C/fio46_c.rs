@@ -1,11 +1,11 @@
 // FIO46-C: Do not access a closed file
 // https://wiki.sei.cmu.edu/confluence/display/c/FIO46-C
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Fio46C;
 
@@ -52,14 +52,19 @@ impl Fio46C {
         }
     }
     /// Analyze a function for closed file access
-    fn analyze_function(&self, func_node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Track closed file streams in this function  
+    fn analyze_function(
+        &self,
+        func_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Track closed file streams in this function
         let mut closed_streams: HashMap<String, usize> = HashMap::new();
         let mut has_any_fclose = false;
 
         // Pass 1: Find all fclose() calls
         self.collect_fclose_calls(func_node, source, &mut closed_streams, &mut has_any_fclose);
-        
+
         // Pass 2: Check for uses of closed streams (always run for debugging)
         self.check_closed_stream_usage(func_node, source, &closed_streams, violations);
     }
@@ -75,7 +80,7 @@ impl Fio46C {
         // Check current node
         if node.kind() == "call_expression" {
             let func_name = self.get_function_name(node, source);
-            
+
             if func_name.trim() == "fclose" {
                 *has_any_fclose = true;
                 // Track the closed stream
@@ -105,15 +110,20 @@ impl Fio46C {
         violations: &mut Vec<RuleViolation>,
     ) {
         let mut cursor = node.walk();
-        
+
         for child in node.children(&mut cursor) {
             if child.kind() == "call_expression" {
                 let func_name = self.get_function_name(&child, source);
-                
+
                 // Don't check fclose itself
                 if func_name.trim() != "fclose" {
                     // Check if this function call uses a closed stream
-                    self.check_function_uses_closed_stream(&child, source, closed_streams, violations);
+                    self.check_function_uses_closed_stream(
+                        &child,
+                        source,
+                        closed_streams,
+                        violations,
+                    );
                 }
             }
 
@@ -133,9 +143,7 @@ impl Fio46C {
         let func_name = self.get_function_name(call_node, source);
 
         // Functions that implicitly use stdout
-        let stdout_functions = vec![
-            "printf", "puts", "putchar", "putc",
-        ];
+        let stdout_functions = vec!["printf", "puts", "putchar", "putc"];
 
         // Functions that implicitly use stderr
         let _stderr_functions = vec![
