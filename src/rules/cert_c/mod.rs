@@ -121,6 +121,9 @@ pub mod dcl00_c;
 #[path = "DCL/DCL06-C/dcl06_c.rs"]
 pub mod dcl06_c;
 
+#[path = "DCL/DCL08-C/dcl08_c.rs"]
+pub mod dcl08_c;
+
 #[path = "DCL/DCL39-C/dcl39_c.rs"]
 pub mod dcl39_c;
 
@@ -286,6 +289,9 @@ pub mod exp43_c;
 #[path = "EXP/EXP44-C/exp44_c.rs"]
 pub mod exp44_c;
 
+#[path = "EXP/EXP45-C/exp45_c.rs"]
+pub mod exp45_c;
+
 #[path = "EXP/EXP47-C/exp47_c.rs"]
 pub mod exp47_c;
 
@@ -337,11 +343,17 @@ pub mod fio18_c;
 #[path = "FIO/FIO20-C/fio20_c.rs"]
 pub mod fio20_c;
 
+#[path = "FIO/FIO21-C/fio21_c.rs"]
+pub mod fio21_c;
+
 #[path = "FIO/FIO42-C/fio42_c.rs"]
 pub mod fio42_c;
 
 #[path = "FIO/FIO45-C/fio45_c.rs"]
 pub mod fio45_c;
+
+#[path = "FIO/FIO46-C/fio46_c.rs"]
+pub mod fio46_c;
 
 #[path = "FIO/FIO47-C/fio47_c.rs"]
 pub mod fio47_c;
@@ -674,6 +686,7 @@ impl RuleRegistry {
         registry.register(Box::new(con50_c::Con50C));
         registry.register(Box::new(dcl00_c::Dcl00C));
         registry.register(Box::new(dcl06_c::Dcl06C));
+        registry.register(Box::new(dcl08_c::Dcl08C));
         registry.register(Box::new(dcl39_c::Dcl39C));
         registry.register(Box::new(env31_c::Env31C));
         registry.register(Box::new(env32_c::Env32C));
@@ -724,6 +737,7 @@ impl RuleRegistry {
         registry.register(Box::new(exp40_c::Exp40C));
         registry.register(Box::new(exp42_c::Exp42C));
         registry.register(Box::new(exp43_c::Exp43C));
+        registry.register(Box::new(exp45_c::Exp45C));
         registry.register(Box::new(fio30_c::Fio30C));
         registry.register(Box::new(fio01_c::Fio01C));
         registry.register(Box::new(fio03_c::Fio03C));
@@ -734,8 +748,10 @@ impl RuleRegistry {
         registry.register(Box::new(fio10_c::Fio10C));
         registry.register(Box::new(fio18_c::Fio18C));
         registry.register(Box::new(fio20_c::Fio20C));
+        registry.register(Box::new(fio21_c::Fio21C));
         registry.register(Box::new(fio42_c::Fio42C));
         registry.register(Box::new(fio45_c::Fio45C));
+        registry.register(Box::new(fio46_c::Fio46C));
         registry.register(Box::new(fio47_c::Fio47C));
         registry.register(Box::new(fio50_c::Fio50C::new()));
         registry.register(Box::new(fio37_c::Fio37C));
