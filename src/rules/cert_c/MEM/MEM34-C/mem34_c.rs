@@ -60,7 +60,7 @@ impl Mem34C {
             if let Some(func_node) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func_node, source);
                 let func_name_str = func_name.trim();
-                
+
                 match func_name_str {
                     "free" => {
                         // Check if the argument to free() is dynamically allocated
@@ -71,7 +71,7 @@ impl Mem34C {
                                 // 2. Variable is never dynamically allocated
                                 let has_literal_assignment = self.has_string_literal_assignment(&var_name, node, source);
                                 let has_dynamic_allocation = self.is_dynamically_allocated(&var_name, node, source);
-                                
+
                                 if has_literal_assignment || !has_dynamic_allocation {
                                     let position = node.start_position();
                                     violations.push(RuleViolation {
@@ -174,7 +174,7 @@ impl Mem34C {
     }
 
     /// Check if a variable was dynamically allocated
-    /// 
+    ///
     /// This checks if the variable was assigned from malloc/calloc/realloc
     fn is_dynamically_allocated(&self, var_name: &str, node: &Node, source: &str) -> bool {
         // Walk up to the containing function
@@ -196,13 +196,13 @@ impl Mem34C {
             // Check if left side matches our variable
             if let Some(left) = node.child_by_field_name("left")
                 .or_else(|| node.child_by_field_name("declarator")) {
-                
+
                 if let Some(left_name) = self.extract_identifier(&left, source) {
                     if left_name == var_name {
                         // Check if right side is malloc/calloc/realloc
                         if let Some(right) = node.child_by_field_name("right")
                             .or_else(|| node.child_by_field_name("value")) {
-                            
+
                             if self.is_dynamic_allocation_call(&right, source) {
                                 return true;
                             }
@@ -229,19 +229,19 @@ impl Mem34C {
             if let Some(func) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func, source);
                 let func_name_str = func_name.trim();
-                return func_name_str == "malloc" 
-                    || func_name_str == "calloc" 
+                return func_name_str == "malloc"
+                    || func_name_str == "calloc"
                     || func_name_str == "realloc";
             }
         }
-        
+
         // Check inside cast expressions
         if node.kind() == "cast_expression" {
             if let Some(value) = node.child_by_field_name("value") {
                 return self.is_dynamic_allocation_call(&value, source);
             }
         }
-        
+
         false
     }
 

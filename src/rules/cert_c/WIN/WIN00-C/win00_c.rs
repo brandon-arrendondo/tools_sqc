@@ -53,7 +53,7 @@ impl Win00C {
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,
                         file_path: String::new(),
-                        message: 
+                        message:
                             "Using LoadLibrary() without specifying search paths enables DLL hijacking attacks. \
                             An attacker could place a malicious DLL on the search path."
                                 .to_string(),

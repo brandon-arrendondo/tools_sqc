@@ -48,7 +48,7 @@ impl Pre10C {
         if node.kind() == "preproc_def" || node.kind() == "preproc_function_def" {
             self.check_macro_definition(node, source, violations);
         }
-        
+
         // Also check for problematic usage patterns: if without braces followed by multiple statements
         if node.kind() == "if_statement" {
             self.check_if_statement(node, source, violations);
@@ -66,7 +66,7 @@ impl Pre10C {
         if let Some(consequence) = node.child_by_field_name("consequence") {
             if consequence.kind() != "compound_statement" {
                 let consequence_text = get_node_text(&consequence, source).trim().to_string();
-                
+
                 // Check for identifier or call_expression that looks like a macro call
                 // This catches patterns like: if (z == 0) SWAP(x, y);
                 if consequence.kind() == "expression_statement" {
@@ -83,7 +83,7 @@ impl Pre10C {
                                         line: node.start_position().row + 1,
                                         column: node.start_position().column + 1,
                                         file_path: String::new(),
-                                        message: 
+                                        message:
                                             "Control statement without braces calling what appears to be a macro. \
                                             If the macro expands to multiple statements, this will cause unexpected behavior."
                                                 .to_string(),
@@ -98,11 +98,11 @@ impl Pre10C {
                         }
                     }
                 }
-                
+
                 // Also check if there are multiple statements following (siblings after this if)
                 if let Some(parent) = node.parent() {
                     let parent_text = get_node_text(&parent, source);
-                    
+
                     // If we find a pattern like: if (cond) statement1; statement2;
                     // This suggests a macro expanded to multiple statements
                     let lines_after_if: Vec<&str> = parent_text
@@ -111,11 +111,11 @@ impl Pre10C {
                         .skip(1)
                         .take(3)
                         .collect();
-                    
+
                     let semicolon_count = lines_after_if.iter()
                         .filter(|l| l.contains(';'))
                         .count();
-                    
+
                     if semicolon_count >= 2 {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
@@ -123,7 +123,7 @@ impl Pre10C {
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
                             file_path: String::new(),
-                            message: 
+                            message:
                                 "Control statement without braces followed by multiple statements. \
                                 This may indicate improper macro usage or unwrapped multistatement macro."
                                     .to_string(),
@@ -143,18 +143,18 @@ impl Pre10C {
         // Check for pattern: } ; else
         // This happens when a macro that ends in a block is followed by a semicolon
         // The semicolon breaks parsing, so the 'else' might not be in the tree as an alternative
-        
+
         // Get the full text around this if statement from the source
         let if_end = node.end_byte();
-        
+
         // Look ahead in the source after the if statement ends
         if if_end < source.len() {
             let remaining_text = &source[if_end..];
             let next_200_chars: String = remaining_text.chars().take(200).collect();
-            
+
             // Check if we see whitespace/newline, then semicolon, then "else"
             let trimmed = next_200_chars.trim_start();
-            
+
             if trimmed.starts_with(';') {
                 // After the semicolon, we might have comments, so we need to be more careful
                 // Just check if "else" appears somewhere in the next bit of text
@@ -170,7 +170,7 @@ impl Pre10C {
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
                             file_path: String::new(),
-                            message: 
+                            message:
                                 "Semicolon after compound statement before 'else'. \
                                 This indicates a macro that should be wrapped in do-while(0)."
                                     .to_string(),
@@ -189,17 +189,17 @@ impl Pre10C {
 
     fn check_macro_definition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         let macro_text = get_node_text(node, source);
-        
+
         // Check if macro contains multiple statements (has semicolons)
         let semicolon_count = macro_text.matches(';').count();
-        
+
         // If macro has multiple statements (2+ semicolons for multi-statement)
         if semicolon_count >= 2 {
             // Check if it's wrapped in do-while
-            let is_wrapped = macro_text.contains("do") && 
+            let is_wrapped = macro_text.contains("do") &&
                            macro_text.contains("while") &&
                            macro_text.contains('}');
-            
+
             if !is_wrapped {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
@@ -207,7 +207,7 @@ impl Pre10C {
                     line: node.start_position().row + 1,
                     column: node.start_position().column + 1,
                     file_path: String::new(),
-                    message: 
+                    message:
                         "Multi-statement macro should be wrapped in do { ... } while(0) to prevent \
                         control flow issues when used without braces."
                             .to_string(),

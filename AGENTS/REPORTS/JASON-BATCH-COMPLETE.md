@@ -24,7 +24,7 @@ All rules below have **100% test pass rate**:
 - **Status:** ✅ STAGED
 
 ### 2. DCL21-C: Declarators should be properly enclosed
-- **Tests:** 8/8 passing  
+- **Tests:** 8/8 passing
 - **Commit:** b2dd32f
 - **Status:** ✅ STAGED
 
