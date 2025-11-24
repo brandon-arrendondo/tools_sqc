@@ -1,18 +1,28 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 Ryan Urchick
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use tree_sitter::Node;
 
 pub struct Pre12C;
 
 impl CertRule for Pre12C {
-    fn rule_id(&self) -> &'static str { "PRE12-C" }
-    fn description(&self) -> &'static str { "Do not define unsafe macros" }
-    fn severity(&self) -> Severity { Severity::Medium }
-    fn category(&self) -> RuleCategory { RuleCategory::Rule }
-    fn cert_id(&self) -> &'static str { "PRE12-C" }
+    fn rule_id(&self) -> &'static str {
+        "PRE12-C"
+    }
+    fn description(&self) -> &'static str {
+        "Do not define unsafe macros"
+    }
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+    fn cert_id(&self) -> &'static str {
+        "PRE12-C"
+    }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
@@ -106,7 +116,7 @@ impl Pre12C {
         // Extract params from #define NAME(param1, param2) definition
         if let Some(start) = text.find('(') {
             if let Some(end) = text.find(')') {
-                let params_str = &text[start+1..end];
+                let params_str = &text[start + 1..end];
                 let params: Vec<String> = params_str
                     .split(',')
                     .map(|s| s.trim().to_string())

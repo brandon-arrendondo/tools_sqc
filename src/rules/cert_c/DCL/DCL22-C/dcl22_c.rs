@@ -71,8 +71,8 @@ impl Dcl22C {
                             // UNLESS you use volatile to signal intent?
                             // So: no volatile = violation, with volatile = OK?
 
-                            let has_volatile = type_text.contains("volatile") &&
-                                              self.declaration_has_volatile(identifier, source);
+                            let has_volatile = type_text.contains("volatile")
+                                && self.declaration_has_volatile(identifier, source);
 
                             if !has_volatile {
                                 violations.push(RuleViolation {

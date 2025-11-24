@@ -1,18 +1,28 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 Ryan Urchick
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use tree_sitter::Node;
 
 pub struct Exp37C;
 
 impl CertRule for Exp37C {
-    fn rule_id(&self) -> &'static str { "EXP37-C" }
-    fn description(&self) -> &'static str { "Call functions with correct arguments" }
-    fn severity(&self) -> Severity { Severity::Medium }
-    fn category(&self) -> RuleCategory { RuleCategory::Rule }
-    fn cert_id(&self) -> &'static str { "EXP37-C" }
+    fn rule_id(&self) -> &'static str {
+        "EXP37-C"
+    }
+    fn description(&self) -> &'static str {
+        "Call functions with correct arguments"
+    }
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+    fn cert_id(&self) -> &'static str {
+        "EXP37-C"
+    }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
@@ -30,7 +40,11 @@ impl Exp37C {
             // log2() doesn't support complex numbers directly
             if text.starts_with("log2(") && !text.contains("creal(") {
                 // Check if context has complex number declarations
-                let lines_before = source.lines().take(node.start_position().row + 1).collect::<Vec<_>>().join("\n");
+                let lines_before = source
+                    .lines()
+                    .take(node.start_position().row + 1)
+                    .collect::<Vec<_>>()
+                    .join("\n");
                 if lines_before.contains("complex") && lines_before.contains("=") {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -80,8 +94,11 @@ impl Exp37C {
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
                             file_path: String::new(),
-                            message: "Old-style function declaration without parameter types".to_string(),
-                            suggestion: Some("Specify parameter types in function declaration".to_string()),
+                            message: "Old-style function declaration without parameter types"
+                                .to_string(),
+                            suggestion: Some(
+                                "Specify parameter types in function declaration".to_string(),
+                            ),
                             requires_manual_review: None,
                         });
                     }
@@ -98,8 +115,12 @@ impl Exp37C {
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,
                         file_path: String::new(),
-                        message: "Variadic function declaration should use proper header".to_string(),
-                        suggestion: Some("Include proper header instead of declaring variadic function".to_string()),
+                        message: "Variadic function declaration should use proper header"
+                            .to_string(),
+                        suggestion: Some(
+                            "Include proper header instead of declaring variadic function"
+                                .to_string(),
+                        ),
                         requires_manual_review: None,
                     });
                 }
@@ -114,7 +135,9 @@ impl Exp37C {
                     column: node.start_position().column + 1,
                     file_path: String::new(),
                     message: "Function pointer declared without parameter types".to_string(),
-                    suggestion: Some("Declare function pointer with explicit parameter types".to_string()),
+                    suggestion: Some(
+                        "Declare function pointer with explicit parameter types".to_string(),
+                    ),
                     requires_manual_review: None,
                 });
             }

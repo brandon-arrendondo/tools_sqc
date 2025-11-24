@@ -1,18 +1,28 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 Ryan Urchick
 
-use tree_sitter::Node;
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use tree_sitter::Node;
 
 pub struct Fio19C;
 
 impl CertRule for Fio19C {
-    fn rule_id(&self) -> &'static str { "FIO19-C" }
-    fn description(&self) -> &'static str { "Do not use ftell() to determine file size" }
-    fn severity(&self) -> Severity { Severity::Medium }
-    fn category(&self) -> RuleCategory { RuleCategory::Rule }
-    fn cert_id(&self) -> &'static str { "FIO19-C" }
+    fn rule_id(&self) -> &'static str {
+        "FIO19-C"
+    }
+    fn description(&self) -> &'static str {
+        "Do not use ftell() to determine file size"
+    }
+    fn severity(&self) -> Severity {
+        Severity::Medium
+    }
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Rule
+    }
+    fn cert_id(&self) -> &'static str {
+        "FIO19-C"
+    }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
@@ -36,8 +46,12 @@ impl Fio19C {
                     line: node.start_position().row + 1,
                     column: node.start_position().column + 1,
                     file_path: String::new(),
-                    message: "Using ftell() to determine file size is unreliable; use fstat() instead".to_string(),
-                    suggestion: Some("Use fstat() with st_size to get accurate file size".to_string()),
+                    message:
+                        "Using ftell() to determine file size is unreliable; use fstat() instead"
+                            .to_string(),
+                    suggestion: Some(
+                        "Use fstat() with st_size to get accurate file size".to_string(),
+                    ),
                     requires_manual_review: None,
                 });
             }
