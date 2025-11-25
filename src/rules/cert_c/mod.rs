@@ -406,6 +406,9 @@ pub mod flp07_c;
 #[path = "FLP/FLP00-C/flp00_c.rs"]
 pub mod flp00_c;
 
+#[path = "FLP/FLP01-C/flp01_c.rs"]
+pub mod flp01_c;
+
 #[path = "FLP/FLP02-C/flp02_c.rs"]
 pub mod flp02_c;
 
@@ -775,6 +778,7 @@ impl RuleRegistry {
         registry.register(Box::new(flp37_c::Flp37C));
         registry.register(Box::new(flp07_c::Flp07C));
         registry.register(Box::new(flp00_c::Flp00C));
+        registry.register(Box::new(flp01_c::Flp01C));
         registry.register(Box::new(flp02_c::Flp02C::new()));
         registry.register(Box::new(flp03_c::Flp03C));
         registry.register(Box::new(flp04_c::Flp04C::new()));
