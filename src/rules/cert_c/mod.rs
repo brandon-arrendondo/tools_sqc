@@ -244,6 +244,9 @@ pub mod err34_c;
 #[path = "EXP/EXP00-C/exp00_c.rs"]
 pub mod exp00_c;
 
+#[path = "EXP/EXP02-C/exp02_c.rs"]
+pub mod exp02_c;
+
 #[path = "EXP/EXP05-C/exp05_c.rs"]
 pub mod exp05_c;
 
