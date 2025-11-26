@@ -193,7 +193,37 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-25 - Claude Code (via /work-active)
+
+**Implementation Complete**
+
+1. **Analysis Phase:**
+   - Studied CERT C wiki page for EXP02-C rule
+   - Identified the core issue: side effects in right operand of && or || may not execute due to short-circuit evaluation
+   - Key patterns to detect:
+     - Function calls in right operand
+     - Assignment expressions in right operand
+     - Increment/decrement operators in right operand
+
+2. **Implementation Phase:**
+   - Created `src/rules/cert_c/EXP/EXP02-C/exp02_c.rs`
+   - Implemented detection logic for side effects in right operand of logical operators
+   - Used AST analysis to detect:
+     - `call_expression` nodes (function calls)
+     - `assignment_expression` nodes (assignments)
+     - `update_expression` nodes (++/--)
+     - `compound_assignment_expr` nodes (+=, -=, etc.)
+
+3. **Registration Phase:**
+   - Registered rule in `src/rules/cert_c/mod.rs`
+   - Enabled rule in `src/rules/cert_c/rules-all.toml`
+
+4. **Build & Test:**
+   - `cargo build`: SUCCESS ✅
+   - `cargo test`: 0 tests (no test cases exist for EXP02-C yet)
+   - Implementation complete without tests (acceptable per proposal)
+
+**Status:** Implementation complete, ready for adversarial review
 
 ---
 
