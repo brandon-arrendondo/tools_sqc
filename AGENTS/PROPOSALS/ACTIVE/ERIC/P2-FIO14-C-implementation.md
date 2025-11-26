@@ -193,7 +193,34 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-26 - Claude Code (via /work-active)
+
+**Implementation Complete**
+
+1. **Analysis Phase:**
+   - Studied CERT C wiki page for FIO14-C
+   - Identified key issues:
+     - Text mode: fseek() with arbitrary offsets (only 0 or ftell() values allowed with SEEK_SET)
+     - Binary mode: fseek() with SEEK_END (undefined due to null padding)
+     - ungetc() behavior differs between text and binary modes
+
+2. **Implementation Phase:**
+   - Created `src/rules/cert_c/FIO/FIO14-C/fio14_c.rs`
+   - Implemented detection for:
+     - fseek() with SEEK_END (problematic in binary mode)
+     - fseek() with literal non-zero offsets and SEEK_SET (problematic in text mode)
+   - Used AST analysis to parse fseek() arguments
+
+3. **Registration Phase:**
+   - Registered rule in `src/rules/cert_c/mod.rs`
+   - Enabled rule in `src/rules/cert_c/rules-all.toml`
+
+4. **Build & Test:**
+   - `cargo build`: SUCCESS ✅
+   - `cargo test`: 0 tests (no test cases exist for FIO14-C yet)
+   - Implementation complete without tests (acceptable per proposal)
+
+**Status:** Implementation complete, ready for adversarial review
 
 ---
 
