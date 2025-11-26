@@ -193,7 +193,34 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-25 - Claude Code (via /work-active)
+
+**Implementation Complete**
+
+1. **Analysis Phase:**
+   - Studied CERT C wiki page for ERR30-C rule
+   - Identified three categories of errno usage:
+     - Out-of-band functions (ftell, signal, mbrtowc) - must check return value before errno
+     - In-band functions (strtoul, strtod, fgetwc) - must set errno=0 before calling
+     - No errno guarantee functions - should not rely on errno
+
+2. **Implementation Phase:**
+   - Created `src/rules/cert_c/ERR/ERR30-C/err30_c.rs`
+   - Implemented detection logic for:
+     - errno checked without prior return value verification (out-of-band functions)
+     - In-band functions called without errno = 0 initialization
+   - Used AST analysis to track errno usage patterns and function calls
+
+3. **Registration Phase:**
+   - Registered rule in `src/rules/cert_c/mod.rs`
+   - Enabled rule in `src/rules/cert_c/rules-all.toml`
+
+4. **Build & Test:**
+   - `cargo build`: SUCCESS ✅
+   - `cargo test`: 0 tests (no test cases exist for ERR30-C yet)
+   - Implementation complete without tests (acceptable per proposal)
+
+**Status:** Implementation complete, ready for adversarial review
 
 ---
 

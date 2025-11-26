@@ -229,6 +229,9 @@ pub mod env02_c;
 #[path = "ERR/ERR07-C/err07_c.rs"]
 pub mod err07_c;
 
+#[path = "ERR/ERR30-C/err30_c.rs"]
+pub mod err30_c;
+
 #[path = "ERR/ERR32-C/err32_c.rs"]
 pub mod err32_c;
 
