@@ -391,6 +391,9 @@ pub mod fio32_c;
 #[path = "FIO/FIO38-C/fio38_c.rs"]
 pub mod fio38_c;
 
+#[path = "FIO/FIO40-C/fio40_c.rs"]
+pub mod fio40_c;
+
 #[path = "FIO/FIO41-C/fio41_c.rs"]
 pub mod fio41_c;
 

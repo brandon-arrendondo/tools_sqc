@@ -193,7 +193,31 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-26 - Claude Code (via /work-active)
+
+**Implementation Complete**
+
+1. **Analysis Phase:**
+   - Studied FIO40-C rule from TOML description
+   - Identified violation: when fgets()/fgetws() fail, buffer contents are indeterminate
+   - Buffer must be reset to known value (empty string) to avoid undefined behavior
+
+2. **Implementation Phase:**
+   - Created `src/rules/cert_c/FIO/FIO40-C/fio40_c.rs`
+   - Detects if statements checking fgets()/fgetws() == NULL
+   - Verifies failure branch resets buffer with buf[0] = '\0' or buf[0] = L'\0'
+   - Provides suggestions to reset buffer on failure
+
+3. **Registration Phase:**
+   - Registered rule in `src/rules/cert_c/mod.rs`
+   - Enabled rule in `src/rules/cert_c/rules-all.toml`
+
+4. **Build & Test:**
+   - `cargo build`: SUCCESS ✅ (fixed lifetime issue in find_assignment)
+   - `cargo test`: 0 tests (no test cases exist for FIO40-C yet)
+   - Implementation complete without tests (acceptable per proposal)
+
+**Status:** Implementation complete, ready for adversarial review
 
 ---
 
