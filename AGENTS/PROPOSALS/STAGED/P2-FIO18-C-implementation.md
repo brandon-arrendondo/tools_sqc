@@ -1,7 +1,7 @@
 ---
 rule_id: FIO18-C
 priority: P2
-status: active
+status: staged
 assigned_to: TRISTAN
 created: 2025-11-17
 last_modified: 2025-11-17
@@ -193,11 +193,35 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-### 2025-11-17 - Implementation Complete
+### 2025-11-17 - Initial Implementation
 
-**Test Results:** 3/3 unit tests passing (100%)
+**Test Results:** Embedded unit tests (now removed)
 
-**Commit:** (see git log)
+### 2025-12-01 - Claude Code (via /work-active) - COMPLETE
+
+**Initial Status:** 50% pass rate (1/2 tests)
+- PASS test: wiki_compliant_1.c passing
+- FAIL test: wiki_noncompliant_1.c not detecting violation
+
+**Root Cause Analysis:**
+Original implementation checked for sizeof() usage but didn't detect the pattern where
+a size variable (`size2`) is used without being derived from `strlen()`.
+
+**Key Insight from CERT C Wiki:**
+The rule requires that fwrite() size arguments be derived from strlen() for string data:
+- **Non-compliant**: `fwrite(buffer, 1, size2, fp)` where size2 is NOT from strlen()
+- **Compliant**: `size2 = strlen(buffer) + 1; fwrite(buffer, 1, size2, fp)`
+
+**Implementation Changes:**
+1. Added first pass to collect variables assigned from strlen() expressions
+2. Second pass checks fwrite() calls against this set
+3. Flags violations when size argument isn't derived from strlen()
+
+**Final Test Results: 100% pass rate (2/2 tests)**
+- ✅ test_fio18_c_pass_wiki_compliant_1
+- ✅ test_fio18_c_fail_wiki_noncompliant_1
+
+**Commit:** 74a8a8d - P2-FIO18-C: Achieve 100% pass rate (2/2 tests)
 
 ---
 
