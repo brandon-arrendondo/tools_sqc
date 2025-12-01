@@ -64,17 +64,19 @@ impl CertRule for Dcl39C {
 
         // Track structure variables and their initialization status
         let mut struct_vars: HashMap<String, StructVarInfo> = HashMap::new();
-        let mut zeroed_vars: HashSet<String> = HashSet::new();
+        let mut safe_struct_types: HashSet<String> = HashSet::new();
 
-        // First pass: find memset calls that zero structures
-        self.find_memset_calls(node, source, &mut zeroed_vars);
+        // Find packed structs and structs with explicit padding
+        // NOTE: memset() is NOT sufficient per CERT wiki - subsequent field
+        // assignments can leak data through padding bits
+        self.find_safe_struct_types(node, source, &mut safe_struct_types);
 
         // Second pass: find structure declarations and trust boundary calls
         self.analyze_structures(
             node,
             source,
             &mut struct_vars,
-            &zeroed_vars,
+            &safe_struct_types,
             &mut violations,
         );
 
@@ -83,25 +85,37 @@ impl CertRule for Dcl39C {
 }
 
 impl Dcl39C {
-    /// Find memset calls that zero variables
-    fn find_memset_calls(&self, node: &Node, source: &str, zeroed_vars: &mut HashSet<String>) {
-        if node.kind() == "call_expression" {
-            if let Some(function) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&function, source);
+    /// Find safe struct types (packed, explicit padding, etc.)
+    fn find_safe_struct_types(&self, node: &Node, source: &str, safe_types: &mut HashSet<String>) {
+        if node.kind() == "struct_specifier" {
+            let struct_text = get_node_text(node, source);
+            let struct_name = self.extract_struct_name(node, source);
 
-                if func_name == "memset" {
-                    if let Some(args) = node.child_by_field_name("arguments") {
-                        let arg_list = self.get_arguments(&args, source);
-                        // memset(ptr, value, size) - if value is 0, it's zeroing
-                        if arg_list.len() >= 2 && (arg_list[1] == "0" || arg_list[1] == "'\\0'") {
-                            // Extract variable name from first argument
-                            let first_arg = &arg_list[0];
-                            if first_arg.starts_with('&') {
-                                let var_name = first_arg[1..].trim().to_string();
-                                zeroed_vars.insert(var_name);
-                            }
-                        }
-                    }
+            // Check for __attribute__((__packed__))
+            if struct_text.contains("__attribute__") && struct_text.contains("packed") {
+                if !struct_name.is_empty() {
+                    safe_types.insert(format!("struct {}", struct_name));
+                }
+            }
+
+            // Check for explicit padding fields
+            if self.has_explicit_padding_fields(node, source) {
+                if !struct_name.is_empty() {
+                    safe_types.insert(format!("struct {}", struct_name));
+                }
+            }
+
+            // Check for bitfield padding
+            if self.has_bitfield_padding(node, source) {
+                if !struct_name.is_empty() {
+                    safe_types.insert(format!("struct {}", struct_name));
+                }
+            }
+
+            // Check if struct is inside a #pragma pack context
+            if self.is_inside_pragma_pack(node, source) {
+                if !struct_name.is_empty() {
+                    safe_types.insert(format!("struct {}", struct_name));
                 }
             }
         }
@@ -109,9 +123,100 @@ impl Dcl39C {
         // Recurse through children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.find_memset_calls(&child, source, zeroed_vars);
+                self.find_safe_struct_types(&child, source, safe_types);
             }
         }
+    }
+
+    /// Check if a node is inside a #pragma pack(push, 1) ... #pragma pack(pop) region
+    fn is_inside_pragma_pack(&self, node: &Node, source: &str) -> bool {
+        let struct_line = node.start_position().row;
+
+        // Look for #pragma pack directives in the source before this struct
+        let source_lines: Vec<&str> = source.lines().collect();
+
+        // Search backwards for #pragma pack(push, 1)
+        let mut found_push = false;
+        for line_idx in (0..struct_line).rev() {
+            if line_idx >= source_lines.len() {
+                continue;
+            }
+            let line = source_lines[line_idx];
+            if line.contains("#pragma") && line.contains("pack") {
+                if line.contains("push") && line.contains("1") {
+                    found_push = true;
+                    break;
+                } else if line.contains("pop") {
+                    // Found a pop before a push, not in packed region
+                    return false;
+                }
+            }
+        }
+
+        // If we found push, check if there's a pop after the struct
+        if found_push {
+            for line_idx in (struct_line + 1)..source_lines.len() {
+                let line = source_lines[line_idx];
+                if line.contains("#pragma") && line.contains("pack") && line.contains("pop") {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Extract struct name from struct_specifier
+    fn extract_struct_name(&self, struct_node: &Node, source: &str) -> String {
+        for i in 0..struct_node.child_count() {
+            if let Some(child) = struct_node.child(i) {
+                if child.kind() == "type_identifier" {
+                    return get_node_text(&child, source).to_string();
+                }
+            }
+        }
+        String::new()
+    }
+
+    /// Check if struct has explicit padding fields
+    fn has_explicit_padding_fields(&self, struct_node: &Node, source: &str) -> bool {
+        for i in 0..struct_node.child_count() {
+            if let Some(child) = struct_node.child(i) {
+                if child.kind() == "field_declaration_list" {
+                    for j in 0..child.child_count() {
+                        if let Some(field) = child.child(j) {
+                            let field_text = get_node_text(&field, source).to_lowercase();
+                            if field_text.contains("padding") {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if struct has bitfield padding
+    fn has_bitfield_padding(&self, struct_node: &Node, source: &str) -> bool {
+        for i in 0..struct_node.child_count() {
+            if let Some(child) = struct_node.child(i) {
+                if child.kind() == "field_declaration_list" {
+                    for j in 0..child.child_count() {
+                        if let Some(field) = child.child(j) {
+                            if field.kind() == "field_declaration" {
+                                let field_text = get_node_text(&field, source).to_lowercase();
+                                // Check for bitfield with padding in name
+                                if field_text.contains(":") && field_text.contains("padding") {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
     }
 
     /// Analyze structures for trust boundary violations
@@ -120,19 +225,18 @@ impl Dcl39C {
         node: &Node,
         source: &str,
         struct_vars: &mut HashMap<String, StructVarInfo>,
-        zeroed_vars: &HashSet<String>,
+        safe_struct_types: &HashSet<String>,
         violations: &mut Vec<RuleViolation>,
     ) {
         // Check for structure variable declarations
         if node.kind() == "declaration" {
             if let Some((var_name, struct_type)) = self.extract_struct_declaration(node, source) {
-                let is_zeroed = zeroed_vars.contains(&var_name);
                 struct_vars.insert(
                     var_name.clone(),
                     StructVarInfo {
                         var_name,
                         struct_type,
-                        is_zeroed,
+                        is_zeroed: false, // Not used anymore - memset is insufficient
                     },
                 );
             }
@@ -152,29 +256,33 @@ impl Dcl39C {
                             if arg.starts_with('&') {
                                 let var_name = arg[1..].trim().to_string();
                                 // Check if this is a known struct variable that wasn't zeroed
-                                if let Some(_info) = struct_vars.get(&var_name) {
-                                    // Only check zeroed_vars (memset calls anywhere in function)
-                                    // Don't check info.is_zeroed (which was set at declaration time)
-                                    if !zeroed_vars.contains(&var_name) {
-                                        violations.push(RuleViolation {
-                                            rule_id: self.rule_id().to_string(),
-                                            message: format!(
-                                                "Structure '{}' passed to trust boundary function '{}' \
-                                                 without clearing padding bytes. Use memset() to zero \
-                                                 the structure or serialize fields individually.",
-                                                var_name, func_name
-                                            ),
-                                            severity: self.severity(),
-                                            line: node.start_position().row + 1,
-                                            column: node.start_position().column + 1,
-                                            file_path: String::new(),
-                                            suggestion: Some(format!(
-                                                "Add: memset(&{}, 0, sizeof({}));",
-                                                var_name, var_name
-                                            )),
-                                            requires_manual_review: None,
-                                        });
+                                if let Some(info) = struct_vars.get(&var_name) {
+                                    // Skip if struct type is safe (packed, explicit padding, etc.)
+                                    if safe_struct_types.contains(&info.struct_type) {
+                                        continue;
                                     }
+
+                                    // Structure passed to trust boundary - this is a violation
+                                    // Note: memset() is NOT sufficient per CERT wiki
+                                    violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        message: format!(
+                                            "Structure '{}' passed to trust boundary function '{}' \
+                                             may leak padding bytes. Use packed attributes, explicit \
+                                             padding fields, or serialize fields individually.",
+                                            var_name, func_name
+                                        ),
+                                        severity: self.severity(),
+                                        line: node.start_position().row + 1,
+                                        column: node.start_position().column + 1,
+                                        file_path: String::new(),
+                                        suggestion: Some(format!(
+                                            "Use __attribute__((__packed__)) or serialize fields: \
+                                             copy_to_user(buf, &{}.a, sizeof({}.a)); ...",
+                                            var_name, var_name
+                                        )),
+                                        requires_manual_review: None,
+                                    });
                                 }
                             }
                         }
@@ -186,7 +294,7 @@ impl Dcl39C {
         // Recurse through children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.analyze_structures(&child, source, struct_vars, zeroed_vars, violations);
+                self.analyze_structures(&child, source, struct_vars, safe_struct_types, violations);
             }
         }
     }
