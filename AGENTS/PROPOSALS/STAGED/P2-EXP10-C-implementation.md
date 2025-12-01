@@ -1,7 +1,7 @@
 ---
 rule_id: EXP10-C
 priority: P2
-status: active
+status: staged
 assigned_to: TRISTAN
 created: 2025-11-17
 last_modified: 2025-11-17
