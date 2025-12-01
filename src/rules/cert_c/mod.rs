@@ -625,6 +625,9 @@ pub mod str06_c;
 #[path = "STR/STR31-C/str31_c.rs"]
 pub mod str31_c;
 
+#[path = "STR/STR32-C/str32_c.rs"]
+pub mod str32_c;
+
 #[path = "STR/STR38-C/str38_c.rs"]
 pub mod str38_c;
 
@@ -637,8 +640,14 @@ pub mod str02_c;
 #[path = "STR/STR10-C/str10_c.rs"]
 pub mod str10_c;
 
+#[path = "STR/STR11-C/str11_c.rs"]
+pub mod str11_c;
+
 #[path = "STR/STR34-C/str34_c.rs"]
 pub mod str34_c;
+
+#[path = "STR/STR37-C/str37_c.rs"]
+pub mod str37_c;
 
 #[path = "SIG/SIG00-C/sig00_c.rs"]
 pub mod sig00_c;
@@ -864,11 +873,14 @@ impl RuleRegistry {
         registry.register(Box::new(str06_c::Str06C::new()));
         registry.register(Box::new(sig31_c::Sig31C));
         registry.register(Box::new(str31_c::Str31C));
+        registry.register(Box::new(str32_c::Str32C));
         registry.register(Box::new(str38_c::Str38C));
         registry.register(Box::new(str00_c::Str00C));
         registry.register(Box::new(str02_c::Str02C::new()));
         registry.register(Box::new(str10_c::Str10C));
+        registry.register(Box::new(str11_c::Str11C));
         registry.register(Box::new(str34_c::Str34C));
+        registry.register(Box::new(str37_c::Str37C));
         registry.register(Box::new(sig00_c::Sig00C::new()));
         registry.register(Box::new(sig30_c::Sig30C));
         registry.register(Box::new(sig01_c::Sig01C));
