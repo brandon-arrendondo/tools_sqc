@@ -193,7 +193,31 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-12-01 - Claude Code (via /work-active)
+**Status:** COMPLETE ✅
+
+**Implementation Summary:**
+- Created `src/rules/cert_c/STR/STR11-C/str11_c.rs` implementing detection of character arrays with insufficient bounds for string literals
+- Implemented detection of array declarations with explicit bounds initialized with string literals
+- Calculates string literal length (handling escape sequences) and compares with array bound
+- Registered rule in `src/rules/cert_c/mod.rs`
+- Enabled rule in `src/rules/cert_c/rules-all.toml` and `STR11-C.toml`
+
+**Test Results:**
+- ✅ **100% pass rate: 2/2 tests passed**
+- Compliant tests: 1/1 passed (wiki_compliant_1.c)
+- Non-compliant tests: 1/1 passed (wiki_noncompliant_1.c)
+
+**Implementation Details:**
+The rule detects when a character array is initialized with a string literal but the specified bound is too small to accommodate the null terminator. This violates C standards and creates arrays that are not properly null-terminated strings.
+
+Detection strategy:
+1. Find character array declarations (char or const char) with explicit bounds
+2. Check if initialized with a string literal (not explicit element notation like {'a', 'b', 'c'})
+3. Calculate string literal length, handling escape sequences (\n, \t, \xHH, etc.)
+4. Report violation if array_size <= string_length (needs > to hold null terminator)
+
+The implementation successfully detects the non-compliant pattern where arrays are declared with bounds that match the character count but lack space for '\0'.
 
 ---
 

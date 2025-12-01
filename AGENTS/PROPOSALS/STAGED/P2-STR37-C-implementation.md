@@ -1,5 +1,5 @@
 ---
-rule_id: STR32-C
+rule_id: STR37-C
 priority: P2
 status: active
 assigned_to: ALLY
@@ -11,35 +11,35 @@ tags:
   - STR
 ---
 
-# P2-STR32-C - STR32-C Implementation
+# P2-STR37-C - STR37-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** BRANDON
+**Assigned To:** BLAKE
 **Category:** STR
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** STR32-C
+**Rule ID:** STR37-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/STR32-C.+Do+not+pass+a+non-null-terminated+character+sequence+to+a+library+function+that+expects+a+string
+https://wiki.sei.cmu.edu/confluence/display/c/STR37-C.+Arguments+to+character-handling+functions+must+be+representable+as+an+unsigned+char
 
 ---
 
 ## Task
 
-Implement or verify STR32-C with 100% test pass rate and DRY compliance.
+Implement or verify STR37-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for STR32-C
-2. Check if implementation exists in `src/rules/cert_c/STR/STR32-C/`
+1. Study the CERT C wiki page for STR37-C
+2. Check if implementation exists in `src/rules/cert_c/STR/STR37-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,7 +193,33 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-12-01 - Claude Code (via /work-active)
+**Status:** COMPLETE ✅
+
+**Implementation Summary:**
+- Created comprehensive detection system in `src/rules/cert_c/STR/STR37-C/str37_c.rs`
+  - Detects calls to character-handling functions from <ctype.h>
+  - Checks if arguments are properly cast to `unsigned char`
+  - Identifies potentially unsafe arguments (pointer dereferences, char variables, array subscripts)
+  - Reports violations with specific function names and suggestions
+- Registered rule in `src/rules/cert_c/mod.rs` (lines 649-650, 883)
+- Enabled rule in configuration files (STR37-C.toml, rules-all.toml)
+- Supports all character-handling functions (isalpha, isdigit, toupper, tolower, etc.)
+- Handles various cast expressions and recursive checking
+
+**Key Features:**
+- Comprehensive function coverage (isalnum, isalpha, isascii, isblank, iscntrl, isdigit, etc.)
+- Detects missing `unsigned char` casts on potentially unsafe arguments
+- Handles pointer dereferences (*ptr), array subscripts (arr[i]), and identifiers
+- Recursive checking for parenthesized and cast expressions
+- Safe handling of integer and character literals (no false positives)
+
+**Test Results:**
+- ✅ **100% pass rate: 2/2 tests passed**
+- Compliant tests: 1/1 passed
+  - wiki_compliant_1.c
+- Non-compliant tests: 1/1 passed
+  - wiki_noncompliant_1.c
 
 ---
 
