@@ -353,11 +353,52 @@ impl Pos38C {
         source: &str,
         file_descriptors: &HashSet<String>,
     ) -> bool {
+        // Check for close() calls first - if fd is closed, it's not being used (safe pattern)
+        if self.subtree_closes_file_descriptor(node, source, file_descriptors) {
+            return false;
+        }
+
         let node_text = get_node_text(node, source);
 
         // Check if any of the file descriptors are mentioned in this subtree
+        // in a context that uses them (not just closes them)
         for fd in file_descriptors {
             if node_text.contains(fd) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    fn subtree_closes_file_descriptor(
+        &self,
+        node: &Node,
+        source: &str,
+        file_descriptors: &HashSet<String>,
+    ) -> bool {
+        // Look for close() calls on the file descriptors
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_text = get_node_text(&function, source);
+                if func_text.trim() == "close" {
+                    // Check if the argument is one of our file descriptors
+                    if let Some(args) = node.child_by_field_name("arguments") {
+                        let args_text = get_node_text(&args, source);
+                        for fd in file_descriptors {
+                            if args_text.contains(fd) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recurse through children
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            if self.subtree_closes_file_descriptor(&child, source, file_descriptors) {
                 return true;
             }
         }
