@@ -1,7 +1,7 @@
 ---
 rule_id: ENV33-C
 priority: P2
-status: active
+status: staged
 assigned_to: TRISTAN
 created: 2025-11-17
 last_modified: 2025-11-17
@@ -16,7 +16,7 @@ tags:
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** BLAKE
+**Assigned To:** TRISTAN
 **Category:** ENV
 **Estimated Effort:** 10-30 hours
 
