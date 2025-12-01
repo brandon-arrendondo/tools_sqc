@@ -16,4 +16,143 @@
 
 void system_paths(void) {
     /* NON-COMPLIANT: System paths should be const */
-    char config_dir[] = \"/etc\";\n    char home_dir[] = \"/home\";\n    char temp_dir[] = \"/tmp\";\n    char log_dir[] = \"/var/log\";\n    char bin_dir[] = \"/usr/bin\";\n\n    printf(\"System Directory Paths:\\n\");\n    printf(\"  Config: %s\\n\", config_dir);\n    printf(\"  Home: %s\\n\", home_dir);\n    printf(\"  Temp: %s\\n\", temp_dir);\n    printf(\"  Logs: %s\\n\", log_dir);\n    printf(\"  Binaries: %s\\n\", bin_dir);\n\n    /* Paths are used for file operations but never modified */\n    char full_path[256];\n    sprintf(full_path, \"%s/myapp.conf\", config_dir);\n    printf(\"  Config file: %s\\n\", full_path);\n\n    sprintf(full_path, \"%s/myapp.log\", log_dir);\n    printf(\"  Log file: %s\\n\", full_path);\n}\n\nvoid application_files(void) {\n    /* NON-COMPLIANT: Application file names should be const */\n    char config_file[] = \"app.conf\";\n    char log_file[] = \"application.log\";\n    char pid_file[] = \"app.pid\";\n    char lock_file[] = \"app.lock\";\n    char data_file[] = \"data.db\";\n\n    /* NON-COMPLIANT: File extensions should be const */\n    char txt_extension[] = \".txt\";\n    char log_extension[] = \".log\";\n    char conf_extension[] = \".conf\";\n    char backup_extension[] = \".bak\";\n\n    printf(\"\\nApplication Files:\\n\");\n    printf(\"  Config: %s\\n\", config_file);\n    printf(\"  Log: %s\\n\", log_file);\n    printf(\"  PID: %s\\n\", pid_file);\n    printf(\"  Lock: %s\\n\", lock_file);\n    printf(\"  Database: %s\\n\", data_file);\n\n    printf(\"\\nFile Extensions:\\n\");\n    printf(\"  Text: %s\\n\", txt_extension);\n    printf(\"  Log: %s\\n\", log_extension);\n    printf(\"  Config: %s\\n\", conf_extension);\n    printf(\"  Backup: %s\\n\", backup_extension);\n\n    /* Extensions used for file type checking but never modified */\n    char test_file[] = \"document.txt\";\n    if (strstr(test_file, txt_extension) != NULL) {\n        printf(\"  %s is a text file\\n\", test_file);\n    }\n}\n\nvoid resource_paths(void) {\n    /* NON-COMPLIANT: Resource paths should be const */\n    char image_path[] = \"/assets/images/\";\n    char css_path[] = \"/assets/css/\";\n    char js_path[] = \"/assets/js/\";\n    char font_path[] = \"/assets/fonts/\";\n    char icon_path[] = \"/assets/icons/\";\n\n    /* NON-COMPLIANT: Default resource names should be const */\n    char default_css[] = \"style.css\";\n    char default_js[] = \"script.js\";\n    char default_favicon[] = \"favicon.ico\";\n    char default_logo[] = \"logo.png\";\n\n    printf(\"\\nWeb Resource Paths:\\n\");\n    printf(\"  Images: %s\\n\", image_path);\n    printf(\"  CSS: %s\\n\", css_path);\n    printf(\"  JavaScript: %s\\n\", js_path);\n    printf(\"  Fonts: %s\\n\", font_path);\n    printf(\"  Icons: %s\\n\", icon_path);\n\n    /* Paths used for URL construction but never modified */\n    char full_url[256];\n    sprintf(full_url, \"%s%s\", css_path, default_css);\n    printf(\"  Default CSS: %s\\n\", full_url);\n\n    sprintf(full_url, \"%s%s\", js_path, default_js);\n    printf(\"  Default JS: %s\\n\", full_url);\n\n    sprintf(full_url, \"%s%s\", icon_path, default_favicon);\n    printf(\"  Favicon: %s\\n\", full_url);\n}\n\nvoid backup_paths(void) {\n    /* NON-COMPLIANT: Backup directory patterns should be const */\n    char backup_root[] = \"/backup\";\n    char daily_backup[] = \"/backup/daily\";\n    char weekly_backup[] = \"/backup/weekly\";\n    char monthly_backup[] = \"/backup/monthly\";\n    char archive_backup[] = \"/backup/archive\";\n\n    /* NON-COMPLIANT: Backup filename patterns should be const */\n    char daily_pattern[] = \"daily_%Y%m%d.tar.gz\";\n    char weekly_pattern[] = \"weekly_%Y_w%U.tar.gz\";\n    char monthly_pattern[] = \"monthly_%Y%m.tar.gz\";\n\n    printf(\"\\nBackup Configuration:\\n\");\n    printf(\"  Root: %s\\n\", backup_root);\n    printf(\"  Daily: %s\\n\", daily_backup);\n    printf(\"  Weekly: %s\\n\", weekly_backup);\n    printf(\"  Monthly: %s\\n\", monthly_backup);\n    printf(\"  Archive: %s\\n\", archive_backup);\n\n    printf(\"\\nBackup Filename Patterns:\\n\");\n    printf(\"  Daily: %s\\n\", daily_pattern);\n    printf(\"  Weekly: %s\\n\", weekly_pattern);\n    printf(\"  Monthly: %s\\n\", monthly_pattern);\n\n    /* Patterns used for file generation but never modified */\n    char backup_file[256];\n    sprintf(backup_file, \"%s/database_%s\", daily_backup, \"20240101\");\n    printf(\"  Sample backup: %s\\n\", backup_file);\n}\n\nint main(void) {\n    /* NON-COMPLIANT: Installation paths should be const */\n    char install_prefix[] = \"/usr/local\";\n    char install_bindir[] = \"/usr/local/bin\";\n    char install_libdir[] = \"/usr/local/lib\";\n    char install_datadir[] = \"/usr/local/share\";\n\n    printf(\"Installation Paths:\\n\");\n    printf(\"  Prefix: %s\\n\", install_prefix);\n    printf(\"  Binaries: %s\\n\", install_bindir);\n    printf(\"  Libraries: %s\\n\", install_libdir);\n    printf(\"  Data: %s\\n\", install_datadir);\n\n    system_paths();\n    application_files();\n    resource_paths();\n    backup_paths();\n\n    return 0;\n}"
+    char config_dir[] = "/etc";
+    char home_dir[] = "/home";
+    char temp_dir[] = "/tmp";
+    char log_dir[] = "/var/log";
+    char bin_dir[] = "/usr/bin";
+
+    printf("System Directory Paths:\n");
+    printf("  Config: %s\n", config_dir);
+    printf("  Home: %s\n", home_dir);
+    printf("  Temp: %s\n", temp_dir);
+    printf("  Logs: %s\n", log_dir);
+    printf("  Binaries: %s\n", bin_dir);
+
+    /* Paths are used for file operations but never modified */
+    char full_path[256];
+    sprintf(full_path, "%s/myapp.conf", config_dir);
+    printf("  Config file: %s\n", full_path);
+
+    sprintf(full_path, "%s/myapp.log", log_dir);
+    printf("  Log file: %s\n", full_path);
+}
+
+void application_files(void) {
+    /* NON-COMPLIANT: Application file names should be const */
+    char config_file[] = "app.conf";
+    char log_file[] = "application.log";
+    char pid_file[] = "app.pid";
+    char lock_file[] = "app.lock";
+    char data_file[] = "data.db";
+
+    /* NON-COMPLIANT: File extensions should be const */
+    char txt_extension[] = ".txt";
+    char log_extension[] = ".log";
+    char conf_extension[] = ".conf";
+    char backup_extension[] = ".bak";
+
+    printf("\nApplication Files:\n");
+    printf("  Config: %s\n", config_file);
+    printf("  Log: %s\n", log_file);
+    printf("  PID: %s\n", pid_file);
+    printf("  Lock: %s\n", lock_file);
+    printf("  Database: %s\n", data_file);
+
+    printf("\nFile Extensions:\n");
+    printf("  Text: %s\n", txt_extension);
+    printf("  Log: %s\n", log_extension);
+    printf("  Config: %s\n", conf_extension);
+    printf("  Backup: %s\n", backup_extension);
+
+    /* Extensions used for file type checking but never modified */
+    char test_file[] = "document.txt";
+    if (strstr(test_file, txt_extension) != NULL) {
+        printf("  %s is a text file\n", test_file);
+    }
+}
+
+void resource_paths(void) {
+    /* NON-COMPLIANT: Resource paths should be const */
+    char image_path[] = "/assets/images/";
+    char css_path[] = "/assets/css/";
+    char js_path[] = "/assets/js/";
+    char font_path[] = "/assets/fonts/";
+    char icon_path[] = "/assets/icons/";
+
+    /* NON-COMPLIANT: Default resource names should be const */
+    char default_css[] = "style.css";
+    char default_js[] = "script.js";
+    char default_favicon[] = "favicon.ico";
+    char default_logo[] = "logo.png";
+
+    printf("\nWeb Resource Paths:\n");
+    printf("  Images: %s\n", image_path);
+    printf("  CSS: %s\n", css_path);
+    printf("  JavaScript: %s\n", js_path);
+    printf("  Fonts: %s\n", font_path);
+    printf("  Icons: %s\n", icon_path);
+
+    /* Paths used for URL construction but never modified */
+    char full_url[256];
+    sprintf(full_url, "%s%s", css_path, default_css);
+    printf("  Default CSS: %s\n", full_url);
+
+    sprintf(full_url, "%s%s", js_path, default_js);
+    printf("  Default JS: %s\n", full_url);
+
+    sprintf(full_url, "%s%s", icon_path, default_favicon);
+    printf("  Favicon: %s\n", full_url);
+}
+
+void backup_paths(void) {
+    /* NON-COMPLIANT: Backup directory patterns should be const */
+    char backup_root[] = "/backup";
+    char daily_backup[] = "/backup/daily";
+    char weekly_backup[] = "/backup/weekly";
+    char monthly_backup[] = "/backup/monthly";
+    char archive_backup[] = "/backup/archive";
+
+    /* NON-COMPLIANT: Backup filename patterns should be const */
+    char daily_pattern[] = "daily_%Y%m%d.tar.gz";
+    char weekly_pattern[] = "weekly_%Y_w%U.tar.gz";
+    char monthly_pattern[] = "monthly_%Y%m.tar.gz";
+
+    printf("\nBackup Configuration:\n");
+    printf("  Root: %s\n", backup_root);
+    printf("  Daily: %s\n", daily_backup);
+    printf("  Weekly: %s\n", weekly_backup);
+    printf("  Monthly: %s\n", monthly_backup);
+    printf("  Archive: %s\n", archive_backup);
+
+    printf("\nBackup Filename Patterns:\n");
+    printf("  Daily: %s\n", daily_pattern);
+    printf("  Weekly: %s\n", weekly_pattern);
+    printf("  Monthly: %s\n", monthly_pattern);
+
+    /* Patterns used for file generation but never modified */
+    char backup_file[256];
+    sprintf(backup_file, "%s/database_%s", daily_backup, "20240101");
+    printf("  Sample backup: %s\n", backup_file);
+}
+
+int main(void) {
+    /* NON-COMPLIANT: Installation paths should be const */
+    char install_prefix[] = "/usr/local";
+    char install_bindir[] = "/usr/local/bin";
+    char install_libdir[] = "/usr/local/lib";
+    char install_datadir[] = "/usr/local/share";
+
+    printf("Installation Paths:\n");
+    printf("  Prefix: %s\n", install_prefix);
+    printf("  Binaries: %s\n", install_bindir);
+    printf("  Libraries: %s\n", install_libdir);
+    printf("  Data: %s\n", install_datadir);
+
+    system_paths();
+    application_files();
+    resource_paths();
+    backup_paths();
+
+    return 0;
+}
