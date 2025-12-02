@@ -17,7 +17,7 @@ tags:
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Last Modified:** 2025-11-18
-**Assigned To:** HUU
+**Assigned To:** TRISTAN
 **Category:** FIO
 **Estimated Effort:** 10-30 hours
 **Actual Effort:** ~15-20 hours (estimated)

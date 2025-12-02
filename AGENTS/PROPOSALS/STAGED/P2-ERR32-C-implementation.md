@@ -16,7 +16,7 @@ tags:
 **Status:** STAGED (awaiting adversarial review)
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** JASON
+**Assigned To:** TRISTAN
 **Category:** ERR
 **Estimated Effort:** 10-30 hours
 

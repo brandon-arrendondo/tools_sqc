@@ -1,7 +1,7 @@
 ---
 rule_id: PRE11-C
 priority: P2
-status: staged
+status: active
 assigned_to: TRISTAN
 created: 2025-11-17
 last_modified: 2025-11-19
