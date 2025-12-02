@@ -13,10 +13,10 @@ tags:
 
 # P2-FIO05-C - FIO05-C Implementation
 
-**Status:** STALLED (80% test pass rate - one test case appears invalid)
+**Status:** ACTIVE - In Progress
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** BLAKE
+**Assigned To:** TRISTAN
 **Category:** FIO
 **Estimated Effort:** 10-30 hours
 

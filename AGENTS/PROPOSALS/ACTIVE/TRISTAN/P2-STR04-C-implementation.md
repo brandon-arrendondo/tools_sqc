@@ -16,7 +16,7 @@ tags:
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** HUU
+**Assigned To:** TRISTAN
 **Category:** STR
 **Estimated Effort:** 10-30 hours
 

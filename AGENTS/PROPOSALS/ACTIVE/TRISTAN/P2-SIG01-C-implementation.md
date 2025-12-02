@@ -13,7 +13,7 @@ tags:
 
 # P2-SIG01-C - SIG01-C Implementation
 
-**Status:** STALLED (awaiting wiki parser fix)
+**Status:** ACTIVE - In Progress
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** TRISTAN

@@ -1,7 +1,7 @@
 ---
 rule_id: POS35-C
 priority: P2
-status: staged
+status: active
 assigned_to: TRISTAN
 created: 2025-11-17
 last_modified: 2025-11-19
@@ -16,7 +16,7 @@ tags:
 **Status:** STAGED
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
+**Assigned To:** TRISTAN
 **Category:** POS
 **Estimated Effort:** 10-30 hours
 

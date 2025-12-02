@@ -16,7 +16,7 @@ tags:
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
+**Assigned To:** TRISTAN
 **Category:** WIN
 **Estimated Effort:** 10-30 hours
 
