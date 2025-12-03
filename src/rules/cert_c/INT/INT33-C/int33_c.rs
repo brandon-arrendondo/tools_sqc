@@ -1,9 +1,18 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
 pub struct Int33C;
+
+/// Information about macros that perform division
+struct DivisionMacro {
+    /// Name of the macro
+    name: String,
+    /// Index of the divisor parameter (0-based)
+    divisor_param_index: usize,
+}
 
 impl CertRule for Int33C {
     fn rule_id(&self) -> &'static str {
@@ -29,11 +38,126 @@ impl CertRule for Int33C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
+        // First pass: find division macros and zero-initialized variables
+        let division_macros = self.find_division_macros(source);
+        let zero_vars = self.find_zero_initialized_vars(node, source);
+
+        // Check for division or modulo operations
+        self.check_node(node, source, &mut violations, &division_macros, &zero_vars);
+
+        violations
+    }
+}
+
+impl Int33C {
+    /// Find macros that contain division operations
+    fn find_division_macros(&self, source: &str) -> HashMap<String, DivisionMacro> {
+        let mut macros = HashMap::new();
+
+        // Parse #define directives that contain division
+        for line in source.lines() {
+            let trimmed = line.trim();
+            if trimmed.starts_with("#define") {
+                // Parse: #define NAME(params) body
+                // Look for division in the body
+                if (trimmed.contains(" / ") || trimmed.contains(")/") || trimmed.contains("/("))
+                    && trimmed.contains('(')
+                {
+                    // Extract macro name and parameters
+                    if let Some(name_start) = trimmed.strip_prefix("#define") {
+                        let name_part = name_start.trim();
+                        if let Some(paren_pos) = name_part.find('(') {
+                            let macro_name = name_part[..paren_pos].trim().to_string();
+
+                            // Find which parameter is the divisor
+                            // Look for pattern like (a) / (b) - divisor is typically the second
+                            if let Some(params_end) = name_part.find(')') {
+                                let params = &name_part[paren_pos + 1..params_end];
+                                let param_list: Vec<&str> =
+                                    params.split(',').map(|s| s.trim()).collect();
+
+                                // The divisor is typically the second parameter in binary division
+                                if param_list.len() >= 2 {
+                                    macros.insert(
+                                        macro_name.clone(),
+                                        DivisionMacro {
+                                            name: macro_name,
+                                            divisor_param_index: 1, // Second parameter
+                                        },
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        macros
+    }
+
+    /// Find variables initialized to zero
+    fn find_zero_initialized_vars(&self, node: &Node, source: &str) -> HashSet<String> {
+        let mut zero_vars = HashSet::new();
+        self.collect_zero_vars(node, source, &mut zero_vars);
+        zero_vars
+    }
+
+    fn collect_zero_vars(&self, node: &Node, source: &str, zero_vars: &mut HashSet<String>) {
+        if node.kind() == "declaration" || node.kind() == "init_declarator" {
+            // Look for pattern: type var = 0
+            let decl_text = ast_utils::get_node_text(node, source);
+            if decl_text.contains("= 0") || decl_text.ends_with("= 0;") {
+                // Extract variable name
+                if let Some(name) = self.extract_declared_var_name(node, source) {
+                    zero_vars.insert(name);
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_zero_vars(&child, source, zero_vars);
+            }
+        }
+    }
+
+    fn extract_declared_var_name(&self, node: &Node, source: &str) -> Option<String> {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "init_declarator" {
+                    // Look for identifier in init_declarator
+                    for j in 0..child.child_count() {
+                        if let Some(grandchild) = child.child(j) {
+                            if grandchild.kind() == "identifier" {
+                                return Some(
+                                    ast_utils::get_node_text(&grandchild, source).to_string(),
+                                );
+                            }
+                        }
+                    }
+                } else if child.kind() == "identifier" {
+                    return Some(ast_utils::get_node_text(&child, source).to_string());
+                }
+            }
+        }
+        None
+    }
+
+    /// Main check function that processes nodes
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        division_macros: &HashMap<String, DivisionMacro>,
+        zero_vars: &HashSet<String>,
+    ) {
         // Check for division or modulo operations
         if node.kind() == "binary_expression" {
             if let Some(operator) = ast_utils::get_binary_operator(node, source) {
                 if operator == "/" || operator == "%" {
-                    self.check_division_safety(node, source, &mut violations);
+                    self.check_division_safety(node, source, violations);
                 }
             }
         }
@@ -43,27 +167,17 @@ impl CertRule for Int33C {
             if let Some(right) = node.child_by_field_name("right") {
                 let right_text = ast_utils::get_node_text(&right, source);
                 // Check for /= or %=
-                if right_text.starts_with("=") {
-                    // This is handled by the operator field
-                } else {
+                if !right_text.starts_with("=") {
                     // Check the operator itself
                     for i in 0..node.child_count() {
                         if let Some(child) = node.child(i) {
                             if child.kind() == "/=" || child.kind() == "%=" {
-                                self.check_compound_assignment_safety(
-                                    node,
-                                    source,
-                                    &mut violations,
-                                );
+                                self.check_compound_assignment_safety(node, source, violations);
                                 break;
                             }
                             let text = ast_utils::get_node_text(&child, source);
                             if text == "/=" || text == "%=" {
-                                self.check_compound_assignment_safety(
-                                    node,
-                                    source,
-                                    &mut violations,
-                                );
+                                self.check_compound_assignment_safety(node, source, violations);
                                 break;
                             }
                         }
@@ -72,18 +186,76 @@ impl CertRule for Int33C {
             }
         }
 
+        // Check for calls to division macros
+        if node.kind() == "call_expression" {
+            self.check_macro_call(node, source, violations, division_macros, zero_vars);
+        }
+
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                violations.extend(self.check(&child, source));
+                self.check_node(&child, source, violations, division_macros, zero_vars);
             }
         }
-
-        violations
     }
-}
 
-impl Int33C {
+    /// Check if a macro call might cause division by zero
+    fn check_macro_call(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        division_macros: &HashMap<String, DivisionMacro>,
+        zero_vars: &HashSet<String>,
+    ) {
+        // Get the function/macro name
+        if let Some(function) = node.child_by_field_name("function") {
+            let func_name = ast_utils::get_node_text(&function, source);
+
+            // Check if this is a known division macro
+            if let Some(macro_info) = division_macros.get(func_name) {
+                // Get the arguments
+                if let Some(args) = node.child_by_field_name("arguments") {
+                    let mut arg_idx = 0;
+                    for i in 0..args.child_count() {
+                        if let Some(arg) = args.child(i) {
+                            // Skip parentheses and commas
+                            if arg.kind() == "(" || arg.kind() == ")" || arg.kind() == "," {
+                                continue;
+                            }
+
+                            // Check if this is the divisor argument
+                            if arg_idx == macro_info.divisor_param_index {
+                                let arg_text = ast_utils::get_node_text(&arg, source);
+
+                                // Check if divisor is zero literal or a zero-initialized variable
+                                if arg_text == "0" || zero_vars.contains(arg_text) {
+                                    violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        severity: self.severity(),
+                                        message: format!(
+                                            "Macro '{}' called with divisor '{}' that may be zero",
+                                            func_name, arg_text
+                                        ),
+                                        file_path: String::new(),
+                                        line: node.start_position().row + 1,
+                                        column: node.start_position().column + 1,
+                                        suggestion: Some(
+                                            "Check if divisor is not zero before calling division macro".to_string(),
+                                        ),
+                                        ..Default::default()
+                                    });
+                                    return;
+                                }
+                            }
+                            arg_idx += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /// Check if a division or modulo operation is safe
     fn check_division_safety(
         &self,
