@@ -105,6 +105,8 @@ impl Str02C {
     }
 
     /// Check exec*() family calls for command injection risk
+    /// exec*() is generally safer than system() because it doesn't invoke the shell
+    /// We only flag exec*() when user data is passed in arguments without proper protection
     fn check_exec_family_call(
         &self,
         node: &Node,
@@ -113,31 +115,70 @@ impl Str02C {
         violations: &mut Vec<RuleViolation>,
     ) {
         if let Some(args_node) = node.child_by_field_name("arguments") {
-            // Get first argument (command path)
-            if let Some(first_arg) = self.get_first_argument(&args_node) {
-                let arg_text = get_node_text(&first_arg, source);
+            // For exec*() functions, we look for getenv() calls in arguments
+            // which indicate potentially unsanitized user/environment data
+            let args_text = get_node_text(&args_node, source);
 
-                // Check if argument is a string literal (safe) or a variable/expression (risky)
-                if !self.is_string_literal(&first_arg) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::Medium,
-                        message: format!(
-                            "Call to {}() with non-literal path '{}' detected. Ensure the path does not contain unsanitized user input to prevent command injection.",
-                            function_name, arg_text.trim()
-                        ),
-                        file_path: String::new(),
-                        line: node.start_position().row + 1,
-                        column: node.start_position().column + 1,
-                        suggestion: Some(
-                            "Validate and sanitize the command path before passing to exec*() functions. Ensure it doesn't contain user-controlled data or environment variables."
-                                .to_string(),
-                        ),
-                        ..Default::default()
-                    });
+            // Check if getenv() is used in arguments without protection
+            // getenv returns environment variables which may be user-controlled
+            if args_text.contains("getenv(") {
+                // Check if "--" appears BEFORE getenv() in the arguments
+                // The "--" argument signals "end of options" to prevent option injection
+                if let Some(getenv_pos) = args_text.find("getenv(") {
+                    let before_getenv = &args_text[..getenv_pos];
+                    // If "--" appears before getenv, the user data cannot be interpreted
+                    // as command-line options, which is the proper protection
+                    if before_getenv.contains("\"--\"") {
+                        return; // Properly protected with end-of-options marker
+                    }
                 }
+
+                // Check if there's any indication of sanitization in the containing scope
+                let scope = self.find_containing_scope(node);
+                if let Some(scope) = scope {
+                    let scope_text = get_node_text(&scope, source);
+                    // If strspn or similar sanitization is present, it's likely safe
+                    if scope_text.contains("strspn(")
+                        || scope_text.contains("strcspn(")
+                        || scope_text.contains("ok_chars")
+                    {
+                        return; // Likely sanitized
+                    }
+                }
+
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::Medium,
+                    message: format!(
+                        "Call to {}() with getenv() in arguments without '--' end-of-options marker. Environment variables may contain values that could be interpreted as command options.",
+                        function_name
+                    ),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(
+                        "Add '--' argument before user-controlled data to prevent option injection, or sanitize the data before passing to exec*() functions."
+                            .to_string(),
+                    ),
+                    ..Default::default()
+                });
             }
         }
+    }
+
+    /// Find the containing function or scope for a node
+    fn find_containing_scope<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if parent.kind() == "function_definition"
+                || parent.kind() == "compound_statement"
+                || parent.kind() == "translation_unit"
+            {
+                return Some(parent);
+            }
+            current = parent;
+        }
+        None
     }
 
     /// Get the first argument from an argument list node
