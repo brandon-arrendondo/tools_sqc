@@ -53,12 +53,12 @@ impl CertRule for Int01C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Track size_t parameters and variables
+        // Track size_t/rsize_t parameters and variables
         let mut size_t_vars: HashSet<String> = HashSet::new();
         // Track int variables
         let mut int_vars: HashMap<String, (usize, usize)> = HashMap::new();
 
-        // Find size_t variables (parameters and locals)
+        // Find size_t/rsize_t variables (parameters and locals)
         self.find_size_t_vars(node, source, &mut size_t_vars);
 
         // Find int variables
@@ -67,17 +67,24 @@ impl CertRule for Int01C {
         // Find comparisons between int and size_t
         self.find_int_size_t_comparisons(node, source, &size_t_vars, &int_vars, &mut violations);
 
+        // Check for function parameters representing sizes that don't use size_t
+        self.check_size_params(node, source, &mut violations);
+
+        // Check for variables used as sizes (in malloc/alloc calls) that aren't size_t
+        self.check_size_variable_usage(node, source, &size_t_vars, &mut violations);
+
         violations
     }
 }
 
 impl Int01C {
-    /// Find size_t variables (parameters and declarations)
+    /// Find size_t/rsize_t variables (parameters and declarations)
     fn find_size_t_vars(&self, node: &Node, source: &str, size_t_vars: &mut HashSet<String>) {
         // Check function parameters
         if node.kind() == "parameter_declaration" {
             let decl_text = get_node_text(node, source);
-            if decl_text.contains("size_t") {
+            // Check for size_t or rsize_t
+            if decl_text.contains("size_t") || decl_text.contains("rsize_t") {
                 if let Some(var_name) = self.extract_param_name(node, source) {
                     size_t_vars.insert(var_name);
                 }
@@ -87,7 +94,8 @@ impl Int01C {
         // Check variable declarations
         if node.kind() == "declaration" {
             let decl_text = get_node_text(node, source);
-            if decl_text.contains("size_t ") {
+            // Check for size_t or rsize_t
+            if decl_text.contains("size_t") || decl_text.contains("rsize_t") {
                 if let Some(var_name) = self.extract_var_name(node, source) {
                     size_t_vars.insert(var_name);
                 }
@@ -239,6 +247,204 @@ impl Int01C {
                 }
             }
         }
+        None
+    }
+
+    /// Check for function parameters representing sizes that don't use size_t
+    fn check_size_params(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Look for function declarations with size-related parameter names
+        if node.kind() == "function_definition" || node.kind() == "function_declarator" {
+            // Find parameter_list
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "function_declarator" {
+                        self.check_size_params(&child, source, violations);
+                    } else if child.kind() == "parameter_list" {
+                        self.check_param_list(&child, source, violations);
+                    }
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_size_params(&child, source, violations);
+            }
+        }
+    }
+
+    /// Check parameters in a parameter list for size-related names without size_t
+    fn check_param_list(
+        &self,
+        param_list: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        for i in 0..param_list.child_count() {
+            if let Some(param) = param_list.child(i) {
+                if param.kind() == "parameter_declaration" {
+                    let param_text = get_node_text(&param, source);
+
+                    // Skip if already using size_t or rsize_t
+                    if param_text.contains("size_t") || param_text.contains("rsize_t") {
+                        continue;
+                    }
+
+                    // Check for size-related parameter names
+                    let size_names = [
+                        "size",
+                        "blocksize",
+                        "len",
+                        "length",
+                        "count",
+                        "bufsize",
+                        "sz",
+                    ];
+                    let param_lower = param_text.to_lowercase();
+
+                    for size_name in &size_names {
+                        if param_lower.contains(size_name) {
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                message: format!(
+                                    "Parameter '{}' appears to represent a size but doesn't use size_t",
+                                    param_text.trim()
+                                ),
+                                severity: self.severity(),
+                                line: param.start_position().row + 1,
+                                column: param.start_position().column + 1,
+                                file_path: String::new(),
+                                suggestion: Some("Use size_t for parameters representing object sizes".to_string()),
+                                requires_manual_review: None,
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check for variables used as sizes in malloc/alloc calls that aren't size_t
+    fn check_size_variable_usage(
+        &self,
+        node: &Node,
+        source: &str,
+        size_t_vars: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Look for call expressions to allocation functions
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&function, source);
+
+                // Check if this is an allocation function
+                let alloc_funcs = ["malloc", "calloc", "realloc", "alloc", "aligned_alloc"];
+                if alloc_funcs
+                    .iter()
+                    .any(|&f| func_name == f || func_name.ends_with("alloc"))
+                {
+                    // Check arguments for non-size_t size expressions
+                    if let Some(args) = node.child_by_field_name("arguments") {
+                        self.check_alloc_args(&args, source, size_t_vars, violations);
+                    }
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_size_variable_usage(&child, source, size_t_vars, violations);
+            }
+        }
+    }
+
+    /// Check allocation function arguments for non-size_t types
+    fn check_alloc_args(
+        &self,
+        args: &Node,
+        source: &str,
+        size_t_vars: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // The size argument is typically the first (malloc) or second (calloc)
+        // We flag variables that represent sizes but aren't size_t
+
+        for i in 0..args.child_count() {
+            if let Some(arg) = args.child(i) {
+                // Skip parentheses, commas
+                if arg.kind() == "(" || arg.kind() == ")" || arg.kind() == "," {
+                    continue;
+                }
+
+                // Check if the argument contains an identifier (variable)
+                let arg_text = get_node_text(&arg, source);
+
+                // Extract the base variable name from expressions like "length+1"
+                let base_var = self.extract_base_var_name(&arg, source);
+
+                // Skip if the base variable is already declared as size_t/rsize_t
+                if let Some(ref var_name) = base_var {
+                    if size_t_vars.contains(var_name) {
+                        continue;
+                    }
+                }
+
+                // If it's a variable name that looks like a size but isn't size_t
+                // We detect this by checking if it's used in allocation context
+                // and has a size-related name
+                let size_related = ["length", "len", "size", "count", "sz", "n"]
+                    .iter()
+                    .any(|&name| arg_text.to_lowercase().contains(name));
+
+                if size_related {
+                    // This is a heuristic - the variable name suggests a size
+                    // but we're using it in an allocation function
+                    // The rule says all such values should be size_t
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        message: format!(
+                            "Expression '{}' used as size argument to allocation function should use size_t type",
+                            arg_text
+                        ),
+                        severity: self.severity(),
+                        line: arg.start_position().row + 1,
+                        column: arg.start_position().column + 1,
+                        file_path: String::new(),
+                        suggestion: Some("Ensure the variable used for size is declared as size_t".to_string()),
+                        requires_manual_review: None,
+                    });
+                    return; // Only report once per call
+                }
+            }
+        }
+    }
+
+    /// Extract the base variable name from an expression (e.g., "length+1" -> "length")
+    fn extract_base_var_name(&self, node: &Node, source: &str) -> Option<String> {
+        // If it's a simple identifier, return it
+        if node.kind() == "identifier" {
+            return Some(get_node_text(node, source).to_string());
+        }
+
+        // If it's a binary expression, check the left side first
+        if node.kind() == "binary_expression" {
+            if let Some(left) = node.child_by_field_name("left") {
+                return self.extract_base_var_name(&left, source);
+            }
+        }
+
+        // Recurse into children to find an identifier
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(name) = self.extract_base_var_name(&child, source) {
+                    return Some(name);
+                }
+            }
+        }
+
         None
     }
 }
