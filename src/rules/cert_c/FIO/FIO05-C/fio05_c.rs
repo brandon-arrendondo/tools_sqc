@@ -132,6 +132,7 @@ struct FileOperation {
     line: usize,
     column: usize,
     node_id: usize,
+    is_read_mode: bool, // True if opening in read mode (needs ownership check)
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -311,6 +312,9 @@ impl FileReopenAnalyzer {
             if let Some(filename_node) = self.get_first_argument(&arguments) {
                 let filename = ast_utils::get_node_text_owned(&filename_node, source);
 
+                // Check if open mode suggests reading existing file (needs ownership check)
+                let is_read_mode = self.is_read_mode(&arguments, source, func_name);
+
                 let op = FileOperation {
                     op_type: OpType::Open,
                     filename: filename.clone(),
@@ -318,6 +322,7 @@ impl FileReopenAnalyzer {
                     line: node.start_position().row + 1,
                     column: node.start_position().column + 1,
                     node_id: node.id(),
+                    is_read_mode,
                 };
 
                 self.file_operations
@@ -326,6 +331,32 @@ impl FileReopenAnalyzer {
                     .push(op);
             }
         }
+    }
+
+    /// Check if open mode suggests reading existing file content
+    fn is_read_mode(&self, arguments: &Node, source: &str, func_name: &str) -> bool {
+        // Get the mode argument (2nd for fopen, varies for open)
+        let args: Vec<_> = (0..arguments.child_count())
+            .filter_map(|i| arguments.child(i))
+            .filter(|n| !matches!(n.kind(), "," | "(" | ")"))
+            .collect();
+
+        if func_name == "fopen" && args.len() >= 2 {
+            let mode = ast_utils::get_node_text_owned(&args[1], source);
+            // "r" and "r+" read existing file; "w", "w+", "a", "a+" create/truncate
+            return mode.contains("\"r") || mode.contains("'r");
+        }
+
+        if func_name == "open" && args.len() >= 2 {
+            let flags = ast_utils::get_node_text_owned(&args[1], source);
+            // O_RDONLY or O_RDWR without O_CREAT suggests reading existing
+            let has_rdonly = flags.contains("O_RDONLY");
+            let has_rdwr = flags.contains("O_RDWR");
+            let has_creat = flags.contains("O_CREAT");
+            return (has_rdonly || has_rdwr) && !has_creat;
+        }
+
+        false
     }
 
     fn process_close_call(&mut self, node: &Node, source: &str, _func_name: &str) {
@@ -338,7 +369,7 @@ impl FileReopenAnalyzer {
                 // We'll mark this as a close operation for the associated filename
                 for (filename, ops) in &mut self.file_operations {
                     // Find the most recent open with matching fd_var
-                    if let Some(last_open) = ops.iter().rev().find(|op| {
+                    if let Some(_last_open) = ops.iter().rev().find(|op| {
                         op.op_type == OpType::Open
                             && op.fd_var.as_ref().map(|v| v == &fd_var).unwrap_or(false)
                     }) {
@@ -349,6 +380,7 @@ impl FileReopenAnalyzer {
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
                             node_id: node.id(),
+                            is_read_mode: false,
                         };
                         ops.push(close_op);
                         break;
@@ -367,7 +399,7 @@ impl FileReopenAnalyzer {
 
                 // Also track as an fstat operation for analysis
                 for (filename, ops) in &mut self.file_operations {
-                    if let Some(last_open) = ops.iter().rev().find(|op| {
+                    if let Some(_last_open) = ops.iter().rev().find(|op| {
                         op.op_type == OpType::Open
                             && op.fd_var.as_ref().map(|v| v == &fd_var).unwrap_or(false)
                     }) {
@@ -378,6 +410,7 @@ impl FileReopenAnalyzer {
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
                             node_id: node.id(),
+                            is_read_mode: false,
                         };
                         ops.push(fstat_op);
                         break;
@@ -415,8 +448,58 @@ impl FileReopenAnalyzer {
     fn detect_reopen_violations(&self, violations: &mut Vec<RuleViolation>) {
         // Check each filename for reopen patterns
         for (filename, ops) in &self.file_operations {
-            // Look for pattern: Open -> Close -> Open (without proper fstat checks)
+            // Check 1: Open -> Close -> Open (without proper fstat checks)
             self.check_reopen_pattern(filename, ops, violations);
+
+            // Check 2: Open with variable filename (not string literal) without fstat validation
+            self.check_unvalidated_open(filename, ops, violations);
+        }
+    }
+
+    fn check_unvalidated_open(
+        &self,
+        filename: &str,
+        ops: &[FileOperation],
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Skip if filename is a string literal (starts with " or ')
+        let trimmed = filename.trim();
+        if trimmed.starts_with('"') || trimmed.starts_with('\'') {
+            return;
+        }
+
+        // Look for open operations in READ MODE without subsequent fstat + attribute comparison
+        for op in ops {
+            if op.op_type == OpType::Open && op.is_read_mode {
+                // Check if there's an fstat for this file descriptor
+                let has_fstat = ops.iter().any(|o| {
+                    o.op_type == OpType::Fstat
+                        && o.fd_var.is_some()
+                        && op.fd_var.is_some()
+                        && o.fd_var == op.fd_var
+                });
+
+                // If no fstat AND no attribute comparison, it's a violation
+                if !has_fstat && !self.has_attribute_comparison {
+                    violations.push(RuleViolation {
+                        rule_id: "FIO05-C".to_string(),
+                        severity: Severity::Medium,
+                        message: format!(
+                            "File opened for reading using variable filename '{}' without verifying file attributes (fstat + st_uid/st_gid check)",
+                            filename
+                        ),
+                        file_path: String::new(),
+                        line: op.line,
+                        column: op.column,
+                        suggestion: Some(
+                            "Use fstat() to check file ownership (st_uid, st_gid) before reading untrusted files"
+                                .to_string(),
+                        ),
+                        ..Default::default()
+                    });
+                    return; // Only report once per filename
+                }
+            }
         }
     }
 
