@@ -308,6 +308,16 @@ impl Str31C {
                         return false; // Environment variables are unlimited size
                     }
 
+                    // Check if variable is assigned from argv (indirect reference)
+                    if self.is_variable_from_argv(src_name, source) {
+                        return false; // Command line arguments are unbounded
+                    }
+
+                    // Check if source is a function parameter (unbounded external input)
+                    if self.is_function_parameter(src_name, source) {
+                        return false; // Function parameters from external sources are dangerous
+                    }
+
                     // Check if source is a larger buffer
                     if let Some(src_buffer_size) = self.find_buffer_size(src_name, root, source) {
                         if src_buffer_size > buffer_size {
@@ -369,6 +379,65 @@ impl Str31C {
         for line in lines {
             if line.contains(var_name) && line.contains("=") && line.contains("getenv") {
                 return true;
+            }
+        }
+        false
+    }
+
+    /// Check if a variable is assigned from argv
+    fn is_variable_from_argv(&self, var_name: &str, source: &str) -> bool {
+        let lines: Vec<&str> = source.lines().collect();
+        for line in lines {
+            // Check for patterns like: name = argv[0], name = (argc && argv[0]) ? argv[0] : ""
+            if line.contains(var_name) && line.contains("=") && line.contains("argv[") {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Check if a variable is a function parameter (unbounded external input)
+    fn is_function_parameter(&self, var_name: &str, source: &str) -> bool {
+        let lines: Vec<&str> = source.lines().collect();
+        for line in lines {
+            let trimmed = line.trim();
+
+            // Skip if this is a variable declaration (has = or ; after var_name)
+            if trimmed.contains("=") && trimmed.contains(var_name) {
+                continue; // This is a local variable, not a parameter
+            }
+
+            // Check for function definitions with the parameter
+            // Patterns: void func(const char *name), void func(char *name), void func(char name[])
+            // Must be a function definition line (has return type + function name + params + opening brace or just params)
+            if (trimmed.starts_with("void ")
+                || trimmed.starts_with("int ")
+                || trimmed.starts_with("char ")
+                || trimmed.starts_with("static ")
+                || trimmed.starts_with("extern "))
+                && trimmed.contains("(")
+                && trimmed.contains(")")
+            {
+                // Check if it looks like a function definition with this parameter
+                if let Some(paren_start) = trimmed.find('(') {
+                    if let Some(paren_end) = trimmed.rfind(')') {
+                        if paren_end > paren_start {
+                            let params = &trimmed[paren_start + 1..paren_end];
+                            // Check if var_name appears in parameter list as a char* or const char*
+                            // Use word boundary check to avoid partial matches
+                            let pattern = format!(r"\b{}\b", regex::escape(var_name));
+                            if let Ok(re) = regex::Regex::new(&pattern) {
+                                if re.is_match(params)
+                                    && (params.contains("char *")
+                                        || params.contains("char*")
+                                        || params.contains("const char"))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         false
@@ -440,15 +509,21 @@ impl Str31C {
 
     /// Check if sprintf is safe based on format string analysis
     fn check_sprintf_safety(&self, arguments: &Node, source: &str, root: &Node) -> bool {
-        // Extract destination buffer name
+        // Extract destination buffer name, format string, and arguments
         let mut dest_name = None;
         let mut format_string = None;
+        let mut sprintf_args: Vec<String> = Vec::new();
         let mut arg_count = 0;
 
         for i in 0..arguments.child_count() {
             if let Some(arg) = arguments.child(i) {
-                if arg.kind() == "identifier" && arg_count == 0 {
-                    dest_name = Some(&source[arg.start_byte()..arg.end_byte()]);
+                if arg.kind() == "identifier" {
+                    if arg_count == 0 {
+                        dest_name = Some(&source[arg.start_byte()..arg.end_byte()]);
+                    } else if arg_count >= 2 {
+                        // Arguments after format string
+                        sprintf_args.push(source[arg.start_byte()..arg.end_byte()].to_string());
+                    }
                 } else if arg.kind() == "string_literal" && arg_count == 1 {
                     format_string = Some(&source[arg.start_byte()..arg.end_byte()]);
                 }
@@ -459,31 +534,46 @@ impl Str31C {
             }
         }
 
+        // Check format string for unbounded %s with external/unbounded arguments
+        let mut has_unbounded_arg = false;
+        if let Some(fmt) = format_string {
+            let fmt_clean = fmt.trim_matches('"');
+
+            // If format contains %s, check if arguments are bounded
+            if fmt_clean.contains("%s") {
+                for arg_name in &sprintf_args {
+                    // Check if argument is a function parameter (unbounded)
+                    if self.is_function_parameter(arg_name, source) {
+                        has_unbounded_arg = true;
+                        break;
+                    }
+                    // Check if argument comes from argv
+                    if self.is_variable_from_argv(arg_name, source) || arg_name.contains("argv[") {
+                        has_unbounded_arg = true;
+                        break;
+                    }
+                    // Check if argument comes from getenv
+                    if self.is_variable_from_getenv(arg_name, source) {
+                        has_unbounded_arg = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         // If we have destination name, try to find its size
         if let Some(dest) = dest_name {
             if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
-                // If buffer is reasonably sized, consider it safe for typical sprintf usage
-                // sprintf_safe.c uses buffer[50] which should be safe
-                if buffer_size >= 50 {
-                    // Additional check: if the format string is simple and buffer is large enough
-                    if let Some(fmt) = format_string {
-                        // Count literal characters and format specifiers
-                        let fmt_clean = fmt.trim_matches('"');
-                        let literal_chars = fmt_clean.len() - fmt_clean.matches('%').count() * 2; // rough estimate
-
-                        // For simple formats with %d and short literal text, 50 chars should be plenty
-                        if literal_chars < 30
-                            && (fmt_clean.contains("%d") || fmt_clean.contains("%s"))
-                        {
-                            return true;
-                        }
-                    }
-                    return true; // Conservative: buffers >= 50 are generally safe for typical sprintf
-                }
-
-                // Very large buffers are always safe
+                // Very large buffers are safe
                 if buffer_size >= 256 {
                     return true;
+                }
+
+                // For medium buffers (>= 50), safe if no unbounded %s arguments
+                if buffer_size >= 50 {
+                    if !has_unbounded_arg {
+                        return true; // Buffer is large enough and all args are bounded
+                    }
                 }
             }
         }
@@ -504,6 +594,50 @@ impl Str31C {
                         let re = regex::Regex::new(r"%\d+s").unwrap();
                         if !re.is_match(format) {
                             return true; // Dangerous: unbounded %s
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Detect off-by-one errors in string copying loops
+    fn detect_off_by_one_loop(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "for_statement" {
+            let loop_text = &source[node.start_byte()..node.end_byte()];
+
+            // Pattern: for (i = 0; src[i] && (i < n); ++i) { dest[i] = src[i]; }
+            // followed by dest[i] = '\0'; outside the loop
+            // This is off-by-one because when i==n, dest[n] is written out of bounds
+            //
+            // SAFE pattern: for (i = 0; src[i] && (i < n - 1); ++i) - leaves room for null
+
+            // Check for the pattern with both null check and bounds check combined with &&
+            if (loop_text.contains("src[") || loop_text.contains("source["))
+                && loop_text.contains("dest[")
+                && loop_text.contains("i < ")
+                && (loop_text.contains("&&") || loop_text.contains("||"))
+            {
+                // Check if the safe pattern is used (i < n - 1)
+                // This leaves room for the null terminator
+                if loop_text.contains("< n - 1")
+                    || loop_text.contains("< n-1")
+                    || loop_text.contains("< (n - 1)")
+                    || loop_text.contains("< (n-1)")
+                {
+                    return false; // Safe: already accounts for null terminator
+                }
+
+                // Look for the null termination after the loop body
+                // Pattern: loop body ends with } followed by dest[i] = '\0';
+                if loop_text.contains("= '\\0'") || loop_text.contains("= 0;") {
+                    // Check for the dangerous pattern: i < n (without - 1)
+                    // Using regex to match "i < n" but not "i < n - 1"
+                    let re = regex::Regex::new(r"i\s*<\s*n\s*[);]").ok();
+                    if let Some(regex) = re {
+                        if regex.is_match(loop_text) {
+                            return true; // Off-by-one: null termination may write past buffer
                         }
                     }
                 }
@@ -540,6 +674,26 @@ impl Str31C {
                 }
             }
 
+            // Detect getchar() loop pattern without bounds checking:
+            // while ((ch = getchar()) != '\n' && ch != EOF) { *p++ = (char)ch; }
+            if loop_text.contains("getchar")
+                && (loop_text.contains("*p++") || loop_text.contains("++"))
+            {
+                // Check for bounds checking
+                if !loop_text.contains("< ")
+                    && !loop_text.contains("<=")
+                    && !loop_text.contains("sizeof")
+                    && !loop_text.contains("size")
+                    && !loop_text.contains("len")
+                    && !loop_text.contains("count")
+                    && !loop_text.contains("max")
+                    && !loop_text.contains("limit")
+                    && !loop_text.contains("BUFFER")
+                {
+                    return true; // Dangerous: getchar loop without bounds check
+                }
+            }
+
             // Also check for array indexing patterns without bounds
             if loop_text.contains("[") && loop_text.contains("]") && loop_text.contains("++") {
                 // Look for array-to-array copying patterns
@@ -565,13 +719,16 @@ impl Str31C {
             // Pattern: while (*p) { *dest++ = *src++; }
             if loop_text.contains("*")
                 && loop_text.contains("++")
-                && (loop_text.contains("dest") || loop_text.contains("buffer"))
+                && (loop_text.contains("dest")
+                    || loop_text.contains("buffer")
+                    || loop_text.contains("= (char)"))
             {
                 // Check for bounds checking
                 if !loop_text.contains("&&")
                     && !loop_text.contains("size")
                     && !loop_text.contains("end")
                     && !loop_text.contains("limit")
+                    && !loop_text.contains("BUFFER")
                 {
                     return true; // Dangerous pointer arithmetic without bounds
                 }
@@ -657,6 +814,7 @@ impl Str31C {
         // Extract arguments to see if this looks like string copying
         let mut dest_name = None;
         let mut src_name = None;
+        let mut size_text = None;
         let mut arg_count = 0;
 
         for i in 0..arguments.child_count() {
@@ -666,6 +824,8 @@ impl Str31C {
                         dest_name = Some(&source[arg.start_byte()..arg.end_byte()]);
                     } else if arg_count == 1 {
                         src_name = Some(&source[arg.start_byte()..arg.end_byte()]);
+                    } else if arg_count == 2 {
+                        size_text = Some(&source[arg.start_byte()..arg.end_byte()]);
                     }
                 }
 
@@ -675,10 +835,35 @@ impl Str31C {
             }
         }
 
+        // If the size argument contains 'len' and the buffer was allocated with strlen+1,
+        // this is a safe pattern (e.g., memcpy(buff, editor, len) where len = strlen(editor)+1)
+        if let Some(size_var) = size_text {
+            // Check if the size variable was computed from strlen + 1
+            let lines: Vec<&str> = source.lines().collect();
+            for line in &lines {
+                if line.contains(size_var) && line.contains("strlen") && line.contains("+ 1") {
+                    return false; // Safe: size is computed from strlen + 1
+                }
+            }
+        }
+
         // Heuristic: if variables have string-like names, it's likely string copying
         if let (Some(dest), Some(src)) = (dest_name, src_name) {
             let dest_lower = dest.to_lowercase();
             let src_lower = src.to_lowercase();
+
+            // But first check if this is a safe dynamic allocation pattern
+            let lines: Vec<&str> = source.lines().collect();
+            for line in &lines {
+                // Check if dest was allocated with malloc(strlen(src) + 1)
+                if line.contains(dest)
+                    && line.contains("malloc")
+                    && line.contains("strlen")
+                    && line.contains("+ 1")
+                {
+                    return false; // Safe dynamic allocation
+                }
+            }
 
             if dest_lower.contains("str")
                 || dest_lower.contains("buf")
@@ -1187,6 +1372,26 @@ impl CertRule for Str31C {
                 column: start_point.column + 1,
                 suggestion: Some("Add explicit bounds checking or use standard string functions with size limits".to_string()),
             ..Default::default()
+            });
+        }
+
+        // Check for off-by-one errors in string copying loops
+        if self.detect_off_by_one_loop(node, source) {
+            let start_point = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::Medium,
+                message:
+                    "Potential off-by-one error: null terminator may be written past buffer end."
+                        .to_string(),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(
+                    "Use (i < n - 1) in loop condition to leave room for null terminator"
+                        .to_string(),
+                ),
+                ..Default::default()
             });
         }
 
