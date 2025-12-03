@@ -32,9 +32,19 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashMap;
 use tree_sitter::Node;
 
 pub struct Fio47C;
+
+/// Track inferred type category for variables
+#[derive(Debug, Clone, PartialEq)]
+enum TypeCategory {
+    Integer,
+    Pointer, // Includes char* and const char*
+    Float,
+    Unknown,
+}
 
 impl Fio47C {
     pub fn new() -> Self {
@@ -83,20 +93,28 @@ impl Fio47C {
         function_name: &str,
     ) -> Option<&'a str> {
         if let Some(args) = call_node.child_by_field_name("arguments") {
-            // For fprintf/fscanf, format string is second argument
-            // For printf/sprintf/scanf, format string is first argument
-            let format_arg_index =
-                if function_name.starts_with('f') && !function_name.starts_with("fopen") {
-                    1 // fprintf, fscanf, etc. - skip FILE* argument
-                } else {
-                    0 // printf, sprintf, scanf, etc.
-                };
+            // Determine format string argument index based on function
+            let format_arg_index = match function_name {
+                // Functions where format is at index 0 (first arg)
+                "printf" | "scanf" | "vprintf" | "vscanf" => 0,
+                // Functions where format is at index 1 (second arg - after FILE* or buffer)
+                "fprintf" | "fscanf" | "sprintf" | "sscanf" | "vfprintf" | "vfscanf"
+                | "vsprintf" | "vsscanf" | "dprintf" | "vdprintf" => 1,
+                // Functions where format is at index 2 (third arg - after buffer and size)
+                "snprintf" | "vsnprintf" => 2,
+                // Default to index 0
+                _ => 0,
+            };
 
             let mut arg_count = 0;
             for i in 0..args.child_count() {
                 if let Some(child) = args.child(i) {
-                    // Skip commas and whitespace
-                    if child.kind() == "," || child.kind() == "comment" {
+                    // Skip commas, parentheses, and comments
+                    if child.kind() == ","
+                        || child.kind() == "comment"
+                        || child.kind() == "("
+                        || child.kind() == ")"
+                    {
                         continue;
                     }
 
@@ -354,8 +372,12 @@ impl Fio47C {
             let mut count: usize = 0;
             for i in 0..args.child_count() {
                 if let Some(child) = args.child(i) {
-                    // Skip commas and whitespace
-                    if child.kind() == "," || child.kind() == "comment" {
+                    // Skip commas, parentheses, and comments
+                    if child.kind() == ","
+                        || child.kind() == "comment"
+                        || child.kind() == "("
+                        || child.kind() == ")"
+                    {
                         continue;
                     }
                     count += 1;
@@ -374,6 +396,282 @@ impl Fio47C {
         } else {
             0
         }
+    }
+
+    /// Get expected type category for a format specifier
+    fn get_expected_type(&self, specifier: char) -> TypeCategory {
+        match specifier {
+            'd' | 'i' | 'o' | 'u' | 'x' | 'X' | 'c' => TypeCategory::Integer,
+            'f' | 'F' | 'e' | 'E' | 'g' | 'G' | 'a' | 'A' => TypeCategory::Float,
+            's' | 'p' => TypeCategory::Pointer,
+            _ => TypeCategory::Unknown,
+        }
+    }
+
+    /// Collect variable types from the function body
+    fn collect_variable_types(
+        &self,
+        func_node: &Node,
+        source: &str,
+    ) -> HashMap<String, TypeCategory> {
+        let mut types = HashMap::new();
+        self.collect_types_recursive(func_node, source, &mut types);
+        types
+    }
+
+    fn collect_types_recursive(
+        &self,
+        node: &Node,
+        source: &str,
+        types: &mut HashMap<String, TypeCategory>,
+    ) {
+        if node.kind() == "declaration" {
+            self.process_declaration(node, source, types);
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_types_recursive(&child, source, types);
+            }
+        }
+    }
+
+    fn process_declaration(
+        &self,
+        node: &Node,
+        source: &str,
+        types: &mut HashMap<String, TypeCategory>,
+    ) {
+        // Simplified approach: analyze the full declaration text to determine types
+        let decl_text = get_node_text(node, source);
+
+        // Check if this is a pointer type declaration (contains *)
+        let is_pointer = decl_text.contains('*');
+
+        // Extract base type category
+        let type_category = if decl_text.contains("float") || decl_text.contains("double") {
+            TypeCategory::Float
+        } else if decl_text.contains("int")
+            || decl_text.contains("char")
+            || decl_text.contains("short")
+            || decl_text.contains("long")
+            || decl_text.contains("size_t")
+        {
+            TypeCategory::Integer
+        } else {
+            TypeCategory::Unknown
+        };
+
+        // The final type depends on whether it's a pointer
+        let final_type = if is_pointer {
+            TypeCategory::Pointer
+        } else {
+            type_category
+        };
+
+        // Find all identifier names in this declaration
+        self.find_and_register_identifiers(node, source, types, &final_type);
+    }
+
+    fn find_and_register_identifiers(
+        &self,
+        node: &Node,
+        source: &str,
+        types: &mut HashMap<String, TypeCategory>,
+        var_type: &TypeCategory,
+    ) {
+        // Check if this node is an identifier that's part of a declarator
+        if node.kind() == "identifier" {
+            // Make sure it's a variable declaration, not a type name or function name
+            if let Some(parent) = node.parent() {
+                let parent_kind = parent.kind();
+                if parent_kind == "pointer_declarator"
+                    || parent_kind == "init_declarator"
+                    || parent_kind == "declarator"
+                    || parent_kind == "array_declarator"
+                {
+                    let var_name = get_node_text(node, source).to_string();
+                    types.insert(var_name, var_type.clone());
+                }
+            }
+        }
+
+        // Recursively search children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.find_and_register_identifiers(&child, source, types, var_type);
+            }
+        }
+    }
+
+    fn process_init_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+        types: &mut HashMap<String, TypeCategory>,
+        base_type: &TypeCategory,
+        is_pointer: bool,
+    ) {
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            let (var_name, decl_is_pointer) = self.extract_declarator_info(&declarator, source);
+
+            let final_type = if is_pointer || decl_is_pointer {
+                TypeCategory::Pointer
+            } else {
+                base_type.clone()
+            };
+
+            if !var_name.is_empty() {
+                types.insert(var_name, final_type);
+            }
+        }
+    }
+
+    fn extract_declarator_info(&self, node: &Node, source: &str) -> (String, bool) {
+        match node.kind() {
+            "identifier" => (get_node_text(node, source).to_string(), false),
+            "pointer_declarator" => {
+                // Get the identifier inside the pointer declarator
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" {
+                            return (get_node_text(&child, source).to_string(), true);
+                        }
+                    }
+                }
+                (String::new(), true)
+            }
+            _ => {
+                // Try to find an identifier child
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        let (name, is_ptr) = self.extract_declarator_info(&child, source);
+                        if !name.is_empty() {
+                            return (name, is_ptr);
+                        }
+                    }
+                }
+                (String::new(), false)
+            }
+        }
+    }
+
+    /// Infer type from an expression node
+    fn infer_expression_type(
+        &self,
+        node: &Node,
+        source: &str,
+        var_types: &HashMap<String, TypeCategory>,
+    ) -> TypeCategory {
+        match node.kind() {
+            "identifier" => {
+                let name = get_node_text(node, source);
+                var_types
+                    .get(name)
+                    .cloned()
+                    .unwrap_or(TypeCategory::Unknown)
+            }
+            "number_literal" => {
+                let text = get_node_text(node, source);
+                if text.contains('.') || text.contains('e') || text.contains('E') {
+                    TypeCategory::Float
+                } else {
+                    TypeCategory::Integer
+                }
+            }
+            "string_literal" => TypeCategory::Pointer,
+            "char_literal" => TypeCategory::Integer,
+            "unary_expression" => {
+                // Check for address-of operator
+                if let Some(operator) = node.child_by_field_name("operator") {
+                    let op = get_node_text(&operator, source);
+                    if op == "&" {
+                        return TypeCategory::Pointer;
+                    }
+                }
+                TypeCategory::Unknown
+            }
+            _ => TypeCategory::Unknown,
+        }
+    }
+
+    /// Extract format specifier characters from format string
+    fn extract_format_specifiers(&self, format_string: &str) -> Vec<char> {
+        let mut specifiers = Vec::new();
+        let mut chars = format_string.chars().peekable();
+
+        while let Some(ch) = chars.next() {
+            if ch == '%' {
+                if let Some(&next) = chars.peek() {
+                    if next == '%' {
+                        chars.next();
+                        continue;
+                    }
+
+                    // Skip flags, width, precision, length modifier
+                    while let Some(&c) = chars.peek() {
+                        if matches!(c, '-' | '+' | ' ' | '#' | '0' | '\'' | '.' | '*')
+                            || c.is_ascii_digit()
+                        {
+                            chars.next();
+                        } else if matches!(c, 'h' | 'l' | 'j' | 'z' | 't' | 'L') {
+                            chars.next();
+                            // Handle hh and ll
+                            if let Some(&next) = chars.peek() {
+                                if (c == 'h' && next == 'h') || (c == 'l' && next == 'l') {
+                                    chars.next();
+                                }
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // Get the conversion specifier
+                    if let Some(specifier) = chars.next() {
+                        if specifier != '%' {
+                            specifiers.push(specifier);
+                        }
+                    }
+                }
+            }
+        }
+
+        specifiers
+    }
+
+    /// Get the data arguments from a printf call (excluding format string and FILE*)
+    fn get_data_arguments<'a>(&self, call_node: &'a Node, function_name: &str) -> Vec<Node<'a>> {
+        let mut args = Vec::new();
+
+        if let Some(arguments) = call_node.child_by_field_name("arguments") {
+            let skip_count =
+                if function_name.starts_with('f') && !function_name.starts_with("fopen") {
+                    2 // Skip FILE* and format string
+                } else {
+                    1 // Skip format string only
+                };
+
+            let mut arg_idx = 0;
+            for i in 0..arguments.child_count() {
+                if let Some(child) = arguments.child(i) {
+                    // Skip commas, parentheses, and comments
+                    if child.kind() == ","
+                        || child.kind() == "comment"
+                        || child.kind() == "("
+                        || child.kind() == ")"
+                    {
+                        continue;
+                    }
+                    if arg_idx >= skip_count {
+                        args.push(child);
+                    }
+                    arg_idx += 1;
+                }
+            }
+        }
+
+        args
     }
 }
 
@@ -400,20 +698,30 @@ impl CertRule for Fio47C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+
+        // Collect variable types from the entire translation unit first
+        let var_types = self.collect_variable_types(node, source);
+
+        self.check_node(node, source, &mut violations, &var_types);
         violations
     }
 }
 
 impl Fio47C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        var_types: &HashMap<String, TypeCategory>,
+    ) {
         // Check for call expressions
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let function_name = get_node_text(&function, source);
 
                 if self.is_format_function(function_name) {
-                    self.check_format_call(node, source, function_name, violations);
+                    self.check_format_call(node, source, function_name, violations, var_types);
                 }
             }
         }
@@ -421,7 +729,7 @@ impl Fio47C {
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
+                self.check_node(&child, source, violations, var_types);
             }
         }
     }
@@ -432,6 +740,7 @@ impl Fio47C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        var_types: &HashMap<String, TypeCategory>,
     ) {
         // Extract format string if it's a literal
         if let Some(format_string) = self.extract_format_string(call_node, source, function_name) {
@@ -477,6 +786,38 @@ impl Fio47C {
                     ),
                     ..Default::default()
                 });
+            }
+
+            // Check argument types against format specifiers
+            let specifiers = self.extract_format_specifiers(format_string);
+            let data_args = self.get_data_arguments(call_node, function_name);
+
+            for (i, (specifier, arg)) in specifiers.iter().zip(data_args.iter()).enumerate() {
+                let expected_type = self.get_expected_type(*specifier);
+                let actual_type = self.infer_expression_type(arg, source, var_types);
+
+                // Only flag clear mismatches (not Unknown types)
+                if expected_type != TypeCategory::Unknown
+                    && actual_type != TypeCategory::Unknown
+                    && expected_type != actual_type
+                {
+                    let arg_text = get_node_text(arg, source);
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: self.severity(),
+                        message: format!(
+                            "Type mismatch in {}(): format specifier '%{}' expects {:?} but argument {} ('{}') is {:?}",
+                            function_name, specifier, expected_type, i + 1, arg_text, actual_type
+                        ),
+                        file_path: String::new(),
+                        line: call_node.start_position().row + 1,
+                        column: call_node.start_position().column + 1,
+                        suggestion: Some(
+                            "Ensure format specifiers match argument types".to_string()
+                        ),
+                        ..Default::default()
+                    });
+                }
             }
         }
         // If format string is not a literal, we cannot validate it statically
