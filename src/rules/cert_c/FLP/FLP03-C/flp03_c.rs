@@ -48,9 +48,112 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashSet;
 use tree_sitter::Node;
 
 pub struct Flp03C;
+
+/// Analyzer that tracks floating-point variables
+struct FpAnalyzer {
+    float_vars: HashSet<String>,
+}
+
+impl FpAnalyzer {
+    fn new() -> Self {
+        Self {
+            float_vars: HashSet::new(),
+        }
+    }
+
+    /// Collect all floating-point variable declarations from the AST
+    fn collect_float_vars(&mut self, node: &Node, source: &str) {
+        if node.kind() == "declaration" {
+            let decl_text = get_node_text(node, source);
+            // Check if this is a float/double declaration
+            if decl_text.starts_with("float")
+                || decl_text.starts_with("double")
+                || decl_text.contains(" float ")
+                || decl_text.contains(" double ")
+            {
+                // Extract all identifiers from this declaration
+                self.extract_identifiers_from_declaration(node, source);
+            }
+        }
+
+        // Recursively process children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_float_vars(&child, source);
+            }
+        }
+    }
+
+    fn extract_identifiers_from_declaration(&mut self, node: &Node, source: &str) {
+        // Look for init_declarator or declarator nodes containing identifiers
+        if node.kind() == "identifier" {
+            // Verify parent is a declarator-type node (not type specifier)
+            if let Some(parent) = node.parent() {
+                let parent_kind = parent.kind();
+                if parent_kind == "init_declarator"
+                    || parent_kind == "declarator"
+                    || parent_kind == "pointer_declarator"
+                    || parent_kind == "array_declarator"
+                {
+                    let var_name = get_node_text(node, source).to_string();
+                    self.float_vars.insert(var_name);
+                }
+            }
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.extract_identifiers_from_declaration(&child, source);
+            }
+        }
+    }
+
+    /// Check if an expression involves floating-point values or variables
+    fn is_fp_expression(&self, node: &Node, source: &str) -> bool {
+        let text = get_node_text(node, source);
+
+        // Check for floating-point literals (contains decimal point or e notation)
+        if text.contains('.') && !text.starts_with("/*") {
+            return true;
+        }
+        if (text.contains('e') || text.contains('E')) && text.chars().any(|c| c.is_ascii_digit()) {
+            return true;
+        }
+
+        // Check for floating-point type keywords
+        if text.contains("float") || text.contains("double") {
+            return true;
+        }
+
+        // Check if any identifier in this expression is a known float variable
+        self.contains_float_identifier(node, source)
+    }
+
+    fn contains_float_identifier(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "identifier" {
+            let name = get_node_text(node, source);
+            if self.float_vars.contains(name) {
+                return true;
+            }
+        }
+
+        // Recursively check children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.contains_float_identifier(&child, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+}
 
 impl Flp03C {
     pub fn new() -> Self {
@@ -87,6 +190,22 @@ impl Flp03C {
             }
         }
 
+        // Check for Windows SEH exception handling (_try/_except or __try/__except)
+        // These are typically parsed as identifier nodes with the text "_try", "__try", etc.
+        let node_text = get_node_text(node, source);
+        if node_text.contains("_try")
+            || node_text.contains("__try")
+            || node_text.contains("_except")
+            || node_text.contains("__except")
+        {
+            return true;
+        }
+
+        // Also check for _fpieee_flt which is Windows FP exception handling
+        if node_text.contains("_fpieee_flt") || node_text.contains("unmask_fpsr") {
+            return true;
+        }
+
         // Recursively check children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
@@ -99,25 +218,14 @@ impl Flp03C {
         false
     }
 
-    /// Check if a binary expression involves floating-point types
-    fn is_floating_point_expression(&self, node: &Node, source: &str) -> bool {
-        let text = get_node_text(node, source);
-
-        // Check for floating-point literals (contains decimal point or e notation)
-        if text.contains('.') || text.contains('e') || text.contains('E') {
-            return true;
-        }
-
-        // Check for floating-point type keywords
-        if text.contains("float") || text.contains("double") {
-            return true;
-        }
-
-        false
-    }
-
     /// Check for floating-point division operations
-    fn check_fp_division(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_fp_division(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        analyzer: &FpAnalyzer,
+    ) {
         if node.kind() == "binary_expression" {
             // Check if this is a division operation
             let mut is_division = false;
@@ -130,7 +238,7 @@ impl Flp03C {
                 }
             }
 
-            if is_division && self.is_floating_point_expression(node, source) {
+            if is_division && analyzer.is_fp_expression(node, source) {
                 // Check if there's error checking in the containing function
                 if let Some(containing_func) = self.find_containing_function(node) {
                     if !self.contains_fp_error_checking(&containing_func, source) {
@@ -153,7 +261,13 @@ impl Flp03C {
     }
 
     /// Check for floating-point type conversions without error checking
-    fn check_fp_conversion(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_fp_conversion(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        analyzer: &FpAnalyzer,
+    ) {
         // Check for cast expressions involving floating-point types
         if node.kind() == "cast_expression" {
             if let Some(type_node) = node.child_by_field_name("type") {
@@ -186,10 +300,9 @@ impl Flp03C {
                 node.child_by_field_name("left"),
                 node.child_by_field_name("right"),
             ) {
-                // Check if left side appears to be a float variable
-                // This is a heuristic - ideally we'd track type information
-                if self.is_floating_point_expression(&left, source)
-                    || self.is_floating_point_expression(&right, source)
+                // Check if expression involves floating-point variables
+                if analyzer.is_fp_expression(&left, source)
+                    || analyzer.is_fp_expression(&right, source)
                 {
                     // Check if there's error checking in the containing function
                     if let Some(containing_func) = self.find_containing_function(node) {
@@ -197,9 +310,7 @@ impl Flp03C {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 severity: self.severity(),
-                                message: format!(
-                                    "Floating-point assignment without error checking (may underflow or lose precision)"
-                                ),
+                                message: "Floating-point assignment without error checking (may underflow or lose precision)".to_string(),
                                 file_path: String::new(),
                                 line: node.start_position().row + 1,
                                 column: node.start_position().column + 1,
@@ -251,20 +362,32 @@ impl CertRule for Flp03C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+
+        // First pass: collect all floating-point variable declarations
+        let mut analyzer = FpAnalyzer::new();
+        analyzer.collect_float_vars(node, source);
+
+        // Second pass: check for violations
+        self.check_node(node, source, &mut violations, &analyzer);
         violations
     }
 }
 
 impl Flp03C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        analyzer: &FpAnalyzer,
+    ) {
         // Check for floating-point operations without error checking
         match node.kind() {
             "binary_expression" => {
-                self.check_fp_division(node, source, violations);
+                self.check_fp_division(node, source, violations, analyzer);
             }
             "cast_expression" | "assignment_expression" => {
-                self.check_fp_conversion(node, source, violations);
+                self.check_fp_conversion(node, source, violations, analyzer);
             }
             _ => {}
         }
@@ -272,7 +395,7 @@ impl Flp03C {
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
+                self.check_node(&child, source, violations, analyzer);
             }
         }
     }
