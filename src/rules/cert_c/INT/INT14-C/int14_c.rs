@@ -67,6 +67,75 @@ impl Int14C {
         matches!(op, "+" | "-" | "*" | "/" | "%")
     }
 
+    /// Check if an operator is a shift operator (subset of bitwise often misused for arithmetic)
+    fn is_shift_operator(&self, op: &str) -> bool {
+        matches!(op, "<<" | ">>" | "<<=" | ">>=")
+    }
+
+    /// Collect signed integer parameters from a function
+    fn collect_signed_int_params(&self, node: &Node, source: &str) -> HashSet<String> {
+        let mut params = HashSet::new();
+
+        // Look for function_declarator within function_definition
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "function_declarator" {
+                    self.collect_params_from_declarator(&child, source, &mut params);
+                }
+            }
+        }
+        params
+    }
+
+    fn collect_params_from_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+        params: &mut HashSet<String>,
+    ) {
+        // Look for parameter_list
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "parameter_list" {
+                    self.collect_params_from_list(&child, source, params);
+                }
+            }
+        }
+    }
+
+    fn collect_params_from_list(&self, node: &Node, source: &str, params: &mut HashSet<String>) {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "parameter_declaration" {
+                    let param_text = get_node_text(&child, source);
+                    // Check for signed integer types (int, short, long, signed)
+                    // Exclude unsigned types
+                    if (param_text.contains("int")
+                        || param_text.contains("short")
+                        || param_text.contains("long"))
+                        && !param_text.contains("unsigned")
+                    {
+                        // Extract parameter name
+                        if let Some(name) = self.extract_param_name(&child, source) {
+                            params.insert(name);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn extract_param_name(&self, node: &Node, source: &str) -> Option<String> {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "identifier" {
+                    return Some(get_node_text(&child, source).to_string());
+                }
+            }
+        }
+        None
+    }
+
     /// Extract variable names used in an expression
     fn extract_variables(&self, node: &Node, source: &str, vars: &mut HashSet<String>) {
         if node.kind() == "identifier" {
@@ -118,12 +187,20 @@ impl Int14C {
         // Track line numbers for first occurrence
         let mut variable_locations: HashMap<String, (usize, usize)> = HashMap::new();
 
+        // Collect signed integer parameters
+        let signed_int_params = self.collect_signed_int_params(node, source);
+
+        // Track shift operations on signed integer parameters
+        let mut shift_operations: HashMap<String, (usize, usize)> = HashMap::new();
+
         // Recursively analyze all operations in the function
         self.analyze_operations(
             node,
             source,
             &mut variable_operations,
             &mut variable_locations,
+            &signed_int_params,
+            &mut shift_operations,
         );
 
         // Check for variables that have both bitwise and arithmetic operations
@@ -149,6 +226,32 @@ impl Int14C {
                 });
             }
         }
+
+        // Flag shift operations on signed integer parameters (often used for arithmetic optimization)
+        for (var_name, (line, column)) in shift_operations.iter() {
+            // Skip if already flagged for mixed operations
+            if let Some(ops) = variable_operations.get(var_name) {
+                if ops.contains(&OperationType::Bitwise) && ops.contains(&OperationType::Arithmetic)
+                {
+                    continue;
+                }
+            }
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: self.severity(),
+                message: format!(
+                    "Shift operation on signed integer '{}' may be used for arithmetic optimization (use explicit arithmetic instead)",
+                    var_name
+                ),
+                file_path: String::new(),
+                line: *line,
+                column: *column,
+                suggestion: Some(
+                    "Use explicit arithmetic operations like * or / instead of shift operations on signed integers".to_string()
+                ),
+                ..Default::default()
+            });
+        }
     }
 
     /// Recursively analyze operations on variables
@@ -158,6 +261,8 @@ impl Int14C {
         source: &str,
         variable_operations: &mut HashMap<String, HashSet<OperationType>>,
         variable_locations: &mut HashMap<String, (usize, usize)>,
+        signed_int_params: &HashSet<String>,
+        shift_operations: &mut HashMap<String, (usize, usize)>,
     ) {
         // Check binary expressions
         if node.kind() == "binary_expression" {
@@ -176,17 +281,30 @@ impl Int14C {
                     self.extract_variables(node, source, &mut vars);
 
                     // Record operation type for each variable
-                    for var in vars {
+                    for var in vars.iter() {
                         variable_operations
                             .entry(var.clone())
                             .or_insert_with(HashSet::new)
                             .insert(op_type.clone());
 
                         // Record first location if not already recorded
-                        if !variable_locations.contains_key(&var) {
+                        if !variable_locations.contains_key(var) {
                             let line = node.start_position().row + 1;
                             let column = node.start_position().column + 1;
-                            variable_locations.insert(var, (line, column));
+                            variable_locations.insert(var.clone(), (line, column));
+                        }
+                    }
+
+                    // Track shift operations on signed integer parameters
+                    if self.is_shift_operator(&op) {
+                        for var in vars.iter() {
+                            if signed_int_params.contains(var)
+                                && !shift_operations.contains_key(var)
+                            {
+                                let line = node.start_position().row + 1;
+                                let column = node.start_position().column + 1;
+                                shift_operations.insert(var.clone(), (line, column));
+                            }
                         }
                     }
                 }
@@ -231,7 +349,17 @@ impl Int14C {
                             if !variable_locations.contains_key(&var) {
                                 let line = node.start_position().row + 1;
                                 let column = node.start_position().column + 1;
-                                variable_locations.insert(var, (line, column));
+                                variable_locations.insert(var.clone(), (line, column));
+                            }
+
+                            // Track shift compound assignments on signed int params
+                            if self.is_shift_operator(&op_text)
+                                && signed_int_params.contains(&var)
+                                && !shift_operations.contains_key(&var)
+                            {
+                                let line = node.start_position().row + 1;
+                                let column = node.start_position().column + 1;
+                                shift_operations.insert(var, (line, column));
                             }
                         }
                     }
@@ -269,7 +397,14 @@ impl Int14C {
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.analyze_operations(&child, source, variable_operations, variable_locations);
+                self.analyze_operations(
+                    &child,
+                    source,
+                    variable_operations,
+                    variable_locations,
+                    signed_int_params,
+                    shift_operations,
+                );
             }
         }
     }
