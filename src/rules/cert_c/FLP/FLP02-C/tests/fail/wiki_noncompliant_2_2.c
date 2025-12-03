@@ -4,15 +4,39 @@
  * Status: FAIL - Should trigger FLP02-C violation
  */
 
-array[0] = 10.100000 and total is 10.100000
-array[1] = 10.100000 and total is 20.200001
-array[2] = 10.100000 and total is 30.300001
-array[3] = 10.100000 and total is 40.400002
-array[4] = 10.100000 and total is 50.500000
-array[5] = 10.100000 and total is 60.599998
-array[6] = 10.100000 and total is 70.699997
-array[7] = 10.100000 and total is 80.799995
-array[8] = 10.100000 and total is 90.899994
-array[9] = 10.100000 and total is 100.999992
-mean is 10.099999
-array[0] is not the mean
+#include <stdio.h>
+
+/* Returns the mean value of the array */
+float mean(float array[], int size) {
+  float total = 0.0;
+  size_t i;
+  for (i = 0; i < size; i++) {
+    total += array[i];
+    printf("array[%zu] = %f and total is %f\n", i, array[i], total);
+  }
+  if (size != 0)
+    return total / size;
+  else
+    return 0.0;
+}
+
+enum { array_size = 10 };
+float array_value = 10.1;
+
+int main(void) {
+  float array[array_size];
+  float avg;
+  size_t i;
+  for (i = 0; i < array_size; i++) {
+    array[i] = array_value;
+  }
+
+  avg = mean( array, array_size);
+  printf("mean is %f\n", avg);
+  if (avg == array[0]) {  /* FLP02-C violation: float equality comparison */
+    printf("array[0] is the mean\n");
+  } else {
+    printf("array[0] is not the mean\n");
+  }
+  return 0;
+}
