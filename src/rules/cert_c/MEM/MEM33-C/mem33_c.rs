@@ -489,6 +489,10 @@ impl FlexibleArrayAnalyzer {
                 if let Some(violation) = self.check_declaration_copy(node, source) {
                     violations.push(violation);
                 }
+                // Check for offsetof misuse in variable initialization
+                if let Some(violation) = self.check_offsetof_in_init(node, source) {
+                    violations.push(violation);
+                }
             }
             "variable_declarator" => {
                 // Some parsers may use variable_declarator instead of init_declarator
@@ -527,16 +531,28 @@ impl FlexibleArrayAnalyzer {
                 if let Some(violation) = self.check_memory_operations(node, source) {
                     violations.push(violation);
                 }
+                // Check for offsetof() misuse with flexible array members
+                if let Some(violation) = self.check_offsetof_misuse(node, source) {
+                    violations.push(violation);
+                }
             }
             "cast_expression" => {
                 // Check for casting violations with flexible array structs (both const-casting and invalid type casting)
                 if let Some(violation) = self.check_casting_violations(node, source) {
                     violations.push(violation);
                 }
+                // Check for sizeof in pointer arithmetic with flexible array structures
+                if let Some(violation) = self.check_sizeof_in_pointer_arithmetic(node, source) {
+                    violations.push(violation);
+                }
             }
             "binary_expression" => {
                 // Check for pointer arithmetic on flexible array structures
                 if let Some(violation) = self.check_pointer_arithmetic(node, source) {
+                    violations.push(violation);
+                }
+                // Check for offsetof misuse in binary expressions (e.g., offsetof() + sizeof())
+                if let Some(violation) = self.check_offsetof_in_binary(node, source) {
                     violations.push(violation);
                 }
             }
@@ -3412,6 +3428,227 @@ impl FlexibleArrayAnalyzer {
                     }
                 }
             }
+        }
+
+        None
+    }
+
+    /// Check for offsetof() misuse with flexible array members in call expressions
+    /// Per MEM33-C, using offsetof() with flexible arrays for manual address calculation
+    /// or size calculation can lead to incorrect memory handling
+    fn check_offsetof_misuse(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        // Get the full expression text
+        let node_text = source[node.start_byte()..node.end_byte()].to_string();
+
+        // Check if this call contains offsetof
+        if !node_text.contains("offsetof") {
+            return None;
+        }
+
+        // Check if offsetof is being used with a flexible array struct
+        let is_flex_struct = self
+            .flexible_structs
+            .keys()
+            .any(|struct_name| node_text.contains(struct_name));
+
+        // Also check common flexible array struct patterns
+        let has_flex_pattern = node_text.contains("flex_array")
+            || node_text.contains("flex_struct")
+            || node_text.contains("FlexArray");
+
+        if is_flex_struct || has_flex_pattern {
+            // Check if this is being used for manual pointer arithmetic or size calculation
+            // by looking at the parent context
+            if let Some(parent) = node.parent() {
+                let parent_text = source[parent.start_byte()..parent.end_byte()].to_string();
+
+                // Check if offsetof result is used in:
+                // 1. Pointer arithmetic (base_addr + offset)
+                // 2. Size calculation (offsetof(...) + sizeof(...))
+                // 3. Assignment to a size variable
+                let is_problematic_use = parent_text.contains("+")
+                    || parent.kind() == "binary_expression"
+                    || parent.kind() == "init_declarator";
+
+                if is_problematic_use {
+                    let start_point = node.start_position();
+                    return Some(RuleViolation {
+                        rule_id: "MEM33-C".to_string(),
+                        severity: Severity::Medium,
+                        message: format!(
+                            "Using offsetof() with flexible array structure for manual address/size calculation: {}. This pattern bypasses proper flexible array member handling.",
+                            node_text
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Access flexible array members directly through the structure pointer (ptr->data[i]) instead of manual offset calculations".to_string()),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+
+        None
+    }
+
+    /// Check for offsetof() misuse in init_declarator (e.g., size_t x = offsetof(...))
+    fn check_offsetof_in_init(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        let node_text = source[node.start_byte()..node.end_byte()].to_string();
+
+        // Check if initialization contains offsetof with flexible array struct
+        if !node_text.contains("offsetof") {
+            return None;
+        }
+
+        // Check for flexible array struct patterns
+        let is_flex_struct = self
+            .flexible_structs
+            .keys()
+            .any(|struct_name| node_text.contains(struct_name));
+
+        let has_flex_pattern = node_text.contains("flex_array")
+            || node_text.contains("flex_struct")
+            || node_text.contains("FlexArray");
+
+        if is_flex_struct || has_flex_pattern {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "MEM33-C".to_string(),
+                severity: Severity::Medium,
+                message: format!(
+                    "Using offsetof() with flexible array structure for manual calculation: {}. This pattern bypasses proper flexible array member handling.",
+                    node_text
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Access flexible array members directly through the structure pointer (ptr->data[i]) instead of manual offset calculations".to_string()),
+                ..Default::default()
+            });
+        }
+
+        None
+    }
+
+    /// Check for offsetof() misuse in binary expressions (e.g., offsetof() + sizeof())
+    fn check_offsetof_in_binary(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+        let node_text = source[node.start_byte()..node.end_byte()].to_string();
+
+        // Check if binary expression contains offsetof with flexible array struct
+        if !node_text.contains("offsetof") {
+            return None;
+        }
+
+        // Check for flexible array struct patterns
+        let is_flex_struct = self
+            .flexible_structs
+            .keys()
+            .any(|struct_name| node_text.contains(struct_name));
+
+        let has_flex_pattern = node_text.contains("flex_array")
+            || node_text.contains("flex_struct")
+            || node_text.contains("FlexArray");
+
+        if is_flex_struct || has_flex_pattern {
+            // Check if this is a size calculation pattern (offsetof + sizeof)
+            if node_text.contains("+")
+                && (node_text.contains("sizeof")
+                    || node_text.contains("base_addr")
+                    || node_text.contains("data_offset"))
+            {
+                let start_point = node.start_position();
+                return Some(RuleViolation {
+                    rule_id: "MEM33-C".to_string(),
+                    severity: Severity::Medium,
+                    message: format!(
+                        "Manual size calculation using offsetof() with flexible array structure: {}. This pattern can lead to incorrect memory allocation.",
+                        node_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Use sizeof(struct) + sizeof(element_type) * count for proper flexible array allocation".to_string()),
+                    ..Default::default()
+                });
+            }
+        }
+
+        None
+    }
+
+    /// Check for sizeof(struct) used in pointer arithmetic with flexible array structures
+    /// This is wrong because sizeof(struct) doesn't include the flexible array size
+    fn check_sizeof_in_pointer_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> Option<RuleViolation> {
+        // This is called for cast_expression nodes
+        // We want to catch patterns like:
+        //   (struct flex_array_struct *)((char *)ptr + sizeof(struct flex_array_struct))
+        // But NOT allocation patterns like:
+        //   (struct flex_array_struct *)malloc(sizeof(struct flex_array_struct) + ...)
+
+        let node_text = source[node.start_byte()..node.end_byte()].to_string();
+
+        // Skip if this is part of a malloc/calloc/realloc call (allocation, not pointer arithmetic)
+        if node_text.contains("malloc")
+            || node_text.contains("calloc")
+            || node_text.contains("realloc")
+        {
+            return None;
+        }
+
+        // Look for pattern: cast of (char *)ptr + sizeof(struct) or similar
+        // This indicates pointer arithmetic to move through memory
+        if !node_text.contains("(char *)") && !node_text.contains("(char*)") {
+            return None; // Not pointer arithmetic pattern
+        }
+
+        // Must have sizeof applied to flexible array struct in pointer arithmetic context
+        if !node_text.contains("sizeof") {
+            return None;
+        }
+
+        // Check if sizeof is applied to a flexible array struct
+        for struct_name in self.flexible_structs.keys() {
+            if node_text.contains(&format!("sizeof(struct {})", struct_name))
+                || node_text.contains(&format!("sizeof({})", struct_name))
+            {
+                // This is sizeof applied to a flexible array struct in pointer arithmetic
+                let start_point = node.start_position();
+                return Some(RuleViolation {
+                    rule_id: "MEM33-C".to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Pointer arithmetic using sizeof(struct {}) doesn't account for flexible array member size. Each structure instance may have different actual sizes.",
+                        struct_name
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Flexible array structures cannot be stored in contiguous arrays. Use an array of pointers to individually allocated structures instead.".to_string()),
+                    ..Default::default()
+                });
+            }
+        }
+
+        // Also check common patterns
+        if node_text.contains("sizeof(struct flex_array_struct)")
+            || node_text.contains("sizeof(flex_array_struct)")
+        {
+            let start_point = node.start_position();
+            return Some(RuleViolation {
+                rule_id: "MEM33-C".to_string(),
+                severity: Severity::High,
+                message: "Pointer arithmetic using sizeof(struct) with flexible array structure. The sizeof operator returns only the fixed size, not including the flexible array.".to_string(),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Flexible array structures cannot be stored in contiguous arrays. Use an array of pointers to individually allocated structures instead.".to_string()),
+                ..Default::default()
+            });
         }
 
         None
