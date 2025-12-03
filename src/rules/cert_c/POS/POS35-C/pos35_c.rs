@@ -134,10 +134,10 @@ impl Pos35C {
         if self.is_lstat_call(node, source) {
             // Check if this is in a function scope with subsequent open() calls
             if let Some(parent) = node.parent() {
-                if let Some(compound) = self.find_containing_compound(&parent) {
+                if let Some(scope) = self.find_containing_scope(&parent) {
                     // Check if there's an S_ISLNK check and open() call in the same scope
-                    if self.contains_s_islnk(&compound, source) {
-                        if self.contains_open_without_nofollow(&compound, source) {
+                    if self.contains_s_islnk(&scope, source) {
+                        if self.contains_open_without_nofollow(&scope, source) {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 severity: self.severity(),
@@ -157,11 +157,12 @@ impl Pos35C {
         }
     }
 
-    /// Find containing compound statement
-    fn find_containing_compound<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+    /// Find containing scope (compound_statement or translation_unit)
+    fn find_containing_scope<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
         let mut current = *node;
         while let Some(parent) = current.parent() {
-            if parent.kind() == "compound_statement" {
+            // Check for compound_statement (function body) or translation_unit (file scope)
+            if parent.kind() == "compound_statement" || parent.kind() == "translation_unit" {
                 return Some(parent);
             }
             current = parent;
