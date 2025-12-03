@@ -56,6 +56,10 @@ struct MemoryLeakAnalyzer {
     escaped_memory: HashSet<String>,
     // Collect double-free violations during analysis
     double_free_violations: Vec<RuleViolation>,
+    // Track if we're inside a loop (for double-free detection)
+    in_loop: bool,
+    // Track loop nesting depth for proper double-free detection
+    loop_depth: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -72,6 +76,8 @@ impl MemoryLeakAnalyzer {
             freed_memory: HashMap::new(),
             escaped_memory: HashSet::new(),
             double_free_violations: Vec::new(),
+            in_loop: false,
+            loop_depth: 0,
         }
     }
 
@@ -107,12 +113,38 @@ impl MemoryLeakAnalyzer {
             "return_statement" => {
                 self.process_return(node, source);
             }
-            "if_statement" | "while_statement" | "for_statement" | "do_statement" => {
-                // Process control flow statements recursively
+            "while_statement" | "for_statement" | "do_statement" => {
+                // Track loop nesting for double-free detection
+                self.in_loop = true;
+                self.loop_depth += 1;
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
                         self.analyze_node(&child, source);
                     }
+                }
+                self.loop_depth -= 1;
+                if self.loop_depth == 0 {
+                    self.in_loop = false;
+                }
+            }
+            "if_statement" => {
+                // For if statements, use branch-aware analysis
+                // Save freed state before processing each branch
+                let saved_freed = self.freed_memory.clone();
+
+                // Check if this if-block contains a return statement
+                let has_return = self.block_has_return(node);
+
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        self.analyze_node(&child, source);
+                    }
+                }
+
+                // If this if-block has a return, frees inside it are branch-local
+                // Restore previous state to avoid false double-free on other branches
+                if has_return && !self.in_loop {
+                    self.freed_memory = saved_freed;
                 }
             }
             "compound_statement" => {
@@ -169,8 +201,20 @@ impl MemoryLeakAnalyzer {
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
+            // Handle field expressions on the left - memory escapes through struct assignment
+            // e.g., list->head = new_node  (new_node escapes through list)
+            if left.kind() == "field_expression" || left.kind() == "subscript_expression" {
+                // If right side is an allocated variable, mark it as escaped
+                if right.kind() == "identifier" {
+                    let right_var = ast_utils::get_node_text_owned(&right, source);
+                    if self.allocated_memory.contains_key(&right_var) {
+                        self.escaped_memory.insert(right_var);
+                    }
+                }
+                return;
+            }
+
             // Handle identifiers for allocation tracking
-            // Don't track field expressions as allocations since they often escape with their parent struct
             let var_name = if left.kind() == "identifier" {
                 ast_utils::get_node_text_owned(&left, source)
             } else {
@@ -364,6 +408,13 @@ impl MemoryLeakAnalyzer {
     }
 
     fn is_allocation_call(&self, node: &Node, source: &str) -> bool {
+        // Handle cast expressions like (char *)malloc(...)
+        if node.kind() == "cast_expression" {
+            if let Some(value) = node.child_by_field_name("value") {
+                return self.is_allocation_call(&value, source);
+            }
+        }
+
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = ast_utils::get_node_text_owned(&function, source);
@@ -377,6 +428,13 @@ impl MemoryLeakAnalyzer {
     }
 
     fn get_allocation_type(&self, node: &Node, source: &str) -> String {
+        // Handle cast expressions like (char *)malloc(...)
+        if node.kind() == "cast_expression" {
+            if let Some(value) = node.child_by_field_name("value") {
+                return self.get_allocation_type(&value, source);
+            }
+        }
+
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 return ast_utils::get_node_text_owned(&function, source);
@@ -428,5 +486,22 @@ impl MemoryLeakAnalyzer {
                 });
             }
         }
+    }
+
+    /// Check if a node contains a return statement
+    fn block_has_return(&self, node: &Node) -> bool {
+        if node.kind() == "return_statement" {
+            return true;
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.block_has_return(&child) {
+                    return true;
+                }
+            }
+        }
+
+        false
     }
 }
