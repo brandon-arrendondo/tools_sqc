@@ -31,52 +31,96 @@ impl CertRule for Mem30C {
         let mut violations = Vec::new();
         let mut analyzer = MemoryAnalyzer::new();
 
-        // First pass: collect memory operations
-        analyzer.collect_memory_operations(node, source);
-
-        // Second pass: analyze for violations
-        analyzer.analyze_violations(node, source, &mut violations);
+        // Single pass: analyze the AST for use-after-free patterns
+        analyzer.analyze_node(node, source, &mut violations);
 
         violations
     }
 }
 
-#[derive(Debug, Clone)]
-enum MemoryState {
-    Allocated,
-    Freed,
-    Unknown,
-}
-
-#[derive(Debug, Clone)]
-struct MemoryOperation {
-    variable: String,
-    operation: String, // "malloc", "free", "realloc", "access"
-    line: usize,
-    node_start: usize,
-    node_end: usize,
-}
-
 struct MemoryAnalyzer {
-    memory_operations: Vec<MemoryOperation>,
-    variable_states: HashMap<String, MemoryState>,
+    // Track which variables are currently freed
+    freed_vars: HashSet<String>,
+    // Track aliases: if alias = ptr, then aliases["alias"] = "ptr"
+    aliases: HashMap<String, String>,
+    // Track which variables have been set to NULL after free
+    nullified_vars: HashSet<String>,
 }
 
 impl MemoryAnalyzer {
     fn new() -> Self {
         Self {
-            memory_operations: Vec::new(),
-            variable_states: HashMap::new(),
+            freed_vars: HashSet::new(),
+            aliases: HashMap::new(),
+            nullified_vars: HashSet::new(),
         }
     }
 
-    fn collect_memory_operations(&mut self, node: &Node, source: &str) {
+    /// Main analysis entry point - recursively analyze the AST
+    fn analyze_node(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        match node.kind() {
+            "function_definition" => {
+                // Analyze each function with fresh state to avoid cross-function pollution
+                let mut func_analyzer = MemoryAnalyzer::new();
+                func_analyzer.analyze_function(node, source, violations);
+                return; // Don't recurse further - function handled completely
+            }
+            _ => {}
+        }
+
+        // Recursively process child nodes (top-level traversal)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.analyze_node(&child, source, violations);
+            }
+        }
+    }
+
+    /// Analyze a single function with isolated state
+    fn analyze_function(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        self.analyze_function_body(node, source, violations);
+    }
+
+    /// Analyze nodes within a function
+    fn analyze_function_body(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         match node.kind() {
             "call_expression" => {
-                self.process_function_call(node, source);
+                self.process_call_expression(node, source, violations);
             }
             "assignment_expression" => {
-                self.process_assignment(node, source);
+                self.process_assignment(node, source, violations);
+            }
+            "init_declarator" => {
+                self.process_init_declarator(node, source, violations);
+            }
+            "pointer_expression" => {
+                // Check for dereference of freed memory (*ptr)
+                self.check_pointer_dereference(node, source, violations);
+            }
+            "subscript_expression" => {
+                // Check for array access on freed memory (arr[i])
+                self.check_subscript_access(node, source, violations);
+            }
+            "binary_expression" => {
+                // Check for pointer arithmetic on freed memory (ptr + n)
+                self.check_binary_expression(node, source, violations);
+            }
+            "return_statement" => {
+                // Check for returning freed memory
+                self.check_return_statement(node, source, violations);
+            }
+            "for_statement" => {
+                // Check for dangerous loop free patterns
+                self.check_for_loop_pattern(node, source, violations);
+            }
+            "field_expression" => {
+                // Check for field access on freed memory (ptr->field)
+                self.check_field_access(node, source, violations);
             }
             _ => {}
         }
@@ -84,395 +128,649 @@ impl MemoryAnalyzer {
         // Recursively process child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_memory_operations(&child, source);
+                self.analyze_function_body(&child, source, violations);
             }
         }
     }
 
-    fn process_function_call(&mut self, node: &Node, source: &str) {
-        if let Some(function_node) = node.child_by_field_name("function") {
-            let function_name = get_node_text(&function_node, source);
-
-            match function_name {
-                "free" => {
-                    self.process_free_call(node, source);
-                }
-                "malloc" | "calloc" | "realloc" => {
-                    self.process_allocation_call(node, source, function_name);
-                }
-                "strcpy" | "strcat" | "memcpy" | "memmove" | "sprintf" | "printf" => {
-                    self.process_memory_access_function(node, source, function_name);
-                }
-                _ => {
-                    // Check if any arguments might be freed memory
-                    self.check_function_arguments_for_freed_memory(node, source, function_name);
-                }
-            }
-        }
-    }
-
-    fn process_free_call(&mut self, node: &Node, source: &str) {
-        if let Some(arguments) = node.child_by_field_name("arguments") {
-            for i in 0..arguments.child_count() {
-                if let Some(arg) = arguments.child(i) {
-                    if arg.kind() != "," {
-                        let var_name = self.extract_variable_name(&arg, source);
-                        if !var_name.is_empty() {
-                            let start_point = node.start_position();
-                            self.memory_operations.push(MemoryOperation {
-                                variable: var_name.clone(),
-                                operation: "free".to_string(),
-                                line: start_point.row + 1,
-                                node_start: node.start_byte(),
-                                node_end: node.end_byte(),
-                            });
-                            self.variable_states.insert(var_name, MemoryState::Freed);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fn process_allocation_call(&mut self, node: &Node, source: &str, function_name: &str) {
-        // Look for assignment to track allocated memory
-        if let Some(parent) = node.parent() {
-            if parent.kind() == "assignment_expression" {
-                if let Some(left) = parent.child_by_field_name("left") {
-                    let var_name = self.extract_variable_name(&left, source);
-                    if !var_name.is_empty() {
-                        let start_point = node.start_position();
-                        self.memory_operations.push(MemoryOperation {
-                            variable: var_name.clone(),
-                            operation: function_name.to_string(),
-                            line: start_point.row + 1,
-                            node_start: node.start_byte(),
-                            node_end: node.end_byte(),
-                        });
-                        self.variable_states
-                            .insert(var_name, MemoryState::Allocated);
-                    }
-                }
-            }
-        }
-    }
-
-    fn process_assignment(&mut self, node: &Node, source: &str) {
-        // Check for assignments that might involve freed memory
-        if let (Some(left), Some(right)) = (
-            node.child_by_field_name("left"),
-            node.child_by_field_name("right"),
-        ) {
-            let _left_var = self.extract_variable_name(&left, source);
-            let right_var = self.extract_variable_name(&right, source);
-
-            // Check if assigning from a freed pointer
-            if !right_var.is_empty() {
-                if let Some(MemoryState::Freed) = self.variable_states.get(&right_var) {
-                    let start_point = node.start_position();
-                    self.memory_operations.push(MemoryOperation {
-                        variable: right_var.clone(),
-                        operation: "access".to_string(),
-                        line: start_point.row + 1,
-                        node_start: node.start_byte(),
-                        node_end: node.end_byte(),
-                    });
-                }
-            }
-        }
-    }
-
-    fn process_memory_access_function(&mut self, node: &Node, source: &str, _function_name: &str) {
-        // Check if function arguments reference freed memory
-        if let Some(arguments) = node.child_by_field_name("arguments") {
-            for i in 0..arguments.child_count() {
-                if let Some(arg) = arguments.child(i) {
-                    if arg.kind() != "," {
-                        let var_name = self.extract_variable_name(&arg, source);
-                        if !var_name.is_empty() {
-                            if let Some(MemoryState::Freed) = self.variable_states.get(&var_name) {
-                                let start_point = node.start_position();
-                                self.memory_operations.push(MemoryOperation {
-                                    variable: var_name.clone(),
-                                    operation: "access".to_string(),
-                                    line: start_point.row + 1,
-                                    node_start: node.start_byte(),
-                                    node_end: node.end_byte(),
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fn check_function_arguments_for_freed_memory(
+    /// Process function calls - free(), malloc(), printf(), etc.
+    fn process_call_expression(
         &mut self,
         node: &Node,
         source: &str,
-        _function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let Some(function_node) = node.child_by_field_name("function") {
+            let function_name = get_node_text(&function_node, source);
+
+            match function_name.as_ref() {
+                "free" => {
+                    self.process_free_call(node, source, violations);
+                }
+                "malloc" | "calloc" => {
+                    // Allocation will be tracked via assignment
+                }
+                "realloc" => {
+                    // For realloc, the original pointer may become invalid
+                    // but we only flag if the old pointer is used after
+                }
+                _ => {
+                    // Check if any argument is a freed pointer
+                    self.check_function_args_for_freed(node, source, violations);
+                }
+            }
+        }
+    }
+
+    /// Process free() call - mark variable as freed
+    fn process_free_call(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
     ) {
         if let Some(arguments) = node.child_by_field_name("arguments") {
             for i in 0..arguments.child_count() {
                 if let Some(arg) = arguments.child(i) {
-                    if arg.kind() != "," {
-                        let var_name = self.extract_variable_name(&arg, source);
-                        if !var_name.is_empty() {
-                            if let Some(MemoryState::Freed) = self.variable_states.get(&var_name) {
-                                let start_point = node.start_position();
-                                self.memory_operations.push(MemoryOperation {
-                                    variable: var_name.clone(),
-                                    operation: "access".to_string(),
-                                    line: start_point.row + 1,
-                                    node_start: node.start_byte(),
-                                    node_end: node.end_byte(),
-                                });
-                            }
+                    if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                        continue;
+                    }
+
+                    // For pointer dereference expressions like free(*ptr),
+                    // the memory pointed to by *ptr is freed, not ptr itself.
+                    // Skip tracking for these complex patterns to avoid false positives.
+                    if arg.kind() == "pointer_expression" {
+                        // We're freeing *ptr, not ptr. Skip tracking.
+                        continue;
+                    }
+
+                    // For subscript expressions like free(arr[i]),
+                    // the memory at arr[i] is freed, not arr itself.
+                    // Skip tracking to avoid false positives.
+                    if arg.kind() == "subscript_expression" {
+                        // We're freeing arr[i], not arr. Skip tracking.
+                        continue;
+                    }
+
+                    // For cast expressions like free((type)ptr), extract the inner value
+                    let actual_arg = if arg.kind() == "cast_expression" {
+                        if let Some(value) = arg.child_by_field_name("value") {
+                            value
+                        } else {
+                            arg
                         }
+                    } else {
+                        arg
+                    };
+
+                    // For field expressions like free(data->name), track the full path
+                    // not just the base variable
+                    let var_name = if actual_arg.kind() == "field_expression" {
+                        get_node_text(&actual_arg, source).to_string()
+                    } else if actual_arg.kind() == "identifier" {
+                        get_node_text(&actual_arg, source).to_string()
+                    } else {
+                        // For other complex expressions, skip to avoid false positives
+                        continue;
+                    };
+
+                    if var_name.is_empty() {
+                        continue;
                     }
-                }
-            }
-        }
-    }
 
-    fn analyze_violations(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Look for specific violation patterns
-        self.check_use_after_free(violations, source);
-        self.check_double_free(violations, source);
-        self.check_realloc_misuse(node, source, violations);
-        self.check_loop_free_patterns(node, source, violations);
-    }
+                    // Resolve to canonical name (in case of alias)
+                    let canonical = self.resolve_canonical(&var_name);
 
-    fn check_use_after_free(&self, violations: &mut Vec<RuleViolation>, _source: &str) {
-        let mut freed_vars: HashSet<String> = HashSet::new();
-
-        for op in &self.memory_operations {
-            match op.operation.as_str() {
-                "free" => {
-                    freed_vars.insert(op.variable.clone());
-                }
-                "access" => {
-                    if freed_vars.contains(&op.variable) {
+                    // Check for double-free
+                    if self.is_freed(&canonical) && !self.nullified_vars.contains(&canonical) {
                         violations.push(RuleViolation {
                             rule_id: "MEM30-C".to_string(),
                             severity: Severity::Critical,
-                            message: format!(
-                                "Use-after-free: variable '{}' accessed after being freed",
-                                op.variable
-                            ),
+                            message: format!("Double-free: '{}' freed multiple times", var_name),
                             file_path: String::new(),
-                            line: op.line,
-                            column: 1,
-                            suggestion: Some("Do not access memory after freeing it. Set pointer to NULL after free().".to_string()),
-                        ..Default::default()
-                        });
-                    }
-                }
-                "malloc" | "calloc" | "realloc" => {
-                    // Reset freed status if reallocated
-                    freed_vars.remove(&op.variable);
-                }
-                _ => {}
-            }
-        }
-    }
-
-    fn check_double_free(&self, violations: &mut Vec<RuleViolation>, _source: &str) {
-        let mut freed_vars: HashSet<String> = HashSet::new();
-
-        for op in &self.memory_operations {
-            match op.operation.as_str() {
-                "free" => {
-                    if freed_vars.contains(&op.variable) {
-                        violations.push(RuleViolation {
-                            rule_id: "MEM30-C".to_string(),
-                            severity: Severity::Critical,
-                            message: format!(
-                                "Double-free: variable '{}' freed multiple times",
-                                op.variable
-                            ),
-                            file_path: String::new(),
-                            line: op.line,
-                            column: 1,
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
                             suggestion: Some(
                                 "Set pointer to NULL after freeing to prevent double-free."
                                     .to_string(),
                             ),
                             ..Default::default()
                         });
-                    } else {
-                        freed_vars.insert(op.variable.clone());
                     }
-                }
-                "malloc" | "calloc" | "realloc" => {
-                    // Reset freed status if reallocated
-                    freed_vars.remove(&op.variable);
-                }
-                _ => {}
-            }
-        }
-    }
 
-    fn check_realloc_misuse(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        self.check_realloc_pattern(node, source, violations);
-    }
+                    // Mark as freed
+                    self.freed_vars.insert(canonical.clone());
+                    self.freed_vars.insert(var_name.clone());
 
-    fn check_realloc_pattern(
-        &self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
-        match node.kind() {
-            "call_expression" => {
-                if let Some(function_node) = node.child_by_field_name("function") {
-                    let function_name = get_node_text(&function_node, source);
-
-                    if function_name == "realloc" {
-                        // Look for dangerous realloc patterns
-                        if let Some(parent) = node.parent() {
-                            if parent.kind() == "assignment_expression" {
-                                if let Some(left) = parent.child_by_field_name("left") {
-                                    let realloc_target = self.extract_variable_name(&left, source);
-
-                                    // Check if realloc is assigned back to the same variable
-                                    if let Some(arguments) = node.child_by_field_name("arguments") {
-                                        if let Some(first_arg) = arguments.child(0) {
-                                            if first_arg.kind() != "," {
-                                                let source_var =
-                                                    self.extract_variable_name(&first_arg, source);
-                                                if realloc_target == source_var {
-                                                    let start_point = node.start_position();
-                                                    violations.push(RuleViolation {
-                                                        rule_id: "MEM30-C".to_string(),
-                                                        severity: Severity::High,
-                                                        message: format!(
-                                                            "Dangerous realloc pattern: '{}' assigned back to same variable, may cause memory leak on failure",
-                                                            realloc_target
-                                                        ),
-                                                        file_path: String::new(),
-                                                        line: start_point.row + 1,
-                                                        column: start_point.column + 1,
-                                                        suggestion: Some("Use temporary variable for realloc result and check for NULL before assignment".to_string()),
-                                                    ..Default::default()
-                                                    });
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                    // Also mark any aliases as freed
+                    let aliases_to_free: Vec<String> = self
+                        .aliases
+                        .iter()
+                        .filter(|(_, v)| **v == canonical || **v == var_name)
+                        .map(|(k, _)| k.clone())
+                        .collect();
+                    for alias in aliases_to_free {
+                        self.freed_vars.insert(alias);
                     }
                 }
             }
-            _ => {}
         }
+    }
 
-        // Recursively check child nodes
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.check_realloc_pattern(&child, source, violations);
+    /// Process assignment expression - track aliases and NULL assignments
+    fn process_assignment(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
+            // Check if assigning NULL - this clears freed status
+            let right_text = get_node_text(&right, source);
+            if right_text.trim() == "NULL" || right_text.trim() == "0" {
+                // For field expressions like data->name = NULL, track the full path
+                let left_path = get_node_text(&left, source).to_string();
+                self.nullified_vars.insert(left_path.clone());
+                self.freed_vars.remove(&left_path);
+
+                // Also track base variable
+                let left_var = self.extract_base_variable(&left, source);
+                if !left_var.is_empty() {
+                    self.nullified_vars.insert(left_var.clone());
+                    self.freed_vars.remove(&left_var);
+                }
+                return;
+            }
+
+            let left_var = self.extract_base_variable(&left, source);
+            if left_var.is_empty() {
+                return;
+            }
+
+            // Check if this is a dereference write (*ptr = value)
+            if left.kind() == "pointer_expression" {
+                // This is writing through a pointer
+                if let Some(arg) = left.child_by_field_name("argument") {
+                    let ptr_var = self.extract_base_variable(&arg, source);
+                    if !ptr_var.is_empty() && self.is_freed(&ptr_var) {
+                        violations.push(RuleViolation {
+                            rule_id: "MEM30-C".to_string(),
+                            severity: Severity::Critical,
+                            message: format!(
+                                "Use-after-free: writing to freed memory via '{}'",
+                                ptr_var
+                            ),
+                            file_path: String::new(),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            suggestion: Some("Do not access memory after freeing it.".to_string()),
+                            ..Default::default()
+                        });
+                    }
+                }
+                return;
+            }
+
+            // Check if right side is a freed pointer (creating alias from freed)
+            let right_var = self.extract_base_variable(&right, source);
+            if !right_var.is_empty() {
+                if self.is_freed(&right_var) {
+                    // Creating an alias from freed pointer - the new variable is also freed
+                    self.freed_vars.insert(left_var.clone());
+                    self.aliases.insert(left_var.clone(), right_var.clone());
+                } else if right.kind() == "identifier" {
+                    // Track this as an alias
+                    self.aliases.insert(left_var.clone(), right_var.clone());
+                    // If original gets freed, alias should be considered freed too
+                    if self.freed_vars.contains(&right_var) {
+                        self.freed_vars.insert(left_var.clone());
+                    }
+                }
+            }
+
+            // Check if right side is pointer arithmetic on freed memory
+            if right.kind() == "binary_expression" {
+                self.check_binary_expression(&right, source, violations);
+            }
+
+            // Clear freed status if assigning new allocation
+            if right.kind() == "call_expression" {
+                if let Some(func) = right.child_by_field_name("function") {
+                    let func_name = get_node_text(&func, source);
+                    if func_name == "malloc" || func_name == "calloc" || func_name == "realloc" {
+                        self.freed_vars.remove(&left_var);
+                        self.nullified_vars.remove(&left_var);
+                    }
+                }
             }
         }
     }
 
-    fn check_loop_free_patterns(
-        &self,
+    /// Process variable initialization (int *p = ptr)
+    fn process_init_declarator(
+        &mut self,
         node: &Node,
         source: &str,
-        violations: &mut Vec<RuleViolation>,
+        _violations: &mut Vec<RuleViolation>,
     ) {
-        // Look for linked list free patterns
-        self.check_linked_list_free(node, source, violations);
+        if let (Some(declarator), Some(value)) = (
+            node.child_by_field_name("declarator"),
+            node.child_by_field_name("value"),
+        ) {
+            let left_var = self.extract_declarator_name(&declarator, source);
+            if left_var.is_empty() {
+                return;
+            }
+
+            let right_var = self.extract_base_variable(&value, source);
+            if !right_var.is_empty() {
+                // Track as alias
+                self.aliases.insert(left_var.clone(), right_var.clone());
+
+                // If source is freed, the new variable is also freed
+                if self.is_freed(&right_var) {
+                    self.freed_vars.insert(left_var);
+                }
+            }
+        }
     }
 
-    fn check_linked_list_free(
+    /// Check pointer dereference (*ptr) for use-after-free
+    fn check_pointer_dereference(
         &self,
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        if node.kind() == "for_statement" || node.kind() == "while_statement" {
-            let loop_text = get_node_text(node, source);
+        // Skip if this is the left side of an assignment (handled separately)
+        if let Some(parent) = node.parent() {
+            if parent.kind() == "assignment_expression" {
+                if let Some(left) = parent.child_by_field_name("left") {
+                    if left.start_byte() == node.start_byte() {
+                        return; // Handled in process_assignment
+                    }
+                }
+            }
+        }
 
-            // Look for patterns like: p = p->next after free(p)
-            if loop_text.contains("free(") && loop_text.contains("->next") {
-                // This is a heuristic check for the classic linked list free error
-                if self.has_dangerous_loop_free_pattern(loop_text) {
-                    let start_point = node.start_position();
+        if let Some(arg) = node.child_by_field_name("argument") {
+            let var_name = self.extract_base_variable(&arg, source);
+            if !var_name.is_empty() && self.is_freed(&var_name) {
+                violations.push(RuleViolation {
+                    rule_id: "MEM30-C".to_string(),
+                    severity: Severity::Critical,
+                    message: format!("Use-after-free: dereferencing freed pointer '{}'", var_name),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some("Do not access memory after freeing it.".to_string()),
+                    ..Default::default()
+                });
+            }
+        }
+    }
+
+    /// Check array subscript access (arr[i]) for use-after-free
+    fn check_subscript_access(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let Some(arg) = node.child_by_field_name("argument") {
+            // First check if the full path is freed (e.g., obj->data.values)
+            let full_path = get_node_text(&arg, source);
+            if self.is_freed(&full_path) {
+                violations.push(RuleViolation {
+                    rule_id: "MEM30-C".to_string(),
+                    severity: Severity::Critical,
+                    message: format!("Use-after-free: accessing freed array '{}'", full_path),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some("Do not access memory after freeing it.".to_string()),
+                    ..Default::default()
+                });
+                return;
+            }
+
+            // Also check base variable
+            let var_name = self.extract_base_variable(&arg, source);
+            if !var_name.is_empty() && self.is_freed(&var_name) {
+                violations.push(RuleViolation {
+                    rule_id: "MEM30-C".to_string(),
+                    severity: Severity::Critical,
+                    message: format!("Use-after-free: accessing freed array '{}'", var_name),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some("Do not access memory after freeing it.".to_string()),
+                    ..Default::default()
+                });
+            }
+        }
+    }
+
+    /// Check binary expression for pointer arithmetic on freed memory
+    fn check_binary_expression(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Check for ptr + n or ptr - n patterns
+        if let (Some(left), Some(operator)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("operator"),
+        ) {
+            let op_text = get_node_text(&operator, source);
+            if op_text == "+" || op_text == "-" {
+                let left_var = self.extract_base_variable(&left, source);
+                if !left_var.is_empty() && self.is_freed(&left_var) {
                     violations.push(RuleViolation {
                         rule_id: "MEM30-C".to_string(),
-                        severity: Severity::High,
-                        message:
-                            "Potential use-after-free in loop: accessing freed pointer's members"
-                                .to_string(),
+                        severity: Severity::Critical,
+                        message: format!(
+                            "Use-after-free: pointer arithmetic on freed pointer '{}'",
+                            left_var
+                        ),
                         file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Save pointer->next before freeing pointer".to_string()),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        suggestion: Some("Do not use freed pointers in arithmetic.".to_string()),
                         ..Default::default()
                     });
                 }
             }
         }
+    }
 
-        // Recursively check child nodes
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.check_linked_list_free(&child, source, violations);
+    /// Check function arguments for use of freed memory
+    fn check_function_args_for_freed(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let Some(arguments) = node.child_by_field_name("arguments") {
+            for i in 0..arguments.child_count() {
+                if let Some(arg) = arguments.child(i) {
+                    if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                        continue;
+                    }
+
+                    let var_name = self.extract_base_variable(&arg, source);
+                    if !var_name.is_empty() && self.is_freed(&var_name) {
+                        violations.push(RuleViolation {
+                            rule_id: "MEM30-C".to_string(),
+                            severity: Severity::Critical,
+                            message: format!(
+                                "Use-after-free: passing freed pointer '{}' to function",
+                                var_name
+                            ),
+                            file_path: String::new(),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            suggestion: Some("Do not pass freed memory to functions.".to_string()),
+                            ..Default::default()
+                        });
+                    }
+                }
             }
         }
     }
 
-    fn has_dangerous_loop_free_pattern(&self, loop_text: &str) -> bool {
-        // Look for pattern: p = p->next; free(p) or free(p); ... p->next
-        let lines: Vec<&str> = loop_text.lines().collect();
+    /// Check return statement for returning freed memory
+    fn check_return_statement(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Check if the return value is a freed pointer
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "return" {
+                    continue;
+                }
+                let var_name = self.extract_base_variable(&child, source);
+                if !var_name.is_empty() && self.is_freed(&var_name) {
+                    violations.push(RuleViolation {
+                        rule_id: "MEM30-C".to_string(),
+                        severity: Severity::Critical,
+                        message: format!("Use-after-free: returning freed pointer '{}'", var_name),
+                        file_path: String::new(),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        suggestion: Some("Do not return freed memory from functions.".to_string()),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+    }
 
-        for i in 0..lines.len() {
-            let line = lines[i].trim();
-            if line.contains("free(") {
-                // Check if there's a ->next access in the same loop
-                for j in 0..lines.len() {
-                    if i != j && lines[j].contains("->next") {
-                        return true;
+    /// Check for loop pattern for dangerous p = p->next after free(p)
+    fn check_for_loop_pattern(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Get the loop text for pattern matching
+        let loop_text = get_node_text(node, source);
+
+        // Look for classic linked list free error:
+        // for (p = head; p != NULL; p = p->next) { free(p); }
+        if loop_text.contains("free(") && loop_text.contains("->") {
+            // Check if free happens before the pointer is used in update
+            // This is a heuristic check
+            if let Some(update) = node.child_by_field_name("update") {
+                let update_text = get_node_text(&update, source);
+                // Look for patterns like: p = p->next
+                if update_text.contains("->") {
+                    // Check if there's a free() in the body that frees the same variable
+                    if let Some(body) = node.child_by_field_name("body") {
+                        let body_text = get_node_text(&body, source);
+                        // Extract the variable from update (e.g., "p" from "p = p->next")
+                        if let Some(eq_pos) = update_text.find('=') {
+                            let var_part = update_text[..eq_pos].trim();
+                            // Check if free(var) is in the body
+                            let free_pattern = format!("free({})", var_part);
+                            if body_text.contains(&free_pattern) {
+                                violations.push(RuleViolation {
+                                    rule_id: "MEM30-C".to_string(),
+                                    severity: Severity::Critical,
+                                    message: format!(
+                                        "Use-after-free in loop: accessing '{}'->next after free({})",
+                                        var_part, var_part
+                                    ),
+                                    file_path: String::new(),
+                                    line: node.start_position().row + 1,
+                                    column: node.start_position().column + 1,
+                                    suggestion: Some(
+                                        "Save pointer->next before freeing pointer.".to_string(),
+                                    ),
+                                    ..Default::default()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check field access for use-after-free (ptr->field)
+    fn check_field_access(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Skip if this is inside a free() call - handled separately
+        if let Some(parent) = node.parent() {
+            if parent.kind() == "argument_list" {
+                if let Some(grandparent) = parent.parent() {
+                    if grandparent.kind() == "call_expression" {
+                        if let Some(func) = grandparent.child_by_field_name("function") {
+                            if get_node_text(&func, source) == "free" {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            // Skip if this is the left side of an assignment (handled elsewhere)
+            if parent.kind() == "assignment_expression" {
+                if let Some(left) = parent.child_by_field_name("left") {
+                    if left.start_byte() == node.start_byte() {
+                        return;
                     }
                 }
             }
         }
 
+        // Check if the full field expression is freed (e.g., buf->data)
+        let full_path = get_node_text(node, source);
+        if self.is_freed(&full_path) {
+            violations.push(RuleViolation {
+                rule_id: "MEM30-C".to_string(),
+                severity: Severity::Critical,
+                message: format!("Use-after-free: accessing freed pointer '{}'", full_path),
+                file_path: String::new(),
+                line: node.start_position().row + 1,
+                column: node.start_position().column + 1,
+                suggestion: Some("Do not access freed memory.".to_string()),
+                ..Default::default()
+            });
+            return;
+        }
+
+        // Check if the base of field expression is freed
+        if let Some(arg) = node.child_by_field_name("argument") {
+            let var_name = self.extract_base_variable(&arg, source);
+            if !var_name.is_empty() && self.is_freed(&var_name) {
+                violations.push(RuleViolation {
+                    rule_id: "MEM30-C".to_string(),
+                    severity: Severity::Critical,
+                    message: format!(
+                        "Use-after-free: accessing member of freed pointer '{}'",
+                        var_name
+                    ),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some("Do not access members of freed memory.".to_string()),
+                    ..Default::default()
+                });
+            }
+        }
+    }
+
+    /// Check if a variable is in freed state (considering aliases)
+    fn is_freed(&self, var_name: &str) -> bool {
+        if self.nullified_vars.contains(var_name) {
+            return false;
+        }
+        if self.freed_vars.contains(var_name) {
+            return true;
+        }
+        // Check if it's an alias of a freed variable
+        if let Some(canonical) = self.aliases.get(var_name) {
+            if self.nullified_vars.contains(canonical) {
+                return false;
+            }
+            return self.freed_vars.contains(canonical);
+        }
         false
     }
 
-    fn extract_variable_name(&self, node: &Node, source: &str) -> String {
+    /// Resolve a variable to its canonical name (follow alias chain)
+    fn resolve_canonical(&self, var_name: &str) -> String {
+        let mut current = var_name.to_string();
+        let mut visited = HashSet::new();
+        while let Some(target) = self.aliases.get(&current) {
+            if visited.contains(target) {
+                break; // Avoid infinite loop
+            }
+            visited.insert(current.clone());
+            current = target.clone();
+        }
+        current
+    }
+
+    /// Extract the base variable name from various node types
+    fn extract_base_variable(&self, node: &Node, source: &str) -> String {
         match node.kind() {
             "identifier" => get_node_text(node, source).to_string(),
             "pointer_expression" => {
-                // Handle *ptr
-                if let Some(argument) = node.child_by_field_name("argument") {
-                    self.extract_variable_name(&argument, source)
+                // *ptr - get the base pointer
+                if let Some(arg) = node.child_by_field_name("argument") {
+                    self.extract_base_variable(&arg, source)
                 } else {
                     String::new()
                 }
             }
             "field_expression" => {
-                // Handle ptr->field, just return the base
-                if let Some(argument) = node.child_by_field_name("argument") {
-                    self.extract_variable_name(&argument, source)
+                // ptr->field - get the base
+                if let Some(arg) = node.child_by_field_name("argument") {
+                    self.extract_base_variable(&arg, source)
                 } else {
                     String::new()
                 }
             }
             "subscript_expression" => {
-                // Handle ptr[index], just return the base
-                if let Some(argument) = node.child_by_field_name("argument") {
-                    self.extract_variable_name(&argument, source)
+                // arr[i] - get the base array
+                if let Some(arg) = node.child_by_field_name("argument") {
+                    self.extract_base_variable(&arg, source)
+                } else {
+                    String::new()
+                }
+            }
+            "parenthesized_expression" => {
+                // (ptr) - unwrap
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() != "(" && child.kind() != ")" {
+                            return self.extract_base_variable(&child, source);
+                        }
+                    }
+                }
+                String::new()
+            }
+            "cast_expression" => {
+                // (type)ptr - get the operand
+                if let Some(value) = node.child_by_field_name("value") {
+                    self.extract_base_variable(&value, source)
                 } else {
                     String::new()
                 }
             }
             _ => String::new(),
+        }
+    }
+
+    /// Extract variable name from a declarator node
+    fn extract_declarator_name(&self, node: &Node, source: &str) -> String {
+        match node.kind() {
+            "identifier" => get_node_text(node, source).to_string(),
+            "pointer_declarator" => {
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    self.extract_declarator_name(&declarator, source)
+                } else {
+                    String::new()
+                }
+            }
+            _ => {
+                // Try to find an identifier child
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" {
+                            return get_node_text(&child, source).to_string();
+                        }
+                    }
+                }
+                String::new()
+            }
         }
     }
 }
