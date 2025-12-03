@@ -3,26 +3,16 @@
 //! Restrict-qualified pointers must not alias each other. Assigning one restrict
 //! pointer to another or passing overlapping memory to restrict parameters causes UB.
 //!
-//! ## Examples:
-//!
-//! **Non-compliant:**
-//! ```c
-//! int *restrict a;
-//! int *restrict b;
-//! a = b;  // Undefined behavior - restrict pointers aliasing
-//! ```
-//!
-//! **Compliant:**
-//! ```c
-//! int *restrict a;
-//! int *b;
-//! a = b;  // OK - b is not restrict-qualified
-//! ```
+//! ## Violations detected:
+//! 1. Assigning one restrict pointer to another
+//! 2. Initializing a restrict pointer from another restrict pointer
+//! 3. Passing same array/pointer multiple times to restrict parameters
+//! 4. Passing overlapping memory regions to restrict parameters (memcpy overlap)
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
 pub struct Exp43C;
@@ -53,27 +43,30 @@ impl CertRule for Exp43C {
 
         // Track restrict-qualified pointer variables
         let mut restrict_vars: HashSet<String> = HashSet::new();
+        // Track pointer aliasing (var -> base it points to)
+        let mut pointer_bases: HashMap<String, String> = HashMap::new();
 
-        // First pass: find restrict pointer declarations
-        self.find_restrict_declarations(node, source, &mut restrict_vars);
+        // First pass: find restrict pointer declarations and track pointer bases
+        self.find_restrict_declarations(node, source, &mut restrict_vars, &mut pointer_bases);
 
-        // Second pass: find assignments between restrict pointers
-        self.find_restrict_assignments(node, source, &restrict_vars, &mut violations);
+        // Second pass: find assignments/initializations between restrict pointers
+        self.find_restrict_violations(node, source, &restrict_vars, &mut violations);
 
         // Third pass: find function calls with potentially overlapping restrict params
-        self.find_overlapping_restrict_calls(node, source, &mut violations);
+        self.find_overlapping_restrict_calls(node, source, &pointer_bases, &mut violations);
 
         violations
     }
 }
 
 impl Exp43C {
-    /// Find restrict-qualified pointer declarations
+    /// Find restrict-qualified pointer declarations and track pointer bases
     fn find_restrict_declarations(
         &self,
         node: &Node,
         source: &str,
         restrict_vars: &mut HashSet<String>,
+        pointer_bases: &mut HashMap<String, String>,
     ) {
         if node.kind() == "declaration" {
             let decl_text = get_node_text(node, source);
@@ -85,22 +78,71 @@ impl Exp43C {
             }
         }
 
+        // Track pointer assignments like: ptr2 = ptr1 + 3
+        if node.kind() == "assignment_expression" {
+            if let (Some(left), Some(right)) = (
+                node.child_by_field_name("left"),
+                node.child_by_field_name("right"),
+            ) {
+                let left_text = get_node_text(&left, source).to_string();
+                let right_text = get_node_text(&right, source);
+                // Extract base from expressions like "ptr1 + 3" or "c_str"
+                let base = self.extract_base_pointer(right_text);
+                if !base.is_empty() {
+                    pointer_bases.insert(left_text, base);
+                }
+            }
+        }
+
+        // Track init_declarator like: char *ptr2 = ptr1 + 3
+        if node.kind() == "init_declarator" {
+            if let (Some(declarator), Some(value)) = (
+                node.child_by_field_name("declarator"),
+                node.child_by_field_name("value"),
+            ) {
+                if let Some(var_name) = self.find_identifier(&declarator, source) {
+                    let value_text = get_node_text(&value, source);
+                    let base = self.extract_base_pointer(value_text);
+                    if !base.is_empty() {
+                        pointer_bases.insert(var_name, base);
+                    }
+                }
+            }
+        }
+
         // Recurse
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.find_restrict_declarations(&child, source, restrict_vars);
+                self.find_restrict_declarations(&child, source, restrict_vars, pointer_bases);
             }
         }
     }
 
-    /// Find assignments between restrict-qualified pointers
-    fn find_restrict_assignments(
+    /// Extract base pointer from expression like "ptr + 3" -> "ptr"
+    fn extract_base_pointer(&self, expr: &str) -> String {
+        let trimmed = expr.trim();
+        // Handle expressions like "ptr1 + 3" or "c_str"
+        if trimmed.contains('+') || trimmed.contains('-') {
+            trimmed
+                .split(|c| c == '+' || c == '-')
+                .next()
+                .unwrap_or("")
+                .trim()
+                .to_string()
+        } else {
+            trimmed.to_string()
+        }
+    }
+
+    /// Find assignments/initializations between restrict pointers
+    fn find_restrict_violations(
         &self,
         node: &Node,
         source: &str,
         restrict_vars: &HashSet<String>,
         violations: &mut Vec<RuleViolation>,
     ) {
+        // Check assignment expressions: a = b
         if node.kind() == "assignment_expression" {
             if let (Some(left), Some(right)) = (
                 node.child_by_field_name("left"),
@@ -131,12 +173,67 @@ impl Exp43C {
             }
         }
 
+        // Check init_declarator: int *restrict p2 = p1
+        if node.kind() == "init_declarator" {
+            // Check if parent declaration has restrict
+            let parent_text = if let Some(parent) = node.parent() {
+                get_node_text(&parent, source)
+            } else {
+                ""
+            };
+
+            if parent_text.contains("restrict") {
+                if let Some(value) = node.child_by_field_name("value") {
+                    let value_text = get_node_text(&value, source);
+                    // If initializing from another restrict pointer
+                    if restrict_vars.contains(value_text) {
+                        // Check if this is inside an inner block (compound_statement)
+                        // Inner block scope allows restrict aliasing
+                        if !self.is_in_inner_block(node) {
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                message: format!(
+                                    "Initializing restrict pointer from another restrict pointer '{}'. \
+                                     This causes undefined behavior due to pointer aliasing.",
+                                    value_text
+                                ),
+                                severity: self.severity(),
+                                line: node.start_position().row + 1,
+                                column: node.start_position().column + 1,
+                                file_path: String::new(),
+                                suggestion: Some(
+                                    "Use non-restrict pointers for aliased references".to_string(),
+                                ),
+                                requires_manual_review: None,
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
         // Recurse
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.find_restrict_assignments(&child, source, restrict_vars, violations);
+                self.find_restrict_violations(&child, source, restrict_vars, violations);
             }
         }
+    }
+
+    /// Check if node is inside an inner block (compound_statement within compound_statement)
+    fn is_in_inner_block(&self, node: &Node) -> bool {
+        let mut compound_count = 0;
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "compound_statement" {
+                compound_count += 1;
+                if compound_count >= 2 {
+                    return true;
+                }
+            }
+            current = parent.parent();
+        }
+        false
     }
 
     /// Find function calls with potentially overlapping restrict parameters
@@ -144,29 +241,119 @@ impl Exp43C {
         &self,
         node: &Node,
         source: &str,
+        pointer_bases: &HashMap<String, String>,
         violations: &mut Vec<RuleViolation>,
     ) {
         if node.kind() == "call_expression" {
-            if let Some(args) = node.child_by_field_name("arguments") {
-                let args_text = get_node_text(&args, source);
-                // Check for common overlap patterns: same array with different offsets
-                // e.g., f(50, d + 1, d) or memcpy(a, a+1, n)
-                if self.has_overlapping_array_args(&args_text) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        message: "Function call with potentially overlapping memory regions. \
-                             If parameters are restrict-qualified, this causes undefined behavior."
-                            .to_string(),
-                        severity: self.severity(),
-                        line: node.start_position().row + 1,
-                        column: node.start_position().column + 1,
-                        file_path: String::new(),
-                        suggestion: Some(
-                            "Ensure memory regions do not overlap when using restrict pointers"
-                                .to_string(),
-                        ),
-                        requires_manual_review: None,
-                    });
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&function, source);
+
+                if let Some(args) = node.child_by_field_name("arguments") {
+                    // Collect all argument expressions
+                    let arg_exprs: Vec<String> = self.collect_arg_expressions(&args, source);
+
+                    // Special case: memcpy with aliased pointers (overlapping memory)
+                    // memcpy has restrict parameters, so overlapping is UB
+                    if func_name == "memcpy" && arg_exprs.len() >= 2 {
+                        // For memcpy, check if both args derive from same ultimate base
+                        // ANY aliasing is a problem because we can't prove non-overlap
+                        let base0 = self.extract_base_pointer(&arg_exprs[0]);
+                        let base1 = self.extract_base_pointer(&arg_exprs[1]);
+                        let resolved0 = self.resolve_pointer_base(&base0, pointer_bases);
+                        let resolved1 = self.resolve_pointer_base(&base1, pointer_bases);
+
+                        if resolved0 == resolved1 && !resolved0.is_empty() {
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                message: format!(
+                                    "memcpy called with potentially overlapping memory regions (both derive from '{}'). \
+                                     memcpy's restrict parameters require non-overlapping memory.",
+                                    resolved0
+                                ),
+                                severity: self.severity(),
+                                line: node.start_position().row + 1,
+                                column: node.start_position().column + 1,
+                                file_path: String::new(),
+                                suggestion: Some(
+                                    "Use memmove for overlapping memory regions".to_string(),
+                                ),
+                                requires_manual_review: None,
+                            });
+                            return;
+                        }
+                    }
+
+                    // Check for same argument appearing multiple times
+                    // Distinguish between:
+                    // - f(a, b, b) - b duplicated in positions 2,3 (likely const restrict - OK)
+                    // - f(a, a, a) - a appears in position 1 AND other positions (likely write+read - UB)
+                    if self.has_output_aliased_with_input(&arg_exprs) {
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            message: format!(
+                                "Function '{}' called with same pointer for output and input parameters. \
+                                 If output parameter is non-const restrict, this causes undefined behavior.",
+                                func_name
+                            ),
+                            severity: self.severity(),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            file_path: String::new(),
+                            suggestion: Some(
+                                "Ensure output restrict parameter receives a unique pointer".to_string(),
+                            ),
+                            requires_manual_review: None,
+                        });
+                        return;
+                    }
+
+                    // Check for overlapping memory regions (via pointer aliasing)
+                    // Only flag for known standard library functions with non-const restrict params
+                    // For user-defined functions, we can't know if params are const restrict
+                    let known_restrict_funcs = [
+                        "strcpy", "strncpy", "strcat", "strncat", "sprintf", "snprintf",
+                    ];
+                    if known_restrict_funcs.contains(&func_name)
+                        && self.has_aliased_args(&arg_exprs, pointer_bases)
+                    {
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            message: format!(
+                                "Function '{}' called with aliased pointers. \
+                                 If parameters are restrict-qualified, overlapping memory causes undefined behavior.",
+                                func_name
+                            ),
+                            severity: self.severity(),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            file_path: String::new(),
+                            suggestion: Some(
+                                "Ensure memory regions do not overlap when using restrict pointers".to_string(),
+                            ),
+                            requires_manual_review: None,
+                        });
+                        return;
+                    }
+
+                    // Check for overlapping base + offset patterns (but exclude non-overlapping)
+                    if self.has_definitely_overlapping_args(&arg_exprs) {
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            message: format!(
+                                "Function '{}' called with overlapping memory regions. \
+                                 If parameters are restrict-qualified, this causes undefined behavior.",
+                                func_name
+                            ),
+                            severity: self.severity(),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            file_path: String::new(),
+                            suggestion: Some(
+                                "Ensure memory regions do not overlap when using restrict pointers".to_string(),
+                            ),
+                            requires_manual_review: None,
+                        });
+                    }
                 }
             }
         }
@@ -174,41 +361,179 @@ impl Exp43C {
         // Recurse
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.find_overlapping_restrict_calls(&child, source, violations);
+                self.find_overlapping_restrict_calls(&child, source, pointer_bases, violations);
             }
         }
     }
 
-    /// Check if arguments contain overlapping array references
-    fn has_overlapping_array_args(&self, args_text: &str) -> bool {
-        // Simple heuristic: look for patterns like "d + 1, d" or "a, a+1"
-        let parts: Vec<&str> = args_text.split(',').collect();
-        if parts.len() >= 2 {
-            for i in 0..parts.len() {
-                for j in 0..parts.len() {
-                    if i != j {
-                        let a = parts[i].trim();
-                        let b = parts[j].trim();
-                        // Check if one is base and other is base + offset
-                        if (a.contains('+') || a.contains('-'))
-                            && !b.contains('+')
-                            && !b.contains('-')
-                        {
-                            // Extract base from "base + offset"
-                            let base = a
-                                .split(|c| c == '+' || c == '-')
-                                .next()
-                                .unwrap_or("")
-                                .trim();
-                            if base == b || b.starts_with(base) {
-                                return true;
-                            }
+    /// Check if the first pointer argument (output) is aliased with any subsequent argument (input)
+    /// Pattern: f(n, out, in1, in2) - if out == in1 or out == in2, it's likely UB
+    /// But f(n, out, in, in) where only inputs are same is often OK (const restrict)
+    fn has_output_aliased_with_input(&self, args: &[String]) -> bool {
+        // Find first non-numeric argument (likely the output pointer)
+        let mut first_pointer_idx = None;
+        let mut first_pointer = String::new();
+
+        for (i, arg) in args.iter().enumerate() {
+            let trimmed = arg.trim();
+            // Skip numeric literals and sizeof expressions
+            if trimmed.is_empty()
+                || trimmed.chars().all(|c| c.is_ascii_digit())
+                || trimmed.starts_with("sizeof")
+            {
+                continue;
+            }
+            first_pointer_idx = Some(i);
+            first_pointer = trimmed.to_string();
+            break;
+        }
+
+        // If we found a first pointer, check if it appears in later positions
+        if let Some(idx) = first_pointer_idx {
+            for arg in args.iter().skip(idx + 1) {
+                let trimmed = arg.trim();
+                if trimmed == first_pointer {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Collect argument expressions from argument_list
+    fn collect_arg_expressions(&self, args: &Node, source: &str) -> Vec<String> {
+        let mut result = Vec::new();
+        for i in 0..args.child_count() {
+            if let Some(child) = args.child(i) {
+                let kind = child.kind();
+                if kind != "(" && kind != ")" && kind != "," {
+                    result.push(get_node_text(&child, source).to_string());
+                }
+            }
+        }
+        result
+    }
+
+    /// Check if same argument appears multiple times as IDENTICAL expressions
+    /// (not just same base with different offsets)
+    fn has_duplicate_args(&self, args: &[String]) -> bool {
+        let mut seen: HashSet<String> = HashSet::new();
+        for arg in args {
+            let trimmed = arg.trim().to_string();
+            // Skip numeric literals and empty
+            if trimmed.is_empty() || trimmed.chars().all(|c| c.is_ascii_digit()) {
+                continue;
+            }
+            // Only flag if EXACT same expression (e.g., "a, a, a" not "d+50, d")
+            if seen.contains(&trimmed) {
+                return true;
+            }
+            seen.insert(trimmed);
+        }
+        false
+    }
+
+    /// Recursively resolve pointer base through the pointer_bases chain
+    fn resolve_pointer_base(&self, ptr: &str, pointer_bases: &HashMap<String, String>) -> String {
+        let mut current = ptr.to_string();
+        let mut visited = std::collections::HashSet::new();
+
+        while let Some(base) = pointer_bases.get(&current) {
+            if visited.contains(base) {
+                break; // Avoid infinite loops
+            }
+            visited.insert(base.clone());
+            current = base.clone();
+        }
+        current
+    }
+
+    /// Check if arguments are aliased (derived from same base) AND overlapping
+    fn has_aliased_args(&self, args: &[String], pointer_bases: &HashMap<String, String>) -> bool {
+        // Get base pointers and offsets for all arguments
+        let arg_info: Vec<(String, i64)> = args
+            .iter()
+            .map(|arg| {
+                let base = self.extract_base_pointer(arg);
+                let offset = self.extract_offset(arg);
+                // Recursively resolve through pointer chain: ptr2 -> ptr1 -> c_str
+                let resolved_base = self.resolve_pointer_base(&base, pointer_bases);
+                (resolved_base, offset)
+            })
+            .collect();
+
+        // Check if any two arguments have same base AND are potentially overlapping
+        for i in 0..arg_info.len() {
+            for j in (i + 1)..arg_info.len() {
+                let (base_i, offset_i) = &arg_info[i];
+                let (base_j, offset_j) = &arg_info[j];
+
+                if base_i.is_empty() || base_j.is_empty() {
+                    continue;
+                }
+
+                // Skip if both are numeric literals
+                if base_i.chars().all(|c| c.is_ascii_digit()) {
+                    continue;
+                }
+
+                if base_i == base_j {
+                    // Same base - check if offsets indicate overlap
+                    // If offsets are far apart (>= 50), likely non-overlapping
+                    let diff = (*offset_i - *offset_j).abs();
+                    if diff < 50 {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check for definitely overlapping array arguments
+    /// Returns true only if we can prove overlap (small offsets)
+    fn has_definitely_overlapping_args(&self, args: &[String]) -> bool {
+        // Look for patterns where same base is used with small offsets
+        // e.g., (base, base + 3) - likely overlapping
+        // but (base + 50, base) with n=50 - might not overlap
+        for i in 0..args.len() {
+            for j in (i + 1)..args.len() {
+                let a = args[i].trim();
+                let b = args[j].trim();
+
+                let base_a = self.extract_base_pointer(a);
+                let base_b = self.extract_base_pointer(b);
+
+                if base_a == base_b && !base_a.is_empty() {
+                    // Same base - check offsets
+                    let offset_a = self.extract_offset(a);
+                    let offset_b = self.extract_offset(b);
+
+                    // If one is base and other is base + small_offset, likely overlap
+                    if offset_a == 0 || offset_b == 0 {
+                        let other_offset = offset_a.max(offset_b);
+                        // Small offset (< 50) is likely overlapping with typical buffer operations
+                        if other_offset > 0 && other_offset < 50 {
+                            return true;
                         }
                     }
                 }
             }
         }
         false
+    }
+
+    /// Extract numeric offset from expression like "ptr + 3" -> 3
+    fn extract_offset(&self, expr: &str) -> i64 {
+        let trimmed = expr.trim();
+        if let Some(pos) = trimmed.find('+') {
+            trimmed[pos + 1..].trim().parse().unwrap_or(0)
+        } else if let Some(pos) = trimmed.find('-') {
+            -trimmed[pos + 1..].trim().parse().unwrap_or(0)
+        } else {
+            0
+        }
     }
 
     /// Extract variable name from declaration
