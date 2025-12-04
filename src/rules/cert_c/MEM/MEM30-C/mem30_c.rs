@@ -45,6 +45,13 @@ struct MemoryAnalyzer {
     aliases: HashMap<String, String>,
     // Track which variables have been set to NULL after free
     nullified_vars: HashSet<String>,
+    // Track realloc old pointers that have been updated to new pointer
+    realloc_updated: HashSet<String>,
+    // Track realloc relationships: realloc_map[old_ptr] = new_ptr
+    // When we see new_ptr = realloc(old_ptr, ...), old_ptr becomes potentially invalid
+    realloc_invalidated: HashSet<String>,
+    // Track union members - when one member is freed, all are freed
+    union_members: HashMap<String, HashSet<String>>,
 }
 
 impl MemoryAnalyzer {
@@ -53,6 +60,9 @@ impl MemoryAnalyzer {
             freed_vars: HashSet::new(),
             aliases: HashMap::new(),
             nullified_vars: HashSet::new(),
+            realloc_updated: HashSet::new(),
+            realloc_invalidated: HashSet::new(),
+            union_members: HashMap::new(),
         }
     }
 
@@ -89,6 +99,11 @@ impl MemoryAnalyzer {
         violations: &mut Vec<RuleViolation>,
     ) {
         match node.kind() {
+            "if_statement" => {
+                // Handle if-else with branch-sensitive analysis
+                self.analyze_if_statement(node, source, violations);
+                return; // Don't recurse - handled by analyze_if_statement
+            }
             "call_expression" => {
                 self.process_call_expression(node, source, violations);
             }
@@ -105,6 +120,9 @@ impl MemoryAnalyzer {
             "subscript_expression" => {
                 // Check for array access on freed memory (arr[i])
                 self.check_subscript_access(node, source, violations);
+                // Don't recurse into subscript - we already checked the argument
+                // This prevents double-checking field expressions that are subscript arguments
+                return;
             }
             "binary_expression" => {
                 // Check for pointer arithmetic on freed memory (ptr + n)
@@ -133,6 +151,161 @@ impl MemoryAnalyzer {
         }
     }
 
+    /// Analyze if-statement with branch-sensitive analysis
+    fn analyze_if_statement(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // First analyze the condition (it's executed in the current state)
+        if let Some(condition) = node.child_by_field_name("condition") {
+            self.analyze_function_body(&condition, source, violations);
+        }
+
+        // Save state before branches
+        let saved_freed = self.freed_vars.clone();
+        let saved_nullified = self.nullified_vars.clone();
+        let saved_aliases = self.aliases.clone();
+        let saved_realloc_updated = self.realloc_updated.clone();
+        let saved_realloc_invalidated = self.realloc_invalidated.clone();
+
+        // Analyze the "consequence" (then branch)
+        let mut then_returns = false;
+        if let Some(consequence) = node.child_by_field_name("consequence") {
+            self.analyze_function_body(&consequence, source, violations);
+            then_returns = self.unconditionally_returns(&consequence);
+        }
+
+        // Save state after then-branch
+        let then_freed = self.freed_vars.clone();
+        let then_nullified = self.nullified_vars.clone();
+        let then_realloc_invalidated = self.realloc_invalidated.clone();
+        let then_realloc_updated = self.realloc_updated.clone();
+
+        // Reset state for else branch (starts from saved state)
+        self.freed_vars = saved_freed.clone();
+        self.nullified_vars = saved_nullified.clone();
+        self.aliases = saved_aliases.clone();
+        self.realloc_updated = saved_realloc_updated.clone();
+        self.realloc_invalidated = saved_realloc_invalidated.clone();
+
+        // Analyze the "alternative" (else branch) if present
+        let mut else_returns = false;
+        if let Some(alternative) = node.child_by_field_name("alternative") {
+            self.analyze_function_body(&alternative, source, violations);
+            else_returns = self.unconditionally_returns(&alternative);
+        }
+
+        let else_freed = self.freed_vars.clone();
+        let else_nullified = self.nullified_vars.clone();
+        let else_realloc_invalidated = self.realloc_invalidated.clone();
+        let else_realloc_updated = self.realloc_updated.clone();
+
+        // Merge states based on which branches return
+        if then_returns && else_returns {
+            // Both branches return - code after is unreachable, keep saved state
+            self.freed_vars = saved_freed;
+            self.nullified_vars = saved_nullified;
+            self.realloc_invalidated = saved_realloc_invalidated;
+            self.realloc_updated = saved_realloc_updated;
+        } else if then_returns {
+            // Only then returns - use else branch state
+            self.freed_vars = else_freed;
+            self.nullified_vars = else_nullified;
+            self.realloc_invalidated = else_realloc_invalidated;
+            self.realloc_updated = else_realloc_updated;
+        } else if else_returns {
+            // Only else returns - use then branch state
+            self.freed_vars = then_freed;
+            self.nullified_vars = then_nullified;
+            self.realloc_invalidated = then_realloc_invalidated;
+            self.realloc_updated = then_realloc_updated;
+        } else {
+            // Neither returns - merge states
+            // For use-after-free detection: if freed in EITHER branch, it's potentially freed after
+            // This ensures we catch use-after-free even on conditional frees
+            self.freed_vars = then_freed;
+            for var in else_freed {
+                self.freed_vars.insert(var);
+            }
+            // But remove vars that were nullified in both branches
+            for var in saved_nullified.iter() {
+                if then_nullified.contains(var) && else_nullified.contains(var) {
+                    self.freed_vars.remove(var);
+                }
+            }
+            // Union of nullified
+            self.nullified_vars = then_nullified;
+            for var in else_nullified {
+                self.nullified_vars.insert(var);
+            }
+            // For realloc_invalidated: use union (if invalidated in either branch, could be invalid)
+            // This is conservative for detecting use-after-free
+            self.realloc_invalidated = then_realloc_invalidated;
+            for var in else_realloc_invalidated {
+                self.realloc_invalidated.insert(var);
+            }
+            // Union of realloc_updated
+            self.realloc_updated = then_realloc_updated;
+            for var in else_realloc_updated {
+                self.realloc_updated.insert(var);
+            }
+        }
+    }
+
+    /// Check if a branch unconditionally returns (all paths return)
+    fn unconditionally_returns(&self, node: &Node) -> bool {
+        match node.kind() {
+            "return_statement" => true,
+            "compound_statement" => {
+                // A compound statement unconditionally returns if its last statement returns
+                // or if it contains an unconditional return
+                let mut last_child = None;
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() != "{" && child.kind() != "}" {
+                            last_child = Some(child);
+                        }
+                    }
+                }
+                if let Some(last) = last_child {
+                    self.unconditionally_returns(&last)
+                } else {
+                    false
+                }
+            }
+            "if_statement" => {
+                // An if-statement unconditionally returns only if BOTH branches unconditionally return
+                let then_returns = node
+                    .child_by_field_name("consequence")
+                    .map(|c| self.unconditionally_returns(&c))
+                    .unwrap_or(false);
+                let else_returns = node
+                    .child_by_field_name("alternative")
+                    .map(|c| self.unconditionally_returns(&c))
+                    .unwrap_or(false);
+                then_returns && else_returns
+            }
+            _ => false,
+        }
+    }
+
+    /// Check if a node contains a return statement
+    fn contains_return(&self, node: &Node) -> bool {
+        if node.kind() == "return_statement" {
+            return true;
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.contains_return(&child) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     /// Process function calls - free(), malloc(), printf(), etc.
     fn process_call_expression(
         &mut self,
@@ -152,11 +325,28 @@ impl MemoryAnalyzer {
                 }
                 "realloc" => {
                     // For realloc, the original pointer may become invalid
-                    // but we only flag if the old pointer is used after
+                    // Track the old pointer as invalidated in case it's used
+                    self.track_realloc_old_pointer(node, source);
                 }
                 _ => {
-                    // Check if any argument is a freed pointer
-                    self.check_function_args_for_freed(node, source, violations);
+                    // Check for common free-related macros
+                    let upper_name = function_name.to_uppercase();
+                    if upper_name.contains("FREE")
+                        || upper_name == "XFREE"
+                        || upper_name == "G_FREE"
+                        || upper_name == "SAFE_DELETE"
+                        || upper_name == "DELETE"
+                    {
+                        // Treat as free() call
+                        self.process_free_call(node, source, violations);
+                    } else if upper_name.contains("REALLOC") {
+                        // Treat as realloc() call - track old pointer as invalidated
+                        // Don't check args for freed - realloc expects a possibly-allocated pointer
+                        self.track_realloc_old_pointer(node, source);
+                    } else {
+                        // Check if any argument is a freed pointer
+                        self.check_function_args_for_freed(node, source, violations);
+                    }
                 }
             }
         }
@@ -205,10 +395,14 @@ impl MemoryAnalyzer {
 
                     // For field expressions like free(data->name), track the full path
                     // not just the base variable
-                    let var_name = if actual_arg.kind() == "field_expression" {
-                        get_node_text(&actual_arg, source).to_string()
+                    let (var_name, base_var) = if actual_arg.kind() == "field_expression" {
+                        let full_path = get_node_text(&actual_arg, source).to_string();
+                        // For union support: also track the base variable
+                        // When free(u.member1) is called, u.member2 also becomes invalid
+                        let base = self.extract_base_variable(&actual_arg, source);
+                        (full_path, Some(base))
                     } else if actual_arg.kind() == "identifier" {
-                        get_node_text(&actual_arg, source).to_string()
+                        (get_node_text(&actual_arg, source).to_string(), None)
                     } else {
                         // For other complex expressions, skip to avoid false positives
                         continue;
@@ -221,8 +415,11 @@ impl MemoryAnalyzer {
                     // Resolve to canonical name (in case of alias)
                     let canonical = self.resolve_canonical(&var_name);
 
-                    // Check for double-free
-                    if self.is_freed(&canonical) && !self.nullified_vars.contains(&canonical) {
+                    // Check for double-free (only check freed_vars, not realloc_invalidated)
+                    // It's OK to free a realloc-invalidated pointer (that's expected when realloc fails)
+                    if self.is_actually_freed(&canonical)
+                        && !self.nullified_vars.contains(&canonical)
+                    {
                         violations.push(RuleViolation {
                             rule_id: "MEM30-C".to_string(),
                             severity: Severity::Critical,
@@ -241,6 +438,18 @@ impl MemoryAnalyzer {
                     // Mark as freed
                     self.freed_vars.insert(canonical.clone());
                     self.freed_vars.insert(var_name.clone());
+
+                    // For union support: track union member relationships
+                    // When free(u.member) is called, all u.* accesses become invalid
+                    if let Some(base) = base_var {
+                        if !base.is_empty() {
+                            // Add to union tracking - all field accesses on this base are suspect
+                            self.union_members
+                                .entry(base.clone())
+                                .or_default()
+                                .insert(var_name.clone());
+                        }
+                    }
 
                     // Also mark any aliases as freed
                     let aliases_to_free: Vec<String> = self
@@ -268,13 +477,16 @@ impl MemoryAnalyzer {
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
+            // Get full path for field expressions (e.g., im->clip->list)
+            let left_full_path = get_node_text(&left, source).to_string();
+
             // Check if assigning NULL - this clears freed status
             let right_text = get_node_text(&right, source);
             if right_text.trim() == "NULL" || right_text.trim() == "0" {
                 // For field expressions like data->name = NULL, track the full path
-                let left_path = get_node_text(&left, source).to_string();
-                self.nullified_vars.insert(left_path.clone());
-                self.freed_vars.remove(&left_path);
+                self.nullified_vars.insert(left_full_path.clone());
+                self.freed_vars.remove(&left_full_path);
+                self.realloc_invalidated.remove(&left_full_path);
 
                 // Also track base variable
                 let left_var = self.extract_base_variable(&left, source);
@@ -286,7 +498,7 @@ impl MemoryAnalyzer {
             }
 
             let left_var = self.extract_base_variable(&left, source);
-            if left_var.is_empty() {
+            if left_var.is_empty() && left_full_path.is_empty() {
                 return;
             }
 
@@ -314,9 +526,27 @@ impl MemoryAnalyzer {
                 return;
             }
 
-            // Check if right side is a freed pointer (creating alias from freed)
+            // Check if right side is a realloc result variable
+            // If we're assigning a realloc result to the original pointer (ptr = new_ptr),
+            // clear the freed status since the pointer is now valid again
             let right_var = self.extract_base_variable(&right, source);
             if !right_var.is_empty() {
+                // Check if right_var was the result of a realloc on left_var
+                // This handles: new_ptr = realloc(ptr, ...); ptr = new_ptr;
+                // Also handles: im->clip->list = more; after more = gdRealloc(im->clip->list, ...)
+                if self.realloc_updated.contains(&right_var) {
+                    // Clear both base variable and full path
+                    self.freed_vars.remove(&left_var);
+                    self.nullified_vars.remove(&left_var);
+                    self.realloc_invalidated.remove(&left_var);
+                    // For field expressions, also clear the full path
+                    self.freed_vars.remove(&left_full_path);
+                    self.nullified_vars.remove(&left_full_path);
+                    self.realloc_invalidated.remove(&left_full_path);
+                    // Also clear any aliases pointing to the old value
+                    self.aliases.remove(&left_var);
+                }
+
                 if self.is_freed(&right_var) {
                     // Creating an alias from freed pointer - the new variable is also freed
                     self.freed_vars.insert(left_var.clone());
@@ -340,9 +570,19 @@ impl MemoryAnalyzer {
             if right.kind() == "call_expression" {
                 if let Some(func) = right.child_by_field_name("function") {
                     let func_name = get_node_text(&func, source);
-                    if func_name == "malloc" || func_name == "calloc" || func_name == "realloc" {
+                    let upper_func_name = func_name.to_uppercase();
+                    if func_name == "malloc" || func_name == "calloc" {
                         self.freed_vars.remove(&left_var);
                         self.nullified_vars.remove(&left_var);
+                        self.realloc_invalidated.remove(&left_var);
+                    } else if func_name == "realloc" || upper_func_name.contains("REALLOC") {
+                        // Track the old pointer passed to realloc as invalidated
+                        self.track_realloc_old_pointer(&right, source);
+                        // For realloc, track that left_var is the result of realloc
+                        self.realloc_updated.insert(left_var.clone());
+                        self.freed_vars.remove(&left_var);
+                        self.nullified_vars.remove(&left_var);
+                        self.realloc_invalidated.remove(&left_var);
                     }
                 }
             }
@@ -363,6 +603,43 @@ impl MemoryAnalyzer {
             let left_var = self.extract_declarator_name(&declarator, source);
             if left_var.is_empty() {
                 return;
+            }
+
+            // Check if this is a realloc initialization
+            if value.kind() == "call_expression" {
+                if let Some(func) = value.child_by_field_name("function") {
+                    let func_name = get_node_text(&func, source);
+                    let upper_func_name = func_name.to_uppercase();
+                    if func_name == "realloc" || upper_func_name.contains("REALLOC") {
+                        // Track that left_var is the result of realloc
+                        self.realloc_updated.insert(left_var.clone());
+                        // Also track what pointer was passed to realloc (it's now invalidated)
+                        self.track_realloc_old_pointer(&value, source);
+                        return;
+                    } else if func_name == "malloc" || func_name == "calloc" {
+                        // Fresh allocation, nothing special to track
+                        return;
+                    }
+                }
+            }
+
+            // Check for cast expression wrapping a call
+            if value.kind() == "cast_expression" {
+                if let Some(inner_value) = value.child_by_field_name("value") {
+                    if inner_value.kind() == "call_expression" {
+                        if let Some(func) = inner_value.child_by_field_name("function") {
+                            let func_name = get_node_text(&func, source);
+                            let upper_func_name = func_name.to_uppercase();
+                            if func_name == "realloc" || upper_func_name.contains("REALLOC") {
+                                self.realloc_updated.insert(left_var.clone());
+                                self.track_realloc_old_pointer(&inner_value, source);
+                                return;
+                            } else if func_name == "malloc" || func_name == "calloc" {
+                                return;
+                            }
+                        }
+                    }
+                }
             }
 
             let right_var = self.extract_base_variable(&value, source);
@@ -606,13 +883,27 @@ impl MemoryAnalyzer {
 
     /// Check field access for use-after-free (ptr->field)
     fn check_field_access(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Skip if this is inside a free() call - handled separately
+        // Skip if parent is a subscript_expression (checked in check_subscript_access)
+        if let Some(parent) = node.parent() {
+            if parent.kind() == "subscript_expression" {
+                return;
+            }
+        }
+
+        // Skip if this is inside a free() or realloc() call - handled separately
         if let Some(parent) = node.parent() {
             if parent.kind() == "argument_list" {
                 if let Some(grandparent) = parent.parent() {
                     if grandparent.kind() == "call_expression" {
                         if let Some(func) = grandparent.child_by_field_name("function") {
-                            if get_node_text(&func, source) == "free" {
+                            let func_name = get_node_text(&func, source);
+                            let upper_func_name = func_name.to_uppercase();
+                            // Skip for free, realloc, and custom variants
+                            if func_name == "free"
+                                || func_name == "realloc"
+                                || upper_func_name.contains("FREE")
+                                || upper_func_name.contains("REALLOC")
+                            {
                                 return;
                             }
                         }
@@ -666,7 +957,8 @@ impl MemoryAnalyzer {
         }
     }
 
-    /// Check if a variable is in freed state (considering aliases)
+    /// Check if a variable is in freed state (considering aliases and realloc invalidation)
+    /// Used for use-after-free detection
     fn is_freed(&self, var_name: &str) -> bool {
         if self.nullified_vars.contains(var_name) {
             return false;
@@ -674,14 +966,88 @@ impl MemoryAnalyzer {
         if self.freed_vars.contains(var_name) {
             return true;
         }
-        // Check if it's an alias of a freed variable
+        // Check if invalidated by realloc (old pointer after realloc)
+        if self.realloc_invalidated.contains(var_name) {
+            return true;
+        }
+        // Check if it's an alias of a freed or invalidated variable
         if let Some(canonical) = self.aliases.get(var_name) {
             if self.nullified_vars.contains(canonical) {
                 return false;
             }
-            return self.freed_vars.contains(canonical);
+            if self.freed_vars.contains(canonical) || self.realloc_invalidated.contains(canonical) {
+                return true;
+            }
+        }
+        // Check if any union member sharing this base is freed
+        for (base, members) in &self.union_members {
+            if var_name.starts_with(base) {
+                for member in members {
+                    if self.freed_vars.contains(member) || self.realloc_invalidated.contains(member)
+                    {
+                        return true;
+                    }
+                }
+            }
         }
         false
+    }
+
+    /// Check if a variable has actually been freed (not just realloc-invalidated)
+    /// Used for double-free detection - it's OK to free a realloc-invalidated pointer
+    fn is_actually_freed(&self, var_name: &str) -> bool {
+        if self.nullified_vars.contains(var_name) {
+            return false;
+        }
+        if self.freed_vars.contains(var_name) {
+            return true;
+        }
+        // Check if it's an alias of a freed variable (not realloc-invalidated)
+        if let Some(canonical) = self.aliases.get(var_name) {
+            if self.nullified_vars.contains(canonical) {
+                return false;
+            }
+            if self.freed_vars.contains(canonical) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Track the old pointer passed to realloc as invalidated
+    fn track_realloc_old_pointer(&mut self, call_node: &Node, source: &str) {
+        if let Some(args) = call_node.child_by_field_name("arguments") {
+            // First argument to realloc is the old pointer
+            for i in 0..args.child_count() {
+                if let Some(arg) = args.child(i) {
+                    if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                        // For field expressions (like im->clip->list), track the full path
+                        // since only that specific field becomes invalid
+                        let old_ptr = if arg.kind() == "field_expression" {
+                            get_node_text(&arg, source).to_string()
+                        } else {
+                            self.extract_base_variable(&arg, source)
+                        };
+
+                        if !old_ptr.is_empty() {
+                            // The old pointer is now potentially invalid
+                            self.realloc_invalidated.insert(old_ptr.clone());
+                            // Also invalidate any aliases pointing to the old pointer
+                            let aliases_to_invalidate: Vec<String> = self
+                                .aliases
+                                .iter()
+                                .filter(|(_, v)| **v == old_ptr)
+                                .map(|(k, _)| k.clone())
+                                .collect();
+                            for alias in aliases_to_invalidate {
+                                self.realloc_invalidated.insert(alias);
+                            }
+                        }
+                        break; // Only need the first argument
+                    }
+                }
+            }
+        }
     }
 
     /// Resolve a variable to its canonical name (follow alias chain)
