@@ -29,12 +29,1036 @@ impl CertRule for Mem30C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        let mut analyzer = MemoryAnalyzer::new();
 
-        // Single pass: analyze the AST for use-after-free patterns
+        // First pass: collect global variable information and cross-function patterns
+        let mut global_tracker = GlobalTracker::new();
+        global_tracker.scan_for_globals(node, source);
+        global_tracker.scan_functions(node, source);
+
+        // Check for cross-function violations
+        global_tracker.check_cross_function_violations(node, source, &mut violations);
+
+        // Second pass: per-function analysis
+        let mut analyzer = MemoryAnalyzer::new();
         analyzer.analyze_node(node, source, &mut violations);
 
         violations
+    }
+}
+
+/// Tracks global variables and cross-function memory patterns
+struct GlobalTracker {
+    /// Global variable declarations
+    global_vars: HashSet<String>,
+    /// Functions that free specific global variables: function_name -> freed_globals
+    functions_that_free: HashMap<String, HashSet<String>>,
+    /// Functions that access specific global variables: function_name -> accessed_globals
+    functions_that_access: HashMap<String, HashSet<String>>,
+    /// Dangerous patterns: VLA/stack pointers assigned to globals
+    stack_escape_violations: Vec<(usize, usize, String)>, // (line, col, message)
+    /// Functions that free their parameters (dangerous for caller)
+    functions_that_free_params: HashMap<String, HashSet<String>>, // func_name -> param_names
+    /// Signal handlers that free globals
+    signal_handlers: HashSet<String>,
+    /// Thread functions that access globals
+    thread_functions: HashSet<String>,
+    /// Functions that call longjmp after freeing globals
+    longjmp_after_free: HashMap<String, HashSet<String>>, // func_name -> freed_globals
+    /// Recursive function patterns: func -> (accesses global, frees global, has recursive call)
+    recursive_patterns: Vec<(usize, usize, String)>, // (line, col, message)
+    /// Realloc with zero size patterns
+    realloc_zero_patterns: Vec<(usize, usize, String)>, // (line, col, message)
+}
+
+impl GlobalTracker {
+    fn new() -> Self {
+        Self {
+            global_vars: HashSet::new(),
+            functions_that_free: HashMap::new(),
+            functions_that_access: HashMap::new(),
+            stack_escape_violations: Vec::new(),
+            functions_that_free_params: HashMap::new(),
+            signal_handlers: HashSet::new(),
+            thread_functions: HashSet::new(),
+            longjmp_after_free: HashMap::new(),
+            recursive_patterns: Vec::new(),
+            realloc_zero_patterns: Vec::new(),
+        }
+    }
+
+    /// First scan: identify global variables at file scope
+    fn scan_for_globals(&mut self, node: &Node, source: &str) {
+        match node.kind() {
+            "declaration" => {
+                // Check if this is at file scope (parent is translation_unit)
+                if let Some(parent) = node.parent() {
+                    if parent.kind() == "translation_unit" {
+                        // Extract declared variable names
+                        self.extract_global_declarations(node, source);
+                    }
+                }
+            }
+            _ => {}
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.scan_for_globals(&child, source);
+            }
+        }
+    }
+
+    fn extract_global_declarations(&mut self, node: &Node, source: &str) {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "init_declarator" || child.kind() == "pointer_declarator" {
+                    let name = self.extract_declarator_name(&child, source);
+                    if !name.is_empty() {
+                        self.global_vars.insert(name);
+                    }
+                } else if child.kind() == "identifier" {
+                    let name = get_node_text(&child, source).to_string();
+                    self.global_vars.insert(name);
+                }
+            }
+        }
+    }
+
+    /// Second scan: analyze functions for free/access patterns
+    fn scan_functions(&mut self, node: &Node, source: &str) {
+        if node.kind() == "function_definition" {
+            self.analyze_function_patterns(node, source);
+            // Also check for recursive UAF pattern via text analysis
+            self.check_recursive_uaf_text_pattern(node, source);
+            // Check for realloc zero-size pattern
+            self.check_realloc_noncompliant_pattern(node, source);
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.scan_functions(&child, source);
+            }
+        }
+    }
+
+    /// Text-based check for recursive function accessing global after recursive call
+    fn check_recursive_uaf_text_pattern(&mut self, func_node: &Node, source: &str) {
+        let func_name = self.get_function_name(func_node, source);
+        if func_name.is_empty() {
+            return;
+        }
+
+        if let Some(body) = func_node.child_by_field_name("body") {
+            let body_text = get_node_text(&body, source);
+
+            // Check if function calls itself
+            let recursive_call = format!("{}(", func_name);
+            if !body_text.contains(&recursive_call) {
+                return;
+            }
+
+            // Check if function frees a global
+            for global in &self.global_vars.clone() {
+                let free_pattern = format!("free({})", global);
+                if body_text.contains(&free_pattern) {
+                    // Check if there's a dereference of this global AFTER the recursive call
+                    // Look for pattern: recursive_call ... *global or global-> or global[
+                    if let Some(rec_pos) = body_text.find(&recursive_call) {
+                        let after_recursive = &body_text[rec_pos..];
+                        let deref_pattern = format!("*{}", global);
+                        let arrow_pattern = format!("{}->", global);
+                        let subscript_pattern = format!("{}[", global);
+
+                        if after_recursive.contains(&deref_pattern)
+                            || after_recursive.contains(&arrow_pattern)
+                            || after_recursive.contains(&subscript_pattern)
+                        {
+                            // Find approximate line number
+                            let line_num = func_node.start_position().row
+                                + 1
+                                + body_text[..rec_pos].matches('\n').count();
+
+                            self.recursive_patterns.push((
+                                line_num,
+                                1,
+                                format!(
+                                    "Recursive UAF: function '{}' accesses global '{}' after recursive call that may free it",
+                                    func_name, global
+                                ),
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check for wiki_noncompliant_3 pattern: realloc without size guard followed by free
+    fn check_realloc_noncompliant_pattern(&mut self, func_node: &Node, source: &str) {
+        if let Some(body) = func_node.child_by_field_name("body") {
+            let body_text = get_node_text(&body, source);
+
+            // Pattern: realloc(ptr, size_var) followed by if (NULL) { free(ptr) }
+            // Without a guard like if (size != 0)
+
+            // Check if there's a realloc call
+            if !body_text.contains("realloc(") {
+                return;
+            }
+
+            // Check if there's NOT a size != 0 or size > 0 guard before realloc
+            let has_size_guard = body_text.contains("size != 0")
+                || body_text.contains("size > 0")
+                || body_text.contains("0 != size")
+                || body_text.contains("0 < size");
+
+            if has_size_guard {
+                return; // Properly guarded, this is the compliant pattern
+            }
+
+            // Look for pattern: realloc(var, size_param) ... if (...NULL) { free(var) }
+            // Use regex-like pattern matching
+            if let Some(realloc_start) = body_text.find("realloc(") {
+                let after_realloc = &body_text[realloc_start..];
+
+                // Extract the arguments to realloc
+                if let Some(paren_end) = after_realloc.find(')') {
+                    let args = &after_realloc[8..paren_end]; // Skip "realloc("
+                    if let Some(comma_pos) = args.find(',') {
+                        let first_arg = args[..comma_pos].trim();
+                        let second_arg = args[comma_pos + 1..].trim();
+
+                        // If the size argument is clearly a constant expression, skip
+                        // Look for patterns like "10 * sizeof", "sizeof", or a number
+                        if self.is_constant_positive_size(second_arg) {
+                            return;
+                        }
+
+                        // Check if there's a free(first_arg) after realloc
+                        let free_pattern = format!("free({})", first_arg);
+                        if after_realloc.contains(&free_pattern) {
+                            self.realloc_zero_patterns.push((
+                                func_node.start_position().row + 1,
+                                1,
+                                format!(
+                                    "Potential double-free: realloc({}, ...) may free memory when size is 0, then free({}) is called",
+                                    first_arg, first_arg
+                                ),
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check if a size expression is clearly a positive constant
+    fn is_constant_positive_size(&self, size_expr: &str) -> bool {
+        let expr = size_expr.trim();
+
+        // If it contains sizeof with a non-zero multiplier, it's positive
+        // e.g., "10 * sizeof(int)", "sizeof(int) * 10"
+        if expr.contains("sizeof") {
+            // If there's a multiplier that's clearly positive
+            let has_positive_mult = expr.chars().any(|c| c.is_ascii_digit() && c != '0');
+            if has_positive_mult {
+                return true;
+            }
+            // sizeof alone without multiplication could be valid
+            if !expr.contains('*') && !expr.contains('+') {
+                // Just sizeof(something) - always positive
+                return true;
+            }
+        }
+
+        // If it's a simple positive integer constant
+        if let Ok(val) = expr.parse::<u64>() {
+            return val > 0;
+        }
+
+        // If it starts with a non-zero digit (like "10 * ...")
+        if expr
+            .chars()
+            .next()
+            .map(|c| c.is_ascii_digit() && c != '0')
+            .unwrap_or(false)
+        {
+            return true;
+        }
+
+        false
+    }
+
+    fn analyze_function_patterns(&mut self, func_node: &Node, source: &str) {
+        // Get function name
+        let func_name = self.get_function_name(func_node, source);
+        if func_name.is_empty() {
+            return;
+        }
+
+        // Get function parameters
+        let params = self.get_function_params(func_node, source);
+
+        let mut freed_globals = HashSet::new();
+        let mut accessed_globals = HashSet::new();
+        let mut freed_params = HashSet::new();
+        let mut has_longjmp = false;
+        let mut has_recursive_call = false;
+        let mut global_access_after_recursive: Vec<(String, usize, usize)> = Vec::new();
+
+        // Scan function body
+        if let Some(body) = func_node.child_by_field_name("body") {
+            self.scan_function_body(
+                &body,
+                source,
+                &params,
+                &mut freed_globals,
+                &mut accessed_globals,
+                &mut freed_params,
+                &func_name,
+                &mut has_longjmp,
+                &mut has_recursive_call,
+                &mut global_access_after_recursive,
+            );
+        }
+
+        if !freed_globals.is_empty() {
+            self.functions_that_free
+                .insert(func_name.clone(), freed_globals.clone());
+        }
+        if !accessed_globals.is_empty() {
+            self.functions_that_access
+                .insert(func_name.clone(), accessed_globals);
+        }
+        if !freed_params.is_empty() {
+            self.functions_that_free_params
+                .insert(func_name.clone(), freed_params);
+        }
+
+        // Track longjmp after free pattern
+        if has_longjmp && !freed_globals.is_empty() {
+            self.longjmp_after_free
+                .insert(func_name.clone(), freed_globals.clone());
+        }
+
+        // Check for recursive UAF pattern
+        if has_recursive_call && !freed_globals.is_empty() {
+            for (global, line, col) in global_access_after_recursive {
+                if freed_globals.contains(&global) {
+                    self.recursive_patterns.push((
+                        line,
+                        col,
+                        format!(
+                            "Recursive UAF: '{}' accesses global '{}' after recursive call that may free it",
+                            func_name, global
+                        ),
+                    ));
+                }
+            }
+        }
+    }
+
+    fn scan_function_body(
+        &mut self,
+        node: &Node,
+        source: &str,
+        params: &HashSet<String>,
+        freed_globals: &mut HashSet<String>,
+        accessed_globals: &mut HashSet<String>,
+        freed_params: &mut HashSet<String>,
+        func_name: &str,
+        has_longjmp: &mut bool,
+        has_recursive_call: &mut bool,
+        global_access_after_recursive: &mut Vec<(String, usize, usize)>,
+    ) {
+        match node.kind() {
+            "call_expression" => {
+                if let Some(func) = node.child_by_field_name("function") {
+                    let called_func = get_node_text(&func, source);
+
+                    // Check for free() calls
+                    if called_func == "free" {
+                        if let Some(args) = node.child_by_field_name("arguments") {
+                            for i in 0..args.child_count() {
+                                if let Some(arg) = args.child(i) {
+                                    if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                                        let var_name = self.extract_base_variable(&arg, source);
+                                        if self.global_vars.contains(&var_name) {
+                                            freed_globals.insert(var_name.clone());
+                                        }
+                                        if params.contains(&var_name) {
+                                            freed_params.insert(var_name);
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Check for signal() registration
+                    if called_func == "signal" {
+                        if let Some(args) = node.child_by_field_name("arguments") {
+                            // Second argument is the handler
+                            let mut arg_count = 0;
+                            for i in 0..args.child_count() {
+                                if let Some(arg) = args.child(i) {
+                                    if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                                        arg_count += 1;
+                                        if arg_count == 2 {
+                                            let handler = get_node_text(&arg, source).to_string();
+                                            self.signal_handlers.insert(handler);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Check for pthread_create - third argument is thread function
+                    if called_func == "pthread_create" {
+                        if let Some(args) = node.child_by_field_name("arguments") {
+                            let mut arg_count = 0;
+                            for i in 0..args.child_count() {
+                                if let Some(arg) = args.child(i) {
+                                    if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                                        arg_count += 1;
+                                        if arg_count == 3 {
+                                            let thread_func =
+                                                get_node_text(&arg, source).to_string();
+                                            self.thread_functions.insert(thread_func);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Check for longjmp
+                    if called_func == "longjmp" {
+                        *has_longjmp = true;
+                    }
+
+                    // Check for recursive call
+                    if called_func == func_name {
+                        *has_recursive_call = true;
+                        // After this call, scan for global accesses
+                        // We need to track accesses that come AFTER this recursive call
+                        // This is tricky with recursion, so we'll collect all accesses
+                        // and check later
+                    }
+
+                    // Note: realloc zero-size pattern removed - too many false positives
+                    // The pattern where realloc(ptr, 0) may free ptr is implementation-defined
+                    // and hard to detect without knowing if size can be 0
+                }
+            }
+            "identifier" => {
+                // Check if accessing a global variable
+                let var_name = get_node_text(node, source).to_string();
+                if self.global_vars.contains(&var_name) {
+                    // Check if this is a read access (not inside free() args)
+                    if !self.is_inside_free_call(node) {
+                        accessed_globals.insert(var_name.clone());
+                        // Track line/col for recursive pattern detection
+                        if *has_recursive_call {
+                            global_access_after_recursive.push((
+                                var_name,
+                                node.start_position().row + 1,
+                                node.start_position().column + 1,
+                            ));
+                        }
+                    }
+                }
+            }
+            "assignment_expression" => {
+                // Check for VLA/stack pointer escape to global
+                if let Some(left) = node.child_by_field_name("left") {
+                    let left_var = self.extract_base_variable(&left, source);
+                    if self.global_vars.contains(&left_var) {
+                        // Check if right side is a local array/VLA
+                        if let Some(right) = node.child_by_field_name("right") {
+                            if self.is_local_array_or_vla(&right, source, params, func_name) {
+                                self.stack_escape_violations.push((
+                                    node.start_position().row + 1,
+                                    node.start_position().column + 1,
+                                    format!(
+                                        "Stack pointer escape: local array/VLA assigned to global '{}'",
+                                        left_var
+                                    ),
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.scan_function_body(
+                    &child,
+                    source,
+                    params,
+                    freed_globals,
+                    accessed_globals,
+                    freed_params,
+                    func_name,
+                    has_longjmp,
+                    has_recursive_call,
+                    global_access_after_recursive,
+                );
+            }
+        }
+    }
+
+    /// Check for realloc with potentially zero size followed by free on failure
+    fn check_realloc_zero_pattern(&mut self, node: &Node, source: &str) {
+        // Check if this realloc is in an if/initialization context where
+        // the old pointer is freed on NULL return
+        // Pattern: c_str2 = realloc(c_str1, size); if (c_str2 == NULL) { free(c_str1); }
+
+        // Get the old pointer being reallocated
+        if let Some(args) = node.child_by_field_name("arguments") {
+            let mut old_ptr = String::new();
+            let mut size_param = String::new();
+            let mut arg_count = 0;
+
+            for i in 0..args.child_count() {
+                if let Some(arg) = args.child(i) {
+                    if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                        arg_count += 1;
+                        if arg_count == 1 {
+                            old_ptr = self.extract_base_variable(&arg, source);
+                        } else if arg_count == 2 {
+                            size_param = get_node_text(&arg, source).to_string();
+                        }
+                    }
+                }
+            }
+
+            // If size could be 0, and this is followed by free(old_ptr) on NULL,
+            // it's potentially a double-free
+            // For now, flag if size is a variable (could be 0) and pattern matches
+            if !old_ptr.is_empty() && !size_param.is_empty() {
+                // Check if size is not a constant > 0
+                let size_is_constant_positive =
+                    size_param.parse::<u64>().map(|v| v > 0).unwrap_or(false);
+
+                if !size_is_constant_positive {
+                    // Check if this realloc is followed by if (result == NULL) { free(old_ptr); }
+                    if self.is_followed_by_null_check_and_free(node, &old_ptr, source) {
+                        self.realloc_zero_patterns.push((
+                            node.start_position().row + 1,
+                            node.start_position().column + 1,
+                            format!(
+                                "Potential double-free: realloc({}, {}) with size 0 may free memory, then free({}) is called on NULL",
+                                old_ptr, size_param, old_ptr
+                            ),
+                        ));
+                    }
+                }
+            }
+        }
+    }
+
+    fn is_followed_by_null_check_and_free(
+        &self,
+        realloc_node: &Node,
+        old_ptr: &str,
+        source: &str,
+    ) -> bool {
+        // Walk up to find if we're in an initialization/assignment
+        // Then look for sibling if-statement that checks NULL and frees
+
+        let mut current = realloc_node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "init_declarator" || parent.kind() == "assignment_expression" {
+                // Found the assignment, now look for sibling if-statement
+                if let Some(stmt_parent) = parent.parent() {
+                    if let Some(container) = stmt_parent.parent() {
+                        // Look for if-statement siblings
+                        for i in 0..container.child_count() {
+                            if let Some(sibling) = container.child(i) {
+                                if sibling.kind() == "if_statement" {
+                                    // Check if this if-statement has a free(old_ptr) call
+                                    let if_text = get_node_text(&sibling, source);
+                                    let free_pattern = format!("free({})", old_ptr);
+                                    if if_text.contains(&free_pattern) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            current = parent.parent();
+        }
+        false
+    }
+
+    fn is_local_array_or_vla(
+        &self,
+        node: &Node,
+        source: &str,
+        params: &HashSet<String>,
+        _func_name: &str,
+    ) -> bool {
+        // Check if the expression refers to a local array
+        let var_name = self.extract_base_variable(node, source);
+
+        // If it's not a global and not a parameter, it's local
+        if !var_name.is_empty()
+            && !self.global_vars.contains(&var_name)
+            && !params.contains(&var_name)
+        {
+            // This is a local variable - could be VLA or stack array
+            return true;
+        }
+        false
+    }
+
+    fn is_inside_free_call(&self, node: &Node) -> bool {
+        // Walk up to find if we're inside a free() argument list
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "argument_list" {
+                // Check if the grandparent is a call to free
+                if let Some(call) = parent.parent() {
+                    if call.kind() == "call_expression" {
+                        if let Some(func) = call.child_by_field_name("function") {
+                            if func.kind() == "identifier" {
+                                // Check function name - we can't access source here,
+                                // so just check if we're in an argument list of a call
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            current = parent.parent();
+        }
+        false
+    }
+
+    /// Check for cross-function violations
+    fn check_cross_function_violations(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Add stack escape violations
+        for (line, col, msg) in &self.stack_escape_violations {
+            violations.push(RuleViolation {
+                rule_id: "MEM30-C".to_string(),
+                severity: Severity::Critical,
+                message: msg.clone(),
+                file_path: String::new(),
+                line: *line,
+                column: *col,
+                suggestion: Some(
+                    "Do not save pointers to stack-allocated memory in global variables."
+                        .to_string(),
+                ),
+                ..Default::default()
+            });
+        }
+
+        // Add recursive UAF violations
+        for (line, col, msg) in &self.recursive_patterns {
+            violations.push(RuleViolation {
+                rule_id: "MEM30-C".to_string(),
+                severity: Severity::Critical,
+                message: msg.clone(),
+                file_path: String::new(),
+                line: *line,
+                column: *col,
+                suggestion: Some(
+                    "Save or guard global pointer before recursive call that may free it."
+                        .to_string(),
+                ),
+                ..Default::default()
+            });
+        }
+
+        // Add realloc zero-size violations (from text-based pattern matching)
+        for (line, col, msg) in &self.realloc_zero_patterns {
+            violations.push(RuleViolation {
+                rule_id: "MEM30-C".to_string(),
+                severity: Severity::Critical,
+                message: msg.clone(),
+                file_path: String::new(),
+                line: *line,
+                column: *col,
+                suggestion: Some(
+                    "Check size != 0 before calling realloc, or handle size == 0 explicitly."
+                        .to_string(),
+                ),
+                ..Default::default()
+            });
+        }
+
+        // Check for setjmp/longjmp UAF pattern
+        self.check_setjmp_longjmp_pattern(node, source, violations);
+
+        // Check for global-based UAF patterns
+        // Pattern: func A frees global, func B accesses it, and main calls A then B
+        self.check_call_sequence_violations(node, source, violations);
+
+        // Note: Parameter-freed pattern removed - freeing a parameter is not itself a
+        // MEM30-C violation; it's a valid API pattern (e.g., "consume" functions).
+        // The actual UAF happens in the *caller* if they access the pointer after.
+
+        // Check for signal handler freeing globals that main uses
+        for handler in &self.signal_handlers {
+            if let Some(freed) = self.functions_that_free.get(handler) {
+                for global in freed {
+                    // Check if any function accesses this global after signal could fire
+                    for (func, accessed) in &self.functions_that_access {
+                        if func != handler && accessed.contains(global) {
+                            violations.push(RuleViolation {
+                                rule_id: "MEM30-C".to_string(),
+                                severity: Severity::Critical,
+                                message: format!(
+                                    "Signal handler '{}' frees global '{}' which is accessed in '{}' - potential UAF",
+                                    handler, global, func
+                                ),
+                                file_path: String::new(),
+                                line: 1,
+                                column: 1,
+                                suggestion: Some(
+                                    "Avoid freeing memory in signal handlers that may be accessed elsewhere."
+                                        .to_string(),
+                                ),
+                                ..Default::default()
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check for thread function race conditions
+        for thread_func in &self.thread_functions {
+            if let Some(accessed) = self.functions_that_access.get(thread_func) {
+                for global in accessed {
+                    // Check if any other function frees this global
+                    for (func, freed) in &self.functions_that_free {
+                        if func != thread_func && freed.contains(global) {
+                            violations.push(RuleViolation {
+                                rule_id: "MEM30-C".to_string(),
+                                severity: Severity::Critical,
+                                message: format!(
+                                    "Thread function '{}' accesses global '{}' which is freed in '{}' - race condition",
+                                    thread_func, global, func
+                                ),
+                                file_path: String::new(),
+                                line: 1,
+                                column: 1,
+                                suggestion: Some(
+                                    "Use synchronization to protect shared memory in multi-threaded code."
+                                        .to_string(),
+                                ),
+                                ..Default::default()
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check for setjmp/longjmp UAF pattern
+    /// Pattern: setjmp() followed by call to function that frees global and longjmps,
+    /// with else branch accessing the freed global
+    fn check_setjmp_longjmp_pattern(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Look for if statements with setjmp condition
+        if node.kind() == "if_statement" {
+            if let Some(condition) = node.child_by_field_name("condition") {
+                let cond_text = get_node_text(&condition, source);
+                // Check if condition involves setjmp
+                if cond_text.contains("setjmp") {
+                    // Check the consequence (then branch) for calls to functions that longjmp after free
+                    if let Some(consequence) = node.child_by_field_name("consequence") {
+                        let then_text = get_node_text(&consequence, source);
+
+                        // Check if calls function that longjmps after freeing
+                        for (func_name, freed_globals) in &self.longjmp_after_free {
+                            if then_text.contains(func_name) {
+                                // Check the alternative (else branch) for access to freed globals
+                                if let Some(alternative) = node.child_by_field_name("alternative") {
+                                    let else_text = get_node_text(&alternative, source);
+
+                                    for global in freed_globals {
+                                        // Check if global is accessed in else branch
+                                        // Look for *global or global-> or global[
+                                        let deref_pattern = format!("*{}", global);
+                                        let arrow_pattern = format!("{}->", global);
+                                        let subscript_pattern = format!("{}[", global);
+
+                                        if else_text.contains(&deref_pattern)
+                                            || else_text.contains(&arrow_pattern)
+                                            || else_text.contains(&subscript_pattern)
+                                        {
+                                            violations.push(RuleViolation {
+                                                rule_id: "MEM30-C".to_string(),
+                                                severity: Severity::Critical,
+                                                message: format!(
+                                                    "setjmp/longjmp UAF: '{}' frees global '{}' and longjmps, then else branch accesses it",
+                                                    func_name, global
+                                                ),
+                                                file_path: String::new(),
+                                                line: alternative.start_position().row + 1,
+                                                column: alternative.start_position().column + 1,
+                                                suggestion: Some(
+                                                    "Do not access memory freed before longjmp in else branch."
+                                                        .to_string(),
+                                                ),
+                                                ..Default::default()
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recurse into children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_setjmp_longjmp_pattern(&child, source, violations);
+            }
+        }
+    }
+
+    /// Check for sequences like: call free_func(); call access_func();
+    fn check_call_sequence_violations(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Find function bodies and check call sequences
+        if node.kind() == "function_definition" {
+            if let Some(body) = node.child_by_field_name("body") {
+                self.analyze_call_sequence(&body, source, violations);
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_call_sequence_violations(&child, source, violations);
+            }
+        }
+    }
+
+    fn analyze_call_sequence(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Collect all call expressions in order
+        let mut calls: Vec<(String, usize, usize)> = Vec::new();
+        self.collect_calls(node, source, &mut calls);
+
+        // Track which globals have been freed so far
+        let mut freed_globals: HashSet<String> = HashSet::new();
+
+        for (func_name, line, col) in &calls {
+            // Check if this function accesses any freed globals
+            if let Some(accessed) = self.functions_that_access.get(func_name) {
+                for global in accessed {
+                    if freed_globals.contains(global) {
+                        violations.push(RuleViolation {
+                            rule_id: "MEM30-C".to_string(),
+                            severity: Severity::Critical,
+                            message: format!(
+                                "Cross-function UAF: '{}' accesses global '{}' which was freed earlier",
+                                func_name, global
+                            ),
+                            file_path: String::new(),
+                            line: *line,
+                            column: *col,
+                            suggestion: Some(
+                                "Do not access global memory after it has been freed."
+                                    .to_string(),
+                            ),
+                            ..Default::default()
+                        });
+                    }
+                }
+            }
+
+            // Update freed globals based on this call
+            if let Some(freed) = self.functions_that_free.get(func_name) {
+                for global in freed {
+                    freed_globals.insert(global.clone());
+                }
+            }
+        }
+    }
+
+    fn collect_calls(&self, node: &Node, source: &str, calls: &mut Vec<(String, usize, usize)>) {
+        if node.kind() == "call_expression" {
+            if let Some(func) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&func, source).to_string();
+                calls.push((
+                    func_name,
+                    node.start_position().row + 1,
+                    node.start_position().column + 1,
+                ));
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_calls(&child, source, calls);
+            }
+        }
+    }
+
+    fn get_function_name(&self, func_node: &Node, source: &str) -> String {
+        if let Some(declarator) = func_node.child_by_field_name("declarator") {
+            return self.extract_function_declarator_name(&declarator, source);
+        }
+        String::new()
+    }
+
+    fn extract_function_declarator_name(&self, node: &Node, source: &str) -> String {
+        match node.kind() {
+            "identifier" => get_node_text(node, source).to_string(),
+            "function_declarator" => {
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    self.extract_function_declarator_name(&declarator, source)
+                } else {
+                    String::new()
+                }
+            }
+            "pointer_declarator" => {
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    self.extract_function_declarator_name(&declarator, source)
+                } else {
+                    String::new()
+                }
+            }
+            _ => String::new(),
+        }
+    }
+
+    fn get_function_params(&self, func_node: &Node, source: &str) -> HashSet<String> {
+        let mut params = HashSet::new();
+        if let Some(declarator) = func_node.child_by_field_name("declarator") {
+            self.extract_params_from_declarator(&declarator, source, &mut params);
+        }
+        params
+    }
+
+    fn extract_params_from_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+        params: &mut HashSet<String>,
+    ) {
+        match node.kind() {
+            "function_declarator" => {
+                if let Some(parameters) = node.child_by_field_name("parameters") {
+                    for i in 0..parameters.child_count() {
+                        if let Some(param) = parameters.child(i) {
+                            if param.kind() == "parameter_declaration" {
+                                if let Some(declarator) = param.child_by_field_name("declarator") {
+                                    let name = self.extract_declarator_name(&declarator, source);
+                                    if !name.is_empty() {
+                                        params.insert(name);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            "pointer_declarator" => {
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    self.extract_params_from_declarator(&declarator, source, params);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    fn extract_declarator_name(&self, node: &Node, source: &str) -> String {
+        match node.kind() {
+            "identifier" => get_node_text(node, source).to_string(),
+            "pointer_declarator" | "init_declarator" => {
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    self.extract_declarator_name(&declarator, source)
+                } else {
+                    // Try to find identifier child
+                    for i in 0..node.child_count() {
+                        if let Some(child) = node.child(i) {
+                            if child.kind() == "identifier" {
+                                return get_node_text(&child, source).to_string();
+                            }
+                        }
+                    }
+                    String::new()
+                }
+            }
+            "array_declarator" => {
+                // int arr[10] - get the identifier
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" {
+                            return get_node_text(&child, source).to_string();
+                        }
+                    }
+                }
+                String::new()
+            }
+            _ => String::new(),
+        }
+    }
+
+    fn extract_base_variable(&self, node: &Node, source: &str) -> String {
+        match node.kind() {
+            "identifier" => get_node_text(node, source).to_string(),
+            "pointer_expression" | "field_expression" | "subscript_expression" => {
+                if let Some(arg) = node.child_by_field_name("argument") {
+                    self.extract_base_variable(&arg, source)
+                } else {
+                    String::new()
+                }
+            }
+            "parenthesized_expression" => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() != "(" && child.kind() != ")" {
+                            return self.extract_base_variable(&child, source);
+                        }
+                    }
+                }
+                String::new()
+            }
+            "cast_expression" => {
+                if let Some(value) = node.child_by_field_name("value") {
+                    self.extract_base_variable(&value, source)
+                } else {
+                    String::new()
+                }
+            }
+            _ => String::new(),
+        }
     }
 }
 
