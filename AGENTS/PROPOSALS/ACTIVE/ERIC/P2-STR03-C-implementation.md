@@ -200,3 +200,37 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 ## Verification
 
 @architect: APPROVED
+
+---
+
+## Implementation Log
+
+**Date**: 2025-11-21  
+**Status**: COMPLETE ✅
+
+### Implementation Summary
+
+Created `src/rules/cert_c/STR/STR03-C/str03_c.rs` (155 lines).
+
+**Detection Logic**:
+- Identifies calls to `strncpy()`, `strncat()`, `snprintf()` that may truncate strings
+- Checks for length validation before truncating function calls  
+- Looks for `strlen()` + `sizeof()` validation patterns in preceding if statements
+- Marks violations for manual review (allows intentional truncation per STR03-C-EX1)
+
+**Test Results**: 2/2 tests passing (100%)
+- ✅ wiki_noncompliant_1.c - strncpy without validation (detected)
+- ✅ wiki_adequate_space.c - strcpy with proper length validation (no violation)
+
+**DRY Compliance**: ✅
+- Uses `ast_utils::get_node_text()` for source extraction
+- Follows standard RuleViolation pattern
+- No code duplication
+
+**Commit**: 3a89cfe  
+**Branch**: claude-work-active-BLAKE-20251119
+
+### Notes
+
+This rule is marked "rose-false-positive" on CERT C wiki, meaning it will produce false positives since any truncation could be intentional (STR03-C-EX1). The implementation flags all unvalidated truncating function calls and marks them for manual review to handle this uncertainty.
+

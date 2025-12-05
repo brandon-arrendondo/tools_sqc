@@ -1,45 +1,45 @@
 ---
-rule_id: EXP45-C
+rule_id: DCL02-C
 priority: P2
 status: active
-assigned_to: JASON
+assigned_to: ERIC
 created: 2025-11-17
 last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - EXP
+  - DCL
 ---
 
-# P2-EXP45-C - EXP45-C Implementation
+# P2-DCL02-C - DCL02-C Implementation
 
-**Status:** ACTIVE
+**Status:** STALLED (awaiting test case fix)
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** BLAKE
-**Category:** EXP
+**Assigned To:** ERIC
+**Category:** DCL
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** EXP45-C
+**Rule ID:** DCL02-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/EXP45-C.+Do+not+perform+assignments+in+selection+statements
+https://wiki.sei.cmu.edu/confluence/display/c/DCL02-C.+Use+visually+distinct+identifiers
 
 ---
 
 ## Task
 
-Implement or verify EXP45-C with 100% test pass rate and DRY compliance.
+Implement or verify DCL02-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for EXP45-C
-2. Check if implementation exists in `src/rules/cert_c/EXP/EXP45-C/`
+1. Study the CERT C wiki page for DCL02-C
+2. Check if implementation exists in `src/rules/cert_c/DCL/DCL02-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,7 +193,67 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-24 - Claude Code (via /work-active)
+
+**Implementation Complete - Test Case Issue Discovered**
+
+Successfully implemented DCL02-C rule that detects pairs of identifiers differing only by visually similar characters:
+- Created `src/rules/cert_c/DCL/DCL02-C/dcl02_c.rs` with character normalization logic
+- Registered in `src/rules/cert_c/mod.rs`
+- Enabled in `DCL02-C.toml`
+- Build: ✅ PASSING
+
+**Test Results: 2 passed, 2 failed**
+
+The failing tests appear to have incorrect expectations:
+
+**Test Case Issue:**
+- `wiki_source_character_set.c` contains only `int id_O;` (single identifier)
+- `wiki_source_character_set_2.c` contains only `int id_0;` (single identifier)
+- Both tests expect a violation, but each file is analyzed independently
+- The CERT C wiki clearly states: "Do not define **multiple** identifiers that vary only with respect to one or more visually similar characters"
+- A single identifier with confusable characters is NOT a violation by itself
+
+**Expected behavior per CERT C standard:**
+- ❌ VIOLATION: Having both `id_O` and `id_0` in the SAME compilation unit
+- ✅ COMPLIANT: Having only `id_O` or only `id_0` in isolation
+
+**Actual test expectation:**
+- Test expects `id_O` alone to trigger violation (incorrect)
+- Test expects `id_0` alone to trigger violation (incorrect)
+
+**Root cause:** Test cases misinterpret the rule - they should either:
+1. Combine both declarations in a single test file, OR
+2. Test infrastructure should check across multiple related files
+
+**Implementation is correct per CERT C specification. Test cases need to be fixed.**
+
+@architect: BLOCKED - Test cases are incorrect. Need test infrastructure changes or test case rewrite.
+
+**Recommendation:**
+1. Option A: Combine the two test files into one that declares both `id_O` and `id_0` (preferred)
+2. Option B: Modify test infrastructure to support cross-file identifier checking
+3. Option C: Clarify if the rule interpretation should be different from CERT C wiki
+
+Please review and advise on how to proceed.
+
+**Commit Status:**
+Unable to commit implementation due to pre-commit hook restrictions:
+- Pre-commit hooks run tests as part of `cargo-check`
+- Tests fail (as documented above - test case issue, not implementation issue)
+- CLAUDE.md explicitly prohibits `--no-verify` flag
+- Only humans can skip pre-commit hooks
+- Implementation code exists in working directory but cannot be committed
+
+**Files Ready to Commit (in working directory, pending architect approval):**
+- `src/rules/cert_c/DCL/DCL02-C/dcl02_c.rs` (implementation - NEW)
+- `src/rules/cert_c/mod.rs` (registration - MODIFIED)
+- `src/rules/cert_c/DCL/DCL02-C/DCL02-C.toml` (disabled until tests fixed - MODIFIED)
+
+**Next Steps:**
+1. Architect reviews test case issue
+2. Either: Fix test cases and re-enable rule, OR architect commits code with `--no-verify` to preserve work
+3. This proposal remains in STALLED until test resolution
 
 ---
 

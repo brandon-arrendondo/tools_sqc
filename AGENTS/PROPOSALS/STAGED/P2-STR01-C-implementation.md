@@ -1,5 +1,5 @@
 ---
-rule_id: PRE10-C
+rule_id: STR01-C
 priority: P2
 status: active
 assigned_to: JASON
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - PRE
+  - STR
 ---
 
-# P2-PRE10-C - PRE10-C Implementation
+# P2-STR01-C - STR01-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** BLAKE
-**Category:** PRE
+**Category:** STR
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** PRE10-C
+**Rule ID:** STR01-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/PRE10-C.+Wrap+multistatement+macros+in+a+do-while+loop
+https://wiki.sei.cmu.edu/confluence/display/c/STR01-C.+Adopt+and+implement+a+consistent+plan+for+managing+strings
 
 ---
 
 ## Task
 
-Implement or verify PRE10-C with 100% test pass rate and DRY compliance.
+Implement or verify STR01-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for PRE10-C
-2. Check if implementation exists in `src/rules/cert_c/PRE/PRE10-C/`
+1. Study the CERT C wiki page for STR01-C
+2. Check if implementation exists in `src/rules/cert_c/STR/STR01-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -200,3 +200,87 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 ## Verification
 
 @architect: APPROVED
+
+---
+
+## Implementation Assessment
+
+**Status**: STALLED - Unimplementable as static analysis rule
+
+**Date**: 2025-11-21
+
+### Analysis
+
+STR01-C is a **policy recommendation**, not a detectable code pattern.
+
+**From CERT C Wiki**:
+- Tagged as "**unenforceable**"
+- Risk assessment: "**Detectable: No**"
+- Rule is about adopting a consistent organizational approach (static vs dynamic string allocation)
+
+**Why Unimplementable**:
+
+1. **No concrete patterns**: Rule doesn't describe specific code anti-patterns to detect
+2. **Requires whole-project analysis**: Would need to analyze entire codebase to determine if approach is "consistent"
+3. **Subjective policy**: What constitutes "consistent" varies by organization
+4. **No test cases**: No tests exist (no `tests/STR01-C/` directory)
+
+**Example scenarios**:
+- Some functions use `char buf[256]` (static)
+- Other functions use `malloc()` (dynamic)
+
+A static analyzer cannot determine if this is:
+- Inconsistent policy violation (bad)
+- Intentional design decision (good)
+- Legacy code mixed with new code (acceptable)
+
+### Architect Alert
+
+**@architect: Rule STR01-C cannot be implemented as static analysis**
+
+**Reason**: Policy-level recommendation without detectable patterns
+
+**Evidence**:
+- CERT C wiki explicitly marks as "Detectable: No"
+- Tagged as "unenforceable" 
+- Comments from CERT authors suggest it's "better suited for training"
+- No test infrastructure exists
+
+**Recommendation**:
+1. Mark rule as "unimplementable via static analysis" in documentation
+2. Remove from P2 implementation queue
+3. Consider adding to project documentation/training materials instead
+
+### Conclusion
+
+This rule should remain **disabled** and marked as requiring manual policy enforcement rather than automated detection.
+
+**Alternative Approaches**:
+- Code review checklists
+- Architecture documentation
+- Team coding standards
+- Training materials
+
+Not suitable for automated static analysis.
+
+---
+
+## Status Update: NOT IMPLEMENTABLE
+
+**Date:** 2025-11-24
+**Status:** STALLED - Not suitable for static analysis
+
+### Reason:
+STR01-C is a recommendation to "adopt and implement a consistent plan for managing strings" (static vs dynamic allocation). This is a project-wide architectural policy decision, not a per-violation check.
+
+The rule requires:
+1. Analysis of string management patterns across the entire codebase
+2. Detection of inconsistency in approach (some static, some dynamic)
+3. Project-level policy enforcement
+
+This is beyond the scope of per-file static analysis. No test cases exist because there are no specific violations to detect.
+
+### Recommendation:
+- Move to STALLED/Not Implementable
+- Document as architectural/policy rule requiring manual review
+

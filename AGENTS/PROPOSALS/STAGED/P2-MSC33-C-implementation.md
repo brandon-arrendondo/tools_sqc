@@ -1,45 +1,45 @@
 ---
-rule_id: DCL08-C
+rule_id: MSC33-C
 priority: P2
 status: active
-assigned_to: JASON
+assigned_to: ERIC
 created: 2025-11-17
 last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - DCL
+  - MSC
 ---
 
-# P2-DCL08-C - DCL08-C Implementation
+# P2-MSC33-C - MSC33-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** HUU
-**Category:** DCL
+**Assigned To:** BLAKE
+**Category:** MSC
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** DCL08-C
+**Rule ID:** MSC33-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/DCL08-C.+Properly+encode+relationships+in+constant+definitions
+https://wiki.sei.cmu.edu/confluence/display/c/MSC33-C.+Do+not+pass+invalid+data+to+the+asctime()+function
 
 ---
 
 ## Task
 
-Implement or verify DCL08-C with 100% test pass rate and DRY compliance.
+Implement or verify MSC33-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for DCL08-C
-2. Check if implementation exists in `src/rules/cert_c/DCL/DCL08-C/`
+1. Study the CERT C wiki page for MSC33-C
+2. Check if implementation exists in `src/rules/cert_c/MSC/MSC33-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)

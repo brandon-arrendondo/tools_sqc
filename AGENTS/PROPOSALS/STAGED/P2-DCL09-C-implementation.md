@@ -1,45 +1,45 @@
 ---
-rule_id: ERR30-C
+rule_id: DCL09-C
 priority: P2
 status: active
-assigned_to: ERIC
+assigned_to: BLAKE
 created: 2025-11-17
 last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - ERR
+  - DCL
 ---
 
-# P2-ERR30-C - ERR30-C Implementation
+# P2-DCL09-C - DCL09-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ALLY
-**Category:** ERR
+**Assigned To:** ERIC
+**Category:** DCL
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** ERR30-C
+**Rule ID:** DCL09-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/ERR30-C.+Take+care+when+reading+errno
+https://wiki.sei.cmu.edu/confluence/display/c/DCL09-C.+Declare+functions+that+return+errno+with+a+return+type+of+errno_t
 
 ---
 
 ## Task
 
-Implement or verify ERR30-C with 100% test pass rate and DRY compliance.
+Implement or verify DCL09-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for ERR30-C
-2. Check if implementation exists in `src/rules/cert_c/ERR/ERR30-C/`
+1. Study the CERT C wiki page for DCL09-C
+2. Check if implementation exists in `src/rules/cert_c/DCL/DCL09-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,7 +193,24 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-19 - Claude Code (via /work-active)
+
+**Status:** COMPLETE - All tests passing
+
+**Implementation:**
+- ✅ Created `src/rules/cert_c/DCL/DCL09-C/dcl09_c.rs`
+- ✅ Registered in `src/rules/cert_c/mod.rs` (lines 151-152, 475)
+- ✅ Enabled in `DCL09-C.toml`
+- ✅ Build succeeds
+- ✅ 1/1 test passes (100%)
+
+**Test Results:**
+- PASS: `test_dcl09_c_pass_wiki_posix` ✅
+
+**Implementation Details:**
+- Detects functions returning errno/errno constants with return type int
+- Checks for errno constants (EINVAL, EIO, ENOENT, etc.) in return statements
+- Recommends using errno_t return type for clarity
 
 ---
 

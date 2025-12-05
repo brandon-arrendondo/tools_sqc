@@ -295,6 +295,11 @@ impl Str31C {
                         return false; // Always dangerous
                     }
 
+                    // Check if source variable traces back to argv (e.g., name = argv[0])
+                    if self.traces_to_argv(src_name, source) {
+                        return false; // Traces to argv - unbounded size
+                    }
+
                     if src_name.contains("env_value")
                         || src_name == "getenv"
                         || src_name == "env_value"
@@ -440,9 +445,10 @@ impl Str31C {
 
     /// Check if sprintf is safe based on format string analysis
     fn check_sprintf_safety(&self, arguments: &Node, source: &str, root: &Node) -> bool {
-        // Extract destination buffer name
+        // Extract destination buffer name, format string, and format arguments
         let mut dest_name = None;
         let mut format_string = None;
+        let mut format_args = Vec::new();
         let mut arg_count = 0;
 
         for i in 0..arguments.child_count() {
@@ -451,6 +457,9 @@ impl Str31C {
                     dest_name = Some(&source[arg.start_byte()..arg.end_byte()]);
                 } else if arg.kind() == "string_literal" && arg_count == 1 {
                     format_string = Some(&source[arg.start_byte()..arg.end_byte()]);
+                } else if arg.kind() == "identifier" && arg_count > 1 {
+                    // Collect format arguments (for %s/%d analysis)
+                    format_args.push(&source[arg.start_byte()..arg.end_byte()]);
                 }
 
                 if arg.kind() != "," && arg.kind() != "(" && arg.kind() != ")" {
@@ -462,29 +471,64 @@ impl Str31C {
         // If we have destination name, try to find its size
         if let Some(dest) = dest_name {
             if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
-                // If buffer is reasonably sized, consider it safe for typical sprintf usage
-                // sprintf_safe.c uses buffer[50] which should be safe
-                if buffer_size >= 50 {
-                    // Additional check: if the format string is simple and buffer is large enough
-                    if let Some(fmt) = format_string {
-                        // Count literal characters and format specifiers
-                        let fmt_clean = fmt.trim_matches('"');
-                        let literal_chars = fmt_clean.len() - fmt_clean.matches('%').count() * 2; // rough estimate
+                // Check the format string for unbounded format specifiers
+                if let Some(fmt) = format_string {
+                    let fmt_clean = fmt.trim_matches('"');
 
-                        // For simple formats with %d and short literal text, 50 chars should be plenty
-                        if literal_chars < 30
-                            && (fmt_clean.contains("%d") || fmt_clean.contains("%s"))
-                        {
+                    // If format contains %s (unbounded string), be careful
+                    if fmt_clean.contains("%s") {
+                        // For very small buffers, definitely unsafe
+                        if buffer_size < 50 {
+                            return false;
+                        }
+                        // For buffers 50-255, check if %s argument is from a function parameter
+                        if buffer_size >= 50 && buffer_size < 256 {
+                            let s_count = fmt_clean.matches("%s").count();
+                            let literal_chars =
+                                fmt_clean.len() - fmt_clean.matches('%').count() * 2;
+
+                            // Check if any %s argument is a function parameter (unsafe)
+                            let mut has_param_source = false;
+                            for arg in &format_args {
+                                if self.is_function_parameter(arg, source) {
+                                    has_param_source = true;
+                                    break;
+                                }
+                            }
+
+                            // If %s source is a function parameter, be strict
+                            if has_param_source {
+                                return false; // Unsafe: %s from unknown-length parameter
+                            }
+
+                            // Otherwise, single %s with short format might be ok (local variable)
+                            if s_count == 1 && literal_chars < 20 {
+                                return true; // Allow single %s with short format from local var
+                            }
+                            return false;
+                        }
+                        // Very large buffers suggest programmer accounted for expansion
+                        if buffer_size >= 256 {
                             return true;
                         }
                     }
-                    return true; // Conservative: buffers >= 50 are generally safe for typical sprintf
+
+                    // For formats with only fixed-size specifiers (%d, %c, %ld, %lld, etc.)
+                    let literal_chars = fmt_clean.len() - fmt_clean.matches('%').count() * 2;
+                    let estimated_size = literal_chars
+                        + (fmt_clean.matches("%d").count() * 11)       // int: max 11 chars (-2147483648)
+                        + (fmt_clean.matches("%ld").count() * 20)      // long: max ~20 chars
+                        + (fmt_clean.matches("%lld").count() * 20)     // long long: max 20 chars (9223372036854775807)
+                        + (fmt_clean.matches("%c").count() * 1)
+                        + 1; // null terminator
+
+                    if buffer_size >= estimated_size {
+                        return true;
+                    }
                 }
 
-                // Very large buffers are always safe
-                if buffer_size >= 256 {
-                    return true;
-                }
+                // If no format string found or couldn't analyze, be conservative
+                return false;
             }
         }
 
@@ -509,6 +553,112 @@ impl Str31C {
                 }
             }
         }
+        false
+    }
+
+    /// Check if a variable traces back to argv (unbounded string source)
+    fn traces_to_argv(&self, var_name: &str, source: &str) -> bool {
+        let lines: Vec<&str> = source.lines().collect();
+        for line in lines {
+            // Look for: char *name = argv[...] or const char *name = ... argv[...] ...
+            if line.contains(var_name)
+                && line.contains("argv")
+                && (line.contains("=") || line.contains("?"))
+            {
+                // Check if var_name appears before argv in assignment
+                if let Some(var_pos) = line.find(var_name) {
+                    if let Some(argv_pos) = line.find("argv") {
+                        if var_pos < argv_pos {
+                            return true; // var_name is assigned from argv
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a variable name is a function parameter (makes sprintf %s unsafe)
+    fn is_function_parameter(&self, var_name: &str, source: &str) -> bool {
+        let lines: Vec<&str> = source.lines().collect();
+        for line in lines {
+            // Look for function signatures like: void func(const char *name) or int main(int argc, char *argv[])
+            if line.contains("(") && line.contains(var_name) && line.contains(")") {
+                // Check if this looks like a function declaration/definition
+                if (line.contains("void ")
+                    || line.contains("int ")
+                    || line.contains("char ")
+                    || line.contains("const ")
+                    || line.contains("*")
+                    || line.contains("[]"))
+                    && !line.trim().starts_with("//")
+                {
+                    // Extract the part between ( and )
+                    if let Some(start) = line.find('(') {
+                        if let Some(end) = line.rfind(')') {
+                            if end > start {
+                                let params = &line[start + 1..end];
+                                // Check if var_name appears in the parameter list
+                                if params.contains(var_name) {
+                                    // Make sure it's a word boundary (not part of another word)
+                                    let words: Vec<&str> = params
+                                        .split(|c: char| !c.is_alphanumeric() && c != '_')
+                                        .collect();
+                                    if words.contains(&var_name) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Detect off-by-one error in manual string copy (dest[i] = '\0' after loop with i < n)
+    fn detect_off_by_one_error(&self, node: &Node, source: &str) -> bool {
+        // Look for function definitions containing the pattern
+        if node.kind() == "function_definition" {
+            let func_text = &source[node.start_byte()..node.end_byte()];
+
+            // Pattern: for (i = 0; ... i < n; ++i) { dest[i] = src[i]; } dest[i] = '\0';
+            // The issue: i == n after loop, but dest[n] is out of bounds (should be dest[n-1])
+            // SAFE pattern: i < n - 1 (then dest[i] is safe)
+
+            // Check for a loop with condition "i < n" (but NOT "i < n - 1" which is safe)
+            if (func_text.contains("i < n") || func_text.contains("i < size"))
+                && !func_text.contains("i < n - 1")
+                && !func_text.contains("i < size - 1")
+                && !func_text.contains("i < n-1")
+                && !func_text.contains("i < size-1")
+                && func_text.contains("++i")
+                && func_text.contains("[i]")
+            {
+                // Look for assignment after the loop using the same index
+                // Pattern: dest[i] = '\0' or similar after the closing brace
+                let lines: Vec<&str> = func_text.lines().collect();
+                let mut found_loop_end = false;
+
+                for line in lines {
+                    // Look for closing brace (end of loop)
+                    if line.trim() == "}" {
+                        found_loop_end = true;
+                    }
+
+                    // After loop ends, look for dest[i] = '\0' or similar
+                    if found_loop_end
+                        && line.contains("[i]")
+                        && line.contains("=")
+                        && line.contains("'\\0'")
+                    {
+                        return true; // Off-by-one: i might equal n, accessing out of bounds
+                    }
+                }
+            }
+        }
+
         false
     }
 
@@ -561,6 +711,21 @@ impl Str31C {
         // Also check for manual pointer arithmetic loops
         if node.kind() == "while_statement" {
             let loop_text = &source[node.start_byte()..node.end_byte()];
+
+            // Pattern: while ((ch = getchar()) != '\n') { *p++ = ch; }
+            if loop_text.contains("getchar") && loop_text.contains("++") {
+                // Check for bounds checking
+                if !loop_text.contains("< ")
+                    && !loop_text.contains("<=")
+                    && !loop_text.contains("size")
+                    && !loop_text.contains("end")
+                    && !loop_text.contains("limit")
+                    && !loop_text.contains("- buf")
+                    && !loop_text.contains("- buffer")
+                {
+                    return true; // Dangerous getchar loop without bounds checking
+                }
+            }
 
             // Pattern: while (*p) { *dest++ = *src++; }
             if loop_text.contains("*")
@@ -657,6 +822,7 @@ impl Str31C {
         // Extract arguments to see if this looks like string copying
         let mut dest_name = None;
         let mut src_name = None;
+        let mut size_arg = None;
         let mut arg_count = 0;
 
         for i in 0..arguments.child_count() {
@@ -666,11 +832,24 @@ impl Str31C {
                         dest_name = Some(&source[arg.start_byte()..arg.end_byte()]);
                     } else if arg_count == 1 {
                         src_name = Some(&source[arg.start_byte()..arg.end_byte()]);
+                    } else if arg_count == 2 {
+                        size_arg = Some(&source[arg.start_byte()..arg.end_byte()]);
                     }
                 }
 
                 if arg.kind() != "," && arg.kind() != "(" && arg.kind() != ")" {
                     arg_count += 1;
+                }
+            }
+        }
+
+        // Check if the size argument includes "+ 1" for null terminator (safe pattern)
+        if let Some(size_var) = size_arg {
+            // Look for: size_t len = strlen(src) + 1; memcpy(dest, src, len);
+            let lines: Vec<&str> = source.lines().collect();
+            for line in lines {
+                if line.contains(size_var) && line.contains("strlen") && line.contains("+ 1") {
+                    return false; // SAFE: size includes + 1 for null terminator
                 }
             }
         }
@@ -1173,6 +1352,51 @@ impl CertRule for Str31C {
                     _ => {}
                 }
             }
+        }
+
+        // Check for unvalidated argv usage (main with argv but no argc validation)
+        if node.kind() == "function_definition" {
+            let func_text = &source[node.start_byte()..node.end_byte()];
+
+            // Check if this is main() with argv parameter but no validation
+            if func_text.contains("main")
+                && func_text.contains("argc")
+                && func_text.contains("argv")
+                && func_text.contains("char *argv")
+            {
+                // Check if there's any argc validation (e.g., "argc &&" or "if (argc")
+                if !func_text.contains("argc &&")
+                    && !func_text.contains("if (argc")
+                    && !func_text.contains("if(argc")
+                {
+                    let start_point = node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Medium,
+                        message: "Program arguments (argv) used without validating argc or checking for null pointers".to_string(),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\"".to_string()),
+                    ..Default::default()
+                    });
+                }
+            }
+        }
+
+        // Check for off-by-one errors in manual string copy (dest[i] after loop with i < n)
+        if self.detect_off_by_one_error(node, source) {
+            let start_point = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::Medium,
+                message: "Off-by-one error: accessing array[i] after loop with condition 'i < n' can access out-of-bounds memory when i == n".to_string(),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Use 'dest[i-1] = '\\0'' or adjust loop condition to 'i < n-1'".to_string()),
+            ..Default::default()
+            });
         }
 
         // Check for manual string copying loops without bounds checking
