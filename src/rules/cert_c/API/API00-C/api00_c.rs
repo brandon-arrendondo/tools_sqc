@@ -1,7 +1,9 @@
 //! API00-C: Functions should validate their parameters
 //!
-//! This rule detects functions that use pointer parameters without validating them first.
-//! Proper parameter validation helps prevent NULL pointer dereferences and other undefined behavior.
+//! This rule detects functions that use parameters without validating them first.
+//! This includes:
+//! - Pointer parameters used without NULL checks
+//! - Integer parameters used in arithmetic without overflow checks
 //!
 //! ## Examples:
 //!
@@ -131,9 +133,12 @@ impl Api00C {
             .map(|(name, _)| name.clone())
             .collect();
 
-        if pointer_params.is_empty() {
-            return; // No pointer parameters to check
-        }
+        // Filter for integer parameters that could overflow
+        let integer_params: Vec<String> = params
+            .iter()
+            .filter(|(_, param_type)| self.is_integer_type(param_type))
+            .map(|(name, _)| name.clone())
+            .collect();
 
         // Get function body
         let body = match function_node.child_by_field_name("body") {
@@ -141,18 +146,201 @@ impl Api00C {
             None => return, // No body (declaration only)
         };
 
-        // Find validated parameters (those that appear in validation checks)
-        let validated_params = self.find_validated_parameters(&body, &pointer_params, source);
+        // Check pointer parameters
+        if !pointer_params.is_empty() {
+            // Find validated parameters (those that appear in validation checks)
+            let validated_params = self.find_validated_parameters(&body, &pointer_params, source);
 
-        // Check which pointer parameters are used without validation
-        for param_name in &pointer_params {
-            if !validated_params.contains(param_name) {
-                // Check if the parameter is actually used in the function
-                if self.is_parameter_used(&body, param_name, source) {
-                    self.report_violation(function_node, param_name, source, violations);
+            // Check which pointer parameters are used without validation
+            for param_name in &pointer_params {
+                if !validated_params.contains(param_name) {
+                    // Check if the parameter is actually used in the function
+                    if self.is_parameter_used(&body, param_name, source) {
+                        self.report_violation(
+                            function_node,
+                            param_name,
+                            "pointer",
+                            source,
+                            violations,
+                        );
+                    }
                 }
             }
         }
+
+        // Check integer parameters for overflow validation
+        if !integer_params.is_empty() {
+            self.check_integer_overflow_validation(
+                function_node,
+                &body,
+                &integer_params,
+                source,
+                violations,
+            );
+        }
+    }
+
+    /// Check if integer parameters are validated for overflow before arithmetic operations
+    fn check_integer_overflow_validation(
+        &self,
+        function_node: &Node,
+        body: &Node,
+        integer_params: &[String],
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Look for arithmetic operations using integer parameters without overflow checks
+        for param_name in integer_params {
+            if self.has_unchecked_arithmetic(body, param_name, source) {
+                self.report_violation(function_node, param_name, "integer", source, violations);
+            }
+        }
+    }
+
+    /// Check if an integer parameter is used in arithmetic without overflow validation
+    fn has_unchecked_arithmetic(&self, body: &Node, param_name: &str, source: &str) -> bool {
+        // Check if there's overflow validation before arithmetic use
+        let body_text = get_node_text(body, source);
+
+        // Remove comments from body text to avoid false positives
+        let body_no_comments = self.remove_comments(&body_text);
+
+        // Look for arithmetic operators with the parameter
+        let arithmetic_patterns = [
+            format!("{} +", param_name),
+            format!("{} -", param_name),
+            format!("{} *", param_name),
+            format!("{}+", param_name),
+            format!("{}-", param_name),
+            format!("{}*", param_name),
+            format!("+ {}", param_name),
+            format!("- {}", param_name),
+            format!("* {}", param_name),
+            format!("+{}", param_name),
+            format!("-{}", param_name),
+            format!("*{}", param_name),
+            format!("{} <<", param_name),
+            format!("{}<<", param_name),
+            format!("<< {}", param_name),
+            format!("<<{}", param_name),
+        ];
+
+        let has_arithmetic = arithmetic_patterns
+            .iter()
+            .any(|p| body_no_comments.contains(p));
+
+        if !has_arithmetic {
+            return false;
+        }
+
+        // Check for overflow validation patterns
+        let overflow_check_patterns = [
+            // Check for INT_MAX/INT_MIN comparisons
+            format!("{} > INT_MAX", param_name),
+            format!("{} < INT_MIN", param_name),
+            format!("{} >= INT_MAX", param_name),
+            format!("{} <= INT_MIN", param_name),
+            // Check for SIZE_MAX comparisons
+            format!("{} > SIZE_MAX", param_name),
+            format!("{} >= SIZE_MAX", param_name),
+            format!("SIZE_MAX - {}", param_name),
+            format!("SIZE_MAX -{}", param_name),
+            // Check for UINT_MAX comparisons
+            format!("{} > UINT_MAX", param_name),
+            format!("{} >= UINT_MAX", param_name),
+            // Check for division overflow check (result / divisor != dividend)
+            "will overflow".to_string(),
+            "overflow check".to_string(),
+            // Wrapped arithmetic check
+            "__builtin_add_overflow".to_string(),
+            "__builtin_sub_overflow".to_string(),
+            "__builtin_mul_overflow".to_string(),
+        ];
+
+        let has_overflow_check = overflow_check_patterns
+            .iter()
+            .any(|p| body_text.contains(p));
+
+        // Also check for basic parameter validation (if param == 0, if param < X, etc.)
+        let basic_validation_patterns = [
+            format!("if ({} == 0)", param_name),
+            format!("if ({}==0)", param_name),
+            format!("if ({} == 0", param_name),
+            format!("if (0 == {})", param_name),
+            format!("if (!{})", param_name),
+            format!("if ({} < ", param_name),
+            format!("if ({} > ", param_name),
+            format!("if ({} <= ", param_name),
+            format!("if ({} >= ", param_name),
+            // Handle || patterns
+            format!("|| {} == 0", param_name),
+            format!("||{} == 0", param_name),
+            format!("{} == 0 ||", param_name),
+            format!("{} == 0||", param_name),
+            format!("|| {} > ", param_name),
+            format!("|| {} < ", param_name),
+            format!("{} > ", param_name),
+            format!("{} < ", param_name),
+        ];
+
+        let has_basic_validation = basic_validation_patterns
+            .iter()
+            .any(|p| body_text.contains(p));
+
+        // Return true if there's arithmetic but no overflow check AND no basic validation
+        !has_overflow_check && !has_basic_validation
+    }
+
+    /// Remove C-style comments from text to avoid false positives
+    fn remove_comments(&self, text: &str) -> String {
+        let mut result = String::with_capacity(text.len());
+        let chars: Vec<char> = text.chars().collect();
+        let mut i = 0;
+
+        while i < chars.len() {
+            if i + 1 < chars.len() && chars[i] == '/' && chars[i + 1] == '*' {
+                // Skip block comment
+                i += 2;
+                while i + 1 < chars.len() && !(chars[i] == '*' && chars[i + 1] == '/') {
+                    i += 1;
+                }
+                i += 2; // Skip closing */
+            } else if i + 1 < chars.len() && chars[i] == '/' && chars[i + 1] == '/' {
+                // Skip line comment
+                while i < chars.len() && chars[i] != '\n' {
+                    i += 1;
+                }
+            } else {
+                result.push(chars[i]);
+                i += 1;
+            }
+        }
+
+        result
+    }
+
+    /// Check if a type is an integer type (not floating point)
+    fn is_integer_type(&self, type_str: &str) -> bool {
+        let normalized = type_str.to_lowercase();
+        // Exclude pointers
+        if type_str.contains('*') {
+            return false;
+        }
+        // Exclude floating point types
+        if normalized.contains("float") || normalized.contains("double") {
+            return false;
+        }
+        // Check for integer types
+        normalized.contains("int")
+            || (normalized.contains("long") && !normalized.contains("double"))
+            || normalized.contains("short")
+            || normalized.contains("size_t")
+            || (normalized.contains("unsigned")
+                && !normalized.contains("double")
+                && !normalized.contains("float"))
+            || (normalized.contains("signed")
+                && !normalized.contains("double")
+                && !normalized.contains("float"))
     }
 
     /// Find parameters that are validated (checked for NULL) before use
@@ -440,26 +628,45 @@ impl Api00C {
         &self,
         function_node: &Node,
         param_name: &str,
+        param_type: &str,
         source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
         // Get function name
         let func_name = self.get_function_name(function_node, source);
 
+        let (message, suggestion) = if param_type == "pointer" {
+            (
+                format!(
+                    "Function '{}' does not validate pointer parameter '{}' before use",
+                    func_name, param_name
+                ),
+                format!(
+                    "Add validation check for '{}' at the start of the function, e.g., 'if (!{}) {{ return error_code; }}'",
+                    param_name, param_name
+                ),
+            )
+        } else {
+            (
+                format!(
+                    "Function '{}' does not validate integer parameter '{}' for overflow before arithmetic operations",
+                    func_name, param_name
+                ),
+                format!(
+                    "Add overflow validation for '{}' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()",
+                    param_name
+                ),
+            )
+        };
+
         violations.push(RuleViolation {
             rule_id: self.rule_id().to_string(),
             severity: Severity::Medium,
-            message: format!(
-                "Function '{}' does not validate pointer parameter '{}' before use",
-                func_name, param_name
-            ),
+            message,
             file_path: String::new(),
             line: function_node.start_position().row + 1,
             column: function_node.start_position().column + 1,
-            suggestion: Some(format!(
-                "Add validation check for '{}' at the start of the function, e.g., 'if (!{}) {{ return error_code; }}'",
-                param_name, param_name
-            )),
+            suggestion: Some(suggestion),
             ..Default::default()
         });
     }

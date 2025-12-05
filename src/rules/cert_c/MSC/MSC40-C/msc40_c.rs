@@ -40,6 +40,7 @@ use crate::manifest::{RuleCategory, Severity};
 use crate::prelude::RuleViolation;
 use crate::rules::cert_c::CertRule;
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashSet;
 use tree_sitter::Node;
 
 pub struct Msc40C;
@@ -67,12 +68,111 @@ impl CertRule for Msc40C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+
+        // First pass: collect static (internal linkage) identifiers at file scope
+        let mut static_identifiers = HashSet::new();
+        self.collect_static_identifiers(node, source, &mut static_identifiers);
+
+        // Second pass: check for violations
+        self.check_node_with_statics(node, source, &static_identifiers, &mut violations);
         violations
     }
 }
 
 impl Msc40C {
+    /// Collect static identifiers declared at file scope
+    fn collect_static_identifiers(&self, node: &Node, source: &str, statics: &mut HashSet<String>) {
+        // Only look at translation_unit level for file-scope statics
+        if node.kind() == "declaration" {
+            let decl_text = get_node_text(node, source);
+            if decl_text.trim_start().starts_with("static") {
+                // Extract variable name from declaration
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    let name = self.extract_identifier_name(&declarator, source);
+                    if !name.is_empty() {
+                        statics.insert(name);
+                    }
+                }
+            }
+        }
+
+        // Only recurse into top-level nodes (not into function bodies)
+        if node.kind() == "translation_unit" {
+            let mut cursor = node.walk();
+            for child in node.children(&mut cursor) {
+                // Skip function definitions when collecting file-scope statics
+                if child.kind() != "function_definition" {
+                    self.collect_static_identifiers(&child, source, statics);
+                }
+            }
+        }
+    }
+
+    fn extract_identifier_name(&self, node: &Node, source: &str) -> String {
+        match node.kind() {
+            "identifier" => get_node_text(node, source).trim().to_string(),
+            "init_declarator" | "pointer_declarator" | "array_declarator" => {
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    return self.extract_identifier_name(&declarator, source);
+                }
+                // Fallback: try first child
+                if let Some(child) = node.child(0) {
+                    return self.extract_identifier_name(&child, source);
+                }
+                String::new()
+            }
+            _ => {
+                // Try to find an identifier child
+                let mut cursor = node.walk();
+                for child in node.children(&mut cursor) {
+                    if child.kind() == "identifier" {
+                        return get_node_text(&child, source).trim().to_string();
+                    }
+                }
+                String::new()
+            }
+        }
+    }
+
+    fn check_node_with_statics(
+        &self,
+        node: &Node,
+        source: &str,
+        static_identifiers: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Check for inline function definitions
+        if node.kind() == "function_definition" {
+            self.check_inline_function_with_statics(node, source, static_identifiers, violations);
+        }
+
+        // Recurse through child nodes
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.check_node_with_statics(&child, source, static_identifiers, violations);
+        }
+    }
+
+    fn check_inline_function_with_statics(
+        &self,
+        node: &Node,
+        source: &str,
+        static_identifiers: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Check if this is an inline function (extern inline or just inline, but not static inline)
+        if !self.is_non_static_inline_function(node, source) {
+            return;
+        }
+
+        // Check for static variable declarations inside the function
+        self.check_for_internal_static_declarations(node, source, violations);
+
+        // Check for references to static (internally-linked) identifiers
+        self.check_for_static_references_with_set(node, source, static_identifiers, violations);
+    }
+
+    #[allow(dead_code)]
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Check for inline function definitions
         if node.kind() == "function_definition" {
@@ -86,6 +186,7 @@ impl Msc40C {
         }
     }
 
+    #[allow(dead_code)]
     fn check_inline_function(
         &self,
         node: &Node,
@@ -108,21 +209,33 @@ impl Msc40C {
         // Check for inline specifier and ensure it's not static inline
         let func_text = get_node_text(node, source);
 
-        // Must be inline
-        if !func_text.contains("inline") {
-            return false;
+        // Check for "extern inline" or just "inline" (not "static inline")
+        let has_inline = func_text.contains("inline");
+        let has_extern = func_text.contains("extern");
+
+        // If it has inline keyword
+        if has_inline {
+            // But not static inline (static inline is allowed)
+            // Check if "static" appears before "inline" in the declaration
+            if let Some(inline_pos) = func_text.find("inline") {
+                let before_inline = &func_text[..inline_pos];
+                if before_inline.contains("static") {
+                    return false; // static inline is compliant
+                }
+            }
+            return true;
         }
 
-        // But not static inline (static inline is allowed)
-        // Check if "static" appears before "inline" in the declaration
-        if let Some(inline_pos) = func_text.find("inline") {
-            let before_inline = &func_text[..inline_pos];
-            if before_inline.contains("static") {
-                return false; // static inline is compliant
+        // extern function definitions (without static) that have static variables
+        // are also problematic - they provide external linkage with internal state
+        if has_extern {
+            // Check if "static" appears at the beginning (static extern is unusual but check)
+            if !func_text.trim_start().starts_with("static") {
+                return true; // extern function without static qualifier
             }
         }
 
-        true
+        false
     }
 
     fn check_for_internal_static_declarations(
@@ -169,23 +282,71 @@ impl Msc40C {
         }
     }
 
+    fn check_for_static_references_with_set(
+        &self,
+        node: &Node,
+        source: &str,
+        static_identifiers: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Look for identifier references in the function body that match static identifiers
+        if let Some(body) = node.child_by_field_name("body") {
+            self.find_static_references(&body, source, static_identifiers, violations);
+        }
+    }
+
+    fn find_static_references(
+        &self,
+        node: &Node,
+        source: &str,
+        static_identifiers: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Check if this is an identifier that matches a static
+        if node.kind() == "identifier" {
+            let name = get_node_text(node, source).trim().to_string();
+            if static_identifiers.contains(&name) {
+                // Check if this is not a declaration (we only want references)
+                if let Some(parent) = node.parent() {
+                    // Skip if this is the declarator in a declaration
+                    if parent.kind() != "init_declarator" && !parent.kind().contains("declarator") {
+                        let start_point = node.start_position();
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::Low,
+                            message: format!(
+                                "Non-static inline function references static identifier '{}' which has internal linkage. This violates C Standard constraint.",
+                                name
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some(
+                                "Either remove 'static' from the referenced identifier, make the function 'static inline', or remove 'inline' from the function.".to_string()
+                            ),
+                            ..Default::default()
+                        });
+                        return; // Only report once per static reference
+                    }
+                }
+            }
+        }
+
+        // Recurse through children
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.find_static_references(&child, source, static_identifiers, violations);
+        }
+    }
+
+    #[allow(dead_code)]
     fn check_for_static_references(
         &self,
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        // This is a heuristic check - we look for identifier references
-        // In a production implementation, we would need full symbol table analysis
-        // to determine if an identifier has internal linkage
-
-        // For now, this is a conservative stub that could be enhanced with:
-        // 1. Building a symbol table of static declarations in the file
-        // 2. Tracking which identifiers are referenced in inline functions
-        // 3. Reporting violations when inline functions reference static identifiers
-
-        // This would require multi-pass analysis and is beyond the scope of
-        // a simple AST walker. Leaving as a stub for now.
+        // Legacy stub - kept for compatibility
         let _ = (node, source, violations);
     }
 }
