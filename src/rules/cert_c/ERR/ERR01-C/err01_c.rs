@@ -190,12 +190,71 @@ impl Err01C {
 
     /// Recursively traverse AST
     fn traverse(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        self.process_function(node, source, violations);
+        // Handle function definitions
+        if node.kind() == "function_definition" {
+            self.process_function(node, source, violations);
+        } else if node.kind() == "translation_unit" {
+            // Handle top-level statements (for code snippets without function wrappers)
+            *self.file_stream_functions_seen.borrow_mut() = false;
+            self.traverse_top_level(node, source, violations);
+        }
 
         // Recurse into children
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
             self.traverse(&child, source, violations);
+        }
+    }
+
+    /// Traverse top-level statements in a translation unit
+    fn traverse_top_level(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            // Skip function definitions (handled separately)
+            if child.kind() == "function_definition" {
+                continue;
+            }
+
+            // Check expression statements at top level
+            if child.kind() == "expression_statement" {
+                self.check_expression_statement(&child, source, violations);
+            }
+
+            // Check if statements at top level
+            if child.kind() == "if_statement" {
+                self.check_errno_usage(&child, source, violations);
+            }
+        }
+    }
+
+    /// Check an expression statement for FILE stream calls
+    fn check_expression_statement(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            if child.kind() == "call_expression" {
+                self.check_call_expression(&child, source);
+            }
+            // Also check for errno checks in expression statements
+            self.check_errno_usage(&child, source, violations);
+
+            // Recurse to find nested call expressions
+            self.find_calls_recursive(&child, source);
+        }
+    }
+
+    /// Recursively find call expressions in a node
+    fn find_calls_recursive(&self, node: &Node, source: &str) {
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            if child.kind() == "call_expression" {
+                self.check_call_expression(&child, source);
+            }
+            self.find_calls_recursive(&child, source);
         }
     }
 }
