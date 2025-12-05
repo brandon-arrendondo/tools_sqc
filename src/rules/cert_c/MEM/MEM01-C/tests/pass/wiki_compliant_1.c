@@ -2,21 +2,27 @@
  * Rule: MEM01-C
  * Source: wiki
  * Status: PASS - Should NOT trigger MEM01-C violation
+ * Description: Pointer set to NULL after free prevents double-free
  */
 
-char *message;
-int message_type;
+#include <stdlib.h>
 
-/* Initialize message and message_type */
+#define value_1 1
+#define value_2 2
 
-if (message_type == value_1) {
-  /* Process message type 1 */
-  free(message);
-  message = NULL;
-}
-/* ... */
-if (message_type == value_2) {
-  /* Process message type 2 */
-  free(message);
-  message = NULL;
+void compliant(void) {
+    char *message = malloc(100);
+    int message_type = value_1;
+
+    if (message_type == value_1) {
+        /* Process message type 1 */
+        free(message);
+        message = NULL;  /* Compliant: set to NULL after free */
+    }
+    /* ... */
+    if (message_type == value_2) {
+        /* Process message type 2 */
+        free(message);
+        message = NULL;  /* Compliant: set to NULL after free */
+    }
 }

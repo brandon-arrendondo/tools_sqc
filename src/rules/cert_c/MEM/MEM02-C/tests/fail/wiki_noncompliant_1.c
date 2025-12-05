@@ -2,6 +2,7 @@
  * Rule: MEM02-C
  * Source: wiki
  * Status: FAIL - Should trigger MEM02-C violation
+ * Description: malloc result not cast - type mismatch possible
  */
 
 #include <stdlib.h>
@@ -19,12 +20,14 @@ struct widget {
   double d;
 };
 
-widget *p;
+void testcase_noncompliant_no_cast(void) {
+    widget *p;
 
-/* ... */
+    /* ... */
 
-p = malloc(sizeof(gadget)); /* Imminent problem */
-if (p != NULL) {
-  p->i = 0;                 /* Undefined behavior */
-  p->d = 0.0;               /* Undefined behavior */
+    p = malloc(sizeof(gadget)); /* Violation: no cast, sizeof wrong type */
+    if (p != NULL) {
+        p->i = 0;
+        p->d = 0.0;
+    }
 }
