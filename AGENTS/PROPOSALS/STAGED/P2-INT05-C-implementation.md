@@ -1,45 +1,45 @@
 ---
-rule_id: DCL09-C
+rule_id: INT05-C
 priority: P2
 status: active
-assigned_to: BLAKE
+assigned_to: ERIC
 created: 2025-11-17
 last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - DCL
+  - INT
 ---
 
-# P2-DCL09-C - DCL09-C Implementation
+# P2-INT05-C - INT05-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
-**Category:** DCL
+**Assigned To:** BLAKE
+**Category:** INT
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** DCL09-C
+**Rule ID:** INT05-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/DCL09-C.+Declare+functions+that+return+errno+with+a+return+type+of+errno_t
+https://wiki.sei.cmu.edu/confluence/display/c/INT05-C.+Do+not+use+input+functions+to+convert+character+data+if+they+cannot+handle+all+possible+inputs
 
 ---
 
 ## Task
 
-Implement or verify DCL09-C with 100% test pass rate and DRY compliance.
+Implement or verify INT05-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for DCL09-C
-2. Check if implementation exists in `src/rules/cert_c/DCL/DCL09-C/`
+1. Study the CERT C wiki page for INT05-C
+2. Check if implementation exists in `src/rules/cert_c/INT/INT05-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)

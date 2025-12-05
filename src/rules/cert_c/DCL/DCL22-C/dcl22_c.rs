@@ -1,15 +1,22 @@
-// SPDX-License-Identifier: MIT
-// Copyright (c) 2024 Ryan Urchick
-
-//! DCL22-C: Do not cast array references to pointers with incompatible element types
+//! DCL22-C: Use volatile for data that cannot be cached
 //!
-//! Casting an array to a pointer of a different type can lead to alignment and aliasing issues.
-
-use tree_sitter::Node;
+//! This rule detects variables that should be declared volatile but aren't.
+//! Variables accessed in signal handlers or representing hardware/memory-mapped I/O
+//! should be volatile to prevent unwanted compiler optimizations.
+//!
+//! VIOLATIONS:
+//! - sig_atomic_t flag;              // Should be volatile sig_atomic_t
+//! - int32_t bank[3]; modified around external function calls
+//!
+//! COMPLIANT:
+//! - volatile sig_atomic_t flag;     // Correct for signal handler
+//! - volatile int32_t bank[3];       // Correct for hardware register
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils;
+use std::collections::HashMap;
+use tree_sitter::Node;
 
 pub struct Dcl22C;
 
@@ -19,15 +26,15 @@ impl CertRule for Dcl22C {
     }
 
     fn description(&self) -> &'static str {
-        "Do not cast array references to pointers with incompatible element types"
+        "Use volatile for data that cannot be cached"
     }
 
     fn severity(&self) -> Severity {
-        Severity::High
+        Severity::Low
     }
 
     fn category(&self) -> RuleCategory {
-        RuleCategory::Rule
+        RuleCategory::Recommendation
     }
 
     fn cert_id(&self) -> &'static str {
@@ -36,92 +43,268 @@ impl CertRule for Dcl22C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+
+        // Check function definitions for variables modified around function calls
+        if node.kind() == "function_definition" {
+            violations.extend(self.check_function_for_volatile_candidates(node, source));
+        }
+
+        // Check declarations for sig_atomic_t without volatile
+        if node.kind() == "declaration" {
+            if let Some(violation) = self.check_sig_atomic_declaration(node, source) {
+                violations.push(violation);
+            }
+        }
+
+        // Recursively check child nodes
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            violations.extend(self.check(&child, source));
+        }
+
         violations
     }
 }
 
 impl Dcl22C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Look for casts where the operand uses the address-of operator on an array
-        if node.kind() == "cast_expression" {
-            // Get the cast type and operand
-            if let Some(type_node) = node.child_by_field_name("type") {
-                let type_text = get_node_text(&type_node, source);
+    /// Check function for variables that should be volatile
+    /// Detects variables modified around function calls (pattern: write, call, write)
+    fn check_function_for_volatile_candidates<'a>(
+        &self,
+        func_node: &Node<'a>,
+        source: &str,
+    ) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
 
-                if let Some(operand) = node.child_by_field_name("value") {
-                    let operand_text = get_node_text(&operand, source);
+        // Get function body
+        let body = match func_node.child_by_field_name("body") {
+            Some(b) => b,
+            None => return violations,
+        };
 
-                    // Check for (T **)&array pattern
-                    if type_text.contains("**") && operand_text.trim().starts_with('&') {
-                        // Extract the identifier
-                        let identifier = operand_text.trim_start_matches('&').trim();
+        // Collect local declarations without volatile
+        let mut non_volatile_vars: HashMap<String, Node<'a>> = HashMap::new();
+        self.collect_non_volatile_declarations(&body, source, &mut non_volatile_vars);
 
-                        // Check if this is an array by looking for its declaration
-                        if self.is_array_identifier(identifier, source) {
-                            // The key insight from comparing test cases:
-                            // Compliant has volatile in BOTH declaration AND cast
-                            // Noncompliant has volatile in NEITHER
-                            // But the noncompliant one should be flagged!
-                            //
-                            // So it's not about matching - it's about having volatile at all?
-                            // OR: it's about the ABSENCE of volatile being the problem?
-                            //
-                            // Wait - maybe the rule is: you CAN'T cast array to ** safely
-                            // UNLESS you use volatile to signal intent?
-                            // So: no volatile = violation, with volatile = OK?
+        // Analyze statement sequences for pattern: assignment -> function call -> assignment
+        let statements = self.get_statements(&body);
+        for i in 0..statements.len().saturating_sub(2) {
+            // Look for pattern across 3+ consecutive statements
+            let var_before = self.get_assigned_variable(&statements[i], source);
+            let has_call = self.contains_function_call(&statements[i + 1]);
+            let var_after = self.get_assigned_variable(&statements[i + 2], source);
 
-                            let has_volatile = type_text.contains("volatile")
-                                && self.declaration_has_volatile(identifier, source);
+            if let (Some(var1), true, Some(var2)) = (var_before, has_call, var_after) {
+                if var1 == var2 && non_volatile_vars.contains_key(&var1) {
+                    // Found pattern: variable modified before and after function call
+                    let decl_node = &non_volatile_vars[&var1];
+                    let start_point = decl_node.start_position();
 
-                            if !has_volatile {
-                                violations.push(RuleViolation {
-                                    rule_id: self.rule_id().to_string(),
-                                    severity: self.severity(),
-                                    line: node.start_position().row + 1,
-                                    column: node.start_position().column + 1,
-                                    file_path: String::new(),
-                                    message:
-                                        "Casting array reference to pointer with incompatible type. \
-                                        This can cause alignment issues and undefined behavior."
-                                            .to_string(),
-                                    suggestion: Some(
-                                        "Avoid casting arrays to incompatible pointer types. \
-                                        Use volatile qualifiers if this pattern is necessary."
-                                            .to_string(),
-                                    ),
-                                    requires_manual_review: None,
-                                });
-                            }
-                        }
-                    }
+                    violations.push(RuleViolation {
+                        rule_id: "DCL22-C".to_string(),
+                        severity: Severity::Low,
+                        message: format!(
+                            "Variable '{}' should be declared volatile - modified around function calls that may have external side effects",
+                            var1
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls".to_string()
+                        ),
+                        requires_manual_review: None,
+                    });
+
+                    // Remove to avoid duplicate violations for same variable
+                    non_volatile_vars.remove(&var1);
                 }
             }
         }
 
-        let mut cursor = node.walk();
-        for child in node.children(&mut cursor) {
-            self.check_node(&child, source, violations);
+        violations
+    }
+
+    /// Collect all local variable declarations that are not volatile
+    fn collect_non_volatile_declarations<'a>(
+        &self,
+        body: &Node<'a>,
+        source: &str,
+        vars: &mut HashMap<String, Node<'a>>,
+    ) {
+        let mut cursor = body.walk();
+        for child in body.children(&mut cursor) {
+            if child.kind() == "declaration" {
+                let type_text = self.get_type_text(&child, source).unwrap_or_default();
+                if !type_text.contains("volatile") {
+                    if let Some(var_name) = self.get_variable_name(&child, source) {
+                        vars.insert(var_name, child);
+                    }
+                }
+            } else if child.kind() == "compound_statement" {
+                self.collect_non_volatile_declarations(&child, source, vars);
+            }
         }
     }
 
-    fn is_array_identifier(&self, identifier: &str, source: &str) -> bool {
-        // Check if identifier is declared as an array
-        for line in source.lines() {
-            if line.contains(identifier) && line.contains('[') && line.contains(']') {
-                return true;
+    /// Get all statements from a compound statement
+    fn get_statements<'a>(&self, body: &'a Node) -> Vec<Node<'a>> {
+        let mut statements = Vec::new();
+        let mut cursor = body.walk();
+        for child in body.children(&mut cursor) {
+            if !matches!(child.kind(), "{" | "}") {
+                statements.push(child);
+            }
+        }
+        statements
+    }
+
+    /// Get variable name from an assignment statement
+    fn get_assigned_variable(&self, stmt: &Node, source: &str) -> Option<String> {
+        // Look for expression_statement containing assignment_expression
+        if stmt.kind() == "expression_statement" {
+            let mut cursor = stmt.walk();
+            for child in stmt.children(&mut cursor) {
+                if child.kind() == "assignment_expression" {
+                    // Get left side of assignment
+                    if let Some(left) = child.child_by_field_name("left") {
+                        return self.extract_base_identifier(&left, source);
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract base identifier from expression (handles array subscripts)
+    fn extract_base_identifier(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(ast_utils::get_node_text(node, source).to_string()),
+            "subscript_expression" => {
+                // For bank[0], extract "bank"
+                if let Some(array) = node.child_by_field_name("argument") {
+                    return self.extract_base_identifier(&array, source);
+                }
+                None
+            }
+            _ => None,
+        }
+    }
+
+    /// Check if a statement contains a function call
+    fn contains_function_call(&self, stmt: &Node) -> bool {
+        if stmt.kind() == "expression_statement" {
+            let mut cursor = stmt.walk();
+            for child in stmt.children(&mut cursor) {
+                if child.kind() == "call_expression" {
+                    return true;
+                }
             }
         }
         false
     }
 
-    fn declaration_has_volatile(&self, identifier: &str, source: &str) -> bool {
-        // Check if the array declaration has volatile qualifier
-        for line in source.lines() {
-            if line.contains(identifier) && line.contains('[') {
-                return line.contains("volatile");
+    /// Check if a sig_atomic_t declaration is missing volatile qualifier
+    fn check_sig_atomic_declaration(
+        &self,
+        decl_node: &Node,
+        source: &str,
+    ) -> Option<RuleViolation> {
+        // Get the type specifier
+        let type_text = self.get_type_text(decl_node, source)?;
+
+        // Check if it's sig_atomic_t
+        if type_text.contains("sig_atomic_t") {
+            // Check if volatile is present
+            if !type_text.contains("volatile") {
+                let start_point = decl_node.start_position();
+                let var_name = self
+                    .get_variable_name(decl_node, source)
+                    .unwrap_or_else(|| "<unknown>".to_string());
+
+                return Some(RuleViolation {
+                    rule_id: "DCL22-C".to_string(),
+                    severity: Severity::Low,
+                    message: format!(
+                        "Variable '{}' of type 'sig_atomic_t' should be declared volatile for signal handler safety",
+                        var_name
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Declare as 'volatile sig_atomic_t' to prevent compiler optimizations that could cause race conditions".to_string()
+                    ),
+                    requires_manual_review: None,
+                });
             }
         }
-        false
+
+        None
+    }
+
+    /// Get the full type text from a declaration
+    fn get_type_text(&self, decl_node: &Node, source: &str) -> Option<String> {
+        let mut type_parts = Vec::new();
+
+        let mut cursor = decl_node.walk();
+        for child in decl_node.children(&mut cursor) {
+            match child.kind() {
+                "type_qualifier"
+                | "storage_class_specifier"
+                | "primitive_type"
+                | "type_identifier"
+                | "struct_specifier" => {
+                    let text = ast_utils::get_node_text(&child, source);
+                    type_parts.push(text.to_string());
+                }
+                _ => {}
+            }
+        }
+
+        if type_parts.is_empty() {
+            None
+        } else {
+            Some(type_parts.join(" "))
+        }
+    }
+
+    /// Get the variable name from a declaration
+    fn get_variable_name(&self, decl_node: &Node, source: &str) -> Option<String> {
+        let mut cursor = decl_node.walk();
+        for child in decl_node.children(&mut cursor) {
+            if child.kind() == "init_declarator" {
+                if let Some(declarator) = child.child_by_field_name("declarator") {
+                    return self.extract_identifier(&declarator, source);
+                }
+            } else if matches!(
+                child.kind(),
+                "identifier" | "pointer_declarator" | "array_declarator"
+            ) {
+                return self.extract_identifier(&child, source);
+            }
+        }
+        None
+    }
+
+    /// Extract identifier from declarator
+    fn extract_identifier(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(ast_utils::get_node_text(node, source).to_string()),
+            "pointer_declarator" | "array_declarator" => {
+                if let Some(child_declarator) = node.child_by_field_name("declarator") {
+                    return self.extract_identifier(&child_declarator, source);
+                }
+                // Fallback: search for identifier child
+                let mut cursor = node.walk();
+                for child in node.children(&mut cursor) {
+                    if child.kind() == "identifier" {
+                        return Some(ast_utils::get_node_text(&child, source).to_string());
+                    }
+                }
+                None
+            }
+            _ => None,
+        }
     }
 }
