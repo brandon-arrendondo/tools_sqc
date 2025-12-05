@@ -1,39 +1,41 @@
 //! CON41-C: Wrap functions that can fail spuriously in a loop
 //!
-//! This rule detects calls to atomic_compare_exchange_weak() and
-//! atomic_compare_exchange_weak_explicit() that are not wrapped in a loop.
+//! Atomic compare-exchange weak functions can fail spuriously and must be wrapped
+//! in a loop to handle these failures correctly.
+//!
+//! ## Affected Functions:
+//! - `atomic_compare_exchange_weak()`
+//! - `atomic_compare_exchange_weak_explicit()`
+//!
+//! ## Rationale:
+//! Per C Standard 7.17.7.4 paragraph 5 [ISO/IEC 9899:2024]:
+//! - A weak compare-and-exchange operation may fail spuriously
+//! - This makes them faster on some platforms (Alpha, ARM, MIPS, PowerPC)
+//! - These architectures implement compare-and-exchange using load-linked/store-conditional
+//! - To recover from spurious failures, a loop must be used
 //!
 //! ## Examples:
 //!
-//! **Non-compliant:**
+//! **Non-compliant (no loop):**
 //! ```c
-//! success = atomic_compare_exchange_weak(ptr_to_head, &old_head, new_head);
-//! if (!success) {
-//!   cleanup_data_structure(new_head);
+//! _Bool flag = 0;
+//! if (atomic_compare_exchange_weak(&flag, &expected, 1)) {
+//!     // May fail spuriously!
 //! }
 //! ```
 //!
-//! **Compliant:**
+//! **Compliant (in loop):**
 //! ```c
-//! do {
-//!   if (new_head != NULL) {
-//!     cleanup_data_structure(new_head);
-//!   }
-//!   saved_old_head = old_head;
-//! } while (!(success = atomic_compare_exchange_weak(
-//!            ptr_to_head, &old_head, new_head
-//!          )) && old_head == saved_old_head);
-//! ```
-//!
-//! Or use the strong variant:
-//! ```c
-//! success = atomic_compare_exchange_strong(ptr_to_head, &old_head, new_head);
+//! _Bool flag = 0;
+//! while (!atomic_compare_exchange_weak(&flag, &expected, 1)) {
+//!     // Retry on spurious failure
+//! }
 //! ```
 //!
 //! ## Detection Strategy:
-//! - Find all calls to atomic_compare_exchange_weak functions
-//! - Check if the call is inside a loop (do, while, for)
-//! - Report violations when not wrapped in a loop
+//! - Find calls to atomic_compare_exchange_weak() and atomic_compare_exchange_weak_explicit()
+//! - Check if they are within a loop (while, for, do-while)
+//! - Flag violations if not in a loop
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
@@ -52,7 +54,7 @@ impl CertRule for Con41C {
     }
 
     fn severity(&self) -> Severity {
-        Severity::Low
+        Severity::Medium
     }
 
     fn category(&self) -> RuleCategory {
@@ -72,30 +74,31 @@ impl CertRule for Con41C {
 
 impl Con41C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Look for call_expression nodes
+        // Look for call expressions
         if node.kind() == "call_expression" {
-            if let Some(func_node) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&func_node, source);
+            if let Some(func) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&func, source);
 
-                // Check if it's one of the weak compare-exchange functions
-                if self.is_weak_compare_exchange(&func_name) {
-                    // Check if this call is inside a loop
-                    if !self.is_inside_loop(node) {
+                // Check if this is an atomic compare-exchange weak function
+                if matches!(
+                    func_name,
+                    "atomic_compare_exchange_weak" | "atomic_compare_exchange_weak_explicit"
+                ) {
+                    // Check if the call is within a loop
+                    if !self.is_in_loop(node) {
                         let line = node.start_position().row + 1;
-                        let column = node.start_position().column + 1;
-
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
-                            severity: Severity::Low,
+                            severity: Severity::Medium,
                             message: format!(
-                                "Call to '{}' is not wrapped in a loop. This function can fail spuriously and should be wrapped in a do-while loop, or use atomic_compare_exchange_strong() instead.",
-                                func_name.trim()
+                                "Function '{}' can fail spuriously and must be wrapped in a loop (C11 7.17.7.4)",
+                                func_name
                             ),
                             file_path: String::new(),
                             line,
-                            column,
+                            column: 0,
                             suggestion: Some(
-                                "Wrap this call in a loop (e.g., do-while) to handle spurious failures, or use atomic_compare_exchange_strong() instead".to_string()
+                                format!("Wrap {} in a while/for/do-while loop to handle spurious failures", func_name)
                             ),
                             ..Default::default()
                         });
@@ -104,7 +107,7 @@ impl Con41C {
             }
         }
 
-        // Recursively check child nodes
+        // Recursively check children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 self.check_node(&child, source, violations);
@@ -112,18 +115,13 @@ impl Con41C {
         }
     }
 
-    fn is_weak_compare_exchange(&self, func_name: &str) -> bool {
-        let trimmed = func_name.trim();
-        trimmed == "atomic_compare_exchange_weak"
-            || trimmed == "atomic_compare_exchange_weak_explicit"
-    }
-
-    fn is_inside_loop(&self, node: &Node) -> bool {
+    /// Check if a node is within a loop structure
+    fn is_in_loop(&self, node: &Node) -> bool {
         let mut current = node.parent();
 
         while let Some(parent) = current {
             match parent.kind() {
-                "while_statement" | "do_statement" | "for_statement" => {
+                "while_statement" | "for_statement" | "do_statement" => {
                     return true;
                 }
                 "function_definition" => {

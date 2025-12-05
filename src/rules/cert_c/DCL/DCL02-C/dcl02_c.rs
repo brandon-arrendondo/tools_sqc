@@ -1,0 +1,346 @@
+//! DCL02-C: Use visually distinct identifiers
+//!
+//! This rule detects identifiers that differ only by visually similar characters.
+//! Such identifiers can lead to confusion and errors during code review and maintenance.
+//!
+//! VIOLATIONS:
+//! - int id_O; int id_0;           // O (letter) vs 0 (digit)
+//! - int var1; int varl;           // 1 (digit) vs l (lowercase L)
+//! - int count_I; int count_l;     // I (uppercase i) vs l (lowercase L)
+//! - int valS; int val5;           // S (letter) vs 5 (digit)
+//! - int sumB; int sum8;           // B (letter) vs 8 (digit)
+//! - int rn_value; int m_value;    // rn (two chars) vs m (one char)
+//!
+//! COMPLIANT:
+//! - int id_a; int id_b;           // Clearly distinct identifiers
+//! - int first; int second;        // Meaningful, distinct names
+//! - int counter; int index;       // Different names entirely
+//!
+//! Visually similar character pairs:
+//! - 0 (zero) ↔ O, Q, D (capital letters)
+//! - 1 (one) ↔ I, l (capital i, lowercase L)
+//! - 2 (two) ↔ Z (capital z)
+//! - 5 (five) ↔ S (capital s)
+//! - 8 (eight) ↔ B (capital b)
+//! - n ↔ h (lowercase)
+//! - m ↔ rn (lowercase m vs r+n sequence)
+
+use super::super::{CertRule, RuleViolation};
+use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils;
+use std::collections::HashMap;
+use tree_sitter::Node;
+
+pub struct Dcl02C;
+
+impl CertRule for Dcl02C {
+    fn rule_id(&self) -> &'static str {
+        "DCL02-C"
+    }
+
+    fn description(&self) -> &'static str {
+        "Use visually distinct identifiers"
+    }
+
+    fn severity(&self) -> Severity {
+        Severity::Low
+    }
+
+    fn category(&self) -> RuleCategory {
+        RuleCategory::Recommendation
+    }
+
+    fn cert_id(&self) -> &'static str {
+        "DCL02-C"
+    }
+
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // Collect all identifiers in each scope
+        let mut scope_analyzer = ScopeAnalyzer::new();
+        scope_analyzer.analyze_scope(node, source, &mut violations);
+
+        violations
+    }
+}
+
+struct ScopeAnalyzer {
+    // Map of normalized identifier -> list of (actual identifier, position)
+    identifiers: HashMap<String, Vec<(String, usize, usize)>>,
+}
+
+impl ScopeAnalyzer {
+    fn new() -> Self {
+        Self {
+            identifiers: HashMap::new(),
+        }
+    }
+
+    fn analyze_scope(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Recursively collect all identifiers in this scope
+        self.collect_identifiers(node, source);
+
+        // Check for visually similar identifiers
+        self.check_visual_similarity(violations);
+
+        // Analyze nested scopes (functions, blocks)
+        self.analyze_child_scopes(node, source, violations);
+    }
+
+    fn collect_identifiers(&mut self, node: &Node, source: &str) {
+        match node.kind() {
+            "declaration" | "parameter_declaration" => {
+                if let Some(identifier) = self.extract_identifier(node, source) {
+                    let normalized = normalize_identifier(&identifier);
+                    let pos = node.start_position();
+
+                    self.identifiers
+                        .entry(normalized)
+                        .or_insert_with(Vec::new)
+                        .push((identifier, pos.row + 1, pos.column + 1));
+                }
+            }
+            "function_definition" => {
+                // Extract function name
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    if let Some(func_name) = self.get_function_name(&declarator, source) {
+                        let normalized = normalize_identifier(&func_name);
+                        let pos = node.start_position();
+
+                        self.identifiers
+                            .entry(normalized)
+                            .or_insert_with(Vec::new)
+                            .push((func_name, pos.row + 1, pos.column + 1));
+                    }
+                }
+                // Don't recurse into function body here - will be handled by analyze_child_scopes
+                return;
+            }
+            _ => {
+                // Recurse into children (except function bodies which are separate scopes)
+                if node.kind() != "compound_statement" || !self.is_function_body(node) {
+                    for i in 0..node.child_count() {
+                        if let Some(child) = node.child(i) {
+                            self.collect_identifiers(&child, source);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn analyze_child_scopes(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        match node.kind() {
+            "function_definition" => {
+                // Analyze function body as a new scope
+                if let Some(body) = node.child_by_field_name("body") {
+                    let mut child_analyzer = ScopeAnalyzer::new();
+
+                    // Include function parameters in the function scope
+                    if let Some(declarator) = node.child_by_field_name("declarator") {
+                        child_analyzer.collect_parameters(&declarator, source);
+                    }
+
+                    child_analyzer.analyze_scope(&body, source, violations);
+                }
+            }
+            "compound_statement" if !self.is_function_body(node) => {
+                // Analyze nested block as a new scope
+                let mut child_analyzer = ScopeAnalyzer::new();
+                child_analyzer.analyze_scope(node, source, violations);
+            }
+            _ => {
+                // Recurse to find nested scopes
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        self.analyze_child_scopes(&child, source, violations);
+                    }
+                }
+            }
+        }
+    }
+
+    fn collect_parameters(&mut self, declarator: &Node, source: &str) {
+        if let Some(params) = declarator.child_by_field_name("parameters") {
+            for i in 0..params.child_count() {
+                if let Some(param) = params.child(i) {
+                    if param.kind() == "parameter_declaration" {
+                        if let Some(identifier) = self.extract_identifier(&param, source) {
+                            let normalized = normalize_identifier(&identifier);
+                            let pos = param.start_position();
+
+                            self.identifiers
+                                .entry(normalized)
+                                .or_insert_with(Vec::new)
+                                .push((identifier, pos.row + 1, pos.column + 1));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn is_function_body(&self, node: &Node) -> bool {
+        // Check if this compound_statement is a direct child of a function_definition
+        if let Some(parent) = node.parent() {
+            parent.kind() == "function_definition"
+        } else {
+            false
+        }
+    }
+
+    fn extract_identifier(&self, node: &Node, source: &str) -> Option<String> {
+        // Try to find an identifier in the declaration
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            return self.get_declarator_name(&declarator, source);
+        }
+
+        // Fallback: search for identifier node
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "identifier" {
+                    return Some(ast_utils::get_node_text_owned(&child, source));
+                }
+                if let Some(name) = self.extract_identifier(&child, source) {
+                    return Some(name);
+                }
+            }
+        }
+
+        None
+    }
+
+    fn get_declarator_name(&self, declarator: &Node, source: &str) -> Option<String> {
+        match declarator.kind() {
+            "identifier" => Some(ast_utils::get_node_text_owned(declarator, source)),
+            "pointer_declarator" | "array_declarator" | "function_declarator" => {
+                if let Some(child_declarator) = declarator.child_by_field_name("declarator") {
+                    return self.get_declarator_name(&child_declarator, source);
+                }
+
+                // Fallback: find identifier child
+                for i in 0..declarator.child_count() {
+                    if let Some(child) = declarator.child(i) {
+                        if child.kind() == "identifier" {
+                            return Some(ast_utils::get_node_text_owned(&child, source));
+                        }
+                        if let Some(name) = self.get_declarator_name(&child, source) {
+                            return Some(name);
+                        }
+                    }
+                }
+                None
+            }
+            _ => None,
+        }
+    }
+
+    fn get_function_name(&self, declarator: &Node, source: &str) -> Option<String> {
+        match declarator.kind() {
+            "identifier" => Some(ast_utils::get_node_text_owned(declarator, source)),
+            "function_declarator" => {
+                if let Some(child_declarator) = declarator.child_by_field_name("declarator") {
+                    return self.get_function_name(&child_declarator, source);
+                }
+                None
+            }
+            "pointer_declarator" => {
+                if let Some(child_declarator) = declarator.child_by_field_name("declarator") {
+                    return self.get_function_name(&child_declarator, source);
+                }
+                None
+            }
+            _ => None,
+        }
+    }
+
+    fn check_visual_similarity(&self, violations: &mut Vec<RuleViolation>) {
+        // For each group of identifiers with the same normalized form
+        for (normalized, identifiers) in &self.identifiers {
+            if identifiers.len() > 1 {
+                // Found multiple identifiers with the same normalized form
+                // Report all but the first as violations
+                for i in 1..identifiers.len() {
+                    let (id1, line1, _col1) = &identifiers[0];
+                    let (id2, line2, col2) = &identifiers[i];
+
+                    violations.push(RuleViolation {
+                        rule_id: "DCL02-C".to_string(),
+                        severity: Severity::Low,
+                        message: format!(
+                            "Identifier '{}' at line {} is visually similar to '{}' at line {} (normalized: '{}')",
+                            id2, line2, id1, line1, normalized
+                        ),
+                        file_path: String::new(),
+                        line: *line2,
+                        column: *col2,
+                        suggestion: Some(format!(
+                            "Use a more distinct identifier name that doesn't rely on visually similar characters"
+                        )),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+    }
+}
+
+/// Normalize identifier by replacing visually similar characters with a canonical form
+fn normalize_identifier(id: &str) -> String {
+    let mut normalized = String::with_capacity(id.len());
+    let chars: Vec<char> = id.chars().collect();
+    let mut i = 0;
+
+    while i < chars.len() {
+        let ch = chars[i];
+
+        // Check for 'rn' sequence (looks like 'm')
+        if ch == 'r' && i + 1 < chars.len() && chars[i + 1] == 'n' {
+            normalized.push('m'); // Normalize rn -> m
+            i += 2;
+            continue;
+        }
+
+        // Check for 'm' (looks like 'rn')
+        if ch == 'm' {
+            normalized.push('m'); // Keep m as canonical form
+            i += 1;
+            continue;
+        }
+
+        // Normalize visually similar characters
+        let canonical = match ch {
+            // 0 (zero) looks like O, Q, D
+            '0' | 'O' | 'Q' | 'D' => '0',
+
+            // 1 (one) looks like I (capital i), l (lowercase L)
+            '1' | 'I' | 'l' => '1',
+
+            // 2 (two) looks like Z
+            '2' | 'Z' => '2',
+
+            // 5 (five) looks like S
+            '5' | 'S' => '5',
+
+            // 8 (eight) looks like B
+            '8' | 'B' => '8',
+
+            // n looks like h
+            'n' | 'h' => 'n',
+
+            // Keep other characters as-is
+            c => c,
+        };
+
+        normalized.push(canonical);
+        i += 1;
+    }
+
+    normalized
+}

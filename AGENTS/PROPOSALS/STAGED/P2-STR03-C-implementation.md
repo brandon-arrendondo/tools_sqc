@@ -1,5 +1,5 @@
 ---
-rule_id: EXP02-C
+rule_id: STR03-C
 priority: P2
 status: active
 assigned_to: ERIC
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - EXP
+  - STR
 ---
 
-# P2-EXP02-C - EXP02-C Implementation
+# P2-STR03-C - STR03-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ALLY
-**Category:** EXP
+**Assigned To:** BLAKE
+**Category:** STR
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** EXP02-C
+**Rule ID:** STR03-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/EXP02-C.+Be+aware+of+the+short-circuit+behavior+of+the+logical+AND+and+OR+operators
+https://wiki.sei.cmu.edu/confluence/display/c/STR03-C.+Do+not+inadvertently+truncate+a+string
 
 ---
 
 ## Task
 
-Implement or verify EXP02-C with 100% test pass rate and DRY compliance.
+Implement or verify STR03-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for EXP02-C
-2. Check if implementation exists in `src/rules/cert_c/EXP/EXP02-C/`
+1. Study the CERT C wiki page for STR03-C
+2. Check if implementation exists in `src/rules/cert_c/STR/STR03-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -200,3 +200,37 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 ## Verification
 
 @architect: APPROVED
+
+---
+
+## Implementation Log
+
+**Date**: 2025-11-21  
+**Status**: COMPLETE ✅
+
+### Implementation Summary
+
+Created `src/rules/cert_c/STR/STR03-C/str03_c.rs` (155 lines).
+
+**Detection Logic**:
+- Identifies calls to `strncpy()`, `strncat()`, `snprintf()` that may truncate strings
+- Checks for length validation before truncating function calls  
+- Looks for `strlen()` + `sizeof()` validation patterns in preceding if statements
+- Marks violations for manual review (allows intentional truncation per STR03-C-EX1)
+
+**Test Results**: 2/2 tests passing (100%)
+- ✅ wiki_noncompliant_1.c - strncpy without validation (detected)
+- ✅ wiki_adequate_space.c - strcpy with proper length validation (no violation)
+
+**DRY Compliance**: ✅
+- Uses `ast_utils::get_node_text()` for source extraction
+- Follows standard RuleViolation pattern
+- No code duplication
+
+**Commit**: 3a89cfe  
+**Branch**: claude-work-active-BLAKE-20251119
+
+### Notes
+
+This rule is marked "rose-false-positive" on CERT C wiki, meaning it will produce false positives since any truncation could be intentional (STR03-C-EX1). The implementation flags all unvalidated truncating function calls and marks them for manual review to handle this uncertainty.
+

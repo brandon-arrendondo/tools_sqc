@@ -224,3 +224,36 @@ The implementation successfully detects the non-compliant pattern where arrays a
 ## Verification
 
 @architect: APPROVED
+
+---
+
+## Implementation Log
+
+**Date**: 2025-11-21  
+**Status**: COMPLETE ✅
+
+### Implementation Summary
+
+Created `src/rules/cert_c/STR/STR11-C/str11_c.rs` (172 lines).
+
+**Detection Logic**:
+- Identifies char array declarations with explicit bounds and string literal initializers
+- Checks if array size equals string length (missing null terminator space)
+- Also detects arrays that are too small (size < string_length + 1)
+- Handles const qualifiers correctly by collecting all type information
+
+**Test Results**: 2/2 tests passing (100%)
+- ✅ wiki_noncompliant_1.c - `const char s[3] = "abc";` (detected: size 3 for 4-char string)
+- ✅ wiki_compliant_1.c - `const char s[] = "abc";` (no violation: compiler determines size)
+
+**Bug Fixed During Implementation**:
+Initial implementation only checked first type node, missing "char" when "const" came first.
+Fixed by collecting all type-related nodes and checking combined string.
+
+**DRY Compliance**: ✅
+- Uses `ast_utils::get_node_text()` for source extraction
+- Follows standard RuleViolation pattern
+
+**Commit**: 2aba295  
+**Branch**: claude-work-active-BLAKE-20251119
+

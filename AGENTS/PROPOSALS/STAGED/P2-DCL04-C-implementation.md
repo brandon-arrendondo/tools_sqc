@@ -1,5 +1,5 @@
 ---
-rule_id: FIO22-C
+rule_id: DCL04-C
 priority: P2
 status: active
 assigned_to: ERIC
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - FIO
+  - DCL
 ---
 
-# P2-FIO22-C - FIO22-C Implementation
+# P2-DCL04-C - DCL04-C Implementation
 
-**Status:** ACTIVE
+**Status:** STAGED (awaiting adversarial review)
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** HUU
-**Category:** FIO
+**Assigned To:** ERIC
+**Category:** DCL
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** FIO22-C
+**Rule ID:** DCL04-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FIO22-C.+Close+files+before+spawning+processes
+https://wiki.sei.cmu.edu/confluence/display/c/DCL04-C.+Do+not+declare+more+than+one+variable+per+declaration
 
 ---
 
 ## Task
 
-Implement or verify FIO22-C with 100% test pass rate and DRY compliance.
+Implement or verify DCL04-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for FIO22-C
-2. Check if implementation exists in `src/rules/cert_c/FIO/FIO22-C/`
+1. Study the CERT C wiki page for DCL04-C
+2. Check if implementation exists in `src/rules/cert_c/DCL/DCL04-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -183,17 +183,38 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Acceptance Criteria
 
-- [ ] Implementation exists and compiles
-- [ ] All test cases pass (100% pass rate)
-- [ ] Uses get_node_text() and other shared utilities (DRY compliance)
-- [ ] Rule enabled in configuration
-- [ ] Implementation documented with comments
+- [x] Implementation exists and compiles
+- [x] All test cases pass (100% pass rate)
+- [x] Uses get_node_text() and other shared utilities (DRY compliance)
+- [x] Rule enabled in configuration
+- [x] Implementation documented with comments
 
 ---
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-11-19 - Claude Code (via /work-active)
+
+**Status:** COMPLETE - All tests passing
+
+**Implementation:**
+- ✅ Created `src/rules/cert_c/DCL/DCL04-C/dcl04_c.rs`
+- ✅ Registered in `src/rules/cert_c/mod.rs` (lines 145-146, 470)
+- ✅ Enabled in `DCL04-C.toml`
+- ✅ Build succeeds
+- ✅ All 4 tests pass (100% pass rate)
+
+**Test Results:**
+- PASS: `test_dcl04_c_fail_wiki_noncompliant_1` ✅
+- PASS: `test_dcl04_c_fail_wiki_noncompliant_2` ✅
+- PASS: `test_dcl04_c_pass_wiki_compliant_1` ✅
+- PASS: `test_dcl04_c_pass_wiki_compliant_2` ✅
+
+**Implementation Details:**
+- Detects declarations with multiple variables (comma-separated)
+- Exception: for loop declarations (multiple loop control variables allowed)
+- Counts init_declarator and direct declarator children
+- Provides clear error messages with line numbers
 
 ---
 

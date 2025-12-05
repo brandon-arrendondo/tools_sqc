@@ -1,5 +1,5 @@
 ---
-rule_id: FIO14-C
+rule_id: INT05-C
 priority: P2
 status: active
 assigned_to: ERIC
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - FIO
+  - INT
 ---
 
-# P2-FIO14-C - FIO14-C Implementation
+# P2-INT05-C - INT05-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ALLY
-**Category:** FIO
+**Assigned To:** BLAKE
+**Category:** INT
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** FIO14-C
+**Rule ID:** INT05-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FIO14-C.+Understand+the+difference+between+text+mode+and+binary+mode+with+file+streams
+https://wiki.sei.cmu.edu/confluence/display/c/INT05-C.+Do+not+use+input+functions+to+convert+character+data+if+they+cannot+handle+all+possible+inputs
 
 ---
 
 ## Task
 
-Implement or verify FIO14-C with 100% test pass rate and DRY compliance.
+Implement or verify INT05-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for FIO14-C
-2. Check if implementation exists in `src/rules/cert_c/FIO/FIO14-C/`
+1. Study the CERT C wiki page for INT05-C
+2. Check if implementation exists in `src/rules/cert_c/INT/INT05-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
