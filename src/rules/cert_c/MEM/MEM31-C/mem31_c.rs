@@ -50,8 +50,6 @@ impl CertRule for Mem31C {
 struct MemoryLeakAnalyzer {
     // Track allocated memory by variable name
     allocated_memory: HashMap<String, AllocInfo>,
-    // Track freed memory
-    freed_memory: HashSet<String>,
     // Track variables that are returned or stored globally
     escaped_memory: HashSet<String>,
 }
@@ -67,7 +65,6 @@ impl MemoryLeakAnalyzer {
     fn new() -> Self {
         Self {
             allocated_memory: HashMap::new(),
-            freed_memory: HashSet::new(),
             escaped_memory: HashSet::new(),
         }
     }
@@ -79,57 +76,33 @@ impl MemoryLeakAnalyzer {
         violations: &mut Vec<RuleViolation>,
     ) {
         if let Some(body) = func_node.child_by_field_name("body") {
-            // First pass: collect all memory operations
-            self.analyze_node(&body, source);
+            // First pass: collect all allocations
+            self.collect_allocations(&body, source);
 
-            // Second pass: check for leaks
-            self.detect_leaks(violations);
+            // Second pass: analyze control flow paths for leaks
+            self.analyze_paths(&body, source, violations);
         }
     }
 
-    fn analyze_node(&mut self, node: &Node, source: &str) {
+    fn collect_allocations(&mut self, node: &Node, source: &str) {
         match node.kind() {
-            "declaration" | "expression_statement" => {
-                self.process_statement(node, source);
+            "declaration" => {
+                self.process_declaration(node, source);
             }
             "assignment_expression" => {
-                self.process_assignment(node, source);
-            }
-            "call_expression" => {
-                self.process_call(node, source);
-            }
-            "return_statement" => {
-                self.process_return(node, source);
-            }
-            "if_statement" | "while_statement" | "for_statement" | "do_statement" => {
-                // Process control flow statements recursively
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        self.analyze_node(&child, source);
-                    }
-                }
-            }
-            "compound_statement" => {
-                // Process compound statements recursively
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        self.analyze_node(&child, source);
-                    }
-                }
+                self.process_assignment_alloc(node, source);
             }
             _ => {
-                // Recursively process other nodes
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
-                        self.analyze_node(&child, source);
+                        self.collect_allocations(&child, source);
                     }
                 }
             }
         }
     }
 
-    fn process_statement(&mut self, node: &Node, source: &str) {
-        // Look for declarations with malloc/calloc/realloc
+    fn process_declaration(&mut self, node: &Node, source: &str) {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 if child.kind() == "init_declarator" {
@@ -141,7 +114,7 @@ impl MemoryLeakAnalyzer {
                                 let pos = value.start_position();
                                 let alloc_type = self.get_allocation_type(&value, source);
                                 self.allocated_memory.insert(
-                                    var_name.clone(),
+                                    var_name,
                                     AllocInfo {
                                         line: pos.row + 1,
                                         column: pos.column + 1,
@@ -151,14 +124,12 @@ impl MemoryLeakAnalyzer {
                             }
                         }
                     }
-                } else {
-                    self.analyze_node(&child, source);
                 }
             }
         }
     }
 
-    fn process_assignment(&mut self, node: &Node, source: &str) {
+    fn process_assignment_alloc(&mut self, node: &Node, source: &str) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
@@ -166,131 +137,315 @@ impl MemoryLeakAnalyzer {
             if left.kind() == "identifier" {
                 let var_name = ast_utils::get_node_text_owned(&left, source);
 
-                // Check if this variable was previously allocated
-                let was_allocated = self.allocated_memory.contains_key(&var_name);
-
-                // Check if assigning result of allocation
                 if self.is_allocation_call(&right, source) {
-                    // If the variable was already allocated and not freed, it's a leak
-                    if was_allocated && !self.freed_memory.contains(&var_name) {
-                        // The old allocation is now leaked - we need to create a unique identifier for it
-                        // Since we can't track the old allocation separately, we'll generate a violation now
-                        if let Some(old_alloc) = self.allocated_memory.get(&var_name) {
-                            // We'll mark this as leaked by creating a unique name for the old allocation
-                            let leaked_name =
-                                format!("{}@{}:{}", var_name, old_alloc.line, old_alloc.column);
-                            self.allocated_memory.insert(leaked_name, old_alloc.clone());
-                        }
-                    }
-
                     let pos = right.start_position();
                     let alloc_type = self.get_allocation_type(&right, source);
                     self.allocated_memory.insert(
-                        var_name.clone(),
+                        var_name,
                         AllocInfo {
                             line: pos.row + 1,
                             column: pos.column + 1,
                             alloc_type,
                         },
                     );
-                } else if right.kind() == "identifier" {
-                    // Check if assigning allocated pointer to another variable
-                    let right_var = ast_utils::get_node_text_owned(&right, source);
-                    if self.allocated_memory.contains_key(&right_var) {
-                        // Transfer ownership
-                        if let Some(alloc_info) = self.allocated_memory.get(&right_var).cloned() {
-                            self.allocated_memory.insert(var_name, alloc_info);
-                            // The original variable still holds the allocation until freed
+                }
+            }
+        }
+    }
+
+    fn analyze_paths(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        let mut path_state = PathState::new();
+        self.analyze_statement(node, source, &mut path_state, violations);
+
+        // Check for leaks at implicit function exit (when function ends without explicit return)
+        // But only if the function doesn't end with a return/exit statement
+        if !self.ends_with_exit(node, source) {
+            self.detect_leaks_at_exit(&path_state, violations);
+        }
+    }
+
+    fn analyze_statement(
+        &mut self,
+        node: &Node,
+        source: &str,
+        path_state: &mut PathState,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        match node.kind() {
+            "return_statement" => {
+                self.process_return(node, source, path_state);
+                self.detect_leaks_at_exit(path_state, violations);
+            }
+            "expression_statement" => {
+                // Process expression statements (e.g., free(buffer);)
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "call_expression" {
+                            self.process_call(&child, source, path_state);
+                            // Check if this is an exit/abort call
+                            if let Some(function) = child.child_by_field_name("function") {
+                                let func_name = ast_utils::get_node_text_owned(&function, source);
+                                if matches!(
+                                    func_name.as_str(),
+                                    "exit" | "abort" | "_exit" | "_Exit"
+                                ) {
+                                    self.detect_leaks_at_exit(path_state, violations);
+                                }
+                            }
+                        } else {
+                            self.analyze_statement(&child, source, path_state, violations);
                         }
                     }
-                } else if right.kind() == "null"
-                    || ast_utils::get_node_text_owned(&right, source) == "NULL"
-                {
-                    // Setting to NULL doesn't free memory, potential leak if not freed before
-                    // If the variable was allocated and not freed, it's a leak
-                    if was_allocated && !self.freed_memory.contains(&var_name) {
-                        if let Some(old_alloc) = self.allocated_memory.get(&var_name) {
-                            let leaked_name =
-                                format!("{}@{}:{}", var_name, old_alloc.line, old_alloc.column);
-                            self.allocated_memory.insert(leaked_name, old_alloc.clone());
-                        }
+                }
+            }
+            "call_expression" => {
+                self.process_call(node, source, path_state);
+                // Check if this is an exit/abort call
+                if let Some(function) = node.child_by_field_name("function") {
+                    let func_name = ast_utils::get_node_text_owned(&function, source);
+                    if matches!(func_name.as_str(), "exit" | "abort" | "_exit" | "_Exit") {
+                        self.detect_leaks_at_exit(path_state, violations);
+                    }
+                }
+            }
+            "if_statement" => {
+                self.process_if_statement(node, source, path_state, violations);
+            }
+            "while_statement" | "for_statement" | "do_statement" => {
+                // For loops, analyze the body
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        self.analyze_statement(&child, source, path_state, violations);
+                    }
+                }
+            }
+            "compound_statement" => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        self.analyze_statement(&child, source, path_state, violations);
+                    }
+                }
+            }
+            _ => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        self.analyze_statement(&child, source, path_state, violations);
                     }
                 }
             }
         }
     }
 
-    fn process_call(&mut self, node: &Node, source: &str) {
+    fn process_if_statement(
+        &mut self,
+        node: &Node,
+        source: &str,
+        path_state: &mut PathState,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Save current path state
+        let state_before = path_state.clone();
+
+        // Analyze consequence (then branch)
+        if let Some(consequence) = node.child_by_field_name("consequence") {
+            let mut then_state = state_before.clone();
+            self.analyze_statement(&consequence, source, &mut then_state, violations);
+
+            // Check if then branch has an early return/exit
+            let then_has_exit = self.has_exit_statement(&consequence, source);
+
+            // Analyze alternative (else branch)
+            if let Some(alternative) = node.child_by_field_name("alternative") {
+                let mut else_state = state_before.clone();
+                self.analyze_statement(&alternative, source, &mut else_state, violations);
+
+                let else_has_exit = self.has_exit_statement(&alternative, source);
+
+                // If then branch exits, continue with else state
+                if then_has_exit && !else_has_exit {
+                    *path_state = else_state;
+                }
+                // If else branch exits, continue with then state
+                else if else_has_exit && !then_has_exit {
+                    *path_state = then_state;
+                }
+                // If both exit, detect leaks on both paths
+                else if then_has_exit && else_has_exit {
+                    // Both paths exit - nothing continues
+                }
+                // If neither exits, we need to merge states
+                // Check if memory is freed in only one branch
+                else {
+                    self.detect_partial_free(&then_state, &else_state, violations);
+                    // Merge states - memory is freed only if freed in both
+                    let freed_in_both: HashSet<String> = then_state
+                        .freed_memory
+                        .intersection(&else_state.freed_memory)
+                        .cloned()
+                        .collect();
+                    path_state.freed_memory = freed_in_both;
+                }
+            } else {
+                // No else branch
+                if then_has_exit {
+                    // Then branch exits, continue with original state
+                    *path_state = state_before;
+                } else {
+                    // Check for leaks when memory is freed only in then branch
+                    if !then_state
+                        .freed_memory
+                        .is_subset(&state_before.freed_memory)
+                    {
+                        // Memory freed in then but not guaranteed in all paths
+                        self.detect_partial_free(&then_state, &state_before, violations);
+                    }
+                    // Continue with then state (optimistic)
+                    *path_state = then_state;
+                }
+            }
+        }
+    }
+
+    fn detect_partial_free(
+        &self,
+        state1: &PathState,
+        state2: &PathState,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Find variables freed in one path but not the other
+        let freed_in_one: HashSet<_> = state1
+            .freed_memory
+            .symmetric_difference(&state2.freed_memory)
+            .collect();
+
+        for var_name in freed_in_one {
+            if let Some(alloc_info) = self.allocated_memory.get(var_name.as_str()) {
+                if !self.escaped_memory.contains(var_name.as_str()) {
+                    violations.push(RuleViolation {
+                        rule_id: "MEM31-C".to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Memory allocated with '{}' for variable '{}' may not be freed on all execution paths",
+                            alloc_info.alloc_type, var_name
+                        ),
+                        file_path: String::new(),
+                        line: alloc_info.line,
+                        column: alloc_info.column,
+                        suggestion: Some(format!(
+                            "Ensure 'free({})' is called on all execution paths",
+                            var_name
+                        )),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+    }
+
+    fn has_exit_statement(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "return_statement" {
+            return true;
+        }
+
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_name = ast_utils::get_node_text_owned(&function, source);
+                if matches!(
+                    func_name.as_str(),
+                    "exit" | "abort" | "_exit" | "_Exit" | "longjmp"
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.has_exit_statement(&child, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    fn ends_with_exit(&self, node: &Node, source: &str) -> bool {
+        // Check if the last statement in a compound block is a return/exit
+        if node.kind() == "compound_statement" {
+            let mut last_statement: Option<Node> = None;
+
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    // Skip punctuation like { and }
+                    if child.kind() != "{" && child.kind() != "}" {
+                        last_statement = Some(child);
+                    }
+                }
+            }
+
+            if let Some(last_stmt) = last_statement {
+                if last_stmt.kind() == "return_statement" {
+                    return true;
+                }
+
+                if last_stmt.kind() == "expression_statement" {
+                    for i in 0..last_stmt.child_count() {
+                        if let Some(child) = last_stmt.child(i) {
+                            if child.kind() == "call_expression" {
+                                if let Some(function) = child.child_by_field_name("function") {
+                                    let func_name =
+                                        ast_utils::get_node_text_owned(&function, source);
+                                    if matches!(
+                                        func_name.as_str(),
+                                        "exit" | "abort" | "_exit" | "_Exit"
+                                    ) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        false
+    }
+
+    fn process_call(&self, node: &Node, source: &str, path_state: &mut PathState) {
         if let Some(function) = node.child_by_field_name("function") {
             let func_name = ast_utils::get_node_text_owned(&function, source);
 
             if func_name == "free" {
-                // Process free() call
                 if let Some(arguments) = node.child_by_field_name("arguments") {
                     for i in 0..arguments.child_count() {
                         if let Some(arg) = arguments.child(i) {
                             if arg.kind() == "identifier" {
                                 let var_name = ast_utils::get_node_text_owned(&arg, source);
-                                self.freed_memory.insert(var_name.clone());
-                                // Also mark any aliases as freed
-                                let vars_to_free: Vec<String> = self
-                                    .allocated_memory
-                                    .iter()
-                                    .filter_map(|(k, v)| {
-                                        if let Some(original) = self.allocated_memory.get(&var_name)
-                                        {
-                                            if v.line == original.line
-                                                && v.column == original.column
-                                            {
-                                                Some(k.clone())
-                                            } else {
-                                                None
-                                            }
-                                        } else {
-                                            None
-                                        }
-                                    })
-                                    .collect();
-
-                                for v in vars_to_free {
-                                    self.freed_memory.insert(v);
-                                }
+                                path_state.freed_memory.insert(var_name);
                             }
                         }
                     }
                 }
             } else if func_name == "realloc" {
-                // realloc can be used to free memory (when new size is 0) or reallocate
                 if let Some(arguments) = node.child_by_field_name("arguments") {
-                    let mut arg_count = 0;
                     let mut first_arg = String::new();
-
                     for i in 0..arguments.child_count() {
                         if let Some(arg) = arguments.child(i) {
-                            if arg.kind() != "," && arg.kind() != "(" && arg.kind() != ")" {
-                                if arg_count == 0 && arg.kind() == "identifier" {
-                                    first_arg = ast_utils::get_node_text_owned(&arg, source);
-                                }
-                                arg_count += 1;
+                            if arg.kind() == "identifier" && first_arg.is_empty() {
+                                first_arg = ast_utils::get_node_text_owned(&arg, source);
+                                path_state.freed_memory.insert(first_arg.clone());
+                                break;
                             }
                         }
                     }
-
-                    if !first_arg.is_empty() {
-                        // realloc frees the old memory and allocates new
-                        self.freed_memory.insert(first_arg.clone());
-                    }
                 }
-            } else {
-                // Check if passing allocated memory to a function (might transfer ownership)
-                // For now, we'll be conservative and not mark it as escaped
-                // unless it's a known ownership-transferring function
             }
         }
     }
 
-    fn process_return(&mut self, node: &Node, source: &str) {
-        // If returning allocated memory, it escapes and shouldn't be considered a leak
+    fn process_return(&mut self, node: &Node, source: &str, _path_state: &PathState) {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 if child.kind() == "identifier" {
@@ -300,8 +455,32 @@ impl MemoryLeakAnalyzer {
                     }
                 } else if self.is_allocation_call(&child, source) {
                     // Direct return of allocation is not a leak
-                    // We don't track it since it escapes immediately
                 }
+            }
+        }
+    }
+
+    fn detect_leaks_at_exit(&self, path_state: &PathState, violations: &mut Vec<RuleViolation>) {
+        for (var_name, alloc_info) in &self.allocated_memory {
+            if !path_state.freed_memory.contains(var_name)
+                && !self.escaped_memory.contains(var_name)
+            {
+                violations.push(RuleViolation {
+                    rule_id: "MEM31-C".to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Memory allocated with '{}' for variable '{}' is not freed before function exit",
+                        alloc_info.alloc_type, var_name
+                    ),
+                    file_path: String::new(),
+                    line: alloc_info.line,
+                    column: alloc_info.column,
+                    suggestion: Some(format!(
+                        "Add 'free({})' before the function exits",
+                        var_name
+                    )),
+                    ..Default::default()
+                });
             }
         }
     }
@@ -348,27 +527,17 @@ impl MemoryLeakAnalyzer {
             _ => "unknown".to_string(),
         }
     }
+}
 
-    fn detect_leaks(&self, violations: &mut Vec<RuleViolation>) {
-        for (var_name, alloc_info) in &self.allocated_memory {
-            if !self.freed_memory.contains(var_name) && !self.escaped_memory.contains(var_name) {
-                violations.push(RuleViolation {
-                    rule_id: "MEM31-C".to_string(),
-                    severity: Severity::High,
-                    message: format!(
-                        "Memory allocated with '{}' for variable '{}' is not freed",
-                        alloc_info.alloc_type, var_name
-                    ),
-                    file_path: String::new(),
-                    line: alloc_info.line,
-                    column: alloc_info.column,
-                    suggestion: Some(format!(
-                        "Add 'free({})' before the variable goes out of scope",
-                        var_name
-                    )),
-                    ..Default::default()
-                });
-            }
+#[derive(Clone)]
+struct PathState {
+    freed_memory: HashSet<String>,
+}
+
+impl PathState {
+    fn new() -> Self {
+        Self {
+            freed_memory: HashSet::new(),
         }
     }
 }
