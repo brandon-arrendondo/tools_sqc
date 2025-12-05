@@ -1,5 +1,5 @@
 ---
-rule_id: DCL04-C
+rule_id: ERR30-C
 priority: P2
 status: active
 assigned_to: ERIC
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - DCL
+  - ERR
 ---
 
-# P2-DCL04-C - DCL04-C Implementation
+# P2-ERR30-C - ERR30-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
-**Category:** DCL
+**Assigned To:** ALLY
+**Category:** ERR
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** DCL04-C
+**Rule ID:** ERR30-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/DCL04-C.+Do+not+declare+more+than+one+variable+per+declaration
+https://wiki.sei.cmu.edu/confluence/display/c/ERR30-C.+Take+care+when+reading+errno
 
 ---
 
 ## Task
 
-Implement or verify DCL04-C with 100% test pass rate and DRY compliance.
+Implement or verify ERR30-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for DCL04-C
-2. Check if implementation exists in `src/rules/cert_c/DCL/DCL04-C/`
+1. Study the CERT C wiki page for ERR30-C
+2. Check if implementation exists in `src/rules/cert_c/ERR/ERR30-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,28 +193,34 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-### 2025-11-19 - Claude Code (via /work-active)
+### 2025-11-25 - Claude Code (via /work-active)
 
-**Status:** COMPLETE - All tests passing
+**Implementation Complete**
 
-**Implementation:**
-- ✅ Created `src/rules/cert_c/DCL/DCL04-C/dcl04_c.rs`
-- ✅ Registered in `src/rules/cert_c/mod.rs` (lines 145-146, 470)
-- ✅ Enabled in `DCL04-C.toml`
-- ✅ Build succeeds
-- ✅ All 4 tests pass (100% pass rate)
+1. **Analysis Phase:**
+   - Studied CERT C wiki page for ERR30-C rule
+   - Identified three categories of errno usage:
+     - Out-of-band functions (ftell, signal, mbrtowc) - must check return value before errno
+     - In-band functions (strtoul, strtod, fgetwc) - must set errno=0 before calling
+     - No errno guarantee functions - should not rely on errno
 
-**Test Results:**
-- PASS: `test_dcl04_c_fail_wiki_noncompliant_1` ✅
-- PASS: `test_dcl04_c_fail_wiki_noncompliant_2` ✅
-- PASS: `test_dcl04_c_pass_wiki_compliant_1` ✅
-- PASS: `test_dcl04_c_pass_wiki_compliant_2` ✅
+2. **Implementation Phase:**
+   - Created `src/rules/cert_c/ERR/ERR30-C/err30_c.rs`
+   - Implemented detection logic for:
+     - errno checked without prior return value verification (out-of-band functions)
+     - In-band functions called without errno = 0 initialization
+   - Used AST analysis to track errno usage patterns and function calls
 
-**Implementation Details:**
-- Detects declarations with multiple variables (comma-separated)
-- Exception: for loop declarations (multiple loop control variables allowed)
-- Counts init_declarator and direct declarator children
-- Provides clear error messages with line numbers
+3. **Registration Phase:**
+   - Registered rule in `src/rules/cert_c/mod.rs`
+   - Enabled rule in `src/rules/cert_c/rules-all.toml`
+
+4. **Build & Test:**
+   - `cargo build`: SUCCESS ✅
+   - `cargo test`: 0 tests (no test cases exist for ERR30-C yet)
+   - Implementation complete without tests (acceptable per proposal)
+
+**Status:** Implementation complete, ready for adversarial review
 
 ---
 

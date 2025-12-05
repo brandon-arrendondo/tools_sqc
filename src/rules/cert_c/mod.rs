@@ -250,6 +250,9 @@ pub mod env02_c;
 #[path = "ERR/ERR07-C/err07_c.rs"]
 pub mod err07_c;
 
+#[path = "ERR/ERR30-C/err30_c.rs"]
+pub mod err30_c;
+
 #[path = "ERR/ERR32-C/err32_c.rs"]
 pub mod err32_c;
 
@@ -261,6 +264,9 @@ pub mod err34_c;
 
 #[path = "EXP/EXP00-C/exp00_c.rs"]
 pub mod exp00_c;
+
+#[path = "EXP/EXP02-C/exp02_c.rs"]
+pub mod exp02_c;
 
 #[path = "EXP/EXP05-C/exp05_c.rs"]
 pub mod exp05_c;
@@ -397,8 +403,14 @@ pub mod fio37_c;
 #[path = "FIO/FIO13-C/fio13_c.rs"]
 pub mod fio13_c;
 
+#[path = "FIO/FIO14-C/fio14_c.rs"]
+pub mod fio14_c;
+
 #[path = "FIO/FIO17-C/fio17_c.rs"]
 pub mod fio17_c;
+
+#[path = "FIO/FIO22-C/fio22_c.rs"]
+pub mod fio22_c;
 
 #[path = "FIO/FIO23-C/fio23_c.rs"]
 pub mod fio23_c;
@@ -414,6 +426,9 @@ pub mod fio32_c;
 
 #[path = "FIO/FIO38-C/fio38_c.rs"]
 pub mod fio38_c;
+
+#[path = "FIO/FIO40-C/fio40_c.rs"]
+pub mod fio40_c;
 
 #[path = "FIO/FIO41-C/fio41_c.rs"]
 pub mod fio41_c;
