@@ -121,7 +121,12 @@ impl Pos50C {
     }
 
     /// Check if an expression is the address of a local or thread-local variable
-    fn is_address_of_local_or_thread_local(&self, node: &Node, pthread_node: &Node, source: &str) -> bool {
+    fn is_address_of_local_or_thread_local(
+        &self,
+        node: &Node,
+        pthread_node: &Node,
+        source: &str,
+    ) -> bool {
         // Check if the node itself is a unary & expression
         if node.kind() == "unary_expression" {
             if let Some(op) = node.child_by_field_name("operator") {
@@ -144,7 +149,8 @@ impl Pos50C {
         if node_text.trim().starts_with('&') {
             // Extract variable name after &
             let var_part = node_text.trim().trim_start_matches('&');
-            let var_name = var_part.split(|c: char| !c.is_alphanumeric() && c != '_')
+            let var_name = var_part
+                .split(|c: char| !c.is_alphanumeric() && c != '_')
                 .next()
                 .unwrap_or("")
                 .to_string();
@@ -166,7 +172,7 @@ impl Pos50C {
                 }
                 None
             }
-            _ => None
+            _ => None,
         }
     }
 
@@ -240,7 +246,7 @@ impl Pos50C {
                 }
                 None
             }
-            _ => None
+            _ => None,
         }
     }
 

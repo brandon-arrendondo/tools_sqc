@@ -55,7 +55,12 @@ impl Pos52C {
     }
 
     /// Check if a block contains pthread_mutex_lock followed by blocking operations
-    fn check_for_lock_and_blocking(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_for_lock_and_blocking(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let statements = self.get_statements(node);
         let mut locked = false;
         let mut lock_line = 0;
@@ -129,7 +134,8 @@ impl Pos52C {
 
     /// Check if a function is a blocking operation
     fn is_blocking_function(&self, func_name: &str) -> bool {
-        matches!(func_name,
+        matches!(
+            func_name,
             // Network I/O
             "recv" | "recvfrom" | "recvmsg" | "send" | "sendto" | "sendmsg" |
             "accept" | "connect" |

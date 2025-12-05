@@ -112,9 +112,7 @@ impl Pre10C {
                         .take(3)
                         .collect();
 
-                    let semicolon_count = lines_after_if.iter()
-                        .filter(|l| l.contains(';'))
-                        .count();
+                    let semicolon_count = lines_after_if.iter().filter(|l| l.contains(';')).count();
 
                     if semicolon_count >= 2 {
                         violations.push(RuleViolation {
@@ -139,7 +137,12 @@ impl Pre10C {
         }
     }
 
-    fn check_semicolon_before_else(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_semicolon_before_else(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         // Check for pattern: } ; else
         // This happens when a macro that ends in a block is followed by a semicolon
         // The semicolon breaks parsing, so the 'else' might not be in the tree as an alternative
@@ -186,8 +189,12 @@ impl Pre10C {
         }
     }
 
-
-    fn check_macro_definition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_macro_definition(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         let macro_text = get_node_text(node, source);
 
         // Check if macro contains multiple statements (has semicolons)
@@ -196,9 +203,9 @@ impl Pre10C {
         // If macro has multiple statements (2+ semicolons for multi-statement)
         if semicolon_count >= 2 {
             // Check if it's wrapped in do-while
-            let is_wrapped = macro_text.contains("do") &&
-                           macro_text.contains("while") &&
-                           macro_text.contains('}');
+            let is_wrapped = macro_text.contains("do")
+                && macro_text.contains("while")
+                && macro_text.contains('}');
 
             if !is_wrapped {
                 violations.push(RuleViolation {
@@ -212,7 +219,8 @@ impl Pre10C {
                         control flow issues when used without braces."
                             .to_string(),
                     suggestion: Some(
-                        "Wrap macro body: #define MACRO(x) do { statement1; statement2; } while(0)".to_string()
+                        "Wrap macro body: #define MACRO(x) do { statement1; statement2; } while(0)"
+                            .to_string(),
                     ),
                     requires_manual_review: None,
                 });

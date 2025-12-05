@@ -149,7 +149,8 @@ impl Int13C {
         while let Some(parent) = current {
             // Look for declaration in this scope
             if self.is_scope_node(parent.kind()) {
-                if let Some(decl) = self.find_declaration_in_scope(&parent, var_name.trim(), source) {
+                if let Some(decl) = self.find_declaration_in_scope(&parent, var_name.trim(), source)
+                {
                     return self.is_signed_declaration(&decl, source);
                 }
             }
@@ -164,7 +165,12 @@ impl Int13C {
     fn is_scope_node(&self, kind: &str) -> bool {
         matches!(
             kind,
-            "function_definition" | "compound_statement" | "translation_unit" | "for_statement" | "while_statement" | "if_statement"
+            "function_definition"
+                | "compound_statement"
+                | "translation_unit"
+                | "for_statement"
+                | "while_statement"
+                | "if_statement"
         )
     }
 
