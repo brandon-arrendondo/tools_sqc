@@ -1,8 +1,22 @@
+//! INT13-C: Use bitwise operators only on unsigned operands
+//!
+//! Bitwise operations on signed integers can produce implementation-defined
+//! or undefined behavior. Using bitwise operators on unsigned types ensures
+//! predictable results across platforms.
+//!
+//! ## Violations:
+//! - int x = ...; x << 2;    // Bitwise shift on signed int
+//! - signed int y; y & mask; // Bitwise AND on signed operand
+//!
+//! ## Compliant:
+//! - unsigned int x = ...; x << 2; // Bitwise shift on unsigned
+
+use std::collections::HashMap;
+use tree_sitter::Node;
+
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use std::collections::HashMap;
-use tree_sitter::Node;
 
 pub struct Int13C;
 

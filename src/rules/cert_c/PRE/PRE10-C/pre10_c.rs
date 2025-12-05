@@ -1,3 +1,24 @@
+//! PRE10-C: Wrap multistatement macros in a do-while loop
+//!
+//! Multi-statement macros should be wrapped in do { ... } while(0) to prevent issues
+//! when used in control structures without braces.
+//!
+//! ## Rationale:
+//! - Without wrapping, macros used in if/else can cause unexpected behavior
+//! - The do-while(0) idiom allows a trailing semicolon
+//! - Prevents dangling else problems
+//!
+//! ## Example Non-compliant:
+//! ```c
+//! #define SWAP(x, y) tmp = x; x = y; y = tmp
+//! if (z == 0) SWAP(a, b);  // Only first statement in if block!
+//! ```
+//!
+//! ## Example Compliant:
+//! ```c
+//! #define SWAP(x, y) do { tmp = x; x = y; y = tmp; } while(0)
+//! ```
+
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
@@ -68,7 +89,7 @@ impl Pre10C {
                                 "Wrap the macro body in: do { /* statements */ } while (0)"
                                     .to_string(),
                             ),
-                            ..Default::default()
+                            requires_manual_review: None,
                         });
                     }
                 }
@@ -110,9 +131,7 @@ impl Pre10C {
         let mut escaped = false;
         let chars: Vec<char> = text.chars().collect();
 
-        for i in 0..chars.len() {
-            let c = chars[i];
-
+        for c in chars {
             if escaped {
                 escaped = false;
                 continue;
@@ -155,11 +174,9 @@ impl Pre10C {
         }
 
         // Check if it ends with while (0) or while(0)
-        let ends_with_while = cleaned.ends_with("while (0)")
+        cleaned.ends_with("while (0)")
             || cleaned.ends_with("while(0)")
             || cleaned.ends_with("while ( 0 )")
-            || cleaned.ends_with("while( 0 )");
-
-        ends_with_while
+            || cleaned.ends_with("while( 0 )")
     }
 }

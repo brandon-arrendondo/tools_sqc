@@ -1,3 +1,17 @@
+//! MEM34-C: Only free memory allocated dynamically
+//!
+//! This rule detects attempts to free or reallocate memory that was not dynamically allocated.
+//!
+//! ## Violations:
+//! - Calling free() on a string literal pointer
+//! - Calling free() on a stack-allocated variable
+//! - Calling realloc() on a stack-allocated array
+//! - Calling realloc() on a pointer to stack memory
+//!
+//! ## Compliant:
+//! - Only free() memory returned from malloc/calloc/realloc
+//! - Only realloc() memory that was previously dynamically allocated
+
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
@@ -184,7 +198,7 @@ impl MemorySourceAnalyzer {
 
                 if func_name == "free" {
                     self.check_free_argument(node, source, violations);
-                } else if matches!(func_name.as_str(), "realloc") {
+                } else if func_name == "realloc" {
                     self.check_realloc_argument(node, source, violations);
                 }
             }
@@ -227,10 +241,10 @@ impl MemorySourceAnalyzer {
                                 file_path: String::new(),
                                 line: *line,
                                 column: *column,
-                                suggestion: Some(format!(
-                                    "Only call free() on memory allocated with malloc/calloc/realloc"
-                                )),
-                                ..Default::default()
+                                suggestion: Some(
+                                    "Only call free() on memory allocated with malloc/calloc/realloc".to_string()
+                                ),
+                                requires_manual_review: None,
                             });
                         }
                     }
@@ -285,10 +299,10 @@ impl MemorySourceAnalyzer {
                                     file_path: String::new(),
                                     line: *line,
                                     column: *column,
-                                    suggestion: Some(format!(
-                                        "Only call realloc() on memory allocated with malloc/calloc/realloc"
-                                    )),
-                                    ..Default::default()
+                                    suggestion: Some(
+                                        "Only call realloc() on memory allocated with malloc/calloc/realloc".to_string()
+                                    ),
+                                    requires_manual_review: None,
                                 });
                             }
                         }

@@ -8,39 +8,12 @@
 //! - Signal handlers execute in an unpredictable thread context
 //! - Race conditions and data corruption can occur
 //! - POSIX implementations provide defined behavior but are still discouraged
-//!
-//! ## Examples:
-//!
-//! **Non-compliant (using signal() in multithreaded program):**
-//! ```c
-//! #include <signal.h>
-//! #include <threads.h>
-//!
-//! void handler(int signum) { /* ... */ }
-//!
-//! int main(void) {
-//!   signal(SIGINT, handler);  // Violation: signal() in multithreaded context
-//!   thrd_t tid;
-//!   thrd_create(&tid, thread_func, NULL);
-//!   // ...
-//! }
-//! ```
-//!
-//! **Compliant (avoid signal() in multithreaded programs):**
-//! ```c
-//! // Use platform-specific thread-safe signal mechanisms
-//! // or avoid mixing signals and threads entirely
-//! ```
-//!
-//! ## Detection Strategy:
-//! - Find calls to `signal()` function
-//! - Check if the code uses threading functions (thrd_create, pthread_create, etc.)
-//! - Flag violations when both are present
+
+use tree_sitter::Node;
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 
 pub struct Con37C;
 
@@ -54,7 +27,7 @@ impl CertRule for Con37C {
     }
 
     fn severity(&self) -> Severity {
-        Severity::Medium
+        Severity::High
     }
 
     fn category(&self) -> RuleCategory {
@@ -85,14 +58,16 @@ impl Con37C {
     fn has_threading_functions(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&func, source);
+                let func_name = get_node_text(&func, source).trim();
 
-                // Check for C11 thread functions and POSIX thread functions
+                // Check for C11 thread functions, POSIX thread functions, and Windows thread functions
                 if matches!(
                     func_name,
                     "thrd_create"
                         | "pthread_create"
                         | "CreateThread"
+                        | "_beginthread"
+                        | "_beginthreadex"
                         | "thrd_join"
                         | "pthread_join"
                         | "mtx_init"
@@ -104,11 +79,10 @@ impl Con37C {
         }
 
         // Recursively check children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if self.has_threading_functions(&child, source) {
-                    return true;
-                }
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            if self.has_threading_functions(&child, source) {
+                return true;
             }
         }
 
@@ -119,31 +93,33 @@ impl Con37C {
     fn check_signal_calls(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&func, source);
+                let func_name = get_node_text(&func, source).trim();
 
                 if func_name == "signal" {
                     let line = node.start_position().row + 1;
+                    let column = node.start_position().column + 1;
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
-                        severity: Severity::Medium,
-                        message: "Call to signal() in a multithreaded program results in undefined behavior (C11 7.14.1.1)".to_string(),
+                        severity: self.severity(),
+                        message: "Calling signal() in a multithreaded program causes undefined behavior."
+                            .to_string(),
                         file_path: String::new(),
                         line,
-                        column: 0,
+                        column,
                         suggestion: Some(
-                            "Avoid mixing signals and threads. Use platform-specific thread-safe signal mechanisms or redesign to avoid signal handlers in multithreaded code".to_string()
+                            "Use sigaction() on POSIX systems or platform-specific thread-safe alternatives."
+                                .to_string(),
                         ),
-                        ..Default::default()
+                        requires_manual_review: None,
                     });
                 }
             }
         }
 
         // Recursively check children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.check_signal_calls(&child, source, violations);
-            }
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.check_signal_calls(&child, source, violations);
         }
     }
 }

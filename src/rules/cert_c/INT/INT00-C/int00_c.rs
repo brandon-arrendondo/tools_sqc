@@ -1,3 +1,16 @@
+//! INT00-C: Understand the data model used by your implementation(s)
+//!
+//! This rule detects code that makes assumptions about the sizes of integer types,
+//! which can lead to undefined behavior or unexpected results across different platforms.
+//!
+//! ## Violations:
+//! - Format specifier mismatches (e.g., %ld with int variable)
+//! - Unsafe casts that assume type sizes (e.g., (unsigned long)a * b)
+//!
+//! ## Compliant:
+//! - Using correct format specifiers matching variable types
+//! - Using uintmax_t for safe integer conversions
+
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
@@ -94,8 +107,6 @@ impl Int00C {
         };
 
         // Determine which argument is the format string
-        // fprintf, fscanf, etc. have file pointer first, then format string
-        // printf, scanf have format string first
         let format_arg_index = if matches!(
             func_name.as_str(),
             "fprintf"
@@ -260,7 +271,6 @@ impl Int00C {
                 !self.format_matches_type(spec, &var_type)
             } else {
                 // If we can't determine the type, check for known dangerous patterns
-                // %ld, %lld, %lu, %llu make assumptions about type sizes
                 matches!(spec.as_str(), "%ld" | "%lld" | "%lu" | "%llu")
             };
 
@@ -284,9 +294,9 @@ impl Int00C {
                     line: call_node.start_position().row + 1,
                     column: call_node.start_position().column + 1,
                     file_path: String::new(),
-                    suggestion: Some(format!(
-                        "Use correct format specifier or verify data model assumptions with static assertions"
-                    )),
+                    suggestion: Some(
+                        "Use correct format specifier or verify data model assumptions with static assertions".to_string()
+                    ),
                     requires_manual_review: None,
                 });
             }
@@ -316,7 +326,6 @@ impl Int00C {
         };
 
         // Simple text-based search for declaration patterns
-        // Look for patterns like "int x", "unsigned long y", etc.
         self.find_type_in_source(&var_name, source)
     }
 
@@ -366,90 +375,6 @@ impl Int00C {
                 {
                     return type_name.to_string();
                 }
-            }
-        }
-
-        "unknown".to_string()
-    }
-
-    /// Find declaration in a specific scope
-    fn find_declaration_in_scope(
-        &self,
-        scope: &Node,
-        var_name: &str,
-        source: &str,
-    ) -> Option<String> {
-        let mut cursor = scope.walk();
-        for child in scope.children(&mut cursor) {
-            if child.kind() == "declaration" {
-                let decl_text = get_node_text(&child, source);
-                // Simple check: does this declaration contain the variable name?
-                if decl_text.contains(var_name) {
-                    // Extract type from declaration
-                    return Some(self.extract_type_from_declaration(&child, source));
-                }
-            }
-            // Recursively search in child scopes
-            if let Some(found_type) = self.find_declaration_in_scope(&child, var_name, source) {
-                return Some(found_type);
-            }
-        }
-        None
-    }
-
-    /// Find declarator matching variable name
-    fn find_declarator<'a>(
-        &self,
-        decl_node: &Node<'a>,
-        var_name: &str,
-        source: &str,
-    ) -> Option<Node<'a>> {
-        let mut cursor = decl_node.walk();
-        for child in decl_node.children(&mut cursor) {
-            if child.kind() == "init_declarator" || child.kind() == "identifier" {
-                let text = get_node_text(&child, source);
-                if text.contains(var_name) {
-                    return Some(child);
-                }
-            }
-        }
-        None
-    }
-
-    /// Extract type from declaration node
-    fn extract_type_from_declaration(&self, decl_node: &Node, source: &str) -> String {
-        if let Some(type_node) = decl_node.child_by_field_name("type") {
-            return get_node_text(&type_node, source).trim().to_string();
-        }
-
-        // Fallback: get first child that looks like a type
-        let mut cursor = decl_node.walk();
-        for child in decl_node.children(&mut cursor) {
-            if matches!(
-                child.kind(),
-                "primitive_type" | "type_identifier" | "sized_type_specifier"
-            ) {
-                return get_node_text(&child, source).trim().to_string();
-            }
-        }
-
-        // Last resort: parse the declaration text directly
-        let decl_text = get_node_text(decl_node, source);
-        // Match common type patterns: "int x", "unsigned int x", "long x", etc.
-        if let Some(type_part) = decl_text.split_whitespace().next() {
-            // Simple type extraction
-            if matches!(
-                type_part,
-                "int" | "char" | "short" | "long" | "float" | "double" | "unsigned" | "signed"
-            ) {
-                // For types like "unsigned int", get both words
-                let words: Vec<&str> = decl_text.split_whitespace().collect();
-                if words.len() >= 2 {
-                    if words[0] == "unsigned" || words[0] == "signed" {
-                        return format!("{} {}", words[0], words[1]);
-                    }
-                }
-                return type_part.to_string();
             }
         }
 

@@ -200,3 +200,57 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 ## Verification
 
 @architect: APPROVED
+
+---
+
+## Implementation Log
+
+**Date:** 2024-11-24
+**Implemented by:** Claude
+**Branch:** claude-work-active-JASON-20251124
+**Commit:** [See git log for commit hash]
+
+### Status: ✅ IMPLEMENTATION COMPLETE - ALL TESTS PASSING
+
+### Test Results: ✅ 8/8 tests passing (100%)
+
+**Failing Tests (violations correctly detected):**
+- test_exp45_c_fail_wiki_noncompliant_1: ✅ Detects `x = y` in do-while condition
+- test_exp45_c_fail_wiki_noncompliant_2: ✅ Detects multiple assignments `x = y, p = q` in condition
+
+**Passing Tests (compliant code):**
+- test_exp45_c_pass_wiki_compliant_6: ✅ Allows assignment not as final comma expression
+- test_exp45_c_pass_wiki_forstatement: ✅ Allows assignment in for loop update expression
+- test_exp45_c_pass_wiki_intentional_assignment: ✅ Allows `(x = y) != 0` pattern
+- test_exp45_c_pass_wiki_rhs_variable: ✅ Ignores comparison operators `==`
+- test_exp45_c_pass_wiki_rhs_variable_2: ✅ Ignores comparison operators `==`
+- test_exp45_c_pass_wiki_unintentional_assignment: ✅ Allows comparison `x == y` in condition
+
+### Implementation Approach:
+
+The implementation recursively traverses the AST to find selection statements (if/while/do-while) and analyzes their conditions for assignments:
+
+1. **Find Selection Statements**: Traverses AST looking for `if_statement`, `while_statement`, `do_statement`
+2. **Extract Condition**: Gets the condition field from selection statement
+3. **Unwrap Parentheses**: Strips `parenthesized_expression` nodes
+4. **Check for Assignments**: Detects `assignment_expression` nodes using recursive traversal
+5. **Handle Special Cases**:
+   - **Comma expressions**: Only the rightmost expression is the actual condition
+   - **Binary expressions**: Assignments wrapped in comparisons are allowed (e.g., `(x=y)!=0`)
+   - **For loops**: Update expressions are not checked (different semantic)
+
+The key insight is tracking whether an assignment is at the "top level" of the condition. Assignments become safe when wrapped in comparisons or when not the final expression in a comma sequence.
+
+### Files Modified:
+
+- `src/rules/cert_c/EXP/EXP45-C/exp45_c.rs` (new - ~145 lines)
+- `src/rules/cert_c/EXP/EXP45-C/EXP45-C.toml` (enabled = true)
+- `src/rules/cert_c/mod.rs` (registration)
+- `src/rules/cert_c/rules-all.toml` (auto-generated)
+
+### Notes:
+
+- For loops are explicitly excluded - assignments in for loop update expressions are idiomatic C
+- The rule correctly distinguishes between semantic contexts (condition vs update expression)
+- Comma expressions require special handling to identify the "active" expression
+- Binary expressions (comparisons) wrapping assignments make the intent clear and are allowed
