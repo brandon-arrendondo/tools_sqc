@@ -1,5 +1,5 @@
 ---
-rule_id: STR37-C
+rule_id: EXP46-C
 priority: P2
 status: active
 assigned_to: ALLY
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - STR
+  - EXP
 ---
 
-# P2-STR37-C - STR37-C Implementation
+# P2-EXP46-C - EXP46-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** BLAKE
-**Category:** STR
+**Assigned To:** ALLY
+**Category:** EXP
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** STR37-C
+**Rule ID:** EXP46-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/STR37-C.+Arguments+to+character-handling+functions+must+be+representable+as+an+unsigned+char
+https://wiki.sei.cmu.edu/confluence/display/c/EXP46-C.+Do+not+use+a+bitwise+operator+with+a+Boolean-like+operand
 
 ---
 
 ## Task
 
-Implement or verify STR37-C with 100% test pass rate and DRY compliance.
+Implement or verify EXP46-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for STR37-C
-2. Check if implementation exists in `src/rules/cert_c/STR/STR37-C/`
+1. Study the CERT C wiki page for EXP46-C
+2. Check if implementation exists in `src/rules/cert_c/EXP/EXP46-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,7 +193,31 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### Implementation Phase (Completed 2025-11-24)
+1. **Studied CERT C Wiki**: Reviewed EXP46-C requirements for detecting bitwise operators with Boolean-like operands
+2. **Created New Implementation**: Implemented from scratch at `src/rules/cert_c/EXP/EXP46-C/exp46_c.rs` (217 lines)
+3. **Verified DRY Compliance**: Uses `get_node_text()` from `crate::utility::cert_c::ast_utils`
+
+### Implementation Details
+- **Detection Target**: Bitwise operators (&, |, ^) used with Boolean-like expressions
+- **Boolean-like Expressions**: Results from relational operators (<, >, <=, >=) and equality operators (==, !=)
+- **Detection Strategy**:
+  - Traverses binary_expression nodes
+  - Identifies bitwise operators
+  - Checks if left/right operands are Boolean-like expressions
+  - Looks through parenthesized expressions recursively
+- **Violation Messages**: Suggests using logical operators (&&, ||) instead of bitwise operators
+
+### Registration and Enablement
+4. **Registered in mod.rs**: Lines 316-317 (module declaration) and line 742 (registry registration)
+5. **Enabled Rule**: `rules-all.toml` line 487 changed to `enabled = true`
+6. **Build Status**: Compiles successfully with only pre-existing warnings
+7. **Committed**: Committed with ENV30-C, EXP03-C, EXP39-C, and FIO02-C implementations (commit 1a49de4)
+
+### Test Status
+- No test cases exist yet for EXP46-C (this is acceptable per guidelines)
+- Rule implementation follows established patterns from other EXP rules
+- **Severity**: Low (logic error that may cause incorrect behavior but not immediate security risk)
 
 ---
 

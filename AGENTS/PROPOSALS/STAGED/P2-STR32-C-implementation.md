@@ -1,5 +1,5 @@
 ---
-rule_id: FLP01-C
+rule_id: STR32-C
 priority: P2
 status: active
 assigned_to: ALLY
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - FLP
+  - STR
 ---
 
-# P2-FLP01-C - FLP01-C Implementation
+# P2-STR32-C - STR32-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** BLAKE
-**Category:** FLP
+**Assigned To:** BRANDON
+**Category:** STR
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** FLP01-C
+**Rule ID:** STR32-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/FLP01-C.+Take+care+in+rearranging+floating-point+expressions
+https://wiki.sei.cmu.edu/confluence/display/c/STR32-C.+Do+not+pass+a+non-null-terminated+character+sequence+to+a+library+function+that+expects+a+string
 
 ---
 
 ## Task
 
-Implement or verify FLP01-C with 100% test pass rate and DRY compliance.
+Implement or verify STR32-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for FLP01-C
-2. Check if implementation exists in `src/rules/cert_c/FLP/FLP01-C/`
+1. Study the CERT C wiki page for STR32-C
+2. Check if implementation exists in `src/rules/cert_c/STR/STR32-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,7 +193,33 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-12-01 - Claude Code (via /work-active)
+**Status:** COMPLETE ✅
+
+**Implementation Summary:**
+- Created comprehensive three-pass detection system in `src/rules/cert_c/STR/STR32-C/str32_c.rs`
+  - Pass 1: Identifies potentially non-null-terminated arrays (STR11-C overlap, strncpy, realloc)
+  - Pass 2: Tracks explicit null-termination with order-awareness (only after unsafe operations)
+  - Pass 3: Detects usage with string functions requiring null termination
+- Registered rule in `src/rules/cert_c/mod.rs` (lines 628-629, 873)
+- Enabled rule in configuration files (STR32-C.toml, rules-all.toml)
+- Supports both char and wide character (wchar_t) operations
+- Handles edge cases: explicit null termination, realloc, strncpy patterns
+
+**Key Features:**
+- Detects arrays with bounds too small for null terminator (STR11-C overlap)
+- Tracks strncpy() destinations (may not null-terminate)
+- Tracks realloc() results (may not preserve null termination)
+- Order-aware null-termination detection (only removes from unsafe if AFTER unsafe operation)
+- Supports wide character literals (`L'\0'`) and functions (wcslen, wcscpy, etc.)
+- Comprehensive string function coverage (strlen, strcpy, printf, etc.)
+
+**Test Results:**
+- ✅ **100% pass rate: 7/7 tests passed**
+- Compliant tests: 4/4 passed
+  - wiki_compliant_1.c, wiki_compliant_2.c, wiki_truncation.c, wiki_copy_without_truncation.c
+- Non-compliant tests: 3/3 passed
+  - wiki_noncompliant_1.c, wiki_noncompliant_2.c (wcslen violation), wiki_strncpy.c
 
 ---
 

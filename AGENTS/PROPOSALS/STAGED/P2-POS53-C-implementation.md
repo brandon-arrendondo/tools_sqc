@@ -1,5 +1,5 @@
 ---
-rule_id: CON41-C
+rule_id: POS53-C
 priority: P2
 status: active
 assigned_to: ALLY
@@ -8,38 +8,38 @@ last_modified: 2025-11-17
 tags:
   - cert-c
   - implementation
-  - CON
+  - POS
 ---
 
-# P2-CON41-C - CON41-C Implementation
+# P2-POS53-C - POS53-C Implementation
 
 **Status:** ACTIVE
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
-**Assigned To:** ERIC
-**Category:** CON
+**Assigned To:** HUU
+**Category:** POS
 **Estimated Effort:** 10-30 hours
 
 ## CERT C Rule Information
 
-**Rule ID:** CON41-C
+**Rule ID:** POS53-C
 **Type:** rule
 **CERT Priority:** L2
 **Level:** L2
 **Currently Enabled:** false
 
 **Wiki Reference:**
-https://wiki.sei.cmu.edu/confluence/display/c/CON41-C.+Wrap+functions+that+can+fail+spuriously+in+a+loop
+https://wiki.sei.cmu.edu/confluence/display/c/POS53-C.+Do+not+use+more+than+one+mutex+for+concurrent+waiting+operations+on+a+condition+variable
 
 ---
 
 ## Task
 
-Implement or verify CON41-C with 100% test pass rate and DRY compliance.
+Implement or verify POS53-C with 100% test pass rate and DRY compliance.
 
 ### Requirements:
-1. Study the CERT C wiki page for CON41-C
-2. Check if implementation exists in `src/rules/cert_c/CON/CON41-C/`
+1. Study the CERT C wiki page for POS53-C
+2. Check if implementation exists in `src/rules/cert_c/POS/POS53-C/`
 3. If exists: verify tests pass, ensure DRY compliance
 4. If not exists: implement from scratch following existing patterns
 5. Ensure all test cases pass (100% pass rate required)
@@ -193,7 +193,31 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-(To be filled in during implementation)
+### 2025-12-01 - Claude Code (via /work-active)
+**Status:** COMPLETE ✅
+
+**Implementation Summary:**
+- Created `src/rules/cert_c/POS/POS53-C/pos53_c.rs` implementing detection of multiple mutexes used with the same condition variable
+- Implemented tracking of pthread_cond_wait() and pthread_cond_timedwait() calls
+- Built mapping of condition variables to mutexes
+- Registered rule in `src/rules/cert_c/mod.rs`
+- Enabled rule in `src/rules/cert_c/rules-all.toml` and `POS53-C.toml`
+
+**Test Results:**
+- ✅ **100% pass rate: 2/2 tests passed**
+- Compliant tests: 1/1 passed (wiki_compliant_1.c)
+- Non-compliant tests: 1/1 passed (wiki_noncompliant_1.c)
+
+**Implementation Details:**
+The rule detects when the same condition variable is used with different mutexes in pthread_cond_wait() or pthread_cond_timedwait() calls. This violates POSIX requirements and creates undefined behavior.
+
+Detection strategy:
+1. Track all pthread_cond_wait() and pthread_cond_timedwait() calls
+2. For each call, extract the condition variable (arg 0) and mutex (arg 1)
+3. Build a mapping: condition_variable → set of mutexes
+4. Report violation if any condition variable is associated with more than one mutex
+
+The implementation successfully detects the non-compliant pattern where multiple threads wait on the same condition variable with different mutexes.
 
 ---
 
