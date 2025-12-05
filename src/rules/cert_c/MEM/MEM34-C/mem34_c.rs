@@ -65,12 +65,16 @@ impl Mem34C {
                     "free" => {
                         // Check if the argument to free() is dynamically allocated
                         if let Some(args) = node.child_by_field_name("arguments") {
-                            if let Some(var_name) = self.get_first_argument_identifier(&args, source) {
+                            if let Some(var_name) =
+                                self.get_first_argument_identifier(&args, source)
+                            {
                                 // Flag if we find a problem:
                                 // 1. Variable is assigned a string literal
                                 // 2. Variable is never dynamically allocated
-                                let has_literal_assignment = self.has_string_literal_assignment(&var_name, node, source);
-                                let has_dynamic_allocation = self.is_dynamically_allocated(&var_name, node, source);
+                                let has_literal_assignment =
+                                    self.has_string_literal_assignment(&var_name, node, source);
+                                let has_dynamic_allocation =
+                                    self.is_dynamically_allocated(&var_name, node, source);
 
                                 if has_literal_assignment || !has_dynamic_allocation {
                                     let position = node.start_position();
@@ -98,7 +102,9 @@ impl Mem34C {
                     "realloc" => {
                         // Check if the first argument to realloc() is dynamically allocated
                         if let Some(args) = node.child_by_field_name("arguments") {
-                            if let Some(var_name) = self.get_first_argument_identifier(&args, source) {
+                            if let Some(var_name) =
+                                self.get_first_argument_identifier(&args, source)
+                            {
                                 // Check if this variable is a stack array
                                 if self.is_stack_allocated(&var_name, node, source) {
                                     let position = node.start_position();
@@ -149,9 +155,7 @@ impl Mem34C {
     /// Extract identifier name from an expression
     fn extract_identifier(&self, node: &Node, source: &str) -> Option<String> {
         match node.kind() {
-            "identifier" => {
-                Some(get_node_text(node, source).trim().to_string())
-            }
+            "identifier" => Some(get_node_text(node, source).trim().to_string()),
             "cast_expression" => {
                 // Look for identifier in the value being cast
                 if let Some(value) = node.child_by_field_name("value") {
@@ -169,7 +173,7 @@ impl Mem34C {
                 }
                 None
             }
-            _ => None
+            _ => None,
         }
     }
 
@@ -194,15 +198,17 @@ impl Mem34C {
         // Check for assignments: var_name = malloc(...)
         if node.kind() == "assignment_expression" || node.kind() == "init_declarator" {
             // Check if left side matches our variable
-            if let Some(left) = node.child_by_field_name("left")
-                .or_else(|| node.child_by_field_name("declarator")) {
-
+            if let Some(left) = node
+                .child_by_field_name("left")
+                .or_else(|| node.child_by_field_name("declarator"))
+            {
                 if let Some(left_name) = self.extract_identifier(&left, source) {
                     if left_name == var_name {
                         // Check if right side is malloc/calloc/realloc
-                        if let Some(right) = node.child_by_field_name("right")
-                            .or_else(|| node.child_by_field_name("value")) {
-
+                        if let Some(right) = node
+                            .child_by_field_name("right")
+                            .or_else(|| node.child_by_field_name("value"))
+                        {
                             if self.is_dynamic_allocation_call(&right, source) {
                                 return true;
                             }
