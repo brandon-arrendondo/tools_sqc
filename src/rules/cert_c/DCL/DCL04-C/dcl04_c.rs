@@ -1,95 +1,28 @@
-// SPDX-License-Identifier: MIT
-// Copyright (c) 2024 BISSELL Homecare, Inc.
-
 //! DCL04-C: Do not declare more than one variable per declaration
 //!
-//! This rule detects violations where multiple variables are declared in a
-//! single declaration statement. Declaring multiple variables in one line
-//! can cause confusion regarding:
-//! - The types of the variables (e.g., char *src, c; where only src is a pointer)
-//! - Initial values (e.g., int i, j = 1; where only j is initialized)
+//! This rule detects when multiple variables are declared in a single declaration statement.
+//! Multiple declarations can cause confusion about variable types and initialization.
 //!
-//! The rule recommends that every declaration should be for a single variable,
-//! on its own line, with an explanatory comment about the role of the variable.
+//! VIOLATIONS:
+//! - char *src = 0, c = 0;         // src is char*, c is char - type confusion
+//! - int i, j = 1;                 // Only j is initialized
+//! - int *p, q, r;                 // p is int*, but q and r are int
 //!
-//! CERT C reference:
-//! https://wiki.sei.cmu.edu/confluence/display/c/DCL04-C.+Do+not+declare+more+than+one+variable+per+declaration
+//! COMPLIANT:
+//! - char *src = 0;  /* Source */
+//!   char c = 0;     /* Character */
+//! - int i = 1;
+//!   int j = 1;
+//!
+//! EXCEPTIONS:
+//! - for (int i = 0, j = 0; ...) {} // Multiple loop control variables OK
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils;
 use tree_sitter::Node;
 
-#[derive(Debug)]
 pub struct Dcl04C;
-
-impl Dcl04C {
-    pub fn new() -> Self {
-        Dcl04C
-    }
-
-    /// Check if a declaration node declares multiple variables
-    fn check_declaration(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Count the number of declarators in this declaration
-        let mut declarator_count = 0;
-        let mut first_declarator_line = 0;
-
-        let mut cursor = node.walk();
-        for child in node.children(&mut cursor) {
-            match child.kind() {
-                "init_declarator" | "identifier" => {
-                    declarator_count += 1;
-                    if declarator_count == 1 {
-                        first_declarator_line = child.start_position().row + 1;
-                    }
-                }
-                _ => {}
-            }
-        }
-
-        // If there are multiple declarators, it's a violation
-        if declarator_count > 1 {
-            violations.push(RuleViolation {
-                rule_id: "DCL04-C".to_string(),
-                severity: Severity::Low,
-                line: first_declarator_line,
-                column: node.start_position().column + 1,
-                message: format!(
-                    "Declaration contains {} variables; each variable should have its own declaration",
-                    declarator_count
-                ),
-                file_path: String::new(),
-                suggestion: Some(
-                    "Split into separate declarations, one per line, with explanatory comments"
-                        .to_string(),
-                ),
-                requires_manual_review: Some(false),
-            });
-        }
-    }
-
-    /// Recursively check nodes for multiple variable declarations
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        match node.kind() {
-            "declaration" => {
-                self.check_declaration(node, source, violations);
-            }
-            _ => {}
-        }
-
-        // Recursively check all children
-        let mut cursor = node.walk();
-        for child in node.children(&mut cursor) {
-            self.check_node(&child, source, violations);
-        }
-    }
-}
-
-impl Default for Dcl04C {
-    fn default() -> Self {
-        Self::new()
-    }
-}
 
 impl CertRule for Dcl04C {
     fn rule_id(&self) -> &'static str {
@@ -112,9 +45,112 @@ impl CertRule for Dcl04C {
         "DCL04-C"
     }
 
-    fn check(&self, root_node: &Node, source: &str) -> Vec<RuleViolation> {
+    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(root_node, source, &mut violations);
+
+        // Check declarations for multiple variables
+        if node.kind() == "declaration" {
+            // Skip if this is a for loop declaration (exception)
+            if self.is_for_loop_declaration(node) {
+                return violations;
+            }
+
+            let declarator_count = self.count_declarators(node);
+
+            if declarator_count > 1 {
+                let start_point = node.start_position();
+                let declaration_text = ast_utils::get_node_text(node, source);
+
+                violations.push(RuleViolation {
+                    rule_id: "DCL04-C".to_string(),
+                    severity: Severity::Low,
+                    message: format!(
+                        "Multiple variables ({}) declared in single declaration: {}",
+                        declarator_count,
+                        declaration_text.lines().next().unwrap_or(&declaration_text)
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Declare each variable on its own line with an explanatory comment"
+                            .to_string(),
+                    ),
+                    ..Default::default()
+                });
+            }
+        }
+
+        // Recursively check child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                violations.extend(self.check(&child, source));
+            }
+        }
+
         violations
+    }
+}
+
+impl Dcl04C {
+    /// Check if this declaration is part of a for loop (exception to the rule)
+    fn is_for_loop_declaration(&self, node: &Node) -> bool {
+        if let Some(parent) = node.parent() {
+            // Check if parent is a for_statement
+            if parent.kind() == "for_statement" {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Count the number of declarators in a declaration
+    fn count_declarators(&self, declaration_node: &Node) -> usize {
+        let mut count = 0;
+
+        for i in 0..declaration_node.child_count() {
+            if let Some(child) = declaration_node.child(i) {
+                match child.kind() {
+                    // init_declarator has format: declarator = initializer
+                    "init_declarator" => {
+                        count += 1;
+                    }
+                    // Plain declarator without initialization
+                    "pointer_declarator"
+                    | "array_declarator"
+                    | "function_declarator"
+                    | "identifier" => {
+                        // Check if this is a direct declarator (not part of init_declarator)
+                        if self.is_direct_declarator(&child, declaration_node) {
+                            count += 1;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        count
+    }
+
+    /// Check if a node is a direct declarator child (not nested in init_declarator)
+    fn is_direct_declarator(&self, node: &Node, declaration: &Node) -> bool {
+        // A declarator is direct if its parent is the declaration itself
+        if let Some(parent) = node.parent() {
+            if parent.id() == declaration.id() {
+                // Make sure it's actually a declarator kind
+                matches!(
+                    node.kind(),
+                    "pointer_declarator"
+                        | "array_declarator"
+                        | "function_declarator"
+                        | "identifier"
+                )
+            } else {
+                false
+            }
+        } else {
+            false
+        }
     }
 }

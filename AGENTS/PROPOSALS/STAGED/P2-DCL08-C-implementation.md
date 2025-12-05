@@ -200,3 +200,49 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 ## Verification
 
 @architect: APPROVED
+
+---
+
+## Implementation Log
+
+**Implementation Date:** 2024-11-24
+**Implementer:** Claude (via JASON team)
+**Branch:** claude-work-active-JASON-20251124
+**Commit:** P2-DCL08-C: Implement constant relationship detection
+
+### Implementation Summary
+
+Successfully implemented DCL08-C to detect when constants with mathematical relationships are not properly encoded, or when false relationships are encoded across different enum definitions.
+
+### Test Results
+- **Status:** ✅ ALL TESTS PASSING
+- **Test Results:**
+  - ✅ test_dcl08_c_fail_wiki_noncompliant_1 - Detects missing relationship (20 = 18+2)
+  - ✅ test_dcl08_c_fail_wiki_noncompliant_2 - Detects misleading cross-enum relationship
+  - ✅ test_dcl08_c_pass_wiki_compliant_1 - Accepts proper encoding (OUT_STR_LEN=IN_STR_LEN+2)
+  - ✅ test_dcl08_c_pass_wiki_compliant_2 - Accepts independent constants
+
+### Implementation Approach
+
+**Two-Pass Analysis:**
+1. **First Pass:** Collect all enum constant names across the entire file
+2. **Second Pass:** Check each enum for violations
+   - Missing relationships: Numeric literals with potential mathematical relationships
+   - False relationships: References to constants from different enums with arithmetic
+
+**Key Features:**
+- Detects constants that could be expressed as relationships (e.g., 20 = 18+2)
+- Flags cross-enum arithmetic relationships as potentially misleading
+- Distinguishes proper encoding (same enum) from false relationships (different enum)
+- Uses small offset threshold (1-10) to identify potential relationships
+
+### Files Modified
+- Created: `src/rules/cert_c/DCL/DCL08-C/dcl08_c.rs` (~270 lines)
+- Modified: `src/rules/cert_c/mod.rs` (added module registration)
+- Modified: `src/rules/cert_c/DCL/DCL08-C/DCL08-C.toml` (enabled rule)
+- Modified: `src/rules/cert_c/rules-all.toml` (auto-generated)
+
+### Notes
+- Implementation correctly handles both missing relationships and false relationships
+- Test suite validates both failure cases (violations detected) and pass cases (no false positives)
+- Rule successfully integrated into the registry and enabled
