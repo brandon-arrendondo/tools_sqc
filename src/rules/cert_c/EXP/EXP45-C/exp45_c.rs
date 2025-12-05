@@ -1,3 +1,37 @@
+//! EXP45-C: Do not perform assignments in selection statements
+//!
+//! Performing assignments in selection statements can lead to confusion between
+//! the assignment operator (=) and the equality operator (==), potentially causing
+//! logic errors.
+//!
+//! ## Rationale:
+//! - Assignments in conditions are often mistakes (= instead of ==)
+//! - Reduces code readability
+//! - Can lead to unintended behavior
+//!
+//! ## Examples:
+//!
+//! **Non-compliant (assignment in if condition):**
+//! ```c
+//! if (x = 5) {  // Likely meant ==, always true
+//!     // ...
+//! }
+//! ```
+//!
+//! **Compliant (comparison):**
+//! ```c
+//! if (x == 5) {
+//!     // ...
+//! }
+//! ```
+//!
+//! **Exception EX1 (assignment used in comparison - compliant):**
+//! ```c
+//! if ((x = foo()) != NULL) {  // Assignment result compared
+//!     // ...
+//! }
+//! ```
+
 use tree_sitter::Node;
 
 use super::super::{CertRule, RuleViolation};
@@ -16,7 +50,7 @@ impl CertRule for Exp45C {
     }
 
     fn severity(&self) -> Severity {
-        Severity::Low
+        Severity::Medium
     }
 
     fn category(&self) -> RuleCategory {
@@ -36,22 +70,33 @@ impl CertRule for Exp45C {
 
 impl Exp45C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check if this node is an if_statement, while_statement, or do_statement
         match node.kind() {
             "if_statement" => {
                 if let Some(condition) = node.child_by_field_name("condition") {
-                    self.check_condition(&condition, source, violations);
+                    self.check_condition_for_assignment(&condition, source, "if", violations);
+                }
+            }
+            "switch_statement" => {
+                if let Some(condition) = node.child_by_field_name("condition") {
+                    self.check_condition_for_assignment(&condition, source, "switch", violations);
                 }
             }
             "while_statement" => {
                 if let Some(condition) = node.child_by_field_name("condition") {
-                    self.check_condition(&condition, source, violations);
+                    self.check_condition_for_assignment(&condition, source, "while", violations);
                 }
             }
             "do_statement" => {
                 if let Some(condition) = node.child_by_field_name("condition") {
-                    self.check_condition(&condition, source, violations);
+                    self.check_condition_for_assignment(&condition, source, "do-while", violations);
                 }
+            }
+            "for_statement" => {
+                // Check condition (second expression) - assignments NOT allowed here
+                if let Some(condition) = node.child_by_field_name("condition") {
+                    self.check_condition_for_assignment(&condition, source, "for", violations);
+                }
+                // Note: Assignments in initializer and update expressions are allowed
             }
             _ => {}
         }
@@ -63,81 +108,119 @@ impl Exp45C {
         }
     }
 
-    fn check_condition(&self, condition: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // If the condition is a parenthesized_expression, unwrap it
-        let mut expr = *condition;
-        if expr.kind() == "parenthesized_expression" {
-            if let Some(child) = expr.named_child(0) {
-                expr = child;
-            }
-        }
-
-        // Check for assignments in the condition
-        self.check_expression_for_assignment(&expr, source, violations, true);
+    fn check_condition_for_assignment(
+        &self,
+        condition: &Node,
+        source: &str,
+        statement_type: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        self.find_assignments_in_condition(condition, source, statement_type, violations);
     }
 
-    fn check_expression_for_assignment(
+    fn find_assignments_in_condition(
         &self,
         node: &Node,
         source: &str,
+        statement_type: &str,
         violations: &mut Vec<RuleViolation>,
-        is_top_level: bool,
     ) {
-        match node.kind() {
-            "assignment_expression" => {
-                // Found an assignment at top level of condition - this is a violation
-                // unless it's wrapped in a comparison or other expression
-                if is_top_level {
-                    let position = node.start_position();
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: self.severity(),
-                        line: position.row + 1,
-                        column: position.column + 1,
-                        file_path: String::new(),
-                        message: format!(
-                            "Assignment in selection statement condition: '{}'",
-                            get_node_text(node, source)
-                        ),
-                        suggestion: None,
-                        requires_manual_review: None,
-                    });
-                }
-            }
-            "comma_expression" => {
-                // In a comma expression, check all children
-                // The rightmost expression is the one that determines the condition
-                let mut cursor = node.walk();
-                let children: Vec<_> = node.named_children(&mut cursor).collect();
+        if node.kind() == "assignment_expression" {
+            // Check if this assignment is part of a comparison (EX1 exception)
+            // or in the first operand of a comma expression (allowed)
+            if !self.is_assignment_in_comparison(node) && !self.is_in_first_comma_operand(node) {
+                let line = node.start_position().row + 1;
+                let column = node.start_position().column + 1;
+                let assignment_text = get_node_text(node, source);
 
-                // Check all expressions - the last one is the top-level condition
-                for (i, child) in children.iter().enumerate() {
-                    let is_last = i == children.len() - 1;
-                    self.check_expression_for_assignment(
-                        child,
-                        source,
-                        violations,
-                        is_last && is_top_level,
-                    );
-                }
-            }
-            "binary_expression" => {
-                // If this is a comparison or other binary operator wrapping an assignment,
-                // the assignment is OK (e.g., (x = y) != 0)
-                // So we check children with is_top_level = false
-                let mut cursor = node.walk();
-                for child in node.named_children(&mut cursor) {
-                    self.check_expression_for_assignment(&child, source, violations, false);
-                }
-            }
-            _ => {
-                // For other expression types, recursively check children
-                // with is_top_level = false since they're nested
-                let mut cursor = node.walk();
-                for child in node.named_children(&mut cursor) {
-                    self.check_expression_for_assignment(&child, source, violations, false);
-                }
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: format!(
+                        "Assignment in {} statement condition: '{}'",
+                        statement_type,
+                        assignment_text
+                            .split('\n')
+                            .next()
+                            .unwrap_or(&assignment_text)
+                    ),
+                    file_path: String::new(),
+                    line,
+                    column,
+                    suggestion: Some(format!(
+                        "Use == for comparison, or move assignment outside {} condition",
+                        statement_type
+                    )),
+                    requires_manual_review: None,
+                });
             }
         }
+
+        // Recursively check children
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.find_assignments_in_condition(&child, source, statement_type, violations);
+        }
+    }
+
+    /// Check if assignment is used as operand to a comparison (EX1 exception)
+    /// Examples: if ((x = foo()) != NULL) is allowed
+    fn is_assignment_in_comparison(&self, assignment_node: &Node) -> bool {
+        // Walk up to find parent
+        if let Some(parent) = assignment_node.parent() {
+            // Check if parent is a comparison or relational expression
+            match parent.kind() {
+                "binary_expression" => {
+                    // Check if it's a comparison operator
+                    let mut cursor = parent.walk();
+                    for child in parent.children(&mut cursor) {
+                        if matches!(child.kind(), "!=" | "==" | "<" | ">" | "<=" | ">=") {
+                            return true;
+                        }
+                    }
+                }
+                "parenthesized_expression" => {
+                    // Assignment in parentheses, check if the parentheses are part of a comparison
+                    return self.is_assignment_in_comparison(&parent);
+                }
+                _ => {}
+            }
+        }
+        false
+    }
+
+    /// Check if assignment is in the first operand of a comma expression
+    /// This is allowed per the rule (only second operand is restricted)
+    fn is_in_first_comma_operand(&self, assignment_node: &Node) -> bool {
+        if let Some(parent) = assignment_node.parent() {
+            if parent.kind() == "comma_expression" {
+                // Check if this assignment is the left/first operand
+                if let Some(left) = parent.child_by_field_name("left") {
+                    // The assignment or its parent is the left operand
+                    if left.id() == assignment_node.id() {
+                        return true;
+                    }
+                    // Check if assignment is within the left operand
+                    return self.is_ancestor_of(&left, assignment_node);
+                }
+            }
+            // Recursively check if we're nested in a comma expression's first operand
+            return self.is_in_first_comma_operand(&parent);
+        }
+        false
+    }
+
+    /// Check if ancestor_node contains target_node
+    fn is_ancestor_of(&self, ancestor: &Node, target: &Node) -> bool {
+        let mut cursor = ancestor.walk();
+        for child in ancestor.children(&mut cursor) {
+            if child.id() == target.id() {
+                return true;
+            }
+            if self.is_ancestor_of(&child, target) {
+                return true;
+            }
+        }
+        false
     }
 }

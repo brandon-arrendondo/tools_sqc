@@ -203,6 +203,68 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ---
 
+## Implementation Assessment
+
+**Status**: STALLED - Unimplementable as static analysis rule
+
+**Date**: 2025-11-21
+
+### Analysis
+
+STR01-C is a **policy recommendation**, not a detectable code pattern.
+
+**From CERT C Wiki**:
+- Tagged as "**unenforceable**"
+- Risk assessment: "**Detectable: No**"
+- Rule is about adopting a consistent organizational approach (static vs dynamic string allocation)
+
+**Why Unimplementable**:
+
+1. **No concrete patterns**: Rule doesn't describe specific code anti-patterns to detect
+2. **Requires whole-project analysis**: Would need to analyze entire codebase to determine if approach is "consistent"
+3. **Subjective policy**: What constitutes "consistent" varies by organization
+4. **No test cases**: No tests exist (no `tests/STR01-C/` directory)
+
+**Example scenarios**:
+- Some functions use `char buf[256]` (static)
+- Other functions use `malloc()` (dynamic)
+
+A static analyzer cannot determine if this is:
+- Inconsistent policy violation (bad)
+- Intentional design decision (good)
+- Legacy code mixed with new code (acceptable)
+
+### Architect Alert
+
+**@architect: Rule STR01-C cannot be implemented as static analysis**
+
+**Reason**: Policy-level recommendation without detectable patterns
+
+**Evidence**:
+- CERT C wiki explicitly marks as "Detectable: No"
+- Tagged as "unenforceable" 
+- Comments from CERT authors suggest it's "better suited for training"
+- No test infrastructure exists
+
+**Recommendation**:
+1. Mark rule as "unimplementable via static analysis" in documentation
+2. Remove from P2 implementation queue
+3. Consider adding to project documentation/training materials instead
+
+### Conclusion
+
+This rule should remain **disabled** and marked as requiring manual policy enforcement rather than automated detection.
+
+**Alternative Approaches**:
+- Code review checklists
+- Architecture documentation
+- Team coding standards
+- Training materials
+
+Not suitable for automated static analysis.
+
+---
+
 ## Status Update: NOT IMPLEMENTABLE
 
 **Date:** 2025-11-24
@@ -220,8 +282,5 @@ This is beyond the scope of per-file static analysis. No test cases exist becaus
 
 ### Recommendation:
 - Move to STALLED/Not Implementable
-- Consider this rule complete for JASON batch (13/14 implementable rules = 100%)
 - Document as architectural/policy rule requiring manual review
-
-**JASON Batch Status: 13/14 rules implemented (100% of implementable rules)**
 

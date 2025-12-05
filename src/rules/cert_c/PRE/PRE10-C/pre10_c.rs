@@ -1,16 +1,28 @@
-// SPDX-License-Identifier: MIT
-// Copyright (c) 2024 Ryan Urchick
-
 //! PRE10-C: Wrap multistatement macros in a do-while loop
 //!
 //! Multi-statement macros should be wrapped in do { ... } while(0) to prevent issues
 //! when used in control structures without braces.
-
-use tree_sitter::Node;
+//!
+//! ## Rationale:
+//! - Without wrapping, macros used in if/else can cause unexpected behavior
+//! - The do-while(0) idiom allows a trailing semicolon
+//! - Prevents dangling else problems
+//!
+//! ## Example Non-compliant:
+//! ```c
+//! #define SWAP(x, y) tmp = x; x = y; y = tmp
+//! if (z == 0) SWAP(a, b);  // Only first statement in if block!
+//! ```
+//!
+//! ## Example Compliant:
+//! ```c
+//! #define SWAP(x, y) do { tmp = x; x = y; y = tmp; } while(0)
+//! ```
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils;
+use tree_sitter::Node;
 
 pub struct Pre10C;
 
@@ -44,187 +56,127 @@ impl CertRule for Pre10C {
 
 impl Pre10C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check for preprocessor #define directives
+        // Check for preprocessor macro definitions
+        // preproc_def: object-like macros (e.g., #define MAX 100)
+        // preproc_function_def: function-like macros with parameters (e.g., #define SWAP(x, y) ...)
         if node.kind() == "preproc_def" || node.kind() == "preproc_function_def" {
-            self.check_macro_definition(node, source, violations);
+            if let Some(value) = node.child_by_field_name("value") {
+                let value_text = ast_utils::get_node_text(&value, source);
+
+                // Check if this macro has multiple statements
+                if self.has_multiple_statements(&value_text) {
+                    // Check if it's wrapped in do-while(0)
+                    if !self.is_wrapped_in_do_while(&value_text) {
+                        // Get macro name for better error message
+                        let macro_name = if let Some(name) = node.child_by_field_name("name") {
+                            ast_utils::get_node_text(&name, source)
+                        } else {
+                            "unknown"
+                        };
+
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: self.severity(),
+                            message: format!(
+                                "Multistatement macro '{}' is not wrapped in a do-while loop. \
+                                 This can cause issues when used in if statements without braces",
+                                macro_name
+                            ),
+                            file_path: String::new(),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            suggestion: Some(
+                                "Wrap the macro body in: do { /* statements */ } while (0)"
+                                    .to_string(),
+                            ),
+                            requires_manual_review: None,
+                        });
+                    }
+                }
+            }
         }
 
-        // Also check for problematic usage patterns: if without braces followed by multiple statements
-        if node.kind() == "if_statement" {
-            self.check_if_statement(node, source, violations);
-            self.check_semicolon_before_else(node, source, violations);
-        }
-
+        // Recursively check children
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
             self.check_node(&child, source, violations);
         }
     }
 
-    fn check_if_statement(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check if the consequence is not a compound statement
-        if let Some(consequence) = node.child_by_field_name("consequence") {
-            if consequence.kind() != "compound_statement" {
-                let consequence_text = get_node_text(&consequence, source).trim().to_string();
+    fn has_multiple_statements(&self, text: &str) -> bool {
+        // Remove line continuations (backslash-newline)
+        let cleaned = text.replace("\\\n", " ").replace("\\\r\n", " ");
 
-                // Check for identifier or call_expression that looks like a macro call
-                // This catches patterns like: if (z == 0) SWAP(x, y);
-                if consequence.kind() == "expression_statement" {
-                    if let Some(expr) = consequence.named_child(0) {
-                        if expr.kind() == "call_expression" {
-                            // Get the function name
-                            if let Some(func) = expr.child_by_field_name("function") {
-                                let func_name = get_node_text(&func, source).trim();
-                                // If it's all caps or looks like a macro (common convention)
-                                if func_name.chars().all(|c| c.is_uppercase() || c == '_') {
-                                    violations.push(RuleViolation {
-                                        rule_id: self.rule_id().to_string(),
-                                        severity: self.severity(),
-                                        line: node.start_position().row + 1,
-                                        column: node.start_position().column + 1,
-                                        file_path: String::new(),
-                                        message:
-                                            "Control statement without braces calling what appears to be a macro. \
-                                            If the macro expands to multiple statements, this will cause unexpected behavior."
-                                                .to_string(),
-                                        suggestion: Some(
-                                            "Use braces {} around control statement bodies, or wrap multistatement \
-                                            macros in do-while(0).".to_string()
-                                        ),
-                                        requires_manual_review: None,
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
+        // Count semicolons (excluding those in strings)
+        let semicolon_count = self.count_semicolons_outside_strings(&cleaned);
 
-                // Also check if there are multiple statements following (siblings after this if)
-                if let Some(parent) = node.parent() {
-                    let parent_text = get_node_text(&parent, source);
-
-                    // If we find a pattern like: if (cond) statement1; statement2;
-                    // This suggests a macro expanded to multiple statements
-                    let lines_after_if: Vec<&str> = parent_text
-                        .lines()
-                        .skip_while(|l| !l.contains("if"))
-                        .skip(1)
-                        .take(3)
-                        .collect();
-
-                    let semicolon_count = lines_after_if.iter().filter(|l| l.contains(';')).count();
-
-                    if semicolon_count >= 2 {
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: self.severity(),
-                            line: node.start_position().row + 1,
-                            column: node.start_position().column + 1,
-                            file_path: String::new(),
-                            message:
-                                "Control statement without braces followed by multiple statements. \
-                                This may indicate improper macro usage or unwrapped multistatement macro."
-                                    .to_string(),
-                            suggestion: Some(
-                                "Use braces {} around control statement bodies, or wrap multistatement \
-                                macros in do-while(0).".to_string()
-                            ),
-                            requires_manual_review: None,
-                        });
-                    }
-                }
-            }
+        // Multiple statements if we have more than 1 semicolon
+        // OR if we have curly braces (compound statement)
+        if semicolon_count > 1 {
+            return true;
         }
+
+        // Check for curly braces pattern (like { x; y; z; })
+        if cleaned.contains('{') && cleaned.contains('}') && semicolon_count > 0 {
+            return true;
+        }
+
+        false
     }
 
-    fn check_semicolon_before_else(
-        &self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
-        // Check for pattern: } ; else
-        // This happens when a macro that ends in a block is followed by a semicolon
-        // The semicolon breaks parsing, so the 'else' might not be in the tree as an alternative
+    fn count_semicolons_outside_strings(&self, text: &str) -> usize {
+        let mut count = 0;
+        let mut in_string = false;
+        let mut in_char = false;
+        let mut escaped = false;
+        let chars: Vec<char> = text.chars().collect();
 
-        // Get the full text around this if statement from the source
-        let if_end = node.end_byte();
+        for c in chars {
+            if escaped {
+                escaped = false;
+                continue;
+            }
 
-        // Look ahead in the source after the if statement ends
-        if if_end < source.len() {
-            let remaining_text = &source[if_end..];
-            let next_200_chars: String = remaining_text.chars().take(200).collect();
+            if c == '\\' {
+                escaped = true;
+                continue;
+            }
 
-            // Check if we see whitespace/newline, then semicolon, then "else"
-            let trimmed = next_200_chars.trim_start();
-
-            if trimmed.starts_with(';') {
-                // After the semicolon, we might have comments, so we need to be more careful
-                // Just check if "else" appears somewhere in the next bit of text
-                // This is a pragmatic approach for detecting the syntax error
-                if trimmed.contains("else") {
-                    // Make sure "else" is a keyword, not part of a comment or string
-                    // Simple heuristic: look for "else" as a word boundary
-                    let words: Vec<&str> = trimmed.split_whitespace().collect();
-                    if words.iter().any(|w| w.starts_with("else")) {
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: self.severity(),
-                            line: node.start_position().row + 1,
-                            column: node.start_position().column + 1,
-                            file_path: String::new(),
-                            message:
-                                "Semicolon after compound statement before 'else'. \
-                                This indicates a macro that should be wrapped in do-while(0)."
-                                    .to_string(),
-                            suggestion: Some(
-                                "Remove the semicolon or wrap the macro in do { ... } while(0) to allow \
-                                a trailing semicolon.".to_string()
-                            ),
-                            requires_manual_review: None,
-                        });
-                    }
-                }
+            if c == '"' && !in_char {
+                in_string = !in_string;
+            } else if c == '\'' && !in_string {
+                in_char = !in_char;
+            } else if c == ';' && !in_string && !in_char {
+                count += 1;
             }
         }
+
+        count
     }
 
-    fn check_macro_definition(
-        &self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
-        let macro_text = get_node_text(node, source);
+    fn is_wrapped_in_do_while(&self, text: &str) -> bool {
+        // Remove line continuations and extra whitespace
+        let cleaned = text
+            .replace("\\\n", " ")
+            .replace("\\\r\n", " ")
+            .trim()
+            .to_string();
 
-        // Check if macro contains multiple statements (has semicolons)
-        let semicolon_count = macro_text.matches(';').count();
+        // Check for do-while(0) pattern
+        // Pattern: starts with "do" and ends with "while (0)" or "while(0)"
+        let starts_with_do = cleaned.starts_with("do")
+            && (cleaned.chars().nth(2) == Some('{')
+                || cleaned.chars().nth(2) == Some(' ')
+                || cleaned.chars().nth(2) == Some('\t'));
 
-        // If macro has multiple statements (2+ semicolons for multi-statement)
-        if semicolon_count >= 2 {
-            // Check if it's wrapped in do-while
-            let is_wrapped = macro_text.contains("do")
-                && macro_text.contains("while")
-                && macro_text.contains('}');
-
-            if !is_wrapped {
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: self.severity(),
-                    line: node.start_position().row + 1,
-                    column: node.start_position().column + 1,
-                    file_path: String::new(),
-                    message:
-                        "Multi-statement macro should be wrapped in do { ... } while(0) to prevent \
-                        control flow issues when used without braces."
-                            .to_string(),
-                    suggestion: Some(
-                        "Wrap macro body: #define MACRO(x) do { statement1; statement2; } while(0)"
-                            .to_string(),
-                    ),
-                    requires_manual_review: None,
-                });
-            }
+        if !starts_with_do {
+            return false;
         }
+
+        // Check if it ends with while (0) or while(0)
+        cleaned.ends_with("while (0)")
+            || cleaned.ends_with("while(0)")
+            || cleaned.ends_with("while ( 0 )")
+            || cleaned.ends_with("while( 0 )")
     }
 }
