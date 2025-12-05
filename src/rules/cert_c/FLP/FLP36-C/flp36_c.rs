@@ -68,6 +68,11 @@ impl Flp36C {
             return None;
         }
 
+        // Check if this is actually a long -> float conversion
+        if !self.is_long_to_float_conversion(node, source) {
+            return None;
+        }
+
         // If no precision checking, report as potential violation
         let start_point = node.start_position();
 
@@ -81,8 +86,44 @@ impl Flp36C {
             suggestion: Some(
                 "Ensure target floating-point type has sufficient precision (use assert with PRECISION macro or use double instead of float)".to_string()
             ),
-            ..Default::default()
+            requires_manual_review: None,
         })
+    }
+
+    /// Check if this is a long -> float conversion
+    fn is_long_to_float_conversion(&self, node: &Node, source: &str) -> bool {
+        // Get the declaration context
+        if node.kind() == "init_declarator" {
+            if let Some(parent) = node.parent() {
+                let decl_text = ast_utils::get_node_text(&parent, source);
+                // Check if target is float (not double)
+                if decl_text.contains("float") && !decl_text.contains("double") {
+                    // Check if source is a long variable
+                    if let Some(value) = node.child_by_field_name("value") {
+                        let value_text = ast_utils::get_node_text(&value, source);
+                        // Look for the long variable in scope
+                        if self.is_long_variable(&value_text, source) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a variable name refers to a long type variable
+    fn is_long_variable(&self, var_name: &str, source: &str) -> bool {
+        let var_name = var_name.trim();
+        // Search source for declaration of this variable as long
+        for line in source.lines() {
+            if (line.contains("long int") || (line.contains("long") && !line.contains("double")))
+                && line.contains(var_name)
+            {
+                return true;
+            }
+        }
+        false
     }
 
     /// Check if there's precision validation in the function

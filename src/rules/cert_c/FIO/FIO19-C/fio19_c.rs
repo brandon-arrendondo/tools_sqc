@@ -24,11 +24,6 @@
 //! fstat(fileno(fp), &st);
 //! off_t size = st.st_size;
 //! ```
-//!
-//! ## Detection Strategy:
-//! - Find fseek() calls with SEEK_END argument
-//! - Check if followed by ftell() on same file pointer
-//! - This pattern indicates file size computation attempt
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
@@ -47,7 +42,7 @@ impl CertRule for Fio19C {
     }
 
     fn severity(&self) -> Severity {
-        Severity::Low
+        Severity::Medium
     }
 
     fn category(&self) -> RuleCategory {
@@ -70,7 +65,7 @@ impl Fio19C {
         // Look for fseek() calls
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&func, source);
+                let func_name = get_node_text(&func, source).trim();
 
                 if func_name == "fseek" {
                     // Check if fseek uses SEEK_END
@@ -80,23 +75,24 @@ impl Fio19C {
                             let file_ptr_text = get_node_text(&file_ptr, source);
 
                             // Check if there's a ftell() call on the same file pointer nearby
-                            if self.has_ftell_nearby(node, &file_ptr_text, source) {
+                            if self.has_ftell_nearby(node, file_ptr_text.trim(), source) {
                                 let line = node.start_position().row + 1;
+                                let column = node.start_position().column + 1;
 
                                 violations.push(RuleViolation {
                                     rule_id: self.rule_id().to_string(),
-                                    severity: Severity::Low,
-                                    message: format!(
+                                    severity: self.severity(),
+                                    message:
                                         "Using fseek()/ftell() to compute file size - use fstat() or platform-specific APIs instead"
-                                    ),
+                                            .to_string(),
                                     file_path: String::new(),
                                     line,
-                                    column: 0,
+                                    column,
                                     suggestion: Some(
                                         "Use fstat() with fileno() to get file size reliably"
                                             .to_string(),
                                     ),
-                                    ..Default::default()
+                                    requires_manual_review: None,
                                 });
                             }
                         }
@@ -106,10 +102,9 @@ impl Fio19C {
         }
 
         // Recursively check children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
-            }
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.check_node(&child, source, violations);
         }
     }
 
@@ -117,16 +112,15 @@ impl Fio19C {
     fn fseek_uses_seek_end(&self, fseek_node: &Node, source: &str) -> bool {
         if let Some(args) = fseek_node.child_by_field_name("arguments") {
             let mut arg_count = 0;
-            for i in 0..args.child_count() {
-                if let Some(child) = args.child(i) {
-                    // Skip separators and parentheses
-                    if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
-                        arg_count += 1;
-                        if arg_count == 3 {
-                            // Third argument (whence parameter)
-                            let arg_text = get_node_text(&child, source);
-                            return arg_text.trim() == "SEEK_END" || arg_text.trim() == "2";
-                        }
+            let mut cursor = args.walk();
+            for child in args.children(&mut cursor) {
+                // Skip separators and parentheses
+                if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
+                    arg_count += 1;
+                    if arg_count == 3 {
+                        // Third argument (whence parameter)
+                        let arg_text = get_node_text(&child, source).trim();
+                        return arg_text == "SEEK_END" || arg_text == "2";
                     }
                 }
             }
@@ -137,11 +131,10 @@ impl Fio19C {
     /// Get the first argument from a function call (file pointer)
     fn get_first_argument<'a>(&self, call_node: &Node<'a>) -> Option<Node<'a>> {
         if let Some(args) = call_node.child_by_field_name("arguments") {
-            for i in 0..args.child_count() {
-                if let Some(child) = args.child(i) {
-                    if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
-                        return Some(child);
-                    }
+            let mut cursor = args.walk();
+            for child in args.children(&mut cursor) {
+                if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
+                    return Some(child);
                 }
             }
         }
@@ -178,12 +171,12 @@ impl Fio19C {
     fn find_ftell_on_file_ptr(&self, node: &Node, file_ptr: &str, source: &str) -> bool {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&func, source);
+                let func_name = get_node_text(&func, source).trim();
 
                 if func_name == "ftell" {
                     // Check if ftell uses the same file pointer
                     if let Some(first_arg) = self.get_first_argument(node) {
-                        let arg_text = get_node_text(&first_arg, source);
+                        let arg_text = get_node_text(&first_arg, source).trim();
                         if arg_text == file_ptr {
                             return true;
                         }
@@ -193,11 +186,10 @@ impl Fio19C {
         }
 
         // Recursively check children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if self.find_ftell_on_file_ptr(&child, file_ptr, source) {
-                    return true;
-                }
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            if self.find_ftell_on_file_ptr(&child, file_ptr, source) {
+                return true;
             }
         }
 

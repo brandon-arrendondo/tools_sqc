@@ -57,10 +57,9 @@ impl CertRule for Dcl22C {
         }
 
         // Recursively check child nodes
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                violations.extend(self.check(&child, source));
-            }
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            violations.extend(self.check(&child, source));
         }
 
         violations
@@ -114,7 +113,7 @@ impl Dcl22C {
                         suggestion: Some(
                             "Declare as 'volatile' to prevent compiler optimizations that assume variable state is unchanged across function calls".to_string()
                         ),
-                        ..Default::default()
+                        requires_manual_review: None,
                     });
 
                     // Remove to avoid duplicate violations for same variable
@@ -133,18 +132,17 @@ impl Dcl22C {
         source: &str,
         vars: &mut HashMap<String, Node<'a>>,
     ) {
-        for i in 0..body.child_count() {
-            if let Some(child) = body.child(i) {
-                if child.kind() == "declaration" {
-                    let type_text = self.get_type_text(&child, source).unwrap_or_default();
-                    if !type_text.contains("volatile") {
-                        if let Some(var_name) = self.get_variable_name(&child, source) {
-                            vars.insert(var_name, child);
-                        }
+        let mut cursor = body.walk();
+        for child in body.children(&mut cursor) {
+            if child.kind() == "declaration" {
+                let type_text = self.get_type_text(&child, source).unwrap_or_default();
+                if !type_text.contains("volatile") {
+                    if let Some(var_name) = self.get_variable_name(&child, source) {
+                        vars.insert(var_name, child);
                     }
-                } else if child.kind() == "compound_statement" {
-                    self.collect_non_volatile_declarations(&child, source, vars);
                 }
+            } else if child.kind() == "compound_statement" {
+                self.collect_non_volatile_declarations(&child, source, vars);
             }
         }
     }
@@ -152,11 +150,10 @@ impl Dcl22C {
     /// Get all statements from a compound statement
     fn get_statements<'a>(&self, body: &'a Node) -> Vec<Node<'a>> {
         let mut statements = Vec::new();
-        for i in 0..body.child_count() {
-            if let Some(child) = body.child(i) {
-                if !matches!(child.kind(), "{" | "}") {
-                    statements.push(child);
-                }
+        let mut cursor = body.walk();
+        for child in body.children(&mut cursor) {
+            if !matches!(child.kind(), "{" | "}") {
+                statements.push(child);
             }
         }
         statements
@@ -166,13 +163,12 @@ impl Dcl22C {
     fn get_assigned_variable(&self, stmt: &Node, source: &str) -> Option<String> {
         // Look for expression_statement containing assignment_expression
         if stmt.kind() == "expression_statement" {
-            for i in 0..stmt.child_count() {
-                if let Some(child) = stmt.child(i) {
-                    if child.kind() == "assignment_expression" {
-                        // Get left side of assignment
-                        if let Some(left) = child.child_by_field_name("left") {
-                            return self.extract_base_identifier(&left, source);
-                        }
+            let mut cursor = stmt.walk();
+            for child in stmt.children(&mut cursor) {
+                if child.kind() == "assignment_expression" {
+                    // Get left side of assignment
+                    if let Some(left) = child.child_by_field_name("left") {
+                        return self.extract_base_identifier(&left, source);
                     }
                 }
             }
@@ -198,11 +194,10 @@ impl Dcl22C {
     /// Check if a statement contains a function call
     fn contains_function_call(&self, stmt: &Node) -> bool {
         if stmt.kind() == "expression_statement" {
-            for i in 0..stmt.child_count() {
-                if let Some(child) = stmt.child(i) {
-                    if child.kind() == "call_expression" {
-                        return true;
-                    }
+            let mut cursor = stmt.walk();
+            for child in stmt.children(&mut cursor) {
+                if child.kind() == "call_expression" {
+                    return true;
                 }
             }
         }
@@ -240,7 +235,7 @@ impl Dcl22C {
                     suggestion: Some(
                         "Declare as 'volatile sig_atomic_t' to prevent compiler optimizations that could cause race conditions".to_string()
                     ),
-                    ..Default::default()
+                    requires_manual_review: None,
                 });
             }
         }
@@ -252,19 +247,18 @@ impl Dcl22C {
     fn get_type_text(&self, decl_node: &Node, source: &str) -> Option<String> {
         let mut type_parts = Vec::new();
 
-        for i in 0..decl_node.child_count() {
-            if let Some(child) = decl_node.child(i) {
-                match child.kind() {
-                    "type_qualifier"
-                    | "storage_class_specifier"
-                    | "primitive_type"
-                    | "type_identifier"
-                    | "struct_specifier" => {
-                        let text = ast_utils::get_node_text(&child, source);
-                        type_parts.push(text);
-                    }
-                    _ => {}
+        let mut cursor = decl_node.walk();
+        for child in decl_node.children(&mut cursor) {
+            match child.kind() {
+                "type_qualifier"
+                | "storage_class_specifier"
+                | "primitive_type"
+                | "type_identifier"
+                | "struct_specifier" => {
+                    let text = ast_utils::get_node_text(&child, source);
+                    type_parts.push(text.to_string());
                 }
+                _ => {}
             }
         }
 
@@ -277,18 +271,17 @@ impl Dcl22C {
 
     /// Get the variable name from a declaration
     fn get_variable_name(&self, decl_node: &Node, source: &str) -> Option<String> {
-        for i in 0..decl_node.child_count() {
-            if let Some(child) = decl_node.child(i) {
-                if child.kind() == "init_declarator" {
-                    if let Some(declarator) = child.child_by_field_name("declarator") {
-                        return self.extract_identifier(&declarator, source);
-                    }
-                } else if matches!(
-                    child.kind(),
-                    "identifier" | "pointer_declarator" | "array_declarator"
-                ) {
-                    return self.extract_identifier(&child, source);
+        let mut cursor = decl_node.walk();
+        for child in decl_node.children(&mut cursor) {
+            if child.kind() == "init_declarator" {
+                if let Some(declarator) = child.child_by_field_name("declarator") {
+                    return self.extract_identifier(&declarator, source);
                 }
+            } else if matches!(
+                child.kind(),
+                "identifier" | "pointer_declarator" | "array_declarator"
+            ) {
+                return self.extract_identifier(&child, source);
             }
         }
         None
@@ -303,11 +296,10 @@ impl Dcl22C {
                     return self.extract_identifier(&child_declarator, source);
                 }
                 // Fallback: search for identifier child
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        if child.kind() == "identifier" {
-                            return Some(ast_utils::get_node_text(&child, source).to_string());
-                        }
+                let mut cursor = node.walk();
+                for child in node.children(&mut cursor) {
+                    if child.kind() == "identifier" {
+                        return Some(ast_utils::get_node_text(&child, source).to_string());
                     }
                 }
                 None

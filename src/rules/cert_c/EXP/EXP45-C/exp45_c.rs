@@ -31,17 +31,12 @@
 //!     // ...
 //! }
 //! ```
-//!
-//! ## Detection Strategy:
-//! - Find selection statements (if, switch, while, do, for)
-//! - Check conditions for assignment expressions
-//! - Exception: Allow if assignment is operand to comparison
-//! - Exception: Allow assignments in for loop update expression (third part)
+
+use tree_sitter::Node;
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use tree_sitter::Node;
 
 pub struct Exp45C;
 
@@ -97,27 +92,19 @@ impl Exp45C {
                 }
             }
             "for_statement" => {
-                // Check initializer (first expression)
-                if let Some(initializer) = node.child_by_field_name("initializer") {
-                    // Assignments in initializer are fine - skip
-                }
-
                 // Check condition (second expression) - assignments NOT allowed here
                 if let Some(condition) = node.child_by_field_name("condition") {
                     self.check_condition_for_assignment(&condition, source, "for", violations);
                 }
-
-                // Check update (third expression) - assignments allowed here
-                // Skip checking the update expression
+                // Note: Assignments in initializer and update expressions are allowed
             }
             _ => {}
         }
 
         // Recursively check children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
-            }
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.check_node(&child, source, violations);
         }
     }
 
@@ -143,13 +130,14 @@ impl Exp45C {
             // or in the first operand of a comma expression (allowed)
             if !self.is_assignment_in_comparison(node) && !self.is_in_first_comma_operand(node) {
                 let line = node.start_position().row + 1;
+                let column = node.start_position().column + 1;
                 let assignment_text = get_node_text(node, source);
 
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
-                    severity: Severity::Medium,
+                    severity: self.severity(),
                     message: format!(
-                        "Assignment in {} statement condition (possible confusion with ==): {}",
+                        "Assignment in {} statement condition: '{}'",
                         statement_type,
                         assignment_text
                             .split('\n')
@@ -158,21 +146,20 @@ impl Exp45C {
                     ),
                     file_path: String::new(),
                     line,
-                    column: 0,
+                    column,
                     suggestion: Some(format!(
                         "Use == for comparison, or move assignment outside {} condition",
                         statement_type
                     )),
-                    ..Default::default()
+                    requires_manual_review: None,
                 });
             }
         }
 
         // Recursively check children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.find_assignments_in_condition(&child, source, statement_type, violations);
-            }
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.find_assignments_in_condition(&child, source, statement_type, violations);
         }
     }
 
@@ -184,20 +171,11 @@ impl Exp45C {
             // Check if parent is a comparison or relational expression
             match parent.kind() {
                 "binary_expression" => {
-                    // Check if it's a comparison operator by examining the parent's text
-                    // Look for comparison operators: !=, ==, <, >, <=, >=
-                    // We check if the parent node contains these operators
-                    for i in 0..parent.child_count() {
-                        if let Some(child) = parent.child(i) {
-                            if child.kind() == "!="
-                                || child.kind() == "=="
-                                || child.kind() == "<"
-                                || child.kind() == ">"
-                                || child.kind() == "<="
-                                || child.kind() == ">="
-                            {
-                                return true;
-                            }
+                    // Check if it's a comparison operator
+                    let mut cursor = parent.walk();
+                    for child in parent.children(&mut cursor) {
+                        if matches!(child.kind(), "!=" | "==" | "<" | ">" | "<=" | ">=") {
+                            return true;
                         }
                     }
                 }
@@ -234,14 +212,13 @@ impl Exp45C {
 
     /// Check if ancestor_node contains target_node
     fn is_ancestor_of(&self, ancestor: &Node, target: &Node) -> bool {
-        for i in 0..ancestor.child_count() {
-            if let Some(child) = ancestor.child(i) {
-                if child.id() == target.id() {
-                    return true;
-                }
-                if self.is_ancestor_of(&child, target) {
-                    return true;
-                }
+        let mut cursor = ancestor.walk();
+        for child in ancestor.children(&mut cursor) {
+            if child.id() == target.id() {
+                return true;
+            }
+            if self.is_ancestor_of(&child, target) {
+                return true;
             }
         }
         false
