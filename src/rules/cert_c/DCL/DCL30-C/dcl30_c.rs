@@ -208,7 +208,7 @@ impl Dcl30C {
         };
 
         // Search for declaration of this variable in function body
-        self.find_local_declaration(&body, var_name, source)
+        self.find_local_declaration(&body, &var_name, source)
     }
 
     /// Find if a variable is declared locally (not static)
@@ -403,7 +403,7 @@ impl Dcl30C {
             if let Some(child) = translation_unit.child(i) {
                 if child.kind() == "declaration" {
                     // Check if this declares our variable
-                    if self.contains_identifier(&child, var_name) {
+                    if self.contains_identifier(&child, &var_name) {
                         return true;
                     }
                 }

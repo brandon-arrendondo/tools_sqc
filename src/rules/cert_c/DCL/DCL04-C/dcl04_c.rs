@@ -67,7 +67,7 @@ impl CertRule for Dcl04C {
                     message: format!(
                         "Multiple variables ({}) declared in single declaration: {}",
                         declarator_count,
-                        declaration_text.lines().next().unwrap_or(declaration_text)
+                        declaration_text.lines().next().unwrap_or(&declaration_text)
                     ),
                     file_path: String::new(),
                     line: start_point.row + 1,
