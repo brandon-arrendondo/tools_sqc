@@ -137,13 +137,21 @@ pub fn find_string_literal_length(var_name: &str, node: &Node, source: &str) -> 
 pub fn find_allocation_size(ptr_name: &str, preceding_text: &str) -> Option<usize> {
     // Look for the most recent malloc/realloc call for this pointer
     // Patterns: ptr = malloc(N * sizeof(...))  or  ptr = realloc(ptr, N * sizeof(...))
+    // Also handles: type *ptr = malloc(...) declarations
 
     // Search for realloc first (more recent), then malloc
+    // Try both "ptr = malloc" and "*ptr = malloc" patterns
     let realloc_pattern = format!("{} = realloc", ptr_name);
     let malloc_pattern = format!("{} = malloc", ptr_name);
+    let ptr_realloc_pattern = format!("*{} = realloc", ptr_name);
+    let ptr_malloc_pattern = format!("*{} = malloc", ptr_name);
 
-    let realloc_pos = preceding_text.rfind(&realloc_pattern);
-    let malloc_pos = preceding_text.rfind(&malloc_pattern);
+    let realloc_pos = preceding_text
+        .rfind(&realloc_pattern)
+        .or_else(|| preceding_text.rfind(&ptr_realloc_pattern));
+    let malloc_pos = preceding_text
+        .rfind(&malloc_pattern)
+        .or_else(|| preceding_text.rfind(&ptr_malloc_pattern));
 
     // Use whichever is more recent (appears later in the text)
     let (_pattern, pos) = match (malloc_pos, realloc_pos) {
@@ -161,10 +169,18 @@ pub fn find_allocation_size(ptr_name: &str, preceding_text: &str) -> Option<usiz
 
     // Extract the allocation size from the call
     // Look for pattern: malloc(N * sizeof(...)) or malloc(N*sizeof(...))
+    // For realloc: realloc(ptr, N * sizeof(...))
     let after_call = &preceding_text[pos..];
     if let Some(paren_start) = after_call.find('(') {
         if let Some(paren_end) = after_call.find(')') {
-            let args = &after_call[paren_start + 1..paren_end];
+            let mut args = &after_call[paren_start + 1..paren_end];
+
+            // For realloc, skip the first argument (the pointer)
+            if after_call.contains("realloc") {
+                if let Some(comma_pos) = args.find(',') {
+                    args = args[comma_pos + 1..].trim();
+                }
+            }
 
             // Try to extract N from "N * sizeof(...)" or "N*sizeof(...)"
             if args.contains("sizeof") {
