@@ -132,6 +132,11 @@ impl Fio22CChecker {
                     self.open_files.remove(&file_var);
                 }
 
+                // Check for FD_CLOEXEC flag being set
+                if let Some(file_var) = self.find_cloexec_set(node, source) {
+                    self.open_files.remove(&file_var);
+                }
+
                 // Check for process spawn operations
                 if self.has_process_spawn(node, source) {
                     // Check if any files are still open
@@ -161,6 +166,36 @@ impl Fio22CChecker {
                 self.check_compound_statement(node, source, violations);
             }
             "if_statement" | "while_statement" | "for_statement" | "do_statement" => {
+                // Check for FD_CLOEXEC being set in condition
+                if let Some(file_var) = self.find_cloexec_set(node, source) {
+                    self.open_files.remove(&file_var);
+                }
+
+                // Check if the condition contains a process spawn call
+                if self.has_process_spawn(node, source) {
+                    // Check if any files are still open
+                    if !self.open_files.is_empty() {
+                        let start_point = node.start_position();
+                        let open_file_names: Vec<String> =
+                            self.open_files.keys().cloned().collect();
+                        violations.push(RuleViolation {
+                            rule_id: "FIO22-C".to_string(),
+                            severity: Severity::Medium,
+                            message: format!(
+                                "Process spawned while file(s) still open: {} - files must be closed before spawning processes",
+                                open_file_names.join(", ")
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some(
+                                "Close all open files with fclose() before calling system(), fork(), or exec()".to_string()
+                            ),
+                            ..Default::default()
+                        });
+                    }
+                }
+
                 // Recursively check control flow statements
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
@@ -179,6 +214,12 @@ impl Fio22CChecker {
             if let Some(function) = call.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
                 if func_name == "fopen" || func_name == "open" {
+                    // Check if O_CLOEXEC is used in the flags (only for open())
+                    let call_text = get_node_text(&call, source);
+                    if func_name == "open" && call_text.contains("O_CLOEXEC") {
+                        // File will be closed on exec, no need to track
+                        return None;
+                    }
                     // Try to extract the variable name being assigned
                     return self.extract_assigned_variable(node, source);
                 }
@@ -199,6 +240,33 @@ impl Fio22CChecker {
                             if let Some(arg) = args.child(i) {
                                 if arg.kind() == "identifier" {
                                     return Some(get_node_text(&arg, source).to_string());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Check if this node sets FD_CLOEXEC on a file descriptor
+    fn find_cloexec_set(&self, node: &Node, source: &str) -> Option<String> {
+        // Look for fcntl(fd, F_SETFD, ... | FD_CLOEXEC) pattern
+        if let Some(call) = self.find_call_expression(node, source) {
+            if let Some(function) = call.child_by_field_name("function") {
+                let func_name = get_node_text(&function, source);
+                if func_name == "fcntl" {
+                    // Check if FD_CLOEXEC appears in the call
+                    let call_text = get_node_text(&call, source);
+                    if call_text.contains("FD_CLOEXEC") || call_text.contains("F_SETFD") {
+                        // Extract the file descriptor argument (first arg)
+                        if let Some(args) = call.child_by_field_name("arguments") {
+                            for i in 0..args.child_count() {
+                                if let Some(arg) = args.child(i) {
+                                    if arg.kind() == "identifier" {
+                                        return Some(get_node_text(&arg, source).to_string());
+                                    }
                                 }
                             }
                         }
