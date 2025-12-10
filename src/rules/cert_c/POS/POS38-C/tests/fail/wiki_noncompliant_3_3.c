@@ -12,24 +12,26 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-char c;
-pid_t pid;
+void func(void) {
+    char c;
+    pid_t pid;
 
-int fd = open("data.txt", O_RDWR);
-if (fd == -1) {
-  /* Handle error */
-}
+    int fd = open("data.txt", O_RDWR);
+    if (fd == -1) {
+      /* Handle error */
+    }
 
-pid = fork();
-if (pid == -1) {
-  /* Handle error */
-}
+    pid = fork();
+    if (pid == -1) {
+      /* Handle error */
+    }
 
-if (pid == 0) { /*child*/
-  lseek(fd, 0, SEEK_SET);
-  read(fd, &c, 1);
-}
-else { /*parent*/
-  lseek(fd, 10, SEEK_SET);
-  read(fd, &c, 1);
+    if (pid == 0) { /*child*/
+      lseek(fd, 0, SEEK_SET);
+      read(fd, &c, 1);
+    }
+    else { /*parent*/
+      lseek(fd, 10, SEEK_SET);
+      read(fd, &c, 1);
+    }
 }

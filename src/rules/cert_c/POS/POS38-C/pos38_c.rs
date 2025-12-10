@@ -86,12 +86,15 @@ impl CertRule for Pos38C {
 
 impl Pos38C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check at the translation_unit (file) level or function level
-        if node.kind() == "translation_unit" || node.kind() == "function_definition" {
+        // Only check at function_definition level to avoid nested traversals
+        // (translation_unit would cause redundant checks on function children)
+        if node.kind() == "function_definition" {
             self.check_scope_for_fork_pattern(node, source, violations);
+            // Don't recurse into function body - we've already checked it
+            return;
         }
 
-        // Recurse through children
+        // Recurse through children to find function definitions
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
             self.check_node(&child, source, violations);
@@ -169,11 +172,11 @@ impl Pos38C {
 
     fn is_file_opening_call(&self, text: &str) -> bool {
         let text = text.trim();
-        text.starts_with("open(")
-            || text.starts_with("fopen(")
-            || text.starts_with("fdopen(")
-            || text.starts_with("creat(")
-            || text.starts_with("openat(")
+        text.contains("open(")
+            || text.contains("fopen(")
+            || text.contains("fdopen(")
+            || text.contains("creat(")
+            || text.contains("openat(")
     }
 
     fn find_declarator<'a>(&self, node: &'a Node) -> Option<Node<'a>> {
@@ -254,37 +257,44 @@ impl Pos38C {
                 let mut cursor = parent.walk();
                 for sibling in parent.children(&mut cursor) {
                     if found_stmt && sibling.kind() == "if_statement" {
-                        // Check both branches for fd usage
-                        let parent_branch_uses_fd = self.branch_uses_file_descriptor(
-                            &sibling,
-                            source,
-                            file_descriptors,
-                            true,
-                        );
-                        let child_branch_uses_fd = self.branch_uses_file_descriptor(
-                            &sibling,
-                            source,
-                            file_descriptors,
-                            false,
-                        );
+                        // Check if this if statement has both branches (consequence and alternative)
+                        // Skip error-handling if statements (e.g., `if (pid == -1)`) that don't have else
+                        let has_else_branch = sibling.child_by_field_name("alternative").is_some();
 
-                        if parent_branch_uses_fd && child_branch_uses_fd {
-                            // Both branches use a file descriptor - potential race condition
-                            let start_point = fork_node.start_position();
-                            violations.push(RuleViolation {
-                                rule_id: self.rule_id().to_string(),
-                                severity: Severity::Medium,
-                                message: "Race condition detected: file descriptor used after fork() in both parent and child processes. File descriptors are shared after fork(), leading to nondeterministic behavior.".to_string(),
-                                file_path: String::new(),
-                                line: start_point.row + 1,
-                                column: start_point.column + 1,
-                                suggestion: Some(
-                                    "Close the file descriptor in one process and reopen it, or use separate file descriptors for parent and child.".to_string()
-                                ),
-                                ..Default::default()
-                            });
-                            return; // Found the violation, no need to check further
+                        if has_else_branch {
+                            // Check both branches for fd usage
+                            let parent_branch_uses_fd = self.branch_uses_file_descriptor(
+                                &sibling,
+                                source,
+                                file_descriptors,
+                                true,
+                            );
+                            let child_branch_uses_fd = self.branch_uses_file_descriptor(
+                                &sibling,
+                                source,
+                                file_descriptors,
+                                false,
+                            );
+
+                            if parent_branch_uses_fd && child_branch_uses_fd {
+                                // Both branches use a file descriptor - potential race condition
+                                let start_point = fork_node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: "Race condition detected: file descriptor used after fork() in both parent and child processes. File descriptors are shared after fork(), leading to nondeterministic behavior.".to_string(),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some(
+                                        "Close the file descriptor in one process and reopen it, or use separate file descriptors for parent and child.".to_string()
+                                    ),
+                                    ..Default::default()
+                                });
+                                return; // Found the violation, no need to check further
+                            }
                         }
+                        // Continue checking other if statements (don't return early)
                     }
                     if sibling.id() == parent_stmt.id() {
                         found_stmt = true;
@@ -295,13 +305,17 @@ impl Pos38C {
     }
 
     fn find_parent_statement<'a>(&self, node: &'a Node) -> Option<Node<'a>> {
+        // Find the statement-level parent (expression_statement or declaration)
+        // that is a direct child of a compound_statement
         let mut current = *node;
         while let Some(parent) = current.parent() {
-            if parent.kind() == "expression_statement"
-                || parent.kind() == "declaration"
-                || parent.kind() == "assignment_expression"
-            {
-                return Some(parent);
+            if parent.kind() == "expression_statement" || parent.kind() == "declaration" {
+                // Verify this is a direct child of compound_statement
+                if let Some(grandparent) = parent.parent() {
+                    if grandparent.kind() == "compound_statement" {
+                        return Some(parent);
+                    }
+                }
             }
             current = parent;
         }
