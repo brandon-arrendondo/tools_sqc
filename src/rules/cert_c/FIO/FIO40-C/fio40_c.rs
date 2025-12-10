@@ -194,6 +194,7 @@ impl Fio40C {
     /// Check if this is a statement that resets the buffer
     fn is_buffer_reset_statement(&self, node: &Node, buffer_var: &str, source: &str) -> bool {
         // Look for assignment like buf[0] = '\0' or buf[0] = L'\0' or buf[0] = 0
+        // Also handle *buf = '\0' (pointer dereference syntax)
         if node.kind() == "expression_statement" {
             if let Some(assignment) = self.find_assignment(node) {
                 if let (Some(left), Some(right)) = (
@@ -203,11 +204,21 @@ impl Fio40C {
                     let left_text = get_node_text(&left, source);
                     let right_text = get_node_text(&right, source).trim();
 
-                    // Check if left side is buf[0]
-                    if left_text.contains(buffer_var) && left_text.contains("[0]") {
-                        // Check if right side is '\0' or L'\0' or 0
-                        if right_text == "'\\0'" || right_text == "L'\\0'" || right_text == "0" {
+                    // Check if right side is '\0' or L'\0' or 0
+                    let is_null_char =
+                        right_text == "'\\0'" || right_text == "L'\\0'" || right_text == "0";
+
+                    if is_null_char {
+                        // Check if left side is buf[0]
+                        if left_text.contains(buffer_var) && left_text.contains("[0]") {
                             return true;
+                        }
+                        // Check if left side is *buf (pointer dereference)
+                        if left.kind() == "pointer_expression" {
+                            let deref_text = get_node_text(&left, source);
+                            if deref_text == format!("*{}", buffer_var) {
+                                return true;
+                            }
                         }
                     }
                 }
