@@ -5,6 +5,12 @@ use tree_sitter::Node;
 
 pub struct Pre32C;
 
+/// Information about an unclosed function call
+struct UnclosedCallInfo {
+    function_name: String,
+    open_parens: usize,
+}
+
 impl CertRule for Pre32C {
     fn rule_id(&self) -> &'static str {
         "PRE32-C"
@@ -41,6 +47,12 @@ impl Pre32C {
             "call_expression" => {
                 self.check_function_call(node, source, violations);
             }
+            // Check for preprocessor directives that contain call expressions
+            // This catches cases where tree-sitter parses the #ifdef as a wrapper
+            "preproc_ifdef" | "preproc_if" | "preproc_ifndef" | "preproc_else" | "preproc_elif"
+            | "preproc_call" | "preproc_def" | "preproc_include" => {
+                self.check_preproc_for_macro_calls(node, source, violations);
+            }
             _ => {}
         }
 
@@ -50,6 +62,118 @@ impl Pre32C {
                 self.check_node(&child, source, violations);
             }
         }
+    }
+
+    /// Check if a preprocessor directive (like #ifdef) appears within a macro call
+    /// by looking at the raw source text around the directive
+    fn check_preproc_for_macro_calls(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let start_byte = node.start_byte();
+        let end_byte = node.end_byte();
+
+        // Look backwards from the preprocessor directive to find an unclosed call expression
+        // We need to check if there's an open parenthesis for a function call that spans this directive
+        let text_before = &source[..start_byte];
+
+        // Find the last function call that might contain this directive
+        // Look for pattern like "func(" or "MACRO("
+        if let Some(call_info) = self.find_unclosed_call_before(text_before) {
+            // Now check if the call closes after this preprocessor directive
+            // Note: For preproc_ifdef/preproc_if/etc., the node spans the entire block (from #ifdef to #endif)
+            // So we need to check what's after the START of the directive, not the END
+            // This means we look at whether there's a closing paren somewhere after the directive starts
+            let text_after_start = &source[start_byte..];
+            if self.has_matching_close_paren(text_after_start, call_info.open_parens) {
+                // This preprocessor directive is inside a function/macro call
+                let start_point = node.start_position();
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Preprocessor directive '{}' used inside invocation of '{}'. This causes undefined behavior if the function is implemented as a macro",
+                        node.kind().replace("preproc_", "#"),
+                        call_info.function_name
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Move preprocessor directives outside the function call using conditional compilation".to_string()),
+                    ..Default::default()
+                });
+            }
+        }
+    }
+
+    /// Find an unclosed function call before the given position
+    fn find_unclosed_call_before(&self, text: &str) -> Option<UnclosedCallInfo> {
+        let mut paren_depth = 0i32;
+        let chars: Vec<char> = text.chars().collect();
+        let mut i = chars.len();
+
+        // Scan backwards
+        while i > 0 {
+            i -= 1;
+            match chars[i] {
+                ')' => paren_depth += 1,
+                '(' => {
+                    paren_depth -= 1;
+                    if paren_depth < 0 {
+                        // Found unclosed open paren - look for function name
+                        let mut end = i;
+                        // Skip whitespace
+                        while end > 0 && chars[end - 1].is_whitespace() {
+                            end -= 1;
+                        }
+                        // Extract identifier
+                        let mut start = end;
+                        while start > 0
+                            && (chars[start - 1].is_alphanumeric() || chars[start - 1] == '_')
+                        {
+                            start -= 1;
+                        }
+                        if start < end {
+                            let function_name: String = chars[start..end].iter().collect();
+                            if self.is_potentially_macro_function(&function_name) {
+                                return Some(UnclosedCallInfo {
+                                    function_name,
+                                    open_parens: (-paren_depth) as usize,
+                                });
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        None
+    }
+
+    /// Check if there's a matching close paren for the unclosed call
+    fn has_matching_close_paren(&self, text: &str, open_count: usize) -> bool {
+        let mut close_count = 0usize;
+        let mut paren_depth = 0i32;
+
+        for c in text.chars() {
+            match c {
+                '(' => paren_depth += 1,
+                ')' => {
+                    if paren_depth > 0 {
+                        paren_depth -= 1;
+                    } else {
+                        close_count += 1;
+                        if close_count >= open_count {
+                            return true;
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        false
     }
 
     fn check_function_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
@@ -143,6 +267,7 @@ impl Pre32C {
             // I/O functions
             "getc", "putc", "getchar", "putchar", "fgetc", "fputc", "getwc", "putwc", "fgetwc",
             "fputwc", "printf", "fprintf", "sprintf", "snprintf", "scanf", "fscanf", "sscanf",
+            "fread", "fwrite", "fopen", "fclose", "fseek", "ftell", "rewind", "fgets", "fputs",
             // Math functions
             "abs", "labs", "llabs", "fabs", "fabsf", "fabsl", "sqrt", "sqrtf", "sqrtl", "pow",
             "powf", "powl", "sin", "cos", "tan", "asin", "acos", "atan", "atan2", "exp", "log",
@@ -160,7 +285,8 @@ impl Pre32C {
         std_lib_functions.contains(function_name) ||
         // Any function could potentially be a macro, so we should be conservative
         // But focus on functions commonly implemented as macros
-        function_name.chars().all(|c| c.is_uppercase() || c == '_') // ALL_CAPS suggests macro
+        function_name.chars().all(|c| c.is_uppercase() || c == '_' || c.is_ascii_digit())
+        // ALL_CAPS suggests macro
     }
 
     fn contains_preprocessor_directives(&self, text: &str) -> bool {
