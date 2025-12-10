@@ -1,6 +1,6 @@
 ## Gather Opinions - Distributed Autonomous Review
 
-**Purpose:** Rapid, persona-driven analysis of all STAGED proposals to gather multiple perspectives before final review.
+**Purpose:** Rapid, persona-driven analysis of STAGED proposals to gather multiple perspectives before final review.
 
 **Mode:** Autonomous with initial persona selection
 
@@ -8,7 +8,32 @@
 
 ---
 
-### Step 1: Select Review Persona (INTERACTIVE)
+### Step 0: Create Review Branch (REQUIRED)
+
+Before starting any reviews, create a dedicated branch for this opinion-gathering session:
+
+```bash
+# Get reviewer name and create branch
+REVIEWER=$(git config user.name | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
+DATE=$(date +%Y%m%d)
+BRANCH_NAME="opinions/${REVIEWER}-${DATE}"
+
+# Create and checkout branch
+git checkout -b "$BRANCH_NAME"
+echo "Created review branch: $BRANCH_NAME"
+```
+
+**Why branch?** Each opinion will be committed individually, creating an audit trail of the review process.
+
+---
+
+### Step 1: Select Persona & Configure Auto-Approvals (INTERACTIVE)
+
+**PAUSE HERE** - Two things to set up before autonomous execution begins:
+
+---
+
+#### 1A. Select Review Persona
 
 Before reviewing proposals, I need to understand what perspective you want me to adopt.
 
@@ -44,127 +69,193 @@ Before reviewing proposals, I need to understand what perspective you want me to
 
 8. **Custom** - Describe your own perspective
 
-**Which persona should I adopt?**
+---
 
-**ARCHITECT: REGARDLESS OF PERSONA, ALWAYS PERFORM AN EXAMINATION DURING THIS ANALYSIS IN AN ADVERSARIAL WAY, AND ALWAYS LOOK FOR DRY (Dont repeat yourself) and KISS (Keep it simple stupid) violations. Specific focus area is shared utility usage - all rules need to ensure that their error message is clearly and cleanly populated out**
+#### 1B. Configure Auto-Approvals (Optional - for Autonomous Execution)
+
+To run this workflow without manual approval prompts, add these commands to `.claude/settings.local.json`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(git config:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git rev-list:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(wc:*)",
+      "Bash(scripts/review_helpers.sh:*)"
+    ]
+  }
+}
+```
+
+**What these commands do:**
+- `git config/checkout/branch/add/commit/push` - Branch management and committing opinions
+- `ls/cat/head/wc` - Reading proposals and counting files
+- `grep` - Searching for DRY violations across the repo
+- `scripts/review_helpers.sh` - Recording opinions to proposal frontmatter
+
+**Security note:** All operations are read-only except for:
+- Creating a dedicated opinion branch
+- Committing opinions to proposal YAML frontmatter
+- Pushing the opinion branch to remote
 
 ---
 
-### Step 2: Identify Reviewer
+**Ready to proceed?** Please provide:
+1. Your chosen persona (number 1-8 or custom description)
+2. Confirm auto-approvals are configured (or acknowledge you'll approve manually)
+
+---
+
+### Step 2: Identify Reviewer and Scan Proposals
 
 ```bash
 REVIEWER=$(git config user.name | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
 echo "Reviewer: $REVIEWER"
 echo "Persona: {SELECTED_PERSONA}"
-```
 
----
-
-### Step 3: Scan STAGED Proposals
-
-```bash
 # Count proposals awaiting review
 PROPOSAL_COUNT=$(ls -1 AGENTS/PROPOSALS/STAGED/*.md 2>/dev/null | wc -l)
 echo "Found $PROPOSAL_COUNT proposals in STAGED/"
-
-# List all proposals
-ls -1 AGENTS/PROPOSALS/STAGED/*.md
 ```
 
 **Starting autonomous review as {PERSONA}...**
 
 ---
 
-### Step 4: Process Each Proposal (AUTONOMOUS)
+### Step 3: Process Each Proposal (AUTONOMOUS)
 
 For **EACH** proposal in STAGED, I will:
 
 #### A. Read Complete Proposal
+
 ```bash
 # Read entire proposal - ALL sections
 cat AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md
 ```
 
-**Focus areas based on persona:**
+**Focus areas:**
 - Read all sections: Task, Implementation Constraints, Implementation Log, Acceptance Criteria
+- Let the proposal provide context - don't assume repo-specific knowledge
 - Review Implementation Log for what was actually done
 - Check Acceptance Criteria for completeness
 - Note any red flags specific to my persona
 
-#### B. Quick Code Inspection (if commit referenced)
-```bash
-# Extract commit hash from Implementation Log (if present)
-COMMIT=$(grep -oP 'commit[: ]+\K[a-f0-9]{7,40}' AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md | head -1)
+#### B. Code Inspection
 
-# View changes if commit found
-if [ -n "$COMMIT" ]; then
-  git show "$COMMIT" --stat
-  git show "$COMMIT" -- src/rules/cert_c/ | head -100
-fi
+```bash
+# Extract paths/commits from proposal and inspect implementation
+# Focus on the specific files mentioned in the proposal
 ```
 
-#### C. Form Opinion (Persona-Specific Analysis)
+**Inspection should be:**
+- Guided by the proposal context, and the persona that the reviewer has selected
+- Neutral (as neutral as the adopted persona allows)
+- Exploratory but time-bounded (max 10 minutes per proposal)
+
+#### C. Form Opinion (Persona-Specific + Universal Analysis)
 
 **Opinion Categories:**
-- ✅ **LOOKS_GOOD** - Implementation appears complete, no issues from my persona's perspective
+- ✅ **LOOKS_GOOD** - Implementation appears complete, no issues found
 - ⚠️  **NEEDS_REVIEW** - Potential issues found that need addressing
-- 🛑 **BLOCKED** - Critical issues from my persona's perspective, cannot proceed
+- 🛑 **BLOCKED** - Critical issues, cannot proceed
 
-**Persona-Specific Checklist:**
+---
+
+### UNIVERSAL ANALYSIS (ALL PERSONAS MUST PERFORM)
+
+**Regardless of persona, ALWAYS check for:**
+
+#### DRY (Don't Repeat Yourself) Violations
+
+**Within the proposal's implementation:**
+- Duplicated code blocks, arrays, or constants
+- Similar logic that could be extracted to a helper function
+- Hardcoded values that appear multiple times
+
+**Across the repository (exploratory, time-bounded):**
+- Does this proposal implement functionality similar to another proposal or feature?
+- Could this method/utility benefit other implementations?
+- Should this be promoted to a shared utility location?
+
+```bash
+# Quick exploratory search for similar patterns
+# Example: If proposal implements a "find_function_calls" method, check if similar exists elsewhere
+grep -r "similar_pattern" src/ --include="*.rs" | head -10
+```
+
+**DRY Recommendation Framework:**
+- If a method is useful to 2+ implementations → suggest moving to shared utilities
+- Shared utility locations: `src/utility/cert_c/` or `src/utility/`
+- Note: Don't spend >1 minute on cross-repo DRY analysis per proposal
+
+#### KISS (Keep It Simple, Stupid) Violations
+
+- Overly complex logic where simpler alternatives exist
+- Unnecessary abstractions or indirection
+- Functions doing too many things
+
+#### Error Message Clarity
+
+- Are violation messages clear and actionable?
+- Do they provide enough context for the user to understand and fix the issue?
+- Are suggestions helpful and specific?
+
+---
+
+### Persona-Specific Checklists
 
 **If Security Auditor:**
 - [ ] No unwrap() on user/external input
 - [ ] No unsafe{} blocks without justification
 - [ ] Input validation present
-- [ ] No SQL injection vectors
-- [ ] No buffer overflow risks
 - [ ] Error handling doesn't leak sensitive info
 
 **If Performance Engineer:**
-- [ ] Algorithmic complexity reasonable (no O(n²) where O(n) possible)
+- [ ] Algorithmic complexity reasonable
 - [ ] No unnecessary allocations in hot paths
-- [ ] No blocking operations without timeout
-- [ ] Resource cleanup (no leaks)
 - [ ] Efficient data structures chosen
 
 **If Maintainability Advocate:**
 - [ ] Code is readable and well-structured
 - [ ] Complex logic has explanatory comments
 - [ ] No magic numbers (use constants)
-- [ ] Functions are appropriately sized
 - [ ] Consistent with codebase patterns
-- [ ] Technical debt noted if introduced
 
 **If Test Quality Reviewer:**
-- [ ] Test coverage adequate for rule complexity
+- [ ] Test coverage adequate for complexity
 - [ ] Edge cases tested
 - [ ] Error paths tested
-- [ ] Tests use appropriate assertions
 - [ ] Test names are descriptive
-- [ ] No brittle tests (hardcoded values, timing-dependent)
 
 **If API Designer:**
 - [ ] API names are clear and consistent
 - [ ] No breaking changes to public APIs
-- [ ] Documentation updated if API changed
-- [ ] Backwards compatibility maintained
 - [ ] Error types appropriate
 
 **If Memory Safety Expert:**
-- [ ] No manual memory management issues
 - [ ] No unsafe pointer arithmetic
 - [ ] Proper lifetime management
-- [ ] No use-after-free risks
 - [ ] Buffer boundaries checked
 
 **If Generalist:**
 - [ ] Implementation matches task description
 - [ ] All acceptance criteria met
-- [ ] No obvious bugs
-- [ ] Tests present and passing
 - [ ] Code quality acceptable
 
-#### D. Record Opinion
+---
+
+#### D. Record Opinion and Commit
+
 ```bash
 # Add opinion to proposal frontmatter
 scripts/review_helpers.sh add-opinion \
@@ -173,31 +264,36 @@ scripts/review_helpers.sh add-opinion \
   "{OPINION}" \
   "{COMMENT}"
 
-**ARCHITECT: YOUR COMMENT SHOULD ALWAYS BE CLEAR AND PROVIDE ENOUGH CONTEXT FOR A DEEPER DIVE INTO SPECIFICS** 
-
-# Example:
-# scripts/review_helpers.sh add-opinion \
-#   "AGENTS/PROPOSALS/STAGED/P1-FIO37-C-implementation.md" \
-#   "Security Auditor" \
-#   "NEEDS_REVIEW" \
-#   "Line 142: unwrap() on user input. Use ? operator or proper error handling."
+# Commit this individual opinion
+git add "AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md"
+git commit -m "opinion({PROPOSAL_ID}): {OPINION} by {REVIEWER} as {PERSONA}"
 ```
 
 **Comment Guidelines:**
 - Be specific: cite line numbers, function names, file paths
 - Be constructive: suggest fixes, not just problems
-- Be brief: 1-2 sentences max
-- Be persona-focused: comment on issues relevant to your perspective
+- Provide enough context for a deeper dive into specifics
+- Note any cross-repo DRY concerns with specific file references
+- Keep comments brief but actionable (5 sentences max), but if there are egregious violations you can add more
+
+**Example comments:**
+```
+# Good - specific and actionable
+"DRY: pointer_funcs array duplicated at lines 142/198. Similar array exists in ARR38-C (line 55). Consider shared constant in src/utility/cert_c/. Error messages are clear."
+
+# Bad - vague
+"Some duplication found. Looks okay otherwise."
+```
 
 #### E. Track Progress
+
 ```bash
-# Simple progress counter
 echo "✓ [{CURRENT}/{TOTAL}] {PROPOSAL_ID} - {OPINION}"
 ```
 
 ---
 
-### Step 5: Generate Summary Report
+### Step 4: Generate Summary Report
 
 After processing all proposals:
 
@@ -205,56 +301,48 @@ After processing all proposals:
 === Gather Opinions Summary ===
 Reviewer: {REVIEWER_NAME}
 Persona: {SELECTED_PERSONA}
+Branch: opinions/{REVIEWER}-{DATE}
 Date: {YYYY-MM-DD}
-Session Duration: {HOURS} hours
 
 Processed: {TOTAL} proposals
-Average time: ~3 minutes per proposal
+Commits: {TOTAL} (one per opinion)
 
 Opinions:
   ✅ LOOKS_GOOD: {COUNT} proposals
   ⚠️  NEEDS_REVIEW: {COUNT} proposals
   🛑 BLOCKED: {COUNT} proposals
 
-Top Concerns (from {PERSONA} perspective):
+Universal Concerns Found:
+  - DRY violations (within implementation): {COUNT}
+  - DRY violations (cross-repo candidates): {COUNT}
+  - KISS violations: {COUNT}
+  - Error message clarity issues: {COUNT}
+
+Persona-Specific Concerns:
   - {Issue 1}: {COUNT} proposals
   - {Issue 2}: {COUNT} proposals
-  - {Issue 3}: {COUNT} proposals
 
-Examples:
-  LOOKS_GOOD: P2-API04-C (clean implementation, no issues)
-  NEEDS_REVIEW: P1-FIO37-C (unwrap() usage)
-  BLOCKED: P1-ARR30-C (unsafe pointer arithmetic without bounds check)
+Cross-Repo DRY Candidates (potential shared utilities):
+  - {Pattern/Method}: Found in {PROPOSAL_1}, {PROPOSAL_2}
+  - {Pattern/Method}: Found in {PROPOSAL_3}, {PROPOSAL_4}
 
 Next Steps:
-  - All proposals now have your opinion recorded
-  - Waiting for other reviewers to complete their opinions
-  - Architect will run /review-staged to synthesize opinions
+  - Push branch: git push -u origin opinions/{REVIEWER}-{DATE}
+  - Create PR or wait for architect to run /review-staged
 ```
 
 ---
 
-### Step 6: Check Coverage (Optional)
+### Step 5: Finalize Session
 
 ```bash
-# See how many reviewers have reviewed each proposal
-scripts/review_helpers.sh analyze-coverage
-```
+# Push the opinion branch
+git push -u origin "$BRANCH_NAME"
 
-**Coverage Report:**
-```
-=== Review Coverage ===
-Total proposals in STAGED: 93
-
-Coverage:
-  3+ reviewers: 45 proposals (good coverage)
-  2 reviewers: 30 proposals (minimal coverage)
-  1 reviewer: 15 proposals (needs more opinions)
-  0 reviewers: 3 proposals (NOT REVIEWED)
-
-Recommendation:
-  - Proposals with 2+ reviewers ready for /review-staged
-  - Proposals with 0-1 reviewers need more opinions
+# Summary
+echo "Opinion gathering complete."
+echo "Branch: $BRANCH_NAME"
+echo "Commits: $(git rev-list --count main..$BRANCH_NAME)"
 ```
 
 ---
@@ -262,23 +350,27 @@ Recommendation:
 ### Important Guidelines
 
 **DO:**
-- Read the COMPLETE proposal (all sections)
-- Apply your persona's lens consistently
-- Be specific in comments (line numbers, file paths)
-- Record opinion even if "LOOKS_GOOD" (silence = no opinion)
-- Process all proposals (don't cherry-pick)
-- Stay objective and constructive
+- Create branch before starting
+- Commit each opinion individually
+- Read the COMPLETE proposal (let it provide context)
+- Apply persona lens consistently while staying neutral
+- Be exploratory for DRY violations (but time-bounded)
+- Check for cross-repo patterns that could become shared utilities
+- Be specific in comments (line numbers, file paths, similar files)
+- Record opinion even if "LOOKS_GOOD"
 
 **DON'T:**
-- Skip proposals (process all in STAGED)
+- Skip the branch creation step
+- Batch commits (each opinion = one commit)
+- Assume repo-specific knowledge (let proposal guide you)
+- Spend >5 minutes per proposal (rapid screening)
+- Search every nook and cranny for DRY (be exploratory, not exhaustive)
 - Modify code (this is read-only review)
 - Make final decisions (that's Phase 2 /review-staged)
-- Spend >5 minutes per proposal (this is rapid screening)
-- Second-guess other reviewers' opinions (add yours independently)
 
 **Time Management:**
-- Budget: 3-5 hours for ~93 proposals
 - Target: 2-4 minutes per proposal
+- DRY cross-repo check: ~30-60 seconds max
 - If going over: focus on Implementation Log + Acceptance Criteria only
 - Deep analysis happens in Phase 2 (by architect)
 
@@ -288,11 +380,12 @@ Recommendation:
 
 **Session Complete When:**
 - All proposals in STAGED/ have your opinion recorded
+- Each opinion has been committed individually
 - Summary report generated
-- No modifications made to code (read-only)
+- Branch pushed to remote
 
 **Next Steps:**
-- Wait for other team members to complete their opinions
+- Wait for other team members to complete their opinions (on their own branches)
 - Architect runs `/review-staged` to synthesize all opinions and make final decisions
 
 ---
@@ -302,31 +395,50 @@ Recommendation:
 ```
 User: /gather-opinions
 
-Claude: Which review persona should I adopt?
-[Shows 8 options]
+Claude: === Step 1: Select Persona & Configure Auto-Approvals ===
 
-User: Security Auditor
+PAUSE - Two things to set up before autonomous execution:
 
-Claude: Starting review as Security Auditor...
+1A. Which persona should I adopt? [Shows 8 options]
+
+1B. For autonomous execution, add to .claude/settings.local.json:
+    [Shows JSON config]
+
+Ready to proceed? Please provide:
+1. Your chosen persona
+2. Confirm auto-approvals configured (or will approve manually)
+
+User: Maintainability Advocate, auto-approvals configured
+
+Claude: Creating review branch...
+Created: opinions/tristan-vanfossen-20251210
+
+Starting review as Maintainability Advocate...
 Reviewer: tristan-vanfossen
 Found 93 proposals in STAGED/
 
-Reading P1-API00-C-implementation.md... ✓ [1/93] LOOKS_GOOD
-Reading P1-API01-C-implementation.md... ✓ [2/93] NEEDS_REVIEW
-Reading P1-API02-C-implementation.md... ✓ [3/93] LOOKS_GOOD
+Processing P1-API00-C...
+  - Reading proposal... (context acquired)
+  - Inspecting implementation...
+  - DRY check (within): OK
+  - DRY check (cross-repo): Found similar pattern in P2-API05-C
+  - KISS check: OK
+  - Error messages: Clear
+  - Persona check: No magic numbers, good structure
+  ✓ [1/93] NEEDS_REVIEW - committed
+
+Processing P1-API01-C...
+  ✓ [2/93] LOOKS_GOOD - committed
 ...
-Reading P2-WIN30-C-implementation.md... ✓ [93/93] BLOCKED
 
 === Summary ===
-Processed: 93 proposals in 4.2 hours
-  ✅ LOOKS_GOOD: 65
-  ⚠️  NEEDS_REVIEW: 23
-  🛑 BLOCKED: 5
+Branch: opinions/tristan-vanfossen-20251210
+Processed: 93 proposals
+Commits: 93
 
-Top security concerns:
-  - unwrap() on user input: 12 proposals
-  - unsafe{} without justification: 5 proposals
-  - Missing input validation: 6 proposals
+Cross-Repo DRY Candidates:
+  - find_call_expression(): P1-API00-C, P2-API05-C, P1-FIO37-C
+  - is_modification_function(): P2-ENV30-C, P1-STR31-C
 
-Session complete. Run /review-staged when ready for final decisions.
+Session complete.
 ```
