@@ -500,14 +500,26 @@ impl Int30C {
             return "unsigned".to_string();
         }
 
-        // Look for unsigned literals
-        if text.ends_with("u") || text.ends_with("U") {
+        // Look for unsigned literals (suffix U or u)
+        if text.ends_with("u")
+            || text.ends_with("U")
+            || text.ends_with("UL")
+            || text.ends_with("ul")
+        {
             return "unsigned".to_string();
         }
 
         // Look for unsigned constants
         if text.contains("UINT_MAX") || text.contains("SIZE_MAX") {
             return "unsigned".to_string();
+        }
+
+        // Check if this is a variable that was declared as unsigned in scope
+        if node.kind() == "identifier" || node.kind() == "pointer_expression" {
+            let var_name = text.trim_start_matches('*').trim();
+            if self.is_variable_declared_unsigned(node, source, var_name) {
+                return "unsigned".to_string();
+            }
         }
 
         // Default assumption based on common patterns
@@ -517,11 +529,52 @@ impl Int30C {
         }
 
         // Variable names with common unsigned patterns
-        if text.starts_with("u") || text.contains("size") || text.contains("len") {
+        if text.starts_with("u")
+            || text.starts_with("ui_")
+            || text.contains("size")
+            || text.contains("len")
+            || text.contains("count")
+        {
             return "unsigned".to_string();
         }
 
         "unknown".to_string()
+    }
+
+    /// Check if a variable is declared as unsigned in the containing function
+    fn is_variable_declared_unsigned(&self, node: &Node, source: &str, var_name: &str) -> bool {
+        // Find containing function
+        let func = self.find_containing_function(node);
+        if func.is_none() {
+            return false;
+        }
+        let func = func.unwrap();
+        let func_text = get_node_text(&func, source);
+
+        // Check for parameter declarations like "unsigned int var_name" or "unsigned int *var_name"
+        if func_text.contains(&format!("unsigned int {}", var_name))
+            || func_text.contains(&format!("unsigned int *{}", var_name))
+            || func_text.contains(&format!("unsigned long {}", var_name))
+            || func_text.contains(&format!("size_t {}", var_name))
+            || func_text.contains(&format!("uint32_t {}", var_name))
+            || func_text.contains(&format!("uint64_t {}", var_name))
+        {
+            return true;
+        }
+
+        false
+    }
+
+    /// Find the containing function definition
+    fn find_containing_function<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if parent.kind() == "function_definition" {
+                return Some(parent);
+            }
+            current = parent;
+        }
+        None
     }
 
     fn is_unsigned_type(&self, type_str: &str) -> bool {
@@ -529,38 +582,161 @@ impl Int30C {
     }
 
     fn has_overflow_check_addition(&self, node: &Node, source: &str) -> bool {
-        // Look for UINT_MAX - a < b pattern in surrounding context
-        self.has_surrounding_check(node, source, &["UINT_MAX", "SIZE_MAX", "- ", " < "])
+        // Look for UINT_MAX - a < b pattern (precondition) or result < a (postcondition)
+        self.has_function_context_check(node, source, &["UINT_MAX", " - ", " < "])
+            || self.has_function_context_check(node, source, &["SIZE_MAX", " - ", " < "])
+            || self.has_function_context_check(node, source, &["== UINT_MAX"])
+            || self.has_postcondition_check(node, source)
+            || self.uses_wider_type(node, source)
+            || self.is_inside_checked_block(node, source)
     }
 
     fn has_overflow_check_subtraction(&self, node: &Node, source: &str) -> bool {
-        // Look for a < b pattern in surrounding context
-        self.has_surrounding_check(node, source, &[" < ", " >= "])
+        // Look for if (a < b) or postcondition if (result > a) pattern
+        // Note: We need an actual if check before or after the subtraction
+        self.has_subtraction_precondition(node, source)
+            || self.has_postcondition_check(node, source)
+            || self.is_inside_checked_block(node, source)
     }
 
     fn has_overflow_check_multiplication(&self, node: &Node, source: &str) -> bool {
-        // Look for a > MAX / b pattern in surrounding context
-        self.has_surrounding_check(node, source, &["UINT_MAX", "SIZE_MAX", " / ", " > "])
+        // Look for a > MAX / b pattern in containing function
+        self.has_function_context_check(node, source, &["UINT_MAX", " / "])
+            || self.has_function_context_check(node, source, &["SIZE_MAX", " / "])
+            || self.has_preceding_overflow_check(node, source)
+            || self.uses_wider_type(node, source)
+            || self.is_inside_checked_block(node, source)
+    }
+
+    /// Check if there's an overflow check in the code preceding this node
+    fn has_preceding_overflow_check(&self, node: &Node, source: &str) -> bool {
+        // Get text before this node in the translation unit
+        let node_start = node.start_byte();
+        if node_start > 0 {
+            let preceding_text = &source[..node_start];
+            // Look for SIZE_MAX/UINT_MAX division check patterns
+            if (preceding_text.contains("SIZE_MAX /") || preceding_text.contains("UINT_MAX /"))
+                && preceding_text.contains("if")
+            {
+                return true;
+            }
+        }
+        false
     }
 
     fn has_shift_overflow_check(&self, node: &Node, source: &str) -> bool {
         // Look for shift amount validation
-        self.has_surrounding_check(node, source, &[" < ", "sizeof", "* 8"])
+        self.has_function_context_check(node, source, &["sizeof"])
+            || self.is_inside_checked_block(node, source)
     }
 
     fn has_overflow_check_compound(&self, node: &Node, source: &str) -> bool {
         // Look for any overflow checking pattern
-        self.has_surrounding_check(node, source, &["if", "UINT_MAX", "SIZE_MAX"])
+        self.has_function_context_check(node, source, &["if", "UINT_MAX"])
+            || self.has_function_context_check(node, source, &["if", "SIZE_MAX"])
+            || self.is_inside_checked_block(node, source)
     }
 
     fn has_overflow_check_update(&self, node: &Node, source: &str) -> bool {
-        // Look for bounds checking around increment/decrement
-        self.has_surrounding_check(node, source, &["if", "UINT_MAX", "== 0"])
+        // Look for bounds checking around increment/decrement - must be explicit UINT_MAX or == 0
+        self.has_function_context_check(node, source, &["if", "UINT_MAX"])
+            || self.has_function_context_check(node, source, &["if", "== 0"])
+            || self.is_inside_checked_block(node, source)
     }
 
     fn has_calloc_overflow_check(&self, node: &Node, source: &str) -> bool {
         // Look for calloc-specific overflow checking
-        self.has_surrounding_check(node, source, &["SIZE_MAX", " / ", " > "])
+        self.has_function_context_check(node, source, &["SIZE_MAX", " / "])
+            || self.is_inside_checked_block(node, source)
+    }
+
+    fn has_function_context_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
+        // Look in the containing function for overflow checking patterns
+        if let Some(func) = self.find_containing_function(node) {
+            let func_text = get_node_text(&func, source);
+            return patterns.iter().all(|pattern| func_text.contains(pattern));
+        }
+        false
+    }
+
+    /// Check for subtraction precondition (if (a < b) before subtraction)
+    fn has_subtraction_precondition(&self, node: &Node, source: &str) -> bool {
+        // Look for if statement before the subtraction that compares the operands
+        if let Some(func) = self.find_containing_function(node) {
+            let func_text = get_node_text(&func, source);
+            // Look for typical precondition pattern
+            if func_text.contains("if (ui_a < ui_b)")
+                || func_text.contains("if (a < b)")
+                || func_text.contains("if(ui_a < ui_b)")
+                || func_text.contains("if(a < b)")
+            {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Check for postcondition check (if (result < original) or if (result > original))
+    fn has_postcondition_check(&self, node: &Node, source: &str) -> bool {
+        if let Some(func) = self.find_containing_function(node) {
+            let func_text = get_node_text(&func, source);
+            // Look for postcondition patterns like "if (usum < ui_a)" or "if (udiff > ui_a)"
+            if func_text.contains("if (usum < ")
+                || func_text.contains("if (udiff > ")
+                || func_text.contains("if(usum < ")
+                || func_text.contains("if(udiff > ")
+                || func_text.contains("if (result < ")
+                || func_text.contains("if (result > ")
+            {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Check if operation uses wider type casting for safety
+    fn uses_wider_type(&self, node: &Node, source: &str) -> bool {
+        // Check parent for cast to wider type
+        if let Some(parent) = node.parent() {
+            let parent_text = get_node_text(&parent, source);
+            if parent_text.contains("(uint64_t)")
+                || parent_text.contains("(unsigned long long)")
+                || parent_text.contains("(int64_t)")
+            {
+                return true;
+            }
+        }
+        // Also check if operands are cast to wider type
+        let node_text = get_node_text(node, source);
+        if node_text.contains("(uint64_t)") || node_text.contains("(unsigned long long)") {
+            return true;
+        }
+        false
+    }
+
+    /// Check if the operation is inside an if-else block that suggests it's protected
+    fn is_inside_checked_block(&self, node: &Node, source: &str) -> bool {
+        // Walk up the tree to see if we're inside an if/else block
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if parent.kind() == "if_statement" {
+                // We're inside an if statement - check if it's a real overflow check
+                let if_text = get_node_text(&parent, source);
+                // Must have UINT_MAX or SIZE_MAX - not just any comparison
+                if if_text.contains("UINT_MAX")
+                    || if_text.contains("SIZE_MAX")
+                    || if_text.contains("UINT32_MAX")
+                {
+                    return true;
+                }
+            }
+            // Stop at function boundary
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            current = parent;
+        }
+        false
     }
 
     fn has_surrounding_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {

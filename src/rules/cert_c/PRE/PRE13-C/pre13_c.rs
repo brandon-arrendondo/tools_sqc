@@ -74,6 +74,7 @@ impl Pre13C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        defined_macros: &[String],
     ) {
         // Check both #if and #elif directives
         let is_conditional = node.kind() == "preproc_if" || node.kind() == "preproc_elif";
@@ -91,55 +92,46 @@ impl Pre13C {
         let condition_text = get_node_text(&condition, source);
 
         // Check if condition uses standard macros directly without defined()
-        for macro_name in [
-            "__STDC__",
-            "__STDC_VERSION__",
-            "__STDC_HOSTED__",
-            "__STDC_MB_MIGHT_NEQ_WC__",
-            "__STDC_UTF_16__",
-            "__STDC_UTF_32__",
-            "__STDC_ANALYZABLE__",
-            "__STDC_IEC_559__",
-            "__STDC_IEC_559_COMPLEX__",
-            "__STDC_ISO_10646__",
-            "__STDC_LIB_EXT1__",
-            "__STDC_NO_ATOMICS__",
-            "__STDC_NO_COMPLEX__",
-            "__STDC_NO_THREADS__",
-            "__STDC_NO_VLA__",
-        ] {
+        for macro_name in self.get_standard_macros() {
             // Check if the macro is used in the condition
             if condition_text.contains(macro_name) {
-                // Check if it's used with defined()
+                // Check if it's used with defined() in THIS condition
                 let defined_pattern = format!("defined({})", macro_name);
                 let defined_pattern_spaces = format!("defined ({})", macro_name);
 
-                if !condition_text.contains(&defined_pattern)
-                    && !condition_text.contains(&defined_pattern_spaces)
+                if condition_text.contains(&defined_pattern)
+                    || condition_text.contains(&defined_pattern_spaces)
                 {
-                    // Check if the macro appears directly (not in defined())
-                    // This is a violation: using macro value without checking if it's defined
-
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: self.severity(),
-                        message: format!(
-                            "Standard macro '{}' is used in preprocessor conditional without first checking if it is defined. Use 'defined({})' before testing its value.",
-                            macro_name, macro_name
-                        ),
-                        file_path: String::new(),
-                        line: node.start_position().row + 1,
-                        column: node.start_position().column + 1,
-                        suggestion: Some(format!(
-                            "Wrap the condition with 'defined({})' check: '#if defined({}) && ({})'",
-                            macro_name, macro_name, condition_text
-                        )),
-                        ..Default::default()
-                    });
-
-                    // Only report once per condition, even if multiple macros are used incorrectly
-                    return;
+                    // Has defined() check in this condition - OK
+                    continue;
                 }
+
+                // Check if it was checked with defined() in an enclosing #if
+                if defined_macros.contains(&macro_name.to_string()) {
+                    // Already checked in enclosing scope - OK
+                    continue;
+                }
+
+                // This is a violation: using macro value without checking if it's defined
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: format!(
+                        "Standard macro '{}' is used in preprocessor conditional without first checking if it is defined. Use 'defined({})' before testing its value.",
+                        macro_name, macro_name
+                    ),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(format!(
+                        "Wrap the condition with 'defined({})' check: '#if defined({}) && ({})'",
+                        macro_name, macro_name, condition_text
+                    )),
+                    ..Default::default()
+                });
+
+                // Only report once per condition, even if multiple macros are used incorrectly
+                return;
             }
         }
     }
@@ -168,21 +160,78 @@ impl CertRule for Pre13C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+        let defined_macros: Vec<String> = Vec::new();
+        self.check_node(node, source, &mut violations, &defined_macros);
         violations
     }
 }
 
 impl Pre13C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        defined_macros: &[String],
+    ) {
         // Check this node
-        self.check_preprocessor_conditional(node, source, violations);
+        self.check_preprocessor_conditional(node, source, violations, defined_macros);
 
-        // Recursively check child nodes
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
+        // For preproc_if nodes, extract macros checked with defined() and pass to children
+        if node.kind() == "preproc_if" {
+            if let Some(condition) = node.child_by_field_name("condition") {
+                let condition_text = get_node_text(&condition, source);
+                let mut new_defined_macros = defined_macros.to_vec();
+
+                // Extract macros checked with defined() in this condition
+                for macro_name in self.get_standard_macros() {
+                    let defined_pattern = format!("defined({})", macro_name);
+                    let defined_pattern_spaces = format!("defined ({})", macro_name);
+                    if condition_text.contains(&defined_pattern)
+                        || condition_text.contains(&defined_pattern_spaces)
+                    {
+                        if !new_defined_macros.contains(&macro_name.to_string()) {
+                            new_defined_macros.push(macro_name.to_string());
+                        }
+                    }
+                }
+
+                // Recurse into children with updated defined_macros set
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        self.check_node(&child, source, violations, &new_defined_macros);
+                    }
+                }
+                return;
             }
         }
+
+        // Recursively check child nodes with current defined_macros set
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_node(&child, source, violations, defined_macros);
+            }
+        }
+    }
+
+    /// List of standard macros that need defined() checks
+    fn get_standard_macros(&self) -> &[&str] {
+        &[
+            "__STDC__",
+            "__STDC_VERSION__",
+            "__STDC_HOSTED__",
+            "__STDC_MB_MIGHT_NEQ_WC__",
+            "__STDC_UTF_16__",
+            "__STDC_UTF_32__",
+            "__STDC_ANALYZABLE__",
+            "__STDC_IEC_559__",
+            "__STDC_IEC_559_COMPLEX__",
+            "__STDC_ISO_10646__",
+            "__STDC_LIB_EXT1__",
+            "__STDC_NO_ATOMICS__",
+            "__STDC_NO_COMPLEX__",
+            "__STDC_NO_THREADS__",
+            "__STDC_NO_VLA__",
+        ]
     }
 }

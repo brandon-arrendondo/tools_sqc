@@ -2,14 +2,28 @@
  * Rule: MEM02-C
  * Source: wiki
  * Status: PASS - Should NOT trigger MEM02-C violation
+ * Description: Macro usage with proper cast inside macro
  */
 
-widget *p;
+#include <stdlib.h>
 
-/* ... */
+#define MALLOC(type) ((type *)malloc(sizeof(type)))
 
-p = MALLOC(widget);   /* OK */
-if (p != NULL) {
-  p->i = 0;           /* OK */
-  p->d = 0.0;         /* OK */
+typedef struct widget widget;
+struct widget {
+  char c[10];
+  int i;
+  double d;
+};
+
+void testcase_compliant_macro_usage(void) {
+    widget *p;
+
+    /* ... */
+
+    p = MALLOC(widget);   /* Compliant: macro casts */
+    if (p != NULL) {
+        p->i = 0;
+        p->d = 0.0;
+    }
 }

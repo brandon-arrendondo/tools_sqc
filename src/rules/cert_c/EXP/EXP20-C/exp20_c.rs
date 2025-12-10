@@ -130,7 +130,7 @@ impl Exp20C {
         }
     }
 
-    /// Check if function name suggests validation/checking
+    /// Check if function name suggests validation/checking or string comparison
     fn is_validation_function(&self, func_text: &str) -> bool {
         func_text.contains("validate")
             || func_text.contains("Validate")
@@ -138,5 +138,11 @@ impl Exp20C {
             || func_text.contains("Check")
             || func_text.contains("verify")
             || func_text.contains("Verify")
+            // String comparison functions - !strcmp() is an implicit boolean test
+            || func_text.contains("strcmp")
+            || func_text.contains("strncmp")
+            || func_text.contains("memcmp")
+            || func_text.contains("wcscmp")
+            || func_text.contains("wcsncmp")
     }
 }

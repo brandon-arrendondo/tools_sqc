@@ -12,7 +12,6 @@ int allocate_and_process(size_t size) {
 
     if (buffer == NULL) {
         printf("Allocation failed\n");
-        free(buffer);  // Error: freeing NULL or invalid pointer
         return -1;
     }
 
@@ -21,22 +20,16 @@ int allocate_and_process(size_t size) {
         buffer[i] = i;
     }
 
-    // Simulate error condition
+    // Bug: Missing return after free in error path
+    // This causes a double free when size > 1000
     if (size > 1000) {
         printf("Size too large, cleaning up\n");
         free(buffer);
-        return -1;
+        // BUG: Missing return - falls through to second free!
     }
 
-    // Normal cleanup
-    free(buffer);  // Double free if size > 1000
-
-    return 0;
-}
-
-int main() {
-    allocate_and_process(500);   // Normal case
-    allocate_and_process(1500);  // Error case with double free
+    // Normal cleanup - but this is also reached when size > 1000!
+    free(buffer);  // DOUBLE FREE when size > 1000
 
     return 0;
 }

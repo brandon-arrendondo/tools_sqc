@@ -29,7 +29,13 @@ impl CertRule for STR04C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
+        self.check_node(node, source, &mut violations);
+        violations
+    }
+}
 
+impl STR04C {
+    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Check declarations for signed/unsigned char arrays with string literals
         if node.kind() == "declaration" {
             if let Some(violation) = self.check_string_declaration(node, source) {
@@ -42,11 +48,13 @@ impl CertRule for STR04C {
             violations.extend(self.check_string_function_call(node, source));
         }
 
-        violations
+        // Recursively check children
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.check_node(&child, source, violations);
+        }
     }
-}
 
-impl STR04C {
     fn check_string_function_call(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
@@ -207,15 +215,25 @@ impl STR04C {
 
         for child in node.children(&mut cursor) {
             match child.kind() {
+                "type_qualifier" => {
+                    // Capture type qualifiers like "signed" or "unsigned"
+                    let text = get_node_text(&child, source);
+                    type_text.push_str(text);
+                    type_text.push(' ');
+                }
                 "sized_type_specifier" => {
                     // sized_type_specifier contains "signed char" or "unsigned char"
                     type_text = get_node_text(&child, source).to_string();
                 }
                 "primitive_type" => {
                     let text = get_node_text(&child, source);
-                    if text == "char" && type_text.is_empty() {
-                        // Plain char is OK
-                        return None;
+                    if text == "char" {
+                        if type_text.is_empty() {
+                            // Plain char is OK
+                            return None;
+                        }
+                        // Append "char" to type (e.g., "signed char")
+                        type_text.push_str(text);
                     }
                 }
                 "init_declarator" => {

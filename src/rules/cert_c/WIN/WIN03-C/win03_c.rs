@@ -53,8 +53,9 @@ impl Win03C {
                 "fopen" => {
                     self.check_fopen_call(node, source, violations);
                 }
-                "system" => {
-                    self.check_system_call(node, violations);
+                "_strtoui64" | "_strtoul" | "strtoul" | "_atoi64" => {
+                    // Check if converting cmdLine to handle (dangerous pattern)
+                    self.check_handle_from_cmdline(node, source, violations);
                 }
                 _ => {}
             }
@@ -129,23 +130,75 @@ impl Win03C {
         }
     }
 
-    /// Check system() calls (always inherit all handles)
-    fn check_system_call(&self, node: &Node, violations: &mut Vec<RuleViolation>) {
-        violations.push(RuleViolation {
-            rule_id: self.rule_id().to_string(),
-            severity: Severity::Low,
-            message: format!(
-                "system() call detected. On Windows, system() creates a child process that inherits all inheritable handles from the parent. This may unintentionally leak sensitive resources."
-            ),
-            file_path: String::new(),
-            line: node.start_position().row + 1,
-            column: node.start_position().column + 1,
-            suggestion: Some(
-                "Consider using CreateProcess() with explicit handle inheritance control instead of system(), or ensure all handles are created with inheritance disabled."
-                    .to_string(),
-            ),
-            ..Default::default()
-        });
+    /// Check if a string-to-integer conversion is being used to receive a handle via command line
+    /// This is a dangerous pattern for handle inheritance UNLESS the handle is validated
+    fn check_handle_from_cmdline(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let Some(args_node) = node.child_by_field_name("arguments") {
+            // Get first argument
+            if let Some(first_arg) = self.get_nth_argument(&args_node, 0) {
+                let arg_text = get_node_text(&first_arg, source).trim();
+
+                // Check if parsing cmdLine, lpCmdLine, or similar command line variables
+                if arg_text.contains("cmdLine")
+                    || arg_text.contains("CmdLine")
+                    || arg_text.contains("lpCmdLine")
+                    || arg_text.contains("CommandLine")
+                {
+                    // Check if result is being cast to HANDLE
+                    if let Some(parent) = node.parent() {
+                        let parent_text = get_node_text(&parent, source);
+                        if parent_text.contains("HANDLE") {
+                            // Check if DuplicateHandle is used in the same scope to validate
+                            // Finding the containing function/scope
+                            let scope = self.find_containing_scope(node);
+                            if let Some(scope) = scope {
+                                let scope_text = get_node_text(&scope, source);
+                                // If DuplicateHandle is used, this is the compliant pattern
+                                if scope_text.contains("DuplicateHandle") {
+                                    return; // Compliant - handle is being validated
+                                }
+                            }
+
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: self.severity(),
+                                message: format!(
+                                    "Converting command line argument to HANDLE without validation. Receiving handles via command line is insecure - it exposes handles to other processes and allows handle hijacking."
+                                ),
+                                file_path: String::new(),
+                                line: node.start_position().row + 1,
+                                column: node.start_position().column + 1,
+                                suggestion: Some(
+                                    "Validate the handle using DuplicateHandle() to ensure it's a valid handle with appropriate access rights, or use proper IPC mechanisms."
+                                        .to_string(),
+                                ),
+                                ..Default::default()
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Find the containing function or scope for a node
+    fn find_containing_scope<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if parent.kind() == "function_definition"
+                || parent.kind() == "compound_statement"
+                || parent.kind() == "translation_unit"
+            {
+                return Some(parent);
+            }
+            current = parent;
+        }
+        None
     }
 
     /// Get the Nth argument from an argument list node (0-indexed)

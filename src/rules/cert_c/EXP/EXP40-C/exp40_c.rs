@@ -67,7 +67,7 @@ fn check_assignment(node: &Node, source: &str, violations: &mut Vec<RuleViolatio
         // Pattern: *ptr = value where ptr might point to const data
         if left_text.starts_with('*') {
             // Get the pointer variable
-            let ptr_var = left_text.trim_start_matches('*').trim();
+            let _ptr_var = left_text.trim_start_matches('*').trim();
 
             // If the RHS contains a const object or const pointer, flag it
             if is_potentially_const_violating(&right, source) {
@@ -82,7 +82,66 @@ fn check_assignment(node: &Node, source: &str, violations: &mut Vec<RuleViolatio
                 );
             }
         }
+
+        // Check for assigning &non_const_ptr to const_ptr_ptr (const T ** = &(T *))
+        // Pattern: ipp = &ip where ipp is const int ** and ip is int *
+        if left.kind() == "identifier" && right.kind() == "pointer_expression" {
+            if let Some(op) = right.child_by_field_name("operator") {
+                if get_node_text(&op, source) == "&" {
+                    // Check if this identifier was declared with const ** pattern
+                    if is_const_pointer_to_pointer_var(&left_text, node, source) {
+                        report_violation(
+                            node,
+                            source,
+                            violations,
+                            &format!(
+                                "Assigning address of non-const pointer to const-qualified pointer-to-pointer: {} = {}",
+                                left_text, right_text
+                            ),
+                        );
+                    }
+                }
+            }
+        }
     }
+}
+
+/// Check if a variable name was declared as const T **
+fn is_const_pointer_to_pointer_var(var_name: &str, node: &Node, source: &str) -> bool {
+    // Find the translation_unit (root)
+    let mut root = *node;
+    while let Some(parent) = root.parent() {
+        root = parent;
+    }
+
+    // Search for declarations of this variable
+    find_const_ptr_ptr_decl(&root, var_name, source)
+}
+
+fn find_const_ptr_ptr_decl(node: &Node, var_name: &str, source: &str) -> bool {
+    if node.kind() == "declaration" {
+        let decl_text = get_node_text(node, source);
+        // Check for patterns like "const int **varname" or "const T **varname"
+        if decl_text.contains("const") && decl_text.contains("**") && decl_text.contains(var_name) {
+            // Make sure const is before ** (not after like int * const *)
+            if let Some(const_pos) = decl_text.find("const") {
+                if let Some(ptr_ptr_pos) = decl_text.find("**") {
+                    if const_pos < ptr_ptr_pos {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if find_const_ptr_ptr_decl(&child, var_name, source) {
+                return true;
+            }
+        }
+    }
+    false
 }
 
 /// Check init_declarator for const removal in initialization
@@ -206,18 +265,20 @@ fn is_const_qualified(node: &Node, source: &str) -> bool {
 
 /// Check if expression might be violating const
 fn is_potentially_const_violating(node: &Node, source: &str) -> bool {
-    // Look for address-of expressions (&var) or const-qualified expressions
+    // Look for address-of expressions (&var) - only flag if argument is const
     if node.kind() == "pointer_expression" {
         if let Some(operator) = node.child_by_field_name("operator") {
             let op_text = get_node_text(&operator, source);
             if op_text == "&" {
-                // Taking address - might be of const variable
-                return true;
+                // Only flag if taking address of const-qualified object
+                if let Some(argument) = node.child_by_field_name("argument") {
+                    return contains_const_keyword(&argument, source);
+                }
             }
         }
     }
 
-    // Check for const keyword
+    // Check for const keyword directly in expression
     contains_const_keyword(node, source)
 }
 
