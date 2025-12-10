@@ -92,12 +92,41 @@ impl Exp19C {
         if let Some(alternative) = if_node.child_by_field_name("alternative") {
             // Skip checking if the alternative is another if_statement (else if)
             // We'll check that if_statement separately in recursion
-            if alternative.kind() != "if_statement" && alternative.kind() != "compound_statement" {
-                return Some(self.create_violation(
-                    if_node,
-                    "else",
-                    "else statement body should be enclosed in braces {}",
-                ));
+            if alternative.kind() == "if_statement" {
+                return None; // else-if chain, will be checked recursively
+            }
+
+            // The alternative can be wrapped in an else_clause node in tree-sitter-c
+            // We need to check the actual body inside it
+            let body_to_check = if alternative.kind() == "else_clause" {
+                // Find the actual statement inside the else_clause
+                let mut body = None;
+                let mut cursor = alternative.walk();
+                for child in alternative.children(&mut cursor) {
+                    // Skip the "else" keyword, look for the actual statement
+                    if child.kind() != "else" {
+                        body = Some(child);
+                        break;
+                    }
+                }
+                body
+            } else {
+                Some(alternative)
+            };
+
+            if let Some(body) = body_to_check {
+                // Skip if it's an if_statement (else if case inside else_clause)
+                if body.kind() == "if_statement" {
+                    return None;
+                }
+                // Check if the body is a compound_statement (braced block)
+                if body.kind() != "compound_statement" {
+                    return Some(self.create_violation(
+                        if_node,
+                        "else",
+                        "else statement body should be enclosed in braces {}",
+                    ));
+                }
             }
         }
 
