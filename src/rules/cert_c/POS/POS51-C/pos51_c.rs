@@ -95,20 +95,66 @@ impl Pos51C {
         locks
     }
 
-    /// Check if a node contains conditional statements (if/else) that might order locks
-    fn contains_conditional_ordering(&self, node: &Node) -> bool {
+    /// Check if a node contains conditional statements that order locks based on comparison
+    /// The condition should compare the lock arguments (e.g., from->id < to->id)
+    fn contains_conditional_ordering(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "if_statement" {
-            return true;
+            // Check if the condition involves a comparison that could be lock ordering
+            if let Some(condition) = node.child_by_field_name("condition") {
+                let cond_text = get_node_text(&condition, source);
+                // Look for comparison patterns like "->id <" or "->id >" or address comparisons
+                if (cond_text.contains("->id") || cond_text.contains(".id"))
+                    && (cond_text.contains('<') || cond_text.contains('>'))
+                {
+                    return true;
+                }
+                // Also check for address comparisons (comparing pointers directly)
+                if cond_text.contains('<') || cond_text.contains('>') {
+                    // Check if both sides of the comparison are pointer variables
+                    if self.is_pointer_comparison(&condition, source) {
+                        return true;
+                    }
+                }
+            }
         }
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if self.contains_conditional_ordering(&child) {
+                if self.contains_conditional_ordering(&child, source) {
                     return true;
                 }
             }
         }
 
+        false
+    }
+
+    /// Check if the condition is a pointer comparison (used for lock ordering)
+    fn is_pointer_comparison(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "binary_expression" {
+            let text = get_node_text(node, source);
+            // Simple heuristic: if both sides are identifiers and operator is < or >
+            if let Some(op) = node.child_by_field_name("operator") {
+                let op_text = get_node_text(&op, source);
+                if op_text == "<" || op_text == ">" {
+                    // Check if left and right are identifiers (pointer variables)
+                    if let Some(left) = node.child_by_field_name("left") {
+                        if let Some(right) = node.child_by_field_name("right") {
+                            let left_text = get_node_text(&left, source);
+                            let right_text = get_node_text(&right, source);
+                            // Both should be simple identifiers (pointer vars)
+                            if !left_text.contains('(')
+                                && !right_text.contains('(')
+                                && !left_text.chars().all(|c| c.is_ascii_digit())
+                                && !right_text.chars().all(|c| c.is_ascii_digit())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         false
     }
 
@@ -130,7 +176,7 @@ impl Pos51C {
             // If there are multiple locks, check for potential deadlock
             if locks.len() >= 2 {
                 // Check if there's conditional ordering logic
-                let has_conditional = self.contains_conditional_ordering(&body);
+                let has_conditional = self.contains_conditional_ordering(&body, source);
 
                 // If multiple locks without conditional ordering, report violation
                 if !has_conditional {

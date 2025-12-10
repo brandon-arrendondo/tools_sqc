@@ -7,7 +7,7 @@
 #include <stdio.h>
 enum { BUFFERSIZE = 24 }; 
 void report_error(const char *msg) {
-  const char *error_log = msg;
+  const char *error_log;  /* NON-COMPLIANT: Uninitialized local pointer */
   char buffer[BUFFERSIZE];
 
   sprintf(buffer, "Error: %s", error_log);

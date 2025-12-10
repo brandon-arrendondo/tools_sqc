@@ -145,8 +145,14 @@ impl Pre05C {
             let macro_name = self.extract_macro_name(node, source);
 
             // Skip inner helper macros (those with naming patterns suggesting they're implementation details)
-            // OR if this macro is called by another macro in the file (two-level indirection)
-            if self.is_likely_helper_macro(&macro_name) || called_macros.contains(&macro_name) {
+            // These are typically the inner level in two-level indirection patterns
+            if self.is_likely_helper_macro(&macro_name) {
+                return;
+            }
+
+            // Check if this macro is called by a wrapper macro that doesn't use ##/#
+            // (proper two-level indirection pattern)
+            if self.has_proper_wrapper(node, source, &macro_name, called_macros) {
                 return;
             }
 
@@ -223,5 +229,74 @@ impl Pre05C {
             || upper.ends_with("_HELPER")
             || upper.ends_with("_INNER")
             || upper.ends_with("_")
+    }
+
+    /// Check if this macro has a proper wrapper that doesn't use ##/#
+    /// This indicates correct two-level indirection pattern
+    fn has_proper_wrapper(
+        &self,
+        _node: &Node,
+        source: &str,
+        macro_name: &str,
+        _called_macros: &[String],
+    ) -> bool {
+        // Look through all macro definitions in the source
+        // Check if there's a macro that:
+        // 1. Calls this macro
+        // 2. Doesn't use ## or # directly
+        // 3. Has the same or similar name (e.g., JOIN wrapping JOIN_AGAIN)
+
+        // Simple heuristic: look for a wrapper pattern like:
+        // #define WRAPPER(...) INNER_MACRO(...)
+        // where INNER_MACRO uses ## and WRAPPER doesn't
+
+        let lines: Vec<&str> = source.lines().collect();
+        for line in &lines {
+            let trimmed = line.trim();
+            if !trimmed.starts_with("#define") {
+                continue;
+            }
+
+            // Skip if this line is the macro itself
+            if trimmed.contains(&format!("#define {}", macro_name))
+                || trimmed.contains(&format!("#define {}(", macro_name))
+            {
+                continue;
+            }
+
+            // Check if this is a macro that calls our target macro
+            if trimmed.contains(macro_name) && trimmed.contains('(') {
+                // This macro references our target - check if it uses ## or #
+                if !trimmed.contains("##") && !self.line_contains_stringification(trimmed) {
+                    // Found a wrapper macro that doesn't use ##/#
+                    // This is proper two-level indirection
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Check if a line contains stringification operator
+    fn line_contains_stringification(&self, line: &str) -> bool {
+        let chars: Vec<char> = line.chars().collect();
+        for i in 0..chars.len() {
+            if chars[i] == '#' {
+                // Skip if it's the # from #define
+                if i == 0 {
+                    continue;
+                }
+                // Skip if it's part of ##
+                if i + 1 < chars.len() && chars[i + 1] == '#' {
+                    continue;
+                }
+                if i > 0 && chars[i - 1] == '#' {
+                    continue;
+                }
+                return true;
+            }
+        }
+        false
     }
 }

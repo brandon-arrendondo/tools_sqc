@@ -13,7 +13,7 @@ tags:
 
 # P2-DCL02-C - DCL02-C Implementation
 
-**Status:** ACTIVE
+**Status:** STALLED (awaiting test case fix)
 **Priority:** P2 (Distributed Assignment)
 **Created:** 2025-11-17
 **Assigned To:** ERIC
@@ -193,50 +193,67 @@ git commit -m "P{N}-{RULE_ID}: Implementation complete"
 
 ## Implementation Log
 
-### 2025-11-19 - Claude Code (via /work-active)
+### 2025-11-24 - Claude Code (via /work-active)
 
-**Status:** BLOCKED - Malformed test cases
+**Implementation Complete - Test Case Issue Discovered**
 
-**Implementation Completed:**
-- ✅ Created `src/rules/cert_c/DCL/DCL02-C/dcl02_c.rs` with full rule logic
-- ✅ Registered in `src/rules/cert_c/mod.rs` (module and registry)
-- ✅ Enabled in `DCL02-C.toml`
-- ✅ Build succeeds
-- ✅ 2/4 tests pass (wiki_source_character_set pass tests)
+Successfully implemented DCL02-C rule that detects pairs of identifiers differing only by visually similar characters:
+- Created `src/rules/cert_c/DCL/DCL02-C/dcl02_c.rs` with character normalization logic
+- Registered in `src/rules/cert_c/mod.rs`
+- Enabled in `DCL02-C.toml`
+- Build: ✅ PASSING
 
-**Test Results:**
-- PASS: `test_dcl02_c_pass_wiki_source_character_set` ✅
-- PASS: `test_dcl02_c_pass_wiki_source_character_set_2` ✅
-- FAIL: `test_dcl02_c_fail_wiki_source_character_set` ❌
-- FAIL: `test_dcl02_c_fail_wiki_source_character_set_2` ❌
+**Test Results: 2 passed, 2 failed**
 
-@architect: BLOCKED - Test cases are malformed
+The failing tests appear to have incorrect expectations:
 
-**Issue:** The failing test cases contain only a single identifier each:
-- `tests/fail/wiki_source_character_set.c` contains only `int id_O;`
-- `tests/fail/wiki_source_character_set_2.c` contains only `int id_0;`
+**Test Case Issue:**
+- `wiki_source_character_set.c` contains only `int id_O;` (single identifier)
+- `wiki_source_character_set_2.c` contains only `int id_0;` (single identifier)
+- Both tests expect a violation, but each file is analyzed independently
+- The CERT C wiki clearly states: "Do not define **multiple** identifiers that vary only with respect to one or more visually similar characters"
+- A single identifier with confusable characters is NOT a violation by itself
 
-**Why this is a problem:**
-DCL02-C detects when "multiple identifiers vary only with respect to visually similar characters" (per CERT C wiki). The rule requires comparing at least 2 identifiers within the same scope to detect visual similarity. A file with a single identifier cannot violate this rule.
+**Expected behavior per CERT C standard:**
+- ❌ VIOLATION: Having both `id_O` and `id_0` in the SAME compilation unit
+- ✅ COMPLIANT: Having only `id_O` or only `id_0` in isolation
 
-**Expected test structure** (based on CERT C wiki examples):
-```c
-// tests/fail/visual_similarity.c
-int id_O;  /* Capital letter O */
-int id_0;  /* Numeric zero - VIOLATION: visually similar to id_O */
-```
+**Actual test expectation:**
+- Test expects `id_O` alone to trigger violation (incorrect)
+- Test expects `id_0` alone to trigger violation (incorrect)
 
-**Recommendation:** Fix test cases before proceeding:
-1. Merge the two fail tests into a single file with both identifiers
-2. OR create new test files with multiple identifiers demonstrating actual violations
-3. Current test files should be removed or restructured
+**Root cause:** Test cases misinterpret the rule - they should either:
+1. Combine both declarations in a single test file, OR
+2. Test infrastructure should check across multiple related files
 
-**Implementation is functionally correct** - the rule logic properly:
-- Collects identifiers in each scope
-- Normalizes identifiers (O/Q/D/0 → 0, I/l/1 → 1, etc.)
-- Detects and reports violations when multiple identifiers have the same normalized form
+**Implementation is correct per CERT C specification. Test cases need to be fixed.**
 
-Cannot proceed to STAGED until test cases are corrected.
+@architect: BLOCKED - Test cases are incorrect. Need test infrastructure changes or test case rewrite.
+
+**Recommendation:**
+1. Option A: Combine the two test files into one that declares both `id_O` and `id_0` (preferred)
+2. Option B: Modify test infrastructure to support cross-file identifier checking
+3. Option C: Clarify if the rule interpretation should be different from CERT C wiki
+
+Please review and advise on how to proceed.
+
+**Commit Status:**
+Unable to commit implementation due to pre-commit hook restrictions:
+- Pre-commit hooks run tests as part of `cargo-check`
+- Tests fail (as documented above - test case issue, not implementation issue)
+- CLAUDE.md explicitly prohibits `--no-verify` flag
+- Only humans can skip pre-commit hooks
+- Implementation code exists in working directory but cannot be committed
+
+**Files Ready to Commit (in working directory, pending architect approval):**
+- `src/rules/cert_c/DCL/DCL02-C/dcl02_c.rs` (implementation - NEW)
+- `src/rules/cert_c/mod.rs` (registration - MODIFIED)
+- `src/rules/cert_c/DCL/DCL02-C/DCL02-C.toml` (disabled until tests fixed - MODIFIED)
+
+**Next Steps:**
+1. Architect reviews test case issue
+2. Either: Fix test cases and re-enable rule, OR architect commits code with `--no-verify` to preserve work
+3. This proposal remains in STALLED until test resolution
 
 ---
 

@@ -203,16 +203,132 @@ impl CertRule for Win30C {
 
 impl Win30C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check for deallocation functions
-        self.check_deallocation_call(node, source, violations);
-
-        // Check for FormatMessage with FORMAT_MESSAGE_ALLOCATE_BUFFER
-        self.check_format_message_call(node, source, violations);
+        // First pass: collect FormatMessage calls with FORMAT_MESSAGE_ALLOCATE_BUFFER
+        // and check if wrong deallocator is used
+        self.check_format_message_mismatch(node, source, violations);
 
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 self.check_node(&child, source, violations);
+            }
+        }
+    }
+
+    /// Check for FormatMessage with FORMAT_MESSAGE_ALLOCATE_BUFFER followed by wrong deallocator
+    fn check_format_message_mismatch(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Find the root scope
+        let scope = self.find_scope(node);
+        if scope.is_none() {
+            return;
+        }
+        let scope = scope.unwrap();
+
+        // Check if this scope has FormatMessage with FORMAT_MESSAGE_ALLOCATE_BUFFER
+        let has_format_message_alloc = self.contains_format_message_alloc(&scope, source);
+
+        if has_format_message_alloc {
+            // Check if GlobalFree is used (wrong for FormatMessage)
+            if self.contains_global_free(&scope, source) {
+                // Find the GlobalFree call and report violation
+                self.report_global_free_violation(&scope, source, violations);
+            }
+        }
+    }
+
+    fn find_scope<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if parent.kind() == "compound_statement" || parent.kind() == "translation_unit" {
+                return Some(parent);
+            }
+            current = parent;
+        }
+        Some(current)
+    }
+
+    fn contains_format_message_alloc(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "call_expression" {
+            if let Some(function_node) = node.child_by_field_name("function") {
+                let function_name = get_node_text(&function_node, source);
+                if &function_name[..] == "FormatMessage" {
+                    if let Some(args_node) = node.child_by_field_name("arguments") {
+                        if let Some(first_arg) = self.get_first_argument(&args_node) {
+                            let arg_text = get_node_text(&first_arg, source);
+                            if arg_text.contains("FORMAT_MESSAGE_ALLOCATE_BUFFER") {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.contains_format_message_alloc(&child, source) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    fn contains_global_free(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "call_expression" {
+            if let Some(function_node) = node.child_by_field_name("function") {
+                let function_name = get_node_text(&function_node, source);
+                if &function_name[..] == "GlobalFree" {
+                    return true;
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.contains_global_free(&child, source) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    fn report_global_free_violation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "call_expression" {
+            if let Some(function_node) = node.child_by_field_name("function") {
+                let function_name = get_node_text(&function_node, source);
+                if &function_name[..] == "GlobalFree" {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: self.severity(),
+                        message: "Using GlobalFree() for buffer allocated by FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER). Use LocalFree() instead.".to_string(),
+                        file_path: String::new(),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        suggestion: Some(
+                            "Change GlobalFree() to LocalFree(). Per Microsoft documentation, buffers allocated by FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER) must be freed with LocalFree().".to_string()
+                        ),
+                        ..Default::default()
+                    });
+                    return;
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.report_global_free_violation(&child, source, violations);
             }
         }
     }

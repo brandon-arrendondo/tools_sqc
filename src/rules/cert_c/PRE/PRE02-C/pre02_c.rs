@@ -121,17 +121,10 @@ impl Pre02C {
             }
         }
 
-        // Also check for unary operators at the start
+        // Check for unary operators at the start
+        // Note: Even standalone negative numbers like -1 should be parenthesized
+        // because "x END_OF_FILE" becomes "x -1" (subtraction) if END_OF_FILE is defined as -1
         if trimmed.starts_with('-') || trimmed.starts_with('!') || trimmed.starts_with('~') {
-            // Make sure it's not part of a number literal or member access
-            if trimmed.starts_with('-') && trimmed.len() > 1 {
-                let next_char = trimmed.chars().nth(1);
-                if next_char.is_some() && next_char.unwrap().is_ascii_digit() {
-                    // It's a negative number literal - check if there's more after it
-                    let parts: Vec<&str> = trimmed.split_whitespace().collect();
-                    return parts.len() > 1; // If there's more than just the number, needs parens
-                }
-            }
             return true;
         }
 

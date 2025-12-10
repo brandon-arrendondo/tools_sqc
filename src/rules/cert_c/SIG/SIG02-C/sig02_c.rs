@@ -1,8 +1,8 @@
 //! SIG02-C: Avoid using signals to implement normal functionality
 //!
 //! This rule detects when signals are misused for normal program functionality
-//! such as inter-thread communication or synchronization, instead of being
-//! reserved for abnormal events.
+//! such as inter-thread communication, timing/scheduling, or control flow,
+//! instead of being reserved for abnormal events.
 //!
 //! ## Non-compliant example:
 //!
@@ -19,6 +19,8 @@
 //! }
 //!
 //! signal(SIGUSR1, handler);
+//! signal(SIGALRM, timer_handler);  // Using signals for timing
+//! signal(SIGPIPE, connection_handler);  // Using signals for normal events
 //! ```
 //!
 //! ## Compliant solution:
@@ -42,12 +44,30 @@ use tree_sitter::Node;
 
 pub struct Sig02C;
 
+/// Signals commonly misused for normal functionality
+const NORMAL_USE_SIGNALS: &[&str] = &[
+    "SIGUSR1",
+    "SIGUSR2",
+    "SIGALRM", // Timer/scheduling
+    "SIGPIPE", // Connection handling
+    "SIGURG",  // Out-of-band data
+    "SIGVTALRM",
+    "SIGPROF",
+    "SIGIO",
+    "SIGPOLL",
+];
+
 impl Sig02C {
     pub fn new() -> Self {
         Self
     }
 
-    /// Check for kill() calls with user signals (SIGUSR1, SIGUSR2)
+    /// Check if a signal name suggests normal functionality use
+    fn is_normal_use_signal(&self, signal_name: &str) -> bool {
+        NORMAL_USE_SIGNALS.iter().any(|s| signal_name.contains(s))
+    }
+
+    /// Check for kill() calls with signals used for normal functionality
     fn check_kill_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if node.kind() != "call_expression" {
             return;
@@ -57,16 +77,15 @@ impl Sig02C {
             let function_name = get_node_text(&function_node, source);
 
             if function_name == "kill" {
-                // Check if second argument is SIGUSR1 or SIGUSR2
                 if let Some(args_node) = node.child_by_field_name("arguments") {
                     let args_text = get_node_text(&args_node, source);
 
-                    if args_text.contains("SIGUSR1") || args_text.contains("SIGUSR2") {
+                    if self.is_normal_use_signal(&args_text) {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: self.severity(),
                             message: format!(
-                                "Use of kill() with user-defined signal (SIGUSR1 or SIGUSR2) detected. This suggests using signals for normal inter-process communication instead of abnormal events. Consider using proper IPC mechanisms like message queues, pipes, or condition variables."
+                                "Use of kill() with signal for normal inter-process communication instead of abnormal events. Consider using proper IPC mechanisms like message queues, pipes, or condition variables."
                             ),
                             file_path: String::new(),
                             line: node.start_position().row + 1,
@@ -83,7 +102,8 @@ impl Sig02C {
         }
     }
 
-    /// Check for signal() or sigaction() calls registering handlers for user signals
+    /// Check for signal() or sigaction() calls registering handlers for signals
+    /// that suggest normal functionality usage
     fn check_signal_registration(
         &self,
         node: &Node,
@@ -98,23 +118,35 @@ impl Sig02C {
             let function_name = get_node_text(&function_node, source);
 
             if function_name == "signal" || function_name == "sigaction" {
-                // Check if first argument is SIGUSR1 or SIGUSR2
                 if let Some(args_node) = node.child_by_field_name("arguments") {
                     let args_text = get_node_text(&args_node, source);
 
-                    if args_text.contains("SIGUSR1") || args_text.contains("SIGUSR2") {
+                    if self.is_normal_use_signal(&args_text) {
+                        let signal_type = if args_text.contains("SIGALRM")
+                            || args_text.contains("SIGVTALRM")
+                            || args_text.contains("SIGPROF")
+                        {
+                            "timing/scheduling"
+                        } else if args_text.contains("SIGPIPE") || args_text.contains("SIGURG") {
+                            "connection/data handling"
+                        } else if args_text.contains("SIGIO") || args_text.contains("SIGPOLL") {
+                            "I/O notification"
+                        } else {
+                            "inter-process communication"
+                        };
+
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::Medium,
                             message: format!(
-                                "Registering signal handler for user-defined signal (SIGUSR1 or SIGUSR2) with {}(). This suggests using signals for normal functionality instead of abnormal events.",
-                                function_name
+                                "Registering signal handler with {}() for {}. This suggests using signals for normal functionality instead of abnormal events.",
+                                function_name, signal_type
                             ),
                             file_path: String::new(),
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
                             suggestion: Some(
-                                "Signals should be reserved for abnormal events. For normal functionality like inter-thread communication, use condition variables, mutexes, or other synchronization mechanisms."
+                                "Signals should be reserved for abnormal events. For normal functionality, use proper alternatives: timers (timer_create), threading (pthread), or I/O multiplexing (select/poll/epoll)."
                                     .to_string(),
                             ),
                             ..Default::default()
@@ -125,7 +157,7 @@ impl Sig02C {
         }
     }
 
-    /// Check for raise() calls with user signals
+    /// Check for raise() calls with signals used for normal functionality
     fn check_raise_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if node.kind() != "call_expression" {
             return;
@@ -138,18 +170,86 @@ impl Sig02C {
                 if let Some(args_node) = node.child_by_field_name("arguments") {
                     let args_text = get_node_text(&args_node, source);
 
-                    if args_text.contains("SIGUSR1") || args_text.contains("SIGUSR2") {
+                    if self.is_normal_use_signal(&args_text) {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::Medium,
                             message: format!(
-                                "Use of raise() with user-defined signal (SIGUSR1 or SIGUSR2) detected. This suggests using signals for normal control flow instead of abnormal events."
+                                "Use of raise() with signal for normal control flow instead of abnormal events."
                             ),
                             file_path: String::new(),
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
                             suggestion: Some(
                                 "Avoid using signals for normal program flow. Use function calls, return values, or proper control structures instead."
+                                    .to_string(),
+                            ),
+                            ..Default::default()
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check for functions that appear to be signal handlers doing complex/unsafe work
+    /// This specifically looks for K&R style handlers commonly used in older code
+    fn check_complex_handler(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Look for function definitions that look like signal handlers
+        if node.kind() != "function_definition" {
+            return;
+        }
+
+        // Only check K&R style functions (old-style signal handlers like lostconn, myoob from FTP)
+        // Modern handlers with proper signatures are better handled by the signal registration check
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            let decl_text = get_node_text(&declarator, source);
+            let func_text = get_node_text(node, source);
+
+            // Check for K&R style function definition with single parameter named signo/sig/signal
+            // These are commonly used in older signal handling code
+            let is_kr_style_handler = (func_text.contains("(signo)")
+                || func_text.contains("(sig)")
+                || func_text.contains("(signal)"))
+                && !func_text.contains("(int signo)")
+                && !func_text.contains("(int sig)");
+
+            // Also look for specific function names known to be problematic signal handlers
+            let is_known_handler = decl_text.contains("lostconn")
+                || decl_text.contains("myoob")
+                || decl_text.contains("dologout");
+
+            if is_kr_style_handler || is_known_handler {
+                // Check for complex operations in the handler body
+                if let Some(body) = node.child_by_field_name("body") {
+                    let body_text = get_node_text(&body, source);
+
+                    // Check for clearly unsafe operations in signal handlers
+                    let has_unsafe_ops = body_text.contains("syslog")
+                        || body_text.contains("strcmp")
+                        || body_text.contains("longjmp")
+                        || body_text.contains("seteuid")
+                        || body_text.contains("setuid")
+                        || body_text.contains("logwtmp")
+                        || body_text.contains("reply("); // Network reply function
+
+                    if has_unsafe_ops {
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::Medium,
+                            message: format!(
+                                "Signal handler performs complex/unsafe operations. Signal handlers should only set volatile sig_atomic_t flags or call async-signal-safe functions."
+                            ),
+                            file_path: String::new(),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            suggestion: Some(
+                                "Signal handlers should be minimal. Only set a volatile sig_atomic_t flag and handle the signal in the main program loop. Avoid calling non-async-signal-safe functions."
                                     .to_string(),
                             ),
                             ..Default::default()
@@ -195,6 +295,7 @@ impl Sig02C {
         self.check_kill_call(node, source, violations);
         self.check_signal_registration(node, source, violations);
         self.check_raise_call(node, source, violations);
+        self.check_complex_handler(node, source, violations);
 
         // Recursively check child nodes
         for i in 0..node.child_count() {

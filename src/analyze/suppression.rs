@@ -320,11 +320,16 @@ mod tests {
     #[test]
     fn test_hash_validation() {
         let source = "int x = 5;\nint y = 10;\nint z = x + y;";
+        let rule_id = "TEST-1";
+        // Extract the code for line 2 and calculate hash the same way is_valid does
+        let code = Suppression::extract_lines(source, 2, 1);
+        let hash = SuppressionManager::calculate_suppression_hash(rule_id, &code);
+
         let suppression = Suppression {
-            rule_id: "TEST-1".to_string(),
+            rule_id: rule_id.to_string(),
             justification: "Test".to_string(),
             fingerprint: SuppressionFingerprint::CodeHash {
-                hash: Suppression::calculate_hash_for_lines(source, 2, 2),
+                hash,
                 lines: (2, 2),
             },
             review_date: None,

@@ -53,15 +53,15 @@ pub fn is_user_input_variable(var_name: &str, preceding_text: &str) -> bool {
 pub fn has_validation_before_loop(
     var_name: &str,
     preceding_text: &str,
-    loop_pos: usize,
-    source: &str,
+    _loop_pos: usize,
+    _source: &str,
 ) -> bool {
     // Check if there's validation of var_name between scanf and the loop
     // Look for patterns like: if (count > MAX) or if (count < 0)
 
     // Find where scanf populated the variable
     if let Some(scanf_pos) = preceding_text.rfind("scanf") {
-        let between_scanf_and_loop = &source[scanf_pos..loop_pos];
+        let between_scanf_and_loop = &preceding_text[scanf_pos..];
 
         // Look for validation patterns
         let validation_patterns = [
