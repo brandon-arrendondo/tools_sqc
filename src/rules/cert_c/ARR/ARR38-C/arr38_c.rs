@@ -1,9 +1,32 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashMap;
 use tree_sitter::Node;
 
 pub struct Arr38C;
+
+/// Information about a buffer size from allocation or declaration
+#[derive(Clone, Debug)]
+struct BufferInfo {
+    /// Size in bytes or elements (if known)
+    size: Option<usize>,
+    /// Size expression (e.g., "nchars", "sizeof(arr)")
+    size_expr: String,
+    /// Type of allocation (malloc, calloc, array, etc.)
+    alloc_type: String,
+}
+
+/// Information about a pointer with an offset from a base buffer
+#[derive(Clone, Debug)]
+struct PointerOffsetInfo {
+    /// Base buffer name
+    base_buffer: String,
+    /// Offset in bytes/elements (if known)
+    offset: Option<usize>,
+    /// Offset expression (e.g., "15", "n")
+    offset_expr: String,
+}
 
 impl CertRule for Arr38C {
     fn rule_id(&self) -> &'static str {
@@ -28,18 +51,216 @@ impl CertRule for Arr38C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
+        let mut buffer_info: HashMap<String, BufferInfo> = HashMap::new();
+        let mut size_vars: HashMap<String, String> = HashMap::new();
+        let mut pointer_offsets: HashMap<String, PointerOffsetInfo> = HashMap::new();
 
-        self.check_node(node, source, &mut violations);
+        // First pass: collect buffer allocations, size variable assignments, and pointer offsets
+        self.collect_buffer_info(
+            node,
+            source,
+            &mut buffer_info,
+            &mut size_vars,
+            &mut pointer_offsets,
+        );
+
+        // Second pass: check for violations
+        self.check_node(
+            node,
+            source,
+            &mut violations,
+            &buffer_info,
+            &size_vars,
+            &pointer_offsets,
+        );
 
         violations
     }
 }
 
 impl Arr38C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    /// First pass: collect buffer allocations, size variable assignments, and pointer offsets
+    fn collect_buffer_info(
+        &self,
+        node: &Node,
+        source: &str,
+        buffer_info: &mut HashMap<String, BufferInfo>,
+        size_vars: &mut HashMap<String, String>,
+        pointer_offsets: &mut HashMap<String, PointerOffsetInfo>,
+    ) {
+        match node.kind() {
+            "declaration" => {
+                self.extract_declaration_info(
+                    node,
+                    source,
+                    buffer_info,
+                    size_vars,
+                    pointer_offsets,
+                );
+            }
+            "expression_statement" => {
+                self.extract_assignment_info(node, source, buffer_info, size_vars, pointer_offsets);
+            }
+            _ => {}
+        }
+
+        // Recursively process child nodes
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_buffer_info(&child, source, buffer_info, size_vars, pointer_offsets);
+            }
+        }
+    }
+
+    /// Extract buffer/size info from declarations
+    fn extract_declaration_info(
+        &self,
+        node: &Node,
+        source: &str,
+        buffer_info: &mut HashMap<String, BufferInfo>,
+        size_vars: &mut HashMap<String, String>,
+        pointer_offsets: &mut HashMap<String, PointerOffsetInfo>,
+    ) {
+        let text = get_node_text(node, source);
+
+        // Check for array declarations: char arr[SIZE]
+        if text.contains('[') && text.contains(']') {
+            if let Some(var_name) = self.extract_array_var_name(&text) {
+                if let Some(size) = self.extract_array_size(&text) {
+                    buffer_info.insert(
+                        var_name.clone(),
+                        BufferInfo {
+                            size: Some(size),
+                            size_expr: size.to_string(),
+                            alloc_type: "array".to_string(),
+                        },
+                    );
+                }
+            }
+        }
+
+        // Check for malloc/calloc/aligned_alloc assignments
+        if text.contains("malloc(") || text.contains("calloc(") || text.contains("aligned_alloc(") {
+            if let Some(var_name) = self.extract_pointer_var_name(&text) {
+                if let Some(size_expr) = self.extract_alloc_size(&text) {
+                    let size = self.try_parse_size(&size_expr);
+                    buffer_info.insert(
+                        var_name.clone(),
+                        BufferInfo {
+                            size,
+                            size_expr: size_expr.clone(),
+                            alloc_type: if text.contains("malloc") {
+                                "malloc"
+                            } else if text.contains("calloc") {
+                                "calloc"
+                            } else {
+                                "aligned_alloc"
+                            }
+                            .to_string(),
+                        },
+                    );
+                }
+            }
+        }
+
+        // Check for size_t variable assignments
+        if text.contains("size_t") || text.contains("const size_t") {
+            if let Some((var_name, size_expr)) = self.extract_size_var_assignment(&text) {
+                size_vars.insert(var_name, size_expr);
+            }
+        }
+
+        // Check for pointer offset assignments: char *ptr = buffer + offset;
+        if text.contains('*') && text.contains('=') && text.contains('+') {
+            if let Some((ptr_name, base, offset)) = self.extract_pointer_offset(&text) {
+                pointer_offsets.insert(
+                    ptr_name,
+                    PointerOffsetInfo {
+                        base_buffer: base,
+                        offset: self.try_parse_size(&offset),
+                        offset_expr: offset,
+                    },
+                );
+            }
+        }
+    }
+
+    /// Extract assignment info from expression statements
+    fn extract_assignment_info(
+        &self,
+        node: &Node,
+        source: &str,
+        buffer_info: &mut HashMap<String, BufferInfo>,
+        size_vars: &mut HashMap<String, String>,
+        pointer_offsets: &mut HashMap<String, PointerOffsetInfo>,
+    ) {
+        let text = get_node_text(node, source);
+
+        // Check for malloc/calloc assignments
+        if text.contains("malloc(") || text.contains("calloc(") || text.contains("aligned_alloc(") {
+            if let Some(var_name) = self.extract_assignment_lhs(&text) {
+                if let Some(size_expr) = self.extract_alloc_size(&text) {
+                    let size = self.try_parse_size(&size_expr);
+                    buffer_info.insert(
+                        var_name.clone(),
+                        BufferInfo {
+                            size,
+                            size_expr: size_expr.clone(),
+                            alloc_type: if text.contains("malloc") {
+                                "malloc"
+                            } else if text.contains("calloc") {
+                                "calloc"
+                            } else {
+                                "aligned_alloc"
+                            }
+                            .to_string(),
+                        },
+                    );
+                }
+            }
+        }
+
+        // Check for size variable assignments: n = sizeof(p);
+        if text.contains("sizeof(") || text.contains("+ 1") {
+            if let Some((var_name, size_expr)) = self.extract_simple_assignment(&text) {
+                size_vars.insert(var_name, size_expr);
+            }
+        }
+
+        // Check for pointer offset assignments: ptr = buffer + offset;
+        if text.contains('=') && text.contains('+') && !text.contains("malloc") {
+            if let Some((ptr_name, base, offset)) = self.extract_pointer_offset(&text) {
+                pointer_offsets.insert(
+                    ptr_name,
+                    PointerOffsetInfo {
+                        base_buffer: base,
+                        offset: self.try_parse_size(&offset),
+                        offset_expr: offset,
+                    },
+                );
+            }
+        }
+    }
+
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
+        pointer_offsets: &HashMap<String, PointerOffsetInfo>,
+    ) {
         match node.kind() {
             "call_expression" => {
-                self.check_library_function_call(node, source, violations);
+                self.check_library_function_call(
+                    node,
+                    source,
+                    violations,
+                    buffer_info,
+                    size_vars,
+                    pointer_offsets,
+                );
             }
             _ => {}
         }
@@ -47,7 +268,14 @@ impl Arr38C {
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
+                self.check_node(
+                    &child,
+                    source,
+                    violations,
+                    buffer_info,
+                    size_vars,
+                    pointer_offsets,
+                );
             }
         }
     }
@@ -57,16 +285,34 @@ impl Arr38C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
+        pointer_offsets: &HashMap<String, PointerOffsetInfo>,
     ) {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = get_node_text(&function_node, source);
 
             match function_name {
                 "memcpy" | "memmove" | "memset" | "memcmp" | "memchr" => {
-                    self.check_memory_function(node, source, function_name, violations);
+                    self.check_memory_function(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                        size_vars,
+                        pointer_offsets,
+                    );
                 }
                 "strcpy" | "strncpy" | "strcat" | "strncat" | "strcmp" | "strncmp" => {
-                    self.check_string_function(node, source, function_name, violations);
+                    self.check_string_function(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                        size_vars,
+                    );
                 }
                 "wmemcpy" | "wmemmove" | "wmemset" | "wmemcmp" | "wmemchr" => {
                     self.check_wide_memory_function(node, source, function_name, violations);
@@ -78,13 +324,34 @@ impl Arr38C {
                     self.check_allocation_function(node, source, function_name, violations);
                 }
                 "fread" | "fwrite" => {
-                    self.check_io_function(node, source, function_name, violations);
+                    self.check_io_function(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                        size_vars,
+                    );
                 }
                 "fgets" | "snprintf" | "swprintf" | "strftime" => {
-                    self.check_buffer_function(node, source, function_name, violations);
+                    self.check_buffer_function(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                        size_vars,
+                    );
                 }
                 "bsearch" | "qsort" => {
-                    self.check_array_function(node, source, function_name, violations);
+                    self.check_array_function(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                        size_vars,
+                    );
                 }
                 _ => {}
             }
@@ -97,23 +364,64 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
+        pointer_offsets: &HashMap<String, PointerOffsetInfo>,
     ) {
         let args = self.get_function_arguments(node, source);
 
         match function_name {
             "memcpy" | "memmove" => {
                 if args.len() >= 3 {
-                    self.check_three_arg_size(&args, node, source, function_name, violations);
+                    // First check for pointer offset issues
+                    if let Some(violation) = self.check_pointer_offset_overflow(
+                        &args,
+                        node,
+                        function_name,
+                        buffer_info,
+                        size_vars,
+                        pointer_offsets,
+                    ) {
+                        violations.push(violation);
+                        return;
+                    }
+
+                    // Check for buffer/size mismatches
+                    self.check_buffer_size_mismatch(
+                        &args,
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                        size_vars,
+                    );
                 }
             }
             "memset" => {
                 if args.len() >= 3 {
-                    self.check_three_arg_size(&args, node, source, function_name, violations);
+                    self.check_buffer_size_mismatch(
+                        &args,
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                        size_vars,
+                    );
                 }
             }
             "memcmp" | "memchr" => {
                 if args.len() >= 3 {
-                    self.check_three_arg_size(&args, node, source, function_name, violations);
+                    self.check_buffer_size_mismatch(
+                        &args,
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                        size_vars,
+                    );
                 }
             }
             _ => {}
@@ -126,6 +434,8 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
     ) {
         let args = self.get_function_arguments(node, source);
 
@@ -135,21 +445,16 @@ impl Arr38C {
                     self.check_string_size_parameter(
                         &args,
                         node,
-                        source,
                         function_name,
                         violations,
+                        buffer_info,
+                        size_vars,
                     );
                 }
             }
             "strcpy" | "strcat" => {
                 if args.len() >= 2 {
-                    self.check_unbounded_string_function(
-                        &args,
-                        node,
-                        source,
-                        function_name,
-                        violations,
-                    );
+                    self.check_unbounded_string_function(&args, node, function_name, violations);
                 }
             }
             _ => {}
@@ -168,6 +473,8 @@ impl Arr38C {
         if args.len() >= 3 {
             // Wide character functions expect size in terms of wchar_t, not bytes
             let size_arg = &args[2];
+
+            // Check for sizeof (byte count instead of element count)
             if self.is_byte_size_expression(size_arg) {
                 let start_point = node.start_position();
                 violations.push(RuleViolation {
@@ -181,6 +488,27 @@ impl Arr38C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Use element count instead of sizeof() for wide character functions".to_string()),
+                    ..Default::default()
+                });
+                return;
+            }
+
+            // Check for hardcoded counts that likely exceed buffer
+            if self.is_hardcoded_large_count(size_arg) {
+                let start_point = node.start_position();
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Function '{}' called with hardcoded count {} that may exceed buffer bounds",
+                        function_name, size_arg
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Use array size (e.g., sizeof(dest)/sizeof(wchar_t)) instead".to_string(),
+                    ),
                     ..Default::default()
                 });
             }
@@ -198,6 +526,8 @@ impl Arr38C {
 
         if function_name.contains("wcsn") && args.len() >= 3 {
             let size_arg = &args[2];
+
+            // Check for sizeof (byte count instead of character count)
             if self.is_byte_size_expression(size_arg) {
                 let start_point = node.start_position();
                 violations.push(RuleViolation {
@@ -213,6 +543,27 @@ impl Arr38C {
                     suggestion: Some(
                         "Use character count instead of sizeof() for wide string functions"
                             .to_string(),
+                    ),
+                    ..Default::default()
+                });
+                return;
+            }
+
+            // Check for hardcoded sizes that likely exceed buffer
+            if self.is_hardcoded_large_count(size_arg) {
+                let start_point = node.start_position();
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Function '{}' called with hardcoded count {} that may exceed buffer bounds",
+                        function_name, size_arg
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Use array size (e.g., sizeof(dest)/sizeof(wchar_t)) instead".to_string(),
                     ),
                     ..Default::default()
                 });
@@ -331,14 +682,47 @@ impl Arr38C {
         &self,
         args: &[String],
         node: &Node,
-        _source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
     ) {
+        let dest_arg = &args[0];
         let size_arg = &args[2];
 
+        // Check if size exceeds known buffer size
+        if let Some(violation) = self.check_size_exceeds_buffer(
+            dest_arg,
+            size_arg,
+            node,
+            function_name,
+            buffer_info,
+            size_vars,
+        ) {
+            violations.push(violation);
+            return;
+        }
+
+        // Check for hardcoded sizes that are suspiciously large
+        if self.is_hardcoded_large_size(size_arg) {
+            let start_point = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::Medium,
+                message: format!(
+                    "Function '{}' called with hardcoded size {} that may exceed buffer bounds",
+                    function_name, size_arg
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Use sizeof(buffer) or a validated size".to_string()),
+                ..Default::default()
+            });
+            return;
+        }
+
         // Use the general dangerous size calculation check
-        // This will allow sizeof(buffer) - 1 and other safe patterns
         if self.is_dangerous_size_calculation(size_arg) {
             let start_point = node.start_position();
             violations.push(RuleViolation {
@@ -361,7 +745,6 @@ impl Arr38C {
         &self,
         _args: &[String],
         node: &Node,
-        _source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
@@ -377,7 +760,10 @@ impl Arr38C {
             file_path: String::new(),
             line: start_point.row + 1,
             column: start_point.column + 1,
-            suggestion: Some(format!("Replace '{}' with safer bounded alternative", function_name)),
+            suggestion: Some(format!(
+                "Replace '{}' with safer bounded alternative",
+                function_name
+            )),
             ..Default::default()
         });
     }
@@ -388,51 +774,90 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
     ) {
         let args = self.get_function_arguments(node, source);
 
         // fread/fwrite have signature: (ptr, size, count, file)
         if args.len() >= 4 {
+            let buf_arg = &args[0];
             let size_arg = &args[1];
             let count_arg = &args[2];
 
-            // Check if count_arg looks like it might be total bytes instead of count
-            // Common error: using sizeof(buffer) as count instead of dividing by element size
+            // Check if count uses sizeof but size also uses sizeof - indicates total bytes
+            // used as count
             if count_arg.contains("sizeof(") && !count_arg.contains("/") {
-                let start_point = node.start_position();
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: Severity::High,
-                    message: format!(
-                        "Function '{}' count parameter appears to use total size instead of element count",
-                        function_name
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some("Use element count, not total byte size. Example: fread(buf, sizeof(elem), count, file)".to_string()),
-                    ..Default::default()
-                });
+                // Resolve count_arg through size_vars if it's a variable
+                let resolved_count = size_vars.get(count_arg.trim()).unwrap_or(count_arg);
+                if resolved_count.contains("sizeof(") && !resolved_count.contains("/") {
+                    let start_point = node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Function '{}' count parameter appears to use total size instead of element count",
+                            function_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Use element count, not total byte size. Example: fread(buf, sizeof(elem), count, file)".to_string()),
+                        ..Default::default()
+                    });
+                    return;
+                }
             }
 
-            // Check for wrong size calculation (size * count could overflow)
-            if self.is_dangerous_size_calculation(size_arg)
-                || self.is_dangerous_size_calculation(count_arg)
-            {
-                let start_point = node.start_position();
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: Severity::High,
-                    message: format!(
-                        "Function '{}' has potentially invalid size or count parameter",
-                        function_name
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some("Verify size and count parameters are correct".to_string()),
-                    ..Default::default()
-                });
+            // Check if count is a variable that was assigned sizeof(buffer) without division
+            if let Some(resolved_count) = size_vars.get(count_arg.trim()) {
+                if resolved_count.contains("sizeof(") && !resolved_count.contains("/") {
+                    let start_point = node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Function '{}' count parameter '{}' appears to use total size instead of element count",
+                            function_name, count_arg
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Use element count (sizeof(buf)/sizeof(elem)), not total byte size".to_string()),
+                        ..Default::default()
+                    });
+                    return;
+                }
+            }
+
+            // Check for hardcoded struct sizes (e.g., using 16 instead of sizeof(struct obj))
+            // The size argument should use sizeof() for struct-based operations
+            let resolved_size = size_vars.get(size_arg.trim()).unwrap_or(size_arg);
+            if !resolved_size.contains("sizeof(") {
+                // Check if it's a hardcoded number that might be a struct size assumption
+                if let Ok(size_val) = resolved_size.trim().parse::<usize>() {
+                    // Common struct sizes that indicate hardcoded assumptions
+                    if size_val >= 8 && size_val <= 64 && size_val % 4 == 0 {
+                        // Likely a hardcoded struct size - check if buffer is struct-based
+                        if buf_arg.contains("struct") || source.contains("struct obj") {
+                            let start_point = node.start_position();
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: Severity::Medium,
+                                message: format!(
+                                    "Function '{}' uses hardcoded size {} which may not match actual struct size with padding",
+                                    function_name, size_val
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some("Use sizeof(struct_type) to ensure correct size on all platforms".to_string()),
+                                ..Default::default()
+                            });
+                            return;
+                        }
+                    }
+                }
             }
         }
     }
@@ -443,20 +868,55 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
     ) {
         let args = self.get_function_arguments(node, source);
 
         // These functions have a size parameter that must not exceed buffer size
         // fgets(buf, size, file), snprintf(buf, size, fmt, ...), etc.
-        let size_idx = match function_name {
-            "fgets" => 1,
-            "snprintf" | "swprintf" => 1,
-            "strftime" => 1,
+        let (buf_idx, size_idx) = match function_name {
+            "fgets" => (0, 1),
+            "snprintf" | "swprintf" => (0, 1),
+            "strftime" => (0, 1),
             _ => return,
         };
 
         if args.len() > size_idx {
+            let buf_arg = &args[buf_idx];
             let size_arg = &args[size_idx];
+
+            // Check if size exceeds known buffer size
+            if let Some(violation) = self.check_size_exceeds_buffer(
+                buf_arg,
+                size_arg,
+                node,
+                function_name,
+                buffer_info,
+                size_vars,
+            ) {
+                violations.push(violation);
+                return;
+            }
+
+            // Check for hardcoded sizes that are suspiciously large
+            if self.is_hardcoded_large_size(size_arg) {
+                let start_point = node.start_position();
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Function '{}' called with hardcoded size {} that may exceed buffer bounds",
+                        function_name, size_arg
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Use sizeof(buffer) or a validated size".to_string()),
+                    ..Default::default()
+                });
+                return;
+            }
 
             if self.is_dangerous_size_calculation(size_arg) {
                 let start_point = node.start_position();
@@ -485,26 +945,60 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        _size_vars: &HashMap<String, String>,
     ) {
         let args = self.get_function_arguments(node, source);
 
         match function_name {
             "bsearch" => {
                 // bsearch(key, base, count, size, compare)
-                if args.len() >= 4 {
-                    let size_arg = &args[3];
-                    if self.is_dangerous_size_calculation(size_arg) {
+                if args.len() >= 5 {
+                    let base_arg = &args[1];
+                    let count_arg = &args[2];
+
+                    // Check if count exceeds known array size
+                    if let Some(buf_info) = buffer_info.get(base_arg.trim()) {
+                        if let Some(arr_size) = buf_info.size {
+                            if let Some(count) = self.try_parse_size(count_arg) {
+                                if count > arr_size {
+                                    let start_point = node.start_position();
+                                    violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        severity: Severity::High,
+                                        message: format!(
+                                            "bsearch count {} exceeds array size {}",
+                                            count, arr_size
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some(
+                                            "Use actual array element count".to_string(),
+                                        ),
+                                        ..Default::default()
+                                    });
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    // Check for hardcoded count that seems too large
+                    if self.is_hardcoded_large_count(count_arg) {
                         let start_point = node.start_position();
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::High,
-                            message: "bsearch called with potentially incorrect element size"
-                                .to_string(),
+                            message: format!(
+                                "bsearch called with suspicious hardcoded count {}",
+                                count_arg
+                            ),
                             file_path: String::new(),
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some(
-                                "Verify element size matches array element type".to_string(),
+                                "Use sizeof(array)/sizeof(array[0]) for element count".to_string(),
                             ),
                             ..Default::default()
                         });
@@ -513,20 +1007,76 @@ impl Arr38C {
             }
             "qsort" => {
                 // qsort(base, count, size, compare)
-                if args.len() >= 3 {
+                if args.len() >= 4 {
+                    let base_arg = &args[0];
+                    let count_arg = &args[1];
                     let size_arg = &args[2];
-                    if self.is_dangerous_size_calculation(size_arg) {
+
+                    // Check for type mismatch in element size
+                    // e.g., using sizeof(long) for an int array
+                    if self.is_type_size_mismatch(base_arg, size_arg, source) {
                         let start_point = node.start_position();
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::High,
-                            message: "qsort called with potentially incorrect element size"
-                                .to_string(),
+                            message: format!(
+                                "qsort element size '{}' may not match array element type",
+                                size_arg
+                            ),
                             file_path: String::new(),
                             line: start_point.row + 1,
                             column: start_point.column + 1,
                             suggestion: Some(
-                                "Verify element size matches array element type".to_string(),
+                                "Use sizeof(array[0]) or sizeof(*array) for element size"
+                                    .to_string(),
+                            ),
+                            ..Default::default()
+                        });
+                        return;
+                    }
+
+                    // Check if count exceeds known array size
+                    if let Some(buf_info) = buffer_info.get(base_arg.trim()) {
+                        if let Some(arr_size) = buf_info.size {
+                            if let Some(count) = self.try_parse_size(count_arg) {
+                                if count > arr_size {
+                                    let start_point = node.start_position();
+                                    violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        severity: Severity::High,
+                                        message: format!(
+                                            "qsort count {} exceeds array size {}",
+                                            count, arr_size
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some(
+                                            "Use actual array element count".to_string(),
+                                        ),
+                                        ..Default::default()
+                                    });
+                                    return;
+                                }
+                            }
+                        }
+                    }
+
+                    // Check for hardcoded count that seems too large
+                    if self.is_hardcoded_large_count(count_arg) {
+                        let start_point = node.start_position();
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::High,
+                            message: format!(
+                                "qsort called with suspicious hardcoded count {}",
+                                count_arg
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some(
+                                "Use sizeof(array)/sizeof(array[0]) for element count".to_string(),
                             ),
                             ..Default::default()
                         });
@@ -593,12 +1143,26 @@ impl Arr38C {
             return true;
         }
 
-        // Pattern 2: Variable + 1 patterns (not strlen/wcslen)
+        // Pattern 2: Variable + constant patterns (not strlen/wcslen)
+        // These indicate adding to an allocation size, which would exceed the buffer
         // e.g., "nchars + 1" when nchars is the allocated size
-        if size_expr.contains("nchars + 1")
-            || (size_expr.contains("chars") && size_expr.contains("+ 1"))
+        // e.g., "n + 50" when n is the VLA size
+        if size_expr.contains('+')
+            && !size_expr.contains("strlen(")
+            && !size_expr.contains("wcslen(")
         {
-            return true;
+            // Check if there's a meaningful offset (anything added)
+            // Skip if it's sizeof(x) + sizeof(y) which is typically intentional
+            let plus_count = size_expr.matches('+').count();
+            let sizeof_count = size_expr.matches("sizeof(").count();
+            // If we have more + operations than sizeof patterns, likely a problem
+            if plus_count > sizeof_count {
+                return true;
+            }
+            // If no sizeof at all and has +, it's suspicious
+            if sizeof_count == 0 {
+                return true;
+            }
         }
 
         false
@@ -608,5 +1172,800 @@ impl Arr38C {
         // Check for potential overflow in calloc
         (count_expr.contains("SIZE_MAX") || count_expr.contains("UINT_MAX"))
             || (size_expr.contains("SIZE_MAX") || size_expr.contains("UINT_MAX"))
+    }
+
+    /// Check for buffer/size mismatches in memory functions
+    fn check_buffer_size_mismatch(
+        &self,
+        args: &[String],
+        node: &Node,
+        source: &str,
+        function_name: &str,
+        violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
+    ) {
+        let dest_arg = &args[0];
+        let size_arg = &args[2];
+
+        // Resolve the size argument to its expression if it's a variable
+        let size_arg_owned = size_arg.to_string();
+        let resolved_size = size_vars.get(size_arg.trim()).unwrap_or(&size_arg_owned);
+
+        // Check if size exceeds known buffer size
+        if let Some(violation) = self.check_size_exceeds_buffer(
+            dest_arg,
+            size_arg,
+            node,
+            function_name,
+            buffer_info,
+            size_vars,
+        ) {
+            violations.push(violation);
+            return;
+        }
+
+        // For memcpy/memmove, also check source buffer
+        if (function_name == "memcpy" || function_name == "memmove") && args.len() >= 3 {
+            let src_arg = &args[1];
+            if let Some(violation) = self.check_size_exceeds_buffer(
+                src_arg,
+                size_arg,
+                node,
+                function_name,
+                buffer_info,
+                size_vars,
+            ) {
+                violations.push(violation);
+                return;
+            }
+
+            // Check for sizeof(src) when dest is smaller
+            if size_arg.contains("sizeof(") {
+                // Extract the variable from sizeof(var)
+                if let Some(sizeof_var) = self.extract_sizeof_var(size_arg) {
+                    // If sizeof references source but dest is known to be smaller
+                    if sizeof_var == src_arg.trim() {
+                        if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                            if let Some(src_info) = buffer_info.get(src_arg.trim()) {
+                                if let (Some(dest_size), Some(src_size)) =
+                                    (dest_info.size, src_info.size)
+                                {
+                                    if src_size > dest_size {
+                                        let start_point = node.start_position();
+                                        violations.push(RuleViolation {
+                                            rule_id: self.rule_id().to_string(),
+                                            severity: Severity::High,
+                                            message: format!(
+                                                "Function '{}': sizeof({}) ({} bytes) exceeds destination buffer size ({} bytes)",
+                                                function_name, sizeof_var, src_size, dest_size
+                                            ),
+                                            file_path: String::new(),
+                                            line: start_point.row + 1,
+                                            column: start_point.column + 1,
+                                            suggestion: Some("Use sizeof(dest) or minimum of source and destination sizes".to_string()),
+                                            ..Default::default()
+                                        });
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Check for sizeof(dest) when source is a string literal (shorter source)
+            // This catches patterns like: sizeof(p) used to copy from "Too short"
+            // But NOT when there's a ternary/min check like: sizeof(p) < strlen(q) + 1 ? sizeof(p) : strlen(q) + 1
+            if let Some(sizeof_var) = self.extract_sizeof_var(resolved_size) {
+                // If sizeof references destination and source is a string literal
+                if sizeof_var == dest_arg.trim() {
+                    // Check if there's already a size validation in the resolved expression
+                    // Skip if there's a ternary pattern like "sizeof(p) < strlen(q)"
+                    if !resolved_size.contains("strlen(")
+                        && !resolved_size.contains("?")
+                        && !resolved_size.contains("<")
+                    {
+                        // Check if source is a string literal or assigned from one
+                        if self.is_short_string_source(src_arg, dest_arg, source) {
+                            let start_point = node.start_position();
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: Severity::High,
+                                message: format!(
+                                    "Function '{}': sizeof({}) may read past end of source buffer",
+                                    function_name, sizeof_var
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some(
+                                    "Use minimum of sizeof(dest) and source size".to_string(),
+                                ),
+                                ..Default::default()
+                            });
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Check for hardcoded sizes
+        if self.is_hardcoded_large_size(size_arg) {
+            let start_point = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Function '{}' called with hardcoded size {} that may exceed buffer bounds",
+                    function_name, size_arg
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Use sizeof(buffer) or a validated size".to_string()),
+                ..Default::default()
+            });
+            return;
+        }
+
+        // Check for user-controlled sizes (Heartbleed-like vulnerability)
+        if self.is_potentially_user_controlled_in_source(size_arg, source) {
+            let start_point = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Function '{}' called with potentially unvalidated size parameter '{}'",
+                    function_name, size_arg
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(
+                    "Validate size parameter against actual buffer size before use".to_string(),
+                ),
+                ..Default::default()
+            });
+            return;
+        }
+
+        // Check for type size mismatches (sizeof(int) for long array)
+        // Use resolved size to catch patterns like: const size_t n = sizeof(int) * ARR_SIZE; memset(p, 0, n);
+        if self.is_dangerous_size_calculation(resolved_size) {
+            let start_point = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Function '{}' called with potentially invalid size calculation",
+                    function_name
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some("Ensure size argument does not exceed buffer bounds".to_string()),
+                ..Default::default()
+            });
+        }
+    }
+
+    /// Check for overflow when destination is an offset pointer
+    /// e.g., char *dest_ptr = buffer + 15; memcpy(dest_ptr, src, sizeof(src));
+    fn check_pointer_offset_overflow(
+        &self,
+        args: &[String],
+        node: &Node,
+        function_name: &str,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
+        pointer_offsets: &HashMap<String, PointerOffsetInfo>,
+    ) -> Option<RuleViolation> {
+        let dest_arg = args[0].trim();
+        let size_arg = args[2].trim();
+
+        // Check if destination is an offset pointer
+        if let Some(offset_info) = pointer_offsets.get(dest_arg) {
+            // Get the base buffer size
+            if let Some(base_info) = buffer_info.get(&offset_info.base_buffer) {
+                if let Some(base_size) = base_info.size {
+                    // Calculate remaining space after offset
+                    if let Some(offset_val) = offset_info.offset {
+                        let remaining = if base_size > offset_val {
+                            base_size - offset_val
+                        } else {
+                            0
+                        };
+
+                        // Resolve the size argument
+                        let size_arg_owned = size_arg.to_string();
+                        let resolved_size = size_vars.get(size_arg).unwrap_or(&size_arg_owned);
+
+                        // Try to determine copy size
+                        let copy_size =
+                            if let Some(sizeof_var) = self.extract_sizeof_var(resolved_size) {
+                                // sizeof(some_var) - look up that var's size
+                                if let Some(var_info) = buffer_info.get(&sizeof_var) {
+                                    var_info.size
+                                } else {
+                                    self.try_parse_size(resolved_size)
+                                }
+                            } else {
+                                self.try_parse_size(resolved_size)
+                            };
+
+                        if let Some(copy_val) = copy_size {
+                            if copy_val > remaining {
+                                let start_point = node.start_position();
+                                return Some(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::High,
+                                    message: format!(
+                                        "Function '{}': copying {} bytes to '{}' (offset {} from '{}') exceeds remaining buffer space of {} bytes",
+                                        function_name, copy_val, dest_arg, offset_val, offset_info.base_buffer, remaining
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some(format!(
+                                        "Reduce copy size to at most {} bytes or increase buffer size",
+                                        remaining
+                                    )),
+                                    ..Default::default()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Check if size exceeds known buffer size
+    fn check_size_exceeds_buffer(
+        &self,
+        buf_arg: &str,
+        size_arg: &str,
+        node: &Node,
+        function_name: &str,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: &HashMap<String, String>,
+    ) -> Option<RuleViolation> {
+        let buf_name = buf_arg.trim();
+
+        // Try to get buffer info
+        if let Some(buf_info) = buffer_info.get(buf_name) {
+            if let Some(buf_size) = buf_info.size {
+                // Try to resolve size_arg
+                let size_arg_owned = size_arg.to_string();
+                let resolved_size = size_vars.get(size_arg.trim()).unwrap_or(&size_arg_owned);
+
+                // Try to parse size as a number
+                if let Some(size_val) = self.try_parse_size(resolved_size) {
+                    if size_val > buf_size {
+                        let start_point = node.start_position();
+                        return Some(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::High,
+                            message: format!(
+                                "Function '{}': size {} exceeds buffer '{}' size {}",
+                                function_name, size_val, buf_name, buf_size
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some("Use sizeof(buffer) or correct size".to_string()),
+                            ..Default::default()
+                        });
+                    }
+                }
+
+                // Check if size_arg is sizeof(something_different)
+                if let Some(sizeof_var) = self.extract_sizeof_var(size_arg) {
+                    if sizeof_var != buf_name {
+                        // sizeof() of a different variable - check if it's larger
+                        if let Some(other_info) = buffer_info.get(&sizeof_var) {
+                            if let Some(other_size) = other_info.size {
+                                if other_size > buf_size {
+                                    let start_point = node.start_position();
+                                    return Some(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        severity: Severity::High,
+                                        message: format!(
+                                            "Function '{}': sizeof({}) ({} bytes) may exceed buffer '{}' size ({} bytes)",
+                                            function_name, sizeof_var, other_size, buf_name, buf_size
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some(format!("Use sizeof({}) instead", buf_name)),
+                                        ..Default::default()
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Check if a size value might be user-controlled (Heartbleed-like)
+    /// This is conservative but catches obvious patterns
+    fn is_potentially_user_controlled_in_source(&self, size_arg: &str, source: &str) -> bool {
+        let size_arg = size_arg.trim();
+
+        // Check if it's a simple variable (not sizeof, not a calculation)
+        if !size_arg.contains("sizeof(")
+            && !size_arg.contains('+')
+            && !size_arg.contains('-')
+            && !size_arg.contains('*')
+            && !size_arg.contains('/')
+        {
+            // Flag obvious patterns that indicate user/external input
+            let suspicious_names = [
+                "payload",      // classic Heartbleed pattern
+                "user_size",    // explicit user-controlled
+                "input_size",   // external input
+                "client_size",  // network input
+                "request_size", // network input
+            ];
+
+            // Check for exact match with suspicious names
+            for name in &suspicious_names {
+                if size_arg == *name {
+                    // Check if there's validation in the source
+                    if self.has_size_validation(size_arg, source) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+
+            // Check if size_arg is a function parameter that's used directly
+            // Pattern: void func(..., type size_arg) { ... memcpy(..., size_arg); }
+            if self.is_unvalidated_function_parameter(size_arg, source) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Check if there's validation for a size parameter
+    fn has_size_validation(&self, size_arg: &str, source: &str) -> bool {
+        // Look for validation in if-statement conditions only
+        let validation_patterns = [
+            format!("if ({} >", size_arg),
+            format!("if ({} <", size_arg),
+            format!("if ({} >=", size_arg),
+            format!("if ({} <=", size_arg),
+            format!("if (1 + 2 + {}", size_arg), // Heartbleed specific validation pattern
+            format!("{} > sizeof", size_arg),
+            format!("{} >= sizeof", size_arg),
+        ];
+        for pattern in &validation_patterns {
+            if source.contains(pattern.as_str()) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Check if a variable is a function parameter used without validation
+    fn is_unvalidated_function_parameter(&self, size_arg: &str, source: &str) -> bool {
+        // Look for function parameter patterns
+        // Pattern: type func(..., unsigned int user_size) or similar
+        // Use word boundaries to avoid partial matches (e.g., "n" matching "nchars")
+        let param_patterns = [
+            format!("int {} ", size_arg), // "int n " - with trailing space
+            format!("int {})", size_arg), // "int n)" - at end of params
+            format!("int {},", size_arg), // "int n," - followed by comma
+            format!("size_t {} ", size_arg),
+            format!("size_t {})", size_arg),
+            format!("size_t {},", size_arg),
+            format!("unsigned {} ", size_arg),
+            format!("unsigned {})", size_arg),
+            format!("unsigned {},", size_arg),
+            format!("uint32_t {} ", size_arg),
+            format!("uint32_t {})", size_arg),
+            format!("uint32_t {},", size_arg),
+        ];
+
+        // First check if size_arg IS directly a parameter
+        let mut is_direct_param = false;
+        for pattern in &param_patterns {
+            // Check if it appears in a function signature (before first {)
+            if let Some(brace_pos) = source.find('{') {
+                let header = &source[..brace_pos];
+                if header.contains(pattern.as_str()) && header.contains('(') {
+                    is_direct_param = true;
+                    break;
+                }
+            }
+        }
+
+        // If size_arg is not directly a parameter, check if it's assigned from one
+        // But if it's assigned directly (n = nchars) where nchars is the param AND
+        // nchars is also used for allocation (malloc(nchars)), that's safe
+        if !is_direct_param {
+            // Check if it's a local variable assigned from a param
+            // This pattern is typically safe: const size_t n = nchars;
+            // We only care about direct parameter use without validation
+            return false;
+        }
+
+        // Check if there's validation before use
+        if !self.has_size_validation(size_arg, source) {
+            return true;
+        }
+
+        false
+    }
+
+    /// Check if source is a string literal that's shorter than destination
+    fn is_short_string_source(&self, src_arg: &str, dest_arg: &str, source: &str) -> bool {
+        let src = src_arg.trim();
+        let dest = dest_arg.trim();
+
+        // Check if source is directly a string literal
+        if src.starts_with('"') && src.ends_with('"') {
+            return true;
+        }
+
+        // Check if source variable is assigned from a string literal
+        // Pattern: const char *q = "Too short";
+        // or: char *q = "string";
+        let patterns = [format!("*{} = \"", src), format!(" {} = \"", src)];
+        for pattern in &patterns {
+            if source.contains(pattern.as_str()) {
+                // Found string literal assignment - now check if dest is larger
+                // Look for dest array size
+                if let Some(dest_size) = self.find_array_size(dest, source) {
+                    // Estimate string length by finding the literal
+                    if let Some(literal_len) = self.find_string_literal_length(src, source) {
+                        if dest_size > literal_len {
+                            return true;
+                        }
+                    } else {
+                        // Couldn't determine length but it's a string literal assignment
+                        // Be conservative and flag it
+                        return true;
+                    }
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Find the size of an array from its declaration
+    fn find_array_size(&self, var_name: &str, source: &str) -> Option<usize> {
+        // Pattern: type var_name[SIZE]
+        let pattern = format!(" {}[", var_name);
+        if let Some(start) = source.find(&pattern) {
+            let rest = &source[start + pattern.len()..];
+            if let Some(end) = rest.find(']') {
+                let size_str = &rest[..end];
+                if let Ok(size) = size_str.trim().parse::<usize>() {
+                    return Some(size);
+                }
+            }
+        }
+        None
+    }
+
+    /// Find the length of a string literal assigned to a variable
+    fn find_string_literal_length(&self, var_name: &str, source: &str) -> Option<usize> {
+        // Look for: *var = "..." or var = "..."
+        let patterns = [format!("*{} = \"", var_name), format!(" {} = \"", var_name)];
+        for pattern in &patterns {
+            if let Some(start) = source.find(pattern.as_str()) {
+                let rest = &source[start + pattern.len()..];
+                if let Some(end) = rest.find('"') {
+                    // Length is end position + 1 for null terminator
+                    return Some(end + 1);
+                }
+            }
+        }
+        None
+    }
+
+    /// Check for type size mismatch (e.g., sizeof(long) for int array)
+    fn is_type_size_mismatch(&self, array_arg: &str, size_arg: &str, source: &str) -> bool {
+        // Extract the type from sizeof(type)
+        if let Some(sizeof_type) = self.extract_sizeof_type(size_arg) {
+            // Check if the array was declared with a different type
+            let array_name = array_arg.trim();
+
+            // Look for array declaration in source
+            // Pattern: type array_name[
+            let patterns = [
+                format!("int {}[", array_name),
+                format!("int*{}", array_name),
+                format!("char {}[", array_name),
+                format!("char*{}", array_name),
+                format!("short {}[", array_name),
+                format!("long {}[", array_name),
+                format!("float {}[", array_name),
+                format!("double {}[", array_name),
+            ];
+
+            for pattern in &patterns {
+                if source.contains(pattern) {
+                    // Extract the declared type
+                    if let Some(decl_type) = pattern.split_whitespace().next() {
+                        // Check if sizeof type differs from declared type
+                        if sizeof_type != decl_type
+                            && !sizeof_type.contains(array_name)
+                            && !sizeof_type.contains("*")
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Extract type from sizeof(type)
+    fn extract_sizeof_type(&self, expr: &str) -> Option<String> {
+        if let Some(start) = expr.find("sizeof(") {
+            let rest = &expr[start + 7..];
+            if let Some(end) = rest.find(')') {
+                let inner = rest[..end].trim();
+                // Check if it's a type (not a variable or dereference)
+                if !inner.starts_with('*') && !inner.contains('[') {
+                    // Common C types
+                    let types = [
+                        "int", "char", "short", "long", "float", "double", "void", "size_t",
+                        "int8_t", "int16_t", "int32_t", "int64_t", "uint8_t", "uint16_t",
+                        "uint32_t", "uint64_t", "wchar_t",
+                    ];
+                    for t in &types {
+                        if inner.contains(t) {
+                            return Some(inner.to_string());
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract variable name from sizeof(var)
+    fn extract_sizeof_var(&self, expr: &str) -> Option<String> {
+        if let Some(start) = expr.find("sizeof(") {
+            let rest = &expr[start + 7..];
+            if let Some(end) = rest.find(')') {
+                let var = rest[..end].trim();
+                // Handle sizeof(*ptr) - return ptr
+                if var.starts_with('*') {
+                    return Some(var[1..].trim().to_string());
+                }
+                return Some(var.to_string());
+            }
+        }
+        None
+    }
+
+    /// Check if a size is a hardcoded large value
+    fn is_hardcoded_large_size(&self, size_arg: &str) -> bool {
+        // Try to parse as a number
+        if let Some(size) = self.try_parse_size(size_arg) {
+            // Suspicious if it's a round number > 20 or any number > 100
+            // that doesn't look like it comes from sizeof or a constant
+            if size > 100
+                || (size > 20 && size % 10 == 0)
+                || (size > 10 && !size_arg.contains("sizeof"))
+            {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Check if count is a suspicious hardcoded value
+    fn is_hardcoded_large_count(&self, count_arg: &str) -> bool {
+        if let Some(count) = self.try_parse_size(count_arg) {
+            // Suspicious if > 20 and doesn't use sizeof
+            if count > 20 && !count_arg.contains("sizeof") {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Try to parse a size expression as a numeric value
+    fn try_parse_size(&self, expr: &str) -> Option<usize> {
+        let expr = expr.trim();
+        // Direct number
+        if let Ok(n) = expr.parse::<usize>() {
+            return Some(n);
+        }
+        None
+    }
+
+    /// Extract array variable name from declaration
+    fn extract_array_var_name(&self, decl: &str) -> Option<String> {
+        // Pattern: type var[size] or type *var = ...
+        // Find the identifier before [
+        if let Some(bracket_pos) = decl.find('[') {
+            let before = &decl[..bracket_pos];
+            let parts: Vec<&str> = before.split_whitespace().collect();
+            if let Some(last) = parts.last() {
+                // Remove any * prefix
+                let name = last.trim_start_matches('*');
+                if !name.is_empty() {
+                    return Some(name.to_string());
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract array size from declaration like "char arr[40]"
+    fn extract_array_size(&self, decl: &str) -> Option<usize> {
+        if let Some(start) = decl.find('[') {
+            if let Some(end) = decl.find(']') {
+                let size_str = decl[start + 1..end].trim();
+                if let Ok(size) = size_str.parse::<usize>() {
+                    return Some(size);
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract pointer variable name from declaration with allocation
+    fn extract_pointer_var_name(&self, decl: &str) -> Option<String> {
+        // Pattern: type *var = malloc(...)
+        if let Some(eq_pos) = decl.find('=') {
+            let before = &decl[..eq_pos];
+            let parts: Vec<&str> = before.split_whitespace().collect();
+            if let Some(last) = parts.last() {
+                let name = last.trim_start_matches('*').trim_end_matches('*');
+                if !name.is_empty() {
+                    return Some(name.to_string());
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract allocation size from malloc/calloc/aligned_alloc call
+    fn extract_alloc_size(&self, text: &str) -> Option<String> {
+        // Find the function call
+        for func in &["malloc(", "aligned_alloc("] {
+            if let Some(start) = text.find(func) {
+                let rest = &text[start + func.len()..];
+                // For aligned_alloc, skip the alignment parameter
+                let size_start = if *func == "aligned_alloc(" {
+                    rest.find(',').map(|p| p + 1).unwrap_or(0)
+                } else {
+                    0
+                };
+                let size_part = &rest[size_start..];
+                if let Some(end) = size_part.find(')') {
+                    let size = size_part[..end].trim();
+                    return Some(size.to_string());
+                }
+            }
+        }
+
+        // For calloc, extract count * size
+        if let Some(start) = text.find("calloc(") {
+            let rest = &text[start + 7..];
+            if let Some(end) = rest.find(')') {
+                let args = &rest[..end];
+                return Some(args.to_string());
+            }
+        }
+
+        None
+    }
+
+    /// Extract size_t variable assignment
+    fn extract_size_var_assignment(&self, text: &str) -> Option<(String, String)> {
+        // Pattern: size_t n = sizeof(p); or const size_t n = value;
+        if let Some(eq_pos) = text.find('=') {
+            let before = &text[..eq_pos];
+            let after = &text[eq_pos + 1..];
+
+            // Get variable name (last word before =)
+            let parts: Vec<&str> = before.split_whitespace().collect();
+            if let Some(var_name) = parts.last() {
+                let var_name = var_name.trim();
+                // Get value (everything after = until ; or end)
+                // Don't strip parens as they're part of sizeof() etc.
+                let value = after.trim().trim_end_matches(';').trim();
+                if !var_name.is_empty() && !value.is_empty() {
+                    return Some((var_name.to_string(), value.to_string()));
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract assignment left-hand side
+    fn extract_assignment_lhs(&self, text: &str) -> Option<String> {
+        if let Some(eq_pos) = text.find('=') {
+            let before = &text[..eq_pos];
+            let parts: Vec<&str> = before.split_whitespace().collect();
+            if let Some(last) = parts.last() {
+                let name = last.trim_start_matches('*').trim_end_matches('*');
+                if !name.is_empty() {
+                    return Some(name.to_string());
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract simple assignment (var = expr)
+    fn extract_simple_assignment(&self, text: &str) -> Option<(String, String)> {
+        if let Some(eq_pos) = text.find('=') {
+            // Make sure it's not == or !=
+            if eq_pos > 0 {
+                let char_before = text.chars().nth(eq_pos - 1);
+                if char_before == Some('!') || char_before == Some('=') {
+                    return None;
+                }
+            }
+            if text.len() > eq_pos + 1 {
+                let char_after = text.chars().nth(eq_pos + 1);
+                if char_after == Some('=') {
+                    return None;
+                }
+            }
+
+            let before = &text[..eq_pos];
+            let after = &text[eq_pos + 1..];
+
+            let parts: Vec<&str> = before.split_whitespace().collect();
+            if let Some(var_name) = parts.last() {
+                let value = after.trim().trim_end_matches(';').trim();
+                if !var_name.is_empty() && !value.is_empty() {
+                    return Some((var_name.to_string(), value.to_string()));
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract pointer offset from declaration like "char *ptr = buffer + 15;"
+    /// Returns (ptr_name, base_buffer, offset_expr)
+    fn extract_pointer_offset(&self, text: &str) -> Option<(String, String, String)> {
+        // Pattern: type *ptr = base + offset;
+        if let Some(eq_pos) = text.find('=') {
+            let before = &text[..eq_pos];
+            let after = &text[eq_pos + 1..];
+
+            // Get pointer name (last word before =, with * removed)
+            let parts: Vec<&str> = before.split_whitespace().collect();
+            if let Some(last) = parts.last() {
+                let ptr_name = last.trim_start_matches('*').trim();
+                if ptr_name.is_empty() {
+                    return None;
+                }
+
+                // Parse the right side: base + offset
+                let rhs = after.trim().trim_end_matches(';').trim();
+                if let Some(plus_pos) = rhs.find('+') {
+                    let base = rhs[..plus_pos].trim();
+                    let offset = rhs[plus_pos + 1..].trim();
+
+                    if !base.is_empty() && !offset.is_empty() {
+                        return Some((ptr_name.to_string(), base.to_string(), offset.to_string()));
+                    }
+                }
+            }
+        }
+        None
     }
 }

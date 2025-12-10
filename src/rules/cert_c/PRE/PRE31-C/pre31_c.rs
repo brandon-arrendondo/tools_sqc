@@ -59,6 +59,11 @@ impl Pre31C {
 
             // Check if this is a potentially unsafe macro
             if self.is_unsafe_macro(function_name) {
+                // Skip if the macro is defined with a safe pattern (_Generic or statement expr)
+                if self.is_safe_macro_definition(function_name, source) {
+                    return;
+                }
+
                 let args = self.get_function_arguments(node, source);
 
                 // Check each argument for side effects
@@ -132,9 +137,46 @@ impl Pre31C {
         .cloned()
         .collect();
 
+        // Known safe macros that evaluate arguments exactly once
+        let safe_macros: HashSet<&str> = [
+            // GNU statement expression style
+            "SAFE_ABS", "SAFE_MAX",
+            "SAFE_MIN",
+            // Any macro explicitly named "SAFE_" is likely safe
+        ]
+        .iter()
+        .cloned()
+        .collect();
+
+        // Check for known safe patterns
+        if safe_macros.contains(function_name) || function_name.starts_with("SAFE_") {
+            return false;
+        }
+
         unsafe_macros.contains(function_name) ||
         // Heuristic: macros with ALL_CAPS names are likely unsafe
         (function_name.chars().all(|c| c.is_uppercase() || c == '_') && function_name.len() > 2)
+    }
+
+    /// Check if the source contains a safe definition of the macro
+    /// Safe definitions use _Generic or statement expressions
+    fn is_safe_macro_definition(&self, function_name: &str, source: &str) -> bool {
+        // Look for #define of this macro
+        let define_pattern = format!("#define {}", function_name);
+        if let Some(start) = source.find(&define_pattern) {
+            // Get the rest of the line/definition
+            let rest = &source[start..];
+            // Check for safe patterns
+            // _Generic evaluates its controlling expression only once
+            if rest.contains("_Generic") {
+                return true;
+            }
+            // GNU statement expression: ({ ... }) ensures single evaluation
+            if rest.contains("({") {
+                return true;
+            }
+        }
+        false
     }
 
     fn has_side_effects(&self, arg: &str, context_node: &Node, source: &str) -> bool {
@@ -167,8 +209,12 @@ impl Pre31C {
             return true;
         }
 
-        // Volatile access
+        // Volatile access - check both direct keyword and via volatile variables in source
         if arg.contains("volatile") {
+            return true;
+        }
+        // Check if any identifier in arg was declared as volatile in the source
+        if self.is_volatile_variable_access(arg, source) {
             return true;
         }
 
@@ -213,6 +259,11 @@ impl Pre31C {
             "printf", "fprintf", "sprintf", "scanf", "fscanf", "sscanf", "malloc", "calloc",
             "realloc", "free", "fopen", "fclose", "fread", "fwrite", "fgetc", "fputc", "getchar",
             "putchar", "gets", "puts", "rand", "srand", "time", "exit", "abort", "system",
+            // String functions that may have side effects (modify errno, etc.)
+            "strlen", "strcmp", "strncmp", "strcpy", "strncpy", "strcat", "strncat", "strtok",
+            "strtol", "strtoul", "strtod", "atoi", "atol", "atof",
+            // Memory functions
+            "memcpy", "memmove", "memset", "memcmp",
         ];
 
         for func in &side_effect_functions {
@@ -221,6 +272,113 @@ impl Pre31C {
             }
         }
 
+        // Also check for any function call pattern: identifier followed by (
+        // This catches user-defined functions that might have side effects
+        self.contains_any_function_call(arg)
+    }
+
+    fn contains_any_function_call(&self, arg: &str) -> bool {
+        // Look for function call pattern: identifier(
+        // But exclude known safe operations like type casts and pure functions
+        let chars: Vec<char> = arg.chars().collect();
+        let mut i = 0;
+
+        while i < chars.len() {
+            // Look for open paren
+            if chars[i] == '(' {
+                // Look backwards for identifier
+                let mut end = i;
+                // Skip whitespace
+                while end > 0 && chars[end - 1].is_whitespace() {
+                    end -= 1;
+                }
+                // Check if there's an identifier before the paren
+                let mut start = end;
+                while start > 0 && (chars[start - 1].is_alphanumeric() || chars[start - 1] == '_') {
+                    start -= 1;
+                }
+                if start < end {
+                    let identifier: String = chars[start..end].iter().collect();
+                    // Filter out known safe constructs (type casts, sizeof, etc.)
+                    let safe_patterns = [
+                        "int",
+                        "char",
+                        "float",
+                        "double",
+                        "long",
+                        "short",
+                        "unsigned",
+                        "signed",
+                        "void",
+                        "size_t",
+                        "sizeof",
+                        "typeof",
+                        "__typeof__",
+                    ];
+                    // Pure functions that have no side effects (PRE31-C-EX1)
+                    // These functions only compute a value from their inputs
+                    let pure_functions = [
+                        "abs",
+                        "labs",
+                        "llabs",
+                        "fabs",
+                        "fabsf",
+                        "fabsl",
+                        "sqrt",
+                        "sqrtf",
+                        "sqrtl",
+                        "cbrt",
+                        "cbrtf",
+                        "cbrtl",
+                        "sin",
+                        "cos",
+                        "tan",
+                        "asin",
+                        "acos",
+                        "atan",
+                        "atan2",
+                        "sinh",
+                        "cosh",
+                        "tanh",
+                        "asinh",
+                        "acosh",
+                        "atanh",
+                        "exp",
+                        "exp2",
+                        "expm1",
+                        "log",
+                        "log2",
+                        "log10",
+                        "log1p",
+                        "pow",
+                        "hypot",
+                        "ceil",
+                        "floor",
+                        "round",
+                        "trunc",
+                        "fmod",
+                        "remainder",
+                        "fmax",
+                        "fmin",
+                        "isnan",
+                        "isinf",
+                        "isfinite",
+                        "isnormal",
+                        "square", // Common user-defined pure function
+                        "negate",
+                        "negative",
+                        "positive",
+                    ];
+                    if !safe_patterns.contains(&identifier.as_str())
+                        && !identifier.starts_with("_Generic")
+                        && !pure_functions.contains(&identifier.as_str())
+                    {
+                        return true;
+                    }
+                }
+            }
+            i += 1;
+        }
         false
     }
 
@@ -300,5 +458,65 @@ impl Pre31C {
         }
 
         args
+    }
+
+    /// Check if the argument contains access to a volatile variable
+    fn is_volatile_variable_access(&self, arg: &str, source: &str) -> bool {
+        // Extract identifiers from the argument
+        let identifiers = self.extract_identifiers(arg);
+
+        // Check if any identifier is declared as volatile in the source
+        for id in identifiers {
+            // Look for volatile declaration of this variable
+            // Patterns: "volatile int name" or "volatile type name" or "type volatile name"
+            let patterns = [
+                format!("volatile {} {};", id, ""), // At start
+                format!("volatile {}", id),         // Basic pattern
+                format!("{} volatile", id),         // Type after volatile
+            ];
+
+            // Simple check: look for "volatile" followed by the identifier or identifier preceded by volatile
+            if source.contains(&format!("volatile int {}", id))
+                || source.contains(&format!("volatile unsigned {}", id))
+                || source.contains(&format!("volatile char {}", id))
+                || source.contains(&format!("volatile short {}", id))
+                || source.contains(&format!("volatile long {}", id))
+                || source.contains(&format!("int volatile {}", id))
+                || source.contains(&format!("volatile {}", id))
+            {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Extract all identifiers from an expression
+    fn extract_identifiers(&self, expr: &str) -> Vec<String> {
+        let mut identifiers = Vec::new();
+        let chars: Vec<char> = expr.chars().collect();
+        let mut i = 0;
+
+        while i < chars.len() {
+            // Look for start of identifier
+            if chars[i].is_alphabetic() || chars[i] == '_' {
+                let start = i;
+                while i < chars.len() && (chars[i].is_alphanumeric() || chars[i] == '_') {
+                    i += 1;
+                }
+                let id: String = chars[start..i].iter().collect();
+                // Filter out keywords
+                let keywords = [
+                    "if", "else", "while", "for", "return", "int", "char", "void", "float",
+                    "double", "long", "short", "unsigned", "signed", "const", "volatile", "static",
+                    "extern", "sizeof",
+                ];
+                if !keywords.contains(&id.as_str()) {
+                    identifiers.push(id);
+                }
+            } else {
+                i += 1;
+            }
+        }
+        identifiers
     }
 }

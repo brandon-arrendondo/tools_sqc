@@ -312,6 +312,12 @@ impl Err30C {
     fn checks_return_value_for_function(&self, condition: &str, function_name: &str) -> bool {
         match function_name {
             "ftell" => condition.contains("== -1") || condition.contains("== -1L"),
+            "fopen" | "freopen" => {
+                condition.contains("== NULL")
+                    || condition.contains("!= NULL")
+                    || condition.contains("== 0")
+                    || condition.contains("!= 0")
+            }
             "signal" => condition.contains("== SIG_ERR"),
             "mbrtowc" | "wcrtomb" => {
                 condition.contains("== (size_t)-1") || condition.contains("< 0")
@@ -331,7 +337,17 @@ impl Err30C {
     fn is_outofband_function(&self, function_name: &str) -> bool {
         matches!(
             function_name,
-            "ftell" | "signal" | "mbrtowc" | "wcrtomb" | "mbtowc" | "wctomb"
+            "ftell"
+                | "fopen"
+                | "freopen"
+                | "fclose"
+                | "fflush"
+                | "fseek"
+                | "signal"
+                | "mbrtowc"
+                | "wcrtomb"
+                | "mbtowc"
+                | "wctomb"
         )
     }
 

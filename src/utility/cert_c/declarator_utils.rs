@@ -18,11 +18,14 @@ use tree_sitter::Node;
 /// `true` if the declarator tree contains a node of the target kind
 ///
 /// # Examples
-/// ```ignore
-/// // Check if field has array declarator
-/// if has_declarator_of_kind(&declarator, "array_declarator") {
-///     // This is an array field
-/// }
+/// ```no_run
+/// use sqc::utility::cert_c::declarator_utils::has_declarator_of_kind;
+/// use tree_sitter::Node;
+/// // Check if field has array declarator:
+/// // let declarator: Node = /* get from parsed AST */;
+/// // if has_declarator_of_kind(&declarator, "array_declarator") {
+/// //     // This is an array field
+/// // }
 /// ```
 pub fn has_declarator_of_kind(node: &Node, target_kind: &str) -> bool {
     if node.kind() == target_kind {
@@ -44,10 +47,12 @@ pub fn has_declarator_of_kind(node: &Node, target_kind: &str) -> bool {
 /// Check if a declarator is an array (has array_declarator)
 ///
 /// # Examples
-/// ```ignore
-/// int arr[10];      // true
-/// int *ptr;         // false
-/// int arr[5][10];   // true
+/// ```no_run
+/// use sqc::utility::cert_c::declarator_utils::is_array_declarator;
+/// use tree_sitter::Node;
+/// // int arr[10];      // returns true
+/// // int *ptr;         // returns false
+/// // int arr[5][10];   // returns true
 /// ```
 pub fn is_array_declarator(node: &Node) -> bool {
     has_declarator_of_kind(node, "array_declarator")
@@ -56,10 +61,12 @@ pub fn is_array_declarator(node: &Node) -> bool {
 /// Check if a declarator is a pointer (has pointer_declarator)
 ///
 /// # Examples
-/// ```ignore
-/// int *ptr;         // true
-/// int **ptr;        // true
-/// int arr[10];      // false
+/// ```no_run
+/// use sqc::utility::cert_c::declarator_utils::is_pointer_declarator;
+/// use tree_sitter::Node;
+/// // int *ptr;         // returns true
+/// // int **ptr;        // returns true
+/// // int arr[10];      // returns false
 /// ```
 pub fn is_pointer_declarator(node: &Node) -> bool {
     has_declarator_of_kind(node, "pointer_declarator")
@@ -68,9 +75,11 @@ pub fn is_pointer_declarator(node: &Node) -> bool {
 /// Check if a declarator is a function pointer (has function_declarator)
 ///
 /// # Examples
-/// ```ignore
-/// int (*fn)(int);   // true
-/// int *ptr;         // false
+/// ```no_run
+/// use sqc::utility::cert_c::declarator_utils::is_function_declarator;
+/// use tree_sitter::Node;
+/// // int (*fn)(int);   // returns true
+/// // int *ptr;         // returns false
 /// ```
 pub fn is_function_declarator(node: &Node) -> bool {
     has_declarator_of_kind(node, "function_declarator")

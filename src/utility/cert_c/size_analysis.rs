@@ -17,11 +17,13 @@ use tree_sitter::Node;
 /// The size in bytes of the array element type (defaults to 4 for int)
 ///
 /// # Examples
-/// ```ignore
-/// let code = "int numbers[10]; numbers[i] = value;";
+/// ```
+/// use sqc::utility::cert_c::size_analysis::find_element_size;
+/// // Works when declaration is found before usage point
+/// let code = "int numbers[10];";
 /// assert_eq!(find_element_size("numbers", code), 4);
 ///
-/// let code2 = "char buffer[100]; buffer[i] = 'a';";
+/// let code2 = "char buffer[100];";
 /// assert_eq!(find_element_size("buffer", code2), 1);
 /// ```
 pub fn find_element_size(var_name: &str, preceding_text: &str) -> usize {
@@ -77,10 +79,13 @@ pub fn find_element_size(var_name: &str, preceding_text: &str) -> usize {
 /// `Some(length)` if a string literal is found, `None` otherwise
 ///
 /// # Examples
-/// ```ignore
-/// let code = r#"char *msg = "hello"; strcpy(dest, msg);"#;
+/// ```no_run
+/// use sqc::utility::cert_c::size_analysis::find_string_literal_length;
+/// use tree_sitter::Node;
 /// // When checking the strcpy call with msg:
-/// assert_eq!(find_string_literal_length("msg", node, code), Some(5));
+/// // let node: Node = /* get from parsed AST */;
+/// // let code = r#"char *msg = "hello"; strcpy(dest, msg);"#;
+/// // assert_eq!(find_string_literal_length("msg", &node, code), Some(5));
 /// ```
 pub fn find_string_literal_length(var_name: &str, node: &Node, source: &str) -> Option<usize> {
     // Find the variable declaration and extract string literal length
@@ -127,7 +132,8 @@ pub fn find_string_literal_length(var_name: &str, node: &Node, source: &str) -> 
 /// `Some(count)` where count is the number of elements allocated, `None` if not found
 ///
 /// # Examples
-/// ```ignore
+/// ```
+/// use sqc::utility::cert_c::size_analysis::find_allocation_size;
 /// let code = "int *arr = malloc(10 * sizeof(int)); for (i = 0; i < 15; i++)";
 /// assert_eq!(find_allocation_size("arr", code), Some(10));
 ///

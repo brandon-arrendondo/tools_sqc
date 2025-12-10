@@ -23,38 +23,97 @@ use tree_sitter::Node;
 pub struct Dcl31C {
     // Track declared functions to detect implicit declarations
     declared_functions: RefCell<HashSet<String>>,
+    // Track included headers
+    included_headers: RefCell<HashSet<String>>,
 }
 
 impl Dcl31C {
     pub fn new() -> Self {
         Dcl31C {
             declared_functions: RefCell::new(HashSet::new()),
+            included_headers: RefCell::new(HashSet::new()),
+        }
+    }
+
+    /// Track #include directives
+    fn track_includes(&self, node: &Node, source: &str) {
+        if node.kind() == "preproc_include" {
+            let text = get_node_text(node, source);
+            // Extract header name from #include <header.h> or #include "header.h"
+            if let Some(start) = text.find('<') {
+                if let Some(end) = text.find('>') {
+                    let header = &text[start + 1..end];
+                    self.included_headers
+                        .borrow_mut()
+                        .insert(header.to_string());
+                }
+            } else if let Some(start) = text.find('"') {
+                if let Some(end) = text[start + 1..].find('"') {
+                    let header = &text[start + 1..start + 1 + end];
+                    self.included_headers
+                        .borrow_mut()
+                        .insert(header.to_string());
+                }
+            }
         }
     }
 
     /// Check if a declaration has an explicit type specifier
     fn has_type_specifier(&self, node: &Node, source: &str) -> bool {
         let mut cursor = node.walk();
+        let mut has_storage_class = false;
+        let mut has_explicit_type = false;
+        let mut has_real_declarator = false;
+        let mut type_identifier_name: Option<String> = None;
+
         for child in node.children(&mut cursor) {
             let kind = child.kind();
-            // Type specifiers in C
+            // Type specifiers in C - explicit types
             if matches!(
                 kind,
                 "primitive_type"
                     | "sized_type_specifier"
-                    | "type_identifier"
                     | "struct_specifier"
                     | "union_specifier"
                     | "enum_specifier"
             ) {
-                return true;
+                has_explicit_type = true;
             }
-            // Check for standard types like void, int, char, etc.
-            if kind == "type_qualifier" || kind == "storage_class_specifier" {
-                continue;
+            // type_identifier could be a typedef or could be the variable name
+            // if tree-sitter is confused about implicit int
+            if kind == "type_identifier" {
+                type_identifier_name = Some(get_node_text(&child, source).to_string());
+            }
+            // Track storage class specifiers like extern, static
+            if kind == "storage_class_specifier" {
+                has_storage_class = true;
+            }
+            // Track if we have a real declarator (non-empty identifier or declarator node)
+            if kind == "identifier" {
+                let text = get_node_text(&child, source);
+                if !text.is_empty() {
+                    has_real_declarator = true;
+                }
+            } else if kind.contains("declarator") {
+                has_real_declarator = true;
             }
         }
-        false
+
+        // Special case: "extern foo;" - tree-sitter parses this as:
+        // - storage_class_specifier: "extern"
+        // - type_identifier: "foo" (interpreted as the type)
+        // - identifier: "" (empty!)
+        // This is actually implicit int - foo is the variable name, not a type
+        if has_storage_class && type_identifier_name.is_some() && !has_real_declarator {
+            return false;
+        }
+
+        // If we have a storage class but no type at all, this is implicit int
+        if has_storage_class && !has_explicit_type && type_identifier_name.is_none() {
+            return false;
+        }
+
+        has_explicit_type || type_identifier_name.is_some()
     }
 
     /// Check for missing type specifier in declaration
@@ -115,29 +174,32 @@ impl Dcl31C {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
 
-                // Skip standard library functions that are typically declared via headers
-                if self.is_standard_function(&func_name) {
+                // Skip standard library functions ONLY if their header was included
+                if self.is_standard_function_with_header(func_name) {
                     return;
                 }
 
-                if !self.declared_functions.borrow().contains(func_name) {
-                    violations.push(RuleViolation {
-                        rule_id: "DCL31-C".to_string(),
-                        severity: Severity::Low,
-                        line: node.start_position().row + 1,
-                        column: node.start_position().column + 1,
-                        message: format!(
-                            "Function '{}' is called without prior declaration",
-                            func_name
-                        ),
-                        file_path: String::new(),
-                        suggestion: Some(
-                            "Declare the function before calling it or include the appropriate header"
-                                .to_string(),
-                        ),
-                        requires_manual_review: Some(false),
-                    });
+                // Skip if explicitly declared in this file
+                if self.declared_functions.borrow().contains(func_name) {
+                    return;
                 }
+
+                violations.push(RuleViolation {
+                    rule_id: "DCL31-C".to_string(),
+                    severity: Severity::Low,
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    message: format!(
+                        "Function '{}' is called without prior declaration",
+                        func_name
+                    ),
+                    file_path: String::new(),
+                    suggestion: Some(
+                        "Declare the function before calling it or include the appropriate header"
+                            .to_string(),
+                    ),
+                    requires_manual_review: Some(false),
+                });
             }
         }
     }
@@ -167,66 +229,47 @@ impl Dcl31C {
         }
     }
 
-    /// Check if a function is a known standard library function
-    fn is_standard_function(&self, name: &str) -> bool {
-        // Common standard library functions
-        matches!(
-            name,
-            "printf"
-                | "scanf"
-                | "fprintf"
-                | "fscanf"
-                | "sprintf"
-                | "sscanf"
-                | "malloc"
-                | "calloc"
-                | "realloc"
-                | "free"
-                | "memcpy"
-                | "memmove"
-                | "memset"
-                | "memcmp"
-                | "strcpy"
-                | "strncpy"
-                | "strcat"
-                | "strncat"
-                | "strcmp"
-                | "strncmp"
-                | "strlen"
-                | "strchr"
-                | "strstr"
-                | "fopen"
-                | "fclose"
-                | "fread"
-                | "fwrite"
-                | "fseek"
-                | "ftell"
-                | "getchar"
-                | "putchar"
-                | "gets"
-                | "puts"
-                | "atoi"
-                | "atof"
-                | "atol"
-                | "strtol"
-                | "strtod"
-                | "exit"
-                | "abort"
-                | "atexit"
-                | "assert"
-                | "sqrt"
-                | "pow"
-                | "sin"
-                | "cos"
-                | "tan"
-                | "log"
-                | "exp"
-        )
+    /// Check if a function is a known standard library function with its header included
+    fn is_standard_function_with_header(&self, name: &str) -> bool {
+        let headers = self.included_headers.borrow();
+
+        // Check if the appropriate header is included for each function
+        let has_stdio = headers.contains("stdio.h");
+        let has_stdlib = headers.contains("stdlib.h");
+        let has_string = headers.contains("string.h");
+        let has_math = headers.contains("math.h");
+        let has_assert = headers.contains("assert.h");
+
+        match name {
+            // stdio.h functions
+            "printf" | "scanf" | "fprintf" | "fscanf" | "sprintf" | "sscanf" | "fopen"
+            | "fclose" | "fread" | "fwrite" | "fseek" | "ftell" | "getchar" | "putchar"
+            | "gets" | "puts" => has_stdio,
+
+            // stdlib.h functions
+            "malloc" | "calloc" | "realloc" | "free" | "atoi" | "atof" | "atol" | "strtol"
+            | "strtod" | "exit" | "abort" | "atexit" => has_stdlib,
+
+            // string.h functions
+            "memcpy" | "memmove" | "memset" | "memcmp" | "strcpy" | "strncpy" | "strcat"
+            | "strncat" | "strcmp" | "strncmp" | "strlen" | "strchr" | "strstr" => has_string,
+
+            // math.h functions
+            "sqrt" | "pow" | "sin" | "cos" | "tan" | "log" | "exp" => has_math,
+
+            // assert.h
+            "assert" => has_assert,
+
+            _ => false,
+        }
     }
 
     /// Recursively traverse AST
     fn traverse(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // First pass: track declarations
+        // Track includes for header-aware function checking
+        self.track_includes(node, source);
+
+        // Track declarations
         self.track_function_declaration(node, source);
 
         // Check for violations

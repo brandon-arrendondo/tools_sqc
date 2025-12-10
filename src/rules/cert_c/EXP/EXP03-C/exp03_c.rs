@@ -183,6 +183,18 @@ impl Exp03C {
                             count += self.check_for_sizeof_addition(&right, source, depth + 1);
                         }
                         return count;
+                    } else if operator == "*" {
+                        // For multiplication, check if either operand contains sizeof
+                        // This catches patterns like "buffer_size * sizeof(char)"
+                        let mut count = 0;
+                        if let Some(left) = node.child_by_field_name("left") {
+                            count += self.check_for_sizeof_in_expr(&left, source, depth + 1);
+                        }
+                        if let Some(right) = node.child_by_field_name("right") {
+                            count += self.check_for_sizeof_in_expr(&right, source, depth + 1);
+                        }
+                        // A multiplication with sizeof counts as 1 sizeof expression
+                        return if count > 0 { 1 } else { 0 };
                     }
                 }
                 0
@@ -202,6 +214,27 @@ impl Exp03C {
                     }
                 }
                 0
+            }
+            _ => 0,
+        }
+    }
+
+    /// Check if an expression contains sizeof anywhere
+    fn check_for_sizeof_in_expr(&self, node: &Node, source: &str, depth: usize) -> usize {
+        if depth > 20 {
+            return 0;
+        }
+
+        match node.kind() {
+            "sizeof_expression" => 1,
+            "binary_expression" | "parenthesized_expression" | "cast_expression" => {
+                let mut count = 0;
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        count += self.check_for_sizeof_in_expr(&child, source, depth + 1);
+                    }
+                }
+                count
             }
             _ => 0,
         }

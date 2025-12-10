@@ -13,14 +13,21 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashSet;
 use tree_sitter::Node;
 
 #[derive(Debug)]
-pub struct Exp44C;
+pub struct Exp44C {
+    // Track macros that contain _Generic
+    generic_macros: HashSet<String>,
+}
 
 impl Exp44C {
     pub fn new() -> Self {
-        Exp44C
+        Exp44C {
+            generic_macros: HashSet::new(),
+        }
     }
 
     /// Check if a node represents a side effect
@@ -155,16 +162,92 @@ impl Exp44C {
         }
     }
 
-    /// Recursively traverse AST
-    fn traverse(&self, node: &Node, violations: &mut Vec<RuleViolation>) {
-        self.check_sizeof_expression(node, violations);
-        self.check_alignof_expression(node, violations);
-        self.check_generic_expression(node, violations);
+    /// Track macro definitions that contain _Generic
+    fn collect_generic_macros(&self, node: &Node, source: &str, macros: &mut HashSet<String>) {
+        // Look for #define directives
+        if node.kind() == "preproc_function_def" || node.kind() == "preproc_def" {
+            let text = get_node_text(node, source);
+            // Check if the macro body contains _Generic
+            if text.contains("_Generic") {
+                // Extract macro name
+                if let Some(name_node) = node.child_by_field_name("name") {
+                    let name = get_node_text(&name_node, source).trim().to_string();
+                    macros.insert(name);
+                }
+            }
+        }
 
         // Recurse into children
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
-            self.traverse(&child, violations);
+            self.collect_generic_macros(&child, source, macros);
+        }
+    }
+
+    /// Check if a call expression is to a _Generic-containing macro with side effects
+    fn check_generic_macro_call(
+        &self,
+        node: &Node,
+        source: &str,
+        generic_macros: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() != "call_expression" {
+            return;
+        }
+
+        // Get function name
+        if let Some(func_node) = node.child_by_field_name("function") {
+            let func_name = get_node_text(&func_node, source).trim().to_string();
+
+            // Check if this is a call to a _Generic-containing macro
+            if generic_macros.contains(&func_name) {
+                // Check arguments for side effects
+                if let Some(args_node) = node.child_by_field_name("arguments") {
+                    let mut cursor = args_node.walk();
+                    for child in args_node.children(&mut cursor) {
+                        if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
+                            if self.has_side_effect(&child) {
+                                violations.push(RuleViolation {
+                                    rule_id: "EXP44-C".to_string(),
+                                    severity: Severity::Low,
+                                    line: child.start_position().row + 1,
+                                    column: child.start_position().column + 1,
+                                    message: format!(
+                                        "Side effect in macro '{}' argument that uses _Generic; expression may not be evaluated",
+                                        func_name
+                                    ),
+                                    file_path: String::new(),
+                                    suggestion: Some(
+                                        "Move side effects outside of _Generic-containing macro call".to_string(),
+                                    ),
+                                    requires_manual_review: Some(false),
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Recursively traverse AST
+    fn traverse(
+        &self,
+        node: &Node,
+        source: &str,
+        generic_macros: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        self.check_sizeof_expression(node, violations);
+        self.check_alignof_expression(node, violations);
+        self.check_generic_expression(node, violations);
+        self.check_generic_macro_call(node, source, generic_macros, violations);
+
+        // Recurse into children
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.traverse(&child, source, generic_macros, violations);
         }
     }
 }
@@ -192,7 +275,13 @@ impl CertRule for Exp44C {
 
     fn check(&self, root: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.traverse(root, &mut violations);
+
+        // First pass: collect macros that contain _Generic
+        let mut generic_macros = HashSet::new();
+        self.collect_generic_macros(root, source, &mut generic_macros);
+
+        // Second pass: check for violations
+        self.traverse(root, source, &generic_macros, &mut violations);
         violations
     }
 }

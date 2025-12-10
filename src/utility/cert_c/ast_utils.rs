@@ -433,11 +433,14 @@ pub fn is_in_sizeof(node: &Node) -> bool {
 /// The for_statement node that contains the given node, or None if not found
 ///
 /// # Examples
-/// ```ignore
-/// // When checking a subscript inside a for loop
-/// if let Some(for_loop) = find_containing_for_loop(&subscript_node) {
-///     // Analyze loop bounds
-/// }
+/// ```no_run
+/// use sqc::utility::cert_c::ast_utils::find_containing_for_loop;
+/// use tree_sitter::Node;
+/// // When checking a subscript inside a for loop:
+/// // let subscript_node: Node = /* get from parsed AST */;
+/// // if let Some(for_loop) = find_containing_for_loop(&subscript_node) {
+/// //     // Analyze loop bounds
+/// // }
 /// ```
 pub fn find_containing_for_loop<'a>(node: &Node<'a>) -> Option<Node<'a>> {
     let mut current = node.parent();
@@ -459,11 +462,14 @@ pub fn find_containing_for_loop<'a>(node: &Node<'a>) -> Option<Node<'a>> {
 /// The if_statement node that contains the given node, or None if not found
 ///
 /// # Examples
-/// ```ignore
-/// // When checking if array access is within a bounds check
-/// if let Some(if_stmt) = find_containing_if_statement(&subscript_node) {
-///     // Check if condition validates bounds
-/// }
+/// ```no_run
+/// use sqc::utility::cert_c::ast_utils::find_containing_if_statement;
+/// use tree_sitter::Node;
+/// // When checking if array access is within a bounds check:
+/// // let subscript_node: Node = /* get from parsed AST */;
+/// // if let Some(if_stmt) = find_containing_if_statement(&subscript_node) {
+/// //     // Check if condition validates bounds
+/// // }
 /// ```
 pub fn find_containing_if_statement<'a>(node: &Node<'a>) -> Option<Node<'a>> {
     let mut current = node.parent();

@@ -12,22 +12,24 @@
 #include <unistd.h>
 #include <sys/types.h>
 
-char data[] = "test";
-pid_t pid;
+void func(void) {
+    char data[] = "test";
+    pid_t pid;
 
-int fd = open("output.txt", O_WRONLY | O_CREAT, 0644);
-if (fd == -1) {
-  /* Handle error */
-}
+    int fd = open("output.txt", O_WRONLY | O_CREAT, 0644);
+    if (fd == -1) {
+      /* Handle error */
+    }
 
-pid = fork();
-if (pid == -1) {
-  /* Handle error */
-}
+    pid = fork();
+    if (pid == -1) {
+      /* Handle error */
+    }
 
-if (pid == 0) { /*child*/
-  write(fd, "child\n", 6);
-}
-else { /*parent*/
-  write(fd, "parent\n", 7);
+    if (pid == 0) { /*child*/
+      write(fd, "child\n", 6);
+    }
+    else { /*parent*/
+      write(fd, "parent\n", 7);
+    }
 }
