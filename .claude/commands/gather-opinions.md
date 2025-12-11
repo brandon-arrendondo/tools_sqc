@@ -142,6 +142,13 @@ ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -2
 4. `pending`: "Next: {SECOND_PROPOSAL}"
 5. `in_progress`: "Progress: 0/{TOTAL} reviewed"
 
+**⚠️ CRITICAL: Do NOT modify this 5-todo structure. Do NOT batch proposals.**
+This exact structure enables workflow recovery after context compaction:
+- Todos 1-3 tell a resumed agent which step to continue from
+- Todo 4 tells a resumed agent what proposal comes next
+- Todo 5 tracks exact progress for accurate resumption
+Changing this structure BREAKS recovery. Process ONE proposal at a time.
+
 **Starting autonomous review as {PERSONA}...**
 
 ---
@@ -172,6 +179,13 @@ ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -2
 ```bash
 ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -4 | tail -1
 ```
+
+**Validation Checkpoint (every 10 proposals):**
+After proposals 10, 20, 30, etc., verify your todo list has exactly 5 items:
+- 3 workflow steps for current proposal (Analyze/Form opinion/Record and commit)
+- 1 "Next:" tracking todo
+- 1 "Progress:" tracking todo
+If your structure has deviated (batching, different format), STOP and reset to the correct 5-todo structure before continuing.
 
 For **EACH** proposal in STAGED, I will:
 
