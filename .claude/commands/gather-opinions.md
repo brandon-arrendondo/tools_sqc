@@ -131,10 +131,16 @@ ls -1 AGENTS/PROPOSALS/STAGED/*.md | wc -l
 ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -2
 ```
 
-**Initialize TodoWrite with exactly 3 todos:**
-1. Current proposal `in_progress`: "Gathering opinion on {FIRST_PROPOSAL}"
-2. Next proposal `pending`: "Next: {SECOND_PROPOSAL}"
-3. Progress counter `in_progress`: "Progress: 0/{TOTAL} reviewed"
+**Initialize TodoWrite with exactly 5 todos:**
+
+*Workflow steps for current proposal:*
+1. `in_progress`: "Analyze {FIRST_PROPOSAL}" (read proposal + inspect implementation)
+2. `pending`: "Form opinion on {FIRST_PROPOSAL}" (persona analysis + DRY/KISS checks)
+3. `pending`: "Record and commit {FIRST_PROPOSAL}" (add-opinion + add-comment + git commit)
+
+*Tracking:*
+4. `pending`: "Next: {SECOND_PROPOSAL}"
+5. `in_progress`: "Progress: 0/{TOTAL} reviewed"
 
 **Starting autonomous review as {PERSONA}...**
 
@@ -142,16 +148,25 @@ ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -2
 
 ### Step 4: Process Each Proposal (AUTONOMOUS)
 
-**TodoWrite Management:** After completing each proposal (N), update all 3 todos:
+**TodoWrite Management:**
 
-1. Mark current proposal todo as `completed`
-2. Move next proposal to `in_progress`: "Gathering opinion on {PROPOSAL}"
-3. **Query for new next proposal** - do NOT guess filenames:
+*During each proposal* - progress through steps 1→2→3:
+- Mark current step `completed`, mark next step `in_progress`
+- Step 1 "Analyze": covers sections A + B below
+- Step 2 "Form opinion": covers section C below
+- Step 3 "Record and commit": covers sections D + E below
+
+*After completing proposal N* - reset for next proposal:
+1. Create fresh workflow todos for next proposal:
+   - `in_progress`: "Analyze {NEXT_PROPOSAL}"
+   - `pending`: "Form opinion on {NEXT_PROPOSAL}"
+   - `pending`: "Record and commit {NEXT_PROPOSAL}"
+2. **Query for new next proposal** - do NOT guess filenames:
    ```bash
    ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -{N+2} | tail -1
    ```
-   Add as `pending`: "Next: {QUERIED_PROPOSAL}" (or remove todo if none remaining)
-4. Update progress counter: "Progress: {N}/{TOTAL} reviewed"
+   Update to `pending`: "Next: {QUERIED_PROPOSAL}" (or remove if none remaining)
+3. Update progress counter: "Progress: {N}/{TOTAL} reviewed"
 
 **Example:** After completing proposal #2, query for proposal #4:
 ```bash
