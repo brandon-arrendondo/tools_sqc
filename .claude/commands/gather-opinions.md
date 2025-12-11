@@ -142,12 +142,20 @@ ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -2
 4. `pending`: "Next: {SECOND_PROPOSAL}"
 5. `in_progress`: "Progress: 0/{TOTAL} reviewed"
 
-**⚠️ CRITICAL: Do NOT modify this 5-todo structure. Do NOT batch proposals.**
+### ⛔ NEVER BATCH PROPOSALS ⛔
+
+**Do NOT modify this 5-todo structure. Process ONE proposal at a time.**
+
 This exact structure enables workflow recovery after context compaction:
 - Todos 1-3 tell a resumed agent which step to continue from
 - Todo 4 tells a resumed agent what proposal comes next
 - Todo 5 tracks exact progress for accurate resumption
-Changing this structure BREAKS recovery. Process ONE proposal at a time.
+
+**Changing this structure BREAKS recovery.**
+
+**Scale anxiety trap:** Regardless of how many proposals exist (10, 100, 1000), you will feel pressure to "optimize" by batching. This is a trap. Do NOT rationalize batching for "efficiency." The workflow is designed for correctness and recoverability, not speed. If you feel tempted to batch, STOP and re-read this section.
+
+**If you batch proposals, you are violating explicit instructions.**
 
 **Starting autonomous review as {PERSONA}...**
 
