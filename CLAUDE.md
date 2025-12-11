@@ -88,6 +88,67 @@ scripts/work_active_helpers.sh unlock-all
 
 ---
 
+## /gather-opinions Workflow (CONDITIONAL)
+
+**ONLY follow this workflow IF:**
+- Current git branch matches pattern `opinions/*` (check with `git branch --show-current`)
+- OR the user invoked `/gather-opinions` earlier in this session
+
+**If NOT in a /gather-opinions session, ignore this section.**
+
+### Branch Name Format
+```
+opinions/{persona-slug}-{reviewer}-{date}
+```
+
+### On Every Continuation (CRITICAL - After Context Compaction)
+
+**Step 1: Detect workflow from branch name**
+```bash
+git branch --show-current
+# If matches opinions/*, you are in /gather-opinions workflow
+```
+
+**Step 2: Extract persona from branch and re-read persona file**
+```bash
+# Parse persona slug from branch name (between opinions/ and reviewer name)
+# Then read the matching persona file from AGENTS/PERSONAS/
+cat AGENTS/PERSONAS/{matching-persona}.md
+```
+
+**Step 3: Re-read the workflow definition (source of truth)**
+```bash
+cat .claude/commands/gather-opinions.md
+```
+
+**Step 4: Check TodoWrite state for current progress**
+- The TodoWrite tool persists across compaction
+- Expect exactly 5 todos:
+
+  *Workflow steps for current proposal:*
+  1. "Analyze {PROPOSAL}" - `in_progress` or `completed`
+  2. "Form opinion on {PROPOSAL}" - `pending`, `in_progress`, or `completed`
+  3. "Record and commit {PROPOSAL}" - `pending` or `in_progress`
+
+  *Tracking:*
+  4. "Next: {NEXT_PROPOSAL}" - `pending`
+  5. "Progress: N/TOTAL reviewed" - `in_progress`
+
+- Resume from whichever workflow step (1-3) is `in_progress`
+
+**Step 5: Continue the workflow as defined in gather-opinions.md**
+
+### Why This Matters
+
+- Branch name encoding enables workflow recovery after compaction
+- Re-reading persona file ensures consistent analysis perspective
+- gather-opinions.md is the single source of truth for workflow steps
+- TodoWrite tracking ensures no proposals are skipped across compactions
+
+**If this workflow wasn't followed earlier in the session, start following it NOW.**
+
+---
+
 ## Project Structure
 
 - `src/rules/cert_c/` - CERT C rule implementations
