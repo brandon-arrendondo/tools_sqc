@@ -8,28 +8,9 @@
 
 ---
 
-### Step 0: Create Review Branch (REQUIRED)
+### Step 1: Select Persona (INTERACTIVE)
 
-Before starting any reviews, create a dedicated branch for this opinion-gathering session:
-
-```bash
-# Get reviewer name and create branch
-REVIEWER=$(git config user.name | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
-DATE=$(date +%Y%m%d)
-BRANCH_NAME="opinions/${REVIEWER}-${DATE}"
-
-# Create and checkout branch
-git checkout -b "$BRANCH_NAME"
-echo "Created review branch: $BRANCH_NAME"
-```
-
-**Why branch?** Each opinion will be committed individually, creating an audit trail of the review process.
-
----
-
-### Step 1: Select Persona & Configure Auto-Approvals (INTERACTIVE)
-
-**PAUSE HERE** - Two things to set up before autonomous execution begins:
+**PAUSE HERE** - Persona selection required before branch creation.
 
 ---
 
@@ -37,37 +18,28 @@ echo "Created review branch: $BRANCH_NAME"
 
 Before reviewing proposals, I need to understand what perspective you want me to adopt.
 
-**Common Review Personas:**
+**Available Personas:** (located in `AGENTS/PERSONAS/`)
 
-1. **Security Auditor**
-   - Focus: Vulnerabilities, unsafe code, input validation, panic vectors
-   - Looks for: unwrap(), unsafe{}, unvalidated input, SQL injection, XSS, buffer overflows
+```bash
+ls AGENTS/PERSONAS/*.md
+```
 
-2. **Performance Engineer**
-   - Focus: Algorithmic complexity, resource usage, efficiency
-   - Looks for: O(n²) algorithms, unnecessary allocations, blocking operations, memory leaks
+| Persona File | Focus |
+|--------------|-------|
+| `security-auditor.md` | Vulnerabilities, unsafe code, input validation |
+| `performance-engineer.md` | Algorithmic complexity, resource usage |
+| `maintainability-advocate.md` | Code clarity, documentation, technical debt |
+| `test-quality-reviewer.md` | Test coverage, edge cases, failure scenarios |
+| `api-designer.md` | Interfaces, ergonomics, breaking changes |
+| `memory-safety-expert.md` | Memory leaks, buffer overflows, lifetime issues |
+| `generalist.md` | Balanced review across all dimensions |
 
-3. **Maintainability Advocate**
-   - Focus: Code clarity, documentation, technical debt, future-proofing
-   - Looks for: Complex logic, missing comments, magic numbers, tight coupling
+**Custom Personas:** Create your own in `AGENTS/PERSONAS/{your-persona}.md`
 
-4. **Test Quality Reviewer**
-   - Focus: Test coverage, edge cases, test design, failure scenarios
-   - Looks for: Missing tests, weak assertions, untested error paths, brittle tests
-
-5. **API Designer**
-   - Focus: Interfaces, ergonomics, breaking changes, backwards compatibility
-   - Looks for: Poor naming, inconsistent patterns, breaking API changes, missing docs
-
-6. **Memory Safety Expert**
-   - Focus: Memory leaks, use-after-free, buffer overflows, lifetime issues
-   - Looks for: Manual memory management, pointer arithmetic, unsafe casts
-
-7. **Generalist**
-   - Focus: Balanced review across all dimensions
-   - Looks for: General correctness, completeness, quality
-
-8. **Custom** - Describe your own perspective
+After selection, read the full persona prompt:
+```bash
+cat AGENTS/PERSONAS/{selected-persona}.md
+```
 
 ---
 
@@ -85,7 +57,6 @@ To run this workflow without manual approval prompts, add these commands to `.cl
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(git rev-list:*)",
       "Bash(ls:*)",
       "Bash(cat:*)",
       "Bash(grep:*)",
@@ -111,28 +82,81 @@ To run this workflow without manual approval prompts, add these commands to `.cl
 ---
 
 **Ready to proceed?** Please provide:
-1. Your chosen persona (number 1-8 or custom description)
+1. Your chosen persona file (e.g., `security-auditor` or path to custom)
 2. Confirm auto-approvals are configured (or acknowledge you'll approve manually)
 
 ---
 
-### Step 2: Identify Reviewer and Scan Proposals
+### Step 2: Create Review Branch (REQUIRED)
 
+After persona selection, create a dedicated branch. Run these commands separately:
+
+**Get reviewer name:**
 ```bash
-REVIEWER=$(git config user.name | tr ' ' '-' | tr '[:upper:]' '[:lower:]')
-echo "Reviewer: $REVIEWER"
-echo "Persona: {SELECTED_PERSONA}"
-
-# Count proposals awaiting review
-PROPOSAL_COUNT=$(ls -1 AGENTS/PROPOSALS/STAGED/*.md 2>/dev/null | wc -l)
-echo "Found $PROPOSAL_COUNT proposals in STAGED/"
+git config user.name
 ```
+Convert to lowercase with hyphens (e.g., "Tristan VanFossen" → "tristan-vanfossen").
+
+**Get today's date:**
+```bash
+date +%Y%m%d
+```
+
+**Create the branch** (substitute actual values):
+```bash
+git checkout -b "opinions/{PERSONA_FILE}-{REVIEWER}-{DATE}"
+```
+
+**Example:** For persona `security-auditor`, reviewer `tristan-vanfossen`, date `20251211`:
+```bash
+git checkout -b "opinions/security-auditor-tristan-vanfossen-20251211"
+```
+
+**Branch format:** `opinions/{persona-file}-{reviewer}-{date}`
+- Persona file basename enables workflow recovery after context compaction
+
+**Why branch?** Each opinion will be committed individually, creating an audit trail of the review process.
+
+---
+
+### Step 3: Scan Proposals and Initialize Todos
+
+**Count proposals:**
+```bash
+ls -1 AGENTS/PROPOSALS/STAGED/*.md | wc -l
+```
+
+**List first two proposals:**
+```bash
+ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -2
+```
+
+**Initialize TodoWrite with exactly 3 todos:**
+1. Current proposal `in_progress`: "Gathering opinion on {FIRST_PROPOSAL}"
+2. Next proposal `pending`: "Next: {SECOND_PROPOSAL}"
+3. Progress counter `in_progress`: "Progress: 0/{TOTAL} reviewed"
 
 **Starting autonomous review as {PERSONA}...**
 
 ---
 
-### Step 3: Process Each Proposal (AUTONOMOUS)
+### Step 4: Process Each Proposal (AUTONOMOUS)
+
+**TodoWrite Management:** After completing each proposal (N), update all 3 todos:
+
+1. Mark current proposal todo as `completed`
+2. Move next proposal to `in_progress`: "Gathering opinion on {PROPOSAL}"
+3. **Query for new next proposal** - do NOT guess filenames:
+   ```bash
+   ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -{N+2} | tail -1
+   ```
+   Add as `pending`: "Next: {QUERIED_PROPOSAL}" (or remove todo if none remaining)
+4. Update progress counter: "Progress: {N}/{TOTAL} reviewed"
+
+**Example:** After completing proposal #2, query for proposal #4:
+```bash
+ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -4 | tail -1
+```
 
 For **EACH** proposal in STAGED, I will:
 
@@ -256,13 +280,15 @@ grep -r "similar_pattern" src/ --include="*.rs" | head -10
 
 #### D. Record Opinion and Commit
 
+**IMPORTANT:** All commands must be single-line (no `\` continuations).
+
 ```bash
-# Add opinion to proposal frontmatter
-scripts/review_helpers.sh add-opinion \
-  "AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md" \
-  "{SELECTED_PERSONA}" \
-  "{OPINION}" \
-  "{COMMENT}"
+# Add opinion to proposal frontmatter (creates reviewer entry)
+scripts/review_helpers.sh add-opinion "AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md" "{PERSONA_FILE}" "{OPINION}"
+
+# Add comments (200 char limit per call, 5 comments max unless egregious violations)
+scripts/review_helpers.sh add-comment "AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md" "First observation here."
+scripts/review_helpers.sh add-comment "AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md" "Second observation here."
 
 # Commit this individual opinion
 git add "AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md"
@@ -270,19 +296,21 @@ git commit -m "opinion({PROPOSAL_ID}): {OPINION} by {REVIEWER} as {PERSONA}"
 ```
 
 **Comment Guidelines:**
+- 200 character limit per comment (enforced by script)
 - Be specific: cite line numbers, function names, file paths
 - Be constructive: suggest fixes, not just problems
-- Provide enough context for a deeper dive into specifics
 - Note any cross-repo DRY concerns with specific file references
-- Keep comments brief but actionable (5 sentences max), but if there are egregious violations you can add more
+- 5 comments max, unless egregious violations warrant more
 
-**Example comments:**
-```
+**Example comment sequence:**
+```bash
 # Good - specific and actionable
-"DRY: pointer_funcs array duplicated at lines 142/198. Similar array exists in ARR38-C (line 55). Consider shared constant in src/utility/cert_c/. Error messages are clear."
+scripts/review_helpers.sh add-comment "path/file.md" "DRY: pointer_funcs duplicated at lines 142/198, similar in ARR38-C line 55."
+scripts/review_helpers.sh add-comment "path/file.md" "Consider shared constant in src/utility/cert_c/."
+scripts/review_helpers.sh add-comment "path/file.md" "Missing test coverage for flexible array members."
 
 # Bad - vague
-"Some duplication found. Looks okay otherwise."
+scripts/review_helpers.sh add-comment "path/file.md" "Some duplication found."
 ```
 
 #### E. Track Progress
@@ -293,7 +321,7 @@ echo "✓ [{CURRENT}/{TOTAL}] {PROPOSAL_ID} - {OPINION}"
 
 ---
 
-### Step 4: Generate Summary Report
+### Step 5: Generate Summary Report
 
 After processing all proposals:
 
@@ -301,7 +329,7 @@ After processing all proposals:
 === Gather Opinions Summary ===
 Reviewer: {REVIEWER_NAME}
 Persona: {SELECTED_PERSONA}
-Branch: opinions/{REVIEWER}-{DATE}
+Branch: opinions/{PERSONA_FILE}-{REVIEWER}-{DATE}
 Date: {YYYY-MM-DD}
 
 Processed: {TOTAL} proposals
@@ -327,13 +355,13 @@ Cross-Repo DRY Candidates (potential shared utilities):
   - {Pattern/Method}: Found in {PROPOSAL_3}, {PROPOSAL_4}
 
 Next Steps:
-  - Push branch: git push -u origin opinions/{REVIEWER}-{DATE}
+  - Push branch: git push -u origin opinions/{PERSONA_FILE}-{REVIEWER}-{DATE}
   - Create PR or wait for architect to run /review-staged
 ```
 
 ---
 
-### Step 5: Finalize Session
+### Step 6: Finalize Session
 
 ```bash
 # Push the opinion branch
@@ -395,25 +423,32 @@ echo "Commits: $(git rev-list --count main..$BRANCH_NAME)"
 ```
 User: /gather-opinions
 
-Claude: === Step 1: Select Persona & Configure Auto-Approvals ===
+Claude: === Step 1: Select Persona ===
 
-PAUSE - Two things to set up before autonomous execution:
+PAUSE - Persona selection required before branch creation.
 
-1A. Which persona should I adopt? [Shows 8 options]
-
-1B. For autonomous execution, add to .claude/settings.local.json:
-    [Shows JSON config]
+Available personas in AGENTS/PERSONAS/:
+  - security-auditor.md
+  - performance-engineer.md
+  - maintainability-advocate.md
+  - test-quality-reviewer.md
+  - api-designer.md
+  - memory-safety-expert.md
+  - generalist.md
 
 Ready to proceed? Please provide:
-1. Your chosen persona
+1. Your chosen persona file (e.g., "maintainability-advocate")
 2. Confirm auto-approvals configured (or will approve manually)
 
-User: Maintainability Advocate, auto-approvals configured
+User: maintainability-advocate, auto-approvals configured
 
-Claude: Creating review branch...
-Created: opinions/tristan-vanfossen-20251210
+Claude: Reading persona...
+[Reads AGENTS/PERSONAS/maintainability-advocate.md]
 
-Starting review as Maintainability Advocate...
+Creating review branch...
+Created: opinions/maintainability-advocate-tristan-vanfossen-20251210
+
+Starting review as maintainability-advocate...
 Reviewer: tristan-vanfossen
 Found 93 proposals in STAGED/
 
@@ -432,7 +467,7 @@ Processing P1-API01-C...
 ...
 
 === Summary ===
-Branch: opinions/tristan-vanfossen-20251210
+Branch: opinions/maintainability-advocate-tristan-vanfossen-20251210
 Processed: 93 proposals
 Commits: 93
 

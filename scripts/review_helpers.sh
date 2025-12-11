@@ -13,13 +13,12 @@ get_reviewer_name() {
     git config user.name | tr ' ' '-' | tr '[:upper:]' '[:lower:]'
 }
 
-# Add opinion to proposal frontmatter
-# Usage: add-opinion PROPOSAL_FILE PERSONA OPINION COMMENT
+# Add opinion to proposal frontmatter (creates reviewer entry with empty comments array)
+# Usage: add-opinion PROPOSAL_FILE PERSONA OPINION
 add_opinion() {
     local proposal_file="$1"
     local persona="$2"
     local opinion="$3"
-    local comment="$4"
 
     if [ ! -f "$proposal_file" ]; then
         echo "ERROR: Proposal file not found: $proposal_file"
@@ -41,7 +40,7 @@ add_opinion() {
             echo "    date: $date"
             echo "    timestamp: $timestamp"
             echo "    opinion: $opinion"
-            echo "    comment: \"$comment\""
+            echo "    comments: []"
             echo "---"
             echo ""
             cat "$proposal_file"
@@ -63,12 +62,12 @@ add_opinion() {
                 echo "    date: $date"
                 echo "    timestamp: $timestamp"
                 echo "    opinion: $opinion"
-                echo "    comment: \"$comment\""
+                echo "    comments: []"
                 tail -n +$closing_line "$proposal_file"
             } > "${proposal_file}.tmp"
             mv "${proposal_file}.tmp" "$proposal_file"
         else
-            # Reviews section exists - append to it before closing ---
+            # Reviews section exists - append new reviewer entry before closing ---
             {
                 head -n $((closing_line - 1)) "$proposal_file"
                 echo "  - reviewer: $reviewer"
@@ -76,7 +75,7 @@ add_opinion() {
                 echo "    date: $date"
                 echo "    timestamp: $timestamp"
                 echo "    opinion: $opinion"
-                echo "    comment: \"$comment\""
+                echo "    comments: []"
                 tail -n +$closing_line "$proposal_file"
             } > "${proposal_file}.tmp"
             mv "${proposal_file}.tmp" "$proposal_file"
@@ -86,6 +85,48 @@ add_opinion() {
     echo "✓ Opinion added to $proposal_file"
     echo "  Reviewer: $reviewer ($persona)"
     echo "  Opinion: $opinion"
+}
+
+# Add comment to most recent reviewer's comments array
+# Usage: add-comment PROPOSAL_FILE COMMENT
+# Note: Comments limited to 200 characters
+add_comment() {
+    local proposal_file="$1"
+    local comment="$2"
+
+    if [ ! -f "$proposal_file" ]; then
+        echo "ERROR: Proposal file not found: $proposal_file"
+        exit 1
+    fi
+
+    if [ ${#comment} -gt 200 ]; then
+        echo "ERROR: Comment exceeds 200 character limit (${#comment} chars)"
+        echo "Split into multiple add-comment calls."
+        exit 1
+    fi
+
+    # Find the line with "comments: []" or the last "comments:" line and append
+    if grep -q "comments: \[\]" "$proposal_file"; then
+        # Empty comments array - replace with first comment
+        sed -i "s|comments: \[\]|comments:\n      - \"$comment\"|" "$proposal_file"
+    elif grep -q "^    comments:$" "$proposal_file"; then
+        # Comments array exists - find last comment entry and append after it
+        # Find line number of last "      - " under comments
+        local last_comment_line=$(grep -n '^      - "' "$proposal_file" | tail -1 | cut -d: -f1)
+        if [ -n "$last_comment_line" ]; then
+            # Insert after last comment
+            sed -i "${last_comment_line}a\\      - \"$comment\"" "$proposal_file"
+        else
+            # No comments yet under comments: header - add first one
+            local comments_line=$(grep -n "^    comments:$" "$proposal_file" | tail -1 | cut -d: -f1)
+            sed -i "${comments_line}a\\      - \"$comment\"" "$proposal_file"
+        fi
+    else
+        echo "ERROR: No reviewer entry found. Run add-opinion first."
+        exit 1
+    fi
+
+    echo "✓ Comment added"
 }
 
 # Analyze opinion coverage across all STAGED proposals
@@ -340,9 +381,11 @@ review_helpers.sh - Distributed review workflow helper
 
 PHASE 1 COMMANDS (gather-opinions):
   get-reviewer-name              Get reviewer name from git config
-  add-opinion FILE PERSONA OPINION COMMENT
-                                 Add opinion to proposal frontmatter
+  add-opinion FILE PERSONA OPINION
+                                 Add opinion to proposal (creates reviewer entry)
+                                 PERSONA: persona file basename, e.g., "security-auditor"
                                  OPINION: LOOKS_GOOD|NEEDS_REVIEW|BLOCKED
+  add-comment FILE COMMENT       Add comment to most recent reviewer's entry
   analyze-coverage               Show review coverage statistics
 
 PHASE 2 COMMANDS (review-staged):
@@ -354,8 +397,10 @@ PHASE 2 COMMANDS (review-staged):
   move-to-stalled FILE           Move proposal to STALLED/
 
 EXAMPLES:
-  # Phase 1: Add your opinion
-  $0 add-opinion P1-FIO37-C-implementation.md "Security Auditor" "NEEDS_REVIEW" "Line 142: unwrap() on user input"
+  # Phase 1: Add your opinion and comments
+  $0 add-opinion AGENTS/PROPOSALS/STAGED/P1-FIO37-C.md "security-auditor" "NEEDS_REVIEW"
+  $0 add-comment AGENTS/PROPOSALS/STAGED/P1-FIO37-C.md "Line 142: unwrap() on user input."
+  $0 add-comment AGENTS/PROPOSALS/STAGED/P1-FIO37-C.md "Missing validation for external data."
 
   # Phase 2: Analyze and move
   $0 analyze-opinions
@@ -371,11 +416,19 @@ case "$1" in
         ;;
 
     "add-opinion")
-        if [ $# -lt 5 ]; then
-            echo "Usage: $0 add-opinion PROPOSAL_FILE PERSONA OPINION COMMENT"
+        if [ $# -lt 4 ]; then
+            echo "Usage: $0 add-opinion PROPOSAL_FILE PERSONA OPINION"
             exit 1
         fi
-        add_opinion "$2" "$3" "$4" "$5"
+        add_opinion "$2" "$3" "$4"
+        ;;
+
+    "add-comment")
+        if [ $# -lt 3 ]; then
+            echo "Usage: $0 add-comment PROPOSAL_FILE COMMENT"
+            exit 1
+        fi
+        add_comment "$2" "$3"
         ;;
 
     "analyze-coverage")
