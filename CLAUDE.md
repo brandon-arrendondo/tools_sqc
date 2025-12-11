@@ -123,11 +123,18 @@ cat .claude/commands/gather-opinions.md
 
 **Step 4: Check TodoWrite state for current progress**
 - The TodoWrite tool persists across compaction
-- Expect exactly 3 todos:
-  1. Current proposal `in_progress` (e.g., "Gathering opinion on P1-API00-C")
-  2. Next proposal `pending` (e.g., "Next: P1-API01-C")
-  3. Progress counter `in_progress` (e.g., "Progress: 5/283 reviewed")
-- Resume from the `in_progress` proposal todo
+- Expect exactly 5 todos:
+
+  *Workflow steps for current proposal:*
+  1. "Analyze {PROPOSAL}" - `in_progress` or `completed`
+  2. "Form opinion on {PROPOSAL}" - `pending`, `in_progress`, or `completed`
+  3. "Record and commit {PROPOSAL}" - `pending` or `in_progress`
+
+  *Tracking:*
+  4. "Next: {NEXT_PROPOSAL}" - `pending`
+  5. "Progress: N/TOTAL reviewed" - `in_progress`
+
+- Resume from whichever workflow step (1-3) is `in_progress`
 
 **Step 5: Continue the workflow as defined in gather-opinions.md**
 
