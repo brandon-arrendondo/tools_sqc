@@ -134,7 +134,9 @@ cat .claude/commands/gather-opinions.md
   4. "Next: {NEXT_PROPOSAL}" - `pending`
   5. "Progress: N/TOTAL reviewed" - `in_progress`
 
+- **⚠️ Do NOT modify this structure or batch proposals** - it enables recovery
 - Resume from whichever workflow step (1-3) is `in_progress`
+- If todos have deviated from this structure, reset to correct format before continuing
 
 **Step 5: Continue the workflow as defined in gather-opinions.md**
 
