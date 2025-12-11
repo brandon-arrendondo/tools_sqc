@@ -138,6 +138,8 @@ cat .claude/commands/gather-opinions.md
 - Resume from whichever workflow step (1-3) is `in_progress`
 - If todos have deviated from this structure, reset to correct format before continuing
 
+**Anti-pattern to watch for:** If Claude starts batching proposals or modifying the 5-todo structure for "efficiency," this BREAKS the workflow. The number of proposals is irrelevant - never batch, regardless of scale.
+
 **Step 5: Continue the workflow as defined in gather-opinions.md**
 
 ### Why This Matters
