@@ -9,6 +9,10 @@ tags:
   - cert-c
   - implementation
   - PRE
+related_files:
+  - src/rules/cert_c/PRE/PRE11-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-PRE11-C - PRE11-C Implementation

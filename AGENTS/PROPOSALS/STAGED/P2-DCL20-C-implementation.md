@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - DCL
+reviews: []
+related_files:
+  - src/rules/cert_c/DCL/DCL20-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-DCL20-C - DCL20-C Implementation

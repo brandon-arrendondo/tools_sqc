@@ -9,6 +9,10 @@ tags:
   - cert-c
   - implementation
   - POS
+related_files:
+  - src/rules/cert_c/POS/POS04-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-POS04-C - POS04-C Implementation

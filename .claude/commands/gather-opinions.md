@@ -131,25 +131,26 @@ ls -1 AGENTS/PROPOSALS/STAGED/*.md | wc -l
 ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -2
 ```
 
-**Initialize TodoWrite with exactly 5 todos:**
+**Initialize TodoWrite with exactly 6 todos:**
 
 *Workflow steps for current proposal:*
-1. `in_progress`: "Analyze {FIRST_PROPOSAL}" (read proposal + inspect implementation)
-2. `pending`: "Form opinion on {FIRST_PROPOSAL}" (persona analysis + DRY/KISS checks)
-3. `pending`: "Record and commit {FIRST_PROPOSAL}" (add-opinion + add-comment + git commit)
+1. `in_progress`: "LOCK + Read proposal {FIRST_PROPOSAL}" (scripts/review_helpers.sh lock-for-opinion + read proposal markdown)
+2. `pending`: "Read ALL related_files for {RULE_ID}" (read EVERY file in related_files array - no skipping)
+3. `pending`: "Form opinion on {FIRST_PROPOSAL}" (persona analysis + DRY/KISS checks on ACTUAL CODE)
+4. `pending`: "Record + commit + UNLOCK {FIRST_PROPOSAL}" (add-opinion + add-comment + git commit + scripts/review_helpers.sh unlock-for-opinion)
 
 *Tracking:*
-4. `pending`: "Next: {SECOND_PROPOSAL}"
-5. `in_progress`: "Progress: 0/{TOTAL} reviewed"
+5. `pending`: "Next: {SECOND_PROPOSAL}"
+6. `in_progress`: "Progress: 0/{TOTAL} reviewed"
 
 ### ⛔ NEVER BATCH PROPOSALS ⛔
 
-**Do NOT modify this 5-todo structure. Process ONE proposal at a time.**
+**Do NOT modify this 6-todo structure. Process ONE proposal at a time.**
 
 This exact structure enables workflow recovery after context compaction:
-- Todos 1-3 tell a resumed agent which step to continue from
-- Todo 4 tells a resumed agent what proposal comes next
-- Todo 5 tracks exact progress for accurate resumption
+- Todos 1-4 tell a resumed agent which step to continue from
+- Todo 5 tells a resumed agent what proposal comes next
+- Todo 6 tracks exact progress for accurate resumption
 
 **Changing this structure BREAKS recovery.**
 
@@ -163,19 +164,30 @@ This exact structure enables workflow recovery after context compaction:
 
 ### Step 4: Process Each Proposal (AUTONOMOUS)
 
+**⚠️ MECHANICAL ENFORCEMENT - LOCKING REQUIRED**
+
+Before analyzing ANY proposal, you MUST call `lock-for-opinion`. This command:
+- Makes all OTHER proposals unreadable (chmod 000)
+- Makes all OTHER rule implementations unreadable (chmod 000)
+- Leaves ONLY the current proposal and its rule accessible
+
+**This is not optional.** The lock prevents batching at the filesystem level - you literally cannot read other proposals while locked.
+
 **TodoWrite Management:**
 
-*During each proposal* - progress through steps 1→2→3:
+*During each proposal* - progress through steps 1→2→3→4:
 - Mark current step `completed`, mark next step `in_progress`
-- Step 1 "Analyze": covers sections A + B below
-- Step 2 "Form opinion": covers section C below
-- Step 3 "Record and commit": covers sections D + E below
+- Step 1 "LOCK + Read proposal": covers section A below (MUST lock first!)
+- Step 2 "Read ALL related_files": covers section B below (read EVERY file - no skipping)
+- Step 3 "Form opinion": covers section C below (based on ACTUAL CODE, not just markdown)
+- Step 4 "Record + commit + UNLOCK": covers sections D + E below (MUST unlock after!)
 
 *After completing proposal N* - reset for next proposal:
 1. Create fresh workflow todos for next proposal:
-   - `in_progress`: "Analyze {NEXT_PROPOSAL}"
+   - `in_progress`: "LOCK + Read proposal {NEXT_PROPOSAL}"
+   - `pending`: "Read ALL related_files for {RULE_ID}"
    - `pending`: "Form opinion on {NEXT_PROPOSAL}"
-   - `pending`: "Record and commit {NEXT_PROPOSAL}"
+   - `pending`: "Record + commit + UNLOCK {NEXT_PROPOSAL}"
 2. **Query for new next proposal** - do NOT guess filenames:
    ```bash
    ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -{N+2} | tail -1
@@ -189,16 +201,25 @@ ls -1 AGENTS/PROPOSALS/STAGED/*.md | head -4 | tail -1
 ```
 
 **Validation Checkpoint (every 10 proposals):**
-After proposals 10, 20, 30, etc., verify your todo list has exactly 5 items:
-- 3 workflow steps for current proposal (Analyze/Form opinion/Record and commit)
+After proposals 10, 20, 30, etc., verify your todo list has exactly 6 items:
+- 4 workflow steps for current proposal (LOCK+Read proposal/Read ALL related_files/Form opinion/Record+commit+UNLOCK)
 - 1 "Next:" tracking todo
 - 1 "Progress:" tracking todo
-If your structure has deviated (batching, different format), STOP and reset to the correct 5-todo structure before continuing.
+If your structure has deviated (batching, different format), STOP and reset to the correct 6-todo structure before continuing.
 
 For **EACH** proposal in STAGED, I will:
 
-#### A. Read Complete Proposal
+#### A. Lock and Read Complete Proposal
 
+**FIRST ACTION - Lock for this proposal:**
+```bash
+# REQUIRED: Lock all other proposals and implementations
+scripts/review_helpers.sh lock-for-opinion AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md
+```
+
+This makes all OTHER proposals unreadable. You can now ONLY access this proposal's files.
+
+**THEN read the proposal:**
 ```bash
 # Read entire proposal - ALL sections
 cat AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md
@@ -211,17 +232,47 @@ cat AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md
 - Check Acceptance Criteria for completeness
 - Note any red flags specific to my persona
 
-#### B. Code Inspection
+#### B. Read ALL related_files (MANDATORY)
 
-```bash
-# Extract paths/commits from proposal and inspect implementation
-# Focus on the specific files mentioned in the proposal
+**⚠️ CRITICAL: You MUST read EVERY file listed in `related_files` frontmatter.**
+
+The proposal frontmatter contains a `related_files` array. You MUST read ALL of them:
+
+```yaml
+related_files:
+  - src/rules/cert_c/{CATEGORY}/{RULE_ID}/   # Read ALL files in this directory
+  - src/rules/cert_c/mod.rs                   # Check rule registration
+  - src/utility/cert_c/                       # Understand shared utilities used
 ```
 
+**Required reads for EVERY proposal:**
+```bash
+# 1. Read the rule implementation file(s)
+cat src/rules/cert_c/{CATEGORY}/{RULE_ID}/*.rs
+
+# 2. Read the rule TOML config
+cat src/rules/cert_c/{CATEGORY}/{RULE_ID}/{RULE_ID}.toml
+
+# 3. Read test files if they exist
+ls src/rules/cert_c/{CATEGORY}/{RULE_ID}/tests/ 2>/dev/null && \
+cat src/rules/cert_c/{CATEGORY}/{RULE_ID}/tests/*/*.c
+
+# 4. Verify mod.rs registration (grep for the rule)
+grep -n "{RULE_ID}\|{rule_id}" src/rules/cert_c/mod.rs | head -5
+```
+
+**Optional (if commits mentioned in frontmatter):**
+If the proposal frontmatter contains commit hashes, inspect them:
+```bash
+git show {COMMIT_HASH} --stat
+```
+
+**This is NOT optional. If you skip reading related_files, your opinion is based on incomplete information and is INVALID.**
+
 **Inspection should be:**
-- Guided by the proposal context, and the persona that the reviewer has selected
-- Neutral (as neutral as the adopted persona allows)
-- Exploratory but time-bounded (max 10 minutes per proposal)
+- COMPREHENSIVE - read ALL related_files, no skipping
+- Guided by the proposal context and the persona that the reviewer has selected
+- Focused on ACTUAL CODE, not just proposal markdown claims
 
 #### C. Form Opinion (Persona-Specific + Universal Analysis)
 
@@ -315,7 +366,7 @@ grep -r "similar_pattern" src/ --include="*.rs" | head -10
 
 ---
 
-#### D. Record Opinion and Commit
+#### D. Record Opinion, Commit, and Unlock
 
 **IMPORTANT:** All commands must be single-line (no `\` continuations).
 
@@ -330,6 +381,9 @@ scripts/review_helpers.sh add-comment "AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.m
 # Commit this individual opinion
 git add "AGENTS/PROPOSALS/STAGED/{PROPOSAL_FILE}.md"
 git commit -m "opinion({PROPOSAL_ID}): {OPINION} by {REVIEWER} as {PERSONA}"
+
+# REQUIRED: Unlock after commit so next proposal can be accessed
+scripts/review_helpers.sh unlock-for-opinion
 ```
 
 **Comment Guidelines:**
@@ -490,16 +544,29 @@ Reviewer: tristan-vanfossen
 Found 93 proposals in STAGED/
 
 Processing P1-API00-C...
-  - Reading proposal... (context acquired)
-  - Inspecting implementation...
-  - DRY check (within): OK
-  - DRY check (cross-repo): Found similar pattern in P2-API05-C
-  - KISS check: OK
-  - Error messages: Clear
-  - Persona check: No magic numbers, good structure
+  - LOCK: scripts/review_helpers.sh lock-for-opinion (283 other proposals locked)
+  - Reading proposal markdown... (context acquired)
+  - Reading ALL related_files:
+    - src/rules/cert_c/API/API00-C/api00_c.rs (147 lines)
+    - src/rules/cert_c/API/API00-C/API00-C.toml
+    - src/rules/cert_c/API/API00-C/tests/fail/*.c (2 files)
+    - src/rules/cert_c/API/API00-C/tests/pass/*.c (1 file)
+    - grep mod.rs for registration: FOUND at line 312
+  - Forming opinion (on ACTUAL CODE, not just markdown):
+    - DRY check (within): OK
+    - DRY check (cross-repo): Found similar pattern in P2-API05-C
+    - KISS check: OK
+    - Error messages: Clear
+    - Persona check: No magic numbers, good structure
+  - Recording opinion and committing...
+  - UNLOCK: scripts/review_helpers.sh unlock-for-opinion
   ✓ [1/93] NEEDS_REVIEW - committed
 
 Processing P1-API01-C...
+  - LOCK: scripts/review_helpers.sh lock-for-opinion (283 other proposals locked)
+  - Reading ALL related_files...
+  ...
+  - UNLOCK: scripts/review_helpers.sh unlock-for-opinion
   ✓ [2/93] LOOKS_GOOD - committed
 ...
 

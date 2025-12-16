@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/API/API02-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-API02-C - Functions that read or write to or from an array should take an argument to specify the source or target size
 
 **Status:** STAGED (100% - 2/2 passing)

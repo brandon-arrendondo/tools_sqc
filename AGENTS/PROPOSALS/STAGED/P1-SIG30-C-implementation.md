@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/SIG/SIG30-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-SIG30-C - Call only asynchronous-safe functions within signal handlers
 
 **Status:** STAGED
