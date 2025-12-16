@@ -374,12 +374,93 @@ move_to_stalled() {
     echo "✓ Moved to STALLED: $proposal_file"
 }
 
+# Lock for opinion gathering - lock all other proposals and unrelated rule files
+# Usage: lock-for-opinion PROPOSAL_FILE
+lock_for_opinion() {
+    local proposal_file="$1"
+
+    if [ ! -f "$proposal_file" ]; then
+        echo "ERROR: Proposal file not found: $proposal_file"
+        exit 1
+    fi
+
+    # Extract rule ID from proposal filename (e.g., P2-MEM36-C-implementation.md -> MEM36-C)
+    local basename=$(basename "$proposal_file")
+    local rule_id=$(echo "$basename" | sed 's/^P[0-9]*-//' | sed 's/-implementation\.md$//')
+
+    # Derive category from rule_id (e.g., MEM36-C -> MEM)
+    local category=$(echo "$rule_id" | sed 's/[0-9].*$//')
+
+    echo "Locking for opinion gathering: $rule_id"
+    echo ""
+
+    # Lock ALL proposals except current one
+    echo "Locking other proposals..."
+    local locked_proposals=0
+    for f in "$STAGED_DIR"/*.md; do
+        if [ "$f" != "$proposal_file" ] && [ -f "$f" ]; then
+            chmod 000 "$f" 2>/dev/null && locked_proposals=$((locked_proposals + 1))
+        fi
+    done
+    echo "  Locked $locked_proposals other proposals"
+
+    # Lock ALL rule implementation directories except current rule
+    echo "Locking other rule implementations..."
+    local locked_rules=0
+    for dir in src/rules/cert_c/*/; do
+        for ruledir in "$dir"*/; do
+            if [ -d "$ruledir" ]; then
+                local dirname=$(basename "$ruledir")
+                if [ "$dirname" != "$rule_id" ]; then
+                    find "$ruledir" -type f \( -name "*.rs" -o -name "*.toml" -o -name "*.c" \) -exec chmod 000 {} \; 2>/dev/null
+                    locked_rules=$((locked_rules + 1))
+                fi
+            fi
+        done
+    done
+    echo "  Locked $locked_rules other rule directories"
+
+    echo ""
+    echo "✅ Opinion gathering mode active for $rule_id"
+    echo "   Accessible:"
+    echo "   - $proposal_file"
+    echo "   - src/rules/cert_c/$category/$rule_id/"
+    echo "   - src/rules/cert_c/mod.rs"
+    echo "   - src/utility/cert_c/"
+}
+
+# Unlock for opinion gathering - restore permissions to all proposals and rules
+unlock_for_opinion() {
+    echo "Unlocking all proposals and rule implementations..."
+    echo ""
+
+    # Unlock all proposals
+    local unlocked_proposals=0
+    for f in "$STAGED_DIR"/*.md; do
+        if [ -f "$f" ]; then
+            chmod 644 "$f" 2>/dev/null && unlocked_proposals=$((unlocked_proposals + 1))
+        fi
+    done
+    echo "  Unlocked $unlocked_proposals proposals"
+
+    # Unlock all rule implementation files
+    find src/rules/cert_c -type f \( -name "*.rs" -o -name "*.toml" -o -name "*.c" \) -exec chmod 644 {} \; 2>/dev/null
+    local unlocked_files=$(find src/rules/cert_c -type f \( -name "*.rs" -o -name "*.toml" -o -name "*.c" \) | wc -l)
+    echo "  Unlocked $unlocked_files rule files"
+
+    echo ""
+    echo "✅ All files unlocked"
+}
+
 # Show help
 show_help() {
     cat << EOF
 review_helpers.sh - Distributed review workflow helper
 
 PHASE 1 COMMANDS (gather-opinions):
+  lock-for-opinion FILE          Lock all other proposals and rule files
+                                 Only current proposal and its rule remain accessible
+  unlock-for-opinion             Restore permissions to all proposals and rules
   get-reviewer-name              Get reviewer name from git config
   add-opinion FILE PERSONA OPINION
                                  Add opinion to proposal (creates reviewer entry)
@@ -411,6 +492,18 @@ EOF
 
 # Main command dispatcher
 case "$1" in
+    "lock-for-opinion")
+        if [ $# -lt 2 ]; then
+            echo "Usage: $0 lock-for-opinion PROPOSAL_FILE"
+            exit 1
+        fi
+        lock_for_opinion "$2"
+        ;;
+
+    "unlock-for-opinion")
+        unlock_for_opinion
+        ;;
+
     "get-reviewer-name")
         get_reviewer_name
         ;;
