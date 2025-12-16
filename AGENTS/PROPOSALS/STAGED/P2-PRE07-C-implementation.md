@@ -10,6 +10,10 @@ tags:
   - implementation
   - PRE
   - completed
+related_files:
+  - src/rules/cert_c/PRE/PRE07-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-PRE07-C - PRE07-C Implementation

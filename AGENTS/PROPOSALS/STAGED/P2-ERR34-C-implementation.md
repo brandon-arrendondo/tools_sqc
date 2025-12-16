@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - ERR
+reviews: []
+related_files:
+  - src/rules/cert_c/ERR/ERR34-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-ERR34-C - ERR34-C Implementation

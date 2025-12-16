@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/POS/POS54-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-POS54-C - Detect and handle POSIX library errors
 
 **Status:** STAGED (100% - 2/2 passing)

@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - FLP
+reviews: []
+related_files:
+  - src/rules/cert_c/FLP/FLP01-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-FLP01-C - FLP01-C Implementation

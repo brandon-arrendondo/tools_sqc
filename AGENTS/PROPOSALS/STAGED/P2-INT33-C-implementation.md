@@ -12,6 +12,11 @@ tags:
   - INT
   - session-3
   - target-rule
+reviews: []
+related_files:
+  - src/rules/cert_c/INT/INT33-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-INT33-C - INT33-C Implementation

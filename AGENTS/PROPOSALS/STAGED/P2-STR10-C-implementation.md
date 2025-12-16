@@ -9,6 +9,10 @@ tags:
   - cert-c
   - implementation
   - STR
+related_files:
+  - src/rules/cert_c/STR/STR10-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-STR10-C - STR10-C Implementation

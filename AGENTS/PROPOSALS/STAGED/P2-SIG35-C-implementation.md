@@ -9,6 +9,10 @@ tags:
   - cert-c
   - implementation
   - SIG
+related_files:
+  - src/rules/cert_c/SIG/SIG35-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-SIG35-C - SIG35-C Implementation

@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - FIO
+reviews: []
+related_files:
+  - src/rules/cert_c/FIO/FIO01-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-FIO01-C - FIO01-C Implementation

@@ -9,6 +9,10 @@ tags:
   - cert-c
   - implementation
   - POS
+related_files:
+  - src/rules/cert_c/POS/POS47-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-POS47-C - POS47-C Implementation

@@ -9,6 +9,10 @@ tags:
   - cert-c
   - implementation
   - MSC
+related_files:
+  - src/rules/cert_c/MSC/MSC38-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-MSC38-C - MSC38-C Implementation

@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - ENV
+reviews: []
+related_files:
+  - src/rules/cert_c/ENV/ENV30-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-ENV30-C - ENV30-C Implementation
