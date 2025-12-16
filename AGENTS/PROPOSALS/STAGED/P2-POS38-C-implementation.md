@@ -10,6 +10,10 @@ tags:
   - implementation
   - POS
   - test-issues
+related_files:
+  - src/rules/cert_c/POS/POS38-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-POS38-C - POS38-C Implementation

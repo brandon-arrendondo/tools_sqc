@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/ERR/ERR33-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-ERR33-C - Detect and handle standard library errors
 
 **Status:** STAGED (awaiting adversarial review - 100% test pass rate achieved)

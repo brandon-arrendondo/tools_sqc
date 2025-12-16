@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/INT/INT32-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-INT32-C - Ensure that operations on signed integers do not result in overflow
 
 **Status:** STAGED (100% - 56/56 passing)

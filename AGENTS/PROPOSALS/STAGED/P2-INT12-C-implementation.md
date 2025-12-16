@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - INT
+reviews: []
+related_files:
+  - src/rules/cert_c/INT/INT12-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-INT12-C - INT12-C Implementation

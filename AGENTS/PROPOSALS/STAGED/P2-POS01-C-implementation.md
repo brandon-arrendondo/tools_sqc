@@ -10,6 +10,10 @@ tags:
   - implementation
   - POS
   - completed
+related_files:
+  - src/rules/cert_c/POS/POS01-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-POS01-C - POS01-C Implementation

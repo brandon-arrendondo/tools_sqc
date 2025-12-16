@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/PRE/PRE09-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-PRE09-C - Do not replace secure functions with deprecated or obsolescent functions
 
 **Status:** STAGED

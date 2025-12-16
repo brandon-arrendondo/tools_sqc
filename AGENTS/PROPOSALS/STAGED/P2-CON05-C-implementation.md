@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - CON
+reviews: []
+related_files:
+  - src/rules/cert_c/CON/CON05-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-CON05-C - CON05-C Implementation

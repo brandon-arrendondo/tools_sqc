@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - DCL
+reviews: []
+related_files:
+  - src/rules/cert_c/DCL/DCL07-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-DCL07-C - DCL07-C Implementation

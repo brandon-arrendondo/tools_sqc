@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/INT/INT18-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-INT18-C - Evaluate integer expressions in a larger size before comparing or assigning to that size
 
 **Status:** STAGED (Ready for Review)

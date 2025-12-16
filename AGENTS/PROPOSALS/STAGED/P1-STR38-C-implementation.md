@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/STR/STR38-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-STR38-C - Do not confuse narrow and wide character strings and functions
 
 **Status:** STAGED

@@ -9,6 +9,10 @@ tags:
   - cert-c
   - implementation
   - WIN
+related_files:
+  - src/rules/cert_c/WIN/WIN00-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-WIN00-C - WIN00-C Implementation

@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/MSC/MSC32-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-MSC32-C - Properly seed pseudorandom number generators
 
 **Status:** STAGED (100% - 5/5 passing)

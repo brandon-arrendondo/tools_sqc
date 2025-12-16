@@ -9,6 +9,10 @@ tags:
   - cert-c
   - implementation
   - SIG
+related_files:
+  - src/rules/cert_c/SIG/SIG02-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-SIG02-C - SIG02-C Implementation

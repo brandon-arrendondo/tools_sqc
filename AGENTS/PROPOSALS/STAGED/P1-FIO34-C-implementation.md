@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/FIO/FIO34-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-FIO34-C - Distinguish between characters read from a file and EOF or WEOF
 
 **Status:** STAGED (100% - 48/48 passing)

@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/POS/POS30-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-POS30-C - Use the readlink() function properly
 
 **Status:** STAGED (Ready for Review)

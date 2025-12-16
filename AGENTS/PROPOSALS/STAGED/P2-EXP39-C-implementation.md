@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - EXP
+reviews: []
+related_files:
+  - src/rules/cert_c/EXP/EXP39-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-EXP39-C - EXP39-C Implementation

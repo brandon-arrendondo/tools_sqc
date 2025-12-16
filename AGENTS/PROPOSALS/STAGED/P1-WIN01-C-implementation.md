@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/WIN/WIN01-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-WIN01-C - Do not forcibly terminate execution
 
 **Status:** STAGED (100% - 2/2 passing)

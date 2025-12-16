@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/EXP/EXP15-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-EXP15-C - Do not place a semicolon on the same line as an if, for, or while statement
 
 **Status:** STAGED (100% - 2/2 passing)

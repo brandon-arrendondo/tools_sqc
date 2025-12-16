@@ -123,22 +123,24 @@ cat .claude/commands/gather-opinions.md
 
 **Step 4: Check TodoWrite state for current progress**
 - The TodoWrite tool persists across compaction
-- Expect exactly 5 todos:
+- Expect exactly 6 todos:
 
   *Workflow steps for current proposal:*
-  1. "Analyze {PROPOSAL}" - `in_progress` or `completed`
-  2. "Form opinion on {PROPOSAL}" - `pending`, `in_progress`, or `completed`
-  3. "Record and commit {PROPOSAL}" - `pending` or `in_progress`
+  1. "LOCK + Read proposal {PROPOSAL}" - `in_progress` or `completed`
+  2. "Read ALL related_files for {RULE_ID}" - `pending`, `in_progress`, or `completed`
+  3. "Form opinion on {PROPOSAL}" - `pending`, `in_progress`, or `completed`
+  4. "Record + commit + UNLOCK {PROPOSAL}" - `pending` or `in_progress`
 
   *Tracking:*
-  4. "Next: {NEXT_PROPOSAL}" - `pending`
-  5. "Progress: N/TOTAL reviewed" - `in_progress`
+  5. "Next: {NEXT_PROPOSAL}" - `pending`
+  6. "Progress: N/TOTAL reviewed" - `in_progress`
 
 - **⚠️ Do NOT modify this structure or batch proposals** - it enables recovery
-- Resume from whichever workflow step (1-3) is `in_progress`
+- Resume from whichever workflow step (1-4) is `in_progress`
 - If todos have deviated from this structure, reset to correct format before continuing
+- **CRITICAL:** Step 2 requires reading ALL files in `related_files` frontmatter - no skipping
 
-**Anti-pattern to watch for:** If Claude starts batching proposals or modifying the 5-todo structure for "efficiency," this BREAKS the workflow. The number of proposals is irrelevant - never batch, regardless of scale.
+**Anti-pattern to watch for:** If Claude starts batching proposals or modifying the 6-todo structure for "efficiency," this BREAKS the workflow. The number of proposals is irrelevant - never batch, regardless of scale.
 
 **Step 5: Continue the workflow as defined in gather-opinions.md**
 

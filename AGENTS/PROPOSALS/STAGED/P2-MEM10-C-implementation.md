@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - MEM
+reviews: []
+related_files:
+  - src/rules/cert_c/MEM/MEM10-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-MEM10-C - MEM10-C Implementation

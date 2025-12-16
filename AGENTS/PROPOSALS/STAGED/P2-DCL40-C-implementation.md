@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - DCL
+reviews: []
+related_files:
+  - src/rules/cert_c/DCL/DCL40-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-DCL40-C - DCL40-C Implementation

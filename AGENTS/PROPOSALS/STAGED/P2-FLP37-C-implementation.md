@@ -10,6 +10,11 @@ tags:
   - implementation
   - FLP
   - completed
+reviews: []
+related_files:
+  - src/rules/cert_c/FLP/FLP37-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-FLP37-C - FLP37-C Implementation
