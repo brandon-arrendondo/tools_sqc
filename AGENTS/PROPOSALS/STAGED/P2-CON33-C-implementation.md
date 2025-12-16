@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - CON
+reviews: []
+related_files:
+  - src/rules/cert_c/CON/CON33-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-CON33-C - CON33-C Implementation

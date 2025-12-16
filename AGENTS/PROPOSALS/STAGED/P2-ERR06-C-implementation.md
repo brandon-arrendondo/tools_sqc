@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - ERR
+reviews: []
+related_files:
+  - src/rules/cert_c/ERR/ERR06-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-ERR06-C - ERR06-C Implementation

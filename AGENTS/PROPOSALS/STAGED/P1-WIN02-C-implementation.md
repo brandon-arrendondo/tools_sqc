@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/WIN/WIN02-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-WIN02-C - Restrict privileges when spawning child processes
 
 **Status:** STAGED (100% - 2/2 passing)

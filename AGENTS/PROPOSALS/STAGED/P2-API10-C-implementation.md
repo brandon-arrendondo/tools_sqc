@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - API
+reviews: []
+related_files:
+  - src/rules/cert_c/API/API10-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-API10-C - API10-C Implementation

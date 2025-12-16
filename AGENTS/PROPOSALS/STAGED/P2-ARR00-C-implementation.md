@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - ARR
+reviews: []
+related_files:
+  - src/rules/cert_c/ARR/ARR00-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-ARR00-C - ARR00-C Implementation

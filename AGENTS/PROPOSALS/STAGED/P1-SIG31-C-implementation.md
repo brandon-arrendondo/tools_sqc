@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/SIG/SIG31-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-SIG31-C - Do not access shared objects in signal handlers
 
 **Status:** STAGED (100% - 43/43 passing)

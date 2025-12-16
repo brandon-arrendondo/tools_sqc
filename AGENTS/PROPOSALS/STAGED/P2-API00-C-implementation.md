@@ -10,6 +10,11 @@ tags:
   - implementation
   - API
 TristanClaudeOpinion: "
+reviews: []
+related_files:
+  - src/rules/cert_c/API/API00-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-API00-C - API00-C Implementation

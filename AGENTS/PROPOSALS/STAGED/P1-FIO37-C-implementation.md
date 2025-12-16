@@ -1,3 +1,11 @@
+---
+reviews: []
+related_files:
+  - src/rules/cert_c/FIO/FIO37-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
+---
+
 # P1-FIO37-C - Do not assume that fgets() or fgetws() returns a nonempty string when successful
 
 **Status:** STAGED (Ready for Review)

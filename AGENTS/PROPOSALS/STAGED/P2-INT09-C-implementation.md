@@ -9,6 +9,11 @@ tags:
   - cert-c
   - implementation
   - INT
+reviews: []
+related_files:
+  - src/rules/cert_c/INT/INT09-C/
+  - src/rules/cert_c/mod.rs
+  - src/utility/cert_c/
 ---
 
 # P2-INT09-C - INT09-C Implementation
