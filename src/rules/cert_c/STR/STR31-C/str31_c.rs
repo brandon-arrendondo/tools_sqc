@@ -1242,6 +1242,109 @@ impl CertRule for Str31C {
                         }
                     }
 
+                    // Wide character equivalents
+                    "wcscpy" => {
+                        if let Some(arguments) = node.child_by_field_name("arguments") {
+                            if !self.check_strcpy_safety(&arguments, source, &root) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: "Potential buffer overflow with wcscpy(). Cannot verify destination buffer is large enough.".to_string(),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Use wcsncpy() with explicit size limit or verify buffer size".to_string()),
+                                ..Default::default()
+                                });
+                            }
+                        }
+                    }
+
+                    "wcscat" => {
+                        if let Some(arguments) = node.child_by_field_name("arguments") {
+                            if !self.check_strcat_safety(&arguments, source, &root) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: "Potential buffer overflow with wcscat(). Cannot verify destination has space for concatenation.".to_string(),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Use wcsncat() with size limit or track remaining buffer space".to_string()),
+                                ..Default::default()
+                                });
+                            }
+                        }
+                    }
+
+                    "wcsncpy" => {
+                        if let Some(arguments) = node.child_by_field_name("arguments") {
+                            if !self.check_strncpy_safety(&arguments, source, &root) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: "Potential null termination issue with wcsncpy(). Size parameter equals buffer size.".to_string(),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Use size-1 as limit and explicitly null-terminate, or use wcslcpy()".to_string()),
+                                ..Default::default()
+                                });
+                            }
+                        }
+                    }
+
+                    "wcsncat" => {
+                        if let Some(arguments) = node.child_by_field_name("arguments") {
+                            if !self.check_strcat_safety(&arguments, source, &root) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: "Potential buffer overflow with wcsncat(). Verify destination has sufficient space.".to_string(),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Ensure size parameter accounts for existing content and null terminator".to_string()),
+                                ..Default::default()
+                                });
+                            }
+                        }
+                    }
+
+                    "wmemcpy" => {
+                        if let Some(arguments) = node.child_by_field_name("arguments") {
+                            if self.is_string_memcpy(&arguments, source, &root) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: "wmemcpy used for string copying may not include null terminator".to_string(),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Use wcscpy/wcsncpy or wmemcpy with size+1 for null terminator".to_string()),
+                                ..Default::default()
+                                });
+                            }
+                        }
+                    }
+
+                    "swprintf" => {
+                        if let Some(arguments) = node.child_by_field_name("arguments") {
+                            if !self.check_sprintf_safety(&arguments, source, &root) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::Medium,
+                                    message: "Potential buffer overflow with swprintf(). Cannot verify output fits in destination buffer.".to_string(),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some("Use snwprintf() with explicit buffer size or verify buffer capacity".to_string()),
+                                ..Default::default()
+                                });
+                            }
+                        }
+                    }
+
                     // sprintf - check format string safety
                     "sprintf" => {
                         if let Some(arguments) = node.child_by_field_name("arguments") {
