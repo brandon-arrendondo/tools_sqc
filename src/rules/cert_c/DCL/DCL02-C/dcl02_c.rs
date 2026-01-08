@@ -57,9 +57,9 @@ impl CertRule for Dcl02C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Collect all identifiers in each scope
+        // Collect all identifiers in each scope (with depth limit to prevent stack overflow)
         let mut scope_analyzer = ScopeAnalyzer::new();
-        scope_analyzer.analyze_scope(node, source, &mut violations);
+        scope_analyzer.analyze_scope_with_depth(node, source, &mut violations, 0);
 
         violations
     }
@@ -78,14 +78,124 @@ impl ScopeAnalyzer {
     }
 
     fn analyze_scope(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Recursively collect all identifiers in this scope
-        self.collect_identifiers(node, source);
+        self.analyze_scope_with_depth(node, source, violations, 0);
+    }
+
+    fn analyze_scope_with_depth(
+        &mut self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        depth: usize,
+    ) {
+        // Limit scope nesting depth to prevent stack overflow
+        const MAX_SCOPE_DEPTH: usize = 100;
+        if depth > MAX_SCOPE_DEPTH {
+            return;
+        }
+
+        // Use iterative traversal instead of recursion to avoid stack overflow
+        self.collect_identifiers_iterative(node, source);
 
         // Check for visually similar identifiers
         self.check_visual_similarity(violations);
 
-        // Analyze nested scopes (functions, blocks)
-        self.analyze_child_scopes(node, source, violations);
+        // Analyze nested scopes (functions, blocks) iteratively
+        self.analyze_child_scopes_iterative(node, source, violations, depth);
+    }
+
+    fn collect_identifiers_iterative(&mut self, root: &Node, source: &str) {
+        // Use explicit stack instead of recursion to avoid stack overflow
+        let mut stack = vec![*root];
+
+        while let Some(node) = stack.pop() {
+            match node.kind() {
+                "declaration" | "parameter_declaration" => {
+                    if let Some(identifier) = self.extract_identifier(&node, source) {
+                        let normalized = normalize_identifier(&identifier);
+                        let pos = node.start_position();
+
+                        self.identifiers
+                            .entry(normalized)
+                            .or_insert_with(Vec::new)
+                            .push((identifier, pos.row + 1, pos.column + 1));
+                    }
+                }
+                "function_definition" => {
+                    // Extract function name
+                    if let Some(declarator) = node.child_by_field_name("declarator") {
+                        if let Some(func_name) = self.get_function_name(&declarator, source) {
+                            let normalized = normalize_identifier(&func_name);
+                            let pos = node.start_position();
+
+                            self.identifiers
+                                .entry(normalized)
+                                .or_insert_with(Vec::new)
+                                .push((func_name, pos.row + 1, pos.column + 1));
+                        }
+                    }
+                    // Don't recurse into function body here - will be handled separately
+                    continue;
+                }
+                _ => {
+                    // Add children to stack (except function bodies which are separate scopes)
+                    if node.kind() != "compound_statement" || !self.is_function_body(&node) {
+                        for i in (0..node.child_count()).rev() {
+                            if let Some(child) = node.child(i) {
+                                stack.push(child);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn analyze_child_scopes_iterative(
+        &mut self,
+        root: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        depth: usize,
+    ) {
+        // Use explicit stack instead of recursion to avoid stack overflow
+        let mut stack = vec![*root];
+
+        while let Some(node) = stack.pop() {
+            match node.kind() {
+                "function_definition" => {
+                    // Analyze function body as a new scope
+                    if let Some(body) = node.child_by_field_name("body") {
+                        let mut child_analyzer = ScopeAnalyzer::new();
+
+                        // Include function parameters in the function scope
+                        if let Some(declarator) = node.child_by_field_name("declarator") {
+                            child_analyzer.collect_parameters(&declarator, source);
+                        }
+
+                        child_analyzer.analyze_scope_with_depth(
+                            &body,
+                            source,
+                            violations,
+                            depth + 1,
+                        );
+                    }
+                }
+                "compound_statement" if !self.is_function_body(&node) => {
+                    // Analyze nested block as a new scope
+                    let mut child_analyzer = ScopeAnalyzer::new();
+                    child_analyzer.analyze_scope_with_depth(&node, source, violations, depth + 1);
+                }
+                _ => {
+                    // Add children to stack to find nested scopes
+                    for i in (0..node.child_count()).rev() {
+                        if let Some(child) = node.child(i) {
+                            stack.push(child);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fn collect_identifiers(&mut self, node: &Node, source: &str) {
@@ -196,9 +306,24 @@ impl ScopeAnalyzer {
     }
 
     fn extract_identifier(&self, node: &Node, source: &str) -> Option<String> {
+        self.extract_identifier_with_depth(node, source, 0)
+    }
+
+    fn extract_identifier_with_depth(
+        &self,
+        node: &Node,
+        source: &str,
+        depth: usize,
+    ) -> Option<String> {
+        // Limit recursion depth to prevent stack overflow
+        const MAX_DEPTH: usize = 50;
+        if depth > MAX_DEPTH {
+            return None;
+        }
+
         // Try to find an identifier in the declaration
         if let Some(declarator) = node.child_by_field_name("declarator") {
-            return self.get_declarator_name(&declarator, source);
+            return self.get_declarator_name_with_depth(&declarator, source, depth + 1);
         }
 
         // Fallback: search for identifier node
@@ -207,7 +332,7 @@ impl ScopeAnalyzer {
                 if child.kind() == "identifier" {
                     return Some(ast_utils::get_node_text_owned(&child, source));
                 }
-                if let Some(name) = self.extract_identifier(&child, source) {
+                if let Some(name) = self.extract_identifier_with_depth(&child, source, depth + 1) {
                     return Some(name);
                 }
             }
@@ -217,11 +342,30 @@ impl ScopeAnalyzer {
     }
 
     fn get_declarator_name(&self, declarator: &Node, source: &str) -> Option<String> {
+        self.get_declarator_name_with_depth(declarator, source, 0)
+    }
+
+    fn get_declarator_name_with_depth(
+        &self,
+        declarator: &Node,
+        source: &str,
+        depth: usize,
+    ) -> Option<String> {
+        // Limit recursion depth to prevent stack overflow
+        const MAX_DEPTH: usize = 50;
+        if depth > MAX_DEPTH {
+            return None;
+        }
+
         match declarator.kind() {
             "identifier" => Some(ast_utils::get_node_text_owned(declarator, source)),
             "pointer_declarator" | "array_declarator" | "function_declarator" => {
                 if let Some(child_declarator) = declarator.child_by_field_name("declarator") {
-                    return self.get_declarator_name(&child_declarator, source);
+                    return self.get_declarator_name_with_depth(
+                        &child_declarator,
+                        source,
+                        depth + 1,
+                    );
                 }
 
                 // Fallback: find identifier child
@@ -230,7 +374,9 @@ impl ScopeAnalyzer {
                         if child.kind() == "identifier" {
                             return Some(ast_utils::get_node_text_owned(&child, source));
                         }
-                        if let Some(name) = self.get_declarator_name(&child, source) {
+                        if let Some(name) =
+                            self.get_declarator_name_with_depth(&child, source, depth + 1)
+                        {
                             return Some(name);
                         }
                     }
@@ -242,17 +388,32 @@ impl ScopeAnalyzer {
     }
 
     fn get_function_name(&self, declarator: &Node, source: &str) -> Option<String> {
+        self.get_function_name_with_depth(declarator, source, 0)
+    }
+
+    fn get_function_name_with_depth(
+        &self,
+        declarator: &Node,
+        source: &str,
+        depth: usize,
+    ) -> Option<String> {
+        // Limit recursion depth to prevent stack overflow
+        const MAX_DEPTH: usize = 50;
+        if depth > MAX_DEPTH {
+            return None;
+        }
+
         match declarator.kind() {
             "identifier" => Some(ast_utils::get_node_text_owned(declarator, source)),
             "function_declarator" => {
                 if let Some(child_declarator) = declarator.child_by_field_name("declarator") {
-                    return self.get_function_name(&child_declarator, source);
+                    return self.get_function_name_with_depth(&child_declarator, source, depth + 1);
                 }
                 None
             }
             "pointer_declarator" => {
                 if let Some(child_declarator) = declarator.child_by_field_name("declarator") {
-                    return self.get_function_name(&child_declarator, source);
+                    return self.get_function_name_with_depth(&child_declarator, source, depth + 1);
                 }
                 None
             }
