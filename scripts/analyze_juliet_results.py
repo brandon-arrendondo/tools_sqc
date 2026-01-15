@@ -137,9 +137,19 @@ def analyze_single_file(c_filepath, violations_dict):
     }
 
 def main():
-    # Paths
-    juliet_dir = Path.home() / 'data/benchmarks/juliet-test-suite-c/testcases/CWE121_Stack_Based_Buffer_Overflow/s08'
-    csv_path = '/tmp/juliet_cwe121_s08.csv'
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Analyze SqC results against Juliet ground truth')
+    parser.add_argument('--csv', default='/tmp/juliet_cwe121_FULL_AFTER_FIX.csv',
+                        help='Path to SqC CSV results')
+    parser.add_argument('--dir', default=str(Path.home() / 'data/benchmarks/juliet-test-suite-c/testcases/CWE121_Stack_Based_Buffer_Overflow'),
+                        help='Path to Juliet test directory')
+    parser.add_argument('--subdir', default=None,
+                        help='Specific subdirectory (e.g., s08). If not specified, analyzes all.')
+    args = parser.parse_args()
+
+    juliet_base = Path(args.dir)
+    csv_path = args.csv
 
     print("Parsing SqC CSV results...")
     violations_dict = parse_sqc_csv(csv_path)
@@ -148,10 +158,18 @@ def main():
     print("\nAnalyzing files...")
     results = []
 
-    for c_file in sorted(juliet_dir.glob('*.c')):
-        result = analyze_single_file(c_file, violations_dict)
-        if result:
-            results.append(result)
+    # Handle single subdir or all subdirs
+    if args.subdir:
+        search_dirs = [juliet_base / args.subdir]
+    else:
+        search_dirs = sorted(juliet_base.glob('s*'))
+
+    for search_dir in search_dirs:
+        if search_dir.is_dir():
+            for c_file in sorted(search_dir.glob('*.c')):
+                result = analyze_single_file(c_file, violations_dict)
+                if result:
+                    results.append(result)
 
     # Aggregate statistics
     total_tp = sum(r['tp_count'] for r in results)
@@ -161,8 +179,9 @@ def main():
     total_good_lines = sum(r['good_lines'] for r in results)
     total_flaw_lines = sum(r['flaw_lines'] for r in results)
 
+    subdir_desc = f"({args.subdir})" if args.subdir else "(all subdirs)"
     print("\n" + "="*70)
-    print("JULIET BENCHMARK ANALYSIS - CWE-121 (s08 subset)")
+    print(f"JULIET BENCHMARK ANALYSIS - CWE-121 {subdir_desc}")
     print("="*70)
     print(f"\nFiles analyzed: {len(results)}")
     print(f"Total OMITBAD lines: {total_bad_lines}")
