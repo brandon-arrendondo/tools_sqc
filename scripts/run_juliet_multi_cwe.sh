@@ -3,11 +3,14 @@
 # Usage: ./scripts/run_juliet_multi_cwe.sh [CWE_DIR...]
 # If no args, runs the default priority set.
 
-set -euo pipefail
+set -uo pipefail
 
-SQC="$(dirname "$0")/../target/release/sqc"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+SQC="$PROJECT_DIR/target/release/sqc"
+MANIFEST="$PROJECT_DIR/rules_templates/rules-all.toml"
 JULIET_BASE="${HOME}/data/benchmarks/juliet-test-suite-c/testcases"
-ANALYZE="$(dirname "$0")/analyze_juliet_results.py"
+ANALYZE="$SCRIPT_DIR/analyze_juliet_results.py"
 RESULTS_DIR="/tmp/juliet_results"
 
 mkdir -p "$RESULTS_DIR"
@@ -57,7 +60,10 @@ for cwe in "${CWES[@]}"; do
 
     # Run SqC scan
     start_time=$(date +%s)
-    "$SQC" "$cwe_dir" -e "$csv_file" >/dev/null 2>&1
+    if ! "$SQC" "$cwe_dir" -m "$MANIFEST" -e "$csv_file" >/dev/null 2>&1; then
+        echo "  ERROR: SqC scan failed for $cwe (skipping)"
+        continue
+    fi
     end_time=$(date +%s)
     elapsed=$((end_time - start_time))
 
