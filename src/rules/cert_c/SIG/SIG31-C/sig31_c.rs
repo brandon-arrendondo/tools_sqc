@@ -68,6 +68,19 @@ impl CertRule for Sig31C {
 }
 
 impl Sig31C {
+    /// Recursively collect file-scope declarations, including inside preprocessor blocks.
+    fn collect_file_scope_declarations<'a>(node: &Node<'a>, decls: &mut Vec<Node<'a>>) {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "declaration" {
+                    decls.push(child);
+                } else if child.kind().starts_with("preproc_") {
+                    Self::collect_file_scope_declarations(&child, decls);
+                }
+            }
+        }
+    }
+
     fn find_signal_handlers(&self, node: &Node, source: &str) -> HashSet<String> {
         let mut handlers = HashSet::new();
         self.collect_handlers(node, source, &mut handlers);
@@ -152,32 +165,30 @@ impl Sig31C {
     fn find_global_variables(&self, node: &Node, source: &str) -> HashMap<String, bool> {
         let mut vars = HashMap::new();
 
-        // Only look at direct children of translation_unit
+        // Look at file-scope declarations, including those inside preprocessor blocks
         if node.kind() == "translation_unit" {
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if child.kind() == "declaration" {
-                        let decl_text = get_node_text(&child, source);
+            let mut decls = Vec::new();
+            Self::collect_file_scope_declarations(node, &mut decls);
+            for child in &decls {
+                let decl_text = get_node_text(child, source);
 
-                        // Parse type - check if it's safe
-                        // Safe types: ONLY volatile sig_atomic_t, atomic_* types
-                        // Everything else (int, struct, arrays, etc.) is UNSAFE
-                        let is_safe = (decl_text.contains("volatile")
-                            && decl_text.contains("sig_atomic_t"))
-                            || decl_text.contains("atomic_");
+                // Parse type - check if it's safe
+                // Safe types: ONLY volatile sig_atomic_t, atomic_* types
+                // Everything else (int, struct, arrays, etc.) is UNSAFE
+                let is_safe = (decl_text.contains("volatile")
+                    && decl_text.contains("sig_atomic_t"))
+                    || decl_text.contains("atomic_");
 
-                        // Extract ALL declarators (handles init_declarator, pointer_declarator, etc.)
-                        for j in 0..child.child_count() {
-                            if let Some(decl_child) = child.child(j) {
-                                let kind = decl_child.kind();
-                                if kind == "init_declarator"
-                                    || kind == "pointer_declarator"
-                                    || kind == "array_declarator"
-                                    || kind == "identifier"
-                                {
-                                    self.extract_var_names(&decl_child, source, &mut vars, is_safe);
-                                }
-                            }
+                // Extract ALL declarators (handles init_declarator, pointer_declarator, etc.)
+                for j in 0..child.child_count() {
+                    if let Some(decl_child) = child.child(j) {
+                        let kind = decl_child.kind();
+                        if kind == "init_declarator"
+                            || kind == "pointer_declarator"
+                            || kind == "array_declarator"
+                            || kind == "identifier"
+                        {
+                            self.extract_var_names(&decl_child, source, &mut vars, is_safe);
                         }
                     }
                 }

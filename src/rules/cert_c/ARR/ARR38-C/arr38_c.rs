@@ -744,28 +744,15 @@ impl Arr38C {
     fn check_unbounded_string_function(
         &self,
         _args: &[String],
-        node: &Node,
-        function_name: &str,
-        violations: &mut Vec<RuleViolation>,
+        _node: &Node,
+        _function_name: &str,
+        _violations: &mut Vec<RuleViolation>,
     ) {
-        // These functions are inherently dangerous without bounds checking
-        let start_point = node.start_position();
-        violations.push(RuleViolation {
-            rule_id: self.rule_id().to_string(),
-            severity: Severity::High,
-            message: format!(
-                "Function '{}' is unsafe - no bounds checking. Use safer alternatives like strncpy/strncat",
-                function_name
-            ),
-            file_path: String::new(),
-            line: start_point.row + 1,
-            column: start_point.column + 1,
-            suggestion: Some(format!(
-                "Replace '{}' with safer bounded alternative",
-                function_name
-            )),
-            ..Default::default()
-        });
+        // Unbounded string function usage (strcpy/strcat without bounds checking)
+        // is already covered by STR31-C. ARR38-C focuses on library functions
+        // forming invalid pointers through size mismatches and buffer overflows,
+        // not on general unsafe function usage.
+        // No-op to avoid duplicate violations with STR31-C.
     }
 
     fn check_io_function(

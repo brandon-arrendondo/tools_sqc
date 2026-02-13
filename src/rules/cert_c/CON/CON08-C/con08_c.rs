@@ -196,14 +196,14 @@ impl Con08C {
             let has_mutex = self.uses_mutex_lock(&body, source);
 
             // Check if any of the called functions are atomic
-            let calls_atomic_funcs = relevant_calls
+            let atomic_calls: Vec<&String> = relevant_calls
                 .iter()
-                .any(|name| atomic_functions.contains(name));
+                .filter(|name| atomic_functions.contains(*name))
+                .collect();
 
-            // Violation if:
-            // 1. Calls multiple functions AND doesn't wrap them in mutex
-            // 2. OR calls multiple atomic functions without wrapping
-            if !has_mutex && (calls_atomic_funcs || relevant_calls.len() >= 2) {
+            // Only flag when calling multiple atomic functions without wrapping
+            // them in a mutex. Do NOT flag ordinary multi-function calls.
+            if !has_mutex && atomic_calls.len() >= 2 {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: Severity::Low,

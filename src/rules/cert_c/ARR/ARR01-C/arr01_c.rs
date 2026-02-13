@@ -78,6 +78,19 @@ impl CertRule for Arr01C {
 }
 
 impl Arr01C {
+    /// Recursively collect file-scope declarations, including inside preprocessor blocks.
+    fn collect_file_scope_declarations<'a>(node: &Node<'a>, decls: &mut Vec<Node<'a>>) {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "declaration" {
+                    decls.push(child);
+                } else if child.kind().starts_with("preproc_") {
+                    Self::collect_file_scope_declarations(&child, decls);
+                }
+            }
+        }
+    }
+
     fn check_function_definitions(
         &self,
         node: &Node,
@@ -126,14 +139,12 @@ impl Arr01C {
         source: &str,
         array_params: &mut HashMap<String, usize>,
     ) {
-        // Only check direct children of translation_unit (file-scope declarations)
+        // Check file-scope declarations, including those inside preprocessor blocks
         if node.kind() == "translation_unit" {
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if child.kind() == "declaration" {
-                        self.check_global_declaration(&child, source, array_params);
-                    }
-                }
+            let mut decls = Vec::new();
+            Self::collect_file_scope_declarations(node, &mut decls);
+            for child in &decls {
+                self.check_global_declaration(child, source, array_params);
             }
         }
     }

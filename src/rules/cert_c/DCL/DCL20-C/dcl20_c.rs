@@ -28,14 +28,10 @@ impl Dcl20C {
         source: &'a str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        // Check function definitions
-        if node.kind() == "function_definition" {
-            if let Some(declarator) = node.child_by_field_name("declarator") {
-                self.check_function_declarator(&declarator, source, violations);
-            }
-        }
-
-        // Check function declarations (prototypes)
+        // Only check function declarations (prototypes), NOT definitions.
+        // In C, f() in a definition already means "no arguments" and is
+        // just a style concern. In a declaration/prototype, f() means
+        // "unspecified arguments" which is the actual semantic issue.
         if node.kind() == "declaration" {
             // Look for function declarators in the declaration
             self.check_declaration_for_function(&node, source, violations);
