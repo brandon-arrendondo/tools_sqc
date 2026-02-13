@@ -431,6 +431,13 @@ impl ScopeAnalyzer {
                     let (id1, line1, _col1) = &identifiers[0];
                     let (id2, line2, col2) = &identifiers[i];
 
+                    // Only flag when identifiers are actually different strings
+                    // that happen to normalize the same (e.g., id_0 vs id_O).
+                    // Identical identifiers in different scopes are not a DCL02-C issue.
+                    if id1 == id2 {
+                        continue;
+                    }
+
                     violations.push(RuleViolation {
                         rule_id: "DCL02-C".to_string(),
                         severity: Severity::Low,
