@@ -40,80 +40,72 @@ impl CertRule for Exp33C {
             interprocedural_analyzer.scan_function_definitions(node, source);
 
             // First pass: collect file-scope static/thread-local declarations
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if child.kind() == "declaration" {
-                        let decl_text = get_node_text(&child, source);
-                        if decl_text.contains("static ")
-                            || decl_text.contains("_Thread_local")
-                            || decl_text.contains("__thread")
+            let mut file_scope_decls = Vec::new();
+            Exp33C::collect_file_scope_declarations(node, &mut file_scope_decls);
+            for child in &file_scope_decls {
+                let decl_text = get_node_text(child, source);
+                if decl_text.contains("static ")
+                    || decl_text.contains("_Thread_local")
+                    || decl_text.contains("__thread")
+                {
+                    // Check if it has an initializer
+                    if !decl_text.contains('=') && !decl_text.contains('{') {
+                        // Extract variable name
+                        if let Some(var_name) =
+                            Exp33C::extract_var_name_from_declaration(child, source)
                         {
-                            // Check if it has an initializer
-                            if !decl_text.contains('=') && !decl_text.contains('{') {
-                                // Extract variable name
-                                if let Some(var_name) =
-                                    Exp33C::extract_var_name_from_declaration(&child, source)
-                                {
-                                    file_scope_vars.insert(var_name, VarState::StaticUninitialized);
-                                }
-                            }
+                            file_scope_vars.insert(var_name, VarState::StaticUninitialized);
                         }
                     }
                 }
             }
 
             // Second pass: analyze each function with file-scope vars
+            let mut func_defs = Vec::new();
+            Exp33C::collect_function_definitions(node, &mut func_defs);
             if !file_scope_vars.is_empty() {
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        if child.kind() == "function_definition" {
-                            if let Some(body) = child.child_by_field_name("body") {
-                                let mut analyzer = UninitializedVariableAnalyzer::new();
-                                // Copy interprocedural analysis results
-                                analyzer.realloc_wrapper_functions =
-                                    interprocedural_analyzer.realloc_wrapper_functions.clone();
-                                analyzer.conditionally_init_functions = interprocedural_analyzer
-                                    .conditionally_init_functions
-                                    .clone();
-                                // Add file-scope vars
-                                for (name, state) in &file_scope_vars {
-                                    analyzer.var_states.insert(name.clone(), state.clone());
-                                }
-                                analyzer.collect_all_info(&body, source);
-                                analyzer.check_usage(&body, source, &mut violations);
-                            }
+                for func_def in &func_defs {
+                    if let Some(body) = func_def.child_by_field_name("body") {
+                        let mut analyzer = UninitializedVariableAnalyzer::new();
+                        // Copy interprocedural analysis results
+                        analyzer.realloc_wrapper_functions =
+                            interprocedural_analyzer.realloc_wrapper_functions.clone();
+                        analyzer.conditionally_init_functions = interprocedural_analyzer
+                            .conditionally_init_functions
+                            .clone();
+                        // Add file-scope vars
+                        for (name, state) in &file_scope_vars {
+                            analyzer.var_states.insert(name.clone(), state.clone());
                         }
+                        analyzer.collect_all_info(&body, source);
+                        analyzer.check_usage(&body, source, &mut violations);
                     }
                 }
             }
 
             // Third pass: analyze each function for local uninitialized variable usage
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if child.kind() == "function_definition" {
-                        if let Some(body) = child.child_by_field_name("body") {
-                            let mut analyzer = UninitializedVariableAnalyzer::new();
-                            // Copy interprocedural analysis results
-                            analyzer.realloc_wrapper_functions =
-                                interprocedural_analyzer.realloc_wrapper_functions.clone();
-                            analyzer.conditionally_init_functions = interprocedural_analyzer
-                                .conditionally_init_functions
-                                .clone();
+            for func_def in &func_defs {
+                if let Some(body) = func_def.child_by_field_name("body") {
+                    let mut analyzer = UninitializedVariableAnalyzer::new();
+                    // Copy interprocedural analysis results
+                    analyzer.realloc_wrapper_functions =
+                        interprocedural_analyzer.realloc_wrapper_functions.clone();
+                    analyzer.conditionally_init_functions = interprocedural_analyzer
+                        .conditionally_init_functions
+                        .clone();
 
-                            // Two-pass analysis:
-                            // Pass 1: Collect all declarations and track which get initialized
-                            analyzer.collect_all_info(&body, source);
+                    // Two-pass analysis:
+                    // Pass 1: Collect all declarations and track which get initialized
+                    analyzer.collect_all_info(&body, source);
 
-                            // Check for goto patterns that skip initializations
-                            analyzer.check_goto_pattern(&body, source, &mut violations);
+                    // Check for goto patterns that skip initializations
+                    analyzer.check_goto_pattern(&body, source, &mut violations);
 
-                            // Check for conditional initialization patterns
-                            analyzer.check_conditional_init_pattern(&body, source);
+                    // Check for conditional initialization patterns
+                    analyzer.check_conditional_init_pattern(&body, source);
 
-                            // Pass 2: Check for reads of uninitialized variables
-                            analyzer.check_usage(&body, source, &mut violations);
-                        }
-                    }
+                    // Pass 2: Check for reads of uninitialized variables
+                    analyzer.check_usage(&body, source, &mut violations);
                 }
             }
 
@@ -153,6 +145,34 @@ impl CertRule for Exp33C {
 }
 
 impl Exp33C {
+    /// Recursively collect all `function_definition` nodes, including those nested
+    /// inside preprocessor conditional blocks (`#ifdef`, `#ifndef`, `#if`, etc.).
+    fn collect_function_definitions<'a>(node: &Node<'a>, funcs: &mut Vec<Node<'a>>) {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "function_definition" {
+                    funcs.push(child);
+                } else if child.kind().starts_with("preproc_") {
+                    Self::collect_function_definitions(&child, funcs);
+                }
+            }
+        }
+    }
+
+    /// Recursively collect all `declaration` nodes at file scope, including those
+    /// nested inside preprocessor conditional blocks.
+    fn collect_file_scope_declarations<'a>(node: &Node<'a>, decls: &mut Vec<Node<'a>>) {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "declaration" {
+                    decls.push(child);
+                } else if child.kind().starts_with("preproc_") {
+                    Self::collect_file_scope_declarations(&child, decls);
+                }
+            }
+        }
+    }
+
     fn extract_var_name_from_declaration(decl: &Node, source: &str) -> Option<String> {
         for i in 0..decl.child_count() {
             if let Some(child) = decl.child(i) {
@@ -283,12 +303,10 @@ impl UninitializedVariableAnalyzer {
     /// Scan the translation unit for function definitions that wrap realloc
     /// or conditionally initialize pointer parameters
     fn scan_function_definitions(&mut self, translation_unit: &Node, source: &str) {
-        for i in 0..translation_unit.child_count() {
-            if let Some(child) = translation_unit.child(i) {
-                if child.kind() == "function_definition" {
-                    self.analyze_function_def(&child, source);
-                }
-            }
+        let mut func_defs = Vec::new();
+        Exp33C::collect_function_definitions(translation_unit, &mut func_defs);
+        for func_def in &func_defs {
+            self.analyze_function_def(func_def, source);
         }
     }
 
