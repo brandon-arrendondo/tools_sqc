@@ -137,9 +137,19 @@ def analyze_single_file(c_filepath, violations_dict):
     }
 
 def main():
-    # Paths
-    juliet_dir = Path.home() / 'data/benchmarks/juliet-test-suite-c/testcases/CWE121_Stack_Based_Buffer_Overflow/s08'
-    csv_path = '/tmp/juliet_cwe121_s08.csv'
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Analyze SqC results against Juliet ground truth')
+    parser.add_argument('--csv', required=True,
+                        help='Path to SqC CSV results')
+    parser.add_argument('--dir', required=True,
+                        help='Path to Juliet test directory (e.g., .../testcases/CWE190_Integer_Overflow)')
+    parser.add_argument('--subdir', default=None,
+                        help='Specific subdirectory (e.g., s08). If not specified, analyzes all.')
+    args = parser.parse_args()
+
+    juliet_base = Path(args.dir)
+    csv_path = args.csv
 
     print("Parsing SqC CSV results...")
     violations_dict = parse_sqc_csv(csv_path)
@@ -148,10 +158,23 @@ def main():
     print("\nAnalyzing files...")
     results = []
 
-    for c_file in sorted(juliet_dir.glob('*.c')):
-        result = analyze_single_file(c_file, violations_dict)
-        if result:
-            results.append(result)
+    # Handle single subdir or all subdirs
+    if args.subdir:
+        search_dirs = [juliet_base / args.subdir]
+    else:
+        subdirs = sorted(juliet_base.glob('s*'))
+        if subdirs and subdirs[0].is_dir():
+            search_dirs = subdirs
+        else:
+            # Flat layout: .c files directly in the CWE directory
+            search_dirs = [juliet_base]
+
+    for search_dir in search_dirs:
+        if search_dir.is_dir():
+            for c_file in sorted(search_dir.glob('*.c')):
+                result = analyze_single_file(c_file, violations_dict)
+                if result:
+                    results.append(result)
 
     # Aggregate statistics
     total_tp = sum(r['tp_count'] for r in results)
@@ -161,8 +184,13 @@ def main():
     total_good_lines = sum(r['good_lines'] for r in results)
     total_flaw_lines = sum(r['flaw_lines'] for r in results)
 
+    # Extract CWE name from directory path
+    cwe_name = juliet_base.name  # e.g., "CWE121_Stack_Based_Buffer_Overflow"
+    cwe_id = cwe_name.split('_')[0] if '_' in cwe_name else cwe_name
+
+    subdir_desc = f"({args.subdir})" if args.subdir else "(all subdirs)"
     print("\n" + "="*70)
-    print("JULIET BENCHMARK ANALYSIS - CWE-121 (s08 subset)")
+    print(f"JULIET BENCHMARK ANALYSIS - {cwe_id} {subdir_desc}")
     print("="*70)
     print(f"\nFiles analyzed: {len(results)}")
     print(f"Total OMITBAD lines: {total_bad_lines}")
