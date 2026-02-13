@@ -72,6 +72,19 @@ impl CertRule for Dcl30C {
 }
 
 impl Dcl30C {
+    /// Recursively collect file-scope declarations, including inside preprocessor blocks.
+    fn collect_file_scope_declarations<'a>(node: &Node<'a>, decls: &mut Vec<Node<'a>>) {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "declaration" {
+                    decls.push(child);
+                } else if child.kind().starts_with("preproc_") {
+                    Self::collect_file_scope_declarations(&child, decls);
+                }
+            }
+        }
+    }
+
     /// Check if a return statement returns a pointer to a local variable
     fn check_return_local(&self, return_node: &Node, source: &str) -> Option<RuleViolation> {
         // Get the returned expression
@@ -397,16 +410,12 @@ impl Dcl30C {
             None => return false,
         };
 
-        // Search for global declaration of this variable
-        // A global variable is declared directly under translation_unit, not in a function
-        for i in 0..translation_unit.child_count() {
-            if let Some(child) = translation_unit.child(i) {
-                if child.kind() == "declaration" {
-                    // Check if this declares our variable
-                    if self.contains_identifier(&child, &var_name) {
-                        return true;
-                    }
-                }
+        // Search for global declaration of this variable, including inside preprocessor blocks
+        let mut decls = Vec::new();
+        Self::collect_file_scope_declarations(&translation_unit, &mut decls);
+        for child in &decls {
+            if self.contains_identifier(child, &var_name) {
+                return true;
             }
         }
 
