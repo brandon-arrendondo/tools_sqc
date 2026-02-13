@@ -186,14 +186,14 @@ impl Int08C {
     }
 
     /// Check if a type is a narrow integer type (prone to overflow)
+    /// Per CERT INT08-C, narrow types are those smaller than int:
+    /// char, short, and their signed/unsigned variants.
+    /// int itself is NOT narrow - overflow on int is covered by INT32-C.
     fn is_narrow_integer_type(&self, type_name: &str) -> bool {
         matches!(
             type_name,
-            "int"
-                | "short"
+            "short"
                 | "char"
-                | "signed int"
-                | "unsigned int"
                 | "signed short"
                 | "unsigned short"
                 | "signed char"
