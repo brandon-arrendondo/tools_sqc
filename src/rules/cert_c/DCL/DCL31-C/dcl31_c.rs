@@ -15,6 +15,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::std_functions;
 use std::cell::RefCell;
 use std::collections::HashSet;
 use tree_sitter::Node;
@@ -23,38 +24,12 @@ use tree_sitter::Node;
 pub struct Dcl31C {
     // Track declared functions to detect implicit declarations
     declared_functions: RefCell<HashSet<String>>,
-    // Track included headers
-    included_headers: RefCell<HashSet<String>>,
 }
 
 impl Dcl31C {
     pub fn new() -> Self {
         Dcl31C {
             declared_functions: RefCell::new(HashSet::new()),
-            included_headers: RefCell::new(HashSet::new()),
-        }
-    }
-
-    /// Track #include directives
-    fn track_includes(&self, node: &Node, source: &str) {
-        if node.kind() == "preproc_include" {
-            let text = get_node_text(node, source);
-            // Extract header name from #include <header.h> or #include "header.h"
-            if let Some(start) = text.find('<') {
-                if let Some(end) = text.find('>') {
-                    let header = &text[start + 1..end];
-                    self.included_headers
-                        .borrow_mut()
-                        .insert(header.to_string());
-                }
-            } else if let Some(start) = text.find('"') {
-                if let Some(end) = text[start + 1..].find('"') {
-                    let header = &text[start + 1..start + 1 + end];
-                    self.included_headers
-                        .borrow_mut()
-                        .insert(header.to_string());
-                }
-            }
         }
     }
 
@@ -174,8 +149,10 @@ impl Dcl31C {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
 
-                // Skip standard library functions ONLY if their header was included
-                if self.is_standard_function_with_header(func_name) {
+                // Skip known standard library functions unconditionally.
+                // Tree-sitter cannot follow #include directives, so header-aware
+                // checking produces FPs whenever headers are included transitively.
+                if std_functions::is_known_standard_function(func_name) {
                     return;
                 }
 
@@ -229,46 +206,8 @@ impl Dcl31C {
         }
     }
 
-    /// Check if a function is a known standard library function with its header included
-    fn is_standard_function_with_header(&self, name: &str) -> bool {
-        let headers = self.included_headers.borrow();
-
-        // Check if the appropriate header is included for each function
-        let has_stdio = headers.contains("stdio.h");
-        let has_stdlib = headers.contains("stdlib.h");
-        let has_string = headers.contains("string.h");
-        let has_math = headers.contains("math.h");
-        let has_assert = headers.contains("assert.h");
-
-        match name {
-            // stdio.h functions
-            "printf" | "scanf" | "fprintf" | "fscanf" | "sprintf" | "sscanf" | "fopen"
-            | "fclose" | "fread" | "fwrite" | "fseek" | "ftell" | "getchar" | "putchar"
-            | "gets" | "puts" => has_stdio,
-
-            // stdlib.h functions
-            "malloc" | "calloc" | "realloc" | "free" | "atoi" | "atof" | "atol" | "strtol"
-            | "strtod" | "exit" | "abort" | "atexit" => has_stdlib,
-
-            // string.h functions
-            "memcpy" | "memmove" | "memset" | "memcmp" | "strcpy" | "strncpy" | "strcat"
-            | "strncat" | "strcmp" | "strncmp" | "strlen" | "strchr" | "strstr" => has_string,
-
-            // math.h functions
-            "sqrt" | "pow" | "sin" | "cos" | "tan" | "log" | "exp" => has_math,
-
-            // assert.h
-            "assert" => has_assert,
-
-            _ => false,
-        }
-    }
-
     /// Recursively traverse AST
     fn traverse(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Track includes for header-aware function checking
-        self.track_includes(node, source);
-
         // Track declarations
         self.track_function_declaration(node, source);
 

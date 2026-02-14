@@ -192,12 +192,7 @@ impl Int08C {
     fn is_narrow_integer_type(&self, type_name: &str) -> bool {
         matches!(
             type_name,
-            "short"
-                | "char"
-                | "signed short"
-                | "unsigned short"
-                | "signed char"
-                | "unsigned char"
+            "short" | "char" | "signed short" | "unsigned short" | "signed char" | "unsigned char"
         )
     }
 

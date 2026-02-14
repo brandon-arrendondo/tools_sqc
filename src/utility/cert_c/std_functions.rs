@@ -1,0 +1,177 @@
+/// Check if a function name is a known standard library function.
+///
+/// Covers C11 standard library, a POSIX subset, and Windows socket basics.
+/// Used by DCL31-C and DCL07-C to avoid false positives on standard function
+/// calls where tree-sitter cannot follow `#include` directives to verify
+/// that the function was declared via a header.
+pub fn is_known_standard_function(name: &str) -> bool {
+    match name {
+        // ===== C11 Standard Library =====
+
+        // stdio.h
+        "printf" | "fprintf" | "sprintf" | "snprintf" | "vprintf" | "vfprintf" | "vsprintf"
+        | "vsnprintf" | "scanf" | "fscanf" | "sscanf" | "vscanf" | "vfscanf" | "vsscanf"
+        | "fopen" | "fclose" | "fflush" | "freopen" | "fread" | "fwrite" | "fgetc" | "fgets"
+        | "fputc" | "fputs" | "getc" | "getchar" | "gets" | "putc" | "putchar" | "puts"
+        | "ungetc" | "fseek" | "ftell" | "rewind" | "fgetpos" | "fsetpos" | "clearerr"
+        | "feof" | "ferror" | "perror" | "tmpfile" | "tmpnam" | "remove" | "rename"
+        | "setbuf" | "setvbuf" => true,
+
+        // stdlib.h
+        "malloc" | "calloc" | "realloc" | "free" | "aligned_alloc" | "atoi" | "atol"
+        | "atoll" | "atof" | "strtol" | "strtoll" | "strtoul" | "strtoull" | "strtof"
+        | "strtod" | "strtold" | "rand" | "srand" | "abort" | "exit" | "_Exit"
+        | "quick_exit" | "atexit" | "at_quick_exit" | "system" | "getenv" | "bsearch"
+        | "qsort" | "abs" | "labs" | "llabs" | "div" | "ldiv" | "lldiv" | "mblen"
+        | "mbtowc" | "wctomb" | "mbstowcs" | "wcstombs" => true,
+
+        // string.h
+        "memcpy" | "memmove" | "memset" | "memcmp" | "memchr" | "strcpy" | "strncpy"
+        | "strcat" | "strncat" | "strcmp" | "strncmp" | "strchr" | "strrchr" | "strstr"
+        | "strtok" | "strlen" | "strerror" | "strcoll" | "strxfrm" | "strpbrk" | "strspn"
+        | "strcspn" => true,
+
+        // math.h
+        "acos" | "asin" | "atan" | "atan2" | "cos" | "sin" | "tan" | "acosh" | "asinh"
+        | "atanh" | "cosh" | "sinh" | "tanh" | "exp" | "exp2" | "expm1" | "frexp" | "ldexp"
+        | "log" | "log2" | "log10" | "log1p" | "logb" | "ilogb" | "modf" | "scalbn"
+        | "scalbln" | "pow" | "sqrt" | "cbrt" | "hypot" | "fabs" | "fmod" | "remainder"
+        | "remquo" | "fma" | "fmax" | "fmin" | "fdim" | "nan" | "ceil" | "floor" | "trunc"
+        | "round" | "lround" | "llround" | "nearbyint" | "rint" | "lrint" | "llrint"
+        | "copysign" | "nextafter" | "nexttoward" | "isnan" | "isinf" | "isfinite"
+        | "isnormal" | "signbit" | "isgreater" | "isgreaterequal" | "isless" | "islessequal"
+        | "islessgreater" | "isunordered"
+        // float variants
+        | "acosf" | "asinf" | "atanf" | "atan2f" | "cosf" | "sinf" | "tanf" | "acoshf"
+        | "asinhf" | "atanhf" | "coshf" | "sinhf" | "tanhf" | "expf" | "exp2f" | "expm1f"
+        | "frexpf" | "ldexpf" | "logf" | "log2f" | "log10f" | "log1pf" | "logbf" | "ilogbf"
+        | "modff" | "scalbnf" | "scalblnf" | "powf" | "sqrtf" | "cbrtf" | "hypotf" | "fabsf"
+        | "fmodf" | "remainderf" | "remquof" | "fmaf" | "fmaxf" | "fminf" | "fdimf" | "nanf"
+        | "ceilf" | "floorf" | "truncf" | "roundf" | "lroundf" | "llroundf" | "nearbyintf"
+        | "rintf" | "lrintf" | "llrintf" | "copysignf" | "nextafterf" | "nexttowardf"
+        // long double variants
+        | "acosl" | "asinl" | "atanl" | "atan2l" | "cosl" | "sinl" | "tanl" | "acoshl"
+        | "asinhl" | "atanhl" | "coshl" | "sinhl" | "tanhl" | "expl" | "exp2l" | "expm1l"
+        | "frexpl" | "ldexpl" | "logl" | "log2l" | "log10l" | "log1pl" | "logbl" | "ilogbl"
+        | "modfl" | "scalbnl" | "scalblnl" | "powl" | "sqrtl" | "cbrtl" | "hypotl" | "fabsl"
+        | "fmodl" | "remainderl" | "remquol" | "fmal" | "fmaxl" | "fminl" | "fdiml" | "nanl"
+        | "ceill" | "floorl" | "truncl" | "roundl" | "lroundl" | "llroundl" | "nearbyintl"
+        | "rintl" | "lrintl" | "llrintl" | "copysignl" | "nextafterl" | "nexttowardl" => true,
+
+        // ctype.h
+        "isalnum" | "isalpha" | "isblank" | "iscntrl" | "isdigit" | "isgraph" | "islower"
+        | "isprint" | "ispunct" | "isspace" | "isupper" | "isxdigit" | "tolower"
+        | "toupper" => true,
+
+        // wctype.h
+        "iswalnum" | "iswalpha" | "iswblank" | "iswcntrl" | "iswdigit" | "iswgraph"
+        | "iswlower" | "iswprint" | "iswpunct" | "iswspace" | "iswupper" | "iswxdigit"
+        | "towlower" | "towupper" | "iswctype" | "wctype" | "towctrans" | "wctrans" => true,
+
+        // wchar.h
+        "wprintf" | "fwprintf" | "swprintf" | "vwprintf" | "vfwprintf" | "vswprintf"
+        | "wscanf" | "fwscanf" | "swscanf" | "vwscanf" | "vfwscanf" | "vswscanf" | "fgetwc"
+        | "fgetws" | "fputwc" | "fputws" | "getwc" | "getwchar" | "putwc" | "putwchar"
+        | "ungetwc" | "wcstol" | "wcstoll" | "wcstoul" | "wcstoull" | "wcstof" | "wcstod"
+        | "wcstold" | "wcscpy" | "wcsncpy" | "wcscat" | "wcsncat" | "wcscmp" | "wcsncmp"
+        | "wcschr" | "wcsrchr" | "wcsstr" | "wcstok" | "wcslen" | "wmemcpy" | "wmemmove"
+        | "wmemset" | "wmemcmp" | "wmemchr" | "wcscoll" | "wcsxfrm" | "wcspbrk" | "wcsspn"
+        | "wcscspn" | "wcsftime" | "btowc" | "wctob" | "mbsinit" | "mbrlen" | "mbrtowc"
+        | "wcrtomb" | "mbsrtowcs" | "wcsrtombs" => true,
+
+        // time.h
+        "time" | "difftime" | "mktime" | "strftime" | "gmtime" | "localtime" | "asctime"
+        | "ctime" | "clock" | "timespec_get" => true,
+
+        // signal.h
+        "signal" | "raise" => true,
+
+        // setjmp.h
+        "setjmp" | "longjmp" => true,
+
+        // locale.h
+        "setlocale" | "localeconv" => true,
+
+        // assert.h
+        "assert" => true,
+
+        // stdarg.h (macros, but sometimes seen as function calls)
+        "va_start" | "va_end" | "va_arg" | "va_copy" => true,
+
+        // inttypes.h
+        "imaxabs" | "imaxdiv" | "strtoimax" | "strtoumax" | "wcstoimax" | "wcstoumax" => true,
+
+        // fenv.h
+        "feclearexcept" | "fegetexceptflag" | "feraiseexcept" | "fesetexceptflag"
+        | "fetestexcept" | "fegetround" | "fesetround" | "fegetenv" | "feholdexcept"
+        | "fesetenv" | "feupdateenv" => true,
+
+        // complex.h
+        "cabs" | "cabsf" | "cabsl" | "cacos" | "cacosf" | "cacosl" | "cacosh" | "cacoshf"
+        | "cacoshl" | "carg" | "cargf" | "cargl" | "casin" | "casinf" | "casinl" | "casinh"
+        | "casinhf" | "casinhl" | "catan" | "catanf" | "catanl" | "catanh" | "catanhf"
+        | "catanhl" | "ccos" | "ccosf" | "ccosl" | "ccosh" | "ccoshf" | "ccoshl" | "cexp"
+        | "cexpf" | "cexpl" | "cimag" | "cimagf" | "cimagl" | "clog" | "clogf" | "clogl"
+        | "conj" | "conjf" | "conjl" | "cpow" | "cpowf" | "cpowl" | "cproj" | "cprojf"
+        | "cprojl" | "creal" | "crealf" | "creall" | "csin" | "csinf" | "csinl" | "csinh"
+        | "csinhf" | "csinhl" | "csqrt" | "csqrtf" | "csqrtl" | "ctan" | "ctanf" | "ctanl"
+        | "ctanh" | "ctanhf" | "ctanhl" => true,
+
+        // ===== POSIX Subset =====
+
+        // unistd.h
+        "read" | "write" | "close" | "fork" | "execl" | "execle" | "execlp" | "execv"
+        | "execve" | "execvp" | "pipe" | "dup" | "dup2" | "sleep" | "usleep" | "getpid"
+        | "getppid" | "getuid" | "geteuid" | "getgid" | "getegid" | "access" | "chdir"
+        | "getcwd" | "chown" | "link" | "unlink" | "rmdir" | "symlink" | "readlink"
+        | "isatty" | "lseek" | "sysconf" | "pathconf" | "fpathconf" | "alarm" | "pause"
+        | "setsid" | "setpgid" | "getpgid" | "tcgetpgrp" | "tcsetpgrp" | "fsync"
+        | "fdatasync" | "truncate" | "ftruncate" | "nice" => true,
+
+        // sys/socket.h
+        "socket" | "bind" | "listen" | "accept" | "connect" | "send" | "recv" | "sendto"
+        | "recvfrom" | "sendmsg" | "recvmsg" | "shutdown" | "setsockopt" | "getsockopt"
+        | "getpeername" | "getsockname" | "socketpair" => true,
+
+        // arpa/inet.h
+        "htons" | "htonl" | "ntohs" | "ntohl" | "inet_addr" | "inet_ntoa" | "inet_pton"
+        | "inet_ntop" => true,
+
+        // netdb.h
+        "getaddrinfo" | "freeaddrinfo" | "gai_strerror" | "getnameinfo" | "getservbyname"
+        | "getservbyport" | "gethostbyname" | "gethostbyaddr" => true,
+
+        // pthread basics
+        "pthread_create" | "pthread_join" | "pthread_detach" | "pthread_exit" | "pthread_self"
+        | "pthread_equal" | "pthread_cancel" | "pthread_mutex_init" | "pthread_mutex_destroy"
+        | "pthread_mutex_lock" | "pthread_mutex_trylock" | "pthread_mutex_unlock"
+        | "pthread_cond_init" | "pthread_cond_destroy" | "pthread_cond_wait"
+        | "pthread_cond_signal" | "pthread_cond_broadcast" | "pthread_cond_timedwait"
+        | "pthread_rwlock_init" | "pthread_rwlock_destroy" | "pthread_rwlock_rdlock"
+        | "pthread_rwlock_wrlock" | "pthread_rwlock_unlock" | "pthread_key_create"
+        | "pthread_key_delete" | "pthread_getspecific" | "pthread_setspecific"
+        | "pthread_once" | "pthread_attr_init" | "pthread_attr_destroy" => true,
+
+        // fcntl / stat / mmap
+        "open" | "creat" | "fcntl" | "stat" | "fstat" | "lstat" | "mkdir" | "chmod"
+        | "fchmod" | "umask" | "mmap" | "munmap" | "mprotect" | "msync" | "mlock"
+        | "munlock" => true,
+
+        // select / poll / epoll
+        "select" | "pselect" | "poll" | "ppoll" | "epoll_create" | "epoll_create1"
+        | "epoll_ctl" | "epoll_wait" => true,
+
+        // POSIX misc
+        "opendir" | "readdir" | "closedir" | "rewinddir" | "seekdir" | "telldir"
+        | "dlopen" | "dlclose" | "dlsym" | "dlerror" | "getopt" | "getopt_long"
+        | "strsignal" | "strerror_r" | "realpath" | "mkstemp" | "mkdtemp" | "glob"
+        | "globfree" | "regcomp" | "regexec" | "regfree" | "regerror" => true,
+
+        // ===== Windows Socket Basics =====
+        "WSAStartup" | "WSACleanup" | "WSAGetLastError" | "WSASetLastError"
+        | "closesocket" | "ioctlsocket" | "WSASocketA" | "WSASocketW"
+        | "WSASend" | "WSARecv" => true,
+
+        _ => false,
+    }
+}

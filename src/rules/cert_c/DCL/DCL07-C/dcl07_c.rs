@@ -13,6 +13,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::std_functions;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
@@ -93,11 +94,11 @@ impl Dcl07C {
         }
     }
 
-    /// Check if a function is a standard library function
+    /// Check if a function is a known standard library function.
+    /// Tree-sitter cannot follow #include directives, so we unconditionally
+    /// skip known standard functions to avoid false positives from transitive includes.
     fn is_standard_function(&self, name: &str) -> bool {
-        // Don't skip standard functions - they should still be declared properly!
-        // The rule requires ALL functions to have proper declarations.
-        false
+        std_functions::is_known_standard_function(name)
     }
 
     /// Collect all function declarations and definitions
