@@ -96,35 +96,50 @@ impl Flp02C {
     }
 
     /// Check if a node itself has floating-point characteristics
+    /// Only checks via AST node kinds to avoid false positives from text matching
     fn has_float_characteristics(&self, node: &Node, source: &str) -> bool {
-        let text = get_node_text(node, source);
+        let kind = node.kind();
 
-        // Check for float literals (contains decimal point or 'f'/'F' suffix)
-        if (text.contains('.') && !text.contains("->") && !text.contains("..."))
-            || text.ends_with('f')
-            || text.ends_with('F')
-        {
-            return true;
-        }
-
-        // Check for double literals (scientific notation)
-        if text.contains('e') || text.contains('E') {
-            return true;
-        }
-
-        // Check for explicit float/double casts
-        if text.contains("(float)") || text.contains("(double)") {
-            return true;
-        }
-
-        // Check for common floating-point functions
-        let float_funcs = [
-            "sqrtf", "sqrt", "powf", "pow", "sinf", "sin", "cosf", "cos", "tanf", "tan", "logf",
-            "log", "expf", "exp", "fabsf", "fabs",
-        ];
-        for func in &float_funcs {
-            if text.contains(func) {
+        // Only check number_literal nodes for float literal patterns
+        if kind == "number_literal" {
+            let text = get_node_text(node, source);
+            // Decimal point (but not -> or ...)
+            if text.contains('.') && !text.contains("->") && !text.contains("...") {
                 return true;
+            }
+            // 'f'/'F' suffix on number literal
+            if text.ends_with('f') || text.ends_with('F') {
+                return true;
+            }
+            // Scientific notation on number literal
+            if text.contains('e') || text.contains('E') {
+                return true;
+            }
+        }
+
+        // Only check cast_expression nodes for float casts
+        if kind == "cast_expression" {
+            if let Some(type_node) = node.child_by_field_name("type") {
+                let type_text = get_node_text(&type_node, source);
+                if type_text.contains("float") || type_text.contains("double") {
+                    return true;
+                }
+            }
+        }
+
+        // Only check call_expression nodes for float function calls
+        if kind == "call_expression" {
+            if let Some(func_node) = node.child_by_field_name("function") {
+                if func_node.kind() == "identifier" {
+                    let func_name = get_node_text(&func_node, source);
+                    let float_funcs = [
+                        "sqrtf", "sqrt", "powf", "pow", "sinf", "sin", "cosf", "cos", "tanf",
+                        "tan", "logf", "log", "expf", "exp", "fabsf", "fabs",
+                    ];
+                    if float_funcs.contains(&func_name) {
+                        return true;
+                    }
+                }
             }
         }
 

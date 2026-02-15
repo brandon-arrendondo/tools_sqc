@@ -261,13 +261,7 @@ impl Flp03C {
     }
 
     /// Check for floating-point type conversions without error checking
-    fn check_fp_conversion(
-        &self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-        analyzer: &FpAnalyzer,
-    ) {
+    fn check_fp_conversion(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Check for cast expressions involving floating-point types
         if node.kind() == "cast_expression" {
             if let Some(type_node) = node.child_by_field_name("type") {
@@ -285,37 +279,6 @@ impl Flp03C {
                                 column: node.start_position().column + 1,
                                 suggestion: Some(
                                     "Use feclearexcept/fetestexcept to detect FE_INEXACT, FE_OVERFLOW, or FE_UNDERFLOW".to_string()
-                                ),
-                                ..Default::default()
-                            });
-                        }
-                    }
-                }
-            }
-        }
-
-        // Check for assignment to floating-point variables from other types
-        if node.kind() == "assignment_expression" {
-            if let (Some(left), Some(right)) = (
-                node.child_by_field_name("left"),
-                node.child_by_field_name("right"),
-            ) {
-                // Check if expression involves floating-point variables
-                if analyzer.is_fp_expression(&left, source)
-                    || analyzer.is_fp_expression(&right, source)
-                {
-                    // Check if there's error checking in the containing function
-                    if let Some(containing_func) = self.find_containing_function(node) {
-                        if !self.contains_fp_error_checking(&containing_func, source) {
-                            violations.push(RuleViolation {
-                                rule_id: self.rule_id().to_string(),
-                                severity: self.severity(),
-                                message: "Floating-point assignment without error checking (may underflow or lose precision)".to_string(),
-                                file_path: String::new(),
-                                line: node.start_position().row + 1,
-                                column: node.start_position().column + 1,
-                                suggestion: Some(
-                                    "Use feclearexcept/fetestexcept to detect floating-point exceptions".to_string()
                                 ),
                                 ..Default::default()
                             });
@@ -386,8 +349,8 @@ impl Flp03C {
             "binary_expression" => {
                 self.check_fp_division(node, source, violations, analyzer);
             }
-            "cast_expression" | "assignment_expression" => {
-                self.check_fp_conversion(node, source, violations, analyzer);
+            "cast_expression" => {
+                self.check_fp_conversion(node, source, violations);
             }
             _ => {}
         }

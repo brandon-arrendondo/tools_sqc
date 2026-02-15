@@ -61,6 +61,14 @@ fn main() -> Result<()> {
                 .conflicts_with("interactive")
                 .conflicts_with("export"),
         )
+        .arg(
+            Arg::new("directories")
+                .long("directories")
+                .short('d')
+                .help("Additional directories to pre-scan for function definitions (cross-file context)")
+                .value_name("DIR")
+                .action(clap::ArgAction::Append),
+        )
         .get_matches();
 
     let path = matches.get_one::<String>("path").unwrap();
@@ -68,6 +76,10 @@ fn main() -> Result<()> {
     let interactive = matches.get_flag("interactive");
     let export_file = matches.get_one::<String>("export");
     let generate_suppression = matches.get_one::<String>("generate_suppression");
+    let directories: Vec<String> = matches
+        .get_many::<String>("directories")
+        .map(|vals| vals.cloned().collect())
+        .unwrap_or_default();
 
     // Verify the path and determine source type
     let project_source = ProjectSource::open(path)?;
@@ -81,7 +93,7 @@ fn main() -> Result<()> {
     }
 
     if interactive {
-        let mut ui = TerminalUI::new(path, manifest)?;
+        let mut ui = TerminalUI::new(path, manifest, &directories)?;
         ui.run()?;
     } else {
         println!("Analyzing {} at: {}", project_source.source_type(), path);
@@ -91,7 +103,12 @@ fn main() -> Result<()> {
         let progress_reporter = CLIProgressReporter::new();
 
         // Perform analysis with progress reporting
-        let violations = analyze_project(&project_source, &manifest, Some(&progress_reporter))?;
+        let violations = analyze_project(
+            &project_source,
+            &manifest,
+            Some(&progress_reporter),
+            &directories,
+        )?;
 
         // Export to file if requested
         if let Some(export_path) = export_file {

@@ -1,6 +1,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashMap;
 use tree_sitter::Node;
 
 pub struct Int32C;
@@ -28,25 +29,32 @@ impl CertRule for Int32C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+        let type_map = self.collect_variable_types(node, source);
+        self.check_node(node, source, &mut violations, &type_map);
         violations
     }
 }
 
 impl Int32C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         match node.kind() {
             "binary_expression" => {
-                self.check_binary_operation(node, source, violations);
+                self.check_binary_operation(node, source, violations, type_map);
             }
             "assignment_expression" => {
-                self.check_assignment_operation(node, source, violations);
+                self.check_assignment_operation(node, source, violations, type_map);
             }
             "unary_expression" => {
-                self.check_unary_operation(node, source, violations);
+                self.check_unary_operation(node, source, violations, type_map);
             }
             "update_expression" => {
-                self.check_increment_decrement(node, source, violations);
+                self.check_increment_decrement(node, source, violations, type_map);
             }
             "call_expression" => {
                 self.check_function_call(node, source, violations);
@@ -57,7 +65,7 @@ impl Int32C {
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
+                self.check_node(&child, source, violations, type_map);
             }
         }
     }
@@ -67,15 +75,16 @@ impl Int32C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(operator) = self.get_operator(node, source) {
             match operator.as_str() {
-                "+" => self.check_addition(node, source, violations),
-                "-" => self.check_subtraction(node, source, violations),
-                "*" => self.check_multiplication(node, source, violations),
-                "/" => self.check_division(node, source, violations),
-                "%" => self.check_modulo(node, source, violations),
-                "<<" => self.check_left_shift(node, source, violations),
+                "+" => self.check_addition(node, source, violations, type_map),
+                "-" => self.check_subtraction(node, source, violations, type_map),
+                "*" => self.check_multiplication(node, source, violations, type_map),
+                "/" => self.check_division(node, source, violations, type_map),
+                "%" => self.check_modulo(node, source, violations, type_map),
+                "<<" => self.check_left_shift(node, source, violations, type_map),
                 _ => {}
             }
         }
@@ -86,15 +95,16 @@ impl Int32C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(operator) = self.get_assignment_operator(node, source) {
             match operator.as_str() {
-                "+=" => self.check_compound_addition(node, source, violations),
-                "-=" => self.check_compound_subtraction(node, source, violations),
-                "*=" => self.check_compound_multiplication(node, source, violations),
+                "+=" => self.check_compound_addition(node, source, violations, type_map),
+                "-=" => self.check_compound_subtraction(node, source, violations, type_map),
+                "*=" => self.check_compound_multiplication(node, source, violations, type_map),
                 "/=" => self.check_compound_division(node, source, violations),
                 "%=" => self.check_compound_modulo(node, source, violations),
-                "<<=" => self.check_compound_left_shift(node, source, violations),
+                "<<=" => self.check_compound_left_shift(node, source, violations, type_map),
                 _ => {}
             }
         }
@@ -105,21 +115,28 @@ impl Int32C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(operator) = self.get_unary_operator(node, source) {
             if operator == "-" {
-                self.check_negation(node, source, violations);
+                self.check_negation(node, source, violations, type_map);
             }
         }
     }
 
-    fn check_addition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_addition(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
-            let left_type = self.infer_type(&left, source);
-            let right_type = self.infer_type(&right, source);
+            let left_type = self.infer_type(&left, source, type_map);
+            let right_type = self.infer_type(&right, source, type_map);
 
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
                 // Skip if this operation is part of an overflow check comparison
@@ -149,13 +166,19 @@ impl Int32C {
         }
     }
 
-    fn check_subtraction(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_subtraction(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
-            let left_type = self.infer_type(&left, source);
-            let right_type = self.infer_type(&right, source);
+            let left_type = self.infer_type(&left, source, type_map);
+            let right_type = self.infer_type(&right, source, type_map);
 
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
                 // Skip if this operation is part of an overflow check comparison
@@ -193,13 +216,19 @@ impl Int32C {
         }
     }
 
-    fn check_multiplication(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_multiplication(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
-            let left_type = self.infer_type(&left, source);
-            let right_type = self.infer_type(&right, source);
+            let left_type = self.infer_type(&left, source, type_map);
+            let right_type = self.infer_type(&right, source, type_map);
 
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
                 // Skip if this operation is part of an overflow check comparison
@@ -241,15 +270,21 @@ impl Int32C {
         }
     }
 
-    fn check_division(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_division(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
             let left_text = get_node_text(&left, source);
             let right_text = get_node_text(&right, source);
-            let left_type = self.infer_type(&left, source);
-            let right_type = self.infer_type(&right, source);
+            let left_type = self.infer_type(&left, source, type_map);
+            let right_type = self.infer_type(&right, source, type_map);
 
             // Check for signed integer division
             // INT_MIN / -1 causes overflow because -INT_MIN cannot be represented
@@ -267,8 +302,10 @@ impl Int32C {
                     || self.could_be_int_min(&left, source);
 
                 // Also flag generic signed division of variables (could be INT_MIN / -1 at runtime)
-                let is_variable_division =
-                    left.kind() == "identifier" && right.kind() == "identifier";
+                // but skip if the right operand (divisor) is unsigned — can't be -1
+                let is_variable_division = left.kind() == "identifier"
+                    && right.kind() == "identifier"
+                    && !self.is_unsigned_type(&right_type);
 
                 if (has_explicit_risk || is_variable_division)
                     && !self.has_division_overflow_check(node, source)
@@ -294,15 +331,21 @@ impl Int32C {
         }
     }
 
-    fn check_modulo(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_modulo(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
             let left_text = get_node_text(&left, source);
             let right_text = get_node_text(&right, source);
-            let left_type = self.infer_type(&left, source);
-            let right_type = self.infer_type(&right, source);
+            let left_type = self.infer_type(&left, source, type_map);
+            let right_type = self.infer_type(&right, source, type_map);
 
             // Check for signed integer modulo
             // INT_MIN % -1 causes overflow
@@ -313,8 +356,10 @@ impl Int32C {
                     && (right_text == "-1" || right_text.contains("-1"));
 
                 // Also flag generic signed modulo of variables (could be INT_MIN % -1 at runtime)
-                let is_variable_modulo =
-                    left.kind() == "identifier" && right.kind() == "identifier";
+                // but skip if the right operand (divisor) is unsigned — can't be -1
+                let is_variable_modulo = left.kind() == "identifier"
+                    && right.kind() == "identifier"
+                    && !self.is_unsigned_type(&right_type);
 
                 if (has_explicit_risk || is_variable_modulo)
                     && !self.has_modulo_overflow_check(node, source)
@@ -340,10 +385,16 @@ impl Int32C {
         }
     }
 
-    fn check_negation(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_negation(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let Some(argument) = node.child_by_field_name("argument") {
             let _arg_text = get_node_text(&argument, source);
-            let arg_type = self.infer_type(&argument, source);
+            let arg_type = self.infer_type(&argument, source, type_map);
 
             // Check for negation of signed integers, especially -INT_MIN which causes overflow
             if self.is_signed_type(&arg_type) {
@@ -371,12 +422,18 @@ impl Int32C {
         }
     }
 
-    fn check_left_shift(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_left_shift(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(_right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_signed_type(&left_type) {
                 if !self.has_shift_overflow_check(node, source) {
@@ -406,9 +463,10 @@ impl Int32C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(left) = node.child_by_field_name("left") {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -440,9 +498,10 @@ impl Int32C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(left) = node.child_by_field_name("left") {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -472,9 +531,10 @@ impl Int32C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(left) = node.child_by_field_name("left") {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -580,9 +640,10 @@ impl Int32C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(left) = node.child_by_field_name("left") {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -612,9 +673,10 @@ impl Int32C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(argument) = node.child_by_field_name("argument") {
-            let arg_type = self.infer_type(&argument, source);
+            let arg_type = self.infer_type(&argument, source, type_map);
 
             if self.is_signed_type(&arg_type) {
                 // Skip if this is part of a safe for loop (bounded, starting from small values)
@@ -784,7 +846,143 @@ impl Int32C {
         }
     }
 
-    fn infer_type(&self, node: &Node, source: &str) -> String {
+    /// Collect variable types from function parameters and local declarations.
+    /// Walks the entire AST to find all function_definition nodes and collects
+    /// types from their parameters and body declarations.
+    fn collect_variable_types(&self, node: &Node, source: &str) -> HashMap<String, String> {
+        let mut type_map = HashMap::new();
+
+        if node.kind() == "function_definition" {
+            // Collect from function parameters
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                self.collect_params_from_declarator(&declarator, source, &mut type_map);
+            }
+            // Collect from local declarations in the function body
+            if let Some(body) = node.child_by_field_name("body") {
+                self.collect_local_declarations(&body, source, &mut type_map);
+            }
+        }
+
+        // Recurse into children to find nested function_definitions
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                let child_map = self.collect_variable_types(&child, source);
+                type_map.extend(child_map);
+            }
+        }
+
+        type_map
+    }
+
+    fn collect_params_from_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &mut HashMap<String, String>,
+    ) {
+        if node.kind() == "function_declarator" {
+            if let Some(params) = node.child_by_field_name("parameters") {
+                for i in 0..params.child_count() {
+                    if let Some(param) = params.child(i) {
+                        if param.kind() == "parameter_declaration" {
+                            self.extract_type_and_name(&param, source, type_map);
+                        }
+                    }
+                }
+            }
+        }
+        // Recurse to find nested function_declarator (e.g. pointer declarators)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_params_from_declarator(&child, source, type_map);
+            }
+        }
+    }
+
+    fn collect_local_declarations(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &mut HashMap<String, String>,
+    ) {
+        if node.kind() == "declaration" {
+            self.extract_type_and_name(node, source, type_map);
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_local_declarations(&child, source, type_map);
+            }
+        }
+    }
+
+    fn extract_type_and_name(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &mut HashMap<String, String>,
+    ) {
+        let mut type_text = String::new();
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "primitive_type" | "sized_type_specifier" | "type_identifier" => {
+                        type_text = get_node_text(&child, source).to_string();
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        if type_text.is_empty() {
+            return;
+        }
+
+        // Extract variable names from declarators
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            if let Some(name) = self.extract_identifier_name(&declarator, source) {
+                type_map.insert(name, type_text.clone());
+            }
+        }
+
+        // Handle init_declarator lists (e.g. `int a, b;`)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(decl) = child.child_by_field_name("declarator") {
+                        if let Some(name) = self.extract_identifier_name(&decl, source) {
+                            type_map.insert(name, type_text.clone());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn extract_identifier_name(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(get_node_text(node, source).to_string()),
+            "pointer_declarator" | "array_declarator" | "parenthesized_declarator" => {
+                if let Some(inner) = node.child_by_field_name("declarator") {
+                    self.extract_identifier_name(&inner, source)
+                } else {
+                    None
+                }
+            }
+            _ => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" {
+                            return Some(get_node_text(&child, source).to_string());
+                        }
+                    }
+                }
+                None
+            }
+        }
+    }
+
+    fn infer_type(&self, node: &Node, source: &str, type_map: &HashMap<String, String>) -> String {
         let text = get_node_text(&node, source);
 
         // Look for explicit unsigned type indicators first
@@ -821,7 +1019,26 @@ impl Int32C {
             return "signed".to_string();
         }
 
-        // If this is just a variable name, look for it in function parameters or declarations
+        // If this is a variable name, check the type map first (most reliable)
+        if node.kind() == "identifier" {
+            if let Some(declared_type) = type_map.get(text) {
+                if self.is_unsigned_type(declared_type) {
+                    return "unsigned".to_string();
+                }
+                // Only return signed if the type is clearly an integer type
+                if declared_type.contains("int")
+                    || declared_type.contains("short")
+                    || declared_type.contains("long")
+                    || declared_type == "signed"
+                {
+                    return "signed".to_string();
+                }
+                // Non-integer types (float, double, char, pointers, structs) — skip
+                return "unknown".to_string();
+            }
+        }
+
+        // Fall back to old heuristic for variable names not in the type map
         if text.chars().all(|c| c.is_ascii_alphabetic() || c == '_') {
             if let Some(declared_type) = self.find_variable_declaration(node, source, text) {
                 return declared_type;
@@ -842,8 +1059,9 @@ impl Int32C {
             return "signed".to_string();
         }
 
-        // For simple variable names, default to signed since "int" is signed by default in C
-        "signed".to_string()
+        // For variables NOT in the type map, default to unknown instead of signed
+        // This prevents false positives on variables whose type we can't determine
+        "unknown".to_string()
     }
 
     fn find_variable_declaration(
@@ -894,9 +1112,15 @@ impl Int32C {
     }
 
     fn is_signed_type(&self, type_str: &str) -> bool {
-        type_str == "signed"
-            || type_str == "int"
-            || (type_str != "unsigned" && type_str != "size_t" && !type_str.contains("uint"))
+        type_str == "signed" || type_str == "int"
+    }
+
+    fn is_unsigned_type(&self, type_str: &str) -> bool {
+        type_str == "unsigned"
+            || type_str == "size_t"
+            || type_str.contains("uint")
+            || type_str.starts_with("unsigned ")
+            || type_str == "SIZE_MAX"
     }
 
     fn could_be_int_min(&self, node: &Node, source: &str) -> bool {

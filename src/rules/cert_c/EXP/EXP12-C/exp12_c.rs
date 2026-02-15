@@ -93,46 +93,40 @@ fn check_for_ignored_return_values(node: &Node, source: &str, violations: &mut V
     }
 }
 
-/// Check if a function is known to return important values that should be checked
+/// Check if a function is known to return important values that should be checked.
+/// Only includes functions whose return values indicate success/failure or allocation —
+/// not functions that return destination pointers or comparison results.
 fn is_function_with_important_return_value(function_name: &str) -> bool {
-    // List of functions from standard library and POSIX that return important values
-    // This includes functions that can fail and signal errors via return values
     matches!(
         function_name,
-        // Memory allocation functions
+        // Memory allocation (return NULL on failure)
         "malloc" | "calloc" | "realloc" | "aligned_alloc" |
-        // String functions that can fail
+        // String allocation
         "asprintf" | "vasprintf" |
-        // File I/O functions
-        "fopen" | "fclose" | "fread" | "fwrite" | "fseek" | "ftell" |
-        "fflush" | "fgetc" | "fgets" | "fputc" | "fputs" | "fprintf" |
-        "fscanf" | "feof" | "ferror" | "freopen" | "remove" | "rename" |
-        "tmpfile" | "setvbuf" | "ungetc" |
-        // Standard I/O
-        "scanf" | "sscanf" | "printf" | "sprintf" | "snprintf" |
-        "vprintf" | "vsprintf" | "vsnprintf" | "puts" |
-        "getc" | "getchar" | "gets" | "putc" | "putchar" |
+        // File I/O with error returns (NULL or error code)
+        "fopen" | "freopen" | "tmpfile" |
+        "fclose" | "fread" | "fwrite" | "fseek" | "ftell" |
+        "fflush" | "setvbuf" | "remove" | "rename" |
+        // Formatted I/O (return count or negative on error)
+        "scanf" | "sscanf" | "fscanf" |
+        "printf" | "fprintf" | "sprintf" | "snprintf" |
         // Process/system functions
-        "system" | "atexit" | "signal" | "raise" |
-        // POSIX functions
-        "open" | "close" | "read" | "write" | "lseek" | "access" |
-        "chdir" | "chmod" | "chown" | "dup" | "dup2" | "pipe" |
-        "fork" | "exec" | "execl" | "execle" | "execlp" | "execv" |
-        "execve" | "execvp" | "wait" | "waitpid" |
+        "system" | "atexit" | "signal" |
+        // POSIX functions with error returns
+        "open" | "close" | "read" | "write" | "lseek" |
+        "dup" | "dup2" | "pipe" |
+        "fork" | "wait" | "waitpid" | "access" |
+        "chdir" | "chmod" | "chown" |
+        // POSIX exec (only returns on error)
+        "execl" | "execle" | "execlp" | "execv" | "execve" | "execvp" |
+        // pthread (return error code)
         "pthread_create" | "pthread_join" | "pthread_mutex_init" |
         "pthread_mutex_lock" | "pthread_mutex_unlock" |
-        // String/memory functions with return values
-        "strcpy" | "strncpy" | "strcat" | "strncat" | "memcpy" |
-        "memmove" | "memset" | "memcmp" | "strcmp" | "strncmp" |
-        "strchr" | "strrchr" | "strstr" | "strtok" | "strlen" |
-        // Time functions
-        "time" | "clock" | "strftime" |
-        // Math functions (though these typically can't fail in the same way)
-        // Network functions (if applicable)
+        // Network (return -1/SOCKET_ERROR on failure)
         "socket" | "bind" | "listen" | "accept" | "connect" |
         "send" | "recv" | "sendto" | "recvfrom" |
-        // Other common functions
-        "setlocale" | "getenv" | "mktime" | "difftime"
+        // Other functions with meaningful error returns
+        "setlocale" | "getenv" | "mktime"
     )
 }
 

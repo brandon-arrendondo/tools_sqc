@@ -11,17 +11,24 @@
 // 3. Find function pointer assignments where signature doesn't match
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use crate::utility::cert_c::std_functions;
-use std::collections::HashMap;
+use std::cell::RefCell;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
-pub struct Dcl07C;
+pub struct Dcl07C {
+    // Functions known from pre-scanned directories (cross-file context)
+    cross_file_functions: RefCell<HashSet<String>>,
+}
 
 impl Dcl07C {
     pub fn new() -> Self {
-        Dcl07C
+        Dcl07C {
+            cross_file_functions: RefCell::new(HashSet::new()),
+        }
     }
 
     /// Check a node and all its descendants for violations
@@ -74,6 +81,11 @@ impl Dcl07C {
 
             // Check if function was declared before this call
             if !declarations.contains_key(func_name) {
+                // Skip if known from pre-scanned directories
+                if self.cross_file_functions.borrow().contains(func_name) {
+                    return;
+                }
+
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     line: call_node.start_position().row + 1,
@@ -496,6 +508,10 @@ impl CertRule for Dcl07C {
 
     fn cert_id(&self) -> &'static str {
         "DCL07-C"
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.cross_file_functions.borrow_mut() = context.known_functions.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {

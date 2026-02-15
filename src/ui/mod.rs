@@ -113,6 +113,7 @@ pub struct TerminalUI {
     repo_path: String,
     manifest: RuleManifest,
     registry: RuleRegistry,
+    directories: Vec<String>,
     violations: Vec<RuleViolation>,
     suppressed_violations: Vec<RuleViolation>, // Violations that are suppressed
     clean_files: Vec<String>,                  // Files that were scanned but had no violations
@@ -152,7 +153,7 @@ pub struct TerminalUI {
 }
 
 impl TerminalUI {
-    pub fn new(repo_path: &str, manifest: RuleManifest) -> Result<Self> {
+    pub fn new(repo_path: &str, manifest: RuleManifest, directories: &[String]) -> Result<Self> {
         let registry = RuleRegistry::new();
         let mut selected_violation = ListState::default();
         selected_violation.select(Some(0));
@@ -168,6 +169,7 @@ impl TerminalUI {
             repo_path: repo_path.to_string(),
             manifest,
             registry,
+            directories: directories.to_vec(),
             violations: Vec::new(),
             suppressed_violations: Vec::new(),
             clean_files: Vec::new(),
@@ -2133,6 +2135,7 @@ impl TerminalUI {
     }
 
     fn scan_repository<B: Backend>(&mut self, terminal: &mut Terminal<B>) -> Result<()> {
+        use crate::analyze::prescan;
         use crate::files::ProjectSource;
         use crate::parser::CParser;
         use std::time::Duration;
@@ -2147,6 +2150,16 @@ impl TerminalUI {
         self.suppressed_violations.clear();
         self.clean_files.clear();
         self.combined_violations.clear();
+
+        // Pre-scan directories for cross-file context
+        if !self.directories.is_empty() {
+            let context = prescan::prescan_directories(&self.directories, None)?;
+            if context.has_cross_file_data() {
+                for rule in self.registry.all_rules() {
+                    rule.set_project_context(&context);
+                }
+            }
+        }
 
         let project_source = ProjectSource::open(&self.repo_path)?;
         let c_files = project_source.get_c_files()?;

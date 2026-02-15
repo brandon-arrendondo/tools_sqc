@@ -24,6 +24,12 @@ pub trait ProgressReporter: Send + Sync {
     /// # Returns
     /// `true` if cancellation has been requested, `false` otherwise
     fn is_cancelled(&self) -> bool;
+
+    /// Report the start of a directory pre-scan phase
+    fn report_prescan_start(&self, _num_directories: usize) {}
+
+    /// Report the completion of directory pre-scanning
+    fn report_prescan_complete(&self, _num_functions: usize) {}
 }
 
 /// CLI progress reporter that displays progress on a single terminal line
@@ -49,6 +55,25 @@ impl CLIProgressReporter {
 }
 
 impl ProgressReporter for CLIProgressReporter {
+    fn report_prescan_start(&self, num_directories: usize) {
+        println!(
+            "Pre-scanning {} {} for function definitions...",
+            num_directories,
+            if num_directories == 1 {
+                "directory"
+            } else {
+                "directories"
+            }
+        );
+    }
+
+    fn report_prescan_complete(&self, num_functions: usize) {
+        println!(
+            "Pre-scan complete: found {} function definitions",
+            num_functions
+        );
+    }
+
     fn report_file(&self, current: usize, total: usize, file_path: &str, rule_id: &str) {
         // Format: "Scanning: [file 15/42] src/foo/bar.c - Checking: ARR30-C"
         let message = format!(

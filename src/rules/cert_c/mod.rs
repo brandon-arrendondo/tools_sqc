@@ -907,7 +907,7 @@ impl RuleRegistry {
         registry.register(Box::new(dcl36_c::Dcl36C::new()));
         registry.register(Box::new(dcl38_c::Dcl38C));
         registry.register(Box::new(dcl41_c::Dcl41C));
-        registry.register(Box::new(dcl07_c::Dcl07C));
+        registry.register(Box::new(dcl07_c::Dcl07C::new()));
         registry.register(Box::new(dcl09_c::Dcl09C));
         registry.register(Box::new(dcl10_c::Dcl10C));
         registry.register(Box::new(dcl11_c::Dcl11C));
