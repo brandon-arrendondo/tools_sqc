@@ -13,6 +13,7 @@
 //! https://wiki.sei.cmu.edu/confluence/display/c/DCL31-C.+Declare+identifiers+before+using+them
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use crate::utility::cert_c::std_functions;
@@ -24,12 +25,15 @@ use tree_sitter::Node;
 pub struct Dcl31C {
     // Track declared functions to detect implicit declarations
     declared_functions: RefCell<HashSet<String>>,
+    // Functions known from pre-scanned directories (cross-file context)
+    cross_file_functions: RefCell<HashSet<String>>,
 }
 
 impl Dcl31C {
     pub fn new() -> Self {
         Dcl31C {
             declared_functions: RefCell::new(HashSet::new()),
+            cross_file_functions: RefCell::new(HashSet::new()),
         }
     }
 
@@ -161,6 +165,11 @@ impl Dcl31C {
                     return;
                 }
 
+                // Skip if known from pre-scanned directories
+                if self.cross_file_functions.borrow().contains(func_name) {
+                    return;
+                }
+
                 violations.push(RuleViolation {
                     rule_id: "DCL31-C".to_string(),
                     severity: Severity::Low,
@@ -243,6 +252,10 @@ impl CertRule for Dcl31C {
 
     fn cert_id(&self) -> &'static str {
         "DCL31-C"
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.cross_file_functions.borrow_mut() = context.known_functions.clone();
     }
 
     fn check(&self, root: &Node, source: &str) -> Vec<RuleViolation> {

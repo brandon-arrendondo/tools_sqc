@@ -41,7 +41,7 @@ scan_cwe() {
 
     local start_time
     start_time=$(date +%s)
-    if ! "$SQC" "$cwe_dir" -m "$MANIFEST" -e "$csv_file" >/dev/null 2>&1; then
+    if ! "$SQC" "$cwe_dir" -m "$MANIFEST" -d "$JULIET_BASE" -d "${JULIET_BASE}/../testcasesupport" -e "$csv_file" >/dev/null 2>&1; then
         echo "ERROR: $cwe scan failed"
         return 1
     fi

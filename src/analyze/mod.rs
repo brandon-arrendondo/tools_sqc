@@ -1,3 +1,5 @@
+pub mod context;
+pub mod prescan;
 pub mod suppression;
 
 use super::files::ProjectSource;
@@ -14,9 +16,22 @@ pub fn analyze_project(
     project_source: &ProjectSource,
     manifest: &RuleManifest,
     progress: Option<&dyn ProgressReporter>,
+    directories: &[String],
 ) -> Result<Vec<RuleViolation>> {
     let mut violations = Vec::new();
     let registry = RuleRegistry::new();
+
+    // Pre-scan additional directories for cross-file context
+    let context = if directories.is_empty() {
+        context::ProjectContext::new()
+    } else {
+        prescan::prescan_directories(directories, progress)?
+    };
+    if context.has_cross_file_data() {
+        for rule in registry.all_rules() {
+            rule.set_project_context(&context);
+        }
+    }
 
     // Validate that all enabled rules are implemented
     let mut unimplemented_rules = Vec::new();

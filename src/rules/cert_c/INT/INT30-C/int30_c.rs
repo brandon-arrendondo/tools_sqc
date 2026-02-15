@@ -1,6 +1,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashMap;
 use tree_sitter::Node;
 
 pub struct Int30C;
@@ -28,27 +29,34 @@ impl CertRule for Int30C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
+        let type_map = self.collect_variable_types(node, source);
 
-        self.check_node(node, source, &mut violations);
+        self.check_node(node, source, &mut violations, &type_map);
 
         violations
     }
 }
 
 impl Int30C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         match node.kind() {
             "binary_expression" => {
-                self.check_binary_operation(node, source, violations);
+                self.check_binary_operation(node, source, violations, type_map);
             }
             "assignment_expression" => {
-                self.check_assignment_operation(node, source, violations);
+                self.check_assignment_operation(node, source, violations, type_map);
             }
             "call_expression" => {
                 self.check_function_call(node, source, violations);
             }
             "update_expression" => {
-                self.check_increment_decrement(node, source, violations);
+                self.check_increment_decrement(node, source, violations, type_map);
             }
             _ => {}
         }
@@ -56,7 +64,7 @@ impl Int30C {
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
+                self.check_node(&child, source, violations, type_map);
             }
         }
     }
@@ -66,13 +74,14 @@ impl Int30C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(operator) = self.get_operator(node, source) {
             match operator.as_str() {
-                "+" => self.check_addition(node, source, violations),
-                "-" => self.check_subtraction(node, source, violations),
-                "*" => self.check_multiplication(node, source, violations),
-                "<<" => self.check_left_shift(node, source, violations),
+                "+" => self.check_addition(node, source, violations, type_map),
+                "-" => self.check_subtraction(node, source, violations, type_map),
+                "*" => self.check_multiplication(node, source, violations, type_map),
+                "<<" => self.check_left_shift(node, source, violations, type_map),
                 _ => {}
             }
         }
@@ -83,25 +92,32 @@ impl Int30C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(operator) = self.get_assignment_operator(node, source) {
             match operator.as_str() {
-                "+=" => self.check_compound_addition(node, source, violations),
-                "-=" => self.check_compound_subtraction(node, source, violations),
-                "*=" => self.check_compound_multiplication(node, source, violations),
-                "<<=" => self.check_compound_left_shift(node, source, violations),
+                "+=" => self.check_compound_addition(node, source, violations, type_map),
+                "-=" => self.check_compound_subtraction(node, source, violations, type_map),
+                "*=" => self.check_compound_multiplication(node, source, violations, type_map),
+                "<<=" => self.check_compound_left_shift(node, source, violations, type_map),
                 _ => {}
             }
         }
     }
 
-    fn check_addition(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_addition(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
-            let left_type = self.infer_type(&left, source);
-            let right_type = self.infer_type(&right, source);
+            let left_type = self.infer_type(&left, source, type_map);
+            let right_type = self.infer_type(&right, source, type_map);
 
             if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
                 if !self.has_overflow_check_addition(node, source) {
@@ -129,13 +145,19 @@ impl Int30C {
         }
     }
 
-    fn check_subtraction(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_subtraction(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
-            let left_type = self.infer_type(&left, source);
-            let right_type = self.infer_type(&right, source);
+            let left_type = self.infer_type(&left, source, type_map);
+            let right_type = self.infer_type(&right, source, type_map);
 
             if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
                 if !self.has_overflow_check_subtraction(node, source) {
@@ -162,13 +184,19 @@ impl Int30C {
         }
     }
 
-    fn check_multiplication(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_multiplication(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
-            let left_type = self.infer_type(&left, source);
-            let right_type = self.infer_type(&right, source);
+            let left_type = self.infer_type(&left, source, type_map);
+            let right_type = self.infer_type(&right, source, type_map);
 
             if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
                 if !self.has_overflow_check_multiplication(node, source) {
@@ -193,12 +221,18 @@ impl Int30C {
         }
     }
 
-    fn check_left_shift(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    fn check_left_shift(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
+    ) {
         if let (Some(left), Some(_right)) = (
             node.child_by_field_name("left"),
             node.child_by_field_name("right"),
         ) {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_unsigned_type(&left_type) {
                 if !self.has_shift_overflow_check(node, source) {
@@ -228,9 +262,10 @@ impl Int30C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(left) = node.child_by_field_name("left") {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -260,9 +295,10 @@ impl Int30C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(left) = node.child_by_field_name("left") {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -292,9 +328,10 @@ impl Int30C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(left) = node.child_by_field_name("left") {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -324,9 +361,10 @@ impl Int30C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(left) = node.child_by_field_name("left") {
-            let left_type = self.infer_type(&left, source);
+            let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -356,9 +394,10 @@ impl Int30C {
         node: &Node,
         source: &str,
         violations: &mut Vec<RuleViolation>,
+        type_map: &HashMap<String, String>,
     ) {
         if let Some(argument) = node.child_by_field_name("argument") {
-            let arg_type = self.infer_type(&argument, source);
+            let arg_type = self.infer_type(&argument, source, type_map);
 
             if self.is_unsigned_type(&arg_type) {
                 let operator = self.get_update_operator(node, source);
@@ -491,11 +530,10 @@ impl Int30C {
         });
     }
 
-    fn infer_type(&self, node: &Node, source: &str) -> String {
-        // Simple type inference based on patterns
+    fn infer_type(&self, node: &Node, source: &str, type_map: &HashMap<String, String>) -> String {
         let text = get_node_text(node, source);
 
-        // Look for explicit unsigned indicators
+        // Look for explicit unsigned indicators in the text
         if text.contains("unsigned") || text.contains("size_t") || text.contains("uint") {
             return "unsigned".to_string();
         }
@@ -514,28 +552,51 @@ impl Int30C {
             return "unsigned".to_string();
         }
 
-        // Check if this is a variable that was declared as unsigned in scope
+        // sizeof() always returns size_t (unsigned)
+        if node.kind() == "sizeof_expression" {
+            return "unsigned".to_string();
+        }
+
+        // Plain number literals — assume signed for conservatism
+        if text.chars().all(|c| c.is_ascii_digit()) {
+            return "int".to_string();
+        }
+
+        // Check identifiers against the type map (most reliable)
+        if node.kind() == "identifier" {
+            if let Some(declared_type) = type_map.get(text) {
+                if self.is_unsigned_type(declared_type) {
+                    return "unsigned".to_string();
+                }
+                // Non-integer types (float, double, char, pointers, structs) — not applicable
+                if !declared_type.contains("int")
+                    && !declared_type.contains("short")
+                    && !declared_type.contains("long")
+                    && declared_type != "signed"
+                {
+                    return "not_applicable".to_string();
+                }
+                return "int".to_string();
+            }
+        }
+
+        // For pointer expressions, strip the '*' and check
+        if node.kind() == "pointer_expression" {
+            let var_name = text.trim_start_matches('*').trim();
+            if let Some(declared_type) = type_map.get(var_name) {
+                if self.is_unsigned_type(declared_type) {
+                    return "unsigned".to_string();
+                }
+                return "int".to_string();
+            }
+        }
+
+        // Fallback: check variable declaration in function text for unmapped variables
         if node.kind() == "identifier" || node.kind() == "pointer_expression" {
             let var_name = text.trim_start_matches('*').trim();
             if self.is_variable_declared_unsigned(node, source, var_name) {
                 return "unsigned".to_string();
             }
-        }
-
-        // Default assumption based on common patterns
-        if text.chars().all(|c| c.is_ascii_digit()) {
-            // Plain number - could be either, assume signed for conservatism
-            return "int".to_string();
-        }
-
-        // Variable names with common unsigned patterns
-        if text.starts_with("u")
-            || text.starts_with("ui_")
-            || text.contains("size")
-            || text.contains("len")
-            || text.contains("count")
-        {
-            return "unsigned".to_string();
         }
 
         "unknown".to_string()
@@ -575,6 +636,139 @@ impl Int30C {
             current = parent;
         }
         None
+    }
+
+    fn collect_variable_types(&self, node: &Node, source: &str) -> HashMap<String, String> {
+        let mut type_map = HashMap::new();
+
+        if node.kind() == "function_definition" {
+            // Collect from function parameters
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                self.collect_params_from_declarator(&declarator, source, &mut type_map);
+            }
+            // Collect from local declarations in the function body
+            if let Some(body) = node.child_by_field_name("body") {
+                self.collect_local_declarations(&body, source, &mut type_map);
+            }
+        }
+
+        // Recurse into children to find nested function_definitions
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                let child_map = self.collect_variable_types(&child, source);
+                type_map.extend(child_map);
+            }
+        }
+
+        type_map
+    }
+
+    fn collect_params_from_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &mut HashMap<String, String>,
+    ) {
+        if node.kind() == "function_declarator" {
+            if let Some(params) = node.child_by_field_name("parameters") {
+                for i in 0..params.child_count() {
+                    if let Some(param) = params.child(i) {
+                        if param.kind() == "parameter_declaration" {
+                            self.extract_type_and_name(&param, source, type_map);
+                        }
+                    }
+                }
+            }
+        }
+        // Recurse to find nested function_declarator (e.g. pointer declarators)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_params_from_declarator(&child, source, type_map);
+            }
+        }
+    }
+
+    fn collect_local_declarations(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &mut HashMap<String, String>,
+    ) {
+        if node.kind() == "declaration" {
+            self.extract_type_and_name(node, source, type_map);
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_local_declarations(&child, source, type_map);
+            }
+        }
+    }
+
+    fn extract_type_and_name(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &mut HashMap<String, String>,
+    ) {
+        let mut type_text = String::new();
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "primitive_type" | "sized_type_specifier" | "type_identifier" => {
+                        type_text = get_node_text(&child, source).to_string();
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        if type_text.is_empty() {
+            return;
+        }
+
+        // Extract variable names from declarators
+        if let Some(declarator) = node.child_by_field_name("declarator") {
+            if let Some(name) = self.extract_identifier_name(&declarator, source) {
+                type_map.insert(name, type_text.clone());
+            }
+        }
+
+        // Handle init_declarator lists (e.g. `int a, b;`)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(decl) = child.child_by_field_name("declarator") {
+                        if let Some(name) = self.extract_identifier_name(&decl, source) {
+                            type_map.insert(name, type_text.clone());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fn extract_identifier_name(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(get_node_text(node, source).to_string()),
+            "pointer_declarator" | "array_declarator" | "parenthesized_declarator" => {
+                if let Some(inner) = node.child_by_field_name("declarator") {
+                    self.extract_identifier_name(&inner, source)
+                } else {
+                    None
+                }
+            }
+            _ => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" {
+                            return Some(get_node_text(&child, source).to_string());
+                        }
+                    }
+                }
+                None
+            }
+        }
     }
 
     fn is_unsigned_type(&self, type_str: &str) -> bool {

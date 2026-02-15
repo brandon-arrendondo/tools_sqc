@@ -1,0 +1,138 @@
+use super::context::ProjectContext;
+use crate::parser::CParser;
+use crate::progress::ProgressReporter;
+
+use anyhow::Result;
+use std::collections::HashSet;
+use tree_sitter::Node;
+use walkdir::WalkDir;
+
+/// Pre-scan the given directories to collect function names defined in `.c`/`.h` files.
+///
+/// This provides cross-file context so that rules like DCL31-C and DCL07-C
+/// can suppress false positives for functions defined in other translation units.
+pub fn prescan_directories(
+    dirs: &[String],
+    progress: Option<&dyn ProgressReporter>,
+) -> Result<ProjectContext> {
+    let mut known_functions = HashSet::new();
+    let mut parser = CParser::new()?;
+
+    if let Some(reporter) = progress {
+        reporter.report_prescan_start(dirs.len());
+    }
+
+    for dir in dirs {
+        for entry in WalkDir::new(dir)
+            .into_iter()
+            .filter_map(|e| e.ok())
+            .filter(|e| {
+                let path = e.path();
+                matches!(
+                    path.extension().and_then(|ext| ext.to_str()),
+                    Some("c") | Some("h")
+                )
+            })
+        {
+            let file_path = entry.path().to_string_lossy().to_string();
+            if let Ok((tree, source)) = parser.parse_file(&file_path) {
+                let root = tree.root_node();
+                collect_function_names(&root, &source, &mut known_functions);
+            }
+        }
+    }
+
+    if let Some(reporter) = progress {
+        reporter.report_prescan_complete(known_functions.len());
+    }
+
+    Ok(ProjectContext { known_functions })
+}
+
+/// Extract function names from top-level `function_definition` and `declaration`
+/// nodes, recursing into `preproc_*` blocks (same pattern as EXP33-C/SIG31-C).
+fn collect_function_names(node: &Node, source: &str, names: &mut HashSet<String>) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "function_definition" => {
+                    if let Some(name) = extract_function_name_from_declarator(&child, source) {
+                        names.insert(name);
+                    }
+                }
+                "declaration" => {
+                    // Only collect if it contains a function_declarator (i.e. a prototype)
+                    if let Some(name) = extract_function_name_from_declaration(&child, source) {
+                        names.insert(name);
+                    }
+                }
+                kind if kind.starts_with("preproc_") => {
+                    collect_function_names(&child, source, names);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Extract function name from a `function_definition` node's declarator.
+fn extract_function_name_from_declarator(node: &Node, source: &str) -> Option<String> {
+    let declarator = node.child_by_field_name("declarator")?;
+    extract_identifier_from_declarator(&declarator, source)
+}
+
+/// Extract function name from a `declaration` node if it's a function prototype.
+fn extract_function_name_from_declaration(node: &Node, source: &str) -> Option<String> {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "function_declarator" => {
+                    return extract_identifier_from_declarator(&child, source);
+                }
+                "init_declarator" => {
+                    for j in 0..child.child_count() {
+                        if let Some(grandchild) = child.child(j) {
+                            if grandchild.kind() == "function_declarator" {
+                                return extract_identifier_from_declarator(&grandchild, source);
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    None
+}
+
+/// Drill into a declarator tree to find the leaf `identifier`.
+fn extract_identifier_from_declarator(node: &Node, source: &str) -> Option<String> {
+    match node.kind() {
+        "identifier" => {
+            let name = node.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+            if name.is_empty() {
+                None
+            } else {
+                Some(name)
+            }
+        }
+        "function_declarator" | "pointer_declarator" => {
+            let inner = node.child_by_field_name("declarator")?;
+            extract_identifier_from_declarator(&inner, source)
+        }
+        _ => {
+            // Fallback: search children for an identifier
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "identifier" {
+                        let name = child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                        if !name.is_empty() {
+                            return Some(name);
+                        }
+                    }
+                }
+            }
+            None
+        }
+    }
+}

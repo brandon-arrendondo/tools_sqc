@@ -1,5 +1,6 @@
 mod cert_c;
 
+use crate::analyze::context::ProjectContext;
 use tree_sitter::Node;
 
 pub trait CertRule {
@@ -9,6 +10,10 @@ pub trait CertRule {
     fn category(&self) -> crate::manifest::RuleCategory;
     fn cert_id(&self) -> &'static str;
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation>;
+
+    /// Inject cross-file context gathered by the pre-scan phase.
+    /// Default is a no-op; only rules that need cross-file data override this.
+    fn set_project_context(&self, _context: &ProjectContext) {}
 }
 
 #[derive(Debug, Clone)]

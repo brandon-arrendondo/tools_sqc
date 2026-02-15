@@ -274,25 +274,36 @@ impl Dcl06C {
 
     /// Check if context is suspicious for magic numbers
     fn is_suspicious_context(&self, context: &str) -> bool {
-        matches!(
-            context,
-            "comparison" | "function_argument" | "loop" | "assignment"
-        )
+        matches!(context, "comparison" | "function_argument")
     }
 
     /// Check if a literal value is acceptable (common non-magic values)
     fn is_acceptable_literal(&self, value: &str) -> bool {
-        // Acceptable values: 0, 1, -1, 2 (and their variations)
         let trimmed = value.trim();
 
         // Handle negative numbers
         if trimmed.starts_with('-') {
             let positive = &trimmed[1..];
-            return positive == "1" || positive == "0";
+            return matches!(positive, "0" | "1" | "2");
         }
 
-        // Common acceptable values
-        matches!(trimmed, "0" | "1" | "2" | "0x0" | "0x1" | "0x2")
+        // Common acceptable values: 0-10 and hex equivalents
+        matches!(
+            trimmed,
+            "0" | "1"
+                | "2"
+                | "3"
+                | "4"
+                | "5"
+                | "6"
+                | "7"
+                | "8"
+                | "9"
+                | "10"
+                | "0x0"
+                | "0x1"
+                | "0x2"
+        )
     }
 
     /// Find all sizeof() usages and return the variable names
