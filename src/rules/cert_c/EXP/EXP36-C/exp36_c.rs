@@ -64,11 +64,24 @@ impl Exp36C {
         // Get the type being cast to
         if let Some(type_node) = node.child_by_field_name("type") {
             let target_type = ast_utils::get_node_text(&type_node, source).trim();
+
+            // EXP36-C is about pointer-to-pointer casts — skip non-pointer target types
+            // e.g., (unsigned)time(NULL) is an integer cast, not a pointer alignment issue
+            if !target_type.contains('*') {
+                return;
+            }
+
             let target_alignment = self.get_type_alignment(target_type);
 
             // Get the value being cast
             if let Some(value_node) = node.child_by_field_name("value") {
                 let source_type = self.infer_pointer_type(&value_node, source);
+
+                // Skip if source is not actually a pointer type
+                if source_type == "unknown *" {
+                    return;
+                }
+
                 let source_alignment = self.get_type_alignment(&source_type);
 
                 // Check if we're casting to a more strictly aligned type
@@ -214,6 +227,13 @@ impl Exp36C {
     /// Infer the pointer type from a node (for expressions like &c, char_ptr, etc.)
     fn infer_pointer_type(&self, node: &Node, source: &str) -> String {
         match node.kind() {
+            "parenthesized_expression" => {
+                // Unwrap parentheses: (data + offset) -> data + offset
+                if let Some(inner) = node.child(1) {
+                    return self.infer_pointer_type(&inner, source);
+                }
+                "unknown *".to_string()
+            }
             "pointer_expression" => {
                 // Pattern: &c where c is char
                 // Get the argument and infer its type
