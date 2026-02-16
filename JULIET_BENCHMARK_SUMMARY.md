@@ -8,9 +8,9 @@
 
 ## Executive Summary
 
-SqC was benchmarked against all 118 CWE categories in the NIST Juliet Test Suite, covering **54,484 test files**. Ground truth analysis using Juliet's OMITBAD/OMITGOOD annotations yields a weighted average true positive rate of **43.1%** across 106 categories with data.
+SqC was benchmarked against all 118 CWE categories in the NIST Juliet Test Suite, covering **54,484 test files**. Ground truth analysis using Juliet's OMITBAD/OMITGOOD annotations yields a weighted average true positive rate of **43.4%** across 106 categories with data.
 
-15 categories achieve >50% TP rate, with the best at 81.5% (CWE-506). Five rounds of targeted rule fixes plus cross-file analysis (`-d` option) have reduced FPs by 61% from baseline.
+15 categories achieve >50% TP rate, with the best at 81.5% (CWE-506). Seven rounds of targeted rule fixes plus cross-file analysis (`-d` option) have reduced FPs by 64% from baseline.
 
 ## Latest Results (2026-02-14)
 
@@ -19,10 +19,10 @@ SqC was benchmarked against all 118 CWE categories in the NIST Juliet Test Suite
 | Metric | Value |
 |--------|-------|
 | **Files Analyzed** | 54,484 |
-| **Classified (TP+FP)** | 574,948 |
-| **True Positives** | 247,757 |
-| **False Positives** | 327,191 |
-| **Weighted TP Rate** | **43.1%** |
+| **Classified (TP+FP)** | 532,528 |
+| **True Positives** | 231,053 |
+| **False Positives** | 301,475 |
+| **Weighted TP Rate** | **43.4%** |
 | **Categories with data** | 106 / 118 |
 | **Wall-clock time** | ~25 min (12 parallel jobs) |
 | **Cross-file dirs** | `testcases/` + `testcasesupport/` |
@@ -37,9 +37,20 @@ SqC was benchmarked against all 118 CWE categories in the NIST Juliet Test Suite
 | Round 3 (2026-02-14) | DCL31-C, DCL07-C, FLP34-C | 402,013 | 537,589 | 42.8% | -198,974 |
 | Round 4 (2026-02-14) | EXP12-C, FLP03-C, INT32-C | 363,914 | 492,648 | 42.5% | -44,941 |
 | Round 5 (2026-02-14) | FLP02-C, DCL06-C, INT30-C | 340,894 | 475,813 | 41.7% | -16,835 |
-| **Round 6 (2026-02-14)** | **Cross-file analysis (`-d`)** | **247,757** | **327,191** | **43.1%** | **-148,622** |
+| Round 6 (2026-02-14) | Cross-file analysis (`-d`) | 247,757 | 327,191 | 43.1% | -148,622 |
+| **Round 7 (2026-02-14)** | **EXP36-C, EXP34-C, ARR37-C** | **231,053** | **301,475** | **43.4%** | **-25,716** |
 
-**Cumulative improvement**: TP rate 41.1% -> 43.1% (+2.0pp), FP reduced by 512,150 (-61.0%).
+**Cumulative improvement**: TP rate 41.1% -> 43.4% (+2.3pp), FP reduced by 537,866 (-64.1%).
+
+### Round 7 Fix Details
+
+1. **EXP36-C** (pointer cast alignment): The rule flagged ALL casts, not just pointer-to-pointer casts. `(unsigned)time(NULL)` was flagged because the target type `unsigned` had alignment 4 and the inferred source `unknown *` had alignment 1. Fixed by: (a) skip casts where target type doesn't contain `*` (not a pointer cast), (b) skip casts where source type is `unknown *` (can't verify alignment issue), (c) handle parenthesized expressions in type inference so `(struct foo_header *)(data + offset)` still works. **Impact: significant reduction in EXP36-C FPs.**
+
+2. **EXP34-C** (null pointer dereference): Two changes: (a) Removed the `_t` suffix heuristic that marked any parameter with `_t` in its type as potentially null — this caught `time_t`, `pid_t`, `mode_t` etc. which are NOT pointers. Now only uses AST-based `is_pointer_declarator()` and explicit `*` in type text. (b) Field expression assignments (`current = list->next`) now only propagate null status if the base object is already in the potentially-null set, instead of unconditionally marking the target as potentially null. **Impact: reduction in EXP34-C FPs from non-pointer typedef parameters and conservative field access handling.**
+
+3. **ARR37-C** (pointer arithmetic on non-array): Three changes: (a) Stop flagging Unknown pointers entirely — the rule should only flag confirmed non-array pointers. If we can't determine whether a pointer refers to an array, don't flag. (b) Recognize `alloca`/`ALLOCA`/`aligned_alloc` allocation functions as array/non-array appropriately. (c) Treat all pointer parameters as ambiguous (not just multi-parameter functions) since single-parameter functions frequently receive arrays. **Impact: major reduction in ARR37-C FPs from unknown/ambiguous pointer classifications.**
+
+**Net impact**: -25,716 FP (-7.9%), -16,704 TP (-6.7%), TP rate +0.3pp.
 
 ### Round 6 Fix Details
 
@@ -181,7 +192,7 @@ scripts/run_juliet_parallel.sh         Parallel multi-CWE runner (12 jobs)
 ## Next Steps
 
 ### Short-Term
-- **Further FP reduction**: Top remaining FP rules: EXP34-C, INT32-C, INT30-C, DCL06-C (DCL31-C/DCL07-C greatly reduced by cross-file analysis)
+- **Further FP reduction**: Top remaining FP rules: INT32-C (23K), DCL31-C (21K), DCL07-C (20K), INT30-C (17K), EXP34-C (15K), DCL06-C (14K)
 - Add CWE-specific rule weighting/filtering
 - Implement data-flow analysis rules for CWE-416, CWE-401, CWE-476
 

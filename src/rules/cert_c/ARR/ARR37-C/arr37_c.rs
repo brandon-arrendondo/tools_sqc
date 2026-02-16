@@ -99,9 +99,11 @@ impl Arr37C {
                         if self.is_pointer_arithmetic(&left, &right, source, analyzer) {
                             let pointer_name = self.get_pointer_name(&left, source);
 
-                            // Skip ambiguous parameters (function parameters) - can't determine statically
-                            if analyzer.is_ambiguous_parameter(&pointer_name) {
-                                // Don't flag parameters - they could be arrays or single objects
+                            // Skip ambiguous parameters and unknown pointers - can't determine statically
+                            if analyzer.is_ambiguous_parameter(&pointer_name)
+                                || analyzer.is_unknown_pointer(&pointer_name)
+                            {
+                                // Don't flag - could be arrays or single objects
                             } else if analyzer.is_struct_member_pointer(&pointer_name) {
                                 let start_point = node.start_position();
                                 violations.push(RuleViolation {
@@ -115,22 +117,6 @@ impl Arr37C {
                                     line: start_point.row + 1,
                                     column: start_point.column + 1,
                                     suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
-                                    ..Default::default()
-                                });
-                            } else if analyzer.is_unknown_pointer(&pointer_name) {
-                                let start_point = node.start_position();
-                                violations.push(RuleViolation {
-                                    rule_id: self.rule_id().to_string(),
-                                    severity: Severity::Medium,
-                                    message: format!(
-                                        "Pointer arithmetic on pointer '{}' with unknown origin. Cannot determine if it points to an array or single object",
-                                        pointer_name
-                                    ),
-                                    file_path: String::new(),
-                                    line: start_point.row + 1,
-                                    column: start_point.column + 1,
-                                    suggestion: Some("Verify the pointer refers to an array before performing arithmetic, or document the allocation size".to_string()),
-                                    requires_manual_review: Some(true),
                                     ..Default::default()
                                 });
                             } else if analyzer.is_non_array_pointer(&pointer_name) {
@@ -169,9 +155,11 @@ impl Arr37C {
             let start_point = node.start_position();
             let op_text = &source[node.start_byte()..node.end_byte()];
 
-            // Skip ambiguous parameters (function parameters) - can't determine statically
-            if analyzer.is_ambiguous_parameter(&pointer_name) {
-                // Don't flag parameters - they could be arrays or single objects
+            // Skip ambiguous parameters and unknown pointers - can't determine statically
+            if analyzer.is_ambiguous_parameter(&pointer_name)
+                || analyzer.is_unknown_pointer(&pointer_name)
+            {
+                // Don't flag - could be arrays or single objects
             } else if analyzer.is_struct_member_pointer(&pointer_name) {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
@@ -184,21 +172,6 @@ impl Arr37C {
                     line: start_point.row + 1,
                     column: start_point.column + 1,
                     suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
-                    ..Default::default()
-                });
-            } else if analyzer.is_unknown_pointer(&pointer_name) {
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: Severity::Medium,
-                    message: format!(
-                        "Increment/decrement operation '{}' on pointer '{}' with unknown origin. Cannot determine if it points to an array or single object",
-                        op_text, pointer_name
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some("Verify the pointer refers to an array before performing arithmetic, or document the allocation size".to_string()),
-                    requires_manual_review: Some(true),
                     ..Default::default()
                 });
             } else if analyzer.is_non_array_pointer(&pointer_name) {
@@ -240,9 +213,11 @@ impl Arr37C {
                 let start_point = node.start_position();
                 let op_text = &source[node.start_byte()..node.end_byte()];
 
-                // Skip ambiguous parameters (function parameters) - can't determine statically
-                if analyzer.is_ambiguous_parameter(&pointer_name) {
-                    // Don't flag parameters - they could be arrays or single objects
+                // Skip ambiguous parameters and unknown pointers - can't determine statically
+                if analyzer.is_ambiguous_parameter(&pointer_name)
+                    || analyzer.is_unknown_pointer(&pointer_name)
+                {
+                    // Don't flag - could be arrays or single objects
                 } else if analyzer.is_struct_member_pointer(&pointer_name) {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -255,21 +230,6 @@ impl Arr37C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
-                        ..Default::default()
-                    });
-                } else if analyzer.is_unknown_pointer(&pointer_name) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::Medium,
-                        message: format!(
-                            "Compound assignment '{}' on pointer '{}' with unknown origin. Cannot determine if it points to an array or single object",
-                            op_text, pointer_name
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Verify the pointer refers to an array before performing arithmetic, or document the allocation size".to_string()),
-                        requires_manual_review: Some(true),
                         ..Default::default()
                     });
                 } else if analyzer.is_non_array_pointer(&pointer_name) {
@@ -310,9 +270,11 @@ impl Arr37C {
                 let start_point = node.start_position();
                 let subscript_text = &source[node.start_byte()..node.end_byte()];
 
-                // Skip ambiguous parameters (function parameters) - can't determine statically
-                if analyzer.is_ambiguous_parameter(&pointer_name) {
-                    // Don't flag parameters - they could be arrays or single objects
+                // Skip ambiguous parameters and unknown pointers - can't determine statically
+                if analyzer.is_ambiguous_parameter(&pointer_name)
+                    || analyzer.is_unknown_pointer(&pointer_name)
+                {
+                    // Don't flag - could be arrays or single objects
                 } else if analyzer.is_struct_member_pointer(&pointer_name) {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -325,21 +287,6 @@ impl Arr37C {
                         line: start_point.row + 1,
                         column: start_point.column + 1,
                         suggestion: Some("Do not perform pointer arithmetic across struct members".to_string()),
-                        ..Default::default()
-                    });
-                } else if analyzer.is_unknown_pointer(&pointer_name) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::Medium,
-                        message: format!(
-                            "Subscript operation '{}' on pointer '{}' with unknown origin. Cannot determine if it points to an array or single object",
-                            subscript_text, pointer_name
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Verify the pointer refers to an array before using subscript notation, or document the allocation size".to_string()),
-                        requires_manual_review: Some(true),
                         ..Default::default()
                     });
                 } else if analyzer.is_non_array_pointer(&pointer_name) {
@@ -599,17 +546,11 @@ impl NonArrayPointerAnalyzer {
                     }
                 }
 
-                // Categorize pointer parameters based on parameter count
+                // All pointer parameters are ambiguous — can't determine statically
+                // whether they point to arrays or single objects
                 for param_name in pointer_params {
-                    if param_count >= 2 {
-                        // Function has 2+ parameters - pointer might be an array with size param
-                        self.variable_types
-                            .insert(param_name, VariableType::AmbiguousParameter);
-                    } else {
-                        // Function has only 1 parameter (the pointer) - likely single object
-                        self.variable_types
-                            .insert(param_name, VariableType::NonArray);
-                    }
+                    self.variable_types
+                        .insert(param_name, VariableType::AmbiguousParameter);
                 }
             }
         }
@@ -698,6 +639,22 @@ impl NonArrayPointerAnalyzer {
                         }
                     } else {
                         VariableType::Array
+                    }
+                }
+                // Stack allocation functions always allocate arrays
+                "alloca" | "ALLOCA" | "_alloca" | "_malloca" => VariableType::Array,
+                // aligned_alloc(alignment, size) — same pattern as malloc
+                "aligned_alloc" => {
+                    if let Some(arguments) = node.child_by_field_name("arguments") {
+                        let arg_text =
+                            source[arguments.start_byte()..arguments.end_byte()].to_string();
+                        if arg_text.contains('*') {
+                            VariableType::Array
+                        } else {
+                            VariableType::NonArray
+                        }
+                    } else {
+                        VariableType::NonArray
                     }
                 }
                 _ => VariableType::Unknown,

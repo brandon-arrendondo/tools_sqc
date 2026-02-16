@@ -102,18 +102,13 @@ impl NullPointerAnalyzer {
                             if let Some(param_declarator) = param.child_by_field_name("declarator")
                             {
                                 let param_name = get_identifier_name(&param_declarator, source);
-                                // Mark as potentially null if it's a pointer
-                                // Check for actual pointer declarators or '*' in the type
-                                // Also check for common pointer-like typedef patterns (but not size_t, int_t, etc.)
-                                if is_pointer_declarator(&param_declarator) ||
-                                   param_text.contains('*') ||
-                                   param_text.contains("_ptr") ||  // Ends with _ptr
-                                   (param_text.contains("_t ") && !param_text.contains("size_t") && !param_text.contains("int_t")) || // Typedef but not size/int type
-                                   param_text.starts_with("FILE") || // FILE pointer
-                                   param_text.starts_with("png_") || // PNG library types
-                                   param_name.ends_with("_ptr") || // Parameter name suggests pointer
-                                   param_name.contains("callback")
-                                // Callback parameters
+                                // Mark as potentially null if it's actually a pointer
+                                // Only use AST-based detection and explicit '*' in the type text
+                                if is_pointer_declarator(&param_declarator)
+                                    || param_text.contains('*')
+                                    || param_text.starts_with("FILE")
+                                    || param_name.contains("callback")
+                                // Function pointer typedefs can't be detected via AST
                                 {
                                     self.potentially_null_vars.insert(param_name);
                                 }
@@ -247,8 +242,13 @@ impl NullPointerAnalyzer {
                         }
                     } else if right.kind() == "field_expression" {
                         // Assignment from field access: current = current->next
-                        // Field access can also be null (e.g., next pointer in linked list)
-                        self.potentially_null_vars.insert(left_name.clone());
+                        // Only propagate null if the base object is already potentially null
+                        if let Some(argument) = right.child_by_field_name("argument") {
+                            let base_name = ast_utils::get_node_text_owned(&argument, source);
+                            if self.potentially_null_vars.contains(&base_name) {
+                                self.potentially_null_vars.insert(left_name.clone());
+                            }
+                        }
                     } else if !is_null_value(&right_text) && left.kind() == "identifier" {
                         // If assigning a non-null value to a simple variable, remove from potentially null set
                         // (Don't remove for field_expression as it's more complex)
