@@ -22,14 +22,14 @@ SqC has been benchmarked against the [NIST Juliet Test Suite v1.3](https://samat
 | Metric | Value |
 |--------|-------|
 | **Files Analyzed** | 54,484 |
-| **True Positives** | 231,053 |
-| **False Positives** | 301,475 |
-| **TP Rate** | **43.4%** |
+| **True Positives** | 230,992 |
+| **False Positives** | 296,415 |
+| **TP Rate** | **43.8%** |
 | **CWE Categories** | 106 / 118 with data |
 
 ### FP Reduction Progress
 
-Seven rounds of targeted rule improvements plus cross-file analysis reduced false positives by 64% from baseline while improving the true positive rate:
+Eight rounds of targeted rule improvements plus cross-file analysis reduced false positives by 65% from baseline while improving the true positive rate:
 
 | Round | Fixes | TP | FP | TP Rate | FP Delta |
 |-------|-------|---:|---:|--------:|---------:|
@@ -40,26 +40,27 @@ Seven rounds of targeted rule improvements plus cross-file analysis reduced fals
 | Round 4 | EXP12-C, FLP03-C, INT32-C | 363,914 | 492,648 | 42.5% | -44,941 |
 | Round 5 | FLP02-C, DCL06-C, INT30-C | 340,894 | 475,813 | 41.7% | -16,835 |
 | Round 6 | Cross-file analysis (`-d`) | 247,757 | 327,191 | 43.1% | -148,622 |
-| **Round 7** | **EXP36-C, EXP34-C, ARR37-C** | **231,053** | **301,475** | **43.4%** | **-25,716** |
+| Round 7 | EXP36-C, EXP34-C, ARR37-C | 231,053 | 301,475 | 43.4% | -25,716 |
+| **Round 8** | **DCL40-C, FLP32-C, ERR33-C** | **230,992** | **296,415** | **43.8%** | **-5,060** |
 
-**Cumulative**: TP rate 41.1% → 43.4% (+2.3pp), FP reduced by 537,866 (-64.1%).
+**Cumulative**: TP rate 41.1% → 43.8% (+2.7pp), FP reduced by 542,926 (-64.7%).
 
 ### Top CWE Detection Rates
 
 | CWE | Category | TP Rate |
 |-----|----------|--------:|
-| 506 | Embedded Malicious Code | 81.5% |
-| 427 | Uncontrolled Search Path Element | 68.5% |
-| 78 | OS Command Injection | 67.3% |
-| 617 | Reachable Assertion | 65.4% |
-| 15 | External Control of System/Config | 62.2% |
-| 123 | Write-What-Where Condition | 61.9% |
-| 197 | Numeric Truncation Error | 60.9% |
-| 510 | Trapdoor | 60.5% |
-| 114 | Process Control | 58.7% |
-| 194 | Unexpected Sign Extension | 58.4% |
+| 480 | Use of Incorrect Operator | 91.7% |
+| 506 | Embedded Malicious Code | 85.9% |
+| 587 | Assignment of Fixed Address to Pointer | 83.3% |
+| 617 | Reachable Assertion | 79.2% |
+| 197 | Numeric Truncation Error | 78.3% |
+| 464 | Data Structure Sentinel Addition | 77.6% |
+| 427 | Uncontrolled Search Path Element | 72.8% |
+| 78 | OS Command Injection | 71.4% |
+| 123 | Write-What-Where Condition | 68.2% |
+| 15 | External Control of System/Config | 67.0% |
 
-15 categories achieve >50% TP rate. See [JULIET_BENCHMARK_SUMMARY.md](JULIET_BENCHMARK_SUMMARY.md) for full details, methodology, and per-round fix descriptions.
+18 categories achieve >50% TP rate. See [JULIET_BENCHMARK_SUMMARY.md](JULIET_BENCHMARK_SUMMARY.md) for full details, methodology, and per-round fix descriptions.
 
 ## Installation
 

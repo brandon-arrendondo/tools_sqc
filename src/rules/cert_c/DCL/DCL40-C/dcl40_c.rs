@@ -181,64 +181,6 @@ impl Dcl40C {
 
             // Get variable name
             if let Some(name) = self.get_variable_name(&declarator, source) {
-                // Check for excessively long identifiers (C requires at least 31 significant chars)
-                // Check if THIS name is >= 31 chars OR conflicts with any >= 31 char identifier
-                let needs_check = name.len() >= 31;
-
-                if needs_check {
-                    // Get prefix to check (first 31 chars)
-                    let prefix_len = std::cmp::min(31, name.len());
-                    let prefix = &name[..prefix_len];
-                    let object_decls = self.object_decls.borrow();
-                    let function_decls = self.function_decls.borrow();
-
-                    // Check against other objects
-                    for (other_name, _) in object_decls.iter() {
-                        if other_name != &name && other_name.len() >= 31 {
-                            let other_prefix_len = std::cmp::min(31, other_name.len());
-                            let other_prefix = &other_name[..other_prefix_len];
-                            if prefix == other_prefix {
-                                violations.push(RuleViolation {
-                                    rule_id: "DCL40-C".to_string(),
-                                    severity: Severity::High,
-                                    line: node.start_position().row + 1,
-                                    column: node.start_position().column + 1,
-                                    message: format!(
-                                        "Identifier '{}' shares first 31 characters with '{}', may cause undefined behavior",
-                                        name, other_name
-                                    ),
-                                    file_path: String::new(),
-                                    suggestion: Some("Use identifiers that differ within the first 31 characters".to_string()),
-                                    requires_manual_review: Some(false),
-                                });
-                            }
-                        }
-                    }
-
-                    // Check against functions too
-                    for (func_name, _) in function_decls.iter() {
-                        if func_name != &name && func_name.len() >= 31 {
-                            let func_prefix_len = std::cmp::min(31, func_name.len());
-                            let func_prefix = &func_name[..func_prefix_len];
-                            if prefix == func_prefix {
-                                violations.push(RuleViolation {
-                                    rule_id: "DCL40-C".to_string(),
-                                    severity: Severity::High,
-                                    line: node.start_position().row + 1,
-                                    column: node.start_position().column + 1,
-                                    message: format!(
-                                        "Identifier '{}' shares first 31 characters with function '{}', may cause undefined behavior",
-                                        name, func_name
-                                    ),
-                                    file_path: String::new(),
-                                    suggestion: Some("Use identifiers that differ within the first 31 characters".to_string()),
-                                    requires_manual_review: Some(false),
-                                });
-                            }
-                        }
-                    }
-                }
-
                 // Get type information
                 let type_info = self.get_object_type(node, &declarator, source);
 
@@ -346,23 +288,51 @@ impl Dcl40C {
         }
     }
 
-    /// Check declarations
+    /// Check declarations — only at file scope (direct children of translation_unit
+    /// or preproc_* blocks). Declarations inside function bodies are local variables
+    /// and cannot conflict with file-scope declarations in the DCL40-C sense.
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         match node.kind() {
-            "declaration" => {
-                self.check_function_declaration(node, source, violations);
-                self.check_object_declaration(node, source, violations);
+            "translation_unit" => {
+                // Only process direct children at file scope
+                let mut cursor = node.walk();
+                for child in node.children(&mut cursor) {
+                    match child.kind() {
+                        "declaration" => {
+                            self.check_function_declaration(&child, source, violations);
+                            self.check_object_declaration(&child, source, violations);
+                        }
+                        "function_definition" => {
+                            self.check_function_declaration(&child, source, violations);
+                        }
+                        kind if kind.starts_with("preproc_") => {
+                            // Recurse into preprocessor blocks at file scope
+                            self.check_node(&child, source, violations);
+                        }
+                        _ => {}
+                    }
+                }
             }
-            "function_definition" => {
-                self.check_function_declaration(node, source, violations);
+            kind if kind.starts_with("preproc_") => {
+                // Process direct children of preprocessor blocks
+                let mut cursor = node.walk();
+                for child in node.children(&mut cursor) {
+                    match child.kind() {
+                        "declaration" => {
+                            self.check_function_declaration(&child, source, violations);
+                            self.check_object_declaration(&child, source, violations);
+                        }
+                        "function_definition" => {
+                            self.check_function_declaration(&child, source, violations);
+                        }
+                        kind if kind.starts_with("preproc_") => {
+                            self.check_node(&child, source, violations);
+                        }
+                        _ => {}
+                    }
+                }
             }
             _ => {}
-        }
-
-        // Recursively check all children
-        let mut cursor = node.walk();
-        for child in node.children(&mut cursor) {
-            self.check_node(&child, source, violations);
         }
     }
 }
