@@ -177,100 +177,120 @@ impl Flp32C {
         }
     }
 
-    /// Check if there's error checking near the math function call
+    /// Check if there's error checking near the math function call.
+    /// Searches a limited window (5 statements before and after) for errno/isnan/etc.,
+    /// rather than the entire containing scope.
     fn has_error_checking(&self, call_node: &Node, source: &str) -> bool {
-        // Get the containing scope (function or compound statement)
-        let scope = self.get_containing_scope(call_node);
-        let scope_node = match scope {
+        // Find the statement containing this call
+        let stmt_node = match self.find_containing_statement(call_node) {
             Some(s) => s,
             None => return false,
         };
 
-        // Check for errno usage or error checking functions in the same scope
-        self.has_errno_check(&scope_node, source)
-            || self.has_error_check_functions(&scope_node, source)
-    }
-
-    /// Get the containing function or compound statement
-    fn get_containing_scope<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
-        let mut current = node.parent();
-
-        while let Some(n) = current {
-            if matches!(
-                n.kind(),
-                "compound_statement" | "function_definition" | "translation_unit"
-            ) {
-                return Some(n);
+        // Find the compound_statement containing the statement
+        let compound_node = {
+            let mut parent = stmt_node.parent();
+            loop {
+                match parent {
+                    Some(p) if p.kind() == "compound_statement" => break p,
+                    Some(p) => parent = p.parent(),
+                    None => return false,
+                }
             }
-            current = n.parent();
+        };
+
+        let stmt_start_byte = stmt_node.start_byte();
+        let stmt_end_byte = stmt_node.end_byte();
+        const MAX_SEARCH: usize = 5;
+
+        // Collect statement indices and find the call's position
+        let mut statement_indices: Vec<usize> = Vec::new();
+        let mut call_stmt_idx: Option<usize> = None;
+        let mut cursor = compound_node.walk();
+        for (i, child) in compound_node.children(&mut cursor).enumerate() {
+            if child.start_byte() >= stmt_start_byte && child.end_byte() <= stmt_end_byte {
+                call_stmt_idx = Some(statement_indices.len());
+            }
+            statement_indices.push(i);
         }
 
+        let call_pos = match call_stmt_idx {
+            Some(p) => p,
+            None => return false,
+        };
+
+        // Search backward (up to 5 statements before)
+        let start = call_pos.saturating_sub(MAX_SEARCH);
+        for &idx in &statement_indices[start..call_pos] {
+            if let Some(child) = compound_node.child(idx) {
+                if self.node_contains_errno_or_error_check(&child, source) {
+                    return true;
+                }
+            }
+        }
+
+        // Search forward (up to 5 statements after)
+        let end = std::cmp::min(call_pos + 1 + MAX_SEARCH, statement_indices.len());
+        for &idx in &statement_indices[(call_pos + 1)..end] {
+            if let Some(child) = compound_node.child(idx) {
+                if self.node_contains_errno_or_error_check(&child, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Find the statement node containing a given node
+    fn find_containing_statement<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = node.parent();
+        while let Some(p) = current {
+            if matches!(
+                p.kind(),
+                "expression_statement"
+                    | "declaration"
+                    | "if_statement"
+                    | "while_statement"
+                    | "for_statement"
+                    | "return_statement"
+            ) {
+                return Some(p);
+            }
+            current = p.parent();
+        }
         None
     }
 
-    /// Check if errno is used in the scope
-    fn has_errno_check(&self, scope: &Node, source: &str) -> bool {
-        self.find_identifier_usage(scope, "errno", source)
-    }
-
-    /// Check if error checking functions are used (isnan, isinf, isfinite, fpclassify, etc.)
-    fn has_error_check_functions(&self, scope: &Node, source: &str) -> bool {
-        const ERROR_CHECK_FUNCS: &[&str] = &[
-            "isnan",
-            "isinf",
-            "isfinite",
-            "fpclassify",
-            "isnormal",
-            "signbit",
-            "fetestexcept",
-            "feclearexcept",
-            // Domain checking functions
-            "isless",
-            "islessequal",
-            "isgreater",
-            "isgreaterequal",
-            "islessgreater",
-            "isunordered",
-        ];
-
-        for func in ERROR_CHECK_FUNCS {
-            // Check both function calls and identifier usage (for macros)
-            if self.find_function_call(scope, func, source)
-                || self.find_identifier_usage(scope, func, source)
-            {
-                return true;
-            }
-        }
-
-        false
-    }
-
-    /// Recursively search for identifier usage
-    fn find_identifier_usage(&self, node: &Node, identifier: &str, source: &str) -> bool {
+    /// Recursively check if a node contains errno usage or error-checking function calls
+    fn node_contains_errno_or_error_check(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "identifier" {
             let text = get_node_text(node, source);
-            if text == identifier {
+            if text == "errno" {
                 return true;
             }
         }
 
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if self.find_identifier_usage(&child, identifier, source) {
-                    return true;
-                }
-            }
-        }
-
-        false
-    }
-
-    /// Recursively search for function calls
-    fn find_function_call(&self, node: &Node, func_name: &str, source: &str) -> bool {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
-                let text = get_node_text(&func, source);
-                if text == func_name {
+                let func_name = get_node_text(&func, source);
+                if matches!(
+                    func_name,
+                    "isnan"
+                        | "isinf"
+                        | "isfinite"
+                        | "fpclassify"
+                        | "isnormal"
+                        | "signbit"
+                        | "fetestexcept"
+                        | "feclearexcept"
+                        | "isless"
+                        | "islessequal"
+                        | "isgreater"
+                        | "isgreaterequal"
+                        | "islessgreater"
+                        | "isunordered"
+                ) {
                     return true;
                 }
             }
@@ -278,7 +298,7 @@ impl Flp32C {
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if self.find_function_call(&child, func_name, source) {
+                if self.node_contains_errno_or_error_check(&child, source) {
                     return true;
                 }
             }
