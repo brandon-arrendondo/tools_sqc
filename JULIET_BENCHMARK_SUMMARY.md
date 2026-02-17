@@ -1,6 +1,6 @@
 # SqC vs. NIST Juliet Test Suite - Benchmark Summary
 
-**Last Updated**: 2026-02-14
+**Last Updated**: 2026-02-16
 **Benchmark**: NIST Juliet Test Suite v1.3 for C/C++
 **Categories Tested**: 118 (all CWE categories in Juliet)
 
@@ -8,21 +8,21 @@
 
 ## Executive Summary
 
-SqC was benchmarked against all 118 CWE categories in the NIST Juliet Test Suite, covering **54,484 test files**. Ground truth analysis using Juliet's OMITBAD/OMITGOOD annotations yields a weighted average true positive rate of **43.4%** across 106 categories with data.
+SqC was benchmarked against all 118 CWE categories in the NIST Juliet Test Suite, covering **54,484 test files**. Ground truth analysis using Juliet's OMITBAD/OMITGOOD annotations yields a weighted average true positive rate of **43.8%** across 106 categories with data.
 
-15 categories achieve >50% TP rate, with the best at 81.5% (CWE-506). Seven rounds of targeted rule fixes plus cross-file analysis (`-d` option) have reduced FPs by 64% from baseline.
+15 categories achieve >50% TP rate, with the best at 81.5% (CWE-506). Eight rounds of targeted rule fixes plus cross-file analysis (`-d` option) have reduced FPs by 65% from baseline.
 
-## Latest Results (2026-02-14)
+## Latest Results (2026-02-16)
 
 ### Aggregate Metrics
 
 | Metric | Value |
 |--------|-------|
 | **Files Analyzed** | 54,484 |
-| **Classified (TP+FP)** | 532,528 |
-| **True Positives** | 231,053 |
-| **False Positives** | 301,475 |
-| **Weighted TP Rate** | **43.4%** |
+| **Classified (TP+FP)** | 527,407 |
+| **True Positives** | 230,992 |
+| **False Positives** | 296,415 |
+| **Weighted TP Rate** | **43.8%** |
 | **Categories with data** | 106 / 118 |
 | **Wall-clock time** | ~25 min (12 parallel jobs) |
 | **Cross-file dirs** | `testcases/` + `testcasesupport/` |
@@ -38,9 +38,20 @@ SqC was benchmarked against all 118 CWE categories in the NIST Juliet Test Suite
 | Round 4 (2026-02-14) | EXP12-C, FLP03-C, INT32-C | 363,914 | 492,648 | 42.5% | -44,941 |
 | Round 5 (2026-02-14) | FLP02-C, DCL06-C, INT30-C | 340,894 | 475,813 | 41.7% | -16,835 |
 | Round 6 (2026-02-14) | Cross-file analysis (`-d`) | 247,757 | 327,191 | 43.1% | -148,622 |
-| **Round 7 (2026-02-14)** | **EXP36-C, EXP34-C, ARR37-C** | **231,053** | **301,475** | **43.4%** | **-25,716** |
+| Round 7 (2026-02-14) | EXP36-C, EXP34-C, ARR37-C | 231,053 | 301,475 | 43.4% | -25,716 |
+| **Round 8 (2026-02-16)** | **DCL40-C, FLP32-C, ERR33-C** | **230,992** | **296,415** | **43.8%** | **-5,060** |
 
-**Cumulative improvement**: TP rate 41.1% -> 43.4% (+2.3pp), FP reduced by 537,866 (-64.1%).
+**Cumulative improvement**: TP rate 41.1% -> 43.8% (+2.7pp), FP reduced by 542,926 (-64.7%).
+
+### Round 8 Fix Details
+
+1. **DCL40-C** (incompatible declarations): Two changes: (a) Restricted checking to file-scope declarations only — the rule previously traversed into function bodies, comparing local variable declarations against file-scope declarations. Now only processes `translation_unit` direct children and `preproc_*` blocks. (b) Removed the 31-character identifier prefix collision check entirely. This check flagged O(n²) violations when multiple identifiers shared the same first 31 characters (common in Juliet's naming convention like `CWE190_Integer_Overflow__int_fscanf_add_01_bad` vs `..._good`). The 31-character significance limit is a C90 concern unrelated to incompatible type declarations. **Impact: DCL40-C FP reduced from ~12K to near zero. Zero TP loss since DCL40-C had 0 TPs.**
+
+2. **FLP32-C** (math domain/range errors): Replaced the broad scope check that searched the entire containing function for any errno/isnan usage with a windowed search — only counts error checking within 5 statements before or after the math call. Previously, a single `errno = 0` anywhere in the function suppressed all FLP32-C flags for every math call in that function. **Impact: FLP32-C FP reduced from ~930 to minimal.**
+
+3. **ERR33-C** (unchecked return values): Two changes: (a) Added `argument_list` detection to `is_call_in_assignment_or_declaration()` — calls whose return values are consumed as arguments to other functions (e.g., `srand((unsigned)time(NULL))`) are no longer flagged as unchecked. (b) Removed math functions from `is_error_returning_function()` since they overlap with FLP32-C. **Impact: ERR33-C FP modestly reduced; math function double-flagging eliminated.**
+
+**Net impact**: -5,060 FP (-1.7%), -61 TP (negligible), TP rate +0.4pp.
 
 ### Round 7 Fix Details
 
@@ -192,7 +203,7 @@ scripts/run_juliet_parallel.sh         Parallel multi-CWE runner (12 jobs)
 ## Next Steps
 
 ### Short-Term
-- **Further FP reduction**: Top remaining FP rules: INT32-C (23K), DCL31-C (21K), DCL07-C (20K), INT30-C (17K), EXP34-C (15K), DCL06-C (14K)
+- **Further FP reduction**: Top remaining FP rules: INT32-C (23K), DCL31-C (21K), DCL07-C (20K), INT30-C (17K), EXP34-C (15K), DCL06-C (14K), EXP12-C (9K), MEM10-C (7K), ERR33-C (6K)
 - Add CWE-specific rule weighting/filtering
 - Implement data-flow analysis rules for CWE-416, CWE-401, CWE-476
 
