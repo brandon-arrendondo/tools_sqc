@@ -147,7 +147,8 @@ impl Err33C {
         let mut current = call_node.parent();
         while let Some(parent) = current {
             match parent.kind() {
-                "assignment_expression" | "init_declarator" => return true,
+                // Return value is consumed by assignment, declaration, or as argument to another call
+                "assignment_expression" | "init_declarator" | "argument_list" => return true,
                 "expression_statement" | "compound_statement" | "function_definition" => break,
                 _ => {}
             }
@@ -361,12 +362,7 @@ impl Err33C {
             // Character classification that can fail
             "mblen" | "mbtowc" | "wctomb" |
 
-            // Math functions that set errno
-            "acos" | "asin" | "atan" | "atan2" | "cos" | "sin" | "tan" |
-            "acosh" | "asinh" | "atanh" | "cosh" | "sinh" | "tanh" |
-            "exp" | "exp2" | "expm1" | "log" | "log10" | "log1p" | "log2" |
-            "pow" | "sqrt" | "cbrt" | "hypot" | "fabs" | "fmod" | "remainder" |
-            "ceil" | "floor" | "trunc" | "round" | "nearbyint" | "rint" |
+            // Math functions covered by FLP32-C — removed to avoid double-flagging
 
             // Environment
             "getenv"
