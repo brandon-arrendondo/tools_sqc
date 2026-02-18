@@ -927,7 +927,7 @@ impl RuleRegistry {
         registry.register(Box::new(err07_c::Err07C));
         registry.register(Box::new(err30_c::Err30C));
         registry.register(Box::new(err32_c::Err32C));
-        registry.register(Box::new(err33_c::Err33C));
+        registry.register(Box::new(err33_c::Err33C::new()));
         registry.register(Box::new(err34_c::Err34C));
         registry.register(Box::new(exp00_c::Exp00C));
         registry.register(Box::new(exp02_c::Exp02C));
@@ -943,7 +943,7 @@ impl RuleRegistry {
         registry.register(Box::new(exp30_c::Exp30C));
         registry.register(Box::new(exp32_c::Exp32C));
         registry.register(Box::new(exp33_c::Exp33C));
-        registry.register(Box::new(exp34_c::Exp34C));
+        registry.register(Box::new(exp34_c::Exp34C::new()));
         registry.register(Box::new(exp35_c::Exp35C));
         registry.register(Box::new(exp36_c::Exp36C));
         registry.register(Box::new(exp10_c::Exp10C));

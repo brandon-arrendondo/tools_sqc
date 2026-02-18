@@ -43,6 +43,11 @@ impl Int32C {
         violations: &mut Vec<RuleViolation>,
         type_map: &HashMap<String, String>,
     ) {
+        // Skip nodes inside compile-time contexts (cannot overflow at runtime)
+        if self.is_in_compile_time_context(node) {
+            return;
+        }
+
         match node.kind() {
             "binary_expression" => {
                 self.check_binary_operation(node, source, violations, type_map);
@@ -68,6 +73,27 @@ impl Int32C {
                 self.check_node(&child, source, violations, type_map);
             }
         }
+    }
+
+    /// Check if this node is inside a compile-time context where overflow cannot occur at runtime.
+    /// Covers: sizeof(), _Static_assert, enum value definitions, array size declarators.
+    fn is_in_compile_time_context(&self, node: &Node) -> bool {
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            match parent.kind() {
+                "sizeof_expression" => return true,
+                "static_assert_declaration" => return true,
+                "enumerator" => return true,
+                "array_declarator" => {
+                    // Array size expressions like int arr[N + 1] are compile-time
+                    return true;
+                }
+                "function_definition" => break,
+                _ => {}
+            }
+            current = parent.parent();
+        }
+        false
     }
 
     fn check_binary_operation(
@@ -144,6 +170,13 @@ impl Int32C {
                     return;
                 }
 
+                // Skip if using wider type (cast to long long before addition)
+                let left_text = get_node_text(&left, source);
+                let right_text = get_node_text(&right, source);
+                if self.has_wider_cast(&left_text, &right_text) {
+                    return;
+                }
+
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -194,6 +227,11 @@ impl Int32C {
                     return; // Safe - constant expression
                 }
 
+                // Skip if using wider type (cast to long long before subtraction)
+                if self.has_wider_cast(&left_text, &right_text) {
+                    return;
+                }
+
                 if !self.has_overflow_check_subtraction(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -239,13 +277,13 @@ impl Int32C {
                 // Skip if using wider type (cast to long long before multiplication)
                 let left_text = get_node_text(&left, source);
                 let right_text = get_node_text(&right, source);
-                if (left_text.contains("long long") || right_text.contains("long long"))
-                    || (left_text.starts_with("(signed long long)")
-                        || left_text.starts_with("(long long)")
-                        || right_text.starts_with("(signed long long)")
-                        || right_text.starts_with("(long long)"))
-                {
+                if self.has_wider_cast(&left_text, &right_text) {
                     return; // Safe - using wider type
+                }
+
+                // Skip if operands are bounded for-loop variables
+                if self.is_in_bounded_for_loop(node, source) {
+                    return;
                 }
 
                 if !self.has_overflow_check_multiplication(node, source) {
@@ -1129,6 +1167,49 @@ impl Int32C {
             || (text.starts_with("min") && (text.contains("val") || text.contains("num")))
     }
 
+    /// Check if either operand has a wider-type cast (long long), making overflow impossible.
+    fn has_wider_cast(&self, left_text: &str, right_text: &str) -> bool {
+        let has_ll = |text: &str| {
+            text.contains("long long")
+                || text.starts_with("(signed long long)")
+                || text.starts_with("(long long)")
+                || text.starts_with("(int64_t)")
+                || text.starts_with("(int_least64_t)")
+        };
+        has_ll(left_text) || has_ll(right_text)
+    }
+
+    /// Extract operand identifier names from a binary expression node.
+    /// Returns a vec of variable names found in the left/right operands.
+    fn extract_operand_names(&self, node: &Node, source: &str) -> Vec<String> {
+        let mut names = Vec::new();
+        if let Some(left) = node.child_by_field_name("left") {
+            self.collect_identifiers(&left, source, &mut names);
+        }
+        if let Some(right) = node.child_by_field_name("right") {
+            self.collect_identifiers(&right, source, &mut names);
+        }
+        // For unary/update expressions, check argument
+        if let Some(arg) = node.child_by_field_name("argument") {
+            self.collect_identifiers(&arg, source, &mut names);
+        }
+        names
+    }
+
+    fn collect_identifiers(&self, node: &Node, source: &str, names: &mut Vec<String>) {
+        if node.kind() == "identifier" {
+            let name = get_node_text(node, source).to_string();
+            if !names.contains(&name) {
+                names.push(name);
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_identifiers(&child, source, names);
+            }
+        }
+    }
+
     fn contains_arithmetic(&self, expr: &str) -> bool {
         expr.contains('+') || expr.contains('-') || expr.contains('*') || expr.contains('/')
     }
@@ -1158,6 +1239,47 @@ impl Int32C {
             return true;
         }
 
+        false
+    }
+
+    /// Check if a binary expression is inside a for-loop with a small constant bound,
+    /// making overflow impossible (e.g., `i * i` where `i < 100`).
+    fn is_in_bounded_for_loop(&self, node: &Node, source: &str) -> bool {
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "for_statement" {
+                let for_text = get_node_text(&parent, source);
+                // Check that the loop doesn't involve near-limit values
+                if for_text.contains("INT_MAX")
+                    || for_text.contains("LONG_MAX")
+                    || for_text.contains("INT_MIN")
+                    || for_text.contains("LONG_MIN")
+                {
+                    return false;
+                }
+                // Heuristic: if the for-loop condition contains a small numeric bound
+                // (< 4 digits), the loop variable won't overflow in typical arithmetic
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    // Look for patterns like "i < 100" or "i <= 999"
+                    let bound_re = cond_text
+                        .split(|c: char| !c.is_ascii_digit())
+                        .filter(|s| !s.is_empty())
+                        .any(|num| {
+                            num.len() <= 4
+                                && num.parse::<i64>().map_or(false, |n| n <= 10000 && n >= 0)
+                        });
+                    if bound_re {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            current = parent.parent();
+        }
         false
     }
 
@@ -1399,42 +1521,114 @@ impl Int32C {
         false
     }
 
-    /// Check if the function containing this node has overflow checking code (all patterns must match)
+    /// Check if the function containing this node has overflow checking code (all patterns must match).
+    /// Scoped to operands: requires at least one operand name from the flagged expression to appear
+    /// near the overflow guard pattern, preventing one variable's check from suppressing another's.
     fn has_function_level_overflow_check(
         &self,
         node: &Node,
         source: &str,
         patterns: &[&str],
     ) -> bool {
-        // Find the containing function
-        let mut current = node.parent();
-        while let Some(parent) = current {
-            if parent.kind() == "function_definition" {
-                // Search the entire function body for the patterns
-                let func_text = get_node_text(&parent, source);
-                return patterns.iter().all(|pattern| func_text.contains(pattern));
-            }
-            current = parent.parent();
-        }
-        false
+        let operand_names = self.extract_operand_names(node, source);
+        self.has_function_level_overflow_check_scoped(node, source, patterns, &operand_names)
     }
 
-    /// Check if the function containing this node has overflow checking code (any pattern can match)
+    /// Check if the function containing this node has overflow checking code (all patterns must match).
+    /// Variant used when operand names are not applicable (e.g., compound assignments).
     fn has_function_level_patterns_any(
         &self,
         node: &Node,
         source: &str,
         patterns: &[&str],
     ) -> bool {
+        let operand_names = self.extract_operand_names(node, source);
+        self.has_function_level_overflow_check_scoped(node, source, patterns, &operand_names)
+    }
+
+    /// Core operand-scoped function-level overflow check.
+    /// Checks that:
+    /// 1. All the given patterns exist in the function (e.g., "INT_MAX", " - ")
+    /// 2. At least one operand from the flagged expression appears in a line that
+    ///    also contains at least one of the overflow-guard keywords (INT_MAX, INT_MIN, etc.)
+    fn has_function_level_overflow_check_scoped(
+        &self,
+        node: &Node,
+        source: &str,
+        patterns: &[&str],
+        operand_names: &[String],
+    ) -> bool {
         // Find the containing function
         let mut current = node.parent();
         while let Some(parent) = current {
             if parent.kind() == "function_definition" {
-                // Search the entire function body for the patterns
                 let func_text = get_node_text(&parent, source);
-                return patterns.iter().all(|pattern| func_text.contains(pattern));
+
+                // First: do the patterns even exist in this function?
+                if !patterns.iter().all(|p| func_text.contains(p)) {
+                    return false;
+                }
+
+                // If we have no operand names to scope against, fall back to
+                // the old behavior (patterns found anywhere in the function)
+                if operand_names.is_empty() {
+                    return true;
+                }
+
+                // The overflow-guard keywords we look for near operand names
+                let guard_keywords = [
+                    "INT_MAX",
+                    "INT_MIN",
+                    "LONG_MAX",
+                    "LONG_MIN",
+                    "LLONG_MAX",
+                    "LLONG_MIN",
+                    "UINT_MAX",
+                    "SIZE_MAX",
+                ];
+
+                // Search for lines that contain an overflow guard keyword AND
+                // at least one operand name from the flagged expression.
+                for line in func_text.lines() {
+                    let trimmed = line.trim();
+                    let has_guard = guard_keywords.iter().any(|kw| trimmed.contains(kw));
+                    if !has_guard {
+                        continue;
+                    }
+                    if operand_names
+                        .iter()
+                        .any(|name| self.contains_word(trimmed, name))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
             current = parent.parent();
+        }
+        false
+    }
+
+    /// Check if `text` contains `word` as a whole word (not a substring of another identifier).
+    fn contains_word(&self, text: &str, word: &str) -> bool {
+        if word.is_empty() {
+            return false;
+        }
+        let mut start = 0;
+        while let Some(pos) = text[start..].find(word) {
+            let abs_pos = start + pos;
+            let before_ok = abs_pos == 0
+                || !text.as_bytes()[abs_pos - 1].is_ascii_alphanumeric()
+                    && text.as_bytes()[abs_pos - 1] != b'_';
+            let after_pos = abs_pos + word.len();
+            let after_ok = after_pos >= text.len()
+                || !text.as_bytes()[after_pos].is_ascii_alphanumeric()
+                    && text.as_bytes()[after_pos] != b'_';
+            if before_ok && after_ok {
+                return true;
+            }
+            start = abs_pos + 1;
         }
         false
     }
