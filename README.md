@@ -11,6 +11,8 @@ A comprehensive terminal-based static analysis tool that validates C code compli
 - **Violation Suppression**: Suppress false positives with SHA-256 based suppression system
 - **Git Integration**: Seamlessly analyze C files in git repositories, with diff-only mode for incremental analysis
 - **Cross-File Analysis**: Pre-scan directories for function definitions to reduce false positives
+- **Inter-Procedural Analysis**: Function summaries computed during prescan enable cross-function reasoning (null returns, freed parameters, no-return functions)
+- **Control-Flow Graphs**: Per-function CFG construction with reaching definitions for path-sensitive analysis
 - **Configurable Rules**: Enable/disable rules via TOML manifest with per-rule severity settings
 - **Fast Analysis**: Tree-sitter based parsing for efficient code analysis
 - **Extensible Architecture**: Plugin-style rule system for easy addition of new CERT C rules
@@ -165,6 +167,15 @@ sqc /path/to/repo --diff --min-severity High --fail-on-severity High --export re
 - `1` — Violations found (when `--fail-on-violation` or `--fail-on-severity` is set)
 - `2` — Analysis error (invalid path, bad manifest, etc.)
 
+#### Example Workflows
+
+Ready-to-use CI pipeline configurations are included in the repository:
+
+- **GitHub Actions:** [`.github/workflows/sqc-analysis.yml`](.github/workflows/sqc-analysis.yml) — Runs diff-only analysis on PRs and full scans on push to `main`. Uploads SARIF results to [GitHub Code Scanning](https://docs.github.com/en/code-security/code-scanning) via `github/codeql-action/upload-sarif`.
+- **Azure DevOps:** [`ci/azure-pipelines.yml`](ci/azure-pipelines.yml) — Same two-mode pattern (PR = diff-only, push = full scan). Publishes SARIF as a build artifact.
+
+Both workflows use `--fail-on-severity High` to gate the pipeline on high-severity findings, and `--min-severity Medium` to filter out low-severity noise.
+
 ## Configuration
 
 ### Quick Start with Rule Templates
@@ -283,6 +294,11 @@ src/
 ├── prelude.rs       # Common imports and type definitions
 ├── analyze/         # Core analysis engine
 │   ├── mod.rs       # Project analysis orchestration
+│   ├── cfg.rs       # Control-flow graph construction
+│   ├── context.rs   # Cross-file project context
+│   ├── dataflow.rs  # Reaching definitions analysis
+│   ├── function_summary.rs # Inter-procedural function summaries
+│   ├── prescan.rs   # Directory pre-scanning for cross-file context
 │   └── suppression.rs # Violation suppression system
 ├── export/          # Export functionality
 │   └── mod.rs       # CSV, XLSX, JSON, and SARIF export

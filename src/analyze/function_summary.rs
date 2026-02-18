@@ -1,0 +1,384 @@
+//! Function summary computation for inter-procedural analysis.
+//!
+//! Computes lightweight summaries of each function's behavior during the prescan
+//! phase. These summaries are used by rules to reason about callee behavior
+//! without re-analyzing the callee's body.
+
+use std::collections::{HashMap, HashSet};
+use tree_sitter::Node;
+
+/// Summary of a function's behavior relevant to CERT C rules.
+#[derive(Debug, Clone, Default)]
+pub struct FunctionSummary {
+    /// Parameter indices that this function frees (e.g., free(param[0])).
+    pub frees_params: HashSet<usize>,
+    /// Whether this function can return NULL.
+    pub can_return_null: bool,
+    /// Whether this function returns dynamically allocated memory.
+    pub returns_allocation: bool,
+    /// Parameter indices that this function checks for NULL.
+    pub checks_null_params: HashSet<usize>,
+    /// Parameter indices that this function writes through (modifies via pointer).
+    pub modifies_params: HashSet<usize>,
+    /// Whether this function never returns (calls abort/exit/longjmp).
+    pub never_returns: bool,
+}
+
+/// Compute function summaries for all function definitions in the AST.
+pub fn compute_summaries(root: &Node, source: &str) -> HashMap<String, FunctionSummary> {
+    let mut summaries = HashMap::new();
+
+    collect_function_summaries(root, source, &mut summaries);
+
+    summaries
+}
+
+fn collect_function_summaries(
+    node: &Node,
+    source: &str,
+    summaries: &mut HashMap<String, FunctionSummary>,
+) {
+    if node.kind() == "function_definition" {
+        if let Some(name) = extract_function_name(node, source) {
+            let summary = analyze_function(node, source);
+            summaries.insert(name, summary);
+        }
+    }
+
+    // Recurse into preproc blocks
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "function_definition" => {
+                    if let Some(name) = extract_function_name(&child, source) {
+                        let summary = analyze_function(&child, source);
+                        summaries.insert(name, summary);
+                    }
+                }
+                kind if kind.starts_with("preproc_") => {
+                    collect_function_summaries(&child, source, summaries);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Analyze a single function definition to produce its summary.
+fn analyze_function(func_node: &Node, source: &str) -> FunctionSummary {
+    let mut summary = FunctionSummary::default();
+
+    // Collect parameter names
+    let params = collect_param_names(func_node, source);
+
+    // Check the return type
+    if let Some(return_type) = func_node.child_by_field_name("type") {
+        let type_text = return_type.utf8_text(source.as_bytes()).unwrap_or("");
+        // Functions returning pointer types might return NULL
+        let decl_text = func_node
+            .child_by_field_name("declarator")
+            .map(|d| d.utf8_text(source.as_bytes()).unwrap_or(""))
+            .unwrap_or("");
+        if decl_text.contains('*') {
+            // Could return NULL unless proven otherwise
+            summary.can_return_null = true;
+        }
+        // void functions can't return NULL
+        if type_text == "void" {
+            summary.can_return_null = false;
+        }
+    }
+
+    // Analyze function body
+    if let Some(body) = func_node.child_by_field_name("body") {
+        let body_text = body.utf8_text(source.as_bytes()).unwrap_or("");
+
+        // Check for never-returns patterns
+        summary.never_returns = check_never_returns(&body, source);
+
+        // Check for returns-allocation pattern
+        summary.returns_allocation = body_text.contains("malloc(")
+            || body_text.contains("calloc(")
+            || body_text.contains("realloc(")
+            || body_text.contains("aligned_alloc(");
+
+        // Check for NULL return
+        if !summary.can_return_null {
+            // Even non-pointer return types: check if the function returns NULL
+            summary.can_return_null = check_returns_null(&body, source);
+        }
+
+        // Analyze parameter usage
+        analyze_param_usage(&body, source, &params, &mut summary);
+    }
+
+    summary
+}
+
+/// Collect parameter names from a function declaration.
+fn collect_param_names(func_node: &Node, source: &str) -> Vec<String> {
+    let mut params = Vec::new();
+
+    if let Some(declarator) = func_node.child_by_field_name("declarator") {
+        collect_params_recursive(&declarator, source, &mut params);
+    }
+
+    params
+}
+
+fn collect_params_recursive(node: &Node, source: &str, params: &mut Vec<String>) {
+    if node.kind() == "function_declarator" {
+        if let Some(param_list) = node.child_by_field_name("parameters") {
+            for i in 0..param_list.child_count() {
+                if let Some(param) = param_list.child(i) {
+                    if param.kind() == "parameter_declaration" {
+                        if let Some(decl) = param.child_by_field_name("declarator") {
+                            let name = extract_leaf_identifier(&decl, source);
+                            params.push(name);
+                        } else {
+                            params.push(String::new()); // Unnamed parameter
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                collect_params_recursive(&child, source, params);
+            }
+        }
+    }
+}
+
+/// Check if a function body always calls abort/exit/longjmp (never returns normally).
+fn check_never_returns(body: &Node, source: &str) -> bool {
+    let body_text = body.utf8_text(source.as_bytes()).unwrap_or("");
+
+    // Quick text check — if none of these are present, the function can return
+    if !body_text.contains("abort(")
+        && !body_text.contains("exit(")
+        && !body_text.contains("_Exit(")
+        && !body_text.contains("longjmp(")
+        && !body_text.contains("quick_exit(")
+    {
+        return false;
+    }
+
+    // More precise: check if every code path ends with a no-return call.
+    // For simplicity, check if the function's body ends with a no-return call
+    // (last statement is abort/exit/etc. — no return statement after it).
+    let has_return = body_text.contains("return ");
+    let ends_with_noreturn = body_text.contains("abort()")
+        || body_text.contains("exit(EXIT_FAILURE)")
+        || body_text.contains("exit(1)")
+        || body_text.contains("exit(EXIT_SUCCESS)")
+        || body_text.contains("exit(0)");
+
+    // If the function has no return statements and ends with a no-return call
+    if !has_return && ends_with_noreturn {
+        return true;
+    }
+
+    // Simple heuristic: if every path through the function ends with
+    // abort/exit, it never returns. This is too expensive to check fully
+    // without a CFG, so we use a conservative approach.
+    false
+}
+
+/// Check if a function body contains any `return NULL` / `return 0` statements.
+fn check_returns_null(body: &Node, source: &str) -> bool {
+    if body.kind() == "return_statement" {
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() != "return" {
+                    let text = child.utf8_text(source.as_bytes()).unwrap_or("").trim();
+                    if text == "NULL" || text == "0" || text == "nullptr" {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    for i in 0..body.child_count() {
+        if let Some(child) = body.child(i) {
+            if check_returns_null(&child, source) {
+                return true;
+            }
+        }
+    }
+
+    false
+}
+
+/// Analyze how parameters are used in the function body.
+fn analyze_param_usage(
+    body: &Node,
+    source: &str,
+    params: &[String],
+    summary: &mut FunctionSummary,
+) {
+    let body_text = body.utf8_text(source.as_bytes()).unwrap_or("");
+
+    for (idx, param_name) in params.iter().enumerate() {
+        if param_name.is_empty() {
+            continue;
+        }
+
+        // Check if parameter is freed
+        if body_text.contains(&format!("free({})", param_name))
+            || body_text.contains(&format!("free( {} )", param_name))
+        {
+            summary.frees_params.insert(idx);
+        }
+
+        // Check if parameter is null-checked
+        if body_text.contains(&format!("{} == NULL", param_name))
+            || body_text.contains(&format!("NULL == {}", param_name))
+            || body_text.contains(&format!("{} != NULL", param_name))
+            || body_text.contains(&format!("NULL != {}", param_name))
+            || body_text.contains(&format!("!{}", param_name))
+        {
+            summary.checks_null_params.insert(idx);
+        }
+
+        // Check if parameter is written through (dereferenced on left side of assignment)
+        if body_text.contains(&format!("*{} =", param_name))
+            || body_text.contains(&format!("{}->", param_name))
+            || body_text.contains(&format!("{}[", param_name))
+        {
+            summary.modifies_params.insert(idx);
+        }
+    }
+}
+
+fn extract_function_name(func_node: &Node, source: &str) -> Option<String> {
+    let declarator = func_node.child_by_field_name("declarator")?;
+    let name = extract_leaf_identifier(&declarator, source);
+    if name.is_empty() {
+        None
+    } else {
+        Some(name)
+    }
+}
+
+fn extract_leaf_identifier(node: &Node, source: &str) -> String {
+    match node.kind() {
+        "identifier" => node.utf8_text(source.as_bytes()).unwrap_or("").to_string(),
+        "function_declarator" | "pointer_declarator" | "array_declarator" => {
+            if let Some(inner) = node.child_by_field_name("declarator") {
+                extract_leaf_identifier(&inner, source)
+            } else {
+                String::new()
+            }
+        }
+        _ => {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "identifier" {
+                        return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                    }
+                }
+            }
+            String::new()
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parse_and_summarize(code: &str) -> HashMap<String, FunctionSummary> {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(code, None).unwrap();
+        compute_summaries(&tree.root_node(), code)
+    }
+
+    #[test]
+    fn test_never_returns() {
+        let code = r#"
+        void die(const char *msg) {
+            fprintf(stderr, "%s\n", msg);
+            abort();
+        }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("die").unwrap();
+        assert!(summary.never_returns);
+    }
+
+    #[test]
+    fn test_frees_params() {
+        let code = r#"
+        void cleanup(void *ptr) {
+            free(ptr);
+        }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("cleanup").unwrap();
+        assert!(summary.frees_params.contains(&0));
+    }
+
+    #[test]
+    fn test_can_return_null() {
+        let code = r#"
+        char *find_match(const char *haystack, const char *needle) {
+            char *result = strstr(haystack, needle);
+            if (!result) {
+                return NULL;
+            }
+            return result;
+        }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("find_match").unwrap();
+        assert!(summary.can_return_null);
+    }
+
+    #[test]
+    fn test_checks_null_params() {
+        let code = r#"
+        int safe_strlen(const char *s) {
+            if (s == NULL) {
+                return 0;
+            }
+            return strlen(s);
+        }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("safe_strlen").unwrap();
+        assert!(summary.checks_null_params.contains(&0));
+    }
+
+    #[test]
+    fn test_modifies_params() {
+        let code = r#"
+        void init_struct(struct config *cfg) {
+            cfg->value = 0;
+            cfg->name = "default";
+        }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("init_struct").unwrap();
+        assert!(summary.modifies_params.contains(&0));
+    }
+
+    #[test]
+    fn test_returns_allocation() {
+        let code = r#"
+        char *create_buffer(size_t size) {
+            char *buf = malloc(size);
+            if (!buf) return NULL;
+            memset(buf, 0, size);
+            return buf;
+        }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("create_buffer").unwrap();
+        assert!(summary.returns_allocation);
+        assert!(summary.can_return_null);
+    }
+}
