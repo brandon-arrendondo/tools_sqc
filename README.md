@@ -26,14 +26,14 @@ SqC has been benchmarked against the [NIST Juliet Test Suite v1.3](https://samat
 | Metric | Value |
 |--------|-------|
 | **Files Analyzed** | 54,484 |
-| **True Positives** | 230,992 |
-| **False Positives** | 296,415 |
+| **True Positives** | 230,643 |
+| **False Positives** | 296,342 |
 | **TP Rate** | **43.8%** |
 | **CWE Categories** | 106 / 118 with data |
 
 ### FP Reduction Progress
 
-Eight rounds of targeted rule improvements plus cross-file analysis reduced false positives by 65% from baseline while improving the true positive rate:
+Nine rounds of targeted rule improvements plus cross-file analysis reduced false positives by 65% from baseline while improving the true positive rate:
 
 | Round | Fixes | TP | FP | TP Rate | FP Delta |
 |-------|-------|---:|---:|--------:|---------:|
@@ -45,9 +45,12 @@ Eight rounds of targeted rule improvements plus cross-file analysis reduced fals
 | Round 5 | FLP02-C, DCL06-C, INT30-C | 340,894 | 475,813 | 41.7% | -16,835 |
 | Round 6 | Cross-file analysis (`-d`) | 247,757 | 327,191 | 43.1% | -148,622 |
 | Round 7 | EXP36-C, EXP34-C, ARR37-C | 231,053 | 301,475 | 43.4% | -25,716 |
-| **Round 8** | **DCL40-C, FLP32-C, ERR33-C** | **230,992** | **296,415** | **43.8%** | **-5,060** |
+| Round 8 | DCL40-C, FLP32-C, ERR33-C | 230,992 | 296,415 | 43.8% | -5,060 |
+| **Round 9** | **CFG, data-flow, inter-procedural analysis** | **230,643** | **296,342** | **43.8%** | **-73** |
 
-**Cumulative**: TP rate 41.1% → 43.8% (+2.7pp), FP reduced by 542,926 (-64.7%).
+Round 9 added CFG construction, reaching definitions, and inter-procedural function summaries. Juliet impact is minimal because tests are single-file; the infrastructure targets multi-file real-world codebases.
+
+**Cumulative**: TP rate 41.1% → 43.8% (+2.7pp), FP reduced by 542,999 (-64.7%).
 
 ### Top CWE Detection Rates
 
@@ -72,7 +75,7 @@ Comparison with other static analysis tools on Juliet and real-world benchmarks,
 
 | Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
 |------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **43.8%** | **56.2%** | AST (tree-sitter) | Full (118 CWEs) | 283 rules | -- |
+| **SqC** | **43.8%** | **56.2%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
 | Semgrep CE | 44-48% | Very low | AST (tree-sitter) | No | Community | Free |
 | Semgrep Pro | 72-75% | Very low | AST + taint + inter-file | No | Community | Commercial |
 | Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
