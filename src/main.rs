@@ -10,6 +10,7 @@ mod rules;
 mod ui;
 mod utility;
 
+use crate::manifest::Severity;
 use crate::prelude::*;
 use clap::{Arg, Command};
 
@@ -20,7 +21,20 @@ use files::ProjectSource;
 use progress::CLIProgressReporter;
 use ui::TerminalUI;
 
-fn main() -> Result<()> {
+use std::collections::HashSet;
+
+fn main() {
+    let result = run();
+    match result {
+        Ok(exit_code) => std::process::exit(exit_code),
+        Err(e) => {
+            eprintln!("Error: {:#}", e);
+            std::process::exit(2);
+        }
+    }
+}
+
+fn run() -> Result<i32> {
     let matches = Command::new("sqc")
         .about("Software Code Quality - CERT C compliance checker")
         .version("0.1.0")
@@ -50,7 +64,7 @@ fn main() -> Result<()> {
             Arg::new("export")
                 .long("export")
                 .short('e')
-                .help("Export all violations to file (CSV or Excel based on extension, non-interactive mode)")
+                .help("Export violations to file (CSV, Excel, JSON, or SARIF based on extension)")
                 .value_name("FILE"),
         )
         .arg(
@@ -69,6 +83,38 @@ fn main() -> Result<()> {
                 .value_name("DIR")
                 .action(clap::ArgAction::Append),
         )
+        .arg(
+            Arg::new("fail_on_violation")
+                .long("fail-on-violation")
+                .help("Exit with code 1 if any violations are found")
+                .action(clap::ArgAction::SetTrue),
+        )
+        .arg(
+            Arg::new("fail_on_severity")
+                .long("fail-on-severity")
+                .help("Exit with code 1 if any violation meets or exceeds this severity")
+                .value_name("LEVEL")
+                .value_parser(["Low", "Medium", "High", "Critical"]),
+        )
+        .arg(
+            Arg::new("min_severity")
+                .long("min-severity")
+                .help("Only report violations at or above this severity")
+                .value_name("LEVEL")
+                .value_parser(["Low", "Medium", "High", "Critical"]),
+        )
+        .arg(
+            Arg::new("rules")
+                .long("rules")
+                .help("Only report violations from these rules (comma-separated)")
+                .value_name("RULE1,RULE2,..."),
+        )
+        .arg(
+            Arg::new("diff")
+                .long("diff")
+                .help("Only analyze modified/new C files (git diff)")
+                .action(clap::ArgAction::SetTrue),
+        )
         .get_matches();
 
     let path = matches.get_one::<String>("path").unwrap();
@@ -80,6 +126,17 @@ fn main() -> Result<()> {
         .get_many::<String>("directories")
         .map(|vals| vals.cloned().collect())
         .unwrap_or_default();
+    let fail_on_violation = matches.get_flag("fail_on_violation");
+    let fail_on_severity: Option<Severity> = matches
+        .get_one::<String>("fail_on_severity")
+        .map(|s| s.parse().expect("clap validated severity"));
+    let min_severity: Option<Severity> = matches
+        .get_one::<String>("min_severity")
+        .map(|s| s.parse().expect("clap validated severity"));
+    let rule_filter: Option<HashSet<String>> = matches
+        .get_one::<String>("rules")
+        .map(|s| s.split(',').map(|r| r.trim().to_string()).collect());
+    let diff_only = matches.get_flag("diff");
 
     // Verify the path and determine source type
     let project_source = ProjectSource::open(path)?;
@@ -89,33 +146,65 @@ fn main() -> Result<()> {
 
     // Handle suppression generation
     if let Some(gen_spec) = generate_suppression {
-        return handle_generate_suppression(gen_spec);
+        handle_generate_suppression(gen_spec)?;
+        return Ok(0);
     }
 
     if interactive {
         let mut ui = TerminalUI::new(path, manifest, &directories)?;
         ui.run()?;
-    } else {
-        println!("Analyzing {} at: {}", project_source.source_type(), path);
-        println!("Using manifest: {}", manifest_path);
+        return Ok(0);
+    }
 
-        // Create progress reporter for CLI
-        let progress_reporter = CLIProgressReporter::new();
+    println!("Analyzing {} at: {}", project_source.source_type(), path);
+    println!("Using manifest: {}", manifest_path);
 
-        // Perform analysis with progress reporting
-        let violations = analyze_project(
-            &project_source,
-            &manifest,
-            Some(&progress_reporter),
-            &directories,
-        )?;
+    if diff_only {
+        println!("Mode: diff-only (analyzing modified files)");
+    }
 
-        // Export to file if requested
-        if let Some(export_path) = export_file {
-            export_all_violations(&violations, export_path, path, &manifest)?;
-            println!("Exported violations to: {}", export_path);
+    // Create progress reporter for CLI
+    let progress_reporter = CLIProgressReporter::new();
+
+    // Perform analysis with progress reporting
+    let mut violations = analyze_project(
+        &project_source,
+        &manifest,
+        Some(&progress_reporter),
+        &directories,
+        diff_only,
+    )?;
+
+    // Post-analysis filtering
+    if let Some(ref min_sev) = min_severity {
+        violations.retain(|v| v.severity >= *min_sev);
+    }
+    if let Some(ref rules) = rule_filter {
+        violations.retain(|v| rules.contains(&v.rule_id));
+    }
+
+    // Export to file if requested
+    if let Some(export_path) = export_file {
+        export_all_violations(&violations, export_path, path, &manifest)?;
+        println!(
+            "Exported {} violations to: {}",
+            violations.len(),
+            export_path
+        );
+    }
+
+    // Print summary
+    println!("Total violations: {}", violations.len());
+
+    // Determine exit code
+    if fail_on_violation && !violations.is_empty() {
+        return Ok(1);
+    }
+    if let Some(ref threshold) = fail_on_severity {
+        if violations.iter().any(|v| v.severity >= *threshold) {
+            return Ok(1);
         }
     }
 
-    Ok(())
+    Ok(0)
 }

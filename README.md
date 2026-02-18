@@ -4,11 +4,13 @@ A comprehensive terminal-based static analysis tool that validates C code compli
 
 ## Features
 
-- **CERT C Compliance**: Validates code against 15 implemented SEI CERT C coding standards
+- **CERT C Compliance**: 283 SEI CERT C rules implemented
 - **Interactive Terminal UI**: Navigate and review violations with a modern TUI built with ratatui
-- **Multiple Export Formats**: Export violations to CSV or XLSX for reporting and tracking
+- **Multiple Export Formats**: CSV, XLSX, JSON, and SARIF 2.1.0 output
+- **CI/CD Ready**: Exit codes, severity thresholds, rule filtering, and diff-only mode
 - **Violation Suppression**: Suppress false positives with SHA-256 based suppression system
-- **Git Integration**: Seamlessly analyze C files in git repositories
+- **Git Integration**: Seamlessly analyze C files in git repositories, with diff-only mode for incremental analysis
+- **Cross-File Analysis**: Pre-scan directories for function definitions to reduce false positives
 - **Configurable Rules**: Enable/disable rules via TOML manifest with per-rule severity settings
 - **Fast Analysis**: Tree-sitter based parsing for efficient code analysis
 - **Extensible Architecture**: Plugin-style rule system for easy addition of new CERT C rules
@@ -62,6 +64,34 @@ Eight rounds of targeted rule improvements plus cross-file analysis reduced fals
 
 18 categories achieve >50% TP rate. See [JULIET_BENCHMARK_SUMMARY.md](JULIET_BENCHMARK_SUMMARY.md) for full details, methodology, and per-round fix descriptions.
 
+### How SqC Compares
+
+Comparison with other static analysis tools on Juliet and real-world benchmarks, compiled from academic papers and published data:
+
+| Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
+|------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
+| **SqC** | **43.8%** | **56.2%** | AST (tree-sitter) | Full (118 CWEs) | 283 rules | -- |
+| Semgrep CE | 44-48% | Very low | AST (tree-sitter) | No | Community | Free |
+| Semgrep Pro | 72-75% | Very low | AST + taint + inter-file | No | Community | Commercial |
+| Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
+| Flawfinder | ~40% | High | Lexical scanning | Indirect | No | Free |
+| CodeQL | ~29% | Moderate | Data-flow, taint | Indirect | Partial | Free/Commercial |
+| Cppcheck | Low | Very low | Data-flow | Indirect | Partial | Free |
+| Coverity | Best-in-class | ~15-20% (claimed) | Inter-procedural, path-sensitive | Not public | Partial | Enterprise |
+| Fortify | 100% OWASP (claimed) | Not published | Inter-procedural, taint, data-flow | Not public | Partial | Enterprise |
+| Commercial "Tool C"* | ~73% | ~7% | Inter-procedural | Yes (22 CWEs) | -- | Commercial |
+
+*\*Anonymized commercial tool from [Goseva-Popstojanova & Perhinschi 2015](https://community.wvu.edu/~kagoseva/Papers/IST-2015.pdf), tested on 22 C/C++ CWEs only.*
+
+**Key context from the literature:**
+- Tools on average find ~20% of weaknesses in basic Juliet test cases ([ISSTA 2022](https://dl.acm.org/doi/10.1145/3533767.3534380))
+- Even commercial tools miss 27% of C/C++ vulnerabilities on Juliet (Goseva 2015)
+- FP rates across tools range from 6.5% to 76%+ depending on rule set and benchmark ([survey](https://www.sciencedirect.com/science/article/abs/pii/S0950584913000384))
+- Industry target for developer adoption is 10-20% FP rate
+- No single tool is comprehensive; academic consensus recommends tool combination
+
+**Sources:** [ISSTA 2022 (TUM)](https://dl.acm.org/doi/10.1145/3533767.3534380) | [Goseva 2015](https://community.wvu.edu/~kagoseva/Papers/IST-2015.pdf) | [JKU 2014](https://www.se.jku.at/wp-content/uploads/2014/08/2014.Using-the-Juliet-Test-Suite.pdf) | [Semgrep Blog 2025](https://semgrep.dev/blog/2025/security-research-comparing-semgrep-community-edition-and-semgrep-code-for-static-analysis/) | [NIST SATE VI](https://www.nist.gov/itl/ssd/software-quality-group/static-analysis-tool-exposition-sate-vi)
+
 ## Installation
 
 ```bash
@@ -89,23 +119,51 @@ cargo build --release
 
 ```bash
 # Basic analysis (non-interactive)
-./target/release/sqc /path/to/repo
+sqc /path/to/repo
 
 # With custom manifest
-./target/release/sqc /path/to/repo --manifest custom-rules.toml
+sqc /path/to/repo --manifest custom-rules.toml
 
-# Export violations to CSV
-./target/release/sqc /path/to/repo --export violations.csv
+# Export violations to various formats
+sqc /path/to/repo --export violations.csv
+sqc /path/to/repo --export violations.xlsx
+sqc /path/to/repo --export violations.json
+sqc /path/to/repo --export violations.sarif       # SARIF 2.1.0
+sqc /path/to/repo --export violations.sarif.json   # SARIF (alternate ext)
 
-# Export violations to Excel
-./target/release/sqc /path/to/repo --export-xlsx violations.xlsx
+# Cross-file analysis (reduces false positives)
+sqc /path/to/repo -d /path/to/repo -d /path/to/shared/headers
 
-# Generate suppression file for current violations
-./target/release/sqc /path/to/repo --generate-suppression
-
-# Use suppression file to filter false positives
-./target/release/sqc /path/to/repo --suppression .sqc-suppress.toml
+# Generate suppression comment for a specific violation
+sqc --generate-suppression src/main.c:42:ARR30-C
 ```
+
+### CI/CD Integration
+
+```bash
+# Fail the build if any violations are found
+sqc /path/to/repo --fail-on-violation
+
+# Fail only on High or Critical severity violations
+sqc /path/to/repo --fail-on-severity High
+
+# Filter by severity (only report Medium and above)
+sqc /path/to/repo --min-severity Medium
+
+# Only check specific rules
+sqc /path/to/repo --rules ARR30-C,MEM30-C,STR31-C
+
+# Only analyze files changed in git (diff mode)
+sqc /path/to/repo --diff
+
+# Combine for CI pipeline: diff-only, High+ severity, SARIF output
+sqc /path/to/repo --diff --min-severity High --fail-on-severity High --export results.sarif
+```
+
+**Exit codes:**
+- `0` — Success (no violations, or no flags requiring failure)
+- `1` — Violations found (when `--fail-on-violation` or `--fail-on-severity` is set)
+- `2` — Analysis error (invalid path, bad manifest, etc.)
 
 ## Configuration
 
@@ -227,7 +285,7 @@ src/
 │   ├── mod.rs       # Project analysis orchestration
 │   └── suppression.rs # Violation suppression system
 ├── export/          # Export functionality
-│   └── mod.rs       # CSV and XLSX export implementations
+│   └── mod.rs       # CSV, XLSX, JSON, and SARIF export
 ├── files/           # File and repository handling
 │   └── mod.rs       # Git integration and file discovery
 ├── manifest/        # Rule configuration system
@@ -296,6 +354,7 @@ impl CertRule for Mem30C {
 ### Data Management
 - `git2` (0.19) - Git repository integration
 - `serde` (1.0) - Serialization framework
+- `serde_json` (1.0) - JSON and SARIF export
 - `toml` (0.8) - Configuration file parsing
 - `csv` (1.3) - CSV export functionality
 - `rust_xlsxwriter` (0.79) - Excel file generation
