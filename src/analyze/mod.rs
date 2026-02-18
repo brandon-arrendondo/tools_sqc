@@ -17,6 +17,7 @@ pub fn analyze_project(
     manifest: &RuleManifest,
     progress: Option<&dyn ProgressReporter>,
     directories: &[String],
+    diff_only: bool,
 ) -> Result<Vec<RuleViolation>> {
     let mut violations = Vec::new();
     let registry = RuleRegistry::new();
@@ -49,7 +50,11 @@ pub fn analyze_project(
         eprintln!("These rules will be skipped during analysis.\n");
     }
 
-    let c_files = project_source.get_c_files()?;
+    let c_files = if diff_only {
+        project_source.get_modified_c_files()?
+    } else {
+        project_source.get_c_files()?
+    };
     let total_files = c_files.len();
     let mut parser = CParser::new()?;
     let mut suppression_manager = SuppressionManager::new();
