@@ -16,7 +16,7 @@ pub trait CertRule {
     fn set_project_context(&self, _context: &ProjectContext) {}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize)]
 pub struct RuleViolation {
     pub rule_id: String,
     pub severity: crate::manifest::Severity,
