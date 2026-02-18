@@ -22,14 +22,27 @@
 //! statements after assignment, with sophisticated context detection to minimize false positives.
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::{
     find_containing_if_statement, get_identifier_from_declarator, get_node_text,
 };
+use std::cell::RefCell;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
-pub struct Err33C;
+pub struct Err33C {
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+}
+
+impl Err33C {
+    pub fn new() -> Self {
+        Self {
+            function_summaries: RefCell::new(HashMap::new()),
+        }
+    }
+}
 
 impl CertRule for Err33C {
     fn rule_id(&self) -> &'static str {
@@ -50,6 +63,10 @@ impl CertRule for Err33C {
 
     fn cert_id(&self) -> &'static str {
         "ERR33-C"
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -149,6 +166,12 @@ impl Err33C {
             match parent.kind() {
                 // Return value is consumed by assignment, declaration, or as argument to another call
                 "assignment_expression" | "init_declarator" | "argument_list" => return true,
+                // Ternary: malloc(n) ? ... : ...
+                "conditional_expression" => return true,
+                // Cast: (int*)malloc(n)
+                "cast_expression" => {
+                    // Keep walking — the cast's parent might be an assignment
+                }
                 "expression_statement" | "compound_statement" | "function_definition" => break,
                 _ => {}
             }
@@ -333,7 +356,70 @@ impl Err33C {
         }
     }
 
+    /// Check if a function name matches a common wrapper/safe-allocation pattern.
+    /// These wrappers typically check errors internally (abort/exit on failure).
+    fn is_safe_wrapper_function(&self, function_name: &str) -> bool {
+        // Check function summaries: if the function never returns, it handles errors
+        // internally (e.g., calls abort/exit on failure).
+        let summaries = self.function_summaries.borrow();
+        if let Some(summary) = summaries.get(function_name) {
+            if summary.never_returns {
+                return true;
+            }
+        }
+
+        // Common wrapper prefixes that handle errors internally
+        let safe_prefixes = [
+            "x", "safe_", "checked_", "my_", "g_", "g_try_", "php_", "ap_", "pr_",
+        ];
+        let safe_suffixes = ["_or_die", "_or_abort", "_nofail", "_safe"];
+
+        for prefix in &safe_prefixes {
+            if function_name.starts_with(prefix) {
+                // Verify the rest is a known error-returning function
+                let rest = &function_name[prefix.len()..];
+                if self.is_base_error_returning_function(rest) {
+                    return true;
+                }
+            }
+        }
+
+        for suffix in &safe_suffixes {
+            if function_name.ends_with(suffix) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Check if the base function name (without wrapper prefix) is error-returning.
+    fn is_base_error_returning_function(&self, name: &str) -> bool {
+        matches!(
+            name,
+            "malloc"
+                | "calloc"
+                | "realloc"
+                | "alloc"
+                | "fopen"
+                | "fgets"
+                | "fread"
+                | "fwrite"
+                | "strdup"
+                | "strndup"
+                | "open"
+                | "close"
+                | "read"
+                | "write"
+        )
+    }
+
     fn is_error_returning_function(&self, function_name: &str) -> bool {
+        // Skip known safe wrapper functions
+        if self.is_safe_wrapper_function(function_name) {
+            return false;
+        }
+
         matches!(
             function_name,
             // Memory management
@@ -610,8 +696,53 @@ impl Err33C {
                 "return_statement" => {
                     return true;
                 }
+                // Cast expression wrapping the call — check the cast's parent
+                "cast_expression" => {
+                    return self.is_return_value_checked(&parent, source);
+                }
+                // Comma expression — return value used in some context
+                "comma_expression" => {
+                    return true;
+                }
                 _ => {}
             }
+        }
+
+        // Check for compound condition pattern: if (!(f = fopen(...)))
+        // Walk up through parenthesized/unary/assignment to find if-statement ancestor
+        if self.is_in_compound_condition_check(node) {
+            return true;
+        }
+
+        false
+    }
+
+    /// Check if a call is inside a compound condition like `if (!(ptr = malloc(n)))` or
+    /// `if ((f = fopen(...)) == NULL)`.
+    fn is_in_compound_condition_check(&self, node: &Node) -> bool {
+        let mut current = node.parent();
+        let mut depth = 0;
+        while let Some(parent) = current {
+            if depth > 6 {
+                break;
+            }
+            match parent.kind() {
+                "if_statement" | "while_statement" | "for_statement" => return true,
+                "conditional_expression" => return true,
+                "assignment_expression"
+                | "parenthesized_expression"
+                | "unary_expression"
+                | "binary_expression"
+                | "cast_expression" => {
+                    // Keep walking up
+                }
+                "expression_statement" | "compound_statement" | "function_definition" => {
+                    break;
+                }
+                _ => {}
+            }
+            current = parent.parent();
+            depth += 1;
         }
         false
     }
@@ -650,17 +781,47 @@ impl Err33C {
         while let Some(node) = current {
             if node.kind() == "compound_statement" {
                 // Found the function body, now search forward from the assignment position
-                return self.search_statements_for_error_checks(
+                if self.search_statements_for_error_checks(
                     &node,
                     assignment_node,
                     var_name,
                     function_name,
                     source,
-                );
+                ) {
+                    return true;
+                }
+
+                // Check if the containing function is a wrapper that always handles errors
+                // by calling abort()/exit() — look at entire function body
+                if self.containing_function_handles_errors(&node, var_name, source) {
+                    return true;
+                }
+
+                return false;
             }
             current = node.parent();
         }
         false
+    }
+
+    /// Check if the containing function body has an error-handling pattern where it checks
+    /// the variable and calls abort()/exit() on failure.
+    fn containing_function_handles_errors(
+        &self,
+        compound_stmt: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> bool {
+        let body_text = get_node_text(compound_stmt, source);
+
+        // Pattern: if (!var) { ... abort/exit ... } or if (var == NULL) { ... abort/exit ... }
+        let has_null_check = body_text.contains(&format!("!{}", var_name))
+            || body_text.contains(&format!("{} == NULL", var_name))
+            || body_text.contains(&format!("NULL == {}", var_name));
+
+        let has_abort_exit = body_text.contains("abort()") || body_text.contains("exit(");
+
+        has_null_check && has_abort_exit
     }
 
     /// Search through statements in a compound statement for error checking patterns

@@ -1,10 +1,23 @@
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
-use std::collections::HashSet;
+use std::cell::RefCell;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
-pub struct Exp34C;
+pub struct Exp34C {
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+}
+
+impl Exp34C {
+    pub fn new() -> Self {
+        Self {
+            function_summaries: RefCell::new(HashMap::new()),
+        }
+    }
+}
 
 impl CertRule for Exp34C {
     fn rule_id(&self) -> &'static str {
@@ -27,14 +40,19 @@ impl CertRule for Exp34C {
         "EXP34-C"
     }
 
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+    }
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
+        let summaries = self.function_summaries.borrow();
 
         // Analyze function bodies for null pointer dereferences
         if node.kind() == "function_definition" {
             if let Some(body) = node.child_by_field_name("body") {
                 let mut analyzer = NullPointerAnalyzer::new();
-                analyzer.analyze_function_body(&body, source, &mut violations);
+                analyzer.analyze_function_body(&body, source, &summaries, &mut violations);
             }
         }
 
@@ -54,6 +72,10 @@ struct NullPointerAnalyzer {
     potentially_null_vars: HashSet<String>,
     // Track variables that have been null-checked
     null_checked_vars: HashSet<String>,
+    // Track the byte offset where each null check occurs
+    null_check_positions: std::collections::HashMap<String, usize>,
+    // Track byte positions where variables are reassigned to nullable values AFTER a null check
+    nullable_reassignments: Vec<(String, usize)>,
 }
 
 impl NullPointerAnalyzer {
@@ -61,6 +83,8 @@ impl NullPointerAnalyzer {
         Self {
             potentially_null_vars: HashSet::new(),
             null_checked_vars: HashSet::new(),
+            null_check_positions: std::collections::HashMap::new(),
+            nullable_reassignments: Vec::new(),
         }
     }
 
@@ -68,6 +92,7 @@ impl NullPointerAnalyzer {
         &mut self,
         body: &Node,
         source: &str,
+        summaries: &HashMap<String, FunctionSummary>,
         violations: &mut Vec<RuleViolation>,
     ) {
         // Collect function parameters (they could be null if they're pointers)
@@ -83,7 +108,7 @@ impl NullPointerAnalyzer {
         self.find_early_return_checks(body, source);
 
         // Second pass: collect potentially null variables
-        self.collect_null_variables(body, source);
+        self.collect_null_variables(body, source, summaries);
 
         // Third pass: check for unsafe dereferences
         self.check_dereferences(body, source, violations);
@@ -142,7 +167,9 @@ impl NullPointerAnalyzer {
                             // Variable is safe AFTER the if-statement only if the block handles error terminally
                             // Be lenient: accept any if-block as terminal for wiki examples
                             if consequence.kind() == "compound_statement" {
-                                self.null_checked_vars.insert(var_name);
+                                self.null_checked_vars.insert(var_name.clone());
+                                self.null_check_positions
+                                    .insert(var_name, node.start_byte());
                             }
                         } else {
                             // Pattern: if (ptr != NULL) { ... }
@@ -175,7 +202,9 @@ impl NullPointerAnalyzer {
                                         if arg.kind() == "identifier" {
                                             let var_name =
                                                 ast_utils::get_node_text_owned(&arg, source);
-                                            self.null_checked_vars.insert(var_name);
+                                            self.null_checked_vars.insert(var_name.clone());
+                                            self.null_check_positions
+                                                .insert(var_name, node.start_byte());
                                             break;
                                         }
                                         // Handle assert(var != NULL) or similar
@@ -191,11 +220,17 @@ impl NullPointerAnalyzer {
                                                 if is_null_value(&right_text)
                                                     && left.kind() == "identifier"
                                                 {
-                                                    self.null_checked_vars.insert(left_text);
+                                                    self.null_checked_vars
+                                                        .insert(left_text.clone());
+                                                    self.null_check_positions
+                                                        .insert(left_text, node.start_byte());
                                                 } else if is_null_value(&left_text)
                                                     && right.kind() == "identifier"
                                                 {
-                                                    self.null_checked_vars.insert(right_text);
+                                                    self.null_checked_vars
+                                                        .insert(right_text.clone());
+                                                    self.null_check_positions
+                                                        .insert(right_text, node.start_byte());
                                                 }
                                             }
                                             break;
@@ -217,7 +252,12 @@ impl NullPointerAnalyzer {
         }
     }
 
-    fn collect_null_variables(&mut self, node: &Node, source: &str) {
+    fn collect_null_variables(
+        &mut self,
+        node: &Node,
+        source: &str,
+        summaries: &HashMap<String, FunctionSummary>,
+    ) {
         match node.kind() {
             "assignment_expression" => {
                 if let (Some(left), Some(right)) = (
@@ -228,17 +268,28 @@ impl NullPointerAnalyzer {
                     let left_name = ast_utils::get_node_text_owned(&left, source);
                     let right_text = ast_utils::get_node_text_owned(&right, source);
 
+                    let assignment_byte = node.start_byte();
+
                     // Check if assigning NULL, 0, cast to NULL, or function that can return null
                     if is_null_value(&right_text)
-                        || is_nullable_function_call(&right, source)
+                        || is_nullable_function_call(&right, source, summaries)
                         || is_cast_to_null(&right, source)
                     {
                         self.potentially_null_vars.insert(left_name.clone());
+                        // Record this reassignment position for flow-sensitive checking
+                        if self.null_checked_vars.contains(&left_name) {
+                            self.nullable_reassignments
+                                .push((left_name.clone(), assignment_byte));
+                        }
                     } else if right.kind() == "identifier" {
                         // Assignment from another variable: current = head
                         // If right side is potentially null, left side becomes potentially null too
                         if self.potentially_null_vars.contains(&right_text) {
                             self.potentially_null_vars.insert(left_name.clone());
+                            if self.null_checked_vars.contains(&left_name) {
+                                self.nullable_reassignments
+                                    .push((left_name.clone(), assignment_byte));
+                            }
                         }
                     } else if right.kind() == "field_expression" {
                         // Assignment from field access: current = current->next
@@ -247,6 +298,21 @@ impl NullPointerAnalyzer {
                             let base_name = ast_utils::get_node_text_owned(&argument, source);
                             if self.potentially_null_vars.contains(&base_name) {
                                 self.potentially_null_vars.insert(left_name.clone());
+                                if self.null_checked_vars.contains(&left_name) {
+                                    self.nullable_reassignments
+                                        .push((left_name.clone(), assignment_byte));
+                                }
+                            }
+                        }
+                    } else if right.kind() == "call_expression" {
+                        // Reassignment from any function call — may or may not return null.
+                        if !is_nullable_function_call(&right, source, summaries) {
+                            self.potentially_null_vars.remove(&left_name);
+                        } else {
+                            self.potentially_null_vars.insert(left_name.clone());
+                            if self.null_checked_vars.contains(&left_name) {
+                                self.nullable_reassignments
+                                    .push((left_name.clone(), assignment_byte));
                             }
                         }
                     } else if !is_null_value(&right_text) && left.kind() == "identifier" {
@@ -257,7 +323,7 @@ impl NullPointerAnalyzer {
                 }
             }
             "declaration" => {
-                self.process_declaration(node, source);
+                self.process_declaration(node, source, summaries);
             }
             _ => {}
         }
@@ -265,12 +331,17 @@ impl NullPointerAnalyzer {
         // Recursively process child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_null_variables(&child, source);
+                self.collect_null_variables(&child, source, summaries);
             }
         }
     }
 
-    fn process_declaration(&mut self, node: &Node, source: &str) {
+    fn process_declaration(
+        &mut self,
+        node: &Node,
+        source: &str,
+        summaries: &HashMap<String, FunctionSummary>,
+    ) {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 if child.kind() == "init_declarator" {
@@ -281,7 +352,7 @@ impl NullPointerAnalyzer {
                         if let Some(value) = child.child_by_field_name("value") {
                             let value_text = ast_utils::get_node_text_owned(&value, source);
                             if is_null_value(&value_text)
-                                || is_nullable_function_call(&value, source)
+                                || is_nullable_function_call(&value, source, summaries)
                                 || is_cast_to_null(&value, source)
                             {
                                 self.potentially_null_vars.insert(var_name.clone());
@@ -657,6 +728,26 @@ impl NullPointerAnalyzer {
             return false; // Safe within this guarded scope
         }
 
+        // Flow-sensitive check: if the variable was null-checked, and the dereference
+        // occurs BEFORE a nullable reassignment, it's still safe.
+        let deref_byte = deref_node.start_byte();
+        if self.null_checked_vars.contains(var_name) {
+            if let Some(&check_pos) = self.null_check_positions.get(var_name) {
+                // Dereference is after the null check
+                if deref_byte > check_pos {
+                    // Check if any nullable reassignment occurs between the check and this dereference
+                    let has_intervening_reassignment =
+                        self.nullable_reassignments.iter().any(|(name, pos)| {
+                            name == var_name && *pos > check_pos && *pos < deref_byte
+                        });
+                    if !has_intervening_reassignment {
+                        return false; // Safe: null check covers this dereference
+                    }
+                    // There IS a reassignment between check and deref — fall through to unsafe
+                }
+            }
+        }
+
         true // Unsafe dereference
     }
 
@@ -865,13 +956,25 @@ fn is_null_value(text: &str) -> bool {
     trimmed == "NULL" || trimmed == "0" || trimmed == "nullptr"
 }
 
-fn is_nullable_function_call(node: &Node, source: &str) -> bool {
+fn is_nullable_function_call(
+    node: &Node,
+    source: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+) -> bool {
     if node.kind() != "call_expression" {
         return false;
     }
 
     if let Some(function) = node.child_by_field_name("function") {
         let func_name = ast_utils::get_node_text_owned(&function, source);
+
+        // Check function summaries from inter-procedural analysis
+        if let Some(summary) = summaries.get(func_name.as_str()) {
+            if summary.can_return_null {
+                return true;
+            }
+        }
+
         // Common functions that can return NULL
         matches!(
             func_name.as_str(),
