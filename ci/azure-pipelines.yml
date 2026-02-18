@@ -1,0 +1,110 @@
+# SqC Static Analysis - Azure DevOps Example Pipeline
+#
+# This pipeline runs SqC CERT C analysis on your C/C++ codebase.
+# - On PRs: analyzes only changed files (--diff mode)
+# - On push to main: full repository scan
+# - Publishes SARIF results as a build artifact
+#
+# Prerequisites:
+#   - Rust toolchain installed on the agent (or use a Rust container)
+#   - A sqc-rules.toml manifest (or use built-in defaults)
+
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  CARGO_TERM_COLOR: always
+
+stages:
+  - stage: Build
+    displayName: Build SqC
+    jobs:
+      - job: BuildSqC
+        displayName: Build SqC binary
+        steps:
+          - task: Cache@2
+            inputs:
+              key: 'cargo | "$(Agent.OS)" | Cargo.lock'
+              restoreKeys: |
+                cargo | "$(Agent.OS)"
+              path: $(Pipeline.Workspace)/.cargo
+            displayName: Cache Cargo
+
+          - script: |
+              cargo build --release
+            displayName: Build SqC
+
+          - task: PublishPipelineArtifact@1
+            inputs:
+              targetPath: target/release/sqc
+              artifactName: sqc-binary
+            displayName: Publish SqC binary
+
+  - stage: Analyze
+    displayName: Run Analysis
+    dependsOn: Build
+    jobs:
+      - job: AnalyzePR
+        displayName: Analyze PR (diff only)
+        condition: eq(variables['Build.Reason'], 'PullRequest')
+        steps:
+          - checkout: self
+            fetchDepth: 0  # Full history for --diff mode
+
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifactName: sqc-binary
+              targetPath: $(Build.SourcesDirectory)
+            displayName: Download SqC binary
+
+          - script: |
+              chmod +x sqc
+              ./sqc . --diff \
+                --min-severity Medium \
+                --fail-on-severity High \
+                --export results.sarif
+            displayName: Run SqC (diff mode)
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: results.sarif
+              artifactName: sarif-results
+            displayName: Publish SARIF results
+            condition: always()
+
+      - job: AnalyzeFull
+        displayName: Full Analysis
+        condition: ne(variables['Build.Reason'], 'PullRequest')
+        steps:
+          - checkout: self
+
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              artifactName: sqc-binary
+              targetPath: $(Build.SourcesDirectory)
+            displayName: Download SqC binary
+
+          - script: |
+              chmod +x sqc
+              ./sqc . -d . \
+                --min-severity Medium \
+                --fail-on-severity High \
+                --export results.sarif
+            displayName: Run SqC (full scan)
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathToPublish: results.sarif
+              artifactName: sarif-results
+            displayName: Publish SARIF results
+            condition: always()

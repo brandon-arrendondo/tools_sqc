@@ -1,4 +1,7 @@
+pub mod cfg;
 pub mod context;
+pub mod dataflow;
+pub mod function_summary;
 pub mod prescan;
 pub mod suppression;
 
@@ -10,6 +13,7 @@ use super::rules::{RuleRegistry, RuleViolation};
 use suppression::SuppressionManager;
 
 use anyhow::Result;
+use std::collections::HashMap;
 use std::fs;
 
 pub fn analyze_project(
@@ -70,6 +74,10 @@ pub fn analyze_project(
 
         if let Ok((tree, source)) = parser.parse_file(file_path) {
             let root_node = tree.root_node();
+
+            // Build CFGs for all function definitions in this file
+            let mut function_cfgs: HashMap<usize, cfg::FunctionCfg> = HashMap::new();
+            collect_function_cfgs(&root_node, &source, &mut function_cfgs);
 
             // Extract suppressions from the current file
             suppression_manager.extract_from_source(file_path, &source);
@@ -235,6 +243,25 @@ pub fn handle_generate_suppression(spec: &str) -> Result<()> {
     println!("Note: Replace 'TODO: Add justification' with an actual explanation of why this violation is acceptable.");
 
     Ok(())
+}
+
+/// Collect CFGs for all function_definition nodes in the AST.
+/// Keyed by the function's start byte offset.
+fn collect_function_cfgs(
+    node: &tree_sitter::Node,
+    source: &str,
+    cfgs: &mut HashMap<usize, cfg::FunctionCfg>,
+) {
+    if node.kind() == "function_definition" {
+        if let Some(function_cfg) = cfg::build_function_cfg(node, source) {
+            cfgs.insert(node.start_byte(), function_cfg);
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_function_cfgs(&child, source, cfgs);
+        }
+    }
 }
 
 pub fn get_code_snippet(file_path: &str, line_number: usize) -> Result<String> {

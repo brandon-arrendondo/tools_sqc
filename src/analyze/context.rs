@@ -1,4 +1,5 @@
-use std::collections::HashSet;
+use super::function_summary::FunctionSummary;
+use std::collections::{HashMap, HashSet};
 
 /// Cross-file context gathered by pre-scanning additional directories.
 ///
@@ -8,6 +9,10 @@ use std::collections::HashSet;
 #[derive(Debug, Default, Clone)]
 pub struct ProjectContext {
     pub known_functions: HashSet<String>,
+    /// Function summaries computed during prescan for inter-procedural analysis.
+    pub function_summaries: HashMap<String, FunctionSummary>,
+    /// Call graph: maps function name to the set of functions it calls.
+    pub call_graph: HashMap<String, HashSet<String>>,
 }
 
 impl ProjectContext {
@@ -20,8 +25,13 @@ impl ProjectContext {
         self.known_functions.contains(name)
     }
 
+    /// Returns the summary for a function, if available.
+    pub fn get_function_summary(&self, name: &str) -> Option<&FunctionSummary> {
+        self.function_summaries.get(name)
+    }
+
     /// Returns `true` if any cross-file data was collected.
     pub fn has_cross_file_data(&self) -> bool {
-        !self.known_functions.is_empty()
+        !self.known_functions.is_empty() || !self.function_summaries.is_empty()
     }
 }
