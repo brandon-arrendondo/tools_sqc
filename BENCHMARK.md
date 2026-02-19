@@ -83,8 +83,9 @@
 | Round 7 | EXP36-C, EXP34-C, ARR37-C | 231,053 | 301,475 | 43.4% | -25,716 |
 | Round 8 | DCL40-C, FLP32-C, ERR33-C | 230,992 | 296,415 | 43.8% | -5,060 |
 | **Round 9** | **CFG, data-flow, inter-procedural analysis** | **230,643** | **296,342** | **43.8%** | **-73** |
+| Round 10 | EXP34-C: `&&` short-circuit guard + stack array fix | TBD | TBD | TBD | ~-1,800 (est.) |
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases).
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Round 10 targets two specific EXP34-C FP patterns identified by diagnostic analysis of CWE476 results.
 
 ---
 
@@ -421,6 +422,24 @@ Comparison compiled from academic papers and published data. Direct Juliet runs 
 
 **Sources:** [ISSTA 2022 (TUM)](https://dl.acm.org/doi/10.1145/3533767.3534380) | [Goseva 2015](https://community.wvu.edu/~kagoseva/Papers/IST-2015.pdf) | [JKU 2014](https://www.se.jku.at/wp-content/uploads/2014/08/2014.Using-the-Juliet-Test-Suite.pdf) | [Semgrep Blog 2025](https://semgrep.dev/blog/2025/security-research-comparing-semgrep-community-edition-and-semgrep-code-for-static-analysis/)
 
+### Published CERT-C Results on Real Codebases
+
+**Conclusion from literature search (2026-02-19):** No published CERT-C violation rates per KLOC on production open-source code exist. This is a genuine gap in the published literature.
+
+| Source | CERT-C Specific | Named Codebase | Notes |
+|--------|:---------------:|:--------------:|-------|
+| [Coverity Scan](https://scan.coverity.com) | No | Yes | Defect density only (curl=0.00, nginx=0.01, sqlite=0.50, openssl=0.21 /KLOC) — uses Coverity's own taxonomy, not CERT-C rules |
+| [TrustInSoft 2022 CERT-C Benchmark](https://trust-in-soft.com/blog/2022/10/27/cert-c-benchmark/) | Yes | No | Synthetic test suite; TrustInSoft 87% vs Tool A 55% vs Tool B 38% TP rate on CERT-C undefined-behavior subset |
+| [SEI SCALe on JasPer (2015)](https://www.sei.cmu.edu/documents/462/2015_019_001_435900.pdf) | Yes | Yes (JasPer image library) | Only publicly named full CERT-C audit on an OSS codebase |
+| [ISSTA 2022 (Lipp et al.)](https://dl.acm.org/doi/10.1145/3533767.3534380) | No (CVE taxonomy) | Yes (OpenSSL, SQLite, FFmpeg, ...) | 9 real OSS projects, CVE-based ground truth — not CERT-C rule-mapped |
+| [NIST SATE IV/V/VI](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.500-326.pdf) | No (CWE/CVE) | Partially | Wireshark and SQLite (SATE VI), bugs injected; not CERT-C mapped |
+| [Nguyen et al. 2019 IEEE](https://ieeexplore.ieee.org/document/8836131) | Yes | No (unnamed industrial) | 87% TP / 13% FP on Project 1; 57% TP / 43% FP on Project 2 |
+
+**Implication for SqC validation**: Direct comparison to published CERT-C results on the same codebase is not possible (no such results exist). Valid comparison strategies:
+1. SqC vs. Cppcheck vs. clang-tidy on same codebase — done for libcrc, curl, mosquitto (see below)
+2. SqC on JasPer with reference to the SEI SCALe 2015 report (only named CERT-C audit)
+3. SqC TP rate vs. TrustInSoft's synthetic CERT-C benchmark as upper-bound reference
+
 ### SqC vs. Cppcheck vs. Clang on a Test File
 
 Small-scale direct comparison (20-line test file with 4 deliberate violations):
@@ -649,11 +668,12 @@ The ~43.8% Juliet TP rate is likely near the ceiling for single-translation-unit
 
 ### Phase 3: Continued FP Reduction
 
-6. **Leverage CFG for EXP34-C** — use reaching definitions to suppress null-ptr flags on paths where a null check dominates the dereference
-7. **Leverage inter-procedural summaries for MEM30-C** — track freed-parameter propagation across calls
-8. **CWE-457 improvement** — DCL02-C contributes 36K FPs in this category; tighten scope or add same-function check
-9. **Add CWE-256 rules** — plaintext password storage patterns (variable names + assignment)
-10. **Add CWE-338 rules** — PRNG quality (`rand()` without seed, `rand()` for security context)
+6. **~~EXP34-C: `&&` short-circuit guard~~** ✅ — `(ptr != NULL) && (ptr->field)` now recognized as safe; fixes Juliet binary_if FPs
+7. **~~EXP34-C: stack array fix~~** ✅ — `int *arr[5]` no longer treated as potentially null; fixes Juliet _66a variant FPs (~858 files affected)
+8. **EXP34-C: inter-procedural null dominance** — use reaching definitions to suppress flags on paths where a null check dominates the dereference; requires path-sensitive CFG analysis (most impactful remaining EXP34-C improvement)
+9. **Leverage inter-procedural summaries for MEM30-C** — track freed-parameter propagation across calls
+10. **CWE-457 improvement** — DCL02-C contributes 36K FPs in this category; tighten scope or add same-function check
+11. **CWE-256 and CWE-338** — Both are Windows-specific (w32) in Juliet; structural FP issue (good() functions use more complex Windows API code). MSC30-C already handles rand(). No clean rule fix available without Windows API semantics.
 
 ### Phase 4: Architecture Evolution
 
