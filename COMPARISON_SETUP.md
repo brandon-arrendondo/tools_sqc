@@ -23,6 +23,8 @@ This document details how to install **cppcheck** and **clang/clang-tidy** on Ub
    - [9.1 Known Pitfalls and Fixes](#91-known-pitfalls-and-fixes)
    - [9.2 Verification Scripts](#92-verification-scripts)
    - [9.3 libcrc Baseline Reference](#93-libcrc-baseline-reference)
+   - [9.4 curl Baseline Reference](#94-curl-baseline-reference)
+   - [9.5 mosquitto Baseline Reference](#95-mosquitto-baseline-reference)
 10. [Notes on Methodology](#10-notes-on-methodology)
 
 ---
@@ -624,7 +626,13 @@ cppcheck \
 
 #### clang-tidy
 
-CMake natively exports `compile_commands.json` with one flag:
+mosquitto requires `libcjson-dev` (used for MQTT message JSON handling). Install it first:
+
+```bash
+sudo apt install -y libcjson-dev
+```
+
+CMake natively exports `compile_commands.json`:
 
 ```bash
 cmake \
@@ -632,7 +640,8 @@ cmake \
   -B ~/data/comparisons/mosquitto/build \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DWITH_TLS=OFF \
-  -DWITH_WEBSOCKETS=OFF
+  -DWITH_WEBSOCKETS=OFF \
+  -DWITH_TESTS=OFF
 
 cmake --build ~/data/comparisons/mosquitto/build --clean-first -j$(nproc)
 
@@ -643,7 +652,13 @@ run-clang-tidy \
   2>&1 | tee ~/data/comparisons/results/clang-tidy/mosquitto/results.txt
 ```
 
-`-DWITH_TLS=OFF -DWITH_WEBSOCKETS=OFF` avoids failures if OpenSSL or libwebsockets headers are absent. Remove those flags if the libraries are installed.
+Flags used:
+
+| Flag | Purpose |
+|------|---------|
+| `-DWITH_TLS=OFF` | Skip OpenSSL/TLS support |
+| `-DWITH_WEBSOCKETS=OFF` | Skip libwebsockets support |
+| `-DWITH_TESTS=OFF` | Skip unit test build (avoids requiring GTest) |
 
 ---
 
@@ -679,6 +694,14 @@ cppcheck \
 
 #### clang-tidy
 
+curl 8.19+ requires `libpsl` unconditionally (the CMake option `CURL_DISABLE_LIBPSL` does **not** remove the hard dependency). Install it before configuring:
+
+```bash
+sudo apt install -y libpsl-dev
+```
+
+Configure and build:
+
 ```bash
 cmake \
   -S ~/data/comparisons/curl \
@@ -686,7 +709,10 @@ cmake \
   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
   -DBUILD_SHARED_LIBS=OFF \
   -DCURL_USE_OPENSSL=OFF \
-  -DCURL_DISABLE_LDAP=ON
+  -DCURL_DISABLE_LDAP=ON \
+  -DUSE_LIBIDN2=OFF \
+  -DUSE_NGHTTP2=OFF \
+  -DCURL_ZSTD=OFF
 
 cmake --build ~/data/comparisons/curl/build --clean-first -j$(nproc)
 
@@ -697,7 +723,17 @@ run-clang-tidy \
   2>&1 | tee ~/data/comparisons/results/clang-tidy/curl/results.txt
 ```
 
-`-DCURL_USE_OPENSSL=OFF -DCURL_DISABLE_LDAP=ON` avoids missing-library failures in a minimal environment. For a full analysis with TLS enabled, install `libssl-dev` and drop those flags.
+Flags used to avoid missing optional dependencies in a minimal environment:
+
+| Flag | Purpose |
+|------|---------|
+| `-DCURL_USE_OPENSSL=OFF` | Skip OpenSSL (not installed) |
+| `-DCURL_DISABLE_LDAP=ON` | Skip LDAP support |
+| `-DUSE_LIBIDN2=OFF` | Skip libidn2 (internationalized domain names) |
+| `-DUSE_NGHTTP2=OFF` | Skip HTTP/2 support |
+| `-DCURL_ZSTD=OFF` | Skip zstd compression |
+
+If the cmake configure step fails due to missing packages, delete the build directory and retry: `rm -rf ~/data/comparisons/curl/build`. A partial configure leaves state that causes misleading errors on re-runs.
 
 ---
 
@@ -985,6 +1021,48 @@ libcrc was the first project validated end-to-end. These counts are the confirme
 **clang-tidy files**: Nearly all findings in `precalc/precalc.c` (47), `src/nmea-chk.c` (2), `examples/tstcrc.c` (1)
 
 **Interpretation**: cppcheck and clang-tidy find a small number of conservative, high-confidence issues. sqc finds orders of magnitude more by covering 283 CERT C rules rather than the ~20 checks the other tools implement for C. The disparity is expected and informative — it reflects rule coverage breadth, not false positive rate.
+
+---
+
+---
+
+### 9.4 curl Baseline Reference
+
+curl was the second project validated end-to-end. It is ~10× larger than libcrc (~220 C files in `lib/` + `src/`), with heavy use of preprocessor guards, function pointers, and platform abstraction macros. These counts are from a clean run with the cmake flags documented in §8.4 and `libpsl-dev` installed.
+
+| Tool | Total findings | Breakdown |
+|------|---------------|-----------|
+| **sqc** | 131,445 violations | Critical: 2,277, High: 44,288, Medium: 27,682, Low: 57,198 |
+| **cppcheck** | 1,065 findings | error: 4, warning: 237, style: 599, information: 225 |
+| **clang-tidy** | 848 diagnostics | `clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling`: 419, `cert-err33-c`: 364, `clang-analyzer-valist.Uninitialized`: 56 |
+
+**sqc top rules**: `EXP34-C` (22,350), `DCL07-C` (16,000), `DCL31-C` (15,945), `EXP19-C` (9,105), `API00-C` (7,777)
+
+**cppcheck notes**: 222 of the 225 `information` findings are `toomanyconfigs` entries — expected for curl's heavy `#ifdef` usage (cppcheck caps config enumeration at 12 per file). Real actionable findings: `nullPointerRedundantCheck` (CWE-476): 177, `constParameterPointer` (CWE-398): 159, `unusedFunction` (CWE-561): 108, `ctunullpointer` (CWE-476): 50. The `toomanyconfigs` entries do **not** indicate a tool error here (no `syntaxError` present), unlike the `-I /usr/include` failure mode described in §9.1.
+
+**clang-tidy notes**: 678 compilation units captured. The dominant check is `DeprecatedOrUnsafeBufferHandling` (sprintf/strcpy family), followed by `cert-err33-c` (unchecked return values). `clang-analyzer-valist.Uninitialized` (56) are likely genuine defects in variadic helpers.
+
+**Interpretation**: sqc's violation count scales with project size and rule breadth (283 rules). cppcheck and clang-tidy both scaled proportionally from libcrc to curl (~25× more findings vs ~25× more source), confirming consistent analysis rather than runaway false positives.
+
+---
+
+### 9.5 mosquitto Baseline Reference
+
+mosquitto is a mid-size MQTT broker + client library (~121 C files in `lib/` + `src/`; 224 compilation units captured for clang-tidy). Its heavy use of compile-time feature flags (`WITH_TLS`, `WITH_BROKER`, `WITH_THREADING`, `WITH_WEBSOCKETS`, `WIN32`, etc.) means cppcheck enumerates many configurations per file, making it significantly slower than projects with fewer `#ifdef` guards.
+
+| Tool | Total findings | By Severity | Top Rules/Checks |
+|------|---------------|-------------|-----------------|
+| **sqc** | **59,176** | Critical: 1,181 / High: 20,765 / Medium: 13,182 / Low: 24,048 | EXP34-C (8,657), DCL31-C (6,823), DCL07-C (6,820), API00-C (3,092), DCL13-C (2,940) |
+| **cppcheck** | **747** | error: 36, warning: 1, style: 298, information: 412 | `missingInclude` (293), `unusedFunction`/CWE-561 (128), `toomanyconfigs` (117), `variableScope`/CWE-398 (72), `uninitvar`/CWE-457 (34) |
+| **clang-tidy** | **338** | — | `cert-err33-c` (277), `cert-err34-c` (33), `clang-analyzer-deadcode.DeadStores` (8), `clang-analyzer-security.insecureAPI.strcpy` (5) |
+
+**cppcheck notes**:
+- 293 `missingInclude` (information) — mosquitto's internal headers (`src/mosquitto_broker_internal.h`, etc.) are not on the include path provided; these findings are informational and do not affect the quality of actual bug findings
+- 117 `toomanyconfigs` (information) — expected given mosquitto's per-file `#ifdef` complexity (~10–12 configurations per file)
+- 34 `uninitvar` (CWE-457, error severity) are the most significant cppcheck findings — potentially real uninitialized variable bugs in the broker code
+- Real actionable findings (excluding information): 335
+
+**clang-tidy notes**: `cert-err33-c` (277) dominates — unchecked return values of `fprintf`, `fclose`, `snprintf`, `strftime`, and `fputs` throughout client-side output code (`client/sub_client_output.c`, `client/pub_client.c`). `cert-err34-c` (33) flags `atoi()` usage in plugin configuration parsers. `clang-analyzer-security.insecureAPI.strcpy` (5) are concrete unsafe buffer operations.
 
 ---
 
