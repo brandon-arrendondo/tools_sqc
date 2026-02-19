@@ -383,10 +383,23 @@ impl Api00C {
                                     source,
                                 );
 
-                            // Check if the if body is an early return/error handling
+                            // Case 1: early-return / early-exit pattern
+                            //   if (!ptr)        { return; }
+                            //   if (ptr == NULL) { return; }
                             if self.is_early_return_pattern(&child, source) {
                                 for param in validated_in_condition {
                                     validated.insert(param);
+                                }
+                            } else {
+                                // Case 2: positive guard pattern
+                                //   if (ptr != NULL) { /* all usage inside */ }
+                                // The parameter is only accessed inside the guarded block,
+                                // so it is safely validated even without an early return.
+                                let condition_text = get_node_text(&condition, source);
+                                for param in validated_in_condition {
+                                    if self.is_positive_null_guard(&condition_text, &param) {
+                                        validated.insert(param);
+                                    }
                                 }
                             }
                         }
@@ -818,6 +831,43 @@ impl Api00C {
             }
         }
         None
+    }
+
+    /// Returns true if the condition text is a positive NULL guard for `param`,
+    /// i.e. the if-block is only entered when the pointer is non-NULL.
+    /// Examples: `ptr != NULL`, `NULL != ptr`, `ptr != 0`, `ptr` (bare truthiness)
+    fn is_positive_null_guard(&self, condition_text: &str, param: &str) -> bool {
+        let patterns: &[&str] = &["!= NULL", "!=NULL", "!= 0", "!=0"];
+        for suffix in patterns {
+            if condition_text.contains(&format!("{} {}", param, suffix))
+                || condition_text.contains(&format!("{}{}", param, suffix))
+            {
+                return true;
+            }
+        }
+        // NULL/0 on the left: NULL != ptr, 0 != ptr
+        let prefixes: &[&str] = &["NULL !=", "NULL!=", "0 !=", "0!="];
+        for prefix in prefixes {
+            if condition_text.contains(&format!("{} {}", prefix, param))
+                || condition_text.contains(&format!("{}{}", prefix, param))
+            {
+                return true;
+            }
+        }
+        // Bare truthiness check: if (ptr) or if (ptr && ...)
+        // but NOT if (!ptr) which is the early-return form already handled above
+        let bare_patterns: &[&str] = &[
+            &format!("({})", param),
+            &format!("({} ", param),
+            &format!("({} &&", param),
+            &format!("({}&& ", param),
+        ];
+        for p in bare_patterns {
+            if condition_text.contains(*p) {
+                return true;
+            }
+        }
+        false
     }
 
     /// Check if a parameter is a debug/logging parameter (e.g., __FILE__, __func__)

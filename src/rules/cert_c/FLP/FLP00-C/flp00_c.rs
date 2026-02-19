@@ -137,47 +137,71 @@ impl Flp00C {
         }
     }
 
-    /// Check if expression looks like it involves floating-point values
+    /// Check if expression looks like it involves floating-point values.
+    ///
+    /// Key constraints to avoid false positives:
+    /// - A bare `.` in expression text also appears in struct member access
+    ///   (`obj.field`), so the decimal-point check is restricted to
+    ///   `number_literal` nodes where it unambiguously means a float literal.
+    /// - Integer division (`int / int`) does NOT produce a float, so the
+    ///   presence of `/` alone is not sufficient.
     fn looks_like_floating_point(&self, node: &Node, source: &str) -> bool {
-        let text = get_node_text(node, source);
-
-        // Check for floating-point literals (contains decimal point or 'f' suffix)
-        if text.contains('.') || text.ends_with('f') || text.ends_with('F') {
-            return true;
-        }
-
-        // Check for floating-point type keywords in the expression
-        if text.contains("float") || text.contains("double") {
-            return true;
-        }
-
-        // Check for common floating-point math functions
-        let fp_functions = [
-            "sqrtf", "powf", "expf", "logf", "sinf", "cosf", "tanf", "fabsf", "fmaxf", "fminf",
-            "sqrt", "pow", "exp", "log", "sin", "cos", "tan", "fabs", "fmax", "fmin",
-        ];
-
-        for func in &fp_functions {
-            if text.contains(func) {
+        // Floating-point literal: only check for `.` inside a number_literal node.
+        // `text.contains('.')` on arbitrary expression text also matches struct
+        // member access (`obj.field`) and is the primary source of false positives.
+        if node.kind() == "number_literal" {
+            let text = get_node_text(node, source);
+            // Decimal point, scientific notation, or explicit float suffix
+            if text.contains('.')
+                || text.ends_with('f')
+                || text.ends_with('F')
+                || text.to_ascii_lowercase().contains('e')
+            {
                 return true;
             }
         }
 
-        // Check if node is a call_expression to a floating-point function
+        // Float/double keyword appearing literally in a cast or type expression.
+        // Only check when the node itself is a type node, not on arbitrary text
+        // (to avoid matching variable names that happen to contain "float").
+        if matches!(
+            node.kind(),
+            "cast_expression" | "type_descriptor" | "primitive_type"
+        ) {
+            let text = get_node_text(node, source);
+            if text.contains("float") || text.contains("double") {
+                return true;
+            }
+        }
+
+        // Call to a known floating-point math function.
+        const FP_FUNCTIONS: &[&str] = &[
+            "sqrtf", "powf", "expf", "logf", "sinf", "cosf", "tanf", "fabsf", "fmaxf", "fminf",
+            "sqrt", "pow", "exp", "log", "sin", "cos", "tan", "fabs", "fmax", "fmin",
+        ];
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
-                if fp_functions.contains(&func_name.as_ref()) {
+                if FP_FUNCTIONS.contains(&func_name.as_ref()) {
                     return true;
                 }
             }
         }
 
-        // Check if it's a division operation (likely to produce floating-point)
-        if node.kind() == "binary_expression" {
-            if let Some(op) = node.child_by_field_name("operator") {
-                if get_node_text(&op, source) == "/" {
-                    return true;
+        // For compound expressions, recurse into operands so that
+        // `a * 2.0f + b` correctly propagates the float signal.
+        // Do NOT recurse into field_expression / subscript_expression nodes
+        // because those just mean the sub-expression has a `.` or `[]` which
+        // doesn't imply floating-point.
+        if matches!(
+            node.kind(),
+            "binary_expression" | "unary_expression" | "parenthesized_expression"
+        ) {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if self.looks_like_floating_point(&child, source) {
+                        return true;
+                    }
                 }
             }
         }
