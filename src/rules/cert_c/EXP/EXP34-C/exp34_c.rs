@@ -364,8 +364,10 @@ impl NullPointerAnalyzer {
                                 }
                             }
                         } else {
-                            // Uninitialized pointer variables are potentially null
-                            if is_pointer_declarator(&declarator) {
+                            // Uninitialized pointer variables (not stack arrays) are potentially null
+                            if is_pointer_declarator(&declarator)
+                                && !declarator_contains_array(&declarator)
+                            {
                                 self.potentially_null_vars.insert(var_name);
                             }
                         }
@@ -374,7 +376,13 @@ impl NullPointerAnalyzer {
                     // Handle simple uninitialized declarations like "int *ptr;"
                     // The declarator might be a direct child of the declaration node
                     let var_name = get_identifier_name(&child, source);
-                    if !var_name.is_empty() && is_pointer_declarator(&child) {
+                    // Don't treat stack arrays (int *arr[5]) as potentially null —
+                    // the array variable itself is stack-allocated and can never be null.
+                    // Only true pointer variables (int *ptr) can be null.
+                    if !var_name.is_empty()
+                        && is_pointer_declarator(&child)
+                        && !declarator_contains_array(&child)
+                    {
                         self.potentially_null_vars.insert(var_name);
                     }
                 }
@@ -756,6 +764,27 @@ impl NullPointerAnalyzer {
         let mut current = node.parent();
 
         while let Some(parent) = current {
+            // Check if we're in the right operand of a && expression whose left
+            // operand null-checks this variable — short-circuit makes the right side safe.
+            // Pattern: (ptr != NULL) && (ptr->field)  →  ptr->field is safe here.
+            if parent.kind() == "binary_expression" {
+                if let Some(operator) = parent.child_by_field_name("operator") {
+                    let op = ast_utils::get_node_text_owned(&operator, source);
+                    if op == "&&" {
+                        if let (Some(left), Some(right)) = (
+                            parent.child_by_field_name("left"),
+                            parent.child_by_field_name("right"),
+                        ) {
+                            if self.node_is_within(&right, node)
+                                && self.analyze_condition_for_safety(&left, var_name, source, false)
+                            {
+                                return true; // Safe: && short-circuit guards this side
+                            }
+                        }
+                    }
+                }
+            }
+
             // Check if we're in a conditional expression (ternary operator)
             if parent.kind() == "conditional_expression" {
                 // Pattern: (condition) ? expr1 : expr2
@@ -1058,6 +1087,22 @@ fn is_deref_function(func_name: &str) -> bool {
             | "memcmp"
             | "free"
     )
+}
+
+/// Check if a declarator contains an array_declarator at any level.
+/// Used to detect stack arrays like `int *arr[5]` — these are never null themselves.
+fn declarator_contains_array(node: &Node) -> bool {
+    if node.kind() == "array_declarator" {
+        return true;
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if declarator_contains_array(&child) {
+                return true;
+            }
+        }
+    }
+    false
 }
 
 /// Check if an expression is a cast to NULL (e.g., (int*)NULL)
