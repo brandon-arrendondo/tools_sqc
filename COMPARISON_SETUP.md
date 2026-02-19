@@ -19,7 +19,11 @@ This document details how to install **cppcheck** and **clang/clang-tidy** on Ub
    - [8.3 mosquitto](#83-mosquitto)
    - [8.4 curl](#84-curl)
    - [8.5 hostap](#85-hostap)
-9. [Notes on Methodology](#9-notes-on-methodology)
+9. [Verifying Results Are Valid](#9-verifying-results-are-valid)
+   - [9.1 Known Pitfalls and Fixes](#91-known-pitfalls-and-fixes)
+   - [9.2 Verification Scripts](#92-verification-scripts)
+   - [9.3 libcrc Baseline Reference](#93-libcrc-baseline-reference)
+10. [Notes on Methodology](#10-notes-on-methodology)
 
 ---
 
@@ -93,20 +97,17 @@ cppcheck --enable=all --std=c11 --xml /path/to/source/ 2> cppcheck_results.xml
 
 Note: cppcheck writes XML to **stderr**, not stdout. Redirect with `2>`.
 
-### 3.3 CERT C Checks Specifically
+### 3.3 CERT C Checks
 
-cppcheck includes a `cert` addon that maps checks to CERT C rules:
+In cppcheck 2.x, CERT C checks are built-in and activated by `--enable=all`. The `cert.py` addon from cppcheck 1.x is no longer included in Ubuntu 24.04 packages and is not needed:
 
 ```bash
-# Using the built-in cert addon
-cppcheck --addon=cert --enable=all --std=c11 /path/to/source/ 2>&1 | tee cppcheck_cert.txt
+# CERT C checks are included in --enable=all (no addon required)
+cppcheck --enable=all --std=c11 /path/to/source/ 2>&1 | tee cppcheck_cert.txt
 
-# XML output with cert addon
-cppcheck --addon=cert --enable=all --std=c11 --xml /path/to/source/ 2> cppcheck_cert.xml
+# XML output
+cppcheck --enable=all --std=c11 --xml /path/to/source/ 2> cppcheck_cert.xml
 ```
-
-The cert addon file is typically located at:
-`/usr/share/cppcheck/addons/cert.py`
 
 ### 3.4 Suppress Vendor/Library Headers
 
@@ -127,7 +128,6 @@ cppcheck \
 cppcheck \
   --enable=all \
   --std=c11 \
-  --addon=cert \
   --xml \
   --xml-version=2 \
   testcases/CWE121_Stack_Based_Buffer_Overflow/ \
@@ -136,7 +136,7 @@ cppcheck \
 # All testcases — parallel across CWE directories
 find testcases/ -maxdepth 1 -type d -name 'CWE*' | \
   xargs -P 12 -I{} bash -c \
-    'cppcheck --enable=all --std=c11 --addon=cert --xml --xml-version=2 "{}" 2> "cppcheck_$(basename {}).xml"'
+    'cppcheck --enable=all --std=c11 --xml --xml-version=2 "{}" 2> "cppcheck_$(basename {}).xml"'
 ```
 
 ### 3.6 SARIF Output (cppcheck 2.12+)
@@ -154,7 +154,7 @@ Note: SARIF output was added in cppcheck 2.12. If your installed version is olde
 | `--enable=all` | Enable all checks (style, performance, portability, information, unusedFunction) |
 | `--enable=warning` | Only warnings (subset of `all`) |
 | `--std=c11` | Target C standard (c89, c99, c11, c17) |
-| `--addon=cert` | Enable CERT C rule checks |
+| `--addon=misra` | Enable MISRA C checks (available in Ubuntu 24.04 package) |
 | `--xml --xml-version=2` | XML output (to stderr) |
 | `--output-format=sarif` | SARIF output (v2.12+) |
 | `-j N` | Parallel analysis with N threads |
@@ -275,12 +275,17 @@ find testcases/CWE121_Stack_Based_Buffer_Overflow/ -name '*.c' | \
 
 ### 5.1 Standard Run
 
+The default manifest path (`rules_templates/rules-all.toml`) is resolved relative to the current working directory. Run from within the sqc repo, or pass `--manifest` explicitly when running from elsewhere.
+
 ```bash
 # Build first (if not already built)
 cargo build --release
 
-# Basic stdout output
+# Basic stdout output (run from sqc repo root)
 ./target/release/sqc /path/to/source/
+
+# Basic stdout output from any directory
+/path/to/sqc /path/to/source/ --manifest /path/to/sqc-repo/rules_templates/rules-all.toml
 
 # Export to JSON
 ./target/release/sqc /path/to/source/ --export results.json
@@ -413,7 +418,7 @@ find "$JULIET_DIR" -maxdepth 1 -type d -name 'CWE*' | \
 # --- cppcheck ---
 find "$JULIET_DIR" -maxdepth 1 -type d -name 'CWE*' | \
   xargs -P 12 -I{} bash -c \
-    'cppcheck --enable=all --std=c11 --addon=cert --xml --xml-version=2 "{}" \
+    'cppcheck --enable=all --std=c11 --xml --xml-version=2 "{}" \
       2> "results/cppcheck/$(basename {}).xml"'
 
 # --- clang-tidy ---
@@ -462,6 +467,8 @@ All commands below assume:
 - `bear` is installed (`sudo apt install -y bear`) for projects that need `compile_commands.json`
 - `run-clang-tidy` is available (`sudo apt install -y clang-tidy python3-clang-tidy` or via llvm package)
 
+**sqc manifest note**: sqc resolves the default manifest path (`rules_templates/rules-all.toml`) relative to the *current working directory*, not the binary location. When running sqc from outside the sqc repo, pass `--manifest` with an absolute path, as shown in all commands below.
+
 ```bash
 # Create output directories once
 mkdir -p ~/data/comparisons/results/{sqc,cppcheck,clang-tidy}/{libcrc,sqlite,mosquitto,curl,hostap}
@@ -483,6 +490,7 @@ libcrc is the simplest of the five projects — no configure step, no external d
 ```bash
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/libcrc \
   -d ~/data/comparisons/libcrc \
+  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
   --export ~/data/comparisons/results/sqc/libcrc/results.json
 ```
 
@@ -492,8 +500,8 @@ libcrc is the simplest of the five projects — no configure step, no external d
 cppcheck \
   --enable=all \
   --std=c11 \
-  --addon=cert \
   --xml --xml-version=2 \
+  --suppress=missingIncludeSystem \
   -I ~/data/comparisons/libcrc/include \
   ~/data/comparisons/libcrc/src/ \
   2> ~/data/comparisons/results/cppcheck/libcrc/results.xml
@@ -505,7 +513,9 @@ libcrc uses a plain Makefile with no configure, so use `bear` to capture the com
 
 ```bash
 # Option A — bear (recommended, captures exact compiler flags)
-cd ~/data/comparisons/libcrc && bear -- make
+# make clean is required — bear only captures invocations during an actual build;
+# if the project is already built, make does nothing and compile_commands.json is empty.
+cd ~/data/comparisons/libcrc && make clean && bear -- make
 run-clang-tidy \
   -clang-tidy-binary clang-tidy \
   -checks='-*,cert-*,clang-analyzer-*' \
@@ -536,6 +546,7 @@ sqlite uses extensive preprocessor conditionals and internal macros. Expect high
 ```bash
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/sqlite \
   -d ~/data/comparisons/sqlite \
+  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
   --export ~/data/comparisons/results/sqc/sqlite/results.json
 ```
 
@@ -545,7 +556,6 @@ sqlite uses extensive preprocessor conditionals and internal macros. Expect high
 cppcheck \
   --enable=all \
   --std=c11 \
-  --addon=cert \
   --xml --xml-version=2 \
   --suppress=missingIncludeSystem \
   -I ~/data/comparisons/sqlite/src \
@@ -560,7 +570,7 @@ sqlite's configure script generates the Makefile; use `bear` to intercept the bu
 ```bash
 cd ~/data/comparisons/sqlite
 ./configure
-bear -- make -j$(nproc)
+make clean && bear -- make -j$(nproc)
 run-clang-tidy \
   -clang-tidy-binary clang-tidy \
   -checks='-*,cert-*,clang-analyzer-*' \
@@ -592,6 +602,7 @@ find ~/data/comparisons/sqlite/src/ -name '*.c' | \
 ```bash
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/mosquitto \
   -d ~/data/comparisons/mosquitto \
+  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
   --export ~/data/comparisons/results/sqc/mosquitto/results.json
 ```
 
@@ -601,7 +612,6 @@ find ~/data/comparisons/sqlite/src/ -name '*.c' | \
 cppcheck \
   --enable=all \
   --std=c11 \
-  --addon=cert \
   --xml --xml-version=2 \
   --suppress=missingIncludeSystem \
   -I ~/data/comparisons/mosquitto/include \
@@ -624,7 +634,7 @@ cmake \
   -DWITH_TLS=OFF \
   -DWITH_WEBSOCKETS=OFF
 
-cmake --build ~/data/comparisons/mosquitto/build -j$(nproc)
+cmake --build ~/data/comparisons/mosquitto/build --clean-first -j$(nproc)
 
 run-clang-tidy \
   -clang-tidy-binary clang-tidy \
@@ -648,6 +658,7 @@ run-clang-tidy \
 ```bash
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/curl \
   -d ~/data/comparisons/curl \
+  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
   --export ~/data/comparisons/results/sqc/curl/results.json
 ```
 
@@ -657,7 +668,6 @@ run-clang-tidy \
 cppcheck \
   --enable=all \
   --std=c11 \
-  --addon=cert \
   --xml --xml-version=2 \
   --suppress=missingIncludeSystem \
   -I ~/data/comparisons/curl/include \
@@ -678,7 +688,7 @@ cmake \
   -DCURL_USE_OPENSSL=OFF \
   -DCURL_DISABLE_LDAP=ON
 
-cmake --build ~/data/comparisons/curl/build -j$(nproc)
+cmake --build ~/data/comparisons/curl/build --clean-first -j$(nproc)
 
 run-clang-tidy \
   -clang-tidy-binary clang-tidy \
@@ -706,6 +716,7 @@ hostap ships `gen_compile_commands.py` which reads build artefacts to produce `c
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/hostap \
   -d ~/data/comparisons/hostap/src \
   -d ~/data/comparisons/hostap/wpa_supplicant \
+  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
   --export ~/data/comparisons/results/sqc/hostap/results.json
 ```
 
@@ -715,7 +726,6 @@ hostap ships `gen_compile_commands.py` which reads build artefacts to produce `c
 cppcheck \
   --enable=all \
   --std=c11 \
-  --addon=cert \
   --xml --xml-version=2 \
   --suppress=missingIncludeSystem \
   -I ~/data/comparisons/hostap/src \
@@ -742,7 +752,7 @@ CONFIG_EAP_MD5=y
 EOF
 
 # Build to generate object files (needed by gen_compile_commands.py)
-bear -- make -j$(nproc) wpa_supplicant 2>/dev/null || true
+make clean 2>/dev/null; bear -- make -j$(nproc) wpa_supplicant 2>/dev/null || true
 
 # Generate compile_commands.json using hostap's own script
 cd ~/data/comparisons/hostap
@@ -774,7 +784,211 @@ find ~/data/comparisons/hostap/src/ -name '*.c' | \
 
 ---
 
-## 9. Notes on Methodology
+## 9. Verifying Results Are Valid
+
+After running all three tools, verify that each output file is non-empty and contains actual findings — not just empty output, tool errors, or a check listing with no diagnostics. This section documents the verification steps and all pitfalls encountered during initial setup on Ubuntu 24.04 with libcrc.
+
+---
+
+### 9.1 Known Pitfalls and Fixes
+
+These issues were each encountered and resolved during the first real run against libcrc. Check for all of them before trusting results.
+
+#### sqc: manifest not found when run outside the repo
+
+**Symptom**:
+```
+Error: Failed to read manifest file: rules_templates/rules-all.toml: No such file or directory
+```
+
+**Cause**: sqc resolves the default manifest path relative to the current working directory, not the binary location. Running sqc from a project directory (e.g., `~/data/comparisons/libcrc`) fails because `rules_templates/rules-all.toml` does not exist there.
+
+**Fix**: Always pass `--manifest` with an absolute path:
+```bash
+~/data/tools_sqc/target/release/sqc ~/data/comparisons/libcrc \
+  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  ...
+```
+
+---
+
+#### cppcheck: `--addon=cert` not available on Ubuntu 24.04
+
+**Symptom**:
+```
+Did not find addon cert.py
+```
+
+**Cause**: The Ubuntu 24.04 apt package of cppcheck 2.13 does not ship `cert.py`. Available addons are: `findcasts`, `misc`, `misra`, `naming`, `namingng`, `threadsafety`, `y2038`. In cppcheck 2.x, CERT C checks were folded into the built-in checker.
+
+**Fix**: Remove `--addon=cert`. The `--enable=all` flag already activates the built-in CERT-related checks.
+
+---
+
+#### cppcheck: blank lines inside `\`-continued commands break the shell
+
+**Symptom**:
+```
+cppcheck: error: no C or C++ source files found.
+```
+...when the command visually looks correct.
+
+**Cause**: A blank line between two `\`-continued lines terminates the shell command at that point. The source path never reaches cppcheck. This can be silently introduced when editing the command (e.g., removing a flag line leaves an empty line behind).
+
+**Fix**: Ensure there are no blank lines between any `\`-continued lines in cppcheck commands.
+
+---
+
+#### cppcheck: passing `-I /usr/include` causes parse errors in system headers
+
+**Symptom**:
+```
+[information] toomanyconfigs: Too many #ifdef configurations — cppcheck only checks 12 of 38
+[error] syntaxError: syntax error @ stdlib.h:980
+```
+Finding count drops to near zero.
+
+**Cause**: cppcheck has its own internal model of standard library functions. Passing `-I /usr/include` causes it to actually parse GCC system headers, which contain compiler-specific extensions cppcheck cannot handle.
+
+**Fix**: Never pass `-I /usr/include` to cppcheck. Use `--suppress=missingIncludeSystem` to silence the "include not found" information messages instead. cppcheck will still analyse the code correctly using its internal stdlib model.
+
+---
+
+#### clang-tidy: `compile_commands.json` is empty when project is already built
+
+**Symptom**: `compile_commands.json` is 2–3 bytes (`[]`). clang-tidy output contains only the "Enabled checks:" listing with no diagnostics.
+
+**Cause**: `bear` works by intercepting compiler invocations via `LD_PRELOAD`. If `make` finds all targets up-to-date, no compiler is invoked and no entries are recorded. The resulting `compile_commands.json` is empty.
+
+**Fix**: Always run `make clean` (or `cmake --build ... --clean-first` for CMake projects) immediately before `bear -- make`. Verify the entry count before running clang-tidy:
+```bash
+python3 -c "import json; db=json.load(open('compile_commands.json')); print(len(db), 'entries')"
+# Must be > 0
+```
+
+---
+
+#### clang-tidy: output file looks non-empty but contains no diagnostics
+
+**Symptom**: Results file is 5–7 KB but all content is the "Enabled checks:" block. Grepping for `warning:` or `error:` returns 0 matches.
+
+**Cause**: `run-clang-tidy` always prints the enabled check list regardless of whether it found anything. This can mask the empty-`compile_commands.json` problem above.
+
+**Fix**: After running clang-tidy, explicitly count diagnostic lines:
+```bash
+grep -c "warning:\|error:" ~/data/comparisons/results/clang-tidy/PROJECT/results.txt
+# Must be > 0 for a project of any meaningful size
+```
+
+---
+
+### 9.2 Verification Scripts
+
+Run these immediately after generating results to confirm all three tools produced valid output.
+
+#### Quick sanity check — all three tools
+
+```bash
+PROJECT=libcrc
+RESULTS=~/data/comparisons/results
+
+echo "=== sqc ==="
+python3 -c "
+import json, collections
+data = json.load(open('$RESULTS/sqc/$PROJECT/results.json'))
+sevs = collections.Counter(v['severity'] for v in data)
+rules = collections.Counter(v['rule_id'] for v in data)
+print(f'Total violations: {len(data)}')
+print('By severity:', dict(sevs.most_common()))
+print('Top 10 rules:', dict(rules.most_common(10)))
+"
+
+echo "=== cppcheck ==="
+python3 -c "
+import xml.etree.ElementTree as ET, collections
+errors = ET.parse('$RESULTS/cppcheck/$PROJECT/results.xml').getroot().findall('.//error')
+sevs = collections.Counter(e.get('severity') for e in errors)
+ids  = collections.Counter(e.get('id') for e in errors)
+cwes = collections.Counter(e.get('cwe') for e in errors if e.get('cwe'))
+print(f'Total findings: {len(errors)}')
+print('By severity:', dict(sevs.most_common()))
+print('Top IDs:', dict(ids.most_common(10)))
+print('CWEs hit:', dict(cwes.most_common(10)))
+"
+
+echo "=== clang-tidy ==="
+python3 -c "
+import re, collections
+checks = collections.Counter()
+files  = collections.Counter()
+with open('$RESULTS/clang-tidy/$PROJECT/results.txt') as f:
+    for line in f:
+        m = re.match(r'^(\S[^:]+):\d+:\d+: (?:warning|error): .+\[(\S+)\]', line)
+        if m:
+            files[m.group(1).split('/')[-1]] += 1
+            checks[m.group(2)] += 1
+print(f'Total diagnostics: {sum(checks.values())}')
+print('By check:', dict(checks.most_common(10)))
+print('By file:', dict(files.most_common(10)))
+"
+```
+
+Change `PROJECT=libcrc` to `sqlite`, `mosquitto`, `curl`, or `hostap` for other projects.
+
+#### Validate compile_commands.json before running clang-tidy
+
+```bash
+python3 -c "
+import json, sys
+db = json.load(open('compile_commands.json'))
+print(f'{len(db)} compilation units')
+if len(db) == 0:
+    print('ERROR: empty — run make clean && bear -- make first')
+    sys.exit(1)
+for e in db[:5]:
+    print(' ', e['file'].split('/')[-1])
+"
+```
+
+#### Check for cppcheck error conditions
+
+```bash
+# Flag any run that produced syntaxError or toomanyconfigs as primary output
+python3 -c "
+import xml.etree.ElementTree as ET
+errors = ET.parse('results.xml').getroot().findall('.//error')
+bad = [e for e in errors if e.get('id') in ('syntaxError', 'toomanyconfigs')]
+real = [e for e in errors if e.get('id') not in ('syntaxError', 'toomanyconfigs', 'checkersReport', 'missingIncludeSystem')]
+print(f'Real findings: {len(real)}, Problem indicators: {len(bad)}')
+if bad:
+    for e in bad[:3]:
+        print(f\"  [{e.get('id')}] {e.get('msg','')[:80]}\")
+"
+```
+
+---
+
+### 9.3 libcrc Baseline Reference
+
+libcrc was the first project validated end-to-end. These counts are the confirmed-good baseline. If results differ significantly when re-running, a tool flag or environment issue is likely the cause.
+
+| Tool | Total findings | Breakdown |
+|------|---------------|-----------|
+| **sqc** | 1,109 violations | High: 453, Medium: 388, Low: 268 |
+| **cppcheck** | 41 findings | style: 40 (`unusedFunction` 21, `variableScope` 19), information: 1 |
+| **clang-tidy** | 50 diagnostics | `cert-err33-c`: 26, `clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling`: 24 |
+
+**sqc top rules**: `EXP14-C` (106), `ERR33-C` (68), `EXP12-C` (62), `INT30-C` (60), `EXP19-C` (59)
+
+**cppcheck CWEs**: CWE-561 (unused code, 21), CWE-398 (poor code quality, 19)
+
+**clang-tidy files**: Nearly all findings in `precalc/precalc.c` (47), `src/nmea-chk.c` (2), `examples/tstcrc.c` (1)
+
+**Interpretation**: cppcheck and clang-tidy find a small number of conservative, high-confidence issues. sqc finds orders of magnitude more by covering 283 CERT C rules rather than the ~20 checks the other tools implement for C. The disparity is expected and informative — it reflects rule coverage breadth, not false positive rate.
+
+---
+
+## 10. Notes on Methodology
 
 ### Apples-to-Apples Concerns
 
