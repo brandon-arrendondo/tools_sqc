@@ -578,7 +578,12 @@ Neither cppcheck nor clang-tidy has equivalents for DCL07-C (include type info i
 
 #### EXP33-C Gap on mosquitto
 
-cppcheck's 34 `uninitvar [error]` findings on mosquitto are the highest-confidence real defects in the entire dataset (error-severity, data-flow proven). sqc's EXP33-C shows 2,247 on curl but is not prominent on mosquitto. This suggests either an analysis gap for mosquitto's specific patterns, or that sqc EXP33-C and cppcheck `uninitvar` are detecting different sub-cases of the same CWE-457 class.
+cppcheck's 34 `uninitvar [error]` findings on mosquitto are the highest-confidence real defects in the entire dataset (error-severity, data-flow proven). sqc's EXP33-C finds 902 on mosquitto and 2,247 on curl — so sqc IS running. The findings are in different files:
+
+- cppcheck `uninitvar`: `messages_mosq.c`, `bridge.c`, `bridge_topic.c` — struct fields not set after allocation (`message->msg.qos`, `cur->msg.mid`, etc.)
+- sqc EXP33-C: `extended_auth.c`, `packet_mosq.c`, `alias_mosq.c` — local scalar variables read before assignment
+
+These are different sub-patterns of CWE-457. sqc EXP33-C detects local scalar uninitialized reads. cppcheck `uninitvar` detects partial struct initialization (allocated struct with some members left unset). The cppcheck pattern requires tracking struct member initialization — a distinct analysis that sqc doesn't currently perform. The 34 cppcheck error-severity findings are genuine defects sqc cannot reach with its current analysis model.
 
 #### What sqc Uniquely Covers
 
