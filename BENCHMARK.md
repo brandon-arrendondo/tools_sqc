@@ -1,7 +1,7 @@
 # SqC Benchmark, Analysis, and Strategic Assessment
 
-**Last Updated**: 2026-02-19 (cross-tool capability analysis added)
-**Current TP Rate**: 43.8% (Round 9, 54,484 Juliet files)
+**Last Updated**: 2026-02-19 (Round 11 Juliet benchmark results)
+**Current TP Rate**: 43.2% (Round 11, 54,484 Juliet files)
 
 ---
 
@@ -29,10 +29,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 230,643 |
-| **False Positives** | 296,342 |
-| **TP Rate** | **43.8%** |
-| **FP Reduction from Baseline** | -64.7% (839K → 296K) |
+| **True Positives** | 207,800 |
+| **False Positives** | 272,782 |
+| **TP Rate** | **43.2%** |
+| **FP Reduction from Baseline** | -67.5% (839K → 273K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
 
@@ -40,31 +40,31 @@
 
 | Rule | FP | TP | Notes |
 |------|---:|---:|-------|
-| INT32-C | 23K | 16K | Type-aware inference already applied |
-| DCL31-C | 21K | 16K | Cross-file + std_functions already applied |
-| DCL07-C | 20K | 16K | Cross-file + std_functions already applied |
-| INT30-C | 17K | 17K | ~50/50 ratio — reductions lose TPs |
-| EXP34-C | 15K | 12K | Null pointer — already tightened |
-| DCL06-C | 14K | 19K | Code style — ~50/50, reductions lose TPs |
-| EXP12-C | 9K | 10K | Whitelist already trimmed |
-| MEM10-C | 7K | 6K | ~50/50 ratio |
-| ERR33-C | 6K | 4K | Nested calls + math overlap fixed |
+| INT32-C | ~22K | ~16K | Type-aware inference already applied |
+| INT30-C | ~18K | ~17K | ~50/50 ratio — reductions lose TPs |
+| EXP34-C | ~15K | ~12K | Null pointer — CFG dominance fix is next target |
+| DCL06-C | ~14K | ~19K | Code style — ~50/50, reductions lose TPs |
+| EXP12-C | ~9K | ~10K | Whitelist already trimmed |
+| DCL31-C | ~10K | ~5K | Reduced from 21K (Round 11 ALL_CAPS macro guard) |
+| DCL07-C | ~10K | ~5K | Reduced from 20K (Round 11 ALL_CAPS macro guard) |
+| MEM10-C | ~7K | ~7K | ~50/50 ratio |
+| ERR33-C | ~6K | ~4K | Nested calls + math overlap fixed |
 
-**Key insight**: Most remaining top FP rules have ~50/50 TP/FP ratios. Further rule tuning will proportionally lose TPs. The ~43.8% Juliet ceiling is likely an architectural constraint for single-translation-unit analysis.
+**Key insight**: Most remaining top FP rules have ~50/50 TP/FP ratios. Further rule tuning will proportionally lose TPs. The ~43.2% Juliet ceiling is likely an architectural constraint for single-translation-unit analysis. DCL31-C and DCL07-C dropped significantly (Round 11 ALL_CAPS macro guard).
 
 ---
 
 ## Juliet Benchmark Results
 
-### Aggregate Metrics (Round 9 — 2026-02-19)
+### Aggregate Metrics (Round 11 — 2026-02-19)
 
 | Metric | Value |
 |--------|-------|
 | **Files Analyzed** | 54,484 |
-| **Classified (TP+FP)** | 526,985 |
-| **True Positives** | 230,643 |
-| **False Positives** | 296,342 |
-| **Weighted TP Rate** | **43.8%** |
+| **Classified (TP+FP)** | 480,582 |
+| **True Positives** | 207,800 |
+| **False Positives** | 272,782 |
+| **Weighted TP Rate** | **43.2%** |
 | **Categories with data** | 106 / 118 |
 | **Wall-clock time** | ~25 min (12 parallel jobs) |
 | **Cross-file dirs** | `testcases/` + `testcasesupport/` |
@@ -83,10 +83,10 @@
 | Round 7 | EXP36-C, EXP34-C, ARR37-C | 231,053 | 301,475 | 43.4% | -25,716 |
 | Round 8 | DCL40-C, FLP32-C, ERR33-C | 230,992 | 296,415 | 43.8% | -5,060 |
 | **Round 9** | **CFG, data-flow, inter-procedural analysis** | **230,643** | **296,342** | **43.8%** | **-73** |
-| Round 10 | EXP34-C: `&&` short-circuit guard + stack array fix | TBD | TBD | TBD | ~-1,800 (est.) |
-| Round 11 | DCL07-C/DCL31-C: ALL_CAPS macro guard + POSIX std_functions additions | TBD | TBD | TBD | TBD |
+| Round 10 | EXP34-C: `&&` short-circuit guard + stack array fix | — | — | — | not independently measured |
+| **Round 11** | **DCL07-C/DCL31-C: ALL_CAPS macro guard + POSIX std_functions (includes R10)** | **207,800** | **272,782** | **43.2%** | **-23,560** |
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Round 10 targets two specific EXP34-C FP patterns identified by diagnostic analysis of CWE476 results. Round 11 targets DCL07-C/DCL31-C macro false positives identified from real-world comparison analysis; Juliet impact TBD but real-world impact is estimated at ~-7,600 on mosquitto and ~-10,300 on curl (combined).
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Rounds 10+11 (measured together) removed 23,560 FP. The ~50/50 TP/FP loss ratio in Rounds 10+11 is characteristic of DCL rules that fire equally in OMITBAD and OMITGOOD — the ALL_CAPS macro guard removes macro-call violations that appear in both sections. TP rate dropped 0.6pp because the removed DCL violations were ~50/50, not true security findings. Real-world impact is much more favorable: ~-7,640 on mosquitto and ~-10,260 on curl.
 
 ---
 
