@@ -84,8 +84,9 @@
 | Round 8 | DCL40-C, FLP32-C, ERR33-C | 230,992 | 296,415 | 43.8% | -5,060 |
 | **Round 9** | **CFG, data-flow, inter-procedural analysis** | **230,643** | **296,342** | **43.8%** | **-73** |
 | Round 10 | EXP34-C: `&&` short-circuit guard + stack array fix | TBD | TBD | TBD | ~-1,800 (est.) |
+| Round 11 | DCL07-C/DCL31-C: ALL_CAPS macro guard + POSIX std_functions additions | TBD | TBD | TBD | TBD |
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Round 10 targets two specific EXP34-C FP patterns identified by diagnostic analysis of CWE476 results.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Round 10 targets two specific EXP34-C FP patterns identified by diagnostic analysis of CWE476 results. Round 11 targets DCL07-C/DCL31-C macro false positives identified from real-world comparison analysis; Juliet impact TBD but real-world impact is estimated at ~-7,600 on mosquitto and ~-10,300 on curl (combined).
 
 ---
 
@@ -553,9 +554,16 @@ Note: cppcheck's `nullPointerRedundantCheck` (177 on curl, warning-level) is a d
 
 sqc finds approximately 5× more unchecked return values than clang-tidy's `cert-err33-c` (1,404 vs 277 on mosquitto). Clang-tidy's check is scoped to a specific list of POSIX/C standard functions. sqc's ERR33-C uses the ~270-function `std_functions` database. The ratio is plausible but warrants review: functions like `printf` to stdout and `fclose` are CERT-flaggable but the caller rarely has a recovery path, making these low-value findings in practice.
 
-#### ERR34-C Gap: Unsafe Numeric Conversion
+#### ERR34-C: No Coverage Gap
 
-clang-tidy's `cert-err34-c` fires on `atoi`, `atol`, `atof`, and `atoll` — functions with no error-detection mechanism. On mosquitto it finds 33 instances; on curl, 6. sqc's ERR34-C does not appear in the top 15 rules on either project, suggesting near-zero coverage of this bug class. These are genuine reliability issues (silent wraparound/truncation on invalid input).
+clang-tidy's `cert-err34-c` fires on `atoi`, `atol`, `atof`, and `atoll`. sqc's ERR34-C is implemented and also covers the `scanf` family. sqc's ERR34-C finds **more** than clang-tidy on both projects:
+
+| Project | sqc ERR34-C | clang-tidy cert-err34-c |
+|---------|------------|------------------------|
+| mosquitto | 126 | 33 |
+| curl | 28 | 6 |
+
+sqc's higher count reflects its broader function coverage (includes `sscanf`, `fscanf`, `scanf`). ERR34-C is not in sqc's top 15 rules by volume on either project because it is a focused, low-volume check — which is the correct behavior for this rule.
 
 #### DCL Rule Volume: Signal Dilution
 
@@ -585,14 +593,15 @@ Despite the above concerns, sqc's coverage breadth is genuine — clang-tidy fir
 
 #### Improvement Priorities (from Real-World Data)
 
-| Priority | Issue | Evidence | Likely Fix |
-|----------|-------|----------|------------|
-| **P1** | EXP34-C FP rate | 4,300:1 ratio vs cppcheck confirmed null errors | CFG dominance: suppress when null check dominates dereference on all paths |
-| **P1** | DCL07-C / DCL31-C volume | 23–24% of all sqc output; no competitor equivalent | Scope to declarations lacking explicit type info (not already-typed definitions) |
-| **P2** | ERR34-C gap | clang-tidy finds 33/6 atoi usages; sqc ~0 | Implement/verify ERR34-C fires on `atoi`, `atol`, `atof`, `atoll` |
-| **P2** | EXP33-C on mosquitto | 34 cppcheck error-severity uninitvar not matched | Cross-check EXP33-C analysis against cppcheck's uninitvar trigger conditions |
-| **P3** | ERR33-C ratio | 5× over clang-tidy; review low-value functions | Exclude functions with no practical error-recovery path (printf to stdout, etc.) |
-| **P3** | const-correctness gap | cppcheck finds 266 const-param/variable findings on curl | Consider const-parameter rules if CERT C has applicable guidance |
+| Priority | Issue | Evidence | Status |
+|----------|-------|----------|--------|
+| **P1** | EXP34-C FP rate | 4,300:1 ratio vs cppcheck confirmed null errors | Pending: CFG dominance analysis (Round 11 target) |
+| **P1** | DCL07-C / DCL31-C macro FPs | ALL_CAPS macro calls flagged as undeclared functions; ~48% of function-call findings | **Fixed (Round 11)**: `is_macro_like_name()` guard added to both rules |
+| **P1** | DCL07-C / DCL31-C POSIX gaps | `strcasecmp`, `strdup`, `strtok_r` missing from std_functions | **Fixed (Round 11)**: Added to std_functions.rs |
+| **P2** | ERR34-C gap | N/A — sqc finds MORE than clang-tidy (126 vs 33 on mosquitto, 28 vs 6 on curl) | **Closed**: No gap exists |
+| **P2** | EXP33-C on mosquitto | 34 cppcheck error-severity uninitvar not matched by sqc | Pending: investigate trigger conditions |
+| **P3** | ERR33-C ratio | 5× over clang-tidy; review low-value functions | Pending: exclude no-recovery-path functions |
+| **P3** | const-correctness gap | cppcheck finds 266 const-param/variable findings on curl | Pending: assess CERT C applicability |
 
 ---
 
