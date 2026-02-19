@@ -98,16 +98,16 @@ impl Exp15C {
         statement_type: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        // Get the condition node (exists for if/while/for statements)
-        if let Some(condition) = node.child_by_field_name("condition") {
-            let condition_end_line = condition.end_position().row;
-
-            // Check if there's a semicolon on the same line after the condition
-            if self.has_semicolon_on_same_line(node, condition_end_line, source) {
+        // Check if the body of the control statement is an empty statement (just ";").
+        // This is the correct signal for EXP15-C — NOT searching for any semicolon on
+        // the condition line, which produces false positives for `for` statements because
+        // tree-sitter exposes the two clause-separator semicolons as direct children of
+        // the for_statement node on the same line as the condition.
+        if let Some(body) = node.child_by_field_name("body") {
+            let is_empty_body = self.is_empty_statement(&body, source);
+            if is_empty_body {
                 let start_point = node.start_position();
                 let statement_text = get_node_text(node, source);
-
-                // Get just the first line for clearer error message
                 let first_line = statement_text.lines().next().unwrap_or(statement_text);
 
                 violations.push(RuleViolation {
@@ -130,37 +130,15 @@ impl Exp15C {
         }
     }
 
-    /// Check if there's a semicolon on the same line as the condition ends
-    fn has_semicolon_on_same_line(
-        &self,
-        statement_node: &Node,
-        condition_end_line: usize,
-        source: &str,
-    ) -> bool {
-        // Walk through all children of the statement to find a semicolon
-        for i in 0..statement_node.child_count() {
-            if let Some(child) = statement_node.child(i) {
-                // Check if this is a semicolon
-                if child.kind() == ";" {
-                    let semicolon_line = child.start_position().row;
-                    if semicolon_line == condition_end_line {
-                        return true;
-                    }
-                }
-
-                // Also check for expression_statement which might contain the semicolon
-                if child.kind() == "expression_statement" {
-                    let child_line = child.start_position().row;
-                    if child_line == condition_end_line {
-                        // Check if this expression_statement is empty (just a semicolon)
-                        let child_text = get_node_text(&child, source);
-                        if child_text.trim() == ";" {
-                            return true;
-                        }
-                    }
-                }
-            }
+    /// Returns true if `node` represents an empty C statement (bare ";").
+    ///
+    /// Tree-sitter-c represents `for (...);` with a body whose kind is either
+    /// `";"` directly or an `expression_statement` whose full text is just ";".
+    fn is_empty_statement(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            ";" => true,
+            "expression_statement" => get_node_text(node, source).trim() == ";",
+            _ => false,
         }
-        false
     }
 }

@@ -630,9 +630,13 @@ impl Con34C {
 
         // Check the source text before this compound statement for #pragma omp parallel
         if start_byte > 0 {
-            // Look back up to 200 characters for the pragma
+            // Look back up to 200 bytes for the pragma; snap to char boundary
             let start_search = if start_byte > 200 {
-                start_byte - 200
+                let mut idx = start_byte - 200;
+                while !source.is_char_boundary(idx) {
+                    idx += 1;
+                }
+                idx
             } else {
                 0
             };
