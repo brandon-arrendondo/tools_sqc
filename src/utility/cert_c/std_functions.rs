@@ -31,6 +31,11 @@ pub fn is_known_standard_function(name: &str) -> bool {
         | "strtok" | "strlen" | "strerror" | "strcoll" | "strxfrm" | "strpbrk" | "strspn"
         | "strcspn" => true,
 
+        // POSIX string extensions (string.h / strings.h under _POSIX_C_SOURCE)
+        "strdup" | "strndup" | "stpcpy" | "stpncpy"
+        | "strcasecmp" | "strncasecmp"
+        | "strtok_r" | "strerror_l" => true,
+
         // math.h
         "acos" | "asin" | "atan" | "atan2" | "cos" | "sin" | "tan" | "acosh" | "asinh"
         | "atanh" | "cosh" | "sinh" | "tanh" | "exp" | "exp2" | "expm1" | "frexp" | "ldexp"
