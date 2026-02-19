@@ -67,7 +67,7 @@ Round 9 added CFG construction, reaching definitions, and inter-procedural funct
 | 123 | Write-What-Where Condition | 68.2% |
 | 15 | External Control of System/Config | 67.0% |
 
-18 categories achieve >50% TP rate. See [JULIET_BENCHMARK_SUMMARY.md](JULIET_BENCHMARK_SUMMARY.md) for full details, methodology, and per-round fix descriptions.
+18 categories achieve >50% TP rate. See [BENCHMARK.md](BENCHMARK.md) for full details, methodology, per-round fix descriptions, competitor comparison, and strategic roadmap.
 
 ### How SqC Compares
 
@@ -107,6 +107,35 @@ cargo build --release
 
 ## Usage
 
+### Command Reference
+
+```
+sqc [OPTIONS] [PATH]
+
+Arguments:
+  [PATH]  Path to the file, directory, or git repository to analyze [default: .]
+
+Options:
+  -m, --manifest <FILE>            Path to the rules manifest file
+                                   [default: rules_templates/rules-all.toml]
+  -i, --interactive                Run in interactive terminal UI mode
+  -e, --export <FILE>              Export violations to file (format by extension:
+                                   .csv, .xlsx, .json, .sarif, .sarif.json)
+      --generate-suppression <FILE:LINE:RULE>
+                                   Generate suppression entry for a specific violation
+  -d, --directories <DIR>          Additional directories to pre-scan for function
+                                   definitions (repeatable; enables cross-file context)
+      --fail-on-violation          Exit with code 1 if any violations are found
+      --fail-on-severity <LEVEL>   Exit with code 1 if any violation meets or exceeds
+                                   this severity [Low, Medium, High, Critical]
+      --min-severity <LEVEL>       Only report violations at or above this severity
+                                   [Low, Medium, High, Critical]
+      --rules <RULE1,RULE2,...>    Only report violations from these rules (comma-separated)
+      --diff                       Only analyze modified/new C files (requires git repo)
+  -h, --help                       Print help
+  -V, --version                    Print version
+```
+
 ### Interactive Mode
 
 ```bash
@@ -118,12 +147,15 @@ cargo build --release
 
 # Use custom rules manifest
 ./target/release/sqc --manifest custom-rules.toml --interactive
+
+# Interactive with cross-file context
+./target/release/sqc /path/to/repo -d /path/to/repo --interactive
 ```
 
 ### Command Line Mode
 
 ```bash
-# Basic analysis (non-interactive)
+# Basic analysis — prints violations to stdout
 sqc /path/to/repo
 
 # With custom manifest
@@ -136,10 +168,10 @@ sqc /path/to/repo --export violations.json
 sqc /path/to/repo --export violations.sarif       # SARIF 2.1.0
 sqc /path/to/repo --export violations.sarif.json   # SARIF (alternate ext)
 
-# Cross-file analysis (reduces false positives)
+# Cross-file analysis (pre-scans directories for function definitions)
 sqc /path/to/repo -d /path/to/repo -d /path/to/shared/headers
 
-# Generate suppression comment for a specific violation
+# Generate suppression entry for a specific violation
 sqc --generate-suppression src/main.c:42:ARR30-C
 ```
 
@@ -170,7 +202,7 @@ sqc /path/to/repo --diff --min-severity High --fail-on-severity High --export re
 - `1` — Violations found (when `--fail-on-violation` or `--fail-on-severity` is set)
 - `2` — Analysis error (invalid path, bad manifest, etc.)
 
-#### Example Workflows
+#### Example CI Workflows
 
 Ready-to-use CI pipeline configurations are included in the repository:
 
@@ -181,26 +213,19 @@ Both workflows use `--fail-on-severity High` to gate the pipeline on high-severi
 
 ## Configuration
 
-### Quick Start with Rule Templates
+### Manifest File
 
-Use the provided rule templates for easy configuration:
+The manifest TOML file controls which rules are active and their severity. The default manifest (`rules_templates/rules-all.toml`) enables all 283 rules.
 
 ```bash
-# Use all rules (complete rule set)
-sqc --config rules_templates/rules-all.toml /path/to/code
+# Use default (all rules enabled)
+sqc /path/to/code
 
-# Test individual rules
-sqc --config rules_templates/MEM33-C.toml /path/to/code
-sqc --config rules_templates/ARR30-C.toml /path/to/code
-
-# Create custom rule sets
-cat rules_templates/MEM*.toml > memory_rules.toml
-sqc --config memory_rules.toml /path/to/code
+# Use a custom manifest
+sqc --manifest my-rules.toml /path/to/code
 ```
 
-### Custom Configuration
-
-Create a custom `sqc-rules.toml` file to configure which CERT C rules to apply:
+### Custom Manifest Format
 
 ```toml
 [metadata]
@@ -226,68 +251,82 @@ cert_id = "STR31-C"
 
 ## Supported CERT C Rules
 
-Currently implemented 15 CERT C rules:
+283 rules implemented across 17 CERT C categories:
 
-### Array Rules (ARR)
-- **ARR30-C**: Do not form or use out-of-bounds pointers or array subscripts
-- **ARR32-C**: Ensure size arguments for variable-length arrays are in a valid range
-- **ARR36-C**: Do not subtract or compare two pointers that do not refer to the same array
-- **ARR37-C**: Do not add or subtract an integer to a pointer to a non-array object
-- **ARR38-C**: Guarantee that library functions do not form invalid pointers
-- **ARR39-C**: Do not add or subtract a scaled integer to a pointer
+| Category | Count | Rules |
+|----------|------:|-------|
+| **API** | 9 | API00-C, API01-C, API02-C, API03-C, API04-C, API05-C, API07-C, API09-C, API10-C |
+| **ARR** | 9 | ARR00-C, ARR01-C, ARR02-C, ARR30-C, ARR32-C, ARR36-C, ARR37-C, ARR38-C, ARR39-C |
+| **CON** | 23 | CON01–CON09-C, CON30–CON41-C, CON43-C, CON50-C |
+| **DCL** | 31 | DCL00–DCL23-C, DCL30-C, DCL31-C, DCL36–DCL41-C |
+| **ENV** | 8 | ENV01-C, ENV02-C, ENV03-C, ENV30–ENV34-C |
+| **ERR** | 11 | ERR00-C, ERR01-C, ERR02-C, ERR04-C, ERR05-C, ERR06-C, ERR07-C, ERR30-C, ERR32-C, ERR33-C, ERR34-C |
+| **EXP** | 31 | EXP00–EXP47-C (selected) |
+| **FIO** | 35 | FIO01–FIO51-C (selected) |
+| **FLP** | 13 | FLP00–FLP37-C (selected) |
+| **INT** | 23 | INT00–INT36-C (selected) |
+| **MEM** | 17 | MEM00–MEM36-C (selected) |
+| **MSC** | 8 | MSC30-C, MSC32-C, MSC33-C, MSC37–MSC41-C |
+| **POS** | 20 | POS01–POS54-C (selected) |
+| **PRE** | 16 | PRE00–PRE13-C, PRE30-C, PRE31-C, PRE32-C |
+| **SIG** | 7 | SIG00-C, SIG01-C, SIG02-C, SIG30-C, SIG31-C, SIG34-C, SIG35-C |
+| **STR** | 16 | STR00–STR38-C (selected) |
+| **WIN** | 6 | WIN00–WIN04-C, WIN30-C |
 
-### Declaration Rules (DCL)
-- **DCL00-C**: Const-qualify immutable objects
-
-### Expression Rules (EXP)
-- **EXP33-C**: Do not read uninitialized memory
-
-### Integer Rules (INT)
-- **INT30-C**: Ensure that unsigned integer operations do not wrap
-
-### Memory Rules (MEM)
-- **MEM30-C**: Do not access freed memory
-
-### Preprocessor Rules (PRE)
-- **PRE30-C**: Do not create a universal character name through concatenation
-- **PRE31-C**: Avoid side effects in arguments to unsafe macros
-- **PRE32-C**: Do not use preprocessor directives in invocations of function-like macros
-
-### String Rules (STR)
-- **STR31-C**: Guarantee that storage for strings has sufficient space for character data and the null terminator
-
-### Rule Templates
-
-All supported rules are available as individual template files in the `rules_templates/` directory:
-- **Individual rule files**: Each rule has its own `.toml` file (e.g., `MEM33-C.toml`, `ARR30-C.toml`)
-- **Complete rule set**: `rules-all.toml` contains all rules in a single file
-- **Easy testing**: Test individual rules or create custom rule combinations
-- **Documentation**: See `rules_templates/README.md` for detailed usage instructions
-
-Additional rules can be easily added by implementing the `CertRule` trait in the `src/rules/cert_c/` directory.
+For the full list, see the rule source files in `src/rules/cert_c/` or the complete manifest at `rules_templates/rules-all.toml`.
 
 ## Interactive UI Controls
 
-### Navigation
-- `↑/↓` or `k/j` - Navigate violation list
-- `Page Up/Page Down` - Navigate by page
-- `Home/End` - Jump to first/last violation
-- `Enter` - View detailed violation information
+The interactive TUI (`--interactive`) has two tabs: **Violations** and **Configuration**.
 
-### Actions
-- `s` - Scan repository for violations
-- `e` - Export violations to CSV
-- `E` - Export violations to Excel (XLSX)
-- `x` - Suppress selected violation
-- `X` - Generate suppression file for all violations
-- `h` - Toggle hidden items (show/hide suppressed violations and clean files)
-- `f` - Toggle file filter
-- `r` - Toggle rule filter
-- `q` - Quit application
+### Navigation (both tabs)
+| Key | Action |
+|-----|--------|
+| `↑` / `↓` | Move up/down one item |
+| `Page Up` / `Page Down` | Move up/down by 10 items |
+| `←` / `→` | Collapse / expand group |
+| `q` / `Esc` | Quit |
 
-### Views
-- `Tab` - Switch between violations list and details view
-- `1-3` - Switch between different panel views
+### Tab Switching
+| Key | Action |
+|-----|--------|
+| `v` | Switch to Violations tab |
+| `c` | Switch to Configuration tab |
+| `Tab` | Toggle focus between violations list and file preview panel |
+
+### Violations Tab — Selection
+| Key | Action |
+|-----|--------|
+| `Space` | Toggle checkbox on violation; expand/collapse group header |
+| `a` | Select all violations |
+| `Shift+A` | Select all violations in current group (grouped modes only) |
+| `n` | Deselect all violations |
+| `Shift+N` | Deselect all violations in current group (grouped modes only) |
+
+### Violations Tab — Actions
+| Key | Action |
+|-----|--------|
+| `s` | Scan repository for violations |
+| `i` | Suppress checked violations (writes to `.sqc-suppress.toml`) |
+| `e` | Export checked violations to file (prompts for path; CSV format) |
+| `h` | Toggle visibility of suppressed violations and clean files |
+| `p` | Toggle file preview panel |
+
+### Violations Tab — Sorting / Grouping
+| Key | Action |
+|-----|--------|
+| `1` | Default sort order |
+| `2` | Group / sort by violation ID (CERT rule) |
+| `3` | Group / sort by file path |
+| `4` | Group / sort by filename |
+| `r` | Reverse sort direction |
+
+### Configuration Tab
+| Key | Action |
+|-----|--------|
+| `Space` | Toggle rule enabled/disabled |
+| `e` | Save configuration to file (prompts for path) |
+| `←` / `→` | Collapse / expand rule category group |
 
 ## Project Structure
 
@@ -311,16 +350,27 @@ src/
 │   └── mod.rs       # TOML manifest parsing and validation
 ├── parser/          # C code parsing
 │   └── mod.rs       # Tree-sitter C parser integration
+├── progress.rs      # CLI progress reporting
 ├── rules/           # CERT C rule implementations
 │   ├── mod.rs       # Rule trait and registry
-│   └── cert_c/      # Individual CERT C rule modules
-│       ├── arr30_c.rs, arr32_c.rs, ... # Array rules
-│       ├── dcl00_c.rs                  # Declaration rules
-│       ├── exp33_c.rs                  # Expression rules
-│       ├── int30_c.rs                  # Integer rules
-│       ├── mem30_c.rs                  # Memory rules
-│       ├── pre30_c.rs, pre31_c.rs, ... # Preprocessor rules
-│       └── str31_c.rs                  # String rules
+│   └── cert_c/      # Individual CERT C rule modules (17 categories)
+│       ├── API/     # API rules (9 rules)
+│       ├── ARR/     # Array rules (9 rules)
+│       ├── CON/     # Concurrency rules (23 rules)
+│       ├── DCL/     # Declaration rules (31 rules)
+│       ├── ENV/     # Environment rules (8 rules)
+│       ├── ERR/     # Error handling rules (11 rules)
+│       ├── EXP/     # Expression rules (31 rules)
+│       ├── FIO/     # I/O rules (35 rules)
+│       ├── FLP/     # Floating point rules (13 rules)
+│       ├── INT/     # Integer rules (23 rules)
+│       ├── MEM/     # Memory rules (17 rules)
+│       ├── MSC/     # Miscellaneous rules (8 rules)
+│       ├── POS/     # POSIX rules (20 rules)
+│       ├── PRE/     # Preprocessor rules (16 rules)
+│       ├── SIG/     # Signal rules (7 rules)
+│       ├── STR/     # String rules (16 rules)
+│       └── WIN/     # Windows rules (6 rules)
 ├── ui/              # Terminal user interface
 │   └── mod.rs       # Ratatui-based interactive UI
 └── utility/         # Helper functions
@@ -329,16 +379,15 @@ src/
 
 ## Adding New Rules
 
-1. Create a new file in `src/rules/` (e.g., `mem30_c.rs`)
+1. Create a directory and implementation file in `src/rules/cert_c/CATEGORY/RULE-ID/` (e.g., `src/rules/cert_c/MEM/MEM30-C/mem30_c.rs`)
 2. Implement the `CertRule` trait
-3. Register the rule in `src/rules/mod.rs`
-4. Add configuration to your manifest file
+3. Register the rule in `src/rules/cert_c/mod.rs`
+4. Add the rule entry to `rules_templates/rules-all.toml`
 
 Example rule implementation:
 
 ```rust
-use super::{CertRule, RuleViolation};
-use tree_sitter::Node;
+use crate::prelude::*;
 
 pub struct Mem30C;
 
@@ -351,7 +400,7 @@ impl CertRule for Mem30C {
         "Do not access freed memory"
     }
 
-    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+    fn check(&self, node: &Node, source: &str, _context: &ProjectContext) -> Vec<RuleViolation> {
         // Implementation here
         Vec::new()
     }
@@ -388,14 +437,14 @@ impl CertRule for Mem30C {
 
 ## Suppression System
 
-SqC includes a sophisticated suppression system to handle false positives:
+SqC includes a suppression system to handle false positives:
 
 ### Creating Suppressions
 ```bash
-# Generate suppression file for all current violations
-./target/release/sqc --generate-suppression
+# Generate suppression entry for a specific violation (file:line:rule)
+./target/release/sqc --generate-suppression src/main.c:42:ARR30-C
 
-# Or suppress individual violations in the interactive UI with 'x'
+# Or in interactive mode: check violations with Space, then press 'i' to suppress
 ```
 
 ### Suppression File Format
@@ -413,11 +462,11 @@ reason = "False positive: bounds check performed earlier"
 
 Contributions are welcome! To add a new CERT C rule:
 
-1. Create a new file in `src/rules/cert_c/` (e.g., `new_rule.rs`)
+1. Create `src/rules/cert_c/CATEGORY/RULE-ID/rule_id_c.rs` with the rule implementation
 2. Implement the `CertRule` trait
 3. Register the rule in `src/rules/cert_c/mod.rs`
-4. Add tests for your rule
-5. Update the manifest template with the new rule
+4. Add test cases as `.c` files in `tests/`
+5. Add the rule entry to `rules_templates/rules-all.toml`
 
 ## License
 
