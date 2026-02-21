@@ -392,15 +392,40 @@ impl Str31C {
 
     /// Check if strcat is safe based on buffer analysis
     fn check_strcat_safety(&self, arguments: &Node, source: &str, root: &Node) -> bool {
-        // Extract destination argument
+        // Extract destination and source arguments
         let mut dest_name = None;
+        let mut src_arg_kind = "";
+        let mut src_arg_text = "";
+        let mut arg_index = 0;
 
         for i in 0..arguments.child_count() {
             if let Some(arg) = arguments.child(i) {
-                if arg.kind() == "identifier" {
-                    dest_name = Some(&source[arg.start_byte()..arg.end_byte()]);
-                    break;
+                // Skip punctuation
+                if matches!(arg.kind(), "," | "(" | ")") {
+                    continue;
                 }
+                if arg_index == 0 && arg.kind() == "identifier" {
+                    dest_name = Some(&source[arg.start_byte()..arg.end_byte()]);
+                } else if arg_index == 1 {
+                    src_arg_kind = arg.kind();
+                    src_arg_text = &source[arg.start_byte()..arg.end_byte()];
+                }
+                arg_index += 1;
+            }
+        }
+
+        // If the source argument is a very short string literal (≤ 3 chars), it is
+        // extremely unlikely to cause overflow on its own — these are typically path
+        // separators ("/"), glob patterns ("*.*"), or similar 1–3 character constants.
+        // We can't track cumulative concatenation length without data-flow analysis,
+        // so we only suppress for the shortest class to avoid FPs like `strcat(data, "*.*")`.
+        if src_arg_kind == "string_literal" {
+            // Strip quotes and check literal length (content between the quotes)
+            let literal_content = src_arg_text
+                .trim_start_matches('"')
+                .trim_end_matches('"');
+            if literal_content.len() <= 3 {
+                return true; // Safe: very short separator/glob literal
             }
         }
 
