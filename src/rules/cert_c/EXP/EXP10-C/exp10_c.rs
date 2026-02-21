@@ -62,7 +62,7 @@ impl Exp10C {
     ) {
         // Check binary expressions for multiple function calls
         if node.kind() == "binary_expression" {
-            let call_count = self.count_function_calls(node);
+            let call_count = self.count_function_calls(node, source);
             if call_count >= 2 {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
@@ -87,7 +87,7 @@ impl Exp10C {
         // Check function call expressions that themselves contain multiple function calls
         if node.kind() == "call_expression" {
             if let Some(args) = node.child_by_field_name("arguments") {
-                let call_count = self.count_function_calls(&args);
+                let call_count = self.count_function_calls(&args, source);
                 if call_count >= 2 {
                     let node_text = get_node_text(node, source);
                     // Only flag if this looks like the complex pattern with array subscript
@@ -116,7 +116,7 @@ impl Exp10C {
 
         // Also check for complex pointer subscript patterns
         if node.kind() == "subscript_expression" {
-            let total_calls = self.count_function_calls(node);
+            let total_calls = self.count_function_calls(node, source);
             if total_calls >= 2 {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
@@ -145,20 +145,69 @@ impl Exp10C {
         }
     }
 
-    /// Count the number of function calls in a subtree
-    fn count_function_calls(&self, node: &Node) -> usize {
+    /// Count the number of non-pure function calls in a subtree.
+    /// Pure functions (abs, sqrt, strlen, etc.) have no side effects so their evaluation
+    /// order doesn't matter — counting them creates false positives on safe patterns like
+    /// `if (abs(data) <= sqrt(CHAR_MAX))`.
+    fn count_function_calls(&self, node: &Node, source: &str) -> usize {
         let mut count = 0;
 
         if node.kind() == "call_expression" {
-            count += 1;
+            // Check if this is a known pure function — if so, skip it
+            let is_pure = node
+                .child_by_field_name("function")
+                .map(|func| self.is_pure_function(get_node_text(&func, source)))
+                .unwrap_or(false);
+            if !is_pure {
+                count += 1;
+            }
         }
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                count += self.count_function_calls(&child);
+                count += self.count_function_calls(&child, source);
             }
         }
 
         count
+    }
+
+    /// Check if a function is known to be pure (no side effects).
+    /// Pure functions do not need sequencing — calling them in any order
+    /// produces the same result without affecting shared state.
+    fn is_pure_function(&self, name: &str) -> bool {
+        matches!(
+            name,
+            // Math functions (C standard)
+            "abs" | "fabs" | "fabsf" | "fabsl" | "labs" | "llabs"
+            | "sqrt" | "sqrtf" | "sqrtl"
+            | "sin" | "sinf" | "sinl"
+            | "cos" | "cosf" | "cosl"
+            | "tan" | "tanf" | "tanl"
+            | "asin" | "acos" | "atan" | "atan2"
+            | "ceil" | "ceilf" | "ceill"
+            | "floor" | "floorf" | "floorl"
+            | "round" | "roundf" | "roundl"
+            | "fmod" | "fmodf" | "fmodl"
+            | "pow" | "powf" | "powl"
+            | "exp" | "expf" | "expl"
+            | "log" | "logf" | "logl"
+            | "log2" | "log10"
+            | "hypot" | "hypotf"
+            | "cbrt" | "cbrtf"
+            | "trunc" | "truncf" | "truncl"
+            // String query functions (read-only)
+            | "strlen" | "wcslen" | "strnlen"
+            | "strcmp" | "strncmp" | "strcasecmp" | "strncasecmp"
+            | "memcmp"
+            | "strchr" | "strrchr" | "strstr"
+            // Type testing
+            | "isdigit" | "isalpha" | "isalnum" | "isspace" | "isupper" | "islower"
+            | "isxdigit" | "isprint" | "ispunct" | "iscntrl"
+            // Conversion (read-only)
+            | "toupper" | "tolower"
+            | "atoi" | "atol" | "atoll" | "atof"
+            | "strtol" | "strtoul" | "strtoll" | "strtoull" | "strtod"
+        )
     }
 }

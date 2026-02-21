@@ -76,6 +76,8 @@ struct NullPointerAnalyzer {
     null_check_positions: std::collections::HashMap<String, usize>,
     // Track byte positions where variables are reassigned to nullable values AFTER a null check
     nullable_reassignments: Vec<(String, usize)>,
+    // Track variables known to be declared as pointer types (gates null-taint)
+    declared_pointer_vars: HashSet<String>,
 }
 
 impl NullPointerAnalyzer {
@@ -85,6 +87,7 @@ impl NullPointerAnalyzer {
             null_checked_vars: HashSet::new(),
             null_check_positions: std::collections::HashMap::new(),
             nullable_reassignments: Vec::new(),
+            declared_pointer_vars: HashSet::new(),
         }
     }
 
@@ -135,6 +138,7 @@ impl NullPointerAnalyzer {
                                     || param_name.contains("callback")
                                 // Function pointer typedefs can't be detected via AST
                                 {
+                                    self.declared_pointer_vars.insert(param_name.clone());
                                     self.potentially_null_vars.insert(param_name);
                                 }
                             }
@@ -270,10 +274,23 @@ impl NullPointerAnalyzer {
 
                     let assignment_byte = node.start_byte();
 
-                    // Check if assigning NULL, 0, cast to NULL, or function that can return null
-                    if is_null_value(&right_text)
-                        || is_nullable_function_call(&right, source, summaries)
-                        || is_cast_to_null(&right, source)
+                    // Only apply the pointer-type gate for simple identifier LHS.
+                    // For field_expression (c.value), subscript_expression, etc. we cannot
+                    // look up the declared type without struct analysis, so keep the original
+                    // permissive behaviour for those.  For plain identifiers we require the
+                    // variable to be in declared_pointer_vars so that integer variables like
+                    // `int rc` are never tainted by a nullable function-call return value.
+                    let left_is_ptr = left.kind() != "identifier"
+                        || self.declared_pointer_vars.contains(&left_name);
+
+                    // Check if assigning NULL, 0, cast to NULL, or function that can return null.
+                    // For nullable function calls we require the LHS to be a declared pointer.
+                    // For literal NULL/0/(T*)NULL we also require pointer type (assigning 0 to
+                    // an int is never a null pointer situation).
+                    if left_is_ptr
+                        && (is_null_value(&right_text)
+                            || is_nullable_function_call(&right, source, summaries)
+                            || is_cast_to_null(&right, source))
                     {
                         self.potentially_null_vars.insert(left_name.clone());
                         // Record this reassignment position for flow-sensitive checking
@@ -283,8 +300,8 @@ impl NullPointerAnalyzer {
                         }
                     } else if right.kind() == "identifier" {
                         // Assignment from another variable: current = head
-                        // If right side is potentially null, left side becomes potentially null too
-                        if self.potentially_null_vars.contains(&right_text) {
+                        // Only propagate null-taint if both sides are pointer variables.
+                        if left_is_ptr && self.potentially_null_vars.contains(&right_text) {
                             self.potentially_null_vars.insert(left_name.clone());
                             if self.null_checked_vars.contains(&left_name) {
                                 self.nullable_reassignments
@@ -293,14 +310,16 @@ impl NullPointerAnalyzer {
                         }
                     } else if right.kind() == "field_expression" {
                         // Assignment from field access: current = current->next
-                        // Only propagate null if the base object is already potentially null
-                        if let Some(argument) = right.child_by_field_name("argument") {
-                            let base_name = ast_utils::get_node_text_owned(&argument, source);
-                            if self.potentially_null_vars.contains(&base_name) {
-                                self.potentially_null_vars.insert(left_name.clone());
-                                if self.null_checked_vars.contains(&left_name) {
-                                    self.nullable_reassignments
-                                        .push((left_name.clone(), assignment_byte));
+                        // Only propagate null if LHS is a pointer and the base is potentially null.
+                        if left_is_ptr {
+                            if let Some(argument) = right.child_by_field_name("argument") {
+                                let base_name = ast_utils::get_node_text_owned(&argument, source);
+                                if self.potentially_null_vars.contains(&base_name) {
+                                    self.potentially_null_vars.insert(left_name.clone());
+                                    if self.null_checked_vars.contains(&left_name) {
+                                        self.nullable_reassignments
+                                            .push((left_name.clone(), assignment_byte));
+                                    }
                                 }
                             }
                         }
@@ -347,27 +366,34 @@ impl NullPointerAnalyzer {
                 if child.kind() == "init_declarator" {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
                         let var_name = get_identifier_name(&declarator, source);
+                        let is_ptr = is_pointer_declarator(&declarator)
+                            && !declarator_contains_array(&declarator);
 
-                        // Check if initialized to null, cast to null, or a nullable function
+                        if is_ptr {
+                            self.declared_pointer_vars.insert(var_name.clone());
+                        }
+
+                        // Only taint as potentially-null if this variable is a pointer type.
+                        // Integers (e.g. `int rc = 0` or `int rc = func()`) must never be
+                        // added to potentially_null_vars even when the RHS looks null-like.
                         if let Some(value) = child.child_by_field_name("value") {
                             let value_text = ast_utils::get_node_text_owned(&value, source);
-                            if is_null_value(&value_text)
-                                || is_nullable_function_call(&value, source, summaries)
-                                || is_cast_to_null(&value, source)
+                            if is_ptr
+                                && (is_null_value(&value_text)
+                                    || is_nullable_function_call(&value, source, summaries)
+                                    || is_cast_to_null(&value, source))
                             {
                                 self.potentially_null_vars.insert(var_name.clone());
                             } else if value.kind() == "identifier" {
-                                // Declaration initialized from another variable: Node *current = head;
-                                // If the source variable is potentially null, this one is too
-                                if self.potentially_null_vars.contains(&value_text) {
+                                // Declaration initialized from another pointer: Node *current = head;
+                                // Only propagate null-taint if this is also a pointer variable.
+                                if is_ptr && self.potentially_null_vars.contains(&value_text) {
                                     self.potentially_null_vars.insert(var_name.clone());
                                 }
                             }
                         } else {
                             // Uninitialized pointer variables (not stack arrays) are potentially null
-                            if is_pointer_declarator(&declarator)
-                                && !declarator_contains_array(&declarator)
-                            {
+                            if is_ptr {
                                 self.potentially_null_vars.insert(var_name);
                             }
                         }
@@ -383,6 +409,7 @@ impl NullPointerAnalyzer {
                         && is_pointer_declarator(&child)
                         && !declarator_contains_array(&child)
                     {
+                        self.declared_pointer_vars.insert(var_name.clone());
                         self.potentially_null_vars.insert(var_name);
                     }
                 }
@@ -541,7 +568,15 @@ impl NullPointerAnalyzer {
     fn check_dereferences(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         match node.kind() {
             "pointer_expression" => {
-                // Direct pointer dereference: *ptr or *(c.value)
+                // tree-sitter uses pointer_expression for both *ptr (dereference) and
+                // &var (address-of).  Only the dereference form can be a null-ptr bug;
+                // taking the address of a variable is always safe.
+                let is_deref = node
+                    .child_by_field_name("operator")
+                    .map(|op| ast_utils::get_node_text_owned(&op, source) == "*")
+                    .unwrap_or(false);
+
+                if is_deref {
                 if let Some(argument) = node.child_by_field_name("argument") {
                     // Get the full expression being dereferenced (could be identifier or field_expression)
                     let mut deref_text = ast_utils::get_node_text_owned(&argument, source);
@@ -581,6 +616,7 @@ impl NullPointerAnalyzer {
                         }
                     }
                 }
+                } // end if is_deref
             }
             "subscript_expression" => {
                 // Array subscript can also be null pointer dereference: ptr[index]

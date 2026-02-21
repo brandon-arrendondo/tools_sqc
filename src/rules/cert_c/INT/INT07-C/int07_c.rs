@@ -154,12 +154,11 @@ impl Int07C {
             if let Some(operator) = node.child_by_field_name("operator") {
                 let op_text = get_node_text(&operator, source);
 
-                // Arithmetic operators: +, -, *, /, %
-                // Comparison operators: <, <=, >, >=, ==, !=
-                let is_numeric_op = matches!(
-                    op_text,
-                    "+" | "-" | "*" | "/" | "%" | "<" | "<=" | ">" | ">=" | "==" | "!="
-                );
+                // Arithmetic operators only: +, -, *, /, %
+                // Comparisons (<, <=, >, >=, ==, !=) are intentionally excluded:
+                // patterns like `data < CHAR_MAX` are the CORRECT safe-coding pattern
+                // for range-checking plain char variables before arithmetic.
+                let is_numeric_op = matches!(op_text, "+" | "-" | "*" | "/" | "%");
 
                 if is_numeric_op {
                     // Check left and right operands
