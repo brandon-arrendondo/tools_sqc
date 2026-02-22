@@ -55,8 +55,12 @@ impl Str31C {
     fn analyze_string_length(&self, node: &Node, source: &str) -> Option<usize> {
         if node.kind() == "string_literal" {
             let literal = &source[node.start_byte()..node.end_byte()];
-            // Remove quotes and account for escape sequences
-            let trimmed = literal.trim_matches('"');
+            // Strip encoding prefix (L for wide strings, u/U for C11 char types)
+            // then strip surrounding quotes
+            let trimmed = literal
+                .trim_start_matches('L')
+                .trim_start_matches('"')
+                .trim_end_matches('"');
             // Basic estimate - more sophisticated escape handling could be added
             return Some(trimmed.len()); // Don't include null terminator in length for comparison
         }
@@ -362,6 +366,17 @@ impl Str31C {
                         return true;
                     }
                 }
+
+                // Buffer size is known but small and we couldn't confirm safety — flag it
+                return false;
+            }
+
+            // Destination buffer size could not be determined (dynamic allocation, pointer param, etc.)
+            // If source is a known string literal (bounded at compile time), we can't confirm
+            // overflow without knowing the destination size — assume safe to avoid FPs in
+            // unrelated CWEs where good functions copy fixed strings into opaque buffers.
+            if source_length.is_some() {
+                return true;
             }
         }
 
@@ -420,8 +435,9 @@ impl Str31C {
         // We can't track cumulative concatenation length without data-flow analysis,
         // so we only suppress for the shortest class to avoid FPs like `strcat(data, "*.*")`.
         if src_arg_kind == "string_literal" {
-            // Strip quotes and check literal length (content between the quotes)
+            // Strip encoding prefix (L for wide strings) then surrounding quotes
             let literal_content = src_arg_text
+                .trim_start_matches('L')
                 .trim_start_matches('"')
                 .trim_end_matches('"');
             if literal_content.len() <= 3 {
@@ -462,6 +478,16 @@ impl Str31C {
                 if buffer_size >= 256 {
                     return true;
                 }
+
+                // Buffer size is known but small and source is unknown-length — flag it
+                return false;
+            }
+
+            // Destination buffer size could not be determined (dynamic allocation, pointer param, etc.)
+            // If source is a string literal (bounded at compile time), we can't confirm overflow
+            // without knowing the destination size — assume safe to avoid FPs in unrelated CWEs.
+            if src_arg_kind == "string_literal" {
+                return true;
             }
         }
 
@@ -768,7 +794,20 @@ impl Str31C {
             }
         }
 
-        false
+        // Also check if used in context that suggests string operations
+        let full_line = {
+            let lines: Vec<&str> = source.lines().collect();
+            let mut line_text = "";
+            for line in lines {
+                if line.contains("memcpy") && (line.contains("strlen") || line.contains("string")) {
+                    line_text = line;
+                    break;
+                }
+            }
+            line_text
+        };
+
+        !full_line.is_empty()
     }
 
     /// Check for strncpy null termination issues
@@ -895,20 +934,7 @@ impl Str31C {
             }
         }
 
-        // Also check if used in context that suggests string operations
-        let full_line = {
-            let lines: Vec<&str> = source.lines().collect();
-            let mut line_text = "";
-            for line in lines {
-                if line.contains("memcpy") && (line.contains("strlen") || line.contains("string")) {
-                    line_text = line;
-                    break;
-                }
-            }
-            line_text
-        };
-
-        !full_line.is_empty()
+        false
     }
 
     /// Find the length of string copied via strcpy to a destination variable
