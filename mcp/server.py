@@ -38,6 +38,19 @@ mcp = FastMCP(
 
 # ── Internal helpers ──────────────────────────────────────────────────────────
 
+def _fmt_duration(seconds: int) -> str:
+    """Format a duration in seconds as 'Xh Ym Zs' (omitting leading zero units)."""
+    h, rem = divmod(seconds, 3600)
+    m, s = divmod(rem, 60)
+    parts = []
+    if h:
+        parts.append(f"{h}h")
+    if m or h:
+        parts.append(f"{m}m")
+    parts.append(f"{s}s")
+    return " ".join(parts)
+
+
 def _read_state() -> dict | None:
     """Read persisted benchmark state (PID + start time) from disk."""
     try:
@@ -256,20 +269,28 @@ def get_status() -> str:
         "done_cwes": done_count,
         "total_cwes": total_cwes,
         "elapsed_seconds": elapsed_s,
+        "elapsed_human": _fmt_duration(elapsed_s),
         "eta_seconds": eta_s,
+        "eta_human": _fmt_duration(eta_s) if eta_s else None,
         "recently_completed": done[-5:],
         "errors": log_data["errors"],
     }
 
     if is_complete:
+        # Use the summary file mtime as the actual finish time (it's written last).
+        total_s = int(summary_file.stat().st_mtime - state["start_time"])
+        result["total_duration_seconds"] = total_s
+        result["total_duration_human"] = _fmt_duration(total_s)
         result["message"] = (
-            f"Benchmark complete. {done_count}/{total_cwes} CWEs analyzed. "
+            f"Benchmark complete in {_fmt_duration(total_s)}. "
+            f"{done_count}/{total_cwes} CWEs analyzed. "
             "Use get_results() for aggregated stats or get_cwe_detail(cwe_id) for specifics."
         )
     elif is_running:
-        eta_str = f"{eta_s // 60}m {eta_s % 60}s" if eta_s else "unknown"
+        eta_str = _fmt_duration(eta_s) if eta_s else "unknown"
         result["message"] = (
-            f"{done_count}/{total_cwes} CWEs done ({progress_pct}%). ETA: {eta_str}."
+            f"{done_count}/{total_cwes} CWEs done ({progress_pct}%). "
+            f"Elapsed: {_fmt_duration(elapsed_s)}. ETA: {eta_str}."
         )
 
     return json.dumps(result)
@@ -303,6 +324,10 @@ def get_results(sort_by: str = "fp_count") -> str:
     rule_fp: dict[str, int] = {}
     per_cwe: list[dict] = []
 
+    # Build timing lookup from log (cwe_name → duration_s).
+    log_data = _parse_log()
+    cwe_timing: dict[str, int] = {e["cwe"]: e["duration_s"] for e in log_data["done"]}
+
     for f in sorted(RESULTS_DIR.glob("*_analysis.txt")):
         cwe_name = f.stem.replace("_analysis", "")
         parsed = _parse_analysis(f.read_text())
@@ -312,16 +337,18 @@ def get_results(sort_by: str = "fp_count") -> str:
         total_tp += tp
         total_fp += fp
 
-        per_cwe.append(
-            {
-                "cwe": cwe_name,
-                "tp": tp,
-                "fp": fp,
-                "total": cwe_total,
-                "tp_pct": round(tp / cwe_total * 100, 1) if cwe_total else 0,
-                "fp_pct": round(fp / cwe_total * 100, 1) if cwe_total else 0,
-            }
-        )
+        entry: dict = {
+            "cwe": cwe_name,
+            "tp": tp,
+            "fp": fp,
+            "total": cwe_total,
+            "tp_pct": round(tp / cwe_total * 100, 1) if cwe_total else 0,
+            "fp_pct": round(fp / cwe_total * 100, 1) if cwe_total else 0,
+        }
+        if cwe_name in cwe_timing:
+            entry["duration_seconds"] = cwe_timing[cwe_name]
+            entry["duration_human"] = _fmt_duration(cwe_timing[cwe_name])
+        per_cwe.append(entry)
 
         for entry in parsed["top_tp_rules"]:
             rule_tp[entry["rule"]] = rule_tp.get(entry["rule"], 0) + entry["count"]
@@ -353,17 +380,28 @@ def get_results(sort_by: str = "fp_count") -> str:
     rules_data.sort(key=sort_keys.get(sort_by, sort_keys["fp_count"]))
 
     grand_total = total_tp + total_fp
+
+    summary: dict = {
+        "total_violations": grand_total,
+        "total_tp": total_tp,
+        "total_fp": total_fp,
+        "tp_rate_pct": round(total_tp / grand_total * 100, 1) if grand_total else 0,
+        "fp_rate_pct": round(total_fp / grand_total * 100, 1) if grand_total else 0,
+        "cwes_analyzed": len(per_cwe),
+        "sort_by": sort_by,
+    }
+
+    # Include total run duration if we have a start time and the summary file exists.
+    state = _read_state()
+    summary_file = RESULTS_DIR / "multi_cwe_summary.txt"
+    if state and summary_file.exists():
+        total_s = int(summary_file.stat().st_mtime - state["start_time"])
+        summary["total_duration_seconds"] = total_s
+        summary["total_duration_human"] = _fmt_duration(total_s)
+
     return json.dumps(
         {
-            "summary": {
-                "total_violations": grand_total,
-                "total_tp": total_tp,
-                "total_fp": total_fp,
-                "tp_rate_pct": round(total_tp / grand_total * 100, 1) if grand_total else 0,
-                "fp_rate_pct": round(total_fp / grand_total * 100, 1) if grand_total else 0,
-                "cwes_analyzed": len(per_cwe),
-                "sort_by": sort_by,
-            },
+            "summary": summary,
             "top_rules": rules_data[:20],
             "per_cwe": sorted(per_cwe, key=lambda x: -x["fp"]),
         }
@@ -419,29 +457,35 @@ def get_cwe_detail(cwe_id: str) -> str:
     tp, fp = parsed["tp"], parsed["fp"]
     total = tp + fp
 
-    return json.dumps(
-        {
-            "cwe": cwe_name,
-            "files_analyzed": parsed["files"],
-            "summary": {
-                "total_violations": total,
-                "tp": tp,
-                "fp": fp,
-                "tp_rate_pct": round(tp / total * 100, 1) if total else 0,
-                "fp_rate_pct": round(fp / total * 100, 1) if total else 0,
-                "flaw_lines_detected": parsed["flaw_detected"],
-                "flaw_lines_total": parsed["flaw_total"],
-                "flaw_detection_rate_pct": (
-                    round(parsed["flaw_detected"] / parsed["flaw_total"] * 100, 1)
-                    if parsed["flaw_total"]
-                    else 0
-                ),
-            },
-            "top_tp_rules": parsed["top_tp_rules"],
-            "top_fp_rules": parsed["top_fp_rules"],
-            "flaw_line_rules": parsed["flaw_line_rules"],
-        }
-    )
+    log_data = _parse_log()
+    cwe_timing: dict[str, int] = {e["cwe"]: e["duration_s"] for e in log_data["done"]}
+
+    detail: dict = {
+        "cwe": cwe_name,
+        "files_analyzed": parsed["files"],
+        "summary": {
+            "total_violations": total,
+            "tp": tp,
+            "fp": fp,
+            "tp_rate_pct": round(tp / total * 100, 1) if total else 0,
+            "fp_rate_pct": round(fp / total * 100, 1) if total else 0,
+            "flaw_lines_detected": parsed["flaw_detected"],
+            "flaw_lines_total": parsed["flaw_total"],
+            "flaw_detection_rate_pct": (
+                round(parsed["flaw_detected"] / parsed["flaw_total"] * 100, 1)
+                if parsed["flaw_total"]
+                else 0
+            ),
+        },
+        "top_tp_rules": parsed["top_tp_rules"],
+        "top_fp_rules": parsed["top_fp_rules"],
+        "flaw_line_rules": parsed["flaw_line_rules"],
+    }
+    if cwe_name in cwe_timing:
+        detail["duration_seconds"] = cwe_timing[cwe_name]
+        detail["duration_human"] = _fmt_duration(cwe_timing[cwe_name])
+
+    return json.dumps(detail)
 
 
 if __name__ == "__main__":
