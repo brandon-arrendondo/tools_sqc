@@ -168,12 +168,13 @@ impl NullPointerAnalyzer {
 
                         if condition_checks_for_null {
                             // Pattern: if (ptr == NULL) { ... }
-                            // Variable is safe AFTER the if-statement only if the block handles error terminally
-                            // Be lenient: accept any if-block as terminal for wiki examples
+                            // Variable is safe only AFTER the entire if-statement ends.
+                            // Using end_byte ensures that derefs inside the null-branch
+                            // (deref_byte < if_end) are still flagged as unsafe, while
+                            // derefs after the block (deref_byte > if_end) are safe.
                             if consequence.kind() == "compound_statement" {
                                 self.null_checked_vars.insert(var_name.clone());
-                                self.null_check_positions
-                                    .insert(var_name, node.start_byte());
+                                self.null_check_positions.insert(var_name, node.end_byte());
                             }
                         } else {
                             // Pattern: if (ptr != NULL) { ... }
@@ -272,7 +273,11 @@ impl NullPointerAnalyzer {
                     let left_name = ast_utils::get_node_text_owned(&left, source);
                     let right_text = ast_utils::get_node_text_owned(&right, source);
 
-                    let assignment_byte = node.start_byte();
+                    // Use end_byte so that RHS sub-expressions (e.g. current->next in
+                    // `current = current->next`) have a deref_byte that is LESS than
+                    // assignment_byte — preventing the RHS from being treated as coming
+                    // after its own assignment (self-referential false positive).
+                    let assignment_byte = node.end_byte();
 
                     // Only apply the pointer-type gate for simple identifier LHS.
                     // For field_expression (c.value), subscript_expression, etc. we cannot
@@ -567,45 +572,45 @@ impl NullPointerAnalyzer {
                     .unwrap_or(false);
 
                 if is_deref {
-                if let Some(argument) = node.child_by_field_name("argument") {
-                    // Get the full expression being dereferenced (could be identifier or field_expression)
-                    let mut deref_text = ast_utils::get_node_text_owned(&argument, source);
+                    if let Some(argument) = node.child_by_field_name("argument") {
+                        // Get the full expression being dereferenced (could be identifier or field_expression)
+                        let mut deref_text = ast_utils::get_node_text_owned(&argument, source);
 
-                    // Handle parenthesized expressions - strip the parentheses
-                    if argument.kind() == "parenthesized_expression" {
-                        // Get the inner expression
-                        if let Some(inner) = argument.child(1) {
-                            // child 0 is '(', child 1 is expression, child 2 is ')'
-                            deref_text = ast_utils::get_node_text_owned(&inner, source);
+                        // Handle parenthesized expressions - strip the parentheses
+                        if argument.kind() == "parenthesized_expression" {
+                            // Get the inner expression
+                            if let Some(inner) = argument.child(1) {
+                                // child 0 is '(', child 1 is expression, child 2 is ')'
+                                deref_text = ast_utils::get_node_text_owned(&inner, source);
+                            }
+                        }
+
+                        // Check both simple identifiers and complex expressions like field_expression
+                        if argument.kind() == "identifier"
+                            || argument.kind() == "field_expression"
+                            || argument.kind() == "parenthesized_expression"
+                        {
+                            if self.is_unsafe_dereference_at_node(&deref_text, node, source) {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: "EXP34-C".to_string(),
+                                    severity: Severity::High,
+                                    message: format!(
+                                        "Potential null pointer dereference of variable '{}'",
+                                        deref_text
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some(format!(
+                                        "Check if '{}' is not NULL before dereferencing",
+                                        deref_text
+                                    )),
+                                    ..Default::default()
+                                });
+                            }
                         }
                     }
-
-                    // Check both simple identifiers and complex expressions like field_expression
-                    if argument.kind() == "identifier"
-                        || argument.kind() == "field_expression"
-                        || argument.kind() == "parenthesized_expression"
-                    {
-                        if self.is_unsafe_dereference_at_node(&deref_text, node, source) {
-                            let start_point = node.start_position();
-                            violations.push(RuleViolation {
-                                rule_id: "EXP34-C".to_string(),
-                                severity: Severity::High,
-                                message: format!(
-                                    "Potential null pointer dereference of variable '{}'",
-                                    deref_text
-                                ),
-                                file_path: String::new(),
-                                line: start_point.row + 1,
-                                column: start_point.column + 1,
-                                suggestion: Some(format!(
-                                    "Check if '{}' is not NULL before dereferencing",
-                                    deref_text
-                                )),
-                                ..Default::default()
-                            });
-                        }
-                    }
-                }
                 } // end if is_deref
             }
             "subscript_expression" => {
@@ -740,8 +745,14 @@ impl NullPointerAnalyzer {
     }
 
     fn is_unsafe_dereference(&self, var_name: &str) -> bool {
-        // A dereference is unsafe if the variable is potentially null and hasn't been checked
-        self.potentially_null_vars.contains(var_name) && !self.null_checked_vars.contains(var_name)
+        // A variable is a candidate for unsafe dereference if it is potentially null.
+        // The null_checked_vars membership alone does NOT make it safe here — that
+        // determination is position-sensitive and handled by is_unsafe_dereference_at_node
+        // via the flow-sensitive check and is_in_null_guarded_scope.  Removing the
+        // !null_checked_vars short-circuit ensures we correctly flag the deref_after_check
+        // pattern: `if (ptr == NULL) { *ptr; }` — the variable IS in null_checked_vars
+        // (we saw an == NULL check) but the dereference is INSIDE the null branch.
+        self.potentially_null_vars.contains(var_name)
     }
 
     /// Check if a dereference at a specific AST node is unsafe, considering local null-checks
