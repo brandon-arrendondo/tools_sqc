@@ -229,7 +229,7 @@ pub fn is_known_standard_function(name: &str) -> bool {
         | "WaitForSingleObject" | "WaitForMultipleObjects"
         | "GetExitCodeProcess" | "GetExitCodeThread"
         | "GetCurrentProcessId" | "GetCurrentThreadId"
-        | "OpenThread" | "SuspendThread" | "ResumeThread" => true,
+        | "SuspendThread" | "ResumeThread" => true,
 
         // Windows synchronization
         "CreateMutex" | "CreateMutexA" | "CreateMutexW"
