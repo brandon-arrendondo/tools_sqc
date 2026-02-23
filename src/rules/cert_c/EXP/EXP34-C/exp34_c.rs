@@ -481,16 +481,6 @@ impl NullPointerAnalyzer {
             return true;
         }
 
-        // Check for exit/abort calls
-        if node.kind() == "call_expression" {
-            if let Some(function) = node.child_by_field_name("function") {
-                if let tree_sitter::Node { .. } = function {
-                    // We can't easily get the source here, but exit/abort are common patterns
-                    // This will be checked recursively
-                }
-            }
-        }
-
         // If the block is non-empty (has statements), consider it as having error handling
         // This is a pragmatic approach for wiki examples that use "/* Handle error */" comments
         if node.kind() == "compound_statement" {

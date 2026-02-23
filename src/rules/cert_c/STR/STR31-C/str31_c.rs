@@ -852,10 +852,10 @@ impl Str31C {
         let lines: Vec<&str> = source.lines().collect();
         let mut was_freed = false;
         let mut freed_line_num = 0;
-        let mut current_line_num = 0;
+        let mut _current_line_num = 0;
 
         for (idx, line) in lines.iter().enumerate() {
-            current_line_num = idx + 1;
+            _current_line_num = idx + 1;
 
             // Look for free(var_name)
             if line.contains("free") && line.contains(var_name) {
@@ -863,14 +863,14 @@ impl Str31C {
                 if let Ok(re) = regex::Regex::new(&pattern) {
                     if re.is_match(line) {
                         was_freed = true;
-                        freed_line_num = current_line_num;
+                        freed_line_num = _current_line_num;
                     }
                 }
             }
 
             // If we see strcpy/strcat after free, it's a violation
             if was_freed
-                && current_line_num > freed_line_num
+                && _current_line_num > freed_line_num
                 && (line.contains("strcpy") || line.contains("strcat"))
                 && line.contains(var_name)
             {
@@ -1165,7 +1165,7 @@ impl Str31C {
     fn check_wcstombs_safety(&self, arguments: &Node, source: &str, root: &Node) -> bool {
         // Extract destination buffer and size arguments
         let mut dest_name = None;
-        let mut buffer_size_arg = None;
+        let mut _buffer_size_arg = None;
         let mut arg_count = 0;
 
         for i in 0..arguments.child_count() {
@@ -1175,7 +1175,7 @@ impl Str31C {
                 } else if arg.kind() == "number_literal" && arg_count == 2 {
                     let size_text = &source[arg.start_byte()..arg.end_byte()];
                     if let Ok(size) = size_text.parse::<usize>() {
-                        buffer_size_arg = Some(size);
+                        _buffer_size_arg = Some(size);
                     }
                 }
 

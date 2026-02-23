@@ -4,7 +4,7 @@
 //! definitions reach each point in the program. This enables flow-sensitive
 //! analysis for rules like MEM30-C (use-after-free) and EXP34-C (null deref).
 
-use super::cfg::{BasicBlock, BlockId, CfgEdge, FunctionCfg};
+use super::cfg::{BlockId, FunctionCfg};
 use std::collections::{HashMap, HashSet, VecDeque};
 use tree_sitter::Node;
 
