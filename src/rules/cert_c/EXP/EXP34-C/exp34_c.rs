@@ -264,6 +264,45 @@ impl NullPointerAnalyzer {
         summaries: &HashMap<String, FunctionSummary>,
     ) {
         match node.kind() {
+            "if_statement" => {
+                // For if/else, merge state from both branches (union of potentially_null).
+                // This correctly handles variant 12: if one branch sets ptr=NULL and the
+                // other sets ptr=valid, the merged state keeps ptr as potentially_null.
+                let consequence = node.child_by_field_name("consequence");
+                let alternative = node.child_by_field_name("alternative");
+
+                if let (Some(cons), Some(alt)) = (consequence, alternative) {
+                    // Process the condition first (may contain call expressions)
+                    if let Some(condition) = node.child_by_field_name("condition") {
+                        self.collect_null_variables(&condition, source, summaries);
+                    }
+
+                    // Save state before branching
+                    let saved_null = self.potentially_null_vars.clone();
+                    let saved_ptrs = self.declared_pointer_vars.clone();
+
+                    // Process the if branch
+                    self.collect_null_variables(&cons, source, summaries);
+                    let null_after_if = self.potentially_null_vars.clone();
+                    let ptrs_after_if = self.declared_pointer_vars.clone();
+
+                    // Restore state and process the else branch
+                    self.potentially_null_vars = saved_null;
+                    self.declared_pointer_vars = saved_ptrs;
+                    self.collect_null_variables(&alt, source, summaries);
+
+                    // Merge: union — a variable is potentially null if null on ANY path
+                    for var in null_after_if {
+                        self.potentially_null_vars.insert(var);
+                    }
+                    for var in ptrs_after_if {
+                        self.declared_pointer_vars.insert(var);
+                    }
+
+                    return; // Children handled above; skip generic recursion
+                }
+                // No else branch: fall through to generic recursion below
+            }
             "assignment_expression" => {
                 if let (Some(left), Some(right)) = (
                     node.child_by_field_name("left"),
