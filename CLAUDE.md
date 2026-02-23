@@ -181,8 +181,11 @@ Within each group, focus on **increasing TP rate** (reducing false negatives) an
   - Round 14 fix: `deref_after_check` pattern — `if (ptr == NULL) { *ptr; }` now caught
     via `end_byte` in `null_check_positions` + removed premature `null_checked_vars` early exit
     + `end_byte` in `nullable_reassignments` (prevents self-referential FP on `cur = cur->next`)
-  - Remaining gaps: variant 12 (`globalReturnsTrueOrFalse()` — opaque non-constant branch),
-    variant 45 (static global null flow across functions), multi-file splits (need interprocedural)
+  - Round 15 fix: if/else branch merge — `collect_null_variables` now takes union of
+    `potentially_null_vars` from both branches, fixing variant 12 (`globalReturnsTrueOrFalse()`)
+    where if-branch sets ptr=NULL and else-branch sets ptr=non-null (+8 TPs)
+  - Remaining gaps: variant 45 (static global null flow across functions — requires file-level
+    pre-pass to track globals assigned NULL), multi-file splits (need interprocedural)
 - **ARR30-C** / **ARR38-C** — out-of-bounds array access (CWE-125, CWE-787)
 - **EXP33-C** — uninitialized memory reads (CWE-457)
 - **INT30-C** / **INT32-C** — unsigned wraparound / signed integer overflow (CWE-190, CWE-191)

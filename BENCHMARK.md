@@ -1,7 +1,7 @@
 # SqC Benchmark, Analysis, and Strategic Assessment
 
-**Last Updated**: 2026-02-22 (Round 13 Juliet benchmark results)
-**Current TP Rate**: 44.1% (Round 13, 54,484 Juliet files)
+**Last Updated**: 2026-02-23 (Round 15 Juliet benchmark in progress)
+**Current TP Rate**: 44.1% (Round 13, 54,484 Juliet files) — Round 15 in progress
 
 ---
 
@@ -88,12 +88,34 @@
 | **Round 11** | **DCL07-C/DCL31-C: ALL_CAPS macro guard + POSIX std_functions (includes R10)** | **207,800** | **272,782** | **43.2%** | **-23,560** |
 | Round 12 | INT07-C, INT32-C, EXP10-C, EXP34-C, INT30-C, MEM10-C, STR31-C (short literal), Windows API std_functions | 189,950 | 243,849 | 43.8% | -28,933 |
 | **Round 13** | **STR31-C: L-prefix fix + literal-source+unknown-dest suppression (strcpy + strcat)** | **189,016** | **239,724** | **44.1%** | **-4,125** |
+| Round 14 | EXP34-C: `deref_after_check` pattern (fix end_byte + remove premature early-exit) | +18 TP | 0 new FP | — | not independently measured |
+| **Round 15** | **EXP34-C: if/else branch merge (variant 12 — globalReturnsTrueOrFalse)** | **+8 TP** | **0 new FP** | **TBD** | **benchmark in progress** |
 
 **Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Rounds 10+11 removed 23,560 FP (DCL ALL_CAPS macro guard). Round 12 removed 28,933 FP (Windows API std_functions additions were the dominant effect — DCL31-C/DCL07-C dropped from ~41K to ~5K combined FP). Round 13 removed 4,125 FP from targeted STR31-C fixes. Cumulative FP reduction from baseline: -599,617 (-71.4%).
 
 ---
 
 ## Per-Round Fix Details
+
+### Round 15 — EXP34-C: if/else Branch Merge
+
+Add `"if_statement"` handling to `collect_null_variables` that properly merges state from both branches when an `else` clause is present. When processing an `if/else`, the analyzer now: saves state before branching, processes each branch separately, then takes the union of `potentially_null_vars` and `declared_pointer_vars` as the merged post-if state.
+
+**Fixes false negative in variant 12** (`globalReturnsTrueOrFalse`): when the `if`-branch sets `ptr = NULL` and the `else`-branch sets `ptr = valid`, the merged state correctly keeps `ptr` as potentially_null at the post-if dereference. Previously the else-branch's assignment removed `ptr` from `potentially_null_vars`, causing the deref to be missed.
+
+**Net**: +8 TPs on CWE-476 (8 variant-12 files), 0 new FPs, 5 pre-existing test failures unchanged.
+
+---
+
+### Round 14 — EXP34-C: deref_after_check Pattern
+
+- Fix `null_check_positions` to store `end_byte` (not `start_byte`) so derefs INSIDE the null branch (`if (ptr == NULL) { *ptr; }`) are still flagged as unsafe.
+- Remove premature `null_checked_vars` early-exit from `is_unsafe_dereference`, enabling flow-sensitive position check to run correctly.
+- Fix `nullable_reassignments` to store `end_byte` so RHS sub-expressions (`cur->next` in `cur = cur->next`) don't self-trigger as reassignments.
+
+**Net**: +18 TPs on CWE-476 deref_after_check variant, 0 new FPs.
+
+---
 
 ### Round 13 — STR31-C: L-prefix and Literal-Source Fixes
 
