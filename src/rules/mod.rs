@@ -27,6 +27,13 @@ pub trait CertRule {
     /// Inject cross-file context gathered by the pre-scan phase.
     /// Default is a no-op; only rules that need cross-file data override this.
     fn set_project_context(&self, _context: &ProjectContext) {}
+
+    /// Returns true if this rule applies to the given file path.
+    /// Default: applies to all files. Override for rules that are
+    /// specific to a file type (e.g. header-only rules like PRE06-C).
+    fn applies_to_file(&self, _file_path: &str) -> bool {
+        true
+    }
 }
 
 #[derive(Debug, Clone, serde::Serialize)]

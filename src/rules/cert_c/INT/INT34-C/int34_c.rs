@@ -65,6 +65,15 @@ impl Int34C {
             let right_text = ast_utils::get_node_text(&right_node, source);
             let left_text = ast_utils::get_node_text(&left_node, source);
 
+            // If the shift amount is a non-negative integer literal the rule is
+            // trivially satisfied: negative-shift cannot happen, and width-overflow
+            // is a compiler-visible property of the constant (compilers warn on
+            // e.g. `x >> 64`).  INT34-C is only meaningful for *variable* shift
+            // amounts whose range cannot be determined at compile time.
+            if self.is_non_negative_integer_literal(&right_node, source) {
+                return;
+            }
+
             // Check if this is an unsigned type operation
             // Unsigned shifts have defined behavior in most cases
             if self.is_likely_unsigned(&left_text, &left_node, source) {
@@ -123,6 +132,31 @@ impl Int34C {
             )),
             ..Default::default()
         });
+    }
+
+    /// Returns true if the node is a non-negative integer literal
+    /// (decimal, hex, octal, or binary), including those with suffix letters
+    /// such as `8u`, `16UL`, `0x1FUL`.
+    fn is_non_negative_integer_literal(&self, node: &Node, source: &str) -> bool {
+        // tree-sitter-c uses "number_literal" for all numeric constants.
+        if node.kind() != "number_literal" {
+            return false;
+        }
+        let text = ast_utils::get_node_text(node, source)
+            .trim()
+            .to_ascii_lowercase();
+        // Strip common integer suffixes (u, l, ul, ull, lu, llu)
+        let stripped = text.trim_end_matches(|c: char| matches!(c, 'u' | 'l'));
+        // Must be parseable as a non-negative integer (decimal, hex, octal)
+        if stripped.starts_with("0x") {
+            u64::from_str_radix(&stripped[2..], 16).is_ok()
+        } else if stripped.starts_with("0b") {
+            u64::from_str_radix(&stripped[2..], 2).is_ok()
+        } else if stripped.starts_with('0') && stripped.len() > 1 {
+            u64::from_str_radix(&stripped[1..], 8).is_ok()
+        } else {
+            stripped.parse::<u64>().is_ok()
+        }
     }
 
     /// Check if the operand is likely an unsigned type

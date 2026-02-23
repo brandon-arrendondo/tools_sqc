@@ -318,7 +318,7 @@ impl Arr39C {
                     if argument.kind() == "binary_expression" {
                         if let Some(operator_node) = argument.child_by_field_name("operator") {
                             let op = &source[operator_node.start_byte()..operator_node.end_byte()];
-                            if (op == "+" || op == "-") {
+                            if op == "+" || op == "-" {
                                 if let Some(left) = argument.child_by_field_name("left") {
                                     if self.looks_like_pointer_node(&left, source) {
                                         return true;

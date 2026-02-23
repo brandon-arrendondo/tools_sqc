@@ -155,6 +155,18 @@ cat .claude/commands/gather-opinions.md
 
 ---
 
+## Known TODOs / Low-priority gaps
+
+- **INT34-C: literal shift amount >= type width** — Current fix skips all non-negative
+  integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where
+  the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;` — UB, 32 >= 32).
+  Compilers warn on this with `-Wshift-count-overflow`, so low priority, but it could cause
+  Juliet benchmark FNs on any test cases that use out-of-range literal shift amounts.
+  Fix: skip only literals in `[0, 31]` for non-`long long` operands, `[0, 63]` for `long long`.
+  Requires knowing the promoted operand type (non-trivial without type resolution).
+
+---
+
 ## Project Structure
 
 - `src/rules/cert_c/` - CERT C rule implementations

@@ -115,12 +115,11 @@ impl Mem10C {
     fn is_direct_null_check(&self, condition: &Node, source: &str) -> bool {
         let condition_text = get_node_text(condition, source);
 
-        // Check for common NULL check patterns
-        if condition_text.contains("== NULL")
-            || condition_text.contains("!= NULL")
-            || condition_text.contains("== 0")
-            || condition_text.contains("!= 0")
-        {
+        // Check for explicit NULL pointer comparisons only.
+        // We intentionally exclude "== 0" and "!= 0" because these are very common
+        // for checking integer return values (e.g., fclose() == 0, system() != 0)
+        // and generate massive false positives in non-pointer contexts.
+        if condition_text.contains("== NULL") || condition_text.contains("!= NULL") {
             // Make sure it's not a function call (which would be a validation function)
             // If it contains a function call, it's likely using a validation function
             if !self.appears_to_be_validation_function_call(condition, source) {

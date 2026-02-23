@@ -1,7 +1,7 @@
 # SqC Benchmark, Analysis, and Strategic Assessment
 
-**Last Updated**: 2026-02-19 (cross-tool capability analysis added)
-**Current TP Rate**: 43.8% (Round 9, 54,484 Juliet files)
+**Last Updated**: 2026-02-22 (Round 13 Juliet benchmark results)
+**Current TP Rate**: 44.1% (Round 13, 54,484 Juliet files)
 
 ---
 
@@ -29,10 +29,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 230,643 |
-| **False Positives** | 296,342 |
-| **TP Rate** | **43.8%** |
-| **FP Reduction from Baseline** | -64.7% (839K → 296K) |
+| **True Positives** | 189,016 |
+| **False Positives** | 239,724 |
+| **TP Rate** | **44.1%** |
+| **FP Reduction from Baseline** | -71.4% (839K → 240K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
 
@@ -40,33 +40,34 @@
 
 | Rule | FP | TP | Notes |
 |------|---:|---:|-------|
-| INT32-C | 23K | 16K | Type-aware inference already applied |
-| DCL31-C | 21K | 16K | Cross-file + std_functions already applied |
-| DCL07-C | 20K | 16K | Cross-file + std_functions already applied |
-| INT30-C | 17K | 17K | ~50/50 ratio — reductions lose TPs |
-| EXP34-C | 15K | 12K | Null pointer — already tightened |
-| DCL06-C | 14K | 19K | Code style — ~50/50, reductions lose TPs |
-| EXP12-C | 9K | 10K | Whitelist already trimmed |
-| MEM10-C | 7K | 6K | ~50/50 ratio |
-| ERR33-C | 6K | 4K | Nested calls + math overlap fixed |
+| INT32-C | ~22K | ~15K | Type-aware inference already applied; 59% FP rate |
+| INT30-C | ~16K | ~14K | ~53% FP rate; pointer arithmetic guards applied |
+| DCL06-C | ~15K | ~19K | Code style — ~44% FP rate; reductions lose TPs |
+| EXP34-C | ~13K | ~10K | Null pointer — CFG dominance fix is next target; 56% FP rate |
+| EXP12-C | ~9K | ~10K | ~48% FP rate; whitelist already trimmed |
+| INT36-C | ~6K | ~3K | 64% FP rate |
+| ERR33-C | ~6K | ~4K | 63% FP rate; nested calls + math overlap fixed |
+| MEM10-C | ~6K | ~3K | 65% FP rate; `== 0` integer-check guard applied |
+| ERR05-C | ~6K | ~3K | 64% FP rate |
+| STR31-C | ~2K | ~1K | Improved from 88% → ~60% FP rate (Round 13); `is_function_parameter` guard pending |
 
-**Key insight**: Most remaining top FP rules have ~50/50 TP/FP ratios. Further rule tuning will proportionally lose TPs. The ~43.8% Juliet ceiling is likely an architectural constraint for single-translation-unit analysis.
+**Key insight**: Most remaining top FP rules have ~50-65% FP ratios. Further rule tuning will proportionally lose TPs. The ~44% Juliet ceiling is likely an architectural constraint for single-translation-unit analysis. DCL31-C and DCL07-C dropped to ~2.5K each (Round 12 Windows API std_functions additions).
 
 ---
 
 ## Juliet Benchmark Results
 
-### Aggregate Metrics (Round 9 — 2026-02-19)
+### Aggregate Metrics (Round 13 — 2026-02-22)
 
 | Metric | Value |
 |--------|-------|
 | **Files Analyzed** | 54,484 |
-| **Classified (TP+FP)** | 526,985 |
-| **True Positives** | 230,643 |
-| **False Positives** | 296,342 |
-| **Weighted TP Rate** | **43.8%** |
+| **Classified (TP+FP)** | 428,740 |
+| **True Positives** | 189,016 |
+| **False Positives** | 239,724 |
+| **Weighted TP Rate** | **44.1%** |
 | **Categories with data** | 106 / 118 |
-| **Wall-clock time** | ~25 min (12 parallel jobs) |
+| **Wall-clock time** | ~51 min (12 parallel jobs) |
 | **Cross-file dirs** | `testcases/` + `testcasesupport/` |
 
 ### FP Reduction History
@@ -83,13 +84,48 @@
 | Round 7 | EXP36-C, EXP34-C, ARR37-C | 231,053 | 301,475 | 43.4% | -25,716 |
 | Round 8 | DCL40-C, FLP32-C, ERR33-C | 230,992 | 296,415 | 43.8% | -5,060 |
 | **Round 9** | **CFG, data-flow, inter-procedural analysis** | **230,643** | **296,342** | **43.8%** | **-73** |
-| Round 10 | EXP34-C: `&&` short-circuit guard + stack array fix | TBD | TBD | TBD | ~-1,800 (est.) |
+| Round 10 | EXP34-C: `&&` short-circuit guard + stack array fix | — | — | — | not independently measured |
+| **Round 11** | **DCL07-C/DCL31-C: ALL_CAPS macro guard + POSIX std_functions (includes R10)** | **207,800** | **272,782** | **43.2%** | **-23,560** |
+| Round 12 | INT07-C, INT32-C, EXP10-C, EXP34-C, INT30-C, MEM10-C, STR31-C (short literal), Windows API std_functions | 189,950 | 243,849 | 43.8% | -28,933 |
+| **Round 13** | **STR31-C: L-prefix fix + literal-source+unknown-dest suppression (strcpy + strcat)** | **189,016** | **239,724** | **44.1%** | **-4,125** |
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Round 10 targets two specific EXP34-C FP patterns identified by diagnostic analysis of CWE476 results.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Rounds 10+11 removed 23,560 FP (DCL ALL_CAPS macro guard). Round 12 removed 28,933 FP (Windows API std_functions additions were the dominant effect — DCL31-C/DCL07-C dropped from ~41K to ~5K combined FP). Round 13 removed 4,125 FP from targeted STR31-C fixes. Cumulative FP reduction from baseline: -599,617 (-71.4%).
 
 ---
 
 ## Per-Round Fix Details
+
+### Round 13 — STR31-C: L-prefix and Literal-Source Fixes
+
+1. **`analyze_string_length`: strip L-prefix**: Wide string literals like `L"*.*"` previously measured as 4 characters because `trim_matches('"')` left the `L` prefix. Fixed to strip `L` before measuring content length. **Impact**: CWE78 STR31-C FPs eliminated (~970 FPs).
+
+2. **`check_strcat_safety`: L-prefix in short-literal check**: Same fix in the ≤3-char literal suppression path of `check_strcat_safety`.
+
+3. **`check_strcpy_safety`: literal source + unknown dest → safe**: When the source argument is a bounded string literal and the destination buffer size is unknown (dynamic allocation, pointer parameter, etc.), no longer flags the call. Previously returned `false` (flag) unconditionally when buffer size was undetermined. **Impact**: CWE134 STR31-C FPs eliminated (~1,277 FPs). Known limitation: suppresses some cross-function TPs (CWE124/127) where a small buffer is passed as a parameter to a helper that calls `strcpy(dest, literal)`. Adding `!self.is_function_parameter(dest, source)` guard would recover these TPs with minimal FP regression.
+
+4. **`check_strcat_safety`: literal source + unknown dest → safe**: Same suppression for the `strcat`/`wcscat` path.
+
+**Net**: -4,125 FP (-1.7%), -934 TP (-0.5%), TP rate +0.3pp. STR31-C FP rate improved from ~88% to approximately ~60%.
+
+### Round 12 — INT07-C, INT32-C, EXP10-C, EXP34-C, INT30-C, MEM10-C, STR31-C, Windows API
+
+1. **INT07-C**: Removed comparison operators (`<`, `<=`, `>`, `>=`, `==`, `!=`) from numeric-use detection; `data < CHAR_MAX` is the correct safe-coding pattern, not a violation.
+
+2. **INT32-C**: `infer_type()` returns `"not_applicable"` for non-integer types (char, float, pointers); all 12 arithmetic check functions skip when either operand is `"not_applicable"`. Prevents `char data; data + 1` from falsely flagging as signed overflow.
+
+3. **EXP10-C**: Added `is_pure_function()` whitelist (~50 functions: `abs`, `sqrt`, `strlen`, `strcmp`, `isdigit`, etc.); pure math functions have no side effects and are excluded from unsequenced-call counting.
+
+4. **EXP34-C**: Gates nullable-function-call taint on `declared_pointer_vars`; `int rc = func()` no longer taints `rc` as a potentially-null pointer.
+
+5. **INT30-C**: Added `not_applicable` guards for pointer arithmetic (`ptr + n`, `ptr - n`, `ptr += n`, `ptr -= n`) — valid C pointer arithmetic, not unsigned int overflow.
+
+6. **MEM10-C**: Removed `== 0` / `!= 0` from null-check detection; these are overwhelmingly integer return value checks, not pointer null checks.
+
+7. **STR31-C**: Short literal suppression (≤3 chars) in `check_strcat_safety`.
+
+8. **std_functions**: Added ~100 Windows API functions (Crypto, Auth, Memory, File I/O, Process, Registry, Networking) and uppercase macro wrappers. **Impact: DCL31-C/DCL07-C went from ~21K/~20K to ~2.5K/~2.4K FP — the largest single win of any round.**
+
+**Net**: -28,933 FP (-10.6%), -17,850 TP (-7.9%), TP rate +0.6pp. Windows API whitelist was dominant; all other fixes combined contributed ~2K FP reduction.
 
 ### Round 9 — CFG, Data-Flow, Inter-Procedural Analysis
 
@@ -401,7 +437,7 @@ Comparison compiled from academic papers and published data. Direct Juliet runs 
 
 | Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
 |------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **43.8%** | **56.2%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
+| **SqC** | **44.1%** | **55.9%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
 | Semgrep CE | 44–48% | Very low | AST (tree-sitter) | No | Community | Free |
 | Semgrep Pro | 72–75% | Very low | AST + taint + inter-file | No | Community | Commercial |
 | Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
@@ -553,9 +589,16 @@ Note: cppcheck's `nullPointerRedundantCheck` (177 on curl, warning-level) is a d
 
 sqc finds approximately 5× more unchecked return values than clang-tidy's `cert-err33-c` (1,404 vs 277 on mosquitto). Clang-tidy's check is scoped to a specific list of POSIX/C standard functions. sqc's ERR33-C uses the ~270-function `std_functions` database. The ratio is plausible but warrants review: functions like `printf` to stdout and `fclose` are CERT-flaggable but the caller rarely has a recovery path, making these low-value findings in practice.
 
-#### ERR34-C Gap: Unsafe Numeric Conversion
+#### ERR34-C: No Coverage Gap
 
-clang-tidy's `cert-err34-c` fires on `atoi`, `atol`, `atof`, and `atoll` — functions with no error-detection mechanism. On mosquitto it finds 33 instances; on curl, 6. sqc's ERR34-C does not appear in the top 15 rules on either project, suggesting near-zero coverage of this bug class. These are genuine reliability issues (silent wraparound/truncation on invalid input).
+clang-tidy's `cert-err34-c` fires on `atoi`, `atol`, `atof`, and `atoll`. sqc's ERR34-C is implemented and also covers the `scanf` family. sqc's ERR34-C finds **more** than clang-tidy on both projects:
+
+| Project | sqc ERR34-C | clang-tidy cert-err34-c |
+|---------|------------|------------------------|
+| mosquitto | 126 | 33 |
+| curl | 28 | 6 |
+
+sqc's higher count reflects its broader function coverage (includes `sscanf`, `fscanf`, `scanf`). ERR34-C is not in sqc's top 15 rules by volume on either project because it is a focused, low-volume check — which is the correct behavior for this rule.
 
 #### DCL Rule Volume: Signal Dilution
 
@@ -570,7 +613,12 @@ Neither cppcheck nor clang-tidy has equivalents for DCL07-C (include type info i
 
 #### EXP33-C Gap on mosquitto
 
-cppcheck's 34 `uninitvar [error]` findings on mosquitto are the highest-confidence real defects in the entire dataset (error-severity, data-flow proven). sqc's EXP33-C shows 2,247 on curl but is not prominent on mosquitto. This suggests either an analysis gap for mosquitto's specific patterns, or that sqc EXP33-C and cppcheck `uninitvar` are detecting different sub-cases of the same CWE-457 class.
+cppcheck's 34 `uninitvar [error]` findings on mosquitto are the highest-confidence real defects in the entire dataset (error-severity, data-flow proven). sqc's EXP33-C finds 902 on mosquitto and 2,247 on curl — so sqc IS running. The findings are in different files:
+
+- cppcheck `uninitvar`: `messages_mosq.c`, `bridge.c`, `bridge_topic.c` — struct fields not set after allocation (`message->msg.qos`, `cur->msg.mid`, etc.)
+- sqc EXP33-C: `extended_auth.c`, `packet_mosq.c`, `alias_mosq.c` — local scalar variables read before assignment
+
+These are different sub-patterns of CWE-457. sqc EXP33-C detects local scalar uninitialized reads. cppcheck `uninitvar` detects partial struct initialization (allocated struct with some members left unset). The cppcheck pattern requires tracking struct member initialization — a distinct analysis that sqc doesn't currently perform. The 34 cppcheck error-severity findings are genuine defects sqc cannot reach with its current analysis model.
 
 #### What sqc Uniquely Covers
 
@@ -585,14 +633,15 @@ Despite the above concerns, sqc's coverage breadth is genuine — clang-tidy fir
 
 #### Improvement Priorities (from Real-World Data)
 
-| Priority | Issue | Evidence | Likely Fix |
-|----------|-------|----------|------------|
-| **P1** | EXP34-C FP rate | 4,300:1 ratio vs cppcheck confirmed null errors | CFG dominance: suppress when null check dominates dereference on all paths |
-| **P1** | DCL07-C / DCL31-C volume | 23–24% of all sqc output; no competitor equivalent | Scope to declarations lacking explicit type info (not already-typed definitions) |
-| **P2** | ERR34-C gap | clang-tidy finds 33/6 atoi usages; sqc ~0 | Implement/verify ERR34-C fires on `atoi`, `atol`, `atof`, `atoll` |
-| **P2** | EXP33-C on mosquitto | 34 cppcheck error-severity uninitvar not matched | Cross-check EXP33-C analysis against cppcheck's uninitvar trigger conditions |
-| **P3** | ERR33-C ratio | 5× over clang-tidy; review low-value functions | Exclude functions with no practical error-recovery path (printf to stdout, etc.) |
-| **P3** | const-correctness gap | cppcheck finds 266 const-param/variable findings on curl | Consider const-parameter rules if CERT C has applicable guidance |
+| Priority | Issue | Evidence | Status |
+|----------|-------|----------|--------|
+| **P1** | EXP34-C FP rate | 4,300:1 ratio vs cppcheck confirmed null errors | Pending: CFG dominance analysis (Round 11 target) |
+| **P1** | DCL07-C / DCL31-C macro FPs | ALL_CAPS macro calls flagged as undeclared functions; ~48% of function-call findings | **Fixed (Round 11)**: `is_macro_like_name()` guard added to both rules |
+| **P1** | DCL07-C / DCL31-C POSIX gaps | `strcasecmp`, `strdup`, `strtok_r` missing from std_functions | **Fixed (Round 11)**: Added to std_functions.rs |
+| **P2** | ERR34-C gap | N/A — sqc finds MORE than clang-tidy (126 vs 33 on mosquitto, 28 vs 6 on curl) | **Closed**: No gap exists |
+| **P2** | EXP33-C on mosquitto | 34 cppcheck error-severity uninitvar not matched by sqc | Pending: investigate trigger conditions |
+| **P3** | ERR33-C ratio | 5× over clang-tidy; review low-value functions | Pending: exclude no-recovery-path functions |
+| **P3** | const-correctness gap | cppcheck finds 266 const-param/variable findings on curl | Pending: assess CERT C applicability |
 
 ---
 
@@ -605,7 +654,7 @@ Despite the above concerns, sqc's coverage breadth is genuine — clang-tidy fir
 - Cross-file analysis via function name pre-scanning (`-d` flag)
 - Sequential file processing (parallelized externally via shell scripts)
 
-### What SqC Has (as of Round 9)
+### What SqC Has (as of Round 13)
 
 - Local variable/type inference within functions (`collect_variable_types` pattern)
 - Preprocessor block traversal (`preproc_*` node recursion)
@@ -628,7 +677,7 @@ Despite the above concerns, sqc's coverage breadth is genuine — clang-tidy fir
 
 ### Architectural Ceiling
 
-The ~43.8% Juliet TP rate is likely near the ceiling for single-translation-unit AST analysis. Without value-range and alias analysis, the tool cannot distinguish validated from unvalidated inputs, null-checked from unchecked pointers, or computed buffer sizes from literal ones.
+The ~44% Juliet TP rate is likely near the ceiling for single-translation-unit AST analysis. Without value-range and alias analysis, the tool cannot distinguish validated from unvalidated inputs, null-checked from unchecked pointers, or computed buffer sizes from literal ones.
 
 ---
 

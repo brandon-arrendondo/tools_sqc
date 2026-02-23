@@ -93,8 +93,12 @@ impl Dcl30C {
                 if child.kind() == "identifier" {
                     let var_name = ast_utils::get_node_text(&child, source).to_string();
 
-                    // Check if this identifier refers to a local array/variable
-                    if self.is_local_variable(&child, source) {
+                    // Only flag if the local is a pointer or array type.
+                    // Returning a scalar by value copies the value — it is safe and
+                    // is NOT what DCL30-C is about.
+                    if self.is_local_variable(&child, source)
+                        && self.local_var_is_pointer_or_array(&child, &var_name, source)
+                    {
                         let start_point = return_node.start_position();
 
                         return Some(RuleViolation {
@@ -117,6 +121,99 @@ impl Dcl30C {
             }
         }
         None
+    }
+
+    /// Returns true if the local variable named `var_name` is declared as a pointer
+    /// or array type in the enclosing function body.
+    fn local_var_is_pointer_or_array(&self, var_node: &Node, var_name: &str, source: &str) -> bool {
+        // Walk up to the function body
+        let mut current = var_node.parent();
+        let mut function_body: Option<Node> = None;
+        while let Some(node) = current {
+            if node.kind() == "compound_statement" {
+                if let Some(parent) = node.parent() {
+                    if parent.kind() == "function_definition" {
+                        function_body = Some(node);
+                        break;
+                    }
+                }
+            }
+            current = node.parent();
+        }
+        let body = match function_body {
+            Some(b) => b,
+            None => return false,
+        };
+        self.find_pointer_or_array_declaration(&body, var_name, source)
+    }
+
+    /// Search a compound statement for a declaration of `var_name` that is a
+    /// pointer (`*`) or array (`[`) declarator.
+    fn find_pointer_or_array_declaration(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() == "declaration" {
+                    if self.declaration_contains_var_by_name(&child, var_name, source) {
+                        // Check the declarator kind: pointer_declarator or array_declarator
+                        // means it is a pointer/array type.
+                        return self.declaration_has_pointer_or_array_declarator(&child);
+                    }
+                }
+                if child.kind() == "compound_statement" {
+                    if self.find_pointer_or_array_declaration(&child, var_name, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a declaration declares `var_name` by comparing actual identifier text.
+    fn declaration_contains_var_by_name(
+        &self,
+        decl_node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> bool {
+        for i in 0..decl_node.child_count() {
+            if let Some(child) = decl_node.child(i) {
+                if matches!(
+                    child.kind(),
+                    "init_declarator" | "array_declarator" | "pointer_declarator" | "identifier"
+                ) {
+                    if self.contains_identifier_by_name(&child, var_name, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// True if the declaration node contains a pointer_declarator or array_declarator,
+    /// indicating the declared variable is a pointer or array.
+    fn declaration_has_pointer_or_array_declarator(&self, decl_node: &Node) -> bool {
+        for i in 0..decl_node.child_count() {
+            if let Some(child) = decl_node.child(i) {
+                match child.kind() {
+                    "pointer_declarator" | "array_declarator" => return true,
+                    "init_declarator" => {
+                        // init_declarator wraps the actual declarator
+                        for j in 0..child.child_count() {
+                            if let Some(inner) = child.child(j) {
+                                if matches!(inner.kind(), "pointer_declarator" | "array_declarator")
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        false
     }
 
     /// Check if an assignment assigns a local variable to global or output parameter
@@ -268,20 +365,35 @@ impl Dcl30C {
         false
     }
 
-    /// Check if a node tree contains an identifier with given name
+    /// Check if a node tree contains an identifier with given name (text-free version,
+    /// used only where source is unavailable — compares byte length as a coarse filter).
+    /// Prefer `contains_identifier_by_name` when source is available.
     fn contains_identifier(&self, node: &Node, var_name: &str) -> bool {
         if node.kind() == "identifier" {
-            // Compare node text byte range (simple byte comparison)
             if var_name.len() == (node.end_byte() - node.start_byte()) {
-                // Exact length match - likely the same identifier
                 return true;
             }
         }
-
-        // Recursively search children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 if self.contains_identifier(&child, var_name) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Accurate version: checks identifier text against source bytes.
+    fn contains_identifier_by_name(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        if node.kind() == "identifier" {
+            if ast_utils::get_node_text(node, source) == var_name {
+                return true;
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.contains_identifier_by_name(&child, var_name, source) {
                     return true;
                 }
             }

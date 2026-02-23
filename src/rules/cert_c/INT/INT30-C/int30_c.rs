@@ -119,6 +119,15 @@ impl Int30C {
             let left_type = self.infer_type(&left, source, type_map);
             let right_type = self.infer_type(&right, source, type_map);
 
+            // Skip pointer arithmetic: ptr + n, n + ptr
+            // "not_applicable" means a non-integer type (pointer, float, struct).
+            // Adding an unsigned offset to a pointer is valid C pointer arithmetic and
+            // is NOT an unsigned integer overflow — that is ARR39-C's domain.
+            if left_type == "not_applicable" || right_type == "not_applicable" {
+                // Recurse into children only
+                return;
+            }
+
             if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
@@ -158,6 +167,11 @@ impl Int30C {
         ) {
             let left_type = self.infer_type(&left, source, type_map);
             let right_type = self.infer_type(&right, source, type_map);
+
+            // Skip pointer arithmetic: ptr - n, ptr - ptr2
+            if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
 
             if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
                 if !self.has_overflow_check_subtraction(node, source) {
@@ -267,6 +281,11 @@ impl Int30C {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source, type_map);
 
+            // Skip pointer arithmetic: ptr += n
+            if left_type == "not_applicable" {
+                return;
+            }
+
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
@@ -299,6 +318,11 @@ impl Int30C {
     ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source, type_map);
+
+            // Skip pointer arithmetic: ptr -= n
+            if left_type == "not_applicable" {
+                return;
+            }
 
             if self.is_unsigned_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
