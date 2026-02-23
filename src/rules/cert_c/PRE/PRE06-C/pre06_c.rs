@@ -24,6 +24,15 @@ impl CertRule for Pre06C {
         "PRE06-C"
     }
 
+    fn applies_to_file(&self, file_path: &str) -> bool {
+        matches!(
+            std::path::Path::new(file_path)
+                .extension()
+                .and_then(|e| e.to_str()),
+            Some("h" | "hpp" | "hh" | "hxx")
+        )
+    }
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 

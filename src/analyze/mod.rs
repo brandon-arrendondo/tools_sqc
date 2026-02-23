@@ -94,6 +94,10 @@ pub fn analyze_project(
 
                 // Check if rule is implemented
                 if let Some(rule) = registry.get_rule(rule_id) {
+                    // Skip rules that don't apply to this file type (e.g. header-only rules)
+                    if !rule.applies_to_file(file_path) {
+                        continue;
+                    }
                     let mut file_violations = rule.check(&root_node, &source);
 
                     // Filter out suppressed violations

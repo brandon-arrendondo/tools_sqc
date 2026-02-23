@@ -164,6 +164,11 @@ impl Int32C {
             let left_type = self.infer_type(&left, source, type_map);
             let right_type = self.infer_type(&right, source, type_map);
 
+            // Skip if any operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
+
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
                 // Skip if this operation is part of an overflow check comparison
                 if self.is_part_of_comparison(node, source) {
@@ -212,6 +217,11 @@ impl Int32C {
         ) {
             let left_type = self.infer_type(&left, source, type_map);
             let right_type = self.infer_type(&right, source, type_map);
+
+            // Skip if any operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
 
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
                 // Skip if this operation is part of an overflow check comparison
@@ -268,6 +278,11 @@ impl Int32C {
             let left_type = self.infer_type(&left, source, type_map);
             let right_type = self.infer_type(&right, source, type_map);
 
+            // Skip if any operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
+
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
                 // Skip if this operation is part of an overflow check comparison
                 if self.is_part_of_comparison(node, source) {
@@ -323,6 +338,11 @@ impl Int32C {
             let right_text = get_node_text(&right, source);
             let left_type = self.infer_type(&left, source, type_map);
             let right_type = self.infer_type(&right, source, type_map);
+
+            // Skip if any operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
 
             // Check for signed integer division
             // INT_MIN / -1 causes overflow because -INT_MIN cannot be represented
@@ -385,6 +405,11 @@ impl Int32C {
             let left_type = self.infer_type(&left, source, type_map);
             let right_type = self.infer_type(&right, source, type_map);
 
+            // Skip if any operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
+
             // Check for signed integer modulo
             // INT_MIN % -1 causes overflow
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
@@ -434,6 +459,11 @@ impl Int32C {
             let _arg_text = get_node_text(&argument, source);
             let arg_type = self.infer_type(&argument, source, type_map);
 
+            // Skip if operand is a non-integer type (char, float, pointer, etc.)
+            if arg_type == "not_applicable" {
+                return;
+            }
+
             // Check for negation of signed integers, especially -INT_MIN which causes overflow
             if self.is_signed_type(&arg_type) {
                 if !self.has_negation_overflow_check(node, source) {
@@ -473,6 +503,11 @@ impl Int32C {
         ) {
             let left_type = self.infer_type(&left, source, type_map);
 
+            // Skip if operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" {
+                return;
+            }
+
             if self.is_signed_type(&left_type) {
                 if !self.has_shift_overflow_check(node, source) {
                     let start_point = node.start_position();
@@ -505,6 +540,11 @@ impl Int32C {
     ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source, type_map);
+
+            // Skip if operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" {
+                return;
+            }
 
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -541,6 +581,11 @@ impl Int32C {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source, type_map);
 
+            // Skip if operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" {
+                return;
+            }
+
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
@@ -573,6 +618,11 @@ impl Int32C {
     ) {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source, type_map);
+
+            // Skip if operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" {
+                return;
+            }
 
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
@@ -683,6 +733,11 @@ impl Int32C {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source, type_map);
 
+            // Skip if operand is a non-integer type (char, float, pointer, etc.)
+            if left_type == "not_applicable" {
+                return;
+            }
+
             if self.is_signed_type(&left_type) {
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
@@ -715,6 +770,11 @@ impl Int32C {
     ) {
         if let Some(argument) = node.child_by_field_name("argument") {
             let arg_type = self.infer_type(&argument, source, type_map);
+
+            // Skip if operand is a non-integer type (char, float, pointer, etc.)
+            if arg_type == "not_applicable" {
+                return;
+            }
 
             if self.is_signed_type(&arg_type) {
                 // Skip if this is part of a safe for loop (bounded, starting from small values)
@@ -1071,8 +1131,8 @@ impl Int32C {
                 {
                     return "signed".to_string();
                 }
-                // Non-integer types (float, double, char, pointers, structs) — skip
-                return "unknown".to_string();
+                // Non-integer types (float, double, char, pointers, structs) — not applicable to INT32-C
+                return "not_applicable".to_string();
             }
         }
 

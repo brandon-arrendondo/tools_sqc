@@ -4,7 +4,6 @@
 //! a sequence of statements with a single entry and single exit. Edges represent
 //! control flow between blocks (fallthrough, branches, back edges, returns).
 
-use std::collections::HashMap;
 use tree_sitter::Node;
 
 /// Unique identifier for a basic block within a function CFG.

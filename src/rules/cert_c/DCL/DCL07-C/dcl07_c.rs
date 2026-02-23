@@ -74,6 +74,14 @@ impl Dcl07C {
         if let Some(func) = call_node.child_by_field_name("function") {
             let func_name = get_node_text(&func, source);
 
+            // Skip ALL_CAPS identifiers — in C, all-uppercase names are macros by
+            // convention. Tree-sitter cannot expand macros, so it sees macro
+            // invocations like SAFE_PRINT(x) or CU_ASSERT_EQUAL(a,b) as function
+            // calls. They are never truly undeclared functions.
+            if is_macro_like_name(func_name) {
+                return;
+            }
+
             // Skip standard library functions
             if self.is_standard_function(func_name) {
                 return;
@@ -524,4 +532,17 @@ impl CertRule for Dcl07C {
         self.check_node(node, source, &mut violations, &declarations);
         violations
     }
+}
+
+/// Returns true if the name looks like a C macro rather than a function.
+///
+/// By C convention, macro names are ALL_CAPS (may include digits and underscores).
+/// Tree-sitter sees macro invocations like `SAFE_PRINT(x)` as function calls
+/// because it cannot expand preprocessor definitions. Skipping all-uppercase
+/// names avoids these false positives.
+fn is_macro_like_name(name: &str) -> bool {
+    !name.is_empty()
+        && name
+            .chars()
+            .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
 }

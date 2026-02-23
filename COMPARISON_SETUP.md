@@ -26,6 +26,14 @@ This document details how to install **cppcheck** and **clang/clang-tidy** on Ub
    - [9.4 curl Baseline Reference](#94-curl-baseline-reference)
    - [9.5 mosquitto Baseline Reference](#95-mosquitto-baseline-reference)
 10. [Notes on Methodology](#10-notes-on-methodology)
+11. [Distributed Benchmarking with GNU Parallel (8-Node Cluster)](#11-distributed-benchmarking-with-gnu-parallel-8-node-cluster)
+    - [11.1 Prerequisites](#111-prerequisites)
+    - [11.2 Node File](#112-node-file)
+    - [11.3 Fast Re-Benchmark Workflow](#113-fast-re-benchmark-workflow)
+    - [11.4 Juliet Benchmark Distribution](#114-juliet-benchmark-distribution)
+    - [11.5 Real-World Project Distribution](#115-real-world-project-distribution)
+    - [11.6 Scaling to More Projects](#116-scaling-to-more-projects)
+12. [TODO: Additional Tools to Evaluate](#12-todo-additional-tools-to-evaluate)
 
 ---
 
@@ -1088,3 +1096,299 @@ mosquitto is a mid-size MQTT broker + client library (~121 C files in `lib/` + `
 4. Classify each finding as TP or FP using Juliet's OMITBAD/OMITGOOD sections.
 5. Compute precision, recall, and F1 per tool.
 6. Restrict comparison to rules/checks that all tools implement for fair overlap analysis.
+
+---
+
+## 12. TODO: Additional Tools to Evaluate
+
+> **Status**: Research task for next session. The goal is to identify open-source or freely-available static analysis tools with meaningful CERT C / CWE coverage that can be added to the distributed benchmark alongside cppcheck and clang-tidy.
+
+### Candidates to Investigate
+
+| Tool | Type | Notes |
+|------|------|-------|
+| **Infer** (Meta) | Open source, flow-sensitive | Already in §7 comparison table. Handles null deref and memory safety well. Slower than pattern-based tools. |
+| **Frama-C** (CEA) | Open source, formal methods | Eva (value analysis) and WP (deductive verification) plugins cover many CERT C rules. Very thorough but slow; may need dedicated node. |
+| **Semgrep CE** | Open source, pattern-based | Already in §7 comparison table. Fast, easy to extend with custom CERT C patterns. |
+| **Flawfinder** | Open source, pattern-based | Lightweight, focuses on CWE security patterns (buffer overflows, format strings). Quick to run. |
+| **PVS-Studio** | Commercial (free for OSS) | Has explicit CERT C mapping in their documentation. Worth checking if free tier covers the projects we benchmark. |
+| **Coverity Scan** | Commercial (free for OSS) | Synopsys; defect density data only, no public CERT C mapping — but widely cited. Limited API access for automation. |
+| **CodeChecker** | Open source | Frontend/aggregator for Clang Static Analyzer results with a web UI and diff capability. Not a new analysis engine but may simplify result management. |
+
+### Research Questions for Each Tool
+
+- Does it have explicit CERT C rule mapping, or only CWE/generic defect categories?
+- Can it run headlessly from a shell command suitable for GNU Parallel distribution?
+- What is the approximate runtime on libcrc (baseline: cppcheck=~5s, clang-tidy=~10s, sqc=~2s)?
+- Does it produce machine-readable output (XML, JSON, SARIF) for scripted comparison?
+- Are there known Juliet benchmark results published for this tool?
+
+### Priority
+
+Infer and Frama-C are highest priority — both are flow-sensitive (unlike cppcheck/clang-tidy) and would provide the most meaningful comparison to sqc's analysis depth. Semgrep CE is useful for establishing a pattern-matching baseline. Flawfinder is a quick win if runtime is negligible.
+
+
+---
+
+## 11. Distributed Benchmarking with GNU Parallel (8-Node Cluster)
+
+The primary use case here is fast re-benchmarking: after a rule change, rebuild sqc and get updated TP/FP numbers across Juliet and all real-world projects as quickly as possible. GNU Parallel over SSH is the right tool for this — it extends the same `xargs -P` pattern already used throughout this doc to span multiple machines, with no daemon infrastructure.
+
+**Key principle**: cppcheck and clang-tidy results are stable across sqc rule changes — run them once and cache. Only sqc needs to re-run after each rule iteration. The fast re-benchmark path is sqc-only.
+
+---
+
+### 11.1 Prerequisites
+
+**Install GNU Parallel** on all nodes:
+
+```bash
+sudo apt install -y parallel
+# Silence the citation notice
+parallel --citation <<< "will cite" 2>/dev/null || true
+```
+
+**SSH key auth** from head node to all compute nodes (no password prompts):
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/id_benchmark -N ""
+for node in node1 node2 node3 node4 node5 node6 node7 node8; do
+  ssh-copy-id -i ~/.ssh/id_benchmark.pub $node
+done
+```
+
+**Shared filesystem**: NFS or any shared mount at a consistent path across all nodes is strongly preferred. If unavailable, see the rsync pattern at the end of §11.3.
+
+**Environment variables** (add to `~/.bashrc` on the head node):
+
+```bash
+export SQC_BIN=/home/brandon/data/tools_sqc/target/release/sqc
+export SQC_MANIFEST=/home/brandon/data/tools_sqc/rules_templates/rules-all.toml
+export JULIET_DIR=/shared/data/juliet/testcases
+export JULIET_SUPPORT=/shared/data/juliet/testcasesupport
+export RESULTS_DIR=/shared/data/comparisons/results
+export NODES_FILE=/home/brandon/.benchmark_nodes
+```
+
+Create output directories once:
+
+```bash
+mkdir -p $RESULTS_DIR/{sqc,cppcheck,clang-tidy}/{juliet,libcrc,sqlite,mosquitto,curl,hostap}
+mkdir -p logs/
+```
+
+---
+
+### 11.2 Node File
+
+GNU Parallel reads a node file where each line is `user@host/N` — the `/N` controls how many concurrent jobs run on that host. Set N to the number of cores you want to dedicate per node.
+
+```
+# ~/.benchmark_nodes
+brandon@node1/8
+brandon@node2/8
+brandon@node3/8
+brandon@node4/8
+brandon@node5/8
+brandon@node6/8
+brandon@node7/8
+brandon@node8/8
+```
+
+Include the head node with `:/8` if you want it to also do work (it runs the coordinator process but is otherwise idle during distribution).
+
+Verify connectivity before the first real run:
+
+```bash
+parallel --sshloginfile $NODES_FILE \
+  --nonall \
+  'echo "$(hostname): $(nproc) cores, $(free -h | awk "/^Mem/{print $2}") RAM"'
+```
+
+---
+
+### 11.3 Fast Re-Benchmark Workflow
+
+This is the primary use case: a rule has been changed, sqc rebuilt, and you want updated TP/FP numbers as fast as possible.
+
+**Step 1 — Rebuild** (on head node, shared FS makes the binary immediately available everywhere):
+
+```bash
+cd /home/brandon/data/tools_sqc
+cargo build --release 2>&1 | tail -3
+```
+
+If no shared FS, push the binary to all nodes after building:
+
+```bash
+parallel --sshloginfile $NODES_FILE \
+  --nonall \
+  "rsync -az $SQC_BIN {}/sqc_bin"
+# then use {}/sqc_bin instead of $SQC_BIN in job commands
+```
+
+**Step 2 — Run sqc across Juliet + real-world projects in parallel**:
+
+```bash
+# Generate CWE list
+find $JULIET_DIR -maxdepth 1 -type d -name 'CWE*' | sort > /tmp/cwe_dirs.txt
+
+# Juliet: one job per CWE directory, distributed across all nodes
+parallel \
+  --sshloginfile $NODES_FILE \
+  --jobs 4 \
+  --eta \
+  '$SQC_BIN {} \
+    -d $JULIET_DIR \
+    -d $JULIET_SUPPORT \
+    --manifest $SQC_MANIFEST \
+    --export $RESULTS_DIR/sqc/juliet/$(basename {}).csv \
+    2>/dev/null' \
+  :::: /tmp/cwe_dirs.txt
+
+# Real-world projects: one job per project, run concurrently
+parallel \
+  --sshloginfile $NODES_FILE \
+  --jobs 1 \
+  '$SQC_BIN $RESULTS_DIR/../{} \
+    -d $RESULTS_DIR/../{} \
+    --manifest $SQC_MANIFEST \
+    --export $RESULTS_DIR/sqc/{}/results.csv \
+    2>/dev/null' \
+  ::: libcrc sqlite mosquitto curl hostap
+```
+
+**Step 3 — Aggregate**:
+
+```bash
+# Merge Juliet CSVs and run TP/FP analysis
+MERGED=$RESULTS_DIR/sqc/juliet/all_cwe.csv
+head -1 $(ls $RESULTS_DIR/sqc/juliet/CWE*.csv | head -1) > "$MERGED"
+for f in $RESULTS_DIR/sqc/juliet/CWE*.csv; do tail -n +2 "$f"; done >> "$MERGED"
+
+python3 /home/brandon/data/tools_sqc/scripts/analyze_juliet_results.py \
+  --csv "$MERGED" \
+  --dir "$JULIET_DIR" \
+  | tee $RESULTS_DIR/sqc/juliet/tp_fp_summary.txt
+```
+
+Total turnaround for steps 2–3 with 8 nodes at 8 jobs/node: Juliet (~130 CWEs) in roughly 2–4 minutes; all 5 real-world projects in parallel on separate nodes simultaneously.
+
+---
+
+### 11.4 Juliet Benchmark Distribution
+
+The Juliet benchmark distributes naturally — each CWE directory is an independent unit of work.
+
+```bash
+# Full three-tool Juliet run (cppcheck and clang-tidy results can be cached;
+# only re-run sqc between rule iterations)
+
+# sqc — fast, re-run every iteration
+parallel \
+  --sshloginfile $NODES_FILE \
+  --jobs 4 \
+  --joblog logs/juliet_sqc.log \
+  --resume-failed \
+  '$SQC_BIN {1} \
+    -d $JULIET_DIR -d $JULIET_SUPPORT \
+    --manifest $SQC_MANIFEST \
+    --export $RESULTS_DIR/sqc/juliet/$(basename {1}).csv \
+    2>/dev/null' \
+  :::: /tmp/cwe_dirs.txt
+
+# cppcheck — run once, results stable across sqc rule changes
+parallel \
+  --sshloginfile $NODES_FILE \
+  --jobs 4 \
+  --joblog logs/juliet_cppcheck.log \
+  --resume-failed \
+  'cppcheck \
+    --enable=all --std=c11 --xml --xml-version=2 \
+    --suppress=missingIncludeSystem \
+    {1} \
+    2> $RESULTS_DIR/cppcheck/juliet/$(basename {1}).xml' \
+  :::: /tmp/cwe_dirs.txt
+
+# clang-tidy — run once, results stable across sqc rule changes
+parallel \
+  --sshloginfile $NODES_FILE \
+  --jobs 2 \
+  --joblog logs/juliet_clang_tidy.log \
+  --resume-failed \
+  'find {1} -name "*.c" | \
+    xargs -P 4 -I{f} clang-tidy \
+      -checks="-*,cert-*,clang-analyzer-*" {f} \
+      -- -std=c11 -I $JULIET_SUPPORT \
+    > $RESULTS_DIR/clang-tidy/juliet/$(basename {1}).txt 2>&1' \
+  :::: /tmp/cwe_dirs.txt
+```
+
+`--resume-failed` re-runs only failed jobs on the next invocation (uses `--joblog`). Useful when a node goes down mid-run.
+
+---
+
+### 11.5 Real-World Project Distribution
+
+Real-world projects vary in size. Run them in parallel across nodes, assigning heavier projects to dedicated nodes:
+
+```bash
+# Parallel sqc across all projects simultaneously
+# Each project runs on whichever node is free
+parallel \
+  --sshloginfile $NODES_FILE \
+  --jobs 1 \
+  --colsep '\t' \
+  '$SQC_BIN {2} \
+    -d {2} \
+    --manifest $SQC_MANIFEST \
+    --export $RESULTS_DIR/sqc/{1}/results.csv \
+    2>/dev/null && echo "Done: {1}"' \
+  :::: <(printf "libcrc\t/shared/data/comparisons/libcrc\n\
+sqlite\t/shared/data/comparisons/sqlite\n\
+mosquitto\t/shared/data/comparisons/mosquitto\n\
+curl\t/shared/data/comparisons/curl\n\
+hostap\t/shared/data/comparisons/hostap\n")
+```
+
+To run cppcheck across all projects in parallel (one-time baseline, stable results):
+
+```bash
+declare -A CPP_SRC CPP_INC
+CPP_SRC[libcrc]="/shared/data/comparisons/libcrc/src/"
+CPP_INC[libcrc]="-I /shared/data/comparisons/libcrc/include"
+CPP_SRC[sqlite]="/shared/data/comparisons/sqlite/src/"
+CPP_INC[sqlite]="-I /shared/data/comparisons/sqlite/src"
+CPP_SRC[mosquitto]="/shared/data/comparisons/mosquitto/lib/ /shared/data/comparisons/mosquitto/src/"
+CPP_INC[mosquitto]="-I /shared/data/comparisons/mosquitto/include -i /shared/data/comparisons/mosquitto/deps"
+CPP_SRC[curl]="/shared/data/comparisons/curl/lib/ /shared/data/comparisons/curl/src/"
+CPP_INC[curl]="-I /shared/data/comparisons/curl/include -I /shared/data/comparisons/curl/lib"
+CPP_SRC[hostap]="/shared/data/comparisons/hostap/src/ /shared/data/comparisons/hostap/wpa_supplicant/"
+CPP_INC[hostap]="-I /shared/data/comparisons/hostap/src -I /shared/data/comparisons/hostap/src/utils"
+
+for PROJECT in libcrc sqlite mosquitto curl hostap; do
+  echo "$PROJECT	${CPP_SRC[$PROJECT]}	${CPP_INC[$PROJECT]}"
+done | \
+parallel \
+  --sshloginfile $NODES_FILE \
+  --jobs 1 \
+  --colsep '\t' \
+  'cppcheck --enable=all --std=c11 --xml --xml-version=2 \
+    --suppress=missingIncludeSystem {3} {2} \
+    2> $RESULTS_DIR/cppcheck/{1}/results.xml && echo "Done cppcheck: {1}"'
+```
+
+---
+
+### 11.6 Scaling to More Projects
+
+Adding a new real-world project to the benchmark requires only:
+
+1. Clone the project to `/shared/data/comparisons/<project>/`
+2. Add a row to the project list used in §11.5
+3. Add cppcheck source/include entries to the `CPP_SRC`/`CPP_INC` maps
+4. Run cppcheck once to establish a baseline (stable across sqc iterations)
+5. The fast re-benchmark script (§11.3) picks it up automatically
+
+The per-project cppcheck and clang-tidy baselines only need to be re-run if the project source is updated or a new tool version is being evaluated, not between sqc rule iterations.
+

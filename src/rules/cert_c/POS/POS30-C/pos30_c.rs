@@ -30,7 +30,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use std::collections::HashMap;
 use tree_sitter::Node;
 
 pub struct Pos30C;

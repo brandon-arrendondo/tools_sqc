@@ -11,7 +11,6 @@
 //! unsafe for use across multiple threads without synchronization.
 
 use crate::manifest::{RuleCategory, Severity};
-use crate::prelude::*;
 use crate::rules::{CertRule, RuleViolation};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
