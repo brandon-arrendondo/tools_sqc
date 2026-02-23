@@ -172,13 +172,13 @@ The 601 non-EXP34-C FPs in CWE-476 have specific, fixable causes:
 
 | Rule | FP Count | Root Cause | Proposed Fix | Est. FP Reduction |
 |------|:--------:|------------|--------------|:-----------------:|
-| **MEM10-C** | 134 | Fires on `if (data != NULL)` in good() — penalizes inline null checks as "should use validation function." Good functions fix the vuln by ADDING null checks, which MEM10-C then flags. | Only fire when the inline null check is for a **function parameter**, not a locally-declared variable. A local variable's null check is not an "ad-hoc validation" in the MEM10-C sense. | ~110 |
+| **MEM10-C** | 134 → **28** ✅ | Fires on `if (data != NULL)` in good() — penalizes inline null checks as "should use validation function." Good functions fix the vuln by ADDING null checks, which MEM10-C then flags. | ✅ DONE R16: Only fire when the inline null check is for a **function parameter**, not a locally-declared variable. Verified: 134→28 FPs (106 reduction). Remaining 28 FPs are from goodB2GSink-style functions where `data` IS a param — unavoidable without call-site analysis. | **106** |
 | **EXP33-C** | 94 | Fires on variables that appear uninitialized in some branches; good() functions add branches (null checks) that confuse initialization tracking. | Apply CFG-based branch merge to EXP33-C initialization tracking (same fix as Pillar 1). | ~60 |
-| **DCL13-C** | 83 | Fires on `int main(int argc, char * argv[])` — argv not declared const. This is the C standard signature; const is not applicable here. | Skip `main()` function entirely in DCL13-C. | ~30 |
+| **DCL13-C** | 83 | Fires on sink functions in OMITGOOD sections (`goodG2BSink(char *data)` — `data` not modified, should be const). The main() skip in R16 had no benchmark impact: main() is in `#ifdef INCLUDEMAIN`, not OMITBAD/OMITGOOD. Real FPs come from functions with identical signatures in both bad/good sections. | No clean fix — same structure in bad() and good() sections means any suppression removes TPs equally. Accept as structural. | ~0 |
 | **API02-C** | 76 | Fires on function signatures; structural noise in both bad() and good() sections. | Narrow scope or accept as structural. | ~30 |
 | **API00-C** | 65 | Same as API02-C. | Same. | ~20 |
 
-**Total estimated FP reduction: ~250 FPs** → collateral FPs drop from 601 to ~351.
+**Total estimated FP reduction: ~176 FPs** → collateral FPs drop from 601 to ~425 (MEM10-C gave 106, others remain structural).
 
 ---
 
@@ -256,6 +256,7 @@ The 601 non-EXP34-C FPs in CWE-476 have specific, fixable causes:
 | 13 (legacy) | ~33% | ~80 | ~600 | Pre-deref_after_check |
 | 14 | +18 EXP34-C TP | 100 | ~600 | deref_after_check pattern |
 | 15 | 35.4% | 82 | 601 | if/else branch merge (variant 12) |
-| 16 (target) | ~50% | ~350 | ~480 | CFG dataflow + DCL13-C/MEM10-C fixes |
+| 16 | ~37-40%? | 82 | ~495 | MEM10-C param-only fix (−106 FP); DCL13-C main() no benchmark impact; pending full run |
+| 17 (target) | ~50% | ~350 | ~480 | CFG dataflow + remaining FP fixes |
 | 17 (target) | ~65% | ~600 | ~400 | Call-site propagation + EXP33-C fix |
 | 18+ (target) | **≥80%** | **~850** | **~200** | Full architecture |
