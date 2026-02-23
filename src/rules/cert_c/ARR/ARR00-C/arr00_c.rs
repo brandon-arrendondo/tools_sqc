@@ -15,8 +15,8 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::{
-    find_containing_function, get_function_parameters,
-    is_array_parameter_type, is_function_parameter, is_inside_loop, is_write_context,
+    find_containing_function, get_function_parameters, is_array_parameter_type,
+    is_function_parameter, is_inside_loop, is_write_context,
 };
 use crate::utility::cert_c::size_analysis::{
     find_allocation_size, find_element_size, find_string_literal_length,

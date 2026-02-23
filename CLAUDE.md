@@ -167,6 +167,43 @@ cat .claude/commands/gather-opinions.md
 
 ---
 
+## Benchmark Improvement Priorities (Juliet TP Rate)
+
+The following CERT-C rules are **high priority** for Juliet benchmark improvement
+because they supersede critical BISSELL code rules (BRULE-045, BRULE-047,
+BRULE-051, BRULE-056). When selecting rules to improve, prefer these over others.
+
+Within each group, focus on **increasing TP rate** (reducing false negatives) and
+**reducing FP rate** (reducing false positives on `good*` functions).
+
+### Tier 1 — Undefined Behavior (BRULE-047 → highest impact)
+- **EXP34-C** — null pointer dereference (CWE-476; largest single CWE in Juliet)
+  - Round 14 fix: `deref_after_check` pattern — `if (ptr == NULL) { *ptr; }` now caught
+    via `end_byte` in `null_check_positions` + removed premature `null_checked_vars` early exit
+    + `end_byte` in `nullable_reassignments` (prevents self-referential FP on `cur = cur->next`)
+  - Remaining gaps: variant 12 (`globalReturnsTrueOrFalse()` — opaque non-constant branch),
+    variant 45 (static global null flow across functions), multi-file splits (need interprocedural)
+- **ARR30-C** / **ARR38-C** — out-of-bounds array access (CWE-125, CWE-787)
+- **EXP33-C** — uninitialized memory reads (CWE-457)
+- **INT30-C** / **INT32-C** — unsigned wraparound / signed integer overflow (CWE-190, CWE-191)
+
+### Tier 2 — Memory Safety (BRULE-045)
+- **MEM30-C** — use-after-free (CWE-416)
+- **MEM31-C** — memory leak / failure to free (CWE-401)
+- **MEM34-C** — double-free (CWE-415)
+- **MEM35-C** — insufficient memory allocation (CWE-131)
+
+### Tier 3 — Concurrency (BRULE-051)
+- **CON30-C** through **CON43-C** — race conditions, deadlock, unsafe shared access
+  (CWE-362, CWE-366, CWE-367)
+- Focus: Juliet has limited concurrency test cases; prioritize FP reduction over TP gains here.
+
+### Tier 4 — Sensitive Data (BRULE-056)
+- **MSC41-C** — hard-coded credentials / sensitive literals (CWE-798, CWE-259)
+- Focus: Juliet coverage is thin; improvements here are primarily real-world FP/FN quality.
+
+---
+
 ## Project Structure
 
 - `src/rules/cert_c/` - CERT C rule implementations
