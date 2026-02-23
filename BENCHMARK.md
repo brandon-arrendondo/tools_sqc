@@ -1,7 +1,7 @@
 # SqC Benchmark, Analysis, and Strategic Assessment
 
-**Last Updated**: 2026-02-23 (Round 15 Juliet benchmark in progress)
-**Current TP Rate**: 44.1% (Round 13, 54,484 Juliet files) — Round 15 in progress
+**Last Updated**: 2026-02-23 (Round 15 complete — MCP benchmark system)
+**Current TP Rate**: 44.7% (Round 15, MCP benchmark) / 44.1% (Round 13, legacy system)
 
 ---
 
@@ -31,7 +31,7 @@
 | **Juliet Files** | 54,484 |
 | **True Positives** | 189,016 |
 | **False Positives** | 239,724 |
-| **TP Rate** | **44.1%** |
+| **TP Rate** | **44.7%** (Round 15, MCP) / 44.1% (Round 13, legacy) |
 | **FP Reduction from Baseline** | -71.4% (839K → 240K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
@@ -89,7 +89,9 @@
 | Round 12 | INT07-C, INT32-C, EXP10-C, EXP34-C, INT30-C, MEM10-C, STR31-C (short literal), Windows API std_functions | 189,950 | 243,849 | 43.8% | -28,933 |
 | **Round 13** | **STR31-C: L-prefix fix + literal-source+unknown-dest suppression (strcpy + strcat)** | **189,016** | **239,724** | **44.1%** | **-4,125** |
 | Round 14 | EXP34-C: `deref_after_check` pattern (fix end_byte + remove premature early-exit) | +18 TP | 0 new FP | — | not independently measured |
-| **Round 15** | **EXP34-C: if/else branch merge (variant 12 — globalReturnsTrueOrFalse)** | **+8 TP** | **0 new FP** | **TBD** | **benchmark in progress** |
+| **Round 15** | **EXP34-C: if/else branch merge (variant 12 — globalReturnsTrueOrFalse)** | 376,056 ¹ | 465,233 ¹ | **44.7%** ¹ | — |
+
+¹ Rounds 14–15 measured by Juliet benchmark MCP server. Absolute TP/FP counts not directly comparable to Rounds 1–13 (different benchmark runner methodology). TP rate is the comparable metric.
 
 **Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Rounds 10+11 removed 23,560 FP (DCL ALL_CAPS macro guard). Round 12 removed 28,933 FP (Windows API std_functions additions were the dominant effect — DCL31-C/DCL07-C dropped from ~41K to ~5K combined FP). Round 13 removed 4,125 FP from targeted STR31-C fixes. Cumulative FP reduction from baseline: -599,617 (-71.4%).
 
@@ -103,7 +105,7 @@ Add `"if_statement"` handling to `collect_null_variables` that properly merges s
 
 **Fixes false negative in variant 12** (`globalReturnsTrueOrFalse`): when the `if`-branch sets `ptr = NULL` and the `else`-branch sets `ptr = valid`, the merged state correctly keeps `ptr` as potentially_null at the post-if dereference. Previously the else-branch's assignment removed `ptr` from `potentially_null_vars`, causing the deref to be missed.
 
-**Net**: +8 TPs on CWE-476 (8 variant-12 files), 0 new FPs, 5 pre-existing test failures unchanged.
+**Net**: +4 TP on CWE-476 vs Round 14 mixed benchmark (357 TP, 651 FP, 35.4% TP rate). 8 variant-12 bad() functions now correctly flagged; minor FP uptick in other CWE-476 files from if/else merge widening. Overall benchmark TP rate 44.7% (MCP system). 5 pre-existing test failures unchanged.
 
 ---
 

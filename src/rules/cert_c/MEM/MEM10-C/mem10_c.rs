@@ -70,6 +70,74 @@ impl CertRule for Mem10C {
 }
 
 impl Mem10C {
+    /// Collect the pointer parameter names of the enclosing function definition.
+    /// Returns an empty set if we can't find a function definition ancestor.
+    fn collect_enclosing_params<'a>(
+        &self,
+        node: &Node<'a>,
+        source: &str,
+    ) -> std::collections::HashSet<String> {
+        let mut current = node.parent();
+        while let Some(p) = current {
+            if p.kind() == "function_definition" {
+                return self.extract_pointer_param_names(&p, source);
+            }
+            current = p.parent();
+        }
+        std::collections::HashSet::new()
+    }
+
+    fn extract_pointer_param_names(
+        &self,
+        func_node: &Node,
+        source: &str,
+    ) -> std::collections::HashSet<String> {
+        let mut names = std::collections::HashSet::new();
+        for i in 0..func_node.child_count() {
+            if let Some(child) = func_node.child(i) {
+                self.collect_params_from_declarator(&child, source, &mut names);
+            }
+        }
+        names
+    }
+
+    fn collect_params_from_declarator(
+        &self,
+        node: &Node,
+        source: &str,
+        names: &mut std::collections::HashSet<String>,
+    ) {
+        if node.kind() == "function_declarator" {
+            if let Some(params) = node.child_by_field_name("parameters") {
+                for i in 0..params.child_count() {
+                    if let Some(param) = params.child(i) {
+                        if param.kind() == "parameter_declaration" {
+                            if let Some(decl) = param.child_by_field_name("declarator") {
+                                let text = get_node_text(&decl, source);
+                                // Extract the identifier from declarators like *data, data[], etc.
+                                if decl.kind() == "pointer_declarator"
+                                    || decl.kind() == "array_declarator"
+                                {
+                                    if let Some(id) = find_identifier_in_node(&decl, source) {
+                                        names.insert(id);
+                                    }
+                                } else if decl.kind() == "identifier" {
+                                    names.insert(text.to_string());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    self.collect_params_from_declarator(&child, source, names);
+                }
+            }
+        }
+    }
+
     fn check_pointer_validation(
         &self,
         node: &Node,
@@ -81,24 +149,32 @@ impl Mem10C {
             if let Some(condition) = node.child_by_field_name("condition") {
                 // Check if this is a direct NULL comparison
                 if self.is_direct_null_check(&condition, source) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        message: "Direct NULL check for pointer validation. \
-                                 Define and use a dedicated pointer validation function \
-                                 instead of ad-hoc NULL checks. This centralizes validation \
-                                 logic and allows platform-specific enhancements."
-                            .to_string(),
-                        severity: self.severity(),
-                        line: condition.start_position().row + 1,
-                        column: condition.start_position().column + 1,
-                        file_path: String::new(),
-                        suggestion: Some(
-                            "Create a validation function like 'int valid(void *ptr)' \
-                             and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+                    // Only flag when the checked pointer is a function parameter.
+                    // Inline null checks on locally-declared variables are acceptable
+                    // practice; the "use a validation function" advice is primarily
+                    // relevant when validating inputs at function boundaries.
+                    let checked_var = extract_checked_var_name(&condition, source);
+                    let params = self.collect_enclosing_params(node, source);
+                    if checked_var.as_deref().map_or(false, |v| params.contains(v)) {
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            message: "Direct NULL check for pointer validation. \
+                                     Define and use a dedicated pointer validation function \
+                                     instead of ad-hoc NULL checks. This centralizes validation \
+                                     logic and allows platform-specific enhancements."
                                 .to_string(),
-                        ),
-                        requires_manual_review: Some(true),
-                    });
+                            severity: self.severity(),
+                            line: condition.start_position().row + 1,
+                            column: condition.start_position().column + 1,
+                            file_path: String::new(),
+                            suggestion: Some(
+                                "Create a validation function like 'int valid(void *ptr)' \
+                                 and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+                                    .to_string(),
+                            ),
+                            requires_manual_review: Some(true),
+                        });
+                    }
                 }
             }
         }
@@ -167,4 +243,60 @@ impl Mem10C {
 
         false
     }
+}
+
+/// Extract the variable name being null-checked from a condition node.
+/// Handles: `ptr == NULL`, `NULL == ptr`, `ptr != NULL`, `NULL != ptr`, `!ptr`
+fn extract_checked_var_name(condition: &Node, source: &str) -> Option<String> {
+    // Binary expression: ptr == NULL or ptr != NULL (or reversed)
+    if condition.kind() == "binary_expression" {
+        let left = condition.child_by_field_name("left")?;
+        let right = condition.child_by_field_name("right")?;
+        let left_text = get_node_text(&left, source);
+        let right_text = get_node_text(&right, source);
+        if right_text == "NULL" && left.kind() == "identifier" {
+            return Some(left_text.to_string());
+        }
+        if left_text == "NULL" && right.kind() == "identifier" {
+            return Some(right_text.to_string());
+        }
+        return None;
+    }
+
+    // Parenthesized expression: (ptr == NULL)
+    if condition.kind() == "parenthesized_expression" {
+        if let Some(inner) = condition.child(1) {
+            return extract_checked_var_name(&inner, source);
+        }
+    }
+
+    // Unary not: !ptr
+    if condition.kind() == "unary_expression" {
+        if let Some(op) = condition.child_by_field_name("operator") {
+            if get_node_text(&op, source) == "!" {
+                if let Some(arg) = condition.child_by_field_name("argument") {
+                    if arg.kind() == "identifier" {
+                        return Some(get_node_text(&arg, source).to_string());
+                    }
+                }
+            }
+        }
+    }
+
+    None
+}
+
+/// Recursively find the first identifier inside a declarator node.
+fn find_identifier_in_node(node: &Node, source: &str) -> Option<String> {
+    if node.kind() == "identifier" {
+        return Some(get_node_text(node, source).to_string());
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if let Some(id) = find_identifier_in_node(&child, source) {
+                return Some(id);
+            }
+        }
+    }
+    None
 }

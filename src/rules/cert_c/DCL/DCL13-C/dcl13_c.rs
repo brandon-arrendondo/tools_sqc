@@ -58,6 +58,44 @@ fn check_functions_recursively(
     }
 }
 
+/// Get the name of the function being defined
+fn get_function_name(func_node: &Node, source: &str) -> Option<String> {
+    for i in 0..func_node.child_count() {
+        if let Some(child) = func_node.child(i) {
+            if let Some(name) = find_name_in_declarator(&child, source) {
+                return Some(name);
+            }
+        }
+    }
+    None
+}
+
+fn find_name_in_declarator(node: &Node, source: &str) -> Option<String> {
+    if node.kind() == "function_declarator" {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "identifier" {
+                    return Some(ast_utils::get_node_text(&child, source).to_string());
+                }
+                if child.kind() == "pointer_declarator" {
+                    if let Some(name) = find_name_in_declarator(&child, source) {
+                        return Some(name);
+                    }
+                }
+            }
+        }
+    } else if node.kind() == "pointer_declarator" {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(name) = find_name_in_declarator(&child, source) {
+                    return Some(name);
+                }
+            }
+        }
+    }
+    None
+}
+
 /// Check a function definition for const-correctness of pointer parameters
 fn check_function_definition(
     func_node: &Node,
@@ -65,6 +103,12 @@ fn check_function_definition(
     violations: &mut Vec<RuleViolation>,
     rule_id: &str,
 ) {
+    // Skip main() — its signature (int argc, char *argv[]) is mandated by the C standard;
+    // requiring const on argv is incorrect and generates FPs on every Juliet test file.
+    if get_function_name(func_node, source).as_deref() == Some("main") {
+        return;
+    }
+
     // Extract function parameters with their const-qualification status
     let params = extract_function_parameters(func_node, source);
 
