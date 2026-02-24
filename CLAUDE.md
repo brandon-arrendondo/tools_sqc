@@ -155,6 +155,33 @@ cat .claude/commands/gather-opinions.md
 
 ---
 
+## Benchmark Workflow (CRITICAL)
+
+When running Juliet benchmarks, follow this protocol strictly:
+
+1. **Version bump + commit BEFORE benchmark**: Always bump the version in `Cargo.toml`,
+   rebuild (`cargo build --release`), and commit before starting a benchmark run.
+   This ensures the benchmark results directory is tagged with the correct version
+   and commit SHA (e.g., `sqc-0.2.1-abc1234`).
+
+2. **NEVER modify code while a benchmark is running**: The benchmark uses
+   `target/release/sqc`. If you rebuild while it's running, you corrupt results
+   mid-run. Make ALL code changes and commits BEFORE starting the benchmark.
+
+3. **Wait for completion**: Benchmarks take ~40-50 minutes. The last CWE category
+   takes the longest. Check status with `get_status()` no more than once every
+   10 minutes. Do NOT make changes or start other work until the benchmark completes.
+
+4. **Compare runs**: After a benchmark completes, use `compare_runs()` to compare
+   against previous runs. Use `get_cwe_detail()` for per-CWE deep dives.
+
+5. **Workflow sequence**:
+   ```
+   implement changes → bump version → commit → build release → run benchmark → wait → analyze
+   ```
+
+---
+
 ## Known TODOs / Low-priority gaps
 
 - **INT34-C: literal shift amount >= type width** — Current fix skips all non-negative
@@ -164,6 +191,46 @@ cat .claude/commands/gather-opinions.md
   Juliet benchmark FNs on any test cases that use out-of-range literal shift amounts.
   Fix: skip only literals in `[0, 31]` for non-`long long` operands, `[0, 63]` for `long long`.
   Requires knowing the promoted operand type (non-trivial without type resolution).
+
+---
+
+## Benchmark Improvement Priorities (Juliet TP Rate)
+
+The following CERT-C rules are **high priority** for Juliet benchmark improvement
+because they supersede critical BISSELL code rules (BRULE-045, BRULE-047,
+BRULE-051, BRULE-056). When selecting rules to improve, prefer these over others.
+
+Within each group, focus on **increasing TP rate** (reducing false negatives) and
+**reducing FP rate** (reducing false positives on `good*` functions).
+
+### Tier 1 — Undefined Behavior (BRULE-047 → highest impact)
+- **EXP34-C** — null pointer dereference (CWE-476; largest single CWE in Juliet)
+  - Round 14 fix: `deref_after_check` pattern — `if (ptr == NULL) { *ptr; }` now caught
+    via `end_byte` in `null_check_positions` + removed premature `null_checked_vars` early exit
+    + `end_byte` in `nullable_reassignments` (prevents self-referential FP on `cur = cur->next`)
+  - Round 15 fix: if/else branch merge — `collect_null_variables` now takes union of
+    `potentially_null_vars` from both branches, fixing variant 12 (`globalReturnsTrueOrFalse()`)
+    where if-branch sets ptr=NULL and else-branch sets ptr=non-null (+8 TPs)
+  - Remaining gaps: variant 45 (static global null flow across functions — requires file-level
+    pre-pass to track globals assigned NULL), multi-file splits (need interprocedural)
+- **ARR30-C** / **ARR38-C** — out-of-bounds array access (CWE-125, CWE-787)
+- **EXP33-C** — uninitialized memory reads (CWE-457)
+- **INT30-C** / **INT32-C** — unsigned wraparound / signed integer overflow (CWE-190, CWE-191)
+
+### Tier 2 — Memory Safety (BRULE-045)
+- **MEM30-C** — use-after-free (CWE-416)
+- **MEM31-C** — memory leak / failure to free (CWE-401)
+- **MEM34-C** — double-free (CWE-415)
+- **MEM35-C** — insufficient memory allocation (CWE-131)
+
+### Tier 3 — Concurrency (BRULE-051)
+- **CON30-C** through **CON43-C** — race conditions, deadlock, unsafe shared access
+  (CWE-362, CWE-366, CWE-367)
+- Focus: Juliet has limited concurrency test cases; prioritize FP reduction over TP gains here.
+
+### Tier 4 — Sensitive Data (BRULE-056)
+- **MSC41-C** — hard-coded credentials / sensitive literals (CWE-798, CWE-259)
+- Focus: Juliet coverage is thin; improvements here are primarily real-world FP/FN quality.
 
 ---
 

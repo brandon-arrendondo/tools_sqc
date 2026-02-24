@@ -7,6 +7,7 @@ pub struct Str31C;
 
 impl Str31C {
     /// Extract buffer size from array declaration or malloc call
+    #[allow(dead_code)]
     fn analyze_buffer_size(&self, node: &Node, source: &str) -> Option<usize> {
         // Check for array declaration with size
         if node.kind() == "array_declarator" {
@@ -395,6 +396,7 @@ impl Str31C {
     }
 
     /// Find a line containing a specific function call with the given variable
+    #[allow(dead_code)]
     fn find_line_containing_call(&self, func_name: &str, var_name: &str, source: &str) -> String {
         let lines: Vec<&str> = source.lines().collect();
         for line in lines {

@@ -182,6 +182,12 @@ impl Int32C {
                     return;
                 }
 
+                // Skip if inside a block guarded by a type-limit bounds check
+                let op_names = self.extract_operand_names(node, source);
+                if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -242,6 +248,12 @@ impl Int32C {
                     return;
                 }
 
+                // Skip if inside a block guarded by a type-limit bounds check
+                let op_names = self.extract_operand_names(node, source);
+                if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
                 if !self.has_overflow_check_subtraction(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -298,6 +310,12 @@ impl Int32C {
 
                 // Skip if operands are bounded for-loop variables
                 if self.is_in_bounded_for_loop(node, source) {
+                    return;
+                }
+
+                // Skip if inside a block guarded by a type-limit bounds check
+                let op_names = self.extract_operand_names(node, source);
+                if self.is_inside_bounds_checked_block(node, source, &op_names) {
                     return;
                 }
 
@@ -509,6 +527,12 @@ impl Int32C {
             }
 
             if self.is_signed_type(&left_type) {
+                // Skip if inside a block guarded by a type-limit bounds check
+                let op_names = self.extract_operand_names(node, source);
+                if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
                 if !self.has_shift_overflow_check(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -547,6 +571,12 @@ impl Int32C {
             }
 
             if self.is_signed_type(&left_type) {
+                // Skip if inside a block guarded by a type-limit bounds check
+                let op_names = self.extract_operand_names(node, source);
+                if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -587,6 +617,12 @@ impl Int32C {
             }
 
             if self.is_signed_type(&left_type) {
+                // Skip if inside a block guarded by a type-limit bounds check
+                let op_names = self.extract_operand_names(node, source);
+                if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -625,6 +661,12 @@ impl Int32C {
             }
 
             if self.is_signed_type(&left_type) {
+                // Skip if inside a block guarded by a type-limit bounds check
+                let op_names = self.extract_operand_names(node, source);
+                if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(&node, source);
@@ -779,6 +821,12 @@ impl Int32C {
             if self.is_signed_type(&arg_type) {
                 // Skip if this is part of a safe for loop (bounded, starting from small values)
                 if self.is_in_safe_for_loop(node, source) {
+                    return;
+                }
+
+                // Skip if inside a block guarded by a type-limit bounds check
+                let op_names = self.extract_operand_names(node, source);
+                if self.is_inside_bounds_checked_block(node, source, &op_names) {
                     return;
                 }
 
@@ -1376,17 +1424,19 @@ impl Int32C {
     }
 
     fn has_overflow_check_addition(&self, node: &Node, source: &str) -> bool {
-        // First check the immediate surrounding context (parent/grandparent)
+        // First check the immediate surrounding context (parent/grandparent) — strict pattern
         if self.has_surrounding_check(node, source, &["INT_MAX", "INT_MIN", " - ", " > ", " < "]) {
             return true;
         }
 
-        // Then check the broader function context for overflow checks
-        self.has_function_level_overflow_check(
-            node,
-            source,
-            &["INT_MAX", "INT_MIN", " - ", " > ", " < "],
-        )
+        // Check for any signed limit macro with a comparison operator in the function.
+        // Relaxed from requiring ALL of [INT_MAX, INT_MIN, " - ", " > ", " < "] to
+        // requiring any limit macro + comparison — handles CHAR_MAX, SHRT_MAX, etc.
+        // The scoped check (guard_keywords + operand match) ensures precision.
+        self.has_function_level_overflow_check(node, source, &[" > "])
+            || self.has_function_level_overflow_check(node, source, &[" < "])
+            || self.has_function_level_overflow_check(node, source, &[" >= "])
+            || self.has_function_level_overflow_check(node, source, &[" <= "])
     }
 
     fn has_overflow_check_subtraction(&self, node: &Node, source: &str) -> bool {
@@ -1645,6 +1695,12 @@ impl Int32C {
                     "LLONG_MIN",
                     "UINT_MAX",
                     "SIZE_MAX",
+                    "CHAR_MAX",
+                    "CHAR_MIN",
+                    "SCHAR_MAX",
+                    "SCHAR_MIN",
+                    "SHRT_MAX",
+                    "SHRT_MIN",
                 ];
 
                 // Search for lines that contain an overflow guard keyword AND
@@ -1689,6 +1745,64 @@ impl Int32C {
                 return true;
             }
             start = abs_pos + 1;
+        }
+        false
+    }
+
+    /// Check if the arithmetic node is inside a block guarded by a type-limit bounds check.
+    /// Walks up ancestors (up to 15 levels) looking for an `if_statement` whose condition
+    /// references a signed type-limit macro AND at least one operand of the arithmetic.
+    fn is_inside_bounds_checked_block(
+        &self,
+        node: &Node,
+        source: &str,
+        op_names: &[String],
+    ) -> bool {
+        const SIGNED_LIMIT_MACROS: &[&str] = &[
+            "INT_MAX",
+            "INT_MIN",
+            "LONG_MAX",
+            "LONG_MIN",
+            "LLONG_MAX",
+            "LLONG_MIN",
+            "CHAR_MAX",
+            "CHAR_MIN",
+            "SCHAR_MAX",
+            "SCHAR_MIN",
+            "SHRT_MAX",
+            "SHRT_MIN",
+        ];
+
+        let mut current = *node;
+        let mut depth = 0;
+        while let Some(parent) = current.parent() {
+            depth += 1;
+            if depth > 15 {
+                break;
+            }
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            if parent.kind() == "if_statement" {
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    let has_limit = SIGNED_LIMIT_MACROS
+                        .iter()
+                        .any(|m| self.contains_word(&cond_text, m));
+                    if has_limit {
+                        if op_names.is_empty() {
+                            return true;
+                        }
+                        if op_names
+                            .iter()
+                            .any(|name| self.contains_word(&cond_text, name))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            current = parent;
         }
         false
     }

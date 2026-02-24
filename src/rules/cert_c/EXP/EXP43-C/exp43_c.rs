@@ -417,6 +417,7 @@ impl Exp43C {
 
     /// Check if same argument appears multiple times as IDENTICAL expressions
     /// (not just same base with different offsets)
+    #[allow(dead_code)]
     fn has_duplicate_args(&self, args: &[String]) -> bool {
         let mut seen: HashSet<String> = HashSet::new();
         for arg in args {

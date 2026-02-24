@@ -687,6 +687,7 @@ impl Exp39C {
         false
     }
 
+    #[allow(dead_code)]
     fn has_array_dimension_mismatch(&self, declarator: &str, _value: &str) -> bool {
         // Simplified check for array dimension mismatches
         // This would need more sophisticated parsing in a complete implementation

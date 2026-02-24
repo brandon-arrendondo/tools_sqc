@@ -103,7 +103,14 @@ impl Exp15C {
         // the condition line, which produces false positives for `for` statements because
         // tree-sitter exposes the two clause-separator semicolons as direct children of
         // the for_statement node on the same line as the condition.
-        if let Some(body) = node.child_by_field_name("body") {
+        //
+        // Note: tree-sitter-c uses "consequence" for if_statement, "body" for while/for.
+        let body_field = if statement_type == "if" {
+            "consequence"
+        } else {
+            "body"
+        };
+        if let Some(body) = node.child_by_field_name(body_field) {
             let is_empty_body = self.is_empty_statement(&body, source);
             if is_empty_body {
                 let start_point = node.start_position();

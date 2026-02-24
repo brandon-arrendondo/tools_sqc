@@ -7,6 +7,7 @@ use tree_sitter::Node;
 pub struct Int33C;
 
 /// Information about macros that perform division
+#[allow(dead_code)]
 struct DivisionMacro {
     /// Name of the macro
     name: String,

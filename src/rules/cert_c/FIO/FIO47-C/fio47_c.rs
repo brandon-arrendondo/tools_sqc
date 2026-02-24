@@ -47,6 +47,7 @@ enum TypeCategory {
 }
 
 impl Fio47C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Self
     }
@@ -504,6 +505,7 @@ impl Fio47C {
         }
     }
 
+    #[allow(dead_code)]
     fn process_init_declarator(
         &self,
         node: &Node,

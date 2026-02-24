@@ -43,6 +43,7 @@ impl Pre13C {
     }
 
     /// Standard predefined macros that should be tested with defined()
+    #[allow(dead_code)]
     fn is_standard_macro(&self, name: &str) -> bool {
         matches!(
             name,

@@ -81,6 +81,7 @@ pub fn is_pointer_declarator(node: &Node) -> bool {
 /// // int (*fn)(int);   // returns true
 /// // int *ptr;         // returns false
 /// ```
+#[allow(dead_code)]
 pub fn is_function_declarator(node: &Node) -> bool {
     has_declarator_of_kind(node, "function_declarator")
 }
@@ -97,7 +98,7 @@ mod tests {
         parser.parse(code, None).unwrap()
     }
 
-    fn find_declarator(tree: &tree_sitter::Tree) -> Option<Node> {
+    fn find_declarator<'a>(tree: &'a tree_sitter::Tree) -> Option<Node<'a>> {
         let root = tree.root_node();
         // Find first declarator in the tree
         for i in 0..root.child_count() {

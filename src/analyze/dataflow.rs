@@ -1,4 +1,5 @@
 //! Reaching definitions analysis using the CFG.
+#![allow(dead_code)]
 //!
 //! Implements a standard iterative worklist algorithm to compute which variable
 //! definitions reach each point in the program. This enables flow-sensitive
@@ -525,7 +526,7 @@ fn is_pointer_type_declarator(node: &Node) -> bool {
 }
 
 /// Find an AST node that covers the given byte range.
-fn find_node_at_range<'a>(root: &Node<'a>, start: usize, end: usize) -> Option<Node<'a>> {
+pub fn find_node_at_range<'a>(root: &Node<'a>, start: usize, end: usize) -> Option<Node<'a>> {
     if root.start_byte() == start && root.end_byte() == end {
         return Some(*root);
     }
@@ -557,7 +558,7 @@ mod tests {
         (tree, code.to_string())
     }
 
-    fn get_func_node(tree: &tree_sitter::Tree) -> Option<tree_sitter::Node> {
+    fn get_func_node<'a>(tree: &'a tree_sitter::Tree) -> Option<tree_sitter::Node<'a>> {
         let root = tree.root_node();
         for i in 0..root.child_count() {
             if let Some(child) = root.child(i) {

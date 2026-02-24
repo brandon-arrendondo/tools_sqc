@@ -24,6 +24,7 @@ enum Linkage {
     External, // non-static
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 struct IdentifierInfo {
     name: String,

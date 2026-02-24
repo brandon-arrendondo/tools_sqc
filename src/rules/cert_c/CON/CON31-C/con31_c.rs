@@ -62,6 +62,7 @@ use tree_sitter::Node;
 pub struct Con31C;
 
 impl Con31C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Con31C
     }

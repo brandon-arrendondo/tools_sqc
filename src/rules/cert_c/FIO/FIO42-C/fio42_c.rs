@@ -84,6 +84,7 @@ struct FileResourceTracker {
 }
 
 #[derive(Clone)]
+#[allow(dead_code)]
 struct ResourceInfo {
     var_name: String,
     resource_type: ResourceType,

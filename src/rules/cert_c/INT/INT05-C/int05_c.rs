@@ -147,14 +147,9 @@ impl Int05C {
                 }
 
                 // Check for length modifiers (l, ll, h, hh, etc.)
-                let mut has_long = false;
-                let mut has_long_long = false;
-
                 if i < chars.len() && chars[i] == 'l' {
-                    has_long = true;
                     i += 1;
                     if i < chars.len() && chars[i] == 'l' {
-                        has_long_long = true;
                         i += 1;
                     }
                 } else if i < chars.len() && chars[i] == 'h' {

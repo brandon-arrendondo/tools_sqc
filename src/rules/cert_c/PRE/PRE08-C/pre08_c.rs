@@ -92,7 +92,7 @@ impl Pre08C {
         self.collect_includes(node, source, &mut includes);
 
         // Check for conflicts (headers with same first 8 chars)
-        for (significant_name, headers) in includes.iter() {
+        for (_significant_name, headers) in includes.iter() {
             if headers.len() > 1 {
                 // Multiple headers map to the same significant name - report violations
                 for (i, (header1, line1)) in headers.iter().enumerate() {

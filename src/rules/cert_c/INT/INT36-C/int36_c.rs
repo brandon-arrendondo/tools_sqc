@@ -48,6 +48,7 @@ use tree_sitter::Node;
 pub struct Int36C;
 
 impl Int36C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Self
     }

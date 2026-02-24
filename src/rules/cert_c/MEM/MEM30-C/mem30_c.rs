@@ -514,6 +514,7 @@ impl GlobalTracker {
     }
 
     /// Check for realloc with potentially zero size followed by free on failure
+    #[allow(dead_code)]
     fn check_realloc_zero_pattern(&mut self, node: &Node, source: &str) {
         // Check if this realloc is in an if/initialization context where
         // the old pointer is freed on NULL return
@@ -1316,6 +1317,7 @@ impl MemoryAnalyzer {
     }
 
     /// Check if a node contains a return statement
+    #[allow(dead_code)]
     fn contains_return(&self, node: &Node) -> bool {
         if node.kind() == "return_statement" {
             return true;

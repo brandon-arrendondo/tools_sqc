@@ -11,7 +11,7 @@ SQC="$PROJECT_DIR/target/release/sqc"
 MANIFEST="$PROJECT_DIR/rules_templates/rules-all.toml"
 JULIET_BASE="${HOME}/data/benchmarks/juliet-test-suite-c/testcases"
 ANALYZE="$SCRIPT_DIR/analyze_juliet_results.py"
-RESULTS_DIR="/tmp/juliet_results"
+RESULTS_DIR="${RESULTS_DIR:-/tmp/juliet_results}"
 
 JOBS="${1:-12}"
 

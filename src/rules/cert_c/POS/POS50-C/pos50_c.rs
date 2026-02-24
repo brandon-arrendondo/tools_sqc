@@ -251,6 +251,7 @@ impl Pos50C {
     }
 
     /// Check if a variable is declared with __thread at file scope
+    #[allow(dead_code)]
     fn is_thread_local_global(&self, root_node: &Node, var_name: &str, source: &str) -> bool {
         let mut cursor = root_node.walk();
         for child in root_node.children(&mut cursor) {
@@ -287,6 +288,7 @@ impl Pos50C {
     }
 
     /// Get the translation unit (root) node
+    #[allow(dead_code)]
     fn get_translation_unit<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
         let mut current = Some(*node);
         while let Some(n) = current {

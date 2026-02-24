@@ -147,6 +147,7 @@ fn is_problematic_vla_size(size_node: &Node, source: &str) -> bool {
     false
 }
 
+#[allow(dead_code)]
 fn is_identifier_node(node: &Node) -> bool {
     node.kind() == "identifier"
 }
