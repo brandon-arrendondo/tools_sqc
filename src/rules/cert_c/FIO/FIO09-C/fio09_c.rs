@@ -62,17 +62,19 @@ use tree_sitter::Node;
 pub struct Fio09C;
 
 impl Fio09C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Fio09C
     }
 
     /// Check if a node represents a pointer to a struct type
+    #[allow(dead_code)]
     fn is_struct_pointer(&self, node: &Node, source: &str) -> bool {
         let text = get_node_text(node, source);
 
         // Check for address-of operator on a struct variable
         // Pattern: &struct_var or &data
-        if let Some(child) = node.child_by_field_name("argument") {
+        if let Some(_child) = node.child_by_field_name("argument") {
             // Check if the argument is a pointer_expression (&...)
             if node.kind() == "pointer_expression" {
                 return true; // Any pointer could be a struct

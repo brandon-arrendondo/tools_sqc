@@ -68,6 +68,7 @@ impl GitRepo {
         Ok(modified_files)
     }
 
+    #[allow(dead_code)]
     pub fn get_repo_root(&self) -> &str {
         &self.repo_path
     }

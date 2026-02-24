@@ -33,6 +33,7 @@ use tree_sitter::Node;
 pub struct Con30C;
 
 /// Tracks TSS key information
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 struct TssKeyInfo {
     key_name: String,

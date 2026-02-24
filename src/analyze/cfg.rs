@@ -1,4 +1,5 @@
 //! Control-flow graph construction from tree-sitter AST.
+#![allow(dead_code)]
 //!
 //! Builds a lightweight CFG from C function bodies. Each basic block contains
 //! a sequence of statements with a single entry and single exit. Edges represent

@@ -179,6 +179,7 @@ impl Pos38C {
             || text.contains("openat(")
     }
 
+    #[allow(dead_code)]
     fn find_declarator<'a>(&self, node: &'a Node) -> Option<Node<'a>> {
         if node.kind() == "init_declarator" {
             node.child_by_field_name("declarator")
@@ -322,6 +323,7 @@ impl Pos38C {
         None
     }
 
+    #[allow(dead_code)]
     fn find_following_if_statement<'a>(&self, stmt_node: &'a Node) -> Option<Node<'a>> {
         // Look for a sibling if statement
         if let Some(parent) = stmt_node.parent() {

@@ -53,6 +53,7 @@ enum OperationType {
 }
 
 impl Int14C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Self
     }

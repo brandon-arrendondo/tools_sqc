@@ -304,6 +304,7 @@ impl Fio23C {
         None
     }
 
+    #[allow(dead_code)]
     fn has_print_without_prior_fclose(&self, func_node: &Node, source: &str) -> bool {
         // This method is no longer used but kept for completeness
         self.has_printf_in_function(func_node, source)

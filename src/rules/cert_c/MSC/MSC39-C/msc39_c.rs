@@ -93,6 +93,7 @@ impl Msc39C {
     }
 
     /// Check if a type is va_list pointer
+    #[allow(dead_code)]
     fn is_va_list_pointer(&self, type_node: &Node, source: &str) -> bool {
         let type_text = get_node_text(type_node, source);
         type_text.contains("va_list") && type_text.contains('*')

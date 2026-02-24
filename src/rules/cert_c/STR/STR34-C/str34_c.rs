@@ -169,7 +169,7 @@ impl Str34C {
         char_vars: &HashMap<String, (usize, bool)>,
         violations: &mut Vec<RuleViolation>,
     ) {
-        if let Some(declarator) = node.child_by_field_name("declarator") {
+        if let Some(_declarator) = node.child_by_field_name("declarator") {
             if let Some(value) = node.child_by_field_name("value") {
                 // Check if the declarator is a larger integer type
                 if let Some(parent) = node.parent() {

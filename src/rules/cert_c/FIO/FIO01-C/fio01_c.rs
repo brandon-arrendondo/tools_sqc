@@ -82,6 +82,7 @@ impl CertRule for Fio01C {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct FileOp {
     op_type: FileOpType,
     var_name: String,
@@ -90,6 +91,7 @@ struct FileOp {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 enum FileOpType {
     FileOpen,  // fopen
     FileClose, // fclose

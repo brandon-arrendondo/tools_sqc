@@ -53,6 +53,7 @@ pub struct Arr30C;
 
 /// Information about a buffer (array or dynamically allocated memory)
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct BufferInfo {
     name: String,
     size: BufferSize,
@@ -62,6 +63,7 @@ struct BufferInfo {
 
 /// Represents the size of a buffer
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 enum BufferSize {
     Static(usize),            // char arr[10]
     DynamicCalculated(usize), // malloc(10 * sizeof(int))
@@ -72,6 +74,7 @@ enum BufferSize {
 
 /// Represents an index value that can be constant or variable
 #[derive(Debug)]
+#[allow(dead_code)]
 enum IndexValue {
     Constant(isize),                   // Changed from usize to support negative indices
     Expression(String, Option<isize>), // Expression text and evaluated constant if possible
@@ -81,6 +84,7 @@ enum IndexValue {
 
 /// Represents a pointer arithmetic offset
 #[derive(Debug)]
+#[allow(dead_code)]
 enum OffsetValue {
     Constant(usize),
     Variable(String),
@@ -97,6 +101,7 @@ struct PointerAlias {
 
 /// Represents a function-like macro that might involve array access
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct FunctionMacro {
     name: String,
     params: Vec<String>,
@@ -1454,6 +1459,7 @@ impl Arr30C {
     }
 
     /// Get index text from subscript expression
+    #[allow(dead_code)]
     fn get_subscript_index_text(&self, node: &Node, source: &str) -> Option<String> {
         let index_node = self.get_subscript_index(node)?;
         let text = &source[index_node.start_byte()..index_node.end_byte()];
@@ -2197,7 +2203,7 @@ impl Arr30C {
         }
 
         // Second pass: for each malloc variable, check if it has NULL check with return/exit
-        for (var_name, alloc_line) in &malloc_vars {
+        for (var_name, _alloc_line) in &malloc_vars {
             let has_safe_null_check =
                 self.has_safe_null_check_in_function(func_node, source, var_name);
 
@@ -2465,6 +2471,7 @@ impl Arr30C {
     }
 
     /// Find identifier in a node
+    #[allow(dead_code)]
     fn find_identifier_in_node(&self, node: &Node, source: &str) -> Option<String> {
         if node.kind() == "identifier" {
             return Some(source[node.start_byte()..node.end_byte()].to_string());
@@ -3817,6 +3824,7 @@ impl Arr30C {
     }
 
     /// Get array node from subscript expression
+    #[allow(dead_code)]
     fn get_subscript_array<'a>(&self, node: &'a Node<'a>) -> Option<Node<'a>> {
         node.child(0)
     }

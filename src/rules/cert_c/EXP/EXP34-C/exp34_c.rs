@@ -473,6 +473,7 @@ impl NullPointerAnalyzer {
     }
 
     /// Check if a block contains error handling (return, exit, throw, goto, or any statement suggesting error handling)
+    #[allow(dead_code)]
     fn contains_early_return(&self, node: &Node) -> bool {
         if matches!(
             node.kind(),
@@ -512,6 +513,7 @@ impl NullPointerAnalyzer {
         false
     }
 
+    #[allow(dead_code)]
     fn process_null_check(&mut self, condition: &Node, source: &str) {
         // Look for patterns like: ptr != NULL, ptr == NULL, !ptr, ptr
         match condition.kind() {
@@ -567,45 +569,45 @@ impl NullPointerAnalyzer {
                     .unwrap_or(false);
 
                 if is_deref {
-                if let Some(argument) = node.child_by_field_name("argument") {
-                    // Get the full expression being dereferenced (could be identifier or field_expression)
-                    let mut deref_text = ast_utils::get_node_text_owned(&argument, source);
+                    if let Some(argument) = node.child_by_field_name("argument") {
+                        // Get the full expression being dereferenced (could be identifier or field_expression)
+                        let mut deref_text = ast_utils::get_node_text_owned(&argument, source);
 
-                    // Handle parenthesized expressions - strip the parentheses
-                    if argument.kind() == "parenthesized_expression" {
-                        // Get the inner expression
-                        if let Some(inner) = argument.child(1) {
-                            // child 0 is '(', child 1 is expression, child 2 is ')'
-                            deref_text = ast_utils::get_node_text_owned(&inner, source);
+                        // Handle parenthesized expressions - strip the parentheses
+                        if argument.kind() == "parenthesized_expression" {
+                            // Get the inner expression
+                            if let Some(inner) = argument.child(1) {
+                                // child 0 is '(', child 1 is expression, child 2 is ')'
+                                deref_text = ast_utils::get_node_text_owned(&inner, source);
+                            }
+                        }
+
+                        // Check both simple identifiers and complex expressions like field_expression
+                        if argument.kind() == "identifier"
+                            || argument.kind() == "field_expression"
+                            || argument.kind() == "parenthesized_expression"
+                        {
+                            if self.is_unsafe_dereference_at_node(&deref_text, node, source) {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: "EXP34-C".to_string(),
+                                    severity: Severity::High,
+                                    message: format!(
+                                        "Potential null pointer dereference of variable '{}'",
+                                        deref_text
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some(format!(
+                                        "Check if '{}' is not NULL before dereferencing",
+                                        deref_text
+                                    )),
+                                    ..Default::default()
+                                });
+                            }
                         }
                     }
-
-                    // Check both simple identifiers and complex expressions like field_expression
-                    if argument.kind() == "identifier"
-                        || argument.kind() == "field_expression"
-                        || argument.kind() == "parenthesized_expression"
-                    {
-                        if self.is_unsafe_dereference_at_node(&deref_text, node, source) {
-                            let start_point = node.start_position();
-                            violations.push(RuleViolation {
-                                rule_id: "EXP34-C".to_string(),
-                                severity: Severity::High,
-                                message: format!(
-                                    "Potential null pointer dereference of variable '{}'",
-                                    deref_text
-                                ),
-                                file_path: String::new(),
-                                line: start_point.row + 1,
-                                column: start_point.column + 1,
-                                suggestion: Some(format!(
-                                    "Check if '{}' is not NULL before dereferencing",
-                                    deref_text
-                                )),
-                                ..Default::default()
-                            });
-                        }
-                    }
-                }
                 } // end if is_deref
             }
             "subscript_expression" => {

@@ -16,6 +16,7 @@ use tree_sitter::Node;
 pub struct Dcl16C;
 
 impl Dcl16C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Dcl16C
     }

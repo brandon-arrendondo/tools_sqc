@@ -156,6 +156,7 @@ impl FpAnalyzer {
 }
 
 impl Flp03C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Self
     }

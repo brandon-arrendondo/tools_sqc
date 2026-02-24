@@ -18,6 +18,7 @@ use tree_sitter::Node;
 pub struct Con50C;
 
 impl Con50C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Con50C
     }
