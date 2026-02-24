@@ -132,7 +132,7 @@ impl Pos51C {
     /// Check if the condition is a pointer comparison (used for lock ordering)
     fn is_pointer_comparison(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "binary_expression" {
-            let text = get_node_text(node, source);
+            let _text = get_node_text(node, source);
             // Simple heuristic: if both sides are identifiers and operator is < or >
             if let Some(op) = node.child_by_field_name("operator") {
                 let op_text = get_node_text(&op, source);

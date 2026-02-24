@@ -37,7 +37,7 @@ fn main() {
 fn run() -> Result<i32> {
     let matches = Command::new("sqc")
         .about("Software Code Quality - CERT C compliance checker")
-        .version("0.1.0")
+        .version(env!("CARGO_PKG_VERSION"))
         .arg(
             Arg::new("path")
                 .help("Path to the file, directory, or git repository to analyze")

@@ -129,7 +129,7 @@ impl Fio14C {
     }
 
     /// Extract function call arguments as a vector of nodes
-    fn extract_arguments<'a>(&self, arguments_node: &Node<'a>, source: &str) -> Vec<Node<'a>> {
+    fn extract_arguments<'a>(&self, arguments_node: &Node<'a>, _source: &str) -> Vec<Node<'a>> {
         let mut args = Vec::new();
 
         for i in 0..arguments_node.child_count() {

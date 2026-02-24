@@ -124,6 +124,7 @@ impl Arr01C {
 
     /// Collect all function parameters (both array syntax and pointer types)
     /// These parameters may have decayed from arrays, making sizeof incorrect
+    #[allow(dead_code)]
     fn collect_array_parameters(&self, node: &Node, source: &str) -> HashMap<String, usize> {
         let mut array_params = HashMap::new();
         self.collect_array_params_recursive(node, source, &mut array_params);
@@ -193,6 +194,7 @@ impl Arr01C {
         false
     }
 
+    #[allow(dead_code)]
     fn collect_array_params_recursive(
         &self,
         node: &Node,

@@ -81,7 +81,7 @@ impl Api10C {
             for pattern in &insecure_patterns {
                 if macro_name.contains(pattern) {
                     let start_point = node.start_position();
-                    let define_text = get_node_text(node, source);
+                    let _define_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),

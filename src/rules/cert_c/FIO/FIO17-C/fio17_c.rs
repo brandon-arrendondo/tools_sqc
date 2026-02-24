@@ -120,7 +120,7 @@ impl Fio17C {
 
         // Look for explicit null terminator assignment
         // Patterns: buffer[...] = '\0'; or buffer[...] = 0;
-        let patterns = vec![
+        let _patterns = vec![
             format!("{}[", buffer_name),
             String::from("= '\\0'"),
             String::from("= 0"),

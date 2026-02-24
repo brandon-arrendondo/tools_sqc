@@ -104,6 +104,7 @@ impl ProgressReporter for CLIProgressReporter {
 }
 
 /// GUI progress reporter that stores state for display in the terminal UI
+#[allow(dead_code)]
 pub struct GUIProgressReporter {
     pub current_file: Arc<std::sync::Mutex<usize>>,
     pub total_files: Arc<std::sync::Mutex<usize>>,
@@ -113,6 +114,7 @@ pub struct GUIProgressReporter {
 }
 
 impl GUIProgressReporter {
+    #[allow(dead_code)]
     pub fn new(cancellation: Arc<AtomicBool>) -> Self {
         Self {
             current_file: Arc::new(std::sync::Mutex::new(0)),
@@ -124,6 +126,7 @@ impl GUIProgressReporter {
     }
 
     /// Get current progress state for display
+    #[allow(dead_code)]
     pub fn get_state(&self) -> (usize, usize, String, String) {
         let current = *self.current_file.lock().unwrap();
         let total = *self.total_files.lock().unwrap();

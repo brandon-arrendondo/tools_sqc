@@ -193,7 +193,7 @@ impl Fio02C {
         };
 
         if let Some(value) = value_node {
-            let value_text = get_node_text(&value, source).trim();
+            let _value_text = get_node_text(&value, source).trim();
 
             // Check if assigned from tainted source
             if self.is_tainted_source(&value, source, tainted_vars) {
@@ -400,7 +400,7 @@ impl Fio02C {
         violations: &mut Vec<RuleViolation>,
     ) {
         let start_point = node.start_position();
-        let call_text = get_node_text(node, source).trim().to_string();
+        let _call_text = get_node_text(node, source).trim().to_string();
 
         violations.push(RuleViolation {
             rule_id: self.rule_id().to_string(),

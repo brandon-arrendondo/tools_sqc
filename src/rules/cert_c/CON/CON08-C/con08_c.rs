@@ -261,6 +261,10 @@ impl Con08C {
             }
         }
     }
+
+    /// Extract function name from a function_definition node.
+    /// Handles both direct function_declarator children and pointer return types
+    /// where function_declarator is nested inside pointer_declarator.
     fn get_function_name(&self, function_node: &Node, source: &str) -> Option<String> {
         for i in 0..function_node.child_count() {
             if let Some(child) = function_node.child(i) {
@@ -268,6 +272,28 @@ impl Con08C {
                     if let Some(name) = self.get_identifier_name(&child, source) {
                         return Some(name);
                     }
+                }
+                // Handle pointer return types: type *func_name(...)
+                // tree-sitter wraps as: pointer_declarator -> function_declarator
+                if child.kind() == "pointer_declarator" {
+                    if let Some(name) = self.find_function_name_in_declarator(&child, source) {
+                        return Some(name);
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Recursively search a declarator node for a function_declarator and extract its name.
+    fn find_function_name_in_declarator(&self, node: &Node, source: &str) -> Option<String> {
+        if node.kind() == "function_declarator" {
+            return self.get_identifier_name(node, source);
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(name) = self.find_function_name_in_declarator(&child, source) {
+                    return Some(name);
                 }
             }
         }

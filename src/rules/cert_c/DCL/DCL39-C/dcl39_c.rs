@@ -30,6 +30,7 @@ use tree_sitter::Node;
 pub struct Dcl39C;
 
 /// Tracks structure variable information
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 struct StructVarInfo {
     var_name: String,

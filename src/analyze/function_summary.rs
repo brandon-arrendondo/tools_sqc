@@ -20,6 +20,9 @@ pub struct FunctionSummary {
     pub checks_null_params: HashSet<usize>,
     /// Parameter indices that this function writes through (modifies via pointer).
     pub modifies_params: HashSet<usize>,
+    /// Parameter indices that this function dereferences in any way (read or write).
+    /// Superset of modifies_params — includes `*param`, `param[i]`, `param->field`.
+    pub dereferences_params: HashSet<usize>,
     /// Whether this function never returns (calls abort/exit/longjmp).
     pub never_returns: bool,
 }
@@ -249,6 +252,14 @@ fn analyze_param_usage(
             || body_text.contains(&format!("{}[", param_name))
         {
             summary.modifies_params.insert(idx);
+        }
+
+        // Check if parameter is dereferenced in any way (read or write)
+        if body_text.contains(&format!("*{}", param_name))
+            || body_text.contains(&format!("{}->", param_name))
+            || body_text.contains(&format!("{}[", param_name))
+        {
+            summary.dereferences_params.insert(idx);
         }
     }
 }

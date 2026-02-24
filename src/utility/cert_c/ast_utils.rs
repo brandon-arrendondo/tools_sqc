@@ -48,6 +48,7 @@ pub fn is_inside_loop(node: &Node) -> bool {
 }
 
 /// Check if a node is inside a conditional statement (if, else if, switch)
+#[allow(dead_code)]
 pub fn is_inside_conditional(node: &Node) -> bool {
     let mut current = node.parent();
     while let Some(parent) = current {
@@ -239,6 +240,7 @@ pub fn is_pointer_type(type_str: &str) -> bool {
 }
 
 /// Check if a type string represents a signed integer type
+#[allow(dead_code)]
 pub fn is_signed_type(type_str: &str) -> bool {
     matches!(
         type_str.trim(),
@@ -261,6 +263,7 @@ pub fn is_signed_type(type_str: &str) -> bool {
 }
 
 /// Check if a type string represents an unsigned integer type
+#[allow(dead_code)]
 pub fn is_unsigned_type(type_str: &str) -> bool {
     type_str.contains("unsigned")
         || matches!(
@@ -325,6 +328,7 @@ pub fn get_binary_operator<'a>(node: &Node, source: &'a str) -> Option<&'a str> 
 /// Find array size from declaration in preceding text
 /// Looks for patterns like: type array_name[size]
 /// Returns the size if found and it's a constant
+#[allow(dead_code)]
 pub fn find_array_size(array_name: &str, preceding_text: &str) -> Option<usize> {
     // Look for array declaration pattern: array_name[number]
     let pattern = format!("{}[", array_name);
@@ -360,6 +364,7 @@ pub fn find_array_size(array_name: &str, preceding_text: &str) -> Option<usize> 
 
 /// Get the size of a C type in bytes
 /// This is a best-effort approximation for common types
+#[allow(dead_code)]
 pub fn get_type_size(type_name: &str) -> usize {
     match type_name.trim() {
         "char" | "signed char" | "unsigned char" | "int8_t" | "uint8_t" => 1,
@@ -406,6 +411,7 @@ pub fn is_write_context(node: &Node) -> bool {
 }
 
 /// Check if a node is part of a sizeof expression
+#[allow(dead_code)]
 pub fn is_in_sizeof(node: &Node) -> bool {
     let mut current = node.parent();
     while let Some(parent) = current {

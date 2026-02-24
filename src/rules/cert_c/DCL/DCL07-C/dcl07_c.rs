@@ -185,7 +185,7 @@ impl Dcl07C {
     fn check_kr_style_function<'a>(
         &self,
         func_node: &Node<'a>,
-        source: &'a str,
+        _source: &'a str,
         violations: &mut Vec<RuleViolation>,
     ) {
         // K&R style has form:

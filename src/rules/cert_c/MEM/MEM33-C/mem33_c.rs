@@ -3,6 +3,7 @@ use crate::manifest::{RuleCategory, Severity};
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
+#[allow(dead_code)]
 pub struct Mem33C {
     // Track structures that contain flexible array members
     flexible_structs: HashMap<String, FlexibleArrayInfo>,
@@ -11,6 +12,7 @@ pub struct Mem33C {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct FlexibleArrayInfo {
     struct_name: String,
     has_flexible_array: bool,
@@ -59,6 +61,7 @@ struct ArrayDeclaratorInfo {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 struct StorageInfo {
     storage_type: String,
     is_dynamic: bool,
@@ -588,7 +591,7 @@ impl FlexibleArrayAnalyzer {
                             if let Some(violation_info) =
                                 self.check_anonymous_union_with_flexible(&child, source)
                             {
-                                let start_point = child.start_position();
+                                let _start_point = child.start_position();
                                 violations.push(RuleViolation {
                                     rule_id: "MEM33-C".to_string(),
                                     severity: Severity::High,
@@ -1232,19 +1235,19 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
+    #[allow(dead_code)]
     fn extract_declared_type_with_qualifiers(
         &self,
         declaration: &Node,
         source: &str,
     ) -> Option<(String, bool)> {
         let mut is_const = false;
-        let mut type_name = None;
 
         // First pass: look for const qualifier anywhere in the declaration
         self.find_const_qualifier_recursive(declaration, source, &mut is_const);
 
         // Second pass: look for struct type name with multiple strategies
-        type_name = self.find_struct_type_name_recursive(declaration, source);
+        let type_name = self.find_struct_type_name_recursive(declaration, source);
 
         if let Some(name) = type_name {
             Some((name, is_const))
@@ -1576,6 +1579,7 @@ impl FlexibleArrayAnalyzer {
         self.find_allocation_context(variable_name, source)
     }
 
+    #[allow(dead_code)]
     fn extract_field_name_from_expression(
         &self,
         field_expr: &Node,
@@ -1592,6 +1596,7 @@ impl FlexibleArrayAnalyzer {
         None
     }
 
+    #[allow(dead_code)]
     fn is_flexible_array_member_name(&self, member_name: &str) -> bool {
         // Check if this member name suggests a flexible array member
         // Common naming patterns for flexible array members
@@ -1622,6 +1627,7 @@ impl FlexibleArrayAnalyzer {
         false
     }
 
+    #[allow(dead_code)]
     fn is_known_flexible_array_struct_array(&self, array_name: &str) -> bool {
         // Check if this array name was previously identified as a flexible array struct array
         // This would require tracking array declarations, but for now use heuristics
@@ -2956,7 +2962,7 @@ impl FlexibleArrayAnalyzer {
             if let Some(violation_info) =
                 self.check_union_members_for_flexible_structs(&field_list, source)
             {
-                let start_point = node.start_position();
+                let _start_point = node.start_position();
                 return Some(RuleViolation {
                     rule_id: "MEM33-C".to_string(),
                     severity: Severity::High,

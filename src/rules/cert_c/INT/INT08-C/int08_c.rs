@@ -128,7 +128,7 @@ impl Int08C {
                         all_vars.extend(right_vars);
 
                         for var in all_vars {
-                            if let Some((var_type, decl_line)) = variables.get(&var) {
+                            if let Some((var_type, _decl_line)) = variables.get(&var) {
                                 // Check if this is a narrow integer type
                                 if self.is_narrow_integer_type(var_type) {
                                     // Check if there's appropriate overflow protection
@@ -201,7 +201,7 @@ impl Int08C {
         &self,
         expr_node: &Node,
         var_name: &str,
-        var_type: &str,
+        _var_type: &str,
         source: &str,
     ) -> bool {
         // Find the containing scope

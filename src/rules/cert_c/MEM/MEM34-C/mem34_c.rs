@@ -260,7 +260,6 @@ impl MemorySourceAnalyzer {
         violations: &mut Vec<RuleViolation>,
     ) {
         if let Some(arguments) = call_node.child_by_field_name("arguments") {
-            let mut found_first_arg = false;
             for i in 0..arguments.child_count() {
                 if let Some(arg) = arguments.child(i) {
                     // Skip punctuation
@@ -268,9 +267,7 @@ impl MemorySourceAnalyzer {
                         continue;
                     }
 
-                    if !found_first_arg {
-                        found_first_arg = true;
-
+                    {
                         // Extract variable name from the first argument
                         let var_name = if arg.kind() == "identifier" {
                             ast_utils::get_node_text_owned(&arg, source)

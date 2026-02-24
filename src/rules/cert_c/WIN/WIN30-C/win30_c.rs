@@ -41,6 +41,7 @@ impl Win30C {
     }
 
     /// Check for potentially mismatched allocation/deallocation pairs
+    #[allow(dead_code)]
     fn check_deallocation_call(
         &self,
         node: &Node,
@@ -117,6 +118,7 @@ impl Win30C {
     }
 
     /// Check for FormatMessage with FORMAT_MESSAGE_ALLOCATE_BUFFER
+    #[allow(dead_code)]
     fn check_format_message_call(
         &self,
         node: &Node,

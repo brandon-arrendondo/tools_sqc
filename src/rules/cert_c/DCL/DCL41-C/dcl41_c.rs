@@ -19,6 +19,7 @@ use tree_sitter::Node;
 pub struct Dcl41C;
 
 impl Dcl41C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Dcl41C
     }
@@ -52,7 +53,7 @@ impl Dcl41C {
     fn check_switch_statement(
         &self,
         node: &Node,
-        source: &str,
+        _source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
         if node.kind() != "switch_statement" {
