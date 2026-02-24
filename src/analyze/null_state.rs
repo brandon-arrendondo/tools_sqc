@@ -68,6 +68,7 @@ pub struct NullAnalysisResult {
     /// Entry state for each block (after joining predecessors + edge refinement).
     pub block_entry_states: HashMap<BlockId, StateMap>,
     /// Exit state for each block (after simulating block statements).
+    #[allow(dead_code)]
     pub block_exit_states: HashMap<BlockId, StateMap>,
     /// Set of variables declared as pointer types.
     pub declared_pointers: HashSet<String>,
@@ -739,6 +740,7 @@ fn check_preceding_null_assign(assignment_node: &Node, var_name: &str, source: &
 /// `func_node` is the `function_definition` AST node (for param extraction).
 /// `source` is the full source text.
 /// `summaries` are inter-procedural function summaries.
+#[allow(dead_code)]
 pub fn analyze_null_states(
     cfg: &FunctionCfg,
     func_node: &Node,
@@ -995,6 +997,7 @@ pub fn is_null_deref_at(
 ///
 /// Returns the concrete NullState (not just unsafe/safe). Used by call-site
 /// null propagation to distinguish DefinitelyNull from PossiblyNull.
+#[allow(dead_code)]
 pub fn get_var_state_at(
     result: &NullAnalysisResult,
     cfg: &FunctionCfg,
@@ -1148,6 +1151,7 @@ pub fn is_nullable_function(func_name: &str, summaries: &HashMap<String, Functio
     )
 }
 
+#[allow(dead_code)]
 pub fn is_cast_to_null(node: &Node, source: &str) -> bool {
     if node.kind() == "cast_expression" {
         if let Some(value) = node.child_by_field_name("value") {

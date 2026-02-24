@@ -89,6 +89,7 @@ impl DirectorySource {
         self.get_c_files()
     }
 
+    #[allow(dead_code)]
     pub fn get_root_path(&self) -> &str {
         &self.path
     }

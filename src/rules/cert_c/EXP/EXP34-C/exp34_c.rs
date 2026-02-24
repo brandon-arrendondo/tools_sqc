@@ -321,6 +321,7 @@ fn check_function_arguments_cfg(
 /// Call-site null propagation: flag passing a DefinitelyNull pointer to a
 /// function that doesn't null-check that parameter. This catches the source
 /// side of cross-file null dereferences (Juliet variants 51-68).
+#[allow(dead_code)]
 fn check_callsite_null_args(
     callee_name: &str,
     args: &Node,

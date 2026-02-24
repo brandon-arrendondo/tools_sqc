@@ -18,6 +18,7 @@ use std::collections::HashSet;
 use tree_sitter::Node;
 
 #[derive(Debug)]
+#[allow(dead_code)]
 pub struct Exp44C {
     // Track macros that contain _Generic
     generic_macros: HashSet<String>,
@@ -132,7 +133,6 @@ impl Exp44C {
         // The controlling expression in _Generic is not evaluated
         // Check the first argument (controlling expression)
         let mut cursor = node.walk();
-        let mut first_child_processed = false;
 
         for child in node.children(&mut cursor) {
             // Skip the _Generic keyword itself
@@ -141,7 +141,7 @@ impl Exp44C {
             }
 
             // Check only the controlling expression (first argument)
-            if !first_child_processed && self.has_side_effect(&child) {
+            if self.has_side_effect(&child) {
                 violations.push(RuleViolation {
                     rule_id: "EXP44-C".to_string(),
                     severity: Severity::Low,
@@ -154,11 +154,8 @@ impl Exp44C {
                     ),
                     requires_manual_review: Some(false),
                 });
-                first_child_processed = true;
-                break;
             }
-
-            first_child_processed = true;
+            break; // Only check the first argument
         }
     }
 

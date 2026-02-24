@@ -517,15 +517,11 @@ impl NonArrayPointerAnalyzer {
         // Get the parameter list - don't recurse, parent handles that
         if let Some(declarator) = node.child_by_field_name("declarator") {
             if let Some(parameters) = declarator.child_by_field_name("parameters") {
-                // Count total parameters
-                let mut param_count = 0;
                 let mut pointer_params = Vec::new();
 
                 for i in 0..parameters.child_count() {
                     if let Some(param) = parameters.child(i) {
                         if param.kind() == "parameter_declaration" {
-                            param_count += 1;
-
                             if let Some(param_declarator) = param.child_by_field_name("declarator")
                             {
                                 let param_name = ast_utils::get_identifier_from_declarator(

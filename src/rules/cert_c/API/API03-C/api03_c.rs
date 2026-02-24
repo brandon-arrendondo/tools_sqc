@@ -100,6 +100,7 @@ impl Api03C {
         }
     }
 
+    #[allow(dead_code)]
     fn is_function_declaration(&self, decl_node: &Node) -> bool {
         // Look for function_declarator in the declaration
         let mut cursor = decl_node.walk();
@@ -418,6 +419,7 @@ struct FunctionInfo {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 struct ParamInfo {
     type_text: String,
     position: usize,

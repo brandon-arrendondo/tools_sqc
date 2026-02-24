@@ -469,7 +469,7 @@ impl Pre31C {
         for id in identifiers {
             // Look for volatile declaration of this variable
             // Patterns: "volatile int name" or "volatile type name" or "type volatile name"
-            let patterns = [
+            let _patterns = [
                 format!("volatile {} {};", id, ""), // At start
                 format!("volatile {}", id),         // Basic pattern
                 format!("{} volatile", id),         // Type after volatile

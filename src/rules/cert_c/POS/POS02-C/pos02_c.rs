@@ -87,7 +87,7 @@ impl Pos02C {
         )
     }
 
-    fn has_privilege_drop_after(&self, node: &Node, source: &str) -> bool {
+    fn has_privilege_drop_after(&self, _node: &Node, source: &str) -> bool {
         // More lenient check: look for privilege dropping anywhere in the source
         // This is because the privilege drop might be in the calling function
         let full_source = source;

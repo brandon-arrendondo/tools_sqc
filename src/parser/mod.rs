@@ -28,6 +28,7 @@ impl CParser {
         Ok((tree, source))
     }
 
+    #[allow(dead_code)]
     pub fn parse_source(&mut self, source: &str) -> Result<Tree> {
         self.parser
             .parse(source, None)

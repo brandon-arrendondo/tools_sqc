@@ -1443,6 +1443,7 @@ impl Err33C {
     }
 
     /// Helper function to find containing if statement
+    #[allow(dead_code)]
     fn find_containing_if_statement<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
         let mut current = node.parent();
         while let Some(parent) = current {

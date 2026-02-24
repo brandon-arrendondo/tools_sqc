@@ -134,6 +134,7 @@ impl Dcl37C {
     }
 
     /// Check declarations for reserved identifiers
+    #[allow(dead_code)]
     fn check_declaration(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(declarator) = node.child_by_field_name("declarator") {
             self.check_declarator(&declarator, source, violations);

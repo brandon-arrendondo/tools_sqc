@@ -157,7 +157,7 @@ impl Int18C {
             if let Some(value) = assignment.child_by_field_name("value") {
                 if self.is_arithmetic_binary(&value) {
                     // Check if declarator has larger type
-                    if let Some(declarator) = assignment.child_by_field_name("declarator") {
+                    if let Some(_declarator) = assignment.child_by_field_name("declarator") {
                         // Get parent declaration to check type
                         if let Some(parent) = assignment.parent() {
                             if parent.kind() == "declaration" {
@@ -185,7 +185,7 @@ impl Int18C {
     }
 
     /// Get operator from binary expression
-    fn get_operator(&self, node: &Node, source: &str) -> String {
+    fn get_operator(&self, node: &Node, _source: &str) -> String {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 let kind = child.kind();

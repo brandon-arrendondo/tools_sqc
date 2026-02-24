@@ -33,7 +33,7 @@ impl CertRule for Pre06C {
         )
     }
 
-    fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+    fn check(&self, _node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
         // Check if source has #ifndef, #define, #endif pattern

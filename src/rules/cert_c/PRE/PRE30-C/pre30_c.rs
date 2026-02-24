@@ -282,6 +282,7 @@ impl Pre30C {
         false
     }
 
+    #[allow(dead_code)]
     fn contains_ucn_pattern(&self, text: &str) -> bool {
         // Check if text contains UCN patterns using string operations
         // Look for \uXXXX or \UXXXXXXXX patterns
