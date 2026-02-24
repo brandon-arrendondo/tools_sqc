@@ -525,7 +525,7 @@ fn is_pointer_type_declarator(node: &Node) -> bool {
 }
 
 /// Find an AST node that covers the given byte range.
-fn find_node_at_range<'a>(root: &Node<'a>, start: usize, end: usize) -> Option<Node<'a>> {
+pub fn find_node_at_range<'a>(root: &Node<'a>, start: usize, end: usize) -> Option<Node<'a>> {
     if root.start_byte() == start && root.end_byte() == end {
         return Some(*root);
     }

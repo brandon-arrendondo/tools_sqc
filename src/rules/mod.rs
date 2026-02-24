@@ -2,6 +2,7 @@ mod cert_c;
 
 use crate::analyze::cfg::FunctionCfg;
 use crate::analyze::context::ProjectContext;
+use std::collections::HashMap;
 use tree_sitter::Node;
 
 pub trait CertRule {
@@ -27,6 +28,10 @@ pub trait CertRule {
     /// Inject cross-file context gathered by the pre-scan phase.
     /// Default is a no-op; only rules that need cross-file data override this.
     fn set_project_context(&self, _context: &ProjectContext) {}
+
+    /// Inject per-file function CFGs for flow-sensitive analysis.
+    /// Default is a no-op; only rules that need CFG data override this.
+    fn set_function_cfgs(&self, _cfgs: &HashMap<usize, FunctionCfg>) {}
 
     /// Returns true if this rule applies to the given file path.
     /// Default: applies to all files. Override for rules that are
