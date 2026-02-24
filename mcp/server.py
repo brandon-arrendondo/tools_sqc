@@ -3,7 +3,9 @@
 MCP server for running and monitoring the Juliet CERT C benchmark against sqc.
 
 Tools:
-  run_benchmark          - Start (or restart) a fresh benchmark run
+  run_benchmark          - Start a fresh benchmark run (unique dir per version+commit)
+  cancel_benchmark       - Cancel a running benchmark (kills all parallel processes)
+  clear_results          - Remove old benchmark result directories
   get_status             - Progress %, ETA, recently completed CWEs
   get_results(sort_by)   - Aggregated TP/FP stats + per-rule breakdown
   get_cwe_detail(cwe_id) - Detailed stats for one CWE
@@ -12,6 +14,8 @@ Tools:
 import json
 import os
 import re
+import shutil
+import signal
 import subprocess
 import time
 from pathlib import Path
@@ -22,9 +26,8 @@ from mcp.server.fastmcp import FastMCP
 _HERE = Path(__file__).parent
 PROJECT_DIR = _HERE.parent
 SCRIPT = PROJECT_DIR / "scripts" / "run_juliet_parallel.sh"
-RESULTS_DIR = Path("/tmp/juliet_results")
-LOG_FILE = Path("/tmp/juliet_bench.log")
-PID_FILE = Path("/tmp/juliet_bench.pid")
+RESULTS_BASE = Path("/tmp/juliet_results")
+STATE_FILE = Path("/tmp/juliet_bench.pid")  # stores JSON state (name kept for compat)
 
 # The benchmark script knows its total CWE list; we use 118 as the known count.
 KNOWN_TOTAL_CWES = 118
@@ -51,34 +54,141 @@ def _fmt_duration(seconds: int) -> str:
     return " ".join(parts)
 
 
-def _read_state() -> dict | None:
-    """Read persisted benchmark state (PID + start time) from disk."""
+def _get_sqc_version() -> str:
+    """Read sqc version from Cargo.toml."""
     try:
-        return json.loads(PID_FILE.read_text())
+        for line in (PROJECT_DIR / "Cargo.toml").read_text().splitlines():
+            m = re.match(r'^version\s*=\s*"([^"]+)"', line)
+            if m:
+                return m.group(1)
+    except Exception:
+        pass
+    return "unknown"
+
+
+def _get_git_sha() -> str:
+    """Get short git commit SHA for the current HEAD."""
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True, cwd=PROJECT_DIR, timeout=5,
+        )
+        return result.stdout.strip() if result.returncode == 0 else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _read_state() -> dict | None:
+    """Read persisted benchmark state from disk."""
+    try:
+        return json.loads(STATE_FILE.read_text())
     except Exception:
         return None
 
 
-def _write_state(pid: int, start_time: float) -> None:
-    PID_FILE.write_text(json.dumps({"pid": pid, "start_time": start_time}))
+def _write_state(state: dict) -> None:
+    """Write benchmark state to disk."""
+    STATE_FILE.write_text(json.dumps(state))
+
+
+def _update_state(**kwargs) -> dict | None:
+    """Read state, merge kwargs, write back. Returns updated state or None."""
+    state = _read_state()
+    if state is None:
+        return None
+    state.update(kwargs)
+    _write_state(state)
+    return state
 
 
 def _process_alive(pid: int) -> bool:
+    """Check if process is alive (not a zombie)."""
     try:
         os.kill(pid, 0)
-        return True
     except (ProcessLookupError, PermissionError):
         return False
+    # Check for zombie on Linux
+    try:
+        status = Path(f"/proc/{pid}/status").read_text()
+        for line in status.splitlines():
+            if line.startswith("State:") and "zombie" in line.lower():
+                return False
+    except Exception:
+        pass
+    return True
 
 
-def _parse_log() -> dict:
+def _active_results_dir(state: dict | None = None) -> Path:
+    """Return the results directory for the current/latest run."""
+    if state is None:
+        state = _read_state()
+    if state and "results_dir" in state:
+        return Path(state["results_dir"])
+    # Legacy fallback: flat /tmp/juliet_results/
+    return RESULTS_BASE
+
+
+def _get_log_file(state: dict | None = None) -> Path:
+    """Return the log file path for the current/latest run."""
+    if state is None:
+        state = _read_state()
+    if state and "results_dir" in state:
+        return Path(state["results_dir"]) / "benchmark.log"
+    # Legacy fallback
+    return Path("/tmp/juliet_bench.log")
+
+
+def _kill_process_group(pid: int) -> None:
+    """Kill an entire process group: SIGTERM, wait, then SIGKILL stragglers."""
+    # SIGTERM the group
+    try:
+        os.killpg(pid, signal.SIGTERM)
+    except (ProcessLookupError, PermissionError):
+        return  # already dead
+
+    # Give processes time to handle SIGTERM gracefully
+    time.sleep(1.0)
+
+    # SIGKILL anything still alive
+    try:
+        os.killpg(pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        pass
+
+    # Reap zombie if we're the parent
+    try:
+        os.waitpid(pid, os.WNOHANG)
+    except ChildProcessError:
+        pass
+
+
+def _find_child_pids(parent_pid: int) -> list[int]:
+    """Find all descendant PIDs of a process (Linux /proc)."""
+    children = []
+    try:
+        result = subprocess.run(
+            ["ps", "--ppid", str(parent_pid), "-o", "pid=", "--no-headers"],
+            capture_output=True, text=True, timeout=5,
+        )
+        for line in result.stdout.splitlines():
+            pid_str = line.strip()
+            if pid_str.isdigit():
+                children.append(int(pid_str))
+                # Recurse for grandchildren
+                children.extend(_find_child_pids(int(pid_str)))
+    except Exception:
+        pass
+    return children
+
+
+def _parse_log(log_file: Path) -> dict:
     """
-    Parse /tmp/juliet_bench.log and return:
-      done   - list of completed CWEs with timing/violation data
+    Parse benchmark log and return:
+      done    - list of completed CWEs with timing/violation data
       started - set of CWE names that have been started
       errors  - error lines
     """
-    if not LOG_FILE.exists():
+    if not log_file.exists():
         return {"done": [], "started": set(), "errors": []}
 
     done: list[dict] = []
@@ -86,7 +196,7 @@ def _parse_log() -> dict:
     errors: list[str] = []
     done_names: set[str] = set()  # dedup (script may log twice on retry)
 
-    for line in LOG_FILE.read_text().splitlines():
+    for line in log_file.read_text().splitlines():
         if line.startswith("DONE:"):
             # DONE: CWE78_OS_Command_Injection | 1276s | 125780 violations | 5600 files
             m = re.match(
@@ -160,6 +270,22 @@ def _parse_analysis(content: str) -> dict:
     }
 
 
+def _dir_size_human(path: Path) -> str:
+    """Return human-readable size of a directory."""
+    total = 0
+    try:
+        for f in path.rglob("*"):
+            if f.is_file():
+                total += f.stat().st_size
+    except Exception:
+        pass
+    for unit in ("B", "KB", "MB", "GB"):
+        if total < 1024:
+            return f"{total:.1f} {unit}"
+        total /= 1024
+    return f"{total:.1f} TB"
+
+
 # ── Tools ─────────────────────────────────────────────────────────────────────
 
 @mcp.tool()
@@ -167,56 +293,250 @@ def run_benchmark() -> str:
     """
     Start a fresh Juliet benchmark run against sqc.
 
-    Clears all previous results from /tmp/juliet_results/ and restarts.
-    Returns immediately — use get_status() to monitor progress.
-    If a benchmark is already running, returns its current PID instead of starting a new one.
+    Creates a unique results directory based on the sqc version and git commit SHA
+    (e.g., /tmp/juliet_results/sqc-0.1.0-abc1234/). Returns immediately — use
+    get_status() to monitor progress. If a benchmark is already running, returns
+    its current PID instead of starting a new one.
     """
     state = _read_state()
-    if state and _process_alive(state["pid"]):
+    if state and _process_alive(state.get("pid", 0)):
         elapsed = int(time.time() - state["start_time"])
         return json.dumps(
             {
                 "status": "already_running",
                 "pid": state["pid"],
+                "results_dir": state.get("results_dir", str(RESULTS_BASE)),
                 "elapsed_seconds": elapsed,
                 "message": "Benchmark already running. Use get_status() to monitor.",
             }
         )
 
-    # Clear old results
-    if RESULTS_DIR.exists():
-        for f in RESULTS_DIR.glob("*.csv"):
-            f.unlink(missing_ok=True)
-        for f in RESULTS_DIR.glob("*.txt"):
-            f.unlink(missing_ok=True)
-    else:
-        RESULTS_DIR.mkdir(parents=True)
+    # Determine version and commit for the unique directory name
+    version = _get_sqc_version()
+    sha = _get_git_sha()
+    run_name = f"sqc-{version}-{sha}"
+    results_dir = RESULTS_BASE / run_name
 
-    LOG_FILE.unlink(missing_ok=True)
+    # Create/clear the run-specific results directory
+    if results_dir.exists():
+        for f in results_dir.glob("*.csv"):
+            f.unlink(missing_ok=True)
+        for f in results_dir.glob("*.txt"):
+            f.unlink(missing_ok=True)
+        log = results_dir / "benchmark.log"
+        log.unlink(missing_ok=True)
+    else:
+        results_dir.mkdir(parents=True)
+
+    # Open log file inside the results directory
+    log_path = results_dir / "benchmark.log"
+    log_fh = log_path.open("w")
 
     # Launch benchmark detached from the MCP server process so it survives
     # even if the MCP server is restarted.
-    log_fh = LOG_FILE.open("w")
+    env = os.environ.copy()
+    env["RESULTS_DIR"] = str(results_dir)
+
     proc = subprocess.Popen(
         ["bash", str(SCRIPT)],
         stdout=log_fh,
         stderr=subprocess.STDOUT,
-        start_new_session=True,  # detach from MCP server process group
+        start_new_session=True,  # detach — PID becomes PGID
+        env=env,
     )
     log_fh.close()  # MCP server doesn't need to hold the handle
 
     start_time = time.time()
-    _write_state(proc.pid, start_time)
+    new_state = {
+        "pid": proc.pid,
+        "start_time": start_time,
+        "results_dir": str(results_dir),
+        "version": version,
+        "commit_sha": sha,
+        "run_name": run_name,
+        "status": "running",
+    }
+    _write_state(new_state)
 
     return json.dumps(
         {
             "status": "started",
             "pid": proc.pid,
+            "results_dir": str(results_dir),
+            "run_name": run_name,
+            "version": version,
+            "commit_sha": sha,
             "message": (
                 f"Benchmark started (PID {proc.pid}). "
-                "Results appear in /tmp/juliet_results/. "
+                f"Results dir: {results_dir}. "
                 "Use get_status() to monitor progress."
             ),
+        }
+    )
+
+
+@mcp.tool()
+def cancel_benchmark() -> str:
+    """
+    Cancel a running Juliet benchmark.
+
+    Kills the benchmark process group (the main script, xargs workers, and all
+    child sqc processes). Partial results already written are preserved and can
+    still be queried with get_results() and get_cwe_detail().
+    """
+    state = _read_state()
+    if state is None:
+        return json.dumps(
+            {
+                "status": "no_benchmark",
+                "message": "No benchmark has been run. Nothing to cancel.",
+            }
+        )
+
+    pid = state["pid"]
+    if not _process_alive(pid):
+        # Check if it was already cancelled
+        if state.get("status") == "cancelled":
+            return json.dumps(
+                {
+                    "status": "already_cancelled",
+                    "pid": pid,
+                    "message": "Benchmark was already cancelled.",
+                }
+            )
+        elapsed = int(time.time() - state["start_time"])
+        return json.dumps(
+            {
+                "status": "not_running",
+                "pid": pid,
+                "elapsed_seconds": elapsed,
+                "message": (
+                    "Benchmark process is not running (already finished or crashed). "
+                    "Use get_status() to check results."
+                ),
+            }
+        )
+
+    # Collect child PIDs before killing (for verification)
+    child_pids = _find_child_pids(pid)
+
+    # Kill the entire process group (the script and its children).
+    # run_benchmark() uses start_new_session=True, so the PID is also the PGID.
+    _kill_process_group(pid)
+
+    # Belt-and-suspenders: kill any children that escaped the process group
+    time.sleep(0.3)
+    for cpid in child_pids:
+        try:
+            os.kill(cpid, signal.SIGKILL)
+        except (ProcessLookupError, PermissionError):
+            pass
+
+    # Update state to reflect cancellation
+    elapsed = int(time.time() - state["start_time"])
+    _update_state(status="cancelled")
+
+    log_file = _get_log_file(state)
+    log_data = _parse_log(log_file)
+    done_count = len(log_data["done"])
+
+    return json.dumps(
+        {
+            "status": "cancelled",
+            "pid": pid,
+            "elapsed_seconds": elapsed,
+            "elapsed_human": _fmt_duration(elapsed),
+            "cwes_completed_before_cancel": done_count,
+            "processes_killed": 1 + len(child_pids),
+            "results_dir": state.get("results_dir", str(RESULTS_BASE)),
+            "message": (
+                f"Benchmark cancelled (PID {pid}) after {_fmt_duration(elapsed)}. "
+                f"{done_count} CWEs completed before cancellation. "
+                f"Killed {1 + len(child_pids)} processes (main + children). "
+                "Partial results are preserved — use get_results() to view them."
+            ),
+        }
+    )
+
+
+@mcp.tool()
+def clear_results() -> str:
+    """
+    Remove old benchmark result directories.
+
+    Removes all result directories under /tmp/juliet_results/ that are not
+    from a currently running benchmark. Also cleans up legacy flat result files.
+    """
+    if not RESULTS_BASE.exists():
+        return json.dumps(
+            {
+                "status": "nothing_to_clear",
+                "message": f"{RESULTS_BASE} does not exist. Nothing to clear.",
+            }
+        )
+
+    state = _read_state()
+    active_dir = None
+    if state and _process_alive(state.get("pid", 0)):
+        active_dir = state.get("results_dir")
+
+    removed: list[dict] = []
+    skipped: list[str] = []
+    errors: list[str] = []
+
+    # Remove run subdirectories (sqc-version-sha/)
+    for entry in sorted(RESULTS_BASE.iterdir()):
+        if entry.is_dir() and entry.name.startswith("sqc-"):
+            if active_dir and str(entry) == active_dir:
+                skipped.append(entry.name)
+                continue
+            try:
+                size = _dir_size_human(entry)
+                n_files = sum(1 for _ in entry.rglob("*") if _.is_file())
+                shutil.rmtree(entry)
+                removed.append({"name": entry.name, "size": size, "files": n_files})
+            except Exception as e:
+                errors.append(f"Failed to remove {entry.name}: {e}")
+
+    # Clean up legacy flat files (*.csv, *.txt directly in RESULTS_BASE)
+    legacy_count = 0
+    for pattern in ("*.csv", "*.txt"):
+        for f in RESULTS_BASE.glob(pattern):
+            if f.is_file():
+                try:
+                    f.unlink()
+                    legacy_count += 1
+                except Exception as e:
+                    errors.append(f"Failed to remove {f.name}: {e}")
+
+    # Clean up legacy log file
+    legacy_log = Path("/tmp/juliet_bench.log")
+    if legacy_log.exists():
+        try:
+            legacy_log.unlink()
+            legacy_count += 1
+        except Exception:
+            pass
+
+    total_removed = len(removed)
+    msg_parts = []
+    if total_removed:
+        msg_parts.append(f"Removed {total_removed} run directories")
+    if legacy_count:
+        msg_parts.append(f"cleaned up {legacy_count} legacy files")
+    if skipped:
+        msg_parts.append(f"skipped {len(skipped)} active run(s)")
+    if not msg_parts:
+        msg_parts.append("Nothing to clear")
+
+    return json.dumps(
+        {
+            "status": "cleared" if (total_removed or legacy_count) else "nothing_to_clear",
+            "removed_dirs": removed,
+            "skipped_active": skipped,
+            "legacy_files_removed": legacy_count,
+            "errors": errors,
+            "message": ". ".join(msg_parts) + ".",
         }
     )
 
@@ -239,12 +559,17 @@ def get_status() -> str:
             }
         )
 
-    log_data = _parse_log()
+    results_dir = _active_results_dir(state)
+    log_file = _get_log_file(state)
+    log_data = _parse_log(log_file)
     done = log_data["done"]
     done_count = len(done)
-    is_running = _process_alive(state["pid"])
 
-    summary_file = RESULTS_DIR / "multi_cwe_summary.txt"
+    pid = state.get("pid", 0)
+    is_running = _process_alive(pid)
+    was_cancelled = state.get("status") == "cancelled"
+
+    summary_file = results_dir / "multi_cwe_summary.txt"
     is_complete = summary_file.exists() and not is_running
 
     elapsed_s = int(time.time() - state["start_time"])
@@ -261,10 +586,18 @@ def get_status() -> str:
             remaining = total_cwes - done_count
             eta_s = int(remaining / rate) if rate > 0 else None
 
+    # Determine state string
+    if is_complete:
+        state_str = "completed"
+    elif was_cancelled:
+        state_str = "cancelled"
+    elif is_running:
+        state_str = "running"
+    else:
+        state_str = "crashed"
+
     result: dict = {
-        "state": (
-            "completed" if is_complete else "running" if is_running else "crashed"
-        ),
+        "state": state_str,
         "progress_pct": progress_pct,
         "done_cwes": done_count,
         "total_cwes": total_cwes,
@@ -272,6 +605,10 @@ def get_status() -> str:
         "elapsed_human": _fmt_duration(elapsed_s),
         "eta_seconds": eta_s,
         "eta_human": _fmt_duration(eta_s) if eta_s else None,
+        "results_dir": str(results_dir),
+        "run_name": state.get("run_name"),
+        "version": state.get("version"),
+        "commit_sha": state.get("commit_sha"),
         "recently_completed": done[-5:],
         "errors": log_data["errors"],
     }
@@ -286,11 +623,23 @@ def get_status() -> str:
             f"{done_count}/{total_cwes} CWEs analyzed. "
             "Use get_results() for aggregated stats or get_cwe_detail(cwe_id) for specifics."
         )
+    elif was_cancelled:
+        result["message"] = (
+            f"Benchmark was cancelled after {_fmt_duration(elapsed_s)}. "
+            f"{done_count}/{total_cwes} CWEs completed before cancellation. "
+            "Partial results available via get_results()."
+        )
     elif is_running:
         eta_str = _fmt_duration(eta_s) if eta_s else "unknown"
         result["message"] = (
             f"{done_count}/{total_cwes} CWEs done ({progress_pct}%). "
             f"Elapsed: {_fmt_duration(elapsed_s)}. ETA: {eta_str}."
+        )
+    else:
+        result["message"] = (
+            f"Benchmark process (PID {pid}) is no longer running. "
+            f"{done_count}/{total_cwes} CWEs completed. "
+            "It may have crashed — check errors field."
         )
 
     return json.dumps(result)
@@ -308,7 +657,10 @@ def get_results(sort_by: str = "fp_count") -> str:
     Returns a summary (total TP, FP, TP rate), the top 20 rules by the chosen
     sort key, and a per-CWE table sorted by FP count.
     """
-    if not RESULTS_DIR.exists() or not list(RESULTS_DIR.glob("*_analysis.txt")):
+    state = _read_state()
+    results_dir = _active_results_dir(state)
+
+    if not results_dir.exists() or not list(results_dir.glob("*_analysis.txt")):
         return json.dumps(
             {
                 "error": (
@@ -325,10 +677,11 @@ def get_results(sort_by: str = "fp_count") -> str:
     per_cwe: list[dict] = []
 
     # Build timing lookup from log (cwe_name → duration_s).
-    log_data = _parse_log()
+    log_file = _get_log_file(state)
+    log_data = _parse_log(log_file)
     cwe_timing: dict[str, int] = {e["cwe"]: e["duration_s"] for e in log_data["done"]}
 
-    for f in sorted(RESULTS_DIR.glob("*_analysis.txt")):
+    for f in sorted(results_dir.glob("*_analysis.txt")):
         cwe_name = f.stem.replace("_analysis", "")
         parsed = _parse_analysis(f.read_text())
         tp, fp = parsed["tp"], parsed["fp"]
@@ -389,11 +742,14 @@ def get_results(sort_by: str = "fp_count") -> str:
         "fp_rate_pct": round(total_fp / grand_total * 100, 1) if grand_total else 0,
         "cwes_analyzed": len(per_cwe),
         "sort_by": sort_by,
+        "results_dir": str(results_dir),
+        "run_name": state.get("run_name") if state else None,
+        "version": state.get("version") if state else None,
+        "commit_sha": state.get("commit_sha") if state else None,
     }
 
     # Include total run duration if we have a start time and the summary file exists.
-    state = _read_state()
-    summary_file = RESULTS_DIR / "multi_cwe_summary.txt"
+    summary_file = results_dir / "multi_cwe_summary.txt"
     if state and summary_file.exists():
         total_s = int(summary_file.stat().st_mtime - state["start_time"])
         summary["total_duration_seconds"] = total_s
@@ -420,7 +776,10 @@ def get_cwe_detail(cwe_id: str) -> str:
     Returns file count, TP/FP rates, top contributing rules for TPs and FPs,
     and FLAW-line detection statistics.
     """
-    if not RESULTS_DIR.exists():
+    state = _read_state()
+    results_dir = _active_results_dir(state)
+
+    if not results_dir.exists():
         return json.dumps(
             {"error": "No results found. Run run_benchmark() first."}
         )
@@ -433,14 +792,14 @@ def get_cwe_detail(cwe_id: str) -> str:
     # Match CWE78 → CWE78_... but NOT CWE780_... by requiring _ or end after the ID.
     matches = [
         f
-        for f in RESULTS_DIR.glob("*_analysis.txt")
+        for f in results_dir.glob("*_analysis.txt")
         if re.match(rf"^{re.escape(needle)}(_|$)", f.name.upper())
     ]
 
     if not matches:
         available = sorted(
             f.stem.replace("_analysis", "")
-            for f in RESULTS_DIR.glob("*_analysis.txt")
+            for f in results_dir.glob("*_analysis.txt")
         )
         return json.dumps(
             {
@@ -457,12 +816,15 @@ def get_cwe_detail(cwe_id: str) -> str:
     tp, fp = parsed["tp"], parsed["fp"]
     total = tp + fp
 
-    log_data = _parse_log()
+    log_file = _get_log_file(state)
+    log_data = _parse_log(log_file)
     cwe_timing: dict[str, int] = {e["cwe"]: e["duration_s"] for e in log_data["done"]}
 
     detail: dict = {
         "cwe": cwe_name,
         "files_analyzed": parsed["files"],
+        "results_dir": str(results_dir),
+        "run_name": state.get("run_name") if state else None,
         "summary": {
             "total_violations": total,
             "tp": tp,
@@ -486,6 +848,460 @@ def get_cwe_detail(cwe_id: str) -> str:
         detail["duration_human"] = _fmt_duration(cwe_timing[cwe_name])
 
     return json.dumps(detail)
+
+
+# ── Comparison helpers ────────────────────────────────────────────────────────
+
+def _list_run_dirs() -> list[dict]:
+    """List all run directories under RESULTS_BASE with metadata."""
+    runs = []
+    if not RESULTS_BASE.exists():
+        return runs
+
+    for entry in sorted(RESULTS_BASE.iterdir()):
+        if not entry.is_dir() or not entry.name.startswith("sqc-"):
+            continue
+        # Parse run name: sqc-{version}-{sha}
+        parts = entry.name.split("-", 2)  # ["sqc", version, sha]
+        version = parts[1] if len(parts) > 1 else "unknown"
+        sha = parts[2] if len(parts) > 2 else "unknown"
+
+        analysis_files = list(entry.glob("*_analysis.txt"))
+        summary_file = entry / "multi_cwe_summary.txt"
+        log_file = entry / "benchmark.log"
+
+        # Use directory mtime as proxy for run date
+        try:
+            mtime = entry.stat().st_mtime
+        except Exception:
+            mtime = 0
+
+        runs.append({
+            "run_name": entry.name,
+            "path": str(entry),
+            "version": version,
+            "commit_sha": sha,
+            "cwes_completed": len(analysis_files),
+            "is_complete": summary_file.exists(),
+            "has_log": log_file.exists(),
+            "size": _dir_size_human(entry),
+            "modified": time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(mtime)),
+        })
+
+    # Sort newest first
+    runs.sort(key=lambda r: r["modified"], reverse=True)
+    return runs
+
+
+def _resolve_run(identifier: str) -> Path | None:
+    """
+    Resolve a run identifier to a results directory path.
+
+    Accepts:
+    - "latest" / "current" — most recent run from state file
+    - Full run name: "sqc-0.1.0-abc1234"
+    - Just the SHA: "abc1234"
+    - Full path: "/tmp/juliet_results/sqc-0.1.0-abc1234"
+    """
+    ident = identifier.strip()
+
+    # "latest" / "current" → read from state
+    if ident.lower() in ("latest", "current"):
+        state = _read_state()
+        if state and "results_dir" in state:
+            p = Path(state["results_dir"])
+            if p.exists():
+                return p
+        # Fall back to newest directory
+        runs = _list_run_dirs()
+        if runs:
+            return Path(runs[0]["path"])
+        return None
+
+    # Full path
+    if ident.startswith("/"):
+        p = Path(ident)
+        return p if p.exists() else None
+
+    # Full run name (starts with "sqc-")
+    if ident.startswith("sqc-"):
+        p = RESULTS_BASE / ident
+        return p if p.exists() else None
+
+    # Try as SHA suffix match
+    if not RESULTS_BASE.exists():
+        return None
+    for entry in sorted(RESULTS_BASE.iterdir(), reverse=True):
+        if entry.is_dir() and entry.name.endswith(f"-{ident}"):
+            return entry
+
+    # Try as substring anywhere in run name
+    for entry in sorted(RESULTS_BASE.iterdir(), reverse=True):
+        if entry.is_dir() and ident in entry.name:
+            return entry
+
+    return None
+
+
+def _load_run_data(results_dir: Path) -> dict:
+    """Load all analysis data from a results directory into a comparable structure."""
+    data: dict = {
+        "per_cwe": {},        # cwe_name → parsed analysis dict
+        "per_rule_tp": {},    # rule → total TP count across CWEs
+        "per_rule_fp": {},    # rule → total FP count across CWEs
+        "total_tp": 0,
+        "total_fp": 0,
+        "cwe_count": 0,
+    }
+    for f in sorted(results_dir.glob("*_analysis.txt")):
+        cwe_name = f.stem.replace("_analysis", "")
+        parsed = _parse_analysis(f.read_text())
+        data["per_cwe"][cwe_name] = parsed
+        data["total_tp"] += parsed["tp"]
+        data["total_fp"] += parsed["fp"]
+        data["cwe_count"] += 1
+        for entry in parsed["top_tp_rules"]:
+            data["per_rule_tp"][entry["rule"]] = (
+                data["per_rule_tp"].get(entry["rule"], 0) + entry["count"]
+            )
+        for entry in parsed["top_fp_rules"]:
+            data["per_rule_fp"][entry["rule"]] = (
+                data["per_rule_fp"].get(entry["rule"], 0) + entry["count"]
+            )
+    return data
+
+
+# ── Comparison tools ─────────────────────────────────────────────────────────
+
+@mcp.tool()
+def list_runs() -> str:
+    """
+    List all available benchmark run directories.
+
+    Shows each run's version, commit SHA, number of CWEs completed, size,
+    and whether the run finished. Use the run_name values as identifiers
+    in compare_runs() and compare_cwe().
+    """
+    runs = _list_run_dirs()
+
+    if not runs:
+        return json.dumps({
+            "runs": [],
+            "message": (
+                "No benchmark runs found. Use run_benchmark() to start one. "
+                f"Results are stored under {RESULTS_BASE}."
+            ),
+        })
+
+    # Mark which one is the "current" run from state
+    state = _read_state()
+    current_dir = state.get("results_dir") if state else None
+    for r in runs:
+        r["is_current"] = r["path"] == current_dir
+
+    return json.dumps({
+        "runs": runs,
+        "count": len(runs),
+        "message": (
+            f"{len(runs)} benchmark run(s) found. "
+            "Use run names as identifiers in compare_runs() and compare_cwe()."
+        ),
+    })
+
+
+@mcp.tool()
+def compare_runs(base: str, target: str) -> str:
+    """
+    Compare two benchmark runs showing TP/FP deltas.
+
+    Args:
+        base: Base (older) run — run name, commit SHA, or "latest"
+        target: Target (newer) run — run name, commit SHA, or "latest"
+
+    Returns overall TP/FP delta, top CWEs improved/regressed, and per-rule
+    changes. Positive FP delta = regression (more FPs), negative = improvement.
+    """
+    base_dir = _resolve_run(base)
+    target_dir = _resolve_run(target)
+
+    if base_dir is None:
+        avail = [r["run_name"] for r in _list_run_dirs()]
+        return json.dumps({
+            "error": f"Could not resolve base run '{base}'.",
+            "available_runs": avail,
+        })
+    if target_dir is None:
+        avail = [r["run_name"] for r in _list_run_dirs()]
+        return json.dumps({
+            "error": f"Could not resolve target run '{target}'.",
+            "available_runs": avail,
+        })
+    if base_dir == target_dir:
+        return json.dumps({
+            "error": "Base and target resolve to the same run directory.",
+            "resolved_path": str(base_dir),
+        })
+
+    base_data = _load_run_data(base_dir)
+    target_data = _load_run_data(target_dir)
+
+    if base_data["cwe_count"] == 0:
+        return json.dumps({"error": f"No analysis files in base run: {base_dir}"})
+    if target_data["cwe_count"] == 0:
+        return json.dumps({"error": f"No analysis files in target run: {target_dir}"})
+
+    # ── Overall summary ──────────────────────────────────────────────────
+    base_total = base_data["total_tp"] + base_data["total_fp"]
+    target_total = target_data["total_tp"] + target_data["total_fp"]
+    base_tp_rate = round(base_data["total_tp"] / base_total * 100, 1) if base_total else 0
+    target_tp_rate = round(target_data["total_tp"] / target_total * 100, 1) if target_total else 0
+
+    summary = {
+        "base_run": base_dir.name,
+        "target_run": target_dir.name,
+        "base": {
+            "tp": base_data["total_tp"],
+            "fp": base_data["total_fp"],
+            "total": base_total,
+            "tp_rate_pct": base_tp_rate,
+            "cwes": base_data["cwe_count"],
+        },
+        "target": {
+            "tp": target_data["total_tp"],
+            "fp": target_data["total_fp"],
+            "total": target_total,
+            "tp_rate_pct": target_tp_rate,
+            "cwes": target_data["cwe_count"],
+        },
+        "delta": {
+            "tp": target_data["total_tp"] - base_data["total_tp"],
+            "fp": target_data["total_fp"] - base_data["total_fp"],
+            "total": target_total - base_total,
+            "tp_rate_pp": round(target_tp_rate - base_tp_rate, 2),
+        },
+    }
+
+    # ── Per-CWE deltas ───────────────────────────────────────────────────
+    all_cwes = set(base_data["per_cwe"]) | set(target_data["per_cwe"])
+    cwe_deltas: list[dict] = []
+    for cwe in sorted(all_cwes):
+        b = base_data["per_cwe"].get(cwe, {"tp": 0, "fp": 0})
+        t = target_data["per_cwe"].get(cwe, {"tp": 0, "fp": 0})
+        b_total = b["tp"] + b["fp"]
+        t_total = t["tp"] + t["fp"]
+        b_tp_pct = round(b["tp"] / b_total * 100, 1) if b_total else 0
+        t_tp_pct = round(t["tp"] / t_total * 100, 1) if t_total else 0
+
+        cwe_deltas.append({
+            "cwe": cwe,
+            "base_tp": b["tp"],
+            "base_fp": b["fp"],
+            "target_tp": t["tp"],
+            "target_fp": t["fp"],
+            "delta_tp": t["tp"] - b["tp"],
+            "delta_fp": t["fp"] - b["fp"],
+            "base_tp_pct": b_tp_pct,
+            "target_tp_pct": t_tp_pct,
+            "delta_tp_rate_pp": round(t_tp_pct - b_tp_pct, 2),
+        })
+
+    # Sort by FP delta (biggest improvements first = most negative)
+    cwe_deltas.sort(key=lambda x: x["delta_fp"])
+
+    # Top improvements (FP decreased) and regressions (FP increased)
+    improvements = [d for d in cwe_deltas if d["delta_fp"] < 0][:15]
+    regressions = [d for d in cwe_deltas if d["delta_fp"] > 0]
+    regressions.sort(key=lambda x: -x["delta_fp"])
+    regressions = regressions[:15]
+
+    # ── Per-rule deltas ──────────────────────────────────────────────────
+    all_rules = set(base_data["per_rule_tp"]) | set(base_data["per_rule_fp"]) | \
+                set(target_data["per_rule_tp"]) | set(target_data["per_rule_fp"])
+
+    rule_deltas: list[dict] = []
+    for rule in sorted(all_rules):
+        b_tp = base_data["per_rule_tp"].get(rule, 0)
+        b_fp = base_data["per_rule_fp"].get(rule, 0)
+        t_tp = target_data["per_rule_tp"].get(rule, 0)
+        t_fp = target_data["per_rule_fp"].get(rule, 0)
+        rule_deltas.append({
+            "rule": rule,
+            "base_tp": b_tp,
+            "base_fp": b_fp,
+            "target_tp": t_tp,
+            "target_fp": t_fp,
+            "delta_tp": t_tp - b_tp,
+            "delta_fp": t_fp - b_fp,
+        })
+
+    # Top rule improvements and regressions by FP delta
+    rule_deltas.sort(key=lambda x: x["delta_fp"])
+    rule_improvements = [d for d in rule_deltas if d["delta_fp"] < 0][:10]
+    rule_regressions = [d for d in rule_deltas if d["delta_fp"] > 0]
+    rule_regressions.sort(key=lambda x: -x["delta_fp"])
+    rule_regressions = rule_regressions[:10]
+
+    # ── CWEs only in one run ─────────────────────────────────────────────
+    only_in_base = sorted(set(base_data["per_cwe"]) - set(target_data["per_cwe"]))
+    only_in_target = sorted(set(target_data["per_cwe"]) - set(base_data["per_cwe"]))
+
+    return json.dumps({
+        "summary": summary,
+        "cwe_improvements": improvements,
+        "cwe_regressions": regressions,
+        "rule_improvements": rule_improvements,
+        "rule_regressions": rule_regressions,
+        "cwes_only_in_base": only_in_base,
+        "cwes_only_in_target": only_in_target,
+        "all_cwe_deltas": cwe_deltas,
+    })
+
+
+@mcp.tool()
+def compare_cwe(cwe_id: str, base: str, target: str) -> str:
+    """
+    Compare a specific CWE's results between two benchmark runs.
+
+    Args:
+        cwe_id: CWE identifier (e.g., "CWE476", "476")
+        base: Base (older) run — run name, commit SHA, or "latest"
+        target: Target (newer) run — run name, commit SHA, or "latest"
+
+    Returns TP/FP delta, per-rule changes, and FLAW detection delta for the CWE.
+    """
+    base_dir = _resolve_run(base)
+    target_dir = _resolve_run(target)
+
+    if base_dir is None:
+        return json.dumps({"error": f"Could not resolve base run '{base}'."})
+    if target_dir is None:
+        return json.dumps({"error": f"Could not resolve target run '{target}'."})
+
+    # Normalise CWE ID
+    needle = cwe_id.upper()
+    if not needle.startswith("CWE"):
+        needle = "CWE" + needle
+
+    def _find_analysis(results_dir: Path, needle: str) -> tuple[str, dict] | None:
+        for f in results_dir.glob("*_analysis.txt"):
+            if re.match(rf"^{re.escape(needle)}(_|$)", f.name.upper()):
+                cwe_name = f.stem.replace("_analysis", "")
+                return cwe_name, _parse_analysis(f.read_text())
+        return None
+
+    base_result = _find_analysis(base_dir, needle)
+    target_result = _find_analysis(target_dir, needle)
+
+    if base_result is None and target_result is None:
+        return json.dumps({
+            "error": f"CWE '{cwe_id}' not found in either run.",
+        })
+
+    # Handle CWE present in only one run
+    if base_result is None:
+        cwe_name, t = target_result
+        return json.dumps({
+            "cwe": cwe_name,
+            "note": f"CWE only present in target run ({target_dir.name}), not in base.",
+            "target": {
+                "tp": t["tp"], "fp": t["fp"], "files": t["files"],
+                "flaw_detected": t["flaw_detected"], "flaw_total": t["flaw_total"],
+            },
+        })
+    if target_result is None:
+        cwe_name, b = base_result
+        return json.dumps({
+            "cwe": cwe_name,
+            "note": f"CWE only present in base run ({base_dir.name}), not in target.",
+            "base": {
+                "tp": b["tp"], "fp": b["fp"], "files": b["files"],
+                "flaw_detected": b["flaw_detected"], "flaw_total": b["flaw_total"],
+            },
+        })
+
+    cwe_name, b = base_result
+    _, t = target_result
+
+    b_total = b["tp"] + b["fp"]
+    t_total = t["tp"] + t["fp"]
+    b_tp_pct = round(b["tp"] / b_total * 100, 1) if b_total else 0
+    t_tp_pct = round(t["tp"] / t_total * 100, 1) if t_total else 0
+
+    b_flaw_pct = round(b["flaw_detected"] / b["flaw_total"] * 100, 1) if b["flaw_total"] else 0
+    t_flaw_pct = round(t["flaw_detected"] / t["flaw_total"] * 100, 1) if t["flaw_total"] else 0
+
+    # ── Per-rule comparison ──────────────────────────────────────────────
+    # Build rule maps from top_tp_rules and top_fp_rules
+    def _rule_map(entries: list[dict]) -> dict[str, int]:
+        return {e["rule"]: e["count"] for e in entries}
+
+    b_tp_rules = _rule_map(b["top_tp_rules"])
+    b_fp_rules = _rule_map(b["top_fp_rules"])
+    t_tp_rules = _rule_map(t["top_tp_rules"])
+    t_fp_rules = _rule_map(t["top_fp_rules"])
+
+    all_rules = set(b_tp_rules) | set(b_fp_rules) | set(t_tp_rules) | set(t_fp_rules)
+    rule_changes: list[dict] = []
+    for rule in sorted(all_rules):
+        b_tp = b_tp_rules.get(rule, 0)
+        b_fp = b_fp_rules.get(rule, 0)
+        t_tp = t_tp_rules.get(rule, 0)
+        t_fp = t_fp_rules.get(rule, 0)
+        if b_tp != t_tp or b_fp != t_fp:
+            rule_changes.append({
+                "rule": rule,
+                "base_tp": b_tp, "base_fp": b_fp,
+                "target_tp": t_tp, "target_fp": t_fp,
+                "delta_tp": t_tp - b_tp, "delta_fp": t_fp - b_fp,
+            })
+
+    # Sort by absolute FP change (biggest changes first)
+    rule_changes.sort(key=lambda x: abs(x["delta_fp"]), reverse=True)
+
+    # Rules that appeared or disappeared
+    b_all_rules = set(b_tp_rules) | set(b_fp_rules)
+    t_all_rules = set(t_tp_rules) | set(t_fp_rules)
+    new_rules = sorted(t_all_rules - b_all_rules)
+    removed_rules = sorted(b_all_rules - t_all_rules)
+
+    return json.dumps({
+        "cwe": cwe_name,
+        "base_run": base_dir.name,
+        "target_run": target_dir.name,
+        "summary": {
+            "base": {
+                "tp": b["tp"], "fp": b["fp"], "total": b_total,
+                "tp_rate_pct": b_tp_pct, "files": b["files"],
+            },
+            "target": {
+                "tp": t["tp"], "fp": t["fp"], "total": t_total,
+                "tp_rate_pct": t_tp_pct, "files": t["files"],
+            },
+            "delta": {
+                "tp": t["tp"] - b["tp"],
+                "fp": t["fp"] - b["fp"],
+                "total": t_total - b_total,
+                "tp_rate_pp": round(t_tp_pct - b_tp_pct, 2),
+            },
+        },
+        "flaw_detection": {
+            "base": {
+                "detected": b["flaw_detected"], "total": b["flaw_total"],
+                "rate_pct": b_flaw_pct,
+            },
+            "target": {
+                "detected": t["flaw_detected"], "total": t["flaw_total"],
+                "rate_pct": t_flaw_pct,
+            },
+            "delta": {
+                "detected": t["flaw_detected"] - b["flaw_detected"],
+                "rate_pp": round(t_flaw_pct - b_flaw_pct, 2),
+            },
+        },
+        "rule_changes": rule_changes,
+        "new_rules_in_target": new_rules,
+        "removed_rules_from_base": removed_rules,
+    })
 
 
 if __name__ == "__main__":
