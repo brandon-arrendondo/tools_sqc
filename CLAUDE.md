@@ -155,6 +155,33 @@ cat .claude/commands/gather-opinions.md
 
 ---
 
+## Benchmark Workflow (CRITICAL)
+
+When running Juliet benchmarks, follow this protocol strictly:
+
+1. **Version bump + commit BEFORE benchmark**: Always bump the version in `Cargo.toml`,
+   rebuild (`cargo build --release`), and commit before starting a benchmark run.
+   This ensures the benchmark results directory is tagged with the correct version
+   and commit SHA (e.g., `sqc-0.2.1-abc1234`).
+
+2. **NEVER modify code while a benchmark is running**: The benchmark uses
+   `target/release/sqc`. If you rebuild while it's running, you corrupt results
+   mid-run. Make ALL code changes and commits BEFORE starting the benchmark.
+
+3. **Wait for completion**: Benchmarks take ~40-50 minutes. The last CWE category
+   takes the longest. Check status with `get_status()` no more than once every
+   10 minutes. Do NOT make changes or start other work until the benchmark completes.
+
+4. **Compare runs**: After a benchmark completes, use `compare_runs()` to compare
+   against previous runs. Use `get_cwe_detail()` for per-CWE deep dives.
+
+5. **Workflow sequence**:
+   ```
+   implement changes → bump version → commit → build release → run benchmark → wait → analyze
+   ```
+
+---
+
 ## Known TODOs / Low-priority gaps
 
 - **INT34-C: literal shift amount >= type width** — Current fix skips all non-negative
