@@ -988,9 +988,16 @@ impl Int30C {
     /// Operand-aware: the if-condition must reference at least one operand of the arithmetic.
     fn is_inside_checked_block(&self, node: &Node, source: &str) -> bool {
         const UNSIGNED_LIMIT_MACROS: &[&str] = &[
-            "UINT_MAX", "SIZE_MAX", "UINT32_MAX",
-            "UCHAR_MAX", "USHRT_MAX", "UINT8_MAX", "UINT16_MAX", "UINT64_MAX",
-            "ULONG_MAX", "ULLONG_MAX",
+            "UINT_MAX",
+            "SIZE_MAX",
+            "UINT32_MAX",
+            "UCHAR_MAX",
+            "USHRT_MAX",
+            "UINT8_MAX",
+            "UINT16_MAX",
+            "UINT64_MAX",
+            "ULONG_MAX",
+            "ULLONG_MAX",
         ];
 
         let op_names = self.extract_operand_names(node, source);

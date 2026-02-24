@@ -63,8 +63,7 @@ impl CertRule for Exp34C {
 
         // At the top level (translation_unit), collect file-scope global null states
         if node.kind() == "translation_unit" {
-            let globals =
-                null_state::collect_file_scope_null_states(node, source, &summaries);
+            let globals = null_state::collect_file_scope_null_states(node, source, &summaries);
             *self.file_global_states.borrow_mut() = globals;
         }
 

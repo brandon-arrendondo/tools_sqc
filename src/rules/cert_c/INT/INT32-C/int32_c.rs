@@ -1759,8 +1759,18 @@ impl Int32C {
         op_names: &[String],
     ) -> bool {
         const SIGNED_LIMIT_MACROS: &[&str] = &[
-            "INT_MAX", "INT_MIN", "LONG_MAX", "LONG_MIN", "LLONG_MAX", "LLONG_MIN",
-            "CHAR_MAX", "CHAR_MIN", "SCHAR_MAX", "SCHAR_MIN", "SHRT_MAX", "SHRT_MIN",
+            "INT_MAX",
+            "INT_MIN",
+            "LONG_MAX",
+            "LONG_MIN",
+            "LLONG_MAX",
+            "LLONG_MIN",
+            "CHAR_MAX",
+            "CHAR_MIN",
+            "SCHAR_MAX",
+            "SCHAR_MIN",
+            "SHRT_MAX",
+            "SHRT_MIN",
         ];
 
         let mut current = *node;
