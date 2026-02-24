@@ -79,7 +79,7 @@ fn check_node(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
 fn check_assignment(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
     // Get left side (variable being assigned to)
     if let Some(left) = node.child_by_field_name("left") {
-        let left_text = ast_utils::get_node_text(&left, source);
+        let _left_text = ast_utils::get_node_text(&left, source);
 
         // Check if left side appears to be a small integer type variable
         // We'll check the right side for bitwise operations

@@ -7,6 +7,7 @@ use tree_sitter::Node;
 pub struct Arr38C;
 
 /// Information about a buffer size from allocation or declaration
+#[allow(dead_code)]
 #[derive(Clone, Debug)]
 struct BufferInfo {
     /// Size in bytes or elements (if known)
@@ -18,6 +19,7 @@ struct BufferInfo {
 }
 
 /// Information about a pointer with an offset from a base buffer
+#[allow(dead_code)]
 #[derive(Clone, Debug)]
 struct PointerOffsetInfo {
     /// Base buffer name
@@ -649,6 +651,7 @@ impl Arr38C {
         }
     }
 
+    #[allow(dead_code)]
     fn check_three_arg_size(
         &self,
         args: &[String],
@@ -761,7 +764,7 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
-        buffer_info: &HashMap<String, BufferInfo>,
+        _buffer_info: &HashMap<String, BufferInfo>,
         size_vars: &HashMap<String, String>,
     ) {
         let args = self.get_function_arguments(node, source);
@@ -1094,6 +1097,7 @@ impl Arr38C {
         expr.contains("sizeof(") && !expr.contains("/ sizeof(")
     }
 
+    #[allow(dead_code)]
     fn is_sizeof_expression(&self, expr: &str) -> bool {
         expr.contains("sizeof(")
     }

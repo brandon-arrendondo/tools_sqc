@@ -73,7 +73,7 @@ impl Pre32C {
         violations: &mut Vec<RuleViolation>,
     ) {
         let start_byte = node.start_byte();
-        let end_byte = node.end_byte();
+        let _end_byte = node.end_byte();
 
         // Look backwards from the preprocessor directive to find an unclosed call expression
         // We need to check if there's an open parenthesis for a function call that spans this directive
@@ -310,6 +310,7 @@ impl Pre32C {
         false
     }
 
+    #[allow(dead_code)]
     fn spans_multiple_lines_with_directives(&self, text: &str) -> bool {
         let lines: Vec<&str> = text.lines().collect();
 

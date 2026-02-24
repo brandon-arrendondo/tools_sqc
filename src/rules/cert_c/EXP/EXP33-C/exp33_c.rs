@@ -216,6 +216,7 @@ impl Exp33C {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Clone, Debug, PartialEq)]
 enum VarState {
     Uninitialized,
@@ -226,6 +227,7 @@ enum VarState {
     StaticUninitialized, // static/thread-local without explicit initializer
 }
 
+#[allow(dead_code)]
 struct UninitializedVariableAnalyzer {
     var_states: HashMap<String, VarState>,
     malloc_pointers: HashSet<String>,
@@ -782,6 +784,7 @@ impl UninitializedVariableAnalyzer {
         false
     }
 
+    #[allow(dead_code)]
     fn find_enclosing_conditional<'a>(&self, pos: usize, node: &Node<'a>) -> Option<Node<'a>> {
         // Check if current node contains the position
         if pos < node.start_byte() || pos >= node.end_byte() {
@@ -1601,7 +1604,7 @@ impl UninitializedVariableAnalyzer {
         }
     }
 
-    fn is_deref_read_context(&self, node: &Node, source: &str) -> bool {
+    fn is_deref_read_context(&self, node: &Node, _source: &str) -> bool {
         if let Some(parent) = node.parent() {
             match parent.kind() {
                 "assignment_expression" => {

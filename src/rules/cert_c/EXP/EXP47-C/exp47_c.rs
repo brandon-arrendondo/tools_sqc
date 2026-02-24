@@ -30,6 +30,7 @@ struct VariadicFuncInfo {
 }
 
 impl Exp47C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Exp47C
     }

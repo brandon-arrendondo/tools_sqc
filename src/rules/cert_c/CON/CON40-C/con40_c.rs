@@ -20,6 +20,7 @@ use tree_sitter::Node;
 pub struct Con40C;
 
 impl Con40C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Con40C
     }

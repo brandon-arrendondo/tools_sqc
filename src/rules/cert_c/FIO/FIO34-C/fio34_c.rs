@@ -292,6 +292,7 @@ impl Fio34C {
     }
 
     /// All functions that work with character I/O (for general detection)
+    #[allow(dead_code)]
     fn is_character_io_function(&self, name: &str) -> bool {
         self.is_character_input_function(name) || self.is_character_manipulation_function(name)
     }
@@ -441,6 +442,7 @@ impl Fio34C {
     }
 
     /// Helper: Check if text contains char variable with getc pattern
+    #[allow(dead_code)]
     fn contains_char_getc_pattern(&self, _text: &str) -> bool {
         // This needs to actually check if the variable is char type
         // For now, return false - we need proper type checking in loop conditions

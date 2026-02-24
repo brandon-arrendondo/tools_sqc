@@ -37,6 +37,7 @@ impl ProjectSource {
         }
     }
 
+    #[allow(dead_code)]
     pub fn get_root_path(&self) -> &str {
         match self {
             ProjectSource::Git(git_repo) => git_repo.get_repo_root(),

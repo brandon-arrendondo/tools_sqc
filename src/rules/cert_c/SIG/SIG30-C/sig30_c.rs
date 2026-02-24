@@ -251,7 +251,7 @@ impl Sig30C {
     fn is_unsafe_function(
         &self,
         func_name: &str,
-        handler_name: &str,
+        _handler_name: &str,
         all_handlers: &HashSet<String>,
     ) -> bool {
         // Special case: calling another signal handler function directly is OK

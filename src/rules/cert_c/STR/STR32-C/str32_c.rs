@@ -375,7 +375,7 @@ impl Str32C {
         )
     }
 
-    fn extract_arguments<'a>(&self, arguments: &'a Node, source: &str) -> Vec<Node<'a>> {
+    fn extract_arguments<'a>(&self, arguments: &'a Node, _source: &str) -> Vec<Node<'a>> {
         let mut args = Vec::new();
         let mut cursor = arguments.walk();
 

@@ -147,7 +147,7 @@ impl Pos34C {
         // If argument is not an identifier, it might be a cast or other expression
         // For simplicity, we'll check if the text contains an identifier pattern
         let var_name = if arg.kind() == "identifier" {
-            arg_text.clone()
+            arg_text
         } else if arg.kind() == "cast_expression" {
             // Handle cast like (char *)env
             if let Some(value) = arg.child_by_field_name("value") {
@@ -157,7 +157,7 @@ impl Pos34C {
             }
         } else {
             // For other expressions, extract identifier if present
-            arg_text.clone()
+            arg_text
         };
 
         // Check if this variable is declared locally in the containing function

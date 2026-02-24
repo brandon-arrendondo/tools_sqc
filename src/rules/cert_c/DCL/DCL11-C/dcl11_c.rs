@@ -17,6 +17,7 @@ use tree_sitter::Node;
 pub struct Dcl11C;
 
 impl Dcl11C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Dcl11C
     }
@@ -149,7 +150,7 @@ impl Dcl11C {
     }
 
     /// Extract arguments from argument list
-    fn extract_arguments<'a>(&self, args_node: &Node<'a>, source: &'a str) -> Vec<Node<'a>> {
+    fn extract_arguments<'a>(&self, args_node: &Node<'a>, _source: &'a str) -> Vec<Node<'a>> {
         let mut args = Vec::new();
 
         for i in 0..args_node.child_count() {

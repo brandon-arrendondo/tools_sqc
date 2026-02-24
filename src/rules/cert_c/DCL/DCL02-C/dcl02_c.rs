@@ -77,6 +77,7 @@ impl ScopeAnalyzer {
         }
     }
 
+    #[allow(dead_code)]
     fn analyze_scope(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         self.analyze_scope_with_depth(node, source, violations, 0);
     }
@@ -198,6 +199,7 @@ impl ScopeAnalyzer {
         }
     }
 
+    #[allow(dead_code)]
     fn collect_identifiers(&mut self, node: &Node, source: &str) {
         match node.kind() {
             "declaration" | "parameter_declaration" => {
@@ -240,6 +242,7 @@ impl ScopeAnalyzer {
         }
     }
 
+    #[allow(dead_code)]
     fn analyze_child_scopes(
         &mut self,
         node: &Node,
@@ -341,6 +344,7 @@ impl ScopeAnalyzer {
         None
     }
 
+    #[allow(dead_code)]
     fn get_declarator_name(&self, declarator: &Node, source: &str) -> Option<String> {
         self.get_declarator_name_with_depth(declarator, source, 0)
     }
