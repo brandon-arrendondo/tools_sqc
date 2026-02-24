@@ -1,7 +1,7 @@
 # SqC Benchmark, Analysis, and Strategic Assessment
 
-**Last Updated**: 2026-02-23 (Round 15 complete — MCP benchmark system)
-**Current TP Rate**: 44.7% (Round 15, MCP benchmark) / 44.1% (Round 13, legacy system)
+**Last Updated**: 2026-02-23 (Round 16 complete — MCP benchmark system)
+**Current TP Rate**: 44.8% (Round 16, MCP benchmark) / 44.1% (Round 13, legacy system)
 
 ---
 
@@ -29,10 +29,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 189,016 |
-| **False Positives** | 239,724 |
-| **TP Rate** | **44.7%** (Round 15, MCP) / 44.1% (Round 13, legacy) |
-| **FP Reduction from Baseline** | -71.4% (839K → 240K) |
+| **True Positives** | 370,887 |
+| **False Positives** | 457,739 |
+| **TP Rate** | **44.8%** (Round 16, MCP) / 44.1% (Round 13, legacy) |
+| **FP Reduction from Baseline** | -71.4% (839K → 240K, legacy system) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
 
@@ -47,7 +47,7 @@
 | EXP12-C | ~9K | ~10K | ~48% FP rate; whitelist already trimmed |
 | INT36-C | ~6K | ~3K | 64% FP rate |
 | ERR33-C | ~6K | ~4K | 63% FP rate; nested calls + math overlap fixed |
-| MEM10-C | ~6K | ~3K | 65% FP rate; `== 0` integer-check guard applied |
+| MEM10-C | ~5.5K | ~3K | 66% FP rate; `== 0` integer-check guard + param-only null check (R16) |
 | ERR05-C | ~6K | ~3K | 64% FP rate |
 | STR31-C | ~2K | ~1K | Improved from 88% → ~60% FP rate (Round 13); `is_function_parameter` guard pending |
 
@@ -90,14 +90,38 @@
 | **Round 13** | **STR31-C: L-prefix fix + literal-source+unknown-dest suppression (strcpy + strcat)** | **189,016** | **239,724** | **44.1%** | **-4,125** |
 | Round 14 | EXP34-C: `deref_after_check` pattern (fix end_byte + remove premature early-exit) | +18 TP | 0 new FP | — | not independently measured |
 | **Round 15** | **EXP34-C: if/else branch merge (variant 12 — globalReturnsTrueOrFalse)** | 376,056 ¹ | 465,233 ¹ | **44.7%** ¹ | — |
+| **Round 16** | **DCL13-C main() exemption + MEM10-C parameter-only null check** | **370,887** ¹ | **457,739** ¹ | **44.8%** ¹ | **-7,494** ¹ |
 
-¹ Rounds 14–15 measured by Juliet benchmark MCP server. Absolute TP/FP counts not directly comparable to Rounds 1–13 (different benchmark runner methodology). TP rate is the comparable metric.
+¹ Rounds 14–16 measured by Juliet benchmark MCP server. Absolute TP/FP counts not directly comparable to Rounds 1–13 (different benchmark runner methodology). TP rate is the comparable metric.
 
 **Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; Round 8 removed 5K; Round 9 removed 73 (Juliet is single-file, so CFG/inter-procedural infrastructure has minimal Juliet impact — targets real-world multi-file codebases). Rounds 10+11 removed 23,560 FP (DCL ALL_CAPS macro guard). Round 12 removed 28,933 FP (Windows API std_functions additions were the dominant effect — DCL31-C/DCL07-C dropped from ~41K to ~5K combined FP). Round 13 removed 4,125 FP from targeted STR31-C fixes. Cumulative FP reduction from baseline: -599,617 (-71.4%).
 
 ---
 
 ## Per-Round Fix Details
+
+### Round 16 — DCL13-C main() Exemption + MEM10-C Parameter-Only Null Check
+
+1. **DCL13-C**: Added `main()` exemption — `main` function parameters are defined by the C standard and should not be flagged for const-qualification. No benchmark impact because Juliet's `main()` is inside `#ifdef INCLUDEMAIN`, not in OMITBAD/OMITGOOD sections.
+
+2. **MEM10-C**: Restricted inline null-check detection to fire only when the null check is for a **function parameter**, not a locally-declared variable. Good functions in CWE-476 fix the vulnerability by adding `if (data != NULL)` guards; MEM10-C was penalizing this correct defensive pattern. **Impact on CWE-476: MEM10-C FPs dropped 134 → 28 (-106 FPs).** Remaining 28 FPs are from `goodB2GSink`-style functions where `data` IS a parameter — unavoidable without call-site analysis.
+
+**CWE-476 detail (the EXP34-C target)**:
+
+| Metric | R15 (baseline) | R16 (current) | Delta |
+|--------|---------------:|--------------:|------:|
+| TP Rate | 35.4% | 37.6% | +2.2pp |
+| TP | 357 | 329 | -28 |
+| FP | 651 | 545 | -106 |
+| EXP34-C TP | 82 | 82 | 0 |
+| EXP34-C FP | ~50 | 50 | 0 |
+| MEM10-C FP | 134 | 28 | -106 |
+
+The TP decrease (-28) is from reduced collateral rule firing; the FP decrease (-106) is entirely from MEM10-C, netting a +2.2pp TP rate improvement. This validates the NULL-CHECK-IMPROVEMENT.md Phase 1 prediction of "~37-40%".
+
+**Overall benchmark**: TP rate 44.7% → 44.8% (+0.1pp). Total violations down by ~12.5K (FP-dominated reduction).
+
+---
 
 ### Round 15 — EXP34-C: if/else Branch Merge
 
@@ -255,7 +279,7 @@ The bulk of categories (64%) cluster here. Includes buffer overflows (CWE-121 ~4
 
 ### Tier 3: Below Average (25-35%) — 16 categories
 
-Includes integer overflow/underflow (CWE-190/191 ~32%), memory management (CWE-401 ~32%, CWE-415 ~33%), and NULL pointer dereference (CWE-476 ~33%).
+Includes integer overflow/underflow (CWE-190 ~33%, CWE-191 ~35%), memory management (CWE-401 ~34%, CWE-415 ~34%), and NULL pointer dereference (CWE-476 ~38% — improved from 33% baseline via MEM10-C param-only fix in R16).
 
 ### Tier 4: Weak Detection (<25%) — 4 categories
 
@@ -678,7 +702,7 @@ Despite the above concerns, sqc's coverage breadth is genuine — clang-tidy fir
 - Cross-file analysis via function name pre-scanning (`-d` flag)
 - Sequential file processing (parallelized externally via shell scripts)
 
-### What SqC Has (as of Round 13)
+### What SqC Has (as of Round 16-CFG)
 
 - Local variable/type inference within functions (`collect_variable_types` pattern)
 - Preprocessor block traversal (`preproc_*` node recursion)
@@ -686,9 +710,10 @@ Despite the above concerns, sqc's coverage breadth is genuine — clang-tidy fir
 - Cross-file function name scanning
 - Taint tracking (FIO30-C)
 - Variable state tracking (EXP33-C uninitialized variable detection)
-- **CFG construction** per function with dominance information
+- **CFG construction** per function with condition metadata (`condition_range`)
 - **Reaching definitions** (data-flow) for path-sensitive analysis
 - **Inter-procedural function summaries** (null returns, freed parameters, no-return functions)
+- **CFG-based null state dataflow** (`src/analyze/null_state.rs`) — forward dataflow with null lattice, edge refinement on branch conditions, assert recognition. Used by EXP34-C.
 
 ### What SqC Lacks
 

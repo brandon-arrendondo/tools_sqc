@@ -2,6 +2,7 @@ pub mod cfg;
 pub mod context;
 pub mod dataflow;
 pub mod function_summary;
+pub mod null_state;
 pub mod prescan;
 pub mod suppression;
 
@@ -98,6 +99,8 @@ pub fn analyze_project(
                     if !rule.applies_to_file(file_path) {
                         continue;
                     }
+                    // Provide CFGs for flow-sensitive rules (e.g. EXP34-C)
+                    rule.set_function_cfgs(&function_cfgs);
                     let mut file_violations = rule.check(&root_node, &source);
 
                     // Filter out suppressed violations

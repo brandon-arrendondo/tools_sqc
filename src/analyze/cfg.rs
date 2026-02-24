@@ -17,6 +17,9 @@ pub struct BasicBlock {
     pub statements: Vec<(usize, usize)>,
     /// Overall byte range of this block.
     pub byte_range: (usize, usize),
+    /// Byte range of the condition expression (for if/while/for/do-while blocks).
+    /// Used by null-state analysis to extract edge refinement info.
+    pub condition_range: Option<(usize, usize)>,
 }
 
 /// Edge types in the control-flow graph.
@@ -39,7 +42,7 @@ pub enum CfgEdge {
 }
 
 /// A control-flow graph for a single function.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FunctionCfg {
     pub blocks: Vec<BasicBlock>,
     pub edges: Vec<(BlockId, BlockId, CfgEdge)>,
@@ -95,6 +98,7 @@ impl CfgBuilder {
             id: 0,
             statements: Vec::new(),
             byte_range: (0, 0),
+            condition_range: None,
         };
         CfgBuilder {
             blocks: vec![entry_block],
@@ -111,6 +115,7 @@ impl CfgBuilder {
             id,
             statements: Vec::new(),
             byte_range: (0, 0),
+            condition_range: None,
         });
         id
     }
@@ -208,6 +213,10 @@ impl CfgBuilder {
         // Add the condition to the current block
         if let Some(condition) = node.child_by_field_name("condition") {
             self.add_statement(condition.start_byte(), condition.end_byte());
+            // Record condition range for edge refinement (null-state analysis)
+            if let Some(block) = self.blocks.get_mut(self.current_block) {
+                block.condition_range = Some((condition.start_byte(), condition.end_byte()));
+            }
         }
 
         let condition_block = self.current_block;
@@ -253,6 +262,9 @@ impl CfgBuilder {
         self.current_block = header_block;
         if let Some(condition) = node.child_by_field_name("condition") {
             self.add_statement(condition.start_byte(), condition.end_byte());
+            if let Some(block) = self.blocks.get_mut(header_block) {
+                block.condition_range = Some((condition.start_byte(), condition.end_byte()));
+            }
         }
 
         let body_block = self.new_block();
@@ -286,6 +298,9 @@ impl CfgBuilder {
         self.current_block = header_block;
         if let Some(condition) = node.child_by_field_name("condition") {
             self.add_statement(condition.start_byte(), condition.end_byte());
+            if let Some(block) = self.blocks.get_mut(header_block) {
+                block.condition_range = Some((condition.start_byte(), condition.end_byte()));
+            }
         }
 
         let body_block = self.new_block();
@@ -335,6 +350,9 @@ impl CfgBuilder {
 
         if let Some(condition) = node.child_by_field_name("condition") {
             self.add_statement(condition.start_byte(), condition.end_byte());
+            if let Some(block) = self.blocks.get_mut(cond_block) {
+                block.condition_range = Some((condition.start_byte(), condition.end_byte()));
+            }
         }
 
         self.add_edge(cond_block, body_block, CfgEdge::BackEdge);
