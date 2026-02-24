@@ -47,7 +47,7 @@ impl NullState {
 }
 
 /// State map: variable name -> NullState.
-type StateMap = HashMap<String, NullState>;
+pub type StateMap = HashMap<String, NullState>;
 
 /// Join two state maps (union of keys, lattice join per key).
 fn join_states(a: &StateMap, b: &StateMap) -> StateMap {
@@ -486,6 +486,263 @@ fn classify_rvalue_null(
 }
 
 // ---------------------------------------------------------------------------
+// File-scope global null-state pre-pass
+// ---------------------------------------------------------------------------
+
+/// Collect null states for file-scope (static or global) pointer variables.
+///
+/// Scans all file-scope pointer variable declarations, then walks all function
+/// bodies to find assignments to those variables. Returns a map from variable
+/// name to its joined null state across all assignment sites.
+///
+/// Used by EXP34-C to detect patterns like Juliet variant 45:
+/// ```c
+/// static char *globalData;
+/// void bad() { globalData = NULL; badSink(); }
+/// void badSink() { char *data = globalData; data[0]; }
+/// ```
+pub fn collect_file_scope_null_states(
+    root: &Node,
+    source: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+) -> StateMap {
+    let mut global_vars: HashSet<String> = HashSet::new();
+    let mut result: StateMap = StateMap::new();
+
+    // Pass 1: Identify file-scope pointer variable declarations.
+    // Walk top-level nodes (and preproc blocks) for declarations.
+    collect_file_scope_pointer_decls(root, source, &mut global_vars, &mut result, summaries);
+
+    if global_vars.is_empty() {
+        return result;
+    }
+
+    // Pass 2: Walk all function bodies for assignments to these globals.
+    collect_global_assignments(root, source, &global_vars, &mut result, summaries);
+
+    result
+}
+
+/// Identify file-scope pointer declarations and their initializer states.
+fn collect_file_scope_pointer_decls(
+    node: &Node,
+    source: &str,
+    global_vars: &mut HashSet<String>,
+    result: &mut StateMap,
+    summaries: &HashMap<String, FunctionSummary>,
+) {
+    for i in 0..node.child_count() {
+        let child = match node.child(i) {
+            Some(c) => c,
+            None => continue,
+        };
+
+        match child.kind() {
+            "declaration" => {
+                // Check if any declarator is a pointer type
+                for j in 0..child.child_count() {
+                    if let Some(declarator) = child.child(j) {
+                        if declarator.kind() == "init_declarator" {
+                            if let Some(decl) = declarator.child_by_field_name("declarator") {
+                                if is_pointer_declarator(&decl) && !contains_array(&decl) {
+                                    let name = get_identifier_from_declarator(&decl, source);
+                                    if !name.is_empty() {
+                                        global_vars.insert(name.clone());
+
+                                        // Classify the initializer if present
+                                        if let Some(value) =
+                                            declarator.child_by_field_name("value")
+                                        {
+                                            let state =
+                                                classify_rvalue_null(&value, source, summaries);
+                                            result.insert(name, state);
+                                        }
+                                        // No initializer: C default for file-scope is zero/NULL
+                                        // but we'll be conservative and leave as Unknown to
+                                        // let assignments determine the state
+                                    }
+                                }
+                            }
+                        } else if is_pointer_declarator(&declarator) && !contains_array(&declarator)
+                        {
+                            // Direct declarator without init (e.g., `static char *p;`)
+                            let name = get_identifier_from_declarator(&declarator, source);
+                            if !name.is_empty()
+                                && declarator.kind() != "storage_class_specifier"
+                                && declarator.kind() != "type_qualifier"
+                                && declarator.kind() != "primitive_type"
+                                && declarator.kind() != "type_identifier"
+                            {
+                                global_vars.insert(name);
+                                // File-scope without initializer: technically zero-initialized
+                                // but leave as Unknown to let assignments drive the state
+                            }
+                        }
+                    }
+                }
+            }
+            // Recurse into preprocessor blocks to find declarations
+            k if k.starts_with("preproc_") => {
+                collect_file_scope_pointer_decls(&child, source, global_vars, result, summaries);
+            }
+            _ => {}
+        }
+    }
+}
+
+/// Walk all function bodies looking for assignments to file-scope globals.
+fn collect_global_assignments(
+    node: &Node,
+    source: &str,
+    global_vars: &HashSet<String>,
+    result: &mut StateMap,
+    summaries: &HashMap<String, FunctionSummary>,
+) {
+    for i in 0..node.child_count() {
+        let child = match node.child(i) {
+            Some(c) => c,
+            None => continue,
+        };
+
+        match child.kind() {
+            "function_definition" => {
+                if let Some(body) = child.child_by_field_name("body") {
+                    scan_body_for_global_assignments(
+                        &body,
+                        source,
+                        global_vars,
+                        result,
+                        summaries,
+                    );
+                }
+            }
+            k if k.starts_with("preproc_") => {
+                collect_global_assignments(&child, source, global_vars, result, summaries);
+            }
+            _ => {}
+        }
+    }
+}
+
+/// Recursively scan a function body for assignments to global variables.
+fn scan_body_for_global_assignments(
+    node: &Node,
+    source: &str,
+    global_vars: &HashSet<String>,
+    result: &mut StateMap,
+    summaries: &HashMap<String, FunctionSummary>,
+) {
+    match node.kind() {
+        "assignment_expression" => {
+            if let Some(left) = node.child_by_field_name("left") {
+                let var_name = get_text(&left, source);
+                if global_vars.contains(&var_name) {
+                    if let Some(right) = node.child_by_field_name("right") {
+                        let rhs_text = get_text(&right, source);
+                        // If RHS is itself a variable, check if it's a known global
+                        // or classify the rvalue directly
+                        let new_state = if right.kind() == "identifier"
+                            && global_vars.contains(&rhs_text)
+                        {
+                            result.get(&rhs_text).copied().unwrap_or(NullState::Unknown)
+                        } else if right.kind() == "identifier" {
+                            // RHS is a local variable — we can't know its value
+                            // from the pre-pass. Check if it's a null literal.
+                            if is_null_value(&rhs_text) {
+                                NullState::DefinitelyNull
+                            } else {
+                                // Could be anything — look at what we can infer.
+                                // In Juliet variant 45, the pattern is:
+                                //   data = NULL; globalVar = data;
+                                // We need to check if this local was just assigned NULL.
+                                // Since we can't track locals in the pre-pass, check
+                                // the preceding statement for a null assignment to this var.
+                                check_preceding_null_assign(node, &rhs_text, source)
+                            }
+                        } else {
+                            classify_rvalue_null(&right, source, summaries)
+                        };
+
+                        // Join with existing state
+                        let existing = result.get(&var_name).copied().unwrap_or(NullState::Unknown);
+                        result.insert(var_name, existing.join(new_state));
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+
+    // Recurse into children
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            scan_body_for_global_assignments(&child, source, global_vars, result, summaries);
+        }
+    }
+}
+
+/// Check if the preceding statement in the same compound_statement assigns
+/// NULL to the given variable. Handles the common Juliet pattern:
+///   data = NULL;
+///   globalVar = data;
+fn check_preceding_null_assign(assignment_node: &Node, var_name: &str, source: &str) -> NullState {
+    // Walk up to find the containing expression_statement, then check the previous sibling
+    let expr_stmt = if assignment_node.parent().map(|p| p.kind()) == Some("expression_statement") {
+        assignment_node.parent().unwrap()
+    } else {
+        return NullState::Unknown;
+    };
+
+    if let Some(prev) = expr_stmt.prev_sibling() {
+        if prev.kind() == "expression_statement" {
+            if let Some(expr) = prev.child(0) {
+                if expr.kind() == "assignment_expression" {
+                    if let Some(left) = expr.child_by_field_name("left") {
+                        if get_text(&left, source) == var_name {
+                            if let Some(right) = expr.child_by_field_name("right") {
+                                let rhs = get_text(&right, source);
+                                if is_null_value(rhs.trim()) {
+                                    return NullState::DefinitelyNull;
+                                }
+                                // Non-null assignment (e.g., data = "Good")
+                                return classify_rvalue_null(&right, source, &HashMap::new());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // Check for declaration: `char *data = NULL;` or `char *data;`
+        if prev.kind() == "declaration" {
+            for i in 0..prev.child_count() {
+                if let Some(child) = prev.child(i) {
+                    if child.kind() == "init_declarator" {
+                        if let Some(decl) = child.child_by_field_name("declarator") {
+                            let name = get_identifier_from_declarator(&decl, source);
+                            if name == var_name {
+                                if let Some(value) = child.child_by_field_name("value") {
+                                    let vtext = get_text(&value, source);
+                                    if is_null_value(vtext.trim()) {
+                                        return NullState::DefinitelyNull;
+                                    }
+                                    return classify_rvalue_null(
+                                        &value,
+                                        source,
+                                        &HashMap::new(),
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    NullState::Unknown
+}
+
+// ---------------------------------------------------------------------------
 // Forward dataflow (worklist algorithm)
 // ---------------------------------------------------------------------------
 
@@ -500,6 +757,18 @@ pub fn analyze_null_states(
     source: &str,
     summaries: &HashMap<String, FunctionSummary>,
 ) -> NullAnalysisResult {
+    analyze_null_states_with_globals(cfg, func_node, source, summaries, &StateMap::new())
+}
+
+/// Like `analyze_null_states` but seeds the initial state with file-scope
+/// global variable null states collected by `collect_file_scope_null_states`.
+pub fn analyze_null_states_with_globals(
+    cfg: &FunctionCfg,
+    func_node: &Node,
+    source: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+    global_states: &StateMap,
+) -> NullAnalysisResult {
     let body = match func_node.child_by_field_name("body") {
         Some(b) => b,
         None => {
@@ -513,8 +782,15 @@ pub fn analyze_null_states(
 
     let mut declared_pointers = HashSet::new();
 
-    // Initialize entry state: pointer params -> PossiblyNull
+    // Initialize entry state: pointer params -> PossiblyNull, globals -> precomputed
     let mut initial_state = StateMap::new();
+
+    // Seed with global variable states
+    for (name, &state) in global_states {
+        initial_state.insert(name.clone(), state);
+        declared_pointers.insert(name.clone());
+    }
+
     if let Some(declarator) = func_node.child_by_field_name("declarator") {
         collect_param_pointer_state(
             &declarator,
@@ -1067,5 +1343,76 @@ void foo(int *p) {
         assert!(!is_null_deref_at(
             &result, &cfg, &body, &source, "p", deref_pos, &summaries
         ));
+    }
+
+    #[test]
+    fn test_global_prepass_null_static() {
+        // Variant 45 pattern: static global assigned NULL, read in sink function
+        let code = r#"
+static int *globalData;
+
+void source() {
+    int *data;
+    data = NULL;
+    globalData = data;
+}
+
+void sink() {
+    int *data = globalData;
+    *data = 42;
+}
+"#;
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(code, None).unwrap();
+        let root = tree.root_node();
+        let summaries = HashMap::new();
+
+        let globals = collect_file_scope_null_states(&root, code, &summaries);
+        assert_eq!(globals.get("globalData"), Some(&NullState::DefinitelyNull));
+
+        // Now analyze sink() with global states
+        let sink_func = (0..root.child_count())
+            .filter_map(|i| root.child(i))
+            .find(|c| {
+                c.kind() == "function_definition"
+                    && code[c.start_byte()..c.end_byte()].contains("sink")
+            })
+            .unwrap();
+        let cfg = build_function_cfg(&sink_func, code).unwrap();
+        let result =
+            analyze_null_states_with_globals(&cfg, &sink_func, code, &summaries, &globals);
+        let body = sink_func.child_by_field_name("body").unwrap();
+        let deref_pos = code.find("*data = 42").unwrap();
+        assert!(is_null_deref_at(
+            &result, &cfg, &body, code, "data", deref_pos, &summaries
+        ));
+    }
+
+    #[test]
+    fn test_global_prepass_nonnull_static() {
+        // Good variant: static global assigned non-null, should NOT flag
+        let code = r#"
+static char *globalData;
+
+void source() {
+    char *data;
+    data = "Good";
+    globalData = data;
+}
+
+void sink() {
+    char *data = globalData;
+    data[0];
+}
+"#;
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(code, None).unwrap();
+        let root = tree.root_node();
+        let summaries = HashMap::new();
+
+        let globals = collect_file_scope_null_states(&root, code, &summaries);
+        assert_eq!(globals.get("globalData"), Some(&NullState::NotNull));
     }
 }

@@ -2,7 +2,7 @@ use super::super::{CertRule, RuleViolation};
 use crate::analyze::cfg::{self as cfg_mod, FunctionCfg};
 use crate::analyze::context::ProjectContext;
 use crate::analyze::function_summary::FunctionSummary;
-use crate::analyze::null_state::{self, NullAnalysisResult};
+use crate::analyze::null_state::{self, NullAnalysisResult, StateMap};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
 use std::cell::RefCell;
@@ -12,6 +12,9 @@ use tree_sitter::Node;
 pub struct Exp34C {
     function_summaries: RefCell<HashMap<String, FunctionSummary>>,
     function_cfgs: RefCell<HashMap<usize, FunctionCfg>>,
+    /// Null states for file-scope (static/global) pointer variables,
+    /// computed once per file by scanning all declarations and assignments.
+    file_global_states: RefCell<StateMap>,
 }
 
 impl Exp34C {
@@ -19,6 +22,7 @@ impl Exp34C {
         Self {
             function_summaries: RefCell::new(HashMap::new()),
             function_cfgs: RefCell::new(HashMap::new()),
+            file_global_states: RefCell::new(StateMap::new()),
         }
     }
 }
@@ -57,6 +61,13 @@ impl CertRule for Exp34C {
         let summaries = self.function_summaries.borrow();
         let cfgs = self.function_cfgs.borrow();
 
+        // At the top level (translation_unit), collect file-scope global null states
+        if node.kind() == "translation_unit" {
+            let globals =
+                null_state::collect_file_scope_null_states(node, source, &summaries);
+            *self.file_global_states.borrow_mut() = globals;
+        }
+
         if node.kind() == "function_definition" {
             if let Some(body) = node.child_by_field_name("body") {
                 // Get pre-built CFG or build one on the fly
@@ -71,8 +82,15 @@ impl CertRule for Exp34C {
                     return violations;
                 };
 
-                // Run CFG-based null-state dataflow
-                let analysis = null_state::analyze_null_states(cfg, node, source, &summaries);
+                // Run CFG-based null-state dataflow, seeded with global states
+                let global_states = self.file_global_states.borrow();
+                let analysis = null_state::analyze_null_states_with_globals(
+                    cfg,
+                    node,
+                    source,
+                    &summaries,
+                    &global_states,
+                );
 
                 // Walk AST for dereferences and check each against the dataflow result
                 check_dereferences_cfg(
@@ -618,5 +636,6 @@ fn is_deref_function(func_name: &str) -> bool {
             | "memset"
             | "memcmp"
             | "free"
+            | "fclose"
     )
 }
