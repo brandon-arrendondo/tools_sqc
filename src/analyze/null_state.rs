@@ -550,8 +550,7 @@ fn collect_file_scope_pointer_decls(
                                         global_vars.insert(name.clone());
 
                                         // Classify the initializer if present
-                                        if let Some(value) =
-                                            declarator.child_by_field_name("value")
+                                        if let Some(value) = declarator.child_by_field_name("value")
                                         {
                                             let state =
                                                 classify_rvalue_null(&value, source, summaries);
@@ -607,13 +606,7 @@ fn collect_global_assignments(
         match child.kind() {
             "function_definition" => {
                 if let Some(body) = child.child_by_field_name("body") {
-                    scan_body_for_global_assignments(
-                        &body,
-                        source,
-                        global_vars,
-                        result,
-                        summaries,
-                    );
+                    scan_body_for_global_assignments(&body, source, global_vars, result, summaries);
                 }
             }
             k if k.starts_with("preproc_") => {
@@ -641,27 +634,26 @@ fn scan_body_for_global_assignments(
                         let rhs_text = get_text(&right, source);
                         // If RHS is itself a variable, check if it's a known global
                         // or classify the rvalue directly
-                        let new_state = if right.kind() == "identifier"
-                            && global_vars.contains(&rhs_text)
-                        {
-                            result.get(&rhs_text).copied().unwrap_or(NullState::Unknown)
-                        } else if right.kind() == "identifier" {
-                            // RHS is a local variable — we can't know its value
-                            // from the pre-pass. Check if it's a null literal.
-                            if is_null_value(&rhs_text) {
-                                NullState::DefinitelyNull
+                        let new_state =
+                            if right.kind() == "identifier" && global_vars.contains(&rhs_text) {
+                                result.get(&rhs_text).copied().unwrap_or(NullState::Unknown)
+                            } else if right.kind() == "identifier" {
+                                // RHS is a local variable — we can't know its value
+                                // from the pre-pass. Check if it's a null literal.
+                                if is_null_value(&rhs_text) {
+                                    NullState::DefinitelyNull
+                                } else {
+                                    // Could be anything — look at what we can infer.
+                                    // In Juliet variant 45, the pattern is:
+                                    //   data = NULL; globalVar = data;
+                                    // We need to check if this local was just assigned NULL.
+                                    // Since we can't track locals in the pre-pass, check
+                                    // the preceding statement for a null assignment to this var.
+                                    check_preceding_null_assign(node, &rhs_text, source)
+                                }
                             } else {
-                                // Could be anything — look at what we can infer.
-                                // In Juliet variant 45, the pattern is:
-                                //   data = NULL; globalVar = data;
-                                // We need to check if this local was just assigned NULL.
-                                // Since we can't track locals in the pre-pass, check
-                                // the preceding statement for a null assignment to this var.
-                                check_preceding_null_assign(node, &rhs_text, source)
-                            }
-                        } else {
-                            classify_rvalue_null(&right, source, summaries)
-                        };
+                                classify_rvalue_null(&right, source, summaries)
+                            };
 
                         // Join with existing state
                         let existing = result.get(&var_name).copied().unwrap_or(NullState::Unknown);
@@ -725,11 +717,7 @@ fn check_preceding_null_assign(assignment_node: &Node, var_name: &str, source: &
                                     if is_null_value(vtext.trim()) {
                                         return NullState::DefinitelyNull;
                                     }
-                                    return classify_rvalue_null(
-                                        &value,
-                                        source,
-                                        &HashMap::new(),
-                                    );
+                                    return classify_rvalue_null(&value, source, &HashMap::new());
                                 }
                             }
                         }
@@ -1424,8 +1412,7 @@ void sink() {
             })
             .unwrap();
         let cfg = build_function_cfg(&sink_func, code).unwrap();
-        let result =
-            analyze_null_states_with_globals(&cfg, &sink_func, code, &summaries, &globals);
+        let result = analyze_null_states_with_globals(&cfg, &sink_func, code, &summaries, &globals);
         let body = sink_func.child_by_field_name("body").unwrap();
         let deref_pos = code.find("*data = 42").unwrap();
         assert!(is_null_deref_at(
