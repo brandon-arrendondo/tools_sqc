@@ -1003,6 +1003,50 @@ pub fn is_null_deref_at(
     }
 }
 
+/// Query the null state of a variable at a given byte offset.
+///
+/// Returns the concrete NullState (not just unsafe/safe). Used by call-site
+/// null propagation to distinguish DefinitelyNull from PossiblyNull.
+pub fn get_var_state_at(
+    result: &NullAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    source: &str,
+    var_name: &str,
+    byte_offset: usize,
+    summaries: &HashMap<String, FunctionSummary>,
+) -> NullState {
+    let block = match find_block_containing(cfg, byte_offset) {
+        Some(b) => b,
+        None => return NullState::Unknown,
+    };
+
+    let entry = match result.block_entry_states.get(&block.id) {
+        Some(s) => s,
+        None => return NullState::Unknown,
+    };
+
+    let mut state = entry.clone();
+    let mut declared_pointers = result.declared_pointers.clone();
+
+    for &(start, end) in &block.statements {
+        if start >= byte_offset {
+            break;
+        }
+        if let Some(stmt_node) = find_node_at_range(body, start, end) {
+            process_statement_for_null_state(
+                &stmt_node,
+                source,
+                &mut state,
+                &mut declared_pointers,
+                summaries,
+            );
+        }
+    }
+
+    state.get(var_name).copied().unwrap_or(NullState::Unknown)
+}
+
 /// Find the basic block whose byte range contains the given offset.
 fn find_block_containing(cfg: &FunctionCfg, byte_offset: usize) -> Option<&BasicBlock> {
     // First try statement-level containment (more precise)

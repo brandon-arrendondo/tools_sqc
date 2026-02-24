@@ -263,6 +263,17 @@ fn check_dereferences_cfg(
                         );
                     }
                 }
+
+                // Call-site null propagation: flag passing DefinitelyNull
+                // to a function that doesn't null-check that parameter.
+                if !is_deref_function(&func_name) {
+                    if let Some(args) = node.child_by_field_name("arguments") {
+                        check_callsite_null_args(
+                            &func_name, &args, source, analysis, cfg, body,
+                            summaries, violations,
+                        );
+                    }
+                }
             }
         }
         _ => {}
@@ -309,6 +320,75 @@ fn check_function_arguments_cfg(
                     });
                 }
             }
+        }
+    }
+}
+
+/// Call-site null propagation: flag passing a DefinitelyNull pointer to a
+/// function that doesn't null-check that parameter. This catches the source
+/// side of cross-file null dereferences (Juliet variants 51-68).
+fn check_callsite_null_args(
+    callee_name: &str,
+    args: &Node,
+    source: &str,
+    analysis: &NullAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    summaries: &HashMap<String, FunctionSummary>,
+    violations: &mut Vec<RuleViolation>,
+) {
+    let callee_summary = summaries.get(callee_name);
+
+    let mut param_idx: usize = 0;
+    for i in 0..args.child_count() {
+        if let Some(arg) = args.child(i) {
+            // Skip commas and other non-argument tokens
+            if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                continue;
+            }
+
+            if arg.kind() == "identifier" {
+                let var_name = ast_utils::get_node_text_owned(&arg, source);
+                let state = null_state::get_var_state_at(
+                    analysis,
+                    cfg,
+                    body,
+                    source,
+                    &var_name,
+                    arg.start_byte(),
+                    summaries,
+                );
+
+                // Only flag DefinitelyNull — PossiblyNull is too noisy for call sites
+                if state == null_state::NullState::DefinitelyNull {
+                    // Check if the callee null-checks this parameter
+                    let callee_checks_null = callee_summary
+                        .map(|s| s.checks_null_params.contains(&param_idx))
+                        .unwrap_or(false);
+
+                    if !callee_checks_null {
+                        let start_point = arg.start_position();
+                        violations.push(RuleViolation {
+                            rule_id: "EXP34-C".to_string(),
+                            severity: Severity::High,
+                            message: format!(
+                                "Passing null pointer '{}' to '{}' which does not check for NULL",
+                                var_name, callee_name
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some(format!(
+                                "Check if '{}' is not NULL before passing to '{}'",
+                                var_name, callee_name
+                            )),
+                            ..Default::default()
+                        });
+                    }
+                }
+            }
+
+            param_idx += 1;
         }
     }
 }
