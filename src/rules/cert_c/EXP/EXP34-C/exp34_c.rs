@@ -264,16 +264,11 @@ fn check_dereferences_cfg(
                     }
                 }
 
-                // Call-site null propagation: flag passing DefinitelyNull
-                // to a function that doesn't null-check that parameter.
-                if !is_deref_function(&func_name) {
-                    if let Some(args) = node.child_by_field_name("arguments") {
-                        check_callsite_null_args(
-                            &func_name, &args, source, analysis, cfg, body,
-                            summaries, violations,
-                        );
-                    }
-                }
+                // NOTE: Call-site null propagation (check_callsite_null_args) was
+                // attempted but produced too many FPs on relay functions and
+                // dereferences_params filtering removed all TPs too. Needs better
+                // callee summary accuracy before re-enabling. See v0.2.1/v0.2.2
+                // benchmark comparison.
             }
         }
         _ => {}
