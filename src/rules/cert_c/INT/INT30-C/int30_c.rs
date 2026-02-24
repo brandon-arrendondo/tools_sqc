@@ -932,20 +932,87 @@ impl Int30C {
         false
     }
 
-    /// Check if the operation is inside an if-else block that suggests it's protected
+    /// Extract operand identifier names from a binary/assignment/update expression node.
+    fn extract_operand_names(&self, node: &Node, source: &str) -> Vec<String> {
+        let mut names = Vec::new();
+        if let Some(left) = node.child_by_field_name("left") {
+            self.collect_identifiers(&left, source, &mut names);
+        }
+        if let Some(right) = node.child_by_field_name("right") {
+            self.collect_identifiers(&right, source, &mut names);
+        }
+        if let Some(arg) = node.child_by_field_name("argument") {
+            self.collect_identifiers(&arg, source, &mut names);
+        }
+        names
+    }
+
+    fn collect_identifiers(&self, node: &Node, source: &str, names: &mut Vec<String>) {
+        if node.kind() == "identifier" {
+            let name = get_node_text(node, source).to_string();
+            if !names.contains(&name) {
+                names.push(name);
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_identifiers(&child, source, names);
+            }
+        }
+    }
+
+    /// Check if `text` contains `word` as a whole word (not a substring of another identifier).
+    fn contains_word(&self, text: &str, word: &str) -> bool {
+        if word.is_empty() {
+            return false;
+        }
+        let mut start = 0;
+        while let Some(pos) = text[start..].find(word) {
+            let abs_pos = start + pos;
+            let before_ok = abs_pos == 0
+                || !text.as_bytes()[abs_pos - 1].is_ascii_alphanumeric()
+                    && text.as_bytes()[abs_pos - 1] != b'_';
+            let after_pos = abs_pos + word.len();
+            let after_ok = after_pos >= text.len()
+                || !text.as_bytes()[after_pos].is_ascii_alphanumeric()
+                    && text.as_bytes()[after_pos] != b'_';
+            if before_ok && after_ok {
+                return true;
+            }
+            start = abs_pos + 1;
+        }
+        false
+    }
+
+    /// Check if the operation is inside an if-else block guarded by an unsigned type-limit macro.
+    /// Operand-aware: the if-condition must reference at least one operand of the arithmetic.
     fn is_inside_checked_block(&self, node: &Node, source: &str) -> bool {
-        // Walk up the tree to see if we're inside an if/else block
+        const UNSIGNED_LIMIT_MACROS: &[&str] = &[
+            "UINT_MAX", "SIZE_MAX", "UINT32_MAX",
+            "UCHAR_MAX", "USHRT_MAX", "UINT8_MAX", "UINT16_MAX", "UINT64_MAX",
+            "ULONG_MAX", "ULLONG_MAX",
+        ];
+
+        let op_names = self.extract_operand_names(node, source);
         let mut current = *node;
         while let Some(parent) = current.parent() {
             if parent.kind() == "if_statement" {
-                // We're inside an if statement - check if it's a real overflow check
-                let if_text = get_node_text(&parent, source);
-                // Must have UINT_MAX or SIZE_MAX - not just any comparison
-                if if_text.contains("UINT_MAX")
-                    || if_text.contains("SIZE_MAX")
-                    || if_text.contains("UINT32_MAX")
-                {
-                    return true;
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    let has_limit = UNSIGNED_LIMIT_MACROS
+                        .iter()
+                        .any(|m| self.contains_word(&cond_text, m));
+                    if has_limit {
+                        if op_names.is_empty() {
+                            return true;
+                        }
+                        if op_names
+                            .iter()
+                            .any(|name| self.contains_word(&cond_text, name))
+                        {
+                            return true;
+                        }
+                    }
                 }
             }
             // Stop at function boundary
