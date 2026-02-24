@@ -361,12 +361,18 @@ fn check_callsite_null_args(
 
                 // Only flag DefinitelyNull — PossiblyNull is too noisy for call sites
                 if state == null_state::NullState::DefinitelyNull {
-                    // Check if the callee null-checks this parameter
+                    // Only flag if the callee:
+                    // 1. Dereferences this parameter (dereferences_params) — ensures
+                    //    relay functions that just forward aren't flagged
+                    // 2. Does NOT null-check this parameter (checks_null_params)
+                    let callee_derefs_param = callee_summary
+                        .map(|s| s.dereferences_params.contains(&param_idx))
+                        .unwrap_or(false);
                     let callee_checks_null = callee_summary
                         .map(|s| s.checks_null_params.contains(&param_idx))
                         .unwrap_or(false);
 
-                    if !callee_checks_null {
+                    if callee_derefs_param && !callee_checks_null {
                         let start_point = arg.start_position();
                         violations.push(RuleViolation {
                             rule_id: "EXP34-C".to_string(),
