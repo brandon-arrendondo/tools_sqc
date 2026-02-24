@@ -98,7 +98,7 @@ mod tests {
         parser.parse(code, None).unwrap()
     }
 
-    fn find_declarator(tree: &tree_sitter::Tree) -> Option<Node> {
+    fn find_declarator<'a>(tree: &'a tree_sitter::Tree) -> Option<Node<'a>> {
         let root = tree.root_node();
         // Find first declarator in the tree
         for i in 0..root.child_count() {

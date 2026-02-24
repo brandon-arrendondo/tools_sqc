@@ -375,10 +375,7 @@ fn generate_integration_tests() -> Result<()> {
     writeln!(main_file, "#[cfg(test)]")?;
     writeln!(main_file, "mod generated_tests {{")?;
     writeln!(main_file, "    use crate::parser::CParser;")?;
-    writeln!(
-        main_file,
-        "    use crate::rules::{{CertRule, RuleRegistry}};"
-    )?;
+    writeln!(main_file, "    use crate::rules::RuleRegistry;")?;
     writeln!(main_file, "    use std::path::Path;\n")?;
 
     // Sort for consistent output

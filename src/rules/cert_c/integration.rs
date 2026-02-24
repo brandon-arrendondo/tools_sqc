@@ -17,6 +17,7 @@ lazy_static::lazy_static! {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct TestResult {
     passed: bool,
     expected_to_fail: bool,
@@ -460,6 +461,7 @@ struct TestCaseInfo {
 }
 
 #[derive(Debug)]
+#[allow(dead_code)]
 struct RuleInfo {
     id: String,
     category: String,

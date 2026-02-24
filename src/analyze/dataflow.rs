@@ -558,7 +558,7 @@ mod tests {
         (tree, code.to_string())
     }
 
-    fn get_func_node(tree: &tree_sitter::Tree) -> Option<tree_sitter::Node> {
+    fn get_func_node<'a>(tree: &'a tree_sitter::Tree) -> Option<tree_sitter::Node<'a>> {
         let root = tree.root_node();
         for i in 0..root.child_count() {
             if let Some(child) = root.child(i) {
