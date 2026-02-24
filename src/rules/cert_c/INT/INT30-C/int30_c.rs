@@ -957,6 +957,7 @@ impl Int30C {
         false
     }
 
+    #[allow(dead_code)]
     fn has_surrounding_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
         // Simple heuristic: look in parent contexts for overflow checking patterns
         if let Some(parent) = node.parent() {

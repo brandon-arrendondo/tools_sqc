@@ -125,6 +125,7 @@ struct FileReopenAnalyzer {
 }
 
 #[derive(Clone, Debug)]
+#[allow(dead_code)]
 struct FileOperation {
     op_type: OpType,
     filename: String,
@@ -390,7 +391,7 @@ impl FileReopenAnalyzer {
         }
     }
 
-    fn process_fstat_call(&mut self, node: &Node, source: &str, func_name: &str) {
+    fn process_fstat_call(&mut self, node: &Node, source: &str, _func_name: &str) {
         if let Some(arguments) = node.child_by_field_name("arguments") {
             // fstat(fd, &buf) - first argument is file descriptor
             if let Some(fd_node) = self.get_first_argument(&arguments) {

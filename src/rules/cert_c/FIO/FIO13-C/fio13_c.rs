@@ -156,6 +156,7 @@ impl Fio13C {
 }
 
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 enum FileOp {
     Ungetc(usize), // line number
     Read(usize),   // line number

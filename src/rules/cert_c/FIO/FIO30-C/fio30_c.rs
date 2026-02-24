@@ -517,7 +517,7 @@ impl FormatStringAnalyzer {
     }
 
     /// Extract arguments from an argument list
-    fn extract_arguments<'a>(&self, arguments: &'a Node, source: &str) -> Vec<Node<'a>> {
+    fn extract_arguments<'a>(&self, arguments: &'a Node, _source: &str) -> Vec<Node<'a>> {
         let mut args = Vec::new();
         for i in 0..arguments.child_count() {
             if let Some(arg) = arguments.child(i) {

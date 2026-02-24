@@ -259,6 +259,7 @@ impl Dcl08C {
         }
     }
 
+    #[allow(dead_code)]
     fn contains_reference_with_arithmetic(
         &self,
         value_text: &str,

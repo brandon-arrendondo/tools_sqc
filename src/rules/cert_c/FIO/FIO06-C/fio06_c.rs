@@ -23,6 +23,7 @@ use tree_sitter::Node;
 pub struct Fio06C;
 
 impl Fio06C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Fio06C
     }

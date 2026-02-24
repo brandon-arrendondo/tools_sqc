@@ -1,4 +1,5 @@
 //! Reaching definitions analysis using the CFG.
+#![allow(dead_code)]
 //!
 //! Implements a standard iterative worklist algorithm to compute which variable
 //! definitions reach each point in the program. This enables flow-sensitive

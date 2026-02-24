@@ -164,6 +164,7 @@ impl DCL19C {
         None
     }
 
+    #[allow(dead_code)]
     fn check_file_scope_function(&self, node: &Node, source: &str) -> Option<RuleViolation> {
         // Check if this is a non-static function definition
         let mut cursor = node.walk();

@@ -17,6 +17,7 @@ use tree_sitter::Node;
 pub struct Dcl20C;
 
 impl Dcl20C {
+    #[allow(dead_code)]
     pub fn new() -> Self {
         Dcl20C
     }

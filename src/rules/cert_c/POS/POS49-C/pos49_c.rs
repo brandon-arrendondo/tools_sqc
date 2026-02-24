@@ -92,7 +92,7 @@ impl Pos49C {
         while let Some(parent) = current {
             if parent.kind() == "compound_statement" {
                 let node_pos = node.start_byte();
-                let stmt_text = &source[parent.start_byte()..parent.end_byte()];
+                let _stmt_text = &source[parent.start_byte()..parent.end_byte()];
 
                 // Simple heuristic: check if we're between lock and unlock calls
                 // Find text before this node in the statement

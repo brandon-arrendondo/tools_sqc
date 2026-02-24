@@ -274,6 +274,7 @@ impl SuppressionManager {
     }
 
     /// Generate a suppression comment for a violation
+    #[allow(dead_code)]
     pub fn generate_suppression_comment(
         rule_id: &str,
         source: &str,

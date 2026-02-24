@@ -78,6 +78,7 @@ impl Flp02C {
 
     /// Get the type of an expression (simplified heuristic)
     /// Checks if expression or any of its descendants contain floating-point characteristics
+    #[allow(dead_code)]
     fn appears_to_be_float_expression(&self, node: &Node, source: &str) -> bool {
         // Check current node
         if self.has_float_characteristics(node, source) {
