@@ -1131,41 +1131,9 @@ impl Int32C {
     fn infer_type(&self, node: &Node, source: &str, type_map: &HashMap<String, String>) -> String {
         let text = get_node_text(&node, source);
 
-        // Look for explicit unsigned type indicators first
-        if text.contains("unsigned") || text.contains("size_t") || text.contains("uint") {
-            return "unsigned".to_string();
-        }
-
-        // Look for unsigned literals
-        if text.ends_with("u") || text.ends_with("U") {
-            return "unsigned".to_string();
-        }
-
-        // Look for unsigned constants
-        if text.contains("UINT_MAX") || text.contains("SIZE_MAX") {
-            return "unsigned".to_string();
-        }
-
-        // Look for explicit signed type indicators
-        if text.contains("signed")
-            || text.contains("int")
-            || text.contains("short")
-            || text.contains("long")
-        {
-            return "signed".to_string();
-        }
-
-        // Look for signed integer constants
-        if text.contains("INT_MAX") || text.contains("INT_MIN") {
-            return "signed".to_string();
-        }
-
-        // Plain numbers without unsigned suffix are typically signed
-        if text.chars().all(|c| c.is_ascii_digit() || c == '-') {
-            return "signed".to_string();
-        }
-
-        // If this is a variable name, check the type map first (most reliable)
+        // Check the type map FIRST — most reliable source of type info.
+        // Must come before text heuristics because variable names like "index"
+        // contain "int" as a substring, causing false signed classification.
         if node.kind() == "identifier" {
             if let Some(declared_type) = type_map.get(text) {
                 if self.is_unsigned_type(declared_type) {
@@ -1182,6 +1150,42 @@ impl Int32C {
                 // Non-integer types (float, double, char, pointers, structs) — not applicable to INT32-C
                 return "not_applicable".to_string();
             }
+        }
+
+        // Look for explicit unsigned type indicators
+        if text.contains("unsigned") || text.contains("size_t") || text.contains("uint") {
+            return "unsigned".to_string();
+        }
+
+        // Look for unsigned literals
+        if text.ends_with("u") || text.ends_with("U") {
+            return "unsigned".to_string();
+        }
+
+        // Look for unsigned constants
+        if text.contains("UINT_MAX") || text.contains("SIZE_MAX") {
+            return "unsigned".to_string();
+        }
+
+        // Look for explicit signed type indicators (only for non-identifier nodes
+        // like type specifiers in casts/declarations — identifiers checked above)
+        if node.kind() != "identifier"
+            && (text.contains("signed")
+                || text.contains("int")
+                || text.contains("short")
+                || text.contains("long"))
+        {
+            return "signed".to_string();
+        }
+
+        // Look for signed integer constants
+        if text.contains("INT_MAX") || text.contains("INT_MIN") {
+            return "signed".to_string();
+        }
+
+        // Plain numbers without unsigned suffix are typically signed
+        if text.chars().all(|c| c.is_ascii_digit() || c == '-') {
+            return "signed".to_string();
         }
 
         // Fall back to old heuristic for variable names not in the type map
