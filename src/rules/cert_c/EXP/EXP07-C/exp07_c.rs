@@ -39,14 +39,16 @@ impl CertRule for Exp07C {
                     // Check if the right operand (shift amount) is a numeric literal
                     if let Some(right) = node.child_by_field_name("right") {
                         if is_numeric_literal(&right, source) {
-                            // This is a shift with a magic number - potential violation
-                            // Check if there's a comment suggesting a constant should be used
-                            if has_constant_assumption_comment(node, source) {
-                                report_violation(node, source, &mut violations);
+                            // Byte-boundary shifts (8, 16, 24, 32, ...) are standard
+                            // serialization/packing idioms, not magic number assumptions.
+                            let shift_text = get_node_text(&right, source).trim();
+                            if let Ok(shift_val) = shift_text.parse::<u32>() {
+                                if shift_val > 0 && shift_val % 8 == 0 {
+                                    // Skip — byte extraction/packing pattern
+                                } else {
+                                    report_violation(node, source, &mut violations);
+                                }
                             } else {
-                                // Even without a comment, shifting by a magic number
-                                // is often a sign of assuming a constant's value
-                                // Report it as a potential violation
                                 report_violation(node, source, &mut violations);
                             }
                         }
