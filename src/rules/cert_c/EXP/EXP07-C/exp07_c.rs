@@ -80,52 +80,6 @@ fn is_numeric_literal(node: &Node, source: &str) -> bool {
     }
 }
 
-/// Check if there's a comment near this node that suggests a constant assumption
-/// For example: "/* BUFSIZ = 512 = 2^9 */"
-fn has_constant_assumption_comment(node: &Node, source: &str) -> bool {
-    // Get the line containing this node
-    let start_byte = node.start_byte();
-    let end_byte = node.end_byte();
-
-    // Search for the start of the line
-    let line_start = source[..start_byte]
-        .rfind('\n')
-        .map(|pos| pos + 1)
-        .unwrap_or(0);
-
-    // Search for the end of the line
-    let line_end = source[end_byte..]
-        .find('\n')
-        .map(|pos| end_byte + pos)
-        .unwrap_or(source.len());
-
-    // Get the full line
-    let line = &source[line_start..line_end];
-
-    // Check if the line contains a comment with typical constant assumption patterns
-    // Pattern: "/* NAME = value = expression */" or similar
-    if line.contains("/*") && line.contains("*/") {
-        // Extract comment content
-        if let Some(comment_start) = line.find("/*") {
-            if let Some(comment_end) = line.find("*/") {
-                let comment = &line[comment_start + 2..comment_end];
-
-                // Look for patterns like "CONSTANT = number" or "= 2^n"
-                if comment.contains('=')
-                    && (comment.contains('^')
-                        || comment
-                            .chars()
-                            .any(|c| c.is_ascii_uppercase() && c.is_alphabetic()))
-                {
-                    return true;
-                }
-            }
-        }
-    }
-
-    false
-}
-
 /// Report a violation for assuming constant values in expressions
 fn report_violation(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
     let start_point = node.start_position();
