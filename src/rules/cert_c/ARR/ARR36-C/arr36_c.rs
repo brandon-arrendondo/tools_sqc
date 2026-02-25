@@ -207,8 +207,12 @@ impl PointerAnalyzer {
     }
 
     fn process_parameter(&mut self, node: &Node, source: &str) {
-        // For function parameters, each parameter is treated as a distinct pointer
-        // We track them using their parameter name as a unique identifier
+        // For function parameters, only track pointer/array parameters as distinct arrays.
+        // Non-pointer parameters (int, uint32_t, etc.) are scalars — comparing them
+        // is not pointer comparison and should not trigger ARR36-C.
+        if !self.is_pointer_or_array_parameter(node) {
+            return;
+        }
         if let Some(declarator) = node.child_by_field_name("declarator") {
             let param_name = ast_utils::get_identifier_from_declarator(&declarator, source);
             if !param_name.is_empty() {
@@ -218,6 +222,33 @@ impl PointerAnalyzer {
                     .insert(param_name.clone(), format!("param:{}", param_name));
             }
         }
+    }
+
+    /// Check if a parameter declaration is a pointer or array type.
+    fn is_pointer_or_array_parameter(&self, param_node: &Node) -> bool {
+        // Check declarator for pointer_declarator or array_declarator
+        if let Some(declarator) = param_node.child_by_field_name("declarator") {
+            if declarator.kind() == "pointer_declarator" || declarator.kind() == "array_declarator"
+            {
+                return true;
+            }
+            // Check children for nested pointer/array declarators
+            for i in 0..declarator.child_count() {
+                if let Some(child) = declarator.child(i) {
+                    if child.kind() == "pointer_declarator" || child.kind() == "array_declarator" {
+                        return true;
+                    }
+                }
+            }
+        }
+        // Check if the type itself contains a pointer
+        if let Some(type_node) = param_node.child_by_field_name("type") {
+            // Abstract pointer declarators (e.g., `void *` without name)
+            if type_node.kind() == "pointer_declarator" {
+                return true;
+            }
+        }
+        false
     }
 
     fn extract_array_base(&self, node: &Node, source: &str) -> String {
@@ -369,12 +400,11 @@ impl PointerAnalyzer {
             }
             "field_expression" => {
                 // Handle struct.member or union.member access
-                // Extract full path to distinguish between different members
+                // Only return info if explicitly tracked — don't assume all field
+                // expressions are pointers. Untracked fields (integers, etc.)
+                // should return None to avoid flagging scalar comparisons.
                 let var_name = source[node.start_byte()..node.end_byte()].to_string();
-                self.variable_arrays.get(&var_name).cloned().or_else(|| {
-                    // If not in our tracking map, use the field expression itself as the identifier
-                    Some(var_name)
-                })
+                self.variable_arrays.get(&var_name).cloned()
             }
             _ => None,
         }
