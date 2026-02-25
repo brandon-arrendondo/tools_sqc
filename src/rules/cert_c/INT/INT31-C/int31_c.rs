@@ -601,9 +601,10 @@ impl Int31C {
         }
     }
 
-    /// Detect narrowing when a shift expression is cast to a narrow type.
-    /// e.g., `(uint8_t)(val >> 8)` — the shift implies the source is at least 16-bit,
-    /// so this is a narrowing conversion even if we can't resolve the source type.
+    /// Detect narrowing when a left-shift expression is cast to a narrow type.
+    /// Left-shift moves bits up, then narrow cast discards high bits = data loss.
+    /// Right-shift before narrow cast is intentional byte extraction and is SAFE:
+    ///   `(uint8_t)(val >> 8)` extracts the high byte — no data loss.
     fn check_shift_narrowing(
         &self,
         node: &Node,
@@ -621,16 +622,15 @@ impl Int31C {
             return;
         }
 
-        // Check if the cast operand contains a right-shift expression.
-        // The operand may be wrapped in parenthesized_expression, so check text-based.
-        // e.g., (uint8_t)(ptrTlv->tag >> 8) — operand is "(ptrTlv->tag >> 8)"
-        if source_expr.contains(">>") {
+        // Right-shift before narrow cast = byte extraction = safe (FP-010).
+        // Only flag left-shift before narrow cast, which loses high bits.
+        if source_expr.contains("<<") && !source_expr.contains(">>") {
             let pos = node.start_position();
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
                 severity: Severity::High,
                 message: format!(
-                    "Narrowing conversion: '{}' shifted right and cast to {} may lose upper bits",
+                    "Narrowing conversion: '{}' shifted left and cast to {} may lose upper bits",
                     source_expr, target_clean
                 ),
                 file_path: String::new(),
