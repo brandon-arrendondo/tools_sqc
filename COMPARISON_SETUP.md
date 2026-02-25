@@ -1392,3 +1392,206 @@ Adding a new real-world project to the benchmark requires only:
 
 The per-project cppcheck and clang-tidy baselines only need to be re-run if the project source is updated or a new tool version is being evaluated, not between sqc rule iterations.
 
+---
+
+## 13. Operational Notes from First Run (Ubuntu 22.04, 2026-02-24)
+
+This section records lessons learned from the first full comparison run on a fresh Ubuntu 22.04
+machine. Use this as a checklist to avoid repeating the same mistakes.
+
+### 13.1 Setup Prerequisites
+
+**Build dependencies** — sqc fails to build without these:
+
+```bash
+sudo apt install -y pkg-config libssl-dev
+```
+
+`libssl3` (runtime library) is installed by default on Ubuntu 22.04, but `libssl-dev` (headers)
+and `pkg-config` are not. Without them, `cargo build --release` fails with:
+```
+error: could not find `pkg-config` / could not find OpenSSL installation
+```
+
+**cppcheck version** — Ubuntu 22.04 apt ships cppcheck **2.7** (not 2.13 as documented for 24.04).
+This version does not support `--output-format=sarif` or the MISRA addon. All other flags
+documented in this file work correctly with 2.7.
+
+**clang-tidy version** — Ubuntu 22.04 ships LLVM 21.x via the LLVM apt repository at
+`~/.local/bin/clang-tidy` (version 21.1.6). The apt package from universe is older (14.x).
+Both work for CERT C checks; use whichever is already installed.
+
+### 13.2 Project Paths
+
+Projects are cloned to `~/data/<project>/` (not `~/data/comparisons/<project>/` as documented).
+Adjust all commands accordingly:
+
+```bash
+# Document says: ~/data/comparisons/libcrc
+# Actual path:   ~/data/libcrc
+```
+
+Output results are written to `~/data/results/{sqc,cppcheck,clang-tidy}/<project>/results.*`.
+
+Create output directories once:
+
+```bash
+mkdir -p ~/data/results/{sqc,cppcheck,clang-tidy}/{libcrc,sqlite,mosquitto,curl,hostap}
+```
+
+### 13.3 cppcheck: CRITICAL — Use `-j N` and `--max-configs=3`
+
+**Without these flags, cppcheck is completely impractical on large projects:**
+
+| Project | Files | Single-threaded runtime | `-j 8 --max-configs=3` runtime |
+|---------|-------|------------------------|-------------------------------|
+| libcrc  | 16    | ~5 min                 | ~1 min                        |
+| sqlite  | 312   | **3+ hours** (killed at 17%)| ~30 min               |
+| mosquitto | 121 | ~20 min               | ~5 min                        |
+| curl    | ~220  | (not measured)         | ~15 min (estimated)           |
+| hostap  | 504   | (not measured)         | ~30 min (estimated)           |
+
+The root cause is that SQLite uses massive `#ifdef` configuration enumeration. Without
+`--max-configs=3`, cppcheck checks **~15 configurations per file** by default for SQLite, making
+`jimsh0.c` alone (24K lines, a Tcl interpreter embedded in the build system) take 164+ CPU minutes.
+
+**Always run cppcheck with:**
+
+```bash
+cppcheck \
+  --enable=all \
+  --std=c11 \
+  --xml --xml-version=2 \
+  --suppress=missingIncludeSystem \
+  --max-configs=3 \
+  -j $(nproc) \
+  ~/data/$proj/
+```
+
+**Note**: `-j N` disables the `unusedFunction` check (cppcheck limitation). This is acceptable —
+the important checks (memory, null pointer, CERT C) are unaffected.
+
+**Stuck worker workaround**: Even with `--max-configs=3 -j 8`, cppcheck occasionally spawns a
+worker that hangs indefinitely on a single file (e.g., `jimsh0.c` in sqlite — a 24K-line Tcl
+interpreter embedded in the autoconf build system). Detect and kill the stuck worker with:
+
+```bash
+# Run this in a separate terminal while cppcheck is running on large projects
+watch -n 30 'ps aux | grep cppcheck | grep -v grep | awk "{print \$2, \"time:\", \$10, \"cpu:\", \$3}"'
+
+# If a worker has been running for 20+ minutes with 99%+ CPU, kill it:
+kill <PID>
+# The main cppcheck process (which shows 0% CPU while waiting) will
+# finalize results collected so far and move to the next project.
+```
+
+This pattern was observed on sqlite (jimsh0.c) and hostap. Killing the stuck worker
+results in partial analysis of the affected file — all other files are unaffected.
+
+### 13.4 sqc: Run Times (Single-Threaded, Release Build)
+
+sqc is single-threaded per invocation but individual project runs can be backgrounded:
+
+| Project | Files | Violations | Runtime |
+|---------|-------|-----------|---------|
+| libcrc  | 16    | 954       | ~2 min  |
+| sqlite  | 312   | 424,842   | ~78 min |
+| mosquitto | 121 | 47,417   | ~24 min |
+| curl    | ~220  | 207,476   | ~17 min |
+| hostap  | 504   | 473,862   | ~84 min |
+
+sqc is sequential in the comparison loop. Total wall-clock time: ~3.5 hours for all 5 projects.
+
+### 13.5 clang-tidy: Run Times
+
+clang-tidy with `-P $(nproc)` direct file scan (no compile_commands.json) completes all 5
+projects in ~30 minutes total. It is the fastest of the three tools.
+
+### 13.6 STR31-C Regression Detected (feature/exp34c-deref-after-check branch)
+
+**Important finding**: The current sqc branch shows a severe STR31-C false-positive explosion
+on large projects. This did NOT appear in the baseline results (sqc Round 9 / v0.2.3 and earlier).
+
+| Project | STR31-C findings | Expected |
+|---------|-----------------|----------|
+| curl    | 93,140          | Not in baseline top-10 |
+| sqlite  | 206,651         | Not in baseline top-10 |
+| hostap  | 170,586         | Not in baseline top-10 |
+
+Root cause: **36,085 identical** "Manual string copying loop without apparent bounds checking
+detected" messages appear in `curl/lib/vtls/openssl.c` (5,479 lines). This is ~6.5 hits per
+line — physically impossible for genuine findings. The STR31-C rule is triggering on every
+iteration of string-copy loops rather than once per loop.
+
+The total violation count for curl jumped from **131,445 (baseline) to 207,476 (+58%)** due
+entirely to this regression. Other rules (EXP34-C, DCL07-C, DCL31-C) are broadly consistent
+with baseline.
+
+**Action**: Investigate STR31-C loop detection logic before the next benchmark run. The rule
+should fire once per loop, not once per iteration.
+
+### 13.7 Baseline vs Current Branch Comparison
+
+| Project | Baseline | Current (feature branch) | Delta | Note |
+|---------|----------|--------------------------|-------|------|
+| libcrc  | 1,109    | 954                      | −14%  | Normal variation |
+| mosquitto | 59,176 | 47,417                  | −20%  | Improvement (fewer FPs) |
+| curl    | 131,445  | 207,476                  | +58%  | **STR31-C regression** |
+| sqlite  | N/A      | 424,842                  | —     | First run |
+| hostap  | N/A      | 473,862                  | —     | First run |
+
+The −20% reduction in mosquitto is likely a genuine improvement from DCL31-C and DCL07-C
+being tuned (those rules dropped from ~6,820 to ~2,975 each vs baseline).
+
+### 13.7b Full Results Table (2026-02-24, feature/exp34c-deref-after-check)
+
+| Project | sqc violations | cppcheck findings | clang-tidy diagnostics |
+|---------|---------------|-------------------|----------------------|
+| libcrc  | 954           | 40                | 52                   |
+| sqlite  | 424,842       | 1,182             | 2,291                |
+| mosquitto | 47,417      | 598               | 907                  |
+| curl    | 207,476       | 551               | 1,653                |
+| hostap  | 473,862       | 1,066             | 1,083                |
+
+**sqc top rules by project:**
+- libcrc: EXP14-C (106), ERR33-C (68), EXP12-C (62), INT30-C (60), EXP19-C (59)
+- sqlite: STR31-C (206,651 — **regression**), EXP34-C (41,885), DCL07-C (20,443)
+- mosquitto: EXP34-C (7,631), API00-C (3,081), DCL31-C (2,979), DCL07-C (2,975)
+- curl: STR31-C (93,140 — **regression**), EXP34-C (21,893), DCL07-C (10,725)
+- hostap: STR31-C (170,586 — **regression**), EXP34-C (69,164), DCL08-C (25,296)
+
+**cppcheck top findings by project (excluding information/toomanyconfigs):**
+- libcrc: variableScope (36), unusedFunction (2)
+- sqlite: variableScope (505), unreadVariable (103), constParameter (63)
+- mosquitto: variableScope (236), uninitvar (50 — real bugs), constParameter (19)
+- curl: variableScope (95), unreadVariable (42), knownConditionTrueFalse (21)
+- hostap: variableScope (390), uninitvar (89 — real bugs), constParameter (86)
+
+**clang-tidy note**: `clang-diagnostic-error` counts (405 in sqlite, 1024 in curl, 517 in
+hostap) represent files that failed to parse (missing headers, cross-TU dependencies). These
+are not CERT C findings — they indicate the direct file scan approach (without
+compile_commands.json) is incomplete for complex projects. For accurate clang-tidy results on
+curl/sqlite/hostap, use `bear -- make` to capture compile_commands.json first.
+
+### 13.8 Fast Re-Run After Bug Fixes
+
+After fixing STR31-C (or any rule), re-run sqc only (cppcheck/clang-tidy don't change):
+
+```bash
+SQC=~/data/tools_sqc/target/release/sqc
+MANIFEST=~/data/tools_sqc/rules_templates/rules-all.toml
+
+cargo build --release -q  # rebuild after fix
+for proj in libcrc sqlite mosquitto curl hostap; do
+  $SQC ~/data/$proj \
+    -d ~/data/$proj \
+    --manifest $MANIFEST \
+    --export ~/data/results/sqc/$proj/results.json \
+    2>&1 | tail -1 &
+done
+wait
+echo "All done"
+```
+
+This runs all 5 projects in parallel — total wall time drops to ~84 min (hostap, the longest).
+

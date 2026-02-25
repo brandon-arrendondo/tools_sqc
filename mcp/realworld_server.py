@@ -281,6 +281,20 @@ def _process_alive(pid: int) -> bool:
     return True
 
 
+def _remote_check_done(host: str, version_dir: Path, run_id: str) -> bool:
+    """Check if a remote run finished by looking for its .done sentinel file."""
+    _, ssh_user = _load_remote_config()
+    sentinel = f"{version_dir / (run_id + '.done')}"
+    try:
+        result = subprocess.run(
+            ["ssh"] + SSH_OPTS + [f"{ssh_user}@{host}", f"test -f {shlex.quote(sentinel)}"],
+            capture_output=True, timeout=10,
+        )
+        return result.returncode == 0
+    except Exception:
+        return False
+
+
 def _kill_process_group(pid: int) -> None:
     try:
         os.killpg(pid, signal.SIGTERM)
@@ -347,22 +361,28 @@ def _resolve_host(host: str | None) -> str | dict:
 
 
 def _build_remote_shell_cmd(tool: str, cmd: list[str], version_dir: Path, run_id: str) -> str:
-    """Convert a local command + I/O redirections into a single shell string for SSH."""
+    """Convert a local command + I/O redirections into a single shell string for SSH.
+
+    Every remote command ends by touching a .done sentinel file so the local
+    server can cheaply detect completion without tracking remote PIDs.
+    """
     dir_str = shlex.quote(str(version_dir))
     mkdir = f"mkdir -p {dir_str}"
+    done = shlex.quote(str(version_dir / f"{run_id}.done"))
+    sentinel = f"touch {done}"
 
     if tool == "sqc":
         # sqc writes JSON via --export; stdout/stderr → log
         log = shlex.quote(str(version_dir / f"{run_id}.log"))
         cmd_str = " ".join(shlex.quote(c) for c in cmd)
-        return f"{mkdir} && {cmd_str} > {log} 2>&1"
+        return f"{mkdir} && {cmd_str} > {log} 2>&1 ; {sentinel}"
 
     elif tool == "cppcheck":
         # cppcheck: stderr is XML output, stdout → log
         xml = shlex.quote(str(version_dir / f"{run_id}.xml"))
         log = shlex.quote(str(version_dir / f"{run_id}.log"))
         cmd_str = " ".join(shlex.quote(c) for c in cmd)
-        return f"{mkdir} && {cmd_str} > {log} 2> {xml}"
+        return f"{mkdir} && {cmd_str} > {log} 2> {xml} ; {sentinel}"
 
     else:  # clang-tidy
         # clang-tidy cmd is ["bash", "-c", "pipeline..."]
@@ -370,7 +390,7 @@ def _build_remote_shell_cmd(tool: str, cmd: list[str], version_dir: Path, run_id
         pipeline = cmd[2]  # the bash -c argument
         txt = shlex.quote(str(version_dir / f"{run_id}.txt"))
         log = shlex.quote(str(version_dir / f"{run_id}.log"))
-        return f"{mkdir} && bash -c {shlex.quote(pipeline)} > {txt} 2> {log}"
+        return f"{mkdir} && bash -c {shlex.quote(pipeline)} > {txt} 2> {log} ; {sentinel}"
 
 
 def _fetch_remote_results(host: str, version_dir: Path, run_id: str) -> dict:
@@ -729,7 +749,7 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
             })
 
     # Clean up stale local result files from prior runs with same run_id
-    for ext in (".json", ".xml", ".txt", ".log", ".ssh.log"):
+    for ext in (".json", ".xml", ".txt", ".log", ".ssh.log", ".done"):
         stale = version_dir / f"{run_id}{ext}"
         stale.unlink(missing_ok=True)
 
@@ -901,35 +921,54 @@ def get_status() -> str:
         is_remote = run_host != "local"
 
         # Determine status
-        if is_alive:
-            status = "running"
-            active_count += 1
-        elif run_info.get("status") == "cancelled":
+        if run_info.get("status") == "cancelled":
             status = "cancelled"
             failed_count += 1
-        else:
-            # For remote runs: fetch results via scp when SSH process exits
-            if is_remote and not run_info.get("results_fetched"):
-                version_dir = Path(run_info.get("version_dir", ""))
+        elif is_alive:
+            status = "running"
+            active_count += 1
+        elif is_remote and not run_info.get("results_fetched"):
+            # Remote run: SSH process exited but remote job may still be running.
+            # Check for .done sentinel on the remote host.
+            version_dir = Path(run_info.get("version_dir", ""))
+            if _remote_check_done(run_host, version_dir, run_id):
                 fetch_result = _fetch_remote_results(run_host, version_dir, run_id)
                 run_info["results_fetched"] = True
                 run_info["fetch_info"] = fetch_result
-
-            # Check if result file exists → completed vs crashed
+                # Now check local result files
+                result_file = _get_result_file(version_dir, run_id)
+                if result_file and result_file.stat().st_size > 0:
+                    status = "completed"
+                    completed_count += 1
+                    run_info["status"] = "completed"
+                    run_info["end_time"] = now
+                else:
+                    log_file = version_dir / f"{run_id}.log"
+                    if log_file.exists() and log_file.stat().st_size > 0:
+                        status = "completed"
+                        completed_count += 1
+                        run_info["status"] = "completed"
+                    else:
+                        status = "failed"
+                        failed_count += 1
+            else:
+                # Sentinel not found — remote still running
+                status = "running"
+                active_count += 1
+        else:
+            # Local run (or already-fetched remote): check result files
             version_dir = Path(run_info.get("version_dir", ""))
             result_file = _get_result_file(version_dir, run_id)
             if result_file and result_file.stat().st_size > 0:
                 status = "completed"
                 completed_count += 1
-                # Update state
                 if run_info.get("status") != "completed":
                     run_info["status"] = "completed"
                     run_info["end_time"] = now
             else:
-                # Check log for errors
                 log_file = version_dir / f"{run_id}.log"
                 if log_file.exists() and log_file.stat().st_size > 0:
-                    status = "completed"  # may have warnings but finished
+                    status = "completed"
                     completed_count += 1
                     if run_info.get("status") != "completed":
                         run_info["status"] = "completed"
