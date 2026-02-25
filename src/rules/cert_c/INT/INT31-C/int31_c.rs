@@ -607,7 +607,7 @@ impl Int31C {
     fn check_shift_narrowing(
         &self,
         node: &Node,
-        source: &str,
+        _source: &str,
         source_expr: &str,
         target_type: &str,
         violations: &mut Vec<RuleViolation>,
