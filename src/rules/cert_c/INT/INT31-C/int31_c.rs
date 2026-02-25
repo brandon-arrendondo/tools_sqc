@@ -62,6 +62,21 @@ const UNSIGNED_TYPES: &[&str] = &[
 const NARROW_TYPES: &[&str] = &["char", "signed char", "unsigned char", "int8_t", "uint8_t"];
 
 const WIDE_TYPES: &[&str] = &[
+    // 16-bit types (wider than NARROW_TYPES which are 8-bit)
+    "short",
+    "unsigned short",
+    "short int",
+    "unsigned short int",
+    "int16_t",
+    "uint16_t",
+    // 32-bit types
+    "int",
+    "unsigned",
+    "unsigned int",
+    "signed int",
+    "int32_t",
+    "uint32_t",
+    // 64-bit types
     "long",
     "unsigned long",
     "long int",
@@ -509,6 +524,11 @@ impl Int31C {
         // Get source type if known
         let source_type = var_types.get(&source_expr).cloned().unwrap_or_default();
         if source_type.is_empty() {
+            // Even without a resolved source type, detect narrowing when the cast
+            // operand is a shift expression (e.g., `(uint8_t)(val >> 8)`). A right-shift
+            // by >= 8 bits implies the source is at least 16-bit, so casting to uint8_t
+            // is a narrowing conversion that may lose data.
+            self.check_shift_narrowing(node, source, &source_expr, &target_type, violations);
             return;
         }
 
@@ -574,6 +594,50 @@ impl Int31C {
                 column: pos.column + 1,
                 suggestion: Some(
                     "Check that the value is within target type range before conversion"
+                        .to_string(),
+                ),
+                ..Default::default()
+            });
+        }
+    }
+
+    /// Detect narrowing when a shift expression is cast to a narrow type.
+    /// e.g., `(uint8_t)(val >> 8)` — the shift implies the source is at least 16-bit,
+    /// so this is a narrowing conversion even if we can't resolve the source type.
+    fn check_shift_narrowing(
+        &self,
+        node: &Node,
+        source: &str,
+        source_expr: &str,
+        target_type: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let target_clean = target_type
+            .replace("(", "")
+            .replace(")", "")
+            .trim()
+            .to_string();
+        if !self.is_narrow_type(&target_clean) {
+            return;
+        }
+
+        // Check if the cast operand contains a right-shift expression.
+        // The operand may be wrapped in parenthesized_expression, so check text-based.
+        // e.g., (uint8_t)(ptrTlv->tag >> 8) — operand is "(ptrTlv->tag >> 8)"
+        if source_expr.contains(">>") {
+            let pos = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Narrowing conversion: '{}' shifted right and cast to {} may lose upper bits",
+                    source_expr, target_clean
+                ),
+                file_path: String::new(),
+                line: pos.row + 1,
+                column: pos.column + 1,
+                suggestion: Some(
+                    "Ensure the shifted value fits in the target type or use a wider type"
                         .to_string(),
                 ),
                 ..Default::default()
