@@ -728,6 +728,11 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
                 "message": f"Run '{run_id}' already in progress (PID {existing['pid']}). Use get_status().",
             })
 
+    # Clean up stale local result files from prior runs with same run_id
+    for ext in (".json", ".xml", ".txt", ".log", ".ssh.log"):
+        stale = version_dir / f"{run_id}{ext}"
+        stale.unlink(missing_ok=True)
+
     # Build command
     if tool == "sqc":
         cmd = _build_sqc_cmd(codebase, cfg, version_dir, run_id)
