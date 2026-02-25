@@ -99,6 +99,15 @@ impl Dcl30C {
                     if self.is_local_variable(&child, source)
                         && self.local_var_is_pointer_or_array(&child, &var_name, source)
                     {
+                        // Don't flag if the pointer was assigned from heap allocation
+                        // (malloc, calloc, realloc, or wrapper functions). Returning
+                        // a heap pointer via a local variable is safe — the allocated
+                        // memory outlives the function scope. This is the standard
+                        // factory/constructor pattern in C.
+                        if self.local_var_is_heap_allocated(&child, &var_name, source) {
+                            return None;
+                        }
+
                         let start_point = return_node.start_position();
 
                         return Some(RuleViolation {
@@ -145,6 +154,227 @@ impl Dcl30C {
             None => return false,
         };
         self.find_pointer_or_array_declaration(&body, var_name, source)
+    }
+
+    /// Check if a local pointer variable was initialized from a heap allocation
+    /// (malloc, calloc, realloc, or wrapper functions). Returning such a pointer
+    /// is safe because the heap memory outlives the function scope.
+    fn local_var_is_heap_allocated(&self, var_node: &Node, var_name: &str, source: &str) -> bool {
+        // Walk up to the function body
+        let mut current = var_node.parent();
+        let mut function_body: Option<Node> = None;
+        while let Some(node) = current {
+            if node.kind() == "compound_statement" {
+                if let Some(parent) = node.parent() {
+                    if parent.kind() == "function_definition" {
+                        function_body = Some(node);
+                        break;
+                    }
+                }
+            }
+            current = node.parent();
+        }
+        let body = match function_body {
+            Some(b) => b,
+            None => return false,
+        };
+        self.find_heap_allocation_for_var(&body, var_name, source)
+    }
+
+    /// Search a function body for evidence that `var_name` holds a heap pointer
+    /// or a pointer copied from another (non-local-address) source.
+    fn find_heap_allocation_for_var(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() == "declaration" {
+                    if self.declaration_contains_var_by_name(&child, var_name, source) {
+                        // Check initializer for alloc
+                        if self.declaration_has_alloc_initializer(&child, source) {
+                            return true;
+                        }
+                        // If initialized to NULL, check for later alloc assignment
+                        if self.declaration_has_null_initializer(&child, source) {
+                            if self.has_alloc_assignment_in_body(body, var_name, source) {
+                                return true;
+                            }
+                            // Also safe: pointer assigned from struct member access or function call
+                            // (not address-of local). If only assigned from field_expression or
+                            // call_expression, it holds a non-local pointer.
+                            if self.only_assigned_safe_sources(body, var_name, source) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                if child.kind() == "compound_statement" {
+                    if self.find_heap_allocation_for_var(&child, var_name, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a declaration initializes the variable to NULL.
+    fn declaration_has_null_initializer(&self, decl: &Node, source: &str) -> bool {
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        let text = ast_utils::get_node_text(&value, source);
+                        return text == "NULL" || text == "0" || text == "nullptr";
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Scan function body for `var_name = alloc(...)` assignments.
+    fn has_alloc_assignment_in_body(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() == "expression_statement" {
+                    if let Some(expr) = child.child(0) {
+                        if expr.kind() == "assignment_expression" {
+                            if let (Some(left), Some(right)) = (
+                                expr.child_by_field_name("left"),
+                                expr.child_by_field_name("right"),
+                            ) {
+                                let left_text = ast_utils::get_node_text(&left, source);
+                                if left_text == var_name && self.is_alloc_expression(&right, source)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Recurse into if-blocks, etc.
+                if child.kind() == "if_statement" || child.kind() == "compound_statement" {
+                    if self.has_alloc_assignment_in_body(&child, var_name, source) {
+                        return true;
+                    }
+                }
+                if let Some(consequence) = child.child_by_field_name("consequence") {
+                    if self.has_alloc_assignment_in_body(&consequence, var_name, source) {
+                        return true;
+                    }
+                }
+                if let Some(alternative) = child.child_by_field_name("alternative") {
+                    if self.has_alloc_assignment_in_body(&alternative, var_name, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if all assignments to `var_name` in the body are from safe sources
+    /// (struct member access, function call, NULL) — not from address-of-local.
+    fn only_assigned_safe_sources(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        let mut found_any_assignment = false;
+        self.check_assignments_safe(body, var_name, source, &mut found_any_assignment)
+            && found_any_assignment
+    }
+
+    fn check_assignments_safe(
+        &self,
+        node: &Node,
+        var_name: &str,
+        source: &str,
+        found: &mut bool,
+    ) -> bool {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "expression_statement" {
+                    if let Some(expr) = child.child(0) {
+                        if expr.kind() == "assignment_expression" {
+                            if let (Some(left), Some(right)) = (
+                                expr.child_by_field_name("left"),
+                                expr.child_by_field_name("right"),
+                            ) {
+                                let left_text = ast_utils::get_node_text(&left, source);
+                                if left_text == var_name {
+                                    *found = true;
+                                    // Unsafe: address-of expression
+                                    if right.kind() == "pointer_expression" {
+                                        return false;
+                                    }
+                                    let rt = ast_utils::get_node_text(&right, source);
+                                    if rt.starts_with('&') {
+                                        return false;
+                                    }
+                                    // Safe sources: field_expression, call_expression,
+                                    // subscript_expression, identifier, NULL
+                                }
+                            }
+                        }
+                    }
+                }
+                // Recurse
+                if !self.check_assignments_safe(&child, var_name, source, found) {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+
+    /// Check if a declaration has an initializer that is a heap allocation call.
+    fn declaration_has_alloc_initializer(&self, decl: &Node, source: &str) -> bool {
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        return self.is_alloc_expression(&value, source);
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if an expression is a heap allocation (malloc, calloc, realloc, or
+    /// wrapper). Handles cast expressions like `(Type *)malloc(...)`.
+    fn is_alloc_expression(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "call_expression" => {
+                if let Some(func) = node.child_by_field_name("function") {
+                    let func_name = ast_utils::get_node_text(&func, source);
+                    let upper = func_name.to_uppercase();
+                    return func_name == "malloc"
+                        || func_name == "calloc"
+                        || func_name == "realloc"
+                        || func_name == "strdup"
+                        || func_name == "strndup"
+                        || upper.contains("MALLOC")
+                        || upper.contains("CALLOC")
+                        || upper.contains("REALLOC")
+                        || upper.contains("ALLOC")
+                        || upper.contains("STRDUP");
+                }
+                false
+            }
+            "cast_expression" => {
+                // (Type *)malloc(...) — unwrap the cast
+                if let Some(value) = node.child_by_field_name("value") {
+                    self.is_alloc_expression(&value, source)
+                } else {
+                    false
+                }
+            }
+            "parenthesized_expression" => {
+                if let Some(inner) = node.child(1) {
+                    self.is_alloc_expression(&inner, source)
+                } else {
+                    false
+                }
+            }
+            _ => false,
+        }
     }
 
     /// Search a compound statement for a declaration of `var_name` that is a
