@@ -557,7 +557,7 @@ impl Dcl30C {
             if let Some(child) = body.child(i) {
                 if child.kind() == "declaration" {
                     // Check if this declaration declares our variable
-                    if self.declaration_contains_var(&child, var_name) {
+                    if self.declaration_contains_var(&child, var_name, source) {
                         // Check if it's NOT static
                         let decl_text = ast_utils::get_node_text(&child, source);
                         return !decl_text.contains("static");
@@ -575,9 +575,7 @@ impl Dcl30C {
     }
 
     /// Check if a declaration contains a specific variable name
-    fn declaration_contains_var(&self, decl_node: &Node, var_name: &str) -> bool {
-        // Simple approach: check if variable name appears in declaration text
-        // This is a heuristic but works for most cases
+    fn declaration_contains_var(&self, decl_node: &Node, var_name: &str, source: &str) -> bool {
         for i in 0..decl_node.child_count() {
             if let Some(child) = decl_node.child(i) {
                 // Look for init_declarator or direct declarators
@@ -585,8 +583,8 @@ impl Dcl30C {
                     child.kind(),
                     "init_declarator" | "array_declarator" | "pointer_declarator" | "identifier"
                 ) {
-                    // Search recursively for identifier nodes
-                    if self.contains_identifier(&child, var_name) {
+                    // Search recursively for identifier nodes using text comparison
+                    if self.contains_identifier_by_name(&child, var_name, source) {
                         return true;
                     }
                 }
@@ -595,26 +593,7 @@ impl Dcl30C {
         false
     }
 
-    /// Check if a node tree contains an identifier with given name (text-free version,
-    /// used only where source is unavailable — compares byte length as a coarse filter).
-    /// Prefer `contains_identifier_by_name` when source is available.
-    fn contains_identifier(&self, node: &Node, var_name: &str) -> bool {
-        if node.kind() == "identifier" {
-            if var_name.len() == (node.end_byte() - node.start_byte()) {
-                return true;
-            }
-        }
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if self.contains_identifier(&child, var_name) {
-                    return true;
-                }
-            }
-        }
-        false
-    }
-
-    /// Accurate version: checks identifier text against source bytes.
+    /// Check if a node tree contains an identifier with given name.
     fn contains_identifier_by_name(&self, node: &Node, var_name: &str, source: &str) -> bool {
         if node.kind() == "identifier" {
             if ast_utils::get_node_text(node, source) == var_name {
@@ -756,7 +735,7 @@ impl Dcl30C {
         let mut decls = Vec::new();
         Self::collect_file_scope_declarations(&translation_unit, &mut decls);
         for child in &decls {
-            if self.contains_identifier(child, &var_name) {
+            if self.contains_identifier_by_name(child, &var_name, source) {
                 return true;
             }
         }
