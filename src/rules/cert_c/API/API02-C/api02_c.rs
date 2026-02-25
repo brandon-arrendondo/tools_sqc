@@ -157,6 +157,37 @@ impl Api02C {
 
         let type_text = get_node_text(&type_node, source);
 
+        // Skip const char * parameters — these are conventionally null-terminated
+        // string inputs that use the null terminator as bounds, not explicit size.
+        // This matches standard C conventions (strcmp, strdup, printf format, etc.)
+        let param_text = get_node_text(param, source);
+        let normalized = param_text.split_whitespace().collect::<Vec<_>>().join(" ");
+        if normalized.starts_with("const char *") || normalized.starts_with("const char*") {
+            return false;
+        }
+        // Also handle the tree-sitter pattern where const is a type_qualifier
+        // and char is the type — check if type is "char" and there's a const qualifier
+        if type_text == "char" {
+            let mut has_const = false;
+            for i in 0..param.child_count() {
+                if let Some(child) = param.child(i) {
+                    if child.kind() == "type_qualifier" {
+                        let q = get_node_text(&child, source);
+                        if q == "const" {
+                            has_const = true;
+                        }
+                    }
+                }
+            }
+            if has_const {
+                if let Some(declarator) = param.child_by_field_name("declarator") {
+                    if is_pointer_declarator(&declarator) {
+                        return false;
+                    }
+                }
+            }
+        }
+
         // Check for pointer type
         if type_text.contains('*') {
             // Exclude function pointers (they're not arrays)
@@ -182,7 +213,20 @@ impl Api02C {
         };
 
         let type_text = get_node_text(&type_node, source);
-        type_text.contains("size_t")
+
+        // Accept size_t and common integer types used for sizes in embedded codebases
+        matches!(
+            type_text,
+            "size_t"
+                | "uint32_t"
+                | "uint16_t"
+                | "uint8_t"
+                | "int32_t"
+                | "int"
+                | "unsigned"
+                | "unsigned int"
+                | "rsize_t"
+        )
     }
 
     fn report_violation(

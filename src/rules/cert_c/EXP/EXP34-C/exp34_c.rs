@@ -6,7 +6,7 @@ use crate::analyze::null_state::{self, NullAnalysisResult, StateMap};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
 use std::cell::RefCell;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
 pub struct Exp34C {
@@ -92,6 +92,7 @@ impl CertRule for Exp34C {
                 );
 
                 // Walk AST for dereferences and check each against the dataflow result
+                let mut reported_vars: HashSet<String> = HashSet::new();
                 check_dereferences_cfg(
                     &body,
                     source,
@@ -100,6 +101,7 @@ impl CertRule for Exp34C {
                     &body,
                     &summaries,
                     &mut violations,
+                    &mut reported_vars,
                 );
             }
         }
@@ -127,6 +129,7 @@ fn check_dereferences_cfg(
     body: &Node,
     summaries: &HashMap<String, FunctionSummary>,
     violations: &mut Vec<RuleViolation>,
+    reported_vars: &mut HashSet<String>,
 ) {
     match node.kind() {
         "pointer_expression" => {
@@ -152,7 +155,18 @@ fn check_dereferences_cfg(
                         || argument.kind() == "field_expression"
                         || argument.kind() == "parenthesized_expression"
                     {
-                        if is_unsafe_at(&deref_text, node, source, analysis, cfg, body, summaries) {
+                        if !reported_vars.contains(&deref_text)
+                            && is_unsafe_at(
+                                &deref_text,
+                                node,
+                                source,
+                                analysis,
+                                cfg,
+                                body,
+                                summaries,
+                            )
+                        {
+                            reported_vars.insert(deref_text.clone());
                             let start_point = node.start_position();
                             violations.push(RuleViolation {
                                 rule_id: "EXP34-C".to_string(),
@@ -179,7 +193,10 @@ fn check_dereferences_cfg(
             if let Some(array) = node.child(0) {
                 if array.kind() == "identifier" {
                     let var_name = ast_utils::get_node_text_owned(&array, source);
-                    if is_unsafe_at(&var_name, node, source, analysis, cfg, body, summaries) {
+                    if !reported_vars.contains(&var_name)
+                        && is_unsafe_at(&var_name, node, source, analysis, cfg, body, summaries)
+                    {
+                        reported_vars.insert(var_name.clone());
                         let start_point = node.start_position();
                         violations.push(RuleViolation {
                             rule_id: "EXP34-C".to_string(),
@@ -205,7 +222,10 @@ fn check_dereferences_cfg(
             if let Some(argument) = node.child_by_field_name("argument") {
                 if argument.kind() == "identifier" {
                     let var_name = ast_utils::get_node_text_owned(&argument, source);
-                    if is_unsafe_at(&var_name, node, source, analysis, cfg, body, summaries) {
+                    if !reported_vars.contains(&var_name)
+                        && is_unsafe_at(&var_name, node, source, analysis, cfg, body, summaries)
+                    {
+                        reported_vars.insert(var_name.clone());
                         let start_point = node.start_position();
                         violations.push(RuleViolation {
                             rule_id: "EXP34-C".to_string(),
@@ -232,7 +252,10 @@ fn check_dereferences_cfg(
                 // Function pointer call
                 if function.kind() == "identifier" {
                     let func_name = ast_utils::get_node_text_owned(&function, source);
-                    if is_unsafe_at(&func_name, node, source, analysis, cfg, body, summaries) {
+                    if !reported_vars.contains(&func_name)
+                        && is_unsafe_at(&func_name, node, source, analysis, cfg, body, summaries)
+                    {
+                        reported_vars.insert(func_name.clone());
                         let start_point = function.start_position();
                         violations.push(RuleViolation {
                             rule_id: "EXP34-C".to_string(),
@@ -258,7 +281,14 @@ fn check_dereferences_cfg(
                 if is_deref_function(&func_name) {
                     if let Some(args) = node.child_by_field_name("arguments") {
                         check_function_arguments_cfg(
-                            &args, source, analysis, cfg, body, summaries, violations,
+                            &args,
+                            source,
+                            analysis,
+                            cfg,
+                            body,
+                            summaries,
+                            violations,
+                            reported_vars,
                         );
                     }
                 }
@@ -276,7 +306,16 @@ fn check_dereferences_cfg(
     // Recurse
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
-            check_dereferences_cfg(&child, source, analysis, cfg, body, summaries, violations);
+            check_dereferences_cfg(
+                &child,
+                source,
+                analysis,
+                cfg,
+                body,
+                summaries,
+                violations,
+                reported_vars,
+            );
         }
     }
 }
@@ -289,12 +328,16 @@ fn check_function_arguments_cfg(
     body: &Node,
     summaries: &HashMap<String, FunctionSummary>,
     violations: &mut Vec<RuleViolation>,
+    reported_vars: &mut HashSet<String>,
 ) {
     for i in 0..args.child_count() {
         if let Some(arg) = args.child(i) {
             if arg.kind() == "identifier" {
                 let var_name = ast_utils::get_node_text_owned(&arg, source);
-                if is_unsafe_at(&var_name, &arg, source, analysis, cfg, body, summaries) {
+                if !reported_vars.contains(&var_name)
+                    && is_unsafe_at(&var_name, &arg, source, analysis, cfg, body, summaries)
+                {
+                    reported_vars.insert(var_name.clone());
                     let start_point = arg.start_position();
                     violations.push(RuleViolation {
                         rule_id: "EXP34-C".to_string(),
@@ -439,17 +482,23 @@ fn is_in_expression_guard(var_name: &str, node: &Node, source: &str) -> bool {
     let mut current = node.parent();
 
     while let Some(parent) = current {
-        // && short-circuit: (ptr != NULL) && (ptr->field)
+        // Short-circuit guards:
+        // && : (ptr != NULL) && (ptr->field) — right side safe when left confirms non-null
+        // || : (ptr == NULL) || (ptr[0] == ...) — right side safe when left is null-check
+        //      (right only evaluates when left is false, i.e. ptr is NOT null)
         if parent.kind() == "binary_expression" {
             if let Some(operator) = parent.child_by_field_name("operator") {
                 let op = ast_utils::get_node_text_owned(&operator, source);
-                if op == "&&" {
+                if op == "&&" || op == "||" {
                     if let (Some(left), Some(right)) = (
                         parent.child_by_field_name("left"),
                         parent.child_by_field_name("right"),
                     ) {
+                        // For &&: right executes when left is TRUE  → check left confirms non-null (negated=false)
+                        // For ||: right executes when left is FALSE → check left negated confirms non-null (negated=true)
+                        let negated = op == "||";
                         if node_is_within(&right, node)
-                            && analyze_condition_for_safety(&left, var_name, source, false)
+                            && analyze_condition_for_safety(&left, var_name, source, negated)
                         {
                             return true;
                         }
