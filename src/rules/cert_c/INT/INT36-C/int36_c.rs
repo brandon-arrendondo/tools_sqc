@@ -103,15 +103,18 @@ impl Int36C {
             // Try to infer if the value is a pointer
             // This is a heuristic - ideally we'd have full type analysis
             let value_text = get_node_text(&value_node, source);
-            let appears_to_be_pointer = value_text.contains("->")
-                || value_text.contains('&')
-                || value_text.starts_with('*')
-                || value_text.contains("ptr")
-                || value_text.contains("NULL");
+            // When the expression contains `->` or `[`, it's a struct field access
+            // or array subscript — these dereference the pointer and yield the
+            // member/element type, which is typically NOT a pointer itself.
+            let is_dereferenced = value_text.contains("->") || value_text.contains('[');
+            let appears_to_be_pointer = value_text.contains('&')
+                || value_node.kind() == "pointer_expression"
+                || value_text == "NULL"
+                || (!is_dereferenced && value_text.contains("ptr"));
 
             // Check if casting to an integer type that's not uintptr_t/intptr_t
             if self.is_integer_type(type_text) && !self.is_safe_pointer_integer_type(type_text) {
-                if appears_to_be_pointer || value_node.kind() == "pointer_expression" {
+                if appears_to_be_pointer {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: self.severity(),

@@ -168,6 +168,47 @@ impl Exp30C {
         source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
+        // For assignment expressions (x = expr), the RHS is fully evaluated before
+        // the LHS write (C11 6.5.16). So `x = f(x)` is well-defined. Only flag
+        // when the RHS itself contains unsequenced modifications (e.g., `a[i] = i++`).
+        if node.kind() == "assignment_expression" {
+            // Get modifications from RHS subexpressions only (++, --, compound assign)
+            let rhs_mods = if let Some(right) = node.child_by_field_name("right") {
+                self.find_modifications(&right, source)
+            } else {
+                HashSet::new()
+            };
+            // If RHS has no modifications beyond the assignment itself, it's safe
+            if rhs_mods.is_empty() {
+                return;
+            }
+            // Check if RHS modifications conflict with LHS or other reads
+            let read_vars = self.find_variable_reads(node, source);
+            let conflicts: Vec<_> = rhs_mods.intersection(&read_vars).collect();
+            if !conflicts.is_empty() {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: format!(
+                        "Variable(s) {} modified and accessed without sequence point",
+                        conflicts
+                            .iter()
+                            .map(|s| format!("'{}'", s))
+                            .collect::<Vec<_>>()
+                            .join(", ")
+                    ),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(
+                        "Separate the modification into a separate statement".to_string(),
+                    ),
+                    ..Default::default()
+                });
+            }
+            return;
+        }
+
         let modified_vars = self.find_modifications(node, source);
         let read_vars = self.find_variable_reads(node, source);
 
