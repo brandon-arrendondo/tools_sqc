@@ -188,6 +188,24 @@ impl Api02C {
             }
         }
 
+        // Skip pointers to user-defined/struct types — these are almost always
+        // single-object pointers (OOP "self"/"this"), not arrays.
+        // Only flag pointers to primitive/builtin types that could be arrays.
+        if self.is_user_defined_type(&type_text) {
+            return false;
+        }
+
+        // Skip void * parameters — in C, void * without a size parameter is virtually
+        // always a type-erased single object (OOP "self", generic item, etc.), not an
+        // array. When void * IS used for arrays (memcpy, fread), the size is always present.
+        if type_text == "void" {
+            if let Some(declarator) = param.child_by_field_name("declarator") {
+                if is_pointer_declarator(&declarator) {
+                    return false;
+                }
+            }
+        }
+
         // Check for pointer type
         if type_text.contains('*') {
             // Exclude function pointers (they're not arrays)
@@ -204,6 +222,64 @@ impl Api02C {
         }
 
         false
+    }
+
+    /// Check if a type name is a user-defined type (struct, union, typedef, enum)
+    /// rather than a C primitive type. User-defined type pointers are almost always
+    /// single-object pointers, not arrays, so API02-C shouldn't flag them.
+    fn is_user_defined_type(&self, type_text: &str) -> bool {
+        // Strip const/volatile/restrict qualifiers and whitespace
+        let stripped = type_text
+            .replace("const", "")
+            .replace("volatile", "")
+            .replace("restrict", "")
+            .replace("struct", "")
+            .replace("union", "")
+            .replace("enum", "")
+            .trim()
+            .to_string();
+
+        // Explicit struct/union/enum keyword → user-defined
+        if type_text.contains("struct ")
+            || type_text.contains("union ")
+            || type_text.contains("enum ")
+        {
+            return true;
+        }
+
+        // C primitive types and stdint types that could be used for arrays
+        let primitive_types = [
+            "char",
+            "int",
+            "short",
+            "long",
+            "float",
+            "double",
+            "void",
+            "signed",
+            "unsigned",
+            "_Bool",
+            "bool",
+            // stdint types
+            "int8_t",
+            "int16_t",
+            "int32_t",
+            "int64_t",
+            "uint8_t",
+            "uint16_t",
+            "uint32_t",
+            "uint64_t",
+            "size_t",
+            "ssize_t",
+            "ptrdiff_t",
+            "intptr_t",
+            "uintptr_t",
+            "wchar_t",
+            // Common C99/POSIX types
+            "FILE",
+        ];
+
+        !primitive_types.iter().any(|p| stripped == *p)
     }
 
     fn is_size_t_parameter(&self, param: &Node, source: &str) -> bool {
