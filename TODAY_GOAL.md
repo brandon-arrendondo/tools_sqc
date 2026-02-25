@@ -24,30 +24,34 @@ process for all modules.
 
 ## 2. SQC Findings Breakdown (Top 20 Rules)
 
-| Rule | Count | Severity | BRULE Mapping | FP Assessment |
-|------|-------|----------|---------------|---------------|
-| DCL08-C | 85 | Low | — | **Mostly TP** — const-qualify params not modified |
-| API02-C | 57 | High | — | **Mixed** — flags `const char *` string funcs; many are null-terminated, no size needed |
-| EXP34-C | 49 | High | BRULE-047 | **~80% FP** — see §3.1 |
-| DCL13-C | 47 | Low | — | **Needs review** — function pointer prototype completeness |
-| DCL15-C | 41 | Low | — | **Mostly TP** — file-scope functions should be `static` (library exports excepted) |
-| INT01-C | 29 | Medium | — | **Mixed** — size representation suggestions |
-| API00-C | 20 | Medium | — | **Needs review** — consistent error-checking interface |
-| MEM10-C | 17 | Medium | — | **Advisory** — pointer validation function pattern |
-| INT30-C | 16 | High | BRULE-047 | **Needs review** — unsigned wrap checks |
-| PRE00-C | 13 | Low | — | **Mostly TP** — macro parenthesization |
-| ARR36-C | 13 | High | BRULE-047 | **Needs review** — array bounds |
-| MEM30-C | 13 | Critical | BRULE-045 | **~70% FP** — see §3.2 |
-| DCL19-C | 11 | Low | BRULE-039 | **Mostly TP** — variable scope minimization |
-| INT32-C | 11 | High | BRULE-047 | **Needs review** — signed overflow |
-| INT36-C | 8 | Low | — | **Advisory** — pointer-to-integer conversion |
-| DCL30-C | 7 | High | — | **Needs review** — appropriate storage duration |
-| ERR33-C | 7 | High | — | **Mostly TP** — unchecked return values |
-| DCL31-C | 5 | Low | BRULE-035 | **Mostly TP** — identifier uniqueness |
-| DCL07-C | 5 | Low | — | **Low noise** — include guards |
-| INT07-C | 5 | Medium | BRULE-029 | **Mostly TP** — integer conversion |
+| Rule | Original | Current | Severity | BRULE Mapping | FP Assessment |
+|------|----------|---------|----------|---------------|---------------|
+| DCL08-C | 85 | 85 | Low | — | **Mostly TP** — const-qualify params not modified |
+| DCL13-C | 47 | 47 | Low | — | **Needs review** — function pointer prototype completeness |
+| DCL15-C | 41 | 41 | Low | — | **Mostly TP** — file-scope functions should be `static` (library exports excepted) |
+| INT01-C | 29 | 29 | Medium | — | **Mixed** — size representation suggestions |
+| API00-C | 20 | 20 | Medium | — | **Needs review** — consistent error-checking interface |
+| MEM10-C | 17 | 17 | Medium | — | **Advisory** — pointer validation function pattern |
+| DCL07-C | 5 | **17** | Low | — | +12 from user code changes (CRC refactor) |
+| PRE00-C | 13 | 13 | Low | — | **Mostly TP** — macro parenthesization |
+| DCL19-C | 11 | 11 | Low | BRULE-039 | **Mostly TP** — variable scope minimization |
+| INT32-C | 11 | 11 | High | BRULE-047 | **Reviewed** — FP-004 fixed (type inference) |
+| INT30-C | 16 | **9** | High | BRULE-047 | **Reduced** — for-loop + `>0` guard skip |
+| EXP34-C | 49 | **9** | High | BRULE-047 | **Reduced 82%** — cascading dedup, short-circuit |
+| ERR33-C | 7 | 7 | High | — | **Mostly TP** — unchecked return values |
+| INT07-C | 5 | 5 | Medium | BRULE-029 | **Mostly TP** — integer conversion |
+| DCL31-C | 5 | 5 | Low | BRULE-035 | **Mostly TP** — identifier uniqueness |
+| API02-C | 57 | **2** | High | — | **Reduced 96%** — struct/void*/const char* skip |
+| ARR36-C | 13 | **2** | High | BRULE-047 | **Reduced 85%** — non-pointer param filter |
+| INT31-C | 0 | **2** | High | BRULE-029 | **+2 new TPs** — narrowing detection gap fixed |
+| MEM30-C | 13 | **1** | Critical | BRULE-045 | **Reduced 92%** — realloc-to-temp pattern |
+| DCL30-C | 7 | **0** | High | — | **Eliminated** — identifier matching bug fix |
+| INT36-C | 8 | **0** | Low | — | **Eliminated** — struct field access excluded |
+| EXP07-C | 4 | **0** | Low | — | **Eliminated** — byte-boundary shifts excluded |
+| PRE31-C | 1 | **0** | High | — | **Eliminated** — string literal skip |
+| EXP30-C | 3 | **0** | High | — | **Eliminated** — `x = f(x)` safe per C11 |
 
-**Remaining 38 rules:** 1–4 findings each (EXP33-C ×4, EXP07-C ×4, etc.)
+**Remaining rules:** EXP33-C ×4, DCL05-C ×4, STR09-C ×4, ERR00-C ×4, etc. (1–4 each)
 
 ---
 
@@ -224,7 +228,116 @@ These map to BRULE-034 (no dead code) which is only partially covered by SQC.
 | 3 | Recognize realloc-to-temp safe pattern | -9 FP | MEM30-C |
 | 4 | Suppress API02-C for `const char *` null-terminated string params | -15 FP | API02-C |
 
-**Estimated reduction:** ~67 FP → SQC from 534 to ~467 findings
+**Phase 1 reduction:** 75 FP eliminated → SQC from 534 to 459 findings (-14%)
+**Commit:** `bbfe6c35` on branch `fix/fp-reduction-d-lib-common`
+
+| # | Action | Impact | Rules Affected |
+|---|--------|--------|---------------|
+| 5 | Skip heap-allocated pointer returns in DCL30-C | -6 FP | DCL30-C |
+| 6 | Filter integer (non-pointer) comparisons in ARR36-C | -11 FP | ARR36-C |
+
+**Phase 2 reduction:** 17 additional FP eliminated → SQC from 459 to 442 findings
+**Commit:** `d08cfc1d` on branch `fix/fp-reduction-d-lib-common`
+
+**Cumulative after Phase 1+2:** 534 → 442 findings (-92, 17.2% reduction)
+
+| # | Action | Impact | Rules Affected |
+|---|--------|--------|---------------|
+| 7 | Skip struct-type pointers (OOP self/this) in API02-C | -23 FP | API02-C |
+| 8 | Skip void* single-object pointers in API02-C | -9 FP | API02-C |
+
+**Phase 3 reduction:** 32 additional FP eliminated → SQC from 442 to 410 findings
+**Commit:** `1d656c31` on branch `fix/fp-reduction-d-lib-common`
+
+**Cumulative after Phase 1+2+3:** 534 → 410 findings (-124, 23.2% reduction)
+
+| # | Action | Impact | Rules Affected |
+|---|--------|--------|---------------|
+| 9 | Skip for-loop update clause increments in INT30-C | -6 FP | INT30-C |
+
+**Phase 4 reduction:** 6 additional FP eliminated → SQC from 410 to 404 findings
+**Commit:** `d8c30216` on branch `fix/fp-reduction-d-lib-common`
+
+**Cumulative after Phase 1-4:** 534 → 404 findings (-130, 24.3% reduction)
+
+### Phase 5: User Feedback Fixes
+
+| # | Action | Type | Rules Affected |
+|---|--------|------|---------------|
+| 10 | Fix contains_identifier matching by byte length (enum constants misidentified) | FP fix | DCL30-C |
+| 11 | Add uint16_t/uint32_t/int/short to WIDE_TYPES for narrowing detection | FN fix | INT31-C |
+| 12 | Add shift-narrowing heuristic for struct field casts | FN fix | INT31-C |
+
+**Phase 5:** DCL30-C 1→0 (-1 FP), INT31-C 0→2 (+2 new TPs)
+**Commit:** `02ec01cd` on branch `fix/fp-reduction-d-lib-common`
+
+### Phase 6: INT31-C FP Fix + INT32-C Type Inference Fix
+
+| # | Action | Type | Rules Affected |
+|---|--------|------|---------------|
+| 13 | Skip right-shift byte-extraction casts `(uint8_t)(tag >> 8)` | FP fix | INT31-C |
+| 14 | Move type_map lookup before text heuristics in `infer_type()` | FP fix | INT32-C |
+
+`index` variable name contains `int` substring → false signed classification.
+Guard text heuristics with `node.kind() != "identifier"` check.
+
+**Phase 6:** INT31-C FP-010 fixed, INT32-C FP-004 fixed (no count change on source files)
+**Commits:** `0dabd0a4`, `40e6dc33`, `6b369f81` on branch `fix/fp-reduction-d-lib-common`
+
+### Phase 7: Batch FP Fixes (INT36-C, PRE31-C, EXP30-C, INT30-C)
+
+| # | Action | Impact | Rules Affected |
+|---|--------|--------|---------------|
+| 15 | Exclude `->` / `[]` from pointer-to-int heuristic (FP-005) | -8 FP | INT36-C |
+| 16 | Skip string literal args from side-effect analysis (FP-007) | -1 FP | PRE31-C |
+| 17 | Recognize `x = f(x)` as safe per C11 sequencing (FP-008) | -3 FP | EXP30-C |
+| 18 | Detect `if (var > 0)` guard before unsigned decrement (FP-011) | -1 FP | INT30-C |
+
+**Phase 7 reduction:** 13 FP eliminated
+**Commit:** `51f4b229` on branch `fix/fp-reduction-d-lib-common`
+
+### Phase 8: EXP07-C Byte-Shift Fix
+
+| # | Action | Impact | Rules Affected |
+|---|--------|--------|---------------|
+| 19 | Skip byte-boundary shift amounts (multiples of 8) in EXP07-C | -4 FP | EXP07-C |
+
+**Phase 8 reduction:** 4 FP eliminated
+**Commits:** `d685da79`, `8c9eadfb` on branch `fix/fp-reduction-d-lib-common`
+
+---
+
+**Cumulative after all phases (source files, accounting for user code changes):**
+
+Original SQC baseline: **534 findings** (original code, original SQC)
+User's REFACTOR.md baseline: **404 findings** (original code, after Phase 1-4 SQC fixes)
+Current (v17): **398 findings** (user-modified code + Phase 5-8 SQC fixes)
+
+*Note: User modified d_lib_common code during this session (fixed ISSUE-001 through
+ISSUE-005, added test files, moved CRC vars into #ifdef guards). DCL07-C increased
+5→17 due to code restructuring. The 398 count reflects both SQC improvements AND
+user code changes.*
+
+| Rule | Original | Current | Reduction | Notes |
+|------|----------|---------|-----------|-------|
+| EXP34-C | 49 | 9 | -40 (82%) | Cascading dedup, short-circuit |
+| API02-C | 57 | 2 | -55 (96%) | Struct/void*/const char* skip |
+| MEM30-C | 13 | 1 | -12 (92%) | Realloc-to-temp pattern |
+| ARR36-C | 13 | 2 | -11 (85%) | Non-pointer param filter |
+| DCL30-C | 7 | 0 | -7 (100%) | Identifier matching bug fix |
+| INT30-C | 16 | 9 | -7 (44%) | For-loop skip + `> 0` guard |
+| INT36-C | 8 | 0 | -8 (100%) | Struct field access excluded |
+| EXP07-C | 4 | 0 | -4 (100%) | Byte-boundary shifts excluded |
+| PRE31-C | 1 | 0 | -1 (100%) | String literal skip |
+| EXP30-C | 3 | 0 | -3 (100%) | `x = f(x)` safe per C11 |
+| INT31-C | 0 | 2 | +2 (new TPs) | Narrowing detection gap |
+| DCL07-C | 5 | 17 | +12 | User code changes (not SQC) |
+
+### Remaining Known FP (deferred)
+
+| FP ID | Rule | Issue | Why Deferred |
+|-------|------|-------|-------------|
+| FP-009 | DCL07-C/DCL31-C | `update_crc_8` called inside `#ifdef` guard; declaration also guarded | Requires preprocessor-level analysis — fundamental infrastructure gap |
 
 ### Phase 2: d_lib_common Code Fixes (module improvements)
 
@@ -299,11 +412,22 @@ fixed using AI-assisted static analysis**.
 
 ---
 
-## 9. Next Steps
+## 9. Progress & Next Steps
 
-1. [ ] **SQC accuracy first** — reduce FPs on d_lib_common so findings are trustworthy
-2. [ ] Fix genuine issues in d_lib_common (with before/after for presentation)
-3. [ ] Re-run SQC after FP fixes to validate improvement
-4. [ ] Run same process on next module (candidate: d_lib_wifi, d_lib_ble)
-5. [ ] Generate per-module BRULE coverage cards for development workbook
-6. [ ] Compile presentation slides: critical issues found/fixed per module
+1. [x] **SQC accuracy first** — reduce FPs on d_lib_common so findings are trustworthy
+   - Phase 1: EXP34-C 49→9, MEM30-C 13→1, API02-C 57→34 (commit `bbfe6c35`)
+   - Phase 2: DCL30-C 7→1, ARR36-C 13→2 (commit `d08cfc1d`)
+   - Phase 3: API02-C 34→2 (struct/void* skip) (commit `1d656c31`)
+   - Phase 4: INT30-C 16→10 (for-loop update skip) (commit `d8c30216`)
+   - Phase 5: DCL30-C 1→0 (identifier match bug), INT31-C 0→2 (narrowing FN) (commit `02ec01cd`)
+   - Phase 6: INT31-C FP-010 fixed, INT32-C FP-004 fixed (commits `0dabd0a4`, `6b369f81`)
+   - Phase 7: INT36-C 8→0, PRE31-C 1→0, EXP30-C 3→0, INT30-C 10→9 (commit `51f4b229`)
+   - Phase 8: EXP07-C 4→0 (commits `d685da79`, `8c9eadfb`)
+   - **Final: 398 source-file findings (10 rules improved, 11 commits)**
+   - Only remaining known FP: FP-009 (DCL07-C/DCL31-C #ifdef guard — deferred)
+2. [x] **User fixing genuine issues in d_lib_common** (ISSUE-001 through ISSUE-005 fixed)
+3. [ ] **Review remaining high-severity findings** — triage remaining 398 by severity
+4. [ ] Re-run SQC after all code fixes to produce final findings count
+5. [ ] Run same process on next module (candidate: d_lib_wifi, d_lib_ble)
+6. [ ] Generate per-module BRULE coverage cards for development workbook
+7. [ ] Compile presentation slides: critical issues found/fixed per module
