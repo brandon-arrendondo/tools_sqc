@@ -717,99 +717,80 @@ impl Str31C {
 
     /// Detect manual string loops without bounds checking
     fn detect_manual_string_loop(&self, node: &Node, source: &str) -> bool {
-        if node.kind() == "while_statement" || node.kind() == "for_statement" {
-            let loop_text = &source[node.start_byte()..node.end_byte()];
-
-            // Detect patterns like:
-            // while (source[i] != '\0') { dest[i] = source[i]; i++; }
-            // for (int i = 0; source[i]; i++) { dest[i] = source[i]; }
-            if (loop_text.contains("!= '\\0'")
-                || loop_text.contains("!= 0")
-                || loop_text.contains("*src")
-                || loop_text.contains("*source"))
-                && (loop_text.contains("[i]") || loop_text.contains("++"))
-            {
-                // Check for bounds checking
-                if !loop_text.contains("< ")
-                    && !loop_text.contains("<=")
-                    && !loop_text.contains("sizeof")
-                    && !loop_text.contains("size")
-                    && !loop_text.contains("len")
-                    && !loop_text.contains("count")
-                    && !loop_text.contains("max")
-                    && !loop_text.contains("limit")
-                {
-                    return true; // Dangerous: no bounds check
-                }
-            }
-
-            // Also check for array indexing patterns without bounds
-            if loop_text.contains("[") && loop_text.contains("]") && loop_text.contains("++") {
-                // Look for array-to-array copying patterns
-                if (loop_text.contains("dest[") || loop_text.contains("buffer["))
-                    && (loop_text.contains("src[") || loop_text.contains("source["))
-                {
-                    // Check if there's any bounds checking
-                    if !loop_text.contains("< ")
-                        && !loop_text.contains("<=")
-                        && !loop_text.contains("sizeof")
-                        && !loop_text.contains("size")
-                    {
-                        return true; // No bounds check detected
-                    }
-                }
-            }
+        // Only check loop statements
+        if node.kind() != "while_statement" && node.kind() != "for_statement" {
+            return false;
         }
 
-        // Also check for manual pointer arithmetic loops
-        if node.kind() == "while_statement" {
-            let loop_text = &source[node.start_byte()..node.end_byte()];
+        // Extract the loop condition text (NOT the full loop body).
+        let condition_text = node
+            .child_by_field_name("condition")
+            .map(|c| &source[c.start_byte()..c.end_byte()])
+            .unwrap_or("");
 
-            // Pattern: while ((ch = getchar()) != '\n') { *p++ = ch; }
-            if loop_text.contains("getchar") && loop_text.contains("++") {
-                // Check for bounds checking
-                if !loop_text.contains("< ")
-                    && !loop_text.contains("<=")
-                    && !loop_text.contains("size")
-                    && !loop_text.contains("end")
-                    && !loop_text.contains("limit")
-                    && !loop_text.contains("- buf")
-                    && !loop_text.contains("- buffer")
-                {
-                    return true; // Dangerous getchar loop without bounds checking
-                }
-            }
+        // Extract loop body text
+        let body_text = node
+            .child_by_field_name("body")
+            .map(|c| &source[c.start_byte()..c.end_byte()])
+            .unwrap_or("");
 
-            // Pattern: while (*p) { *dest++ = *src++; }
-            if loop_text.contains("*")
-                && loop_text.contains("++")
-                && (loop_text.contains("dest") || loop_text.contains("buffer"))
-            {
-                // Check for bounds checking
-                if !loop_text.contains("&&")
-                    && !loop_text.contains("size")
-                    && !loop_text.contains("end")
-                    && !loop_text.contains("limit")
-                {
-                    return true; // Dangerous pointer arithmetic without bounds
-                }
-            }
+        // Pattern 1: Null-terminated string walk
+        //   while (data[i] != '\0') { *ptr++ = data[i++]; }
+        //   while (*src) { *dest++ = *src++; }
+        //   for (int i = 0; source[i]; i++) { dest[i] = source[i]; }
+        let is_string_walk = condition_text.contains("!= '\\0'")
+            || condition_text.contains("!='\\0'")
+            || (condition_text.contains("!= 0")
+                && (condition_text.contains("[") || condition_text.contains("*")));
+
+        // Pattern 2: getchar loop writing to buffer
+        //   while ((ch = getchar()) != '\n') { *p++ = ch; }
+        let is_getchar_loop = condition_text.contains("getchar");
+
+        if !is_string_walk && !is_getchar_loop {
+            return false;
         }
 
-        // Also check if used in context that suggests string operations
-        let full_line = {
-            let lines: Vec<&str> = source.lines().collect();
-            let mut line_text = "";
-            for line in lines {
-                if line.contains("memcpy") && (line.contains("strlen") || line.contains("string")) {
-                    line_text = line;
-                    break;
-                }
-            }
-            line_text
-        };
+        // The body must write to memory (array indexing or pointer increment)
+        let has_write =
+            // Array-to-array copy: dest[i] = src[i]
+            (body_text.contains("[") && body_text.contains("] ="))
+            // Pointer write with increment: *ptr++ = ..., *p++ = ...
+            || body_text.contains("*p++ =") || body_text.contains("*p++=")
+            || body_text.contains("*ptr++ =") || body_text.contains("*ptr++=")
+            || body_text.contains("*dest++ =") || body_text.contains("*dst++ =")
+            || body_text.contains("*buf++ =") || body_text.contains("*buffer++ =")
+            // General pattern: *(identifier)++ = (something)
+            || (body_text.contains("++") && body_text.contains("*") && body_text.contains("="));
 
-        !full_line.is_empty()
+        if !has_write {
+            return false;
+        }
+
+        // For getchar loops, require pointer increment to be a genuine buffer write
+        if is_getchar_loop && !has_write {
+            return false;
+        }
+
+        // Check for any bounds-checking in the condition or body
+        let full_loop_text = &source[node.start_byte()..node.end_byte()];
+        let has_bounds_check =
+            // Condition has a conjunction with a size check
+            (condition_text.contains("&&") && (
+                condition_text.contains("< ") || condition_text.contains("<=")
+                || condition_text.contains("size") || condition_text.contains("len")
+                || condition_text.contains("limit") || condition_text.contains("end")
+                || condition_text.contains("max")))
+            // For-loop condition has a less-than bound AND the body has array copy
+            || (node.kind() == "for_statement" && condition_text.contains("< ") && condition_text.contains("sizeof"))
+            // Body checks bounds
+            || body_text.contains("sizeof")
+            || full_loop_text.contains("buf_size") || full_loop_text.contains("bufsize")
+            || full_loop_text.contains("maxlen") || full_loop_text.contains("max_len")
+            // Pointer distance check: p - buf < size
+            || full_loop_text.contains("- buf") || full_loop_text.contains("- buffer");
+
+        !has_bounds_check
     }
 
     /// Check for strncpy null termination issues
@@ -917,6 +898,17 @@ impl Str31C {
                 if line.contains(size_var) && line.contains("strlen") && line.contains("+ 1") {
                     return false; // SAFE: size includes + 1 for null terminator
                 }
+            }
+        }
+
+        // Check if size argument is a strlen() call without + 1 — definite bug
+        if arguments.child_count() > 0 {
+            let args_text = &source[arguments.start_byte()..arguments.end_byte()];
+            if args_text.contains("strlen")
+                && !args_text.contains("+ 1")
+                && !args_text.contains("+1")
+            {
+                return true;
             }
         }
 

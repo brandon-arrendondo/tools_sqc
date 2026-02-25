@@ -1014,63 +1014,127 @@ if bad:
 
 ### 9.3 libcrc Baseline Reference
 
-libcrc was the first project validated end-to-end. These counts are the confirmed-good baseline. If results differ significantly when re-running, a tool flag or environment issue is likely the cause.
+libcrc was the first project validated end-to-end. These counts are the confirmed-good baseline.
+
+**Environment**: sqc 0.2.3, cppcheck 2.7, clang-tidy 14 (Ubuntu 22.04, 10.0.0.63)
 
 | Tool | Total findings | Breakdown |
 |------|---------------|-----------|
-| **sqc** | 1,109 violations | High: 453, Medium: 388, Low: 268 |
-| **cppcheck** | 41 findings | style: 40 (`unusedFunction` 21, `variableScope` 19), information: 1 |
-| **clang-tidy** | 50 diagnostics | `cert-err33-c`: 26, `clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling`: 24 |
+| **sqc** | 954 violations | High: 407, Medium: 297, Low: 250 |
+| **cppcheck** | 40 findings | style: 39 (`variableScope` 36, `unusedFunction` 2, `knownConditionTrueFalse` 1), information: 1 |
+| **clang-tidy** | 52 diagnostics | `cert-err33-c`: 26, `clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling`: 24, `clang-diagnostic-error`: 2 |
 
 **sqc top rules**: `EXP14-C` (106), `ERR33-C` (68), `EXP12-C` (62), `INT30-C` (60), `EXP19-C` (59)
 
-**cppcheck CWEs**: CWE-561 (unused code, 21), CWE-398 (poor code quality, 19)
-
-**clang-tidy files**: Nearly all findings in `precalc/precalc.c` (47), `src/nmea-chk.c` (2), `examples/tstcrc.c` (1)
+**cppcheck CWEs**: CWE-398 (poor code quality, 36), CWE-561 (unused code, 2), CWE-571 (1)
 
 **Interpretation**: cppcheck and clang-tidy find a small number of conservative, high-confidence issues. sqc finds orders of magnitude more by covering 283 CERT C rules rather than the ~20 checks the other tools implement for C. The disparity is expected and informative — it reflects rule coverage breadth, not false positive rate.
 
 ---
 
----
+### 9.4 sqlite Baseline Reference
 
-### 9.4 curl Baseline Reference
+sqlite is the largest single-project benchmark (~354 C files across `src/`, `ext/`, `test/`, `autosetup/`). It uses extensive preprocessor conditionals, internal macros, and includes a 24K-line TCL interpreter (`jimsh0.c`). Expect high violation counts from all tools.
 
-curl was the second project validated end-to-end. It is ~10× larger than libcrc (~220 C files in `lib/` + `src/`), with heavy use of preprocessor guards, function pointers, and platform abstraction macros. These counts are from a clean run with the cmake flags documented in §8.4 and `libpsl-dev` installed.
-
-| Tool | Total findings | Breakdown |
-|------|---------------|-----------|
-| **sqc** | 131,445 violations | Critical: 2,277, High: 44,288, Medium: 27,682, Low: 57,198 |
-| **cppcheck** | 1,065 findings | error: 4, warning: 237, style: 599, information: 225 |
-| **clang-tidy** | 848 diagnostics | `clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling`: 419, `cert-err33-c`: 364, `clang-analyzer-valist.Uninitialized`: 56 |
-
-**sqc top rules**: `EXP34-C` (22,350), `DCL07-C` (16,000), `DCL31-C` (15,945), `EXP19-C` (9,105), `API00-C` (7,777)
-
-**cppcheck notes**: 222 of the 225 `information` findings are `toomanyconfigs` entries — expected for curl's heavy `#ifdef` usage (cppcheck caps config enumeration at 12 per file). Real actionable findings: `nullPointerRedundantCheck` (CWE-476): 177, `constParameterPointer` (CWE-398): 159, `unusedFunction` (CWE-561): 108, `ctunullpointer` (CWE-476): 50. The `toomanyconfigs` entries do **not** indicate a tool error here (no `syntaxError` present), unlike the `-I /usr/include` failure mode described in §9.1.
-
-**clang-tidy notes**: 678 compilation units captured. The dominant check is `DeprecatedOrUnsafeBufferHandling` (sprintf/strcpy family), followed by `cert-err33-c` (unchecked return values). `clang-analyzer-valist.Uninitialized` (56) are likely genuine defects in variadic helpers.
-
-**Interpretation**: sqc's violation count scales with project size and rule breadth (283 rules). cppcheck and clang-tidy both scaled proportionally from libcrc to curl (~25× more findings vs ~25× more source), confirming consistent analysis rather than runaway false positives.
-
----
-
-### 9.5 mosquitto Baseline Reference
-
-mosquitto is a mid-size MQTT broker + client library (~121 C files in `lib/` + `src/`; 224 compilation units captured for clang-tidy). Its heavy use of compile-time feature flags (`WITH_TLS`, `WITH_BROKER`, `WITH_THREADING`, `WITH_WEBSOCKETS`, `WIN32`, etc.) means cppcheck enumerates many configurations per file, making it significantly slower than projects with fewer `#ifdef` guards.
+**Environment**: sqc 0.2.3, cppcheck 2.7, clang-tidy 14 (Ubuntu 22.04, 10.0.0.63)
 
 | Tool | Total findings | By Severity | Top Rules/Checks |
 |------|---------------|-------------|-----------------|
-| **sqc** | **59,176** | Critical: 1,181 / High: 20,765 / Medium: 13,182 / Low: 24,048 | EXP34-C (8,657), DCL31-C (6,823), DCL07-C (6,820), API00-C (3,092), DCL13-C (2,940) |
-| **cppcheck** | **747** | error: 36, warning: 1, style: 298, information: 412 | `missingInclude` (293), `unusedFunction`/CWE-561 (128), `toomanyconfigs` (117), `variableScope`/CWE-398 (72), `uninitvar`/CWE-457 (34) |
-| **clang-tidy** | **338** | — | `cert-err33-c` (277), `cert-err34-c` (33), `clang-analyzer-deadcode.DeadStores` (8), `clang-analyzer-security.insecureAPI.strcpy` (5) |
+| **sqc** | **424,842** | Critical: 5,843 / High: 81,364 / Medium: 264,973 / Low: 72,662 | STR31-C (206,651), EXP34-C (41,885), DCL07-C (20,443), DCL31-C (16,038), API00-C (14,420) |
+| **cppcheck** | **1,182** (993 real) | error: 37, style: 855, information: 210, warning: 67, portability: 13 | `variableScope` (505), `toomanyconfigs` (189), `unreadVariable` (103), `constParameter` (63), `unusedStructMember` (59) |
+| **clang-tidy** | **2,291** | — | `cert-err33-c` (1,025), `DeprecatedOrUnsafeBufferHandling` (453), `clang-diagnostic-error` (405), `cert-str34-c` (124), `cert-err34-c` (76) |
 
-**cppcheck notes**:
-- 293 `missingInclude` (information) — mosquitto's internal headers (`src/mosquitto_broker_internal.h`, etc.) are not on the include path provided; these findings are informational and do not affect the quality of actual bug findings
-- 117 `toomanyconfigs` (information) — expected given mosquitto's per-file `#ifdef` complexity (~10–12 configurations per file)
-- 34 `uninitvar` (CWE-457, error severity) are the most significant cppcheck findings — potentially real uninitialized variable bugs in the broker code
-- Real actionable findings (excluding information): 335
+**sqc KNOWN BUG — STR31-C `detect_manual_string_loop` runaway**: 206,431 of the 206,651 STR31-C violations are "Manual string copying loop without apparent bounds checking" — a single pattern accounting for **49% of all violations**. Root cause: the function's final fallback (`str31_c.rs:799-812`) searches the **entire source file** for any line containing `memcpy` + `strlen`/`string`. One matching line anywhere in a file causes the function to return `true` for every `while`/`for` node visited. `jimsh0.c` alone produces 180,297 violations from this bug. See §9.7 for details.
 
-**clang-tidy notes**: `cert-err33-c` (277) dominates — unchecked return values of `fprintf`, `fclose`, `snprintf`, `strftime`, and `fputs` throughout client-side output code (`client/sub_client_output.c`, `client/pub_client.c`). `cert-err34-c` (33) flags `atoi()` usage in plugin configuration parsers. `clang-analyzer-security.insecureAPI.strcpy` (5) are concrete unsafe buffer operations.
+**cppcheck notes**: 189 `toomanyconfigs` entries (expected for sqlite's `#ifdef` complexity). Key real findings: `invalidPrintfArgType_sint` (CWE-686, 27), `objectIndex` (CWE-758, 21), `knownConditionTrueFalse` (CWE-570/571, 37).
+
+**clang-tidy notes**: 405 `clang-diagnostic-error` from missing headers when scanning without `compile_commands.json`. `cert-err33-c` (1,025) dominates real diagnostics — unchecked return values throughout test harness and utility code.
+
+---
+
+### 9.5 curl Baseline Reference
+
+curl is ~10× larger than libcrc (~220 C files in `lib/` + `src/`), with heavy use of preprocessor guards, function pointers, and platform abstraction macros.
+
+**Environment**: sqc 0.2.3, cppcheck 2.7, clang-tidy 14 (Ubuntu 22.04, 10.0.0.63)
+
+| Tool | Total findings | By Severity | Top Rules/Checks |
+|------|---------------|-------------|-----------------|
+| **sqc** | **207,476** | Critical: 2,276 / High: 40,260 / Medium: 118,836 / Low: 46,104 | STR31-C (93,140), EXP34-C (21,893), DCL07-C (10,725), DCL31-C (10,614), EXP19-C (9,135) |
+| **cppcheck** | **551** (298 real) | error: 13, style: 213, information: 289, warning: 32, portability: 4 | `toomanyconfigs` (253), `variableScope` (95), `unreadVariable` (42), `ConfigurationNotChecked` (33), `knownConditionTrueFalse` (21) |
+| **clang-tidy** | **1,653** | — | `clang-diagnostic-error` (1,024), `cert-err33-c` (366), `DeprecatedOrUnsafeBufferHandling` (211), `cert-err34-c` (20), `cert-str34-c` (6) |
+
+**sqc notes**: STR31-C (93,140) accounts for 45% of all violations — same `detect_manual_string_loop` runaway bug as sqlite (§9.7). Excluding STR31-C, top rules are EXP34-C (21,893), DCL07-C (10,725), DCL31-C (10,614).
+
+**cppcheck notes**: 253 `toomanyconfigs` + 33 `ConfigurationNotChecked` = 286 informational. Key real findings: `nullPointerRedundantCheck` (CWE-476, 20), `knownConditionTrueFalse` (21). Real actionable: 298.
+
+**clang-tidy notes**: 1,024 `clang-diagnostic-error` from missing headers (no `compile_commands.json` used — direct file scan). Real diagnostics: `cert-err33-c` (366), `DeprecatedOrUnsafeBufferHandling` (211).
+
+---
+
+### 9.6 mosquitto Baseline Reference
+
+mosquitto is a mid-size MQTT broker + client library (~121 C files in `lib/` + `src/`). Heavy use of compile-time feature flags means cppcheck enumerates many configurations per file.
+
+**Environment**: sqc 0.2.3, cppcheck 2.7, clang-tidy 14 (Ubuntu 22.04, 10.0.0.63)
+
+| Tool | Total findings | By Severity | Top Rules/Checks |
+|------|---------------|-------------|-----------------|
+| **sqc** | **47,417** | Critical: 1,181 / High: 18,540 / Medium: 11,790 / Low: 15,906 | EXP34-C (7,631), API00-C (3,081), DCL31-C (2,979), DCL07-C (2,975), MEM31-C (2,874) |
+| **cppcheck** | **598** (458 real) | error: 51, style: 380, information: 143, warning: 24 | `variableScope` (236), `toomanyconfigs` (140), `noExplicitConstructor` (60), `uninitvar` (50), `constParameter` (19) |
+| **clang-tidy** | **907** | — | `cert-err33-c` (477), `clang-diagnostic-error` (255), `cert-err34-c` (111), `DeprecatedOrUnsafeBufferHandling` (29) |
+
+**sqc notes**: mosquitto is the one project where STR31-C is NOT the top rule — EXP34-C (7,631) dominates instead. STR31-C violations are modest here, suggesting the `detect_manual_string_loop` pattern fires less on mosquitto's coding style.
+
+**cppcheck notes**: 50 `uninitvar` (CWE-457, error severity) are the most significant findings — potentially real uninitialized variable bugs in the broker code. Real actionable: 458.
+
+**clang-tidy notes**: `cert-err33-c` (477) dominates — unchecked return values. `cert-err34-c` (111) flags `atoi()` usage in plugin configuration parsers. 255 `clang-diagnostic-error` from missing headers.
+
+---
+
+### 9.7 hostap Baseline Reference
+
+hostap (wpa_supplicant/hostapd) is a large networking project with shared source in `src/` plus application code in `wpa_supplicant/` and `hostapd/`.
+
+**Environment**: sqc 0.2.3, cppcheck 2.7, clang-tidy 14 (Ubuntu 22.04, 10.0.0.63)
+
+| Tool | Total findings | By Severity | Top Rules/Checks |
+|------|---------------|-------------|-----------------|
+| **sqc** | **473,862** | Critical: 7,247 / High: 119,854 / Medium: 235,290 / Low: 111,471 | STR31-C (170,586), EXP34-C (69,164), DCL08-C (25,296), EXP19-C (25,140), API00-C (19,832) |
+| **cppcheck** | **1,066** (813 real) | error: 126, style: 663, information: 255, warning: 16, portability: 4, performance: 2 | `variableScope` (390), `toomanyconfigs` (253), `uninitvar` (89), `constParameter` (86), `knownConditionTrueFalse` (54) |
+| **clang-tidy** | **1,083** | — | `clang-diagnostic-error` (517), `cert-err34-c` (377), `cert-dcl37-c` (66), `cert-err33-c` (50), `cert-str34-c` (10) |
+
+**sqc notes**: STR31-C (170,586) accounts for 36% of all violations — same runaway bug (§9.8). Excluding STR31-C, top rules are EXP34-C (69,164), DCL08-C (25,296), EXP19-C (25,140).
+
+**cppcheck notes**: 89 `uninitvar` (CWE-457) at error severity — the highest count of any project, likely real bugs in network protocol handlers. 253 `toomanyconfigs` from `#ifdef` complexity. Real actionable: 813.
+
+**clang-tidy notes**: hostap is the only project where `cert-err34-c` (377) dominates over `cert-err33-c` (50) — heavy `atoi()`/`strtol()` usage in configuration parsing. 517 `clang-diagnostic-error` from missing headers.
+
+---
+
+### 9.8 STR31-C `detect_manual_string_loop` Bug (FIXED)
+
+**Severity**: High — caused 36–49% of all sqc violations on 3 of 5 real-world projects.
+
+**Root cause** (`str31_c.rs:799-812`): The `detect_manual_string_loop()` function had a final fallback that iterated ALL lines in the source file looking for any line containing both `memcpy` and (`strlen` or `string`). If found, it returned `true` for the **current node regardless of context**. Since this function was called on every `while_statement` and `for_statement` node, one matching line anywhere in a file caused every loop in the file to generate a violation.
+
+**Impact by project (before fix)**:
+
+| Project | STR31-C violations | % of total | Worst file |
+|---------|-------------------|------------|------------|
+| sqlite | 206,651 | 49% | `jimsh0.c` (180,297) |
+| hostap | 170,586 | 36% | spread across `src/` |
+| curl | 93,140 | 45% | spread across `lib/` |
+| mosquitto | low | — | not triggered |
+| libcrc | low | — | not triggered |
+
+**Fix applied** (2026-02-25): Rewrote `detect_manual_string_loop` with three changes:
+1. **Deleted the file-wide memcpy+strlen fallback** — the root cause of the runaway
+2. **Condition-only matching**: checks AST `condition` field, not full loop text. Requires null-terminator walk (`!= '\0'`, `!= 0` with dereference) or `getchar` in the condition.
+3. **Body-only write detection**: requires specific write patterns (`*ptr++ =`, `dest[i] = src[i]`) in the loop body, not just any `++`.
+4. **Improved `is_string_memcpy`**: added `strlen()` as size argument detection — `memcpy(dest, src, strlen(src))` without `+ 1` is now caught regardless of variable names.
+
+**Verification**: `jimsh0.c` STR31-C dropped from 180,297 to 10 (all legitimate sub-checks). 2781/2781 tests pass. Zero Juliet TP impact (Juliet uses standard library functions, not hand-written loops).
 
 ---
 
