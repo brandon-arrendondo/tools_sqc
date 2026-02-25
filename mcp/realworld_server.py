@@ -61,7 +61,7 @@ def _load_remote_config() -> tuple[dict[str, str], str]:
 # ── Codebase Registry ─────────────────────────────────────────────────────────
 CODEBASES = {
     "libcrc": {
-        "path": Path.home() / "data" / "comparisons" / "libcrc",
+        "path": Path.home() / "data" / "libcrc",
         "sqc": {
             "scan_path": None,  # same as path (whole project)
             "extra_args": [],
@@ -77,7 +77,7 @@ CODEBASES = {
         },
     },
     "sqlite": {
-        "path": Path.home() / "data" / "comparisons" / "sqlite",
+        "path": Path.home() / "data" / "sqlite",
         "sqc": {
             "scan_path": None,
             "extra_args": [],
@@ -93,7 +93,7 @@ CODEBASES = {
         },
     },
     "mosquitto": {
-        "path": Path.home() / "data" / "comparisons" / "mosquitto",
+        "path": Path.home() / "data" / "mosquitto",
         "sqc": {
             "scan_path": None,
             "extra_args": [],
@@ -115,7 +115,7 @@ CODEBASES = {
         },
     },
     "curl": {
-        "path": Path.home() / "data" / "comparisons" / "curl",
+        "path": Path.home() / "data" / "curl",
         "sqc": {
             "scan_path": None,
             "extra_args": [],
@@ -137,7 +137,7 @@ CODEBASES = {
         },
     },
     "hostap": {
-        "path": Path.home() / "data" / "comparisons" / "hostap",
+        "path": Path.home() / "data" / "hostap",
         "sqc": {
             "scan_path": None,
             "extra_args": [
@@ -213,6 +213,42 @@ def _get_git_sha() -> str:
         return result.stdout.strip() if result.returncode == 0 else "unknown"
     except Exception:
         return "unknown"
+
+
+def _get_tool_version(tool: str) -> str:
+    """Get the version string for any supported tool."""
+    if tool == "sqc":
+        return _get_sqc_version()
+    elif tool == "cppcheck":
+        try:
+            result = subprocess.run(
+                ["cppcheck", "--version"],
+                capture_output=True, text=True, timeout=5,
+            )
+            # Output: "Cppcheck 2.13" or similar
+            m = re.search(r"(\d+\.\d+(?:\.\d+)?)", result.stdout)
+            return m.group(1) if m else "unknown"
+        except Exception:
+            return "unknown"
+    elif tool == "clang-tidy":
+        try:
+            result = subprocess.run(
+                ["clang-tidy", "--version"],
+                capture_output=True, text=True, timeout=5,
+            )
+            # Look for "LLVM version X.Y.Z" or "clang-tidy version X.Y.Z"
+            m = re.search(r"version\s+(\d+\.\d+(?:\.\d+)?)", result.stdout)
+            return m.group(1) if m else "unknown"
+        except Exception:
+            return "unknown"
+    return "unknown"
+
+
+def _make_version_dir_name(tool: str, version: str, sha: str) -> str:
+    """Build version directory name: sqc includes git SHA, others just tool-version."""
+    if tool == "sqc":
+        return f"sqc-{version}-{sha}"
+    return f"{tool}-{version}"
 
 
 def _read_state() -> dict:
@@ -524,15 +560,32 @@ def _get_result_file(results_dir: Path, run_id: str) -> Path | None:
     return None
 
 
-def _get_version_dir(version: str | None = None, sha: str | None = None) -> Path | None:
-    """Find a results directory matching version+sha, or the latest."""
+def _get_version_dir(identifier: str | None = None) -> Path | None:
+    """Find a results directory by name, commit SHA, or 'latest'.
+
+    Args:
+        identifier: One of:
+          - Full dir name (e.g. "sqc-0.2.4-abc1234")
+          - Commit SHA (e.g. "abc1234") — matches sqc dirs
+          - "latest" or None — most recently modified dir
+    """
     if not RESULTS_BASE.exists():
         return None
 
-    if version and sha:
-        dirname = f"{version}-{sha}"
-        p = RESULTS_BASE / dirname
-        return p if p.exists() else None
+    if identifier and identifier != "latest":
+        # Try exact dir name match
+        p = RESULTS_BASE / identifier
+        if p.exists():
+            return p
+        # Try as commit SHA — search sqc dirs
+        for d in RESULTS_BASE.iterdir():
+            if d.is_dir() and d.name.endswith(f"-{identifier}"):
+                return d
+        # Try legacy format (version-sha without tool prefix)
+        for d in RESULTS_BASE.iterdir():
+            if d.is_dir() and identifier in d.name:
+                return d
+        return None
 
     # Find latest by modification time
     dirs = sorted(
@@ -541,6 +594,30 @@ def _get_version_dir(version: str | None = None, sha: str | None = None) -> Path
         reverse=True,
     )
     return dirs[0] if dirs else None
+
+
+def _parse_version_dir_name(name: str) -> tuple[str, str, str]:
+    """Parse dir name into (tool, version, sha).
+
+    Formats:
+      sqc-{version}-{sha}     → ("sqc", version, sha)
+      cppcheck-{version}      → ("cppcheck", version, "")
+      clang-tidy-{version}    → ("clang-tidy", version, "")
+      {version}-{sha}         → ("sqc", version, sha)  [legacy]
+    """
+    if name.startswith("clang-tidy-"):
+        return ("clang-tidy", name[len("clang-tidy-"):], "")
+    if name.startswith("cppcheck-"):
+        return ("cppcheck", name[len("cppcheck-"):], "")
+    if name.startswith("sqc-"):
+        rest = name[len("sqc-"):]
+        parts = rest.rsplit("-", 1)
+        version = parts[0] if parts else "unknown"
+        sha = parts[1] if len(parts) > 1 else "unknown"
+        return ("sqc", version, sha)
+    # Legacy format: {version}-{sha}
+    parts = name.rsplit("-", 1)
+    return ("sqc", parts[0], parts[1] if len(parts) > 1 else "unknown")
 
 
 def _list_version_dirs() -> list[dict]:
@@ -552,16 +629,12 @@ def _list_version_dirs() -> list[dict]:
     for entry in sorted(RESULTS_BASE.iterdir()):
         if not entry.is_dir():
             continue
-        # Parse dir name: {version}-{sha}
-        parts = entry.name.rsplit("-", 1)
-        version = parts[0] if len(parts) > 0 else "unknown"
-        sha = parts[1] if len(parts) > 1 else "unknown"
+        tool, version, sha = _parse_version_dir_name(entry.name)
 
         result_files = [
             f for f in entry.iterdir()
             if f.is_file() and f.suffix in (".json", ".xml", ".txt") and f.stem != "benchmark"
         ]
-        log_files = list(entry.glob("*.log"))
 
         try:
             mtime = entry.stat().st_mtime
@@ -571,6 +644,7 @@ def _list_version_dirs() -> list[dict]:
         runs.append({
             "dir_name": entry.name,
             "path": str(entry),
+            "tool": tool,
             "version": version,
             "commit_sha": sha,
             "result_files": len(result_files),
@@ -632,9 +706,10 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
                 "hint": "Install it first. See COMPARISON_SETUP.md sections 1-2.",
             })
 
-    version = _get_sqc_version()
+    version = _get_tool_version(tool)
     sha = _get_git_sha()
-    version_dir = RESULTS_BASE / f"{version}-{sha}"
+    dir_name = _make_version_dir_name(tool, version, sha)
+    version_dir = RESULTS_BASE / dir_name
     version_dir.mkdir(parents=True, exist_ok=True)
 
     run_id = _make_run_id(tool, codebase, version, sha)
