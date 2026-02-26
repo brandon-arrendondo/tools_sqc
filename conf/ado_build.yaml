@@ -71,7 +71,7 @@ stages:
 
           - script: |
               source $HOME/.cargo/env
-              cargo test -- -Z unstable-options --format json | cargo2junit > test-results.xml
+              RUSTC_BOOTSTRAP=1 cargo test -- -Z unstable-options --format json | cargo2junit > test-results.xml
             displayName: "Run tests (JUnit output)"
 
           - task: PublishTestResults@2
