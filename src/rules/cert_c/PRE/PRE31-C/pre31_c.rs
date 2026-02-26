@@ -68,6 +68,11 @@ impl Pre31C {
 
                 // Check each argument for side effects
                 for (i, arg) in args.iter().enumerate() {
+                    // String literals have no side effects — skip them.
+                    let trimmed = arg.trim();
+                    if trimmed.starts_with('"') && trimmed.ends_with('"') {
+                        continue;
+                    }
                     if self.has_side_effects(arg, node, source) {
                         let start_point = node.start_position();
 

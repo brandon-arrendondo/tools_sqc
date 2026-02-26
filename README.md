@@ -17,85 +17,30 @@ A comprehensive terminal-based static analysis tool that validates C code compli
 - **Fast Analysis**: Tree-sitter based parsing for efficient code analysis
 - **Extensible Architecture**: Plugin-style rule system for easy addition of new CERT C rules
 
-## NIST Juliet Benchmark Results
+## Benchmark Results
 
-SqC has been benchmarked against the [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++, covering all 118 CWE categories (54,484 test files). Juliet provides ground truth via preprocessor-guarded sections: violations in `OMITBAD` sections are true positives, violations in `OMITGOOD` sections are false positives.
-
-### Aggregate Metrics
+SqC has been benchmarked against the [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) (54,484 files, 118 CWE categories) and 5 real-world open-source C codebases.
 
 | Metric | Value |
 |--------|-------|
-| **Files Analyzed** | 54,484 |
-| **True Positives** | 230,643 |
-| **False Positives** | 296,342 |
-| **TP Rate** | **43.8%** |
-| **CWE Categories** | 106 / 118 with data |
+| **Juliet TP Rate** | **44.5%** (v0.2.7) |
+| **FP Reduction from Baseline** | -74.3% (839K → 216K) |
+| **Real-World Projects** | libcrc, sqlite, mosquitto, curl, hostap |
 
-### FP Reduction Progress
+See [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md) for full details.
 
-Nine rounds of targeted rule improvements plus cross-file analysis reduced false positives by 65% from baseline while improving the true positive rate:
+## Documentation
 
-| Round | Fixes | TP | FP | TP Rate | FP Delta |
-|-------|-------|---:|---:|--------:|---------:|
-| Baseline | -- | 586,539 | 839,341 | 41.1% | -- |
-| Round 1 | INT08-C, CON08-C, DCL20-C, ARR38-C | 552,645 | 752,422 | 42.3% | -86,919 |
-| Round 2 | EXP33-C, SIG31-C, ARR01-C, DCL30-C, DCL02-C | 555,700 | 736,563 | 43.0% | -15,859 |
-| Round 3 | DCL31-C, DCL07-C, FLP34-C | 402,013 | 537,589 | 42.8% | -198,974 |
-| Round 4 | EXP12-C, FLP03-C, INT32-C | 363,914 | 492,648 | 42.5% | -44,941 |
-| Round 5 | FLP02-C, DCL06-C, INT30-C | 340,894 | 475,813 | 41.7% | -16,835 |
-| Round 6 | Cross-file analysis (`-d`) | 247,757 | 327,191 | 43.1% | -148,622 |
-| Round 7 | EXP36-C, EXP34-C, ARR37-C | 231,053 | 301,475 | 43.4% | -25,716 |
-| Round 8 | DCL40-C, FLP32-C, ERR33-C | 230,992 | 296,415 | 43.8% | -5,060 |
-| **Round 9** | **CFG, data-flow, inter-procedural analysis** | **230,643** | **296,342** | **43.8%** | **-73** |
-
-Round 9 added CFG construction, reaching definitions, and inter-procedural function summaries. Juliet impact is minimal because tests are single-file; the infrastructure targets multi-file real-world codebases.
-
-**Cumulative**: TP rate 41.1% → 43.8% (+2.7pp), FP reduced by 542,999 (-64.7%).
-
-### Top CWE Detection Rates
-
-| CWE | Category | TP Rate |
-|-----|----------|--------:|
-| 480 | Use of Incorrect Operator | 91.7% |
-| 506 | Embedded Malicious Code | 85.9% |
-| 587 | Assignment of Fixed Address to Pointer | 83.3% |
-| 617 | Reachable Assertion | 79.2% |
-| 197 | Numeric Truncation Error | 78.3% |
-| 464 | Data Structure Sentinel Addition | 77.6% |
-| 427 | Uncontrolled Search Path Element | 72.8% |
-| 78 | OS Command Injection | 71.4% |
-| 123 | Write-What-Where Condition | 68.2% |
-| 15 | External Control of System/Config | 67.0% |
-
-18 categories achieve >50% TP rate. See [BENCHMARK.md](BENCHMARK.md) for full details, methodology, per-round fix descriptions, competitor comparison, and strategic roadmap.
-
-### How SqC Compares
-
-Comparison with other static analysis tools on Juliet and real-world benchmarks, compiled from academic papers and published data:
-
-| Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
-|------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **43.8%** | **56.2%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
-| Semgrep CE | 44-48% | Very low | AST (tree-sitter) | No | Community | Free |
-| Semgrep Pro | 72-75% | Very low | AST + taint + inter-file | No | Community | Commercial |
-| Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
-| Flawfinder | ~40% | High | Lexical scanning | Indirect | No | Free |
-| CodeQL | ~29% | Moderate | Data-flow, taint | Indirect | Partial | Free/Commercial |
-| Cppcheck | Low | Very low | Data-flow | Indirect | Partial | Free |
-| Coverity | Best-in-class | ~15-20% (claimed) | Inter-procedural, path-sensitive | Not public | Partial | Enterprise |
-| Fortify | 100% OWASP (claimed) | Not published | Inter-procedural, taint, data-flow | Not public | Partial | Enterprise |
-| Commercial "Tool C"* | ~73% | ~7% | Inter-procedural | Yes (22 CWEs) | -- | Commercial |
-
-*\*Anonymized commercial tool from [Goseva-Popstojanova & Perhinschi 2015](https://community.wvu.edu/~kagoseva/Papers/IST-2015.pdf), tested on 22 C/C++ CWEs only.*
-
-**Key context from the literature:**
-- Tools on average find ~20% of weaknesses in basic Juliet test cases ([ISSTA 2022](https://dl.acm.org/doi/10.1145/3533767.3534380))
-- Even commercial tools miss 27% of C/C++ vulnerabilities on Juliet (Goseva 2015)
-- FP rates across tools range from 6.5% to 76%+ depending on rule set and benchmark ([survey](https://www.sciencedirect.com/science/article/abs/pii/S0950584913000384))
-- Industry target for developer adoption is 10-20% FP rate
-- No single tool is comprehensive; academic consensus recommends tool combination
-
-**Sources:** [ISSTA 2022 (TUM)](https://dl.acm.org/doi/10.1145/3533767.3534380) | [Goseva 2015](https://community.wvu.edu/~kagoseva/Papers/IST-2015.pdf) | [JKU 2014](https://www.se.jku.at/wp-content/uploads/2014/08/2014.Using-the-Juliet-Test-Suite.pdf) | [Semgrep Blog 2025](https://semgrep.dev/blog/2025/security-research-comparing-semgrep-community-edition-and-semgrep-code-for-static-analysis/) | [NIST SATE VI](https://www.nist.gov/itl/ssd/software-quality-group/static-analysis-tool-exposition-sate-vi)
+| File | Contents |
+|------|----------|
+| [README.md](README.md) | Tool overview, usage, configuration (this file) |
+| [JULIET_RESULTS.md](JULIET_RESULTS.md) | Juliet benchmark data: TP/FP history, per-round fixes, per-CWE results, methodology, competitor comparison |
+| [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md) | Real-world codebase results: sqc vs cppcheck vs clang-tidy on 5 OSS projects, d_lib_common case study |
+| [BENCHMARK_SUMMARY.md](BENCHMARK_SUMMARY.md) | Overall benchmark strategy, architecture assessment, CI/CD readiness, methodology notes |
+| [BENCHMARK_INSTALL.md](BENCHMARK_INSTALL.md) | Installing cppcheck, clang-tidy, setting up Juliet and real-world codebases, per-project commands |
+| [BENCHMARK_RUNNING.md](BENCHMARK_RUNNING.md) | Running benchmarks via MCP servers (Juliet and real-world), workflow protocol |
+| [PLAN.md](PLAN.md) | Future plans: EXP34-C roadmap, pending FP improvements, architecture evolution, competitor research |
+| [CLAUDE.md](CLAUDE.md) | Claude Code project instructions (agent workflows, git rules, benchmark protocol) |
 
 ## Installation
 

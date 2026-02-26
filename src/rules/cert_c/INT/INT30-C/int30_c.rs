@@ -426,6 +426,18 @@ impl Int30C {
             if self.is_unsigned_type(&arg_type) {
                 let operator = self.get_update_operator(node, source);
                 if operator == "++" || operator == "--" {
+                    // Skip increments/decrements in for-loop update clauses — the loop
+                    // condition bounds the counter, making wrap impossible in practice.
+                    if self.is_in_for_loop_update(node) {
+                        return;
+                    }
+                    // Skip decrements guarded by `var > 0` or `0 < var` (FP-011).
+                    if operator == "--" {
+                        let var_name = get_node_text(&argument, source);
+                        if self.is_guarded_by_gt_zero(node, var_name, source) {
+                            return;
+                        }
+                    }
                     if !self.has_overflow_check_update(node, source) {
                         let start_point = node.start_position();
                         let expr_text = get_node_text(node, source);
@@ -1080,6 +1092,71 @@ impl Int30C {
         } else {
             "unknown".to_string()
         }
+    }
+
+    /// Check if a decrement is inside an if-block guarded by `var > 0` or `0 < var`.
+    /// Pattern: `if (var > 0) { var--; }` — wrap is provably impossible.
+    fn is_guarded_by_gt_zero(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if parent.kind() == "if_statement" {
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    // Remove outer parens from parenthesized_expression
+                    let cond = cond_text.trim();
+                    let cond = if cond.starts_with('(') && cond.ends_with(')') {
+                        &cond[1..cond.len() - 1]
+                    } else {
+                        cond
+                    };
+                    let cond = cond.trim();
+                    // Match: var > 0, var != 0, 0 < var, 0 != var
+                    let patterns = [
+                        format!("{} > 0", var_name),
+                        format!("{} != 0", var_name),
+                        format!("0 < {}", var_name),
+                        format!("0 != {}", var_name),
+                    ];
+                    if patterns.iter().any(|p| cond == p) {
+                        return true;
+                    }
+                }
+            }
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            current = parent;
+        }
+        false
+    }
+
+    /// Check if a node is inside the update clause of a for-loop.
+    /// For-loop update increments (i++) are bounded by the loop condition,
+    /// making unsigned wrap impossible in normal usage.
+    fn is_in_for_loop_update(&self, node: &Node) -> bool {
+        let mut current = Some(node.clone());
+        while let Some(n) = current {
+            if let Some(parent) = n.parent() {
+                if parent.kind() == "for_statement" {
+                    // Check if this node is in the update clause
+                    // The for_statement fields: initializer, condition, update, body
+                    if let Some(update) = parent.child_by_field_name("update") {
+                        if self.node_contains(&update, &n) {
+                            return true;
+                        }
+                    }
+                }
+                current = Some(parent);
+            } else {
+                break;
+            }
+        }
+        false
+    }
+
+    /// Check if parent node contains child (by byte range).
+    fn node_contains(&self, parent: &Node, child: &Node) -> bool {
+        child.start_byte() >= parent.start_byte() && child.end_byte() <= parent.end_byte()
     }
 
     fn get_function_arguments(&self, node: &Node, source: &str) -> Vec<String> {

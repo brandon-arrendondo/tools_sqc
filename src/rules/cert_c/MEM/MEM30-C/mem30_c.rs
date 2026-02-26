@@ -1063,6 +1063,13 @@ impl GlobalTracker {
     }
 }
 
+/// Which branch of an if-statement corresponds to realloc returning NULL
+#[derive(Debug, PartialEq)]
+enum ReallocNullBranch {
+    Then, // if (result == NULL) or if (!result) — then-branch is the NULL case
+    Else, // if (result) or if (result != NULL) — else-branch is the NULL case
+}
+
 struct MemoryAnalyzer {
     // Track which variables are currently freed
     freed_vars: HashSet<String>,
@@ -1075,6 +1082,10 @@ struct MemoryAnalyzer {
     // Track realloc relationships: realloc_map[old_ptr] = new_ptr
     // When we see new_ptr = realloc(old_ptr, ...), old_ptr becomes potentially invalid
     realloc_invalidated: HashSet<String>,
+    // Maps realloc result variable -> original pointers that were invalidated.
+    // Used to clear invalidation in else-branches where realloc returned NULL
+    // (meaning the original pointer is still valid).
+    realloc_source: HashMap<String, Vec<String>>,
     // Track union members - when one member is freed, all are freed
     union_members: HashMap<String, HashSet<String>>,
 }
@@ -1087,6 +1098,7 @@ impl MemoryAnalyzer {
             nullified_vars: HashSet::new(),
             realloc_updated: HashSet::new(),
             realloc_invalidated: HashSet::new(),
+            realloc_source: HashMap::new(),
             union_members: HashMap::new(),
         }
     }
@@ -1188,12 +1200,25 @@ impl MemoryAnalyzer {
             self.analyze_function_body(&condition, source, violations);
         }
 
+        // Check if the condition tests a realloc result variable.
+        // Pattern: if (temp) or if (temp != NULL) means then=realloc succeeded, else=failed.
+        // Pattern: if (!temp) or if (temp == NULL) means then=realloc failed, else=succeeded.
+        // When realloc fails (returns NULL), the original pointer is still valid.
+        let realloc_null_branch = self.detect_realloc_condition_branch(node, source);
+
         // Save state before branches
         let saved_freed = self.freed_vars.clone();
         let saved_nullified = self.nullified_vars.clone();
         let saved_aliases = self.aliases.clone();
         let saved_realloc_updated = self.realloc_updated.clone();
         let saved_realloc_invalidated = self.realloc_invalidated.clone();
+
+        // If the then-branch is the realloc-failed path, clear invalidation there
+        if realloc_null_branch == Some(ReallocNullBranch::Then) {
+            if let Some(cond) = node.child_by_field_name("condition") {
+                self.clear_realloc_invalidation_for_condition(&cond, source);
+            }
+        }
 
         // Analyze the "consequence" (then branch)
         let mut then_returns = false;
@@ -1214,6 +1239,13 @@ impl MemoryAnalyzer {
         self.aliases = saved_aliases.clone();
         self.realloc_updated = saved_realloc_updated.clone();
         self.realloc_invalidated = saved_realloc_invalidated.clone();
+
+        // If the else-branch is the realloc-failed path, clear invalidation there
+        if realloc_null_branch == Some(ReallocNullBranch::Else) {
+            if let Some(cond) = node.child_by_field_name("condition") {
+                self.clear_realloc_invalidation_for_condition(&cond, source);
+            }
+        }
 
         // Analyze the "alternative" (else branch) if present
         let mut else_returns = false;
@@ -1313,6 +1345,150 @@ impl MemoryAnalyzer {
                 then_returns && else_returns
             }
             _ => false,
+        }
+    }
+
+    /// Detect if an if-statement's condition tests a realloc result variable.
+    /// Returns which branch corresponds to realloc returning NULL (failed).
+    fn detect_realloc_condition_branch(
+        &self,
+        if_node: &Node,
+        source: &str,
+    ) -> Option<ReallocNullBranch> {
+        let condition = if_node.child_by_field_name("condition")?;
+        // Unwrap parenthesized_expression
+        let cond = if condition.kind() == "parenthesized_expression" {
+            condition.child(1).unwrap_or(condition)
+        } else {
+            condition
+        };
+
+        match cond.kind() {
+            // if (result) — non-null in then, null in else
+            "identifier" => {
+                let var = get_node_text(&cond, source);
+                if self.realloc_updated.contains(var) {
+                    Some(ReallocNullBranch::Else)
+                } else {
+                    None
+                }
+            }
+            // if (!result) — null in then, non-null in else
+            "unary_expression" => {
+                if let Some(op) = cond.child(0) {
+                    if get_node_text(&op, source) == "!" {
+                        if let Some(arg) = cond.child_by_field_name("argument") {
+                            let inner = if arg.kind() == "parenthesized_expression" {
+                                arg.child(1).unwrap_or(arg)
+                            } else {
+                                arg
+                            };
+                            if inner.kind() == "identifier" {
+                                let var = get_node_text(&inner, source);
+                                if self.realloc_updated.contains(var) {
+                                    return Some(ReallocNullBranch::Then);
+                                }
+                            }
+                        }
+                    }
+                }
+                None
+            }
+            // if (result != NULL) or if (result == NULL)
+            "binary_expression" => {
+                if let (Some(left), Some(op), Some(right)) = (
+                    cond.child_by_field_name("left"),
+                    cond.child_by_field_name("operator"),
+                    cond.child_by_field_name("right"),
+                ) {
+                    let op_text = get_node_text(&op, source);
+                    let left_text = get_node_text(&left, source);
+                    let right_text = get_node_text(&right, source);
+
+                    let (var, is_null_cmp) =
+                        if right_text == "NULL" || right_text == "0" || right_text == "nullptr" {
+                            (left_text, true)
+                        } else if left_text == "NULL" || left_text == "0" || left_text == "nullptr"
+                        {
+                            (right_text, true)
+                        } else {
+                            ("", false)
+                        };
+
+                    if is_null_cmp && self.realloc_updated.contains(var) {
+                        match op_text {
+                            // if (result == NULL) — then=null, else=non-null
+                            "==" => Some(ReallocNullBranch::Then),
+                            // if (result != NULL) — then=non-null, else=null
+                            "!=" => Some(ReallocNullBranch::Else),
+                            _ => None,
+                        }
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        }
+    }
+
+    /// Clear realloc invalidation for the original pointer(s) corresponding to
+    /// the realloc result tested in the given condition. Called in the branch
+    /// where realloc returned NULL, meaning the original pointer is still valid.
+    fn clear_realloc_invalidation_for_condition(&mut self, condition: &Node, source: &str) {
+        let cond = if condition.kind() == "parenthesized_expression" {
+            condition.child(1).unwrap_or(*condition)
+        } else {
+            *condition
+        };
+
+        // Extract the variable being tested
+        let var_name = match cond.kind() {
+            "identifier" => get_node_text(&cond, source).to_string(),
+            "unary_expression" => {
+                if let Some(arg) = cond.child_by_field_name("argument") {
+                    let inner = if arg.kind() == "parenthesized_expression" {
+                        arg.child(1).unwrap_or(arg)
+                    } else {
+                        arg
+                    };
+                    if inner.kind() == "identifier" {
+                        get_node_text(&inner, source).to_string()
+                    } else {
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+            "binary_expression" => {
+                if let (Some(left), Some(right)) = (
+                    cond.child_by_field_name("left"),
+                    cond.child_by_field_name("right"),
+                ) {
+                    let lt = get_node_text(&left, source);
+                    let rt = get_node_text(&right, source);
+                    if rt == "NULL" || rt == "0" || rt == "nullptr" {
+                        lt.to_string()
+                    } else if lt == "NULL" || lt == "0" || lt == "nullptr" {
+                        rt.to_string()
+                    } else {
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            }
+            _ => return,
+        };
+
+        // Look up which original pointers this realloc result corresponds to
+        if let Some(old_ptrs) = self.realloc_source.get(&var_name) {
+            for old_ptr in old_ptrs.clone() {
+                self.realloc_invalidated.remove(&old_ptr);
+            }
         }
     }
 
@@ -1603,9 +1779,12 @@ impl MemoryAnalyzer {
                         self.realloc_invalidated.remove(&left_var);
                     } else if func_name == "realloc" || upper_func_name.contains("REALLOC") {
                         // Track the old pointer passed to realloc as invalidated
-                        self.track_realloc_old_pointer(&right, source);
+                        let old_ptrs = self.track_realloc_old_pointer(&right, source);
                         // For realloc, track that left_var is the result of realloc
                         self.realloc_updated.insert(left_var.clone());
+                        if !old_ptrs.is_empty() {
+                            self.realloc_source.insert(left_var.clone(), old_ptrs);
+                        }
                         self.freed_vars.remove(&left_var);
                         self.nullified_vars.remove(&left_var);
                         self.realloc_invalidated.remove(&left_var);
@@ -1640,7 +1819,10 @@ impl MemoryAnalyzer {
                         // Track that left_var is the result of realloc
                         self.realloc_updated.insert(left_var.clone());
                         // Also track what pointer was passed to realloc (it's now invalidated)
-                        self.track_realloc_old_pointer(&value, source);
+                        let old_ptrs = self.track_realloc_old_pointer(&value, source);
+                        if !old_ptrs.is_empty() {
+                            self.realloc_source.insert(left_var.clone(), old_ptrs);
+                        }
                         return;
                     } else if func_name == "malloc" || func_name == "calloc" {
                         // Fresh allocation, nothing special to track
@@ -1658,7 +1840,10 @@ impl MemoryAnalyzer {
                             let upper_func_name = func_name.to_uppercase();
                             if func_name == "realloc" || upper_func_name.contains("REALLOC") {
                                 self.realloc_updated.insert(left_var.clone());
-                                self.track_realloc_old_pointer(&inner_value, source);
+                                let old_ptrs = self.track_realloc_old_pointer(&inner_value, source);
+                                if !old_ptrs.is_empty() {
+                                    self.realloc_source.insert(left_var.clone(), old_ptrs);
+                                }
                                 return;
                             } else if func_name == "malloc" || func_name == "calloc" {
                                 return;
@@ -2040,8 +2225,10 @@ impl MemoryAnalyzer {
         false
     }
 
-    /// Track the old pointer passed to realloc as invalidated
-    fn track_realloc_old_pointer(&mut self, call_node: &Node, source: &str) {
+    /// Track the old pointer passed to realloc as invalidated.
+    /// Returns the old pointer names that were invalidated (for realloc_source tracking).
+    fn track_realloc_old_pointer(&mut self, call_node: &Node, source: &str) -> Vec<String> {
+        let mut invalidated = Vec::new();
         if let Some(args) = call_node.child_by_field_name("arguments") {
             // First argument to realloc is the old pointer
             for i in 0..args.child_count() {
@@ -2058,6 +2245,7 @@ impl MemoryAnalyzer {
                         if !old_ptr.is_empty() {
                             // The old pointer is now potentially invalid
                             self.realloc_invalidated.insert(old_ptr.clone());
+                            invalidated.push(old_ptr.clone());
                             // Also invalidate any aliases pointing to the old pointer
                             let aliases_to_invalidate: Vec<String> = self
                                 .aliases
@@ -2066,7 +2254,8 @@ impl MemoryAnalyzer {
                                 .map(|(k, _)| k.clone())
                                 .collect();
                             for alias in aliases_to_invalidate {
-                                self.realloc_invalidated.insert(alias);
+                                self.realloc_invalidated.insert(alias.clone());
+                                invalidated.push(alias);
                             }
                         }
                         break; // Only need the first argument
@@ -2074,6 +2263,7 @@ impl MemoryAnalyzer {
                 }
             }
         }
+        invalidated
     }
 
     /// Resolve a variable to its canonical name (follow alias chain)
