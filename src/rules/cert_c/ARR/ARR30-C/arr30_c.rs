@@ -658,12 +658,13 @@ impl Arr30C {
     ) {
         let lines: Vec<&str> = source.lines().collect();
 
+        let re = regex::Regex::new(r"^\s*(\w+)\s+(\w+)\s*;").ok();
         for (line_idx, line) in lines.iter().enumerate() {
             let trimmed = line.trim();
 
             // Pattern: TypedefName member_name;
             // Look for lines that match typedef usage inside structs/unions
-            if let Ok(re) = regex::Regex::new(r"^\s*(\w+)\s+(\w+)\s*;") {
+            if let Some(re) = &re {
                 if let Some(caps) = re.captures(trimmed) {
                     if let (Some(type_match), Some(member_match)) = (caps.get(1), caps.get(2)) {
                         let type_name = type_match.as_str();
@@ -774,14 +775,14 @@ impl Arr30C {
         // Check if this is member access (contains '.' or '->')
         if text.contains('.') {
             // Extract the member name after the last '.'
-            if let Some(member) = text.split('.').last() {
+            if let Some(member) = text.split('.').next_back() {
                 return Some(member.to_string());
             }
         }
 
         if text.contains("->") {
             // Extract the member name after the last '->'
-            if let Some(member) = text.split("->").last() {
+            if let Some(member) = text.rsplit("->").next() {
                 return Some(member.to_string());
             }
         }
@@ -1169,7 +1170,6 @@ impl Arr30C {
         false
     }
 
-    /// Find containing for loop
     // Removed: find_containing_for_loop - now using ast_utils::find_containing_for_loop
     // Removed: find_containing_if_statement - now using ast_utils::find_containing_if_statement
 
@@ -2203,7 +2203,7 @@ impl Arr30C {
         }
 
         // Second pass: for each malloc variable, check if it has NULL check with return/exit
-        for (var_name, _alloc_line) in &malloc_vars {
+        for var_name in malloc_vars.keys() {
             let has_safe_null_check =
                 self.has_safe_null_check_in_function(func_node, source, var_name);
 
@@ -3072,15 +3072,13 @@ impl Arr30C {
                 element_type: "unknown".to_string(),
                 allocation_line: line,
             })
-        } else if let Some(expr) = size_expr {
-            Some(BufferInfo {
+        } else {
+            size_expr.map(|expr| BufferInfo {
                 name,
                 size: BufferSize::Symbolic(expr),
                 element_type: "unknown".to_string(),
                 allocation_line: line,
             })
-        } else {
-            None
         }
     }
 
@@ -3547,7 +3545,6 @@ impl Arr30C {
                                     macro_info.line
                                 )),
                                 requires_manual_review: Some(true),
-                                ..Default::default()
                             });
                         }
                     }

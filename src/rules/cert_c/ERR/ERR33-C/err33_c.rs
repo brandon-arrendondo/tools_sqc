@@ -375,9 +375,8 @@ impl Err33C {
         let safe_suffixes = ["_or_die", "_or_abort", "_nofail", "_safe"];
 
         for prefix in &safe_prefixes {
-            if function_name.starts_with(prefix) {
+            if let Some(rest) = function_name.strip_prefix(prefix) {
                 // Verify the rest is a known error-returning function
-                let rest = &function_name[prefix.len()..];
                 if self.is_base_error_returning_function(rest) {
                     return true;
                 }

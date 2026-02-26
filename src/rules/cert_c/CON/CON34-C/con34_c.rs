@@ -157,17 +157,17 @@ impl Con34C {
                 // Check various problematic patterns
                 let is_violation = self.is_address_of_local_var(&arg_node, source, call_node)
                     || (self.is_pointer_parameter(&arg_node, source, call_node)
-                        && !self.is_allocated_pointer(&arg_text, call_node, source)
-                        && !self.is_likely_allocated_param(&arg_text))
+                        && !self.is_allocated_pointer(arg_text, call_node, source)
+                        && !self.is_likely_allocated_param(arg_text))
                     || (arg_node.kind() == "identifier"
-                        && !self.is_static_variable(&arg_text, call_node, source)
-                        && !self.is_allocated_pointer(&arg_text, call_node, source)
-                        && !self.is_likely_allocated_param(&arg_text)
+                        && !self.is_static_variable(arg_text, call_node, source)
+                        && !self.is_allocated_pointer(arg_text, call_node, source)
+                        && !self.is_likely_allocated_param(arg_text)
                         && !arg_text.starts_with("&"));
 
                 if is_violation {
                     let message = if self.is_address_of_local_var(&arg_node, source, call_node) {
-                        format!("Passing address of automatic (local) variable to thrd_create()")
+                        "Passing address of automatic (local) variable to thrd_create()".to_string()
                     } else {
                         format!(
                             "Passing '{}' to thrd_create() may reference automatic storage",
@@ -216,9 +216,7 @@ impl Con34C {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: Severity::Medium,
-                    message: format!(
-                        "Thread-specific storage (tss_set) used in function that creates threads. Child thread may access parent's thread-specific data"
-                    ),
+                    message: "Thread-specific storage (tss_set) used in function that creates threads. Child thread may access parent's thread-specific data".to_string(),
                     file_path: String::new(),
                     line: call_node.start_position().row + 1,
                     column: call_node.start_position().column + 1,
@@ -264,6 +262,7 @@ impl Con34C {
         false
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn extract_base_identifier(&self, node: &Node, source: &str) -> Option<String> {
         // Handle direct identifiers
         if node.kind() == "identifier" {
@@ -366,6 +365,7 @@ impl Con34C {
         false
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn is_allocation_call(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
@@ -457,10 +457,10 @@ impl Con34C {
 
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
-                    if child.kind() == "storage_class_specifier" {
-                        if get_node_text(&child, source) == "static" {
-                            is_static = true;
-                        }
+                    if child.kind() == "storage_class_specifier"
+                        && get_node_text(&child, source) == "static"
+                    {
+                        is_static = true;
                     }
 
                     if child.kind() == "init_declarator" {
@@ -471,10 +471,10 @@ impl Con34C {
                                 }
                             }
                         }
-                    } else if child.kind() == "identifier" {
-                        if get_node_text(&child, source) == var_name {
-                            has_var = true;
-                        }
+                    } else if child.kind() == "identifier"
+                        && get_node_text(&child, source) == var_name
+                    {
+                        has_var = true;
                     }
                 }
             }
@@ -533,6 +533,7 @@ impl Con34C {
         false
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn get_identifier_name(&self, node: &Node, source: &str) -> Option<String> {
         if node.kind() == "identifier" {
             return Some(get_node_text(node, source).to_string());
@@ -571,6 +572,7 @@ impl Con34C {
         false
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn has_thrd_create(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
@@ -599,6 +601,7 @@ impl Con34C {
         false
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn has_tss_get(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
@@ -733,10 +736,10 @@ impl Con34C {
 
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
-                    if child.kind() == "storage_class_specifier" {
-                        if get_node_text(&child, source) == "static" {
-                            is_static = true;
-                        }
+                    if child.kind() == "storage_class_specifier"
+                        && get_node_text(&child, source) == "static"
+                    {
+                        is_static = true;
                     }
 
                     if child.kind() == "init_declarator" {
@@ -762,6 +765,7 @@ impl Con34C {
         }
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn is_var_modified_in_node(&self, node: &Node, var_name: &str, source: &str) -> bool {
         // Check for assignment or update expressions involving this variable
         if matches!(node.kind(), "update_expression" | "assignment_expression") {

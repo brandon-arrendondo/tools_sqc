@@ -253,18 +253,15 @@ impl Arr38C {
         size_vars: &HashMap<String, String>,
         pointer_offsets: &HashMap<String, PointerOffsetInfo>,
     ) {
-        match node.kind() {
-            "call_expression" => {
-                self.check_library_function_call(
-                    node,
-                    source,
-                    violations,
-                    buffer_info,
-                    size_vars,
-                    pointer_offsets,
-                );
-            }
-            _ => {}
+        if node.kind() == "call_expression" {
+            self.check_library_function_call(
+                node,
+                source,
+                violations,
+                buffer_info,
+                size_vars,
+                pointer_offsets,
+            );
         }
 
         // Recursively check child nodes
@@ -827,7 +824,7 @@ impl Arr38C {
                 // Check if it's a hardcoded number that might be a struct size assumption
                 if let Ok(size_val) = resolved_size.trim().parse::<usize>() {
                     // Common struct sizes that indicate hardcoded assumptions
-                    if size_val >= 8 && size_val <= 64 && size_val % 4 == 0 {
+                    if (8..=64).contains(&size_val) && size_val % 4 == 0 {
                         // Likely a hardcoded struct size - check if buffer is struct-based
                         if buf_arg.contains("struct") || source.contains("struct obj") {
                             let start_point = node.start_position();
@@ -844,7 +841,6 @@ impl Arr38C {
                                 suggestion: Some("Use sizeof(struct_type) to ensure correct size on all platforms".to_string()),
                                 ..Default::default()
                             });
-                            return;
                         }
                     }
                 }
@@ -1364,11 +1360,7 @@ impl Arr38C {
                 if let Some(base_size) = base_info.size {
                     // Calculate remaining space after offset
                     if let Some(offset_val) = offset_info.offset {
-                        let remaining = if base_size > offset_val {
-                            base_size - offset_val
-                        } else {
-                            0
-                        };
+                        let remaining = base_size.saturating_sub(offset_val);
 
                         // Resolve the size argument
                         let size_arg_owned = size_arg.to_string();
@@ -1736,8 +1728,8 @@ impl Arr38C {
             if let Some(end) = rest.find(')') {
                 let var = rest[..end].trim();
                 // Handle sizeof(*ptr) - return ptr
-                if var.starts_with('*') {
-                    return Some(var[1..].trim().to_string());
+                if let Some(stripped) = var.strip_prefix('*') {
+                    return Some(stripped.trim().to_string());
                 }
                 return Some(var.to_string());
             }

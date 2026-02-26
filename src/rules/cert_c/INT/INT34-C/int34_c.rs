@@ -33,7 +33,7 @@ impl CertRule for Int34C {
         if node.kind() == "binary_expression" {
             if let Some(operator) = ast_utils::get_binary_operator(node, source) {
                 if operator == "<<" || operator == ">>" {
-                    self.check_shift_operation(node, source, &operator, &mut violations);
+                    self.check_shift_operation(node, source, operator, &mut violations);
                 }
             }
         }
@@ -76,21 +76,19 @@ impl Int34C {
 
             // Check if this is an unsigned type operation
             // Unsigned shifts have defined behavior in most cases
-            if self.is_likely_unsigned(&left_text, &left_node, source) {
+            if self.is_likely_unsigned(left_text, &left_node, source) {
                 // For unsigned types, be more lenient
                 // Only require validation for left-shifts (which can cause issues)
-                if operator == "<<" {
-                    if !self.is_shift_amount_validated(node, &right_node, source) {
-                        self.report_violation(
-                            node,
-                            left_text.to_string(),
-                            right_text.to_string(),
-                            source,
-                            violations,
-                        );
-                    }
-                }
                 // Right-shifts on unsigned are generally safe
+                if operator == "<<" && !self.is_shift_amount_validated(node, &right_node, source) {
+                    self.report_violation(
+                        node,
+                        left_text.to_string(),
+                        right_text.to_string(),
+                        source,
+                        violations,
+                    );
+                }
             } else {
                 // For signed types or unknown types, require validation for both left and right shifts
                 if !self.is_shift_amount_validated(node, &right_node, source) {
@@ -146,12 +144,12 @@ impl Int34C {
             .trim()
             .to_ascii_lowercase();
         // Strip common integer suffixes (u, l, ul, ull, lu, llu)
-        let stripped = text.trim_end_matches(|c: char| matches!(c, 'u' | 'l'));
+        let stripped = text.trim_end_matches(['u', 'l']);
         // Must be parseable as a non-negative integer (decimal, hex, octal)
-        if stripped.starts_with("0x") {
-            u64::from_str_radix(&stripped[2..], 16).is_ok()
-        } else if stripped.starts_with("0b") {
-            u64::from_str_radix(&stripped[2..], 2).is_ok()
+        if let Some(hex) = stripped.strip_prefix("0x") {
+            u64::from_str_radix(hex, 16).is_ok()
+        } else if let Some(bin) = stripped.strip_prefix("0b") {
+            u64::from_str_radix(bin, 2).is_ok()
         } else if stripped.starts_with('0') && stripped.len() > 1 {
             u64::from_str_radix(&stripped[1..], 8).is_ok()
         } else {
@@ -199,10 +197,10 @@ impl Int34C {
         let shift_var = ast_utils::get_node_text(shift_amount, source);
 
         // Find the containing function
-        if let Some(func) = ast_utils::find_containing_function(&shift_node) {
+        if let Some(func) = ast_utils::find_containing_function(shift_node) {
             if let Some(body) = func.child_by_field_name("body") {
                 // Check if there's validation before the shift
-                if self.has_validation_check(&body, &shift_var, source, shift_node) {
+                if self.has_validation_check(&body, shift_var, source, shift_node) {
                     return true;
                 }
             }
@@ -213,7 +211,7 @@ impl Int34C {
         while let Some(node) = current {
             if node.kind() == "if_statement" {
                 if let Some(condition) = node.child_by_field_name("condition") {
-                    if self.checks_shift_bounds(&condition, &shift_var, source) {
+                    if self.checks_shift_bounds(&condition, shift_var, source) {
                         // Check if we're in the safe branch (else or consequence after validation)
                         if self.is_in_safe_branch(&node, shift_node) {
                             return true;
@@ -251,7 +249,7 @@ impl Int34C {
                         if self.checks_shift_bounds(&condition, var_name, source) {
                             // Check if the consequence has return/exit
                             if let Some(consequence) = child.child_by_field_name("consequence") {
-                                if self.has_return_or_error_handling(&consequence, source) {
+                                if Self::has_return_or_error_handling(&consequence, source) {
                                     return true;
                                 }
                             }
@@ -338,7 +336,7 @@ impl Int34C {
     }
 
     /// Check if branch contains return or error handling
-    fn has_return_or_error_handling(&self, node: &Node, source: &str) -> bool {
+    fn has_return_or_error_handling(node: &Node, source: &str) -> bool {
         let text = ast_utils::get_node_text(node, source);
 
         if text.contains("return") || text.contains("error") || text.contains("exit") {
@@ -354,7 +352,7 @@ impl Int34C {
                 {
                     return true;
                 }
-                if self.has_return_or_error_handling(&child, source) {
+                if Self::has_return_or_error_handling(&child, source) {
                     return true;
                 }
             }
@@ -367,13 +365,13 @@ impl Int34C {
     fn is_in_safe_branch(&self, if_node: &Node, shift_node: &Node) -> bool {
         // Check if shift_node is in the consequence or alternative
         if let Some(consequence) = if_node.child_by_field_name("consequence") {
-            if self.is_descendant(&consequence, shift_node) {
+            if Self::is_descendant(&consequence, shift_node) {
                 return true;
             }
         }
 
         if let Some(alternative) = if_node.child_by_field_name("alternative") {
-            if self.is_descendant(&alternative, shift_node) {
+            if Self::is_descendant(&alternative, shift_node) {
                 return true;
             }
         }
@@ -382,14 +380,14 @@ impl Int34C {
     }
 
     /// Check if target is a descendant of node
-    fn is_descendant(&self, node: &Node, target: &Node) -> bool {
+    fn is_descendant(node: &Node, target: &Node) -> bool {
         if node.id() == target.id() {
             return true;
         }
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if self.is_descendant(&child, target) {
+                if Self::is_descendant(&child, target) {
                     return true;
                 }
             }

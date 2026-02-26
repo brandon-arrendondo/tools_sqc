@@ -2,7 +2,6 @@ use crate::rules::RuleViolation;
 use crate::utility::files::get_relative_path;
 
 use anyhow::Result;
-use serde_json;
 use std::fs::File;
 use std::io::BufWriter;
 

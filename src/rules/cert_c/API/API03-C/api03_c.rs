@@ -133,10 +133,7 @@ impl Api03C {
         for func_info in declarations {
             // Extract prefix (e.g., "f" from "fputs", "fprintf")
             let prefix = self.get_function_prefix(&func_info.name);
-            func_groups
-                .entry(prefix)
-                .or_insert_with(Vec::new)
-                .push(func_info);
+            func_groups.entry(prefix).or_default().push(func_info);
         }
 
         // Check each group for inconsistent FILE* positioning
@@ -353,7 +350,7 @@ impl Api03C {
         };
 
         // Check if macro swaps parameters (e.g., #define fputs(X,Y) fputs(Y,X))
-        if self.is_parameter_swap_with_params(&macro_name, &params, &macro_value) {
+        if self.is_parameter_swap_with_params(macro_name, &params, macro_value) {
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
                 severity: Severity::Medium,

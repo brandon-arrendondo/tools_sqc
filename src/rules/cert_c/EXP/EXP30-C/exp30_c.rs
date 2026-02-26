@@ -125,9 +125,7 @@ impl Exp30C {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: self.severity(),
-                        message: format!(
-                            "Multiple function calls with potential side effects in unsequenced arguments"
-                        ),
+                        message: "Multiple function calls with potential side effects in unsequenced arguments".to_string(),
                         file_path: String::new(),
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,

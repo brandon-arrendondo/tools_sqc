@@ -722,7 +722,7 @@ impl Exp39C {
             line: start_point.row + 1,
             column: start_point.column + 1,
             suggestion: Some(
-                format!("Avoid casting between incompatible pointer types. Use type-appropriate operations or unions for legitimate type punning. Consider using standard library functions instead of direct type manipulation.")
+                "Avoid casting between incompatible pointer types. Use type-appropriate operations or unions for legitimate type punning. Consider using standard library functions instead of direct type manipulation.".to_string()
             ),
             ..Default::default()
         });

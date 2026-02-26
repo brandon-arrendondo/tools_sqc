@@ -129,12 +129,12 @@ impl Exp03C {
         let size_arg = match func_name {
             "malloc" => {
                 // malloc(size) - first argument
-                args.get(0)
+                args.first()
             }
             "calloc" => {
                 // calloc(count, size) - check both arguments
                 // Check first arg for manual calculations
-                if let Some(first_arg) = args.get(0) {
+                if let Some(first_arg) = args.first() {
                     if self.contains_sizeof_addition(first_arg, source) {
                         self.report_violation(first_arg, source, violations);
                     }

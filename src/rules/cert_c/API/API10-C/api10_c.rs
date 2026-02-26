@@ -94,10 +94,11 @@ impl Api10C {
                         file_path: String::new(),
                         line: start_point.row + 1,
                         column: start_point.column + 1,
-                        suggestion: Some(format!(
+                        suggestion: Some(
                             "Rename to require explicit opt-out of security (e.g., 'DISABLE_HOST_VALIDATION' \
                              instead of 'VALIDATE_HOST', 'ENABLE_V1_0' instead of 'DISABLE_V1_0')"
-                        )),
+                                .to_string(),
+                        ),
                         ..Default::default()
                     });
 

@@ -213,7 +213,7 @@ pub fn is_function_parameter(function_node: &Node, var_name: &str, source: &str)
                             let words: Vec<&str> = param_text
                                 .split(|c: char| !c.is_alphanumeric() && c != '_')
                                 .collect();
-                            if words.iter().any(|&word| word == var_name) {
+                            if words.contains(&var_name) {
                                 return true;
                             }
                         }

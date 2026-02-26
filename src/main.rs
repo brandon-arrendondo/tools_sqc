@@ -1,3 +1,8 @@
+#![allow(clippy::only_used_in_recursion)]
+#![allow(clippy::needless_borrow)]
+#![allow(clippy::too_many_arguments)]
+#![allow(clippy::collapsible_if)]
+
 pub mod prelude;
 
 mod analyze;

@@ -61,7 +61,7 @@ impl CertRule for Exp42C {
 
             for capture in m.captures {
                 let capture_name = &query.capture_names()[capture.index as usize];
-                match capture_name.as_ref() {
+                match &**capture_name {
                     "func_name" => func_name_node = Some(capture.node),
                     "args" => args_node = Some(capture.node),
                     "call" => call_node = Some(capture.node),

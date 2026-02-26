@@ -665,10 +665,7 @@ fn check_obvious_string_overflow(node: &Node, source: &str) -> Option<RuleViolat
         None
     };
 
-    let src_len = match src_len {
-        Some(len) => len,
-        None => return None, // Can't determine source length
-    };
+    let src_len = src_len?;
 
     // Get destination identifier name
     let dest_name = &source[dest.start_byte()..dest.end_byte()];
@@ -1118,7 +1115,7 @@ fn extract_array_name_from_subscript(body_text: &str, loop_var: &str) -> Option<
             && before_bracket
                 .chars()
                 .nth(end - 1)
-                .map_or(false, |c| c.is_whitespace())
+                .is_some_and(|c| c.is_whitespace())
         {
             end -= 1;
         }
@@ -1830,9 +1827,7 @@ fn check_return_local_array(node: &Node, source: &str) -> Option<RuleViolation> 
         file_path: String::new(),
         line,
         column,
-        suggestion: Some(format!(
-            "Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter."
-        )),
+        suggestion: Some("Consider allocating the array dynamically (malloc/calloc), declaring it as static, or passing a buffer as a parameter.".to_string()),
         ..Default::default()
     })
 }
@@ -2016,8 +2011,8 @@ fn find_pointer_source_array(ptr_name: &str, preceding_text: &str) -> Option<Str
             let after_eq = after_eq.trim_start();
 
             // If it starts with &, skip it
-            let after_eq = if after_eq.starts_with('&') {
-                &after_eq[1..]
+            let after_eq = if let Some(stripped) = after_eq.strip_prefix('&') {
+                stripped
             } else {
                 after_eq
             };

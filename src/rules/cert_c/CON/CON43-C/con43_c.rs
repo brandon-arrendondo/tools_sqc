@@ -137,6 +137,7 @@ fn has_synchronization_nearby(node: &Node, source: &str) -> bool {
 }
 
 /// Check if a node contains a pointer dereference
+#[allow(clippy::only_used_in_recursion)]
 fn contains_pointer_deref(node: &Node, source: &str) -> bool {
     if node.kind() == "pointer_expression" {
         return true;
@@ -174,10 +175,8 @@ fn find_identifier(node: &Node, source: &str) -> Option<String> {
 /// Get the condition node from a switch statement
 fn get_switch_condition<'a>(node: &'a Node) -> Option<Node<'a>> {
     let mut cursor = node.walk();
-    for child in node.children(&mut cursor) {
-        if child.kind() == "parenthesized_expression" {
-            return Some(child);
-        }
-    }
-    None
+    let result = node
+        .children(&mut cursor)
+        .find(|child| child.kind() == "parenthesized_expression");
+    result
 }

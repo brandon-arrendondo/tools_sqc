@@ -87,9 +87,7 @@ impl Fio13C {
                     // Get the FILE* argument (second argument)
                     if let Some(args) = node.child_by_field_name("arguments") {
                         if let Some(file_arg) = self.get_nth_argument(&args, 1, source) {
-                            let entry = file_operations
-                                .entry(file_arg.clone())
-                                .or_insert_with(Vec::new);
+                            let entry = file_operations.entry(file_arg.clone()).or_default();
                             entry.push(FileOp::Ungetc(node.start_position().row));
                         }
                     }
@@ -97,9 +95,7 @@ impl Fio13C {
                     // Get the FILE* argument
                     if let Some(args) = node.child_by_field_name("arguments") {
                         if let Some(file_arg) = self.get_file_argument(&args, &func_name, source) {
-                            let entry = file_operations
-                                .entry(file_arg.clone())
-                                .or_insert_with(Vec::new);
+                            let entry = file_operations.entry(file_arg.clone()).or_default();
                             entry.push(FileOp::Read(node.start_position().row));
                         }
                     }

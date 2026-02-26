@@ -55,7 +55,7 @@ impl Pre08C {
         };
 
         // Extract just the filename (without directory path)
-        let basename = filename.split('/').last().unwrap_or(filename);
+        let basename = filename.rsplit('/').next().unwrap_or(filename);
 
         Some(basename.to_string())
     }
@@ -133,7 +133,7 @@ impl Pre08C {
                 let line = node.start_position().row + 1;
                 includes
                     .entry(significant)
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push((header, line));
             }
         }

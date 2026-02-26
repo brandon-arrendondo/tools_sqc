@@ -138,7 +138,7 @@ impl Int14C {
     }
 
     /// Extract variable names used in an expression
-    fn extract_variables(&self, node: &Node, source: &str, vars: &mut HashSet<String>) {
+    fn extract_variables(node: &Node, source: &str, vars: &mut HashSet<String>) {
         if node.kind() == "identifier" {
             let var_name = get_node_text(node, source).to_string();
             vars.insert(var_name);
@@ -147,7 +147,7 @@ impl Int14C {
         // Recursively check children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.extract_variables(&child, source, vars);
+                Self::extract_variables(&child, source, vars);
             }
         }
     }
@@ -279,13 +279,13 @@ impl Int14C {
                 if let Some(op_type) = op_type {
                     // Extract variables from this expression
                     let mut vars = HashSet::new();
-                    self.extract_variables(node, source, &mut vars);
+                    Self::extract_variables(node, source, &mut vars);
 
                     // Record operation type for each variable
                     for var in vars.iter() {
                         variable_operations
                             .entry(var.clone())
-                            .or_insert_with(HashSet::new)
+                            .or_default()
                             .insert(op_type.clone());
 
                         // Record first location if not already recorded
@@ -343,7 +343,7 @@ impl Int14C {
                             let var = get_node_text(&left, source).to_string();
                             variable_operations
                                 .entry(var.clone())
-                                .or_insert_with(HashSet::new)
+                                .or_default()
                                 .insert(op_type);
 
                             // Record first location if not already recorded
@@ -354,7 +354,7 @@ impl Int14C {
                             }
 
                             // Track shift compound assignments on signed int params
-                            if self.is_shift_operator(&op_text)
+                            if self.is_shift_operator(op_text)
                                 && signed_int_params.contains(&var)
                                 && !shift_operations.contains_key(&var)
                             {
@@ -375,20 +375,20 @@ impl Int14C {
                     // Extract variables from the operand
                     let mut vars = HashSet::new();
                     if let Some(operand) = node.child(1) {
-                        self.extract_variables(&operand, source, &mut vars);
+                        Self::extract_variables(&operand, source, &mut vars);
 
                         for var in vars {
                             variable_operations
                                 .entry(var.clone())
-                                .or_insert_with(HashSet::new)
+                                .or_default()
                                 .insert(OperationType::Bitwise);
 
                             // Record first location if not already recorded
-                            if !variable_locations.contains_key(&var) {
+                            variable_locations.entry(var).or_insert_with(|| {
                                 let line = node.start_position().row + 1;
                                 let column = node.start_position().column + 1;
-                                variable_locations.insert(var, (line, column));
-                            }
+                                (line, column)
+                            });
                         }
                     }
                 }

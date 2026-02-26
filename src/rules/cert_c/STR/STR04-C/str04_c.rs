@@ -240,9 +240,8 @@ impl STR04C {
                     // Has initialization - check if it's an array with string literal
                     let mut init_cursor = child.walk();
                     for init_child in child.children(&mut init_cursor) {
-                        if init_child.kind() == "array_declarator" {
-                            has_array_or_init = true;
-                        } else if init_child.kind() == "string_literal"
+                        if init_child.kind() == "array_declarator"
+                            || init_child.kind() == "string_literal"
                             || init_child.kind() == "concatenated_string"
                         {
                             has_array_or_init = true;

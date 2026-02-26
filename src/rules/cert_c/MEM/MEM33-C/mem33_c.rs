@@ -1186,7 +1186,7 @@ impl FlexibleArrayAnalyzer {
                         // not part of an initializer expression
                         if i == 0
                             || (i == 1
-                                && declaration.child(0).map_or(false, |c| {
+                                && declaration.child(0).is_some_and(|c| {
                                     c.kind() == "storage_class_specifier"
                                         || c.kind() == "type_qualifier"
                                 }))
@@ -1208,7 +1208,7 @@ impl FlexibleArrayAnalyzer {
                         // Only consider if it's the first type identifier (the declaration type)
                         if i == 0
                             || (i == 1
-                                && declaration.child(0).map_or(false, |c| {
+                                && declaration.child(0).is_some_and(|c| {
                                     c.kind() == "storage_class_specifier"
                                         || c.kind() == "type_qualifier"
                                 }))
@@ -1220,7 +1220,7 @@ impl FlexibleArrayAnalyzer {
                         // Handle primitive types like size_t, int, etc.
                         if i == 0
                             || (i == 1
-                                && declaration.child(0).map_or(false, |c| {
+                                && declaration.child(0).is_some_and(|c| {
                                     c.kind() == "storage_class_specifier"
                                         || c.kind() == "type_qualifier"
                                 }))
@@ -1249,11 +1249,7 @@ impl FlexibleArrayAnalyzer {
         // Second pass: look for struct type name with multiple strategies
         let type_name = self.find_struct_type_name_recursive(declaration, source);
 
-        if let Some(name) = type_name {
-            Some((name, is_const))
-        } else {
-            None
-        }
+        type_name.map(|name| (name, is_const))
     }
 
     fn find_const_qualifier_recursive(&self, node: &Node, source: &str, is_const: &mut bool) {
@@ -2109,11 +2105,9 @@ impl FlexibleArrayAnalyzer {
 
     fn get_function_name(&self, call_node: &Node, source: &str) -> Option<String> {
         // Extract function name from call_expression
-        if let Some(function) = call_node.child_by_field_name("function") {
-            Some(source[function.start_byte()..function.end_byte()].to_string())
-        } else {
-            None
-        }
+        call_node
+            .child_by_field_name("function")
+            .map(|function| source[function.start_byte()..function.end_byte()].to_string())
     }
 
     fn get_allocation_size_argument(&self, call_node: &Node, source: &str) -> Option<String> {
@@ -2257,9 +2251,8 @@ impl FlexibleArrayAnalyzer {
                 && !expr.contains("|")
             {
                 // Special case: Check for sizeof(*pointer) pattern
-                if sizeof_content.starts_with("*") {
+                if let Some(var_name) = sizeof_content.strip_prefix("*") {
                     // This is sizeof(*pointer), check if pointer likely points to flexible struct
-                    let var_name = &sizeof_content[1..]; // Remove the *
                     if self.is_likely_flexible_struct_pointer(var_name) {
                         return true;
                     }
@@ -2395,7 +2388,7 @@ impl FlexibleArrayAnalyzer {
     fn find_preceding_size_calculation(&self, call_node: &Node, source: &str) -> Option<String> {
         // Look for size calculations in the preceding 5-10 lines
         let call_line = call_node.start_position().row;
-        let start_search = if call_line >= 10 { call_line - 10 } else { 0 };
+        let start_search = call_line.saturating_sub(10);
 
         // This is a simplified implementation - in practice, you'd want to parse the AST
         // to find variable assignments that might contain size calculations
@@ -2512,7 +2505,7 @@ impl FlexibleArrayAnalyzer {
     ) -> Option<String> {
         // Look for variable assignments in the 10 lines preceding the realloc call
         let scope_line = scope_node.start_position().row;
-        let start_search = if scope_line >= 10 { scope_line - 10 } else { 0 };
+        let start_search = scope_line.saturating_sub(10);
 
         let lines: Vec<&str> = source.lines().collect();
 
@@ -2703,7 +2696,7 @@ impl FlexibleArrayAnalyzer {
                     }
                 }
             }
-            if args.len() >= 1 {
+            if !args.is_empty() {
                 return Some(args[0].clone()); // First argument is the target
             }
         }

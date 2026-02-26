@@ -187,8 +187,8 @@ impl Mem35C {
 
                         if target_normalized != sizeof_normalized {
                             // Allow some compatible types
-                            if !(target_normalized == "char" && sizeof_normalized == "1")
-                                && !(target_normalized.contains("struct")
+                            if !(target_normalized == "char" && sizeof_normalized == "1"
+                                || target_normalized.contains("struct")
                                     && sizeof_normalized.contains("struct"))
                             {
                                 return true;

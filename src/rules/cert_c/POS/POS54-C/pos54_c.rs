@@ -147,7 +147,7 @@ impl Pos54C {
         source: &str,
     ) -> bool {
         // Get the parent statement
-        let mut current_opt = Some(start_node.clone());
+        let mut current_opt = Some(*start_node);
         while let Some(current) = current_opt.as_ref() {
             if let Some(parent) = current.parent() {
                 if parent.kind() == "declaration" || parent.kind() == "expression_statement" {
@@ -163,7 +163,7 @@ impl Pos54C {
         let current = current_opt.as_ref().unwrap_or(start_node);
 
         // Get the compound statement (block) containing this statement
-        let mut block_opt = Some(current.clone());
+        let mut block_opt = Some(*current);
         while let Some(block) = block_opt.as_ref() {
             if let Some(parent) = block.parent() {
                 if parent.kind() == "compound_statement" {
@@ -205,6 +205,7 @@ impl Pos54C {
     }
 
     /// Check if a statement contains an error check for the variable
+    #[allow(clippy::only_used_in_recursion)]
     fn statement_checks_error(
         &self,
         node: &Node,
@@ -218,28 +219,26 @@ impl Pos54C {
                 let condition_text = get_node_text(&condition, source);
 
                 // Check for NULL check (fmemopen, open_memstream)
-                if Self::is_posix_null_error_function(function_name) {
-                    if condition_text.contains(var_name)
-                        && (condition_text.contains("== NULL")
-                            || condition_text.contains("!= NULL")
-                            || condition_text.contains("==NULL")
-                            || condition_text.contains("!=NULL")
-                            || format!("!{}", var_name) == condition_text.trim())
-                    {
-                        return true;
-                    }
+                if Self::is_posix_null_error_function(function_name)
+                    && condition_text.contains(var_name)
+                    && (condition_text.contains("== NULL")
+                        || condition_text.contains("!= NULL")
+                        || condition_text.contains("==NULL")
+                        || condition_text.contains("!=NULL")
+                        || format!("!{}", var_name) == condition_text.trim())
+                {
+                    return true;
                 }
 
                 // Check for non-zero check (posix_memalign)
-                if Self::is_posix_nonzero_error_function(function_name) {
-                    if condition_text.contains(var_name)
-                        && (condition_text.contains("!= 0")
-                            || condition_text.contains("== 0")
-                            || condition_text.contains("!=0")
-                            || condition_text.contains("==0"))
-                    {
-                        return true;
-                    }
+                if Self::is_posix_nonzero_error_function(function_name)
+                    && condition_text.contains(var_name)
+                    && (condition_text.contains("!= 0")
+                        || condition_text.contains("== 0")
+                        || condition_text.contains("!=0")
+                        || condition_text.contains("==0"))
+                {
+                    return true;
                 }
             }
         }
@@ -264,7 +263,7 @@ impl Pos54C {
         violations: &mut Vec<RuleViolation>,
     ) {
         let start_point = node.start_position();
-        let call_text = get_node_text(&node, source);
+        let call_text = get_node_text(node, source);
 
         violations.push(RuleViolation {
             rule_id: self.rule_id().to_string(),

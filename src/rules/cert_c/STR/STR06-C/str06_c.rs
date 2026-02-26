@@ -61,7 +61,7 @@ impl Str06C {
         if node.kind() == "call_expression" {
             if let Some(function_node) = node.child_by_field_name("function") {
                 let function_name = get_node_text(&function_node, source);
-                return &function_name[..] == "getenv";
+                return function_name == "getenv";
             }
         }
         false
@@ -225,7 +225,7 @@ impl Str06C {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = get_node_text(&function_node, source);
 
-            if &function_name[..] == "strtok" {
+            if function_name == "strtok" {
                 self.check_strtok_argument_with_vars(node, source, violations, getenv_vars);
             }
         }

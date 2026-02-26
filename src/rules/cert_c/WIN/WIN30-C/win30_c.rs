@@ -55,7 +55,7 @@ impl Win30C {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = get_node_text(&function_node, source);
 
-            match &function_name[..] {
+            match function_name {
                 "free"
                 | "LocalFree"
                 | "GlobalFree"
@@ -63,7 +63,7 @@ impl Win30C {
                 | "VirtualFreeEx"
                 | "HeapFree"
                 | "FreeUserPhysicalPages" => {
-                    self.check_deallocation_usage(&function_name, node, source, violations);
+                    self.check_deallocation_usage(function_name, node, source, violations);
                 }
                 _ => {}
             }
@@ -132,7 +132,7 @@ impl Win30C {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = get_node_text(&function_node, source);
 
-            if &function_name[..] == "FormatMessage" {
+            if function_name == "FormatMessage" {
                 // Check if first argument contains FORMAT_MESSAGE_ALLOCATE_BUFFER
                 if let Some(args_node) = node.child_by_field_name("arguments") {
                     if let Some(first_arg) = self.get_first_argument(&args_node) {
@@ -142,9 +142,7 @@ impl Win30C {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 severity: Severity::Medium,
-                                message: format!(
-                                    "FormatMessage() called with FORMAT_MESSAGE_ALLOCATE_BUFFER. The allocated buffer MUST be freed with LocalFree(), not free(), GlobalFree(), or other deallocators."
-                                ),
+                                message: "FormatMessage() called with FORMAT_MESSAGE_ALLOCATE_BUFFER. The allocated buffer MUST be freed with LocalFree(), not free(), GlobalFree(), or other deallocators.".to_string(),
                                 file_path: String::new(),
                                 line: node.start_position().row + 1,
                                 column: node.start_position().column + 1,
@@ -258,7 +256,7 @@ impl Win30C {
         if node.kind() == "call_expression" {
             if let Some(function_node) = node.child_by_field_name("function") {
                 let function_name = get_node_text(&function_node, source);
-                if &function_name[..] == "FormatMessage" {
+                if function_name == "FormatMessage" {
                     if let Some(args_node) = node.child_by_field_name("arguments") {
                         if let Some(first_arg) = self.get_first_argument(&args_node) {
                             let arg_text = get_node_text(&first_arg, source);
@@ -281,11 +279,12 @@ impl Win30C {
         false
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn contains_global_free(&self, node: &Node, source: &str) -> bool {
         if node.kind() == "call_expression" {
             if let Some(function_node) = node.child_by_field_name("function") {
                 let function_name = get_node_text(&function_node, source);
-                if &function_name[..] == "GlobalFree" {
+                if function_name == "GlobalFree" {
                     return true;
                 }
             }
@@ -310,7 +309,7 @@ impl Win30C {
         if node.kind() == "call_expression" {
             if let Some(function_node) = node.child_by_field_name("function") {
                 let function_name = get_node_text(&function_node, source);
-                if &function_name[..] == "GlobalFree" {
+                if function_name == "GlobalFree" {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: self.severity(),

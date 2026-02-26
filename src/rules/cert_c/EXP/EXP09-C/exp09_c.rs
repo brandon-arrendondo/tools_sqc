@@ -96,14 +96,10 @@ impl Exp09C {
 
             // For calloc(count, size), check the size argument (second parameter)
             // For malloc(size) and realloc(ptr, size), check the size argument
-            let size_arg_index = if func_name == "calloc" {
+            let size_arg_index = if func_name == "calloc" || func_name == "realloc" {
                 1
             } else {
-                if func_name == "realloc" {
-                    1
-                } else {
-                    0
-                }
+                0
             };
 
             if let Some(size_arg) = args.get(size_arg_index) {

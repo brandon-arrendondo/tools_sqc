@@ -88,17 +88,14 @@ impl GlobalTracker {
 
     /// First scan: identify global variables at file scope
     fn scan_for_globals(&mut self, node: &Node, source: &str) {
-        match node.kind() {
-            "declaration" => {
-                // Check if this is at file scope (parent is translation_unit)
-                if let Some(parent) = node.parent() {
-                    if parent.kind() == "translation_unit" {
-                        // Extract declared variable names
-                        self.extract_global_declarations(node, source);
-                    }
+        if node.kind() == "declaration" {
+            // Check if this is at file scope (parent is translation_unit)
+            if let Some(parent) = node.parent() {
+                if parent.kind() == "translation_unit" {
+                    // Extract declared variable names
+                    self.extract_global_declarations(node, source);
                 }
             }
-            _ => {}
         }
 
         for i in 0..node.child_count() {
@@ -1105,14 +1102,11 @@ impl MemoryAnalyzer {
 
     /// Main analysis entry point - recursively analyze the AST
     fn analyze_node(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        match node.kind() {
-            "function_definition" => {
-                // Analyze each function with fresh state to avoid cross-function pollution
-                let mut func_analyzer = MemoryAnalyzer::new();
-                func_analyzer.analyze_function(node, source, violations);
-                return; // Don't recurse further - function handled completely
-            }
-            _ => {}
+        if node.kind() == "function_definition" {
+            // Analyze each function with fresh state to avoid cross-function pollution
+            let mut func_analyzer = MemoryAnalyzer::new();
+            func_analyzer.analyze_function(node, source, violations);
+            return; // Don't recurse further - function handled completely
         }
 
         // Recursively process child nodes (top-level traversal)
@@ -1518,7 +1512,7 @@ impl MemoryAnalyzer {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = get_node_text(&function_node, source);
 
-            match function_name.as_ref() {
+            match function_name {
                 "free" => {
                     self.process_free_call(node, source, violations);
                 }

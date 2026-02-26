@@ -155,7 +155,7 @@ impl Dcl36C {
         violations: &mut Vec<RuleViolation>,
     ) {
         let mut decls = self.declarations.borrow_mut();
-        let entry = decls.entry(name.clone()).or_insert_with(Vec::new);
+        let entry = decls.entry(name.clone()).or_default();
 
         // Check if this identifier already has a declaration with different linkage
         for prev in entry.iter() {

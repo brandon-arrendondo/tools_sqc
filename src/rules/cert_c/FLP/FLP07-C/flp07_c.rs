@@ -81,7 +81,6 @@ impl Flp07C {
                                 column,
                                 suggestion: Some("Cast the function return value to the expected type".to_string()),
                                 requires_manual_review: Some(true),
-                                ..Default::default()
                             });
                         }
                     }
@@ -166,7 +165,6 @@ impl Flp07C {
                                                 column,
                                                 suggestion: Some("Cast the function return value to the expected type".to_string()),
                                                 requires_manual_review: Some(true),
-                                                ..Default::default()
                                             });
                                         }
                                     }
