@@ -62,6 +62,21 @@ const UNSIGNED_TYPES: &[&str] = &[
 const NARROW_TYPES: &[&str] = &["char", "signed char", "unsigned char", "int8_t", "uint8_t"];
 
 const WIDE_TYPES: &[&str] = &[
+    // 16-bit types (wider than NARROW_TYPES which are 8-bit)
+    "short",
+    "unsigned short",
+    "short int",
+    "unsigned short int",
+    "int16_t",
+    "uint16_t",
+    // 32-bit types
+    "int",
+    "unsigned",
+    "unsigned int",
+    "signed int",
+    "int32_t",
+    "uint32_t",
+    // 64-bit types
     "long",
     "unsigned long",
     "long int",
@@ -330,12 +345,67 @@ impl Int31C {
             }
         }
 
+        // Detect bounded constant assignments: data = CHAR_MAX - 5;
+        // If a tracked variable is assigned a value referencing a type-limit macro,
+        // the programmer is aware of type bounds and subsequent casts are intentional.
+        if node.kind() == "expression_statement" {
+            if let Some(expr) = node.child(0) {
+                if expr.kind() == "assignment_expression" {
+                    if let Some(left) = expr.child_by_field_name("left") {
+                        let lhs = get_node_text(&left, source).trim().to_string();
+                        if var_types.contains_key(&lhs) {
+                            if let Some(right) = expr.child_by_field_name("right") {
+                                let rhs = get_node_text(&right, source);
+                                if Self::rhs_has_narrow_limit_macro(rhs) {
+                                    validated_vars.insert(lhs);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Also check init_declarator: int data = CHAR_MAX - 5;
+        if node.kind() == "init_declarator" {
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                let var_name = self.extract_var_name(&declarator, source);
+                if !var_name.is_empty() {
+                    if let Some(value) = node.child_by_field_name("value") {
+                        let rhs = get_node_text(&value, source);
+                        if Self::rhs_has_narrow_limit_macro(rhs) {
+                            validated_vars.insert(var_name);
+                        }
+                    }
+                }
+            }
+        }
+
         // Recurse
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 self.collect_validations(&child, source, validated_vars, var_types);
             }
         }
+    }
+
+    /// Check if a right-hand-side expression references a narrow-type limit macro.
+    /// Only suppress for macros that bound the value to a narrow (char-sized) range.
+    /// Wide-type limits like LONG_MAX or INT_MAX suggest the value may be too large
+    /// for a narrowing cast, so those should NOT suppress (e.g., `s_a = LONG_MAX;
+    /// (signed char)s_a` is a genuine truncation).
+    fn rhs_has_narrow_limit_macro(rhs: &str) -> bool {
+        const NARROW_LIMIT_MACROS: &[&str] = &[
+            "CHAR_MAX",
+            "CHAR_MIN",
+            "SCHAR_MAX",
+            "SCHAR_MIN",
+            "UCHAR_MAX",
+            "INT8_MAX",
+            "INT8_MIN",
+            "UINT8_MAX",
+        ];
+        NARROW_LIMIT_MACROS.iter().any(|m| rhs.contains(m))
     }
 
     fn check_unsafe_conversions(
@@ -509,6 +579,11 @@ impl Int31C {
         // Get source type if known
         let source_type = var_types.get(&source_expr).cloned().unwrap_or_default();
         if source_type.is_empty() {
+            // Even without a resolved source type, detect narrowing when the cast
+            // operand is a shift expression (e.g., `(uint8_t)(val >> 8)`). A right-shift
+            // by >= 8 bits implies the source is at least 16-bit, so casting to uint8_t
+            // is a narrowing conversion that may lose data.
+            self.check_shift_narrowing(node, source, &source_expr, &target_type, violations);
             return;
         }
 
@@ -521,6 +596,9 @@ impl Int31C {
 
         // Signed to unsigned without validation
         if self.is_signed_type(&source_type) && self.is_unsigned_type(&target_clean) {
+            if self.is_inside_bounds_checked_block(node, source, &source_expr) {
+                return;
+            }
             let pos = node.start_position();
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
@@ -541,6 +619,9 @@ impl Int31C {
 
         // Unsigned to signed without validation
         if self.is_unsigned_type(&source_type) && self.is_signed_type(&target_clean) {
+            if self.is_inside_bounds_checked_block(node, source, &source_expr) {
+                return;
+            }
             let pos = node.start_position();
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
@@ -561,6 +642,9 @@ impl Int31C {
 
         // Narrowing conversion (wide to narrow)
         if self.is_wide_type(&source_type) && self.is_narrow_type(&target_clean) {
+            if self.is_inside_bounds_checked_block(node, source, &source_expr) {
+                return;
+            }
             let pos = node.start_position();
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
@@ -579,6 +663,137 @@ impl Int31C {
                 ..Default::default()
             });
         }
+    }
+
+    /// Detect narrowing when a left-shift expression is cast to a narrow type.
+    /// Left-shift moves bits up, then narrow cast discards high bits = data loss.
+    /// Right-shift before narrow cast is intentional byte extraction and is SAFE:
+    ///   `(uint8_t)(val >> 8)` extracts the high byte — no data loss.
+    fn check_shift_narrowing(
+        &self,
+        node: &Node,
+        _source: &str,
+        source_expr: &str,
+        target_type: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let target_clean = target_type
+            .replace("(", "")
+            .replace(")", "")
+            .trim()
+            .to_string();
+        if !self.is_narrow_type(&target_clean) {
+            return;
+        }
+
+        // Right-shift before narrow cast = byte extraction = safe (FP-010).
+        // Only flag left-shift before narrow cast, which loses high bits.
+        if source_expr.contains("<<") && !source_expr.contains(">>") {
+            let pos = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Narrowing conversion: '{}' shifted left and cast to {} may lose upper bits",
+                    source_expr, target_clean
+                ),
+                file_path: String::new(),
+                line: pos.row + 1,
+                column: pos.column + 1,
+                suggestion: Some(
+                    "Ensure the shifted value fits in the target type or use a wider type"
+                        .to_string(),
+                ),
+                ..Default::default()
+            });
+        }
+    }
+
+    /// Check if a node is inside a bounds-checked block — an enclosing
+    /// if-statement (or ternary) whose condition validates the source expression
+    /// against a type-limit macro (CHAR_MAX, SCHAR_MIN, UINT8_MAX, etc.).
+    fn is_inside_bounds_checked_block(&self, node: &Node, source: &str, source_expr: &str) -> bool {
+        const LIMIT_MACROS: &[&str] = &[
+            "CHAR_MAX",
+            "CHAR_MIN",
+            "SCHAR_MAX",
+            "SCHAR_MIN",
+            "UCHAR_MAX",
+            "SHRT_MAX",
+            "SHRT_MIN",
+            "USHRT_MAX",
+            "INT_MAX",
+            "INT_MIN",
+            "UINT_MAX",
+            "LONG_MAX",
+            "LONG_MIN",
+            "ULONG_MAX",
+            "LLONG_MAX",
+            "LLONG_MIN",
+            "ULLONG_MAX",
+            "INT8_MAX",
+            "INT8_MIN",
+            "UINT8_MAX",
+            "INT16_MAX",
+            "INT16_MIN",
+            "UINT16_MAX",
+            "INT32_MAX",
+            "INT32_MIN",
+            "UINT32_MAX",
+            "INT64_MAX",
+            "INT64_MIN",
+            "UINT64_MAX",
+            "SIZE_MAX",
+        ];
+
+        if source_expr.is_empty() {
+            return false;
+        }
+
+        let mut current = *node;
+        for _ in 0..15 {
+            let parent = match current.parent() {
+                Some(p) => p,
+                None => break,
+            };
+
+            if parent.kind() == "if_statement" {
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+
+                    let has_comparison = cond_text.contains('<')
+                        || cond_text.contains('>')
+                        || cond_text.contains("<=")
+                        || cond_text.contains(">=");
+
+                    let has_bound = LIMIT_MACROS.iter().any(|m| cond_text.contains(m));
+
+                    let references_operand = cond_text.contains(source_expr);
+
+                    if has_comparison && has_bound && references_operand {
+                        return true;
+                    }
+                }
+            }
+
+            // Also check ternary (conditional_expression)
+            if parent.kind() == "conditional_expression" {
+                if let Some(condition) = parent.child(0) {
+                    let cond_text = get_node_text(&condition, source);
+
+                    let has_comparison = cond_text.contains('<') || cond_text.contains('>');
+                    let has_bound = LIMIT_MACROS.iter().any(|m| cond_text.contains(m));
+                    let references_operand = cond_text.contains(source_expr);
+
+                    if has_comparison && has_bound && references_operand {
+                        return true;
+                    }
+                }
+            }
+
+            current = parent;
+        }
+        false
     }
 
     fn get_cast_operand(&self, node: &Node, source: &str) -> String {
