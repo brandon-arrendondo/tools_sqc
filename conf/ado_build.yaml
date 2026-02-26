@@ -104,8 +104,8 @@ stages:
     displayName: "Package"
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
     jobs:
-      - job:
-        displayName: "Package"
+      - job: PublishCrate
+        displayName: "Publish Crate"
         variables:
           SYSTEM_ACCESSTOKEN: $(System.AccessToken)
         steps:
@@ -132,4 +132,39 @@ stages:
           - script: |
               source $HOME/.cargo/env
               cargo publish --registry ELEC_SW_Rust_Packages --allow-dirty
-            displayName: "Publish to Azure Artifacts"
+            displayName: "Publish crate to Azure Artifacts"
+
+      - job: PublishBinary
+        displayName: "Publish Binary"
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: DownloadBuildArtifacts@1
+            displayName: "Download build artifact"
+            inputs:
+              buildType: current
+              downloadType: single
+              artifactName: sqc
+              downloadPath: $(System.ArtifactsDirectory)
+
+          - script: |
+              chmod +x $(System.ArtifactsDirectory)/sqc/sqc
+            displayName: "Set binary executable"
+
+          - script: |
+              SQC_VERSION=$(grep '^version' Cargo.toml | head -1 | sed 's/.*"\(.*\)"/\1/')
+              echo "##vso[task.setvariable variable=SQC_VERSION]$SQC_VERSION"
+              echo "Publishing sqc version: $SQC_VERSION"
+            displayName: "Extract version from Cargo.toml"
+
+          - task: UniversalPackages@0
+            displayName: "Publish binary to Azure Artifacts"
+            inputs:
+              command: publish
+              publishDirectory: $(System.ArtifactsDirectory)/sqc
+              feedsToUsePublish: internal
+              vstsFeedPublish: ELEC_SW/ELEC_SW_Rust_Packages
+              vstsFeedPackagePublish: sqc
+              versionOption: custom
+              versionPublish: $(SQC_VERSION)
