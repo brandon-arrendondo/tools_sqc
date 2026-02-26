@@ -95,9 +95,7 @@ impl Sig01C {
                                 violations.push(RuleViolation {
                                     rule_id: self.rule_id().to_string(),
                                     severity: Severity::Low,
-                                    message: format!(
-                                        "Use of signal() has implementation-defined behavior regarding handler persistence. Consider using sigaction() for portable behavior."
-                                    ),
+                                    message: "Use of signal() has implementation-defined behavior regarding handler persistence. Consider using sigaction() for portable behavior.".to_string(),
                                     file_path: String::new(),
                                     line: node.start_position().row + 1,
                                     column: node.start_position().column + 1,

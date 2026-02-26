@@ -94,19 +94,17 @@ impl Int35C {
                         let right_text = get_node_text(&right, source);
 
                         // Check for pattern: sizeof(...) * CHAR_BIT or CHAR_BIT * sizeof(...)
-                        let has_sizeof_char_bit = (self.is_sizeof_expression(&left_text)
-                            && self.is_char_bit(&right_text))
-                            || (self.is_char_bit(&left_text)
-                                && self.is_sizeof_expression(&right_text));
+                        let has_sizeof_char_bit = (self.is_sizeof_expression(left_text)
+                            && self.is_char_bit(right_text))
+                            || (self.is_char_bit(left_text)
+                                && self.is_sizeof_expression(right_text));
 
                         if has_sizeof_char_bit {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
-                                message: format!(
-                                    "Using 'sizeof(...) * CHAR_BIT' to determine integer precision \
+                                message: "Using 'sizeof(...) * CHAR_BIT' to determine integer precision \
                                      is incorrect when padding bits exist. Use PRECISION() macro, \
-                                     popcount(), or C23 *_WIDTH macros instead."
-                                ),
+                                     popcount(), or C23 *_WIDTH macros instead.".to_string(),
                                 severity: self.severity(),
                                 line: node.start_position().row + 1,
                                 column: node.start_position().column + 1,

@@ -128,28 +128,28 @@ impl Int30C {
                 return;
             }
 
-            if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
-                if !self.has_overflow_check_addition(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(node, source);
+            if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
+                && !self.has_overflow_check_addition(node, source)
+            {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Unsigned integer addition '{}' may wrap without overflow checking",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some(
-                            "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
-                                .to_string(),
-                        ),
-                        ..Default::default()
-                    });
-                }
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Unsigned integer addition '{}' may wrap without overflow checking",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Add overflow check: if (UINT_MAX - a < b) { /* handle error */ }"
+                            .to_string(),
+                    ),
+                    ..Default::default()
+                });
             }
         }
     }
@@ -173,27 +173,27 @@ impl Int30C {
                 return;
             }
 
-            if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
-                if !self.has_overflow_check_subtraction(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(node, source);
+            if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
+                && !self.has_overflow_check_subtraction(node, source)
+            {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Unsigned integer subtraction '{}' may wrap without underflow checking",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some(
-                            "Add underflow check: if (a < b) { /* handle error */ }".to_string(),
-                        ),
-                        ..Default::default()
-                    });
-                }
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Unsigned integer subtraction '{}' may wrap without underflow checking",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Add underflow check: if (a < b) { /* handle error */ }".to_string(),
+                    ),
+                    ..Default::default()
+                });
             }
         }
     }
@@ -212,25 +212,28 @@ impl Int30C {
             let left_type = self.infer_type(&left, source, type_map);
             let right_type = self.infer_type(&right, source, type_map);
 
-            if self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type) {
-                if !self.has_overflow_check_multiplication(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(node, source);
+            if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
+                && !self.has_overflow_check_multiplication(node, source)
+            {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Unsigned integer multiplication '{}' may wrap without overflow checking",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }".to_string()),
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Unsigned integer multiplication '{}' may wrap without overflow checking",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Add overflow check: if (a > UINT_MAX / b) { /* handle error */ }"
+                            .to_string(),
+                    ),
                     ..Default::default()
-                    });
-                }
+                });
             }
         }
     }
@@ -248,25 +251,23 @@ impl Int30C {
         ) {
             let left_type = self.infer_type(&left, source, type_map);
 
-            if self.is_unsigned_type(&left_type) {
-                if !self.has_shift_overflow_check(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(node, source);
+            if self.is_unsigned_type(&left_type) && !self.has_shift_overflow_check(node, source) {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Unsigned integer left shift '{}' may cause overflow without checking",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Add shift overflow check before shifting".to_string()),
-                        ..Default::default()
-                    });
-                }
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Unsigned integer left shift '{}' may cause overflow without checking",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Add shift overflow check before shifting".to_string()),
+                    ..Default::default()
+                });
             }
         }
     }
@@ -286,25 +287,24 @@ impl Int30C {
                 return;
             }
 
-            if self.is_unsigned_type(&left_type) {
-                if !self.has_overflow_check_compound(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(node, source);
+            if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
+            {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Unsigned integer compound addition '{}' may wrap without overflow checking",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Add overflow check before compound assignment".to_string()),
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Unsigned integer compound addition '{}' may wrap without overflow checking",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Add overflow check before compound assignment".to_string()),
                     ..Default::default()
-                    });
-                }
+                });
             }
         }
     }
@@ -324,25 +324,24 @@ impl Int30C {
                 return;
             }
 
-            if self.is_unsigned_type(&left_type) {
-                if !self.has_overflow_check_compound(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(node, source);
+            if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
+            {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Unsigned integer compound subtraction '{}' may wrap without underflow checking",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Add underflow check before compound assignment".to_string()),
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Unsigned integer compound subtraction '{}' may wrap without underflow checking",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Add underflow check before compound assignment".to_string()),
                     ..Default::default()
-                    });
-                }
+                });
             }
         }
     }
@@ -357,25 +356,24 @@ impl Int30C {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source, type_map);
 
-            if self.is_unsigned_type(&left_type) {
-                if !self.has_overflow_check_compound(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(node, source);
+            if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
+            {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Unsigned integer compound multiplication '{}' may wrap without overflow checking",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Add overflow check before compound assignment".to_string()),
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Unsigned integer compound multiplication '{}' may wrap without overflow checking",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Add overflow check before compound assignment".to_string()),
                     ..Default::default()
-                    });
-                }
+                });
             }
         }
     }
@@ -390,25 +388,24 @@ impl Int30C {
         if let Some(left) = node.child_by_field_name("left") {
             let left_type = self.infer_type(&left, source, type_map);
 
-            if self.is_unsigned_type(&left_type) {
-                if !self.has_overflow_check_compound(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(node, source);
+            if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
+            {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Unsigned integer compound left shift '{}' may cause overflow without checking",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Add shift overflow check before compound assignment".to_string()),
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Unsigned integer compound left shift '{}' may cause overflow without checking",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Add shift overflow check before compound assignment".to_string()),
                     ..Default::default()
-                    });
-                }
+                });
             }
         }
     }
@@ -765,7 +762,7 @@ impl Int30C {
 
         // Extract variable names from declarators
         if let Some(declarator) = node.child_by_field_name("declarator") {
-            if let Some(name) = self.extract_identifier_name(&declarator, source) {
+            if let Some(name) = Self::extract_identifier_name(&declarator, source) {
                 type_map.insert(name, type_text.clone());
             }
         }
@@ -775,7 +772,7 @@ impl Int30C {
             if let Some(child) = node.child(i) {
                 if child.kind() == "init_declarator" {
                     if let Some(decl) = child.child_by_field_name("declarator") {
-                        if let Some(name) = self.extract_identifier_name(&decl, source) {
+                        if let Some(name) = Self::extract_identifier_name(&decl, source) {
                             type_map.insert(name, type_text.clone());
                         }
                     }
@@ -784,12 +781,12 @@ impl Int30C {
         }
     }
 
-    fn extract_identifier_name(&self, node: &Node, source: &str) -> Option<String> {
+    fn extract_identifier_name(node: &Node, source: &str) -> Option<String> {
         match node.kind() {
             "identifier" => Some(get_node_text(node, source).to_string()),
             "pointer_declarator" | "array_declarator" | "parenthesized_declarator" => {
                 if let Some(inner) = node.child_by_field_name("declarator") {
-                    self.extract_identifier_name(&inner, source)
+                    Self::extract_identifier_name(&inner, source)
                 } else {
                     None
                 }
@@ -948,18 +945,18 @@ impl Int30C {
     fn extract_operand_names(&self, node: &Node, source: &str) -> Vec<String> {
         let mut names = Vec::new();
         if let Some(left) = node.child_by_field_name("left") {
-            self.collect_identifiers(&left, source, &mut names);
+            Self::collect_identifiers(&left, source, &mut names);
         }
         if let Some(right) = node.child_by_field_name("right") {
-            self.collect_identifiers(&right, source, &mut names);
+            Self::collect_identifiers(&right, source, &mut names);
         }
         if let Some(arg) = node.child_by_field_name("argument") {
-            self.collect_identifiers(&arg, source, &mut names);
+            Self::collect_identifiers(&arg, source, &mut names);
         }
         names
     }
 
-    fn collect_identifiers(&self, node: &Node, source: &str, names: &mut Vec<String>) {
+    fn collect_identifiers(node: &Node, source: &str, names: &mut Vec<String>) {
         if node.kind() == "identifier" {
             let name = get_node_text(node, source).to_string();
             if !names.contains(&name) {
@@ -968,7 +965,7 @@ impl Int30C {
         }
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_identifiers(&child, source, names);
+                Self::collect_identifiers(&child, source, names);
             }
         }
     }
@@ -1020,14 +1017,14 @@ impl Int30C {
                     let cond_text = get_node_text(&condition, source);
                     let has_limit = UNSIGNED_LIMIT_MACROS
                         .iter()
-                        .any(|m| self.contains_word(&cond_text, m));
+                        .any(|m| self.contains_word(cond_text, m));
                     if has_limit {
                         if op_names.is_empty() {
                             return true;
                         }
                         if op_names
                             .iter()
-                            .any(|name| self.contains_word(&cond_text, name))
+                            .any(|name| self.contains_word(cond_text, name))
                         {
                             return true;
                         }
@@ -1134,7 +1131,7 @@ impl Int30C {
     /// For-loop update increments (i++) are bounded by the loop condition,
     /// making unsigned wrap impossible in normal usage.
     fn is_in_for_loop_update(&self, node: &Node) -> bool {
-        let mut current = Some(node.clone());
+        let mut current = Some(*node);
         while let Some(n) = current {
             if let Some(parent) = n.parent() {
                 if parent.kind() == "for_statement" {

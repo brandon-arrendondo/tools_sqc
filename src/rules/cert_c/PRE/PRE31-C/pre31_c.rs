@@ -38,11 +38,8 @@ impl CertRule for Pre31C {
 
 impl Pre31C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        match node.kind() {
-            "call_expression" => {
-                self.check_macro_call(node, source, violations);
-            }
-            _ => {}
+        if node.kind() == "call_expression" {
+            self.check_macro_call(node, source, violations);
         }
 
         // Recursively check child nodes
@@ -248,11 +245,10 @@ impl Pre31C {
             };
             let after = arg.chars().nth(pos + 1);
 
-            match (before, after) {
-                (Some('!'), _) | (Some('='), _) | (Some('<'), _) | (Some('>'), _) => false,
-                (_, Some('=')) => false,
-                _ => true,
-            }
+            !matches!(
+                (before, after),
+                (Some('!' | '=' | '<' | '>'), _) | (_, Some('='))
+            )
         } else {
             false
         }

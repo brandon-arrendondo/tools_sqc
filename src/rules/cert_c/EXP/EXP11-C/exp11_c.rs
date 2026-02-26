@@ -192,8 +192,8 @@ fn collect_bitfield_vars_recursive<'a>(
 /// Extracts struct name from type text like "struct bf"
 fn extract_struct_name(type_text: &str) -> Option<&str> {
     let trimmed = type_text.trim();
-    if trimmed.starts_with("struct ") {
-        Some(trimmed["struct ".len()..].trim())
+    if let Some(rest) = trimmed.strip_prefix("struct ") {
+        Some(rest.trim())
     } else {
         None
     }

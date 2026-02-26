@@ -537,13 +537,9 @@ impl Str34C {
                     None
                 }
             }
-            "field_expression" => {
-                if let Some(field) = node.child_by_field_name("field") {
-                    Some(get_node_text(&field, source).to_string())
-                } else {
-                    None
-                }
-            }
+            "field_expression" => node
+                .child_by_field_name("field")
+                .map(|field| get_node_text(&field, source).to_string()),
             "pointer_expression" => {
                 if let Some(argument) = node.child_by_field_name("argument") {
                     self.extract_identifier(&argument, source)

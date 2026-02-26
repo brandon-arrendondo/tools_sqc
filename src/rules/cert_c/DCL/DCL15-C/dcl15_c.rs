@@ -254,11 +254,9 @@ impl Dcl15C {
 
     fn extract_return_type(&self, function_def: &Node, source: &str) -> Option<String> {
         // Look for type node
-        if let Some(type_node) = function_def.child_by_field_name("type") {
-            Some(get_node_text(&type_node, source).to_string())
-        } else {
-            None
-        }
+        function_def
+            .child_by_field_name("type")
+            .map(|type_node| get_node_text(&type_node, source).to_string())
     }
 
     fn is_variable_declaration(&self, node: &Node, source: &str) -> bool {

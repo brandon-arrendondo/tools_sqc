@@ -14,7 +14,7 @@ pub fn export_all_violations_to_csv(
     let mut writer = Writer::from_path(csv_path)?;
 
     // Write CSV headers
-    writer.write_record(&[
+    writer.write_record([
         "Title",
         "Description",
         "Work Item Type",
@@ -40,7 +40,7 @@ pub fn export_all_violations_to_csv(
             violation.rule_id, rule_description, code_snippet
         );
 
-        writer.write_record(&[&title, &description, "Bug", "Proposed", "1 - Critical", "1"])?;
+        writer.write_record([&title, &description, "Bug", "Proposed", "1 - Critical", "1"])?;
     }
 
     writer.flush()?;

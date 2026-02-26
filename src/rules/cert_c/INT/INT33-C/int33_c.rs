@@ -286,34 +286,32 @@ impl Int33C {
 
             // Check if divisor is a variable, array element, field, expression, pointer dereference, or function call that might be zero
             // Look for preceding check
-            if right.kind() == "identifier"
+            if (right.kind() == "identifier"
                 || right.kind() == "field_expression"
                 || right.kind() == "subscript_expression"  // Array/pointer subscript like divisors[i]
                 || right.kind() == "call_expression" // Function calls like get_divisor()
                 || right.kind() == "binary_expression" // Expressions like (a - b)
                 || right.kind() == "parenthesized_expression" // Parenthesized expressions
                 || right.kind() == "pointer_expression" // Pointer dereference like *ptr
-                || right.kind() == "unary_expression"
-            // Other unary expressions
+                || right.kind() == "unary_expression")
+                && !self.is_divisor_checked(node, &right, source)
             {
-                if !self.is_divisor_checked(node, &right, source) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: self.severity(),
-                        message: format!(
-                            "Division or modulo by '{}' without checking for zero",
-                            right_text
-                        ),
-                        file_path: String::new(),
-                        line: node.start_position().row + 1,
-                        column: node.start_position().column + 1,
-                        suggestion: Some(format!(
-                            "Check if '{}' is not zero before division",
-                            right_text
-                        )),
-                        ..Default::default()
-                    });
-                }
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: format!(
+                        "Division or modulo by '{}' without checking for zero",
+                        right_text
+                    ),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(format!(
+                        "Check if '{}' is not zero before division",
+                        right_text
+                    )),
+                    ..Default::default()
+                });
             }
         }
     }
@@ -346,33 +344,32 @@ impl Int33C {
             }
 
             // Check if divisor is a variable, array element, field, expression, pointer dereference, or function call that might be zero
-            if right.kind() == "identifier"
+            if (right.kind() == "identifier"
                 || right.kind() == "field_expression"
                 || right.kind() == "subscript_expression"
                 || right.kind() == "call_expression"
                 || right.kind() == "binary_expression"
                 || right.kind() == "parenthesized_expression"
                 || right.kind() == "pointer_expression"
-                || right.kind() == "unary_expression"
+                || right.kind() == "unary_expression")
+                && !self.is_divisor_checked(node, &right, source)
             {
-                if !self.is_divisor_checked(node, &right, source) {
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: self.severity(),
-                        message: format!(
-                            "Compound assignment with '{}' without checking for zero",
-                            right_text
-                        ),
-                        file_path: String::new(),
-                        line: node.start_position().row + 1,
-                        column: node.start_position().column + 1,
-                        suggestion: Some(format!(
-                            "Check if '{}' is not zero before division",
-                            right_text
-                        )),
-                        ..Default::default()
-                    });
-                }
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: format!(
+                        "Compound assignment with '{}' without checking for zero",
+                        right_text
+                    ),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(format!(
+                        "Check if '{}' is not zero before division",
+                        right_text
+                    )),
+                    ..Default::default()
+                });
             }
         }
     }
@@ -382,22 +379,20 @@ impl Int33C {
         let divisor_text = ast_utils::get_node_text(divisor, source);
 
         // Extract base variable name from complex expressions
-        let base_var_name = self.extract_base_variable(divisor, source);
+        let base_var_name = Self::extract_base_variable(divisor, source);
 
         // For struct field accesses like frac->denominator, check if there's validation
         // in the struct's initialization or constructor function
-        if divisor.kind() == "field_expression" {
-            if self.is_struct_field_validated(divisor, source) {
-                return true;
-            }
+        if divisor.kind() == "field_expression" && self.is_struct_field_validated(divisor, source) {
+            return true;
         }
 
         // Find the containing function
-        if let Some(func) = ast_utils::find_containing_function(&div_node) {
+        if let Some(func) = ast_utils::find_containing_function(div_node) {
             if let Some(body) = func.child_by_field_name("body") {
                 // Check if there's an early return or error handling for zero divisor
                 // Check both the full expression and the base variable
-                if self.has_early_return_for_zero(&body, &divisor_text, source, div_node)
+                if self.has_early_return_for_zero(&body, divisor_text, source, div_node)
                     || (base_var_name != divisor_text
                         && self.has_early_return_for_zero(&body, &base_var_name, source, div_node))
                 {
@@ -412,7 +407,7 @@ impl Int33C {
             // Look for if statements that check the divisor
             if node.kind() == "if_statement" {
                 if let Some(condition) = node.child_by_field_name("condition") {
-                    if self.checks_for_zero(&condition, &divisor_text, source)
+                    if self.checks_for_zero(&condition, divisor_text, source)
                         || (base_var_name != divisor_text
                             && self.checks_for_zero(&condition, &base_var_name, source))
                     {
@@ -432,13 +427,13 @@ impl Int33C {
 
     /// Extract the base variable name from an expression
     /// For example: (-step) -> step, (*ptr) -> ptr, frac->denominator -> denominator
-    fn extract_base_variable(&self, node: &Node, source: &str) -> String {
+    fn extract_base_variable(node: &Node, source: &str) -> String {
         match node.kind() {
             "identifier" => ast_utils::get_node_text(node, source).to_string(),
             "parenthesized_expression" => {
                 // Look inside parentheses
                 if let Some(child) = node.named_child(0) {
-                    self.extract_base_variable(&child, source)
+                    Self::extract_base_variable(&child, source)
                 } else {
                     ast_utils::get_node_text(node, source).to_string()
                 }
@@ -446,7 +441,7 @@ impl Int33C {
             "unary_expression" | "pointer_expression" => {
                 // For unary like (-step) or (*ptr), extract the argument
                 if let Some(argument) = node.child_by_field_name("argument") {
-                    self.extract_base_variable(&argument, source)
+                    Self::extract_base_variable(&argument, source)
                 } else {
                     ast_utils::get_node_text(node, source).to_string()
                 }
@@ -488,7 +483,7 @@ impl Int33C {
                         if self.checks_for_zero(&condition, var_name, source) {
                             // Check if the consequence has return/exit
                             if let Some(consequence) = child.child_by_field_name("consequence") {
-                                if self.has_return_or_exit(&consequence, source) {
+                                if Self::has_return_or_exit(&consequence, source) {
                                     return true;
                                 }
                             }
@@ -513,7 +508,7 @@ impl Int33C {
     }
 
     /// Check if a branch contains return or exit
-    fn has_return_or_exit(&self, node: &Node, source: &str) -> bool {
+    fn has_return_or_exit(node: &Node, source: &str) -> bool {
         let text = ast_utils::get_node_text(node, source);
 
         if text.contains("return") || text.contains("exit") || text.contains("abort") {
@@ -529,7 +524,7 @@ impl Int33C {
                 {
                     return true;
                 }
-                if self.has_return_or_exit(&child, source) {
+                if Self::has_return_or_exit(&child, source) {
                     return true;
                 }
             }
@@ -542,14 +537,14 @@ impl Int33C {
     fn is_in_safe_branch(&self, if_node: &Node, div_node: &Node) -> bool {
         // Check if div_node is a descendant of the if_statement's consequence
         if let Some(consequence) = if_node.child_by_field_name("consequence") {
-            if self.is_descendant(&consequence, div_node) {
+            if Self::is_descendant(&consequence, div_node) {
                 return true;
             }
         }
 
         // Check if there's an alternative (else) branch
         if let Some(alternative) = if_node.child_by_field_name("alternative") {
-            if self.is_descendant(&alternative, div_node) {
+            if Self::is_descendant(&alternative, div_node) {
                 return true;
             }
         }
@@ -558,14 +553,14 @@ impl Int33C {
     }
 
     /// Check if target is a descendant of node
-    fn is_descendant(&self, node: &Node, target: &Node) -> bool {
+    fn is_descendant(node: &Node, target: &Node) -> bool {
         if node.id() == target.id() {
             return true;
         }
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if self.is_descendant(&child, target) {
+                if Self::is_descendant(&child, target) {
                     return true;
                 }
             }
@@ -652,8 +647,7 @@ impl Int33C {
                         && (line.contains("if") || line.contains("IF"))
                     {
                         // Look in the next few lines for error handling (return/exit/abort)
-                        for check_idx in idx..std::cmp::min(idx + 10, lines.len()) {
-                            let check_line = lines[check_idx];
+                        for check_line in lines.iter().skip(idx).take(10) {
                             if check_line.contains("return false")
                                 || check_line.contains("return NULL")
                                 || check_line.contains("return -1")

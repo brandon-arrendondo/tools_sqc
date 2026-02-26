@@ -54,7 +54,7 @@ impl Str02C {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = get_node_text(&function_node, source);
 
-            match &function_name[..] {
+            match function_name {
                 "system" | "popen" => {
                     self.check_command_injection_risk(node, source, &function_name, violations);
                 }

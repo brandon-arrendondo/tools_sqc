@@ -159,11 +159,11 @@ impl Suppression {
                 if line.contains('{') {
                     // Find matching closing brace
                     let mut brace_count = 1;
-                    for j in (i + 1)..lines.len() {
-                        if lines[j].contains('{') {
+                    for (j, line_j) in lines.iter().enumerate().skip(i + 1) {
+                        if line_j.contains('{') {
                             brace_count += 1;
                         }
-                        if lines[j].contains('}') {
+                        if line_j.contains('}') {
                             brace_count -= 1;
                             if brace_count == 0 {
                                 end = j + 1;
@@ -227,15 +227,14 @@ impl Suppression {
     }
 }
 
+#[derive(Default)]
 pub struct SuppressionManager {
     suppressions: HashMap<String, Vec<Suppression>>,
 }
 
 impl SuppressionManager {
     pub fn new() -> Self {
-        Self {
-            suppressions: HashMap::new(),
-        }
+        Self::default()
     }
 
     /// Extract all suppressions from source code
@@ -297,7 +296,7 @@ impl SuppressionManager {
         hasher.update(rule_ids.as_bytes());
         hasher.update(b":");
         // Include the normalized code (trimmed and whitespace-normalized)
-        let normalized_code = code.trim().split_whitespace().collect::<Vec<_>>().join(" ");
+        let normalized_code = code.split_whitespace().collect::<Vec<_>>().join(" ");
         hasher.update(normalized_code.as_bytes());
         format!("{:x}", hasher.finalize())[..16].to_string()
     }

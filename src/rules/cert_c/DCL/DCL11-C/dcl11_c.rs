@@ -321,7 +321,7 @@ impl Dcl11C {
         }
 
         // Check for integer literals
-        if text.chars().next().map_or(false, |c| c.is_ascii_digit()) {
+        if text.chars().next().is_some_and(|c| c.is_ascii_digit()) {
             if text.contains("LL") || text.contains("ll") {
                 return "long long".to_string();
             } else if text.contains('L') || text.contains('l') {

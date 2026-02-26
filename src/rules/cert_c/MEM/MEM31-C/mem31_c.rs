@@ -346,7 +346,7 @@ impl MemoryLeakAnalyzer {
 
                     // Check if this variable is freed at the target label
                     // Also check for field expression variants (e.g., bundle->data matches bundle)
-                    let is_freed_at_label = label_freed_vars.as_ref().map_or(false, |freed| {
+                    let is_freed_at_label = label_freed_vars.as_ref().is_some_and(|freed| {
                         freed.contains(var_name)
                             || freed
                                 .iter()

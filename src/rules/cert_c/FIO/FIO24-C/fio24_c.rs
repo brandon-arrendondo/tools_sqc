@@ -98,11 +98,8 @@ impl Fio24C {
         open_files: &mut HashMap<String, Vec<(String, tree_sitter::Point)>>,
         file_pointers: &mut HashMap<String, String>,
     ) {
-        match node.kind() {
-            "call_expression" => {
-                self.check_call_expression(node, source, violations, open_files, file_pointers);
-            }
-            _ => {}
+        if node.kind() == "call_expression" {
+            self.check_call_expression(node, source, violations, open_files, file_pointers);
         }
 
         // Recursively check child nodes
@@ -177,7 +174,7 @@ impl Fio24C {
 
                 open_files
                     .entry(filename.clone())
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push((var_name.clone(), location));
 
                 if !var_name.is_empty() {

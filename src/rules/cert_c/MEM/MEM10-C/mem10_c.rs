@@ -155,7 +155,7 @@ impl Mem10C {
                     // relevant when validating inputs at function boundaries.
                     let checked_var = extract_checked_var_name(&condition, source);
                     let params = self.collect_enclosing_params(node, source);
-                    if checked_var.as_deref().map_or(false, |v| params.contains(v)) {
+                    if checked_var.as_deref().is_some_and(|v| params.contains(v)) {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             message: "Direct NULL check for pointer validation. \

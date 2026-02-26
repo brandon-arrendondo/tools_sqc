@@ -178,7 +178,7 @@ impl Int32C {
                 // Skip if using wider type (cast to long long before addition)
                 let left_text = get_node_text(&left, source);
                 let right_text = get_node_text(&right, source);
-                if self.has_wider_cast(&left_text, &right_text) {
+                if self.has_wider_cast(left_text, right_text) {
                     return;
                 }
 
@@ -190,7 +190,7 @@ impl Int32C {
 
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -244,7 +244,7 @@ impl Int32C {
                 }
 
                 // Skip if using wider type (cast to long long before subtraction)
-                if self.has_wider_cast(&left_text, &right_text) {
+                if self.has_wider_cast(left_text, right_text) {
                     return;
                 }
 
@@ -256,7 +256,7 @@ impl Int32C {
 
                 if !self.has_overflow_check_subtraction(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -304,7 +304,7 @@ impl Int32C {
                 // Skip if using wider type (cast to long long before multiplication)
                 let left_text = get_node_text(&left, source);
                 let right_text = get_node_text(&right, source);
-                if self.has_wider_cast(&left_text, &right_text) {
+                if self.has_wider_cast(left_text, right_text) {
                     return; // Safe - using wider type
                 }
 
@@ -321,7 +321,7 @@ impl Int32C {
 
                 if !self.has_overflow_check_multiplication(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -387,7 +387,7 @@ impl Int32C {
                     && !self.has_division_overflow_check(node, source)
                 {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -446,7 +446,7 @@ impl Int32C {
                     && !self.has_modulo_overflow_check(node, source)
                 {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -483,27 +483,25 @@ impl Int32C {
             }
 
             // Check for negation of signed integers, especially -INT_MIN which causes overflow
-            if self.is_signed_type(&arg_type) {
-                if !self.has_negation_overflow_check(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+            if self.is_signed_type(&arg_type) && !self.has_negation_overflow_check(node, source) {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Signed integer negation '{}' may overflow (-INT_MIN)",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some(
-                            "Add check: if (value == INT_MIN) { /* handle error */ }".to_string(),
-                        ),
-                        ..Default::default()
-                    });
-                }
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Signed integer negation '{}' may overflow (-INT_MIN)",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some(
+                        "Add check: if (value == INT_MIN) { /* handle error */ }".to_string(),
+                    ),
+                    ..Default::default()
+                });
             }
         }
     }
@@ -535,7 +533,7 @@ impl Int32C {
 
                 if !self.has_shift_overflow_check(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -579,7 +577,7 @@ impl Int32C {
 
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -625,7 +623,7 @@ impl Int32C {
 
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -669,7 +667,7 @@ impl Int32C {
 
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                    let expr_text = get_node_text(node, source);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -704,25 +702,24 @@ impl Int32C {
 
             if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source))
                 && (right_text == "-1" || right_text.contains("-1"))
+                && !self.has_overflow_check_compound(node, source)
             {
-                if !self.has_overflow_check_compound(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Signed integer compound division '{}' may overflow (INT_MIN /= -1)",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Add check before assignment: if (left == INT_MIN && right == -1) { /* handle error */ }".to_string()),
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Signed integer compound division '{}' may overflow (INT_MIN /= -1)",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Add check before assignment: if (left == INT_MIN && right == -1) { /* handle error */ }".to_string()),
                     ..Default::default()
-                    });
-                }
+                });
             }
         }
     }
@@ -742,25 +739,24 @@ impl Int32C {
 
             if (left_text.contains("INT_MIN") || self.could_be_int_min(&left, source))
                 && (right_text == "-1" || right_text.contains("-1"))
+                && !self.has_overflow_check_compound(node, source)
             {
-                if !self.has_overflow_check_compound(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Signed integer compound modulo '{}' may overflow (INT_MIN %= -1)",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Add check before assignment: if (left == INT_MIN && right == -1) { /* handle error */ }".to_string()),
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Signed integer compound modulo '{}' may overflow (INT_MIN %= -1)",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Add check before assignment: if (left == INT_MIN && right == -1) { /* handle error */ }".to_string()),
                     ..Default::default()
-                    });
-                }
+                });
             }
         }
     }
@@ -780,25 +776,23 @@ impl Int32C {
                 return;
             }
 
-            if self.is_signed_type(&left_type) {
-                if !self.has_overflow_check_compound(node, source) {
-                    let start_point = node.start_position();
-                    let expr_text = get_node_text(&node, source);
+            if self.is_signed_type(&left_type) && !self.has_overflow_check_compound(node, source) {
+                let start_point = node.start_position();
+                let expr_text = get_node_text(node, source);
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Signed integer compound left shift '{}' may overflow or exhibit undefined behavior",
-                            expr_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some("Validate shift amount and check for overflow before assignment".to_string()),
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Signed integer compound left shift '{}' may overflow or exhibit undefined behavior",
+                        expr_text
+                    ),
+                    file_path: String::new(),
+                    line: start_point.row + 1,
+                    column: start_point.column + 1,
+                    suggestion: Some("Validate shift amount and check for overflow before assignment".to_string()),
                     ..Default::default()
-                    });
-                }
+                });
             }
         }
     }
@@ -831,36 +825,36 @@ impl Int32C {
                 }
 
                 let operator = self.get_update_operator(node, source);
-                if operator == "++" || operator == "--" {
-                    if !self.has_overflow_check_update(node, source) {
-                        let start_point = node.start_position();
-                        let expr_text = get_node_text(&node, source);
+                if (operator == "++" || operator == "--")
+                    && !self.has_overflow_check_update(node, source)
+                {
+                    let start_point = node.start_position();
+                    let expr_text = get_node_text(node, source);
 
-                        let message = if operator == "++" {
-                            format!(
-                                "Signed integer increment '{}' may overflow at INT_MAX",
-                                expr_text
-                            )
-                        } else {
-                            format!(
-                                "Signed integer decrement '{}' may overflow at INT_MIN",
-                                expr_text
-                            )
-                        };
+                    let message = if operator == "++" {
+                        format!(
+                            "Signed integer increment '{}' may overflow at INT_MAX",
+                            expr_text
+                        )
+                    } else {
+                        format!(
+                            "Signed integer decrement '{}' may overflow at INT_MIN",
+                            expr_text
+                        )
+                    };
 
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::Medium,
-                            message,
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some(
-                                "Add bounds checking before increment/decrement".to_string(),
-                            ),
-                            ..Default::default()
-                        });
-                    }
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Medium,
+                        message,
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Add bounds checking before increment/decrement".to_string(),
+                        ),
+                        ..Default::default()
+                    });
                 }
             }
         }
@@ -974,7 +968,7 @@ impl Int32C {
         // because the absolute value of the minimum signed integer cannot be represented
         if !self.has_abs_overflow_check(node, source) {
             let start_point = node.start_position();
-            let expr_text = get_node_text(&node, source);
+            let expr_text = get_node_text(node, source);
 
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
@@ -1086,7 +1080,7 @@ impl Int32C {
 
         // Extract variable names from declarators
         if let Some(declarator) = node.child_by_field_name("declarator") {
-            if let Some(name) = self.extract_identifier_name(&declarator, source) {
+            if let Some(name) = Self::extract_identifier_name(&declarator, source) {
                 type_map.insert(name, type_text.clone());
             }
         }
@@ -1096,7 +1090,7 @@ impl Int32C {
             if let Some(child) = node.child(i) {
                 if child.kind() == "init_declarator" {
                     if let Some(decl) = child.child_by_field_name("declarator") {
-                        if let Some(name) = self.extract_identifier_name(&decl, source) {
+                        if let Some(name) = Self::extract_identifier_name(&decl, source) {
                             type_map.insert(name, type_text.clone());
                         }
                     }
@@ -1105,12 +1099,12 @@ impl Int32C {
         }
     }
 
-    fn extract_identifier_name(&self, node: &Node, source: &str) -> Option<String> {
+    fn extract_identifier_name(node: &Node, source: &str) -> Option<String> {
         match node.kind() {
             "identifier" => Some(get_node_text(node, source).to_string()),
             "pointer_declarator" | "array_declarator" | "parenthesized_declarator" => {
                 if let Some(inner) = node.child_by_field_name("declarator") {
-                    self.extract_identifier_name(&inner, source)
+                    Self::extract_identifier_name(&inner, source)
                 } else {
                     None
                 }
@@ -1129,7 +1123,7 @@ impl Int32C {
     }
 
     fn infer_type(&self, node: &Node, source: &str, type_map: &HashMap<String, String>) -> String {
-        let text = get_node_text(&node, source);
+        let text = get_node_text(node, source);
 
         // Check the type map FIRST — most reliable source of type info.
         // Must come before text heuristics because variable names like "index"
@@ -1230,10 +1224,11 @@ impl Int32C {
                     if params_text.contains("unsigned") && params_text.contains(var_name) {
                         return Some("unsigned".to_string());
                     }
-                    if params_text.contains("signed") || params_text.contains("int") {
-                        if params_text.contains(var_name) && !params_text.contains("unsigned") {
-                            return Some("signed".to_string());
-                        }
+                    if (params_text.contains("signed") || params_text.contains("int"))
+                        && params_text.contains(var_name)
+                        && !params_text.contains("unsigned")
+                    {
+                        return Some("signed".to_string());
                     }
                 }
                 break;
@@ -1274,7 +1269,7 @@ impl Int32C {
     }
 
     fn could_be_int_min(&self, node: &Node, source: &str) -> bool {
-        let text = get_node_text(&node, source);
+        let text = get_node_text(node, source);
         text.contains("INT_MIN")
             || (text.starts_with("min") && (text.contains("val") || text.contains("num")))
     }
@@ -1296,19 +1291,19 @@ impl Int32C {
     fn extract_operand_names(&self, node: &Node, source: &str) -> Vec<String> {
         let mut names = Vec::new();
         if let Some(left) = node.child_by_field_name("left") {
-            self.collect_identifiers(&left, source, &mut names);
+            Self::collect_identifiers(&left, source, &mut names);
         }
         if let Some(right) = node.child_by_field_name("right") {
-            self.collect_identifiers(&right, source, &mut names);
+            Self::collect_identifiers(&right, source, &mut names);
         }
         // For unary/update expressions, check argument
         if let Some(arg) = node.child_by_field_name("argument") {
-            self.collect_identifiers(&arg, source, &mut names);
+            Self::collect_identifiers(&arg, source, &mut names);
         }
         names
     }
 
-    fn collect_identifiers(&self, node: &Node, source: &str, names: &mut Vec<String>) {
+    fn collect_identifiers(node: &Node, source: &str, names: &mut Vec<String>) {
         if node.kind() == "identifier" {
             let name = get_node_text(node, source).to_string();
             if !names.contains(&name) {
@@ -1317,7 +1312,7 @@ impl Int32C {
         }
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_identifiers(&child, source, names);
+                Self::collect_identifiers(&child, source, names);
             }
         }
     }
@@ -1379,7 +1374,7 @@ impl Int32C {
                         .filter(|s| !s.is_empty())
                         .any(|num| {
                             num.len() <= 4
-                                && num.parse::<i64>().map_or(false, |n| n <= 10000 && n >= 0)
+                                && num.parse::<i64>().is_ok_and(|n| (0..=10000).contains(&n))
                         });
                     if bound_re {
                         return true;
@@ -1792,14 +1787,14 @@ impl Int32C {
                     let cond_text = get_node_text(&condition, source);
                     let has_limit = SIGNED_LIMIT_MACROS
                         .iter()
-                        .any(|m| self.contains_word(&cond_text, m));
+                        .any(|m| self.contains_word(cond_text, m));
                     if has_limit {
                         if op_names.is_empty() {
                             return true;
                         }
                         if op_names
                             .iter()
-                            .any(|name| self.contains_word(&cond_text, name))
+                            .any(|name| self.contains_word(cond_text, name))
                         {
                             return true;
                         }
@@ -1858,7 +1853,7 @@ impl Int32C {
     }
 
     fn get_update_operator(&self, node: &Node, source: &str) -> String {
-        let text = get_node_text(&node, source);
+        let text = get_node_text(node, source);
         if text.contains("++") {
             "++".to_string()
         } else if text.contains("--") {

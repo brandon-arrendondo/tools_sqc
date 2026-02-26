@@ -168,8 +168,8 @@ impl FormatStringAnalyzer {
                             .filter(|n| !matches!(n.kind(), "," | "(" | ")"))
                             .collect();
                         let start = if func_name == "fscanf" { 2 } else { 1 };
-                        for i in start..args.len() {
-                            if let Some(dest_name) = self.get_base_variable(&args[i], source) {
+                        for arg in args.iter().skip(start) {
+                            if let Some(dest_name) = self.get_base_variable(arg, source) {
                                 self.user_input_vars.insert(dest_name);
                             }
                         }
@@ -407,8 +407,8 @@ impl FormatStringAnalyzer {
                     // scanf/fscanf: first arg is format, rest are pointers to receive input
                     // sscanf: first two args are string and format, rest are pointers
                     let start_index = if func_name == "sscanf" { 2 } else { 1 };
-                    for i in start_index..args.len() {
-                        if let Some(dest_name) = self.get_base_variable(&args[i], source) {
+                    for arg in args.iter().skip(start_index) {
+                        if let Some(dest_name) = self.get_base_variable(arg, source) {
                             self.user_input_vars.insert(dest_name.clone());
                             self.safe_vars.remove(&dest_name);
                         }
@@ -428,13 +428,10 @@ impl FormatStringAnalyzer {
                         let dest_arg = &args[0];
 
                         // Check if any source arguments are tainted
-                        let mut any_source_tainted = false;
-                        for i in 1..args.len() {
-                            if self.is_tainted_argument(&args[i], source) {
-                                any_source_tainted = true;
-                                break;
-                            }
-                        }
+                        let any_source_tainted = args
+                            .iter()
+                            .skip(1)
+                            .any(|arg| self.is_tainted_argument(arg, source));
 
                         if any_source_tainted {
                             // Mark destination as tainted

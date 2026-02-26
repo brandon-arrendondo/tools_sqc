@@ -154,14 +154,14 @@ impl Pos53C {
                             // Track this combination
                             cond_var_to_mutexes
                                 .entry(cond_var.clone())
-                                .or_insert_with(HashSet::new)
+                                .or_default()
                                 .insert(mutex);
 
                             // Track location for violation reporting
                             let start_point = node.start_position();
                             cond_var_locations
                                 .entry(cond_var)
-                                .or_insert_with(Vec::new)
+                                .or_default()
                                 .push((start_point.row, start_point.column));
                         }
                     }

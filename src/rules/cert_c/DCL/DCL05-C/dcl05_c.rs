@@ -242,6 +242,7 @@ fn check_external_pointer_typedef_usage(
 }
 
 /// Find the first type_identifier node (non-recursive, just direct children)
+#[allow(clippy::manual_find)]
 fn find_first_type_identifier_node<'a>(node: &'a Node) -> Option<Node<'a>> {
     let mut cursor = node.walk();
     for child in node.children(&mut cursor) {

@@ -46,7 +46,6 @@ impl CertRule for Fio23C {
                         "Call fclose(stdout) before return to ensure data is flushed".to_string(),
                     ),
                     requires_manual_review: Some(false),
-                    ..Default::default()
                 });
             }
         }
@@ -236,7 +235,6 @@ impl Fio23C {
                         column,
                         suggestion: Some("Do not call fclose(stdout) before atexit handlers that print".to_string()),
                         requires_manual_review: Some(true),
-                        ..Default::default()
                     });
                 }
             }
@@ -271,12 +269,12 @@ impl Fio23C {
 
     fn get_first_arg<'a>(&self, arguments: &Node<'a>) -> Option<Node<'a>> {
         let mut cursor = arguments.walk();
-        for child in arguments.children(&mut cursor) {
-            if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
-                return Some(child);
-            }
-        }
-        None
+        Self::find_first_non_punctuation(arguments.children(&mut cursor))
+    }
+
+    fn find_first_non_punctuation<'a>(iter: impl Iterator<Item = Node<'a>>) -> Option<Node<'a>> {
+        iter.into_iter()
+            .find(|child| child.kind() != "," && child.kind() != "(" && child.kind() != ")")
     }
 
     fn find_function_by_name<'a>(

@@ -46,7 +46,7 @@ impl Win03C {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = get_node_text(&function_node, source);
 
-            match &function_name[..] {
+            match function_name {
                 "OpenMutex" => {
                     self.check_open_mutex_call(node, source, violations);
                 }
@@ -167,9 +167,7 @@ impl Win03C {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 severity: self.severity(),
-                                message: format!(
-                                    "Converting command line argument to HANDLE without validation. Receiving handles via command line is insecure - it exposes handles to other processes and allows handle hijacking."
-                                ),
+                                message: "Converting command line argument to HANDLE without validation. Receiving handles via command line is insecure - it exposes handles to other processes and allows handle hijacking.".to_string(),
                                 file_path: String::new(),
                                 line: node.start_position().row + 1,
                                 column: node.start_position().column + 1,

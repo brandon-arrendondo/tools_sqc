@@ -156,8 +156,7 @@ impl Dcl39C {
 
         // If we found push, check if there's a pop after the struct
         if found_push {
-            for line_idx in (struct_line + 1)..source_lines.len() {
-                let line = source_lines[line_idx];
+            for line in source_lines.iter().skip(struct_line + 1) {
                 if line.contains("#pragma") && line.contains("pack") && line.contains("pop") {
                     return true;
                 }
@@ -254,8 +253,8 @@ impl Dcl39C {
                         let arg_list = self.get_arguments(&args, source);
                         for arg in &arg_list {
                             // Check for &struct_var pattern
-                            if arg.starts_with('&') {
-                                let var_name = arg[1..].trim().to_string();
+                            if let Some(stripped) = arg.strip_prefix('&') {
+                                let var_name = stripped.trim().to_string();
                                 // Check if this is a known struct variable that wasn't zeroed
                                 if let Some(info) = struct_vars.get(&var_name) {
                                     // Skip if struct type is safe (packed, explicit padding, etc.)

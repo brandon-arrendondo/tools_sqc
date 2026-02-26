@@ -626,7 +626,7 @@ impl Str00C {
 
                 // Check for numeric literals > 127
                 if let Ok(value) = right_text.trim().parse::<i32>() {
-                    if value > 127 || value < 0 {
+                    if !(0..=127).contains(&value) {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::Medium,
@@ -849,15 +849,13 @@ impl Str00C {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: Severity::Medium,
-                        message: format!(
-                            "Function parameter uses 'signed char*' (should use plain 'char*' for strings)"
-                        ),
+                        message: "Function parameter uses 'signed char*' (should use plain 'char*' for strings)".to_string(),
                         file_path: String::new(),
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,
-                        suggestion: Some(format!(
-                            "Use plain 'char*' instead of 'signed char*' for string parameters"
-                        )),
+                        suggestion: Some(
+                            "Use plain 'char*' instead of 'signed char*' for string parameters".to_string()
+                        ),
                         ..Default::default()
                     });
                 }
@@ -884,15 +882,13 @@ impl Str00C {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: Severity::Medium,
-                    message: format!(
-                        "Struct field uses 'signed char' (should use plain 'char' for character data)"
-                    ),
+                    message: "Struct field uses 'signed char' (should use plain 'char' for character data)".to_string(),
                     file_path: String::new(),
                     line: node.start_position().row + 1,
                     column: node.start_position().column + 1,
-                    suggestion: Some(format!(
-                        "Use plain 'char' instead of 'signed char' for character struct fields"
-                    )),
+                    suggestion: Some(
+                        "Use plain 'char' instead of 'signed char' for character struct fields".to_string()
+                    ),
                     ..Default::default()
                 });
             }
