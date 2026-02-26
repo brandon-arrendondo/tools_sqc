@@ -15,10 +15,12 @@ Tools:
   compare_runs(base, target)         - Compare two version dirs
   list_runs()                        - List all version directories
   cancel_run(run_id)                 - Cancel a specific or all active runs
+  purge_run(run_id, zombies)         - Remove stale/zombie runs from tracking
   clear_results()                    - Remove old result directories
   deploy_sqc(host)                   - Deploy sqc binary to remote host(s)
 """
 
+import fcntl
 import json
 import os
 import re
@@ -26,6 +28,7 @@ import shlex
 import shutil
 import signal
 import subprocess
+import tempfile
 import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -251,6 +254,9 @@ def _make_version_dir_name(tool: str, version: str, sha: str) -> str:
     return f"{tool}-{version}"
 
 
+_STATE_LOCK = Path("/tmp/realworld_bench.lock")
+
+
 def _read_state() -> dict:
     """Read persisted state. Returns dict with 'runs' key (map of run_id → run info)."""
     try:
@@ -263,7 +269,50 @@ def _read_state() -> dict:
 
 
 def _write_state(state: dict) -> None:
-    STATE_FILE.write_text(json.dumps(state, indent=2))
+    """Atomic write: write to temp file then rename (POSIX atomic)."""
+    content = json.dumps(state, indent=2)
+    fd, tmp = tempfile.mkstemp(dir=STATE_FILE.parent, suffix=".tmp")
+    closed = False
+    try:
+        os.write(fd, content.encode())
+        os.fsync(fd)
+        os.close(fd)
+        closed = True
+        os.rename(tmp, str(STATE_FILE))
+    except Exception:
+        if not closed:
+            os.close(fd)
+        Path(tmp).unlink(missing_ok=True)
+        raise
+
+
+class _StateLock:
+    """Context manager for exclusive access to the state file.
+
+    Usage:
+        with _StateLock() as state:
+            state["runs"][run_id] = {...}
+        # State is automatically written on exit
+    """
+
+    def __init__(self):
+        self._fd = None
+        self._state = None
+
+    def __enter__(self) -> dict:
+        self._fd = open(_STATE_LOCK, "w")
+        fcntl.flock(self._fd, fcntl.LOCK_EX)
+        self._state = _read_state()
+        return self._state
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        try:
+            if exc_type is None:
+                _write_state(self._state)
+        finally:
+            fcntl.flock(self._fd, fcntl.LOCK_UN)
+            self._fd.close()
+        return False
 
 
 def _process_alive(pid: int) -> bool:
@@ -734,19 +783,19 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
 
     run_id = _make_run_id(tool, codebase, version, sha)
 
-    # Check if already running
-    state = _read_state()
-    if run_id in state["runs"]:
-        existing = state["runs"][run_id]
-        if _process_alive(existing.get("pid", 0)):
-            elapsed = int(time.time() - existing["start_time"])
-            return json.dumps({
-                "status": "already_running",
-                "run_id": run_id,
-                "pid": existing["pid"],
-                "elapsed_seconds": elapsed,
-                "message": f"Run '{run_id}' already in progress (PID {existing['pid']}). Use get_status().",
-            })
+    # Check if already running (locked read)
+    with _StateLock() as state:
+        if run_id in state["runs"]:
+            existing = state["runs"][run_id]
+            if _process_alive(existing.get("pid", 0)):
+                elapsed = int(time.time() - existing["start_time"])
+                return json.dumps({
+                    "status": "already_running",
+                    "run_id": run_id,
+                    "pid": existing["pid"],
+                    "elapsed_seconds": elapsed,
+                    "message": f"Run '{run_id}' already in progress (PID {existing['pid']}). Use get_status().",
+                })
 
     # Clean up stale local result files from prior runs with same run_id
     for ext in (".json", ".xml", ".txt", ".log", ".ssh.log", ".done"):
@@ -768,6 +817,8 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
         ssh_cmd = ["ssh"] + SSH_OPTS + [f"{ssh_user}@{resolved}", shell_cmd]
 
         # Log SSH command for debugging
+        # NOTE: file handle intentionally left open — subprocess writes to it.
+        # It will be closed when the subprocess exits and the fd is GC'd.
         ssh_log_path = version_dir / f"{run_id}.ssh.log"
         ssh_log_fh = ssh_log_path.open("w")
         ssh_log_fh.write(f"# SSH command: {' '.join(ssh_cmd)}\n")
@@ -779,7 +830,6 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
             stderr=subprocess.STDOUT,
             start_new_session=True,
         )
-        ssh_log_fh.close()
     else:
         # Local execution (unchanged)
         log_path = version_dir / f"{run_id}.log"
@@ -814,20 +864,21 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
             )
         log_fh.close()
 
+    # Record new run in state (locked read-modify-write)
     start_time = time.time()
-    state["runs"][run_id] = {
-        "pid": proc.pid,
-        "start_time": start_time,
-        "tool": tool,
-        "codebase": codebase,
-        "version": version,
-        "commit_sha": sha,
-        "version_dir": str(version_dir),
-        "status": "running",
-        "host": resolved if remote else "local",
-        "results_fetched": not remote,  # local results are always "fetched"
-    }
-    _write_state(state)
+    with _StateLock() as state:
+        state["runs"][run_id] = {
+            "pid": proc.pid,
+            "start_time": start_time,
+            "tool": tool,
+            "codebase": codebase,
+            "version": version,
+            "commit_sha": sha,
+            "version_dir": str(version_dir),
+            "status": "running",
+            "host": resolved if remote else "local",
+            "results_fetched": not remote,  # local results are always "fetched"
+        }
 
     hosts, _ = _load_remote_config()
     host_label = f" on {hosts.get(resolved, resolved)}" if remote else ""
@@ -870,7 +921,10 @@ def run_all(codebase: str | None = None, tool: str | None = None,
     results = []
     for t in tools:
         for cb in codebases:
-            result = json.loads(run_analysis(t, cb, host=host))
+            try:
+                result = json.loads(run_analysis(t, cb, host=host))
+            except Exception as e:
+                result = {"status": "error", "error": str(e)}
             results.append({
                 "tool": t,
                 "codebase": cb,
@@ -900,95 +954,97 @@ def get_status() -> str:
 
     Returns per-run status with timing, plus overall summary.
     """
-    state = _read_state()
-    if not state["runs"]:
-        return json.dumps({
-            "status": "no_runs",
-            "message": "No runs tracked. Use run_analysis() or run_all() to start.",
-        })
+    with _StateLock() as state:
+        if not state["runs"]:
+            return json.dumps({
+                "status": "no_runs",
+                "message": "No runs tracked. Use run_analysis() or run_all() to start.",
+            })
 
-    now = time.time()
-    statuses = []
-    active_count = 0
-    completed_count = 0
-    failed_count = 0
+        now = time.time()
+        statuses = []
+        active_count = 0
+        completed_count = 0
+        failed_count = 0
 
-    for run_id, run_info in sorted(state["runs"].items()):
-        pid = run_info.get("pid", 0)
-        is_alive = _process_alive(pid)
-        elapsed_s = int(now - run_info["start_time"])
-        run_host = run_info.get("host", "local")
-        is_remote = run_host != "local"
+        for run_id, run_info in sorted(state["runs"].items()):
+            pid = run_info.get("pid", 0)
+            is_alive = _process_alive(pid)
+            elapsed_s = int(now - run_info["start_time"])
+            run_host = run_info.get("host", "local")
+            is_remote = run_host != "local"
 
-        # Determine status
-        if run_info.get("status") == "cancelled":
-            status = "cancelled"
-            failed_count += 1
-        elif is_alive:
-            status = "running"
-            active_count += 1
-        elif is_remote and not run_info.get("results_fetched"):
-            # Remote run: SSH process exited but remote job may still be running.
-            # Check for .done sentinel on the remote host.
-            version_dir = Path(run_info.get("version_dir", ""))
-            if _remote_check_done(run_host, version_dir, run_id):
-                fetch_result = _fetch_remote_results(run_host, version_dir, run_id)
-                run_info["results_fetched"] = True
-                run_info["fetch_info"] = fetch_result
-                # Now check local result files
+            # Determine status
+            if run_info.get("status") == "cancelled":
+                status = "cancelled"
+                failed_count += 1
+            elif is_alive:
+                status = "running"
+                active_count += 1
+            elif is_remote and not run_info.get("results_fetched"):
+                # Remote run: SSH process exited but remote job may still be running.
+                # Check for .done sentinel on the remote host.
+                version_dir = Path(run_info.get("version_dir", ""))
+                if _remote_check_done(run_host, version_dir, run_id):
+                    fetch_result = _fetch_remote_results(run_host, version_dir, run_id)
+                    run_info["results_fetched"] = True
+                    run_info["fetch_info"] = fetch_result
+                    # Now check local result files
+                    result_file = _get_result_file(version_dir, run_id)
+                    if result_file and result_file.stat().st_size > 0:
+                        status = "completed"
+                        completed_count += 1
+                        run_info["status"] = "completed"
+                        run_info["end_time"] = now
+                    else:
+                        log_file = version_dir / f"{run_id}.log"
+                        if log_file.exists() and log_file.stat().st_size > 0:
+                            status = "completed"
+                            completed_count += 1
+                            run_info["status"] = "completed"
+                        else:
+                            status = "failed"
+                            failed_count += 1
+                elif elapsed_s > 14400:  # 4 hours
+                    # Local SSH died, no sentinel, very old → zombie
+                    status = "zombie"
+                    failed_count += 1
+                else:
+                    # Sentinel not found — remote still running
+                    status = "running"
+                    active_count += 1
+            else:
+                # Local run (or already-fetched remote): check result files
+                version_dir = Path(run_info.get("version_dir", ""))
                 result_file = _get_result_file(version_dir, run_id)
                 if result_file and result_file.stat().st_size > 0:
                     status = "completed"
                     completed_count += 1
-                    run_info["status"] = "completed"
-                    run_info["end_time"] = now
+                    if run_info.get("status") != "completed":
+                        run_info["status"] = "completed"
+                        run_info["end_time"] = now
                 else:
                     log_file = version_dir / f"{run_id}.log"
                     if log_file.exists() and log_file.stat().st_size > 0:
                         status = "completed"
                         completed_count += 1
-                        run_info["status"] = "completed"
+                        if run_info.get("status") != "completed":
+                            run_info["status"] = "completed"
                     else:
                         status = "failed"
                         failed_count += 1
-            else:
-                # Sentinel not found — remote still running
-                status = "running"
-                active_count += 1
-        else:
-            # Local run (or already-fetched remote): check result files
-            version_dir = Path(run_info.get("version_dir", ""))
-            result_file = _get_result_file(version_dir, run_id)
-            if result_file and result_file.stat().st_size > 0:
-                status = "completed"
-                completed_count += 1
-                if run_info.get("status") != "completed":
-                    run_info["status"] = "completed"
-                    run_info["end_time"] = now
-            else:
-                log_file = version_dir / f"{run_id}.log"
-                if log_file.exists() and log_file.stat().st_size > 0:
-                    status = "completed"
-                    completed_count += 1
-                    if run_info.get("status") != "completed":
-                        run_info["status"] = "completed"
-                else:
-                    status = "failed"
-                    failed_count += 1
 
-        entry = {
-            "run_id": run_id,
-            "tool": run_info.get("tool"),
-            "codebase": run_info.get("codebase"),
-            "host": run_host,
-            "status": status,
-            "pid": pid,
-            "elapsed_seconds": elapsed_s,
-            "elapsed_human": _fmt_duration(elapsed_s),
-        }
-        statuses.append(entry)
-
-    _write_state(state)
+            entry = {
+                "run_id": run_id,
+                "tool": run_info.get("tool"),
+                "codebase": run_info.get("codebase"),
+                "host": run_host,
+                "status": status,
+                "pid": pid,
+                "elapsed_seconds": elapsed_s,
+                "elapsed_human": _fmt_duration(elapsed_s),
+            }
+            statuses.append(entry)
 
     return json.dumps({
         "active": active_count,
@@ -1205,42 +1261,116 @@ def cancel_run(run_id: str | None = None) -> str:
     Args:
         run_id: Run ID to cancel. If omitted, cancels ALL active runs.
     """
-    state = _read_state()
-    if not state["runs"]:
-        return json.dumps({
-            "status": "no_runs",
-            "message": "No runs tracked.",
-        })
-
-    cancelled = []
-    not_running = []
-
-    targets = {}
-    if run_id:
-        if run_id not in state["runs"]:
+    with _StateLock() as state:
+        if not state["runs"]:
             return json.dumps({
-                "error": f"Run '{run_id}' not found.",
-                "available": sorted(state["runs"].keys()),
+                "status": "no_runs",
+                "message": "No runs tracked.",
             })
-        targets = {run_id: state["runs"][run_id]}
-    else:
-        targets = dict(state["runs"])
 
-    for rid, info in targets.items():
-        pid = info.get("pid", 0)
-        if _process_alive(pid):
-            _kill_process_group(pid)
-            info["status"] = "cancelled"
-            cancelled.append(rid)
+        cancelled = []
+        not_running = []
+
+        targets = {}
+        if run_id:
+            if run_id not in state["runs"]:
+                return json.dumps({
+                    "error": f"Run '{run_id}' not found.",
+                    "available": sorted(state["runs"].keys()),
+                })
+            targets = {run_id: state["runs"][run_id]}
         else:
-            not_running.append(rid)
+            targets = dict(state["runs"])
 
-    _write_state(state)
+        for rid, info in targets.items():
+            pid = info.get("pid", 0)
+            if _process_alive(pid):
+                _kill_process_group(pid)
+                info["status"] = "cancelled"
+                cancelled.append(rid)
+            else:
+                not_running.append(rid)
 
     return json.dumps({
         "cancelled": cancelled,
         "not_running": not_running,
         "message": f"Cancelled {len(cancelled)} run(s). {len(not_running)} were not running.",
+    })
+
+
+@mcp.tool()
+def purge_run(run_id: str | None = None, zombies: bool = False) -> str:
+    """
+    Remove stale/zombie runs from tracking state (does not delete result files).
+
+    Use this to clean up runs that are stuck as "running" but whose processes
+    are actually dead (zombies). Does NOT remove result files on disk.
+    Completed and cancelled runs are never purged by zombies=True — only
+    runs that never reached a terminal status are candidates.
+
+    Args:
+        run_id: Specific run ID to purge. If omitted, requires zombies=True.
+        zombies: If True, purge all zombie runs (dead process, not completed/cancelled,
+                 elapsed > 4 hours). Ignored if run_id is specified.
+    """
+    zombie_threshold = 14400  # 4 hours
+
+    with _StateLock() as state:
+        if not state["runs"]:
+            return json.dumps({"status": "no_runs", "message": "No runs tracked."})
+
+        purged = []
+
+        if run_id:
+            if run_id not in state["runs"]:
+                return json.dumps({
+                    "error": f"Run '{run_id}' not found.",
+                    "available": sorted(state["runs"].keys()),
+                })
+            info = state["runs"].pop(run_id)
+            purged.append({
+                "run_id": run_id,
+                "host": info.get("host", "local"),
+                "elapsed": _fmt_duration(int(time.time() - info["start_time"])),
+            })
+        elif zombies:
+            now = time.time()
+            to_purge = []
+            for rid, info in state["runs"].items():
+                pid = info.get("pid", 0)
+                elapsed_s = int(now - info["start_time"])
+                is_alive = _process_alive(pid)
+                is_remote = info.get("host", "local") != "local"
+                already_done = info.get("status") in ("completed", "cancelled")
+
+                # Skip completed/cancelled runs — they're not zombies
+                if already_done:
+                    continue
+
+                if not is_alive and elapsed_s > zombie_threshold:
+                    if is_remote and not info.get("results_fetched"):
+                        # Remote zombie: SSH dead, no results fetched, old
+                        to_purge.append(rid)
+                    elif not is_remote:
+                        # Local zombie: process dead, old
+                        to_purge.append(rid)
+
+            for rid in to_purge:
+                info = state["runs"].pop(rid)
+                purged.append({
+                    "run_id": rid,
+                    "host": info.get("host", "local"),
+                    "elapsed": _fmt_duration(int(time.time() - info["start_time"])),
+                })
+        else:
+            return json.dumps({
+                "error": "Specify run_id or set zombies=True to purge stale runs.",
+            })
+
+    return json.dumps({
+        "purged": purged,
+        "count": len(purged),
+        "message": f"Purged {len(purged)} run(s) from tracking state.",
     })
 
 
@@ -1256,38 +1386,37 @@ def clear_results() -> str:
         })
 
     # Find active version dirs
-    state = _read_state()
-    active_dirs = set()
-    for info in state["runs"].values():
-        if _process_alive(info.get("pid", 0)):
-            active_dirs.add(info.get("version_dir"))
+    with _StateLock() as state:
+        active_dirs = set()
+        for info in state["runs"].values():
+            if _process_alive(info.get("pid", 0)):
+                active_dirs.add(info.get("version_dir"))
 
-    removed = []
-    skipped = []
-    errors = []
+        removed = []
+        skipped = []
+        errors = []
 
-    for entry in sorted(RESULTS_BASE.iterdir()):
-        if not entry.is_dir():
-            continue
-        if str(entry) in active_dirs:
-            skipped.append(entry.name)
-            continue
-        try:
-            size = _dir_size_human(entry)
-            shutil.rmtree(entry)
-            removed.append({"name": entry.name, "size": size})
-        except Exception as e:
-            errors.append(f"Failed to remove {entry.name}: {e}")
+        for entry in sorted(RESULTS_BASE.iterdir()):
+            if not entry.is_dir():
+                continue
+            if str(entry) in active_dirs:
+                skipped.append(entry.name)
+                continue
+            try:
+                size = _dir_size_human(entry)
+                shutil.rmtree(entry)
+                removed.append({"name": entry.name, "size": size})
+            except Exception as e:
+                errors.append(f"Failed to remove {entry.name}: {e}")
 
-    # Clean up state entries for removed dirs
-    to_remove = []
-    for rid, info in state["runs"].items():
-        vdir = info.get("version_dir", "")
-        if not Path(vdir).exists() and not _process_alive(info.get("pid", 0)):
-            to_remove.append(rid)
-    for rid in to_remove:
-        del state["runs"][rid]
-    _write_state(state)
+        # Clean up state entries for removed dirs
+        to_remove = []
+        for rid, info in state["runs"].items():
+            vdir = info.get("version_dir", "")
+            if not Path(vdir).exists() and not _process_alive(info.get("pid", 0)):
+                to_remove.append(rid)
+        for rid in to_remove:
+            del state["runs"][rid]
 
     return json.dumps({
         "removed": removed,
