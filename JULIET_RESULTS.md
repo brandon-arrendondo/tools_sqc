@@ -1,0 +1,313 @@
+# SqC — Juliet Benchmark Results
+
+**Last Updated**: 2026-02-25
+**Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
+
+---
+
+## Current State
+
+| Metric | Value |
+|--------|-------|
+| **Rules Implemented** | 283 CERT C rules |
+| **Juliet Files** | 54,484 |
+| **True Positives** | 172,780 |
+| **False Positives** | 215,671 |
+| **TP Rate** | **44.5%** (v0.2.7, MCP benchmark) |
+| **FP Reduction from Baseline** | -74.3% (839K → 216K) |
+| **CWE Categories with Data** | 106 / 118 |
+| **Categories >50% TP** | 18 |
+
+---
+
+## FP Reduction History
+
+| Round | Version | Fixes | TP | FP | TP Rate | FP Delta |
+|-------|---------|-------|---:|---:|--------:|---------:|
+| Baseline | v0.2.1 | -- | 586,539 | 839,341 | 41.1% | -- |
+| Round 1 | | INT08-C, CON08-C, DCL20-C, ARR38-C | 552,645 | 752,422 | 42.3% | -86,919 |
+| Round 2 | | EXP33-C, SIG31-C, ARR01-C, DCL30-C, DCL02-C | 555,700 | 736,563 | 43.0% | -15,859 |
+| Round 3 | | DCL31-C, DCL07-C, FLP34-C | 402,013 | 537,589 | 42.8% | -198,974 |
+| Round 4 | | EXP12-C, FLP03-C, INT32-C | 363,914 | 492,648 | 42.5% | -44,941 |
+| Round 5 | | FLP02-C, DCL06-C, INT30-C | 340,894 | 475,813 | 41.7% | -16,835 |
+| Round 6 | | Cross-file analysis (`-d`) | 247,757 | 327,191 | 43.1% | -148,622 |
+| Round 7 | | EXP36-C, EXP34-C, ARR37-C | 231,053 | 301,475 | 43.4% | -25,716 |
+| Round 8 | | DCL40-C, FLP32-C, ERR33-C | 230,992 | 296,415 | 43.8% | -5,060 |
+| Round 9 | | CFG, data-flow, inter-procedural | 230,643 | 296,342 | 43.8% | -73 |
+| Round 11 | | DCL07-C/DCL31-C: ALL_CAPS + POSIX std_functions | 207,800 | 272,782 | 43.2% | -23,560 |
+| Round 12 | v0.2.4 | INT07-C, INT32-C, EXP10-C, EXP34-C, INT30-C, MEM10-C, STR31-C, Windows API | 189,950 | 243,849 | 43.8% | -28,933 |
+| Round 13 | | STR31-C: L-prefix + literal-source suppression | 189,016 | 239,724 | 44.1% | -4,125 |
+| Round 15 | | EXP34-C: if/else branch merge (variant 12) | ¹ | ¹ | 44.7% | ¹ |
+| Round 16 | v0.2.6 | DCL13-C main() + MEM10-C param-only null check | ¹ | ¹ | 44.8% | ¹ |
+| **v0.2.7** | v0.2.7 | **INT36-C TP restore + INT31-C FP fix** | **172,780** | **215,671** | **44.5%** | **-1** |
+
+¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
+
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-623,670 (-74.3%)**.
+
+---
+
+## Per-Round Fix Details
+
+### v0.2.7 — INT36-C TP Restore + INT31-C FP Fix
+
+- **INT36-C**: Re-allowed `->` field access in pointer-to-int detection (+955 TP, +149 FP — restoring TPs from earlier over-aggressive filtering)
+- **INT31-C**: Added shift-narrowing detection for `(uint8_t)(value >> N)` patterns (-138 FP, -9 TP; CWE197 TP rate 71.8% → 75.7%)
+- **Overall**: +72 TP, -1 FP
+
+### Round 16 — DCL13-C main() Exemption + MEM10-C Parameter-Only Null Check
+
+1. **DCL13-C**: `main()` parameters defined by C standard — not flagged for const-qualification
+2. **MEM10-C**: Inline null-check detection restricted to function parameters only. Good functions in CWE-476 add `if (data != NULL)` guards; MEM10-C was penalizing this correct pattern. **CWE-476 MEM10-C FPs: 134 → 28 (-106)**
+
+### Round 15 — EXP34-C: if/else Branch Merge
+
+`collect_null_variables` now merges state from both if/else branches (union of `potentially_null_vars`). Fixes variant 12 (`globalReturnsTrueOrFalse`) where if-branch sets ptr=NULL and else-branch sets ptr=non-null.
+
+### Round 14 — EXP34-C: deref_after_check Pattern
+
+Fixed `null_check_positions` to store `end_byte` so derefs inside the null branch (`if (ptr == NULL) { *ptr; }`) are still flagged. +18 TPs, 0 new FPs.
+
+### Round 13 — STR31-C: L-prefix and Literal-Source Fixes
+
+1. Strip L-prefix before measuring wide string literals (`L"*.*"` → 3 chars, not 4)
+2. Literal source + unknown dest → safe (suppresses FPs in CWE134 good functions)
+3. **Net**: -4,125 FP (-1.7%), -934 TP, TP rate +0.3pp
+
+### Round 12 — INT07-C, INT32-C, EXP10-C, EXP34-C, INT30-C, MEM10-C, STR31-C, Windows API
+
+- INT07-C: Removed comparison operators from numeric-use detection
+- INT32-C: `infer_type()` returns "not_applicable" for non-integer types
+- EXP10-C: `is_pure_function()` whitelist (~50 functions)
+- EXP34-C: Gates nullable-function-call taint on `declared_pointer_vars`
+- INT30-C: Not-applicable guards for pointer arithmetic
+- MEM10-C: Removed `== 0`/`!= 0` from null-check detection
+- STR31-C: Short literal suppression (≤3 chars)
+- **std_functions**: +~100 Windows API functions. **DCL31-C/DCL07-C: 21K/20K → 2.5K/2.4K FP**
+- **Net**: -28,933 FP (-10.6%), TP rate +0.6pp
+
+### Round 9 — CFG, Data-Flow, Inter-Procedural Analysis
+
+CFG construction, reaching definitions, inter-procedural function summaries. Minimal Juliet impact (-73 FP) — targets multi-file real-world codebases.
+
+### Round 8 — DCL40-C, FLP32-C, ERR33-C
+
+- DCL40-C: Removed 31-char prefix collision check (was O(n²) FPs). FP ~12K → ~0, 0 TP loss
+- FLP32-C: Windowed error checking (5 stmts) instead of entire scope
+- ERR33-C: Argument-list detection for nested calls
+- **Net**: -5,060 FP (-1.7%), TP rate +0.4pp
+
+### Round 7 — EXP36-C, EXP34-C, ARR37-C
+
+- EXP36-C: Only check pointer-to-pointer casts; skip integer casts and unknown source types
+- EXP34-C: Removed `_t` suffix heuristic; field null propagation now conditional on base
+- ARR37-C: Stop flagging Unknown pointers; all pointer params now ambiguous
+- **Net**: -25,716 FP (-7.9%), TP rate +0.3pp
+
+### Round 6 — Cross-File Analysis (`-d`)
+
+`--directories` CLI option pre-scans for function definitions. DCL31-C/DCL07-C eliminated FPs from Juliet helper functions. **Net**: -148,622 FP (-31.2%), TP rate +1.4pp.
+
+### Round 5 — FLP02-C, DCL06-C, INT30-C
+
+- FLP02-C: AST-node-kind checks instead of text heuristics
+- DCL06-C: Expanded acceptable literal values to 0–10
+- INT30-C: `collect_variable_types()` pattern; removed name heuristics
+- **Net**: -16,835 FP (-3.4%), TP rate -0.7pp (DCL06-C is ~50/50)
+
+### Round 4 — EXP12-C, FLP03-C, INT32-C
+
+- EXP12-C: Removed ~30 side-effect functions from "important return value" whitelist
+- FLP03-C: Removed assignment_expression arm
+- INT32-C: `collect_variable_types()` HashMap; default "unknown" for unmapped variables
+- **Net**: -44,941 FP (-8.4%)
+
+### Round 3 — DCL31-C, DCL07-C, FLP34-C
+
+- Shared `std_functions.rs` database (~270 functions). **-198,974 FP**
+- FLP34-C: Type-aware checking
+
+### Round 2 — EXP33-C, SIG31-C, ARR01-C, DCL30-C, DCL02-C
+
+Fixed preprocessor-block visibility bug (functions inside `#ifdef` invisible). DCL02-C similar-identifier check. **-15,859 FP; CWE-457 TP rate 12.2% → 22.6%**
+
+### Round 1 — INT08-C, CON08-C, DCL20-C, ARR38-C
+
+- INT08-C: Removed `int` from "narrow type" definition
+- CON08-C: Only flag multiple *atomic* functions without mutex
+- DCL20-C: Only flag declarations/prototypes, not definitions
+- ARR38-C: Removed duplicate strcpy/strcat flagging
+- **Net**: -86,919 FP (-10.4%), TP rate +1.2pp
+
+---
+
+## Performance by CWE Category
+
+### Tier 1: Strong Detection (TP > 50%) — 18 categories
+
+| CWE | Category | TP Rate | Files |
+|-----|----------|--------:|------:|
+| 480 | Use of Incorrect Operator | 91.7% | 18 |
+| 506 | Embedded Malicious Code | 85.9% | 158 |
+| 587 | Assignment of Fixed Address to Pointer | 83.3% | 18 |
+| 617 | Reachable Assertion | 79.2% | 354 |
+| 197 | Numeric Truncation Error | 78.3% | 1,008 |
+| 464 | Data Structure Sentinel Addition | 77.6% | 56 |
+| 427 | Uncontrolled Search Path Element | 72.8% | 560 |
+| 78 | OS Command Injection | 71.4% | 5,600 |
+| 123 | Write-What-Where Condition | 68.2% | 168 |
+| 15 | External Control of System/Config | 67.0% | 56 |
+| 194 | Unexpected Sign Extension | ~58% | 1,344 |
+| 195 | Signed-to-Unsigned Conversion | ~56% | 1,344 |
+| 510 | Trapdoor | ~58% | 70 |
+| 90 | LDAP Injection | ~52% | 560 |
+| 526 | Info Exposure via Env Variables | ~54% | 18 |
+| 680 | Integer Overflow to Buffer Overflow | ~51% | 336 |
+| 188 | Reliance on Data/Memory Layout | ~51% | 36 |
+| 114 | Process Control | ~58% | 672 |
+
+### Tier 2: Moderate Detection (35–50%) — 68 categories
+
+The bulk of categories (64%) cluster here. Includes buffer overflows (CWE-121 ~43%, CWE-122 ~42%), format strings (CWE-134 ~37%), and resource management.
+
+### Tier 3: Below Average (25–35%) — 16 categories
+
+Includes integer overflow/underflow (CWE-190 ~33%, CWE-191 ~35%), memory management (CWE-401 ~34%, CWE-415 ~34%), NULL pointer dereference (CWE-476 ~38%).
+
+### Tier 4: Weak Detection (<25%) — 4 categories
+
+| CWE | Category | TP Rate | Root Cause |
+|-----|----------|--------:|------------|
+| 256 | Plaintext Password Storage | ~15% | No credential-storage rules |
+| 338 | Weak PRNG | ~23% | No PRNG-quality rules |
+| 457 | Use of Uninitialized Variable | ~24% | Improved from 12.2% after fixes |
+| 319 | Cleartext Transmission | ~25% | Limited cleartext detection |
+
+---
+
+## Full Per-CWE Results (Round 1 Baseline)
+
+> This table reflects Round 1 (42.3% TP rate). Current performance is higher. Relative ordering remains representative.
+
+| CWE | Vulnerability Type | Files | TP | FP | TP Rate |
+|-----|-------------------|------:|---:|---:|--------:|
+| 506 | Embedded Malicious Code | 158 | 3,421 | 552 | 86.1% |
+| 15 | External Control of System/Config | 56 | 1,255 | 422 | 74.8% |
+| 427 | Uncontrolled Search Path Element | 560 | 7,656 | 2,798 | 73.2% |
+| 78 | OS Command Injection | 5,600 | 79,292 | 30,203 | 72.4% |
+| 617 | Reachable Assertion | 354 | 2,685 | 1,192 | 69.3% |
+| 197 | Numeric Truncation Error | 1,008 | 7,899 | 3,733 | 67.9% |
+| 123 | Write-What-Where Condition | 168 | 2,239 | 1,213 | 64.9% |
+| 114 | Process Control | 672 | 8,839 | 4,973 | 64.0% |
+| 194 | Unexpected Sign Extension | 1,344 | 18,260 | 12,440 | 59.5% |
+| 510 | Trapdoor | 70 | 1,450 | 1,037 | 58.3% |
+| 195 | Signed-to-Unsigned Conversion | 1,344 | 16,087 | 11,865 | 57.6% |
+| 90 | LDAP Injection | 560 | 12,600 | 10,252 | 55.1% |
+| 464 | Data Structure Sentinel Addition | 56 | 334 | 280 | 54.4% |
+| 526 | Info Exposure via Env Variables | 18 | 69 | 58 | 54.3% |
+| 587 | Fixed Address to Pointer | 18 | 36 | 31 | 53.7% |
+| 680 | Integer Overflow to Buffer Overflow | 336 | 5,381 | 4,715 | 53.3% |
+| 188 | Reliance on Data/Memory Layout | 36 | 286 | 275 | 51.0% |
+| 843 | Type Confusion | 100 | 279 | 340 | 45.1% |
+| 481 | Assigning Instead of Comparing | 18 | 195 | 239 | 44.9% |
+| 480 | Use of Incorrect Operator | 18 | 79 | 97 | 44.9% |
+| 121 | Stack-Based Buffer Overflow | 5,906 | 50,353 | 66,007 | 43.3% |
+| 122 | Heap-Based Buffer Overflow | 3,656 | 42,202 | 58,891 | 41.7% |
+| 134 | Uncontrolled Format String | 3,360 | 52,276 | 90,251 | 36.7% |
+| 476 | NULL Pointer Dereference | 372 | 1,222 | 2,475 | 33.1% |
+| 190 | Integer Overflow | 5,040 | 26,103 | 54,636 | 32.3% |
+| 191 | Integer Underflow | 3,864 | 19,849 | 40,831 | 32.7% |
+| 401 | Memory Leak | 1,228 | 10,976 | 23,198 | 32.1% |
+| 416 | Use After Free | 150 | 1,787 | 4,698 | 27.6% |
+| 457 | Use of Uninitialized Variable | 616 | 5,045 | 36,338 | 12.2% |
+| | **TOTALS (106 categories)** | **54,484** | **552,645** | **752,422** | **42.3%** |
+
+12 categories had no C test data (Java/C++ only): CWE-23, CWE-36, CWE-396, CWE-397, CWE-440, CWE-500, CWE-561, CWE-562, CWE-672, CWE-674, CWE-676, CWE-762.
+
+*(Full 106-row table available in prior BENCHMARK.md archive)*
+
+---
+
+## Benchmark Methodology
+
+### Ground Truth Classification
+
+Juliet test files contain preprocessor-guarded sections:
+- **`#ifndef OMITBAD`**: Vulnerable code — violations here = **True Positives**
+- **`#ifndef OMITGOOD`**: Fixed/safe code — violations here = **False Positives**
+- **`/* FLAW: */`**: Comments marking exact vulnerability locations
+
+### Metrics
+
+- **TP Rate** = Violations in OMITBAD / (Violations in OMITBAD + OMITGOOD)
+- Violations outside both sections are excluded
+- Classification is at the **violation level**, not file level
+
+### Scan Configuration
+
+- **SqC**: `./target/release/sqc testcases/CWE{id}/ -d testcases/ -d testcasesupport/ --export results.csv`
+- **Parallelism**: 12 concurrent processes
+- **Ground truth analysis**: `scripts/analyze_juliet_results.py`
+
+### Limitations
+
+1. SqC applies all 283 rules to every file — most are not relevant to the specific CWE
+2. OMITBAD sections contain both vulnerable code AND supporting infrastructure
+3. FLAW line detection is ~0% (SqC reports code lines, not comment lines)
+4. The OMITBAD/OMITGOOD code ratio varies across categories
+5. 12 categories had no usable C test data
+
+---
+
+## Competitor Comparison
+
+| Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
+|------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
+| **SqC** | **44.5%** | **55.5%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
+| Semgrep CE | 44–48% | Very low | AST (tree-sitter) | No | Community | Free |
+| Semgrep Pro | 72–75% | Very low | AST + taint + inter-file | No | Community | Commercial |
+| Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
+| Flawfinder | ~40% | High | Lexical scanning | Indirect | No | Free |
+| CodeQL | ~29% | Moderate | Data-flow, taint | Indirect | Partial | Free/Commercial |
+| Cppcheck | Low | Very low | Data-flow | Indirect | Partial | Free |
+| Coverity | Best-in-class | ~15–20% | Inter-procedural, path-sensitive | Not public | Partial | Enterprise |
+| Commercial "Tool C"* | ~73% | ~7% | Inter-procedural | Yes (22 CWEs) | -- | Commercial |
+
+*Anonymized from [Goseva-Popstojanova & Perhinschi 2015](https://community.wvu.edu/~kagoseva/Papers/IST-2015.pdf), tested on 22 CWEs only.*
+
+**Key context from literature:**
+- Tools on average find ~20% of weaknesses in basic Juliet test cases ([ISSTA 2022](https://dl.acm.org/doi/10.1145/3533767.3534380))
+- Even commercial tools miss 27% of C/C++ vulnerabilities (Goseva 2015)
+- FP rates range from 6.5% to 76%+ depending on rule set
+- Industry target for developer adoption is 10–20% FP rate
+- No single tool is comprehensive; academic consensus recommends tool combination
+
+**Sources:** [ISSTA 2022](https://dl.acm.org/doi/10.1145/3533767.3534380) | [Goseva 2015](https://community.wvu.edu/~kagoseva/Papers/IST-2015.pdf) | [JKU 2014](https://www.se.jku.at/wp-content/uploads/2014/08/2014.Using-the-Juliet-Test-Suite.pdf) | [Semgrep Blog 2025](https://semgrep.dev/blog/2025/security-research-comparing-semgrep-community-edition-and-semgrep-code-for-static-analysis/)
+
+---
+
+## Version History
+
+| Version | TP Rate | FP | TP | Notes |
+|---------|--------:|---:|---:|-------|
+| v0.2.1 (baseline) | 41.1% | 839,341 | ~584K | Original |
+| v0.2.4 | 43.8% | 243,849 | 189,950 | Windows API + multiple rule fixes |
+| v0.2.6 | 44.5% | 215,672 | 172,708 | CFG null state + bounds-check detection |
+| **v0.2.7** | **44.5%** | **215,671** | **172,780** | INT36-C TP restore + INT31-C FP fix |
+
+---
+
+## Scripts and Data Locations
+
+```
+scripts/analyze_juliet_results.py      Ground truth analysis (OMITBAD/OMITGOOD)
+scripts/run_juliet_multi_cwe.sh        Sequential multi-CWE runner
+scripts/run_juliet_parallel.sh         Parallel multi-CWE runner (12 jobs)
+
+~/data/benchmarks/juliet-test-suite-c/
+  testcases/                           118 CWE categories, 54,484 .c files
+  testcasesupport/                     Shared helper functions
+
+/tmp/juliet_results/                   Per-run output (MCP benchmark server)
+  sqc-{version}-{commit}/             Results directory per run
+```
