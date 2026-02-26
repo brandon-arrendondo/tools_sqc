@@ -70,9 +70,8 @@ stages:
             displayName: "Install test and coverage tools"
 
           - script: |
-              set -e
               source $HOME/.cargo/env
-              cargo test --verbose -- -Z unstable-options --format json 2>&1 | cargo2junit > test-results.xml
+              cargo test -- -Z unstable-options --format json | cargo2junit > test-results.xml
             displayName: "Run tests (JUnit output)"
 
           - task: PublishTestResults@2
