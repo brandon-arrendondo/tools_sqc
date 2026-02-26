@@ -86,11 +86,7 @@ impl Flp04C {
         }
 
         // Get arguments
-        let args = if let Some(args_node) = node.child_by_field_name("arguments") {
-            args_node
-        } else {
-            return None;
-        };
+        let args = node.child_by_field_name("arguments")?;
 
         // Collect all arguments (skip commas and parentheses)
         let mut all_args = Vec::new();
@@ -127,8 +123,8 @@ impl Flp04C {
 
         // Extract variable names from pointer expressions after format string
         let mut float_vars = Vec::new();
-        for i in (format_index + 1)..all_args.len() {
-            let arg = all_args[i];
+        for arg in all_args.iter().skip(format_index + 1) {
+            let arg = *arg;
             if arg.kind() == "pointer_expression" {
                 if let Some(var_node) = arg.child_by_field_name("argument") {
                     let var_name = get_node_text(&var_node, source).to_string();
@@ -258,7 +254,7 @@ impl Flp04C {
         float_inputs: &HashMap<String, (usize, usize)>,
         validated_vars: &mut HashSet<String>,
     ) {
-        for (var_name, _) in float_inputs {
+        for var_name in float_inputs.keys() {
             if self.has_validation_check(node, source, var_name) {
                 validated_vars.insert(var_name.clone());
             }

@@ -88,9 +88,9 @@ impl Dcl09C {
                     file_path: String::new(),
                     line: start_point.row + 1,
                     column: start_point.column + 1,
-                    suggestion: Some(format!(
-                        "Change return type to 'errno_t' to clearly indicate this function returns error codes"
-                    )),
+                    suggestion: Some(
+                        "Change return type to 'errno_t' to clearly indicate this function returns error codes".to_string()
+                    ),
                     ..Default::default()
                 });
             }
@@ -327,6 +327,6 @@ impl Dcl09C {
             "EHWPOISON",
         ];
 
-        errno_constants.iter().any(|&constant| text == constant)
+        errno_constants.contains(&text)
     }
 }

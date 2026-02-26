@@ -68,7 +68,7 @@ impl Int17C {
             let literal_text = get_node_text(node, source);
 
             // Check if it's a problematic hex constant
-            if self.is_implementation_dependent_constant(&literal_text) {
+            if self.is_implementation_dependent_constant(literal_text) {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     message: format!(
@@ -166,7 +166,7 @@ impl Int17C {
             let hex_part = &normalized[2..];
 
             // Check if it's all F's (any length) - suggests all-bits-set assumption
-            if hex_part.chars().all(|c| c == 'f') && hex_part.len() % 2 == 0 {
+            if hex_part.chars().all(|c| c == 'f') && hex_part.len().is_multiple_of(2) {
                 // Even number of F's suggests byte-aligned mask
                 return true;
             }

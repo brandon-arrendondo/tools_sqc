@@ -127,7 +127,7 @@ impl Err32C {
         source: &str,
         registered_handlers: &HashSet<String>,
     ) -> bool {
-        let mut current = Some(node.clone());
+        let mut current = Some(*node);
 
         while let Some(n) = current {
             if n.kind() == "function_definition" {
@@ -154,7 +154,7 @@ impl Err32C {
 
     /// Get the containing function definition for a node
     fn get_containing_function<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
-        let mut current = Some(node.clone());
+        let mut current = Some(*node);
         while let Some(n) = current {
             if n.kind() == "function_definition" {
                 return Some(n);

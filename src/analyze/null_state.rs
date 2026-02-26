@@ -626,44 +626,41 @@ fn scan_body_for_global_assignments(
     result: &mut StateMap,
     summaries: &HashMap<String, FunctionSummary>,
 ) {
-    match node.kind() {
-        "assignment_expression" => {
-            if let Some(left) = node.child_by_field_name("left") {
-                let var_name = get_text(&left, source);
-                if global_vars.contains(&var_name) {
-                    if let Some(right) = node.child_by_field_name("right") {
-                        let rhs_text = get_text(&right, source);
-                        // If RHS is itself a variable, check if it's a known global
-                        // or classify the rvalue directly
-                        let new_state =
-                            if right.kind() == "identifier" && global_vars.contains(&rhs_text) {
-                                result.get(&rhs_text).copied().unwrap_or(NullState::Unknown)
-                            } else if right.kind() == "identifier" {
-                                // RHS is a local variable — we can't know its value
-                                // from the pre-pass. Check if it's a null literal.
-                                if is_null_value(&rhs_text) {
-                                    NullState::DefinitelyNull
-                                } else {
-                                    // Could be anything — look at what we can infer.
-                                    // In Juliet variant 45, the pattern is:
-                                    //   data = NULL; globalVar = data;
-                                    // We need to check if this local was just assigned NULL.
-                                    // Since we can't track locals in the pre-pass, check
-                                    // the preceding statement for a null assignment to this var.
-                                    check_preceding_null_assign(node, &rhs_text, source)
-                                }
+    if node.kind() == "assignment_expression" {
+        if let Some(left) = node.child_by_field_name("left") {
+            let var_name = get_text(&left, source);
+            if global_vars.contains(&var_name) {
+                if let Some(right) = node.child_by_field_name("right") {
+                    let rhs_text = get_text(&right, source);
+                    // If RHS is itself a variable, check if it's a known global
+                    // or classify the rvalue directly
+                    let new_state =
+                        if right.kind() == "identifier" && global_vars.contains(&rhs_text) {
+                            result.get(&rhs_text).copied().unwrap_or(NullState::Unknown)
+                        } else if right.kind() == "identifier" {
+                            // RHS is a local variable — we can't know its value
+                            // from the pre-pass. Check if it's a null literal.
+                            if is_null_value(&rhs_text) {
+                                NullState::DefinitelyNull
                             } else {
-                                classify_rvalue_null(&right, source, summaries)
-                            };
+                                // Could be anything — look at what we can infer.
+                                // In Juliet variant 45, the pattern is:
+                                //   data = NULL; globalVar = data;
+                                // We need to check if this local was just assigned NULL.
+                                // Since we can't track locals in the pre-pass, check
+                                // the preceding statement for a null assignment to this var.
+                                check_preceding_null_assign(node, &rhs_text, source)
+                            }
+                        } else {
+                            classify_rvalue_null(&right, source, summaries)
+                        };
 
-                        // Join with existing state
-                        let existing = result.get(&var_name).copied().unwrap_or(NullState::Unknown);
-                        result.insert(var_name, existing.join(new_state));
-                    }
+                    // Join with existing state
+                    let existing = result.get(&var_name).copied().unwrap_or(NullState::Unknown);
+                    result.insert(var_name, existing.join(new_state));
                 }
             }
         }
-        _ => {}
     }
 
     // Recurse into children
@@ -864,7 +861,7 @@ pub fn analyze_null_states_with_globals(
 
         // Check convergence
         let old_exit = exit_states.get(&block_id);
-        if old_exit.map_or(true, |old| *old != new_exit) {
+        if old_exit.is_none_or(|old| *old != new_exit) {
             entry_states.insert(block_id, new_entry);
             exit_states.insert(block_id, new_exit);
 
@@ -1049,15 +1046,11 @@ fn find_block_containing(cfg: &FunctionCfg, byte_offset: usize) -> Option<&Basic
         }
     }
     // Fallback to block byte range
-    for block in &cfg.blocks {
-        if block.byte_range.0 > 0
+    cfg.blocks.iter().find(|block| {
+        block.byte_range.0 > 0
             && byte_offset >= block.byte_range.0
             && byte_offset < block.byte_range.1
-        {
-            return Some(block);
-        }
-    }
-    None
+    })
 }
 
 // ---------------------------------------------------------------------------

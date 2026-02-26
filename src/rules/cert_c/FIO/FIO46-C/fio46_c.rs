@@ -143,10 +143,10 @@ impl Fio46C {
         let func_name = self.get_function_name(call_node, source);
 
         // Functions that implicitly use stdout
-        let stdout_functions = vec!["printf", "puts", "putchar", "putc"];
+        let stdout_functions = ["printf", "puts", "putchar", "putc"];
 
         // Functions that implicitly use stderr
-        let _stderr_functions = vec![
+        let _stderr_functions = [
             "perror", // perror uses stderr
         ];
 

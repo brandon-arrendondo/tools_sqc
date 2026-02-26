@@ -123,7 +123,7 @@ impl Con04C {
                 let func_name = get_node_text(&function, source);
 
                 // Check for thread creation
-                if self.is_thread_create_function(&func_name) {
+                if self.is_thread_create_function(func_name) {
                     if let Some(thread_var) = self.extract_thread_variable(node, source) {
                         let creation = ThreadCreation {
                             variable_name: thread_var.clone(),
@@ -135,14 +135,14 @@ impl Con04C {
                 }
 
                 // Check for thread join
-                if self.is_thread_join_function(&func_name) {
+                if self.is_thread_join_function(func_name) {
                     if let Some(thread_var) = self.extract_thread_argument(node, source) {
                         joined_or_detached.insert(thread_var);
                     }
                 }
 
                 // Check for thread detach
-                if self.is_thread_detach_function(&func_name) {
+                if self.is_thread_detach_function(func_name) {
                     if let Some(arg) = self.extract_thread_argument(node, source) {
                         if arg == "thrd_current()" || arg.contains("thrd_current") {
                             // Thread detaches itself - this is valid pattern
@@ -207,8 +207,7 @@ impl Con04C {
                         let arg_text = get_node_text(&child, source).trim().to_string();
 
                         // Handle &var or &var[i]
-                        if arg_text.starts_with('&') {
-                            let var_name = arg_text[1..].trim_start();
+                        if let Some(var_name) = arg_text.strip_prefix('&').map(str::trim_start) {
                             // Handle array indexing: &thr[i] -> thr
                             if let Some(bracket_pos) = var_name.find('[') {
                                 return Some(var_name[..bracket_pos].to_string());

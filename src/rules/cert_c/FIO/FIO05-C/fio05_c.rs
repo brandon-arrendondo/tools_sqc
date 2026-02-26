@@ -326,10 +326,7 @@ impl FileReopenAnalyzer {
                     is_read_mode,
                 };
 
-                self.file_operations
-                    .entry(filename)
-                    .or_insert_with(Vec::new)
-                    .push(op);
+                self.file_operations.entry(filename).or_default().push(op);
             }
         }
     }
@@ -572,8 +569,12 @@ impl FileReopenAnalyzer {
 
     fn has_fstat_between(&self, start_idx: usize, end_idx: usize, ops: &[FileOperation]) -> bool {
         // Check if there's an fstat operation between start and end indices
-        for i in start_idx..=end_idx.min(ops.len() - 1) {
-            if ops[i].op_type == OpType::Fstat {
+        for op in ops
+            .iter()
+            .take(end_idx.min(ops.len() - 1) + 1)
+            .skip(start_idx)
+        {
+            if op.op_type == OpType::Fstat {
                 return true;
             }
         }

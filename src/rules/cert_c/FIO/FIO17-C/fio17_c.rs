@@ -54,7 +54,6 @@ impl Fio17C {
                             column,
                             suggestion: Some("Ensure buffer size accounts for null terminator, or explicitly add null terminator after fread()".to_string()),
                             requires_manual_review: Some(true),
-                            ..Default::default()
                         });
                     }
                 }
@@ -120,7 +119,7 @@ impl Fio17C {
 
         // Look for explicit null terminator assignment
         // Patterns: buffer[...] = '\0'; or buffer[...] = 0;
-        let _patterns = vec![
+        let _patterns = [
             format!("{}[", buffer_name),
             String::from("= '\\0'"),
             String::from("= 0"),
@@ -134,11 +133,9 @@ impl Fio17C {
                     return true;
                 }
             }
-        } else {
-            if remaining_source.contains(&format!("{}[", buffer_name)) {
-                if remaining_source.contains("'\\0'") || remaining_source.contains("= 0;") {
-                    return true;
-                }
+        } else if remaining_source.contains(&format!("{}[", buffer_name)) {
+            if remaining_source.contains("'\\0'") || remaining_source.contains("= 0;") {
+                return true;
             }
         }
 

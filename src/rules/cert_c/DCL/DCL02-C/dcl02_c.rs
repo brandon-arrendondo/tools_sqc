@@ -116,10 +116,11 @@ impl ScopeAnalyzer {
                         let normalized = normalize_identifier(&identifier);
                         let pos = node.start_position();
 
-                        self.identifiers
-                            .entry(normalized)
-                            .or_insert_with(Vec::new)
-                            .push((identifier, pos.row + 1, pos.column + 1));
+                        self.identifiers.entry(normalized).or_default().push((
+                            identifier,
+                            pos.row + 1,
+                            pos.column + 1,
+                        ));
                     }
                 }
                 "function_definition" => {
@@ -129,10 +130,11 @@ impl ScopeAnalyzer {
                             let normalized = normalize_identifier(&func_name);
                             let pos = node.start_position();
 
-                            self.identifiers
-                                .entry(normalized)
-                                .or_insert_with(Vec::new)
-                                .push((func_name, pos.row + 1, pos.column + 1));
+                            self.identifiers.entry(normalized).or_default().push((
+                                func_name,
+                                pos.row + 1,
+                                pos.column + 1,
+                            ));
                         }
                     }
                     // Don't recurse into function body here - will be handled separately
@@ -207,10 +209,11 @@ impl ScopeAnalyzer {
                     let normalized = normalize_identifier(&identifier);
                     let pos = node.start_position();
 
-                    self.identifiers
-                        .entry(normalized)
-                        .or_insert_with(Vec::new)
-                        .push((identifier, pos.row + 1, pos.column + 1));
+                    self.identifiers.entry(normalized).or_default().push((
+                        identifier,
+                        pos.row + 1,
+                        pos.column + 1,
+                    ));
                 }
             }
             "function_definition" => {
@@ -220,14 +223,14 @@ impl ScopeAnalyzer {
                         let normalized = normalize_identifier(&func_name);
                         let pos = node.start_position();
 
-                        self.identifiers
-                            .entry(normalized)
-                            .or_insert_with(Vec::new)
-                            .push((func_name, pos.row + 1, pos.column + 1));
+                        self.identifiers.entry(normalized).or_default().push((
+                            func_name,
+                            pos.row + 1,
+                            pos.column + 1,
+                        ));
                     }
                 }
                 // Don't recurse into function body here - will be handled by analyze_child_scopes
-                return;
             }
             _ => {
                 // Recurse into children (except function bodies which are separate scopes)
@@ -288,10 +291,11 @@ impl ScopeAnalyzer {
                             let normalized = normalize_identifier(&identifier);
                             let pos = param.start_position();
 
-                            self.identifiers
-                                .entry(normalized)
-                                .or_insert_with(Vec::new)
-                                .push((identifier, pos.row + 1, pos.column + 1));
+                            self.identifiers.entry(normalized).or_default().push((
+                                identifier,
+                                pos.row + 1,
+                                pos.column + 1,
+                            ));
                         }
                     }
                 }
@@ -452,9 +456,9 @@ impl ScopeAnalyzer {
                         file_path: String::new(),
                         line: *line2,
                         column: *col2,
-                        suggestion: Some(format!(
-                            "Use a more distinct identifier name that doesn't rely on visually similar characters"
-                        )),
+                        suggestion: Some(
+                            "Use a more distinct identifier name that doesn't rely on visually similar characters".to_string()
+                        ),
                         ..Default::default()
                     });
                 }

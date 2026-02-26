@@ -627,7 +627,7 @@ impl NonArrayPointerAnalyzer {
                         let cleaned = arg_text.trim_matches(&['(', ')', ' '][..]);
                         let args: Vec<&str> = cleaned.split(',').map(|s| s.trim()).collect();
                         // If first arg is 1, it's a single object allocation
-                        if args.len() >= 1 && args[0] == "1" {
+                        if !args.is_empty() && args[0] == "1" {
                             VariableType::NonArray
                         } else {
                             // Otherwise it's an array

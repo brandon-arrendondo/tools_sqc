@@ -57,7 +57,6 @@ impl Pos02C {
                                 "Call setuid/setgid to drop privileges after setup".to_string(),
                             ),
                             requires_manual_review: Some(true),
-                            ..Default::default()
                         });
                     }
                 }

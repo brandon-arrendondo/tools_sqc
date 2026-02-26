@@ -79,9 +79,9 @@ impl Pre11C {
                 file_path: String::new(),
                 line: node.start_position().row + 1,
                 column: node.start_position().column + 1,
-                suggestion: Some(format!(
-                    "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition."
-                )),
+                suggestion: Some(
+                    "Remove the trailing semicolon from the macro definition. The semicolon should be added by the macro user, not in the definition.".to_string()
+                ),
                 ..Default::default()
             });
         }

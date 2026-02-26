@@ -282,8 +282,7 @@ impl Dcl06C {
         let trimmed = value.trim();
 
         // Handle negative numbers
-        if trimmed.starts_with('-') {
-            let positive = &trimmed[1..];
+        if let Some(positive) = trimmed.strip_prefix('-') {
             return matches!(positive, "0" | "1" | "2");
         }
 

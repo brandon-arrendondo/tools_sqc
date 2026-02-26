@@ -98,16 +98,16 @@ fn generate_rules_all_toml() -> Result<()> {
             })
             .filter(|e| {
                 e.path().is_file()
-                    && e.path().extension().map_or(false, |ext| ext == "toml")
-                    && e.path().file_name().and_then(|name| name.to_str()).map_or(
-                        false,
-                        |name_str| {
+                    && e.path().extension().is_some_and(|ext| ext == "toml")
+                    && e.path()
+                        .file_name()
+                        .and_then(|name| name.to_str())
+                        .is_some_and(|name_str| {
                             // Match pattern like ARR30-C.toml, but exclude rules-all.toml
                             name_str != "rules-all.toml"
                                 && name_str.contains('-')
                                 && !name_str.starts_with('.')
-                        },
-                    )
+                        })
             })
             .map(|e| e.path().to_path_buf())
             .collect();
@@ -312,7 +312,7 @@ fn generate_integration_tests() -> Result<()> {
 
                     let test_path = test_file.path();
 
-                    if test_path.extension().map_or(false, |e| e == "c") {
+                    if test_path.extension().is_some_and(|e| e == "c") {
                         generate_test_function(
                             &mut rule_file,
                             rule_id,
@@ -350,7 +350,7 @@ fn generate_integration_tests() -> Result<()> {
 
                     let test_path = test_file.path();
 
-                    if test_path.extension().map_or(false, |e| e == "c") {
+                    if test_path.extension().is_some_and(|e| e == "c") {
                         generate_test_function(
                             &mut rule_file,
                             rule_id,
@@ -412,7 +412,7 @@ fn generate_test_function(
         .file_stem()
         .and_then(|s| s.to_str())
         .context("Invalid test file name")?;
-    let test_name_safe = test_file_stem.replace('-', "_").replace('.', "_");
+    let test_name_safe = test_file_stem.replace(['-', '.'], "_");
 
     // Generate test function name: test_arr00_c_fail_wiki_noncompliant_1
     let test_fn_name = format!("test_{}_{}_{}", rule_snake, test_type, test_name_safe);
@@ -545,7 +545,7 @@ fn check_if_rule_enabled(toml_path: &str) -> Result<bool> {
     // Check for implemented rule format: [rules.cert_c.RULE-ID] enabled = true
     if let Some(rules) = config.rules {
         if let Some(cert_c_rules) = rules.get("cert_c") {
-            for (_rule_id, settings) in cert_c_rules {
+            for settings in cert_c_rules.values() {
                 if settings.enabled {
                     return Ok(true);
                 }

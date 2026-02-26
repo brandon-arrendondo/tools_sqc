@@ -102,7 +102,7 @@ impl Fio50C {
     }
 
     /// Extract the first argument (FILE* variable) from function call
-    fn get_file_argument<'a>(&self, arguments: &'a Node, source: &str) -> Option<String> {
+    fn get_file_argument(&self, arguments: &Node, source: &str) -> Option<String> {
         let mut cursor = arguments.walk();
         for child in arguments.children(&mut cursor) {
             if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
@@ -120,7 +120,7 @@ impl Fio50C {
         self.collect_file_operations(scope_node, source, &mut file_operations);
 
         // Detect violations in operation sequences
-        for (_file_var, ops) in &file_operations {
+        for ops in file_operations.values() {
             self.detect_alternation_violations(ops, violations);
         }
     }
@@ -212,10 +212,7 @@ impl Fio50C {
                                 column: node.start_position().column + 1,
                             };
 
-                            file_operations
-                                .entry(file_var)
-                                .or_insert_with(Vec::new)
-                                .push(operation);
+                            file_operations.entry(file_var).or_default().push(operation);
                         }
                     }
                 }
@@ -232,7 +229,7 @@ impl Fio50C {
 
                 file_operations
                     .entry(stream_var)
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(operation);
             }
         }
@@ -250,7 +247,7 @@ impl Fio50C {
 
                 file_operations
                     .entry(stream_var)
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(operation);
             }
 
@@ -265,7 +262,7 @@ impl Fio50C {
 
                 file_operations
                     .entry(stream_var)
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(operation);
             }
         }

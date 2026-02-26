@@ -11,6 +11,10 @@ pub fn get_relative_path(file_path: &str, base_path: &str) -> String {
         relative.to_string_lossy().to_string()
     } else {
         // Fall back to just the filename if we can't get relative path
-        file_path.split('/').last().unwrap_or(file_path).to_string()
+        file_path
+            .split('/')
+            .next_back()
+            .unwrap_or(file_path)
+            .to_string()
     }
 }

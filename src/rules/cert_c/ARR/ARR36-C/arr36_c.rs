@@ -49,11 +49,8 @@ impl Arr36C {
         analyzer: &PointerAnalyzer,
         violations: &mut Vec<RuleViolation>,
     ) {
-        match node.kind() {
-            "binary_expression" => {
-                self.check_binary_expression(node, source, analyzer, violations);
-            }
-            _ => {}
+        if node.kind() == "binary_expression" {
+            self.check_binary_expression(node, source, analyzer, violations);
         }
 
         // Recursively check child nodes

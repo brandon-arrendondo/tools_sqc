@@ -182,7 +182,7 @@ impl Flp00C {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
-                if FP_FUNCTIONS.contains(&func_name.as_ref()) {
+                if FP_FUNCTIONS.contains(&func_name) {
                     return true;
                 }
             }

@@ -80,6 +80,7 @@ impl Con40C {
     }
 
     /// Get identifier name from a declarator node
+    #[allow(clippy::only_used_in_recursion)]
     fn get_identifier<'a>(&self, node: &Node<'a>, source: &'a str) -> Option<&'a str> {
         if node.kind() == "identifier" {
             return Some(get_node_text(node, source));
@@ -163,6 +164,7 @@ impl Con40C {
     }
 
     /// Count references to atomic variables within an expression
+    #[allow(clippy::only_used_in_recursion)]
     fn count_var_references<'a>(
         &self,
         node: &Node<'a>,
@@ -176,7 +178,7 @@ impl Con40C {
             if atomic_vars.contains_key(var_name) {
                 var_counts
                     .entry(var_name.to_string())
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(*node);
             }
         }
@@ -195,6 +197,7 @@ impl Con40C {
     }
 
     /// Check if this is a safe compound assignment operation
+    #[allow(clippy::only_used_in_recursion)]
     fn is_safe_compound_assignment(&self, node: &Node, source: &str, var_name: &str) -> bool {
         // Compound assignments like +=, -=, *=, /=, ^=, etc. are atomic operations
         if node.kind() == "assignment_expression" {

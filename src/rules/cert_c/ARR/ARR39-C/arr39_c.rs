@@ -493,7 +493,7 @@ impl Arr39C {
 
         // For an identifier, we need to look at its declaration or most recent cast
         // This is a simplified heuristic - we look for cast expressions in the parent chain
-        let mut current = node.clone();
+        let mut current = *node;
 
         // Walk up the tree to find casts
         for _ in 0..5 {

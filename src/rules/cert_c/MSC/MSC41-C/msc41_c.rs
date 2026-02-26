@@ -119,7 +119,7 @@ impl Msc41C {
             .any(|c| !c.is_alphanumeric() && !c.is_whitespace());
 
         // Passwords/keys typically have mixed character types
-        (has_letters && has_digits) || (has_letters && has_special) || (has_digits && has_special)
+        (has_special || has_digits) && has_letters || (has_digits && has_special)
     }
 
     /// Check call expressions for hard-coded sensitive data
