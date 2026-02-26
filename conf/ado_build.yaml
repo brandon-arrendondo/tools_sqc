@@ -1,0 +1,106 @@
+---
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-22.04
+
+stages:
+  - stage: "Build"
+    displayName: "Build"
+    jobs:
+      - job:
+        displayName: "Build"
+        steps:
+          - checkout: self
+            submodules: recursive
+            clean: true
+
+          - script: |
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+              source $HOME/.cargo/env
+              rustc --version
+              cargo --version
+            displayName: "Install Rust toolchain (stable)"
+
+          - script: |
+              sudo apt-get update
+              sudo apt-get install -y libgtk-3-dev
+            displayName: "Install system dependencies"
+
+          - script: |
+              set -e
+              source $HOME/.cargo/env
+              echo "Checking code formatting..."
+              cargo fmt -- --check || {
+                echo "Code formatting check failed. Run 'cargo fmt' to fix."
+                exit 1
+              }
+              echo "Code formatting check passed"
+            displayName: "Check code formatting"
+
+          - script: |
+              set -e
+              source $HOME/.cargo/env
+              echo "Running Clippy linter..."
+              cargo clippy -- -D warnings || {
+                echo "Clippy linting failed. Fix all warnings before proceeding."
+                exit 1
+              }
+              echo "Clippy linting passed"
+            displayName: "Run Clippy linting"
+
+          - script: |
+              set -e
+              source $HOME/.cargo/env
+              cargo build --release --verbose
+            displayName: "Build Cargo project (release)"
+
+          - script: |
+              set -e
+              source $HOME/.cargo/env
+              cargo test --verbose
+            displayName: "Run tests"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish build artifact"
+            inputs:
+              PathtoPublish: "$(Build.SourcesDirectory)/target/release/sqc"
+              ArtifactName: "sqc"
+              publishLocation: "Container"
+
+  - stage: "Package"
+    displayName: "Package"
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))
+    jobs:
+      - job:
+        displayName: "Package"
+        variables:
+          SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+        steps:
+          - checkout: self
+            submodules: true
+
+          - script: |
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+              source $HOME/.cargo/env
+              rustc --version
+              cargo --version
+            displayName: "Install Rust toolchain (stable)"
+
+          - script: |
+              sudo apt-get update
+              sudo apt-get install -y libgtk-3-dev
+            displayName: "Install system dependencies"
+
+          - task: CargoAuthenticate@0
+            displayName: "Authenticate Cargo with Azure Artifacts"
+            inputs:
+              configFile: "$(Build.SourcesDirectory)/.cargo/config.toml"
+
+          - script: |
+              source $HOME/.cargo/env
+              cargo publish --registry ELEC_SW_Rust_Packages --allow-dirty
+            displayName: "Publish to Azure Artifacts"
