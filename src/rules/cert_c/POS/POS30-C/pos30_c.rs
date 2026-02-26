@@ -107,7 +107,7 @@ impl Pos30C {
 
         // Third argument is size - get full text including expressions like sizeof(buf)-1
         let size_arg = &arg_nodes[2];
-        let size_text = get_node_text(&size_arg, source);
+        let size_text = get_node_text(size_arg, source);
 
         // Check if it's sizeof(buf) or bufsize without -1
         // Violations:
@@ -116,7 +116,7 @@ impl Pos30C {
         let is_violation = (size_text.contains("sizeof") && !size_text.contains("-"))
             || (!size_text.contains("sizeof")
                 && !size_text.contains("-")
-                && !size_text.chars().all(|c| c.is_digit(10)));
+                && !size_text.chars().all(|c| c.is_ascii_digit()));
 
         if is_violation {
             // VIOLATION: using full buffer size without subtracting 1

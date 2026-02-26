@@ -133,7 +133,7 @@ impl Int31C {
 
                 // Then: collect variable types from body
                 self.collect_var_types(&body, source, &mut var_types);
-                self.collect_validations(&body, source, &mut validated_vars, &var_types);
+                Self::collect_validations(&body, source, &mut validated_vars, &var_types);
 
                 // Second pass: check for unsafe conversions
                 self.check_unsafe_conversions(
@@ -169,7 +169,7 @@ impl Int31C {
                     if let Some(child) = node.child(i) {
                         if child.kind() == "init_declarator" {
                             if let Some(declarator) = child.child_by_field_name("declarator") {
-                                let var_name = self.extract_var_name(&declarator, source);
+                                let var_name = Self::extract_var_name(&declarator, source);
                                 if !var_name.is_empty() {
                                     var_types.insert(var_name, type_text.clone());
                                 }
@@ -189,7 +189,7 @@ impl Int31C {
             let type_text = self.extract_parameter_type(node, source);
             if !type_text.is_empty() {
                 if let Some(declarator) = node.child_by_field_name("declarator") {
-                    let var_name = self.extract_var_name(&declarator, source);
+                    let var_name = Self::extract_var_name(&declarator, source);
                     if !var_name.is_empty() {
                         var_types.insert(var_name, type_text);
                     }
@@ -260,14 +260,14 @@ impl Int31C {
             .unwrap_or_default()
     }
 
-    fn extract_var_name(&self, node: &Node, source: &str) -> String {
+    fn extract_var_name(node: &Node, source: &str) -> String {
         if node.kind() == "identifier" {
             return get_node_text(node, source).to_string();
         }
         if node.kind() == "pointer_declarator" {
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
-                    let name = self.extract_var_name(&child, source);
+                    let name = Self::extract_var_name(&child, source);
                     if !name.is_empty() {
                         return name;
                     }
@@ -278,7 +278,6 @@ impl Int31C {
     }
 
     fn collect_validations(
-        &self,
         node: &Node,
         source: &str,
         validated_vars: &mut HashSet<String>,
@@ -369,7 +368,7 @@ impl Int31C {
         // Also check init_declarator: int data = CHAR_MAX - 5;
         if node.kind() == "init_declarator" {
             if let Some(declarator) = node.child_by_field_name("declarator") {
-                let var_name = self.extract_var_name(&declarator, source);
+                let var_name = Self::extract_var_name(&declarator, source);
                 if !var_name.is_empty() {
                     if let Some(value) = node.child_by_field_name("value") {
                         let rhs = get_node_text(&value, source);
@@ -384,7 +383,7 @@ impl Int31C {
         // Recurse
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_validations(&child, source, validated_vars, var_types);
+                Self::collect_validations(&child, source, validated_vars, var_types);
             }
         }
     }
@@ -474,7 +473,7 @@ impl Int31C {
                         let value_text = get_node_text(&child, source);
                         // Check if it's a literal number > 255
                         if let Ok(value) = value_text.parse::<i64>() {
-                            if value > 255 || value < 0 {
+                            if !(0..=255).contains(&value) {
                                 let pos = call_node.start_position();
                                 violations.push(RuleViolation {
                                     rule_id: self.rule_id().to_string(),
@@ -515,7 +514,7 @@ impl Int31C {
             let left_text = get_node_text(&left, source);
 
             // Check if left is a time_t variable
-            let is_time_t = var_types.get(left_text).map_or(false, |t| t == "time_t");
+            let is_time_t = var_types.get(left_text).is_some_and(|t| t == "time_t");
 
             if is_time_t {
                 if let Some(right) = node.child_by_field_name("right") {
@@ -856,10 +855,11 @@ impl Int31C {
         for t in UNSIGNED_TYPES {
             let t_lower = t.to_lowercase();
             // Only match if the type doesn't also match a signed pattern
-            if normalized.contains(&t_lower) && !t_lower.contains("signed") {
-                if t_lower.starts_with("u") || t_lower.contains("size") {
-                    return true;
-                }
+            if normalized.contains(&t_lower)
+                && !t_lower.contains("signed")
+                && (t_lower.starts_with("u") || t_lower.contains("size"))
+            {
+                return true;
             }
         }
         false

@@ -56,7 +56,6 @@ impl Fio51C {
                                     "Call fclose() before function returns".to_string(),
                                 ),
                                 requires_manual_review: Some(true),
-                                ..Default::default()
                             });
                         }
                     }

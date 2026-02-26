@@ -70,7 +70,6 @@ impl Pos49C {
                                 column: node.start_position().column + 1,
                                 suggestion: Some("Protect bit-field access with pthread_mutex_lock/unlock".to_string()),
                                 requires_manual_review: Some(true),
-                                ..Default::default()
                             });
                         }
                     }

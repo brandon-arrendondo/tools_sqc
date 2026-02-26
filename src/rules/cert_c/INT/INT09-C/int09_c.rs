@@ -112,7 +112,7 @@ impl Int09C {
                     let (value, is_explicit) =
                         if let Some(value_node) = child.child_by_field_name("value") {
                             let value_text = get_node_text(&value_node, source);
-                            let parsed_value = self.parse_constant_value(&value_text);
+                            let parsed_value = self.parse_constant_value(value_text);
                             (parsed_value, true)
                         } else {
                             (current_value, false)
@@ -140,7 +140,7 @@ impl Int09C {
         for enumerator in &enumerators {
             value_map
                 .entry(enumerator.value)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(enumerator);
         }
 

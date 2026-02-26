@@ -86,9 +86,7 @@ impl Pre04C {
 
     /// Check if the header name matches a standard C library header
     fn is_standard_header(&self, header_name: &str) -> bool {
-        self.standard_headers
-            .iter()
-            .any(|&std_header| header_name == std_header)
+        self.standard_headers.contains(&header_name)
     }
 
     /// Check an include directive for reuse of standard header names

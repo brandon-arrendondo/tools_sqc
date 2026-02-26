@@ -96,6 +96,7 @@ impl Pos05C {
         has_chroot && has_chdir && has_setuid
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn search_chroot_pattern(
         &self,
         node: &Node,
@@ -108,7 +109,7 @@ impl Pos05C {
             if let Some(function) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&function, source);
 
-                match func_name.as_ref() {
+                match func_name {
                     "chroot" => *has_chroot = true,
                     "chdir" => {
                         // Check if it's chdir("/")
@@ -145,7 +146,7 @@ impl Pos05C {
                 let func_name = get_node_text(&function, source);
 
                 // Check if this is a file operation function
-                if self.is_file_operation(&func_name) {
+                if self.is_file_operation(func_name) {
                     // Check if arguments contain user-controlled input (argv, user input, etc.)
                     if let Some(arguments) = node.child_by_field_name("arguments") {
                         if self.uses_user_input(&arguments, source) {

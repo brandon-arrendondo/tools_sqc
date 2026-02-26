@@ -163,6 +163,7 @@ impl Api05C {
         None
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn extract_declarator_name(&self, declarator: &Node, source: &str) -> Option<String> {
         match declarator.kind() {
             "identifier" => Some(get_node_text(declarator, source).to_string()),
@@ -235,6 +236,7 @@ impl Api05C {
         false
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn has_nested_array_or_function(&self, node: &Node) -> bool {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
@@ -267,7 +269,7 @@ impl Api05C {
                         && size_node.named_child_count() > 0
                         && size_node
                             .named_child(0)
-                            .map_or(false, |n| n.kind() == "identifier"))
+                            .is_some_and(|n| n.kind() == "identifier"))
                 {
                     // Extract variable name
                     let var_name = if size_node.kind() == "identifier" {

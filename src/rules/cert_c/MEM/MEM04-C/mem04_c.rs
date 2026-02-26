@@ -280,11 +280,9 @@ impl Mem04C {
 
         // Look at previous lines for validation patterns
         // We'll look back up to 50 lines (reasonable scope for local validation)
-        let start_line = if alloc_line > 50 { alloc_line - 50 } else { 0 };
+        let start_line = alloc_line.saturating_sub(50);
 
-        for line_idx in start_line..alloc_line {
-            let line = lines[line_idx];
-
+        for line in lines.iter().take(alloc_line).skip(start_line) {
             // Check if this line contains an if-statement with the variable
             if line.trim_start().starts_with("if") && line.contains(var_name) {
                 // Check for common zero-check patterns

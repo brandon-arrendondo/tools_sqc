@@ -44,10 +44,9 @@ impl Msc33C {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: self.severity(),
-                        message: format!(
-                            "Call to asctime() function without validation. \
+                        message: "Call to asctime() function without validation. \
                              The asctime() function can overflow if passed invalid data"
-                        ),
+                            .to_string(),
                         file_path: String::new(),
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,

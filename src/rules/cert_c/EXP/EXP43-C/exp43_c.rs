@@ -124,7 +124,7 @@ impl Exp43C {
         // Handle expressions like "ptr1 + 3" or "c_str"
         if trimmed.contains('+') || trimmed.contains('-') {
             trimmed
-                .split(|c| c == '+' || c == '-')
+                .split(['+', '-'])
                 .next()
                 .unwrap_or("")
                 .trim()

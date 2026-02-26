@@ -178,11 +178,9 @@ impl Con30C {
             if arg_list.len() >= 2 {
                 // First arg is &key
                 let key_arg = arg_list[0].trim();
-                let key_name = if key_arg.starts_with('&') {
-                    key_arg[1..].trim().to_string()
-                } else {
-                    key_arg.to_string()
-                };
+                let key_name = key_arg
+                    .strip_prefix('&')
+                    .map_or_else(|| key_arg.to_string(), |s| s.trim().to_string());
 
                 // Second arg is destructor (NULL means no destructor)
                 let destructor_arg = arg_list[1].trim();

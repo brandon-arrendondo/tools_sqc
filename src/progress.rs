@@ -37,11 +37,17 @@ pub struct CLIProgressReporter {
     last_line_length: Arc<std::sync::Mutex<usize>>,
 }
 
-impl CLIProgressReporter {
-    pub fn new() -> Self {
+impl Default for CLIProgressReporter {
+    fn default() -> Self {
         Self {
             last_line_length: Arc::new(std::sync::Mutex::new(0)),
         }
+    }
+}
+
+impl CLIProgressReporter {
+    pub fn new() -> Self {
+        Self::default()
     }
 
     /// Clear the current line

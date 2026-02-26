@@ -51,9 +51,7 @@ impl Sig00C {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: self.severity(),
-                    message: format!(
-                        "Use of signal() function detected. signal() does not provide signal masking and can lead to race conditions in noninterruptible signal handlers. Use sigaction() with proper signal masking instead."
-                    ),
+                    message: "Use of signal() function detected. signal() does not provide signal masking and can lead to race conditions in noninterruptible signal handlers. Use sigaction() with proper signal masking instead.".to_string(),
                     file_path: String::new(),
                     line: node.start_position().row + 1,
                     column: node.start_position().column + 1,
@@ -83,9 +81,7 @@ impl Sig00C {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
                         severity: Severity::Medium,
-                        message: format!(
-                            "sigaction() call detected without apparent signal masking. Ensure sa_mask is properly configured with sigaddset() before calling sigaction()."
-                        ),
+                        message: "sigaction() call detected without apparent signal masking. Ensure sa_mask is properly configured with sigaddset() before calling sigaction().".to_string(),
                         file_path: String::new(),
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,

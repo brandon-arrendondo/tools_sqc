@@ -93,6 +93,7 @@ struct ResourceInfo {
 }
 
 #[derive(Clone, PartialEq)]
+#[allow(clippy::enum_variant_names)]
 enum ResourceType {
     FilePointer,    // FILE* from fopen/freopen
     FileDescriptor, // int fd from open()

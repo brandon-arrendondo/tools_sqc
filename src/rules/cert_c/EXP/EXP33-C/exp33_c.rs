@@ -315,7 +315,7 @@ impl UninitializedVariableAnalyzer {
     fn analyze_function_def(&mut self, func_def: &Node, source: &str) {
         // Get function name from declarator
         let func_name = if let Some(declarator) = func_def.child_by_field_name("declarator") {
-            self.get_function_name(&declarator, source)
+            Self::get_function_name(&declarator, source)
         } else {
             return;
         };
@@ -339,12 +339,12 @@ impl UninitializedVariableAnalyzer {
         }
     }
 
-    fn get_function_name(&self, declarator: &Node, source: &str) -> String {
+    fn get_function_name(declarator: &Node, source: &str) -> String {
         match declarator.kind() {
             "identifier" => get_node_text(declarator, source).to_string(),
             "function_declarator" => {
                 if let Some(inner) = declarator.child_by_field_name("declarator") {
-                    self.get_function_name(&inner, source)
+                    Self::get_function_name(&inner, source)
                 } else {
                     String::new()
                 }
@@ -352,7 +352,7 @@ impl UninitializedVariableAnalyzer {
             "pointer_declarator" => {
                 for i in 0..declarator.child_count() {
                     if let Some(child) = declarator.child(i) {
-                        let name = self.get_function_name(&child, source);
+                        let name = Self::get_function_name(&child, source);
                         if !name.is_empty() {
                             return name;
                         }
@@ -368,7 +368,7 @@ impl UninitializedVariableAnalyzer {
     fn function_returns_realloc(&self, body: &Node, source: &str) -> bool {
         // First, find all variables assigned from realloc
         let mut realloc_vars: HashSet<String> = HashSet::new();
-        self.collect_realloc_vars(body, source, &mut realloc_vars);
+        Self::collect_realloc_vars(body, source, &mut realloc_vars);
 
         if realloc_vars.is_empty() {
             return false;
@@ -383,10 +383,10 @@ impl UninitializedVariableAnalyzer {
         }
 
         // Then check if any return statement returns a realloc result or a realloc variable
-        self.find_realloc_return(body, source, &realloc_vars)
+        Self::find_realloc_return(body, source, &realloc_vars)
     }
 
-    fn collect_realloc_vars(&self, node: &Node, source: &str, realloc_vars: &mut HashSet<String>) {
+    fn collect_realloc_vars(node: &Node, source: &str, realloc_vars: &mut HashSet<String>) {
         // Look for assignments like: var = realloc(...) or var = (type *)realloc(...)
         if node.kind() == "declaration" || node.kind() == "assignment_expression" {
             let text = get_node_text(node, source);
@@ -404,7 +404,7 @@ impl UninitializedVariableAnalyzer {
                         if let Some(child) = node.child(i) {
                             if child.kind() == "init_declarator" {
                                 if let Some(declarator) = child.child_by_field_name("declarator") {
-                                    let var_name = self.get_var_name(&declarator, source);
+                                    let var_name = Self::get_var_name(&declarator, source);
                                     if var_name != "unknown" {
                                         realloc_vars.insert(var_name);
                                     }
@@ -418,17 +418,12 @@ impl UninitializedVariableAnalyzer {
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_realloc_vars(&child, source, realloc_vars);
+                Self::collect_realloc_vars(&child, source, realloc_vars);
             }
         }
     }
 
-    fn find_realloc_return(
-        &self,
-        node: &Node,
-        source: &str,
-        realloc_vars: &HashSet<String>,
-    ) -> bool {
+    fn find_realloc_return(node: &Node, source: &str, realloc_vars: &HashSet<String>) -> bool {
         if node.kind() == "return_statement" {
             let return_text = get_node_text(node, source);
             // Check if return value directly involves realloc
@@ -450,7 +445,7 @@ impl UninitializedVariableAnalyzer {
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if self.find_realloc_return(&child, source, realloc_vars) {
+                if Self::find_realloc_return(&child, source, realloc_vars) {
                     return true;
                 }
             }
@@ -480,7 +475,7 @@ impl UninitializedVariableAnalyzer {
 
         if declarator.kind() == "function_declarator" {
             if let Some(params_node) = declarator.child_by_field_name("parameters") {
-                self.collect_pointer_params(&params_node, source, &mut params);
+                Self::collect_pointer_params(&params_node, source, &mut params);
             }
         } else {
             for i in 0..declarator.child_count() {
@@ -492,7 +487,7 @@ impl UninitializedVariableAnalyzer {
         params
     }
 
-    fn collect_pointer_params(&self, node: &Node, source: &str, params: &mut Vec<String>) {
+    fn collect_pointer_params(node: &Node, source: &str, params: &mut Vec<String>) {
         if node.kind() == "parameter_declaration" {
             // Check if this is a pointer parameter
             let param_text = get_node_text(node, source);
@@ -501,7 +496,7 @@ impl UninitializedVariableAnalyzer {
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
                         if child.kind() == "pointer_declarator" || child.kind() == "identifier" {
-                            let name = self.get_var_name(&child, source);
+                            let name = Self::get_var_name(&child, source);
                             if name != "unknown" {
                                 params.push(name);
                             }
@@ -513,7 +508,7 @@ impl UninitializedVariableAnalyzer {
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_pointer_params(&child, source, params);
+                Self::collect_pointer_params(&child, source, params);
             }
         }
     }
@@ -533,17 +528,11 @@ impl UninitializedVariableAnalyzer {
 
     fn find_all_pointer_writes(&self, param: &str, node: &Node, source: &str) -> Vec<usize> {
         let mut writes = Vec::new();
-        self.collect_pointer_writes(param, node, source, &mut writes);
+        Self::collect_pointer_writes(param, node, source, &mut writes);
         writes
     }
 
-    fn collect_pointer_writes(
-        &self,
-        param: &str,
-        node: &Node,
-        source: &str,
-        writes: &mut Vec<usize>,
-    ) {
+    fn collect_pointer_writes(param: &str, node: &Node, source: &str, writes: &mut Vec<usize>) {
         if node.kind() == "assignment_expression" {
             if let Some(left) = node.child_by_field_name("left") {
                 // Check for *param = value
@@ -562,7 +551,7 @@ impl UninitializedVariableAnalyzer {
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_pointer_writes(param, &child, source, writes);
+                Self::collect_pointer_writes(param, &child, source, writes);
             }
         }
     }
@@ -684,12 +673,11 @@ impl UninitializedVariableAnalyzer {
     /// Find all assignment positions for a variable
     fn find_all_assignments(&self, var_name: &str, node: &Node, source: &str) -> Vec<usize> {
         let mut positions = Vec::new();
-        self.collect_assignments_for_var(var_name, node, source, &mut positions);
+        Self::collect_assignments_for_var(var_name, node, source, &mut positions);
         positions
     }
 
     fn collect_assignments_for_var(
-        &self,
         var_name: &str,
         node: &Node,
         source: &str,
@@ -708,7 +696,7 @@ impl UninitializedVariableAnalyzer {
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_assignments_for_var(var_name, &child, source, positions);
+                Self::collect_assignments_for_var(var_name, &child, source, positions);
             }
         }
     }
@@ -725,9 +713,9 @@ impl UninitializedVariableAnalyzer {
                 "if_statement" => {
                     // Check if position is in the condition vs the body
                     // The condition always executes, so we only care about the body
-                    if !self.is_in_if_condition(pos, &conditional) {
+                    if !Self::is_in_if_condition(pos, &conditional) {
                         // Position is in the body - check if this if has else
-                        if !self.if_chain_has_else(&conditional) {
+                        if !Self::if_chain_has_else(&conditional) {
                             return true; // In body of if without else
                         }
                     }
@@ -747,16 +735,11 @@ impl UninitializedVariableAnalyzer {
     /// Find all enclosing conditionals (from innermost to outermost)
     fn find_all_enclosing_conditionals<'a>(&self, pos: usize, node: &Node<'a>) -> Vec<Node<'a>> {
         let mut result = Vec::new();
-        self.collect_enclosing_conditionals(pos, node, &mut result);
+        Self::collect_enclosing_conditionals(pos, node, &mut result);
         result
     }
 
-    fn collect_enclosing_conditionals<'a>(
-        &self,
-        pos: usize,
-        node: &Node<'a>,
-        result: &mut Vec<Node<'a>>,
-    ) {
+    fn collect_enclosing_conditionals<'a>(pos: usize, node: &Node<'a>, result: &mut Vec<Node<'a>>) {
         // Check if current node contains the position
         if pos < node.start_byte() || pos >= node.end_byte() {
             return;
@@ -764,19 +747,19 @@ impl UninitializedVariableAnalyzer {
 
         // If this node is a conditional, add it
         if node.kind() == "if_statement" || node.kind() == "switch_statement" {
-            result.push(node.clone());
+            result.push(*node);
         }
 
         // Recursively check children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_enclosing_conditionals(pos, &child, result);
+                Self::collect_enclosing_conditionals(pos, &child, result);
             }
         }
     }
 
     /// Check if position is inside the condition clause of an if statement (not the body)
-    fn is_in_if_condition(&self, pos: usize, if_node: &Node) -> bool {
+    fn is_in_if_condition(pos: usize, if_node: &Node) -> bool {
         // The condition is the parenthesized_expression child
         if let Some(condition) = if_node.child_by_field_name("condition") {
             return pos >= condition.start_byte() && pos < condition.end_byte();
@@ -785,7 +768,7 @@ impl UninitializedVariableAnalyzer {
     }
 
     #[allow(dead_code)]
-    fn find_enclosing_conditional<'a>(&self, pos: usize, node: &Node<'a>) -> Option<Node<'a>> {
+    fn find_enclosing_conditional<'a>(pos: usize, node: &Node<'a>) -> Option<Node<'a>> {
         // Check if current node contains the position
         if pos < node.start_byte() || pos >= node.end_byte() {
             return None;
@@ -794,7 +777,7 @@ impl UninitializedVariableAnalyzer {
         // Check children first (to find innermost)
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if let Some(found) = self.find_enclosing_conditional(pos, &child) {
+                if let Some(found) = Self::find_enclosing_conditional(pos, &child) {
                     return Some(found);
                 }
             }
@@ -802,26 +785,26 @@ impl UninitializedVariableAnalyzer {
 
         // Then check if this node is a conditional
         if node.kind() == "if_statement" || node.kind() == "switch_statement" {
-            return Some(node.clone());
+            return Some(*node);
         }
 
         None
     }
 
-    fn if_chain_has_else(&self, if_node: &Node) -> bool {
+    fn if_chain_has_else(if_node: &Node) -> bool {
         // An if statement has: condition, consequence, and optionally alternative
         // The alternative can be another if_statement (else if), else_clause, or a compound_statement (else)
         if let Some(alt) = if_node.child_by_field_name("alternative") {
             if alt.kind() == "if_statement" {
                 // It's an else-if directly, check recursively
-                return self.if_chain_has_else(&alt);
+                return Self::if_chain_has_else(&alt);
             } else if alt.kind() == "else_clause" {
                 // Wrapped in else_clause - check if it contains an if_statement (else if)
                 for i in 0..alt.child_count() {
                     if let Some(child) = alt.child(i) {
                         if child.kind() == "if_statement" {
                             // It's an else-if, check recursively
-                            return self.if_chain_has_else(&child);
+                            return Self::if_chain_has_else(&child);
                         }
                     }
                 }
@@ -857,7 +840,7 @@ impl UninitializedVariableAnalyzer {
         let mut decls_with_init: Vec<(String, usize)> = Vec::new(); // (var name, position)
         let mut assignments: Vec<(String, usize)> = Vec::new(); // (var name, assignment position)
 
-        self.collect_goto_info(
+        Self::collect_goto_info(
             node,
             source,
             &mut gotos,
@@ -929,7 +912,6 @@ impl UninitializedVariableAnalyzer {
     }
 
     fn collect_goto_info(
-        &self,
         node: &Node,
         source: &str,
         gotos: &mut Vec<(String, usize)>,
@@ -974,7 +956,7 @@ impl UninitializedVariableAnalyzer {
                         if let Some(child) = node.child(i) {
                             if child.kind() == "init_declarator" {
                                 if let Some(declarator) = child.child_by_field_name("declarator") {
-                                    let var_name = self.get_var_name(&declarator, source);
+                                    let var_name = Self::get_var_name(&declarator, source);
                                     if var_name != "unknown" {
                                         decls_with_init.push((var_name, node.start_byte()));
                                     }
@@ -998,7 +980,14 @@ impl UninitializedVariableAnalyzer {
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_goto_info(&child, source, gotos, labels, decls_with_init, assignments);
+                Self::collect_goto_info(
+                    &child,
+                    source,
+                    gotos,
+                    labels,
+                    decls_with_init,
+                    assignments,
+                );
             }
         }
     }
@@ -1019,7 +1008,7 @@ impl UninitializedVariableAnalyzer {
             if let Some(child) = node.child(i) {
                 if child.kind() == "init_declarator" {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
-                        let var_name = self.get_var_name(&declarator, source);
+                        let var_name = Self::get_var_name(&declarator, source);
 
                         if let Some(value) = child.child_by_field_name("value") {
                             let value_text = get_node_text(&value, source);
@@ -1059,7 +1048,7 @@ impl UninitializedVariableAnalyzer {
                     // Direct declarator without init_declarator wrapper
                     // Check if the whole declaration has an initializer
                     if !decl_text.contains('=') && !decl_text.contains('{') {
-                        let var_name = self.get_var_name(&child, source);
+                        let var_name = Self::get_var_name(&child, source);
                         if var_name != "unknown" {
                             // Track as initially uninitialized
                             self.initially_uninitialized.insert(var_name.clone());
@@ -1207,10 +1196,10 @@ impl UninitializedVariableAnalyzer {
                                 let arg_text = get_node_text(&arg, source);
                                 if arg_text.starts_with('&') {
                                     let var_name = self.extract_var_from_arg(&arg, source);
-                                    if !var_name.is_empty() {
-                                        if self.var_states.contains_key(&var_name) {
-                                            self.var_states.insert(var_name, VarState::Initialized);
-                                        }
+                                    if !var_name.is_empty()
+                                        && self.var_states.contains_key(&var_name)
+                                    {
+                                        self.var_states.insert(var_name, VarState::Initialized);
                                     }
                                 }
                             }
@@ -1501,7 +1490,7 @@ impl UninitializedVariableAnalyzer {
                         if gp.kind() == "call_expression" {
                             if let Some(func) = gp.child_by_field_name("function") {
                                 let func_name = get_node_text(&func, source);
-                                if self.initializing_functions.contains(&func_name.to_string()) {
+                                if self.initializing_functions.contains(func_name) {
                                     // Check if this is the first (destination) argument
                                     for i in 0..parent.child_count() {
                                         if let Some(arg) = parent.child(i) {
@@ -1629,7 +1618,7 @@ impl UninitializedVariableAnalyzer {
     ) {
         if let Some(array) = node.child_by_field_name("argument") {
             // Handle ptr[i], arr->field[i], or (*ptr)[i] patterns
-            let base_name = self.extract_base_pointer(&array, source);
+            let base_name = Self::extract_base_pointer(&array, source);
 
             if base_name.is_empty() || self.reported.contains(&base_name) {
                 return;
@@ -1677,13 +1666,13 @@ impl UninitializedVariableAnalyzer {
     }
 
     /// Extract the base pointer from expressions like arr, arr->field, (*ptr), etc.
-    fn extract_base_pointer(&self, node: &Node, source: &str) -> String {
+    fn extract_base_pointer(node: &Node, source: &str) -> String {
         match node.kind() {
             "identifier" => get_node_text(node, source).to_string(),
             "field_expression" => {
                 // arr->field or obj.field - get the base
                 if let Some(arg) = node.child_by_field_name("argument") {
-                    self.extract_base_pointer(&arg, source)
+                    Self::extract_base_pointer(&arg, source)
                 } else {
                     String::new()
                 }
@@ -1691,7 +1680,7 @@ impl UninitializedVariableAnalyzer {
             "pointer_expression" => {
                 // (*ptr) or &var
                 if let Some(arg) = node.child_by_field_name("argument") {
-                    self.extract_base_pointer(&arg, source)
+                    Self::extract_base_pointer(&arg, source)
                 } else {
                     String::new()
                 }
@@ -1701,7 +1690,7 @@ impl UninitializedVariableAnalyzer {
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
                         if child.kind() != "(" && child.kind() != ")" {
-                            return self.extract_base_pointer(&child, source);
+                            return Self::extract_base_pointer(&child, source);
                         }
                     }
                 }
@@ -1751,7 +1740,7 @@ impl UninitializedVariableAnalyzer {
         }
     }
 
-    fn get_var_name(&self, declarator: &Node, source: &str) -> String {
+    fn get_var_name(declarator: &Node, source: &str) -> String {
         match declarator.kind() {
             "identifier" => get_node_text(declarator, source).to_string(),
             "pointer_declarator" | "array_declarator" => {
@@ -1760,7 +1749,7 @@ impl UninitializedVariableAnalyzer {
                         if child.kind() == "identifier" {
                             return get_node_text(&child, source).to_string();
                         }
-                        let nested = self.get_var_name(&child, source);
+                        let nested = Self::get_var_name(&child, source);
                         if nested != "unknown" {
                             return nested;
                         }

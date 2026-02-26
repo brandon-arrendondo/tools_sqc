@@ -215,7 +215,7 @@ impl TerminalUI {
             let category = rule_id.split('-').next().unwrap_or(rule_id).to_string();
             grouped
                 .entry(category)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push((rule_id.clone(), config.clone()));
         }
 
@@ -333,13 +333,10 @@ impl TerminalUI {
                 Event::Key(key) => {
                     if self.show_progress_dialog {
                         // Handle ESC key to cancel scan
-                        match key.code {
-                            KeyCode::Esc => {
-                                // Set cancellation flag
-                                self.scan_cancellation.store(true, Ordering::Relaxed);
-                                // Dialog will be hidden automatically when scan completes
-                            }
-                            _ => {}
+                        if key.code == KeyCode::Esc {
+                            // Set cancellation flag
+                            self.scan_cancellation.store(true, Ordering::Relaxed);
+                            // Dialog will be hidden automatically when scan completes
                         }
                     } else if self.show_save_dialog {
                         match key.code {
@@ -458,13 +455,7 @@ impl TerminalUI {
                                     // Page up in violations list - move by 10 items or to the top
                                     let page_size = 10;
                                     let i = match self.selected_violation.selected() {
-                                        Some(i) => {
-                                            if i <= page_size {
-                                                0
-                                            } else {
-                                                i - page_size
-                                            }
-                                        }
+                                        Some(i) => i.saturating_sub(page_size),
                                         None => 0,
                                     };
                                     self.selected_violation.select(Some(i));
@@ -924,103 +915,68 @@ impl TerminalUI {
 
         // Create dynamic violations title with current violation details
         let violations_title = if let Some(selected_index) = self.selected_violation.selected() {
-            if let Some(selected_item) = self.flat_display_items.get(selected_index) {
-                if let GroupItem::Violation { violation, .. } = selected_item {
-                    let focus_indicator = if !self.preview_focused || !self.show_file_preview {
-                        "[FOCUSED] "
+            if let Some(GroupItem::Violation { violation, .. }) =
+                self.flat_display_items.get(selected_index)
+            {
+                let focus_indicator = if !self.preview_focused || !self.show_file_preview {
+                    "[FOCUSED] "
+                } else {
+                    ""
+                };
+
+                let relative_path = self.get_relative_path(&violation.file_path);
+                let filename = std::path::Path::new(&violation.file_path)
+                    .file_name()
+                    .unwrap_or_default()
+                    .to_string_lossy();
+
+                // Get rule description
+                let rule_description =
+                    if let Some(rule) = self.registry.get_rule(&violation.rule_id) {
+                        rule.description()
                     } else {
-                        ""
+                        "Unknown rule"
                     };
 
-                    let relative_path = self.get_relative_path(&violation.file_path);
-                    let filename = std::path::Path::new(&violation.file_path)
-                        .file_name()
-                        .unwrap_or_default()
-                        .to_string_lossy();
-
-                    // Get rule description
-                    let rule_description =
-                        if let Some(rule) = self.registry.get_rule(&violation.rule_id) {
-                            rule.description()
-                        } else {
-                            "Unknown rule"
-                        };
-
-                    let sort_info = if self.sort_mode != SortMode::Default {
-                        format!(
-                            " [Sort: {} {}]",
-                            self.sort_mode.name(),
-                            if self.sort_ascending { "A-Z" } else { "Z-A" }
-                        )
-                    } else {
-                        String::new()
-                    };
-
-                    let hidden_info = if self.show_suppressed || self.show_clean_files {
-                        let mut items = Vec::new();
-                        if self.show_suppressed && !self.suppressed_violations.is_empty() {
-                            items.push(format!("{} suppressed", self.suppressed_violations.len()));
-                        }
-                        if self.show_clean_files && !self.clean_files.is_empty() {
-                            items.push(format!("{} clean", self.clean_files.len()));
-                        }
-                        if !items.is_empty() {
-                            format!(" [Hidden: {}]", items.join(", "))
-                        } else {
-                            String::new()
-                        }
-                    } else {
-                        String::new()
-                    };
-
+                let sort_info = if self.sort_mode != SortMode::Default {
                     format!(
-                        "Repository: {} | {}Violations{}{} - {}: {} - {}:{} ({})",
-                        self.repo_path,
-                        focus_indicator,
-                        sort_info,
-                        hidden_info,
-                        violation.rule_id,
-                        rule_description,
-                        filename,
-                        violation.line,
-                        relative_path
+                        " [Sort: {} {}]",
+                        self.sort_mode.name(),
+                        if self.sort_ascending { "A-Z" } else { "Z-A" }
                     )
                 } else {
-                    let focus_indicator = if !self.preview_focused || !self.show_file_preview {
-                        "[FOCUSED] "
-                    } else {
-                        ""
-                    };
-                    let sort_info = if self.sort_mode != SortMode::Default {
-                        format!(
-                            " [Sort: {} {}]",
-                            self.sort_mode.name(),
-                            if self.sort_ascending { "A-Z" } else { "Z-A" }
-                        )
-                    } else {
-                        String::new()
-                    };
-                    let hidden_info = if self.show_suppressed || self.show_clean_files {
-                        let mut items = Vec::new();
-                        if self.show_suppressed && !self.suppressed_violations.is_empty() {
-                            items.push(format!("{} suppressed", self.suppressed_violations.len()));
-                        }
-                        if self.show_clean_files && !self.clean_files.is_empty() {
-                            items.push(format!("{} clean", self.clean_files.len()));
-                        }
-                        if !items.is_empty() {
-                            format!(" [Hidden: {}]", items.join(", "))
-                        } else {
-                            String::new()
-                        }
+                    String::new()
+                };
+
+                let hidden_info = if self.show_suppressed || self.show_clean_files {
+                    let mut items = Vec::new();
+                    if self.show_suppressed && !self.suppressed_violations.is_empty() {
+                        items.push(format!("{} suppressed", self.suppressed_violations.len()));
+                    }
+                    if self.show_clean_files && !self.clean_files.is_empty() {
+                        items.push(format!("{} clean", self.clean_files.len()));
+                    }
+                    if !items.is_empty() {
+                        format!(" [Hidden: {}]", items.join(", "))
                     } else {
                         String::new()
-                    };
-                    format!(
-                        "Repository: {} | {}Violations{}{}",
-                        self.repo_path, focus_indicator, sort_info, hidden_info
-                    )
-                }
+                    }
+                } else {
+                    String::new()
+                };
+
+                format!(
+                    "Repository: {} | {}Violations{}{} - {}: {} - {}:{} ({})",
+                    self.repo_path,
+                    focus_indicator,
+                    sort_info,
+                    hidden_info,
+                    violation.rule_id,
+                    rule_description,
+                    filename,
+                    violation.line,
+                    relative_path
+                )
             } else {
                 let focus_indicator = if !self.preview_focused || !self.show_file_preview {
                     "[FOCUSED] "
@@ -1352,8 +1308,7 @@ impl TerminalUI {
                     let description = item
                         .config
                         .description
-                        .as_ref()
-                        .map(|s| s.as_str())
+                        .as_deref()
                         .or_else(|| {
                             self.registry
                                 .get_rule(&item.rule_id)
@@ -1751,7 +1706,7 @@ impl TerminalUI {
                 .to_string();
             groups
                 .entry(category)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push((*original_index, violation.clone()));
         }
 
@@ -1791,7 +1746,7 @@ impl TerminalUI {
 
             path_groups
                 .entry(dir_path)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(GroupItem::Violation {
                     original_index: *original_index,
                     violation: violation.clone(),
@@ -1810,7 +1765,7 @@ impl TerminalUI {
 
                 path_groups
                     .entry(dir_path)
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(GroupItem::CleanFile {
                         file_path: file_path.clone(),
                         level: 1,
@@ -1847,7 +1802,7 @@ impl TerminalUI {
 
             file_groups
                 .entry(filename)
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push((*original_index, violation.clone()));
         }
 
@@ -1921,26 +1876,24 @@ impl TerminalUI {
                 } else if !expand {
                     // For left arrow on a child item, find and collapse the parent group
                     if let Some(parent_index) = self.find_parent_group(selected_index) {
-                        if let Some(parent_item) =
+                        if let Some(GroupItem::Group { name, level, .. }) =
                             self.flat_display_items.get(parent_index).cloned()
                         {
-                            if let GroupItem::Group { name, level, .. } = parent_item {
-                                // Collapse the parent group
-                                self.update_grouped_items_expand(&name, level, false);
-                                self.flatten_groups();
+                            // Collapse the parent group
+                            self.update_grouped_items_expand(&name, level, false);
+                            self.flatten_groups();
 
-                                // Find the parent group in the new flat list and select it
-                                for (i, item) in self.flat_display_items.iter().enumerate() {
-                                    if let GroupItem::Group {
-                                        name: item_name,
-                                        level: item_level,
-                                        ..
-                                    } = item
-                                    {
-                                        if item_name == &name && item_level == &level {
-                                            self.selected_violation.select(Some(i));
-                                            break;
-                                        }
+                            // Find the parent group in the new flat list and select it
+                            for (i, item) in self.flat_display_items.iter().enumerate() {
+                                if let GroupItem::Group {
+                                    name: item_name,
+                                    level: item_level,
+                                    ..
+                                } = item
+                                {
+                                    if item_name == &name && item_level == &level {
+                                        self.selected_violation.select(Some(i));
+                                        break;
                                     }
                                 }
                             }
@@ -2302,7 +2255,7 @@ impl TerminalUI {
         let mut writer = Writer::from_path(path)?;
 
         // Write CSV headers
-        writer.write_record(&[
+        writer.write_record([
             "Title",
             "Description",
             "Work Item Type",
@@ -2329,7 +2282,7 @@ impl TerminalUI {
                     violation.rule_id, rule_description, code_snippet
                 );
 
-                writer.write_record(&[
+                writer.write_record([
                     &title,
                     &description,
                     "Bug",
@@ -2443,7 +2396,11 @@ impl TerminalUI {
         if let Ok(relative) = file_path_obj.strip_prefix(base_path_obj) {
             relative.to_string_lossy().to_string()
         } else {
-            file_path.split('/').last().unwrap_or(file_path).to_string()
+            file_path
+                .split('/')
+                .next_back()
+                .unwrap_or(file_path)
+                .to_string()
         }
     }
 
@@ -2467,7 +2424,7 @@ impl TerminalUI {
         use std::process::Command;
 
         let output = Command::new("git")
-            .args(&["status", "--porcelain"])
+            .args(["status", "--porcelain"])
             .current_dir(&self.repo_path)
             .output()
             .context("Failed to run git status")?;
@@ -2516,7 +2473,7 @@ impl TerminalUI {
 
                     summary_map
                         .entry(violation.file_path.clone())
-                        .or_insert_with(Vec::new)
+                        .or_default()
                         .push(violation_suppression);
                 }
             }
@@ -2593,7 +2550,7 @@ impl TerminalUI {
         use std::process::Command;
 
         let output = Command::new("git")
-            .args(&["config", "user.email"])
+            .args(["config", "user.email"])
             .current_dir(&self.repo_path)
             .output()
             .context("Failed to get git user email")?;
@@ -2607,7 +2564,7 @@ impl TerminalUI {
 
         // Try git user.name as fallback
         let output = Command::new("git")
-            .args(&["config", "user.name"])
+            .args(["config", "user.name"])
             .current_dir(&self.repo_path)
             .output()
             .context("Failed to get git user name")?;

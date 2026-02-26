@@ -263,6 +263,7 @@ impl Con06C {
         }
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn collect_mutex_destroys<'a>(
         &self,
         node: &Node<'a>,
@@ -280,11 +281,8 @@ impl Con06C {
                                 if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
                                     let arg_text = get_node_text(&arg, source);
                                     // Remove leading & for address-of operator
-                                    let var_name = if arg_text.starts_with('&') {
-                                        arg_text[1..].to_string()
-                                    } else {
-                                        arg_text.to_string()
-                                    };
+                                    let var_name =
+                                        arg_text.strip_prefix('&').unwrap_or(arg_text).to_string();
                                     mutex_destroys.push((var_name, *node));
                                     break;
                                 }
@@ -303,6 +301,7 @@ impl Con06C {
         }
     }
 
+    #[allow(clippy::only_used_in_recursion)]
     fn extract_identifier(&self, node: &Node, source: &str) -> String {
         if node.kind() == "identifier" {
             return get_node_text(node, source).to_string();

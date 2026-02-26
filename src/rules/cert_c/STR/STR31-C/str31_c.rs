@@ -535,7 +535,7 @@ impl Str31C {
                             return false;
                         }
                         // For buffers 50-255, check if %s argument is from a function parameter
-                        if buffer_size >= 50 && buffer_size < 256 {
+                        if (50..256).contains(&buffer_size) {
                             let s_count = fmt_clean.matches("%s").count();
                             let literal_chars =
                                 fmt_clean.len() - fmt_clean.matches('%').count() * 2;
@@ -572,7 +572,7 @@ impl Str31C {
                         + (fmt_clean.matches("%d").count() * 11)       // int: max 11 chars (-2147483648)
                         + (fmt_clean.matches("%ld").count() * 20)      // long: max ~20 chars
                         + (fmt_clean.matches("%lld").count() * 20)     // long long: max 20 chars (9223372036854775807)
-                        + (fmt_clean.matches("%c").count() * 1)
+                        + fmt_clean.matches("%c").count()
                         + 1; // null terminator
 
                     if buffer_size >= estimated_size {
@@ -591,6 +591,7 @@ impl Str31C {
     /// Check for dangerous scanf patterns
     fn check_scanf_format(&self, arguments: &Node, source: &str) -> bool {
         // Look for %s without width specifier
+        let re = regex::Regex::new(r"%\d+s").unwrap();
         for i in 0..arguments.child_count() {
             if let Some(arg) = arguments.child(i) {
                 if arg.kind() == "string_literal" {
@@ -598,7 +599,6 @@ impl Str31C {
                     // Check for unbounded %s (without width like %10s)
                     if format.contains("%s") && !format.contains("%[") {
                         // Simple check: look for %<number>s pattern
-                        let re = regex::Regex::new(r"%\d+s").unwrap();
                         if !re.is_match(format) {
                             return true; // Dangerous: unbounded %s
                         }
@@ -982,10 +982,7 @@ impl Str31C {
         // Group strcat operations by destination variable
         let mut dest_groups: HashMap<String, Vec<(usize, String)>> = HashMap::new();
         for (line_num, dest, src) in strcat_operations {
-            dest_groups
-                .entry(dest)
-                .or_insert_with(Vec::new)
-                .push((line_num, src));
+            dest_groups.entry(dest).or_default().push((line_num, src));
         }
 
         // Analyze each destination for cumulative overflow
@@ -1034,7 +1031,7 @@ impl Str31C {
             .set_language(&tree_sitter_c::language())
             .expect("Error loading C grammar");
 
-        if let Some(tree) = parser.parse(&source, None) {
+        if let Some(tree) = parser.parse(source, None) {
             let root_node = tree.root_node();
 
             // Get destination buffer size
@@ -1220,7 +1217,7 @@ impl CertRule for Str31C {
         let mut violations = Vec::new();
 
         // Get the root node for buffer size analysis
-        let mut root = node.clone();
+        let mut root = *node;
         while let Some(parent) = root.parent() {
             root = parent;
         }

@@ -105,13 +105,12 @@ impl Fio09C {
     /// Get the first argument from a function call
     fn get_first_argument<'a>(&self, arguments: &'a Node) -> Option<Node<'a>> {
         let mut cursor = arguments.walk();
-        for child in arguments.children(&mut cursor) {
-            // Skip parentheses and commas
-            if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
-                return Some(child);
-            }
-        }
-        None
+        Self::find_non_punctuation(arguments.children(&mut cursor))
+    }
+
+    fn find_non_punctuation<'a>(iter: impl Iterator<Item = Node<'a>>) -> Option<Node<'a>> {
+        iter.into_iter()
+            .find(|child| child.kind() != "(" && child.kind() != ")" && child.kind() != ",")
     }
 
     /// Check for fread() or fwrite() calls with struct pointers

@@ -77,10 +77,11 @@ impl Api04C {
                         file_path: String::new(),
                         line: node.start_position().row + 1,
                         column: node.start_position().column + 1,
-                        suggestion: Some(format!(
+                        suggestion: Some(
                             "Consider using functions with clearer return values like strcpy_s() or strcpy_m() \
                             that return errno_t for consistent error checking"
-                        )),
+                                .to_string(),
+                        ),
                         ..Default::default()
                     });
                 }

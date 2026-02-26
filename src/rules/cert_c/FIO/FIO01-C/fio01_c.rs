@@ -157,7 +157,7 @@ impl Fio01C {
 
             // Get the arguments
             if let Some(args_node) = node.child_by_field_name("arguments") {
-                match func_name.as_ref() {
+                match func_name {
                     "fopen" => {
                         // fopen(file_name, mode)
                         if let Some(first_arg) = args_node.child(1) {
@@ -171,7 +171,7 @@ impl Fio01C {
                                 };
                                 file_name_vars
                                     .entry(var_name.to_string())
-                                    .or_insert_with(Vec::new)
+                                    .or_default()
                                     .push(op);
                             }
                         }
@@ -189,7 +189,7 @@ impl Fio01C {
                                 };
                                 file_name_vars
                                     .entry(var_name.to_string())
-                                    .or_insert_with(Vec::new)
+                                    .or_default()
                                     .push(op);
                             }
                         }
@@ -207,7 +207,7 @@ impl Fio01C {
                                 };
                                 file_name_vars
                                     .entry(var_name.to_string())
-                                    .or_insert_with(Vec::new)
+                                    .or_default()
                                     .push(op);
                             }
                         }
@@ -225,7 +225,7 @@ impl Fio01C {
                                 };
                                 file_name_vars
                                     .entry(var_name.to_string())
-                                    .or_insert_with(Vec::new)
+                                    .or_default()
                                     .push(op);
                             }
                         }

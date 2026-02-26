@@ -59,7 +59,6 @@ impl Str03C {
                                         .to_string(),
                                 ),
                                 requires_manual_review: Some(true),
-                                ..Default::default()
                             });
                         }
                     }

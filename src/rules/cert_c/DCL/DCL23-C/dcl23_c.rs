@@ -74,9 +74,7 @@ impl Dcl23C {
                     } else {
                         name.clone()
                     };
-                    ids.entry(base)
-                        .or_insert_with(Vec::new)
-                        .push((name, line, col));
+                    ids.entry(base).or_default().push((name, line, col));
                 }
             }
         }

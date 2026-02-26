@@ -80,13 +80,11 @@ impl Sig02C {
                 if let Some(args_node) = node.child_by_field_name("arguments") {
                     let args_text = get_node_text(&args_node, source);
 
-                    if self.is_normal_use_signal(&args_text) {
+                    if self.is_normal_use_signal(args_text) {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: self.severity(),
-                            message: format!(
-                                "Use of kill() with signal for normal inter-process communication instead of abnormal events. Consider using proper IPC mechanisms like message queues, pipes, or condition variables."
-                            ),
+                            message: "Use of kill() with signal for normal inter-process communication instead of abnormal events. Consider using proper IPC mechanisms like message queues, pipes, or condition variables.".to_string(),
                             file_path: String::new(),
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
@@ -121,7 +119,7 @@ impl Sig02C {
                 if let Some(args_node) = node.child_by_field_name("arguments") {
                     let args_text = get_node_text(&args_node, source);
 
-                    if self.is_normal_use_signal(&args_text) {
+                    if self.is_normal_use_signal(args_text) {
                         let signal_type = if args_text.contains("SIGALRM")
                             || args_text.contains("SIGVTALRM")
                             || args_text.contains("SIGPROF")
@@ -170,13 +168,11 @@ impl Sig02C {
                 if let Some(args_node) = node.child_by_field_name("arguments") {
                     let args_text = get_node_text(&args_node, source);
 
-                    if self.is_normal_use_signal(&args_text) {
+                    if self.is_normal_use_signal(args_text) {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::Medium,
-                            message: format!(
-                                "Use of raise() with signal for normal control flow instead of abnormal events."
-                            ),
+                            message: "Use of raise() with signal for normal control flow instead of abnormal events.".to_string(),
                             file_path: String::new(),
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,
@@ -242,9 +238,7 @@ impl Sig02C {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             severity: Severity::Medium,
-                            message: format!(
-                                "Signal handler performs complex/unsafe operations. Signal handlers should only set volatile sig_atomic_t flags or call async-signal-safe functions."
-                            ),
+                            message: "Signal handler performs complex/unsafe operations. Signal handlers should only set volatile sig_atomic_t flags or call async-signal-safe functions.".to_string(),
                             file_path: String::new(),
                             line: node.start_position().row + 1,
                             column: node.start_position().column + 1,

@@ -158,7 +158,7 @@ impl ToctouTracker {
                     if let Some(args) = node.child_by_field_name("arguments") {
                         // Extract filename and mode arguments
                         if let Some((filename, mode)) = self.extract_fopen_args(&args, source) {
-                            let calls = self.fopen_calls.entry(scope_id).or_insert_with(Vec::new);
+                            let calls = self.fopen_calls.entry(scope_id).or_default();
                             calls.push(FopenCall {
                                 filename,
                                 mode,
@@ -204,7 +204,7 @@ impl ToctouTracker {
             for call in calls {
                 filename_groups
                     .entry(call.filename.clone())
-                    .or_insert_with(Vec::new)
+                    .or_default()
                     .push(call);
             }
 
@@ -219,9 +219,7 @@ impl ToctouTracker {
                         // Check if first call is a read check (mode "r")
                         if first_call.mode == "r" {
                             // Look for subsequent write calls
-                            for j in i + 1..file_calls.len() {
-                                let second_call = file_calls[j];
-
+                            for second_call in file_calls.iter().skip(i + 1) {
                                 // Check if second call is a write (mode "w", "a", etc.)
                                 if second_call.mode.starts_with('w')
                                     || second_call.mode.starts_with('a')
