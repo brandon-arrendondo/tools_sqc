@@ -1637,6 +1637,59 @@ are not CERT C findings — they indicate the direct file scan approach (without
 compile_commands.json) is incomplete for complex projects. For accurate clang-tidy results on
 curl/sqlite/hostap, use `bear -- make` to capture compile_commands.json first.
 
+### 13.7c Latest Results (2026-02-25, sqc v0.2.7, fix/fp-reduction-d-lib-common)
+
+**Environment**: sqc 0.2.7 (commit 54819432), cppcheck 2.10, clang-tidy 21.1.6 (remote hosts 10.0.0.57/10.0.0.63)
+
+| Project   | sqc violations | cppcheck findings | clang-tidy diagnostics |
+|-----------|---------------|-------------------|----------------------|
+| libcrc    | 842           | 41                | 4                    |
+| sqlite    | 180,011       | 628               | 223                  |
+| mosquitto | 39,177        | 484               | 163                  |
+| curl      | 93,576        | 519               | 1,327                |
+| hostap    | 234,421       | 2,118             | 3,188                |
+| **Total** | **548,027**   | **3,790**         | **4,905**            |
+
+**sqc top rules by project:**
+- libcrc: EXP14-C (106), ERR33-C (68), EXP12-C (62), EXP19-C (59), FIO47-C (47)
+- sqlite: DCL07-C (20,445), DCL31-C (18,055), API00-C (14,420), DCL13-C (13,903), POS49-C (12,327)
+- mosquitto: API00-C (3,081), DCL31-C (2,979), DCL07-C (2,975), MEM31-C (2,874), DCL13-C (2,848)
+- curl: DCL07-C (10,725), DCL31-C (10,614), EXP19-C (9,135), API00-C (7,793), DCL13-C (7,096)
+- hostap: DCL08-C (25,296), EXP19-C (25,140), API00-C (19,832), DCL13-C (19,361), POS49-C (16,883)
+
+**cppcheck top findings by project:**
+- libcrc: unusedFunction (21), variableScope (19), missingInclude (1)
+- sqlite: variableScope (215), toomanyconfigs (110), unusedFunction (109)
+- mosquitto: unusedFunction (122), toomanyconfigs (118), ConfigurationNotChecked (106)
+- curl: toomanyconfigs (221), unusedFunction (108), variableScope (61)
+- hostap: unusedFunction (803), variableScope (438), toomanyconfigs (431)
+
+**clang-tidy top diagnostics by project:**
+- libcrc: clang-diagnostic-error (2), cert-err33-c (1), DeprecatedOrUnsafeBufferHandling (1)
+- sqlite: clang-diagnostic-error (118), cert-str34-c (57), cert-err33-c (16)
+- mosquitto: clang-diagnostic-error (116), cert-err33-c (32), cert-dcl51-cpp (5)
+- curl: clang-diagnostic-error (1,200), cert-err33-c (109), cert-str34-c (5)
+- hostap: DeprecatedOrUnsafeBufferHandling (1,891), clang-diagnostic-error (680), cert-err33-c (209)
+
+**Delta vs §13.7b baseline (sqc 0.2.3 → 0.2.7):**
+
+| Project   | v0.2.3     | v0.2.7     | Delta      | Change |
+|-----------|-----------|-----------|------------|--------|
+| libcrc    | 954       | 842       | −112       | −12%   |
+| sqlite    | 424,842   | 180,011   | −244,831   | −58%   |
+| mosquitto | 47,417    | 39,177    | −8,240     | −17%   |
+| curl      | 207,476   | 93,576    | −113,900   | −55%   |
+| hostap    | 473,862   | 234,421   | −239,441   | −50%   |
+| **Total** | **1,154,551** | **548,027** | **−606,524** | **−53%** |
+
+**Key changes from v0.2.3 → v0.2.7:**
+- **STR31-C bug fixed** (§9.8): No longer appears in any project's top rules. Was responsible for 36–49% of violations on sqlite/curl/hostap.
+- **DCL31-C/DCL07-C reduced**: Windows API whitelist additions (Round 9) dropped these by ~65%.
+- **Style rules now dominate**: DCL07-C, DCL31-C, API00-C, DCL13-C, EXP19-C, POS49-C are the top noise contributors — all code style/convention rules, not safety-critical.
+- **cppcheck/clang-tidy note**: Tool versions changed (cppcheck 2.7→2.10, clang-tidy 14→21.1.6) and environment moved to remote hosts. Counts are not directly comparable to §13.7b baseline.
+
+---
+
 ### 13.8 Fast Re-Run After Bug Fixes
 
 After fixing STR31-C (or any rule), re-run sqc only (cppcheck/clang-tidy don't change):
