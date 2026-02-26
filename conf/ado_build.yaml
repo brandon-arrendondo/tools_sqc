@@ -66,8 +66,33 @@ stages:
           - script: |
               set -e
               source $HOME/.cargo/env
-              cargo test --verbose
-            displayName: "Run tests"
+              cargo install cargo2junit cargo-llvm-cov
+            displayName: "Install test and coverage tools"
+
+          - script: |
+              set -e
+              source $HOME/.cargo/env
+              cargo test --verbose -- -Z unstable-options --format json 2>&1 | cargo2junit > test-results.xml
+            displayName: "Run tests (JUnit output)"
+
+          - task: PublishTestResults@2
+            displayName: "Publish test results"
+            inputs:
+              testResultsFormat: "JUnit"
+              testResultsFiles: "$(Build.SourcesDirectory)/test-results.xml"
+              testRunTitle: "sqc unit tests"
+            condition: always()
+
+          - script: |
+              set -e
+              source $HOME/.cargo/env
+              cargo llvm-cov --lcov --output-path lcov.info
+            displayName: "Generate code coverage (llvm-cov)"
+
+          - task: PublishCodeCoverageResults@2
+            displayName: "Publish code coverage"
+            inputs:
+              summaryFileLocation: "$(Build.SourcesDirectory)/lcov.info"
 
           - task: PublishBuildArtifacts@1
             displayName: "Publish build artifact"
