@@ -119,6 +119,39 @@ impl DCL19C {
                 }
             }
         }
+
+        // Tree-sitter does not expand macros, so a macro like `STATIC` (which
+        // conditionally expands to `static` for production builds and to nothing
+        // for unit-test builds) will never appear as a storage_class_specifier.
+        // Scan the raw source text of the declaration prefix for well-known
+        // static-equivalent macro names used in embedded/firmware codebases.
+        self.has_static_macro_in_prefix(node, source)
+    }
+
+    /// Returns true if the source text before the function name contains a
+    /// recognised macro that is a conditional alias for `static`.
+    fn has_static_macro_in_prefix(&self, node: &Node, source: &str) -> bool {
+        const STATIC_MACROS: &[&str] = &[
+            "STATIC",
+            "STATIC_FUNC",
+            "STATIC_INLINE",
+            "PRIVATE",
+            "INTERNAL",
+            "LOCAL",
+        ];
+
+        let node_text = get_node_text(node, source);
+        let first_line = node_text.lines().next().unwrap_or("");
+
+        // Tokenise the first line before the opening parenthesis
+        let before_paren = first_line.split('(').next().unwrap_or(first_line);
+        for token in before_paren.split_whitespace() {
+            let token = token.trim_start_matches('*');
+            if STATIC_MACROS.contains(&token) {
+                return true;
+            }
+        }
+
         false
     }
 
