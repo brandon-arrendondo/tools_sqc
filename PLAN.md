@@ -51,6 +51,27 @@ Cross-file variants (51–68) have null assignment in file A and dereference in 
 
 **Expected impact**: Recover ~300–400 TPs (CWE124/127) with minimal FP regression.
 
+### INT31-C: Implicit Narrowing Assignment Detection
+
+- [ ] Enable `check_assignment_conversion()` in INT31-C (currently stubbed out)
+
+**Problem**: INT31-C only detects narrowing via explicit `cast_expression` nodes. Implicit
+narrowing assignments like `uint8_t x = uint16_val;` or `tag = (uint16_t)(expr);` (where
+`tag` is `uint8_t`) are not flagged. This is the most dangerous class — the programmer didn't
+write a cast, so likely didn't consider the width mismatch.
+
+**Approach**: On `init_declarator` and `assignment_expression`, infer the LHS type (from
+declaration or `collect_variable_types()`) and the RHS type (from cast type, literal width,
+or variable type). Flag when RHS type is provably wider than LHS type and no explicit
+narrowing cast is present.
+
+**Risk**: High FP potential — many implicit narrowings are safe (e.g., `int x = 0;` assigned
+to `char`). Needs careful filtering: skip when RHS is a literal that fits, skip when RHS
+was already range-checked. Start with assignment of cast_expression results only
+(`tag = (uint16_t)(expr)`) which is the lowest-FP, highest-value detection path.
+
+**Origin**: d_lib_common FN-001 — real data corruption bug caught manually, not by sqc.
+
 ### INT34-C: Literal Shift Amount >= Type Width
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
@@ -83,18 +104,13 @@ Targeted FP reduction driven by findings from `~/data/d_lib_common/REFACTOR.md`.
 | FP-001 | DCL19-C | Recognize `STATIC` macro as static-equivalent (ported `has_static_macro_in_prefix()` from DCL15-C) | `fc862520` |
 | FP-004 | INT32-C | Skip unsigned operands in all 5 binary overflow checks — unsigned wrap is INT30-C, not INT32-C | `0d545f83` |
 | FP-002 | DCL15-C | Skip functions with prototypes in `.h` headers (public API). Also fixed prescan to traverse `linkage_specification`/`declaration_list` nodes (`extern "C" {}` blocks) and handle `pointer_declarator`-wrapped prototypes | `ff5508c0` |
-
-### Pending
-
-| FP | Rule | Description |
-|----|------|-------------|
-| FP-005 | INT36-C | Array subscripting misidentified as pointer-to-integer conversion |
-| FP-006 | EXP07-C | Bit-shift on struct field flagged as "assume constant value" |
-| FP-007 | PRE31-C | String literal flagged as macro argument with side effects |
-| FP-008 | EXP30-C | Sequence point FP on separate assignment statements |
-| FP-009 | DCL07-C/31-C | `update_crc_8` flagged as undeclared (defined in external lib) |
-| FP-010 | INT31-C | Byte-extraction casts flagged as narrowing data loss |
-| FP-011 | INT30-C | Unsigned decrement flagged despite explicit `> 0` guard |
+| FP-005 | INT36-C | Exclude struct field access (`->`) and array subscript (`[`) from pointer-to-integer heuristic — these dereference and yield member/element types, not pointer types | `51f4b229` |
+| FP-007 | PRE31-C | Skip string literal arguments from side-effect analysis — `=` inside format strings is not an assignment | `51f4b229` |
+| FP-008 | EXP30-C | Recognize `x = f(x)` as safe — RHS fully evaluated before LHS write per C11 6.5.16 | `51f4b229` |
+| FP-011 | INT30-C | Detect `if (var > 0)` / `if (0 < var)` guard before unsigned decrement — wrap provably impossible | `51f4b229` |
+| FP-006 | EXP07-C | No longer fires on d_lib_common (resolved by prior EXP07-C improvements) | — |
+| FP-010 | INT31-C | No longer fires on d_lib_common (resolved by prior INT31-C byte-extraction improvements) | — |
+| FP-009 | DCL07-C/31-C | Skip indirect calls (function pointers via `->` / `.`) + skip calls inside `preproc_ifdef`/`preproc_if`/`preproc_elif` blocks | 0.2.12 |
 
 ### Prescan Infrastructure Improvements (from FP-002)
 
@@ -117,9 +133,11 @@ The FP-002 fix improved the prescan infrastructure beyond just DCL15-C:
 
 ### DCL13-C: Alias Tracking for Remaining FP
 
-**Status**: 1 FP remaining after Round 12 fix (case 17: `ringbuffer.c:275 ptrBuffer`).
+- [ ] Fix last DCL13-C FP: `ringbuffer.c:275 ptrBuffer` (case 17 from Round 12)
 
 **Problem**: `ptrBuffer` is stored into `ptrRingBufferInfo->buffer` and then `memset` writes through the struct member. sqc doesn't track that `ptrBuffer` and `ptrRingBufferInfo->buffer` are aliased, so it reports `ptrBuffer` as unmodified. This is fundamentally beyond AST-level analysis — requires alias/points-to tracking.
+
+**Possible shortcut**: If a pointer parameter is stored into a struct field (assignment `struct->field = param`), treat it as potentially modified — the struct may be written through later. This avoids full alias analysis while covering the common "store-then-write-through-alias" pattern.
 
 ### Analysis Capabilities Lacking
 
@@ -135,7 +153,7 @@ The FP-002 fix improved the prescan infrastructure beyond just DCL15-C:
 ## Real-World Validation
 
 - [x] libcrc, sqlite, mosquitto, curl, hostap — three-way comparison complete
-- [x] d_lib_common FP triage — 12 FPs documented in REFACTOR.md, 6 fixed (3 in sqc, 3 in d_lib_common code)
+- [x] d_lib_common FP triage — 12 FPs documented in REFACTOR.md, all resolved (10 fixed in sqc, 2 resolved by prior improvements)
 - [ ] Review remaining high-severity findings on d_lib_common
 - [ ] Run same process on next module (d_lib_wifi, d_lib_ble)
 - [ ] Generate per-module BRULE coverage cards for development workbook

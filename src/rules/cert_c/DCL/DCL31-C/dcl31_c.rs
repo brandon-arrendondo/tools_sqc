@@ -151,6 +151,14 @@ impl Dcl31C {
     fn check_function_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
+                // Skip indirect calls through function pointers or struct members.
+                // e.g., self->callback(args), obj.handler(args), array[i](args)
+                // These are not direct calls to named functions — they cannot be
+                // "declared" in the traditional sense.
+                if function.kind() != "identifier" {
+                    return;
+                }
+
                 let func_name = get_node_text(&function, source);
 
                 // Skip ALL_CAPS identifiers — in C, all-uppercase names are macros by
@@ -175,6 +183,13 @@ impl Dcl31C {
 
                 // Skip if known from pre-scanned directories
                 if self.cross_file_functions.borrow().contains(func_name) {
+                    return;
+                }
+
+                // Skip calls inside preprocessor conditionals (#ifdef, #if, #elif).
+                // The corresponding declaration may be in a conditionally-included
+                // header that tree-sitter cannot see.
+                if is_inside_preproc_conditional(node) {
                     return;
                 }
 
@@ -284,4 +299,20 @@ fn is_macro_like_name(name: &str) -> bool {
         && name
             .chars()
             .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
+}
+
+/// Returns true if the node is nested inside a preprocessor conditional block
+/// (#ifdef, #ifndef, #if, #elif). Calls inside these blocks may reference
+/// functions declared in conditionally-included headers that tree-sitter
+/// cannot resolve.
+fn is_inside_preproc_conditional(node: &Node) -> bool {
+    let mut current = *node;
+    while let Some(parent) = current.parent() {
+        match parent.kind() {
+            "preproc_ifdef" | "preproc_if" | "preproc_elif" => return true,
+            _ => {}
+        }
+        current = parent;
+    }
+    false
 }
