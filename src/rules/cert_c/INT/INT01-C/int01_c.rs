@@ -379,6 +379,12 @@ impl Int01C {
                     continue;
                 }
 
+                // sizeof() returns size_t by definition (C99 §6.5.3.4 ¶5) —
+                // always the correct type, never flag it.
+                if arg.kind() == "sizeof_expression" {
+                    continue;
+                }
+
                 // Check if the argument contains an identifier (variable)
                 let arg_text = get_node_text(&arg, source);
 
