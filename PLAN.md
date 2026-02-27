@@ -81,10 +81,16 @@ Current fix skips all non-negative integer literals to eliminate FPs from `x >> 
 - [ ] Baseline-aware suppression ("only new violations")
 - [ ] Docker image for containerized CI/CD
 
+### DCL13-C: Alias Tracking for Remaining FP
+
+**Status**: 1 FP remaining after Round 12 fix (case 17: `ringbuffer.c:275 ptrBuffer`).
+
+**Problem**: `ptrBuffer` is stored into `ptrRingBufferInfo->buffer` and then `memset` writes through the struct member. sqc doesn't track that `ptrBuffer` and `ptrRingBufferInfo->buffer` are aliased, so it reports `ptrBuffer` as unmodified. This is fundamentally beyond AST-level analysis — requires alias/points-to tracking.
+
 ### Analysis Capabilities Lacking
 
 - No preprocessor expansion (macros appear as function calls)
-- No alias analysis (pointer aliasing not resolved)
+- No alias analysis (pointer aliasing not resolved — see DCL13-C remaining FP above)
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond literal constants)
