@@ -51,24 +51,16 @@ Cross-file variants (51–68) have null assignment in file A and dereference in 
 
 **Expected impact**: Recover ~300–400 TPs (CWE124/127) with minimal FP regression.
 
-### INT31-C: Implicit Narrowing Assignment Detection
+### INT31-C: Implicit Narrowing Assignment Detection (COMPLETE)
 
-- [ ] Enable `check_assignment_conversion()` in INT31-C (currently stubbed out)
+- [x] Enable `check_assignment_conversion()` in INT31-C
 
-**Problem**: INT31-C only detects narrowing via explicit `cast_expression` nodes. Implicit
-narrowing assignments like `uint8_t x = uint16_val;` or `tag = (uint16_t)(expr);` (where
-`tag` is `uint8_t`) are not flagged. This is the most dangerous class — the programmer didn't
-write a cast, so likely didn't consider the width mismatch.
-
-**Approach**: On `init_declarator` and `assignment_expression`, infer the LHS type (from
-declaration or `collect_variable_types()`) and the RHS type (from cast type, literal width,
-or variable type). Flag when RHS type is provably wider than LHS type and no explicit
-narrowing cast is present.
-
-**Risk**: High FP potential — many implicit narrowings are safe (e.g., `int x = 0;` assigned
-to `char`). Needs careful filtering: skip when RHS is a literal that fits, skip when RHS
-was already range-checked. Start with assignment of cast_expression results only
-(`tag = (uint16_t)(expr)`) which is the lowest-FP, highest-value detection path.
+**Implemented** (0.2.13): `check_assignment_conversion()` detects implicit narrowing in
+`init_declarator` and `assignment_expression` nodes. Uses `get_type_width()` (8/16/32/64)
+and `infer_rhs_width()` (dispatches on cast_expression, identifier, parenthesized_expression).
+FP suppressions: double-flag prevention (RHS cast already caught), validated vars, bounds-checked
+blocks, literal-fits-in-width, safe bitmask (`& 0xFF`). Conservative: returns None for unknown
+types — only flags when both sides have known widths.
 
 **Origin**: d_lib_common FN-001 — real data corruption bug caught manually, not by sqc.
 
