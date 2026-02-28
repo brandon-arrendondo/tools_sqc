@@ -11,10 +11,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 158,403 |
-| **False Positives** | 196,177 |
-| **TP Rate** | **44.7%** (v0.2.13, MCP benchmark) |
-| **FP Reduction from Baseline** | -76.6% (839K → 196K) |
+| **True Positives** | 146,714 |
+| **False Positives** | 185,499 |
+| **TP Rate** | **44.2%** (v0.2.15, MCP benchmark) |
+| **FP Reduction from Baseline** | -77.9% (839K → 185K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
 
@@ -43,14 +43,43 @@
 | v0.2.11 | v0.2.11 | INT32-C bounds-check detection, INT30-C macro fixes | 172,780 | 215,669 | 44.5% | -2 |
 | **v0.2.12** | v0.2.12 | **DCL13-C pointer modification + INT01-C sizeof skip** | **169,161** | **210,138** | **44.6%** | **-5,531** |
 | **v0.2.13** | v0.2.13 | **INT31-C implicit narrowing + d_lib_common FP fixes** | **158,403** | **196,177** | **44.7%** | **-13,961** |
+| **v0.2.15** | v0.2.15 | **d_lib_common FP.md cleanup (17 patterns)** | **146,714** | **185,499** | **44.2%** | **-10,678** |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-643,164 (-76.6%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-653,842 (-77.9%)**.
 
 ---
 
 ## Per-Round Fix Details
+
+### v0.2.15 — d_lib_common FP.md Cleanup (17 Patterns)
+
+Addressed all 17 FP patterns (~51 violations) documented in `~/data/d_lib_common/FP.md` across two commits. Targeted real-world precision over Juliet benchmark score.
+
+**Commit 1 (`d31a6c3`)** — Batch 1 (10 rule fixes, ~36 FPs):
+- FIO46-C: Source-order stream tracking (store `start_byte()`, only flag after fclose)
+- INT32-C: Return `not_applicable` for `field_expression` nodes
+- FLP03-C: Precise scientific notation regex, per-operand float check in division
+- EXP40-C: Check parent `declaration` for `const` type qualifier
+- EXP12-C: Check `node.parent()` — skip when return value is captured
+- INT01-C: Skip `sizeof(...) * N` binary expressions in allocation args
+- INT10-C: `collect_variable_types()` + `operand_has_unsigned_type()` for struct fields
+- ARR39-C: Skip ALL_CAPS-only arithmetic (macro/enum constants)
+- EXP05-C: Don't recurse into `function_definition` nodes for const scanning
+- EXP02-C: Exempt `NULL_CHECK && FUNCTION_CALL` guard pattern
+
+**Commit 2 (`0a45c9f`)** — 6 remaining violations:
+- INT32-C (x3): Propagate unsigned type through binary_expression chains
+- INT10-C (x1): Skip `field_expression` operands in modulo sign check
+- EXP05-C (x1): Skip `field_expression` in const-qualification check
+- ARR39-C (x1): Recursive `is_all_caps_arithmetic()` for nested expressions
+
+**Juliet impact** (0.2.13 → 0.2.15):
+- **Net**: -10,678 FP (-5.4%), -11,689 TP, TP rate **44.7% → 44.2%** (-0.5pp)
+- TP rate decline accepted: fixes are semantically correct for real-world code
+- Top rule deltas: EXP12-C -5,477 FP/-7,530 TP (parent check reduces over-flagging), INT01-C -2,714 FP/-740 TP, INT32-C -181 FP/-1,122 TP
+- FIO46-C and EXP02-C eliminated entirely (0 detections — correct, these rules had very low signal)
 
 ### v0.2.13 — INT31-C Implicit Narrowing + d_lib_common FP Fixes
 
@@ -294,7 +323,7 @@ Juliet test files contain preprocessor-guarded sections:
 
 | Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
 |------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **44.6%** | **55.4%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
+| **SqC** | **44.2%** | **55.8%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
 | Semgrep CE | 44–48% | Very low | AST (tree-sitter) | No | Community | Free |
 | Semgrep Pro | 72–75% | Very low | AST + taint + inter-file | No | Community | Commercial |
 | Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
@@ -326,6 +355,8 @@ Juliet test files contain preprocessor-guarded sections:
 | v0.2.6 | 44.5% | 215,672 | 172,708 | CFG null state + bounds-check detection |
 | v0.2.7 | 44.5% | 215,671 | 172,780 | INT36-C TP restore + INT31-C FP fix |
 | **v0.2.12** | **44.6%** | **210,138** | **169,161** | DCL13-C pointer modification + INT01-C sizeof skip |
+| v0.2.13 | 44.7% | 196,177 | 158,403 | INT31-C implicit narrowing + d_lib_common REFACTOR.md fixes |
+| **v0.2.15** | **44.2%** | **185,499** | **146,714** | d_lib_common FP.md cleanup (17 patterns, real-world precision) |
 
 ---
 

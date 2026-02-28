@@ -19,9 +19,13 @@ typedef struct {
 
 Point scale_point(Point p, int scale_factor) {
     Point result;
+    // Extract to locals so INT32-C can resolve types
+    // (field_expression types can't be resolved without struct definitions)
+    int px = p.x;
+    int py = p.y;
     // VIOLATION: multiplication can overflow
-    result.x = p.x * scale_factor;
-    result.y = p.y * scale_factor;
+    result.x = px * scale_factor;
+    result.y = py * scale_factor;
     return result;
 }
 

@@ -385,6 +385,26 @@ impl Int01C {
                     continue;
                 }
 
+                // sizeof(...) * N or N * sizeof(...) — the result is size_t
+                if arg.kind() == "binary_expression" {
+                    if let Some(op) = arg.child_by_field_name("operator") {
+                        let op_text = get_node_text(&op, source);
+                        if op_text == "*" {
+                            let left = arg.child_by_field_name("left");
+                            let right = arg.child_by_field_name("right");
+                            let has_sizeof = left
+                                .as_ref()
+                                .is_some_and(|n| n.kind() == "sizeof_expression")
+                                || right
+                                    .as_ref()
+                                    .is_some_and(|n| n.kind() == "sizeof_expression");
+                            if has_sizeof {
+                                continue;
+                            }
+                        }
+                    }
+                }
+
                 // Check if the argument contains an identifier (variable)
                 let arg_text = get_node_text(&arg, source);
 
