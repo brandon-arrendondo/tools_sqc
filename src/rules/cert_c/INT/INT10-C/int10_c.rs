@@ -233,6 +233,12 @@ impl Int10C {
             return false;
         }
 
+        // Field expressions (e.g., self->field) — we can't resolve struct member
+        // types without struct definitions, so don't assume signed
+        if left_node.kind() == "field_expression" || right_node.kind() == "field_expression" {
+            return false;
+        }
+
         // Check if we're in a function with size_t parameters
         if self.is_in_function_with_unsigned_params(modulo_node, source) {
             return false;
