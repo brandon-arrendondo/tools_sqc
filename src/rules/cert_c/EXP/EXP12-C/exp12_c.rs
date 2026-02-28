@@ -75,6 +75,21 @@ fn is_explicit_void_cast(node: &Node, source: &str) -> bool {
 fn check_for_ignored_return_values(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
     // Look for call_expression nodes
     if node.kind() == "call_expression" {
+        // Check if the return value is being used (parent is assignment, init, etc.)
+        if let Some(parent) = node.parent() {
+            let parent_kind = parent.kind();
+            if parent_kind == "assignment_expression"
+                || parent_kind == "init_declarator"
+                || parent_kind == "argument_list"
+                || parent_kind == "return_statement"
+                || parent_kind == "conditional_expression"
+                || parent_kind == "binary_expression"
+            {
+                // Return value IS being captured — not ignored
+                return;
+            }
+        }
+
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = get_node_text(&function_node, source);
 

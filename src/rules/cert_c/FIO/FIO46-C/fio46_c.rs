@@ -70,6 +70,7 @@ impl Fio46C {
     }
 
     /// Collect all fclose() calls in the function
+    /// Stores stream name → fclose byte position for source-order comparison
     fn collect_fclose_calls(
         &self,
         node: &Node,
@@ -83,13 +84,13 @@ impl Fio46C {
 
             if func_name.trim() == "fclose" {
                 *has_any_fclose = true;
-                // Track the closed stream
+                // Track the closed stream with its byte position
                 if let Some(stream_name) = self.get_first_argument(node, source) {
-                    let line = node.start_position().row + 1;
+                    let byte_pos = node.start_byte();
                     let trimmed_name = stream_name.trim().to_string();
-                    closed_streams.insert(trimmed_name.clone(), line);
+                    closed_streams.insert(trimmed_name.clone(), byte_pos);
                     // Also try with no trim
-                    closed_streams.insert(stream_name, line);
+                    closed_streams.insert(stream_name, byte_pos);
                 }
             }
         }
@@ -152,7 +153,11 @@ impl Fio46C {
 
         // Check if function implicitly uses stdout and stdout was closed
         let func_name_trimmed = func_name.trim();
-        if stdout_functions.contains(&func_name_trimmed) && closed_streams.contains_key("stdout") {
+        if stdout_functions.contains(&func_name_trimmed)
+            && closed_streams
+                .get("stdout")
+                .is_some_and(|&fclose_byte| call_node.start_byte() > fclose_byte)
+        {
             let position = call_node.start_position();
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
@@ -177,7 +182,10 @@ impl Fio46C {
             for arg in arguments.children(&mut cursor) {
                 if arg.kind() == "identifier" {
                     let arg_text = get_node_text(&arg, source);
-                    if closed_streams.contains_key(arg_text.trim()) {
+                    if closed_streams
+                        .get(arg_text.trim())
+                        .is_some_and(|&fclose_byte| call_node.start_byte() > fclose_byte)
+                    {
                         let position = call_node.start_position();
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),

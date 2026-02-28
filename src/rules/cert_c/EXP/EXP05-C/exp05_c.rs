@@ -178,9 +178,13 @@ fn check_body_for_const(body: &Node, id_name: &str, source: &str) -> bool {
                     return true;
                 }
             }
-            // Recursively search nested scopes
-            if check_body_for_const(&child, id_name, source) {
-                return true;
+            // Recursively search nested scopes, but NOT into other function
+            // definitions — those have their own scope and their const parameters
+            // don't apply here
+            if child.kind() != "function_definition" {
+                if check_body_for_const(&child, id_name, source) {
+                    return true;
+                }
             }
         }
     }

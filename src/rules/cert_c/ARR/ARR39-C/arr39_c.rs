@@ -411,9 +411,22 @@ impl Arr39C {
         }
     }
 
+    /// Check if a text is an ALL_CAPS identifier (macro/enum constant)
+    fn is_all_caps_identifier(text: &str) -> bool {
+        !text.is_empty()
+            && text
+                .chars()
+                .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
+    }
+
     fn is_pointer_scaled_arithmetic(&self, left: &Node, right: &Node, source: &str) -> bool {
         let left_text = &source[left.start_byte()..left.end_byte()];
         let right_text = &source[right.start_byte()..right.end_byte()];
+
+        // Both operands are ALL_CAPS identifiers → macro/enum constants, not pointers
+        if Self::is_all_caps_identifier(left_text) && Self::is_all_caps_identifier(right_text) {
+            return false;
+        }
 
         // Check if left is likely a pointer and right contains scaling
         let left_is_pointer = self.looks_like_pointer_node(left, source);
