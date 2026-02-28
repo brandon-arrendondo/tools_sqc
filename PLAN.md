@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-02-27
+**Last Updated**: 2026-02-28 (v0.2.15)
 
 ---
 
@@ -74,28 +74,64 @@ types — only flags when both sides have known widths.
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
 
-### Top Remaining FP Rules (after 0.2.13)
+### Top Remaining FP Rules (after 0.2.15)
 
 | Rule | FP | TP | FP% | Notes |
 |------|---:|---:|----:|-------|
-| DCL06-C | 14.6K | 18.9K | 44% | Code style — reductions lose TPs proportionally |
-| INT30-C | 14.0K | 13.0K | 52% | Pointer arithmetic guards applied |
-| INT32-C | 11.0K | 7.7K | 59% | Down from ~19K after unsigned operand skip |
-| EXP12-C | 11.0K | 10.9K | 50% | Whitelist already trimmed |
-| EXP33-C | 6.8K | 4.9K | 58% | |
-| INT36-C | 6.7K | 4.0K | 62% | |
-| ERR05-C | 6.3K | 3.3K | 65% | |
-| ERR33-C | 6.3K | 3.7K | 63% | Nested calls + math overlap fixed |
+| DCL06-C | 15.6K | 18.9K | 45% | Code style — reductions lose TPs proportionally |
+| INT30-C | 14.0K | 13.2K | 52% | Pointer arithmetic guards applied |
+| INT32-C | 10.8K | 6.6K | 62% | field_expression → not_applicable reduced both |
+| EXP33-C | 6.8K | 5.4K | 56% | |
+| INT36-C | 6.7K | 4.1K | 62% | |
+| ERR05-C | 6.6K | 3.3K | 66% | |
+| ERR33-C | 6.4K | 3.8K | 63% | Nested calls + math overlap fixed |
+| EXP12-C | 5.5K | 3.4K | 62% | Parent-check added (was 11K/10.9K) |
 
-**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~45% Juliet ceiling is likely an architectural constraint for single-TU analysis.
+**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. EXP12-C parent-check was the right semantic fix (captures return values correctly) but cost -7,530 Juliet TPs. The ~44% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
 
 ---
 
 ## Real-World FP Fixes (d_lib_common)
 
-Targeted FP reduction driven by findings from `~/data/d_lib_common/REFACTOR.md`.
+Targeted FP reduction driven by findings from `~/data/d_lib_common/REFACTOR.md` and `~/data/d_lib_common/FP.md`.
 
-### Completed
+### Round 2: FP.md Cleanup (0.2.14)
+
+Addressed 17 FP patterns (~51 violations) documented in `FP.md`. All 17 patterns resolved (14 fixed, 3 already resolved by Batch 1 cascading effects).
+
+| Pattern | Rule | FPs | Fix |
+|---------|------|----:|-----|
+| 1 | FIO46-C | 7 | Source-order stream tracking: store `start_byte()` in `closed_streams`, only flag when call occurs AFTER fclose |
+| 3 | INT32-C | 5 | Return `not_applicable` for `field_expression` nodes without type evidence |
+| 5 | FLP03-C | 2 | Precise scientific notation regex (digit before/after e/E), check operands individually in division |
+| 7 | EXP40-C | 2 | Check parent `declaration` node for `const` type qualifier before flagging |
+| 8 | EXP12-C | 2 | Check `node.parent()` kind — skip when parent is `assignment_expression`, `init_declarator`, etc. |
+| 11 | INT01-C | 2 | Skip `sizeof(...) * N` binary expressions in allocation args |
+| 12 | INT10-C | 1 | Add `collect_variable_types()` and `operand_has_unsigned_type()` for struct field type resolution |
+| 14 | ARR39-C | 1 | Skip ALL_CAPS-only arithmetic (macro/enum constants are integers, not pointers) |
+| 15 | EXP05-C | 1 | Don't recurse into `function_definition` nodes when scanning global scope for const declarations |
+| 16 | EXP02-C | 1 | Exempt `NULL_CHECK && FUNCTION_CALL` guard pattern from side-effect warning |
+| 2,6,9,10,13,17 | Various | ~30 | Resolved by cascading effects of Batch 1 fixes (no longer triggered) |
+
+**Result (commit 1 — `d31a6c3`)**: 0/17 FP patterns remain. d_lib_common FP-report violations dropped from ~51 to ~6.
+
+**Follow-up (commit 2 — `0a45c9f`)**: 6 remaining violations fixed:
+- INT32-C (×3): propagate unsigned type through binary_expression chains (`unsigned_char - 'a' + 10`)
+- INT10-C (×1): skip `field_expression` operands in modulo sign check
+- EXP05-C (×1): skip `field_expression` in const-qualification check (base pointer const ≠ member const)
+- ARR39-C (×1): recursive `is_all_caps_arithmetic()` for nested binary_expressions (`A + B + C`)
+
+All original FP.md violations now resolved (0 remaining).
+
+**Juliet benchmark** (0.2.15 vs 0.2.13): -10,678 FP (-5.4%), -11,689 TP, TP rate 44.7% → 44.2% (-0.5pp).
+Top deltas: EXP12-C -5,477 FP/-7,530 TP (parent-check semantically correct but Juliet bad files have multiple call sites), INT01-C -2,714 FP/-740 TP, INT32-C -181 FP/-1,122 TP. Accepted: real-world precision prioritized over Juliet score.
+
+**Deferred (require cross-function analysis)**:
+- Pattern 4 — INT30-C guards (~8 FPs): Requires value-range analysis
+- Pattern 9 — EXP34-C null guards (~5 FPs): Cross-function null invariants
+- Pattern 17 — MEM31-C ownership (2 FPs): Cross-function ownership tracking
+
+### Round 1: REFACTOR.md Cleanup (Completed)
 
 | FP | Rule | Fix | Commit |
 |----|------|-----|--------|
@@ -137,6 +173,16 @@ The FP-002 fix improved the prescan infrastructure beyond just DCL15-C:
 
 **Possible shortcut**: If a pointer parameter is stored into a struct field (assignment `struct->field = param`), treat it as potentially modified — the struct may be written through later. This avoids full alias analysis while covering the common "store-then-write-through-alias" pattern.
 
+### Struct Field Type Resolution (TODO)
+
+Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is signed or unsigned. Currently, `field_expression` nodes return `"not_applicable"` or `"unknown"` because tree-sitter doesn't resolve struct member types.
+
+**Approach**: Build a struct-field-type database during prescan by parsing `struct` definitions. Map `struct_name.field_name → type_text`. When encountering `self->field`, look up the variable's struct type from `collect_variable_types()`, then resolve the field's type from the database.
+
+**Impact**: Would recover TPs lost by the INT32-C `field_expression → not_applicable` change (e.g., signed int fields in struct arithmetic). Would also improve INT10-C and INT30-C precision for struct-heavy code.
+
+**Complexity**: Medium — requires struct definition parsing + two-level lookup (variable → struct type → field type). Limited by typedef resolution (can't follow `typedef struct Foo Bar`).
+
 ### Analysis Capabilities Lacking
 
 - No preprocessor expansion (macros appear as function calls)
@@ -145,6 +191,7 @@ The FP-002 fix improved the prescan infrastructure beyond just DCL15-C:
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond literal constants)
 - No whole-program analysis (limited to function summary pre-scanning)
+- No struct field type resolution (field_expression types unknown — see TODO above)
 
 ---
 

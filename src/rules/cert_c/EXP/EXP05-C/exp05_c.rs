@@ -178,9 +178,13 @@ fn check_body_for_const(body: &Node, id_name: &str, source: &str) -> bool {
                     return true;
                 }
             }
-            // Recursively search nested scopes
-            if check_body_for_const(&child, id_name, source) {
-                return true;
+            // Recursively search nested scopes, but NOT into other function
+            // definitions — those have their own scope and their const parameters
+            // don't apply here
+            if child.kind() != "function_definition" {
+                if check_body_for_const(&child, id_name, source) {
+                    return true;
+                }
             }
         }
     }
@@ -238,6 +242,10 @@ fn is_const_qualified_argument(node: &Node, context: &Node, source: &str) -> boo
             let id_name = get_node_text(node, source);
             find_const_declaration(id_name, context, source)
         }
+        // Field expressions (e.g., ptr->buffer): the base pointer may be const-qualified
+        // but the member itself may not be. We can't determine member const-qualification
+        // without struct definitions, so skip these to avoid false positives.
+        "field_expression" => false,
         _ => {
             // Recursively check for identifiers in the argument
             for i in 0..node.child_count() {

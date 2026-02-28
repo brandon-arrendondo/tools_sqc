@@ -65,6 +65,17 @@ impl Exp02C {
                 // Only check logical AND (&&) and OR (||) operators
                 if matches!(op_text, "&&" | "||") {
                     if let Some(right) = node.child_by_field_name("right") {
+                        // Exempt null-guard && function-call pattern:
+                        // `ptr != NULL && func(ptr)` is a standard guard idiom
+                        if op_text == "&&" {
+                            if let Some(left) = node.child_by_field_name("left") {
+                                if self.is_null_guard_pattern(&left, source) {
+                                    // This is intentional short-circuit guarding
+                                    return;
+                                }
+                            }
+                        }
+
                         // Check if the right operand has side effects
                         if self.has_side_effects(&right, source) {
                             let start_point = right.start_position();
@@ -97,6 +108,47 @@ impl Exp02C {
                 self.check_node(&child, source, violations);
             }
         }
+    }
+
+    /// Check if the left operand of && is a null/validity guard pattern
+    /// e.g., `ptr != NULL`, `ptr`, `!ptr`, `ptr != 0`
+    fn is_null_guard_pattern(&self, node: &Node, source: &str) -> bool {
+        let text = get_node_text(node, source);
+
+        // Pattern: `expr != NULL` or `expr != 0` or `NULL != expr`
+        if text.contains("!= NULL")
+            || text.contains("!=NULL")
+            || text.contains("!= 0")
+            || text.contains("!=0")
+            || text.contains("NULL !=")
+            || text.contains("NULL!=")
+        {
+            return true;
+        }
+
+        // Pattern: `expr == NULL` or `expr == 0` (negative check, still a guard)
+        if text.contains("== NULL")
+            || text.contains("==NULL")
+            || text.contains("== 0")
+            || text.contains("==0")
+        {
+            return true;
+        }
+
+        // Pattern: bare identifier or `!identifier` (truthiness check)
+        if node.kind() == "identifier" || node.kind() == "unary_expression" {
+            return true;
+        }
+
+        // Pattern: parenthesized expression containing null check
+        if node.kind() == "parenthesized_expression" {
+            let inner_text = get_node_text(node, source);
+            if inner_text.contains("NULL") || inner_text.contains("!") {
+                return true;
+            }
+        }
+
+        false
     }
 
     /// Check if a node contains side effects (function calls, assignments, increments)

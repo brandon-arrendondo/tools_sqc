@@ -121,8 +121,20 @@ impl FpAnalyzer {
         if text.contains('.') && !text.starts_with("/*") {
             return true;
         }
-        if (text.contains('e') || text.contains('E')) && text.chars().any(|c| c.is_ascii_digit()) {
-            return true;
+
+        // Precise scientific notation: digit before e/E, digit or sign after
+        // Avoids matching 'e' in identifiers like "sizeof"
+        let bytes = text.as_bytes();
+        for i in 1..bytes.len().saturating_sub(1) {
+            if bytes[i] == b'e' || bytes[i] == b'E' {
+                let before = bytes[i - 1];
+                let after = bytes[i + 1];
+                if before.is_ascii_digit()
+                    && (after.is_ascii_digit() || after == b'+' || after == b'-')
+                {
+                    return true;
+                }
+            }
         }
 
         // Check for floating-point type keywords
@@ -239,7 +251,14 @@ impl Flp03C {
                 }
             }
 
-            if is_division && analyzer.is_fp_expression(node, source) {
+            // Check each operand individually — at least one must be float
+            let left_fp = node
+                .child_by_field_name("left")
+                .is_some_and(|l| analyzer.is_fp_expression(&l, source));
+            let right_fp = node
+                .child_by_field_name("right")
+                .is_some_and(|r| analyzer.is_fp_expression(&r, source));
+            if is_division && (left_fp || right_fp) {
                 // Check if there's error checking in the containing function
                 if let Some(containing_func) = self.find_containing_function(node) {
                     if !self.contains_fp_error_checking(&containing_func, source) {
