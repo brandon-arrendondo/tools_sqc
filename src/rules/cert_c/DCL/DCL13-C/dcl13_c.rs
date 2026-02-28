@@ -121,6 +121,13 @@ fn check_function_definition(
             continue; // Only check pointer parameters
         }
 
+        // DCL13-C: "Declare function parameters that are pointers to values
+        // not changed by the function as const"
+        // If already const-qualified, there's nothing for DCL13-C to flag.
+        if is_const {
+            continue;
+        }
+
         // Check if this parameter is modified in the function body
         let is_modified = if let Some(body_node) = body {
             is_pointer_param_modified(&body_node, &param_name, source)
@@ -128,27 +135,8 @@ fn check_function_definition(
             false // No body, assume not modified
         };
 
-        if is_modified {
-            // Case 1: Pointer parameter is being modified through dereference
-            // This is a violation because it creates side effects visible outside the function
-            violations.push(RuleViolation {
-                rule_id: rule_id.to_string(),
-                severity: Severity::Low,
-                message: format!(
-                    "Function modifies value through pointer parameter '{}' - consider using const or avoiding modification",
-                    param_name
-                ),
-                file_path: String::new(),
-                line,
-                column: col,
-                suggestion: Some(format!(
-                    "Declare parameter as 'const <type> *{}' to prevent modifications, or document this as an output parameter",
-                    param_name
-                )),
-                ..Default::default()
-            });
-        } else if !is_const {
-            // Case 2: non-const pointer parameter that is never modified (should be const)
+        if !is_modified {
+            // Non-const pointer parameter that is never modified — should be const.
             violations.push(RuleViolation {
                 rule_id: rule_id.to_string(),
                 severity: Severity::Low,
@@ -288,30 +276,69 @@ fn find_parameter_list<'a>(declarator: &Node<'a>) -> Option<Node<'a>> {
     None
 }
 
+/// Functions known to NOT modify their pointer arguments.
+/// If a pointer parameter is passed to a function NOT in this list,
+/// we conservatively assume the function may modify the pointed-to data.
+const READ_ONLY_FUNCTIONS: &[&str] = &[
+    // C stdio - output (read format string and args)
+    "printf", "fprintf", "vprintf", "vfprintf", "wprintf", "fwprintf", "puts", "fputs", "putchar",
+    "fputc", "putc", // C stdio - file ops (don't modify pointer args)
+    "fclose", "fflush", "fseek", "ftell", "rewind", "feof", "ferror", "fopen", "freopen",
+    // C string - read-only
+    "strlen", "strcmp", "strncmp", "strchr", "strrchr", "strstr", "strpbrk", "strspn", "strcspn",
+    "strerror", // C wide string - read-only
+    "wcslen", "wcscmp", "wcsncmp", "wcschr", "wcsrchr", "wcsstr",
+    // C memory - read-only
+    "memcmp", "memchr",
+    // C search/sort (bsearch reads the array; qsort modifies so NOT listed)
+    "bsearch", // C string - duplication (reads source string)
+    "strdup", "strndup", "wcsdup", // C conversion (first arg is read-only string)
+    "atoi", "atol", "atof", "atoll", // C ctype
+    "isalpha", "isdigit", "isalnum", "isspace", "isupper", "islower", "ispunct", "isprint",
+    "iscntrl", "isxdigit", "isgraph", "toupper", "tolower", // C math
+    "abs", "labs", "llabs", "fabs", "sqrt", "pow", "ceil", "floor", "log", "log10", "exp", "sin",
+    "cos", "tan", // C assert / control flow
+    "assert", "exit", "abort", "_exit", "_Exit", // POSIX - read-only for pointer args
+    "write", "open", "close", "perror", "access", "stat", "lstat",
+];
+
 /// Check if a pointer parameter is modified in the function body
 fn is_pointer_param_modified(body: &Node, param_name: &str, source: &str) -> bool {
-    // Look for assignment expressions that modify *param_name
     check_node_for_pointer_modification(body, param_name, source)
 }
 
-/// Recursively check if a node contains modifications to the dereferenced pointer
+/// Recursively check if a node contains modifications through a pointer parameter.
+///
+/// Detects:
+/// - Direct dereference writes: `*param = expr`
+/// - Struct member writes via arrow: `param->field = expr`
+/// - Array subscript writes: `param[i] = expr`, `param->field[i] = expr`
+/// - Compound assignments: `param->field += expr`
+/// - Increment/decrement: `param->field++`, `(*param)++`
+/// - Function calls passing param to potentially-modifying functions
 fn check_node_for_pointer_modification(node: &Node, param_name: &str, source: &str) -> bool {
-    // Check if this is an assignment to *param_name
+    // Check if this is an assignment where LHS writes through param
     if node.kind() == "assignment_expression" {
         if let Some(left) = node.child_by_field_name("left") {
-            // Check if left side is a pointer dereference of our parameter
-            if is_pointer_dereference_of_param(&left, param_name, source) {
+            if is_write_through_param(&left, param_name, source) {
                 return true;
             }
         }
     }
 
-    // Check for increment/decrement of *param_name
+    // Check for increment/decrement through param (e.g., (*p)++, p->field++)
     if node.kind() == "update_expression" {
         if let Some(argument) = node.child_by_field_name("argument") {
-            if is_pointer_dereference_of_param(&argument, param_name, source) {
+            if is_write_through_param(&argument, param_name, source) {
                 return true;
             }
+        }
+    }
+
+    // Check if param is passed to a function that may modify it
+    if node.kind() == "call_expression" {
+        if is_param_passed_to_modifying_call(node, param_name, source) {
+            return true;
         }
     }
 
@@ -327,16 +354,128 @@ fn check_node_for_pointer_modification(node: &Node, param_name: &str, source: &s
     false
 }
 
-/// Check if a node is a pointer dereference of a specific parameter (e.g., *x)
-fn is_pointer_dereference_of_param(node: &Node, param_name: &str, source: &str) -> bool {
-    if node.kind() == "pointer_expression" {
-        // Get the argument of the dereference
-        if let Some(argument) = node.child_by_field_name("argument") {
-            let text = ast_utils::get_node_text(&argument, source);
-            return text == param_name;
+/// Check if a node represents writing through a parameter (dereferencing the pointed-to data).
+///
+/// Handles: `*param`, `param->field`, `param[i]`, `param->field[i]`,
+/// `param->field1->field2`, `(*param).field`, and nested combinations.
+fn is_write_through_param(node: &Node, param_name: &str, source: &str) -> bool {
+    match node.kind() {
+        "pointer_expression" => {
+            // *param
+            if let Some(argument) = node.child_by_field_name("argument") {
+                let text = ast_utils::get_node_text(&argument, source);
+                if text == param_name {
+                    return true;
+                }
+            }
         }
+        "field_expression" => {
+            // param->field or param->field1->field2
+            if let Some(argument) = node.child_by_field_name("argument") {
+                let text = ast_utils::get_node_text(&argument, source);
+                if text == param_name {
+                    return true;
+                }
+                // Nested: param->field1->field2, (*param).field, etc.
+                return is_write_through_param(&argument, param_name, source);
+            }
+        }
+        "subscript_expression" => {
+            // param[i] or param->items[i]
+            if let Some(argument) = node.child_by_field_name("argument") {
+                let text = ast_utils::get_node_text(&argument, source);
+                if text == param_name {
+                    return true;
+                }
+                // Nested: param->items[i]
+                return is_write_through_param(&argument, param_name, source);
+            }
+        }
+        "parenthesized_expression" => {
+            // (*param) — unwrap parens
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() != "(" && child.kind() != ")" {
+                        return is_write_through_param(&child, param_name, source);
+                    }
+                }
+            }
+        }
+        _ => {}
     }
     false
+}
+
+/// Check if an argument expression is the parameter itself (directly or through a cast).
+///
+/// Only matches direct usage: `param`, `(void*)param`, `((param))`.
+/// Does NOT match derived expressions like `param->field` or `param[i]`,
+/// because passing a member's value to a function doesn't constitute
+/// modification of the struct the parameter points to.
+fn arg_is_param(node: &Node, param_name: &str, source: &str) -> bool {
+    match node.kind() {
+        "identifier" => ast_utils::get_node_text(node, source) == param_name,
+        "cast_expression" => {
+            // (void*)param
+            if let Some(value) = node.child_by_field_name("value") {
+                return arg_is_param(&value, param_name, source);
+            }
+            false
+        }
+        "parenthesized_expression" => {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() != "(" && child.kind() != ")" {
+                        return arg_is_param(&child, param_name, source);
+                    }
+                }
+            }
+            false
+        }
+        _ => false,
+    }
+}
+
+/// Check if a pointer parameter is passed to a function that may modify it.
+///
+/// Returns true if the param (or an expression rooted in it) appears as an
+/// argument to a function call, and that function is NOT in the read-only
+/// whitelist. This conservatively assumes unknown functions may write through
+/// their pointer arguments.
+fn is_param_passed_to_modifying_call(call_node: &Node, param_name: &str, source: &str) -> bool {
+    let args = match call_node.child_by_field_name("arguments") {
+        Some(a) => a,
+        None => return false,
+    };
+
+    // Check if param appears as any argument (including through casts/member access)
+    let mut param_is_arg = false;
+    for i in 0..args.child_count() {
+        if let Some(arg) = args.child(i) {
+            if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                continue;
+            }
+            if arg_is_param(&arg, param_name, source) {
+                param_is_arg = true;
+                break;
+            }
+        }
+    }
+
+    if !param_is_arg {
+        return false;
+    }
+
+    // Get function name — if it's a known read-only function, not a modification
+    if let Some(func) = call_node.child_by_field_name("function") {
+        let func_name = ast_utils::get_node_text(&func, source);
+        if READ_ONLY_FUNCTIONS.contains(&func_name) {
+            return false;
+        }
+    }
+
+    // Unknown or non-read-only function with our param as argument → assume modification
+    true
 }
 
 /// Extract function parameters with const-qualification and pointer status

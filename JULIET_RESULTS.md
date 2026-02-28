@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-02-25
+**Last Updated**: 2026-02-27
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -11,10 +11,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 172,780 |
-| **False Positives** | 215,671 |
-| **TP Rate** | **44.5%** (v0.2.7, MCP benchmark) |
-| **FP Reduction from Baseline** | -74.3% (839K → 216K) |
+| **True Positives** | 158,403 |
+| **False Positives** | 196,177 |
+| **TP Rate** | **44.7%** (v0.2.13, MCP benchmark) |
+| **FP Reduction from Baseline** | -76.6% (839K → 196K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
 
@@ -40,14 +40,45 @@
 | Round 15 | | EXP34-C: if/else branch merge (variant 12) | ¹ | ¹ | 44.7% | ¹ |
 | Round 16 | v0.2.6 | DCL13-C main() + MEM10-C param-only null check | ¹ | ¹ | 44.8% | ¹ |
 | **v0.2.7** | v0.2.7 | **INT36-C TP restore + INT31-C FP fix** | **172,780** | **215,671** | **44.5%** | **-1** |
+| v0.2.11 | v0.2.11 | INT32-C bounds-check detection, INT30-C macro fixes | 172,780 | 215,669 | 44.5% | -2 |
+| **v0.2.12** | v0.2.12 | **DCL13-C pointer modification + INT01-C sizeof skip** | **169,161** | **210,138** | **44.6%** | **-5,531** |
+| **v0.2.13** | v0.2.13 | **INT31-C implicit narrowing + d_lib_common FP fixes** | **158,403** | **196,177** | **44.7%** | **-13,961** |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-623,670 (-74.3%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-643,164 (-76.6%)**.
 
 ---
 
 ## Per-Round Fix Details
+
+### v0.2.13 — INT31-C Implicit Narrowing + d_lib_common FP Fixes
+
+- **INT31-C**: Implemented `check_assignment_conversion()` for implicit narrowing detection (`uint8_t tag = (uint16_t)(expr)`). Conservative: only flags when both LHS and RHS have known integer types. FP suppressions: literal-fits, safe-mask (`& 0xFF`), bounds-checked blocks, double-flag prevention. Juliet CWE197 impact: -9 TP / -9 FP (unchanged — Juliet uses explicit casts). Real-world: +229 new findings across curl/hostap/sqlite/mosquitto.
+- **INT32-C**: Skip unsigned operands in binary overflow checks (FP-004). **-8,390 FP**, -7,068 TP.
+- **DCL07-C/DCL31-C**: Skip indirect calls (function pointers) + preproc-guarded calls (FP-009). **-2,529/-2,429 FP**.
+- **DCL15-C**: Skip functions declared in header files (public API). **-663 FP** (curl).
+- **Net**: **-13,961 FP (-6.6%)**, -10,758 TP, TP rate **44.6% → 44.7%** (+0.1pp)
+- Zero CWE regressions. Top CWE improvements: CWE90 (-2,737 FP, +8.2pp), CWE78 (-1,704 FP, +2.7pp).
+- **Rule regressions**: ARR00-C (+905 FP), WIN03-C (+233 FP), MEM01-C (+225 FP) — under investigation.
+
+**Real-world benchmark** (0.2.11 → 0.2.13, 4 codebases):
+
+| Codebase | 0.2.11 | 0.2.13 | Delta |
+|----------|--------|--------|-------|
+| curl | 93,576 | 73,816 | -19,760 (-21.1%) |
+| hostap | 234,421 | 206,906 | -27,515 (-11.7%) |
+| sqlite | 177,983 | 147,091 | -30,892 (-17.4%) |
+| mosquitto | 39,177 | 33,638 | -5,539 (-14.1%) |
+| **Total** | **545,157** | **461,451** | **-83,706 (-15.4%)** |
+
+### v0.2.12 — DCL13-C Pointer Modification + INT01-C sizeof Skip
+
+- **DCL13-C**: Comprehensive pointer modification detection — tracks `*ptr =`, `ptr[i] =`, `ptr->field =`, increment/decrement, and function-call mutations. Rule went from 4,713 FP → 486 FP (**-4,227 FP**, -3,163 TP). The large TP drop is expected: many "const-qualify" violations in Juliet's bad code were technically correct flags but low-signal.
+- **INT01-C**: Skip `sizeof(...)` expressions in allocation argument checks. `malloc(sizeof(int) * n)` no longer flags `sizeof(int)` as an implicit conversion. **-988 FP**, -1,251 TP.
+- **Side effects**: DCL13-C's reduction exposed previously-masked violations from other rules: EXP33-C (+1,022 FP), API02-C (+628 FP), ERR05-C (+431 FP), EXP12-C (+279 FP). Net still strongly positive.
+- **Net**: **-5,531 FP (-2.6%)**, -3,619 TP, TP rate **44.5% → 44.6%** (+0.1pp)
+- Only 1 CWE regressed: CWE773 (+3 FP, 0 TP change)
 
 ### v0.2.7 — INT36-C TP Restore + INT31-C FP Fix
 
@@ -263,7 +294,7 @@ Juliet test files contain preprocessor-guarded sections:
 
 | Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
 |------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **44.5%** | **55.5%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
+| **SqC** | **44.6%** | **55.4%** | AST + CFG + inter-procedural | Full (118 CWEs) | 283 rules | -- |
 | Semgrep CE | 44–48% | Very low | AST (tree-sitter) | No | Community | Free |
 | Semgrep Pro | 72–75% | Very low | AST + taint + inter-file | No | Community | Commercial |
 | Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
@@ -293,7 +324,8 @@ Juliet test files contain preprocessor-guarded sections:
 | v0.2.1 (baseline) | 41.1% | 839,341 | ~584K | Original |
 | v0.2.4 | 43.8% | 243,849 | 189,950 | Windows API + multiple rule fixes |
 | v0.2.6 | 44.5% | 215,672 | 172,708 | CFG null state + bounds-check detection |
-| **v0.2.7** | **44.5%** | **215,671** | **172,780** | INT36-C TP restore + INT31-C FP fix |
+| v0.2.7 | 44.5% | 215,671 | 172,780 | INT36-C TP restore + INT31-C FP fix |
+| **v0.2.12** | **44.6%** | **210,138** | **169,161** | DCL13-C pointer modification + INT01-C sizeof skip |
 
 ---
 

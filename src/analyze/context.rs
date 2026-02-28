@@ -9,6 +9,10 @@ use std::collections::{HashMap, HashSet};
 #[derive(Debug, Default, Clone)]
 pub struct ProjectContext {
     pub known_functions: HashSet<String>,
+    /// Functions declared (prototyped) in `.h` header files.
+    /// A function with a header prototype is public API and should not be
+    /// flagged by DCL15-C/DCL19-C as needing `static`.
+    pub header_declared_functions: HashSet<String>,
     /// Function summaries computed during prescan for inter-procedural analysis.
     pub function_summaries: HashMap<String, FunctionSummary>,
     /// Call graph: maps function name to the set of functions it calls.
@@ -28,6 +32,12 @@ impl ProjectContext {
     /// Returns the summary for a function, if available.
     pub fn get_function_summary(&self, name: &str) -> Option<&FunctionSummary> {
         self.function_summaries.get(name)
+    }
+
+    /// Returns `true` if the function has a prototype in a `.h` header file,
+    /// indicating it is public API with intentional external linkage.
+    pub fn is_header_declared(&self, name: &str) -> bool {
+        self.header_declared_functions.contains(name)
     }
 
     /// Returns `true` if any cross-file data was collected.
