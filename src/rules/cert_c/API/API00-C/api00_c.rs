@@ -43,12 +43,26 @@
 //! - Report violation if a pointer parameter is used without prior validation
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
+use crate::analyze::null_state::NullState;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::{get_function_parameters, get_node_text, is_pointer_type};
-use std::collections::HashSet;
+use std::cell::RefCell;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
-pub struct Api00C;
+pub struct Api00C {
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+}
+
+impl Api00C {
+    pub fn new() -> Self {
+        Self {
+            function_summaries: RefCell::new(HashMap::new()),
+        }
+    }
+}
 
 impl CertRule for Api00C {
     fn rule_id(&self) -> &'static str {
@@ -69,6 +83,10 @@ impl CertRule for Api00C {
 
     fn cert_id(&self) -> &'static str {
         "API00-C"
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -151,9 +169,31 @@ impl Api00C {
             // Find validated parameters (those that appear in validation checks)
             let validated_params = self.find_validated_parameters(&body, &pointer_params, source);
 
+            // Look up callsite null states from prescan (if available)
+            let func_name = self.get_function_name(function_node, source);
+            let summaries = self.function_summaries.borrow();
+            let summary = summaries.get(&func_name);
+
+            // Build param name → index mapping
+            let param_indices: HashMap<&str, usize> = params
+                .iter()
+                .enumerate()
+                .map(|(i, (name, _))| (name.as_str(), i))
+                .collect();
+
             // Check which pointer parameters are used without validation
             for param_name in &pointer_params {
                 if !validated_params.contains(param_name) {
+                    // Suppress if all callers pass NotNull for this parameter
+                    if let (Some(s), Some(&idx)) = (summary, param_indices.get(param_name.as_str()))
+                    {
+                        if let Some(&state) = s.callsite_param_null_states.get(&idx) {
+                            if state == NullState::NotNull {
+                                continue; // All callers pass non-null → skip
+                            }
+                        }
+                    }
+
                     // Check if the parameter is actually used in the function
                     if self.is_parameter_used(&body, param_name, source) {
                         self.report_violation(

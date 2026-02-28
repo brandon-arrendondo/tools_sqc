@@ -838,7 +838,7 @@ impl RuleRegistry {
     pub fn new() -> Self {
         let mut registry = Self { rules: Vec::new() };
 
-        registry.register(Box::new(api00_c::Api00C));
+        registry.register(Box::new(api00_c::Api00C::new()));
         registry.register(Box::new(api01_c::Api01C));
         registry.register(Box::new(api02_c::Api02C));
         registry.register(Box::new(api03_c::Api03C));
