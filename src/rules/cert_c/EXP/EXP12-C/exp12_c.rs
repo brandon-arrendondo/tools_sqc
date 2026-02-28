@@ -83,7 +83,6 @@ fn check_for_ignored_return_values(node: &Node, source: &str, violations: &mut V
                 || parent_kind == "argument_list"
                 || parent_kind == "return_statement"
                 || parent_kind == "conditional_expression"
-                || parent_kind == "binary_expression"
             {
                 // Return value IS being captured — not ignored
                 return;
