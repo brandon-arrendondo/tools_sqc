@@ -4,6 +4,7 @@
 //! phase. These summaries are used by rules to reason about callee behavior
 //! without re-analyzing the callee's body.
 
+use crate::analyze::null_state::NullState;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
@@ -25,6 +26,9 @@ pub struct FunctionSummary {
     pub dereferences_params: HashSet<usize>,
     /// Whether this function never returns (calls abort/exit/longjmp).
     pub never_returns: bool,
+    /// Aggregated null states of arguments at all call sites (populated by prescan second pass).
+    /// Maps parameter index → joined NullState from all callers.
+    pub callsite_param_null_states: HashMap<usize, NullState>,
 }
 
 /// Compute function summaries for all function definitions in the AST.
@@ -294,6 +298,65 @@ fn extract_leaf_identifier(node: &Node, source: &str) -> String {
             }
             String::new()
         }
+    }
+}
+
+/// Infer the null state of a call argument from AST structure alone.
+///
+/// Used during prescan to collect argument states at each call site without
+/// running full dataflow. Returns:
+/// - DefinitelyNull for NULL/0/nullptr literals or casts wrapping them
+/// - NotNull for string literals, &var, non-zero numeric literals
+/// - Unknown for identifiers and complex expressions (conservative)
+pub fn infer_arg_null_state(arg: &Node, source: &str) -> NullState {
+    match arg.kind() {
+        "null" | "nullptr" => NullState::DefinitelyNull,
+        "number_literal" => {
+            let text = arg.utf8_text(source.as_bytes()).unwrap_or("").trim();
+            if text == "0" {
+                NullState::DefinitelyNull
+            } else {
+                NullState::NotNull
+            }
+        }
+        "string_literal" | "concatenated_string" | "char_literal" => NullState::NotNull,
+        "unary_expression" => {
+            // &var is always non-null
+            if let Some(op) = arg.child_by_field_name("operator") {
+                if op.utf8_text(source.as_bytes()).unwrap_or("") == "&" {
+                    return NullState::NotNull;
+                }
+            }
+            NullState::Unknown
+        }
+        "cast_expression" => {
+            // (type*)NULL or (type*)0
+            if let Some(value) = arg.child_by_field_name("value") {
+                let inner = infer_arg_null_state(&value, source);
+                if inner == NullState::DefinitelyNull {
+                    return NullState::DefinitelyNull;
+                }
+            }
+            NullState::Unknown
+        }
+        "parenthesized_expression" => {
+            // Unwrap (expr)
+            if let Some(inner) = arg.child(1) {
+                return infer_arg_null_state(&inner, source);
+            }
+            NullState::Unknown
+        }
+        "identifier" => {
+            // Check for well-known NULL macros
+            let text = arg.utf8_text(source.as_bytes()).unwrap_or("");
+            if text == "NULL" {
+                NullState::DefinitelyNull
+            } else {
+                // Can't know without dataflow — conservative
+                NullState::Unknown
+            }
+        }
+        _ => NullState::Unknown,
     }
 }
 

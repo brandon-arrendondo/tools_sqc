@@ -1,5 +1,6 @@
 use super::context::ProjectContext;
-use super::function_summary;
+use super::function_summary::{self, FunctionSummary};
+use crate::analyze::null_state::NullState;
 use crate::parser::CParser;
 use crate::progress::ProgressReporter;
 
@@ -64,6 +65,10 @@ pub fn prescan_directories(
             }
         }
     }
+
+    // Second pass: collect argument null states at call sites and aggregate
+    // per-callee per-param. This seeds callee parameter states during analysis.
+    collect_callsite_null_states(dirs, &mut function_summaries, &header_declared_functions);
 
     if let Some(reporter) = progress {
         reporter.report_prescan_complete(known_functions.len());
@@ -289,6 +294,139 @@ fn collect_callees(node: &Node, source: &str, callees: &mut HashSet<String>) {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
             collect_callees(&child, source, callees);
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Second pass: call-site argument null state collection
+// ---------------------------------------------------------------------------
+
+/// Collect argument null states at all call sites and aggregate into callee summaries.
+///
+/// For each callee, joins per-param states across all call sites:
+/// - all NotNull → NotNull (safe to skip null check)
+/// - any DefinitelyNull → PossiblyNull (mixed callers)
+/// - any Unknown → leaves as Unknown (will default to PossiblyNull in analysis)
+///
+/// Functions declared in headers get an implicit Unknown caller to prevent
+/// false NotNull seeding for externally-visible functions.
+fn collect_callsite_null_states(
+    dirs: &[String],
+    summaries: &mut HashMap<String, FunctionSummary>,
+    header_declared: &HashSet<String>,
+) {
+    // Accumulate: callee_name → Vec<Vec<NullState>> (one inner vec per call site)
+    let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+    let mut parser = match CParser::new() {
+        Ok(p) => p,
+        Err(_) => return,
+    };
+
+    for dir in dirs {
+        for entry in WalkDir::new(dir)
+            .into_iter()
+            .filter_map(|e| e.ok())
+            .filter(|e| matches!(e.path().extension().and_then(|ext| ext.to_str()), Some("c")))
+        {
+            let file_path = entry.path().to_string_lossy().to_string();
+            if let Ok((tree, source)) = parser.parse_file(&file_path) {
+                collect_callsite_args_from_tree(&tree.root_node(), &source, &mut callsite_args);
+            }
+        }
+    }
+
+    // For header-declared functions, add an implicit Unknown arg vector.
+    // This prevents false NotNull seeding for externally-visible functions
+    // that may be called from code we don't scan.
+    for func_name in header_declared {
+        if let Some(summary) = summaries.get(func_name) {
+            // Count how many params this function has from its summary
+            let max_param = summary
+                .dereferences_params
+                .iter()
+                .chain(summary.checks_null_params.iter())
+                .chain(summary.frees_params.iter())
+                .chain(summary.modifies_params.iter())
+                .max()
+                .copied()
+                .unwrap_or(0);
+            if max_param > 0 || !summary.dereferences_params.is_empty() {
+                let unknown_args = vec![NullState::Unknown; max_param + 1];
+                callsite_args
+                    .entry(func_name.clone())
+                    .or_default()
+                    .push(unknown_args);
+            }
+        }
+    }
+
+    // Join per-callee per-param
+    for (callee_name, arg_vectors) in &callsite_args {
+        if let Some(summary) = summaries.get_mut(callee_name) {
+            let max_params = arg_vectors.iter().map(|v| v.len()).max().unwrap_or(0);
+            for param_idx in 0..max_params {
+                let mut joined = NullState::Unknown;
+                let mut any_known = false;
+                for args in arg_vectors {
+                    if let Some(&state) = args.get(param_idx) {
+                        if state != NullState::Unknown {
+                            if !any_known {
+                                joined = state;
+                                any_known = true;
+                            } else {
+                                joined = joined.join(state);
+                            }
+                        }
+                    }
+                    // Missing arg → treat as Unknown (no contribution to join)
+                }
+                // Only store if we have concrete info
+                if any_known {
+                    summary.callsite_param_null_states.insert(param_idx, joined);
+                }
+            }
+        }
+    }
+}
+
+/// Walk an AST tree collecting call-site argument null states.
+fn collect_callsite_args_from_tree(
+    node: &Node,
+    source: &str,
+    callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
+) {
+    if node.kind() == "call_expression" {
+        if let Some(function) = node.child_by_field_name("function") {
+            if function.kind() == "identifier" {
+                let callee_name = function.utf8_text(source.as_bytes()).unwrap_or("");
+                if !callee_name.is_empty() {
+                    if let Some(args_node) = node.child_by_field_name("arguments") {
+                        let mut arg_states = Vec::new();
+                        for i in 0..args_node.child_count() {
+                            if let Some(arg) = args_node.child(i) {
+                                if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                                    continue;
+                                }
+                                arg_states
+                                    .push(function_summary::infer_arg_null_state(&arg, source));
+                            }
+                        }
+                        if !arg_states.is_empty() {
+                            callsite_args
+                                .entry(callee_name.to_string())
+                                .or_default()
+                                .push(arg_states);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_callsite_args_from_tree(&child, source, callsite_args);
         }
     }
 }
