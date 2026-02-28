@@ -64,24 +64,30 @@ types — only flags when both sides have known widths.
 
 **Origin**: d_lib_common FN-001 — real data corruption bug caught manually, not by sqc.
 
+**Benchmark results** (0.2.13 vs 0.2.12):
+- Juliet CWE197: -9 TP / -9 FP (unchanged — Juliet uses explicit casts)
+- Juliet overall: 44.6% → 44.7% TP rate (+0.1pp), -13,961 FP (-6.6%)
+- Real-world INT31-C new findings: curl +24, hostap +156, sqlite +49, mosquitto +0 (229 total)
+- Real-world total: 545K → 461K violations (-15.4% across 4 codebases)
+
 ### INT34-C: Literal Shift Amount >= Type Width
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
 
-### Top Remaining FP Rules (candidates for next round)
+### Top Remaining FP Rules (after 0.2.13)
 
 | Rule | FP | TP | FP% | Notes |
 |------|---:|---:|----:|-------|
-| INT32-C | ~19K | ~15K | 57% | Type-aware inference already applied |
-| DCL06-C | ~15K | ~19K | 44% | Code style — reductions lose TPs proportionally |
-| INT30-C | ~14K | ~13K | 52% | Pointer arithmetic guards applied |
-| EXP12-C | ~11K | ~11K | 50% | Whitelist already trimmed |
-| INT36-C | ~7K | ~4K | 63% | |
-| ERR33-C | ~6K | ~4K | 63% | Nested calls + math overlap fixed |
-| ERR05-C | ~6K | ~3K | 65% | |
-| EXP33-C | ~6K | ~5K | 54% | |
+| DCL06-C | 14.6K | 18.9K | 44% | Code style — reductions lose TPs proportionally |
+| INT30-C | 14.0K | 13.0K | 52% | Pointer arithmetic guards applied |
+| INT32-C | 11.0K | 7.7K | 59% | Down from ~19K after unsigned operand skip |
+| EXP12-C | 11.0K | 10.9K | 50% | Whitelist already trimmed |
+| EXP33-C | 6.8K | 4.9K | 58% | |
+| INT36-C | 6.7K | 4.0K | 62% | |
+| ERR05-C | 6.3K | 3.3K | 65% | |
+| ERR33-C | 6.3K | 3.7K | 63% | Nested calls + math overlap fixed |
 
-**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~44% Juliet ceiling is likely an architectural constraint for single-TU analysis.
+**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~45% Juliet ceiling is likely an architectural constraint for single-TU analysis.
 
 ---
 
