@@ -1192,6 +1192,29 @@ impl Int32C {
             return "not_applicable".to_string();
         }
 
+        // Binary expressions: propagate unsigned/not_applicable from sub-operands.
+        // If any operand in the chain is unsigned, the whole expression should be
+        // treated as unsigned (matching C integer promotion rules for unsigned types).
+        if node.kind() == "binary_expression" {
+            if let (Some(left), Some(right)) = (
+                node.child_by_field_name("left"),
+                node.child_by_field_name("right"),
+            ) {
+                let lt = self.infer_type(&left, source, type_map);
+                let rt = self.infer_type(&right, source, type_map);
+                if lt == "unsigned" || rt == "unsigned" {
+                    return "unsigned".to_string();
+                }
+                if lt == "not_applicable" || rt == "not_applicable" {
+                    return "not_applicable".to_string();
+                }
+                if lt == "signed" || rt == "signed" {
+                    return "signed".to_string();
+                }
+                return "unknown".to_string();
+            }
+        }
+
         // Look for explicit signed type indicators (only for non-identifier nodes
         // like type specifiers in casts/declarations — identifiers checked above)
         if node.kind() != "identifier"

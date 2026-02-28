@@ -419,12 +419,46 @@ impl Arr39C {
                 .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '_')
     }
 
+    /// Recursively check if an expression consists entirely of ALL_CAPS
+    /// identifiers and arithmetic operators (macro/enum constant arithmetic).
+    /// Handles nested binary_expressions like `A + B + C` parsed as `(A + B) + C`.
+    fn is_all_caps_arithmetic(node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "identifier" => {
+                let text = &source[node.start_byte()..node.end_byte()];
+                Self::is_all_caps_identifier(text)
+            }
+            "number_literal" => true,
+            "binary_expression" => {
+                // Both operands must be ALL_CAPS arithmetic
+                node.child_by_field_name("left")
+                    .is_some_and(|l| Self::is_all_caps_arithmetic(&l, source))
+                    && node
+                        .child_by_field_name("right")
+                        .is_some_and(|r| Self::is_all_caps_arithmetic(&r, source))
+            }
+            "parenthesized_expression" => {
+                // Unwrap parentheses
+                node.child(1)
+                    .is_some_and(|inner| Self::is_all_caps_arithmetic(&inner, source))
+            }
+            _ => false,
+        }
+    }
+
     fn is_pointer_scaled_arithmetic(&self, left: &Node, right: &Node, source: &str) -> bool {
         let left_text = &source[left.start_byte()..left.end_byte()];
         let right_text = &source[right.start_byte()..right.end_byte()];
 
         // Both operands are ALL_CAPS identifiers → macro/enum constants, not pointers
         if Self::is_all_caps_identifier(left_text) && Self::is_all_caps_identifier(right_text) {
+            return false;
+        }
+
+        // Entire expression tree consists of ALL_CAPS identifiers and numeric literals
+        // (handles nested expressions like `A + B + C` parsed as `(A + B) + C`)
+        if Self::is_all_caps_arithmetic(left, source) && Self::is_all_caps_arithmetic(right, source)
+        {
             return false;
         }
 
