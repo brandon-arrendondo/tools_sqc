@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-02-28
+**Last Updated**: 2026-02-28 (v0.2.15)
 
 ---
 
@@ -74,20 +74,20 @@ types — only flags when both sides have known widths.
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
 
-### Top Remaining FP Rules (after 0.2.13)
+### Top Remaining FP Rules (after 0.2.15)
 
 | Rule | FP | TP | FP% | Notes |
 |------|---:|---:|----:|-------|
-| DCL06-C | 14.6K | 18.9K | 44% | Code style — reductions lose TPs proportionally |
-| INT30-C | 14.0K | 13.0K | 52% | Pointer arithmetic guards applied |
-| INT32-C | 11.0K | 7.7K | 59% | Down from ~19K after unsigned operand skip |
-| EXP12-C | 11.0K | 10.9K | 50% | Whitelist already trimmed |
-| EXP33-C | 6.8K | 4.9K | 58% | |
-| INT36-C | 6.7K | 4.0K | 62% | |
-| ERR05-C | 6.3K | 3.3K | 65% | |
-| ERR33-C | 6.3K | 3.7K | 63% | Nested calls + math overlap fixed |
+| DCL06-C | 15.6K | 18.9K | 45% | Code style — reductions lose TPs proportionally |
+| INT30-C | 14.0K | 13.2K | 52% | Pointer arithmetic guards applied |
+| INT32-C | 10.8K | 6.6K | 62% | field_expression → not_applicable reduced both |
+| EXP33-C | 6.8K | 5.4K | 56% | |
+| INT36-C | 6.7K | 4.1K | 62% | |
+| ERR05-C | 6.6K | 3.3K | 66% | |
+| ERR33-C | 6.4K | 3.8K | 63% | Nested calls + math overlap fixed |
+| EXP12-C | 5.5K | 3.4K | 62% | Parent-check added (was 11K/10.9K) |
 
-**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~45% Juliet ceiling is likely an architectural constraint for single-TU analysis.
+**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. EXP12-C parent-check was the right semantic fix (captures return values correctly) but cost -7,530 Juliet TPs. The ~44% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
 
 ---
 
@@ -122,6 +122,9 @@ Addressed 17 FP patterns (~51 violations) documented in `FP.md`. All 17 patterns
 - ARR39-C (×1): recursive `is_all_caps_arithmetic()` for nested binary_expressions (`A + B + C`)
 
 All original FP.md violations now resolved (0 remaining).
+
+**Juliet benchmark** (0.2.15 vs 0.2.13): -10,678 FP (-5.4%), -11,689 TP, TP rate 44.7% → 44.2% (-0.5pp).
+Top deltas: EXP12-C -5,477 FP/-7,530 TP (parent-check semantically correct but Juliet bad files have multiple call sites), INT01-C -2,714 FP/-740 TP, INT32-C -181 FP/-1,122 TP. Accepted: real-world precision prioritized over Juliet score.
 
 **Deferred (require cross-function analysis)**:
 - Pattern 4 — INT30-C guards (~8 FPs): Requires value-range analysis
