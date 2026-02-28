@@ -15,6 +15,69 @@ use tree_sitter::Node;
 
 pub struct Int31C;
 
+/// Returns the bit-width of a known integer type, or None for unknown types.
+/// Check 64-bit before 32-bit to prevent "long int" matching "int".
+fn get_type_width(type_str: &str) -> Option<u32> {
+    let t = type_str.trim();
+
+    // 8-bit types
+    if t == "char" || t == "signed char" || t == "unsigned char" || t == "int8_t" || t == "uint8_t"
+    {
+        return Some(8);
+    }
+
+    // 16-bit types
+    if t == "short"
+        || t == "signed short"
+        || t == "unsigned short"
+        || t == "short int"
+        || t == "signed short int"
+        || t == "unsigned short int"
+        || t == "int16_t"
+        || t == "uint16_t"
+    {
+        return Some(16);
+    }
+
+    // 64-bit types — check BEFORE 32-bit so "long int" doesn't match "int"
+    if t == "long"
+        || t == "signed long"
+        || t == "unsigned long"
+        || t == "long int"
+        || t == "signed long int"
+        || t == "unsigned long int"
+        || t == "long long"
+        || t == "signed long long"
+        || t == "unsigned long long"
+        || t == "long long int"
+        || t == "signed long long int"
+        || t == "unsigned long long int"
+        || t == "int64_t"
+        || t == "uint64_t"
+        || t == "size_t"
+        || t == "ssize_t"
+        || t == "ptrdiff_t"
+        || t == "intptr_t"
+        || t == "uintptr_t"
+    {
+        return Some(64);
+    }
+
+    // 32-bit types
+    if t == "int"
+        || t == "signed"
+        || t == "unsigned"
+        || t == "signed int"
+        || t == "unsigned int"
+        || t == "int32_t"
+        || t == "uint32_t"
+    {
+        return Some(32);
+    }
+
+    None
+}
+
 // Signed integer types
 const SIGNED_TYPES: &[&str] = &[
     "signed",
@@ -810,15 +873,303 @@ impl Int31C {
 
     fn check_assignment_conversion(
         &self,
-        _node: &Node,
-        _source: &str,
-        _violations: &mut Vec<RuleViolation>,
-        _var_types: &HashMap<String, String>,
-        _validated_vars: &HashSet<String>,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        var_types: &HashMap<String, String>,
+        validated_vars: &HashSet<String>,
     ) {
-        // Already handled via cast_expression checks - this prevents double-flagging
-        // Only flag implicit conversions (no cast) if they're clearly dangerous
-        // For now, skip to avoid duplicates since our test cases use explicit casts
+        // Extract LHS name and RHS node depending on node kind
+        let (lhs_name, rhs_node) = if node.kind() == "assignment_expression" {
+            let left = match node.child_by_field_name("left") {
+                Some(l) => l,
+                None => return,
+            };
+            let right = match node.child_by_field_name("right") {
+                Some(r) => r,
+                None => return,
+            };
+            (get_node_text(&left, source).trim().to_string(), right)
+        } else if node.kind() == "init_declarator" {
+            let declarator = match node.child_by_field_name("declarator") {
+                Some(d) => d,
+                None => return,
+            };
+            let value = match node.child_by_field_name("value") {
+                Some(v) => v,
+                None => return,
+            };
+            (Self::extract_var_name(&declarator, source), value)
+        } else {
+            return;
+        };
+
+        if lhs_name.is_empty() {
+            return;
+        }
+
+        // Get LHS type from var_types
+        let lhs_type = match var_types.get(&lhs_name) {
+            Some(t) => t.clone(),
+            None => return,
+        };
+
+        let lhs_width = match get_type_width(&lhs_type) {
+            Some(w) => w,
+            None => return,
+        };
+
+        let rhs_width = match self.infer_rhs_width(&rhs_node, source, var_types) {
+            Some(w) => w,
+            None => return,
+        };
+
+        // No narrowing
+        if rhs_width <= lhs_width {
+            return;
+        }
+
+        // Suppression: RHS has a narrowing cast whose target width <= LHS width
+        // (check_cast_conversion already flags this)
+        if Self::rhs_has_narrowing_cast_to(&rhs_node, source, lhs_width) {
+            return;
+        }
+
+        // Suppression: validated variable
+        if validated_vars.contains(&lhs_name) {
+            return;
+        }
+
+        // Suppression: inside bounds-checked block
+        // Try to extract source expression name for the bounds check
+        let rhs_text = get_node_text(&rhs_node, source);
+        let source_expr = Self::extract_dominant_identifier(&rhs_node, source);
+        if !source_expr.is_empty()
+            && self.is_inside_bounds_checked_block(node, source, &source_expr)
+        {
+            return;
+        }
+
+        // Suppression: RHS literal fits in LHS type
+        if Self::rhs_literal_fits_in_width(&rhs_node, source, lhs_width) {
+            return;
+        }
+
+        // Suppression: RHS has safe mask (& 0xFF etc.)
+        if Self::rhs_has_safe_mask(&rhs_text, lhs_width) {
+            return;
+        }
+
+        let pos = node.start_position();
+        violations.push(RuleViolation {
+            rule_id: self.rule_id().to_string(),
+            severity: Severity::High,
+            message: format!(
+                "Implicit narrowing conversion: assigning wider type to '{}' ({})",
+                lhs_name, lhs_type
+            ),
+            file_path: String::new(),
+            line: pos.row + 1,
+            column: pos.column + 1,
+            suggestion: Some(
+                "Add an explicit bounds check or use an explicit narrowing cast".to_string(),
+            ),
+            ..Default::default()
+        });
+    }
+
+    /// Infer the bit-width of the RHS expression.
+    fn infer_rhs_width(
+        &self,
+        node: &Node,
+        source: &str,
+        var_types: &HashMap<String, String>,
+    ) -> Option<u32> {
+        match node.kind() {
+            "cast_expression" => {
+                // Extract the cast target type
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "type_descriptor" {
+                            let type_text = get_node_text(&child, source)
+                                .replace("(", "")
+                                .replace(")", "")
+                                .trim()
+                                .to_string();
+                            return get_type_width(&type_text);
+                        }
+                    }
+                }
+                None
+            }
+            "identifier" => {
+                let name = get_node_text(node, source).to_string();
+                var_types.get(&name).and_then(|t| get_type_width(t))
+            }
+            "parenthesized_expression" => {
+                // Unwrap parens and recurse
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() != "(" && child.kind() != ")" {
+                            return self.infer_rhs_width(&child, source, var_types);
+                        }
+                    }
+                }
+                None
+            }
+            "number_literal" => None,
+            _ => None,
+        }
+    }
+
+    /// Check if RHS is a cast_expression whose target width <= LHS width.
+    /// If so, check_cast_conversion() already handles it — don't double-flag.
+    fn rhs_has_narrowing_cast_to(node: &Node, source: &str, lhs_width: u32) -> bool {
+        let check = node;
+        if check.kind() == "cast_expression" {
+            for i in 0..check.child_count() {
+                if let Some(child) = check.child(i) {
+                    if child.kind() == "type_descriptor" {
+                        let type_text = get_node_text(&child, source)
+                            .replace("(", "")
+                            .replace(")", "")
+                            .trim()
+                            .to_string();
+                        if let Some(cast_width) = get_type_width(&type_text) {
+                            return cast_width <= lhs_width;
+                        }
+                    }
+                }
+            }
+        }
+        // Also check through parenthesized expressions
+        if check.kind() == "parenthesized_expression" {
+            for i in 0..check.child_count() {
+                if let Some(child) = check.child(i) {
+                    if child.kind() != "(" && child.kind() != ")" {
+                        return Self::rhs_has_narrowing_cast_to(&child, source, lhs_width);
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if RHS is a number literal that fits in the given bit width.
+    fn rhs_literal_fits_in_width(node: &Node, source: &str, width: u32) -> bool {
+        let check = if node.kind() == "parenthesized_expression" {
+            // Unwrap one level of parens
+            let mut inner = None;
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() != "(" && child.kind() != ")" {
+                        inner = Some(child);
+                        break;
+                    }
+                }
+            }
+            match inner {
+                Some(n) => n,
+                None => return false,
+            }
+        } else {
+            *node
+        };
+
+        if check.kind() != "number_literal" {
+            return false;
+        }
+
+        let text = get_node_text(&check, source).trim().to_string();
+        // Strip suffixes (U, L, UL, LL, ULL, etc.)
+        let cleaned = text.trim_end_matches(['u', 'U', 'l', 'L']);
+
+        let value = if cleaned.starts_with("0x") || cleaned.starts_with("0X") {
+            i64::from_str_radix(&cleaned[2..], 16).ok()
+        } else if cleaned.starts_with("0b") || cleaned.starts_with("0B") {
+            i64::from_str_radix(&cleaned[2..], 2).ok()
+        } else if cleaned.starts_with('0') && cleaned.len() > 1 && !cleaned.contains('.') {
+            i64::from_str_radix(cleaned, 8).ok()
+        } else {
+            cleaned.parse::<i64>().ok()
+        };
+
+        match value {
+            Some(v) => match width {
+                8 => (0..=255).contains(&v) || (-128..=127).contains(&v),
+                16 => (0..=65535).contains(&v) || (-32768..=32767).contains(&v),
+                32 => (0..=4294967295i64).contains(&v) || (-2147483648..=2147483647).contains(&v),
+                _ => true,
+            },
+            None => false,
+        }
+    }
+
+    /// Check if RHS text contains a safe bitmask that limits the value to fit in `width` bits.
+    fn rhs_has_safe_mask(rhs_text: &str, width: u32) -> bool {
+        if !rhs_text.contains('&') {
+            return false;
+        }
+
+        let masks: &[&str] = match width {
+            8 => &["0xFF", "0xff", "0XFF", "0Xff", "255"],
+            16 => &[
+                "0xFFFF", "0xffff", "0XFFFF", "0Xffff", "65535", "0xFF", "0xff", "255",
+            ],
+            32 => &[
+                "0xFFFFFFFF",
+                "0xffffffff",
+                "0xFFFF",
+                "0xffff",
+                "0xFF",
+                "0xff",
+            ],
+            _ => return false,
+        };
+
+        masks.iter().any(|m| rhs_text.contains(m))
+    }
+
+    /// Extract the dominant identifier from an expression for bounds-check lookup.
+    /// For `(uint16_t)(buffer[i])`, this extracts "buffer".
+    /// For `some_var`, this extracts "some_var".
+    fn extract_dominant_identifier(node: &Node, source: &str) -> String {
+        match node.kind() {
+            "identifier" => get_node_text(node, source).to_string(),
+            "cast_expression" => {
+                // Get the operand (skip type_descriptor and parens)
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        let kind = child.kind();
+                        if kind != "type_descriptor" && kind != "(" && kind != ")" {
+                            return Self::extract_dominant_identifier(&child, source);
+                        }
+                    }
+                }
+                String::new()
+            }
+            "parenthesized_expression" => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() != "(" && child.kind() != ")" {
+                            return Self::extract_dominant_identifier(&child, source);
+                        }
+                    }
+                }
+                String::new()
+            }
+            _ => {
+                // For complex expressions, try to find the first identifier child
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" {
+                            return get_node_text(&child, source).to_string();
+                        }
+                    }
+                }
+                String::new()
+            }
+        }
     }
 
     fn is_signed_type(&self, type_str: &str) -> bool {

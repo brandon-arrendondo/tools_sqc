@@ -4,12 +4,26 @@
 //! and could be declared with internal linkage to avoid namespace pollution and improve
 //! encapsulation.
 
+use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::rules::{CertRule, RuleViolation};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::cell::RefCell;
+use std::collections::HashSet;
 use tree_sitter::Node;
 
-pub struct Dcl15C;
+pub struct Dcl15C {
+    /// Functions declared (prototyped) in header files — public API.
+    header_declared: RefCell<HashSet<String>>,
+}
+
+impl Default for Dcl15C {
+    fn default() -> Self {
+        Self {
+            header_declared: RefCell::new(HashSet::new()),
+        }
+    }
+}
 
 impl CertRule for Dcl15C {
     fn rule_id(&self) -> &'static str {
@@ -36,6 +50,10 @@ impl CertRule for Dcl15C {
         let mut violations = Vec::new();
         self.check_translation_unit(node, source, &mut violations);
         violations
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.header_declared.borrow_mut() = context.header_declared_functions.clone();
     }
 }
 
@@ -92,6 +110,12 @@ impl Dcl15C {
             if let Some(function_name) = self.extract_function_name(&declarator, source) {
                 // Skip main() and other standard entry points
                 if self.is_standard_entry_point(&function_name) {
+                    return;
+                }
+
+                // Skip functions declared (prototyped) in a header file —
+                // they are public API with intentional external linkage.
+                if self.header_declared.borrow().contains(&function_name) {
                     return;
                 }
 

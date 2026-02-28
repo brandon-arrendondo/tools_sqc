@@ -169,6 +169,11 @@ impl Int32C {
                 return;
             }
 
+            // Skip if either operand is unsigned — unsigned wrap is INT30-C, not INT32-C
+            if left_type == "unsigned" || right_type == "unsigned" {
+                return;
+            }
+
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
                 // Skip if this operation is part of an overflow check comparison
                 if self.is_part_of_comparison(node, source) {
@@ -226,6 +231,11 @@ impl Int32C {
 
             // Skip if any operand is a non-integer type (char, float, pointer, etc.)
             if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
+
+            // Skip if either operand is unsigned — unsigned wrap is INT30-C, not INT32-C
+            if left_type == "unsigned" || right_type == "unsigned" {
                 return;
             }
 
@@ -292,6 +302,11 @@ impl Int32C {
 
             // Skip if any operand is a non-integer type (char, float, pointer, etc.)
             if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
+
+            // Skip if either operand is unsigned — unsigned wrap is INT30-C, not INT32-C
+            if left_type == "unsigned" || right_type == "unsigned" {
                 return;
             }
 
@@ -362,6 +377,11 @@ impl Int32C {
                 return;
             }
 
+            // Skip if either operand is unsigned — unsigned wrap is INT30-C, not INT32-C
+            if left_type == "unsigned" || right_type == "unsigned" {
+                return;
+            }
+
             // Check for signed integer division
             // INT_MIN / -1 causes overflow because -INT_MIN cannot be represented
             if self.is_signed_type(&left_type) || self.is_signed_type(&right_type) {
@@ -425,6 +445,11 @@ impl Int32C {
 
             // Skip if any operand is a non-integer type (char, float, pointer, etc.)
             if left_type == "not_applicable" || right_type == "not_applicable" {
+                return;
+            }
+
+            // Skip if either operand is unsigned — unsigned wrap is INT30-C, not INT32-C
+            if left_type == "unsigned" || right_type == "unsigned" {
                 return;
             }
 

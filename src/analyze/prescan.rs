@@ -19,6 +19,7 @@ pub fn prescan_directories(
     progress: Option<&dyn ProgressReporter>,
 ) -> Result<ProjectContext> {
     let mut known_functions = HashSet::new();
+    let mut header_declared_functions = HashSet::new();
     let mut function_summaries = HashMap::new();
     let mut call_graph = HashMap::new();
     let mut parser = CParser::new()?;
@@ -40,9 +41,17 @@ pub fn prescan_directories(
             })
         {
             let file_path = entry.path().to_string_lossy().to_string();
+            let is_header = entry.path().extension().and_then(|ext| ext.to_str()) == Some("h");
+
             if let Ok((tree, source)) = parser.parse_file(&file_path) {
                 let root = tree.root_node();
                 collect_function_names(&root, &source, &mut known_functions);
+
+                // Track function declarations from header files separately —
+                // these are public API with intentional external linkage.
+                if is_header {
+                    collect_header_declarations(&root, &source, &mut header_declared_functions);
+                }
 
                 // Compute function summaries for this file
                 let file_summaries = function_summary::compute_summaries(&root, &source);
@@ -62,9 +71,52 @@ pub fn prescan_directories(
 
     Ok(ProjectContext {
         known_functions,
+        header_declared_functions,
         function_summaries,
         call_graph,
     })
+}
+
+/// Collect function declarations (prototypes) from a header file.
+/// These represent public API functions with intentional external linkage.
+fn collect_header_declarations(node: &Node, source: &str, names: &mut HashSet<String>) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "declaration" => {
+                    // Only collect non-static function prototypes
+                    if !has_static_specifier(&child, source) {
+                        if let Some(name) = extract_function_name_from_declaration(&child, source) {
+                            names.insert(name);
+                        }
+                    }
+                }
+                kind if kind.starts_with("preproc_")
+                    || kind == "linkage_specification"
+                    || kind == "declaration_list" =>
+                {
+                    collect_header_declarations(&child, source, names);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Check if a declaration node has a `static` storage class specifier.
+fn has_static_specifier(node: &Node, source: &str) -> bool {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "storage_class_specifier" {
+                if let Ok(text) = child.utf8_text(source.as_bytes()) {
+                    if text == "static" {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    false
 }
 
 /// Extract function names from top-level `function_definition` and `declaration`
@@ -84,7 +136,10 @@ fn collect_function_names(node: &Node, source: &str, names: &mut HashSet<String>
                         names.insert(name);
                     }
                 }
-                kind if kind.starts_with("preproc_") => {
+                kind if kind.starts_with("preproc_")
+                    || kind == "linkage_specification"
+                    || kind == "declaration_list" =>
+                {
                     collect_function_names(&child, source, names);
                 }
                 _ => {}
@@ -100,6 +155,10 @@ fn extract_function_name_from_declarator(node: &Node, source: &str) -> Option<St
 }
 
 /// Extract function name from a `declaration` node if it's a function prototype.
+///
+/// Handles both direct function declarators (`void foo(...)`) and
+/// pointer-returning declarators (`int *foo(...)`) where tree-sitter
+/// wraps the function_declarator inside a pointer_declarator.
 fn extract_function_name_from_declaration(node: &Node, source: &str) -> Option<String> {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
@@ -107,14 +166,45 @@ fn extract_function_name_from_declaration(node: &Node, source: &str) -> Option<S
                 "function_declarator" => {
                     return extract_identifier_from_declarator(&child, source);
                 }
+                "pointer_declarator" => {
+                    // e.g. `ArrayList *ArrayList_New(int a, int b);`
+                    // pointer_declarator wraps the function_declarator
+                    return extract_func_name_from_nested_declarator(&child, source);
+                }
                 "init_declarator" => {
                     for j in 0..child.child_count() {
                         if let Some(grandchild) = child.child(j) {
                             if grandchild.kind() == "function_declarator" {
                                 return extract_identifier_from_declarator(&grandchild, source);
                             }
+                            if grandchild.kind() == "pointer_declarator" {
+                                return extract_func_name_from_nested_declarator(
+                                    &grandchild,
+                                    source,
+                                );
+                            }
                         }
                     }
+                }
+                _ => {}
+            }
+        }
+    }
+    None
+}
+
+/// Recursively search a declarator subtree for a function_declarator
+/// and extract its identifier.  Handles chains like
+/// `pointer_declarator -> function_declarator -> identifier`.
+fn extract_func_name_from_nested_declarator(node: &Node, source: &str) -> Option<String> {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "function_declarator" => {
+                    return extract_identifier_from_declarator(&child, source);
+                }
+                "pointer_declarator" => {
+                    return extract_func_name_from_nested_declarator(&child, source);
                 }
                 _ => {}
             }
@@ -171,7 +261,10 @@ fn collect_call_graph(
                         call_graph.insert(func_name, callees);
                     }
                 }
-                kind if kind.starts_with("preproc_") => {
+                kind if kind.starts_with("preproc_")
+                    || kind == "linkage_specification"
+                    || kind == "declaration_list" =>
+                {
                     collect_call_graph(&child, source, call_graph);
                 }
                 _ => {}
