@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-02-28 (v0.2.15)
+**Last Updated**: 2026-02-28 (v0.2.16)
 
 ---
 
@@ -15,16 +15,19 @@ Goal: Raise CWE-476 (NULL Pointer Dereference) TP rate from 37.6% toward 80%+.
 - [x] MEM10-C parameter-only null check fix (−106 FP on CWE-476)
 - [x] DCL13-C main() exemption (no benchmark impact)
 
-### Phase 2 — Call-Site Null Propagation (NEXT)
+### Phase 2 — Call-Site Null Propagation (COMPLETE)
 
 Cross-file variants (51–68) have null assignment in file A and dereference in file B.
 
-1. **Extend `FunctionSummary`**: Add `possibly_null_params: Vec<usize>` field
-2. **Two-pass analysis**: First pass collects call-site null info; second pass uses it in callee analysis
-3. **Call-site flagging**: When a call passes a definitely/possibly-null value as a pointer argument, flag EXP34-C at the call site
-4. **EXP33-C CFG integration**: Apply branch-merge fix to EXP33-C initialization tracking
+- [x] **Call-site flagging (Approach A)**: Re-enabled `check_callsite_null_args` — flags DefinitelyNull args passed to callees that don't null-check. Removed `dereferences_params` gate, added `is_null_safe_function()` whitelist.
+- [x] **Callee param seeding (Approach B)**: `infer_arg_null_state()` in `function_summary.rs` classifies call-site args via AST. Prescan second pass (`collect_callsite_null_states` in `prescan.rs`) aggregates per-callee per-param with lattice join. Header-declared functions get implicit Unknown caller to prevent false NotNull seeding.
+- [x] **Param state wiring**: `analyze_null_states_with_globals()` accepts `func_name` param, seeds pointer params from `callsite_param_null_states` instead of blanket PossiblyNull.
 
-**Estimated gain**: Tier D = ~120 files at 70% detection → ~252 additional TPs.
+**Juliet results** (0.2.16 vs 0.2.15): CWE-476 +19 TP, +17 FP (TP rate 35.9% → 36.6%). Overall +19 TP, +11 FP (44.8% unchanged).
+
+**Real-world results** (0.2.16 vs 0.2.13): -5,892 violations (-1.3%) across 5 codebases. Modest impact — most real-world functions receive mixed null/non-null args, limiting all-NotNull param seeding benefit.
+
+**Remaining gaps**: Relay chains (variants 52–54) produce Unknown from AST inference (param forwarding). Indirect data flow (63–67) and cross-file globals (68) not addressed. EXP33-C CFG integration deferred.
 
 ### Phase 3 — Tier E Coverage + API Rule Narrowing
 
@@ -74,7 +77,7 @@ types — only flags when both sides have known widths.
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
 
-### Top Remaining FP Rules (after 0.2.15)
+### Top Remaining FP Rules (after 0.2.16)
 
 | Rule | FP | TP | FP% | Notes |
 |------|---:|---:|----:|-------|
@@ -87,7 +90,7 @@ Current fix skips all non-negative integer literals to eliminate FPs from `x >> 
 | ERR33-C | 6.4K | 3.8K | 63% | Nested calls + math overlap fixed |
 | EXP12-C | 5.5K | 3.4K | 62% | Parent-check added (was 11K/10.9K) |
 
-**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. EXP12-C parent-check was the right semantic fix (captures return values correctly) but cost -7,530 Juliet TPs. The ~44% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
+**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. EXP12-C parent-check was the right semantic fix (captures return values correctly) but cost -7,530 Juliet TPs. The ~44–45% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
 
 ---
 
@@ -190,7 +193,7 @@ Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is 
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond literal constants)
-- No whole-program analysis (limited to function summary pre-scanning)
+- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation)
 - No struct field type resolution (field_expression types unknown — see TODO above)
 
 ---
