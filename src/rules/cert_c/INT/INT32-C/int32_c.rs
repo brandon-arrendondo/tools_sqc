@@ -1186,6 +1186,12 @@ impl Int32C {
             return "unsigned".to_string();
         }
 
+        // Field expressions (e.g., self->capacity) without type evidence
+        // should not be assumed signed — return not_applicable
+        if node.kind() == "field_expression" {
+            return "not_applicable".to_string();
+        }
+
         // Look for explicit signed type indicators (only for non-identifier nodes
         // like type specifiers in casts/declarations — identifiers checked above)
         if node.kind() != "identifier"

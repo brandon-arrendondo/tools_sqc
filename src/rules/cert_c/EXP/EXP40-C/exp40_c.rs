@@ -154,8 +154,28 @@ fn check_init_declarator(node: &Node, source: &str, violations: &mut Vec<RuleVio
                 let decl_text = get_node_text(&declarator, source);
                 let value_text = get_node_text(&value, source);
 
+                // Check if const is in the parent declaration's type specifiers
+                let parent_has_const = node
+                    .parent()
+                    .filter(|p| p.kind() == "declaration")
+                    .is_some_and(|decl| {
+                        // Check type specifiers in the declaration for const
+                        let mut cursor = decl.walk();
+                        for child in decl.children(&mut cursor) {
+                            if child.kind() == "type_qualifier" {
+                                let q = get_node_text(&child, source);
+                                if q == "const" {
+                                    return true;
+                                }
+                            }
+                        }
+                        false
+                    });
+
                 // If the declarator is a non-const pointer but the value is const, flag it
-                if !contains_const_keyword(&declarator, source)
+                // Skip if the parent declaration already has const qualifier
+                if !parent_has_const
+                    && !contains_const_keyword(&declarator, source)
                     && is_const_qualified(&value, source)
                 {
                     report_violation(

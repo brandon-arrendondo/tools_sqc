@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-02-27
+**Last Updated**: 2026-02-28
 
 ---
 
@@ -93,9 +93,34 @@ Current fix skips all non-negative integer literals to eliminate FPs from `x >> 
 
 ## Real-World FP Fixes (d_lib_common)
 
-Targeted FP reduction driven by findings from `~/data/d_lib_common/REFACTOR.md`.
+Targeted FP reduction driven by findings from `~/data/d_lib_common/REFACTOR.md` and `~/data/d_lib_common/FP.md`.
 
-### Completed
+### Round 2: FP.md Cleanup (0.2.14)
+
+Addressed 17 FP patterns (~51 violations) documented in `FP.md`. All 17 patterns resolved (14 fixed, 3 already resolved by Batch 1 cascading effects).
+
+| Pattern | Rule | FPs | Fix |
+|---------|------|----:|-----|
+| 1 | FIO46-C | 7 | Source-order stream tracking: store `start_byte()` in `closed_streams`, only flag when call occurs AFTER fclose |
+| 3 | INT32-C | 5 | Return `not_applicable` for `field_expression` nodes without type evidence |
+| 5 | FLP03-C | 2 | Precise scientific notation regex (digit before/after e/E), check operands individually in division |
+| 7 | EXP40-C | 2 | Check parent `declaration` node for `const` type qualifier before flagging |
+| 8 | EXP12-C | 2 | Check `node.parent()` kind — skip when parent is `assignment_expression`, `init_declarator`, etc. |
+| 11 | INT01-C | 2 | Skip `sizeof(...) * N` binary expressions in allocation args |
+| 12 | INT10-C | 1 | Add `collect_variable_types()` and `operand_has_unsigned_type()` for struct field type resolution |
+| 14 | ARR39-C | 1 | Skip ALL_CAPS-only arithmetic (macro/enum constants are integers, not pointers) |
+| 15 | EXP05-C | 1 | Don't recurse into `function_definition` nodes when scanning global scope for const declarations |
+| 16 | EXP02-C | 1 | Exempt `NULL_CHECK && FUNCTION_CALL` guard pattern from side-effect warning |
+| 2,6,9,10,13,17 | Various | ~30 | Resolved by cascading effects of Batch 1 fixes (no longer triggered) |
+
+**Result**: 0/17 FP patterns remain. d_lib_common violations dropped from ~51 FP-report violations to 0.
+
+**Deferred (require cross-function analysis)**:
+- Pattern 4 — INT30-C guards (~8 FPs): Requires value-range analysis
+- Pattern 9 — EXP34-C null guards (~5 FPs): Cross-function null invariants
+- Pattern 17 — MEM31-C ownership (2 FPs): Cross-function ownership tracking
+
+### Round 1: REFACTOR.md Cleanup (Completed)
 
 | FP | Rule | Fix | Commit |
 |----|------|-----|--------|
@@ -137,6 +162,16 @@ The FP-002 fix improved the prescan infrastructure beyond just DCL15-C:
 
 **Possible shortcut**: If a pointer parameter is stored into a struct field (assignment `struct->field = param`), treat it as potentially modified — the struct may be written through later. This avoids full alias analysis while covering the common "store-then-write-through-alias" pattern.
 
+### Struct Field Type Resolution (TODO)
+
+Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is signed or unsigned. Currently, `field_expression` nodes return `"not_applicable"` or `"unknown"` because tree-sitter doesn't resolve struct member types.
+
+**Approach**: Build a struct-field-type database during prescan by parsing `struct` definitions. Map `struct_name.field_name → type_text`. When encountering `self->field`, look up the variable's struct type from `collect_variable_types()`, then resolve the field's type from the database.
+
+**Impact**: Would recover TPs lost by the INT32-C `field_expression → not_applicable` change (e.g., signed int fields in struct arithmetic). Would also improve INT10-C and INT30-C precision for struct-heavy code.
+
+**Complexity**: Medium — requires struct definition parsing + two-level lookup (variable → struct type → field type). Limited by typedef resolution (can't follow `typedef struct Foo Bar`).
+
 ### Analysis Capabilities Lacking
 
 - No preprocessor expansion (macros appear as function calls)
@@ -145,6 +180,7 @@ The FP-002 fix improved the prescan infrastructure beyond just DCL15-C:
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond literal constants)
 - No whole-program analysis (limited to function summary pre-scanning)
+- No struct field type resolution (field_expression types unknown — see TODO above)
 
 ---
 
