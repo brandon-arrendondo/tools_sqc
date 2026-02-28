@@ -1,55 +1,60 @@
 # SqC — Real-World Benchmark Results
 
-**Last Updated**: 2026-02-25
+**Last Updated**: 2026-02-28
 
 Automated benchmark results across 5 real-world C codebases using sqc, cppcheck, and clang-tidy. Also includes d_lib_common (internal module) FP reduction case study.
 
 ---
 
-## Latest Results (sqc v0.2.7)
+## Latest Results (sqc v0.2.16)
 
-MCP-based benchmark infrastructure. All three tools run on the same machine (cppcheck 2.10, clang-tidy 21.1.6, sqc v0.2.7 commit `54819432`).
+MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.1.6, sqc v0.2.16 commit `cb35661d`).
 
 ### Violation Counts — All Three Tools
 
 | Project | LOC (approx) | sqc | cppcheck | clang-tidy |
 |---------|-------------|----:|--------:|-----------:|
-| **libcrc** | ~1K | 842 | 40 | 4 |
-| **sqlite** | ~350 files | 180,011 | 517 | 204 |
-| **mosquitto** | ~120 files | 39,177 | 364 | 160 |
-| **curl** | ~220 files | 93,576 | 297 | 1,314 |
-| **hostap** | ~600 files | 234,421 | 1,675 | 2,957 |
-| **Total** | | **548,027** | **2,893** | **4,639** |
+| **libcrc** | ~1K | 790 | 43 | 2 |
+| **sqlite** | ~350 files | 144,581 | 1,181 | 135 |
+| **mosquitto** | ~120 files | 33,200 | 747 | 44 |
+| **curl** | ~220 files | 73,239 | 519 | 114 |
+| **hostap** | ~600 files | 204,560 | 2,118 | 2,279 |
+| **Total** | | **456,370** | **4,608** | **2,574** |
 
-**Interpretation**: sqc covers 283 CERT-C rules (advisory + mandatory) while cppcheck and clang-tidy implement ~20 checks each. The 100–200x difference in raw counts reflects rule coverage breadth, not false positive rate.
+**Interpretation**: sqc covers 283 CERT-C rules (advisory + mandatory) while cppcheck and clang-tidy implement ~20 checks each. The 100x difference in raw counts reflects rule coverage breadth, not false positive rate.
 
-### sqc Top Rules by Project
+### sqc Version History
 
-| Project | Top 5 Rules |
-|---------|------------|
-| **libcrc** | EXP14-C (106), ERR33-C (68), EXP12-C (62), EXP19-C (59), FIO47-C (47) |
-| **sqlite** | DCL07-C (20K), DCL31-C (18K), API00-C (14K), DCL13-C (14K), POS49-C (12K) |
-| **mosquitto** | API00-C (3K), DCL31-C (3K), DCL07-C (3K), MEM31-C (3K), DCL13-C (3K) |
-| **curl** | DCL07-C (11K), DCL31-C (11K), EXP19-C (9K), API00-C (8K), DCL13-C (7K) |
-| **hostap** | DCL08-C (25K), EXP19-C (25K), API00-C (20K), DCL13-C (19K), POS49-C (17K) |
+| Project | v0.2.7 | v0.2.13 | v0.2.16 | Delta (0.2.13→0.2.16) |
+|---------|-------:|--------:|--------:|----------------------:|
+| **libcrc** | 842 | 811 | 790 | -21 (-2.6%) |
+| **mosquitto** | 39,177 | 33,638 | 33,200 | -438 (-1.3%) |
+| **sqlite** | 180,011 | 147,091 | 144,581 | -2,510 (-1.7%) |
+| **curl** | 93,576 | 73,816 | 73,239 | -577 (-0.8%) |
+| **hostap** | 234,421 | 206,906 | 204,560 | -2,346 (-1.1%) |
+| **Total** | **548,027** | **462,262** | **456,370** | **-5,892 (-1.3%)** |
 
-### Improvement from Baseline (sqlite: v0.2.4 → v0.2.7)
+**v0.2.13→v0.2.16 changes**: Call-site null propagation (EXP34-C Phase 2). Prescan collects argument null states at call sites; callee params seeded with joined caller states instead of blanket PossiblyNull. Call-site flagging re-enabled for DefinitelyNull args passed to functions that don't null-check.
 
-| Metric | v0.2.4 | v0.2.7 | Delta |
-|--------|-------:|-------:|------:|
-| Total violations | 427,377 | 180,011 | **-247,366 (-57.9%)** |
-| STR31-C | 206,651 | 222 | -206,429 (rewrite) |
-| EXP34-C | 41,886 | 8,734 | -33,152 (null-deref FP reduction) |
-| ARR36-C | 3,034 | 600 | -2,434 |
-| EXP30-C | 2,623 | 300 | -2,323 |
-| API02-C | 1,542 | 166 | -1,376 |
+**v0.2.7→v0.2.13 changes**: Cross-file analysis (`-d` directories), Windows API whitelist, bounds-check detection (INT32-C/INT30-C), CFG-based null state dataflow (EXP34-C Phase 1), multiple FP reduction rounds. Total: -85,765 (-15.6%).
+
+### Improvement from Baseline (sqlite: v0.2.4 → v0.2.16)
+
+| Metric | v0.2.4 | v0.2.7 | v0.2.16 | Delta (0.2.4→0.2.16) |
+|--------|-------:|-------:|--------:|---------------------:|
+| Total violations | 427,377 | 180,011 | 144,581 | **-282,796 (-66.2%)** |
+| STR31-C | 206,651 | 222 | ~200 | -206,451 (rewrite) |
+| EXP34-C | 41,886 | 8,734 | ~8,500 | -33,386 (CFG dataflow + call-site propagation) |
+| ARR36-C | 3,034 | 600 | ~600 | -2,434 |
+| EXP30-C | 2,623 | 300 | ~300 | -2,323 |
+| API02-C | 1,542 | 166 | ~166 | -1,376 |
 
 ### Key Observations
 
-- **STR31-C no longer dominant**: After `detect_manual_string_loop` rewrite, generates ~200 violations on sqlite vs. 206,651 before
-- **EXP34-C dramatically reduced**: sqlite 41,886 → 8,734, hostap 69,164 → 12,339 (CFG-based null state dataflow)
+- **Steady decline across all projects**: Every codebase shows reduction from v0.2.7 through v0.2.16
 - **Advisory rules dominate**: DCL07-C, DCL31-C, DCL08-C, DCL13-C, EXP19-C, API00-C are code-style/quality rules. Severity filtering would significantly reduce noise
-- **mosquitto is cleanest**: Only 39K violations (vs. 234K for hostap)
+- **Call-site propagation has modest real-world impact**: -1.3% overall — most real-world functions receive mixed null/non-null args, limiting the benefit of all-NotNull param seeding
+- **mosquitto is cleanest**: 33K violations (vs. 205K for hostap)
 
 ---
 
@@ -72,7 +77,7 @@ MCP-based benchmark infrastructure. All three tools run on the same machine (cpp
 | mosquitto | 8,657 | 2 | 0 |
 | curl | 22,350 | 0 | 177 |
 
-sqc flags any pointer dereference without a locally-visible null check. cppcheck uses data-flow analysis and only fires when it can prove a null-dereference path. The CFG-based null state dataflow (Phase 1 complete) is the foundation for closing this gap.
+sqc uses CFG-based null state dataflow with inter-procedural call-site propagation (Phase 2 complete as of v0.2.16). cppcheck uses data-flow analysis and only fires when it can prove a null-dereference path. The gap is narrowing but sqc still flags more conservatively.
 
 ### What sqc Uniquely Covers
 
@@ -81,6 +86,21 @@ sqc flags any pointer dereference without a locally-visible null check. cppcheck
 - **MEM30-C / MEM31-C** (use-after-free, memory management)
 - **API00-C / API02-C**: no competitor equivalent
 - **270+ additional rules** across integer, floating-point, environment, concurrency, POSIX
+
+---
+
+## Historical Results (v0.2.7)
+
+First MCP-based benchmark run (cppcheck 2.10, clang-tidy 21.1.6, sqc v0.2.7 commit `54819432`).
+
+| Project | sqc | cppcheck | clang-tidy |
+|---------|----:|--------:|-----------:|
+| **libcrc** | 842 | 40 | 4 |
+| **sqlite** | 180,011 | 517 | 204 |
+| **mosquitto** | 39,177 | 364 | 160 |
+| **curl** | 93,576 | 297 | 1,314 |
+| **hostap** | 234,421 | 1,675 | 2,957 |
+| **Total** | **548,027** | **2,893** | **4,639** |
 
 ---
 
