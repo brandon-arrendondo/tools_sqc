@@ -113,7 +113,15 @@ Addressed 17 FP patterns (~51 violations) documented in `FP.md`. All 17 patterns
 | 16 | EXP02-C | 1 | Exempt `NULL_CHECK && FUNCTION_CALL` guard pattern from side-effect warning |
 | 2,6,9,10,13,17 | Various | ~30 | Resolved by cascading effects of Batch 1 fixes (no longer triggered) |
 
-**Result**: 0/17 FP patterns remain. d_lib_common violations dropped from ~51 FP-report violations to 0.
+**Result (commit 1 — `d31a6c3`)**: 0/17 FP patterns remain. d_lib_common FP-report violations dropped from ~51 to ~6.
+
+**Follow-up (commit 2 — `0a45c9f`)**: 6 remaining violations fixed:
+- INT32-C (×3): propagate unsigned type through binary_expression chains (`unsigned_char - 'a' + 10`)
+- INT10-C (×1): skip `field_expression` operands in modulo sign check
+- EXP05-C (×1): skip `field_expression` in const-qualification check (base pointer const ≠ member const)
+- ARR39-C (×1): recursive `is_all_caps_arithmetic()` for nested binary_expressions (`A + B + C`)
+
+All original FP.md violations now resolved (0 remaining).
 
 **Deferred (require cross-function analysis)**:
 - Pattern 4 — INT30-C guards (~8 FPs): Requires value-range analysis
