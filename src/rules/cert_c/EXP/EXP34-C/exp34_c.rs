@@ -81,6 +81,11 @@ impl CertRule for Exp34C {
                     return violations;
                 };
 
+                // Extract function name for call-site param seeding
+                let func_name = node
+                    .child_by_field_name("declarator")
+                    .and_then(|d| extract_function_name(&d, source));
+
                 // Run CFG-based null-state dataflow, seeded with global states
                 let global_states = self.file_global_states.borrow();
                 let analysis = null_state::analyze_null_states_with_globals(
@@ -89,6 +94,7 @@ impl CertRule for Exp34C {
                     source,
                     &summaries,
                     &global_states,
+                    func_name.as_deref(),
                 );
 
                 // Walk AST for dereferences and check each against the dataflow result
@@ -293,11 +299,19 @@ fn check_dereferences_cfg(
                     }
                 }
 
-                // NOTE: Call-site null propagation (check_callsite_null_args) was
-                // attempted but produced too many FPs on relay functions and
-                // dereferences_params filtering removed all TPs too. Needs better
-                // callee summary accuracy before re-enabling. See v0.2.1/v0.2.2
-                // benchmark comparison.
+                // Call-site null propagation: flag DefinitelyNull args to callees
+                // that don't null-check them. Only when callee has a summary
+                // (guards against flagging unknown library functions).
+                if !is_deref_function(&func_name) && !is_null_safe_function(&func_name) {
+                    if summaries.contains_key(&func_name) {
+                        if let Some(args_node) = node.child_by_field_name("arguments") {
+                            check_callsite_null_args(
+                                &func_name, &args_node, source, analysis, cfg, body, summaries,
+                                violations,
+                            );
+                        }
+                    }
+                }
             }
         }
         _ => {}
@@ -364,7 +378,6 @@ fn check_function_arguments_cfg(
 /// Call-site null propagation: flag passing a DefinitelyNull pointer to a
 /// function that doesn't null-check that parameter. This catches the source
 /// side of cross-file null dereferences (Juliet variants 51-68).
-#[allow(dead_code)]
 fn check_callsite_null_args(
     callee_name: &str,
     args: &Node,
@@ -399,18 +412,12 @@ fn check_callsite_null_args(
 
                 // Only flag DefinitelyNull — PossiblyNull is too noisy for call sites
                 if state == null_state::NullState::DefinitelyNull {
-                    // Only flag if the callee:
-                    // 1. Dereferences this parameter (dereferences_params) — ensures
-                    //    relay functions that just forward aren't flagged
-                    // 2. Does NOT null-check this parameter (checks_null_params)
-                    let callee_derefs_param = callee_summary
-                        .map(|s| s.dereferences_params.contains(&param_idx))
-                        .unwrap_or(false);
+                    // If no summary, assume callee handles null (conservative for unknowns)
                     let callee_checks_null = callee_summary
                         .map(|s| s.checks_null_params.contains(&param_idx))
-                        .unwrap_or(false);
+                        .unwrap_or(true);
 
-                    if callee_derefs_param && !callee_checks_null {
+                    if !callee_checks_null {
                         let start_point = arg.start_position();
                         violations.push(RuleViolation {
                             rule_id: "EXP34-C".to_string(),
@@ -435,6 +442,26 @@ fn check_callsite_null_args(
             param_idx += 1;
         }
     }
+}
+
+/// Functions that safely handle NULL arguments (no dereference concern).
+fn is_null_safe_function(name: &str) -> bool {
+    matches!(
+        name,
+        "free"
+            | "printLine"
+            | "printWLine"
+            | "printIntLine"
+            | "printLongLine"
+            | "printLongLongLine"
+            | "printStructLine"
+            | "printHexCharLine"
+            | "printUnsignedLine"
+            | "printFloatLine"
+            | "printDoubleLine"
+            | "printSizeTLine"
+            | "printHexUnsignedCharLine"
+    )
 }
 
 // ---------------------------------------------------------------------------
@@ -739,6 +766,36 @@ fn node_is_within(parent_node: &Node, child_node: &Node) -> bool {
 
 fn is_null_value(text: &str) -> bool {
     null_state::is_null_value(text)
+}
+
+/// Extract the function name from a declarator node (handles pointer_declarator wrapping).
+fn extract_function_name(declarator: &Node, source: &str) -> Option<String> {
+    match declarator.kind() {
+        "identifier" => {
+            let name = ast_utils::get_node_text_owned(declarator, source);
+            if name.is_empty() {
+                None
+            } else {
+                Some(name)
+            }
+        }
+        "function_declarator" | "pointer_declarator" => declarator
+            .child_by_field_name("declarator")
+            .and_then(|d| extract_function_name(&d, source)),
+        _ => {
+            for i in 0..declarator.child_count() {
+                if let Some(child) = declarator.child(i) {
+                    if child.kind() == "identifier" {
+                        let name = ast_utils::get_node_text_owned(&child, source);
+                        if !name.is_empty() {
+                            return Some(name);
+                        }
+                    }
+                }
+            }
+            None
+        }
+    }
 }
 
 fn is_deref_function(func_name: &str) -> bool {

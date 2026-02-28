@@ -29,7 +29,7 @@ pub enum NullState {
 
 impl NullState {
     /// Lattice join: merge two states from converging paths.
-    fn join(self, other: NullState) -> NullState {
+    pub fn join(self, other: NullState) -> NullState {
         use NullState::*;
         if self == other {
             return self;
@@ -744,17 +744,22 @@ pub fn analyze_null_states(
     source: &str,
     summaries: &HashMap<String, FunctionSummary>,
 ) -> NullAnalysisResult {
-    analyze_null_states_with_globals(cfg, func_node, source, summaries, &StateMap::new())
+    analyze_null_states_with_globals(cfg, func_node, source, summaries, &StateMap::new(), None)
 }
 
 /// Like `analyze_null_states` but seeds the initial state with file-scope
 /// global variable null states collected by `collect_file_scope_null_states`.
+///
+/// If `func_name` is provided, uses call-site-derived parameter null states
+/// from `summaries[func_name].callsite_param_null_states` to seed parameters
+/// instead of blanket PossiblyNull.
 pub fn analyze_null_states_with_globals(
     cfg: &FunctionCfg,
     func_node: &Node,
     source: &str,
     summaries: &HashMap<String, FunctionSummary>,
     global_states: &StateMap,
+    func_name: Option<&str>,
 ) -> NullAnalysisResult {
     let body = match func_node.child_by_field_name("body") {
         Some(b) => b,
@@ -778,12 +783,18 @@ pub fn analyze_null_states_with_globals(
         declared_pointers.insert(name.clone());
     }
 
+    // Look up call-site-derived param states if func_name is available
+    let callsite_states = func_name
+        .and_then(|name| summaries.get(name))
+        .map(|s| &s.callsite_param_null_states);
+
     if let Some(declarator) = func_node.child_by_field_name("declarator") {
         collect_param_pointer_state(
             &declarator,
             source,
             &mut initial_state,
             &mut declared_pointers,
+            callsite_states,
         );
     }
 
@@ -994,7 +1005,6 @@ pub fn is_null_deref_at(
 ///
 /// Returns the concrete NullState (not just unsafe/safe). Used by call-site
 /// null propagation to distinguish DefinitelyNull from PossiblyNull.
-#[allow(dead_code)]
 pub fn get_var_state_at(
     result: &NullAnalysisResult,
     cfg: &FunctionCfg,
@@ -1062,9 +1072,11 @@ fn collect_param_pointer_state(
     source: &str,
     state: &mut StateMap,
     declared_pointers: &mut HashSet<String>,
+    callsite_states: Option<&HashMap<usize, NullState>>,
 ) {
     if declarator.kind() == "function_declarator" {
         if let Some(params) = declarator.child_by_field_name("parameters") {
+            let mut param_idx: usize = 0;
             for i in 0..params.child_count() {
                 if let Some(param) = params.child(i) {
                     if param.kind() == "parameter_declaration" {
@@ -1078,9 +1090,21 @@ fn collect_param_pointer_state(
                                     || name.contains("callback"))
                             {
                                 declared_pointers.insert(name.clone());
-                                state.insert(name, NullState::PossiblyNull);
+                                // Use call-site-derived state if available,
+                                // falling back to PossiblyNull (default)
+                                let seed_state = callsite_states
+                                    .and_then(|cs| cs.get(&param_idx))
+                                    .copied()
+                                    .map(|s| match s {
+                                        // Unknown from callsite → PossiblyNull (conservative)
+                                        NullState::Unknown => NullState::PossiblyNull,
+                                        other => other,
+                                    })
+                                    .unwrap_or(NullState::PossiblyNull);
+                                state.insert(name, seed_state);
                             }
                         }
+                        param_idx += 1;
                     }
                 }
             }
@@ -1088,7 +1112,13 @@ fn collect_param_pointer_state(
     } else {
         for i in 0..declarator.child_count() {
             if let Some(child) = declarator.child(i) {
-                collect_param_pointer_state(&child, source, state, declared_pointers);
+                collect_param_pointer_state(
+                    &child,
+                    source,
+                    state,
+                    declared_pointers,
+                    callsite_states,
+                );
             }
         }
     }
@@ -1409,7 +1439,8 @@ void sink() {
             })
             .unwrap();
         let cfg = build_function_cfg(&sink_func, code).unwrap();
-        let result = analyze_null_states_with_globals(&cfg, &sink_func, code, &summaries, &globals);
+        let result =
+            analyze_null_states_with_globals(&cfg, &sink_func, code, &summaries, &globals, None);
         let body = sink_func.child_by_field_name("body").unwrap();
         let deref_pos = code.find("*data = 42").unwrap();
         assert!(is_null_deref_at(
