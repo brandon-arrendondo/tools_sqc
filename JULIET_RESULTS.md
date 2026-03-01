@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-02-28
+**Last Updated**: 2026-03-01
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -11,10 +11,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 146,913 |
-| **False Positives** | 185,591 |
-| **TP Rate** | **44.2%** (v0.2.17, MCP benchmark) |
-| **FP Reduction from Baseline** | -77.9% (839K → 186K) |
+| **True Positives** | 145,639 |
+| **False Positives** | 184,645 |
+| **TP Rate** | **44.1%** (v0.2.18, MCP benchmark) |
+| **FP Reduction from Baseline** | -78.0% (839K → 185K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
 
@@ -46,10 +46,11 @@
 | **v0.2.15** | v0.2.15 | **d_lib_common FP.md cleanup (17 patterns)** | **146,714** | **185,499** | **44.2%** | **-10,678** |
 | v0.2.16 | v0.2.16 | EXP34-C: call-site null propagation (Phase 2) | 146,733 | 185,510 | 44.2% | +11 |
 | **v0.2.17** | **v0.2.17** | **Phase 3: MEM10-C, API00-C, API02-C, prescan enhancement** | **146,913** | **185,591** | **44.2%** | **+81** |
+| **v0.2.18** | **v0.2.18** | **INT31-C pointer cast, ARR36-C type filter, API00-C void-cast, INT30-C guard expansion** | **145,639** | **184,645** | **44.1%** | **-946** |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-653,750 (-77.9%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-654,696 (-78.0%)**.
 
 ---
 
@@ -73,6 +74,29 @@ Two complementary mechanisms for cross-file null pointer analysis:
 - No impact on other CWEs (changes isolated to EXP34-C null analysis)
 
 **Files changed**: `exp34_c.rs`, `function_summary.rs`, `prescan.rs`, `null_state.rs`
+
+### v0.2.18 — Quick Wins FP Reduction (INT31-C, ARR36-C, API00-C, INT30-C)
+
+Four targeted fixes addressing false positives identified from real-world codebases.
+
+**INT31-C pointer cast skip**: Added early return when either target or source type contains `*`. Pointer reinterpretation casts like `(uint8_t *)buf` are not integer value conversions and should not trigger INT31-C.
+
+**ARR36-C type filtering**: Only track pointer/array declarators (`pointer_declarator` or `array_declarator`) in `process_declaration()`. Scalar variables initialized from array subscripts (e.g., `int a = arr[0]`) are not pointers — their subtraction/comparison is integer arithmetic, not pointer arithmetic.
+
+**API00-C void-cast detection**: Recognize `(void)param` casts and `UNUSED(param)` macros as intentional suppression patterns. Parameters explicitly cast to void are acknowledged as unused by design and should not trigger API00-C's "validate before use" check.
+
+**INT30-C guard pattern expansion**: Rewrote `is_guarded_by_gt_zero()` to walk AST ancestors looking for enclosing `if`, `while`, and `for` conditions. Added `condition_implies_positive()` with compound condition support (handles `&&`/`||` via `contains()`). Recognizes `var > expr` (any lower bound, not just zero) and `expr < var` (with `<<`/`<=` exclusion). Added `is_subtract_one_guarded()` for both binary subtraction and compound `-= 1`.
+
+**Juliet impact** (0.2.17 → 0.2.18):
+- **Overall**: TP 146,913→145,639 (−1,274), FP 185,591→184,645 (**−946**), TP rate **44.2% → 44.1%** (−0.1pp)
+- INT30-C dominant: −1,292 TP / −935 FP (guard expansion removes both TPs and FPs)
+- CWE191 (Integer Underflow): −1 TP / −45 FP (clean win)
+- WIN03-C: +16 TP / −102 FP (unexpected improvement)
+- ARR38-C: 0 TP / −36 FP (clean win)
+- Only 1 trivial regression: CWE675 +1 FP
+- INT30-C FP:TP ratio ~0.7:1 (loses more TPs than FPs — guard patterns are slightly too aggressive)
+
+**Files changed**: `int31_c.rs`, `arr36_c.rs`, `api00_c.rs`, `int30_c.rs`
 
 ### v0.2.17 — Phase 3: CWE-476 FP Reduction (MEM10-C, API00-C, API02-C, Prescan)
 
