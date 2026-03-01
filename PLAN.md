@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-02-28 (v0.2.16)
+**Last Updated**: 2026-02-28 (v0.2.17)
 
 ---
 
@@ -29,15 +29,29 @@ Cross-file variants (51–68) have null assignment in file A and dereference in 
 
 **Remaining gaps**: Relay chains (variants 52–54) produce Unknown from AST inference (param forwarding). Indirect data flow (63–67) and cross-file globals (68) not addressed. EXP33-C CFG integration deferred.
 
-### Phase 3 — Tier E Coverage + API Rule Narrowing
+### Phase 3 — API Rule Narrowing + Prescan Enhancement (COMPLETE)
 
-- Whole-program global null tracking (multi-TU coordination)
-- API00-C / API02-C scope narrowing
+Targeted CWE-476 FP reduction via rule narrowing and enhanced inter-procedural analysis.
+
+- [x] **MEM10-C positive guard suppression**: Suppress when condition is `!= NULL` / bare truthiness and param is only used inside guarded block. −38 FP, 0 TP loss (clean elimination).
+- [x] **API02-C `const wchar_t *` exclusion**: Extended existing `const char *` skip to wide strings. Original plan to skip all `char *` was too aggressive — `char *` as destination buffer correctly requires size param.
+- [x] **API00-C caller-aware suppression**: Converted to stateful struct with `function_summaries`. Added `set_project_context()` to receive summaries. If callsite param state is NotNull → suppress violation.
+- [x] **Prescan local variable tracking**: `collect_local_var_states()` scans function bodies for assignments (`var = NULL` → DefinitelyNull, `var = "str"` → NotNull, etc.). `collect_calls_with_locals()` resolves identifier args via local state instead of returning Unknown.
+- [x] **Variant 45 global tracking verified**: `badSink()` correctly flagged, `goodG2BSink()` and `goodB2GSink()` correctly suppressed. No code changes needed.
+
+**Juliet results** (0.2.17 vs 0.2.16): CWE-476 TP 313→320 (+7), FP 542→512 (−30), TP rate 36.6%→38.5% (+1.9pp). CWE-690 bonus: +36 TP, −63 FP. Overall TP rate 44.2% (unchanged).
+
+**Side benefits**: Prescan enhancement improved FIO03-C (−169 FP), ERR05-C (−105 FP), FIO20-C (−102 FP).
+
+**Known regressions**: EXP34-C +76 FP, FIO06-C +169 FP (side effects of enhanced prescan providing more inter-procedural data). Candidates for future investigation.
 
 ### Phase 4 — Remaining Edge Cases
 
-- Global pre-pass for static globals (Variant 45)
-- Remaining FP reduction + edge cases
+- Relay chains (variants 52–54): prescan returns Unknown for param forwarding
+- Indirect data flow (variants 63–67): not addressed
+- Cross-file globals (variant 68): not addressed
+- EXP33-C CFG integration (deferred — needs full CFG rewrite like EXP34-C)
+- EXP34-C/FIO06-C regression investigation from Phase 3
 - Target: 80%+ CWE-476 TP rate
 
 ---
@@ -77,7 +91,7 @@ types — only flags when both sides have known widths.
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
 
-### Top Remaining FP Rules (after 0.2.16)
+### Top Remaining FP Rules (after 0.2.17)
 
 | Rule | FP | TP | FP% | Notes |
 |------|---:|---:|----:|-------|
@@ -193,7 +207,7 @@ Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is 
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond literal constants)
-- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation)
+- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking)
 - No struct field type resolution (field_expression types unknown — see TODO above)
 
 ---
