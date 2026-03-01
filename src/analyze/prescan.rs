@@ -391,9 +391,167 @@ fn collect_callsite_null_states(
 }
 
 /// Walk an AST tree collecting call-site argument null states.
+/// For each function definition, first collects local variable assignments
+/// to resolve identifier arguments (e.g., `data = NULL; sink(data)` → DefinitelyNull).
 fn collect_callsite_args_from_tree(
     node: &Node,
     source: &str,
+    callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
+) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "function_definition" => {
+                    // Collect local variable states within this function
+                    if let Some(body) = child.child_by_field_name("body") {
+                        let local_states = collect_local_var_states(&body, source);
+                        collect_calls_with_locals(&body, source, &local_states, callsite_args);
+                    }
+                }
+                kind if kind.starts_with("preproc_") => {
+                    collect_callsite_args_from_tree(&child, source, callsite_args);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Collect simple local variable assignments within a function body.
+/// Tracks the *last* assignment to each variable (flow-insensitive, conservative).
+/// Only tracks simple patterns: `var = NULL`, `var = "string"`, `var = &x`, `var = func()`.
+fn collect_local_var_states(body: &Node, source: &str) -> HashMap<String, NullState> {
+    let mut states = HashMap::new();
+    collect_assignments_recursive(body, source, &mut states);
+    states
+}
+
+fn collect_assignments_recursive(
+    node: &Node,
+    source: &str,
+    states: &mut HashMap<String, NullState>,
+) {
+    match node.kind() {
+        "expression_statement" => {
+            // Look for assignment expressions: var = expr
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "assignment_expression" {
+                        if let (Some(left), Some(right)) = (
+                            child.child_by_field_name("left"),
+                            child.child_by_field_name("right"),
+                        ) {
+                            if left.kind() == "identifier" {
+                                let var_name =
+                                    left.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                                if !var_name.is_empty() {
+                                    let state = infer_rhs_null_state(&right, source);
+                                    if state != NullState::Unknown {
+                                        states.insert(var_name, state);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "declaration" => {
+            // Handle `type *var = expr;` init declarations
+            if let Some(decl) = node.child_by_field_name("declarator") {
+                extract_init_state(&decl, source, states);
+            }
+            // Also check for multiple declarators
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "init_declarator" {
+                        extract_init_state(&child, source, states);
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_assignments_recursive(&child, source, states);
+        }
+    }
+}
+
+/// Extract null state from an init_declarator: `*var = expr` or `var = expr`.
+fn extract_init_state(decl: &Node, source: &str, states: &mut HashMap<String, NullState>) {
+    if let Some(value) = decl.child_by_field_name("value") {
+        // Find the variable name in the declarator
+        let name_node = decl.child_by_field_name("declarator").unwrap_or(*decl);
+        let var_name = extract_leaf_id(&name_node, source);
+        if !var_name.is_empty() {
+            let state = infer_rhs_null_state(&value, source);
+            if state != NullState::Unknown {
+                states.insert(var_name, state);
+            }
+        }
+    }
+}
+
+/// Extract the leaf identifier from a declarator chain.
+fn extract_leaf_id(node: &Node, source: &str) -> String {
+    match node.kind() {
+        "identifier" => node.utf8_text(source.as_bytes()).unwrap_or("").to_string(),
+        "pointer_declarator" | "array_declarator" => {
+            if let Some(inner) = node.child_by_field_name("declarator") {
+                extract_leaf_id(&inner, source)
+            } else {
+                String::new()
+            }
+        }
+        _ => {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "identifier" {
+                        return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                    }
+                }
+            }
+            String::new()
+        }
+    }
+}
+
+/// Infer null state of a right-hand-side expression in an assignment.
+fn infer_rhs_null_state(node: &Node, source: &str) -> NullState {
+    // Delegate to the existing literal-level inference first
+    let literal_state = function_summary::infer_arg_null_state(node, source);
+    if literal_state != NullState::Unknown {
+        return literal_state;
+    }
+
+    // Additional patterns for RHS:
+    match node.kind() {
+        "call_expression" => {
+            // malloc/calloc/realloc can return NULL → PossiblyNull
+            if let Some(func) = node.child_by_field_name("function") {
+                let func_name = func.utf8_text(source.as_bytes()).unwrap_or("");
+                if matches!(
+                    func_name,
+                    "malloc" | "calloc" | "realloc" | "aligned_alloc" | "strdup" | "strndup"
+                ) {
+                    return NullState::PossiblyNull;
+                }
+            }
+            NullState::Unknown
+        }
+        _ => NullState::Unknown,
+    }
+}
+
+/// Walk call expressions within a function body, using local variable states
+/// to resolve identifier arguments.
+fn collect_calls_with_locals(
+    node: &Node,
+    source: &str,
+    local_states: &HashMap<String, NullState>,
     callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
 ) {
     if node.kind() == "call_expression" {
@@ -408,8 +566,21 @@ fn collect_callsite_args_from_tree(
                                 if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
                                     continue;
                                 }
-                                arg_states
-                                    .push(function_summary::infer_arg_null_state(&arg, source));
+                                // First try literal-level inference
+                                let state = function_summary::infer_arg_null_state(&arg, source);
+                                if state != NullState::Unknown {
+                                    arg_states.push(state);
+                                } else if arg.kind() == "identifier" {
+                                    // Look up in local variable states
+                                    let name = arg.utf8_text(source.as_bytes()).unwrap_or("");
+                                    if let Some(&local_state) = local_states.get(name) {
+                                        arg_states.push(local_state);
+                                    } else {
+                                        arg_states.push(NullState::Unknown);
+                                    }
+                                } else {
+                                    arg_states.push(NullState::Unknown);
+                                }
                             }
                         }
                         if !arg_states.is_empty() {
@@ -426,7 +597,7 @@ fn collect_callsite_args_from_tree(
 
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
-            collect_callsite_args_from_tree(&child, source, callsite_args);
+            collect_calls_with_locals(&child, source, local_states, callsite_args);
         }
     }
 }

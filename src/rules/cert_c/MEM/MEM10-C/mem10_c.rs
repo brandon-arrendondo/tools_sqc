@@ -156,24 +156,33 @@ impl Mem10C {
                     let checked_var = extract_checked_var_name(&condition, source);
                     let params = self.collect_enclosing_params(node, source);
                     if checked_var.as_deref().is_some_and(|v| params.contains(v)) {
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            message: "Direct NULL check for pointer validation. \
-                                     Define and use a dedicated pointer validation function \
-                                     instead of ad-hoc NULL checks. This centralizes validation \
-                                     logic and allows platform-specific enhancements."
-                                .to_string(),
-                            severity: self.severity(),
-                            line: condition.start_position().row + 1,
-                            column: condition.start_position().column + 1,
-                            file_path: String::new(),
-                            suggestion: Some(
-                                "Create a validation function like 'int valid(void *ptr)' \
-                                 and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
-                                    .to_string(),
-                            ),
-                            requires_manual_review: Some(true),
+                        // Suppress positive null guards where the param is only used
+                        // inside the guarded block. Pattern: if (ptr != NULL) { use(ptr); }
+                        // This is the prescribed fix per EXP34-C and should not be flagged.
+                        let suppress = checked_var.as_ref().is_some_and(|var_name| {
+                            is_positive_guard(&condition, source)
+                                && !is_param_used_after_if(node, var_name, source)
                         });
+                        if !suppress {
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                message: "Direct NULL check for pointer validation. \
+                                         Define and use a dedicated pointer validation function \
+                                         instead of ad-hoc NULL checks. This centralizes validation \
+                                         logic and allows platform-specific enhancements."
+                                    .to_string(),
+                                severity: self.severity(),
+                                line: condition.start_position().row + 1,
+                                column: condition.start_position().column + 1,
+                                file_path: String::new(),
+                                suggestion: Some(
+                                    "Create a validation function like 'int valid(void *ptr)' \
+                                     and use 'if (!valid(ptr))' instead of 'if (ptr == NULL)'"
+                                        .to_string(),
+                                ),
+                                requires_manual_review: Some(true),
+                            });
+                        }
                     }
                 }
             }
@@ -299,4 +308,73 @@ fn find_identifier_in_node(node: &Node, source: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Returns true if the condition is a positive null guard — i.e. the if-block
+/// is entered only when the pointer is non-NULL.
+/// Matches: `ptr != NULL`, `NULL != ptr`, bare `ptr` truthiness.
+/// Does NOT match: `ptr == NULL`, `!ptr` (those are negative/early-return guards).
+fn is_positive_guard(condition: &Node, source: &str) -> bool {
+    let text = get_node_text(condition, source);
+
+    // != NULL patterns
+    if text.contains("!= NULL") || text.contains("!=NULL") {
+        return true;
+    }
+    if text.contains("NULL !=") || text.contains("NULL!=") {
+        return true;
+    }
+
+    // Bare truthiness: condition is just the identifier (possibly parenthesized)
+    // e.g. if (ptr) or if (ptr && ...)
+    if condition.kind() == "identifier" {
+        return true;
+    }
+    if condition.kind() == "parenthesized_expression" {
+        if let Some(inner) = condition.child(1) {
+            if inner.kind() == "identifier" {
+                return true;
+            }
+        }
+    }
+
+    false
+}
+
+/// Check if `var_name` is used in any sibling statement after the given if_statement node.
+fn is_param_used_after_if(if_node: &Node, var_name: &str, source: &str) -> bool {
+    let parent = match if_node.parent() {
+        Some(p) => p,
+        None => return false,
+    };
+
+    let mut found_if = false;
+    for i in 0..parent.child_count() {
+        if let Some(sibling) = parent.child(i) {
+            if sibling.id() == if_node.id() {
+                found_if = true;
+                continue;
+            }
+            if found_if && contains_identifier(&sibling, var_name, source) {
+                return true;
+            }
+        }
+    }
+
+    false
+}
+
+/// Recursively check if a node contains an identifier matching `name`.
+fn contains_identifier(node: &Node, name: &str, source: &str) -> bool {
+    if node.kind() == "identifier" && get_node_text(node, source) == name {
+        return true;
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if contains_identifier(&child, name, source) {
+                return true;
+            }
+        }
+    }
+    false
 }

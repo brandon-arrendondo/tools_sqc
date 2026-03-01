@@ -187,6 +187,25 @@ impl Api02C {
                 }
             }
         }
+        // Skip const wchar_t * — wide string equivalent of const char *
+        if type_text == "wchar_t" {
+            let mut has_const = false;
+            for i in 0..param.child_count() {
+                if let Some(child) = param.child(i) {
+                    if child.kind() == "type_qualifier" && get_node_text(&child, source) == "const"
+                    {
+                        has_const = true;
+                    }
+                }
+            }
+            if has_const {
+                if let Some(declarator) = param.child_by_field_name("declarator") {
+                    if is_pointer_declarator(&declarator) {
+                        return false;
+                    }
+                }
+            }
+        }
 
         // Skip pointers to user-defined/struct types — these are almost always
         // single-object pointers (OOP "self"/"this"), not arrays.
