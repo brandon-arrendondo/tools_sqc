@@ -11,9 +11,9 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 146,733 |
-| **False Positives** | 185,510 |
-| **TP Rate** | **44.2%** (v0.2.16, MCP benchmark) |
+| **True Positives** | 146,913 |
+| **False Positives** | 185,591 |
+| **TP Rate** | **44.2%** (v0.2.17, MCP benchmark) |
 | **FP Reduction from Baseline** | -77.9% (839K → 186K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
@@ -45,10 +45,11 @@
 | **v0.2.13** | v0.2.13 | **INT31-C implicit narrowing + d_lib_common FP fixes** | **158,403** | **196,177** | **44.7%** | **-13,961** |
 | **v0.2.15** | v0.2.15 | **d_lib_common FP.md cleanup (17 patterns)** | **146,714** | **185,499** | **44.2%** | **-10,678** |
 | v0.2.16 | v0.2.16 | EXP34-C: call-site null propagation (Phase 2) | 146,733 | 185,510 | 44.2% | +11 |
+| **v0.2.17** | **v0.2.17** | **Phase 3: MEM10-C, API00-C, API02-C, prescan enhancement** | **146,913** | **185,591** | **44.2%** | **+81** |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-653,831 (-77.9%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-653,750 (-77.9%)**.
 
 ---
 
@@ -72,6 +73,30 @@ Two complementary mechanisms for cross-file null pointer analysis:
 - No impact on other CWEs (changes isolated to EXP34-C null analysis)
 
 **Files changed**: `exp34_c.rs`, `function_summary.rs`, `prescan.rs`, `null_state.rs`
+
+### v0.2.17 — Phase 3: CWE-476 FP Reduction (MEM10-C, API00-C, API02-C, Prescan)
+
+Targeted CWE-476 false positive reduction via rule narrowing and enhanced inter-procedural analysis.
+
+**MEM10-C positive guard suppression**: Suppress violations when the condition is a positive null guard (`!= NULL` or bare truthiness) and the parameter is only used inside the guarded block. This pattern (`if (data != NULL) { use(data); }`) is the prescribed fix per EXP34-C — MEM10-C was penalizing correct code.
+
+**API02-C `const wchar_t *` exclusion**: Extended existing `const char *` skip to wide strings. Wide char pointers follow the same null-terminated string convention. Original plan to skip all mutable `char *` was too aggressive — `char *` as destination buffer correctly requires a size parameter.
+
+**API00-C caller-aware suppression**: Converted from unit struct to stateful with `function_summaries`. Added `set_project_context()` to receive summaries from prescan. Before flagging a pointer parameter, checks `callsite_param_null_states`: if all callers pass NotNull → suppress violation.
+
+**Prescan local variable tracking**: Enhanced `collect_callsite_args_from_tree` with `collect_local_var_states()` — scans function bodies for simple assignments (`var = NULL` → DefinitelyNull, `var = "str"` → NotNull, `var = malloc(...)` → PossiblyNull). Resolves identifier arguments via local state lookup instead of returning Unknown.
+
+**Variant 45 global tracking**: Verified working correctly — `badSink()` flagged (reads DefinitelyNull global), `goodG2BSink()` and `goodB2GSink()` correctly suppressed. No code changes needed.
+
+**Juliet impact** (0.2.16 → 0.2.17):
+- **Overall**: +180 TP, +81 FP, TP rate **44.2% → 44.2%** (unchanged)
+- **CWE-476**: TP 313→320 (+7), FP 542→512 (−30), TP rate **36.6% → 38.5%** (+1.9pp)
+- **CWE-690**: TP 3711→3747 (+36), FP 4474→4411 (−63), TP rate +0.6pp
+- Per-rule: MEM10-C −38 FP/0 TP (clean elimination), API00-C −3 FP/0 TP
+- Side benefits from prescan: FIO03-C −169 FP, ERR05-C −105 FP, FIO20-C −102 FP
+- Regressions: EXP34-C +76 FP, FIO06-C +169 FP (enhanced prescan provides more inter-procedural data to these rules)
+
+**Files changed**: `mem10_c.rs`, `api00_c.rs`, `api02_c.rs`, `prescan.rs`, `mod.rs`
 
 ### v0.2.15 — d_lib_common FP.md Cleanup (17 Patterns)
 
@@ -252,7 +277,7 @@ The bulk of categories (64%) cluster here. Includes buffer overflows (CWE-121 ~4
 
 ### Tier 3: Below Average (25–35%) — 16 categories
 
-Includes integer overflow/underflow (CWE-190 ~33%, CWE-191 ~35%), memory management (CWE-401 ~34%, CWE-415 ~34%), NULL pointer dereference (CWE-476 ~37%).
+Includes integer overflow/underflow (CWE-190 ~33%, CWE-191 ~35%), memory management (CWE-401 ~34%, CWE-415 ~34%), NULL pointer dereference (CWE-476 ~39%).
 
 ### Tier 4: Weak Detection (<25%) — 4 categories
 
@@ -343,7 +368,7 @@ Juliet test files contain preprocessor-guarded sections:
 
 | Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
 |------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **44.2%** | **55.8%** | AST + CFG + inter-procedural + call-site null | Full (118 CWEs) | 283 rules | -- |
+| **SqC** | **44.2%** | **55.8%** | AST + CFG + inter-procedural + call-site null + local var tracking | Full (118 CWEs) | 283 rules | -- |
 | Semgrep CE | 44–48% | Very low | AST (tree-sitter) | No | Community | Free |
 | Semgrep Pro | 72–75% | Very low | AST + taint + inter-file | No | Community | Commercial |
 | Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
@@ -377,7 +402,8 @@ Juliet test files contain preprocessor-guarded sections:
 | **v0.2.12** | **44.6%** | **210,138** | **169,161** | DCL13-C pointer modification + INT01-C sizeof skip |
 | v0.2.13 | 44.7% | 196,177 | 158,403 | INT31-C implicit narrowing + d_lib_common REFACTOR.md fixes |
 | v0.2.15 | 44.2% | 185,499 | 146,714 | d_lib_common FP.md cleanup (17 patterns, real-world precision) |
-| **v0.2.16** | **44.2%** | **185,510** | **146,733** | EXP34-C call-site null propagation (Phase 2) |
+| v0.2.16 | 44.2% | 185,510 | 146,733 | EXP34-C call-site null propagation (Phase 2) |
+| **v0.2.17** | **44.2%** | **185,591** | **146,913** | Phase 3: MEM10-C, API00-C, API02-C, prescan (CWE-476 38.5%) |
 
 ---
 
