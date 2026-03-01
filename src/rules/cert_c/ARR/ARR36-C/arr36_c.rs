@@ -189,6 +189,12 @@ impl PointerAnalyzer {
             if let Some(child) = node.child(i) {
                 if child.kind() == "init_declarator" {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
+                        // Only track pointer/array variables — scalar variables initialized
+                        // from array subscripts (e.g., `int a = arr[0]`) are not pointers
+                        // and their subtraction/comparison is not pointer arithmetic.
+                        if !Self::is_pointer_declarator(&declarator) {
+                            continue;
+                        }
                         if let Some(value) = child.child_by_field_name("value") {
                             let var_name =
                                 ast_utils::get_identifier_from_declarator(&declarator, source);
@@ -201,6 +207,11 @@ impl PointerAnalyzer {
                 }
             }
         }
+    }
+
+    /// Check if a declarator represents a pointer type (pointer_declarator or array_declarator).
+    fn is_pointer_declarator(declarator: &Node) -> bool {
+        matches!(declarator.kind(), "pointer_declarator" | "array_declarator")
     }
 
     fn process_parameter(&mut self, node: &Node, source: &str) {
