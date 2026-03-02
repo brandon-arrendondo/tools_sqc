@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-03-01
+**Last Updated**: 2026-03-02
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -47,10 +47,11 @@
 | v0.2.16 | v0.2.16 | EXP34-C: call-site null propagation (Phase 2) | 146,733 | 185,510 | 44.2% | +11 |
 | **v0.2.17** | **v0.2.17** | **Phase 3: MEM10-C, API00-C, API02-C, prescan enhancement** | **146,913** | **185,591** | **44.2%** | **+81** |
 | **v0.2.18** | **v0.2.18** | **INT31-C pointer cast, ARR36-C type filter, API00-C void-cast, INT30-C guard expansion** | **145,639** | **184,645** | **44.1%** | **-946** |
+| v0.2.19 | v0.2.19 | INT30-C loop guards, prescan null guards, ARR00-C crash fix | 145,639 | 184,644 | 44.1% | -1 |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-654,696 (-78.0%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-654,697 (-78.0%)**.
 
 ---
 
@@ -74,6 +75,24 @@ Two complementary mechanisms for cross-file null pointer analysis:
 - No impact on other CWEs (changes isolated to EXP34-C null analysis)
 
 **Files changed**: `exp34_c.rs`, `function_summary.rs`, `prescan.rs`, `null_state.rs`
+
+### v0.2.19 — Real-World FP Reduction (INT30-C Loop Guards, Prescan Null Guards, ARR00-C Fix)
+
+Three changes targeting real-world false positives (not Juliet-specific patterns).
+
+**INT30-C loop-bounded increment**: Added `is_add_one_bounded_by_loop()` and `is_bounded_by_loop_condition()` — walk AST ancestors for enclosing `while`/`for` with `var < limit` condition. Suppresses `var + 1`, `var += 1`, `var++` when bounded by loop condition (proves no unsigned wrap).
+
+**Prescan early-return null guards**: Added `collect_early_return_null_guards()` to detect `if (p == NULL) return;` patterns at function entry. Marks guarded parameters as NotNull in local_states for downstream rules (EXP34-C, API00-C caller-aware suppression).
+
+**ARR00-C crash fix**: `array_size - 1` panicked when `array_size` was 0 (unsigned underflow). Changed to `saturating_sub(1)`.
+
+**Juliet impact** (0.2.18 → 0.2.19):
+- **Overall**: TP 145,639→145,639 (0), FP 184,645→184,644 (**-1**), TP rate **44.1% → 44.1%** (unchanged)
+- Essentially neutral: changes target real-world patterns not present in Juliet
+- Rule-level churn: FIO06-C -169 FP (prescan improvement) offset by FIO03-C +169 FP, ARR00-C -74 FP offset by EXP10-C +74 FP
+- No CWE-level regressions
+
+**Files changed**: `int30_c.rs`, `prescan.rs`, `arr00_c.rs`
 
 ### v0.2.18 — Quick Wins FP Reduction (INT31-C, ARR36-C, API00-C, INT30-C)
 
