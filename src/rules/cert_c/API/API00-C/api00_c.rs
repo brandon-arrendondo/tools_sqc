@@ -616,6 +616,11 @@ impl Api00C {
         if node.kind() == "identifier" {
             let text = get_node_text(node, source);
             if text == param_name {
+                // Skip (void)param / UNUSED(param) patterns — these explicitly mark
+                // a parameter as intentionally unused (e.g., callback signature match)
+                if self.is_in_void_cast(node, source) {
+                    return false;
+                }
                 // Check if it's actually being used (not just in a validation check)
                 if let Some(parent) = node.parent() {
                     // Skip if this is part of a validation check condition
@@ -669,6 +674,61 @@ impl Api00C {
             // Check for unary not operator
             if parent.kind() == "unary_expression" {
                 return true;
+            }
+
+            current = parent.parent();
+        }
+
+        false
+    }
+
+    /// Check if an identifier is inside a (void)param or UNUSED(param) cast.
+    /// These patterns explicitly suppress unused-parameter warnings and indicate
+    /// the parameter is intentionally not used.
+    fn is_in_void_cast(&self, node: &Node, source: &str) -> bool {
+        let mut current = node.parent();
+        let mut depth = 0;
+
+        while let Some(parent) = current {
+            depth += 1;
+            if depth > 5 {
+                break;
+            }
+
+            if parent.kind() == "cast_expression" {
+                // Check if the cast target type is "void"
+                for i in 0..parent.child_count() {
+                    if let Some(child) = parent.child(i) {
+                        if child.kind() == "type_descriptor" {
+                            let type_text = get_node_text(&child, source);
+                            if type_text.trim() == "void" {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Handle UNUSED(param) macro — parsed as call_expression before preprocessing
+            if parent.kind() == "call_expression" {
+                if let Some(func) = parent.child_by_field_name("function") {
+                    let func_name = get_node_text(&func, source);
+                    if matches!(
+                        func_name,
+                        "UNUSED"
+                            | "UNREFERENCED_PARAMETER"
+                            | "UNUSED_PARAM"
+                            | "UNUSED_PARAMETER"
+                            | "Q_UNUSED"
+                    ) {
+                        return true;
+                    }
+                }
+            }
+
+            // Stop at expression_statement boundary
+            if parent.kind() == "expression_statement" {
+                break;
             }
 
             current = parent.parent();

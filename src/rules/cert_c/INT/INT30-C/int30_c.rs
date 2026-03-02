@@ -131,6 +131,11 @@ impl Int30C {
             if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
                 && !self.has_overflow_check_addition(node, source)
             {
+                // Check for var + 1 or 1 + var bounded by enclosing loop condition
+                if self.is_add_one_bounded_by_loop(node, source) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -289,6 +294,17 @@ impl Int30C {
 
             if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
             {
+                // Check for var += 1 bounded by enclosing loop condition (var < limit)
+                if let Some(right) = node.child_by_field_name("right") {
+                    let right_text = get_node_text(&right, source);
+                    if right_text.trim() == "1" {
+                        let var_name = get_node_text(&left, source);
+                        if self.is_bounded_by_loop_condition(node, var_name.trim(), source) {
+                            return;
+                        }
+                    }
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -326,6 +342,17 @@ impl Int30C {
 
             if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
             {
+                // Check for var -= 1 with positive guard (var > expr implies var >= 1)
+                if let Some(right) = node.child_by_field_name("right") {
+                    let right_text = get_node_text(&right, source);
+                    if right_text.trim() == "1" {
+                        let var_name = get_node_text(&left, source);
+                        if self.is_guarded_by_gt_zero(node, var_name.trim(), source) {
+                            return;
+                        }
+                    }
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -432,6 +459,13 @@ impl Int30C {
                     if operator == "--" {
                         let var_name = get_node_text(&argument, source);
                         if self.is_guarded_by_gt_zero(node, var_name, source) {
+                            return;
+                        }
+                    }
+                    // Skip increments bounded by enclosing loop condition (var < limit).
+                    if operator == "++" {
+                        let var_name = get_node_text(&argument, source);
+                        if self.is_bounded_by_loop_condition(node, var_name.trim(), source) {
                             return;
                         }
                     }
@@ -824,6 +858,7 @@ impl Int30C {
         self.has_subtraction_precondition(node, source)
             || self.has_postcondition_check(node, source)
             || self.is_inside_checked_block(node, source)
+            || self.is_subtract_one_guarded(node, source)
     }
 
     fn has_overflow_check_multiplication(&self, node: &Node, source: &str) -> bool {
@@ -1091,30 +1126,19 @@ impl Int30C {
         }
     }
 
-    /// Check if a decrement is inside an if-block guarded by `var > 0` or `0 < var`.
-    /// Pattern: `if (var > 0) { var--; }` — wrap is provably impossible.
+    /// Check if a decrement/subtraction is inside a block guarded by a positive-value condition.
+    /// Patterns: `if (var > 0)`, `while (var > expr)`, `for (...; var > expr; ...)`.
+    /// For unsigned types, `var > expr` implies `var >= 1`, making `var--` or `var - 1` safe.
     fn is_guarded_by_gt_zero(&self, node: &Node, var_name: &str, source: &str) -> bool {
         let mut current = *node;
         while let Some(parent) = current.parent() {
-            if parent.kind() == "if_statement" {
+            if matches!(
+                parent.kind(),
+                "if_statement" | "while_statement" | "for_statement"
+            ) {
                 if let Some(condition) = parent.child_by_field_name("condition") {
                     let cond_text = get_node_text(&condition, source);
-                    // Remove outer parens from parenthesized_expression
-                    let cond = cond_text.trim();
-                    let cond = if cond.starts_with('(') && cond.ends_with(')') {
-                        &cond[1..cond.len() - 1]
-                    } else {
-                        cond
-                    };
-                    let cond = cond.trim();
-                    // Match: var > 0, var != 0, 0 < var, 0 != var
-                    let patterns = [
-                        format!("{} > 0", var_name),
-                        format!("{} != 0", var_name),
-                        format!("0 < {}", var_name),
-                        format!("0 != {}", var_name),
-                    ];
-                    if patterns.iter().any(|p| cond == p) {
+                    if self.condition_implies_positive(cond_text, var_name) {
                         return true;
                     }
                 }
@@ -1123,6 +1147,68 @@ impl Int30C {
                 break;
             }
             current = parent;
+        }
+        false
+    }
+
+    /// Check if a condition text implies var_name > 0 (i.e., var is positive).
+    /// Handles compound conditions (&&/||) via substring matching.
+    /// Recognizes `var > expr` (any lower bound, not just zero) since for unsigned
+    /// types, `var > expr` always implies `var >= 1`.
+    fn condition_implies_positive(&self, cond_text: &str, var_name: &str) -> bool {
+        let cond = cond_text.trim();
+        let cond = if cond.starts_with('(') && cond.ends_with(')') {
+            &cond[1..cond.len() - 1]
+        } else {
+            cond
+        };
+        let cond = cond.trim();
+
+        // Quick check: does the condition mention the variable as a whole word?
+        if !self.contains_word(cond, var_name) {
+            return false;
+        }
+
+        // Pattern 1: var > expr (strict GT — implies var >= 1 for unsigned)
+        // Covers: var > 0, var > idx, var > some_expr, etc.
+        let gt_pat = format!("{} > ", var_name);
+        if cond.contains(&gt_pat) {
+            return true;
+        }
+
+        // Pattern 2: var != 0 or 0 != var (explicit non-zero check)
+        let neq_zero = format!("{} != 0", var_name);
+        let zero_neq = format!("0 != {}", var_name);
+        if cond.contains(&neq_zero) || cond.contains(&zero_neq) {
+            return true;
+        }
+
+        // Pattern 3: expr < var (reverse of var > expr — strict LT)
+        let lt_rev = format!("< {}", var_name);
+        if cond.contains(&lt_rev) {
+            for (pos, _) in cond.match_indices(&lt_rev) {
+                // Exclude << (shift) and <= (less-than-or-equal)
+                let prev = if pos > 0 { cond.as_bytes()[pos - 1] } else { 0 };
+                if prev != b'<' && prev != b'=' {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// For "var - 1" subtraction: if var is guarded by a positive-value condition,
+    /// then var >= 1 and var - 1 >= 0, so no unsigned wrap.
+    fn is_subtract_one_guarded(&self, node: &Node, source: &str) -> bool {
+        if let Some(right) = node.child_by_field_name("right") {
+            let right_text = get_node_text(&right, source);
+            if right_text.trim() == "1" {
+                if let Some(left) = node.child_by_field_name("left") {
+                    let var_name = get_node_text(&left, source);
+                    return self.is_guarded_by_gt_zero(node, var_name.trim(), source);
+                }
+            }
         }
         false
     }
@@ -1154,6 +1240,87 @@ impl Int30C {
     /// Check if parent node contains child (by byte range).
     fn node_contains(&self, parent: &Node, child: &Node) -> bool {
         child.start_byte() >= parent.start_byte() && child.end_byte() <= parent.end_byte()
+    }
+
+    /// For binary "var + 1" or "1 + var": if var is bounded by an enclosing loop
+    /// condition (var < limit), then var + 1 <= limit <= UINT_MAX, so no wrap.
+    fn is_add_one_bounded_by_loop(&self, node: &Node, source: &str) -> bool {
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
+            let left_text = get_node_text(&left, source);
+            let right_text = get_node_text(&right, source);
+
+            // Check "var + 1" pattern
+            if right_text.trim() == "1" {
+                return self.is_bounded_by_loop_condition(node, left_text.trim(), source);
+            }
+            // Check "1 + var" pattern
+            if left_text.trim() == "1" {
+                return self.is_bounded_by_loop_condition(node, right_text.trim(), source);
+            }
+        }
+        false
+    }
+
+    /// Check if var_name is bounded by an enclosing loop condition.
+    /// Detects `while (var < limit)` and `for (...; var < limit; ...)` patterns.
+    /// Inside the loop body, var < limit, so var + 1 <= limit <= UINT_MAX.
+    fn is_bounded_by_loop_condition(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if matches!(parent.kind(), "while_statement" | "for_statement") {
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    if self.condition_implies_upper_bound(&cond_text, var_name) {
+                        return true;
+                    }
+                }
+            }
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            current = parent;
+        }
+        false
+    }
+
+    /// Check if a condition implies var < some_limit (upper bound).
+    /// Recognizes: `var < expr`, `var <= expr`, `expr > var`, `expr >= var`.
+    fn condition_implies_upper_bound(&self, cond_text: &str, var_name: &str) -> bool {
+        let cond = cond_text.trim();
+        let cond = if cond.starts_with('(') && cond.ends_with(')') {
+            &cond[1..cond.len() - 1]
+        } else {
+            cond
+        };
+        let cond = cond.trim();
+
+        if !self.contains_word(cond, var_name) {
+            return false;
+        }
+
+        // Pattern 1: var < expr or var <= expr
+        let lt_pat = format!("{} < ", var_name);
+        let le_pat = format!("{} <= ", var_name);
+        if cond.contains(&lt_pat) || cond.contains(&le_pat) {
+            return true;
+        }
+
+        // Pattern 2: expr > var or expr >= var
+        let gt_rev = format!("> {}", var_name);
+        if cond.contains(&gt_rev) {
+            // Exclude >> (shift)
+            for (pos, _) in cond.match_indices(&gt_rev) {
+                let prev = if pos > 0 { cond.as_bytes()[pos - 1] } else { 0 };
+                if prev != b'>' {
+                    return true;
+                }
+            }
+        }
+
+        false
     }
 
     fn get_function_arguments(&self, node: &Node, source: &str) -> Vec<String> {

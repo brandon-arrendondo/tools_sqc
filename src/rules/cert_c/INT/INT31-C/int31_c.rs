@@ -656,6 +656,12 @@ impl Int31C {
             .trim()
             .to_string();
 
+        // Skip pointer-type casts — not integer value conversions
+        // e.g., (uint8_t *)buf is pointer reinterpretation, not a narrowing conversion
+        if target_clean.contains('*') || source_type.contains('*') {
+            return;
+        }
+
         // Signed to unsigned without validation
         if self.is_signed_type(&source_type) && self.is_unsigned_type(&target_clean) {
             if self.is_inside_bounds_checked_block(node, source, &source_expr) {

@@ -1622,14 +1622,14 @@ fn check_constant_out_of_bounds(node: &Node, source: &str) -> Option<RuleViolati
                 severity: Severity::Critical,
                 message: format!(
                     "Array subscript {} is out of bounds for array '{}[{}]'. Valid indices are 0 to {}.",
-                    index_value, array_name, array_size, array_size - 1
+                    index_value, array_name, array_size, array_size.saturating_sub(1)
                 ),
                 file_path: String::new(),
                 line: start_point.row + 1,
                 column: start_point.column + 1,
                 suggestion: Some(format!(
                     "Use a valid index in the range [0, {}] for array '{}'",
-                    array_size - 1, array_name
+                    array_size.saturating_sub(1), array_name
                 )),
             ..Default::default()
             });
