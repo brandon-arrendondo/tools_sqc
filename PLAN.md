@@ -1,6 +1,16 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-01 (v0.2.18)
+**Last Updated**: 2026-03-02 (v0.2.19)
+
+---
+
+## Real-World FP Fixes — d_lib_networking (v0.2.20, in progress)
+
+### MSC37-C: `STATIC void` macro prefix false positive (FIXED)
+
+**Problem**: `STATIC void func()` where `STATIC` is a macro expanding to `static` was flagged as "non-void function has no return statement". Tree-sitter treats `STATIC` (unknown identifier) as the type field, putting `void` in an ERROR node. `is_void_type()` only checked the type field, so it saw `STATIC` instead of `void`.
+
+**Fix**: Added `has_void_specifier()` to scan all direct children of the function_definition node for `void`, catching cases where a macro precedes the return type. Test case added.
 
 ---
 
