@@ -404,7 +404,10 @@ fn collect_callsite_args_from_tree(
                 "function_definition" => {
                     // Collect local variable states within this function
                     if let Some(body) = child.child_by_field_name("body") {
-                        let local_states = collect_local_var_states(&body, source);
+                        let mut local_states = collect_local_var_states(&body, source);
+                        // Detect early-return null guards: `if (p == NULL) return;`
+                        // After the guard, p is guaranteed NotNull.
+                        collect_early_return_null_guards(&body, source, &mut local_states);
                         collect_calls_with_locals(&body, source, &local_states, callsite_args);
                     }
                 }
@@ -424,6 +427,103 @@ fn collect_local_var_states(body: &Node, source: &str) -> HashMap<String, NullSt
     let mut states = HashMap::new();
     collect_assignments_recursive(body, source, &mut states);
     states
+}
+
+/// Detect early-return null guard patterns in the function body.
+/// Pattern: `if (var == NULL) return;` or `if (!var) return;` — after the guard,
+/// var is guaranteed NotNull for the rest of the function.
+/// Inserts guarded variables as NotNull into the states map.
+fn collect_early_return_null_guards(
+    body: &Node,
+    source: &str,
+    states: &mut HashMap<String, NullState>,
+) {
+    for i in 0..body.child_count() {
+        if let Some(child) = body.child(i) {
+            if child.kind() == "if_statement" {
+                if let Some(condition) = child.child_by_field_name("condition") {
+                    // Check if consequence contains a return statement (early exit)
+                    if has_early_return_consequence(&child) {
+                        // Extract variable names from null-check condition
+                        for var_name in extract_null_checked_vars(&condition, source) {
+                            states.insert(var_name, NullState::NotNull);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Check if an if_statement's consequence contains a return/goto/exit.
+fn has_early_return_consequence(if_node: &Node) -> bool {
+    if let Some(consequence) = if_node.child_by_field_name("consequence") {
+        return node_contains_return(&consequence);
+    }
+    false
+}
+
+fn node_contains_return(node: &Node) -> bool {
+    if matches!(node.kind(), "return_statement" | "goto_statement") {
+        return true;
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if node_contains_return(&child) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+/// Extract variable names from a null-check condition.
+/// Recognizes: `var == NULL`, `NULL == var`, `!var`, `var == 0`, `0 == var`.
+fn extract_null_checked_vars(condition: &Node, source: &str) -> Vec<String> {
+    let mut vars = Vec::new();
+    let cond_text = condition
+        .utf8_text(source.as_bytes())
+        .unwrap_or("")
+        .trim()
+        .to_string();
+    // Strip outer parens from parenthesized_expression
+    let cond_text = if cond_text.starts_with('(') && cond_text.ends_with(')') {
+        &cond_text[1..cond_text.len() - 1]
+    } else {
+        &cond_text
+    };
+
+    // Split on || for compound conditions: `if (!a || !b) return;`
+    for part in cond_text.split("||") {
+        let part = part.trim();
+        // Pattern: !var
+        if let Some(var) = part.strip_prefix('!') {
+            let var = var.trim();
+            if is_simple_identifier(var) {
+                vars.push(var.to_string());
+            }
+        }
+        // Pattern: var == NULL or var == 0
+        else if let Some(pos) = part.find("==") {
+            let left = part[..pos].trim();
+            let right = part[pos + 2..].trim();
+            if (right == "NULL" || right == "0") && is_simple_identifier(left) {
+                vars.push(left.to_string());
+            } else if (left == "NULL" || left == "0") && is_simple_identifier(right) {
+                vars.push(right.to_string());
+            }
+        }
+    }
+    vars
+}
+
+/// Check if a string is a simple C identifier (no operators, no spaces).
+fn is_simple_identifier(s: &str) -> bool {
+    !s.is_empty()
+        && s.chars().all(|c| c.is_alphanumeric() || c == '_')
+        && s.chars()
+            .next()
+            .is_some_and(|c| c.is_alphabetic() || c == '_')
 }
 
 fn collect_assignments_recursive(

@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-02-28 (v0.2.17)
+**Last Updated**: 2026-03-01 (v0.2.18)
 
 ---
 
@@ -91,20 +91,52 @@ types — only flags when both sides have known widths.
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
 
-### Top Remaining FP Rules (after 0.2.17)
+### Top Remaining FP Rules (after 0.2.18)
 
 | Rule | FP | TP | FP% | Notes |
 |------|---:|---:|----:|-------|
 | DCL06-C | 15.6K | 18.9K | 45% | Code style — reductions lose TPs proportionally |
-| INT30-C | 14.0K | 13.2K | 52% | Pointer arithmetic guards applied |
+| INT30-C | 13.1K | 11.9K | 52% | Guard expansion in v0.2.18 |
 | INT32-C | 10.8K | 6.6K | 62% | field_expression → not_applicable reduced both |
 | EXP33-C | 6.8K | 5.4K | 56% | |
 | INT36-C | 6.7K | 4.1K | 62% | |
-| ERR05-C | 6.6K | 3.3K | 66% | |
 | ERR33-C | 6.4K | 3.8K | 63% | Nested calls + math overlap fixed |
-| EXP12-C | 5.5K | 3.4K | 62% | Parent-check added (was 11K/10.9K) |
+| ERR05-C | 6.3K | 3.3K | 65% | |
+| EXP12-C | 5.4K | 3.4K | 62% | Parent-check added (was 11K/10.9K) |
 
-**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. EXP12-C parent-check was the right semantic fix (captures return values correctly) but cost -7,530 Juliet TPs. The ~44–45% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
+**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~44–45% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
+
+---
+
+## Real-World FP — Remaining Issues (after v0.2.18)
+
+Verified against d_lib_common (7,694 violations) and d_hal_linux_random (45 violations).
+Of the original 17 d_lib_common patterns + 6 d_hal_linux_random patterns, 12 are fixed. 8 remain.
+
+| # | Rule | Violations | Difficulty | Description |
+|---|------|--------:|------------|-------------|
+| 1 | **INT30-C** | ~12 | Medium | Loop-bounded increments (`index += 1` where `index < bufferSize`), addition guarded by branch |
+| 2 | **EXP33-C** | ~36 | Medium | For-loop init not recognized; array declarations without initializers |
+| 3 | **INT33-C** | ~7 | Hard | Division guarded by earlier comparison (`lower < upper` → divisor ≥ 2). Needs value-range |
+| 4 | **INT34-C** | ~1 | Hard | Shift bounded by loop iteration count. Needs value-range |
+| 5 | **EXP34-C** | ~28 | Medium | Helper functions called only after caller validates params with early-return null guard |
+| 6 | **MEM30-C** | ~1 | Hard | Sequential struct/member frees (`free(s->items); free(s);`). Needs field-level tracking |
+| 7 | **MEM31-C** | ~9 | Hard | Cross-function ownership (`strdup` into struct field, freed via custom `_Delete`). Needs ownership model |
+| 8 | **API00-C** | ~18 | Easy | Validation present but after variable declarations; static helper functions called from validated callers |
+
+### Actionable Now (v0.2.19 targets)
+
+**Issue 1 — INT30-C loop-bounded increment**: Inside `while (index < bufferSize)` or `for (...; index < limit; ...)`, `index + 1` / `index++` / `index += 1` cannot wrap (counterpart of `is_guarded_by_gt_zero` for decrements). Detect enclosing loop condition with `var < expr` or `var <= expr` pattern.
+
+**Issue 5 — EXP34-C prescan null guard**: Enhance prescan `collect_local_var_states()` to detect early-return null guard patterns on function parameters (`if (p == NULL) return;`). After such a guard, the param is NotNull at subsequent call sites. This feeds into Phase 2 callee param seeding.
+
+**Issue 8 — API00-C validation past declarations**: `check_validation_patterns()` needs to scan past `declaration` nodes in the function body to find `if_statement` validation. Also: static helper functions called only from validated contexts should be suppressed (caller-aware already partially works via Phase 3).
+
+### Deferred (require new analysis capabilities)
+
+- **Issue 3 (INT33-C)** / **Issue 4 (INT34-C)**: Need value-range analysis to prove divisor ≠ 0 or shift < width from enclosing conditions
+- **Issue 6 (MEM30-C)**: Needs field-level alias tracking to know `self` is still valid after `free(self->items)`
+- **Issue 7 (MEM31-C)**: Needs cross-function ownership model (struct field allocated in constructor, freed in destructor)
 
 ---
 
