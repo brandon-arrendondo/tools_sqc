@@ -69,6 +69,21 @@ impl Msc37C {
         type_text.trim() == "void"
     }
 
+    /// Check if any direct child of function_definition is "void".
+    /// Handles cases like `MACRO void func()` where a macro precedes void and
+    /// tree-sitter assigns the macro as the type field. The actual "void" keyword
+    /// ends up in an ERROR node since tree-sitter doesn't expect two type specifiers.
+    fn has_void_specifier(&self, func_def: &Node, source: &str) -> bool {
+        for i in 0..func_def.child_count() {
+            if let Some(child) = func_def.child(i) {
+                if get_node_text(&child, source).trim() == "void" {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     /// Check if a function is main()
     fn is_main_function(&self, declarator: &Node, source: &str) -> bool {
         // Look for function_declarator with name "main"
@@ -191,8 +206,9 @@ impl Msc37C {
             None => return,
         };
 
-        // Skip void functions
-        if self.is_void_type(&type_node, source) {
+        // Skip void functions — also check for void as a sibling specifier
+        // to handle macros preceding void (e.g., STATIC void func())
+        if self.is_void_type(&type_node, source) || self.has_void_specifier(node, source) {
             return;
         }
 
