@@ -1,4 +1,5 @@
 pub mod cfg;
+pub mod const_eval;
 pub mod context;
 pub mod dataflow;
 pub mod function_summary;

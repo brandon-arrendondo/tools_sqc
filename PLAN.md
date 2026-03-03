@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-03 (v0.2.20)
+**Last Updated**: 2026-03-03 (v0.2.21)
 
 ---
 
@@ -88,11 +88,14 @@
 | 16 | API00-C | 20→8 | FIXED (static function skip) |
 | 17 | DCL13-C | 7→1 | FIXED (addr-of-member + alias) |
 | 6 | EXP33-C | 1 | OPEN |
-| 9 | MEM05-C | 2 | OPEN |
-| 11 | ARR32-C | 1 | OPEN |
+| 9 | MEM05-C | 2 | FIXED (macro constant VLA + recursion word boundary) |
+| 11 | ARR32-C | 1 | FIXED (macro constant accepted) |
 | 14 | PRE08-C | 3 | OPEN |
+| 22 | ARR02-C | 3 | FIXED (string-literal-initialized arrays) |
+| 23 | POS02-C | 3 | FIXED (socket/setsockopt not privileged) |
+| 24 | PRE31-C (logging) | 2 | FIXED (string literal stripping) |
 
-Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → **123** (Round 4). FP patterns resolved: 15/17.
+Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → 123 (Round 4) → 86 (Round 5) → **71** (Round 6). FP patterns resolved: 19/23.
 
 ### Round 4: INT01-C dedup + EXP34-C stack array (v0.2.20)
 
@@ -115,6 +118,47 @@ No CWE regressions (all deltas are improvements or neutral).
 **Top rule changes** (full per-rule data): API00-C −1,917 FP (static skip), INT01-C −231 FP (dedup), EXP34-C −221 FP (array NotNull), DCL30-C −201 FP, FIO47-C −88 FP. **No rule regressions** (previously reported POS02-C/ERR05-C/MEM06-C regressions were a measurement artifact from the top-10-only aggregation — see "Benchmark Measurement Fix" section below).
 
 Net: strongly positive (−2,720 FP, +0.1pp TP rate).
+
+### Round 6: ARR02-C, POS02-C, PRE31-C, MEM05-C (v0.2.22)
+
+**ARR02-C string-literal-initialized arrays** (`arr02_c.rs`): Skip implicit bounds check when `init_declarator` value is a `string_literal` or `concatenated_string`. `const char name[] = "..."` is standard C — the compiler determines the size from the initializer. −3 FPs (AWS cert blobs in ca.c).
+
+**POS02-C unprivileged socket operations** (`pos02_c.rs`): Removed `socket` and `setsockopt` from `is_privileged_operation()`. These are standard unprivileged networking calls — only `SOCK_RAW` requires `CAP_NET_RAW`, and `setsockopt` for `SO_RCVTIMEO`/`SO_SNDTIMEO` is unprivileged. Kept `bind`/`listen` (server-side privileged port pattern). −3 FPs.
+
+**PRE31-C string literal stripping** (`pre31_c.rs`): Added `strip_string_literals()` to remove content inside quotes before checking for function-call patterns. `NW_LOGE(PR "...mbedtls_ssl_write()..." PW)` was flagged because `contains_any_function_call` found `mbedtls_ssl_write()` inside the quoted portion — the arg starts with `PR` not `"`, so the existing string-literal skip at the top didn't trigger. All side-effect checks now operate on the stripped text. −2 FPs.
+
+**MEM05-C macro constant VLA + recursion word boundary** (`mem05_c.rs`): (a) Added `is_likely_macro_constant()` — ALL_CAPS identifiers are conventionally preprocessor constants, not runtime values. `unsigned char cert_buf[SSL_CERT_BUFFER_SIZE]` no longer flagged as VLA. (b) `count_word_matches()` uses word-boundary matching for recursion detection — `pthread_mutex_init` no longer matches as a recursive call to `mutex_init`. −2 FPs.
+
+**Result**: 86 → **71** total violations (−15 total since Round 5, −10 from these fixes). 19/23 FP patterns resolved.
+
+### Const-Eval / Value-Range Analysis (v0.2.21)
+
+**Problem**: sqc treats `#define` macro constants as unknown variables, so `SSL_CERT_RETRY_DELAY_MS * 1000` (where the macro is 50) gets flagged as potential overflow even though `50 * 1000 = 50000` trivially fits in `int`.
+
+**Implementation**: New `src/analyze/const_eval.rs` module (~550 lines) with:
+- `MacroConstantMap` — collects `#define NAME value` constants from tree-sitter `preproc_def` nodes
+- `ValueRange { min, max }` — interval arithmetic with checked `add`, `sub`, `mul`, `shl` operations
+- `try_evaluate_expr()` — recursive AST constant folder (handles literals, macro refs, binary/unary ops)
+- `try_evaluate_range()` — range-based variant returning `ValueRange` instead of exact values
+- `extract_loop_var_ranges()` — walks AST ancestors for `for`/`while`/`do` loop bounds, supports compound `&&` conditions
+- `resolve_local_var_range()` — scans backward in enclosing compound_statement for `type var = expr` assignments
+- `expression_fits_in_signed()`/`expression_fits_in_unsigned()` — convenience wrappers combining all of the above
+
+**Integration**:
+- `ProjectContext.macro_constants` — cross-file macros collected during prescan and include resolution
+- INT32-C: `RefCell<MacroConstantMap>` fields, `set_project_context()`, early return in all 8 arithmetic check functions when `expression_fits_in_signed()` proves safety
+- INT30-C: same pattern with `expression_fits_in_unsigned()`
+- Comment stripping for trailing `//` in `#define` values (tree-sitter includes comment text in `preproc_arg`)
+- Negative-shift UB guard: refuses to suppress left-shift when left operand range includes negatives
+- Compound assignment guard: only resolves RHS identifiers, not LHS (mutation target in loops)
+
+**d_lib_networking results**: INT32-C 10→8 (−2), INT30-C 6→6 (unchanged). The 2 suppressed: `SSL_CERT_RETRY_DELAY_MS * 1000` (50×1000=50000) and `SSL_HANDSHAKE_RETRY_DELAY_MS * 1000` (250×1000=250000).
+
+**Remaining INT32-C** (6): require flow-sensitive analysis — post-increment state (`attempts++`), cross-statement propagation, parameter bounds. Beyond syntactic const_eval scope.
+
+**Remaining INT30-C** (6): `cert_buflen + 1` from function returns, loop-bounded `cur += 1` (needs flow-sensitive knowledge that loop variable ≥ initial value at usage point).
+
+**Test impact**: 1 test moved from fail/ to pass/ (`testcases_shift_over.c` — 1000000 << 10 = 1,024,000,000 fits in INT_MAX). 8 new const_eval unit tests. All 2801 tests pass.
 
 ---
 
@@ -368,7 +412,7 @@ Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is 
 - No alias analysis (pointer aliasing not resolved — see DCL13-C remaining FP above)
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
-- No value range analysis (beyond literal constants)
+- No value range analysis (beyond const_eval macro folding + loop-bound extraction — see v0.2.21)
 - No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking + `-I` header resolution)
 - No struct field type resolution (field_expression types unknown — see TODO above)
 
