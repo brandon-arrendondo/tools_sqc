@@ -81,7 +81,17 @@ impl Arr02C {
             "init_declarator" => {
                 // This has an initializer, check the declarator part
                 if let Some(declarator) = node.child_by_field_name("declarator") {
-                    self.check_array_declarator(&declarator, source, violations);
+                    // Skip implicit bounds check when initializer is a string literal
+                    // (or concatenated_string). const char name[] = "..." is standard C
+                    // and the compiler determines the size from the initializer.
+                    let has_string_init = node
+                        .child_by_field_name("value")
+                        .map(|v| v.kind() == "string_literal" || v.kind() == "concatenated_string")
+                        .unwrap_or(false);
+
+                    if !has_string_init {
+                        self.check_array_declarator(&declarator, source, violations);
+                    }
 
                     // Also check if initializer has too many elements
                     if let Some(value) = node.child_by_field_name("value") {
