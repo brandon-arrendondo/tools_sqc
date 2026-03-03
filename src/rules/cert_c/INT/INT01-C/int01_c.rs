@@ -266,9 +266,17 @@ impl Int01C {
             }
         }
 
-        // Recurse
+        // Recurse — skip function_declarator children of function_definition
+        // to avoid double-visiting (already handled above)
+        let dominated =
+            node.kind() == "function_definition" || node.kind() == "function_declarator";
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
+                if dominated
+                    && (child.kind() == "function_declarator" || child.kind() == "parameter_list")
+                {
+                    continue;
+                }
                 self.check_size_params(&child, source, violations);
             }
         }

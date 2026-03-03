@@ -562,11 +562,18 @@ fn collect_assignments_recursive(
             if let Some(decl) = node.child_by_field_name("declarator") {
                 extract_init_state(&decl, source, states);
             }
-            // Also check for multiple declarators
+            // Also check for multiple declarators and array declarations
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
                     if child.kind() == "init_declarator" {
                         extract_init_state(&child, source, states);
+                    }
+                    // Stack arrays can never be null — mark as NotNull
+                    if child.kind() == "array_declarator" {
+                        let var_name = extract_leaf_id(&child, source);
+                        if !var_name.is_empty() {
+                            states.insert(var_name, NullState::NotNull);
+                        }
                     }
                 }
             }
