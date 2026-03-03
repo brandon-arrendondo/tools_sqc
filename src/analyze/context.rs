@@ -17,6 +17,8 @@ pub struct ProjectContext {
     pub function_summaries: HashMap<String, FunctionSummary>,
     /// Call graph: maps function name to the set of functions it calls.
     pub call_graph: HashMap<String, HashSet<String>>,
+    /// Macro constants collected from `#define` directives across all scanned files.
+    pub macro_constants: HashMap<String, i64>,
 }
 
 impl ProjectContext {
@@ -42,6 +44,8 @@ impl ProjectContext {
 
     /// Returns `true` if any cross-file data was collected.
     pub fn has_cross_file_data(&self) -> bool {
-        !self.known_functions.is_empty() || !self.function_summaries.is_empty()
+        !self.known_functions.is_empty()
+            || !self.function_summaries.is_empty()
+            || !self.macro_constants.is_empty()
     }
 }
