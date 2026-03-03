@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-02 (v0.2.19)
+**Last Updated**: 2026-03-03 (v0.2.19)
 
 ---
 
@@ -11,6 +11,66 @@
 **Problem**: `STATIC void func()` where `STATIC` is a macro expanding to `static` was flagged as "non-void function has no return statement". Tree-sitter treats `STATIC` (unknown identifier) as the type field, putting `void` in an ERROR node. `is_void_type()` only checked the type field, so it saw `STATIC` instead of `void`.
 
 **Fix**: Added `has_void_specifier()` to scan all direct children of the function_definition node for `void`, catching cases where a macro precedes the return type. Test case added.
+
+### INT36-C: `(void)` discard cast false positive (FIXED)
+
+**Problem**: `(void)fprintf(...)` was flagged as "unsafe integer-to-pointer conversion". Two bugs: (1) `is_pointer_type()` matched bare `void` (discard cast) as a pointer type. (2) `is_integer_type()` matched function names containing "int" as a substring (`fprintf` → "int"). Bug #1 was the gate that let #2 fire.
+
+**Fix**: Removed `type_text.contains("void")` from `is_pointer_type()` — `void *` already matches via `*`. Bare `void` (discard cast) is not a pointer type. Eliminates 7 FPs on d_lib_networking.
+
+### PRE02-C: Trailing comment in macro value (FIXED)
+
+**Problem**: `#define FOO 50 // delay - reduced from 100` was flagged because tree-sitter includes the trailing `// ...` comment in the `preproc_def` value node. The ` - ` in the comment text matched the operator detection.
+
+**Fix**: Strip trailing `//` comments from the value text before checking for operators. Eliminates 3 FPs on d_lib_networking.
+
+### ERR33-C: `(void)` cast not recognized as intentional discard (FIXED)
+
+**Problem**: `(void)fprintf(...)` and `(void)fflush(...)` were flagged as unchecked return values. `is_call_in_assignment_or_declaration()` walked through `cast_expression` parents but didn't recognize `(void)` as intentionally consuming the return value — it kept walking and hit `expression_statement`, returning false.
+
+**Fix**: In the `cast_expression` arm, check if the cast target type is bare `void`. If so, return true (value is intentionally discarded). This is the standard CERT-C compliant pattern for acknowledging a discarded return value. Eliminates 2 FPs on d_lib_networking.
+
+### CON03-C: const variables and synchronization primitives (FIXED)
+
+**Problem**: `const char[]` arrays (read-only certificate data) and `pthread_mutex_t` were flagged as lacking thread synchronization. Read-only data cannot have data races. Mutexes ARE the synchronization mechanism.
+
+**Fix**: Skip `const`-qualified variables (no data races on read-only data). Skip known synchronization primitive types (`pthread_mutex_t`, `pthread_rwlock_t`, `mtx_t`, `sem_t`, etc.). Eliminates 4 FPs on d_lib_networking.
+
+### DCL30-C: scalar value copy through pointer (FIXED)
+
+**Problem**: `*sock = sockfd` (where `sockfd` is `int`) was flagged as "local variable address escapes". But this copies the integer VALUE, not the ADDRESS of `sockfd`. The pointer `sock` was passed by the caller.
+
+**Fix**: In the `pointer_expression` LHS case, only flag when the RHS local variable is a pointer/array type (actual address escape). Scalar value copies are safe. Eliminates 1 FP on d_lib_networking.
+
+### DCL07-C/DCL31-C: `-I`/`--include-path` flag for header resolution (FIXED)
+
+**Problem**: 75 of 223 violations were DCL07-C/DCL31-C false positives for functions declared in external headers (mbedtls, d_lib_common). The `-d` flag existed but required users to manually identify directories containing all source files.
+
+**Fix**: Added `-I`/`--include-path` CLI flag (mirrors compiler convention). Pre-pass extracts `#include` directives from source files, resolves them against `-I` search paths (both `"quoted"` and `<angle>` forms), parses found headers, and merges function declarations into `ProjectContext`. Composes naturally with `-d` — both populate the same context. Headers parsed only once (deduped by canonical path).
+
+**Result**: With `-I` pointing at 3 include dirs: 223→205 total violations (−18). DCL07-C/DCL31-C specifically: 75→66 (−9). Remaining 66 are functions from system headers or generated headers not available on disk.
+
+### Progress Summary
+
+| Pattern | Rule(s) | FPs | Status |
+|---------|---------|-----|--------|
+| 2 | MSC37-C | 3 | FIXED |
+| 3 | INT36-C | 7 | FIXED |
+| 4 | POS49-C | 4 | Already resolved |
+| 5 | CON03-C | 4 | FIXED (1 remains — legit finding) |
+| 7 | DCL30-C | 1 | FIXED |
+| 10 | PRE02-C | 3 | FIXED |
+| 12 | ERR33-C | 2 | FIXED |
+| 13 | EXP12-C | 2 | Already resolved |
+| 1 | DCL07-C/DCL31-C | 75→66 | FIXED (`-I` flag implemented) |
+| 6 | EXP33-C | 1 | OPEN |
+| 8 | FIO47-C | 1 | OPEN |
+| 9 | MEM05-C | 2 | OPEN |
+| 11 | ARR32-C | 1 | OPEN |
+| 14 | PRE08-C | 3 | OPEN |
+| 15 | EXP37-C | 2 | OPEN |
+
+Total violations: 233 → **223** (−10 from fixes) → **205** with `-I` (−18 more from include resolution). FP patterns resolved: 9/15 (34 FPs eliminated).
 
 ---
 
@@ -249,7 +309,7 @@ Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is 
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond literal constants)
-- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking)
+- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking + `-I` header resolution)
 - No struct field type resolution (field_expression types unknown — see TODO above)
 
 ---

@@ -6,6 +6,7 @@ use crate::progress::ProgressReporter;
 
 use anyhow::Result;
 use std::collections::{HashMap, HashSet};
+use std::path::{Path, PathBuf};
 use tree_sitter::Node;
 use walkdir::WalkDir;
 
@@ -700,4 +701,153 @@ fn collect_calls_with_locals(
             collect_calls_with_locals(&child, source, local_states, callsite_args);
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// Include path resolution (-I flag)
+// ---------------------------------------------------------------------------
+
+/// Resolve `#include` directives from source files against the given include
+/// search paths, parse found headers, and merge declarations into `context`.
+///
+/// Each resolved header is parsed only once (deduped by canonical path).
+/// Both `"quoted.h"` and `<angle.h>` forms are resolved; unfound system
+/// headers are silently skipped.
+pub fn resolve_includes(
+    source_files: &[String],
+    include_paths: &[String],
+    context: &mut super::context::ProjectContext,
+    progress: Option<&dyn ProgressReporter>,
+) -> Result<()> {
+    if let Some(reporter) = progress {
+        reporter.report_include_resolve_start(include_paths.len());
+    }
+
+    let mut parser = CParser::new()?;
+    let mut resolved_set: HashSet<PathBuf> = HashSet::new();
+
+    // Collect all #include directives from source files
+    for file_path in source_files {
+        if let Ok((tree, source)) = parser.parse_file(file_path) {
+            let directives = extract_include_directives(&tree.root_node(), &source);
+            let source_dir = Path::new(file_path).parent();
+
+            for include_path in &directives {
+                if let Some(resolved) = resolve_header(include_path, source_dir, include_paths) {
+                    // Canonicalize to avoid parsing the same file twice
+                    let canonical = match resolved.canonicalize() {
+                        Ok(c) => c,
+                        Err(_) => resolved.clone(),
+                    };
+                    if resolved_set.contains(&canonical) {
+                        continue;
+                    }
+                    resolved_set.insert(canonical);
+
+                    // Parse the header and merge into context
+                    let header_path = resolved.to_string_lossy().to_string();
+                    if let Ok((htree, hsource)) = parser.parse_file(&header_path) {
+                        let root = htree.root_node();
+                        collect_function_names(&root, &hsource, &mut context.known_functions);
+                        collect_header_declarations(
+                            &root,
+                            &hsource,
+                            &mut context.header_declared_functions,
+                        );
+                        let file_summaries = function_summary::compute_summaries(&root, &hsource);
+                        for (name, summary) in file_summaries {
+                            context.function_summaries.insert(name, summary);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if let Some(reporter) = progress {
+        reporter.report_include_resolve_complete(resolved_set.len());
+    }
+
+    Ok(())
+}
+
+/// Extract `#include` directive paths from an AST.
+///
+/// Walks `preproc_include` nodes and extracts the path string, stripping
+/// both `"..."` and `<...>` delimiters. Recurses into `preproc_*` nodes
+/// to handle conditional includes.
+fn extract_include_directives(node: &Node, source: &str) -> Vec<String> {
+    let mut directives = Vec::new();
+    extract_includes_recursive(node, source, &mut directives);
+    directives
+}
+
+fn extract_includes_recursive(node: &Node, source: &str, directives: &mut Vec<String>) {
+    match node.kind() {
+        "preproc_include" => {
+            // The path child contains the include path (e.g. "foo.h" or <foo.h>)
+            if let Some(path_node) = node.child_by_field_name("path") {
+                if let Ok(text) = path_node.utf8_text(source.as_bytes()) {
+                    let text = text.trim();
+                    // Strip delimiters: "foo.h" -> foo.h, <foo.h> -> foo.h
+                    let path = if (text.starts_with('"') && text.ends_with('"'))
+                        || (text.starts_with('<') && text.ends_with('>'))
+                    {
+                        &text[1..text.len() - 1]
+                    } else {
+                        text
+                    };
+                    if !path.is_empty() {
+                        directives.push(path.to_string());
+                    }
+                }
+            }
+        }
+        kind if kind.starts_with("preproc_") => {
+            // Recurse into conditional compilation blocks
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    extract_includes_recursive(&child, source, directives);
+                }
+            }
+        }
+        _ => {}
+    }
+
+    // For non-preproc nodes, walk children (translation_unit, etc.)
+    if !node.kind().starts_with("preproc_") {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                extract_includes_recursive(&child, source, directives);
+            }
+        }
+    }
+}
+
+/// Resolve an include path against search directories.
+///
+/// Search order: (1) source file's directory (if available), (2) each `-I`
+/// path in order. Returns the first match where the candidate is a file.
+fn resolve_header(
+    include_path: &str,
+    source_dir: Option<&Path>,
+    include_search_paths: &[String],
+) -> Option<PathBuf> {
+    // First: try relative to the source file's directory
+    if let Some(dir) = source_dir {
+        let candidate = dir.join(include_path);
+        if candidate.is_file() {
+            return Some(candidate);
+        }
+    }
+
+    // Then: try each -I path in order
+    for search_dir in include_search_paths {
+        let candidate = Path::new(search_dir).join(include_path);
+        if candidate.is_file() {
+            return Some(candidate);
+        }
+    }
+
+    None
 }
