@@ -89,6 +89,14 @@ fn run() -> Result<i32> {
                 .action(clap::ArgAction::Append),
         )
         .arg(
+            Arg::new("include_paths")
+                .long("include-path")
+                .short('I')
+                .help("Include search paths for resolving #include directives (like compiler -I flag)")
+                .value_name("DIR")
+                .action(clap::ArgAction::Append),
+        )
+        .arg(
             Arg::new("fail_on_violation")
                 .long("fail-on-violation")
                 .help("Exit with code 1 if any violations are found")
@@ -131,6 +139,10 @@ fn run() -> Result<i32> {
         .get_many::<String>("directories")
         .map(|vals| vals.cloned().collect())
         .unwrap_or_default();
+    let include_paths: Vec<String> = matches
+        .get_many::<String>("include_paths")
+        .map(|vals| vals.cloned().collect())
+        .unwrap_or_default();
     let fail_on_violation = matches.get_flag("fail_on_violation");
     let fail_on_severity: Option<Severity> = matches
         .get_one::<String>("fail_on_severity")
@@ -156,7 +168,7 @@ fn run() -> Result<i32> {
     }
 
     if interactive {
-        let mut ui = TerminalUI::new(path, manifest, &directories)?;
+        let mut ui = TerminalUI::new(path, manifest, &directories, &include_paths)?;
         ui.run()?;
         return Ok(0);
     }
@@ -177,6 +189,7 @@ fn run() -> Result<i32> {
         &manifest,
         Some(&progress_reporter),
         &directories,
+        &include_paths,
         diff_only,
     )?;
 
