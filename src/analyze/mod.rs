@@ -22,17 +22,29 @@ pub fn analyze_project(
     manifest: &RuleManifest,
     progress: Option<&dyn ProgressReporter>,
     directories: &[String],
+    include_paths: &[String],
     diff_only: bool,
 ) -> Result<Vec<RuleViolation>> {
     let mut violations = Vec::new();
     let registry = RuleRegistry::new();
 
     // Pre-scan additional directories for cross-file context
-    let context = if directories.is_empty() {
+    let mut context = if directories.is_empty() {
         context::ProjectContext::new()
     } else {
         prescan::prescan_directories(directories, progress)?
     };
+
+    // Resolve #include directives against include search paths
+    if !include_paths.is_empty() {
+        let c_files = if diff_only {
+            project_source.get_modified_c_files()?
+        } else {
+            project_source.get_c_files()?
+        };
+        prescan::resolve_includes(&c_files, include_paths, &mut context, progress)?;
+    }
+
     if context.has_cross_file_data() {
         for rule in registry.all_rules() {
             rule.set_project_context(&context);

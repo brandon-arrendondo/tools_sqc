@@ -150,6 +150,17 @@ impl Con03C {
             let is_global = self.is_global_scope(node);
 
             if is_static || is_global {
+                // const-qualified variables are read-only — no data races possible
+                if self.has_type_qualifier(node, source, "const") {
+                    return;
+                }
+
+                // Synchronization primitives ARE the synchronization — don't flag them
+                let decl_text = get_node_text(node, source);
+                if self.is_synchronization_type(&decl_text) {
+                    return;
+                }
+
                 let is_volatile = self.has_type_qualifier(node, source, "volatile");
                 let is_atomic = self.has_atomic_type(node, source);
 
@@ -235,6 +246,20 @@ impl Con03C {
             }
         }
         false
+    }
+
+    fn is_synchronization_type(&self, decl_text: &str) -> bool {
+        let sync_types = [
+            "pthread_mutex_t",
+            "pthread_rwlock_t",
+            "pthread_cond_t",
+            "pthread_spinlock_t",
+            "pthread_barrier_t",
+            "mtx_t",
+            "cnd_t",
+            "sem_t",
+        ];
+        sync_types.iter().any(|t| decl_text.contains(t))
     }
 
     fn is_global_scope(&self, node: &Node) -> bool {

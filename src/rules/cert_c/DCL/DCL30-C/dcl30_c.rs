@@ -467,7 +467,12 @@ impl Dcl30C {
             // Check if left side is a pointer dereference or global
             match left.kind() {
                 "pointer_expression" => {
-                    // *ptr_param = local; pattern
+                    // *ptr_param = local; pattern — only flag if local is a pointer/array
+                    // Assigning a scalar value (e.g., *sock = sockfd where sockfd is int)
+                    // just copies the value, not the address. Only pointer assignments escape.
+                    if !self.local_var_is_pointer_or_array(&right, &right_var, source) {
+                        return None;
+                    }
                     let start_point = assignment_node.start_position();
                     return Some(RuleViolation {
                         rule_id: "DCL30-C".to_string(),

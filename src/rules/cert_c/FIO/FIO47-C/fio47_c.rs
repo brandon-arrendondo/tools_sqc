@@ -385,9 +385,13 @@ impl Fio47C {
                 }
             }
 
-            // Subtract 1 for the format string itself
-            // For fprintf/fscanf, also subtract 1 for the FILE* argument
-            if function_name.starts_with('f') && !function_name.starts_with("fopen") {
+            // Subtract non-format, non-data arguments:
+            // snprintf/vsnprintf: buffer + size + format = 3
+            // fprintf/fscanf etc: FILE* + format = 2
+            // printf/scanf etc: format = 1
+            if matches!(function_name, "snprintf" | "vsnprintf") {
+                count = count.saturating_sub(3);
+            } else if function_name.starts_with('f') && !function_name.starts_with("fopen") {
                 count = count.saturating_sub(2);
             } else {
                 count = count.saturating_sub(1);

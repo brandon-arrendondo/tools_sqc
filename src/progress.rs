@@ -30,6 +30,12 @@ pub trait ProgressReporter: Send + Sync {
 
     /// Report the completion of directory pre-scanning
     fn report_prescan_complete(&self, _num_functions: usize) {}
+
+    /// Report the start of include path resolution
+    fn report_include_resolve_start(&self, _num_include_paths: usize) {}
+
+    /// Report the completion of include path resolution
+    fn report_include_resolve_complete(&self, _num_headers: usize) {}
 }
 
 /// CLI progress reporter that displays progress on a single terminal line
@@ -77,6 +83,26 @@ impl ProgressReporter for CLIProgressReporter {
         println!(
             "Pre-scan complete: found {} function definitions",
             num_functions
+        );
+    }
+
+    fn report_include_resolve_start(&self, num_include_paths: usize) {
+        println!(
+            "Resolving #include directives against {} search {}...",
+            num_include_paths,
+            if num_include_paths == 1 {
+                "path"
+            } else {
+                "paths"
+            }
+        );
+    }
+
+    fn report_include_resolve_complete(&self, num_headers: usize) {
+        println!(
+            "Include resolution complete: parsed {} header {}",
+            num_headers,
+            if num_headers == 1 { "file" } else { "files" }
         );
     }
 

@@ -114,6 +114,7 @@ pub struct TerminalUI {
     manifest: RuleManifest,
     registry: RuleRegistry,
     directories: Vec<String>,
+    include_paths: Vec<String>,
     violations: Vec<RuleViolation>,
     suppressed_violations: Vec<RuleViolation>, // Violations that are suppressed
     clean_files: Vec<String>,                  // Files that were scanned but had no violations
@@ -153,7 +154,12 @@ pub struct TerminalUI {
 }
 
 impl TerminalUI {
-    pub fn new(repo_path: &str, manifest: RuleManifest, directories: &[String]) -> Result<Self> {
+    pub fn new(
+        repo_path: &str,
+        manifest: RuleManifest,
+        directories: &[String],
+        include_paths: &[String],
+    ) -> Result<Self> {
         let registry = RuleRegistry::new();
         let mut selected_violation = ListState::default();
         selected_violation.select(Some(0));
@@ -170,6 +176,7 @@ impl TerminalUI {
             manifest,
             registry,
             directories: directories.to_vec(),
+            include_paths: include_paths.to_vec(),
             violations: Vec::new(),
             suppressed_violations: Vec::new(),
             clean_files: Vec::new(),
@@ -2105,17 +2112,25 @@ impl TerminalUI {
         self.combined_violations.clear();
 
         // Pre-scan directories for cross-file context
-        if !self.directories.is_empty() {
-            let context = prescan::prescan_directories(&self.directories, None)?;
-            if context.has_cross_file_data() {
-                for rule in self.registry.all_rules() {
-                    rule.set_project_context(&context);
-                }
-            }
-        }
+        let mut context = if !self.directories.is_empty() {
+            prescan::prescan_directories(&self.directories, None)?
+        } else {
+            crate::analyze::context::ProjectContext::new()
+        };
 
+        // Resolve #include directives against include search paths
         let project_source = ProjectSource::open(&self.repo_path)?;
         let c_files = project_source.get_c_files()?;
+
+        if !self.include_paths.is_empty() {
+            let _ = prescan::resolve_includes(&c_files, &self.include_paths, &mut context, None);
+        }
+
+        if context.has_cross_file_data() {
+            for rule in self.registry.all_rules() {
+                rule.set_project_context(&context);
+            }
+        }
         let total_files = c_files.len();
         let mut parser = CParser::new()?;
 
