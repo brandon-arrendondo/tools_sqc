@@ -117,6 +117,11 @@ impl Api00C {
         source: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
+        // Skip static functions — API00-C is about public API contracts
+        if Self::is_static_function(function_node, source) {
+            return;
+        }
+
         // Get function parameters (handle nested declarators for pointer-returning functions)
         let params = match self.extract_function_parameters(function_node, source) {
             Some(p) => p,
@@ -735,6 +740,28 @@ impl Api00C {
         }
 
         false
+    }
+
+    /// Check if a function_definition has `static` storage class or a STATIC macro prefix.
+    fn is_static_function(function_node: &Node, source: &str) -> bool {
+        for i in 0..function_node.child_count() {
+            if let Some(child) = function_node.child(i) {
+                if child.kind() == "storage_class_specifier" {
+                    if let Ok(text) = child.utf8_text(source.as_bytes()) {
+                        if text == "static" {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        // Check for STATIC macro prefix (tree-sitter sees unexpanded macro as first tokens)
+        let func_text = function_node.utf8_text(source.as_bytes()).unwrap_or("");
+        let first_token = func_text.split_whitespace().next().unwrap_or("");
+        matches!(
+            first_token,
+            "STATIC" | "STATIC_FUNC" | "STATIC_INLINE" | "STATIC_NOINLINE"
+        )
     }
 
     fn report_violation(
