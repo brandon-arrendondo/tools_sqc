@@ -152,7 +152,13 @@ impl Pre02C {
             None => return, // No replacement text
         };
 
-        let value_text = get_node_text(&value_node, source);
+        let raw_value_text = get_node_text(&value_node, source);
+
+        // Strip trailing line comments — tree-sitter may include `// ...` in preproc_def value
+        let value_text: &str = match raw_value_text.find("//") {
+            Some(pos) => raw_value_text[..pos].trim_end(),
+            None => raw_value_text,
+        };
 
         // Check if it contains operators
         if !self.contains_operators(&value_text) {

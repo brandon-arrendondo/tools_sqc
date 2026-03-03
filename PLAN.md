@@ -1,6 +1,132 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-01 (v0.2.18)
+**Last Updated**: 2026-03-03 (v0.2.20)
+
+---
+
+## Real-World FP Fixes — d_lib_networking (v0.2.20, in progress)
+
+### MSC37-C: `STATIC void` macro prefix false positive (FIXED)
+
+**Problem**: `STATIC void func()` where `STATIC` is a macro expanding to `static` was flagged as "non-void function has no return statement". Tree-sitter treats `STATIC` (unknown identifier) as the type field, putting `void` in an ERROR node. `is_void_type()` only checked the type field, so it saw `STATIC` instead of `void`.
+
+**Fix**: Added `has_void_specifier()` to scan all direct children of the function_definition node for `void`, catching cases where a macro precedes the return type. Test case added.
+
+### INT36-C: `(void)` discard cast false positive (FIXED)
+
+**Problem**: `(void)fprintf(...)` was flagged as "unsafe integer-to-pointer conversion". Two bugs: (1) `is_pointer_type()` matched bare `void` (discard cast) as a pointer type. (2) `is_integer_type()` matched function names containing "int" as a substring (`fprintf` → "int"). Bug #1 was the gate that let #2 fire.
+
+**Fix**: Removed `type_text.contains("void")` from `is_pointer_type()` — `void *` already matches via `*`. Bare `void` (discard cast) is not a pointer type. Eliminates 7 FPs on d_lib_networking.
+
+### PRE02-C: Trailing comment in macro value (FIXED)
+
+**Problem**: `#define FOO 50 // delay - reduced from 100` was flagged because tree-sitter includes the trailing `// ...` comment in the `preproc_def` value node. The ` - ` in the comment text matched the operator detection.
+
+**Fix**: Strip trailing `//` comments from the value text before checking for operators. Eliminates 3 FPs on d_lib_networking.
+
+### ERR33-C: `(void)` cast not recognized as intentional discard (FIXED)
+
+**Problem**: `(void)fprintf(...)` and `(void)fflush(...)` were flagged as unchecked return values. `is_call_in_assignment_or_declaration()` walked through `cast_expression` parents but didn't recognize `(void)` as intentionally consuming the return value — it kept walking and hit `expression_statement`, returning false.
+
+**Fix**: In the `cast_expression` arm, check if the cast target type is bare `void`. If so, return true (value is intentionally discarded). This is the standard CERT-C compliant pattern for acknowledging a discarded return value. Eliminates 2 FPs on d_lib_networking.
+
+### CON03-C: const variables and synchronization primitives (FIXED)
+
+**Problem**: `const char[]` arrays (read-only certificate data) and `pthread_mutex_t` were flagged as lacking thread synchronization. Read-only data cannot have data races. Mutexes ARE the synchronization mechanism.
+
+**Fix**: Skip `const`-qualified variables (no data races on read-only data). Skip known synchronization primitive types (`pthread_mutex_t`, `pthread_rwlock_t`, `mtx_t`, `sem_t`, etc.). Eliminates 4 FPs on d_lib_networking.
+
+### DCL30-C: scalar value copy through pointer (FIXED)
+
+**Problem**: `*sock = sockfd` (where `sockfd` is `int`) was flagged as "local variable address escapes". But this copies the integer VALUE, not the ADDRESS of `sockfd`. The pointer `sock` was passed by the caller.
+
+**Fix**: In the `pointer_expression` LHS case, only flag when the RHS local variable is a pointer/array type (actual address escape). Scalar value copies are safe. Eliminates 1 FP on d_lib_networking.
+
+### DCL07-C/DCL31-C: `-I`/`--include-path` flag for header resolution (FIXED)
+
+**Problem**: 75 of 223 violations were DCL07-C/DCL31-C false positives for functions declared in external headers (mbedtls, d_lib_common). The `-d` flag existed but required users to manually identify directories containing all source files.
+
+**Fix**: Added `-I`/`--include-path` CLI flag (mirrors compiler convention). Pre-pass extracts `#include` directives from source files, resolves them against `-I` search paths (both `"quoted"` and `<angle>` forms), parses found headers, and merges function declarations into `ProjectContext`. Composes naturally with `-d` — both populate the same context. Headers parsed only once (deduped by canonical path).
+
+**Result**: With `-I` pointing at 3 include dirs: 223→205 total violations (−18). DCL07-C/DCL31-C specifically: 75→66 (−9). Remaining 66 are functions from system headers or generated headers not available on disk.
+
+### Round 2: Transitive includes, FIO47-C, EXP37-C, API00-C (v0.2.20)
+
+**Transitive include resolution** (`prescan.rs`): Converted single-pass `#include` iteration to queue-based processing. After parsing a resolved header, its `#include` directives are extracted and enqueued for resolution (with the header's directory as the new source_dir). `resolved_set` prevents cycles. Result: 71 headers parsed (up from ~20 in single-pass). Remaining DCL07/31-C violations are for project-local functions (`Memory_Malloc`, `FileUtil_ReadFileIntoBuf`, `BasicTCPConnection_setBlockingState`) that aren't in any included header — best fixed by d_lib_networking adding explicit `#include` directives for headers it actually uses.
+
+**FIO47-C snprintf arg count**: `count_arguments()` now subtracts 3 for `snprintf`/`vsnprintf` (buffer + size + format) instead of 1. −1 FP.
+
+**EXP37-C init_declarator skip**: K&R-style declaration check now skips `declaration` nodes with an `init_declarator` child (e.g., `uint32_t count = MACRO_CALL();`). −2 FPs.
+
+**API00-C static function skip**: `check_function_parameter_validation()` returns early for `static` functions (via `storage_class_specifier`) and `STATIC`/`STATIC_FUNC`/`STATIC_INLINE`/`STATIC_NOINLINE` macro prefixes. API00-C is about public API contracts — static functions are internal. −12 FPs.
+
+**Result**: 155 → **137** total violations (−18). 12/15 FP patterns now resolved.
+
+### Round 3: DCL13-C address-of-member + local alias (v0.2.20)
+
+**DCL13-C address-of-member detection** (`dcl13_c.rs`): `arg_addresses_param_member()` detects `&(param->field)` passed as function argument. tree-sitter parses `&expr` as `pointer_expression` (not `unary_expression`). `expr_derives_from_param()` recursively walks `field_expression`, `subscript_expression`, `pointer_expression`, and `parenthesized_expression` to find the parameter at the root. −5 FPs (all `sock` params with `&(sock->ssl)`, `&(sock->server_fd)`, etc. passed to mbedtls functions).
+
+**DCL13-C local pointer alias tracking**: `collect_pointer_aliases()` finds `T *local = param;` patterns in function body. If any alias is modified (or passed to a modifying call), the original parameter is considered modified. −1 FP (`buf` aliased as `cur = buf; recv(sock, cur, ...)`).
+
+**Result**: 137 → **131** total violations (−6). 13/17 FP patterns resolved.
+
+### Progress Summary
+
+| Pattern | Rule(s) | FPs | Status |
+|---------|---------|-----|--------|
+| 2 | MSC37-C | 3 | FIXED |
+| 3 | INT36-C | 7 | FIXED |
+| 4 | POS49-C | 4 | Already resolved |
+| 5 | CON03-C | 4 | FIXED (1 remains — legit finding) |
+| 7 | DCL30-C | 1 | FIXED |
+| 10 | PRE02-C | 3 | FIXED |
+| 12 | ERR33-C | 2 | FIXED |
+| 13 | EXP12-C | 2 | Already resolved |
+| 1 | DCL07-C/DCL31-C | 75→15 | FIXED (`-I` flag + transitive resolution) |
+| 8 | FIO47-C | 1 | FIXED (snprintf arg count) |
+| 15 | EXP37-C | 2 | FIXED (init_declarator skip) |
+| 16 | API00-C | 20→8 | FIXED (static function skip) |
+| 17 | DCL13-C | 7→1 | FIXED (addr-of-member + alias) |
+| 6 | EXP33-C | 1 | OPEN |
+| 9 | MEM05-C | 2 | OPEN |
+| 11 | ARR32-C | 1 | OPEN |
+| 14 | PRE08-C | 3 | OPEN |
+
+Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → **123** (Round 4). FP patterns resolved: 15/17.
+
+### Round 4: INT01-C dedup + EXP34-C stack array (v0.2.20)
+
+**INT01-C duplicate firing** (`int01_c.rs`): `check_size_params()` double-visited `function_declarator` and `parameter_list` nodes — once via explicit child iteration (lines 258–264) and again via general recursion (lines 270–274). Fix: skip already-handled node kinds in the general recursion when inside a `function_definition` or `function_declarator`. −3 duplicate violations (6→3).
+
+**EXP34-C stack array NotNull** (`prescan.rs`): `collect_assignments_recursive()` didn't track array declarations, so local arrays like `unsigned char cert_buf[N]` weren't recognized as NotNull at call sites. Fix: detect `array_declarator` children in declaration nodes and mark them NotNull (stack arrays can never be null). −1 FP.
+
+**Result**: 131 → **123** total violations (−8). 15/17 FP patterns resolved.
+
+### Juliet Benchmark: v0.2.19 → v0.2.20
+
+| Metric | v0.2.19 | v0.2.20 | Delta |
+|--------|---------|---------|-------|
+| TP | 145,639 | 144,278 | -1,361 |
+| FP | 184,644 | 181,924 | **-2,720** |
+| TP Rate | 44.1% | **44.2%** | **+0.1pp** |
+
+No CWE regressions (all deltas are improvements or neutral).
+
+**Top rule changes** (full per-rule data): API00-C −1,917 FP (static skip), INT01-C −231 FP (dedup), EXP34-C −221 FP (array NotNull), DCL30-C −201 FP, FIO47-C −88 FP. **No rule regressions** (previously reported POS02-C/ERR05-C/MEM06-C regressions were a measurement artifact from the top-10-only aggregation — see "Benchmark Measurement Fix" section below).
+
+Net: strongly positive (−2,720 FP, +0.1pp TP rate).
+
+---
+
+## Benchmark Measurement Fix (v0.2.21)
+
+**Discovery**: The MCP benchmark server's `compare_runs()` aggregated per-rule TP/FP from only the **top 10 rules** per CWE analysis file. This produced lossy data that created phantom regressions and inaccurate per-rule deltas.
+
+**Impact on v0.2.20**: The reported "regressions" — POS02-C +840 FP, ERR05-C +395 FP, MEM06-C +191 FP — were entirely phantom. Verified by comparing raw CSV violations: all three rules had **zero actual change** between v0.2.19 and v0.2.20. The apparent increase was caused by API00-C dropping out of the top 10 FP list in several CWEs (due to the static function skip), which promoted these other rules into the visible window.
+
+**Historical impact**: Per-rule deltas documented in JULIET_RESULTS.md have varying accuracy. Total TP/FP counts and TP rates were always correct (computed from full data). Per-rule numbers were approximately correct for dominant rules but could be significantly off for rules near the top-10 boundary. The direction of changes (improvement vs regression) was generally correct for major rules.
+
+**Fix**: Analysis script now outputs all rules (not top 10). All 16 existing benchmark runs reanalyzed with full per-rule data. MCP server parser updated to handle both old and new format.
 
 ---
 
@@ -91,18 +217,22 @@ types — only flags when both sides have known widths.
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
 
-### Top Remaining FP Rules (after 0.2.18)
+### Top Remaining FP Rules (v0.2.20, full per-rule data)
 
 | Rule | FP | TP | FP% | Notes |
 |------|---:|---:|----:|-------|
-| DCL06-C | 15.6K | 18.9K | 45% | Code style — reductions lose TPs proportionally |
-| INT30-C | 13.1K | 11.9K | 52% | Guard expansion in v0.2.18 |
-| INT32-C | 10.8K | 6.6K | 62% | field_expression → not_applicable reduced both |
-| EXP33-C | 6.8K | 5.4K | 56% | |
-| INT36-C | 6.7K | 4.1K | 62% | |
-| ERR33-C | 6.4K | 3.8K | 63% | Nested calls + math overlap fixed |
-| ERR05-C | 6.3K | 3.3K | 65% | |
-| EXP12-C | 5.4K | 3.4K | 62% | Parent-check added (was 11K/10.9K) |
+| DCL06-C | 15.9K | 19.1K | 46% | Code style — reductions lose TPs proportionally |
+| INT30-C | 13.6K | 12.3K | 52% | Guard expansion in v0.2.18 |
+| INT32-C | 11.1K | 6.7K | 62% | field_expression → not_applicable reduced both |
+| EXP33-C | 8.5K | 6.7K | 56% | |
+| ERR05-C | 7.3K | 4.1K | 64% | |
+| ERR33-C | 7.1K | 5.2K | 58% | Nested calls + math overlap fixed |
+| INT36-C | 6.8K | 4.1K | 62% | |
+| EXP12-C | 6.4K | 4.4K | 59% | Parent-check added |
+| DCL00-C | 5.1K | 3.0K | 63% | |
+| MEM04-C | 5.1K | 2.8K | 64% | |
+| MEM06-C | 5.0K | 2.9K | 64% | |
+| API00-C | 4.5K | 3.5K | 56% | Static function skip in v0.2.20 |
 
 **Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~44–45% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
 
@@ -239,7 +369,7 @@ Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is 
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond literal constants)
-- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking)
+- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking + `-I` header resolution)
 - No struct field type resolution (field_expression types unknown — see TODO above)
 
 ---

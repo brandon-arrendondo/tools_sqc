@@ -26,6 +26,8 @@ from mcp.server.fastmcp import FastMCP
 _HERE = Path(__file__).parent
 PROJECT_DIR = _HERE.parent
 SCRIPT = PROJECT_DIR / "scripts" / "run_juliet_parallel.sh"
+ANALYZE_SCRIPT = PROJECT_DIR / "scripts" / "analyze_juliet_results.py"
+JULIET_BASE = Path.home() / "data" / "benchmarks" / "juliet-test-suite-c" / "testcases"
 RESULTS_BASE = Path("/tmp/juliet_results")
 STATE_FILE = Path("/tmp/juliet_bench.pid")  # stores JSON state (name kept for compat)
 
@@ -239,11 +241,11 @@ def _parse_analysis(content: str) -> dict:
     in_bad = in_good = in_flaw = False
 
     for line in content.splitlines():
-        if "Top 10 Rules in OMITBAD" in line:
+        if "Rules in OMITBAD" in line:
             in_bad, in_good, in_flaw = True, False, False
-        elif "Top 10 Rules in OMITGOOD" in line:
+        elif "Rules in OMITGOOD" in line:
             in_bad, in_good, in_flaw = False, True, False
-        elif "Top Rules on FLAW Lines" in line:
+        elif "Rules on FLAW Lines" in line:
             in_bad, in_good, in_flaw = False, False, True
         elif line.startswith("---") or line.startswith("==="):
             in_bad = in_good = in_flaw = False
@@ -539,6 +541,85 @@ def clear_results() -> str:
             "message": ". ".join(msg_parts) + ".",
         }
     )
+
+
+@mcp.tool()
+def reanalyze_run(run: str = "all") -> str:
+    """
+    Re-run the analysis script on existing benchmark CSVs.
+
+    Regenerates _analysis.txt files from raw CSV data using the current
+    version of analyze_juliet_results.py. Does NOT re-run sqc — only
+    reclassifies existing violations as TP/FP.
+
+    Use this after updating the analysis script (e.g., to output all rules
+    instead of top 10) to refresh analysis files for historical runs.
+
+    Args:
+        run: Run identifier (run name, SHA, or "latest"), or "all" to
+             reanalyze every run directory.
+    """
+    if not JULIET_BASE.exists():
+        return json.dumps({"error": f"Juliet test suite not found at {JULIET_BASE}"})
+    if not ANALYZE_SCRIPT.exists():
+        return json.dumps({"error": f"Analysis script not found at {ANALYZE_SCRIPT}"})
+
+    # Determine which run directories to process
+    if run == "all":
+        targets = [
+            RESULTS_BASE / entry.name
+            for entry in sorted(RESULTS_BASE.iterdir())
+            if entry.is_dir() and entry.name.startswith("sqc-")
+        ]
+    else:
+        resolved = _resolve_run(run)
+        if resolved is None:
+            avail = [r["run_name"] for r in _list_run_dirs()]
+            return json.dumps({"error": f"Cannot resolve '{run}'.", "available": avail})
+        targets = [resolved]
+
+    results = []
+    for results_dir in targets:
+        csv_files = sorted(results_dir.glob("CWE*.csv"))
+        if not csv_files:
+            results.append({"run": results_dir.name, "status": "skipped", "reason": "no CSVs"})
+            continue
+
+        reanalyzed = 0
+        errors = []
+        for csv_file in csv_files:
+            cwe_name = csv_file.stem  # e.g. CWE134_Uncontrolled_Format_String
+            cwe_dir = JULIET_BASE / cwe_name
+            analysis_file = results_dir / f"{cwe_name}_analysis.txt"
+
+            if not cwe_dir.is_dir():
+                continue
+
+            try:
+                result = subprocess.run(
+                    ["python3", str(ANALYZE_SCRIPT), "--csv", str(csv_file), "--dir", str(cwe_dir)],
+                    capture_output=True, text=True, timeout=60,
+                )
+                if result.returncode == 0:
+                    analysis_file.write_text(result.stdout)
+                    reanalyzed += 1
+                else:
+                    errors.append(f"{cwe_name}: {result.stderr[:200]}")
+            except subprocess.TimeoutExpired:
+                errors.append(f"{cwe_name}: timeout")
+            except Exception as e:
+                errors.append(f"{cwe_name}: {e}")
+
+        results.append({
+            "run": results_dir.name,
+            "cwes_reanalyzed": reanalyzed,
+            "errors": errors[:5] if errors else [],
+        })
+
+    return json.dumps({
+        "results": results,
+        "message": f"Reanalyzed {len(targets)} run(s). Analysis files now include full per-rule breakdowns.",
+    })
 
 
 @mcp.tool()

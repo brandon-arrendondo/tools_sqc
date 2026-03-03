@@ -54,8 +54,10 @@ impl Int36C {
     }
 
     /// Check if a type is a pointer type
+    /// Note: bare `void` (without `*`) is NOT a pointer type — it's a discard cast.
+    /// `void *` matches via the `*` check.
     fn is_pointer_type(&self, type_text: &str) -> bool {
-        type_text.contains('*') || type_text.contains("void")
+        type_text.contains('*')
     }
 
     /// Check if a type is an integer type suitable for pointer storage
