@@ -129,8 +129,16 @@ fn check_function_definition(
         }
 
         // Check if this parameter is modified in the function body
+        // Also check through local pointer aliases (e.g., `T *cur = param;`)
         let is_modified = if let Some(body_node) = body {
-            is_pointer_param_modified(&body_node, &param_name, source)
+            if is_pointer_param_modified(&body_node, &param_name, source) {
+                true
+            } else {
+                let aliases = collect_pointer_aliases(&body_node, &param_name, source);
+                aliases
+                    .iter()
+                    .any(|alias| is_pointer_param_modified(&body_node, alias, source))
+            }
         } else {
             false // No body, assume not modified
         };
@@ -307,6 +315,68 @@ fn is_pointer_param_modified(body: &Node, param_name: &str, source: &str) -> boo
     check_node_for_pointer_modification(body, param_name, source)
 }
 
+/// Collect local pointer variables that are initialized from a parameter.
+///
+/// Detects patterns like `T *cur = param;` or `T *alias = (T *)param;`.
+/// Returns the names of local aliases so modifications through them
+/// can be attributed back to the original parameter.
+fn collect_pointer_aliases(body: &Node, param_name: &str, source: &str) -> Vec<String> {
+    let mut aliases = Vec::new();
+    collect_aliases_recursive(body, param_name, source, &mut aliases);
+    aliases
+}
+
+fn collect_aliases_recursive(
+    node: &Node,
+    param_name: &str,
+    source: &str,
+    aliases: &mut Vec<String>,
+) {
+    if node.kind() == "declaration" {
+        // Look for init_declarator children with pointer declarator
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "init_declarator" {
+                    // Check if the initializer value is the parameter
+                    if let Some(value) = child.child_by_field_name("value") {
+                        if arg_is_param(&value, param_name, source) {
+                            // Extract the declared name from the declarator
+                            if let Some(declarator) = child.child_by_field_name("declarator") {
+                                if let Some(name) =
+                                    find_identifier_in_declarator(&declarator, source)
+                                {
+                                    aliases.push(name);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_aliases_recursive(&child, param_name, source, aliases);
+        }
+    }
+}
+
+/// Extract the identifier name from a declarator node (handles pointer_declarator wrapping).
+fn find_identifier_in_declarator(node: &Node, source: &str) -> Option<String> {
+    if node.kind() == "identifier" {
+        return Some(ast_utils::get_node_text(node, source).to_string());
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if let Some(name) = find_identifier_in_declarator(&child, source) {
+                return Some(name);
+            }
+        }
+    }
+    None
+}
+
 /// Recursively check if a node contains modifications through a pointer parameter.
 ///
 /// Detects:
@@ -406,6 +476,81 @@ fn is_write_through_param(node: &Node, param_name: &str, source: &str) -> bool {
     false
 }
 
+/// Check if an argument is `&(param->field)`, `&param[i]`, or similar address-of
+/// expressions that take the address of the parameter's member data.
+///
+/// Passing `&(param->field)` to a non-read-only function means the callee can
+/// modify `param->field`, so the struct pointed to by `param` is modified.
+fn arg_addresses_param_member(node: &Node, param_name: &str, source: &str) -> bool {
+    // tree-sitter C parses &expr as pointer_expression (same node kind as *expr)
+    if node.kind() != "pointer_expression" {
+        return false;
+    }
+    // Check for & operator (vs * dereference)
+    if let Some(op_node) = node.child_by_field_name("operator") {
+        if ast_utils::get_node_text(&op_node, source) != "&" {
+            return false;
+        }
+    } else {
+        return false;
+    }
+    // The operand of & should derive from param (e.g., param->field, param[i])
+    if let Some(argument) = node.child_by_field_name("argument") {
+        return expr_derives_from_param(&argument, param_name, source);
+    }
+    false
+}
+
+/// Check if an expression is rooted in a parameter (for address-of detection).
+///
+/// Matches: `param->field`, `param[i]`, `(*param).field`, `((param->field))`,
+/// and nested combinations like `param->a->b`.
+fn expr_derives_from_param(node: &Node, param_name: &str, source: &str) -> bool {
+    match node.kind() {
+        "field_expression" => {
+            if let Some(argument) = node.child_by_field_name("argument") {
+                let text = ast_utils::get_node_text(&argument, source);
+                if text == param_name {
+                    return true;
+                }
+                return expr_derives_from_param(&argument, param_name, source);
+            }
+            false
+        }
+        "subscript_expression" => {
+            if let Some(argument) = node.child(0) {
+                let text = ast_utils::get_node_text(&argument, source);
+                if text == param_name {
+                    return true;
+                }
+                return expr_derives_from_param(&argument, param_name, source);
+            }
+            false
+        }
+        "pointer_expression" => {
+            if let Some(argument) = node.child_by_field_name("argument") {
+                let text = ast_utils::get_node_text(&argument, source);
+                if text == param_name {
+                    return true;
+                }
+                return expr_derives_from_param(&argument, param_name, source);
+            }
+            false
+        }
+        "parenthesized_expression" => {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() != "(" && child.kind() != ")" {
+                        return expr_derives_from_param(&child, param_name, source);
+                    }
+                }
+            }
+            false
+        }
+        _ => false,
+    }
+}
+
 /// Check if an argument expression is the parameter itself (directly or through a cast).
 ///
 /// Only matches direct usage: `param`, `(void*)param`, `((param))`.
@@ -448,14 +593,16 @@ fn is_param_passed_to_modifying_call(call_node: &Node, param_name: &str, source:
         None => return false,
     };
 
-    // Check if param appears as any argument (including through casts/member access)
+    // Check if param appears as any argument (direct, cast, or address-of-member)
     let mut param_is_arg = false;
     for i in 0..args.child_count() {
         if let Some(arg) = args.child(i) {
             if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
                 continue;
             }
-            if arg_is_param(&arg, param_name, source) {
+            if arg_is_param(&arg, param_name, source)
+                || arg_addresses_param_member(&arg, param_name, source)
+            {
                 param_is_arg = true;
                 break;
             }

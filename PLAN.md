@@ -50,6 +50,26 @@
 
 **Result**: With `-I` pointing at 3 include dirs: 223→205 total violations (−18). DCL07-C/DCL31-C specifically: 75→66 (−9). Remaining 66 are functions from system headers or generated headers not available on disk.
 
+### Round 2: Transitive includes, FIO47-C, EXP37-C, API00-C (v0.2.20)
+
+**Transitive include resolution** (`prescan.rs`): Converted single-pass `#include` iteration to queue-based processing. After parsing a resolved header, its `#include` directives are extracted and enqueued for resolution (with the header's directory as the new source_dir). `resolved_set` prevents cycles. Result: 71 headers parsed (up from ~20 in single-pass). Remaining DCL07/31-C violations are for project-local functions (`Memory_Malloc`, `FileUtil_ReadFileIntoBuf`, `BasicTCPConnection_setBlockingState`) that aren't in any included header — best fixed by d_lib_networking adding explicit `#include` directives for headers it actually uses.
+
+**FIO47-C snprintf arg count**: `count_arguments()` now subtracts 3 for `snprintf`/`vsnprintf` (buffer + size + format) instead of 1. −1 FP.
+
+**EXP37-C init_declarator skip**: K&R-style declaration check now skips `declaration` nodes with an `init_declarator` child (e.g., `uint32_t count = MACRO_CALL();`). −2 FPs.
+
+**API00-C static function skip**: `check_function_parameter_validation()` returns early for `static` functions (via `storage_class_specifier`) and `STATIC`/`STATIC_FUNC`/`STATIC_INLINE`/`STATIC_NOINLINE` macro prefixes. API00-C is about public API contracts — static functions are internal. −12 FPs.
+
+**Result**: 155 → **137** total violations (−18). 12/15 FP patterns now resolved.
+
+### Round 3: DCL13-C address-of-member + local alias (v0.2.20)
+
+**DCL13-C address-of-member detection** (`dcl13_c.rs`): `arg_addresses_param_member()` detects `&(param->field)` passed as function argument. tree-sitter parses `&expr` as `pointer_expression` (not `unary_expression`). `expr_derives_from_param()` recursively walks `field_expression`, `subscript_expression`, `pointer_expression`, and `parenthesized_expression` to find the parameter at the root. −5 FPs (all `sock` params with `&(sock->ssl)`, `&(sock->server_fd)`, etc. passed to mbedtls functions).
+
+**DCL13-C local pointer alias tracking**: `collect_pointer_aliases()` finds `T *local = param;` patterns in function body. If any alias is modified (or passed to a modifying call), the original parameter is considered modified. −1 FP (`buf` aliased as `cur = buf; recv(sock, cur, ...)`).
+
+**Result**: 137 → **131** total violations (−6). 13/17 FP patterns resolved.
+
 ### Progress Summary
 
 | Pattern | Rule(s) | FPs | Status |
@@ -62,15 +82,17 @@
 | 10 | PRE02-C | 3 | FIXED |
 | 12 | ERR33-C | 2 | FIXED |
 | 13 | EXP12-C | 2 | Already resolved |
-| 1 | DCL07-C/DCL31-C | 75→66 | FIXED (`-I` flag implemented) |
+| 1 | DCL07-C/DCL31-C | 75→15 | FIXED (`-I` flag + transitive resolution) |
+| 8 | FIO47-C | 1 | FIXED (snprintf arg count) |
+| 15 | EXP37-C | 2 | FIXED (init_declarator skip) |
+| 16 | API00-C | 20→8 | FIXED (static function skip) |
+| 17 | DCL13-C | 7→1 | FIXED (addr-of-member + alias) |
 | 6 | EXP33-C | 1 | OPEN |
-| 8 | FIO47-C | 1 | OPEN |
 | 9 | MEM05-C | 2 | OPEN |
 | 11 | ARR32-C | 1 | OPEN |
 | 14 | PRE08-C | 3 | OPEN |
-| 15 | EXP37-C | 2 | OPEN |
 
-Total violations: 233 → **223** (−10 from fixes) → **205** with `-I` (−18 more from include resolution). FP patterns resolved: 9/15 (34 FPs eliminated).
+Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → **131** (Round 3). FP patterns resolved: 13/17.
 
 ---
 

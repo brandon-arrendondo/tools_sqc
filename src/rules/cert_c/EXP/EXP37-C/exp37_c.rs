@@ -82,8 +82,12 @@ impl Exp37C {
         if node.kind() == "declaration" {
             let text = node.utf8_text(source.as_bytes()).unwrap_or("");
 
+            // Skip variable declarations with initialization (e.g. uint32_t x = MACRO();)
+            let has_init = (0..node.child_count())
+                .any(|i| node.child(i).is_some_and(|c| c.kind() == "init_declarator"));
+
             // Pattern: function_name(); with empty parens (K&R style)
-            if text.contains("()") && !text.contains("void") {
+            if !has_init && text.contains("()") && !text.contains("void") {
                 // Exclude function pointers and actual function definitions
                 if !text.contains("(*") && !text.contains("{") {
                     // Check if it looks like a function declaration

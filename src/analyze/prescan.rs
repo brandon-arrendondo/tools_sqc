@@ -726,39 +726,51 @@ pub fn resolve_includes(
     let mut parser = CParser::new()?;
     let mut resolved_set: HashSet<PathBuf> = HashSet::new();
 
-    // Collect all #include directives from source files
+    // Queue of (include_path, source_dir) pairs to resolve — supports transitive includes
+    let mut queue: Vec<(String, Option<PathBuf>)> = Vec::new();
+
+    // Seed the queue with #include directives from source files
     for file_path in source_files {
         if let Ok((tree, source)) = parser.parse_file(file_path) {
             let directives = extract_include_directives(&tree.root_node(), &source);
-            let source_dir = Path::new(file_path).parent();
+            let source_dir = Path::new(file_path).parent().map(|p| p.to_path_buf());
+            for inc in directives {
+                queue.push((inc, source_dir.clone()));
+            }
+        }
+    }
 
-            for include_path in &directives {
-                if let Some(resolved) = resolve_header(include_path, source_dir, include_paths) {
-                    // Canonicalize to avoid parsing the same file twice
-                    let canonical = match resolved.canonicalize() {
-                        Ok(c) => c,
-                        Err(_) => resolved.clone(),
-                    };
-                    if resolved_set.contains(&canonical) {
-                        continue;
-                    }
-                    resolved_set.insert(canonical);
+    // Process queue: resolve each header, parse it, and enqueue its transitive includes
+    while let Some((include_path, source_dir)) = queue.pop() {
+        if let Some(resolved) = resolve_header(&include_path, source_dir.as_deref(), include_paths)
+        {
+            let canonical = match resolved.canonicalize() {
+                Ok(c) => c,
+                Err(_) => resolved.clone(),
+            };
+            if resolved_set.contains(&canonical) {
+                continue;
+            }
+            resolved_set.insert(canonical);
 
-                    // Parse the header and merge into context
-                    let header_path = resolved.to_string_lossy().to_string();
-                    if let Ok((htree, hsource)) = parser.parse_file(&header_path) {
-                        let root = htree.root_node();
-                        collect_function_names(&root, &hsource, &mut context.known_functions);
-                        collect_header_declarations(
-                            &root,
-                            &hsource,
-                            &mut context.header_declared_functions,
-                        );
-                        let file_summaries = function_summary::compute_summaries(&root, &hsource);
-                        for (name, summary) in file_summaries {
-                            context.function_summaries.insert(name, summary);
-                        }
-                    }
+            let header_path = resolved.to_string_lossy().to_string();
+            if let Ok((htree, hsource)) = parser.parse_file(&header_path) {
+                let root = htree.root_node();
+                collect_function_names(&root, &hsource, &mut context.known_functions);
+                collect_header_declarations(
+                    &root,
+                    &hsource,
+                    &mut context.header_declared_functions,
+                );
+                let file_summaries = function_summary::compute_summaries(&root, &hsource);
+                for (name, summary) in file_summaries {
+                    context.function_summaries.insert(name, summary);
+                }
+
+                // Enqueue transitive includes from this header
+                let header_dir = resolved.parent().map(|p| p.to_path_buf());
+                for inc in extract_include_directives(&root, &hsource) {
+                    queue.push((inc, header_dir.clone()));
                 }
             }
         }
