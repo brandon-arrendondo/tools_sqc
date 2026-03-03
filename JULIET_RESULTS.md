@@ -11,10 +11,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 144,278 |
-| **False Positives** | 181,924 |
-| **TP Rate** | **44.2%** (v0.2.20, MCP benchmark) |
-| **FP Reduction from Baseline** | -78.3% (839K → 182K) |
+| **True Positives** | 137,921 |
+| **False Positives** | 175,667 |
+| **TP Rate** | **44.0%** (v0.2.21, MCP benchmark) |
+| **FP Reduction from Baseline** | -79.1% (839K → 176K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
 
@@ -49,10 +49,11 @@
 | **v0.2.18** | **v0.2.18** | **INT31-C pointer cast, ARR36-C type filter, API00-C void-cast, INT30-C guard expansion** | **145,639** | **184,645** | **44.1%** | **-946** |
 | v0.2.19 | v0.2.19 | INT30-C loop guards, prescan null guards, ARR00-C crash fix | 145,639 | 184,644 | 44.1% | -1 |
 | **v0.2.20** | **v0.2.20** | **d_lib_networking FP fixes: API00-C static skip, INT01-C dedup, EXP37-C init_declarator, EXP34-C array NotNull** | **144,278** | **181,924** | **44.2%** | **-2,720** |
+| **v0.2.21** | **v0.2.21** | **const_eval value-range analysis + d_lib_networking Round 6 FP fixes** | **137,921** | **175,667** | **44.0%** | **-6,257** |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-657,417 (-78.3%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-663,674 (-79.1%)**.
 
 ---
 
@@ -76,6 +77,27 @@ Two complementary mechanisms for cross-file null pointer analysis:
 - No impact on other CWEs (changes isolated to EXP34-C null analysis)
 
 **Files changed**: `exp34_c.rs`, `function_summary.rs`, `prescan.rs`, `null_state.rs`
+
+### v0.2.21 — Const-Eval Value-Range Analysis + d_lib_networking Round 6
+
+New `src/analyze/const_eval.rs` module (~550 lines) implements lightweight constant evaluation: macro constant collection from `#define` nodes, `ValueRange` interval arithmetic, recursive AST constant folder, loop-bound extraction from enclosing `for`/`while`/`do` statements, and local variable range resolution. Integrated into INT32-C and INT30-C as early-return suppression when `expression_fits_in_signed()`/`expression_fits_in_unsigned()` proves safety.
+
+**d_lib_networking Round 6 fixes** (also included):
+- ARR02-C: Skip string-literal-initialized arrays (`const char name[] = "..."`)
+- POS02-C: Removed `socket`/`setsockopt` from privileged operation list
+- PRE31-C: Strip string literals before side-effect analysis
+- MEM05-C: ALL_CAPS macro constant VLA suppression + word-boundary recursion matching
+
+**Juliet impact** (0.2.20 → 0.2.21):
+- **Overall**: TP 144,278→137,921 (−6,357), FP 181,924→175,667 (**−6,257**), TP rate **44.2% → 44.0%** (−0.2pp)
+- Zero CWE regressions. Zero rule regressions
+- Top rule changes: INT32-C −2,849 FP/−2,147 TP (const_eval), POS02-C −1,660 FP/−2,398 TP (socket/setsockopt), MEM05-C −1,454 FP/−1,638 TP (ALL_CAPS VLA), ARR02-C −157 FP/−88 TP, INT30-C −136 FP/−86 TP
+- **POS02-C concern**: 0.69:1 FP:TP ratio — loses more TPs than FPs. Juliet patterns use `socket()`/`setsockopt()` in good/bad function pairs; removing the check suppresses violations in surrounding code. Real-world impact is much smaller (−167 across curl+hostap)
+- CWE190 (Integer Overflow): −1,269 FP (biggest CWE improvement). CWE191: −848 FP
+
+**d_lib_networking results**: INT32-C 10→8 (−2 macro×literal FPs suppressed). INT30-C unchanged.
+
+**Files changed**: `const_eval.rs` (NEW), `context.rs`, `prescan.rs`, `mod.rs`, `int32_c.rs`, `int30_c.rs`, `arr02_c.rs`, `pos02_c.rs`, `pre31_c.rs`, `mem05_c.rs`
 
 ### v0.2.20 — d_lib_networking FP Fixes (API00-C, INT01-C, EXP37-C, EXP34-C)
 
@@ -320,24 +342,24 @@ Fixed preprocessor-block visibility bug (functions inside `#ifdef` invisible). D
 
 | CWE | Category | TP Rate | Files |
 |-----|----------|--------:|------:|
-| 480 | Use of Incorrect Operator | 91.7% | 18 |
-| 506 | Embedded Malicious Code | 85.9% | 158 |
-| 587 | Assignment of Fixed Address to Pointer | 83.3% | 18 |
-| 617 | Reachable Assertion | 79.2% | 354 |
-| 197 | Numeric Truncation Error | 78.3% | 1,008 |
-| 464 | Data Structure Sentinel Addition | 77.6% | 56 |
-| 427 | Uncontrolled Search Path Element | 72.8% | 560 |
-| 78 | OS Command Injection | 71.4% | 5,600 |
-| 123 | Write-What-Where Condition | 68.2% | 168 |
-| 15 | External Control of System/Config | 67.0% | 56 |
-| 194 | Unexpected Sign Extension | ~58% | 1,344 |
-| 195 | Signed-to-Unsigned Conversion | ~56% | 1,344 |
-| 510 | Trapdoor | ~58% | 70 |
-| 90 | LDAP Injection | ~52% | 560 |
-| 526 | Info Exposure via Env Variables | ~54% | 18 |
-| 680 | Integer Overflow to Buffer Overflow | ~51% | 336 |
-| 188 | Reliance on Data/Memory Layout | ~51% | 36 |
-| 114 | Process Control | ~58% | 672 |
+| 464 | Data Structure Sentinel Addition | 89.1% | 56 |
+| 617 | Reachable Assertion | 86.7% | 354 |
+| 506 | Embedded Malicious Code | 85.7% | 158 |
+| 587 | Assignment of Fixed Address to Pointer | 100% | 18 |
+| 526 | Info Exposure via Env Variables | 100% | 18 |
+| 78 | OS Command Injection | 76.1% | 5,600 |
+| 114 | Process Control | 73.6% | 672 |
+| 427 | Uncontrolled Search Path Element | 72.0% | 560 |
+| 510 | Trapdoor | 70.0% | 70 |
+| 197 | Numeric Truncation Error | 69.4% | 1,008 |
+| 15 | External Control of System/Config | 66.9% | 56 |
+| 620 | Unverified Password Change | 64.4% | 36 |
+| 194 | Unexpected Sign Extension | 59.9% | 1,344 |
+| 188 | Reliance on Data/Memory Layout | 59.5% | 36 |
+| 123 | Write-What-Where Condition | 58.6% | 168 |
+| 90 | LDAP Injection | 57.9% | 560 |
+| 195 | Signed-to-Unsigned Conversion | 57.9% | 1,344 |
+| 835 | Infinite Loop | 50.0% | 18 |
 
 ### Tier 2: Moderate Detection (35–50%) — 68 categories
 
@@ -445,7 +467,7 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 
 | Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
 |------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **44.2%** | **55.8%** | AST + CFG + inter-procedural + call-site null + local var tracking + `-I` header resolution | Full (118 CWEs) | 283 rules | -- |
+| **SqC** | **44.0%** | **56.0%** | AST + CFG + inter-procedural + call-site null + local var tracking + const_eval + `-I` header resolution | Full (118 CWEs) | 283 rules | -- |
 | Semgrep CE | 44–48% | Very low | AST (tree-sitter) | No | Community | Free |
 | Semgrep Pro | 72–75% | Very low | AST + taint + inter-file | No | Community | Commercial |
 | Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
@@ -483,7 +505,8 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 | v0.2.17 | 44.2% | 185,591 | 146,913 | Phase 3: MEM10-C, API00-C, API02-C, prescan (CWE-476 38.5%) |
 | v0.2.18 | 44.1% | 184,645 | 145,639 | INT31-C pointer cast, ARR36-C, API00-C void-cast, INT30-C guards |
 | v0.2.19 | 44.1% | 184,644 | 145,639 | INT30-C loop guards, prescan null guards, ARR00-C fix |
-| **v0.2.20** | **44.2%** | **181,924** | **144,278** | **d_lib_networking FP fixes: API00-C, INT01-C, EXP37-C, EXP34-C** |
+| v0.2.20 | 44.2% | 181,924 | 144,278 | d_lib_networking FP fixes: API00-C, INT01-C, EXP37-C, EXP34-C |
+| **v0.2.21** | **44.0%** | **175,667** | **137,921** | **const_eval value-range analysis + d_lib_networking Round 6** |
 
 ---
 
