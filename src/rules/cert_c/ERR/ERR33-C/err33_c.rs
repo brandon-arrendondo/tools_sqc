@@ -114,7 +114,7 @@ impl Err33C {
             if self.is_error_returning_function(function_name) {
                 // Skip if this call is part of an assignment or declaration
                 // Those cases are handled by check_assignment and check_init_declarator
-                if self.is_call_in_assignment_or_declaration(node) {
+                if self.is_call_in_assignment_or_declaration(node, source) {
                     return;
                 }
 
@@ -160,7 +160,7 @@ impl Err33C {
         }
     }
 
-    fn is_call_in_assignment_or_declaration(&self, call_node: &Node) -> bool {
+    fn is_call_in_assignment_or_declaration(&self, call_node: &Node, source: &str) -> bool {
         let mut current = call_node.parent();
         while let Some(parent) = current {
             match parent.kind() {
@@ -168,8 +168,15 @@ impl Err33C {
                 "assignment_expression" | "init_declarator" | "argument_list" => return true,
                 // Ternary: malloc(n) ? ... : ...
                 "conditional_expression" => return true,
-                // Cast: (int*)malloc(n)
+                // Cast: (int*)malloc(n) or (void)fprintf(...)
                 "cast_expression" => {
+                    // (void)func() is intentional discard — CERT-C compliant pattern
+                    if let Some(type_node) = parent.child_by_field_name("type") {
+                        let type_text = get_node_text(&type_node, source);
+                        if type_text.trim() == "void" {
+                            return true;
+                        }
+                    }
                     // Keep walking — the cast's parent might be an assignment
                 }
                 "expression_statement" | "compound_statement" | "function_definition" => break,
