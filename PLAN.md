@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-03 (v0.2.19)
+**Last Updated**: 2026-03-03 (v0.2.20)
 
 ---
 
@@ -92,7 +92,41 @@
 | 11 | ARR32-C | 1 | OPEN |
 | 14 | PRE08-C | 3 | OPEN |
 
-Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → **131** (Round 3). FP patterns resolved: 13/17.
+Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → **123** (Round 4). FP patterns resolved: 15/17.
+
+### Round 4: INT01-C dedup + EXP34-C stack array (v0.2.20)
+
+**INT01-C duplicate firing** (`int01_c.rs`): `check_size_params()` double-visited `function_declarator` and `parameter_list` nodes — once via explicit child iteration (lines 258–264) and again via general recursion (lines 270–274). Fix: skip already-handled node kinds in the general recursion when inside a `function_definition` or `function_declarator`. −3 duplicate violations (6→3).
+
+**EXP34-C stack array NotNull** (`prescan.rs`): `collect_assignments_recursive()` didn't track array declarations, so local arrays like `unsigned char cert_buf[N]` weren't recognized as NotNull at call sites. Fix: detect `array_declarator` children in declaration nodes and mark them NotNull (stack arrays can never be null). −1 FP.
+
+**Result**: 131 → **123** total violations (−8). 15/17 FP patterns resolved.
+
+### Juliet Benchmark: v0.2.19 → v0.2.20
+
+| Metric | v0.2.19 | v0.2.20 | Delta |
+|--------|---------|---------|-------|
+| TP | 145,639 | 144,278 | -1,361 |
+| FP | 184,644 | 181,924 | **-2,720** |
+| TP Rate | 44.1% | **44.2%** | **+0.1pp** |
+
+No CWE regressions (all deltas are improvements or neutral).
+
+**Top rule changes** (full per-rule data): API00-C −1,917 FP (static skip), INT01-C −231 FP (dedup), EXP34-C −221 FP (array NotNull), DCL30-C −201 FP, FIO47-C −88 FP. **No rule regressions** (previously reported POS02-C/ERR05-C/MEM06-C regressions were a measurement artifact from the top-10-only aggregation — see "Benchmark Measurement Fix" section below).
+
+Net: strongly positive (−2,720 FP, +0.1pp TP rate).
+
+---
+
+## Benchmark Measurement Fix (v0.2.21)
+
+**Discovery**: The MCP benchmark server's `compare_runs()` aggregated per-rule TP/FP from only the **top 10 rules** per CWE analysis file. This produced lossy data that created phantom regressions and inaccurate per-rule deltas.
+
+**Impact on v0.2.20**: The reported "regressions" — POS02-C +840 FP, ERR05-C +395 FP, MEM06-C +191 FP — were entirely phantom. Verified by comparing raw CSV violations: all three rules had **zero actual change** between v0.2.19 and v0.2.20. The apparent increase was caused by API00-C dropping out of the top 10 FP list in several CWEs (due to the static function skip), which promoted these other rules into the visible window.
+
+**Historical impact**: Per-rule deltas documented in JULIET_RESULTS.md have varying accuracy. Total TP/FP counts and TP rates were always correct (computed from full data). Per-rule numbers were approximately correct for dominant rules but could be significantly off for rules near the top-10 boundary. The direction of changes (improvement vs regression) was generally correct for major rules.
+
+**Fix**: Analysis script now outputs all rules (not top 10). All 16 existing benchmark runs reanalyzed with full per-rule data. MCP server parser updated to handle both old and new format.
 
 ---
 
@@ -183,18 +217,22 @@ types — only flags when both sides have known widths.
 
 Current fix skips all non-negative integer literals to eliminate FPs from `x >> 8` etc. This means we miss the case where the literal is >= the promoted type width (e.g. `uint8_t x; x << 32;`). Compilers warn with `-Wshift-count-overflow`. Low priority — requires knowing promoted operand type.
 
-### Top Remaining FP Rules (after 0.2.18)
+### Top Remaining FP Rules (v0.2.20, full per-rule data)
 
 | Rule | FP | TP | FP% | Notes |
 |------|---:|---:|----:|-------|
-| DCL06-C | 15.6K | 18.9K | 45% | Code style — reductions lose TPs proportionally |
-| INT30-C | 13.1K | 11.9K | 52% | Guard expansion in v0.2.18 |
-| INT32-C | 10.8K | 6.6K | 62% | field_expression → not_applicable reduced both |
-| EXP33-C | 6.8K | 5.4K | 56% | |
-| INT36-C | 6.7K | 4.1K | 62% | |
-| ERR33-C | 6.4K | 3.8K | 63% | Nested calls + math overlap fixed |
-| ERR05-C | 6.3K | 3.3K | 65% | |
-| EXP12-C | 5.4K | 3.4K | 62% | Parent-check added (was 11K/10.9K) |
+| DCL06-C | 15.9K | 19.1K | 46% | Code style — reductions lose TPs proportionally |
+| INT30-C | 13.6K | 12.3K | 52% | Guard expansion in v0.2.18 |
+| INT32-C | 11.1K | 6.7K | 62% | field_expression → not_applicable reduced both |
+| EXP33-C | 8.5K | 6.7K | 56% | |
+| ERR05-C | 7.3K | 4.1K | 64% | |
+| ERR33-C | 7.1K | 5.2K | 58% | Nested calls + math overlap fixed |
+| INT36-C | 6.8K | 4.1K | 62% | |
+| EXP12-C | 6.4K | 4.4K | 59% | Parent-check added |
+| DCL00-C | 5.1K | 3.0K | 63% | |
+| MEM04-C | 5.1K | 2.8K | 64% | |
+| MEM06-C | 5.0K | 2.9K | 64% | |
+| API00-C | 4.5K | 3.5K | 56% | Static function skip in v0.2.20 |
 
 **Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~44–45% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
 
