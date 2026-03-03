@@ -231,16 +231,16 @@ def main():
         for line, rule in r['tp_flaw_violations']:
             tp_flaw_rules[rule] += 1
 
-    print(f"\n--- Top 10 Rules in OMITBAD (True Positives) ---")
-    for rule, count in sorted(tp_rules.items(), key=lambda x: x[1], reverse=True)[:10]:
+    print(f"\n--- Rules in OMITBAD (True Positives) ---")
+    for rule, count in sorted(tp_rules.items(), key=lambda x: x[1], reverse=True):
         print(f"  {rule}: {count}")
 
-    print(f"\n--- Top 10 Rules in OMITGOOD (False Positives) ---")
-    for rule, count in sorted(fp_rules.items(), key=lambda x: x[1], reverse=True)[:10]:
+    print(f"\n--- Rules in OMITGOOD (False Positives) ---")
+    for rule, count in sorted(fp_rules.items(), key=lambda x: x[1], reverse=True):
         print(f"  {rule}: {count}")
 
-    print(f"\n--- Top Rules on FLAW Lines (Critical Detections) ---")
-    for rule, count in sorted(tp_flaw_rules.items(), key=lambda x: x[1], reverse=True)[:10]:
+    print(f"\n--- Rules on FLAW Lines (Critical Detections) ---")
+    for rule, count in sorted(tp_flaw_rules.items(), key=lambda x: x[1], reverse=True):
         print(f"  {rule}: {count}")
 
     print("\n" + "="*70)

@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-03-02
+**Last Updated**: 2026-03-03
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -11,10 +11,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 145,639 |
-| **False Positives** | 184,645 |
-| **TP Rate** | **44.1%** (v0.2.18, MCP benchmark) |
-| **FP Reduction from Baseline** | -78.0% (839K → 185K) |
+| **True Positives** | 144,278 |
+| **False Positives** | 181,924 |
+| **TP Rate** | **44.2%** (v0.2.20, MCP benchmark) |
+| **FP Reduction from Baseline** | -78.3% (839K → 182K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 18 |
 
@@ -48,10 +48,11 @@
 | **v0.2.17** | **v0.2.17** | **Phase 3: MEM10-C, API00-C, API02-C, prescan enhancement** | **146,913** | **185,591** | **44.2%** | **+81** |
 | **v0.2.18** | **v0.2.18** | **INT31-C pointer cast, ARR36-C type filter, API00-C void-cast, INT30-C guard expansion** | **145,639** | **184,645** | **44.1%** | **-946** |
 | v0.2.19 | v0.2.19 | INT30-C loop guards, prescan null guards, ARR00-C crash fix | 145,639 | 184,644 | 44.1% | -1 |
+| **v0.2.20** | **v0.2.20** | **d_lib_networking FP fixes: API00-C static skip, INT01-C dedup, EXP37-C init_declarator, EXP34-C array NotNull** | **144,278** | **181,924** | **44.2%** | **-2,720** |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-654,697 (-78.0%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-657,417 (-78.3%)**.
 
 ---
 
@@ -75,6 +76,30 @@ Two complementary mechanisms for cross-file null pointer analysis:
 - No impact on other CWEs (changes isolated to EXP34-C null analysis)
 
 **Files changed**: `exp34_c.rs`, `function_summary.rs`, `prescan.rs`, `null_state.rs`
+
+### v0.2.20 — d_lib_networking FP Fixes (API00-C, INT01-C, EXP37-C, EXP34-C)
+
+Fixes driven by real-world false positive analysis on d_lib_networking codebase. Four rounds of targeted fixes (transitive includes, snprintf arg count, K&R declaration, static function skip, DCL13-C alias tracking, INT01-C dedup, stack array NotNull).
+
+**API00-C static function skip**: `check_function_parameter_validation()` returns early for `static` functions and `STATIC` macro prefixes. API00-C is about public API contracts — static functions are internal.
+
+**INT01-C duplicate firing fix**: `check_size_params()` double-visited `function_declarator`/`parameter_list` nodes via both explicit child iteration and general recursion. Fix: skip already-handled node kinds in general recursion.
+
+**EXP37-C init_declarator skip**: K&R-style declaration check now skips `declaration` nodes with `init_declarator` child (variable declarations with initialization, not function prototypes).
+
+**EXP34-C stack array NotNull**: `collect_assignments_recursive()` in prescan now detects `array_declarator` children and marks them NotNull (stack arrays can never be null).
+
+**FIO47-C snprintf arg count**: `count_arguments()` subtracts 3 for `snprintf`/`vsnprintf` (buffer + size + format).
+
+**DCL13-C address-of-member + alias**: Detects `&(param->field)` in function args and `T *local = param;` alias patterns as modification through the parameter.
+
+**Juliet impact** (0.2.19 → 0.2.20):
+- **Overall**: TP 145,639→144,278 (−1,361), FP 184,644→181,924 (**−2,720**), TP rate **44.1% → 44.2%** (+0.1pp)
+- No CWE regressions (all CWE deltas are improvements or neutral)
+- Top rule changes (full per-rule data): API00-C −1,917 FP (static skip), INT01-C −231 FP (dedup), EXP34-C −221 FP (array NotNull), DCL30-C −201 FP, FIO47-C −88 FP
+- **No rule regressions.** Previously reported POS02-C/ERR05-C/MEM06-C regressions were a measurement artifact — see note below
+
+**Files changed**: `api00_c.rs`, `int01_c.rs`, `exp37_c.rs`, `fio47_c.rs`, `dcl13_c.rs`, `prescan.rs`
 
 ### v0.2.19 — Real-World FP Reduction (INT30-C Loop Guards, Prescan Null Guards, ARR00-C Fix)
 
@@ -405,13 +430,22 @@ Juliet test files contain preprocessor-guarded sections:
 4. The OMITBAD/OMITGOOD code ratio varies across categories
 5. 12 categories had no usable C test data
 
+### Per-Rule Data Accuracy Note (2026-03-03)
+
+Prior to this date, the analysis script output only the **top 10 rules** per CWE for TP and FP. The MCP benchmark server aggregated per-rule totals from these top-10 lists, producing lossy data. This caused:
+- **Phantom regressions**: Rules appearing in the top-10 window when other rules dropped out (e.g., v0.2.20's reported POS02-C/ERR05-C/MEM06-C "regressions" were entirely phantom — zero actual change)
+- **Inaccurate per-rule deltas**: Numbers could be undercounted (rule only in top-10 for some CWEs) or overcounted (rule entering top-10 due to another rule's reduction)
+- **Total TP/FP and TP rates were always correct** — these were computed from full violation data, not per-rule aggregation
+
+The analysis script now outputs all rules, and all 16 existing benchmark runs have been reanalyzed with full per-rule data. Historical per-rule numbers in this document's "Per-Round Fix Details" section predate this fix and may have varying accuracy. The overall direction of changes was generally correct.
+
 ---
 
 ## Competitor Comparison
 
 | Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
 |------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **44.2%** | **55.8%** | AST + CFG + inter-procedural + call-site null + local var tracking | Full (118 CWEs) | 283 rules | -- |
+| **SqC** | **44.2%** | **55.8%** | AST + CFG + inter-procedural + call-site null + local var tracking + `-I` header resolution | Full (118 CWEs) | 283 rules | -- |
 | Semgrep CE | 44–48% | Very low | AST (tree-sitter) | No | Community | Free |
 | Semgrep Pro | 72–75% | Very low | AST + taint + inter-file | No | Community | Commercial |
 | Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
@@ -446,7 +480,10 @@ Juliet test files contain preprocessor-guarded sections:
 | v0.2.13 | 44.7% | 196,177 | 158,403 | INT31-C implicit narrowing + d_lib_common REFACTOR.md fixes |
 | v0.2.15 | 44.2% | 185,499 | 146,714 | d_lib_common FP.md cleanup (17 patterns, real-world precision) |
 | v0.2.16 | 44.2% | 185,510 | 146,733 | EXP34-C call-site null propagation (Phase 2) |
-| **v0.2.17** | **44.2%** | **185,591** | **146,913** | Phase 3: MEM10-C, API00-C, API02-C, prescan (CWE-476 38.5%) |
+| v0.2.17 | 44.2% | 185,591 | 146,913 | Phase 3: MEM10-C, API00-C, API02-C, prescan (CWE-476 38.5%) |
+| v0.2.18 | 44.1% | 184,645 | 145,639 | INT31-C pointer cast, ARR36-C, API00-C void-cast, INT30-C guards |
+| v0.2.19 | 44.1% | 184,644 | 145,639 | INT30-C loop guards, prescan null guards, ARR00-C fix |
+| **v0.2.20** | **44.2%** | **181,924** | **144,278** | **d_lib_networking FP fixes: API00-C, INT01-C, EXP37-C, EXP34-C** |
 
 ---
 
