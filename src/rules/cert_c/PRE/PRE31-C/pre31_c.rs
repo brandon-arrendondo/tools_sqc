@@ -181,47 +181,79 @@ impl Pre31C {
         false
     }
 
+    /// Remove content inside string literals from an expression so that
+    /// function-call patterns inside strings don't trigger false positives.
+    /// e.g. `PR "mbedtls_ssl_write() timeout" PW` → `PR  PW`
+    fn strip_string_literals(&self, text: &str) -> String {
+        let mut result = String::with_capacity(text.len());
+        let mut in_string = false;
+        let mut escape_next = false;
+        for ch in text.chars() {
+            if escape_next {
+                escape_next = false;
+                continue;
+            }
+            if ch == '\\' && in_string {
+                escape_next = true;
+                continue;
+            }
+            if ch == '"' {
+                in_string = !in_string;
+                continue;
+            }
+            if !in_string {
+                result.push(ch);
+            }
+        }
+        result
+    }
+
     fn has_side_effects(&self, arg: &str, context_node: &Node, source: &str) -> bool {
+        // Strip string literal content to avoid false positive function-call detection
+        // inside quoted text (e.g., NW_LOGE(PR "...func()..." PW, ...))
+        let stripped = self.strip_string_literals(arg);
+        let arg_check = stripped.as_str();
+
         // Check for various types of side effects in the argument
 
         // Direct side effect operators
-        if arg.contains("++")
-            || arg.contains("--")
-            || arg.contains("+=")
-            || arg.contains("-=")
-            || arg.contains("*=")
-            || arg.contains("/=")
-            || arg.contains("%=")
-            || arg.contains("&=")
-            || arg.contains("|=")
-            || arg.contains("^=")
-            || arg.contains("<<=")
-            || arg.contains(">>=")
+        if arg_check.contains("++")
+            || arg_check.contains("--")
+            || arg_check.contains("+=")
+            || arg_check.contains("-=")
+            || arg_check.contains("*=")
+            || arg_check.contains("/=")
+            || arg_check.contains("%=")
+            || arg_check.contains("&=")
+            || arg_check.contains("|=")
+            || arg_check.contains("^=")
+            || arg_check.contains("<<=")
+            || arg_check.contains(">>=")
         {
             return true;
         }
 
         // Assignment operator
-        if self.contains_assignment(arg) {
+        if self.contains_assignment(arg_check) {
             return true;
         }
 
         // Function calls that might have side effects
-        if self.contains_function_call_with_side_effects(arg) {
+        if self.contains_function_call_with_side_effects(arg_check) {
             return true;
         }
 
         // Volatile access - check both direct keyword and via volatile variables in source
-        if arg.contains("volatile") {
+        if arg_check.contains("volatile") {
             return true;
         }
         // Check if any identifier in arg was declared as volatile in the source
-        if self.is_volatile_variable_access(arg, source) {
+        if self.is_volatile_variable_access(arg_check, source) {
             return true;
         }
 
         // I/O operations
-        if self.contains_io_operations(arg) {
+        if self.contains_io_operations(arg_check) {
             return true;
         }
 

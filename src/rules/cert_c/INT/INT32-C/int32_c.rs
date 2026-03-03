@@ -1,10 +1,25 @@
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::const_eval::{self, MacroConstantMap};
+use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
-pub struct Int32C;
+pub struct Int32C {
+    project_macros: RefCell<MacroConstantMap>,
+    current_macros: RefCell<MacroConstantMap>,
+}
+
+impl Int32C {
+    pub fn new() -> Self {
+        Self {
+            project_macros: RefCell::new(MacroConstantMap::new()),
+            current_macros: RefCell::new(MacroConstantMap::new()),
+        }
+    }
+}
 
 impl CertRule for Int32C {
     fn rule_id(&self) -> &'static str {
@@ -27,9 +42,19 @@ impl CertRule for Int32C {
         "INT32-C"
     }
 
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.project_macros.borrow_mut() = context.macro_constants.clone();
+    }
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         let type_map = self.collect_variable_types(node, source);
+
+        // Merge project-level macros with per-file macros
+        let mut macros = self.project_macros.borrow().clone();
+        macros.extend(const_eval::collect_macro_constants(node, source));
+        *self.current_macros.borrow_mut() = macros;
+
         self.check_node(node, source, &mut violations, &type_map);
         violations
     }
@@ -92,6 +117,45 @@ impl Int32C {
                 _ => {}
             }
             current = parent.parent();
+        }
+        false
+    }
+
+    /// For compound assignments (`x op= y`), check if `x op y` provably fits
+    /// in a signed integer of `bits` width using constant evaluation.
+    /// Note: only resolves the RHS — the LHS is the mutation target and its
+    /// initial assignment doesn't reflect its current value (especially in loops).
+    fn compound_expr_fits_signed(&self, node: &Node, source: &str, op: &str, bits: u32) -> bool {
+        let macros = self.current_macros.borrow();
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
+            let loop_ranges = const_eval::extract_loop_var_ranges(node, source, &macros);
+            let mut var_ranges = loop_ranges.clone();
+            // Only resolve RHS identifiers — LHS is the mutation target
+            const_eval::resolve_identifiers_in_expr(
+                &right,
+                source,
+                &macros,
+                &loop_ranges,
+                &mut var_ranges,
+            );
+            // LHS: only use loop ranges and macros (not local assignments)
+            let lr = const_eval::try_evaluate_range(&left, source, &macros, &loop_ranges);
+            let rr = const_eval::try_evaluate_range(&right, source, &macros, &var_ranges);
+            if let (Some(lr), Some(rr)) = (lr, rr) {
+                let result = match op {
+                    "+" => lr.add(&rr),
+                    "-" => lr.sub(&rr),
+                    "*" => lr.mul(&rr),
+                    "<<" => lr.shl(&rr),
+                    _ => None,
+                };
+                if let Some(range) = result {
+                    return range.fits_in_signed(bits);
+                }
+            }
         }
         false
     }
@@ -193,6 +257,16 @@ impl Int32C {
                     return;
                 }
 
+                // Skip if constant evaluation proves the result fits in 32-bit signed
+                if const_eval::expression_fits_in_signed(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                ) {
+                    return;
+                }
+
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(node, source);
@@ -264,6 +338,16 @@ impl Int32C {
                     return;
                 }
 
+                // Skip if constant evaluation proves the result fits in 32-bit signed
+                if const_eval::expression_fits_in_signed(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                ) {
+                    return;
+                }
+
                 if !self.has_overflow_check_subtraction(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(node, source);
@@ -331,6 +415,16 @@ impl Int32C {
                 // Skip if inside a block guarded by a type-limit bounds check
                 let op_names = self.extract_operand_names(node, source);
                 if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
+                // Skip if constant evaluation proves the result fits in 32-bit signed
+                if const_eval::expression_fits_in_signed(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                ) {
                     return;
                 }
 
@@ -556,6 +650,16 @@ impl Int32C {
                     return;
                 }
 
+                // Skip if constant evaluation proves the result fits in 32-bit signed
+                if const_eval::expression_fits_in_signed(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                ) {
+                    return;
+                }
+
                 if !self.has_shift_overflow_check(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(node, source);
@@ -597,6 +701,11 @@ impl Int32C {
                 // Skip if inside a block guarded by a type-limit bounds check
                 let op_names = self.extract_operand_names(node, source);
                 if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
+                // Skip if constant evaluation proves the result fits in 32-bit signed
+                if self.compound_expr_fits_signed(node, source, "+", 32) {
                     return;
                 }
 
@@ -646,6 +755,11 @@ impl Int32C {
                     return;
                 }
 
+                // Skip if constant evaluation proves the result fits in 32-bit signed
+                if self.compound_expr_fits_signed(node, source, "-", 32) {
+                    return;
+                }
+
                 if !self.has_overflow_check_compound(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(node, source);
@@ -687,6 +801,11 @@ impl Int32C {
                 // Skip if inside a block guarded by a type-limit bounds check
                 let op_names = self.extract_operand_names(node, source);
                 if self.is_inside_bounds_checked_block(node, source, &op_names) {
+                    return;
+                }
+
+                // Skip if constant evaluation proves the result fits in 32-bit signed
+                if self.compound_expr_fits_signed(node, source, "*", 32) {
                     return;
                 }
 
@@ -801,23 +920,30 @@ impl Int32C {
                 return;
             }
 
-            if self.is_signed_type(&left_type) && !self.has_overflow_check_compound(node, source) {
-                let start_point = node.start_position();
-                let expr_text = get_node_text(node, source);
+            if self.is_signed_type(&left_type) {
+                // Skip if constant evaluation proves the result fits in 32-bit signed
+                if self.compound_expr_fits_signed(node, source, "<<", 32) {
+                    return;
+                }
 
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: Severity::High,
-                    message: format!(
-                        "Signed integer compound left shift '{}' may overflow or exhibit undefined behavior",
-                        expr_text
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some("Validate shift amount and check for overflow before assignment".to_string()),
-                    ..Default::default()
-                });
+                if !self.has_overflow_check_compound(node, source) {
+                    let start_point = node.start_position();
+                    let expr_text = get_node_text(node, source);
+
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Signed integer compound left shift '{}' may overflow or exhibit undefined behavior",
+                            expr_text
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some("Validate shift amount and check for overflow before assignment".to_string()),
+                        ..Default::default()
+                    });
+                }
             }
         }
     }

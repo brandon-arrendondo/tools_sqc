@@ -71,18 +71,15 @@ impl Pos02C {
     }
 
     fn is_privileged_operation(&self, func_name: &str) -> bool {
-        // Operations that often require elevated privileges
+        // Operations that typically require elevated privileges.
+        // Note: socket() and setsockopt() are NOT privileged for standard
+        // TCP/UDP (SOCK_STREAM, SOCK_DGRAM). Only SOCK_RAW requires
+        // CAP_NET_RAW. setsockopt for SO_RCVTIMEO/SO_SNDTIMEO is unprivileged.
+        // bind() to ports < 1024 requires CAP_NET_BIND_SERVICE, and listen()
+        // on a privileged port implies prior bind() — both kept as indicators.
         matches!(
             func_name,
-            "socket"
-                | "bind"
-                | "listen"
-                | "setsockopt"
-                | "chroot"
-                | "chown"
-                | "chmod"
-                | "mount"
-                | "umount"
+            "bind" | "listen" | "chroot" | "chown" | "chmod" | "mount" | "umount"
         )
     }
 

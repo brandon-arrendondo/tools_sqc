@@ -1,3 +1,4 @@
+use super::const_eval;
 use super::context::ProjectContext;
 use super::function_summary::{self, FunctionSummary};
 use crate::analyze::null_state::NullState;
@@ -24,6 +25,7 @@ pub fn prescan_directories(
     let mut header_declared_functions = HashSet::new();
     let mut function_summaries = HashMap::new();
     let mut call_graph = HashMap::new();
+    let mut macro_constants = HashMap::new();
     let mut parser = CParser::new()?;
 
     if let Some(reporter) = progress {
@@ -63,6 +65,10 @@ pub fn prescan_directories(
 
                 // Build call graph for this file
                 collect_call_graph(&root, &source, &mut call_graph);
+
+                // Collect macro constants from #define directives
+                let file_macros = const_eval::collect_macro_constants(&root, &source);
+                macro_constants.extend(file_macros);
             }
         }
     }
@@ -80,6 +86,7 @@ pub fn prescan_directories(
         header_declared_functions,
         function_summaries,
         call_graph,
+        macro_constants,
     })
 }
 
@@ -773,6 +780,10 @@ pub fn resolve_includes(
                 for (name, summary) in file_summaries {
                     context.function_summaries.insert(name, summary);
                 }
+
+                // Collect macro constants from resolved headers
+                let header_macros = const_eval::collect_macro_constants(&root, &hsource);
+                context.macro_constants.extend(header_macros);
 
                 // Enqueue transitive includes from this header
                 let header_dir = resolved.parent().map(|p| p.to_path_buf());

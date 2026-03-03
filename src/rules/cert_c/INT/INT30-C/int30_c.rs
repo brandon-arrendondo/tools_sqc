@@ -1,10 +1,25 @@
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::const_eval::{self, MacroConstantMap};
+use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
-pub struct Int30C;
+pub struct Int30C {
+    project_macros: RefCell<MacroConstantMap>,
+    current_macros: RefCell<MacroConstantMap>,
+}
+
+impl Int30C {
+    pub fn new() -> Self {
+        Self {
+            project_macros: RefCell::new(MacroConstantMap::new()),
+            current_macros: RefCell::new(MacroConstantMap::new()),
+        }
+    }
+}
 
 impl CertRule for Int30C {
     fn rule_id(&self) -> &'static str {
@@ -27,9 +42,18 @@ impl CertRule for Int30C {
         "INT30-C"
     }
 
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.project_macros.borrow_mut() = context.macro_constants.clone();
+    }
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         let type_map = self.collect_variable_types(node, source);
+
+        // Merge project-level macros with per-file macros
+        let mut macros = self.project_macros.borrow().clone();
+        macros.extend(const_eval::collect_macro_constants(node, source));
+        *self.current_macros.borrow_mut() = macros;
 
         self.check_node(node, source, &mut violations, &type_map);
 
@@ -38,6 +62,45 @@ impl CertRule for Int30C {
 }
 
 impl Int30C {
+    /// For compound assignments (`x op= y`), check if `x op y` provably fits
+    /// in an unsigned integer of `bits` width using constant evaluation.
+    /// Note: only resolves the RHS — the LHS is the mutation target and its
+    /// initial assignment doesn't reflect its current value (especially in loops).
+    fn compound_expr_fits_unsigned(&self, node: &Node, source: &str, op: &str, bits: u32) -> bool {
+        let macros = self.current_macros.borrow();
+        if let (Some(left), Some(right)) = (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
+            let loop_ranges = const_eval::extract_loop_var_ranges(node, source, &macros);
+            let mut var_ranges = loop_ranges.clone();
+            // Only resolve RHS identifiers — LHS is the mutation target
+            const_eval::resolve_identifiers_in_expr(
+                &right,
+                source,
+                &macros,
+                &loop_ranges,
+                &mut var_ranges,
+            );
+            // LHS: only use loop ranges and macros (not local assignments)
+            let lr = const_eval::try_evaluate_range(&left, source, &macros, &loop_ranges);
+            let rr = const_eval::try_evaluate_range(&right, source, &macros, &var_ranges);
+            if let (Some(lr), Some(rr)) = (lr, rr) {
+                let result = match op {
+                    "+" => lr.add(&rr),
+                    "-" => lr.sub(&rr),
+                    "*" => lr.mul(&rr),
+                    "<<" => lr.shl(&rr),
+                    _ => None,
+                };
+                if let Some(range) = result {
+                    return range.fits_in_unsigned(bits);
+                }
+            }
+        }
+        false
+    }
+
     fn check_node(
         &self,
         node: &Node,
@@ -136,6 +199,16 @@ impl Int30C {
                     return;
                 }
 
+                // Skip if constant evaluation proves the result fits in 32-bit unsigned
+                if const_eval::expression_fits_in_unsigned(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                ) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -181,6 +254,16 @@ impl Int30C {
             if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
                 && !self.has_overflow_check_subtraction(node, source)
             {
+                // Skip if constant evaluation proves the result fits in 32-bit unsigned
+                if const_eval::expression_fits_in_unsigned(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                ) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -220,6 +303,16 @@ impl Int30C {
             if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
                 && !self.has_overflow_check_multiplication(node, source)
             {
+                // Skip if constant evaluation proves the result fits in 32-bit unsigned
+                if const_eval::expression_fits_in_unsigned(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                ) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -257,6 +350,16 @@ impl Int30C {
             let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_unsigned_type(&left_type) && !self.has_shift_overflow_check(node, source) {
+                // Skip if constant evaluation proves the result fits in 32-bit unsigned
+                if const_eval::expression_fits_in_unsigned(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                ) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -303,6 +406,11 @@ impl Int30C {
                             return;
                         }
                     }
+                }
+
+                // Skip if constant evaluation proves the result fits in 32-bit unsigned
+                if self.compound_expr_fits_unsigned(node, source, "+", 32) {
+                    return;
                 }
 
                 let start_point = node.start_position();
@@ -353,6 +461,11 @@ impl Int30C {
                     }
                 }
 
+                // Skip if constant evaluation proves the result fits in 32-bit unsigned
+                if self.compound_expr_fits_unsigned(node, source, "-", 32) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -385,6 +498,11 @@ impl Int30C {
 
             if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
             {
+                // Skip if constant evaluation proves the result fits in 32-bit unsigned
+                if self.compound_expr_fits_unsigned(node, source, "*", 32) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -417,6 +535,11 @@ impl Int30C {
 
             if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
             {
+                // Skip if constant evaluation proves the result fits in 32-bit unsigned
+                if self.compound_expr_fits_unsigned(node, source, "<<", 32) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
