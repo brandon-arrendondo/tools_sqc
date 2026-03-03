@@ -1387,9 +1387,10 @@ impl Int30C {
         false
     }
 
-    /// Check if var_name is bounded by an enclosing loop condition.
-    /// Detects `while (var < limit)` and `for (...; var < limit; ...)` patterns.
-    /// Inside the loop body, var < limit, so var + 1 <= limit <= UINT_MAX.
+    /// Check if var_name is bounded by an enclosing loop or if-statement condition.
+    /// Detects `while (var < limit)`, `for (...; var < limit; ...)`, and
+    /// `if (var < limit)` patterns (true branch only).
+    /// Inside the guarded body, var < limit, so var + 1 <= limit <= UINT_MAX.
     fn is_bounded_by_loop_condition(&self, node: &Node, var_name: &str, source: &str) -> bool {
         let mut current = *node;
         while let Some(parent) = current.parent() {
@@ -1398,6 +1399,22 @@ impl Int30C {
                     let cond_text = get_node_text(&condition, source);
                     if self.condition_implies_upper_bound(&cond_text, var_name) {
                         return true;
+                    }
+                }
+            }
+            // Also check if_statement — but only if we're in the true branch
+            if parent.kind() == "if_statement" {
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    if self.condition_implies_upper_bound(&cond_text, var_name) {
+                        // Verify we're inside the consequence (true branch), not alternative
+                        if let Some(consequence) = parent.child_by_field_name("consequence") {
+                            if current.start_byte() >= consequence.start_byte()
+                                && current.end_byte() <= consequence.end_byte()
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
             }
