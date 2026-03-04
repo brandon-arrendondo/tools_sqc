@@ -1182,7 +1182,13 @@ impl Int31C {
         let normalized = type_str.to_lowercase();
 
         // First check if it's explicitly unsigned - if so, not signed
+        // This catches "unsigned int", "unsigned long", etc.
         if normalized.contains("unsigned") {
+            return false;
+        }
+
+        // Also bail out for unsigned stdint types (uint32_t contains "int" as substring)
+        if self.is_unsigned_type(type_str) {
             return false;
         }
 
