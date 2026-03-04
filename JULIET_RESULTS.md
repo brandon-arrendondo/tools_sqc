@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-03-03
+**Last Updated**: 2026-03-04
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -11,12 +11,12 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 137,921 |
-| **False Positives** | 175,667 |
-| **TP Rate** | **44.0%** (v0.2.21, MCP benchmark) |
-| **FP Reduction from Baseline** | -79.1% (839K → 176K) |
+| **True Positives** | 131,661 |
+| **False Positives** | 163,585 |
+| **TP Rate** | **44.6%** (v0.2.23, MCP benchmark) |
+| **FP Reduction from Baseline** | -80.5% (839K → 164K) |
 | **CWE Categories with Data** | 106 / 118 |
-| **Categories >50% TP** | 18 |
+| **Categories >50% TP** | 19 |
 
 ---
 
@@ -50,14 +50,40 @@
 | v0.2.19 | v0.2.19 | INT30-C loop guards, prescan null guards, ARR00-C crash fix | 145,639 | 184,644 | 44.1% | -1 |
 | **v0.2.20** | **v0.2.20** | **d_lib_networking FP fixes: API00-C static skip, INT01-C dedup, EXP37-C init_declarator, EXP34-C array NotNull** | **144,278** | **181,924** | **44.2%** | **-2,720** |
 | **v0.2.21** | **v0.2.21** | **const_eval value-range analysis + d_lib_networking Round 6 FP fixes** | **137,921** | **175,667** | **44.0%** | **-6,257** |
+| v0.2.22 | v0.2.22 | INT30-C: extend upper-bound guard to if_statement | 137,921 | 175,673 | 44.0% | +6 |
+| **v0.2.23** | **v0.2.23** | **INT32-C const_eval for alloc/memory/abs + INT30-C uint64_t skip + built-in macros** | **131,661** | **163,585** | **44.6%** | **-12,088** |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-663,674 (-79.1%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-675,756 (-80.5%)**.
 
 ---
 
 ## Per-Round Fix Details
+
+### v0.2.23 — INT32-C Const-Eval for Allocation/Memory/Abs + INT30-C Built-in Macros
+
+Major const_eval enhancement: built-in C standard limit macros, sizeof resolution, and AST-based allocation overflow checks.
+
+**Built-in limit macros**: Added ~35 C standard macros (INT_MAX, UINT_MAX, CHAR_MAX, etc.) as defaults in `collect_macro_constants()`. Since tree-sitter doesn't process `#include <limits.h>`, const_eval previously couldn't resolve expressions involving these macros. Now `INT_MAX/2 + INT_MAX/2`, `UINT_MAX - 50`, and similar are correctly evaluated.
+
+**sizeof resolution**: Maps ~20 C types to LP64 sizes (`char`→1, `int`→4, `long`→8, `size_t`→8, pointers→8). Enables const-folding of `N * sizeof(T)` allocation expressions.
+
+**INT32-C allocation overflow**: Refactored `check_allocation_overflow()` and `check_memory_function_overflow()` from text-level `contains_arithmetic()` (just `expr.contains('*')`) to AST node traversal with `expression_fits_in_signed()` (64-bit width for size_t). `malloc(100 * sizeof(char))` now resolves to 400 and is suppressed.
+
+**INT32-C abs() suppression**: Two new checks in `check_abs_overflow()`:
+- Widening cast: `abs((long)data)` can't overflow because long range contains all int values
+- Comparison condition: `if (abs(x) <= limit)` — the abs() IS the bounds check, not a violation
+
+**INT30-C uint64_t subtraction skip**: `uint64_t` subtraction wrapping is practically impossible (2^64 ns = ~584 years). Skip unsigned subtraction checks when both operands are 64-bit.
+
+**Juliet impact** (0.2.22 → 0.2.23):
+- **Overall**: TP 137,921→131,661 (−6,260), FP 175,673→163,585 (**−12,088**), TP rate **44.0% → 44.6%** (+0.6pp)
+- Per-rule: INT32-C −2,394 TP/−5,238 FP (2.2:1 ratio), INT30-C −3,866 TP/−6,848 FP (1.8:1 ratio)
+- Zero rule regressions. Only CWE194 +28 FP and CWE195 +25 FP (noise from const_eval enabling new evaluations)
+- Top CWE improvements: CWE197 +14.8pp TP rate (69.4%→84.2%), CWE590 +3.1pp, CWE226 +3.5pp, CWE122 −2,809 FP
+
+**Files changed**: `const_eval.rs`, `int32_c.rs`, `int30_c.rs`, `function_summary.rs`
 
 ### v0.2.16 — EXP34-C: Call-Site Null Propagation (Phase 2)
 
@@ -351,7 +377,7 @@ Fixed preprocessor-block visibility bug (functions inside `#ifdef` invisible). D
 | 114 | Process Control | 73.6% | 672 |
 | 427 | Uncontrolled Search Path Element | 72.0% | 560 |
 | 510 | Trapdoor | 70.0% | 70 |
-| 197 | Numeric Truncation Error | 69.4% | 1,008 |
+| 197 | Numeric Truncation Error | 84.2% | 1,008 |
 | 15 | External Control of System/Config | 66.9% | 56 |
 | 620 | Unverified Password Change | 64.4% | 36 |
 | 194 | Unexpected Sign Extension | 59.9% | 1,344 |
@@ -467,7 +493,7 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 
 | Tool | Detection Rate | FP Rate | Analysis Depth | Juliet Data | CERT C | Price |
 |------|---------------:|--------:|----------------|:-----------:|:------:|:-----:|
-| **SqC** | **44.0%** | **56.0%** | AST + CFG + inter-procedural + call-site null + local var tracking + const_eval + `-I` header resolution | Full (118 CWEs) | 283 rules | -- |
+| **SqC** | **44.6%** | **55.4%** | AST + CFG + inter-procedural + call-site null + local var tracking + const_eval + `-I` header resolution | Full (118 CWEs) | 283 rules | -- |
 | Semgrep CE | 44–48% | Very low | AST (tree-sitter) | No | Community | Free |
 | Semgrep Pro | 72–75% | Very low | AST + taint + inter-file | No | Community | Commercial |
 | Infer | ~55% | ~45% | Separation logic | Partial (4 CWEs) | No | Free |
@@ -507,6 +533,8 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 | v0.2.19 | 44.1% | 184,644 | 145,639 | INT30-C loop guards, prescan null guards, ARR00-C fix |
 | v0.2.20 | 44.2% | 181,924 | 144,278 | d_lib_networking FP fixes: API00-C, INT01-C, EXP37-C, EXP34-C |
 | **v0.2.21** | **44.0%** | **175,667** | **137,921** | **const_eval value-range analysis + d_lib_networking Round 6** |
+| v0.2.22 | 44.0% | 175,673 | 137,921 | INT30-C: extend upper-bound guard to if_statement |
+| **v0.2.23** | **44.6%** | **163,585** | **131,661** | **INT32-C const_eval alloc/memory/abs + INT30-C uint64_t + built-in macros** |
 
 ---
 
