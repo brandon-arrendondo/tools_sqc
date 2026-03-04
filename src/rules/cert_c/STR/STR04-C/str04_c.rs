@@ -211,7 +211,7 @@ impl STR04C {
     fn check_string_declaration(&self, node: &Node, source: &str) -> Option<RuleViolation> {
         let mut cursor = node.walk();
         let mut type_text = String::new();
-        let mut has_array_or_init = false;
+        let mut has_string_evidence = false;
 
         for child in node.children(&mut cursor) {
             match child.kind() {
@@ -237,33 +237,32 @@ impl STR04C {
                     }
                 }
                 "init_declarator" => {
-                    // Has initialization - check if it's an array with string literal
+                    // Has initialization - only flag if initialized with string literal
                     let mut init_cursor = child.walk();
                     for init_child in child.children(&mut init_cursor) {
-                        if init_child.kind() == "array_declarator"
-                            || init_child.kind() == "string_literal"
+                        if init_child.kind() == "string_literal"
                             || init_child.kind() == "concatenated_string"
                         {
-                            has_array_or_init = true;
+                            has_string_evidence = true;
                         } else if init_child.kind() == "initializer_list" {
                             let mut list_cursor = init_child.walk();
                             for list_item in init_child.children(&mut list_cursor) {
                                 if list_item.kind() == "string_literal" {
-                                    has_array_or_init = true;
+                                    has_string_evidence = true;
                                 }
                             }
                         }
                     }
                 }
-                "array_declarator" => {
-                    has_array_or_init = true;
-                }
+                // Bare array_declarator without string literal init is likely a binary
+                // buffer (e.g., unsigned char cert_buf[2048]) — not a string violation
+                "array_declarator" => {}
                 _ => {}
             }
         }
 
-        // Check if type_text contains signed/unsigned char
-        if has_array_or_init
+        // Only flag signed/unsigned char with string literal evidence
+        if has_string_evidence
             && (type_text.contains("signed") || type_text.contains("unsigned"))
             && type_text.contains("char")
         {

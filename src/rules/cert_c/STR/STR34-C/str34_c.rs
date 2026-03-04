@@ -56,11 +56,12 @@ impl Str34C {
                 // Check for any char type (signed, unsigned, or plain)
                 let is_signed_char = trimmed == "signed char";
                 let is_plain_char = trimmed == "char";
-                let is_unsigned_char = trimmed == "unsigned char";
+                let _is_unsigned_char = trimmed == "unsigned char";
 
-                if is_signed_char || is_plain_char || is_unsigned_char {
+                if is_signed_char || is_plain_char {
                     // Extract variable names from declarators
-                    // Only track pointer variables (char *, signed char *)
+                    // Only track signed/plain char pointer variables — unsigned char
+                    // doesn't need cast to unsigned char before widening
                     for i in 0..node.child_count() {
                         if let Some(child) = node.child(i) {
                             if child.kind() == "init_declarator" {

@@ -1,38 +1,42 @@
 # SqC — Real-World Benchmark Results
 
-**Last Updated**: 2026-03-03
+**Last Updated**: 2026-03-04
 
 Automated benchmark results across 5 real-world C codebases using sqc, cppcheck, and clang-tidy. Also includes d_lib_common (internal module) FP reduction case study.
 
 ---
 
-## Latest Results (sqc v0.2.21)
+## Latest Results (sqc v0.2.22)
 
-MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.1.6, sqc v0.2.21 commit `6e5746fc`).
+MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.1.6, sqc v0.2.22 commit `c9b92219`).
 
 ### Violation Counts — All Three Tools
 
 | Project | LOC (approx) | sqc | cppcheck | clang-tidy |
 |---------|-------------|----:|--------:|-----------:|
 | **libcrc** | ~1K | 777 | 43 | 2 |
-| **sqlite** | ~350 files | 130,774 | 1,181 | 135 |
-| **mosquitto** | ~120 files | 29,997 | 747 | 44 |
-| **curl** | ~220 files | 64,393 | 519 | 114 |
-| **hostap** | ~600 files | 184,952 | 2,118 | 2,279 |
-| **Total** | | **410,893** | **4,608** | **2,574** |
+| **sqlite** | ~350 files | 130,802 | 1,181 | 135 |
+| **mosquitto** | ~120 files | 29,989 | 747 | 44 |
+| **curl** | ~220 files | 64,389 | 519 | 114 |
+| **hostap** | ~600 files | 185,197 | 2,118 | 2,279 |
+| **Total** | | **411,154** | **4,608** | **2,574** |
 
 **Interpretation**: sqc covers 283 CERT-C rules (advisory + mandatory) while cppcheck and clang-tidy implement ~20 checks each. The 100x difference in raw counts reflects rule coverage breadth, not false positive rate.
 
 ### sqc Version History
 
-| Project | v0.2.7 | v0.2.13 | v0.2.16 | v0.2.21 | Delta (0.2.16→0.2.21) |
-|---------|-------:|--------:|--------:|--------:|----------------------:|
-| **libcrc** | 842 | 811 | 790 | 777 | -13 (-1.6%) |
-| **mosquitto** | 39,177 | 33,638 | 33,200 | 29,997 | -3,203 (-9.6%) |
-| **sqlite** | 180,011 | 147,091 | 144,581 | 130,774 | -13,807 (-9.5%) |
-| **curl** | 93,576 | 73,816 | 73,239 | 64,393 | -8,846 (-12.1%) |
-| **hostap** | 234,421 | 206,906 | 204,560 | 184,952 | -19,608 (-9.6%) |
-| **Total** | **548,027** | **462,262** | **456,370** | **410,893** | **-45,477 (-10.0%)** |
+| Project | v0.2.7 | v0.2.13 | v0.2.16 | v0.2.21 | v0.2.22 | Delta (0.2.21→0.2.22) |
+|---------|-------:|--------:|--------:|--------:|--------:|----------------------:|
+| **libcrc** | 842 | 811 | 790 | 777 | 777 | 0 |
+| **mosquitto** | 39,177 | 33,638 | 33,200 | 29,997 | 29,989 | -8 |
+| **sqlite** | 180,011 | 147,091 | 144,581 | 130,774 | 130,802 | +28¹ |
+| **curl** | 93,576 | 73,816 | 73,239 | 64,393 | 64,389 | -4 |
+| **hostap** | 234,421 | 206,906 | 204,560 | 184,952 | 185,197 | +245¹ |
+| **Total** | **548,027** | **462,262** | **456,370** | **410,893** | **411,154** | **+261** |
+
+¹ hostap/sqlite increases are DCL31-C non-deterministic prescan noise, not related to INT30-C change.
+
+**v0.2.22 changes**: INT30-C if-statement upper-bound guard detection. Extends `is_bounded_by_loop_condition()` to suppress `++`/`+= 1`/`var + 1` inside `if (var < limit)` true branch. INT30-C deltas: curl -9, hostap -7, mosquitto -8 (total -24).
 
 **v0.2.16→v0.2.21 changes**: const_eval value-range analysis (INT32-C/INT30-C macro constant folding), API00-C static function skip, INT01-C dedup fix, EXP34-C stack array NotNull, DCL13-C alias tracking, INT31-C pointer cast skip, ARR36-C type filter, INT30-C guard expansion, ARR02-C string-literal arrays, POS02-C socket/setsockopt, PRE31-C literal stripping, MEM05-C ALL_CAPS VLA.
 
@@ -59,7 +63,7 @@ MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.
 - **v0.2.16→v0.2.21 is the largest inter-version drop**: -10.0% overall, driven by API00-C static skip (dominant), const_eval, and multiple targeted FP fixes
 - **Advisory rules dominate**: DCL07-C, DCL31-C, DCL08-C, DCL13-C, EXP19-C, API00-C are code-style/quality rules. Severity filtering would significantly reduce noise
 - **mosquitto is cleanest**: 30K violations (vs. 185K for hostap)
-- **Cumulative reduction from v0.2.7**: -137,134 violations (-25.0%) across all 5 codebases
+- **Cumulative reduction from v0.2.7**: -136,873 violations (-25.0%) across all 5 codebases
 
 ---
 

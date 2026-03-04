@@ -195,6 +195,7 @@ def _parse_log(log_file: Path) -> dict:
 
     done: list[dict] = []
     started: set[str] = set()
+    started_files: dict[str, int] = {}  # CWE name → file count from START line
     errors: list[str] = []
     done_names: set[str] = set()  # dedup (script may log twice on retry)
 
@@ -216,13 +217,15 @@ def _parse_log(log_file: Path) -> dict:
                 )
         elif line.startswith("START:"):
             # START: CWE78_OS_Command_Injection (5600 files)
-            m = re.match(r"START: (\S+)", line)
+            m = re.match(r"START: (\S+)\s*(?:\((\d+) files\))?", line)
             if m:
                 started.add(m.group(1))
+                if m.group(2):
+                    started_files[m.group(1)] = int(m.group(2))
         elif line.startswith("ERROR:"):
             errors.append(line)
 
-    return {"done": done, "started": started, "errors": errors}
+    return {"done": done, "started": started, "started_files": started_files, "errors": errors}
 
 
 def _parse_analysis(content: str) -> dict:
@@ -645,6 +648,7 @@ def get_status() -> str:
     log_data = _parse_log(log_file)
     done = log_data["done"]
     done_count = len(done)
+    started_files = log_data.get("started_files", {})
 
     pid = state.get("pid", 0)
     is_running = _process_alive(pid)
@@ -677,11 +681,23 @@ def get_status() -> str:
     else:
         state_str = "crashed"
 
+    # File-level progress from START/DONE lines
+    done_names = {d["cwe"] for d in done}
+    files_processed = sum(d["files"] for d in done)
+    files_total = sum(started_files.values()) if started_files else None
+    files_in_progress = sum(
+        started_files[cwe] for cwe in started_files
+        if cwe not in done_names
+    ) if started_files else 0
+
     result: dict = {
         "state": state_str,
         "progress_pct": progress_pct,
         "done_cwes": done_count,
         "total_cwes": total_cwes,
+        "files_processed": files_processed,
+        "files_total": files_total,
+        "files_in_progress": files_in_progress,
         "elapsed_seconds": elapsed_s,
         "elapsed_human": _fmt_duration(elapsed_s),
         "eta_seconds": eta_s,
@@ -694,6 +710,8 @@ def get_status() -> str:
         "errors": log_data["errors"],
     }
 
+    files_str = f" ({files_processed:,} / {files_total:,} files)" if files_total else ""
+
     if is_complete:
         # Use the summary file mtime as the actual finish time (it's written last).
         total_s = int(summary_file.stat().st_mtime - state["start_time"])
@@ -701,19 +719,19 @@ def get_status() -> str:
         result["total_duration_human"] = _fmt_duration(total_s)
         result["message"] = (
             f"Benchmark complete in {_fmt_duration(total_s)}. "
-            f"{done_count}/{total_cwes} CWEs analyzed. "
+            f"{done_count}/{total_cwes} CWEs analyzed{files_str}. "
             "Use get_results() for aggregated stats or get_cwe_detail(cwe_id) for specifics."
         )
     elif was_cancelled:
         result["message"] = (
             f"Benchmark was cancelled after {_fmt_duration(elapsed_s)}. "
-            f"{done_count}/{total_cwes} CWEs completed before cancellation. "
+            f"{done_count}/{total_cwes} CWEs completed before cancellation{files_str}. "
             "Partial results available via get_results()."
         )
     elif is_running:
         eta_str = _fmt_duration(eta_s) if eta_s else "unknown"
         result["message"] = (
-            f"{done_count}/{total_cwes} CWEs done ({progress_pct}%). "
+            f"{done_count}/{total_cwes} CWEs done ({progress_pct}%){files_str}. "
             f"Elapsed: {_fmt_duration(elapsed_s)}. ETA: {eta_str}."
         )
     else:
