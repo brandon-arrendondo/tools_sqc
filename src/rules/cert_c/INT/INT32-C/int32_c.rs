@@ -267,6 +267,11 @@ impl Int32C {
                     return;
                 }
 
+                // Skip opaque_value + small_literal (e.g. FUNC() + 1)
+                if Self::is_small_increment_of_opaque(node, source) {
+                    return;
+                }
+
                 if !self.has_overflow_check_addition(node, source) {
                     let start_point = node.start_position();
                     let expr_text = get_node_text(node, source);
@@ -1105,6 +1110,11 @@ impl Int32C {
                         continue;
                     }
                     if arg_idx == size_arg_idx {
+                        // Simple field access (e.g., struct->field) is not arithmetic.
+                        // contains_arithmetic() text match hits '->' as '-'.
+                        if arg_node.kind() == "field_expression" {
+                            return;
+                        }
                         let arg_text = get_node_text(&arg_node, source);
                         if self.contains_arithmetic(arg_text) {
                             // Use const_eval to check if the arithmetic provably fits
@@ -1626,6 +1636,116 @@ impl Int32C {
                 Self::collect_identifiers(&child, source, names);
             }
         }
+    }
+
+    /// Returns true if this binary_expression is `opaque + small_literal` or
+    /// `small_literal + opaque`, where "opaque" is a call_expression or an
+    /// identifier whose value comes from a call_expression.  Adding a small
+    /// constant (0..=10) to any realistic function return value cannot overflow
+    /// a 32-bit integer.
+    fn is_small_increment_of_opaque(node: &Node, source: &str) -> bool {
+        if node.kind() != "binary_expression" {
+            return false;
+        }
+        let (left, right) = match (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
+            (Some(l), Some(r)) => (l, r),
+            _ => return false,
+        };
+
+        let is_small_literal = |n: &Node| -> bool {
+            if n.kind() != "number_literal" {
+                return false;
+            }
+            let text = get_node_text(n, source).trim().to_string();
+            text.parse::<u64>().is_ok_and(|v| v <= 10)
+        };
+
+        let is_opaque = |n: &Node| -> bool {
+            if n.kind() == "call_expression" {
+                return true;
+            }
+            // Identifier whose initializer is a call_expression
+            if n.kind() == "identifier" {
+                let var_name = get_node_text(n, source);
+                if let Some(func) = crate::utility::cert_c::ast_utils::find_containing_function(n) {
+                    if let Some(body) = func.child_by_field_name("body") {
+                        if Self::identifier_initialized_from_call(&body, var_name, source, n) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            false
+        };
+
+        (is_opaque(&left) && is_small_literal(&right))
+            || (is_small_literal(&left) && is_opaque(&right))
+    }
+
+    /// Check if an identifier was initialized from a call_expression earlier in the same scope.
+    /// Searches recursively into preproc blocks and nested compound statements.
+    fn identifier_initialized_from_call(
+        scope: &Node,
+        var_name: &str,
+        source: &str,
+        usage_node: &Node,
+    ) -> bool {
+        let usage_row = usage_node.start_position().row;
+        for i in 0..scope.named_child_count() {
+            if let Some(child) = scope.named_child(i) {
+                if child.start_position().row >= usage_row {
+                    break;
+                }
+                // declaration: type var = call();
+                if child.kind() == "declaration" {
+                    if let Some(declarator) = child.child_by_field_name("declarator") {
+                        if declarator.kind() == "init_declarator" {
+                            let decl_name = declarator
+                                .child_by_field_name("declarator")
+                                .map(|d| get_node_text(&d, source));
+                            let init = declarator.child_by_field_name("value");
+                            if decl_name == Some(var_name) {
+                                if let Some(init_node) = init {
+                                    if init_node.kind() == "call_expression" {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // assignment: var = call();
+                if child.kind() == "expression_statement" {
+                    if let Some(expr) = child.named_child(0) {
+                        if expr.kind() == "assignment_expression" {
+                            let lhs = expr.child_by_field_name("left");
+                            let rhs = expr.child_by_field_name("right");
+                            if let (Some(l), Some(r)) = (lhs, rhs) {
+                                if get_node_text(&l, source) == var_name
+                                    && r.kind() == "call_expression"
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Recurse into preproc blocks and nested scopes
+                if child.kind().starts_with("preproc_")
+                    || child.kind() == "compound_statement"
+                    || child.kind() == "if_statement"
+                {
+                    if Self::identifier_initialized_from_call(&child, var_name, source, usage_node)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
     }
 
     fn contains_arithmetic(&self, expr: &str) -> bool {
