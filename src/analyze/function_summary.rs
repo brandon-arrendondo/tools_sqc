@@ -347,12 +347,13 @@ pub fn infer_arg_null_state(arg: &Node, source: &str) -> NullState {
             NullState::Unknown
         }
         "identifier" => {
-            // Check for well-known NULL macros
             let text = arg.utf8_text(source.as_bytes()).unwrap_or("");
             if text == "NULL" {
                 NullState::DefinitelyNull
+            } else if matches!(text, "stdout" | "stderr" | "stdin") {
+                // Standard C streams are guaranteed non-null
+                NullState::NotNull
             } else {
-                // Can't know without dataflow — conservative
                 NullState::Unknown
             }
         }

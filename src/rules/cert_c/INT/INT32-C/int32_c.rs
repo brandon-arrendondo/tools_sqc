@@ -1038,29 +1038,47 @@ impl Int32C {
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        let args = self.get_function_arguments(node, source);
-
-        for (i, arg) in args.iter().enumerate() {
-            if self.contains_arithmetic(arg) && !self.has_allocation_overflow_check(node, source) {
-                let start_point = node.start_position();
-                violations.push(RuleViolation {
-                    rule_id: self.rule_id().to_string(),
-                    severity: Severity::High,
-                    message: format!(
-                        "{}() argument {} contains arithmetic that may overflow: '{}'",
-                        function_name,
-                        i + 1,
-                        arg
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some(
-                        "Validate arithmetic operations before passing to allocation functions"
-                            .to_string(),
-                    ),
-                    ..Default::default()
-                });
+        if let Some(arguments) = node.child_by_field_name("arguments") {
+            let mut arg_idx = 0;
+            for i in 0..arguments.child_count() {
+                if let Some(arg_node) = arguments.child(i) {
+                    let kind = arg_node.kind();
+                    if kind == "(" || kind == ")" || kind == "," {
+                        continue;
+                    }
+                    let arg_text = get_node_text(&arg_node, source);
+                    if self.contains_arithmetic(arg_text) {
+                        // Use const_eval to check if the arithmetic provably fits
+                        let macros = self.current_macros.borrow();
+                        if const_eval::expression_fits_in_signed(&arg_node, source, &macros, 64) {
+                            arg_idx += 1;
+                            continue;
+                        }
+                        drop(macros);
+                        if !self.has_allocation_overflow_check(node, source) {
+                            let start_point = node.start_position();
+                            violations.push(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: Severity::High,
+                                message: format!(
+                                    "{}() argument {} contains arithmetic that may overflow: '{}'",
+                                    function_name,
+                                    arg_idx + 1,
+                                    arg_text
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some(
+                                    "Validate arithmetic operations before passing to allocation functions"
+                                        .to_string(),
+                                ),
+                                ..Default::default()
+                            });
+                        }
+                    }
+                    arg_idx += 1;
+                }
             }
         }
     }
@@ -1072,37 +1090,53 @@ impl Int32C {
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
     ) {
-        let args = self.get_function_arguments(node, source);
-
         // Check size arguments for arithmetic that might overflow
-        let size_arg_indices = match function_name {
-            "memcpy" | "memmove" => vec![2], // Third argument is size
-            "memset" => vec![2],             // Third argument is size
-            _ => vec![],
+        let size_arg_idx: usize = match function_name {
+            "memcpy" | "memmove" | "memset" => 2, // Third argument is size
+            _ => return,
         };
 
-        for &idx in &size_arg_indices {
-            if let Some(arg) = args.get(idx) {
-                if self.contains_arithmetic(arg)
-                    && !self.has_memory_function_overflow_check(node, source)
-                {
-                    let start_point = node.start_position();
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "{}() size argument contains arithmetic that may overflow: '{}'",
-                            function_name, arg
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some(
-                            "Validate size calculations before passing to memory functions"
-                                .to_string(),
-                        ),
-                        ..Default::default()
-                    });
+        if let Some(arguments) = node.child_by_field_name("arguments") {
+            let mut arg_idx = 0;
+            for i in 0..arguments.child_count() {
+                if let Some(arg_node) = arguments.child(i) {
+                    let kind = arg_node.kind();
+                    if kind == "(" || kind == ")" || kind == "," {
+                        continue;
+                    }
+                    if arg_idx == size_arg_idx {
+                        let arg_text = get_node_text(&arg_node, source);
+                        if self.contains_arithmetic(arg_text) {
+                            // Use const_eval to check if the arithmetic provably fits
+                            let macros = self.current_macros.borrow();
+                            if const_eval::expression_fits_in_signed(&arg_node, source, &macros, 64)
+                            {
+                                return;
+                            }
+                            drop(macros);
+                            if !self.has_memory_function_overflow_check(node, source) {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::High,
+                                    message: format!(
+                                        "{}() size argument contains arithmetic that may overflow: '{}'",
+                                        function_name, arg_text
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some(
+                                        "Validate size calculations before passing to memory functions"
+                                            .to_string(),
+                                    ),
+                                    ..Default::default()
+                                });
+                            }
+                        }
+                        return;
+                    }
+                    arg_idx += 1;
                 }
             }
         }
@@ -1117,6 +1151,20 @@ impl Int32C {
     ) {
         // abs(INT_MIN), labs(LONG_MIN), llabs(LLONG_MIN) all cause overflow
         // because the absolute value of the minimum signed integer cannot be represented
+
+        // Skip if the abs() argument is cast to a wider type (e.g., abs((long)data)).
+        // Widening cast means the minimum value of the original type is representable
+        // in the wider type's abs range, so overflow can't occur.
+        if self.abs_arg_has_widening_cast(node, source, function_name) {
+            return;
+        }
+
+        // Skip if abs() call is part of a comparison condition (it IS a bounds check).
+        // Pattern: if (abs(x) <= limit) { ... } — the abs() is the safety check itself.
+        if self.is_inside_comparison_condition(node) {
+            return;
+        }
+
         if !self.has_abs_overflow_check(node, source) {
             let start_point = node.start_position();
             let expr_text = get_node_text(node, source);
@@ -1135,6 +1183,89 @@ impl Int32C {
             ..Default::default()
             });
         }
+    }
+
+    /// Check if the abs() argument contains a widening cast (e.g., `abs((long)data)`).
+    /// When abs() gets `int` but is called as `abs((long)data)`, the long range
+    /// means INT_MIN cast to long is representable and abs() won't overflow.
+    fn abs_arg_has_widening_cast(&self, node: &Node, source: &str, function_name: &str) -> bool {
+        if let Some(arguments) = node.child_by_field_name("arguments") {
+            for i in 0..arguments.child_count() {
+                if let Some(arg) = arguments.child(i) {
+                    if arg.kind() == "cast_expression" {
+                        let cast_text = get_node_text(&arg, source);
+                        // For abs(): widening to long or long long
+                        if function_name == "abs"
+                            && (cast_text.contains("(long)") || cast_text.contains("(long long)"))
+                        {
+                            return true;
+                        }
+                        // For labs(): widening to long long
+                        if function_name == "labs" && cast_text.contains("(long long)") {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if this node is inside a comparison that's part of a condition
+    /// (e.g., `if (abs(x) <= limit)`).
+    fn is_inside_comparison_condition(&self, node: &Node) -> bool {
+        let mut current = node.parent();
+        let mut depth = 0;
+        while let Some(parent) = current {
+            if depth > 10 {
+                break;
+            }
+            match parent.kind() {
+                "binary_expression" => {
+                    // Check if this is a comparison operator
+                    for i in 0..parent.child_count() {
+                        if let Some(c) = parent.child(i) {
+                            if matches!(c.kind(), "<" | "<=" | ">" | ">=" | "==" | "!=") {
+                                // Now check if the comparison is part of an if/while condition
+                                if let Some(grandparent) = parent.parent() {
+                                    if grandparent.kind() == "parenthesized_expression" {
+                                        if let Some(ggp) = grandparent.parent() {
+                                            if matches!(
+                                                ggp.kind(),
+                                                "if_statement" | "while_statement"
+                                            ) {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                    // Also handle: if (abs(x) <= y && ...)
+                                    if matches!(grandparent.kind(), "binary_expression") {
+                                        if let Some(ggp) = grandparent.parent() {
+                                            if ggp.kind() == "parenthesized_expression" {
+                                                if let Some(gggp) = ggp.parent() {
+                                                    if matches!(
+                                                        gggp.kind(),
+                                                        "if_statement" | "while_statement"
+                                                    ) {
+                                                        return true;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                return false;
+                            }
+                        }
+                    }
+                }
+                "function_definition" | "translation_unit" => break,
+                _ => {}
+            }
+            current = parent.parent();
+            depth += 1;
+        }
+        false
     }
 
     /// Collect variable types from function parameters and local declarations.
@@ -1962,7 +2093,10 @@ impl Int32C {
             if parent.kind() == "function_definition" {
                 break;
             }
-            if parent.kind() == "if_statement" {
+            if matches!(
+                parent.kind(),
+                "if_statement" | "while_statement" | "for_statement"
+            ) {
                 if let Some(condition) = parent.child_by_field_name("condition") {
                     let cond_text = get_node_text(&condition, source);
                     let has_limit = SIGNED_LIMIT_MACROS
@@ -1979,11 +2113,85 @@ impl Int32C {
                             return true;
                         }
                     }
+                    // For while/for: check if the loop-bounded variable is the
+                    // same as the operation's target variable. E.g., `while (attempts < MAX)`
+                    // bounds `attempts`, so `attempts++` is safe, but `sum += x` is not.
+                    if matches!(parent.kind(), "while_statement" | "for_statement") {
+                        let bounded_vars = self.extract_loop_bounded_vars(&condition, source);
+                        if let Some(target) = self.extract_mutation_target(node, source) {
+                            if bounded_vars.contains(&target) {
+                                return true;
+                            }
+                        }
+                    }
                 }
             }
             current = parent;
         }
         false
+    }
+
+    /// Extract the target variable of a mutation operation.
+    /// For `x += y` → "x", for `x++` → "x", for `a * b` → None (not a mutation).
+    fn extract_mutation_target(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "augmented_assignment_expression" | "assignment_expression" => {
+                if let Some(left) = node.child_by_field_name("left") {
+                    if left.kind() == "identifier" {
+                        let name = get_node_text(&left, source);
+                        if !name.is_empty() {
+                            return Some(name.to_string());
+                        }
+                    }
+                }
+                None
+            }
+            "update_expression" => {
+                if let Some(arg) = node.child_by_field_name("argument") {
+                    if arg.kind() == "identifier" {
+                        let name = get_node_text(&arg, source);
+                        if !name.is_empty() {
+                            return Some(name.to_string());
+                        }
+                    }
+                }
+                None
+            }
+            _ => None,
+        }
+    }
+
+    /// Extract variable names that are bounded by comparison operators in a
+    /// loop condition. E.g., `i < N` → ["i"], `attempts < MAX && ret != 0` → ["attempts"].
+    fn extract_loop_bounded_vars(&self, condition: &Node, source: &str) -> Vec<String> {
+        let cond_text = get_node_text(condition, source);
+        // Strip outer parens
+        let cond_text = cond_text
+            .strip_prefix('(')
+            .and_then(|s| s.strip_suffix(')'))
+            .unwrap_or(cond_text);
+        let mut vars = Vec::new();
+        // Split on && to handle compound conditions
+        for part in cond_text.split("&&") {
+            let part = part.trim();
+            // Look for `var < expr`, `var <= expr`, `var > expr`, `var >= expr`
+            for op in &["<=", ">=", "<", ">"] {
+                if let Some(pos) = part.find(op) {
+                    let left = part[..pos].trim();
+                    let right = part[pos + op.len()..].trim();
+                    // Left-side bounded: `var < BOUND`
+                    if matches!(*op, "<" | "<=") && is_simple_c_identifier(left) {
+                        vars.push(left.to_string());
+                    }
+                    // Right-side bounded: `BOUND > var`
+                    if matches!(*op, ">" | ">=") && is_simple_c_identifier(right) {
+                        vars.push(right.to_string());
+                    }
+                    break; // Only match first operator per sub-expression
+                }
+            }
+        }
+        vars
     }
 
     fn has_surrounding_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
@@ -2042,21 +2250,12 @@ impl Int32C {
             "unknown".to_string()
         }
     }
+}
 
-    fn get_function_arguments(&self, node: &Node, source: &str) -> Vec<String> {
-        let mut args = Vec::new();
-
-        if let Some(arguments) = node.child_by_field_name("arguments") {
-            for i in 0..arguments.child_count() {
-                if let Some(child) = arguments.child(i) {
-                    if child.kind() != "," {
-                        let arg_text = get_node_text(&child, source).to_string();
-                        args.push(arg_text.trim().to_string());
-                    }
-                }
-            }
-        }
-
-        args
-    }
+fn is_simple_c_identifier(s: &str) -> bool {
+    !s.is_empty()
+        && s.chars()
+            .next()
+            .is_some_and(|c| c.is_alphabetic() || c == '_')
+        && s.chars().all(|c| c.is_alphanumeric() || c == '_')
 }

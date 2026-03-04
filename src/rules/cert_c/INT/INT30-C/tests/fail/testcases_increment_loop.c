@@ -7,7 +7,7 @@
 /*
  * Rule: INT30-C - Ensure that unsigned integer operations do not wrap
  * Status: FAIL
- * Reason: Increment in loop without bounds check
+ * Reason: Addition in loop condition without bounds check
  */
 
 #include <limits.h>
@@ -15,13 +15,13 @@
 void increment_no_check(unsigned int start) {
     unsigned int i;
 
-    // Increment without checking for UINT_MAX
-    for (i = start; i < start + 100; i++) {  // Line 13 - VIOLATION (i++ can wrap)
+    // Loop with unchecked unsigned addition in condition
+    for (i = start; i < start + 100; i++) {
         // Process...
     }
 }
 
 int main(void) {
-    increment_no_check(UINT_MAX - 50);  // Will wrap
+    increment_no_check(UINT_MAX - 50);
     return 0;
 }
