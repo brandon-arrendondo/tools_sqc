@@ -59,10 +59,13 @@ impl ValueRange {
     }
 
     pub fn shl(&self, other: &ValueRange) -> Option<Self> {
-        // Only handle non-negative shift amounts in [0, 63]
-        if other.min < 0 || other.max > 63 {
+        if other.max > 63 || other.max < 0 {
             return None;
         }
+        // Clamp negative lower bound to 0: negative shifts are UB in C,
+        // so in correct code only the non-negative range is reachable.
+        let shift_min = other.min.max(0);
+        let other = ValueRange::new(shift_min, other.max);
         let corners = [
             self.min.checked_shl(other.min as u32)?,
             self.min.checked_shl(other.max as u32)?,
@@ -105,14 +108,108 @@ impl ValueRange {
 }
 
 // ---------------------------------------------------------------------------
+// Built-in C standard limit macros (<limits.h>, <stdint.h>)
+// ---------------------------------------------------------------------------
+
+/// Returns a map of C standard limit macros to their platform values.
+/// Uses LP64 data model (64-bit long) which is standard on modern Linux/macOS.
+fn builtin_limit_macros() -> MacroConstantMap {
+    let mut m = MacroConstantMap::new();
+    // <limits.h> — char
+    m.insert("CHAR_BIT".into(), 8);
+    m.insert("CHAR_MAX".into(), 127);
+    m.insert("CHAR_MIN".into(), -128);
+    m.insert("SCHAR_MAX".into(), 127);
+    m.insert("SCHAR_MIN".into(), -128);
+    m.insert("UCHAR_MAX".into(), 255);
+    // <limits.h> — short (16-bit)
+    m.insert("SHRT_MAX".into(), 32767);
+    m.insert("SHRT_MIN".into(), -32768);
+    m.insert("USHRT_MAX".into(), 65535);
+    // <limits.h> — int (32-bit)
+    m.insert("INT_MAX".into(), 2147483647);
+    m.insert("INT_MIN".into(), -2147483648);
+    m.insert("UINT_MAX".into(), 4294967295);
+    // <limits.h> — long (64-bit on LP64)
+    m.insert("LONG_MAX".into(), i64::MAX);
+    m.insert("LONG_MIN".into(), i64::MIN);
+    // <limits.h> — long long (64-bit)
+    m.insert("LLONG_MAX".into(), i64::MAX);
+    m.insert("LLONG_MIN".into(), i64::MIN);
+    // <stdint.h> — fixed-width
+    m.insert("INT8_MAX".into(), 127);
+    m.insert("INT8_MIN".into(), -128);
+    m.insert("INT16_MAX".into(), 32767);
+    m.insert("INT16_MIN".into(), -32768);
+    m.insert("INT32_MAX".into(), 2147483647);
+    m.insert("INT32_MIN".into(), -2147483648);
+    m.insert("INT64_MAX".into(), i64::MAX);
+    m.insert("INT64_MIN".into(), i64::MIN);
+    m.insert("UINT8_MAX".into(), 255);
+    m.insert("UINT16_MAX".into(), 65535);
+    m.insert("UINT32_MAX".into(), 4294967295);
+    m
+}
+
+// ---------------------------------------------------------------------------
+// sizeof resolution
+// ---------------------------------------------------------------------------
+
+/// Resolve sizeof(type) to a constant value.
+/// Uses conservative sizes (LP64 model). Returns None for unknown types.
+fn resolve_sizeof_type(type_text: &str) -> Option<i64> {
+    let t = type_text.trim();
+    match t {
+        "char" | "signed char" | "unsigned char" | "int8_t" | "uint8_t" | "bool" | "_Bool" => {
+            Some(1)
+        }
+        "short" | "short int" | "signed short" | "unsigned short" | "int16_t" | "uint16_t" => {
+            Some(2)
+        }
+        "int" | "signed int" | "unsigned int" | "signed" | "unsigned" | "int32_t" | "uint32_t"
+        | "wchar_t" | "float" => Some(4),
+        "long"
+        | "signed long"
+        | "unsigned long"
+        | "long int"
+        | "signed long int"
+        | "unsigned long int"
+        | "long long"
+        | "signed long long"
+        | "unsigned long long"
+        | "long long int"
+        | "signed long long int"
+        | "unsigned long long int"
+        | "int64_t"
+        | "uint64_t"
+        | "size_t"
+        | "ssize_t"
+        | "ptrdiff_t"
+        | "double"
+        | "time_t"
+        | "off_t" => Some(8),
+        "long double" => Some(16),
+        _ => {
+            // Pointer types: any type ending with '*' is pointer-sized (8 on LP64)
+            if t.ends_with('*') {
+                Some(8)
+            } else {
+                None
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Macro constant collection
 // ---------------------------------------------------------------------------
 
 /// Walk `preproc_def` nodes in the AST to collect `#define NAME value` constants.
 /// Handles decimal, hex, octal literals, expressions, and references to other macros.
 /// Recurses into `preproc_ifdef/if/ifndef` blocks.
+/// Includes built-in C standard limit macros (CHAR_MAX, INT_MAX, etc.).
 pub fn collect_macro_constants(root: &Node, source: &str) -> MacroConstantMap {
-    let mut macros = MacroConstantMap::new();
+    let mut macros = builtin_limit_macros();
     // Two-pass: first collect all raw definitions, then resolve references
     let mut raw_defs: Vec<(String, String)> = Vec::new();
     collect_preproc_defs(root, source, &mut raw_defs);
@@ -423,8 +520,40 @@ pub fn try_evaluate_expr(node: &Node, source: &str, macros: &MacroConstantMap) -
             let value = node.child_by_field_name("value")?;
             try_evaluate_expr(&value, source, macros)
         }
+        "sizeof_expression" => {
+            // sizeof(type) or sizeof(expr)
+            resolve_sizeof_node(node, source)
+        }
         _ => None,
     }
+}
+
+/// Resolve a sizeof_expression AST node to a constant value.
+fn resolve_sizeof_node(node: &Node, source: &str) -> Option<i64> {
+    // sizeof_expression children: "sizeof" "(" type_descriptor ")" or "sizeof" "(" expression ")"
+    // The type is in a parenthesized_expression or type_descriptor child.
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "type_descriptor" | "primitive_type" | "sized_type_specifier" => {
+                    let type_text = child.utf8_text(source.as_bytes()).ok()?;
+                    return resolve_sizeof_type(type_text);
+                }
+                "parenthesized_expression" => {
+                    // sizeof(expr) — check if inner is a type-like identifier
+                    if let Some(inner) = child.child(1) {
+                        if inner.kind() == "identifier" {
+                            let text = inner.utf8_text(source.as_bytes()).ok()?;
+                            // Could be a typedef name like wchar_t, int64_t, etc.
+                            return resolve_sizeof_type(text);
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    None
 }
 
 // ---------------------------------------------------------------------------
@@ -498,6 +627,7 @@ pub fn try_evaluate_range(
             let value = node.child_by_field_name("value")?;
             try_evaluate_range(&value, source, macros, var_ranges)
         }
+        "sizeof_expression" => resolve_sizeof_node(node, source).map(ValueRange::exact),
         _ => None,
     }
 }

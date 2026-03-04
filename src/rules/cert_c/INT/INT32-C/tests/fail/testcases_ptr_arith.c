@@ -10,21 +10,18 @@
  * Reason: Pointer arithmetic offset calculation can overflow
  */
 
-#include <limits.h>
 #include <stdio.h>
+
+int compute_offset(int base, int extra) {
+    // VIOLATION: addition can overflow when base and extra are large
+    int total_offset = base + extra;
+
+    printf("Total offset: %d\n", total_offset);
+    return total_offset;
+}
 
 int main() {
     int array[100];
-    int base_offset = INT_MAX / 2;
-    int additional_offset = INT_MAX / 2;
-
-    // VIOLATION: offset calculation can overflow
-    int total_offset = base_offset + additional_offset;
-
-    printf("Total offset: %d\n", total_offset);
-
-    // This would be dangerous pointer arithmetic
-    // int* ptr = array + total_offset;
-
+    int result = compute_offset(2000000000, 500000000);
     return 0;
 }

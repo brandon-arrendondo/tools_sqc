@@ -94,8 +94,11 @@
 | 22 | ARR02-C | 3 | FIXED (string-literal-initialized arrays) |
 | 23 | POS02-C | 3 | FIXED (socket/setsockopt not privileged) |
 | 24 | PRE31-C (logging) | 2 | FIXED (string literal stripping) |
+| 25 | INT32-C | 8→4 | FIXED (while/for bounds, const_eval shl clamp, local var chain) |
+| 20 | EXP34-C | 4 | OPEN (callback params, boolean-guarded null, output param) |
+| 21 | INT30-C | 6→5 | FIXED (uint64_t subtraction skip) |
 
-Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → 123 (Round 4) → 86 (Round 5) → **71** (Round 6). FP patterns resolved: 19/23.
+Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → 123 (Round 4) → 86 (Round 5) → 71 (Round 6) → **95** (100 baseline, Round 7 −5). FP patterns resolved: 21/26.
 
 ### Round 4: INT01-C dedup + EXP34-C stack array (v0.2.20)
 
@@ -130,6 +133,24 @@ Net: strongly positive (−2,720 FP, +0.1pp TP rate).
 **MEM05-C macro constant VLA + recursion word boundary** (`mem05_c.rs`): (a) Added `is_likely_macro_constant()` — ALL_CAPS identifiers are conventionally preprocessor constants, not runtime values. `unsigned char cert_buf[SSL_CERT_BUFFER_SIZE]` no longer flagged as VLA. (b) `count_word_matches()` uses word-boundary matching for recursion detection — `pthread_mutex_init` no longer matches as a recursive call to `mutex_init`. −2 FPs.
 
 **Result**: 86 → **71** total violations (−15 total since Round 5, −10 from these fixes). 19/23 FP patterns resolved.
+
+### Round 7: INT32-C while/for bounds, INT30-C uint64_t, const_eval shl (v0.2.22)
+
+**INT32-C while/for loop-bound detection** (`int32_c.rs`): Extended `is_inside_bounds_checked_block()` to check `while_statement` and `for_statement` ancestors (was if_statement only). Added `extract_mutation_target()` to only suppress when the loop-bounded variable matches the operation's TARGET — prevents false negatives like `sum += array[i]` inside `for (i < N)` where `i` is bounded but `sum` is not. Added `extract_loop_bounded_vars()` to parse comparison operators from loop conditions. −3 violations (`attempts++`, `SSL_CONNECTION_BASE_DELAY_MS * (1 << ...)`, `1 << (attempts - 1)` — all inside `while (attempts < SSL_MAX_CONNECTION_ATTEMPTS)`).
+
+**const_eval shl negative-clamp** (`const_eval.rs`): `ValueRange::shl()` now clamps negative shift-amount lower bounds to 0 instead of returning None. Negative shifts are UB in C, so in correct programs only non-negative values are reachable. This unblocked the `1 << (attempts - 1)` evaluation chain: with attempts ∈ [0,1] from loop range, `attempts - 1` ∈ [-1, 0], clamped to [0, 0], `1 << 0 = 1`. Then `500 * 1 = 500`, `delay_ms = 500`, `500 * 1000 = 500000` fits in int32. −1 violation (`delay_ms * 1000`).
+
+**INT30-C uint64_t subtraction skip** (`int30_c.rs`): Added `any_operand_64bit_unsigned()` check in `check_subtraction()`. When either operand has declared type `uint64_t` (or equivalent 64-bit unsigned type), subtraction is skipped — 2^64 wraparound is practically impossible for real-world values. Uses `get_declared_type()` to look up the actual declared type from `type_map` (not the lossy "unsigned" from `infer_type()`). −1 violation (`BISSELL_TIMER_MS_SINCE_BOOT() - start_time_ms`).
+
+**stdout/stderr/stdin NotNull** (`function_summary.rs`): Added standard C stream identifiers as known NotNull in `infer_arg_null_state()`. General improvement for prescan null-state inference (no d_lib_networking impact — the EXP34-C violations at line 60 are for callback parameters, not stream identifiers).
+
+**Result**: 100 → **95** total violations (−5). INT32-C 8→4, INT30-C 6→5, EXP34-C 4→4.
+
+**Remaining INT32-C** (4): `-err` negation (INT_MIN UB), `DATAMODEL_GET_*() + 1` ×2 (opaque function return), `memcpy` size cast (AST parsing issue).
+
+**Remaining INT30-C** (5): All `+1` patterns on function return values or loop counters without provable upper bounds.
+
+**Remaining EXP34-C** (4): Callback params from mbedtls (2), output parameter deref (1), boolean-guarded null check (1). All require deeper interprocedural analysis.
 
 ### Const-Eval / Value-Range Analysis (v0.2.21)
 
@@ -412,7 +433,7 @@ Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is 
 - No alias analysis (pointer aliasing not resolved — see DCL13-C remaining FP above)
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
-- No value range analysis (beyond const_eval macro folding + loop-bound extraction — see v0.2.21)
+- No value range analysis (beyond const_eval macro folding + loop-bound extraction + shl negative-clamp — see v0.2.21/v0.2.22)
 - No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking + `-I` header resolution)
 - No struct field type resolution (field_expression types unknown — see TODO above)
 

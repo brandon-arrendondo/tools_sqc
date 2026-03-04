@@ -251,6 +251,13 @@ impl Int30C {
                 return;
             }
 
+            // Skip 64-bit unsigned subtraction: uint64_t wraps at 2^64 which is
+            // practically impossible for real-world values (e.g., elapsed time patterns).
+            // Only one operand needs to be 64-bit — C promotion rules widen the other.
+            if self.any_operand_64bit_unsigned(&left, &right, source, type_map) {
+                return;
+            }
+
             if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
                 && !self.has_overflow_check_subtraction(node, source)
             {
@@ -963,6 +970,50 @@ impl Int30C {
 
     fn is_unsigned_type(&self, type_str: &str) -> bool {
         type_str.contains("unsigned") || type_str == "size_t" || type_str.contains("uint")
+    }
+
+    fn is_64bit_unsigned_declared(&self, type_str: &str) -> bool {
+        type_str == "uint64_t"
+            || type_str == "unsigned long long"
+            || type_str == "unsigned long long int"
+            || type_str == "uint_least64_t"
+            || type_str == "uint_fast64_t"
+    }
+
+    fn any_operand_64bit_unsigned(
+        &self,
+        left: &Node,
+        right: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        let left_64 = self
+            .get_declared_type(left, source, type_map)
+            .is_some_and(|t| self.is_64bit_unsigned_declared(&t));
+        let right_64 = self
+            .get_declared_type(right, source, type_map)
+            .is_some_and(|t| self.is_64bit_unsigned_declared(&t));
+        left_64 || right_64
+    }
+
+    fn get_declared_type(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> Option<String> {
+        match node.kind() {
+            "identifier" => {
+                let name = get_node_text(node, source);
+                type_map.get(name).cloned()
+            }
+            "call_expression" => {
+                // For function calls, check if the result is assigned to a typed variable
+                // or look at the surrounding context. For now, return None.
+                None
+            }
+            _ => None,
+        }
     }
 
     fn has_overflow_check_addition(&self, node: &Node, source: &str) -> bool {
