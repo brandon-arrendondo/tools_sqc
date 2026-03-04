@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-03-04
+**Last Updated**: 2026-03-05
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -11,10 +11,10 @@
 |--------|-------|
 | **Rules Implemented** | 283 CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 131,661 |
-| **False Positives** | 163,585 |
-| **TP Rate** | **44.6%** (v0.2.23, MCP benchmark) |
-| **FP Reduction from Baseline** | -80.5% (839K → 164K) |
+| **True Positives** | 130,199 |
+| **False Positives** | 161,965 |
+| **TP Rate** | **44.6%** (v0.2.25, MCP benchmark) |
+| **FP Reduction from Baseline** | -80.7% (839K → 162K) |
 | **CWE Categories with Data** | 106 / 118 |
 | **Categories >50% TP** | 19 |
 
@@ -52,14 +52,43 @@
 | **v0.2.21** | **v0.2.21** | **const_eval value-range analysis + d_lib_networking Round 6 FP fixes** | **137,921** | **175,667** | **44.0%** | **-6,257** |
 | v0.2.22 | v0.2.22 | INT30-C: extend upper-bound guard to if_statement | 137,921 | 175,673 | 44.0% | +6 |
 | **v0.2.23** | **v0.2.23** | **INT32-C const_eval for alloc/memory/abs + INT30-C uint64_t skip + built-in macros** | **131,661** | **163,585** | **44.6%** | **-12,088** |
+| v0.2.25 | v0.2.25 | ARR32-C tightening, INT18-C/EXP05-C removal, INT30-C pointer type, INT32-C field_expr, INT34-C const_eval | 130,199 | 161,965 | 44.6% | -1,620 |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-675,756 (-80.5%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-677,376 (-80.7%)**.
 
 ---
 
 ## Per-Round Fix Details
+
+### v0.2.25 — ARR32-C Tightening, Rule Removals, Value-Range FP Fixes
+
+Mixed release: ARR32-C refinement (pre-existing), INT18-C/EXP05-C rule removal, and d_lib_networking value-range FP fixes.
+
+**ARR32-C tightening** (dominant effect): Refined array size validation to reduce false positives. −1,201 TP/−926 FP — trades some TPs for cleaner results. Largest CWE impacts: CWE190 −584 FP, CWE191 −391 FP, CWE194 −148 TP (no FP change), CWE195 −132 TP (no FP change).
+
+**INT18-C removal**: Rule removed entirely (−232 TP/−621 FP). Was generating 2.7:1 FP:TP ratio — not worth keeping.
+
+**EXP05-C removal**: Rule removed entirely (−3 TP/−12 FP). Negligible detection with poor ratio.
+
+**INT30-C pointer type detection**: Fixed `infer_type()` to check for pointer types (`*`) before `is_unsigned_type()`. `unsigned char *` was incorrectly classified as "unsigned" instead of "not_applicable". Also fixed `extract_type_and_name()` to include `*` in type_map for pointer declarators, and pointer_expression dereference to strip one `*` level. (−26 TP/−62 FP)
+
+**INT32-C field_expression skip**: `check_memory_function_overflow()` now skips `field_expression` nodes (e.g., `server_host->h_length`) — `contains_arithmetic()` was matching `->` as subtraction.
+
+**INT32-C/INT30-C small increment suppression**: New `is_small_increment_of_opaque()` suppresses `call_expression + small_literal` and `call_initialized_var + small_literal` patterns where const_eval can't evaluate function return values.
+
+**INT34-C const_eval integration**: Converted from unit struct to stateful struct with `MacroConstantMap`. Shift amount range evaluation via `try_evaluate_range()` + loop-bounds validation as fallback.
+
+**Juliet impact** (0.2.23 → 0.2.25):
+- **Overall**: TP 131,661→130,199 (−1,462), FP 163,585→161,965 (**−1,620**), TP rate **44.6% → 44.6%** (unchanged)
+- Per-rule: ARR32-C −1,201 TP/−926 FP, INT18-C −232 TP/−621 FP, INT30-C −26 TP/−62 FP, EXP05-C −3 TP/−12 FP
+- Only regression: FIO05-C +1 FP (noise). CWE773 +2 FP (noise).
+- CWE194 −148 TP/0 FP and CWE195 −132 TP/0 FP from ARR32-C changes (TP loss, no FP benefit)
+
+**d_lib_networking impact**: 7 target FPs eliminated (64 → 61 violations). All from value-range fixes (INT30-C pointer type, INT32-C field_expr/small_increment, INT30-C small_increment, INT34-C const_eval).
+
+**Files changed**: `int30_c.rs`, `int32_c.rs`, `int34_c.rs`, `mod.rs`, `arr32_c.rs`, `exp05_c.rs`, `int18_c.rs`, `str04_c.rs`
 
 ### v0.2.23 — INT32-C Const-Eval for Allocation/Memory/Abs + INT30-C Built-in Macros
 
@@ -535,6 +564,7 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 | **v0.2.21** | **44.0%** | **175,667** | **137,921** | **const_eval value-range analysis + d_lib_networking Round 6** |
 | v0.2.22 | 44.0% | 175,673 | 137,921 | INT30-C: extend upper-bound guard to if_statement |
 | **v0.2.23** | **44.6%** | **163,585** | **131,661** | **INT32-C const_eval alloc/memory/abs + INT30-C uint64_t + built-in macros** |
+| v0.2.25 | 44.6% | 161,965 | 130,199 | ARR32-C tightening, INT18-C/EXP05-C removal, value-range FP fixes |
 
 ---
 
