@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-03 (v0.2.21)
+**Last Updated**: 2026-03-04 (v0.2.23)
 
 ---
 
@@ -98,7 +98,7 @@
 | 20 | EXP34-C | 4 | OPEN (callback params, boolean-guarded null, output param) |
 | 21 | INT30-C | 6→5 | FIXED (uint64_t subtraction skip) |
 
-Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → 123 (Round 4) → 86 (Round 5) → 71 (Round 6) → **95** (100 baseline, Round 7 −5). FP patterns resolved: 21/26.
+Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → 123 (Round 4) → 86 (Round 5) → 71 (Round 6) → 68 (Round 7, `-I d_lib_common`) → 51 (Round 8, v0.2.23) → 51 (Round 9, v0.2.24) → 47 (Round 10, v0.2.25) → **36** (Round 11, codebase + config fixes). Of 36 current: 22 TP, 14 FP (39% FP rate). 25 FP patterns fixed in sqc, 7 fixed in codebase/config.
 
 ### Round 4: INT01-C dedup + EXP34-C stack array (v0.2.20)
 
@@ -151,6 +151,16 @@ Net: strongly positive (−2,720 FP, +0.1pp TP rate).
 **Remaining INT30-C** (5): All `+1` patterns on function return values or loop counters without provable upper bounds.
 
 **Remaining EXP34-C** (4): Callback params from mbedtls (2), output parameter deref (1), boolean-guarded null check (1). All require deeper interprocedural analysis.
+
+### Round 10: STR04-C, INT18-C, EXP05-C type/const fixes (v0.2.25)
+
+**STR04-C binary buffer skip** (`str04_c.rs`): `check_string_declaration()` now only flags `unsigned char` arrays with string literal evidence (string_literal or concatenated_string in initializer). Bare `unsigned char buf[N]` without string init is a binary buffer (cert data, key data), not a text string. −2 FPs.
+
+**INT18-C uint64_t recognition** (`int18_c.rs`): `has_larger_type_specifier()` now checks `type_identifier` nodes (tree-sitter parses `uint64_t` as type_identifier, not primitive_type). Added `operand_has_larger_declared_type()` to check if RHS operands are already declared as the larger type — if `start_time_ms` is `uint64_t`, subtraction already happens in 64-bit. −1 FP.
+
+**EXP05-C const detection** (`exp05_c.rs`): Replaced text-based `check_body_for_const()` with AST-based `declaration_declares_const_var()`. Old code did `decl_text.contains("const") && decl_text.contains(var_name)` which matched `const` from cast expressions in initializers (e.g., `bool x = f((const T*)&servaddr)` triggered because "const" and "servaddr" both appeared in the declaration text). New code checks only `type_qualifier` children for `const`. −1 FP.
+
+**Result**: 51 → **47** total violations (−4 FP). FP rate 57% → 45%.
 
 ### Const-Eval / Value-Range Analysis (v0.2.21)
 

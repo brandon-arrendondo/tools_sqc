@@ -1,9 +1,24 @@
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::const_eval::{self, MacroConstantMap};
+use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
+use std::cell::RefCell;
 use tree_sitter::Node;
 
-pub struct Int34C;
+pub struct Int34C {
+    project_macros: RefCell<MacroConstantMap>,
+    current_macros: RefCell<MacroConstantMap>,
+}
+
+impl Int34C {
+    pub fn new() -> Self {
+        Self {
+            project_macros: RefCell::new(MacroConstantMap::new()),
+            current_macros: RefCell::new(MacroConstantMap::new()),
+        }
+    }
+}
 
 impl CertRule for Int34C {
     fn rule_id(&self) -> &'static str {
@@ -26,30 +41,39 @@ impl CertRule for Int34C {
         "INT34-C"
     }
 
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.project_macros.borrow_mut() = context.macro_constants.clone();
+    }
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Check for left-shift and right-shift operations
-        if node.kind() == "binary_expression" {
-            if let Some(operator) = ast_utils::get_binary_operator(node, source) {
-                if operator == "<<" || operator == ">>" {
-                    self.check_shift_operation(node, source, operator, &mut violations);
-                }
-            }
-        }
+        // Merge project-level macros with per-file macros
+        let mut macros = self.project_macros.borrow().clone();
+        macros.extend(const_eval::collect_macro_constants(node, source));
+        *self.current_macros.borrow_mut() = macros;
 
-        // Recursively check child nodes
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                violations.extend(self.check(&child, source));
-            }
-        }
-
+        self.check_recursive(node, source, &mut violations);
         violations
     }
 }
 
 impl Int34C {
+    fn check_recursive(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if node.kind() == "binary_expression" {
+            if let Some(operator) = ast_utils::get_binary_operator(node, source) {
+                if operator == "<<" || operator == ">>" {
+                    self.check_shift_operation(node, source, operator, violations);
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_recursive(&child, source, violations);
+            }
+        }
+    }
+
     /// Check if a shift operation is safe
     fn check_shift_operation(
         &self,
@@ -72,6 +96,28 @@ impl Int34C {
             // amounts whose range cannot be determined at compile time.
             if self.is_non_negative_integer_literal(&right_node, source) {
                 return;
+            }
+
+            // Try const_eval range analysis on the shift amount.
+            // If the shift amount is provably in [0, 31], no overflow possible.
+            {
+                let macros = self.current_macros.borrow();
+                let loop_ranges = const_eval::extract_loop_var_ranges(node, source, &macros);
+                let mut var_ranges = loop_ranges.clone();
+                const_eval::resolve_identifiers_in_expr(
+                    &right_node,
+                    source,
+                    &macros,
+                    &loop_ranges,
+                    &mut var_ranges,
+                );
+                if let Some(range) =
+                    const_eval::try_evaluate_range(&right_node, source, &macros, &var_ranges)
+                {
+                    if range.min >= 0 && range.max < 32 {
+                        return;
+                    }
+                }
             }
 
             // Check if this is an unsigned type operation
@@ -206,20 +252,135 @@ impl Int34C {
             }
         }
 
-        // Check parent if statement
+        // Check parent if/while/for statements
         let mut current = shift_node.parent();
         while let Some(node) = current {
-            if node.kind() == "if_statement" {
-                if let Some(condition) = node.child_by_field_name("condition") {
-                    if self.checks_shift_bounds(&condition, shift_var, source) {
-                        // Check if we're in the safe branch (else or consequence after validation)
-                        if self.is_in_safe_branch(&node, shift_node) {
+            match node.kind() {
+                "if_statement" => {
+                    if let Some(condition) = node.child_by_field_name("condition") {
+                        if self.checks_shift_bounds(&condition, shift_var, source) {
+                            if self.is_in_safe_branch(&node, shift_node) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                "while_statement" | "for_statement" | "do_statement" => {
+                    // If the shift amount expression contains an identifier
+                    // bounded by this loop condition to a small value, it's safe.
+                    if let Some(condition) = node.child_by_field_name("condition") {
+                        if self.loop_bounds_shift_amount(&condition, shift_amount, source) {
                             return true;
                         }
                     }
                 }
+                _ => {}
             }
             current = node.parent();
+        }
+
+        false
+    }
+
+    /// Check if a loop condition bounds the shift amount to a safe range.
+    /// Extracts identifiers from the shift amount and checks if the loop
+    /// condition constrains them to < 32.
+    fn loop_bounds_shift_amount(
+        &self,
+        condition: &Node,
+        shift_amount: &Node,
+        source: &str,
+    ) -> bool {
+        // Collect identifiers from the shift amount expression
+        let mut shift_vars = Vec::new();
+        Self::collect_identifiers_from(shift_amount, source, &mut shift_vars);
+        if shift_vars.is_empty() {
+            return false;
+        }
+
+        // Unwrap parenthesized_expression
+        let cond = if condition.kind() == "parenthesized_expression" {
+            match condition.child(1) {
+                Some(c) => c,
+                None => return false,
+            }
+        } else {
+            *condition
+        };
+
+        // Check if any shift variable appears in a < or <= comparison with a small bound
+        self.condition_bounds_var_small(&cond, &shift_vars, source)
+    }
+
+    fn collect_identifiers_from(node: &Node, source: &str, names: &mut Vec<String>) {
+        if node.kind() == "identifier" {
+            let name = ast_utils::get_node_text(node, source).to_string();
+            if !names.contains(&name) {
+                names.push(name);
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                Self::collect_identifiers_from(&child, source, names);
+            }
+        }
+    }
+
+    /// Check if a condition bounds any of the given variables to less than 32.
+    fn condition_bounds_var_small(&self, cond: &Node, var_names: &[String], source: &str) -> bool {
+        if cond.kind() != "binary_expression" {
+            return false;
+        }
+        let op = ast_utils::get_binary_operator(cond, source).unwrap_or_default();
+
+        // Handle && conditions
+        if op == "&&" {
+            if let Some(left) = cond.child_by_field_name("left") {
+                if self.condition_bounds_var_small(&left, var_names, source) {
+                    return true;
+                }
+            }
+            if let Some(right) = cond.child_by_field_name("right") {
+                if self.condition_bounds_var_small(&right, var_names, source) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Check var < N or var <= N patterns
+        let (left, right) = match (
+            cond.child_by_field_name("left"),
+            cond.child_by_field_name("right"),
+        ) {
+            (Some(l), Some(r)) => (l, r),
+            _ => return false,
+        };
+        let left_text = ast_utils::get_node_text(&left, source);
+        let right_text = ast_utils::get_node_text(&right, source);
+
+        // var < BOUND or var <= BOUND
+        if (op == "<" || op == "<=") && var_names.iter().any(|v| v == left_text) {
+            // Try to parse the bound as a small number
+            if let Ok(bound) = right_text.trim().parse::<i64>() {
+                return bound <= 32;
+            }
+            // Try to resolve macro
+            let macros = self.current_macros.borrow();
+            if let Some(val) = const_eval::try_evaluate_expr(&right, source, &macros) {
+                return val <= 32;
+            }
+        }
+
+        // BOUND > var or BOUND >= var
+        if (op == ">" || op == ">=") && var_names.iter().any(|v| v == right_text) {
+            if let Ok(bound) = left_text.trim().parse::<i64>() {
+                return bound <= 32;
+            }
+            let macros = self.current_macros.borrow();
+            if let Some(val) = const_eval::try_evaluate_expr(&left, source, &macros) {
+                return val <= 32;
+            }
         }
 
         false
@@ -417,7 +578,7 @@ void func(unsigned int a, unsigned int b) {
 }
 "#;
         let tree = parse_c_code(code);
-        let rule = Int34C;
+        let rule = Int34C::new();
         let violations = rule.check(&tree.root_node(), code);
         assert!(!violations.is_empty(), "Should detect unchecked shift");
     }
@@ -436,7 +597,7 @@ void func(unsigned int a, unsigned int b) {
 }
 "#;
         let tree = parse_c_code(code);
-        let rule = Int34C;
+        let rule = Int34C::new();
         let violations = rule.check(&tree.root_node(), code);
         assert!(
             violations.is_empty(),

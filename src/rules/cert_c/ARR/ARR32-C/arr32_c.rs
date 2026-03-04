@@ -110,7 +110,11 @@ fn is_variable_length_array(size_node: &Node, source: &str) -> bool {
     // A VLA has a size that is not a compile-time constant
     // Simple heuristic: if it's an identifier or expression (not a number literal)
     match size_node.kind() {
-        "identifier" => true,
+        "identifier" => {
+            // ALL_CAPS identifiers are conventionally preprocessor constants, not VLAs
+            let name = &source[size_node.start_byte()..size_node.end_byte()];
+            !is_likely_macro_constant(name)
+        }
         "binary_expression" => true,
         "call_expression" => true,
         "number_literal" => false,
@@ -308,6 +312,18 @@ fn has_prior_validation(body_node: &Node, source: &str, var_name: &str, vla_line
         }
     }
     false
+}
+
+/// ALL_CAPS identifiers are conventionally preprocessor constants (not runtime variables)
+fn is_likely_macro_constant(name: &str) -> bool {
+    !name.is_empty()
+        && name
+            .chars()
+            .all(|c| c.is_ascii_uppercase() || c == '_' || c.is_ascii_digit())
+        && name
+            .chars()
+            .next()
+            .is_some_and(|c| c.is_ascii_uppercase() || c == '_')
 }
 
 fn get_binary_operator<'a>(node: &Node, source: &'a str) -> &'a str {

@@ -209,6 +209,11 @@ impl Int30C {
                     return;
                 }
 
+                // Skip opaque_value + small_literal (e.g. FUNC() + 1, buflen + 1)
+                if Self::is_small_increment_of_opaque(node, source) {
+                    return;
+                }
+
                 let start_point = node.start_position();
                 let expr_text = get_node_text(node, source);
 
@@ -762,6 +767,10 @@ impl Int30C {
         // Check identifiers against the type map (most reliable)
         if node.kind() == "identifier" {
             if let Some(declared_type) = type_map.get(text) {
+                // Pointer types are not integer types — skip
+                if declared_type.contains('*') {
+                    return "not_applicable".to_string();
+                }
                 if self.is_unsigned_type(declared_type) {
                     return "unsigned".to_string();
                 }
@@ -777,11 +786,25 @@ impl Int30C {
             }
         }
 
-        // For pointer expressions, strip the '*' and check
+        // For pointer expressions (*var), strip the '*' and check the pointed-to type.
+        // Dereferencing a pointer yields the base type, so strip one '*' from the
+        // declared type if present.
         if node.kind() == "pointer_expression" {
             let var_name = text.trim_start_matches('*').trim();
             if let Some(declared_type) = type_map.get(var_name) {
-                if self.is_unsigned_type(declared_type) {
+                // Strip one level of pointer indirection (dereference)
+                let deref_type = if let Some(stripped) = declared_type.strip_suffix(" *") {
+                    stripped
+                } else if let Some(stripped) = declared_type.strip_suffix('*') {
+                    stripped
+                } else {
+                    declared_type.as_str()
+                };
+                if deref_type.contains('*') {
+                    // Still a pointer after dereference (e.g. int **)
+                    return "not_applicable".to_string();
+                }
+                if self.is_unsigned_type(deref_type) {
                     return "unsigned".to_string();
                 }
                 return "int".to_string();
@@ -927,7 +950,12 @@ impl Int30C {
         // Extract variable names from declarators
         if let Some(declarator) = node.child_by_field_name("declarator") {
             if let Some(name) = Self::extract_identifier_name(&declarator, source) {
-                type_map.insert(name, type_text.clone());
+                let full_type = if Self::is_pointer_declarator(&declarator) {
+                    format!("{} *", type_text)
+                } else {
+                    type_text.clone()
+                };
+                type_map.insert(name, full_type);
             }
         }
 
@@ -937,12 +965,32 @@ impl Int30C {
                 if child.kind() == "init_declarator" {
                     if let Some(decl) = child.child_by_field_name("declarator") {
                         if let Some(name) = Self::extract_identifier_name(&decl, source) {
-                            type_map.insert(name, type_text.clone());
+                            let full_type = if Self::is_pointer_declarator(&decl) {
+                                format!("{} *", type_text)
+                            } else {
+                                type_text.clone()
+                            };
+                            type_map.insert(name, full_type);
                         }
                     }
                 }
             }
         }
+    }
+
+    /// Returns true if this declarator (or init_declarator wrapping it) contains
+    /// a pointer_declarator, indicating the declared variable is a pointer type.
+    fn is_pointer_declarator(node: &Node) -> bool {
+        if node.kind() == "pointer_declarator" {
+            return true;
+        }
+        // init_declarator wraps the actual declarator
+        if node.kind() == "init_declarator" {
+            if let Some(decl) = node.child_by_field_name("declarator") {
+                return decl.kind() == "pointer_declarator";
+            }
+        }
+        false
     }
 
     fn extract_identifier_name(node: &Node, source: &str) -> Option<String> {
@@ -966,6 +1014,115 @@ impl Int30C {
                 None
             }
         }
+    }
+
+    /// Returns true if this binary_expression is `opaque + small_literal` or
+    /// `small_literal + opaque`, where "opaque" is a call_expression or an
+    /// identifier whose value comes from a call_expression.  Adding a small
+    /// constant (0..=10) to any realistic function return value cannot overflow.
+    fn is_small_increment_of_opaque(node: &Node, source: &str) -> bool {
+        if node.kind() != "binary_expression" {
+            return false;
+        }
+        let (left, right) = match (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
+            (Some(l), Some(r)) => (l, r),
+            _ => return false,
+        };
+
+        let is_small_literal = |n: &Node| -> bool {
+            if n.kind() != "number_literal" {
+                return false;
+            }
+            let text = get_node_text(n, source).trim().to_string();
+            text.parse::<u64>().is_ok_and(|v| v <= 10)
+        };
+
+        let is_opaque = |n: &Node| -> bool {
+            if n.kind() == "call_expression" {
+                return true;
+            }
+            // Identifier whose initializer is a call_expression
+            if n.kind() == "identifier" {
+                let var_name = get_node_text(n, source);
+                if let Some(func) = crate::utility::cert_c::ast_utils::find_containing_function(n) {
+                    if let Some(body) = func.child_by_field_name("body") {
+                        if Self::identifier_initialized_from_call(&body, var_name, source, n) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            false
+        };
+
+        (is_opaque(&left) && is_small_literal(&right))
+            || (is_small_literal(&left) && is_opaque(&right))
+    }
+
+    /// Check if an identifier was initialized from a call_expression earlier in the same scope.
+    /// Searches recursively into preproc blocks and nested compound statements.
+    fn identifier_initialized_from_call(
+        scope: &Node,
+        var_name: &str,
+        source: &str,
+        usage_node: &Node,
+    ) -> bool {
+        let usage_row = usage_node.start_position().row;
+        for i in 0..scope.named_child_count() {
+            if let Some(child) = scope.named_child(i) {
+                if child.start_position().row >= usage_row {
+                    break;
+                }
+                // declaration: type var = call();
+                if child.kind() == "declaration" {
+                    if let Some(declarator) = child.child_by_field_name("declarator") {
+                        if declarator.kind() == "init_declarator" {
+                            let decl_name = declarator
+                                .child_by_field_name("declarator")
+                                .map(|d| get_node_text(&d, source));
+                            let init = declarator.child_by_field_name("value");
+                            if decl_name == Some(var_name) {
+                                if let Some(init_node) = init {
+                                    if init_node.kind() == "call_expression" {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // assignment: var = call();
+                if child.kind() == "expression_statement" {
+                    if let Some(expr) = child.named_child(0) {
+                        if expr.kind() == "assignment_expression" {
+                            let lhs = expr.child_by_field_name("left");
+                            let rhs = expr.child_by_field_name("right");
+                            if let (Some(l), Some(r)) = (lhs, rhs) {
+                                if get_node_text(&l, source) == var_name
+                                    && r.kind() == "call_expression"
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                // Recurse into preproc blocks and compound statements
+                if child.kind().starts_with("preproc_")
+                    || child.kind() == "compound_statement"
+                    || child.kind() == "if_statement"
+                {
+                    if Self::identifier_initialized_from_call(&child, var_name, source, usage_node)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
     }
 
     fn is_unsigned_type(&self, type_str: &str) -> bool {

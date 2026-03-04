@@ -172,9 +172,12 @@ fn check_body_for_const(body: &Node, id_name: &str, source: &str) -> bool {
     for i in 0..body.child_count() {
         if let Some(child) = body.child(i) {
             if child.kind() == "declaration" {
-                let decl_text = get_node_text(&child, source);
-                // Check if this declaration has const and matches the identifier
-                if decl_text.contains("const") && decl_text.contains(id_name) {
+                // Check if this declaration declares the target variable with const qualifier.
+                // We must check the AST structure, not raw text — raw text matching picks up
+                // "const" from cast expressions inside initializers (e.g.,
+                // `bool x = f((const T *)&servaddr)` contains "const" and "servaddr" but
+                // servaddr is NOT const-declared).
+                if declaration_declares_const_var(&child, id_name, source) {
                     return true;
                 }
             }
@@ -189,6 +192,44 @@ fn check_body_for_const(body: &Node, id_name: &str, source: &str) -> bool {
         }
     }
     false
+}
+
+/// Check if a declaration node declares the given variable with const qualification.
+/// Only checks the type specifiers/qualifiers of the declaration, NOT the initializer.
+fn declaration_declares_const_var(decl: &Node, id_name: &str, source: &str) -> bool {
+    let mut has_const = false;
+    let mut has_var = false;
+
+    for i in 0..decl.child_count() {
+        if let Some(child) = decl.child(i) {
+            match child.kind() {
+                "type_qualifier" => {
+                    let text = get_node_text(&child, source);
+                    if text == "const" {
+                        has_const = true;
+                    }
+                }
+                "init_declarator" => {
+                    // Check the declarator part (not the initializer value) for the identifier
+                    if let Some(declarator) = child.child_by_field_name("declarator") {
+                        let decl_text = get_node_text(&declarator, source);
+                        if decl_text.contains(id_name) {
+                            has_var = true;
+                        }
+                    }
+                }
+                "identifier" | "array_declarator" | "pointer_declarator" => {
+                    let text = get_node_text(&child, source);
+                    if text.contains(id_name) {
+                        has_var = true;
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+
+    has_const && has_var
 }
 
 /// Check if a function name is a known function that modifies its arguments
