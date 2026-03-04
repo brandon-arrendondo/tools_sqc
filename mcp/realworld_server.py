@@ -620,6 +620,26 @@ def _parse_result_file(run_id: str, filepath: Path) -> dict:
     return {"error": f"Unknown file type: {filepath.suffix}", "total": 0, "per_rule": {}}
 
 
+def _parse_sqc_log_progress(version_dir: Path, run_id: str) -> dict | None:
+    """Parse tail of sqc log for file progress (Scanning: [file N/M])."""
+    log_file = version_dir / f"{run_id}.log"
+    if not log_file.exists():
+        return None
+    try:
+        size = log_file.stat().st_size
+        with open(log_file, "rb") as f:
+            # Read last 4KB to find the most recent progress line
+            f.seek(max(0, size - 4096))
+            tail = f.read().decode("utf-8", errors="replace")
+        matches = re.findall(r"Scanning: \[file (\d+)/(\d+)\]", tail)
+        if matches:
+            current, total = matches[-1]
+            return {"current_file": int(current), "total_files": int(total)}
+    except Exception:
+        pass
+    return None
+
+
 def _get_result_file(results_dir: Path, run_id: str) -> Path | None:
     """Find the result file for a run (json, xml, or txt)."""
     for ext in (".json", ".xml", ".txt"):
@@ -1044,6 +1064,14 @@ def get_status() -> str:
                 "elapsed_seconds": elapsed_s,
                 "elapsed_human": _fmt_duration(elapsed_s),
             }
+
+            # Add file-level progress for running sqc runs
+            if status == "running" and run_info.get("tool") == "sqc":
+                version_dir = Path(run_info.get("version_dir", ""))
+                file_progress = _parse_sqc_log_progress(version_dir, run_id)
+                if file_progress:
+                    entry["file_progress"] = file_progress
+
             statuses.append(entry)
 
     return json.dumps({

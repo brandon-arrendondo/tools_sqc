@@ -218,16 +218,136 @@ impl Int18C {
         false
     }
 
-    /// Check if binary expression has at least one operand cast to larger type
+    /// Check if binary expression has at least one operand cast to larger type,
+    /// or if an operand is already declared as the larger type
     fn has_cast_operand(&self, binary: &Node, source: &str) -> bool {
         if let Some(left) = binary.child_by_field_name("left") {
             if self.has_larger_type_cast(&left, source) {
+                return true;
+            }
+            if self.operand_has_larger_declared_type(&left, source) {
                 return true;
             }
         }
         if let Some(right) = binary.child_by_field_name("right") {
             if self.has_larger_type_cast(&right, source) {
                 return true;
+            }
+            if self.operand_has_larger_declared_type(&right, source) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Check if an operand identifier has a declared type that is already a larger type
+    fn operand_has_larger_declared_type(&self, node: &Node, source: &str) -> bool {
+        if node.kind() != "identifier" {
+            return false;
+        }
+        let var_name = get_node_text(node, source);
+
+        // Walk up to the function_definition to search for declarations
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "function_definition" {
+                // Check parameters
+                if let Some(declarator) = parent.child_by_field_name("declarator") {
+                    if self.param_has_larger_type(&declarator, var_name, source) {
+                        return true;
+                    }
+                }
+                // Check local declarations in function body
+                if let Some(body) = parent.child_by_field_name("body") {
+                    if self.local_decl_has_larger_type(&body, var_name, source) {
+                        return true;
+                    }
+                }
+                break;
+            }
+            current = parent.parent();
+        }
+        false
+    }
+
+    /// Check if a function parameter has a larger type
+    fn param_has_larger_type(&self, declarator: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..declarator.child_count() {
+            if let Some(child) = declarator.child(i) {
+                if child.kind() == "parameter_list" {
+                    for j in 0..child.child_count() {
+                        if let Some(param) = child.child(j) {
+                            if param.kind() == "parameter_declaration" {
+                                let param_text = get_node_text(&param, source);
+                                if param_text.contains(var_name) {
+                                    // Check type nodes
+                                    for k in 0..param.child_count() {
+                                        if let Some(type_node) = param.child(k) {
+                                            if type_node.kind() == "type_identifier"
+                                                || type_node.kind() == "primitive_type"
+                                                || type_node.kind() == "sized_type_specifier"
+                                            {
+                                                let type_str = get_node_text(&type_node, source);
+                                                if self.is_larger_type(type_str) {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a local variable declaration has a larger type
+    fn local_decl_has_larger_type(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() == "declaration" {
+                    // Check if this declaration declares our variable with a larger type.
+                    // Must check the declarator NAME only (not the full init_declarator text,
+                    // which includes the initializer expression).
+                    let mut has_larger = false;
+                    let mut has_var = false;
+                    for j in 0..child.child_count() {
+                        if let Some(decl_child) = child.child(j) {
+                            match decl_child.kind() {
+                                "type_identifier" | "primitive_type" | "sized_type_specifier" => {
+                                    let type_str = get_node_text(&decl_child, source);
+                                    if self.is_larger_type(type_str) {
+                                        has_larger = true;
+                                    }
+                                }
+                                "init_declarator" => {
+                                    // Only check the declarator name, not the initializer value
+                                    if let Some(declarator) =
+                                        decl_child.child_by_field_name("declarator")
+                                    {
+                                        let name = get_node_text(&declarator, source);
+                                        if name == var_name {
+                                            has_var = true;
+                                        }
+                                    }
+                                }
+                                "identifier" => {
+                                    let text = get_node_text(&decl_child, source);
+                                    if text == var_name {
+                                        has_var = true;
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                    }
+                    if has_larger && has_var {
+                        return true;
+                    }
+                }
             }
         }
         false
@@ -247,7 +367,10 @@ impl Int18C {
         // Find type specifier in declaration
         for i in 0..declaration.child_count() {
             if let Some(child) = declaration.child(i) {
-                if child.kind() == "primitive_type" || child.kind() == "sized_type_specifier" {
+                if child.kind() == "primitive_type"
+                    || child.kind() == "sized_type_specifier"
+                    || child.kind() == "type_identifier"
+                {
                     let type_str = get_node_text(&child, source);
                     if self.is_larger_type(type_str) {
                         return true;
