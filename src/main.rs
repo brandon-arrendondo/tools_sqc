@@ -213,7 +213,7 @@ fn run() -> Result<i32> {
 
     // Export to file if requested (includes both active and suppressed violations)
     if let Some(export_path) = export_file {
-        export_all_violations(&violations, &suppressed, export_path, path, &manifest)?;
+        export_all_violations(&violations, &suppressed, export_path, &manifest)?;
         println!(
             "Exported {} violations ({} suppressed) to: {}",
             violations.len(),

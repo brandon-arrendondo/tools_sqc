@@ -1,7 +1,6 @@
 use crate::analyze::SuppressedViolation;
 use crate::manifest::Severity;
 use crate::rules::RuleViolation;
-use crate::utility::files::get_relative_path;
 
 use anyhow::Result;
 use std::collections::BTreeMap;
@@ -19,9 +18,7 @@ fn severity_to_sarif_level(severity: &Severity) -> &'static str {
 fn violation_to_sarif_result(
     v: &RuleViolation,
     rule_index: &BTreeMap<&str, usize>,
-    base_path: &str,
 ) -> serde_json::Value {
-    let relative_path = get_relative_path(&v.file_path, base_path);
     let idx = rule_index.get(v.rule_id.as_str()).copied().unwrap_or(0);
     let mut result = serde_json::json!({
         "ruleId": v.rule_id,
@@ -33,7 +30,7 @@ fn violation_to_sarif_result(
         "locations": [{
             "physicalLocation": {
                 "artifactLocation": {
-                    "uri": relative_path,
+                    "uri": v.file_path,
                     "uriBaseId": "%SRCROOT%"
                 },
                 "region": {
@@ -57,7 +54,6 @@ pub fn export_all_violations_to_sarif(
     violations: &[RuleViolation],
     suppressed: &[SuppressedViolation],
     sarif_path: &str,
-    base_path: &str,
 ) -> Result<()> {
     // Collect unique rules from both active and suppressed violations
     let mut rules_map: BTreeMap<String, &RuleViolation> = BTreeMap::new();
@@ -96,12 +92,12 @@ pub fn export_all_violations_to_sarif(
     // Build results: active violations
     let mut results_array: Vec<serde_json::Value> = violations
         .iter()
-        .map(|v| violation_to_sarif_result(v, &rule_index, base_path))
+        .map(|v| violation_to_sarif_result(v, &rule_index))
         .collect();
 
     // Append suppressed violations with SARIF suppressions array
     for s in suppressed {
-        let mut result = violation_to_sarif_result(&s.violation, &rule_index, base_path);
+        let mut result = violation_to_sarif_result(&s.violation, &rule_index);
         result["suppressions"] = serde_json::json!([{
             "kind": "inSource",
             "justification": s.justification

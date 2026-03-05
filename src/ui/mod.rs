@@ -1,5 +1,3 @@
-use crate::prelude::*;
-
 use anyhow::{Context, Result};
 use crossterm::{
     event::{self, DisableMouseCapture, EnableMouseCapture, Event, KeyCode, MouseEventKind},
@@ -1655,15 +1653,12 @@ impl TerminalUI {
                 self.group_by_violation_id();
             }
             SortMode::FilePath => {
-                let repo_path = &self.repo_path;
                 let sort_ascending = self.sort_ascending;
                 self.sorted_violations.sort_by(|a, b| {
-                    let path_a = get_relative_path(&a.1.file_path, repo_path);
-                    let path_b = get_relative_path(&b.1.file_path, repo_path);
                     if sort_ascending {
-                        path_a.cmp(&path_b)
+                        a.1.file_path.cmp(&b.1.file_path)
                     } else {
-                        path_b.cmp(&path_a)
+                        b.1.file_path.cmp(&a.1.file_path)
                     }
                 });
                 self.group_by_file_path();
@@ -1745,8 +1740,7 @@ impl TerminalUI {
         let mut path_groups: BTreeMap<String, Vec<GroupItem>> = BTreeMap::new();
 
         for (original_index, violation) in &self.sorted_violations {
-            let path = get_relative_path(&violation.file_path, &self.repo_path);
-            let dir_path = std::path::Path::new(&path)
+            let dir_path = std::path::Path::new(&violation.file_path)
                 .parent()
                 .map(|p| p.to_string_lossy().to_string())
                 .unwrap_or_else(|| ".".to_string());
@@ -1764,8 +1758,7 @@ impl TerminalUI {
         // Add clean files if they should be shown
         if self.show_clean_files {
             for file_path in &self.clean_files {
-                let path = get_relative_path(file_path, &self.repo_path);
-                let dir_path = std::path::Path::new(&path)
+                let dir_path = std::path::Path::new(file_path.as_str())
                     .parent()
                     .map(|p| p.to_string_lossy().to_string())
                     .unwrap_or_else(|| ".".to_string());
@@ -2403,20 +2396,7 @@ impl TerminalUI {
     }
 
     fn get_relative_path(&self, file_path: &str) -> String {
-        use std::path::Path;
-
-        let base_path_obj = Path::new(&self.repo_path);
-        let file_path_obj = Path::new(file_path);
-
-        if let Ok(relative) = file_path_obj.strip_prefix(base_path_obj) {
-            relative.to_string_lossy().to_string()
-        } else {
-            file_path
-                .split('/')
-                .next_back()
-                .unwrap_or(file_path)
-                .to_string()
-        }
+        file_path.to_string()
     }
 
     // Suppression functionality
@@ -2777,15 +2757,12 @@ impl TerminalUI {
                 });
             }
             SortMode::FilePath => {
-                let repo_path = &self.repo_path;
                 let sort_ascending = self.sort_ascending;
                 self.combined_violations.sort_by(|a, b| {
-                    let path_a = get_relative_path(&a.file_path, repo_path);
-                    let path_b = get_relative_path(&b.file_path, repo_path);
                     if sort_ascending {
-                        path_a.cmp(&path_b)
+                        a.file_path.cmp(&b.file_path)
                     } else {
-                        path_b.cmp(&path_a)
+                        b.file_path.cmp(&a.file_path)
                     }
                 });
             }
