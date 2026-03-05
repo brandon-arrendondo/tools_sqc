@@ -127,6 +127,12 @@ fn run() -> Result<i32> {
                 .help("Only analyze modified/new C files (git diff)")
                 .action(clap::ArgAction::SetTrue),
         )
+        .arg(
+            Arg::new("suppress_file")
+                .long("suppress-file")
+                .help("Path to .sqc-suppress.toml file (auto-detected in project root if not specified)")
+                .value_name("FILE"),
+        )
         .get_matches();
 
     let path = matches.get_one::<String>("path").unwrap();
@@ -153,6 +159,7 @@ fn run() -> Result<i32> {
         .get_one::<String>("rules")
         .map(|s| s.split(',').map(|r| r.trim().to_string()).collect());
     let diff_only = matches.get_flag("diff");
+    let suppress_file = matches.get_one::<String>("suppress_file");
 
     // Verify the path and determine source type
     let project_source = ProjectSource::open(path)?;
@@ -190,6 +197,7 @@ fn run() -> Result<i32> {
         &directories,
         &include_paths,
         diff_only,
+        suppress_file.map(|s| s.as_str()),
     )?;
 
     let mut violations = results.violations;
