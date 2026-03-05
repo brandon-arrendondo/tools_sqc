@@ -30,8 +30,7 @@ fn violation_to_sarif_result(
         "locations": [{
             "physicalLocation": {
                 "artifactLocation": {
-                    "uri": v.file_path,
-                    "uriBaseId": "%SRCROOT%"
+                    "uri": v.file_path
                 },
                 "region": {
                     "startLine": v.line,
