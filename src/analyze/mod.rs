@@ -18,6 +18,18 @@ use anyhow::Result;
 use std::collections::HashMap;
 use std::fs;
 
+/// A violation that was suppressed by an inline SQC-SUPPRESS comment.
+pub struct SuppressedViolation {
+    pub violation: RuleViolation,
+    pub justification: String,
+}
+
+/// Results from project analysis, containing both active and suppressed violations.
+pub struct AnalysisResults {
+    pub violations: Vec<RuleViolation>,
+    pub suppressed: Vec<SuppressedViolation>,
+}
+
 pub fn analyze_project(
     project_source: &ProjectSource,
     manifest: &RuleManifest,
@@ -25,8 +37,9 @@ pub fn analyze_project(
     directories: &[String],
     include_paths: &[String],
     diff_only: bool,
-) -> Result<Vec<RuleViolation>> {
+) -> Result<AnalysisResults> {
     let mut violations = Vec::new();
+    let mut suppressed = Vec::new();
     let registry = RuleRegistry::new();
 
     // Pre-scan additional directories for cross-file context
@@ -116,34 +129,31 @@ pub fn analyze_project(
                     rule.set_function_cfgs(&function_cfgs);
                     let mut file_violations = rule.check(&root_node, &source);
 
-                    // Filter out suppressed violations
-                    file_violations.retain(|violation| {
+                    // Set file path and severity on all violations
+                    for violation in &mut file_violations {
+                        violation.file_path = file_path.clone();
+                        violation.severity = rule_config
+                            .severity
+                            .clone()
+                            .unwrap_or_else(|| rule.severity());
+                    }
+
+                    // Partition into active and suppressed violations
+                    for violation in file_violations {
                         if let Some(suppression) = suppression_manager.should_suppress(
                             file_path,
                             rule_id,
                             violation.line,
                             &source,
                         ) {
-                            // Log that violation was suppressed (optional)
-                            eprintln!(
-                                "Suppressed {} at {}:{} - Justification: {}",
-                                rule_id, file_path, violation.line, suppression.justification
-                            );
-                            false
+                            suppressed.push(SuppressedViolation {
+                                violation,
+                                justification: suppression.justification.clone(),
+                            });
                         } else {
-                            true
+                            violations.push(violation);
                         }
-                    });
-
-                    for violation in &mut file_violations {
-                        violation.file_path = file_path.clone();
-                        // Use config severity if specified, otherwise use rule's default severity
-                        violation.severity = rule_config
-                            .severity
-                            .clone()
-                            .unwrap_or_else(|| rule.severity());
                     }
-                    violations.extend(file_violations);
                 }
                 // Note: Unimplemented rules are already warned about at the start of analysis
             }
@@ -155,7 +165,10 @@ pub fn analyze_project(
         reporter.report_complete(violations.len());
     }
 
-    Ok(violations)
+    Ok(AnalysisResults {
+        violations,
+        suppressed,
+    })
 }
 
 pub fn handle_generate_suppression(spec: &str) -> Result<()> {
