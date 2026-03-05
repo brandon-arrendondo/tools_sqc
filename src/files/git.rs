@@ -32,7 +32,9 @@ impl GitRepo {
                     if let Some(path_str) = path.to_str() {
                         // Skip files in .git directory
                         if !path_str.contains("/.git/") {
-                            c_files.push(path_str.to_string());
+                            // Normalize: strip leading "./" so paths are clean relative to cwd
+                            let normalized = path_str.strip_prefix("./").unwrap_or(path_str);
+                            c_files.push(normalized.to_string());
                         }
                     }
                 }

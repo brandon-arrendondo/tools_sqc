@@ -17,7 +17,6 @@ pub fn export_all_violations(
     violations: &[RuleViolation],
     suppressed: &[SuppressedViolation],
     export_path: &str,
-    base_path: &str,
     _manifest: &RuleManifest,
 ) -> Result<()> {
     use std::path::Path;
@@ -26,28 +25,22 @@ pub fn export_all_violations(
 
     // Check for .sarif.json double extension
     if export_path.ends_with(".sarif.json") {
-        return export_all_violations_to_sarif(violations, suppressed, export_path, base_path);
+        return export_all_violations_to_sarif(violations, suppressed, export_path);
     }
 
     if let Some(extension) = path.extension() {
         match extension.to_str() {
-            Some("xlsx") => {
-                export_all_violations_to_excel(violations, export_path, base_path, _manifest)
-            }
-            Some("csv") => {
-                export_all_violations_to_csv(violations, export_path, base_path, _manifest)
-            }
-            Some("json") => export_all_violations_to_json(violations, export_path, base_path),
-            Some("sarif") => {
-                export_all_violations_to_sarif(violations, suppressed, export_path, base_path)
-            }
+            Some("xlsx") => export_all_violations_to_excel(violations, export_path, _manifest),
+            Some("csv") => export_all_violations_to_csv(violations, export_path, _manifest),
+            Some("json") => export_all_violations_to_json(violations, export_path),
+            Some("sarif") => export_all_violations_to_sarif(violations, suppressed, export_path),
             _ => {
                 // Default to Excel for unknown extensions
-                export_all_violations_to_excel(violations, export_path, base_path, _manifest)
+                export_all_violations_to_excel(violations, export_path, _manifest)
             }
         }
     } else {
         // No extension, default to Excel
-        export_all_violations_to_excel(violations, export_path, base_path, _manifest)
+        export_all_violations_to_excel(violations, export_path, _manifest)
     }
 }

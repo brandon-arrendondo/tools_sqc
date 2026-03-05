@@ -50,18 +50,9 @@ impl DirectorySource {
     pub fn get_c_files(&self) -> Result<Vec<String>> {
         let mut c_files = Vec::new();
 
-        // If it's a single file, just return that file
+        // If it's a single file, just return the path as given
         if self.is_file {
-            // Convert to absolute path
-            let path_obj = Path::new(&self.path);
-            if let Ok(abs_path) = path_obj.canonicalize() {
-                if let Some(path_str) = abs_path.to_str() {
-                    c_files.push(path_str.to_string());
-                }
-            } else {
-                // Fall back to the original path if canonicalize fails
-                c_files.push(self.path.clone());
-            }
+            c_files.push(self.path.clone());
             return Ok(c_files);
         }
 
@@ -73,7 +64,9 @@ impl DirectorySource {
                     if let Some(path_str) = path.to_str() {
                         // Skip files in .git directory (in case there's a .git folder but not a valid repo)
                         if !path_str.contains("/.git/") {
-                            c_files.push(path_str.to_string());
+                            // Normalize: strip leading "./" so paths are clean relative to cwd
+                            let normalized = path_str.strip_prefix("./").unwrap_or(path_str);
+                            c_files.push(normalized.to_string());
                         }
                     }
                 }
