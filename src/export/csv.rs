@@ -5,7 +5,6 @@ use crate::rules::{get_rule_description, RuleRegistry, RuleViolation};
 pub fn export_all_violations_to_csv(
     violations: &[RuleViolation],
     csv_path: &str,
-    base_path: &str,
     _manifest: &RuleManifest,
 ) -> Result<()> {
     use csv::Writer;
@@ -26,11 +25,10 @@ pub fn export_all_violations_to_csv(
     // Write all violations
     for violation in violations {
         let file_hash = calculate_file_hash(&violation.file_path)?;
-        let relative_path = get_relative_path(&violation.file_path, base_path);
 
         let title = format!(
             "{}:{}:{} version:{}",
-            violation.rule_id, relative_path, violation.line, file_hash
+            violation.rule_id, violation.file_path, violation.line, file_hash
         );
 
         let code_snippet = get_code_snippet(&violation.file_path, violation.line)?;
