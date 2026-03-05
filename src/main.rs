@@ -19,8 +19,7 @@ use crate::manifest::Severity;
 use crate::prelude::*;
 use clap::{Arg, Command};
 
-use analyze::analyze_project;
-use analyze::handle_generate_suppression;
+use analyze::{analyze_project, handle_generate_suppression};
 use export::export_all_violations;
 use files::ProjectSource;
 use progress::CLIProgressReporter;
@@ -184,7 +183,7 @@ fn run() -> Result<i32> {
     let progress_reporter = CLIProgressReporter::new();
 
     // Perform analysis with progress reporting
-    let mut violations = analyze_project(
+    let results = analyze_project(
         &project_source,
         &manifest,
         Some(&progress_reporter),
@@ -192,6 +191,9 @@ fn run() -> Result<i32> {
         &include_paths,
         diff_only,
     )?;
+
+    let mut violations = results.violations;
+    let suppressed = results.suppressed;
 
     // Post-analysis filtering
     if let Some(ref min_sev) = min_severity {
@@ -201,20 +203,25 @@ fn run() -> Result<i32> {
         violations.retain(|v| rules.contains(&v.rule_id));
     }
 
-    // Export to file if requested
+    // Export to file if requested (includes both active and suppressed violations)
     if let Some(export_path) = export_file {
-        export_all_violations(&violations, export_path, path, &manifest)?;
+        export_all_violations(&violations, &suppressed, export_path, path, &manifest)?;
         println!(
-            "Exported {} violations to: {}",
+            "Exported {} violations ({} suppressed) to: {}",
             violations.len(),
+            suppressed.len(),
             export_path
         );
     }
 
     // Print summary
-    println!("Total violations: {}", violations.len());
+    println!(
+        "Total violations: {} ({} suppressed)",
+        violations.len(),
+        suppressed.len()
+    );
 
-    // Determine exit code
+    // Determine exit code (only unsuppressed violations count)
     if fail_on_violation && !violations.is_empty() {
         return Ok(1);
     }
