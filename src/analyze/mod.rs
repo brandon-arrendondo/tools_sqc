@@ -37,6 +37,7 @@ pub fn analyze_project(
     directories: &[String],
     include_paths: &[String],
     diff_only: bool,
+    suppress_file: Option<&str>,
 ) -> Result<AnalysisResults> {
     let mut violations = Vec::new();
     let mut suppressed = Vec::new();
@@ -89,6 +90,27 @@ pub fn analyze_project(
     let total_files = c_files.len();
     let mut parser = CParser::new()?;
     let mut suppression_manager = SuppressionManager::new();
+
+    // Load TOML suppression file if provided or auto-detected
+    let toml_path = suppress_file.map(String::from).or_else(|| {
+        let auto_path =
+            std::path::Path::new(project_source.get_root_path()).join(".sqc-suppress.toml");
+        if auto_path.exists() {
+            auto_path.to_str().map(String::from)
+        } else {
+            None
+        }
+    });
+    if let Some(ref path) = toml_path {
+        match suppression_manager.load_from_toml(path) {
+            Ok(count) => {
+                eprintln!("Loaded {} suppressions from {}", count, path);
+            }
+            Err(e) => {
+                eprintln!("Warning: {}", e);
+            }
+        }
+    }
 
     for (file_idx, file_path) in c_files.iter().enumerate() {
         // Check for cancellation before processing each file
@@ -172,18 +194,24 @@ pub fn analyze_project(
 }
 
 pub fn handle_generate_suppression(spec: &str) -> Result<()> {
-    // Parse the specification: FILE:LINE:RULE or FILE:LINE-LINE:RULE
+    // Parse the specification: FILE:LINE:RULE
     let parts: Vec<&str> = spec.splitn(3, ':').collect();
     if parts.len() != 3 {
-        eprintln!("Error: Invalid format. Use FILE:LINE:RULE or FILE:LINE-LINE:RULE");
+        eprintln!("Error: Invalid format. Use FILE:LINE:RULE");
         eprintln!("Example: src/main.c:42:ARR30-C");
-        eprintln!("Example: src/utils.c:15-18:MEM30-C");
         return Ok(());
     }
 
     let file_path = parts[0];
-    let line_spec = parts[1];
     let rule_id = parts[2];
+
+    let line: usize = match parts[1].parse() {
+        Ok(n) if n > 0 => n,
+        _ => {
+            eprintln!("Error: Invalid line number");
+            return Ok(());
+        }
+    };
 
     // Read the source file
     let source = match fs::read_to_string(file_path) {
@@ -194,86 +222,53 @@ pub fn handle_generate_suppression(spec: &str) -> Result<()> {
         }
     };
 
-    // Parse line specification
-    let (start_line, end_line) = if line_spec.contains('-') {
-        let range_parts: Vec<&str> = line_spec.split('-').collect();
-        if range_parts.len() != 2 {
-            eprintln!("Error: Invalid line range format. Use LINE-LINE");
-            return Ok(());
-        }
-        let start: usize = range_parts[0]
-            .parse()
-            .map_err(|_| {
-                eprintln!("Error: Invalid start line number");
-            })
-            .unwrap_or(0);
-        let end: usize = range_parts[1]
-            .parse()
-            .map_err(|_| {
-                eprintln!("Error: Invalid end line number");
-            })
-            .unwrap_or(0);
-        (start, end)
-    } else {
-        let line: usize = line_spec
-            .parse()
-            .map_err(|_| {
-                eprintln!("Error: Invalid line number");
-            })
-            .unwrap_or(0);
-        (line, line)
-    };
-
-    if start_line == 0 || end_line == 0 || start_line > end_line {
-        eprintln!("Error: Invalid line numbers");
-        return Ok(());
-    }
-
-    // Extract the code lines
     let lines: Vec<&str> = source.lines().collect();
-    if start_line > lines.len() || end_line > lines.len() {
+    if line > lines.len() {
         eprintln!(
-            "Error: Line numbers exceed file length (file has {} lines)",
+            "Error: Line {} exceeds file length ({} lines)",
+            line,
             lines.len()
         );
         return Ok(());
     }
 
-    let code_lines = &lines[(start_line - 1)..end_line];
-    let code = code_lines.join("\n");
+    // Get the code line, stripping any existing SQC-SUPPRESS comment
+    let raw_line = lines[line - 1];
+    let code = if let Some(pos) = raw_line.find("// SQC-SUPPRESS") {
+        &raw_line[..pos]
+    } else if let Some(pos) = raw_line.find("/* SQC-SUPPRESS") {
+        &raw_line[..pos]
+    } else {
+        raw_line
+    };
 
-    // Calculate the hash
-    let hash = SuppressionManager::calculate_suppression_hash(rule_id, &code);
+    let hash = SuppressionManager::calculate_suppression_hash(rule_id, code);
 
-    // Generate the suppression comment
     println!(
-        "Generated suppression comment for {}:{}:{}",
-        file_path, line_spec, rule_id
+        "Generated suppression for {}:{}:{}",
+        file_path, line, rule_id
     );
     println!();
-    println!("Code being suppressed:");
-    for (i, line) in code_lines.iter().enumerate() {
-        println!("{:4}: {}", start_line + i, line);
-    }
+    println!("Code:");
+    println!("{:4}: {}", line, raw_line);
     println!();
+    let filename = std::path::Path::new(file_path)
+        .file_name()
+        .and_then(|f| f.to_str())
+        .unwrap_or(file_path);
 
-    if start_line == end_line {
-        println!("Add this comment BEFORE line {}:", start_line);
-        println!(
-            "// SQC-SUPPRESS: {} HASH:{} JUSTIFICATION: \"TODO: Add justification\"",
-            rule_id, hash
-        );
-    } else {
-        println!("Add this comment BEFORE line {}:", start_line);
-        println!(
-            "// SQC-SUPPRESS: {} LINES:{} HASH:{} JUSTIFICATION: \"TODO: Add justification\"",
-            rule_id,
-            end_line - start_line + 1,
-            hash
-        );
-    }
+    println!("Add on the line before, or inline:");
+    println!(
+        "// SQC-SUPPRESS: {} HASH:{} JUSTIFICATION: \"TODO: Add justification\"",
+        rule_id, hash
+    );
     println!();
-    println!("Note: Replace 'TODO: Add justification' with an actual explanation of why this violation is acceptable.");
+    println!("Or add to .sqc-suppress.toml (for read-only codebases):");
+    println!("[[suppression]]");
+    println!("file = \"{}\"", filename);
+    println!("rule = \"{}\"", rule_id);
+    println!("hash = \"{}\"", hash);
+    println!("justification = \"TODO: Add justification\"");
 
     Ok(())
 }

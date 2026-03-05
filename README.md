@@ -77,6 +77,8 @@ Options:
                                    [Low, Medium, High, Critical]
       --rules <RULE1,RULE2,...>    Only report violations from these rules (comma-separated)
       --diff                       Only analyze modified/new C files (requires git repo)
+      --suppress-file <FILE>       Path to .sqc-suppress.toml file
+                                   (auto-detected in project root if not specified)
   -h, --help                       Print help
   -V, --version                    Print version
 ```
@@ -382,25 +384,69 @@ impl CertRule for Mem30C {
 
 ## Suppression System
 
-SqC includes a suppression system to handle false positives:
+SqC supports inline source-code suppression comments to handle false positives. Each suppression includes a SHA-256 hash of the violation line, ensuring suppressions break automatically when the underlying code changes.
 
-### Creating Suppressions
+### Workflow
+
 ```bash
-# Generate suppression entry for a specific violation (file:line:rule)
-./target/release/sqc --generate-suppression src/main.c:42:ARR30-C
+# 1. Run sqc, identify a false positive on line 42
+sqc src/main.c
 
-# Or in interactive mode: check violations with Space, then press 'i' to suppress
+# 2. Generate the suppression hash
+sqc --generate-suppression src/main.c:42:ARR30-C
+
+# 3. Add the comment on the line before (or inline on the same line)
 ```
 
-### Suppression File Format
-Suppressions are stored in `.sqc-suppress.toml` with SHA-256 hashes:
+### Comment Format
+
+```c
+// Line-before style (most common):
+// SQC-SUPPRESS: ARR30-C HASH:a1b2c3d4e5f67890 JUSTIFICATION: "Bounds validated by caller"
+arr[index] = value;
+
+// Inline style (same line as violation):
+arr[index] = value; // SQC-SUPPRESS: ARR30-C HASH:a1b2c3d4e5f67890 JUSTIFICATION: "Bounds validated by caller"
+
+// Stacked (multiple rules on one line):
+// SQC-SUPPRESS: ERR00-C HASH:aaaa... JUSTIFICATION: "return captured in bytes_read"
+// SQC-SUPPRESS: EXP34-C HASH:bbbb... JUSTIFICATION: "buf checked at function entry"
+bytes_read = fread(buf, 1, file_size, fp);
+```
+
+### How It Works
+
+- **Hash**: `SHA-256(rule_id + ":" + whitespace_normalized(violation_line))`, truncated to 16 hex characters. The hash includes the rule ID so different rules on the same line produce different hashes.
+- **Matching**: A suppress comment matches a violation when (1) the rule ID matches, (2) the comment is on the same line or up to 5 lines before the violation, and (3) the hash of the violation line matches the stored hash.
+- **Staleness detection**: If the code on the violation line changes, the hash no longer matches and the suppression stops working, forcing re-review.
+
+### External Suppression File (`.sqc-suppress.toml`)
+
+For read-only codebases where you cannot add inline comments, place a `.sqc-suppress.toml` file in the project root (auto-detected) or specify it with `--suppress-file`:
+
 ```toml
-[[suppressions]]
-file = "src/example.c"
-rule = "ARR30-C"
-line = 42
-hash = "a1b2c3d4..."
-reason = "False positive: bounds check performed earlier"
+# .sqc-suppress.toml
+
+[[suppression]]
+file = "ringbuffer.c"
+rule = "INT30-C"
+hash = "a1f5861150a1e5b8"
+justification = "Overflow checked by caller"
+
+[[suppression]]
+file = "src/utility.c"
+rule = "EXP34-C"
+hash = "b2c3d4e5f6a78901"
+justification = "Pointer validated at function entry"
+```
+
+- **File matching**: The `file` field matches by suffix — `ringbuffer.c` matches any path ending in `ringbuffer.c`, and `src/utility.c` matches paths ending in `src/utility.c`.
+- **No proximity check**: TOML suppressions match by rule ID and hash only (no line-number proximity requirement).
+- **Same hash**: Use `--generate-suppression` to get the hash, then copy it into the TOML file.
+
+```bash
+# Generate and get both inline comment and TOML entry formats:
+sqc --generate-suppression src/ringbuffer.c:173:INT30-C
 ```
 
 ## Contributing
