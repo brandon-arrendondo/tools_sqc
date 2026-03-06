@@ -444,15 +444,16 @@ The FP-002 fix improved the prescan infrastructure beyond just DCL15-C:
 
 **Possible shortcut**: If a pointer parameter is stored into a struct field (assignment `struct->field = param`), treat it as potentially modified — the struct may be written through later. This avoids full alias analysis while covering the common "store-then-write-through-alias" pattern.
 
-### Struct Field Type Resolution (TODO)
+### Struct Field Type Resolution (DONE — v0.3.5)
 
-Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is signed or unsigned. Currently, `field_expression` nodes return `"not_applicable"` or `"unknown"` because tree-sitter doesn't resolve struct member types.
+Implemented struct field type resolution for INT32-C and INT30-C. The prescan phase now collects struct definitions (named structs, typedef'd structs) into a `struct_field_types: HashMap<String, HashMap<String, String>>` in `ProjectContext`. When `infer_type()` encounters a `field_expression` (e.g., `s->count`), it resolves the field's type via:
+1. Look up base variable type from `collect_variable_types()` (e.g., `s → "struct Data *"`)
+2. Extract struct name (e.g., "Data")
+3. Look up field type in struct database (e.g., "count" → "unsigned int")
 
-**Approach**: Build a struct-field-type database during prescan by parsing `struct` definitions. Map `struct_name.field_name → type_text`. When encountering `self->field`, look up the variable's struct type from `collect_variable_types()`, then resolve the field's type from the database.
+**Files changed**: `prescan.rs` (collection), `context.rs` (storage), `ast_utils.rs` (shared helpers), `int32_c.rs` (integration), `int30_c.rs` (integration). Also added `struct_specifier` to `extract_type_and_name()` in both INT rules so struct pointer params appear in the type_map.
 
-**Impact**: Would recover TPs lost by the INT32-C `field_expression → not_applicable` change (e.g., signed int fields in struct arithmetic). Would also improve INT10-C and INT30-C precision for struct-heavy code.
-
-**Complexity**: Medium — requires struct definition parsing + two-level lookup (variable → struct type → field type). Limited by typedef resolution (can't follow `typedef struct Foo Bar`).
+**Limitation**: Still can't follow `typedef struct Foo Bar` (only handles `typedef struct { ... } Name` and `struct Name { ... }`). INT10-C not yet integrated (unit struct, minimal FP count).
 
 ### Analysis Capabilities Lacking
 
@@ -462,7 +463,7 @@ Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is 
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond const_eval macro folding + loop-bound extraction + shl negative-clamp + increment-before-subtract detection — see v0.2.21/v0.2.22/v0.3.3)
 - No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking + `-I` header resolution)
-- No struct field type resolution (field_expression types unknown — see TODO above)
+- Struct field type resolution available for INT32-C/INT30-C (v0.3.5) — limited to structs visible during prescan
 
 ---
 

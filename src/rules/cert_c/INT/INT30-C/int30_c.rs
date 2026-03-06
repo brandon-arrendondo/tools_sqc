@@ -10,6 +10,7 @@ use tree_sitter::Node;
 pub struct Int30C {
     project_macros: RefCell<MacroConstantMap>,
     current_macros: RefCell<MacroConstantMap>,
+    struct_field_types: RefCell<HashMap<String, HashMap<String, String>>>,
 }
 
 impl Int30C {
@@ -17,6 +18,7 @@ impl Int30C {
         Self {
             project_macros: RefCell::new(MacroConstantMap::new()),
             current_macros: RefCell::new(MacroConstantMap::new()),
+            struct_field_types: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -44,6 +46,7 @@ impl CertRule for Int30C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_macros.borrow_mut() = context.macro_constants.clone();
+        *self.struct_field_types.borrow_mut() = context.struct_field_types.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -811,6 +814,32 @@ impl Int30C {
             }
         }
 
+        // Field expressions (e.g., s->length): resolve via struct field type database
+        if node.kind() == "field_expression" {
+            let sft = self.struct_field_types.borrow();
+            if let Some(field_type) =
+                crate::utility::cert_c::ast_utils::resolve_field_expression_type(
+                    node, source, type_map, &sft,
+                )
+            {
+                if field_type.contains('*') {
+                    return "not_applicable".to_string();
+                }
+                if self.is_unsigned_type(&field_type) {
+                    return "unsigned".to_string();
+                }
+                if !field_type.contains("int")
+                    && !field_type.contains("short")
+                    && !field_type.contains("long")
+                    && field_type != "signed"
+                {
+                    return "not_applicable".to_string();
+                }
+                return "int".to_string();
+            }
+            return "unknown".to_string();
+        }
+
         // Fallback: check variable declaration in function text for unmapped variables
         if node.kind() == "identifier" || node.kind() == "pointer_expression" {
             let var_name = text.trim_start_matches('*').trim();
@@ -936,6 +965,9 @@ impl Int30C {
             if let Some(child) = node.child(i) {
                 match child.kind() {
                     "primitive_type" | "sized_type_specifier" | "type_identifier" => {
+                        type_text = get_node_text(&child, source).to_string();
+                    }
+                    "struct_specifier" => {
                         type_text = get_node_text(&child, source).to_string();
                     }
                     _ => {}
