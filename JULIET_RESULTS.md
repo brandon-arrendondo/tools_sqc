@@ -565,6 +565,7 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 | v0.2.22 | 44.0% | 175,673 | 137,921 | INT30-C: extend upper-bound guard to if_statement |
 | **v0.2.23** | **44.6%** | **163,585** | **131,661** | **INT32-C const_eval alloc/memory/abs + INT30-C uint64_t + built-in macros** |
 | v0.2.25 | 44.6% | 161,965 | 130,199 | ARR32-C tightening, INT18-C/EXP05-C removal, value-range FP fixes |
+| v0.3.5 | 44.6% | 161,510 | 130,004 | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C fixes |
 
 ---
 
