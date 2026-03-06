@@ -1,5 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
+use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Pos49C;
@@ -56,8 +57,11 @@ impl Pos49C {
                 // Check if this field access is part of an assignment or expression
                 if let Some(parent) = node.parent() {
                     if matches!(parent.kind(), "assignment_expression" | "update_expression") {
-                        // Check if this access is protected by a mutex
-                        if !self.is_within_mutex_lock(node, source) {
+                        // Skip if the base variable is a local stack variable —
+                        // local variables are inherently thread-safe
+                        if self.is_local_variable(node, source) {
+                            // Local stack variable, not shared across threads
+                        } else if !self.is_within_mutex_lock(node, source) {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 severity: self.severity(),
@@ -82,6 +86,75 @@ impl Pos49C {
         for child in node.children(&mut cursor) {
             self.check_node(&child, source, violations);
         }
+    }
+
+    fn is_local_variable(&self, field_expr: &Node, source: &str) -> bool {
+        // Get the base variable name from the field expression (e.g., "servaddr" from "servaddr.sin_port")
+        let base_name = if let Some(argument) = field_expr.child_by_field_name("argument") {
+            let text = get_node_text(&argument, source);
+            let text = text.trim();
+            // Handle pointer dereference: (*ptr).field
+            if text.starts_with('(') || text.starts_with('*') {
+                return false; // Conservative: pointer-based access might be shared
+            }
+            text.to_string()
+        } else {
+            return false;
+        };
+
+        // Walk up to find the enclosing function_definition
+        let mut current = field_expr.parent();
+        while let Some(node) = current {
+            if node.kind() == "function_definition" {
+                // Search the function body for a local declaration of this variable
+                if let Some(body) = node.child_by_field_name("body") {
+                    return self.has_local_declaration(&body, source, &base_name);
+                }
+                return false;
+            }
+            current = node.parent();
+        }
+        false
+    }
+
+    fn has_local_declaration(&self, node: &Node, source: &str, var_name: &str) -> bool {
+        if node.kind() == "declaration" {
+            let decl_text = get_node_text(node, source);
+            // Check if this declaration contains the variable name as a declarator
+            let mut cursor = node.walk();
+            for child in node.children(&mut cursor) {
+                if child.kind() == "init_declarator" || child.kind() == "identifier" {
+                    let name = get_node_text(&child, source);
+                    // For init_declarator, extract the identifier
+                    if child.kind() == "init_declarator" {
+                        if let Some(declarator) = child.child_by_field_name("declarator") {
+                            let decl_name = get_node_text(&declarator, source).trim().to_string();
+                            if decl_name == var_name {
+                                // Ensure it's not a pointer parameter or extern/static global
+                                if !decl_text.contains("extern") && !decl_text.contains("static") {
+                                    return true;
+                                }
+                            }
+                        }
+                    } else if name.trim() == var_name {
+                        if !decl_text.contains("extern") && !decl_text.contains("static") {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recurse into child nodes (but not into nested functions)
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            if child.kind() != "function_definition" {
+                if self.has_local_declaration(&child, source, var_name) {
+                    return true;
+                }
+            }
+        }
+        false
     }
 
     fn is_within_mutex_lock(&self, node: &Node, source: &str) -> bool {
