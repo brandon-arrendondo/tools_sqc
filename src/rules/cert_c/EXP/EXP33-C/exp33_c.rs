@@ -236,6 +236,7 @@ struct UninitializedVariableAnalyzer {
     has_unconditional_init: HashSet<String>, // Variables with at least one unconditional assignment
     initially_uninitialized: HashSet<String>, // Variables that started without initializer
     unsigned_char_vars: HashSet<String>, // Variables of unsigned char type (EXP33-C exception)
+    array_vars: HashSet<String>, // Variables declared as arrays (decay to pointers in calls)
     realloc_wrapper_functions: HashSet<String>, // Functions that return realloc results
     conditionally_init_functions: HashSet<String>, // Functions that conditionally init pointer params
 }
@@ -297,6 +298,7 @@ impl UninitializedVariableAnalyzer {
             has_unconditional_init: HashSet::new(),
             initially_uninitialized: HashSet::new(),
             unsigned_char_vars: HashSet::new(),
+            array_vars: HashSet::new(),
             realloc_wrapper_functions: HashSet::new(),
             conditionally_init_functions: HashSet::new(),
         }
@@ -1010,6 +1012,11 @@ impl UninitializedVariableAnalyzer {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
                         let var_name = Self::get_var_name(&declarator, source);
 
+                        // Track array variables
+                        if declarator.kind() == "array_declarator" {
+                            self.array_vars.insert(var_name.clone());
+                        }
+
                         if let Some(value) = child.child_by_field_name("value") {
                             let value_text = get_node_text(&value, source);
 
@@ -1050,6 +1057,10 @@ impl UninitializedVariableAnalyzer {
                     if !decl_text.contains('=') && !decl_text.contains('{') {
                         let var_name = Self::get_var_name(&child, source);
                         if var_name != "unknown" {
+                            // Track array variables
+                            if child.kind() == "array_declarator" {
+                                self.array_vars.insert(var_name.clone());
+                            }
                             // Track as initially uninitialized
                             self.initially_uninitialized.insert(var_name.clone());
                             // Track unsigned char variables (EXP33-C exception)
@@ -1187,9 +1198,9 @@ impl UninitializedVariableAnalyzer {
                 {
                     // For unknown functions (that aren't known to read from pointers
                     // AND aren't detected as conditionally initializing),
-                    // treat any &var argument as potentially initialized.
-                    // This is a conservative assumption to avoid false positives
-                    // for functions with output parameters that always initialize.
+                    // treat any &var argument or array/pointer variable passed directly
+                    // as potentially initialized. Arrays decay to pointers, so
+                    // func(buf) is equivalent to func(&buf[0]).
                     for i in 0..args.child_count() {
                         if let Some(arg) = args.child(i) {
                             if arg.kind() == "pointer_expression" {
@@ -1201,6 +1212,18 @@ impl UninitializedVariableAnalyzer {
                                     {
                                         self.var_states.insert(var_name, VarState::Initialized);
                                     }
+                                }
+                            } else if arg.kind() == "identifier" {
+                                // Only mark array variables as initialized when passed
+                                // by name — arrays decay to pointers and the function
+                                // may write into the buffer. Scalar variables passed by
+                                // value cannot be modified by the callee.
+                                let var_name = get_node_text(&arg, source).to_string();
+                                if self.array_vars.contains(&var_name)
+                                    && self.var_states.contains_key(&var_name)
+                                    && self.initially_uninitialized.contains(&var_name)
+                                {
+                                    self.var_states.insert(var_name, VarState::Initialized);
                                 }
                             }
                         }

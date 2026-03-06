@@ -291,8 +291,7 @@ const READ_ONLY_FUNCTIONS: &[&str] = &[
     // C stdio - output (read format string and args)
     "printf", "fprintf", "vprintf", "vfprintf", "wprintf", "fwprintf", "puts", "fputs", "putchar",
     "fputc", "putc", // C stdio - file ops (don't modify pointer args)
-    "fclose", "fflush", "fseek", "ftell", "rewind", "feof", "ferror", "fopen", "freopen",
-    // C string - read-only
+    "ftell", "feof", "ferror", "fopen", // C string - read-only
     "strlen", "strcmp", "strncmp", "strchr", "strrchr", "strstr", "strpbrk", "strspn", "strcspn",
     "strerror", // C wide string - read-only
     "wcslen", "wcscmp", "wcsncmp", "wcschr", "wcsrchr", "wcsstr",
