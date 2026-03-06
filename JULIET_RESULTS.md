@@ -53,14 +53,30 @@
 | v0.2.22 | v0.2.22 | INT30-C: extend upper-bound guard to if_statement | 137,921 | 175,673 | 44.0% | +6 |
 | **v0.2.23** | **v0.2.23** | **INT32-C const_eval for alloc/memory/abs + INT30-C uint64_t skip + built-in macros** | **131,661** | **163,585** | **44.6%** | **-12,088** |
 | v0.2.25 | v0.2.25 | ARR32-C tightening, INT18-C/EXP05-C removal, INT30-C pointer type, INT32-C field_expr, INT34-C const_eval | 130,199 | 161,965 | 44.6% | -1,620 |
+| v0.3.5 | v0.3.5 | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C FP fixes | 130,004 | 161,510 | 44.6% | -455 |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
 
-**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-677,376 (-80.7%)**.
+**Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-677,831 (-80.7%)**.
 
 ---
 
 ## Per-Round Fix Details
+
+### v0.3.5 — Struct Field Type Resolution, d_lib_networking FP Fixes
+
+Struct field type resolution for INT32-C/INT30-C, plus DCL13-C/DCL30-C/EXP33-C targeted FP fixes.
+
+**Struct field type resolution**: Prescan now collects struct definitions into `struct_field_types: HashMap<String, HashMap<String, String>>`. INT32-C and INT30-C `infer_type()` resolves `field_expression` nodes (e.g., `s->count`) via two-level lookup: variable type → struct name → field type. Previously returned `not_applicable`/`unknown` for all struct field accesses.
+
+**d_lib_networking fixes**: DCL13-C (removed FILE-modifying functions from READ_ONLY_FUNCTIONS), DCL30-C (added `conditional_expression` handling to `is_alloc_expression()`), EXP33-C (array output parameter recognition for unknown functions). Cleared 3 inline suppressions.
+
+**Juliet impact** (0.2.25 → 0.3.5):
+- **Overall**: TP 130,199→130,004 (−195), FP 161,965→161,510 (**−455**), TP rate **44.6% → 44.6%** (unchanged)
+- Minimal Juliet impact expected — Juliet uses explicit local variables, not struct member access patterns
+- Real-world impact expected on struct-heavy codebases (d_lib_networking, curl, mosquitto, etc.)
+
+**Files changed**: `prescan.rs`, `context.rs`, `ast_utils.rs`, `int32_c.rs`, `int30_c.rs`, `dcl13_c.rs`, `dcl30_c.rs`, `exp33_c.rs`
 
 ### v0.2.25 — ARR32-C Tightening, Rule Removals, Value-Range FP Fixes
 
