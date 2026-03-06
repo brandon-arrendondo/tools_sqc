@@ -1529,17 +1529,66 @@ impl Int30C {
         false
     }
 
-    /// For "var - 1" subtraction: if var is guarded by a positive-value condition,
+    /// For "var - 1" or "var - 1U" subtraction: if var is guarded by a
+    /// positive-value condition or was incremented before this point,
     /// then var >= 1 and var - 1 >= 0, so no unsigned wrap.
     fn is_subtract_one_guarded(&self, node: &Node, source: &str) -> bool {
         if let Some(right) = node.child_by_field_name("right") {
-            let right_text = get_node_text(&right, source);
-            if right_text.trim() == "1" {
+            let right_text = get_node_text(&right, source).trim().to_string();
+            // Accept 1, 1U, 1u, 1UL, 1ul, etc.
+            if self.is_literal_one(&right_text) {
                 if let Some(left) = node.child_by_field_name("left") {
-                    let var_name = get_node_text(&left, source);
-                    return self.is_guarded_by_gt_zero(node, var_name.trim(), source);
+                    let var_name = get_node_text(&left, source).trim().to_string();
+                    if self.is_guarded_by_gt_zero(node, &var_name, source) {
+                        return true;
+                    }
+                    // Check if the variable was incremented before this subtraction
+                    // in the same compound_statement (e.g., `var++; ... var - 1U`)
+                    if self.is_preceded_by_increment(node, &var_name, source) {
+                        return true;
+                    }
                 }
             }
+        }
+        false
+    }
+
+    /// Check if a literal text represents the value 1 (with optional unsigned suffix).
+    fn is_literal_one(&self, text: &str) -> bool {
+        let text = text.trim();
+        if text == "1" {
+            return true;
+        }
+        // Strip unsigned/long suffixes: 1U, 1u, 1UL, 1ul, 1ULL, etc.
+        let stripped = text.trim_end_matches(['u', 'U', 'l', 'L']);
+        stripped == "1"
+    }
+
+    /// Check if the variable was incremented (var++, ++var, var += 1) before
+    /// this node in the same compound_statement. This means var >= 1 at the
+    /// point of the subtraction.
+    fn is_preceded_by_increment(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        // Find the enclosing compound_statement
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "compound_statement" {
+                let before_text = &source[parent.start_byte()..node.start_byte()];
+                // Check for var++ or ++var
+                let postinc = format!("{}++", var_name);
+                let preinc = format!("++{}", var_name);
+                let addassign = format!("{} += 1", var_name);
+                if before_text.contains(&postinc)
+                    || before_text.contains(&preinc)
+                    || before_text.contains(&addassign)
+                {
+                    return true;
+                }
+                return false;
+            }
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            current = parent.parent();
         }
         false
     }
