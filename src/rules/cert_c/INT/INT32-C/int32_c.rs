@@ -10,6 +10,7 @@ use tree_sitter::Node;
 pub struct Int32C {
     project_macros: RefCell<MacroConstantMap>,
     current_macros: RefCell<MacroConstantMap>,
+    struct_field_types: RefCell<HashMap<String, HashMap<String, String>>>,
 }
 
 impl Int32C {
@@ -17,6 +18,7 @@ impl Int32C {
         Self {
             project_macros: RefCell::new(MacroConstantMap::new()),
             current_macros: RefCell::new(MacroConstantMap::new()),
+            struct_field_types: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -44,6 +46,7 @@ impl CertRule for Int32C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_macros.borrow_mut() = context.macro_constants.clone();
+        *self.struct_field_types.borrow_mut() = context.struct_field_types.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -1361,6 +1364,9 @@ impl Int32C {
                     "primitive_type" | "sized_type_specifier" | "type_identifier" => {
                         type_text = get_node_text(&child, source).to_string();
                     }
+                    "struct_specifier" => {
+                        type_text = get_node_text(&child, source).to_string();
+                    }
                     _ => {}
                 }
             }
@@ -1370,10 +1376,16 @@ impl Int32C {
             return;
         }
 
-        // Extract variable names from declarators
+        // Extract variable names from declarators, tracking pointer indirection
         if let Some(declarator) = node.child_by_field_name("declarator") {
+            let is_pointer = declarator.kind() == "pointer_declarator";
             if let Some(name) = Self::extract_identifier_name(&declarator, source) {
-                type_map.insert(name, type_text.clone());
+                let full_type = if is_pointer {
+                    format!("{} *", type_text)
+                } else {
+                    type_text.clone()
+                };
+                type_map.insert(name, full_type);
             }
         }
 
@@ -1382,8 +1394,14 @@ impl Int32C {
             if let Some(child) = node.child(i) {
                 if child.kind() == "init_declarator" {
                     if let Some(decl) = child.child_by_field_name("declarator") {
+                        let is_pointer = decl.kind() == "pointer_declarator";
                         if let Some(name) = Self::extract_identifier_name(&decl, source) {
-                            type_map.insert(name, type_text.clone());
+                            let full_type = if is_pointer {
+                                format!("{} *", type_text)
+                            } else {
+                                type_text.clone()
+                            };
+                            type_map.insert(name, full_type);
                         }
                     }
                 }
@@ -1453,9 +1471,26 @@ impl Int32C {
             return "unsigned".to_string();
         }
 
-        // Field expressions (e.g., self->capacity) without type evidence
-        // should not be assumed signed — return not_applicable
+        // Field expressions (e.g., s->count): try to resolve via struct field type database
         if node.kind() == "field_expression" {
+            let sft = self.struct_field_types.borrow();
+            if let Some(field_type) =
+                crate::utility::cert_c::ast_utils::resolve_field_expression_type(
+                    node, source, type_map, &sft,
+                )
+            {
+                if self.is_unsigned_type(&field_type) {
+                    return "unsigned".to_string();
+                }
+                if field_type.contains("int")
+                    || field_type.contains("short")
+                    || field_type.contains("long")
+                    || field_type == "signed"
+                {
+                    return "signed".to_string();
+                }
+                return "not_applicable".to_string();
+            }
             return "not_applicable".to_string();
         }
 
