@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-03-05
+**Last Updated**: 2026-03-09
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -54,14 +54,34 @@
 | **v0.2.23** | **v0.2.23** | **INT32-C const_eval for alloc/memory/abs + INT30-C uint64_t skip + built-in macros** | **131,661** | **163,585** | **44.6%** | **-12,088** |
 | v0.2.25 | v0.2.25 | ARR32-C tightening, INT18-C/EXP05-C removal, INT30-C pointer type, INT32-C field_expr, INT34-C const_eval | 130,199 | 161,965 | 44.6% | -1,620 |
 | v0.3.5 | v0.3.5 | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C FP fixes | 130,004 | 161,510 | 44.6% | -455 |
+| **v0.3.8** | **v0.3.8** | **STR31-C is_function_parameter, API00-C validation patterns, EXP34-C compound null, EXP33-C field-write fix** | ² | ² | **44.3%**² | ² |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
+² v0.3.8 run used `run_juliet_multi_cwe.sh` (12-CWE subset, 25,860 files): TP=61,799, FP=77,826, TP rate=44.3%. Full-suite numbers not yet available.
 
 **Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-677,831 (-80.7%)**.
 
 ---
 
 ## Per-Round Fix Details
+
+### v0.3.8 — STR31-C, API00-C, EXP34-C, EXP33-C FP Fixes (12-CWE subset)
+
+**Scope**: 12-CWE subset (25,860 files). Full-suite numbers marked ² in table.
+
+- **STR31-C**: Gate literal-source suppression in `check_strcpy_safety` and `check_strcat_safety` on `!is_function_parameter(dest)`. Recovers TPs in CWE124/127 (not in this 12-CWE set, so no measurable change here).
+- **API00-C**: 4 new validation patterns recognized: return-statement null check, if/else chain, helper-fn early-return, unsigned char arithmetic exclusion. Reduces FPs in real-world code.
+- **EXP34-C**: Compound null guard fix — `parse_all_null_conditions` collects ALL variables from `||` conditions. `if (a == NULL || b == NULL) return;` now marks both `a` and `b` NotNull on the false branch.
+- **EXP33-C**: Field/subscript write on uninitialized struct no longer treated as a read:
+  - `myUnion.field = x` — writing to a field does not read the base variable
+  - `arr[i].field = x` — writing through subscript+field does not read the base
+  - `process_assignment` now marks base variable as Initialized on any field write (stack structs and malloc arrays)
+
+**EXP33-C delta**: TP 2,524→2,225 (−299), FP 3,022→2,446 (−576). FP rate 54.5%→52.4%.
+
+- **Overall**: TP 62,098→61,799 (−299), FP 78,402→77,826 (**−576**), TP rate **44.2%→44.3%** (+0.1pp)
+
+---
 
 ### v0.3.5 — Struct Field Type Resolution, d_lib_networking FP Fixes
 
@@ -582,6 +602,7 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 | **v0.2.23** | **44.6%** | **163,585** | **131,661** | **INT32-C const_eval alloc/memory/abs + INT30-C uint64_t + built-in macros** |
 | v0.2.25 | 44.6% | 161,965 | 130,199 | ARR32-C tightening, INT18-C/EXP05-C removal, value-range FP fixes |
 | v0.3.5 | 44.6% | 161,510 | 130,004 | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C fixes |
+| v0.3.8 | 44.3%² | 77,826² | 61,799² | STR31-C is_function_parameter, API00-C patterns, EXP34-C compound null, EXP33-C field-write fix |
 
 ---
 
