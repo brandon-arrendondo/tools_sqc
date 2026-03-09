@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-04 (v0.2.23)
+**Last Updated**: 2026-03-06 (v0.3.3)
 
 ---
 
@@ -97,8 +97,11 @@
 | 25 | INT32-C | 8→4 | FIXED (while/for bounds, const_eval shl clamp, local var chain) |
 | 20 | EXP34-C | 4 | OPEN (callback params, boolean-guarded null, output param) |
 | 21 | INT30-C | 6→5 | FIXED (uint64_t subtraction skip) |
+| 36 | POS49-C | 1 | FIXED (local stack variable skip — v0.3.3) |
+| 37 | EXP12-C | 1 | Already resolved (no code change needed) |
+| 39 | INT30-C | 1 | FIXED (increment-then-subtract + 1U literal — v0.3.3) |
 
-Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → 123 (Round 4) → 86 (Round 5) → 71 (Round 6) → 68 (Round 7, `-I d_lib_common`) → 51 (Round 8, v0.2.23) → 51 (Round 9, v0.2.24) → 47 (Round 10, v0.2.25) → **36** (Round 11, codebase + config fixes). Of 36 current: 22 TP, 14 FP (39% FP rate). 25 FP patterns fixed in sqc, 7 fixed in codebase/config.
+Total violations: 233 → 223 → 205 → 155 (with `-I`) → 137 → 131 (Round 3) → 123 (Round 4) → 86 (Round 5) → 71 (Round 6) → 68 (Round 7, `-I d_lib_common`) → 51 (Round 8, v0.2.23) → 51 (Round 9, v0.2.24) → 47 (Round 10, v0.2.25) → 36 (Round 11, codebase + config fixes) → **0** (Round 15, all resolved — 18 inline suppressions, 11 sqc FP). 3 more suppressions removable after v0.3.2 (POS49-C, EXP12-C, INT30-C).
 
 ### Round 4: INT01-C dedup + EXP34-C stack array (v0.2.20)
 
@@ -161,6 +164,20 @@ Net: strongly positive (−2,720 FP, +0.1pp TP rate).
 **EXP05-C const detection** (`exp05_c.rs`): Replaced text-based `check_body_for_const()` with AST-based `declaration_declares_const_var()`. Old code did `decl_text.contains("const") && decl_text.contains(var_name)` which matched `const` from cast expressions in initializers (e.g., `bool x = f((const T*)&servaddr)` triggered because "const" and "servaddr" both appeared in the declaration text). New code checks only `type_qualifier` children for `const`. −1 FP.
 
 **Result**: 51 → **47** total violations (−4 FP). FP rate 57% → 45%.
+
+### Round 12: POS49-C, EXP12-C, INT30-C suppression elimination (v0.3.3)
+
+Targeted removal of 3 inline FP suppressions in d_lib_networking by fixing the underlying sqc rules.
+
+**POS49-C local stack variable skip** (`pos49_c.rs`): Added `is_local_variable()` — walks up to enclosing `function_definition`, searches body for a local `declaration` of the base variable (excluding `extern`/`static`). `has_local_declaration()` recurses through declaration nodes matching variable name. Conservative: pointer dereferences (`(*ptr).field`) still flagged since pointed-to memory could be shared. −1 FP (`servaddr.sin_port = htons(port)` where `servaddr` is a stack-local `struct sockaddr_in`).
+
+**EXP12-C already fixed**: `if (connect(...) != 0)` no longer triggers EXP12-C — the call_expression inside a binary_expression (comparison) is not within an expression_statement, so `check_for_ignored_return_values` is never invoked. Suppression can be removed with no code changes.
+
+**INT30-C increment-then-subtract** (`int30_c.rs`): Two fixes to `is_subtract_one_guarded()`:
+1. `is_literal_one()` — accepts `1U`, `1u`, `1UL`, etc. (strips unsigned/long suffixes before comparing to "1"). Previously only matched bare `1`.
+2. `is_preceded_by_increment()` — checks if `var++`, `++var`, or `var += 1` appears before the subtraction in the same `compound_statement`. Proves `var >= 1` at the subtraction point. −1 FP (`attempts - 1U` where `attempts++` runs at the top of the while loop body).
+
+**Result**: 3 suppressions can be removed from d_lib_networking (POS49-C, EXP12-C, INT30-C). All 2814 tests pass, no regressions.
 
 ### Const-Eval / Value-Range Analysis (v0.2.21)
 
@@ -320,7 +337,7 @@ Of the original 17 d_lib_common patterns + 6 d_hal_linux_random patterns, 12 are
 
 | # | Rule | Violations | Difficulty | Description |
 |---|------|--------:|------------|-------------|
-| 1 | **INT30-C** | ~12 | Medium | Loop-bounded increments (`index += 1` where `index < bufferSize`), addition guarded by branch |
+| 1 | **INT30-C** | ~12 | Medium | Loop-bounded increments (`index += 1` where `index < bufferSize`), addition guarded by branch. v0.3.2: increment-then-subtract pattern + `1U` literal suffix now handled |
 | 2 | **EXP33-C** | ~36 | Medium | For-loop init not recognized; array declarations without initializers |
 | 3 | **INT33-C** | ~7 | Hard | Division guarded by earlier comparison (`lower < upper` → divisor ≥ 2). Needs value-range |
 | 4 | **INT34-C** | ~1 | Hard | Shift bounded by loop iteration count. Needs value-range |
@@ -427,15 +444,16 @@ The FP-002 fix improved the prescan infrastructure beyond just DCL15-C:
 
 **Possible shortcut**: If a pointer parameter is stored into a struct field (assignment `struct->field = param`), treat it as potentially modified — the struct may be written through later. This avoids full alias analysis while covering the common "store-then-write-through-alias" pattern.
 
-### Struct Field Type Resolution (TODO)
+### Struct Field Type Resolution (DONE — v0.3.5)
 
-Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is signed or unsigned. Currently, `field_expression` nodes return `"not_applicable"` or `"unknown"` because tree-sitter doesn't resolve struct member types.
+Implemented struct field type resolution for INT32-C and INT30-C. The prescan phase now collects struct definitions (named structs, typedef'd structs) into a `struct_field_types: HashMap<String, HashMap<String, String>>` in `ProjectContext`. When `infer_type()` encounters a `field_expression` (e.g., `s->count`), it resolves the field's type via:
+1. Look up base variable type from `collect_variable_types()` (e.g., `s → "struct Data *"`)
+2. Extract struct name (e.g., "Data")
+3. Look up field type in struct database (e.g., "count" → "unsigned int")
 
-**Approach**: Build a struct-field-type database during prescan by parsing `struct` definitions. Map `struct_name.field_name → type_text`. When encountering `self->field`, look up the variable's struct type from `collect_variable_types()`, then resolve the field's type from the database.
+**Files changed**: `prescan.rs` (collection), `context.rs` (storage), `ast_utils.rs` (shared helpers), `int32_c.rs` (integration), `int30_c.rs` (integration). Also added `struct_specifier` to `extract_type_and_name()` in both INT rules so struct pointer params appear in the type_map.
 
-**Impact**: Would recover TPs lost by the INT32-C `field_expression → not_applicable` change (e.g., signed int fields in struct arithmetic). Would also improve INT10-C and INT30-C precision for struct-heavy code.
-
-**Complexity**: Medium — requires struct definition parsing + two-level lookup (variable → struct type → field type). Limited by typedef resolution (can't follow `typedef struct Foo Bar`).
+**Limitation**: Still can't follow `typedef struct Foo Bar` (only handles `typedef struct { ... } Name` and `struct Name { ... }`). INT10-C not yet integrated (unit struct, minimal FP count).
 
 ### Analysis Capabilities Lacking
 
@@ -443,9 +461,9 @@ Several rules (INT32-C, INT10-C, INT30-C) need to know whether `self->field` is 
 - No alias analysis (pointer aliasing not resolved — see DCL13-C remaining FP above)
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
-- No value range analysis (beyond const_eval macro folding + loop-bound extraction + shl negative-clamp — see v0.2.21/v0.2.22)
+- No value range analysis (beyond const_eval macro folding + loop-bound extraction + shl negative-clamp + increment-before-subtract detection — see v0.2.21/v0.2.22/v0.3.3)
 - No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking + `-I` header resolution)
-- No struct field type resolution (field_expression types unknown — see TODO above)
+- Struct field type resolution available for INT32-C/INT30-C (v0.3.5) — limited to structs visible during prescan
 
 ---
 

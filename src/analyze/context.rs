@@ -19,6 +19,9 @@ pub struct ProjectContext {
     pub call_graph: HashMap<String, HashSet<String>>,
     /// Macro constants collected from `#define` directives across all scanned files.
     pub macro_constants: HashMap<String, i64>,
+    /// Struct field types: maps `struct_name -> field_name -> type_text`.
+    /// Enables resolving types of `field_expression` nodes (e.g., `s->count` → "int").
+    pub struct_field_types: HashMap<String, HashMap<String, String>>,
 }
 
 impl ProjectContext {
@@ -42,10 +45,20 @@ impl ProjectContext {
         self.header_declared_functions.contains(name)
     }
 
+    /// Look up the type of a struct field given the struct name and field name.
+    /// `struct_name` should be the bare name (e.g., "MyStruct", not "struct MyStruct").
+    pub fn get_struct_field_type(&self, struct_name: &str, field_name: &str) -> Option<&str> {
+        self.struct_field_types
+            .get(struct_name)
+            .and_then(|fields| fields.get(field_name))
+            .map(|s| s.as_str())
+    }
+
     /// Returns `true` if any cross-file data was collected.
     pub fn has_cross_file_data(&self) -> bool {
         !self.known_functions.is_empty()
             || !self.function_summaries.is_empty()
             || !self.macro_constants.is_empty()
+            || !self.struct_field_types.is_empty()
     }
 }

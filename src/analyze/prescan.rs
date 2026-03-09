@@ -26,6 +26,7 @@ pub fn prescan_directories(
     let mut function_summaries = HashMap::new();
     let mut call_graph = HashMap::new();
     let mut macro_constants = HashMap::new();
+    let mut struct_field_types = HashMap::new();
     let mut parser = CParser::new()?;
 
     if let Some(reporter) = progress {
@@ -69,6 +70,9 @@ pub fn prescan_directories(
                 // Collect macro constants from #define directives
                 let file_macros = const_eval::collect_macro_constants(&root, &source);
                 macro_constants.extend(file_macros);
+
+                // Collect struct field types from struct definitions
+                collect_struct_definitions(&root, &source, &mut struct_field_types);
             }
         }
     }
@@ -87,6 +91,7 @@ pub fn prescan_directories(
         function_summaries,
         call_graph,
         macro_constants,
+        struct_field_types,
     })
 }
 
@@ -718,6 +723,213 @@ fn collect_calls_with_locals(
 }
 
 // ---------------------------------------------------------------------------
+// Struct field type collection
+// ---------------------------------------------------------------------------
+
+/// Collect struct field types from struct definitions and typedefs.
+///
+/// Handles three patterns:
+/// 1. `struct Name { type field; ... };`
+/// 2. `typedef struct { type field; ... } Name;`
+/// 3. `typedef struct Name { type field; ... } Name;` (or alias)
+fn collect_struct_definitions(
+    node: &Node,
+    source: &str,
+    struct_field_types: &mut HashMap<String, HashMap<String, String>>,
+) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "struct_specifier" => {
+                    // Pattern 1: `struct Name { ... };` (top-level or inside declaration)
+                    collect_from_struct_specifier(&child, source, struct_field_types);
+                }
+                "type_definition" => {
+                    // Pattern 2/3: `typedef struct { ... } Name;`
+                    collect_from_typedef(&child, source, struct_field_types);
+                }
+                "declaration" => {
+                    // Struct definitions can appear inside declarations:
+                    // `struct Name { ... } var;`
+                    for j in 0..child.child_count() {
+                        if let Some(gc) = child.child(j) {
+                            if gc.kind() == "struct_specifier" {
+                                collect_from_struct_specifier(&gc, source, struct_field_types);
+                            }
+                        }
+                    }
+                }
+                kind if kind.starts_with("preproc_")
+                    || kind == "linkage_specification"
+                    || kind == "declaration_list" =>
+                {
+                    collect_struct_definitions(&child, source, struct_field_types);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Extract fields from a `struct_specifier` node with a name and body.
+fn collect_from_struct_specifier(
+    node: &Node,
+    source: &str,
+    struct_field_types: &mut HashMap<String, HashMap<String, String>>,
+) {
+    let name = match node.child_by_field_name("name") {
+        Some(n) => n.utf8_text(source.as_bytes()).unwrap_or("").to_string(),
+        None => return, // Anonymous struct without typedef — can't reference by name
+    };
+    if name.is_empty() {
+        return;
+    }
+    if let Some(body) = node.child_by_field_name("body") {
+        let fields = extract_struct_fields(&body, source);
+        if !fields.is_empty() {
+            struct_field_types.insert(name, fields);
+        }
+    }
+}
+
+/// Extract fields from a `type_definition` containing a struct specifier.
+/// Handles: `typedef struct [Name] { ... } Alias;`
+fn collect_from_typedef(
+    node: &Node,
+    source: &str,
+    struct_field_types: &mut HashMap<String, HashMap<String, String>>,
+) {
+    let mut struct_spec = None;
+    let mut typedef_name = None;
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "struct_specifier" {
+                struct_spec = Some(child);
+            }
+            // The typedef alias is a type_identifier at the end
+            if child.kind() == "type_identifier" {
+                typedef_name = Some(child.utf8_text(source.as_bytes()).unwrap_or("").to_string());
+            }
+            // Handle pointer typedefs: `typedef struct Foo *FooPtr;`
+            if child.kind() == "pointer_declarator" {
+                if let Some(inner) = child.child_by_field_name("declarator") {
+                    if inner.kind() == "type_identifier" {
+                        // Skip pointer typedefs — we want value types only
+                    }
+                }
+            }
+        }
+    }
+
+    if let Some(spec) = struct_spec {
+        // First, collect under the struct's own name (if it has one)
+        collect_from_struct_specifier(&spec, source, struct_field_types);
+
+        // Then, also register under the typedef alias
+        if let Some(alias) = typedef_name {
+            if !alias.is_empty() {
+                if let Some(body) = spec.child_by_field_name("body") {
+                    let fields = extract_struct_fields(&body, source);
+                    if !fields.is_empty() {
+                        struct_field_types.insert(alias, fields);
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Extract field name → type text from a `field_declaration_list` node.
+fn extract_struct_fields(body: &Node, source: &str) -> HashMap<String, String> {
+    let mut fields = HashMap::new();
+    for i in 0..body.child_count() {
+        if let Some(child) = body.child(i) {
+            if child.kind() == "field_declaration" {
+                if let Some((field_name, type_text)) = extract_field_decl(&child, source) {
+                    fields.insert(field_name, type_text);
+                }
+            }
+        }
+    }
+    fields
+}
+
+/// Extract (field_name, type_text) from a single `field_declaration` node.
+///
+/// A field_declaration looks like: `type_specifiers declarator ;`
+/// e.g., `unsigned int flags;` or `char *name;` or `struct Inner *inner;`
+fn extract_field_decl(node: &Node, source: &str) -> Option<(String, String)> {
+    // Collect type specifier text (everything before the declarator)
+    let mut type_parts = Vec::new();
+    let mut field_name = None;
+    let mut has_pointer = false;
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "type_qualifier"
+                | "primitive_type"
+                | "sized_type_specifier"
+                | "struct_specifier"
+                | "enum_specifier"
+                | "union_specifier"
+                | "type_identifier" => {
+                    type_parts.push(child.utf8_text(source.as_bytes()).unwrap_or("").to_string());
+                }
+                "field_identifier" => {
+                    field_name = Some(child.utf8_text(source.as_bytes()).unwrap_or("").to_string());
+                }
+                "pointer_declarator" => {
+                    has_pointer = true;
+                    // Extract field_identifier from inside pointer_declarator
+                    field_name = extract_field_id_from_declarator(&child, source);
+                }
+                "array_declarator" => {
+                    // e.g., `char name[64];` — extract field_identifier
+                    field_name = extract_field_id_from_declarator(&child, source);
+                }
+                "function_declarator" => {
+                    // Function pointer fields — skip for type resolution purposes
+                    return None;
+                }
+                _ => {}
+            }
+        }
+    }
+
+    let name = field_name?;
+    if name.is_empty() || type_parts.is_empty() {
+        return None;
+    }
+
+    let mut type_text = type_parts.join(" ");
+    if has_pointer {
+        type_text.push_str(" *");
+    }
+
+    Some((name, type_text))
+}
+
+/// Extract field_identifier from a declarator chain (pointer_declarator, array_declarator).
+fn extract_field_id_from_declarator(node: &Node, source: &str) -> Option<String> {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "field_identifier" => {
+                    return Some(child.utf8_text(source.as_bytes()).unwrap_or("").to_string());
+                }
+                "pointer_declarator" | "array_declarator" => {
+                    return extract_field_id_from_declarator(&child, source);
+                }
+                _ => {}
+            }
+        }
+    }
+    None
+}
+
+// ---------------------------------------------------------------------------
 // Include path resolution (-I flag)
 // ---------------------------------------------------------------------------
 
@@ -784,6 +996,9 @@ pub fn resolve_includes(
                 // Collect macro constants from resolved headers
                 let header_macros = const_eval::collect_macro_constants(&root, &hsource);
                 context.macro_constants.extend(header_macros);
+
+                // Collect struct field types from resolved headers
+                collect_struct_definitions(&root, &hsource, &mut context.struct_field_types);
 
                 // Enqueue transitive includes from this header
                 let header_dir = resolved.parent().map(|p| p.to_path_buf());

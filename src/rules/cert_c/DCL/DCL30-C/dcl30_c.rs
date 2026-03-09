@@ -373,6 +373,20 @@ impl Dcl30C {
                     false
                 }
             }
+            "conditional_expression" => {
+                // (cond) ? alloc_expr : NULL — check both branches
+                if let Some(consequence) = node.child_by_field_name("consequence") {
+                    if self.is_alloc_expression(&consequence, source) {
+                        return true;
+                    }
+                }
+                if let Some(alternative) = node.child_by_field_name("alternative") {
+                    if self.is_alloc_expression(&alternative, source) {
+                        return true;
+                    }
+                }
+                false
+            }
             _ => false,
         }
     }

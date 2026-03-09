@@ -488,6 +488,123 @@ pub fn find_containing_if_statement<'a>(node: &Node<'a>) -> Option<Node<'a>> {
     None
 }
 
+// ============================================================================
+// Struct Type Resolution
+// ============================================================================
+
+/// Extract the struct name from a C type string.
+///
+/// Handles patterns like:
+/// - `"struct MyStruct *"` → `Some("MyStruct")`
+/// - `"struct MyStruct"` → `Some("MyStruct")`
+/// - `"MyStruct *"` → `Some("MyStruct")`
+/// - `"MyStruct"` → `Some("MyStruct")`
+/// - `"int"` → `None` (primitive type, not a struct)
+///
+/// For typedef'd structs (e.g., `typedef struct Foo { ... } Foo;`), the
+/// type_map entry may be just `"Foo *"` without the `struct` keyword.
+pub fn extract_struct_name_from_type(type_str: &str) -> Option<&str> {
+    let trimmed = type_str.trim();
+
+    // Strip pointer/const qualifiers from the end
+    let base = trimmed
+        .trim_end_matches('*')
+        .trim_end()
+        .trim_end_matches("const")
+        .trim();
+
+    // Skip obvious primitives
+    if matches!(
+        base,
+        "int"
+            | "unsigned int"
+            | "signed int"
+            | "short"
+            | "unsigned short"
+            | "long"
+            | "unsigned long"
+            | "long long"
+            | "unsigned long long"
+            | "char"
+            | "unsigned char"
+            | "signed char"
+            | "float"
+            | "double"
+            | "void"
+            | "_Bool"
+    ) {
+        return None;
+    }
+    // Skip stdint types
+    if base.ends_with("_t")
+        && (base.starts_with("int") || base.starts_with("uint") || base.starts_with("size"))
+    {
+        return None;
+    }
+
+    // "struct MyStruct" → "MyStruct"
+    if let Some(name) = base.strip_prefix("struct ") {
+        let name = name.trim();
+        if !name.is_empty() && name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+            return Some(name);
+        }
+        return None;
+    }
+
+    // Bare identifier (typedef'd name) — must look like an identifier, not a primitive
+    if !base.is_empty()
+        && base
+            .chars()
+            .next()
+            .is_some_and(|c| c.is_alphabetic() || c == '_')
+        && base.chars().all(|c| c.is_alphanumeric() || c == '_')
+    {
+        return Some(base);
+    }
+
+    None
+}
+
+/// Resolve the type of a `field_expression` node using the variable type map
+/// and struct field type database.
+///
+/// Given `s->count` where `s` is declared as `struct MyStruct *s`:
+/// 1. Extracts field name "count" from the field_expression
+/// 2. Looks up base variable "s" → "struct MyStruct *" in type_map
+/// 3. Extracts struct name "MyStruct"
+/// 4. Looks up "MyStruct"."count" → "int" in struct_field_types
+pub fn resolve_field_expression_type(
+    node: &Node,
+    source: &str,
+    type_map: &std::collections::HashMap<String, String>,
+    struct_field_types: &std::collections::HashMap<
+        String,
+        std::collections::HashMap<String, String>,
+    >,
+) -> Option<String> {
+    let field_node = node.child_by_field_name("field")?;
+    let field_name = field_node.utf8_text(source.as_bytes()).ok()?;
+    let argument = node.child_by_field_name("argument")?;
+
+    // Get the base variable name
+    let base_name = match argument.kind() {
+        "identifier" => argument.utf8_text(source.as_bytes()).ok()?,
+        _ => return None,
+    };
+
+    // Look up base variable's declared type
+    let base_type = type_map.get(base_name)?;
+
+    // Extract struct name from the type
+    let struct_name = extract_struct_name_from_type(base_type)?;
+
+    // Look up field type in struct database
+    struct_field_types
+        .get(struct_name)
+        .and_then(|fields| fields.get(field_name))
+        .cloned()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
