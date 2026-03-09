@@ -118,8 +118,13 @@ impl Int36C {
                 || (!is_dereferenced && value_text.contains("ptr"))
                 || (cast_to_pointer && is_dereferenced);
 
-            // Check if casting to an integer type that's not uintptr_t/intptr_t
-            if self.is_integer_type(type_text) && !self.is_safe_pointer_integer_type(type_text) {
+            // Check if casting to an integer type that's not uintptr_t/intptr_t.
+            // Exclude pointer types — a cast like `(uint8_t *)&x` has a type_text containing
+            // '*', meaning it's a pointer cast, not a pointer-to-integer cast.
+            if self.is_integer_type(type_text)
+                && !self.is_safe_pointer_integer_type(type_text)
+                && !self.is_pointer_type(type_text)
+            {
                 if appears_to_be_pointer {
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
