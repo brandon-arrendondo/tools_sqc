@@ -284,6 +284,11 @@ impl Exp36C {
             ("unsigned char *", 1),
             ("signed char", 1),
             ("signed char *", 1),
+            // Fixed-width byte types — alignment 1 (same as char)
+            ("uint8_t", 1),
+            ("uint8_t *", 1),
+            ("int8_t", 1),
+            ("int8_t *", 1),
             ("short", 2),
             ("short *", 2),
             ("unsigned short", 2),

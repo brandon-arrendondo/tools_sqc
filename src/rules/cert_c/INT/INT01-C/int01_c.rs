@@ -299,6 +299,17 @@ impl Int01C {
                         continue;
                     }
 
+                    // Skip fixed-width integer types — on small/embedded targets (8/16-bit MCUs)
+                    // uint8_t or uint16_t is the correct type for size parameters; size_t
+                    // would waste scarce registers and uint8_t/uint16_t is intentional.
+                    if param_text.contains("uint8_t")
+                        || param_text.contains("uint16_t")
+                        || param_text.contains("int8_t")
+                        || param_text.contains("int16_t")
+                    {
+                        continue;
+                    }
+
                     // Check for size-related parameter names
                     let size_names = [
                         "size",
