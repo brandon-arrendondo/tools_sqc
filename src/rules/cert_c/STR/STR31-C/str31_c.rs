@@ -376,7 +376,7 @@ impl Str31C {
             // If source is a known string literal (bounded at compile time), we can't confirm
             // overflow without knowing the destination size — assume safe to avoid FPs in
             // unrelated CWEs where good functions copy fixed strings into opaque buffers.
-            if source_length.is_some() {
+            if source_length.is_some() && !self.is_function_parameter(dest, source) {
                 return true;
             }
         }
@@ -488,7 +488,7 @@ impl Str31C {
             // Destination buffer size could not be determined (dynamic allocation, pointer param, etc.)
             // If source is a string literal (bounded at compile time), we can't confirm overflow
             // without knowing the destination size — assume safe to avoid FPs in unrelated CWEs.
-            if src_arg_kind == "string_literal" {
+            if src_arg_kind == "string_literal" && !self.is_function_parameter(dest, source) {
                 return true;
             }
         }
@@ -961,17 +961,30 @@ impl Str31C {
     }
 
     /// Check for multiple strcat operations that might cause cumulative overflow
-    fn check_sequential_strcat_overflow(&self, node: &Node, source: &str) -> Option<RuleViolation> {
+    fn check_sequential_strcat_overflow(
+        &self,
+        node: &Node,
+        source: &str,
+        root: &Node,
+    ) -> Option<RuleViolation> {
         // Only analyze at function scope to capture multiple strcat calls
         if node.kind() != "function_definition" {
             return None;
         }
 
+        // Scan only the lines within this function body, not the entire file
+        let func_start = node.start_position().row;
+        let func_end = node.end_position().row;
         let lines: Vec<&str> = source.lines().collect();
         let mut strcat_operations: Vec<(usize, String, String)> = Vec::new(); // (line_num, dest_var, src_var)
 
-        // First pass: collect all strcat operations in this function
-        for (line_idx, line) in lines.iter().enumerate() {
+        // First pass: collect strcat operations within this function's line range
+        for (line_idx, line) in lines
+            .iter()
+            .enumerate()
+            .skip(func_start)
+            .take(func_end.saturating_sub(func_start) + 1)
+        {
             if line.contains("strcat") {
                 if let Some((dest, src)) = self.extract_strcat_arguments(line) {
                     strcat_operations.push((line_idx + 1, dest, src));
@@ -990,7 +1003,7 @@ impl Str31C {
             if operations.len() > 1 {
                 // Multiple strcat operations on same variable
                 if let Some(violation) =
-                    self.analyze_cumulative_strcat(&dest_var, &operations, source)
+                    self.analyze_cumulative_strcat(&dest_var, &operations, source, root)
                 {
                     return Some(violation);
                 }
@@ -1024,46 +1037,37 @@ impl Str31C {
         dest_var: &str,
         operations: &[(usize, String)],
         source: &str,
+        root: &Node,
     ) -> Option<RuleViolation> {
-        // For multi-strcat analysis, we'll parse the source again to create a minimal node
-        let mut parser = tree_sitter::Parser::new();
-        parser
-            .set_language(&tree_sitter_c::language())
-            .expect("Error loading C grammar");
+        // Get destination buffer size using the already-parsed root node
+        let buffer_size = self.find_buffer_size(dest_var, root, source)?;
 
-        if let Some(tree) = parser.parse(source, None) {
-            let root_node = tree.root_node();
+        // Start with initial buffer content
+        let mut cumulative_length = self.get_initial_buffer_content_length(dest_var, source);
 
-            // Get destination buffer size
-            let buffer_size = self.find_buffer_size(dest_var, &root_node, source)?;
+        // Track cumulative length after each strcat
+        for (line_num, src_var) in operations {
+            let src_length = self
+                .get_string_length_from_context(Some(src_var), source)
+                .unwrap_or(0);
+            cumulative_length += src_length;
 
-            // Start with initial buffer content
-            let mut cumulative_length = self.get_initial_buffer_content_length(dest_var, source);
-
-            // Track cumulative length after each strcat
-            for (line_num, src_var) in operations {
-                let src_length = self
-                    .get_string_length_from_context(Some(&src_var), source)
-                    .unwrap_or(0);
-                cumulative_length += src_length;
-
-                // Check if this operation would cause overflow
-                if cumulative_length + 1 > buffer_size {
-                    // +1 for null terminator
-                    return Some(RuleViolation {
-                        rule_id: "STR31-C".to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Multiple strcat operations cause buffer overflow. Cumulative length {} exceeds buffer size {}",
-                            cumulative_length + 1, buffer_size
-                        ),
-                        file_path: String::new(),
-                        line: *line_num,
-                        column: 1,
-                        suggestion: Some("Use strncat with size limits or allocate larger buffer".to_string()),
-                    ..Default::default()
-                    });
-                }
+            // Check if this operation would cause overflow
+            if cumulative_length + 1 > buffer_size {
+                // +1 for null terminator
+                return Some(RuleViolation {
+                    rule_id: "STR31-C".to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Multiple strcat operations cause buffer overflow. Cumulative length {} exceeds buffer size {}",
+                        cumulative_length + 1, buffer_size
+                    ),
+                    file_path: String::new(),
+                    line: *line_num,
+                    column: 1,
+                    suggestion: Some("Use strncat with size limits or allocate larger buffer".to_string()),
+                ..Default::default()
+                });
             }
         }
 
@@ -1223,7 +1227,9 @@ impl CertRule for Str31C {
         }
 
         // NEW: Check for sequential strcat overflow at function level
-        if let Some(multi_strcat_violation) = self.check_sequential_strcat_overflow(node, source) {
+        if let Some(multi_strcat_violation) =
+            self.check_sequential_strcat_overflow(node, source, &root)
+        {
             violations.push(multi_strcat_violation);
         }
 

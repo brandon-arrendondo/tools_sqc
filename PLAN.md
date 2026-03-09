@@ -276,13 +276,13 @@ Targeted CWE-476 FP reduction via rule narrowing and enhanced inter-procedural a
 
 ## Juliet FP Reduction — Pending Improvements
 
-### STR31-C: `check_strcpy_safety` — Add `is_function_parameter` Guard
+### STR31-C: `check_strcpy_safety` — Add `is_function_parameter` Guard (COMPLETE)
 
-**Status**: Identified but not yet implemented.
+**Status**: Implemented on `more_fp_fixes` branch.
 
 **Problem**: Round 13 added a suppression: when source is a string literal and dest buffer size is unknown, assume safe. This suppression also fires on TPs in cross-function tests (CWE124, CWE127) where a small stack buffer is passed to a helper that calls `strcpy(data, "fixedstring")`.
 
-**Fix**: Gate the suppression on `!self.is_function_parameter(dest, source)`.
+**Fix**: Gated the suppression on `!self.is_function_parameter(dest, source)` in both `check_strcpy_safety` and `check_strcat_safety`. Also fixed `check_sequential_strcat_overflow` to scan only the current function's line range (not the whole file) and eliminated re-parsing in `analyze_cumulative_strcat` by reusing the root node from `check()`.
 
 **Expected impact**: Recover ~300–400 TPs (CWE124/127) with minimal FP regression.
 
