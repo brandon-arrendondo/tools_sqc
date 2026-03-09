@@ -55,15 +55,30 @@
 | v0.2.25 | v0.2.25 | ARR32-C tightening, INT18-C/EXP05-C removal, INT30-C pointer type, INT32-C field_expr, INT34-C const_eval | 130,199 | 161,965 | 44.6% | -1,620 |
 | v0.3.5 | v0.3.5 | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C FP fixes | 130,004 | 161,510 | 44.6% | -455 |
 | **v0.3.8** | **v0.3.8** | **STR31-C is_function_parameter, API00-C validation patterns, EXP34-C compound null, EXP33-C field-write fix** | ² | ² | **44.3%**² | ² |
+| **v0.3.9** | **v0.3.9** | **DCL08-C protocol enum skip, EXP36-C uint8_t* alignment, INT36-C pointer cast guard, INT01-C uint8_t skip, EXP33-C multi-branch FP** | ² | ² | **44.3%**² | ² |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
-² v0.3.8 run used `run_juliet_multi_cwe.sh` (12-CWE subset, 25,860 files): TP=61,799, FP=77,826, TP rate=44.3%. Full-suite numbers not yet available.
+² Multi-CWE subset (12 CWEs, ~25K files) via `run_juliet_multi_cwe.sh`. v0.3.8: TP=61,799 FP=77,826 rate=44.3%. v0.3.9: TP=61,349 FP=77,245 rate=44.3% (−450 TP / −581 FP vs v0.3.8). Full-suite numbers not yet available.
 
 **Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-677,831 (-80.7%)**.
 
 ---
 
 ## Per-Round Fix Details
+
+### v0.3.9 — P3214 Real-World FP Fixes (12-CWE subset)
+
+**Scope**: Targeted at 5 high-frequency FP patterns from P3214 embedded firmware (CMS80F752x/8051 MCU). 12-CWE subset: TP=61,349, FP=77,245, rate=44.3% (−450 TP / −581 FP vs v0.3.8).
+
+- **DCL08-C**: Skip pair-offset "relationship" check when all 3+ enumerators have explicit values. Protocol/wire-format/register enums assign all values deliberately — no implicit relationship to encode. 2-member enums (canonical `{IN_STR_LEN=18, OUT_STR_LEN=20}`) still checked. Eliminates ~205 FPs per protocol-heavy file.
+- **EXP36-C**: Added `uint8_t *` and `int8_t *` to alignment map with value 1. Previously `ends_with("*")` fallback assigned them alignment 4, causing `(uint8_t *)&struct_var` to be flagged as increasing alignment strictness (it decreases it). Eliminates 4 FPs per memcpy/memset site.
+- **INT36-C**: Guard `check_pointer_to_integer_cast` with `!is_pointer_type(type_text)`. `is_integer_type("uint8_t *")` returned true because "uint8_t" contains "int". Pointer casts like `(uint8_t *)&x` were incorrectly flagged as pointer-to-integer conversions. Eliminates 14 FPs per file.
+- **INT01-C**: Skip `check_param_list` when param uses `uint8_t`/`uint16_t`/`int8_t`/`int16_t`. On 8/16-bit MCUs these are correct types for size parameters; `size_t` would waste scarce registers. Eliminates 12 FPs.
+- **EXP33-C**: When a variable is initialized in 2+ distinct conditional branches (if/else-if without final else), use `ConditionallyInitialized` instead of `Uninitialized`. Multi-branch chains indicate the programmer covers all cases (e.g., exhaustive enum dispatch); sqc cannot prove this statically. Single-branch if-without-else still flags. Also fixed position deduplication in `collect_init_func_calls_for_var` (identifier args were pushed twice). Eliminates 31 FPs.
+
+**Juliet impact** (v0.3.8 → v0.3.9): TP 61,799→61,349 (−450), FP 77,826→77,245 (−581), rate 44.3%→44.3%. TP loss primarily from DCL08-C no longer flagging all-explicit-value enums (low-confidence detections on protocol enum patterns).
+
+---
 
 ### v0.3.8 — STR31-C, API00-C, EXP34-C, EXP33-C FP Fixes (12-CWE subset)
 
