@@ -91,16 +91,30 @@ struct ConditionInfo {
 /// Parse a condition AST node to extract null-check info.
 /// Returns None if the condition is not a recognizable null check.
 fn parse_null_condition(node: &Node, source: &str) -> Option<ConditionInfo> {
+    parse_all_null_conditions(node, source).into_iter().next()
+}
+
+/// Parse a condition AST node and collect ALL null-check conditions.
+/// For compound `||` conditions like `ptr == NULL || q == NULL`, returns info
+/// for every null-checked variable (not just the first one).
+fn parse_all_null_conditions(node: &Node, source: &str) -> Vec<ConditionInfo> {
     match node.kind() {
         "parenthesized_expression" => {
             // Unwrap parens: child(0)='(', child(1)=expr, child(2)=')'
             node.child(1)
-                .and_then(|inner| parse_null_condition(&inner, source))
+                .map(|inner| parse_all_null_conditions(&inner, source))
+                .unwrap_or_default()
         }
         "binary_expression" => {
-            let left = node.child_by_field_name("left")?;
-            let operator = node.child_by_field_name("operator")?;
-            let right = node.child_by_field_name("right")?;
+            let Some(left) = node.child_by_field_name("left") else {
+                return Vec::new();
+            };
+            let Some(operator) = node.child_by_field_name("operator") else {
+                return Vec::new();
+            };
+            let Some(right) = node.child_by_field_name("right") else {
+                return Vec::new();
+            };
             let op = get_text(&operator, source);
 
             match op.as_str() {
@@ -108,58 +122,71 @@ fn parse_null_condition(node: &Node, source: &str) -> Option<ConditionInfo> {
                     // ptr == NULL  => true: DefinitelyNull, false: NotNull
                     // NULL == ptr  => same
                     if let Some(var) = extract_null_check_var(&left, &right, source) {
-                        return Some(ConditionInfo {
+                        return vec![ConditionInfo {
                             var_name: var,
                             true_state: NullState::DefinitelyNull,
                             false_state: NullState::NotNull,
-                        });
+                        }];
                     }
+                    Vec::new()
                 }
                 "!=" => {
                     // ptr != NULL  => true: NotNull, false: DefinitelyNull
                     if let Some(var) = extract_null_check_var(&left, &right, source) {
-                        return Some(ConditionInfo {
+                        return vec![ConditionInfo {
                             var_name: var,
                             true_state: NullState::NotNull,
                             false_state: NullState::DefinitelyNull,
-                        });
+                        }];
                     }
+                    Vec::new()
                 }
-                "&&" | "||" => {
-                    // Try to find a null check in either operand
-                    if let Some(info) = parse_null_condition(&left, source) {
-                        return Some(info);
-                    }
-                    return parse_null_condition(&right, source);
+                "||" => {
+                    // Collect all null checks from both sides.
+                    // On the FALSE branch, ALL conditions are false → all vars NotNull.
+                    // On the TRUE branch, at least one is true → conservative (don't refine).
+                    let mut all = parse_all_null_conditions(&left, source);
+                    all.extend(parse_all_null_conditions(&right, source));
+                    all
                 }
-                _ => {}
+                "&&" => {
+                    // Collect all null checks from both sides.
+                    // On the TRUE branch, ALL conditions are true → all vars have true_state.
+                    let mut all = parse_all_null_conditions(&left, source);
+                    all.extend(parse_all_null_conditions(&right, source));
+                    all
+                }
+                _ => Vec::new(),
             }
-            None
         }
         "unary_expression" => {
             // !ptr => true: DefinitelyNull, false: NotNull
-            let operator = node.child(0)?;
+            let Some(operator) = node.child(0) else {
+                return Vec::new();
+            };
             if get_text(&operator, source) == "!" {
-                let arg = node.child_by_field_name("argument")?;
+                let Some(arg) = node.child_by_field_name("argument") else {
+                    return Vec::new();
+                };
                 if arg.kind() == "identifier" {
-                    return Some(ConditionInfo {
+                    return vec![ConditionInfo {
                         var_name: get_text(&arg, source),
                         true_state: NullState::DefinitelyNull,
                         false_state: NullState::NotNull,
-                    });
+                    }];
                 }
             }
-            None
+            Vec::new()
         }
         "identifier" => {
             // if (ptr) => true: NotNull, false: DefinitelyNull
-            Some(ConditionInfo {
+            vec![ConditionInfo {
                 var_name: get_text(node, source),
                 true_state: NullState::NotNull,
                 false_state: NullState::DefinitelyNull,
-            })
+            }]
         }
-        _ => None,
+        _ => Vec::new(),
     }
 }
 
@@ -929,8 +956,8 @@ fn apply_edge_refinement(
         None => return state,
     };
 
-    // Parse condition for null-check info
-    if let Some(info) = parse_null_condition(&cond_node, source) {
+    // Parse condition for null-check info (all vars in compound conditions)
+    for info in parse_all_null_conditions(&cond_node, source) {
         let refined_state = if is_true {
             info.true_state
         } else {
