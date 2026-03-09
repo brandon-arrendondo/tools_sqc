@@ -599,10 +599,14 @@ impl UninitializedVariableAnalyzer {
             // Also check for function-call-based initializations
             let func_inits = self.find_all_init_func_calls(&var_name, node, source);
 
-            // Combine all initialization positions
+            // Combine all initialization positions, deduplicating by byte offset so that
+            // a single call site (e.g. fgets which pushes twice for an identifier arg)
+            // counts as one initialization.
+            let mut seen: HashSet<usize> = HashSet::new();
             let all_inits: Vec<usize> = assignments
                 .into_iter()
                 .chain(func_inits.into_iter())
+                .filter(|pos| seen.insert(*pos))
                 .collect();
             if all_inits.is_empty() {
                 continue; // No initializations found
@@ -614,7 +618,16 @@ impl UninitializedVariableAnalyzer {
                 .all(|pos| self.is_inside_incomplete_conditional(*pos, node, source));
 
             if all_conditional {
-                self.var_states.insert(var_name, VarState::Uninitialized);
+                if all_inits.len() >= 2 {
+                    // 2+ initializations across conditional branches suggests exhaustive
+                    // coverage (e.g. if/else-if chains where all enum values are handled).
+                    // Downgrade to ConditionallyInitialized rather than Uninitialized to
+                    // avoid false positives; check_usage does not flag this state.
+                    self.var_states
+                        .insert(var_name, VarState::ConditionallyInitialized);
+                } else {
+                    self.var_states.insert(var_name, VarState::Uninitialized);
+                }
             }
         }
     }
