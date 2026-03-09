@@ -1,40 +1,50 @@
 # SqC — Real-World Benchmark Results
 
-**Last Updated**: 2026-03-04
+**Last Updated**: 2026-03-06
 
 Automated benchmark results across 5 real-world C codebases using sqc, cppcheck, and clang-tidy. Also includes d_lib_common (internal module) FP reduction case study.
 
 ---
 
-## Latest Results (sqc v0.2.22)
+## Latest Results (sqc v0.3.5)
 
-MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.1.6, sqc v0.2.22 commit `c9b92219`).
+MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.1.6, sqc v0.3.5 commit `8b8e1eec`).
 
 ### Violation Counts — All Three Tools
 
 | Project | LOC (approx) | sqc | cppcheck | clang-tidy |
 |---------|-------------|----:|--------:|-----------:|
-| **libcrc** | ~1K | 777 | 43 | 2 |
-| **sqlite** | ~350 files | 130,802 | 1,181 | 135 |
-| **mosquitto** | ~120 files | 29,989 | 747 | 44 |
-| **curl** | ~220 files | 64,389 | 519 | 114 |
-| **hostap** | ~600 files | 185,197 | 2,118 | 2,279 |
-| **Total** | | **411,154** | **4,608** | **2,574** |
+| **libcrc** | ~1K | 734 | 43 | 2 |
+| **sqlite** | ~350 files | 129,035 | 1,181 | 135 |
+| **mosquitto** | ~120 files | 29,824 | 747 | 44 |
+| **curl** | ~220 files | 63,207 | 519 | 114 |
+| **hostap** | ~600 files | 179,833 | 2,118 | 2,279 |
+| **Total** | | **402,633** | **4,608** | **2,574** |
 
 **Interpretation**: sqc covers 283 CERT-C rules (advisory + mandatory) while cppcheck and clang-tidy implement ~20 checks each. The 100x difference in raw counts reflects rule coverage breadth, not false positive rate.
 
 ### sqc Version History
 
-| Project | v0.2.7 | v0.2.13 | v0.2.16 | v0.2.21 | v0.2.22 | Delta (0.2.21→0.2.22) |
-|---------|-------:|--------:|--------:|--------:|--------:|----------------------:|
-| **libcrc** | 842 | 811 | 790 | 777 | 777 | 0 |
-| **mosquitto** | 39,177 | 33,638 | 33,200 | 29,997 | 29,989 | -8 |
-| **sqlite** | 180,011 | 147,091 | 144,581 | 130,774 | 130,802 | +28¹ |
-| **curl** | 93,576 | 73,816 | 73,239 | 64,393 | 64,389 | -4 |
-| **hostap** | 234,421 | 206,906 | 204,560 | 184,952 | 185,197 | +245¹ |
-| **Total** | **548,027** | **462,262** | **456,370** | **410,893** | **411,154** | **+261** |
+| Project | v0.2.7 | v0.2.13 | v0.2.16 | v0.2.21 | v0.2.22 | v0.3.5 | Delta (0.2.21→0.3.5) |
+|---------|-------:|--------:|--------:|--------:|--------:|-------:|----------------------:|
+| **libcrc** | 842 | 811 | 790 | 777 | 777 | 734 | -43 (-5.5%) |
+| **mosquitto** | 39,177 | 33,638 | 33,200 | 29,997 | 29,989 | 29,824 | -173 (-0.6%) |
+| **sqlite** | 180,011 | 147,091 | 144,581 | 130,774 | 130,802 | 129,035 | -1,739 (-1.3%) |
+| **curl** | 93,576 | 73,816 | 73,239 | 64,393 | 64,389 | 63,207 | -1,186 (-1.8%) |
+| **hostap** | 234,421 | 206,906 | 204,560 | 184,952 | 185,197 | 179,833 | -5,119 (-2.8%) |
+| **Total** | **548,027** | **462,262** | **456,370** | **410,893** | **411,154** | **402,633** | **-8,260 (-2.0%)** |
 
-¹ hostap/sqlite increases are DCL31-C non-deterministic prescan noise, not related to INT30-C change.
+**v0.3.5 changes**: DCL13-C alias tracking fix, DCL30-C function parameter skip, EXP33-C uninitialized variable improvements, struct field type resolution for INT32-C/INT30-C, ARR32-C array bounds fixes, POS49-C thread function fixes, STR04-C/STR34-C string type fixes.
+
+**Top rule changes (4 comparable codebases, v0.2.21→v0.3.5)**:
+- ARR32-C −2,178 (array declarator improvements)
+- EXP33-C −2,118 (init tracking for function calls, conditional branches)
+- POS49-C −1,787 (thread function recognition)
+- STR04-C −229 (string literal type checks)
+- EXP05-C −146 (const qualifier detection)
+- INT34-C −100 (shift operand type fixes)
+- INT32-C −93 (net: struct field resolution added new findings, bounds-check detection removed FPs)
+- INT30-C +287 (struct field resolution now correctly identifies unsigned struct fields → more findings)
 
 **v0.2.22 changes**: INT30-C if-statement upper-bound guard detection. Extends `is_bounded_by_loop_condition()` to suppress `++`/`+= 1`/`var + 1` inside `if (var < limit)` true branch. INT30-C deltas: curl -9, hostap -7, mosquitto -8 (total -24).
 
@@ -46,11 +56,11 @@ MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.
 
 **v0.2.7→v0.2.13 changes**: Cross-file analysis (`-d` directories), Windows API whitelist, bounds-check detection (INT32-C/INT30-C), CFG-based null state dataflow (EXP34-C Phase 1), multiple FP reduction rounds. Total: -85,765 (-15.6%).
 
-### Improvement from Baseline (sqlite: v0.2.4 → v0.2.21)
+### Improvement from Baseline (sqlite: v0.2.4 → v0.3.5)
 
-| Metric | v0.2.4 | v0.2.7 | v0.2.16 | v0.2.21 | Delta (0.2.4→0.2.21) |
-|--------|-------:|-------:|--------:|--------:|---------------------:|
-| Total violations | 427,377 | 180,011 | 144,581 | 130,774 | **-296,603 (-69.4%)** |
+| Metric | v0.2.4 | v0.2.7 | v0.2.16 | v0.2.21 | v0.3.5 | Delta (0.2.4→0.3.5) |
+|--------|-------:|-------:|--------:|--------:|-------:|---------------------:|
+| Total violations | 427,377 | 180,011 | 144,581 | 130,774 | 129,035 | **-298,342 (-69.8%)** |
 | STR31-C | 206,651 | 222 | ~200 | ~200 | -206,451 (rewrite) |
 | EXP34-C | 41,886 | 8,734 | ~8,500 | ~8,200 | -33,686 (CFG dataflow + call-site propagation) |
 | ARR36-C | 3,034 | 600 | ~600 | ~550 | -2,484 |
@@ -59,11 +69,13 @@ MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.
 
 ### Key Observations
 
-- **Steady decline across all projects**: Every codebase shows consistent reduction from v0.2.7 through v0.2.21
+- **Steady decline across all projects**: Every codebase shows consistent reduction from v0.2.7 through v0.3.5
 - **v0.2.16→v0.2.21 is the largest inter-version drop**: -10.0% overall, driven by API00-C static skip (dominant), const_eval, and multiple targeted FP fixes
+- **v0.2.21→v0.3.5 continues trend**: -2.0% overall, driven by EXP33-C init tracking, ARR32-C array bounds, and POS49-C thread fixes
+- **Struct field resolution validated**: INT30-C +287 increase is correct behavior — struct fields now properly classified as unsigned, generating new true findings
 - **Advisory rules dominate**: DCL07-C, DCL31-C, DCL08-C, DCL13-C, EXP19-C, API00-C are code-style/quality rules. Severity filtering would significantly reduce noise
-- **mosquitto is cleanest**: 30K violations (vs. 185K for hostap)
-- **Cumulative reduction from v0.2.7**: -136,873 violations (-25.0%) across all 5 codebases
+- **mosquitto is cleanest**: 30K violations (vs. 180K for hostap)
+- **Cumulative reduction from v0.2.7**: -145,394 violations (-26.5%) across all 5 codebases (4 comparable)
 
 ---
 

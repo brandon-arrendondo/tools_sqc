@@ -10,6 +10,7 @@ use tree_sitter::Node;
 pub struct Int30C {
     project_macros: RefCell<MacroConstantMap>,
     current_macros: RefCell<MacroConstantMap>,
+    struct_field_types: RefCell<HashMap<String, HashMap<String, String>>>,
 }
 
 impl Int30C {
@@ -17,6 +18,7 @@ impl Int30C {
         Self {
             project_macros: RefCell::new(MacroConstantMap::new()),
             current_macros: RefCell::new(MacroConstantMap::new()),
+            struct_field_types: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -44,6 +46,7 @@ impl CertRule for Int30C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_macros.borrow_mut() = context.macro_constants.clone();
+        *self.struct_field_types.borrow_mut() = context.struct_field_types.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -811,6 +814,32 @@ impl Int30C {
             }
         }
 
+        // Field expressions (e.g., s->length): resolve via struct field type database
+        if node.kind() == "field_expression" {
+            let sft = self.struct_field_types.borrow();
+            if let Some(field_type) =
+                crate::utility::cert_c::ast_utils::resolve_field_expression_type(
+                    node, source, type_map, &sft,
+                )
+            {
+                if field_type.contains('*') {
+                    return "not_applicable".to_string();
+                }
+                if self.is_unsigned_type(&field_type) {
+                    return "unsigned".to_string();
+                }
+                if !field_type.contains("int")
+                    && !field_type.contains("short")
+                    && !field_type.contains("long")
+                    && field_type != "signed"
+                {
+                    return "not_applicable".to_string();
+                }
+                return "int".to_string();
+            }
+            return "unknown".to_string();
+        }
+
         // Fallback: check variable declaration in function text for unmapped variables
         if node.kind() == "identifier" || node.kind() == "pointer_expression" {
             let var_name = text.trim_start_matches('*').trim();
@@ -936,6 +965,9 @@ impl Int30C {
             if let Some(child) = node.child(i) {
                 match child.kind() {
                     "primitive_type" | "sized_type_specifier" | "type_identifier" => {
+                        type_text = get_node_text(&child, source).to_string();
+                    }
+                    "struct_specifier" => {
                         type_text = get_node_text(&child, source).to_string();
                     }
                     _ => {}
@@ -1529,17 +1561,66 @@ impl Int30C {
         false
     }
 
-    /// For "var - 1" subtraction: if var is guarded by a positive-value condition,
+    /// For "var - 1" or "var - 1U" subtraction: if var is guarded by a
+    /// positive-value condition or was incremented before this point,
     /// then var >= 1 and var - 1 >= 0, so no unsigned wrap.
     fn is_subtract_one_guarded(&self, node: &Node, source: &str) -> bool {
         if let Some(right) = node.child_by_field_name("right") {
-            let right_text = get_node_text(&right, source);
-            if right_text.trim() == "1" {
+            let right_text = get_node_text(&right, source).trim().to_string();
+            // Accept 1, 1U, 1u, 1UL, 1ul, etc.
+            if self.is_literal_one(&right_text) {
                 if let Some(left) = node.child_by_field_name("left") {
-                    let var_name = get_node_text(&left, source);
-                    return self.is_guarded_by_gt_zero(node, var_name.trim(), source);
+                    let var_name = get_node_text(&left, source).trim().to_string();
+                    if self.is_guarded_by_gt_zero(node, &var_name, source) {
+                        return true;
+                    }
+                    // Check if the variable was incremented before this subtraction
+                    // in the same compound_statement (e.g., `var++; ... var - 1U`)
+                    if self.is_preceded_by_increment(node, &var_name, source) {
+                        return true;
+                    }
                 }
             }
+        }
+        false
+    }
+
+    /// Check if a literal text represents the value 1 (with optional unsigned suffix).
+    fn is_literal_one(&self, text: &str) -> bool {
+        let text = text.trim();
+        if text == "1" {
+            return true;
+        }
+        // Strip unsigned/long suffixes: 1U, 1u, 1UL, 1ul, 1ULL, etc.
+        let stripped = text.trim_end_matches(['u', 'U', 'l', 'L']);
+        stripped == "1"
+    }
+
+    /// Check if the variable was incremented (var++, ++var, var += 1) before
+    /// this node in the same compound_statement. This means var >= 1 at the
+    /// point of the subtraction.
+    fn is_preceded_by_increment(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        // Find the enclosing compound_statement
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "compound_statement" {
+                let before_text = &source[parent.start_byte()..node.start_byte()];
+                // Check for var++ or ++var
+                let postinc = format!("{}++", var_name);
+                let preinc = format!("++{}", var_name);
+                let addassign = format!("{} += 1", var_name);
+                if before_text.contains(&postinc)
+                    || before_text.contains(&preinc)
+                    || before_text.contains(&addassign)
+                {
+                    return true;
+                }
+                return false;
+            }
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            current = parent.parent();
         }
         false
     }
