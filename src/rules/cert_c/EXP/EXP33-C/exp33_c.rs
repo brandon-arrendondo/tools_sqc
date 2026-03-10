@@ -1464,6 +1464,17 @@ impl UninitializedVariableAnalyzer {
             );
 
             if is_uninit {
+                // Before flagging, check if there's a preceding assignment to this variable
+                // in the same enclosing compound_statement. This handles the case where
+                // check_conditional_init_pattern conservatively marked the variable as
+                // Uninitialized, but the specific read location is dominated by an
+                // assignment in the same block (e.g., `data = 5; use(data);` inside an
+                // if-block without else).
+                if self.initially_uninitialized.contains(&var_name)
+                    && Self::has_preceding_assignment_in_block(node, &var_name, source)
+                {
+                    return;
+                }
                 // Check if this is a read context (not assignment target, not declaration)
                 if self.is_read_context_for_identifier(node, source) {
                     let start = node.start_position();
@@ -1797,6 +1808,105 @@ impl UninitializedVariableAnalyzer {
             }
         } else {
             true
+        }
+    }
+
+    /// Check if there is an assignment to `var_name` in the same enclosing
+    /// compound_statement that precedes `read_node` in source order.
+    /// This catches the pattern where `check_conditional_init_pattern`
+    /// conservatively marked a variable as Uninitialized because its
+    /// assignment is inside an incomplete conditional, but the read is in
+    /// the same block as the assignment (e.g., `data = 5; use(data);`).
+    fn has_preceding_assignment_in_block(read_node: &Node, var_name: &str, source: &str) -> bool {
+        let read_byte = read_node.start_byte();
+
+        // Walk up to find the nearest enclosing compound_statement
+        let mut current = read_node.parent();
+        while let Some(node) = current {
+            if node.kind() == "compound_statement" {
+                // Scan children of this compound_statement for assignments
+                // to var_name that precede read_byte
+                if Self::block_has_preceding_assignment(&node, var_name, source, read_byte) {
+                    return true;
+                }
+                // Only check the innermost compound_statement
+                break;
+            }
+            current = node.parent();
+        }
+        false
+    }
+
+    /// Scan direct children of a compound_statement for an assignment or
+    /// init-declaration of `var_name` that comes before `before_byte`.
+    fn block_has_preceding_assignment(
+        block: &Node,
+        var_name: &str,
+        source: &str,
+        before_byte: usize,
+    ) -> bool {
+        for i in 0..block.named_child_count() {
+            if let Some(child) = block.named_child(i) {
+                // Only look at statements before the read
+                if child.start_byte() >= before_byte {
+                    break;
+                }
+
+                // Check for direct assignment: var_name = ...
+                if Self::statement_assigns_var(&child, var_name, source) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a statement (or expression_statement wrapping an assignment)
+    /// assigns to `var_name`.
+    fn statement_assigns_var(stmt: &Node, var_name: &str, source: &str) -> bool {
+        match stmt.kind() {
+            "expression_statement" => {
+                // Check the contained expression
+                for i in 0..stmt.named_child_count() {
+                    if let Some(child) = stmt.named_child(i) {
+                        if Self::statement_assigns_var(&child, var_name, source) {
+                            return true;
+                        }
+                    }
+                }
+                false
+            }
+            "assignment_expression" => {
+                if let Some(left) = stmt.child_by_field_name("left") {
+                    if left.kind() == "identifier" {
+                        return get_node_text(&left, source) == var_name;
+                    }
+                }
+                false
+            }
+            "declaration" => {
+                // Check for init_declarator with a value (e.g., `int data = 5;`)
+                let text = get_node_text(stmt, source);
+                if !text.contains('=') {
+                    return false;
+                }
+                for i in 0..stmt.child_count() {
+                    if let Some(child) = stmt.child(i) {
+                        if child.kind() == "init_declarator" {
+                            if let Some(declarator) = child.child_by_field_name("declarator") {
+                                let decl_name = Self::get_var_name(&declarator, source);
+                                if decl_name == var_name
+                                    && child.child_by_field_name("value").is_some()
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                false
+            }
+            _ => false,
         }
     }
 

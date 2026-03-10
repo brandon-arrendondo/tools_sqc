@@ -1,5 +1,5 @@
 use super::super::{CertRule, RuleViolation};
-use crate::analyze::const_eval::{self, MacroConstantMap};
+use crate::analyze::const_eval::{self, MacroConstantMap, VarRangeMap};
 use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
@@ -102,15 +102,11 @@ impl Int34C {
             // If the shift amount is provably in [0, 31], no overflow possible.
             {
                 let macros = self.current_macros.borrow();
-                let loop_ranges = const_eval::extract_loop_var_ranges(node, source, &macros);
-                let mut var_ranges = loop_ranges.clone();
-                const_eval::resolve_identifiers_in_expr(
-                    &right_node,
-                    source,
-                    &macros,
-                    &loop_ranges,
-                    &mut var_ranges,
-                );
+                let mut var_ranges = const_eval::extract_loop_var_ranges(node, source, &macros);
+
+                // Also extract ranges from enclosing if-statement conditions
+                Self::extract_if_condition_ranges(node, source, &macros, &mut var_ranges);
+
                 if let Some(range) =
                     const_eval::try_evaluate_range(&right_node, source, &macros, &var_ranges)
                 {
@@ -538,6 +534,166 @@ impl Int34C {
         }
 
         false
+    }
+
+    /// Walk up to enclosing if_statement ancestors and extract variable
+    /// bounds from their conditions. Only applies when the node is inside
+    /// the consequence (then-branch) of the if.
+    fn extract_if_condition_ranges(
+        node: &Node,
+        source: &str,
+        macros: &MacroConstantMap,
+        ranges: &mut VarRangeMap,
+    ) {
+        let mut current = node.parent();
+        while let Some(ancestor) = current {
+            if ancestor.kind() == "if_statement" {
+                // Only apply bounds if node is in the consequence (then-branch)
+                if let Some(consequence) = ancestor.child_by_field_name("consequence") {
+                    if node.start_byte() >= consequence.start_byte()
+                        && node.end_byte() <= consequence.end_byte()
+                    {
+                        if let Some(condition) = ancestor.child_by_field_name("condition") {
+                            let cond = if condition.kind() == "parenthesized_expression" {
+                                condition.child(1)
+                            } else {
+                                Some(condition)
+                            };
+                            if let Some(cond) = cond {
+                                Self::extract_comparison_bounds(&cond, source, macros, ranges);
+                            }
+                        }
+                    }
+                }
+            }
+            current = ancestor.parent();
+        }
+    }
+
+    /// Extract variable bounds from comparison expressions.
+    /// Handles <, <=, >, >=, != operators and compound && conditions.
+    fn extract_comparison_bounds(
+        node: &Node,
+        source: &str,
+        macros: &MacroConstantMap,
+        ranges: &mut VarRangeMap,
+    ) {
+        if node.kind() != "binary_expression" {
+            return;
+        }
+        let op = match ast_utils::get_binary_operator(node, source) {
+            Some(o) => o,
+            None => return,
+        };
+
+        // Handle compound && conditions
+        if op == "&&" {
+            if let Some(left) = node.child_by_field_name("left") {
+                Self::extract_comparison_bounds(&left, source, macros, ranges);
+            }
+            if let Some(right) = node.child_by_field_name("right") {
+                Self::extract_comparison_bounds(&right, source, macros, ranges);
+            }
+            return;
+        }
+
+        let (left, right) = match (
+            node.child_by_field_name("left"),
+            node.child_by_field_name("right"),
+        ) {
+            (Some(l), Some(r)) => (l, r),
+            _ => return,
+        };
+
+        match op {
+            "<" => {
+                // left < right → left ∈ [_, right-1]
+                if left.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&right, source, macros) {
+                        let name = ast_utils::get_node_text(&left, source).to_string();
+                        let entry = ranges
+                            .entry(name)
+                            .or_insert(const_eval::ValueRange::new(i64::MIN, i64::MAX));
+                        entry.max = entry.max.min(bound - 1);
+                    }
+                }
+                // left < right → right ∈ [left+1, _]
+                if right.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&left, source, macros) {
+                        let name = ast_utils::get_node_text(&right, source).to_string();
+                        let entry = ranges
+                            .entry(name)
+                            .or_insert(const_eval::ValueRange::new(i64::MIN, i64::MAX));
+                        entry.min = entry.min.max(bound + 1);
+                    }
+                }
+            }
+            "<=" => {
+                if left.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&right, source, macros) {
+                        let name = ast_utils::get_node_text(&left, source).to_string();
+                        let entry = ranges
+                            .entry(name)
+                            .or_insert(const_eval::ValueRange::new(i64::MIN, i64::MAX));
+                        entry.max = entry.max.min(bound);
+                    }
+                }
+                if right.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&left, source, macros) {
+                        let name = ast_utils::get_node_text(&right, source).to_string();
+                        let entry = ranges
+                            .entry(name)
+                            .or_insert(const_eval::ValueRange::new(i64::MIN, i64::MAX));
+                        entry.min = entry.min.max(bound);
+                    }
+                }
+            }
+            ">" => {
+                // left > right → left ∈ [right+1, _]
+                if left.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&right, source, macros) {
+                        let name = ast_utils::get_node_text(&left, source).to_string();
+                        let entry = ranges
+                            .entry(name)
+                            .or_insert(const_eval::ValueRange::new(i64::MIN, i64::MAX));
+                        entry.min = entry.min.max(bound + 1);
+                    }
+                }
+                if right.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&left, source, macros) {
+                        let name = ast_utils::get_node_text(&right, source).to_string();
+                        let entry = ranges
+                            .entry(name)
+                            .or_insert(const_eval::ValueRange::new(i64::MIN, i64::MAX));
+                        entry.max = entry.max.min(bound - 1);
+                    }
+                }
+            }
+            ">=" => {
+                if left.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&right, source, macros) {
+                        let name = ast_utils::get_node_text(&left, source).to_string();
+                        let entry = ranges
+                            .entry(name)
+                            .or_insert(const_eval::ValueRange::new(i64::MIN, i64::MAX));
+                        entry.min = entry.min.max(bound);
+                    }
+                }
+                if right.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&left, source, macros) {
+                        let name = ast_utils::get_node_text(&right, source).to_string();
+                        let entry = ranges
+                            .entry(name)
+                            .or_insert(const_eval::ValueRange::new(i64::MIN, i64::MAX));
+                        entry.max = entry.max.min(bound);
+                    }
+                }
+            }
+            "!=" => {
+                // x != 0 doesn't give a tight range for shifts, skip
+            }
+            _ => {}
+        }
     }
 
     /// Check if target is a descendant of node
