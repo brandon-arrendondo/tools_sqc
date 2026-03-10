@@ -124,6 +124,14 @@ impl Dcl31C {
                 }
             }
         }
+        // Track function-like macro names (#define FOO(...) ...)
+        // so that macro invocations aren't flagged as undeclared functions.
+        if node.kind() == "preproc_function_def" {
+            if let Some(name_node) = node.child_by_field_name("name") {
+                let name = get_node_text(&name_node, source).to_string();
+                self.declared_functions.borrow_mut().insert(name);
+            }
+        }
     }
 
     /// Extract function name from declarator

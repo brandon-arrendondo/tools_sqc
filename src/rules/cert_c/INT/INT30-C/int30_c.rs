@@ -582,6 +582,12 @@ impl Int30C {
         violations: &mut Vec<RuleViolation>,
         type_map: &HashMap<String, String>,
     ) {
+        // Skip increments/decrements that are the update clause of a for-loop.
+        // The loop condition inherently bounds the variable.
+        if node.parent().is_some_and(|p| p.kind() == "for_statement") {
+            return;
+        }
+
         if let Some(argument) = node.child_by_field_name("argument") {
             let arg_type = self.infer_type(&argument, source, type_map);
 
