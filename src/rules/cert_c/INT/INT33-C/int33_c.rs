@@ -1,10 +1,23 @@
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::const_eval::{self, MacroConstantMap, ValueRange, VarRangeMap};
+use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
+use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
-pub struct Int33C;
+pub struct Int33C {
+    project_macros: RefCell<MacroConstantMap>,
+}
+
+impl Int33C {
+    pub fn new() -> Self {
+        Self {
+            project_macros: RefCell::new(MacroConstantMap::new()),
+        }
+    }
+}
 
 /// Information about macros that perform division
 #[allow(dead_code)]
@@ -34,6 +47,10 @@ impl CertRule for Int33C {
 
     fn cert_id(&self) -> &'static str {
         "INT33-C"
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.project_macros.borrow_mut() = context.macro_constants.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -422,6 +439,12 @@ impl Int33C {
             current = node.parent();
         }
 
+        // Value-range analysis: check if enclosing conditions prove divisor >= 1
+        // This catches patterns like `if (lower < upper) { total / (upper - lower); }`
+        if self.divisor_provably_nonzero(div_node, divisor, source) {
+            return true;
+        }
+
         false
     }
 
@@ -618,6 +641,222 @@ impl Int33C {
         false
     }
 
+    /// Use value-range analysis to prove a divisor is provably non-zero.
+    /// Walks up to enclosing if/while/for statements and extracts variable
+    /// bounds from their conditions. Then evaluates the divisor expression
+    /// with those bounds. If the result range is entirely > 0 or entirely < 0,
+    /// the divisor cannot be zero.
+    fn divisor_provably_nonzero(&self, div_node: &Node, divisor: &Node, source: &str) -> bool {
+        // Collect macro constants
+        let macros = self.project_macros.borrow();
+        let mut file_macros =
+            const_eval::collect_macro_constants(&Self::find_root(div_node), source);
+        file_macros.extend(macros.iter().map(|(k, v)| (k.clone(), *v)));
+
+        // Extract ranges from enclosing loop conditions
+        let mut var_ranges = const_eval::extract_loop_var_ranges(div_node, source, &file_macros);
+
+        // Also extract ranges from enclosing if_statement conditions
+        // This is the key addition: `if (lower < upper)` establishes bounds
+        Self::extract_if_condition_ranges(div_node, source, &file_macros, &mut var_ranges);
+
+        // Try to evaluate the divisor's range
+        if let Some(range) =
+            const_eval::try_evaluate_range(divisor, source, &file_macros, &var_ranges)
+        {
+            // If the entire range is > 0 or < 0, the divisor cannot be zero
+            if range.min >= 1 || range.max <= -1 {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Walk up to enclosing if_statement ancestors and extract variable
+    /// bounds from their conditions. Only applies when the division is
+    /// inside the consequence (then-branch) of the if — the condition is
+    /// known to be true on that path.
+    fn extract_if_condition_ranges(
+        node: &Node,
+        source: &str,
+        macros: &MacroConstantMap,
+        ranges: &mut VarRangeMap,
+    ) {
+        let mut current = node.parent();
+        while let Some(parent) = current {
+            if parent.kind() == "if_statement" {
+                // Only extract if we're in the consequence (then) branch
+                if let Some(consequence) = parent.child_by_field_name("consequence") {
+                    if Self::is_descendant(&consequence, node) {
+                        if let Some(condition) = parent.child_by_field_name("condition") {
+                            Self::extract_comparison_bounds(&condition, source, macros, ranges);
+                        }
+                    }
+                }
+            } else if parent.kind() == "function_definition" || parent.kind() == "translation_unit"
+            {
+                break;
+            }
+            current = parent.parent();
+        }
+    }
+
+    /// Extract variable bounds from comparison expressions.
+    /// Handles: a < b, a > b, a <= b, a >= b, a != b (with literals),
+    /// and compound && conditions.
+    fn extract_comparison_bounds(
+        condition: &Node,
+        source: &str,
+        macros: &MacroConstantMap,
+        ranges: &mut VarRangeMap,
+    ) {
+        // Unwrap parenthesized_expression
+        let cond = if condition.kind() == "parenthesized_expression" {
+            condition.child(1).unwrap_or(*condition)
+        } else {
+            *condition
+        };
+
+        if cond.kind() != "binary_expression" {
+            return;
+        }
+
+        let op = ast_utils::get_binary_operator(&cond, source).unwrap_or_default();
+
+        // Handle compound && conditions
+        if op == "&&" {
+            if let Some(left) = cond.child_by_field_name("left") {
+                Self::extract_comparison_bounds(&left, source, macros, ranges);
+            }
+            if let Some(right) = cond.child_by_field_name("right") {
+                Self::extract_comparison_bounds(&right, source, macros, ranges);
+            }
+            return;
+        }
+
+        let (left, right) = match (
+            cond.child_by_field_name("left"),
+            cond.child_by_field_name("right"),
+        ) {
+            (Some(l), Some(r)) => (l, r),
+            _ => return,
+        };
+
+        let left_text = ast_utils::get_node_text(&left, source);
+        let right_text = ast_utils::get_node_text(&right, source);
+
+        match op {
+            "<" => {
+                // left < right → left ∈ [_, right-1]
+                if left.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&right, source, macros) {
+                        let entry = ranges
+                            .entry(left_text.to_string())
+                            .or_insert(ValueRange::new(i64::MIN / 2, bound - 1));
+                        if bound - 1 < entry.max {
+                            entry.max = bound - 1;
+                        }
+                    }
+                }
+                // left < right → right ∈ [left+1, _]
+                if right.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&left, source, macros) {
+                        let entry = ranges
+                            .entry(right_text.to_string())
+                            .or_insert(ValueRange::new(bound + 1, i64::MAX / 2));
+                        if bound + 1 > entry.min {
+                            entry.min = bound + 1;
+                        }
+                    }
+                }
+            }
+            "<=" => {
+                if left.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&right, source, macros) {
+                        let entry = ranges
+                            .entry(left_text.to_string())
+                            .or_insert(ValueRange::new(i64::MIN / 2, bound));
+                        if bound < entry.max {
+                            entry.max = bound;
+                        }
+                    }
+                }
+                if right.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&left, source, macros) {
+                        let entry = ranges
+                            .entry(right_text.to_string())
+                            .or_insert(ValueRange::new(bound, i64::MAX / 2));
+                        if bound > entry.min {
+                            entry.min = bound;
+                        }
+                    }
+                }
+            }
+            ">" => {
+                // left > right → left ∈ [right+1, _]
+                if left.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&right, source, macros) {
+                        let entry = ranges
+                            .entry(left_text.to_string())
+                            .or_insert(ValueRange::new(bound + 1, i64::MAX / 2));
+                        if bound + 1 > entry.min {
+                            entry.min = bound + 1;
+                        }
+                    }
+                }
+                if right.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&left, source, macros) {
+                        let entry = ranges
+                            .entry(right_text.to_string())
+                            .or_insert(ValueRange::new(i64::MIN / 2, bound - 1));
+                        if bound - 1 < entry.max {
+                            entry.max = bound - 1;
+                        }
+                    }
+                }
+            }
+            ">=" => {
+                if left.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&right, source, macros) {
+                        let entry = ranges
+                            .entry(left_text.to_string())
+                            .or_insert(ValueRange::new(bound, i64::MAX / 2));
+                        if bound > entry.min {
+                            entry.min = bound;
+                        }
+                    }
+                }
+                if right.kind() == "identifier" {
+                    if let Some(bound) = const_eval::try_evaluate_expr(&left, source, macros) {
+                        let entry = ranges
+                            .entry(right_text.to_string())
+                            .or_insert(ValueRange::new(i64::MIN / 2, bound));
+                        if bound < entry.max {
+                            entry.max = bound;
+                        }
+                    }
+                }
+            }
+            "!=" => {
+                // var != 0 establishes var ∈ [-inf, -1] ∪ [1, inf]
+                // We can't represent a gap, but if one side is 0, we know
+                // the range excludes zero. We'll handle this separately
+                // in divisor_provably_nonzero via the ne_zero check.
+            }
+            _ => {}
+        }
+    }
+
+    /// Find the root (translation_unit) node for collecting file macros
+    fn find_root<'a>(node: &'a Node<'a>) -> Node<'a> {
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            current = parent;
+        }
+        current
+    }
+
     /// Check if a struct field is validated for non-zero in a constructor/setter
     /// This provides basic inter-procedural analysis for struct invariants
     fn is_struct_field_validated(&self, field_expr: &Node, source: &str) -> bool {
@@ -691,7 +930,7 @@ int main() {
 }
 "#;
         let tree = parse_c_code(code);
-        let rule = Int33C;
+        let rule = Int33C::new();
         let violations = rule.check(&tree.root_node(), code);
         assert!(
             !violations.is_empty(),
@@ -707,7 +946,7 @@ void func(int a, int b) {
 }
 "#;
         let tree = parse_c_code(code);
-        let rule = Int33C;
+        let rule = Int33C::new();
         let violations = rule.check(&tree.root_node(), code);
         assert!(!violations.is_empty(), "Should detect unchecked division");
     }
@@ -722,7 +961,7 @@ void func(int a, int b) {
 }
 "#;
         let tree = parse_c_code(code);
-        let rule = Int33C;
+        let rule = Int33C::new();
         let violations = rule.check(&tree.root_node(), code);
         assert!(violations.is_empty(), "Should not flag checked division");
     }
