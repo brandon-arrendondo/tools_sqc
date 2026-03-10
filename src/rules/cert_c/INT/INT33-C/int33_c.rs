@@ -9,12 +9,15 @@ use tree_sitter::Node;
 
 pub struct Int33C {
     project_macros: RefCell<MacroConstantMap>,
+    /// Cached per-file macro constants (set once per check() call, avoids re-collecting per division node)
+    file_macros: RefCell<MacroConstantMap>,
 }
 
 impl Int33C {
     pub fn new() -> Self {
         Self {
             project_macros: RefCell::new(MacroConstantMap::new()),
+            file_macros: RefCell::new(MacroConstantMap::new()),
         }
     }
 }
@@ -55,6 +58,14 @@ impl CertRule for Int33C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
+
+        // Cache per-file macro constants once (avoid re-collecting per division node)
+        {
+            let project = self.project_macros.borrow();
+            let mut cached = const_eval::collect_macro_constants(node, source);
+            cached.extend(project.iter().map(|(k, v)| (k.clone(), *v)));
+            *self.file_macros.borrow_mut() = cached;
+        }
 
         // First pass: find division macros and zero-initialized variables
         let division_macros = self.find_division_macros(source);
@@ -575,21 +586,9 @@ impl Int33C {
         false
     }
 
-    /// Check if target is a descendant of node
+    /// Check if target is a descendant of node (O(1) via byte-range containment)
     fn is_descendant(node: &Node, target: &Node) -> bool {
-        if node.id() == target.id() {
-            return true;
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if Self::is_descendant(&child, target) {
-                    return true;
-                }
-            }
-        }
-
-        false
+        target.start_byte() >= node.start_byte() && target.end_byte() <= node.end_byte()
     }
 
     /// Check if a condition expression checks for zero
@@ -647,11 +646,8 @@ impl Int33C {
     /// with those bounds. If the result range is entirely > 0 or entirely < 0,
     /// the divisor cannot be zero.
     fn divisor_provably_nonzero(&self, div_node: &Node, divisor: &Node, source: &str) -> bool {
-        // Collect macro constants
-        let macros = self.project_macros.borrow();
-        let mut file_macros =
-            const_eval::collect_macro_constants(&Self::find_root(div_node), source);
-        file_macros.extend(macros.iter().map(|(k, v)| (k.clone(), *v)));
+        // Use cached per-file macro constants (collected once in check())
+        let file_macros = self.file_macros.borrow();
 
         // Extract ranges from enclosing loop conditions
         let mut var_ranges = const_eval::extract_loop_var_ranges(div_node, source, &file_macros);
@@ -846,15 +842,6 @@ impl Int33C {
             }
             _ => {}
         }
-    }
-
-    /// Find the root (translation_unit) node for collecting file macros
-    fn find_root<'a>(node: &'a Node<'a>) -> Node<'a> {
-        let mut current = *node;
-        while let Some(parent) = current.parent() {
-            current = parent;
-        }
-        current
     }
 
     /// Check if a struct field is validated for non-zero in a constructor/setter
