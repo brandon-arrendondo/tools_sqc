@@ -27,6 +27,7 @@ pub fn prescan_directories(
     let mut call_graph = HashMap::new();
     let mut macro_constants = HashMap::new();
     let mut struct_field_types = HashMap::new();
+    let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
     let mut parser = CParser::new()?;
 
     if let Some(reporter) = progress {
@@ -73,13 +74,22 @@ pub fn prescan_directories(
 
                 // Collect struct field types from struct definitions
                 collect_struct_definitions(&root, &source, &mut struct_field_types);
+
+                // Collect call-site argument null states in the same pass
+                // (avoids re-parsing all files in a second directory walk)
+                if !is_header {
+                    collect_callsite_args_from_tree(&root, &source, &mut callsite_args);
+                }
             }
         }
     }
 
-    // Second pass: collect argument null states at call sites and aggregate
-    // per-callee per-param. This seeds callee parameter states during analysis.
-    collect_callsite_null_states(dirs, &mut function_summaries, &header_declared_functions);
+    // Aggregate callsite null states into function summaries (no second file pass needed)
+    aggregate_callsite_null_states(
+        &callsite_args,
+        &mut function_summaries,
+        &header_declared_functions,
+    );
 
     if let Some(reporter) = progress {
         reporter.report_prescan_complete(known_functions.len());
@@ -330,7 +340,7 @@ fn collect_callees(node: &Node, source: &str, callees: &mut HashSet<String>) {
 // Second pass: call-site argument null state collection
 // ---------------------------------------------------------------------------
 
-/// Collect argument null states at all call sites and aggregate into callee summaries.
+/// Aggregate pre-collected callsite argument null states into callee summaries.
 ///
 /// For each callee, joins per-param states across all call sites:
 /// - all NotNull → NotNull (safe to skip null check)
@@ -339,30 +349,13 @@ fn collect_callees(node: &Node, source: &str, callees: &mut HashSet<String>) {
 ///
 /// Functions declared in headers get an implicit Unknown caller to prevent
 /// false NotNull seeding for externally-visible functions.
-fn collect_callsite_null_states(
-    dirs: &[String],
+fn aggregate_callsite_null_states(
+    callsite_args: &HashMap<String, Vec<Vec<NullState>>>,
     summaries: &mut HashMap<String, FunctionSummary>,
     header_declared: &HashSet<String>,
 ) {
-    // Accumulate: callee_name → Vec<Vec<NullState>> (one inner vec per call site)
-    let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
-    let mut parser = match CParser::new() {
-        Ok(p) => p,
-        Err(_) => return,
-    };
-
-    for dir in dirs {
-        for entry in WalkDir::new(dir)
-            .into_iter()
-            .filter_map(|e| e.ok())
-            .filter(|e| matches!(e.path().extension().and_then(|ext| ext.to_str()), Some("c")))
-        {
-            let file_path = entry.path().to_string_lossy().to_string();
-            if let Ok((tree, source)) = parser.parse_file(&file_path) {
-                collect_callsite_args_from_tree(&tree.root_node(), &source, &mut callsite_args);
-            }
-        }
-    }
+    // For header-declared functions, we need a mutable copy to add implicit Unknown entries
+    let mut callsite_args = callsite_args.clone();
 
     // For header-declared functions, add an implicit Unknown arg vector.
     // This prevents false NotNull seeding for externally-visible functions

@@ -8,6 +8,7 @@
 //! plus loop-bound ancestor walks.
 
 use std::collections::HashMap;
+use std::sync::LazyLock;
 use tree_sitter::Node;
 
 /// Map of macro name → constant integer value.
@@ -113,7 +114,8 @@ impl ValueRange {
 
 /// Returns a map of C standard limit macros to their platform values.
 /// Uses LP64 data model (64-bit long) which is standard on modern Linux/macOS.
-fn builtin_limit_macros() -> MacroConstantMap {
+/// Lazily-initialized built-in C limit macros — allocated once, reused across all files.
+static BUILTIN_LIMIT_MACROS: LazyLock<MacroConstantMap> = LazyLock::new(|| {
     let mut m = MacroConstantMap::new();
     // <limits.h> — char
     m.insert("CHAR_BIT".into(), 8);
@@ -149,7 +151,7 @@ fn builtin_limit_macros() -> MacroConstantMap {
     m.insert("UINT16_MAX".into(), 65535);
     m.insert("UINT32_MAX".into(), 4294967295);
     m
-}
+});
 
 // ---------------------------------------------------------------------------
 // sizeof resolution
@@ -209,7 +211,7 @@ fn resolve_sizeof_type(type_text: &str) -> Option<i64> {
 /// Recurses into `preproc_ifdef/if/ifndef` blocks.
 /// Includes built-in C standard limit macros (CHAR_MAX, INT_MAX, etc.).
 pub fn collect_macro_constants(root: &Node, source: &str) -> MacroConstantMap {
-    let mut macros = builtin_limit_macros();
+    let mut macros = BUILTIN_LIMIT_MACROS.clone();
     // Two-pass: first collect all raw definitions, then resolve references
     let mut raw_defs: Vec<(String, String)> = Vec::new();
     collect_preproc_defs(root, source, &mut raw_defs);
