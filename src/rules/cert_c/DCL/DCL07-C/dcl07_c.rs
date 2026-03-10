@@ -150,6 +150,15 @@ impl Dcl07C {
         source: &'a str,
         declarations: &mut HashMap<String, usize>,
     ) {
+        // Collect function-like macro names (#define FOO(...) ...)
+        // so that macro invocations aren't flagged as undeclared functions.
+        if node.kind() == "preproc_function_def" {
+            if let Some(name_node) = node.child_by_field_name("name") {
+                let name = get_node_text(&name_node, source);
+                declarations.insert(name.to_string(), node.start_position().row);
+            }
+        }
+
         // Check for function definitions
         if node.kind() == "function_definition" {
             if let Some(declarator) = node.child_by_field_name("declarator") {

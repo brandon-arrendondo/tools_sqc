@@ -154,6 +154,21 @@ fn collect_function_names(node: &Node, source: &str, names: &mut HashSet<String>
                         names.insert(name);
                     }
                 }
+                "preproc_function_def" => {
+                    // Collect function-like macro names so DCL07-C/DCL31-C
+                    // don't flag macro invocations as undeclared functions.
+                    if let Some(name_node) = child.child_by_field_name("name") {
+                        let name = name_node
+                            .utf8_text(source.as_bytes())
+                            .unwrap_or("")
+                            .to_string();
+                        if !name.is_empty() {
+                            names.insert(name);
+                        }
+                    }
+                    // Also recurse into body for nested function names
+                    collect_function_names(&child, source, names);
+                }
                 kind if kind.starts_with("preproc_")
                     || kind == "linkage_specification"
                     || kind == "declaration_list" =>

@@ -57,10 +57,36 @@ impl CertRule for Arr02C {
 }
 
 impl Arr02C {
+    /// Check if a declaration has an `extern` storage class specifier.
+    fn has_extern_specifier(node: &Node, source: &str) -> bool {
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            if child.kind() == "storage_class_specifier" {
+                let text = get_node_text(&child, source);
+                if text == "extern" {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     /// Check all declarations for implicit array bounds
     fn check_declarations(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Only check declaration nodes
         if node.kind() == "declaration" {
+            // Skip extern declarations — incomplete array types are permitted
+            // by C11 §6.7.6.2 for extern declarations where size is defined
+            // at the point of definition.
+            if Self::has_extern_specifier(node, source) {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        self.check_declarations(&child, source, violations);
+                    }
+                }
+                return;
+            }
+
             // Check if this declaration has an initializer
             if let Some(declarator) = node.child_by_field_name("declarator") {
                 self.check_declarator(&declarator, source, violations);
