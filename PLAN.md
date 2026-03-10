@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-06 (v0.3.3)
+**Last Updated**: 2026-03-09 (v0.3.8)
 
 ---
 
@@ -276,13 +276,13 @@ Targeted CWE-476 FP reduction via rule narrowing and enhanced inter-procedural a
 
 ## Juliet FP Reduction — Pending Improvements
 
-### STR31-C: `check_strcpy_safety` — Add `is_function_parameter` Guard
+### STR31-C: `check_strcpy_safety` — Add `is_function_parameter` Guard (COMPLETE v0.3.8)
 
-**Status**: Identified but not yet implemented.
+**Status**: Implemented on `str31_fp_fix` branch (v0.3.8).
 
 **Problem**: Round 13 added a suppression: when source is a string literal and dest buffer size is unknown, assume safe. This suppression also fires on TPs in cross-function tests (CWE124, CWE127) where a small stack buffer is passed to a helper that calls `strcpy(data, "fixedstring")`.
 
-**Fix**: Gate the suppression on `!self.is_function_parameter(dest, source)`.
+**Fix**: Gated the suppression on `!self.is_function_parameter(dest, source)` in both `check_strcpy_safety` and `check_strcat_safety`. Also fixed `check_sequential_strcat_overflow` to scan only the current function's line range (not the whole file) and eliminated re-parsing in `analyze_cumulative_strcat` by reusing the root node from `check()`.
 
 **Expected impact**: Recover ~300–400 TPs (CWE124/127) with minimal FP regression.
 
@@ -338,13 +338,13 @@ Of the original 17 d_lib_common patterns + 6 d_hal_linux_random patterns, 12 are
 | # | Rule | Violations | Difficulty | Description |
 |---|------|--------:|------------|-------------|
 | 1 | **INT30-C** | ~12 | Medium | Loop-bounded increments (`index += 1` where `index < bufferSize`), addition guarded by branch. v0.3.2: increment-then-subtract pattern + `1U` literal suffix now handled |
-| 2 | **EXP33-C** | ~36 | Medium | For-loop init not recognized; array declarations without initializers |
+| 2 | **EXP33-C** | ~36 | Medium | For-loop init not recognized; array declarations without initializers. v0.3.8: field/subscript write no longer treated as read (−576 FP, −299 TP on 12-CWE Juliet) |
 | 3 | **INT33-C** | ~7 | Hard | Division guarded by earlier comparison (`lower < upper` → divisor ≥ 2). Needs value-range |
 | 4 | **INT34-C** | ~1 | Hard | Shift bounded by loop iteration count. Needs value-range |
-| 5 | **EXP34-C** | ~28 | Medium | Helper functions called only after caller validates params with early-return null guard |
+| 5 | **EXP34-C** | ~28 | Medium | Helper functions called only after caller validates params with early-return null guard. v0.3.8: compound `\|\|` null guard now collects all vars |
 | 6 | **MEM30-C** | ~1 | Hard | Sequential struct/member frees (`free(s->items); free(s);`). Needs field-level tracking |
 | 7 | **MEM31-C** | ~9 | Hard | Cross-function ownership (`strdup` into struct field, freed via custom `_Delete`). Needs ownership model |
-| 8 | **API00-C** | ~18 | Easy | Validation present but after variable declarations; static helper functions called from validated callers |
+| 8 | **API00-C** | ~18 | Easy | Validation present but after variable declarations; static helper functions called from validated callers. v0.3.8: 4 new validation patterns recognized (DONE) |
 
 ### Actionable Now (v0.2.19 targets)
 

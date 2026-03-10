@@ -221,6 +221,15 @@ impl Dcl08C {
             }
         }
 
+        // If all enumerators have explicit values AND there are 3 or more members, this is a
+        // protocol/register/command enum — the programmer deliberately assigned every value
+        // (e.g. wire-format spec, CAN command IDs).  There is no implicit relationship to
+        // encode; skip the pair-offset check.  2-member enums like {IN_STR_LEN=18, OUT_STR_LEN=20}
+        // are the canonical DCL08-C example and are still checked.
+        if enum_values.len() == enumerators.len() && enumerators.len() >= 3 {
+            return;
+        }
+
         // Check if any pair of values might have a relationship
         // For noncompliant_1: IN_STR_LEN=18, OUT_STR_LEN=20 (20 = 18+2)
         if enum_values.len() >= 2 {
