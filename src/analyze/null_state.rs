@@ -88,12 +88,6 @@ struct ConditionInfo {
     false_state: NullState,
 }
 
-/// Parse a condition AST node to extract null-check info.
-/// Returns None if the condition is not a recognizable null check.
-fn parse_null_condition(node: &Node, source: &str) -> Option<ConditionInfo> {
-    parse_all_null_conditions(node, source).into_iter().next()
-}
-
 /// Parse a condition AST node and collect ALL null-check conditions.
 /// For compound `||` conditions like `ptr == NULL || q == NULL`, returns info
 /// for every null-checked variable (not just the first one).
