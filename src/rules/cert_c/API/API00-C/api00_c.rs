@@ -375,6 +375,11 @@ impl Api00C {
         if normalized.contains("float") || normalized.contains("double") {
             return false;
         }
+        // Exclude char types — single-byte types used for character/byte processing
+        // where arithmetic is on known-range values (e.g., c - '0', c - 'a')
+        if normalized.contains("char") {
+            return false;
+        }
         // Check for integer types
         normalized.contains("int")
             || (normalized.contains("long") && !normalized.contains("double"))
@@ -421,17 +426,31 @@ impl Api00C {
                     "if_statement" => {
                         // Check if this is a validation pattern
                         if let Some(condition) = child.child_by_field_name("condition") {
-                            let validated_in_condition = self
-                                .extract_validated_params_from_condition(
-                                    &condition,
-                                    pointer_params,
-                                    source,
-                                );
+                            let condition_text = get_node_text(&condition, source);
 
                             // Case 1: early-return / early-exit pattern
                             //   if (!ptr)        { return; }
                             //   if (ptr == NULL) { return; }
+                            //   if (isNullOrEmpty(ptr)) { return; }  (helper fn call)
                             if self.is_early_return_pattern(&child, source) {
+                                // Use broad match: any param appearing in the condition
+                                // of an early-return guard is considered validated.
+                                // This handles both direct null checks and helper fn calls.
+                                for param in pointer_params {
+                                    if condition_text.contains(param.as_str()) {
+                                        validated.insert(param.clone());
+                                    }
+                                }
+                            } else if child.child_by_field_name("alternative").is_some() {
+                                // Case 3: if/else chain — param is checked in condition and
+                                // actual work is in the else branch.
+                                //   if (NULL == ptr) { result = ERR; } else { work(ptr); }
+                                let validated_in_condition = self
+                                    .extract_validated_params_from_condition(
+                                        &condition,
+                                        pointer_params,
+                                        source,
+                                    );
                                 for param in validated_in_condition {
                                     validated.insert(param);
                                 }
@@ -440,12 +459,32 @@ impl Api00C {
                                 //   if (ptr != NULL) { /* all usage inside */ }
                                 // The parameter is only accessed inside the guarded block,
                                 // so it is safely validated even without an early return.
-                                let condition_text = get_node_text(&condition, source);
+                                let validated_in_condition = self
+                                    .extract_validated_params_from_condition(
+                                        &condition,
+                                        pointer_params,
+                                        source,
+                                    );
                                 for param in validated_in_condition {
                                     if self.is_positive_null_guard(&condition_text, &param) {
                                         validated.insert(param);
                                     }
                                 }
+                            }
+                        }
+                    }
+                    "return_statement" => {
+                        // Case 4: return expression contains null check
+                        //   return (str == NULL || str[0] == '\0');
+                        // The null check IS the validation in short-circuit boolean returns.
+                        let stmt_text = get_node_text(&child, source);
+                        for param in pointer_params {
+                            if stmt_text.contains(&format!("{} == NULL", param))
+                                || stmt_text.contains(&format!("NULL == {}", param))
+                                || stmt_text.contains(&format!("!{}", param))
+                                || stmt_text.contains(&format!("! {}", param))
+                            {
+                                validated.insert(param.clone());
                             }
                         }
                     }

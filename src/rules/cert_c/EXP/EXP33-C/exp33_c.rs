@@ -599,10 +599,14 @@ impl UninitializedVariableAnalyzer {
             // Also check for function-call-based initializations
             let func_inits = self.find_all_init_func_calls(&var_name, node, source);
 
-            // Combine all initialization positions
+            // Combine all initialization positions, deduplicating by byte offset so that
+            // a single call site (e.g. fgets which pushes twice for an identifier arg)
+            // counts as one initialization.
+            let mut seen: HashSet<usize> = HashSet::new();
             let all_inits: Vec<usize> = assignments
                 .into_iter()
                 .chain(func_inits.into_iter())
+                .filter(|pos| seen.insert(*pos))
                 .collect();
             if all_inits.is_empty() {
                 continue; // No initializations found
@@ -614,7 +618,16 @@ impl UninitializedVariableAnalyzer {
                 .all(|pos| self.is_inside_incomplete_conditional(*pos, node, source));
 
             if all_conditional {
-                self.var_states.insert(var_name, VarState::Uninitialized);
+                if all_inits.len() >= 2 {
+                    // 2+ initializations across conditional branches suggests exhaustive
+                    // coverage (e.g. if/else-if chains where all enum values are handled).
+                    // Downgrade to ConditionallyInitialized rather than Uninitialized to
+                    // avoid false positives; check_usage does not flag this state.
+                    self.var_states
+                        .insert(var_name, VarState::ConditionallyInitialized);
+                } else {
+                    self.var_states.insert(var_name, VarState::Uninitialized);
+                }
             }
         }
     }
@@ -1139,24 +1152,20 @@ impl UninitializedVariableAnalyzer {
                     }
                 }
             } else if left.kind() == "field_expression" {
-                // ptr->field = value or obj.field = value - marks base as initialized
-                if let Some(arg) = left.child_by_field_name("argument") {
-                    let base_name = if arg.kind() == "identifier" {
-                        get_node_text(&arg, source).to_string()
-                    } else if arg.kind() == "pointer_expression" {
-                        // (*ptr).field
-                        if let Some(inner) = arg.child_by_field_name("argument") {
-                            get_node_text(&inner, source).to_string()
-                        } else {
-                            return;
-                        }
-                    } else {
-                        return;
-                    };
-
+                // struct.field = value or ptr->field = value or arr[i].field = value
+                // Recursively extract the base variable and mark it as initialized.
+                // This handles: p.a = 1 (marks p), arr[0].a = 0 (marks arr).
+                let base_name = Self::extract_base_pointer(&left, source);
+                if !base_name.is_empty() {
                     if self.malloc_pointers.contains(&base_name) {
                         self.var_states
                             .insert(base_name, VarState::MallocInitialized);
+                    } else if self.var_states.contains_key(&base_name) {
+                        if let Some(current) = self.var_states.get(&base_name) {
+                            if *current != VarState::StaticUninitialized {
+                                self.var_states.insert(base_name, VarState::Initialized);
+                            }
+                        }
                     }
                 }
             }
@@ -1534,13 +1543,27 @@ impl UninitializedVariableAnalyzer {
                     }
                     true
                 }
+                // field_expression: identifier is base of struct/pointer access.
+                // Not a read if the field_expression itself is the LHS of an assignment
+                // (e.g., `myUnion.field = x` — writing to the field, not reading myUnion).
+                "field_expression" => {
+                    if let Some(gp) = parent.parent() {
+                        if gp.kind() == "assignment_expression" {
+                            if let Some(left) = gp.child_by_field_name("left") {
+                                if parent.start_byte() == left.start_byte() {
+                                    return false; // e.g. myUnion.field = x
+                                }
+                            }
+                        }
+                    }
+                    true
+                }
                 // These are read contexts
                 "binary_expression"
                 | "return_statement"
                 | "condition_clause"
                 | "parenthesized_expression"
                 | "call_expression"
-                | "field_expression"
                 | "subscript_expression"
                 | "update_expression" => true,
                 _ => true,
@@ -1733,6 +1756,20 @@ impl UninitializedVariableAnalyzer {
                     true
                 }
                 "init_declarator" => false,
+                // subscript inside field_expression LHS: data[0].field = x
+                // The subscript is not being read — it's the write target's base.
+                "field_expression" => {
+                    if let Some(gp) = parent.parent() {
+                        if gp.kind() == "assignment_expression" {
+                            if let Some(left) = gp.child_by_field_name("left") {
+                                if parent.start_byte() == left.start_byte() {
+                                    return false; // e.g. data[i].field = x
+                                }
+                            }
+                        }
+                    }
+                    true
+                }
                 "call_expression" => {
                     if let Some(func) = parent.child_by_field_name("function") {
                         let func_name = get_node_text(&func, source).to_string();
