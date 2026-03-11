@@ -269,6 +269,23 @@ impl Int30C {
             if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
                 && !self.has_overflow_check_subtraction(node, source)
             {
+                // Skip var - 1 / var - 1U when guarded by positive check or preceded by increment
+                if self.is_subtract_one_guarded(node, source) {
+                    return;
+                }
+
+                // Skip a - b when guarded by `if (a >= b)` or `if (a > b)`
+                let left_text = get_node_text(&left, source);
+                let right_text = get_node_text(&right, source);
+                if self.is_subtraction_guarded_by_comparison(
+                    node,
+                    left_text.trim(),
+                    right_text.trim(),
+                    source,
+                ) {
+                    return;
+                }
+
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
                 if const_eval::expression_fits_in_unsigned(
                     node,
@@ -415,7 +432,7 @@ impl Int30C {
                 // Check for var += 1 bounded by enclosing loop condition (var < limit)
                 if let Some(right) = node.child_by_field_name("right") {
                     let right_text = get_node_text(&right, source);
-                    if right_text.trim() == "1" {
+                    if self.is_literal_one(right_text.trim()) {
                         let var_name = get_node_text(&left, source);
                         if self.is_bounded_by_loop_condition(node, var_name.trim(), source) {
                             return;
@@ -468,11 +485,21 @@ impl Int30C {
                 // Check for var -= 1 with positive guard (var > expr implies var >= 1)
                 if let Some(right) = node.child_by_field_name("right") {
                     let right_text = get_node_text(&right, source);
-                    if right_text.trim() == "1" {
+                    if self.is_literal_one(right_text.trim()) {
                         let var_name = get_node_text(&left, source);
                         if self.is_guarded_by_gt_zero(node, var_name.trim(), source) {
                             return;
                         }
+                    }
+                    // Check for var -= expr guarded by `if (var >= expr)` or `if (var > expr)`
+                    let var_name = get_node_text(&left, source);
+                    if self.is_subtraction_guarded_by_comparison(
+                        node,
+                        var_name.trim(),
+                        right_text.trim(),
+                        source,
+                    ) {
+                        return;
                     }
                 }
 
@@ -1660,8 +1687,9 @@ impl Int30C {
         child.start_byte() >= parent.start_byte() && child.end_byte() <= parent.end_byte()
     }
 
-    /// For binary "var + 1" or "1 + var": if var is bounded by an enclosing loop
-    /// condition (var < limit), then var + 1 <= limit <= UINT_MAX, so no wrap.
+    /// For binary "var + 1" or "1 + var" (including 1U, 1u, etc.): if var is bounded
+    /// by an enclosing loop condition (var < limit), then var + 1 <= limit <= UINT_MAX,
+    /// so no wrap.
     fn is_add_one_bounded_by_loop(&self, node: &Node, source: &str) -> bool {
         if let (Some(left), Some(right)) = (
             node.child_by_field_name("left"),
@@ -1670,12 +1698,12 @@ impl Int30C {
             let left_text = get_node_text(&left, source);
             let right_text = get_node_text(&right, source);
 
-            // Check "var + 1" pattern
-            if right_text.trim() == "1" {
+            // Check "var + 1" pattern (including 1U, 1u, 1UL, etc.)
+            if self.is_literal_one(right_text.trim()) {
                 return self.is_bounded_by_loop_condition(node, left_text.trim(), source);
             }
             // Check "1 + var" pattern
-            if left_text.trim() == "1" {
+            if self.is_literal_one(left_text.trim()) {
                 return self.is_bounded_by_loop_condition(node, right_text.trim(), source);
             }
         }
@@ -1756,6 +1784,119 @@ impl Int30C {
         }
 
         false
+    }
+
+    /// Check if `a - b` is inside a block guarded by `a >= b`, `a > b`, `b <= a`, or `b < a`.
+    /// Walks ancestors for if_statement, while_statement, for_statement — same pattern
+    /// as `is_guarded_by_gt_zero` but checks for a comparison between the two operands.
+    fn is_subtraction_guarded_by_comparison(
+        &self,
+        node: &Node,
+        left_name: &str,
+        right_name: &str,
+        source: &str,
+    ) -> bool {
+        // Only apply when both operands are simple identifiers (not complex expressions)
+        if !self.is_simple_identifier(left_name) || !self.is_simple_identifier(right_name) {
+            return false;
+        }
+
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if matches!(
+                parent.kind(),
+                "if_statement" | "while_statement" | "for_statement"
+            ) {
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    if self.condition_implies_a_gte_b(&cond_text, left_name, right_name) {
+                        // For if_statement, verify we're in the true branch (consequence)
+                        if parent.kind() == "if_statement" {
+                            if let Some(consequence) = parent.child_by_field_name("consequence") {
+                                if current.start_byte() >= consequence.start_byte()
+                                    && current.end_byte() <= consequence.end_byte()
+                                {
+                                    return true;
+                                }
+                            }
+                        } else {
+                            // while/for: loop body is always the true branch
+                            return true;
+                        }
+                    }
+                }
+            }
+            if parent.kind() == "function_definition" {
+                break;
+            }
+            current = parent;
+        }
+        false
+    }
+
+    /// Check if a condition implies `a >= b` (i.e., `a - b` cannot underflow).
+    /// Recognizes: `a >= b`, `a > b`, `b <= a`, `b < a`, and compound `&&` conditions.
+    fn condition_implies_a_gte_b(&self, cond_text: &str, a: &str, b: &str) -> bool {
+        let cond = cond_text.trim();
+        let cond = if cond.starts_with('(') && cond.ends_with(')') {
+            &cond[1..cond.len() - 1]
+        } else {
+            cond
+        };
+        let cond = cond.trim();
+
+        // Must mention both variables
+        if !self.contains_word(cond, a) || !self.contains_word(cond, b) {
+            return false;
+        }
+
+        // For compound && conditions, check each part
+        for part in cond.split("&&") {
+            let part = part.trim();
+            if self.single_condition_implies_a_gte_b(part, a, b) {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    /// Check a single (non-compound) condition for a >= b patterns.
+    fn single_condition_implies_a_gte_b(&self, cond: &str, a: &str, b: &str) -> bool {
+        // Strip parens
+        let cond = cond.trim();
+        let cond = if cond.starts_with('(') && cond.ends_with(')') {
+            &cond[1..cond.len() - 1]
+        } else {
+            cond
+        };
+        let cond = cond.trim();
+
+        // Pattern: a >= b or a > b
+        let gte_pat = format!("{} >= {}", a, b);
+        let gt_pat = format!("{} > {}", a, b);
+        if self.contains_word(cond, a) && self.contains_word(cond, b) {
+            if cond.contains(&gte_pat) || cond.contains(&gt_pat) {
+                return true;
+            }
+            // Pattern: b <= a or b < a
+            let lte_pat = format!("{} <= {}", b, a);
+            let lt_pat = format!("{} < {}", b, a);
+            if cond.contains(&lte_pat) || cond.contains(&lt_pat) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Check if text is a simple C identifier (no operators, spaces, or punctuation).
+    fn is_simple_identifier(&self, text: &str) -> bool {
+        !text.is_empty()
+            && text.chars().all(|c| c.is_alphanumeric() || c == '_')
+            && text
+                .chars()
+                .next()
+                .is_some_and(|c| c.is_alphabetic() || c == '_')
     }
 
     fn get_function_arguments(&self, node: &Node, source: &str) -> Vec<String> {
