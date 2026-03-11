@@ -100,6 +100,138 @@ stages:
               ArtifactName: "sqc"
               publishLocation: "Container"
 
+  - stage: "Benchmark"
+    displayName: "Performance Benchmark"
+    dependsOn: Build
+    jobs:
+      - job: BenchmarkMosquitto
+        displayName: "Benchmark: mosquitto v2.1.2"
+        timeoutInMinutes: 30
+        variables:
+          MOSQUITTO_TAG: v2.1.2
+          MOSQUITTO_REPO: https://github.com/eclipse-mosquitto/mosquitto.git
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - task: DownloadBuildArtifacts@1
+            displayName: "Download sqc binary"
+            inputs:
+              buildType: current
+              downloadType: single
+              artifactName: sqc
+              downloadPath: $(System.ArtifactsDirectory)
+
+          - script: |
+              chmod +x $(System.ArtifactsDirectory)/sqc/sqc
+            displayName: "Set binary executable"
+
+          - script: |
+              set -e
+              git clone --depth 1 --branch $(MOSQUITTO_TAG) \
+                $(MOSQUITTO_REPO) $(Agent.TempDirectory)/mosquitto
+              file_count=$(find $(Agent.TempDirectory)/mosquitto -name "*.c" | wc -l)
+              echo "##vso[task.setvariable variable=MOSQUITTO_FILES]$file_count"
+              echo "Cloned mosquitto $(MOSQUITTO_TAG): $file_count C files"
+            displayName: "Clone mosquitto at pinned tag"
+
+          - script: |
+              set -e
+              SQC=$(System.ArtifactsDirectory)/sqc/sqc
+              MOSQUITTO=$(Agent.TempDirectory)/mosquitto
+              RESULTS=$(Build.ArtifactStagingDirectory)/benchmark
+
+              mkdir -p "$RESULTS"
+
+              SQC_VERSION=$("$SQC" --version 2>&1 | head -1 || echo "unknown")
+              echo "sqc version: $SQC_VERSION"
+
+              START_NS=$(date +%s%N)
+
+              "$SQC" "$MOSQUITTO" \
+                -d "$MOSQUITTO" \
+                -e "$RESULTS/mosquitto-violations.json" \
+                > /dev/null 2>&1 || true
+
+              END_NS=$(date +%s%N)
+              ELAPSED_MS=$(( (END_NS - START_NS) / 1000000 ))
+              ELAPSED_S=$(( ELAPSED_MS / 1000 ))
+
+              echo "##vso[task.setvariable variable=SCAN_TIME_MS]$ELAPSED_MS"
+              echo "##vso[task.setvariable variable=SCAN_TIME_S]$ELAPSED_S"
+              echo "##vso[task.setvariable variable=SQC_VERSION]$SQC_VERSION"
+              echo "Scan completed in ${ELAPSED_S}s (${ELAPSED_MS}ms)"
+            displayName: "Run sqc benchmark"
+
+          - script: |
+              set -e
+              RESULTS=$(Build.ArtifactStagingDirectory)/benchmark
+
+              python3 << 'PYEOF'
+              import json, collections, os
+
+              results_dir = os.environ.get("BUILD_ARTIFACTSTAGINGDIRECTORY", ".") + "/benchmark"
+              data = json.load(open(f"{results_dir}/mosquitto-violations.json"))
+
+              counts = collections.Counter(v["rule_id"] for v in data)
+              severity = collections.Counter(v["severity"] for v in data)
+
+              report = {
+                  "sqc_version": os.environ.get("SQC_VERSION", "unknown"),
+                  "commit_sha": os.environ.get("BUILD_SOURCEVERSION", "unknown"),
+                  "build_id": os.environ.get("BUILD_BUILDID", "unknown"),
+                  "benchmark_target": {
+                      "project": "mosquitto",
+                      "tag": os.environ.get("MOSQUITTO_TAG", "v2.1.2"),
+                      "c_files": int(os.environ.get("MOSQUITTO_FILES", "0")),
+                  },
+                  "environment": {
+                      "agent": os.environ.get("AGENT_MACHINENAME", "unknown"),
+                      "os": os.environ.get("AGENT_OS", "unknown"),
+                      "pool": "ubuntu-latest",
+                  },
+                  "results": {
+                      "total_violations": len(data),
+                      "scan_time_ms": int(os.environ.get("SCAN_TIME_MS", "0")),
+                      "scan_time_seconds": int(os.environ.get("SCAN_TIME_S", "0")),
+                      "by_severity": dict(severity),
+                      "top_20_rules": [
+                          {"rule": r, "count": c}
+                          for r, c in counts.most_common(20)
+                      ],
+                      "all_rules": dict(counts.most_common()),
+                  },
+              }
+
+              with open(f"{results_dir}/benchmark-report.json", "w") as f:
+                  json.dump(report, f, indent=2)
+
+              r = report["results"]
+              print(f"SqC version:    {report['sqc_version']}")
+              print(f"Commit:         {report['commit_sha'][:8]}")
+              print(f"Violations:     {r['total_violations']}")
+              print(f"Scan time:      {r['scan_time_seconds']}s ({r['scan_time_ms']}ms)")
+              print(f"Files:          {report['benchmark_target']['c_files']}")
+              print(f"Unique rules:   {len(counts)}")
+              print("---")
+              print("Top 10 rules:")
+              for entry in r["top_20_rules"][:10]:
+                  print(f"  {entry['rule']}: {entry['count']}")
+              print("---")
+              print("By severity:")
+              for sev in ["Critical", "High", "Medium", "Low"]:
+                  print(f"  {sev}: {r['by_severity'].get(sev, 0)}")
+              PYEOF
+            displayName: "Generate benchmark report"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish benchmark results"
+            inputs:
+              PathtoPublish: $(Build.ArtifactStagingDirectory)/benchmark
+              ArtifactName: "benchmark-mosquitto"
+              publishLocation: "Container"
+            condition: always()
+
   - stage: "Package"
     displayName: "Package"
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'), ne(variables['Build.Reason'], 'PullRequest'))

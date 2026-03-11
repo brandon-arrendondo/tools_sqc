@@ -20,6 +20,27 @@
 
 ---
 
+## Benchmark Environment
+
+Runtime varies significantly by machine and parallelism. Always record these when reporting results.
+
+| Parameter | Description |
+|-----------|-------------|
+| **Machine** | CPU model, core count, RAM |
+| **Parallel Jobs** | Number of concurrent sqc processes (`JOBS` in `run_juliet_parallel.sh`) |
+| **Total Runtime** | Wall-clock time from benchmark start to completion |
+
+### Historical Benchmark Environments
+
+| Run | Machine | Cores | Jobs | Total Runtime | Notes |
+|-----|---------|------:|-----:|---------------|-------|
+| v0.2.1 – v0.2.25 (full suite) | 24-core workstation | 24 | 12 | ~40–50 min | MCP benchmark server, full 118 CWE suite |
+| v0.3.8 – v0.3.9 (12-CWE subset) | 4-core laptop | 4 | 4 | TBD | `run_juliet_multi_cwe.sh`, 12-CWE subset only |
+
+**Note**: The parallel runner (`run_juliet_parallel.sh`) defaults to `JOBS=12`. Higher core counts reduce wall-clock time but don't affect per-CWE results. When comparing runtimes across versions, ensure the same machine and job count were used.
+
+---
+
 ## FP Reduction History
 
 | Round | Version | Fixes | TP | FP | TP Rate | FP Delta |
@@ -547,8 +568,9 @@ Juliet test files contain preprocessor-guarded sections:
 ### Scan Configuration
 
 - **SqC**: `./target/release/sqc testcases/CWE{id}/ -d testcases/ -d testcasesupport/ --export results.csv`
-- **Parallelism**: 12 concurrent processes
+- **Parallelism**: Configurable via `JOBS` parameter (default: 12). Each CWE category is scanned as a separate sqc process; `xargs -P $JOBS` controls concurrency
 - **Ground truth analysis**: `scripts/analyze_juliet_results.py`
+- **Total runtime**: Captured by MCP benchmark server (`total_duration_seconds` in `get_status()` and `get_results()`). Also logged in `benchmark.log` via per-CWE `START:`/`DONE:` timestamps
 
 ### Limitations
 
@@ -598,26 +620,26 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 
 ## Version History
 
-| Version | TP Rate | FP | TP | Notes |
-|---------|--------:|---:|---:|-------|
-| v0.2.1 (baseline) | 41.1% | 839,341 | ~584K | Original |
-| v0.2.4 | 43.8% | 243,849 | 189,950 | Windows API + multiple rule fixes |
-| v0.2.6 | 44.5% | 215,672 | 172,708 | CFG null state + bounds-check detection |
-| v0.2.7 | 44.5% | 215,671 | 172,780 | INT36-C TP restore + INT31-C FP fix |
-| **v0.2.12** | **44.6%** | **210,138** | **169,161** | DCL13-C pointer modification + INT01-C sizeof skip |
-| v0.2.13 | 44.7% | 196,177 | 158,403 | INT31-C implicit narrowing + d_lib_common REFACTOR.md fixes |
-| v0.2.15 | 44.2% | 185,499 | 146,714 | d_lib_common FP.md cleanup (17 patterns, real-world precision) |
-| v0.2.16 | 44.2% | 185,510 | 146,733 | EXP34-C call-site null propagation (Phase 2) |
-| v0.2.17 | 44.2% | 185,591 | 146,913 | Phase 3: MEM10-C, API00-C, API02-C, prescan (CWE-476 38.5%) |
-| v0.2.18 | 44.1% | 184,645 | 145,639 | INT31-C pointer cast, ARR36-C, API00-C void-cast, INT30-C guards |
-| v0.2.19 | 44.1% | 184,644 | 145,639 | INT30-C loop guards, prescan null guards, ARR00-C fix |
-| v0.2.20 | 44.2% | 181,924 | 144,278 | d_lib_networking FP fixes: API00-C, INT01-C, EXP37-C, EXP34-C |
-| **v0.2.21** | **44.0%** | **175,667** | **137,921** | **const_eval value-range analysis + d_lib_networking Round 6** |
-| v0.2.22 | 44.0% | 175,673 | 137,921 | INT30-C: extend upper-bound guard to if_statement |
-| **v0.2.23** | **44.6%** | **163,585** | **131,661** | **INT32-C const_eval alloc/memory/abs + INT30-C uint64_t + built-in macros** |
-| v0.2.25 | 44.6% | 161,965 | 130,199 | ARR32-C tightening, INT18-C/EXP05-C removal, value-range FP fixes |
-| v0.3.5 | 44.6% | 161,510 | 130,004 | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C fixes |
-| v0.3.8 | 44.3%² | 77,826² | 61,799² | STR31-C is_function_parameter, API00-C patterns, EXP34-C compound null, EXP33-C field-write fix |
+| Version | TP Rate | FP | TP | Runtime | Machine | Notes |
+|---------|--------:|---:|---:|---------|---------|-------|
+| v0.2.1 (baseline) | 41.1% | 839,341 | ~584K | — | 24-core workstation | Original |
+| v0.2.4 | 43.8% | 243,849 | 189,950 | — | 24-core workstation | Windows API + multiple rule fixes |
+| v0.2.6 | 44.5% | 215,672 | 172,708 | — | 24-core workstation | CFG null state + bounds-check detection |
+| v0.2.7 | 44.5% | 215,671 | 172,780 | — | 24-core workstation | INT36-C TP restore + INT31-C FP fix |
+| **v0.2.12** | **44.6%** | **210,138** | **169,161** | — | 24-core workstation | DCL13-C pointer modification + INT01-C sizeof skip |
+| v0.2.13 | 44.7% | 196,177 | 158,403 | — | 24-core workstation | INT31-C implicit narrowing + d_lib_common REFACTOR.md fixes |
+| v0.2.15 | 44.2% | 185,499 | 146,714 | — | 24-core workstation | d_lib_common FP.md cleanup (17 patterns, real-world precision) |
+| v0.2.16 | 44.2% | 185,510 | 146,733 | — | 24-core workstation | EXP34-C call-site null propagation (Phase 2) |
+| v0.2.17 | 44.2% | 185,591 | 146,913 | — | 24-core workstation | Phase 3: MEM10-C, API00-C, API02-C, prescan (CWE-476 38.5%) |
+| v0.2.18 | 44.1% | 184,645 | 145,639 | — | 24-core workstation | INT31-C pointer cast, ARR36-C, API00-C void-cast, INT30-C guards |
+| v0.2.19 | 44.1% | 184,644 | 145,639 | — | 24-core workstation | INT30-C loop guards, prescan null guards, ARR00-C fix |
+| v0.2.20 | 44.2% | 181,924 | 144,278 | — | 24-core workstation | d_lib_networking FP fixes: API00-C, INT01-C, EXP37-C, EXP34-C |
+| **v0.2.21** | **44.0%** | **175,667** | **137,921** | — | 24-core workstation | **const_eval value-range analysis + d_lib_networking Round 6** |
+| v0.2.22 | 44.0% | 175,673 | 137,921 | — | 24-core workstation | INT30-C: extend upper-bound guard to if_statement |
+| **v0.2.23** | **44.6%** | **163,585** | **131,661** | — | 24-core workstation | **INT32-C const_eval alloc/memory/abs + INT30-C uint64_t + built-in macros** |
+| v0.2.25 | 44.6% | 161,965 | 130,199 | — | 24-core workstation | ARR32-C tightening, INT18-C/EXP05-C removal, value-range FP fixes |
+| v0.3.5 | 44.6% | 161,510 | 130,004 | — | 24-core workstation | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C fixes |
+| v0.3.8 | 44.3%² | 77,826² | 61,799² | — | 4-core laptop | STR31-C is_function_parameter, API00-C patterns, EXP34-C compound null, EXP33-C field-write fix |
 
 ---
 
