@@ -12,16 +12,34 @@ MCP-based benchmark infrastructure across 3 hosts (cppcheck 2.10, clang-tidy 21.
 
 ### Violation Counts — All Three Tools
 
-| Project | LOC (approx) | sqc | cppcheck | clang-tidy |
-|---------|-------------|----:|--------:|-----------:|
-| **libcrc** | ~1K | 734 | 43 | 2 |
-| **sqlite** | ~350 files | 129,035 | 1,181 | 135 |
-| **mosquitto** | ~120 files | 29,824 | 747 | 44 |
-| **curl** | ~220 files | 63,207 | 519 | 114 |
-| **hostap** | ~600 files | 179,833 | 2,118 | 2,279 |
-| **Total** | | **402,633** | **4,608** | **2,574** |
+| Project | C Files | LOC | sqc | cppcheck | clang-tidy |
+|---------|--------:|----:|----:|--------:|-----------:|
+| **libcrc** | 16 | 2,130 | 734 | 43 | 2 |
+| **sqlite** | 310 | 402,321 | 129,035 | 1,181 | 135 |
+| **mosquitto** | 384 | 88,717 | 29,824 | 747 | 44 |
+| **curl** | 697 | 240,412 | 63,207 | 519 | 114 |
+| **hostap** | 505 | 541,441 | 179,833 | 2,118 | 2,279 |
+| **Total** | **1,912** | **1,275,021** | **402,633** | **4,608** | **2,574** |
 
 **Interpretation**: sqc covers 283 CERT-C rules (advisory + mandatory) while cppcheck and clang-tidy implement ~20 checks each. The 100x difference in raw counts reflects rule coverage breadth, not false positive rate.
+
+### Scan Timing — sqc v0.3.13 (4-core laptop, single process)
+
+| Project | C Files | LOC | sqc Time | Violations |
+|---------|--------:|----:|----------|-----------:|
+| **libcrc** | 16 | 2,130 | 6s | 734 |
+| **mosquitto** | 384 | 88,717 | 4m 10s | 26,735 |
+| **curl** | 697 | 240,412 | TBD | 63,207 |
+| **sqlite** | 310 | 402,321 | TBD | 129,035 |
+| **hostap** | 505 | 541,441 | TBD | 179,833 |
+
+**Environment**: 4-core laptop (AMD/Intel mobile), single sqc process, `-d` cross-file analysis enabled, warm filesystem cache. Timing measured with `time` command (wall-clock).
+
+**Notes**:
+- Scan time correlates with LOC more than file count. sqlite's amalgamated `sqlite3.c` (~250K lines) dominates its scan time despite having fewer files than curl
+- When comparing across machines, record CPU model and core count
+- First-run (cold cache) adds ~50-60% overhead vs warm cache
+- **mosquitto** is used as the CI/CD benchmark target (see `conf/ado_build.yaml`, Benchmark stage). Expected CI time: ~8-12 min on ADO ubuntu-latest agent
 
 ### sqc Version History
 
