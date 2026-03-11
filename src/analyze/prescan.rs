@@ -28,6 +28,7 @@ pub fn prescan_directories(
     let mut macro_constants = HashMap::new();
     let mut struct_field_types = HashMap::new();
     let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+    let mut source_files: Vec<PathBuf> = Vec::new();
     let mut parser = CParser::new()?;
 
     if let Some(reporter) = progress {
@@ -79,15 +80,28 @@ pub fn prescan_directories(
                 // (avoids re-parsing all files in a second directory walk)
                 if !is_header {
                     collect_callsite_args_from_tree(&root, &source, &mut callsite_args);
+                    source_files.push(entry.path().to_path_buf());
                 }
             }
         }
     }
 
-    // Aggregate callsite null states into function summaries (no second file pass needed)
+    // Aggregate callsite null states into function summaries
     aggregate_callsite_null_states(
         &callsite_args,
         &mut function_summaries,
+        &header_declared_functions,
+    );
+
+    // Second pass: propagate parameter null states through relay functions.
+    // After the first aggregation, functions have callsite_param_null_states.
+    // Re-collect callsite args using these param states to resolve parameter forwarding:
+    //   void mid(int *p) { low(p); }  — p now resolved via mid's param state
+    propagate_param_null_states(
+        &source_files,
+        &mut parser,
+        &mut function_summaries,
+        &mut callsite_args,
         &header_declared_functions,
     );
 
@@ -407,6 +421,182 @@ fn aggregate_callsite_null_states(
                     summary.callsite_param_null_states.insert(param_idx, joined);
                 }
             }
+        }
+    }
+}
+
+/// Second pass: propagate parameter null states through relay functions.
+///
+/// After the first aggregation, each function has `callsite_param_null_states` derived
+/// from its direct callers. However, relay functions (which forward parameters to callees
+/// without modification) produce Unknown at those call sites because function parameters
+/// aren't in `local_states`.
+///
+/// This pass re-parses source files, seeds each function's parameter names with their
+/// aggregated null states, and re-collects callsite args. Then re-aggregates to propagate
+/// the states one level deeper through the call chain.
+fn propagate_param_null_states(
+    source_files: &[PathBuf],
+    parser: &mut CParser,
+    summaries: &mut HashMap<String, FunctionSummary>,
+    callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
+    header_declared: &HashSet<String>,
+) {
+    // Snapshot the current param null states before re-collection
+    let param_states_snapshot: HashMap<String, HashMap<usize, NullState>> = summaries
+        .iter()
+        .filter(|(_, s)| !s.callsite_param_null_states.is_empty())
+        .map(|(name, s)| (name.clone(), s.callsite_param_null_states.clone()))
+        .collect();
+
+    // If no functions have param states, nothing to propagate
+    if param_states_snapshot.is_empty() {
+        return;
+    }
+
+    // Re-collect callsite args with parameter state awareness
+    let mut new_callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+
+    for file_path in source_files {
+        if let Ok((tree, source)) = parser.parse_file(&file_path.to_string_lossy()) {
+            let root = tree.root_node();
+            collect_callsite_args_with_param_states(
+                &root,
+                &source,
+                &param_states_snapshot,
+                &mut new_callsite_args,
+            );
+        }
+    }
+
+    // Only proceed if the second pass found any new information
+    if new_callsite_args.is_empty() {
+        return;
+    }
+
+    // Merge new callsite args into the existing ones
+    for (callee, arg_vecs) in new_callsite_args {
+        callsite_args.entry(callee).or_default().extend(arg_vecs);
+    }
+
+    // Clear old aggregated states and re-aggregate with the merged data
+    for summary in summaries.values_mut() {
+        summary.callsite_param_null_states.clear();
+    }
+    aggregate_callsite_null_states(callsite_args, summaries, header_declared);
+}
+
+/// Like `collect_callsite_args_from_tree`, but also seeds function parameters
+/// with their aggregated null states from the first pass. This resolves
+/// parameter forwarding patterns like `void mid(int *p) { low(p); }`.
+fn collect_callsite_args_with_param_states(
+    node: &Node,
+    source: &str,
+    param_states: &HashMap<String, HashMap<usize, NullState>>,
+    callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
+) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "function_definition" => {
+                    if let Some(body) = child.child_by_field_name("body") {
+                        let mut local_states = collect_local_var_states(&body, source);
+                        collect_early_return_null_guards(&body, source, &mut local_states);
+
+                        // Extract function name and seed parameter states
+                        let func_name = extract_function_name(&child, source);
+                        if let Some(func_name) = func_name {
+                            if let Some(func_param_states) = param_states.get(&func_name) {
+                                // Get parameter names for this function
+                                let param_names =
+                                    function_summary::collect_param_names(&child, source);
+                                for (idx, name) in param_names.iter().enumerate() {
+                                    if !name.is_empty() && !local_states.contains_key(name.as_str())
+                                    {
+                                        // Only seed if the param isn't already in local_states
+                                        // (guards and assignments take priority)
+                                        if let Some(&state) = func_param_states.get(&idx) {
+                                            local_states.insert(name.clone(), state);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        collect_calls_with_locals(&body, source, &local_states, callsite_args);
+                    }
+                }
+                kind if kind.starts_with("preproc_") => {
+                    collect_callsite_args_with_param_states(
+                        &child,
+                        source,
+                        param_states,
+                        callsite_args,
+                    );
+                }
+                "linkage_specification" => {
+                    // Handle extern "C" { ... } blocks
+                    collect_callsite_args_with_param_states(
+                        &child,
+                        source,
+                        param_states,
+                        callsite_args,
+                    );
+                }
+                "declaration_list" => {
+                    collect_callsite_args_with_param_states(
+                        &child,
+                        source,
+                        param_states,
+                        callsite_args,
+                    );
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Extract the function name from a function_definition node.
+fn extract_function_name(func_node: &Node, source: &str) -> Option<String> {
+    let declarator = func_node.child_by_field_name("declarator")?;
+    extract_func_name_recursive(&declarator, source)
+}
+
+fn extract_func_name_recursive(node: &Node, source: &str) -> Option<String> {
+    match node.kind() {
+        "function_declarator" => {
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                let name = declarator.utf8_text(source.as_bytes()).ok()?;
+                let name = name.trim();
+                // Handle pointer declarators: strip leading *
+                let name = name.trim_start_matches('*');
+                if !name.is_empty() {
+                    return Some(name.to_string());
+                }
+            }
+            None
+        }
+        "pointer_declarator" => {
+            if let Some(inner) = node.child_by_field_name("declarator") {
+                extract_func_name_recursive(&inner, source)
+            } else {
+                None
+            }
+        }
+        "identifier" => {
+            let name = node.utf8_text(source.as_bytes()).ok()?;
+            Some(name.trim().to_string())
+        }
+        _ => {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if let Some(name) = extract_func_name_recursive(&child, source) {
+                        return Some(name);
+                    }
+                }
+            }
+            None
         }
     }
 }
