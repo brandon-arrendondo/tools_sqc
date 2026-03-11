@@ -123,7 +123,7 @@ fn analyze_function(func_node: &Node, source: &str) -> FunctionSummary {
 }
 
 /// Collect parameter names from a function declaration.
-fn collect_param_names(func_node: &Node, source: &str) -> Vec<String> {
+pub fn collect_param_names(func_node: &Node, source: &str) -> Vec<String> {
     let mut params = Vec::new();
 
     if let Some(declarator) = func_node.child_by_field_name("declarator") {
