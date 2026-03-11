@@ -38,22 +38,33 @@ pub trait ProgressReporter: Send + Sync {
     fn report_include_resolve_complete(&self, _num_headers: usize) {}
 }
 
-/// CLI progress reporter that displays progress on a single terminal line
+/// CLI progress reporter with verbosity levels.
+///
+/// - `verbosity=0` (default): per-file progress bar
+/// - `verbosity=1` (`-v`): per-file + per-rule progress (previous default)
+/// - `verbosity>=2` (`-vv`): reserved for future per-violation detail
 pub struct CLIProgressReporter {
     last_line_length: Arc<std::sync::Mutex<usize>>,
+    last_file: Arc<std::sync::Mutex<usize>>,
+    verbosity: u8,
 }
 
 impl Default for CLIProgressReporter {
     fn default() -> Self {
         Self {
             last_line_length: Arc::new(std::sync::Mutex::new(0)),
+            last_file: Arc::new(std::sync::Mutex::new(0)),
+            verbosity: 0,
         }
     }
 }
 
 impl CLIProgressReporter {
-    pub fn new() -> Self {
-        Self::default()
+    pub fn new(verbosity: u8) -> Self {
+        Self {
+            verbosity,
+            ..Self::default()
+        }
     }
 
     /// Clear the current line
@@ -63,6 +74,12 @@ impl CLIProgressReporter {
             print!("\r{}\r", " ".repeat(last_len));
             io::stdout().flush().unwrap_or(());
         }
+    }
+
+    fn write_progress(&self, message: &str) {
+        *self.last_line_length.lock().unwrap() = message.len();
+        print!("\r{}", message);
+        io::stdout().flush().unwrap_or(());
     }
 }
 
@@ -107,18 +124,40 @@ impl ProgressReporter for CLIProgressReporter {
     }
 
     fn report_file(&self, current: usize, total: usize, file_path: &str, rule_id: &str) {
-        // Format: "Scanning: [file 15/42] src/foo/bar.c - Checking: ARR30-C"
-        let message = format!(
-            "Scanning: [file {}/{}] {} - Checking: {}",
-            current, total, file_path, rule_id
-        );
+        if self.verbosity >= 1 {
+            // -v: per-rule progress (previous default behavior)
+            let message = format!(
+                "Scanning: [file {}/{}] {} - Checking: {}",
+                current, total, file_path, rule_id
+            );
+            self.write_progress(&message);
+        } else {
+            // Default: per-file progress bar — only update when file changes
+            let mut last = self.last_file.lock().unwrap();
+            if *last != current {
+                *last = current;
+                drop(last); // release before I/O
 
-        // Store length for clearing
-        *self.last_line_length.lock().unwrap() = message.len();
+                let pct = current * 100 / total;
+                let bar_width = 30;
+                let filled = current * bar_width / total;
+                let bar: String = "█".repeat(filled) + &"░".repeat(bar_width - filled);
 
-        // Print with carriage return to overwrite line
-        print!("\r{}", message);
-        io::stdout().flush().unwrap_or(());
+                // Truncate file path to fit in terminal
+                let max_path = 40;
+                let display_path = if file_path.len() > max_path {
+                    &file_path[file_path.len() - max_path..]
+                } else {
+                    file_path
+                };
+
+                let message = format!(
+                    "Scanning: [{}] {}/{} ({}%) {}",
+                    bar, current, total, pct, display_path
+                );
+                self.write_progress(&message);
+            }
+        }
     }
 
     fn report_complete(&self, total_violations: usize) {
