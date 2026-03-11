@@ -133,6 +133,13 @@ fn run() -> Result<i32> {
                 .help("Path to .sqc-suppress.toml file (auto-detected in project root if not specified)")
                 .value_name("FILE"),
         )
+        .arg(
+            Arg::new("verbose")
+                .long("verbose")
+                .short('v')
+                .help("Increase output verbosity (-v: per-rule progress, -vv: per-violation detail)")
+                .action(clap::ArgAction::Count),
+        )
         .get_matches();
 
     let path = matches.get_one::<String>("path").unwrap();
@@ -160,6 +167,7 @@ fn run() -> Result<i32> {
         .map(|s| s.split(',').map(|r| r.trim().to_string()).collect());
     let diff_only = matches.get_flag("diff");
     let suppress_file = matches.get_one::<String>("suppress_file");
+    let verbosity = matches.get_count("verbose");
 
     // Verify the path and determine source type
     let project_source = ProjectSource::open(path)?;
@@ -187,7 +195,7 @@ fn run() -> Result<i32> {
     }
 
     // Create progress reporter for CLI
-    let progress_reporter = CLIProgressReporter::new();
+    let progress_reporter = CLIProgressReporter::new(verbosity);
 
     // Perform analysis with progress reporting
     let results = analyze_project(
