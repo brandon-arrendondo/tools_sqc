@@ -265,7 +265,7 @@ Targeted CWE-476 FP reduction via rule narrowing and enhanced inter-procedural a
 
 ### Phase 4 — Remaining Edge Cases
 
-- Relay chains (variants 52–54): prescan returns Unknown for param forwarding
+- Relay chains (variants 52–54): **partially addressed** (v0.3.13) — multi-pass prescan propagates param states through single-hop relay. Deep chains (3+ hops) still produce Unknown.
 - Indirect data flow (variants 63–67): not addressed
 - Cross-file globals (variant 68): not addressed
 - EXP33-C CFG integration (deferred — needs full CFG rewrite like EXP34-C)
@@ -337,22 +337,28 @@ Of the original 17 d_lib_common patterns + 6 d_hal_linux_random patterns, 12 are
 
 | # | Rule | Violations | Difficulty | Description |
 |---|------|--------:|------------|-------------|
-| 1 | **INT30-C** | ~12 | Medium | Loop-bounded increments (`index += 1` where `index < bufferSize`), addition guarded by branch. v0.3.2: increment-then-subtract pattern + `1U` literal suffix now handled |
-| 2 | **EXP33-C** | ~36 | Medium | For-loop init not recognized; array declarations without initializers. v0.3.8: field/subscript write no longer treated as read (−576 FP, −299 TP on 12-CWE Juliet) |
+| 1 | **INT30-C** | ~12 | Medium | Loop-bounded increments (`index += 1` where `index < bufferSize`), addition guarded by branch. v0.3.2: increment-then-subtract pattern + `1U` literal suffix now handled. v0.3.13: subtraction guarded by comparison (`if (a >= b) { a - b }`) + `1U` suffix in loop-bound and compound addition |
+| 2 | **EXP33-C** | ~36 | Medium | For-loop init not recognized; array declarations without initializers. v0.3.8: field/subscript write no longer treated as read (−576 FP, −299 TP on 12-CWE Juliet). v0.3.13: for-loop init clause recognized as dominating assignment; ancestor scope walk for preceding assignments |
 | 3 | **INT33-C** | ~7 | Hard | Division guarded by earlier comparison (`lower < upper` → divisor ≥ 2). Needs value-range |
 | 4 | **INT34-C** | ~1 | Hard | Shift bounded by loop iteration count. Needs value-range |
-| 5 | **EXP34-C** | ~28 | Medium | Helper functions called only after caller validates params with early-return null guard. v0.3.8: compound `\|\|` null guard now collects all vars |
+| 5 | **EXP34-C** | ~28 | Medium | Helper functions called only after caller validates params with early-return null guard. v0.3.8: compound `\|\|` null guard now collects all vars. v0.3.13: multi-pass prescan propagates param null states through relay chains (`high→mid→low`) |
 | 6 | **MEM30-C** | ~1 | Hard | Sequential struct/member frees (`free(s->items); free(s);`). Needs field-level tracking |
 | 7 | **MEM31-C** | ~9 | Hard | Cross-function ownership (`strdup` into struct field, freed via custom `_Delete`). Needs ownership model |
 | 8 | **API00-C** | ~18 | Easy | Validation present but after variable declarations; static helper functions called from validated callers. v0.3.8: 4 new validation patterns recognized (DONE) |
 
-### Actionable Now (v0.2.19 targets)
+### Actionable Now
 
-**Issue 1 — INT30-C loop-bounded increment**: Inside `while (index < bufferSize)` or `for (...; index < limit; ...)`, `index + 1` / `index++` / `index += 1` cannot wrap (counterpart of `is_guarded_by_gt_zero` for decrements). Detect enclosing loop condition with `var < expr` or `var <= expr` pattern.
+No medium-difficulty FP issues remain. Next targets are architecture improvements (baseline suppression, parallelization) or hard deferred issues.
 
-**Issue 5 — EXP34-C prescan null guard**: Enhance prescan `collect_local_var_states()` to detect early-return null guard patterns on function parameters (`if (p == NULL) return;`). After such a guard, the param is NotNull at subsequent call sites. This feeds into Phase 2 callee param seeding.
+### Recently Completed
 
-**Issue 8 — API00-C validation past declarations**: `check_validation_patterns()` needs to scan past `declaration` nodes in the function body to find `if_statement` validation. Also: static helper functions called only from validated contexts should be suppressed (caller-aware already partially works via Phase 3).
+**Issue 1 — INT30-C subtraction guard** (v0.3.13): Added `is_subtraction_guarded_by_comparison()` — detects `if (a >= b) { a - b }` patterns. Walks ancestors for if/while/for conditions comparing both operands. Supports `a >= b`, `a > b`, `b <= a`, `b < a`, and compound `&&` conditions. Also generalized `1U`/`1u` suffix handling in loop-bound and compound addition checks.
+
+**Issue 5 — EXP34-C parameter null propagation** (v0.3.13): Added multi-pass prescan with `propagate_param_null_states()`. After initial aggregation, re-collects callsite args with function parameters seeded from aggregated states. Resolves relay chains: `high(p) { if(!p) return; mid(p); }` → `mid(p) { low(p); }` → `low(p) { *p = 42; }` — p now NotNull at low_level.
+
+**Issue 2 — EXP33-C for-loop init** (v0.3.13): Fixed `has_preceding_assignment_in_block()` to walk ancestor scopes (not just innermost compound_statement). Added `for_init_assigns_var()` to recognize for-statement init clauses as dominating assignments for reads in the condition, update, and body. Handles `for (i = 0; ...)`, `for (int i = 0; ...)`, and comma expressions `for (i = 0, j = 0; ...)`.
+
+**Issue 8 — API00-C validation past declarations** (v0.3.8): 4 new validation patterns recognized (DONE).
 
 ### Deferred (require new analysis capabilities)
 
@@ -462,7 +468,7 @@ Implemented struct field type resolution for INT32-C and INT30-C. The prescan ph
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
 - No value range analysis (beyond const_eval macro folding + loop-bound extraction + shl negative-clamp + increment-before-subtract detection — see v0.2.21/v0.2.22/v0.3.3)
-- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + local variable tracking + `-I` header resolution)
+- No whole-program analysis (inter-procedural limited to function summaries + call-site null state propagation + multi-pass param relay propagation + local variable tracking + `-I` header resolution)
 - Struct field type resolution available for INT32-C/INT30-C (v0.3.5) — limited to structs visible during prescan
 
 ---

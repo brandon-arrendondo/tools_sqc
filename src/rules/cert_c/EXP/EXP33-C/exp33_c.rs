@@ -1820,19 +1820,68 @@ impl UninitializedVariableAnalyzer {
     fn has_preceding_assignment_in_block(read_node: &Node, var_name: &str, source: &str) -> bool {
         let read_byte = read_node.start_byte();
 
-        // Walk up to find the nearest enclosing compound_statement
+        // Walk up through ancestor nodes looking for dominating assignments
         let mut current = read_node.parent();
         while let Some(node) = current {
-            if node.kind() == "compound_statement" {
-                // Scan children of this compound_statement for assignments
-                // to var_name that precede read_byte
-                if Self::block_has_preceding_assignment(&node, var_name, source, read_byte) {
-                    return true;
+            match node.kind() {
+                "compound_statement" => {
+                    // Scan children of this compound_statement for assignments
+                    // to var_name that precede read_byte
+                    if Self::block_has_preceding_assignment(&node, var_name, source, read_byte) {
+                        return true;
+                    }
                 }
-                // Only check the innermost compound_statement
-                break;
+                "for_statement" => {
+                    // The for-statement initializer always executes before the
+                    // condition and body. If the read is anywhere in the for-statement
+                    // (condition, update, or body), the init clause dominates it.
+                    if Self::for_init_assigns_var(&node, var_name, source) {
+                        return true;
+                    }
+                }
+                "function_definition" => break,
+                _ => {}
             }
             current = node.parent();
+        }
+        false
+    }
+
+    /// Check if a for-statement's initializer clause assigns to `var_name`.
+    /// Handles both `for (var = expr; ...)` and `for (type var = expr; ...)`.
+    fn for_init_assigns_var(for_node: &Node, var_name: &str, source: &str) -> bool {
+        // tree-sitter stores the for-loop initializer in the "initializer" field
+        if let Some(init) = for_node.child_by_field_name("initializer") {
+            match init.kind() {
+                "assignment_expression" => {
+                    if let Some(left) = init.child_by_field_name("left") {
+                        if left.kind() == "identifier" && get_node_text(&left, source) == var_name {
+                            return true;
+                        }
+                    }
+                }
+                "declaration" => {
+                    // for (int i = 0; ...) — check if var_name is declared with init
+                    return Self::statement_assigns_var(&init, var_name, source);
+                }
+                // Could be a comma_expression: for (i = 0, j = 0; ...)
+                "comma_expression" => {
+                    for i in 0..init.child_count() {
+                        if let Some(child) = init.child(i) {
+                            if child.kind() == "assignment_expression" {
+                                if let Some(left) = child.child_by_field_name("left") {
+                                    if left.kind() == "identifier"
+                                        && get_node_text(&left, source) == var_name
+                                    {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
+            }
         }
         false
     }
