@@ -4,9 +4,16 @@ Analyze SqC results against Juliet ground truth to calculate:
 - True Positive Rate (TPR)
 - False Positive Rate (FPR)
 - False Negative Rate (FNR)
+
+Optional CWE-aware metrics (with --cwe and --rule-cwe-map):
+- CWE-matched TP/FP rates (filtered to relevant rules only)
+- Noise ratio (non-CWE-matched findings)
+- Per-file detection rate
+- FLAW-line hit rate with ±1 tolerance
 """
 
 import csv
+import json
 import re
 import os
 from pathlib import Path
@@ -128,13 +135,150 @@ def analyze_single_file(c_filepath, violations_dict):
         'bad_lines': len(sections['bad_lines']),
         'good_lines': len(sections['good_lines']),
         'flaw_lines': len(sections['flaw_lines']),
+        'flaw_line_set': sections['flaw_lines'],
         'tp_count': len(tp_violations),
         'fp_count': len(fp_violations),
         'tp_flaw_count': len(tp_flaw_violations),
         'tp_violations': tp_violations,
         'fp_violations': fp_violations,
-        'tp_flaw_violations': tp_flaw_violations
+        'tp_flaw_violations': tp_flaw_violations,
+        'has_bad_section': bool(sections['bad_lines']),
     }
+
+
+def _normalize_cwe_id(raw: str) -> str:
+    """Normalize CWE ID to 'CWE-NNN' format.
+
+    Handles: 'CWE190', 'CWE-190', 'cwe-190', '190'
+    """
+    raw = raw.strip().upper()
+    if raw.startswith("CWE-"):
+        return raw
+    if raw.startswith("CWE"):
+        return "CWE-" + raw[3:]
+    if raw.isdigit():
+        return "CWE-" + raw
+    return raw
+
+
+def _extract_cwe_from_dir(dir_path: str) -> str | None:
+    """Extract CWE ID from a Juliet directory name.
+
+    E.g. 'CWE190_Integer_Overflow' → 'CWE-190'
+         'CWE121_Stack_Based_Buffer_Overflow' → 'CWE-121'
+    """
+    dirname = Path(dir_path).name
+    m = re.match(r'(CWE)(\d+)', dirname)
+    if m:
+        return f"CWE-{m.group(2)}"
+    return None
+
+
+def _hits_flaw_line(line_num: int, flaw_lines: set) -> bool:
+    """Check if a violation line hits a FLAW line with ±1 tolerance."""
+    return (line_num in flaw_lines or
+            line_num - 1 in flaw_lines or
+            line_num + 1 in flaw_lines)
+
+
+def compute_cwe_aware_metrics(results, cwe_id, cwe_rules):
+    """Compute CWE-aware metrics given a set of CWE-matched rule IDs.
+
+    Returns a dict with all CWE-aware metrics, or None if no matched rules.
+    """
+    if not cwe_rules:
+        return None
+
+    cwe_matched_tp = 0
+    cwe_matched_fp = 0
+    noise_tp = 0
+    noise_fp = 0
+    cwe_matched_tp_rules = defaultdict(int)
+    cwe_matched_fp_rules = defaultdict(int)
+
+    # Per-file detection: did file have ≥1 CWE-relevant TP in OMITBAD?
+    files_with_bad_section = 0
+    files_detected = 0
+
+    # FLAW-line hit rate: CWE-matched violations within ±1 of a FLAW line
+    flaw_hits = 0
+    total_flaw_lines = 0
+
+    for r in results:
+        if r['has_bad_section']:
+            files_with_bad_section += 1
+
+        file_has_cwe_tp = False
+        flaw_line_set = r['flaw_line_set']
+        total_flaw_lines += len(flaw_line_set)
+
+        for line_num, rule in r['tp_violations']:
+            if rule in cwe_rules:
+                cwe_matched_tp += 1
+                cwe_matched_tp_rules[rule] += 1
+                file_has_cwe_tp = True
+                if _hits_flaw_line(line_num, flaw_line_set):
+                    flaw_hits += 1
+            else:
+                noise_tp += 1
+
+        for line_num, rule in r['fp_violations']:
+            if rule in cwe_rules:
+                cwe_matched_fp += 1
+                cwe_matched_fp_rules[rule] += 1
+            else:
+                noise_fp += 1
+
+        if file_has_cwe_tp:
+            files_detected += 1
+
+    cwe_matched_total = cwe_matched_tp + cwe_matched_fp
+    noise_total = noise_tp + noise_fp
+    all_total = cwe_matched_total + noise_total
+
+    return {
+        'cwe_id': cwe_id,
+        'cwe_rules': sorted(cwe_rules),
+        'cwe_matched_tp': cwe_matched_tp,
+        'cwe_matched_fp': cwe_matched_fp,
+        'cwe_matched_total': cwe_matched_total,
+        'cwe_matched_tp_rate': round(cwe_matched_tp / cwe_matched_total * 100, 1) if cwe_matched_total else 0,
+        'noise_count': noise_total,
+        'noise_ratio': round(noise_total / all_total * 100, 1) if all_total else 0,
+        'per_file_detected': files_detected,
+        'per_file_total': files_with_bad_section,
+        'per_file_rate': round(files_detected / files_with_bad_section * 100, 1) if files_with_bad_section else 0,
+        'flaw_hit_detected': flaw_hits,
+        'flaw_hit_total': total_flaw_lines,
+        'flaw_hit_rate': round(flaw_hits / total_flaw_lines * 100, 1) if total_flaw_lines else 0,
+        'cwe_matched_tp_rules': dict(sorted(cwe_matched_tp_rules.items(), key=lambda x: -x[1])),
+        'cwe_matched_fp_rules': dict(sorted(cwe_matched_fp_rules.items(), key=lambda x: -x[1])),
+    }
+
+
+def print_cwe_aware_section(metrics):
+    """Print the CWE-aware metrics section (appended after existing output)."""
+    cwe_id = metrics['cwe_id']
+    rules_str = ", ".join(metrics['cwe_rules'])
+
+    print(f"\n--- CWE-Aware Metrics ({cwe_id}) ---")
+    print(f"CWE-matched rules: {rules_str}")
+    print(f"CWE-matched TP: {metrics['cwe_matched_tp']}")
+    print(f"CWE-matched FP: {metrics['cwe_matched_fp']}")
+    print(f"CWE-matched TP Rate: {metrics['cwe_matched_tp_rate']}%")
+    print(f"Noise findings (non-CWE-matched): {metrics['noise_count']}")
+    print(f"Noise ratio: {metrics['noise_ratio']}%")
+    print(f"Per-file detection rate: {metrics['per_file_rate']}% ({metrics['per_file_detected']}/{metrics['per_file_total']})")
+    print(f"FLAW-line hit rate (CWE-matched): {metrics['flaw_hit_rate']}% ({metrics['flaw_hit_detected']}/{metrics['flaw_hit_total']})")
+
+    print(f"\n--- CWE-Matched Rules in OMITBAD ---")
+    for rule, count in metrics['cwe_matched_tp_rules'].items():
+        print(f"  {rule}: {count}")
+
+    print(f"\n--- CWE-Matched Rules in OMITGOOD ---")
+    for rule, count in metrics['cwe_matched_fp_rules'].items():
+        print(f"  {rule}: {count}")
+
 
 def main():
     import argparse
@@ -146,6 +290,10 @@ def main():
                         help='Path to Juliet test directory (e.g., .../testcases/CWE190_Integer_Overflow)')
     parser.add_argument('--subdir', default=None,
                         help='Specific subdirectory (e.g., s08). If not specified, analyzes all.')
+    parser.add_argument('--cwe', default=None,
+                        help='CWE ID for CWE-aware filtering (e.g., CWE-190). Auto-detected from --dir if omitted.')
+    parser.add_argument('--rule-cwe-map', default=None,
+                        help='Path to rule_cwe_map.json for CWE-aware metrics')
     args = parser.parse_args()
 
     juliet_base = Path(args.dir)
@@ -244,6 +392,37 @@ def main():
         print(f"  {rule}: {count}")
 
     print("\n" + "="*70)
+
+    # ── CWE-Aware Metrics (appended after existing output) ────────────────
+    rule_cwe_map_path = args.rule_cwe_map
+    cwe_arg = args.cwe
+
+    if rule_cwe_map_path:
+        # Load the rule-CWE map
+        try:
+            with open(rule_cwe_map_path) as f:
+                rule_cwe_map = json.load(f)
+        except Exception as e:
+            print(f"\nWARNING: Could not load rule-CWE map: {e}", file=__import__('sys').stderr)
+            return
+
+        # Determine CWE ID: use --cwe if given, else auto-detect from --dir
+        if cwe_arg:
+            target_cwe = _normalize_cwe_id(cwe_arg)
+        else:
+            target_cwe = _extract_cwe_from_dir(args.dir)
+
+        if target_cwe:
+            cwe_to_rules = rule_cwe_map.get('cwe_to_rules', {})
+            matched_rules = set(cwe_to_rules.get(target_cwe, []))
+
+            if matched_rules:
+                metrics = compute_cwe_aware_metrics(results, target_cwe, matched_rules)
+                if metrics:
+                    print_cwe_aware_section(metrics)
+            else:
+                print(f"\n--- CWE-Aware Metrics ({target_cwe}) ---")
+                print(f"No rules mapped to {target_cwe} in rule-CWE map")
 
 if __name__ == '__main__':
     main()

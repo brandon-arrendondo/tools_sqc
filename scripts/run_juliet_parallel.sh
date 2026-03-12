@@ -11,11 +11,18 @@ SQC="$PROJECT_DIR/target/release/sqc"
 MANIFEST="$PROJECT_DIR/rules_templates/rules-all.toml"
 JULIET_BASE="${HOME}/data/benchmarks/juliet-test-suite-c/testcases"
 ANALYZE="$SCRIPT_DIR/analyze_juliet_results.py"
+GENERATE_MAP="$SCRIPT_DIR/generate_rule_cwe_map.py"
+RULE_CWE_MAP="$PROJECT_DIR/data/rule_cwe_map.json"
 RESULTS_DIR="${RESULTS_DIR:-/tmp/juliet_results}"
 
 JOBS="${1:-12}"
 
 mkdir -p "$RESULTS_DIR"
+
+# Auto-regenerate rule-CWE map for CWE-aware metrics
+if [ -f "$GENERATE_MAP" ]; then
+    python3 "$GENERATE_MAP" 2>/dev/null || true
+fi
 
 scan_cwe() {
     local cwe="$1"
@@ -52,14 +59,18 @@ scan_cwe() {
     local violation_count
     violation_count=$(tail -n +2 "$csv_file" 2>/dev/null | wc -l)
 
-    # Run analysis
-    python3 "$ANALYZE" --csv "$csv_file" --dir "$cwe_dir" > "$analysis_file" 2>&1
+    # Run analysis (with CWE-aware metrics if map is available)
+    local analyze_args=(--csv "$csv_file" --dir "$cwe_dir")
+    if [ -f "$RULE_CWE_MAP" ]; then
+        analyze_args+=(--rule-cwe-map "$RULE_CWE_MAP")
+    fi
+    python3 "$ANALYZE" "${analyze_args[@]}" > "$analysis_file" 2>&1
 
     echo "DONE: $cwe | ${elapsed}s | ${violation_count} violations | ${file_count} files"
 }
 
 export -f scan_cwe
-export SQC MANIFEST JULIET_BASE ANALYZE RESULTS_DIR
+export SQC MANIFEST JULIET_BASE ANALYZE RULE_CWE_MAP RESULTS_DIR
 
 # Get all CWE directories
 ALL_CWES=$(ls "$JULIET_BASE")
