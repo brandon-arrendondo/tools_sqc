@@ -490,9 +490,75 @@ cross-function patterns where the null-returning call is in a different function
 #### Priority 5 — Zero-Detection CWEs (rules exist but never fire)
 
 31 CWEs have CERT-C rules mapped but produce zero CWE-relevant detections. These represent
-rules that exist in sqc but whose patterns don't match what Juliet tests for. Low-hanging
-fruit: investigate CWE-194/195 (INT31-C should detect sign extension — 1,344 files each)
-and CWE-253 (ERR33-C should detect unchecked return values — 684 files).
+rules that exist in sqc but whose patterns don't match what Juliet tests for.
+
+**Investigation Results (2026-03-12)**:
+
+**CWE-124/126/127 (buffer underwrite/overread/underread)** — FIXED (quick win). These CWEs
+had no rule mappings despite being children of CWE-125/CWE-119 which ARE mapped. Added
+CWE-124, CWE-126, CWE-127 to ARR30-C, ARR38-C, STR31-C TOMLs. These rules already fire
+on the Juliet test files — they were just classified as noise instead of CWE-matched.
+Regenerated `rule_cwe_map.json` (144 → 147 unique CWEs).
+
+**CWE-194/195 (sign extension, signed→unsigned)** — INT31-C mapped but only checks explicit
+casts and direct assignments. Juliet uses implicit conversions in function arguments
+(e.g., `strncpy(dest, src, signed_short)` where `short` is implicitly widened). Fix requires
+adding function-argument type checking to INT31-C — medium difficulty.
+
+**CWE-253 (incorrect check of function return value)** — ERR33-C mapped but architectural
+mismatch. ERR33-C validates **that** a return value is checked, not **how** it's checked.
+CWE-253 Juliet patterns use WRONG comparisons: `fgets() < 0` (fgets returns NULL, not -1),
+`fprintf() == 0` (error returns -1). `is_return_value_checked()` sees `binary_expression`
+and returns true immediately. Fix: validate the comparison operator/value against
+function-specific error indicators (NULL-returning vs negative-returning vs nonzero-returning).
+The validation logic already exists in `find_error_check_in_context()` (line ~989) but is
+only called for assigned variables, not direct comparisons. Medium-high difficulty.
+
+**CWE-78 (OS command injection)** — ENV03-C/ENV33-C/STR02-C mapped. 5,600 files, 17,350
+incidental TPs but 0 CWE-matched. Three gaps:
+1. **Windows API coverage**: `_execl()`, `_execv()`, `_spawnl()` etc. not detected by
+   ENV33-C or STR02-C. ~400-700 missed TPs. Easy fix.
+2. **ENV03-C file-level scope**: `clearenv()` anywhere in file suppresses all `system()`
+   calls including vulnerable ones. Should be function-scoped. ~200-400 missed TPs.
+3. **STR02-C limited taint tracking**: only checks string literal vs non-literal for
+   `system()` args; exec family only checks `getenv()`. No tracking of `recv()`, `scanf()`,
+   etc. as taint sources. ~1,500-2,000 FP reduction if improved.
+
+#### Priority 6 — CWE-78 Windows API Coverage (easy, +400-700 TP)
+
+Add Windows exec/spawn variants to ENV33-C: `_execl()`, `_execv()`, `_execlp()`, `_execvp()`,
+`_execle()`, `_execve()`, `_spawnl()`, `_spawnle()`, `_spawnlp()`, `_spawnv()`, `_spawnve()`,
+`_spawnvp()`. Also extend STR02-C argument validation to cover these functions. Currently
+only `system()`, `popen()`, `_popen()` and POSIX `exec*()` are detected. ~400-700 additional
+CWE-matched TPs for minimal code change.
+
+#### Priority 7 — CWE-253 ERR33-C Comparison Validation (medium-high)
+
+Extend `is_return_value_checked()` to validate comparison correctness, not just presence.
+Map each error-returning function to valid error indicators (NULL-returning, negative-returning,
+nonzero-returning) and reject mismatched comparisons. `find_error_check_in_context()` already
+has this logic for assigned variables — extend to direct comparisons in if-statements.
+684 Juliet files, currently 0% detection.
+
+#### Priority 8 — CWE-194/195 INT31-C Implicit Conversion in Arguments (medium)
+
+INT31-C only checks explicit casts and direct assignments. Juliet CWE-194/195 tests use
+implicit conversions in function arguments (`strncpy(dest, src, signed_short)`). Extend
+`check_assignment_conversion()` to inspect call_expression arguments against known function
+parameter types. 2,688 files (1,344 each), currently 0% detection.
+
+#### Future — Fast Benchmark Mode (CWE-focused manifests)
+
+Currently the benchmark runs all 283 rules against every CWE directory, producing the 95%
+noise. A "fast mode" would generate per-CWE manifest TOMLs from `rule_cwe_map.json`
+(e.g. CWE-476.toml with only EXP34-C + API00-C enabled), eliminating noise at the source.
+Expected speedup: significant — fewer rules per file means less AST traversal. Two modes:
+- **Fast**: CWE-matched rules only. Primary metrics (per-file detection, flaw-hit, CWE-matched TP rate). CWEs without mappings are skipped.
+- **Full**: All rules (current behavior). Retains incidental TP/FP for backward compat.
+
+Implementation: `generate_rule_cwe_map.py` already has the `cwe_to_rules` mapping. Add a
+`--fast` flag to `run_juliet_parallel.sh` that generates per-CWE manifests in a temp dir
+and passes them instead of `rules-all.toml`.
 
 #### De-prioritized: Incidental TP Rate
 
