@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-09 (v0.3.8)
+**Last Updated**: 2026-03-11 (v0.3.14)
 
 ---
 
@@ -274,6 +274,152 @@ Targeted CWE-476 FP reduction via rule narrowing and enhanced inter-procedural a
 
 ---
 
+## v0.3.14 Juliet Regression — Investigation & Next Steps
+
+**Benchmark date**: 2026-03-11. Run: `sqc-0.3.14-fb7ef13c`, 118 CWEs, 54,484 files, 1h 14m.
+
+### Regression Summary
+
+| Metric | v0.3.5 (last full suite) | v0.3.14 | Delta |
+|--------|--------------------------|---------|-------|
+| TP | 130,004 | 126,106 | **−3,898** |
+| FP | 161,510 | 158,036 | −3,474 |
+| TP Rate | 44.6% | **44.4%** | **−0.2pp** |
+
+TP loss (3,898) slightly exceeds FP reduction (3,474), so the rate went down. The FP reductions are
+legitimate — the regression is the cost of continuing to tune rules in the 44–45% ceiling range where
+each suppression removes both FPs and TPs proportionally.
+
+### Root Cause: Distributed, No Single Bug
+
+All suspected changes were investigated and ruled out as dominant causes:
+
+| Change | Commit | Risk | Finding |
+|--------|--------|------|---------|
+| EXP33-C multi-branch (≥2 inits → ConditionallyInitialized) | `894d3875` | Medium | Juliet CWE457 bad() functions have 0 inits, not 2+. Not the cause. |
+| INT30-C for-loop update skip | `59a3f9ea` | Medium | CWE190/191 bad() use `data+1`/`data-1`, not `data++`/`data--`. Not the cause. |
+| INT30-C subtraction guard (`a>=b` → skip `a-b`) | `612e1ea2` | Medium | CWE191 bad() has no guard. Not the cause. |
+| EXP33-C ancestor scope walk (removed innermost-only break) | `437a8282` | Low | Correctly suppresses FPs in nested-block patterns. Not over-broad. |
+| EXP33-C preceding-assignment-in-block | `7a8ef10e` | Low | Only suppresses when direct assignment precedes read. Not over-broad. |
+
+**Conclusion**: Regression is the cumulative effect of many individually correct suppressions, each
+removing slightly more TPs than FPs when applied across all 118 CWEs. This is expected at the 44–45%
+architectural ceiling (see "Key Insight" in "Top Remaining FP Rules" section).
+
+### Key Diagnostic: flaw_lines_detected = 0 Everywhere
+
+All major CWEs show `flaw_lines_detected: 0` despite having TPs. This means violations are found
+in `_bad` functions (counted as TPs) but **not at the specific lines Juliet marks as flaws**. This
+is a pre-existing condition, not a v0.3.14 regression.
+
+| CWE | Files | TP | FP | TP% | flaw_lines_detected | flaw_lines_total |
+|-----|------:|---:|---:|----:|--------------------:|-----------------:|
+| CWE457 | 616 | 704 | 2,549 | 21.6% | 0 | 3,024 |
+| CWE190 | 5,040 | 5,001 | 9,393 | 34.7% | 0 | 16,380 |
+| CWE476 | 372 | 308 | 475 | 39.3% | 0 | 1,098 |
+| CWE690 | 1,120 | 3,358 | 3,906 | 46.2% | 0 | 2,580 |
+
+### Investigation Results (2026-03-11): Both (a) AND (b) Are True
+
+Manual investigation on 3 CWE categories confirmed two root causes:
+
+**Root Cause 1: Off-by-one (measurement bug)**
+
+Juliet `/* POTENTIAL FLAW: ... */` comments are always on the line BEFORE the vulnerable code.
+The analysis script (`analyze_juliet_results.py`) records the comment line number, but sqc reports
+the code line. Result: exact matches are systematically missed.
+
+Evidence:
+- CWE476 `struct_01.c`: FLAW comment line 29, sqc EXP34-C reports line 30 (the dereference)
+- CWE190 `short_max_multiply_01.c`: FLAW comment line 30, sqc INT08-C reports line 31
+- Fix: check `line_num` AND `line_num - 1` against `flaw_lines` set
+
+**Root Cause 2: Incidental noise scored as TP (fundamental methodology flaw)**
+
+The section-based scoring (OMITBAD = TP, OMITGOOD = FP) counts ANY finding in the bad section as
+a true positive, regardless of whether it's related to the CWE being tested. This inflates both
+TP and FP counts with noise from unrelated rules.
+
+Evidence — CWE121 `char_type_overrun_memcpy_05.c`:
+- Actual vulnerability (line 50): `memcpy(charFirst, SRC_STR, sizeof(structCharVoid))` — wrong size
+- sqc found: FLP03-C (line 51), INT36-C (line 52) in OMITBAD → scored as 2 "TP"
+- sqc found: FLP03-C (lines 79, 98), INT36-C (lines 80, 99) in OMITGOOD → scored as 4 "FP"
+- **None of these relate to buffer overflow.** The actual flaw was undetected.
+
+Evidence — CWE476 `struct_01.c` (positive case):
+- sqc found EXP34-C on line 30 (the actual null dereference) → genuine TP, correctly in OMITBAD
+- This IS a CWE-relevant detection — EXP34-C maps directly to CWE-476
+
+Evidence — CWE190 `short_max_multiply_01.c` (mixed case):
+- sqc found INT08-C on line 31 (the actual overflow) → genuine TP, related to CWE-190
+- sqc found INT08-C on lines 50, 67 (good variants with guards) → scored as FP
+- FPs are from same rule, unable to prove the guard makes the code safe
+
+**Impact on the 44.4% TP Rate**
+
+The current metric measures: "of all findings sqc generates, what fraction lands in OMITBAD sections?"
+Since OMITGOOD sections typically have ~2x the lines (2 good variants per bad), pure random noise
+would produce ~33% "TP rate." The measured 44.4% is above the noise floor (indicating some real
+detection), but the signal is diluted by incidental findings from unrelated rules.
+
+**Conclusion**: The 44-45% ceiling is NOT an architectural limit on sqc's detection capability.
+It's a measurement artifact from scoring methodology. **CWE-aware scoring is now implemented**
+(see "CWE-Aware Scoring" section below) — validated on CWE-476 where CWE-matched TP rate is
+46.1% vs 39.3% incidental, with 62% noise ratio confirming the dilution effect.
+
+### CWE-Aware Scoring (IMPLEMENTED — v0.3.14)
+
+All 5 proposed metrics are now computed automatically by the benchmark infrastructure.
+
+**Implementation**: `scripts/generate_rule_cwe_map.py` produces `data/rule_cwe_map.json` (117 rules → 144 CWEs). `analyze_juliet_results.py` accepts `--cwe` and `--rule-cwe-map` to append CWE-aware metrics after existing output. `mcp/server.py` passes these args in `reanalyze_run()` and parses the new fields in `_parse_analysis()`. `run_juliet_parallel.sh` auto-regenerates the map at startup. All backward-compatible — old runs parse identically.
+
+**Validation (CWE-476)**:
+
+| Metric | Old (incidental) | New (CWE-aware) |
+|--------|-----------------|-----------------|
+| TP Rate | 39.3% | **46.1%** (CWE-matched: EXP34-C, API00-C only) |
+| Noise ratio | unmeasured | **62.1%** (486/783 findings are unrelated rules) |
+| FLAW-line hit rate | 0% (exact match) | **3.7%** (41/1098, with ±1 tolerance) |
+| Per-file detection rate | unmeasured | **29.0%** (108/372 files caught) |
+
+**Impact on the "44-45% ceiling" narrative**: Confirmed as a measurement artifact. The incidental TP rate (all rules, section-based) has a theoretical noise floor of ~33% (OMITGOOD has ~2x the lines of OMITBAD). CWE-matched TP rates are higher per-CWE because they filter out noise from unrelated rules. The real detection quality is better than 44% — but per-file detection (29% on CWE-476) shows how much room remains for actual improvement.
+
+**Next steps**: Run `reanalyze_run("all")` on the v0.3.14 benchmark to generate CWE-aware metrics across all 118 CWEs. This will produce the first full dataset for prioritizing CWE-specific improvements using per-file detection rate as the actionable metric.
+
+| Metric | What It Measures | How to Compute |
+|--------|-----------------|----------------|
+| **FLAW-line hit rate** | Did sqc find the vulnerability? | % of FLAW-comment lines with a CWE-matched finding within ±1 line |
+| **CWE-matched TP rate** | Relevant findings in bad vs good sections | TP/(TP+FP) counting only CWE-mapped rules |
+| **Per-file detection rate** | Binary: did we catch this test case? | % of OMITBAD files with ≥1 CWE-relevant finding |
+| **Noise ratio** | How much output is unrelated to the CWE? | % of findings from non-CWE-mapped rules |
+| **Incidental TP/FP** | Section-split noise (current metric) | Retained for backward compatibility, de-emphasized |
+
+### Priority 2 — CWE457/EXP33-C TP recovery
+
+EXP33-C: 144 TP / 271 FP in CWE457 (21.6% TP rate). With 616 files each having a bad() function
+that uses an uninitialized variable, we should be getting ~600 TPs, not 144. The bulk of Juliet
+CWE457 bad() patterns are trivial (variant 01: `char *data; printLine(data);`) and EXP33-C DOES
+detect variant 01 (confirmed: line 30 flagged correctly). The gap (144 vs ~600) is from cross-function
+variants (51–68) and other flow variants where EXP33-C lacks interprocedural tracking.
+
+Variants not detected by EXP33-C:
+- Variants 51–68 (cross-function data flow) — bad source in one function, use in another
+- Variants with complex control flow (switch, goto) that EXP33-C's analyzer doesn't fully model
+
+Near-term fix: Improve EXP33-C TP rate on single-file variants (01–18). If variant 01 works,
+check why variants 02–18 might not all be detected. Each represents a control flow pattern.
+
+### Priority 3 — Don't chase the 0.2pp (accept the regression)
+
+The v0.3.14 regression is the cost of 6 months of legitimate FP reductions targeting real-world
+codebases. Attempting to recover it would require weakening those fixes and reintroducing FPs in
+d_lib_networking, d_lib_common, and battery firmware. Not worth it.
+
+Instead, focus on structural TP improvements (cross-function analysis, better CWE-specific
+pattern matching) which can raise the ceiling above 44–45%.
+
+---
+
 ## Juliet FP Reduction — Pending Improvements
 
 ### STR31-C: `check_strcpy_safety` — Add `is_function_parameter` Guard (COMPLETE v0.3.8)
@@ -326,7 +472,7 @@ Current fix skips all non-negative integer literals to eliminate FPs from `x >> 
 | MEM06-C | 5.0K | 2.9K | 64% | |
 | API00-C | 4.5K | 3.5K | 56% | Static function skip in v0.2.20 |
 
-**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~44–45% Juliet ceiling is likely an architectural constraint for single-TU analysis. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
+**Key insight**: Most remaining top FP rules have ~50–65% FP ratios. Further rule tuning will proportionally lose TPs. The ~44–45% incidental TP rate ceiling is a measurement artifact from scoring all rules against all CWEs (see "CWE-Aware Scoring" section). CWE-matched TP rates are higher per-CWE. Per-file detection rate (29% on CWE-476) is the more actionable metric for prioritizing improvements. Higher-value gains will come from structural improvements (cross-function analysis, value-range analysis) rather than per-rule tuning.
 
 ---
 

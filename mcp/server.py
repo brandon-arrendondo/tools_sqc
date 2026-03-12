@@ -27,6 +27,8 @@ _HERE = Path(__file__).parent
 PROJECT_DIR = _HERE.parent
 SCRIPT = PROJECT_DIR / "scripts" / "run_juliet_parallel.sh"
 ANALYZE_SCRIPT = PROJECT_DIR / "scripts" / "analyze_juliet_results.py"
+GENERATE_MAP_SCRIPT = PROJECT_DIR / "scripts" / "generate_rule_cwe_map.py"
+RULE_CWE_MAP = PROJECT_DIR / "data" / "rule_cwe_map.json"
 JULIET_BASE = Path.home() / "data" / "benchmarks" / "juliet-test-suite-c" / "testcases"
 RESULTS_BASE = Path("/tmp/juliet_results")
 STATE_FILE = Path("/tmp/juliet_bench.pid")  # stores JSON state (name kept for compat)
@@ -241,29 +243,41 @@ def _parse_analysis(content: str) -> dict:
     top_tp: list[dict] = []
     top_fp: list[dict] = []
     flaw_rules: list[dict] = []
-    in_bad = in_good = in_flaw = False
+    cwe_matched_tp_rules: list[dict] = []
+    cwe_matched_fp_rules: list[dict] = []
+
+    # Section state machine
+    section = None
 
     for line in content.splitlines():
-        if "Rules in OMITBAD" in line:
-            in_bad, in_good, in_flaw = True, False, False
-        elif "Rules in OMITGOOD" in line:
-            in_bad, in_good, in_flaw = False, True, False
+        if "Rules in OMITBAD (True Positives)" in line:
+            section = "tp"
+        elif "Rules in OMITGOOD (False Positives)" in line:
+            section = "fp"
         elif "Rules on FLAW Lines" in line:
-            in_bad, in_good, in_flaw = False, False, True
+            section = "flaw"
+        elif "CWE-Matched Rules in OMITBAD" in line:
+            section = "cwe_tp"
+        elif "CWE-Matched Rules in OMITGOOD" in line:
+            section = "cwe_fp"
         elif line.startswith("---") or line.startswith("==="):
-            in_bad = in_good = in_flaw = False
+            section = None
         else:
             m = re.match(r"\s+(\w[\w-]+):\s+(\d+)", line)
             if m:
                 entry = {"rule": m.group(1), "count": int(m.group(2))}
-                if in_bad:
+                if section == "tp":
                     top_tp.append(entry)
-                elif in_good:
+                elif section == "fp":
                     top_fp.append(entry)
-                elif in_flaw:
+                elif section == "flaw":
                     flaw_rules.append(entry)
+                elif section == "cwe_tp":
+                    cwe_matched_tp_rules.append(entry)
+                elif section == "cwe_fp":
+                    cwe_matched_fp_rules.append(entry)
 
-    return {
+    result: dict = {
         "tp": tp,
         "fp": fp,
         "files": int(files_m.group(1)) if files_m else 0,
@@ -273,6 +287,47 @@ def _parse_analysis(content: str) -> dict:
         "top_fp_rules": top_fp,
         "flaw_line_rules": flaw_rules,
     }
+
+    # ── CWE-Aware fields (None when not present = backward compat) ────────
+    cwe_tp_m = re.search(r"CWE-matched TP: (\d+)", content)
+    cwe_fp_m = re.search(r"CWE-matched FP: (\d+)", content)
+    cwe_tp_rate_m = re.search(r"CWE-matched TP Rate: ([\d.]+)%", content)
+    noise_m = re.search(r"Noise findings \(non-CWE-matched\): (\d+)", content)
+    noise_ratio_m = re.search(r"Noise ratio: ([\d.]+)%", content)
+    per_file_m = re.search(r"Per-file detection rate: ([\d.]+)% \((\d+)/(\d+)\)", content)
+    flaw_hit_m = re.search(r"FLAW-line hit rate \(CWE-matched\): ([\d.]+)% \((\d+)/(\d+)\)", content)
+    cwe_rules_m = re.search(r"CWE-matched rules: (.+)", content)
+
+    if cwe_tp_m:
+        result["cwe_matched_tp"] = int(cwe_tp_m.group(1))
+        result["cwe_matched_fp"] = int(cwe_fp_m.group(1)) if cwe_fp_m else 0
+        result["cwe_matched_tp_rate"] = float(cwe_tp_rate_m.group(1)) if cwe_tp_rate_m else None
+        result["noise_count"] = int(noise_m.group(1)) if noise_m else None
+        result["noise_ratio"] = float(noise_ratio_m.group(1)) if noise_ratio_m else None
+        if per_file_m:
+            result["per_file_rate"] = float(per_file_m.group(1))
+            result["per_file_detected"] = int(per_file_m.group(2))
+            result["per_file_total"] = int(per_file_m.group(3))
+        else:
+            result["per_file_rate"] = None
+            result["per_file_detected"] = None
+            result["per_file_total"] = None
+        if flaw_hit_m:
+            result["flaw_hit_rate"] = float(flaw_hit_m.group(1))
+            result["flaw_hit_detected"] = int(flaw_hit_m.group(2))
+            result["flaw_hit_total"] = int(flaw_hit_m.group(3))
+        else:
+            result["flaw_hit_rate"] = None
+            result["flaw_hit_detected"] = None
+            result["flaw_hit_total"] = None
+        result["cwe_matched_rules"] = (
+            [r.strip() for r in cwe_rules_m.group(1).split(",")]
+            if cwe_rules_m else []
+        )
+        result["cwe_matched_tp_rules"] = cwe_matched_tp_rules
+        result["cwe_matched_fp_rules"] = cwe_matched_fp_rules
+
+    return result
 
 
 def _dir_size_human(path: Path) -> str:
@@ -289,6 +344,34 @@ def _dir_size_human(path: Path) -> str:
             return f"{total:.1f} {unit}"
         total /= 1024
     return f"{total:.1f} TB"
+
+
+def _extract_cwe_id(cwe_dir_name: str) -> str | None:
+    """Extract normalized CWE ID from a Juliet directory name.
+
+    E.g. 'CWE190_Integer_Overflow' → 'CWE-190'
+         'CWE121_Stack_Based_Buffer_Overflow' → 'CWE-121'
+    """
+    m = re.match(r'(CWE)(\d+)', cwe_dir_name)
+    if m:
+        return f"CWE-{m.group(2)}"
+    return None
+
+
+def _ensure_rule_cwe_map() -> bool:
+    """Ensure data/rule_cwe_map.json exists, generating it if needed."""
+    if RULE_CWE_MAP.exists():
+        return True
+    if not GENERATE_MAP_SCRIPT.exists():
+        return False
+    try:
+        subprocess.run(
+            ["python3", str(GENERATE_MAP_SCRIPT)],
+            capture_output=True, text=True, timeout=30,
+        )
+        return RULE_CWE_MAP.exists()
+    except Exception:
+        return False
 
 
 # ── Tools ─────────────────────────────────────────────────────────────────────
@@ -567,6 +650,9 @@ def reanalyze_run(run: str = "all") -> str:
     if not ANALYZE_SCRIPT.exists():
         return json.dumps({"error": f"Analysis script not found at {ANALYZE_SCRIPT}"})
 
+    # Ensure rule-CWE map exists for CWE-aware metrics
+    has_map = _ensure_rule_cwe_map()
+
     # Determine which run directories to process
     if run == "all":
         targets = [
@@ -598,9 +684,21 @@ def reanalyze_run(run: str = "all") -> str:
             if not cwe_dir.is_dir():
                 continue
 
+            # Build command with CWE-aware args when map is available
+            cmd = [
+                "python3", str(ANALYZE_SCRIPT),
+                "--csv", str(csv_file),
+                "--dir", str(cwe_dir),
+            ]
+            if has_map:
+                cwe_id = _extract_cwe_id(cwe_name)
+                if cwe_id:
+                    cmd.extend(["--cwe", cwe_id])
+                cmd.extend(["--rule-cwe-map", str(RULE_CWE_MAP)])
+
             try:
                 result = subprocess.run(
-                    ["python3", str(ANALYZE_SCRIPT), "--csv", str(csv_file), "--dir", str(cwe_dir)],
+                    cmd,
                     capture_output=True, text=True, timeout=60,
                 )
                 if result.returncode == 0:
@@ -621,7 +719,12 @@ def reanalyze_run(run: str = "all") -> str:
 
     return json.dumps({
         "results": results,
-        "message": f"Reanalyzed {len(targets)} run(s). Analysis files now include full per-rule breakdowns.",
+        "cwe_aware": has_map,
+        "message": (
+            f"Reanalyzed {len(targets)} run(s). "
+            + ("Analysis files now include CWE-aware metrics." if has_map
+               else "CWE-aware metrics skipped (no rule-CWE map).")
+        ),
     })
 
 
@@ -775,6 +878,16 @@ def get_results(sort_by: str = "fp_count") -> str:
     rule_fp: dict[str, int] = {}
     per_cwe: list[dict] = []
 
+    # CWE-aware aggregates
+    total_cwe_matched_tp = 0
+    total_cwe_matched_fp = 0
+    total_noise = 0
+    total_per_file_detected = 0
+    total_per_file_total = 0
+    total_flaw_hit_detected = 0
+    total_flaw_hit_total = 0
+    cwes_with_cwe_aware = 0
+
     # Build timing lookup from log (cwe_name → duration_s).
     log_file = _get_log_file(state)
     log_data = _parse_log(log_file)
@@ -800,12 +913,32 @@ def get_results(sort_by: str = "fp_count") -> str:
         if cwe_name in cwe_timing:
             entry["duration_seconds"] = cwe_timing[cwe_name]
             entry["duration_human"] = _fmt_duration(cwe_timing[cwe_name])
+
+        # Accumulate CWE-aware totals if present
+        if "cwe_matched_tp" in parsed:
+            cwes_with_cwe_aware += 1
+            total_cwe_matched_tp += parsed["cwe_matched_tp"]
+            total_cwe_matched_fp += parsed["cwe_matched_fp"]
+            if parsed.get("noise_count") is not None:
+                total_noise += parsed["noise_count"]
+            if parsed.get("per_file_detected") is not None:
+                total_per_file_detected += parsed["per_file_detected"]
+                total_per_file_total += parsed["per_file_total"]
+            if parsed.get("flaw_hit_detected") is not None:
+                total_flaw_hit_detected += parsed["flaw_hit_detected"]
+                total_flaw_hit_total += parsed["flaw_hit_total"]
+            entry["cwe_matched_tp"] = parsed["cwe_matched_tp"]
+            entry["cwe_matched_fp"] = parsed["cwe_matched_fp"]
+            entry["cwe_matched_tp_rate"] = parsed.get("cwe_matched_tp_rate")
+            entry["per_file_rate"] = parsed.get("per_file_rate")
+            entry["flaw_hit_rate"] = parsed.get("flaw_hit_rate")
+
         per_cwe.append(entry)
 
-        for entry in parsed["top_tp_rules"]:
-            rule_tp[entry["rule"]] = rule_tp.get(entry["rule"], 0) + entry["count"]
-        for entry in parsed["top_fp_rules"]:
-            rule_fp[entry["rule"]] = rule_fp.get(entry["rule"], 0) + entry["count"]
+        for e in parsed["top_tp_rules"]:
+            rule_tp[e["rule"]] = rule_tp.get(e["rule"], 0) + e["count"]
+        for e in parsed["top_fp_rules"]:
+            rule_fp[e["rule"]] = rule_fp.get(e["rule"], 0) + e["count"]
 
     # Build per-rule table
     all_rules = set(rule_tp) | set(rule_fp)
@@ -854,13 +987,48 @@ def get_results(sort_by: str = "fp_count") -> str:
         summary["total_duration_seconds"] = total_s
         summary["total_duration_human"] = _fmt_duration(total_s)
 
-    return json.dumps(
-        {
-            "summary": summary,
-            "top_rules": rules_data[:20],
-            "per_cwe": sorted(per_cwe, key=lambda x: -x["fp"]),
+    # CWE-aware summary block (only when data is present)
+    cwe_aware_summary = None
+    if cwes_with_cwe_aware > 0:
+        cwe_matched_total = total_cwe_matched_tp + total_cwe_matched_fp
+        all_findings = cwe_matched_total + total_noise
+        cwe_aware_summary = {
+            "cwes_with_data": cwes_with_cwe_aware,
+            "cwe_matched_tp": total_cwe_matched_tp,
+            "cwe_matched_fp": total_cwe_matched_fp,
+            "cwe_matched_total": cwe_matched_total,
+            "cwe_matched_tp_rate_pct": (
+                round(total_cwe_matched_tp / cwe_matched_total * 100, 1)
+                if cwe_matched_total else 0
+            ),
+            "noise_total": total_noise,
+            "noise_ratio_pct": (
+                round(total_noise / all_findings * 100, 1)
+                if all_findings else 0
+            ),
+            "per_file_detected": total_per_file_detected,
+            "per_file_total": total_per_file_total,
+            "per_file_rate_pct": (
+                round(total_per_file_detected / total_per_file_total * 100, 1)
+                if total_per_file_total else 0
+            ),
+            "flaw_hit_detected": total_flaw_hit_detected,
+            "flaw_hit_total": total_flaw_hit_total,
+            "flaw_hit_rate_pct": (
+                round(total_flaw_hit_detected / total_flaw_hit_total * 100, 1)
+                if total_flaw_hit_total else 0
+            ),
         }
-    )
+
+    result_dict: dict = {
+        "summary": summary,
+        "top_rules": rules_data[:20],
+        "per_cwe": sorted(per_cwe, key=lambda x: -x["fp"]),
+    }
+    if cwe_aware_summary:
+        result_dict["cwe_aware"] = cwe_aware_summary
+
+    return json.dumps(result_dict)
 
 
 @mcp.tool()
@@ -945,6 +1113,27 @@ def get_cwe_detail(cwe_id: str) -> str:
     if cwe_name in cwe_timing:
         detail["duration_seconds"] = cwe_timing[cwe_name]
         detail["duration_human"] = _fmt_duration(cwe_timing[cwe_name])
+
+    # CWE-aware metrics (when present in parsed data)
+    if "cwe_matched_tp" in parsed:
+        cwe_matched_total = parsed["cwe_matched_tp"] + parsed["cwe_matched_fp"]
+        detail["cwe_aware"] = {
+            "cwe_matched_rules": parsed.get("cwe_matched_rules", []),
+            "cwe_matched_tp": parsed["cwe_matched_tp"],
+            "cwe_matched_fp": parsed["cwe_matched_fp"],
+            "cwe_matched_total": cwe_matched_total,
+            "cwe_matched_tp_rate_pct": parsed.get("cwe_matched_tp_rate"),
+            "noise_count": parsed.get("noise_count"),
+            "noise_ratio_pct": parsed.get("noise_ratio"),
+            "per_file_detected": parsed.get("per_file_detected"),
+            "per_file_total": parsed.get("per_file_total"),
+            "per_file_rate_pct": parsed.get("per_file_rate"),
+            "flaw_hit_detected": parsed.get("flaw_hit_detected"),
+            "flaw_hit_total": parsed.get("flaw_hit_total"),
+            "flaw_hit_rate_pct": parsed.get("flaw_hit_rate"),
+            "cwe_matched_tp_rules": parsed.get("cwe_matched_tp_rules", []),
+            "cwe_matched_fp_rules": parsed.get("cwe_matched_fp_rules", []),
+        }
 
     return json.dumps(detail)
 
@@ -1051,6 +1240,15 @@ def _load_run_data(results_dir: Path) -> dict:
         "total_tp": 0,
         "total_fp": 0,
         "cwe_count": 0,
+        # CWE-aware totals
+        "cwe_aware_count": 0,
+        "total_cwe_matched_tp": 0,
+        "total_cwe_matched_fp": 0,
+        "total_noise": 0,
+        "total_per_file_detected": 0,
+        "total_per_file_total": 0,
+        "total_flaw_hit_detected": 0,
+        "total_flaw_hit_total": 0,
     }
     for f in sorted(results_dir.glob("*_analysis.txt")):
         cwe_name = f.stem.replace("_analysis", "")
@@ -1067,6 +1265,19 @@ def _load_run_data(results_dir: Path) -> dict:
             data["per_rule_fp"][entry["rule"]] = (
                 data["per_rule_fp"].get(entry["rule"], 0) + entry["count"]
             )
+        # Accumulate CWE-aware totals
+        if "cwe_matched_tp" in parsed:
+            data["cwe_aware_count"] += 1
+            data["total_cwe_matched_tp"] += parsed["cwe_matched_tp"]
+            data["total_cwe_matched_fp"] += parsed["cwe_matched_fp"]
+            if parsed.get("noise_count") is not None:
+                data["total_noise"] += parsed["noise_count"]
+            if parsed.get("per_file_detected") is not None:
+                data["total_per_file_detected"] += parsed["per_file_detected"]
+                data["total_per_file_total"] += parsed["per_file_total"]
+            if parsed.get("flaw_hit_detected") is not None:
+                data["total_flaw_hit_detected"] += parsed["flaw_hit_detected"]
+                data["total_flaw_hit_total"] += parsed["flaw_hit_total"]
     return data
 
 
@@ -1244,7 +1455,7 @@ def compare_runs(base: str, target: str) -> str:
     only_in_base = sorted(set(base_data["per_cwe"]) - set(target_data["per_cwe"]))
     only_in_target = sorted(set(target_data["per_cwe"]) - set(base_data["per_cwe"]))
 
-    return json.dumps({
+    result: dict = {
         "summary": summary,
         "cwe_improvements": improvements,
         "cwe_regressions": regressions,
@@ -1253,7 +1464,59 @@ def compare_runs(base: str, target: str) -> str:
         "cwes_only_in_base": only_in_base,
         "cwes_only_in_target": only_in_target,
         "all_cwe_deltas": cwe_deltas,
-    })
+    }
+
+    # ── CWE-aware comparison (when both runs have data) ──────────────────
+    if base_data["cwe_aware_count"] > 0 and target_data["cwe_aware_count"] > 0:
+        def _cwe_aware_summary(d: dict) -> dict:
+            cm_total = d["total_cwe_matched_tp"] + d["total_cwe_matched_fp"]
+            all_total = cm_total + d["total_noise"]
+            return {
+                "cwe_matched_tp": d["total_cwe_matched_tp"],
+                "cwe_matched_fp": d["total_cwe_matched_fp"],
+                "cwe_matched_tp_rate_pct": (
+                    round(d["total_cwe_matched_tp"] / cm_total * 100, 1) if cm_total else 0
+                ),
+                "noise_total": d["total_noise"],
+                "noise_ratio_pct": (
+                    round(d["total_noise"] / all_total * 100, 1) if all_total else 0
+                ),
+                "per_file_detected": d["total_per_file_detected"],
+                "per_file_total": d["total_per_file_total"],
+                "per_file_rate_pct": (
+                    round(d["total_per_file_detected"] / d["total_per_file_total"] * 100, 1)
+                    if d["total_per_file_total"] else 0
+                ),
+                "flaw_hit_detected": d["total_flaw_hit_detected"],
+                "flaw_hit_total": d["total_flaw_hit_total"],
+                "flaw_hit_rate_pct": (
+                    round(d["total_flaw_hit_detected"] / d["total_flaw_hit_total"] * 100, 1)
+                    if d["total_flaw_hit_total"] else 0
+                ),
+            }
+
+        b_cwe = _cwe_aware_summary(base_data)
+        t_cwe = _cwe_aware_summary(target_data)
+
+        result["cwe_aware"] = {
+            "base": b_cwe,
+            "target": t_cwe,
+            "delta": {
+                "cwe_matched_tp": t_cwe["cwe_matched_tp"] - b_cwe["cwe_matched_tp"],
+                "cwe_matched_fp": t_cwe["cwe_matched_fp"] - b_cwe["cwe_matched_fp"],
+                "cwe_matched_tp_rate_pp": round(
+                    t_cwe["cwe_matched_tp_rate_pct"] - b_cwe["cwe_matched_tp_rate_pct"], 2
+                ),
+                "per_file_rate_pp": round(
+                    t_cwe["per_file_rate_pct"] - b_cwe["per_file_rate_pct"], 2
+                ),
+                "flaw_hit_rate_pp": round(
+                    t_cwe["flaw_hit_rate_pct"] - b_cwe["flaw_hit_rate_pct"], 2
+                ),
+            },
+        }
+
+    return json.dumps(result)
 
 
 @mcp.tool()
@@ -1363,7 +1626,7 @@ def compare_cwe(cwe_id: str, base: str, target: str) -> str:
     new_rules = sorted(t_all_rules - b_all_rules)
     removed_rules = sorted(b_all_rules - t_all_rules)
 
-    return json.dumps({
+    result: dict = {
         "cwe": cwe_name,
         "base_run": base_dir.name,
         "target_run": target_dir.name,
@@ -1400,7 +1663,40 @@ def compare_cwe(cwe_id: str, base: str, target: str) -> str:
         "rule_changes": rule_changes,
         "new_rules_in_target": new_rules,
         "removed_rules_from_base": removed_rules,
-    })
+    }
+
+    # CWE-aware comparison (when both runs have CWE-aware data for this CWE)
+    if "cwe_matched_tp" in b and "cwe_matched_tp" in t:
+        b_cm_total = b["cwe_matched_tp"] + b["cwe_matched_fp"]
+        t_cm_total = t["cwe_matched_tp"] + t["cwe_matched_fp"]
+        b_cm_tp_pct = round(b["cwe_matched_tp"] / b_cm_total * 100, 1) if b_cm_total else 0
+        t_cm_tp_pct = round(t["cwe_matched_tp"] / t_cm_total * 100, 1) if t_cm_total else 0
+
+        result["cwe_aware"] = {
+            "base": {
+                "cwe_matched_tp": b["cwe_matched_tp"],
+                "cwe_matched_fp": b["cwe_matched_fp"],
+                "cwe_matched_tp_rate_pct": b_cm_tp_pct,
+                "noise_count": b.get("noise_count"),
+                "per_file_rate_pct": b.get("per_file_rate"),
+                "flaw_hit_rate_pct": b.get("flaw_hit_rate"),
+            },
+            "target": {
+                "cwe_matched_tp": t["cwe_matched_tp"],
+                "cwe_matched_fp": t["cwe_matched_fp"],
+                "cwe_matched_tp_rate_pct": t_cm_tp_pct,
+                "noise_count": t.get("noise_count"),
+                "per_file_rate_pct": t.get("per_file_rate"),
+                "flaw_hit_rate_pct": t.get("flaw_hit_rate"),
+            },
+            "delta": {
+                "cwe_matched_tp": t["cwe_matched_tp"] - b["cwe_matched_tp"],
+                "cwe_matched_fp": t["cwe_matched_fp"] - b["cwe_matched_fp"],
+                "cwe_matched_tp_rate_pp": round(t_cm_tp_pct - b_cm_tp_pct, 2),
+            },
+        }
+
+    return json.dumps(result)
 
 
 if __name__ == "__main__":
