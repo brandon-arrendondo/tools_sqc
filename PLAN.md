@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-11 (v0.3.14)
+**Last Updated**: 2026-03-12 (v0.3.15)
 
 ---
 
@@ -367,24 +367,11 @@ It's a measurement artifact from scoring methodology. **CWE-aware scoring is now
 (see "CWE-Aware Scoring" section below) — validated on CWE-476 where CWE-matched TP rate is
 46.1% vs 39.3% incidental, with 62% noise ratio confirming the dilution effect.
 
-### CWE-Aware Scoring (IMPLEMENTED — v0.3.14)
+### CWE-Aware Scoring (IMPLEMENTED — v0.3.15)
 
 All 5 proposed metrics are now computed automatically by the benchmark infrastructure.
 
 **Implementation**: `scripts/generate_rule_cwe_map.py` produces `data/rule_cwe_map.json` (117 rules → 144 CWEs). `analyze_juliet_results.py` accepts `--cwe` and `--rule-cwe-map` to append CWE-aware metrics after existing output. `mcp/server.py` passes these args in `reanalyze_run()` and parses the new fields in `_parse_analysis()`. `run_juliet_parallel.sh` auto-regenerates the map at startup. All backward-compatible — old runs parse identically.
-
-**Validation (CWE-476)**:
-
-| Metric | Old (incidental) | New (CWE-aware) |
-|--------|-----------------|-----------------|
-| TP Rate | 39.3% | **46.1%** (CWE-matched: EXP34-C, API00-C only) |
-| Noise ratio | unmeasured | **62.1%** (486/783 findings are unrelated rules) |
-| FLAW-line hit rate | 0% (exact match) | **3.7%** (41/1098, with ±1 tolerance) |
-| Per-file detection rate | unmeasured | **29.0%** (108/372 files caught) |
-
-**Impact on the "44-45% ceiling" narrative**: Confirmed as a measurement artifact. The incidental TP rate (all rules, section-based) has a theoretical noise floor of ~33% (OMITGOOD has ~2x the lines of OMITBAD). CWE-matched TP rates are higher per-CWE because they filter out noise from unrelated rules. The real detection quality is better than 44% — but per-file detection (29% on CWE-476) shows how much room remains for actual improvement.
-
-**Next steps**: Run `reanalyze_run("all")` on the v0.3.14 benchmark to generate CWE-aware metrics across all 118 CWEs. This will produce the first full dataset for prioritizing CWE-specific improvements using per-file detection rate as the actionable metric.
 
 | Metric | What It Measures | How to Compute |
 |--------|-----------------|----------------|
@@ -394,29 +381,124 @@ All 5 proposed metrics are now computed automatically by the benchmark infrastru
 | **Noise ratio** | How much output is unrelated to the CWE? | % of findings from non-CWE-mapped rules |
 | **Incidental TP/FP** | Section-split noise (current metric) | Retained for backward compatibility, de-emphasized |
 
-### Priority 2 — CWE457/EXP33-C TP recovery
+### Full-Suite CWE-Aware Results (v0.3.15, 2026-03-12)
 
-EXP33-C: 144 TP / 271 FP in CWE457 (21.6% TP rate). With 616 files each having a bad() function
-that uses an uninitialized variable, we should be getting ~600 TPs, not 144. The bulk of Juliet
-CWE457 bad() patterns are trivial (variant 01: `char *data; printLine(data);`) and EXP33-C DOES
-detect variant 01 (confirmed: line 30 flagged correctly). The gap (144 vs ~600) is from cross-function
-variants (51–68) and other flow variants where EXP33-C lacks interprocedural tracking.
+**Run**: `sqc-0.3.15-9e241f4b`, 118 CWEs, 54,484 files, 1h 53m.
 
-Variants not detected by EXP33-C:
-- Variants 51–68 (cross-function data flow) — bad source in one function, use in another
-- Variants with complex control flow (switch, goto) that EXP33-C's analyzer doesn't fully model
+**Coverage**: 65 of 118 CWEs have rule-to-CWE mappings. 34 CWEs have at least one detection. 31 CWEs have mappings but zero CWE-relevant detections. 53 CWEs have no CERT-C rule mapped at all.
 
-Near-term fix: Improve EXP33-C TP rate on single-file variants (01–18). If variant 01 works,
-check why variants 02–18 might not all be detected. Each represents a control flow pattern.
+| Metric | Incidental (old) | CWE-Aware (new) |
+|--------|-----------------|-----------------|
+| TP Rate | 44.4% (126K/284K) | **45.6%** (5,195/11,404 CWE-matched) |
+| Noise ratio | unmeasured | **95.0%** (217K/229K findings are unrelated rules) |
+| Per-file detection | unmeasured | **10.0%** (4,426/44,243 files caught by relevant rule) |
+| FLAW-line hit rate | 0% (exact match) | **3.6%** (4,258/117,447 with ±1 tolerance) |
 
-### Priority 3 — Don't chase the 0.2pp (accept the regression)
+**The 95% noise ratio is the headline number.** Only 5% of all Juliet findings come from rules
+that actually map to the CWE being tested. The other 95% are incidental — DCL06-C, ERR05-C,
+INT36-C, etc. firing in both OMITBAD and OMITGOOD sections. This explains why the incidental TP
+rate was stuck at 44%: it was measuring noise distribution, not detection capability.
 
-The v0.3.14 regression is the cost of 6 months of legitimate FP reductions targeting real-world
-codebases. Attempting to recover it would require weakening those fixes and reintroducing FPs in
-d_lib_networking, d_lib_common, and battery firmware. Not worth it.
+#### CWEs with Strong Detection (per-file ≥20%)
 
-Instead, focus on structural TP improvements (cross-function analysis, better CWE-specific
-pattern matching) which can raise the ceiling above 44–45%.
+| CWE | Files | Per-File | CM TP Rate | Flaw-Hit | Key Rules |
+|-----|------:|---------:|-----------:|---------:|-----------|
+| CWE-481 (assign vs compare) | 18 | **66.7%** | 100% | 66.7% | EXP45-C |
+| CWE-391 (unchecked error) | 54 | **37.0%** | 62.1% | 64.8% | ERR00-C, ERR33-C, ERR34-C |
+| CWE-467 (sizeof pointer) | 54 | **37.0%** | 100% | 37.0% | ARR01-C, MEM35-C |
+| CWE-758 (undefined behavior) | 365 | **32.6%** | 51.9% | 13.2% | EXP30-C, EXP33-C, INT34-C, MEM30-C |
+| CWE-416 (use after free) | 150 | **30.7%** | 37.1% | 6.9% | MEM00-C, MEM01-C, MEM30-C |
+| CWE-244 (heap inspection) | 72 | **30.6%** | 100% | 16.7% | MEM03-C |
+| CWE-369 (divide by zero) | 1,008 | **30.1%** | 33.7% | 12.0% | FLP03-C, INT33-C |
+| CWE-415 (double free) | 336 | **30.1%** | 44.1% | 15.7% | MEM00-C, MEM01-C, MEM30-C |
+| CWE-476 (null deref) | 372 | **29.0%** | 46.5% | 3.7% | EXP34-C, API00-C |
+| CWE-665 (improper init) | 224 | **29.0%** | 42.1% | 5.8% | ARR02-C, EXP33-C |
+| CWE-338 (weak PRNG) | 18 | **27.8%** | 100% | 27.8% | MSC30-C |
+| CWE-680 (int overflow → BOF) | 336 | **27.1%** | 43.7% | 0.0% | INT30-C, INT32-C |
+| CWE-690 (null from return) | 1,120 | **25.9%** | 82.4% | 8.1% | EXP34-C |
+| CWE-457 (uninitialized var) | 616 | **23.4%** | 34.7% | 2.5% | EXP33-C |
+| CWE-401 (memory leak) | 1,228 | **21.7%** | 49.7% | 6.4% | MEM31-C |
+
+#### High-Volume CWEs with Low Detection (biggest improvement opportunities)
+
+| CWE | Files | Per-File | CM TP Rate | Flaw-Hit | Key Rules |
+|-----|------:|---------:|-----------:|---------:|-----------|
+| CWE-122 (heap BOF) | 3,656 | **4.4%** | 41.7% | 1.9% | ARR30-C, STR31-C |
+| CWE-134 (format string) | 3,360 | **3.7%** | 33.4% | 1.1% | FIO30-C, FIO47-C |
+| CWE-121 (stack BOF) | 5,906 | **12.8%** | 39.3% | 5.6% | ARR30-C, ARR38-C, STR31-C |
+| CWE-190 (integer overflow) | 5,040 | **12.9%** | 44.2% | 4.0% | INT30-C, INT32-C |
+| CWE-191 (integer underflow) | 3,864 | **14.6%** | 43.5% | 4.5% | INT30-C, INT32-C |
+| CWE-590 (free not on heap) | 900 | **10.4%** | 100% | 4.5% | API07-C, MEM34-C |
+| CWE-252 (unchecked return) | 630 | **11.9%** | 100% | 23.8% | ERR33-C, EXP34-C |
+| CWE-197 (numeric truncation) | 1,008 | **18.0%** | 67.5% | 8.6% | INT31-C, FLP34-C |
+| CWE-404 (resource shutdown) | 448 | **17.4%** | 65.3% | 11.9% | FIO42-C, MEM31-C |
+
+#### CWEs with Mapping but Zero Detection (rules exist, never fire on Juliet patterns)
+
+| CWE | Files | Incidental TP | Mapped Rules |
+|-----|------:|--------------:|--------------|
+| CWE-78 (OS cmd injection) | 5,600 | 17,350 | ENV03-C, ENV33-C, STR02-C |
+| CWE-194 (sign extension) | 1,344 | 3,637 | INT31-C |
+| CWE-195 (signed→unsigned) | 1,344 | 3,298 | INT31-C, FLP34-C |
+| CWE-761 (free not at start) | 672 | 2,830 | API07-C |
+| CWE-253 (incorrect check ret) | 684 | 409 | ERR33-C, POS34-C |
+| CWE-114 (process control) | 672 | 1,751 | ERR07-C, MEM10-C |
+| CWE-789 (uncontrolled alloc) | 560 | 2,163 | ARR30-C, MEM35-C |
+| CWE-327 (broken crypto) | 54 | 376 | MSC30-C, MSC32-C |
+| CWE-367 (TOCTOU) | 36 | 188 | FIO01-C, POS01-C |
+
+CWE-78 is the most striking: 5,600 files with 17,350 incidental TPs but 0 CWE-matched detections.
+The mapped rules (ENV03-C, ENV33-C, STR02-C) don't fire on Juliet's command injection patterns.
+CWE-194/195 have INT31-C mapped but it doesn't trigger on sign extension test cases.
+
+### Data-Driven Priorities (based on CWE-aware metrics)
+
+The old priority framework optimized incidental TP rate (stuck at 44%). With CWE-aware scoring,
+we can now prioritize by **per-file detection rate** (did we catch the bug?) on high-volume CWEs.
+
+#### Priority 1 — CWE-122/121: Buffer Overflow Detection (9,562 files, 4.4%/12.8% per-file)
+
+The two largest CWE categories by file count. STR31-C and ARR30-C are mapped but only catch
+4.4% (heap) / 12.8% (stack) of test files. These are `memcpy`, `strcpy`, `memmove` with
+undersized destination buffers. The rules fire on some patterns but miss most variants —
+likely the cross-function and complex-flow variants (51–68) that require interprocedural analysis.
+
+**Action**: Investigate which Juliet variants are detected vs missed by STR31-C/ARR30-C.
+Focus on single-file variants first (01–18), then cross-function. Even getting stack BOF
+from 12.8% → 30% would be a major improvement on the highest-volume CWE.
+
+#### Priority 2 — CWE-457: Uninitialized Variable (616 files, 23.4% per-file)
+
+EXP33-C detects 144 of 616 files. The 34.7% CWE-matched TP rate means it also has FPs in
+OMITGOOD sections. Gap is from cross-function variants (51–68) and control flow patterns
+(switch, goto) that EXP33-C's single-function analyzer doesn't model. Single-file variants
+(01–18) should all be detectable — investigate why some are missed.
+
+#### Priority 3 — CWE-190/191: Integer Overflow/Underflow (8,904 files, 12.9%/14.6% per-file)
+
+INT30-C and INT32-C are the matched rules. These have high noise (the rules fire heavily
+everywhere), but only 12.9%/14.6% of integer overflow test files get a CWE-relevant finding.
+The matched TP rate (~44%) is reasonable — the gap is detection coverage, not precision.
+
+#### Priority 4 — CWE-690: Null Deref from Return (1,120 files, 25.9% per-file, 82.4% CM TP rate)
+
+Already the best-performing high-volume CWE by CWE-matched TP rate. EXP34-C is the sole
+matched rule and achieves 82.4% precision when it fires. Getting per-file detection from
+25.9% → 50%+ would make this a showcase CWE. The 74% of undetected files are likely
+cross-function patterns where the null-returning call is in a different function.
+
+#### Priority 5 — Zero-Detection CWEs (rules exist but never fire)
+
+31 CWEs have CERT-C rules mapped but produce zero CWE-relevant detections. These represent
+rules that exist in sqc but whose patterns don't match what Juliet tests for. Low-hanging
+fruit: investigate CWE-194/195 (INT31-C should detect sign extension — 1,344 files each)
+and CWE-253 (ERR33-C should detect unchecked return values — 684 files).
+
+#### De-prioritized: Incidental TP Rate
+
+The old 44.4% incidental TP rate is no longer a target metric. Rule tuning that removes
+equal TPs and FPs is neutral on CWE-matched metrics and just reduces noise. The 95% noise
+ratio means most "improvements" to incidental rate were noise reshuffling.
 
 ---
 
