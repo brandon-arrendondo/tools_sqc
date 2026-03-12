@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-03-09
+**Last Updated**: 2026-03-11
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -9,14 +9,14 @@
 
 | Metric | Value |
 |--------|-------|
-| **Rules Implemented** | 283 CERT C rules |
+| **Rules Implemented** | 283+ CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 130,199 |
-| **False Positives** | 161,965 |
-| **TP Rate** | **44.6%** (v0.2.25, MCP benchmark) |
-| **FP Reduction from Baseline** | -80.7% (839K → 162K) |
-| **CWE Categories with Data** | 106 / 118 |
-| **Categories >50% TP** | 19 |
+| **True Positives** | 126,106 |
+| **False Positives** | 158,036 |
+| **TP Rate** | **44.4%** (v0.3.14, MCP benchmark) |
+| **FP Reduction from Baseline** | -81.2% (839K → 158K) |
+| **CWE Categories with Data** | 103 / 118 |
+| **Categories >50% TP** | 17 |
 
 ---
 
@@ -77,15 +77,48 @@ Runtime varies significantly by machine and parallelism. Always record these whe
 | v0.3.5 | v0.3.5 | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C FP fixes | 130,004 | 161,510 | 44.6% | -455 |
 | **v0.3.8** | **v0.3.8** | **STR31-C is_function_parameter, API00-C validation patterns, EXP34-C compound null, EXP33-C field-write fix** | ² | ² | **44.3%**² | ² |
 | **v0.3.9** | **v0.3.9** | **DCL08-C protocol enum skip, EXP36-C uint8_t* alignment, INT36-C pointer cast guard, INT01-C uint8_t skip, EXP33-C multi-branch FP** | ² | ² | **44.3%**² | ² |
+| **v0.3.14** | v0.3.14 | **EXP33-C for-loop dominating init + FP fix, INT30-C subtraction guard, EXP34-C param null propagation** | **126,106** | **158,036** | **44.4%** | **-3,474** |
 
 ¹ Rounds 14–16 measured by MCP benchmark server; absolute TP/FP counts differ from legacy runner methodology. TP rate is the comparable metric.
-² Multi-CWE subset (12 CWEs, ~25K files) via `run_juliet_multi_cwe.sh`. v0.3.8: TP=61,799 FP=77,826 rate=44.3%. v0.3.9: TP=61,349 FP=77,245 rate=44.3% (−450 TP / −581 FP vs v0.3.8). Full-suite numbers not yet available.
+² Multi-CWE subset (12 CWEs, ~25K files) via `run_juliet_multi_cwe.sh`. v0.3.8: TP=61,799 FP=77,826 rate=44.3%. v0.3.9: TP=61,349 FP=77,245 rate=44.3% (−450 TP / −581 FP vs v0.3.8). Full-suite numbers now available as v0.3.14 (see row above).
 
 **Trend**: Diminishing returns on FP reduction via rule tuning. Round 3 removed 199K FP; by Round 8 only 5K. Cumulative FP reduction from baseline: **-677,831 (-80.7%)**.
 
 ---
 
 ## Per-Round Fix Details
+
+### v0.3.14 — EXP33-C, INT30-C, EXP34-C FP Fixes (Full Suite)
+
+First full-suite benchmark since v0.3.5 (v0.3.8 and v0.3.9 used 12-CWE subset only). Includes all changes from v0.3.6–v0.3.14, of which v0.3.8 and v0.3.9 are documented below.
+
+**Additional fixes in v0.3.10–v0.3.14**:
+- **EXP34-C**: Parameter null propagation — seed callee params with null state inferred from call-site arguments.
+- **INT30-C**: Subtraction guard — detect `a - b` patterns where a preceding comparison proves `a >= b` and suppress the unsigned wrap violation.
+- **EXP33-C**: For-loop init recognized as dominating assignment — `for (int i = 0; ...)` loop variable initializer now counted as initialization before first use. Also fixed a double-push in `collect_init_func_calls_for_var` that caused position deduplication failures.
+
+**Juliet impact** (v0.3.5 → v0.3.14):
+- **Overall**: TP 130,004→126,106 (−3,898), FP 161,510→158,036 (**−3,474**), TP rate **44.6% → 44.4%** (−0.2pp)
+- CWE categories with data: 106→103
+- Categories >50% TP: 19→17
+- Note: v0.3.8/v0.3.9 12-CWE subset had reported 44.3%; full-suite is 44.4% — consistent with subset measurement
+
+**Top CWEs by FP count** (v0.3.14 full suite):
+
+| CWE | TP | FP | TP% |
+|-----|---:|---:|----:|
+| CWE78 OS Command Injection | 17,350 | 5,592 | 75.6% |
+| CWE197 Numeric Truncation Error | 1,148 | 227 | 83.5% |
+| CWE506 Embedded Malicious Code | 666 | 120 | 84.7% |
+| CWE617 Reachable Assertion | 312 | 48 | 86.7% |
+| CWE464 Addition of Data Structure Sentinel | 48 | 5 | 90.6% |
+| CWE457 Use of Uninitialized Variable | 704 | 2,549 | 21.6% | ← worst
+| CWE563 Unused Variable | 54 | 250 | 17.8% |
+| CWE366 Race Condition Within Thread | 1 | 12 | 7.7% |
+
+**Duration**: 1h 14m 1s (54,484 files, 118 CWEs), 24-core workstation via MCP benchmark server.
+
+---
 
 ### v0.3.9 — P3214 Real-World FP Fixes (12-CWE subset)
 
