@@ -515,22 +515,32 @@ The validation logic already exists in `find_error_check_in_context()` (line ~98
 only called for assigned variables, not direct comparisons. Medium-high difficulty.
 
 **CWE-78 (OS command injection)** — ENV03-C/ENV33-C/STR02-C mapped. 5,600 files, 17,350
-incidental TPs but 0 CWE-matched. Three gaps:
-1. **Windows API coverage**: `_execl()`, `_execv()`, `_spawnl()` etc. not detected by
-   ENV33-C or STR02-C. ~400-700 missed TPs. Easy fix.
-2. **ENV03-C file-level scope**: `clearenv()` anywhere in file suppresses all `system()`
+incidental TPs but 0 CWE-matched. **Primary root cause: macro indirection.** Juliet uses
+`#define SYSTEM system` and calls `SYSTEM(data)`. Tree-sitter sees `SYSTEM` as the function
+name, not `system`. All three rules check for literal function names (`"system" | "popen"`),
+so they never match. Secondary gaps:
+1. **Macro alias resolution**: Rules need to recognize `SYSTEM` → `system` via prescan
+   macro constant collection. Easy-medium fix, would unlock all 5,600 Juliet files.
+2. **Windows API coverage**: `_execl()`, `_execv()`, `_spawnl()` etc. not detected by
+   ENV33-C or STR02-C. ~400-700 additional TPs after macro fix. Easy fix.
+3. **ENV03-C file-level scope**: `clearenv()` anywhere in file suppresses all `system()`
    calls including vulnerable ones. Should be function-scoped. ~200-400 missed TPs.
-3. **STR02-C limited taint tracking**: only checks string literal vs non-literal for
+4. **STR02-C limited taint tracking**: only checks string literal vs non-literal for
    `system()` args; exec family only checks `getenv()`. No tracking of `recv()`, `scanf()`,
    etc. as taint sources. ~1,500-2,000 FP reduction if improved.
 
-#### Priority 6 — CWE-78 Windows API Coverage (easy, +400-700 TP)
+#### Priority 6 — CWE-78 Macro Alias + Windows API Coverage (easy-medium, 5,600 files)
 
-Add Windows exec/spawn variants to ENV33-C: `_execl()`, `_execv()`, `_execlp()`, `_execvp()`,
-`_execle()`, `_execve()`, `_spawnl()`, `_spawnle()`, `_spawnlp()`, `_spawnv()`, `_spawnve()`,
-`_spawnvp()`. Also extend STR02-C argument validation to cover these functions. Currently
-only `system()`, `popen()`, `_popen()` and POSIX `exec*()` are detected. ~400-700 additional
-CWE-matched TPs for minimal code change.
+**Primary fix**: Juliet uses `#define SYSTEM system` and calls `SYSTEM(data)`. ENV33-C,
+ENV03-C, STR02-C check literal names only. Need macro alias resolution — either:
+(a) prescan collects `#define SYSTEM system` and resolves at call sites, or
+(b) rules check if call name is an ALL_CAPS identifier and look up its macro definition.
+This would unlock CWE-78 detection on all 5,600 Juliet files.
+
+**Secondary fix**: Add Windows exec/spawn variants to ENV33-C: `_execl()`, `_execv()`,
+`_execlp()`, `_execvp()`, `_execle()`, `_execve()`, `_spawnl()`, `_spawnle()`, `_spawnlp()`,
+`_spawnv()`, `_spawnve()`, `_spawnvp()`. Also extend STR02-C argument validation to cover
+these functions. ~400-700 additional CWE-matched TPs after macro fix.
 
 #### Priority 7 — CWE-253 ERR33-C Comparison Validation (medium-high)
 
