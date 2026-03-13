@@ -478,7 +478,7 @@ impl Int31C {
         var_types: &HashMap<String, String>,
         validated_vars: &HashSet<String>,
     ) {
-        // Check for memset with value > UCHAR_MAX
+        // Check for memset with value > UCHAR_MAX and signed→size_t in call args
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func, source);
@@ -488,6 +488,13 @@ impl Int31C {
                     }
                 }
             }
+            self.check_call_argument_conversion(
+                node,
+                source,
+                violations,
+                var_types,
+                validated_vars,
+            );
         }
 
         // Check for time_t comparison with uncast -1
@@ -516,6 +523,132 @@ impl Int31C {
                     validated_vars,
                 );
             }
+        }
+    }
+
+    /// Returns the parameter indices that expect size_t for known standard library functions.
+    fn get_size_t_param_positions(func_name: &str) -> Option<&'static [usize]> {
+        match func_name {
+            "malloc" => Some(&[0]),
+            "calloc" => Some(&[0, 1]),
+            "realloc" => Some(&[1]),
+            "aligned_alloc" => Some(&[0, 1]),
+            "memcpy" | "memmove" | "memset" | "memcmp" => Some(&[2]),
+            "strncpy" | "strncat" | "strncmp" => Some(&[2]),
+            "snprintf" => Some(&[1]),
+            "fread" | "fwrite" => Some(&[1, 2]),
+            "strnlen" | "wcsnlen" => Some(&[1]),
+            "qsort" | "bsearch" => Some(&[2, 3]),
+            _ => None,
+        }
+    }
+
+    /// Check for implicit signed→unsigned conversion in function call arguments
+    /// where the parameter expects size_t. This catches CWE-194 (sign extension)
+    /// and CWE-195 (signed to unsigned conversion error).
+    fn check_call_argument_conversion(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+        var_types: &HashMap<String, String>,
+        _validated_vars: &HashSet<String>,
+    ) {
+        let func = match node.child_by_field_name("function") {
+            Some(f) => f,
+            None => return,
+        };
+        let func_name = get_node_text(&func, source).to_string();
+
+        let size_t_positions = match Self::get_size_t_param_positions(&func_name) {
+            Some(p) => p,
+            None => return,
+        };
+
+        let args = match node.child_by_field_name("arguments") {
+            Some(a) => a,
+            None => return,
+        };
+
+        // Collect actual argument nodes (skip parens and commas)
+        let mut arg_nodes = Vec::new();
+        for i in 0..args.child_count() {
+            if let Some(child) = args.child(i) {
+                if child.kind() != "," && child.kind() != "(" && child.kind() != ")" {
+                    arg_nodes.push(child);
+                }
+            }
+        }
+
+        for &param_idx in size_t_positions {
+            if param_idx >= arg_nodes.len() {
+                continue;
+            }
+            let arg_node = &arg_nodes[param_idx];
+
+            // Skip explicit casts — user has acknowledged the conversion
+            if arg_node.kind() == "cast_expression" {
+                continue;
+            }
+
+            // Skip sizeof expressions — always non-negative
+            let arg_text = get_node_text(arg_node, source).to_string();
+            if arg_node.kind() == "sizeof_expression" || arg_text.contains("sizeof") {
+                continue;
+            }
+
+            // Skip non-negative literals
+            if arg_node.kind() == "number_literal" {
+                continue;
+            }
+
+            // Determine the argument's declared type via its dominant identifier
+            let ident = if arg_node.kind() == "identifier" {
+                arg_text.clone()
+            } else {
+                Self::extract_dominant_identifier(arg_node, source)
+            };
+            if ident.is_empty() {
+                continue;
+            }
+
+            let arg_type = match var_types.get(&ident) {
+                Some(t) => t.clone(),
+                None => continue,
+            };
+
+            // Only flag signed types — unsigned→size_t is fine
+            if !self.is_signed_type(&arg_type) {
+                continue;
+            }
+
+            // Suppression: inside a bounds-checked block that validates against
+            // a type-limit macro (SHRT_MAX, INT_MAX, SIZE_MAX, etc.)
+            if self.is_inside_bounds_checked_block(node, source, &ident) {
+                continue;
+            }
+
+            // Suppression: enclosed in an if-condition that checks var >= 0
+            if Self::is_inside_non_negative_guard(node, source, &ident) {
+                continue;
+            }
+
+            let pos = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Signed value '{}' ({}) implicitly converted to size_t in {}() call",
+                    ident, arg_type, func_name
+                ),
+                file_path: String::new(),
+                line: pos.row + 1,
+                column: pos.column + 1,
+                suggestion: Some(
+                    "Validate that the value is non-negative before passing to size_t parameter, or use an explicit cast".to_string(),
+                ),
+                ..Default::default()
+            });
         }
     }
 
@@ -855,6 +988,42 @@ impl Int31C {
 
                     if has_comparison && has_bound && references_operand {
                         return true;
+                    }
+                }
+            }
+
+            current = parent;
+        }
+        false
+    }
+
+    /// Check if the node is inside an if-block whose condition verifies the
+    /// variable is non-negative: `if (var >= 0)` or `if (0 <= var)`.
+    /// This is the proper guard against signed→unsigned conversion issues.
+    fn is_inside_non_negative_guard(node: &Node, source: &str, var_name: &str) -> bool {
+        let mut current = *node;
+        for _ in 0..15 {
+            let parent = match current.parent() {
+                Some(p) => p,
+                None => break,
+            };
+
+            if parent.kind() == "if_statement" {
+                if let Some(condition) = parent.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    if cond_text.contains(var_name) {
+                        // Check for patterns: var >= 0, var > 0, 0 <= var, 0 < var
+                        // Also: var >= 0 && var < LIMIT (compound)
+                        let trimmed = cond_text.replace(' ', "");
+                        let patterns = [
+                            format!("{}>=0", var_name),
+                            format!("{}>0", var_name),
+                            format!("0<={}", var_name),
+                            format!("0<{}", var_name),
+                        ];
+                        if patterns.iter().any(|p| trimmed.contains(p)) {
+                            return true;
+                        }
                     }
                 }
             }
