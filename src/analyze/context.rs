@@ -19,6 +19,9 @@ pub struct ProjectContext {
     pub call_graph: HashMap<String, HashSet<String>>,
     /// Macro constants collected from `#define` directives across all scanned files.
     pub macro_constants: HashMap<String, i64>,
+    /// Macro aliases: `#define ALIAS identifier` patterns (e.g., `SYSTEM` → `system`).
+    /// Used by rules to resolve function calls through macro indirection.
+    pub macro_aliases: HashMap<String, String>,
     /// Struct field types: maps `struct_name -> field_name -> type_text`.
     /// Enables resolving types of `field_expression` nodes (e.g., `s->count` → "int").
     pub struct_field_types: HashMap<String, HashMap<String, String>>,

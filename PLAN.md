@@ -529,18 +529,20 @@ so they never match. Secondary gaps:
    `system()` args; exec family only checks `getenv()`. No tracking of `recv()`, `scanf()`,
    etc. as taint sources. ~1,500-2,000 FP reduction if improved.
 
-#### Priority 6 — CWE-78 Macro Alias + Windows API Coverage (easy-medium, 5,600 files)
+#### Priority 6 — CWE-78 Macro Alias + Windows API Coverage (DONE — v0.3.16)
 
-**Primary fix**: Juliet uses `#define SYSTEM system` and calls `SYSTEM(data)`. ENV33-C,
-ENV03-C, STR02-C check literal names only. Need macro alias resolution — either:
-(a) prescan collects `#define SYSTEM system` and resolves at call sites, or
-(b) rules check if call name is an ALL_CAPS identifier and look up its macro definition.
-This would unlock CWE-78 detection on all 5,600 Juliet files.
+**Primary fix (DONE)**: Added `collect_macro_aliases()` to const_eval.rs — collects
+`#define ALIAS identifier` patterns. Added `macro_aliases: HashMap<String, String>` to
+ProjectContext, collected during prescan and header resolution. All three rules (ENV33-C,
+ENV03-C, STR02-C) now implement `set_project_context()` and merge project-level + per-file
+aliases. Macro names are resolved before matching against dangerous function lists.
+Verified: `SYSTEM(data)` now triggers ENV33-C, ENV03-C, STR02-C.
 
-**Secondary fix**: Add Windows exec/spawn variants to ENV33-C: `_execl()`, `_execv()`,
-`_execlp()`, `_execvp()`, `_execle()`, `_execve()`, `_spawnl()`, `_spawnle()`, `_spawnlp()`,
-`_spawnv()`, `_spawnve()`, `_spawnvp()`. Also extend STR02-C argument validation to cover
-these functions. ~400-700 additional CWE-matched TPs after macro fix.
+**Secondary fix (DONE)**: Added Windows exec/spawn variants to ENV33-C: `_execl()`,
+`_execv()`, `_execlp()`, `_execvp()`, `_execle()`, `_execve()`, `_spawnl()`, `_spawnle()`,
+`_spawnlp()`, `_spawnv()`, `_spawnve()`, `_spawnvp()`. STR02-C also checks Windows
+`_exec*()` variants for argument validation. Verified: `EXECVP(...)` → `_execvp`
+correctly triggers ENV33-C through macro alias resolution.
 
 #### Priority 7 — CWE-253 ERR33-C Comparison Validation (medium-high)
 
