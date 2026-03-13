@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-12 (v0.3.15)
+**Last Updated**: 2026-03-12 (v0.3.16)
 
 ---
 
@@ -505,14 +505,11 @@ casts and direct assignments. Juliet uses implicit conversions in function argum
 (e.g., `strncpy(dest, src, signed_short)` where `short` is implicitly widened). Fix requires
 adding function-argument type checking to INT31-C — medium difficulty.
 
-**CWE-253 (incorrect check of function return value)** — ERR33-C mapped but architectural
-mismatch. ERR33-C validates **that** a return value is checked, not **how** it's checked.
-CWE-253 Juliet patterns use WRONG comparisons: `fgets() < 0` (fgets returns NULL, not -1),
-`fprintf() == 0` (error returns -1). `is_return_value_checked()` sees `binary_expression`
-and returns true immediately. Fix: validate the comparison operator/value against
-function-specific error indicators (NULL-returning vs negative-returning vs nonzero-returning).
-The validation logic already exists in `find_error_check_in_context()` (line ~989) but is
-only called for assigned variables, not direct comparisons. Medium-high difficulty.
+**CWE-253 (incorrect check of function return value)** — **FIXED in P7.** ERR33-C now
+validates comparison correctness when a function call is directly embedded in a
+binary_expression. Functions classified by `ErrorReturnKind` enum (NullPointer, NegativeInt,
+Eof, NonZero, Count). `check_incorrect_comparison()` walks up from call to binary_expression,
+extracts operator/value, and validates against the function's error semantics.
 
 **CWE-78 (OS command injection)** — ENV03-C/ENV33-C/STR02-C mapped. 5,600 files, 17,350
 incidental TPs but 0 CWE-matched. **Primary root cause: macro indirection.** Juliet uses
@@ -544,13 +541,24 @@ Verified: `SYSTEM(data)` now triggers ENV33-C, ENV03-C, STR02-C.
 `_exec*()` variants for argument validation. Verified: `EXECVP(...)` → `_execvp`
 correctly triggers ENV33-C through macro alias resolution.
 
-#### Priority 7 — CWE-253 ERR33-C Comparison Validation (medium-high)
+#### Priority 7 — CWE-253 ERR33-C Comparison Validation (DONE — v0.3.16)
 
-Extend `is_return_value_checked()` to validate comparison correctness, not just presence.
-Map each error-returning function to valid error indicators (NULL-returning, negative-returning,
-nonzero-returning) and reject mismatched comparisons. `find_error_check_in_context()` already
-has this logic for assigned variables — extend to direct comparisons in if-statements.
-684 Juliet files, currently 0% detection.
+Added CWE-253 (incorrect check of function return value) detection to ERR33-C. Functions
+are classified by error return kind: NullPointer (fgets, fopen, malloc — return NULL),
+NegativeInt (fprintf, printf, snprintf — return < 0), Eof (putc, fputs, scanf — return EOF),
+NonZero (remove, rename, fclose — return non-zero), Count (fread, fwrite — return count).
+When a direct call appears in a binary_expression, the comparison operator/value is validated
+against the function's error semantics. Incorrect patterns detected:
+- Pointer functions with ordered comparison: `fgets() < 0` (pointer, not int)
+- Negative-on-error compared `== 0`: `fprintf() == 0` (error is < 0)
+- EOF-returning compared `== 0`: `putc() == 0` (error is EOF/-1)
+- Non-zero-on-error compared `== 0`: `remove() == 0` (0 = success)
+- Count-returning compared `< 0` or `== 0`: `fwrite() < 0` (size_t unsigned)
+
+Also added macro alias resolution to ERR33-C (same pattern as ENV33-C) and extended
+function coverage to include wchar_t variants (fgetws, fwprintf, putwc, etc.) for CWE-253
+detection without adding them to the unchecked-return-value list (avoids ERR33-C noise).
+Verified: all Juliet CWE-253 BAD patterns detected, zero false positives on GOOD patterns.
 
 #### Priority 8 — CWE-194/195 INT31-C Implicit Conversion in Arguments (medium)
 
