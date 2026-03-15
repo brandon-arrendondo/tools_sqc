@@ -1,6 +1,6 @@
 # SqC — Plans & Action Items
 
-**Last Updated**: 2026-03-12 (v0.3.16)
+**Last Updated**: 2026-03-14 (v0.3.18)
 
 ---
 
@@ -438,8 +438,8 @@ rate was stuck at 44%: it was measuring noise distribution, not detection capabi
 | CWE | Files | Incidental TP | Mapped Rules |
 |-----|------:|--------------:|--------------|
 | CWE-78 (OS cmd injection) | 5,600 | 17,350 | ENV03-C, ENV33-C, STR02-C |
-| CWE-194 (sign extension) | 1,344 | 3,637 | INT31-C |
-| CWE-195 (signed→unsigned) | 1,344 | 3,298 | INT31-C, FLP34-C |
+| CWE-194 (sign extension) | 1,344 | 3,637 | INT31-C | **FIXED in P8** |
+| CWE-195 (signed→unsigned) | 1,344 | 3,298 | INT31-C, FLP34-C | **FIXED in P8** |
 | CWE-761 (free not at start) | 672 | 2,830 | API07-C |
 | CWE-253 (incorrect check ret) | 684 | 409 | ERR33-C, POS34-C |
 | CWE-114 (process control) | 672 | 1,751 | ERR07-C, MEM10-C |
@@ -500,10 +500,9 @@ CWE-124, CWE-126, CWE-127 to ARR30-C, ARR38-C, STR31-C TOMLs. These rules alread
 on the Juliet test files — they were just classified as noise instead of CWE-matched.
 Regenerated `rule_cwe_map.json` (144 → 147 unique CWEs).
 
-**CWE-194/195 (sign extension, signed→unsigned)** — INT31-C mapped but only checks explicit
-casts and direct assignments. Juliet uses implicit conversions in function arguments
-(e.g., `strncpy(dest, src, signed_short)` where `short` is implicitly widened). Fix requires
-adding function-argument type checking to INT31-C — medium difficulty.
+**CWE-194/195 (sign extension, signed→unsigned)** — **FIXED in P8 (v0.3.18).** Added
+`check_call_argument_conversion()` to detect signed args passed to size_t parameters.
+See Priority 8 section for details.
 
 **CWE-253 (incorrect check of function return value)** — **FIXED in P7.** ERR33-C now
 validates comparison correctness when a function call is directly embedded in a
@@ -526,7 +525,7 @@ so they never match. Secondary gaps:
    `system()` args; exec family only checks `getenv()`. No tracking of `recv()`, `scanf()`,
    etc. as taint sources. ~1,500-2,000 FP reduction if improved.
 
-#### Priority 6 — CWE-78 Macro Alias + Windows API Coverage (DONE — v0.3.16)
+#### Priority 6 — CWE-78 Macro Alias + Windows API Coverage (DONE — v0.3.16, benchmarked v0.3.17)
 
 **Primary fix (DONE)**: Added `collect_macro_aliases()` to const_eval.rs — collects
 `#define ALIAS identifier` patterns. Added `macro_aliases: HashMap<String, String>` to
@@ -541,7 +540,9 @@ Verified: `SYSTEM(data)` now triggers ENV33-C, ENV03-C, STR02-C.
 `_exec*()` variants for argument validation. Verified: `EXECVP(...)` → `_execvp`
 correctly triggers ENV33-C through macro alias resolution.
 
-#### Priority 7 — CWE-253 ERR33-C Comparison Validation (DONE — v0.3.16)
+**Benchmark (v0.3.17)**: CWE-78 CWE-matched TP 1,282, FP 1,773, precision 42.0%, per-file 13.0%.
+
+#### Priority 7 — CWE-253 ERR33-C Comparison Validation (DONE — v0.3.16, benchmarked v0.3.17)
 
 Added CWE-253 (incorrect check of function return value) detection to ERR33-C. Functions
 are classified by error return kind: NullPointer (fgets, fopen, malloc — return NULL),
@@ -560,12 +561,28 @@ function coverage to include wchar_t variants (fgetws, fwprintf, putwc, etc.) fo
 detection without adding them to the unchecked-return-value list (avoids ERR33-C noise).
 Verified: all Juliet CWE-253 BAD patterns detected, zero false positives on GOOD patterns.
 
-#### Priority 8 — CWE-194/195 INT31-C Implicit Conversion in Arguments (medium)
+**Benchmark (v0.3.17)**: CWE-253 CWE-matched TP 178, FP 0, **100% precision**, 26.0% per-file detection. CWE-252 also 100% precision (179 TP, 0 FP). Zero false positives on GOOD patterns confirmed at scale.
 
-INT31-C only checks explicit casts and direct assignments. Juliet CWE-194/195 tests use
-implicit conversions in function arguments (`strncpy(dest, src, signed_short)`). Extend
-`check_assignment_conversion()` to inspect call_expression arguments against known function
-parameter types. 2,688 files (1,344 each), currently 0% detection.
+#### Priority 8 — CWE-194/195 INT31-C Implicit Conversion in Arguments (DONE — v0.3.18)
+
+Added `check_call_argument_conversion()` to INT31-C: detects signed integer variables
+(`short`, `int`, `int32_t`, etc.) passed to functions expecting `size_t`. Covers 20
+standard library functions: `malloc`, `calloc`, `realloc`, `memcpy`, `memmove`, `memset`,
+`strncpy`, `strncat`, `strncmp`, `memcmp`, `snprintf`, `fread`, `fwrite`, `strnlen`,
+`wcsnlen`, `qsort`, `bsearch`, `aligned_alloc`. Uses `get_size_t_param_positions()` to
+map function names to parameter indices expecting `size_t`.
+
+Suppressions: explicit cast (`(size_t)data`), `sizeof` expressions, numeric literals,
+limit-macro bounds check (`SHRT_MAX`, `INT_MAX`, etc. via `is_inside_bounds_checked_block`),
+and non-negative guard (`if (var >= 0)` via new `is_inside_non_negative_guard()`).
+
+Note: `collect_validations()` was found to be overly aggressive — `if (data < 100)` was
+treated as a bounds check because "100" contains "0" matching `cond_text.contains("0")`.
+The new check bypasses `validated_vars` and uses only structural suppressions.
+
+Verified on Juliet: all 4 sink types (malloc, memcpy, memmove, strncpy) detected across
+multiple flow variants (01–18) for both CWE-194 (`short`) and CWE-195 (`int`).
+Previously 0% CWE-matched detection on 2,688 files. Awaiting benchmark for precise numbers.
 
 #### Future — Fast Benchmark Mode (CWE-focused manifests)
 
