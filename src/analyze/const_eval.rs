@@ -206,6 +206,30 @@ fn resolve_sizeof_type(type_text: &str) -> Option<i64> {
 // Macro constant collection
 // ---------------------------------------------------------------------------
 
+/// Collect `#define ALIAS func_name` patterns where the value is a single C identifier.
+/// These represent macro aliases for function names (e.g., `#define SYSTEM system`).
+/// Returns a map from alias → target identifier.
+pub fn collect_macro_aliases(root: &Node, source: &str) -> HashMap<String, String> {
+    let mut raw_defs: Vec<(String, String)> = Vec::new();
+    collect_preproc_defs(root, source, &mut raw_defs);
+
+    let mut aliases = HashMap::new();
+    for (name, value) in &raw_defs {
+        let v = value.trim();
+        // A function alias is a single C identifier (no operators, parens, digits-only, etc.)
+        if !v.is_empty()
+            && v.chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '_')
+            && !v.chars().next().unwrap_or('0').is_ascii_digit()
+            // Skip pure integer strings (they're constants, not function aliases)
+            && v.parse::<i64>().is_err()
+        {
+            aliases.insert(name.clone(), v.to_string());
+        }
+    }
+    aliases
+}
+
 /// Walk `preproc_def` nodes in the AST to collect `#define NAME value` constants.
 /// Handles decimal, hex, octal literals, expressions, and references to other macros.
 /// Recurses into `preproc_ifdef/if/ifndef` blocks.

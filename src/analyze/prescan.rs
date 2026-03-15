@@ -26,6 +26,7 @@ pub fn prescan_directories(
     let mut function_summaries = HashMap::new();
     let mut call_graph = HashMap::new();
     let mut macro_constants = HashMap::new();
+    let mut macro_aliases = HashMap::new();
     let mut struct_field_types = HashMap::new();
     let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
     let mut source_files: Vec<PathBuf> = Vec::new();
@@ -73,6 +74,10 @@ pub fn prescan_directories(
                 let file_macros = const_eval::collect_macro_constants(&root, &source);
                 macro_constants.extend(file_macros);
 
+                // Collect macro aliases (#define ALIAS identifier)
+                let file_aliases = const_eval::collect_macro_aliases(&root, &source);
+                macro_aliases.extend(file_aliases);
+
                 // Collect struct field types from struct definitions
                 collect_struct_definitions(&root, &source, &mut struct_field_types);
 
@@ -115,6 +120,7 @@ pub fn prescan_directories(
         function_summaries,
         call_graph,
         macro_constants,
+        macro_aliases,
         struct_field_types,
     })
 }
@@ -1191,9 +1197,11 @@ pub fn resolve_includes(
                     context.function_summaries.insert(name, summary);
                 }
 
-                // Collect macro constants from resolved headers
+                // Collect macro constants and aliases from resolved headers
                 let header_macros = const_eval::collect_macro_constants(&root, &hsource);
                 context.macro_constants.extend(header_macros);
+                let header_aliases = const_eval::collect_macro_aliases(&root, &hsource);
+                context.macro_aliases.extend(header_aliases);
 
                 // Collect struct field types from resolved headers
                 collect_struct_definitions(&root, &hsource, &mut context.struct_field_types);
