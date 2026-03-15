@@ -22,6 +22,7 @@
 //! statements after assignment, with sophisticated context detection to minimize false positives.
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::const_eval;
 use crate::analyze::context::ProjectContext;
 use crate::analyze::function_summary::FunctionSummary;
 use crate::manifest::{RuleCategory, Severity};
@@ -32,14 +33,33 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
+/// Error return type categories for CWE-253 incorrect check detection
+#[derive(Debug)]
+enum ErrorReturnKind {
+    /// Returns NULL pointer on error (fgets, fopen, malloc, etc.)
+    NullPointer,
+    /// Returns negative value on error (fprintf, printf, snprintf)
+    NegativeInt,
+    /// Returns EOF (-1) on error (putc, fputc, putchar, fputs, puts, scanf, etc.)
+    Eof,
+    /// Returns non-zero on error (remove, rename, fclose, fseek)
+    NonZero,
+    /// Returns count, compare against expected (fread, fwrite)
+    Count,
+}
+
 pub struct Err33C {
     function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+    project_aliases: RefCell<HashMap<String, String>>,
+    current_aliases: RefCell<HashMap<String, String>>,
 }
 
 impl Err33C {
     pub fn new() -> Self {
         Self {
             function_summaries: RefCell::new(HashMap::new()),
+            project_aliases: RefCell::new(HashMap::new()),
+            current_aliases: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -67,9 +87,15 @@ impl CertRule for Err33C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+        *self.project_aliases.borrow_mut() = context.macro_aliases.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
+        // Merge project-level aliases with per-file aliases
+        let mut aliases = self.project_aliases.borrow().clone();
+        aliases.extend(const_eval::collect_macro_aliases(node, source));
+        *self.current_aliases.borrow_mut() = aliases;
+
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
         violations
@@ -109,17 +135,30 @@ impl Err33C {
 
     fn check_function_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         if let Some(function_node) = node.child_by_field_name("function") {
-            let function_name = get_node_text(&function_node, source);
+            let raw_name = get_node_text(&function_node, source);
+            let function_name = self.resolve_name(raw_name);
 
-            if self.is_error_returning_function(function_name) {
+            let in_assignment = self.is_call_in_assignment_or_declaration(node, source);
+
+            // CWE-253: Check for incorrect comparison of return value (direct calls only)
+            if !in_assignment {
+                if self.check_incorrect_comparison(node, &function_name, source, violations) {
+                    return;
+                }
+            }
+
+            if self.is_error_returning_function(&function_name) {
                 // Skip if this call is part of an assignment or declaration
                 // Those cases are handled by check_assignment and check_init_declarator
-                if self.is_call_in_assignment_or_declaration(node, source) {
+                if in_assignment {
                     return;
                 }
 
                 // For printf/fprintf in error handling contexts, don't flag
-                if matches!(function_name, "printf" | "fprintf" | "sprintf" | "snprintf") {
+                if matches!(
+                    function_name.as_str(),
+                    "printf" | "fprintf" | "sprintf" | "snprintf"
+                ) {
                     if self.is_in_error_handling_context(node, source) {
                         return; // Skip flagging printf/fprintf in error contexts
                     }
@@ -140,7 +179,7 @@ impl Err33C {
                     let start_point = node.start_position();
                     let call_text = get_node_text(&node, source);
 
-                    let error_info = self.get_error_info(function_name);
+                    let error_info = self.get_error_info(&function_name);
 
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
@@ -1471,6 +1510,238 @@ impl Err33C {
             current = parent.parent();
         }
         None
+    }
+
+    // ========================================================================
+    // CWE-253: Incorrect check of function return value
+    // ========================================================================
+
+    /// Resolve a function name through macro aliases.
+    fn resolve_name(&self, name: &str) -> String {
+        let aliases = self.current_aliases.borrow();
+        if let Some(target) = aliases.get(name) {
+            target.clone()
+        } else {
+            name.to_string()
+        }
+    }
+
+    /// Get the error return kind for a function, used for CWE-253 validation.
+    /// This covers more functions than is_error_returning_function() to detect
+    /// incorrect comparisons on wchar_t variants and other stdlib functions.
+    fn get_error_return_kind(&self, function_name: &str) -> Option<ErrorReturnKind> {
+        match function_name {
+            // NULL pointer returns
+            "fgets" | "fgetws" | "fopen" | "freopen" | "tmpfile" | "tmpnam" | "malloc"
+            | "calloc" | "realloc" | "aligned_alloc" | "getenv" | "setlocale" | "ctime"
+            | "localtime" | "gmtime" | "asctime" | "strdup" | "strndup" => {
+                Some(ErrorReturnKind::NullPointer)
+            }
+
+            // Negative int on error (return count or negative)
+            "fprintf" | "printf" | "sprintf" | "snprintf" | "vfprintf" | "vprintf" | "vsprintf"
+            | "vsnprintf" | "fwprintf" | "wprintf" | "swprintf" => {
+                Some(ErrorReturnKind::NegativeInt)
+            }
+
+            // EOF on error
+            "putc" | "fputc" | "putchar" | "putwc" | "fputwc" | "putwchar" | "fputs" | "fputws"
+            | "puts" | "ungetc" | "ungetwc" | "fgetc" | "fgetwc" | "scanf" | "fscanf"
+            | "sscanf" | "wscanf" | "fwscanf" | "swscanf" => Some(ErrorReturnKind::Eof),
+
+            // Non-zero on error
+            "remove" | "rename" | "fclose" | "fseek" | "fflush" | "fsetpos" | "atexit"
+            | "raise" => Some(ErrorReturnKind::NonZero),
+
+            // Count return (compare against expected)
+            "fread" | "fwrite" | "mbstowcs" | "wcstombs" | "strftime" | "wcsftime" => {
+                Some(ErrorReturnKind::Count)
+            }
+
+            _ => None,
+        }
+    }
+
+    /// Check if a function call has an incorrect comparison for its return value (CWE-253).
+    /// Returns true if an incorrect comparison was found and a violation was emitted.
+    fn check_incorrect_comparison(
+        &self,
+        call_node: &Node,
+        function_name: &str,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) -> bool {
+        let error_kind = match self.get_error_return_kind(function_name) {
+            Some(k) => k,
+            None => return false,
+        };
+
+        // Walk up to find the binary_expression containing this call
+        let mut current = call_node.parent();
+        let mut depth = 0;
+        while let Some(parent) = current {
+            if depth > 3 {
+                break;
+            }
+
+            if parent.kind() == "binary_expression" {
+                return self.validate_comparison_for_function(
+                    &parent,
+                    call_node,
+                    function_name,
+                    &error_kind,
+                    source,
+                    violations,
+                );
+            }
+
+            // Keep walking through parenthesized and cast expressions
+            if parent.kind() == "parenthesized_expression" || parent.kind() == "cast_expression" {
+                current = parent.parent();
+                depth += 1;
+                continue;
+            }
+
+            break;
+        }
+
+        false
+    }
+
+    /// Validate whether a binary comparison is correct for the given function's error semantics.
+    /// Returns true if an incorrect comparison was found and a violation was emitted.
+    fn validate_comparison_for_function(
+        &self,
+        binary_expr: &Node,
+        call_node: &Node,
+        function_name: &str,
+        error_kind: &ErrorReturnKind,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) -> bool {
+        let operator = match binary_expr.child_by_field_name("operator") {
+            Some(op) => get_node_text(&op, source),
+            None => return false,
+        };
+        let op = operator.trim();
+
+        let (left, right) = match (
+            binary_expr.child_by_field_name("left"),
+            binary_expr.child_by_field_name("right"),
+        ) {
+            (Some(l), Some(r)) => (l, r),
+            _ => return false,
+        };
+
+        // Figure out the comparison value (the side that ISN'T the call)
+        let cmp_value = if self.node_byte_range_contains(&left, call_node) {
+            get_node_text(&right, source)
+        } else if self.node_byte_range_contains(&right, call_node) {
+            get_node_text(&left, source)
+        } else {
+            return false;
+        };
+        let cmp_value = cmp_value.trim();
+
+        let is_incorrect = match error_kind {
+            ErrorReturnKind::NullPointer => {
+                // Pointer functions: ordered comparisons (<, >, <=, >=) are always wrong
+                matches!(op, "<" | ">" | "<=" | ">=")
+            }
+            ErrorReturnKind::NegativeInt => {
+                // Error is < 0. Checking == 0 doesn't detect errors.
+                op == "==" && cmp_value == "0"
+            }
+            ErrorReturnKind::Eof => {
+                // Error is EOF (-1). Checking == 0 doesn't detect errors.
+                op == "==" && cmp_value == "0"
+            }
+            ErrorReturnKind::NonZero => {
+                // Error is non-zero. Checking == 0 checks for success, not error.
+                op == "==" && cmp_value == "0"
+            }
+            ErrorReturnKind::Count => {
+                // Return is count (size_t). Checking < 0 on unsigned is always false.
+                // Checking == 0 misses partial reads/writes.
+                matches!(op, "<" | "==") && cmp_value == "0"
+            }
+        };
+
+        if is_incorrect {
+            let suggestion =
+                self.get_incorrect_check_suggestion(function_name, error_kind, op, cmp_value);
+
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "Incorrect check of '{}' return value: '{} {}' does not properly \
+                     detect the error condition. {}",
+                    function_name, op, cmp_value, suggestion
+                ),
+                file_path: String::new(),
+                line: call_node.start_position().row + 1,
+                column: call_node.start_position().column + 1,
+                suggestion: Some(suggestion),
+                ..Default::default()
+            });
+            return true;
+        }
+
+        false
+    }
+
+    /// Generate a suggestion message for an incorrect return value check.
+    fn get_incorrect_check_suggestion(
+        &self,
+        function_name: &str,
+        error_kind: &ErrorReturnKind,
+        op: &str,
+        cmp_value: &str,
+    ) -> String {
+        match error_kind {
+            ErrorReturnKind::NullPointer => {
+                format!(
+                    "{}() returns a pointer that is NULL on error. \
+                     Use '== NULL' or '!= NULL' instead of '{} {}'",
+                    function_name, op, cmp_value
+                )
+            }
+            ErrorReturnKind::NegativeInt => {
+                format!(
+                    "{}() returns a negative value on error. \
+                     Use '< 0' to detect errors instead of '{} {}'",
+                    function_name, op, cmp_value
+                )
+            }
+            ErrorReturnKind::Eof => {
+                format!(
+                    "{}() returns EOF (-1) on error. \
+                     Use '== EOF' to detect errors instead of '{} {}'",
+                    function_name, op, cmp_value
+                )
+            }
+            ErrorReturnKind::NonZero => {
+                format!(
+                    "{}() returns non-zero on error. \
+                     Use '!= 0' to detect errors instead of '{} {}'",
+                    function_name, op, cmp_value
+                )
+            }
+            ErrorReturnKind::Count => {
+                format!(
+                    "{}() returns the number of items processed. \
+                     Compare against expected count instead of '{} {}'",
+                    function_name, op, cmp_value
+                )
+            }
+        }
+    }
+
+    /// Check if a node's byte range contains another node
+    fn node_byte_range_contains(&self, potential_parent: &Node, child: &Node) -> bool {
+        potential_parent.start_byte() <= child.start_byte()
+            && potential_parent.end_byte() >= child.end_byte()
     }
 }
 
