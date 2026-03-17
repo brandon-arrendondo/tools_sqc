@@ -74,6 +74,36 @@ def generate_map(project_dir: Path) -> dict:
     }
 
 
+def generate_cwe_manifests(project_dir: Path, cwe_to_rules: dict[str, list[str]]) -> int:
+    """Generate per-CWE TOML manifests with only CWE-matched rules enabled.
+
+    Each manifest lives at rules_templates/cwe/CWE-NNN.toml and contains only
+    the rules that map to that CWE, so sqc runs faster and produces less noise.
+    """
+    manifest_dir = project_dir / "rules_templates" / "cwe"
+    manifest_dir.mkdir(parents=True, exist_ok=True)
+
+    count = 0
+    for cwe_id, rules in sorted(cwe_to_rules.items()):
+        lines = [
+            f'[metadata]',
+            f'name = "CWE-focused manifest for {cwe_id}"',
+            f'version = "1.0.0"',
+            f'cert_version = "2016"',
+            f'',
+        ]
+        for rule in sorted(rules):
+            lines.append(f'[rules.cert_c."{rule}"]')
+            lines.append(f'enabled = true')
+            lines.append(f'')
+
+        manifest_path = manifest_dir / f"{cwe_id}.toml"
+        manifest_path.write_text("\n".join(lines))
+        count += 1
+
+    return count
+
+
 def main():
     project_dir = Path(__file__).resolve().parent.parent
     output_path = project_dir / "data" / "rule_cwe_map.json"
@@ -91,6 +121,12 @@ def main():
         f"{stats['rules_with_cwe']} rules with CWE mappings, "
         f"{stats['unique_cwes']} unique CWEs"
     )
+
+    # Generate per-CWE manifests for fast benchmark mode
+    manifest_count = generate_cwe_manifests(
+        project_dir, mapping["cwe_to_rules"]
+    )
+    print(f"Generated {manifest_count} per-CWE manifests in rules_templates/cwe/")
 
 
 if __name__ == "__main__":
