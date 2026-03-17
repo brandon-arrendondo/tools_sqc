@@ -35,7 +35,7 @@
 
 - Implemented 5 new benchmark metrics: FLAW-line hit rate, CWE-matched TP rate, per-file detection rate, noise ratio, incidental TP/FP
 - `scripts/generate_rule_cwe_map.py` produces `data/rule_cwe_map.json` (117 rules to 144 CWEs)
-- Analysis pipeline fully integrated: `analyze_juliet_results.py`, `mcp/server.py`, `run_juliet_parallel.sh`
+- Analysis pipeline fully integrated: `analyze_juliet_results.py`, `mcp_servers/server.py`, `run_juliet_parallel.sh`
 - **Key finding**: 95% of Juliet findings are noise from unrelated rules; CWE-matched TP rate is 45.6% vs 44.4% incidental
 
 ### CWE Mapping Fixes
