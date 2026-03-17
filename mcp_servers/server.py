@@ -3,12 +3,16 @@
 MCP server for running and monitoring the Juliet CERT C benchmark against sqc.
 
 Tools:
-  run_benchmark          - Start a fresh benchmark run (unique dir per version+commit)
-  cancel_benchmark       - Cancel a running benchmark (kills all parallel processes)
+  run_benchmark          - Start a fresh benchmark run (SQLite-backed)
+  cancel_benchmark       - Cancel a running benchmark
   clear_results          - Remove old benchmark result directories
   get_status             - Progress %, ETA, recently completed CWEs
   get_results(sort_by)   - Aggregated TP/FP stats + per-rule breakdown
   get_cwe_detail(cwe_id) - Detailed stats for one CWE
+  list_runs              - List all benchmark runs
+  compare_runs           - Compare two runs
+  compare_cwe            - Compare one CWE across two runs
+  reanalyze_run          - Re-run analysis on existing CSVs
 """
 
 import json
@@ -17,6 +21,7 @@ import re
 import shutil
 import signal
 import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -35,6 +40,24 @@ STATE_FILE = Path("/tmp/juliet_bench.pid")  # stores JSON state (name kept for c
 
 # The benchmark script knows its total CWE list; we use 118 as the known count.
 KNOWN_TOTAL_CWES = 118
+
+# ── SQLite backend (new) ─────────────────────────────────────────────────────
+# Add project root to path so bench package is importable
+sys.path.insert(0, str(PROJECT_DIR))
+from bench.db import BenchDB
+from bench.config import DB_PATH
+
+def _get_db() -> BenchDB:
+    """Get a BenchDB instance."""
+    return BenchDB()
+
+def _db_has_run(run_id: str) -> bool:
+    """Check if a run exists in the SQLite DB."""
+    try:
+        db = _get_db()
+        return db.get_run(run_id) is not None
+    except Exception:
+        return False
 
 # ── MCP server ────────────────────────────────────────────────────────────────
 mcp = FastMCP(
@@ -202,29 +225,31 @@ def _parse_log(log_file: Path) -> dict:
     done_names: set[str] = set()  # dedup (script may log twice on retry)
 
     for line in log_file.read_text().splitlines():
-        if line.startswith("DONE:"):
+        if line.startswith("DONE"):
             # DONE: CWE78_OS_Command_Injection | 1276s | 125780 violations | 5600 files
-            m = re.match(
-                r"DONE: (\S+) \| (\d+)s \| (\d+) violations \| (\d+) files", line
+            # Also handles: DONE [N/M]: ...
+            m = re.search(
+                r"(?:DONE[^:]*:\s*)(\S+)\s*\|\s*(\d+(?:\.\d+)?)s\s*\|\s*(\d+)\s*violations\s*\|\s*(\d+)\s*files",
+                line
             )
             if m and m.group(1) not in done_names:
                 done_names.add(m.group(1))
                 done.append(
                     {
                         "cwe": m.group(1),
-                        "duration_s": int(m.group(2)),
+                        "duration_s": int(float(m.group(2))),
                         "violations": int(m.group(3)),
                         "files": int(m.group(4)),
                     }
                 )
-        elif line.startswith("START:"):
+        elif line.startswith("START"):
             # START: CWE78_OS_Command_Injection (5600 files)
-            m = re.match(r"START: (\S+)\s*(?:\((\d+) files\))?", line)
+            m = re.match(r"START[^:]*:\s*(\S+)\s*(?:\((\d+) files\))?", line)
             if m:
                 started.add(m.group(1))
                 if m.group(2):
                     started_files[m.group(1)] = int(m.group(2))
-        elif line.startswith("ERROR:"):
+        elif "FAIL:" in line or "ERROR:" in line:
             errors.append(line)
 
     return {"done": done, "started": started, "started_files": started_files, "errors": errors}
@@ -377,14 +402,15 @@ def _ensure_rule_cwe_map() -> bool:
 # ── Tools ─────────────────────────────────────────────────────────────────────
 
 @mcp.tool()
-def run_benchmark() -> str:
+def run_benchmark(mode: str = "fast") -> str:
     """
     Start a fresh Juliet benchmark run against sqc.
 
-    Creates a unique results directory based on the sqc version and git commit SHA
-    (e.g., /tmp/juliet_results/sqc-0.1.0-abc1234/). Returns immediately — use
-    get_status() to monitor progress. If a benchmark is already running, returns
-    its current PID instead of starting a new one.
+    Uses the new Python-based runner (bench.runner) which writes results
+    directly to SQLite. Returns immediately — use get_status() to monitor.
+
+    Args:
+        mode: "fast" (default, per-CWE manifests) or "full" (all rules)
     """
     state = _read_state()
     if state and _process_alive(state.get("pid", 0)):
@@ -403,33 +429,29 @@ def run_benchmark() -> str:
     version = _get_sqc_version()
     sha = _get_git_sha()
     run_name = f"sqc-{version}-{sha}"
+
+    # Create a log directory for stdout capture
     results_dir = RESULTS_BASE / run_name
-
-    # Create/clear the run-specific results directory
-    if results_dir.exists():
-        for f in results_dir.glob("*.csv"):
-            f.unlink(missing_ok=True)
-        for f in results_dir.glob("*.txt"):
-            f.unlink(missing_ok=True)
-        log = results_dir / "benchmark.log"
-        log.unlink(missing_ok=True)
-    else:
-        results_dir.mkdir(parents=True)
-
-    # Open log file inside the results directory
+    results_dir.mkdir(parents=True, exist_ok=True)
     log_path = results_dir / "benchmark.log"
     log_fh = log_path.open("w")
+
+    # Build command for the new Python runner
+    cmd = [sys.executable, "-m", "bench", "juliet"]
+    if mode == "full":
+        cmd.append("--full")
 
     # Launch benchmark detached from the MCP server process so it survives
     # even if the MCP server is restarted.
     env = os.environ.copy()
-    env["RESULTS_DIR"] = str(results_dir)
+    env["PYTHONPATH"] = str(PROJECT_DIR) + ((":" + env["PYTHONPATH"]) if "PYTHONPATH" in env else "")
 
     proc = subprocess.Popen(
-        ["bash", str(SCRIPT)],
+        cmd,
         stdout=log_fh,
         stderr=subprocess.STDOUT,
         start_new_session=True,  # detach — PID becomes PGID
+        cwd=str(PROJECT_DIR),
         env=env,
     )
     log_fh.close()  # MCP server doesn't need to hold the handle
@@ -443,6 +465,7 @@ def run_benchmark() -> str:
         "commit_sha": sha,
         "run_name": run_name,
         "status": "running",
+        "backend": "sqlite",
     }
     _write_state(new_state)
 
@@ -456,8 +479,8 @@ def run_benchmark() -> str:
             "commit_sha": sha,
             "message": (
                 f"Benchmark started (PID {proc.pid}). "
-                f"Results dir: {results_dir}. "
-                "Use get_status() to monitor progress."
+                f"Run: {run_name} ({mode} mode). "
+                "Results written to SQLite. Use get_status() to monitor progress."
             ),
         }
     )
@@ -468,7 +491,7 @@ def cancel_benchmark() -> str:
     """
     Cancel a running Juliet benchmark.
 
-    Kills the benchmark process group (the main script, xargs workers, and all
+    Kills the benchmark process group (the main script, workers, and all
     child sqc processes). Partial results already written are preserved and can
     still be queried with get_results() and get_cwe_detail().
     """
@@ -508,8 +531,7 @@ def cancel_benchmark() -> str:
     # Collect child PIDs before killing (for verification)
     child_pids = _find_child_pids(pid)
 
-    # Kill the entire process group (the script and its children).
-    # run_benchmark() uses start_new_session=True, so the PID is also the PGID.
+    # Kill the entire process group
     _kill_process_group(pid)
 
     # Belt-and-suspenders: kill any children that escaped the process group
@@ -524,9 +546,29 @@ def cancel_benchmark() -> str:
     elapsed = int(time.time() - state["start_time"])
     _update_state(status="cancelled")
 
-    log_file = _get_log_file(state)
-    log_data = _parse_log(log_file)
-    done_count = len(log_data["done"])
+    # Update DB status if this was a SQLite-backed run
+    run_name = state.get("run_name")
+    if run_name and state.get("backend") == "sqlite":
+        try:
+            db = _get_db()
+            from datetime import datetime, timezone
+            db.finish_run(run_name, "cancelled", datetime.now(timezone.utc).isoformat())
+        except Exception:
+            pass
+
+    # Get completion count from DB or log
+    done_count = 0
+    if state.get("backend") == "sqlite" and run_name:
+        try:
+            db = _get_db()
+            progress = db.get_progress(run_name)
+            done_count = progress["done_cwes"]
+        except Exception:
+            pass
+    if done_count == 0:
+        log_file = _get_log_file(state)
+        log_data = _parse_log(log_file)
+        done_count = len(log_data["done"])
 
     return json.dumps(
         {
@@ -638,9 +680,6 @@ def reanalyze_run(run: str = "all") -> str:
     version of analyze_juliet_results.py. Does NOT re-run sqc — only
     reclassifies existing violations as TP/FP.
 
-    Use this after updating the analysis script (e.g., to output all rules
-    instead of top 10) to refresh analysis files for historical runs.
-
     Args:
         run: Run identifier (run name, SHA, or "latest"), or "all" to
              reanalyze every run directory.
@@ -746,6 +785,112 @@ def get_status() -> str:
             }
         )
 
+    pid = state.get("pid", 0)
+    is_running = _process_alive(pid)
+    was_cancelled = state.get("status") == "cancelled"
+    run_name = state.get("run_name")
+    elapsed_s = int(time.time() - state["start_time"])
+
+    # Try SQLite first for status
+    if state.get("backend") == "sqlite" and run_name:
+        try:
+            db = _get_db()
+            progress = db.get_progress(run_name)
+            run = progress.get("run", {})
+            done_count = progress["done_cwes"]
+            total_cwes = progress["total_cwes"] or KNOWN_TOTAL_CWES
+            progress_pct = progress["progress_pct"]
+
+            eta_s = None
+            if is_running and done_count > 0 and elapsed_s > 0:
+                rate = done_count / elapsed_s
+                remaining = total_cwes - done_count
+                eta_s = int(remaining / rate) if rate > 0 else None
+
+            # Determine state string
+            db_status = run.get("status", "unknown")
+            if not is_running and db_status == "running":
+                state_str = "crashed"
+            elif was_cancelled:
+                state_str = "cancelled"
+            elif db_status == "completed":
+                state_str = "completed"
+            elif is_running:
+                state_str = "running"
+            else:
+                state_str = db_status
+
+            # Convert recent completions to legacy format
+            recently = []
+            for c in progress.get("recently_completed", []):
+                recently.append({
+                    "cwe": c["cwe_dir_name"],
+                    "duration_s": int(c["duration_s"] or 0),
+                    "violations": c["violation_count"],
+                    "files": c["file_count"],
+                })
+
+            result: dict = {
+                "state": state_str,
+                "progress_pct": progress_pct,
+                "done_cwes": done_count,
+                "total_cwes": total_cwes,
+                "elapsed_seconds": elapsed_s,
+                "elapsed_human": _fmt_duration(elapsed_s),
+                "eta_seconds": eta_s,
+                "eta_human": _fmt_duration(eta_s) if eta_s else None,
+                "results_dir": state.get("results_dir", str(RESULTS_BASE)),
+                "run_name": run_name,
+                "version": state.get("version"),
+                "commit_sha": state.get("commit_sha"),
+                "recently_completed": recently,
+                "errors": [],
+                "backend": "sqlite",
+            }
+
+            if state_str == "completed":
+                finished = run.get("finished_at")
+                if finished and run.get("started_at"):
+                    from datetime import datetime
+                    try:
+                        t0 = datetime.fromisoformat(run["started_at"])
+                        t1 = datetime.fromisoformat(finished)
+                        total_s = int((t1 - t0).total_seconds())
+                    except Exception:
+                        total_s = elapsed_s
+                else:
+                    total_s = elapsed_s
+                result["total_duration_seconds"] = total_s
+                result["total_duration_human"] = _fmt_duration(total_s)
+                result["message"] = (
+                    f"Benchmark complete in {_fmt_duration(total_s)}. "
+                    f"{done_count}/{total_cwes} CWEs analyzed. "
+                    "Use get_results() for aggregated stats or get_cwe_detail(cwe_id) for specifics."
+                )
+            elif was_cancelled:
+                result["message"] = (
+                    f"Benchmark was cancelled after {_fmt_duration(elapsed_s)}. "
+                    f"{done_count}/{total_cwes} CWEs completed before cancellation. "
+                    "Partial results available via get_results()."
+                )
+            elif is_running:
+                eta_str = _fmt_duration(eta_s) if eta_s else "unknown"
+                result["message"] = (
+                    f"{done_count}/{total_cwes} CWEs done ({progress_pct}%). "
+                    f"Elapsed: {_fmt_duration(elapsed_s)}. ETA: {eta_str}."
+                )
+            else:
+                result["message"] = (
+                    f"Benchmark process (PID {pid}) is no longer running. "
+                    f"{done_count}/{total_cwes} CWEs completed. "
+                    "It may have crashed — check errors field."
+                )
+
+            return json.dumps(result)
+        except Exception:
+            pass  # Fall through to legacy log-based status
+
+    # Legacy: log-based status (for old runs or if DB not available)
     results_dir = _active_results_dir(state)
     log_file = _get_log_file(state)
     log_data = _parse_log(log_file)
@@ -753,14 +898,8 @@ def get_status() -> str:
     done_count = len(done)
     started_files = log_data.get("started_files", {})
 
-    pid = state.get("pid", 0)
-    is_running = _process_alive(pid)
-    was_cancelled = state.get("status") == "cancelled"
-
     summary_file = results_dir / "multi_cwe_summary.txt"
     is_complete = summary_file.exists() and not is_running
-
-    elapsed_s = int(time.time() - state["start_time"])
 
     # Use the known total; fall back to observed started count if higher.
     total_cwes = max(KNOWN_TOTAL_CWES, len(log_data["started"]), done_count)
@@ -816,7 +955,6 @@ def get_status() -> str:
     files_str = f" ({files_processed:,} / {files_total:,} files)" if files_total else ""
 
     if is_complete:
-        # Use the summary file mtime as the actual finish time (it's written last).
         total_s = int(summary_file.stat().st_mtime - state["start_time"])
         result["total_duration_seconds"] = total_s
         result["total_duration_human"] = _fmt_duration(total_s)
@@ -848,17 +986,39 @@ def get_status() -> str:
 
 
 @mcp.tool()
-def get_results(sort_by: str = "fp_count") -> str:
+def get_results(sort_by: str = "fp_count", run: str = "latest") -> str:
     """
     Get aggregated TP/FP results across all completed CWEs.
 
     Args:
         sort_by: How to sort the per-rule breakdown.
                  One of: "fp_count" (default), "fp_rate", "tp_count"
+        run: Run identifier — "latest" (default), run name, or commit SHA.
 
     Returns a summary (total TP, FP, TP rate), the top 20 rules by the chosen
     sort key, and a per-CWE table sorted by FP count.
     """
+    # Try SQLite first
+    try:
+        db = _get_db()
+        run_id = db.resolve_run(run)
+        if run_id:
+            result = db.get_run_summary(run_id)
+            if result["summary"]["cwes_analyzed"] > 0:
+                # Sort top_rules by requested key
+                sort_keys = {
+                    "fp_count": lambda x: -x["fp"],
+                    "fp_rate": lambda x: -x.get("fp_pct", 0),
+                    "tp_count": lambda x: -x["tp"],
+                }
+                result["top_rules"].sort(
+                    key=sort_keys.get(sort_by, sort_keys["fp_count"]))
+                result["summary"]["sort_by"] = sort_by
+                return json.dumps(result)
+    except Exception:
+        pass
+
+    # Legacy fallback: read from text analysis files
     state = _read_state()
     results_dir = _active_results_dir(state)
 
@@ -1032,17 +1192,30 @@ def get_results(sort_by: str = "fp_count") -> str:
 
 
 @mcp.tool()
-def get_cwe_detail(cwe_id: str) -> str:
+def get_cwe_detail(cwe_id: str, run: str = "latest") -> str:
     """
     Get detailed TP/FP breakdown for a specific CWE.
 
     Args:
         cwe_id: CWE identifier. Accepts any of:
                 "CWE78", "78", "CWE78_OS_Command_Injection"
+        run: Run identifier — "latest" (default), run name, or commit SHA.
 
     Returns file count, TP/FP rates, top contributing rules for TPs and FPs,
     and FLAW-line detection statistics.
     """
+    # Try SQLite first
+    try:
+        db = _get_db()
+        run_id = db.resolve_run(run)
+        if run_id:
+            detail = db.get_cwe_detail(run_id, cwe_id)
+            if detail:
+                return json.dumps(detail)
+    except Exception:
+        pass
+
+    # Legacy fallback: read from text analysis files
     state = _read_state()
     results_dir = _active_results_dir(state)
 
@@ -1286,34 +1459,60 @@ def _load_run_data(results_dir: Path) -> dict:
 @mcp.tool()
 def list_runs() -> str:
     """
-    List all available benchmark run directories.
+    List all available benchmark runs (from SQLite DB and legacy directories).
 
     Shows each run's version, commit SHA, number of CWEs completed, size,
     and whether the run finished. Use the run_name values as identifiers
     in compare_runs() and compare_cwe().
     """
-    runs = _list_run_dirs()
+    # Merge SQLite runs with legacy directory runs
+    all_runs = []
+    seen_names = set()
 
-    if not runs:
+    # SQLite runs
+    try:
+        db = _get_db()
+        for r in db.list_runs():
+            progress = db.get_progress(r["run_id"])
+            all_runs.append({
+                "run_name": r["run_id"],
+                "version": r["sqc_version"],
+                "commit_sha": r["commit_sha"],
+                "cwes_completed": progress["done_cwes"],
+                "is_complete": r["status"] == "completed",
+                "status": r["status"],
+                "started_at": r["started_at"],
+                "backend": "sqlite",
+            })
+            seen_names.add(r["run_id"])
+    except Exception:
+        pass
+
+    # Legacy directory runs (only add if not already seen)
+    for r in _list_run_dirs():
+        if r["run_name"] not in seen_names:
+            r["backend"] = "legacy"
+            all_runs.append(r)
+
+    if not all_runs:
         return json.dumps({
             "runs": [],
             "message": (
-                "No benchmark runs found. Use run_benchmark() to start one. "
-                f"Results are stored under {RESULTS_BASE}."
+                "No benchmark runs found. Use run_benchmark() to start one."
             ),
         })
 
     # Mark which one is the "current" run from state
     state = _read_state()
-    current_dir = state.get("results_dir") if state else None
-    for r in runs:
-        r["is_current"] = r["path"] == current_dir
+    current_name = state.get("run_name") if state else None
+    for r in all_runs:
+        r["is_current"] = r["run_name"] == current_name
 
     return json.dumps({
-        "runs": runs,
-        "count": len(runs),
+        "runs": all_runs,
+        "count": len(all_runs),
         "message": (
-            f"{len(runs)} benchmark run(s) found. "
+            f"{len(all_runs)} benchmark run(s) found. "
             "Use run names as identifiers in compare_runs() and compare_cwe()."
         ),
     })
@@ -1331,6 +1530,24 @@ def compare_runs(base: str, target: str) -> str:
     Returns overall TP/FP delta, top CWEs improved/regressed, and per-rule
     changes. Positive FP delta = regression (more FPs), negative = improvement.
     """
+    # Try SQLite first
+    try:
+        db = _get_db()
+        base_id = db.resolve_run(base)
+        target_id = db.resolve_run(target)
+        if base_id and target_id:
+            if base_id == target_id:
+                return json.dumps({
+                    "error": "Base and target resolve to the same run.",
+                    "resolved": base_id,
+                })
+            result = db.compare_runs(base_id, target_id)
+            if "error" not in result:
+                return json.dumps(result)
+    except Exception:
+        pass
+
+    # Legacy fallback
     base_dir = _resolve_run(base)
     target_dir = _resolve_run(target)
 
@@ -1531,6 +1748,81 @@ def compare_cwe(cwe_id: str, base: str, target: str) -> str:
 
     Returns TP/FP delta, per-rule changes, and FLAW detection delta for the CWE.
     """
+    # Try SQLite first
+    try:
+        db = _get_db()
+        base_id = db.resolve_run(base)
+        target_id = db.resolve_run(target)
+        if base_id and target_id:
+            b_detail = db.get_cwe_detail(base_id, cwe_id)
+            t_detail = db.get_cwe_detail(target_id, cwe_id)
+            if b_detail and t_detail:
+                bs, ts = b_detail["summary"], t_detail["summary"]
+                b_total = bs["tp"] + bs["fp"]
+                t_total = ts["tp"] + ts["fp"]
+                b_tp_pct = round(bs["tp"] / b_total * 100, 1) if b_total else 0
+                t_tp_pct = round(ts["tp"] / t_total * 100, 1) if t_total else 0
+
+                result = {
+                    "cwe": b_detail["cwe"],
+                    "base_run": base_id,
+                    "target_run": target_id,
+                    "summary": {
+                        "base": {"tp": bs["tp"], "fp": bs["fp"], "total": b_total,
+                                 "tp_rate_pct": b_tp_pct, "files": b_detail["files_analyzed"]},
+                        "target": {"tp": ts["tp"], "fp": ts["fp"], "total": t_total,
+                                   "tp_rate_pct": t_tp_pct, "files": t_detail["files_analyzed"]},
+                        "delta": {
+                            "tp": ts["tp"] - bs["tp"],
+                            "fp": ts["fp"] - bs["fp"],
+                            "total": t_total - b_total,
+                            "tp_rate_pp": round(t_tp_pct - b_tp_pct, 2),
+                        },
+                    },
+                    "flaw_detection": {
+                        "base": {"detected": bs["flaw_lines_detected"],
+                                 "total": bs["flaw_lines_total"],
+                                 "rate_pct": bs["flaw_detection_rate_pct"]},
+                        "target": {"detected": ts["flaw_lines_detected"],
+                                   "total": ts["flaw_lines_total"],
+                                   "rate_pct": ts["flaw_detection_rate_pct"]},
+                        "delta": {
+                            "detected": ts["flaw_lines_detected"] - bs["flaw_lines_detected"],
+                            "rate_pp": round(ts["flaw_detection_rate_pct"] - bs["flaw_detection_rate_pct"], 2),
+                        },
+                    },
+                }
+
+                # CWE-aware comparison
+                if b_detail.get("cwe_aware") and t_detail.get("cwe_aware"):
+                    ba, ta = b_detail["cwe_aware"], t_detail["cwe_aware"]
+                    b_cm_total = ba["cwe_matched_tp"] + ba["cwe_matched_fp"]
+                    t_cm_total = ta["cwe_matched_tp"] + ta["cwe_matched_fp"]
+                    b_cm_tp_pct = round(ba["cwe_matched_tp"] / b_cm_total * 100, 1) if b_cm_total else 0
+                    t_cm_tp_pct = round(ta["cwe_matched_tp"] / t_cm_total * 100, 1) if t_cm_total else 0
+                    result["cwe_aware"] = {
+                        "base": {
+                            "cwe_matched_tp": ba["cwe_matched_tp"],
+                            "cwe_matched_fp": ba["cwe_matched_fp"],
+                            "cwe_matched_tp_rate_pct": b_cm_tp_pct,
+                        },
+                        "target": {
+                            "cwe_matched_tp": ta["cwe_matched_tp"],
+                            "cwe_matched_fp": ta["cwe_matched_fp"],
+                            "cwe_matched_tp_rate_pct": t_cm_tp_pct,
+                        },
+                        "delta": {
+                            "cwe_matched_tp": ta["cwe_matched_tp"] - ba["cwe_matched_tp"],
+                            "cwe_matched_fp": ta["cwe_matched_fp"] - ba["cwe_matched_fp"],
+                            "cwe_matched_tp_rate_pp": round(t_cm_tp_pct - b_cm_tp_pct, 2),
+                        },
+                    }
+
+                return json.dumps(result)
+    except Exception:
+        pass
+
+    # Legacy fallback
     base_dir = _resolve_run(base)
     target_dir = _resolve_run(target)
 
@@ -1593,7 +1885,6 @@ def compare_cwe(cwe_id: str, base: str, target: str) -> str:
     t_flaw_pct = round(t["flaw_detected"] / t["flaw_total"] * 100, 1) if t["flaw_total"] else 0
 
     # ── Per-rule comparison ──────────────────────────────────────────────
-    # Build rule maps from top_tp_rules and top_fp_rules
     def _rule_map(entries: list[dict]) -> dict[str, int]:
         return {e["rule"]: e["count"] for e in entries}
 
