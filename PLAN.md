@@ -23,15 +23,20 @@ Run full Juliet suite to measure CWE-194/195 improvement from INT31-C `check_cal
 
 `generate_rule_cwe_map.py` now generates 147 per-CWE manifest TOMLs in `rules_templates/cwe/`. `run_juliet_parallel.sh --fast` uses them. Validated on CWE-476: noise drops from 61.8% → 0%, TP rate 39.5% → 46.5%, per-file detection unchanged (29.0%).
 
-### Benchmark Infrastructure Overhaul
+### ~~Benchmark Infrastructure Overhaul~~ ✓ DONE (v0.3.20)
 
-Refactor Juliet and real-world benchmark tooling into a unified Python runner with SQLite output, optimized for Claude-driven analysis.
+Phase 1 complete. New `bench/` package replaces shell scripts with Python runner + SQLite:
+- `bench/runner.py`: `ProcessPoolExecutor`-based parallel CWE runner, writes directly to `data/benchmarks.db`
+- `bench/analyzer.py`: TP/FP classifier extracted from `analyze_juliet_results.py`, returns structured data
+- `bench/db.py`: SQLite schema (7 tables), WAL mode, full CRUD + query API
+- `mcp_servers/server.py`: Updated to launch `python -m bench juliet`, queries SQLite first with legacy fallback
+- `scripts/backfill_juliet_results.py`: Imported 21 Juliet runs + 7 real-world runs from markdown docs
+- Fast mode default, resume support, machine metadata collection
 
-1. **Juliet MCP server**: Update to use `--fast` mode (per-CWE manifests) by default
-2. **Unified Python runner**: Replace shell scripts (`run_juliet_parallel.sh`, `run_juliet_multi_cwe.sh`) with a single Python entry point that handles both Juliet and real-world benchmarks
-3. **SQLite output**: Store all benchmark results (violations, TP/FP classification, CWE-aware metrics, per-CWE timing, total run duration) in a SQLite database instead of flat CSV + text files. Include machine metadata (CPU model, core count, RAM) per run so the MCP server can estimate time remaining from historical runs on the same hardware and detect performance regressions across versions.
-4. **Claude-optimized analysis**: Design schema and query interface so Claude can efficiently drill into results (per-CWE, per-rule, per-variant, cross-run diffs, performance trends) without parsing large text files
-5. **Run orchestration**: Parallel CWE scanning, progress tracking, resume-on-failure, automatic comparison with prior runs
+**Remaining phases** (future):
+- Phase 2: `query_violations()` flexible drill-down, `get_performance_trend()`, `estimate_eta()`
+- Phase 3: Real-world runner integration (`bench/realworld_runner.py`)
+- Phase 4: Remove legacy shell scripts after full migration validation
 
 ### Real-World Validation: Next Modules
 

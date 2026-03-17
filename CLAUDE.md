@@ -159,28 +159,61 @@ cat .claude/commands/gather-opinions.md
 
 See `BENCHMARK_RUNNING.md` for full MCP server tool reference and troubleshooting.
 
-When running Juliet benchmarks, follow this protocol strictly:
+### Data Storage
+
+All benchmark results are stored in **`data/benchmarks.db`** (SQLite, WAL mode).
+This is the single source of truth for Juliet and real-world benchmark data.
+Historical results from `JULIET_RESULTS.md` and `REALWORLD_RESULTS.md` have been
+backfilled. New runs write directly to this database.
+
+**Key tables**: `runs` (one row per benchmark), `cwe_scans` (one per CWE per run),
+`violations` (every individual finding), `cwe_metrics` (pre-computed TP/FP/rates),
+`rule_cwe_breakdown` (per-rule per-CWE counts), `realworld_runs` + `realworld_results`.
+
+### Running Benchmarks
+
+The MCP server (`mcp_servers/server.py`) launches `python -m bench juliet` which:
+- Uses **fast mode by default** (per-CWE manifests, CWE-matched rules only)
+- Runs CWEs in parallel via `ProcessPoolExecutor`
+- Writes results directly to SQLite (no intermediate text files)
+- Supports resume: re-running skips already-completed CWEs
+
+CLI alternative (not through MCP):
+```bash
+python -m bench juliet [--full] [--jobs N]
+python -m bench status [RUN_ID]
+python -m bench compare BASE TARGET
+python -m bench runs
+```
+
+### Protocol
 
 1. **Version bump + commit BEFORE benchmark**: Always bump the version in `Cargo.toml`,
    rebuild (`cargo build --release`), and commit before starting a benchmark run.
-   This ensures the benchmark results directory is tagged with the correct version
-   and commit SHA (e.g., `sqc-0.2.1-abc1234`).
+   The run_id is derived from version + commit SHA (e.g., `sqc-0.3.20-abc1234`).
 
 2. **NEVER modify code while a benchmark is running**: The benchmark uses
    `target/release/sqc`. If you rebuild while it's running, you corrupt results
    mid-run. Make ALL code changes and commits BEFORE starting the benchmark.
 
-3. **Wait for completion**: Benchmarks take ~40-50 minutes. The last CWE category
-   takes the longest. Check status with `get_status()` no more than once every
-   10 minutes. Do NOT make changes or start other work until the benchmark completes.
+3. **Wait for completion**: Fast-mode benchmarks take ~8-10 minutes on 4-core,
+   ~3-5 minutes on 24-core. Full-suite takes ~40-50 minutes. Check status with
+   `get_status()` no more than once every 5 minutes.
 
 4. **Compare runs**: After a benchmark completes, use `compare_runs()` to compare
    against previous runs. Use `get_cwe_detail()` for per-CWE deep dives.
+   Historical runs are available with suffix `-historical` (e.g., `sqc-0.3.17-historical`).
 
 5. **Workflow sequence**:
    ```
    implement changes → bump version → commit → build release → run benchmark → wait → analyze
    ```
+
+### Querying Results
+
+The MCP tools (`get_results`, `get_cwe_detail`, `compare_runs`, `list_runs`) query
+SQLite first, falling back to legacy text files for old runs. All 21 historical
+Juliet runs (v0.2.1 through v0.3.19) and 7 real-world runs are in the database.
 
 ---
 
@@ -203,6 +236,7 @@ When running Juliet benchmarks, follow this protocol strictly:
 ## Project Structure
 
 - `src/rules/cert_c/` - CERT C rule implementations
+- `bench/` - Benchmark infrastructure (runner, analyzer, SQLite DB, CLI)
 - `AGENTS/PROPOSALS/ACTIVE/` - Proposals to implement
 - `AGENTS/PROPOSALS/STAGED/` - Completed proposals
 - `scripts/work_active_helpers.sh` - Workflow automation
