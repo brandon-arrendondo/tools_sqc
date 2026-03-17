@@ -34,12 +34,14 @@ See [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_
 | File | Contents |
 |------|----------|
 | [README.md](README.md) | Tool overview, usage, configuration (this file) |
-| [JULIET_RESULTS.md](JULIET_RESULTS.md) | Juliet benchmark data: TP/FP history, per-round fixes, per-CWE results, methodology, competitor comparison |
-| [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md) | Real-world codebase results: sqc vs cppcheck vs clang-tidy on 5 OSS projects, d_lib_common case study |
-| [BENCHMARK_SUMMARY.md](BENCHMARK_SUMMARY.md) | Overall benchmark strategy, architecture assessment, CI/CD readiness, methodology notes |
-| [BENCHMARK_INSTALL.md](BENCHMARK_INSTALL.md) | Installing cppcheck, clang-tidy, setting up Juliet and real-world codebases, per-project commands |
-| [BENCHMARK_RUNNING.md](BENCHMARK_RUNNING.md) | Running benchmarks via MCP servers (Juliet and real-world), workflow protocol |
-| [PLAN.md](PLAN.md) | Future plans: EXP34-C roadmap, pending FP improvements, architecture evolution, competitor research |
+| [CHANGELOG.md](CHANGELOG.md) | Version history: per-release fixes, features, and benchmark deltas |
+| [PLAN.md](PLAN.md) | Roadmap: immediate, medium-term, and long-term priorities |
+| [RESEARCH.md](RESEARCH.md) | Competitor analysis agenda and academic references |
+| [JULIET_RESULTS.md](JULIET_RESULTS.md) | Juliet benchmark data: TP/FP history, per-CWE results, CWE-aware scoring |
+| [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md) | Real-world codebase results: sqc vs cppcheck vs clang-tidy on 5 OSS projects |
+| [BENCHMARK_SUMMARY.md](BENCHMARK_SUMMARY.md) | Benchmark strategy, architecture assessment, CI/CD readiness |
+| [BENCHMARK_INSTALL.md](BENCHMARK_INSTALL.md) | Tool installation and per-project setup for benchmarking |
+| [BENCHMARK_RUNNING.md](BENCHMARK_RUNNING.md) | Running benchmarks via MCP servers (Juliet and real-world) |
 | [CLAUDE.md](CLAUDE.md) | Claude Code project instructions (agent workflows, git rules, benchmark protocol) |
 
 ## Installation
