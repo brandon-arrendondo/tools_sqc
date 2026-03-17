@@ -5,14 +5,17 @@
 //!
 //! Resolves macro aliases (#define SYSTEM system) via project context.
 //!
+//! Sanitization is checked per function scope: clearenv()/setenv()/putenv()
+//! must appear in the same function as the system()/popen() call.
+//!
 //! Violation pattern:
-//!   system("/bin/ls");  // No clearenv() or setenv("PATH"/"IFS") before
+//!   system("/bin/ls");  // No clearenv() or setenv("PATH"/"IFS") in this function
 //!
 //! Compliant patterns:
 //!   clearenv();
 //!   setenv("PATH", "/bin", 1);
 //!   setenv("IFS", " \t\n", 1);
-//!   system("/bin/ls");  // Environment sanitized before system()
+//!   system("/bin/ls");  // Environment sanitized in same function
 
 use crate::analyze::const_eval;
 use crate::analyze::context::ProjectContext;
@@ -75,16 +78,7 @@ impl CertRule for Env03C {
         *self.current_aliases.borrow_mut() = aliases;
 
         let mut violations = Vec::new();
-        let mut has_env_sanitization = false;
-
-        // First pass: check if ANY environment sanitization exists in the file
-        self.check_for_sanitization(node, source, &mut has_env_sanitization);
-
-        // Second pass: if no sanitization, flag all system()/popen() calls
-        if !has_env_sanitization {
-            self.find_external_program_calls(node, source, &mut violations);
-        }
-
+        self.check_all_calls(node, source, &mut violations);
         violations
     }
 }
@@ -98,6 +92,74 @@ impl Env03C {
         } else {
             name.to_string()
         }
+    }
+
+    /// Find all system()/popen() calls and check if their containing scope
+    /// has environment sanitization.
+    fn check_all_calls(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&function, source);
+                let resolved = self.resolve_name(&func_name);
+
+                if resolved == "system" || resolved == "popen" {
+                    // Find containing function, or root for bare code
+                    let scope = self.find_containing_function_or_root(node);
+                    let scope_node = scope.unwrap_or(*node);
+
+                    // Check if that scope has sanitization
+                    let mut has_sanitization = false;
+                    self.check_for_sanitization(&scope_node, source, &mut has_sanitization);
+
+                    if !has_sanitization {
+                        let start_point = node.start_position();
+                        let call_text = get_node_text(node, source);
+
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::High,
+                            message: format!(
+                                "External program invocation '{}' without environment sanitization. \
+                                The environment should be sanitized before invoking external programs \
+                                to prevent environment variable manipulation attacks.",
+                                call_text
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some(
+                                "Call clearenv() to clear the environment, then use setenv() to set \
+                                PATH and IFS to known safe values before invoking external programs."
+                                    .to_string(),
+                            ),
+                            ..Default::default()
+                        });
+                    }
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_all_calls(&child, source, violations);
+            }
+        }
+    }
+
+    /// Find the containing function_definition, or the translation_unit root.
+    fn find_containing_function_or_root<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = *node;
+        let mut root = *node;
+        while let Some(parent) = current.parent() {
+            if parent.kind() == "function_definition" {
+                return Some(parent);
+            }
+            root = parent;
+            current = parent;
+        }
+        // No function found — return the root (translation_unit)
+        Some(root)
     }
 
     fn check_for_sanitization(&self, node: &Node, source: &str, has_sanitization: &mut bool) {
@@ -159,53 +221,6 @@ impl Env03C {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
                 self.check_for_sanitization(&child, source, has_sanitization);
-            }
-        }
-    }
-
-    fn find_external_program_calls(
-        &self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
-        if node.kind() == "call_expression" {
-            if let Some(function) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&function, source);
-                let resolved = self.resolve_name(&func_name);
-
-                // system() and popen() invoke external programs
-                if resolved == "system" || resolved == "popen" {
-                    let start_point = node.start_position();
-                    let call_text = get_node_text(node, source);
-
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "External program invocation '{}' without environment sanitization. \
-                            The environment should be sanitized before invoking external programs \
-                            to prevent environment variable manipulation attacks.",
-                            call_text
-                        ),
-                        file_path: String::new(),
-                        line: start_point.row + 1,
-                        column: start_point.column + 1,
-                        suggestion: Some(
-                            "Call clearenv() to clear the environment, then use setenv() to set \
-                            PATH and IFS to known safe values before invoking external programs."
-                                .to_string(),
-                        ),
-                        ..Default::default()
-                    });
-                }
-            }
-        }
-
-        // Recurse
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.find_external_program_calls(&child, source, violations);
             }
         }
     }
