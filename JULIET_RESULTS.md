@@ -1,6 +1,6 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-03-11
+**Last Updated**: 2026-03-16
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
 
 ---
@@ -11,10 +11,10 @@
 |--------|-------|
 | **Rules Implemented** | 283+ CERT C rules |
 | **Juliet Files** | 54,484 |
-| **True Positives** | 126,106 |
-| **False Positives** | 158,036 |
-| **TP Rate** | **44.4%** (v0.3.14, MCP benchmark) |
-| **FP Reduction from Baseline** | -81.2% (839K → 158K) |
+| **True Positives** | 128,038 |
+| **False Positives** | 160,496 |
+| **TP Rate** | **44.4%** (v0.3.17, MCP benchmark) |
+| **FP Reduction from Baseline** | -80.9% (839K → 161K) |
 | **CWE Categories with Data** | 103 / 118 |
 | **Categories >50% TP** | 17 |
 
@@ -87,6 +87,82 @@ Runtime varies significantly by machine and parallelism. Always record these whe
 ---
 
 ## Per-Round Fix Details
+
+### v0.3.19 — Fast Benchmark Mode + CWE-78 Taint Tracking (Fast Suite)
+
+First benchmark using **fast mode** (`--fast`): per-CWE manifests that include only CWE-matched rules, eliminating noise from unrelated rules. 68 CWEs scanned (29 skipped — no CWE-mapped rules), 12 parallel jobs.
+
+**Fast benchmark mode**: `generate_rule_cwe_map.py` generates 147 per-CWE TOML manifests. `run_juliet_parallel.sh --fast` uses them. Noise ratio drops to 0% by design.
+
+**ENV03-C function-scoped sanitization**: `clearenv()`/`setenv("PATH")` now checked per-function instead of file-level. A `clearenv()` in one function no longer suppresses violations in other functions in the same file.
+
+**STR02-C intra-function taint tracking**: Replaced blanket "non-literal = risky" check with taint analysis. Tracks `recv()`, `fgets()`, `fgetws()`, `scanf()`, `getenv()`, etc. as taint sources. Handles cast expressions like `(char *)(data + offset)`. Function parameters treated as tainted by default. Taint propagation through `strcpy`/`sprintf`/`memcpy`.
+
+**CWE-78 impact** (v0.3.17 → v0.3.19, fast mode):
+
+| Metric | v0.3.17 | v0.3.19 | Delta |
+|--------|---------|---------|-------|
+| CWE-78 TP | 1,282 | 1,204 | -78 |
+| CWE-78 FP | 1,773 | 1,443 | **-330** |
+| CWE-78 Precision | 42.0% | **45.5%** | +3.5pp |
+| CWE-78 Per-file | 13.0% | 13.0% | — |
+| STR02-C TP | ~278 | 200 | -78 (cross-function) |
+| STR02-C FP | ~382 | 52 | **-330 (-86%)** |
+
+**CWE-aware highlights** (fast mode, CWE-matched rules only):
+
+| CWE | CWE-matched TP | CWE-matched FP | Precision | Per-file | Notes |
+|-----|---------------:|---------------:|----------:|---------:|-------|
+| CWE-252 | 179 | 0 | **100%** | 16.5% | ERR33-C |
+| CWE-253 | 178 | 0 | **100%** | 26.0% | ERR33-C |
+| CWE-690 | 290 | 62 | **82.4%** | 25.9% | EXP34-C |
+| CWE-197 | 259 | 126 | **67.5%** | 37.4% | INT31-C |
+| CWE-401 | 284 | 287 | 49.7% | 21.7% | MEM31-C |
+| CWE-78 | 1,204 | 1,443 | **45.5%** | 13.0% | ENV03-C/STR02-C taint |
+| CWE-476 | 140 | 161 | 46.5% | 29.0% | EXP34-C |
+| CWE-190 | 650 | 820 | 44.2% | 12.9% | INT30-C/INT32-C |
+| CWE-194 | 447 | 626 | 41.7% | 27.0% | INT31-C (new in v0.3.18) |
+| CWE-195 | 406 | 588 | 40.8% | 24.8% | INT31-C (new in v0.3.18) |
+| CWE-121 | 854 | 1,317 | 39.3% | 12.8% | STR31-C/ARR30-C |
+
+**Perfect precision (100% TP)**: CWE-244, CWE-252, CWE-253, CWE-338, CWE-467, CWE-481, CWE-587, CWE-590, CWE-591, CWE-681 (10 CWEs).
+
+**Zero-detection CWEs** (rules mapped but 0 violations): CWE-114, CWE-188, CWE-226, CWE-259, CWE-272, CWE-273, CWE-327, CWE-367, CWE-459, CWE-464, CWE-468, CWE-469, CWE-666, CWE-672, CWE-676, CWE-761, CWE-762, CWE-789, CWE-843 (19 CWEs).
+
+**Duration**: ~8 min wall time (12 jobs, 4-core laptop), 68 CWEs scanned. Fast mode is ~10x faster than full suite for CWE-focused analysis.
+
+---
+
+### v0.3.17 — CWE-78 Macro Alias Resolution + CWE-253 Incorrect Return Check (Full Suite)
+
+Two new detection capabilities: P6 (CWE-78 macro alias resolution) and P7 (CWE-253 incorrect comparison validation).
+
+**P6: CWE-78 macro alias resolution** (commit d8587d80): Added `collect_macro_aliases()` to resolve `#define SYSTEM system` patterns. ENV33-C, ENV03-C, STR02-C now detect dangerous function calls through macro indirection. Also added Windows exec/spawn variants (`_execl`, `_execv`, `_spawnl`, etc.) to ENV33-C and STR02-C.
+
+**P7: CWE-253 ERR33-C comparison validation** (commit 83a71e54): Functions classified by error return kind (NullPointer, NegativeInt, Eof, NonZero, Count). When a direct call appears in a binary_expression, the comparison operator/value is validated against function semantics. Detects: `fgets() < 0` (pointer with ordered op), `fprintf() == 0` (error is < 0), `putc() == 0` (error is EOF), `remove() == 0` (0 = success), `fwrite() < 0` (size_t unsigned). Includes wchar_t variants and macro alias resolution.
+
+**Juliet impact** (v0.3.14 → v0.3.17):
+- **Overall**: TP 126,106→128,038 (+1,932), FP 158,036→160,496 (+2,460), TP rate **44.4% → 44.4%** (unchanged)
+- Net increase from new detections (macro-resolved calls + CWE-253 patterns)
+
+**CWE-aware highlights** (first run with CWE-aware scoring):
+
+| CWE | CWE-matched TP | CWE-matched FP | Precision | Per-file | Notes |
+|-----|---------------:|---------------:|----------:|---------:|-------|
+| CWE-253 | 178 | 0 | **100%** | 26.0% | New — P7 detection |
+| CWE-252 | 179 | 0 | **100%** | 16.5% | Existing ERR33-C |
+| CWE-690 | 290 | 62 | **82.4%** | 25.9% | EXP34-C null deref from return |
+| CWE-78 | 1,282 | 1,773 | 42.0% | 13.0% | P6 macro aliases |
+| CWE-590 | 94 | 0 | **100%** | 10.4% | MEM31-C free-not-on-heap |
+| CWE-467 | 20 | 0 | **100%** | 37.0% | ARR01-C sizeof-on-pointer |
+| CWE-481 | 12 | 0 | **100%** | 66.7% | EXP45-C assign-vs-compare |
+| CWE-391 | 36 | 22 | 62.1% | 37.0% | ERR33-C unchecked error |
+
+**CWE-aware aggregate** (68 CWEs with mapped rules): CWE-matched TP rate 44.3%, per-file detection 12.6%, flaw-hit rate 4.6%, noise ratio 93.3%.
+
+**Duration**: 1h 47m 15s (54,484 files, 118 CWEs), 24-core workstation via MCP benchmark server.
+
+---
 
 ### v0.3.14 — EXP33-C, INT30-C, EXP34-C FP Fixes (Full Suite)
 
@@ -673,6 +749,8 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 | v0.2.25 | 44.6% | 161,965 | 130,199 | — | 24-core workstation | ARR32-C tightening, INT18-C/EXP05-C removal, value-range FP fixes |
 | v0.3.5 | 44.6% | 161,510 | 130,004 | — | 24-core workstation | Struct field type resolution (INT32-C/INT30-C), DCL13-C/DCL30-C/EXP33-C fixes |
 | v0.3.8 | 44.3%² | 77,826² | 61,799² | — | 4-core laptop | STR31-C is_function_parameter, API00-C patterns, EXP34-C compound null, EXP33-C field-write fix |
+| v0.3.14 | 44.4% | 158,036 | 126,106 | 1h 14m | 24-core workstation | EXP33-C, INT30-C, EXP34-C FP fixes (full suite) |
+| **v0.3.17** | **44.4%** | **160,496** | **128,038** | **1h 47m** | **24-core workstation** | **CWE-78 macro alias + CWE-253 incorrect return check** |
 
 ---
 

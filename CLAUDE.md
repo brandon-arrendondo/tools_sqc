@@ -189,7 +189,9 @@ When running Juliet benchmarks, follow this protocol strictly:
 | File | Contents |
 |------|----------|
 | `README.md` | Tool overview, installation, usage, CLI reference |
-| `PLAN.md` | Future plans, roadmap, improvement priorities |
+| `CHANGELOG.md` | Version history, per-release fixes and features |
+| `PLAN.md` | Roadmap: immediate, medium-term, long-term priorities |
+| `RESEARCH.md` | Competitor analysis agenda, academic references |
 | `JULIET_RESULTS.md` | Juliet benchmark data by sqc version |
 | `REALWORLD_RESULTS.md` | Real-world codebase results (5 projects × 3 tools) |
 | `BENCHMARK_SUMMARY.md` | Benchmark strategy, architecture assessment |
