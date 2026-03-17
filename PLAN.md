@@ -23,6 +23,16 @@ Run full Juliet suite to measure CWE-194/195 improvement from INT31-C `check_cal
 
 `generate_rule_cwe_map.py` now generates 147 per-CWE manifest TOMLs in `rules_templates/cwe/`. `run_juliet_parallel.sh --fast` uses them. Validated on CWE-476: noise drops from 61.8% → 0%, TP rate 39.5% → 46.5%, per-file detection unchanged (29.0%).
 
+### Benchmark Infrastructure Overhaul
+
+Refactor Juliet and real-world benchmark tooling into a unified Python runner with SQLite output, optimized for Claude-driven analysis.
+
+1. **Juliet MCP server**: Update to use `--fast` mode (per-CWE manifests) by default
+2. **Unified Python runner**: Replace shell scripts (`run_juliet_parallel.sh`, `run_juliet_multi_cwe.sh`) with a single Python entry point that handles both Juliet and real-world benchmarks
+3. **SQLite output**: Store all benchmark results (violations, TP/FP classification, CWE-aware metrics, per-CWE timing, total run duration) in a SQLite database instead of flat CSV + text files. Include machine metadata (CPU model, core count, RAM) per run so the MCP server can estimate time remaining from historical runs on the same hardware and detect performance regressions across versions.
+4. **Claude-optimized analysis**: Design schema and query interface so Claude can efficiently drill into results (per-CWE, per-rule, per-variant, cross-run diffs, performance trends) without parsing large text files
+5. **Run orchestration**: Parallel CWE scanning, progress tracking, resume-on-failure, automatic comparison with prior runs
+
 ### Real-World Validation: Next Modules
 
 - [ ] Run sqc on d_lib_wifi, d_lib_ble
