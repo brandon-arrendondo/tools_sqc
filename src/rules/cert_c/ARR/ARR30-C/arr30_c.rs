@@ -978,9 +978,18 @@ impl Arr30C {
         let any_assign_re = regex::Regex::new(&any_assign_pattern).ok()?;
         let total_assign_count = any_assign_re.find_iter(func_text).count();
 
-        // If there are multiple assignments (constant or non-constant), the variable
-        // is reassigned and we can't reliably resolve it to a single constant
         if total_assign_count > 1 {
+            // Multiple assignments — check if ALL are constant.
+            // If so, resolve to the last value (handles "data = -1; data = 7;" patterns
+            // where an initialization is overwritten by a known-good value).
+            let const_count = re.find_iter(func_text).count();
+            if const_count == total_assign_count {
+                if let Some(caps) = re.captures_iter(func_text).last() {
+                    if let Some(value_str) = caps.get(1) {
+                        return value_str.as_str().parse::<isize>().ok();
+                    }
+                }
+            }
             return None;
         }
 

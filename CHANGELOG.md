@@ -1,6 +1,56 @@
 # SqC — Changelog
 
+## v0.3.22 (2026-03-19)
+
+### ARR38-C/ARR30-C False Positive Reduction
+
+- ARR38-C: function-scoped alias resolution — `collect_pointer_aliases` now runs per-function instead of file-wide, preventing cross-function contamination (e.g., `data = dataBadBuffer` vs `data = dataGoodBuffer`). Eliminates ~69 CWE805 FPs.
+- ARR38-C: skip heuristic checks when buffer size is verified — `is_hardcoded_large_size` no longer fires when `check_size_exceeds_buffer` already confirmed the copy fits the known buffer.
+- ARR30-C: multi-assignment constant resolution — `try_resolve_variable_to_constant` now resolves to the last value when ALL assignments are constants (handles `data = -1; data = 7;` goodG2B patterns). Eliminates ~67 CWE129 FPs.
+- ARR38-C CWE806 (−183 FP): `strncat(dest, data, strlen(data))` compared buffer allocation size instead of actual content. Fix: function-scoped `find_content_size_in_function()` tracks `memset(var, char, N)` and uses N as effective strlen bound.
+- ARR30-C CWE129 (−67 FP): `check_if_bounds_against_size` searched full if-body text (matched for-loops). Fix: extract only `parenthesized_expression` condition from AST.
+
+## v0.3.21 (2026-03-19)
+
+### CWE-121/122: Buffer Overflow Detection
+
+- ARR30-C: literal loop bounds, ALLOCA tracking, pointer alias tracking
+- ARR38-C: ALLOCA detection, strlen/wcslen overflow, snprintf variants, pointer alias resolution, N*sizeof(type) parsing
+- Benchmark: CWE-121 39.3%→39.9% TP rate (+205 TP, +281 FP), CWE-122 41.7%→36.6% (−5.1pp, +43 TP, +134 FP)
+
+## v0.3.20 (2026-03-18)
+
+### Benchmark Infrastructure Overhaul
+
+- New `bench/` package replaces shell scripts with Python runner + SQLite
+- `bench/runner.py`: `ProcessPoolExecutor`-based parallel CWE runner, writes directly to `data/benchmarks.db`
+- `bench/analyzer.py`: TP/FP classifier extracted from `analyze_juliet_results.py`, returns structured data
+- `bench/db.py`: SQLite schema (7 tables), WAL mode, full CRUD + query API
+- `mcp_servers/server.py`: Updated to launch `python -m bench juliet`, queries SQLite first with legacy fallback
+- `scripts/backfill_juliet_results.py`: Imported 21 Juliet runs + 7 real-world runs from markdown docs
+- Fast mode default, resume support, machine metadata collection
+
+### First 68-CWE Fast Benchmark
+
+- Overall: 8,413 TP / 10,484 FP, 44.5% TP rate, 14.0% per-file
+- 10 CWEs at 100% precision, 24 at zero detection
+- 48 min on 4-core i5-6200U
+
+## v0.3.19 (2026-03-15)
+
+### CWE-78: ENV03-C + STR02-C Improvements
+
+- ENV03-C: function-scoped clearenv() — checks sanitization per-function instead of file-level
+- STR02-C: intra-function taint tracking (recv, fgets, fgetws, scanf, getenv, etc.) with cast handling and propagation
+- Precision 42.0% → 45.5%, FP −330, TP −78 (cross-function patterns remain undetected)
+
 ## v0.3.18 (2026-03-14)
+
+### Fast Benchmark Mode (CWE-Focused Manifests)
+
+- `generate_rule_cwe_map.py` generates 147 per-CWE manifest TOMLs in `rules_templates/cwe/`
+- `run_juliet_parallel.sh --fast` uses per-CWE manifests for targeted scanning
+- Validated on CWE-476: noise drops from 61.8% → 0%, TP rate 39.5% → 46.5%, per-file detection unchanged (29.0%)
 
 ### CWE-194/195: Signed-to-size_t Implicit Conversion Detection (Priority 8)
 
