@@ -25,6 +25,15 @@ Phases 1–4 delivered in v0.3.23 (core module, caching, INT33/34-C, INT32/30-C 
 - VRA transfer function resolves `call_expression` RHS using callee return ranges
 - Benefits all 4 VRA-consuming rules (INT30/32/33/34-C)
 
+### v0.3.24 Performance Regression — IMMEDIATE
+
+~2x benchmark slowdown (88m vs 45m). Root cause: per-file `collect_macro_constants` + `compute_summaries` in `mod.rs` analysis loop. Heavy CWEs (5040+ files) see 4–6x slowdown. CWE-121 (5906 files) timed out.
+
+**Fix:** Move same-file summary computation behind the `needs_vra` check, and cache `file_macros` so they're not recomputed (already computed for VRA in `compute_vra_if_needed`). Avoid cloning `context.function_summaries` per file — pass a reference or compute merged summaries once.
+
+**Files to modify:**
+- `src/analyze/mod.rs` — restructure per-file analysis loop to avoid redundant macro/summary computation
+
 ### VRA Phase 6: INT31-C Migration
 
 INT31-C (integer conversion/truncation) uses syntactic `is_inside_bounds_checked_block()` — walks parent if-statements looking for type-limit macros. VRA would replace this with proper range narrowing: if VRA proves the value is within the target type's range at the cast site, suppress the violation regardless of how the constraint was established.
