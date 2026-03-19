@@ -18,7 +18,7 @@ pub type MacroConstantMap = HashMap<String, i64>;
 pub type VarRangeMap = HashMap<String, ValueRange>;
 
 /// An integer value range [min, max].
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct ValueRange {
     pub min: i64,
     pub max: i64,
@@ -1032,6 +1032,57 @@ pub fn expression_fits_in_unsigned(
         return range.fits_in_unsigned(bits);
     }
     false
+}
+
+/// VRA-backed version of `expression_fits_in_signed`.
+/// Tries CFG-based value-range analysis first, falls back to syntactic analysis.
+pub fn expression_fits_in_signed_vra(
+    node: &Node,
+    source: &str,
+    macros: &MacroConstantMap,
+    bits: u32,
+    vra_var_ranges: Option<&VarRangeMap>,
+) -> bool {
+    // Try VRA-provided ranges first
+    if let Some(var_ranges) = vra_var_ranges {
+        if let Some(range) = try_evaluate_range(node, source, macros, var_ranges) {
+            // For left shift: shifting negative values is UB even if result fits
+            if node.kind() == "binary_expression" && is_shift_operator(node, source) {
+                if range.min < 0 {
+                    return false;
+                }
+                if let Some(left) = node.child_by_field_name("left") {
+                    if let Some(lr) = try_evaluate_range(&left, source, macros, var_ranges) {
+                        if lr.min < 0 {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return range.fits_in_signed(bits);
+        }
+    }
+    // Fallback to syntactic analysis
+    expression_fits_in_signed(node, source, macros, bits)
+}
+
+/// VRA-backed version of `expression_fits_in_unsigned`.
+/// Tries CFG-based value-range analysis first, falls back to syntactic analysis.
+pub fn expression_fits_in_unsigned_vra(
+    node: &Node,
+    source: &str,
+    macros: &MacroConstantMap,
+    bits: u32,
+    vra_var_ranges: Option<&VarRangeMap>,
+) -> bool {
+    // Try VRA-provided ranges first
+    if let Some(var_ranges) = vra_var_ranges {
+        if let Some(range) = try_evaluate_range(node, source, macros, var_ranges) {
+            return range.fits_in_unsigned(bits);
+        }
+    }
+    // Fallback to syntactic analysis
+    expression_fits_in_unsigned(node, source, macros, bits)
 }
 
 /// Resolve identifiers in an expression by scanning local assignments.
