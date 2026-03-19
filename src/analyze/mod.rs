@@ -44,11 +44,16 @@ pub fn analyze_project(
     let mut suppressed = Vec::new();
     let registry = RuleRegistry::new();
 
+    // Pre-compute whether any enabled rule needs VRA (used by prescan + per-file analysis)
+    let needs_vra = manifest
+        .enabled_rules()
+        .any(|(rule_id, _)| registry.get_rule(rule_id).is_some_and(|r| r.needs_vra()));
+
     // Pre-scan additional directories for cross-file context
     let mut context = if directories.is_empty() {
         context::ProjectContext::new()
     } else {
-        prescan::prescan_directories(directories, progress)?
+        prescan::prescan_directories(directories, progress, needs_vra)?
     };
 
     // Resolve #include directives against include search paths
@@ -58,7 +63,7 @@ pub fn analyze_project(
         } else {
             project_source.get_c_files()?
         };
-        prescan::resolve_includes(&c_files, include_paths, &mut context, progress)?;
+        prescan::resolve_includes(&c_files, include_paths, &mut context, progress, needs_vra)?;
     }
 
     if context.has_cross_file_data() {
@@ -129,27 +134,13 @@ pub fn analyze_project(
             let mut function_cfgs: HashMap<usize, cfg::FunctionCfg> = HashMap::new();
             collect_function_cfgs(&root_node, &source, &mut function_cfgs);
 
-            // Compute same-file function summaries for VRA inter-procedural ranges.
-            // Merge with prescan summaries (prescan covers cross-file; this covers same-file).
-            let file_macros = const_eval::collect_macro_constants(&root_node, &source);
-            let file_summaries =
-                function_summary::compute_summaries(&root_node, &source, &file_macros);
-            let merged_summaries = if context.function_summaries.is_empty() {
-                file_summaries
-            } else {
-                let mut merged = context.function_summaries.clone();
-                merged.extend(file_summaries);
-                merged
-            };
-
             // Compute VRA if any enabled rule needs it
             let vra_results = compute_vra_if_needed(
-                &registry,
-                manifest,
+                needs_vra,
                 &function_cfgs,
                 &root_node,
                 &source,
-                &merged_summaries,
+                &context.function_summaries,
             );
 
             // Extract suppressions from the current file
@@ -303,36 +294,43 @@ pub fn handle_generate_suppression(spec: &str) -> Result<()> {
 
 /// Compute VRA for all functions if any enabled rule needs it.
 fn compute_vra_if_needed(
-    registry: &RuleRegistry,
-    manifest: &RuleManifest,
+    needs_vra: bool,
     function_cfgs: &HashMap<usize, cfg::FunctionCfg>,
     root_node: &tree_sitter::Node,
     source: &str,
-    function_summaries: &HashMap<String, function_summary::FunctionSummary>,
+    prescan_summaries: &HashMap<String, function_summary::FunctionSummary>,
 ) -> HashMap<usize, value_range::RangeAnalysisResult> {
-    // Check if any enabled rule needs VRA
-    let needs_vra = manifest
-        .enabled_rules()
-        .any(|(rule_id, _)| registry.get_rule(rule_id).is_some_and(|r| r.needs_vra()));
-
     if !needs_vra || function_cfgs.is_empty() {
         return HashMap::new();
     }
 
+    // Only compute macros and same-file summaries when VRA is actually needed
     let macros = const_eval::collect_macro_constants(root_node, source);
-    let mut results = HashMap::new();
+    let file_summaries = function_summary::compute_summaries(root_node, source, &macros, true);
 
+    // Merge prescan (cross-file) summaries with same-file summaries by reference.
+    // Only clone+extend if both sides are non-empty; otherwise use whichever is available.
+    let merged;
+    let summaries: &HashMap<String, function_summary::FunctionSummary> =
+        if prescan_summaries.is_empty() {
+            &file_summaries
+        } else if file_summaries.is_empty() {
+            prescan_summaries
+        } else {
+            merged = {
+                let mut m = prescan_summaries.clone();
+                m.extend(file_summaries);
+                m
+            };
+            &merged
+        };
+
+    let mut results = HashMap::new();
     for (&start_byte, func_cfg) in function_cfgs {
         if let Some(func_node) = find_function_at_byte(root_node, start_byte) {
             results.insert(
                 start_byte,
-                value_range::analyze_value_ranges(
-                    func_cfg,
-                    &func_node,
-                    source,
-                    &macros,
-                    function_summaries,
-                ),
+                value_range::analyze_value_ranges(func_cfg, &func_node, source, &macros, summaries),
             );
         }
     }

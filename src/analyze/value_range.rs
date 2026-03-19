@@ -1595,7 +1595,7 @@ int f(int x) {
         let root = tree.root_node();
         let macros = const_eval::collect_macro_constants(&root, &source);
         let summaries =
-            crate::analyze::function_summary::compute_summaries(&root, &source, &macros);
+            crate::analyze::function_summary::compute_summaries(&root, &source, &macros, true);
 
         // Find the last function_definition (the caller)
         let mut last_func = None;

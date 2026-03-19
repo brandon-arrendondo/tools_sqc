@@ -2106,7 +2106,7 @@ impl TerminalUI {
 
         // Pre-scan directories for cross-file context
         let mut context = if !self.directories.is_empty() {
-            prescan::prescan_directories(&self.directories, None)?
+            prescan::prescan_directories(&self.directories, None, true)?
         } else {
             crate::analyze::context::ProjectContext::new()
         };
@@ -2116,7 +2116,8 @@ impl TerminalUI {
         let c_files = project_source.get_c_files()?;
 
         if !self.include_paths.is_empty() {
-            let _ = prescan::resolve_includes(&c_files, &self.include_paths, &mut context, None);
+            let _ =
+                prescan::resolve_includes(&c_files, &self.include_paths, &mut context, None, true);
         }
 
         if context.has_cross_file_data() {

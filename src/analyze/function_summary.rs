@@ -37,14 +37,19 @@ pub struct FunctionSummary {
 }
 
 /// Compute function summaries for all function definitions in the AST.
+///
+/// When `compute_return_ranges` is true, also computes return value ranges
+/// for integer-returning functions (needed for VRA inter-procedural analysis).
+/// Pass false during prescan when no VRA-consuming rules are enabled.
 pub fn compute_summaries(
     root: &Node,
     source: &str,
     macros: &MacroConstantMap,
+    compute_return_ranges: bool,
 ) -> HashMap<String, FunctionSummary> {
     let mut summaries = HashMap::new();
 
-    collect_function_summaries(root, source, macros, &mut summaries);
+    collect_function_summaries(root, source, macros, compute_return_ranges, &mut summaries);
 
     summaries
 }
@@ -53,11 +58,12 @@ fn collect_function_summaries(
     node: &Node,
     source: &str,
     macros: &MacroConstantMap,
+    compute_return_ranges: bool,
     summaries: &mut HashMap<String, FunctionSummary>,
 ) {
     if node.kind() == "function_definition" {
         if let Some(name) = extract_function_name(node, source) {
-            let summary = analyze_function(node, source, macros);
+            let summary = analyze_function(node, source, macros, compute_return_ranges);
             summaries.insert(name, summary);
         }
     }
@@ -68,12 +74,19 @@ fn collect_function_summaries(
             match child.kind() {
                 "function_definition" => {
                     if let Some(name) = extract_function_name(&child, source) {
-                        let summary = analyze_function(&child, source, macros);
+                        let summary =
+                            analyze_function(&child, source, macros, compute_return_ranges);
                         summaries.insert(name, summary);
                     }
                 }
                 kind if kind.starts_with("preproc_") => {
-                    collect_function_summaries(&child, source, macros, summaries);
+                    collect_function_summaries(
+                        &child,
+                        source,
+                        macros,
+                        compute_return_ranges,
+                        summaries,
+                    );
                 }
                 _ => {}
             }
@@ -82,7 +95,12 @@ fn collect_function_summaries(
 }
 
 /// Analyze a single function definition to produce its summary.
-fn analyze_function(func_node: &Node, source: &str, macros: &MacroConstantMap) -> FunctionSummary {
+fn analyze_function(
+    func_node: &Node,
+    source: &str,
+    macros: &MacroConstantMap,
+    compute_return_ranges: bool,
+) -> FunctionSummary {
     let mut summary = FunctionSummary::default();
 
     // Collect parameter names
@@ -135,8 +153,8 @@ fn analyze_function(func_node: &Node, source: &str, macros: &MacroConstantMap) -
         // Analyze parameter usage
         analyze_param_usage(&body, source, &params, &mut summary);
 
-        // Compute return value range for integer-returning functions
-        if !is_void_return && !is_pointer_return {
+        // Compute return value range for integer-returning functions (only when VRA is needed)
+        if compute_return_ranges && !is_void_return && !is_pointer_return {
             summary.return_range = compute_return_range(&body, source, macros);
         }
     }
@@ -451,7 +469,7 @@ mod tests {
         parser.set_language(&tree_sitter_c::language()).unwrap();
         let tree = parser.parse(code, None).unwrap();
         let macros = const_eval::collect_macro_constants(&tree.root_node(), code);
-        compute_summaries(&tree.root_node(), code, &macros)
+        compute_summaries(&tree.root_node(), code, &macros, true)
     }
 
     #[test]

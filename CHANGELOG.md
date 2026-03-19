@@ -16,7 +16,7 @@
 - INT32-C: −63 FP, INT33-C: −33 FP, INT30-C: −5 FP (VRA Phases 1–5)
 - CWE-124: 36.9%→52.6%, CWE-122: 36.6%→43.8%, CWE-126: 37.2%→43.8% (ARR FP fixes from v0.3.22)
 - Zero regressions across all CWEs
-- **Known issue**: ~2x performance regression vs v0.3.21 (88m vs 45m). Per-file `compute_summaries` + `collect_macro_constants` overhead scales with file count. CWE-121 (5906 files) timed out.
+- **Performance fix**: ~6x speedup on large non-VRA CWEs. Root cause: `compute_return_range` ran during prescan for all 105K+ Juliet files even when no VRA rules were enabled. Fix: `compute_summaries` takes `compute_return_ranges: bool` flag, prescan passes `needs_vra` from manifest. Per-file macro/summary computation in analysis loop moved behind `needs_vra` guard. CWE-121 with prescan: 14m29s → 2m23s. VRA CWEs unchanged.
 
 ## v0.3.23 (2026-03-19)
 

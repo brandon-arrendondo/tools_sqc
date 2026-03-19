@@ -20,6 +20,7 @@ use walkdir::WalkDir;
 pub fn prescan_directories(
     dirs: &[String],
     progress: Option<&dyn ProgressReporter>,
+    needs_vra: bool,
 ) -> Result<ProjectContext> {
     let mut known_functions = HashSet::new();
     let mut header_declared_functions = HashSet::new();
@@ -62,13 +63,13 @@ pub fn prescan_directories(
                 }
 
                 // Collect macro constants from #define directives (before summaries —
-                // return-range computation needs macro values)
+                // return-range computation needs macro values when VRA is active)
                 let file_macros = const_eval::collect_macro_constants(&root, &source);
                 macro_constants.extend(file_macros.clone());
 
                 // Compute function summaries for this file
                 let file_summaries =
-                    function_summary::compute_summaries(&root, &source, &file_macros);
+                    function_summary::compute_summaries(&root, &source, &file_macros, needs_vra);
                 for (name, summary) in file_summaries {
                     function_summaries.insert(name, summary);
                 }
@@ -1150,6 +1151,7 @@ pub fn resolve_includes(
     include_paths: &[String],
     context: &mut super::context::ProjectContext,
     progress: Option<&dyn ProgressReporter>,
+    needs_vra: bool,
 ) -> Result<()> {
     if let Some(reporter) = progress {
         reporter.report_include_resolve_start(include_paths.len());
@@ -1199,7 +1201,7 @@ pub fn resolve_includes(
                 context.macro_constants.extend(header_macros.clone());
 
                 let file_summaries =
-                    function_summary::compute_summaries(&root, &hsource, &header_macros);
+                    function_summary::compute_summaries(&root, &hsource, &header_macros, needs_vra);
                 for (name, summary) in file_summaries {
                     context.function_summaries.insert(name, summary);
                 }
