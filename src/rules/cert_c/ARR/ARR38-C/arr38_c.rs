@@ -58,6 +58,7 @@ impl CertRule for Arr38C {
         let mut pointer_offsets: HashMap<String, PointerOffsetInfo> = HashMap::new();
 
         // First pass: collect buffer allocations, size variable assignments, and pointer offsets
+        // (file-wide — buffer names like dataBadBuffer/dataGoodBuffer are unique)
         self.collect_buffer_info(
             node,
             source,
@@ -66,24 +67,28 @@ impl CertRule for Arr38C {
             &mut pointer_offsets,
         );
 
-        // Resolve pointer aliases: propagate buffer info through simple assignments
-        // e.g., "data = dataBuffer" → data gets dataBuffer's BufferInfo
-        let aliases = self.collect_pointer_aliases(node, source);
-        for (alias, target) in &aliases {
-            if let Some(info) = buffer_info.get(target).cloned() {
-                buffer_info.entry(alias.clone()).or_insert(info);
+        // Second pass: check each function independently with function-scoped alias resolution.
+        // This prevents cross-function contamination where "data = dataBadBuffer" (bad fn) and
+        // "data = dataGoodBuffer" (good fn) would share the same alias entry in a file-wide map.
+        let functions = self.collect_function_definitions(node);
+        for func_node in &functions {
+            let aliases = self.collect_pointer_aliases(func_node, source);
+            let mut func_buffer_info = buffer_info.clone();
+            for (alias, target) in &aliases {
+                if let Some(info) = func_buffer_info.get(target).cloned() {
+                    func_buffer_info.insert(alias.clone(), info);
+                }
             }
-        }
 
-        // Second pass: check for violations
-        self.check_node(
-            node,
-            source,
-            &mut violations,
-            &buffer_info,
-            &size_vars,
-            &pointer_offsets,
-        );
+            self.check_node(
+                func_node,
+                source,
+                &mut violations,
+                &func_buffer_info,
+                &size_vars,
+                &pointer_offsets,
+            );
+        }
 
         violations
     }
@@ -1440,6 +1445,28 @@ impl Arr38C {
             return;
         }
 
+        // If the dest buffer has known size and the copy fits, skip heuristic checks.
+        // The concrete size comparison above is authoritative; heuristics like
+        // is_hardcoded_large_size are only useful when buffer size is unknown.
+        let dest_size_known = buffer_info
+            .get(dest_arg.trim())
+            .and_then(|info| info.size)
+            .is_some();
+        if dest_size_known {
+            if let Some(size_val) = self.try_parse_size(
+                size_vars
+                    .get(size_arg.trim())
+                    .map(|s| s.as_str())
+                    .unwrap_or(size_arg),
+            ) {
+                if let Some(buf_size) = buffer_info.get(dest_arg.trim()).and_then(|i| i.size) {
+                    if size_val <= buf_size {
+                        return; // Verified safe — skip heuristic checks
+                    }
+                }
+            }
+        }
+
         // For memcpy/memmove, also check source buffer
         if (function_name == "memcpy" || function_name == "memmove") && args.len() >= 3 {
             let src_arg = &args[1];
@@ -2237,6 +2264,29 @@ impl Arr38C {
             }
         }
         None
+    }
+
+    /// Collect all function_definition nodes from the AST
+    fn collect_function_definitions<'a>(&self, node: &Node<'a>) -> Vec<Node<'a>> {
+        let mut functions = Vec::new();
+        self.collect_function_definitions_recursive(node, &mut functions);
+        functions
+    }
+
+    fn collect_function_definitions_recursive<'a>(
+        &self,
+        node: &Node<'a>,
+        functions: &mut Vec<Node<'a>>,
+    ) {
+        if node.kind() == "function_definition" {
+            functions.push(*node);
+            return; // Don't recurse into nested function definitions
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_function_definitions_recursive(&child, functions);
+            }
+        }
     }
 
     /// Collect simple pointer aliases from assignment statements (e.g., "data = dataBuffer")
