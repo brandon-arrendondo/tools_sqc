@@ -66,6 +66,15 @@ impl CertRule for Arr38C {
             &mut pointer_offsets,
         );
 
+        // Resolve pointer aliases: propagate buffer info through simple assignments
+        // e.g., "data = dataBuffer" → data gets dataBuffer's BufferInfo
+        let aliases = self.collect_pointer_aliases(node, source);
+        for (alias, target) in &aliases {
+            if let Some(info) = buffer_info.get(target).cloned() {
+                buffer_info.entry(alias.clone()).or_insert(info);
+            }
+        }
+
         // Second pass: check for violations
         self.check_node(
             node,
@@ -141,8 +150,13 @@ impl Arr38C {
             }
         }
 
-        // Check for malloc/calloc/aligned_alloc assignments
-        if text.contains("malloc(") || text.contains("calloc(") || text.contains("aligned_alloc(") {
+        // Check for malloc/calloc/aligned_alloc/alloca/ALLOCA assignments
+        if text.contains("malloc(")
+            || text.contains("calloc(")
+            || text.contains("aligned_alloc(")
+            || text.contains("ALLOCA(")
+            || text.contains("alloca(")
+        {
             if let Some(var_name) = self.extract_pointer_var_name(&text) {
                 if let Some(size_expr) = self.extract_alloc_size(&text) {
                     let size = self.try_parse_size(&size_expr);
@@ -155,6 +169,8 @@ impl Arr38C {
                                 "malloc"
                             } else if text.contains("calloc") {
                                 "calloc"
+                            } else if text.contains("ALLOCA") || text.contains("alloca") {
+                                "alloca"
                             } else {
                                 "aligned_alloc"
                             }
@@ -198,8 +214,13 @@ impl Arr38C {
     ) {
         let text = get_node_text(node, source);
 
-        // Check for malloc/calloc assignments
-        if text.contains("malloc(") || text.contains("calloc(") || text.contains("aligned_alloc(") {
+        // Check for malloc/calloc/alloca assignments
+        if text.contains("malloc(")
+            || text.contains("calloc(")
+            || text.contains("aligned_alloc(")
+            || text.contains("ALLOCA(")
+            || text.contains("alloca(")
+        {
             if let Some(var_name) = self.extract_assignment_lhs(&text) {
                 if let Some(size_expr) = self.extract_alloc_size(&text) {
                     let size = self.try_parse_size(&size_expr);
@@ -212,6 +233,8 @@ impl Arr38C {
                                 "malloc"
                             } else if text.contains("calloc") {
                                 "calloc"
+                            } else if text.contains("ALLOCA") || text.contains("alloca") {
+                                "alloca"
                             } else {
                                 "aligned_alloc"
                             }
@@ -317,7 +340,13 @@ impl Arr38C {
                     self.check_wide_memory_function(node, source, function_name, violations);
                 }
                 "wcscpy" | "wcsncpy" | "wcscat" | "wcsncat" | "wcscmp" | "wcsncmp" => {
-                    self.check_wide_string_function(node, source, function_name, violations);
+                    self.check_wide_string_function(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                    );
                 }
                 "malloc" | "calloc" | "realloc" | "aligned_alloc" => {
                     self.check_allocation_function(node, source, function_name, violations);
@@ -332,7 +361,8 @@ impl Arr38C {
                         size_vars,
                     );
                 }
-                "fgets" | "snprintf" | "swprintf" | "strftime" => {
+                "fgets" | "snprintf" | "SNPRINTF" | "_snprintf" | "_snwprintf" | "swprintf"
+                | "strftime" => {
                     self.check_buffer_function(
                         node,
                         source,
@@ -520,10 +550,13 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
     ) {
         let args = self.get_function_arguments(node, source);
 
         if function_name.contains("wcsn") && args.len() >= 3 {
+            let dest_arg = &args[0];
+            let src_arg = &args[1];
             let size_arg = &args[2];
 
             // Check for sizeof (byte count instead of character count)
@@ -546,6 +579,42 @@ impl Arr38C {
                     ..Default::default()
                 });
                 return;
+            }
+
+            // Check for wcslen(src) as size where src > dest
+            if let Some(wcslen_arg) = self.extract_wcslen_argument(size_arg) {
+                let wcslen_arg = wcslen_arg.trim();
+                let src_trimmed = src_arg.trim();
+                if wcslen_arg == src_trimmed {
+                    if let Some(src_info) = buffer_info.get(wcslen_arg) {
+                        if let Some(src_size) = src_info.size {
+                            if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                                if let Some(dest_size) = dest_info.size {
+                                    if src_size > dest_size {
+                                        let start_point = node.start_position();
+                                        violations.push(RuleViolation {
+                                            rule_id: self.rule_id().to_string(),
+                                            severity: Severity::High,
+                                            message: format!(
+                                                "Function '{}': wcslen({}) (buffer size {}) may exceed destination '{}' size {}",
+                                                function_name, wcslen_arg, src_size, dest_arg.trim(), dest_size
+                                            ),
+                                            file_path: String::new(),
+                                            line: start_point.row + 1,
+                                            column: start_point.column + 1,
+                                            suggestion: Some(format!(
+                                                "Use sizeof({})/sizeof(wchar_t) as the size limit",
+                                                dest_arg.trim()
+                                            )),
+                                            ..Default::default()
+                                        });
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // Check for hardcoded sizes that likely exceed buffer
@@ -688,6 +757,7 @@ impl Arr38C {
         size_vars: &HashMap<String, String>,
     ) {
         let dest_arg = &args[0];
+        let src_arg = if args.len() >= 2 { &args[1] } else { dest_arg };
         let size_arg = &args[2];
 
         // Check if size exceeds known buffer size
@@ -701,6 +771,46 @@ impl Arr38C {
         ) {
             violations.push(violation);
             return;
+        }
+
+        // Check for strlen(src) as size argument where src buffer > dest buffer
+        // Pattern: strncpy(dest, src, strlen(src)) — size not bounded by dest
+        if let Some(strlen_arg) = self.extract_strlen_argument(size_arg) {
+            // strlen argument should reference the source (2nd arg) or an alias of it
+            let strlen_arg = strlen_arg.trim();
+            let src_trimmed = src_arg.trim();
+            if strlen_arg == src_trimmed {
+                // Check if source buffer is larger than dest buffer
+                if let Some(src_info) = buffer_info.get(strlen_arg) {
+                    if let Some(src_size) = src_info.size {
+                        if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                            if let Some(dest_size) = dest_info.size {
+                                if src_size > dest_size {
+                                    let start_point = node.start_position();
+                                    violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        severity: Severity::High,
+                                        message: format!(
+                                            "Function '{}': strlen({}) (buffer size {}) may exceed destination '{}' size {}",
+                                            function_name, strlen_arg, src_size, dest_arg.trim(), dest_size
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some(format!(
+                                            "Use sizeof({}) or {} as the size limit",
+                                            dest_arg.trim(),
+                                            dest_size
+                                        )),
+                                        ..Default::default()
+                                    });
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // Check for hardcoded sizes that are suspiciously large
@@ -863,7 +973,7 @@ impl Arr38C {
         // fgets(buf, size, file), snprintf(buf, size, fmt, ...), etc.
         let (buf_idx, size_idx) = match function_name {
             "fgets" => (0, 1),
-            "snprintf" | "swprintf" => (0, 1),
+            "snprintf" | "SNPRINTF" | "_snprintf" | "_snwprintf" | "swprintf" => (0, 1),
             "strftime" => (0, 1),
             _ => return,
         };
@@ -883,6 +993,49 @@ impl Arr38C {
             ) {
                 violations.push(violation);
                 return;
+            }
+
+            // Check for strlen/wcslen(src) as size argument for snprintf/SNPRINTF/swprintf
+            // Pattern: snprintf(dest, strlen(data), "%s", data)
+            // Pattern: SNPRINTF(dest, wcslen(data), L"%s", data)
+            if matches!(
+                function_name,
+                "snprintf" | "SNPRINTF" | "_snprintf" | "_snwprintf" | "swprintf"
+            ) {
+                let len_arg = self
+                    .extract_strlen_argument(size_arg)
+                    .or_else(|| self.extract_wcslen_argument(size_arg));
+                if let Some(len_arg) = len_arg {
+                    let len_arg = len_arg.trim();
+                    if let Some(src_info) = buffer_info.get(len_arg) {
+                        if let Some(src_size) = src_info.size {
+                            if let Some(dest_info) = buffer_info.get(buf_arg.trim()) {
+                                if let Some(dest_size) = dest_info.size {
+                                    if src_size > dest_size {
+                                        let start_point = node.start_position();
+                                        violations.push(RuleViolation {
+                                            rule_id: self.rule_id().to_string(),
+                                            severity: Severity::High,
+                                            message: format!(
+                                                "Function '{}': string length of '{}' (buffer size {}) may exceed destination '{}' size {}",
+                                                function_name, len_arg, src_size, buf_arg.trim(), dest_size
+                                            ),
+                                            file_path: String::new(),
+                                            line: start_point.row + 1,
+                                            column: start_point.column + 1,
+                                            suggestion: Some(format!(
+                                                "Use sizeof({}) as the size limit",
+                                                buf_arg.trim()
+                                            )),
+                                            ..Default::default()
+                                        });
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // Check for hardcoded sizes that are suspiciously large
@@ -1771,7 +1924,46 @@ impl Arr38C {
         if let Ok(n) = expr.parse::<usize>() {
             return Some(n);
         }
+        // Handle N*sizeof(type) patterns (e.g., "100*sizeof(char)")
+        if let Some(star_pos) = expr.find('*') {
+            let left = expr[..star_pos].trim();
+            let right = expr[star_pos + 1..].trim();
+            // Try left * sizeof(type)
+            if let Ok(n) = left.parse::<usize>() {
+                if right.starts_with("sizeof(") {
+                    let type_name = right.trim_start_matches("sizeof(").trim_end_matches(')');
+                    if let Some(type_size) = self.sizeof_type(type_name) {
+                        return Some(n * type_size);
+                    }
+                }
+            }
+            // Try sizeof(type) * N
+            if let Ok(n) = right.parse::<usize>() {
+                if left.starts_with("sizeof(") {
+                    let type_name = left.trim_start_matches("sizeof(").trim_end_matches(')');
+                    if let Some(type_size) = self.sizeof_type(type_name) {
+                        return Some(n * type_size);
+                    }
+                }
+            }
+        }
         None
+    }
+
+    /// Get size of common C types
+    fn sizeof_type(&self, type_name: &str) -> Option<usize> {
+        match type_name.trim() {
+            "char" | "unsigned char" | "signed char" => Some(1),
+            "short" | "unsigned short" => Some(2),
+            "int" | "unsigned int" | "int32_t" | "uint32_t" => Some(4),
+            "long" | "unsigned long" | "int64_t" | "uint64_t" | "long long"
+            | "unsigned long long" | "size_t" => Some(8),
+            "float" => Some(4),
+            "double" => Some(8),
+            "wchar_t" => Some(4),
+            "twoIntsStruct" => Some(8), // Common Juliet struct
+            _ => None,
+        }
     }
 
     /// Extract array variable name from declaration
@@ -1821,10 +2013,10 @@ impl Arr38C {
         None
     }
 
-    /// Extract allocation size from malloc/calloc/aligned_alloc call
+    /// Extract allocation size from malloc/calloc/aligned_alloc/alloca call
     fn extract_alloc_size(&self, text: &str) -> Option<String> {
         // Find the function call
-        for func in &["malloc(", "aligned_alloc("] {
+        for func in &["malloc(", "aligned_alloc(", "ALLOCA(", "alloca("] {
             if let Some(start) = text.find(func) {
                 let rest = &text[start + func.len()..];
                 // For aligned_alloc, skip the alignment parameter
@@ -1946,6 +2138,87 @@ impl Arr38C {
                     if !base.is_empty() && !offset.is_empty() {
                         return Some((ptr_name.to_string(), base.to_string(), offset.to_string()));
                     }
+                }
+            }
+        }
+        None
+    }
+
+    /// Collect simple pointer aliases from assignment statements (e.g., "data = dataBuffer")
+    fn collect_pointer_aliases(&self, node: &Node, source: &str) -> Vec<(String, String)> {
+        let mut aliases = Vec::new();
+        self.collect_pointer_aliases_recursive(node, source, &mut aliases);
+        aliases
+    }
+
+    fn collect_pointer_aliases_recursive(
+        &self,
+        node: &Node,
+        source: &str,
+        aliases: &mut Vec<(String, String)>,
+    ) {
+        // Look for expression_statement containing assignment_expression
+        if node.kind() == "expression_statement" {
+            let text = get_node_text(node, source);
+            let text = text.trim().trim_end_matches(';').trim();
+            // Simple assignment: "data = dataBuffer" (no operators, no function calls)
+            if let Some(eq_pos) = text.find('=') {
+                // Skip ==, !=, <=, >=
+                if eq_pos > 0
+                    && !matches!(
+                        text.as_bytes().get(eq_pos.wrapping_sub(1)),
+                        Some(b'!' | b'<' | b'>')
+                    )
+                    && text.as_bytes().get(eq_pos + 1) != Some(&b'=')
+                {
+                    let lhs = text[..eq_pos].trim();
+                    let rhs = text[eq_pos + 1..].trim();
+                    // Only simple identifiers (no operators, no function calls, no casts)
+                    if self.is_simple_identifier(lhs) && self.is_simple_identifier(rhs) {
+                        aliases.push((lhs.to_string(), rhs.to_string()));
+                    }
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_pointer_aliases_recursive(&child, source, aliases);
+            }
+        }
+    }
+
+    /// Check if a string is a simple C identifier
+    fn is_simple_identifier(&self, s: &str) -> bool {
+        !s.is_empty()
+            && s.starts_with(|c: char| c.is_alphabetic() || c == '_')
+            && s.chars().all(|c| c.is_alphanumeric() || c == '_')
+    }
+
+    /// Extract the argument from a strlen() call
+    /// "strlen(data)" → Some("data"), "100" → None
+    fn extract_strlen_argument<'a>(&self, expr: &'a str) -> Option<&'a str> {
+        let expr = expr.trim();
+        if let Some(rest) = expr.strip_prefix("strlen(") {
+            if let Some(arg) = rest.strip_suffix(')') {
+                let arg = arg.trim();
+                if !arg.is_empty() {
+                    return Some(arg);
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract the argument from a wcslen() call
+    /// "wcslen(data)" → Some("data"), "100" → None
+    fn extract_wcslen_argument<'a>(&self, expr: &'a str) -> Option<&'a str> {
+        let expr = expr.trim();
+        if let Some(rest) = expr.strip_prefix("wcslen(") {
+            if let Some(arg) = rest.strip_suffix(')') {
+                let arg = arg.trim();
+                if !arg.is_empty() {
+                    return Some(arg);
                 }
             }
         }
