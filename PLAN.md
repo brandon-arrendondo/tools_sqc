@@ -25,14 +25,9 @@ Phases 1–4 delivered in v0.3.23 (core module, caching, INT33/34-C, INT32/30-C 
 - VRA transfer function resolves `call_expression` RHS using callee return ranges
 - Benefits all 4 VRA-consuming rules (INT30/32/33/34-C)
 
-### v0.3.24 Performance Regression — IMMEDIATE
+### ~~v0.3.24 Performance Regression~~ — FIXED
 
-~2x benchmark slowdown (88m vs 45m). Root cause: per-file `collect_macro_constants` + `compute_summaries` in `mod.rs` analysis loop. Heavy CWEs (5040+ files) see 4–6x slowdown. CWE-121 (5906 files) timed out.
-
-**Fix:** Move same-file summary computation behind the `needs_vra` check, and cache `file_macros` so they're not recomputed (already computed for VRA in `compute_vra_if_needed`). Avoid cloning `context.function_summaries` per file — pass a reference or compute merged summaries once.
-
-**Files to modify:**
-- `src/analyze/mod.rs` — restructure per-file analysis loop to avoid redundant macro/summary computation
+Root cause: `compute_return_range` (Phase 5) ran inside `compute_summaries` during prescan for all 105K+ Juliet files, even when no VRA rules were enabled. Fix: `compute_summaries` accepts `compute_return_ranges: bool`, prescan passes `needs_vra` from manifest check. Per-file macro/summary computation moved behind `needs_vra` guard. CWE-121 with `-d` prescan: 14m29s → 2m23s (6x). VRA CWEs unchanged. Needs full benchmark to confirm.
 
 ### VRA Phase 6: INT31-C Migration
 
