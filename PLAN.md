@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-19 (v0.3.22)
+**Last Updated**: 2026-03-19 (v0.3.24)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -16,6 +16,21 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 - ~~ARR38-C CWE805 (69 FPs)~~: FIXED — function-scoped alias resolution prevents cross-function contamination.
 - ~~ARR30-C CWE129 goodG2B (~67 FPs)~~: FIXED — multi-assignment constant resolution handles `data = -1; data = 7;` patterns.
 - ARR30-C CWE135 (29 FPs): ALLOCA tracking enables `strcpy` flagging on correctly-sized buffers. Lower priority.
+
+### VRA Phase 5: Inter-Procedural Value Ranges — COMPLETE (v0.3.24)
+
+Phases 1–4 delivered in v0.3.23 (core module, caching, INT33/34-C, INT32/30-C migration). Phase 5 adds return-range summaries for inter-procedural precision.
+
+- `FunctionSummary.return_range: Option<ValueRange>` computed during prescan from constant return expressions
+- VRA transfer function resolves `call_expression` RHS using callee return ranges
+- Benefits all 4 VRA-consuming rules (INT30/32/33/34-C)
+
+### VRA Phase 6: INT31-C Migration
+
+INT31-C (integer conversion/truncation) uses syntactic `is_inside_bounds_checked_block()` — walks parent if-statements looking for type-limit macros. VRA would replace this with proper range narrowing: if VRA proves the value is within the target type's range at the cast site, suppress the violation regardless of how the constraint was established.
+
+**Files to modify:**
+- `src/rules/cert_c/INT/INT31-C/int31_c.rs` — add VRA integration (same pattern as INT30/32-C: `vra_results` field, `set_vra_results`, `vra_var_ranges_at` helper); replace `is_inside_bounds_checked_block` calls with VRA range checks
 
 ### Benchmark Infrastructure: Remaining Phases
 
@@ -59,8 +74,8 @@ Remaining from d_lib_common/d_hal_linux_random triage (require new analysis capa
 
 | Rule | Violations | Issue |
 |------|--------:|-------|
-| INT33-C | ~7 | Division guarded by earlier comparison. Needs value-range. |
-| INT34-C | ~1 | Shift bounded by loop iteration count. Needs value-range. |
+| ~~INT33-C~~ | ~~7~~ | ~~Division guarded by earlier comparison.~~ **ADDRESSED in v0.3.23** — CFG-based VRA handles guard patterns. Needs benchmark verification. |
+| ~~INT34-C~~ | ~~1~~ | ~~Shift bounded by loop iteration count.~~ **ADDRESSED in v0.3.23** — CFG-based VRA handles loop bounds. Needs benchmark verification. |
 | MEM30-C | ~1 | Sequential struct/member frees. Needs field-level tracking. |
 | MEM31-C | ~9 | Cross-function ownership (strdup → struct field → custom \_Delete). Needs ownership model. |
 
@@ -93,7 +108,7 @@ Remaining from d_lib_common/d_hal_linux_random triage (require new analysis capa
 - No alias analysis (pointer aliasing not resolved; file-scoped alias collection causes cross-function issues)
 - No symbolic execution
 - No SSA form (beyond reaching definitions)
-- No full value-range analysis (beyond const_eval macro folding + loop-bound extraction)
+- ~~No full value-range analysis~~ **v0.3.23**: CFG-based forward VRA with interval lattice, edge refinement, widening. Intra-procedural only; inter-procedural return ranges planned (Phase 5).
 - Limited whole-program analysis (function summaries + call-site null state + multi-pass relay propagation + local variable tracking + `-I` header resolution)
 - Struct field type resolution limited to structs visible during prescan (INT32-C/INT30-C only)
 

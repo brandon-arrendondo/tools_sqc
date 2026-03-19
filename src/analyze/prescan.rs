@@ -61,18 +61,20 @@ pub fn prescan_directories(
                     collect_header_declarations(&root, &source, &mut header_declared_functions);
                 }
 
+                // Collect macro constants from #define directives (before summaries —
+                // return-range computation needs macro values)
+                let file_macros = const_eval::collect_macro_constants(&root, &source);
+                macro_constants.extend(file_macros.clone());
+
                 // Compute function summaries for this file
-                let file_summaries = function_summary::compute_summaries(&root, &source);
+                let file_summaries =
+                    function_summary::compute_summaries(&root, &source, &file_macros);
                 for (name, summary) in file_summaries {
                     function_summaries.insert(name, summary);
                 }
 
                 // Build call graph for this file
                 collect_call_graph(&root, &source, &mut call_graph);
-
-                // Collect macro constants from #define directives
-                let file_macros = const_eval::collect_macro_constants(&root, &source);
-                macro_constants.extend(file_macros);
 
                 // Collect macro aliases (#define ALIAS identifier)
                 let file_aliases = const_eval::collect_macro_aliases(&root, &source);
@@ -1192,14 +1194,15 @@ pub fn resolve_includes(
                     &hsource,
                     &mut context.header_declared_functions,
                 );
-                let file_summaries = function_summary::compute_summaries(&root, &hsource);
+                // Collect macro constants and aliases from resolved headers
+                let header_macros = const_eval::collect_macro_constants(&root, &hsource);
+                context.macro_constants.extend(header_macros.clone());
+
+                let file_summaries =
+                    function_summary::compute_summaries(&root, &hsource, &header_macros);
                 for (name, summary) in file_summaries {
                     context.function_summaries.insert(name, summary);
                 }
-
-                // Collect macro constants and aliases from resolved headers
-                let header_macros = const_eval::collect_macro_constants(&root, &hsource);
-                context.macro_constants.extend(header_macros);
                 let header_aliases = const_eval::collect_macro_aliases(&root, &hsource);
                 context.macro_aliases.extend(header_aliases);
 

@@ -1,5 +1,33 @@
 # SqC — Changelog
 
+## v0.3.24 (2026-03-19)
+
+### VRA Phase 5: Inter-Procedural Return Ranges
+
+- `FunctionSummary` gains `return_range: Option<ValueRange>` — computed during prescan by evaluating all `return expr;` statements as constant ranges (literals, macros, sizeof, arithmetic). Conservative: `None` if any return is parameter-dependent or unevaluable.
+- VRA transfer function resolves `call_expression` RHS in assignments and declarations: `int x = get_count();` uses callee's return range instead of full type range.
+- Return ranges stored in `RangeAnalysisResult` for intra-block replay consistency in `eval_expr_range_at()` / `get_var_range_at()`.
+- Prescan reordered: macro constants collected before function summaries so `#define`-based return values resolve correctly.
+- Benefits all 4 VRA-consuming rules (INT30-C, INT32-C, INT33-C, INT34-C) — e.g., `x = get_nonzero(); y / x;` no longer flagged by INT33-C when `get_nonzero` provably returns `[1, N]`.
+
+## v0.3.23 (2026-03-19)
+
+### CFG-Based Forward Value-Range Analysis
+
+New `value_range.rs` module implements proper forward dataflow on the CFG, replacing syntactic ancestor walks for integer range reasoning. Follows the same worklist pattern as `null_state.rs`.
+
+**Phases 1–4: Core engine + rule migration**
+
+- **Core VRA engine**: worklist algorithm with interval lattice, edge refinement for all comparison operators (`<`, `<=`, `>`, `>=`, `==`, `!=`), compound conditions (`&&`, `||`), negation, and bare identifier conditions
+- **Type-aware initial ranges**: `unsigned int` → `[0, UINT_MAX]`, `int` → `[INT_MIN, INT_MAX]`, etc. Extracts signedness and bit width from declaration AST
+- **Widening**: after 3 iterations of back-edge targets, growing dimensions widen to type bounds — guarantees termination for loops
+- **Caching**: VRA computed once per file per function, shared across all rules via `set_vra_results()` trait method; only computed when at least one enabled rule requests it via `needs_vra()`
+- **INT33-C**: `divisor_provably_nonzero()` tries VRA first via `eval_expr_range_at()`, falls back to syntactic analysis. Handles early-return guard patterns (`if (b == 0) return;`) and sequential assignments across blocks
+- **INT34-C**: `check_shift_operation()` tries VRA first for shift amount range, falls back to syntactic analysis
+- **INT32-C**: all 6 `expression_fits_in_signed` call sites replaced with VRA-backed `expression_fits_in_signed_vra()`
+- **INT30-C**: all 4 `expression_fits_in_unsigned` call sites replaced with VRA-backed `expression_fits_in_unsigned_vra()`
+- Added `PartialEq` derive to `ValueRange` in `const_eval.rs`
+
 ## v0.3.22 (2026-03-19)
 
 ### ARR38-C/ARR30-C False Positive Reduction

@@ -2,6 +2,7 @@ mod cert_c;
 
 use crate::analyze::cfg::FunctionCfg;
 use crate::analyze::context::ProjectContext;
+use crate::analyze::value_range::RangeAnalysisResult;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
@@ -38,6 +39,17 @@ pub trait CertRule {
     /// specific to a file type (e.g. header-only rules like PRE06-C).
     fn applies_to_file(&self, _file_path: &str) -> bool {
         true
+    }
+
+    /// Inject pre-computed value-range analysis results for flow-sensitive
+    /// integer range checking. Default is a no-op; only rules that need
+    /// VRA data override this.
+    fn set_vra_results(&self, _results: &HashMap<usize, RangeAnalysisResult>) {}
+
+    /// Returns true if this rule uses value-range analysis.
+    /// Used to avoid computing VRA when no enabled rules need it.
+    fn needs_vra(&self) -> bool {
+        false
     }
 }
 
