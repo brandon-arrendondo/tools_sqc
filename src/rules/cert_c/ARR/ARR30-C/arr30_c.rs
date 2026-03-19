@@ -972,6 +972,19 @@ impl Arr30C {
         let pattern = format!(r"\b{}\s*=\s*(-?\d+)", regex::escape(var_name));
         let re = regex::Regex::new(&pattern).ok()?;
 
+        // Check for non-constant assignments (e.g., var = func_call(...), var = other_var)
+        // Pattern: var_name = <something> but exclude comparison operators (==, !=, <=, >=)
+        let any_assign_pattern = format!(r"\b{}\s*=[^=!<>]", regex::escape(var_name));
+        let any_assign_re = regex::Regex::new(&any_assign_pattern).ok()?;
+        let total_assign_count = any_assign_re.find_iter(func_text).count();
+
+        // If there are multiple assignments (constant or non-constant), the variable
+        // is reassigned and we can't reliably resolve it to a single constant
+        if total_assign_count > 1 {
+            return None;
+        }
+
+        // Only one assignment - resolve it
         if let Some(caps) = re.captures(func_text) {
             if let Some(value_str) = caps.get(1) {
                 return value_str.as_str().parse::<isize>().ok();
@@ -1339,18 +1352,39 @@ impl Arr30C {
         None
     }
 
+    /// Extract the condition text from an if_statement node (just the parenthesized expression)
+    fn extract_if_condition_text(&self, if_node: &Node, source: &str) -> Option<String> {
+        for i in 0..if_node.child_count() {
+            if let Some(child) = if_node.child(i) {
+                if child.kind() == "parenthesized_expression" {
+                    return Some(source[child.start_byte()..child.end_byte()].to_string());
+                }
+            }
+        }
+        None
+    }
+
     /// Check if statement bounds against specific buffer size
     fn check_if_bounds_against_size(&self, if_node: &Node, source: &str, size: usize) -> bool {
-        let if_text = &source[if_node.start_byte()..if_node.end_byte()];
+        // Extract just the condition from the if-statement, not the full body
+        let condition_text = match self.extract_if_condition_text(if_node, source) {
+            Some(text) => text,
+            None => {
+                // Fallback to full text if we can't extract condition
+                source[if_node.start_byte()..if_node.end_byte()].to_string()
+            }
+        };
 
         // Look for patterns like: if (idx < SIZE) or if (idx < 3)
-        if if_text.contains(&format!("< {}", size)) {
+        if condition_text.contains(&format!("< {}", size)) {
             return true;
         }
 
         // Also check for macro-based bounds (e.g., "< ROWS", "< COLS")
         // Look for common comparison patterns that indicate bounds checking
-        if if_text.contains("< ") && (if_text.contains(">=") || if_text.contains("&&")) {
+        if condition_text.contains("< ")
+            && (condition_text.contains(">=") || condition_text.contains("&&"))
+        {
             // Pattern like: if (idx >= 0 && idx < SOMETHING)
             // This is a proper bounds check even if we don't know the exact value of SOMETHING
             return true;
