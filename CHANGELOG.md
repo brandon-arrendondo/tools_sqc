@@ -10,6 +10,14 @@
 - Prescan reordered: macro constants collected before function summaries so `#define`-based return values resolve correctly.
 - Benefits all 4 VRA-consuming rules (INT30-C, INT32-C, INT33-C, INT34-C) — e.g., `x = get_nonzero(); y / x;` no longer flagged by INT33-C when `get_nonzero` provably returns `[1, N]`.
 
+### Benchmark: Juliet 67/68 CWEs
+
+- Overall: 7,393 TP / 8,433 FP, **46.7% TP rate** (+2.4pp vs v0.3.21), 13.9% per-file
+- INT32-C: −63 FP, INT33-C: −33 FP, INT30-C: −5 FP (VRA Phases 1–5)
+- CWE-124: 36.9%→52.6%, CWE-122: 36.6%→43.8%, CWE-126: 37.2%→43.8% (ARR FP fixes from v0.3.22)
+- Zero regressions across all CWEs
+- **Known issue**: ~2x performance regression vs v0.3.21 (88m vs 45m). Per-file `compute_summaries` + `collect_macro_constants` overhead scales with file count. CWE-121 (5906 files) timed out.
+
 ## v0.3.23 (2026-03-19)
 
 ### CFG-Based Forward Value-Range Analysis
