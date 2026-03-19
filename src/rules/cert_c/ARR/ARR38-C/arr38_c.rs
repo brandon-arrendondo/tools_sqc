@@ -1,6 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils::{find_containing_function, get_node_text};
 use std::collections::HashMap;
 use tree_sitter::Node;
 
@@ -121,6 +121,92 @@ impl Arr38C {
                 self.collect_buffer_info(&child, source, buffer_info, size_vars, pointer_offsets);
             }
         }
+    }
+
+    /// Find the content size for a variable within the enclosing function by searching
+    /// for memset(var_name, ..., N) calls. This is function-scoped to avoid cross-function
+    /// contamination (e.g., bad function memset(data, 'A', 99) vs good function memset(data, 'A', 49)).
+    /// Also resolves through pointer aliases within the same function.
+    fn find_content_size_in_function(
+        &self,
+        node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> Option<usize> {
+        let func_node = find_containing_function(node)?;
+        let func_text = &source[func_node.start_byte()..func_node.end_byte()];
+
+        // Try direct var_name and any simple aliases found in the same function
+        // e.g., "data = dataBuffer" means we also check memset(dataBuffer, ...)
+        let mut names_to_check = vec![var_name.to_string()];
+        let alias_pattern = format!(r"\b{}\s*=\s*(\w+)\s*;", regex::escape(var_name));
+        if let Ok(re) = regex::Regex::new(&alias_pattern) {
+            for caps in re.captures_iter(func_text) {
+                if let Some(m) = caps.get(1) {
+                    let target = m.as_str();
+                    if self.is_simple_identifier(target) && target != var_name {
+                        names_to_check.push(target.to_string());
+                    }
+                }
+            }
+        }
+        // Also check reverse: if some other var is assigned from this one
+        let reverse_pattern = format!(r"\b(\w+)\s*=\s*{}\s*;", regex::escape(var_name));
+        if let Ok(re) = regex::Regex::new(&reverse_pattern) {
+            for caps in re.captures_iter(func_text) {
+                if let Some(m) = caps.get(1) {
+                    let alias = m.as_str();
+                    if self.is_simple_identifier(alias) && alias != var_name {
+                        names_to_check.push(alias.to_string());
+                    }
+                }
+            }
+        }
+
+        for name in &names_to_check {
+            // Search for memset(name, ..., N) pattern in function text
+            let pattern = format!(
+                r"memset\s*\(\s*{}\s*,\s*[^,]+\s*,\s*([^)]+)\)",
+                regex::escape(name)
+            );
+            if let Ok(re) = regex::Regex::new(&pattern) {
+                if let Some(caps) = re.captures(func_text) {
+                    if let Some(size_match) = caps.get(1) {
+                        if let Some(size) = self.parse_memset_size_expr(size_match.as_str().trim())
+                        {
+                            return Some(size);
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Parse a memset size expression like "50-1" -> 49, "99" -> 99, "100*sizeof(char)" -> 100
+    fn parse_memset_size_expr(&self, expr: &str) -> Option<usize> {
+        let expr = expr.trim();
+
+        // Try direct number first
+        if let Ok(n) = expr.parse::<usize>() {
+            return Some(n);
+        }
+
+        // Try N-1 pattern (e.g., "50-1", "100-1")
+        if let Some(minus_pos) = expr.rfind('-') {
+            let left = expr[..minus_pos].trim();
+            let right = expr[minus_pos + 1..].trim();
+            if let (Ok(l), Ok(r)) = (left.parse::<usize>(), right.parse::<usize>()) {
+                return Some(l.saturating_sub(r));
+            }
+        }
+
+        // Try N*sizeof(char) pattern
+        if let Some(size) = self.try_parse_size(expr) {
+            return Some(size);
+        }
+
+        None
     }
 
     /// Extract buffer/size info from declarations
@@ -474,6 +560,7 @@ impl Arr38C {
                     self.check_string_size_parameter(
                         &args,
                         node,
+                        source,
                         function_name,
                         violations,
                         buffer_info,
@@ -586,13 +673,16 @@ impl Arr38C {
                 let wcslen_arg = wcslen_arg.trim();
                 let src_trimmed = src_arg.trim();
                 if wcslen_arg == src_trimmed {
-                    if let Some(src_info) = buffer_info.get(wcslen_arg) {
-                        if let Some(src_size) = src_info.size {
-                            if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
-                                if let Some(dest_size) = dest_info.size {
-                                    if src_size > dest_size {
-                                        let start_point = node.start_position();
-                                        violations.push(RuleViolation {
+                    // Use content_size if available (from memset in same function), otherwise fall back to buffer alloc size
+                    let effective_src_size = self
+                        .find_content_size_in_function(node, wcslen_arg, source)
+                        .or_else(|| buffer_info.get(wcslen_arg).and_then(|info| info.size));
+                    if let Some(src_size) = effective_src_size {
+                        if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                            if let Some(dest_size) = dest_info.size {
+                                if src_size > dest_size {
+                                    let start_point = node.start_position();
+                                    violations.push(RuleViolation {
                                             rule_id: self.rule_id().to_string(),
                                             severity: Severity::High,
                                             message: format!(
@@ -608,8 +698,7 @@ impl Arr38C {
                                             )),
                                             ..Default::default()
                                         });
-                                        return;
-                                    }
+                                    return;
                                 }
                             }
                         }
@@ -751,6 +840,7 @@ impl Arr38C {
         &self,
         args: &[String],
         node: &Node,
+        source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
         buffer_info: &HashMap<String, BufferInfo>,
@@ -780,14 +870,18 @@ impl Arr38C {
             let strlen_arg = strlen_arg.trim();
             let src_trimmed = src_arg.trim();
             if strlen_arg == src_trimmed {
-                // Check if source buffer is larger than dest buffer
-                if let Some(src_info) = buffer_info.get(strlen_arg) {
-                    if let Some(src_size) = src_info.size {
-                        if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
-                            if let Some(dest_size) = dest_info.size {
-                                if src_size > dest_size {
-                                    let start_point = node.start_position();
-                                    violations.push(RuleViolation {
+                // Use content_size if available (from memset), otherwise fall back to buffer alloc size.
+                // strlen() returns the actual string length, not the buffer capacity.
+                // If memset(data, 'A', 49) was called, content_size is 49 even if buffer is 100.
+                let effective_src_size = self
+                    .find_content_size_in_function(node, strlen_arg, source)
+                    .or_else(|| buffer_info.get(strlen_arg).and_then(|info| info.size));
+                if let Some(src_size) = effective_src_size {
+                    if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                        if let Some(dest_size) = dest_info.size {
+                            if src_size > dest_size {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
                                         rule_id: self.rule_id().to_string(),
                                         severity: Severity::High,
                                         message: format!(
@@ -804,8 +898,7 @@ impl Arr38C {
                                         )),
                                         ..Default::default()
                                     });
-                                    return;
-                                }
+                                return;
                             }
                         }
                     }
@@ -1007,13 +1100,16 @@ impl Arr38C {
                     .or_else(|| self.extract_wcslen_argument(size_arg));
                 if let Some(len_arg) = len_arg {
                     let len_arg = len_arg.trim();
-                    if let Some(src_info) = buffer_info.get(len_arg) {
-                        if let Some(src_size) = src_info.size {
-                            if let Some(dest_info) = buffer_info.get(buf_arg.trim()) {
-                                if let Some(dest_size) = dest_info.size {
-                                    if src_size > dest_size {
-                                        let start_point = node.start_position();
-                                        violations.push(RuleViolation {
+                    // Use content_size if available (from memset), otherwise fall back to buffer alloc size
+                    let effective_src_size = self
+                        .find_content_size_in_function(node, len_arg, source)
+                        .or_else(|| buffer_info.get(len_arg).and_then(|info| info.size));
+                    if let Some(src_size) = effective_src_size {
+                        if let Some(dest_info) = buffer_info.get(buf_arg.trim()) {
+                            if let Some(dest_size) = dest_info.size {
+                                if src_size > dest_size {
+                                    let start_point = node.start_position();
+                                    violations.push(RuleViolation {
                                             rule_id: self.rule_id().to_string(),
                                             severity: Severity::High,
                                             message: format!(
@@ -1029,8 +1125,7 @@ impl Arr38C {
                                             )),
                                             ..Default::default()
                                         });
-                                        return;
-                                    }
+                                    return;
                                 }
                             }
                         }
