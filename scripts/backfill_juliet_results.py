@@ -24,6 +24,7 @@ VERSION_HISTORY = [
     ("v0.2.4",  43.8, 243849, 189950,  None,       "24-core", "full", "Windows API + multiple rule fixes"),
     ("v0.2.6",  44.5, 215672, 172708,  None,       "24-core", "full", "CFG null state + bounds-check detection"),
     ("v0.2.7",  44.5, 215671, 172780,  None,       "24-core", "full", "INT36-C TP restore + INT31-C FP fix"),
+    ("v0.2.11", 44.5, 215669, 172780,  None,       "24-core", "full", "INT32-C bounds-check detection, INT30-C macro fixes"),
     ("v0.2.12", 44.6, 210138, 169161,  None,       "24-core", "full", "DCL13-C pointer modification + INT01-C sizeof skip"),
     ("v0.2.13", 44.7, 196177, 158403,  None,       "24-core", "full", "INT31-C implicit narrowing + d_lib_common FP fixes"),
     ("v0.2.15", 44.2, 185499, 146714,  None,       "24-core", "full", "d_lib_common FP.md cleanup (17 patterns)"),
@@ -38,6 +39,7 @@ VERSION_HISTORY = [
     ("v0.2.25", 44.6, 161965, 130199,  None,       "24-core", "full", "ARR32-C tightening, rule removals, value-range FP fixes"),
     ("v0.3.5",  44.6, 161510, 130004,  None,       "24-core", "full", "Struct field type resolution"),
     ("v0.3.8",  44.3, 77826,  61799,   None,       "4-core",  "full", "12-CWE subset only"),
+    ("v0.3.9",  44.3, 77245,  61349,   None,       "4-core",  "full", "12-CWE subset, P3214 real-world FP fixes"),
     ("v0.3.14", 44.4, 158036, 126106,  "1h 14m",  "24-core", "full", "EXP33-C, INT30-C, EXP34-C FP fixes (full suite)"),
     ("v0.3.17", 44.4, 160496, 128038,  "1h 47m",  "24-core", "full", "CWE-78 macro alias + CWE-253 incorrect return check"),
 ]
