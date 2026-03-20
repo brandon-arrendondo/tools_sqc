@@ -113,6 +113,18 @@ CREATE TABLE IF NOT EXISTS realworld_results (
     UNIQUE(run_id, project, tool)
 );
 
+CREATE TABLE IF NOT EXISTS realworld_violations (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    result_id       INTEGER NOT NULL REFERENCES realworld_results(id),
+    rule_id         TEXT NOT NULL,
+    file_path       TEXT NOT NULL,
+    line            INTEGER NOT NULL,
+    column_num      INTEGER DEFAULT 0,
+    severity        TEXT,
+    message         TEXT,
+    suggestion      TEXT
+);
+
 CREATE INDEX IF NOT EXISTS idx_violations_cwe_scan ON violations(cwe_scan_id);
 CREATE INDEX IF NOT EXISTS idx_violations_rule ON violations(rule_id);
 CREATE INDEX IF NOT EXISTS idx_violations_class ON violations(classification);
@@ -121,6 +133,8 @@ CREATE INDEX IF NOT EXISTS idx_cwe_scans_cwe ON cwe_scans(cwe_id);
 CREATE INDEX IF NOT EXISTS idx_runs_status ON runs(status);
 CREATE INDEX IF NOT EXISTS idx_rw_results_run ON realworld_results(run_id);
 CREATE INDEX IF NOT EXISTS idx_rw_results_project ON realworld_results(project);
+CREATE INDEX IF NOT EXISTS idx_rw_violations_result ON realworld_violations(result_id);
+CREATE INDEX IF NOT EXISTS idx_rw_violations_rule ON realworld_violations(rule_id);
 """
 
 
@@ -703,6 +717,139 @@ class BenchDB:
                     (run_id, project, tool, c_files, loc, violation_count, duration_s)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (run_id, project, tool, c_files, loc, violation_count, duration_s))
+
+    def insert_realworld_violations(self, result_id: int,
+                                      violations: list[dict]) -> None:
+        """Bulk insert per-violation detail for a realworld result."""
+        if not violations:
+            return
+        with self._cursor() as cur:
+            cur.executemany("""
+                INSERT INTO realworld_violations
+                    (result_id, rule_id, file_path, line, column_num,
+                     severity, message, suggestion)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, [(result_id, v["rule_id"], v["file"], v["line"],
+                   v.get("column", 0), v.get("severity"),
+                   v.get("message"), v.get("suggestion"))
+                  for v in violations])
+
+    def ingest_realworld_run(self, version_dir: str, results_path: str,
+                              machine: dict = None) -> int:
+        """Ingest a complete realworld run from JSON result files.
+
+        Args:
+            version_dir: dir name like 'sqc-0.3.26-9e8e8d3b'
+            results_path: path to the directory containing JSON result files
+            machine: optional dict with hostname, cpu_model, cpu_cores
+
+        Returns:
+            The realworld_runs row id.
+        """
+        import os
+        from datetime import datetime
+
+        # Parse version/commit from dir name: sqc-{version}-{sha}
+        parts = version_dir.split("-", 2)
+        version = parts[1] if len(parts) > 1 else version_dir
+        commit = parts[2] if len(parts) > 2 else None
+
+        machine = machine or {}
+        run_id = self.create_realworld_run(
+            sqc_version=version,
+            commit_sha=commit,
+            scanned_at=datetime.now().isoformat(),
+            hostname=machine.get("hostname"),
+            cpu_model=machine.get("cpu_model"),
+            cpu_cores=machine.get("cpu_cores"),
+            notes=f"ingested from {version_dir}",
+        )
+
+        results_dir = Path(results_path)
+        for json_file in sorted(results_dir.glob("*.json")):
+            # Parse filename: sqc-{project}-{version}-{sha}.json
+            stem = json_file.stem
+            # Extract project: between first tool name and version
+            # e.g. "sqc-curl-0.3.26-9e8e8d3b" -> project="curl"
+            name_parts = stem.split("-")
+            if len(name_parts) >= 3:
+                project = name_parts[1]
+            else:
+                continue
+
+            violations = json.load(open(json_file))
+            violation_count = len(violations)
+
+            # Count per-rule
+            rule_counts = {}
+            for v in violations:
+                rid = v.get("rule_id", "unknown")
+                rule_counts[rid] = rule_counts.get(rid, 0) + 1
+
+            result_id = None
+            with self._cursor() as cur:
+                cur.execute("""
+                    INSERT OR REPLACE INTO realworld_results
+                        (run_id, project, tool, c_files, loc, violation_count, duration_s)
+                    VALUES (?, ?, 'sqc', 0, 0, ?, NULL)
+                """, (run_id, project, violation_count))
+                result_id = cur.lastrowid
+
+            # Insert per-violation detail
+            if result_id and violations:
+                self.insert_realworld_violations(result_id, violations)
+
+        return run_id
+
+    def get_realworld_rule_summary(self, run_id: int, project: str = None) -> list[dict]:
+        """Get per-rule violation counts for a realworld run."""
+        with self._cursor() as cur:
+            if project:
+                cur.execute("""
+                    SELECT rv.rule_id, COUNT(*) as count
+                    FROM realworld_violations rv
+                    JOIN realworld_results rr ON rr.id = rv.result_id
+                    WHERE rr.run_id = ? AND rr.project = ?
+                    GROUP BY rv.rule_id
+                    ORDER BY count DESC
+                """, (run_id, project))
+            else:
+                cur.execute("""
+                    SELECT rv.rule_id, COUNT(*) as count
+                    FROM realworld_violations rv
+                    JOIN realworld_results rr ON rr.id = rv.result_id
+                    WHERE rr.run_id = ?
+                    GROUP BY rv.rule_id
+                    ORDER BY count DESC
+                """, (run_id,))
+            return [dict(r) for r in cur.fetchall()]
+
+    def compare_realworld_runs(self, base_run_id: int, target_run_id: int,
+                                project: str = None) -> dict:
+        """Compare two realworld runs with per-rule deltas."""
+        base_rules = {r["rule_id"]: r["count"]
+                      for r in self.get_realworld_rule_summary(base_run_id, project)}
+        target_rules = {r["rule_id"]: r["count"]
+                        for r in self.get_realworld_rule_summary(target_run_id, project)}
+
+        all_rules = sorted(set(base_rules) | set(target_rules))
+        deltas = []
+        for rid in all_rules:
+            b = base_rules.get(rid, 0)
+            t = target_rules.get(rid, 0)
+            if b != t:
+                deltas.append({"rule_id": rid, "base": b, "target": t, "delta": t - b})
+        deltas.sort(key=lambda x: x["delta"])
+
+        base_total = sum(base_rules.values())
+        target_total = sum(target_rules.values())
+
+        return {
+            "base_total": base_total,
+            "target_total": target_total,
+            "delta_total": target_total - base_total,
+            "rule_deltas": deltas,
+        }
 
     def list_realworld_runs(self) -> list[dict]:
         with self._cursor() as cur:
