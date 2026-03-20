@@ -1,6 +1,8 @@
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::cfg::FunctionCfg;
 use crate::analyze::const_eval::{self, MacroConstantMap, ValueRange, VarRangeMap};
 use crate::analyze::context::ProjectContext;
+use crate::analyze::value_range::{self, RangeAnalysisResult};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
 use std::cell::RefCell;
@@ -11,6 +13,10 @@ pub struct Int33C {
     project_macros: RefCell<MacroConstantMap>,
     /// Cached per-file macro constants (set once per check() call, avoids re-collecting per division node)
     file_macros: RefCell<MacroConstantMap>,
+    /// Per-function CFGs (set by set_function_cfgs)
+    function_cfgs: RefCell<HashMap<usize, FunctionCfg>>,
+    /// Per-function VRA results (set by set_vra_results)
+    vra_results: RefCell<HashMap<usize, RangeAnalysisResult>>,
 }
 
 impl Int33C {
@@ -18,6 +24,8 @@ impl Int33C {
         Self {
             project_macros: RefCell::new(MacroConstantMap::new()),
             file_macros: RefCell::new(MacroConstantMap::new()),
+            function_cfgs: RefCell::new(HashMap::new()),
+            vra_results: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -54,6 +62,33 @@ impl CertRule for Int33C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_macros.borrow_mut() = context.macro_constants.clone();
+    }
+
+    fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
+        *self.function_cfgs.borrow_mut() = cfgs.clone();
+    }
+
+    fn set_vra_results(&self, results: &HashMap<usize, RangeAnalysisResult>) {
+        // RangeAnalysisResult is not Clone, so rebuild from reference
+        // We store a shared reference via a separate RefCell
+        // Actually, we need to store the results. Let's use a different approach:
+        // store the raw data we need.
+        let mut stored = HashMap::new();
+        for (&key, result) in results {
+            stored.insert(
+                key,
+                RangeAnalysisResult {
+                    block_entry_ranges: result.block_entry_ranges.clone(),
+                    block_exit_ranges: result.block_exit_ranges.clone(),
+                    return_ranges: result.return_ranges.clone(),
+                },
+            );
+        }
+        *self.vra_results.borrow_mut() = stored;
+    }
+
+    fn needs_vra(&self) -> bool {
+        true
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -641,32 +676,58 @@ impl Int33C {
     }
 
     /// Use value-range analysis to prove a divisor is provably non-zero.
-    /// Walks up to enclosing if/while/for statements and extracts variable
-    /// bounds from their conditions. Then evaluates the divisor expression
-    /// with those bounds. If the result range is entirely > 0 or entirely < 0,
-    /// the divisor cannot be zero.
+    ///
+    /// First tries CFG-based VRA (if available), which handles sequential
+    /// assignments, conditional narrowing through arbitrary paths, and
+    /// early-return guard patterns. Falls back to syntactic ancestor walks.
     fn divisor_provably_nonzero(&self, div_node: &Node, divisor: &Node, source: &str) -> bool {
-        // Use cached per-file macro constants (collected once in check())
         let file_macros = self.file_macros.borrow();
 
-        // Extract ranges from enclosing loop conditions
-        let mut var_ranges = const_eval::extract_loop_var_ranges(div_node, source, &file_macros);
+        // Try CFG-based VRA first (more precise)
+        if let Some(range) = self.eval_divisor_range_via_vra(div_node, divisor, source) {
+            if range.min >= 1 || range.max <= -1 {
+                return true;
+            }
+        }
 
-        // Also extract ranges from enclosing if_statement conditions
-        // This is the key addition: `if (lower < upper)` establishes bounds
+        // Fallback: syntactic ancestor walk (loop bounds + if-condition bounds)
+        let mut var_ranges = const_eval::extract_loop_var_ranges(div_node, source, &file_macros);
         Self::extract_if_condition_ranges(div_node, source, &file_macros, &mut var_ranges);
 
-        // Try to evaluate the divisor's range
         if let Some(range) =
             const_eval::try_evaluate_range(divisor, source, &file_macros, &var_ranges)
         {
-            // If the entire range is > 0 or < 0, the divisor cannot be zero
             if range.min >= 1 || range.max <= -1 {
                 return true;
             }
         }
 
         false
+    }
+
+    /// Evaluate the divisor's range using CFG-based VRA.
+    fn eval_divisor_range_via_vra(
+        &self,
+        div_node: &Node,
+        divisor: &Node,
+        source: &str,
+    ) -> Option<ValueRange> {
+        let vra_results = self.vra_results.borrow();
+        let cfgs = self.function_cfgs.borrow();
+        let file_macros = self.file_macros.borrow();
+
+        if vra_results.is_empty() || cfgs.is_empty() {
+            return None;
+        }
+
+        // Find the containing function to get its CFG and VRA result
+        let func = ast_utils::find_containing_function(div_node)?;
+        let start_byte = func.start_byte();
+        let cfg = cfgs.get(&start_byte)?;
+        let vra = vra_results.get(&start_byte)?;
+        let body = func.child_by_field_name("body")?;
+
+        value_range::eval_expr_range_at(vra, cfg, &body, source, &file_macros, divisor)
     }
 
     /// Walk up to enclosing if_statement ancestors and extract variable
