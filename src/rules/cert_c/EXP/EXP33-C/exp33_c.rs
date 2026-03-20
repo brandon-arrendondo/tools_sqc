@@ -1972,6 +1972,13 @@ impl UninitializedVariableAnalyzer {
                 if Self::statement_assigns_var(&child, var_name, source) {
                     return true;
                 }
+
+                // Check if-chains where all branches either init the var or exit
+                if child.kind() == "if_statement"
+                    && Self::if_chain_covers_init_or_exit(&child, var_name, source)
+                {
+                    return true;
+                }
             }
         }
         false
@@ -2023,6 +2030,110 @@ impl UninitializedVariableAnalyzer {
                 false
             }
             _ => false,
+        }
+    }
+
+    /// Check if an if/else-if/else chain covers all paths for a variable:
+    /// every branch either assigns the variable or contains an unconditional
+    /// exit (return/break/continue/goto). Requires a terminal else clause.
+    fn if_chain_covers_init_or_exit(if_node: &Node, var_name: &str, source: &str) -> bool {
+        // Must have a terminal else (otherwise fall-through path is uncovered)
+        if !Self::if_chain_has_else(if_node) {
+            return false;
+        }
+
+        let mut branches = Vec::new();
+        Self::collect_if_chain_branches(if_node, &mut branches);
+
+        if branches.is_empty() {
+            return false;
+        }
+
+        for branch in &branches {
+            let has_init = Self::branch_unconditionally_assigns(branch, var_name, source);
+            let has_exit = Self::branch_has_unconditional_exit(branch);
+            if !has_init && !has_exit {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// Collect all branch bodies from an if/else-if/else chain.
+    fn collect_if_chain_branches<'a>(if_node: &Node<'a>, branches: &mut Vec<Node<'a>>) {
+        if let Some(consequence) = if_node.child_by_field_name("consequence") {
+            branches.push(consequence);
+        }
+
+        if let Some(alt) = if_node.child_by_field_name("alternative") {
+            match alt.kind() {
+                "if_statement" => {
+                    Self::collect_if_chain_branches(&alt, branches);
+                }
+                "else_clause" => {
+                    let mut found_if = false;
+                    for i in 0..alt.child_count() {
+                        if let Some(child) = alt.child(i) {
+                            if child.kind() == "if_statement" {
+                                Self::collect_if_chain_branches(&child, branches);
+                                found_if = true;
+                                break;
+                            }
+                        }
+                    }
+                    if !found_if {
+                        // Plain else body
+                        for i in 0..alt.named_child_count() {
+                            if let Some(child) = alt.named_child(i) {
+                                branches.push(child);
+                                break;
+                            }
+                        }
+                    }
+                }
+                _ => {
+                    branches.push(alt);
+                }
+            }
+        }
+    }
+
+    /// Check if a branch body unconditionally assigns to var_name.
+    /// Only checks direct statements (not nested conditionals).
+    fn branch_unconditionally_assigns(branch: &Node, var_name: &str, source: &str) -> bool {
+        if branch.kind() == "compound_statement" {
+            for i in 0..branch.named_child_count() {
+                if let Some(child) = branch.named_child(i) {
+                    if Self::statement_assigns_var(&child, var_name, source) {
+                        return true;
+                    }
+                }
+            }
+            false
+        } else {
+            Self::statement_assigns_var(branch, var_name, source)
+        }
+    }
+
+    /// Check if a branch body contains an unconditional exit statement
+    /// (return/break/continue/goto) at the top level.
+    fn branch_has_unconditional_exit(branch: &Node) -> bool {
+        if branch.kind() == "compound_statement" {
+            for i in 0..branch.named_child_count() {
+                if let Some(child) = branch.named_child(i) {
+                    match child.kind() {
+                        "return_statement" | "break_statement" | "continue_statement"
+                        | "goto_statement" => return true,
+                        _ => {}
+                    }
+                }
+            }
+            false
+        } else {
+            matches!(
+                branch.kind(),
+                "return_statement" | "break_statement" | "continue_statement" | "goto_statement"
+            )
         }
     }
 

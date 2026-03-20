@@ -35,20 +35,22 @@ impl CertRule for Pre00C {
 
 impl Pre00C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Look for function-like macros
-        // Tree-sitter C uses "preproc_function_def" for #define MACRO(args) ...
-        if node.kind() == "preproc_function_def" || node.kind() == "preproc_def" {
-            let text = get_node_text(node, source);
-            // For preproc_function_def, it's always a function-like macro
-            // For preproc_def, check if it looks like a function-like macro
-            let is_function_like =
-                node.kind() == "preproc_function_def" || (text.contains('(') && text.contains(')'));
-
-            if is_function_like {
+        // Only flag preproc_function_def (true function-like macros)
+        // with parameters that are evaluated more than once (multi-evaluation risk)
+        if node.kind() == "preproc_function_def" {
+            if self.has_multi_evaluation_risk(node, source) {
+                let macro_name = node
+                    .child_by_field_name("name")
+                    .map(|n| get_node_text(&n, source))
+                    .unwrap_or("unknown");
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     severity: self.severity(),
-                    message: "Function-like macro detected; prefer inline or static functions for type safety".to_string(),
+                    message: format!(
+                        "Function-like macro '{}' evaluates parameter(s) multiple times; \
+                         prefer inline or static functions for type safety",
+                        macro_name
+                    ),
                     file_path: String::new(),
                     line: node.start_position().row + 1,
                     column: node.start_position().column + 1,
@@ -63,5 +65,72 @@ impl Pre00C {
         for child in node.children(&mut cursor) {
             self.check_node(&child, source, violations);
         }
+    }
+
+    /// Check if a function-like macro has unsafe patterns:
+    /// multi-evaluation of parameters or side effects in the body.
+    fn has_multi_evaluation_risk(&self, node: &Node, source: &str) -> bool {
+        let body = match node.child_by_field_name("value") {
+            Some(v) => get_node_text(&v, source).to_string(),
+            None => return false,
+        };
+
+        // Side effects in body: increment/decrement operators
+        if body.contains("++") || body.contains("--") {
+            return true;
+        }
+
+        // Multi-evaluation: any parameter used more than once
+        let params = Self::extract_macro_params(node, source);
+        for param in &params {
+            if Self::count_word_occurrences(&body, param) > 1 {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Extract parameter names from a preproc_function_def's parameters node.
+    fn extract_macro_params(node: &Node, source: &str) -> Vec<String> {
+        let mut params = Vec::new();
+        if let Some(params_node) = node.child_by_field_name("parameters") {
+            for i in 0..params_node.child_count() {
+                if let Some(child) = params_node.child(i) {
+                    if child.kind() == "identifier" {
+                        params.push(get_node_text(&child, source).to_string());
+                    }
+                }
+            }
+        }
+        params
+    }
+
+    /// Count occurrences of `word` in `text` with word-boundary matching.
+    fn count_word_occurrences(text: &str, word: &str) -> usize {
+        let mut count = 0;
+        let word_bytes = word.as_bytes();
+        let text_bytes = text.as_bytes();
+        let word_len = word_bytes.len();
+
+        if word_len == 0 || text_bytes.len() < word_len {
+            return 0;
+        }
+
+        for i in 0..=(text_bytes.len() - word_len) {
+            if &text_bytes[i..i + word_len] == word_bytes {
+                let before_ok = i == 0 || {
+                    let b = text_bytes[i - 1];
+                    !b.is_ascii_alphanumeric() && b != b'_'
+                };
+                let after_ok = i + word_len >= text_bytes.len() || {
+                    let a = text_bytes[i + word_len];
+                    !a.is_ascii_alphanumeric() && a != b'_'
+                };
+                if before_ok && after_ok {
+                    count += 1;
+                }
+            }
+        }
+        count
     }
 }
