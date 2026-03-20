@@ -156,6 +156,15 @@ Remaining from d_lib_common/d_hal_linux_random triage (require new analysis capa
 
 ## Long Term
 
+### Test Coverage (Priority 2)
+
+Current test infrastructure auto-generates integration tests from `.c` files in `tests/` directories. Coverage gaps:
+- Many rules have only wiki-sourced tests (1-3 cases) — need broader pattern coverage
+- No tests for inter-procedural analysis paths (prescan, call-site propagation, `-d` directories)
+- No regression tests for specific FP patterns fixed in each round (real-world patterns from arraylist.c, intset.c, file_util.c etc.)
+- EXP34-C param-null tests had to be restructured when default changed — need tests that exercise with/without project context
+- No negative tests for false-positive patterns (verify FP stays suppressed)
+
 ### Architecture Evolution
 
 - [ ] **Internal parallelization** — rayon for file-level parallelism

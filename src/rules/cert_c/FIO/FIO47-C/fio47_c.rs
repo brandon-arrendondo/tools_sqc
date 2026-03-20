@@ -367,17 +367,15 @@ impl Fio47C {
                 }
             }
 
-            // Subtract non-format, non-data arguments:
-            // snprintf/vsnprintf: buffer + size + format = 3
-            // fprintf/fscanf etc: FILE* + format = 2
-            // printf/scanf etc: format = 1
-            if matches!(function_name, "snprintf" | "vsnprintf") {
-                count = count.saturating_sub(3);
-            } else if function_name.starts_with('f') && !function_name.starts_with("fopen") {
-                count = count.saturating_sub(2);
-            } else {
-                count = count.saturating_sub(1);
-            }
+            // Subtract non-data arguments (everything up to and including format string).
+            // Must match format_arg_index logic in extract_format_string.
+            let skip_count = match function_name {
+                "snprintf" | "vsnprintf" => 3,
+                "fprintf" | "fscanf" | "sprintf" | "sscanf" | "dprintf" | "vdprintf"
+                | "vfprintf" | "vfscanf" | "vsprintf" | "vsscanf" => 2,
+                _ => 1,
+            };
+            count = count.saturating_sub(skip_count);
 
             count
         } else {
