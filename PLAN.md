@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-20 (v0.3.25 Juliet + realworld benchmarks)
+**Last Updated**: 2026-03-20 (v0.3.26 benchmark pending)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -8,19 +8,28 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ---
 
+## Completed in v0.3.26
+
+- **EXP33-C**: Conditional init early-return path — if/else-if/else chains where non-initializing branches have unconditional exits (return/break/continue/goto) no longer flag the variable as uninitialized. Fixes `arraylist.c:132` / `intset.c:124` patterns and Juliet CWE-457 FP regression.
+- **ERR33-C**: `== 0` for NonZero functions (fseek, fclose, fflush, etc.) no longer flagged as CWE-253 incorrect check. `== 0` is a valid success-path check. Also: `== 0` for Count functions (fread, fwrite) no longer flagged — only `< 0` on unsigned size_t is genuinely incorrect.
+- **PRE00-C**: Restricted to macros with multi-evaluation risk (parameter used >1 time in body) or side effects (++/-- in body). Was flagging ALL function-like macros (~1,709 violations on real-world codebases).
+
 ## Immediate Next Steps
 
-### EXP33-C: Conditional Init Early-Return Path (Priority 1)
+### EXP34-C: Param Non-Null Default (Priority 1)
 
-`arraylist.c:132` / `intset.c:124` pattern: if/else-if/else chain where the else-if has `return false`. Variable `new_capacity` is always initialized when the use point is reached, but v0.3.25's broadened `check_conditional_init_pattern` doesn't account for early-return branches eliminating un-initialized paths. Same root cause as Juliet CWE-457 FP regression (+109 FP).
+Real-world FP: 6,679 violations from struct pointer params (`data->state`) flagged as null deref. Root cause: all pointer params default to PossiblyNull without call-site data. Fix: default to NotNull when no inter-procedural call-site data exists. Requires test updates (5 EXP34-C fail tests assume PossiblyNull default for single-file analysis). Estimated impact: −3,000+ real-world violations.
 
-Fix: in `check_conditional_init_pattern`, detect when a branch contains an unconditional return/break/continue — that branch can't reach the use point, so the variable is effectively initialized on all reachable paths.
+**Implementation note**: Simple change in `collect_param_pointer_state` (null_state.rs), but test cases `testcases_func_param`, `testcases_callback_null`, `testcases_list_null`, `wiki_noncompliant_1`, `wiki_noncompliant_3` need updated expectations or restructuring to use project context.
 
-### ERR33-C: fseek Success-Check Misclassification (Priority 1)
+### FIO47-C: 100% FP Rate — Format String Validation Errors (Priority 2)
 
-`file_util.c:37`: `if (fseek(fp, 0L, SEEK_END) == 0)` is a success-path check (proceed only on success), but ERR33-C flags it as "incorrect check of return value: `== 0` does not properly detect the error condition". The rule conflates success-branching with error-handling.
+0 TP, 119 FP (v0.3.25). Three incorrect validation rules:
+1. `%lf` flagged as invalid (`l` with float specifier) — valid in C99+ printf
+2. `'` (grouping) flag with `%d` flagged as invalid — POSIX extension, not an error
+3. `+/space` with `%o/%u/%x` flagged — too aggressive, implementations accept it
 
-Fix: when the check is `== 0` and the guarded block is the success path (contains the normal logic, not error handling), don't flag. Alternatively, only flag `== 0` when there's no corresponding else/error branch.
+Fix: remove or relax these three checks. Free FP reduction (0 TP loss).
 
 ### CWE-121/122 Remaining FP Reduction
 
@@ -80,7 +89,7 @@ Next:
 
 ### CWE-457: Uninitialized Variable — Remaining Gaps (Priority 1)
 
-616 files, 28.7% per-file, 31.8% TP rate (v0.3.25 benchmark). +33 TP but +109 FP vs v0.3.24 — FP regression from alloca/conditional init broadening needs investigation. Remaining gaps:
+616 files, 28.7% per-file, 31.8% TP rate (v0.3.25 benchmark). v0.3.26 addresses the +109 FP regression via early-return branch detection. Remaining gaps:
 - Cross-function variants 63/64 (~70 files): pointer passed between source files, needs inter-procedural analysis
 - Array partial_init through alloca/malloc (~66 files): partial subscript init upgrades to MallocInitialized, losing content-level tracking
 - struct variant 12: struct field access pattern edge case
@@ -118,8 +127,8 @@ v0.3.25 realworld results (curl + mosquitto + libcrc, 83K violations). Overall �
 | EXP33-C | 1,394 | Uninitialized variable FPs | CFG integration needed (same as Juliet EXP33-C rewrite). |
 
 **Quick wins (low effort, high impact):**
-- PRE00-C: restrict to macros with side effects or multiple-evaluation args (−1,709 violations)
-- EXP34-C param non-null: assume non-null for direct function params (−3,000+ estimated)
+- ~~PRE00-C: restrict to macros with side effects or multiple-evaluation args~~ ✅ Done in v0.3.26
+- EXP34-C param non-null: assume non-null for direct function params (−3,000+ estimated) → promoted to Priority 1
 - POS49-C: suppress unless field is accessed within a known critical section pattern
 
 ### Real-World FP — Deferred Hard Issues
