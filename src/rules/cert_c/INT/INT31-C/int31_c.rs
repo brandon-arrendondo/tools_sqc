@@ -8,12 +8,112 @@
 //! - time_t comparison with -1 without proper cast
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::cfg::FunctionCfg;
+use crate::analyze::const_eval::{self, MacroConstantMap, VarRangeMap};
+use crate::analyze::value_range::RangeAnalysisResult;
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils::{self, get_node_text};
+use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
-pub struct Int31C;
+pub struct Int31C {
+    function_cfgs: RefCell<HashMap<usize, FunctionCfg>>,
+    vra_results: RefCell<HashMap<usize, RangeAnalysisResult>>,
+}
+
+impl Int31C {
+    pub fn new() -> Self {
+        Self {
+            function_cfgs: RefCell::new(HashMap::new()),
+            vra_results: RefCell::new(HashMap::new()),
+        }
+    }
+
+    fn vra_var_ranges_at(&self, expr_node: &Node) -> Option<VarRangeMap> {
+        let vra_results = self.vra_results.borrow();
+        let cfgs = self.function_cfgs.borrow();
+
+        if vra_results.is_empty() || cfgs.is_empty() {
+            return None;
+        }
+
+        let func = ast_utils::find_containing_function(expr_node)?;
+        let start_byte = func.start_byte();
+        let cfg = cfgs.get(&start_byte)?;
+        let vra = vra_results.get(&start_byte)?;
+        let byte_offset = expr_node.start_byte();
+
+        let block = cfg
+            .blocks
+            .iter()
+            .find(|b| {
+                b.statements
+                    .iter()
+                    .any(|&(s, e)| byte_offset >= s && byte_offset < e)
+            })
+            .or_else(|| {
+                cfg.blocks.iter().find(|b| {
+                    b.byte_range.0 > 0
+                        && byte_offset >= b.byte_range.0
+                        && byte_offset < b.byte_range.1
+                })
+            })?;
+
+        let entry = vra.block_entry_ranges.get(&block.id)?;
+
+        let var_ranges: VarRangeMap = entry
+            .iter()
+            .map(|(name, typed)| (name.clone(), typed.range))
+            .collect();
+
+        if var_ranges.is_empty() {
+            None
+        } else {
+            Some(var_ranges)
+        }
+    }
+
+    /// Check if VRA proves the source expression fits in the target type at this node.
+    /// Returns true if the value is provably safe for the conversion.
+    fn vra_proves_conversion_safe(
+        &self,
+        node: &Node,
+        source_expr_node: &Node,
+        source: &str,
+        _target_type: &str,
+        target_width: u32,
+        target_signed: bool,
+    ) -> bool {
+        let var_ranges = match self.vra_var_ranges_at(node) {
+            Some(r) => r,
+            None => return false,
+        };
+
+        let macros = MacroConstantMap::new();
+        if let Some(range) =
+            const_eval::try_evaluate_range(source_expr_node, source, &macros, &var_ranges)
+        {
+            if target_signed {
+                return range.fits_in_signed(target_width);
+            } else {
+                return range.fits_in_unsigned(target_width);
+            }
+        }
+
+        // For identifiers, also try looking up directly by name
+        let expr_text = get_node_text(source_expr_node, source).trim().to_string();
+        if let Some(&range) = var_ranges.get(&expr_text) {
+            if target_signed {
+                return range.fits_in_signed(target_width);
+            } else {
+                return range.fits_in_unsigned(target_width);
+            }
+        }
+
+        false
+    }
+}
 
 /// Returns the bit-width of a known integer type, or None for unknown types.
 /// Check 64-bit before 32-bit to prevent "long int" matching "int".
@@ -171,6 +271,29 @@ impl CertRule for Int31C {
 
     fn cert_id(&self) -> &'static str {
         "INT31-C"
+    }
+
+    fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
+        *self.function_cfgs.borrow_mut() = cfgs.clone();
+    }
+
+    fn set_vra_results(&self, results: &HashMap<usize, RangeAnalysisResult>) {
+        let mut stored = HashMap::new();
+        for (&key, result) in results {
+            stored.insert(
+                key,
+                RangeAnalysisResult {
+                    block_entry_ranges: result.block_entry_ranges.clone(),
+                    block_exit_ranges: result.block_exit_ranges.clone(),
+                    return_ranges: result.return_ranges.clone(),
+                },
+            );
+        }
+        *self.vra_results.borrow_mut() = stored;
+    }
+
+    fn needs_vra(&self) -> bool {
+        true
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -622,6 +745,11 @@ impl Int31C {
                 continue;
             }
 
+            // VRA suppression: if value is provably non-negative, safe for size_t
+            if self.vra_proves_conversion_safe(node, arg_node, source, "size_t", 64, false) {
+                continue;
+            }
+
             // Suppression: inside a bounds-checked block that validates against
             // a type-limit macro (SHRT_MAX, INT_MAX, SIZE_MAX, etc.)
             if self.is_inside_bounds_checked_block(node, source, &ident) {
@@ -795,8 +923,19 @@ impl Int31C {
             return;
         }
 
+        let target_width = get_type_width(&target_clean);
+        let target_signed = self.is_signed_type(&target_clean);
+        let operand_node = self.get_cast_operand_node(node);
+
         // Signed to unsigned without validation
         if self.is_signed_type(&source_type) && self.is_unsigned_type(&target_clean) {
+            // VRA: if value is provably non-negative and fits in target width, suppress
+            if let (Some(tw), Some(ref op_node)) = (target_width, &operand_node) {
+                if self.vra_proves_conversion_safe(node, op_node, source, &target_clean, tw, false)
+                {
+                    return;
+                }
+            }
             if self.is_inside_bounds_checked_block(node, source, &source_expr) {
                 return;
             }
@@ -820,6 +959,12 @@ impl Int31C {
 
         // Unsigned to signed without validation
         if self.is_unsigned_type(&source_type) && self.is_signed_type(&target_clean) {
+            // VRA: if value is provably within signed target range, suppress
+            if let (Some(tw), Some(ref op_node)) = (target_width, &operand_node) {
+                if self.vra_proves_conversion_safe(node, op_node, source, &target_clean, tw, true) {
+                    return;
+                }
+            }
             if self.is_inside_bounds_checked_block(node, source, &source_expr) {
                 return;
             }
@@ -843,6 +988,19 @@ impl Int31C {
 
         // Narrowing conversion (wide to narrow)
         if self.is_wide_type(&source_type) && self.is_narrow_type(&target_clean) {
+            // VRA: if value provably fits in target type, suppress
+            if let (Some(tw), Some(ref op_node)) = (target_width, &operand_node) {
+                if self.vra_proves_conversion_safe(
+                    node,
+                    op_node,
+                    source,
+                    &target_clean,
+                    tw,
+                    target_signed,
+                ) {
+                    return;
+                }
+            }
             if self.is_inside_bounds_checked_block(node, source, &source_expr) {
                 return;
             }
@@ -1046,6 +1204,18 @@ impl Int31C {
         String::new()
     }
 
+    fn get_cast_operand_node<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                let kind = child.kind();
+                if kind != "type_descriptor" && kind != "(" && kind != ")" {
+                    return Some(child);
+                }
+            }
+        }
+        None
+    }
+
     fn check_assignment_conversion(
         &self,
         node: &Node,
@@ -1112,6 +1282,14 @@ impl Int31C {
 
         // Suppression: validated variable
         if validated_vars.contains(&lhs_name) {
+            return;
+        }
+
+        // VRA suppression: if RHS value provably fits in LHS type, suppress
+        let lhs_signed = self.is_signed_type(&lhs_type);
+        if self
+            .vra_proves_conversion_safe(node, &rhs_node, source, &lhs_type, lhs_width, lhs_signed)
+        {
             return;
         }
 
