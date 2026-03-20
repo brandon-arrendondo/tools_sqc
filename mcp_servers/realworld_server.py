@@ -1163,12 +1163,42 @@ def get_results(run_id: str | None = None) -> str:
                 "total_rules": len(parsed["per_rule"]),
             })
 
+    # Auto-ingest into SQLite if not already present
+    _auto_ingest_to_sqlite(version_dir)
+
     return json.dumps({
         "version_dir": str(version_dir),
         "dir_name": version_dir.name,
         "runs": all_results,
         "total_runs": len(all_results),
     })
+
+
+def _auto_ingest_to_sqlite(version_dir: Path) -> None:
+    """Ingest a realworld result dir into SQLite if not already present."""
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from bench.db import BenchDB
+
+        db = BenchDB()
+        dir_name = version_dir.name
+
+        # Check if already ingested (match by notes field)
+        existing = [r for r in db.list_realworld_runs()
+                    if r.get("notes") and dir_name in r["notes"]]
+        if existing:
+            return  # Already ingested
+
+        # Only ingest sqc results (skip cppcheck/clang-tidy)
+        json_files = list(version_dir.glob("sqc-*.json"))
+        if not json_files:
+            return
+
+        machine = {"hostname": os.uname().nodename}
+        db.ingest_realworld_run(dir_name, str(version_dir), machine=machine)
+    except Exception:
+        pass  # Don't fail the MCP tool if ingestion fails
 
 
 @mcp.tool()
