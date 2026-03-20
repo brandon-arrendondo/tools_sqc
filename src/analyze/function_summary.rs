@@ -4,6 +4,7 @@
 //! phase. These summaries are used by rules to reason about callee behavior
 //! without re-analyzing the callee's body.
 
+use crate::analyze::const_eval::{self, MacroConstantMap, ValueRange, VarRangeMap};
 use crate::analyze::null_state::NullState;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
@@ -29,13 +30,26 @@ pub struct FunctionSummary {
     /// Aggregated null states of arguments at all call sites (populated by prescan second pass).
     /// Maps parameter index → joined NullState from all callers.
     pub callsite_param_null_states: HashMap<usize, NullState>,
+    /// Computed return value range for integer-returning functions.
+    /// `Some(range)` when all return paths provably return values in [min, max].
+    /// `None` for void, pointer-returning, or unevaluable return expressions.
+    pub return_range: Option<ValueRange>,
 }
 
 /// Compute function summaries for all function definitions in the AST.
-pub fn compute_summaries(root: &Node, source: &str) -> HashMap<String, FunctionSummary> {
+///
+/// When `compute_return_ranges` is true, also computes return value ranges
+/// for integer-returning functions (needed for VRA inter-procedural analysis).
+/// Pass false during prescan when no VRA-consuming rules are enabled.
+pub fn compute_summaries(
+    root: &Node,
+    source: &str,
+    macros: &MacroConstantMap,
+    compute_return_ranges: bool,
+) -> HashMap<String, FunctionSummary> {
     let mut summaries = HashMap::new();
 
-    collect_function_summaries(root, source, &mut summaries);
+    collect_function_summaries(root, source, macros, compute_return_ranges, &mut summaries);
 
     summaries
 }
@@ -43,11 +57,13 @@ pub fn compute_summaries(root: &Node, source: &str) -> HashMap<String, FunctionS
 fn collect_function_summaries(
     node: &Node,
     source: &str,
+    macros: &MacroConstantMap,
+    compute_return_ranges: bool,
     summaries: &mut HashMap<String, FunctionSummary>,
 ) {
     if node.kind() == "function_definition" {
         if let Some(name) = extract_function_name(node, source) {
-            let summary = analyze_function(node, source);
+            let summary = analyze_function(node, source, macros, compute_return_ranges);
             summaries.insert(name, summary);
         }
     }
@@ -58,12 +74,19 @@ fn collect_function_summaries(
             match child.kind() {
                 "function_definition" => {
                     if let Some(name) = extract_function_name(&child, source) {
-                        let summary = analyze_function(&child, source);
+                        let summary =
+                            analyze_function(&child, source, macros, compute_return_ranges);
                         summaries.insert(name, summary);
                     }
                 }
                 kind if kind.starts_with("preproc_") => {
-                    collect_function_summaries(&child, source, summaries);
+                    collect_function_summaries(
+                        &child,
+                        source,
+                        macros,
+                        compute_return_ranges,
+                        summaries,
+                    );
                 }
                 _ => {}
             }
@@ -72,13 +95,20 @@ fn collect_function_summaries(
 }
 
 /// Analyze a single function definition to produce its summary.
-fn analyze_function(func_node: &Node, source: &str) -> FunctionSummary {
+fn analyze_function(
+    func_node: &Node,
+    source: &str,
+    macros: &MacroConstantMap,
+    compute_return_ranges: bool,
+) -> FunctionSummary {
     let mut summary = FunctionSummary::default();
 
     // Collect parameter names
     let params = collect_param_names(func_node, source);
 
     // Check the return type
+    let is_pointer_return;
+    let is_void_return;
     if let Some(return_type) = func_node.child_by_field_name("type") {
         let type_text = return_type.utf8_text(source.as_bytes()).unwrap_or("");
         // Functions returning pointer types might return NULL
@@ -86,14 +116,19 @@ fn analyze_function(func_node: &Node, source: &str) -> FunctionSummary {
             .child_by_field_name("declarator")
             .map(|d| d.utf8_text(source.as_bytes()).unwrap_or(""))
             .unwrap_or("");
-        if decl_text.contains('*') {
+        is_pointer_return = decl_text.contains('*');
+        is_void_return = type_text == "void";
+        if is_pointer_return {
             // Could return NULL unless proven otherwise
             summary.can_return_null = true;
         }
         // void functions can't return NULL
-        if type_text == "void" {
+        if is_void_return {
             summary.can_return_null = false;
         }
+    } else {
+        is_pointer_return = false;
+        is_void_return = false;
     }
 
     // Analyze function body
@@ -117,6 +152,11 @@ fn analyze_function(func_node: &Node, source: &str) -> FunctionSummary {
 
         // Analyze parameter usage
         analyze_param_usage(&body, source, &params, &mut summary);
+
+        // Compute return value range for integer-returning functions (only when VRA is needed)
+        if compute_return_ranges && !is_void_return && !is_pointer_return {
+            summary.return_range = compute_return_range(&body, source, macros);
+        }
     }
 
     summary
@@ -268,6 +308,65 @@ fn analyze_param_usage(
     }
 }
 
+/// Compute the return value range for an integer-returning function.
+///
+/// Collects all `return expr;` statements in the body, evaluates each
+/// expression as a constant range, and joins them. Returns `None` if any
+/// return expression cannot be evaluated (conservative).
+fn compute_return_range(
+    body: &Node,
+    source: &str,
+    macros: &MacroConstantMap,
+) -> Option<ValueRange> {
+    let mut return_exprs = Vec::new();
+    collect_return_expressions(body, &mut return_exprs);
+
+    if return_exprs.is_empty() {
+        return None;
+    }
+
+    let empty_vars = VarRangeMap::new();
+    let mut combined: Option<ValueRange> = None;
+
+    for expr_node in &return_exprs {
+        // Try to evaluate the return expression as a constant range.
+        // Uses empty var_ranges — only resolves literals, macros, sizeof, and
+        // arithmetic on those. Parameter-dependent returns yield None.
+        let range = const_eval::try_evaluate_range(expr_node, source, macros, &empty_vars)?;
+        combined = Some(match combined {
+            Some(existing) => {
+                ValueRange::new(existing.min.min(range.min), existing.max.max(range.max))
+            }
+            None => range,
+        });
+    }
+
+    combined
+}
+
+/// Recursively collect the expression child of every `return_statement` in `node`.
+fn collect_return_expressions<'a>(node: &Node<'a>, out: &mut Vec<Node<'a>>) {
+    if node.kind() == "return_statement" {
+        // The return expression is the first non-keyword child
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() != "return" && child.kind() != ";" {
+                    out.push(child);
+                    return;
+                }
+            }
+        }
+        // Bare `return;` — no expression (void-style)
+        return;
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_return_expressions(&child, out);
+        }
+    }
+}
+
 fn extract_function_name(func_node: &Node, source: &str) -> Option<String> {
     let declarator = func_node.child_by_field_name("declarator")?;
     let name = extract_leaf_identifier(&declarator, source);
@@ -369,7 +468,8 @@ mod tests {
         let mut parser = tree_sitter::Parser::new();
         parser.set_language(&tree_sitter_c::language()).unwrap();
         let tree = parser.parse(code, None).unwrap();
-        compute_summaries(&tree.root_node(), code)
+        let macros = const_eval::collect_macro_constants(&tree.root_node(), code);
+        compute_summaries(&tree.root_node(), code, &macros, true)
     }
 
     #[test]
@@ -455,5 +555,90 @@ mod tests {
         let summary = summaries.get("create_buffer").unwrap();
         assert!(summary.returns_allocation);
         assert!(summary.can_return_null);
+    }
+
+    #[test]
+    fn test_return_range_constant() {
+        let code = r#"
+        int get_five(void) { return 5; }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("get_five").unwrap();
+        assert_eq!(summary.return_range, Some(ValueRange::exact(5)));
+    }
+
+    #[test]
+    fn test_return_range_multiple_paths() {
+        let code = r#"
+        int get_bounded(int flag) {
+            if (flag) return 1;
+            return 10;
+        }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("get_bounded").unwrap();
+        assert_eq!(summary.return_range, Some(ValueRange::new(1, 10)));
+    }
+
+    #[test]
+    fn test_return_range_void() {
+        let code = r#"
+        void do_nothing(void) { return; }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("do_nothing").unwrap();
+        assert_eq!(summary.return_range, None);
+    }
+
+    #[test]
+    fn test_return_range_pointer() {
+        let code = r#"
+        int *get_ptr(void) { return 0; }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("get_ptr").unwrap();
+        assert_eq!(summary.return_range, None);
+    }
+
+    #[test]
+    fn test_return_range_param_dependent() {
+        let code = r#"
+        int identity(int x) { return x; }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("identity").unwrap();
+        // Parameter-dependent return — not evaluable
+        assert_eq!(summary.return_range, None);
+    }
+
+    #[test]
+    fn test_return_range_macro() {
+        let code = r#"
+        #define MAX_COUNT 100
+        int get_max(void) { return MAX_COUNT; }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("get_max").unwrap();
+        assert_eq!(summary.return_range, Some(ValueRange::exact(100)));
+    }
+
+    #[test]
+    fn test_return_range_zero() {
+        let code = r#"
+        int get_zero(void) { return 0; }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("get_zero").unwrap();
+        assert_eq!(summary.return_range, Some(ValueRange::exact(0)));
+    }
+
+    #[test]
+    fn test_return_range_negative() {
+        let code = r#"
+        int get_error(void) { return -1; }
+        "#;
+        let summaries = parse_and_summarize(code);
+        let summary = summaries.get("get_error").unwrap();
+        assert_eq!(summary.return_range, Some(ValueRange::exact(-1)));
     }
 }

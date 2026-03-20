@@ -1,14 +1,21 @@
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::cfg::FunctionCfg;
 use crate::analyze::const_eval::{self, MacroConstantMap, VarRangeMap};
 use crate::analyze::context::ProjectContext;
+use crate::analyze::value_range::{self, RangeAnalysisResult};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
 use std::cell::RefCell;
+use std::collections::HashMap;
 use tree_sitter::Node;
 
 pub struct Int34C {
     project_macros: RefCell<MacroConstantMap>,
     current_macros: RefCell<MacroConstantMap>,
+    /// Per-function CFGs
+    function_cfgs: RefCell<HashMap<usize, FunctionCfg>>,
+    /// Per-function VRA results
+    vra_results: RefCell<HashMap<usize, RangeAnalysisResult>>,
 }
 
 impl Int34C {
@@ -16,6 +23,8 @@ impl Int34C {
         Self {
             project_macros: RefCell::new(MacroConstantMap::new()),
             current_macros: RefCell::new(MacroConstantMap::new()),
+            function_cfgs: RefCell::new(HashMap::new()),
+            vra_results: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -43,6 +52,29 @@ impl CertRule for Int34C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_macros.borrow_mut() = context.macro_constants.clone();
+    }
+
+    fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
+        *self.function_cfgs.borrow_mut() = cfgs.clone();
+    }
+
+    fn set_vra_results(&self, results: &HashMap<usize, RangeAnalysisResult>) {
+        let mut stored = HashMap::new();
+        for (&key, result) in results {
+            stored.insert(
+                key,
+                RangeAnalysisResult {
+                    block_entry_ranges: result.block_entry_ranges.clone(),
+                    block_exit_ranges: result.block_exit_ranges.clone(),
+                    return_ranges: result.return_ranges.clone(),
+                },
+            );
+        }
+        *self.vra_results.borrow_mut() = stored;
+    }
+
+    fn needs_vra(&self) -> bool {
+        true
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -98,13 +130,17 @@ impl Int34C {
                 return;
             }
 
-            // Try const_eval range analysis on the shift amount.
-            // If the shift amount is provably in [0, 31], no overflow possible.
+            // Try CFG-based VRA first (more precise)
+            if let Some(range) = self.eval_shift_range_via_vra(node, &right_node, source) {
+                if range.min >= 0 && range.max < 32 {
+                    return;
+                }
+            }
+
+            // Fallback: syntactic const_eval range analysis on the shift amount.
             {
                 let macros = self.current_macros.borrow();
                 let mut var_ranges = const_eval::extract_loop_var_ranges(node, source, &macros);
-
-                // Also extract ranges from enclosing if-statement conditions
                 Self::extract_if_condition_ranges(node, source, &macros, &mut var_ranges);
 
                 if let Some(range) =
@@ -711,6 +747,30 @@ impl Int34C {
         }
 
         false
+    }
+
+    /// Evaluate the shift amount's range using CFG-based VRA.
+    fn eval_shift_range_via_vra(
+        &self,
+        shift_node: &Node,
+        right_node: &Node,
+        source: &str,
+    ) -> Option<const_eval::ValueRange> {
+        let vra_results = self.vra_results.borrow();
+        let cfgs = self.function_cfgs.borrow();
+        let macros = self.current_macros.borrow();
+
+        if vra_results.is_empty() || cfgs.is_empty() {
+            return None;
+        }
+
+        let func = ast_utils::find_containing_function(shift_node)?;
+        let start_byte = func.start_byte();
+        let cfg = cfgs.get(&start_byte)?;
+        let vra = vra_results.get(&start_byte)?;
+        let body = func.child_by_field_name("body")?;
+
+        value_range::eval_expr_range_at(vra, cfg, &body, source, &macros, right_node)
     }
 }
 

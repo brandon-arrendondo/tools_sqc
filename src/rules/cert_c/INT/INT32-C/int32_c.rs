@@ -1,8 +1,10 @@
 use super::super::{CertRule, RuleViolation};
-use crate::analyze::const_eval::{self, MacroConstantMap};
+use crate::analyze::cfg::FunctionCfg;
+use crate::analyze::const_eval::{self, MacroConstantMap, VarRangeMap};
 use crate::analyze::context::ProjectContext;
+use crate::analyze::value_range::RangeAnalysisResult;
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils::{self, get_node_text};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use tree_sitter::Node;
@@ -11,6 +13,8 @@ pub struct Int32C {
     project_macros: RefCell<MacroConstantMap>,
     current_macros: RefCell<MacroConstantMap>,
     struct_field_types: RefCell<HashMap<String, HashMap<String, String>>>,
+    function_cfgs: RefCell<HashMap<usize, FunctionCfg>>,
+    vra_results: RefCell<HashMap<usize, RangeAnalysisResult>>,
 }
 
 impl Int32C {
@@ -19,6 +23,55 @@ impl Int32C {
             project_macros: RefCell::new(MacroConstantMap::new()),
             current_macros: RefCell::new(MacroConstantMap::new()),
             struct_field_types: RefCell::new(HashMap::new()),
+            function_cfgs: RefCell::new(HashMap::new()),
+            vra_results: RefCell::new(HashMap::new()),
+        }
+    }
+
+    /// Get VRA-derived variable ranges at a specific expression node.
+    /// Uses the block entry ranges as a conservative approximation.
+    fn vra_var_ranges_at(&self, expr_node: &Node) -> Option<VarRangeMap> {
+        let vra_results = self.vra_results.borrow();
+        let cfgs = self.function_cfgs.borrow();
+
+        if vra_results.is_empty() || cfgs.is_empty() {
+            return None;
+        }
+
+        let func = ast_utils::find_containing_function(expr_node)?;
+        let start_byte = func.start_byte();
+        let cfg = cfgs.get(&start_byte)?;
+        let vra = vra_results.get(&start_byte)?;
+        let byte_offset = expr_node.start_byte();
+
+        // Find containing block
+        let block = cfg
+            .blocks
+            .iter()
+            .find(|b| {
+                b.statements
+                    .iter()
+                    .any(|&(s, e)| byte_offset >= s && byte_offset < e)
+            })
+            .or_else(|| {
+                cfg.blocks.iter().find(|b| {
+                    b.byte_range.0 > 0
+                        && byte_offset >= b.byte_range.0
+                        && byte_offset < b.byte_range.1
+                })
+            })?;
+
+        let entry = vra.block_entry_ranges.get(&block.id)?;
+
+        let var_ranges: VarRangeMap = entry
+            .iter()
+            .map(|(name, typed)| (name.clone(), typed.range))
+            .collect();
+
+        if var_ranges.is_empty() {
+            None
+        } else {
+            Some(var_ranges)
         }
     }
 }
@@ -47,6 +100,29 @@ impl CertRule for Int32C {
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_macros.borrow_mut() = context.macro_constants.clone();
         *self.struct_field_types.borrow_mut() = context.struct_field_types.clone();
+    }
+
+    fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
+        *self.function_cfgs.borrow_mut() = cfgs.clone();
+    }
+
+    fn set_vra_results(&self, results: &HashMap<usize, RangeAnalysisResult>) {
+        let mut stored = HashMap::new();
+        for (&key, result) in results {
+            stored.insert(
+                key,
+                RangeAnalysisResult {
+                    block_entry_ranges: result.block_entry_ranges.clone(),
+                    block_exit_ranges: result.block_exit_ranges.clone(),
+                    return_ranges: result.return_ranges.clone(),
+                },
+            );
+        }
+        *self.vra_results.borrow_mut() = stored;
+    }
+
+    fn needs_vra(&self) -> bool {
+        true
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -261,11 +337,12 @@ impl Int32C {
                 }
 
                 // Skip if constant evaluation proves the result fits in 32-bit signed
-                if const_eval::expression_fits_in_signed(
+                if const_eval::expression_fits_in_signed_vra(
                     node,
                     source,
                     &self.current_macros.borrow(),
                     32,
+                    self.vra_var_ranges_at(node).as_ref(),
                 ) {
                     return;
                 }
@@ -347,11 +424,12 @@ impl Int32C {
                 }
 
                 // Skip if constant evaluation proves the result fits in 32-bit signed
-                if const_eval::expression_fits_in_signed(
+                if const_eval::expression_fits_in_signed_vra(
                     node,
                     source,
                     &self.current_macros.borrow(),
                     32,
+                    self.vra_var_ranges_at(node).as_ref(),
                 ) {
                     return;
                 }
@@ -427,11 +505,12 @@ impl Int32C {
                 }
 
                 // Skip if constant evaluation proves the result fits in 32-bit signed
-                if const_eval::expression_fits_in_signed(
+                if const_eval::expression_fits_in_signed_vra(
                     node,
                     source,
                     &self.current_macros.borrow(),
                     32,
+                    self.vra_var_ranges_at(node).as_ref(),
                 ) {
                     return;
                 }
@@ -659,11 +738,12 @@ impl Int32C {
                 }
 
                 // Skip if constant evaluation proves the result fits in 32-bit signed
-                if const_eval::expression_fits_in_signed(
+                if const_eval::expression_fits_in_signed_vra(
                     node,
                     source,
                     &self.current_macros.borrow(),
                     32,
+                    self.vra_var_ranges_at(node).as_ref(),
                 ) {
                     return;
                 }
@@ -1058,7 +1138,14 @@ impl Int32C {
                     if self.contains_arithmetic(arg_text) {
                         // Use const_eval to check if the arithmetic provably fits
                         let macros = self.current_macros.borrow();
-                        if const_eval::expression_fits_in_signed(&arg_node, source, &macros, 64) {
+                        let vra_ranges = self.vra_var_ranges_at(&arg_node);
+                        if const_eval::expression_fits_in_signed_vra(
+                            &arg_node,
+                            source,
+                            &macros,
+                            64,
+                            vra_ranges.as_ref(),
+                        ) {
                             arg_idx += 1;
                             continue;
                         }
@@ -1122,8 +1209,14 @@ impl Int32C {
                         if self.contains_arithmetic(arg_text) {
                             // Use const_eval to check if the arithmetic provably fits
                             let macros = self.current_macros.borrow();
-                            if const_eval::expression_fits_in_signed(&arg_node, source, &macros, 64)
-                            {
+                            let vra_ranges = self.vra_var_ranges_at(&arg_node);
+                            if const_eval::expression_fits_in_signed_vra(
+                                &arg_node,
+                                source,
+                                &macros,
+                                64,
+                                vra_ranges.as_ref(),
+                            ) {
                                 return;
                             }
                             drop(macros);

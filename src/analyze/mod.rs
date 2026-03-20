@@ -6,6 +6,7 @@ pub mod function_summary;
 pub mod null_state;
 pub mod prescan;
 pub mod suppression;
+pub mod value_range;
 
 use super::files::ProjectSource;
 use super::manifest::RuleManifest;
@@ -43,11 +44,16 @@ pub fn analyze_project(
     let mut suppressed = Vec::new();
     let registry = RuleRegistry::new();
 
+    // Pre-compute whether any enabled rule needs VRA (used by prescan + per-file analysis)
+    let needs_vra = manifest
+        .enabled_rules()
+        .any(|(rule_id, _)| registry.get_rule(rule_id).is_some_and(|r| r.needs_vra()));
+
     // Pre-scan additional directories for cross-file context
     let mut context = if directories.is_empty() {
         context::ProjectContext::new()
     } else {
-        prescan::prescan_directories(directories, progress)?
+        prescan::prescan_directories(directories, progress, needs_vra)?
     };
 
     // Resolve #include directives against include search paths
@@ -57,7 +63,7 @@ pub fn analyze_project(
         } else {
             project_source.get_c_files()?
         };
-        prescan::resolve_includes(&c_files, include_paths, &mut context, progress)?;
+        prescan::resolve_includes(&c_files, include_paths, &mut context, progress, needs_vra)?;
     }
 
     if context.has_cross_file_data() {
@@ -128,6 +134,15 @@ pub fn analyze_project(
             let mut function_cfgs: HashMap<usize, cfg::FunctionCfg> = HashMap::new();
             collect_function_cfgs(&root_node, &source, &mut function_cfgs);
 
+            // Compute VRA if any enabled rule needs it
+            let vra_results = compute_vra_if_needed(
+                needs_vra,
+                &function_cfgs,
+                &root_node,
+                &source,
+                &context.function_summaries,
+            );
+
             // Extract suppressions from the current file
             suppression_manager.extract_from_source(file_path, &source);
 
@@ -149,6 +164,10 @@ pub fn analyze_project(
                     }
                     // Provide CFGs for flow-sensitive rules (e.g. EXP34-C)
                     rule.set_function_cfgs(&function_cfgs);
+                    // Provide VRA results for integer-range-sensitive rules
+                    if !vra_results.is_empty() {
+                        rule.set_vra_results(&vra_results);
+                    }
                     let mut file_violations = rule.check(&root_node, &source);
 
                     // Set file path and severity on all violations
@@ -271,6 +290,69 @@ pub fn handle_generate_suppression(spec: &str) -> Result<()> {
     println!("justification = \"TODO: Add justification\"");
 
     Ok(())
+}
+
+/// Compute VRA for all functions if any enabled rule needs it.
+fn compute_vra_if_needed(
+    needs_vra: bool,
+    function_cfgs: &HashMap<usize, cfg::FunctionCfg>,
+    root_node: &tree_sitter::Node,
+    source: &str,
+    prescan_summaries: &HashMap<String, function_summary::FunctionSummary>,
+) -> HashMap<usize, value_range::RangeAnalysisResult> {
+    if !needs_vra || function_cfgs.is_empty() {
+        return HashMap::new();
+    }
+
+    // Only compute macros and same-file summaries when VRA is actually needed
+    let macros = const_eval::collect_macro_constants(root_node, source);
+    let file_summaries = function_summary::compute_summaries(root_node, source, &macros, true);
+
+    // Merge prescan (cross-file) summaries with same-file summaries by reference.
+    // Only clone+extend if both sides are non-empty; otherwise use whichever is available.
+    let merged;
+    let summaries: &HashMap<String, function_summary::FunctionSummary> =
+        if prescan_summaries.is_empty() {
+            &file_summaries
+        } else if file_summaries.is_empty() {
+            prescan_summaries
+        } else {
+            merged = {
+                let mut m = prescan_summaries.clone();
+                m.extend(file_summaries);
+                m
+            };
+            &merged
+        };
+
+    let mut results = HashMap::new();
+    for (&start_byte, func_cfg) in function_cfgs {
+        if let Some(func_node) = find_function_at_byte(root_node, start_byte) {
+            results.insert(
+                start_byte,
+                value_range::analyze_value_ranges(func_cfg, &func_node, source, &macros, summaries),
+            );
+        }
+    }
+    results
+}
+
+/// Find the function_definition node at a given start byte.
+fn find_function_at_byte<'a>(
+    node: &tree_sitter::Node<'a>,
+    start_byte: usize,
+) -> Option<tree_sitter::Node<'a>> {
+    if node.kind() == "function_definition" && node.start_byte() == start_byte {
+        return Some(*node);
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if let Some(found) = find_function_at_byte(&child, start_byte) {
+                return Some(found);
+            }
+        }
+    }
+    None
 }
 
 /// Collect CFGs for all function_definition nodes in the AST.

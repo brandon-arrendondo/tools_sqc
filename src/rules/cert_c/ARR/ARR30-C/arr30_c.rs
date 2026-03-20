@@ -620,6 +620,33 @@ impl Arr30C {
             }
         }
 
+        // Check for assignment expressions: "data = dataBadBuffer;"
+        if node.kind() == "expression_statement" {
+            if let Some(assign) = node.child(0) {
+                if assign.kind() == "assignment_expression" {
+                    if let (Some(left), Some(right)) = (
+                        assign.child_by_field_name("left"),
+                        assign.child_by_field_name("right"),
+                    ) {
+                        if left.kind() == "identifier" && right.kind() == "identifier" {
+                            let lhs = &source[left.start_byte()..left.end_byte()];
+                            let rhs = &source[right.start_byte()..right.end_byte()];
+                            if buffers.contains_key(rhs) {
+                                aliases.insert(
+                                    lhs.to_string(),
+                                    PointerAlias {
+                                        alias_name: lhs.to_string(),
+                                        original_buffer: rhs.to_string(),
+                                        element_size_bytes: None,
+                                    },
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         // Recursively process children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
@@ -945,6 +972,28 @@ impl Arr30C {
         let pattern = format!(r"\b{}\s*=\s*(-?\d+)", regex::escape(var_name));
         let re = regex::Regex::new(&pattern).ok()?;
 
+        // Check for non-constant assignments (e.g., var = func_call(...), var = other_var)
+        // Pattern: var_name = <something> but exclude comparison operators (==, !=, <=, >=)
+        let any_assign_pattern = format!(r"\b{}\s*=[^=!<>]", regex::escape(var_name));
+        let any_assign_re = regex::Regex::new(&any_assign_pattern).ok()?;
+        let total_assign_count = any_assign_re.find_iter(func_text).count();
+
+        if total_assign_count > 1 {
+            // Multiple assignments — check if ALL are constant.
+            // If so, resolve to the last value (handles "data = -1; data = 7;" patterns
+            // where an initialization is overwritten by a known-good value).
+            let const_count = re.find_iter(func_text).count();
+            if const_count == total_assign_count {
+                if let Some(caps) = re.captures_iter(func_text).last() {
+                    if let Some(value_str) = caps.get(1) {
+                        return value_str.as_str().parse::<isize>().ok();
+                    }
+                }
+            }
+            return None;
+        }
+
+        // Only one assignment - resolve it
         if let Some(caps) = re.captures(func_text) {
             if let Some(value_str) = caps.get(1) {
                 return value_str.as_str().parse::<isize>().ok();
@@ -1280,6 +1329,10 @@ impl Arr30C {
                     // For <=, the effective size is value + 1
                     return Some(value + 1);
                 }
+                // Try parsing as literal integer (e.g., "i <= 99")
+                if let Ok(value) = macro_name.parse::<i64>() {
+                    return Some(value + 1);
+                }
             }
         }
 
@@ -1297,6 +1350,10 @@ impl Arr30C {
                     if let Some(&value) = macro_constants.get(&macro_name) {
                         return Some(value);
                     }
+                    // Try parsing as literal integer (e.g., "i < 100")
+                    if let Ok(value) = macro_name.parse::<i64>() {
+                        return Some(value);
+                    }
                 }
             }
         }
@@ -1304,18 +1361,39 @@ impl Arr30C {
         None
     }
 
+    /// Extract the condition text from an if_statement node (just the parenthesized expression)
+    fn extract_if_condition_text(&self, if_node: &Node, source: &str) -> Option<String> {
+        for i in 0..if_node.child_count() {
+            if let Some(child) = if_node.child(i) {
+                if child.kind() == "parenthesized_expression" {
+                    return Some(source[child.start_byte()..child.end_byte()].to_string());
+                }
+            }
+        }
+        None
+    }
+
     /// Check if statement bounds against specific buffer size
     fn check_if_bounds_against_size(&self, if_node: &Node, source: &str, size: usize) -> bool {
-        let if_text = &source[if_node.start_byte()..if_node.end_byte()];
+        // Extract just the condition from the if-statement, not the full body
+        let condition_text = match self.extract_if_condition_text(if_node, source) {
+            Some(text) => text,
+            None => {
+                // Fallback to full text if we can't extract condition
+                source[if_node.start_byte()..if_node.end_byte()].to_string()
+            }
+        };
 
         // Look for patterns like: if (idx < SIZE) or if (idx < 3)
-        if if_text.contains(&format!("< {}", size)) {
+        if condition_text.contains(&format!("< {}", size)) {
             return true;
         }
 
         // Also check for macro-based bounds (e.g., "< ROWS", "< COLS")
         // Look for common comparison patterns that indicate bounds checking
-        if if_text.contains("< ") && (if_text.contains(">=") || if_text.contains("&&")) {
+        if condition_text.contains("< ")
+            && (condition_text.contains(">=") || condition_text.contains("&&"))
+        {
             // Pattern like: if (idx >= 0 && idx < SOMETHING)
             // This is a proper bounds check even if we don't know the exact value of SOMETHING
             return true;
@@ -1399,7 +1477,10 @@ impl Arr30C {
         let func_name_node = right.child(0)?;
         let func_name = &source[func_name_node.start_byte()..func_name_node.end_byte()];
 
-        if func_name != "malloc" && func_name != "calloc" && func_name != "realloc" {
+        if !matches!(
+            func_name,
+            "malloc" | "calloc" | "realloc" | "alloca" | "ALLOCA"
+        ) {
             return None;
         }
 
@@ -2822,6 +2903,27 @@ impl Arr30C {
                         // Insert or update the buffer entry
                         local_buffers.insert(buf_name, buf_info);
                     }
+
+                    // Track pointer aliases from simple assignments: data = dataBadBuffer
+                    if let (Some(left), Some(right)) = (
+                        assign_node.child_by_field_name("left"),
+                        assign_node.child_by_field_name("right"),
+                    ) {
+                        if left.kind() == "identifier" && right.kind() == "identifier" {
+                            let lhs = &source[left.start_byte()..left.end_byte()];
+                            let rhs = &source[right.start_byte()..right.end_byte()];
+                            if local_buffers.contains_key(rhs) {
+                                local_aliases.insert(
+                                    lhs.to_string(),
+                                    PointerAlias {
+                                        alias_name: lhs.to_string(),
+                                        original_buffer: rhs.to_string(),
+                                        element_size_bytes: None,
+                                    },
+                                );
+                            }
+                        }
+                    }
                 }
 
                 // Recursively check this child with the accumulated context
@@ -2931,11 +3033,21 @@ impl Arr30C {
             // the array_declarator is nested inside function_declarator
             return self.find_array_declarator_in_node(&declarator, source);
         } else if declarator.kind() == "pointer_declarator" {
-            // Check if this is a malloc/calloc assignment
+            // Check if this is a malloc/calloc/alloca assignment
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
                     if child.kind() == "call_expression" {
                         return self.extract_buffer_from_malloc_call(&declarator, &child, source);
+                    }
+                    // Handle cast expression wrapping allocation: (type *)ALLOCA(...)
+                    if child.kind() == "cast_expression" {
+                        if let Some(call) = self.find_call_in_cast(&child) {
+                            return self.extract_buffer_from_malloc_call(
+                                &declarator,
+                                &call,
+                                source,
+                            );
+                        }
                     }
                 }
             }
@@ -2948,6 +3060,16 @@ impl Arr30C {
                 if let Some(child) = node.child(i) {
                     if child.kind() == "call_expression" {
                         return self.extract_buffer_from_malloc_call(&declarator, &child, source);
+                    }
+                    // Handle cast expression wrapping allocation: (type *)ALLOCA(...)
+                    if child.kind() == "cast_expression" {
+                        if let Some(call) = self.find_call_in_cast(&child) {
+                            return self.extract_buffer_from_malloc_call(
+                                &declarator,
+                                &call,
+                                source,
+                            );
+                        }
                     }
                 }
             }
@@ -2971,11 +3093,21 @@ impl Arr30C {
         if declarator.kind() == "array_declarator" {
             return self.extract_buffer_from_array_declarator(&declarator, source);
         } else if declarator.kind() == "pointer_declarator" {
-            // Check if this is a malloc/calloc assignment
+            // Check if this is a malloc/calloc/alloca assignment
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
                     if child.kind() == "call_expression" {
                         return self.extract_buffer_from_malloc_call(&declarator, &child, source);
+                    }
+                    // Handle cast expression wrapping allocation: (type *)ALLOCA(...)
+                    if child.kind() == "cast_expression" {
+                        if let Some(call) = self.find_call_in_cast(&child) {
+                            return self.extract_buffer_from_malloc_call(
+                                &declarator,
+                                &call,
+                                source,
+                            );
+                        }
                     }
                 }
             }
@@ -2988,6 +3120,16 @@ impl Arr30C {
                 if let Some(child) = node.child(i) {
                     if child.kind() == "call_expression" {
                         return self.extract_buffer_from_malloc_call(&declarator, &child, source);
+                    }
+                    // Handle cast expression wrapping allocation: (type *)ALLOCA(...)
+                    if child.kind() == "cast_expression" {
+                        if let Some(call) = self.find_call_in_cast(&child) {
+                            return self.extract_buffer_from_malloc_call(
+                                &declarator,
+                                &call,
+                                source,
+                            );
+                        }
                     }
                 }
             }
@@ -3220,6 +3362,18 @@ impl Arr30C {
         None
     }
 
+    /// Find call_expression inside a cast_expression (e.g., (int *)ALLOCA(100))
+    fn find_call_in_cast<'a>(&self, cast_node: &Node<'a>) -> Option<Node<'a>> {
+        for i in 0..cast_node.child_count() {
+            if let Some(child) = cast_node.child(i) {
+                if child.kind() == "call_expression" {
+                    return Some(child);
+                }
+            }
+        }
+        None
+    }
+
     /// Recursively find identifier within a declarator (handles nested pointer_declarators)
     fn find_identifier_in_declarator(&self, node: &Node, source: &str) -> Option<String> {
         if node.kind() == "identifier" {
@@ -3248,7 +3402,7 @@ impl Arr30C {
         line: usize,
     ) -> Option<BufferInfo> {
         match func_name {
-            "malloc" => {
+            "malloc" | "alloca" | "ALLOCA" => {
                 // Get first argument
                 for i in 0..arg_list.child_count() {
                     if let Some(child) = arg_list.child(i) {

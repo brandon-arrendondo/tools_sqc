@@ -1,6 +1,6 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils::{find_containing_function, get_node_text};
 use std::collections::HashMap;
 use tree_sitter::Node;
 
@@ -58,6 +58,7 @@ impl CertRule for Arr38C {
         let mut pointer_offsets: HashMap<String, PointerOffsetInfo> = HashMap::new();
 
         // First pass: collect buffer allocations, size variable assignments, and pointer offsets
+        // (file-wide — buffer names like dataBadBuffer/dataGoodBuffer are unique)
         self.collect_buffer_info(
             node,
             source,
@@ -66,15 +67,28 @@ impl CertRule for Arr38C {
             &mut pointer_offsets,
         );
 
-        // Second pass: check for violations
-        self.check_node(
-            node,
-            source,
-            &mut violations,
-            &buffer_info,
-            &size_vars,
-            &pointer_offsets,
-        );
+        // Second pass: check each function independently with function-scoped alias resolution.
+        // This prevents cross-function contamination where "data = dataBadBuffer" (bad fn) and
+        // "data = dataGoodBuffer" (good fn) would share the same alias entry in a file-wide map.
+        let functions = self.collect_function_definitions(node);
+        for func_node in &functions {
+            let aliases = self.collect_pointer_aliases(func_node, source);
+            let mut func_buffer_info = buffer_info.clone();
+            for (alias, target) in &aliases {
+                if let Some(info) = func_buffer_info.get(target).cloned() {
+                    func_buffer_info.insert(alias.clone(), info);
+                }
+            }
+
+            self.check_node(
+                func_node,
+                source,
+                &mut violations,
+                &func_buffer_info,
+                &size_vars,
+                &pointer_offsets,
+            );
+        }
 
         violations
     }
@@ -114,6 +128,92 @@ impl Arr38C {
         }
     }
 
+    /// Find the content size for a variable within the enclosing function by searching
+    /// for memset(var_name, ..., N) calls. This is function-scoped to avoid cross-function
+    /// contamination (e.g., bad function memset(data, 'A', 99) vs good function memset(data, 'A', 49)).
+    /// Also resolves through pointer aliases within the same function.
+    fn find_content_size_in_function(
+        &self,
+        node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> Option<usize> {
+        let func_node = find_containing_function(node)?;
+        let func_text = &source[func_node.start_byte()..func_node.end_byte()];
+
+        // Try direct var_name and any simple aliases found in the same function
+        // e.g., "data = dataBuffer" means we also check memset(dataBuffer, ...)
+        let mut names_to_check = vec![var_name.to_string()];
+        let alias_pattern = format!(r"\b{}\s*=\s*(\w+)\s*;", regex::escape(var_name));
+        if let Ok(re) = regex::Regex::new(&alias_pattern) {
+            for caps in re.captures_iter(func_text) {
+                if let Some(m) = caps.get(1) {
+                    let target = m.as_str();
+                    if self.is_simple_identifier(target) && target != var_name {
+                        names_to_check.push(target.to_string());
+                    }
+                }
+            }
+        }
+        // Also check reverse: if some other var is assigned from this one
+        let reverse_pattern = format!(r"\b(\w+)\s*=\s*{}\s*;", regex::escape(var_name));
+        if let Ok(re) = regex::Regex::new(&reverse_pattern) {
+            for caps in re.captures_iter(func_text) {
+                if let Some(m) = caps.get(1) {
+                    let alias = m.as_str();
+                    if self.is_simple_identifier(alias) && alias != var_name {
+                        names_to_check.push(alias.to_string());
+                    }
+                }
+            }
+        }
+
+        for name in &names_to_check {
+            // Search for memset(name, ..., N) pattern in function text
+            let pattern = format!(
+                r"memset\s*\(\s*{}\s*,\s*[^,]+\s*,\s*([^)]+)\)",
+                regex::escape(name)
+            );
+            if let Ok(re) = regex::Regex::new(&pattern) {
+                if let Some(caps) = re.captures(func_text) {
+                    if let Some(size_match) = caps.get(1) {
+                        if let Some(size) = self.parse_memset_size_expr(size_match.as_str().trim())
+                        {
+                            return Some(size);
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Parse a memset size expression like "50-1" -> 49, "99" -> 99, "100*sizeof(char)" -> 100
+    fn parse_memset_size_expr(&self, expr: &str) -> Option<usize> {
+        let expr = expr.trim();
+
+        // Try direct number first
+        if let Ok(n) = expr.parse::<usize>() {
+            return Some(n);
+        }
+
+        // Try N-1 pattern (e.g., "50-1", "100-1")
+        if let Some(minus_pos) = expr.rfind('-') {
+            let left = expr[..minus_pos].trim();
+            let right = expr[minus_pos + 1..].trim();
+            if let (Ok(l), Ok(r)) = (left.parse::<usize>(), right.parse::<usize>()) {
+                return Some(l.saturating_sub(r));
+            }
+        }
+
+        // Try N*sizeof(char) pattern
+        if let Some(size) = self.try_parse_size(expr) {
+            return Some(size);
+        }
+
+        None
+    }
+
     /// Extract buffer/size info from declarations
     fn extract_declaration_info(
         &self,
@@ -141,8 +241,13 @@ impl Arr38C {
             }
         }
 
-        // Check for malloc/calloc/aligned_alloc assignments
-        if text.contains("malloc(") || text.contains("calloc(") || text.contains("aligned_alloc(") {
+        // Check for malloc/calloc/aligned_alloc/alloca/ALLOCA assignments
+        if text.contains("malloc(")
+            || text.contains("calloc(")
+            || text.contains("aligned_alloc(")
+            || text.contains("ALLOCA(")
+            || text.contains("alloca(")
+        {
             if let Some(var_name) = self.extract_pointer_var_name(&text) {
                 if let Some(size_expr) = self.extract_alloc_size(&text) {
                     let size = self.try_parse_size(&size_expr);
@@ -155,6 +260,8 @@ impl Arr38C {
                                 "malloc"
                             } else if text.contains("calloc") {
                                 "calloc"
+                            } else if text.contains("ALLOCA") || text.contains("alloca") {
+                                "alloca"
                             } else {
                                 "aligned_alloc"
                             }
@@ -198,8 +305,13 @@ impl Arr38C {
     ) {
         let text = get_node_text(node, source);
 
-        // Check for malloc/calloc assignments
-        if text.contains("malloc(") || text.contains("calloc(") || text.contains("aligned_alloc(") {
+        // Check for malloc/calloc/alloca assignments
+        if text.contains("malloc(")
+            || text.contains("calloc(")
+            || text.contains("aligned_alloc(")
+            || text.contains("ALLOCA(")
+            || text.contains("alloca(")
+        {
             if let Some(var_name) = self.extract_assignment_lhs(&text) {
                 if let Some(size_expr) = self.extract_alloc_size(&text) {
                     let size = self.try_parse_size(&size_expr);
@@ -212,6 +324,8 @@ impl Arr38C {
                                 "malloc"
                             } else if text.contains("calloc") {
                                 "calloc"
+                            } else if text.contains("ALLOCA") || text.contains("alloca") {
+                                "alloca"
                             } else {
                                 "aligned_alloc"
                             }
@@ -317,7 +431,13 @@ impl Arr38C {
                     self.check_wide_memory_function(node, source, function_name, violations);
                 }
                 "wcscpy" | "wcsncpy" | "wcscat" | "wcsncat" | "wcscmp" | "wcsncmp" => {
-                    self.check_wide_string_function(node, source, function_name, violations);
+                    self.check_wide_string_function(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        buffer_info,
+                    );
                 }
                 "malloc" | "calloc" | "realloc" | "aligned_alloc" => {
                     self.check_allocation_function(node, source, function_name, violations);
@@ -332,7 +452,8 @@ impl Arr38C {
                         size_vars,
                     );
                 }
-                "fgets" | "snprintf" | "swprintf" | "strftime" => {
+                "fgets" | "snprintf" | "SNPRINTF" | "_snprintf" | "_snwprintf" | "swprintf"
+                | "strftime" => {
                     self.check_buffer_function(
                         node,
                         source,
@@ -444,6 +565,7 @@ impl Arr38C {
                     self.check_string_size_parameter(
                         &args,
                         node,
+                        source,
                         function_name,
                         violations,
                         buffer_info,
@@ -520,10 +642,13 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        buffer_info: &HashMap<String, BufferInfo>,
     ) {
         let args = self.get_function_arguments(node, source);
 
         if function_name.contains("wcsn") && args.len() >= 3 {
+            let dest_arg = &args[0];
+            let src_arg = &args[1];
             let size_arg = &args[2];
 
             // Check for sizeof (byte count instead of character count)
@@ -546,6 +671,44 @@ impl Arr38C {
                     ..Default::default()
                 });
                 return;
+            }
+
+            // Check for wcslen(src) as size where src > dest
+            if let Some(wcslen_arg) = self.extract_wcslen_argument(size_arg) {
+                let wcslen_arg = wcslen_arg.trim();
+                let src_trimmed = src_arg.trim();
+                if wcslen_arg == src_trimmed {
+                    // Use content_size if available (from memset in same function), otherwise fall back to buffer alloc size
+                    let effective_src_size = self
+                        .find_content_size_in_function(node, wcslen_arg, source)
+                        .or_else(|| buffer_info.get(wcslen_arg).and_then(|info| info.size));
+                    if let Some(src_size) = effective_src_size {
+                        if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                            if let Some(dest_size) = dest_info.size {
+                                if src_size > dest_size {
+                                    let start_point = node.start_position();
+                                    violations.push(RuleViolation {
+                                            rule_id: self.rule_id().to_string(),
+                                            severity: Severity::High,
+                                            message: format!(
+                                                "Function '{}': wcslen({}) (buffer size {}) may exceed destination '{}' size {}",
+                                                function_name, wcslen_arg, src_size, dest_arg.trim(), dest_size
+                                            ),
+                                            file_path: String::new(),
+                                            line: start_point.row + 1,
+                                            column: start_point.column + 1,
+                                            suggestion: Some(format!(
+                                                "Use sizeof({})/sizeof(wchar_t) as the size limit",
+                                                dest_arg.trim()
+                                            )),
+                                            ..Default::default()
+                                        });
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // Check for hardcoded sizes that likely exceed buffer
@@ -682,12 +845,14 @@ impl Arr38C {
         &self,
         args: &[String],
         node: &Node,
+        source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
         buffer_info: &HashMap<String, BufferInfo>,
         size_vars: &HashMap<String, String>,
     ) {
         let dest_arg = &args[0];
+        let src_arg = if args.len() >= 2 { &args[1] } else { dest_arg };
         let size_arg = &args[2];
 
         // Check if size exceeds known buffer size
@@ -701,6 +866,49 @@ impl Arr38C {
         ) {
             violations.push(violation);
             return;
+        }
+
+        // Check for strlen(src) as size argument where src buffer > dest buffer
+        // Pattern: strncpy(dest, src, strlen(src)) — size not bounded by dest
+        if let Some(strlen_arg) = self.extract_strlen_argument(size_arg) {
+            // strlen argument should reference the source (2nd arg) or an alias of it
+            let strlen_arg = strlen_arg.trim();
+            let src_trimmed = src_arg.trim();
+            if strlen_arg == src_trimmed {
+                // Use content_size if available (from memset), otherwise fall back to buffer alloc size.
+                // strlen() returns the actual string length, not the buffer capacity.
+                // If memset(data, 'A', 49) was called, content_size is 49 even if buffer is 100.
+                let effective_src_size = self
+                    .find_content_size_in_function(node, strlen_arg, source)
+                    .or_else(|| buffer_info.get(strlen_arg).and_then(|info| info.size));
+                if let Some(src_size) = effective_src_size {
+                    if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                        if let Some(dest_size) = dest_info.size {
+                            if src_size > dest_size {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        severity: Severity::High,
+                                        message: format!(
+                                            "Function '{}': strlen({}) (buffer size {}) may exceed destination '{}' size {}",
+                                            function_name, strlen_arg, src_size, dest_arg.trim(), dest_size
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some(format!(
+                                            "Use sizeof({}) or {} as the size limit",
+                                            dest_arg.trim(),
+                                            dest_size
+                                        )),
+                                        ..Default::default()
+                                    });
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         // Check for hardcoded sizes that are suspiciously large
@@ -863,7 +1071,7 @@ impl Arr38C {
         // fgets(buf, size, file), snprintf(buf, size, fmt, ...), etc.
         let (buf_idx, size_idx) = match function_name {
             "fgets" => (0, 1),
-            "snprintf" | "swprintf" => (0, 1),
+            "snprintf" | "SNPRINTF" | "_snprintf" | "_snwprintf" | "swprintf" => (0, 1),
             "strftime" => (0, 1),
             _ => return,
         };
@@ -883,6 +1091,51 @@ impl Arr38C {
             ) {
                 violations.push(violation);
                 return;
+            }
+
+            // Check for strlen/wcslen(src) as size argument for snprintf/SNPRINTF/swprintf
+            // Pattern: snprintf(dest, strlen(data), "%s", data)
+            // Pattern: SNPRINTF(dest, wcslen(data), L"%s", data)
+            if matches!(
+                function_name,
+                "snprintf" | "SNPRINTF" | "_snprintf" | "_snwprintf" | "swprintf"
+            ) {
+                let len_arg = self
+                    .extract_strlen_argument(size_arg)
+                    .or_else(|| self.extract_wcslen_argument(size_arg));
+                if let Some(len_arg) = len_arg {
+                    let len_arg = len_arg.trim();
+                    // Use content_size if available (from memset), otherwise fall back to buffer alloc size
+                    let effective_src_size = self
+                        .find_content_size_in_function(node, len_arg, source)
+                        .or_else(|| buffer_info.get(len_arg).and_then(|info| info.size));
+                    if let Some(src_size) = effective_src_size {
+                        if let Some(dest_info) = buffer_info.get(buf_arg.trim()) {
+                            if let Some(dest_size) = dest_info.size {
+                                if src_size > dest_size {
+                                    let start_point = node.start_position();
+                                    violations.push(RuleViolation {
+                                            rule_id: self.rule_id().to_string(),
+                                            severity: Severity::High,
+                                            message: format!(
+                                                "Function '{}': string length of '{}' (buffer size {}) may exceed destination '{}' size {}",
+                                                function_name, len_arg, src_size, buf_arg.trim(), dest_size
+                                            ),
+                                            file_path: String::new(),
+                                            line: start_point.row + 1,
+                                            column: start_point.column + 1,
+                                            suggestion: Some(format!(
+                                                "Use sizeof({}) as the size limit",
+                                                buf_arg.trim()
+                                            )),
+                                            ..Default::default()
+                                        });
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             // Check for hardcoded sizes that are suspiciously large
@@ -1190,6 +1443,28 @@ impl Arr38C {
         ) {
             violations.push(violation);
             return;
+        }
+
+        // If the dest buffer has known size and the copy fits, skip heuristic checks.
+        // The concrete size comparison above is authoritative; heuristics like
+        // is_hardcoded_large_size are only useful when buffer size is unknown.
+        let dest_size_known = buffer_info
+            .get(dest_arg.trim())
+            .and_then(|info| info.size)
+            .is_some();
+        if dest_size_known {
+            if let Some(size_val) = self.try_parse_size(
+                size_vars
+                    .get(size_arg.trim())
+                    .map(|s| s.as_str())
+                    .unwrap_or(size_arg),
+            ) {
+                if let Some(buf_size) = buffer_info.get(dest_arg.trim()).and_then(|i| i.size) {
+                    if size_val <= buf_size {
+                        return; // Verified safe — skip heuristic checks
+                    }
+                }
+            }
         }
 
         // For memcpy/memmove, also check source buffer
@@ -1771,7 +2046,46 @@ impl Arr38C {
         if let Ok(n) = expr.parse::<usize>() {
             return Some(n);
         }
+        // Handle N*sizeof(type) patterns (e.g., "100*sizeof(char)")
+        if let Some(star_pos) = expr.find('*') {
+            let left = expr[..star_pos].trim();
+            let right = expr[star_pos + 1..].trim();
+            // Try left * sizeof(type)
+            if let Ok(n) = left.parse::<usize>() {
+                if right.starts_with("sizeof(") {
+                    let type_name = right.trim_start_matches("sizeof(").trim_end_matches(')');
+                    if let Some(type_size) = self.sizeof_type(type_name) {
+                        return Some(n * type_size);
+                    }
+                }
+            }
+            // Try sizeof(type) * N
+            if let Ok(n) = right.parse::<usize>() {
+                if left.starts_with("sizeof(") {
+                    let type_name = left.trim_start_matches("sizeof(").trim_end_matches(')');
+                    if let Some(type_size) = self.sizeof_type(type_name) {
+                        return Some(n * type_size);
+                    }
+                }
+            }
+        }
         None
+    }
+
+    /// Get size of common C types
+    fn sizeof_type(&self, type_name: &str) -> Option<usize> {
+        match type_name.trim() {
+            "char" | "unsigned char" | "signed char" => Some(1),
+            "short" | "unsigned short" => Some(2),
+            "int" | "unsigned int" | "int32_t" | "uint32_t" => Some(4),
+            "long" | "unsigned long" | "int64_t" | "uint64_t" | "long long"
+            | "unsigned long long" | "size_t" => Some(8),
+            "float" => Some(4),
+            "double" => Some(8),
+            "wchar_t" => Some(4),
+            "twoIntsStruct" => Some(8), // Common Juliet struct
+            _ => None,
+        }
     }
 
     /// Extract array variable name from declaration
@@ -1821,10 +2135,10 @@ impl Arr38C {
         None
     }
 
-    /// Extract allocation size from malloc/calloc/aligned_alloc call
+    /// Extract allocation size from malloc/calloc/aligned_alloc/alloca call
     fn extract_alloc_size(&self, text: &str) -> Option<String> {
         // Find the function call
-        for func in &["malloc(", "aligned_alloc("] {
+        for func in &["malloc(", "aligned_alloc(", "ALLOCA(", "alloca("] {
             if let Some(start) = text.find(func) {
                 let rest = &text[start + func.len()..];
                 // For aligned_alloc, skip the alignment parameter
@@ -1946,6 +2260,110 @@ impl Arr38C {
                     if !base.is_empty() && !offset.is_empty() {
                         return Some((ptr_name.to_string(), base.to_string(), offset.to_string()));
                     }
+                }
+            }
+        }
+        None
+    }
+
+    /// Collect all function_definition nodes from the AST
+    fn collect_function_definitions<'a>(&self, node: &Node<'a>) -> Vec<Node<'a>> {
+        let mut functions = Vec::new();
+        self.collect_function_definitions_recursive(node, &mut functions);
+        functions
+    }
+
+    fn collect_function_definitions_recursive<'a>(
+        &self,
+        node: &Node<'a>,
+        functions: &mut Vec<Node<'a>>,
+    ) {
+        if node.kind() == "function_definition" {
+            functions.push(*node);
+            return; // Don't recurse into nested function definitions
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_function_definitions_recursive(&child, functions);
+            }
+        }
+    }
+
+    /// Collect simple pointer aliases from assignment statements (e.g., "data = dataBuffer")
+    fn collect_pointer_aliases(&self, node: &Node, source: &str) -> Vec<(String, String)> {
+        let mut aliases = Vec::new();
+        self.collect_pointer_aliases_recursive(node, source, &mut aliases);
+        aliases
+    }
+
+    fn collect_pointer_aliases_recursive(
+        &self,
+        node: &Node,
+        source: &str,
+        aliases: &mut Vec<(String, String)>,
+    ) {
+        // Look for expression_statement containing assignment_expression
+        if node.kind() == "expression_statement" {
+            let text = get_node_text(node, source);
+            let text = text.trim().trim_end_matches(';').trim();
+            // Simple assignment: "data = dataBuffer" (no operators, no function calls)
+            if let Some(eq_pos) = text.find('=') {
+                // Skip ==, !=, <=, >=
+                if eq_pos > 0
+                    && !matches!(
+                        text.as_bytes().get(eq_pos.wrapping_sub(1)),
+                        Some(b'!' | b'<' | b'>')
+                    )
+                    && text.as_bytes().get(eq_pos + 1) != Some(&b'=')
+                {
+                    let lhs = text[..eq_pos].trim();
+                    let rhs = text[eq_pos + 1..].trim();
+                    // Only simple identifiers (no operators, no function calls, no casts)
+                    if self.is_simple_identifier(lhs) && self.is_simple_identifier(rhs) {
+                        aliases.push((lhs.to_string(), rhs.to_string()));
+                    }
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_pointer_aliases_recursive(&child, source, aliases);
+            }
+        }
+    }
+
+    /// Check if a string is a simple C identifier
+    fn is_simple_identifier(&self, s: &str) -> bool {
+        !s.is_empty()
+            && s.starts_with(|c: char| c.is_alphabetic() || c == '_')
+            && s.chars().all(|c| c.is_alphanumeric() || c == '_')
+    }
+
+    /// Extract the argument from a strlen() call
+    /// "strlen(data)" → Some("data"), "100" → None
+    fn extract_strlen_argument<'a>(&self, expr: &'a str) -> Option<&'a str> {
+        let expr = expr.trim();
+        if let Some(rest) = expr.strip_prefix("strlen(") {
+            if let Some(arg) = rest.strip_suffix(')') {
+                let arg = arg.trim();
+                if !arg.is_empty() {
+                    return Some(arg);
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract the argument from a wcslen() call
+    /// "wcslen(data)" → Some("data"), "100" → None
+    fn extract_wcslen_argument<'a>(&self, expr: &'a str) -> Option<&'a str> {
+        let expr = expr.trim();
+        if let Some(rest) = expr.strip_prefix("wcslen(") {
+            if let Some(arg) = rest.strip_suffix(')') {
+                let arg = arg.trim();
+                if !arg.is_empty() {
+                    return Some(arg);
                 }
             }
         }
