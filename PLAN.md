@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-20 (v0.3.26 benchmark pending)
+**Last Updated**: 2026-03-20 (v0.3.26 Juliet complete, realworld pending)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -8,28 +8,7 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ---
 
-## Completed in v0.3.26
-
-- **EXP33-C**: Conditional init early-return path — if/else-if/else chains where non-initializing branches have unconditional exits (return/break/continue/goto) no longer flag the variable as uninitialized. Fixes `arraylist.c:132` / `intset.c:124` patterns and Juliet CWE-457 FP regression.
-- **ERR33-C**: `== 0` for NonZero functions (fseek, fclose, fflush, etc.) no longer flagged as CWE-253 incorrect check. `== 0` is a valid success-path check. Also: `== 0` for Count functions (fread, fwrite) no longer flagged — only `< 0` on unsigned size_t is genuinely incorrect.
-- **PRE00-C**: Restricted to macros with multi-evaluation risk (parameter used >1 time in body) or side effects (++/-- in body). Was flagging ALL function-like macros (~1,709 violations on real-world codebases).
-
 ## Immediate Next Steps
-
-### EXP34-C: Param Non-Null Default (Priority 1)
-
-Real-world FP: 6,679 violations from struct pointer params (`data->state`) flagged as null deref. Root cause: all pointer params default to PossiblyNull without call-site data. Fix: default to NotNull when no inter-procedural call-site data exists. Requires test updates (5 EXP34-C fail tests assume PossiblyNull default for single-file analysis). Estimated impact: −3,000+ real-world violations.
-
-**Implementation note**: Simple change in `collect_param_pointer_state` (null_state.rs), but test cases `testcases_func_param`, `testcases_callback_null`, `testcases_list_null`, `wiki_noncompliant_1`, `wiki_noncompliant_3` need updated expectations or restructuring to use project context.
-
-### FIO47-C: 100% FP Rate — Format String Validation Errors (Priority 2)
-
-0 TP, 119 FP (v0.3.25). Three incorrect validation rules:
-1. `%lf` flagged as invalid (`l` with float specifier) — valid in C99+ printf
-2. `'` (grouping) flag with `%d` flagged as invalid — POSIX extension, not an error
-3. `+/space` with `%o/%u/%x` flagged — too aggressive, implementations accept it
-
-Fix: remove or relax these three checks. Free FP reduction (0 TP loss).
 
 ### CWE-121/122 Remaining FP Reduction
 
@@ -75,13 +54,13 @@ v0.3.25 results (all 5 codebases complete, run on brandon-ThinkCentre-M715q 8-co
 
 Regressions to investigate:
 - INT31-C +501 on sqlite (VRA Phase 6 broadened detection — likely new TPs but verify)
-- ERR33-C +149/+234 on hostap/sqlite (slightly more aggressive unchecked return detection)
+- ~~ERR33-C +149/+234 on hostap/sqlite~~ — partially addressed in v0.3.26 (CWE-253 `== 0` fix)
 
 Next:
-- [ ] Ingest all 5 results into SQLite (see migration plan above)
+- [ ] Compare v0.3.26 realworld results against v0.3.25 (benchmark running)
+- [ ] Ingest all results into SQLite (see migration plan above)
 - [ ] Run sqc on d_lib_wifi, d_lib_ble
 - [ ] Review remaining high-severity findings on d_lib_common
-- [ ] Generate per-module BRULE coverage cards
 
 ---
 
@@ -118,17 +97,17 @@ v0.3.25 realworld results (curl + mosquitto + libcrc, 83K violations). Overall �
 
 | Rule | Count | Issue | Fix Approach |
 |------|------:|-------|--------------|
-| EXP34-C | 6,679 | Struct pointer params (`data->state`) flagged as null deref | Assume function params non-null unless from nullable source. Biggest single real-world win. |
+| ~~EXP34-C~~ | ~~6,679~~ | ~~Struct pointer params flagged as null deref~~ | ✅ Done in v0.3.26 — params default to NotNull without call-site data |
 | POS49-C | 4,644 | Every shared field flagged without lock analysis | Without ownership model, too noisy on threaded code. Consider restricting to known-unsafe patterns only. |
 | MEM30-C | 3,452 | Use-after-free FPs from sequential struct/member frees | Needs field-level free tracking. Cross-function free propagation. |
 | MEM31-C | 3,354 | Leak FPs from cross-function ownership | Needs ownership model (strdup→field→custom_Delete). |
 | DCL13-C | 2,373 | Const correctness — pointer params through struct fields | Known alias tracking limitation (ringbuffer.c pattern). |
-| PRE00-C | 1,709 | Every function-like macro flagged | Too aggressive — restrict to unsafe macro patterns (side effects, multiple evaluation). |
+| ~~PRE00-C~~ | ~~1,709~~ | ~~Every function-like macro flagged~~ | ✅ Done in v0.3.26 — restricted to multi-eval + side effects |
 | EXP33-C | 1,394 | Uninitialized variable FPs | CFG integration needed (same as Juliet EXP33-C rewrite). |
 
 **Quick wins (low effort, high impact):**
 - ~~PRE00-C: restrict to macros with side effects or multiple-evaluation args~~ ✅ Done in v0.3.26
-- EXP34-C param non-null: assume non-null for direct function params (−3,000+ estimated) → promoted to Priority 1
+- ~~EXP34-C param non-null: assume non-null for direct function params~~ ✅ Done in v0.3.26
 - POS49-C: suppress unless field is accessed within a known critical section pattern
 
 ### Real-World FP — Deferred Hard Issues

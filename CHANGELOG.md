@@ -1,5 +1,24 @@
 # SqC — Changelog
 
+## v0.3.26 (2026-03-20)
+
+### FP Reduction: 6 Rules
+
+- **EXP33-C**: Conditional init early-return detection — if/else-if/else chains where non-initializing branches have unconditional exits (return/break/continue/goto) no longer flag the variable as uninitialized. New `if_chain_covers_init_or_exit()` analysis integrated into `block_has_preceding_assignment()`. Targets real-world patterns (`arraylist.c:132`, `intset.c:124`).
+- **ERR33-C (CWE-253)**: `== 0` for NonZero functions (fseek, fclose, fflush, remove, rename, fsetpos, atexit, raise) no longer flagged as incorrect check. `== 0` is a valid success-path pattern. Also: `== 0` for Count functions (fread, fwrite) no longer flagged — only `< 0` on unsigned size_t is genuinely incorrect.
+- **FIO47-C**: Fixed 100% FP rate (0 TP, 119 FP → 0 FP). Root cause: `count_arguments()` miscounted non-data args for `sprintf`, `sscanf`, `dprintf` (skipped 1 instead of 2). Also relaxed overly strict format validation: `%lf` valid in C99+, removed `'` flag and `+/space` with `%o/%u/%x` checks.
+- **PRE00-C**: Restricted from flagging ALL function-like macros to only macros with multi-evaluation risk (parameter used >1 time in body) or side effects (++/-- in body). Estimated ~1,700 real-world FP reduction.
+- **EXP34-C**: Pointer function parameters default to NotNull when no inter-procedural call-site data exists (callers responsible for null checks). With prescan/`-d`, call-site states still override. Test cases restructured: 3 param-null tests moved to pass/, 2 wiki tests rewritten to use malloc.
+- **FIO47-C format validation**: `l` length modifier with float specifiers (`%lf`) now accepted (valid C99+). `'` grouping flag and `+/space` with unsigned specifiers no longer flagged.
+
+### Benchmark: Juliet v0.3.26
+
+- Overall: 8,390 TP / 9,252 FP, **47.6% TP rate** (+0.3pp vs v0.3.25), 14.0% per-file
+- FIO47-C: 119 FP → 0 FP (100% FP elimination). CWE-134 TP rate 33.4% → 47.9% (+14.5pp)
+- CWE-685: 0 TP / 6 FP → 3 TP / 0 FP (arg count fix revealed true positives)
+- CWE-253: −33 TP (ERR33-C `== 0` trade-off — Juliet treats success-path checks as incorrect)
+- Real-world benchmark: pending
+
 ## v0.3.25 (2026-03-20)
 
 ### CWE-457: EXP33-C Detection Improvements
