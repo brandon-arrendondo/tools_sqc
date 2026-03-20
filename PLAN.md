@@ -10,61 +10,32 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ## Immediate Next Steps
 
-### CWE-121/122 Remaining FP Reduction
+### Real-World FP Reduction — Next Targets (Priority 1)
 
-- ARR30-C CWE135 (29 FPs): ALLOCA tracking enables `strcpy` flagging on correctly-sized buffers. Lower priority.
+Top remaining FP sources from v0.3.26 per-rule SQLite data (all 5 codebases):
 
-### Benchmark Infrastructure: Remaining Phases
+| Rule | Count | Issue | Approach |
+|------|------:|-------|----------|
+| EXP19-C | 42,140 | Comma operator warnings | Review if rule is too noisy for real-world code |
+| EXP34-C | 26,457 | Null deref (post param-fix) | Remaining: struct field chains, cross-function patterns |
+| POS49-C | 15,693 | Shared field without lock | Suppress unless in known critical section pattern |
+| DCL08-C | 14,354 | Constant variable | Review if over-flagging const candidates |
+| INT32-C | 12,077 | Signed overflow | Stable after VRA — gap is coverage not precision |
+| DCL07-C | 11,237 | Implicit int declaration | Cross-file prescan limitation |
+| DCL31-C | 10,620 | Undeclared function | Cross-file prescan limitation |
+| API00-C | 10,072 | Missing size parameter | Post caller-aware suppression |
+| EXP14-C | 8,028 | Cast loses qualifiers | Review scope |
+| INT30-C | 8,508 | Unsigned overflow | Stable after VRA |
 
-- Phase 2: `query_violations()` flexible drill-down, `get_performance_trend()`, `estimate_eta()`
-- Phase 3: Real-world SQLite integration (see details below)
+**Quick wins:**
+- POS49-C: suppress unless field is accessed within a known critical section pattern (~15K reduction)
+- EXP19-C: evaluate if rule adds value or is pure noise on real codebases
+
+### Benchmark Infrastructure: Remaining
+
+- ~~Phase 3: Real-world SQLite integration~~ ✅ Done in v0.3.26 — `realworld_violations` table, auto-ingest in MCP, `compare_realworld_runs()`, v0.3.5/v0.3.25/v0.3.26 ingested
+- Phase 2: `get_performance_trend()`, `get_realworld_rule_trend()` query tools
 - Phase 4: Remove legacy shell scripts after full migration validation
-
-### Real-World Benchmark → SQLite Migration
-
-Currently realworld results live only as JSON files in `/tmp/realworld_results/` and historical summary counts in `REALWORLD_RESULTS.md`. The `realworld_runs` and `realworld_results` tables in `data/benchmarks.db` were backfilled from markdown but have no auto-ingestion. Plan:
-
-**Step 1: Ingest v0.3.25 results** (immediate)
-- Script to parse completed JSON files from `.63:/tmp/realworld_results/sqc-0.3.25-85555478/`
-- Insert into `realworld_runs` (version, commit, hostname, cpu) + `realworld_results` (project, tool, violation_count)
-- Add new `realworld_violations` table for per-violation detail (rule_id, file, line, message, severity) — enables per-rule trending
-
-**Step 2: Auto-ingestion in MCP server** (next)
-- `realworld_server.py` writes to SQLite on run completion (when `.done` file appears)
-- Parse JSON result file → insert run + results + violations into DB
-- Remote runs: fetch JSON via SCP on completion, then ingest locally
-
-**Step 3: Query tools**
-- `compare_realworld_runs(base, target)` — per-rule delta across codebases
-- `get_realworld_rule_trend(rule_id)` — violation count over versions
-- Deprecate REALWORLD_RESULTS.md as source of truth (generate from DB if needed)
-
-### Real-World Validation
-
-v0.3.26 results (all 5 codebases complete):
-
-| Project | v0.3.25 | v0.3.26 | Delta | Top Reducers |
-|---------|--------:|--------:|------:|--------------|
-| hostap | 160,121 | 157,403 | −2,718 (−1.7%) | EXP34-C −1,463, PRE00-C −1,355, EXP33-C −100 |
-| sqlite | 116,642 | 115,491 | −1,151 (−1.0%) | PRE00-C −1,560, EXP34-C −212, FIO47-C −76 |
-| curl | 55,975 | 54,767 | −1,208 (−2.2%) | PRE00-C −1,113, EXP34-C −77, FIO47-C −15 |
-| mosquitto | 26,470 | 26,182 | −288 (−1.1%) | PRE00-C −246, EXP33-C −25, FIO47-C −11 |
-| libcrc | 705 | 704 | −1 | EXP33-C −1 |
-| **Total** | **359,913** | **354,547** | **−5,366 (−1.5%)** | |
-
-Cumulative from v0.3.5 baseline: 402,633 → 354,547 (**−48,086, −11.9%**).
-
-Per-rule impact: PRE00-C −4,274, EXP34-C −1,758, EXP33-C −163, FIO47-C −149, ERR33-C −4.
-
-Regressions to investigate:
-- ~~DCL31-C +752 on sqlite, +248 on hostap~~ — **not regressions**: sqlite/curl repos were at different commits on 10.0.0.63 (now synced). Hostap delta is entirely in `wlantest/` (`add_note` 4→292) — benchmark artifact from stale remote binary; outside wlantest/ DCL31-C is unchanged (-1).
-- INT31-C +501 on sqlite (VRA Phase 6, from v0.3.25 — also affected by sqlite version diff)
-
-Next:
-- [x] Compare v0.3.26 realworld results against v0.3.25
-- [ ] Investigate DCL31-C regression
-- [ ] Ingest all results into SQLite (see migration plan above)
-- [ ] Run sqc on d_lib_wifi, d_lib_ble
 
 ---
 
@@ -101,18 +72,11 @@ v0.3.25 realworld results (curl + mosquitto + libcrc, 83K violations). Overall �
 
 | Rule | Count | Issue | Fix Approach |
 |------|------:|-------|--------------|
-| ~~EXP34-C~~ | ~~6,679~~ | ~~Struct pointer params flagged as null deref~~ | ✅ Done in v0.3.26 — params default to NotNull without call-site data |
-| POS49-C | 4,644 | Every shared field flagged without lock analysis | Without ownership model, too noisy on threaded code. Consider restricting to known-unsafe patterns only. |
+| POS49-C | 15,693 | Every shared field flagged without lock analysis | Suppress unless in known critical section. Promoted to immediate. |
 | MEM30-C | 3,452 | Use-after-free FPs from sequential struct/member frees | Needs field-level free tracking. Cross-function free propagation. |
 | MEM31-C | 3,354 | Leak FPs from cross-function ownership | Needs ownership model (strdup→field→custom_Delete). |
 | DCL13-C | 2,373 | Const correctness — pointer params through struct fields | Known alias tracking limitation (ringbuffer.c pattern). |
-| ~~PRE00-C~~ | ~~1,709~~ | ~~Every function-like macro flagged~~ | ✅ Done in v0.3.26 — restricted to multi-eval + side effects |
-| EXP33-C | 1,394 | Uninitialized variable FPs | CFG integration needed (same as Juliet EXP33-C rewrite). |
-
-**Quick wins (low effort, high impact):**
-- ~~PRE00-C: restrict to macros with side effects or multiple-evaluation args~~ ✅ Done in v0.3.26
-- ~~EXP34-C param non-null: assume non-null for direct function params~~ ✅ Done in v0.3.26
-- POS49-C: suppress unless field is accessed within a known critical section pattern
+| EXP33-C | 4,700 | Uninitialized variable FPs | CFG integration needed (same as Juliet EXP33-C rewrite). |
 
 ### Real-World FP — Deferred Hard Issues
 
