@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-20 (v0.3.26 Juliet complete, realworld pending)
+**Last Updated**: 2026-03-20 (v0.3.26 Juliet + realworld complete)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -41,26 +41,30 @@ Currently realworld results live only as JSON files in `/tmp/realworld_results/`
 
 ### Real-World Validation
 
-v0.3.25 results (all 5 codebases complete, run on brandon-ThinkCentre-M715q 8-core Ryzen):
+v0.3.26 results (all 5 codebases complete):
 
-| Project | v0.3.5 | v0.3.25 | Delta | Top Reducers |
-|---------|-------:|--------:|------:|--------------|
-| hostap | 179,833 | 160,121 | −19,712 (−11.0%) | DCL08-C −11,718, DCL31/07-C −3,586, EXP33-C −2,643 |
-| sqlite | 129,035 | 116,642 | −12,393 (−9.6%) | DCL31/07-C −9,260, EXP33-C −2,376, INT36-C −733 |
-| curl | 63,207 | 55,975 | −7,232 (−11.4%) | DCL31/07-C −5,640, EXP33-C −940 |
-| mosquitto | 29,824 | 26,470 | −3,354 (−11.2%) | DCL08-C −1,647, DCL31/07-C −926, EXP33-C −291 |
-| libcrc | 734 | 705 | −29 (−3.9%) | |
-| **Total** | **402,633** | **359,913** | **−42,720 (−10.6%)** | |
+| Project | v0.3.25 | v0.3.26 | Delta | Top Reducers |
+|---------|--------:|--------:|------:|--------------|
+| hostap | 160,121 | 157,403 | −2,718 (−1.7%) | EXP34-C −1,463, PRE00-C −1,355, EXP33-C −100 |
+| sqlite | 116,642 | 115,491 | −1,151 (−1.0%) | PRE00-C −1,560, EXP34-C −212, FIO47-C −76 |
+| curl | 55,975 | 54,767 | −1,208 (−2.2%) | PRE00-C −1,113, EXP34-C −77, FIO47-C −15 |
+| mosquitto | 26,470 | 26,182 | −288 (−1.1%) | PRE00-C −246, EXP33-C −25, FIO47-C −11 |
+| libcrc | 705 | 704 | −1 | EXP33-C −1 |
+| **Total** | **359,913** | **354,547** | **−5,366 (−1.5%)** | |
+
+Cumulative from v0.3.5 baseline: 402,633 → 354,547 (**−48,086, −11.9%**).
+
+Per-rule impact: PRE00-C −4,274, EXP34-C −1,758, EXP33-C −163, FIO47-C −149, ERR33-C −4.
 
 Regressions to investigate:
-- INT31-C +501 on sqlite (VRA Phase 6 broadened detection — likely new TPs but verify)
-- ~~ERR33-C +149/+234 on hostap/sqlite~~ — partially addressed in v0.3.26 (CWE-253 `== 0` fix)
+- ~~DCL31-C +752 on sqlite, +248 on hostap~~ — **not regressions**: sqlite/curl repos were at different commits on 10.0.0.63 (now synced). Hostap delta is entirely in `wlantest/` (`add_note` 4→292) — benchmark artifact from stale remote binary; outside wlantest/ DCL31-C is unchanged (-1).
+- INT31-C +501 on sqlite (VRA Phase 6, from v0.3.25 — also affected by sqlite version diff)
 
 Next:
-- [ ] Compare v0.3.26 realworld results against v0.3.25 (benchmark running)
+- [x] Compare v0.3.26 realworld results against v0.3.25
+- [ ] Investigate DCL31-C regression
 - [ ] Ingest all results into SQLite (see migration plan above)
 - [ ] Run sqc on d_lib_wifi, d_lib_ble
-- [ ] Review remaining high-severity findings on d_lib_common
 
 ---
 
