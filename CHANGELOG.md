@@ -17,7 +17,19 @@
 - FIO47-C: 119 FP → 0 FP (100% FP elimination). CWE-134 TP rate 33.4% → 47.9% (+14.5pp)
 - CWE-685: 0 TP / 6 FP → 3 TP / 0 FP (arg count fix revealed true positives)
 - CWE-253: −33 TP (ERR33-C `== 0` trade-off — Juliet treats success-path checks as incorrect)
-- Real-world benchmark: pending
+
+### Real-World: −5,366 violations (−1.5%)
+
+| Project | v0.3.25 | v0.3.26 | Delta |
+|---------|--------:|--------:|------:|
+| hostap | 160,121 | 157,403 | −2,718 (−1.7%) |
+| sqlite | 116,642 | 115,491 | −1,151 (−1.0%) |
+| curl | 55,975 | 54,767 | −1,208 (−2.2%) |
+| mosquitto | 26,470 | 26,182 | −288 (−1.1%) |
+| libcrc | 705 | 704 | −1 |
+
+Per-rule: PRE00-C −4,274, EXP34-C −1,758, EXP33-C −163, FIO47-C −149.
+Cumulative from v0.3.5: 402,633 → 354,547 (−48,086, −11.9%).
 
 ## v0.3.25 (2026-03-20)
 
