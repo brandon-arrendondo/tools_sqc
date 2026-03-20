@@ -1113,15 +1113,20 @@ fn collect_param_pointer_state(
                                 declared_pointers.insert(name.clone());
                                 // Use call-site-derived state if available,
                                 // falling back to PossiblyNull (default)
-                                let seed_state = callsite_states
-                                    .and_then(|cs| cs.get(&param_idx))
-                                    .copied()
-                                    .map(|s| match s {
-                                        // Unknown from callsite → PossiblyNull (conservative)
-                                        NullState::Unknown => NullState::PossiblyNull,
-                                        other => other,
-                                    })
-                                    .unwrap_or(NullState::PossiblyNull);
+                                let seed_state = if let Some(cs) = callsite_states {
+                                    // Have inter-procedural call-site data
+                                    cs.get(&param_idx)
+                                        .copied()
+                                        .map(|s| match s {
+                                            NullState::Unknown => NullState::PossiblyNull,
+                                            other => other,
+                                        })
+                                        .unwrap_or(NullState::PossiblyNull)
+                                } else {
+                                    // No call-site data — assume params are non-null
+                                    // (callers are responsible for null checks)
+                                    NullState::NotNull
+                                };
                                 state.insert(name, seed_state);
                             }
                         }
