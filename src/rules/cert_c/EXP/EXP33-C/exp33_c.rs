@@ -612,20 +612,22 @@ impl UninitializedVariableAnalyzer {
                 continue; // No initializations found
             }
 
-            // Check if ALL initializations are inside incomplete conditionals
-            let all_conditional = all_inits
+            // Check if ALL initializations are inside conditional bodies (any branch).
+            // This catches both incomplete conditionals (if without else) and
+            // assignments in only one branch of a complete if-else.
+            let all_in_conditional = all_inits
                 .iter()
-                .all(|pos| self.is_inside_incomplete_conditional(*pos, node, source));
+                .all(|pos| Self::is_inside_any_conditional_body(*pos, node));
 
-            if all_conditional {
-                if all_inits.len() >= 2 {
-                    // 2+ initializations across conditional branches suggests exhaustive
-                    // coverage (e.g. if/else-if chains where all enum values are handled).
-                    // Downgrade to ConditionallyInitialized rather than Uninitialized to
-                    // avoid false positives; check_usage does not flag this state.
+            if all_in_conditional {
+                if all_inits.len() >= 2 && Self::inits_share_conditional(&all_inits, node) {
+                    // 2+ inits in branches of the SAME conditional suggests exhaustive
+                    // coverage (e.g. if/else-if or complete if/else).
                     self.var_states
                         .insert(var_name, VarState::ConditionallyInitialized);
                 } else {
+                    // Single init, or inits in separate independent conditionals —
+                    // no guarantee of initialization on all paths.
                     self.var_states.insert(var_name, VarState::Uninitialized);
                 }
             }
@@ -745,6 +747,65 @@ impl UninitializedVariableAnalyzer {
             }
         }
         false
+    }
+
+    /// Check if a byte position is inside the body of any conditional (if or switch),
+    /// regardless of whether the conditional is complete or incomplete.
+    fn is_inside_any_conditional_body(pos: usize, node: &Node) -> bool {
+        // Walk the AST to find enclosing conditionals
+        if pos < node.start_byte() || pos >= node.end_byte() {
+            return false;
+        }
+        // Check children first (depth-first)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if Self::is_inside_any_conditional_body(pos, &child) {
+                    return true;
+                }
+            }
+        }
+        // Check if this node is a conditional and pos is in a body (not condition)
+        if node.kind() == "if_statement" {
+            if !Self::is_in_if_condition(pos, node) {
+                return true;
+            }
+        } else if node.kind() == "switch_statement" {
+            return true;
+        }
+        false
+    }
+
+    /// Check if 2+ init positions share the same innermost enclosing conditional.
+    /// Returns true if at least 2 inits have the same enclosing if/switch node,
+    /// suggesting they may cover different branches of the same conditional.
+    fn inits_share_conditional(positions: &[usize], root: &Node) -> bool {
+        let mut conditional_starts: HashMap<usize, usize> = HashMap::new();
+        for &pos in positions {
+            if let Some(cond) = Self::find_innermost_conditional(pos, root) {
+                *conditional_starts.entry(cond.start_byte()).or_insert(0) += 1;
+            }
+        }
+        conditional_starts.values().any(|&count| count >= 2)
+    }
+
+    /// Find the innermost enclosing conditional (if or switch) for a byte position
+    fn find_innermost_conditional<'a>(pos: usize, node: &Node<'a>) -> Option<Node<'a>> {
+        if pos < node.start_byte() || pos >= node.end_byte() {
+            return None;
+        }
+        // Check children first (to find innermost)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(found) = Self::find_innermost_conditional(pos, &child) {
+                    return Some(found);
+                }
+            }
+        }
+        // Then check if this node is a conditional
+        if node.kind() == "if_statement" || node.kind() == "switch_statement" {
+            return Some(*node);
+        }
+        None
     }
 
     /// Find all enclosing conditionals (from innermost to outermost)
@@ -1033,7 +1094,10 @@ impl UninitializedVariableAnalyzer {
                         if let Some(value) = child.child_by_field_name("value") {
                             let value_text = get_node_text(&value, source);
 
-                            if value_text.contains("malloc(") && !value_text.contains("calloc(") {
+                            if (value_text.contains("malloc(") && !value_text.contains("calloc("))
+                                || value_text.contains("alloca(")
+                                || value_text.contains("ALLOCA(")
+                            {
                                 self.var_states
                                     .insert(var_name.clone(), VarState::MallocUninitialized);
                                 self.malloc_pointers.insert(var_name);
@@ -1113,7 +1177,10 @@ impl UninitializedVariableAnalyzer {
             } else if left.kind() == "identifier" {
                 if let Some(right) = node.child_by_field_name("right") {
                     let right_text = get_node_text(&right, source);
-                    if right_text.contains("malloc(") && !right_text.contains("calloc(") {
+                    if (right_text.contains("malloc(") && !right_text.contains("calloc("))
+                        || right_text.contains("alloca(")
+                        || right_text.contains("ALLOCA(")
+                    {
                         self.var_states
                             .insert(left_text.clone(), VarState::MallocUninitialized);
                         self.malloc_pointers.insert(left_text);

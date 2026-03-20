@@ -1,5 +1,13 @@
 # SqC — Changelog
 
+## v0.3.25 (2026-03-20)
+
+### CWE-457: EXP33-C Detection Improvements
+
+- **ALLOCA/alloca tracking**: `alloca()` and `ALLOCA()` allocations now treated as uninitialized memory (like `malloc`), catching reads from uninitialized stack-allocated arrays. +52 new TPs across alloca no_init variants 01–18.
+- **Conditional init heuristic fix**: `check_conditional_init_pattern` broadened from incomplete conditionals (if without else) to any conditional body. Combined with new `inits_share_conditional` check: assignments in separate independent if-else blocks no longer falsely suppress violations. +18 new TPs for variant 12 (`globalReturnsTrueOrFalse()` pattern).
+- Estimated per-file detection: 23.4% → ~35% (benchmark pending).
+
 ## v0.3.24 (2026-03-19)
 
 ### VRA Phase 5: Inter-Procedural Return Ranges
@@ -9,6 +17,12 @@
 - Return ranges stored in `RangeAnalysisResult` for intra-block replay consistency in `eval_expr_range_at()` / `get_var_range_at()`.
 - Prescan reordered: macro constants collected before function summaries so `#define`-based return values resolve correctly.
 - Benefits all 4 VRA-consuming rules (INT30-C, INT32-C, INT33-C, INT34-C) — e.g., `x = get_nonzero(); y / x;` no longer flagged by INT33-C when `get_nonzero` provably returns `[1, N]`.
+
+### VRA Phase 6: INT31-C Migration
+
+- INT31-C (integer conversion/truncation) gains full VRA integration, becoming the 5th VRA-consuming rule.
+- VRA-based range narrowing supplements the existing syntactic `is_inside_bounds_checked_block()` heuristic: if VRA proves the value fits in the target type's range at the cast/assignment site, the violation is suppressed.
+- Covers all three check sites: cast expressions (signed→unsigned, unsigned→signed, narrowing), implicit assignment narrowing, and signed→size_t call arguments.
 
 ### Benchmark: Juliet 67/68 CWEs
 
