@@ -6,7 +6,16 @@
 
 - **ALLOCA/alloca tracking**: `alloca()` and `ALLOCA()` allocations now treated as uninitialized memory (like `malloc`), catching reads from uninitialized stack-allocated arrays. +52 new TPs across alloca no_init variants 01–18.
 - **Conditional init heuristic fix**: `check_conditional_init_pattern` broadened from incomplete conditionals (if without else) to any conditional body. Combined with new `inits_share_conditional` check: assignments in separate independent if-else blocks no longer falsely suppress violations. +18 new TPs for variant 12 (`globalReturnsTrueOrFalse()` pattern).
-- Estimated per-file detection: 23.4% → ~35% (benchmark pending).
+- **INT31-C VRA improvement** (from v0.3.24): CWE-194 TP rate 41.7%→56.8% (+15.1pp, −310 FP/−31 TP). CWE-195: −32 FP, 0 TP.
+
+### Benchmark: Juliet 68/68 CWEs
+
+- Overall: 8,420 TP / 9,371 FP, **47.3% TP rate** (+0.6pp vs v0.3.24), 14.1% per-file
+- CWE-121 (new): 1,027 TP / 1,152 FP (47.1% TP rate) — first full benchmark for stack buffer overflow
+- CWE-194: 41.7%→56.8% (+15.1pp), CWE-195: 40.8%→42.2% (+1.4pp) — INT31-C VRA FP reduction
+- CWE-457: 34.7%→31.8% (−2.9pp) — broader detection (+33 TP) but +109 FP from alloca/conditional init changes
+- CWE-758: 51.9%→50.1% (−1.8pp), CWE-690: 82.4%→82.0% (−0.4pp) — minor regressions
+- Zero regressions on remaining 62 CWEs
 
 ## v0.3.24 (2026-03-19)
 
