@@ -140,6 +140,18 @@ fn run() -> Result<i32> {
                 .help("Increase output verbosity (-v: per-rule progress, -vv: per-violation detail)")
                 .action(clap::ArgAction::Count),
         )
+        .arg(
+            Arg::new("save_prescan")
+                .long("save-prescan")
+                .help("Save prescan context to a binary cache file (for parallel scanning)")
+                .value_name("FILE"),
+        )
+        .arg(
+            Arg::new("load_prescan")
+                .long("load-prescan")
+                .help("Load prescan context from cache instead of scanning -d directories")
+                .value_name("FILE"),
+        )
         .get_matches();
 
     let path = matches.get_one::<String>("path").unwrap();
@@ -168,6 +180,8 @@ fn run() -> Result<i32> {
     let diff_only = matches.get_flag("diff");
     let suppress_file = matches.get_one::<String>("suppress_file");
     let verbosity = matches.get_count("verbose");
+    let save_prescan = matches.get_one::<String>("save_prescan");
+    let load_prescan = matches.get_one::<String>("load_prescan");
 
     // Verify the path and determine source type
     let project_source = ProjectSource::open(path)?;
@@ -206,6 +220,8 @@ fn run() -> Result<i32> {
         &include_paths,
         diff_only,
         suppress_file.map(|s| s.as_str()),
+        save_prescan.map(|s| s.as_str()),
+        load_prescan.map(|s| s.as_str()),
     )?;
 
     let mut violations = results.violations;

@@ -123,7 +123,8 @@ Current test infrastructure auto-generates integration tests from `.c` files in 
 
 - [ ] **Prescan cache** (Priority 1) — `sqc prescan /path -o prescan.db` + `sqc /path --load-prescan prescan.db`. Serialize `ProjectContext` (known_functions, function_summaries, call_graph, macro_constants, macro_aliases, struct_field_types) to a binary file. Eliminates repeated prescan in parallel scanning (28 workers × ~15s prescan = ~7 min wasted CPU on hostap). All fields are `HashMap`/`HashSet` of `String`/`i64`/enums — straightforward serde. Could use bincode or MessagePack for speed. The parallel scanner would generate cache once, then each worker loads it instead of `-d`. Also useful for CI incremental: prescan once, analyze changed files only.
 - [ ] **Internal parallelization** — rayon for file-level parallelism within a single sqc invocation
-- [x] **External parallelization** — `scripts/sqc_parallel_scan.py` splits by subdirectory, runs N sqc processes (v0.3.27)
+- [x] **External parallelization** — `scripts/sqc_parallel_scan.py` splits by subdirectory, runs N sqc processes (v0.3.27). Uses prescan cache to avoid repeated prescan per worker (v0.3.28).
+- [ ] **File-size-aware batching** — current subdir splitting can leave one large unit dominating wall time (e.g., wpa_supplicant/ 69 files = 1061s). Batch by file size rather than directory to balance work across workers.
 - [ ] **Incremental parsing** — only re-parse changed files
 - [ ] **Baseline-aware suppression** — "only new violations" mode
 - [ ] **Docker image** — containerized CI/CD distribution
