@@ -795,7 +795,7 @@ pub fn analyze_null_states_with_globals(
 
     let mut declared_pointers = HashSet::new();
 
-    // Initialize entry state: pointer params -> PossiblyNull, globals -> precomputed
+    // Initialize entry state: pointer params -> NotNull (or callsite-derived), globals -> precomputed
     let mut initial_state = StateMap::new();
 
     // Seed with global variable states
@@ -1114,14 +1114,17 @@ fn collect_param_pointer_state(
                                 // Use call-site-derived state if available,
                                 // falling back to PossiblyNull (default)
                                 let seed_state = if let Some(cs) = callsite_states {
-                                    // Have inter-procedural call-site data
+                                    // Have inter-procedural call-site data.
+                                    // If prescan resolved a concrete state, use it.
+                                    // If Unknown or missing, treat as NotNull — same
+                                    // as no-callsite-data ("callers are responsible").
                                     cs.get(&param_idx)
                                         .copied()
                                         .map(|s| match s {
-                                            NullState::Unknown => NullState::PossiblyNull,
+                                            NullState::Unknown => NullState::NotNull,
                                             other => other,
                                         })
-                                        .unwrap_or(NullState::PossiblyNull)
+                                        .unwrap_or(NullState::NotNull)
                                 } else {
                                     // No call-site data — assume params are non-null
                                     // (callers are responsible for null checks)
