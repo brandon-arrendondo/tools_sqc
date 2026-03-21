@@ -16,37 +16,19 @@ Top remaining FP sources from v0.3.28 per-rule data (all 5 codebases, rules-benc
 
 | Rule | Count | Issue | Approach |
 |------|------:|-------|----------|
-| ~~EXP19-C~~ | ~~42,140~~ | ~~Braceless control flow~~ | ~~Disabled in benchmarks — style rule, all TPs but pure noise~~ |
 | EXP34-C | 26,457 | Null deref (post param-fix) | Remaining: struct field chains, cross-function patterns |
-| ~~POS49-C~~ | ~~15,693~~ → 107 | ~~Shared field without lock~~ | ~~Restricted to bit-field writes only (commit 8a1778a1). 99.3% reduction.~~ |
-| ~~DCL08-C~~ | ~~14,354~~ | ~~Constant variable~~ | ~~Disabled in benchmarks — recommendation rule, zero Juliet impact~~ |
 | INT32-C | 12,077 | Signed overflow | Stable after VRA — gap is coverage not precision |
 | DCL07-C | 11,237 | Implicit int declaration | Cross-file prescan limitation |
 | DCL31-C | 10,620 | Undeclared function | Cross-file prescan limitation |
 | API00-C | 10,072 | Missing size parameter | Post caller-aware suppression |
-| ~~EXP14-C~~ | ~~8,028~~ | ~~Cast loses qualifiers~~ | ~~Disabled in benchmarks — recommendation rule, zero Juliet impact~~ |
 | INT30-C | 8,508 | Unsigned overflow | Stable after VRA |
 
-**Quick wins:**
-- ~~POS49-C: bit-field-only restriction reduced 15,693 → 107 violations (99.3%)~~
-- ~~EXP19-C: disabled in rules-benchmark.toml — style-only rule, 42K TPs but pure noise~~
-- ~~Benchmark noise audit: 12 recommendation rules disabled in rules-benchmark.toml (~72K violations removed)~~
-
-**Completed — Benchmark noise audit (v0.3.27):**
-13 style/recommendation rules now disabled in `rules-benchmark.toml` (zero Juliet CWE contribution, ~114K realworld violations of pure noise removed): EXP19-C, DCL08-C, DCL06-C, EXP02-C, EXP14-C, EXP12-C, EXP10-C, DCL04-C, INT02-C, INT01-C, INT17-C, INT16-C, PRE31-C.
-
-**v0.3.28 Benchmark Results:**
-- Juliet: TP 8,390 / FP 9,252 / **TP rate 47.6%** (up from 44.9% — noise rules no longer contribute FPs)
-- Realworld (vs v0.3.27): curl -37%, hostap -45%, libcrc -41%, mosquitto -26% (all from disabled noise rules, zero regressions on active rules)
+See [CHANGELOG.md](CHANGELOG.md) for completed items (v0.3.27: POS49-C bit-field fix, 13 noise rules disabled; v0.3.28: prescan cache, parallel scanner).
 
 ### Benchmark Infrastructure: Remaining
 
-- ~~Phase 3: Real-world SQLite integration~~ ✅ Done in v0.3.26 — `realworld_violations` table, auto-ingest in MCP, `compare_realworld_runs()`, v0.3.5/v0.3.25/v0.3.26 ingested
-- ~~Phase 5: Parallel realworld scanner~~ ✅ Done in v0.3.27 — `scripts/sqc_parallel_scan.py` splits codebases by subdirectory, runs via ProcessPoolExecutor. MCP server uses it for all sqc scans.
-- ~~Phase 6: Benchmark noise reduction~~ ✅ Done in v0.3.27 — `rules-benchmark.toml` with 13 noisy rules disabled (~114K violations removed)
-- ~~Phase 7: Prescan cache~~ ✅ Done in v0.3.28 — `--save-prescan`/`--load-prescan` CLI flags, persistent cache in `data/prescan_cache/`, `--rebuild-prescan` flag for stale cache. sqlite prescan: ~866s → 0s (reuse), hostap: ~11s → 0s.
-- Phase 2: `get_performance_trend()`, `get_realworld_rule_trend()` query tools
-- Phase 4: Remove legacy shell scripts after full migration validation
+- `get_performance_trend()`, `get_realworld_rule_trend()` query tools
+- Remove legacy shell scripts after full migration validation
 
 ---
 
@@ -75,7 +57,7 @@ Top remaining FP sources from v0.3.28 per-rule data (all 5 codebases, rules-benc
 - EXP33-C CFG integration (needs full rewrite like EXP34-C)
 - EXP34-C/FIO06-C regression investigation from Phase 3
 
-### Real-World FP Reduction — v0.3.25 Findings (Priority 2)
+### Real-World FP Reduction — Remaining Targets (Priority 2)
 
 v0.3.28 realworld results (5 codebases, rules-benchmark.toml): curl 31.7K, hostap 78.5K, mosquitto 19.2K, libcrc 419, sqlite pending. Total ~130K (down from ~322K in v0.3.27 with noise rules).
 
@@ -83,7 +65,6 @@ v0.3.28 realworld results (5 codebases, rules-benchmark.toml): curl 31.7K, hosta
 
 | Rule | Count | Issue | Fix Approach |
 |------|------:|-------|--------------|
-| ~~POS49-C~~ | ~~15,693~~ → 107 | ~~Every shared field flagged~~ | ~~Restricted to bit-field writes only (v0.3.27). 99.3% reduction.~~ |
 | MEM30-C | 3,452 | Use-after-free FPs from sequential struct/member frees | Needs field-level free tracking. Cross-function free propagation. |
 | MEM31-C | 3,354 | Leak FPs from cross-function ownership | Needs ownership model (strdup→field→custom_Delete). |
 | DCL13-C | 2,373 | Const correctness — pointer params through struct fields | Known alias tracking limitation (ringbuffer.c pattern). |
@@ -125,9 +106,9 @@ Current test infrastructure auto-generates integration tests from `.c` files in 
 
 ### Architecture Evolution
 
-- [x] **Prescan cache** (v0.3.28) — `--save-prescan FILE` / `--load-prescan FILE` on sqc CLI. Serializes `ProjectContext` via bincode (~3.6 MB for hostap, ~2.4 MB for sqlite). Persistent cache in `data/prescan_cache/{codebase}.cache`, reused across runs. `--rebuild-prescan` flag when prescan logic changes. Eliminates prescan overhead: sqlite 866s → 0s, hostap 11s → 0s per worker.
+- [x] **Prescan cache** (v0.3.28) — `--save-prescan`/`--load-prescan`, persistent in `data/prescan_cache/`, `--rebuild-prescan` for stale cache
+- [x] **External parallelization** (v0.3.27–v0.3.28) — `scripts/sqc_parallel_scan.py` with subdirectory splitting + prescan cache
 - [ ] **Internal parallelization** — rayon for file-level parallelism within a single sqc invocation
-- [x] **External parallelization** — `scripts/sqc_parallel_scan.py` splits by subdirectory, runs N sqc processes (v0.3.27). Uses prescan cache to avoid repeated prescan per worker (v0.3.28).
 - [ ] **File-size-aware batching** — current subdir splitting can leave one large unit dominating wall time (e.g., wpa_supplicant/ 69 files = 1061s). Batch by file size rather than directory to balance work across workers.
 - [ ] **Incremental parsing** — only re-parse changed files
 - [ ] **Baseline-aware suppression** — "only new violations" mode
