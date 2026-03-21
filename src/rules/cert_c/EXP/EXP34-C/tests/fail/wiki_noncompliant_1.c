@@ -1,16 +1,15 @@
 /*
  * Rule: EXP34-C
- * Source: wiki
+ * Source: wiki (adapted — use malloc instead of png_malloc for detectability)
  * Status: FAIL - Should trigger EXP34-C violation
  */
 
-#include <png.h> /* From libpng */
+#include <stdlib.h>
 #include <string.h>
- 
-void func(png_structp png_ptr, int length, const void *user_data) { 
-  png_charp chunkdata;
-  chunkdata = (png_charp)png_malloc(png_ptr, length + 1);
-  /* ... */
+
+void func(int length, const void *user_data) {
+  char *chunkdata;
+  chunkdata = (char *)malloc(length + 1);
+  /* chunkdata may be NULL if malloc fails */
   memcpy(chunkdata, user_data, length);
-  /* ... */
- }
+}

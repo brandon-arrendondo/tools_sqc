@@ -18,7 +18,7 @@ pub type MacroConstantMap = HashMap<String, i64>;
 pub type VarRangeMap = HashMap<String, ValueRange>;
 
 /// An integer value range [min, max].
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct ValueRange {
     pub min: i64,
     pub max: i64,

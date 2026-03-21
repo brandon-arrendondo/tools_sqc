@@ -1,12 +1,13 @@
 use super::function_summary::FunctionSummary;
 use std::collections::{HashMap, HashSet};
+use std::path::Path;
 
 /// Cross-file context gathered by pre-scanning additional directories.
 ///
 /// Holds function names found in `.c`/`.h` files so that rules like DCL31-C
 /// and DCL07-C can suppress false positives for project-internal functions
 /// defined in other translation units.
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ProjectContext {
     pub known_functions: HashSet<String>,
     /// Functions declared (prototyped) in `.h` header files.
@@ -63,5 +64,19 @@ impl ProjectContext {
             || !self.function_summaries.is_empty()
             || !self.macro_constants.is_empty()
             || !self.struct_field_types.is_empty()
+    }
+
+    /// Save prescan context to a binary cache file.
+    pub fn save_to_file(&self, path: &Path) -> anyhow::Result<()> {
+        let encoded = bincode::serialize(self)?;
+        std::fs::write(path, &encoded)?;
+        Ok(())
+    }
+
+    /// Load prescan context from a binary cache file.
+    pub fn load_from_file(path: &Path) -> anyhow::Result<Self> {
+        let data = std::fs::read(path)?;
+        let context: Self = bincode::deserialize(&data)?;
+        Ok(context)
     }
 }

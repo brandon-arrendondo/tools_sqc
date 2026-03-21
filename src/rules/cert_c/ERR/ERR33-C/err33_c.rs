@@ -1657,13 +1657,14 @@ impl Err33C {
                 op == "==" && cmp_value == "0"
             }
             ErrorReturnKind::NonZero => {
-                // Error is non-zero. Checking == 0 checks for success, not error.
-                op == "==" && cmp_value == "0"
+                // Error is non-zero, 0 means success. Both `== 0` (success path)
+                // and `!= 0` (error path) are valid error-handling patterns.
+                false
             }
             ErrorReturnKind::Count => {
                 // Return is count (size_t). Checking < 0 on unsigned is always false.
-                // Checking == 0 misses partial reads/writes.
-                matches!(op, "<" | "==") && cmp_value == "0"
+                // `== 0` is a valid check for "nothing processed".
+                op == "<" && cmp_value == "0"
             }
         };
 

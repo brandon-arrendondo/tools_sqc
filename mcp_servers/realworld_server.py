@@ -40,7 +40,7 @@ _HERE = Path(__file__).parent
 PROJECT_DIR = _HERE.parent
 RESULTS_BASE = Path("/tmp/realworld_results")
 STATE_FILE = Path("/tmp/realworld_bench.json")
-MANIFEST = PROJECT_DIR / "rules_templates" / "rules-all.toml"
+MANIFEST = PROJECT_DIR / "rules_templates" / "rules-benchmark.toml"
 SQC_BIN = PROJECT_DIR / "target" / "release" / "sqc"
 
 VALID_TOOLS = {"sqc", "cppcheck", "clang-tidy"}
@@ -471,17 +471,43 @@ def _fetch_remote_results(host: str, version_dir: Path, run_id: str) -> dict:
     return {"fetched": fetched, "failed": failed}
 
 
-def _build_sqc_cmd(codebase: str, cfg: dict, results_dir: Path, run_id: str) -> list[str]:
+PARALLEL_SCRIPT = PROJECT_DIR / "scripts" / "sqc_parallel_scan.py"
+PRESCAN_CACHE_DIR = PROJECT_DIR / "data" / "prescan_cache"
+
+
+def _build_sqc_cmd(codebase: str, cfg: dict, results_dir: Path, run_id: str,
+                   rebuild_prescan: bool = False) -> list[str]:
     path = str(cfg["path"])
     scan_path = cfg["sqc"].get("scan_path") or path
     output_file = results_dir / f"{run_id}.json"
+    extra = _expand(cfg["sqc"].get("extra_args", []), path)
+
+    # Use parallel wrapper — it auto-detects whether parallelism is beneficial
+    # (falls back to single process for small codebases)
+    if PARALLEL_SCRIPT.exists():
+        cmd = [
+            "python3", str(PARALLEL_SCRIPT), scan_path,
+            "--sqc", str(SQC_BIN),
+            "-m", str(MANIFEST),
+            "-e", str(output_file),
+            "-d", path,
+            "--jobs", str(min(os.cpu_count() or 4, 8)),
+            "--prescan-cache-dir", str(PRESCAN_CACHE_DIR),
+        ]
+        if rebuild_prescan:
+            cmd.append("--rebuild-prescan")
+        # Add extra -d dirs from codebase config
+        for i, arg in enumerate(extra):
+            if arg == "-d" and i + 1 < len(extra):
+                cmd.extend(["-d", extra[i + 1]])
+        return cmd
+
+    # Fallback: direct sqc invocation
     cmd = [
         str(SQC_BIN), scan_path,
         "--manifest", str(MANIFEST),
         "--export", str(output_file),
     ]
-    extra = _expand(cfg["sqc"].get("extra_args", []), path)
-    # If extra_args already contain -d flags, use those; otherwise add default -d {path}
     if "-d" not in extra:
         cmd.extend(["-d", path])
     cmd.extend(extra)
@@ -621,7 +647,7 @@ def _parse_result_file(run_id: str, filepath: Path) -> dict:
 
 
 def _parse_sqc_log_progress(version_dir: Path, run_id: str) -> dict | None:
-    """Parse tail of sqc log for file progress (Scanning: [file N/M])."""
+    """Parse tail of sqc log for progress (parallel unit or single-file mode)."""
     log_file = version_dir / f"{run_id}.log"
     if not log_file.exists():
         return None
@@ -631,10 +657,20 @@ def _parse_sqc_log_progress(version_dir: Path, run_id: str) -> dict | None:
             # Read last 4KB to find the most recent progress line
             f.seek(max(0, size - 4096))
             tail = f.read().decode("utf-8", errors="replace")
+
+        # Parallel mode: [parallel] Completed N/M: ...
+        par_matches = re.findall(r"\[parallel\] Completed (\d+)/(\d+)", tail)
+        if par_matches:
+            current, total = par_matches[-1]
+            return {"current_unit": int(current), "total_units": int(total),
+                    "mode": "parallel"}
+
+        # Single-process mode: Scanning: [file N/M]
         matches = re.findall(r"Scanning: \[file (\d+)/(\d+)\]", tail)
         if matches:
             current, total = matches[-1]
-            return {"current_file": int(current), "total_files": int(total)}
+            return {"current_file": int(current), "total_files": int(total),
+                    "mode": "single"}
     except Exception:
         pass
     return None
@@ -748,7 +784,8 @@ def _list_version_dirs() -> list[dict]:
 # ── Tools ─────────────────────────────────────────────────────────────────────
 
 @mcp.tool()
-def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
+def run_analysis(tool: str, codebase: str, host: str | None = None,
+                 rebuild_prescan: bool = False) -> str:
     """
     Start a single analysis run (one tool against one codebase).
 
@@ -757,6 +794,9 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
         codebase: One of "libcrc", "sqlite", "mosquitto", "curl", "hostap"
         host: Optional remote host IP or nickname (e.g. "10.0.0.97", "workstation-97").
               If omitted, runs locally.
+        rebuild_prescan: Force prescan cache regeneration for sqc runs.
+              Use after changing prescan logic (prescan.rs, function_summary.rs, etc.).
+              Default: reuse existing cache if available.
 
     Returns immediately. Use get_status() to monitor progress.
     """
@@ -824,7 +864,8 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
 
     # Build command
     if tool == "sqc":
-        cmd = _build_sqc_cmd(codebase, cfg, version_dir, run_id)
+        cmd = _build_sqc_cmd(codebase, cfg, version_dir, run_id,
+                             rebuild_prescan=rebuild_prescan)
     elif tool == "cppcheck":
         cmd = _build_cppcheck_cmd(codebase, cfg, version_dir, run_id)
     else:  # clang-tidy
@@ -916,7 +957,7 @@ def run_analysis(tool: str, codebase: str, host: str | None = None) -> str:
 
 @mcp.tool()
 def run_all(codebase: str | None = None, tool: str | None = None,
-            host: str | None = None) -> str:
+            host: str | None = None, rebuild_prescan: bool = False) -> str:
     """
     Run all tool×codebase combinations (or filter by codebase and/or tool).
 
@@ -924,6 +965,8 @@ def run_all(codebase: str | None = None, tool: str | None = None,
         codebase: Optional filter — only run against this codebase
         tool: Optional filter — only run this tool
         host: Optional remote host IP or nickname. If omitted, runs locally.
+        rebuild_prescan: Force prescan cache regeneration for sqc runs.
+              Use after changing prescan logic (prescan.rs, function_summary.rs, etc.).
 
     Launches each combo as a separate subprocess. Returns summary of what was started.
     """
@@ -942,7 +985,8 @@ def run_all(codebase: str | None = None, tool: str | None = None,
     for t in tools:
         for cb in codebases:
             try:
-                result = json.loads(run_analysis(t, cb, host=host))
+                result = json.loads(run_analysis(t, cb, host=host,
+                                                 rebuild_prescan=rebuild_prescan))
             except Exception as e:
                 result = {"status": "error", "error": str(e)}
             results.append({
@@ -1163,12 +1207,42 @@ def get_results(run_id: str | None = None) -> str:
                 "total_rules": len(parsed["per_rule"]),
             })
 
+    # Auto-ingest into SQLite if not already present
+    _auto_ingest_to_sqlite(version_dir)
+
     return json.dumps({
         "version_dir": str(version_dir),
         "dir_name": version_dir.name,
         "runs": all_results,
         "total_runs": len(all_results),
     })
+
+
+def _auto_ingest_to_sqlite(version_dir: Path) -> None:
+    """Ingest a realworld result dir into SQLite if not already present."""
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from bench.db import BenchDB
+
+        db = BenchDB()
+        dir_name = version_dir.name
+
+        # Check if already ingested (match by notes field)
+        existing = [r for r in db.list_realworld_runs()
+                    if r.get("notes") and dir_name in r["notes"]]
+        if existing:
+            return  # Already ingested
+
+        # Only ingest sqc results (skip cppcheck/clang-tidy)
+        json_files = list(version_dir.glob("sqc-*.json"))
+        if not json_files:
+            return
+
+        machine = {"hostname": os.uname().nodename}
+        db.ingest_realworld_run(dir_name, str(version_dir), machine=machine)
+    except Exception:
+        pass  # Don't fail the MCP tool if ingestion fails
 
 
 @mcp.tool()
@@ -1463,7 +1537,7 @@ def deploy_sqc(host: str | None = None) -> str:
     Args:
         host: Remote host IP or nickname. If omitted, deploys to ALL remote hosts.
 
-    Copies target/release/sqc and rules_templates/rules-all.toml, then verifies
+    Copies target/release/sqc and rules_templates/rules-benchmark.toml, then verifies
     by running sqc --version on the remote.
     """
     if not SQC_BIN.exists():

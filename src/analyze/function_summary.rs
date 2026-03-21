@@ -10,7 +10,7 @@ use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
 /// Summary of a function's behavior relevant to CERT C rules.
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
 pub struct FunctionSummary {
     /// Parameter indices that this function frees (e.g., free(param[0])).
     pub frees_params: HashSet<usize>,

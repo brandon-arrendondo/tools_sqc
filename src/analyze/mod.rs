@@ -39,6 +39,8 @@ pub fn analyze_project(
     include_paths: &[String],
     diff_only: bool,
     suppress_file: Option<&str>,
+    save_prescan: Option<&str>,
+    load_prescan: Option<&str>,
 ) -> Result<AnalysisResults> {
     let mut violations = Vec::new();
     let mut suppressed = Vec::new();
@@ -49,21 +51,46 @@ pub fn analyze_project(
         .enabled_rules()
         .any(|(rule_id, _)| registry.get_rule(rule_id).is_some_and(|r| r.needs_vra()));
 
-    // Pre-scan additional directories for cross-file context
-    let mut context = if directories.is_empty() {
+    // Load or compute cross-file context
+    let mut context = if let Some(cache_path) = load_prescan {
+        let path = std::path::Path::new(cache_path);
+        if path.exists() {
+            if let Some(reporter) = progress {
+                reporter.report_prescan_start(0);
+            }
+            let ctx = context::ProjectContext::load_from_file(path)?;
+            if let Some(reporter) = progress {
+                reporter.report_prescan_complete(ctx.known_functions.len());
+            }
+            ctx
+        } else {
+            anyhow::bail!("Prescan cache file not found: {}", cache_path);
+        }
+    } else if directories.is_empty() {
         context::ProjectContext::new()
     } else {
         prescan::prescan_directories(directories, progress, needs_vra)?
     };
 
     // Resolve #include directives against include search paths
-    if !include_paths.is_empty() {
+    if load_prescan.is_none() && !include_paths.is_empty() {
         let c_files = if diff_only {
             project_source.get_modified_c_files()?
         } else {
             project_source.get_c_files()?
         };
         prescan::resolve_includes(&c_files, include_paths, &mut context, progress, needs_vra)?;
+    }
+
+    // Save prescan cache if requested (after prescan + include resolution)
+    if let Some(cache_path) = save_prescan {
+        context.save_to_file(std::path::Path::new(cache_path))?;
+        eprintln!(
+            "Saved prescan cache ({} functions, {} summaries) to: {}",
+            context.known_functions.len(),
+            context.function_summaries.len(),
+            cache_path,
+        );
     }
 
     if context.has_cross_file_data() {
