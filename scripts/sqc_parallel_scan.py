@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Parallel sqc scanner — splits a codebase by subdirectory.
 
-Finds top-level subdirectories containing .c files and runs one sqc process
-per subdirectory in parallel, then merges JSON outputs. Falls back to a
-single sqc invocation for small codebases (< --min-files).
+Generates a prescan cache once, then runs one sqc process per subdirectory
+in parallel (each loading the cache instead of re-prescanning). Falls back
+to a single sqc invocation for small codebases (< --min-files).
 
 Usage:
     python3 scripts/sqc_parallel_scan.py /path/to/codebase \
@@ -73,10 +73,75 @@ def count_c_files(path: Path) -> int:
     return sum(1 for _ in path.rglob("*.c"))
 
 
+def generate_prescan_cache(sqc_bin: str, manifest: str,
+                           context_dirs: list[str],
+                           cache_path: str) -> bool:
+    """Run sqc --save-prescan to generate a prescan cache file.
+
+    Uses the first .c file found in any context dir as a minimal scan target.
+    Returns True on success.
+    """
+    # Find one .c file to use as a minimal scan target
+    scan_target = None
+    for d in context_dirs:
+        for f in Path(d).rglob("*.c"):
+            scan_target = str(f)
+            break
+        if scan_target:
+            break
+
+    if not scan_target:
+        return False
+
+    cmd = [
+        sqc_bin, scan_target,
+        "-m", manifest,
+        "--save-prescan", cache_path,
+        "-e", os.devnull,
+    ]
+    for d in context_dirs:
+        cmd.extend(["-d", d])
+
+    proc = subprocess.run(cmd, capture_output=True, timeout=600)
+    return proc.returncode == 0 and os.path.exists(cache_path)
+
+
 def scan_one(sqc_bin: str, scan_dir: Path, manifest: str,
-             context_dirs: list[str], output_path: str,
+             prescan_cache: str, output_path: str,
              label: str = "") -> dict:
-    """Run sqc on one directory. Returns summary dict."""
+    """Run sqc on one directory with prescan cache. Returns summary dict."""
+    cmd = [
+        sqc_bin, str(scan_dir),
+        "-m", manifest,
+        "-e", output_path,
+        "--load-prescan", prescan_cache,
+    ]
+
+    start = time.monotonic()
+    proc = subprocess.run(cmd, capture_output=True, timeout=3600)
+    elapsed = time.monotonic() - start
+
+    violations = 0
+    if os.path.exists(output_path):
+        try:
+            with open(output_path) as f:
+                data = json.load(f)
+            violations = len(data)
+        except Exception:
+            pass
+
+    return {
+        "dir": label or scan_dir.name,
+        "elapsed_s": round(elapsed, 1),
+        "violations": violations,
+        "returncode": proc.returncode,
+    }
+
+
+def scan_one_no_cache(sqc_bin: str, scan_dir: Path, manifest: str,
+                      context_dirs: list[str], output_path: str,
+                      label: str = "") -> dict:
+    """Run sqc on one directory without cache (fallback). Returns summary dict."""
     cmd = [sqc_bin, str(scan_dir), "-m", manifest, "-e", output_path]
     for d in context_dirs:
         cmd.extend(["-d", d])
@@ -157,16 +222,41 @@ def main():
     completed = 0
 
     with tempfile.TemporaryDirectory() as tmpdir:
+        # Generate prescan cache once for all workers
+        cache_path = os.path.join(tmpdir, "prescan.cache")
+        print(f"[parallel] Generating prescan cache...",
+              file=sys.stderr, flush=True)
+        cache_start = time.monotonic()
+        use_cache = generate_prescan_cache(
+            args.sqc, args.manifest, context_dirs, cache_path)
+        cache_elapsed = time.monotonic() - cache_start
+
+        if use_cache:
+            cache_size = os.path.getsize(cache_path)
+            print(f"[parallel] Prescan cache ready: {cache_size / 1024:.0f} KB "
+                  f"in {cache_elapsed:.1f}s",
+                  file=sys.stderr, flush=True)
+        else:
+            print(f"[parallel] Prescan cache failed, falling back to -d per worker",
+                  file=sys.stderr, flush=True)
+
         with ProcessPoolExecutor(max_workers=jobs) as executor:
             futures = {}
             for i, unit in enumerate(units):
                 rel = str(unit.relative_to(scan_path))
                 safe_name = rel.replace("/", "_").replace("\\", "_")
                 output = os.path.join(tmpdir, f"{safe_name}.json")
-                future = executor.submit(
-                    scan_one, args.sqc, unit, args.manifest,
-                    context_dirs, output, label=rel,
-                )
+
+                if use_cache:
+                    future = executor.submit(
+                        scan_one, args.sqc, unit, args.manifest,
+                        cache_path, output, label=rel,
+                    )
+                else:
+                    future = executor.submit(
+                        scan_one_no_cache, args.sqc, unit, args.manifest,
+                        context_dirs, output, label=rel,
+                    )
                 futures[future] = (unit, output)
 
             for future in as_completed(futures):
