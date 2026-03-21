@@ -5,13 +5,18 @@ Generates a prescan cache once, then runs one sqc process per subdirectory
 in parallel (each loading the cache instead of re-prescanning). Falls back
 to a single sqc invocation for small codebases (< --min-files).
 
+Prescan caches are stored persistently in --prescan-cache-dir so they can
+be reused across benchmark runs. Use --rebuild-prescan to force regeneration
+(e.g., after changing prescan logic in sqc).
+
 Usage:
     python3 scripts/sqc_parallel_scan.py /path/to/codebase \
         --sqc target/release/sqc \
         -m rules_templates/rules-benchmark.toml \
         -e /tmp/results.json \
         -d /path/to/codebase \
-        --jobs 4
+        --jobs 4 \
+        --prescan-cache-dir data/prescan_cache
 """
 
 import argparse
@@ -73,14 +78,61 @@ def count_c_files(path: Path) -> int:
     return sum(1 for _ in path.rglob("*.c"))
 
 
-def generate_prescan_cache(sqc_bin: str, manifest: str,
-                           context_dirs: list[str],
-                           cache_path: str) -> bool:
-    """Run sqc --save-prescan to generate a prescan cache file.
+def resolve_prescan_cache(sqc_bin: str, manifest: str,
+                          context_dirs: list[str],
+                          cache_dir: str | None,
+                          codebase_name: str,
+                          rebuild: bool) -> str | None:
+    """Resolve prescan cache: reuse existing or generate new.
 
-    Uses the first .c file found in any context dir as a minimal scan target.
-    Returns True on success.
+    Returns path to a valid cache file, or None if caching failed.
     """
+    if cache_dir:
+        os.makedirs(cache_dir, exist_ok=True)
+        cache_path = os.path.join(cache_dir, f"{codebase_name}.cache")
+
+        # Reuse existing cache if available and not forced to rebuild
+        if os.path.exists(cache_path) and not rebuild:
+            size_kb = os.path.getsize(cache_path) / 1024
+            mtime = time.strftime("%Y-%m-%d %H:%M",
+                                  time.localtime(os.path.getmtime(cache_path)))
+            print(f"[parallel] Reusing prescan cache: {cache_path} "
+                  f"({size_kb:.0f} KB, generated {mtime})",
+                  file=sys.stderr, flush=True)
+            return cache_path
+    else:
+        # No persistent dir — use temp file (will be cleaned up)
+        cache_path = None
+
+    # Generate new cache
+    if cache_path is None:
+        import tempfile as tf
+        fd, cache_path = tf.mkstemp(suffix=".cache", prefix="prescan_")
+        os.close(fd)
+
+    print(f"[parallel] Generating prescan cache...",
+          file=sys.stderr, flush=True)
+    cache_start = time.monotonic()
+    ok = _generate_prescan_cache(sqc_bin, manifest, context_dirs, cache_path)
+    cache_elapsed = time.monotonic() - cache_start
+
+    if ok:
+        size_kb = os.path.getsize(cache_path) / 1024
+        print(f"[parallel] Prescan cache ready: {size_kb:.0f} KB "
+              f"in {cache_elapsed:.1f}s → {cache_path}",
+              file=sys.stderr, flush=True)
+        return cache_path
+    else:
+        print(f"[parallel] Prescan cache generation failed "
+              f"({cache_elapsed:.1f}s), falling back to -d per worker",
+              file=sys.stderr, flush=True)
+        return None
+
+
+def _generate_prescan_cache(sqc_bin: str, manifest: str,
+                            context_dirs: list[str],
+                            cache_path: str) -> bool:
+    """Run sqc --save-prescan to generate a prescan cache file."""
     # Find one .c file to use as a minimal scan target
     scan_target = None
     for d in context_dirs:
@@ -192,6 +244,12 @@ def main():
                         help="Parallel workers (0=auto, max 8)")
     parser.add_argument("--min-files", type=int, default=50,
                         help="Min C files to trigger parallel mode (default 50)")
+    parser.add_argument("--prescan-cache-dir",
+                        help="Directory for persistent prescan cache files. "
+                             "If set, caches are reused across runs.")
+    parser.add_argument("--rebuild-prescan", action="store_true",
+                        help="Force prescan cache regeneration (use after "
+                             "changing prescan logic in sqc)")
     args = parser.parse_args()
 
     scan_path = Path(args.scan_path).resolve()
@@ -221,28 +279,18 @@ def main():
         rel = u.relative_to(scan_path)
         print(f"[parallel]   {rel}/: {n} files", file=sys.stderr, flush=True)
 
+    # Resolve prescan cache (reuse or generate)
+    codebase_name = scan_path.name
+    cache_path = resolve_prescan_cache(
+        args.sqc, args.manifest, context_dirs,
+        args.prescan_cache_dir, codebase_name,
+        args.rebuild_prescan,
+    )
+
     all_violations = []
     completed = 0
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        # Generate prescan cache once for all workers
-        cache_path = os.path.join(tmpdir, "prescan.cache")
-        print(f"[parallel] Generating prescan cache...",
-              file=sys.stderr, flush=True)
-        cache_start = time.monotonic()
-        use_cache = generate_prescan_cache(
-            args.sqc, args.manifest, context_dirs, cache_path)
-        cache_elapsed = time.monotonic() - cache_start
-
-        if use_cache:
-            cache_size = os.path.getsize(cache_path)
-            print(f"[parallel] Prescan cache ready: {cache_size / 1024:.0f} KB "
-                  f"in {cache_elapsed:.1f}s",
-                  file=sys.stderr, flush=True)
-        else:
-            print(f"[parallel] Prescan cache failed, falling back to -d per worker",
-                  file=sys.stderr, flush=True)
-
         with ProcessPoolExecutor(max_workers=jobs) as executor:
             futures = {}
             for i, unit in enumerate(units):
@@ -250,7 +298,7 @@ def main():
                 safe_name = rel.replace("/", "_").replace("\\", "_")
                 output = os.path.join(tmpdir, f"{safe_name}.json")
 
-                if use_cache:
+                if cache_path:
                     future = executor.submit(
                         scan_one, args.sqc, unit, args.manifest,
                         cache_path, output, label=rel,
