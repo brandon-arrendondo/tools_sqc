@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-20 (v0.3.26 Juliet + realworld complete)
+**Last Updated**: 2026-03-21 (v0.3.27 benchmark noise reduction + parallel scanner)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -18,42 +18,29 @@ Top remaining FP sources from v0.3.26 per-rule SQLite data (all 5 codebases):
 |------|------:|-------|----------|
 | ~~EXP19-C~~ | ~~42,140~~ | ~~Braceless control flow~~ | ~~Disabled in benchmarks — style rule, all TPs but pure noise~~ |
 | EXP34-C | 26,457 | Null deref (post param-fix) | Remaining: struct field chains, cross-function patterns |
-| POS49-C | 15,693 | Shared field without lock | Suppress unless in known critical section pattern |
-| DCL08-C | 14,354 | Constant variable | Review if over-flagging const candidates |
+| ~~POS49-C~~ | ~~15,693~~ → 107 | ~~Shared field without lock~~ | ~~Restricted to bit-field writes only (commit 8a1778a1). 99.3% reduction.~~ |
+| ~~DCL08-C~~ | ~~14,354~~ | ~~Constant variable~~ | ~~Disabled in benchmarks — recommendation rule, zero Juliet impact~~ |
 | INT32-C | 12,077 | Signed overflow | Stable after VRA — gap is coverage not precision |
 | DCL07-C | 11,237 | Implicit int declaration | Cross-file prescan limitation |
 | DCL31-C | 10,620 | Undeclared function | Cross-file prescan limitation |
 | API00-C | 10,072 | Missing size parameter | Post caller-aware suppression |
-| EXP14-C | 8,028 | Cast loses qualifiers | Review scope |
+| ~~EXP14-C~~ | ~~8,028~~ | ~~Cast loses qualifiers~~ | ~~Disabled in benchmarks — recommendation rule, zero Juliet impact~~ |
 | INT30-C | 8,508 | Unsigned overflow | Stable after VRA |
 
 **Quick wins:**
-- POS49-C: suppress unless field is accessed within a known critical section pattern (~15K reduction)
-- ~~EXP19-C: disabled in rules-benchmark.toml — style-only rule, 42K TPs but pure noise on real codebases~~
+- ~~POS49-C: bit-field-only restriction reduced 15,693 → 107 violations (99.3%)~~
+- ~~EXP19-C: disabled in rules-benchmark.toml — style-only rule, 42K TPs but pure noise~~
+- ~~Benchmark noise audit: 12 recommendation rules disabled in rules-benchmark.toml (~72K violations removed)~~
 
-**Benchmark noise audit — style/recommendation rules with zero Juliet CWE contribution:**
-Candidates to disable in `rules-benchmark.toml` (all are type=recommendation, zero Juliet violations):
-
-| Rule | Realworld Count | Description |
-|------|----------------:|-------------|
-| DCL08-C | 14,354 | Constant variable suggestions |
-| DCL06-C | 9,027 | Meaningful symbolic constants |
-| EXP02-C | 8,644 | Short-circuit behavior awareness |
-| EXP14-C | 8,028 | Integer promotion in bitwise ops |
-| EXP12-C | 5,950 | Ignored return values |
-| EXP10-C | 5,758 | Subexpression evaluation order |
-| DCL04-C | 5,610 | Multiple variables per declaration |
-| INT02-C | 4,031 | Integer conversion rules |
-| INT01-C | 3,230 | Use size_t for object sizes |
-| INT17-C | 2,454 | Implementation-independent int constants |
-| INT16-C | 2,407 | Signed integer representation |
-| PRE31-C | 2,381 | Macro argument side effects |
-
-Total: ~71,874 additional violations that could be suppressed for benchmark clarity.
+**Completed — Benchmark noise audit (v0.3.27):**
+13 style/recommendation rules now disabled in `rules-benchmark.toml` (zero Juliet CWE contribution, ~114K realworld violations of pure noise removed): EXP19-C, DCL08-C, DCL06-C, EXP02-C, EXP14-C, EXP12-C, EXP10-C, DCL04-C, INT02-C, INT01-C, INT17-C, INT16-C, PRE31-C.
 
 ### Benchmark Infrastructure: Remaining
 
 - ~~Phase 3: Real-world SQLite integration~~ ✅ Done in v0.3.26 — `realworld_violations` table, auto-ingest in MCP, `compare_realworld_runs()`, v0.3.5/v0.3.25/v0.3.26 ingested
+- ~~Phase 5: Parallel realworld scanner~~ ✅ Done in v0.3.27 — `scripts/sqc_parallel_scan.py` splits codebases by subdirectory, runs via ProcessPoolExecutor. MCP server uses it for all sqc scans.
+- ~~Phase 6: Benchmark noise reduction~~ ✅ Done in v0.3.27 — `rules-benchmark.toml` with 13 noisy rules disabled (~114K violations removed)
+- Phase 7: **Prescan cache** (`--save-prescan` / `--load-prescan`) — serialize `ProjectContext` to file so parallel workers skip repeated prescan. Currently each worker re-prescans the full codebase (~10-20s × N workers). See Architecture Evolution below.
 - Phase 2: `get_performance_trend()`, `get_realworld_rule_trend()` query tools
 - Phase 4: Remove legacy shell scripts after full migration validation
 
@@ -92,7 +79,7 @@ v0.3.25 realworld results (curl + mosquitto + libcrc, 83K violations). Overall �
 
 | Rule | Count | Issue | Fix Approach |
 |------|------:|-------|--------------|
-| POS49-C | 15,693 | Every shared field flagged without lock analysis | Suppress unless in known critical section. Promoted to immediate. |
+| ~~POS49-C~~ | ~~15,693~~ → 107 | ~~Every shared field flagged~~ | ~~Restricted to bit-field writes only (v0.3.27). 99.3% reduction.~~ |
 | MEM30-C | 3,452 | Use-after-free FPs from sequential struct/member frees | Needs field-level free tracking. Cross-function free propagation. |
 | MEM31-C | 3,354 | Leak FPs from cross-function ownership | Needs ownership model (strdup→field→custom_Delete). |
 | DCL13-C | 2,373 | Const correctness — pointer params through struct fields | Known alias tracking limitation (ringbuffer.c pattern). |
@@ -134,7 +121,9 @@ Current test infrastructure auto-generates integration tests from `.c` files in 
 
 ### Architecture Evolution
 
-- [ ] **Internal parallelization** — rayon for file-level parallelism
+- [ ] **Prescan cache** (Priority 1) — `sqc prescan /path -o prescan.db` + `sqc /path --load-prescan prescan.db`. Serialize `ProjectContext` (known_functions, function_summaries, call_graph, macro_constants, macro_aliases, struct_field_types) to a binary file. Eliminates repeated prescan in parallel scanning (28 workers × ~15s prescan = ~7 min wasted CPU on hostap). All fields are `HashMap`/`HashSet` of `String`/`i64`/enums — straightforward serde. Could use bincode or MessagePack for speed. The parallel scanner would generate cache once, then each worker loads it instead of `-d`. Also useful for CI incremental: prescan once, analyze changed files only.
+- [ ] **Internal parallelization** — rayon for file-level parallelism within a single sqc invocation
+- [x] **External parallelization** — `scripts/sqc_parallel_scan.py` splits by subdirectory, runs N sqc processes (v0.3.27)
 - [ ] **Incremental parsing** — only re-parse changed files
 - [ ] **Baseline-aware suppression** — "only new violations" mode
 - [ ] **Docker image** — containerized CI/CD distribution
