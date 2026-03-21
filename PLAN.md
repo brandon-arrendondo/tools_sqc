@@ -28,7 +28,19 @@ See [CHANGELOG.md](CHANGELOG.md) for completed items (v0.3.27: POS49-C bit-field
 ### Benchmark Infrastructure: Remaining
 
 - `get_performance_trend()`, `get_realworld_rule_trend()` query tools
+- Store per-rule violation counts in realworld benchmark DB (currently only stores aggregate `violation_count` per project — need per-rule breakdown for tracking FP reduction across versions)
 - Remove legacy shell scripts after full migration validation
+
+### Prescan Quality Audit (Priority 2)
+
+Investigate which rules beyond EXP34-C are affected by prescan data quality issues (Unknown/missing callsite states causing false positives or missed detections). Rules that consume `ProjectContext` or `callsite_param_null_states`:
+- EXP34-C (null deref — confirmed affected, fix in progress)
+- API00-C (caller-aware suppression via `callsite_param_null_states`)
+- MEM10-C (positive null guard suppression)
+- DCL31-C / DCL07-C (cross-file function detection)
+- Any rule using `set_project_context()` or `set_function_cfgs()`
+
+Goal: ensure prescan data improves (not worsens) analysis for all consuming rules.
 
 ---
 
