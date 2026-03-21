@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-21 (v0.3.27 benchmark noise reduction + parallel scanner)
+**Last Updated**: 2026-03-21 (v0.3.28 prescan cache + parallel scanner + benchmark noise reduction)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -12,7 +12,7 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ### Real-World FP Reduction — Next Targets (Priority 1)
 
-Top remaining FP sources from v0.3.26 per-rule SQLite data (all 5 codebases):
+Top remaining FP sources from v0.3.28 per-rule data (all 5 codebases, rules-benchmark.toml):
 
 | Rule | Count | Issue | Approach |
 |------|------:|-------|----------|
@@ -35,12 +35,16 @@ Top remaining FP sources from v0.3.26 per-rule SQLite data (all 5 codebases):
 **Completed — Benchmark noise audit (v0.3.27):**
 13 style/recommendation rules now disabled in `rules-benchmark.toml` (zero Juliet CWE contribution, ~114K realworld violations of pure noise removed): EXP19-C, DCL08-C, DCL06-C, EXP02-C, EXP14-C, EXP12-C, EXP10-C, DCL04-C, INT02-C, INT01-C, INT17-C, INT16-C, PRE31-C.
 
+**v0.3.28 Benchmark Results:**
+- Juliet: TP 8,390 / FP 9,252 / **TP rate 47.6%** (up from 44.9% — noise rules no longer contribute FPs)
+- Realworld (vs v0.3.27): curl -37%, hostap -45%, libcrc -41%, mosquitto -26% (all from disabled noise rules, zero regressions on active rules)
+
 ### Benchmark Infrastructure: Remaining
 
 - ~~Phase 3: Real-world SQLite integration~~ ✅ Done in v0.3.26 — `realworld_violations` table, auto-ingest in MCP, `compare_realworld_runs()`, v0.3.5/v0.3.25/v0.3.26 ingested
 - ~~Phase 5: Parallel realworld scanner~~ ✅ Done in v0.3.27 — `scripts/sqc_parallel_scan.py` splits codebases by subdirectory, runs via ProcessPoolExecutor. MCP server uses it for all sqc scans.
 - ~~Phase 6: Benchmark noise reduction~~ ✅ Done in v0.3.27 — `rules-benchmark.toml` with 13 noisy rules disabled (~114K violations removed)
-- Phase 7: **Prescan cache** (`--save-prescan` / `--load-prescan`) — serialize `ProjectContext` to file so parallel workers skip repeated prescan. Currently each worker re-prescans the full codebase (~10-20s × N workers). See Architecture Evolution below.
+- ~~Phase 7: Prescan cache~~ ✅ Done in v0.3.28 — `--save-prescan`/`--load-prescan` CLI flags, persistent cache in `data/prescan_cache/`, `--rebuild-prescan` flag for stale cache. sqlite prescan: ~866s → 0s (reuse), hostap: ~11s → 0s.
 - Phase 2: `get_performance_trend()`, `get_realworld_rule_trend()` query tools
 - Phase 4: Remove legacy shell scripts after full migration validation
 
@@ -50,18 +54,18 @@ Top remaining FP sources from v0.3.26 per-rule SQLite data (all 5 codebases):
 
 ### CWE-457: Uninitialized Variable — Remaining Gaps (Priority 1)
 
-616 files, 28.7% per-file, 31.8% TP rate (v0.3.25 benchmark). v0.3.26 addresses the +109 FP regression via early-return branch detection. Remaining gaps:
+616 files, 28.7% per-file, 31.8% TP rate (v0.3.28 benchmark). v0.3.26 addresses the +109 FP regression via early-return branch detection. Remaining gaps:
 - Cross-function variants 63/64 (~70 files): pointer passed between source files, needs inter-procedural analysis
 - Array partial_init through alloca/malloc (~66 files): partial subscript init upgrades to MallocInitialized, losing content-level tracking
 - struct variant 12: struct field access pattern edge case
 
 ### CWE-190/191: Integer Overflow/Underflow (Priority 3)
 
-8,904 files, 13.0%/14.5% per-file, 45.3%/43.8% TP rate (v0.3.25). INT30-C/INT32-C matched. Stable after VRA integration — gap is detection coverage, not precision.
+8,904 files, 13.0%/14.5% per-file, 45.3%/43.8% TP rate (v0.3.28). INT30-C/INT32-C matched. Stable after VRA integration — gap is detection coverage, not precision.
 
 ### CWE-690: Null Deref from Return (Priority 4)
 
-1,120 files, 25.2% per-file, 82.0% TP rate (v0.3.25). Best-performing high-volume CWE. Getting to 50%+ per-file would make this a showcase. 74% undetected are likely cross-function patterns.
+1,120 files, 25.2% per-file, 82.0% TP rate (v0.3.28). Best-performing high-volume CWE. Getting to 50%+ per-file would make this a showcase. 74% undetected are likely cross-function patterns.
 
 ### EXP34-C Phase 4 — Remaining Edge Cases
 
@@ -73,7 +77,7 @@ Top remaining FP sources from v0.3.26 per-rule SQLite data (all 5 codebases):
 
 ### Real-World FP Reduction — v0.3.25 Findings (Priority 2)
 
-v0.3.25 realworld results (curl + mosquitto + libcrc, 83K violations). Overall −11% vs v0.3.5.
+v0.3.28 realworld results (5 codebases, rules-benchmark.toml): curl 31.7K, hostap 78.5K, mosquitto 19.2K, libcrc 419, sqlite pending. Total ~130K (down from ~322K in v0.3.27 with noise rules).
 
 **High-impact FP targets (per-rule across 3 codebases):**
 
@@ -121,7 +125,7 @@ Current test infrastructure auto-generates integration tests from `.c` files in 
 
 ### Architecture Evolution
 
-- [ ] **Prescan cache** (Priority 1) — `sqc prescan /path -o prescan.db` + `sqc /path --load-prescan prescan.db`. Serialize `ProjectContext` (known_functions, function_summaries, call_graph, macro_constants, macro_aliases, struct_field_types) to a binary file. Eliminates repeated prescan in parallel scanning (28 workers × ~15s prescan = ~7 min wasted CPU on hostap). All fields are `HashMap`/`HashSet` of `String`/`i64`/enums — straightforward serde. Could use bincode or MessagePack for speed. The parallel scanner would generate cache once, then each worker loads it instead of `-d`. Also useful for CI incremental: prescan once, analyze changed files only.
+- [x] **Prescan cache** (v0.3.28) — `--save-prescan FILE` / `--load-prescan FILE` on sqc CLI. Serializes `ProjectContext` via bincode (~3.6 MB for hostap, ~2.4 MB for sqlite). Persistent cache in `data/prescan_cache/{codebase}.cache`, reused across runs. `--rebuild-prescan` flag when prescan logic changes. Eliminates prescan overhead: sqlite 866s → 0s, hostap 11s → 0s per worker.
 - [ ] **Internal parallelization** — rayon for file-level parallelism within a single sqc invocation
 - [x] **External parallelization** — `scripts/sqc_parallel_scan.py` splits by subdirectory, runs N sqc processes (v0.3.27). Uses prescan cache to avoid repeated prescan per worker (v0.3.28).
 - [ ] **File-size-aware batching** — current subdir splitting can leave one large unit dominating wall time (e.g., wpa_supplicant/ 69 files = 1061s). Batch by file size rather than directory to balance work across workers.
