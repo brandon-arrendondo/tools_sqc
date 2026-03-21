@@ -102,8 +102,11 @@ def generate_prescan_cache(sqc_bin: str, manifest: str,
     for d in context_dirs:
         cmd.extend(["-d", d])
 
-    proc = subprocess.run(cmd, capture_output=True, timeout=600)
-    return proc.returncode == 0 and os.path.exists(cache_path)
+    try:
+        proc = subprocess.run(cmd, capture_output=True, timeout=1800)
+        return proc.returncode == 0 and os.path.exists(cache_path)
+    except subprocess.TimeoutExpired:
+        return False
 
 
 def scan_one(sqc_bin: str, scan_dir: Path, manifest: str,
