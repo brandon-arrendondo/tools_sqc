@@ -8,7 +8,7 @@ set -uo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 SQC="$PROJECT_DIR/target/release/sqc"
-MANIFEST="$PROJECT_DIR/rules_templates/rules-all.toml"
+MANIFEST="$PROJECT_DIR/rules_templates/rules-benchmark.toml"
 JULIET_BASE="${HOME}/data/benchmarks/juliet-test-suite-c/testcases"
 ANALYZE="$SCRIPT_DIR/analyze_juliet_results.py"
 RESULTS_DIR="/tmp/juliet_results"
