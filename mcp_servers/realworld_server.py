@@ -40,7 +40,7 @@ _HERE = Path(__file__).parent
 PROJECT_DIR = _HERE.parent
 RESULTS_BASE = Path("/tmp/realworld_results")
 STATE_FILE = Path("/tmp/realworld_bench.json")
-MANIFEST = PROJECT_DIR / "rules_templates" / "rules-all.toml"
+MANIFEST = PROJECT_DIR / "rules_templates" / "rules-benchmark.toml"
 SQC_BIN = PROJECT_DIR / "target" / "release" / "sqc"
 
 VALID_TOOLS = {"sqc", "cppcheck", "clang-tidy"}
@@ -471,17 +471,38 @@ def _fetch_remote_results(host: str, version_dir: Path, run_id: str) -> dict:
     return {"fetched": fetched, "failed": failed}
 
 
+PARALLEL_SCRIPT = PROJECT_DIR / "scripts" / "sqc_parallel_scan.py"
+
+
 def _build_sqc_cmd(codebase: str, cfg: dict, results_dir: Path, run_id: str) -> list[str]:
     path = str(cfg["path"])
     scan_path = cfg["sqc"].get("scan_path") or path
     output_file = results_dir / f"{run_id}.json"
+    extra = _expand(cfg["sqc"].get("extra_args", []), path)
+
+    # Use parallel wrapper — it auto-detects whether parallelism is beneficial
+    # (falls back to single process for small codebases)
+    if PARALLEL_SCRIPT.exists():
+        cmd = [
+            "python3", str(PARALLEL_SCRIPT), scan_path,
+            "--sqc", str(SQC_BIN),
+            "-m", str(MANIFEST),
+            "-e", str(output_file),
+            "-d", path,
+            "--jobs", str(min(os.cpu_count() or 4, 8)),
+        ]
+        # Add extra -d dirs from codebase config
+        for i, arg in enumerate(extra):
+            if arg == "-d" and i + 1 < len(extra):
+                cmd.extend(["-d", extra[i + 1]])
+        return cmd
+
+    # Fallback: direct sqc invocation
     cmd = [
         str(SQC_BIN), scan_path,
         "--manifest", str(MANIFEST),
         "--export", str(output_file),
     ]
-    extra = _expand(cfg["sqc"].get("extra_args", []), path)
-    # If extra_args already contain -d flags, use those; otherwise add default -d {path}
     if "-d" not in extra:
         cmd.extend(["-d", path])
     cmd.extend(extra)
@@ -621,7 +642,7 @@ def _parse_result_file(run_id: str, filepath: Path) -> dict:
 
 
 def _parse_sqc_log_progress(version_dir: Path, run_id: str) -> dict | None:
-    """Parse tail of sqc log for file progress (Scanning: [file N/M])."""
+    """Parse tail of sqc log for progress (parallel unit or single-file mode)."""
     log_file = version_dir / f"{run_id}.log"
     if not log_file.exists():
         return None
@@ -631,10 +652,20 @@ def _parse_sqc_log_progress(version_dir: Path, run_id: str) -> dict | None:
             # Read last 4KB to find the most recent progress line
             f.seek(max(0, size - 4096))
             tail = f.read().decode("utf-8", errors="replace")
+
+        # Parallel mode: [parallel] Completed N/M: ...
+        par_matches = re.findall(r"\[parallel\] Completed (\d+)/(\d+)", tail)
+        if par_matches:
+            current, total = par_matches[-1]
+            return {"current_unit": int(current), "total_units": int(total),
+                    "mode": "parallel"}
+
+        # Single-process mode: Scanning: [file N/M]
         matches = re.findall(r"Scanning: \[file (\d+)/(\d+)\]", tail)
         if matches:
             current, total = matches[-1]
-            return {"current_file": int(current), "total_files": int(total)}
+            return {"current_file": int(current), "total_files": int(total),
+                    "mode": "single"}
     except Exception:
         pass
     return None
@@ -1493,7 +1524,7 @@ def deploy_sqc(host: str | None = None) -> str:
     Args:
         host: Remote host IP or nickname. If omitted, deploys to ALL remote hosts.
 
-    Copies target/release/sqc and rules_templates/rules-all.toml, then verifies
+    Copies target/release/sqc and rules_templates/rules-benchmark.toml, then verifies
     by running sqc --version on the remote.
     """
     if not SQC_BIN.exists():
