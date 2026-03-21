@@ -16,7 +16,7 @@ Top remaining FP sources from v0.3.26 per-rule SQLite data (all 5 codebases):
 
 | Rule | Count | Issue | Approach |
 |------|------:|-------|----------|
-| EXP19-C | 42,140 | Comma operator warnings | Review if rule is too noisy for real-world code |
+| ~~EXP19-C~~ | ~~42,140~~ | ~~Braceless control flow~~ | ~~Disabled in benchmarks — style rule, all TPs but pure noise~~ |
 | EXP34-C | 26,457 | Null deref (post param-fix) | Remaining: struct field chains, cross-function patterns |
 | POS49-C | 15,693 | Shared field without lock | Suppress unless in known critical section pattern |
 | DCL08-C | 14,354 | Constant variable | Review if over-flagging const candidates |
@@ -29,7 +29,27 @@ Top remaining FP sources from v0.3.26 per-rule SQLite data (all 5 codebases):
 
 **Quick wins:**
 - POS49-C: suppress unless field is accessed within a known critical section pattern (~15K reduction)
-- EXP19-C: evaluate if rule adds value or is pure noise on real codebases
+- ~~EXP19-C: disabled in rules-benchmark.toml — style-only rule, 42K TPs but pure noise on real codebases~~
+
+**Benchmark noise audit — style/recommendation rules with zero Juliet CWE contribution:**
+Candidates to disable in `rules-benchmark.toml` (all are type=recommendation, zero Juliet violations):
+
+| Rule | Realworld Count | Description |
+|------|----------------:|-------------|
+| DCL08-C | 14,354 | Constant variable suggestions |
+| DCL06-C | 9,027 | Meaningful symbolic constants |
+| EXP02-C | 8,644 | Short-circuit behavior awareness |
+| EXP14-C | 8,028 | Integer promotion in bitwise ops |
+| EXP12-C | 5,950 | Ignored return values |
+| EXP10-C | 5,758 | Subexpression evaluation order |
+| DCL04-C | 5,610 | Multiple variables per declaration |
+| INT02-C | 4,031 | Integer conversion rules |
+| INT01-C | 3,230 | Use size_t for object sizes |
+| INT17-C | 2,454 | Implementation-independent int constants |
+| INT16-C | 2,407 | Signed integer representation |
+| PRE31-C | 2,381 | Macro argument side effects |
+
+Total: ~71,874 additional violations that could be suppressed for benchmark clarity.
 
 ### Benchmark Infrastructure: Remaining
 
