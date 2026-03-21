@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-20 (v0.3.25 Juliet + realworld benchmarks)
+**Last Updated**: 2026-03-21 (v0.3.28 prescan cache + parallel scanner + benchmark noise reduction)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -10,69 +10,37 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ## Immediate Next Steps
 
-### EXP33-C: Conditional Init Early-Return Path (Priority 1)
+### Real-World FP Reduction — Next Targets (Priority 1)
 
-`arraylist.c:132` / `intset.c:124` pattern: if/else-if/else chain where the else-if has `return false`. Variable `new_capacity` is always initialized when the use point is reached, but v0.3.25's broadened `check_conditional_init_pattern` doesn't account for early-return branches eliminating un-initialized paths. Same root cause as Juliet CWE-457 FP regression (+109 FP).
+Top remaining FP sources from v0.3.28 per-rule data (all 5 codebases, rules-benchmark.toml):
 
-Fix: in `check_conditional_init_pattern`, detect when a branch contains an unconditional return/break/continue — that branch can't reach the use point, so the variable is effectively initialized on all reachable paths.
+| Rule | Count | Issue | Approach |
+|------|------:|-------|----------|
+| EXP34-C | 26,457 | Null deref (post param-fix) | Remaining: struct field chains, cross-function patterns |
+| INT32-C | 12,077 | Signed overflow | Stable after VRA — gap is coverage not precision |
+| DCL07-C | 11,237 | Implicit int declaration | Cross-file prescan limitation |
+| DCL31-C | 10,620 | Undeclared function | Cross-file prescan limitation |
+| API00-C | 10,072 | Missing size parameter | Post caller-aware suppression |
+| INT30-C | 8,508 | Unsigned overflow | Stable after VRA |
 
-### ERR33-C: fseek Success-Check Misclassification (Priority 1)
+See [CHANGELOG.md](CHANGELOG.md) for completed items (v0.3.27: POS49-C bit-field fix, 13 noise rules disabled; v0.3.28: prescan cache, parallel scanner).
 
-`file_util.c:37`: `if (fseek(fp, 0L, SEEK_END) == 0)` is a success-path check (proceed only on success), but ERR33-C flags it as "incorrect check of return value: `== 0` does not properly detect the error condition". The rule conflates success-branching with error-handling.
+### Benchmark Infrastructure: Remaining
 
-Fix: when the check is `== 0` and the guarded block is the success path (contains the normal logic, not error handling), don't flag. Alternatively, only flag `== 0` when there's no corresponding else/error branch.
+- `get_performance_trend()`, `get_realworld_rule_trend()` query tools
+- Store per-rule violation counts in realworld benchmark DB (currently only stores aggregate `violation_count` per project — need per-rule breakdown for tracking FP reduction across versions)
+- Remove legacy shell scripts after full migration validation
 
-### CWE-121/122 Remaining FP Reduction
+### Prescan Quality Audit (Priority 2)
 
-- ARR30-C CWE135 (29 FPs): ALLOCA tracking enables `strcpy` flagging on correctly-sized buffers. Lower priority.
+Investigate which rules beyond EXP34-C are affected by prescan data quality issues (Unknown/missing callsite states causing false positives or missed detections). Rules that consume `ProjectContext` or `callsite_param_null_states`:
+- EXP34-C (null deref — confirmed affected, fix in progress)
+- API00-C (caller-aware suppression via `callsite_param_null_states`)
+- MEM10-C (positive null guard suppression)
+- DCL31-C / DCL07-C (cross-file function detection)
+- Any rule using `set_project_context()` or `set_function_cfgs()`
 
-### Benchmark Infrastructure: Remaining Phases
-
-- Phase 2: `query_violations()` flexible drill-down, `get_performance_trend()`, `estimate_eta()`
-- Phase 3: Real-world SQLite integration (see details below)
-- Phase 4: Remove legacy shell scripts after full migration validation
-
-### Real-World Benchmark → SQLite Migration
-
-Currently realworld results live only as JSON files in `/tmp/realworld_results/` and historical summary counts in `REALWORLD_RESULTS.md`. The `realworld_runs` and `realworld_results` tables in `data/benchmarks.db` were backfilled from markdown but have no auto-ingestion. Plan:
-
-**Step 1: Ingest v0.3.25 results** (immediate)
-- Script to parse completed JSON files from `.63:/tmp/realworld_results/sqc-0.3.25-85555478/`
-- Insert into `realworld_runs` (version, commit, hostname, cpu) + `realworld_results` (project, tool, violation_count)
-- Add new `realworld_violations` table for per-violation detail (rule_id, file, line, message, severity) — enables per-rule trending
-
-**Step 2: Auto-ingestion in MCP server** (next)
-- `realworld_server.py` writes to SQLite on run completion (when `.done` file appears)
-- Parse JSON result file → insert run + results + violations into DB
-- Remote runs: fetch JSON via SCP on completion, then ingest locally
-
-**Step 3: Query tools**
-- `compare_realworld_runs(base, target)` — per-rule delta across codebases
-- `get_realworld_rule_trend(rule_id)` — violation count over versions
-- Deprecate REALWORLD_RESULTS.md as source of truth (generate from DB if needed)
-
-### Real-World Validation
-
-v0.3.25 results (all 5 codebases complete, run on brandon-ThinkCentre-M715q 8-core Ryzen):
-
-| Project | v0.3.5 | v0.3.25 | Delta | Top Reducers |
-|---------|-------:|--------:|------:|--------------|
-| hostap | 179,833 | 160,121 | −19,712 (−11.0%) | DCL08-C −11,718, DCL31/07-C −3,586, EXP33-C −2,643 |
-| sqlite | 129,035 | 116,642 | −12,393 (−9.6%) | DCL31/07-C −9,260, EXP33-C −2,376, INT36-C −733 |
-| curl | 63,207 | 55,975 | −7,232 (−11.4%) | DCL31/07-C −5,640, EXP33-C −940 |
-| mosquitto | 29,824 | 26,470 | −3,354 (−11.2%) | DCL08-C −1,647, DCL31/07-C −926, EXP33-C −291 |
-| libcrc | 734 | 705 | −29 (−3.9%) | |
-| **Total** | **402,633** | **359,913** | **−42,720 (−10.6%)** | |
-
-Regressions to investigate:
-- INT31-C +501 on sqlite (VRA Phase 6 broadened detection — likely new TPs but verify)
-- ERR33-C +149/+234 on hostap/sqlite (slightly more aggressive unchecked return detection)
-
-Next:
-- [ ] Ingest all 5 results into SQLite (see migration plan above)
-- [ ] Run sqc on d_lib_wifi, d_lib_ble
-- [ ] Review remaining high-severity findings on d_lib_common
-- [ ] Generate per-module BRULE coverage cards
+Goal: ensure prescan data improves (not worsens) analysis for all consuming rules.
 
 ---
 
@@ -80,18 +48,18 @@ Next:
 
 ### CWE-457: Uninitialized Variable — Remaining Gaps (Priority 1)
 
-616 files, 28.7% per-file, 31.8% TP rate (v0.3.25 benchmark). +33 TP but +109 FP vs v0.3.24 — FP regression from alloca/conditional init broadening needs investigation. Remaining gaps:
+616 files, 28.7% per-file, 31.8% TP rate (v0.3.28 benchmark). v0.3.26 addresses the +109 FP regression via early-return branch detection. Remaining gaps:
 - Cross-function variants 63/64 (~70 files): pointer passed between source files, needs inter-procedural analysis
 - Array partial_init through alloca/malloc (~66 files): partial subscript init upgrades to MallocInitialized, losing content-level tracking
 - struct variant 12: struct field access pattern edge case
 
 ### CWE-190/191: Integer Overflow/Underflow (Priority 3)
 
-8,904 files, 13.0%/14.5% per-file, 45.3%/43.8% TP rate (v0.3.25). INT30-C/INT32-C matched. Stable after VRA integration — gap is detection coverage, not precision.
+8,904 files, 13.0%/14.5% per-file, 45.3%/43.8% TP rate (v0.3.28). INT30-C/INT32-C matched. Stable after VRA integration — gap is detection coverage, not precision.
 
 ### CWE-690: Null Deref from Return (Priority 4)
 
-1,120 files, 25.2% per-file, 82.0% TP rate (v0.3.25). Best-performing high-volume CWE. Getting to 50%+ per-file would make this a showcase. 74% undetected are likely cross-function patterns.
+1,120 files, 25.2% per-file, 82.0% TP rate (v0.3.28). Best-performing high-volume CWE. Getting to 50%+ per-file would make this a showcase. 74% undetected are likely cross-function patterns.
 
 ### EXP34-C Phase 4 — Remaining Edge Cases
 
@@ -101,26 +69,18 @@ Next:
 - EXP33-C CFG integration (needs full rewrite like EXP34-C)
 - EXP34-C/FIO06-C regression investigation from Phase 3
 
-### Real-World FP Reduction — v0.3.25 Findings (Priority 2)
+### Real-World FP Reduction — Remaining Targets (Priority 2)
 
-v0.3.25 realworld results (curl + mosquitto + libcrc, 83K violations). Overall −11% vs v0.3.5.
+v0.3.28 realworld results (5 codebases, rules-benchmark.toml): curl 31.7K, hostap 78.5K, mosquitto 19.2K, libcrc 419, sqlite pending. Total ~130K (down from ~322K in v0.3.27 with noise rules).
 
 **High-impact FP targets (per-rule across 3 codebases):**
 
 | Rule | Count | Issue | Fix Approach |
 |------|------:|-------|--------------|
-| EXP34-C | 6,679 | Struct pointer params (`data->state`) flagged as null deref | Assume function params non-null unless from nullable source. Biggest single real-world win. |
-| POS49-C | 4,644 | Every shared field flagged without lock analysis | Without ownership model, too noisy on threaded code. Consider restricting to known-unsafe patterns only. |
 | MEM30-C | 3,452 | Use-after-free FPs from sequential struct/member frees | Needs field-level free tracking. Cross-function free propagation. |
 | MEM31-C | 3,354 | Leak FPs from cross-function ownership | Needs ownership model (strdup→field→custom_Delete). |
 | DCL13-C | 2,373 | Const correctness — pointer params through struct fields | Known alias tracking limitation (ringbuffer.c pattern). |
-| PRE00-C | 1,709 | Every function-like macro flagged | Too aggressive — restrict to unsafe macro patterns (side effects, multiple evaluation). |
-| EXP33-C | 1,394 | Uninitialized variable FPs | CFG integration needed (same as Juliet EXP33-C rewrite). |
-
-**Quick wins (low effort, high impact):**
-- PRE00-C: restrict to macros with side effects or multiple-evaluation args (−1,709 violations)
-- EXP34-C param non-null: assume non-null for direct function params (−3,000+ estimated)
-- POS49-C: suppress unless field is accessed within a known critical section pattern
+| EXP33-C | 4,700 | Uninitialized variable FPs | CFG integration needed (same as Juliet EXP33-C rewrite). |
 
 ### Real-World FP — Deferred Hard Issues
 
@@ -147,9 +107,21 @@ Remaining from d_lib_common/d_hal_linux_random triage (require new analysis capa
 
 ## Long Term
 
+### Test Coverage (Priority 2)
+
+Current test infrastructure auto-generates integration tests from `.c` files in `tests/` directories. Coverage gaps:
+- Many rules have only wiki-sourced tests (1-3 cases) — need broader pattern coverage
+- No tests for inter-procedural analysis paths (prescan, call-site propagation, `-d` directories)
+- No regression tests for specific FP patterns fixed in each round (real-world patterns from arraylist.c, intset.c, file_util.c etc.)
+- EXP34-C param-null tests had to be restructured when default changed — need tests that exercise with/without project context
+- No negative tests for false-positive patterns (verify FP stays suppressed)
+
 ### Architecture Evolution
 
-- [ ] **Internal parallelization** — rayon for file-level parallelism
+- [x] **Prescan cache** (v0.3.28) — `--save-prescan`/`--load-prescan`, persistent in `data/prescan_cache/`, `--rebuild-prescan` for stale cache
+- [x] **External parallelization** (v0.3.27–v0.3.28) — `scripts/sqc_parallel_scan.py` with subdirectory splitting + prescan cache
+- [ ] **Internal parallelization** — rayon for file-level parallelism within a single sqc invocation
+- [ ] **File-size-aware batching** — current subdir splitting can leave one large unit dominating wall time (e.g., wpa_supplicant/ 69 files = 1061s). Batch by file size rather than directory to balance work across workers.
 - [ ] **Incremental parsing** — only re-parse changed files
 - [ ] **Baseline-aware suppression** — "only new violations" mode
 - [ ] **Docker image** — containerized CI/CD distribution

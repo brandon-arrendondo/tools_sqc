@@ -1,5 +1,83 @@
 # SqC — Changelog
 
+## v0.3.28 (2026-03-21)
+
+### Prescan Cache
+
+- **`--save-prescan FILE` / `--load-prescan FILE`**: New CLI flags to serialize/deserialize `ProjectContext` to a binary cache file (bincode format). Eliminates repeated prescan overhead in parallel scanning — each worker loads the cache instead of re-scanning the full codebase.
+- `ProjectContext`, `FunctionSummary`, `NullState`, `ValueRange` gain `Serialize`/`Deserialize` derives. Cache includes: known_functions, function_summaries, call_graph, macro_constants, macro_aliases, struct_field_types.
+- Cache sizes: ~3.6 MB for hostap (12K functions), ~2.4 MB for sqlite (312 files).
+- **Persistent cache**: `data/prescan_cache/{codebase}.cache` files reused across benchmark runs. `--rebuild-prescan` flag forces regeneration after prescan logic changes.
+- Per-worker speedup: hostap eap_example 11.2s → 0.8s (93% faster), sqlite prescan 866s → 0s (reuse).
+- New dependency: `bincode = "1.3"`.
+
+### Parallel Scanner Improvements
+
+- Balanced subdirectory splitting: recursive `find_scan_units()` splits large directories (e.g., hostap/src/ 361 files → 20 subdirs) while keeping directories with root-level .c files intact to avoid overlap.
+- Prescan cache integration: generates cache once, passes `--load-prescan` to each parallel worker.
+- Prescan timeout increased from 600s to 1800s (sqlite's 250K-line files need >10 min).
+- Graceful fallback: `TimeoutExpired` caught, falls back to per-worker `-d` mode.
+
+## v0.3.27 (2026-03-21)
+
+### Benchmark Infrastructure
+
+- **`rules-benchmark.toml`**: New benchmark-specific manifest with 13 style/recommendation rules disabled (zero Juliet CWE contribution, ~114K realworld violations of pure noise): EXP19-C, DCL08-C, DCL06-C, EXP02-C, EXP14-C, EXP12-C, EXP10-C, DCL04-C, INT02-C, INT01-C, INT17-C, INT16-C, PRE31-C. `rules-all.toml` unchanged for end users.
+- **Parallel sqc scanner** (`scripts/sqc_parallel_scan.py`): Splits codebases by subdirectory and runs multiple sqc processes via `ProcessPoolExecutor`. Auto-detects parallelism (falls back to single process for <50 files). Deduplicates merged JSON outputs.
+- All benchmark infrastructure (bench/config.py, MCP servers, shell scripts) updated to use `rules-benchmark.toml`.
+- MCP realworld server uses parallel scanner for all sqc scans, with `rebuild_prescan` parameter on `run_analysis()`/`run_all()`.
+
+### FP Reduction: POS49-C
+
+- **POS49-C**: Restricted from flagging all shared struct field writes to only actual bit-field writes. `collect_bitfield_names()` identifies fields declared with `bitfield_clause`, only flags `assignment_expression`/`update_expression` to known bit-fields. 15,693 → 107 violations (99.3% reduction).
+
+### Benchmark: Juliet v0.3.28
+
+- Overall: 8,390 TP / 9,252 FP, **47.6% TP rate** (+0.3pp vs v0.3.26), 14.0% per-file
+- TP rate improvement from disabled noise rules no longer contributing FPs to CWE-matched analysis
+
+### Real-World: −89,002 violations (−40.7%) across 4 codebases
+
+| Project | v0.3.27 | v0.3.28 | Delta |
+|---------|--------:|--------:|------:|
+| hostap | 141,810 | 78,470 | −63,340 (−44.7%) |
+| curl | 50,532 | 31,722 | −18,810 (−37.2%) |
+| mosquitto | 25,769 | 19,202 | −6,567 (−25.5%) |
+| libcrc | 704 | 419 | −285 (−40.5%) |
+
+All deltas from 13 disabled noise rules. Zero regressions on any active rule.
+
+## v0.3.26 (2026-03-20)
+
+### FP Reduction: 6 Rules
+
+- **EXP33-C**: Conditional init early-return detection — if/else-if/else chains where non-initializing branches have unconditional exits (return/break/continue/goto) no longer flag the variable as uninitialized. New `if_chain_covers_init_or_exit()` analysis integrated into `block_has_preceding_assignment()`. Targets real-world patterns (`arraylist.c:132`, `intset.c:124`).
+- **ERR33-C (CWE-253)**: `== 0` for NonZero functions (fseek, fclose, fflush, remove, rename, fsetpos, atexit, raise) no longer flagged as incorrect check. `== 0` is a valid success-path pattern. Also: `== 0` for Count functions (fread, fwrite) no longer flagged — only `< 0` on unsigned size_t is genuinely incorrect.
+- **FIO47-C**: Fixed 100% FP rate (0 TP, 119 FP → 0 FP). Root cause: `count_arguments()` miscounted non-data args for `sprintf`, `sscanf`, `dprintf` (skipped 1 instead of 2). Also relaxed overly strict format validation: `%lf` valid in C99+, removed `'` flag and `+/space` with `%o/%u/%x` checks.
+- **PRE00-C**: Restricted from flagging ALL function-like macros to only macros with multi-evaluation risk (parameter used >1 time in body) or side effects (++/-- in body). Estimated ~1,700 real-world FP reduction.
+- **EXP34-C**: Pointer function parameters default to NotNull when no inter-procedural call-site data exists (callers responsible for null checks). With prescan/`-d`, call-site states still override. Test cases restructured: 3 param-null tests moved to pass/, 2 wiki tests rewritten to use malloc.
+- **FIO47-C format validation**: `l` length modifier with float specifiers (`%lf`) now accepted (valid C99+). `'` grouping flag and `+/space` with unsigned specifiers no longer flagged.
+
+### Benchmark: Juliet v0.3.26
+
+- Overall: 8,390 TP / 9,252 FP, **47.6% TP rate** (+0.3pp vs v0.3.25), 14.0% per-file
+- FIO47-C: 119 FP → 0 FP (100% FP elimination). CWE-134 TP rate 33.4% → 47.9% (+14.5pp)
+- CWE-685: 0 TP / 6 FP → 3 TP / 0 FP (arg count fix revealed true positives)
+- CWE-253: −33 TP (ERR33-C `== 0` trade-off — Juliet treats success-path checks as incorrect)
+
+### Real-World: −5,366 violations (−1.5%)
+
+| Project | v0.3.25 | v0.3.26 | Delta |
+|---------|--------:|--------:|------:|
+| hostap | 160,121 | 157,403 | −2,718 (−1.7%) |
+| sqlite | 116,642 | 115,491 | −1,151 (−1.0%) |
+| curl | 55,975 | 54,767 | −1,208 (−2.2%) |
+| mosquitto | 26,470 | 26,182 | −288 (−1.1%) |
+| libcrc | 705 | 704 | −1 |
+
+Per-rule: PRE00-C −4,274, EXP34-C −1,758, EXP33-C −163, FIO47-C −149.
+Cumulative from v0.3.5: 402,633 → 354,547 (−48,086, −11.9%).
+
 ## v0.3.25 (2026-03-20)
 
 ### CWE-457: EXP33-C Detection Improvements

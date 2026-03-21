@@ -298,27 +298,7 @@ impl Fio47C {
         specifier: char,
         _length_modifier: &str,
     ) -> Option<String> {
-        // Check for invalid flag combinations
-
-        // ' (grouping) flag is invalid with %d
-        if flags.contains('\'') && specifier == 'd' {
-            return Some(format!(
-                "Invalid combination: ' (grouping) flag with %{} specifier",
-                specifier
-            ));
-        }
-
-        // + or space flags are invalid with %o, %u, %x, %X
-        if (flags.contains('+') || flags.contains(' '))
-            && matches!(specifier, 'o' | 'u' | 'x' | 'X')
-        {
-            return Some(format!(
-                "Invalid combination: +/space flag with %{} specifier",
-                specifier
-            ));
-        }
-
-        // # flag with %c, %s, %d, %i, %u is invalid
+        // # flag with %c, %s, %d, %i, %u is invalid per C standard
         if flags.contains('#') && matches!(specifier, 'c' | 's' | 'd' | 'i' | 'u') {
             return Some(format!(
                 "Invalid combination: # flag with %{} specifier",
@@ -335,9 +315,11 @@ impl Fio47C {
             return None;
         }
 
-        // Float specifiers (f, e, g, a, F, E, G, A) are invalid with h, hh, l, ll
+        // Float specifiers (f, e, g, a, F, E, G, A) are invalid with h, hh, ll.
+        // Note: "l" with float IS valid in C99+ printf (no effect, but not UB).
+        // "L" with float is valid (long double).
         if matches!(specifier, 'f' | 'F' | 'e' | 'E' | 'g' | 'G' | 'a' | 'A')
-            && matches!(length_modifier, "h" | "hh" | "l" | "ll")
+            && matches!(length_modifier, "h" | "hh" | "ll")
         {
             return Some(format!(
                 "Invalid combination: {} length modifier with %{} specifier",
@@ -385,17 +367,15 @@ impl Fio47C {
                 }
             }
 
-            // Subtract non-format, non-data arguments:
-            // snprintf/vsnprintf: buffer + size + format = 3
-            // fprintf/fscanf etc: FILE* + format = 2
-            // printf/scanf etc: format = 1
-            if matches!(function_name, "snprintf" | "vsnprintf") {
-                count = count.saturating_sub(3);
-            } else if function_name.starts_with('f') && !function_name.starts_with("fopen") {
-                count = count.saturating_sub(2);
-            } else {
-                count = count.saturating_sub(1);
-            }
+            // Subtract non-data arguments (everything up to and including format string).
+            // Must match format_arg_index logic in extract_format_string.
+            let skip_count = match function_name {
+                "snprintf" | "vsnprintf" => 3,
+                "fprintf" | "fscanf" | "sprintf" | "sscanf" | "dprintf" | "vdprintf"
+                | "vfprintf" | "vfscanf" | "vsprintf" | "vsscanf" => 2,
+                _ => 1,
+            };
+            count = count.saturating_sub(skip_count);
 
             count
         } else {
