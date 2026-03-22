@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-22 (v0.3.30 EXP34-C count-based callsite aggregation)
+**Last Updated**: 2026-03-22 (v0.3.31 FP investigation: INT07-C, ERR33-C, MSC41-C, ARR00-C, EXP33-C)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -12,20 +12,40 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ### Real-World FP Reduction — Next Targets (Priority 1)
 
-Top remaining FP sources from v0.3.28 per-rule data (all 5 codebases, rules-benchmark.toml):
+v0.3.30 per-rule data (all 5 codebases, 182K total violations, rules-benchmark.toml):
 
 | Rule | Count | Issue | Approach |
 |------|------:|-------|----------|
-| EXP34-C | 26,457 | Null deref (post param-fix) | v0.3.30: count-based callsite aggregation (pending benchmark). Remaining: struct field chains, single-callsite nullable returns |
-| INT32-C | 12,077 | Signed overflow | Stable after VRA — gap is coverage not precision |
-| DCL07-C | 11,237 | Implicit int declaration | Cross-file prescan limitation |
-| DCL31-C | 10,620 | Undeclared function | Cross-file prescan limitation |
-| API00-C | 10,072 | Missing size parameter | Post caller-aware suppression |
-| INT30-C | 8,508 | Unsigned overflow | Stable after VRA |
+| MEM30-C | 15,330 | Use-after-free | Needs field-level free tracking (deferred) |
+| DCL13-C | 12,138 | Const correctness | Needs alias tracking (deferred) |
+| INT32-C | 12,034 | Signed overflow | Stable after VRA — gap is coverage not precision |
+| DCL07-C | 10,617 | Implicit int declaration | Cross-file prescan limitation |
+| DCL31-C | 10,543 | Undeclared function | Cross-file prescan limitation |
+| API00-C | 9,851 | Missing size parameter | Post caller-aware suppression |
+| INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
+| **ARR00-C** | **7,341** | Array bounds | **v0.3.31: pointer vs array distinction** |
+| **ERR33-C** | **7,182** | Unchecked return | **v0.3.31: dedup bug + printf suppression** |
+| **INT07-C** | **6,230** | Numeric conversion | **v0.3.31: skip char\* pointers** |
+| MEM31-C | 5,440 | Memory leak | Needs ownership model (deferred) |
+| EXP34-C | 5,290 | Null deref | v0.3.30: -80% via count-based aggregation |
+| **EXP33-C** | **4,554** | Uninitialized | **v0.3.31: sscanf tracking + for-each macros** |
+| **MSC41-C** | **3,954** | Sensitive data | **v0.3.31: restrict keywords + apply heuristic** |
 
 See [CHANGELOG.md](CHANGELOG.md) for completed items (v0.3.27: POS49-C bit-field fix, 13 noise rules disabled; v0.3.28: prescan cache, parallel scanner).
 
-**v0.3.30**: EXP34-C count-based callsite aggregation — replaced lattice join in prescan with vote counting. One PossiblyNull callsite no longer poisons parameters with 50 NotNull callers. DefinitelyNull always propagates; PossiblyNull requires majority. Spot-check: hostap ap.c 13→3, sqlite btree.c 101→72.
+**v0.3.30**: EXP34-C count-based callsite aggregation — 26,457→5,290 (-80%). Juliet CWE-690 TP rate 83.8%→94.3% (+10.5pp). Zero regressions.
+
+### v0.3.31 FP Reduction Targets (Priority 1)
+
+Investigated FP patterns on real-world codebases. Estimated total: -19K to -20K violations.
+
+| Rule | Fix | Est. Reduction | Difficulty |
+|------|-----|---------------|------------|
+| INT07-C | `is_plain_char_declaration` matches `char *` pointers (96.5% FP rate). Skip pointer/array declarators. | -6,000 | Easy |
+| ERR33-C | (1) Dedup bug: standalone calls report twice via expression_statement + call_expression (32%). (2) printf/fprintf diagnostic output (70% of remainder). (3) `==0`/`!=0` not recognized as NULL checks. | -5,000 | Easy-Medium |
+| MSC41-C | Keywords "db"/"key"/"token" match logging/debug funcs via substring. Then ALL string args flagged (skips `looks_like_sensitive_data`). Fix: restrict keywords, always apply heuristic. | -3,000 | Easy |
+| ARR00-C | `is_array_identifier()` returns true for any subscripted pointer. `find_array_size()` confuses subscript access with declarations. `check_array_assignment()` fires on `+=`/`-=`. Fix: AST-based pointer vs array. | -6,000 | Medium |
+| EXP33-C | For-each macros (`dl_list_for_each` etc.) parsed as calls not loops (40%). sscanf `&var` output params not tracked (25%). Fix: macro recognition + sscanf output tracking. | -2,500 | Medium |
 
 ### Benchmark Infrastructure: Remaining
 

@@ -14,56 +14,135 @@ impl Msc41C {
         Self
     }
 
-    /// Check if a function name suggests it deals with sensitive information
+    /// Check if a function name suggests it deals with sensitive information.
+    /// Uses word-boundary-aware matching to avoid false positives from substring
+    /// collisions (e.g., "db" in "p2p_dbg", "key" in "monkey").
     fn is_sensitive_function(name: &str) -> bool {
-        let sensitive_keywords = [
-            "auth",
+        let name_lower = name.to_lowercase();
+
+        // Exact substring match for long, unambiguous keywords
+        let exact_keywords = [
             "password",
             "passwd",
-            "pwd",
             "credential",
-            "login",
-            "key",
             "secret",
-            "token",
             "encrypt",
             "decrypt",
-            "crypto",
             "cipher",
-            "connect",
-            "database",
-            "db",
         ];
-
-        let name_lower = name.to_lowercase();
-        sensitive_keywords
+        if exact_keywords
             .iter()
             .any(|keyword| name_lower.contains(keyword))
+        {
+            return true;
+        }
+
+        // Word-boundary match for short/ambiguous keywords.
+        // A "word boundary" means the keyword is preceded by '_' or is at the
+        // start of the name. We only check the leading boundary — "authenticate"
+        // should match "auth" but "p2p_dbg" should not match "db".
+        let boundary_keywords = ["auth", "login", "pwd", "database"];
+        for keyword in &boundary_keywords {
+            if let Some(pos) = name_lower.find(keyword) {
+                let before_ok = pos == 0 || name_lower.as_bytes()[pos - 1] == b'_';
+                if before_ok {
+                    return true;
+                }
+            }
+        }
+
+        // Strict word-boundary match (both sides) for very short/ambiguous keywords
+        // that cause too many FPs with leading-only matching.
+        let strict_keywords = ["key", "token"];
+        for keyword in &strict_keywords {
+            if let Some(pos) = name_lower.find(keyword) {
+                let before_ok = pos == 0 || name_lower.as_bytes()[pos - 1] == b'_';
+                let after = pos + keyword.len();
+                let after_ok = after == name_lower.len() || name_lower.as_bytes()[after] == b'_';
+                if before_ok && after_ok {
+                    return true;
+                }
+            }
+        }
+
+        false
     }
 
-    /// Check if a variable name suggests it stores sensitive information
+    /// Check if a variable name suggests it stores sensitive information.
+    /// Uses word-boundary matching for short keywords to avoid false positives
+    /// (e.g., "key" in "monkey", "pass" in "bypass", "pin" in "pinned").
     fn is_sensitive_variable_name(name: &str) -> bool {
-        let sensitive_patterns = [
+        let name_lower = name.to_lowercase();
+
+        // Long, unambiguous patterns — substring match is safe
+        let exact_patterns = [
             "password",
             "passwd",
-            "pwd",
-            "pass",
-            "key",
             "secret",
-            "token",
             "credential",
             "apikey",
             "api_key",
-            "auth",
-            "pin",
-            "code",
-            "salt",
         ];
-
-        let name_lower = name.to_lowercase();
-        sensitive_patterns
+        if exact_patterns
             .iter()
             .any(|pattern| name_lower.contains(pattern))
+        {
+            return true;
+        }
+
+        // Short/ambiguous patterns — require word boundary ('_' or start/end)
+        let boundary_patterns = ["pwd", "pass", "key", "token", "auth", "pin", "salt"];
+        for pattern in &boundary_patterns {
+            if let Some(pos) = name_lower.find(pattern) {
+                let before_ok = pos == 0 || name_lower.as_bytes()[pos - 1] == b'_';
+                let after = pos + pattern.len();
+                let after_ok = after == name_lower.len() || name_lower.as_bytes()[after] == b'_';
+                if before_ok && after_ok {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Relaxed check for strings passed to sensitive functions.
+    /// Skips format strings, single-char delimiters, debug labels (with colons/spaces),
+    /// but flags plausible credentials.
+    fn looks_like_sensitive_in_context(text: &str) -> bool {
+        let content = text.trim_matches('"').trim_matches('\'');
+        if content.is_empty() || content.len() < 3 {
+            return false;
+        }
+        // Skip format strings
+        if content.contains('%') {
+            return false;
+        }
+        // Skip debug labels (contain ": " or " - " patterns)
+        if content.contains(": ") || content.contains(" - ") {
+            return false;
+        }
+        // Skip error messages (start with "Could not", "Failed to", "Error", "Cannot", "Invalid")
+        let lower = content.to_lowercase();
+        if lower.starts_with("could not")
+            || lower.starts_with("failed")
+            || lower.starts_with("error")
+            || lower.starts_with("cannot")
+            || lower.starts_with("invalid")
+            || lower.starts_with("unable")
+            || lower.starts_with("no ")
+        {
+            return false;
+        }
+        // Skip algorithm/protocol identifiers (all caps or all caps+digits, < 10 chars)
+        if content.len() < 10
+            && content
+                .chars()
+                .all(|c| c.is_ascii_uppercase() || c.is_ascii_digit() || c == '-' || c == '_')
+        {
+            return false;
+        }
+        true
     }
 
     /// Check if a string literal looks like sensitive data
@@ -169,14 +248,12 @@ impl Msc41C {
         if node.kind() == "string_literal" {
             let text = get_node_text(node, source);
 
-            // If we have a context function (sensitive function), flag any non-empty string literal
-            // Otherwise, use heuristics to determine if it looks like sensitive data
+            // In sensitive function context, use a relaxed heuristic that skips
+            // obvious non-sensitive strings (format strings, debug labels, delimiters)
+            // but flags plausible credentials. Outside context, use strict heuristic.
             let should_flag = if context_func.is_some() {
-                // In sensitive function context, flag any non-empty string
-                let content = text.trim_matches('"').trim_matches('\'');
-                !content.is_empty()
+                Self::looks_like_sensitive_in_context(text)
             } else {
-                // Outside sensitive function context, use heuristics
                 Self::looks_like_sensitive_data(text)
             };
 
