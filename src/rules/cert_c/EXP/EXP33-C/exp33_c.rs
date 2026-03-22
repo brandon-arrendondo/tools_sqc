@@ -1239,33 +1239,92 @@ impl UninitializedVariableAnalyzer {
         }
     }
 
+    /// Common for-each / iterator macros that assign their first argument
+    /// in a loop initializer. Tree-sitter sees them as call_expression, but
+    /// the iterator variable IS initialized by the macro expansion.
+    const FOR_EACH_MACROS: &'static [&'static str] = &[
+        "dl_list_for_each",
+        "dl_list_for_each_safe",
+        "dl_list_for_each_reverse",
+        "for_each_link",
+        "TAILQ_FOREACH",
+        "TAILQ_FOREACH_SAFE",
+        "LIST_FOREACH",
+        "LIST_FOREACH_SAFE",
+        "SLIST_FOREACH",
+        "SLIST_FOREACH_SAFE",
+        "STAILQ_FOREACH",
+        "STAILQ_FOREACH_SAFE",
+        "RB_FOREACH",
+        "SIMPLEQ_FOREACH",
+        "CIRCLEQ_FOREACH",
+    ];
+
     fn process_init_call(&mut self, node: &Node, source: &str) {
         if let Some(function) = node.child_by_field_name("function") {
             let func_name = get_node_text(&function, source).to_string();
 
+            // For-each macros: the first argument (iterator variable) is assigned
+            // by the macro expansion. Mark it as initialized.
+            if Self::FOR_EACH_MACROS.contains(&func_name.as_str()) {
+                if let Some(args) = node.child_by_field_name("arguments") {
+                    for i in 0..args.child_count() {
+                        if let Some(arg) = args.child(i) {
+                            if arg.kind() == "identifier" {
+                                let var_name = get_node_text(&arg, source).to_string();
+                                if self.var_states.contains_key(&var_name) {
+                                    self.var_states.insert(var_name, VarState::Initialized);
+                                }
+                                break; // Only the first identifier arg is the iterator
+                            }
+                        }
+                    }
+                }
+                return;
+            }
+
             if let Some(args) = node.child_by_field_name("arguments") {
                 // For known initializing functions, mark their output pointers as initialized
                 if self.initializing_functions.contains(&func_name) {
-                    // Determine which argument(s) are output pointers based on the function
-                    let output_arg_indices = self.get_output_arg_indices(&func_name);
-
-                    let mut arg_idx = 0;
-                    for i in 0..args.child_count() {
-                        if let Some(arg) = args.child(i) {
-                            if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
-                                if output_arg_indices.contains(&arg_idx) {
-                                    // This is an output argument - mark as initialized
+                    // scanf/fscanf/sscanf: all &var arguments are output pointers.
+                    // We can't parse the format string to know which args are outputs,
+                    // but every &var arg in a scanf call IS an output.
+                    if matches!(func_name.as_str(), "scanf" | "fscanf" | "sscanf") {
+                        for i in 0..args.child_count() {
+                            if let Some(arg) = args.child(i) {
+                                if arg.kind() == "pointer_expression" {
                                     let var_name = self.extract_var_from_arg(&arg, source);
-                                    if !var_name.is_empty() {
-                                        if self.malloc_pointers.contains(&var_name) {
-                                            self.var_states
-                                                .insert(var_name, VarState::MallocInitialized);
-                                        } else if self.var_states.contains_key(&var_name) {
-                                            self.var_states.insert(var_name, VarState::Initialized);
-                                        }
+                                    if !var_name.is_empty()
+                                        && self.var_states.contains_key(&var_name)
+                                    {
+                                        self.var_states.insert(var_name, VarState::Initialized);
                                     }
                                 }
-                                arg_idx += 1;
+                            }
+                        }
+                    } else {
+                        // Determine which argument(s) are output pointers based on the function
+                        let output_arg_indices = self.get_output_arg_indices(&func_name);
+
+                        let mut arg_idx = 0;
+                        for i in 0..args.child_count() {
+                            if let Some(arg) = args.child(i) {
+                                if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                                    if output_arg_indices.contains(&arg_idx) {
+                                        // This is an output argument - mark as initialized
+                                        let var_name = self.extract_var_from_arg(&arg, source);
+                                        if !var_name.is_empty() {
+                                            if self.malloc_pointers.contains(&var_name) {
+                                                self.var_states
+                                                    .insert(var_name, VarState::MallocInitialized);
+                                            } else if self.var_states.contains_key(&var_name) {
+                                                self.var_states
+                                                    .insert(var_name, VarState::Initialized);
+                                            }
+                                        }
+                                    }
+                                    arg_idx += 1;
+                                }
                             }
                         }
                     }
