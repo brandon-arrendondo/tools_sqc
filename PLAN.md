@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-22 (v0.3.32 prescan improvements)
+**Last Updated**: 2026-03-22 (v0.3.32 benchmark complete)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -12,15 +12,15 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ### Real-World FP Reduction — Next Targets (Priority 1)
 
-v0.3.31 per-rule data (all 5 codebases, 161.9K total violations, rules-benchmark.toml):
+v0.3.32 per-rule data (all 5 codebases, 150.3K total violations, rules-benchmark.toml):
 
 | Rule | Count | Issue | Approach |
 |------|------:|-------|----------|
 | MEM30-C | 15,330 | Use-after-free | Needs field-level free tracking (deferred) |
 | DCL13-C | 12,138 | Const correctness | Needs alias tracking (deferred) |
 | INT32-C | 12,034 | Signed overflow | Stable after VRA — gap is coverage not precision |
-| DCL07-C | 10,617 | Implicit int declaration | v0.3.32: prescan deep recursion + macro alias + library whitelist |
-| DCL31-C | 10,543 | Undeclared function | v0.3.32: prescan deep recursion + macro alias + library whitelist |
+| DCL07-C | 4,765 | Implicit int declaration | v0.3.32: -55% via prescan deep recursion + macro alias + library whitelist |
+| DCL31-C | 4,840 | Undeclared function | v0.3.32: -54% via prescan deep recursion + macro alias + library whitelist |
 | API00-C | 9,851 | Missing size parameter | Post caller-aware suppression |
 | INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
 | EXP34-C | 5,290 | Null deref | v0.3.30: -80% via count-based aggregation |

@@ -1,5 +1,35 @@
 # SqC — Changelog
 
+## v0.3.32 (2026-03-22)
+
+### Prescan Quality Audit + DCL07-C/DCL31-C FP Reduction (−11,556 real-world violations, −7.1%)
+
+Total: 161,893 → 150,337 across 5 codebases. Juliet: zero change (47.0% TP rate preserved).
+
+**Root cause analysis**: Audited all 16 rules consuming prescan `ProjectContext`. Found three root causes for DCL07-C/DCL31-C FPs:
+
+1. **Prescan deep recursion** (`prescan.rs`): `collect_function_names` only recursed into `preproc_*` blocks. Tree-sitter misparses files with complex macros (e.g., sqlite's `sqliteInt.h`), burying `function_definition` nodes inside `ERROR` or `compound_statement` at the top level. Now recurses into ALL child nodes. Found 358 additional functions in sqlite alone.
+
+2. **Macro alias integration** (`dcl07_c.rs`, `dcl31_c.rs`): Prescan collected `macro_aliases` (`#define ALIAS target`) but DCL rules didn't check them. Now adds all alias names to `cross_file_functions` in `set_project_context()`.
+
+3. **External library whitelist + `defined` operator** (`dcl07_c.rs`, `dcl31_c.rs`): Added `is_external_library_function()` covering OpenSSL (`SSL_`, `BIO_`, `X509_`, `EVP_`, `PEM_`, `ERR_`), Tcl/Tk (`Tcl_`, `Jim_`), Apple CoreFoundation (`CF*`), mbedTLS (`mbedtls_`), cJSON (`cJSON_`), zlib, GnuTLS, wolfSSL. Skip `defined` (preprocessor operator parsed as call_expression by tree-sitter).
+
+**Per-rule impact**:
+- **DCL07-C**: 10,617 → 4,765 (**−55.1%**)
+- **DCL31-C**: 10,543 → 4,840 (**−54.1%**)
+
+**Per-project impact**:
+
+| Project | v0.3.31 | v0.3.32 | Delta |
+|---------|--------:|--------:|------:|
+| sqlite | 58,789 | 50,616 | −8,173 (−13.9%) |
+| mosquitto | 16,609 | 15,164 | −1,445 (−8.7%) |
+| hostap | 60,609 | 59,549 | −1,060 (−1.7%) |
+| curl | 25,571 | 24,693 | −878 (−3.4%) |
+| libcrc | 315 | 315 | 0 |
+
+**Remaining DCL07-C/DCL31-C FPs** (9.6K combined): Macro definitions in files tree-sitter can't parse (e.g., curl's `curl_setup.h` — `curlx_free` et al.), and project-internal functions buried in unrecoverable parse errors (e.g., sqlite's `prepare.c:937` — `sqlite3_prepare_v2`). Diminishing returns without preprocessor expansion.
+
 ## v0.3.31 (2026-03-22)
 
 ### FP Reduction: 5 Rules (−20,127 real-world violations, −11.1%)
