@@ -405,29 +405,43 @@ fn aggregate_callsite_null_states(
         }
     }
 
-    // Join per-callee per-param
+    // Count-based voting per-callee per-param.
+    //
+    // The prescan's local state tracking can't model null checks between
+    // assignment and use, so PossiblyNull from prescan has a high false
+    // positive rate.  Instead of a lattice join (where one PossiblyNull
+    // callsite poisons a parameter used by 50 NotNull callers), we count
+    // callsite states and apply:
+    //   a) Any DefinitelyNull → PossiblyNull (confirmed NULL flow)
+    //   b) Majority PossiblyNull (> NotNull count) → PossiblyNull
+    //   c) Otherwise → NotNull (PossiblyNull is noise)
     for (callee_name, arg_vectors) in &callsite_args {
         if let Some(summary) = summaries.get_mut(callee_name) {
             let max_params = arg_vectors.iter().map(|v| v.len()).max().unwrap_or(0);
             for param_idx in 0..max_params {
-                let mut joined = NullState::Unknown;
-                let mut any_known = false;
+                let mut null_count: usize = 0;
+                let mut possibly_count: usize = 0;
+                let mut not_null_count: usize = 0;
                 for args in arg_vectors {
                     if let Some(&state) = args.get(param_idx) {
-                        if state != NullState::Unknown {
-                            if !any_known {
-                                joined = state;
-                                any_known = true;
-                            } else {
-                                joined = joined.join(state);
-                            }
+                        match state {
+                            NullState::DefinitelyNull => null_count += 1,
+                            NullState::PossiblyNull => possibly_count += 1,
+                            NullState::NotNull => not_null_count += 1,
+                            NullState::Unknown => {} // no contribution
                         }
                     }
-                    // Missing arg → treat as Unknown (no contribution to join)
                 }
-                // Only store if we have concrete info
-                if any_known {
-                    summary.callsite_param_null_states.insert(param_idx, joined);
+                let total_known = null_count + possibly_count + not_null_count;
+                if total_known > 0 {
+                    let aggregated = if null_count > 0 || possibly_count > not_null_count {
+                        NullState::PossiblyNull
+                    } else {
+                        NullState::NotNull
+                    };
+                    summary
+                        .callsite_param_null_states
+                        .insert(param_idx, aggregated);
                 }
             }
         }
