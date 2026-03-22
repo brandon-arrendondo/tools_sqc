@@ -170,8 +170,13 @@ fn has_static_specifier(node: &Node, source: &str) -> bool {
     false
 }
 
-/// Extract function names from top-level `function_definition` and `declaration`
-/// nodes, recursing into `preproc_*` blocks (same pattern as EXP33-C/SIG31-C).
+/// Extract function names from `function_definition` and `declaration` nodes.
+///
+/// Recurses into all child nodes — not just `preproc_*` blocks — because
+/// tree-sitter may misparse files with complex macros (e.g., sqlite's
+/// `sqliteInt.h`), burying function definitions inside `ERROR` or
+/// `compound_statement` nodes at the top level. Even inside error recovery,
+/// tree-sitter correctly identifies `function_definition` nodes.
 fn collect_function_names(node: &Node, source: &str, names: &mut HashSet<String>) {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
@@ -199,16 +204,13 @@ fn collect_function_names(node: &Node, source: &str, names: &mut HashSet<String>
                             names.insert(name);
                         }
                     }
-                    // Also recurse into body for nested function names
                     collect_function_names(&child, source, names);
                 }
-                kind if kind.starts_with("preproc_")
-                    || kind == "linkage_specification"
-                    || kind == "declaration_list" =>
-                {
+                _ => {
+                    // Recurse into all other nodes (preproc_*, linkage_specification,
+                    // ERROR, compound_statement, etc.) to find buried definitions.
                     collect_function_names(&child, source, names);
                 }
-                _ => {}
             }
         }
     }

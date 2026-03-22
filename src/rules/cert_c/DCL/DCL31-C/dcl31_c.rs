@@ -177,10 +177,23 @@ impl Dcl31C {
                     return;
                 }
 
+                // `defined` is a preprocessor operator, not a function.
+                // Tree-sitter parses `#if defined(X)` conditions and `defined`
+                // appears as a call_expression identifier.
+                if func_name == "defined" {
+                    return;
+                }
+
                 // Skip known standard library functions unconditionally.
                 // Tree-sitter cannot follow #include directives, so header-aware
                 // checking produces FPs whenever headers are included transitively.
                 if std_functions::is_known_standard_function(func_name) {
+                    return;
+                }
+
+                // Skip functions from well-known external libraries whose headers
+                // tree-sitter cannot resolve (not in the scanned project dirs).
+                if is_external_library_function(func_name) {
                     return;
                 }
 
@@ -286,7 +299,13 @@ impl CertRule for Dcl31C {
     }
 
     fn set_project_context(&self, context: &ProjectContext) {
-        *self.cross_file_functions.borrow_mut() = context.known_functions.clone();
+        let mut funcs = context.known_functions.clone();
+        // Macro aliases (#define ALIAS target) define valid call targets —
+        // ALIAS(...) is a macro invocation, not an undeclared function.
+        for alias_name in context.macro_aliases.keys() {
+            funcs.insert(alias_name.clone());
+        }
+        *self.cross_file_functions.borrow_mut() = funcs;
     }
 
     fn check(&self, root: &Node, source: &str) -> Vec<RuleViolation> {
@@ -321,6 +340,73 @@ fn is_inside_preproc_conditional(node: &Node) -> bool {
             _ => {}
         }
         current = parent;
+    }
+    false
+}
+
+/// Returns true if the function name matches a well-known external C library
+/// API prefix. These functions come from system headers that tree-sitter
+/// cannot resolve (OpenSSL, Tcl/Tk, Apple frameworks, mbedTLS, etc.).
+fn is_external_library_function(name: &str) -> bool {
+    // OpenSSL / LibreSSL
+    if name.starts_with("SSL_")
+        || name.starts_with("BIO_")
+        || name.starts_with("X509_")
+        || name.starts_with("EVP_")
+        || name.starts_with("PEM_")
+        || name.starts_with("ERR_")
+        || name.starts_with("OPENSSL_")
+        || name.starts_with("RSA_")
+        || name.starts_with("EC_")
+        || name.starts_with("HMAC_")
+        || name.starts_with("ASN1_")
+        || name.starts_with("PKCS")
+        || name.starts_with("DH_")
+        || name.starts_with("DSA_")
+        || name.starts_with("ECDSA_")
+        || name.starts_with("SSL_CTX_")
+    {
+        return true;
+    }
+    // Tcl/Tk
+    if name.starts_with("Tcl_") || name.starts_with("Jim_") {
+        return true;
+    }
+    // Apple Core Foundation / Security
+    if name.starts_with("CF") && name.len() > 2 && name.as_bytes()[2].is_ascii_uppercase() {
+        return true;
+    }
+    if name.starts_with("SecCertificate")
+        || name.starts_with("SecTrust")
+        || name.starts_with("SecIdentity")
+        || name.starts_with("SecKey")
+        || name.starts_with("SecPolicy")
+    {
+        return true;
+    }
+    // mbedTLS
+    if name.starts_with("mbedtls_") {
+        return true;
+    }
+    // cJSON
+    if name.starts_with("cJSON_") {
+        return true;
+    }
+    // zlib
+    if name.starts_with("inflate")
+        || name.starts_with("deflate")
+        || name.starts_with("compress")
+        || name.starts_with("uncompress")
+    {
+        return true;
+    }
+    // GnuTLS
+    if name.starts_with("gnutls_") {
+        return true;
+    }
+    // wolfSSL
+    if name.starts_with("wolfSSL_") {
+        return true;
     }
     false
 }
