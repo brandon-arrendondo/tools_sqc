@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-21 (v0.3.28 prescan cache + parallel scanner + benchmark noise reduction)
+**Last Updated**: 2026-03-22 (v0.3.30 EXP34-C count-based callsite aggregation)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -16,7 +16,7 @@ Top remaining FP sources from v0.3.28 per-rule data (all 5 codebases, rules-benc
 
 | Rule | Count | Issue | Approach |
 |------|------:|-------|----------|
-| EXP34-C | 26,457 | Null deref (post param-fix) | Remaining: struct field chains, cross-function patterns |
+| EXP34-C | 26,457 | Null deref (post param-fix) | v0.3.30: count-based callsite aggregation (pending benchmark). Remaining: struct field chains, single-callsite nullable returns |
 | INT32-C | 12,077 | Signed overflow | Stable after VRA — gap is coverage not precision |
 | DCL07-C | 11,237 | Implicit int declaration | Cross-file prescan limitation |
 | DCL31-C | 10,620 | Undeclared function | Cross-file prescan limitation |
@@ -25,10 +25,13 @@ Top remaining FP sources from v0.3.28 per-rule data (all 5 codebases, rules-benc
 
 See [CHANGELOG.md](CHANGELOG.md) for completed items (v0.3.27: POS49-C bit-field fix, 13 noise rules disabled; v0.3.28: prescan cache, parallel scanner).
 
+**v0.3.30**: EXP34-C count-based callsite aggregation — replaced lattice join in prescan with vote counting. One PossiblyNull callsite no longer poisons parameters with 50 NotNull callers. DefinitelyNull always propagates; PossiblyNull requires majority. Spot-check: hostap ap.c 13→3, sqlite btree.c 101→72.
+
 ### Benchmark Infrastructure: Remaining
 
-- `get_performance_trend()`, `get_realworld_rule_trend()` query tools
-- Store per-rule violation counts in realworld benchmark DB (currently only stores aggregate `violation_count` per project — need per-rule breakdown for tracking FP reduction across versions)
+- [x] Per-rule violation counts in realworld benchmark DB (1.6M individual violations stored, per-rule queries exposed via MCP tools)
+- [x] `get_rule_trend()` and `get_project_history()` MCP query tools
+- [x] SQLite-first pattern for realworld `get_results()`, `compare_runs()`, `list_runs()` (matches Juliet pattern)
 - Remove legacy shell scripts after full migration validation
 
 ### Prescan Quality Audit (Priority 2)
