@@ -1,5 +1,45 @@
 # SqC — Changelog
 
+## v0.3.31 (2026-03-22)
+
+### FP Reduction: 5 Rules (−20,127 real-world violations, −11.1%)
+
+Total: 182,020 → 161,893 across 5 codebases.
+
+- **INT07-C**: Skip `char *` pointer/array declarations in `is_plain_char_declaration`. 96.5% of violations were pointer arithmetic on `char *`, not `char` value operations. Added `is_pointer_or_array_declaration()` AST check. 6,230 → 207 (**−96.7%**).
+- **ERR33-C**: Fixed duplicate violation bug (standalone calls emitted via both `expression_statement` and `call_expression` paths). Suppressed printf/puts/putchar/fputs/fputc/putc diagnostic output. Suppressed `fprintf(stderr, ...)`. Suppressed `signal(SIG*, SIG_IGN/SIG_DFL)`. Suppressed `time(&t)` with output parameter. Recognized `==0`/`!=0` as NULL checks. Added `putenv`/`strdup`/`strndup` to `is_error_returning_function`. 7,182 → 1,807 (**−74.8%**).
+- **MSC41-C**: Removed overly broad substring keywords (`db`, `connect`). `key`/`token` require strict word boundaries. `auth`/`login`/`pwd`/`database` require leading word boundary. Always apply `looks_like_sensitive_data()` heuristic in function context (previously flagged ALL non-empty strings). Added relaxed `looks_like_sensitive_in_context()` that skips format strings, debug labels, error messages, algorithm identifiers. 3,954 → 293 (**−92.6%**).
+- **ARR00-C**: Rewrote `is_array_identifier()` from text-search (`name[` in function) to AST-based `has_array_declaration()` that walks for `array_declarator` nodes. Only flags true arrays, not subscripted pointers. Guarded `check_uninitialized_array_read`, `check_constant_out_of_bounds`, `check_subscript_bounds` with array-only checks. Fixed `check_array_assignment` to skip compound assignments (`+=`, `-=`). 7,341 → 2,637 (**−64.1%**).
+- **EXP33-C**: Added `scanf`/`fscanf`/`sscanf` `&var` argument initialization tracking (all pointer args marked as initialized). Added for-each macro recognition (15 common macros: `dl_list_for_each`, `TAILQ_FOREACH`, etc.) that marks iterator variables as initialized. 4,554 → 4,189 (**−8.0%**).
+
+### Juliet Benchmark: v0.3.31
+
+- Overall: 8,156 TP / 9,180 FP, **47.0% TP rate** (−0.4pp vs v0.3.30)
+- Zero FP change. −129 TP from intentional printf suppression (CWE-252: −119, CWE-391: −10)
+- No regressions on any other CWE
+
+### Real-World: Per-Project
+
+| Project | v0.3.30 | v0.3.31 | Delta |
+|---------|--------:|--------:|------:|
+| hostap | 69,329 | 60,609 | −8,720 (−12.6%) |
+| sqlite | 66,435 | 58,789 | −7,646 (−11.5%) |
+| curl | 27,640 | 25,571 | −2,069 (−7.5%) |
+| mosquitto | 18,199 | 16,609 | −1,590 (−8.7%) |
+| libcrc | 417 | 315 | −102 (−24.5%) |
+
+## v0.3.30 (2026-03-22)
+
+### FP Reduction: EXP34-C Count-Based Callsite Aggregation
+
+- Replaced lattice join in `aggregate_callsite_null_states()` with count-based voting. One PossiblyNull callsite no longer poisons parameters with 50 NotNull callers. DefinitelyNull always propagates; PossiblyNull requires majority.
+- EXP34-C: 26,457 → 5,290 (**−80.0%**) across 5 real-world codebases.
+
+### Juliet Benchmark: v0.3.30
+
+- Overall: 8,285 TP / 9,180 FP, **47.4% TP rate** (−0.1pp vs v0.3.28)
+- CWE-690 TP rate 83.8% → 94.3% (+10.5pp). Zero regressions.
+
 ## v0.3.28 (2026-03-21)
 
 ### Prescan Cache
