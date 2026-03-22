@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-22 (v0.3.31 benchmark complete)
+**Last Updated**: 2026-03-22 (v0.3.32 prescan improvements)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -19,8 +19,8 @@ v0.3.31 per-rule data (all 5 codebases, 161.9K total violations, rules-benchmark
 | MEM30-C | 15,330 | Use-after-free | Needs field-level free tracking (deferred) |
 | DCL13-C | 12,138 | Const correctness | Needs alias tracking (deferred) |
 | INT32-C | 12,034 | Signed overflow | Stable after VRA — gap is coverage not precision |
-| DCL07-C | 10,617 | Implicit int declaration | Cross-file prescan limitation |
-| DCL31-C | 10,543 | Undeclared function | Cross-file prescan limitation |
+| DCL07-C | 10,617 | Implicit int declaration | v0.3.32: prescan deep recursion + macro alias + library whitelist |
+| DCL31-C | 10,543 | Undeclared function | v0.3.32: prescan deep recursion + macro alias + library whitelist |
 | API00-C | 9,851 | Missing size parameter | Post caller-aware suppression |
 | INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
 | EXP34-C | 5,290 | Null deref | v0.3.30: -80% via count-based aggregation |
@@ -40,14 +40,21 @@ See [CHANGELOG.md](CHANGELOG.md) for completed items.
 
 ### Prescan Quality Audit (Priority 2)
 
-Investigate which rules beyond EXP34-C are affected by prescan data quality issues (Unknown/missing callsite states causing false positives or missed detections). Rules that consume `ProjectContext` or `callsite_param_null_states`:
-- EXP34-C (null deref — confirmed affected, fix in progress)
-- API00-C (caller-aware suppression via `callsite_param_null_states`)
-- MEM10-C (positive null guard suppression)
-- DCL31-C / DCL07-C (cross-file function detection)
-- Any rule using `set_project_context()` or `set_function_cfgs()`
+**v0.3.32 audit complete.** Found three root causes for DCL07-C/DCL31-C FPs:
 
-Goal: ensure prescan data improves (not worsens) analysis for all consuming rules.
+1. **`collect_function_names` missed ERROR nodes** — tree-sitter misparses files with complex macros (e.g., sqlite's `sqliteInt.h`), burying `function_definition` nodes inside `ERROR` or `compound_statement` at the top level. Fixed: now recurses into ALL child nodes. Found 358 additional functions in sqlite alone.
+
+2. **Macro aliases not used by DCL rules** — prescan collected `macro_aliases` but DCL07-C/DCL31-C didn't check them. Fixed: alias names added to `cross_file_functions`.
+
+3. **External library APIs** — Tcl/Tk, OpenSSL, mbedTLS, etc. come from system headers outside scanned dirs. Fixed: `is_external_library_function()` whitelist.
+
+**Remaining limitation**: tree-sitter error recovery is imperfect. Some files (e.g., sqlite's `prepare.c` — 17 lost functions) have parse errors that bury function definitions in structures that even deep recursion can't fully recover. `sqlite3_prepare_v2` is defined in `prepare.c:937` but lost in error recovery. This is a diminishing-returns area — fixing it would require either preprocessor expansion or a fallback regex-based function scanner.
+
+**Other consumers checked (no issues found)**:
+- EXP34-C — uses callsite_param_null_states (count-based aggregation, fixed in v0.3.30)
+- API00-C — uses callsite_param_null_states + function_summaries (working correctly)
+- MEM10-C — uses function_summaries for null guard suppression (working correctly)
+- INT32-C/INT30-C — uses struct_field_types + macro_constants (working correctly)
 
 ---
 
