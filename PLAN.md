@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-22 (v0.3.32 benchmark complete)
+**Last Updated**: 2026-03-23 (v0.3.34 benchmark complete)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -12,59 +12,32 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ### Real-World FP Reduction — Next Targets (Priority 1)
 
-v0.3.32 per-rule data (all 5 codebases, 150.3K total violations, rules-benchmark.toml):
+v0.3.34 per-rule data (all 5 codebases, 152.6K total violations, rules-benchmark.toml):
 
 | Rule | Count | Issue | Approach |
 |------|------:|-------|----------|
 | MEM30-C | 15,330 | Use-after-free | Needs field-level free tracking (deferred) |
 | DCL13-C | 12,138 | Const correctness | Needs alias tracking (deferred) |
-| INT32-C | 12,034 | Signed overflow | Stable after VRA — gap is coverage not precision |
-| DCL07-C | 4,765 | Implicit int declaration | v0.3.32: -55% via prescan deep recursion + macro alias + library whitelist |
-| DCL31-C | 4,840 | Undeclared function | v0.3.32: -54% via prescan deep recursion + macro alias + library whitelist |
-| API00-C | 9,851 | Missing size parameter | Post caller-aware suppression |
+| INT32-C | 12,037 | Signed overflow | Stable after VRA — gap is coverage not precision |
+| API00-C | 9,227 | Missing size parameter | v0.3.33: -624 from API00-C refinements |
 | INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
-| EXP34-C | 5,290 | Null deref | v0.3.30: -80% via count-based aggregation |
+| EXP33-C | 7,088 | Uninitialized | v0.3.34: +2,899 regression from CFG rewrite. `arr[0].field` tracking limitation (Priority 1) |
 | MEM31-C | 5,440 | Memory leak | Needs ownership model (deferred) |
-| EXP33-C | 4,189 | Uninitialized | v0.3.31: -8%, remaining FPs need CFG rewrite |
+| EXP34-C | 5,267 | Null deref | v0.3.30: -80% via count-based aggregation |
+| DCL31-C | 4,840 | Undeclared function | v0.3.32: -54% via prescan deep recursion + macro alias + library whitelist |
+| DCL07-C | 4,765 | Implicit int declaration | v0.3.32: -55% via prescan deep recursion + macro alias + library whitelist |
 | ARR00-C | 2,637 | Array bounds | v0.3.31: -64%, remaining are pointer subtraction/negative index |
 | ERR33-C | 1,807 | Unchecked return | v0.3.31: -75%, remaining are fclose/snprintf/getenv |
 
 See [CHANGELOG.md](CHANGELOG.md) for completed items.
 
-### EXP33-C CFG Rewrite — Complete (52/52 tests pass)
+### EXP33-C Real-World FP Reduction (Priority 1)
 
-EXP33-C rewritten to CFG-based forward dataflow (init_state.rs). All 52 integration tests pass (+ 15 unit tests).
+CFG rewrite complete (v0.3.33–v0.3.34). Juliet: +137 TP, -2 FP, +0.5pp TP rate. But real-world: +2,899 violations (4,189 → 7,088), driven by hostap +2,525. Root causes:
 
-Two detection gaps fixed:
-
-1. **Flexible array member** (fixed): Field writes on MallocUninitialized pointers no longer upgrade to MallocInitialized (only subscript/deref writes do). `check_subscript_read` now extracts root variable through field_expression chains (`arr->data[i]` → `arr`).
-
-2. **Realloc wrapper** (fixed): `classify_initializer` now takes `InitAnalysisConfig` and checks `realloc_wrapper_fns` (pre-scanned functions that wrap `realloc()` without `memset`). `array = resize_array(array, NEW_SIZE)` correctly produces MallocUninitialized.
-
-### Benchmark Infrastructure: Remaining
-
-- [x] Per-rule violation counts in realworld benchmark DB (1.6M individual violations stored, per-rule queries exposed via MCP tools)
-- [x] `get_rule_trend()` and `get_project_history()` MCP query tools
-- [x] SQLite-first pattern for realworld `get_results()`, `compare_runs()`, `list_runs()` (matches Juliet pattern)
-- [x] Remove legacy shell scripts after full migration validation
-
-### Prescan Quality Audit (Priority 2)
-
-**v0.3.32 audit complete.** Found three root causes for DCL07-C/DCL31-C FPs:
-
-1. **`collect_function_names` missed ERROR nodes** — tree-sitter misparses files with complex macros (e.g., sqlite's `sqliteInt.h`), burying `function_definition` nodes inside `ERROR` or `compound_statement` at the top level. Fixed: now recurses into ALL child nodes. Found 358 additional functions in sqlite alone.
-
-2. **Macro aliases not used by DCL rules** — prescan collected `macro_aliases` but DCL07-C/DCL31-C didn't check them. Fixed: alias names added to `cross_file_functions`.
-
-3. **External library APIs** — Tcl/Tk, OpenSSL, mbedTLS, etc. come from system headers outside scanned dirs. Fixed: `is_external_library_function()` whitelist.
-
-**Remaining limitation**: tree-sitter error recovery is imperfect. Some files (e.g., sqlite's `prepare.c` — 17 lost functions) have parse errors that bury function definitions in structures that even deep recursion can't fully recover. `sqlite3_prepare_v2` is defined in `prepare.c:937` but lost in error recovery. This is a diminishing-returns area — fixing it would require either preprocessor expansion or a fallback regex-based function scanner.
-
-**Other consumers checked (no issues found)**:
-- EXP34-C — uses callsite_param_null_states (count-based aggregation, fixed in v0.3.30)
-- API00-C — uses callsite_param_null_states + function_summaries (working correctly)
-- MEM10-C — uses function_summaries for null guard suppression (working correctly)
-- INT32-C/INT30-C — uses struct_field_types + macro_constants (working correctly)
+1. **`arr[0].field` tracking gap** (dominant): `extract_field_base` can't resolve through nested subscript chains — `arr[0].field = val` doesn't update `arr`'s state. Stays MallocUninitialized/Uninitialized, flagging subsequent subscript reads even when all elements are initialized. Fix: extend `extract_field_base` to recurse into `subscript_expression` children (but must preserve partial-init detection for `team[0].x = 1; use(team[3].x)`).
+2. **Custom allocator wrappers**: hostap's `os_malloc`/`os_zalloc` match `malloc(` text check but `os_memcpy`/`os_memset` aren't in `INITIALIZING_FUNCTIONS`. Fix: add common wrapper prefixes or make the list configurable.
+3. **Cross-function variants 63/64**: pointer passed between source files, needs inter-procedural analysis
 
 ---
 
@@ -72,10 +45,9 @@ Two detection gaps fixed:
 
 ### CWE-457: Uninitialized Variable — Remaining Gaps (Priority 1)
 
-616 files, 28.7% per-file, 31.8% TP rate (v0.3.28 benchmark). v0.3.26 addresses the +109 FP regression via early-return branch detection. Remaining gaps:
+v0.3.34: CFG rewrite complete. Remaining gaps:
 - Cross-function variants 63/64 (~70 files): pointer passed between source files, needs inter-procedural analysis
-- Array partial_init through alloca/malloc (~66 files): partial subscript init upgrades to MallocInitialized, losing content-level tracking
-- struct variant 12: struct field access pattern edge case
+- Per-element tracking: `arr[0].field = val` doesn't update `arr` state — causes FPs on fully-initialized array-of-struct patterns, but correctly flags partial-init patterns
 
 ### CWE-190/191: Integer Overflow/Underflow (Priority 3)
 
@@ -90,7 +62,6 @@ Two detection gaps fixed:
 - Relay chains (3+ hops): multi-pass handles single-hop, deep chains still Unknown
 - Indirect data flow (variants 63–67): not addressed
 - Cross-file globals (variant 68): not addressed
-- EXP33-C CFG integration (needs full rewrite like EXP34-C)
 - EXP34-C/FIO06-C regression investigation from Phase 3
 
 ### Real-World FP Reduction — Remaining Targets (Priority 2)
@@ -104,7 +75,7 @@ v0.3.28 realworld results (5 codebases, rules-benchmark.toml): curl 31.7K, hosta
 | MEM30-C | 3,452 | Use-after-free FPs from sequential struct/member frees | Needs field-level free tracking. Cross-function free propagation. |
 | MEM31-C | 3,354 | Leak FPs from cross-function ownership | Needs ownership model (strdup→field→custom_Delete). |
 | DCL13-C | 2,373 | Const correctness — pointer params through struct fields | Known alias tracking limitation (ringbuffer.c pattern). |
-| EXP33-C | 4,700 | Uninitialized variable FPs | CFG integration needed (same as Juliet EXP33-C rewrite). |
+| EXP33-C | 7,088 | Uninitialized variable FPs | CFG rewrite regressed real-world (+2,899). See Immediate Next Steps. |
 
 ### Real-World FP — Deferred Hard Issues
 
