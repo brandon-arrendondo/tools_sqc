@@ -5,6 +5,7 @@
 //! a sequence of statements with a single entry and single exit. Edges represent
 //! control flow between blocks (fallthrough, branches, back edges, returns).
 
+use std::collections::HashMap;
 use tree_sitter::Node;
 
 /// Unique identifier for a basic block within a function CFG.
@@ -40,6 +41,8 @@ pub enum CfgEdge {
     Break,
     /// Continue to loop header.
     Continue,
+    /// Goto jump to a labeled statement.
+    Goto,
 }
 
 /// A control-flow graph for a single function.
@@ -90,6 +93,10 @@ struct CfgBuilder {
     current_block: BlockId,
     /// Stack of (loop_header, loop_exit) for break/continue targets.
     loop_stack: Vec<(BlockId, BlockId)>,
+    /// Label name → block ID mapping for goto edge wiring.
+    label_blocks: HashMap<String, BlockId>,
+    /// Pending goto edges: (source_block, label_name) to wire after all labels are seen.
+    pending_gotos: Vec<(BlockId, String)>,
     function_start_byte: usize,
 }
 
@@ -106,6 +113,8 @@ impl CfgBuilder {
             edges: Vec::new(),
             current_block: 0,
             loop_stack: Vec::new(),
+            label_blocks: HashMap::new(),
+            pending_gotos: Vec::new(),
             function_start_byte,
         }
     }
@@ -186,18 +195,47 @@ impl CfgBuilder {
                 self.current_block = self.new_block(); // Unreachable block after continue
             }
             "goto_statement" => {
-                // Treat goto as a terminal statement (conservative)
                 self.add_statement(node.start_byte(), node.end_byte());
-                self.current_block = self.new_block();
+                // Extract label name and record for deferred edge wiring
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "statement_identifier" || child.kind() == "identifier" {
+                            if let Ok(label) = child.utf8_text(source.as_bytes()) {
+                                self.pending_gotos
+                                    .push((self.current_block, label.to_string()));
+                            }
+                        }
+                    }
+                }
+                self.current_block = self.new_block(); // Unreachable block after goto
             }
             "compound_statement" => {
                 self.build_from_compound_statement(node, source);
             }
             "labeled_statement" => {
+                // Start a new block at the label — goto edges target this block
+                let label_block = self.new_block();
+                self.add_edge(self.current_block, label_block, CfgEdge::Fallthrough);
+                self.current_block = label_block;
+
+                // Record label name → block mapping
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "identifier" || child.kind() == "statement_identifier" {
+                            if let Ok(label) = child.utf8_text(source.as_bytes()) {
+                                self.label_blocks.insert(label.to_string(), label_block);
+                            }
+                        }
+                    }
+                }
+
                 // Process the labeled statement's body
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
-                        if child.kind() != ":" && child.kind() != "identifier" {
+                        if child.kind() != ":"
+                            && child.kind() != "identifier"
+                            && child.kind() != "statement_identifier"
+                        {
                             self.process_statement(&child, source);
                         }
                     }
@@ -362,7 +400,17 @@ impl CfgBuilder {
         self.current_block = exit_block;
     }
 
-    fn build(self) -> FunctionCfg {
+    fn build(mut self) -> FunctionCfg {
+        // Wire pending goto edges now that all labels have been seen
+        let goto_edges: Vec<(BlockId, BlockId)> = self
+            .pending_gotos
+            .iter()
+            .filter_map(|(src, label)| self.label_blocks.get(label).map(|&tgt| (*src, tgt)))
+            .collect();
+        for (src, tgt) in goto_edges {
+            self.add_edge(src, tgt, CfgEdge::Goto);
+        }
+
         // Find exit blocks (blocks with Return edges, or the last block if it has no successors)
         let mut exits: Vec<BlockId> = self
             .edges
@@ -544,6 +592,26 @@ mod tests {
             .filter(|(_, _, e)| *e == CfgEdge::Return)
             .count();
         assert!(return_count >= 2);
+    }
+
+    #[test]
+    fn test_goto_edges() {
+        let code = r#"
+        void foo(int x) {
+            if (x < 0) goto skip;
+            int y = 42;
+            skip:
+            use(y);
+        }
+        "#;
+        let cfg = parse_and_build_cfg(code).unwrap();
+        let has_goto = cfg.edges.iter().any(|(_, _, e)| *e == CfgEdge::Goto);
+        assert!(has_goto, "Should have a goto edge");
+        // The label should create a new block
+        assert!(
+            cfg.block_count() >= 4,
+            "goto+label should create at least 4 blocks"
+        );
     }
 
     #[test]

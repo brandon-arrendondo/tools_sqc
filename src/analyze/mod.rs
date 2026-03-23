@@ -3,6 +3,7 @@ pub mod const_eval;
 pub mod context;
 pub mod dataflow;
 pub mod function_summary;
+pub mod init_state;
 pub mod null_state;
 pub mod prescan;
 pub mod suppression;

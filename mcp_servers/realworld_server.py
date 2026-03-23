@@ -2,7 +2,7 @@
 """
 MCP server for running sqc, cppcheck, and clang-tidy against real open-source
 codebases (libcrc, sqlite, mosquitto, curl, hostap) and tracking results with
-version+commit SHA tagging.
+version+commit SHA tagging. Results stored in SQLite (data/benchmarks.db).
 
 Supports local and remote execution via SSH. Remote hosts share identical paths
 (same username, same directory layout). Results are fetched back via scp.
@@ -11,9 +11,11 @@ Tools:
   run_analysis(tool, codebase, host) - Start one tool×codebase run (local or remote)
   run_all(codebase, tool, host)      - Convenience: run multiple combos
   get_status()                       - Show all active/completed/failed runs
-  get_results(run_id)                - Parse results for a run or latest version
-  compare_runs(base, target)         - Compare two version dirs
-  list_runs()                        - List all version directories
+  get_results(run, project)          - Per-project + per-rule results (SQLite-first)
+  compare_runs(base, target)         - Compare two runs with per-rule deltas
+  list_runs()                        - List all runs (SQLite + filesystem)
+  get_rule_trend(rule_id, project)   - Per-rule violation trend across versions
+  get_project_history(project)       - Per-project violation trend across versions
   cancel_run(run_id)                 - Cancel a specific or all active runs
   purge_run(run_id, zombies)         - Remove stale/zombie runs from tracking
   clear_results()                    - Remove old result directories
@@ -28,6 +30,7 @@ import shlex
 import shutil
 import signal
 import subprocess
+import sys
 import tempfile
 import time
 import xml.etree.ElementTree as ET
@@ -44,6 +47,14 @@ MANIFEST = PROJECT_DIR / "rules_templates" / "rules-benchmark.toml"
 SQC_BIN = PROJECT_DIR / "target" / "release" / "sqc"
 
 VALID_TOOLS = {"sqc", "cppcheck", "clang-tidy"}
+
+# ── SQLite backend ───────────────────────────────────────────────────────────
+sys.path.insert(0, str(PROJECT_DIR))
+from bench.db import BenchDB
+
+def _get_db() -> BenchDB:
+    """Get a BenchDB instance."""
+    return BenchDB()
 
 # ── Remote execution ─────────────────────────────────────────────────────────
 # Loaded from mcp/remote_hosts.json (gitignored). If missing, remote is disabled.
@@ -1118,6 +1129,12 @@ def get_status() -> str:
 
             statuses.append(entry)
 
+    # Auto-ingest completed runs into SQLite
+    if active_count == 0 and completed_count > 0:
+        version_dir = _get_version_dir()
+        if version_dir:
+            _auto_ingest_to_sqlite(version_dir)
+
     return json.dumps({
         "active": active_count,
         "completed": completed_count,
@@ -1132,71 +1149,89 @@ def get_status() -> str:
 
 
 @mcp.tool()
-def get_results(run_id: str | None = None) -> str:
+def get_results(run: str = "latest", project: str | None = None) -> str:
     """
-    Parse and display results for a specific run or all runs in the latest version dir.
+    Get results for a realworld benchmark run.
 
     Args:
-        run_id: Optional run ID (e.g. "sqc-libcrc-0.2.4-abc1234"). If omitted,
-                shows results for all runs in the latest version directory.
+        run: Run identifier — "latest" (default), sqc version (e.g. "0.3.28"),
+             commit SHA, or version dir name (e.g. "sqc-0.3.28-ae46ae3c").
+        project: Optional filter — only show results for this codebase
+                 (e.g. "curl", "hostap", "mosquitto", "sqlite", "libcrc").
 
-    For sqc: parses JSON export (violation count, per-rule breakdown).
-    For cppcheck: parses XML (error counts by id).
-    For clang-tidy: parses text output (warning counts by check name).
+    Returns per-project violation counts and per-rule breakdown from SQLite.
+    Falls back to filesystem result files if not in database.
     """
-    if run_id:
-        # Find specific run
-        state = _read_state()
-        run_info = state["runs"].get(run_id)
-        if not run_info:
-            return json.dumps({
-                "error": f"Run '{run_id}' not found in state.",
-                "available": sorted(state["runs"].keys()),
-            })
-        version_dir = Path(run_info["version_dir"])
-        result_file = _get_result_file(version_dir, run_id)
-        if not result_file:
-            return json.dumps({
-                "error": f"No result file found for '{run_id}'.",
-                "version_dir": str(version_dir),
-                "hint": "The run may still be in progress. Use get_status().",
-            })
-        parsed = _parse_result_file(run_id, result_file)
-        return json.dumps({
-            "run_id": run_id,
-            "tool": run_info.get("tool"),
-            "codebase": run_info.get("codebase"),
-            "version": run_info.get("version"),
-            "commit_sha": run_info.get("commit_sha"),
-            "result_file": str(result_file),
-            "total_violations": parsed["total"],
-            "per_rule_top20": dict(list(parsed["per_rule"].items())[:20]),
-            "total_rules": len(parsed["per_rule"]),
-        })
+    # ── Try SQLite first ─────────────────────────────────────────────────
+    try:
+        db = _get_db()
+        run_id = db.resolve_realworld_run(run)
+        if run_id:
+            summary = db.get_realworld_run_summary(run_id)
+            if "error" not in summary:
+                run_info = summary["run"]
+                projects = []
+                for r in summary["projects"]:
+                    if project and r["project"] != project:
+                        continue
+                    if r["tool"] != "sqc":
+                        continue
+                    proj_rules = summary["per_project_rules"].get(r["project"], [])
+                    projects.append({
+                        "project": r["project"],
+                        "violation_count": r["violation_count"],
+                        "c_files": r["c_files"],
+                        "loc": r["loc"],
+                        "top_rules": {
+                            rr["rule_id"]: rr["count"]
+                            for rr in proj_rules[:20]
+                        },
+                        "total_rules": len(proj_rules),
+                    })
 
-    # Show all results from latest version dir
-    version_dir = _get_version_dir()
+                # Overall rule summary (filtered by project if given)
+                if project:
+                    rule_summary = db.get_realworld_rule_summary(run_id, project)
+                else:
+                    rule_summary = summary["rule_summary"]
+
+                filtered_total = sum(p["violation_count"] for p in projects)
+
+                return json.dumps({
+                    "backend": "sqlite",
+                    "run_id": run_id,
+                    "sqc_version": run_info["sqc_version"],
+                    "commit_sha": run_info.get("commit_sha"),
+                    "scanned_at": run_info.get("scanned_at"),
+                    "total_violations": filtered_total,
+                    "projects": projects,
+                    "top_rules": [
+                        {"rule_id": r["rule_id"], "count": r["count"]}
+                        for r in rule_summary[:20]
+                    ],
+                    "total_rules": len(rule_summary),
+                })
+    except Exception:
+        pass
+
+    # ── Legacy fallback: filesystem ──────────────────────────────────────
+    version_dir = _resolve_version_dir(run if run != "latest" else None)
     if not version_dir:
         return json.dumps({
             "error": "No results found. Run run_analysis() or run_all() first.",
+            "hint": "Or specify a version/run that exists in the database.",
         })
 
     all_results = []
     for f in sorted(version_dir.iterdir()):
         if f.is_file() and f.suffix in (".json", ".xml", ".txt") and not f.stem.endswith(".log"):
-            # Skip log files
             if f.suffix == ".txt" and f.stem.endswith(".log"):
                 continue
             run_name = f.stem
             parsed = _parse_result_file(run_name, f)
-            # Extract tool and codebase from run_id pattern: {tool}-{codebase}-{version}-{sha}
-            parts = run_name.split("-")
-            tool_name = parts[0] if parts else "unknown"
-            codebase_name = parts[1] if len(parts) > 1 else "unknown"
-            # Handle clang-tidy (has hyphen in name)
-            if tool_name == "clang" and len(parts) > 1 and parts[1] == "tidy":
-                tool_name = "clang-tidy"
-                codebase_name = parts[2] if len(parts) > 2 else "unknown"
+            tool_name, codebase_name = _parse_run_id(run_name)
+            if project and codebase_name != project:
+                continue
 
             all_results.append({
                 "run_id": run_name,
@@ -1207,10 +1242,10 @@ def get_results(run_id: str | None = None) -> str:
                 "total_rules": len(parsed["per_rule"]),
             })
 
-    # Auto-ingest into SQLite if not already present
     _auto_ingest_to_sqlite(version_dir)
 
     return json.dumps({
+        "backend": "filesystem",
         "version_dir": str(version_dir),
         "dir_name": version_dir.name,
         "runs": all_results,
@@ -1221,11 +1256,7 @@ def get_results(run_id: str | None = None) -> str:
 def _auto_ingest_to_sqlite(version_dir: Path) -> None:
     """Ingest a realworld result dir into SQLite if not already present."""
     try:
-        import sys
-        sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-        from bench.db import BenchDB
-
-        db = BenchDB()
+        db = _get_db()
         dir_name = version_dir.name
 
         # Check if already ingested (match by notes field)
@@ -1246,31 +1277,95 @@ def _auto_ingest_to_sqlite(version_dir: Path) -> None:
 
 
 @mcp.tool()
-def compare_runs(base_version: str, target_version: str,
-                 codebase: str | None = None, tool: str | None = None) -> str:
+def compare_runs(base: str, target: str,
+                 project: str | None = None) -> str:
     """
-    Compare results between two version directories.
+    Compare two realworld benchmark runs showing per-rule violation deltas.
 
     Args:
-        base_version: Base (older) version dir name, commit SHA, or "latest"
-        target_version: Target (newer) version dir name, commit SHA, or "latest"
-        codebase: Optional filter — only compare this codebase
-        tool: Optional filter — only compare this tool
+        base: Base (older) run — sqc version (e.g. "0.3.27"), commit SHA,
+              version dir name, or "latest"
+        target: Target (newer) run — same formats as base
+        project: Optional filter — only compare this codebase
 
-    Returns violation count deltas per tool per codebase.
+    Returns overall and per-project violation deltas with per-rule breakdown.
     Positive delta = regression (more violations), negative = improvement.
     """
-    base_dir = _resolve_version_dir(base_version)
-    target_dir = _resolve_version_dir(target_version)
+    # ── Try SQLite first ─────────────────────────────────────────────────
+    try:
+        db = _get_db()
+        base_id = db.resolve_realworld_run(base)
+        target_id = db.resolve_realworld_run(target)
+        if base_id and target_id:
+            if base_id == target_id:
+                return json.dumps({
+                    "error": "Base and target resolve to the same run.",
+                    "resolved_id": base_id,
+                })
+
+            base_run = db.get_realworld_run(base_id)
+            target_run = db.get_realworld_run(target_id)
+
+            # Overall comparison
+            overall = db.compare_realworld_runs(base_id, target_id, project)
+
+            # Per-project comparisons
+            base_results = db.get_realworld_results(base_id)
+            target_results = db.get_realworld_results(target_id)
+
+            # Collect project names (sqc only)
+            base_projects = {r["project"] for r in base_results if r["tool"] == "sqc"}
+            target_projects = {r["project"] for r in target_results if r["tool"] == "sqc"}
+            all_projects = sorted(base_projects | target_projects)
+            if project:
+                all_projects = [p for p in all_projects if p == project]
+
+            per_project = []
+            for proj in all_projects:
+                comp = db.compare_realworld_runs(base_id, target_id, proj)
+                per_project.append({
+                    "project": proj,
+                    "base_total": comp["base_total"],
+                    "target_total": comp["target_total"],
+                    "delta": comp["delta_total"],
+                    "top_rule_changes": comp["rule_deltas"][:15],
+                })
+
+            return json.dumps({
+                "backend": "sqlite",
+                "base": {
+                    "run_id": base_id,
+                    "sqc_version": base_run["sqc_version"],
+                    "commit_sha": base_run.get("commit_sha"),
+                },
+                "target": {
+                    "run_id": target_id,
+                    "sqc_version": target_run["sqc_version"],
+                    "commit_sha": target_run.get("commit_sha"),
+                },
+                "overall": {
+                    "base_total": overall["base_total"],
+                    "target_total": overall["target_total"],
+                    "delta": overall["delta_total"],
+                    "top_rule_changes": overall["rule_deltas"][:20],
+                },
+                "per_project": per_project,
+            })
+    except Exception:
+        pass
+
+    # ── Legacy fallback: filesystem ──────────────────────────────────────
+    base_dir = _resolve_version_dir(base)
+    target_dir = _resolve_version_dir(target)
 
     if not base_dir:
         return json.dumps({
-            "error": f"Could not resolve base version '{base_version}'.",
+            "error": f"Could not resolve base version '{base}'.",
             "available": [d["dir_name"] for d in _list_version_dirs()],
         })
     if not target_dir:
         return json.dumps({
-            "error": f"Could not resolve target version '{target_version}'.",
+            "error": f"Could not resolve target version '{target}'.",
             "available": [d["dir_name"] for d in _list_version_dirs()],
         })
     if base_dir == target_dir:
@@ -1282,26 +1377,16 @@ def compare_runs(base_version: str, target_version: str,
     base_results = _load_version_results(base_dir)
     target_results = _load_version_results(target_dir)
 
-    # Filter
-    if tool:
-        tool = tool.strip().lower()
-    if codebase:
-        codebase = codebase.strip().lower()
-
     comparisons = []
     all_keys = set(base_results) | set(target_results)
     for key in sorted(all_keys):
-        # key is (tool, codebase)
         k_tool, k_codebase = key
-        if tool and k_tool != tool:
-            continue
-        if codebase and k_codebase != codebase:
+        if project and k_codebase != project:
             continue
 
         b = base_results.get(key, {"total": 0, "per_rule": {}})
         t = target_results.get(key, {"total": 0, "per_rule": {}})
 
-        # Per-rule deltas
         all_rules = set(b["per_rule"]) | set(t["per_rule"])
         rule_deltas = []
         for r in sorted(all_rules):
@@ -1326,6 +1411,7 @@ def compare_runs(base_version: str, target_version: str,
         })
 
     return json.dumps({
+        "backend": "filesystem",
         "base_dir": base_dir.name,
         "target_dir": target_dir.name,
         "comparisons": comparisons,
@@ -1336,23 +1422,160 @@ def compare_runs(base_version: str, target_version: str,
 @mcp.tool()
 def list_runs() -> str:
     """
-    List all version directories and their result files.
+    List all available realworld benchmark runs (from SQLite DB and filesystem).
 
-    Shows version, commit SHA, number of result files, size,
-    and modification date for each version directory.
+    Shows sqc version, commit SHA, project count, violation count, and source.
+    Use version strings or dir names as identifiers in compare_runs() and get_results().
     """
-    dirs = _list_version_dirs()
-    if not dirs:
+    all_runs = []
+    seen_versions = set()
+
+    # SQLite runs
+    try:
+        db = _get_db()
+        for r in db.list_realworld_runs():
+            results = db.get_realworld_results(r["id"])
+            sqc_results = [rr for rr in results if rr["tool"] == "sqc"]
+            total_violations = sum(rr["violation_count"] for rr in sqc_results)
+            projects = [rr["project"] for rr in sqc_results]
+            all_runs.append({
+                "run_id": r["id"],
+                "sqc_version": r["sqc_version"],
+                "commit_sha": r.get("commit_sha"),
+                "scanned_at": r.get("scanned_at"),
+                "projects": projects,
+                "project_count": len(projects),
+                "total_violations": total_violations,
+                "notes": r.get("notes"),
+                "backend": "sqlite",
+            })
+            seen_versions.add(r["sqc_version"])
+    except Exception:
+        pass
+
+    # Filesystem dirs (only add if not already in SQLite)
+    for d in _list_version_dirs():
+        # Extract version from dir name: sqc-{version}-{sha}
+        parts = d["dir_name"].split("-", 2)
+        version = parts[1] if len(parts) > 1 else d["dir_name"]
+        if version not in seen_versions:
+            d["backend"] = "filesystem"
+            all_runs.append(d)
+
+    if not all_runs:
         return json.dumps({
             "runs": [],
-            "message": f"No result directories found under {RESULTS_BASE}.",
+            "message": "No benchmark runs found. Use run_all() to start one.",
         })
 
     return json.dumps({
-        "runs": dirs,
-        "count": len(dirs),
-        "message": f"{len(dirs)} version directory(ies) found.",
+        "runs": all_runs,
+        "count": len(all_runs),
+        "message": (
+            f"{len(all_runs)} benchmark run(s) found. "
+            "Use sqc_version or dir names in compare_runs() and get_results()."
+        ),
     })
+
+
+@mcp.tool()
+def get_rule_trend(rule_id: str, project: str | None = None) -> str:
+    """
+    Get a rule's violation count trend across all realworld benchmark runs.
+
+    Args:
+        rule_id: CERT C rule ID (e.g. "EXP34-C", "INT32-C")
+        project: Optional filter — only show trend for this codebase
+
+    Returns per-version violation counts, showing how a rule's detections
+    change across sqc versions. Useful for tracking FP reduction progress.
+    """
+    try:
+        db = _get_db()
+        rows = db.get_realworld_rule_trend(rule_id, project)
+        if not rows:
+            return json.dumps({
+                "rule_id": rule_id,
+                "project": project,
+                "message": "No data found for this rule. Check rule_id spelling.",
+            })
+
+        # Group by version for summary
+        by_version: dict[str, dict] = {}
+        for r in rows:
+            ver = r["sqc_version"]
+            if ver not in by_version:
+                by_version[ver] = {"sqc_version": ver, "run_id": r["run_id"],
+                                    "total": 0, "per_project": {}}
+            by_version[ver]["total"] += r["count"]
+            by_version[ver]["per_project"][r["project"]] = r["count"]
+
+        versions = list(by_version.values())
+
+        # Compute deltas between consecutive versions
+        for i in range(1, len(versions)):
+            versions[i]["delta"] = versions[i]["total"] - versions[i - 1]["total"]
+        if versions:
+            versions[0]["delta"] = 0
+
+        return json.dumps({
+            "rule_id": rule_id,
+            "project": project,
+            "versions": versions,
+            "total_runs": len(versions),
+        })
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
+@mcp.tool()
+def get_project_history(project: str) -> str:
+    """
+    Get violation count history for a project across all sqc versions.
+
+    Args:
+        project: Codebase name (e.g. "curl", "hostap", "mosquitto", "sqlite", "libcrc")
+
+    Returns per-version total violation count and top rule changes.
+    """
+    try:
+        db = _get_db()
+        runs = db.list_realworld_runs()
+        if not runs:
+            return json.dumps({"error": "No runs in database."})
+
+        history = []
+        for run in runs:
+            results = db.get_realworld_results(run["id"])
+            sqc_result = next((r for r in results
+                               if r["project"] == project and r["tool"] == "sqc"), None)
+            if not sqc_result:
+                continue
+            rule_summary = db.get_realworld_rule_summary(run["id"], project)
+            history.append({
+                "sqc_version": run["sqc_version"],
+                "run_id": run["id"],
+                "violation_count": sqc_result["violation_count"],
+                "top_rules": [
+                    {"rule_id": r["rule_id"], "count": r["count"]}
+                    for r in rule_summary[:10]
+                ],
+            })
+
+        # Compute deltas
+        for i in range(1, len(history)):
+            history[i]["delta"] = (history[i]["violation_count"]
+                                   - history[i - 1]["violation_count"])
+        if history:
+            history[0]["delta"] = 0
+
+        return json.dumps({
+            "project": project,
+            "history": history,
+            "total_runs": len(history),
+        })
+    except Exception as e:
+        return json.dumps({"error": str(e)})
 
 
 @mcp.tool()

@@ -76,7 +76,11 @@ impl Int07C {
             let decl_text = get_node_text(node, source);
 
             // Check if this is a char declaration (not signed char or unsigned char)
-            if self.is_plain_char_declaration(&decl_text) {
+            // Skip char* pointers and char[] arrays — INT07-C is about char VALUE signedness,
+            // not pointer arithmetic on char*.
+            if self.is_plain_char_declaration(&decl_text)
+                && !self.is_pointer_or_array_declaration(node)
+            {
                 if let Some(var_name) = self.extract_var_name(node, source) {
                     plain_char_vars.insert(
                         var_name,
@@ -93,7 +97,9 @@ impl Int07C {
         if node.kind() == "parameter_declaration" {
             let param_text = get_node_text(node, source);
 
-            if self.is_plain_char_declaration(&param_text) {
+            if self.is_plain_char_declaration(&param_text)
+                && !self.is_pointer_or_array_declaration(node)
+            {
                 if let Some(var_name) = self.extract_param_name(node, source) {
                     plain_char_vars.insert(
                         var_name,
@@ -112,6 +118,31 @@ impl Int07C {
                 self.find_plain_char_vars(&child, source, plain_char_vars);
             }
         }
+    }
+
+    /// Check if a declaration/parameter contains a pointer or array declarator.
+    /// Used to skip `char *pos` and `char buf[N]` — only flag plain `char c` values.
+    fn is_pointer_or_array_declaration(&self, node: &Node) -> bool {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "pointer_declarator" | "array_declarator" => return true,
+                    "init_declarator" => {
+                        for j in 0..child.child_count() {
+                            if let Some(grandchild) = child.child(j) {
+                                if grandchild.kind() == "pointer_declarator"
+                                    || grandchild.kind() == "array_declarator"
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        false
     }
 
     /// Check if declaration text represents a plain char (not signed/unsigned char)

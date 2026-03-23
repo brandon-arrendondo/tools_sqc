@@ -151,7 +151,9 @@ impl Api00C {
         let pointer_params: Vec<String> = params
             .iter()
             .filter(|(name, param_type)| {
-                is_pointer_type(param_type) && !(has_debug_params && self.is_debug_parameter(name))
+                is_pointer_type(param_type)
+                    && !(has_debug_params && self.is_debug_parameter(name))
+                    && !self.is_callback_context_parameter(name)
             })
             .map(|(name, _)| name.clone())
             .collect();
@@ -499,6 +501,15 @@ impl Api00C {
                             }
                         }
                     }
+                    // Recurse into preprocessor blocks — validation may be
+                    // inside #ifdef/#if/#else branches
+                    "preproc_ifdef"
+                    | "preproc_if"
+                    | "preproc_else"
+                    | "preproc_elif"
+                    | "preproc_function_def" => {
+                        self.check_validation_patterns(&child, pointer_params, source, validated);
+                    }
                     _ => {}
                 }
             }
@@ -569,7 +580,7 @@ impl Api00C {
             }
 
             // Check for positive validation (parameter being checked for truthiness)
-            // e.g., if (file && !ferror(file))
+            // e.g., if (file && !ferror(file)), or bare if(ptr) / if (ptr)
             if !is_validated {
                 let positive_patterns = vec![
                     format!("{} &&", param),  // ptr &&
@@ -583,6 +594,21 @@ impl Api00C {
                     if condition_text.contains(pattern) {
                         is_validated = true;
                         break;
+                    }
+                }
+
+                // Bare truthiness: condition IS the parameter itself
+                // e.g., if(ptr) { use } else { return NULL; }
+                if !is_validated {
+                    let trimmed = condition_text.trim();
+                    // Strip outer parens: "(ptr)" → "ptr"
+                    let inner = if trimmed.starts_with('(') && trimmed.ends_with(')') {
+                        trimmed[1..trimmed.len() - 1].trim()
+                    } else {
+                        trimmed
+                    };
+                    if inner == param {
+                        is_validated = true;
                     }
                 }
             }
@@ -1042,6 +1068,27 @@ impl Api00C {
         matches!(
             param_name.to_lowercase().as_str(),
             "file" | "filename" | "func" | "function" | "function_name" | "line" | "lineno"
+        )
+    }
+
+    /// Check if a parameter is a callback/handler context parameter.
+    /// These are opaque data pointers passed through event dispatch systems
+    /// and are not intended to be validated by the handler itself.
+    fn is_callback_context_parameter(&self, param_name: &str) -> bool {
+        let lower = param_name.to_lowercase();
+        matches!(
+            lower.as_str(),
+            "userdata"
+                | "user_data"
+                | "cb_arg"
+                | "cb_data"
+                | "cb_ctx"
+                | "callback_data"
+                | "callback_context"
+                | "priv"
+                | "opaque"
+                | "closure"
+                | "functor_context"
         )
     }
 }
