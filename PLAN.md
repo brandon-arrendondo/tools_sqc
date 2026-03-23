@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-23 (v0.3.36 changes committed, benchmark pending)
+**Last Updated**: 2026-03-23 (v0.3.37 changes committed, benchmark pending)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -38,6 +38,9 @@ v0.3.36:
 - **ARR36-C**: CWE-469 — strchr/wcschr return tracking for cross-array subtraction (36/36 TP, 0 FP)
 - **STR03-C**: CWE-464 — (char)atoi() sentinel detection (38/38 TP, 0 FP)
 - **API07-C**: CWE-843 — void* type confusion detection (40/40 TP, 0 FP)
+
+v0.3.37:
+- **FIO30-C**: CWE-134 format string — recv/recvfrom/recvmsg taint tracking + macro alias resolution + cast/offset expression handling (3,360 Juliet files, previously 0 FIO30-C detections)
 
 Preliminary hostap-only result (work machine, fresh clone at `2a98e6b98`):
 - EXP33-C: 3,611 (down from ~5,201 baseline, **-30.6%**)
