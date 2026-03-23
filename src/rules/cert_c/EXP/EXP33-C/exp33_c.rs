@@ -122,10 +122,6 @@ impl CertRule for Exp33C {
         // Recurse into child nodes (handles preproc blocks, nested structures)
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                // Skip function bodies — already handled above
-                if child.kind() == "function_definition" && node.kind() != "translation_unit" {
-                    continue;
-                }
                 violations.extend(self.check(&child, source));
             }
         }
