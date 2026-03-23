@@ -31,12 +31,22 @@ v0.3.32 per-rule data (all 5 codebases, 150.3K total violations, rules-benchmark
 
 See [CHANGELOG.md](CHANGELOG.md) for completed items.
 
+### EXP33-C CFG Rewrite — Complete (52/52 tests pass)
+
+EXP33-C rewritten to CFG-based forward dataflow (init_state.rs). All 52 integration tests pass (+ 15 unit tests).
+
+Two detection gaps fixed:
+
+1. **Flexible array member** (fixed): Field writes on MallocUninitialized pointers no longer upgrade to MallocInitialized (only subscript/deref writes do). `check_subscript_read` now extracts root variable through field_expression chains (`arr->data[i]` → `arr`).
+
+2. **Realloc wrapper** (fixed): `classify_initializer` now takes `InitAnalysisConfig` and checks `realloc_wrapper_fns` (pre-scanned functions that wrap `realloc()` without `memset`). `array = resize_array(array, NEW_SIZE)` correctly produces MallocUninitialized.
+
 ### Benchmark Infrastructure: Remaining
 
 - [x] Per-rule violation counts in realworld benchmark DB (1.6M individual violations stored, per-rule queries exposed via MCP tools)
 - [x] `get_rule_trend()` and `get_project_history()` MCP query tools
 - [x] SQLite-first pattern for realworld `get_results()`, `compare_runs()`, `list_runs()` (matches Juliet pattern)
-- Remove legacy shell scripts after full migration validation
+- [x] Remove legacy shell scripts after full migration validation
 
 ### Prescan Quality Audit (Priority 2)
 

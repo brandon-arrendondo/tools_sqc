@@ -1,0 +1,1392 @@
+//! Initialization-state forward dataflow analysis using the CFG.
+//!
+//! Tracks whether local variables have been initialized at every point in a
+//! function. Used by EXP33-C to detect reads of uninitialized memory with
+//! proper flow sensitivity through branches, loops, and early returns.
+
+use super::cfg::{BasicBlock, BlockId, CfgEdge, FunctionCfg};
+use super::dataflow::find_node_at_range;
+use std::collections::{HashMap, HashSet, VecDeque};
+use tree_sitter::Node;
+
+// ---------------------------------------------------------------------------
+// Init lattice
+// ---------------------------------------------------------------------------
+
+/// Initialization state for a single variable.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InitState {
+    /// Definitely uninitialized on all reaching paths.
+    Uninitialized,
+    /// Initialized on some paths but not all.
+    MaybeUninitialized,
+    /// Definitely initialized on all reaching paths.
+    Initialized,
+    /// Allocated via malloc/alloca — pointer is set but content is uninitialized.
+    MallocUninitialized,
+    /// Allocated and content written (calloc, memset after malloc, etc.).
+    MallocInitialized,
+}
+
+impl InitState {
+    /// Lattice join: merge two states from converging paths.
+    pub fn join(self, other: InitState) -> InitState {
+        use InitState::*;
+        if self == other {
+            return self;
+        }
+        match (self, other) {
+            // MallocUninitialized + MallocInitialized → MallocInitialized
+            // If content was initialized on any path, treat as initialized.
+            // Catches loop-based initialization patterns (alloc then loop-write).
+            (MallocUninitialized, MallocInitialized) | (MallocInitialized, MallocUninitialized) => {
+                MallocInitialized
+            }
+            // Initialized + Uninitialized → MaybeUninitialized
+            (Initialized, Uninitialized) | (Uninitialized, Initialized) => MaybeUninitialized,
+            // Initialized + Malloc* → Initialized for the pointer itself.
+            // The pointer is assigned on all paths; only content differs.
+            (Initialized, MallocUninitialized)
+            | (MallocUninitialized, Initialized)
+            | (Initialized, MallocInitialized)
+            | (MallocInitialized, Initialized) => Initialized,
+            // MaybeUninitialized absorbs everything
+            (MaybeUninitialized, _) | (_, MaybeUninitialized) => MaybeUninitialized,
+            // Uninitialized + Malloc* → MaybeUninitialized
+            _ => MaybeUninitialized,
+        }
+    }
+
+    /// Returns true if a read at this state is potentially unsafe.
+    pub fn is_unsafe(self) -> bool {
+        matches!(
+            self,
+            InitState::Uninitialized | InitState::MaybeUninitialized
+        )
+    }
+
+    /// Returns true if content access (dereference/subscript) is unsafe.
+    pub fn is_content_unsafe(self) -> bool {
+        matches!(
+            self,
+            InitState::Uninitialized
+                | InitState::MaybeUninitialized
+                | InitState::MallocUninitialized
+        )
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Variable metadata
+// ---------------------------------------------------------------------------
+
+/// Per-variable info tracked alongside InitState.
+#[derive(Debug, Clone, PartialEq)]
+pub struct VarInfo {
+    pub state: InitState,
+    pub is_unsigned_char: bool,
+    pub is_array: bool,
+    pub is_static: bool,
+}
+
+impl VarInfo {
+    pub fn new(state: InitState) -> Self {
+        Self {
+            state,
+            is_unsigned_char: false,
+            is_array: false,
+            is_static: false,
+        }
+    }
+}
+
+/// State map: variable name -> VarInfo.
+pub type InitStateMap = HashMap<String, VarInfo>;
+
+/// Join two state maps (union of keys, lattice join per key).
+/// Variables present in one map but not the other are copied as-is from
+/// the side that has them. This handles loop-local variables that are
+/// only declared inside one branch.
+fn join_states(a: &InitStateMap, b: &InitStateMap) -> InitStateMap {
+    let mut result = a.clone();
+    for (var, info_b) in b {
+        let entry = result.entry(var.clone()).or_insert_with(|| info_b.clone());
+        if entry.state != info_b.state {
+            entry.state = entry.state.join(info_b.state);
+        }
+    }
+    result
+}
+
+/// Join with goto-awareness: variables present in `normal_path` but absent
+/// in `goto_path` are treated as Uninitialized on the goto path (the goto
+/// skipped the declaration).
+fn join_with_goto(normal_path: &InitStateMap, goto_path: &InitStateMap) -> InitStateMap {
+    let mut result = HashMap::new();
+    let all_keys: HashSet<&String> = normal_path.keys().chain(goto_path.keys()).collect();
+    for var in all_keys {
+        match (normal_path.get(var), goto_path.get(var)) {
+            (Some(ia), Some(ib)) => {
+                let mut merged = ia.clone();
+                merged.state = ia.state.join(ib.state);
+                result.insert(var.clone(), merged);
+            }
+            (Some(ia), None) => {
+                // Variable declared on normal path, skipped by goto
+                let mut merged = ia.clone();
+                merged.state = ia.state.join(InitState::Uninitialized);
+                result.insert(var.clone(), merged);
+            }
+            (None, Some(ib)) => {
+                result.insert(var.clone(), ib.clone());
+            }
+            (None, None) => unreachable!(),
+        }
+    }
+    result
+}
+
+// ---------------------------------------------------------------------------
+// Analysis result
+// ---------------------------------------------------------------------------
+
+/// Result of init-state analysis for one function.
+#[allow(dead_code)]
+pub struct InitAnalysisResult {
+    pub block_entry_states: HashMap<BlockId, InitStateMap>,
+    pub block_exit_states: HashMap<BlockId, InitStateMap>,
+    /// Variables tracked during analysis.
+    pub tracked_vars: HashSet<String>,
+}
+
+// ---------------------------------------------------------------------------
+// Known function behavior
+// ---------------------------------------------------------------------------
+
+/// Functions that initialize their output arguments.
+pub const INITIALIZING_FUNCTIONS: &[&str] = &[
+    "memset",
+    "memcpy",
+    "memmove",
+    "strcpy",
+    "strncpy",
+    "sprintf",
+    "snprintf",
+    "fgets",
+    "fread",
+    "read",
+    "recv",
+    "scanf",
+    "fscanf",
+    "sscanf",
+    "gets",
+    "bzero",
+    "strcat",
+    "strncat",
+    // POSIX/system functions that initialize via output pointers
+    "gettimeofday",
+    "getaddrinfo",
+    "stat",
+    "fstat",
+    "lstat",
+    "getrusage",
+    "getsockname",
+    "getpeername",
+    "clock_gettime",
+    "pthread_attr_init",
+    "pthread_mutex_init",
+    "pthread_cond_init",
+    "regcomp",
+    "regexec",
+    "sigaction",
+    "sigemptyset",
+    "sigfillset",
+    "mbrlen",
+    "mbrtowc",
+    "mbsrtowcs",
+    "wcrtomb",
+    "wcsrtombs",
+];
+
+/// Get which argument indices are output (initialized) for known functions.
+pub fn get_output_arg_indices(func_name: &str) -> Vec<usize> {
+    match func_name {
+        "memset" | "memcpy" | "memmove" | "strcpy" | "strncpy" | "sprintf" | "snprintf"
+        | "strcat" | "strncat" | "bzero" => vec![0],
+        "fgets" | "gets" => vec![0],
+        "fread" | "read" | "recv" => vec![0],
+        "scanf" | "fscanf" | "sscanf" => vec![],
+        "gettimeofday" => vec![0],
+        "getaddrinfo" => vec![3],
+        "stat" | "fstat" | "lstat" => vec![1],
+        "getrusage" => vec![1],
+        "getsockname" | "getpeername" => vec![1, 2],
+        "clock_gettime" => vec![1],
+        "pthread_attr_init" | "pthread_mutex_init" | "pthread_cond_init" => vec![0],
+        "sigaction" => vec![2],
+        "sigemptyset" | "sigfillset" => vec![0],
+        "regcomp" => vec![0],
+        "mbrlen" | "mbrtowc" | "mbsrtowcs" | "wcrtomb" | "wcsrtombs" => vec![],
+        "regexec" => vec![],
+        _ => vec![0], // Default: first arg is output
+    }
+}
+
+/// Functions known to only READ from their pointer arguments (not initialize).
+pub fn is_non_initializing_function(func_name: &str) -> bool {
+    matches!(
+        func_name,
+        "mbrlen"
+            | "mbrtowc"
+            | "mbsrtowcs"
+            | "wcrtomb"
+            | "wcsrtombs"
+            | "regexec"
+            | "memcmp"
+            | "strcmp"
+            | "strncmp"
+            | "wmemcmp"
+            | "wcscmp"
+            | "wcsncmp"
+            | "printf"
+            | "fprintf"
+            | "vprintf"
+            | "vfprintf"
+            | "puts"
+            | "fputs"
+            | "putchar"
+            | "fputc"
+            | "strlen"
+            | "wcslen"
+            | "strchr"
+            | "strrchr"
+            | "strstr"
+            | "strpbrk"
+            | "crc32"
+            | "md5"
+            | "sha1"
+            | "sha256"
+            | "fwrite"
+            | "write"
+            | "send"
+            | "sendto"
+    )
+}
+
+/// For-each macros that initialize the first (iterator) argument.
+pub const FOR_EACH_MACROS: &[&str] = &[
+    "dl_list_for_each",
+    "dl_list_for_each_safe",
+    "dl_list_for_each_reverse",
+    "for_each_link",
+    "TAILQ_FOREACH",
+    "TAILQ_FOREACH_SAFE",
+    "LIST_FOREACH",
+    "LIST_FOREACH_SAFE",
+    "SLIST_FOREACH",
+    "SLIST_FOREACH_SAFE",
+    "STAILQ_FOREACH",
+    "STAILQ_FOREACH_SAFE",
+    "RB_FOREACH",
+    "SIMPLEQ_FOREACH",
+    "CIRCLEQ_FOREACH",
+];
+
+// ---------------------------------------------------------------------------
+// Analysis configuration
+// ---------------------------------------------------------------------------
+
+/// Configuration for init-state analysis, carrying interprocedural info.
+#[derive(Default)]
+pub struct InitAnalysisConfig {
+    /// Functions that only conditionally initialize pointer parameters.
+    /// `&var` passed to these functions should NOT be assumed initialized.
+    pub conditionally_init_fns: HashSet<String>,
+    /// Functions that wrap realloc (return uninitialized new portion).
+    pub realloc_wrapper_fns: HashSet<String>,
+}
+
+// ---------------------------------------------------------------------------
+// Transfer function
+// ---------------------------------------------------------------------------
+
+/// Apply the transfer function: simulate all statements in a basic block,
+/// updating the init-state map.
+fn apply_transfer(
+    block: &BasicBlock,
+    entry_state: &InitStateMap,
+    body: &Node,
+    source: &str,
+    tracked_vars: &mut HashSet<String>,
+    config: &InitAnalysisConfig,
+) -> InitStateMap {
+    let mut state = entry_state.clone();
+    for &(start, end) in &block.statements {
+        if let Some(stmt_node) = find_node_at_range(body, start, end) {
+            process_statement(&stmt_node, source, &mut state, tracked_vars, config);
+        }
+    }
+    state
+}
+
+/// Process a single statement for initialization effects.
+fn process_statement(
+    node: &Node,
+    source: &str,
+    state: &mut InitStateMap,
+    tracked_vars: &mut HashSet<String>,
+    config: &InitAnalysisConfig,
+) {
+    match node.kind() {
+        "declaration" => process_declaration(node, source, state, tracked_vars, config),
+        "expression_statement" => {
+            // Unwrap to the actual expression
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() != ";" {
+                        process_expression(&child, source, state, tracked_vars, config);
+                    }
+                }
+            }
+        }
+        "assignment_expression" | "update_expression" | "call_expression" | "comma_expression" => {
+            process_expression(node, source, state, tracked_vars, config);
+        }
+        // For-loop initializer declarations appear directly as nodes
+        "init_declarator" => {
+            // Part of a declaration processed at the statement level
+        }
+        _ => {
+            // Recursively search for init-relevant expressions in nested nodes
+            // (e.g., call inside binary_expression inside parenthesized_expression)
+            find_and_process_init_expressions(node, source, state, tracked_vars, config);
+        }
+    }
+}
+
+/// Process a declaration for initialization tracking.
+fn process_declaration(
+    node: &Node,
+    source: &str,
+    state: &mut InitStateMap,
+    tracked_vars: &mut HashSet<String>,
+    config: &InitAnalysisConfig,
+) {
+    // Determine type properties
+    let type_text = extract_type_text(node, source);
+    let is_unsigned_char = type_text.contains("unsigned char")
+        || type_text.contains("uint8_t")
+        || type_text.contains("BYTE");
+    let is_static = type_text.contains("static") || type_text.contains("_Thread_local");
+
+    // Process each declarator
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "init_declarator" => {
+                    let var_name = get_declarator_name(&child, source);
+                    if var_name.is_empty() {
+                        continue;
+                    }
+                    tracked_vars.insert(var_name.clone());
+
+                    // Has initializer — determine what kind
+                    if let Some(value) = child.child_by_field_name("value") {
+                        let init_state = classify_initializer(&value, source, config);
+                        let is_array = is_array_declarator(&child);
+                        let mut info = VarInfo::new(init_state);
+                        info.is_unsigned_char = is_unsigned_char;
+                        info.is_array = is_array;
+                        info.is_static = is_static;
+                        state.insert(var_name, info);
+                    }
+                }
+                "identifier" => {
+                    // Plain declaration without initializer: `int x;`
+                    let var_name = get_text(node, &child, source);
+                    if !var_name.is_empty() && !is_type_keyword(&var_name) {
+                        tracked_vars.insert(var_name.clone());
+                        let init_state = if is_static {
+                            // Static/thread-local vars are zero-initialized by the C standard,
+                            // but EXP33-C recommends explicit initialization. Track as
+                            // Uninitialized with is_static=true for softer reporting.
+                            InitState::Uninitialized
+                        } else {
+                            InitState::Uninitialized
+                        };
+                        let is_array = false;
+                        let mut info = VarInfo::new(init_state);
+                        info.is_unsigned_char = is_unsigned_char;
+                        info.is_array = is_array;
+                        info.is_static = is_static;
+                        state.insert(var_name, info);
+                    }
+                }
+                "pointer_declarator" | "array_declarator" => {
+                    // `int *p;` or `int arr[10];` without initializer
+                    let var_name = get_declarator_name(&child, source);
+                    if !var_name.is_empty() {
+                        tracked_vars.insert(var_name.clone());
+                        let init_state = InitState::Uninitialized;
+                        let is_array = child.kind() == "array_declarator";
+                        let mut info = VarInfo::new(init_state);
+                        info.is_unsigned_char = is_unsigned_char;
+                        info.is_array = is_array;
+                        info.is_static = is_static;
+                        state.insert(var_name, info);
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Classify an initializer expression to determine init state.
+fn classify_initializer(value: &Node, source: &str, config: &InitAnalysisConfig) -> InitState {
+    let text = value.utf8_text(source.as_bytes()).unwrap_or("");
+
+    // Check for malloc/calloc/alloca patterns
+    if value.kind() == "call_expression" {
+        if let Some(func) = value.child_by_field_name("function") {
+            let func_name = func.utf8_text(source.as_bytes()).unwrap_or("");
+            match func_name {
+                "calloc" => return InitState::MallocInitialized,
+                "malloc" | "alloca" | "ALLOCA" => return InitState::MallocUninitialized,
+                "realloc" => return InitState::MallocUninitialized,
+                _ => {
+                    // Check realloc wrapper functions (identified by pre-scan)
+                    if config.realloc_wrapper_fns.contains(func_name) {
+                        return InitState::MallocUninitialized;
+                    }
+                }
+            }
+        }
+    }
+
+    // Cast expressions: (type *)malloc(...)
+    if value.kind() == "cast_expression" {
+        for i in 0..value.child_count() {
+            if let Some(child) = value.child(i) {
+                if child.kind() == "call_expression" {
+                    return classify_initializer(&child, source, config);
+                }
+            }
+        }
+    }
+
+    // Check for text-based malloc patterns (macro wrappers)
+    if text.contains("malloc(") || text.contains("alloca(") || text.contains("ALLOCA(") {
+        return InitState::MallocUninitialized;
+    }
+    if text.contains("calloc(") {
+        return InitState::MallocInitialized;
+    }
+    if text.contains("realloc(") {
+        return InitState::MallocUninitialized;
+    }
+
+    InitState::Initialized
+}
+
+/// Process an expression for initialization effects.
+fn process_expression(
+    node: &Node,
+    source: &str,
+    state: &mut InitStateMap,
+    tracked_vars: &mut HashSet<String>,
+    config: &InitAnalysisConfig,
+) {
+    match node.kind() {
+        "assignment_expression" => {
+            // First, process the RHS for side effects (e.g., function calls
+            // that initialize other variables via &output_param)
+            if let Some(right) = node.child_by_field_name("right") {
+                find_and_process_init_expressions(&right, source, state, tracked_vars, config);
+            }
+
+            // Then process the LHS assignment
+            if let Some(left) = node.child_by_field_name("left") {
+                let var_name = if left.kind() == "identifier" {
+                    left.utf8_text(source.as_bytes()).unwrap_or("").to_string()
+                } else if left.kind() == "pointer_expression" {
+                    extract_deref_target(&left, source)
+                } else if left.kind() == "subscript_expression" {
+                    extract_subscript_base(&left, source)
+                } else if left.kind() == "field_expression" {
+                    extract_field_base(&left, source)
+                } else {
+                    String::new()
+                };
+
+                if !var_name.is_empty() {
+                    if let Some(info) = state.get_mut(&var_name) {
+                        if left.kind() == "identifier" {
+                            if let Some(right) = node.child_by_field_name("right") {
+                                info.state = classify_initializer(&right, source, config);
+                            } else {
+                                info.state = InitState::Initialized;
+                            }
+                        } else {
+                            match info.state {
+                                InitState::MallocUninitialized => {
+                                    // Field writes (ptr->field = val) don't initialize
+                                    // the entire allocation — flexible array members
+                                    // and other fields may remain uninitialized.
+                                    // Only subscript/deref writes upgrade.
+                                    if left.kind() != "field_expression" {
+                                        info.state = InitState::MallocInitialized;
+                                    }
+                                }
+                                InitState::Uninitialized => {
+                                    if left.kind() == "field_expression" {
+                                        info.state = InitState::Initialized;
+                                    }
+                                    if left.kind() == "subscript_expression" {
+                                        info.state = InitState::Initialized;
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "update_expression" => {
+            // i++ or ++i — the variable is being read AND written
+            // If already tracked and initialized, no change needed
+        }
+        "call_expression" => {
+            process_call_expression(node, source, state, tracked_vars, config);
+        }
+        "comma_expression" => {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() != "," {
+                        process_expression(&child, source, state, tracked_vars, config);
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+}
+
+/// Recursively search a node tree for init-relevant expressions (assignments,
+/// calls, comma expressions) that may be nested inside conditions, casts, etc.
+fn find_and_process_init_expressions(
+    node: &Node,
+    source: &str,
+    state: &mut InitStateMap,
+    tracked_vars: &mut HashSet<String>,
+    config: &InitAnalysisConfig,
+) {
+    match node.kind() {
+        "assignment_expression" | "call_expression" | "comma_expression" | "update_expression" => {
+            process_expression(node, source, state, tracked_vars, config);
+        }
+        _ => {
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    find_and_process_init_expressions(&child, source, state, tracked_vars, config);
+                }
+            }
+        }
+    }
+}
+
+/// Process a call expression for initialization effects.
+fn process_call_expression(
+    node: &Node,
+    source: &str,
+    state: &mut InitStateMap,
+    _tracked_vars: &mut HashSet<String>,
+    config: &InitAnalysisConfig,
+) {
+    let func = match node.child_by_field_name("function") {
+        Some(f) => f,
+        None => return,
+    };
+    let func_name = func.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+
+    // va_start initializes its first argument (the va_list variable)
+    if func_name == "va_start" || func_name == "va_copy" {
+        if let Some(args) = node.child_by_field_name("arguments") {
+            for i in 0..args.child_count() {
+                if let Some(arg) = args.child(i) {
+                    if arg.kind() == "identifier" {
+                        let var_name = arg.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                        if let Some(info) = state.get_mut(&var_name) {
+                            info.state = InitState::Initialized;
+                        }
+                        break; // Only first arg
+                    }
+                }
+            }
+        }
+        return;
+    }
+
+    // For-each macros: first identifier arg is initialized
+    if FOR_EACH_MACROS.contains(&func_name.as_str()) {
+        if let Some(args) = node.child_by_field_name("arguments") {
+            for i in 0..args.child_count() {
+                if let Some(arg) = args.child(i) {
+                    if arg.kind() == "identifier" {
+                        let var_name = arg.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                        if let Some(info) = state.get_mut(&var_name) {
+                            info.state = InitState::Initialized;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return;
+    }
+
+    // Known initializing functions: mark output args as initialized
+    if INITIALIZING_FUNCTIONS.contains(&func_name.as_str()) {
+        let output_indices = get_output_arg_indices(&func_name);
+        if let Some(args) = node.child_by_field_name("arguments") {
+            let mut arg_idx = 0;
+            for i in 0..args.child_count() {
+                if let Some(arg) = args.child(i) {
+                    if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                        continue;
+                    }
+                    if output_indices.contains(&arg_idx) {
+                        let var_name = extract_var_from_arg(&arg, source);
+                        if !var_name.is_empty() {
+                            if let Some(info) = state.get_mut(&var_name) {
+                                // memset on a malloc'd pointer → MallocInitialized
+                                if func_name == "memset"
+                                    && matches!(
+                                        info.state,
+                                        InitState::MallocUninitialized
+                                            | InitState::MallocInitialized
+                                    )
+                                {
+                                    info.state = InitState::MallocInitialized;
+                                } else {
+                                    info.state = InitState::Initialized;
+                                }
+                            }
+                        }
+                    }
+                    arg_idx += 1;
+                }
+            }
+        }
+        return;
+    }
+
+    // Non-initializing functions: skip (they read, not write)
+    if is_non_initializing_function(&func_name) {
+        return;
+    }
+
+    // Unknown function: assume &var initializes (conservative — most functions
+    // that take pointer params write to them), UNLESS the function is known to
+    // only conditionally initialize.
+    let skip_ptr_init = config.conditionally_init_fns.contains(&func_name);
+
+    if let Some(args) = node.child_by_field_name("arguments") {
+        for i in 0..args.child_count() {
+            if let Some(arg) = args.child(i) {
+                if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                    continue;
+                }
+                // &var pattern — assume function writes to it (unless conditionally-init)
+                if !skip_ptr_init && arg.kind() == "pointer_expression" {
+                    let arg_text = arg.utf8_text(source.as_bytes()).unwrap_or("");
+                    if arg_text.starts_with('&') {
+                        let var_name = extract_var_from_arg(&arg, source);
+                        if !var_name.is_empty() {
+                            if let Some(info) = state.get_mut(&var_name) {
+                                info.state = InitState::Initialized;
+                            }
+                        }
+                    }
+                }
+                // Array passed by name — assume function writes to it
+                if arg.kind() == "identifier" {
+                    let var_name = arg.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                    if let Some(info) = state.get(&var_name) {
+                        if info.is_array {
+                            let info = state.get_mut(&var_name).unwrap();
+                            info.state = InitState::Initialized;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Worklist algorithm
+// ---------------------------------------------------------------------------
+
+/// Run init-state forward dataflow analysis on a function.
+#[allow(dead_code)]
+pub fn analyze_init_states(
+    cfg: &FunctionCfg,
+    func_node: &Node,
+    source: &str,
+) -> InitAnalysisResult {
+    analyze_init_states_with_statics(
+        cfg,
+        func_node,
+        source,
+        &InitStateMap::new(),
+        &InitAnalysisConfig::default(),
+    )
+}
+
+/// Like `analyze_init_states` but seeds with file-scope static variable states.
+pub fn analyze_init_states_with_statics(
+    cfg: &FunctionCfg,
+    func_node: &Node,
+    source: &str,
+    static_vars: &InitStateMap,
+    config: &InitAnalysisConfig,
+) -> InitAnalysisResult {
+    let body = match func_node.child_by_field_name("body") {
+        Some(b) => b,
+        None => {
+            return InitAnalysisResult {
+                block_entry_states: HashMap::new(),
+                block_exit_states: HashMap::new(),
+                tracked_vars: HashSet::new(),
+            };
+        }
+    };
+
+    let mut tracked_vars = HashSet::new();
+
+    // Initialize entry state: parameters → Initialized, statics → from pre-scan
+    let mut initial_state = InitStateMap::new();
+
+    // Seed with static variable states
+    for (name, info) in static_vars {
+        initial_state.insert(name.clone(), info.clone());
+        tracked_vars.insert(name.clone());
+    }
+
+    // Function parameters are always initialized (caller provides them)
+    collect_param_init_state(func_node, source, &mut initial_state, &mut tracked_vars);
+
+    let mut entry_states: HashMap<BlockId, InitStateMap> = HashMap::new();
+    let mut exit_states: HashMap<BlockId, InitStateMap> = HashMap::new();
+
+    // Initialize all blocks
+    for block in &cfg.blocks {
+        entry_states.insert(block.id, InitStateMap::new());
+        exit_states.insert(block.id, InitStateMap::new());
+    }
+
+    // Entry block gets initial state
+    entry_states.insert(cfg.entry, initial_state.clone());
+    let entry_exit = apply_transfer(
+        &cfg.blocks[cfg.entry],
+        &initial_state,
+        &body,
+        source,
+        &mut tracked_vars,
+        config,
+    );
+    exit_states.insert(cfg.entry, entry_exit);
+
+    // Worklist
+    // Track which blocks have been visited (have computed exit states)
+    let mut visited: HashSet<BlockId> = HashSet::new();
+    visited.insert(cfg.entry);
+
+    let mut worklist: VecDeque<BlockId> = VecDeque::new();
+    for (succ, _) in cfg.successors(cfg.entry) {
+        worklist.push_back(succ);
+    }
+
+    let mut iterations = 0;
+    let max_iterations = 500 * cfg.blocks.len().max(1);
+
+    while let Some(block_id) = worklist.pop_front() {
+        iterations += 1;
+        if iterations > max_iterations {
+            break;
+        }
+
+        // Join predecessor exit states
+        let preds = cfg.predecessors(block_id);
+        let mut new_entry = InitStateMap::new();
+        let mut first = true;
+
+        for (pred_id, edge_kind) in &preds {
+            if !visited.contains(pred_id) {
+                continue;
+            }
+            let pred_exit = exit_states.get(pred_id).cloned().unwrap_or_default();
+
+            if first {
+                new_entry = pred_exit;
+                first = false;
+            } else if matches!(edge_kind, CfgEdge::Goto) {
+                // Goto edge: variables in new_entry but not pred_exit
+                // were declared between goto and label (skipped).
+                new_entry = join_with_goto(&new_entry, &pred_exit);
+            } else {
+                new_entry = join_states(&new_entry, &pred_exit);
+            }
+        }
+
+        if first {
+            // No predecessors (unreachable block) — skip
+            continue;
+        }
+
+        // Compute exit state
+        let block = &cfg.blocks[block_id];
+        let new_exit = apply_transfer(block, &new_entry, &body, source, &mut tracked_vars, config);
+
+        // Check convergence
+        let old_exit = exit_states.get(&block_id);
+        let changed = match old_exit {
+            None => true,
+            Some(old) => *old != new_exit,
+        };
+
+        visited.insert(block_id);
+
+        if changed {
+            entry_states.insert(block_id, new_entry);
+            exit_states.insert(block_id, new_exit);
+
+            for (succ, _) in cfg.successors(block_id) {
+                if !worklist.contains(&succ) {
+                    worklist.push_back(succ);
+                }
+            }
+        } else {
+            entry_states.insert(block_id, new_entry);
+        }
+    }
+
+    InitAnalysisResult {
+        block_entry_states: entry_states,
+        block_exit_states: exit_states,
+        tracked_vars,
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Point queries
+// ---------------------------------------------------------------------------
+
+/// Check if a variable is uninitialized at a given byte offset.
+/// Returns Some(info) if unsafe, None if safe or unknown.
+#[allow(dead_code)]
+pub fn get_var_info_at(
+    result: &InitAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    source: &str,
+    var_name: &str,
+    byte_offset: usize,
+) -> Option<VarInfo> {
+    get_var_info_at_with_config(
+        result,
+        cfg,
+        body,
+        source,
+        var_name,
+        byte_offset,
+        &InitAnalysisConfig::default(),
+    )
+}
+
+/// Like `get_var_info_at` but with explicit analysis config.
+pub fn get_var_info_at_with_config(
+    result: &InitAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    source: &str,
+    var_name: &str,
+    byte_offset: usize,
+    config: &InitAnalysisConfig,
+) -> Option<VarInfo> {
+    let block = find_block_containing(cfg, byte_offset)?;
+
+    let entry = result.block_entry_states.get(&block.id)?;
+
+    let mut state = entry.clone();
+    let mut tracked = result.tracked_vars.clone();
+
+    for &(start, end) in &block.statements {
+        if start >= byte_offset {
+            break;
+        }
+        if end <= byte_offset {
+            if let Some(stmt_node) = find_node_at_range(body, start, end) {
+                process_statement(&stmt_node, source, &mut state, &mut tracked, config);
+            }
+        }
+    }
+
+    state.get(var_name).cloned()
+}
+
+/// Find the basic block whose byte range contains the given offset.
+fn find_block_containing(cfg: &FunctionCfg, byte_offset: usize) -> Option<&BasicBlock> {
+    // First try statement-level containment (more precise)
+    for block in &cfg.blocks {
+        for &(start, end) in &block.statements {
+            if byte_offset >= start && byte_offset < end {
+                return Some(block);
+            }
+        }
+    }
+    // Fallback to block byte range
+    cfg.blocks.iter().find(|block| {
+        block.byte_range.0 > 0
+            && byte_offset >= block.byte_range.0
+            && byte_offset < block.byte_range.1
+    })
+}
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/// Collect function parameter initialization states.
+fn collect_param_init_state(
+    func_node: &Node,
+    source: &str,
+    state: &mut InitStateMap,
+    tracked_vars: &mut HashSet<String>,
+) {
+    let declarator = match func_node.child_by_field_name("declarator") {
+        Some(d) => d,
+        None => return,
+    };
+
+    // Find the function_declarator (may be nested inside pointer_declarator)
+    let func_decl = find_function_declarator(&declarator);
+    let func_decl = match func_decl {
+        Some(d) => d,
+        None => return,
+    };
+
+    // Find parameter_list
+    for i in 0..func_decl.child_count() {
+        if let Some(child) = func_decl.child(i) {
+            if child.kind() == "parameter_list" {
+                for j in 0..child.child_count() {
+                    if let Some(param) = child.child(j) {
+                        if param.kind() == "parameter_declaration" {
+                            let param_name = get_declarator_name(&param, source);
+                            if !param_name.is_empty() {
+                                let type_text = extract_type_text(&param, source);
+                                let is_unsigned_char = type_text.contains("unsigned char")
+                                    || type_text.contains("uint8_t");
+                                let is_array = param_has_array_declarator(&param);
+                                let mut info = VarInfo::new(InitState::Initialized);
+                                info.is_unsigned_char = is_unsigned_char;
+                                info.is_array = is_array;
+                                state.insert(param_name.clone(), info);
+                                tracked_vars.insert(param_name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn find_function_declarator<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+    if node.kind() == "function_declarator" {
+        return Some(*node);
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if let Some(found) = find_function_declarator(&child) {
+                return Some(found);
+            }
+        }
+    }
+    None
+}
+
+/// Extract the type text from a declaration node.
+fn extract_type_text(node: &Node, source: &str) -> String {
+    let mut parts = Vec::new();
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "primitive_type"
+                | "sized_type_specifier"
+                | "type_identifier"
+                | "storage_class_specifier"
+                | "type_qualifier" => {
+                    if let Ok(t) = child.utf8_text(source.as_bytes()) {
+                        parts.push(t.to_string());
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    parts.join(" ")
+}
+
+/// Get the variable name from a declarator node.
+fn get_declarator_name(node: &Node, source: &str) -> String {
+    // Direct identifier
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "identifier" {
+                return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+            }
+        }
+    }
+    // Recurse into nested declarators
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "init_declarator"
+                | "pointer_declarator"
+                | "array_declarator"
+                | "function_declarator" => {
+                    let name = get_declarator_name(&child, source);
+                    if !name.is_empty() {
+                        return name;
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    String::new()
+}
+
+fn is_array_declarator(node: &Node) -> bool {
+    if node.kind() == "array_declarator" {
+        return true;
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if is_array_declarator(&child) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+fn param_has_array_declarator(node: &Node) -> bool {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "array_declarator" {
+                return true;
+            }
+            if param_has_array_declarator(&child) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+fn is_type_keyword(s: &str) -> bool {
+    matches!(
+        s,
+        "int"
+            | "char"
+            | "short"
+            | "long"
+            | "float"
+            | "double"
+            | "void"
+            | "unsigned"
+            | "signed"
+            | "const"
+            | "volatile"
+            | "static"
+            | "extern"
+            | "register"
+            | "auto"
+            | "struct"
+            | "union"
+            | "enum"
+            | "typedef"
+    )
+}
+
+fn get_text(_parent: &Node, child: &Node, source: &str) -> String {
+    child.utf8_text(source.as_bytes()).unwrap_or("").to_string()
+}
+
+/// Extract variable name from function argument (handles &var, var).
+fn extract_var_from_arg(arg: &Node, source: &str) -> String {
+    if arg.kind() == "pointer_expression" {
+        let text = arg.utf8_text(source.as_bytes()).unwrap_or("");
+        if text.starts_with('&') {
+            if let Some(inner) = arg.child_by_field_name("argument") {
+                if inner.kind() == "identifier" {
+                    return inner.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                }
+            }
+        }
+    } else if arg.kind() == "identifier" {
+        return arg.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+    }
+    String::new()
+}
+
+/// Extract the target variable from a dereference: *ptr → "ptr"
+fn extract_deref_target(node: &Node, source: &str) -> String {
+    if let Some(arg) = node.child_by_field_name("argument") {
+        if arg.kind() == "identifier" {
+            return arg.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+        }
+    }
+    String::new()
+}
+
+/// Extract the base variable from a subscript: arr[i] → "arr"
+fn extract_subscript_base(node: &Node, source: &str) -> String {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "identifier" {
+                return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+            }
+        }
+    }
+    String::new()
+}
+
+/// Extract the base variable from a field expression: ptr->field → "ptr"
+fn extract_field_base(node: &Node, source: &str) -> String {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "identifier" {
+                return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+            }
+        }
+    }
+    String::new()
+}
+
+/// Collect file-scope static variable init states.
+pub fn collect_file_scope_statics(root: &Node, source: &str) -> InitStateMap {
+    let mut state = InitStateMap::new();
+    collect_file_scope_statics_recursive(root, source, &mut state);
+    state
+}
+
+fn collect_file_scope_statics_recursive(node: &Node, source: &str, state: &mut InitStateMap) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "declaration" => {
+                    let type_text = extract_type_text(&child, source);
+                    let is_static =
+                        type_text.contains("static") || type_text.contains("_Thread_local");
+                    if is_static {
+                        let mut tracked = HashSet::new();
+                        process_declaration(
+                            &child,
+                            source,
+                            state,
+                            &mut tracked,
+                            &InitAnalysisConfig::default(),
+                        );
+                    }
+                }
+                "preproc_ifdef" | "preproc_if" | "preproc_else" | "preproc_elif" => {
+                    collect_file_scope_statics_recursive(&child, source, state);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::analyze::cfg::build_function_cfg;
+
+    fn analyze_code(code: &str) -> (FunctionCfg, InitAnalysisResult, String) {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(code, None).unwrap();
+        let root = tree.root_node();
+
+        for i in 0..root.child_count() {
+            if let Some(child) = root.child(i) {
+                if child.kind() == "function_definition" {
+                    let cfg = build_function_cfg(&child, code).unwrap();
+                    let result = analyze_init_states(&cfg, &child, code);
+                    return (cfg, result, code.to_string());
+                }
+            }
+        }
+        panic!("No function definition found");
+    }
+
+    #[test]
+    fn test_uninitialized_simple() {
+        let code = "void foo() { int x; x = x + 1; }";
+        let (cfg, result, source) = analyze_code(code);
+
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(&source, None).unwrap();
+        let root = tree.root_node();
+        let func = root.child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+
+        // x should be uninitialized when first used
+        let info = get_var_info_at(
+            &result,
+            &cfg,
+            &body,
+            &source,
+            "x",
+            code.find("x + 1").unwrap(),
+        );
+        assert!(info.is_some());
+        assert!(info.unwrap().state.is_unsafe());
+    }
+
+    #[test]
+    fn test_initialized_simple() {
+        let code = "void foo() { int x = 5; int y = x + 1; }";
+        let (cfg, result, source) = analyze_code(code);
+
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(&source, None).unwrap();
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+
+        let info = get_var_info_at(
+            &result,
+            &cfg,
+            &body,
+            &source,
+            "x",
+            source.find("x + 1").unwrap(),
+        );
+        assert!(info.is_some());
+        assert!(!info.unwrap().state.is_unsafe());
+    }
+
+    #[test]
+    fn test_conditional_init_both_branches() {
+        let code = r#"
+        void foo(int c) {
+            int x;
+            if (c) {
+                x = 1;
+            } else {
+                x = 2;
+            }
+            int y = x;
+        }
+        "#;
+        let (cfg, result, source) = analyze_code(code);
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(&source, None).unwrap();
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+
+        // After if/else where both branches assign, x should be Initialized
+        let use_pos = source.rfind("x;").unwrap();
+        let info = get_var_info_at(&result, &cfg, &body, &source, "x", use_pos);
+        assert!(info.is_some());
+        assert!(
+            !info.unwrap().state.is_unsafe(),
+            "x should be initialized after if/else"
+        );
+    }
+
+    #[test]
+    fn test_conditional_init_one_branch() {
+        let code = r#"
+        void foo(int c) {
+            int x;
+            if (c) {
+                x = 1;
+            }
+            int y = x;
+        }
+        "#;
+        let (cfg, result, source) = analyze_code(code);
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(&source, None).unwrap();
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+
+        // Only one branch assigns — should be MaybeUninitialized
+        let use_pos = source.rfind("x;").unwrap();
+        let info = get_var_info_at(&result, &cfg, &body, &source, "x", use_pos);
+        assert!(info.is_some());
+        assert!(
+            info.unwrap().state.is_unsafe(),
+            "x should be maybe-uninitialized after if without else"
+        );
+    }
+
+    #[test]
+    fn test_malloc_uninitialized() {
+        let code = r#"
+        void foo() {
+            int *p = malloc(sizeof(int));
+            *p = 42;
+        }
+        "#;
+        let (cfg, result, source) = analyze_code(code);
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(&source, None).unwrap();
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+
+        // After malloc, p itself is initialized but content is not
+        let deref_pos = source.find("*p = 42").unwrap();
+        let info = get_var_info_at(&result, &cfg, &body, &source, "p", deref_pos);
+        assert!(info.is_some());
+        let info = info.unwrap();
+        assert_eq!(info.state, InitState::MallocUninitialized);
+        assert!(!info.state.is_unsafe()); // pointer itself IS initialized
+        assert!(info.state.is_content_unsafe()); // content is NOT
+    }
+
+    #[test]
+    fn test_parameter_initialized() {
+        let code = "void foo(int x) { int y = x; }";
+        let (cfg, result, source) = analyze_code(code);
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(&source, None).unwrap();
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+
+        let info = get_var_info_at(
+            &result,
+            &cfg,
+            &body,
+            &source,
+            "x",
+            source.find("x;").unwrap(),
+        );
+        assert!(info.is_some());
+        assert!(!info.unwrap().state.is_unsafe());
+    }
+}

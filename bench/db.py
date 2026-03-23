@@ -853,7 +853,7 @@ class BenchDB:
 
     def list_realworld_runs(self) -> list[dict]:
         with self._cursor() as cur:
-            cur.execute("SELECT * FROM realworld_runs ORDER BY sqc_version DESC")
+            cur.execute("SELECT * FROM realworld_runs ORDER BY id DESC")
             return [dict(r) for r in cur.fetchall()]
 
     def get_realworld_results(self, run_id: int) -> list[dict]:
@@ -875,6 +875,133 @@ class BenchDB:
                 ORDER BY r.sqc_version, rr.tool
             """, (project,))
             return [dict(r) for r in cur.fetchall()]
+
+    def resolve_realworld_run(self, identifier: str) -> int | None:
+        """Resolve 'latest', version string, or run ID to a realworld_runs row id."""
+        ident = identifier.strip()
+        with self._cursor() as cur:
+            if ident.lower() in ("latest", "current"):
+                cur.execute("SELECT id FROM realworld_runs ORDER BY id DESC LIMIT 1")
+                row = cur.fetchone()
+                return row["id"] if row else None
+
+            # Exact ID match
+            try:
+                int_id = int(ident)
+                cur.execute("SELECT id FROM realworld_runs WHERE id = ?", (int_id,))
+                row = cur.fetchone()
+                if row:
+                    return row["id"]
+            except ValueError:
+                pass
+
+            # Version match (e.g. "0.3.28")
+            cur.execute("""
+                SELECT id FROM realworld_runs
+                WHERE sqc_version = ?
+                ORDER BY id DESC LIMIT 1
+            """, (ident,))
+            row = cur.fetchone()
+            if row:
+                return row["id"]
+
+            # Commit SHA match
+            cur.execute("""
+                SELECT id FROM realworld_runs
+                WHERE commit_sha = ?
+                ORDER BY id DESC LIMIT 1
+            """, (ident,))
+            row = cur.fetchone()
+            if row:
+                return row["id"]
+
+            # Notes substring match (e.g. "sqc-0.3.28-ae46ae3c")
+            cur.execute("""
+                SELECT id FROM realworld_runs
+                WHERE notes LIKE ?
+                ORDER BY id DESC LIMIT 1
+            """, (f"%{ident}%",))
+            row = cur.fetchone()
+            return row["id"] if row else None
+
+    def get_realworld_run(self, run_id: int) -> dict | None:
+        """Get a single realworld run by ID."""
+        with self._cursor() as cur:
+            cur.execute("SELECT * FROM realworld_runs WHERE id = ?", (run_id,))
+            row = cur.fetchone()
+            return dict(row) if row else None
+
+    def get_realworld_rule_trend(self, rule_id: str,
+                                  project: str = None) -> list[dict]:
+        """Get a rule's violation count across all realworld runs.
+
+        Returns rows sorted by version with: sqc_version, run_id,
+        project, count. If project is given, filter to that project only.
+        """
+        with self._cursor() as cur:
+            if project:
+                cur.execute("""
+                    SELECT r.sqc_version, r.id as run_id, rr.project,
+                           COUNT(*) as count
+                    FROM realworld_violations rv
+                    JOIN realworld_results rr ON rr.id = rv.result_id
+                    JOIN realworld_runs r ON r.id = rr.run_id
+                    WHERE rv.rule_id = ? AND rr.project = ?
+                    GROUP BY r.id, rr.project
+                    ORDER BY r.id
+                """, (rule_id, project))
+            else:
+                cur.execute("""
+                    SELECT r.sqc_version, r.id as run_id, rr.project,
+                           COUNT(*) as count
+                    FROM realworld_violations rv
+                    JOIN realworld_results rr ON rr.id = rv.result_id
+                    JOIN realworld_runs r ON r.id = rr.run_id
+                    WHERE rv.rule_id = ?
+                    GROUP BY r.id, rr.project
+                    ORDER BY r.id, rr.project
+                """, (rule_id,))
+            return [dict(r) for r in cur.fetchall()]
+
+    def get_realworld_run_summary(self, run_id: int) -> dict:
+        """Get full summary for a realworld run including per-rule breakdown.
+
+        Returns dict with: run info, per-project results, per-rule counts.
+        """
+        run = self.get_realworld_run(run_id)
+        if not run:
+            return {"error": f"Run {run_id} not found"}
+
+        results = self.get_realworld_results(run_id)
+        rule_summary = self.get_realworld_rule_summary(run_id)
+
+        # Per-project rule breakdown
+        per_project_rules = {}
+        with self._cursor() as cur:
+            for result in results:
+                if result["tool"] != "sqc":
+                    continue
+                cur.execute("""
+                    SELECT rv.rule_id, COUNT(*) as count
+                    FROM realworld_violations rv
+                    WHERE rv.result_id = ?
+                    GROUP BY rv.rule_id
+                    ORDER BY count DESC
+                """, (result["id"],))
+                per_project_rules[result["project"]] = [
+                    dict(r) for r in cur.fetchall()
+                ]
+
+        total_violations = sum(r["violation_count"] for r in results
+                               if r["tool"] == "sqc")
+
+        return {
+            "run": run,
+            "total_violations": total_violations,
+            "projects": results,
+            "rule_summary": rule_summary,
+            "per_project_rules": per_project_rules,
+        }
 
     # ── Run Resolution ────────────────────────────────────────────────────
 

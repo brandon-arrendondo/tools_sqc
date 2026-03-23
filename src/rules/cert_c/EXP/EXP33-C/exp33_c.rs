@@ -1,10 +1,38 @@
+//! EXP33-C: Do not read uninitialized memory
+//!
+//! Detects reads of local variables that may not have been initialized.
+//! Uses CFG-based forward dataflow analysis to track initialization state
+//! across branches, loops, and early returns.
+
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::cfg::{self as cfg_mod, FunctionCfg};
+use crate::analyze::init_state::{self, InitAnalysisResult, InitState, InitStateMap};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
-pub struct Exp33C;
+pub struct Exp33C {
+    function_cfgs: RefCell<HashMap<usize, FunctionCfg>>,
+    /// File-scope static variable init states (collected at translation_unit level).
+    file_scope_statics: RefCell<InitStateMap>,
+    /// Functions that return realloc results (interprocedural pre-scan).
+    realloc_wrapper_fns: RefCell<HashSet<String>>,
+    /// Functions that only conditionally initialize pointer parameters.
+    conditionally_init_fns: RefCell<HashSet<String>>,
+}
+
+impl Exp33C {
+    pub fn new() -> Self {
+        Self {
+            function_cfgs: RefCell::new(HashMap::new()),
+            file_scope_statics: RefCell::new(InitStateMap::new()),
+            realloc_wrapper_fns: RefCell::new(HashSet::new()),
+            conditionally_init_fns: RefCell::new(HashSet::new()),
+        }
+    }
+}
 
 impl CertRule for Exp33C {
     fn rule_id(&self) -> &'static str {
@@ -27,115 +55,77 @@ impl CertRule for Exp33C {
         "EXP33-C"
     }
 
+    fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
+        *self.function_cfgs.borrow_mut() = cfgs.clone();
+    }
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
+        let cfgs = self.function_cfgs.borrow();
 
-        // For translation unit, collect file-scope static/thread-local variables
-        // and analyze all functions with access to those
+        // At translation_unit level: collect file-scope statics and pre-scan functions
         if node.kind() == "translation_unit" {
-            let mut file_scope_vars: HashMap<String, VarState> = HashMap::new();
+            let statics = init_state::collect_file_scope_statics(node, source);
+            *self.file_scope_statics.borrow_mut() = statics;
 
-            // Pre-pass: scan all function definitions for interprocedural analysis
-            let mut interprocedural_analyzer = UninitializedVariableAnalyzer::new();
-            interprocedural_analyzer.scan_function_definitions(node, source);
+            // Pre-scan for realloc wrapper functions
+            let mut wrappers = HashSet::new();
+            scan_realloc_wrappers(node, source, &mut wrappers);
+            *self.realloc_wrapper_fns.borrow_mut() = wrappers;
 
-            // First pass: collect file-scope static/thread-local declarations
-            let mut file_scope_decls = Vec::new();
-            Exp33C::collect_file_scope_declarations(node, &mut file_scope_decls);
-            for child in &file_scope_decls {
-                let decl_text = get_node_text(child, source);
-                if decl_text.contains("static ")
-                    || decl_text.contains("_Thread_local")
-                    || decl_text.contains("__thread")
-                {
-                    // Check if it has an initializer
-                    if !decl_text.contains('=') && !decl_text.contains('{') {
-                        // Extract variable name
-                        if let Some(var_name) =
-                            Exp33C::extract_var_name_from_declaration(child, source)
-                        {
-                            file_scope_vars.insert(var_name, VarState::StaticUninitialized);
-                        }
-                    }
-                }
-            }
-
-            // Second pass: analyze each function with file-scope vars
-            let mut func_defs = Vec::new();
-            Exp33C::collect_function_definitions(node, &mut func_defs);
-            if !file_scope_vars.is_empty() {
-                for func_def in &func_defs {
-                    if let Some(body) = func_def.child_by_field_name("body") {
-                        let mut analyzer = UninitializedVariableAnalyzer::new();
-                        // Copy interprocedural analysis results
-                        analyzer.realloc_wrapper_functions =
-                            interprocedural_analyzer.realloc_wrapper_functions.clone();
-                        analyzer.conditionally_init_functions = interprocedural_analyzer
-                            .conditionally_init_functions
-                            .clone();
-                        // Add file-scope vars
-                        for (name, state) in &file_scope_vars {
-                            analyzer.var_states.insert(name.clone(), state.clone());
-                        }
-                        analyzer.collect_all_info(&body, source);
-                        analyzer.check_usage(&body, source, &mut violations);
-                    }
-                }
-            }
-
-            // Third pass: analyze each function for local uninitialized variable usage
-            for func_def in &func_defs {
-                if let Some(body) = func_def.child_by_field_name("body") {
-                    let mut analyzer = UninitializedVariableAnalyzer::new();
-                    // Copy interprocedural analysis results
-                    analyzer.realloc_wrapper_functions =
-                        interprocedural_analyzer.realloc_wrapper_functions.clone();
-                    analyzer.conditionally_init_functions = interprocedural_analyzer
-                        .conditionally_init_functions
-                        .clone();
-
-                    // Two-pass analysis:
-                    // Pass 1: Collect all declarations and track which get initialized
-                    analyzer.collect_all_info(&body, source);
-
-                    // Check for goto patterns that skip initializations
-                    analyzer.check_goto_pattern(&body, source, &mut violations);
-
-                    // Check for conditional initialization patterns
-                    analyzer.check_conditional_init_pattern(&body, source);
-
-                    // Pass 2: Check for reads of uninitialized variables
-                    analyzer.check_usage(&body, source, &mut violations);
-                }
-            }
-
-            // Don't recurse into children for translation_unit - we've handled everything
-            return violations;
+            // Pre-scan for functions that conditionally initialize pointer params
+            let mut cond_init = HashSet::new();
+            scan_conditionally_init_functions(node, source, &mut cond_init);
+            *self.conditionally_init_fns.borrow_mut() = cond_init;
         }
 
-        // Analyze function bodies for uninitialized variable usage
         if node.kind() == "function_definition" {
             if let Some(body) = node.child_by_field_name("body") {
-                let mut analyzer = UninitializedVariableAnalyzer::new();
+                // Get pre-built CFG or build one on the fly
+                let inline_cfg;
+                let cfg = if let Some(c) = cfgs.get(&node.start_byte()) {
+                    c
+                } else if let Some(c) = cfg_mod::build_function_cfg(node, source) {
+                    inline_cfg = c;
+                    &inline_cfg
+                } else {
+                    return violations;
+                };
 
-                // Two-pass analysis:
-                // Pass 1: Collect all declarations and track which get initialized
-                analyzer.collect_all_info(&body, source);
+                // Run CFG-based init-state dataflow
+                let statics = self.file_scope_statics.borrow();
+                let cond_fns = self.conditionally_init_fns.borrow();
+                let realloc_fns = self.realloc_wrapper_fns.borrow();
+                let config = init_state::InitAnalysisConfig {
+                    conditionally_init_fns: cond_fns.clone(),
+                    realloc_wrapper_fns: realloc_fns.clone(),
+                };
+                let analysis = init_state::analyze_init_states_with_statics(
+                    cfg, node, source, &statics, &config,
+                );
 
-                // Check for goto patterns that skip initializations
-                analyzer.check_goto_pattern(&body, source, &mut violations);
-
-                // Check for conditional initialization patterns
-                analyzer.check_conditional_init_pattern(&body, source);
-
-                // Pass 2: Check for reads of uninitialized variables
-                analyzer.check_usage(&body, source, &mut violations);
+                // Walk AST for read sites and check each against dataflow result
+                let mut reported: HashSet<String> = HashSet::new();
+                check_reads(
+                    &body,
+                    source,
+                    &analysis,
+                    cfg,
+                    &body,
+                    &mut violations,
+                    &mut reported,
+                    &config,
+                );
             }
         }
 
-        // Recursively check child nodes
+        // Recurse into child nodes (handles preproc blocks, nested structures)
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
+                // Skip function bodies — already handled above
+                if child.kind() == "function_definition" && node.kind() != "translation_unit" {
+                    continue;
+                }
                 violations.extend(self.check(&child, source));
             }
         }
@@ -144,2076 +134,1095 @@ impl CertRule for Exp33C {
     }
 }
 
-impl Exp33C {
-    /// Recursively collect all `function_definition` nodes, including those nested
-    /// inside preprocessor conditional blocks (`#ifdef`, `#ifndef`, `#if`, etc.).
-    fn collect_function_definitions<'a>(node: &Node<'a>, funcs: &mut Vec<Node<'a>>) {
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if child.kind() == "function_definition" {
-                    funcs.push(child);
-                } else if child.kind().starts_with("preproc_") {
-                    Self::collect_function_definitions(&child, funcs);
-                }
-            }
+// ---------------------------------------------------------------------------
+// AST walk for read sites
+// ---------------------------------------------------------------------------
+
+/// Recursively walk the AST looking for reads of tracked variables.
+fn check_reads(
+    node: &Node,
+    source: &str,
+    analysis: &InitAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    violations: &mut Vec<RuleViolation>,
+    reported: &mut HashSet<String>,
+    config: &init_state::InitAnalysisConfig,
+) {
+    match node.kind() {
+        "identifier" => {
+            check_identifier_read(
+                node, source, analysis, cfg, body, violations, reported, config,
+            );
         }
-    }
-
-    /// Recursively collect all `declaration` nodes at file scope, including those
-    /// nested inside preprocessor conditional blocks.
-    fn collect_file_scope_declarations<'a>(node: &Node<'a>, decls: &mut Vec<Node<'a>>) {
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if child.kind() == "declaration" {
-                    decls.push(child);
-                } else if child.kind().starts_with("preproc_") {
-                    Self::collect_file_scope_declarations(&child, decls);
-                }
-            }
-        }
-    }
-
-    fn extract_var_name_from_declaration(decl: &Node, source: &str) -> Option<String> {
-        for i in 0..decl.child_count() {
-            if let Some(child) = decl.child(i) {
-                match child.kind() {
-                    "init_declarator" => {
-                        if let Some(declarator) = child.child_by_field_name("declarator") {
-                            return Self::get_declarator_name(&declarator, source);
-                        }
-                    }
-                    "identifier" => {
-                        return Some(get_node_text(&child, source).to_string());
-                    }
-                    "pointer_declarator" | "array_declarator" => {
-                        return Self::get_declarator_name(&child, source);
-                    }
-                    _ => {}
-                }
-            }
-        }
-        None
-    }
-
-    fn get_declarator_name(declarator: &Node, source: &str) -> Option<String> {
-        match declarator.kind() {
-            "identifier" => Some(get_node_text(declarator, source).to_string()),
-            "pointer_declarator" | "array_declarator" => {
-                for i in 0..declarator.child_count() {
-                    if let Some(child) = declarator.child(i) {
-                        if child.kind() == "identifier" {
-                            return Some(get_node_text(&child, source).to_string());
-                        }
-                        if let Some(name) = Self::get_declarator_name(&child, source) {
-                            return Some(name);
-                        }
-                    }
-                }
-                None
-            }
-            _ => None,
-        }
-    }
-}
-
-#[allow(dead_code)]
-#[derive(Clone, Debug, PartialEq)]
-enum VarState {
-    Uninitialized,
-    Initialized,
-    ConditionallyInitialized, // Initialized only in some paths
-    MallocUninitialized,
-    MallocInitialized,
-    StaticUninitialized, // static/thread-local without explicit initializer
-}
-
-#[allow(dead_code)]
-struct UninitializedVariableAnalyzer {
-    var_states: HashMap<String, VarState>,
-    malloc_pointers: HashSet<String>,
-    initializing_functions: HashSet<String>,
-    reported: HashSet<String>, // Track reported variables to avoid duplicates
-    has_unconditional_init: HashSet<String>, // Variables with at least one unconditional assignment
-    initially_uninitialized: HashSet<String>, // Variables that started without initializer
-    unsigned_char_vars: HashSet<String>, // Variables of unsigned char type (EXP33-C exception)
-    array_vars: HashSet<String>, // Variables declared as arrays (decay to pointers in calls)
-    realloc_wrapper_functions: HashSet<String>, // Functions that return realloc results
-    conditionally_init_functions: HashSet<String>, // Functions that conditionally init pointer params
-}
-
-impl UninitializedVariableAnalyzer {
-    fn new() -> Self {
-        let initializing_functions: HashSet<String> = [
-            "memset",
-            "memcpy",
-            "memmove",
-            "strcpy",
-            "strncpy",
-            "sprintf",
-            "snprintf",
-            "fgets",
-            "fread",
-            "read",
-            "recv",
-            "scanf",
-            "fscanf",
-            "sscanf",
-            "gets",
-            "bzero",
-            "strcat",
-            "strncat",
-            // POSIX/system functions that initialize via output pointers
-            "gettimeofday",
-            "getaddrinfo",
-            "stat",
-            "fstat",
-            "lstat",
-            "getrusage",
-            "getsockname",
-            "getpeername",
-            "clock_gettime",
-            "pthread_attr_init",
-            "pthread_mutex_init",
-            "pthread_cond_init",
-            "regcomp",
-            "regexec",
-            "sigaction",
-            "sigemptyset",
-            "sigfillset",
-            "mbrlen",
-            "mbrtowc",
-            "mbsrtowcs",
-            "wcrtomb",
-            "wcsrtombs",
-        ]
-        .iter()
-        .map(|s| s.to_string())
-        .collect();
-
-        Self {
-            var_states: HashMap::new(),
-            malloc_pointers: HashSet::new(),
-            initializing_functions,
-            reported: HashSet::new(),
-            has_unconditional_init: HashSet::new(),
-            initially_uninitialized: HashSet::new(),
-            unsigned_char_vars: HashSet::new(),
-            array_vars: HashSet::new(),
-            realloc_wrapper_functions: HashSet::new(),
-            conditionally_init_functions: HashSet::new(),
-        }
-    }
-
-    /// Scan the translation unit for function definitions that wrap realloc
-    /// or conditionally initialize pointer parameters
-    fn scan_function_definitions(&mut self, translation_unit: &Node, source: &str) {
-        let mut func_defs = Vec::new();
-        Exp33C::collect_function_definitions(translation_unit, &mut func_defs);
-        for func_def in &func_defs {
-            self.analyze_function_def(func_def, source);
-        }
-    }
-
-    fn analyze_function_def(&mut self, func_def: &Node, source: &str) {
-        // Get function name from declarator
-        let func_name = if let Some(declarator) = func_def.child_by_field_name("declarator") {
-            Self::get_function_name(&declarator, source)
-        } else {
-            return;
-        };
-
-        if func_name.is_empty() {
-            return;
-        }
-
-        if let Some(body) = func_def.child_by_field_name("body") {
-            // Check if function returns realloc result
-            if self.function_returns_realloc(&body, source) {
-                self.realloc_wrapper_functions.insert(func_name.clone());
-            }
-
-            // Check if function has pointer parameters that are conditionally initialized
-            if let Some(declarator) = func_def.child_by_field_name("declarator") {
-                if self.has_conditional_pointer_init(&declarator, &body, source) {
-                    self.conditionally_init_functions.insert(func_name);
-                }
-            }
-        }
-    }
-
-    fn get_function_name(declarator: &Node, source: &str) -> String {
-        match declarator.kind() {
-            "identifier" => get_node_text(declarator, source).to_string(),
-            "function_declarator" => {
-                if let Some(inner) = declarator.child_by_field_name("declarator") {
-                    Self::get_function_name(&inner, source)
-                } else {
-                    String::new()
-                }
-            }
-            "pointer_declarator" => {
-                for i in 0..declarator.child_count() {
-                    if let Some(child) = declarator.child(i) {
-                        let name = Self::get_function_name(&child, source);
-                        if !name.is_empty() {
-                            return name;
-                        }
-                    }
-                }
-                String::new()
-            }
-            _ => String::new(),
-        }
-    }
-
-    /// Check if a function body returns a realloc result without initializing the new memory
-    fn function_returns_realloc(&self, body: &Node, source: &str) -> bool {
-        // First, find all variables assigned from realloc
-        let mut realloc_vars: HashSet<String> = HashSet::new();
-        Self::collect_realloc_vars(body, source, &mut realloc_vars);
-
-        if realloc_vars.is_empty() {
-            return false;
-        }
-
-        // Check if any realloc variable is initialized with memset before return
-        // If there's a memset call on the realloc'd memory, it's NOT a pure realloc wrapper
-        let body_text = get_node_text(body, source);
-        if body_text.contains("memset(") {
-            // The function initializes the memory - not a pure realloc wrapper
-            return false;
-        }
-
-        // Then check if any return statement returns a realloc result or a realloc variable
-        Self::find_realloc_return(body, source, &realloc_vars)
-    }
-
-    fn collect_realloc_vars(node: &Node, source: &str, realloc_vars: &mut HashSet<String>) {
-        // Look for assignments like: var = realloc(...) or var = (type *)realloc(...)
-        if node.kind() == "declaration" || node.kind() == "assignment_expression" {
+        "pointer_expression" => {
+            // *ptr — check if ptr content is uninitialized
             let text = get_node_text(node, source);
-            if text.contains("realloc(") {
-                // Extract variable name from left side
-                if node.kind() == "assignment_expression" {
-                    if let Some(left) = node.child_by_field_name("left") {
-                        if left.kind() == "identifier" {
-                            realloc_vars.insert(get_node_text(&left, source).to_string());
-                        }
-                    }
-                } else if node.kind() == "declaration" {
-                    // Extract from init_declarator
-                    for i in 0..node.child_count() {
-                        if let Some(child) = node.child(i) {
-                            if child.kind() == "init_declarator" {
-                                if let Some(declarator) = child.child_by_field_name("declarator") {
-                                    let var_name = Self::get_var_name(&declarator, source);
-                                    if var_name != "unknown" {
-                                        realloc_vars.insert(var_name);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                Self::collect_realloc_vars(&child, source, realloc_vars);
-            }
-        }
-    }
-
-    fn find_realloc_return(node: &Node, source: &str, realloc_vars: &HashSet<String>) -> bool {
-        if node.kind() == "return_statement" {
-            let return_text = get_node_text(node, source);
-            // Check if return value directly involves realloc
-            if return_text.contains("realloc(") {
-                return true;
-            }
-            // Check if returning a variable that was assigned from realloc
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if child.kind() == "identifier" {
-                        let var_name = get_node_text(&child, source);
-                        if realloc_vars.contains(&var_name.to_string()) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if Self::find_realloc_return(&child, source, realloc_vars) {
-                    return true;
-                }
-            }
-        }
-        false
-    }
-
-    /// Check if function has pointer parameters that are only conditionally initialized
-    fn has_conditional_pointer_init(&self, declarator: &Node, body: &Node, source: &str) -> bool {
-        // Get pointer parameter names
-        let pointer_params = self.get_pointer_params(declarator, source);
-        if pointer_params.is_empty() {
-            return false;
-        }
-
-        // Check if any pointer param is written to only conditionally (if/else-if without else)
-        for param in &pointer_params {
-            if self.param_is_conditionally_initialized(param, body, source) {
-                return true;
-            }
-        }
-        false
-    }
-
-    fn get_pointer_params(&self, declarator: &Node, source: &str) -> Vec<String> {
-        let mut params = Vec::new();
-
-        if declarator.kind() == "function_declarator" {
-            if let Some(params_node) = declarator.child_by_field_name("parameters") {
-                Self::collect_pointer_params(&params_node, source, &mut params);
-            }
-        } else {
-            for i in 0..declarator.child_count() {
-                if let Some(child) = declarator.child(i) {
-                    params.extend(self.get_pointer_params(&child, source));
-                }
-            }
-        }
-        params
-    }
-
-    fn collect_pointer_params(node: &Node, source: &str, params: &mut Vec<String>) {
-        if node.kind() == "parameter_declaration" {
-            // Check if this is a pointer parameter
-            let param_text = get_node_text(node, source);
-            if param_text.contains('*') {
-                // Extract parameter name
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        if child.kind() == "pointer_declarator" || child.kind() == "identifier" {
-                            let name = Self::get_var_name(&child, source);
-                            if name != "unknown" {
-                                params.push(name);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                Self::collect_pointer_params(&child, source, params);
-            }
-        }
-    }
-
-    fn param_is_conditionally_initialized(&self, param: &str, body: &Node, source: &str) -> bool {
-        // Find all writes to *param
-        let writes = self.find_all_pointer_writes(param, body, source);
-        if writes.is_empty() {
-            return false; // No writes at all - not relevant
-        }
-
-        // Check if ALL writes are inside incomplete conditionals (if/else-if without else)
-        writes
-            .iter()
-            .all(|pos| self.is_inside_incomplete_conditional(*pos, body, source))
-    }
-
-    fn find_all_pointer_writes(&self, param: &str, node: &Node, source: &str) -> Vec<usize> {
-        let mut writes = Vec::new();
-        Self::collect_pointer_writes(param, node, source, &mut writes);
-        writes
-    }
-
-    fn collect_pointer_writes(param: &str, node: &Node, source: &str, writes: &mut Vec<usize>) {
-        if node.kind() == "assignment_expression" {
-            if let Some(left) = node.child_by_field_name("left") {
-                // Check for *param = value
-                if left.kind() == "pointer_expression" {
-                    let left_text = get_node_text(&left, source);
-                    if left_text.starts_with('*') {
-                        if let Some(arg) = left.child_by_field_name("argument") {
-                            if get_node_text(&arg, source) == param {
-                                writes.push(node.start_byte());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                Self::collect_pointer_writes(param, &child, source, writes);
-            }
-        }
-    }
-
-    /// Pass 1: Collect all declarations, assignments, and function calls that initialize
-    fn collect_all_info(&mut self, node: &Node, source: &str) {
-        match node.kind() {
-            "declaration" => {
-                self.process_declaration(node, source);
-            }
-            "assignment_expression" => {
-                self.process_assignment(node, source);
-            }
-            "call_expression" => {
-                self.process_init_call(node, source);
-            }
-            "update_expression" => {
-                // i++ or ++i doesn't initialize, it reads
-            }
-            _ => {}
-        }
-
-        // Recursively process children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.collect_all_info(&child, source);
-            }
-        }
-    }
-
-    /// Check for conditional initialization patterns (if/else-if without else, switch without default)
-    fn check_conditional_init_pattern(&mut self, node: &Node, source: &str) {
-        // Find variables that are initialized only in conditional branches
-        // and mark them as ConditionallyInitialized
-
-        for (var_name, _state) in self.var_states.clone() {
-            if !self.initially_uninitialized.contains(&var_name) {
-                continue; // Skip variables that were initialized at declaration
-            }
-
-            // Check if this variable is assigned only inside conditionals
-            let assignments = self.find_all_assignments(&var_name, node, source);
-            // Also check for function-call-based initializations
-            let func_inits = self.find_all_init_func_calls(&var_name, node, source);
-
-            // Combine all initialization positions, deduplicating by byte offset so that
-            // a single call site (e.g. fgets which pushes twice for an identifier arg)
-            // counts as one initialization.
-            let mut seen: HashSet<usize> = HashSet::new();
-            let all_inits: Vec<usize> = assignments
-                .into_iter()
-                .chain(func_inits.into_iter())
-                .filter(|pos| seen.insert(*pos))
-                .collect();
-            if all_inits.is_empty() {
-                continue; // No initializations found
-            }
-
-            // Check if ALL initializations are inside conditional bodies (any branch).
-            // This catches both incomplete conditionals (if without else) and
-            // assignments in only one branch of a complete if-else.
-            let all_in_conditional = all_inits
-                .iter()
-                .all(|pos| Self::is_inside_any_conditional_body(*pos, node));
-
-            if all_in_conditional {
-                if all_inits.len() >= 2 && Self::inits_share_conditional(&all_inits, node) {
-                    // 2+ inits in branches of the SAME conditional suggests exhaustive
-                    // coverage (e.g. if/else-if or complete if/else).
-                    self.var_states
-                        .insert(var_name, VarState::ConditionallyInitialized);
-                } else {
-                    // Single init, or inits in separate independent conditionals —
-                    // no guarantee of initialization on all paths.
-                    self.var_states.insert(var_name, VarState::Uninitialized);
-                }
-            }
-        }
-    }
-
-    /// Find all positions where a variable is initialized via function call
-    fn find_all_init_func_calls(&self, var_name: &str, node: &Node, source: &str) -> Vec<usize> {
-        let mut positions = Vec::new();
-        self.collect_init_func_calls_for_var(var_name, node, source, &mut positions);
-        positions
-    }
-
-    fn collect_init_func_calls_for_var(
-        &self,
-        var_name: &str,
-        node: &Node,
-        source: &str,
-        positions: &mut Vec<usize>,
-    ) {
-        if node.kind() == "call_expression" {
-            if let Some(function) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&function, source).to_string();
-                if self.initializing_functions.contains(&func_name) {
-                    if let Some(args) = node.child_by_field_name("arguments") {
-                        let output_indices = self.get_output_arg_indices(&func_name);
-                        let mut arg_idx = 0;
-                        for i in 0..args.child_count() {
-                            if let Some(arg) = args.child(i) {
-                                if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
-                                    if output_indices.contains(&arg_idx) {
-                                        let extracted_var = self.extract_var_from_arg(&arg, source);
-                                        if extracted_var == var_name {
-                                            positions.push(node.start_byte());
-                                        }
-                                        // Also check for direct identifier
-                                        if arg.kind() == "identifier" {
-                                            let arg_name = get_node_text(&arg, source);
-                                            if arg_name == var_name {
-                                                positions.push(node.start_byte());
-                                            }
-                                        }
-                                    }
-                                    arg_idx += 1;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.collect_init_func_calls_for_var(var_name, &child, source, positions);
-            }
-        }
-    }
-
-    /// Find all assignment positions for a variable
-    fn find_all_assignments(&self, var_name: &str, node: &Node, source: &str) -> Vec<usize> {
-        let mut positions = Vec::new();
-        Self::collect_assignments_for_var(var_name, node, source, &mut positions);
-        positions
-    }
-
-    fn collect_assignments_for_var(
-        var_name: &str,
-        node: &Node,
-        source: &str,
-        positions: &mut Vec<usize>,
-    ) {
-        if node.kind() == "assignment_expression" {
-            if let Some(left) = node.child_by_field_name("left") {
-                if left.kind() == "identifier" {
-                    let name = get_node_text(&left, source);
-                    if name == var_name {
-                        positions.push(node.start_byte());
-                    }
-                }
-            }
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                Self::collect_assignments_for_var(var_name, &child, source, positions);
-            }
-        }
-    }
-
-    /// Check if a position is inside an incomplete conditional (if without else, switch without default)
-    fn is_inside_incomplete_conditional(&self, pos: usize, node: &Node, source: &str) -> bool {
-        // Check ALL enclosing conditionals, not just the innermost
-        // A variable is conditionally initialized if ANY enclosing conditional is incomplete
-        // and the position is in the body (not the condition) of that incomplete conditional
-        let conditionals = self.find_all_enclosing_conditionals(pos, node);
-
-        for conditional in conditionals {
-            match conditional.kind() {
-                "if_statement" => {
-                    // Check if position is in the condition vs the body
-                    // The condition always executes, so we only care about the body
-                    if !Self::is_in_if_condition(pos, &conditional) {
-                        // Position is in the body - check if this if has else
-                        if !Self::if_chain_has_else(&conditional) {
-                            return true; // In body of if without else
-                        }
-                    }
-                }
-                "switch_statement" => {
-                    // Check if switch has a default case
-                    if !self.switch_has_default(&conditional, source) {
-                        return true;
-                    }
-                }
-                _ => {}
-            }
-        }
-        false
-    }
-
-    /// Check if a byte position is inside the body of any conditional (if or switch),
-    /// regardless of whether the conditional is complete or incomplete.
-    fn is_inside_any_conditional_body(pos: usize, node: &Node) -> bool {
-        // Walk the AST to find enclosing conditionals
-        if pos < node.start_byte() || pos >= node.end_byte() {
-            return false;
-        }
-        // Check children first (depth-first)
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if Self::is_inside_any_conditional_body(pos, &child) {
-                    return true;
-                }
-            }
-        }
-        // Check if this node is a conditional and pos is in a body (not condition)
-        if node.kind() == "if_statement" {
-            if !Self::is_in_if_condition(pos, node) {
-                return true;
-            }
-        } else if node.kind() == "switch_statement" {
-            return true;
-        }
-        false
-    }
-
-    /// Check if 2+ init positions share the same innermost enclosing conditional.
-    /// Returns true if at least 2 inits have the same enclosing if/switch node,
-    /// suggesting they may cover different branches of the same conditional.
-    fn inits_share_conditional(positions: &[usize], root: &Node) -> bool {
-        let mut conditional_starts: HashMap<usize, usize> = HashMap::new();
-        for &pos in positions {
-            if let Some(cond) = Self::find_innermost_conditional(pos, root) {
-                *conditional_starts.entry(cond.start_byte()).or_insert(0) += 1;
-            }
-        }
-        conditional_starts.values().any(|&count| count >= 2)
-    }
-
-    /// Find the innermost enclosing conditional (if or switch) for a byte position
-    fn find_innermost_conditional<'a>(pos: usize, node: &Node<'a>) -> Option<Node<'a>> {
-        if pos < node.start_byte() || pos >= node.end_byte() {
-            return None;
-        }
-        // Check children first (to find innermost)
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if let Some(found) = Self::find_innermost_conditional(pos, &child) {
-                    return Some(found);
-                }
-            }
-        }
-        // Then check if this node is a conditional
-        if node.kind() == "if_statement" || node.kind() == "switch_statement" {
-            return Some(*node);
-        }
-        None
-    }
-
-    /// Find all enclosing conditionals (from innermost to outermost)
-    fn find_all_enclosing_conditionals<'a>(&self, pos: usize, node: &Node<'a>) -> Vec<Node<'a>> {
-        let mut result = Vec::new();
-        Self::collect_enclosing_conditionals(pos, node, &mut result);
-        result
-    }
-
-    fn collect_enclosing_conditionals<'a>(pos: usize, node: &Node<'a>, result: &mut Vec<Node<'a>>) {
-        // Check if current node contains the position
-        if pos < node.start_byte() || pos >= node.end_byte() {
-            return;
-        }
-
-        // If this node is a conditional, add it
-        if node.kind() == "if_statement" || node.kind() == "switch_statement" {
-            result.push(*node);
-        }
-
-        // Recursively check children
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                Self::collect_enclosing_conditionals(pos, &child, result);
-            }
-        }
-    }
-
-    /// Check if position is inside the condition clause of an if statement (not the body)
-    fn is_in_if_condition(pos: usize, if_node: &Node) -> bool {
-        // The condition is the parenthesized_expression child
-        if let Some(condition) = if_node.child_by_field_name("condition") {
-            return pos >= condition.start_byte() && pos < condition.end_byte();
-        }
-        false
-    }
-
-    #[allow(dead_code)]
-    fn find_enclosing_conditional<'a>(pos: usize, node: &Node<'a>) -> Option<Node<'a>> {
-        // Check if current node contains the position
-        if pos < node.start_byte() || pos >= node.end_byte() {
-            return None;
-        }
-
-        // Check children first (to find innermost)
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if let Some(found) = Self::find_enclosing_conditional(pos, &child) {
-                    return Some(found);
-                }
-            }
-        }
-
-        // Then check if this node is a conditional
-        if node.kind() == "if_statement" || node.kind() == "switch_statement" {
-            return Some(*node);
-        }
-
-        None
-    }
-
-    fn if_chain_has_else(if_node: &Node) -> bool {
-        // An if statement has: condition, consequence, and optionally alternative
-        // The alternative can be another if_statement (else if), else_clause, or a compound_statement (else)
-        if let Some(alt) = if_node.child_by_field_name("alternative") {
-            if alt.kind() == "if_statement" {
-                // It's an else-if directly, check recursively
-                return Self::if_chain_has_else(&alt);
-            } else if alt.kind() == "else_clause" {
-                // Wrapped in else_clause - check if it contains an if_statement (else if)
-                for i in 0..alt.child_count() {
-                    if let Some(child) = alt.child(i) {
-                        if child.kind() == "if_statement" {
-                            // It's an else-if, check recursively
-                            return Self::if_chain_has_else(&child);
-                        }
-                    }
-                }
-                // else_clause without if_statement = plain else
-                return true;
-            } else {
-                // It's a plain else clause (compound_statement, etc.)
-                return true;
-            }
-        }
-        false
-    }
-
-    fn switch_has_default(&self, switch_node: &Node, source: &str) -> bool {
-        // Look for "default:" in the switch body
-        if let Some(body) = switch_node.child_by_field_name("body") {
-            let body_text = get_node_text(&body, source);
-            return body_text.contains("default:");
-        }
-        false
-    }
-
-    /// Check if function contains goto that could skip initializations
-    fn check_goto_pattern(
-        &mut self,
-        node: &Node,
-        source: &str,
-        _violations: &mut Vec<RuleViolation>,
-    ) {
-        // Find goto statements, labels, declarations with initializers, and assignments
-        let mut gotos: Vec<(String, usize)> = Vec::new(); // (target label, goto position)
-        let mut labels: HashMap<String, usize> = HashMap::new(); // label name -> position
-        let mut decls_with_init: Vec<(String, usize)> = Vec::new(); // (var name, position)
-        let mut assignments: Vec<(String, usize)> = Vec::new(); // (var name, assignment position)
-
-        Self::collect_goto_info(
-            node,
-            source,
-            &mut gotos,
-            &mut labels,
-            &mut decls_with_init,
-            &mut assignments,
-        );
-
-        // Check if any goto can skip an initialization (declaration with initializer)
-        for (goto_target, goto_pos) in &gotos {
-            if let Some(&label_pos) = labels.get(goto_target) {
-                // goto at goto_pos jumps to label at label_pos
-                // Check if any declaration with initializer is between them (but could be skipped)
-                for (var_name, decl_pos) in &decls_with_init {
-                    // If goto is before the declaration, and label is after
-                    // Then the goto can skip the initialization
-                    if *goto_pos < *decl_pos && *decl_pos < label_pos {
-                        // This declaration can be skipped!
-                        if self.var_states.contains_key(var_name) {
-                            self.var_states
-                                .insert(var_name.clone(), VarState::Uninitialized);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Check if any goto can reach a label without going through an assignment
-        // Only for variables that were declared without initializer
-        for (var_name, state) in self.var_states.clone() {
-            // Only check variables that:
-            // 1. Are currently marked as Initialized (via later assignment)
-            // 2. Were initially declared without initializer
-            if state == VarState::Initialized && self.initially_uninitialized.contains(&var_name) {
-                // Check if this variable was assigned (not initialized at declaration)
-                // and if there's a path via goto that skips the assignment
-                let var_assignments: Vec<usize> = assignments
-                    .iter()
-                    .filter(|(name, _)| name == &var_name)
-                    .map(|(_, pos)| *pos)
-                    .collect();
-
-                if var_assignments.is_empty() {
-                    continue; // No assignments found
-                }
-
-                // Check each goto - if it can reach a label without going through any assignment
-                for (goto_target, goto_pos) in &gotos {
-                    if let Some(&label_pos) = labels.get(goto_target) {
-                        // Check if this goto can reach the label without passing through any assignment
-                        let skips_all_assignments = var_assignments.iter().all(|&assign_pos| {
-                            // The goto skips this assignment if:
-                            // - goto is before assignment AND label is before assignment (goto jumps over)
-                            // - OR assignment is before goto (goto doesn't pass through it)
-                            *goto_pos < assign_pos && label_pos <= assign_pos
-                                || assign_pos < *goto_pos
-                        });
-
-                        if skips_all_assignments && label_pos > *goto_pos {
-                            // This goto reaches the label without initializing the variable
-                            self.var_states
-                                .insert(var_name.clone(), VarState::Uninitialized);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fn collect_goto_info(
-        node: &Node,
-        source: &str,
-        gotos: &mut Vec<(String, usize)>,
-        labels: &mut HashMap<String, usize>,
-        decls_with_init: &mut Vec<(String, usize)>,
-        assignments: &mut Vec<(String, usize)>,
-    ) {
-        match node.kind() {
-            "goto_statement" => {
-                // Extract target label - can be statement_identifier or identifier
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        if child.kind() == "statement_identifier" || child.kind() == "identifier" {
-                            let label_name = get_node_text(&child, source).to_string();
-                            gotos.push((label_name, node.start_byte()));
-                            break;
-                        }
-                    }
-                }
-            }
-            "labeled_statement" => {
-                // Extract label name - the first child should be the label
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        // Try multiple possible node kinds for label
-                        if child.kind() == "statement_identifier" || child.kind() == "identifier" {
-                            let label_name = get_node_text(&child, source).to_string();
-                            // Remove trailing colon if present
-                            let clean_label = label_name.trim_end_matches(':').to_string();
-                            labels.insert(clean_label, node.start_byte());
-                            break;
-                        }
-                    }
-                }
-            }
-            "declaration" => {
-                let decl_text = get_node_text(node, source);
-                // Check if it has an initializer
-                if decl_text.contains('=') {
-                    // Extract variable name
-                    for i in 0..node.child_count() {
-                        if let Some(child) = node.child(i) {
-                            if child.kind() == "init_declarator" {
-                                if let Some(declarator) = child.child_by_field_name("declarator") {
-                                    let var_name = Self::get_var_name(&declarator, source);
-                                    if var_name != "unknown" {
-                                        decls_with_init.push((var_name, node.start_byte()));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            "assignment_expression" => {
-                // Track assignments for goto path analysis
-                if let Some(left) = node.child_by_field_name("left") {
-                    if left.kind() == "identifier" {
-                        let var_name = get_node_text(&left, source).to_string();
-                        assignments.push((var_name, node.start_byte()));
-                    }
-                }
-            }
-            _ => {}
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                Self::collect_goto_info(
-                    &child,
-                    source,
-                    gotos,
-                    labels,
-                    decls_with_init,
-                    assignments,
+            if text.starts_with('*') {
+                check_deref_read(
+                    node, source, analysis, cfg, body, violations, reported, config,
                 );
             }
         }
-    }
-
-    fn process_declaration(&mut self, node: &Node, source: &str) {
-        // Check if this is an array or struct with initializer like {0} or {1, 2, 3}
-        let decl_text = get_node_text(node, source);
-
-        // Check for static or _Thread_local specifier
-        let is_static_or_thread_local = decl_text.contains("static ")
-            || decl_text.contains("_Thread_local")
-            || decl_text.contains("__thread");
-
-        // Check for unsigned char type (EXP33-C exception)
-        let is_unsigned_char = decl_text.contains("unsigned char");
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                if child.kind() == "init_declarator" {
-                    if let Some(declarator) = child.child_by_field_name("declarator") {
-                        let var_name = Self::get_var_name(&declarator, source);
-
-                        // Track array variables
-                        if declarator.kind() == "array_declarator" {
-                            self.array_vars.insert(var_name.clone());
-                        }
-
-                        if let Some(value) = child.child_by_field_name("value") {
-                            let value_text = get_node_text(&value, source);
-
-                            if (value_text.contains("malloc(") && !value_text.contains("calloc("))
-                                || value_text.contains("alloca(")
-                                || value_text.contains("ALLOCA(")
-                            {
-                                self.var_states
-                                    .insert(var_name.clone(), VarState::MallocUninitialized);
-                                self.malloc_pointers.insert(var_name);
-                            } else if value_text.contains("calloc(") {
-                                self.var_states
-                                    .insert(var_name.clone(), VarState::MallocInitialized);
-                                self.malloc_pointers.insert(var_name);
-                            } else {
-                                // Has initializer = initialized
-                                self.var_states.insert(var_name, VarState::Initialized);
-                            }
-                        } else {
-                            // No initializer - track as initially uninitialized
-                            self.initially_uninitialized.insert(var_name.clone());
-                            // Track unsigned char variables (EXP33-C exception)
-                            if is_unsigned_char {
-                                self.unsigned_char_vars.insert(var_name.clone());
-                            }
-                            if is_static_or_thread_local {
-                                // Static/thread-local without explicit init - flag it
-                                self.var_states
-                                    .insert(var_name, VarState::StaticUninitialized);
-                            } else {
-                                self.var_states.insert(var_name, VarState::Uninitialized);
-                            }
-                        }
-                    }
-                } else if child.kind() == "pointer_declarator"
-                    || child.kind() == "array_declarator"
-                    || child.kind() == "identifier"
-                {
-                    // Direct declarator without init_declarator wrapper
-                    // Check if the whole declaration has an initializer
-                    if !decl_text.contains('=') && !decl_text.contains('{') {
-                        let var_name = Self::get_var_name(&child, source);
-                        if var_name != "unknown" {
-                            // Track array variables
-                            if child.kind() == "array_declarator" {
-                                self.array_vars.insert(var_name.clone());
-                            }
-                            // Track as initially uninitialized
-                            self.initially_uninitialized.insert(var_name.clone());
-                            // Track unsigned char variables (EXP33-C exception)
-                            if is_unsigned_char {
-                                self.unsigned_char_vars.insert(var_name.clone());
-                            }
-                            if is_static_or_thread_local {
-                                self.var_states
-                                    .insert(var_name, VarState::StaticUninitialized);
-                            } else {
-                                self.var_states.insert(var_name, VarState::Uninitialized);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    fn process_assignment(&mut self, node: &Node, source: &str) {
-        if let Some(left) = node.child_by_field_name("left") {
-            let left_text = get_node_text(&left, source).to_string();
-
-            if left.kind() == "subscript_expression" {
-                if let Some(array) = left.child_by_field_name("argument") {
-                    let array_name = get_node_text(&array, source).to_string();
-                    if self.var_states.contains_key(&array_name) {
-                        // Partial init for malloc'd memory
-                        if self.malloc_pointers.contains(&array_name) {
-                            self.var_states
-                                .insert(array_name, VarState::MallocInitialized);
-                        } else {
-                            self.var_states.insert(array_name, VarState::Initialized);
-                        }
-                    }
-                }
-            } else if left.kind() == "identifier" {
-                if let Some(right) = node.child_by_field_name("right") {
-                    let right_text = get_node_text(&right, source);
-                    if (right_text.contains("malloc(") && !right_text.contains("calloc("))
-                        || right_text.contains("alloca(")
-                        || right_text.contains("ALLOCA(")
-                    {
-                        self.var_states
-                            .insert(left_text.clone(), VarState::MallocUninitialized);
-                        self.malloc_pointers.insert(left_text);
-                    } else if right_text.contains("calloc(") {
-                        self.var_states
-                            .insert(left_text.clone(), VarState::MallocInitialized);
-                        self.malloc_pointers.insert(left_text);
-                    } else if right_text.contains("realloc(") {
-                        // realloc can extend memory, and the extended portion is uninitialized
-                        // Treat realloc'd memory as potentially uninitialized
-                        self.var_states
-                            .insert(left_text.clone(), VarState::MallocUninitialized);
-                        self.malloc_pointers.insert(left_text);
-                    } else if self.is_call_to_realloc_wrapper(&right, source) {
-                        // Call to a function that wraps realloc - treat like realloc
-                        self.var_states
-                            .insert(left_text.clone(), VarState::MallocUninitialized);
-                        self.malloc_pointers.insert(left_text);
-                    } else {
-                        // Don't upgrade static variables - they remain flagged
-                        if let Some(current) = self.var_states.get(&left_text) {
-                            if *current != VarState::StaticUninitialized {
-                                self.var_states.insert(left_text, VarState::Initialized);
-                            }
-                        } else {
-                            self.var_states.insert(left_text, VarState::Initialized);
-                        }
-                    }
-                }
-            } else if left.kind() == "pointer_expression" {
-                if let Some(arg) = left.child_by_field_name("argument") {
-                    let ptr_name = get_node_text(&arg, source).to_string();
-                    if self.malloc_pointers.contains(&ptr_name) {
-                        self.var_states
-                            .insert(ptr_name, VarState::MallocInitialized);
-                    }
-                }
-            } else if left.kind() == "field_expression" {
-                // struct.field = value or ptr->field = value or arr[i].field = value
-                // Recursively extract the base variable and mark it as initialized.
-                // This handles: p.a = 1 (marks p), arr[0].a = 0 (marks arr).
-                let base_name = Self::extract_base_pointer(&left, source);
-                if !base_name.is_empty() {
-                    if self.malloc_pointers.contains(&base_name) {
-                        self.var_states
-                            .insert(base_name, VarState::MallocInitialized);
-                    } else if self.var_states.contains_key(&base_name) {
-                        if let Some(current) = self.var_states.get(&base_name) {
-                            if *current != VarState::StaticUninitialized {
-                                self.var_states.insert(base_name, VarState::Initialized);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /// Common for-each / iterator macros that assign their first argument
-    /// in a loop initializer. Tree-sitter sees them as call_expression, but
-    /// the iterator variable IS initialized by the macro expansion.
-    const FOR_EACH_MACROS: &'static [&'static str] = &[
-        "dl_list_for_each",
-        "dl_list_for_each_safe",
-        "dl_list_for_each_reverse",
-        "for_each_link",
-        "TAILQ_FOREACH",
-        "TAILQ_FOREACH_SAFE",
-        "LIST_FOREACH",
-        "LIST_FOREACH_SAFE",
-        "SLIST_FOREACH",
-        "SLIST_FOREACH_SAFE",
-        "STAILQ_FOREACH",
-        "STAILQ_FOREACH_SAFE",
-        "RB_FOREACH",
-        "SIMPLEQ_FOREACH",
-        "CIRCLEQ_FOREACH",
-    ];
-
-    fn process_init_call(&mut self, node: &Node, source: &str) {
-        if let Some(function) = node.child_by_field_name("function") {
-            let func_name = get_node_text(&function, source).to_string();
-
-            // For-each macros: the first argument (iterator variable) is assigned
-            // by the macro expansion. Mark it as initialized.
-            if Self::FOR_EACH_MACROS.contains(&func_name.as_str()) {
-                if let Some(args) = node.child_by_field_name("arguments") {
-                    for i in 0..args.child_count() {
-                        if let Some(arg) = args.child(i) {
-                            if arg.kind() == "identifier" {
-                                let var_name = get_node_text(&arg, source).to_string();
-                                if self.var_states.contains_key(&var_name) {
-                                    self.var_states.insert(var_name, VarState::Initialized);
-                                }
-                                break; // Only the first identifier arg is the iterator
-                            }
-                        }
-                    }
-                }
-                return;
-            }
-
-            if let Some(args) = node.child_by_field_name("arguments") {
-                // For known initializing functions, mark their output pointers as initialized
-                if self.initializing_functions.contains(&func_name) {
-                    // scanf/fscanf/sscanf: all &var arguments are output pointers.
-                    // We can't parse the format string to know which args are outputs,
-                    // but every &var arg in a scanf call IS an output.
-                    if matches!(func_name.as_str(), "scanf" | "fscanf" | "sscanf") {
-                        for i in 0..args.child_count() {
-                            if let Some(arg) = args.child(i) {
-                                if arg.kind() == "pointer_expression" {
-                                    let var_name = self.extract_var_from_arg(&arg, source);
-                                    if !var_name.is_empty()
-                                        && self.var_states.contains_key(&var_name)
-                                    {
-                                        self.var_states.insert(var_name, VarState::Initialized);
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        // Determine which argument(s) are output pointers based on the function
-                        let output_arg_indices = self.get_output_arg_indices(&func_name);
-
-                        let mut arg_idx = 0;
-                        for i in 0..args.child_count() {
-                            if let Some(arg) = args.child(i) {
-                                if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
-                                    if output_arg_indices.contains(&arg_idx) {
-                                        // This is an output argument - mark as initialized
-                                        let var_name = self.extract_var_from_arg(&arg, source);
-                                        if !var_name.is_empty() {
-                                            if self.malloc_pointers.contains(&var_name) {
-                                                self.var_states
-                                                    .insert(var_name, VarState::MallocInitialized);
-                                            } else if self.var_states.contains_key(&var_name) {
-                                                self.var_states
-                                                    .insert(var_name, VarState::Initialized);
-                                            }
-                                        }
-                                    }
-                                    arg_idx += 1;
-                                }
-                            }
-                        }
-                    }
-                } else if !self.is_non_initializing_function(&func_name)
-                    && !self.conditionally_init_functions.contains(&func_name)
-                {
-                    // For unknown functions (that aren't known to read from pointers
-                    // AND aren't detected as conditionally initializing),
-                    // treat any &var argument or array/pointer variable passed directly
-                    // as potentially initialized. Arrays decay to pointers, so
-                    // func(buf) is equivalent to func(&buf[0]).
-                    for i in 0..args.child_count() {
-                        if let Some(arg) = args.child(i) {
-                            if arg.kind() == "pointer_expression" {
-                                let arg_text = get_node_text(&arg, source);
-                                if arg_text.starts_with('&') {
-                                    let var_name = self.extract_var_from_arg(&arg, source);
-                                    if !var_name.is_empty()
-                                        && self.var_states.contains_key(&var_name)
-                                    {
-                                        self.var_states.insert(var_name, VarState::Initialized);
-                                    }
-                                }
-                            } else if arg.kind() == "identifier" {
-                                // Only mark array variables as initialized when passed
-                                // by name — arrays decay to pointers and the function
-                                // may write into the buffer. Scalar variables passed by
-                                // value cannot be modified by the callee.
-                                let var_name = get_node_text(&arg, source).to_string();
-                                if self.array_vars.contains(&var_name)
-                                    && self.var_states.contains_key(&var_name)
-                                    && self.initially_uninitialized.contains(&var_name)
-                                {
-                                    self.var_states.insert(var_name, VarState::Initialized);
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Handle va_start specially - initializes the va_list
-                if func_name == "va_start" {
-                    for i in 0..args.child_count() {
-                        if let Some(arg) = args.child(i) {
-                            if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
-                                let var_name = get_node_text(&arg, source).to_string();
-                                if self.var_states.contains_key(&var_name) {
-                                    self.var_states.insert(var_name, VarState::Initialized);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /// Check if a function is known to READ from pointer arguments rather than initialize them
-    fn is_non_initializing_function(&self, func_name: &str) -> bool {
-        matches!(
-            func_name,
-            // Wide character functions that read mbstate_t
-            "mbrlen" | "mbrtowc" | "mbsrtowcs" | "wcrtomb" | "wcsrtombs" |
-            // Regex functions that read compiled pattern
-            "regexec" |
-            // Comparison functions that read from pointers
-            "memcmp" | "strcmp" | "strncmp" | "wmemcmp" | "wcscmp" | "wcsncmp" |
-            // Print functions that read from pointers (not sprintf/snprintf - they init first arg)
-            "printf" | "fprintf" | "vprintf" | "vfprintf" |
-            "puts" | "fputs" | "putchar" | "fputc" |
-            // String length/search functions that read
-            "strlen" | "wcslen" | "strchr" | "strrchr" | "strstr" | "strpbrk" |
-            // Hash/checksum functions that read data
-            "crc32" | "md5" | "sha1" | "sha256" |
-            // Functions that read data for output
-            "fwrite" | "write" | "send" | "sendto"
-        )
-    }
-
-    /// Check if a node is a call expression to a realloc wrapper function
-    fn is_call_to_realloc_wrapper(&self, node: &Node, source: &str) -> bool {
-        if node.kind() == "call_expression" {
-            if let Some(function) = node.child_by_field_name("function") {
-                let func_name = get_node_text(&function, source).to_string();
-                return self.realloc_wrapper_functions.contains(&func_name);
-            }
-        }
-        // Handle cast expressions: (int *)resize_array(...)
-        if node.kind() == "cast_expression" {
-            for i in 0..node.child_count() {
-                if let Some(child) = node.child(i) {
-                    if self.is_call_to_realloc_wrapper(&child, source) {
-                        return true;
-                    }
-                }
-            }
-        }
-        false
-    }
-
-    /// Get which argument indices are output parameters for known functions
-    fn get_output_arg_indices(&self, func_name: &str) -> Vec<usize> {
-        match func_name {
-            // First argument is output for most string/memory functions
-            "memset" | "memcpy" | "memmove" | "strcpy" | "strncpy" | "sprintf" | "snprintf"
-            | "strcat" | "strncat" | "bzero" => vec![0],
-            // First argument is output for gets/fgets
-            "fgets" | "gets" => vec![0],
-            // These read into the first argument
-            "fread" | "read" | "recv" => vec![0],
-            // scanf family - variables are output (but we can't easily track format args)
-            "scanf" | "fscanf" | "sscanf" => vec![], // Too complex to handle
-            // POSIX functions with output pointers - first arg is usually output
-            "gettimeofday" => vec![0],
-            "getaddrinfo" => vec![3], // 4th arg (results) is output
-            "stat" | "fstat" | "lstat" => vec![1], // 2nd arg (struct stat *) is output
-            "getrusage" => vec![1],
-            "getsockname" | "getpeername" => vec![1, 2],
-            "clock_gettime" => vec![1],
-            // pthread init functions
-            "pthread_attr_init" | "pthread_mutex_init" | "pthread_cond_init" => vec![0],
-            // Signal functions
-            "sigaction" => vec![2], // 3rd arg (old action) is output
-            "sigemptyset" | "sigfillset" => vec![0],
-            // regex
-            "regcomp" => vec![0],
-            // These are NOT pure output - they may read from the state
-            "mbrlen" | "mbrtowc" | "mbsrtowcs" | "wcrtomb" | "wcsrtombs" => vec![],
-            "regexec" => vec![], // Reads compiled regex
-            _ => vec![0],        // Default: first arg is output
-        }
-    }
-
-    /// Extract variable name from an argument (handles &var, var, etc.)
-    fn extract_var_from_arg(&self, arg: &Node, source: &str) -> String {
-        if arg.kind() == "pointer_expression" {
-            let arg_text = get_node_text(arg, source);
-            if arg_text.starts_with('&') {
-                if let Some(inner) = arg.child_by_field_name("argument") {
-                    if inner.kind() == "identifier" {
-                        return get_node_text(&inner, source).to_string();
-                    }
-                }
-            }
-        } else if arg.kind() == "identifier" {
-            return get_node_text(arg, source).to_string();
-        }
-        String::new()
-    }
-
-    /// Pass 2: Check for reads of uninitialized variables
-    fn check_usage(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        match node.kind() {
-            "identifier" => {
-                self.check_identifier_read(node, source, violations);
-            }
-            "pointer_expression" => {
-                self.check_pointer_deref(node, source, violations);
-            }
-            "subscript_expression" => {
-                self.check_subscript_read(node, source, violations);
-            }
-            "field_expression" => {
-                self.check_field_read(node, source, violations);
-            }
-            _ => {}
-        }
-
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                self.check_usage(&child, source, violations);
-            }
-        }
-    }
-
-    fn check_field_read(&mut self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check for field access on malloc'd struct: ptr->field or (*ptr).field
-        if let Some(arg) = node.child_by_field_name("argument") {
-            let base_name = if arg.kind() == "identifier" {
-                get_node_text(&arg, source).to_string()
-            } else if arg.kind() == "pointer_expression" {
-                // (*ptr).field pattern
-                if let Some(inner) = arg.child_by_field_name("argument") {
-                    get_node_text(&inner, source).to_string()
-                } else {
-                    return;
-                }
-            } else {
-                return;
-            };
-
-            if self.reported.contains(&base_name) {
-                return;
-            }
-
-            if let Some(state) = self.var_states.get(&base_name) {
-                if *state == VarState::MallocUninitialized
-                    && self.is_field_read_context(node, source)
-                {
-                    let start = node.start_position();
-                    violations.push(RuleViolation {
-                        rule_id: "EXP33-C".to_string(),
-                        severity: Severity::High,
-                        message: format!(
-                            "Reading from uninitialized malloc'd struct through '{}'",
-                            base_name
-                        ),
-                        file_path: String::new(),
-                        line: start.row + 1,
-                        column: start.column + 1,
-                        suggestion: Some(
-                            "Use calloc() or initialize struct fields before reading".to_string(),
-                        ),
-                        ..Default::default()
-                    });
-                    self.reported.insert(base_name);
-                }
-            }
-        }
-    }
-
-    fn is_field_read_context(&self, node: &Node, _source: &str) -> bool {
-        if let Some(parent) = node.parent() {
-            match parent.kind() {
-                "assignment_expression" => {
-                    if let Some(left) = parent.child_by_field_name("left") {
-                        return node.start_byte() != left.start_byte();
-                    }
-                    true
-                }
-                "init_declarator" => false,
-                _ => true,
-            }
-        } else {
-            true
-        }
-    }
-
-    fn check_identifier_read(
-        &mut self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
-        let var_name = get_node_text(node, source).to_string();
-
-        // Skip if already reported
-        if self.reported.contains(&var_name) {
-            return;
-        }
-
-        // Skip unsigned char variables (EXP33-C exception)
-        if self.unsigned_char_vars.contains(&var_name) {
-            return;
-        }
-
-        // Check if this is an uninitialized variable
-        if let Some(state) = self.var_states.get(&var_name) {
-            let is_uninit = matches!(
-                state,
-                VarState::Uninitialized | VarState::StaticUninitialized
+        "subscript_expression" => {
+            check_subscript_read(
+                node, source, analysis, cfg, body, violations, reported, config,
             );
-
-            if is_uninit {
-                // Before flagging, check if there's a preceding assignment to this variable
-                // in the same enclosing compound_statement. This handles the case where
-                // check_conditional_init_pattern conservatively marked the variable as
-                // Uninitialized, but the specific read location is dominated by an
-                // assignment in the same block (e.g., `data = 5; use(data);` inside an
-                // if-block without else).
-                if self.initially_uninitialized.contains(&var_name)
-                    && Self::has_preceding_assignment_in_block(node, &var_name, source)
-                {
-                    return;
-                }
-                // Check if this is a read context (not assignment target, not declaration)
-                if self.is_read_context_for_identifier(node, source) {
-                    let start = node.start_position();
-                    let msg = if *state == VarState::StaticUninitialized {
-                        format!(
-                            "Reading static/thread-local variable '{}' without explicit initialization",
-                            var_name
-                        )
-                    } else {
-                        format!("Reading uninitialized variable '{}'", var_name)
-                    };
-                    violations.push(RuleViolation {
-                        rule_id: "EXP33-C".to_string(),
-                        severity: Severity::High,
-                        message: msg,
-                        file_path: String::new(),
-                        line: start.row + 1,
-                        column: start.column + 1,
-                        suggestion: Some("Initialize the variable before use".to_string()),
-                        ..Default::default()
-                    });
-                    self.reported.insert(var_name);
-                }
-            }
         }
+        _ => {}
     }
 
-    fn is_read_context_for_identifier(&self, node: &Node, source: &str) -> bool {
-        if let Some(parent) = node.parent() {
-            match parent.kind() {
-                // Left side of assignment is not a read
-                "assignment_expression" => {
-                    if let Some(left) = parent.child_by_field_name("left") {
-                        return node.start_byte() != left.start_byte();
-                    }
-                    true
-                }
-                // Declaration is not a read
-                "init_declarator"
-                | "declaration"
-                | "declarator"
-                | "pointer_declarator"
-                | "array_declarator"
-                | "parameter_declaration" => false,
-                // sizeof doesn't read the value
-                "sizeof_expression" => false,
-                // Address-of (&var) doesn't read the value
-                "unary_expression" => {
-                    let parent_text = get_node_text(&parent, source);
-                    !parent_text.starts_with('&')
-                }
-                // Function call argument is a read
-                "argument_list" => {
-                    // Check if it's passed as a pointer for initialization
-                    if let Some(gp) = parent.parent() {
-                        if gp.kind() == "call_expression" {
-                            if let Some(func) = gp.child_by_field_name("function") {
-                                let func_name = get_node_text(&func, source);
-                                if self.initializing_functions.contains(func_name) {
-                                    // Check if this is the first (destination) argument
-                                    for i in 0..parent.child_count() {
-                                        if let Some(arg) = parent.child(i) {
-                                            if arg.kind() != "("
-                                                && arg.kind() != ")"
-                                                && arg.kind() != ","
-                                            {
-                                                if node.start_byte() == arg.start_byte() {
-                                                    return false; // First arg of init func
-                                                }
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    true
-                }
-                // field_expression: identifier is base of struct/pointer access.
-                // Not a read if the field_expression itself is the LHS of an assignment
-                // (e.g., `myUnion.field = x` — writing to the field, not reading myUnion).
-                "field_expression" => {
-                    if let Some(gp) = parent.parent() {
-                        if gp.kind() == "assignment_expression" {
-                            if let Some(left) = gp.child_by_field_name("left") {
-                                if parent.start_byte() == left.start_byte() {
-                                    return false; // e.g. myUnion.field = x
-                                }
-                            }
-                        }
-                    }
-                    true
-                }
-                // These are read contexts
-                "binary_expression"
-                | "return_statement"
-                | "condition_clause"
-                | "parenthesized_expression"
-                | "call_expression"
-                | "subscript_expression"
-                | "update_expression" => true,
-                _ => true,
-            }
-        } else {
-            true
+    // Recurse into children
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            check_reads(
+                &child, source, analysis, cfg, body, violations, reported, config,
+            );
         }
     }
+}
 
-    fn check_pointer_deref(
-        &mut self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
+/// Check if an identifier read is of an uninitialized variable.
+fn check_identifier_read(
+    node: &Node,
+    source: &str,
+    analysis: &InitAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    violations: &mut Vec<RuleViolation>,
+    reported: &mut HashSet<String>,
+    config: &init_state::InitAnalysisConfig,
+) {
+    let var_name = get_node_text(node, source).to_string();
+
+    // Skip if not tracked
+    if !analysis.tracked_vars.contains(&var_name) {
+        return;
+    }
+
+    // Skip if already reported
+    if reported.contains(&var_name) {
+        return;
+    }
+
+    // Skip if this is NOT a read context
+    if !is_read_context(node, source) {
+        return;
+    }
+
+    // Query init state at this point
+
+    let info = match init_state::get_var_info_at_with_config(
+        analysis,
+        cfg,
+        body,
+        source,
+        &var_name,
+        node.start_byte(),
+        config,
     ) {
-        let node_text = get_node_text(node, source);
+        Some(i) => i,
+        None => return,
+    };
 
-        // Only check dereferences (*ptr), not address-of (&var)
-        if !node_text.starts_with('*') {
+    // EXP33-C exception: reading uninitialized unsigned char is permitted
+    if info.is_unsigned_char {
+        return;
+    }
+
+    // Only flag truly uninitialized or maybe-uninitialized reads
+    if !info.state.is_unsafe() {
+        return;
+    }
+
+    reported.insert(var_name.clone());
+
+    let message = if info.is_static {
+        format!(
+            "Static variable '{}' used without explicit initialization",
+            var_name
+        )
+    } else if matches!(info.state, InitState::MaybeUninitialized) {
+        format!(
+            "Variable '{}' may be used uninitialized (not assigned on all paths)",
+            var_name
+        )
+    } else {
+        format!("Variable '{}' is used uninitialized", var_name)
+    };
+
+    violations.push(RuleViolation {
+        rule_id: "EXP33-C".to_string(),
+        severity: Severity::High,
+        message,
+        file_path: String::new(),
+        line: node.start_position().row + 1,
+        column: node.start_position().column + 1,
+        suggestion: Some(format!(
+            "Initialize '{}' before use, e.g., at its declaration",
+            var_name
+        )),
+        ..Default::default()
+    });
+}
+
+/// Check if a dereference (*ptr) reads uninitialized content.
+fn check_deref_read(
+    node: &Node,
+    source: &str,
+    analysis: &InitAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    violations: &mut Vec<RuleViolation>,
+    reported: &mut HashSet<String>,
+    config: &init_state::InitAnalysisConfig,
+) {
+    // Extract the pointer variable being dereferenced
+    let var_name = if let Some(arg) = node.child_by_field_name("argument") {
+        if arg.kind() == "identifier" {
+            get_node_text(&arg, source).to_string()
+        } else {
             return;
         }
+    } else {
+        return;
+    };
 
-        if let Some(arg) = node.child_by_field_name("argument") {
-            let ptr_name = get_node_text(&arg, source).to_string();
-
-            if self.reported.contains(&ptr_name) {
-                return;
-            }
-
-            if let Some(state) = self.var_states.get(&ptr_name) {
-                match state {
-                    VarState::Uninitialized => {
-                        let start = node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: "EXP33-C".to_string(),
-                            severity: Severity::High,
-                            message: format!("Dereferencing uninitialized pointer '{}'", ptr_name),
-                            file_path: String::new(),
-                            line: start.row + 1,
-                            column: start.column + 1,
-                            suggestion: Some(
-                                "Initialize the pointer before dereferencing".to_string(),
-                            ),
-                            ..Default::default()
-                        });
-                        self.reported.insert(ptr_name);
-                    }
-                    VarState::MallocUninitialized => {
-                        // Check if this is a read context
-                        if self.is_deref_read_context(node, source) {
-                            let start = node.start_position();
-                            violations.push(RuleViolation {
-                                rule_id: "EXP33-C".to_string(),
-                                severity: Severity::High,
-                                message: format!(
-                                    "Reading from uninitialized malloc'd memory through '{}'",
-                                    ptr_name
-                                ),
-                                file_path: String::new(),
-                                line: start.row + 1,
-                                column: start.column + 1,
-                                suggestion: Some(
-                                    "Use calloc() or initialize memory before reading".to_string(),
-                                ),
-                                ..Default::default()
-                            });
-                            self.reported.insert(ptr_name);
-                        }
-                    }
-                    _ => {}
-                }
-            }
-        }
+    if !analysis.tracked_vars.contains(&var_name) || reported.contains(&var_name) {
+        return;
     }
 
-    fn is_deref_read_context(&self, node: &Node, _source: &str) -> bool {
-        if let Some(parent) = node.parent() {
-            match parent.kind() {
-                "assignment_expression" => {
-                    if let Some(left) = parent.child_by_field_name("left") {
-                        return node.start_byte() != left.start_byte();
-                    }
-                    true
-                }
-                "init_declarator" => false,
-                _ => true,
-            }
-        } else {
-            true
-        }
+    // Skip non-read contexts (e.g., *ptr = value is a write)
+    if !is_deref_read_context(node) {
+        return;
     }
 
-    fn check_subscript_read(
-        &mut self,
-        node: &Node,
-        source: &str,
-        violations: &mut Vec<RuleViolation>,
+    let info = match init_state::get_var_info_at_with_config(
+        analysis,
+        cfg,
+        body,
+        source,
+        &var_name,
+        node.start_byte(),
+        config,
     ) {
-        if let Some(array) = node.child_by_field_name("argument") {
-            // Handle ptr[i], arr->field[i], or (*ptr)[i] patterns
-            let base_name = Self::extract_base_pointer(&array, source);
+        Some(i) => i,
+        None => return,
+    };
 
-            if base_name.is_empty() || self.reported.contains(&base_name) {
-                return;
-            }
-
-            // Special case: Flexible array member access pattern (ptr->field[i])
-            // If the subscript argument is a field_expression and the base is malloc'd,
-            // the flexible array portion may be uninitialized even if some fields were assigned
-            let is_flex_array_access =
-                array.kind() == "field_expression" && self.malloc_pointers.contains(&base_name);
-
-            if let Some(state) = self.var_states.get(&base_name) {
-                let is_uninit = *state == VarState::MallocUninitialized
-                    || (is_flex_array_access && *state == VarState::MallocInitialized);
-
-                if is_uninit && self.is_subscript_read_context(node, source) {
-                    let start = node.start_position();
-                    let msg = if is_flex_array_access {
-                        format!(
-                            "Reading from potentially uninitialized flexible array member through '{}'",
-                            base_name
-                        )
-                    } else {
-                        format!(
-                            "Reading from uninitialized malloc'd memory through '{}'",
-                            base_name
-                        )
-                    };
-                    violations.push(RuleViolation {
-                        rule_id: "EXP33-C".to_string(),
-                        severity: Severity::High,
-                        message: msg,
-                        file_path: String::new(),
-                        line: start.row + 1,
-                        column: start.column + 1,
-                        suggestion: Some(
-                            "Use calloc() or initialize memory before reading".to_string(),
-                        ),
-                        ..Default::default()
-                    });
-                    self.reported.insert(base_name);
-                }
-            }
-        }
+    // Check both pointer and content state
+    if info.state.is_unsafe() {
+        // Pointer itself is uninitialized
+        reported.insert(var_name.clone());
+        violations.push(RuleViolation {
+            rule_id: "EXP33-C".to_string(),
+            severity: Severity::High,
+            message: format!("Dereference of uninitialized pointer '{}'", var_name),
+            file_path: String::new(),
+            line: node.start_position().row + 1,
+            column: node.start_position().column + 1,
+            suggestion: Some(format!(
+                "Initialize pointer '{}' before dereferencing",
+                var_name
+            )),
+            ..Default::default()
+        });
+    } else if info.state.is_content_unsafe() {
+        // Pointer is set but content is uninitialized (malloc without memset)
+        reported.insert(var_name.clone());
+        violations.push(RuleViolation {
+            rule_id: "EXP33-C".to_string(),
+            severity: Severity::High,
+            message: format!(
+                "Reading from '{}' which points to uninitialized memory (allocated without initialization)",
+                var_name
+            ),
+            file_path: String::new(),
+            line: node.start_position().row + 1,
+            column: node.start_position().column + 1,
+            suggestion: Some(
+                "Use calloc() instead of malloc(), or memset() after allocation".to_string(),
+            ),
+            ..Default::default()
+        });
     }
+}
 
-    /// Extract the base pointer from expressions like arr, arr->field, (*ptr), etc.
-    fn extract_base_pointer(node: &Node, source: &str) -> String {
-        match node.kind() {
-            "identifier" => get_node_text(node, source).to_string(),
-            "field_expression" => {
-                // arr->field or obj.field - get the base
-                if let Some(arg) = node.child_by_field_name("argument") {
-                    Self::extract_base_pointer(&arg, source)
-                } else {
-                    String::new()
-                }
-            }
-            "pointer_expression" => {
-                // (*ptr) or &var
-                if let Some(arg) = node.child_by_field_name("argument") {
-                    Self::extract_base_pointer(&arg, source)
-                } else {
-                    String::new()
-                }
-            }
-            "parenthesized_expression" => {
-                // (ptr)
-                for i in 0..node.child_count() {
-                    if let Some(child) = node.child(i) {
-                        if child.kind() != "(" && child.kind() != ")" {
-                            return Self::extract_base_pointer(&child, source);
-                        }
-                    }
-                }
-                String::new()
-            }
-            _ => String::new(),
-        }
-    }
-
-    fn is_subscript_read_context(&self, node: &Node, source: &str) -> bool {
-        if let Some(parent) = node.parent() {
-            match parent.kind() {
-                "assignment_expression" => {
-                    if let Some(left) = parent.child_by_field_name("left") {
-                        return node.start_byte() != left.start_byte();
-                    }
-                    true
-                }
-                "init_declarator" => false,
-                // subscript inside field_expression LHS: data[0].field = x
-                // The subscript is not being read — it's the write target's base.
-                "field_expression" => {
-                    if let Some(gp) = parent.parent() {
-                        if gp.kind() == "assignment_expression" {
-                            if let Some(left) = gp.child_by_field_name("left") {
-                                if parent.start_byte() == left.start_byte() {
-                                    return false; // e.g. data[i].field = x
-                                }
-                            }
-                        }
-                    }
-                    true
-                }
-                "call_expression" => {
-                    if let Some(func) = parent.child_by_field_name("function") {
-                        let func_name = get_node_text(&func, source).to_string();
-                        if self.initializing_functions.contains(&func_name) {
-                            if let Some(args) = parent.child_by_field_name("arguments") {
-                                for i in 0..args.child_count() {
-                                    if let Some(arg) = args.child(i) {
-                                        if arg.kind() != "("
-                                            && arg.kind() != ")"
-                                            && arg.kind() != ","
-                                        {
-                                            if node.start_byte() == arg.start_byte() {
-                                                return false;
-                                            }
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    true
-                }
-                _ => true,
-            }
-        } else {
-            true
-        }
-    }
-
-    /// Check if there is an assignment to `var_name` in the same enclosing
-    /// compound_statement that precedes `read_node` in source order.
-    /// This catches the pattern where `check_conditional_init_pattern`
-    /// conservatively marked a variable as Uninitialized because its
-    /// assignment is inside an incomplete conditional, but the read is in
-    /// the same block as the assignment (e.g., `data = 5; use(data);`).
-    fn has_preceding_assignment_in_block(read_node: &Node, var_name: &str, source: &str) -> bool {
-        let read_byte = read_node.start_byte();
-
-        // Walk up through ancestor nodes looking for dominating assignments
-        let mut current = read_node.parent();
-        while let Some(node) = current {
-            match node.kind() {
-                "compound_statement" => {
-                    // Scan children of this compound_statement for assignments
-                    // to var_name that precede read_byte
-                    if Self::block_has_preceding_assignment(&node, var_name, source, read_byte) {
-                        return true;
-                    }
-                }
-                "for_statement" => {
-                    // The for-statement initializer always executes before the
-                    // condition and body. If the read is anywhere in the for-statement
-                    // (condition, update, or body), the init clause dominates it.
-                    if Self::for_init_assigns_var(&node, var_name, source) {
-                        return true;
-                    }
-                }
-                "function_definition" => break,
-                _ => {}
-            }
-            current = node.parent();
-        }
-        false
-    }
-
-    /// Check if a for-statement's initializer clause assigns to `var_name`.
-    /// Handles both `for (var = expr; ...)` and `for (type var = expr; ...)`.
-    fn for_init_assigns_var(for_node: &Node, var_name: &str, source: &str) -> bool {
-        // tree-sitter stores the for-loop initializer in the "initializer" field
-        if let Some(init) = for_node.child_by_field_name("initializer") {
-            match init.kind() {
-                "assignment_expression" => {
-                    if let Some(left) = init.child_by_field_name("left") {
-                        if left.kind() == "identifier" && get_node_text(&left, source) == var_name {
-                            return true;
-                        }
-                    }
-                }
-                "declaration" => {
-                    // for (int i = 0; ...) — check if var_name is declared with init
-                    return Self::statement_assigns_var(&init, var_name, source);
-                }
-                // Could be a comma_expression: for (i = 0, j = 0; ...)
-                "comma_expression" => {
-                    for i in 0..init.child_count() {
-                        if let Some(child) = init.child(i) {
-                            if child.kind() == "assignment_expression" {
-                                if let Some(left) = child.child_by_field_name("left") {
-                                    if left.kind() == "identifier"
-                                        && get_node_text(&left, source) == var_name
-                                    {
-                                        return true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                _ => {}
-            }
-        }
-        false
-    }
-
-    /// Scan direct children of a compound_statement for an assignment or
-    /// init-declaration of `var_name` that comes before `before_byte`.
-    fn block_has_preceding_assignment(
-        block: &Node,
-        var_name: &str,
-        source: &str,
-        before_byte: usize,
-    ) -> bool {
-        for i in 0..block.named_child_count() {
-            if let Some(child) = block.named_child(i) {
-                // Only look at statements before the read
-                if child.start_byte() >= before_byte {
+/// Check if a subscript access (arr[i]) reads uninitialized content.
+fn check_subscript_read(
+    node: &Node,
+    source: &str,
+    analysis: &InitAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    violations: &mut Vec<RuleViolation>,
+    reported: &mut HashSet<String>,
+    config: &init_state::InitAnalysisConfig,
+) {
+    // Extract base variable (handles arr[i], arr->field[i], etc.)
+    let var_name = {
+        let mut name = String::new();
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "identifier" {
+                    name = get_node_text(&child, source).to_string();
                     break;
                 }
-
-                // Check for direct assignment: var_name = ...
-                if Self::statement_assigns_var(&child, var_name, source) {
-                    return true;
-                }
-
-                // Check if-chains where all branches either init the var or exit
-                if child.kind() == "if_statement"
-                    && Self::if_chain_covers_init_or_exit(&child, var_name, source)
-                {
-                    return true;
+                // Handle arr->data[i] — subscript base is a field_expression
+                if child.kind() == "field_expression" {
+                    name = extract_root_identifier(&child, source);
+                    break;
                 }
             }
         }
-        false
+        name
+    };
+
+    if var_name.is_empty()
+        || !analysis.tracked_vars.contains(&var_name)
+        || reported.contains(&var_name)
+    {
+        return;
     }
 
-    /// Check if a statement (or expression_statement wrapping an assignment)
-    /// assigns to `var_name`.
-    fn statement_assigns_var(stmt: &Node, var_name: &str, source: &str) -> bool {
-        match stmt.kind() {
-            "expression_statement" => {
-                // Check the contained expression
-                for i in 0..stmt.named_child_count() {
-                    if let Some(child) = stmt.named_child(i) {
-                        if Self::statement_assigns_var(&child, var_name, source) {
-                            return true;
+    // Skip non-read contexts
+    if !is_subscript_read_context(node) {
+        return;
+    }
+
+    let info = match init_state::get_var_info_at_with_config(
+        analysis,
+        cfg,
+        body,
+        source,
+        &var_name,
+        node.start_byte(),
+        config,
+    ) {
+        Some(i) => i,
+        None => return,
+    };
+
+    // EXP33-C exception: unsigned char content reads are permitted
+    if info.is_unsigned_char {
+        return;
+    }
+
+    // For subscript reads, only flag definitely-uninitialized content.
+    // MaybeUninitialized often results from loop-based array initialization
+    // where the loop join produces a conservative MaybeUninitialized.
+    let content_unsafe = matches!(
+        info.state,
+        InitState::Uninitialized | InitState::MallocUninitialized
+    );
+
+    if content_unsafe {
+        reported.insert(var_name.clone());
+        violations.push(RuleViolation {
+            rule_id: "EXP33-C".to_string(),
+            severity: Severity::High,
+            message: format!(
+                "Reading from '{}' which may contain uninitialized data",
+                var_name
+            ),
+            file_path: String::new(),
+            line: node.start_position().row + 1,
+            column: node.start_position().column + 1,
+            suggestion: Some(format!(
+                "Initialize the contents of '{}' before reading",
+                var_name
+            )),
+            ..Default::default()
+        });
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Read-context detection
+// ---------------------------------------------------------------------------
+
+/// Check if an identifier node is in a read context (not a write target).
+fn is_read_context(node: &Node, source: &str) -> bool {
+    let parent = match node.parent() {
+        Some(p) => p,
+        None => return true,
+    };
+
+    // Walk up ancestors to check context
+    // Some non-read contexts are nested: sizeof(x) → sizeof_expression > parenthesized_expression > identifier
+    let mut ancestor = Some(parent);
+    let mut depth = 0;
+    while let Some(anc) = ancestor {
+        depth += 1;
+        if depth > 5 {
+            break;
+        }
+        match anc.kind() {
+            "sizeof_expression" | "_Alignof" => return false,
+            "parenthesized_expression" => {
+                ancestor = anc.parent();
+                continue;
+            }
+            _ => break,
+        }
+    }
+
+    match parent.kind() {
+        // LHS of assignment
+        "assignment_expression" => {
+            if let Some(left) = parent.child_by_field_name("left") {
+                if left.id() == node.id() {
+                    // Check for compound assignment (+=, -=, *=, etc.)
+                    // which both reads and writes the LHS
+                    for i in 0..parent.child_count() {
+                        if let Some(op) = parent.child(i) {
+                            let op_text = get_node_text(&op, source);
+                            if matches!(
+                                op_text,
+                                "+=" | "-="
+                                    | "*="
+                                    | "/="
+                                    | "%="
+                                    | "<<="
+                                    | ">>="
+                                    | "&="
+                                    | "|="
+                                    | "^="
+                            ) {
+                                return true; // Compound assignment reads the LHS
+                            }
                         }
                     }
+                    return false; // Simple assignment (=) — write only
                 }
-                false
             }
-            "assignment_expression" => {
-                if let Some(left) = stmt.child_by_field_name("left") {
-                    if left.kind() == "identifier" {
-                        return get_node_text(&left, source) == var_name;
-                    }
-                }
-                false
+            true // RHS is a read
+        }
+        // Compound assignment (+=, -=, etc.) — both read and write
+        "augmented_assignment_expression" => true,
+        // Declaration — not a read
+        "declaration" | "init_declarator" => false,
+        // sizeof(x) — not a read
+        "sizeof_expression" => false,
+        // &x — address-of. Generally not a read, BUT if &x is passed to a
+        // non-initializing function (one that reads from the pointer), it IS a read.
+        "pointer_expression" => {
+            let text = get_node_text(&parent, source);
+            if !text.starts_with('&') {
+                return true; // *x — dereference read
             }
-            "declaration" => {
-                // Check for init_declarator with a value (e.g., `int data = 5;`)
-                let text = get_node_text(stmt, source);
-                if !text.contains('=') {
-                    return false;
-                }
-                for i in 0..stmt.child_count() {
-                    if let Some(child) = stmt.child(i) {
-                        if child.kind() == "init_declarator" {
-                            if let Some(declarator) = child.child_by_field_name("declarator") {
-                                let decl_name = Self::get_var_name(&declarator, source);
-                                if decl_name == var_name
-                                    && child.child_by_field_name("value").is_some()
-                                {
-                                    return true;
+            // Check if &var is inside an argument_list of a non-initializing function
+            if let Some(arg_list) = parent.parent() {
+                if arg_list.kind() == "argument_list" {
+                    if let Some(call) = arg_list.parent() {
+                        if call.kind() == "call_expression" {
+                            if let Some(func) = call.child_by_field_name("function") {
+                                let func_name = get_node_text(&func, source);
+                                if init_state::is_non_initializing_function(&func_name) {
+                                    return true; // &var passed to function that reads from it
                                 }
                             }
                         }
                     }
                 }
-                false
             }
-            _ => false,
+            false // Regular &var — not a read
         }
-    }
-
-    /// Check if an if/else-if/else chain covers all paths for a variable:
-    /// every branch either assigns the variable or contains an unconditional
-    /// exit (return/break/continue/goto). Requires a terminal else clause.
-    fn if_chain_covers_init_or_exit(if_node: &Node, var_name: &str, source: &str) -> bool {
-        // Must have a terminal else (otherwise fall-through path is uncovered)
-        if !Self::if_chain_has_else(if_node) {
-            return false;
-        }
-
-        let mut branches = Vec::new();
-        Self::collect_if_chain_branches(if_node, &mut branches);
-
-        if branches.is_empty() {
-            return false;
-        }
-
-        for branch in &branches {
-            let has_init = Self::branch_unconditionally_assigns(branch, var_name, source);
-            let has_exit = Self::branch_has_unconditional_exit(branch);
-            if !has_init && !has_exit {
-                return false;
-            }
-        }
-        true
-    }
-
-    /// Collect all branch bodies from an if/else-if/else chain.
-    fn collect_if_chain_branches<'a>(if_node: &Node<'a>, branches: &mut Vec<Node<'a>>) {
-        if let Some(consequence) = if_node.child_by_field_name("consequence") {
-            branches.push(consequence);
-        }
-
-        if let Some(alt) = if_node.child_by_field_name("alternative") {
-            match alt.kind() {
-                "if_statement" => {
-                    Self::collect_if_chain_branches(&alt, branches);
-                }
-                "else_clause" => {
-                    let mut found_if = false;
-                    for i in 0..alt.child_count() {
-                        if let Some(child) = alt.child(i) {
-                            if child.kind() == "if_statement" {
-                                Self::collect_if_chain_branches(&child, branches);
-                                found_if = true;
-                                break;
-                            }
-                        }
-                    }
-                    if !found_if {
-                        // Plain else body
-                        for i in 0..alt.named_child_count() {
-                            if let Some(child) = alt.named_child(i) {
-                                branches.push(child);
-                                break;
-                            }
+        // Update expression (i++, ++i) — both read and write, but we don't flag these
+        "update_expression" => false,
+        // Field expression LHS — writing to a field is NOT reading the base
+        "field_expression" => {
+            // Check if the field expression is on the LHS of an assignment
+            if let Some(grandparent) = parent.parent() {
+                if grandparent.kind() == "assignment_expression" {
+                    if let Some(left) = grandparent.child_by_field_name("left") {
+                        if left.id() == parent.id() {
+                            return false; // obj.field = val — obj is not "read"
                         }
                     }
                 }
-                _ => {
-                    branches.push(alt);
-                }
             }
+            true
         }
+        // Subscript base (arr[i]) — the base identifier provides the address,
+        // not a value read. Content reads are handled by check_subscript_read.
+        "subscript_expression" => false,
+        // Parameter declaration — not a read
+        "parameter_declaration" => false,
+        // Cast expression — reading the value
+        "cast_expression" => true,
+        // Condition expressions — reading
+        "binary_expression" | "unary_expression" | "conditional_expression" => true,
+        // Function call argument — usually a read, but check for output args
+        // of known initializing functions (e.g., fgets(input, ...) is a write to input)
+        "argument_list" => is_read_in_argument_list(node, &parent, source),
+        // Return statement — reading
+        "return_statement" => true,
+        // Comma expression
+        "comma_expression" => true,
+        _ => true,
     }
+}
 
-    /// Check if a branch body unconditionally assigns to var_name.
-    /// Only checks direct statements (not nested conditionals).
-    fn branch_unconditionally_assigns(branch: &Node, var_name: &str, source: &str) -> bool {
-        if branch.kind() == "compound_statement" {
-            for i in 0..branch.named_child_count() {
-                if let Some(child) = branch.named_child(i) {
-                    if Self::statement_assigns_var(&child, var_name, source) {
-                        return true;
+/// Check if an identifier in an argument_list is being read (vs. being an output arg).
+fn is_read_in_argument_list(node: &Node, arg_list: &Node, source: &str) -> bool {
+    // Find the parent call_expression
+    let call_expr = match arg_list.parent() {
+        Some(c) if c.kind() == "call_expression" => c,
+        _ => return true,
+    };
+
+    // Get function name
+    let func_name = match call_expr.child_by_field_name("function") {
+        Some(f) => get_node_text(&f, source).to_string(),
+        None => return true,
+    };
+
+    // va_start/va_copy: first arg is output (initializes the va_list)
+    if func_name == "va_start" || func_name == "va_copy" {
+        // First non-punctuation arg is the output va_list
+        if let Some(first_arg) = call_expr.child_by_field_name("arguments").and_then(|args| {
+            for i in 0..args.child_count() {
+                if let Some(c) = args.child(i) {
+                    if c.kind() != "(" && c.kind() != ")" && c.kind() != "," {
+                        return Some(c);
                     }
                 }
             }
-            false
-        } else {
-            Self::statement_assigns_var(branch, var_name, source)
+            None
+        }) {
+            if contains_node(&first_arg, node) {
+                return false; // Output arg — not a read
+            }
         }
+        return true;
     }
 
-    /// Check if a branch body contains an unconditional exit statement
-    /// (return/break/continue/goto) at the top level.
-    fn branch_has_unconditional_exit(branch: &Node) -> bool {
-        if branch.kind() == "compound_statement" {
-            for i in 0..branch.named_child_count() {
-                if let Some(child) = branch.named_child(i) {
-                    match child.kind() {
-                        "return_statement" | "break_statement" | "continue_statement"
-                        | "goto_statement" => return true,
-                        _ => {}
+    // Check if this is a known initializing function
+    if !init_state::INITIALIZING_FUNCTIONS.contains(&func_name.as_str()) {
+        // For unknown functions, check if the identifier is passed by name
+        // (arrays passed by name to unknown functions are assumed initialized)
+        return true;
+    }
+
+    // Determine which argument position this identifier is at
+    let output_indices = init_state::get_output_arg_indices(&func_name);
+    if output_indices.is_empty() {
+        return true; // No output args — this is a read
+    }
+
+    let mut arg_idx = 0;
+    for i in 0..arg_list.child_count() {
+        if let Some(child) = arg_list.child(i) {
+            if child.kind() == "," || child.kind() == "(" || child.kind() == ")" {
+                continue;
+            }
+            // Check if this argument contains our identifier node
+            if contains_node(&child, node) {
+                return !output_indices.contains(&arg_idx);
+            }
+            arg_idx += 1;
+        }
+    }
+    true // Couldn't determine position — assume read
+}
+
+/// Check if a node contains a specific descendant (by ID).
+fn contains_node(haystack: &Node, needle: &Node) -> bool {
+    if haystack.id() == needle.id() {
+        return true;
+    }
+    for i in 0..haystack.child_count() {
+        if let Some(child) = haystack.child(i) {
+            if contains_node(&child, needle) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+/// Check if a dereference (*ptr) is in a read context.
+fn is_deref_read_context(node: &Node) -> bool {
+    let parent = match node.parent() {
+        Some(p) => p,
+        None => return true,
+    };
+    match parent.kind() {
+        // *ptr = value is a write
+        "assignment_expression" => {
+            if let Some(left) = parent.child_by_field_name("left") {
+                left.id() != node.id()
+            } else {
+                true
+            }
+        }
+        _ => true,
+    }
+}
+
+/// Check if a subscript access (arr[i]) is in a read context.
+fn is_subscript_read_context(node: &Node) -> bool {
+    // Walk up ancestors to find if this subscript is ultimately on the LHS of an assignment
+    let mut current = *node;
+    for _ in 0..5 {
+        let parent = match current.parent() {
+            Some(p) => p,
+            None => return true,
+        };
+        match parent.kind() {
+            "assignment_expression" => {
+                if let Some(left) = parent.child_by_field_name("left") {
+                    // If the subscript (or its field_expression ancestor) is on the LHS → write
+                    return left.id() != current.id();
+                }
+                return true;
+            }
+            // arr[0].field — subscript is inside field_expression, keep walking up
+            "field_expression" => {
+                current = parent;
+                continue;
+            }
+            _ => return true,
+        }
+    }
+    true
+}
+
+// ---------------------------------------------------------------------------
+// Interprocedural pre-scan
+// ---------------------------------------------------------------------------
+
+/// Scan translation unit for functions that wrap realloc.
+fn scan_realloc_wrappers(node: &Node, source: &str, wrappers: &mut HashSet<String>) {
+    if node.kind() == "function_definition" {
+        if let Some(body) = node.child_by_field_name("body") {
+            let body_text = get_node_text(&body, source);
+            if body_text.contains("realloc(") && !body_text.contains("memset") {
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    let name = get_func_name(&declarator, source);
+                    if !name.is_empty() {
+                        wrappers.insert(name);
                     }
                 }
             }
-            false
-        } else {
-            matches!(
-                branch.kind(),
-                "return_statement" | "break_statement" | "continue_statement" | "goto_statement"
-            )
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            scan_realloc_wrappers(&child, source, wrappers);
+        }
+    }
+}
+
+/// Scan for functions that only conditionally initialize pointer params.
+/// e.g., void set_flag(int n, int *flag) { if (n > 0) *flag = 1; }
+/// — doesn't init *flag on all paths.
+fn scan_conditionally_init_functions(node: &Node, source: &str, result: &mut HashSet<String>) {
+    if node.kind() == "function_definition" {
+        if has_conditional_pointer_init(node, source) {
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                let name = get_func_name(&declarator, source);
+                if !name.is_empty() {
+                    result.insert(name);
+                }
+            }
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            scan_conditionally_init_functions(&child, source, result);
+        }
+    }
+}
+
+/// Check if a function has pointer params that are only conditionally initialized.
+/// Heuristic: the function has pointer params with `*param = ...` writes, but those
+/// writes only appear inside if/else branches (not unconditionally at the top level).
+fn has_conditional_pointer_init(func_node: &Node, source: &str) -> bool {
+    let body = match func_node.child_by_field_name("body") {
+        Some(b) => b,
+        None => return false,
+    };
+
+    // Collect pointer parameter names
+    let mut ptr_param_names = Vec::new();
+    collect_pointer_param_name_list(func_node, source, &mut ptr_param_names);
+    if ptr_param_names.is_empty() {
+        return false;
+    }
+
+    // For each pointer param, check if there's a dereference write at the
+    // top level of the function body (unconditional) or only inside if-blocks
+    for param in &ptr_param_names {
+        let deref_write = format!("*{}", param);
+        let body_text = get_node_text(&body, source);
+
+        if !body_text.contains(&deref_write) {
+            continue; // Param not written through
+        }
+
+        // Check: does *param = appear at compound_statement top level?
+        let mut has_unconditional_write = false;
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() == "expression_statement" {
+                    let stmt_text = get_node_text(&child, source);
+                    if stmt_text.contains(&deref_write) && stmt_text.contains('=') {
+                        has_unconditional_write = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if !has_unconditional_write {
+            // *param = only inside conditionals → function conditionally initializes
+            return true;
         }
     }
 
-    fn get_var_name(declarator: &Node, source: &str) -> String {
-        match declarator.kind() {
-            "identifier" => get_node_text(declarator, source).to_string(),
-            "pointer_declarator" | "array_declarator" => {
+    false
+}
+
+/// Collect pointer parameter names from a function definition.
+fn collect_pointer_param_name_list(func_node: &Node, source: &str, names: &mut Vec<String>) {
+    let declarator = match func_node.child_by_field_name("declarator") {
+        Some(d) => d,
+        None => return,
+    };
+    let func_decl = find_function_declarator_node(&declarator);
+    let func_decl = match func_decl {
+        Some(d) => d,
+        None => return,
+    };
+
+    for i in 0..func_decl.child_count() {
+        if let Some(child) = func_decl.child(i) {
+            if child.kind() == "parameter_list" {
+                for j in 0..child.child_count() {
+                    if let Some(param) = child.child(j) {
+                        if param.kind() == "parameter_declaration" {
+                            let param_text = get_node_text(&param, source);
+                            if param_text.contains('*') {
+                                let name = get_declarator_name_from(&param, source);
+                                if !name.is_empty() {
+                                    names.push(name);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn find_function_declarator_node<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+    if node.kind() == "function_declarator" {
+        return Some(*node);
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if let Some(found) = find_function_declarator_node(&child) {
+                return Some(found);
+            }
+        }
+    }
+    None
+}
+
+fn get_declarator_name_from(node: &Node, source: &str) -> String {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "identifier" {
+                return get_node_text(&child, source).to_string();
+            }
+            if child.kind() == "pointer_declarator" {
+                return get_declarator_name_from(&child, source);
+            }
+        }
+    }
+    String::new()
+}
+
+/// Walk down a field_expression / subscript_expression chain to find the root identifier.
+/// e.g., arr->data → "arr", ptr->field[i] → "ptr"
+fn extract_root_identifier(node: &Node, source: &str) -> String {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "identifier" {
+                return get_node_text(&child, source).to_string();
+            }
+            if child.kind() == "field_expression" || child.kind() == "subscript_expression" {
+                return extract_root_identifier(&child, source);
+            }
+        }
+    }
+    String::new()
+}
+
+fn get_func_name(declarator: &Node, source: &str) -> String {
+    match declarator.kind() {
+        "identifier" => get_node_text(declarator, source).to_string(),
+        "function_declarator" | "pointer_declarator" => {
+            if let Some(inner) = declarator.child_by_field_name("declarator") {
+                get_func_name(&inner, source)
+            } else {
                 for i in 0..declarator.child_count() {
                     if let Some(child) = declarator.child(i) {
                         if child.kind() == "identifier" {
                             return get_node_text(&child, source).to_string();
                         }
-                        let nested = Self::get_var_name(&child, source);
-                        if nested != "unknown" {
-                            return nested;
-                        }
                     }
                 }
-                "unknown".to_string()
+                String::new()
             }
-            _ => "unknown".to_string(),
         }
+        _ => String::new(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::parser::CParser;
+
+    /// Helper: parse code, create rule, call check on root, return violations
+    fn check_code(code: &str) -> Vec<RuleViolation> {
+        let mut parser = CParser::new().expect("parser");
+        let tree = parser.parse_source(code).expect("parse");
+        let rule = Exp33C::new();
+        rule.check(&tree.root_node(), code)
+    }
+
+    #[test]
+    fn test_initialized_at_decl() {
+        let violations = check_code("int f() { int result = 0; return result; }");
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C")
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "result=0 should be initialized, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_uninitialized_read() {
+        let violations = check_code("int f() { int x; return x; }");
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C")
+            .collect::<Vec<_>>();
+        assert!(!exp33.is_empty(), "x should be flagged as uninitialized");
+    }
+
+    #[test]
+    fn test_conditional_init_both_branches() {
+        let violations = check_code(
+            r#"
+            int f(int c) {
+                int x;
+                if (c) { x = 1; } else { x = 2; }
+                return x;
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C")
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "x init'd in both branches, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_conditional_init_one_branch() {
+        let violations = check_code(
+            r#"
+            int f(int c) {
+                int x;
+                if (c) { x = 1; }
+                return x;
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C")
+            .collect::<Vec<_>>();
+        assert!(!exp33.is_empty(), "x only init'd in one branch");
+    }
+
+    #[test]
+    fn test_memset_initializes() {
+        let violations = check_code(
+            r#"
+            typedef int mbstate_t;
+            void f() {
+                mbstate_t state;
+                memset(&state, 0, sizeof(state));
+                use(state);
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("state"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "memset should initialize state, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_va_start_initializes() {
+        let violations = check_code(
+            r#"
+            typedef int va_list;
+            void f(int count, ...) {
+                va_list args;
+                va_start(args, count);
+                use(args);
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("args"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "va_start should initialize args, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_subscript_field_write_not_read() {
+        let violations = check_code(
+            r#"
+            typedef struct { int a; int b; } Pair;
+            void f() {
+                Pair *arr = (Pair *)malloc(4 * sizeof(Pair));
+                if (arr == 0) return;
+                arr[0].a = 0;
+                arr[0].b = 0;
+                free(arr);
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("arr"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "arr[0].a=0 should not flag arr, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_array_loop_init() {
+        let violations = check_code(
+            r#"
+            void f(int size) {
+                int vla[10];
+                for (int i = 0; i < 10; i++) {
+                    vla[i] = i;
+                }
+                use(vla[0]);
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("vla"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "loop init should mark vla as initialized, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_malloc_loop_init() {
+        let violations = check_code(
+            r#"
+            void f() {
+                int *array = malloc(10 * sizeof(int));
+                if (array == 0) return;
+                for (int i = 0; i < 10; i++) {
+                    array[i] = i + 1;
+                }
+                use(array[0]);
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("array"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "loop init after malloc should be safe, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    // --- Regression tests for the 5 remaining fail-test gaps ---
+
+    #[test]
+    fn test_thread_local_uninit() {
+        let violations = check_code(
+            r#"
+            static int counter;
+            void f(void) {
+                counter += 10;
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("counter"))
+            .collect::<Vec<_>>();
+        assert!(
+            !exp33.is_empty(),
+            "static without init should be flagged, got nothing"
+        );
+    }
+
+    #[test]
+    fn test_mbstate_non_init_read() {
+        // &state passed to mbrlen which READS from it (non-initializing)
+        let violations = check_code(
+            r#"
+            typedef int mbstate_t;
+            void f(const char *mbs) {
+                mbstate_t state;
+                mbrlen(mbs, 5, &state);
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("state"))
+            .collect::<Vec<_>>();
+        assert!(
+            !exp33.is_empty(),
+            "mbrlen reads &state without prior init — should flag"
+        );
+    }
+
+    #[test]
+    fn test_return_by_reference_partial() {
+        // set_flag only inits *sign_flag on some paths
+        let violations = check_code(
+            r#"
+            void set_flag(int number, int *sign_flag) {
+                if (sign_flag == 0) return;
+                if (number > 0) *sign_flag = 1;
+                else if (number < 0) *sign_flag = -1;
+            }
+            int f(int number) {
+                int sign;
+                set_flag(number, &sign);
+                return sign < 0;
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("sign"))
+            .collect::<Vec<_>>();
+        assert!(
+            !exp33.is_empty(),
+            "set_flag doesn't init sign for number==0 — should flag"
+        );
+    }
+
+    // test_realloc_uninit_portion and test_flexible_array_uninit are deferred
+    // — they require inter-procedural realloc tracking and flexible array patterns
+    // that are beyond the current CFG analysis scope.
+
+    #[test]
+    fn test_fgets_initializes_array() {
+        let violations = check_code(
+            r#"
+            void f() {
+                char input[100];
+                fgets(input, 100, 0);
+                use(input);
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("input"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "fgets should initialize input, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_struct_field_write() {
+        let violations = check_code(
+            r#"
+            typedef struct { int a; int b; } Pair;
+            void f() {
+                Pair p;
+                p.a = 1;
+                p.b = 2;
+                use(p.a);
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("'p'"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "p.a=1 should initialize p, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
+    }
+
+    #[test]
+    fn test_switch_with_initialized_default() {
+        let violations = check_code(
+            r#"
+            int f(int op) {
+                int result = 0;
+                switch (op) {
+                    case 1: result = 10; break;
+                    default: result = -1; break;
+                }
+                return result;
+            }
+        "#,
+        );
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("result"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "result=0 should be initialized, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
+        );
     }
 }
