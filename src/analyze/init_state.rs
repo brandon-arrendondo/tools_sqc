@@ -530,10 +530,10 @@ fn process_expression(
                         } else {
                             match info.state {
                                 InitState::MallocUninitialized => {
-                                    // Field writes (ptr->field = val) don't initialize
-                                    // the entire allocation — flexible array members
-                                    // and other fields may remain uninitialized.
-                                    // Only subscript/deref writes upgrade.
+                                    // Field writes (ptr->field = val) don't fully
+                                    // initialize malloc'd memory — other fields/flexible
+                                    // array members may remain uninitialized. Only
+                                    // subscript/deref writes upgrade content state.
                                     if left.kind() != "field_expression" {
                                         info.state = InitState::MallocInitialized;
                                     }
