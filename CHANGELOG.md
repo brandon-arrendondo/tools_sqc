@@ -1,5 +1,28 @@
 # SqC — Changelog
 
+## v0.3.37 (2026-03-23)
+
+### FIO30-C: CWE-134 Format String Taint Improvements
+
+FIO30-C was producing zero CWE-matched detections on all 3,360 CWE-134 Juliet files.
+Three fixes unlock detection across all taint source patterns.
+
+**recv/recvfrom/recvmsg taint tracking**
+- Added socket receive functions to `process_string_manipulation_call` — 2nd argument (buffer) is now marked as tainted
+- Handles cast expressions in buffer arg: `recv(sock, (char *)(data + offset), ...)`
+- Unlocks connect_socket and listen_socket Juliet patterns (~1,232 files)
+
+**Macro alias resolution**
+- Integrated `const_eval::collect_macro_aliases` to resolve `#define GETENV getenv` and similar macro indirections
+- All function name lookups in taint tracking, source detection, and sink detection now go through `resolve_func_name()`
+- Unlocks environment Juliet patterns (~616 files)
+
+**get_base_variable expression handling**
+- Added support for `cast_expression`, `parenthesized_expression`, and `binary_expression` in base variable extraction
+- `(char *)(data + dataLen)` now correctly resolves to base variable `data`
+
+Result: All 5 CWE-134 taint sources now produce FIO30-C detections (was 2/5). Variant 01 across all source×sink combinations: 15/15 detected.
+
 ## v0.3.36 (2026-03-23)
 
 ### Juliet Zero-Detection CWE Coverage: +114 TPs

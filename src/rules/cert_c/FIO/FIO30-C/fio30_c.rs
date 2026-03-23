@@ -20,9 +20,10 @@
 //! - Variables assigned from user input sources
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::const_eval;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
 pub struct Fio30C;
@@ -54,6 +55,9 @@ impl CertRule for Fio30C {
         // At translation_unit level, do full inter-procedural analysis
         if node.kind() == "translation_unit" {
             let mut analyzer = FormatStringAnalyzer::new();
+
+            // Collect macro aliases (e.g., #define GETENV getenv)
+            analyzer.macro_aliases = const_eval::collect_macro_aliases(node, source);
 
             // Pre-scan: find which wrapper functions receive tainted data
             analyzer.find_tainted_wrapper_calls(node, source);
@@ -114,7 +118,9 @@ struct FormatStringAnalyzer {
     // Current function being analyzed (for inter-procedural taint lookup)
     current_function: String,
     // Map parameter names to their positions in current function
-    param_positions: std::collections::HashMap<String, usize>,
+    param_positions: HashMap<String, usize>,
+    // Macro aliases: e.g., GETENV → getenv
+    macro_aliases: HashMap<String, String>,
 }
 
 impl FormatStringAnalyzer {
@@ -125,8 +131,17 @@ impl FormatStringAnalyzer {
             function_parameters: HashSet::new(),
             tainted_params: HashSet::new(),
             current_function: String::new(),
-            param_positions: std::collections::HashMap::new(),
+            param_positions: HashMap::new(),
+            macro_aliases: HashMap::new(),
         }
+    }
+
+    /// Resolve a function name through macro aliases (e.g., GETENV → getenv)
+    fn resolve_func_name<'a>(&'a self, name: &'a str) -> &'a str {
+        self.macro_aliases
+            .get(name)
+            .map(|s| s.as_str())
+            .unwrap_or(name)
     }
 
     /// Pre-scan to find which wrapper functions receive tainted data as first argument
@@ -142,7 +157,8 @@ impl FormatStringAnalyzer {
         // Track fgets, scanf, etc. that mark variables as tainted
         if node.kind() == "call_expression" {
             if let Some(function) = node.child_by_field_name("function") {
-                let func_name = ast_utils::get_node_text_owned(&function, source);
+                let raw_name = ast_utils::get_node_text_owned(&function, source);
+                let func_name = self.resolve_func_name(&raw_name).to_string();
 
                 if matches!(
                     func_name.as_str(),
@@ -381,7 +397,8 @@ impl FormatStringAnalyzer {
     /// Process string manipulation calls like strcpy, strcat, sprintf that propagate taint
     fn process_string_manipulation_call(&mut self, node: &Node, source: &str) {
         if let Some(function) = node.child_by_field_name("function") {
-            let func_name = ast_utils::get_node_text_owned(&function, source);
+            let raw_name = ast_utils::get_node_text_owned(&function, source);
+            let func_name = self.resolve_func_name(&raw_name).to_string();
 
             // Handle functions that write user input to their first argument
             if matches!(
@@ -393,6 +410,19 @@ impl FormatStringAnalyzer {
                     if !args.is_empty() {
                         // First argument receives user input
                         if let Some(dest_name) = self.get_base_variable(&args[0], source) {
+                            self.user_input_vars.insert(dest_name.clone());
+                            self.safe_vars.remove(&dest_name);
+                        }
+                    }
+                }
+            }
+
+            // Handle recv/recvfrom/recvmsg — second argument is the buffer
+            if matches!(func_name.as_str(), "recv" | "recvfrom" | "recvmsg") {
+                if let Some(arguments) = node.child_by_field_name("arguments") {
+                    let args = self.extract_arguments(&arguments, source);
+                    if args.len() >= 2 {
+                        if let Some(dest_name) = self.get_base_variable(&args[1], source) {
                             self.user_input_vars.insert(dest_name.clone());
                             self.safe_vars.remove(&dest_name);
                         }
@@ -482,6 +512,33 @@ impl FormatStringAnalyzer {
     fn get_base_variable(&self, node: &Node, source: &str) -> Option<String> {
         match node.kind() {
             "identifier" => Some(ast_utils::get_node_text_owned(node, source)),
+            "cast_expression" => {
+                // (char *)(data + offset) → extract from the value
+                if let Some(value) = node.child_by_field_name("value") {
+                    self.get_base_variable(&value, source)
+                } else {
+                    None
+                }
+            }
+            "parenthesized_expression" => {
+                // (data + offset) → recurse into contents
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if !matches!(child.kind(), "(" | ")") {
+                            return self.get_base_variable(&child, source);
+                        }
+                    }
+                }
+                None
+            }
+            "binary_expression" => {
+                // data + offset → extract left operand as base variable
+                if let Some(left) = node.child_by_field_name("left") {
+                    self.get_base_variable(&left, source)
+                } else {
+                    None
+                }
+            }
             "subscript_expression" | "pointer_expression" | "unary_expression" => {
                 // Handle &var, *var, var[index], etc.
                 if let Some(base) = node.child(0) {
@@ -529,11 +586,12 @@ impl FormatStringAnalyzer {
     /// Check if a call expression returns tainted data
     fn call_returns_tainted_data(&self, call_node: &Node, source: &str) -> bool {
         if let Some(function) = call_node.child_by_field_name("function") {
-            let func_name = ast_utils::get_node_text_owned(&function, source);
+            let raw_name = ast_utils::get_node_text_owned(&function, source);
+            let func_name = self.resolve_func_name(&raw_name);
 
             // User input functions
             if matches!(
-                func_name.as_str(),
+                func_name,
                 "fgets"
                     | "gets"
                     | "getline"
@@ -613,7 +671,8 @@ impl FormatStringAnalyzer {
         violations: &mut Vec<RuleViolation>,
     ) {
         if let Some(function) = node.child_by_field_name("function") {
-            let func_name = ast_utils::get_node_text_owned(&function, source);
+            let raw_name = ast_utils::get_node_text_owned(&function, source);
+            let func_name = self.resolve_func_name(&raw_name).to_string();
 
             if self.is_format_string_function(&func_name) {
                 if let Some(arguments) = node.child_by_field_name("arguments") {
@@ -744,9 +803,10 @@ impl FormatStringAnalyzer {
         match node.kind() {
             "call_expression" => {
                 if let Some(function) = node.child_by_field_name("function") {
-                    let func_name = ast_utils::get_node_text_owned(&function, source);
+                    let raw_name = ast_utils::get_node_text_owned(&function, source);
+                    let func_name = self.resolve_func_name(&raw_name);
                     return matches!(
-                        func_name.as_str(),
+                        func_name,
                         "fgets"
                             | "gets"
                             | "getline"
@@ -857,10 +917,11 @@ impl FormatStringAnalyzer {
             "call_expression" => {
                 // Function calls that return strings could be unsafe
                 if let Some(function) = node.child_by_field_name("function") {
-                    let func_name = ast_utils::get_node_text_owned(&function, source);
+                    let raw_name = ast_utils::get_node_text_owned(&function, source);
+                    let func_name = self.resolve_func_name(&raw_name);
                     // Functions that typically return user-controlled data
                     return matches!(
-                        func_name.as_str(),
+                        func_name,
                         "fgets" | "gets" | "getline" | "getenv" | "getpwnam" | "readline"
                     );
                 }
