@@ -169,6 +169,15 @@ impl CertRule for Arr00C {
 // ============================================================================
 
 fn check_array_assignment(node: &Node, source: &str) -> Option<RuleViolation> {
+    // Only flag plain '=' assignments, not compound assignments (+=, -=, etc.)
+    // which are valid pointer arithmetic operations.
+    if let Some(op) = node.child_by_field_name("operator") {
+        let op_text = &source[op.start_byte()..op.end_byte()];
+        if op_text != "=" {
+            return None;
+        }
+    }
+
     // Get left and right operands of assignment
     let left = node.child_by_field_name("left")?;
     let right = node.child_by_field_name("right")?;
@@ -1263,6 +1272,17 @@ fn check_subscript_bounds(node: &Node, source: &str) -> Option<RuleViolation> {
     // Check for array subscript with unvalidated index
     // Pattern: arr[index] where index comes from scanf or is a function parameter without validation
 
+    // Only flag true arrays, not pointer subscripts
+    let array_node = node.child_by_field_name("argument")?;
+    if array_node.kind() == "identifier" {
+        let arr_name = &source[array_node.start_byte()..array_node.end_byte()];
+        if let Some(fn_node) = find_containing_function(node) {
+            if !has_array_declaration(&fn_node, arr_name, source) {
+                return None;
+            }
+        }
+    }
+
     // Get the index expression from the subscript
     let index_node = node.child_by_field_name("index")?;
 
@@ -1368,10 +1388,9 @@ fn check_uninitialized_array_read(node: &Node, source: &str) -> Option<RuleViola
     let subscript_position = node.start_byte();
     let preceding_text = &source[function_start..subscript_position];
 
-    // Check if array is declared as a local array (not parameter)
-    let array_decl_pattern = format!("{}[", array_name);
-    if !preceding_text.contains(&array_decl_pattern) {
-        return None; // Not a local array, might be a parameter
+    // Only flag true array declarations (type name[SIZE]), not pointers
+    if !has_array_declaration(&function_node, array_name, source) {
+        return None; // Not a local array — pointer or parameter
     }
 
     // Check if it's a function parameter (parameters can be passed initialized)
@@ -1607,8 +1626,12 @@ fn check_constant_out_of_bounds(node: &Node, source: &str) -> Option<RuleViolati
         Err(_) => return None,
     };
 
-    // Find the array declaration to get its size
+    // Only check true array declarations, not subscripted pointers
     let function_node = find_containing_function(node)?;
+    if !has_array_declaration(&function_node, array_name, source) {
+        return None;
+    }
+
     let function_start = function_node.start_byte();
     let subscript_position = node.start_byte();
     let preceding_text = &source[function_start..subscript_position];
@@ -2149,9 +2172,8 @@ fn check_array_comparison(node: &Node, source: &str) -> Option<RuleViolation> {
 // ============================================================================
 
 fn is_array_identifier(node: &Node, source: &str) -> bool {
-    // Heuristic check if identifier could be an array
-    // Limitation: Without symbol table, we cannot definitively determine array types
-    // Only flag if we have strong evidence it's an array
+    // Check if identifier was declared as a true array (type name[SIZE]),
+    // NOT a pointer (type *name) that happens to be subscripted.
 
     if node.kind() != "identifier" || is_function_call_name(node) {
         return false;
@@ -2159,17 +2181,99 @@ fn is_array_identifier(node: &Node, source: &str) -> bool {
 
     let identifier_name = &source[node.start_byte()..node.end_byte()];
 
-    // Check if this identifier is used with subscripts elsewhere (strong evidence of array)
-    // Look for the pattern "identifier[" in the containing function
+    // Walk up to the containing function and search its body for a declaration
+    // of this identifier that uses array_declarator syntax.
     if let Some(function_node) = find_containing_function(node) {
-        let function_text = &source[function_node.start_byte()..function_node.end_byte()];
-        let array_pattern = format!("{}[", identifier_name);
-        if function_text.contains(&array_pattern) {
-            return true;
-        }
+        return has_array_declaration(&function_node, identifier_name, source);
     }
 
     false
+}
+
+/// Check if a variable is declared as an array (with `[]` in the declarator)
+/// anywhere in the given scope node. Returns false for pointer declarations.
+fn has_array_declaration(scope: &Node, var_name: &str, source: &str) -> bool {
+    match scope.kind() {
+        "declaration" => {
+            // Check if this declaration declares var_name as an array
+            if declaration_is_array_for(scope, var_name, source) {
+                return true;
+            }
+        }
+        "parameter_declaration" => {
+            // Array parameters (e.g., `int arr[]`) — check for array_declarator
+            if param_is_array_for(scope, var_name, source) {
+                return true;
+            }
+        }
+        _ => {}
+    }
+
+    for i in 0..scope.child_count() {
+        if let Some(child) = scope.child(i) {
+            if has_array_declaration(&child, var_name, source) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+/// Check if a declaration node declares `var_name` as an array (not a pointer).
+fn declaration_is_array_for(decl: &Node, var_name: &str, source: &str) -> bool {
+    for i in 0..decl.child_count() {
+        if let Some(child) = decl.child(i) {
+            // Direct array_declarator: `int data[10]`
+            if child.kind() == "array_declarator" {
+                if declarator_names(&child, source) == var_name {
+                    return true;
+                }
+            }
+            // init_declarator wrapping array_declarator: `int data[10] = {0}`
+            if child.kind() == "init_declarator" {
+                for j in 0..child.child_count() {
+                    if let Some(gc) = child.child(j) {
+                        if gc.kind() == "array_declarator" {
+                            if declarator_names(&gc, source) == var_name {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    false
+}
+
+/// Check if a parameter_declaration declares `var_name` as an array.
+fn param_is_array_for(param: &Node, var_name: &str, source: &str) -> bool {
+    for i in 0..param.child_count() {
+        if let Some(child) = param.child(i) {
+            if child.kind() == "array_declarator" {
+                if declarator_names(&child, source) == var_name {
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
+
+/// Extract the base identifier name from a declarator (which may be nested).
+fn declarator_names<'a>(node: &Node, source: &'a str) -> &'a str {
+    // array_declarator's first child is either an identifier or another declarator
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "identifier" {
+                return &source[child.start_byte()..child.end_byte()];
+            }
+            if child.kind() == "array_declarator" || child.kind() == "pointer_declarator" {
+                return declarator_names(&child, source);
+            }
+        }
+    }
+    ""
 }
 
 fn is_subscript(node: &Node) -> bool {

@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-21 (v0.3.28 prescan cache + parallel scanner + benchmark noise reduction)
+**Last Updated**: 2026-03-23 (v0.3.34 benchmark complete)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -12,35 +12,32 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ### Real-World FP Reduction — Next Targets (Priority 1)
 
-Top remaining FP sources from v0.3.28 per-rule data (all 5 codebases, rules-benchmark.toml):
+v0.3.34 per-rule data (all 5 codebases, 152.6K total violations, rules-benchmark.toml):
 
 | Rule | Count | Issue | Approach |
 |------|------:|-------|----------|
-| EXP34-C | 26,457 | Null deref (post param-fix) | Remaining: struct field chains, cross-function patterns |
-| INT32-C | 12,077 | Signed overflow | Stable after VRA — gap is coverage not precision |
-| DCL07-C | 11,237 | Implicit int declaration | Cross-file prescan limitation |
-| DCL31-C | 10,620 | Undeclared function | Cross-file prescan limitation |
-| API00-C | 10,072 | Missing size parameter | Post caller-aware suppression |
-| INT30-C | 8,508 | Unsigned overflow | Stable after VRA |
+| MEM30-C | 15,330 | Use-after-free | Needs field-level free tracking (deferred) |
+| DCL13-C | 12,138 | Const correctness | Needs alias tracking (deferred) |
+| INT32-C | 12,037 | Signed overflow | Stable after VRA — gap is coverage not precision |
+| API00-C | 9,227 | Missing size parameter | v0.3.33: -624 from API00-C refinements |
+| INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
+| EXP33-C | 7,088 | Uninitialized | v0.3.34: +2,899 regression from CFG rewrite. `arr[0].field` tracking limitation (Priority 1) |
+| MEM31-C | 5,440 | Memory leak | Needs ownership model (deferred) |
+| EXP34-C | 5,267 | Null deref | v0.3.30: -80% via count-based aggregation |
+| DCL31-C | 4,840 | Undeclared function | v0.3.32: -54% via prescan deep recursion + macro alias + library whitelist |
+| DCL07-C | 4,765 | Implicit int declaration | v0.3.32: -55% via prescan deep recursion + macro alias + library whitelist |
+| ARR00-C | 2,637 | Array bounds | v0.3.31: -64%, remaining are pointer subtraction/negative index |
+| ERR33-C | 1,807 | Unchecked return | v0.3.31: -75%, remaining are fclose/snprintf/getenv |
 
-See [CHANGELOG.md](CHANGELOG.md) for completed items (v0.3.27: POS49-C bit-field fix, 13 noise rules disabled; v0.3.28: prescan cache, parallel scanner).
+See [CHANGELOG.md](CHANGELOG.md) for completed items.
 
-### Benchmark Infrastructure: Remaining
+### EXP33-C Real-World FP Reduction (Priority 1)
 
-- `get_performance_trend()`, `get_realworld_rule_trend()` query tools
-- Store per-rule violation counts in realworld benchmark DB (currently only stores aggregate `violation_count` per project — need per-rule breakdown for tracking FP reduction across versions)
-- Remove legacy shell scripts after full migration validation
+CFG rewrite complete (v0.3.33–v0.3.34). Juliet: +137 TP, -2 FP, +0.5pp TP rate. But real-world: +2,899 violations (4,189 → 7,088), driven by hostap +2,525. Root causes:
 
-### Prescan Quality Audit (Priority 2)
-
-Investigate which rules beyond EXP34-C are affected by prescan data quality issues (Unknown/missing callsite states causing false positives or missed detections). Rules that consume `ProjectContext` or `callsite_param_null_states`:
-- EXP34-C (null deref — confirmed affected, fix in progress)
-- API00-C (caller-aware suppression via `callsite_param_null_states`)
-- MEM10-C (positive null guard suppression)
-- DCL31-C / DCL07-C (cross-file function detection)
-- Any rule using `set_project_context()` or `set_function_cfgs()`
-
-Goal: ensure prescan data improves (not worsens) analysis for all consuming rules.
+1. **`arr[0].field` tracking gap** (dominant): `extract_field_base` can't resolve through nested subscript chains — `arr[0].field = val` doesn't update `arr`'s state. Stays MallocUninitialized/Uninitialized, flagging subsequent subscript reads even when all elements are initialized. Fix: extend `extract_field_base` to recurse into `subscript_expression` children (but must preserve partial-init detection for `team[0].x = 1; use(team[3].x)`).
+2. **Custom allocator wrappers**: hostap's `os_malloc`/`os_zalloc` match `malloc(` text check but `os_memcpy`/`os_memset` aren't in `INITIALIZING_FUNCTIONS`. Fix: add common wrapper prefixes or make the list configurable.
+3. **Cross-function variants 63/64**: pointer passed between source files, needs inter-procedural analysis
 
 ---
 
@@ -48,10 +45,9 @@ Goal: ensure prescan data improves (not worsens) analysis for all consuming rule
 
 ### CWE-457: Uninitialized Variable — Remaining Gaps (Priority 1)
 
-616 files, 28.7% per-file, 31.8% TP rate (v0.3.28 benchmark). v0.3.26 addresses the +109 FP regression via early-return branch detection. Remaining gaps:
+v0.3.34: CFG rewrite complete. Remaining gaps:
 - Cross-function variants 63/64 (~70 files): pointer passed between source files, needs inter-procedural analysis
-- Array partial_init through alloca/malloc (~66 files): partial subscript init upgrades to MallocInitialized, losing content-level tracking
-- struct variant 12: struct field access pattern edge case
+- Per-element tracking: `arr[0].field = val` doesn't update `arr` state — causes FPs on fully-initialized array-of-struct patterns, but correctly flags partial-init patterns
 
 ### CWE-190/191: Integer Overflow/Underflow (Priority 3)
 
@@ -66,7 +62,6 @@ Goal: ensure prescan data improves (not worsens) analysis for all consuming rule
 - Relay chains (3+ hops): multi-pass handles single-hop, deep chains still Unknown
 - Indirect data flow (variants 63–67): not addressed
 - Cross-file globals (variant 68): not addressed
-- EXP33-C CFG integration (needs full rewrite like EXP34-C)
 - EXP34-C/FIO06-C regression investigation from Phase 3
 
 ### Real-World FP Reduction — Remaining Targets (Priority 2)
@@ -80,7 +75,7 @@ v0.3.28 realworld results (5 codebases, rules-benchmark.toml): curl 31.7K, hosta
 | MEM30-C | 3,452 | Use-after-free FPs from sequential struct/member frees | Needs field-level free tracking. Cross-function free propagation. |
 | MEM31-C | 3,354 | Leak FPs from cross-function ownership | Needs ownership model (strdup→field→custom_Delete). |
 | DCL13-C | 2,373 | Const correctness — pointer params through struct fields | Known alias tracking limitation (ringbuffer.c pattern). |
-| EXP33-C | 4,700 | Uninitialized variable FPs | CFG integration needed (same as Juliet EXP33-C rewrite). |
+| EXP33-C | 7,088 | Uninitialized variable FPs | CFG rewrite regressed real-world (+2,899). See Immediate Next Steps. |
 
 ### Real-World FP — Deferred Hard Issues
 

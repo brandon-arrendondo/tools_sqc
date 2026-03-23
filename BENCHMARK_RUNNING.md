@@ -17,7 +17,7 @@ bench/
   config.py        Paths, constants, defaults
   db.py            SQLite schema, WAL mode, CRUD + query API
   analyzer.py      TP/FP classifier (Juliet ground truth)
-  runner.py        Parallel CWE runner (replaces run_juliet_parallel.sh)
+  runner.py        Parallel CWE runner
   machine.py       Machine metadata (CPU, RAM, hostname)
 ```
 

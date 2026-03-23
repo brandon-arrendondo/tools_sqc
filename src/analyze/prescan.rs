@@ -170,8 +170,13 @@ fn has_static_specifier(node: &Node, source: &str) -> bool {
     false
 }
 
-/// Extract function names from top-level `function_definition` and `declaration`
-/// nodes, recursing into `preproc_*` blocks (same pattern as EXP33-C/SIG31-C).
+/// Extract function names from `function_definition` and `declaration` nodes.
+///
+/// Recurses into all child nodes — not just `preproc_*` blocks — because
+/// tree-sitter may misparse files with complex macros (e.g., sqlite's
+/// `sqliteInt.h`), burying function definitions inside `ERROR` or
+/// `compound_statement` nodes at the top level. Even inside error recovery,
+/// tree-sitter correctly identifies `function_definition` nodes.
 fn collect_function_names(node: &Node, source: &str, names: &mut HashSet<String>) {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
@@ -199,16 +204,13 @@ fn collect_function_names(node: &Node, source: &str, names: &mut HashSet<String>
                             names.insert(name);
                         }
                     }
-                    // Also recurse into body for nested function names
                     collect_function_names(&child, source, names);
                 }
-                kind if kind.starts_with("preproc_")
-                    || kind == "linkage_specification"
-                    || kind == "declaration_list" =>
-                {
+                _ => {
+                    // Recurse into all other nodes (preproc_*, linkage_specification,
+                    // ERROR, compound_statement, etc.) to find buried definitions.
                     collect_function_names(&child, source, names);
                 }
-                _ => {}
             }
         }
     }
@@ -405,29 +407,43 @@ fn aggregate_callsite_null_states(
         }
     }
 
-    // Join per-callee per-param
+    // Count-based voting per-callee per-param.
+    //
+    // The prescan's local state tracking can't model null checks between
+    // assignment and use, so PossiblyNull from prescan has a high false
+    // positive rate.  Instead of a lattice join (where one PossiblyNull
+    // callsite poisons a parameter used by 50 NotNull callers), we count
+    // callsite states and apply:
+    //   a) Any DefinitelyNull → PossiblyNull (confirmed NULL flow)
+    //   b) Majority PossiblyNull (> NotNull count) → PossiblyNull
+    //   c) Otherwise → NotNull (PossiblyNull is noise)
     for (callee_name, arg_vectors) in &callsite_args {
         if let Some(summary) = summaries.get_mut(callee_name) {
             let max_params = arg_vectors.iter().map(|v| v.len()).max().unwrap_or(0);
             for param_idx in 0..max_params {
-                let mut joined = NullState::Unknown;
-                let mut any_known = false;
+                let mut null_count: usize = 0;
+                let mut possibly_count: usize = 0;
+                let mut not_null_count: usize = 0;
                 for args in arg_vectors {
                     if let Some(&state) = args.get(param_idx) {
-                        if state != NullState::Unknown {
-                            if !any_known {
-                                joined = state;
-                                any_known = true;
-                            } else {
-                                joined = joined.join(state);
-                            }
+                        match state {
+                            NullState::DefinitelyNull => null_count += 1,
+                            NullState::PossiblyNull => possibly_count += 1,
+                            NullState::NotNull => not_null_count += 1,
+                            NullState::Unknown => {} // no contribution
                         }
                     }
-                    // Missing arg → treat as Unknown (no contribution to join)
                 }
-                // Only store if we have concrete info
-                if any_known {
-                    summary.callsite_param_null_states.insert(param_idx, joined);
+                let total_known = null_count + possibly_count + not_null_count;
+                if total_known > 0 {
+                    let aggregated = if null_count > 0 || possibly_count > not_null_count {
+                        NullState::PossiblyNull
+                    } else {
+                        NullState::NotNull
+                    };
+                    summary
+                        .callsite_param_null_states
+                        .insert(param_idx, aggregated);
                 }
             }
         }

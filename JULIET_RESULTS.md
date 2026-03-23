@@ -758,8 +758,7 @@ The analysis script now outputs all rules, and all 16 existing benchmark runs ha
 
 ```
 scripts/analyze_juliet_results.py      Ground truth analysis (OMITBAD/OMITGOOD)
-scripts/run_juliet_multi_cwe.sh        Sequential multi-CWE runner
-scripts/run_juliet_parallel.sh         Parallel multi-CWE runner (12 jobs)
+bench/                                 Python benchmark module (python -m bench juliet)
 
 ~/data/benchmarks/juliet-test-suite-c/
   testcases/                           118 CWE categories, 54,484 .c files

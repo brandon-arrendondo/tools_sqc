@@ -134,6 +134,14 @@ impl Err33C {
     }
 
     fn check_function_call(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Skip standalone calls (direct child of expression_statement) — those are
+        // handled by check_ignored_return_value to avoid duplicate violations.
+        if let Some(parent) = node.parent() {
+            if parent.kind() == "expression_statement" {
+                return;
+            }
+        }
+
         if let Some(function_node) = node.child_by_field_name("function") {
             let raw_name = get_node_text(&function_node, source);
             let function_name = self.resolve_name(raw_name);
@@ -244,10 +252,56 @@ impl Err33C {
                     }
                 }
 
-                // For printf/fprintf in error handling contexts, don't flag
-                if matches!(function_name, "printf" | "fprintf" | "sprintf" | "snprintf") {
+                // Suppress stdout/stderr diagnostic output functions.
+                // Checking printf/puts/putchar/fputs/fputc return values is
+                // impractical — failures are rare and unrecoverable.
+                // Keep fprintf flagged only when writing to non-stderr files.
+                if matches!(
+                    function_name,
+                    "printf" | "puts" | "putchar" | "fputs" | "fputc" | "putc"
+                ) {
+                    return;
+                }
+                if matches!(function_name, "fprintf" | "sprintf" | "snprintf") {
                     if self.is_in_error_handling_context(stmt_node, source) {
-                        return; // Skip flagging printf/fprintf in error contexts
+                        return;
+                    }
+                    // Suppress fprintf(stderr, ...) — diagnostic output
+                    if function_name == "fprintf" {
+                        if let Some(args) = call_node.child_by_field_name("arguments") {
+                            if let Some(first_arg) = args.child(1) {
+                                let arg_text = get_node_text(&first_arg, source);
+                                if arg_text == "stderr" {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Suppress signal(SIG*, SIG_IGN/SIG_DFL) — return value
+                // (previous handler) is universally ignored in practice.
+                if function_name == "signal" {
+                    if let Some(args) = call_node.child_by_field_name("arguments") {
+                        if let Some(second_arg) = args.child(3) {
+                            let arg_text = get_node_text(&second_arg, source);
+                            if arg_text == "SIG_IGN" || arg_text == "SIG_DFL" {
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // Suppress time(&t) when output parameter is used —
+                // result is stored via pointer arg, return value is redundant.
+                if function_name == "time" {
+                    if let Some(args) = call_node.child_by_field_name("arguments") {
+                        if let Some(first_arg) = args.child(1) {
+                            let arg_text = get_node_text(&first_arg, source);
+                            if arg_text != "NULL" && arg_text != "0" && arg_text != "((void *)0)" {
+                                return;
+                            }
+                        }
                     }
                 }
 
@@ -496,7 +550,10 @@ impl Err33C {
             // Math functions covered by FLP32-C — removed to avoid double-flagging
 
             // Environment
-            "getenv"
+            "getenv" | "putenv" | "setenv" |
+
+            // String duplication (returns NULL on failure)
+            "strdup" | "strndup"
         )
     }
 
@@ -1137,10 +1194,18 @@ impl Err33C {
             function_name,
             "getenv" | "ctime" | "localtime" | "gmtime" | "asctime"
         ) {
-            if text.contains(&format!("{} == NULL", var_name))
-                || text.contains(&format!("NULL == {}", var_name))
+            // AST-based check (handles all whitespace variants and ==0)
+            if self.contains_null_check_for_variable(node, var_name, source) {
+                return true;
+            }
+            // Fallback string patterns (with and without spaces)
+            if text.contains(&format!("{}!=NULL", var_name))
                 || text.contains(&format!("{} != NULL", var_name))
-                || text.contains(&format!("NULL != {}", var_name))
+                || text.contains(&format!("{}==NULL", var_name))
+                || text.contains(&format!("{} == NULL", var_name))
+                || text.contains(&format!("!{}", var_name))
+                || text.contains(&format!("if ({})", var_name))
+                || text.contains(&format!("if({})", var_name))
             {
                 return true;
             }
@@ -1216,9 +1281,10 @@ impl Err33C {
                         let left_text = get_node_text(&left, source);
                         let right_text = get_node_text(&right, source);
 
-                        // Check if one side is our variable and the other is NULL
-                        if (left_text == var_name && right_text == "NULL")
-                            || (right_text == var_name && left_text == "NULL")
+                        // Check if one side is our variable and the other is NULL/0
+                        let is_null = |s: &str| s == "NULL" || s == "0" || s == "((void *)0)";
+                        if (left_text == var_name && is_null(right_text))
+                            || (right_text == var_name && is_null(left_text))
                         {
                             return true;
                         }
