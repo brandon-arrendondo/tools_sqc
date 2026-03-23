@@ -162,16 +162,6 @@ impl Err33C {
                     return;
                 }
 
-                // For printf/fprintf in error handling contexts, don't flag
-                if matches!(
-                    function_name.as_str(),
-                    "printf" | "fprintf" | "sprintf" | "snprintf"
-                ) {
-                    if self.is_in_error_handling_context(node, source) {
-                        return; // Skip flagging printf/fprintf in error contexts
-                    }
-                }
-
                 // Special handling for fclose in cleanup contexts
                 if function_name == "fclose" {
                     // Find the containing statement for context analysis
@@ -252,31 +242,29 @@ impl Err33C {
                     }
                 }
 
-                // Suppress stdout/stderr diagnostic output functions.
-                // Checking printf/puts/putchar/fputs/fputc return values is
+                // Suppress formatted output functions.
+                // Checking return values of printf-family functions is
                 // impractical — failures are rare and unrecoverable.
-                // Keep fprintf flagged only when writing to non-stderr files.
+                // This applies to both stdout/stderr and file output:
+                // serialization code (e.g., config writers) calls fprintf
+                // hundreds of times; checking each is infeasible.
                 if matches!(
                     function_name,
-                    "printf" | "puts" | "putchar" | "fputs" | "fputc" | "putc"
+                    "printf"
+                        | "fprintf"
+                        | "sprintf"
+                        | "snprintf"
+                        | "vprintf"
+                        | "vfprintf"
+                        | "vsprintf"
+                        | "vsnprintf"
+                        | "puts"
+                        | "putchar"
+                        | "fputs"
+                        | "fputc"
+                        | "putc"
                 ) {
                     return;
-                }
-                if matches!(function_name, "fprintf" | "sprintf" | "snprintf") {
-                    if self.is_in_error_handling_context(stmt_node, source) {
-                        return;
-                    }
-                    // Suppress fprintf(stderr, ...) — diagnostic output
-                    if function_name == "fprintf" {
-                        if let Some(args) = call_node.child_by_field_name("arguments") {
-                            if let Some(first_arg) = args.child(1) {
-                                let arg_text = get_node_text(&first_arg, source);
-                                if arg_text == "stderr" {
-                                    return;
-                                }
-                            }
-                        }
-                    }
                 }
 
                 // Suppress signal(SIG*, SIG_IGN/SIG_DFL) — return value

@@ -122,7 +122,7 @@ cargo build --release
 
 # IMPORTANT: When running from outside the sqc repo, pass --manifest explicitly
 ./target/release/sqc /path/to/source/ \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export results.json
 ```
 
@@ -169,7 +169,7 @@ find /path/to/source/ -name '*.c' | \
 # sqc
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/libcrc \
   -d ~/data/comparisons/libcrc \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/libcrc/results.json
 
 # cppcheck
@@ -191,7 +191,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p . \
 # sqc
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/sqlite \
   -d ~/data/comparisons/sqlite \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/sqlite/results.json
 
 # cppcheck
@@ -213,7 +213,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p . \
 # sqc
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/mosquitto \
   -d ~/data/comparisons/mosquitto \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/mosquitto/results.json
 
 # cppcheck
@@ -239,7 +239,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p ~/data/comparisons/mosqui
 # sqc
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/curl \
   -d ~/data/comparisons/curl \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/curl/results.json
 
 # cppcheck
@@ -266,7 +266,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p ~/data/comparisons/curl/b
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/hostap \
   -d ~/data/comparisons/hostap/src \
   -d ~/data/comparisons/hostap/wpa_supplicant \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/hostap/results.json
 
 # cppcheck

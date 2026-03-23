@@ -173,6 +173,9 @@ impl PointerAnalyzer {
             "parameter_declaration" => {
                 self.process_parameter(node, source);
             }
+            "expression_statement" => {
+                self.process_assignment(node, source);
+            }
             _ => {}
         }
 
@@ -195,11 +198,21 @@ impl PointerAnalyzer {
                         if !Self::is_pointer_declarator(&declarator) {
                             continue;
                         }
+                        let var_name =
+                            ast_utils::get_identifier_from_declarator(&declarator, source);
+                        if var_name.is_empty() {
+                            continue;
+                        }
+                        // Array declarations (char arr[] = ...) create their own storage.
+                        // The variable IS its own array base, regardless of initializer.
+                        // Pointer declarations (char *p = arr) alias the source.
+                        if declarator.kind() == "array_declarator" {
+                            self.variable_arrays.insert(var_name.clone(), var_name);
+                            continue;
+                        }
                         if let Some(value) = child.child_by_field_name("value") {
-                            let var_name =
-                                ast_utils::get_identifier_from_declarator(&declarator, source);
                             let array_base = self.extract_array_base(&value, source);
-                            if !var_name.is_empty() && !array_base.is_empty() {
+                            if !array_base.is_empty() {
                                 self.variable_arrays.insert(var_name, array_base);
                             }
                         }
@@ -228,6 +241,34 @@ impl PointerAnalyzer {
                 // This ensures parameters are only equal to themselves
                 self.variable_arrays
                     .insert(param_name.clone(), format!("param:{}", param_name));
+            }
+        }
+    }
+
+    /// Process assignment expressions like `slashPtr = strchr(string1, '/')`.
+    /// Tracks variables assigned from string-search functions (strchr, strrchr,
+    /// wcschr, wcsrchr) as pointing into the first argument's array.
+    fn process_assignment(&mut self, node: &Node, source: &str) {
+        // expression_statement contains an assignment_expression child
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "assignment_expression" {
+                    if let (Some(left), Some(right)) = (
+                        child.child_by_field_name("left"),
+                        child.child_by_field_name("right"),
+                    ) {
+                        let var_name = ast_utils::get_node_text(&left, source).to_string();
+                        if var_name.is_empty()
+                            || !var_name.chars().all(|c| c.is_alphanumeric() || c == '_')
+                        {
+                            continue;
+                        }
+                        let array_base = self.extract_array_base(&right, source);
+                        if !array_base.is_empty() {
+                            self.variable_arrays.insert(var_name, array_base);
+                        }
+                    }
+                }
             }
         }
     }
@@ -276,9 +317,36 @@ impl PointerAnalyzer {
                 }
             }
             "call_expression" => {
-                // Handle function calls like malloc(), calloc(), aligned_alloc()
-                // Each call is treated as a distinct allocation
-                // Use byte position to make each call unique, even if they have identical text
+                // Check if this is a string-search function (strchr, strrchr, wcschr, wcsrchr)
+                // whose return value points into the first argument
+                if let Some(func_node) = node.child_by_field_name("function") {
+                    let func_name = ast_utils::get_node_text(&func_node, source);
+                    if matches!(
+                        func_name,
+                        "strchr"
+                            | "strrchr"
+                            | "wcschr"
+                            | "wcsrchr"
+                            | "memchr"
+                            | "strstr"
+                            | "wcsstr"
+                            | "strpbrk"
+                            | "wcspbrk"
+                    ) {
+                        // Return value points into the first argument
+                        if let Some(args) = node.child_by_field_name("arguments") {
+                            // First real argument (skip '(' which is child 0)
+                            for j in 0..args.child_count() {
+                                if let Some(arg) = args.child(j) {
+                                    if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                                        return self.extract_array_base(&arg, source);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Other calls: treat as distinct allocation
                 format!(
                     "{}@{}",
                     &source[node.start_byte()..node.end_byte()],

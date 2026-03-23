@@ -2011,6 +2011,19 @@ fn check_pointer_subtraction(node: &Node, source: &str) -> Option<RuleViolation>
 }
 
 fn find_pointer_source_array(ptr_name: &str, preceding_text: &str) -> Option<String> {
+    find_pointer_source_array_recursive(ptr_name, preceding_text, 0)
+}
+
+fn find_pointer_source_array_recursive(
+    ptr_name: &str,
+    preceding_text: &str,
+    depth: usize,
+) -> Option<String> {
+    // Limit recursion to avoid infinite loops with circular assignments
+    if depth > 5 {
+        return None;
+    }
+
     // Try to find what array this pointer points to
     // Patterns to look for:
     // 1. int *p = &arr[...];
@@ -2040,7 +2053,7 @@ fn find_pointer_source_array(ptr_name: &str, preceding_text: &str) -> Option<Str
                 after_eq
             };
 
-            // Extract the array name (up to '[', '+', ',', ';', or whitespace)
+            // Extract the source name (up to '[', '+', ',', ';', or whitespace)
             let mut end_pos = 0;
             for (i, c) in after_eq.chars().enumerate() {
                 if c == '[' || c == '+' || c == ',' || c == ';' || c.is_whitespace() || c == ')' {
@@ -2050,11 +2063,21 @@ fn find_pointer_source_array(ptr_name: &str, preceding_text: &str) -> Option<Str
             }
 
             if end_pos > 0 {
-                let array_name = &after_eq[..end_pos];
-                if !array_name.is_empty()
-                    && array_name.chars().all(|c| c.is_alphanumeric() || c == '_')
+                let source_name = &after_eq[..end_pos];
+                if !source_name.is_empty()
+                    && source_name.chars().all(|c| c.is_alphanumeric() || c == '_')
                 {
-                    return Some(array_name.to_string());
+                    // Recursively resolve: if source is itself a pointer assigned
+                    // from another variable, follow the chain to the ultimate base.
+                    // e.g., end = pos + N; pos = buf; → end's base is buf
+                    if let Some(resolved) = find_pointer_source_array_recursive(
+                        source_name,
+                        &preceding_text[..pos],
+                        depth + 1,
+                    ) {
+                        return Some(resolved);
+                    }
+                    return Some(source_name.to_string());
                 }
             }
         }
