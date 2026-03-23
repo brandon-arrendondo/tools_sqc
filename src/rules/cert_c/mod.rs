@@ -942,7 +942,7 @@ impl RuleRegistry {
         registry.register(Box::new(exp20_c::Exp20C));
         registry.register(Box::new(exp30_c::Exp30C));
         registry.register(Box::new(exp32_c::Exp32C));
-        registry.register(Box::new(exp33_c::Exp33C));
+        registry.register(Box::new(exp33_c::Exp33C::new()));
         registry.register(Box::new(exp34_c::Exp34C::new()));
         registry.register(Box::new(exp35_c::Exp35C));
         registry.register(Box::new(exp36_c::Exp36C));
