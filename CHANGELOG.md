@@ -1,5 +1,50 @@
 # SqC — Changelog
 
+## v0.3.34 (2026-03-23)
+
+### EXP33-C: Preproc recursion fix + field-write refinement
+
+- **Critical bug fix**: Functions inside `#ifdef`/`#ifndef`/`#if` preprocessor blocks were silently skipped by EXP33-C's AST recursion. The guard condition `node.kind() != "translation_unit"` excluded all non-top-level parents (preproc_ifdef, preproc_if, etc.). This made EXP33-C completely dead on Juliet (all test functions are inside `#ifndef OMITBAD`). Removed the incorrect skip condition.
+- **Field-write MallocUninitialized preservation**: Re-applied after verifying it only affects `MallocUninitialized` state (heap allocations), not `Uninitialized` (stack variables). Field writes (`ptr->field = val`) on malloc'd pointers no longer upgrade to MallocInitialized, correctly flagging reads of other uninitialized fields/flexible array members. Stack struct field writes (`emp.id = 1`) still upgrade Uninitialized → Initialized.
+- **Reverted `extract_field_base` nested subscript resolution**: Resolving `arr[0].field` → `arr` caused `arr` to be marked Initialized on first element write, suppressing valid partial-init detections. Kept original behavior (returns empty for nested subscript+field patterns).
+
+### Benchmark: v0.3.34
+
+**Juliet** (vs v0.3.32): TP 8,156 → 8,300 (**+144**), FP 9,180 → 9,157 (**-23**), TP rate 47.0% → **47.5%** (+0.5pp). EXP33-C: 294/561 → 431/559 (+137 TP, -2 FP). CWE-758: 50.1% → 64.3% (+14.2pp).
+
+**Real-world** (vs v0.3.32): 150,337 → 152,590 (+2,253). EXP33-C +2,899 (hostap +2,525 dominant) from `arr[0].field` tracking limitation. API00-C -624 (improvement). Net regression — EXP33-C FP reduction is Priority 1.
+
+## v0.3.33 (2026-03-23)
+
+### EXP33-C: CFG-Based Forward Dataflow Rewrite
+
+Complete rewrite of EXP33-C from simple AST-walk to CFG-based forward dataflow analysis. New `init_state.rs` (~1,200 lines) implements proper initialization-state tracking.
+
+**Architecture**:
+- **InitState lattice**: 5 states per variable — `Uninitialized`, `MaybeUninitialized`, `Initialized`, `MallocUninitialized`, `MallocInitialized`
+- **Forward worklist algorithm**: Propagates init state through CFG with lattice join at merge points
+- **Point queries**: `get_var_info_at()` answers "what is variable X's state at byte offset Y?" by replaying transfer function from block entry
+
+**New capabilities**:
+- Branch-sensitive: `if (c) { x = 1; } else { x = 2; } use(x)` → correctly Initialized
+- Loop-aware: Array init loops (`for (i=0; i<n; i++) arr[i] = 0`) upgrade MallocUninitialized → MallocInitialized via join rule
+- Malloc content tracking: Distinguishes pointer-set (MallocUninitialized) from content-written (MallocInitialized)
+- Realloc wrapper detection: Pre-scans for functions wrapping `realloc()` without `memset`; `classify_initializer` checks `realloc_wrapper_fns` from config
+- Conditionally-initializing function detection: Pre-scans for functions that only init pointer params inside if-blocks
+- ~30 initializing functions with per-argument output indices (memset, fgets, scanf, etc.)
+- Non-initializing function list (printf, strlen, memcmp, etc.)
+- File-scope static variable tracking
+- Subscript read extraction through field_expression chains (`arr->data[i]` → root variable `arr`)
+
+**Also includes**:
+- API00-C refinements
+- CFG `condition_range` support
+- Realworld benchmark MCP server enhancements (SQLite-first pattern, `get_rule_trend`, `get_project_history`)
+- Legacy shell scripts removed (batch_analyze_sqlite, bench_mosquitto_versions, compare_tools, run_juliet_multi_cwe, run_juliet_parallel, test_single_file)
+- bench/db.py improvements
+
+**Tests**: 67/67 EXP33-C tests pass (52 integration + 15 unit). Covers branches, loops, malloc, calloc, memset, va_start, fgets, struct fields, subscript writes, goto, switch, early return, compound assignments, sizeof exclusion, unsigned char exception, realloc wrappers, conditional-init functions, flexible array members.
+
 ## v0.3.32 (2026-03-22)
 
 ### Prescan Quality Audit + DCL07-C/DCL31-C FP Reduction (−11,556 real-world violations, −7.1%)
