@@ -594,15 +594,18 @@ fn is_read_in_argument_list(node: &Node, arg_list: &Node, source: &str) -> bool 
         return true;
     }
 
-    // Check if this is a known initializing function
-    if !init_state::INITIALIZING_FUNCTIONS.contains(&func_name.as_str()) {
-        // For unknown functions, check if the identifier is passed by name
-        // (arrays passed by name to unknown functions are assumed initialized)
-        return true;
-    }
+    // Check if this is a known initializing function (exact or suffix match)
+    let base_name = match init_state::match_initializing_function(&func_name) {
+        Some(name) => name,
+        None => {
+            // For unknown functions, check if the identifier is passed by name
+            // (arrays passed by name to unknown functions are assumed initialized)
+            return true;
+        }
+    };
 
     // Determine which argument position this identifier is at
-    let output_indices = init_state::get_output_arg_indices(&func_name);
+    let output_indices = init_state::get_output_arg_indices(base_name);
     if output_indices.is_empty() {
         return true; // No output args — this is a read
     }
