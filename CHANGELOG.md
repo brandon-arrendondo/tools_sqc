@@ -1,5 +1,66 @@
 # SqC — Changelog
 
+## v0.3.36 (2026-03-23)
+
+### Juliet Zero-Detection CWE Coverage: +114 TPs
+
+Three previously-zero-detection CWEs now have detections, all with 100% precision.
+
+**ARR36-C: CWE-469 — strchr/wcschr cross-array subtraction (36 files)**
+- `PointerAnalyzer` now tracks `strchr`, `strrchr`, `wcschr`, `wcsrchr`, `memchr`, `strstr`, `wcsstr`, `strpbrk`, `wcspbrk` return values as pointing into their first argument
+- Array declarations (`char arr[] = ...`) now treated as their own base (not aliased to initializer)
+- Assignment expressions tracked (not just declarations) for pointer origin resolution
+- Result: 36/36 TP, 0 FP
+
+**STR03-C: CWE-464 — (char)atoi() null sentinel detection (56 files)**
+- Detects `(char)atoi(...)` pattern: `atoi()` returns 0 on failure, which becomes null terminator `'\0'` when cast to char, truncating strings
+- Also covers `strtol`, `strtoul`, `atol` with char cast
+- Result: 38/38 TP, 0 FP (remaining 18 are cross-function variants)
+
+**API07-C: CWE-843 — void* type confusion detection (100 files)**
+- Tracks `void*` variable assignments: `data = &charBuffer` records source type
+- Detects dereference with incompatible cast: `*((int*)data)` where cast type is larger than source type
+- Type size comparison: char(1) < short(2) < int(4) < long(8)
+- Result: 40/40 TP, 0 FP (remaining 60 are cross-function variants)
+
+## v0.3.35 (2026-03-23)
+
+### Real-World FP Reduction + CWE-761 Detection
+
+Four rule improvements targeting real-world false positives and Juliet coverage.
+
+**EXP33-C: arr[0].field tracking + initializer suffix matching**
+- `extract_nested_base_ex()` recurses through nested subscript/field chains to resolve base variable (`arr[0].field` → `arr`)
+- `MallocUninitialized` + subscript-in-chain → `MallocInitialized` (fixes dominant hostap FP pattern)
+- Stack `Uninitialized` + subscript-in-chain preserved (partial-init detection for `team[0].x`/`team[3].x`)
+- `match_initializing_function()` suffix-matches wrapper functions: `os_memset` → `memset`, `wp_memcpy` → `memcpy`, etc.
+- `*zalloc()` recognized as zero-initializing allocator (`os_zalloc`, `wpa_zalloc`)
+
+**ARR00-C: Pointer subtraction chain resolution**
+- `find_pointer_source_array()` now recursively resolves pointer derivation chains (depth limit 5)
+- `end = pos + buflen; pos = buf;` → `end` resolves to base `buf`, same as `pos`
+- Eliminates FPs on `end - pos` buffer arithmetic (dominant ARR00-C FP pattern)
+
+**ERR33-C: Suppress printf-family return value checks**
+- All formatted output functions suppressed: `fprintf`, `sprintf`, `snprintf`, `vprintf`, `vfprintf`, `vsprintf`, `vsnprintf`
+- Rationale: checking return values is impractical — failures are rare and unrecoverable. Applies equally to stderr and file output (serialization code calls fprintf hundreds of times).
+
+**API07-C: CWE-761 free-pointer-not-at-start detection**
+- New detection: `free(ptr)` where `ptr` was modified by pointer arithmetic after allocation
+- Tracks `malloc`/`calloc`/`realloc` assignments, detects `ptr++`/`ptr+=N`/`ptr--` modifications, flags subsequent `free(ptr)`
+- Handles reassignment resets and reallocation resets
+- 984 portable Juliet CWE-761 test files; 5/5 spot-checked detect correctly
+
+**Other**:
+- `BENCHMARK_INSTALL.md`: Updated all sqc examples from `rules-all.toml` to `rules-benchmark.toml` (matches MCP server)
+
+### Preliminary Benchmark (hostap only, work machine)
+
+Hostap (fresh clone at `2a98e6b98`, may differ from home setup baseline):
+- **EXP33-C**: ~5,201 → 3,611 (**-1,590, -30.6%**)
+- **ARR00-C**: 1,181 → 771 (**-410, -34.7%**)
+- Full 5-codebase benchmark + Juliet pending on home setup
+
 ## v0.3.34 (2026-03-23)
 
 ### EXP33-C: Preproc recursion fix + field-write refinement
