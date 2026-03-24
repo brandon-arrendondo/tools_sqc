@@ -78,6 +78,7 @@ CODEBASES = {
         "path": Path.home() / "data" / "libcrc",
         "sqc": {
             "scan_path": None,  # same as path (whole project)
+            "includes": [],
             "extra_args": [],
         },
         "cppcheck": {
@@ -94,6 +95,10 @@ CODEBASES = {
         "path": Path.home() / "data" / "sqlite",
         "sqc": {
             "scan_path": None,
+            "includes": [
+                "-I", "/usr/include",           # openssl, zlib, sqlite3
+                "-I", "/usr/include/tcl8.6",    # Tcl (test infrastructure)
+            ],
             "extra_args": [],
         },
         "cppcheck": {
@@ -110,6 +115,10 @@ CODEBASES = {
         "path": Path.home() / "data" / "mosquitto",
         "sqc": {
             "scan_path": None,
+            "includes": [
+                "-I", "/usr/include",           # openssl, CUnit, sqlite3
+                "-I", "/usr/include/cjson",     # cJSON
+            ],
             "extra_args": [],
         },
         "cppcheck": {
@@ -132,6 +141,10 @@ CODEBASES = {
         "path": Path.home() / "data" / "curl",
         "sqc": {
             "scan_path": None,
+            "includes": [
+                "-I", "/usr/include",           # openssl, mbedtls, gnutls, zlib
+                "-I", "{path}/lib",             # internal curlx headers
+            ],
             "extra_args": [],
         },
         "cppcheck": {
@@ -154,6 +167,11 @@ CODEBASES = {
         "path": Path.home() / "data" / "hostap",
         "sqc": {
             "scan_path": None,
+            "includes": [
+                "-I", "/usr/include",              # openssl, gcrypt, pcap
+                "-I", "/usr/include/libnl3",       # netlink (nla_, nlmsg_, nl_)
+                "-I", "/usr/include/dbus-1.0",     # D-Bus
+            ],
             "extra_args": [
                 "-d", "{path}/src",
                 "-d", "{path}/wpa_supplicant",
@@ -335,6 +353,11 @@ def _process_alive(pid: int) -> bool:
         status = Path(f"/proc/{pid}/status").read_text()
         for line in status.splitlines():
             if line.startswith("State:") and "zombie" in line.lower():
+                # Reap the zombie so it doesn't linger
+                try:
+                    os.waitpid(pid, os.WNOHANG)
+                except ChildProcessError:
+                    pass
                 return False
     except Exception:
         pass
@@ -492,6 +515,7 @@ def _build_sqc_cmd(codebase: str, cfg: dict, results_dir: Path, run_id: str,
     scan_path = cfg["sqc"].get("scan_path") or path
     output_file = results_dir / f"{run_id}.json"
     extra = _expand(cfg["sqc"].get("extra_args", []), path)
+    includes = _expand(cfg["sqc"].get("includes", []), path)
 
     # Use parallel wrapper — it auto-detects whether parallelism is beneficial
     # (falls back to single process for small codebases)
@@ -511,6 +535,10 @@ def _build_sqc_cmd(codebase: str, cfg: dict, results_dir: Path, run_id: str,
         for i, arg in enumerate(extra):
             if arg == "-d" and i + 1 < len(extra):
                 cmd.extend(["-d", extra[i + 1]])
+        # Add -I include paths
+        for i, arg in enumerate(includes):
+            if arg == "-I" and i + 1 < len(includes):
+                cmd.extend(["-I", includes[i + 1]])
         return cmd
 
     # Fallback: direct sqc invocation
@@ -522,6 +550,7 @@ def _build_sqc_cmd(codebase: str, cfg: dict, results_dir: Path, run_id: str,
     if "-d" not in extra:
         cmd.extend(["-d", path])
     cmd.extend(extra)
+    cmd.extend(includes)
     return cmd
 
 
@@ -1029,6 +1058,17 @@ def get_status() -> str:
 
     Returns per-run status with timing, plus overall summary.
     """
+    # Reap any zombie child processes to prevent accumulation.
+    # SSH Popen children become zombies when the remote command finishes
+    # but the parent (this server) hasn't called waitpid() yet.
+    try:
+        while True:
+            pid, _ = os.waitpid(-1, os.WNOHANG)
+            if pid == 0:
+                break
+    except ChildProcessError:
+        pass  # No children to reap
+
     with _StateLock() as state:
         if not state["runs"]:
             return json.dumps({
@@ -1059,8 +1099,13 @@ def get_status() -> str:
             elif is_remote and not run_info.get("results_fetched"):
                 # Remote run: SSH process exited but remote job may still be running.
                 # Check for .done sentinel on the remote host.
+                # NOTE: This makes an SSH call per unfetched remote run. If the
+                # remote is unreachable, each call can block up to ConnectTimeout
+                # (10s). To avoid stalling get_status, we check the sentinel but
+                # defer the SCP fetch to get_results(). Only mark status here.
                 version_dir = Path(run_info.get("version_dir", ""))
                 if _remote_check_done(run_host, version_dir, run_id):
+                    # Remote is done — fetch results now (SCP has 30s timeout)
                     fetch_result = _fetch_remote_results(run_host, version_dir, run_id)
                     run_info["results_fetched"] = True
                     run_info["fetch_info"] = fetch_result
@@ -1080,10 +1125,19 @@ def get_status() -> str:
                         else:
                             status = "failed"
                             failed_count += 1
+                    # Reap the zombie SSH process now that we've fetched results
+                    try:
+                        os.waitpid(pid, os.WNOHANG)
+                    except ChildProcessError:
+                        pass
                 elif elapsed_s > 14400:  # 4 hours
                     # Local SSH died, no sentinel, very old → zombie
                     status = "zombie"
                     failed_count += 1
+                    try:
+                        os.waitpid(pid, os.WNOHANG)
+                    except ChildProcessError:
+                        pass
                 else:
                     # Sentinel not found — remote still running
                     status = "running"
