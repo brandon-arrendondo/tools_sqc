@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-24 (v0.3.39 pending benchmark)
+**Last Updated**: 2026-03-24 (v0.3.39 benchmarked)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -12,29 +12,27 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ### Real-World FP Reduction — Top Rules (Priority 1)
 
-v0.3.38 per-rule data (all 5 codebases, 152.0K total violations, rules-benchmark.toml).
-v0.3.39: ARR36-C FP reduction (per-function scoping, alias resolution, compound
-assignment skip, os_* wrapper recognition). hostap sample: 86→10 (−88%).
+v0.3.39 per-rule data (all 5 codebases, 153.2K total violations, rules-benchmark.toml).
 
 | Rule | Count | Issue | Status |
 |------|------:|-------|--------|
 | MEM30-C | 15,330 | Use-after-free | Needs field-level free tracking (deferred) |
 | DCL13-C | 12,138 | Const correctness | Needs alias tracking (deferred) |
-| INT32-C | 12,018 | Signed overflow | Stable after VRA |
+| INT32-C | 12,050 | Signed overflow | Stable after VRA |
 | API00-C | 9,227 | Missing size parameter | Stable |
-| INT30-C | 8,488 | Unsigned overflow | Stable after VRA |
-| EXP33-C | ~6,100 | Uninitialized | v0.3.38: FP fixes (conditional-init, cast unwrap, array arg) |
+| INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
+| DCL31-C | 7,366 | Undeclared function | Prescan + `-I` headers |
+| DCL07-C | 7,291 | Implicit int declaration | Prescan + `-I` headers |
+| EXP33-C | ~6,100 | Uninitialized | v0.3.38: FP fixes |
 | MEM31-C | 5,440 | Memory leak | Needs ownership model (deferred) |
-| EXP34-C | 5,290 | Null deref | Stable |
-| DCL31-C | varies | Undeclared function | Prescan + `-I` headers; library whitelists removed in v0.3.38 |
-| DCL07-C | varies | Implicit int declaration | Prescan + `-I` headers; library whitelists removed in v0.3.38 |
-| ARR36-C | ~2,000? | Pointer subtraction | v0.3.39: per-function scoping + alias resolution (−88% on sample) |
+| EXP34-C | 5,267 | Null deref | Stable |
 | ARR00-C | 2,157 | Array bounds | v0.3.37: -480 (-18.2%) |
 | ERR33-C | 989 | Unchecked return | v0.3.37: -818 (-45.3%) |
+| ARR36-C | 829 | Pointer subtraction | v0.3.39: −3,856 (−82.3%), regression resolved |
 
 ### Juliet TP Rate — Path to 50%
 
-v0.3.38: **48.4% TP rate** (unchanged from v0.3.37 — zero Juliet delta). Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
+v0.3.39: **48.4% TP rate** (unchanged since v0.3.37 — ARR36-C fix was real-world only). Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
 
 ### EXP33-C — Remaining
 

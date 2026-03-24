@@ -1,5 +1,62 @@
 # SqC — Changelog
 
+## v0.3.39 (2026-03-24)
+
+### ARR36-C: Real-World FP Reduction (−82%)
+
+v0.3.36 added strchr-based pointer subtraction detection (CWE-469, 100% TP on
+Juliet). On real-world code it regressed +2,727 violations due to several
+analysis bugs. This release fixes them all.
+
+**Per-function scoping** — Root cause: file-global `PointerAnalyzer` caused
+cross-function variable name collisions. Same-named vars (`pos`, `end`, `buf`)
+in different functions overwrote each other's array bases. Now creates a fresh
+analyzer per `function_definition` with file-scope globals as shared base.
+
+**Identifier chain resolution** — `extract_array_base` follows `variable_arrays`
+for known identifiers. Fixes `pos = buf` where buf is a parameter: pos now
+correctly inherits buf's `param:buf` base instead of getting raw `"buf"`.
+
+**Compound assignment skip** — `pos += ret` no longer overwrites pos's array
+base. `+=`/`-=` advance within the same array; only simple `=` changes the base.
+
+**os_\* wrapper recognition** — `os_strchr`, `os_strstr`, `os_strrchr` etc.
+treated as their standard equivalents for pointer-into-first-arg tracking.
+
+**Allocation function bases** — `malloc`/`calloc`/`realloc`/`aligned_alloc` get
+unique per-call bases (distinct heap objects).
+
+**Address-of vs dereference** — `&var` returns the variable name even if
+untracked (single-element array). `*ptr` follows the alias chain.
+
+**File-scope + bare declarations** — Global/static array declarations tracked
+across functions. `int arr[N];` without initializer now tracked.
+
+### Benchmark: v0.3.38 → v0.3.39
+
+**Juliet**: Zero delta — 8,508 TP, 9,067 FP, **48.4% TP rate** (unchanged).
+
+**Real-world** (5 codebases, sqc-only): 157,688 → 153,156 (**−4,532**, −2.9%).
+
+| Codebase | v0.3.38 | v0.3.39 | Delta |
+|----------|--------:|--------:|------:|
+| hostap | 62,044 | 59,407 | −2,637 |
+| sqlite | 53,964 | 52,978 | −986 |
+| mosquitto | 16,481 | 15,800 | −681 |
+| curl | 24,893 | 24,665 | −228 |
+| libcrc | 306 | 306 | 0 |
+
+Per-rule: ARR36-C **4,685 → 829 (−3,856, −82.3%)**. DCL31-C −334, DCL07-C −333
+(side effect of improved scoping). Zero regressions on any rule or CWE.
+
+## v0.3.38 (2026-03-24)
+
+### EXP33-C: Real-World FP Reduction + DCL31-C/DCL07-C Include Path Support
+
+Removed library-specific whitelists from DCL31-C/DCL07-C and added `-I` include
+paths for system-installed third-party headers. EXP33-C conditional-init, cast
+unwrap, and array arg fixes.
+
 ## v0.3.37 (2026-03-23)
 
 ### FIO30-C: CWE-134 Format String Taint Improvements
