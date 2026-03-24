@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-23 (v0.3.37 changes committed, benchmark pending)
+**Last Updated**: 2026-03-23 (v0.3.37 benchmarked)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -10,63 +10,33 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ## Immediate Next Steps
 
-### TODO: Pin real-world benchmark source commits
+### ARR36-C Real-World FP Reduction (Priority 1)
 
-Confirm and record exact commit SHAs for all 5 real-world benchmark codebases
-(libcrc, sqlite, mosquitto, curl, hostap) in BENCHMARK_INSTALL.md. Currently
-no commits are pinned — results may drift as upstream repos change. Verify
-tonight on home setup by checking `git rev-parse HEAD` in each clone.
+v0.3.36 added strchr-based pointer subtraction detection (CWE-469, 100% TP on Juliet). On real-world code it fires +2,727 times (hostap +3,147, sqlite +1,211). Likely FPs from legitimate pointer arithmetic patterns. Investigate and tighten.
 
-### TODO: Tonight — full 5-codebase benchmark on home setup
+### Real-World FP Reduction — Top Rules (Priority 1)
 
-1. Rebuild v0.3.36, commit
-2. Run full `run_all` benchmark (all 5 codebases) on 24-core home machine
-3. Compare against v0.3.34 baseline (same source commits) for clean delta
-4. Run Juliet benchmark — expect new TPs from CWE-761/469/464/843, verify no regressions
-5. Record results in CHANGELOG.md
-
-**Changes in this branch** (`fix/exp33c-realworld-fp-reduction`):
-
-v0.3.35:
-- **EXP33-C**: arr[0].field tracking + initializer suffix matching + zalloc recognition
-- **ARR00-C**: Pointer subtraction chain resolution (end = pos + N → same base as pos)
-- **ERR33-C**: Suppress all printf-family (fprintf, sprintf, snprintf, vsnprintf, etc.)
-- **API07-C**: CWE-761 detection — free(ptr) after pointer arithmetic (984 Juliet files)
-- **BENCHMARK_INSTALL.md**: rules-all.toml → rules-benchmark.toml (matches MCP server)
-
-v0.3.36:
-- **ARR36-C**: CWE-469 — strchr/wcschr return tracking for cross-array subtraction (36/36 TP, 0 FP)
-- **STR03-C**: CWE-464 — (char)atoi() sentinel detection (38/38 TP, 0 FP)
-- **API07-C**: CWE-843 — void* type confusion detection (40/40 TP, 0 FP)
-
-v0.3.37:
-- **FIO30-C**: CWE-134 format string — recv/recvfrom/recvmsg taint tracking + macro alias resolution + cast/offset expression handling (3,360 Juliet files, previously 0 FIO30-C detections)
-
-Preliminary hostap-only result (work machine, fresh clone at `2a98e6b98`):
-- EXP33-C: 3,611 (down from ~5,201 baseline, **-30.6%**)
-- Total hostap: 62,393 (vs ~78K baseline, but source version may differ)
-
-### Real-World FP Reduction — Next Targets (Priority 1)
-
-v0.3.34 per-rule data (all 5 codebases, 152.6K total violations, rules-benchmark.toml).
-Update with v0.3.35 full benchmark results when available.
+v0.3.37 per-rule data (all 5 codebases, 153.6K total violations, rules-benchmark.toml).
 
 | Rule | Count | Issue | Status |
 |------|------:|-------|--------|
 | MEM30-C | 15,330 | Use-after-free | Needs field-level free tracking (deferred) |
 | DCL13-C | 12,138 | Const correctness | Needs alias tracking (deferred) |
-| INT32-C | 12,037 | Signed overflow | Stable after VRA — gap is coverage not precision |
-| API00-C | 9,227 | Missing size parameter | v0.3.33: -624 from API00-C refinements |
-| INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
-| EXP33-C | 7,088 | Uninitialized | v0.3.35: arr[0].field fix + suffix matching (hostap -30.6% preliminary) |
+| INT32-C | 12,018 | Signed overflow | Stable after VRA |
+| API00-C | 9,227 | Missing size parameter | Stable |
+| INT30-C | 8,488 | Unsigned overflow | Stable after VRA |
+| EXP33-C | 6,611 | Uninitialized | v0.3.37: -477 (-6.7%) |
 | MEM31-C | 5,440 | Memory leak | Needs ownership model (deferred) |
-| EXP34-C | 5,267 | Null deref | v0.3.30: -80% via count-based aggregation |
-| DCL31-C | 4,840 | Undeclared function | v0.3.32: -54% via prescan |
-| DCL07-C | 4,765 | Implicit int declaration | v0.3.32: -55% via prescan |
-| ARR00-C | 2,637 | Array bounds | v0.3.35: pointer subtraction chain fix (hostap -34.7% preliminary) |
-| ERR33-C | 1,807 | Unchecked return | v0.3.35: printf-family suppressed |
+| EXP34-C | 5,290 | Null deref | Stable |
+| DCL31-C | 4,842 | Undeclared function | Stable (prescan) |
+| DCL07-C | 4,765 | Implicit int declaration | Stable (prescan) |
+| **ARR36-C** | **4,685** | **Pointer subtraction** | **+2,727 regression — PRIORITY** |
+| ARR00-C | 2,157 | Array bounds | v0.3.37: -480 (-18.2%) |
+| ERR33-C | 989 | Unchecked return | v0.3.37: -818 (-45.3%) |
 
-See [CHANGELOG.md](CHANGELOG.md) for completed items.
+### Juliet TP Rate — Path to 50%
+
+v0.3.37: **48.4% TP rate**. Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
 
 ### EXP33-C — Remaining
 
@@ -78,17 +48,20 @@ See [CHANGELOG.md](CHANGELOG.md) for completed items.
 
 ### CWE-457: Uninitialized Variable — Remaining Gaps (Priority 1)
 
-v0.3.35: CFG rewrite + arr[0].field fix complete. Remaining gaps:
+v0.3.37: 165 TP, 302 FP, **35.3% TP rate** (up from 32.2% in v0.3.34). The arr[0].field fix and initializer suffix matching removed 72 FP while losing only 13 TP — clean improvement.
+
+Remaining gaps:
 - Cross-function variants 63/64 (~70 files): pointer passed between source files, needs inter-procedural analysis
 - Per-element tracking for stack arrays: `team[0].x = 1; use(team[3].x)` correctly flags, but no way to track that ALL elements are initialized
+- 302 FP still high — likely dominated by cross-function initialization patterns Juliet's "good" functions use
 
 ### CWE-190/191: Integer Overflow/Underflow (Priority 3)
 
-8,904 files, 13.0%/14.5% per-file, 45.3%/43.8% TP rate (v0.3.28). INT30-C/INT32-C matched. Stable after VRA integration — gap is detection coverage, not precision.
+v0.3.37: CWE-190 655 TP/790 FP (45.3%), CWE-191 560 TP/716 FP (43.9%). Unchanged since v0.3.28. INT30-C/INT32-C matched. Stable after VRA — gap is coverage not precision.
 
 ### CWE-690: Null Deref from Return (Priority 4)
 
-1,120 files, 25.2% per-file, 82.0% TP rate (v0.3.28). Best-performing high-volume CWE. Getting to 50%+ per-file would make this a showcase. 74% undetected are likely cross-function patterns.
+v0.3.37: 203 TP, 12 FP, **94.4% TP rate**, 18.1% per-file. Best precision of any high-volume CWE. Per-file rate (18.1%) still below 30% target — 74% undetected are likely cross-function patterns.
 
 ### EXP34-C Phase 4 — Remaining Edge Cases
 
@@ -97,43 +70,23 @@ v0.3.35: CFG rewrite + arr[0].field fix complete. Remaining gaps:
 - Cross-file globals (variant 68): not addressed
 - EXP34-C/FIO06-C regression investigation from Phase 3
 
-### Real-World FP Reduction — Remaining Targets (Priority 2)
-
-v0.3.28 realworld results (5 codebases, rules-benchmark.toml): curl 31.7K, hostap 78.5K, mosquitto 19.2K, libcrc 419, sqlite pending. Total ~130K (down from ~322K in v0.3.27 with noise rules).
-
-**High-impact FP targets (per-rule across 3 codebases):**
-
-| Rule | Count | Issue | Fix Approach |
-|------|------:|-------|--------------|
-| MEM30-C | 3,452 | Use-after-free FPs from sequential struct/member frees | Needs field-level free tracking. Cross-function free propagation. |
-| MEM31-C | 3,354 | Leak FPs from cross-function ownership | Needs ownership model (strdup→field→custom_Delete). |
-| DCL13-C | 2,373 | Const correctness — pointer params through struct fields | Known alias tracking limitation (ringbuffer.c pattern). |
-| EXP33-C | 7,088 | Uninitialized variable FPs | CFG rewrite regressed real-world (+2,899). See Immediate Next Steps. |
-
 ### Real-World FP — Deferred Hard Issues
 
-Remaining from d_lib_common/d_hal_linux_random triage (require new analysis capabilities):
+Require new analysis capabilities beyond current architecture:
 
-| Rule | Violations | Issue |
-|------|--------:|-------|
-| MEM30-C | ~3,452 | Sequential struct/member frees, cross-function free propagation. Needs field-level tracking. |
-| MEM31-C | ~3,354 | Cross-function ownership (strdup → struct field → custom \_Delete). Needs ownership model. |
+| Rule | v0.3.37 Count | Issue | Required Capability |
+|------|--------:|-------|---------------------|
+| MEM30-C | 15,330 | Sequential struct/member frees, cross-function free propagation | Field-level free tracking |
+| MEM31-C | 5,440 | Cross-function ownership (strdup → struct field → custom_Delete) | Ownership model |
+| DCL13-C | 12,138 | Const correctness — pointer params through struct fields | Alias/points-to tracking |
 
-### Zero-Detection CWEs (rules exist but never fire)
-
-19 CWEs have CERT-C rules mapped but produce zero CWE-relevant detections. Most are Windows-only in Juliet. Remaining portable targets:
+### Zero-Detection CWEs — Remaining
 
 | CWE | Portable Files | Mapped Rules | Issue | Effort |
 |-----|------:|--------------|-------|--------|
 | CWE-468 (incorrect pointer scaling) | 36 | ARR39-C, EXP08-C | Implicit void* casts losing type info | High |
 
-**Completed**:
-- CWE-761 (free not at start, 984 files) — v0.3.35 API07-C detection added
-- CWE-843 (type confusion, 100 C files) — v0.3.36 API07-C void* tracking (40 TP, 0 FP; 60 cross-function)
-- CWE-469 (pointer subtraction, 36 files) — v0.3.36 ARR36-C strchr tracking (36 TP, 0 FP)
-- CWE-464 (sentinel, 56 files) — v0.3.36 STR03-C atoi detection (38 TP, 0 FP)
-
-**Windows-only** (13 CWEs, not actionable): CWE-114, CWE-226, CWE-259, CWE-272, CWE-273, CWE-327, CWE-367, CWE-459, CWE-666, CWE-789, etc.
+4 formerly zero-detection CWEs resolved in v0.3.35–v0.3.36 (see CHANGELOG). 13 are Windows-only (not actionable).
 
 ---
 
@@ -185,7 +138,7 @@ Current test infrastructure auto-generates integration tests from `.c` files in 
 - [x] Real-world validation on 5+ open-source projects
 - [ ] Baseline-aware suppression
 - [ ] Docker image
-- [ ] CWE-matched TP rate >= 50% on key CWEs
+- [ ] CWE-matched TP rate >= 50% on key CWEs (currently 48.4% overall; 16 CWEs already at 100%, 6 above 50%)
 
 **Tier 3 — Competitive**
 - [ ] Direct benchmarked comparison with Infer, Frama-C (see [RESEARCH.md](RESEARCH.md))

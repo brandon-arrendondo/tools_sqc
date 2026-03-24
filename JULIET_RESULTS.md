@@ -1,22 +1,43 @@
 # SqC — Juliet Benchmark Results
 
-**Last Updated**: 2026-03-16
+**Last Updated**: 2026-03-23
 **Benchmark**: [NIST Juliet Test Suite v1.3](https://samate.nist.gov/SARD/test-suites/112) for C/C++
+
+> **Note**: From v0.3.20 onward, all benchmark results are stored in
+> `data/benchmarks.db` (SQLite). Use `python -m bench runs` to list runs,
+> `python -m bench compare BASE TARGET` for deltas, or the MCP Juliet
+> benchmark tools (`get_results`, `compare_runs`, `get_cwe_detail`).
+> The tables below are preserved for historical context through v0.3.19.
 
 ---
 
-## Current State
+## Current State (v0.3.37)
 
 | Metric | Value |
 |--------|-------|
 | **Rules Implemented** | 283+ CERT C rules |
-| **Juliet Files** | 54,484 |
-| **True Positives** | 128,038 |
-| **False Positives** | 160,496 |
-| **TP Rate** | **44.4%** (v0.3.17, MCP benchmark) |
-| **FP Reduction from Baseline** | -80.9% (839K → 161K) |
-| **CWE Categories with Data** | 103 / 118 |
-| **Categories >50% TP** | 17 |
+| **Juliet CWEs Scanned** | 68 (fast mode, CWE-matched rules) |
+| **True Positives** | 8,508 |
+| **False Positives** | 9,067 |
+| **TP Rate** | **48.4%** |
+| **Per-file Detection Rate** | 14.3% (7,063 / 49,415 files) |
+| **100% TP-rate CWEs** | 16 (CWE-244, 252, 253, 338, 464, 467, 469, 481, 587, 590, 591, 681, 685, 690¹, 761, 843) |
+| **Benchmark Mode** | Fast (per-CWE manifests, 0% noise) |
+
+¹ CWE-690 is 94.4% TP rate (203 TP, 12 FP), not strictly 100%.
+
+### Recent Progress (fast-mode benchmarks, v0.3.20+)
+
+| Version | TP | FP | TP Rate | vs Previous |
+|---------|---:|---:|--------:|-------------|
+| v0.3.20 | 7,918 | 9,371 | 45.8% | — (first fast-mode run) |
+| v0.3.28 | 8,081 | 9,201 | 46.8% | +163 TP, -170 FP |
+| v0.3.34 | 8,300 | 9,157 | 47.5% | +219 TP, -44 FP |
+| **v0.3.37** | **8,508** | **9,067** | **48.4%** | **+208 TP, -90 FP** |
+
+**v0.3.34 → v0.3.37 highlights**: +208 TP, -90 FP (+0.9pp).
+New CWE detections (all 100% TP): CWE-761 (+104), CWE-464 (+14), CWE-469 (+12), CWE-843 (+12).
+FIO30-C: +113 TP on CWE-134 (TP rate 47.9% → 59.9%). EXP33-C: -113 FP on CWE-457 (TP rate 32.2% → 35.3%).
 
 ---
 

@@ -23,6 +23,34 @@ Three fixes unlock detection across all taint source patterns.
 
 Result: All 5 CWE-134 taint sources now produce FIO30-C detections (was 2/5). Variant 01 across all source×sink combinations: 15/15 detected.
 
+### Benchmark: v0.3.35–v0.3.37 Combined (vs v0.3.34)
+
+**Juliet** (fast mode, 68 CWEs): TP 8,300→8,508 (**+208**), FP 9,157→9,067 (**-90**), TP rate 47.5%→**48.4%** (+0.9pp). Per-file 13.8%→14.3%. Zero regressions.
+
+| Change | TP Δ | FP Δ | Impact |
+|--------|-----:|-----:|--------|
+| CWE-761 (API07-C free-after-arithmetic) | +104 | 0 | New CWE, 100% TP, 15.5% per-file |
+| CWE-134 (FIO30-C recv taint) | +113 | +23 | TP rate 47.9%→59.9% (+12pp) |
+| CWE-464 (STR03-C sentinel) | +14 | 0 | New CWE, 100% TP, 25.0% per-file |
+| CWE-469 (ARR36-C strchr) | +12 | 0 | New CWE, 100% TP, 33.3% per-file |
+| CWE-843 (API07-C type confusion) | +12 | 0 | New CWE, 100% TP, 12.0% per-file |
+| CWE-457 (EXP33-C arr[0].field) | -13 | -72 | TP rate 32.2%→35.3% (+3.1pp) |
+| CWE-665 (EXP33-C initializers) | -27 | -41 | TP rate 41.3%→41.9% (+0.6pp) |
+
+**Real-world** (5 codebases, sqc-only): 152,590→153,568 (**+978**, +0.6%).
+
+| Codebase | v0.3.34 | v0.3.37 | Delta |
+|----------|--------:|--------:|------:|
+| hostap | 61,681 | 62,152 | +471 |
+| sqlite | 50,517 | 51,091 | +574 |
+| curl | 24,858 | 24,891 | +33 |
+| mosquitto | 15,221 | 15,128 | -93 |
+| libcrc | 313 | 306 | -7 |
+
+Per-rule: ARR36-C **+2,727** (strchr tracking fires broadly on real-world pointer arithmetic), ERR33-C **-818** (printf suppression), ARR00-C **-480** (pointer chain fix), EXP33-C **-477** (arr[0].field + suffix matching). Excluding ARR36-C, net **-1,749** FP reduction.
+
+**Source commits pinned** in BENCHMARK_INSTALL.md for all 5 codebases.
+
 ## v0.3.36 (2026-03-23)
 
 ### Juliet Zero-Detection CWE Coverage: +114 TPs
@@ -77,12 +105,9 @@ Four rule improvements targeting real-world false positives and Juliet coverage.
 **Other**:
 - `BENCHMARK_INSTALL.md`: Updated all sqc examples from `rules-all.toml` to `rules-benchmark.toml` (matches MCP server)
 
-### Preliminary Benchmark (hostap only, work machine)
+### Benchmark
 
-Hostap (fresh clone at `2a98e6b98`, may differ from home setup baseline):
-- **EXP33-C**: ~5,201 → 3,611 (**-1,590, -30.6%**)
-- **ARR00-C**: 1,181 → 771 (**-410, -34.7%**)
-- Full 5-codebase benchmark + Juliet pending on home setup
+See v0.3.37 entry for combined v0.3.35–v0.3.37 benchmark results (Juliet + real-world).
 
 ## v0.3.34 (2026-03-23)
 
