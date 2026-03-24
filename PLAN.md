@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-24 (v0.3.38 benchmarked)
+**Last Updated**: 2026-03-24 (v0.3.39 pending benchmark)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -10,15 +10,11 @@ For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ## Immediate Next Steps
 
-### ARR36-C Real-World FP Reduction (Priority 1)
-
-v0.3.36 added strchr-based pointer subtraction detection (CWE-469, 100% TP on Juliet). On real-world code it fires +2,727 times (hostap +3,147, sqlite +1,211). Likely FPs from legitimate pointer arithmetic patterns. Investigate and tighten.
-
 ### Real-World FP Reduction — Top Rules (Priority 1)
 
 v0.3.38 per-rule data (all 5 codebases, 152.0K total violations, rules-benchmark.toml).
-v0.3.38 removed library-specific whitelists from DCL31-C/DCL07-C and added `-I`
-include paths for system-installed third-party headers. Net -579 vs v0.3.34.
+v0.3.39: ARR36-C FP reduction (per-function scoping, alias resolution, compound
+assignment skip, os_* wrapper recognition). hostap sample: 86→10 (−88%).
 
 | Rule | Count | Issue | Status |
 |------|------:|-------|--------|
@@ -32,7 +28,7 @@ include paths for system-installed third-party headers. Net -579 vs v0.3.34.
 | EXP34-C | 5,290 | Null deref | Stable |
 | DCL31-C | varies | Undeclared function | Prescan + `-I` headers; library whitelists removed in v0.3.38 |
 | DCL07-C | varies | Implicit int declaration | Prescan + `-I` headers; library whitelists removed in v0.3.38 |
-| **ARR36-C** | **4,685** | **Pointer subtraction** | **+2,727 regression — PRIORITY** |
+| ARR36-C | ~2,000? | Pointer subtraction | v0.3.39: per-function scoping + alias resolution (−88% on sample) |
 | ARR00-C | 2,157 | Array bounds | v0.3.37: -480 (-18.2%) |
 | ERR33-C | 989 | Unchecked return | v0.3.37: -818 (-45.3%) |
 
