@@ -320,9 +320,10 @@ pub const FOR_EACH_MACROS: &[&str] = &[
 /// Configuration for init-state analysis, carrying interprocedural info.
 #[derive(Default)]
 pub struct InitAnalysisConfig {
-    /// Functions that only conditionally initialize pointer parameters.
-    /// `&var` passed to these functions should NOT be assumed initialized.
-    pub conditionally_init_fns: HashSet<String>,
+    /// Functions with pointer params that are only conditionally initialized.
+    /// Maps function name → set of parameter indices where `*param = ...` only
+    /// appears inside conditionals. Other params are assumed initialized normally.
+    pub conditionally_init_fns: HashMap<String, HashSet<usize>>,
     /// Functions that wrap realloc (return uninitialized new portion).
     pub realloc_wrapper_fns: HashSet<String>,
 }
@@ -598,6 +599,22 @@ fn process_expression(
                 }
             }
         }
+        "cast_expression" => {
+            // Unwrap (void)func(...) and similar casts to process the inner expression
+            if let Some(value) = node.child_by_field_name("value") {
+                process_expression(&value, source, state, tracked_vars, config);
+            }
+        }
+        "parenthesized_expression" => {
+            // Unwrap (expr) to process inner expression
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() != "(" && child.kind() != ")" {
+                        process_expression(&child, source, state, tracked_vars, config);
+                    }
+                }
+            }
+        }
         _ => {}
     }
 }
@@ -717,18 +734,21 @@ fn process_call_expression(
     }
 
     // Unknown function: assume &var initializes (conservative — most functions
-    // that take pointer params write to them), UNLESS the function is known to
-    // only conditionally initialize.
-    let skip_ptr_init = config.conditionally_init_fns.contains(&func_name);
+    // that take pointer params write to them), UNLESS the specific parameter is
+    // known to be only conditionally initialized.
+    let cond_param_indices = config.conditionally_init_fns.get(&func_name);
 
     if let Some(args) = node.child_by_field_name("arguments") {
+        let mut arg_idx: usize = 0;
         for i in 0..args.child_count() {
             if let Some(arg) = args.child(i) {
                 if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
                     continue;
                 }
-                // &var pattern — assume function writes to it (unless conditionally-init)
-                if !skip_ptr_init && arg.kind() == "pointer_expression" {
+                let skip_this_arg =
+                    cond_param_indices.is_some_and(|indices| indices.contains(&arg_idx));
+                // &var pattern — assume function writes to it (unless this param is conditionally-init)
+                if !skip_this_arg && arg.kind() == "pointer_expression" {
                     let arg_text = arg.utf8_text(source.as_bytes()).unwrap_or("");
                     if arg_text.starts_with('&') {
                         let var_name = extract_var_from_arg(&arg, source);
@@ -740,7 +760,7 @@ fn process_call_expression(
                     }
                 }
                 // Array passed by name — assume function writes to it
-                if arg.kind() == "identifier" {
+                if !skip_this_arg && arg.kind() == "identifier" {
                     let var_name = arg.utf8_text(source.as_bytes()).unwrap_or("").to_string();
                     if let Some(info) = state.get(&var_name) {
                         if info.is_array {
@@ -749,6 +769,7 @@ fn process_call_expression(
                         }
                     }
                 }
+                arg_idx += 1;
             }
         }
     }

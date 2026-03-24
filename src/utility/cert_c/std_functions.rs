@@ -296,8 +296,8 @@ pub fn is_known_standard_function(name: &str) -> bool {
         | "CreateDesktopA" | "CreateDesktopW"
         | "CloseDesktop" | "OpenDesktopA" | "OpenDesktopW" => true,
 
-        // ===== Juliet Uppercase Macro Wrappers =====
-        // Juliet uses uppercase macros that expand to standard functions.
+        // ===== Uppercase Macro Wrappers =====
+        // Some codebases use uppercase macros that expand to standard functions.
         // Tree-sitter sees them as calls to these uppercase names.
         "ALLOCA" | "SNPRINTF" | "VSNPRINTF"
         | "GETENV" | "PUTENV" | "SYSTEM"
