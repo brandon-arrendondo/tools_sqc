@@ -1,6 +1,6 @@
 # SqC — Benchmark Installation & Setup
 
-**Last Updated**: 2026-02-25
+**Last Updated**: 2026-03-23
 
 How to install cppcheck, clang-tidy, and configure the environment for running benchmarks alongside sqc.
 
@@ -78,29 +78,46 @@ cd ~/data/benchmarks
 
 ## 5. Real-World Project Setup
 
+### Pinned Source Commits
+
+All benchmark results are run against these exact commits. Pin your clones to
+match before comparing results.
+
+| Project | Repository | Commit SHA | Branch |
+|---------|-----------|------------|--------|
+| libcrc | https://github.com/lammertb/libcrc | `7719e2112a9a960b1bba130d02bebdf58e8701f1` | master |
+| sqlite | https://github.com/sqlite/sqlite.git | `b1a73ba34d05b32007315e4065c6468cc638e3af` | (detached) |
+| mosquitto | https://github.com/eclipse-mosquitto/mosquitto.git | `d3ee5c5ca62c0fa4983308c6fff558ee978e878c` | master |
+| curl | https://github.com/curl/curl.git | `3e198f75861cc2e12daf299689e145949dddd19b` | (detached) |
+| hostap | https://git.w1.fi/hostap.git | `dcee60436390dd34731560657c4257c3b4c839a6` | main |
+
+### Clone and Pin
+
 ```bash
-mkdir -p ~/data/comparisons
-cd ~/data/comparisons
+mkdir -p ~/data
+cd ~/data
 
 # libcrc
 git clone https://github.com/lammertb/libcrc.git
+cd libcrc && git checkout 7719e2112a9a960b1bba130d02bebdf58e8701f1 && cd ..
 
 # sqlite
-# Download from https://sqlite.org/src/ or fossil clone
+git clone https://github.com/sqlite/sqlite.git
+cd sqlite && git checkout b1a73ba34d05b32007315e4065c6468cc638e3af && cd ..
 
 # mosquitto
-git clone https://github.com/eclipse/mosquitto.git
+git clone https://github.com/eclipse-mosquitto/mosquitto.git
 sudo apt install -y libcjson-dev  # required dependency
+cd mosquitto && git checkout d3ee5c5ca62c0fa4983308c6fff558ee978e878c && cd ..
 
 # curl
 git clone https://github.com/curl/curl.git
 sudo apt install -y libpsl-dev  # required for curl 8.19+
+cd curl && git checkout 3e198f75861cc2e12daf299689e145949dddd19b && cd ..
 
 # hostap
-git clone git://w1.fi/hostap.git
-
-# Create output directories
-mkdir -p ~/data/comparisons/results/{sqc,cppcheck,clang-tidy}/{libcrc,sqlite,mosquitto,curl,hostap}
+git clone https://git.w1.fi/hostap.git
+cd hostap && git checkout dcee60436390dd34731560657c4257c3b4c839a6 && cd ..
 ```
 
 ---
