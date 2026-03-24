@@ -82,7 +82,8 @@ def resolve_prescan_cache(sqc_bin: str, manifest: str,
                           context_dirs: list[str],
                           cache_dir: str | None,
                           codebase_name: str,
-                          rebuild: bool) -> str | None:
+                          rebuild: bool,
+                          include_paths: list[str] | None = None) -> str | None:
     """Resolve prescan cache: reuse existing or generate new.
 
     Returns path to a valid cache file, or None if caching failed.
@@ -113,7 +114,8 @@ def resolve_prescan_cache(sqc_bin: str, manifest: str,
     print(f"[parallel] Generating prescan cache...",
           file=sys.stderr, flush=True)
     cache_start = time.monotonic()
-    ok = _generate_prescan_cache(sqc_bin, manifest, context_dirs, cache_path)
+    ok = _generate_prescan_cache(sqc_bin, manifest, context_dirs, cache_path,
+                                    include_paths)
     cache_elapsed = time.monotonic() - cache_start
 
     if ok:
@@ -131,7 +133,8 @@ def resolve_prescan_cache(sqc_bin: str, manifest: str,
 
 def _generate_prescan_cache(sqc_bin: str, manifest: str,
                             context_dirs: list[str],
-                            cache_path: str) -> bool:
+                            cache_path: str,
+                            include_paths: list[str] | None = None) -> bool:
     """Run sqc --save-prescan to generate a prescan cache file."""
     # Find one .c file to use as a minimal scan target
     scan_target = None
@@ -153,6 +156,8 @@ def _generate_prescan_cache(sqc_bin: str, manifest: str,
     ]
     for d in context_dirs:
         cmd.extend(["-d", d])
+    for inc in (include_paths or []):
+        cmd.extend(["-I", inc])
 
     try:
         proc = subprocess.run(cmd, capture_output=True, timeout=1800)
@@ -163,7 +168,8 @@ def _generate_prescan_cache(sqc_bin: str, manifest: str,
 
 def scan_one(sqc_bin: str, scan_dir: Path, manifest: str,
              prescan_cache: str, output_path: str,
-             label: str = "") -> dict:
+             label: str = "",
+             include_paths: list[str] | None = None) -> dict:
     """Run sqc on one directory with prescan cache. Returns summary dict."""
     cmd = [
         sqc_bin, str(scan_dir),
@@ -171,6 +177,8 @@ def scan_one(sqc_bin: str, scan_dir: Path, manifest: str,
         "-e", output_path,
         "--load-prescan", prescan_cache,
     ]
+    for inc in (include_paths or []):
+        cmd.extend(["-I", inc])
 
     start = time.monotonic()
     proc = subprocess.run(cmd, capture_output=True, timeout=3600)
@@ -195,11 +203,14 @@ def scan_one(sqc_bin: str, scan_dir: Path, manifest: str,
 
 def scan_one_no_cache(sqc_bin: str, scan_dir: Path, manifest: str,
                       context_dirs: list[str], output_path: str,
-                      label: str = "") -> dict:
+                      label: str = "",
+                      include_paths: list[str] | None = None) -> dict:
     """Run sqc on one directory without cache (fallback). Returns summary dict."""
     cmd = [sqc_bin, str(scan_dir), "-m", manifest, "-e", output_path]
     for d in context_dirs:
         cmd.extend(["-d", d])
+    for inc in (include_paths or []):
+        cmd.extend(["-I", inc])
 
     start = time.monotonic()
     proc = subprocess.run(cmd, capture_output=True, timeout=3600)
@@ -223,11 +234,14 @@ def scan_one_no_cache(sqc_bin: str, scan_dir: Path, manifest: str,
 
 
 def run_single(sqc_bin: str, scan_path: str, manifest: str,
-               context_dirs: list[str], export_path: str) -> int:
+               context_dirs: list[str], export_path: str,
+               include_paths: list[str] | None = None) -> int:
     """Run sqc as a single process (no parallelism)."""
     cmd = [sqc_bin, scan_path, "-m", manifest, "-e", export_path]
     for d in context_dirs:
         cmd.extend(["-d", d])
+    for inc in (include_paths or []):
+        cmd.extend(["-I", inc])
     result = subprocess.run(cmd, timeout=3600)
     return result.returncode
 
@@ -250,6 +264,8 @@ def main():
     parser.add_argument("--rebuild-prescan", action="store_true",
                         help="Force prescan cache regeneration (use after "
                              "changing prescan logic in sqc)")
+    parser.add_argument("-I", "--include", action="append", default=[],
+                        help="Include search path for header resolution (repeatable)")
     args = parser.parse_args()
 
     scan_path = Path(args.scan_path).resolve()
@@ -269,7 +285,7 @@ def main():
         print(f"[parallel] {scan_path.name}: {total_files} files, running single process",
               file=sys.stderr, flush=True)
         rc = run_single(args.sqc, str(scan_path), args.manifest,
-                        context_dirs, args.export)
+                        context_dirs, args.export, args.include)
         sys.exit(rc)
 
     print(f"[parallel] {scan_path.name}: {total_files} files across "
@@ -284,7 +300,7 @@ def main():
     cache_path = resolve_prescan_cache(
         args.sqc, args.manifest, context_dirs,
         args.prescan_cache_dir, codebase_name,
-        args.rebuild_prescan,
+        args.rebuild_prescan, args.include,
     )
 
     all_violations = []
@@ -302,11 +318,13 @@ def main():
                     future = executor.submit(
                         scan_one, args.sqc, unit, args.manifest,
                         cache_path, output, label=rel,
+                        include_paths=args.include,
                     )
                 else:
                     future = executor.submit(
                         scan_one_no_cache, args.sqc, unit, args.manifest,
                         context_dirs, output, label=rel,
+                        include_paths=args.include,
                     )
                 futures[future] = (unit, output)
 

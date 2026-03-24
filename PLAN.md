@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-23 (v0.3.37 benchmarked)
+**Last Updated**: 2026-03-24 (v0.3.38 benchmarked)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -16,7 +16,9 @@ v0.3.36 added strchr-based pointer subtraction detection (CWE-469, 100% TP on Ju
 
 ### Real-World FP Reduction — Top Rules (Priority 1)
 
-v0.3.37 per-rule data (all 5 codebases, 153.6K total violations, rules-benchmark.toml).
+v0.3.38 per-rule data (all 5 codebases, 152.0K total violations, rules-benchmark.toml).
+v0.3.38 removed library-specific whitelists from DCL31-C/DCL07-C and added `-I`
+include paths for system-installed third-party headers. Net -579 vs v0.3.34.
 
 | Rule | Count | Issue | Status |
 |------|------:|-------|--------|
@@ -25,22 +27,39 @@ v0.3.37 per-rule data (all 5 codebases, 153.6K total violations, rules-benchmark
 | INT32-C | 12,018 | Signed overflow | Stable after VRA |
 | API00-C | 9,227 | Missing size parameter | Stable |
 | INT30-C | 8,488 | Unsigned overflow | Stable after VRA |
-| EXP33-C | 6,611 | Uninitialized | v0.3.37: -477 (-6.7%) |
+| EXP33-C | ~6,100 | Uninitialized | v0.3.38: FP fixes (conditional-init, cast unwrap, array arg) |
 | MEM31-C | 5,440 | Memory leak | Needs ownership model (deferred) |
 | EXP34-C | 5,290 | Null deref | Stable |
-| DCL31-C | 4,842 | Undeclared function | Stable (prescan) |
-| DCL07-C | 4,765 | Implicit int declaration | Stable (prescan) |
+| DCL31-C | varies | Undeclared function | Prescan + `-I` headers; library whitelists removed in v0.3.38 |
+| DCL07-C | varies | Implicit int declaration | Prescan + `-I` headers; library whitelists removed in v0.3.38 |
 | **ARR36-C** | **4,685** | **Pointer subtraction** | **+2,727 regression — PRIORITY** |
 | ARR00-C | 2,157 | Array bounds | v0.3.37: -480 (-18.2%) |
 | ERR33-C | 989 | Unchecked return | v0.3.37: -818 (-45.3%) |
 
 ### Juliet TP Rate — Path to 50%
 
-v0.3.37: **48.4% TP rate**. Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
+v0.3.38: **48.4% TP rate** (unchanged from v0.3.37 — zero Juliet delta). Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
 
 ### EXP33-C — Remaining
 
 - **Cross-function variants 63/64**: pointer passed between source files, needs inter-procedural analysis
+
+### Real-World DCL31-C/DCL07-C — Remaining Include Gaps
+
+v0.3.38 removed library-specific whitelists and added `-I` include paths for
+system-installed third-party headers. Most projects at or below v0.3.34 baseline,
+but two still show increases from unresolved function declarations:
+
+| Project | v0.3.34 | v0.3.38 | Delta | Unresolved Functions |
+|---------|---------|---------|-------|---------------------|
+| mosquitto | 15,221 | 16,481 | +1,260 | `cJSON_*` (1424, header found but includes as `<cjson/cJSON.h>` — need `-I /usr/include` not `/usr/include/cjson`), `CU_*` (692, CUnit test framework), `sqlite3_*` (496), `mysql_*` (24) |
+| sqlite | 50,517 | 53,578 | +3,061 | `Tcl_*` (3010, `#include "tclsqlite.h"` internal header — `-I /usr/include/tcl8.6` doesn't help), internal `sqlite3_*` (32, not caught by `-d` prescan) |
+
+**Fix approaches**:
+- mosquitto `cJSON_`: fix `-I` path — currently `/usr/include/cjson` but mosquitto includes as `<cjson/cJSON.h>` so `/usr/include` is correct (already set, may need prescan rebuild with both paths)
+- mosquitto `CU_`/`sqlite3_`: these are test dependencies — add `-I /usr/include` covers them (already set)
+- sqlite `Tcl_`: Tcl embeds via `#include "tclsqlite.h"` which includes `<tcl.h>` internally — sqc can't follow this chain. Need to add Tcl source dir to `-d` or accept as residual.
+- Alternative: implement glob/prefix suppression (see Architecture Evolution)
 
 ---
 
@@ -109,6 +128,10 @@ Current test infrastructure auto-generates integration tests from `.c` files in 
 - [ ] **File-size-aware batching** — current subdir splitting can leave one large unit dominating wall time (e.g., wpa_supplicant/ 69 files = 1061s). Batch by file size rather than directory to balance work across workers.
 - [ ] **Incremental parsing** — only re-parse changed files
 - [ ] **Baseline-aware suppression** — "only new violations" mode
+- [ ] **Glob/prefix suppression in `.sqc-suppress.toml`** — current TOML format only supports per-file/per-line hash-matched suppressions. Real-world projects need pattern-based suppressions (e.g., suppress DCL31-C for all `wolfSSL_*` calls, or suppress a rule for an entire directory). Valgrind uses `obj:*libXt.so*` glob syntax; cppcheck uses `rule:*` file wildcards; clang-tidy uses `NOLINTNEXTLINE(cert-*)` prefix matching. Candidates for sqc:
+  - `file_glob` field: `"src/vendor/**"` — suppress rule for all files matching glob
+  - `function_prefix` field: `"wolfSSL_"` — suppress DCL31-C/DCL07-C for function name prefixes
+  - `rule_glob` field: `"DCL*"` — suppress all DCL rules (useful for vendor/third-party code)
 - [ ] **Docker image** — containerized CI/CD distribution
 
 ### Analysis Capabilities Lacking

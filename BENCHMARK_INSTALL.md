@@ -76,7 +76,67 @@ cd ~/data/benchmarks
 
 ---
 
-## 5. Real-World Project Setup
+## 5. Third-Party Library Headers (for sqc `-I` resolution)
+
+sqc uses `-I` include paths to resolve `#include` directives from third-party
+libraries. Without these, functions declared in external headers produce
+DCL31-C/DCL07-C false positives. Install the development headers on every
+benchmark host:
+
+```bash
+# Core dependencies (covers most projects)
+sudo apt-get install -y \
+  libssl-dev \
+  libcjson-dev \
+  zlib1g-dev
+
+# mosquitto dependencies
+sudo apt-get install -y \
+  libcunit1-dev \
+  libsqlite3-dev
+
+# curl TLS backend headers
+sudo apt-get install -y \
+  libmbedtls-dev \
+  libgnutls28-dev
+
+# sqlite test infrastructure
+sudo apt-get install -y \
+  tcl-dev
+
+# hostap dependencies
+sudo apt-get install -y \
+  libnl-3-dev \
+  libnl-genl-3-dev \
+  libdbus-1-dev \
+  libgcrypt20-dev \
+  libpcap-dev \
+  libwolfssl-dev
+```
+
+One-liner for all hosts:
+```bash
+sudo apt-get install -y libssl-dev libcjson-dev zlib1g-dev libcunit1-dev \
+  libsqlite3-dev libmbedtls-dev libgnutls28-dev tcl-dev libnl-3-dev \
+  libnl-genl-3-dev libdbus-1-dev libgcrypt20-dev libpcap-dev libwolfssl-dev
+```
+
+### Per-Project Include Paths
+
+The benchmark MCP server (`mcp_servers/realworld_server.py`) passes these
+automatically via the `includes` field in each codebase's sqc config:
+
+| Project | `-I` Paths | Resolves |
+|---------|-----------|----------|
+| libcrc | _(none)_ | Pure C, no external deps |
+| sqlite | `/usr/include` | OpenSSL, zlib, Tcl |
+| mosquitto | `/usr/include`, `/usr/include/cjson` | OpenSSL, cJSON, CUnit, sqlite3 |
+| curl | `/usr/include`, `{path}/lib` | OpenSSL, mbedTLS, GnuTLS, internal curlx |
+| hostap | `/usr/include`, `/usr/include/libnl3`, `/usr/include/dbus-1.0` | OpenSSL, wolfSSL, libnl, D-Bus, libgcrypt, libpcap |
+
+---
+
+## 6. Real-World Project Setup
 
 ### Pinned Source Commits
 
@@ -122,7 +182,7 @@ cd hostap && git checkout dcee60436390dd34731560657c4257c3b4c839a6 && cd ..
 
 ---
 
-## 6. Running Each Tool
+## 7. Running Each Tool
 
 ### sqc
 
@@ -178,7 +238,7 @@ find /path/to/source/ -name '*.c' | \
 
 ---
 
-## 7. Per-Project Commands
+## 8. Per-Project Commands
 
 ### libcrc
 
@@ -312,7 +372,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p . \
 
 ---
 
-## 8. Verifying Results
+## 9. Verifying Results
 
 ### Quick Sanity Check
 
@@ -354,7 +414,7 @@ grep -c "warning:\|error:" $RESULTS/clang-tidy/$PROJECT/results.txt
 
 ---
 
-## 9. Output Format Reference
+## 10. Output Format Reference
 
 ### cppcheck XML (v2)
 ```xml
@@ -379,7 +439,7 @@ SARIF 2.1.0 compatible output with `ruleId` matching CERT C rule IDs.
 
 ---
 
-## 10. Distributed Benchmarking with GNU Parallel
+## 11. Distributed Benchmarking with GNU Parallel
 
 For fast re-benchmarking across multiple machines after rule changes.
 
