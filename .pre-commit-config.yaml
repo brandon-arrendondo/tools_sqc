@@ -1,6 +1,13 @@
 # Pre-commit hooks for tools_scq
 # Install: pre-commit install
 # Run manually: pre-commit run --all-files
+#
+# Prerequisites:
+#   cargo install cargo-llvm-cov
+#
+# Coverage output:
+#   The cargo-llvm-cov hook produces lcov.info in the project root.
+#   CI pipelines can publish this artifact directly — no separate coverage step needed.
 
 repos:
   # Branch protection
@@ -27,16 +34,7 @@ repos:
       - id: cargo-fmt
         name: cargo fmt (auto-fix)
         description: Format Rust code with rustfmt
-        entry: bash -c 'cargo fmt --all 2>&1 && echo "✅ Formatting complete"'
-        language: system
-        pass_filenames: false
-        types: [rust]
-        verbose: true
-
-      - id: cargo-check
-        name: cargo check
-        description: Check Rust code compiles
-        entry: bash -c 'cargo check 2>&1'
+        entry: bash -c 'cargo fmt --all 2>&1 && echo "Formatting complete"'
         language: system
         pass_filenames: false
         types: [rust]
@@ -51,12 +49,10 @@ repos:
         types: [rust]
         verbose: true
 
-      - id: cargo-test
-        name: cargo test
-        description: Run all Rust tests (includes build) - warnings only
-        entry: bash -c 'cargo test 2>&1; exit 0; echo "THIS IS A WARNING NOT A FAILURE"'
+      - id: cargo-llvm-cov
+        name: cargo llvm-cov (tests + 75% coverage gate)
+        description: Run tests with coverage — fail if line coverage < 75%. Produces lcov.info.
+        entry: bash -c 'scripts/coverage-gate.sh 75 2>&1'
         language: system
         pass_filenames: false
         verbose: true
-
-

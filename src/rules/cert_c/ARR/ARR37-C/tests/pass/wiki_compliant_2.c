@@ -10,7 +10,7 @@ struct numbers {
   short a[3];
 };
 
-int sum_numbers(const short numb[], size_t dim) {
+int sum_numbers(const short *numb, size_t dim) {
   int total = 0;
   for (size_t i = 0; i < dim; ++i) {
     total += numb[i];
