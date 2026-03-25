@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-24 (v0.3.39 benchmarked)
+**Last Updated**: 2026-03-25 (v0.3.42 benchmarked)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -10,26 +10,9 @@ For competitor research and academic references, see the [Developer Guide biblio
 
 ## Immediate Next Steps
 
-### Real-World Benchmark Runner Broken (Priority 1)
-
-v0.3.42 real-world runs failed on all codebases except libcrc. The MCP runner invokes `sqc_parallel_scan.py` with `-I` include path flags, but the script doesn't accept them — they get passed through as unrecognized arguments:
-
-```
-sqc_parallel_scan.py: error: unrecognized arguments: -I /usr/include -I /home/brandon/data/curl/lib
-```
-
-**Root cause**: `mcp_servers/server.py` (or the shell wrapper it calls) passes `-I` flags from the per-project config to `sqc_parallel_scan.py`, which only accepts `--sqc`, `-m`, `-e`, `-d`, `-j`, `--min-files`, `--prescan-cache-dir`, `--rebuild-prescan`. The `-I` flags need to either be added to the parallel scan script's argparse, or forwarded to the underlying `sqc` invocations via a passthrough mechanism.
-
-**Impact**: Can't get real-world benchmark data for any project that uses `-I` (curl, hostap, mosquitto, sqlite). Only libcrc works (no `-I` needed).
-
-**Fix options**:
-1. Add `-I` / `--include` to `sqc_parallel_scan.py` argparse and forward to each `sqc` subprocess
-2. Add a generic `--sqc-args` passthrough in the parallel scanner
-3. Fix the MCP runner to invoke `sqc` directly (not via parallel scanner) for projects where parallelization isn't needed
-
 ### Real-World FP Reduction — Top Rules (Priority 1)
 
-v0.3.39 per-rule data (all 5 codebases, 153.2K total violations, rules-benchmark.toml).
+v0.3.42 per-rule data (all 5 codebases, 154.6K total violations, rules-benchmark.toml).
 
 | Rule | Count | Issue | Status |
 |------|------:|-------|--------|
@@ -40,16 +23,27 @@ v0.3.39 per-rule data (all 5 codebases, 153.2K total violations, rules-benchmark
 | INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
 | DCL31-C | 7,366 | Undeclared function | Prescan + `-I` headers |
 | DCL07-C | 7,291 | Implicit int declaration | Prescan + `-I` headers |
-| EXP33-C | ~6,100 | Uninitialized | v0.3.38: FP fixes |
 | MEM31-C | 5,440 | Memory leak | Needs ownership model (deferred) |
 | EXP34-C | 5,267 | Null deref | Stable |
+| EXP33-C | 5,013 | Uninitialized | v0.3.38: FP fixes |
+| STR34-C | 2,801 | Char-to-int conversion | v0.3.42: +252 (init_declarator fix) |
+| API05-C | 2,805 | Unused return value | Stable |
 | ARR00-C | 2,157 | Array bounds | v0.3.37: -480 (-18.2%) |
 | ERR33-C | 989 | Unchecked return | v0.3.37: -818 (-45.3%) |
+| CON34-C | 871 | Thread-unsafe functions | v0.3.42: new detection |
 | ARR36-C | 829 | Pointer subtraction | v0.3.39: −3,856 (−82.3%), regression resolved |
+
+v0.3.42 vs v0.3.39 delta: +1,442 (+0.9%). All increases from newly-fixed rules:
+- CON34-C +871 (new: thread-unsafe function detection)
+- STR34-C +252 (init_declarator + per-function scoping; hostap -322 from FP reduction)
+- EXP40-C +114 (per-scope const variable tracking)
+- ERR01-C +106 (errno-setting function detection)
+- CON07-C +72 (file-scope global collection)
+- DCL02-C +14, POS50-C +11 (minor fixes)
 
 ### Juliet TP Rate — Path to 50%
 
-v0.3.39: **48.4% TP rate** (unchanged since v0.3.37 — ARR36-C fix was real-world only). Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
+v0.3.42: **48.4% TP rate** (unchanged since v0.3.37 — v0.3.42 rule fixes target detection gaps, not FP reduction). Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
 
 ### EXP33-C — Remaining
 
@@ -104,7 +98,7 @@ v0.3.37: 203 TP, 12 FP, **94.4% TP rate**, 18.1% per-file. Best precision of any
 
 Require new analysis capabilities beyond current architecture:
 
-| Rule | v0.3.37 Count | Issue | Required Capability |
+| Rule | v0.3.42 Count | Issue | Required Capability |
 |------|--------:|-------|---------------------|
 | MEM30-C | 15,330 | Sequential struct/member frees, cross-function free propagation | Field-level free tracking |
 | MEM31-C | 5,440 | Cross-function ownership (strdup → struct field → custom_Delete) | Ownership model |
@@ -112,11 +106,32 @@ Require new analysis capabilities beyond current architecture:
 
 ### Zero-Detection CWEs — Remaining
 
-| CWE | Portable Files | Mapped Rules | Issue | Effort |
-|-----|------:|--------------|-------|--------|
-| CWE-468 (incorrect pointer scaling) | 36 | ARR39-C, EXP08-C | Implicit void* casts losing type info | High |
+**Fixed in this batch**: CWE-480 (EXP16-C AST function collection + NULL recognition), CWE-482 (EXP16-C dead comparison detection), CWE-367 (FIO01-C access/stat+open TOCTOU).
 
-4 formerly zero-detection CWEs resolved in v0.3.35–v0.3.36 (see CHANGELOG). 13 are Windows-only (not actionable).
+**Already detected but benchmark can't classify**: CWE-479 (SIG30-C detects all 54 violations, but handler functions are outside `#ifndef OMITBAD` guards — benchmark infra issue).
+
+**Deferred — require new analysis capabilities or have low ROI**:
+
+| CWE | Files | Mapped Rules | Issue | Effort |
+|-----|------:|--------------|-------|--------|
+| CWE-789 (uncontrolled mem alloc) | 560 | ARR30-C, MEM35-C | Needs taint tracking (user input → malloc size) | High |
+| CWE-114 (process control) | 672 | ERR07-C, MEM10-C | Needs taint tracking (untrusted input → LoadLibrary) | High |
+| CWE-272 (least privilege) | 252 | POS02-C, WIN02-C | Windows-only: HKEY_LOCAL_MACHINE vs HKEY_CURRENT_USER | Windows |
+| CWE-259 (hard-coded password) | 112 | MSC41-C | Needs password/credential string pattern matching | Medium |
+| CWE-666 (resource wrong phase) | 90 | MEM30-C | Needs state machine for resource lifecycle | High |
+| CWE-226 (sensitive data uncleared) | 72 | MEM03-C | MEM03-C only checks free/realloc, not stack scope exit | Medium |
+| CWE-327 (broken crypto) | 54 | MSC30-C, MSC32-C | Needs crypto API knowledge (RC5 vs AES) | Medium |
+| CWE-468 (incorrect pointer scaling) | 36 | ARR39-C, EXP08-C | Implicit void* casts losing type info | High |
+| CWE-459 (incomplete cleanup) | 36 | FIO42-C, MEM31-C | FIO42-C detects in other CWEs; these need resource tracking | Medium |
+| CWE-188 (data memory layout) | 36 | ARR32-C, EXP39-C | Struct padding/alignment analysis | High |
+| CWE-675 (duplicate ops on resource) | 224 | FIO24-C | FIO24-C detects in other CWEs; these need different patterns | Medium |
+| CWE-562 (return stack variable) | 2 | DCL30-C | Needs array-decay-to-pointer + address-of-local taint | Medium |
+| CWE-482 (comparing instead of assigning) | 18 | EXP16-C | **FIXED** — dead comparison detection |  |
+| CWE-480 (incorrect operator) | 18 | EXP16-C | **FIXED** — AST-based function name collection |  |
+
+7 formerly zero-detection CWEs resolved in v0.3.35–v0.3.36 and this batch (see CHANGELOG). 13 are Windows-only (not actionable).
+
+**No unit tests for EXP16-C**: The .c test files exist under `tests/fail/` and `tests/pass/` but the build.rs-generated integration tests don't appear in `cargo test`. Needs investigation — may need explicit test registration.
 
 ---
 
@@ -247,7 +262,7 @@ Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known lim
 - [x] Real-world validation on 5+ open-source projects
 - [ ] Baseline-aware suppression
 - [ ] Docker image
-- [ ] CWE-matched TP rate >= 50% on key CWEs (currently 48.4% overall; 16 CWEs already at 100%, 6 above 50%)
+- [ ] CWE-matched TP rate >= 50% on key CWEs (v0.3.42: 48.4% overall; 16 CWEs already at 100%, 6 above 50%)
 
 **Tier 3 — Competitive**
 - [ ] Direct benchmarked comparison with Infer, Frama-C (see [bibliography](docs/bibliography.rst))
