@@ -102,6 +102,44 @@ stages:
               ArtifactName: "sqc"
               publishLocation: "Container"
 
+  - stage: "Documentation"
+    displayName: "Build Documentation"
+    dependsOn: Build
+    jobs:
+      - job: BuildDocs
+        displayName: "Build Developer Guide (HTML + PDF)"
+        steps:
+          - checkout: self
+            fetchDepth: 1
+
+          - script: |
+              set -e
+              sudo apt-get update
+              sudo apt-get install -y python3-pip latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+              pip install sphinx sphinx-rtd-theme
+            displayName: "Install Sphinx and LaTeX"
+
+          - script: |
+              set -e
+              sphinx-build -b html docs $(Build.ArtifactStagingDirectory)/docs/html
+              echo "HTML build complete"
+            displayName: "Build HTML documentation"
+
+          - script: |
+              set -e
+              sphinx-build -M latexpdf docs $(Build.ArtifactStagingDirectory)/docs/pdf
+              cp $(Build.ArtifactStagingDirectory)/docs/pdf/latex/sqc-developer-guide.pdf \
+                $(Build.ArtifactStagingDirectory)/docs/sqc-developer-guide.pdf
+              echo "PDF built: $(ls -lh $(Build.ArtifactStagingDirectory)/docs/sqc-developer-guide.pdf)"
+            displayName: "Build PDF documentation"
+
+          - task: PublishBuildArtifacts@1
+            displayName: "Publish documentation"
+            inputs:
+              PathtoPublish: $(Build.ArtifactStagingDirectory)/docs
+              ArtifactName: "documentation"
+              publishLocation: "Container"
+
   - stage: "Benchmark"
     displayName: "Performance Benchmark"
     dependsOn: Build

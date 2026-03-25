@@ -6,7 +6,7 @@ For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
 For Juliet per-CWE coverage, see [JULIET_COVERAGE.md](JULIET_COVERAGE.md).
 For test infrastructure audit and coverage gaps, see [TEST_INFRASTRUCTURE.md](TEST_INFRASTRUCTURE.md).
-For competitor research, see [RESEARCH.md](RESEARCH.md).
+For competitor research and academic references, see the [Developer Guide bibliography](docs/bibliography.rst).
 
 ---
 
@@ -213,6 +213,6 @@ Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known lim
 - [ ] CWE-matched TP rate >= 50% on key CWEs (currently 48.4% overall; 16 CWEs already at 100%, 6 above 50%)
 
 **Tier 3 — Competitive**
-- [ ] Direct benchmarked comparison with Infer, Frama-C (see [RESEARCH.md](RESEARCH.md))
+- [ ] Direct benchmarked comparison with Infer, Frama-C (see [bibliography](docs/bibliography.rst))
 - [ ] Published comparison results
 - [ ] Per-file detection >= 30% on top 10 CWEs by volume
