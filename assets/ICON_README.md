@@ -4,8 +4,8 @@ The SQC (Software Code Quality) program includes icon files that can be used in 
 
 ## Icon Files
 
-- `icon.png` - PNG format (256x256) for Linux desktop environments
-- `icon.ico` - ICO format (multi-resolution) for Windows
+- `assets/icon.png` - PNG format (256x256) for Linux desktop environments
+- `assets/icon.ico` - ICO format (multi-resolution) for Windows
 
 ## Where the Icon Appears
 
@@ -24,10 +24,10 @@ To add SQC to your application menu:
 
 ```bash
 # Copy the icon to system icons directory
-sudo cp icon.png /usr/local/share/pixmaps/sqc.png
+sudo cp assets/icon.png /usr/local/share/pixmaps/sqc.png
 
 # Copy the desktop file
-sudo cp sqc.desktop /usr/local/share/applications/
+sudo cp assets/sqc.desktop /usr/local/share/applications/
 
 # Update desktop database
 sudo update-desktop-database
@@ -44,7 +44,7 @@ To build with icon on Windows:
 cargo build --release
 ```
 
-The `build.rs` script automatically embeds `icon.ico` during compilation on Windows.
+The `build.rs` script automatically embeds `assets/icon.ico` during compilation on Windows.
 
 ## Icon Design
 
@@ -63,6 +63,6 @@ The icon features:
 ## Customization
 
 To create your own icon:
-1. Edit `icon.png` with your preferred image editor
-2. Convert to .ico for Windows: `convert icon.png -define icon:auto-resize=256,128,64,48,32,16 icon.ico`
+1. Edit `assets/icon.png` with your preferred image editor
+2. Convert to .ico for Windows: `convert assets/icon.png -define icon:auto-resize=256,128,64,48,32,16 assets/icon.ico`
 3. Rebuild the project: `cargo build --release`
