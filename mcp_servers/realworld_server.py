@@ -57,7 +57,7 @@ def _get_db() -> BenchDB:
     return BenchDB()
 
 # ── Remote execution ─────────────────────────────────────────────────────────
-# Loaded from mcp/remote_hosts.json (gitignored). If missing, remote is disabled.
+# Loaded from mcp_servers/remote_hosts.json (gitignored). If missing, remote is disabled.
 REMOTE_HOSTS_CONFIG = _HERE / "remote_hosts.json"
 SSH_OPTS = ["-o", "BatchMode=yes", "-o", "ConnectTimeout=10"]
 
@@ -204,7 +204,7 @@ mcp = FastMCP(
     instructions=(
         "Run sqc, cppcheck, and clang-tidy against real open-source C codebases "
         "(libcrc, sqlite, mosquitto, curl, hostap) and compare results across versions. "
-        "Supports remote execution via SSH if mcp/remote_hosts.json is configured — "
+        "Supports remote execution via SSH if mcp_servers/remote_hosts.json is configured — "
         "pass host parameter to run_analysis/run_all. Use deploy_sqc to push "
         "the sqc binary to remote hosts before running."
     ),
@@ -429,7 +429,7 @@ def _resolve_host(host: str | None) -> str | dict:
         return "local"
     hosts, _ = _load_remote_config()
     if not hosts:
-        return {"error": "Remote execution not configured. Create mcp/remote_hosts.json."}
+        return {"error": "Remote execution not configured. Create mcp_servers/remote_hosts.json."}
     host = host.strip()
     if host in hosts:
         return host
@@ -1829,7 +1829,7 @@ def deploy_sqc(host: str | None = None) -> str:
     hosts, ssh_user = _load_remote_config()
     if not hosts:
         return json.dumps({
-            "error": "Remote execution not configured. Create mcp/remote_hosts.json.",
+            "error": "Remote execution not configured. Create mcp_servers/remote_hosts.json.",
         })
 
     targets: list[str] = []

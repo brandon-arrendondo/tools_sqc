@@ -157,7 +157,7 @@ cat .claude/commands/gather-opinions.md
 
 ## Benchmark Workflow (CRITICAL)
 
-See `BENCHMARK_RUNNING.md` for full MCP server tool reference and troubleshooting.
+See `docs/index.rst` (Benchmark Setup / Running Benchmarks sections) for full MCP server tool reference and troubleshooting.
 
 ### Data Storage
 
@@ -224,12 +224,9 @@ Juliet runs (v0.2.1 through v0.3.19) and 7 real-world runs are in the database.
 | `README.md` | Tool overview, installation, usage, CLI reference |
 | `CHANGELOG.md` | Version history, per-release fixes and features |
 | `PLAN.md` | Roadmap: immediate, medium-term, long-term priorities |
-| `RESEARCH.md` | Competitor analysis agenda, academic references |
 | `JULIET_RESULTS.md` | Juliet benchmark data by sqc version |
 | `REALWORLD_RESULTS.md` | Real-world codebase results (5 projects × 3 tools) |
-| `BENCHMARK_SUMMARY.md` | Benchmark strategy, architecture assessment |
-| `BENCHMARK_RUNNING.md` | MCP server guide for running benchmarks |
-| `BENCHMARK_INSTALL.md` | Tool installation and per-project setup |
+| `docs/index.rst` | Developer guide: advanced usage, CI/CD, benchmarks, testing, contributing |
 
 ---
 
