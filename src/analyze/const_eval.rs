@@ -1301,4 +1301,178 @@ mod tests {
         assert_eq!(result.max, 1000);
         assert!(result.fits_in_signed(32));
     }
+
+    // --- New tests for uncovered branches ---
+
+    #[test]
+    fn test_try_evaluate_text_addition_subtraction() {
+        let macros = MacroConstantMap::new();
+        assert_eq!(try_evaluate_text("10 + 20", &macros), Some(30));
+        assert_eq!(try_evaluate_text("100 - 37", &macros), Some(63));
+        assert_eq!(try_evaluate_text("5 + 3 + 2", &macros), Some(10));
+    }
+
+    #[test]
+    fn test_try_evaluate_text_division() {
+        let macros = MacroConstantMap::new();
+        assert_eq!(try_evaluate_text("100 / 5", &macros), Some(20));
+        assert_eq!(try_evaluate_text("100 / 0", &macros), None); // div by zero
+        assert_eq!(try_evaluate_text("7 / 2", &macros), Some(3)); // truncation
+    }
+
+    #[test]
+    fn test_try_evaluate_text_right_shift() {
+        let macros = MacroConstantMap::new();
+        assert_eq!(try_evaluate_text("256 >> 4", &macros), Some(16));
+        assert_eq!(try_evaluate_text("1 >> 0", &macros), Some(1));
+    }
+
+    #[test]
+    fn test_try_evaluate_text_precedence() {
+        let macros = MacroConstantMap::new();
+        // * has higher precedence than +
+        assert_eq!(try_evaluate_text("2 + 3 * 4", &macros), Some(14));
+        // parens override
+        assert_eq!(try_evaluate_text("(2 + 3) * 4", &macros), Some(20));
+    }
+
+    #[test]
+    fn test_try_evaluate_text_arrow_not_minus() {
+        let macros = MacroConstantMap::new();
+        // "a->b" should not parse as subtraction; returns None (not a constant)
+        assert_eq!(try_evaluate_text("a->b", &macros), None);
+    }
+
+    #[test]
+    fn test_try_evaluate_text_builtin_macros() {
+        let macros = BUILTIN_LIMIT_MACROS.clone();
+        assert_eq!(try_evaluate_text("INT_MAX", &macros), Some(2147483647));
+        assert_eq!(try_evaluate_text("CHAR_BIT", &macros), Some(8));
+        assert_eq!(try_evaluate_text("INT_MAX + 1", &macros), Some(2147483648));
+    }
+
+    #[test]
+    fn test_try_evaluate_text_nested_parens() {
+        let macros = MacroConstantMap::new();
+        assert_eq!(try_evaluate_text("(10)", &macros), Some(10));
+        assert_eq!(try_evaluate_text("(2 + 3) * (4 + 1)", &macros), Some(25));
+        // TODO: Known limitation — double-nested parens fail (returns None)
+        // see PLAN.md. Uncomment when fixed:
+        // assert_eq!(try_evaluate_text("((10))", &macros), Some(10));
+        // assert_eq!(try_evaluate_text("((2 + 3) * (4 + 1))", &macros), Some(25));
+    }
+
+    #[test]
+    fn test_parse_integer_literal_binary() {
+        assert_eq!(parse_integer_literal("0b1010"), Some(10));
+        assert_eq!(parse_integer_literal("0B11"), Some(3));
+    }
+
+    #[test]
+    fn test_parse_integer_literal_edge_cases() {
+        assert_eq!(parse_integer_literal(""), None);
+        assert_eq!(parse_integer_literal("0xFFFFFFFF"), Some(4294967295));
+        assert_eq!(parse_integer_literal("100ULL"), Some(100));
+    }
+
+    #[test]
+    fn test_is_c_identifier() {
+        assert!(is_c_identifier("foo"));
+        assert!(is_c_identifier("_bar"));
+        assert!(is_c_identifier("baz123"));
+        assert!(!is_c_identifier(""));
+        assert!(!is_c_identifier("123abc"));
+        assert!(!is_c_identifier("a-b"));
+    }
+
+    #[test]
+    fn test_parens_balanced() {
+        assert!(parens_balanced("()"));
+        assert!(parens_balanced("(a + (b * c))"));
+        assert!(parens_balanced("no_parens"));
+        assert!(!parens_balanced("("));
+        assert!(!parens_balanced(")"));
+        assert!(!parens_balanced(")("));
+        assert!(!parens_balanced("((())"));
+    }
+
+    #[test]
+    fn test_value_range_add() {
+        let a = ValueRange::new(10, 20);
+        let b = ValueRange::new(5, 15);
+        let result = a.add(&b).unwrap();
+        assert_eq!(result.min, 15);
+        assert_eq!(result.max, 35);
+    }
+
+    #[test]
+    fn test_value_range_sub() {
+        let a = ValueRange::new(10, 20);
+        let b = ValueRange::new(5, 15);
+        let result = a.sub(&b).unwrap();
+        assert_eq!(result.min, -5); // 10 - 15
+        assert_eq!(result.max, 15); // 20 - 5
+    }
+
+    #[test]
+    fn test_value_range_fits_edge_cases() {
+        // 0-bit width
+        assert!(!ValueRange::exact(0).fits_in_signed(0));
+        assert!(!ValueRange::exact(0).fits_in_unsigned(0));
+
+        // 64-bit always fits for signed
+        assert!(ValueRange::new(i64::MIN, i64::MAX).fits_in_signed(64));
+
+        // 64-bit unsigned
+        assert!(ValueRange::new(0, i64::MAX).fits_in_unsigned(64));
+        assert!(!ValueRange::new(-1, 0).fits_in_unsigned(64));
+    }
+
+    #[test]
+    fn test_value_range_shl_invalid_shift() {
+        let a = ValueRange::exact(1);
+        let b = ValueRange::new(0, 100); // max > 63
+        assert!(a.shl(&b).is_none());
+    }
+
+    #[test]
+    fn test_collect_macro_constants_from_ast() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "#define MY_CONST 42\n#define DOUBLE_CONST (MY_CONST * 2)\nint x;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = collect_macro_constants(&tree.root_node(), code);
+        assert_eq!(macros.get("MY_CONST"), Some(&42));
+        assert_eq!(macros.get("DOUBLE_CONST"), Some(&84));
+    }
+
+    #[test]
+    fn test_collect_macro_aliases_from_ast() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "#define SYSTEM system\n#define BUFSIZE 1024\nint x;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let aliases = collect_macro_aliases(&tree.root_node(), code);
+        assert_eq!(aliases.get("SYSTEM"), Some(&"system".to_string()));
+        // BUFSIZE is numeric, should NOT be in aliases
+        assert!(!aliases.contains_key("BUFSIZE"));
+    }
+
+    #[test]
+    fn test_try_evaluate_expr_ast() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = 10 + 20;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+
+        // Navigate to the binary expression: translation_unit > declaration > init_declarator > value
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        let init = decl.child_by_field_name("declarator").unwrap();
+        if let Some(value) = init.child_by_field_name("value") {
+            let result = try_evaluate_expr(&value, code, &macros);
+            assert_eq!(result, Some(30));
+        }
+    }
 }
