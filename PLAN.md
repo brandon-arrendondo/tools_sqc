@@ -4,6 +4,8 @@
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
+For Juliet per-CWE coverage, see [JULIET_COVERAGE.md](JULIET_COVERAGE.md).
+For test infrastructure audit and coverage gaps, see [TEST_INFRASTRUCTURE.md](TEST_INFRASTRUCTURE.md).
 For competitor research, see [RESEARCH.md](RESEARCH.md).
 
 ---
