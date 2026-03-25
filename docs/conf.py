@@ -1,8 +1,8 @@
 # Sphinx configuration for SqC Developer Guide
 
 project = 'SqC'
-author = 'Bissell Homecare'
-copyright = '2026, Bissell Homecare'
+author = 'BISSELL Homecare, Inc.'
+copyright = '2026, BISSELL Homecare, Inc.'
 
 extensions = []
 
@@ -25,5 +25,5 @@ latex_elements = {
 
 latex_documents = [
     ('index', 'sqc-developer-guide.tex', 'SqC Developer Guide',
-     'Bissell Homecare', 'manual'),
+     'BISSELL Homecare, Inc.', 'manual'),
 ]
