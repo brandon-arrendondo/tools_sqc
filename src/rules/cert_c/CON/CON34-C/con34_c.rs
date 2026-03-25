@@ -101,9 +101,28 @@ impl CertRule for Con34C {
     }
 }
 
+/// Functions that use internal static storage and are not thread-safe.
+/// Each entry is (function_name, thread-safe_alternative).
+const THREAD_UNSAFE_FUNCTIONS: &[(&str, &str)] = &[
+    ("localtime", "localtime_r"),
+    ("gmtime", "gmtime_r"),
+    ("ctime", "ctime_r"),
+    ("asctime", "asctime_r"),
+    ("strtok", "strtok_r"),
+    ("rand", "rand_r or a thread-local PRNG"),
+    ("getenv", "secure_getenv or a cached copy"),
+    ("strerror", "strerror_r"),
+    ("readdir", "readdir_r"),
+    ("tmpnam", "mkstemp"),
+    ("setlocale", "uselocale"),
+    ("inet_ntoa", "inet_ntop"),
+    ("gethostbyname", "getaddrinfo"),
+    ("gethostbyaddr", "getnameinfo"),
+];
+
 impl Con34C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check for thrd_create() calls
+        // Check for thrd_create() calls and thread-unsafe function calls
         if node.kind() == "call_expression" {
             if let Some(func) = node.child_by_field_name("function") {
                 let func_name = get_node_text(&func, source);
@@ -111,6 +130,8 @@ impl Con34C {
                     self.check_thrd_create_call(node, source, violations);
                 } else if func_name == "tss_set" {
                     self.check_tss_set_call(node, source, violations);
+                } else {
+                    self.check_thread_unsafe_call(&func_name, node, violations);
                 }
             }
         }
@@ -784,5 +805,31 @@ impl Con34C {
         }
 
         false
+    }
+
+    fn check_thread_unsafe_call(
+        &self,
+        func_name: &str,
+        call_node: &Node,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        for &(unsafe_fn, alternative) in THREAD_UNSAFE_FUNCTIONS {
+            if func_name == unsafe_fn {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::Medium,
+                    message: format!(
+                        "'{}()' uses internal static storage that is shared between threads",
+                        func_name
+                    ),
+                    file_path: String::new(),
+                    line: call_node.start_position().row + 1,
+                    column: call_node.start_position().column + 1,
+                    suggestion: Some(format!("Use '{}' instead for thread safety", alternative)),
+                    ..Default::default()
+                });
+                return;
+            }
+        }
     }
 }

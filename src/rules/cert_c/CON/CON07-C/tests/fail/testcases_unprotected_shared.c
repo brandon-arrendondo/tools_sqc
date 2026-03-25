@@ -1,8 +1,7 @@
 /*
  * Rule: CON07-C
  * Source: testcases
- * Status: PASS - Known limitation: pattern not detected
- * TODO: Move to fail/ when implemented (see PLAN.md)
+ * Status: FAIL - unprotected compound operation on shared global
  */
 
 #include <pthread.h>

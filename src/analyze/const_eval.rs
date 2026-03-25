@@ -312,18 +312,18 @@ fn try_evaluate_text(text: &str, macros: &MacroConstantMap) -> Option<i64> {
     // Strip trailing type suffixes: U, L, UL, LL, ULL (case-insensitive)
     let text = strip_integer_suffix(text);
 
-    // Strip outer parentheses
-    let text = if text.starts_with('(') && text.ends_with(')') {
-        let inner = &text[1..text.len() - 1];
-        // Verify balanced parens
-        if parens_balanced(inner) {
-            inner.trim()
-        } else {
-            text
+    // Strip outer parentheses (handles nested like ((10)))
+    let mut text = text;
+    loop {
+        if text.starts_with('(') && text.ends_with(')') {
+            let inner = &text[1..text.len() - 1];
+            if parens_balanced(inner) {
+                text = inner.trim();
+                continue;
+            }
         }
-    } else {
-        text
-    };
+        break;
+    }
 
     // Try as a literal
     if let Some(val) = parse_integer_literal(text) {
@@ -1356,10 +1356,8 @@ mod tests {
         let macros = MacroConstantMap::new();
         assert_eq!(try_evaluate_text("(10)", &macros), Some(10));
         assert_eq!(try_evaluate_text("(2 + 3) * (4 + 1)", &macros), Some(25));
-        // TODO: Known limitation — double-nested parens fail (returns None)
-        // see PLAN.md. Uncomment when fixed:
-        // assert_eq!(try_evaluate_text("((10))", &macros), Some(10));
-        // assert_eq!(try_evaluate_text("((2 + 3) * (4 + 1))", &macros), Some(25));
+        assert_eq!(try_evaluate_text("((10))", &macros), Some(10));
+        assert_eq!(try_evaluate_text("((2 + 3) * (4 + 1))", &macros), Some(25));
     }
 
     #[test]
