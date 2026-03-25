@@ -107,6 +107,7 @@ impl ScopeAnalyzer {
 
     fn collect_identifiers_iterative(&mut self, root: &Node, source: &str) {
         // Use explicit stack instead of recursion to avoid stack overflow
+        let root_id = root.id();
         let mut stack = vec![*root];
 
         while let Some(node) = stack.pop() {
@@ -141,8 +142,13 @@ impl ScopeAnalyzer {
                     continue;
                 }
                 _ => {
-                    // Add children to stack (except function bodies which are separate scopes)
-                    if node.kind() != "compound_statement" || !self.is_function_body(&node) {
+                    // Add children to stack (except function bodies which are separate scopes,
+                    // but always recurse into the root node even if it's a function body)
+                    let is_root = node.id() == root_id;
+                    if is_root
+                        || node.kind() != "compound_statement"
+                        || !self.is_function_body(&node)
+                    {
                         for i in (0..node.child_count()).rev() {
                             if let Some(child) = node.child(i) {
                                 stack.push(child);
@@ -367,7 +373,10 @@ impl ScopeAnalyzer {
 
         match declarator.kind() {
             "identifier" => Some(ast_utils::get_node_text_owned(declarator, source)),
-            "pointer_declarator" | "array_declarator" | "function_declarator" => {
+            "init_declarator"
+            | "pointer_declarator"
+            | "array_declarator"
+            | "function_declarator" => {
                 if let Some(child_declarator) = declarator.child_by_field_name("declarator") {
                     return self.get_declarator_name_with_depth(
                         &child_declarator,

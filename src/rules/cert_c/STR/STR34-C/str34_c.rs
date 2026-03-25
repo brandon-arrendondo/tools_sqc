@@ -30,17 +30,55 @@ impl CertRule for Str34C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Track signed char and plain char variables
-        let mut char_vars: HashMap<String, (usize, bool)> = HashMap::new(); // (line, is_signed)
-
-        self.collect_char_variables(node, source, &mut char_vars);
-        self.check_node(node, source, &char_vars, &mut violations);
+        // Process each function independently to scope char_vars per function
+        self.check_translation_unit(node, source, &mut violations);
 
         violations
     }
 }
 
 impl Str34C {
+    /// Process each function definition with its own scoped char_vars
+    fn check_translation_unit(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "function_definition" {
+            // Collect char variables scoped to this function
+            let mut char_vars: HashMap<String, (usize, bool)> = HashMap::new();
+            self.collect_char_variables(node, source, &mut char_vars);
+            self.check_node(node, source, &char_vars, violations);
+            return; // Don't recurse further into this function
+        }
+
+        // For non-function nodes, also check with file-scope char_vars
+        // (handles global declarations)
+        if node.kind() == "translation_unit" {
+            let mut file_char_vars: HashMap<String, (usize, bool)> = HashMap::new();
+            // Collect only file-scope declarations (not inside functions)
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "declaration" {
+                        self.collect_char_variables(&child, source, &mut file_char_vars);
+                    }
+                }
+            }
+            // Check file-scope code with file-scope vars
+            if !file_char_vars.is_empty() {
+                self.check_node(node, source, &file_char_vars, violations);
+            }
+        }
+
+        // Recurse to find function_definitions
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_translation_unit(&child, source, violations);
+            }
+        }
+    }
+
     /// Collect all char pointer variables (char *, signed char *, unsigned char *)
     fn collect_char_variables(
         &self,
@@ -86,6 +124,42 @@ impl Str34C {
                                         (node.start_position().row, is_signed_char),
                                     );
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Track char pointer/array function parameters
+        if node.kind() == "parameter_declaration" {
+            // Use full parameter text to check for unsigned char (tree-sitter may
+            // split "unsigned char" across type and qualifier nodes)
+            let full_param_text = get_node_text(node, source);
+            let has_unsigned = full_param_text.contains("unsigned");
+
+            if let Some(type_node) = node.child_by_field_name("type") {
+                let type_text = get_node_text(&type_node, source);
+                let trimmed = type_text.trim();
+                // Strip const/volatile qualifiers for matching
+                let base_type = trimmed
+                    .replace("const ", "")
+                    .replace("volatile ", "")
+                    .trim()
+                    .to_string();
+
+                let is_signed_char = base_type == "signed char";
+                let is_plain_char = base_type == "char" && !has_unsigned;
+
+                if is_signed_char || is_plain_char {
+                    if let Some(declarator) = node.child_by_field_name("declarator") {
+                        // pointer_declarator (char *str) or array_declarator (char buf[])
+                        if declarator.kind() == "pointer_declarator"
+                            || declarator.kind() == "array_declarator"
+                        {
+                            if let Some(var_name) = self.get_declarator_name(&declarator, source) {
+                                char_vars
+                                    .insert(var_name, (node.start_position().row, is_signed_char));
                             }
                         }
                     }
