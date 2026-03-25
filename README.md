@@ -105,7 +105,6 @@ For advanced usage, CI/CD integration details, interactive UI reference, testing
 | [CHANGELOG.md](CHANGELOG.md) | Version history and per-release changes |
 | [JULIET_RESULTS.md](JULIET_RESULTS.md) | Juliet benchmark data: TP/FP history, per-CWE results |
 | [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md) | Real-world results: sqc vs cppcheck vs clang-tidy |
-| [JULIET_COVERAGE.md](JULIET_COVERAGE.md) | Per-CWE coverage report |
 
 ## License
 
