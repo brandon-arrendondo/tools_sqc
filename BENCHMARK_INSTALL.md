@@ -1,6 +1,6 @@
 # SqC — Benchmark Installation & Setup
 
-**Last Updated**: 2026-02-25
+**Last Updated**: 2026-03-23
 
 How to install cppcheck, clang-tidy, and configure the environment for running benchmarks alongside sqc.
 
@@ -76,36 +76,113 @@ cd ~/data/benchmarks
 
 ---
 
-## 5. Real-World Project Setup
+## 5. Third-Party Library Headers (for sqc `-I` resolution)
+
+sqc uses `-I` include paths to resolve `#include` directives from third-party
+libraries. Without these, functions declared in external headers produce
+DCL31-C/DCL07-C false positives. Install the development headers on every
+benchmark host:
 
 ```bash
-mkdir -p ~/data/comparisons
-cd ~/data/comparisons
+# Core dependencies (covers most projects)
+sudo apt-get install -y \
+  libssl-dev \
+  libcjson-dev \
+  zlib1g-dev
+
+# mosquitto dependencies
+sudo apt-get install -y \
+  libcunit1-dev \
+  libsqlite3-dev
+
+# curl TLS backend headers
+sudo apt-get install -y \
+  libmbedtls-dev \
+  libgnutls28-dev
+
+# sqlite test infrastructure
+sudo apt-get install -y \
+  tcl-dev
+
+# hostap dependencies
+sudo apt-get install -y \
+  libnl-3-dev \
+  libnl-genl-3-dev \
+  libdbus-1-dev \
+  libgcrypt20-dev \
+  libpcap-dev \
+  libwolfssl-dev
+```
+
+One-liner for all hosts:
+```bash
+sudo apt-get install -y libssl-dev libcjson-dev zlib1g-dev libcunit1-dev \
+  libsqlite3-dev libmbedtls-dev libgnutls28-dev tcl-dev libnl-3-dev \
+  libnl-genl-3-dev libdbus-1-dev libgcrypt20-dev libpcap-dev libwolfssl-dev
+```
+
+### Per-Project Include Paths
+
+The benchmark MCP server (`mcp_servers/realworld_server.py`) passes these
+automatically via the `includes` field in each codebase's sqc config:
+
+| Project | `-I` Paths | Resolves |
+|---------|-----------|----------|
+| libcrc | _(none)_ | Pure C, no external deps |
+| sqlite | `/usr/include` | OpenSSL, zlib, Tcl |
+| mosquitto | `/usr/include`, `/usr/include/cjson` | OpenSSL, cJSON, CUnit, sqlite3 |
+| curl | `/usr/include`, `{path}/lib` | OpenSSL, mbedTLS, GnuTLS, internal curlx |
+| hostap | `/usr/include`, `/usr/include/libnl3`, `/usr/include/dbus-1.0` | OpenSSL, wolfSSL, libnl, D-Bus, libgcrypt, libpcap |
+
+---
+
+## 6. Real-World Project Setup
+
+### Pinned Source Commits
+
+All benchmark results are run against these exact commits. Pin your clones to
+match before comparing results.
+
+| Project | Repository | Commit SHA | Branch |
+|---------|-----------|------------|--------|
+| libcrc | https://github.com/lammertb/libcrc | `7719e2112a9a960b1bba130d02bebdf58e8701f1` | master |
+| sqlite | https://github.com/sqlite/sqlite.git | `b1a73ba34d05b32007315e4065c6468cc638e3af` | (detached) |
+| mosquitto | https://github.com/eclipse-mosquitto/mosquitto.git | `d3ee5c5ca62c0fa4983308c6fff558ee978e878c` | master |
+| curl | https://github.com/curl/curl.git | `3e198f75861cc2e12daf299689e145949dddd19b` | (detached) |
+| hostap | https://git.w1.fi/hostap.git | `dcee60436390dd34731560657c4257c3b4c839a6` | main |
+
+### Clone and Pin
+
+```bash
+mkdir -p ~/data
+cd ~/data
 
 # libcrc
 git clone https://github.com/lammertb/libcrc.git
+cd libcrc && git checkout 7719e2112a9a960b1bba130d02bebdf58e8701f1 && cd ..
 
 # sqlite
-# Download from https://sqlite.org/src/ or fossil clone
+git clone https://github.com/sqlite/sqlite.git
+cd sqlite && git checkout b1a73ba34d05b32007315e4065c6468cc638e3af && cd ..
 
 # mosquitto
-git clone https://github.com/eclipse/mosquitto.git
+git clone https://github.com/eclipse-mosquitto/mosquitto.git
 sudo apt install -y libcjson-dev  # required dependency
+cd mosquitto && git checkout d3ee5c5ca62c0fa4983308c6fff558ee978e878c && cd ..
 
 # curl
 git clone https://github.com/curl/curl.git
 sudo apt install -y libpsl-dev  # required for curl 8.19+
+cd curl && git checkout 3e198f75861cc2e12daf299689e145949dddd19b && cd ..
 
 # hostap
-git clone git://w1.fi/hostap.git
-
-# Create output directories
-mkdir -p ~/data/comparisons/results/{sqc,cppcheck,clang-tidy}/{libcrc,sqlite,mosquitto,curl,hostap}
+git clone https://git.w1.fi/hostap.git
+cd hostap && git checkout dcee60436390dd34731560657c4257c3b4c839a6 && cd ..
 ```
 
 ---
 
-## 6. Running Each Tool
+## 7. Running Each Tool
 
 ### sqc
 
@@ -122,7 +199,7 @@ cargo build --release
 
 # IMPORTANT: When running from outside the sqc repo, pass --manifest explicitly
 ./target/release/sqc /path/to/source/ \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export results.json
 ```
 
@@ -161,7 +238,7 @@ find /path/to/source/ -name '*.c' | \
 
 ---
 
-## 7. Per-Project Commands
+## 8. Per-Project Commands
 
 ### libcrc
 
@@ -169,7 +246,7 @@ find /path/to/source/ -name '*.c' | \
 # sqc
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/libcrc \
   -d ~/data/comparisons/libcrc \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/libcrc/results.json
 
 # cppcheck
@@ -191,7 +268,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p . \
 # sqc
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/sqlite \
   -d ~/data/comparisons/sqlite \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/sqlite/results.json
 
 # cppcheck
@@ -213,7 +290,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p . \
 # sqc
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/mosquitto \
   -d ~/data/comparisons/mosquitto \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/mosquitto/results.json
 
 # cppcheck
@@ -239,7 +316,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p ~/data/comparisons/mosqui
 # sqc
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/curl \
   -d ~/data/comparisons/curl \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/curl/results.json
 
 # cppcheck
@@ -266,7 +343,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p ~/data/comparisons/curl/b
 ~/data/tools_sqc/target/release/sqc ~/data/comparisons/hostap \
   -d ~/data/comparisons/hostap/src \
   -d ~/data/comparisons/hostap/wpa_supplicant \
-  --manifest ~/data/tools_sqc/rules_templates/rules-all.toml \
+  --manifest ~/data/tools_sqc/rules_templates/rules-benchmark.toml \
   --export ~/data/comparisons/results/sqc/hostap/results.json
 
 # cppcheck
@@ -295,7 +372,7 @@ run-clang-tidy -checks='-*,cert-*,clang-analyzer-*' -p . \
 
 ---
 
-## 8. Verifying Results
+## 9. Verifying Results
 
 ### Quick Sanity Check
 
@@ -337,7 +414,7 @@ grep -c "warning:\|error:" $RESULTS/clang-tidy/$PROJECT/results.txt
 
 ---
 
-## 9. Output Format Reference
+## 10. Output Format Reference
 
 ### cppcheck XML (v2)
 ```xml
@@ -362,7 +439,7 @@ SARIF 2.1.0 compatible output with `ruleId` matching CERT C rule IDs.
 
 ---
 
-## 10. Distributed Benchmarking with GNU Parallel
+## 11. Distributed Benchmarking with GNU Parallel
 
 For fast re-benchmarking across multiple machines after rule changes.
 

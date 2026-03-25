@@ -70,9 +70,16 @@ stages:
             displayName: "Install test and coverage tools"
 
           - script: |
+              set -e
+              source $HOME/.cargo/env
+              scripts/coverage-gate.sh 75
+            displayName: "Run tests with coverage (75% gate)"
+
+          - script: |
               source $HOME/.cargo/env
               RUSTC_BOOTSTRAP=1 cargo test -- -Z unstable-options --format json | cargo2junit > test-results.xml
-            displayName: "Run tests (JUnit output)"
+            displayName: "Generate JUnit test report"
+            condition: always()
 
           - task: PublishTestResults@2
             displayName: "Publish test results"
@@ -82,16 +89,11 @@ stages:
               testRunTitle: "sqc unit tests"
             condition: always()
 
-          - script: |
-              set -e
-              source $HOME/.cargo/env
-              cargo llvm-cov --lcov --output-path lcov.info
-            displayName: "Generate code coverage (llvm-cov)"
-
           - task: PublishCodeCoverageResults@2
             displayName: "Publish code coverage"
             inputs:
               summaryFileLocation: "$(Build.SourcesDirectory)/lcov.info"
+            condition: always()
 
           - task: PublishBuildArtifacts@1
             displayName: "Publish build artifact"

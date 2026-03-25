@@ -67,10 +67,67 @@ impl Str03C {
             }
         }
 
+        // CWE-464: Detect (char)atoi(...) — atoi returns 0 on failure, which becomes
+        // a null sentinel '\0' when cast to char, inadvertently truncating strings.
+        if node.kind() == "cast_expression" {
+            self.check_atoi_char_cast(node, source, violations);
+        }
+
         // Recursively check children
         let mut cursor = node.walk();
         for child in node.children(&mut cursor) {
             self.check_node(&child, source, violations);
+        }
+    }
+
+    /// CWE-464: Detect (char)atoi(...) pattern.
+    /// atoi() returns 0 on failure, which when cast to char becomes '\0' (null sentinel).
+    fn check_atoi_char_cast(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // Check if the cast type is char
+        if let Some(type_node) = node.child_by_field_name("type") {
+            let type_text = ast_utils::get_node_text(&type_node, source);
+            if type_text != "char" {
+                return;
+            }
+        } else {
+            return;
+        }
+
+        // Check if the value is an atoi/strtol call
+        if let Some(value) = node.child_by_field_name("value") {
+            let call_node = if value.kind() == "call_expression" {
+                Some(value)
+            } else if value.kind() == "parenthesized_expression" {
+                // Handle (char)(atoi(...))
+                value.child(1).filter(|c| c.kind() == "call_expression")
+            } else {
+                None
+            };
+
+            if let Some(call) = call_node {
+                if let Some(func) = call.child_by_field_name("function") {
+                    let func_name = ast_utils::get_node_text(&func, source);
+                    if matches!(func_name, "atoi" | "strtol" | "strtoul" | "atol") {
+                        let start_point = node.start_position();
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::Medium,
+                            message: format!(
+                                "Cast of {}() to char: returns 0 on failure, producing null sentinel '\\0' that truncates strings",
+                                func_name
+                            ),
+                            file_path: String::new(),
+                            line: start_point.row + 1,
+                            column: start_point.column + 1,
+                            suggestion: Some(
+                                "Use strtol() with error checking, or validate the result is non-zero before casting to char"
+                                    .to_string(),
+                            ),
+                            ..Default::default()
+                        });
+                    }
+                }
+            }
         }
     }
 

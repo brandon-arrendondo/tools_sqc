@@ -29,19 +29,47 @@ impl CertRule for Arr36C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        let mut analyzer = PointerAnalyzer::new();
 
-        // First pass: collect variable declarations and their types
-        analyzer.collect_declarations(node, source);
-
-        // Second pass: check for violations
-        self.check_node(node, source, &analyzer, &mut violations);
+        // Per-function analysis: create a fresh PointerAnalyzer for each function
+        // to avoid cross-function variable name collisions.
+        self.visit_functions(node, source, &mut violations);
 
         violations
     }
 }
 
 impl Arr36C {
+    /// Walk the AST to find function_definition nodes, then analyze each independently.
+    /// File-scope declarations (globals) are collected first and shared across all functions.
+    fn visit_functions(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        // First pass: collect file-scope declarations (global arrays, static vars)
+        let mut file_scope = PointerAnalyzer::new();
+        file_scope.collect_file_scope(node, source);
+
+        // Second pass: per-function analysis with file-scope as base
+        self.visit_functions_inner(node, source, &file_scope, violations);
+    }
+
+    fn visit_functions_inner(
+        &self,
+        node: &Node,
+        source: &str,
+        file_scope: &PointerAnalyzer,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "function_definition" {
+            let mut analyzer = PointerAnalyzer::from(file_scope);
+            analyzer.collect_declarations(node, source);
+            self.check_node(node, source, &analyzer, violations);
+            return;
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.visit_functions_inner(&child, source, file_scope, violations);
+            }
+        }
+    }
+
     fn check_node(
         &self,
         node: &Node,
@@ -165,6 +193,35 @@ impl PointerAnalyzer {
         }
     }
 
+    fn from(base: &PointerAnalyzer) -> Self {
+        Self {
+            variable_arrays: base.variable_arrays.clone(),
+        }
+    }
+
+    /// Collect file-scope declarations (globals, statics at file level).
+    /// Only processes direct children of translation_unit and preproc blocks.
+    fn collect_file_scope(&mut self, node: &Node, source: &str) {
+        match node.kind() {
+            "translation_unit" | "preproc_ifdef" | "preproc_if" | "preproc_else"
+            | "preproc_elif" => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "declaration" {
+                            self.process_declaration(&child, source);
+                        } else if matches!(
+                            child.kind(),
+                            "preproc_ifdef" | "preproc_if" | "preproc_else" | "preproc_elif"
+                        ) {
+                            self.collect_file_scope(&child, source);
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
     fn collect_declarations(&mut self, node: &Node, source: &str) {
         match node.kind() {
             "declaration" => {
@@ -172,6 +229,9 @@ impl PointerAnalyzer {
             }
             "parameter_declaration" => {
                 self.process_parameter(node, source);
+            }
+            "expression_statement" => {
+                self.process_assignment(node, source);
             }
             _ => {}
         }
@@ -187,23 +247,39 @@ impl PointerAnalyzer {
     fn process_declaration(&mut self, node: &Node, source: &str) {
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                if child.kind() == "init_declarator" {
-                    if let Some(declarator) = child.child_by_field_name("declarator") {
-                        // Only track pointer/array variables — scalar variables initialized
-                        // from array subscripts (e.g., `int a = arr[0]`) are not pointers
-                        // and their subtraction/comparison is not pointer arithmetic.
-                        if !Self::is_pointer_declarator(&declarator) {
-                            continue;
-                        }
+                let declarator = if child.kind() == "init_declarator" {
+                    child.child_by_field_name("declarator")
+                } else if Self::is_pointer_declarator(&child) || child.kind() == "array_declarator"
+                {
+                    // Bare declarations without initializer: `int nums[SIZE];`, `int *p;`
+                    Some(child)
+                } else {
+                    None
+                };
+                if let Some(declarator) = declarator {
+                    if !Self::is_pointer_declarator(&declarator) {
+                        continue;
+                    }
+                    let var_name = ast_utils::get_identifier_from_declarator(&declarator, source);
+                    if var_name.is_empty() {
+                        continue;
+                    }
+                    // Array declarations create their own storage — the variable IS its own base.
+                    if declarator.kind() == "array_declarator" {
+                        self.variable_arrays.insert(var_name.clone(), var_name);
+                        continue;
+                    }
+                    // Pointer with initializer: track which array it aliases
+                    if child.kind() == "init_declarator" {
                         if let Some(value) = child.child_by_field_name("value") {
-                            let var_name =
-                                ast_utils::get_identifier_from_declarator(&declarator, source);
                             let array_base = self.extract_array_base(&value, source);
-                            if !var_name.is_empty() && !array_base.is_empty() {
+                            if !array_base.is_empty() {
                                 self.variable_arrays.insert(var_name, array_base);
                             }
                         }
                     }
+                    // Bare pointer declarations without initializer: not tracked
+                    // (we don't know what they point to)
                 }
             }
         }
@@ -228,6 +304,51 @@ impl PointerAnalyzer {
                 // This ensures parameters are only equal to themselves
                 self.variable_arrays
                     .insert(param_name.clone(), format!("param:{}", param_name));
+            }
+        }
+    }
+
+    /// Process simple assignment expressions like `slashPtr = strchr(string1, '/')`.
+    /// Tracks variables assigned from string-search functions (strchr, strrchr,
+    /// wcschr, wcsrchr) as pointing into the first argument's array.
+    /// Skips compound assignments (+=, -=) since those advance a pointer within
+    /// the same array rather than changing which array it points to.
+    fn process_assignment(&mut self, node: &Node, source: &str) {
+        // expression_statement contains an assignment_expression child
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "assignment_expression" {
+                    // Skip compound assignments (+=, -=, etc.) — they advance a pointer
+                    // within the same array rather than changing which array it points to.
+                    // tree-sitter puts the operator as a direct child: "=", "+=", "-=", etc.
+                    let mut is_simple_assign = false;
+                    for j in 0..child.child_count() {
+                        if let Some(op) = child.child(j) {
+                            if ast_utils::get_node_text(&op, source) == "=" {
+                                is_simple_assign = true;
+                                break;
+                            }
+                        }
+                    }
+                    if !is_simple_assign {
+                        continue;
+                    }
+                    if let (Some(left), Some(right)) = (
+                        child.child_by_field_name("left"),
+                        child.child_by_field_name("right"),
+                    ) {
+                        let var_name = ast_utils::get_node_text(&left, source).to_string();
+                        if var_name.is_empty()
+                            || !var_name.chars().all(|c| c.is_alphanumeric() || c == '_')
+                        {
+                            continue;
+                        }
+                        let array_base = self.extract_array_base(&right, source);
+                        if !array_base.is_empty() {
+                            self.variable_arrays.insert(var_name, array_base);
+                        }
+                    }
+                }
             }
         }
     }
@@ -261,7 +382,18 @@ impl PointerAnalyzer {
 
     fn extract_array_base(&self, node: &Node, source: &str) -> String {
         let result = match node.kind() {
-            "identifier" => source[node.start_byte()..node.end_byte()].to_string(),
+            "identifier" => {
+                let name = source[node.start_byte()..node.end_byte()].to_string();
+                // Follow alias chain: if this variable is already tracked, use its base.
+                // This ensures `pos = buf` gives pos the same base as buf (e.g., "param:buf").
+                // Untracked identifiers return the raw name — they may be typedef arrays
+                // or extern variables that weren't collected.
+                if let Some(base) = self.variable_arrays.get(&name) {
+                    base.clone()
+                } else {
+                    name
+                }
+            }
             "field_expression" => {
                 // Handle struct.member or union.member - capture full path
                 // This ensures u.int_array and u.float_array are distinct
@@ -276,14 +408,49 @@ impl PointerAnalyzer {
                 }
             }
             "call_expression" => {
-                // Handle function calls like malloc(), calloc(), aligned_alloc()
-                // Each call is treated as a distinct allocation
-                // Use byte position to make each call unique, even if they have identical text
-                format!(
-                    "{}@{}",
-                    &source[node.start_byte()..node.end_byte()],
-                    node.start_byte()
-                )
+                // Check if this is a string-search function (strchr, strrchr, wcschr, wcsrchr)
+                // whose return value points into the first argument
+                if let Some(func_node) = node.child_by_field_name("function") {
+                    let func_name = ast_utils::get_node_text(&func_node, source);
+                    // Recognize standard string-search functions and common
+                    // wrapper macros (os_strchr, os_strstr, etc.)
+                    let canonical = func_name.strip_prefix("os_").unwrap_or(func_name);
+                    if matches!(
+                        canonical,
+                        "strchr"
+                            | "strrchr"
+                            | "wcschr"
+                            | "wcsrchr"
+                            | "memchr"
+                            | "strstr"
+                            | "wcsstr"
+                            | "strpbrk"
+                            | "wcspbrk"
+                    ) {
+                        // Return value points into the first argument
+                        if let Some(args) = node.child_by_field_name("arguments") {
+                            // First real argument (skip '(' which is child 0)
+                            for j in 0..args.child_count() {
+                                if let Some(arg) = args.child(j) {
+                                    if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
+                                        return self.extract_array_base(&arg, source);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // Allocation functions create distinct objects
+                    if matches!(
+                        canonical,
+                        "malloc" | "calloc" | "realloc" | "aligned_alloc" | "alloca"
+                    ) {
+                        return format!("alloc@{}", node.start_byte());
+                    }
+                }
+                // Other calls: unknown origin — don't assign a base.
+                // Assigning a unique base would cause every unknown-call pointer
+                // to mismatch with everything else, producing massive FPs.
+                String::new()
             }
             "compound_literal_expression" => {
                 // Handle compound literals like (int[]){1, 2, 3}
@@ -315,11 +482,33 @@ impl PointerAnalyzer {
                 }
             }
             "pointer_expression" | "unary_expression" => {
-                // Handle &array[0] or &array (pointer_expression is used by tree-sitter for &)
+                // Handle &array[0], &array, *ptr (pointer_expression is used by tree-sitter for & and *)
+                // Determine if this is address-of (&) or dereference (*)
+                let is_address_of = node
+                    .child(0)
+                    .is_some_and(|op| ast_utils::get_node_text(&op, source) == "&");
                 if let Some(argument) = node.child_by_field_name("argument") {
                     match argument.kind() {
                         "identifier" => {
-                            source[argument.start_byte()..argument.end_byte()].to_string()
+                            let name =
+                                source[argument.start_byte()..argument.end_byte()].to_string();
+                            if is_address_of {
+                                // &var: the variable itself IS the array (single-element)
+                                // Use its tracked base if available, otherwise use its name
+                                if let Some(base) = self.variable_arrays.get(&name) {
+                                    base.clone()
+                                } else {
+                                    name
+                                }
+                            } else {
+                                // *ptr: follow alias chain — the result points into
+                                // whatever the pointer points to
+                                if let Some(base) = self.variable_arrays.get(&name) {
+                                    base.clone()
+                                } else {
+                                    String::new()
+                                }
+                            }
                         }
                         "field_expression" => {
                             // Handle &struct.member
@@ -386,19 +575,41 @@ impl PointerAnalyzer {
                 }
             }
             "pointer_expression" | "unary_expression" => {
-                // Handle &variable patterns (pointer_expression is used by tree-sitter for &)
+                // Handle &variable and *ptr patterns
+                let is_address_of = node
+                    .child(0)
+                    .is_some_and(|op| ast_utils::get_node_text(&op, source) == "&");
                 if let Some(argument) = node.child_by_field_name("argument") {
                     match argument.kind() {
                         "identifier" => {
                             let var_name =
                                 source[argument.start_byte()..argument.end_byte()].to_string();
-                            Some(var_name) // The variable itself acts as the "array"
+                            if is_address_of {
+                                // &var: use tracked base or the variable name itself
+                                Some(
+                                    self.variable_arrays
+                                        .get(&var_name)
+                                        .cloned()
+                                        .unwrap_or(var_name),
+                                )
+                            } else {
+                                // *ptr: follow alias chain
+                                self.variable_arrays.get(&var_name).cloned()
+                            }
                         }
                         "field_expression" => {
-                            // Handle &struct.member
                             let field_path =
                                 source[argument.start_byte()..argument.end_byte()].to_string();
-                            Some(field_path)
+                            if is_address_of {
+                                Some(
+                                    self.variable_arrays
+                                        .get(&field_path)
+                                        .cloned()
+                                        .unwrap_or(field_path),
+                                )
+                            } else {
+                                self.variable_arrays.get(&field_path).cloned()
+                            }
                         }
                         _ => None,
                     }

@@ -413,3 +413,127 @@ pub fn get_code_snippet(file_path: &str, line_number: usize) -> Result<String> {
         Ok("(line not found)".to_string())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parse_c(code: &str) -> (tree_sitter::Tree, String) {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(code, None).unwrap();
+        (tree, code.to_string())
+    }
+
+    // -- collect_function_cfgs --
+
+    #[test]
+    fn test_collect_function_cfgs_basic() {
+        let code = "void foo(void) { int x = 1; } void bar(int n) { return; }";
+        let (tree, source) = parse_c(code);
+        let mut cfgs = HashMap::new();
+        collect_function_cfgs(&tree.root_node(), &source, &mut cfgs);
+        assert_eq!(cfgs.len(), 2);
+    }
+
+    #[test]
+    fn test_collect_function_cfgs_empty_source() {
+        let code = "int x = 42;"; // no functions
+        let (tree, source) = parse_c(code);
+        let mut cfgs = HashMap::new();
+        collect_function_cfgs(&tree.root_node(), &source, &mut cfgs);
+        assert!(cfgs.is_empty());
+    }
+
+    // -- find_function_at_byte --
+
+    #[test]
+    fn test_find_function_at_byte_found() {
+        let code = "void foo(void) { }";
+        let (tree, _source) = parse_c(code);
+        let root = tree.root_node();
+        let func = root.child(0).unwrap();
+        let start = func.start_byte();
+        let found = find_function_at_byte(&root, start);
+        assert!(found.is_some());
+        assert_eq!(found.unwrap().kind(), "function_definition");
+    }
+
+    #[test]
+    fn test_find_function_at_byte_not_found() {
+        let code = "void foo(void) { }";
+        let (tree, _source) = parse_c(code);
+        let found = find_function_at_byte(&tree.root_node(), 9999);
+        assert!(found.is_none());
+    }
+
+    #[test]
+    fn test_find_function_at_byte_multiple() {
+        let code = "void a(void) {} void b(void) {}";
+        let (tree, _source) = parse_c(code);
+        let root = tree.root_node();
+        // Find second function
+        let second_func = root.child(1).unwrap();
+        let start = second_func.start_byte();
+        let found = find_function_at_byte(&root, start);
+        assert!(found.is_some());
+    }
+
+    // -- get_code_snippet --
+
+    #[test]
+    fn test_get_code_snippet() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let file = dir.path().join("test.c");
+        std::fs::write(&file, "int x = 1;\nint y = 2;\nint z = 3;\n").unwrap();
+        let path = file.to_string_lossy().to_string();
+
+        assert_eq!(get_code_snippet(&path, 1).unwrap(), "int x = 1;");
+        assert_eq!(get_code_snippet(&path, 2).unwrap(), "int y = 2;");
+        assert_eq!(get_code_snippet(&path, 3).unwrap(), "int z = 3;");
+        assert_eq!(get_code_snippet(&path, 99).unwrap(), "(line not found)");
+    }
+
+    #[test]
+    fn test_get_code_snippet_trims_whitespace() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let file = dir.path().join("test.c");
+        std::fs::write(&file, "    int x = 1;\n").unwrap();
+        let path = file.to_string_lossy().to_string();
+        assert_eq!(get_code_snippet(&path, 1).unwrap(), "int x = 1;");
+    }
+
+    // -- compute_vra_if_needed --
+
+    #[test]
+    fn test_compute_vra_not_needed() {
+        let cfgs = HashMap::new();
+        let code = "void f(void) {}";
+        let (tree, source) = parse_c(code);
+        let summaries = HashMap::new();
+        let results = compute_vra_if_needed(false, &cfgs, &tree.root_node(), &source, &summaries);
+        assert!(results.is_empty());
+    }
+
+    #[test]
+    fn test_compute_vra_empty_cfgs() {
+        let cfgs = HashMap::new();
+        let code = "void f(void) {}";
+        let (tree, source) = parse_c(code);
+        let summaries = HashMap::new();
+        let results = compute_vra_if_needed(true, &cfgs, &tree.root_node(), &source, &summaries);
+        assert!(results.is_empty());
+    }
+
+    // -- AnalysisResults / SuppressedViolation construction --
+
+    #[test]
+    fn test_analysis_results_struct() {
+        let results = AnalysisResults {
+            violations: vec![],
+            suppressed: vec![],
+        };
+        assert!(results.violations.is_empty());
+        assert!(results.suppressed.is_empty());
+    }
+}

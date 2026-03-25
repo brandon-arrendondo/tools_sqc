@@ -163,6 +163,27 @@ pub struct InitAnalysisResult {
 // Known function behavior
 // ---------------------------------------------------------------------------
 
+/// Common C library initializer suffixes. A function whose name ends with one
+/// of these (e.g., `os_memset`, `wp_memcpy`) is treated as an initializing function
+/// with the same argument semantics as the base function.
+const INITIALIZER_SUFFIXES: &[&str] = &[
+    "memset", "memcpy", "memmove", "strcpy", "strncpy", "sprintf", "snprintf", "bzero", "strcat",
+    "strncat",
+];
+
+/// Check if `func_name` is a known initializing function (exact match or suffix wrapper).
+/// Returns the canonical base name if matched, or None.
+pub fn match_initializing_function(func_name: &str) -> Option<&'static str> {
+    if let Some(&entry) = INITIALIZING_FUNCTIONS.iter().find(|&&e| e == func_name) {
+        return Some(entry);
+    }
+    // Suffix match: os_memset → memset, wp_memcpy → memcpy, etc.
+    INITIALIZER_SUFFIXES
+        .iter()
+        .find(|&&suffix| func_name.len() > suffix.len() && func_name.ends_with(suffix))
+        .copied()
+}
+
 /// Functions that initialize their output arguments.
 pub const INITIALIZING_FUNCTIONS: &[&str] = &[
     "memset",
@@ -299,9 +320,10 @@ pub const FOR_EACH_MACROS: &[&str] = &[
 /// Configuration for init-state analysis, carrying interprocedural info.
 #[derive(Default)]
 pub struct InitAnalysisConfig {
-    /// Functions that only conditionally initialize pointer parameters.
-    /// `&var` passed to these functions should NOT be assumed initialized.
-    pub conditionally_init_fns: HashSet<String>,
+    /// Functions with pointer params that are only conditionally initialized.
+    /// Maps function name → set of parameter indices where `*param = ...` only
+    /// appears inside conditionals. Other params are assumed initialized normally.
+    pub conditionally_init_fns: HashMap<String, HashSet<usize>>,
     /// Functions that wrap realloc (return uninitialized new portion).
     pub realloc_wrapper_fns: HashSet<String>,
 }
@@ -479,7 +501,7 @@ fn classify_initializer(value: &Node, source: &str, config: &InitAnalysisConfig)
     if text.contains("malloc(") || text.contains("alloca(") || text.contains("ALLOCA(") {
         return InitState::MallocUninitialized;
     }
-    if text.contains("calloc(") {
+    if text.contains("calloc(") || text.contains("zalloc(") {
         return InitState::MallocInitialized;
     }
     if text.contains("realloc(") {
@@ -507,16 +529,20 @@ fn process_expression(
 
             // Then process the LHS assignment
             if let Some(left) = node.child_by_field_name("left") {
-                let var_name = if left.kind() == "identifier" {
-                    left.utf8_text(source.as_bytes()).unwrap_or("").to_string()
+                let (var_name, has_subscript_in_chain) = if left.kind() == "identifier" {
+                    (
+                        left.utf8_text(source.as_bytes()).unwrap_or("").to_string(),
+                        false,
+                    )
                 } else if left.kind() == "pointer_expression" {
-                    extract_deref_target(&left, source)
+                    (extract_deref_target(&left, source), false)
                 } else if left.kind() == "subscript_expression" {
-                    extract_subscript_base(&left, source)
+                    (extract_subscript_base(&left, source), true)
                 } else if left.kind() == "field_expression" {
-                    extract_field_base(&left, source)
+                    let (name, has_sub) = extract_nested_base_ex(&left, source);
+                    (name, has_sub)
                 } else {
-                    String::new()
+                    (String::new(), false)
                 };
 
                 if !var_name.is_empty() {
@@ -534,12 +560,16 @@ fn process_expression(
                                     // initialize malloc'd memory — other fields/flexible
                                     // array members may remain uninitialized. Only
                                     // subscript/deref writes upgrade content state.
-                                    if left.kind() != "field_expression" {
+                                    // But arr[0].field = val (subscript in chain)
+                                    // should upgrade — it's writing content.
+                                    if left.kind() != "field_expression" || has_subscript_in_chain {
                                         info.state = InitState::MallocInitialized;
                                     }
                                 }
                                 InitState::Uninitialized => {
-                                    if left.kind() == "field_expression" {
+                                    if left.kind() == "field_expression" && !has_subscript_in_chain
+                                    {
+                                        // Simple field write: s.field = val → initialized
                                         info.state = InitState::Initialized;
                                     }
                                     if left.kind() == "subscript_expression" {
@@ -564,6 +594,22 @@ fn process_expression(
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
                     if child.kind() != "," {
+                        process_expression(&child, source, state, tracked_vars, config);
+                    }
+                }
+            }
+        }
+        "cast_expression" => {
+            // Unwrap (void)func(...) and similar casts to process the inner expression
+            if let Some(value) = node.child_by_field_name("value") {
+                process_expression(&value, source, state, tracked_vars, config);
+            }
+        }
+        "parenthesized_expression" => {
+            // Unwrap (expr) to process inner expression
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() != "(" && child.kind() != ")" {
                         process_expression(&child, source, state, tracked_vars, config);
                     }
                 }
@@ -646,9 +692,9 @@ fn process_call_expression(
         return;
     }
 
-    // Known initializing functions: mark output args as initialized
-    if INITIALIZING_FUNCTIONS.contains(&func_name.as_str()) {
-        let output_indices = get_output_arg_indices(&func_name);
+    // Known initializing functions (exact or suffix match): mark output args as initialized
+    if let Some(base_name) = match_initializing_function(&func_name) {
+        let output_indices = get_output_arg_indices(base_name);
         if let Some(args) = node.child_by_field_name("arguments") {
             let mut arg_idx = 0;
             for i in 0..args.child_count() {
@@ -661,7 +707,7 @@ fn process_call_expression(
                         if !var_name.is_empty() {
                             if let Some(info) = state.get_mut(&var_name) {
                                 // memset on a malloc'd pointer → MallocInitialized
-                                if func_name == "memset"
+                                if base_name == "memset"
                                     && matches!(
                                         info.state,
                                         InitState::MallocUninitialized
@@ -688,18 +734,21 @@ fn process_call_expression(
     }
 
     // Unknown function: assume &var initializes (conservative — most functions
-    // that take pointer params write to them), UNLESS the function is known to
-    // only conditionally initialize.
-    let skip_ptr_init = config.conditionally_init_fns.contains(&func_name);
+    // that take pointer params write to them), UNLESS the specific parameter is
+    // known to be only conditionally initialized.
+    let cond_param_indices = config.conditionally_init_fns.get(&func_name);
 
     if let Some(args) = node.child_by_field_name("arguments") {
+        let mut arg_idx: usize = 0;
         for i in 0..args.child_count() {
             if let Some(arg) = args.child(i) {
                 if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
                     continue;
                 }
-                // &var pattern — assume function writes to it (unless conditionally-init)
-                if !skip_ptr_init && arg.kind() == "pointer_expression" {
+                let skip_this_arg =
+                    cond_param_indices.is_some_and(|indices| indices.contains(&arg_idx));
+                // &var pattern — assume function writes to it (unless this param is conditionally-init)
+                if !skip_this_arg && arg.kind() == "pointer_expression" {
                     let arg_text = arg.utf8_text(source.as_bytes()).unwrap_or("");
                     if arg_text.starts_with('&') {
                         let var_name = extract_var_from_arg(&arg, source);
@@ -711,7 +760,7 @@ fn process_call_expression(
                     }
                 }
                 // Array passed by name — assume function writes to it
-                if arg.kind() == "identifier" {
+                if !skip_this_arg && arg.kind() == "identifier" {
                     let var_name = arg.utf8_text(source.as_bytes()).unwrap_or("").to_string();
                     if let Some(info) = state.get(&var_name) {
                         if info.is_array {
@@ -720,6 +769,7 @@ fn process_call_expression(
                         }
                     }
                 }
+                arg_idx += 1;
             }
         }
     }
@@ -1157,26 +1207,41 @@ fn extract_deref_target(node: &Node, source: &str) -> String {
 
 /// Extract the base variable from a subscript: arr[i] → "arr"
 fn extract_subscript_base(node: &Node, source: &str) -> String {
-    for i in 0..node.child_count() {
-        if let Some(child) = node.child(i) {
-            if child.kind() == "identifier" {
-                return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
-            }
-        }
-    }
-    String::new()
+    extract_nested_base(node, source)
 }
 
-/// Extract the base variable from a field expression: ptr->field → "ptr"
-fn extract_field_base(node: &Node, source: &str) -> String {
+/// Recursively extract the base identifier from nested field/subscript expressions.
+/// Handles chains like `arr[0].field`, `s.arr[0]`, `ptr->arr[i].field`, etc.
+/// Returns (base_name, has_subscript_in_chain).
+fn extract_nested_base_ex(node: &Node, source: &str) -> (String, bool) {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
-            if child.kind() == "identifier" {
-                return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+            match child.kind() {
+                "identifier" => {
+                    let name = child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                    return (name, false);
+                }
+                "subscript_expression" => {
+                    let (name, _) = extract_nested_base_ex(&child, source);
+                    if !name.is_empty() {
+                        return (name, true);
+                    }
+                }
+                "field_expression" | "parenthesized_expression" => {
+                    let result = extract_nested_base_ex(&child, source);
+                    if !result.0.is_empty() {
+                        return result;
+                    }
+                }
+                _ => {}
             }
         }
     }
-    String::new()
+    (String::new(), false)
+}
+
+fn extract_nested_base(node: &Node, source: &str) -> String {
+    extract_nested_base_ex(node, source).0
 }
 
 /// Collect file-scope static variable init states.

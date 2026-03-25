@@ -19,8 +19,9 @@ pub struct Exp33C {
     file_scope_statics: RefCell<InitStateMap>,
     /// Functions that return realloc results (interprocedural pre-scan).
     realloc_wrapper_fns: RefCell<HashSet<String>>,
-    /// Functions that only conditionally initialize pointer parameters.
-    conditionally_init_fns: RefCell<HashSet<String>>,
+    /// Functions with pointer params that are only conditionally initialized.
+    /// Maps function name → set of pointer parameter indices that are conditional.
+    conditionally_init_fns: RefCell<HashMap<String, HashSet<usize>>>,
 }
 
 impl Exp33C {
@@ -29,7 +30,7 @@ impl Exp33C {
             function_cfgs: RefCell::new(HashMap::new()),
             file_scope_statics: RefCell::new(InitStateMap::new()),
             realloc_wrapper_fns: RefCell::new(HashSet::new()),
-            conditionally_init_fns: RefCell::new(HashSet::new()),
+            conditionally_init_fns: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -74,7 +75,7 @@ impl CertRule for Exp33C {
             *self.realloc_wrapper_fns.borrow_mut() = wrappers;
 
             // Pre-scan for functions that conditionally initialize pointer params
-            let mut cond_init = HashSet::new();
+            let mut cond_init = HashMap::new();
             scan_conditionally_init_functions(node, source, &mut cond_init);
             *self.conditionally_init_fns.borrow_mut() = cond_init;
         }
@@ -229,6 +230,32 @@ fn check_identifier_read(
     // Only flag truly uninitialized or maybe-uninitialized reads
     if !info.state.is_unsafe() {
         return;
+    }
+
+    // Arrays passed by name to unknown function calls decay to pointers.
+    // The init-state transfer function treats such arrays as initialized
+    // (assumes the function writes to them). Skip the read-check here
+    // for consistency, but only for truly unknown functions — not for
+    // known read-only or known initializing functions (handled separately).
+    if info.is_array {
+        if let Some(parent) = node.parent() {
+            if parent.kind() == "argument_list" {
+                if let Some(call_expr) = parent.parent() {
+                    if call_expr.kind() == "call_expression" {
+                        if let Some(func) = call_expr.child_by_field_name("function") {
+                            let fname = get_node_text(&func, source).to_string();
+                            // Known functions are already handled by is_read_in_argument_list.
+                            // Only suppress for truly unknown functions (not non-initializing).
+                            if init_state::match_initializing_function(&fname).is_none()
+                                && !init_state::is_non_initializing_function(&fname)
+                            {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     reported.insert(var_name.clone());
@@ -594,15 +621,18 @@ fn is_read_in_argument_list(node: &Node, arg_list: &Node, source: &str) -> bool 
         return true;
     }
 
-    // Check if this is a known initializing function
-    if !init_state::INITIALIZING_FUNCTIONS.contains(&func_name.as_str()) {
-        // For unknown functions, check if the identifier is passed by name
-        // (arrays passed by name to unknown functions are assumed initialized)
-        return true;
-    }
+    // Check if this is a known initializing function (exact or suffix match)
+    let base_name = match init_state::match_initializing_function(&func_name) {
+        Some(name) => name,
+        None => {
+            // For unknown functions, check if the identifier is passed by name
+            // (arrays passed by name to unknown functions are assumed initialized)
+            return true;
+        }
+    };
 
     // Determine which argument position this identifier is at
-    let output_indices = init_state::get_output_arg_indices(&func_name);
+    let output_indices = init_state::get_output_arg_indices(base_name);
     if output_indices.is_empty() {
         return true; // No output args — this is a read
     }
@@ -714,13 +744,18 @@ fn scan_realloc_wrappers(node: &Node, source: &str, wrappers: &mut HashSet<Strin
 /// Scan for functions that only conditionally initialize pointer params.
 /// e.g., void set_flag(int n, int *flag) { if (n > 0) *flag = 1; }
 /// — doesn't init *flag on all paths.
-fn scan_conditionally_init_functions(node: &Node, source: &str, result: &mut HashSet<String>) {
+fn scan_conditionally_init_functions(
+    node: &Node,
+    source: &str,
+    result: &mut HashMap<String, HashSet<usize>>,
+) {
     if node.kind() == "function_definition" {
-        if has_conditional_pointer_init(node, source) {
+        let cond_indices = get_conditional_init_param_indices(node, source);
+        if !cond_indices.is_empty() {
             if let Some(declarator) = node.child_by_field_name("declarator") {
                 let name = get_func_name(&declarator, source);
                 if !name.is_empty() {
-                    result.insert(name);
+                    result.insert(name, cond_indices);
                 }
             }
         }
@@ -732,30 +767,29 @@ fn scan_conditionally_init_functions(node: &Node, source: &str, result: &mut Has
     }
 }
 
-/// Check if a function has pointer params that are only conditionally initialized.
-/// Heuristic: the function has pointer params with `*param = ...` writes, but those
-/// writes only appear inside if/else branches (not unconditionally at the top level).
-fn has_conditional_pointer_init(func_node: &Node, source: &str) -> bool {
+/// Get the set of pointer parameter indices that are only conditionally initialized.
+/// Returns indices into the full parameter list (including non-pointer params).
+fn get_conditional_init_param_indices(func_node: &Node, source: &str) -> HashSet<usize> {
+    let mut result = HashSet::new();
     let body = match func_node.child_by_field_name("body") {
         Some(b) => b,
-        None => return false,
+        None => return result,
     };
 
-    // Collect pointer parameter names
-    let mut ptr_param_names = Vec::new();
-    collect_pointer_param_name_list(func_node, source, &mut ptr_param_names);
-    if ptr_param_names.is_empty() {
-        return false;
-    }
+    // Collect all parameter names with their indices in the parameter list
+    let mut all_params: Vec<(usize, String, bool)> = Vec::new(); // (index, name, is_pointer)
+    collect_param_list_with_indices(func_node, source, &mut all_params);
 
-    // For each pointer param, check if there's a dereference write at the
-    // top level of the function body (unconditional) or only inside if-blocks
-    for param in &ptr_param_names {
-        let deref_write = format!("*{}", param);
-        let body_text = get_node_text(&body, source);
+    let body_text = get_node_text(&body, source);
+
+    for (idx, param_name, is_pointer) in &all_params {
+        if !is_pointer {
+            continue;
+        }
+        let deref_write = format!("*{}", param_name);
 
         if !body_text.contains(&deref_write) {
-            continue; // Param not written through
+            continue; // Param not written through at all
         }
 
         // Check: does *param = appear at compound_statement top level?
@@ -773,22 +807,24 @@ fn has_conditional_pointer_init(func_node: &Node, source: &str) -> bool {
         }
 
         if !has_unconditional_write {
-            // *param = only inside conditionals → function conditionally initializes
-            return true;
+            result.insert(*idx);
         }
     }
 
-    false
+    result
 }
 
-/// Collect pointer parameter names from a function definition.
-fn collect_pointer_param_name_list(func_node: &Node, source: &str, names: &mut Vec<String>) {
+/// Collect all parameters with their indices, names, and whether they're pointers.
+fn collect_param_list_with_indices(
+    func_node: &Node,
+    source: &str,
+    params: &mut Vec<(usize, String, bool)>,
+) {
     let declarator = match func_node.child_by_field_name("declarator") {
         Some(d) => d,
         None => return,
     };
-    let func_decl = find_function_declarator_node(&declarator);
-    let func_decl = match func_decl {
+    let func_decl = match find_function_declarator_node(&declarator) {
         Some(d) => d,
         None => return,
     };
@@ -796,16 +832,17 @@ fn collect_pointer_param_name_list(func_node: &Node, source: &str, names: &mut V
     for i in 0..func_decl.child_count() {
         if let Some(child) = func_decl.child(i) {
             if child.kind() == "parameter_list" {
+                let mut param_idx = 0;
                 for j in 0..child.child_count() {
                     if let Some(param) = child.child(j) {
                         if param.kind() == "parameter_declaration" {
                             let param_text = get_node_text(&param, source);
-                            if param_text.contains('*') {
-                                let name = get_declarator_name_from(&param, source);
-                                if !name.is_empty() {
-                                    names.push(name);
-                                }
+                            let is_pointer = param_text.contains('*');
+                            let name = get_declarator_name_from(&param, source);
+                            if !name.is_empty() {
+                                params.push((param_idx, name, is_pointer));
                             }
+                            param_idx += 1;
                         }
                     }
                 }
