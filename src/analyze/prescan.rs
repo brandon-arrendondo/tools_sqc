@@ -1323,3 +1323,357 @@ fn resolve_header(
 
     None
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn parse_c(code: &str) -> (tree_sitter::Tree, String) {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let tree = parser.parse(code, None).unwrap();
+        (tree, code.to_string())
+    }
+
+    // -- collect_function_names --
+
+    #[test]
+    fn test_collect_function_names_definitions() {
+        let code = "void foo(void) {} int bar(int x) { return x; }";
+        let (tree, source) = parse_c(code);
+        let mut names = HashSet::new();
+        collect_function_names(&tree.root_node(), &source, &mut names);
+        assert!(names.contains("foo"));
+        assert!(names.contains("bar"));
+    }
+
+    #[test]
+    fn test_collect_function_names_declarations() {
+        let code = "void foo(void); int bar(int x);";
+        let (tree, source) = parse_c(code);
+        let mut names = HashSet::new();
+        collect_function_names(&tree.root_node(), &source, &mut names);
+        assert!(names.contains("foo"));
+        assert!(names.contains("bar"));
+    }
+
+    #[test]
+    fn test_collect_function_names_pointer_return() {
+        let code = "char *strdup(const char *s); int *get_ptr(void) { return 0; }";
+        let (tree, source) = parse_c(code);
+        let mut names = HashSet::new();
+        collect_function_names(&tree.root_node(), &source, &mut names);
+        assert!(names.contains("strdup"));
+        assert!(names.contains("get_ptr"));
+    }
+
+    #[test]
+    fn test_collect_function_names_inside_ifdef() {
+        let code = "#ifdef FEATURE\nvoid guarded(void) {}\n#endif\n";
+        let (tree, source) = parse_c(code);
+        let mut names = HashSet::new();
+        collect_function_names(&tree.root_node(), &source, &mut names);
+        assert!(names.contains("guarded"));
+    }
+
+    #[test]
+    fn test_collect_function_names_macro() {
+        let code = "#define MY_FUNC(x) ((x) + 1)\n";
+        let (tree, source) = parse_c(code);
+        let mut names = HashSet::new();
+        collect_function_names(&tree.root_node(), &source, &mut names);
+        assert!(names.contains("MY_FUNC"));
+    }
+
+    // -- collect_header_declarations --
+
+    #[test]
+    fn test_collect_header_declarations_skips_static() {
+        let code = "void public_func(int x);\nstatic void internal(void);";
+        let (tree, source) = parse_c(code);
+        let mut names = HashSet::new();
+        collect_header_declarations(&tree.root_node(), &source, &mut names);
+        assert!(names.contains("public_func"));
+        assert!(!names.contains("internal"));
+    }
+
+    // -- collect_call_graph --
+
+    #[test]
+    fn test_collect_call_graph() {
+        let code = "void a(void) { b(); c(); } void b(void) { c(); }";
+        let (tree, source) = parse_c(code);
+        let mut graph = HashMap::new();
+        collect_call_graph(&tree.root_node(), &source, &mut graph);
+        assert!(graph.get("a").unwrap().contains("b"));
+        assert!(graph.get("a").unwrap().contains("c"));
+        assert!(graph.get("b").unwrap().contains("c"));
+    }
+
+    // -- collect_local_var_states --
+
+    #[test]
+    fn test_local_var_null() {
+        let code = "void f(void) { int *p = NULL; }";
+        let (tree, source) = parse_c(code);
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+        let states = collect_local_var_states(&body, &source);
+        assert_eq!(states.get("p"), Some(&NullState::DefinitelyNull));
+    }
+
+    #[test]
+    fn test_local_var_string_literal() {
+        let code = r#"void f(void) { char *s = "hello"; }"#;
+        let (tree, source) = parse_c(code);
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+        let states = collect_local_var_states(&body, &source);
+        assert_eq!(states.get("s"), Some(&NullState::NotNull));
+    }
+
+    #[test]
+    fn test_local_var_malloc() {
+        let code = "void f(void) { void *p = malloc(10); }";
+        let (tree, source) = parse_c(code);
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+        let states = collect_local_var_states(&body, &source);
+        assert_eq!(states.get("p"), Some(&NullState::PossiblyNull));
+    }
+
+    #[test]
+    fn test_local_var_stack_array_not_null() {
+        // Stack arrays are always non-null
+        let code = "void f(void) { char buf[64]; }";
+        let (tree, source) = parse_c(code);
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+        let states = collect_local_var_states(&body, &source);
+        assert_eq!(states.get("buf"), Some(&NullState::NotNull));
+    }
+
+    // -- collect_early_return_null_guards --
+
+    #[test]
+    fn test_early_return_null_guard() {
+        let code = "void f(int *p) { if (p == NULL) return; *p = 1; }";
+        let (tree, source) = parse_c(code);
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+        let mut states = HashMap::new();
+        collect_early_return_null_guards(&body, &source, &mut states);
+        assert_eq!(states.get("p"), Some(&NullState::NotNull));
+    }
+
+    #[test]
+    fn test_early_return_bang_guard() {
+        let code = "void f(int *p) { if (!p) return; *p = 1; }";
+        let (tree, source) = parse_c(code);
+        let func = tree.root_node().child(0).unwrap();
+        let body = func.child_by_field_name("body").unwrap();
+        let mut states = HashMap::new();
+        collect_early_return_null_guards(&body, &source, &mut states);
+        assert_eq!(states.get("p"), Some(&NullState::NotNull));
+    }
+
+    // -- is_simple_identifier --
+
+    #[test]
+    fn test_is_simple_identifier() {
+        assert!(is_simple_identifier("foo"));
+        assert!(is_simple_identifier("_bar"));
+        assert!(is_simple_identifier("baz123"));
+        assert!(!is_simple_identifier(""));
+        assert!(!is_simple_identifier("123abc"));
+        assert!(!is_simple_identifier("a b"));
+        assert!(!is_simple_identifier("a+b"));
+    }
+
+    // -- collect_struct_definitions --
+
+    #[test]
+    fn test_struct_named() {
+        let code = "struct Point { int x; int y; };";
+        let (tree, source) = parse_c(code);
+        let mut fields = HashMap::new();
+        collect_struct_definitions(&tree.root_node(), &source, &mut fields);
+        let point = fields.get("Point").expect("Point not found");
+        assert_eq!(point.get("x"), Some(&"int".to_string()));
+        assert_eq!(point.get("y"), Some(&"int".to_string()));
+    }
+
+    #[test]
+    fn test_struct_typedef() {
+        let code = "typedef struct { char *name; int age; } Person;";
+        let (tree, source) = parse_c(code);
+        let mut fields = HashMap::new();
+        collect_struct_definitions(&tree.root_node(), &source, &mut fields);
+        let person = fields.get("Person").expect("Person not found");
+        assert!(person.contains_key("name"));
+        assert!(person.contains_key("age"));
+    }
+
+    // -- extract_include_directives --
+
+    #[test]
+    fn test_extract_includes() {
+        let code = "#include <stdio.h>\n#include \"myheader.h\"\n";
+        let (tree, source) = parse_c(code);
+        let dirs = extract_include_directives(&tree.root_node(), &source);
+        assert!(dirs.contains(&"stdio.h".to_string()));
+        assert!(dirs.contains(&"myheader.h".to_string()));
+    }
+
+    #[test]
+    fn test_extract_includes_conditional() {
+        let code = "#ifdef HAVE_FOO\n#include \"foo.h\"\n#endif\n";
+        let (tree, source) = parse_c(code);
+        let dirs = extract_include_directives(&tree.root_node(), &source);
+        assert!(dirs.contains(&"foo.h".to_string()));
+    }
+
+    // -- resolve_header --
+
+    #[test]
+    fn test_resolve_header_source_dir() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let header = dir.path().join("test.h");
+        std::fs::File::create(&header).unwrap();
+        let result = resolve_header("test.h", Some(dir.path()), &[]);
+        assert!(result.is_some());
+    }
+
+    #[test]
+    fn test_resolve_header_include_path() {
+        let dir = tempfile::TempDir::new().unwrap();
+        let header = dir.path().join("sys.h");
+        std::fs::File::create(&header).unwrap();
+        let search = vec![dir.path().to_string_lossy().to_string()];
+        let result = resolve_header("sys.h", None, &search);
+        assert!(result.is_some());
+    }
+
+    #[test]
+    fn test_resolve_header_not_found() {
+        assert!(resolve_header("nonexistent.h", None, &[]).is_none());
+    }
+
+    // -- aggregate_callsite_null_states --
+
+    #[test]
+    fn test_aggregate_all_not_null() {
+        let mut summaries = HashMap::new();
+        summaries.insert(
+            "sink".to_string(),
+            FunctionSummary {
+                dereferences_params: vec![0].into_iter().collect(),
+                ..Default::default()
+            },
+        );
+        let callsite_args = HashMap::from([(
+            "sink".to_string(),
+            vec![vec![NullState::NotNull], vec![NullState::NotNull]],
+        )]);
+        aggregate_callsite_null_states(&callsite_args, &mut summaries, &HashSet::new());
+        assert_eq!(
+            summaries
+                .get("sink")
+                .unwrap()
+                .callsite_param_null_states
+                .get(&0),
+            Some(&NullState::NotNull)
+        );
+    }
+
+    #[test]
+    fn test_aggregate_any_null_produces_possibly_null() {
+        let mut summaries = HashMap::new();
+        summaries.insert(
+            "sink".to_string(),
+            FunctionSummary {
+                dereferences_params: vec![0].into_iter().collect(),
+                ..Default::default()
+            },
+        );
+        let callsite_args = HashMap::from([(
+            "sink".to_string(),
+            vec![vec![NullState::NotNull], vec![NullState::DefinitelyNull]],
+        )]);
+        aggregate_callsite_null_states(&callsite_args, &mut summaries, &HashSet::new());
+        assert_eq!(
+            summaries
+                .get("sink")
+                .unwrap()
+                .callsite_param_null_states
+                .get(&0),
+            Some(&NullState::PossiblyNull)
+        );
+    }
+
+    // -- collect_callsite_args_from_tree --
+
+    #[test]
+    fn test_callsite_args_null() {
+        let code = "void caller(void) { sink(NULL); }";
+        let (tree, source) = parse_c(code);
+        let mut args = HashMap::new();
+        collect_callsite_args_from_tree(&tree.root_node(), &source, &mut args);
+        assert_eq!(args.get("sink").unwrap()[0][0], NullState::DefinitelyNull);
+    }
+
+    #[test]
+    fn test_callsite_args_local_var() {
+        let code = r#"void caller(void) { char *s = "hi"; sink(s); }"#;
+        let (tree, source) = parse_c(code);
+        let mut args = HashMap::new();
+        collect_callsite_args_from_tree(&tree.root_node(), &source, &mut args);
+        assert_eq!(args.get("sink").unwrap()[0][0], NullState::NotNull);
+    }
+
+    // -- prescan_directories integration --
+
+    #[test]
+    fn test_prescan_directories_basic() {
+        let dir = tempfile::TempDir::new().unwrap();
+        std::fs::write(dir.path().join("a.c"), "void func_a(void) { func_b(); }").unwrap();
+        std::fs::write(dir.path().join("b.c"), "void func_b(void) {}").unwrap();
+        let dirs = vec![dir.path().to_string_lossy().to_string()];
+        let ctx = prescan_directories(&dirs, None, false).unwrap();
+        assert!(ctx.known_functions.contains("func_a"));
+        assert!(ctx.known_functions.contains("func_b"));
+        assert!(ctx.call_graph.get("func_a").unwrap().contains("func_b"));
+    }
+
+    #[test]
+    fn test_prescan_directories_with_header() {
+        let dir = tempfile::TempDir::new().unwrap();
+        std::fs::write(dir.path().join("api.h"), "int public_api(int x);").unwrap();
+        std::fs::write(
+            dir.path().join("impl.c"),
+            "int public_api(int x) { return x + 1; }",
+        )
+        .unwrap();
+        let dirs = vec![dir.path().to_string_lossy().to_string()];
+        let ctx = prescan_directories(&dirs, None, false).unwrap();
+        assert!(ctx.known_functions.contains("public_api"));
+        assert!(ctx.header_declared_functions.contains("public_api"));
+    }
+
+    #[test]
+    fn test_prescan_directories_struct() {
+        let dir = tempfile::TempDir::new().unwrap();
+        std::fs::write(
+            dir.path().join("types.c"),
+            "struct Config { int timeout; char *host; };",
+        )
+        .unwrap();
+        let dirs = vec![dir.path().to_string_lossy().to_string()];
+        let ctx = prescan_directories(&dirs, None, false).unwrap();
+        assert!(ctx
+            .struct_field_types
+            .get("Config")
+            .unwrap()
+            .contains_key("timeout"));
+    }
+}

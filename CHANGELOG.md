@@ -1,5 +1,171 @@
 # SqC — Changelog
 
+## v0.3.39 (2026-03-24)
+
+### ARR36-C: Real-World FP Reduction (−82%)
+
+v0.3.36 added strchr-based pointer subtraction detection (CWE-469, 100% TP on
+Juliet). On real-world code it regressed +2,727 violations due to several
+analysis bugs. This release fixes them all.
+
+**Per-function scoping** — Root cause: file-global `PointerAnalyzer` caused
+cross-function variable name collisions. Same-named vars (`pos`, `end`, `buf`)
+in different functions overwrote each other's array bases. Now creates a fresh
+analyzer per `function_definition` with file-scope globals as shared base.
+
+**Identifier chain resolution** — `extract_array_base` follows `variable_arrays`
+for known identifiers. Fixes `pos = buf` where buf is a parameter: pos now
+correctly inherits buf's `param:buf` base instead of getting raw `"buf"`.
+
+**Compound assignment skip** — `pos += ret` no longer overwrites pos's array
+base. `+=`/`-=` advance within the same array; only simple `=` changes the base.
+
+**os_\* wrapper recognition** — `os_strchr`, `os_strstr`, `os_strrchr` etc.
+treated as their standard equivalents for pointer-into-first-arg tracking.
+
+**Allocation function bases** — `malloc`/`calloc`/`realloc`/`aligned_alloc` get
+unique per-call bases (distinct heap objects).
+
+**Address-of vs dereference** — `&var` returns the variable name even if
+untracked (single-element array). `*ptr` follows the alias chain.
+
+**File-scope + bare declarations** — Global/static array declarations tracked
+across functions. `int arr[N];` without initializer now tracked.
+
+### Benchmark: v0.3.38 → v0.3.39
+
+**Juliet**: Zero delta — 8,508 TP, 9,067 FP, **48.4% TP rate** (unchanged).
+
+**Real-world** (5 codebases, sqc-only): 157,688 → 153,156 (**−4,532**, −2.9%).
+
+| Codebase | v0.3.38 | v0.3.39 | Delta |
+|----------|--------:|--------:|------:|
+| hostap | 62,044 | 59,407 | −2,637 |
+| sqlite | 53,964 | 52,978 | −986 |
+| mosquitto | 16,481 | 15,800 | −681 |
+| curl | 24,893 | 24,665 | −228 |
+| libcrc | 306 | 306 | 0 |
+
+Per-rule: ARR36-C **4,685 → 829 (−3,856, −82.3%)**. DCL31-C −334, DCL07-C −333
+(side effect of improved scoping). Zero regressions on any rule or CWE.
+
+## v0.3.38 (2026-03-24)
+
+### EXP33-C: Real-World FP Reduction + DCL31-C/DCL07-C Include Path Support
+
+Removed library-specific whitelists from DCL31-C/DCL07-C and added `-I` include
+paths for system-installed third-party headers. EXP33-C conditional-init, cast
+unwrap, and array arg fixes.
+
+## v0.3.37 (2026-03-23)
+
+### FIO30-C: CWE-134 Format String Taint Improvements
+
+FIO30-C was producing zero CWE-matched detections on all 3,360 CWE-134 Juliet files.
+Three fixes unlock detection across all taint source patterns.
+
+**recv/recvfrom/recvmsg taint tracking**
+- Added socket receive functions to `process_string_manipulation_call` — 2nd argument (buffer) is now marked as tainted
+- Handles cast expressions in buffer arg: `recv(sock, (char *)(data + offset), ...)`
+- Unlocks connect_socket and listen_socket Juliet patterns (~1,232 files)
+
+**Macro alias resolution**
+- Integrated `const_eval::collect_macro_aliases` to resolve `#define GETENV getenv` and similar macro indirections
+- All function name lookups in taint tracking, source detection, and sink detection now go through `resolve_func_name()`
+- Unlocks environment Juliet patterns (~616 files)
+
+**get_base_variable expression handling**
+- Added support for `cast_expression`, `parenthesized_expression`, and `binary_expression` in base variable extraction
+- `(char *)(data + dataLen)` now correctly resolves to base variable `data`
+
+Result: All 5 CWE-134 taint sources now produce FIO30-C detections (was 2/5). Variant 01 across all source×sink combinations: 15/15 detected.
+
+### Benchmark: v0.3.35–v0.3.37 Combined (vs v0.3.34)
+
+**Juliet** (fast mode, 68 CWEs): TP 8,300→8,508 (**+208**), FP 9,157→9,067 (**-90**), TP rate 47.5%→**48.4%** (+0.9pp). Per-file 13.8%→14.3%. Zero regressions.
+
+| Change | TP Δ | FP Δ | Impact |
+|--------|-----:|-----:|--------|
+| CWE-761 (API07-C free-after-arithmetic) | +104 | 0 | New CWE, 100% TP, 15.5% per-file |
+| CWE-134 (FIO30-C recv taint) | +113 | +23 | TP rate 47.9%→59.9% (+12pp) |
+| CWE-464 (STR03-C sentinel) | +14 | 0 | New CWE, 100% TP, 25.0% per-file |
+| CWE-469 (ARR36-C strchr) | +12 | 0 | New CWE, 100% TP, 33.3% per-file |
+| CWE-843 (API07-C type confusion) | +12 | 0 | New CWE, 100% TP, 12.0% per-file |
+| CWE-457 (EXP33-C arr[0].field) | -13 | -72 | TP rate 32.2%→35.3% (+3.1pp) |
+| CWE-665 (EXP33-C initializers) | -27 | -41 | TP rate 41.3%→41.9% (+0.6pp) |
+
+**Real-world** (5 codebases, sqc-only): 152,590→153,568 (**+978**, +0.6%).
+
+| Codebase | v0.3.34 | v0.3.37 | Delta |
+|----------|--------:|--------:|------:|
+| hostap | 61,681 | 62,152 | +471 |
+| sqlite | 50,517 | 51,091 | +574 |
+| curl | 24,858 | 24,891 | +33 |
+| mosquitto | 15,221 | 15,128 | -93 |
+| libcrc | 313 | 306 | -7 |
+
+Per-rule: ARR36-C **+2,727** (strchr tracking fires broadly on real-world pointer arithmetic), ERR33-C **-818** (printf suppression), ARR00-C **-480** (pointer chain fix), EXP33-C **-477** (arr[0].field + suffix matching). Excluding ARR36-C, net **-1,749** FP reduction.
+
+**Source commits pinned** in BENCHMARK_INSTALL.md for all 5 codebases.
+
+## v0.3.36 (2026-03-23)
+
+### Juliet Zero-Detection CWE Coverage: +114 TPs
+
+Three previously-zero-detection CWEs now have detections, all with 100% precision.
+
+**ARR36-C: CWE-469 — strchr/wcschr cross-array subtraction (36 files)**
+- `PointerAnalyzer` now tracks `strchr`, `strrchr`, `wcschr`, `wcsrchr`, `memchr`, `strstr`, `wcsstr`, `strpbrk`, `wcspbrk` return values as pointing into their first argument
+- Array declarations (`char arr[] = ...`) now treated as their own base (not aliased to initializer)
+- Assignment expressions tracked (not just declarations) for pointer origin resolution
+- Result: 36/36 TP, 0 FP
+
+**STR03-C: CWE-464 — (char)atoi() null sentinel detection (56 files)**
+- Detects `(char)atoi(...)` pattern: `atoi()` returns 0 on failure, which becomes null terminator `'\0'` when cast to char, truncating strings
+- Also covers `strtol`, `strtoul`, `atol` with char cast
+- Result: 38/38 TP, 0 FP (remaining 18 are cross-function variants)
+
+**API07-C: CWE-843 — void* type confusion detection (100 files)**
+- Tracks `void*` variable assignments: `data = &charBuffer` records source type
+- Detects dereference with incompatible cast: `*((int*)data)` where cast type is larger than source type
+- Type size comparison: char(1) < short(2) < int(4) < long(8)
+- Result: 40/40 TP, 0 FP (remaining 60 are cross-function variants)
+
+## v0.3.35 (2026-03-23)
+
+### Real-World FP Reduction + CWE-761 Detection
+
+Four rule improvements targeting real-world false positives and Juliet coverage.
+
+**EXP33-C: arr[0].field tracking + initializer suffix matching**
+- `extract_nested_base_ex()` recurses through nested subscript/field chains to resolve base variable (`arr[0].field` → `arr`)
+- `MallocUninitialized` + subscript-in-chain → `MallocInitialized` (fixes dominant hostap FP pattern)
+- Stack `Uninitialized` + subscript-in-chain preserved (partial-init detection for `team[0].x`/`team[3].x`)
+- `match_initializing_function()` suffix-matches wrapper functions: `os_memset` → `memset`, `wp_memcpy` → `memcpy`, etc.
+- `*zalloc()` recognized as zero-initializing allocator (`os_zalloc`, `wpa_zalloc`)
+
+**ARR00-C: Pointer subtraction chain resolution**
+- `find_pointer_source_array()` now recursively resolves pointer derivation chains (depth limit 5)
+- `end = pos + buflen; pos = buf;` → `end` resolves to base `buf`, same as `pos`
+- Eliminates FPs on `end - pos` buffer arithmetic (dominant ARR00-C FP pattern)
+
+**ERR33-C: Suppress printf-family return value checks**
+- All formatted output functions suppressed: `fprintf`, `sprintf`, `snprintf`, `vprintf`, `vfprintf`, `vsprintf`, `vsnprintf`
+- Rationale: checking return values is impractical — failures are rare and unrecoverable. Applies equally to stderr and file output (serialization code calls fprintf hundreds of times).
+
+**API07-C: CWE-761 free-pointer-not-at-start detection**
+- New detection: `free(ptr)` where `ptr` was modified by pointer arithmetic after allocation
+- Tracks `malloc`/`calloc`/`realloc` assignments, detects `ptr++`/`ptr+=N`/`ptr--` modifications, flags subsequent `free(ptr)`
+- Handles reassignment resets and reallocation resets
+- 984 portable Juliet CWE-761 test files; 5/5 spot-checked detect correctly
+
+**Other**:
+- `BENCHMARK_INSTALL.md`: Updated all sqc examples from `rules-all.toml` to `rules-benchmark.toml` (matches MCP server)
+
+### Benchmark
+
+See v0.3.37 entry for combined v0.3.35–v0.3.37 benchmark results (Juliet + real-world).
+
 ## v0.3.34 (2026-03-23)
 
 ### EXP33-C: Preproc recursion fix + field-write refinement
