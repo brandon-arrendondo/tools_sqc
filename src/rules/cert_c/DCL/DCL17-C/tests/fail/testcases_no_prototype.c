@@ -1,8 +1,7 @@
 /*
  * Rule: DCL17-C
  * Source: testcases
- * Status: PASS - Known limitation: pattern not detected
- * TODO: Move to fail/ when implemented (see PLAN.md)
+ * Status: FAIL - K&R style declarations and definitions
  */
 
 /* Empty parameter list — K&R style, not a prototype */

@@ -1,8 +1,7 @@
 /*
  * Rule: ERR01-C
  * Source: testcases
- * Status: PASS - Known limitation: missing errno check not detected
- * TODO: Move to fail/ when implemented (see PLAN.md)
+ * Status: FAIL - errno-setting functions called without errno check
  */
 
 #include <errno.h>

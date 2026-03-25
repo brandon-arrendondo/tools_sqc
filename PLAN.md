@@ -162,10 +162,10 @@ Bugs discovered during test infrastructure improvements (2026-03-24):
 | FIO10-C | Rule requires explicit `access()+remove()` before `rename()`, but CERT wiki's compliant POSIX example uses plain `rename()` with error checking. | Low | `tests/pass/wiki_posix.c` (TODO: fix rule to accept POSIX rename()) |
 | INT00-C | Unsigned subtraction without guard and mixed signed/unsigned comparison not detected. Rule may not check these patterns. | Medium | `tests/pass/testcases_unsigned_wrap.c` (TODO: move to fail/) |
 | INT16-C | Signed-to-unsigned conversion without range check not detected. `unsigned int u = signed_val;` produces no violation. | Medium | `tests/pass/testcases_signed_unsigned_conversion.c` (TODO: move to fail/) |
-| ERR01-C | Missing errno check after strtol/sqrt not detected. Rule may only check specific patterns. | Medium | `tests/pass/testcases_errno_not_checked.c` (TODO: move to fail/) |
-| MEM10-C | `sizeof(pointer)` misuse in malloc/memset not detected. `malloc(sizeof(arr))` where arr is a pointer should be flagged. | Medium | `tests/pass/testcases_sizeof_pointer.c` (TODO: move to fail/) |
-| POS50-C | TOCTOU race (`stat()` then `fopen()` on same path) not detected. Classic check-use vulnerability. | Medium | `tests/pass/testcases_toctou.c` (TODO: move to fail/) |
-| DCL17-C | K&R style function declaration without prototype not detected. | Low | `tests/pass/testcases_no_prototype.c` (TODO: move to fail/) |
+| ~~ERR01-C~~ | ~~Missing errno check after strtol/sqrt not detected~~ | ~~Medium~~ | **FIXED** — errno-setting function detection |
+| ~~MEM10-C~~ | ~~`sizeof(pointer)` misuse in malloc/memset not detected~~ | ~~Medium~~ | **FIXED** — sizeof(pointer) detection in alloc/memory calls |
+| ~~POS50-C~~ | ~~TOCTOU race (`stat()` then `fopen()` on same path) not detected~~ | ~~Medium~~ | **FIXED** — check-then-use TOCTOU detection |
+| ~~DCL17-C~~ | ~~K&R style function declaration without prototype not detected~~ | ~~Low~~ | **FIXED** — K&R definition + empty param list detection |
 | WIN30-C | `CreateFileA` with NULL security attributes not detected. | Low | `tests/pass/testcases_win_api_misuse.c` (TODO: move to fail/) |
 | MEM04-C | `malloc(sizeof(int))` falsely flagged as "potentially zero size" — sizeof(int) is always > 0. | Low | N/A (FP, test adjusted) |
 
@@ -173,7 +173,7 @@ Bugs discovered during test infrastructure improvements (2026-03-24):
 
 **Action item**: Periodically grep `tests/pass/` for `TODO.*move to fail` and `Known limitation` to find tests that pass only because the implementation has a gap. As each implementation bug above is fixed, move the corresponding test from `pass/` to `fail/` and verify it now triggers the expected violation.
 
-Current inventory (2026-03-25, 11 remaining — 7 fixed/reclassified in v0.3.42):
+Current inventory (2026-03-25, 7 remaining — 7 fixed in v0.3.42, 4 fixed in this batch):
 
 | Rule/Component | Test File | What Should Fail |
 |----------------|-----------|-----------------|
@@ -183,10 +183,6 @@ Current inventory (2026-03-25, 11 remaining — 7 fixed/reclassified in v0.3.42)
 | FIO10-C | `pass/wiki_posix.c` | POSIX rename() with error checking |
 | INT00-C | `pass/testcases_unsigned_wrap.c` | Unsigned wrap and mixed signed/unsigned comparison |
 | INT16-C | `pass/testcases_signed_unsigned_conversion.c` | Signed-to-unsigned conversion without range check |
-| ERR01-C | `pass/testcases_errno_not_checked.c` | Missing errno check after strtol/sqrt |
-| MEM10-C | `pass/testcases_sizeof_pointer.c` | sizeof(pointer) misuse in malloc/memset |
-| POS50-C | `pass/testcases_toctou.c` | stat()+fopen() TOCTOU race |
-| DCL17-C | `pass/testcases_no_prototype.c` | K&R function declaration without prototype |
 | WIN30-C | `pass/testcases_win_api_misuse.c` | CreateFileA with NULL security attributes |
 
 Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known limitation" src/rules/cert_c/**/pass/*.c src/analyze/*.rs`
