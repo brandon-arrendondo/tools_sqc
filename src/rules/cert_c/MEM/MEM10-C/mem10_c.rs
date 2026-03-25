@@ -65,6 +65,7 @@ impl CertRule for Mem10C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_pointer_validation(node, source, &mut violations);
+        self.check_sizeof_pointer_misuse(node, source, &mut violations);
         violations
     }
 }
@@ -250,6 +251,168 @@ impl Mem10C {
             }
         }
 
+        false
+    }
+
+    /// Check for sizeof(pointer) misuse in allocation/memory functions.
+    /// Detects patterns like `malloc(sizeof(ptr))` where ptr is a pointer variable
+    /// (should be `sizeof(*ptr)`) and `memset(buf, 0, sizeof(buf))` where buf is
+    /// a pointer parameter.
+    fn check_sizeof_pointer_misuse(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "call_expression" {
+            if let Some(func) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&func, source);
+                if matches!(
+                    func_name,
+                    "malloc" | "calloc" | "realloc" | "memset" | "memcpy" | "memmove"
+                ) {
+                    if let Some(args) = node.child_by_field_name("arguments") {
+                        self.check_sizeof_args_in_call(func_name, &args, node, source, violations);
+                    }
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_sizeof_pointer_misuse(&child, source, violations);
+            }
+        }
+    }
+
+    /// Check arguments of memory functions for sizeof(pointer) misuse
+    fn check_sizeof_args_in_call(
+        &self,
+        func_name: &str,
+        args: &Node,
+        call_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let mut cursor = args.walk();
+        for child in args.children(&mut cursor) {
+            if child.kind() == "(" || child.kind() == ")" || child.kind() == "," {
+                continue;
+            }
+            // Check this argument and any nested sizeof within it
+            self.find_sizeof_pointer_in_expr(&child, func_name, call_node, source, violations);
+        }
+    }
+
+    /// Recursively look for sizeof(identifier) where identifier is a pointer
+    fn find_sizeof_pointer_in_expr(
+        &self,
+        node: &Node,
+        func_name: &str,
+        call_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "sizeof_expression" {
+            // sizeof can be `sizeof(expr)` or `sizeof expr`
+            // Look for a parenthesized_expression containing a single identifier
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "parenthesized_expression" {
+                        // Get inner: sizeof(X) — check if X is an identifier
+                        if let Some(inner) = child.child(1) {
+                            if inner.kind() == "identifier" {
+                                let var_name = get_node_text(&inner, source);
+                                if self.is_pointer_variable(&inner, var_name, source) {
+                                    violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        message: format!(
+                                            "sizeof({}) returns the size of a pointer ({}), not the pointed-to data. \
+                                             Use sizeof(*{}) or sizeof(type) in {}() call.",
+                                            var_name,
+                                            if cfg!(target_pointer_width = "64") { "8 bytes" } else { "4 bytes" },
+                                            var_name,
+                                            func_name,
+                                        ),
+                                        severity: Severity::Medium,
+                                        line: node.start_position().row + 1,
+                                        column: node.start_position().column + 1,
+                                        file_path: String::new(),
+                                        suggestion: Some(format!(
+                                            "Replace sizeof({}) with sizeof(*{}) to get the size of the pointed-to type",
+                                            var_name, var_name,
+                                        )),
+                                        requires_manual_review: Some(false),
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return; // Don't recurse into sizeof
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.find_sizeof_pointer_in_expr(&child, func_name, call_node, source, violations);
+            }
+        }
+    }
+
+    /// Check if a variable is declared as a pointer type by walking up to the
+    /// enclosing function and scanning declarations and parameters.
+    fn is_pointer_variable(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        // Walk up to enclosing function
+        let mut current = node.parent();
+        while let Some(p) = current {
+            if p.kind() == "function_definition" {
+                // Check parameters
+                if self.is_pointer_param(&p, var_name, source) {
+                    return true;
+                }
+                // Check local declarations in function body
+                if let Some(body) = p.child_by_field_name("body") {
+                    if self.is_pointer_local_var(&body, var_name, source) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            current = p.parent();
+        }
+        false
+    }
+
+    /// Check if var_name is declared as a pointer parameter
+    fn is_pointer_param(&self, func_node: &Node, var_name: &str, source: &str) -> bool {
+        let params = self.extract_pointer_param_names(func_node, source);
+        params.contains(var_name)
+    }
+
+    /// Check if var_name is a local pointer variable
+    fn is_pointer_local_var(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        let mut cursor = body.walk();
+        for child in body.children(&mut cursor) {
+            if child.kind() == "declaration" {
+                // Check if the declaration has a pointer declarator for this var
+                let mut decl_cursor = child.walk();
+                for decl_child in child.children(&mut decl_cursor) {
+                    if decl_child.kind() == "init_declarator" {
+                        if let Some(declarator) = decl_child.child_by_field_name("declarator") {
+                            if declarator.kind() == "pointer_declarator" {
+                                if let Some(id) = find_identifier_in_node(&declarator, source) {
+                                    if id == var_name {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         false
     }
 }

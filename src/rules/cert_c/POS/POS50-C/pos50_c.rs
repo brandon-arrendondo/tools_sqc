@@ -49,6 +49,7 @@ impl CertRule for Pos50C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         self.check_node(node, source, &mut violations);
+        self.check_toctou(node, source, &mut violations);
         violations
     }
 }
@@ -298,5 +299,135 @@ impl Pos50C {
             current = n.parent();
         }
         None
+    }
+
+    // --- TOCTOU detection ---
+
+    /// Check if a function name is a filesystem check function (check phase of TOCTOU)
+    fn is_check_function(name: &str) -> bool {
+        matches!(
+            name,
+            "stat" | "lstat" | "fstat" | "access" | "faccessat" | "euidaccess"
+        )
+    }
+
+    /// Check if a function name is a filesystem use function (use phase of TOCTOU)
+    fn is_use_function(name: &str) -> bool {
+        matches!(
+            name,
+            "fopen"
+                | "open"
+                | "openat"
+                | "creat"
+                | "freopen"
+                | "remove"
+                | "unlink"
+                | "rename"
+                | "chmod"
+                | "chown"
+                | "truncate"
+                | "mkdir"
+                | "rmdir"
+                | "link"
+                | "symlink"
+        )
+    }
+
+    /// Extract the path argument from a check or use function call.
+    /// Returns the text of the first argument (which is the path for these functions).
+    fn extract_path_arg<'a>(call_node: &Node<'a>, source: &'a str) -> Option<&'a str> {
+        let args = call_node.child_by_field_name("arguments")?;
+        let mut cursor = args.walk();
+        for child in args.children(&mut cursor) {
+            if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
+                if child.kind() == "identifier" {
+                    return Some(get_node_text(&child, source));
+                }
+                return None; // Non-identifier first arg (e.g., string literal) — skip
+            }
+        }
+        None
+    }
+
+    /// Walk all function definitions and check for TOCTOU patterns.
+    fn check_toctou(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if node.kind() == "function_definition" {
+            if let Some(body) = node.child_by_field_name("body") {
+                self.check_toctou_in_body(&body, source, violations);
+            }
+        }
+
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.check_toctou(&child, source, violations);
+        }
+    }
+
+    /// Collect all call_expression nodes in order from a function body,
+    /// then look for check→use pairs on the same path variable.
+    fn check_toctou_in_body(&self, body: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        let mut calls: Vec<(String, String, usize, usize)> = Vec::new(); // (func_name, path_var, line, col)
+        self.collect_calls_in_order(body, source, &mut calls);
+
+        // Look for check→use pairs on the same path variable
+        for i in 0..calls.len() {
+            let (ref check_func, ref check_path, _, _) = calls[i];
+            if !Self::is_check_function(check_func) {
+                continue;
+            }
+            // Look for a subsequent use function on the same path
+            for (use_func, use_path, use_line, use_col) in calls.iter().skip(i + 1) {
+                if Self::is_use_function(use_func) && check_path == use_path {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        line: *use_line,
+                        column: *use_col,
+                        file_path: String::new(),
+                        message: format!(
+                            "TOCTOU race condition: {}() checks '{}' then {}() uses it. \
+                             The file state may change between the check and use.",
+                            check_func, check_path, use_func
+                        ),
+                        suggestion: Some(
+                            "Use atomic file operations (e.g., open() with O_CREAT|O_EXCL) \
+                             instead of separate check-then-use sequences."
+                                .to_string(),
+                        ),
+                        requires_manual_review: None,
+                    });
+                    break; // Only flag first use after this check
+                }
+            }
+        }
+    }
+
+    /// Collect function calls in source order from a subtree
+    fn collect_calls_in_order(
+        &self,
+        node: &Node,
+        source: &str,
+        calls: &mut Vec<(String, String, usize, usize)>,
+    ) {
+        if node.kind() == "call_expression" {
+            if let Some(func) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&func, source);
+                if Self::is_check_function(func_name) || Self::is_use_function(func_name) {
+                    if let Some(path_var) = Self::extract_path_arg(node, source) {
+                        calls.push((
+                            func_name.to_string(),
+                            path_var.to_string(),
+                            node.start_position().row + 1,
+                            node.start_position().column + 1,
+                        ));
+                    }
+                }
+            }
+        }
+
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.collect_calls_in_order(&child, source, calls);
+        }
     }
 }
