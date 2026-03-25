@@ -1475,4 +1475,326 @@ mod tests {
             assert_eq!(result, Some(30));
         }
     }
+
+    // --- Tests for sizeof resolution ---
+
+    #[test]
+    fn test_resolve_sizeof_type_basic() {
+        assert_eq!(resolve_sizeof_type("char"), Some(1));
+        assert_eq!(resolve_sizeof_type("unsigned char"), Some(1));
+        assert_eq!(resolve_sizeof_type("int8_t"), Some(1));
+        assert_eq!(resolve_sizeof_type("bool"), Some(1));
+        assert_eq!(resolve_sizeof_type("_Bool"), Some(1));
+        assert_eq!(resolve_sizeof_type("short"), Some(2));
+        assert_eq!(resolve_sizeof_type("uint16_t"), Some(2));
+        assert_eq!(resolve_sizeof_type("int"), Some(4));
+        assert_eq!(resolve_sizeof_type("unsigned int"), Some(4));
+        assert_eq!(resolve_sizeof_type("float"), Some(4));
+        assert_eq!(resolve_sizeof_type("wchar_t"), Some(4));
+        assert_eq!(resolve_sizeof_type("long"), Some(8));
+        assert_eq!(resolve_sizeof_type("double"), Some(8));
+        assert_eq!(resolve_sizeof_type("size_t"), Some(8));
+        assert_eq!(resolve_sizeof_type("long double"), Some(16));
+    }
+
+    #[test]
+    fn test_resolve_sizeof_type_pointers() {
+        assert_eq!(resolve_sizeof_type("int *"), Some(8));
+        assert_eq!(resolve_sizeof_type("char *"), Some(8));
+        assert_eq!(resolve_sizeof_type("void *"), Some(8));
+    }
+
+    #[test]
+    fn test_resolve_sizeof_type_unknown() {
+        assert_eq!(resolve_sizeof_type("struct foo"), None);
+        assert_eq!(resolve_sizeof_type("my_custom_type"), None);
+    }
+
+    #[test]
+    fn test_resolve_sizeof_node_ast() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = sizeof(int);\n";
+        let tree = parser.parse(code, None).unwrap();
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        // Navigate to init_declarator → value (sizeof_expression)
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        let macros = MacroConstantMap::new();
+                        let result = try_evaluate_expr(&value, code, &macros);
+                        assert_eq!(result, Some(4), "sizeof(int) should be 4");
+                    }
+                }
+            }
+        }
+    }
+
+    // --- Tests for AST-based try_evaluate_expr branches ---
+
+    #[test]
+    fn test_try_evaluate_expr_unary() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = -42;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        assert_eq!(try_evaluate_expr(&value, code, &macros), Some(-42));
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_try_evaluate_expr_cast() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = (int)42;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        assert_eq!(try_evaluate_expr(&value, code, &macros), Some(42));
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_try_evaluate_expr_modulo() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = 17 % 5;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        assert_eq!(try_evaluate_expr(&value, code, &macros), Some(2));
+                    }
+                }
+            }
+        }
+    }
+
+    // --- Tests for try_evaluate_range ---
+
+    #[test]
+    fn test_try_evaluate_range_binary_ops() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = a + 10;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+        let mut var_ranges = VarRangeMap::new();
+        var_ranges.insert("a".to_string(), ValueRange::new(0, 50));
+
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        let range = try_evaluate_range(&value, code, &macros, &var_ranges);
+                        assert!(range.is_some());
+                        let r = range.unwrap();
+                        assert_eq!(r.min, 10);
+                        assert_eq!(r.max, 60);
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_try_evaluate_range_unary_neg() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = -a;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+        let mut var_ranges = VarRangeMap::new();
+        var_ranges.insert("a".to_string(), ValueRange::new(5, 10));
+
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        let range = try_evaluate_range(&value, code, &macros, &var_ranges);
+                        assert!(range.is_some());
+                        let r = range.unwrap();
+                        assert_eq!(r.min, -10);
+                        assert_eq!(r.max, -5);
+                    }
+                }
+            }
+        }
+    }
+
+    // --- Tests for expression_fits_in_signed/unsigned ---
+
+    #[test]
+    fn test_expression_fits_in_signed_simple() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = 100 + 200;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        assert!(expression_fits_in_signed(&value, code, &macros, 16));
+                        assert!(expression_fits_in_signed(&value, code, &macros, 32));
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_expression_fits_in_unsigned_simple() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = "int x = 100;\n";
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+
+        let root = tree.root_node();
+        let decl = root.child(0).unwrap();
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                if child.kind() == "init_declarator" {
+                    if let Some(value) = child.child_by_field_name("value") {
+                        assert!(expression_fits_in_unsigned(&value, code, &macros, 8));
+                        assert!(expression_fits_in_unsigned(&value, code, &macros, 16));
+                    }
+                }
+            }
+        }
+    }
+
+    // --- Tests for extract_loop_var_ranges ---
+
+    #[test]
+    fn test_extract_loop_var_ranges_for() {
+        let mut parser = tree_sitter::Parser::new();
+        parser.set_language(&tree_sitter_c::language()).unwrap();
+        let code = r#"
+void foo() {
+    for (int i = 0; i < 10; i++) {
+        int x = i;
+    }
+}
+"#;
+        let tree = parser.parse(code, None).unwrap();
+        let macros = MacroConstantMap::new();
+
+        // Navigate to the identifier "i" in "int x = i;"
+        fn find_identifier<'a>(
+            node: &tree_sitter::Node<'a>,
+            name: &str,
+            source: &str,
+        ) -> Option<tree_sitter::Node<'a>> {
+            if node.kind() == "identifier" && node.utf8_text(source.as_bytes()).ok() == Some(name) {
+                // Check this is an rvalue usage (inside init_declarator value)
+                if let Some(parent) = node.parent() {
+                    if parent.kind() != "init_declarator"
+                        || parent.child_by_field_name("value").map(|v| v.id()) == Some(node.id())
+                    {
+                        return Some(*node);
+                    }
+                }
+            }
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if let Some(found) = find_identifier(&child, name, source) {
+                        return Some(found);
+                    }
+                }
+            }
+            None
+        }
+
+        let root = tree.root_node();
+        // Find the "i" in the assignment "int x = i"
+        if let Some(i_node) = find_identifier(&root, "i", code) {
+            let ranges = extract_loop_var_ranges(&i_node, code, &macros);
+            if let Some(range) = ranges.get("i") {
+                assert!(
+                    range.max <= 9,
+                    "i should be bounded to < 10, got max={}",
+                    range.max
+                );
+            }
+        }
+    }
+
+    // --- Tests for strip_integer_suffix ---
+
+    #[test]
+    fn test_strip_integer_suffix_cases() {
+        assert_eq!(strip_integer_suffix("42ULL"), "42");
+        assert_eq!(strip_integer_suffix("42ull"), "42");
+        assert_eq!(strip_integer_suffix("42UL"), "42");
+        assert_eq!(strip_integer_suffix("42ul"), "42");
+        assert_eq!(strip_integer_suffix("42U"), "42");
+        assert_eq!(strip_integer_suffix("42u"), "42");
+        assert_eq!(strip_integer_suffix("42LL"), "42");
+        assert_eq!(strip_integer_suffix("42ll"), "42");
+        assert_eq!(strip_integer_suffix("42L"), "42");
+        assert_eq!(strip_integer_suffix("42l"), "42");
+        assert_eq!(strip_integer_suffix("42"), "42");
+    }
+
+    // --- Tests for try_evaluate_text edge cases ---
+
+    #[test]
+    fn test_try_evaluate_text_unary_negation() {
+        let macros = MacroConstantMap::new();
+        assert_eq!(try_evaluate_text("-5", &macros), Some(-5));
+        assert_eq!(try_evaluate_text("-0", &macros), Some(0));
+    }
+
+    #[test]
+    fn test_try_evaluate_text_comment_stripping() {
+        let macros = MacroConstantMap::new();
+        assert_eq!(try_evaluate_text("42 // comment", &macros), Some(42));
+    }
+
+    #[test]
+    fn test_try_evaluate_text_suffixed_literal() {
+        let macros = MacroConstantMap::new();
+        assert_eq!(try_evaluate_text("42ULL", &macros), Some(42));
+        assert_eq!(try_evaluate_text("100ul", &macros), Some(100));
+    }
+
+    #[test]
+    fn test_try_evaluate_text_empty_and_whitespace() {
+        let macros = MacroConstantMap::new();
+        assert_eq!(try_evaluate_text("", &macros), None);
+        assert_eq!(try_evaluate_text("  42  ", &macros), Some(42));
+    }
 }
