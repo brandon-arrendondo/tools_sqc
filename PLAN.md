@@ -10,6 +10,23 @@ For competitor research and academic references, see the [Developer Guide biblio
 
 ## Immediate Next Steps
 
+### Real-World Benchmark Runner Broken (Priority 1)
+
+v0.3.42 real-world runs failed on all codebases except libcrc. The MCP runner invokes `sqc_parallel_scan.py` with `-I` include path flags, but the script doesn't accept them — they get passed through as unrecognized arguments:
+
+```
+sqc_parallel_scan.py: error: unrecognized arguments: -I /usr/include -I /home/brandon/data/curl/lib
+```
+
+**Root cause**: `mcp_servers/server.py` (or the shell wrapper it calls) passes `-I` flags from the per-project config to `sqc_parallel_scan.py`, which only accepts `--sqc`, `-m`, `-e`, `-d`, `-j`, `--min-files`, `--prescan-cache-dir`, `--rebuild-prescan`. The `-I` flags need to either be added to the parallel scan script's argparse, or forwarded to the underlying `sqc` invocations via a passthrough mechanism.
+
+**Impact**: Can't get real-world benchmark data for any project that uses `-I` (curl, hostap, mosquitto, sqlite). Only libcrc works (no `-I` needed).
+
+**Fix options**:
+1. Add `-I` / `--include` to `sqc_parallel_scan.py` argparse and forward to each `sqc` subprocess
+2. Add a generic `--sqc-args` passthrough in the parallel scanner
+3. Fix the MCP runner to invoke `sqc` directly (not via parallel scanner) for projects where parallelization isn't needed
+
 ### Real-World FP Reduction — Top Rules (Priority 1)
 
 v0.3.39 per-rule data (all 5 codebases, 153.2K total violations, rules-benchmark.toml).
