@@ -14,6 +14,8 @@
 //! - if (geteuid() != 0)   // Function is called, result compared
 //! - if (do_xyz())         // Function is called, result used as boolean
 
+use std::collections::HashSet;
+
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use tree_sitter::Node;
@@ -43,22 +45,117 @@ impl CertRule for Exp16C {
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
-        self.check_node(node, source, &mut violations);
+        let function_names = self.collect_function_names(node, source);
+        self.check_node(node, source, &function_names, &mut violations);
         violations
     }
 }
 
 impl Exp16C {
-    fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    /// Collect all function names defined or declared in this translation unit.
+    fn collect_function_names(&self, node: &Node, source: &str) -> HashSet<String> {
+        let mut names = HashSet::new();
+        self.collect_function_names_recursive(node, source, &mut names);
+        names
+    }
+
+    fn collect_function_names_recursive(
+        &self,
+        node: &Node,
+        source: &str,
+        names: &mut HashSet<String>,
+    ) {
+        match node.kind() {
+            "function_definition" => {
+                if let Some(name) = self.extract_function_name(node, source) {
+                    names.insert(name);
+                }
+            }
+            "declaration" => {
+                // Forward declarations: check if declarator contains a function_declarator
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    if self.has_function_declarator(&declarator) {
+                        if let Some(name) = self.extract_declarator_name(&declarator, source) {
+                            names.insert(name);
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_function_names_recursive(&child, source, names);
+            }
+        }
+    }
+
+    fn extract_function_name(&self, func_def: &Node, source: &str) -> Option<String> {
+        let declarator = func_def.child_by_field_name("declarator")?;
+        self.extract_declarator_name(&declarator, source)
+    }
+
+    fn extract_declarator_name(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(node.utf8_text(source.as_bytes()).ok()?.to_string()),
+            "function_declarator" | "pointer_declarator" | "parenthesized_declarator" => {
+                let child = node.child_by_field_name("declarator")?;
+                self.extract_declarator_name(&child, source)
+            }
+            _ => {
+                // Walk children looking for an identifier
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if let Some(name) = self.extract_declarator_name(&child, source) {
+                            return Some(name);
+                        }
+                    }
+                }
+                None
+            }
+        }
+    }
+
+    fn has_function_declarator(&self, node: &Node) -> bool {
+        if node.kind() == "function_declarator" {
+            return true;
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.has_function_declarator(&child) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    fn check_node(
+        &self,
+        node: &Node,
+        source: &str,
+        function_names: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
         match node.kind() {
             // Check binary expressions for comparisons
             "binary_expression" => {
-                self.check_binary_expression(node, source, violations);
+                self.check_binary_expression(node, source, function_names, violations);
+            }
+            // Check for standalone comparison as expression statement (CWE-482)
+            // e.g., `x == 5;` where the result is discarded
+            "expression_statement" => {
+                self.check_dead_comparison(node, source, violations);
             }
             // Check if/while conditions for implicit boolean conversion
             "if_statement" | "while_statement" => {
                 if let Some(condition) = node.child_by_field_name("condition") {
-                    self.check_condition_for_implicit_conversion(&condition, source, violations);
+                    self.check_condition_for_implicit_conversion(
+                        &condition,
+                        source,
+                        function_names,
+                        violations,
+                    );
                 }
             }
             // Check parenthesized expressions in conditions
@@ -70,7 +167,12 @@ impl Exp16C {
                         for i in 0..node.child_count() {
                             if let Some(child) = node.child(i) {
                                 if child.kind() == "identifier" {
-                                    self.check_identifier_as_condition(&child, source, violations);
+                                    self.check_identifier_as_condition(
+                                        &child,
+                                        source,
+                                        function_names,
+                                        violations,
+                                    );
                                 }
                             }
                         }
@@ -83,7 +185,7 @@ impl Exp16C {
         // Recurse into children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations);
+                self.check_node(&child, source, function_names, violations);
             }
         }
     }
@@ -92,6 +194,7 @@ impl Exp16C {
         &self,
         node: &Node,
         source: &str,
+        function_names: &HashSet<String>,
         violations: &mut Vec<RuleViolation>,
     ) {
         // Get the operator
@@ -120,7 +223,7 @@ impl Exp16C {
         if let (Some(op), Some(left_node), Some(right_node)) = (operator, left, right) {
             if op == "==" || op == "!=" || op == "<" || op == ">" || op == "<=" || op == ">=" {
                 // Check if left side is a function identifier and right is a constant
-                if self.is_function_identifier(&left_node, source)
+                if self.is_function_identifier(&left_node, source, function_names)
                     && self.is_constant(&right_node, source)
                 {
                     let func_name = left_node.utf8_text(source.as_bytes()).unwrap_or("unknown");
@@ -143,7 +246,7 @@ impl Exp16C {
                 }
 
                 // Check if right side is a function identifier and left is a constant
-                if self.is_function_identifier(&right_node, source)
+                if self.is_function_identifier(&right_node, source, function_names)
                     && self.is_constant(&left_node, source)
                 {
                     let func_name = right_node.utf8_text(source.as_bytes()).unwrap_or("unknown");
@@ -168,10 +271,54 @@ impl Exp16C {
         }
     }
 
+    /// Detect `x == value;` as a standalone expression statement (CWE-482).
+    /// The comparison result is discarded — likely meant `x = value;`.
+    fn check_dead_comparison(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // expression_statement wraps one child expression + ";"
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "binary_expression" {
+                    // Check if operator is == or !=
+                    for j in 0..child.child_count() {
+                        if let Some(op) = child.child(j) {
+                            if op.kind() == "==" {
+                                let expr_text =
+                                    child.utf8_text(source.as_bytes()).unwrap_or("unknown");
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: self.severity(),
+                                    line: child.start_position().row + 1,
+                                    column: child.start_position().column + 1,
+                                    file_path: String::new(),
+                                    message: format!(
+                                        "Comparison '{}' used as statement with result discarded; did you mean '=' (assignment)?",
+                                        expr_text
+                                    ),
+                                    suggestion: Some(
+                                        "Use '=' for assignment instead of '==' for comparison"
+                                            .to_string(),
+                                    ),
+                                    requires_manual_review: None,
+                                });
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fn check_condition_for_implicit_conversion(
         &self,
         node: &Node,
         source: &str,
+        function_names: &HashSet<String>,
         violations: &mut Vec<RuleViolation>,
     ) {
         // Check for parenthesized expression containing just an identifier
@@ -179,7 +326,12 @@ impl Exp16C {
             for i in 0..node.child_count() {
                 if let Some(child) = node.child(i) {
                     if child.kind() == "identifier" {
-                        self.check_identifier_as_condition(&child, source, violations);
+                        self.check_identifier_as_condition(
+                            &child,
+                            source,
+                            function_names,
+                            violations,
+                        );
                     }
                 }
             }
@@ -190,10 +342,11 @@ impl Exp16C {
         &self,
         node: &Node,
         source: &str,
+        function_names: &HashSet<String>,
         violations: &mut Vec<RuleViolation>,
     ) {
         // An identifier used directly in a condition is implicitly compared to 0
-        if self.is_function_identifier(node, source) {
+        if self.is_function_identifier(node, source, function_names) {
             let func_name = node.utf8_text(source.as_bytes()).unwrap_or("unknown");
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
@@ -214,68 +367,51 @@ impl Exp16C {
         }
     }
 
-    fn is_function_identifier(&self, node: &Node, source: &str) -> bool {
+    fn is_function_identifier(
+        &self,
+        node: &Node,
+        source: &str,
+        function_names: &HashSet<String>,
+    ) -> bool {
         if node.kind() != "identifier" {
             return false;
         }
 
         let name = node.utf8_text(source.as_bytes()).unwrap_or("");
 
-        // Check if this identifier is NOT followed by parentheses (i.e., not a function call)
-        // by looking at the parent node
+        // If this identifier is being called (parent is call_expression), it's fine
         if let Some(parent) = node.parent() {
-            // If the parent is a call_expression and this is the function being called,
-            // then it's being called properly - not a violation
             if parent.kind() == "call_expression" {
                 if let Some(func) = parent.child_by_field_name("function") {
                     if func.id() == node.id() {
-                        return false; // This is a proper function call
+                        return false;
                     }
                 }
             }
         }
 
-        // Check for common function names that are likely functions
-        // This heuristic helps identify functions without full semantic analysis
-        let common_functions = [
+        // Check against function names collected from the AST
+        if function_names.contains(name) {
+            return true;
+        }
+
+        // Fallback: well-known standard library functions
+        const KNOWN_FUNCTIONS: &[&str] = &[
             "getuid", "geteuid", "getgid", "getegid", "getpid", "getppid", "fork", "exit", "main",
             "printf", "scanf", "malloc", "free", "strlen", "strcpy", "strcat", "strcmp", "memcpy",
-            "memset", "fopen", "fclose", "fread", "fwrite",
+            "memset", "fopen", "fclose", "fread", "fwrite", "rand", "srand",
         ];
-
-        if common_functions.contains(&name) {
-            return true;
-        }
-
-        // Also check for function declarations earlier in the source
-        // Look for patterns like: "type name(" or "name();"
-        let source_before = &source[..node.start_byte()];
-
-        // Check for function declaration pattern: "return_type name("
-        let decl_pattern = format!(" {}(", name);
-        let decl_pattern2 = format!("\n{}(", name);
-        let decl_pattern3 = format!("\t{}(", name);
-
-        if source_before.contains(&decl_pattern)
-            || source_before.contains(&decl_pattern2)
-            || source_before.contains(&decl_pattern3)
-        {
-            return true;
-        }
-
-        // Check for forward declaration: "type name(...);"
-        let forward_decl = format!("{} {}(", "", name);
-        if source_before.contains(&forward_decl) {
-            return true;
-        }
-
-        false
+        KNOWN_FUNCTIONS.contains(&name)
     }
 
-    fn is_constant(&self, node: &Node, _source: &str) -> bool {
-        matches!(
-            node.kind(),
-            "number_literal" | "char_literal" | "true" | "false"
-        )
+    fn is_constant(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "number_literal" | "char_literal" | "true" | "false" | "null" => true,
+            "identifier" => {
+                let text = node.utf8_text(source.as_bytes()).unwrap_or("");
+                text == "NULL" || text == "nullptr"
+            }
+            _ => false,
+        }
     }
 }

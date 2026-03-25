@@ -75,6 +75,36 @@ impl CertRule for Fio01C {
                     }
                 }
             }
+
+            // TOCTOU: access()/stat() followed by open()/fopen() on same filename
+            let has_access_check = operations
+                .iter()
+                .any(|op| matches!(op.op_type, FileOpType::AccessCheck));
+            let has_posix_open = operations
+                .iter()
+                .any(|op| matches!(op.op_type, FileOpType::PosixOpen | FileOpType::FileOpen));
+
+            if has_access_check && has_posix_open {
+                // Find the check operation for line info
+                for op in operations {
+                    if matches!(op.op_type, FileOpType::AccessCheck) {
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: self.severity(),
+                            message: format!(
+                                "TOCTOU race condition: file '{}' checked with {}() then opened. The file state may change between check and use.",
+                                var_name,
+                                op.func_name
+                            ),
+                            file_path: String::new(),
+                            line: op.line,
+                            column: op.column,
+                            suggestion: Some("Open the file directly and check the result instead of checking access/status first.".to_string()),
+                            ..Default::default()
+                        });
+                    }
+                }
+            }
         }
 
         violations
@@ -85,6 +115,7 @@ impl CertRule for Fio01C {
 #[allow(dead_code)]
 struct FileOp {
     op_type: FileOpType,
+    func_name: String,
     var_name: String,
     line: usize,
     column: usize,
@@ -93,12 +124,14 @@ struct FileOp {
 #[derive(Debug, Clone)]
 #[allow(dead_code)]
 enum FileOpType {
-    FileOpen,  // fopen
-    FileClose, // fclose
-    Remove,    // remove
-    Chmod,     // chmod
-    Open,      // open (POSIX)
-    FdChmod,   // fchmod (safe)
+    FileOpen,    // fopen
+    FileClose,   // fclose
+    Remove,      // remove
+    Chmod,       // chmod
+    Open,        // open (POSIX)
+    FdChmod,     // fchmod (safe)
+    AccessCheck, // access/stat/lstat — TOCTOU check
+    PosixOpen,   // open after check — TOCTOU use
 }
 
 impl FileOpType {
@@ -110,6 +143,8 @@ impl FileOpType {
             FileOpType::Chmod => "chmod",
             FileOpType::Open => "open",
             FileOpType::FdChmod => "fchmod",
+            FileOpType::AccessCheck => "access/stat",
+            FileOpType::PosixOpen => "open",
         }
     }
 }
@@ -157,80 +192,36 @@ impl Fio01C {
 
             // Get the arguments
             if let Some(args_node) = node.child_by_field_name("arguments") {
-                match func_name {
-                    "fopen" => {
-                        // fopen(file_name, mode)
-                        if let Some(first_arg) = args_node.child(1) {
-                            if first_arg.kind() == "identifier" {
-                                let var_name = get_node_text(&first_arg, source);
-                                let op = FileOp {
-                                    op_type: FileOpType::FileOpen,
-                                    var_name: var_name.to_string(),
-                                    line: node.start_position().row + 1,
-                                    column: node.start_position().column + 1,
-                                };
-                                file_name_vars
-                                    .entry(var_name.to_string())
-                                    .or_default()
-                                    .push(op);
-                            }
+                let op_type = match func_name {
+                    "fopen" => Some(FileOpType::FileOpen),
+                    "remove" => Some(FileOpType::Remove),
+                    "chmod" => Some(FileOpType::Chmod),
+                    "fclose" => Some(FileOpType::FileClose),
+                    // TOCTOU check functions (including Juliet macros)
+                    "access" | "ACCESS" | "_access" => Some(FileOpType::AccessCheck),
+                    "stat" | "STAT" | "_stat" | "lstat" => Some(FileOpType::AccessCheck),
+                    // TOCTOU use functions
+                    "open" | "OPEN" | "_open" => Some(FileOpType::PosixOpen),
+                    _ => None,
+                };
+
+                if let Some(op_type) = op_type {
+                    if let Some(first_arg) = args_node.child(1) {
+                        if first_arg.kind() == "identifier" {
+                            let var_name = get_node_text(&first_arg, source);
+                            let op = FileOp {
+                                op_type,
+                                func_name: func_name.to_string(),
+                                var_name: var_name.to_string(),
+                                line: node.start_position().row + 1,
+                                column: node.start_position().column + 1,
+                            };
+                            file_name_vars
+                                .entry(var_name.to_string())
+                                .or_default()
+                                .push(op);
                         }
                     }
-                    "remove" => {
-                        // remove(file_name)
-                        if let Some(first_arg) = args_node.child(1) {
-                            if first_arg.kind() == "identifier" {
-                                let var_name = get_node_text(&first_arg, source);
-                                let op = FileOp {
-                                    op_type: FileOpType::Remove,
-                                    var_name: var_name.to_string(),
-                                    line: node.start_position().row + 1,
-                                    column: node.start_position().column + 1,
-                                };
-                                file_name_vars
-                                    .entry(var_name.to_string())
-                                    .or_default()
-                                    .push(op);
-                            }
-                        }
-                    }
-                    "chmod" => {
-                        // chmod(file_name, mode)
-                        if let Some(first_arg) = args_node.child(1) {
-                            if first_arg.kind() == "identifier" {
-                                let var_name = get_node_text(&first_arg, source);
-                                let op = FileOp {
-                                    op_type: FileOpType::Chmod,
-                                    var_name: var_name.to_string(),
-                                    line: node.start_position().row + 1,
-                                    column: node.start_position().column + 1,
-                                };
-                                file_name_vars
-                                    .entry(var_name.to_string())
-                                    .or_default()
-                                    .push(op);
-                            }
-                        }
-                    }
-                    "fclose" => {
-                        // Track but don't report
-                        if let Some(first_arg) = args_node.child(1) {
-                            if first_arg.kind() == "identifier" {
-                                let var_name = get_node_text(&first_arg, source);
-                                let op = FileOp {
-                                    op_type: FileOpType::FileClose,
-                                    var_name: var_name.to_string(),
-                                    line: node.start_position().row + 1,
-                                    column: node.start_position().column + 1,
-                                };
-                                file_name_vars
-                                    .entry(var_name.to_string())
-                                    .or_default()
-                                    .push(op);
-                            }
-                        }
-                    }
-                    _ => {}
                 }
             }
         }
