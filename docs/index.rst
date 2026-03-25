@@ -26,5 +26,6 @@ testing methodology, project internals, and contributing.
    benchmark-setup
    benchmark-running
    project-structure
+   future-rulesets
    contributing
    bibliography
