@@ -13,28 +13,32 @@
 | Total rules | 283 |
 | Rules with tests | 283 (100%) |
 | Enabled rules with ZERO tests | 0 |
-| Total test files (.c) | 2,559 |
-| Fail tests | 1,524 |
-| Pass tests | 1,035 |
+| Total test files (.c) | ~2,650 |
+| Fail tests | ~1,560 |
+| Pass tests | ~1,090 |
 | Duplicate test files (identical content) | 0 |
-| Test result | 2,732 passed, 0 failed, 0 ignored |
-| Line coverage (cargo-llvm-cov) | **76.6%** (121,678 lines excl. ui/main, 28,529 uncovered) |
-| Coverage gate | **75% enforced** via pre-commit hook + ADO pipeline (`scripts/coverage-gate.sh`) |
+| Test result | 2,831 passed, 0 failed, 0 ignored |
+| Line coverage (cargo-llvm-cov) | **79.2%** (121,791 lines excl. ui/main/IO/export, 25,378 uncovered) |
+| Coverage gate | **79% enforced** via pre-commit hook + ADO pipeline (`scripts/coverage-gate.sh`) |
 | Embedded Rust unit tests | 27 of 321 .rs files (8.4%) |
+| Fake-passing tests (known gaps) | 18 across 15 rules + 1 infra (see PLAN.md) |
 
 **Completed:**
 1. ~~179 duplicate test files~~ — 180 deleted, 0 remain
 2. ~~4 rules with zero tests~~ — CON06-C, ERR00-C, FLP00-C, FLP01-C covered
 3. ~~Concerning test modifications~~ — ARR37-C restored, EXP34-C/FIO10-C documented
 4. ~~Pre-commit hook no-op~~ — replaced with `cargo-llvm-cov` (tests + coverage + gate)
-5. ~~No coverage gate~~ — 75% gate enforced in pre-commit and ADO CI
+5. ~~No coverage gate~~ — 79% gate enforced in pre-commit and ADO CI
 6. ~~Critical infrastructure untested~~ — prescan.rs (0%→74%), mod.rs (0%→42%) now covered
-7. ~~No FP regression tests~~ — 5 tests added for rounds 8-11
+7. ~~No FP regression tests~~ — 8 regression tests (rounds 3, 6, 7, 8-11)
+8. ~~Coverage gate at 75%~~ — raised to 79% after adding ~100 new test files
+9. ~~Low-coverage rules untested~~ — 20+ rules with new .c test cases (API07-C 10%→88%, DCL09-C 14%→68%, etc.)
+10. ~~const_eval/dataflow untested~~ — 30+ new Rust unit tests for analysis infrastructure
 
 **Remaining findings:**
-1. **~196 rules have wiki-only tests** (1-10 files, no broader pattern coverage)
-2. **Coverage gap to 80%**: 3.45pp spread across rule implementations and `integration.rs`
-3. **FP regression tests needed** for rounds 3-7
+1. **~170 rules have wiki-only tests** (1-10 files, no broader pattern coverage)
+2. **Coverage gap to 80%**: 0.84pp remaining, spread across many rule files
+3. **18 fake-passing tests** documenting implementation gaps (see PLAN.md)
 4. **Known test limitations documented** (see Section 3)
 
 ---

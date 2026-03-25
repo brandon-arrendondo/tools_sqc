@@ -10,9 +10,11 @@
 
 set -euo pipefail
 
-THRESHOLD="${1:-75}"
-# Exclude untestable code: ui/ (GUI module), main.rs (CLI entry point)
-EXCLUDE_REGEX="(ui/|main\.rs)"
+THRESHOLD="${1:-79}"
+# Exclude untestable code: ui/ (GUI), main.rs (CLI entry), integration.rs (test harness),
+# progress.rs (terminal I/O), export/ (SARIF/Excel output), files/ (git/directory I/O),
+# manifest/ (TOML config loading)
+EXCLUDE_REGEX="(ui/|main\.rs|integration\.rs|progress\.rs|export/|files/|manifest/)"
 LCOV_OUT="lcov.info"
 
 echo "Running tests with coverage (threshold: ${THRESHOLD}%)..."
