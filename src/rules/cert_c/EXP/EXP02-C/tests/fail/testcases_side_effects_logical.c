@@ -1,0 +1,32 @@
+/*
+ * Rule: EXP02-C
+ * Source: testcases
+ * Status: FAIL - Side effects in short-circuit logical operators
+ */
+
+#include <stdlib.h>
+
+/* Increment in && right operand */
+int side_effect_and(int a, int *count) {
+    if (a > 0 && ++(*count) > 10) {
+        return 1;
+    }
+    return 0;
+}
+
+/* Assignment in || right operand */
+int side_effect_or(int *p, int *q) {
+    if (p != NULL || (q = malloc(sizeof(int))) != NULL) {
+        return 1;
+    }
+    return 0;
+}
+
+/* Function call with side effects in && */
+int get_next(void);
+int side_effect_call(int flag) {
+    if (flag && get_next() > 0) {
+        return 1;
+    }
+    return 0;
+}
