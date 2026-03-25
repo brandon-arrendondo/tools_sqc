@@ -1,8 +1,8 @@
 # Test Infrastructure Audit Report
 
-**Date**: 2026-03-24 (updated 2026-03-24)
+**Date**: 2026-03-24 (updated 2026-03-25)
 **Version**: v0.3.39
-**Branch**: infra/test-coverage-79pct
+**Branch**: main
 
 ---
 
@@ -13,13 +13,13 @@
 | Total rules | 283 |
 | Rules with tests | 283 (100%) |
 | Enabled rules with ZERO tests | 0 |
-| Total test files (.c) | 2,632 |
-| Fail tests | 1,584 |
-| Pass tests | 1,048 |
+| Total test files (.c) | ~2,730 |
+| Fail tests | ~1,630 |
+| Pass tests | ~1,100 |
 | Duplicate test files (identical content) | 0 |
-| Test result | 2,831 passed, 0 failed, 0 ignored |
-| Line coverage (cargo-llvm-cov) | **79.2%** (121,791 lines excl. ui/main/IO/export, 25,378 uncovered) |
-| Coverage gate | **79% enforced** via pre-commit hook + ADO pipeline (`scripts/coverage-gate.sh`) |
+| Test result | 2,947 passed, 0 failed, 0 ignored |
+| Line coverage (cargo-llvm-cov) | **80.1%** (124,904 lines excl. ui/main/IO/export, 24,908 uncovered) |
+| Coverage gate | **80% enforced** via pre-commit hook + ADO pipeline (`scripts/coverage-gate.sh`) |
 | Embedded Rust unit tests | 27 of 321 .rs files (8.4%) |
 | Fake-passing tests (known gaps) | 18 across 15 rules + 1 infra (see PLAN.md) |
 
@@ -36,11 +36,13 @@
 10. ~~const_eval/dataflow untested~~ — 30+ new Rust unit tests for analysis infrastructure
 11. ~~integration.rs inflating uncovered lines~~ — excluded from coverage gate (test harness, not logic)
 
+12. ~~Coverage gap to 80%~~ — raised to **80%** after adding ~100 new .c test files + Rust unit tests across 30+ rules
+
 **Remaining findings:**
-1. **~170 rules have wiki-only tests** (1-10 files, no broader pattern coverage)
-2. **Coverage gap to 80%**: 0.84pp remaining, spread across many rule files
-3. **18 fake-passing tests** documenting implementation gaps (see PLAN.md)
-4. **Known test limitations documented** (see Section 3)
+1. **~150 rules have wiki-only tests** (1-10 files, no broader pattern coverage)
+2. **18 fake-passing tests** documenting implementation gaps (see PLAN.md)
+3. **Known test limitations documented** (see Section 3)
+4. **Known rule-level analysis gaps** (see Section 3, "Rule Implementation Gaps")
 
 ---
 
@@ -108,6 +110,21 @@ The majority of test modifications were genuinely necessary:
 | ARR37-C (`37eb1bd6`) | Pass test changed `const short *numb` to `const short numb[]` to work around tree-sitter parsing limitation. | **FIXED**: Restored `*numb` pointer syntax. Test passes — the tool now correctly handles pointer-syntax array parameters. |
 | FIO10-C (`4725663e`) | Pass test had `rename()` with error checking (POSIX compliant per CERT wiki). Changed to add `access()+remove()` before rename. | **Documented**: The CERT wiki's compliant POSIX example uses plain `rename()` with error checking, but the rule requires explicit destination handling. Test retains the `access()` workaround with a TODO comment to fix the rule. |
 
+### Rule Implementation Gaps (discovered during test coverage work)
+
+The following rule-level analysis limitations were discovered while writing test cases. These are cases where valid C patterns should pass/fail but the rule implementation cannot detect them correctly.
+
+| Rule | Gap | Impact |
+|------|-----|--------|
+| INT00-C | `find_type_in_source()` only matches `TYPE VAR;` or `TYPE VAR,`, not `TYPE VAR = expr;`. Variables with initializers get type "unknown". | Format specifier checks cannot validate `%ld` with `long x = 42;` — only uninitialized vars or function params are type-resolved. |
+| INT08-C | Rule does not recognize `SHRT_MAX` / `CHAR_MAX` guard checks before narrow-type arithmetic. `if (val < SHRT_MAX) { short result = val + 1; }` still triggers. | Narrow-type arithmetic inside validated bounds still produces FPs. |
+| INT34-C | `is_likely_unsigned()` parameter declaration check doesn't traverse tree-sitter's `function_definition → declarator → function_declarator → parameters` hierarchy. Only naming conventions (`ui_`, `u_`, `unsigned_`) work. | Unsigned right-shifts (`x >> amount`) are flagged unless variable names use the convention prefix. |
+| INT34-C | `checks_shift_bounds()` doesn't handle reversed comparison form `N <= var` (only `var >= N`). | `if (32 <= amount) { return; }` is not recognized as validation. |
+| POS50-C | `is_declared_in_function()` doesn't distinguish `static` from automatic storage. `static int x` declared inside a function body is still flagged. | Static locals passed to `pthread_create()` produce FPs. |
+| FLP00-C | Only detects float equality in `if`-conditions, not in return statements or assignments. | `return a == b;` is not flagged. |
+| EXP40-C | `is_const_qualified()` returns false for identifiers — cannot determine if a variable was declared `const` without a symbol table. | Only works with `const` literally in the RHS expression text. |
+| STR03-C | `strncpy()` and `snprintf()` always trigger violations regardless of whether null-termination is manually added afterward. | No way to write a pass test involving these functions. |
+
 ---
 
 ## 4. Coverage Gaps
@@ -141,7 +158,7 @@ The majority of test modifications were genuinely necessary:
 
 ### 4D. Rust Source Code Coverage
 
-Coverage is enforced at **79% line coverage** via `scripts/coverage-gate.sh`, shared by pre-commit hook and ADO CI pipeline. The script:
+Coverage is enforced at **80% line coverage** via `scripts/coverage-gate.sh`, shared by pre-commit hook and ADO CI pipeline. The script:
 - Runs tests via `cargo llvm-cov`
 - Produces `lcov.info` (publishable as CI artifact)
 - Excludes from threshold: `ui/` (GUI), `main.rs` (CLI entry), `integration.rs` (test harness), `progress.rs` (terminal I/O), `export/` (SARIF/Excel output), `files/` (git/directory I/O), `manifest/` (TOML config loading)
@@ -170,9 +187,9 @@ Coverage is enforced at **79% line coverage** via `scripts/coverage-gate.sh`, sh
 ### What the Test Suite Does Well
 
 - **Full rule coverage**: 283 of 283 rules have at least one test
-- **All tests pass**: 2,732/2,732 with 0 failures
+- **All tests pass**: 2,947/2,947 with 0 failures
 - **Zero duplicates**: All test files are unique
-- **Coverage gate enforced**: 75% line coverage via pre-commit + CI (`scripts/coverage-gate.sh`)
+- **Coverage gate enforced**: 80% line coverage via pre-commit + CI (`scripts/coverage-gate.sh`)
 - **Auto-generation from `.c` files**: Low friction to add new tests (drop a `.c` file, rebuild)
 - **Test report generation**: `docs/test-summary.md` auto-generated with per-rule pass rates
 - **Analysis infrastructure well-tested**: CFG, null state, value-range, const-eval, dataflow, prescan, and mod.rs all have `#[cfg(test)]` modules
@@ -195,29 +212,26 @@ All Priority 1 and 2 items completed on 2026-03-24:
 1. ~~Delete duplicate test files~~ — 180 deleted
 2. ~~Add tests for zero-test rules~~ — 7 tests (CON06-C, ERR00-C, FLP00-C, FLP01-C)
 3. ~~Address concerning test modifications~~ — ARR37-C restored, EXP34-C/FIO10-C documented
-4. ~~Fix pre-commit hook~~ — replaced with `cargo-llvm-cov` (tests + coverage + 79% gate)
-5. ~~Coverage gate~~ — 79% enforced in pre-commit + ADO CI via `scripts/coverage-gate.sh`
+4. ~~Fix pre-commit hook~~ — replaced with `cargo-llvm-cov` (tests + coverage + gate)
+5. ~~Coverage gate~~ — 80% enforced in pre-commit + ADO CI via `scripts/coverage-gate.sh`
 6. ~~Prescan/mod.rs unit tests~~ — 38 tests added (prescan 0%→74%, mod.rs 0%→42%)
 7. ~~FP regression tests~~ — 8 tests for rounds 3, 6, 7, 8-11
 8. ~~Coverage output~~ — `lcov.info` produced by gate script, published in ADO pipeline
 
-### Next: Raise Coverage Gate to 80% (current: 79.2%)
+9. ~~Raise coverage gate to 80%~~ — **80% enforced** (80.06% actual). Added ~100 new .c test files + 25 Rust unit tests across 30+ rules and infrastructure.
 
-The 79% gate passes today. Reaching 80% requires ~0.84pp improvement. `integration.rs` (test harness) is already excluded from the gate. The gap is spread across many files — no single target dominates. Highest-impact areas:
+### Next: Raise Coverage Gate to 81%
+
+Current: 80.06% (24,908 uncovered of 124,904 lines). Reaching 81% requires ~0.94pp (~1,175 lines). Highest-impact remaining areas:
 
 | File | Uncovered Lines | Current Coverage | Path to Improve |
 |------|----------------:|-----------------:|-----------------|
-| `const_eval.rs` | 620 | 66.9% | Add tests for uncovered `try_evaluate_*` branches |
-| `INT34-C` | 582 | 41.0% | Add more `.c` test cases for integer conversion patterns |
-| `API07-C` | 518 | 10.2% | Add `.c` test cases (currently wiki-only) |
-| `DCL13-C` | 414 | 45.8% | Add `.c` test cases for const-correctness patterns |
-| `mod.rs` | 381 | 41.5% | `analyze_project` integration test (needs manifest + source fixture) |
-| `dataflow.rs` | 355 | 52.3% | Add tests for reaching-def edge cases |
-
-**Strategy**: Ratchet the threshold up as coverage improves. Each 1pp ≈ 1,200 newly-covered lines. Prioritize by impact:
-1. Add `.c` tests for INT34-C, API07-C, DCL13-C → +1-2pp from rule coverage
-2. Add `const_eval` and `dataflow` unit tests → +0.5-1pp
-3. Add `analyze_project` integration test → +0.3pp
+| `ARR38-C` | 759 | 70.7% | Add `.c` test cases for library-specific patterns |
+| `value_range.rs` | 567 | 70.9% | Add unit tests for uncovered condition/assignment handlers |
+| `ERR33-C` | 550 | 71.2% | Add more `.c` test cases for various stdlib error checks |
+| `INT31-C` | 516 | 70.1% | Add `.c` tests for integer conversion patterns |
+| `INT34-C` | 451 | 54.7% | Add `.c` tests exercising VRA and range-extraction paths |
+| `analyze/mod.rs` | 401 | 40.4% | `analyze_project` integration test (needs manifest + source fixture) |
 
 ### Next: Additional Regression Tests
 
