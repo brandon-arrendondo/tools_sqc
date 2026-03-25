@@ -175,15 +175,17 @@ Bugs discovered during test infrastructure improvements (2026-03-24):
 
 Current inventory (2026-03-25, 7 remaining — 7 fixed in v0.3.42, 4 fixed in this batch):
 
-| Rule/Component | Test File | What Should Fail |
-|----------------|-----------|-----------------|
-| EXP34-C | `pass/testcases_func_param.c` | Intra-file null deref via function parameter |
-| EXP34-C | `pass/testcases_list_null.c` | Same — NULL passed to function that dereferences |
-| EXP34-C | `pass/testcases_callback_null.c` | Same — callback receives NULL |
-| FIO10-C | `pass/wiki_posix.c` | POSIX rename() with error checking |
-| INT00-C | `pass/testcases_unsigned_wrap.c` | Unsigned wrap and mixed signed/unsigned comparison |
-| INT16-C | `pass/testcases_signed_unsigned_conversion.c` | Signed-to-unsigned conversion without range check |
-| WIN30-C | `pass/testcases_win_api_misuse.c` | CreateFileA with NULL security attributes |
+| Rule/Component | Test File | What Should Fail | Blocker |
+|----------------|-----------|-----------------|---------|
+| EXP34-C | `pass/testcases_func_param.c` | Intra-file null deref via function parameter | Test infra — see below |
+| EXP34-C | `pass/testcases_list_null.c` | Same — NULL passed to function that dereferences | Test infra — see below |
+| EXP34-C | `pass/testcases_callback_null.c` | Same — callback receives NULL | Test infra — see below |
+| FIO10-C | `pass/wiki_posix.c` | POSIX rename() with error checking | Rule design |
+| INT00-C | `pass/testcases_unsigned_wrap.c` | Unsigned wrap and mixed signed/unsigned comparison | Pattern mismatch — rule checks format specifiers/casts, not unsigned wrap |
+| INT16-C | `pass/testcases_signed_unsigned_conversion.c` | Signed-to-unsigned conversion without range check | Pattern mismatch — rule checks bitwise ops on signed ints, not conversion |
+| WIN30-C | `pass/testcases_win_api_misuse.c` | CreateFileA with NULL security attributes | Pattern mismatch — rule checks alloc/dealloc pairing, not security attrs |
+
+**EXP34-C analysis (2026-03-25)**: The inter-procedural null analysis (Phases 1-3, call-site propagation, multi-pass relay) **does detect these patterns** in real-world usage with `-d`/prescan. The blocker is the test infrastructure: `build.rs` generates tests that call `rule.check()` directly on a single parsed file with no prescan context. Without `set_project_context()`, `collect_param_pointer_state()` defaults pointer params to NotNull (line 1128 of `null_state.rs`). Fix requires test infra enhancement: either generate tests that build intra-file prescan before invoking the rule, or run these through `analyze_project` instead of `rule.check()`.
 
 Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known limitation" src/rules/cert_c/**/pass/*.c src/analyze/*.rs`
 
