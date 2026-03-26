@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-25 (v0.3.42 benchmarked)
+**Last Updated**: 2026-03-25 (v0.3.43)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
@@ -106,28 +106,16 @@ Require new analysis capabilities beyond current architecture:
 
 ### Zero-Detection CWEs — Remaining
 
-**Fixed in this batch**: CWE-480 (EXP16-C AST function collection + NULL recognition), CWE-482 (EXP16-C dead comparison detection), CWE-367 (FIO01-C access/stat+open TOCTOU).
+**Fixed in v0.3.42**: CWE-480, CWE-482, CWE-367 (see CHANGELOG). CWE-479 resolved by helper-outside-guards reclassification.
 
-**Already detected but benchmark can't classify**: CWE-479 (SIG30-C detects all 54 violations, but handler functions are defined at file scope outside `#ifndef OMITBAD` guards — analyzer classifies them as "unknown" instead of TP).
+### Benchmark Analyzer: Helper-Outside-Guards — COMPLETED (v0.3.42)
 
-### Benchmark Analyzer: Helper-Outside-Guards Pattern — COMPLETED
-
-**Fixed**: `parse_c_file_sections()` in `bench/analyzer.py` now performs call-graph analysis to reclassify helper functions defined outside `#ifndef OMITBAD`/`#ifndef OMITGOOD` guards. If a function is referenced exclusively from OMITBAD sections → TP. Exclusively from OMITGOOD → FP. Mixed references → "unknown". Handles both direct calls (`helperBad(x)`) and function pointer references (`signal(SIGINT, helperBad)`).
-
-**Audit results**: 7 CWEs use the helper-outside-guards pattern. 4 are currently in the fast-mode benchmark; 3 more will benefit when their CWE-matched rules are added:
-
-Currently scanned (reclassified in DB):
-- CWE-479 (18 files): 36 unknown → 36 TP (100% reclassified — was showing 0 detections)
-- CWE-416 (8 files): 16 unknown → 16 TP
-- CWE-366 (36 files): 5 of 6 unknown → 5 FP (1 stays unknown: mixed-reference variant 12)
-- CWE-377: 57 unknown → unchanged (`srand(time())` in `#ifdef INCLUDEMAIN` scaffolding, not helper pattern)
-
-Not yet scanned (no CWE-matched rules, fix will apply automatically when added):
-- CWE-364 Signal Handler Race Condition (18 files, same pattern as CWE-479)
+See CHANGELOG v0.3.42. Remaining CWEs that will auto-benefit when rules are added:
+- CWE-364 Signal Handler Race Condition (18 files)
 - CWE-674 Uncontrolled Recursion (2 files)
-- CWE-563 Unused Variable (2 files), CWE-561 Dead Code (1 file), CWE-398 Poor Code Quality (1 file)
+- CWE-563 Unused Variable (2 files), CWE-398 Poor Code Quality (1 file)
 
-**Impact**: +52 TP, +5 FP across all runs. TP rate 48.4% → 48.5%. All 18 historical runs retroactively corrected (969 total violations reclassified).
+(CWE-561 now has MSC12-C rule — v0.3.43)
 
 **Deferred — require new analysis capabilities or have low ROI**:
 
@@ -145,10 +133,7 @@ Not yet scanned (no CWE-matched rules, fix will apply automatically when added):
 | CWE-188 (data memory layout) | 36 | ARR32-C, EXP39-C | Struct padding/alignment analysis | High |
 | CWE-675 (duplicate ops on resource) | 224 | FIO24-C | FIO24-C detects in other CWEs; these need different patterns | Medium |
 | CWE-562 (return stack variable) | 2 | DCL30-C | Needs array-decay-to-pointer + address-of-local taint | Medium |
-| CWE-482 (comparing instead of assigning) | 18 | EXP16-C | **FIXED** — dead comparison detection |  |
-| CWE-480 (incorrect operator) | 18 | EXP16-C | **FIXED** — AST-based function name collection |  |
-
-7 formerly zero-detection CWEs resolved in v0.3.35–v0.3.36 and this batch (see CHANGELOG). 13 are Windows-only (not actionable).
+10 formerly zero-detection CWEs resolved in v0.3.35–v0.3.42 (see CHANGELOG). 13 are Windows-only (not actionable).
 
 **No unit tests for EXP16-C**: The .c test files exist under `tests/fail/` and `tests/pass/` but the build.rs-generated integration tests don't appear in `cargo test`. Needs investigation — may need explicit test registration.
 
@@ -198,33 +183,22 @@ Rounds 8–11 covered. Still needed:
 
 ### Implementation Bugs Found via Testing (Fix Queue)
 
-Bugs discovered during test infrastructure improvements (2026-03-24):
+Bugs discovered during test infrastructure improvements. 11 fixed in v0.3.42 (see CHANGELOG). Remaining:
 
 | Component | Bug | Severity | Test File |
 |-----------|-----|----------|-----------|
-| ~~`const_eval.rs`~~ | ~~Double-nested parens fail~~ | ~~Medium~~ | **FIXED v0.3.42** — loop-based paren stripping |
-| ~~DCL02-C~~ | ~~Function-scope declarations not checked~~ | ~~Medium~~ | **FIXED v0.3.42** — `init_declarator` + root-node traversal |
-| ~~EXP40-C~~ | ~~Only double-pointer const bypass detected~~ | ~~Medium~~ | **FIXED v0.3.42** — per-scope const variable tracking |
-| ~~STR34-C~~ | ~~init_declarator path not checked~~ | ~~Medium~~ | **FIXED v0.3.42** — parameter tracking + per-function scoping |
-| ~~CON34-C~~ | ~~Thread-unsafe functions not detected~~ | ~~Medium~~ | **FIXED v0.3.42** — banned function list |
-| ~~CON07-C~~ | ~~Unprotected shared variable access not detected~~ | ~~Medium~~ | **FIXED v0.3.42** — file-scope global collection |
-| ~~MSC38-C~~ | ~~Signal handler printf not detected~~ | ~~Medium~~ | **RECLASSIFIED** — test moved to SIG30-C (already detected) |
-| STR03-C | `strncpy` with prior `strlen` validation still flagged. Rule doesn't recognize `if (strlen(src) < dest_size)` as validation before `strncpy`. | Low | N/A (test adjusted to avoid strncpy) |
-| FIO10-C | Rule requires explicit `access()+remove()` before `rename()`, but CERT wiki's compliant POSIX example uses plain `rename()` with error checking. | Low | `tests/pass/wiki_posix.c` (TODO: fix rule to accept POSIX rename()) |
-| INT00-C | Unsigned subtraction without guard and mixed signed/unsigned comparison not detected. Rule may not check these patterns. | Medium | `tests/pass/testcases_unsigned_wrap.c` (TODO: move to fail/) |
-| INT16-C | Signed-to-unsigned conversion without range check not detected. `unsigned int u = signed_val;` produces no violation. | Medium | `tests/pass/testcases_signed_unsigned_conversion.c` (TODO: move to fail/) |
-| ~~ERR01-C~~ | ~~Missing errno check after strtol/sqrt not detected~~ | ~~Medium~~ | **FIXED** — errno-setting function detection |
-| ~~MEM10-C~~ | ~~`sizeof(pointer)` misuse in malloc/memset not detected~~ | ~~Medium~~ | **FIXED** — sizeof(pointer) detection in alloc/memory calls |
-| ~~POS50-C~~ | ~~TOCTOU race (`stat()` then `fopen()` on same path) not detected~~ | ~~Medium~~ | **FIXED** — check-then-use TOCTOU detection |
-| ~~DCL17-C~~ | ~~K&R style function declaration without prototype not detected~~ | ~~Low~~ | **FIXED** — K&R definition + empty param list detection |
-| WIN30-C | `CreateFileA` with NULL security attributes not detected. | Low | `tests/pass/testcases_win_api_misuse.c` (TODO: move to fail/) |
-| MEM04-C | `malloc(sizeof(int))` falsely flagged as "potentially zero size" — sizeof(int) is always > 0. | Low | N/A (FP, test adjusted) |
+| STR03-C | `strncpy` with prior `strlen` validation still flagged | Low | N/A (test adjusted to avoid strncpy) |
+| FIO10-C | POSIX `rename()` with error checking not accepted as compliant | Low | `tests/pass/wiki_posix.c` |
+| INT00-C | Unsigned subtraction without guard not detected | Medium | `tests/pass/testcases_unsigned_wrap.c` (TODO: move to fail/) |
+| INT16-C | Signed-to-unsigned conversion without range check not detected | Medium | `tests/pass/testcases_signed_unsigned_conversion.c` (TODO: move to fail/) |
+| WIN30-C | `CreateFileA` with NULL security attributes not detected | Low | `tests/pass/testcases_win_api_misuse.c` (TODO: move to fail/) |
+| MEM04-C | `malloc(sizeof(int))` falsely flagged as "potentially zero size" | Low | N/A (FP, test adjusted) |
 
 ### Fake-Passing Tests — Periodic Review Needed
 
 **Action item**: Periodically grep `tests/pass/` for `TODO.*move to fail` and `Known limitation` to find tests that pass only because the implementation has a gap. As each implementation bug above is fixed, move the corresponding test from `pass/` to `fail/` and verify it now triggers the expected violation.
 
-Current inventory (2026-03-25, 7 remaining — 7 fixed in v0.3.42, 4 fixed in this batch):
+Current inventory (2026-03-25, 7 remaining — 11 fixed in v0.3.42, see CHANGELOG):
 
 | Rule/Component | Test File | What Should Fail | Blocker |
 |----------------|-----------|-----------------|---------|

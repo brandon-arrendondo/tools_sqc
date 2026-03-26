@@ -138,7 +138,15 @@ pub fn analyze_project(
     if let Some(ref path) = toml_path {
         match suppression_manager.load_from_toml(path) {
             Ok(count) => {
-                eprintln!("Loaded {} suppressions from {}", count, path);
+                let wc = suppression_manager.wildcard_count();
+                if wc > 0 {
+                    eprintln!(
+                        "Loaded {} suppressions ({} wildcard) from {}",
+                        count, wc, path
+                    );
+                } else {
+                    eprintln!("Loaded {} suppressions from {}", count, path);
+                }
             }
             Err(e) => {
                 eprintln!("Warning: {}", e);
@@ -209,15 +217,16 @@ pub fn analyze_project(
 
                     // Partition into active and suppressed violations
                     for violation in file_violations {
-                        if let Some(suppression) = suppression_manager.should_suppress(
+                        if let Some(justification) = suppression_manager.should_suppress(
                             file_path,
                             rule_id,
                             violation.line,
                             &source,
+                            &violation.message,
                         ) {
                             suppressed.push(SuppressedViolation {
+                                justification: justification.to_string(),
                                 violation,
-                                justification: suppression.justification.clone(),
                             });
                         } else {
                             violations.push(violation);

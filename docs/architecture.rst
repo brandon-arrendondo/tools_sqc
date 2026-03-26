@@ -23,7 +23,7 @@ SqC uses a multi-pass analysis architecture:
     [Rule Evaluation] --> 283 CERT C rules applied to AST + CFG + context
         |
         v
-    [Suppression Filter] --> Hash-based suppression matching
+    [Suppression Filter] --> Hash-based + wildcard (glob/prefix) suppression
         |
         v
     [Export] --> CSV, XLSX, JSON, SARIF

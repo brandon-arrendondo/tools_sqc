@@ -53,6 +53,54 @@ For read-only codebases, place a ``.sqc-suppress.toml`` in the project root
 The ``file`` field matches by suffix -- ``ringbuffer.c`` matches any path ending
 in ``ringbuffer.c``.
 
+Wildcard Suppression
+--------------------
+
+For suppressing entire categories of violations without per-line hashes, use
+``[[wildcard]]`` entries. All specified fields are ANDed — a violation must match
+every field present. At least one matching field must be set.
+
+.. code-block:: toml
+
+    # Suppress a rule for all files under a directory
+    [[wildcard]]
+    file_glob = "src/vendor/**"
+    rule = "DCL31-C"
+    justification = "Vendor code, not our responsibility"
+
+    # Suppress all DCL rules for vendor code
+    [[wildcard]]
+    file_glob = "src/vendor/**"
+    rule_glob = "DCL*"
+    justification = "All DCL rules suppressed for vendor code"
+
+    # Suppress by function name prefix in violation messages
+    [[wildcard]]
+    rule = "DCL31-C"
+    function_prefix = "wolfSSL_"
+    justification = "wolfSSL library functions declared in external headers"
+
+    # Combine multiple conditions (all must match)
+    [[wildcard]]
+    file_glob = "tests/**"
+    rule_glob = "MEM*"
+    justification = "Memory rules relaxed in test code"
+
+**Fields:**
+
+- ``file_glob`` — Glob pattern for file paths. Supports ``*`` (any characters
+  except ``/``), ``**`` (any characters including ``/``), and ``?`` (single
+  character). Matched as a suffix against the full file path.
+- ``rule`` — Exact rule ID match (e.g., ``"DCL31-C"``).
+- ``rule_glob`` — Glob pattern for rule IDs (e.g., ``"DCL*"``, ``"INT3?-C"``).
+- ``function_prefix`` — Prefix to match in violation messages. Matches at word
+  boundaries, so ``"wolfSSL_"`` matches ``'wolfSSL_Init'`` but not
+  ``'myWolfSSL_Init'``.
+- ``justification`` — Explanation for the suppression (required).
+
+Wildcard suppressions are checked after inline comment and hash-matched
+suppressions. Hash-matched suppressions always take priority.
+
 Hash Details
 ------------
 
