@@ -127,6 +127,31 @@ impl Err01C {
         }
     }
 
+    /// Check if a function is known to set errno and requires errno checking
+    fn is_errno_setting_function(&self, name: &str) -> bool {
+        matches!(
+            name,
+            "strtol"
+                | "strtoll"
+                | "strtoul"
+                | "strtoull"
+                | "strtod"
+                | "strtof"
+                | "strtold"
+                | "strtoimax"
+                | "strtoumax"
+                | "sqrt"
+                | "pow"
+                | "log"
+                | "log10"
+                | "log2"
+                | "exp"
+                | "fmod"
+                | "asin"
+                | "acos"
+        )
+    }
+
     /// Check for errno usage after FILE stream operations
     fn check_errno_usage(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Check if this statement checks errno
@@ -157,9 +182,79 @@ impl Err01C {
         // Reset state for this function
         *self.file_stream_functions_seen.borrow_mut() = false;
 
-        // Traverse the function body
+        // Traverse the function body for FILE stream errno checks
         if let Some(body) = node.child_by_field_name("body") {
             self.traverse_block(&body, source, violations);
+
+            // Also check for errno-setting functions without errno check
+            self.check_errno_setting_functions(&body, source, violations);
+        }
+    }
+
+    /// Check for errno-setting functions (strtol, sqrt, etc.) called without
+    /// a subsequent errno check in the same function body.
+    fn check_errno_setting_functions(
+        &self,
+        body: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let mut errno_calls = Vec::new();
+        self.collect_errno_setting_calls(body, source, &mut errno_calls);
+
+        if errno_calls.is_empty() {
+            return;
+        }
+
+        // Check if errno is referenced anywhere in the function body
+        let body_has_errno = self.contains_errno(body, source);
+
+        if !body_has_errno {
+            // Flag each errno-setting function call
+            for (line, col, func_name) in errno_calls {
+                violations.push(RuleViolation {
+                    rule_id: "ERR01-C".to_string(),
+                    severity: Severity::Low,
+                    line,
+                    column: col,
+                    message: format!(
+                        "{}() can set errno but errno is not checked after the call",
+                        func_name
+                    ),
+                    file_path: String::new(),
+                    suggestion: Some(format!(
+                        "Set errno to 0 before calling {}() and check errno afterward to detect errors",
+                        func_name
+                    )),
+                    requires_manual_review: Some(false),
+                });
+            }
+        }
+    }
+
+    /// Collect all calls to errno-setting functions in a subtree
+    fn collect_errno_setting_calls(
+        &self,
+        node: &Node,
+        source: &str,
+        calls: &mut Vec<(usize, usize, String)>,
+    ) {
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&function, source);
+                if self.is_errno_setting_function(func_name) {
+                    calls.push((
+                        node.start_position().row + 1,
+                        node.start_position().column + 1,
+                        func_name.to_string(),
+                    ));
+                }
+            }
+        }
+
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.collect_errno_setting_calls(&child, source, calls);
         }
     }
 

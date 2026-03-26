@@ -1,5 +1,75 @@
 # SqC — Changelog
 
+## v0.3.43 (2026-03-25)
+
+### MSC12-C: Dead Code / No-Effect Detection (CWE-561)
+
+New rule implementing 4 detection patterns from CERT C wiki:
+
+- **No-effect expression statements** — comparison used as statement (`a == b;`),
+  bitwise/shift with discarded result (`x >> 3;`), wasted dereference (`*p++;`),
+  bare identifiers as statements
+- **Duplicate conditions in if/else-if chains** — second branch is dead code
+- **Redundant sub-expressions in logical operators** — `a == b && a == b`
+- **Meaningless `continue` at end of loop body**
+
+Exceptions: `(void)` casts (intentional suppression), function calls in
+conditions (side effects like `getc()`), function calls in logical
+sub-expressions.
+
+12 wiki tests (5 fail + 7 pass).
+
+### Wildcard Suppression in `.sqc-suppress.toml`
+
+New `[[wildcard]]` TOML section for suppressing violations by pattern without
+per-line hashes. All specified fields are ANDed — a violation must match every
+field present.
+
+- `file_glob` — glob pattern for file paths (`*`, `**`, `?`)
+- `rule` — exact rule ID match
+- `rule_glob` — glob pattern for rule IDs (e.g., `"DCL*"`)
+- `function_prefix` — prefix match in violation messages at word boundaries
+- `justification` — required explanation
+
+Hash-matched suppressions take priority over wildcards. Glob patterns compiled
+to regex at load time for efficient matching.
+
+## v0.3.42 (2026-03-25)
+
+### Rule Implementation Fixes (11 Rules)
+
+Bugs discovered via systematic test infrastructure review. 7 fixed in first
+batch, 4 more in second batch:
+
+- **const_eval.rs**: Double-nested parens now handled via loop-based stripping
+- **DCL02-C**: Function-scope declarations checked via `init_declarator` + root-node traversal
+- **EXP40-C**: Per-scope const variable tracking (was only double-pointer)
+- **STR34-C**: `init_declarator` path + parameter tracking + per-function scoping
+- **CON34-C**: Thread-unsafe function detection via banned function list
+- **CON07-C**: Unprotected shared variable access via file-scope global collection
+- **MSC38-C**: Test reclassified to SIG30-C (already detected)
+- **ERR01-C**: errno-setting function detection for strtol/sqrt
+- **MEM10-C**: `sizeof(pointer)` misuse detection in alloc/memory calls
+- **POS50-C**: TOCTOU race detection (`stat()` then `fopen()` on same path)
+- **DCL17-C**: K&R style function declaration + empty param list detection
+
+### Zero-Detection Juliet CWEs: CWE-480, CWE-482, CWE-367
+
+- **CWE-480** (EXP16-C): AST-based function name collection + NULL recognition
+- **CWE-482** (EXP16-C): Dead comparison detection
+- **CWE-367** (FIO01-C): `access()`/`stat()` + `open()` TOCTOU detection
+
+### Benchmark Analyzer: Helper-Outside-Guards Reclassification
+
+`parse_c_file_sections()` now performs call-graph analysis to reclassify helper
+functions defined outside `#ifndef OMITBAD`/`#ifndef OMITGOOD` guards. +52 TP,
++5 FP across all runs. 18 historical runs retroactively corrected (969 total
+violations reclassified).
+
+### Coverage Gate Raised to 80%
+
+Coverage gate raised from 79% to 80%. Current: 80.06%.
+
 ## v0.3.39 (2026-03-24)
 
 ### ARR36-C: Real-World FP Reduction (−82%)

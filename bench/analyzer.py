@@ -52,6 +52,9 @@ class CWEAnalysis:
 def parse_c_file_sections(filepath: str | Path) -> dict:
     """Parse a Juliet C file to identify OMITBAD/OMITGOOD line ranges and FLAW lines.
 
+    Also performs call-graph analysis to reclassify helper functions defined
+    outside guards but called exclusively from one guard section.
+
     Returns: {'bad_lines': set, 'good_lines': set, 'flaw_lines': set}
     """
     result = {'bad_lines': set(), 'good_lines': set(), 'flaw_lines': set()}
@@ -82,7 +85,125 @@ def parse_c_file_sections(filepath: str | Path) -> dict:
         elif in_good:
             result['good_lines'].add(i)
 
+    # Reclassify helper functions defined outside guards based on call sites
+    _reclassify_helpers(lines, result)
+
     return result
+
+
+# Matches file-scope function definitions (static or non-static, not indented)
+_FUNC_DEF_RE = re.compile(
+    r'^(?:static\s+)?'           # optional static
+    r'(?:[\w*\s]+\s+)'          # return type (may include pointers/qualifiers)
+    r'(\w+)'                     # function name (capture group 1)
+    r'\s*\([^)]*\)\s*$'         # parameter list, line ends after )
+)
+
+
+def _parse_function_ranges(lines: list[str]) -> dict[str, tuple[int, int]]:
+    """Find file-scope function definitions and their line ranges.
+
+    Returns: {func_name: (start_line, end_line)} using 1-based line numbers.
+    """
+    functions = {}
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        # Skip preprocessor directives and indented lines (not file-scope)
+        if line.startswith('#') or (line and line[0] in ' \t'):
+            i += 1
+            continue
+
+        m = _FUNC_DEF_RE.match(line.rstrip())
+        if m:
+            func_name = m.group(1)
+            # Look for opening brace on this line or next few lines
+            brace_line = None
+            for j in range(i, min(i + 3, len(lines))):
+                if '{' in lines[j]:
+                    brace_line = j
+                    break
+            if brace_line is not None:
+                # Track brace depth to find function end
+                depth = 0
+                start = i + 1  # 1-based
+                end = start
+                for j in range(brace_line, len(lines)):
+                    for ch in lines[j]:
+                        if ch == '{':
+                            depth += 1
+                        elif ch == '}':
+                            depth -= 1
+                            if depth == 0:
+                                end = j + 1  # 1-based
+                                functions[func_name] = (start, end)
+                                i = j + 1
+                                break
+                    if depth == 0 and func_name in functions:
+                        break
+                else:
+                    i += 1
+                continue
+        i += 1
+    return functions
+
+
+def _reclassify_helpers(lines: list[str], result: dict) -> None:
+    """Reclassify helper functions outside guards based on call-site analysis.
+
+    If a function defined outside both OMITBAD/OMITGOOD guards is called
+    exclusively from bad sections, its lines are added to bad_lines (TP).
+    If exclusively from good sections, added to good_lines (FP).
+    Mixed or uncalled functions stay unclassified (unknown).
+    """
+    bad_lines = result['bad_lines']
+    good_lines = result['good_lines']
+
+    functions = _parse_function_ranges(lines)
+    if not functions:
+        return
+
+    # Find functions defined outside both guard sections
+    outside_funcs = {}
+    for name, (start, end) in functions.items():
+        if start not in bad_lines and start not in good_lines:
+            outside_funcs[name] = (start, end)
+
+    if not outside_funcs:
+        return
+
+    # Scan classified lines for references to outside functions.
+    # Matches both direct calls (helperBad(...)) and function pointer
+    # references (signal(SIGINT, helperBad)).
+    calls_from_bad = set()   # func names referenced from bad sections
+    calls_from_good = set()  # func names referenced from good sections
+
+    # Pre-compile word-boundary patterns for each outside function
+    func_patterns = {
+        name: re.compile(r'(?<![a-zA-Z0-9_])' + re.escape(name) + r'(?![a-zA-Z0-9_])')
+        for name in outside_funcs
+    }
+
+    for i, line in enumerate(lines, start=1):
+        if i not in bad_lines and i not in good_lines:
+            continue
+        for func_name, pattern in func_patterns.items():
+            if pattern.search(line):
+                if i in bad_lines:
+                    calls_from_bad.add(func_name)
+                if i in good_lines:
+                    calls_from_good.add(func_name)
+
+    # Reclassify: extend bad_lines/good_lines for exclusively-called helpers
+    for func_name, (start, end) in outside_funcs.items():
+        in_bad_only = func_name in calls_from_bad and func_name not in calls_from_good
+        in_good_only = func_name in calls_from_good and func_name not in calls_from_bad
+        if in_bad_only:
+            for line_num in range(start, end + 1):
+                bad_lines.add(line_num)
+        elif in_good_only:
+            for line_num in range(start, end + 1):
+                good_lines.add(line_num)
 
 
 def parse_sqc_csv(csv_path: str | Path) -> dict:

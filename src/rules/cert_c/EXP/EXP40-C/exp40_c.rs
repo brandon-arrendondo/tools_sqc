@@ -1,6 +1,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashSet;
 use tree_sitter::Node;
 
 pub struct Exp40C;
@@ -29,33 +30,118 @@ impl CertRule for Exp40C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // Check for assignments that might remove const qualification
-        match node.kind() {
-            "assignment_expression" => {
-                check_assignment(node, source, &mut violations);
-            }
-            "init_declarator" => {
-                check_init_declarator(node, source, &mut violations);
-            }
-            "pointer_declarator" => {
-                check_pointer_assignment(node, source, &mut violations);
-            }
-            _ => {}
-        }
+        // Collect const-qualified variable names across the whole file
+        let mut const_vars = HashSet::new();
+        collect_const_vars(node, source, &mut const_vars);
 
-        // Recursively check child nodes
-        for i in 0..node.child_count() {
-            if let Some(child) = node.child(i) {
-                violations.extend(self.check(&child, source));
-            }
-        }
+        // Check for assignments that might remove const qualification
+        check_node_recursive(node, source, &const_vars, &mut violations);
 
         violations
     }
 }
 
+/// Collect all const-qualified variable names from declarations and parameters
+fn collect_const_vars(node: &Node, source: &str, const_vars: &mut HashSet<String>) {
+    match node.kind() {
+        "declaration" => {
+            // Check if declaration has const qualifier
+            let decl_text = get_node_text(node, source);
+            if decl_text.contains("const") {
+                // Extract variable names from this declaration
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() == "init_declarator" {
+                            if let Some(declarator) = child.child_by_field_name("declarator") {
+                                if let Some(name) = extract_var_name(&declarator, source) {
+                                    const_vars.insert(name);
+                                }
+                            }
+                        } else if child.kind() == "pointer_declarator"
+                            || child.kind() == "identifier"
+                        {
+                            if let Some(name) = extract_var_name(&child, source) {
+                                const_vars.insert(name);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        "parameter_declaration" => {
+            let param_text = get_node_text(node, source);
+            if param_text.contains("const") {
+                if let Some(declarator) = node.child_by_field_name("declarator") {
+                    if let Some(name) = extract_var_name(&declarator, source) {
+                        const_vars.insert(name);
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_const_vars(&child, source, const_vars);
+        }
+    }
+}
+
+/// Extract variable name from a declarator node
+fn extract_var_name(node: &Node, source: &str) -> Option<String> {
+    match node.kind() {
+        "identifier" => Some(get_node_text(node, source).to_string()),
+        "pointer_declarator" | "array_declarator" => {
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                return extract_var_name(&declarator, source);
+            }
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "identifier" {
+                        return Some(get_node_text(&child, source).to_string());
+                    }
+                }
+            }
+            None
+        }
+        _ => None,
+    }
+}
+
+fn check_node_recursive(
+    node: &Node,
+    source: &str,
+    const_vars: &HashSet<String>,
+    violations: &mut Vec<RuleViolation>,
+) {
+    match node.kind() {
+        "assignment_expression" => {
+            check_assignment(node, source, const_vars, violations);
+        }
+        "init_declarator" => {
+            check_init_declarator(node, source, const_vars, violations);
+        }
+        "pointer_declarator" => {
+            check_pointer_assignment(node, source, violations);
+        }
+        _ => {}
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            check_node_recursive(&child, source, const_vars, violations);
+        }
+    }
+}
+
 /// Check if an assignment removes const qualification
-fn check_assignment(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+fn check_assignment(
+    node: &Node,
+    source: &str,
+    _const_vars: &HashSet<String>,
+    violations: &mut Vec<RuleViolation>,
+) {
     if let (Some(left), Some(right)) = (
         node.child_by_field_name("left"),
         node.child_by_field_name("right"),
@@ -145,7 +231,12 @@ fn find_const_ptr_ptr_decl(node: &Node, var_name: &str, source: &str) -> bool {
 }
 
 /// Check init_declarator for const removal in initialization
-fn check_init_declarator(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+fn check_init_declarator(
+    node: &Node,
+    source: &str,
+    const_vars: &HashSet<String>,
+    violations: &mut Vec<RuleViolation>,
+) {
     // Get declarator and value
     if let Some(declarator) = node.child_by_field_name("declarator") {
         if let Some(value) = node.child_by_field_name("value") {
@@ -176,7 +267,7 @@ fn check_init_declarator(node: &Node, source: &str, violations: &mut Vec<RuleVio
                 // Skip if the parent declaration already has const qualifier
                 if !parent_has_const
                     && !contains_const_keyword(&declarator, source)
-                    && is_const_qualified(&value, source)
+                    && is_const_qualified(&value, source, const_vars)
                 {
                     report_violation(
                         node,
@@ -262,18 +353,17 @@ fn contains_const_keyword(node: &Node, source: &str) -> bool {
 }
 
 /// Check if a value is const-qualified
-fn is_const_qualified(node: &Node, source: &str) -> bool {
+fn is_const_qualified(node: &Node, source: &str, const_vars: &HashSet<String>) -> bool {
     match node.kind() {
         "pointer_expression" => {
             // &const_var
             if let Some(argument) = node.child_by_field_name("argument") {
-                return is_const_qualified(&argument, source);
+                return is_const_qualified(&argument, source, const_vars);
             }
         }
         "identifier" => {
-            // We'd need symbol table to know if identifier is const
-            // For now, check if we can find const in nearby context
-            return false;
+            let name = get_node_text(node, source);
+            return const_vars.contains(name);
         }
         _ => {
             // Check if node has const in its type

@@ -1,8 +1,7 @@
 /*
  * Rule: CON34-C
  * Source: testcases
- * Status: PASS - Known limitation: pattern not detected
- * TODO: Move to fail/ when implemented (see PLAN.md)
+ * Status: FAIL - thread-unsafe functions use internal static storage
  */
 
 #include <time.h>

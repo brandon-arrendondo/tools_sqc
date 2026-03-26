@@ -1,8 +1,7 @@
 /*
  * Rule: MEM10-C
  * Source: testcases
- * Status: PASS - Known limitation: sizeof(pointer) misuse not detected
- * TODO: Move to fail/ when sizeof(ptr) vs sizeof(*ptr) check is implemented (see PLAN.md)
+ * Status: FAIL - sizeof(pointer) misuse in allocation/memory functions
  */
 
 #include <stdlib.h>

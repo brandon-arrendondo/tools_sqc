@@ -26,11 +26,45 @@ pub struct TomlSuppressionEntry {
     pub justification: String,
 }
 
+/// A wildcard entry in `.sqc-suppress.toml` `[[wildcard]]` section.
+///
+/// All specified fields are ANDed: a violation must match every field present.
+/// At least one matching field (file_glob, rule, rule_glob, function_prefix) must be set.
+#[derive(Debug, Clone, Deserialize)]
+pub struct TomlWildcardEntry {
+    /// Glob pattern for file paths (e.g., `"src/vendor/**"`, `"**/*.generated.c"`).
+    #[serde(default)]
+    pub file_glob: Option<String>,
+    /// Exact rule ID match (e.g., `"DCL31-C"`).
+    #[serde(default)]
+    pub rule: Option<String>,
+    /// Glob pattern for rule IDs (e.g., `"DCL*"`, `"INT3*-C"`).
+    #[serde(default)]
+    pub rule_glob: Option<String>,
+    /// Prefix to match in violation messages (e.g., `"wolfSSL_"`).
+    /// Matches if the message contains an identifier starting with this prefix.
+    #[serde(default)]
+    pub function_prefix: Option<String>,
+    #[serde(default)]
+    pub justification: String,
+}
+
+/// Compiled wildcard suppression, ready for matching.
+struct CompiledWildcard {
+    file_glob: Option<regex::Regex>,
+    rule: Option<String>,
+    rule_glob: Option<regex::Regex>,
+    function_prefix: Option<String>,
+    justification: String,
+}
+
 /// Top-level structure of `.sqc-suppress.toml`.
 #[derive(Debug, Clone, Deserialize)]
 pub struct TomlSuppressionFile {
     #[serde(default)]
     pub suppression: Vec<TomlSuppressionEntry>,
+    #[serde(default)]
+    pub wildcard: Vec<TomlWildcardEntry>,
 }
 
 impl Suppression {
@@ -128,6 +162,8 @@ pub struct SuppressionManager {
     suppressions: HashMap<String, Vec<Suppression>>,
     /// TOML file suppressions (from `.sqc-suppress.toml`), keyed by the `file` field from TOML.
     toml_suppressions: Vec<(String, Suppression)>,
+    /// Wildcard suppressions (from `.sqc-suppress.toml` `[[wildcard]]` sections).
+    wildcard_suppressions: Vec<CompiledWildcard>,
 }
 
 impl SuppressionManager {
@@ -152,7 +188,14 @@ impl SuppressionManager {
             };
             self.toml_suppressions.push((entry.file, suppression));
         }
-        Ok(count)
+
+        let wildcard_count = parsed.wildcard.len();
+        for entry in parsed.wildcard {
+            let compiled = CompiledWildcard::try_from_entry(entry)?;
+            self.wildcard_suppressions.push(compiled);
+        }
+
+        Ok(count + wildcard_count)
     }
 
     /// Extract all suppressions from source code.
@@ -178,27 +221,28 @@ impl SuppressionManager {
 
     /// Check if a violation should be suppressed.
     ///
-    /// Checks inline comment suppressions first, then TOML file suppressions.
-    /// Returns the matching suppression if found.
+    /// Checks inline comment suppressions first, then TOML hash-matched suppressions,
+    /// then wildcard suppressions. Returns the justification string if suppressed.
     pub fn should_suppress(
         &self,
         file_path: &str,
         rule_id: &str,
         line: usize,
         source: &str,
-    ) -> Option<&Suppression> {
+        message: &str,
+    ) -> Option<&str> {
         // Check inline comment suppressions
         if let Some(file_supps) = self.suppressions.get(file_path) {
             if let Some(s) = file_supps
                 .iter()
                 .find(|s| s.rule_id == rule_id && s.matches(source, line))
             {
-                return Some(s);
+                return Some(&s.justification);
             }
         }
 
-        // Check TOML suppressions (suffix match on file path)
-        self.toml_suppressions.iter().find_map(|(pattern, s)| {
+        // Check TOML hash-matched suppressions (suffix match on file path)
+        if let Some(s) = self.toml_suppressions.iter().find_map(|(pattern, s)| {
             if s.rule_id == rule_id
                 && file_path_matches(file_path, pattern)
                 && s.matches(source, line)
@@ -207,7 +251,23 @@ impl SuppressionManager {
             } else {
                 None
             }
-        })
+        }) {
+            return Some(&s.justification);
+        }
+
+        // Check wildcard suppressions
+        for w in &self.wildcard_suppressions {
+            if w.matches(file_path, rule_id, message) {
+                return Some(&w.justification);
+            }
+        }
+
+        None
+    }
+
+    /// Returns the number of wildcard suppressions loaded.
+    pub fn wildcard_count(&self) -> usize {
+        self.wildcard_suppressions.len()
     }
 
     /// Calculate hash: SHA-256(rule_id + ":" + whitespace-normalized code), truncated to 16 hex.
@@ -219,6 +279,158 @@ impl SuppressionManager {
         hasher.update(normalized.as_bytes());
         format!("{:x}", hasher.finalize())[..16].to_string()
     }
+}
+
+impl CompiledWildcard {
+    fn try_from_entry(entry: TomlWildcardEntry) -> Result<Self, String> {
+        if entry.file_glob.is_none()
+            && entry.rule.is_none()
+            && entry.rule_glob.is_none()
+            && entry.function_prefix.is_none()
+        {
+            return Err(
+                "Wildcard entry must have at least one of: file_glob, rule, rule_glob, function_prefix".to_string()
+            );
+        }
+
+        let file_glob = entry
+            .file_glob
+            .as_deref()
+            .map(|g| glob_to_regex(g, true))
+            .transpose()?;
+
+        let rule_glob = entry
+            .rule_glob
+            .as_deref()
+            .map(|g| glob_to_regex(g, false))
+            .transpose()?;
+
+        Ok(CompiledWildcard {
+            file_glob,
+            rule: entry.rule,
+            rule_glob,
+            function_prefix: entry.function_prefix,
+            justification: entry.justification,
+        })
+    }
+
+    fn matches(&self, file_path: &str, rule_id: &str, message: &str) -> bool {
+        if let Some(ref re) = self.file_glob {
+            let normalized = file_path.replace('\\', "/");
+            if !re.is_match(&normalized) {
+                return false;
+            }
+        }
+
+        if let Some(ref rule) = self.rule {
+            if rule_id != rule {
+                return false;
+            }
+        }
+
+        if let Some(ref re) = self.rule_glob {
+            if !re.is_match(rule_id) {
+                return false;
+            }
+        }
+
+        if let Some(ref prefix) = self.function_prefix {
+            if !message_contains_prefix(message, prefix) {
+                return false;
+            }
+        }
+
+        true
+    }
+}
+
+/// Convert a glob pattern to a compiled regex.
+///
+/// When `is_path` is true, the pattern matches against file paths:
+/// - `**` matches any characters including `/` (zero or more path segments)
+/// - `*` matches any characters except `/`
+/// - `?` matches any single character except `/`
+/// - The pattern is matched as a suffix (preceded by `/` or start of string)
+///
+/// When `is_path` is false (e.g., rule IDs), `*` and `**` both match any characters.
+fn glob_to_regex(pattern: &str, is_path: bool) -> Result<regex::Regex, String> {
+    let mut regex_str = String::new();
+    let chars: Vec<char> = pattern.chars().collect();
+    let len = chars.len();
+    let mut i = 0;
+
+    while i < len {
+        match chars[i] {
+            '*' => {
+                if i + 1 < len && chars[i + 1] == '*' {
+                    // `**` — match everything (including `/`)
+                    regex_str.push_str(".*");
+                    i += 2;
+                    // Skip trailing `/` after `**` if present
+                    if i < len && chars[i] == '/' {
+                        regex_str.push_str("/?");
+                        i += 1;
+                    }
+                } else if is_path {
+                    // `*` in path mode — match within a single path segment
+                    regex_str.push_str("[^/]*");
+                    i += 1;
+                } else {
+                    // `*` in non-path mode — match anything
+                    regex_str.push_str(".*");
+                    i += 1;
+                }
+            }
+            '?' => {
+                if is_path {
+                    regex_str.push_str("[^/]");
+                } else {
+                    regex_str.push('.');
+                }
+                i += 1;
+            }
+            c => {
+                // Escape regex metacharacters
+                if ".()+|[]{}^$\\".contains(c) {
+                    regex_str.push('\\');
+                }
+                regex_str.push(c);
+                i += 1;
+            }
+        }
+    }
+
+    // For path patterns, match as suffix (preceded by `/` or start of string)
+    let anchored = if is_path {
+        format!("(?:^|/){regex_str}$")
+    } else {
+        format!("^{regex_str}$")
+    };
+
+    regex::Regex::new(&anchored).map_err(|e| format!("Invalid glob pattern '{}': {}", pattern, e))
+}
+
+/// Check if a violation message contains an identifier starting with the given prefix.
+///
+/// Looks for the prefix preceded by a non-alphanumeric/underscore character (or start of string),
+/// ensuring it matches at a word boundary rather than mid-identifier.
+fn message_contains_prefix(message: &str, prefix: &str) -> bool {
+    if prefix.is_empty() {
+        return false;
+    }
+    let mut search_from = 0;
+    while let Some(pos) = message[search_from..].find(prefix) {
+        let abs_pos = search_from + pos;
+        // Check that the prefix is at a word boundary (not mid-identifier)
+        let at_boundary = abs_pos == 0
+            || !message.as_bytes()[abs_pos - 1].is_ascii_alphanumeric()
+                && message.as_bytes()[abs_pos - 1] != b'_';
+        if at_boundary {
+            return true;
+        }
+        search_from = abs_pos + 1;
+    }
+    false
 }
 
 /// Match a full file path against a TOML suppression file pattern.
@@ -400,17 +612,17 @@ mod tests {
 
         // Should suppress EXP34-C on line 3
         assert!(mgr
-            .should_suppress("test.c", "EXP34-C", 3, &source)
+            .should_suppress("test.c", "EXP34-C", 3, &source, "")
             .is_some());
 
         // Should NOT suppress different rule
         assert!(mgr
-            .should_suppress("test.c", "INT30-C", 3, &source)
+            .should_suppress("test.c", "INT30-C", 3, &source, "")
             .is_none());
 
         // Should NOT suppress different file
         assert!(mgr
-            .should_suppress("other.c", "EXP34-C", 3, &source)
+            .should_suppress("other.c", "EXP34-C", 3, &source, "")
             .is_none());
     }
 
@@ -465,12 +677,12 @@ mod tests {
 
         // Should match via TOML (no proximity check, suffix match on filename)
         assert!(mgr
-            .should_suppress("/some/path/test.c", rule_id, 5, &source)
+            .should_suppress("/some/path/test.c", rule_id, 5, &source, "")
             .is_some());
 
         // Should NOT match different file
         assert!(mgr
-            .should_suppress("/some/path/other.c", rule_id, 5, &source)
+            .should_suppress("/some/path/other.c", rule_id, 5, &source, "")
             .is_none());
     }
 
@@ -503,17 +715,17 @@ mod tests {
 
         // EXP34-C suppressed by inline comment
         assert!(mgr
-            .should_suppress("/project/test.c", "EXP34-C", 2, &source)
+            .should_suppress("/project/test.c", "EXP34-C", 2, &source, "")
             .is_some());
 
         // INT30-C suppressed by TOML entry
         assert!(mgr
-            .should_suppress("/project/test.c", "INT30-C", 2, &source)
+            .should_suppress("/project/test.c", "INT30-C", 2, &source, "")
             .is_some());
 
         // ARR30-C not suppressed by either
         assert!(mgr
-            .should_suppress("/project/test.c", "ARR30-C", 2, &source)
+            .should_suppress("/project/test.c", "ARR30-C", 2, &source, "")
             .is_none());
     }
 
@@ -534,7 +746,323 @@ mod tests {
         mgr.extract_from_source("test.c", &source);
 
         assert!(mgr
-            .should_suppress("test.c", "EXP34-C", 2, &source)
+            .should_suppress("test.c", "EXP34-C", 2, &source, "")
             .is_some());
+    }
+
+    // --- Glob pattern matching tests ---
+
+    #[test]
+    fn test_glob_to_regex_simple_star() {
+        let re = glob_to_regex("*.c", true).unwrap();
+        assert!(re.is_match("test.c"));
+        assert!(re.is_match("/project/src/test.c"));
+        assert!(!re.is_match("test.h"));
+        // *.c matches any .c file (suffix match at path boundary)
+        assert!(re.is_match("/project/src/sub/test.c"));
+        // But * doesn't cross / — so "sub/*.c" won't match nested paths
+        let re2 = glob_to_regex("sub/*.c", true).unwrap();
+        assert!(re2.is_match("/project/sub/test.c"));
+        assert!(!re2.is_match("/project/sub/deep/test.c"));
+    }
+
+    #[test]
+    fn test_glob_to_regex_double_star() {
+        let re = glob_to_regex("src/vendor/**", true).unwrap();
+        assert!(re.is_match("src/vendor/lib.c"));
+        assert!(re.is_match("src/vendor/sub/deep/lib.c"));
+        assert!(re.is_match("/project/src/vendor/lib.c"));
+        assert!(!re.is_match("src/other/lib.c"));
+    }
+
+    #[test]
+    fn test_glob_to_regex_double_star_prefix() {
+        let re = glob_to_regex("**/*.generated.c", true).unwrap();
+        assert!(re.is_match("src/foo.generated.c"));
+        assert!(re.is_match("/a/b/c/foo.generated.c"));
+        assert!(!re.is_match("src/foo.c"));
+    }
+
+    #[test]
+    fn test_glob_to_regex_question_mark() {
+        let re = glob_to_regex("test?.c", true).unwrap();
+        assert!(re.is_match("test1.c"));
+        assert!(re.is_match("/project/testA.c"));
+        assert!(!re.is_match("test.c")); // ? requires exactly one char
+        assert!(!re.is_match("test12.c")); // ? is only one char
+    }
+
+    #[test]
+    fn test_glob_to_regex_rule_pattern() {
+        let re = glob_to_regex("DCL*", false).unwrap();
+        assert!(re.is_match("DCL31-C"));
+        assert!(re.is_match("DCL07-C"));
+        assert!(!re.is_match("INT30-C"));
+    }
+
+    #[test]
+    fn test_glob_to_regex_rule_exact() {
+        let re = glob_to_regex("INT3?-C", false).unwrap();
+        assert!(re.is_match("INT30-C"));
+        assert!(re.is_match("INT32-C"));
+        assert!(!re.is_match("INT300-C"));
+    }
+
+    // --- Message prefix matching tests ---
+
+    #[test]
+    fn test_message_contains_prefix_basic() {
+        let msg = "Function 'wolfSSL_Init' is called without prior declaration";
+        assert!(message_contains_prefix(msg, "wolfSSL_"));
+        assert!(!message_contains_prefix(msg, "openSSL_"));
+    }
+
+    #[test]
+    fn test_message_contains_prefix_word_boundary() {
+        let msg = "Function 'myWolfSSL_Init' is called without prior declaration";
+        // "wolfSSL_" appears inside "myWolfSSL_Init" but not at a word boundary
+        assert!(!message_contains_prefix(msg, "wolfSSL_"));
+    }
+
+    #[test]
+    fn test_message_contains_prefix_at_start() {
+        let msg = "wolfSSL_Init is undeclared";
+        assert!(message_contains_prefix(msg, "wolfSSL_"));
+    }
+
+    #[test]
+    fn test_message_contains_prefix_after_quote() {
+        let msg = "Use of undeclared function 'cJSON_Parse'";
+        assert!(message_contains_prefix(msg, "cJSON_"));
+    }
+
+    #[test]
+    fn test_message_contains_prefix_empty() {
+        assert!(!message_contains_prefix("anything", ""));
+    }
+
+    // --- Wildcard suppression integration tests ---
+
+    #[test]
+    fn test_wildcard_file_glob() {
+        let mut mgr = SuppressionManager::new();
+        mgr.wildcard_suppressions.push(
+            CompiledWildcard::try_from_entry(TomlWildcardEntry {
+                file_glob: Some("src/vendor/**".to_string()),
+                rule: Some("DCL31-C".to_string()),
+                rule_glob: None,
+                function_prefix: None,
+                justification: "Vendor code".to_string(),
+            })
+            .unwrap(),
+        );
+
+        // Matches: vendor file + correct rule
+        assert!(mgr
+            .should_suppress(
+                "/project/src/vendor/lib.c",
+                "DCL31-C",
+                10,
+                "",
+                "Function 'foo' is called without prior declaration",
+            )
+            .is_some());
+
+        // No match: wrong directory
+        assert!(mgr
+            .should_suppress(
+                "/project/src/core/lib.c",
+                "DCL31-C",
+                10,
+                "",
+                "Function 'foo' is called without prior declaration",
+            )
+            .is_none());
+
+        // No match: wrong rule
+        assert!(mgr
+            .should_suppress(
+                "/project/src/vendor/lib.c",
+                "INT30-C",
+                10,
+                "",
+                "Unsigned overflow",
+            )
+            .is_none());
+    }
+
+    #[test]
+    fn test_wildcard_rule_glob() {
+        let mut mgr = SuppressionManager::new();
+        mgr.wildcard_suppressions.push(
+            CompiledWildcard::try_from_entry(TomlWildcardEntry {
+                file_glob: Some("vendor/**".to_string()),
+                rule: None,
+                rule_glob: Some("DCL*".to_string()),
+                function_prefix: None,
+                justification: "All DCL rules suppressed for vendor".to_string(),
+            })
+            .unwrap(),
+        );
+
+        // Matches: vendor file + DCL rule
+        assert!(mgr
+            .should_suppress("/project/vendor/lib.c", "DCL31-C", 10, "", "")
+            .is_some());
+        assert!(mgr
+            .should_suppress("/project/vendor/lib.c", "DCL07-C", 10, "", "")
+            .is_some());
+
+        // No match: non-DCL rule
+        assert!(mgr
+            .should_suppress("/project/vendor/lib.c", "INT30-C", 10, "", "")
+            .is_none());
+    }
+
+    #[test]
+    fn test_wildcard_function_prefix() {
+        let mut mgr = SuppressionManager::new();
+        mgr.wildcard_suppressions.push(
+            CompiledWildcard::try_from_entry(TomlWildcardEntry {
+                file_glob: None,
+                rule: Some("DCL31-C".to_string()),
+                rule_glob: None,
+                function_prefix: Some("wolfSSL_".to_string()),
+                justification: "wolfSSL library functions".to_string(),
+            })
+            .unwrap(),
+        );
+
+        // Matches: DCL31-C with wolfSSL_ function in message
+        assert!(mgr
+            .should_suppress(
+                "any_file.c",
+                "DCL31-C",
+                10,
+                "",
+                "Function 'wolfSSL_Init' is called without prior declaration",
+            )
+            .is_some());
+
+        // No match: different function prefix
+        assert!(mgr
+            .should_suppress(
+                "any_file.c",
+                "DCL31-C",
+                10,
+                "",
+                "Function 'openSSL_Init' is called without prior declaration",
+            )
+            .is_none());
+
+        // No match: wrong rule even with matching prefix
+        assert!(mgr
+            .should_suppress("any_file.c", "INT30-C", 10, "", "wolfSSL_Init overflow",)
+            .is_none());
+    }
+
+    #[test]
+    fn test_wildcard_justification_returned() {
+        let mut mgr = SuppressionManager::new();
+        mgr.wildcard_suppressions.push(
+            CompiledWildcard::try_from_entry(TomlWildcardEntry {
+                file_glob: Some("**".to_string()),
+                rule: Some("DCL31-C".to_string()),
+                rule_glob: None,
+                function_prefix: None,
+                justification: "Global DCL31-C suppression".to_string(),
+            })
+            .unwrap(),
+        );
+
+        let result = mgr.should_suppress("any.c", "DCL31-C", 1, "", "");
+        assert_eq!(result, Some("Global DCL31-C suppression"));
+    }
+
+    #[test]
+    fn test_wildcard_requires_at_least_one_field() {
+        let result = CompiledWildcard::try_from_entry(TomlWildcardEntry {
+            file_glob: None,
+            rule: None,
+            rule_glob: None,
+            function_prefix: None,
+            justification: "No filters".to_string(),
+        });
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_wildcard_toml_parsing() {
+        let toml_str = r#"
+[[wildcard]]
+file_glob = "src/vendor/**"
+rule = "DCL31-C"
+justification = "Vendor code"
+
+[[wildcard]]
+rule_glob = "DCL*"
+function_prefix = "wolfSSL_"
+justification = "wolfSSL library"
+"#;
+        let parsed: TomlSuppressionFile = toml::from_str(toml_str).unwrap();
+        assert_eq!(parsed.wildcard.len(), 2);
+        assert_eq!(
+            parsed.wildcard[0].file_glob.as_deref(),
+            Some("src/vendor/**")
+        );
+        assert_eq!(parsed.wildcard[0].rule.as_deref(), Some("DCL31-C"));
+        assert_eq!(parsed.wildcard[1].rule_glob.as_deref(), Some("DCL*"));
+        assert_eq!(
+            parsed.wildcard[1].function_prefix.as_deref(),
+            Some("wolfSSL_")
+        );
+    }
+
+    #[test]
+    fn test_wildcard_and_hash_coexist_in_toml() {
+        let toml_str = r#"
+[[suppression]]
+file = "ringbuffer.c"
+rule = "INT30-C"
+hash = "a1f5861150a1e5b8"
+justification = "Hash-matched suppression"
+
+[[wildcard]]
+file_glob = "src/vendor/**"
+rule = "DCL31-C"
+justification = "Wildcard suppression"
+"#;
+        let parsed: TomlSuppressionFile = toml::from_str(toml_str).unwrap();
+        assert_eq!(parsed.suppression.len(), 1);
+        assert_eq!(parsed.wildcard.len(), 1);
+    }
+
+    #[test]
+    fn test_hash_suppression_takes_priority_over_wildcard() {
+        let rule_id = "EXP34-C";
+        let code_line = "    *ptr = value;";
+        let hash = SuppressionManager::calculate_suppression_hash(rule_id, code_line);
+
+        let source = format!(
+            "// SQC-SUPPRESS: EXP34-C HASH:{} JUSTIFICATION: \"inline justification\"\n{}",
+            hash, code_line
+        );
+
+        let mut mgr = SuppressionManager::new();
+        mgr.extract_from_source("test.c", &source);
+        mgr.wildcard_suppressions.push(
+            CompiledWildcard::try_from_entry(TomlWildcardEntry {
+                file_glob: Some("**".to_string()),
+                rule: Some("EXP34-C".to_string()),
+                rule_glob: None,
+                function_prefix: None,
+                justification: "wildcard justification".to_string(),
+            })
+            .unwrap(),
+        );
+
+        // Inline hash suppression should match first (returns inline justification)
+        let result = mgr.should_suppress("test.c", "EXP34-C", 2, &source, "");
+        assert_eq!(result, Some("inline justification"));
     }
 }

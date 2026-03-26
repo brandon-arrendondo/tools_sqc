@@ -2204,7 +2204,13 @@ impl TerminalUI {
                         for violation in file_violations {
                             file_has_violations = true;
                             if suppression_manager
-                                .should_suppress(file_path, rule_id, violation.line, &source)
+                                .should_suppress(
+                                    file_path,
+                                    rule_id,
+                                    violation.line,
+                                    &source,
+                                    &violation.message,
+                                )
                                 .is_some()
                             {
                                 // This violation is suppressed

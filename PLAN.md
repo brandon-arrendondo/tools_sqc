@@ -1,10 +1,9 @@
 # SqC — Plans & Roadmap
 
-**Last Updated**: 2026-03-24 (v0.3.39 benchmarked)
+**Last Updated**: 2026-03-25 (v0.3.43)
 
 For completed work, see [CHANGELOG.md](CHANGELOG.md).
 For benchmark data, see [JULIET_RESULTS.md](JULIET_RESULTS.md) and [REALWORLD_RESULTS.md](REALWORLD_RESULTS.md).
-For test infrastructure audit and coverage gaps, see [TEST_INFRASTRUCTURE.md](TEST_INFRASTRUCTURE.md).
 For competitor research and academic references, see the [Developer Guide bibliography](docs/bibliography.rst).
 
 ---
@@ -13,7 +12,7 @@ For competitor research and academic references, see the [Developer Guide biblio
 
 ### Real-World FP Reduction — Top Rules (Priority 1)
 
-v0.3.39 per-rule data (all 5 codebases, 153.2K total violations, rules-benchmark.toml).
+v0.3.42 per-rule data (all 5 codebases, 154.6K total violations, rules-benchmark.toml).
 
 | Rule | Count | Issue | Status |
 |------|------:|-------|--------|
@@ -24,16 +23,27 @@ v0.3.39 per-rule data (all 5 codebases, 153.2K total violations, rules-benchmark
 | INT30-C | 8,474 | Unsigned overflow | Stable after VRA |
 | DCL31-C | 7,366 | Undeclared function | Prescan + `-I` headers |
 | DCL07-C | 7,291 | Implicit int declaration | Prescan + `-I` headers |
-| EXP33-C | ~6,100 | Uninitialized | v0.3.38: FP fixes |
 | MEM31-C | 5,440 | Memory leak | Needs ownership model (deferred) |
 | EXP34-C | 5,267 | Null deref | Stable |
+| EXP33-C | 5,013 | Uninitialized | v0.3.38: FP fixes |
+| STR34-C | 2,801 | Char-to-int conversion | v0.3.42: +252 (init_declarator fix) |
+| API05-C | 2,805 | Unused return value | Stable |
 | ARR00-C | 2,157 | Array bounds | v0.3.37: -480 (-18.2%) |
 | ERR33-C | 989 | Unchecked return | v0.3.37: -818 (-45.3%) |
+| CON34-C | 871 | Thread-unsafe functions | v0.3.42: new detection |
 | ARR36-C | 829 | Pointer subtraction | v0.3.39: −3,856 (−82.3%), regression resolved |
+
+v0.3.42 vs v0.3.39 delta: +1,442 (+0.9%). All increases from newly-fixed rules:
+- CON34-C +871 (new: thread-unsafe function detection)
+- STR34-C +252 (init_declarator + per-function scoping; hostap -322 from FP reduction)
+- EXP40-C +114 (per-scope const variable tracking)
+- ERR01-C +106 (errno-setting function detection)
+- CON07-C +72 (file-scope global collection)
+- DCL02-C +14, POS50-C +11 (minor fixes)
 
 ### Juliet TP Rate — Path to 50%
 
-v0.3.39: **48.4% TP rate** (unchanged since v0.3.37 — ARR36-C fix was real-world only). Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
+v0.3.42: **48.4% TP rate** (unchanged since v0.3.37 — v0.3.42 rule fixes target detection gaps, not FP reduction). Remaining gap dominated by high-FP rules where Juliet good/bad patterns are structurally identical to our analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65% FP), FLP03-C (69% FP).
 
 ### EXP33-C — Remaining
 
@@ -88,7 +98,7 @@ v0.3.37: 203 TP, 12 FP, **94.4% TP rate**, 18.1% per-file. Best precision of any
 
 Require new analysis capabilities beyond current architecture:
 
-| Rule | v0.3.37 Count | Issue | Required Capability |
+| Rule | v0.3.42 Count | Issue | Required Capability |
 |------|--------:|-------|---------------------|
 | MEM30-C | 15,330 | Sequential struct/member frees, cross-function free propagation | Field-level free tracking |
 | MEM31-C | 5,440 | Cross-function ownership (strdup → struct field → custom_Delete) | Ownership model |
@@ -96,11 +106,36 @@ Require new analysis capabilities beyond current architecture:
 
 ### Zero-Detection CWEs — Remaining
 
-| CWE | Portable Files | Mapped Rules | Issue | Effort |
-|-----|------:|--------------|-------|--------|
-| CWE-468 (incorrect pointer scaling) | 36 | ARR39-C, EXP08-C | Implicit void* casts losing type info | High |
+**Fixed in v0.3.42**: CWE-480, CWE-482, CWE-367 (see CHANGELOG). CWE-479 resolved by helper-outside-guards reclassification.
 
-4 formerly zero-detection CWEs resolved in v0.3.35–v0.3.36 (see CHANGELOG). 13 are Windows-only (not actionable).
+### Benchmark Analyzer: Helper-Outside-Guards — COMPLETED (v0.3.42)
+
+See CHANGELOG v0.3.42. Remaining CWEs that will auto-benefit when rules are added:
+- CWE-364 Signal Handler Race Condition (18 files)
+- CWE-674 Uncontrolled Recursion (2 files)
+- CWE-563 Unused Variable (2 files), CWE-398 Poor Code Quality (1 file)
+
+(CWE-561 now has MSC12-C rule — v0.3.43)
+
+**Deferred — require new analysis capabilities or have low ROI**:
+
+| CWE | Files | Mapped Rules | Issue | Effort |
+|-----|------:|--------------|-------|--------|
+| CWE-789 (uncontrolled mem alloc) | 560 | ARR30-C, MEM35-C | Needs taint tracking (user input → malloc size) | High |
+| CWE-114 (process control) | 672 | ERR07-C, MEM10-C | Needs taint tracking (untrusted input → LoadLibrary) | High |
+| CWE-272 (least privilege) | 252 | POS02-C, WIN02-C | Windows-only: HKEY_LOCAL_MACHINE vs HKEY_CURRENT_USER | Windows |
+| CWE-259 (hard-coded password) | 112 | MSC41-C | Needs password/credential string pattern matching | Medium |
+| CWE-666 (resource wrong phase) | 90 | MEM30-C | Needs state machine for resource lifecycle | High |
+| CWE-226 (sensitive data uncleared) | 72 | MEM03-C | MEM03-C only checks free/realloc, not stack scope exit | Medium |
+| CWE-327 (broken crypto) | 54 | MSC30-C, MSC32-C | Needs crypto API knowledge (RC5 vs AES) | Medium |
+| CWE-468 (incorrect pointer scaling) | 36 | ARR39-C, EXP08-C | Implicit void* casts losing type info | High |
+| CWE-459 (incomplete cleanup) | 36 | FIO42-C, MEM31-C | FIO42-C detects in other CWEs; these need resource tracking | Medium |
+| CWE-188 (data memory layout) | 36 | ARR32-C, EXP39-C | Struct padding/alignment analysis | High |
+| CWE-675 (duplicate ops on resource) | 224 | FIO24-C | FIO24-C detects in other CWEs; these need different patterns | Medium |
+| CWE-562 (return stack variable) | 2 | DCL30-C | Needs array-decay-to-pointer + address-of-local taint | Medium |
+10 formerly zero-detection CWEs resolved in v0.3.35–v0.3.42 (see CHANGELOG). 13 are Windows-only (not actionable).
+
+**No unit tests for EXP16-C**: The .c test files exist under `tests/fail/` and `tests/pass/` but the build.rs-generated integration tests don't appear in `cargo test`. Needs investigation — may need explicit test registration.
 
 ---
 
@@ -108,63 +143,74 @@ Require new analysis capabilities beyond current architecture:
 
 ### Test Coverage (Priority 2)
 
-Current test infrastructure auto-generates integration tests from `.c` files in `tests/` directories. Coverage gaps:
-- Many rules have only wiki-sourced tests (1-3 cases) — need broader pattern coverage
-- No tests for inter-procedural analysis paths (prescan, call-site propagation, `-d` directories)
-- No regression tests for specific FP patterns fixed in each round (real-world patterns from arraylist.c, intset.c, file_util.c etc.)
-- EXP34-C param-null tests had to be restructured when default changed — need tests that exercise with/without project context
-- No negative tests for false-positive patterns (verify FP stays suppressed)
+**Coverage gate**: 80% line coverage enforced (`scripts/coverage-gate.sh`). Current: 80.06% (24,908 uncovered of 124,904 lines).
+
+#### Raise Coverage Gate to 81%
+
+Reaching 81% requires ~1,175 additional covered lines. Highest-impact targets:
+
+| File | Uncovered Lines | Current Coverage | Path to Improve |
+|------|----------------:|-----------------:|-----------------|
+| ARR38-C | 759 | 70.7% | Add `.c` test cases for library-specific patterns |
+| value_range.rs | 567 | 70.9% | Add unit tests for uncovered condition/assignment handlers |
+| ERR33-C | 550 | 71.2% | Add more `.c` test cases for various stdlib error checks |
+| INT31-C | 516 | 70.1% | Add `.c` tests for integer conversion patterns |
+| INT34-C | 451 | 54.7% | Add `.c` tests exercising VRA and range-extraction paths |
+| analyze/mod.rs | 401 | 40.4% | `analyze_project` integration test (needs manifest + source fixture) |
+
+#### FP Regression Tests — Rounds 3, 6, 7
+
+Rounds 8–11 covered. Still needed:
+- Std function database lookups should not trigger DCL31-C/DCL07-C (Round 3)
+- Cross-file function definitions should not trigger DCL31-C/DCL07-C (Round 6)
+- Unknown-type pointer casts should not trigger EXP36-C (Round 7)
+
+#### Expand Wiki-Only Rules
+
+~105 rules have exactly 2 test files (1 fail + 1 pass). Prioritize top-FP rules from real-world benchmarks:
+- EXP33-C (6,100 real-world violations) — only 10 wiki tests
+- EXP34-C (5,267) — 6 wiki tests
+- ERR33-C (989) — 11 wiki tests
+
+#### Architecture Improvements (effort: high)
+
+1. **CLI integration tests** — test `--diff`, `--export json/csv/sarif`, `-I`, `-d`, `--save-prescan`/`--load-prescan`
+2. **`expected_fail/` test category** — for known limitations (e.g., EXP34-C intra-file null deref without call-site analysis)
+3. **Fix FIO10-C rule** — accept POSIX `rename()` with error checking as compliant (matches CERT wiki)
+4. **EXP34-C intra-file call-site analysis** — 3 tests waiting in pass/ to move to fail/
+5. **Inter-procedural `.c` tests** — multi-file C test cases for prescan/call-site propagation
+6. **No tests for CLI flags** — `--diff`, `--export`, `--format`, `-I`, `--save-prescan`, `--load-prescan`, suppression
 
 ### Implementation Bugs Found via Testing (Fix Queue)
 
-Bugs discovered during test infrastructure improvements (2026-03-24):
+Bugs discovered during test infrastructure improvements. 11 fixed in v0.3.42 (see CHANGELOG). Remaining:
 
 | Component | Bug | Severity | Test File |
 |-----------|-----|----------|-----------|
-| `const_eval.rs` | `try_evaluate_text("((10))")` returns `None` — double-nested parens fail. Single-level `(10)` works but recursive paren stripping doesn't re-enter after unwrapping. | Medium | `test_try_evaluate_text_nested_parens` (commented assertion) |
-| DCL02-C | Function-scope declarations not checked for visual similarity. Only file-scope `int id_O; int id_0;` is detected; identical patterns inside function bodies produce zero violations. | Medium | `tests/pass/testcases_function_scope_gap.c` (TODO: move to fail/) |
-| EXP40-C | Only detects double-pointer const bypass (`const T **ipp = &ip`). Simple `int *p = &const_int` and `int *p = const_ptr_param` not detected. | Medium | `tests/pass/testcases_const_pointer_assignment.c` (TODO: move to fail/) |
-| STR34-C | `init_declarator` path not checked for char→int sign extension. Only `assignment_expression` and `cast_expression` detected. `int val = *str;` produces no violation. | Medium | `tests/pass/testcases_char_to_int_init.c` (TODO: move to fail/) |
-| STR03-C | `strncpy` with prior `strlen` validation still flagged. Rule doesn't recognize `if (strlen(src) < dest_size)` as validation before `strncpy`. | Low | N/A (test adjusted to avoid strncpy) |
-| FIO10-C | Rule requires explicit `access()+remove()` before `rename()`, but CERT wiki's compliant POSIX example uses plain `rename()` with error checking. | Low | `tests/pass/wiki_posix.c` (TODO: fix rule to accept POSIX rename()) |
-| INT00-C | Unsigned subtraction without guard and mixed signed/unsigned comparison not detected. Rule may not check these patterns. | Medium | `tests/pass/testcases_unsigned_wrap.c` (TODO: move to fail/) |
-| INT16-C | Signed-to-unsigned conversion without range check not detected. `unsigned int u = signed_val;` produces no violation. | Medium | `tests/pass/testcases_signed_unsigned_conversion.c` (TODO: move to fail/) |
-| ERR01-C | Missing errno check after strtol/sqrt not detected. Rule may only check specific patterns. | Medium | `tests/pass/testcases_errno_not_checked.c` (TODO: move to fail/) |
-| MEM10-C | `sizeof(pointer)` misuse in malloc/memset not detected. `malloc(sizeof(arr))` where arr is a pointer should be flagged. | Medium | `tests/pass/testcases_sizeof_pointer.c` (TODO: move to fail/) |
-| POS50-C | TOCTOU race (`stat()` then `fopen()` on same path) not detected. Classic check-use vulnerability. | Medium | `tests/pass/testcases_toctou.c` (TODO: move to fail/) |
-| CON07-C | Unprotected shared variable access (no mutex lock) not detected. | Medium | `tests/pass/testcases_unprotected_shared.c` (TODO: move to fail/) |
-| CON34-C | Thread-unsafe functions (`localtime`, `strtok`, `rand`) not detected. | Medium | `tests/pass/testcases_thread_unsafe.c` (TODO: move to fail/) |
-| DCL17-C | K&R style function declaration without prototype not detected. | Low | `tests/pass/testcases_no_prototype.c` (TODO: move to fail/) |
-| MSC38-C | Signal handler calling `printf` (not async-signal-safe) not detected. | Medium | `tests/pass/testcases_signal_handler.c` (TODO: move to fail/) |
-| WIN30-C | `CreateFileA` with NULL security attributes not detected. | Low | `tests/pass/testcases_win_api_misuse.c` (TODO: move to fail/) |
-| MEM04-C | `malloc(sizeof(int))` falsely flagged as "potentially zero size" — sizeof(int) is always > 0. | Low | N/A (FP, test adjusted) |
+| STR03-C | `strncpy` with prior `strlen` validation still flagged | Low | N/A (test adjusted to avoid strncpy) |
+| FIO10-C | POSIX `rename()` with error checking not accepted as compliant | Low | `tests/pass/wiki_posix.c` |
+| INT00-C | Unsigned subtraction without guard not detected | Medium | `tests/pass/testcases_unsigned_wrap.c` (TODO: move to fail/) |
+| INT16-C | Signed-to-unsigned conversion without range check not detected | Medium | `tests/pass/testcases_signed_unsigned_conversion.c` (TODO: move to fail/) |
+| WIN30-C | `CreateFileA` with NULL security attributes not detected | Low | `tests/pass/testcases_win_api_misuse.c` (TODO: move to fail/) |
+| MEM04-C | `malloc(sizeof(int))` falsely flagged as "potentially zero size" | Low | N/A (FP, test adjusted) |
 
 ### Fake-Passing Tests — Periodic Review Needed
 
 **Action item**: Periodically grep `tests/pass/` for `TODO.*move to fail` and `Known limitation` to find tests that pass only because the implementation has a gap. As each implementation bug above is fixed, move the corresponding test from `pass/` to `fail/` and verify it now triggers the expected violation.
 
-Current inventory (2026-03-24, 18 tests across 15 rules + 1 infra):
+Current inventory (2026-03-25, 7 remaining — 11 fixed in v0.3.42, see CHANGELOG):
 
-| Rule/Component | Test File | What Should Fail |
-|----------------|-----------|-----------------|
-| EXP34-C | `pass/testcases_func_param.c` | Intra-file null deref via function parameter |
-| EXP34-C | `pass/testcases_list_null.c` | Same — NULL passed to function that dereferences |
-| EXP34-C | `pass/testcases_callback_null.c` | Same — callback receives NULL |
-| EXP40-C | `pass/testcases_const_pointer_assignment.c` | Single-level const-to-non-const pointer |
-| DCL02-C | `pass/testcases_function_scope_gap.c` | Function-scope visual similarity |
-| STR34-C | `pass/testcases_char_to_int_init.c` | Init declarator char→int without cast |
-| FIO10-C | `pass/wiki_posix.c` | POSIX rename() with error checking |
-| INT00-C | `pass/testcases_unsigned_wrap.c` | Unsigned wrap and mixed signed/unsigned comparison |
-| INT16-C | `pass/testcases_signed_unsigned_conversion.c` | Signed-to-unsigned conversion without range check |
-| ERR01-C | `pass/testcases_errno_not_checked.c` | Missing errno check after strtol/sqrt |
-| MEM10-C | `pass/testcases_sizeof_pointer.c` | sizeof(pointer) misuse in malloc/memset |
-| POS50-C | `pass/testcases_toctou.c` | stat()+fopen() TOCTOU race |
-| CON07-C | `pass/testcases_unprotected_shared.c` | Unprotected shared variable access |
-| CON34-C | `pass/testcases_thread_unsafe.c` | Thread-unsafe functions (localtime, strtok, rand) |
-| DCL17-C | `pass/testcases_no_prototype.c` | K&R function declaration without prototype |
-| MSC38-C | `pass/testcases_signal_handler.c` | printf in signal handler |
-| WIN30-C | `pass/testcases_win_api_misuse.c` | CreateFileA with NULL security attributes |
-| `const_eval.rs` | `test_try_evaluate_text_nested_parens` | Double-nested parens `((10))` |
+| Rule/Component | Test File | What Should Fail | Blocker |
+|----------------|-----------|-----------------|---------|
+| EXP34-C | `pass/testcases_func_param.c` | Intra-file null deref via function parameter | Test infra — see below |
+| EXP34-C | `pass/testcases_list_null.c` | Same — NULL passed to function that dereferences | Test infra — see below |
+| EXP34-C | `pass/testcases_callback_null.c` | Same — callback receives NULL | Test infra — see below |
+| FIO10-C | `pass/wiki_posix.c` | POSIX rename() with error checking | Rule design |
+| INT00-C | `pass/testcases_unsigned_wrap.c` | Unsigned wrap and mixed signed/unsigned comparison | Pattern mismatch — rule checks format specifiers/casts, not unsigned wrap |
+| INT16-C | `pass/testcases_signed_unsigned_conversion.c` | Signed-to-unsigned conversion without range check | Pattern mismatch — rule checks bitwise ops on signed ints, not conversion |
+| WIN30-C | `pass/testcases_win_api_misuse.c` | CreateFileA with NULL security attributes | Pattern mismatch — rule checks alloc/dealloc pairing, not security attrs |
+
+**EXP34-C analysis (2026-03-25)**: The inter-procedural null analysis (Phases 1-3, call-site propagation, multi-pass relay) **does detect these patterns** in real-world usage with `-d`/prescan. The blocker is the test infrastructure: `build.rs` generates tests that call `rule.check()` directly on a single parsed file with no prescan context. Without `set_project_context()`, `collect_param_pointer_state()` defaults pointer params to NotNull (line 1128 of `null_state.rs`). Fix requires test infra enhancement: either generate tests that build intra-file prescan before invoking the rule, or run these through `analyze_project` instead of `rule.check()`.
 
 Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known limitation" src/rules/cert_c/**/pass/*.c src/analyze/*.rs`
 
@@ -176,10 +222,7 @@ Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known lim
 - [ ] **File-size-aware batching** — current subdir splitting can leave one large unit dominating wall time (e.g., wpa_supplicant/ 69 files = 1061s). Batch by file size rather than directory to balance work across workers.
 - [ ] **Incremental parsing** — only re-parse changed files
 - [ ] **Baseline-aware suppression** — "only new violations" mode
-- [ ] **Glob/prefix suppression in `.sqc-suppress.toml`** — current TOML format only supports per-file/per-line hash-matched suppressions. Real-world projects need pattern-based suppressions (e.g., suppress DCL31-C for all `wolfSSL_*` calls, or suppress a rule for an entire directory). Valgrind uses `obj:*libXt.so*` glob syntax; cppcheck uses `rule:*` file wildcards; clang-tidy uses `NOLINTNEXTLINE(cert-*)` prefix matching. Candidates for sqc:
-  - `file_glob` field: `"src/vendor/**"` — suppress rule for all files matching glob
-  - `function_prefix` field: `"wolfSSL_"` — suppress DCL31-C/DCL07-C for function name prefixes
-  - `rule_glob` field: `"DCL*"` — suppress all DCL rules (useful for vendor/third-party code)
+- [x] **Glob/prefix suppression in `.sqc-suppress.toml`** (v0.3.43) — `[[wildcard]]` TOML section with `file_glob`, `rule`, `rule_glob`, `function_prefix` fields (ANDed). Glob supports `*`, `**`, `?`. `function_prefix` matches at word boundaries in violation messages. Hash-matched suppressions take priority over wildcards.
 - [ ] **Docker image** — containerized CI/CD distribution
 
 ### Analysis Capabilities Lacking
@@ -209,7 +252,7 @@ Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known lim
 - [x] Real-world validation on 5+ open-source projects
 - [ ] Baseline-aware suppression
 - [ ] Docker image
-- [ ] CWE-matched TP rate >= 50% on key CWEs (currently 48.4% overall; 16 CWEs already at 100%, 6 above 50%)
+- [ ] CWE-matched TP rate >= 50% on key CWEs (v0.3.42: 48.4% overall; 16 CWEs already at 100%, 6 above 50%)
 
 **Tier 3 — Competitive**
 - [ ] Direct benchmarked comparison with Infer, Frama-C (see [bibliography](docs/bibliography.rst))
