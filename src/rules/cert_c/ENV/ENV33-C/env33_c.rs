@@ -107,6 +107,18 @@ impl CertRule for Env33C {
     }
 }
 
+/// Functions that introduce external/untrusted input into a program.
+/// If a containing function calls any of these, data passed to system()/popen()
+/// may be tainted and the call should remain flagged.
+const TAINTED_SOURCE_FUNCTIONS: &[&str] = &[
+    // Network I/O
+    "recv", "recvfrom", "recvmsg", // Console/file input
+    "fgets", "gets", "gets_s", "scanf", "fscanf", "sscanf", "wscanf", "fwscanf", "fread", "fgetc",
+    "fgetwc", "getchar", "getwchar", "getc", "getwc", "fgetws", // Environment
+    "getenv", "_wgetenv", // POSIX
+    "read", "pread",
+];
+
 impl Env33C {
     /// Resolve a function name through macro aliases.
     /// If `name` is a macro alias for a dangerous function, returns the target.
@@ -127,34 +139,42 @@ impl Env33C {
                 let resolved = self.resolve_name(&func_name);
 
                 if self.is_dangerous_function(&resolved) {
-                    let suggestion = match resolved.as_str() {
-                        "system" => "Use the exec() family of functions (execl, execv, etc.) instead, which provide better control and security",
-                        "popen" | "_popen" => "Use pipe() and fork() with exec() family functions for better security",
-                        _ => "Use safer alternatives like the exec() family of functions"
-                    };
-
-                    let display_name = if func_name != resolved {
-                        format!("{} (macro for {})", func_name, resolved)
+                    // Check if the call can be suppressed:
+                    // 1. Direct string literal argument → safe (no injection possible)
+                    // 2. Local variable in a function with no tainted input sources → safe
+                    // 3. Function parameter → keep flagging (caller may pass tainted data)
+                    if self.is_safe_command_call(node, source) {
+                        // Skip — command is built from constants with no external input
                     } else {
-                        func_name.to_string()
-                    };
+                        let suggestion = match resolved.as_str() {
+                            "system" => "Use the exec() family of functions (execl, execv, etc.) instead, which provide better control and security",
+                            "popen" | "_popen" => "Use pipe() and fork() with exec() family functions for better security",
+                            _ => "Use safer alternatives like the exec() family of functions"
+                        };
 
-                    violations.push(RuleViolation {
-                        rule_id: self.rule_id().to_string(),
-                        message: format!(
-                            "Call to '{}' is prohibited. This function invokes a command \
-                             processor which can lead to command injection vulnerabilities. \
-                             The function executes arbitrary shell commands and is inherently \
-                             dangerous when user input is involved.",
-                            display_name
-                        ),
-                        severity: self.severity(),
-                        line: node.start_position().row + 1,
-                        column: node.start_position().column + 1,
-                        file_path: String::new(),
-                        suggestion: Some(suggestion.to_string()),
-                        requires_manual_review: None,
-                    });
+                        let display_name = if func_name != resolved {
+                            format!("{} (macro for {})", func_name, resolved)
+                        } else {
+                            func_name.to_string()
+                        };
+
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            message: format!(
+                                "Call to '{}' is prohibited. This function invokes a command \
+                                 processor which can lead to command injection vulnerabilities. \
+                                 The function executes arbitrary shell commands and is inherently \
+                                 dangerous when user input is involved.",
+                                display_name
+                            ),
+                            severity: self.severity(),
+                            line: node.start_position().row + 1,
+                            column: node.start_position().column + 1,
+                            file_path: String::new(),
+                            suggestion: Some(suggestion.to_string()),
+                            requires_manual_review: None,
+                        });
+                    }
                 }
             }
         }
@@ -165,6 +185,137 @@ impl Env33C {
                 self.check_node(&child, source, violations);
             }
         }
+    }
+
+    /// Check if a system()/popen() call is safe (no tainted input flows to the command).
+    ///
+    /// Returns true (safe, suppress) when the argument is a local variable in a
+    /// function that has no tainted input sources AND no pointer/string parameters
+    /// that could carry untrusted data from callers.
+    ///
+    /// Returns false (keep flagging) when:
+    /// - The argument is a function parameter
+    /// - The function has pointer/string parameters (data may flow through them)
+    /// - The containing function reads external input (recv, fgets, getenv, etc.)
+    /// - The argument is a string literal (still a violation: PATH/shell risks)
+    fn is_safe_command_call(&self, call_node: &Node, source: &str) -> bool {
+        // If the first argument is a direct string literal, always flag —
+        // system("cmd") is still an ENV33-C violation (PATH/shell risks)
+        if let Some(args) = call_node.child_by_field_name("arguments") {
+            for i in 0..args.child_count() {
+                if let Some(child) = args.child(i) {
+                    let kind = child.kind();
+                    if kind != "(" && kind != ")" && kind != "," {
+                        // First real argument
+                        if kind == "string_literal" {
+                            return false; // Keep flagging string literal commands
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Find the containing function
+        let func_node = match Self::find_containing_function(call_node) {
+            Some(f) => f,
+            None => return false,
+        };
+
+        // If the function has any pointer/string parameters, external data
+        // might flow through them to the system() argument via snprintf/strcpy
+        if Self::has_pointer_parameters(&func_node, source) {
+            return false;
+        }
+
+        // Check if the containing function calls any tainted source functions
+        if self.function_has_tainted_source(&func_node, source) {
+            return false;
+        }
+
+        // No pointer params and no tainted sources → data is locally-constructed
+        true
+    }
+
+    /// Walk up the AST to find the containing function_definition.
+    fn find_containing_function<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+        let mut current = node.parent();
+        while let Some(n) = current {
+            if n.kind() == "function_definition" {
+                return Some(n);
+            }
+            current = n.parent();
+        }
+        None
+    }
+
+    /// Check if a function_definition has any pointer or array parameters.
+    /// Functions with pointer params may receive tainted data from callers.
+    fn has_pointer_parameters(func_node: &Node, source: &str) -> bool {
+        if let Some(declarator) = func_node.child_by_field_name("declarator") {
+            Self::find_pointer_params_in_subtree(&declarator, source)
+        } else {
+            false
+        }
+    }
+
+    fn find_pointer_params_in_subtree(node: &Node, source: &str) -> bool {
+        if node.kind() == "parameter_list" {
+            for i in 0..node.child_count() {
+                if let Some(param) = node.child(i) {
+                    if param.kind() == "parameter_declaration" {
+                        let param_text = get_node_text(&param, source);
+                        // Skip (void) parameter
+                        if param_text.trim() == "void" {
+                            continue;
+                        }
+                        // Check if parameter type contains pointer/array indicators
+                        if param_text.contains('*') || param_text.contains('[') {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if Self::find_pointer_params_in_subtree(&child, source) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a function body calls any tainted input source functions.
+    fn function_has_tainted_source(&self, func_node: &Node, source: &str) -> bool {
+        self.scan_for_tainted_calls(func_node, source)
+    }
+
+    fn scan_for_tainted_calls(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let name = get_node_text(&function, source);
+                // Resolve through macro aliases (e.g., GETENV → getenv)
+                let resolved = self.resolve_name(&name);
+                if TAINTED_SOURCE_FUNCTIONS.contains(&resolved.as_str()) {
+                    return true;
+                }
+                // Also check the original name (in case alias resolution fails)
+                if TAINTED_SOURCE_FUNCTIONS.contains(&name) {
+                    return true;
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.scan_for_tainted_calls(&child, source) {
+                    return true;
+                }
+            }
+        }
+        false
     }
 
     /// Check if function is a dangerous command processor invocation
