@@ -1,0 +1,641 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+## [Unreleased]
+
+## [0.3.44] - 2026-03-26
+
+### Changed
+
+- ENV33-C: taint-source heuristic suppression for system()/popen(). Functions
+  with no tainted input sources (recv, fgets, getenv, scanf, etc.) and no
+  pointer/string parameters are suppressed. String literal arguments and
+  cross-function sinks with char* params remain flagged. Macro aliases
+  (#define SYSTEM system) resolved via project context.
+- FLP03-C: removed overbroad check_fp_conversion() that flagged all
+  float/double cast expressions. Added divide-by-zero guard detection:
+  fabs/fabsf/fabsl magnitude checks, != 0, > 0, < 0 conditions suppress
+  guarded divisions.
+
+### Results
+
+- Juliet TP rate: 48.4% -> 51.1% (+2.7pp). **P0 milestone achieved.**
+- Total: TP 8,508->8,383 (-125), FP 9,067->8,020 (-1,047). 8.4:1 FP:TP ratio.
+- ENV33-C: -818 FP/-139 TP (5.9:1). FP rate 58%->24.6%.
+- FLP03-C: -234 FP/-70 TP (3.3:1). FP rate 69%->58.2%.
+- CWE-78: TP rate 45.5%->63.0% (+17.5pp).
+- CWE-369: TP rate 33.6%->36.9% (+3.3pp).
+- Bonus: CWE-367 +15 TP, CWE-479 +36 TP, CWE-480 +10 TP, CWE-482 +7 TP
+  (from v0.3.43 MSC12-C/wildcard rules newly matched to CWEs).
+- Realworld: 154,598->154,603 (+5, flat). FLP03-C -164 (-43%, clean).
+  ENV33-C -1. EXP16-C +160 regression in sqlite (unrelated, needs investigation).
+
+## [0.3.43] - 2026-03-25
+
+### Added
+
+- MSC12-C dead code / no-effect detection (CWE-561) with 4 detection patterns:
+  no-effect expression statements (comparisons as statements, bitwise/shift with
+  discarded result, wasted dereferences, bare identifiers), duplicate conditions
+  in if/else-if chains, redundant sub-expressions in logical operators, and
+  meaningless `continue` at end of loop body. Exceptions for `(void)` casts,
+  function calls in conditions, and function calls in logical sub-expressions.
+  12 wiki tests (5 fail + 7 pass).
+- Wildcard suppression in `.sqc-suppress.toml` via `[[wildcard]]` TOML section.
+  Supports `file_glob`, `rule`, `rule_glob`, `function_prefix`, and
+  `justification` fields (all ANDed). Hash-matched suppressions take priority.
+  Glob patterns compiled to regex at load time.
+
+## [0.3.42] - 2026-03-25
+
+### Fixed
+
+- const_eval.rs: double-nested parens now handled via loop-based stripping.
+- DCL02-C: function-scope declarations checked via `init_declarator` +
+  root-node traversal.
+- EXP40-C: per-scope const variable tracking (was only double-pointer).
+- STR34-C: `init_declarator` path + parameter tracking + per-function scoping.
+- CON34-C: thread-unsafe function detection via banned function list.
+- CON07-C: unprotected shared variable access via file-scope global collection.
+- MSC38-C: test reclassified to SIG30-C (already detected).
+- ERR01-C: errno-setting function detection for strtol/sqrt.
+- MEM10-C: `sizeof(pointer)` misuse detection in alloc/memory calls.
+- POS50-C: TOCTOU race detection (`stat()` then `fopen()` on same path).
+- DCL17-C: K&R style function declaration + empty param list detection.
+- CWE-480 (EXP16-C): AST-based function name collection + NULL recognition.
+- CWE-482 (EXP16-C): dead comparison detection.
+- CWE-367 (FIO01-C): `access()`/`stat()` + `open()` TOCTOU detection.
+
+### Changed
+
+- Benchmark analyzer: `parse_c_file_sections()` now performs call-graph analysis
+  to reclassify helper functions defined outside `#ifndef OMITBAD`/`#ifndef
+  OMITGOOD` guards. +52 TP, +5 FP across all runs. 18 historical runs
+  retroactively corrected (969 total violations reclassified).
+- Coverage gate raised from 79% to 80%. Current: 80.06%.
+
+## [0.3.39] - 2026-03-24
+
+### Fixed
+
+- ARR36-C real-world FP reduction (-82%). Per-function scoping fixes
+  cross-function variable name collisions. Identifier chain resolution follows
+  `variable_arrays` for known identifiers. Compound assignment (`+=`/`-=`) no
+  longer overwrites array base. `os_*` wrapper recognition for `os_strchr`,
+  `os_strstr`, `os_strrchr`, etc. Allocation functions get unique per-call
+  bases. Address-of vs dereference distinction. File-scope + bare declaration
+  tracking.
+- Juliet: zero delta (8,508 TP, 9,067 FP, 48.4% TP rate).
+- Real-world: 157,688 -> 153,156 (-4,532, -2.9%). ARR36-C 4,685 -> 829
+  (-3,856, -82.3%).
+
+## [0.3.38] - 2026-03-24
+
+### Fixed
+
+- EXP33-C: conditional-init, cast unwrap, and array arg fixes for real-world
+  FP reduction.
+
+### Changed
+
+- DCL31-C/DCL07-C: removed library-specific whitelists, added `-I` include
+  paths for system-installed third-party headers.
+
+## [0.3.37] - 2026-03-23
+
+### Fixed
+
+- FIO30-C CWE-134 format string taint improvements. Three fixes unlock
+  detection across all taint source patterns:
+  - recv/recvfrom/recvmsg taint tracking: socket receive functions added to
+    `process_string_manipulation_call`, handles cast expressions in buffer arg.
+  - Macro alias resolution: integrated `const_eval::collect_macro_aliases` for
+    `#define GETENV getenv` indirection. All function name lookups go through
+    `resolve_func_name()`.
+  - `get_base_variable` expression handling for `cast_expression`,
+    `parenthesized_expression`, and `binary_expression`.
+- Juliet (v0.3.35-v0.3.37 combined vs v0.3.34): TP 8,300 -> 8,508 (+208),
+  FP 9,157 -> 9,067 (-90), TP rate 47.5% -> 48.4% (+0.9pp). Zero regressions.
+- Real-world: 152,590 -> 153,568 (+978, +0.6%). ARR36-C +2,727 (strchr fires
+  broadly on real-world pointer arithmetic). Excluding ARR36-C, net -1,749 FP.
+- Source commits pinned in BENCHMARK_INSTALL.md for all 5 codebases.
+
+## [0.3.36] - 2026-03-23
+
+### Added
+
+- ARR36-C CWE-469: strchr/wcschr cross-array subtraction detection.
+  `PointerAnalyzer` tracks `strchr`, `strrchr`, `wcschr`, `wcsrchr`, `memchr`,
+  `strstr`, `wcsstr`, `strpbrk`, `wcspbrk` return values as pointing into
+  first argument. Array declarations treated as own base. Assignment expressions
+  tracked for pointer origin resolution. 36/36 TP, 0 FP.
+- STR03-C CWE-464: `(char)atoi()` null sentinel detection. Covers `strtol`,
+  `strtoul`, `atol` with char cast. 38/38 TP, 0 FP.
+- API07-C CWE-843: void* type confusion detection. Tracks `void*` assignments,
+  detects dereference with incompatible cast where cast type is larger than
+  source type. 40/40 TP, 0 FP.
+
+## [0.3.35] - 2026-03-23
+
+### Added
+
+- API07-C CWE-761: free-pointer-not-at-start detection. Tracks
+  `malloc`/`calloc`/`realloc` assignments, detects `ptr++`/`ptr+=N`/`ptr--`
+  modifications, flags subsequent `free(ptr)`. Handles reassignment and
+  reallocation resets.
+
+### Fixed
+
+- EXP33-C: `extract_nested_base_ex()` recurses through nested subscript/field
+  chains (`arr[0].field` -> `arr`). `MallocUninitialized` + subscript-in-chain
+  -> `MallocInitialized`. `match_initializing_function()` suffix-matches wrapper
+  functions (`os_memset` -> `memset`). `*zalloc()` recognized as
+  zero-initializing allocator.
+- ARR00-C: `find_pointer_source_array()` recursively resolves pointer
+  derivation chains (depth limit 5). Eliminates FPs on `end - pos` buffer
+  arithmetic.
+- ERR33-C: printf-family return value checks suppressed (`fprintf`, `sprintf`,
+  `snprintf`, `vprintf`, `vfprintf`, `vsprintf`, `vsnprintf`).
+
+### Changed
+
+- BENCHMARK_INSTALL.md: updated sqc examples from `rules-all.toml` to
+  `rules-benchmark.toml`.
+
+## [0.3.34] - 2026-03-23
+
+### Fixed
+
+- EXP33-C critical bug: functions inside `#ifdef`/`#ifndef`/`#if` preprocessor
+  blocks were silently skipped. The guard condition `node.kind() !=
+  "translation_unit"` excluded all non-top-level parents. Removed incorrect skip
+  condition.
+- EXP33-C: field-write `MallocUninitialized` preservation re-applied. Field
+  writes on malloc'd pointers no longer upgrade to `MallocInitialized`. Stack
+  struct field writes still upgrade `Uninitialized` -> `Initialized`.
+- Reverted `extract_field_base` nested subscript resolution (caused premature
+  `Initialized` marking on first element write).
+- Juliet (vs v0.3.32): TP 8,156 -> 8,300 (+144), FP 9,180 -> 9,157 (-23),
+  TP rate 47.0% -> 47.5%. EXP33-C: 294/561 -> 431/559.
+- Real-world (vs v0.3.32): 150,337 -> 152,590 (+2,253). EXP33-C +2,899
+  (hostap +2,525) from `arr[0].field` limitation.
+
+## [0.3.33] - 2026-03-23
+
+### Changed
+
+- EXP33-C: complete rewrite from AST-walk to CFG-based forward dataflow
+  analysis. New `init_state.rs` (~1,200 lines) with `InitState` lattice (5
+  states: `Uninitialized`, `MaybeUninitialized`, `Initialized`,
+  `MallocUninitialized`, `MallocInitialized`), forward worklist algorithm, and
+  point queries via `get_var_info_at()`. New capabilities: branch-sensitive
+  analysis, loop-aware array init, malloc content tracking, realloc wrapper
+  detection, conditionally-initializing function detection, ~30 initializing
+  functions with per-argument output indices, non-initializing function list,
+  file-scope static variable tracking, subscript read extraction through
+  `field_expression` chains.
+- API00-C refinements.
+- CFG `condition_range` support.
+- Realworld benchmark MCP server enhancements (SQLite-first pattern,
+  `get_rule_trend`, `get_project_history`).
+- bench/db.py improvements.
+
+### Removed
+
+- Legacy shell scripts: batch_analyze_sqlite, bench_mosquitto_versions,
+  compare_tools, run_juliet_multi_cwe, run_juliet_parallel, test_single_file.
+
+## [0.3.32] - 2026-03-22
+
+### Fixed
+
+- DCL07-C/DCL31-C FP reduction (-11,556 real-world violations, -7.1%). Three
+  root causes addressed:
+  1. Prescan deep recursion: `collect_function_names` now recurses into ALL
+     child nodes (not just `preproc_*` blocks), finding functions inside ERROR
+     nodes from tree-sitter misparses.
+  2. Macro alias integration: DCL rules now check `macro_aliases` from prescan.
+  3. External library whitelist: OpenSSL, Tcl/Tk, Apple CoreFoundation,
+     mbedTLS, cJSON, zlib, GnuTLS, wolfSSL prefixes. `defined` operator
+     skipped.
+- DCL07-C: 10,617 -> 4,765 (-55.1%). DCL31-C: 10,543 -> 4,840 (-54.1%).
+- Juliet: zero change (47.0% TP rate preserved).
+
+## [0.3.31] - 2026-03-22
+
+### Fixed
+
+- INT07-C: skip `char *` pointer/array declarations in
+  `is_plain_char_declaration`. 96.5% of violations were pointer arithmetic.
+  6,230 -> 207 (-96.7%).
+- ERR33-C: fixed duplicate violation bug (standalone calls emitted via both
+  paths). Suppressed printf/puts/putchar/fputs/fputc/putc, `fprintf(stderr,
+  ...)`, `signal(SIG*, SIG_IGN/SIG_DFL)`, `time(&t)` with output parameter.
+  Recognized `==0`/`!=0` as NULL checks. Added `putenv`/`strdup`/`strndup`.
+  7,182 -> 1,807 (-74.8%).
+- MSC41-C: removed overly broad substring keywords (`db`, `connect`). Strict
+  word boundaries for `key`/`token`. Leading boundaries for
+  `auth`/`login`/`pwd`/`database`. Always apply `looks_like_sensitive_data()`
+  heuristic. Added `looks_like_sensitive_in_context()`. 3,954 -> 293 (-92.6%).
+- ARR00-C: rewrote `is_array_identifier()` from text-search to AST-based
+  `has_array_declaration()`. Guarded checks with array-only. Fixed
+  `check_array_assignment` to skip compound assignments. 7,341 -> 2,637
+  (-64.1%).
+- EXP33-C: added `scanf`/`fscanf`/`sscanf` `&var` argument initialization.
+  Added 15 for-each macro patterns. 4,554 -> 4,189 (-8.0%).
+- Juliet: 8,156 TP / 9,180 FP, 47.0% TP rate. -129 TP from intentional printf
+  suppression. Zero FP change.
+- Real-world: 182,020 -> 161,893 (-20,127, -11.1%).
+
+## [0.3.30] - 2026-03-22
+
+### Fixed
+
+- EXP34-C: replaced lattice join in `aggregate_callsite_null_states()` with
+  count-based voting. One PossiblyNull callsite no longer poisons parameters
+  with 50 NotNull callers. EXP34-C: 26,457 -> 5,290 (-80.0%) across 5
+  real-world codebases.
+- Juliet: 8,285 TP / 9,180 FP, 47.4% TP rate. CWE-690 TP rate 83.8% -> 94.3%
+  (+10.5pp). Zero regressions.
+
+## [0.3.28] - 2026-03-21
+
+### Added
+
+- `--save-prescan FILE` / `--load-prescan FILE` CLI flags for
+  serializing/deserializing `ProjectContext` to binary cache (bincode format).
+  Cache sizes: ~3.6 MB for hostap (12K functions), ~2.4 MB for sqlite.
+  Per-worker speedup: hostap 11.2s -> 0.8s (93%), sqlite prescan 866s -> 0s.
+  New dependency: `bincode = "1.3"`.
+- Persistent prescan cache at `data/prescan_cache/{codebase}.cache` with
+  `--rebuild-prescan` flag for regeneration.
+
+### Changed
+
+- Parallel scanner: balanced subdirectory splitting via recursive
+  `find_scan_units()`, prescan cache integration, prescan timeout increased
+  600s -> 1800s, graceful `TimeoutExpired` fallback.
+
+## [0.3.27] - 2026-03-21
+
+### Added
+
+- `rules-benchmark.toml` manifest with 13 style/recommendation rules disabled
+  (zero Juliet CWE contribution, ~114K realworld violations): EXP19-C, DCL08-C,
+  DCL06-C, EXP02-C, EXP14-C, EXP12-C, EXP10-C, DCL04-C, INT02-C, INT01-C,
+  INT17-C, INT16-C, PRE31-C.
+- Parallel sqc scanner (`scripts/sqc_parallel_scan.py`): splits codebases by
+  subdirectory, runs multiple sqc processes via `ProcessPoolExecutor`,
+  auto-detects parallelism, deduplicates merged JSON outputs.
+
+### Fixed
+
+- POS49-C: restricted from all shared struct field writes to only actual
+  bit-field writes. `collect_bitfield_names()` identifies fields with
+  `bitfield_clause`. 15,693 -> 107 violations (-99.3%).
+
+### Changed
+
+- All benchmark infrastructure updated to use `rules-benchmark.toml`.
+- MCP realworld server uses parallel scanner with `rebuild_prescan` parameter.
+
+## [0.3.26] - 2026-03-20
+
+### Fixed
+
+- EXP33-C: conditional init early-return detection. If/else-if/else chains
+  where non-initializing branches have unconditional exits no longer flag as
+  uninitialized. New `if_chain_covers_init_or_exit()` analysis.
+- ERR33-C (CWE-253): `== 0` for NonZero functions and Count functions no longer
+  incorrectly flagged.
+- FIO47-C: fixed 100% FP rate (0 TP, 119 FP -> 0 FP). Root cause:
+  `count_arguments()` miscounted non-data args for `sprintf`/`sscanf`/`dprintf`.
+  Relaxed format validation: `%lf` valid in C99+, removed `'` flag and
+  `+/space` with `%o/%u/%x` checks.
+- PRE00-C: restricted from all function-like macros to only macros with
+  multi-evaluation risk or side effects.
+- EXP34-C: pointer function parameters default to NotNull when no
+  inter-procedural call-site data exists.
+- Juliet: 8,390 TP / 9,252 FP, 47.6% TP rate (+0.3pp). FIO47-C: 119 FP -> 0.
+  CWE-134 TP rate 33.4% -> 47.9% (+14.5pp).
+- Real-world: -5,366 violations (-1.5%). PRE00-C -4,274, EXP34-C -1,758.
+  Cumulative from v0.3.5: -48,086 (-11.9%).
+
+## [0.3.25] - 2026-03-20
+
+### Added
+
+- EXP33-C ALLOCA/alloca tracking: `alloca()` and `ALLOCA()` allocations treated
+  as uninitialized memory. +52 new TPs.
+
+### Fixed
+
+- EXP33-C conditional init heuristic: broadened from incomplete conditionals to
+  any conditional body. New `inits_share_conditional` check. +18 new TPs.
+- INT31-C VRA improvement: CWE-194 TP rate 41.7% -> 56.8% (+15.1pp, -310
+  FP/-31 TP).
+- Juliet (68/68 CWEs): 8,420 TP / 9,371 FP, 47.3% TP rate (+0.6pp).
+
+## [0.3.24] - 2026-03-19
+
+### Added
+
+- VRA Phase 5: inter-procedural return ranges. `FunctionSummary` gains
+  `return_range: Option<ValueRange>` computed during prescan. VRA transfer
+  function resolves `call_expression` RHS using callee return range.
+- VRA Phase 6: INT31-C migration. Full VRA integration for
+  signed->unsigned, unsigned->signed, and narrowing casts. VRA-based range
+  narrowing supplements syntactic `is_inside_bounds_checked_block()`.
+
+### Changed
+
+- Prescan reordered: macro constants collected before function summaries.
+- Juliet (67/68 CWEs): 7,393 TP / 8,433 FP, 46.7% TP rate (+2.4pp vs
+  v0.3.21). ~6x speedup on large non-VRA CWEs via `compute_return_ranges` flag.
+
+## [0.3.23] - 2026-03-19
+
+### Added
+
+- CFG-based forward value-range analysis (`value_range.rs`). Worklist algorithm
+  with interval lattice, edge refinement for all comparison/compound operators,
+  type-aware initial ranges, widening after 3 back-edge iterations. Computed
+  once per file per function, shared across rules via `set_vra_results()`.
+
+### Changed
+
+- INT33-C: `divisor_provably_nonzero()` tries VRA first, falls back to
+  syntactic analysis.
+- INT34-C: `check_shift_operation()` tries VRA first for shift amount range.
+- INT32-C: all 6 `expression_fits_in_signed` call sites use VRA-backed version.
+- INT30-C: all 4 `expression_fits_in_unsigned` call sites use VRA-backed
+  version.
+
+## [0.3.22] - 2026-03-19
+
+### Fixed
+
+- ARR38-C: function-scoped alias resolution prevents cross-function
+  contamination. Skip heuristic checks when buffer size is verified. CWE806:
+  function-scoped `find_content_size_in_function()` tracks `memset(var, char,
+  N)`. -183 CWE806 FP, -69 CWE805 FP.
+- ARR30-C: multi-assignment constant resolution via
+  `try_resolve_variable_to_constant`. Extract only condition from AST instead
+  of searching full if-body text. -67 CWE129 FP.
+
+## [0.3.21] - 2026-03-19
+
+### Added
+
+- CWE-121/122 buffer overflow detection: ARR30-C gains literal loop bounds,
+  ALLOCA tracking, pointer alias tracking. ARR38-C gains ALLOCA detection,
+  strlen/wcslen overflow, snprintf variants, pointer alias resolution,
+  N*sizeof(type) parsing.
+- Juliet: CWE-121 39.3% -> 39.9% TP rate, CWE-122 41.7% -> 36.6%.
+
+## [0.3.20] - 2026-03-18
+
+### Changed
+
+- Benchmark infrastructure overhaul: new `bench/` package replaces shell scripts
+  with Python runner + SQLite. `bench/runner.py` with `ProcessPoolExecutor`,
+  `bench/analyzer.py` for TP/FP classification, `bench/db.py` with 7-table
+  schema in WAL mode. MCP server updated to query SQLite first with legacy
+  fallback. `scripts/backfill_juliet_results.py` imported 21 Juliet + 7
+  real-world runs. Fast mode default with resume support.
+- First 68-CWE fast benchmark: 8,413 TP / 10,484 FP, 44.5% TP rate.
+
+## [0.3.19] - 2026-03-15
+
+### Fixed
+
+- ENV03-C: function-scoped clearenv() checks sanitization per-function instead
+  of file-level.
+- STR02-C: intra-function taint tracking (recv, fgets, fgetws, scanf, getenv,
+  etc.) with cast handling and propagation.
+- CWE-78 precision: 42.0% -> 45.5%, FP -330, TP -78.
+
+## [0.3.18] - 2026-03-14
+
+### Added
+
+- Fast benchmark mode: `generate_rule_cwe_map.py` generates 147 per-CWE
+  manifest TOMLs. `run_juliet_parallel.sh --fast` uses per-CWE manifests.
+  CWE-476 validation: noise 61.8% -> 0%, TP rate 39.5% -> 46.5%.
+- INT31-C: `check_call_argument_conversion()` detects signed integer variables
+  passed to functions expecting `size_t`. Covers 20 standard library functions.
+  Suppressions for explicit cast, sizeof, literals, bounds check, non-negative
+  guard.
+
+### Fixed
+
+- Various false positive reduction improvements.
+
+## [0.3.17] - 2026-03-12
+
+### Added
+
+- `collect_macro_aliases()` in const_eval.rs for `#define ALIAS identifier`
+  patterns. ENV33-C, ENV03-C, STR02-C resolve aliases before matching dangerous
+  functions. Windows exec/spawn variants added to ENV33-C.
+- ERR33-C CWE-253: validates comparison correctness for functions classified by
+  `ErrorReturnKind` (NullPointer, NegativeInt, Eof, NonZero, Count). Macro
+  alias resolution + wchar_t variants. CWE-253: 178 TP, 0 FP, 100% precision.
+
+## [0.3.15] - 2026-03-12
+
+### Added
+
+- CWE-aware scoring system: 5 new metrics (FLAW-line hit rate, CWE-matched TP
+  rate, per-file detection rate, noise ratio, incidental TP/FP).
+  `generate_rule_cwe_map.py` produces `data/rule_cwe_map.json` (117 rules to
+  144 CWEs). Integrated into analysis pipeline.
+- CWE-124, CWE-126, CWE-127 mappings for ARR30-C, ARR38-C, STR31-C.
+
+## [0.3.14] - 2026-03-11
+
+### Fixed
+
+- Juliet regression investigation: full-suite benchmark 126,106 TP, 158,036 FP,
+  44.4% TP rate. Confirmed regression is cumulative effect of individually
+  correct suppressions. Discovered scoring methodology issues (off-by-one in
+  FLAW-line matching, incidental noise scored as TP).
+
+## [0.3.13]
+
+### Added
+
+- EXP34-C multi-pass prescan propagation: `propagate_param_null_states()`
+  resolves relay chains across function call hierarchies.
+
+### Fixed
+
+- EXP33-C for-loop init recognition: `has_preceding_assignment_in_block()` walks
+  ancestor scopes. `for_init_assigns_var()` recognizes init clauses as
+  dominating assignments. Handles `for (i = 0; ...)`, `for (int i = 0; ...)`,
+  and comma expressions.
+- INT30-C: `is_subtraction_guarded_by_comparison()` detects `if (a >= b) { a -
+  b }` patterns. Supports `>=`, `>`, `<=`, `<` and compound `&&` conditions.
+  Generalized `1U`/`1u` suffix handling.
+
+## [0.3.8]
+
+### Added
+
+- API00-C: 4 new validation patterns for parameter checking.
+
+### Fixed
+
+- STR31-C: gated string-literal suppression on `!is_function_parameter()` in
+  `check_strcpy_safety` and `check_strcat_safety`. Fixed
+  `check_sequential_strcat_overflow` to scan only current function's line range.
+- EXP33-C: field/subscript write no longer treated as read (-576 FP, -299 TP).
+
+## [0.3.5]
+
+### Added
+
+- Struct field type resolution: prescan collects struct definitions into
+  `struct_field_types` in `ProjectContext`. `infer_type()` resolves
+  `field_expression` types. Integrated with INT32-C and INT30-C.
+
+## [0.3.3]
+
+### Fixed
+
+- POS49-C: `is_local_variable()` skips stack-local struct member assignments.
+- EXP12-C: `connect() != 0` in binary_expression not flagged.
+- INT30-C: `is_literal_one()` strips unsigned/long suffixes.
+  `is_preceded_by_increment()` checks for `var++`/`++var`/`var += 1` before
+  subtraction.
+
+## [0.2.25]
+
+### Fixed
+
+- STR04-C: binary buffer skip, only flag `unsigned char` arrays with string
+  literal evidence.
+- INT18-C: uint64_t recognition via `type_identifier` nodes.
+- EXP05-C: AST-based const detection replacing text-based check.
+
+## [0.2.22]
+
+### Fixed
+
+- ARR02-C: skip implicit bounds check for string-literal-initialized arrays.
+- POS02-C: removed `socket`/`setsockopt` from privileged operations.
+- PRE31-C: strip string literal content before function-call pattern checks.
+- MEM05-C: ALL_CAPS macro constant VLA detection + word-boundary recursion
+  matching.
+- INT32-C: `is_inside_bounds_checked_block()` extended to while/for statements.
+  `extract_mutation_target()` ensures loop-bounded variable matches operation.
+- INT30-C: skip subtraction when either operand is `uint64_t`.
+- Const-eval: `ValueRange::shl()` clamps negative shift-amount lower bounds
+  to 0.
+
+## [0.2.21]
+
+### Added
+
+- Const-eval / value-range analysis module (`src/analyze/const_eval.rs`, ~550
+  lines). `MacroConstantMap` for `#define` constant collection.
+  `ValueRange { min, max }` interval arithmetic. `try_evaluate_expr()` /
+  `try_evaluate_range()` for recursive AST constant folding.
+  `extract_loop_var_ranges()` for loop bounds. Integrated with INT32-C and
+  INT30-C.
+
+### Fixed
+
+- Benchmark measurement: analysis script now outputs all rules (previously top
+  10 only). 16 existing runs reanalyzed. Eliminated phantom regressions from
+  top-10 truncation.
+
+## [0.2.20]
+
+### Added
+
+- `-I`/`--include-path` flag: pre-pass extracts `#include` directives, resolves
+  against search paths. Transitive include resolution with cycle prevention.
+
+### Fixed
+
+- MSC37-C: `STATIC void` macro prefix, `has_void_specifier()` scans all
+  children for `void`.
+- INT36-C: `(void)` discard cast, bare `void` no longer matched as pointer
+  type.
+- PRE02-C: trailing comment stripping in macro values.
+- ERR33-C: `(void)` cast recognized as intentional discard.
+- CON03-C: skip `const`-qualified variables and synchronization primitive types.
+- DCL30-C: scalar value copy through pointer no longer flagged as address
+  escape.
+- FIO47-C: snprintf argument count corrected (subtract 3, not 1).
+- EXP37-C: init_declarator skip for K&R-style declarations.
+- API00-C: skip static functions + caller-aware suppression via NotNull.
+- INT01-C: eliminated double-visit dedup fix (-3 duplicate violations).
+- EXP34-C: array declarations tracked as NotNull in prescan.
+- Juliet: -2,720 FP, TP rate 44.1% -> 44.2%.
+
+## [0.2.17]
+
+### Fixed
+
+- EXP34-C Phase 3: MEM10-C positive guard suppression (-38 FP). API02-C
+  `const wchar_t *` exclusion. API00-C caller-aware suppression via function
+  summaries. Prescan local variable tracking for callsite null state resolution.
+- CWE-476: TP 313 -> 320 (+7), FP 542 -> 512 (-30), rate 36.6% -> 38.5%.
+- CWE-690 bonus: +36 TP, -63 FP.
+
+## [0.2.16]
+
+### Added
+
+- EXP34-C Phase 2: call-site null propagation. Call-site flagging for
+  DefinitelyNull args. Callee param seeding via `infer_arg_null_state()`.
+  Multi-pass aggregation with lattice join.
+- CWE-476: +19 TP, +17 FP (rate 35.9% -> 36.6%).
+
+## [0.2.15]
+
+### Added
+
+- EXP34-C Phase 1: CFG-based null state dataflow (`src/analyze/null_state.rs`).
+  Forward dataflow with NullState lattice. EXP34-C rewritten from ~1200-line
+  linear walk to CFG-based analysis.
+
+### Fixed
+
+- MEM10-C: parameter-only null check fix (-106 FP on CWE-476).
+- d_lib_common FP round 2: resolved all 17 FP patterns (~51 violations). Key
+  fixes: FIO46-C source-order stream tracking, INT32-C field_expression skip,
+  FLP03-C scientific notation, EXP12-C parent-check, INT01-C sizeof skip.
+- Juliet: -10,678 FP (-5.4%), TP rate 44.7% -> 44.2%.
+
+## [0.2.13]
+
+### Added
+
+- INT31-C implicit narrowing assignment detection:
+  `check_assignment_conversion()` for `init_declarator` and
+  `assignment_expression`. Type width comparison with FP suppressions
+  (double-flag, validated vars, bounds-check, literal-fits, bitmask).
+
+### Fixed
+
+- DCL19-C: `STATIC` macro recognition.
+- INT32-C: skip unsigned operands in binary overflow checks.
+- DCL15-C: skip functions with prototypes in `.h` headers.
+- INT36-C: exclude struct field access and array subscript.
+- PRE31-C: skip string literal arguments from side-effect analysis.
+- EXP30-C: recognize `x = f(x)` as safe.
+- INT30-C: detect `if (var > 0)` guard before unsigned decrement.
+- DCL07-C/31-C: skip indirect calls and preprocessor-guarded blocks.
+- Juliet: 44.6% -> 44.7% TP rate, -13,961 FP (-6.6%).
+
+### Changed
+
+- Prescan: `linkage_specification` (`extern "C" {}`) traversal in all walkers.
+  `pointer_declarator` handling for pointer-returning prototypes.
+  `header_declared_functions` field in `ProjectContext`.
