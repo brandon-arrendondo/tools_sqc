@@ -13,24 +13,12 @@ then Juliet benchmark and real-world benchmark to validate.
 
 # Task ID: 1
 # Title: Juliet TP rate to 50%
-# Status: in-progress
+# Status: done
 # Dependencies: none
 # Priority: P0
 # Description: Raise Juliet CWE-matched TP rate from 48.4% to 50%.
 # Details:
-v0.3.42: 48.4% TP rate (unchanged since v0.3.37). Remaining gap dominated by
-high-FP rules where Juliet good/bad patterns are structurally identical to our
-analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65%
-FP), FLP03-C (69% FP). These rules need deeper semantic analysis or Juliet-
-specific pattern recognition to distinguish good from bad.
-
-v0.3.44 changes toward 50%:
-- ENV33-C: taint-source heuristic suppression. Inline good functions (no
-  recv/fgets/getenv and no pointer params) suppressed. String literal args
-  still flagged. Cross-function variants with char* params still flagged.
-- FLP03-C: removed overbroad check_fp_conversion() (flagged all float/double
-  casts). Added division guard detection: fabs/fabsf/fabsl magnitude checks,
-  != 0, > 0, < 0 conditions suppress guarded divisions.
+Achieved in v0.3.44: 51.1% TP rate (+2.7pp from 48.4%). See CHANGELOG.txt.
 
 ---
 
@@ -516,14 +504,14 @@ flag malloc/calloc/realloc/free in all other functions. Medium effort.
 
 # Task ID: 32
 # Title: CWE-matched TP rate >= 50% on key CWEs
-# Status: in-progress
+# Status: done
 # Dependencies: 1
 # Priority: P1
 # Description: Tier 2 production quality milestone.
 # Details:
-v0.3.42: 48.4% overall. 16 CWEs already at 100%, 6 above 50%. Target: overall
->= 50% and top 10 CWEs by volume each >= 50%. Blocked by high-FP rules (see
-task 1).
+Achieved in v0.3.44: 51.1% overall TP rate. 20 CWEs at 100%, CWE-78 jumped
+from 45.5% to 63.0%. Remaining below-50% CWEs are volume-heavy (CWE-121
+47.1%, CWE-190 45.3%, CWE-191 43.9%) and need INT32-C/STR31-C improvements.
 
 ---
 
@@ -583,6 +571,14 @@ v0.3.42 per-rule data (all 5 codebases, 154.6K total, rules-benchmark.toml):
 v0.3.42 vs v0.3.39 delta: +1,442 (+0.9%). All increases from newly-fixed
 rules: CON34-C +871, STR34-C +252, EXP40-C +114, ERR01-C +106, CON07-C +72,
 DCL02-C +14, POS50-C +11.
+
+v0.3.44 vs v0.3.42 delta: +5 (+0.003%, essentially flat). 154,598→154,603.
+- FLP03-C: -164 (381→217, -43%). Clean reduction across all projects.
+  sqlite -133, curl -18, mosquitto -10, hostap -3, libcrc 0.
+- ENV33-C: -1 (5→4). Minimal real-world impact — few system() calls.
+- EXP16-C: +160 (49→209). Regression in sqlite only (39→209). Unrelated to
+  v0.3.44 changes — likely side effect of v0.3.43 MSC12-C. Needs investigation.
+- FIO01-C: +10. New detections (curl +4, sqlite +6). Also unrelated.
 
 ---
 
@@ -670,3 +666,19 @@ detection (fabs/fabsf/fabsl, != 0, > 0 / < 0). Need tests:
 - pass/division_gt_zero.c: Division inside `if (x > 0)`
 - pass/division_fenv.c: Division with feclearexcept/fetestexcept (already exists as wiki_c.c)
 - pass/conversion_only.c: Cast to float/double without division (should not flag)
+
+---
+
+# Task ID: 40
+# Title: Realworld benchmark duration tracking
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Record per-project wall-clock duration in realworld benchmark runs.
+# Details:
+The realworld_results table has a duration_s column but it is always 0 for
+all tools (sqc, cppcheck, clang-tidy). The MCP server runner
+(mcp_servers/server.py or bench/) needs to time each subprocess and write
+the elapsed seconds into duration_s when inserting results. This would
+enable tracking performance regressions across versions and understanding
+which codebases (hostap, sqlite) dominate wall-clock time.

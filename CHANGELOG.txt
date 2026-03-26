@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.44] - 2026-03-26
+
+### Changed
+
+- ENV33-C: taint-source heuristic suppression for system()/popen(). Functions
+  with no tainted input sources (recv, fgets, getenv, scanf, etc.) and no
+  pointer/string parameters are suppressed. String literal arguments and
+  cross-function sinks with char* params remain flagged. Macro aliases
+  (#define SYSTEM system) resolved via project context.
+- FLP03-C: removed overbroad check_fp_conversion() that flagged all
+  float/double cast expressions. Added divide-by-zero guard detection:
+  fabs/fabsf/fabsl magnitude checks, != 0, > 0, < 0 conditions suppress
+  guarded divisions.
+
+### Results
+
+- Juliet TP rate: 48.4% -> 51.1% (+2.7pp). **P0 milestone achieved.**
+- Total: TP 8,508->8,383 (-125), FP 9,067->8,020 (-1,047). 8.4:1 FP:TP ratio.
+- ENV33-C: -818 FP/-139 TP (5.9:1). FP rate 58%->24.6%.
+- FLP03-C: -234 FP/-70 TP (3.3:1). FP rate 69%->58.2%.
+- CWE-78: TP rate 45.5%->63.0% (+17.5pp).
+- CWE-369: TP rate 33.6%->36.9% (+3.3pp).
+- Bonus: CWE-367 +15 TP, CWE-479 +36 TP, CWE-480 +10 TP, CWE-482 +7 TP
+  (from v0.3.43 MSC12-C/wildcard rules newly matched to CWEs).
+- Realworld: 154,598->154,603 (+5, flat). FLP03-C -164 (-43%, clean).
+  ENV33-C -1. EXP16-C +160 regression in sqlite (unrelated, needs investigation).
+
 ## [0.3.43] - 2026-03-25
 
 ### Added
