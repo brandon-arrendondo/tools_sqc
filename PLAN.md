@@ -110,14 +110,24 @@ Require new analysis capabilities beyond current architecture:
 
 **Already detected but benchmark can't classify**: CWE-479 (SIG30-C detects all 54 violations, but handler functions are defined at file scope outside `#ifndef OMITBAD` guards — analyzer classifies them as "unknown" instead of TP).
 
-### Benchmark Analyzer: Helper-Outside-Guards Pattern (Priority 2)
+### Benchmark Analyzer: Helper-Outside-Guards Pattern — COMPLETED
 
-CWE-479 revealed that Juliet sometimes defines helper functions (e.g., `helperBad()`) at file scope, outside the `#ifndef OMITBAD`/`#ifndef OMITGOOD` guards, with only the **call site** inside the guarded section. The analyzer classifies violations by line location relative to guards, so violations in these helpers are classified as "unknown" and don't count as TP or FP.
+**Fixed**: `parse_c_file_sections()` in `bench/analyzer.py` now performs call-graph analysis to reclassify helper functions defined outside `#ifndef OMITBAD`/`#ifndef OMITGOOD` guards. If a function is referenced exclusively from OMITBAD sections → TP. Exclusively from OMITGOOD → FP. Mixed references → "unknown". Handles both direct calls (`helperBad(x)`) and function pointer references (`signal(SIGINT, helperBad)`).
 
-**Action items**:
-1. **Audit**: Grep across the Juliet suite for this pattern — helper functions defined outside guards but referenced exclusively from one guard section. Estimate how many CWEs are affected and the magnitude of misclassified violations.
-2. **Fix (if widespread)**: Enhance the analyzer to trace call graphs: if a function is only referenced from OMITBAD sections, its violations count as TP; if only from OMITGOOD, FP. Mixed references stay "unknown".
-3. **Impact**: Could be silently suppressing TP counts across multiple CWEs, making our benchmark numbers look worse than reality.
+**Audit results**: 7 CWEs use the helper-outside-guards pattern. 4 are currently in the fast-mode benchmark; 3 more will benefit when their CWE-matched rules are added:
+
+Currently scanned (reclassified in DB):
+- CWE-479 (18 files): 36 unknown → 36 TP (100% reclassified — was showing 0 detections)
+- CWE-416 (8 files): 16 unknown → 16 TP
+- CWE-366 (36 files): 5 of 6 unknown → 5 FP (1 stays unknown: mixed-reference variant 12)
+- CWE-377: 57 unknown → unchanged (`srand(time())` in `#ifdef INCLUDEMAIN` scaffolding, not helper pattern)
+
+Not yet scanned (no CWE-matched rules, fix will apply automatically when added):
+- CWE-364 Signal Handler Race Condition (18 files, same pattern as CWE-479)
+- CWE-674 Uncontrolled Recursion (2 files)
+- CWE-563 Unused Variable (2 files), CWE-561 Dead Code (1 file), CWE-398 Poor Code Quality (1 file)
+
+**Impact**: +52 TP, +5 FP across all runs. TP rate 48.4% → 48.5%. All 18 historical runs retroactively corrected (969 total violations reclassified).
 
 **Deferred — require new analysis capabilities or have low ROI**:
 
@@ -238,10 +248,7 @@ Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known lim
 - [ ] **File-size-aware batching** — current subdir splitting can leave one large unit dominating wall time (e.g., wpa_supplicant/ 69 files = 1061s). Batch by file size rather than directory to balance work across workers.
 - [ ] **Incremental parsing** — only re-parse changed files
 - [ ] **Baseline-aware suppression** — "only new violations" mode
-- [ ] **Glob/prefix suppression in `.sqc-suppress.toml`** — current TOML format only supports per-file/per-line hash-matched suppressions. Real-world projects need pattern-based suppressions (e.g., suppress DCL31-C for all `wolfSSL_*` calls, or suppress a rule for an entire directory). Valgrind uses `obj:*libXt.so*` glob syntax; cppcheck uses `rule:*` file wildcards; clang-tidy uses `NOLINTNEXTLINE(cert-*)` prefix matching. Candidates for sqc:
-  - `file_glob` field: `"src/vendor/**"` — suppress rule for all files matching glob
-  - `function_prefix` field: `"wolfSSL_"` — suppress DCL31-C/DCL07-C for function name prefixes
-  - `rule_glob` field: `"DCL*"` — suppress all DCL rules (useful for vendor/third-party code)
+- [x] **Glob/prefix suppression in `.sqc-suppress.toml`** (v0.3.43) — `[[wildcard]]` TOML section with `file_glob`, `rule`, `rule_glob`, `function_prefix` fields (ANDed). Glob supports `*`, `**`, `?`. `function_prefix` matches at word boundaries in violation messages. Hash-matched suppressions take priority over wildcards.
 - [ ] **Docker image** — containerized CI/CD distribution
 
 ### Analysis Capabilities Lacking
