@@ -29,7 +29,9 @@ Full Command Reference
           --rules <RULE1,RULE2,...>    Only report violations from these rules (comma-separated)
           --diff                       Only analyze modified/new C files (requires git repo)
           --suppress-file <FILE>       Path to .sqc-suppress.toml file
-                                       (auto-detected in project root if not specified)
+                                       (auto-detected in project root if not specified;
+                                       supports [[suppression]] hash entries and
+                                       [[wildcard]] glob/prefix entries)
       -I, --include <DIR>              Additional include directories (for header resolution)
       -h, --help                       Print help
       -V, --version                    Print version
