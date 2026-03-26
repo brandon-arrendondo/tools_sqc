@@ -108,7 +108,16 @@ Require new analysis capabilities beyond current architecture:
 
 **Fixed in this batch**: CWE-480 (EXP16-C AST function collection + NULL recognition), CWE-482 (EXP16-C dead comparison detection), CWE-367 (FIO01-C access/stat+open TOCTOU).
 
-**Already detected but benchmark can't classify**: CWE-479 (SIG30-C detects all 54 violations, but handler functions are outside `#ifndef OMITBAD` guards — benchmark infra issue).
+**Already detected but benchmark can't classify**: CWE-479 (SIG30-C detects all 54 violations, but handler functions are defined at file scope outside `#ifndef OMITBAD` guards — analyzer classifies them as "unknown" instead of TP).
+
+### Benchmark Analyzer: Helper-Outside-Guards Pattern (Priority 2)
+
+CWE-479 revealed that Juliet sometimes defines helper functions (e.g., `helperBad()`) at file scope, outside the `#ifndef OMITBAD`/`#ifndef OMITGOOD` guards, with only the **call site** inside the guarded section. The analyzer classifies violations by line location relative to guards, so violations in these helpers are classified as "unknown" and don't count as TP or FP.
+
+**Action items**:
+1. **Audit**: Grep across the Juliet suite for this pattern — helper functions defined outside guards but referenced exclusively from one guard section. Estimate how many CWEs are affected and the magnitude of misclassified violations.
+2. **Fix (if widespread)**: Enhance the analyzer to trace call graphs: if a function is only referenced from OMITBAD sections, its violations count as TP; if only from OMITGOOD, FP. Mixed references stay "unknown".
+3. **Impact**: Could be silently suppressing TP counts across multiple CWEs, making our benchmark numbers look worse than reality.
 
 **Deferred — require new analysis capabilities or have low ROI**:
 
