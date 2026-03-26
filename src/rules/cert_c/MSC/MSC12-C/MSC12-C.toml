@@ -1,0 +1,26 @@
+[metadata]
+id = "MSC12-C"
+type = "recommendation"
+category = "MSC"
+number = 12
+title = "Detect and remove code that has no effect or is never executed"
+description = """
+The presence of code that has no effect or is never executed may indicate a logic
+error and may result in unexpected behavior. Such code includes statements whose
+value is discarded (e.g., a == b; used as a statement), redundant subexpressions
+in logical operators, duplicate conditions in if/else-if chains, and unconditional
+jump statements at the end of loops that would continue anyway.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Mar 25, 2026"
+
+[rules.cert_c.MSC12-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/MSC12-C.+Detect+and+remove+code+that+has+no+effect+or+is+never+executed"
+cwe = ["CWE-561"]
