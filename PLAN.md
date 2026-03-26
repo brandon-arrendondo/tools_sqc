@@ -225,6 +225,40 @@ Quick check command: `grep -r "TODO.*move to fail\|TODO.*Move to fail\|Known lim
 - [x] **Glob/prefix suppression in `.sqc-suppress.toml`** (v0.3.43) — `[[wildcard]]` TOML section with `file_glob`, `rule`, `rule_glob`, `function_prefix` fields (ANDed). Glob supports `*`, `**`, `?`. `function_prefix` matches at word boundaries in violation messages. Hash-matched suppressions take priority over wildcards.
 - [ ] **Docker image** — containerized CI/CD distribution
 
+### BRULE Coverage Gaps — sqc Opportunities
+
+Gaps identified from [BRULES.md](../doc.development_workbook/brules/BRULES.md) where sqc could improve automated enforcement. Rules not listed are either fully superseded by BRULE-027, enforced by other tools (knots, uncrustify, GCC), or inherently manual (hardware, process, architecture review).
+
+**Partially covered (sqc already enforces some patterns):**
+
+| BRULE | Description | Current sqc Rules | Gap |
+|-------|-------------|-------------------|-----|
+| BRULE-029 | Strong typing (sized integers) | `INT07-C`, `INT31-C` | CERT C doesn't mandate `stdint.h` types as strictly as MISRA — gap is prescriptive, not detectable |
+| BRULE-034 | No dead code | `EXP12-C`, `MSC12-C` | `MSC07-C` (unreachable code after return, dead branches) not yet implemented |
+| BRULE-035 | Proper header usage | `DCL36-C`, `DCL31-C` | Unnecessary `extern` in `.c` files not flagged |
+| BRULE-037 | Switch default clause | — | `MSC01-C` not implemented; GCC `-Wswitch-default` covers this |
+| BRULE-062 | Check return values | `ERR33-C`, `EXP12-C` | Already well-covered |
+| BRULE-067 | Input validation at boundaries | `ARR38-C`, `STR31-C` | Taint-based input validation not implemented |
+
+**Not covered (new rules needed):**
+
+| BRULE | Description | Potential CERT C Rule | Effort | Notes |
+|-------|-------------|----------------------|--------|-------|
+| BRULE-058 | No recursion | — (call-graph) | Medium | Requires call-graph construction from prescan; detect cycles |
+| BRULE-059 | Fixed loop bounds | — | High | Requires symbolic analysis of loop termination conditions |
+| BRULE-060 | No dynamic alloc after init | `MEM35-C` variant | Medium | Flag malloc/free outside `main()`/init functions; heuristic |
+| BRULE-061 | Volatile correctness | `DCL22-C` | Medium | Already have rule; gap is ISR/shared-variable context detection |
+| BRULE-063 | No side effects in booleans | `EXP30-C` | Low | Already have rule; verify coverage of assignment-in-condition |
+| BRULE-064 | Limited preprocessor complexity | `PRE00-C`–`PRE31-C` | Low | Several PRE rules exist; gap is `#if` nesting depth check |
+| BRULE-065 | Limited pointer indirection | — | Low | Count `*` depth in declarations; straightforward AST check |
+| BRULE-034+ | Unreachable code (MSC07-C) | `MSC07-C` | Medium | Code after `return`/`exit`/`abort`, always-false branches. Needs CFG |
+
+**Priority for sqc implementation** (based on BRULE severity and feasibility):
+1. `MSC07-C` unreachable code (BRULE-034 gap, Warning level, CFG infrastructure exists)
+2. BRULE-058 recursion detection (Constrained tier, call-graph from prescan)
+3. BRULE-065 pointer indirection depth (All tier, simple AST check)
+4. BRULE-060 post-init malloc detection (Constrained tier, heuristic)
+
 ### Analysis Capabilities Lacking
 
 - No preprocessor expansion (macros appear as function calls; macro aliases partially addressed via `collect_macro_aliases`)
