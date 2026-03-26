@@ -259,6 +259,11 @@ impl Flp03C {
                 .child_by_field_name("right")
                 .is_some_and(|r| analyzer.is_fp_expression(&r, source));
             if is_division && (left_fp || right_fp) {
+                // Check if the division is inside a divide-by-zero guard
+                if self.is_inside_division_guard(node, source) {
+                    return;
+                }
+
                 // Check if there's error checking in the containing function
                 if let Some(containing_func) = self.find_containing_function(node) {
                     if !self.contains_fp_error_checking(&containing_func, source) {
@@ -280,35 +285,6 @@ impl Flp03C {
         }
     }
 
-    /// Check for floating-point type conversions without error checking
-    fn check_fp_conversion(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
-        // Check for cast expressions involving floating-point types
-        if node.kind() == "cast_expression" {
-            if let Some(type_node) = node.child_by_field_name("type") {
-                let type_text = get_node_text(&type_node, source);
-                if type_text.contains("float") || type_text.contains("double") {
-                    // Check if there's error checking in the containing function
-                    if let Some(containing_func) = self.find_containing_function(node) {
-                        if !self.contains_fp_error_checking(&containing_func, source) {
-                            violations.push(RuleViolation {
-                                rule_id: self.rule_id().to_string(),
-                                severity: self.severity(),
-                                message: "Floating-point type conversion without error checking (may cause inexact conversion or overflow)".to_string(),
-                                file_path: String::new(),
-                                line: node.start_position().row + 1,
-                                column: node.start_position().column + 1,
-                                suggestion: Some(
-                                    "Use feclearexcept/fetestexcept to detect FE_INEXACT, FE_OVERFLOW, or FE_UNDERFLOW".to_string()
-                                ),
-                                ..Default::default()
-                            });
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     /// Find the containing function definition for a given node
     fn find_containing_function<'a>(&self, node: &Node<'a>) -> Option<Node<'a>> {
         let mut current = Some(*node);
@@ -319,6 +295,67 @@ impl Flp03C {
             current = n.parent();
         }
         None
+    }
+
+    /// Check if a division node is inside a guard that protects against divide-by-zero.
+    /// Recognizes patterns like:
+    /// - `if (fabs(data) > 0.000001)` (magnitude check)
+    /// - `if (data != 0)` or `if (data != 0.0)` (zero check)
+    /// - `if (x > 0)` / `if (x < 0)` (sign check implies non-zero)
+    fn is_inside_division_guard(&self, node: &Node, source: &str) -> bool {
+        let mut current = node.parent();
+        // Walk up to 15 ancestors looking for an enclosing if_statement
+        let mut depth = 0;
+        while let Some(n) = current {
+            if depth > 15 {
+                break;
+            }
+            if n.kind() == "if_statement" {
+                if let Some(condition) = n.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    if Self::is_division_guard_condition(&cond_text) {
+                        return true;
+                    }
+                }
+            }
+            current = n.parent();
+            depth += 1;
+        }
+        false
+    }
+
+    /// Check if a condition text represents a divide-by-zero guard.
+    fn is_division_guard_condition(cond_text: &str) -> bool {
+        // fabs/fabsf/fabsl magnitude checks: fabs(x) > threshold
+        if cond_text.contains("fabs") || cond_text.contains("fabsf") || cond_text.contains("fabsl")
+        {
+            if cond_text.contains('>') {
+                return true;
+            }
+        }
+
+        // != 0 or != 0.0 checks
+        if (cond_text.contains("!= 0") || cond_text.contains("!=0")) && !cond_text.contains("== 0")
+        {
+            return true;
+        }
+
+        // Comparisons against zero that imply non-zero: > 0, < 0
+        // But not >= 0 or <= 0 (those don't exclude zero)
+        if (cond_text.contains("> 0") || cond_text.contains(">0"))
+            && !cond_text.contains(">= 0")
+            && !cond_text.contains(">=0")
+        {
+            return true;
+        }
+        if (cond_text.contains("< 0") || cond_text.contains("<0"))
+            && !cond_text.contains("<= 0")
+            && !cond_text.contains("<=0")
+        {
+            return true;
+        }
+
+        false
     }
 }
 
@@ -364,15 +401,9 @@ impl Flp03C {
         violations: &mut Vec<RuleViolation>,
         analyzer: &FpAnalyzer,
     ) {
-        // Check for floating-point operations without error checking
-        match node.kind() {
-            "binary_expression" => {
-                self.check_fp_division(node, source, violations, analyzer);
-            }
-            "cast_expression" => {
-                self.check_fp_conversion(node, source, violations);
-            }
-            _ => {}
+        // Check for floating-point division without error checking
+        if node.kind() == "binary_expression" {
+            self.check_fp_division(node, source, violations, analyzer);
         }
 
         // Recursively check child nodes

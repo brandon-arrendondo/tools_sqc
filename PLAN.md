@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-26 (v0.3.43)
+Last Updated: 2026-03-26 (v0.3.44)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -23,6 +23,14 @@ high-FP rules where Juliet good/bad patterns are structurally identical to our
 analysis: INT32-C (55% FP), ENV33-C (58% FP), STR31-C (59% FP), INT33-C (65%
 FP), FLP03-C (69% FP). These rules need deeper semantic analysis or Juliet-
 specific pattern recognition to distinguish good from bad.
+
+v0.3.44 changes toward 50%:
+- ENV33-C: taint-source heuristic suppression. Inline good functions (no
+  recv/fgets/getenv and no pointer params) suppressed. String literal args
+  still flagged. Cross-function variants with char* params still flagged.
+- FLP03-C: removed overbroad check_fp_conversion() (flagged all float/double
+  casts). Added division guard detection: fabs/fabsf/fabsl magnitude checks,
+  != 0, > 0, < 0 conditions suppress guarded divisions.
 
 ---
 
@@ -642,3 +650,23 @@ architectural investment.
   examples
 - Real-world validation on 5 open-source projects (libcrc, sqlite, mosquitto,
   curl, hostap)
+
+---
+
+# Task ID: 39
+# Title: FLP03-C test coverage
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Add test cases for FLP03-C guard detection and conversion removal.
+# Details:
+v0.3.44 removed overbroad check_fp_conversion() and added division guard
+detection (fabs/fabsf/fabsl, != 0, > 0 / < 0). Need tests:
+
+- fail/division_no_guard.c: FP division without any guard or fenv checking
+- fail/division_ge_zero.c: Division inside `if (x >= 0)` (does NOT exclude zero)
+- pass/division_fabs_guard.c: Division inside `if (fabs(x) > 0.000001)`
+- pass/division_ne_zero.c: Division inside `if (x != 0)`
+- pass/division_gt_zero.c: Division inside `if (x > 0)`
+- pass/division_fenv.c: Division with feclearexcept/fetestexcept (already exists as wiki_c.c)
+- pass/conversion_only.c: Cast to float/double without division (should not flag)
