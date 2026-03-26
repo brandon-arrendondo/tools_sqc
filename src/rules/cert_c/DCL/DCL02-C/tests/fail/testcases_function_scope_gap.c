@@ -1,8 +1,7 @@
 /*
  * Rule: DCL02-C
  * Source: testcases
- * Status: PASS - Known limitation: function-scope declarations not checked
- * TODO: Move to fail/ when function-scope similarity checking is implemented (see PLAN.md)
+ * Status: FAIL - function-scope visually similar identifiers
  *
  * These identifiers differ only by 1/I (visually similar) but the rule currently
  * only checks file-scope declarations, not function-local ones.

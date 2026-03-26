@@ -117,6 +117,10 @@ impl Con07C {
     fn find_static_variables(&self, node: &Node, source: &str, static_vars: &mut Vec<String>) {
         if node.kind() == "declaration" {
             let mut is_static = false;
+            let mut is_file_scope = node
+                .parent()
+                .is_some_and(|p| p.kind() == "translation_unit");
+            let mut is_mutex_or_thread_type = false;
             let mut var_names = Vec::new();
 
             for i in 0..node.child_count() {
@@ -125,6 +129,20 @@ impl Con07C {
                         "storage_class_specifier" => {
                             if get_node_text(&child, source) == "static" {
                                 is_static = true;
+                            }
+                            if get_node_text(&child, source) == "extern" {
+                                // extern declarations are not owned by this file
+                                is_file_scope = false;
+                            }
+                        }
+                        "type_identifier" => {
+                            let type_name = get_node_text(&child, source);
+                            if type_name.contains("mutex")
+                                || type_name.contains("pthread")
+                                || type_name.contains("thrd")
+                                || type_name.contains("cnd")
+                            {
+                                is_mutex_or_thread_type = true;
                             }
                         }
                         "init_declarator" => {
@@ -144,7 +162,8 @@ impl Con07C {
                 }
             }
 
-            if is_static {
+            // Collect static variables AND file-scope globals (non-mutex types)
+            if is_static || (is_file_scope && !is_mutex_or_thread_type) {
                 static_vars.extend(var_names);
             }
         }

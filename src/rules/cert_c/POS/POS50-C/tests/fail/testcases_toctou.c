@@ -1,8 +1,7 @@
 /*
  * Rule: POS50-C
  * Source: testcases
- * Status: PASS - Known limitation: stat()+fopen() TOCTOU not detected
- * TODO: Move to fail/ when TOCTOU pattern detection is implemented (see PLAN.md)
+ * Status: FAIL - stat()+fopen() TOCTOU race condition
  */
 
 #include <stdio.h>

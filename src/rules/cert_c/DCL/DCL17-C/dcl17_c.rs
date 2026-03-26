@@ -41,6 +41,9 @@ impl CertRule for Dcl17C {
         // Pass 2: Find direct accesses to volatile variables
         find_direct_volatile_accesses(node, source, &volatile_vars, &mut violations);
 
+        // Pass 3: Detect K&R-style function declarations and definitions
+        find_kr_style_functions(node, source, &mut violations);
+
         violations
     }
 }
@@ -258,4 +261,133 @@ fn is_ancestor_of(ancestor: &Node, descendant: &Node) -> bool {
         current = node.parent();
     }
     false
+}
+
+/// Detect K&R-style function declarations and definitions.
+///
+/// Flags two patterns:
+/// 1. Empty parameter list in declarations: `int func();` (should be `int func(void);`)
+/// 2. K&R-style function definitions where parameter types are listed after the
+///    declarator: `void func(x) int x; { ... }`
+fn find_kr_style_functions(root: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    let mut cursor = root.walk();
+    for child in root.children(&mut cursor) {
+        match child.kind() {
+            "declaration" => {
+                // Check for empty parameter list in function declarations
+                check_empty_param_list_decl(&child, source, violations);
+            }
+            "function_definition" => {
+                // Check for K&R-style definition (declaration nodes between
+                // function_declarator and compound_statement)
+                check_kr_style_definition(&child, source, violations);
+            }
+            _ => {}
+        }
+    }
+}
+
+/// Check if a declaration has a function_declarator with empty parameter list.
+/// `int func();` has parameter_list with only ( and ) — no parameter_declaration
+/// and no `void`. `int func(void);` has a parameter_declaration with `void`.
+fn check_empty_param_list_decl(decl: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    let mut decl_cursor = decl.walk();
+    for child in decl.children(&mut decl_cursor) {
+        if child.kind() == "function_declarator" {
+            if let Some(params) = child.child_by_field_name("parameters") {
+                if is_empty_param_list(&params) {
+                    let func_name = if let Some(id) = child.child_by_field_name("declarator") {
+                        ast_utils::get_node_text(&id, source)
+                    } else {
+                        // Try to find identifier directly
+                        find_func_name_in_declarator(&child, source)
+                    };
+                    violations.push(RuleViolation {
+                        rule_id: "DCL17-C".to_string(),
+                        severity: Severity::Medium,
+                        message: format!(
+                            "Function '{}' declared with empty parameter list (K&R style). \
+                             Use '(void)' for functions that accept no arguments.",
+                            func_name
+                        ),
+                        file_path: String::new(),
+                        line: child.start_position().row + 1,
+                        column: child.start_position().column + 1,
+                        suggestion: Some(format!(
+                            "Change '{}()' to '{}(void)' to declare a proper prototype",
+                            func_name, func_name,
+                        )),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+    }
+}
+
+/// Find the function name identifier within a function_declarator node.
+fn find_func_name_in_declarator<'a>(func_decl: &Node<'a>, source: &'a str) -> &'a str {
+    for i in 0..func_decl.child_count() {
+        if let Some(child) = func_decl.child(i) {
+            if child.kind() == "identifier" {
+                return ast_utils::get_node_text(&child, source);
+            }
+        }
+    }
+    "unknown"
+}
+
+/// Returns true if the parameter_list contains no parameter_declaration nodes.
+fn is_empty_param_list(params: &Node) -> bool {
+    let mut cursor = params.walk();
+    for child in params.children(&mut cursor) {
+        if child.kind() == "parameter_declaration" {
+            return false;
+        }
+        // Also check for bare identifiers (K&R param names)
+        if child.kind() == "identifier" {
+            return false;
+        }
+    }
+    true
+}
+
+/// Check for K&R-style function definitions where tree-sitter places
+/// `declaration` nodes as direct children of `function_definition`
+/// (between the function_declarator and compound_statement).
+fn check_kr_style_definition(func_def: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    let mut has_kr_params = false;
+    let mut func_name = "unknown";
+
+    let mut cursor = func_def.walk();
+    for child in func_def.children(&mut cursor) {
+        if child.kind() == "function_declarator" {
+            func_name = find_func_name_in_declarator(&child, source);
+        }
+        // A `declaration` as direct child of function_definition (not inside
+        // compound_statement) indicates K&R parameter declarations
+        if child.kind() == "declaration" {
+            has_kr_params = true;
+        }
+    }
+
+    if has_kr_params {
+        violations.push(RuleViolation {
+            rule_id: "DCL17-C".to_string(),
+            severity: Severity::Medium,
+            message: format!(
+                "Function '{}' uses K&R-style (old-style) parameter declarations. \
+                 Use modern prototype syntax.",
+                func_name,
+            ),
+            file_path: String::new(),
+            line: func_def.start_position().row + 1,
+            column: func_def.start_position().column + 1,
+            suggestion: Some(
+                "Rewrite using prototype syntax: void func(int x) instead of void func(x) int x;"
+                    .to_string(),
+            ),
+            ..Default::default()
+        });
+    }
 }
