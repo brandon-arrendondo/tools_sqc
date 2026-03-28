@@ -62,8 +62,18 @@ impl Exp10C {
     ) {
         // Check binary expressions for multiple function calls
         if node.kind() == "binary_expression" {
+            // C guarantees left-to-right evaluation for logical operators (&&, ||)
+            // with a sequence point between operands.  These are NOT unsequenced.
+            let is_sequenced_op = node
+                .child_by_field_name("operator")
+                .map(|op| {
+                    let op_text = get_node_text(&op, source);
+                    op_text == "||" || op_text == "&&"
+                })
+                .unwrap_or(false);
+
             let call_count = self.count_function_calls(node, source);
-            if call_count >= 2 {
+            if call_count >= 2 && !is_sequenced_op {
                 violations.push(RuleViolation {
                     rule_id: self.rule_id().to_string(),
                     message: format!(
