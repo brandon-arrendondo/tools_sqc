@@ -128,6 +128,30 @@ impl DCL19C {
         self.has_static_macro_in_prefix(node, source)
     }
 
+    /// Returns true if the declaration text contains a STATIC-equivalent macro.
+    fn has_static_macro_in_declaration(&self, node: &Node, source: &str) -> bool {
+        const STATIC_MACROS: &[&str] = &[
+            "STATIC",
+            "STATIC_VAR",
+            "STATIC_INLINE",
+            "PRIVATE",
+            "INTERNAL",
+            "LOCAL",
+        ];
+
+        let node_text = get_node_text(node, source);
+        let first_line = node_text.lines().next().unwrap_or("");
+        // Check tokens before the `=` or `;`
+        let before_eq = first_line.split('=').next().unwrap_or(first_line);
+        for token in before_eq.split_whitespace() {
+            let token = token.trim_start_matches('*');
+            if STATIC_MACROS.contains(&token) {
+                return true;
+            }
+        }
+        false
+    }
+
     /// Returns true if the source text before the function name contains a
     /// recognised macro that is a conditional alias for `static`.
     fn has_static_macro_in_prefix(&self, node: &Node, source: &str) -> bool {
@@ -160,6 +184,7 @@ impl DCL19C {
         let mut cursor = node.walk();
         let mut is_static = false;
         let mut is_extern = false;
+        let mut is_volatile = false;
         let mut has_init_declarator = false;
 
         for child in node.children(&mut cursor) {
@@ -172,11 +197,28 @@ impl DCL19C {
                         is_extern = true;
                     }
                 }
+                "type_qualifier" => {
+                    let text = get_node_text(&child, source);
+                    if text == "volatile" {
+                        is_volatile = true;
+                    }
+                }
                 "init_declarator" => {
                     has_init_declarator = true;
                 }
                 _ => {}
             }
+        }
+
+        // Check for STATIC macro in the raw text (same as function check)
+        if self.has_static_macro_in_declaration(node, source) {
+            is_static = true;
+        }
+
+        // volatile file-scope variables are typically ISR-shared or hardware-mapped —
+        // they MUST be at file scope for cross-function visibility.
+        if is_volatile {
+            return None;
         }
 
         // Trigger violation if it's a non-static, non-extern global variable
