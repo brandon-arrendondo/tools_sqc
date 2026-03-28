@@ -820,13 +820,16 @@ impl Api00C {
                 }
             }
         }
-        // Check for STATIC macro prefix (tree-sitter sees unexpanded macro as first tokens)
+        // Check for STATIC macro prefix (tree-sitter sees unexpanded macro as first tokens).
+        // Match any token in the declaration prefix that contains "STATIC" as a
+        // substring — covers project-specific macros like LIN_STATIC_INLINE,
+        // MY_STATIC_FUNC, etc.
         let func_text = function_node.utf8_text(source.as_bytes()).unwrap_or("");
-        let first_token = func_text.split_whitespace().next().unwrap_or("");
-        matches!(
-            first_token,
-            "STATIC" | "STATIC_FUNC" | "STATIC_INLINE" | "STATIC_NOINLINE"
-        )
+        let before_paren = func_text.split('(').next().unwrap_or("");
+        before_paren.split_whitespace().any(|token| {
+            let t = token.trim_start_matches('*');
+            t.contains("STATIC") || matches!(t, "PRIVATE" | "INTERNAL" | "LOCAL")
+        })
     }
 
     fn report_violation(
