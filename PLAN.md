@@ -686,21 +686,29 @@ which codebases (hostap, sqlite) dominate wall-clock time.
 ---
 
 # Task ID: 41
-# Title: P3214-driven FP reduction — completed batch
+# Title: P3214-driven FP reduction (v0.3.45)
 # Status: done
 # Dependencies: none
 # Priority: P1
 # Description: FP fixes driven by P3214 Secondary MCU suppression analysis.
 # Details:
-P3214 had 1372 violations (with -d and -I flags). Five rules fixed:
+P3214 had 1372 violations (with -d and -I flags). Ten rules fixed in two rounds:
 
+Round 1 (1372→963, -29.8%):
   DCL18-C: 119→0. Skip zero with type suffix (0U, 0u, 0L, 0UL, etc.).
   DCL08-C: 134→0. Skip enums with consecutive integer sequences.
   PRE02-C: 87→1. Skip do{...}while(0) macros and cast-wrapped expressions.
   EXP35-C: 39→0. Arrow operator (→) means pointer return, not temporary.
   INT36-C: 31→0. Distinguish bitwise AND (&) from address-of; skip *ptr dereference.
 
-Total: 1372→963 (-409, -29.8%). Remaining P3214 suppressions: 963.
+Round 2 (963→780, -19.0%):
+  EXP07-C: 87→0. Skip bit-position shifts (0-7) — standard bit manipulation.
+  DCL19-C: 49→5. Skip volatile variables (ISR-shared) and STATIC macro.
+  INT17-C: 37→0. Skip hex constants ≤0xFFFF — portable across all platforms.
+  EXP10-C: 14→0. Skip || and && — C guarantees left-to-right evaluation.
+  PRE08-C: 13→12. Skip self-matches (same filename vs itself).
+
+Total: 1372→780 (-592, -43.1%). Remaining P3214 suppressions: 780.
 
 ---
 
@@ -741,7 +749,7 @@ Low priority — advisory rule with minimal real-world bug risk.
 
 # Task ID: 44
 # Title: P3214 FP reduction — EXP07-C shift idioms (87 violations)
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Reduce EXP07-C FPs for standard byte extraction patterns.
@@ -758,7 +766,7 @@ Currently 87 violations in P3214, all standard embedded patterns.
 
 # Task ID: 45
 # Title: P3214 FP reduction — DCL19-C file-scope variables (49 violations)
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Reduce DCL19-C FPs for file-scope variables used across modules.
