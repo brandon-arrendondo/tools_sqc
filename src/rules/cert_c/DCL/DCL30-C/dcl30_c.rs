@@ -507,6 +507,13 @@ impl Dcl30C {
                 "identifier" => {
                     // Check if left is a global variable (declared outside function)
                     if self.is_global_or_static(&left, source) {
+                        // Only flag when the local is a pointer or array type.
+                        // Assigning a scalar value (e.g., global_int = local_int)
+                        // just copies the value — no dangling reference is created.
+                        if !self.local_var_is_pointer_or_array(&right, &right_var, source) {
+                            return None;
+                        }
+
                         let left_var = ast_utils::get_node_text(&left, source).to_string();
 
                         // Check if global is reassigned later in the same function (like p = NULL)

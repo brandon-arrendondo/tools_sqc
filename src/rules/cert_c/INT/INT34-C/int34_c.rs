@@ -130,6 +130,14 @@ impl Int34C {
                 return;
             }
 
+            // If the shift amount contains a modulo operation with a small
+            // constant (e.g. `(pos + bi) % 8u`), the result is always bounded
+            // to [0, modulus-1] — guaranteed within type width for any standard
+            // integer type.
+            if self.shift_amount_bounded_by_modulo(&right_node, source) {
+                return;
+            }
+
             // Try CFG-based VRA first (more precise)
             if let Some(range) = self.eval_shift_range_via_vra(node, &right_node, source) {
                 if range.min >= 0 && range.max < 32 {
@@ -208,6 +216,37 @@ impl Int34C {
             )),
             ..Default::default()
         });
+    }
+
+    /// Returns true if the shift amount expression is bounded by a modulo operation
+    /// with a constant divisor that's within type width (e.g., `expr % 8u` gives 0-7).
+    fn shift_amount_bounded_by_modulo(&self, node: &Node, source: &str) -> bool {
+        // Direct modulo: `expr % N`
+        if node.kind() == "binary_expression" {
+            if let Some(op) = ast_utils::get_binary_operator(node, source) {
+                if op == "%" {
+                    if let Some(right) = node.child_by_field_name("right") {
+                        if self.is_non_negative_integer_literal(&right, source) {
+                            let text = ast_utils::get_node_text(&right, source)
+                                .trim()
+                                .to_ascii_lowercase();
+                            let stripped = text.trim_end_matches(['u', 'l']);
+                            if let Ok(modulus) = stripped.parse::<u64>() {
+                                // modulus <= 64 means result is 0..modulus-1, within any type width
+                                return modulus > 0 && modulus <= 64;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // Parenthesized: `(expr % N)`
+        if node.kind() == "parenthesized_expression" {
+            if let Some(inner) = node.child(1) {
+                return self.shift_amount_bounded_by_modulo(&inner, source);
+            }
+        }
+        false
     }
 
     /// Returns true if the node is a non-negative integer literal
