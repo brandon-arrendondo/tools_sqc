@@ -682,3 +682,91 @@ all tools (sqc, cppcheck, clang-tidy). The MCP server runner
 the elapsed seconds into duration_s when inserting results. This would
 enable tracking performance regressions across versions and understanding
 which codebases (hostap, sqlite) dominate wall-clock time.
+
+---
+
+# Task ID: 41
+# Title: P3214-driven FP reduction — completed batch
+# Status: done
+# Dependencies: none
+# Priority: P1
+# Description: FP fixes driven by P3214 Secondary MCU suppression analysis.
+# Details:
+P3214 had 1372 violations (with -d and -I flags). Five rules fixed:
+
+  DCL18-C: 119→0. Skip zero with type suffix (0U, 0u, 0L, 0UL, etc.).
+  DCL08-C: 134→0. Skip enums with consecutive integer sequences.
+  PRE02-C: 87→1. Skip do{...}while(0) macros and cast-wrapped expressions.
+  EXP35-C: 39→0. Arrow operator (→) means pointer return, not temporary.
+  INT36-C: 31→0. Distinguish bitwise AND (&) from address-of; skip *ptr dereference.
+
+Total: 1372→963 (-409, -29.8%). Remaining P3214 suppressions: 963.
+
+---
+
+# Task ID: 42
+# Title: P3214 FP reduction — API00-C parameter validation (134 violations)
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Reduce API00-C FPs for internal functions with trusted callers.
+# Details:
+API00-C flags every function that takes a pointer parameter without NULL
+validation. In embedded firmware (P3214), internal functions are called from
+known call sites with validated arguments. Possible fixes:
+- If prescan shows all call sites pass non-NULL, suppress
+- Add static/internal linkage heuristic (static functions have local callers)
+- Add annotation/naming convention exception (e.g., functions starting with
+  a module prefix called only from same module)
+Real-world impact: API00-C is 9,227 violations in real-world benchmarks.
+
+---
+
+# Task ID: 43
+# Title: P3214 FP reduction — EXP14-C bitwise on small types (91 violations)
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Reduce EXP14-C FPs for defined-behavior integer promotion.
+# Details:
+EXP14-C flags bitwise operations on uint8_t/uint16_t due to implicit
+integer promotion. This is defined behavior in C99/C11 and is the standard
+pattern on 8-bit MCUs. Options:
+- Skip when the result is immediately cast back to the original type
+- Skip when both operands are unsigned (no sign-extension surprise)
+- Make severity "info" rather than generating suppressible violations
+Low priority — advisory rule with minimal real-world bug risk.
+
+---
+
+# Task ID: 44
+# Title: P3214 FP reduction — EXP07-C shift idioms (87 violations)
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Reduce EXP07-C FPs for standard byte extraction patterns.
+# Details:
+EXP07-C flags expressions like `x >> 8`, `x >> 4`, `x << 1` as "assuming
+constant values." These are standard byte extraction and bit manipulation
+idioms. Options:
+- Skip shift operations entirely (they are not "assuming constant values")
+- Skip shift-and-mask patterns (>> N) & 0xFF
+- Restrict to only flag cases where shift amount is a variable
+Currently 87 violations in P3214, all standard embedded patterns.
+
+---
+
+# Task ID: 45
+# Title: P3214 FP reduction — DCL19-C file-scope variables (49 violations)
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Reduce DCL19-C FPs for file-scope variables used across modules.
+# Details:
+DCL19-C flags file-scope variables as "should have minimal scope." With -d
+cross-file analysis, this dropped from 207 to 49, but remaining violations
+are for variables intentionally at file scope (ISR-shared, scheduler state).
+Options:
+- Check if variable has volatile qualifier (likely ISR-shared, skip)
+- Check if variable has extern declaration in headers via prescan
+- This overlaps with DCL15-C (function scope) — both need cross-file linkage
