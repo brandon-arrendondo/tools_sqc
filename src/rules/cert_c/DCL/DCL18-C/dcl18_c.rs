@@ -122,6 +122,13 @@ impl Dcl18C {
             return false;
         }
 
+        // - Zero with type suffix (0U, 0u, 0L, 0l, 0UL, 0ul, 0LL, 0ULL, etc.)
+        //   "0U" is unsigned zero, "0L" is long zero — never octal confusion.
+        let stripped = literal.trim_end_matches(['u', 'U', 'l', 'L']);
+        if stripped == "0" {
+            return false;
+        }
+
         // Check if it has more digits after the leading 0
         // This catches cases like "0042", "0123", etc.
         if literal.len() > 1 {

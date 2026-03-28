@@ -112,8 +112,18 @@ impl Int36C {
             // Exception: when casting TO a pointer type, the field may itself be
             // a pointer (e.g., structCharVoid->voidSecond is void*).
             let is_dereferenced = value_text.contains("->") || value_text.contains('[');
-            let appears_to_be_pointer = value_text.contains('&')
-                || value_node.kind() == "pointer_expression"
+
+            // Distinguish address-of (&var) from bitwise AND (expr & mask).
+            // Address-of: the value node is a pointer_expression with "&" operator,
+            // OR the text starts with "&" (unary).
+            // Bitwise AND: appears as " & " with spaces, typically in binary expressions.
+            let has_address_of = value_text.starts_with('&')
+                || (value_node.kind() == "pointer_expression" && value_text.starts_with('&'));
+
+            // pointer_expression (*ptr) is a dereference — the result is the
+            // pointed-to VALUE, not a pointer.  Only treat it as pointer-like if
+            // the outer node is a pointer_expression with "&" (address-of).
+            let appears_to_be_pointer = has_address_of
                 || value_text == "NULL"
                 || (!is_dereferenced && value_text.contains("ptr"))
                 || (cast_to_pointer && is_dereferenced);

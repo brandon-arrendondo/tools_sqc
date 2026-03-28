@@ -182,14 +182,32 @@ impl Exp35C {
         }
     }
 
+    /// Check if a field_expression uses arrow (->) vs dot (.) operator.
+    /// Arrow means the function returned a pointer to a persistent object,
+    /// not a temporary struct value.
+    fn uses_arrow_operator(&self, field_expr: &Node, source: &str) -> bool {
+        for i in 0..field_expr.child_count() {
+            if let Some(child) = field_expr.child(i) {
+                let text = ast_utils::get_node_text(&child, source);
+                if text == "->" {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     /// Check if a node represents accessing an array member from a temporary
-    fn is_temporary_array_access(&self, node: &Node, _source: &str) -> bool {
+    fn is_temporary_array_access(&self, node: &Node, source: &str) -> bool {
         match node.kind() {
             "field_expression" => {
                 // Check if the argument is a call expression
-                // Pattern: func().array
+                // Pattern: func().array — temporary struct member access
+                // Skip: func()->field — function returns pointer, not temporary
                 if let Some(argument) = node.child_by_field_name("argument") {
-                    return argument.kind() == "call_expression";
+                    if argument.kind() == "call_expression" {
+                        return !self.uses_arrow_operator(node, source);
+                    }
                 }
             }
             "subscript_expression" => {
@@ -198,7 +216,9 @@ impl Exp35C {
                 if let Some(array) = node.child(0) {
                     if array.kind() == "field_expression" {
                         if let Some(argument) = array.child_by_field_name("argument") {
-                            return argument.kind() == "call_expression";
+                            if argument.kind() == "call_expression" {
+                                return !self.uses_arrow_operator(&array, source);
+                            }
                         }
                     }
                 }
