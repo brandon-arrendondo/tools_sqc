@@ -151,12 +151,30 @@ impl Exp02C {
         false
     }
 
+    /// Check if a call_expression is used as a getter in a field access pattern:
+    /// `func()->field` or `func().field`. The call just returns a struct/pointer
+    /// and the result is read — no observable side effect.
+    fn is_getter_in_field_access(&self, call_node: &Node) -> bool {
+        if let Some(parent) = call_node.parent() {
+            if parent.kind() == "field_expression" {
+                if let Some(arg) = parent.child_by_field_name("argument") {
+                    return arg.id() == call_node.id();
+                }
+            }
+        }
+        false
+    }
+
     /// Check if a node contains side effects (function calls, assignments, increments)
     fn has_side_effects(&self, node: &Node, source: &str) -> bool {
         match node.kind() {
-            // Function calls have side effects
+            // Function calls have side effects — unless they're getter patterns
             "call_expression" => {
-                // Exception: certain pure functions might be okay, but be conservative
+                // Exception: func()->field is a getter pattern (returns struct pointer,
+                // field is read). The function call is just to obtain a reference.
+                if self.is_getter_in_field_access(node) {
+                    return false;
+                }
                 true
             }
             // Assignment operators have side effects
