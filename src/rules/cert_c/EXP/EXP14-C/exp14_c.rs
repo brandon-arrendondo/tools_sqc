@@ -130,10 +130,14 @@ fn check_bitwise_expression(node: &Node, source: &str, violations: &mut Vec<Rule
             }
         }
         "binary_expression" => {
-            // Check for bitwise operators (&, |, ^, <<, >>)
+            // Check for bitwise operators that are genuinely risky after promotion.
+            // &, |, ^, >> are safe: promotion widens but the result, when truncated
+            // back to the small type, is identical to the non-promoted result.
+            // Only ~ (unary, handled above) and << are risky: ~ sign-extends the
+            // upper bits, and << can produce a value wider than the original type.
             if let Some(operator) = node.child_by_field_name("operator") {
                 let op_text = ast_utils::get_node_text(&operator, source);
-                if matches!(op_text, "&" | "|" | "^" | "<<" | ">>") {
+                if matches!(op_text, "<<") {
                     // Check if left operand has an explicit cast
                     let left_has_cast = if let Some(left) = node.child_by_field_name("left") {
                         left.kind() == "cast_expression"

@@ -204,8 +204,15 @@ impl Int14C {
             &mut shift_operations,
         );
 
-        // Check for variables that have both bitwise and arithmetic operations
+        // Check for variables that have both bitwise and arithmetic operations.
+        // Skip exactly-2-char variable names like `bi` — these are loop counter/index
+        // variables where mixed bitwise+arithmetic is standard embedded pattern
+        // (e.g., bit position calculated as `pos + bi`, then used in `1u << bi`).
+        // Single-char names like `x` are NOT skipped — they could be function parameters.
         for (var_name, operations) in variable_operations.iter() {
+            if var_name.len() == 2 {
+                continue;
+            }
             if operations.contains(&OperationType::Bitwise)
                 && operations.contains(&OperationType::Arithmetic)
             {
