@@ -217,6 +217,8 @@ def parse_sqc_csv(csv_path: str | Path) -> dict:
         reader = csv.DictReader(f)
         for row in reader:
             title = row['Title']
+            # Strip " version:HASH" suffix added by sqc export
+            title = re.sub(r'\s+version:\S+$', '', title)
             match = re.match(r'([A-Z0-9-]+):(.+):(\d+)', title)
             if match:
                 rule_id = match.group(1)

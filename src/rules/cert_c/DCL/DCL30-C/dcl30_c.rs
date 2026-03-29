@@ -108,6 +108,13 @@ impl Dcl30C {
                             return None;
                         }
 
+                        // Don't flag if the pointer was assigned from a static
+                        // variable's address (e.g., ptrCharString = &staticArray[1]).
+                        // Static storage outlives the function scope.
+                        if self.local_ptr_points_to_static(&child, &var_name, source) {
+                            return None;
+                        }
+
                         let start_point = return_node.start_position();
 
                         return Some(RuleViolation {
@@ -179,6 +186,133 @@ impl Dcl30C {
             None => return false,
         };
         self.find_heap_allocation_for_var(&body, var_name, source)
+    }
+
+    /// Check if a local pointer variable was assigned from the address of a
+    /// `static` local variable (e.g., `ptr = &static_array[i]`). Returning
+    /// such a pointer is safe because static storage outlives the function.
+    fn local_ptr_points_to_static(&self, var_node: &Node, var_name: &str, source: &str) -> bool {
+        let mut current = var_node.parent();
+        let mut function_body: Option<Node> = None;
+        while let Some(node) = current {
+            if node.kind() == "compound_statement" {
+                if let Some(parent) = node.parent() {
+                    if parent.kind() == "function_definition" {
+                        function_body = Some(node);
+                        break;
+                    }
+                }
+            }
+            current = node.parent();
+        }
+        let body = match function_body {
+            Some(b) => b,
+            None => return false,
+        };
+        self.find_static_address_assignment(&body, var_name, source)
+    }
+
+    /// Scan function body for assignments like `var = &something` or
+    /// `var = &something[i]` where `something` is declared `static`.
+    fn find_static_address_assignment(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() == "expression_statement" {
+                    if let Some(expr) = child.child(0) {
+                        if expr.kind() == "assignment_expression" {
+                            if let (Some(left), Some(right)) = (
+                                expr.child_by_field_name("left"),
+                                expr.child_by_field_name("right"),
+                            ) {
+                                let left_text = ast_utils::get_node_text(&left, source);
+                                if left_text == var_name {
+                                    if let Some(src_var) =
+                                        self.extract_address_of_target(&right, source)
+                                    {
+                                        if self.is_static_local(body, &src_var, source) {
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if child.kind() == "compound_statement" || child.kind() == "if_statement" {
+                    if self.find_static_address_assignment(&child, var_name, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Extract the base variable name from an address-of expression.
+    /// `&charString` → Some("charString"), `&charString[1]` → Some("charString")
+    fn extract_address_of_target(&self, node: &Node, source: &str) -> Option<String> {
+        if node.kind() == "pointer_expression" {
+            // &expr — get the operand
+            let text = ast_utils::get_node_text(node, source);
+            if text.starts_with('&') {
+                if let Some(operand) = node.child(1) {
+                    return self.extract_base_identifier(&operand, source);
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract the base identifier from an expression.
+    /// `charString` → Some("charString"), `charString[1]` → Some("charString")
+    fn extract_base_identifier(&self, node: &Node, source: &str) -> Option<String> {
+        match node.kind() {
+            "identifier" => Some(ast_utils::get_node_text(node, source).to_string()),
+            "subscript_expression" => {
+                // array[index] — get the array part
+                if let Some(arr) = node.child(0) {
+                    self.extract_base_identifier(&arr, source)
+                } else {
+                    None
+                }
+            }
+            "field_expression" => {
+                // struct.field — get the struct part
+                if let Some(obj) = node.child(0) {
+                    self.extract_base_identifier(&obj, source)
+                } else {
+                    None
+                }
+            }
+            "parenthesized_expression" => {
+                if let Some(inner) = node.child(1) {
+                    self.extract_base_identifier(&inner, source)
+                } else {
+                    None
+                }
+            }
+            _ => None,
+        }
+    }
+
+    /// Check if `var_name` is declared with `static` storage in the function body.
+    fn is_static_local(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() == "declaration" {
+                    if self.declaration_contains_var_by_name(&child, var_name, source) {
+                        let decl_text = ast_utils::get_node_text(&child, source);
+                        return decl_text.contains("static");
+                    }
+                }
+                if child.kind() == "compound_statement" {
+                    if self.is_static_local(&child, var_name, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
     }
 
     /// Search a function body for evidence that `var_name` holds a heap pointer
