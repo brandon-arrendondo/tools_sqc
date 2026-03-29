@@ -212,6 +212,19 @@ impl Msc37C {
             return;
         }
 
+        // Skip phantom "functions" from preprocessor-broken else-if chains.
+        // When `else if (...)` appears inside #ifdef with no preceding `if` in
+        // the same scope, tree-sitter may misparse it as a function definition
+        // with "else" as the type specifier.
+        let type_text = get_node_text(&type_node, source);
+        let type_trimmed = type_text.trim();
+        if matches!(
+            type_trimmed,
+            "else" | "if" | "while" | "for" | "do" | "switch" | "case" | "default" | "return"
+        ) {
+            return;
+        }
+
         // Get declarator
         let declarator = match node.child_by_field_name("declarator") {
             Some(d) => d,
