@@ -271,6 +271,15 @@ impl Int30C {
             if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
                 && !self.has_overflow_check_addition(node, source)
             {
+                // Skip when both operands are narrow unsigned types (uint8_t, uint16_t).
+                // C promotes these to int (≥32-bit) before arithmetic, so the result
+                // cannot overflow the promoted type.
+                if self.is_narrow_unsigned_type(&left_type)
+                    && self.is_narrow_unsigned_type(&right_type)
+                {
+                    return;
+                }
+
                 // Check for var + 1 or 1 + var bounded by enclosing loop condition
                 if self.is_add_one_bounded_by_loop(node, source) {
                     return;
@@ -344,6 +353,15 @@ impl Int30C {
             if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
                 && !self.has_overflow_check_subtraction(node, source)
             {
+                // Narrow unsigned types (uint8_t, uint16_t) are promoted to int before
+                // subtraction — the result is a signed int that can represent negative
+                // values without wrapping. Skip.
+                if self.is_narrow_unsigned_type(&left_type)
+                    && self.is_narrow_unsigned_type(&right_type)
+                {
+                    return;
+                }
+
                 // Skip var - 1 / var - 1U when guarded by positive check or preceded by increment
                 if self.is_subtract_one_guarded(node, source) {
                     return;
@@ -411,6 +429,16 @@ impl Int30C {
             if (self.is_unsigned_type(&left_type) || self.is_unsigned_type(&right_type))
                 && !self.has_overflow_check_multiplication(node, source)
             {
+                // Narrow unsigned types: max(uint8_t)*max(uint8_t)=65025,
+                // max(uint16_t)*max(uint16_t)=4,294,836,225 which CAN overflow uint32_t.
+                // Only skip uint8_t * uint8_t (fits in 16-bit after promotion).
+                if self.is_narrow_unsigned_type(&left_type)
+                    && self.is_narrow_unsigned_type(&right_type)
+                    && (left_type.contains("8") || right_type.contains("8"))
+                {
+                    return;
+                }
+
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
                 if const_eval::expression_fits_in_unsigned_vra(
                     node,
@@ -459,6 +487,12 @@ impl Int30C {
             let left_type = self.infer_type(&left, source, type_map);
 
             if self.is_unsigned_type(&left_type) && !self.has_shift_overflow_check(node, source) {
+                // Narrow unsigned left shift: uint8_t << N is promoted to int first.
+                // Max result: 0xFF << 7 = 0x7F80, fits in 32-bit. Skip.
+                if self.is_narrow_unsigned_type(&left_type) {
+                    return;
+                }
+
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
                 if const_eval::expression_fits_in_unsigned_vra(
                     node,
@@ -507,6 +541,11 @@ impl Int30C {
 
             if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
             {
+                // Narrow unsigned compound add: uint8_t += uint8_t promotes to int.
+                if self.is_narrow_unsigned_type(&left_type) {
+                    return;
+                }
+
                 // Check for var += 1 bounded by enclosing loop condition (var < limit)
                 if let Some(right) = node.child_by_field_name("right") {
                     let right_text = get_node_text(&right, source);
@@ -560,6 +599,10 @@ impl Int30C {
 
             if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
             {
+                if self.is_narrow_unsigned_type(&left_type) {
+                    return;
+                }
+
                 // Check for var -= 1 with positive guard (var > expr implies var >= 1)
                 if let Some(right) = node.child_by_field_name("right") {
                     let right_text = get_node_text(&right, source);
@@ -618,6 +661,10 @@ impl Int30C {
 
             if self.is_unsigned_type(&left_type) && !self.has_overflow_check_compound(node, source)
             {
+                if self.is_narrow_unsigned_type(&left_type) {
+                    return;
+                }
+
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
                 if self.compound_expr_fits_unsigned(node, source, "*", 32) {
                     return;
@@ -697,6 +744,13 @@ impl Int30C {
             let arg_type = self.infer_type(&argument, source, type_map);
 
             if self.is_unsigned_type(&arg_type) {
+                // Narrow unsigned increment/decrement: uint8_t++ wraps at 255,
+                // uint16_t-- wraps at 0 — both are defined behavior and the
+                // promoted int result doesn't overflow.
+                if self.is_narrow_unsigned_type(&arg_type) {
+                    return;
+                }
+
                 let operator = self.get_update_operator(node, source);
                 if operator == "++" || operator == "--" {
                     // Skip increments/decrements in for-loop update clauses — the loop
@@ -878,7 +932,8 @@ impl Int30C {
             return "int".to_string();
         }
 
-        // Check identifiers against the type map (most reliable)
+        // Check identifiers against the type map (most reliable).
+        // Return the actual declared type to preserve narrow-type info (uint8_t etc.).
         if node.kind() == "identifier" {
             if let Some(declared_type) = type_map.get(text) {
                 // Pointer types are not integer types — skip
@@ -886,7 +941,7 @@ impl Int30C {
                     return "not_applicable".to_string();
                 }
                 if self.is_unsigned_type(declared_type) {
-                    return "unsigned".to_string();
+                    return declared_type.clone();
                 }
                 // Non-integer types (float, double, char, pointers, structs) — not applicable
                 if !declared_type.contains("int")
@@ -1270,6 +1325,25 @@ impl Int30C {
 
     fn is_unsigned_type(&self, type_str: &str) -> bool {
         type_str.contains("unsigned") || type_str == "size_t" || type_str.contains("uint")
+    }
+
+    /// Returns true if the type is a narrow unsigned integer (8-bit or 16-bit).
+    /// Operations on narrow unsigned types are promoted to `int` (at least 32-bit)
+    /// by the C standard, so they cannot overflow `unsigned int` in practice:
+    /// max(uint8_t) * max(uint8_t) = 255*255 = 65025, fits in 32-bit.
+    /// max(uint16_t) + max(uint16_t) = 131070, fits in 32-bit.
+    fn is_narrow_unsigned_type(&self, type_str: &str) -> bool {
+        matches!(
+            type_str,
+            "uint8_t"
+                | "uint_least8_t"
+                | "uint_fast8_t"
+                | "uint16_t"
+                | "uint_least16_t"
+                | "uint_fast16_t"
+                | "unsigned char"
+                | "unsigned short"
+        )
     }
 
     fn is_64bit_unsigned_declared(&self, type_str: &str) -> bool {

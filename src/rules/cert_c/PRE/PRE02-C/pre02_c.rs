@@ -105,6 +105,58 @@ impl Pre02C {
         true
     }
 
+    /// Check if the replacement is a cast expression wrapping a fully parenthesized operand.
+    /// Pattern: (type)(expr) where the entire operand after the cast is parenthesized.
+    /// Example: (uint8_t)(a | b) — the cast prevents precedence issues.
+    fn is_cast_with_parenthesized_operand(&self, text: &str) -> bool {
+        let trimmed = text.trim();
+        if !trimmed.starts_with('(') {
+            return false;
+        }
+        // Find the closing ')' of the cast type
+        let mut depth = 0;
+        let mut cast_end = 0;
+        for (i, c) in trimmed.chars().enumerate() {
+            if c == '(' {
+                depth += 1;
+            } else if c == ')' {
+                depth -= 1;
+                if depth == 0 {
+                    cast_end = i;
+                    break;
+                }
+            }
+        }
+        if cast_end == 0 || cast_end >= trimmed.len() - 1 {
+            return false;
+        }
+        // The cast type must look like a type name (letters, digits, underscores, spaces, *)
+        let cast_type = &trimmed[1..cast_end];
+        if cast_type.is_empty()
+            || !cast_type
+                .chars()
+                .all(|c| c.is_alphanumeric() || c == '_' || c == ' ' || c == '*')
+        {
+            return false;
+        }
+        // The rest after the cast must be a fully parenthesized expression
+        let rest = trimmed[cast_end + 1..].trim();
+        self.is_fully_parenthesized(rest)
+    }
+
+    /// Check if the replacement is a do{...}while(0) statement macro pattern.
+    /// This is the CERT-C recommended approach for multi-statement macros and
+    /// does not need outer parenthesization.
+    fn is_do_while_zero_pattern(&self, text: &str) -> bool {
+        let lower = text.trim().to_lowercase();
+        lower.starts_with("do")
+            && lower.contains("while")
+            && (lower.ends_with("while(0)")
+                || lower.ends_with("while (0)")
+                || lower.ends_with("while(0u)")
+                || lower.ends_with("while (0u)"))
+    }
+
     /// Check if the replacement contains operators that need parenthesization
     fn contains_operators(&self, text: &str) -> bool {
         let trimmed = text.trim();
@@ -173,6 +225,19 @@ impl Pre02C {
         // Check if it's already fully parenthesized
         if self.is_fully_parenthesized(&value_text) {
             return; // Already compliant
+        }
+
+        // Exception: do{...}while(0) is the CERT-C recommended pattern for
+        // multi-statement macros — parenthesization does not apply.
+        if self.is_do_while_zero_pattern(&value_text) {
+            return;
+        }
+
+        // Exception: cast expression wrapping a parenthesized operand, like
+        // (uint8_t)(expr) or (int)(a + b). The cast binds tighter than any
+        // binary operator, so there is no precedence issue in surrounding code.
+        if self.is_cast_with_parenthesized_operand(&value_text) {
+            return;
         }
 
         // Report violation

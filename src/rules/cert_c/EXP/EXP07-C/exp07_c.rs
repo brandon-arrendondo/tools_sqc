@@ -36,16 +36,17 @@ impl CertRule for Exp07C {
 
                 // Check for shift operators
                 if operator == "<<" || operator == ">>" {
-                    // Check if the right operand (shift amount) is a numeric literal
                     if let Some(right) = node.child_by_field_name("right") {
                         if is_numeric_literal(&right, source) {
-                            // Byte-boundary shifts (8, 16, 24, 32, ...) are standard
-                            // serialization/packing idioms, not magic number assumptions.
                             let shift_text = get_node_text(&right, source).trim();
+                            let shift_text = shift_text.trim_end_matches(['u', 'U', 'l', 'L']);
                             if let Ok(shift_val) = shift_text.parse::<u32>() {
-                                if shift_val > 0 && shift_val % 8 == 0 {
-                                    // Skip — byte extraction/packing pattern
-                                } else {
+                                // Skip standard bit manipulation idioms:
+                                // - Shifts 0-7: bit-position operations within a byte
+                                // - Byte-boundary shifts (8, 16, 24, 32): serialization/packing
+                                let is_bit_position = shift_val <= 7;
+                                let is_byte_boundary = shift_val > 0 && shift_val % 8 == 0;
+                                if !is_bit_position && !is_byte_boundary {
                                     report_violation(node, source, &mut violations);
                                 }
                             } else {

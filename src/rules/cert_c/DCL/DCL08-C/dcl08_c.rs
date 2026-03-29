@@ -230,6 +230,18 @@ impl Dcl08C {
             return;
         }
 
+        // If all explicit values form a consecutive integer sequence (0,1,2,... or 1,2,3,...),
+        // this is just making enum numbering explicit — not an encoded relationship.
+        // Common patterns: {SUCCESS=0, FAIL=1}, {CHARGE=1, DISCHARGE=2}, {A=0, B=1, C=2}.
+        if enum_values.len() >= 2 {
+            let mut sorted_vals: Vec<i64> = enum_values.iter().map(|(_, v, _)| *v).collect();
+            sorted_vals.sort();
+            let is_consecutive = sorted_vals.windows(2).all(|w| w[1] == w[0] + 1);
+            if is_consecutive {
+                return;
+            }
+        }
+
         // Check if any pair of values might have a relationship
         // For noncompliant_1: IN_STR_LEN=18, OUT_STR_LEN=20 (20 = 18+2)
         if enum_values.len() >= 2 {
