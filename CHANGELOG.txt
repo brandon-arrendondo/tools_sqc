@@ -6,6 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.47] - 2026-03-29
+
+### Changed
+
+- FIO24-C: added double-close detection for fclose/close/CloseHandle/closesocket.
+  Tracks closed variables per function; flags duplicate close without intervening
+  reopen. Resolves CWE-675 (224 Juliet files, 93.0% TP rate).
+- POS37-C: added unchecked Windows privilege API return value detection
+  (ImpersonateNamedPipeClient, RpcImpersonateClient, ImpersonateLoggedOnUser,
+  CoImpersonateClient, ImpersonateSelf, SetThreadToken). Resolves CWE-273
+  (36 Juliet files, 100% TP rate).
+- DCL30-C: skip return of pointer to static local address. When a local pointer
+  is assigned from &static_var[i], returning it is safe. Eliminates CWE-562 FP.
+- MSC37-C: skip phantom functions from preprocessor-broken else-if chains.
+  tree-sitter misparses disconnected else-if as function definitions.
+- MSC37-C: recognize else_clause nodes in all-branches-return check. if/else
+  where both branches return was falsely flagged.
+- INT33-C: recurse into nested blocks for zero-guard detection. Guards inside
+  outer if-blocks (e.g., null-check wrapping a zero-check) now recognized.
+- INT34-C: recognize (mask >> var) != 0 loop condition as shift-amount bound.
+  while ((mask >> bi) != 0u) implicitly constrains bi to < bit width.
+- rule_cwe_map: added MSC12-C → CWE-561 mapping.
+- bench/analyzer.py: fixed CSV parser regex for version:HASH suffix that broke
+  line number extraction when commit hash started with a digit.
+
+### Results
+
+- 3 formerly zero-detection CWEs now detecting: CWE-675 (80 TP, 93.0%),
+  CWE-273 (72 TP, 100%), CWE-562 (2 TP, 66.7% → 100% after DCL30-C fix).
+
 ## [0.3.46] - 2026-03-28
 
 ### Changed
