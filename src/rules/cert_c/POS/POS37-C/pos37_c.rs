@@ -1,29 +1,9 @@
 //! POS37-C: Ensure that privilege relinquishment is successful
 //!
-//! After calling setuid() to permanently drop privileges, verify that privileges
-//! were actually dropped by attempting to regain them (setuid(0)). If regaining
-//! succeeds, privileges were not properly dropped.
-//!
-//! ## Examples:
-//!
-//! **Non-compliant:**
-//! ```c
-//! setuid(getuid());  // Drop privileges - but what if it failed?
-//! // Code runs, potentially still with elevated privileges
-//! ```
-//!
-//! **Compliant:**
-//! ```c
-//! setuid(getuid());  // Drop privileges
-//! if (setuid(0) != -1) {  // Try to regain - should fail
-//!     // ERROR: privileges not dropped!
-//! }
-//! ```
-//!
-//! ## Detection Strategy:
-//! - Find setuid() calls that drop privileges (setuid(getuid()))
-//! - Check if followed by verification attempt (setuid(0))
-//! - Report violation if no verification
+//! Detects two patterns:
+//! 1. POSIX: setuid(getuid()) without verification via setuid(0)
+//! 2. Windows: Privilege/impersonation APIs called without checking return value
+//!    (ImpersonateNamedPipeClient, RpcImpersonateClient, etc.)
 
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
@@ -31,6 +11,16 @@ use crate::utility::cert_c::ast_utils::get_node_text;
 use tree_sitter::Node;
 
 pub struct Pos37C;
+
+/// Windows privilege/impersonation APIs whose return values must be checked.
+const WIN_PRIVILEGE_APIS: &[&str] = &[
+    "ImpersonateNamedPipeClient",
+    "RpcImpersonateClient",
+    "ImpersonateLoggedOnUser",
+    "CoImpersonateClient",
+    "ImpersonateSelf",
+    "SetThreadToken",
+];
 
 impl CertRule for Pos37C {
     fn rule_id(&self) -> &'static str {
@@ -60,9 +50,11 @@ impl CertRule for Pos37C {
         if node.kind() == "function_definition" {
             if let Some(body) = node.child_by_field_name("body") {
                 self.check_privilege_drop(&body, source, &mut violations);
+                self.check_win_privilege_apis(&body, source, &mut violations);
             }
         } else if node.kind() == "translation_unit" {
             self.check_privilege_drop(node, source, &mut violations);
+            self.check_win_privilege_apis(node, source, &mut violations);
         }
 
         // Recurse
@@ -104,6 +96,57 @@ impl Pos37C {
                 });
             }
         }
+    }
+
+    /// Check for Windows privilege/impersonation API calls with unchecked return values.
+    /// Pattern: `ImpersonateNamedPipeClient(hPipe);` as a bare expression_statement.
+    fn check_win_privilege_apis(
+        &self,
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let func_name = get_node_text(&function, source);
+                let func_name = func_name.trim();
+
+                if WIN_PRIVILEGE_APIS.contains(&func_name) && self.is_unchecked_call(node) {
+                    let start = node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "{}() return value not checked — privilege change may silently fail",
+                            func_name
+                        ),
+                        file_path: String::new(),
+                        line: start.row + 1,
+                        column: start.column + 1,
+                        suggestion: Some(format!(
+                            "Check the return value: if (!{}(...)) {{ /* handle error */ }}",
+                            func_name
+                        )),
+                        ..Default::default()
+                    });
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_win_privilege_apis(&child, source, violations);
+            }
+        }
+    }
+
+    /// A call is "unchecked" if its immediate parent is an expression_statement
+    /// (meaning the return value is discarded).
+    fn is_unchecked_call(&self, call_node: &Node) -> bool {
+        if let Some(parent) = call_node.parent() {
+            return parent.kind() == "expression_statement";
+        }
+        false
     }
 
     fn find_priv_drops(&self, node: &Node, source: &str, drops: &mut Vec<PrivDrop>) {
