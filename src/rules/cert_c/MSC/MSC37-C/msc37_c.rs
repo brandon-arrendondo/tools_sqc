@@ -185,6 +185,17 @@ impl Msc37C {
             "return_statement" => true,
             "compound_statement" => self.ends_with_return(stmt),
             "if_statement" | "switch_statement" => self.all_branches_return(stmt),
+            "else_clause" => {
+                // else_clause wraps the actual statement (compound_statement or single stmt)
+                for i in 0..stmt.child_count() {
+                    if let Some(child) = stmt.child(i) {
+                        if child.kind() != "else" {
+                            return self.statement_returns(&child);
+                        }
+                    }
+                }
+                false
+            }
             _ => false,
         }
     }
