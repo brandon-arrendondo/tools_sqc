@@ -151,22 +151,30 @@ fn find_direct_volatile_accesses(
         if volatile_vars.contains(var_name) {
             // Check if this is a direct access (not wrapped in function call)
             if is_direct_access(node, source) {
-                let start_point = node.start_position();
-                violations.push(RuleViolation {
-                    rule_id: "DCL17-C".to_string(),
-                    severity: Severity::Medium,
-                    message: format!(
-                        "Direct access to volatile variable '{}' may be miscompiled. Wrap volatile accesses in functions",
-                        var_name
-                    ),
-                    file_path: String::new(),
-                    line: start_point.row + 1,
-                    column: start_point.column + 1,
-                    suggestion: Some(
-                        "Use wrapper functions: int vol_read(volatile int *p) { return *p; }".to_string()
-                    ),
-                    ..Default::default()
-                });
+                // Skip simple volatile reads and writes — these are well-defined
+                // on all modern compilers. Only flag compound operations (++, --,
+                // +=, -=, etc.) where read-modify-write may be non-atomic or
+                // subject to optimization issues.
+                if is_simple_volatile_access(node) {
+                    // Simple read or simple assignment — safe, skip
+                } else {
+                    let start_point = node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: "DCL17-C".to_string(),
+                        severity: Severity::Medium,
+                        message: format!(
+                            "Direct access to volatile variable '{}' may be miscompiled. Wrap volatile accesses in functions",
+                            var_name
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Use wrapper functions: int vol_read(volatile int *p) { return *p; }".to_string()
+                        ),
+                        ..Default::default()
+                    });
+                }
             }
         }
     }
@@ -176,6 +184,41 @@ fn find_direct_volatile_accesses(
     for child in node.children(&mut cursor) {
         find_direct_volatile_accesses(&child, source, volatile_vars, violations);
     }
+}
+
+/// Returns true if the volatile variable is accessed in a simple read or write
+/// context — these are well-defined and safe.  Compound operations (++, --,
+/// +=, -=, etc.) and multi-access expressions are NOT simple.
+fn is_simple_volatile_access(node: &Node) -> bool {
+    if let Some(parent) = node.parent() {
+        match parent.kind() {
+            // Simple write: `vol_var = expr;` or simple read: `x = vol_var;`
+            // tree-sitter uses "assignment_expression" only for plain `=`.
+            // Compound assignments (+=, -=, etc.) are "augmented_assignment_expression".
+            "assignment_expression" => {
+                return true;
+            }
+            // Simple read in init declarator: `int x = vol_var;`
+            "init_declarator" => return true,
+            // Simple read in return: `return vol_var;`
+            "return_statement" => return true,
+            // Simple read in condition: `if (vol_var)`, `while (vol_var)`
+            "parenthesized_expression" => {
+                if let Some(grandparent) = parent.parent() {
+                    if matches!(
+                        grandparent.kind(),
+                        "if_statement" | "while_statement" | "for_statement"
+                    ) {
+                        return true;
+                    }
+                }
+            }
+            // Argument to function call: `func(vol_var)` — simple read
+            "argument_list" => return true,
+            _ => {}
+        }
+    }
+    false
 }
 
 /// Determines if an identifier access is "direct" (not wrapped in a function call)

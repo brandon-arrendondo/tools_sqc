@@ -116,67 +116,33 @@ impl Int17C {
             return false;
         }
 
-        // Common implementation-dependent patterns:
-
-        // 32-bit patterns
-        if normalized == "0xffffffff" {
-            return true; // All bits set for 32-bit
-        }
-        if normalized == "0x80000000" {
-            return true; // MSB for 32-bit
-        }
-        if normalized == "0x7fffffff" {
-            return true; // Max positive for signed 32-bit
+        let hex_part = &normalized[2..];
+        if hex_part.is_empty() {
+            return false;
         }
 
-        // 16-bit patterns
-        if normalized == "0xffff" {
-            return true; // All bits set for 16-bit
-        }
-        if normalized == "0x8000" {
-            return true; // MSB for 16-bit
-        }
-        if normalized == "0x7fff" {
-            return true; // Max positive for signed 16-bit
-        }
-
-        // 8-bit patterns (less common but still problematic in some contexts)
-        if normalized == "0xff" {
-            return true; // All bits set for 8-bit
-        }
-        if normalized == "0x80" {
-            return true; // MSB for 8-bit
-        }
-        if normalized == "0x7f" {
-            return true; // Max positive for signed 8-bit
+        // Parse the hex value to check magnitude.
+        // Constants that fit within 16 bits (≤ 0xFFFF, value ≤ 65535) are portable
+        // across all C implementations — they're byte/word masks, not platform
+        // assumptions. Only flag constants > 16 bits where the programmer may be
+        // assuming a specific `int` or `long` width.
+        if let Ok(val) = u64::from_str_radix(hex_part, 16) {
+            if val <= 0xFFFF {
+                return false; // Portable small constant — not implementation-dependent
+            }
         }
 
-        // 64-bit patterns
-        if normalized == "0xffffffffffffffff" {
-            return true; // All bits set for 64-bit
-        }
-        if normalized == "0x8000000000000000" {
-            return true; // MSB for 64-bit
-        }
-
-        // Additional patterns: consecutive F's or patterns that suggest bit-width assumptions
-        // Check for patterns like 0xFFFF0000, 0xFF00, etc. that combine masks
-        if normalized.len() >= 4 {
-            // At least "0x" + 2 hex digits
-            let hex_part = &normalized[2..];
-
-            // Check if it's all F's (any length) - suggests all-bits-set assumption
-            if hex_part.chars().all(|c| c == 'f') && hex_part.len().is_multiple_of(2) {
-                // Even number of F's suggests byte-aligned mask
+        // 32-bit and larger patterns that assume specific widths:
+        if hex_part.len() >= 4 {
+            // All F's (any length > 4 hex digits) — "all bits set" assumption
+            if hex_part.chars().all(|c| c == 'f') {
                 return true;
             }
-
-            // Check for MSB patterns: 8 followed by zeros (like 0x800000, 0x8000000000)
+            // MSB patterns: 8 followed by zeros
             if hex_part.starts_with('8') && hex_part.chars().skip(1).all(|c| c == '0') {
                 return true;
             }
-
-            // Check for max positive patterns: 7 followed by F's
+            // Max positive patterns: 7 followed by F's
             if hex_part.starts_with('7') && hex_part.chars().skip(1).all(|c| c == 'f') {
                 return true;
             }

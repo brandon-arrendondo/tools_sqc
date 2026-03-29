@@ -97,6 +97,12 @@ impl Pre08C {
                 // Multiple headers map to the same significant name - report violations
                 for (i, (header1, line1)) in headers.iter().enumerate() {
                     for (header2, _line2) in headers.iter().skip(i + 1) {
+                        // Skip if the full filenames are identical — including the same
+                        // header twice is not a uniqueness issue (may be a redundant
+                        // include but not a PRE08-C violation).
+                        if header1 == header2 {
+                            continue;
+                        }
                         // Report violation for the first occurrence
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
