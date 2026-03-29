@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-26 (v0.3.44)
+Last Updated: 2026-03-29 (v0.3.47)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -190,11 +190,11 @@ Deferred CWEs requiring new analysis:
 - CWE-468 (36 files): implicit void* casts losing type info
 - CWE-459 (36 files): resource tracking for incomplete cleanup
 - CWE-188 (36 files): struct padding/alignment analysis
-- CWE-675 (224 files): FIO24-C alternate patterns
-- CWE-562 (2 files): array-decay-to-pointer + address-of-local taint
 
-10 formerly zero-detection CWEs resolved in v0.3.35-v0.3.42. 13 are
-Windows-only (not actionable).
+10 formerly zero-detection CWEs resolved in v0.3.35-v0.3.42. 4 more
+resolved in v0.3.47 (CWE-675 double-close, CWE-273 Windows privilege
+APIs, CWE-562 analyzer fix, CWE-561 mapping). 13 are Windows-only
+(not actionable).
 
 ---
 
