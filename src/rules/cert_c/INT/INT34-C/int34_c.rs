@@ -380,7 +380,17 @@ impl Int34C {
         };
 
         // Check if any shift variable appears in a < or <= comparison with a small bound
-        self.condition_bounds_var_small(&cond, &shift_vars, source)
+        if self.condition_bounds_var_small(&cond, &shift_vars, source) {
+            return true;
+        }
+
+        // Check for (expr >> var) != 0 pattern — this implicitly bounds var
+        // to less than the bit width of expr (e.g., uint32_t → < 32).
+        if self.condition_is_shift_to_zero_check(&cond, &shift_vars, source) {
+            return true;
+        }
+
+        false
     }
 
     fn collect_identifiers_from(node: &Node, source: &str, names: &mut Vec<String>) {
@@ -455,6 +465,69 @@ impl Int34C {
         }
 
         false
+    }
+
+    /// Recognize `(expr >> var) != 0` as implicitly bounding `var`.
+    /// When a while-loop condition is `(mask >> bi) != 0u`, `bi` is bounded
+    /// to less than the bit width of mask (at most 31 for uint32_t).
+    fn condition_is_shift_to_zero_check(
+        &self,
+        cond: &Node,
+        var_names: &[String],
+        source: &str,
+    ) -> bool {
+        if cond.kind() != "binary_expression" {
+            return false;
+        }
+        let op = ast_utils::get_binary_operator(cond, source).unwrap_or_default();
+        if op != "!=" && op != "==" {
+            return false;
+        }
+
+        let (left, right) = match (
+            cond.child_by_field_name("left"),
+            cond.child_by_field_name("right"),
+        ) {
+            (Some(l), Some(r)) => (l, r),
+            _ => return false,
+        };
+
+        // One side should be 0/0u, the other should be (expr >> var)
+        let (shift_side, zero_side) = if self.is_zero_literal(&right, source) {
+            (left, right)
+        } else if self.is_zero_literal(&left, source) {
+            (right, left)
+        } else {
+            return false;
+        };
+        let _ = zero_side; // used only for selection above
+
+        // shift_side should be a right-shift containing one of our variables
+        let shift_expr = if shift_side.kind() == "parenthesized_expression" {
+            shift_side.named_child(0).unwrap_or(shift_side)
+        } else {
+            shift_side
+        };
+
+        if shift_expr.kind() == "binary_expression" {
+            if let Some(shift_op) = ast_utils::get_binary_operator(&shift_expr, source) {
+                if shift_op == ">>" {
+                    if let Some(rhs) = shift_expr.child_by_field_name("right") {
+                        let rhs_text = ast_utils::get_node_text(&rhs, source);
+                        if var_names.iter().any(|v| v == rhs_text) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        false
+    }
+
+    fn is_zero_literal(&self, node: &Node, source: &str) -> bool {
+        let text = ast_utils::get_node_text(node, source).trim().to_string();
+        text == "0" || text == "0u" || text == "0U" || text == "0L" || text == "0UL"
     }
 
     /// Check if there's a validation check in the scope before the shift
