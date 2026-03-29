@@ -185,6 +185,17 @@ impl Msc37C {
             "return_statement" => true,
             "compound_statement" => self.ends_with_return(stmt),
             "if_statement" | "switch_statement" => self.all_branches_return(stmt),
+            "else_clause" => {
+                // else_clause wraps the actual statement (compound_statement or single stmt)
+                for i in 0..stmt.child_count() {
+                    if let Some(child) = stmt.child(i) {
+                        if child.kind() != "else" {
+                            return self.statement_returns(&child);
+                        }
+                    }
+                }
+                false
+            }
             _ => false,
         }
     }
@@ -209,6 +220,19 @@ impl Msc37C {
         // Skip void functions — also check for void as a sibling specifier
         // to handle macros preceding void (e.g., STATIC void func())
         if self.is_void_type(&type_node, source) || self.has_void_specifier(node, source) {
+            return;
+        }
+
+        // Skip phantom "functions" from preprocessor-broken else-if chains.
+        // When `else if (...)` appears inside #ifdef with no preceding `if` in
+        // the same scope, tree-sitter may misparse it as a function definition
+        // with "else" as the type specifier.
+        let type_text = get_node_text(&type_node, source);
+        let type_trimmed = type_text.trim();
+        if matches!(
+            type_trimmed,
+            "else" | "if" | "while" | "for" | "do" | "switch" | "case" | "default" | "return"
+        ) {
             return;
         }
 
