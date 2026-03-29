@@ -6,6 +6,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.46] - 2026-03-28
+
+### Changed
+
+- P3214-driven FP reduction: 17 rules improved across 5 rounds. Validated
+  against P3214 Secondary MCU firmware (8051, Keil C51). Zero Juliet
+  regressions across both v0.3.45 and v0.3.46 benchmark runs (51.1% held).
+- DCL18-C: skip zero with type suffix (0U, 0u, 0L, 0UL) — not octal confusion.
+- DCL08-C: skip enums with consecutive integer sequences (0,1,2 or 1,2,3).
+- PRE02-C: skip do{...}while(0) macros and (type)(expr) cast-wrapped macros.
+- EXP35-C: arrow operator (->) means pointer return, not temporary struct.
+- INT36-C: distinguish bitwise AND (&) from address-of; skip *ptr dereference.
+- EXP07-C: skip bit-position shifts (0-7) — standard bit manipulation idioms.
+- DCL19-C: skip volatile variables (ISR-shared) and STATIC macro declarations.
+- INT17-C: skip hex constants ≤0xFFFF — portable across all C implementations.
+- EXP10-C: skip || and && operators — C guarantees left-to-right evaluation.
+- PRE08-C: skip self-matches (same filename compared to itself).
+- DCL30-C: only flag pointer/array locals assigned to globals, not integer copies.
+- EXP02-C: treat func()->field as pure getter read, not a side effect.
+- INT34-C: recognize modulo expression (% N) as shift-amount bounds check.
+- API00-C: recognize any token containing "STATIC" as static-equivalent macro
+  (covers LIN_STATIC_INLINE, MY_STATIC_FUNC, etc.).
+- EXP14-C: only flag ~ (bitwise NOT) and << (left shift) for promotion risk;
+  skip &, |, ^, >> which are safe with unsigned operands.
+- DCL17-C: skip simple volatile reads/writes; only flag compound operations
+  (++, --, +=, -=) where read-modify-write may be non-atomic.
+- INT14-C: skip 2-char loop index variables (bi) for mixed bitwise+arithmetic.
+- INT30-C: skip narrow unsigned types (uint8_t, uint16_t) — promoted to int
+  (≥32-bit) before arithmetic, cannot overflow promoted type. Preserved actual
+  declared type from type_map instead of returning generic "unsigned".
+
+### Results
+
+- Juliet: 8,383 TP / 8,020 FP, 51.1% TP rate (unchanged from v0.3.44).
+  Zero delta on all 69 CWEs across both v0.3.45 and v0.3.46 runs.
+- P3214 Secondary MCU: 1,372 → 476 violations (-896, -65.3%).
+
 ## [0.3.44] - 2026-03-26
 
 ### Changed
