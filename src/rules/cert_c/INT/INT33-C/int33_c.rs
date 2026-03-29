@@ -527,7 +527,9 @@ impl Int33C {
         }
     }
 
-    /// Check if there's an early return or exit when divisor is zero
+    /// Check if there's an early return or exit when divisor is zero.
+    /// Recurses into nested blocks (if-bodies, compound statements) to find
+    /// guards like `if (expr == 0) { return; }` at any nesting depth.
     fn has_early_return_for_zero(
         &self,
         scope: &Node,
@@ -535,7 +537,6 @@ impl Int33C {
         source: &str,
         div_node: &Node,
     ) -> bool {
-        // Walk through statements before the division
         let div_line = div_node.start_position().row;
 
         for i in 0..scope.named_child_count() {
@@ -550,7 +551,6 @@ impl Int33C {
                 if child.kind() == "if_statement" {
                     if let Some(condition) = child.child_by_field_name("condition") {
                         if self.checks_for_zero(&condition, var_name, source) {
-                            // Check if the consequence has return/exit
                             if let Some(consequence) = child.child_by_field_name("consequence") {
                                 if Self::has_return_or_exit(&consequence, source) {
                                     return true;
@@ -558,14 +558,26 @@ impl Int33C {
                             }
                         }
                     }
+                    // Recurse into if-body to find guards at deeper nesting
+                    if let Some(consequence) = child.child_by_field_name("consequence") {
+                        if self.has_early_return_for_zero(&consequence, var_name, source, div_node)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                // Recurse into bare compound statements
+                if child.kind() == "compound_statement" {
+                    if self.has_early_return_for_zero(&child, var_name, source, div_node) {
+                        return true;
+                    }
                 }
 
                 // Check for do-while loops that validate input
                 if child.kind() == "do_statement" {
-                    // Check if the condition checks for zero
                     if let Some(condition) = child.child_by_field_name("condition") {
                         if self.checks_for_zero(&condition, var_name, source) {
-                            // The loop ensures variable is not zero after loop
                             return true;
                         }
                     }
