@@ -686,13 +686,13 @@ which codebases (hostap, sqlite) dominate wall-clock time.
 ---
 
 # Task ID: 41
-# Title: P3214-driven FP reduction (v0.3.45)
+# Title: P3214-driven FP reduction (v0.3.45–v0.3.46)
 # Status: done
 # Dependencies: none
 # Priority: P1
 # Description: FP fixes driven by P3214 Secondary MCU suppression analysis.
 # Details:
-P3214 had 1372 violations (with -d and -I flags). Ten rules fixed in two rounds:
+P3214 had 1372 violations (with -d and -I flags). 17 rules fixed in 5 rounds:
 
 Round 1 (1372→963, -29.8%):
   DCL18-C: 119→0. Skip zero with type suffix (0U, 0u, 0L, 0UL, etc.).
@@ -708,13 +708,28 @@ Round 2 (963→780, -19.0%):
   EXP10-C: 14→0. Skip || and && — C guarantees left-to-right evaluation.
   PRE08-C: 13→12. Skip self-matches (same filename vs itself).
 
-Total: 1372→780 (-592, -43.1%). Remaining P3214 suppressions: 780.
+Round 3 (780→756, -3.1%):
+  DCL30-C: 12→0. Only flag pointer/array locals, not integer value copies.
+  EXP02-C: 15→4. Treat func()->field as pure getter read.
+  INT34-C: 9→8. Recognize modulo as shift-amount bounds check.
+
+Round 4 (756→649, -14.2%):
+  API00-C: 134→27. Recognize STATIC-containing macros (LIN_STATIC_INLINE etc.).
+
+Round 5 (649→476, -26.7%):
+  EXP14-C: 91→12. Only flag ~ and << (risky); skip &, |, ^, >> (safe).
+  DCL17-C: 32→4. Skip simple volatile reads/writes; only flag compound ops.
+  INT14-C: 22→18. Skip 2-char loop index variables for mixed bitwise+arithmetic.
+  INT30-C: 124→78. Skip narrow unsigned types (uint8_t/uint16_t) — promoted to int.
+  PRE08-C: disabled in P3214 project manifest (obsolete 8.3 DOS rule).
+
+Total: 1372→476 (-896, -65.3%). Remaining P3214 violations: 476.
 
 ---
 
 # Task ID: 42
 # Title: P3214 FP reduction — API00-C parameter validation (134 violations)
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Reduce API00-C FPs for internal functions with trusted callers.
@@ -732,7 +747,7 @@ Real-world impact: API00-C is 9,227 violations in real-world benchmarks.
 
 # Task ID: 43
 # Title: P3214 FP reduction — EXP14-C bitwise on small types (91 violations)
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Reduce EXP14-C FPs for defined-behavior integer promotion.
