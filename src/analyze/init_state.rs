@@ -326,6 +326,10 @@ pub struct InitAnalysisConfig {
     pub conditionally_init_fns: HashMap<String, HashSet<usize>>,
     /// Functions that wrap realloc (return uninitialized new portion).
     pub realloc_wrapper_fns: HashSet<String>,
+    /// Cross-file functions that dereference pointer params without modifying them.
+    /// Maps function name → set of param indices that are read-only dereferenced.
+    /// When `&var` is passed at these positions, var should NOT be marked initialized.
+    pub read_only_deref_fns: HashMap<String, HashSet<usize>>,
 }
 
 // ---------------------------------------------------------------------------
@@ -735,8 +739,9 @@ fn process_call_expression(
 
     // Unknown function: assume &var initializes (conservative — most functions
     // that take pointer params write to them), UNLESS the specific parameter is
-    // known to be only conditionally initialized.
+    // known to be only conditionally initialized or read-only dereferenced.
     let cond_param_indices = config.conditionally_init_fns.get(&func_name);
+    let read_only_indices = config.read_only_deref_fns.get(&func_name);
 
     if let Some(args) = node.child_by_field_name("arguments") {
         let mut arg_idx: usize = 0;
@@ -745,8 +750,9 @@ fn process_call_expression(
                 if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
                     continue;
                 }
-                let skip_this_arg =
-                    cond_param_indices.is_some_and(|indices| indices.contains(&arg_idx));
+                let skip_this_arg = cond_param_indices
+                    .is_some_and(|indices| indices.contains(&arg_idx))
+                    || read_only_indices.is_some_and(|indices| indices.contains(&arg_idx));
                 // &var pattern — assume function writes to it (unless this param is conditionally-init)
                 if !skip_this_arg && arg.kind() == "pointer_expression" {
                     let arg_text = arg.utf8_text(source.as_bytes()).unwrap_or("");
