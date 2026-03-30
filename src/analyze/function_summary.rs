@@ -302,6 +302,9 @@ fn analyze_param_usage(
         if body_text.contains(&format!("*{}", param_name))
             || body_text.contains(&format!("{}->", param_name))
             || body_text.contains(&format!("{}[", param_name))
+            // Cast-then-deref pattern: (type *)param — used for void* params
+            // where the cast result is subsequently dereferenced.
+            || body_text.contains(&format!("*){}", param_name))
         {
             summary.dereferences_params.insert(idx);
         }
