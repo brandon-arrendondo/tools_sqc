@@ -28,6 +28,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - INT34-C: recognize (mask >> var) != 0 loop condition as shift-amount bound.
   while ((mask >> bi) != 0u) implicitly constrains bi to < bit width.
 - rule_cwe_map: added MSC12-C → CWE-561 mapping.
+- INT32-C: scope type_map per function definition. Two functions declaring
+  same variable name with different types (float X_pred vs int32_t X_pred)
+  no longer collide — each function gets its own type map.
+- DCL06-C: accept float zero literals (0.0f, 1.0f, etc.) as non-magic.
+  Strip float/unsigned suffixes before checking acceptable values.
+- FLP02-C: skip equality comparisons against exact zero (0.0, 0.0f). Zero
+  is exactly representable in IEEE 754 — divide-by-zero guards are valid.
 - bench/analyzer.py: fixed CSV parser regex for version:HASH suffix that broke
   line number extraction when commit hash started with a digit.
 
