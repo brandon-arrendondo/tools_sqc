@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-30 (v0.3.47)
+Last Updated: 2026-03-30 (v0.3.50)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -24,15 +24,35 @@ Achieved in v0.3.44: 51.1% TP rate (+2.7pp from 48.4%). See CHANGELOG.txt.
 
 # Task ID: 2
 # Title: EXP33-C cross-function variants
-# Status: pending
+# Status: done
 # Dependencies: 19
 # Priority: P2
 # Description: Inter-procedural analysis for EXP33-C variants 63/64.
 # Details:
-Pointer passed between source files needs inter-procedural analysis. ~70 files
-in CWE-457 affected. Same blocker as CWE-457 cross-function gaps (task 4).
-EXP33-C already has CFG-based forward dataflow (init_state.rs) but it is
-intra-procedural only.
+Done in v0.3.49-v0.3.50.
+
+v0.3.49: EXP33-C cross-file init tracking via set_project_context().
+  - build_read_only_deref_fns(): dereferences_params - modifies_params
+  - InitAnalysisConfig.read_only_deref_fns prevents &var from being marked
+    initialized when callee only reads through the pointer
+  - check_cross_file_uninit_calls: flags calls passing &uninit_var to
+    functions that read the pointed-to value (variant 63 pattern)
+  - +10 TP, +10 FP (10 simple scalar/pointer types)
+
+v0.3.50: Prescan recognizes (type *)param cast pattern as dereference.
+  - Enables variant 64 detection (void pointer → cast → deref)
+  - +10 TP, +10 FP (same 10 simple types via void* indirection)
+
+Combined v0.3.48→v0.3.50: CWE-457 402→422 TP (+20), 695→715 FP (+20),
+TP rate 36.6%→37.1% (+0.5pp). Zero regressions on other CWEs.
+
+FPs are from Juliet goodB2G pattern: &uninit_var passed to function that
+reads *param but reassigns a local copy — technically UB but Juliet
+considers "good". 1:1 TP:FP ratio is precision-neutral.
+
+Array types (alloca/malloc/declare) not affected: pointer variable is
+Initialized (assigned via alloc), content uninitialized — already detected
+by intra-procedural analysis.
 
 ---
 
@@ -65,19 +85,21 @@ Per-project DCL31-C+DCL07-C:
 # Task ID: 4
 # Title: CWE-457 uninitialized variable remaining gaps
 # Status: pending
-# Dependencies: 2
+# Dependencies: none
 # Priority: P2
-# Description: Improve CWE-457 TP rate beyond 35.3%.
+# Description: Improve CWE-457 TP rate beyond 37.1%.
 # Details:
-v0.3.37: 165 TP, 302 FP, 35.3% TP rate (up from 32.2% in v0.3.34).
+v0.3.50: 422 TP, 715 FP, 37.1% TP rate (up from 36.6% in v0.3.48, 35.3%
+in v0.3.37). Variant 63/64 simple types resolved by task 2.
 
 Remaining gaps:
-- Cross-function variants 63/64 (~70 files): needs inter-procedural analysis
-  (same as task 2)
+- Cross-function variants 61/62/65-68 (~70+ files each): data flow through
+  global variables, function pointers, unions. Needs deeper inter-procedural
+  analysis beyond call-site pointer passing.
 - Per-element tracking for stack arrays: team[0].x = 1; use(team[3].x)
   correctly flags, but no way to track that ALL elements are initialized
-- 302 FP likely dominated by cross-function initialization patterns in Juliet
-  "good" functions
+- 715 FP includes 20 from goodB2G pattern (task 2); remaining ~695 dominated
+  by cross-function initialization patterns in Juliet "good" functions
 
 ---
 
@@ -297,9 +319,7 @@ changes to generate test expectations differently for this directory.
 # Priority: P3
 # Description: Accept POSIX rename() with error checking as compliant.
 # Details:
-Added Pattern 4 to is_properly_handled(): rename() with return value check
-is acceptable (POSIX atomically replaces destination). Updated fail test to
-bare rename() without error checking. Added pass/testcases_posix_rename.c.
+Done in v0.3.48. See CHANGELOG.txt.
 
 ---
 
@@ -310,13 +330,7 @@ bare rename() without error checking. Added pass/testcases_posix_rename.c.
 # Priority: P2
 # Description: Enable test infra to exercise intra-file prescan for EXP34-C.
 # Details:
-Implemented `// sqc-test: prescan` marker system for .c test files:
-- Added `prescan_single_tree()` to prescan.rs (single-file prescan wrapper)
-- Made `collect_function_cfgs()` public in analyze/mod.rs
-- build.rs detects marker, generates tests with prescan context + CFGs
-- Moved 3 tests from pass/ to fail/ (func_param, list_null, callback_null)
-- All 3 now correctly detect violations via call-site null propagation
-- Infrastructure is generic — any rule can use `// sqc-test: prescan`
+Done in v0.3.48. `// sqc-test: prescan` marker system. See CHANGELOG.txt.
 
 ---
 
@@ -338,23 +352,35 @@ call-site null state propagation.
 # Status: pending
 # Dependencies: none
 # Priority: P2
-# Description: 3 remaining implementation bugs (3 of 6 fixed).
+# Description: 3 remaining implementation bugs.
 # Details:
-Fixed:
-- MEM04-C: sizeof() now recognized as always non-zero in is_potentially_zero()
-- FIO10-C: POSIX rename() with error checking now accepted (task 18)
-- WIN30-C: Reclassified — NULL security attributes is out of scope for
-    WIN30-C (alloc/dealloc pairing). Test comment updated.
+3 of 6 fixed in v0.3.48 (MEM04-C, FIO10-C, WIN30-C). See CHANGELOG.txt.
 
 Remaining:
-- STR03-C: strncpy with prior strlen validation still flagged (Low)
-- INT00-C: unsigned subtraction without guard not detected (Medium,
-    tests/pass/testcases_unsigned_wrap.c — pattern mismatch)
+- STR03-C: strncpy with prior strlen validation still flagged (Low).
+    str03_c.rs has find_length_check_in_scope() (line ~135) which looks for
+    strlen/sizeof checks in if statements, but only accepts the call if it's
+    in the else branch (line ~175). Should also accept strncpy when a preceding
+    strlen check validates the buffer size, regardless of branch placement.
+    Test: pass/wiki_adequate_space.c uses strcpy (not strncpy) so passes.
+    Need a new fail test with strncpy preceded by strlen that currently flags.
+- INT00-C: unsigned subtraction without guard not detected (Medium).
+    int00_c.rs only checks format specifier mismatches (line ~56) and unsafe
+    cast+multiplication patterns (lines 416-490). Does NOT check for unsigned
+    integer wrap on subtraction. Fix requires adding a new check: binary
+    expressions with `-` operator on unsigned types without prior range
+    validation (a >= b). Test: pass/testcases_unsigned_wrap.c should move to
+    fail/ once implemented.
 - INT16-C: signed-to-unsigned conversion without range check not detected
-    (Medium, tests/pass/testcases_signed_unsigned_conversion.c — pattern mismatch)
+    (Medium). int16_c.rs focuses entirely on bitwise operations on signed
+    integers (lines 166-224). Does NOT detect assignments/returns of
+    potentially negative signed values to unsigned types. Fix requires
+    tracking both signed AND unsigned variables and detecting cross-type
+    assignment/return without range check (e.g., `if (x >= 0)`). This is a
+    different analysis pattern than what the rule currently implements.
+    Test: pass/testcases_signed_unsigned_conversion.c should move to fail/.
 
-Note: INT00-C and INT16-C are pattern mismatches — the rules check different
-patterns than what the tests expect. May require rule redesign.
+INT00-C and INT16-C are pattern mismatches — significant rule redesign needed.
 
 ---
 
@@ -419,19 +445,6 @@ workflows.
 
 ---
 
-# Task ID: 26
-# Title: Baseline-aware suppression
-# Status: pending
-# Dependencies: none
-# Priority: P2
-# Description: "Only new violations" mode for CI integration.
-# Details:
-Store a baseline of known violations and only report new ones. Critical for
-adopting sqc on existing codebases without noise from pre-existing issues.
-Part of Tier 2 production quality definition of done.
-
----
-
 # Task ID: 27
 # Title: Docker image
 # Status: pending
@@ -447,29 +460,41 @@ of done.
 
 # Task ID: 28
 # Title: MSC07-C unreachable code detection
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Code after return/exit/abort, always-false branches (BRULE-034 gap).
 # Details:
-BRULE-034 requires no dead code. MSC12-C (v0.3.43) covers no-effect statements
-and duplicate conditions. MSC07-C covers unreachable code: statements after
-return/exit/abort, always-false branches. Needs CFG infrastructure (already
-exists). Warning severity. Complements existing EXP12-C.
+Implemented MSC07-C. AST-based detection of unreachable code patterns:
+- Statements after unconditional return/break/continue/goto in same block
+- Statements after noreturn calls: exit, abort, _Exit, longjmp, quick_exit,
+  thrd_exit, ExitProcess, ExitThread
+- Skips preprocessor directives and comments
+- Reports only first unreachable statement per terminal (avoids noise)
+- CWE-561 mapping. Low severity (recommendation).
+- 11 tests: 7 fail (all terminal types), 4 pass (conditional returns,
+  nested scopes, switch/break, loop/continue).
 
 ---
 
 # Task ID: 29
 # Title: Recursion detection (BRULE-058)
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Detect recursive function calls via call-graph cycle detection.
 # Details:
-BRULE-058 (Constrained tier) prohibits recursion. Requires call-graph
-construction from prescan data (already collects function names and call sites).
-Detect cycles in the call graph. Both direct (f calls f) and indirect (f calls
-g calls f) recursion.
+Implemented as MSC04-C. Maps to BRULE-058 (Constrained tier).
+
+Direct recursion: AST-only detection — scans function body for self-calls.
+Works without prescan data.
+
+Indirect recursion: DFS cycle detection on prescan call_graph. Requires -d
+flag for cross-function call graph. Merges current file's callees with prescan
+graph to handle files not in the prescanned set.
+
+Uses existing prescan infrastructure (call_graph: HashMap<String, HashSet<String>>)
+via set_project_context(). CWE-674 mapping added.
 
 ---
 
@@ -540,7 +565,7 @@ analysis for variants that span multiple functions within a file.
 
 # Task ID: 35
 # Title: Real-world FP tracking dashboard
-# Status: in-progress
+# Status: done
 # Dependencies: none
 # Priority: P1
 # Description: Track top FP-producing rules across real-world codebases.
@@ -687,15 +712,14 @@ detection (fabs/fabsf/fabsl, != 0, > 0 / < 0). Need tests:
 
 # Task ID: 40
 # Title: Realworld benchmark duration tracking
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Record per-project wall-clock duration in realworld benchmark runs.
 # Details:
-The realworld_results table has a duration_s column but it is always 0 for
-all tools (sqc, cppcheck, clang-tidy). The MCP server runner
-(mcp_servers/server.py or bench/) needs to time each subprocess and write
-the elapsed seconds into duration_s when inserting results. This would
-enable tracking performance regressions across versions and understanding
-which codebases (hostap, sqlite) dominate wall-clock time.
+Done. _auto_ingest_to_sqlite() now reads per-codebase durations from the
+state file (start_time/end_time per run) and passes them to
+ingest_realworld_run(). Surfaced in get_results(), get_project_history(),
+and the new get_dashboard() MCP tool. Historical runs remain NULL (no
+retroactive timing data). New runs will populate duration_s automatically.
 
