@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-29 (v0.3.47)
+Last Updated: 2026-03-30 (v0.3.47)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -38,27 +38,27 @@ intra-procedural only.
 
 # Task ID: 3
 # Title: DCL31-C/DCL07-C remaining include gaps
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P1
 # Description: Fix unresolved function declarations in mosquitto and sqlite.
 # Details:
 v0.3.38 removed library-specific whitelists and added -I include paths.
-Two projects still show increases:
 
-mosquitto (15,221 -> 16,481, +1,260):
-  - cJSON_* (1424): header found but includes as <cjson/cJSON.h>, need
-    -I /usr/include not /usr/include/cjson
-  - CU_* (692): CUnit test framework
-  - sqlite3_* (496), mysql_* (24): test dependencies
+Root cause: bug in analyze/mod.rs — resolve_includes was skipped when
+--load-prescan was set, making -I include paths ineffective during parallel
+scans. One-line fix: removed `load_prescan.is_none()` guard.
 
-sqlite (50,517 -> 53,578, +3,061):
-  - Tcl_* (3010): #include "tclsqlite.h" internal header, -I /usr/include/tcl8.6
-    doesn't help. Need Tcl source dir in -d or accept as residual.
-  - Internal sqlite3_* (32): not caught by -d prescan
+Realworld benchmark results (v0.3.44 → v0.3.47):
+  DCL31-C: 7,366 → 1,926 (-5,440, -73.9%)
+  DCL07-C: 7,291 → 1,846 (-5,445, -74.7%)
+  Combined: 14,657 → 3,772 (-10,885)
 
-Fix approaches: mosquitto cJSON_ needs correct -I path. Tcl_ may require
-accepting as residual or adding Tcl source to -d scan directories.
+Per-project DCL31-C+DCL07-C:
+  hostap:    6,939 → 1,469 (-5,470)
+  sqlite:    3,744 →   561 (-3,183)
+  mosquitto: 2,061 →   103 (-1,958)
+  curl:      1,913 → 1,639 (-274)
 
 ---
 
@@ -200,14 +200,16 @@ APIs, CWE-562 analyzer fix, CWE-561 mapping). 13 are Windows-only
 
 # Task ID: 12
 # Title: EXP16-C test registration
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P1
 # Description: Fix EXP16-C test discovery in cargo test.
 # Details:
-The .c test files exist under tests/fail/ and tests/pass/ but the
-build.rs-generated integration tests don't appear in cargo test. Needs
-investigation — may need explicit test registration or build.rs fix.
+Investigated: tests work correctly. 6 generated tests all pass via
+`cargo test -- exp16`. The issue was the test filter path documented in
+CLAUDE.md (`rules::cert_c::RULE_ID::tests`) only matches rules with
+embedded #[cfg(test)] modules. EXP16-C correctly uses only .c file tests,
+discovered via `generated_tests::test_exp16_c_*`.
 
 ---
 
@@ -579,6 +581,26 @@ v0.3.44 vs v0.3.42 delta: +5 (+0.003%, essentially flat). 154,598→154,603.
 - EXP16-C: +160 (49→209). Regression in sqlite only (39→209). Unrelated to
   v0.3.44 changes — likely side effect of v0.3.43 MSC12-C. Needs investigation.
 - FIO01-C: +10. New detections (curl +4, sqlite +6). Also unrelated.
+
+v0.3.47 vs v0.3.44 delta: -12,418 (-8.0%). 154,603→142,185.
+Dominant: DCL31-C -5,440, DCL07-C -5,445 (include resolution fix, task 3).
+Also: EXP07-C -782, MSC37-C -354, INT36-C -277, PRE08-C -174, DCL18-C -137.
+Regressions: INT32-C +491 (per-function type_map scope), FIO24-C +280 (new rule).
+
+Updated per-rule top list (v0.3.47, 142.2K total):
+  MEM30-C:  15,330 — use-after-free (deferred, task 8)
+  INT32-C:  12,541 — signed overflow (+491 from type_map scope fix)
+  DCL13-C:  12,138 — const correctness (deferred, task 10)
+  API00-C:   9,199 — missing size parameter (-28)
+  INT30-C:   8,435 — unsigned overflow (-39)
+  EXP34-C:   5,234 — null deref (-33)
+  MEM31-C:   5,440 — memory leak (deferred, task 9)
+  EXP33-C:   5,013 — uninitialized (stable)
+  STR34-C:   2,801 — char-to-int conversion (stable)
+  API05-C:   2,805 — unused return value (stable)
+  ARR00-C:   2,157 — array bounds (stable)
+  DCL31-C:   1,926 — undeclared function (-5,440, task 3 fix)
+  DCL07-C:   1,846 — implicit int declaration (-5,445, task 3 fix)
 
 ---
 

@@ -74,7 +74,7 @@ pub fn analyze_project(
     };
 
     // Resolve #include directives against include search paths
-    if load_prescan.is_none() && !include_paths.is_empty() {
+    if !include_paths.is_empty() {
         let c_files = if diff_only {
             project_source.get_modified_c_files()?
         } else {

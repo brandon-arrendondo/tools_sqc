@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- analyze: resolve_includes now runs even when --load-prescan is set. Previously
+  -I include paths were silently ignored during parallel scans (sqc_parallel_scan.py),
+  causing DCL31-C/DCL07-C to flag functions declared in system headers.
+  Realworld impact: DCL31-C+DCL07-C 14,657 → 3,772 (-10,885, -74%).
+  Overall: 154,603 → 142,185 (-12,418, -8.0%).
+
 ## [0.3.47] - 2026-03-29
 
 ### Changed
