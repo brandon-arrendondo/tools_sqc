@@ -128,6 +128,32 @@ pub fn prescan_directories(
     })
 }
 
+/// Build a [`ProjectContext`] from a single already-parsed tree.
+///
+/// This is the intra-file equivalent of [`prescan_directories`]: it computes
+/// function summaries and call-site null states so that inter-procedural rules
+/// (e.g. EXP34-C) can resolve parameter state within one translation unit.
+///
+/// Used by the generated integration tests when a `.c` file carries the
+/// `// sqc-test: prescan` marker.
+#[cfg(test)]
+pub fn prescan_single_tree(root: &Node, source: &str) -> ProjectContext {
+    let macros = const_eval::collect_macro_constants(root, source);
+    let mut function_summaries = function_summary::compute_summaries(root, source, &macros, false);
+
+    let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+    collect_callsite_args_from_tree(root, source, &mut callsite_args);
+
+    let empty_headers = HashSet::new();
+    aggregate_callsite_null_states(&callsite_args, &mut function_summaries, &empty_headers);
+
+    ProjectContext {
+        function_summaries,
+        macro_constants: macros,
+        ..ProjectContext::default()
+    }
+}
+
 /// Collect function declarations (prototypes) from a header file.
 /// These represent public API functions with intentional external linkage.
 fn collect_header_declarations(node: &Node, source: &str, names: &mut HashSet<String>) {

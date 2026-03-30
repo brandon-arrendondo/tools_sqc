@@ -1,11 +1,7 @@
 /*
  * Rule: FIO10-C
  * Source: wiki
- * Status: PASS - Should NOT trigger FIO10-C violation
- * Note: access()+remove() before rename() satisfies the rule's current check.
- *       The CERT wiki's original POSIX example uses plain rename() with error
- *       checking (POSIX atomically replaces dest), but the rule currently requires
- *       explicit destination handling. TODO: fix rule to accept POSIX rename().
+ * Status: PASS - access()+remove() before rename(), plus POSIX error-checked rename()
  */
 
 #include <stdio.h>

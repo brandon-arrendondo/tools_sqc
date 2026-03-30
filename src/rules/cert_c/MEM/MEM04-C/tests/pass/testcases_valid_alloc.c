@@ -12,6 +12,24 @@ void literal_alloc(void) {
     if (p) free(p);
 }
 
+/* sizeof expression — always non-zero for complete types */
+void sizeof_alloc(void) {
+    int *p = (int *)malloc(sizeof(int));
+    if (p) free(p);
+}
+
+/* sizeof in multiplication */
+void sizeof_mult_alloc(int n) {
+    int *p = (int *)malloc(n * sizeof(int));
+    if (p) free(p);
+}
+
+/* calloc with sizeof */
+void calloc_sizeof(void) {
+    int *p = (int *)calloc(10, sizeof(int));
+    if (p) free(p);
+}
+
 /* calloc with explicit count and size */
 void explicit_calloc(void) {
     int *p = (int *)calloc(10, 4);

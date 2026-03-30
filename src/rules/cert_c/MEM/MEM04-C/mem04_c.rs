@@ -244,17 +244,14 @@ impl Mem04C {
             return value == 0;
         }
 
-        // If it's not a literal number, it could be a variable, expression, or macro
-        // We conservatively flag these as potentially zero since we can't verify
-        // whether they've been validated without data flow analysis
-        //
-        // This includes:
-        // - Identifiers (variables): "size", "nsize", "count"
-        // - Expressions: "a + b", "sizeof(type)", "strlen(str)"
-        // - Macro calls: "BUFFER_SIZE"
-        //
-        // This is conservative but correct - any variable COULD be zero
+        // sizeof(T) always evaluates to a non-zero value for any complete type
+        if trimmed.contains("sizeof") {
+            return false;
+        }
 
+        // If it's not a literal number, it could be a variable, expression, or macro.
+        // Conservatively flag as potentially zero since we can't verify
+        // whether they've been validated without data flow analysis.
         true
     }
 
