@@ -6,6 +6,8 @@
 
 use super::super::{CertRule, RuleViolation};
 use crate::analyze::cfg::{self as cfg_mod, FunctionCfg};
+use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::analyze::init_state::{self, InitAnalysisResult, InitState, InitStateMap};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
@@ -22,6 +24,8 @@ pub struct Exp33C {
     /// Functions with pointer params that are only conditionally initialized.
     /// Maps function name → set of pointer parameter indices that are conditional.
     conditionally_init_fns: RefCell<HashMap<String, HashSet<usize>>>,
+    /// Cross-file function summaries from prescan (for inter-procedural init tracking).
+    cross_file_summaries: RefCell<HashMap<String, FunctionSummary>>,
 }
 
 impl Exp33C {
@@ -31,7 +35,26 @@ impl Exp33C {
             file_scope_statics: RefCell::new(InitStateMap::new()),
             realloc_wrapper_fns: RefCell::new(HashSet::new()),
             conditionally_init_fns: RefCell::new(HashMap::new()),
+            cross_file_summaries: RefCell::new(HashMap::new()),
         }
+    }
+
+    /// Build the read-only dereference map from cross-file summaries.
+    /// Returns functions that dereference a pointer param without modifying it.
+    fn build_read_only_deref_fns(&self) -> HashMap<String, HashSet<usize>> {
+        let summaries = self.cross_file_summaries.borrow();
+        let mut result = HashMap::new();
+        for (name, summary) in summaries.iter() {
+            let read_only: HashSet<usize> = summary
+                .dereferences_params
+                .difference(&summary.modifies_params)
+                .copied()
+                .collect();
+            if !read_only.is_empty() {
+                result.insert(name.clone(), read_only);
+            }
+        }
+        result
     }
 }
 
@@ -54,6 +77,10 @@ impl CertRule for Exp33C {
 
     fn cert_id(&self) -> &'static str {
         "EXP33-C"
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.cross_file_summaries.borrow_mut() = context.function_summaries.clone();
     }
 
     fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
@@ -97,9 +124,11 @@ impl CertRule for Exp33C {
                 let statics = self.file_scope_statics.borrow();
                 let cond_fns = self.conditionally_init_fns.borrow();
                 let realloc_fns = self.realloc_wrapper_fns.borrow();
+                let read_only_fns = self.build_read_only_deref_fns();
                 let config = init_state::InitAnalysisConfig {
                     conditionally_init_fns: cond_fns.clone(),
                     realloc_wrapper_fns: realloc_fns.clone(),
+                    read_only_deref_fns: read_only_fns.clone(),
                 };
                 let analysis = init_state::analyze_init_states_with_statics(
                     cfg, node, source, &statics, &config,
@@ -117,6 +146,21 @@ impl CertRule for Exp33C {
                     &mut reported,
                     &config,
                 );
+
+                // Check for cross-file calls passing &uninit_var to functions
+                // that read through the pointer (variant 63/64 pattern).
+                if !read_only_fns.is_empty() {
+                    check_cross_file_uninit_calls(
+                        &body,
+                        source,
+                        &analysis,
+                        cfg,
+                        &body,
+                        &read_only_fns,
+                        &mut violations,
+                        &mut reported,
+                    );
+                }
             }
         }
 
@@ -177,6 +221,119 @@ fn check_reads(
             );
         }
     }
+}
+
+/// Check for calls that pass `&uninit_var` to cross-file functions that read
+/// through the pointer without writing first (variant 63/64 pattern).
+fn check_cross_file_uninit_calls(
+    node: &Node,
+    source: &str,
+    analysis: &InitAnalysisResult,
+    cfg: &FunctionCfg,
+    body: &Node,
+    read_only_fns: &HashMap<String, HashSet<usize>>,
+    violations: &mut Vec<RuleViolation>,
+    reported: &mut HashSet<String>,
+) {
+    if node.kind() == "call_expression" {
+        if let Some(func) = node.child_by_field_name("function") {
+            let func_name = get_node_text(&func, source).to_string();
+            if let Some(read_only_params) = read_only_fns.get(&func_name) {
+                if let Some(args) = node.child_by_field_name("arguments") {
+                    let mut arg_idx: usize = 0;
+                    for i in 0..args.child_count() {
+                        if let Some(arg) = args.child(i) {
+                            if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                                continue;
+                            }
+                            if read_only_params.contains(&arg_idx) {
+                                // Check if arg is &var where var is uninitialized
+                                let var_name = extract_addr_of_var(&arg, source);
+                                if !var_name.is_empty()
+                                    && analysis.tracked_vars.contains(&var_name)
+                                    && !reported.contains(&var_name)
+                                {
+                                    if let Some(info) = init_state::get_var_info_at_with_config(
+                                        analysis,
+                                        cfg,
+                                        body,
+                                        source,
+                                        &var_name,
+                                        node.start_byte(),
+                                        &init_state::InitAnalysisConfig::default(),
+                                    ) {
+                                        if info.state.is_unsafe() && !info.is_unsigned_char {
+                                            reported.insert(var_name.clone());
+                                            violations.push(RuleViolation {
+                                                rule_id: "EXP33-C".to_string(),
+                                                severity: Severity::High,
+                                                message: format!(
+                                                    "Passing pointer to uninitialized variable '{}' to '{}' which reads the value",
+                                                    var_name, func_name
+                                                ),
+                                                file_path: String::new(),
+                                                line: node.start_position().row + 1,
+                                                column: node.start_position().column + 1,
+                                                suggestion: Some(format!(
+                                                    "Initialize '{}' before passing its address to '{}'",
+                                                    var_name, func_name
+                                                )),
+                                                ..Default::default()
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                            arg_idx += 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Recurse into children
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            check_cross_file_uninit_calls(
+                &child,
+                source,
+                analysis,
+                cfg,
+                body,
+                read_only_fns,
+                violations,
+                reported,
+            );
+        }
+    }
+}
+
+/// Extract the variable name from an `&var` expression. Returns empty string if not `&var`.
+fn extract_addr_of_var(node: &Node, source: &str) -> String {
+    // Direct &var: pointer_expression with & operator
+    if node.kind() == "pointer_expression" {
+        let text = get_node_text(node, source);
+        if text.starts_with('&') {
+            if let Some(arg) = node.child_by_field_name("argument") {
+                if arg.kind() == "identifier" {
+                    return get_node_text(&arg, source).to_string();
+                }
+            }
+        }
+    }
+    // Parenthesized: (&var)
+    if node.kind() == "parenthesized_expression" {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                let result = extract_addr_of_var(&child, source);
+                if !result.is_empty() {
+                    return result;
+                }
+            }
+        }
+    }
+    String::new()
 }
 
 /// Check if an identifier read is of an uninitialized variable.
@@ -1181,6 +1338,74 @@ mod tests {
         assert!(
             !exp33.is_empty(),
             "set_flag doesn't init sign for number==0 — should flag"
+        );
+    }
+
+    #[test]
+    fn test_cross_file_read_only_deref() {
+        // Simulates variant 63 pattern: &uninit_var passed to a function that
+        // reads *param without writing. With cross-file summaries, this should
+        // be flagged.
+        let code = r#"
+            void f() {
+                int data;
+                badSink(&data);
+            }
+        "#;
+        let mut parser = CParser::new().expect("parser");
+        let tree = parser.parse_source(code).expect("parse");
+        let rule = Exp33C::new();
+
+        // Inject a cross-file summary: badSink dereferences param 0 without modifying
+        let mut summary = FunctionSummary::default();
+        summary.dereferences_params.insert(0);
+        // modifies_params is empty — read-only dereference
+        let mut summaries = HashMap::new();
+        summaries.insert("badSink".to_string(), summary);
+        *rule.cross_file_summaries.borrow_mut() = summaries;
+
+        let violations = rule.check(&tree.root_node(), code);
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("data"))
+            .collect::<Vec<_>>();
+        assert!(
+            !exp33.is_empty(),
+            "Passing &uninit_var to read-only-deref function should flag"
+        );
+    }
+
+    #[test]
+    fn test_cross_file_modifying_function_ok() {
+        // Function that modifies param (writes *param) — should still treat as initializing
+        let code = r#"
+            void f() {
+                int data;
+                initSink(&data);
+                use(data);
+            }
+        "#;
+        let mut parser = CParser::new().expect("parser");
+        let tree = parser.parse_source(code).expect("parse");
+        let rule = Exp33C::new();
+
+        // initSink both dereferences and modifies param 0
+        let mut summary = FunctionSummary::default();
+        summary.dereferences_params.insert(0);
+        summary.modifies_params.insert(0);
+        let mut summaries = HashMap::new();
+        summaries.insert("initSink".to_string(), summary);
+        *rule.cross_file_summaries.borrow_mut() = summaries;
+
+        let violations = rule.check(&tree.root_node(), code);
+        let exp33 = violations
+            .iter()
+            .filter(|v| v.rule_id == "EXP33-C" && v.message.contains("data"))
+            .collect::<Vec<_>>();
+        assert!(
+            exp33.is_empty(),
+            "initSink modifies param — data should be initialized, got: {:?}",
+            exp33.iter().map(|v| &v.message).collect::<Vec<_>>()
         );
     }
 
