@@ -115,6 +115,117 @@ impl Msc04C {
         None // no cycle through this path
     }
 
+    /// Check if a recursive function has a bounded base case: at least one
+    /// parameter, and a conditional return in the body whose condition
+    /// references a parameter. This indicates the recursion is controlled.
+    fn has_bounded_base_case(&self, func_node: &Node, source: &str) -> bool {
+        // Collect parameter names
+        let params = self.collect_param_names(func_node, source);
+        if params.is_empty() {
+            return false; // No params → can't have parameter-dependent base case
+        }
+
+        let body = match func_node.child_by_field_name("body") {
+            Some(b) => b,
+            None => return false,
+        };
+
+        // Look for if_statement children whose condition references a param
+        // and whose consequence contains a return_statement
+        self.find_param_guarded_return(&body, source, &params)
+    }
+
+    /// Collect parameter names from a function_definition.
+    fn collect_param_names(&self, func_node: &Node, source: &str) -> HashSet<String> {
+        let mut params = HashSet::new();
+        let declarator = match func_node.child_by_field_name("declarator") {
+            Some(d) => d,
+            None => return params,
+        };
+        // function_declarator → parameters (parameter_list)
+        self.walk_for_params(&declarator, source, &mut params);
+        params
+    }
+
+    fn walk_for_params(&self, node: &Node, source: &str, params: &mut HashSet<String>) {
+        if node.kind() == "parameter_declaration" {
+            // The declarator child holds the parameter name
+            if let Some(decl) = node.child_by_field_name("declarator") {
+                if let Some(name) = self.find_identifier_in_declarator(&decl, source) {
+                    params.insert(name);
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.walk_for_params(&child, source, params);
+            }
+        }
+    }
+
+    /// Search for an if_statement whose condition references a parameter and
+    /// whose body contains a return_statement.
+    fn find_param_guarded_return(
+        &self,
+        node: &Node,
+        source: &str,
+        params: &HashSet<String>,
+    ) -> bool {
+        if node.kind() == "if_statement" {
+            if let Some(cond) = node.child_by_field_name("condition") {
+                if self.references_any_param(&cond, source, params) {
+                    // Check consequence for return
+                    if let Some(consequence) = node.child_by_field_name("consequence") {
+                        if self.contains_return(&consequence) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.find_param_guarded_return(&child, source, params) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a node or its descendants reference any of the given parameter names.
+    fn references_any_param(&self, node: &Node, source: &str, params: &HashSet<String>) -> bool {
+        if node.kind() == "identifier" {
+            let name = get_node_text(node, source);
+            if params.contains(name.trim()) {
+                return true;
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.references_any_param(&child, source, params) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Check if a node or its descendants contain a return_statement.
+    fn contains_return(&self, node: &Node) -> bool {
+        if node.kind() == "return_statement" {
+            return true;
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.contains_return(&child) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     fn check_function(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         let func_name = match self.extract_func_name(node, source) {
             Some(n) => n,
@@ -129,6 +240,12 @@ impl Msc04C {
 
         // 1. Direct recursion: function calls itself
         if callees.contains(&func_name) {
+            // Suppress if the function has a bounded base case:
+            // a parameter-dependent conditional return before the self-call.
+            // This indicates controlled recursion (CWE-674 compliant).
+            if self.has_bounded_base_case(node, source) {
+                return;
+            }
             violations.push(RuleViolation {
                 rule_id: self.rule_id().to_string(),
                 severity: self.severity(),
