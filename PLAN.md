@@ -292,37 +292,31 @@ changes to generate test expectations differently for this directory.
 
 # Task ID: 18
 # Title: Fix FIO10-C POSIX rename
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Accept POSIX rename() with error checking as compliant.
 # Details:
-Currently flags POSIX rename() even with proper error checking. Test file:
-tests/pass/wiki_posix.c. Fix should match CERT wiki guidance.
+Added Pattern 4 to is_properly_handled(): rename() with return value check
+is acceptable (POSIX atomically replaces destination). Updated fail test to
+bare rename() without error checking. Added pass/testcases_posix_rename.c.
 
 ---
 
 # Task ID: 19
 # Title: EXP34-C intra-file call-site test infrastructure
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Enable test infra to exercise intra-file prescan for EXP34-C.
 # Details:
-3 tests in pass/ should move to fail/ once test infra supports prescan:
-- pass/testcases_func_param.c (intra-file null deref via function parameter)
-- pass/testcases_list_null.c (NULL passed to function that dereferences)
-- pass/testcases_callback_null.c (callback receives NULL)
-
-The inter-procedural null analysis (Phases 1-3) does detect these patterns in
-real-world usage with -d/prescan. Blocker: build.rs generates tests calling
-rule.check() on a single parsed file with no prescan context. Without
-set_project_context(), collect_param_pointer_state() defaults pointer params
-to NotNull (null_state.rs line 1128).
-
-Fix requires either generating tests that build intra-file prescan before
-invoking the rule, or running these through analyze_project instead of
-rule.check().
+Implemented `// sqc-test: prescan` marker system for .c test files:
+- Added `prescan_single_tree()` to prescan.rs (single-file prescan wrapper)
+- Made `collect_function_cfgs()` public in analyze/mod.rs
+- build.rs detects marker, generates tests with prescan context + CFGs
+- Moved 3 tests from pass/ to fail/ (func_param, list_null, callback_null)
+- All 3 now correctly detect violations via call-site null propagation
+- Infrastructure is generic — any rule can use `// sqc-test: prescan`
 
 ---
 
@@ -344,21 +338,23 @@ call-site null state propagation.
 # Status: pending
 # Dependencies: none
 # Priority: P2
-# Description: 6 implementation bugs discovered during test infrastructure review.
+# Description: 3 remaining implementation bugs (3 of 6 fixed).
 # Details:
-- STR03-C: strncpy with prior strlen validation still flagged (Low)
-- FIO10-C: POSIX rename() not accepted as compliant (Low, see task 18)
-- INT00-C: unsigned subtraction without guard not detected (Medium,
-    tests/pass/testcases_unsigned_wrap.c TODO: move to fail/)
-- INT16-C: signed-to-unsigned conversion without range check not detected
-    (Medium, tests/pass/testcases_signed_unsigned_conversion.c TODO: move to
-    fail/)
-- WIN30-C: CreateFileA with NULL security attributes not detected (Low,
-    tests/pass/testcases_win_api_misuse.c TODO: move to fail/)
-- MEM04-C: malloc(sizeof(int)) falsely flagged as "potentially zero size" (Low)
+Fixed:
+- MEM04-C: sizeof() now recognized as always non-zero in is_potentially_zero()
+- FIO10-C: POSIX rename() with error checking now accepted (task 18)
+- WIN30-C: Reclassified — NULL security attributes is out of scope for
+    WIN30-C (alloc/dealloc pairing). Test comment updated.
 
-Note: INT00-C, INT16-C, WIN30-C are pattern mismatches — the rules check
-different patterns than what the tests expect. May require rule redesign.
+Remaining:
+- STR03-C: strncpy with prior strlen validation still flagged (Low)
+- INT00-C: unsigned subtraction without guard not detected (Medium,
+    tests/pass/testcases_unsigned_wrap.c — pattern mismatch)
+- INT16-C: signed-to-unsigned conversion without range check not detected
+    (Medium, tests/pass/testcases_signed_unsigned_conversion.c — pattern mismatch)
+
+Note: INT00-C and INT16-C are pattern mismatches — the rules check different
+patterns than what the tests expect. May require rule redesign.
 
 ---
 
@@ -369,18 +365,16 @@ different patterns than what the tests expect. May require rule redesign.
 # Priority: P2
 # Description: Review and fix tests that pass only due to implementation gaps.
 # Details:
-7 remaining fake-passing tests (11 fixed in v0.3.42):
+2 remaining fake-passing tests (11 fixed in v0.3.42, 5 resolved here):
 
-- EXP34-C pass/testcases_func_param.c — blocker: test infra (task 19)
-- EXP34-C pass/testcases_list_null.c — blocker: test infra (task 19)
-- EXP34-C pass/testcases_callback_null.c — blocker: test infra (task 19)
-- FIO10-C pass/wiki_posix.c — blocker: rule design (task 18)
+Resolved:
+- EXP34-C: 3 tests moved to fail/ with prescan marker (task 19)
+- FIO10-C: POSIX rename() now accepted as compliant (task 18)
+- WIN30-C: Reclassified as out of scope (not a fake pass)
+
+Remaining:
 - INT00-C pass/testcases_unsigned_wrap.c — pattern mismatch
 - INT16-C pass/testcases_signed_unsigned_conversion.c — pattern mismatch
-- WIN30-C pass/testcases_win_api_misuse.c — pattern mismatch
-
-Quick check: grep -r "TODO.*move to fail\|Known limitation"
-  src/rules/cert_c/**/pass/*.c src/analyze/*.rs
 
 ---
 

@@ -376,7 +376,8 @@ fn generate_integration_tests() -> Result<()> {
     writeln!(main_file, "mod generated_tests {{")?;
     writeln!(main_file, "    use crate::parser::CParser;")?;
     writeln!(main_file, "    use crate::rules::RuleRegistry;")?;
-    writeln!(main_file, "    use std::path::Path;\n")?;
+    writeln!(main_file, "    use std::path::Path;")?;
+    writeln!(main_file, "    use std::collections::HashMap;\n")?;
 
     // Sort for consistent output
     rule_modules.sort();
@@ -427,6 +428,9 @@ fn generate_test_function(
         category, rule_id, test_type, test_filename
     );
 
+    // Check if the test file requests intra-file prescan context
+    let needs_prescan = check_test_needs_prescan(test_path);
+
     // Check if rule is implemented by reading the TOML file
     let toml_path = format!("src/rules/cert_c/{}/{}/{}.toml", category, rule_id, rule_id);
     let is_enabled = check_if_rule_enabled(&toml_path)?;
@@ -466,6 +470,23 @@ fn generate_test_function(
         "        .unwrap_or_else(|e| panic!(\"Failed to parse {{:?}}: {{}}\", test_path, e));"
     )?;
     writeln!(f, "    ")?;
+
+    if needs_prescan {
+        // Build intra-file prescan context before calling rule.check()
+        writeln!(
+            f,
+            "    let context = crate::analyze::prescan::prescan_single_tree(&tree.root_node(), &source);"
+        )?;
+        writeln!(f, "    rule.set_project_context(&context);")?;
+        writeln!(f, "    let mut function_cfgs = HashMap::new();")?;
+        writeln!(
+            f,
+            "    crate::analyze::collect_function_cfgs(&tree.root_node(), &source, &mut function_cfgs);"
+        )?;
+        writeln!(f, "    rule.set_function_cfgs(&function_cfgs);")?;
+        writeln!(f, "    ")?;
+    }
+
     writeln!(
         f,
         "    let violations = rule.check(&tree.root_node(), &source);"
@@ -560,4 +581,16 @@ fn check_if_rule_enabled(toml_path: &str) -> Result<bool> {
 
     // Default to false if format is unclear
     Ok(false)
+}
+
+/// Check if a `.c` test file contains the `// sqc-test: prescan` marker.
+///
+/// When present, the generated test will build an intra-file prescan context
+/// (function summaries + call-site null states + CFGs) before calling
+/// `rule.check()`. This enables testing inter-procedural analysis patterns
+/// within a single translation unit.
+fn check_test_needs_prescan(test_path: &std::path::Path) -> bool {
+    fs::read_to_string(test_path)
+        .map(|content| content.contains("// sqc-test: prescan"))
+        .unwrap_or(false)
 }

@@ -394,7 +394,7 @@ fn find_function_at_byte<'a>(
 
 /// Collect CFGs for all function_definition nodes in the AST.
 /// Keyed by the function's start byte offset.
-fn collect_function_cfgs(
+pub fn collect_function_cfgs(
     node: &tree_sitter::Node,
     source: &str,
     cfgs: &mut HashMap<usize, cfg::FunctionCfg>,
