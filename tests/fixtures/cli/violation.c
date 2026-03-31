@@ -1,0 +1,3 @@
+void infinite(void) {
+    infinite();
+}

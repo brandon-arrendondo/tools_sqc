@@ -735,13 +735,15 @@ class BenchDB:
                   for v in violations])
 
     def ingest_realworld_run(self, version_dir: str, results_path: str,
-                              machine: dict = None) -> int:
+                              machine: dict = None,
+                              durations: dict[str, float] = None) -> int:
         """Ingest a complete realworld run from JSON result files.
 
         Args:
             version_dir: dir name like 'sqc-0.3.26-9e8e8d3b'
             results_path: path to the directory containing JSON result files
             machine: optional dict with hostname, cpu_model, cpu_cores
+            durations: optional dict mapping codebase name to elapsed seconds
 
         Returns:
             The realworld_runs row id.
@@ -755,6 +757,7 @@ class BenchDB:
         commit = parts[2] if len(parts) > 2 else None
 
         machine = machine or {}
+        durations = durations or {}
         run_id = self.create_realworld_run(
             sqc_version=version,
             commit_sha=commit,
@@ -786,13 +789,15 @@ class BenchDB:
                 rid = v.get("rule_id", "unknown")
                 rule_counts[rid] = rule_counts.get(rid, 0) + 1
 
+            duration = durations.get(project)
+
             result_id = None
             with self._cursor() as cur:
                 cur.execute("""
                     INSERT OR REPLACE INTO realworld_results
                         (run_id, project, tool, c_files, loc, violation_count, duration_s)
-                    VALUES (?, ?, 'sqc', 0, 0, ?, NULL)
-                """, (run_id, project, violation_count))
+                    VALUES (?, ?, 'sqc', 0, 0, ?, ?)
+                """, (run_id, project, violation_count, duration))
                 result_id = cur.lastrowid
 
             # Insert per-violation detail
@@ -1002,6 +1007,87 @@ class BenchDB:
             "rule_summary": rule_summary,
             "per_project_rules": per_project_rules,
         }
+
+    def get_realworld_dashboard(self, run_id: int,
+                                base_run_id: int | None = None,
+                                top_n: int = 25) -> dict:
+        """Get a dashboard view of realworld results: top rules, per-project, deltas.
+
+        Args:
+            run_id: The target run to display.
+            base_run_id: Optional base run to compute deltas against.
+            top_n: Number of top rules to show (default 25).
+
+        Returns dict with: run info, top_rules (with optional deltas),
+        per_project summaries, and timing data.
+        """
+        run = self.get_realworld_run(run_id)
+        if not run:
+            return {"error": f"Run {run_id} not found"}
+
+        results = self.get_realworld_results(run_id)
+        sqc_results = [r for r in results if r["tool"] == "sqc"]
+        rule_summary = self.get_realworld_rule_summary(run_id)
+        total_violations = sum(r["violation_count"] for r in sqc_results)
+
+        # Per-project summaries
+        per_project = []
+        for r in sqc_results:
+            proj_rules = self.get_realworld_rule_summary(run_id, r["project"])
+            entry = {
+                "project": r["project"],
+                "violation_count": r["violation_count"],
+            }
+            if r.get("duration_s") is not None:
+                entry["duration_s"] = r["duration_s"]
+            entry["top_rules"] = proj_rules[:10]
+            per_project.append(entry)
+
+        # Top rules with optional deltas
+        top_rules = []
+        base_rules = {}
+        if base_run_id:
+            base_rules = {r["rule_id"]: r["count"]
+                          for r in self.get_realworld_rule_summary(base_run_id)}
+
+        for r in rule_summary[:top_n]:
+            entry = {"rule_id": r["rule_id"], "count": r["count"]}
+            if base_rules:
+                base_count = base_rules.get(r["rule_id"], 0)
+                entry["base_count"] = base_count
+                entry["delta"] = r["count"] - base_count
+            top_rules.append(entry)
+
+        # Check for rules that disappeared (were in base but not in target top)
+        if base_rules:
+            target_rule_ids = {r["rule_id"] for r in rule_summary}
+            for rule_id, base_count in sorted(base_rules.items(),
+                                               key=lambda x: -x[1]):
+                if rule_id not in target_rule_ids and base_count > 0:
+                    top_rules.append({
+                        "rule_id": rule_id,
+                        "count": 0,
+                        "base_count": base_count,
+                        "delta": -base_count,
+                    })
+
+        dashboard = {
+            "run": run,
+            "total_violations": total_violations,
+            "top_rules": top_rules,
+            "per_project": per_project,
+        }
+
+        if base_run_id:
+            base_run = self.get_realworld_run(base_run_id)
+            base_total = sum(r["violation_count"]
+                             for r in self.get_realworld_results(base_run_id)
+                             if r["tool"] == "sqc")
+            dashboard["base_run"] = base_run
+            dashboard["base_total"] = base_total
+            dashboard["total_delta"] = total_violations - base_total
+
+        return dashboard
 
     # ── Run Resolution ────────────────────────────────────────────────────
 
