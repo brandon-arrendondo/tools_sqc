@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-31 (v0.3.54, paper tasks added)
+Last Updated: 2026-03-31 (v0.3.55)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -165,7 +165,11 @@ v0.3.53 results (tasks 41-43 complete):
   CWE-690: 560 TP / 38 FP (93.6%, +0.4pp). +40 TP, 0 FP.
   Realworld: EXP34-C +159, API00-C -147. No performance regression.
 
-Remaining: task 44 (variants 63-67, P3 hard). Task 45 (regression tests) done.
+v0.3.55: Task 44 variant 67 (struct field null propagation) implemented.
+  Smoke test: +6 TP, 0 FP across all 6 data types in CWE-476 variant 67.
+  Benchmark results pending.
+
+Remaining: task 44 variants 63-66 (P3 hard). Task 45 (regression tests) done.
 
 ---
 
@@ -880,12 +884,20 @@ v0.3.53 benchmark results:
 
 # Task ID: 44
 # Title: EXP34-C variants 63-67 — indirect data flow
-# Status: pending
+# Status: in-progress
 # Dependencies: 7
 # Priority: P3
 # Description: Cross-file null propagation through indirect data flow mechanisms.
 # Details:
 Each variant requires a distinct new prescan capability:
+
+Variant 67 (struct field): DONE in v0.3.55. NULL in struct field, struct
+  passed by value to sink. Implemented via callsite_param_field_null_states
+  in FunctionSummary. Prescan tracks "var.field" assignments in local_states,
+  propagates through call arguments, aggregates per-function. Null state
+  analysis seeds "paramName.fieldName" into initial_state, transfer function
+  checks dotted key on field_expression RHS.
+  +6 TP, 0 FP across all 6 data types. 2 new regression tests.
 
 Variant 63 (pointer-to-pointer): Caller passes &data where data=NULL.
   Sink receives char **dataPtr, dereferences *dataPtr. Needs pointed-to-value
@@ -901,13 +913,8 @@ Variant 65 (function pointer): Call through function pointer. Needs indirect
 Variant 66 (array element): NULL embedded in array element, array passed to
   sink. Needs array element tracking in prescan.
 
-Variant 67 (struct field): NULL in struct field, struct passed by value to
-  sink. Needs field-sensitive null state in prescan (struct_field_types exists
-  for type resolution but not null states).
-
-60 files total (5 variants × 12 files). Each variant is architecturally
-independent. Recommend implementing in order 67 → 63 → 66 → 64 → 65
-(decreasing tractability). Variants 64-65 may not be worth the effort.
+48 files remaining (4 variants × 12 files). Variants 64-65 may not be worth
+the effort.
 
 ---
 
@@ -1090,4 +1097,41 @@ Remaining items:
   - Add Eric and Tristan's institutional affiliation if not BISSELL
   - Review by co-authors
   - Proofread and style consistency pass
+
+---
+
+# Task ID: 52
+# Title: Man page for sqc
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Create a man page (sqc.1) documenting CLI usage, options, and examples.
+# Details:
+Write sqc.1 in roff format covering: synopsis, all CLI flags (--rules, --diff,
+--fail-on-violation, --fail-on-severity, -d, -I, --save-prescan, --load-prescan,
+--export, --format, --min-severity, --suppress-file, --generate-suppression),
+configuration file format, exit codes, examples, and environment variables.
+Install via Cargo build script or Makefile. Include in deb/rpm packages (task 53).
+
+---
+
+# Task ID: 53
+# Title: Binary distribution packages
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Generate AppImage, Windows .exe, .deb, and .rpm packages for sqc.
+# Details:
+Packaging targets:
+  - AppImage (Linux portable): use cargo-appimage or linuxdeploy with sqc binary +
+    .desktop file + icon. Single self-contained executable for any Linux distro.
+  - Windows .exe: cross-compile with x86_64-pc-windows-gnu or -msvc target.
+    Optionally wrap in an MSI installer via cargo-wix.
+  - .deb (Debian/Ubuntu): use cargo-deb. Include sqc binary in /usr/bin/,
+    man page (task 52) in /usr/share/man/man1/, config examples in
+    /usr/share/doc/sqc/. Set dependencies (libc6).
+  - .rpm (Fedora/RHEL): use cargo-generate-rpm. Same file layout as .deb.
+
+CI/CD integration: GitHub Actions matrix build with release artifacts uploaded
+on tag push. Use cross for cross-compilation where needed.
 

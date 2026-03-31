@@ -309,6 +309,15 @@ fn process_declaration_null(
                             if rval == NullState::NotNull && value.kind() == "field_expression" {
                                 if let Some(arg) = value.child_by_field_name("argument") {
                                     let base = get_text(&arg, source);
+                                    // Check dotted key first (struct field null propagation)
+                                    if let Some(field_node) = value.child_by_field_name("field") {
+                                        let field_name = get_text(&field_node, source);
+                                        let dotted = format!("{}.{}", base, field_name);
+                                        if let Some(&field_state) = state.get(&dotted) {
+                                            state.insert(var_name, field_state);
+                                            continue;
+                                        }
+                                    }
                                     if let Some(&base_state) = state.get(&base) {
                                         if base_state.is_unsafe() {
                                             state.insert(var_name, NullState::PossiblyNull);
@@ -369,6 +378,15 @@ fn process_expression_null(
                 // ptr = other->next: propagate other's state
                 if let Some(arg) = right.child_by_field_name("argument") {
                     let base = get_text(&arg, source);
+                    // Check dotted key first (struct field null propagation)
+                    if let Some(field_node) = right.child_by_field_name("field") {
+                        let field_name = get_text(&field_node, source);
+                        let dotted = format!("{}.{}", base, field_name);
+                        if let Some(&field_state) = state.get(&dotted) {
+                            state.insert(left_name, field_state);
+                            return;
+                        }
+                    }
                     if let Some(&base_state) = state.get(&base) {
                         if base_state.is_unsafe() {
                             state.insert(left_name, NullState::PossiblyNull);
@@ -805,9 +823,8 @@ pub fn analyze_null_states_with_globals(
     }
 
     // Look up call-site-derived param states if func_name is available
-    let callsite_states = func_name
-        .and_then(|name| summaries.get(name))
-        .map(|s| &s.callsite_param_null_states);
+    let func_summary = func_name.and_then(|name| summaries.get(name));
+    let callsite_states = func_summary.map(|s| &s.callsite_param_null_states);
 
     if let Some(declarator) = func_node.child_by_field_name("declarator") {
         collect_param_pointer_state(
@@ -817,6 +834,25 @@ pub fn analyze_null_states_with_globals(
             &mut declared_pointers,
             callsite_states,
         );
+
+        // Seed struct field null states: "paramName.fieldName" → NullState
+        // Enables variant 67 detection (struct field null propagation across functions)
+        if let Some(summary) = func_summary {
+            if !summary.callsite_param_field_null_states.is_empty() {
+                let param_names =
+                    crate::analyze::function_summary::collect_param_names(func_node, source);
+                for (param_idx, field_states) in &summary.callsite_param_field_null_states {
+                    if let Some(param_name) = param_names.get(*param_idx) {
+                        if !param_name.is_empty() {
+                            for (field_name, &state) in field_states {
+                                let key = format!("{}.{}", param_name, field_name);
+                                initial_state.insert(key, state);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     let mut entry_states: HashMap<BlockId, StateMap> = HashMap::new();
