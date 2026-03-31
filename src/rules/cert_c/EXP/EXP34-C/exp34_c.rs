@@ -2,7 +2,7 @@ use super::super::{CertRule, RuleViolation};
 use crate::analyze::cfg::{self as cfg_mod, FunctionCfg};
 use crate::analyze::context::ProjectContext;
 use crate::analyze::function_summary::FunctionSummary;
-use crate::analyze::null_state::{self, NullAnalysisResult, StateMap};
+use crate::analyze::null_state::{self, NullAnalysisResult, NullState, StateMap};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
 use std::cell::RefCell;
@@ -15,6 +15,9 @@ pub struct Exp34C {
     /// Null states for file-scope (static/global) pointer variables,
     /// computed once per file by scanning all declarations and assignments.
     file_global_states: RefCell<StateMap>,
+    /// Cross-file global pointer null states from prescan.
+    /// Used to resolve `extern` pointer globals defined in other translation units.
+    prescan_global_var_states: RefCell<HashMap<String, NullState>>,
 }
 
 impl Exp34C {
@@ -23,6 +26,7 @@ impl Exp34C {
             function_summaries: RefCell::new(HashMap::new()),
             function_cfgs: RefCell::new(HashMap::new()),
             file_global_states: RefCell::new(StateMap::new()),
+            prescan_global_var_states: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -50,6 +54,7 @@ impl CertRule for Exp34C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+        *self.prescan_global_var_states.borrow_mut() = context.global_var_null_states.clone();
     }
 
     fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
@@ -63,7 +68,16 @@ impl CertRule for Exp34C {
 
         // At the top level (translation_unit), collect file-scope global null states
         if node.kind() == "translation_unit" {
-            let globals = null_state::collect_file_scope_null_states(node, source, &summaries);
+            let mut globals = null_state::collect_file_scope_null_states(node, source, &summaries);
+
+            // Merge prescan cross-file states for extern pointer declarations.
+            // For variables declared `extern` in this file, the file-scope analysis
+            // has no assignments to track — inject prescan-derived states.
+            let prescan_states = self.prescan_global_var_states.borrow();
+            if !prescan_states.is_empty() {
+                merge_extern_global_states(node, source, &prescan_states, &mut globals);
+            }
+
             *self.file_global_states.borrow_mut() = globals;
         }
 
@@ -766,6 +780,116 @@ fn node_is_within(parent_node: &Node, child_node: &Node) -> bool {
 
 fn is_null_value(text: &str) -> bool {
     null_state::is_null_value(text)
+}
+
+/// Merge prescan cross-file global null states into the file-scope state map
+/// for any `extern` pointer declarations found in this translation unit.
+///
+/// Scans top-level declarations for `extern TYPE *name;` and, if the variable
+/// is still Unknown in `file_globals`, inserts the prescan-derived state.
+fn merge_extern_global_states(
+    root: &Node,
+    source: &str,
+    prescan_states: &HashMap<String, NullState>,
+    file_globals: &mut StateMap,
+) {
+    merge_extern_in_node(root, source, prescan_states, file_globals);
+
+    fn merge_extern_in_node(
+        node: &Node,
+        source: &str,
+        prescan_states: &HashMap<String, NullState>,
+        file_globals: &mut StateMap,
+    ) {
+        for i in 0..node.child_count() {
+            let child = match node.child(i) {
+                Some(c) => c,
+                None => continue,
+            };
+            match child.kind() {
+                "declaration" => {
+                    let mut has_extern = false;
+                    for j in 0..child.child_count() {
+                        if let Some(tc) = child.child(j) {
+                            if tc.kind() == "storage_class_specifier" {
+                                if tc.utf8_text(source.as_bytes()).unwrap_or("") == "extern" {
+                                    has_extern = true;
+                                }
+                            }
+                        }
+                    }
+                    if !has_extern {
+                        continue;
+                    }
+                    // Find pointer declarators in this extern declaration
+                    for j in 0..child.child_count() {
+                        if let Some(decl) = child.child(j) {
+                            let name = match decl.kind() {
+                                "pointer_declarator" => extract_id_from_decl(&decl, source),
+                                "init_declarator" => {
+                                    // Check child for pointer_declarator
+                                    if has_pointer_child(&decl) {
+                                        extract_id_from_decl(&decl, source)
+                                    } else {
+                                        continue;
+                                    }
+                                }
+                                _ => continue,
+                            };
+                            if name.is_empty() {
+                                continue;
+                            }
+                            // Only inject if not already resolved by file-scope analysis
+                            let current = file_globals
+                                .get(&name)
+                                .copied()
+                                .unwrap_or(NullState::Unknown);
+                            if current == NullState::Unknown {
+                                if let Some(&prescan_state) = prescan_states.get(&name) {
+                                    file_globals.insert(name, prescan_state);
+                                }
+                            }
+                        }
+                    }
+                }
+                k if k.starts_with("preproc_") => {
+                    merge_extern_in_node(&child, source, prescan_states, file_globals);
+                }
+                _ => {}
+            }
+        }
+    }
+
+    fn extract_id_from_decl(node: &Node, source: &str) -> String {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "identifier" => {
+                        return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                    }
+                    "pointer_declarator" | "init_declarator" => {
+                        let result = extract_id_from_decl(&child, source);
+                        if !result.is_empty() {
+                            return result;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        String::new()
+    }
+
+    fn has_pointer_child(node: &Node) -> bool {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "pointer_declarator" {
+                    return true;
+                }
+            }
+        }
+        false
+    }
 }
 
 /// Extract the function name from a declarator node (handles pointer_declarator wrapping).

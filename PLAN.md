@@ -152,17 +152,20 @@ null propagation.
 
 # Task ID: 7
 # Title: EXP34-C Phase 4 edge cases
-# Status: pending
+# Status: in-progress
 # Dependencies: none
 # Priority: P2
 # Description: Address remaining EXP34-C inter-procedural gaps.
 # Details:
-- Relay chains (3+ hops): multi-pass handles single-hop, deep chains still
-  Unknown
-- Indirect data flow (variants 63-67): not addressed
-- Cross-file globals (variant 68): not addressed
-- EXP34-C/FIO06-C regression investigation from Phase 3 (prescan enhancement
-  caused +76 FP EXP34-C, +169 FP FIO06-C)
+Split into sub-tasks 41-45. See individual tasks for details.
+
+Current CWE-476 baseline (v0.3.52): 337 TP / 403 FP (45.5% TP rate),
+82.5% per-file detection. EXP34-C: 247 TP / 263 FP (48.4%).
+CWE-690: 520 TP / 38 FP (93.2% TP rate), 46.4% per-file detection.
+
+Juliet CWE-476 has 6 inter-procedural variants (63-68), each with 12 files
+(6 data types × 2 source/sink files). ~72 files total, likely accounting
+for most of the 65 undetected files.
 
 ---
 
@@ -757,6 +760,130 @@ detection (fabs/fabsf/fabsl, != 0, > 0 / < 0). Need tests:
 - pass/division_gt_zero.c: Division inside `if (x > 0)`
 - pass/division_fenv.c: Division with feclearexcept/fetestexcept (already exists as wiki_c.c)
 - pass/conversion_only.c: Cast to float/double without division (should not flag)
+
+---
+
+# Task ID: 41
+# Title: EXP34-C/FIO06-C Phase 3 regression investigation
+# Status: done
+# Dependencies: 7
+# Priority: P2
+# Description: Investigate whether +76 FP EXP34-C / +169 FP FIO06-C regression
+  from Phase 3 prescan enhancement (v0.2.17) still exists in v0.3.52.
+# Details:
+Investigated in v0.3.52. Both regressions are stale:
+
+FIO06-C (+169 FP): Maps to CWE-276/279/732 — none are in the current
+70-CWE fast-mode benchmark. FIO06-C doesn't appear in any top rule list.
+Unmeasurable and irrelevant to current benchmarks.
+
+EXP34-C (+76 FP): Original regression was noise violations (EXP34-C
+firing on non-CWE-matched CWEs in the old full benchmark). Fast-mode
+CWE-matched manifests mean EXP34-C only fires on CWE-476/CWE-690.
+Noise violations don't exist in fast mode.
+
+Since v0.3.37: CWE-476 gained +216 TP, CWE-690 gained +317 TP.
+Both regressions are from v0.2.17 (30+ versions ago, pre-fast-mode).
+Closed as stale.
+
+---
+
+# Task ID: 42
+# Title: EXP34-C variant 68 — cross-file global null tracking
+# Status: done
+# Dependencies: 7
+# Priority: P2
+# Description: Detect null pointer dereferences through cross-file global variables.
+# Details:
+Implemented cross-file global pointer null state tracking.
+
+Changes:
+  context.rs: Added `global_var_null_states: HashMap<String, NullState>` to
+    ProjectContext. Serde-compatible for prescan cache.
+  prescan.rs: Added `collect_global_var_null_states()` — scans file-scope
+    non-static, non-extern pointer globals and function-body assignments.
+    Handles `data = NULL; globalVar = data;` relay pattern. Called during
+    prescan_directories() for each .c file.
+  exp34_c.rs: Added `prescan_global_var_states` field, populated via
+    set_project_context(). After collect_file_scope_null_states(), merges
+    prescan states for extern pointer declarations via
+    merge_extern_global_states().
+
+Smoke test results (all 6 data types × variant 68):
+  68b.c (sink): 6/6 new TPs — badSink correctly flagged for null deref
+  68a.c (source): 0/6 FPs — no dereferences in source files
+  goodG2BSink: 0 FPs — globalData assigned string literal (NotNull)
+  goodB2GSink: 0 FPs — null guard detected by CFG dataflow
+
+All 3004 existing tests pass, zero regressions.
+
+---
+
+# Task ID: 43
+# Title: EXP34-C relay chain depth (3+ hops)
+# Status: pending
+# Dependencies: 7
+# Priority: P3
+# Description: Extend prescan relay propagation beyond single-hop to handle
+  deep call chains.
+# Details:
+Current two-pass prescan (propagate_param_null_states) handles single-hop
+relay: caller → relay → sink. 3+ hop chains (caller → relay1 → relay2 →
+sink) still resolve to Unknown because only one propagation pass is done.
+
+Fix: iterate propagation to fixpoint or add configurable pass count (e.g.,
+3 passes). Each pass resolves one additional hop. Primarily benefits
+CWE-690 (46.4% per-file rate) where return-value null flows through
+intermediate functions.
+
+---
+
+# Task ID: 44
+# Title: EXP34-C variants 63-67 — indirect data flow
+# Status: pending
+# Dependencies: 7
+# Priority: P3
+# Description: Cross-file null propagation through indirect data flow mechanisms.
+# Details:
+Each variant requires a distinct new prescan capability:
+
+Variant 63 (pointer-to-pointer): Caller passes &data where data=NULL.
+  Sink receives char **dataPtr, dereferences *dataPtr. Needs pointed-to-value
+  tracking in prescan — current callsite args track NullState of the argument
+  itself, not what it points to.
+
+Variant 64 (void pointer): Same as 63 but with type erasure through void*.
+  Needs type recovery after void* cast.
+
+Variant 65 (function pointer): Call through function pointer. Needs indirect
+  call resolution in prescan call_graph. Currently only direct calls tracked.
+
+Variant 66 (array element): NULL embedded in array element, array passed to
+  sink. Needs array element tracking in prescan.
+
+Variant 67 (struct field): NULL in struct field, struct passed by value to
+  sink. Needs field-sensitive null state in prescan (struct_field_types exists
+  for type resolution but not null states).
+
+60 files total (5 variants × 12 files). Each variant is architecturally
+independent. Recommend implementing in order 67 → 63 → 66 → 64 → 65
+(decreasing tractability). Variants 64-65 may not be worth the effort.
+
+---
+
+# Task ID: 45
+# Title: EXP34-C Phase 4 regression tests
+# Status: pending
+# Dependencies: 41, 42, 43
+# Priority: P2
+# Description: Add regression tests for all Phase 4 improvements.
+# Details:
+After implementing tasks 41-43, add targeted .c test files:
+- Cross-file global null deref (variant 68 pattern)
+- Deep relay chain (3+ hop null propagation)
+- FP regression fixes from task 41 (if applicable)
+Test files go in src/rules/cert_c/EXP/EXP34-C/tests/fail/ and pass/.
+Use `// sqc-test: prescan` marker for tests requiring prescan context.
 
 ---
 

@@ -1,4 +1,5 @@
 use super::function_summary::FunctionSummary;
+use super::null_state::NullState;
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
@@ -30,6 +31,12 @@ pub struct ProjectContext {
     /// Used by init-state analysis for dead-branch elimination.
     #[serde(default)]
     pub global_constants: HashMap<String, i64>,
+    /// Global pointer variable null states from across all scanned files.
+    /// Maps variable name to its joined null state across all assignment sites.
+    /// Used by EXP34-C to resolve `extern` pointer globals declared in other
+    /// translation units (Juliet CWE-476 variant 68 pattern).
+    #[serde(default)]
+    pub global_var_null_states: HashMap<String, NullState>,
 }
 
 impl ProjectContext {
