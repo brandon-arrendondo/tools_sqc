@@ -131,6 +131,13 @@ impl Fio10C {
             return true;
         }
 
+        // Pattern 4: rename() with return value check (POSIX compliant).
+        // On POSIX, rename() atomically replaces the destination, so checking
+        // the return value for errors is sufficient handling.
+        if self.has_return_value_check(rename_node) {
+            return true;
+        }
+
         false
     }
 
@@ -248,6 +255,43 @@ impl Fio10C {
                 break;
             }
             current = parent.parent();
+        }
+        false
+    }
+
+    /// Check if rename()'s return value is tested (POSIX compliant pattern).
+    ///
+    /// Matches `if (rename(...) != 0)` and similar patterns where the rename()
+    /// call is the condition (or part of the condition) of an if_statement.
+    fn has_return_value_check(&self, rename_node: &Node) -> bool {
+        let mut current = rename_node.parent();
+        while let Some(node) = current {
+            match node.kind() {
+                // rename() is used directly as an if/while condition
+                "parenthesized_expression" | "binary_expression" | "unary_expression" => {
+                    current = node.parent();
+                    continue;
+                }
+                "if_statement" | "while_statement" => {
+                    // Check that rename_node is inside the condition, not the body
+                    if let Some(condition) = node.child_by_field_name("condition") {
+                        if rename_node.start_byte() >= condition.start_byte()
+                            && rename_node.end_byte() <= condition.end_byte()
+                        {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                // If we hit a statement boundary, stop searching
+                "expression_statement" | "compound_statement" | "function_definition" => {
+                    return false;
+                }
+                _ => {
+                    current = node.parent();
+                    continue;
+                }
+            }
         }
         false
     }

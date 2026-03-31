@@ -283,12 +283,31 @@ impl Dcl06C {
 
         // Handle negative numbers
         if let Some(positive) = trimmed.strip_prefix('-') {
-            return matches!(positive, "0" | "1" | "2");
+            return self.is_acceptable_literal(positive);
         }
 
+        // Strip float/unsigned suffixes: 0.0f, 1.0F, 0u, 0U, 0L, 0UL, etc.
+        let stripped = trimmed.trim_end_matches(['f', 'F', 'u', 'U', 'l', 'L']);
+
+        // Accept zero in any float form: 0.0, 0.0f, 0.0F
+        if stripped == "0.0" || stripped == "0." || stripped == ".0" {
+            return true;
+        }
+
+        // Accept small float literals: 1.0f, 2.0f, etc.
+        if let Some(int_part) = stripped.strip_suffix(".0") {
+            if self.is_acceptable_integer(int_part) {
+                return true;
+            }
+        }
+
+        self.is_acceptable_integer(stripped)
+    }
+
+    fn is_acceptable_integer(&self, value: &str) -> bool {
         // Common acceptable values: 0-10 and hex equivalents
         matches!(
-            trimmed,
+            value,
             "0" | "1"
                 | "2"
                 | "3"

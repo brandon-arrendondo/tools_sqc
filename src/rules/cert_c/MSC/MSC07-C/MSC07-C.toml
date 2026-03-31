@@ -1,0 +1,25 @@
+[metadata]
+id = "MSC07-C"
+type = "recommendation"
+category = "MSC"
+number = 7
+title = "Detect and remove code that is never executed"
+description = """
+Code that can never be executed (dead code) may indicate logic errors, incomplete
+refactoring, or copy-paste mistakes. Common patterns include statements after
+unconditional return, exit(), abort(), break, continue, or goto in the same block.
+Unreachable code should be removed to improve readability and maintainability.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "Custom (BRULE-034)"
+last_modified = "Mar 30, 2026"
+
+[rules.cert_c.MSC07-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/MSC07-C.+Detect+and+remove+dead+code"
+cwe = ["CWE-561"]

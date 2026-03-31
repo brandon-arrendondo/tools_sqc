@@ -174,7 +174,14 @@ impl Int32C {
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations, type_map);
+                // Scope type_map per function to avoid cross-function name collisions
+                // (e.g., float X_pred in one function vs int32_t X_pred in another)
+                if child.kind() == "function_definition" {
+                    let fn_type_map = self.collect_variable_types(&child, source);
+                    self.check_node(&child, source, violations, &fn_type_map);
+                } else {
+                    self.check_node(&child, source, violations, type_map);
+                }
             }
         }
     }

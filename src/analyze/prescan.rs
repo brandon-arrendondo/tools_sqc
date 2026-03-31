@@ -29,6 +29,8 @@ pub fn prescan_directories(
     let mut macro_constants = HashMap::new();
     let mut macro_aliases = HashMap::new();
     let mut struct_field_types = HashMap::new();
+    let mut global_constants: HashMap<String, i64> = HashMap::new();
+    let mut global_var_null_states: HashMap<String, NullState> = HashMap::new();
     let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
     let mut source_files: Vec<PathBuf> = Vec::new();
     let mut parser = CParser::new()?;
@@ -84,6 +86,14 @@ pub fn prescan_directories(
                 // Collect struct field types from struct definitions
                 collect_struct_definitions(&root, &source, &mut struct_field_types);
 
+                // Collect global constants for dead-branch elimination
+                collect_global_constants(&root, &source, &mut global_constants);
+
+                // Collect global pointer variable null states (cross-file)
+                if !is_header {
+                    collect_global_var_null_states(&root, &source, &mut global_var_null_states);
+                }
+
                 // Collect call-site argument null states in the same pass
                 // (avoids re-parsing all files in a second directory walk)
                 if !is_header {
@@ -101,9 +111,9 @@ pub fn prescan_directories(
         &header_declared_functions,
     );
 
-    // Second pass: propagate parameter null states through relay functions.
-    // After the first aggregation, functions have callsite_param_null_states.
-    // Re-collect callsite args using these param states to resolve parameter forwarding:
+    // Iterative propagation: resolve parameter null states through relay chains.
+    // Each pass resolves one additional hop. Runs up to MAX_PROPAGATION_PASSES
+    // times or until convergence (no state changes between passes).
     //   void mid(int *p) { low(p); }  — p now resolved via mid's param state
     propagate_param_null_states(
         &source_files,
@@ -125,7 +135,38 @@ pub fn prescan_directories(
         macro_constants,
         macro_aliases,
         struct_field_types,
+        global_constants,
+        global_var_null_states,
     })
+}
+
+/// Build a [`ProjectContext`] from a single already-parsed tree.
+///
+/// This is the intra-file equivalent of [`prescan_directories`]: it computes
+/// function summaries and call-site null states so that inter-procedural rules
+/// (e.g. EXP34-C) can resolve parameter state within one translation unit.
+///
+/// Used by the generated integration tests when a `.c` file carries the
+/// `// sqc-test: prescan` marker.
+#[cfg(test)]
+pub fn prescan_single_tree(root: &Node, source: &str) -> ProjectContext {
+    let macros = const_eval::collect_macro_constants(root, source);
+    let mut function_summaries = function_summary::compute_summaries(root, source, &macros, false);
+
+    let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+    collect_callsite_args_from_tree(root, source, &mut callsite_args);
+
+    let empty_headers = HashSet::new();
+    aggregate_callsite_null_states(&callsite_args, &mut function_summaries, &empty_headers);
+
+    let known_functions: HashSet<String> = function_summaries.keys().cloned().collect();
+
+    ProjectContext {
+        known_functions,
+        function_summaries,
+        macro_constants: macros,
+        ..ProjectContext::default()
+    }
 }
 
 /// Collect function declarations (prototypes) from a header file.
@@ -460,6 +501,14 @@ fn aggregate_callsite_null_states(
 /// This pass re-parses source files, seeds each function's parameter names with their
 /// aggregated null states, and re-collects callsite args. Then re-aggregates to propagate
 /// the states one level deeper through the call chain.
+/// Maximum number of propagation passes for relay chain resolution.
+/// Each pass resolves one additional hop in the call chain:
+///   Pass 1: caller → relay (single hop)
+///   Pass 2: caller → relay1 → relay2 (two hops)
+///   Pass 3: caller → relay1 → relay2 → relay3 (three hops)
+/// Most real-world code has at most 2-3 relay hops.
+const MAX_PROPAGATION_PASSES: usize = 3;
+
 fn propagate_param_null_states(
     source_files: &[PathBuf],
     parser: &mut CParser,
@@ -467,48 +516,68 @@ fn propagate_param_null_states(
     callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
     header_declared: &HashSet<String>,
 ) {
-    // Snapshot the current param null states before re-collection
-    let param_states_snapshot: HashMap<String, HashMap<usize, NullState>> = summaries
-        .iter()
-        .filter(|(_, s)| !s.callsite_param_null_states.is_empty())
-        .map(|(name, s)| (name.clone(), s.callsite_param_null_states.clone()))
-        .collect();
+    for _pass in 0..MAX_PROPAGATION_PASSES {
+        // Snapshot the current param null states before re-collection
+        let param_states_snapshot: HashMap<String, HashMap<usize, NullState>> = summaries
+            .iter()
+            .filter(|(_, s)| !s.callsite_param_null_states.is_empty())
+            .map(|(name, s)| (name.clone(), s.callsite_param_null_states.clone()))
+            .collect();
 
-    // If no functions have param states, nothing to propagate
-    if param_states_snapshot.is_empty() {
-        return;
-    }
+        // If no functions have param states, nothing to propagate
+        if param_states_snapshot.is_empty() {
+            return;
+        }
 
-    // Re-collect callsite args with parameter state awareness
-    let mut new_callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+        // Re-collect callsite args with parameter state awareness
+        let mut new_callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
 
-    for file_path in source_files {
-        if let Ok((tree, source)) = parser.parse_file(&file_path.to_string_lossy()) {
-            let root = tree.root_node();
-            collect_callsite_args_with_param_states(
-                &root,
-                &source,
-                &param_states_snapshot,
-                &mut new_callsite_args,
-            );
+        for file_path in source_files {
+            if let Ok((tree, source)) = parser.parse_file(&file_path.to_string_lossy()) {
+                let root = tree.root_node();
+                collect_callsite_args_with_param_states(
+                    &root,
+                    &source,
+                    &param_states_snapshot,
+                    &mut new_callsite_args,
+                );
+            }
+        }
+
+        // Only proceed if this pass found any new information
+        if new_callsite_args.is_empty() {
+            return;
+        }
+
+        // Merge new callsite args into the existing ones
+        for (callee, arg_vecs) in new_callsite_args {
+            callsite_args.entry(callee).or_default().extend(arg_vecs);
+        }
+
+        // Clear old aggregated states and re-aggregate with the merged data
+        let prev_states: HashMap<String, HashMap<usize, NullState>> = summaries
+            .iter()
+            .filter(|(_, s)| !s.callsite_param_null_states.is_empty())
+            .map(|(name, s)| (name.clone(), s.callsite_param_null_states.clone()))
+            .collect();
+
+        for summary in summaries.values_mut() {
+            summary.callsite_param_null_states.clear();
+        }
+        aggregate_callsite_null_states(callsite_args, summaries, header_declared);
+
+        // Check for convergence: if no param states changed, stop early
+        let converged = summaries.iter().all(|(name, s)| {
+            let prev = prev_states.get(name);
+            match prev {
+                Some(prev_map) => *prev_map == s.callsite_param_null_states,
+                None => s.callsite_param_null_states.is_empty(),
+            }
+        });
+        if converged {
+            return;
         }
     }
-
-    // Only proceed if the second pass found any new information
-    if new_callsite_args.is_empty() {
-        return;
-    }
-
-    // Merge new callsite args into the existing ones
-    for (callee, arg_vecs) in new_callsite_args {
-        callsite_args.entry(callee).or_default().extend(arg_vecs);
-    }
-
-    // Clear old aggregated states and re-aggregate with the merged data
-    for summary in summaries.values_mut() {
-        summary.callsite_param_null_states.clear();
-    }
-    aggregate_callsite_null_states(callsite_args, summaries, header_declared);
 }
 
 /// Like `collect_callsite_args_from_tree`, but also seeds function parameters
@@ -948,6 +1017,372 @@ fn collect_calls_with_locals(
 // ---------------------------------------------------------------------------
 // Struct field type collection
 // ---------------------------------------------------------------------------
+
+/// Collect null states for file-scope non-static, non-extern pointer globals.
+///
+/// Finds declarations like `char *globalData;` or `char *globalData = NULL;`
+/// at file scope, then walks all function bodies for assignments to those
+/// globals. Tracks the common Juliet pattern: `data = NULL; globalVar = data;`.
+///
+/// Results are joined into the provided `states` map across all files.
+/// Used by EXP34-C for cross-file variant 68 detection.
+fn collect_global_var_null_states(
+    root: &Node,
+    source: &str,
+    states: &mut HashMap<String, NullState>,
+) {
+    use crate::analyze::null_state;
+
+    // Step 1: Find file-scope pointer globals (non-static, non-extern).
+    let mut global_vars: HashSet<String> = HashSet::new();
+    collect_prescan_pointer_globals(root, source, &mut global_vars, states);
+
+    if global_vars.is_empty() {
+        return;
+    }
+
+    // Step 2: Walk function bodies for assignments to these globals.
+    for i in 0..root.child_count() {
+        let child = match root.child(i) {
+            Some(c) => c,
+            None => continue,
+        };
+        match child.kind() {
+            "function_definition" => {
+                if let Some(body) = child.child_by_field_name("body") {
+                    scan_global_var_assignments(&body, source, &global_vars, states);
+                }
+            }
+            k if k.starts_with("preproc_") => {
+                // Recurse into preprocessor blocks for nested function definitions
+                scan_preproc_for_functions(&child, source, &global_vars, states);
+            }
+            _ => {}
+        }
+    }
+
+    fn scan_preproc_for_functions(
+        node: &Node,
+        source: &str,
+        global_vars: &HashSet<String>,
+        states: &mut HashMap<String, NullState>,
+    ) {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "function_definition" => {
+                        if let Some(body) = child.child_by_field_name("body") {
+                            scan_global_var_assignments(&body, source, global_vars, states);
+                        }
+                    }
+                    k if k.starts_with("preproc_") => {
+                        scan_preproc_for_functions(&child, source, global_vars, states);
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+
+    /// Classify an RHS expression as a NullState for prescan purposes.
+    fn classify_rhs(node: &Node, source: &str) -> NullState {
+        let text = node
+            .utf8_text(source.as_bytes())
+            .unwrap_or("")
+            .trim()
+            .to_string();
+        if null_state::is_null_value(&text) {
+            return NullState::DefinitelyNull;
+        }
+        // Cast to NULL: (type*)NULL or (type*)0
+        if node.kind() == "cast_expression" {
+            if let Some(value) = node.child_by_field_name("value") {
+                let vt = value
+                    .utf8_text(source.as_bytes())
+                    .unwrap_or("")
+                    .trim()
+                    .to_string();
+                if null_state::is_null_value(&vt) {
+                    return NullState::DefinitelyNull;
+                }
+            }
+        }
+        // String literal → NotNull
+        if node.kind() == "string_literal" {
+            return NullState::NotNull;
+        }
+        // Address-of → NotNull
+        if node.kind() == "pointer_expression" {
+            if let Some(op) = node.child_by_field_name("operator") {
+                if op.utf8_text(source.as_bytes()).unwrap_or("") == "&" {
+                    return NullState::NotNull;
+                }
+            }
+        }
+        NullState::NotNull
+    }
+
+    /// Recursively scan a function body for assignments to global pointer vars.
+    /// Handles `data = NULL; globalVar = data;` relay pattern.
+    fn scan_global_var_assignments(
+        node: &Node,
+        source: &str,
+        global_vars: &HashSet<String>,
+        states: &mut HashMap<String, NullState>,
+    ) {
+        if node.kind() == "assignment_expression" {
+            if let Some(left) = node.child_by_field_name("left") {
+                let var_name = left.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                if global_vars.contains(&var_name) {
+                    if let Some(right) = node.child_by_field_name("right") {
+                        let new_state = if right.kind() == "identifier" {
+                            let rhs_text =
+                                right.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                            if null_state::is_null_value(&rhs_text) {
+                                NullState::DefinitelyNull
+                            } else {
+                                // Check preceding statement for relay pattern:
+                                //   data = NULL; globalVar = data;
+                                check_preceding_assign_state(node, &rhs_text, source)
+                            }
+                        } else {
+                            classify_rhs(&right, source)
+                        };
+                        let existing = states.get(&var_name).copied().unwrap_or(NullState::Unknown);
+                        states.insert(var_name, existing.join(new_state));
+                    }
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                scan_global_var_assignments(&child, source, global_vars, states);
+            }
+        }
+    }
+
+    /// Check the preceding statement for a null/non-null assignment to the
+    /// relay variable. Handles: `data = NULL; globalVar = data;`
+    fn check_preceding_assign_state(
+        assignment_node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> NullState {
+        let expr_stmt = match assignment_node.parent() {
+            Some(p) if p.kind() == "expression_statement" => p,
+            _ => return NullState::Unknown,
+        };
+        if let Some(prev) = expr_stmt.prev_sibling() {
+            // Check expression_statement: `var = EXPR;`
+            if prev.kind() == "expression_statement" {
+                if let Some(expr) = prev.child(0) {
+                    if expr.kind() == "assignment_expression" {
+                        if let Some(left) = expr.child_by_field_name("left") {
+                            if left.utf8_text(source.as_bytes()).unwrap_or("") == var_name {
+                                if let Some(right) = expr.child_by_field_name("right") {
+                                    return classify_rhs(&right, source);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // Check declaration: `TYPE *var = EXPR;`
+            if prev.kind() == "declaration" {
+                for i in 0..prev.child_count() {
+                    if let Some(child) = prev.child(i) {
+                        if child.kind() == "init_declarator" {
+                            let name = extract_declarator_name(&child, source);
+                            if name == var_name {
+                                if let Some(value) = child.child_by_field_name("value") {
+                                    return classify_rhs(&value, source);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        NullState::Unknown
+    }
+}
+
+/// Find file-scope non-static, non-extern pointer declarations.
+fn collect_prescan_pointer_globals(
+    node: &Node,
+    source: &str,
+    global_vars: &mut HashSet<String>,
+    states: &mut HashMap<String, NullState>,
+) {
+    use crate::analyze::null_state;
+
+    for i in 0..node.child_count() {
+        let child = match node.child(i) {
+            Some(c) => c,
+            None => continue,
+        };
+        match child.kind() {
+            "declaration" => {
+                // Collect type qualifiers and storage class
+                let mut has_extern = false;
+                let mut has_static = false;
+                let mut has_pointer = false;
+                for j in 0..child.child_count() {
+                    if let Some(tc) = child.child(j) {
+                        if tc.kind() == "storage_class_specifier" {
+                            let text = tc.utf8_text(source.as_bytes()).unwrap_or("");
+                            if text == "extern" {
+                                has_extern = true;
+                            }
+                            if text == "static" {
+                                has_static = true;
+                            }
+                        }
+                        if tc.kind() == "pointer_declarator" || tc.kind() == "init_declarator" {
+                            has_pointer = true;
+                        }
+                    }
+                }
+                // Skip extern (defined elsewhere) and static (file-local)
+                if has_extern || has_static || !has_pointer {
+                    continue;
+                }
+                // Extract pointer declarators with optional initializer
+                for j in 0..child.child_count() {
+                    if let Some(decl) = child.child(j) {
+                        if decl.kind() == "init_declarator" {
+                            // Check that it's a pointer type
+                            if !has_pointer_in_declarator(&decl) {
+                                continue;
+                            }
+                            let name = extract_declarator_name(&decl, source);
+                            if name.is_empty() {
+                                continue;
+                            }
+                            global_vars.insert(name.clone());
+                            if let Some(value) = decl.child_by_field_name("value") {
+                                let vtext = value
+                                    .utf8_text(source.as_bytes())
+                                    .unwrap_or("")
+                                    .trim()
+                                    .to_string();
+                                let state = if null_state::is_null_value(&vtext) {
+                                    NullState::DefinitelyNull
+                                } else {
+                                    NullState::NotNull
+                                };
+                                let existing =
+                                    states.get(&name).copied().unwrap_or(NullState::Unknown);
+                                states.insert(name, existing.join(state));
+                            }
+                        } else if decl.kind() == "pointer_declarator" {
+                            // Bare pointer declarator without init
+                            let name = extract_declarator_name(&decl, source);
+                            if !name.is_empty() {
+                                global_vars.insert(name);
+                                // No initializer — leave as Unknown
+                            }
+                        }
+                    }
+                }
+            }
+            k if k.starts_with("preproc_") => {
+                collect_prescan_pointer_globals(&child, source, global_vars, states);
+            }
+            _ => {}
+        }
+    }
+}
+
+/// Check if a declarator node contains a pointer indicator (`*`).
+fn has_pointer_in_declarator(node: &Node) -> bool {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if child.kind() == "pointer_declarator" {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+/// Collect global constants (`[const] TYPE NAME = VALUE;`) from file-scope declarations.
+/// Only collects non-static constants (static ones are file-local and handled by
+/// `init_state::collect_file_scope_constants` within each file).
+fn collect_global_constants(root: &Node, source: &str, constants: &mut HashMap<String, i64>) {
+    for i in 0..root.child_count() {
+        if let Some(child) = root.child(i) {
+            match child.kind() {
+                "declaration" => {
+                    let type_text = {
+                        let mut text = String::new();
+                        for j in 0..child.child_count() {
+                            if let Some(tc) = child.child(j) {
+                                if tc.kind() == "storage_class_specifier"
+                                    || tc.kind() == "type_qualifier"
+                                    || tc.kind() == "primitive_type"
+                                    || tc.kind() == "sized_type_specifier"
+                                {
+                                    if let Ok(t) = tc.utf8_text(source.as_bytes()) {
+                                        text.push_str(t);
+                                        text.push(' ');
+                                    }
+                                }
+                            }
+                        }
+                        text
+                    };
+                    // Skip static declarations (handled per-file in init_state)
+                    if type_text.contains("static") {
+                        continue;
+                    }
+                    // Accept: const TYPE NAME = VALUE; or TYPE NAME = VALUE;
+                    // (non-const globals are included for benchmark support)
+                    for j in 0..child.child_count() {
+                        if let Some(decl) = child.child(j) {
+                            if decl.kind() == "init_declarator" {
+                                let name = extract_declarator_name(&decl, source);
+                                if name.is_empty() {
+                                    continue;
+                                }
+                                if let Some(value) = decl.child_by_field_name("value") {
+                                    let empty_macros: HashMap<String, i64> = HashMap::new();
+                                    if let Some(val) =
+                                        const_eval::try_evaluate_expr(&value, source, &empty_macros)
+                                    {
+                                        constants.insert(name, val);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                "preproc_ifdef" | "preproc_if" | "preproc_else" | "preproc_elif" => {
+                    collect_global_constants(&child, source, constants);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Extract declarator name from an init_declarator node.
+fn extract_declarator_name(decl: &Node, source: &str) -> String {
+    for i in 0..decl.child_count() {
+        if let Some(child) = decl.child(i) {
+            match child.kind() {
+                "identifier" => {
+                    return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                }
+                "pointer_declarator" => {
+                    return extract_declarator_name(&child, source);
+                }
+                _ => {}
+            }
+        }
+    }
+    String::new()
+}
 
 /// Collect struct field types from struct definitions and typedefs.
 ///

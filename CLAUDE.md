@@ -196,9 +196,10 @@ python -m bench runs
    `target/release/sqc`. If you rebuild while it's running, you corrupt results
    mid-run. Make ALL code changes and commits BEFORE starting the benchmark.
 
-3. **Wait for completion**: Fast-mode benchmarks take ~8-10 minutes on 4-core,
-   ~3-5 minutes on 24-core. Full-suite takes ~40-50 minutes. Check status with
-   `get_status()` no more than once every 5 minutes.
+3. **Wait for completion**: Fast-mode Juliet benchmarks take ~13-19 minutes
+   (avg 15.5). Real-world sqc-only takes ~10-15 minutes. Full Juliet suite
+   takes ~40-50 minutes. Check status with `get_status()` no more than once
+   every 5 minutes.
 
 4. **Compare runs**: After a benchmark completes, use `compare_runs()` to compare
    against previous runs. Use `get_cwe_detail()` for per-CWE deep dives.
@@ -212,8 +213,8 @@ python -m bench runs
 ### Querying Results
 
 The MCP tools (`get_results`, `get_cwe_detail`, `compare_runs`, `list_runs`) query
-SQLite first, falling back to legacy text files for old runs. All 21 historical
-Juliet runs (v0.2.1 through v0.3.19) and 7 real-world runs are in the database.
+SQLite first, falling back to legacy text files for old runs. 46 Juliet runs
+(v0.2.1 through current) and 21 real-world runs are in the database.
 
 ---
 
@@ -222,7 +223,7 @@ Juliet runs (v0.2.1 through v0.3.19) and 7 real-world runs are in the database.
 | File | Contents |
 |------|----------|
 | `README.md` | Tool overview, installation, usage, CLI reference |
-| `CHANGELOG.md` | Version history, per-release fixes and features |
+| `CHANGELOG.txt` | Version history, per-release fixes and features |
 | `PLAN.md` | Roadmap: immediate, medium-term, long-term priorities |
 | `JULIET_RESULTS.md` | Juliet benchmark data by sqc version |
 | `REALWORLD_RESULTS.md` | Real-world codebase results (5 projects × 3 tools) |
@@ -233,16 +234,21 @@ Juliet runs (v0.2.1 through v0.3.19) and 7 real-world runs are in the database.
 ## Project Structure
 
 - `src/rules/cert_c/` - CERT C rule implementations
+- `src/analyze/` - Analysis infrastructure (CFG, null state, VRA, prescan)
 - `bench/` - Benchmark infrastructure (runner, analyzer, SQLite DB, CLI)
+- `mcp_servers/` - MCP servers for Juliet and real-world benchmarks
+- `data/` - Benchmark database (benchmarks.db), prescan caches
+- `scripts/` - Workflow helpers, parallel scan, coverage gate
+- `docs/` - Developer guide (index.rst), bibliography
 - `AGENTS/PROPOSALS/ACTIVE/` - Proposals to implement
 - `AGENTS/PROPOSALS/STAGED/` - Completed proposals
-- `scripts/work_active_helpers.sh` - Workflow automation
 
 ## Build & Test
 
 ```bash
 cargo build
-cargo test --package sqc --lib -- rules::cert_c::RULE_ID::tests
+cargo test --package sqc --lib -- rules::cert_c::RULE_ID::tests  # inline unit tests
+cargo test --package sqc --lib -- RULE_ID  # all tests (inline + generated from .c files)
 cargo fmt
 ```
 

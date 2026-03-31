@@ -74,7 +74,7 @@ pub fn analyze_project(
     };
 
     // Resolve #include directives against include search paths
-    if load_prescan.is_none() && !include_paths.is_empty() {
+    if !include_paths.is_empty() {
         let c_files = if diff_only {
             project_source.get_modified_c_files()?
         } else {
@@ -394,7 +394,7 @@ fn find_function_at_byte<'a>(
 
 /// Collect CFGs for all function_definition nodes in the AST.
 /// Keyed by the function's start byte offset.
-fn collect_function_cfgs(
+pub fn collect_function_cfgs(
     node: &tree_sitter::Node,
     source: &str,
     cfgs: &mut HashMap<usize, cfg::FunctionCfg>,

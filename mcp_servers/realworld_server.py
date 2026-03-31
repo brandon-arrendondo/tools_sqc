@@ -13,6 +13,7 @@ Tools:
   get_status()                       - Show all active/completed/failed runs
   get_results(run, project)          - Per-project + per-rule results (SQLite-first)
   compare_runs(base, target)         - Compare two runs with per-rule deltas
+  get_dashboard(run, compare, top)   - FP tracking dashboard with rule deltas
   list_runs()                        - List all runs (SQLite + filesystem)
   get_rule_trend(rule_id, project)   - Per-rule violation trend across versions
   get_project_history(project)       - Per-project violation trend across versions
@@ -1231,7 +1232,7 @@ def get_results(run: str = "latest", project: str | None = None) -> str:
                     if r["tool"] != "sqc":
                         continue
                     proj_rules = summary["per_project_rules"].get(r["project"], [])
-                    projects.append({
+                    proj_entry = {
                         "project": r["project"],
                         "violation_count": r["violation_count"],
                         "c_files": r["c_files"],
@@ -1241,7 +1242,10 @@ def get_results(run: str = "latest", project: str | None = None) -> str:
                             for rr in proj_rules[:20]
                         },
                         "total_rules": len(proj_rules),
-                    })
+                    }
+                    if r.get("duration_s") is not None:
+                        proj_entry["duration_s"] = r["duration_s"]
+                    projects.append(proj_entry)
 
                 # Overall rule summary (filtered by project if given)
                 if project:
@@ -1324,10 +1328,35 @@ def _auto_ingest_to_sqlite(version_dir: Path) -> None:
         if not json_files:
             return
 
+        # Extract per-codebase durations from state file
+        durations = _extract_run_durations()
+
         machine = {"hostname": os.uname().nodename}
-        db.ingest_realworld_run(dir_name, str(version_dir), machine=machine)
+        db.ingest_realworld_run(dir_name, str(version_dir), machine=machine,
+                                durations=durations)
     except Exception:
         pass  # Don't fail the MCP tool if ingestion fails
+
+
+def _extract_run_durations() -> dict[str, float]:
+    """Extract per-codebase durations from the state file.
+
+    Returns dict mapping codebase name to elapsed seconds for completed sqc runs.
+    """
+    durations = {}
+    try:
+        state = _read_state()
+        for run_id, info in state.get("runs", {}).items():
+            if (info.get("tool") == "sqc"
+                    and info.get("status") == "completed"
+                    and "start_time" in info
+                    and "end_time" in info):
+                codebase = info.get("codebase")
+                if codebase:
+                    durations[codebase] = round(info["end_time"] - info["start_time"], 1)
+    except Exception:
+        pass
+    return durations
 
 
 @mcp.tool()
@@ -1533,6 +1562,43 @@ def list_runs() -> str:
 
 
 @mcp.tool()
+def get_dashboard(run: str = "latest", compare: str | None = None,
+                  top: int = 25) -> str:
+    """
+    Real-world FP tracking dashboard: top rules with deltas and per-project breakdown.
+
+    Args:
+        run: Target run — "latest" (default), sqc version, commit SHA, or run ID.
+        compare: Base run to compare against. Default: previous run.
+        top: Number of top rules to show (default 25).
+
+    Returns top FP-producing rules, per-project summaries, and timing data.
+    """
+    try:
+        db = _get_db()
+        target_id = db.resolve_realworld_run(run)
+        if not target_id:
+            return json.dumps({"error": f"Could not resolve run '{run}'."})
+
+        base_id = None
+        if compare:
+            base_id = db.resolve_realworld_run(compare)
+            if not base_id:
+                return json.dumps({"error": f"Could not resolve base run '{compare}'."})
+        else:
+            runs = db.list_realworld_runs()
+            for i, r in enumerate(runs):
+                if r["id"] == target_id and i + 1 < len(runs):
+                    base_id = runs[i + 1]["id"]
+                    break
+
+        dashboard = db.get_realworld_dashboard(target_id, base_id, top_n=top)
+        return json.dumps(dashboard, default=str)
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
+@mcp.tool()
 def get_rule_trend(rule_id: str, project: str | None = None) -> str:
     """
     Get a rule's violation count trend across all realworld benchmark runs.
@@ -1606,7 +1672,7 @@ def get_project_history(project: str) -> str:
             if not sqc_result:
                 continue
             rule_summary = db.get_realworld_rule_summary(run["id"], project)
-            history.append({
+            entry = {
                 "sqc_version": run["sqc_version"],
                 "run_id": run["id"],
                 "violation_count": sqc_result["violation_count"],
@@ -1614,7 +1680,10 @@ def get_project_history(project: str) -> str:
                     {"rule_id": r["rule_id"], "count": r["count"]}
                     for r in rule_summary[:10]
                 ],
-            })
+            }
+            if sqc_result.get("duration_s") is not None:
+                entry["duration_s"] = sqc_result["duration_s"]
+            history.append(entry)
 
         # Compute deltas
         for i in range(1, len(history)):

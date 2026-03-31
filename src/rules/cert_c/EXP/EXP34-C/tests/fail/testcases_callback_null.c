@@ -1,9 +1,9 @@
+// sqc-test: prescan
 /*
  * Rule: EXP34-C
  * Source: testcases
- * Status: PASS - Known limitation: params assumed non-null without call-site data.
- *         This IS a real null deref (main passes NULL), but requires intra-file
- *         call-site analysis to detect. Move to fail/ when implemented.
+ * Status: FAIL - main() passes NULL function pointer to process_data() which calls it.
+ *         Detected via intra-file prescan (call-site null state propagation).
  */
 
 #include <stdio.h>
