@@ -111,9 +111,9 @@ pub fn prescan_directories(
         &header_declared_functions,
     );
 
-    // Second pass: propagate parameter null states through relay functions.
-    // After the first aggregation, functions have callsite_param_null_states.
-    // Re-collect callsite args using these param states to resolve parameter forwarding:
+    // Iterative propagation: resolve parameter null states through relay chains.
+    // Each pass resolves one additional hop. Runs up to MAX_PROPAGATION_PASSES
+    // times or until convergence (no state changes between passes).
     //   void mid(int *p) { low(p); }  — p now resolved via mid's param state
     propagate_param_null_states(
         &source_files,
@@ -501,6 +501,14 @@ fn aggregate_callsite_null_states(
 /// This pass re-parses source files, seeds each function's parameter names with their
 /// aggregated null states, and re-collects callsite args. Then re-aggregates to propagate
 /// the states one level deeper through the call chain.
+/// Maximum number of propagation passes for relay chain resolution.
+/// Each pass resolves one additional hop in the call chain:
+///   Pass 1: caller → relay (single hop)
+///   Pass 2: caller → relay1 → relay2 (two hops)
+///   Pass 3: caller → relay1 → relay2 → relay3 (three hops)
+/// Most real-world code has at most 2-3 relay hops.
+const MAX_PROPAGATION_PASSES: usize = 3;
+
 fn propagate_param_null_states(
     source_files: &[PathBuf],
     parser: &mut CParser,
@@ -508,48 +516,68 @@ fn propagate_param_null_states(
     callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
     header_declared: &HashSet<String>,
 ) {
-    // Snapshot the current param null states before re-collection
-    let param_states_snapshot: HashMap<String, HashMap<usize, NullState>> = summaries
-        .iter()
-        .filter(|(_, s)| !s.callsite_param_null_states.is_empty())
-        .map(|(name, s)| (name.clone(), s.callsite_param_null_states.clone()))
-        .collect();
+    for _pass in 0..MAX_PROPAGATION_PASSES {
+        // Snapshot the current param null states before re-collection
+        let param_states_snapshot: HashMap<String, HashMap<usize, NullState>> = summaries
+            .iter()
+            .filter(|(_, s)| !s.callsite_param_null_states.is_empty())
+            .map(|(name, s)| (name.clone(), s.callsite_param_null_states.clone()))
+            .collect();
 
-    // If no functions have param states, nothing to propagate
-    if param_states_snapshot.is_empty() {
-        return;
-    }
+        // If no functions have param states, nothing to propagate
+        if param_states_snapshot.is_empty() {
+            return;
+        }
 
-    // Re-collect callsite args with parameter state awareness
-    let mut new_callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+        // Re-collect callsite args with parameter state awareness
+        let mut new_callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
 
-    for file_path in source_files {
-        if let Ok((tree, source)) = parser.parse_file(&file_path.to_string_lossy()) {
-            let root = tree.root_node();
-            collect_callsite_args_with_param_states(
-                &root,
-                &source,
-                &param_states_snapshot,
-                &mut new_callsite_args,
-            );
+        for file_path in source_files {
+            if let Ok((tree, source)) = parser.parse_file(&file_path.to_string_lossy()) {
+                let root = tree.root_node();
+                collect_callsite_args_with_param_states(
+                    &root,
+                    &source,
+                    &param_states_snapshot,
+                    &mut new_callsite_args,
+                );
+            }
+        }
+
+        // Only proceed if this pass found any new information
+        if new_callsite_args.is_empty() {
+            return;
+        }
+
+        // Merge new callsite args into the existing ones
+        for (callee, arg_vecs) in new_callsite_args {
+            callsite_args.entry(callee).or_default().extend(arg_vecs);
+        }
+
+        // Clear old aggregated states and re-aggregate with the merged data
+        let prev_states: HashMap<String, HashMap<usize, NullState>> = summaries
+            .iter()
+            .filter(|(_, s)| !s.callsite_param_null_states.is_empty())
+            .map(|(name, s)| (name.clone(), s.callsite_param_null_states.clone()))
+            .collect();
+
+        for summary in summaries.values_mut() {
+            summary.callsite_param_null_states.clear();
+        }
+        aggregate_callsite_null_states(callsite_args, summaries, header_declared);
+
+        // Check for convergence: if no param states changed, stop early
+        let converged = summaries.iter().all(|(name, s)| {
+            let prev = prev_states.get(name);
+            match prev {
+                Some(prev_map) => *prev_map == s.callsite_param_null_states,
+                None => s.callsite_param_null_states.is_empty(),
+            }
+        });
+        if converged {
+            return;
         }
     }
-
-    // Only proceed if the second pass found any new information
-    if new_callsite_args.is_empty() {
-        return;
-    }
-
-    // Merge new callsite args into the existing ones
-    for (callee, arg_vecs) in new_callsite_args {
-        callsite_args.entry(callee).or_default().extend(arg_vecs);
-    }
-
-    // Clear old aggregated states and re-aggregate with the merged data
-    for summary in summaries.values_mut() {
-        summary.callsite_param_null_states.clear();
-    }
-    aggregate_callsite_null_states(callsite_args, summaries, header_declared);
 }
 
 /// Like `collect_callsite_args_from_tree`, but also seeds function parameters

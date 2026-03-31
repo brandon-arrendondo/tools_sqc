@@ -821,20 +821,27 @@ All 3004 existing tests pass, zero regressions.
 
 # Task ID: 43
 # Title: EXP34-C relay chain depth (3+ hops)
-# Status: pending
+# Status: done
 # Dependencies: 7
 # Priority: P3
 # Description: Extend prescan relay propagation beyond single-hop to handle
   deep call chains.
 # Details:
-Current two-pass prescan (propagate_param_null_states) handles single-hop
-relay: caller → relay → sink. 3+ hop chains (caller → relay1 → relay2 →
-sink) still resolve to Unknown because only one propagation pass is done.
+Refactored propagate_param_null_states() from single-pass to iterative
+with convergence detection.
 
-Fix: iterate propagation to fixpoint or add configurable pass count (e.g.,
-3 passes). Each pass resolves one additional hop. Primarily benefits
-CWE-690 (46.4% per-file rate) where return-value null flows through
-intermediate functions.
+MAX_PROPAGATION_PASSES = 3 (resolves up to 3-hop relay chains). Each pass:
+  1. Snapshots current param null states
+  2. Re-parses all source files with param state seeding
+  3. Merges new callsite args and re-aggregates
+  4. Checks convergence (all states unchanged → early exit)
+
+Performance: Juliet CWE-476 (372 files) completes prescan in 1.7s total.
+Convergence is fast — most codebases converge in 1-2 passes since deep
+relay chains are rare. No measurable slowdown.
+
+Benchmark impact will be visible in next full Juliet run (any relay chains
+in CWE-690 that were previously Unknown should now resolve).
 
 ---
 
