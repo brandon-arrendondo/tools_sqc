@@ -76,6 +76,15 @@ impl Flp02C {
         op == "==" || op == "!="
     }
 
+    /// Check if a literal is an exact-zero float (0.0, 0.0f, 0.0F, -0.0, etc.)
+    fn is_zero_float_literal(text: &str) -> bool {
+        let t = text
+            .trim()
+            .trim_start_matches('-')
+            .trim_end_matches(['f', 'F', 'l', 'L']);
+        matches!(t, "0.0" | "0." | ".0" | "0")
+    }
+
     /// Get the type of an expression (simplified heuristic)
     /// Checks if expression or any of its descendants contain floating-point characteristics
     #[allow(dead_code)]
@@ -252,6 +261,21 @@ impl Flp02C {
             } else {
                 false
             };
+
+            // Skip comparisons against exact zero (0.0, 0.0f, -0.0, etc.)
+            // Zero is exactly representable in IEEE 754 — comparing to zero is
+            // a standard divide-by-zero guard pattern, not an epsilon issue.
+            let left_text = node
+                .child_by_field_name("left")
+                .map(|n| get_node_text(&n, source).to_string())
+                .unwrap_or_default();
+            let right_text = node
+                .child_by_field_name("right")
+                .map(|n| get_node_text(&n, source).to_string())
+                .unwrap_or_default();
+            if Self::is_zero_float_literal(&left_text) || Self::is_zero_float_literal(&right_text) {
+                return;
+            }
 
             // Only flag if BOTH operands involve floating-point
             // This avoids false positives when comparing float to integer literals

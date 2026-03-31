@@ -1,11 +1,11 @@
 /*
  * Rule: FIO10-C
  * Source: wiki
- * Status: FAIL - Should trigger FIO10-C violation
+ * Status: FAIL - rename() without any error handling or destination check
  */
 
-const char *src_file = /* ... */;
-const char *dest_file = /* ... */;
-if (rename(src_file, dest_file) != 0) {
-  /* Handle error */
+#include <stdio.h>
+
+void unsafe_rename(const char *src, const char *dst) {
+    rename(src, dst);
 }

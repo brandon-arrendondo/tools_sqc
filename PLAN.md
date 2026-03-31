@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-29 (v0.3.47)
+Last Updated: 2026-03-31 (v0.3.54)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -24,60 +24,101 @@ Achieved in v0.3.44: 51.1% TP rate (+2.7pp from 48.4%). See CHANGELOG.txt.
 
 # Task ID: 2
 # Title: EXP33-C cross-function variants
-# Status: pending
+# Status: done
 # Dependencies: 19
 # Priority: P2
 # Description: Inter-procedural analysis for EXP33-C variants 63/64.
 # Details:
-Pointer passed between source files needs inter-procedural analysis. ~70 files
-in CWE-457 affected. Same blocker as CWE-457 cross-function gaps (task 4).
-EXP33-C already has CFG-based forward dataflow (init_state.rs) but it is
-intra-procedural only.
+Done in v0.3.49-v0.3.50.
+
+v0.3.49: EXP33-C cross-file init tracking via set_project_context().
+  - build_read_only_deref_fns(): dereferences_params - modifies_params
+  - InitAnalysisConfig.read_only_deref_fns prevents &var from being marked
+    initialized when callee only reads through the pointer
+  - check_cross_file_uninit_calls: flags calls passing &uninit_var to
+    functions that read the pointed-to value (variant 63 pattern)
+  - +10 TP, +10 FP (10 simple scalar/pointer types)
+
+v0.3.50: Prescan recognizes (type *)param cast pattern as dereference.
+  - Enables variant 64 detection (void pointer → cast → deref)
+  - +10 TP, +10 FP (same 10 simple types via void* indirection)
+
+Combined v0.3.48→v0.3.50: CWE-457 402→422 TP (+20), 695→715 FP (+20),
+TP rate 36.6%→37.1% (+0.5pp). Zero regressions on other CWEs.
+
+FPs are from Juliet goodB2G pattern: &uninit_var passed to function that
+reads *param but reassigns a local copy — technically UB but Juliet
+considers "good". 1:1 TP:FP ratio is precision-neutral.
+
+Array types (alloca/malloc/declare) not affected: pointer variable is
+Initialized (assigned via alloc), content uninitialized — already detected
+by intra-procedural analysis.
 
 ---
 
 # Task ID: 3
 # Title: DCL31-C/DCL07-C remaining include gaps
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P1
 # Description: Fix unresolved function declarations in mosquitto and sqlite.
 # Details:
 v0.3.38 removed library-specific whitelists and added -I include paths.
-Two projects still show increases:
 
-mosquitto (15,221 -> 16,481, +1,260):
-  - cJSON_* (1424): header found but includes as <cjson/cJSON.h>, need
-    -I /usr/include not /usr/include/cjson
-  - CU_* (692): CUnit test framework
-  - sqlite3_* (496), mysql_* (24): test dependencies
+Root cause: bug in analyze/mod.rs — resolve_includes was skipped when
+--load-prescan was set, making -I include paths ineffective during parallel
+scans. One-line fix: removed `load_prescan.is_none()` guard.
 
-sqlite (50,517 -> 53,578, +3,061):
-  - Tcl_* (3010): #include "tclsqlite.h" internal header, -I /usr/include/tcl8.6
-    doesn't help. Need Tcl source dir in -d or accept as residual.
-  - Internal sqlite3_* (32): not caught by -d prescan
+Realworld benchmark results (v0.3.44 → v0.3.47):
+  DCL31-C: 7,366 → 1,926 (-5,440, -73.9%)
+  DCL07-C: 7,291 → 1,846 (-5,445, -74.7%)
+  Combined: 14,657 → 3,772 (-10,885)
 
-Fix approaches: mosquitto cJSON_ needs correct -I path. Tcl_ may require
-accepting as residual or adding Tcl source to -d scan directories.
+Per-project DCL31-C+DCL07-C:
+  hostap:    6,939 → 1,469 (-5,470)
+  sqlite:    3,744 →   561 (-3,183)
+  mosquitto: 2,061 →   103 (-1,958)
+  curl:      1,913 → 1,639 (-274)
 
 ---
 
 # Task ID: 4
 # Title: CWE-457 uninitialized variable remaining gaps
-# Status: pending
-# Dependencies: 2
+# Status: done
+# Dependencies: none
 # Priority: P2
-# Description: Improve CWE-457 TP rate beyond 35.3%.
+# Description: Improve CWE-457 TP rate beyond 37.1%.
 # Details:
-v0.3.37: 165 TP, 302 FP, 35.3% TP rate (up from 32.2% in v0.3.34).
+v0.3.52: Three-phase improvement to CWE-457 detection.
 
-Remaining gaps:
-- Cross-function variants 63/64 (~70 files): needs inter-procedural analysis
-  (same as task 2)
-- Per-element tracking for stack arrays: team[0].x = 1; use(team[3].x)
-  correctly flags, but no way to track that ALL elements are initialized
-- 302 FP likely dominated by cross-function initialization patterns in Juliet
-  "good" functions
+Findings: CWE-457 has 22 C variants (01-18, 63a/63b, 64a/64b). Variants
+61/62/65-68 do NOT exist for CWE-457 in C (corrected from original plan).
+28 data types × 22 variants = 616 files.
+
+Phase 1 — Partial init array detection (+108 TP):
+  Track allocation_count in VarInfo from malloc/ALLOCA calls. Compare
+  for-loop bound vs allocation count on subscript writes. If bound <
+  allocation count → keep MallocUninitialized (partial init detected).
+  6 partial_init types × 18 variants = 108 new TPs. Zero FP regression.
+
+Phase 2 — Constant condition folding (FP reduction, intra-file):
+  Added comparison operators to const_eval. Collect file-scope static
+  [const] constants. Dead-branch elimination in init-state worklist for
+  known-true/false conditions. Handles variants 02-07 (literal, static
+  const, static var conditions). -120 FP from non-array types.
+
+Phase 3 — Prescan constant propagation (FP reduction, cross-file):
+  Collect global constants from prescan directories into
+  ProjectContext.global_constants. Merge with macro_constants. Handles
+  variants 09-10, 13-14 (cross-file GLOBAL_CONST_*, globalTrue, etc.).
+
+Remaining gaps (not addressed):
+- Variant 08 (staticReturnsTrue()), 11 (globalReturnsTrue()): function
+  call conditions not resolvable without return value inlining.
+- Variant 12 (globalReturnsTrueOrFalse()): genuinely random — correct
+  behavior to flag as MaybeUninitialized.
+- declare_* array types: array-to-pointer decay (data = dataUninitArray)
+  treated as read of uninitialized stack array. FPs from this persist.
 
 ---
 
@@ -111,17 +152,20 @@ null propagation.
 
 # Task ID: 7
 # Title: EXP34-C Phase 4 edge cases
-# Status: pending
+# Status: in-progress
 # Dependencies: none
 # Priority: P2
 # Description: Address remaining EXP34-C inter-procedural gaps.
 # Details:
-- Relay chains (3+ hops): multi-pass handles single-hop, deep chains still
-  Unknown
-- Indirect data flow (variants 63-67): not addressed
-- Cross-file globals (variant 68): not addressed
-- EXP34-C/FIO06-C regression investigation from Phase 3 (prescan enhancement
-  caused +76 FP EXP34-C, +169 FP FIO06-C)
+Split into sub-tasks 41-45. See individual tasks for details.
+
+v0.3.53 results (tasks 41-43 complete):
+  Overall: 52.0% TP rate (+0.1pp from v0.3.52). +58 TP, -6 FP.
+  CWE-476: 355 TP / 397 FP (47.2%, +1.7pp). +18 TP, -6 FP.
+  CWE-690: 560 TP / 38 FP (93.6%, +0.4pp). +40 TP, 0 FP.
+  Realworld: EXP34-C +159, API00-C -147. No performance regression.
+
+Remaining: task 44 (variants 63-67, P3 hard). Task 45 (regression tests) done.
 
 ---
 
@@ -200,14 +244,16 @@ APIs, CWE-562 analyzer fix, CWE-561 mapping). 13 are Windows-only
 
 # Task ID: 12
 # Title: EXP16-C test registration
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P1
 # Description: Fix EXP16-C test discovery in cargo test.
 # Details:
-The .c test files exist under tests/fail/ and tests/pass/ but the
-build.rs-generated integration tests don't appear in cargo test. Needs
-investigation — may need explicit test registration or build.rs fix.
+Investigated: tests work correctly. 6 generated tests all pass via
+`cargo test -- exp16`. The issue was the test filter path documented in
+CLAUDE.md (`rules::cert_c::RULE_ID::tests`) only matches rules with
+embedded #[cfg(test)] modules. EXP16-C correctly uses only .c file tests,
+discovered via `generated_tests::test_exp16_c_*`.
 
 ---
 
@@ -236,21 +282,33 @@ Current: 80.06% (24,908 uncovered of 124,904 lines). Highest-impact targets:
 
 # Task ID: 14
 # Title: FP regression tests for rounds 3, 6, 7
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Add regression tests for FP reduction work not yet covered.
 # Details:
-Rounds 8-11 have regression tests. Still needed:
-- Round 3: std function database lookups should not trigger DCL31-C/DCL07-C
-- Round 6: cross-file function definitions should not trigger DCL31-C/DCL07-C
-- Round 7: unknown-type pointer casts should not trigger EXP36-C
+All rounds now have regression tests.
+
+Round 3 (std_functions): Already covered by testcases_stdlib_calls_regression.c
+in DCL31-C and DCL07-C pass/ directories.
+
+Round 6 (cross-file prescan): Added testcases_crossfile_prescan_regression.c for
+both DCL31-C and DCL07-C. Uses `// sqc-test: prescan` marker to exercise the
+cross_file_functions suppression path. Functions defined after their call site
+are discovered by prescan and not flagged. Also fixed prescan_single_tree() to
+populate known_functions from function_summaries keys (was empty due to
+ProjectContext::default()).
+
+Round 7 (EXP36-C): Unknown source type already covered by
+testcases_unknown_type_cast_regression.c. Added
+testcases_nonpointer_cast_regression.c for the non-pointer target type
+suppression (integer casts like (unsigned)time(NULL) should not trigger).
 
 ---
 
 # Task ID: 15
 # Title: Expand wiki-only rule test coverage
-# Status: pending
+# Status: in-progress
 # Dependencies: none
 # Priority: P2
 # Description: Add tests for ~105 rules with only 2 test files each.
@@ -260,18 +318,49 @@ Prioritize top-FP rules from real-world benchmarks:
 - EXP34-C (5,267) — 6 wiki tests
 - ERR33-C (989) — 11 wiki tests
 
+v0.3.54: Batch 1 — 81 new test files across 29 rules (73 → 45 rules at 2 tests).
+
+Rules expanded (2 → 4-7 tests each):
+  Batch 1 (11 rules): MEM01-C, MEM00-C, EXP12-C, ERR00-C, FIO24-C, FIO37-C,
+    FIO38-C, DCL18-C, STR01-C, STR04-C, PRE08-C.
+  Batch 2 (18 rules): EXP03-C, EXP07-C, EXP09-C, EXP13-C, EXP14-C, EXP32-C,
+    FIO08-C, FIO09-C, FIO39-C, STR06-C, STR09-C, STR11-C, ERR04-C, ERR06-C,
+    DCL38-C, DCL41-C, INT12-C, INT13-C.
+
+Each rule gained 2-5 new tests covering additional violation patterns (fail/)
+and safe usage patterns (pass/). All 3102 tests pass.
+
+Remaining: 45 rules still at 2 tests (mostly CON, POS, FIO, WIN families).
+
 ---
 
 # Task ID: 16
 # Title: CLI integration tests
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Test CLI flags: --diff, --export json/csv/sarif, -I, -d,
   --save-prescan/--load-prescan, suppression.
 # Details:
-No tests currently exist for any CLI flags. Need integration tests that invoke
-sqc as a subprocess and verify output format, exit codes, and behavior.
+tests/cli_integration.rs: 23 integration tests invoking sqc as a subprocess.
+
+Export formats (4 tests): JSON structure/empty, CSV header+row, SARIF schema+results.
+Exit codes (4 tests): --fail-on-violation (with/without violations),
+  --fail-on-severity at/below threshold.
+Filtering (4 tests): --rules include/exclude, --min-severity at/below threshold.
+Prescan caching (1 test): --save-prescan then --load-prescan round-trip.
+Suppression (4 tests): inline SQC-SUPPRESS, TOML --suppress-file,
+  suppressed violations don't trigger --fail-on-violation,
+  SARIF includes suppressed violations with metadata.
+  --generate-suppression outputs correct hash.
+Cross-file (2 tests): -d flag suppresses DCL31-C, without -d flags violation.
+Diff mode (1 test): --diff only analyzes modified/new files in git repo.
+
+Fixtures in tests/fixtures/cli/: violation.c, clean.c, suppressed_inline.c,
+  suppress.toml, manifest_msc04.toml, manifest_dcl31.toml,
+  project/main.c + project/helpers/helper.c.
+
+Also fixed prescan_single_tree() to populate known_functions (task 14).
 
 ---
 
@@ -290,37 +379,23 @@ changes to generate test expectations differently for this directory.
 
 # Task ID: 18
 # Title: Fix FIO10-C POSIX rename
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Accept POSIX rename() with error checking as compliant.
 # Details:
-Currently flags POSIX rename() even with proper error checking. Test file:
-tests/pass/wiki_posix.c. Fix should match CERT wiki guidance.
+Done in v0.3.48. See CHANGELOG.txt.
 
 ---
 
 # Task ID: 19
 # Title: EXP34-C intra-file call-site test infrastructure
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Enable test infra to exercise intra-file prescan for EXP34-C.
 # Details:
-3 tests in pass/ should move to fail/ once test infra supports prescan:
-- pass/testcases_func_param.c (intra-file null deref via function parameter)
-- pass/testcases_list_null.c (NULL passed to function that dereferences)
-- pass/testcases_callback_null.c (callback receives NULL)
-
-The inter-procedural null analysis (Phases 1-3) does detect these patterns in
-real-world usage with -d/prescan. Blocker: build.rs generates tests calling
-rule.check() on a single parsed file with no prescan context. Without
-set_project_context(), collect_param_pointer_state() defaults pointer params
-to NotNull (null_state.rs line 1128).
-
-Fix requires either generating tests that build intra-file prescan before
-invoking the rule, or running these through analyze_project instead of
-rule.check().
+Done in v0.3.48. `// sqc-test: prescan` marker system. See CHANGELOG.txt.
 
 ---
 
@@ -342,21 +417,35 @@ call-site null state propagation.
 # Status: pending
 # Dependencies: none
 # Priority: P2
-# Description: 6 implementation bugs discovered during test infrastructure review.
+# Description: 3 remaining implementation bugs.
 # Details:
-- STR03-C: strncpy with prior strlen validation still flagged (Low)
-- FIO10-C: POSIX rename() not accepted as compliant (Low, see task 18)
-- INT00-C: unsigned subtraction without guard not detected (Medium,
-    tests/pass/testcases_unsigned_wrap.c TODO: move to fail/)
-- INT16-C: signed-to-unsigned conversion without range check not detected
-    (Medium, tests/pass/testcases_signed_unsigned_conversion.c TODO: move to
-    fail/)
-- WIN30-C: CreateFileA with NULL security attributes not detected (Low,
-    tests/pass/testcases_win_api_misuse.c TODO: move to fail/)
-- MEM04-C: malloc(sizeof(int)) falsely flagged as "potentially zero size" (Low)
+3 of 6 fixed in v0.3.48 (MEM04-C, FIO10-C, WIN30-C). See CHANGELOG.txt.
 
-Note: INT00-C, INT16-C, WIN30-C are pattern mismatches — the rules check
-different patterns than what the tests expect. May require rule redesign.
+Remaining:
+- STR03-C: strncpy with prior strlen validation still flagged (Low).
+    str03_c.rs has find_length_check_in_scope() (line ~135) which looks for
+    strlen/sizeof checks in if statements, but only accepts the call if it's
+    in the else branch (line ~175). Should also accept strncpy when a preceding
+    strlen check validates the buffer size, regardless of branch placement.
+    Test: pass/wiki_adequate_space.c uses strcpy (not strncpy) so passes.
+    Need a new fail test with strncpy preceded by strlen that currently flags.
+- INT00-C: unsigned subtraction without guard not detected (Medium).
+    int00_c.rs only checks format specifier mismatches (line ~56) and unsafe
+    cast+multiplication patterns (lines 416-490). Does NOT check for unsigned
+    integer wrap on subtraction. Fix requires adding a new check: binary
+    expressions with `-` operator on unsigned types without prior range
+    validation (a >= b). Test: pass/testcases_unsigned_wrap.c should move to
+    fail/ once implemented.
+- INT16-C: signed-to-unsigned conversion without range check not detected
+    (Medium). int16_c.rs focuses entirely on bitwise operations on signed
+    integers (lines 166-224). Does NOT detect assignments/returns of
+    potentially negative signed values to unsigned types. Fix requires
+    tracking both signed AND unsigned variables and detecting cross-type
+    assignment/return without range check (e.g., `if (x >= 0)`). This is a
+    different analysis pattern than what the rule currently implements.
+    Test: pass/testcases_signed_unsigned_conversion.c should move to fail/.
+
+INT00-C and INT16-C are pattern mismatches — significant rule redesign needed.
 
 ---
 
@@ -367,18 +456,16 @@ different patterns than what the tests expect. May require rule redesign.
 # Priority: P2
 # Description: Review and fix tests that pass only due to implementation gaps.
 # Details:
-7 remaining fake-passing tests (11 fixed in v0.3.42):
+2 remaining fake-passing tests (11 fixed in v0.3.42, 5 resolved here):
 
-- EXP34-C pass/testcases_func_param.c — blocker: test infra (task 19)
-- EXP34-C pass/testcases_list_null.c — blocker: test infra (task 19)
-- EXP34-C pass/testcases_callback_null.c — blocker: test infra (task 19)
-- FIO10-C pass/wiki_posix.c — blocker: rule design (task 18)
+Resolved:
+- EXP34-C: 3 tests moved to fail/ with prescan marker (task 19)
+- FIO10-C: POSIX rename() now accepted as compliant (task 18)
+- WIN30-C: Reclassified as out of scope (not a fake pass)
+
+Remaining:
 - INT00-C pass/testcases_unsigned_wrap.c — pattern mismatch
 - INT16-C pass/testcases_signed_unsigned_conversion.c — pattern mismatch
-- WIN30-C pass/testcases_win_api_misuse.c — pattern mismatch
-
-Quick check: grep -r "TODO.*move to fail\|Known limitation"
-  src/rules/cert_c/**/pass/*.c src/analyze/*.rs
 
 ---
 
@@ -423,19 +510,6 @@ workflows.
 
 ---
 
-# Task ID: 26
-# Title: Baseline-aware suppression
-# Status: pending
-# Dependencies: none
-# Priority: P2
-# Description: "Only new violations" mode for CI integration.
-# Details:
-Store a baseline of known violations and only report new ones. Critical for
-adopting sqc on existing codebases without noise from pre-existing issues.
-Part of Tier 2 production quality definition of done.
-
----
-
 # Task ID: 27
 # Title: Docker image
 # Status: pending
@@ -451,29 +525,43 @@ of done.
 
 # Task ID: 28
 # Title: MSC07-C unreachable code detection
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Code after return/exit/abort, always-false branches (BRULE-034 gap).
 # Details:
-BRULE-034 requires no dead code. MSC12-C (v0.3.43) covers no-effect statements
-and duplicate conditions. MSC07-C covers unreachable code: statements after
-return/exit/abort, always-false branches. Needs CFG infrastructure (already
-exists). Warning severity. Complements existing EXP12-C.
+Implemented MSC07-C. AST-based detection of unreachable code patterns:
+- Statements after unconditional return/break/continue/goto in same block
+- Statements after noreturn calls: exit, abort, _Exit, longjmp, quick_exit,
+  thrd_exit, ExitProcess, ExitThread
+- Skips preprocessor directives and comments
+- Reports only first unreachable statement per terminal (avoids noise)
+- CWE-561 mapping. Low severity (recommendation).
+- 11 tests: 7 fail (all terminal types), 4 pass (conditional returns,
+  nested scopes, switch/break, loop/continue).
 
 ---
 
 # Task ID: 29
 # Title: Recursion detection (BRULE-058)
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Detect recursive function calls via call-graph cycle detection.
 # Details:
-BRULE-058 (Constrained tier) prohibits recursion. Requires call-graph
-construction from prescan data (already collects function names and call sites).
-Detect cycles in the call graph. Both direct (f calls f) and indirect (f calls
-g calls f) recursion.
+Implemented as MSC04-C. Maps to BRULE-058 (Constrained tier).
+
+Direct recursion: AST-only detection — scans function body for self-calls.
+Works without prescan data. Bounded recursion suppression: if the function
+has a parameter-dependent base case (conditional return checking a parameter),
+the violation is suppressed. CWE-674: 2 TP/2 FP → 1 TP/0 FP (100% TP rate).
+
+Indirect recursion: DFS cycle detection on prescan call_graph. Requires -d
+flag for cross-function call graph. Merges current file's callees with prescan
+graph to handle files not in the prescanned set.
+
+Uses existing prescan infrastructure (call_graph: HashMap<String, HashSet<String>>)
+via set_project_context(). CWE-674 mapping added.
 
 ---
 
@@ -544,7 +632,7 @@ analysis for variants that span multiple functions within a file.
 
 # Task ID: 35
 # Title: Real-world FP tracking dashboard
-# Status: in-progress
+# Status: done
 # Dependencies: none
 # Priority: P1
 # Description: Track top FP-producing rules across real-world codebases.
@@ -579,6 +667,26 @@ v0.3.44 vs v0.3.42 delta: +5 (+0.003%, essentially flat). 154,598→154,603.
 - EXP16-C: +160 (49→209). Regression in sqlite only (39→209). Unrelated to
   v0.3.44 changes — likely side effect of v0.3.43 MSC12-C. Needs investigation.
 - FIO01-C: +10. New detections (curl +4, sqlite +6). Also unrelated.
+
+v0.3.47 vs v0.3.44 delta: -12,418 (-8.0%). 154,603→142,185.
+Dominant: DCL31-C -5,440, DCL07-C -5,445 (include resolution fix, task 3).
+Also: EXP07-C -782, MSC37-C -354, INT36-C -277, PRE08-C -174, DCL18-C -137.
+Regressions: INT32-C +491 (per-function type_map scope), FIO24-C +280 (new rule).
+
+Updated per-rule top list (v0.3.47, 142.2K total):
+  MEM30-C:  15,330 — use-after-free (deferred, task 8)
+  INT32-C:  12,541 — signed overflow (+491 from type_map scope fix)
+  DCL13-C:  12,138 — const correctness (deferred, task 10)
+  API00-C:   9,199 — missing size parameter (-28)
+  INT30-C:   8,435 — unsigned overflow (-39)
+  EXP34-C:   5,234 — null deref (-33)
+  MEM31-C:   5,440 — memory leak (deferred, task 9)
+  EXP33-C:   5,013 — uninitialized (stable)
+  STR34-C:   2,801 — char-to-int conversion (stable)
+  API05-C:   2,805 — unused return value (stable)
+  ARR00-C:   2,157 — array bounds (stable)
+  DCL31-C:   1,926 — undeclared function (-5,440, task 3 fix)
+  DCL07-C:   1,846 — implicit int declaration (-5,445, task 3 fix)
 
 ---
 
@@ -651,35 +759,189 @@ architectural investment.
 
 # Task ID: 39
 # Title: FLP03-C test coverage
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Add test cases for FLP03-C guard detection and conversion removal.
 # Details:
-v0.3.44 removed overbroad check_fp_conversion() and added division guard
-detection (fabs/fabsf/fabsl, != 0, > 0 / < 0). Need tests:
+6 new tests (4 → 10 total FLP03-C tests):
 
-- fail/division_no_guard.c: FP division without any guard or fenv checking
-- fail/division_ge_zero.c: Division inside `if (x >= 0)` (does NOT exclude zero)
-- pass/division_fabs_guard.c: Division inside `if (fabs(x) > 0.000001)`
-- pass/division_ne_zero.c: Division inside `if (x != 0)`
-- pass/division_gt_zero.c: Division inside `if (x > 0)`
-- pass/division_fenv.c: Division with feclearexcept/fetestexcept (already exists as wiki_c.c)
-- pass/conversion_only.c: Cast to float/double without division (should not flag)
+fail/ (2 new):
+  division_no_guard.c — FP division without any guard or fenv checking
+  division_ge_zero.c — Division inside `if (x >= 0)` (does NOT exclude zero)
+
+pass/ (4 new):
+  division_fabs_guard.c — Division inside `if (fabs(x) > 0.000001)`
+  division_ne_zero.c — Division inside `if (x != 0)`
+  division_gt_zero.c — Division inside `if (x > 0)`
+  conversion_only.c — Cast to float/double without division (not flagged)
+
+division_fenv.c already covered by existing wiki_c.c.
+
+---
+
+# Task ID: 41
+# Title: EXP34-C/FIO06-C Phase 3 regression investigation
+# Status: done
+# Dependencies: 7
+# Priority: P2
+# Description: Investigate whether +76 FP EXP34-C / +169 FP FIO06-C regression
+  from Phase 3 prescan enhancement (v0.2.17) still exists in v0.3.52.
+# Details:
+Investigated in v0.3.52. Both regressions are stale:
+
+FIO06-C (+169 FP): Maps to CWE-276/279/732 — none are in the current
+70-CWE fast-mode benchmark. FIO06-C doesn't appear in any top rule list.
+Unmeasurable and irrelevant to current benchmarks.
+
+EXP34-C (+76 FP): Original regression was noise violations (EXP34-C
+firing on non-CWE-matched CWEs in the old full benchmark). Fast-mode
+CWE-matched manifests mean EXP34-C only fires on CWE-476/CWE-690.
+Noise violations don't exist in fast mode.
+
+Since v0.3.37: CWE-476 gained +216 TP, CWE-690 gained +317 TP.
+Both regressions are from v0.2.17 (30+ versions ago, pre-fast-mode).
+Closed as stale.
+
+---
+
+# Task ID: 42
+# Title: EXP34-C variant 68 — cross-file global null tracking
+# Status: done
+# Dependencies: 7
+# Priority: P2
+# Description: Detect null pointer dereferences through cross-file global variables.
+# Details:
+Implemented cross-file global pointer null state tracking.
+
+Changes:
+  context.rs: Added `global_var_null_states: HashMap<String, NullState>` to
+    ProjectContext. Serde-compatible for prescan cache.
+  prescan.rs: Added `collect_global_var_null_states()` — scans file-scope
+    non-static, non-extern pointer globals and function-body assignments.
+    Handles `data = NULL; globalVar = data;` relay pattern. Called during
+    prescan_directories() for each .c file.
+  exp34_c.rs: Added `prescan_global_var_states` field, populated via
+    set_project_context(). After collect_file_scope_null_states(), merges
+    prescan states for extern pointer declarations via
+    merge_extern_global_states().
+
+Smoke test results (all 6 data types × variant 68):
+  68b.c (sink): 6/6 new TPs — badSink correctly flagged for null deref
+  68a.c (source): 0/6 FPs — no dereferences in source files
+  goodG2BSink: 0 FPs — globalData assigned string literal (NotNull)
+  goodB2GSink: 0 FPs — null guard detected by CFG dataflow
+
+All 3004 existing tests pass, zero regressions.
+
+---
+
+# Task ID: 43
+# Title: EXP34-C relay chain depth (3+ hops)
+# Status: done
+# Dependencies: 7
+# Priority: P3
+# Description: Extend prescan relay propagation beyond single-hop to handle
+  deep call chains.
+# Details:
+Refactored propagate_param_null_states() from single-pass to iterative
+with convergence detection.
+
+MAX_PROPAGATION_PASSES = 3 (resolves up to 3-hop relay chains). Each pass:
+  1. Snapshots current param null states
+  2. Re-parses all source files with param state seeding
+  3. Merges new callsite args and re-aggregates
+  4. Checks convergence (all states unchanged → early exit)
+
+Performance: Juliet CWE-476 (372 files) completes prescan in 1.7s total.
+Convergence is fast — most codebases converge in 1-2 passes since deep
+relay chains are rare. No measurable slowdown.
+
+v0.3.53 benchmark results:
+  CWE-690: +40 TP, 0 FP (93.2% → 93.6%). Confirms deep relay chains
+    existed — iterative propagation resolved them cleanly.
+  CWE-476: +18 TP, -6 FP (45.5% → 47.2%). Combined effect with task 42.
+  Realworld: EXP34-C +159 new detections across 5 codebases.
+    API00-C -147 FP (better param state resolution benefits suppression).
+  Duration: Juliet 29 min, realworld 42 min — unchanged from v0.3.52.
+
+---
+
+# Task ID: 44
+# Title: EXP34-C variants 63-67 — indirect data flow
+# Status: pending
+# Dependencies: 7
+# Priority: P3
+# Description: Cross-file null propagation through indirect data flow mechanisms.
+# Details:
+Each variant requires a distinct new prescan capability:
+
+Variant 63 (pointer-to-pointer): Caller passes &data where data=NULL.
+  Sink receives char **dataPtr, dereferences *dataPtr. Needs pointed-to-value
+  tracking in prescan — current callsite args track NullState of the argument
+  itself, not what it points to.
+
+Variant 64 (void pointer): Same as 63 but with type erasure through void*.
+  Needs type recovery after void* cast.
+
+Variant 65 (function pointer): Call through function pointer. Needs indirect
+  call resolution in prescan call_graph. Currently only direct calls tracked.
+
+Variant 66 (array element): NULL embedded in array element, array passed to
+  sink. Needs array element tracking in prescan.
+
+Variant 67 (struct field): NULL in struct field, struct passed by value to
+  sink. Needs field-sensitive null state in prescan (struct_field_types exists
+  for type resolution but not null states).
+
+60 files total (5 variants × 12 files). Each variant is architecturally
+independent. Recommend implementing in order 67 → 63 → 66 → 64 → 65
+(decreasing tractability). Variants 64-65 may not be worth the effort.
+
+---
+
+# Task ID: 45
+# Title: EXP34-C Phase 4 regression tests
+# Status: done
+# Dependencies: 41, 42, 43
+# Priority: P2
+# Description: Add regression tests for all Phase 4 improvements.
+# Details:
+8 new unit tests (47 → 55 total EXP34-C tests):
+
+fail/ (4 new):
+  testcases_global_null_deref.c — file-scope global = NULL, deref without check
+  testcases_global_null_assign_deref.c — global assigned NULL in function, deref later
+  testcases_relay_null_to_callee.c — local var NULL relay to callee (prescan, 1-hop)
+  testcases_relay_two_hop.c — NULL through relay function chain (prescan, 2-hop)
+
+pass/ (4 new):
+  testcases_global_null_guard.c — global = NULL but checked before deref
+  testcases_global_string_literal.c — global = string literal (NotNull)
+  testcases_relay_null_guard_callee.c — NULL relayed but callee has early-return guard
+  testcases_relay_nonnull.c — address-of local relayed to callee (NotNull)
+
+3 new CLI integration tests (cross-file variant 68):
+  crossfile_global_null_deref_detected_with_d_flag — source.c defines global=NULL,
+    sink.c has extern + deref. With -d flag, violation detected.
+  crossfile_global_null_guard_not_flagged — sink_safe.c has null check, no violation.
+  crossfile_global_null_not_detected_without_d_flag — without -d, no cross-file
+    context, no violation.
+
+Task 41 (FP regressions) confirmed stale — no regression tests needed.
 
 ---
 
 # Task ID: 40
 # Title: Realworld benchmark duration tracking
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Record per-project wall-clock duration in realworld benchmark runs.
 # Details:
-The realworld_results table has a duration_s column but it is always 0 for
-all tools (sqc, cppcheck, clang-tidy). The MCP server runner
-(mcp_servers/server.py or bench/) needs to time each subprocess and write
-the elapsed seconds into duration_s when inserting results. This would
-enable tracking performance regressions across versions and understanding
-which codebases (hostap, sqlite) dominate wall-clock time.
+Done. _auto_ingest_to_sqlite() now reads per-codebase durations from the
+state file (start_time/end_time per run) and passes them to
+ingest_realworld_run(). Surfaced in get_results(), get_project_history(),
+and the new get_dashboard() MCP tool. Historical runs remain NULL (no
+retroactive timing data). New runs will populate duration_s automatically.
 

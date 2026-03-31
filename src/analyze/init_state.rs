@@ -5,6 +5,7 @@
 //! proper flow sensitivity through branches, loops, and early returns.
 
 use super::cfg::{BasicBlock, BlockId, CfgEdge, FunctionCfg};
+use super::const_eval;
 use super::dataflow::find_node_at_range;
 use std::collections::{HashMap, HashSet, VecDeque};
 use tree_sitter::Node;
@@ -87,6 +88,9 @@ pub struct VarInfo {
     pub is_unsigned_char: bool,
     pub is_array: bool,
     pub is_static: bool,
+    /// Element count from `malloc(N * sizeof(T))` / `ALLOCA(N * sizeof(T))`.
+    /// Used to detect partial initialization loops.
+    pub allocation_count: Option<usize>,
 }
 
 impl VarInfo {
@@ -96,6 +100,7 @@ impl VarInfo {
             is_unsigned_char: false,
             is_array: false,
             is_static: false,
+            allocation_count: None,
         }
     }
 }
@@ -326,6 +331,13 @@ pub struct InitAnalysisConfig {
     pub conditionally_init_fns: HashMap<String, HashSet<usize>>,
     /// Functions that wrap realloc (return uninitialized new portion).
     pub realloc_wrapper_fns: HashSet<String>,
+    /// Cross-file functions that dereference pointer params without modifying them.
+    /// Maps function name → set of param indices that are read-only dereferenced.
+    /// When `&var` is passed at these positions, var should NOT be marked initialized.
+    pub read_only_deref_fns: HashMap<String, HashSet<usize>>,
+    /// File-scope constants (static const and static variables with known init values).
+    /// Used for dead-branch elimination when conditions evaluate to known constants.
+    pub file_scope_constants: HashMap<String, i64>,
 }
 
 // ---------------------------------------------------------------------------
@@ -420,6 +432,9 @@ fn process_declaration(
                         info.is_unsigned_char = is_unsigned_char;
                         info.is_array = is_array;
                         info.is_static = is_static;
+                        if matches!(init_state, InitState::MallocUninitialized) {
+                            info.allocation_count = extract_allocation_count(&value, source);
+                        }
                         state.insert(var_name, info);
                     }
                 }
@@ -511,6 +526,157 @@ fn classify_initializer(value: &Node, source: &str, config: &InitAnalysisConfig)
     InitState::Initialized
 }
 
+/// Extract element count from `malloc(N * sizeof(T))` / `ALLOCA(N * sizeof(T))`.
+/// Returns the number of elements allocated (N), or None if not determinable.
+fn extract_allocation_count(value: &Node, source: &str) -> Option<usize> {
+    // Unwrap cast expressions: (int *)ALLOCA(...)
+    let inner = if value.kind() == "cast_expression" {
+        value.child_by_field_name("value")?
+    } else {
+        *value
+    };
+
+    if inner.kind() != "call_expression" {
+        // Text-based fallback for macro wrappers
+        let text = inner.utf8_text(source.as_bytes()).ok()?;
+        return extract_allocation_count_from_text(text);
+    }
+
+    let func = inner.child_by_field_name("function")?;
+    let func_name = func.utf8_text(source.as_bytes()).ok()?;
+    if !matches!(func_name, "malloc" | "alloca" | "ALLOCA" | "realloc") {
+        return None;
+    }
+
+    let args = inner.child_by_field_name("arguments")?;
+    // Get the first real argument (skip parentheses and commas)
+    let arg = {
+        let mut found = None;
+        for i in 0..args.child_count() {
+            if let Some(c) = args.child(i) {
+                if c.kind() != "(" && c.kind() != ")" && c.kind() != "," {
+                    found = Some(c);
+                    break;
+                }
+            }
+        }
+        found?
+    };
+
+    // Pattern: N * sizeof(T) — extract N
+    if arg.kind() == "binary_expression" {
+        let op = find_operator_text(&arg, source);
+        if op == "*" {
+            let left = arg.child_by_field_name("left")?;
+            let right = arg.child_by_field_name("right")?;
+            let macros: HashMap<String, i64> = HashMap::new();
+            // If left is sizeof, evaluate right (and vice versa)
+            if left.kind() == "sizeof_expression" {
+                let val = const_eval::try_evaluate_expr(&right, source, &macros)?;
+                return if val > 0 { Some(val as usize) } else { None };
+            }
+            if right.kind() == "sizeof_expression" {
+                let val = const_eval::try_evaluate_expr(&left, source, &macros)?;
+                return if val > 0 { Some(val as usize) } else { None };
+            }
+        }
+    }
+    None
+}
+
+/// Extract allocation count from text representation (for macro wrappers).
+fn extract_allocation_count_from_text(text: &str) -> Option<usize> {
+    // Match patterns like ALLOCA(10*sizeof(int)) or malloc(10 * sizeof(int))
+    let inner = if let Some(start) = text.find('(') {
+        // Find the matching argument
+        &text[start + 1..text.rfind(')')?]
+    } else {
+        return None;
+    };
+    // Look for N*sizeof or N * sizeof
+    if let Some(sizeof_pos) = inner.find("sizeof") {
+        let before = inner[..sizeof_pos].trim().trim_end_matches('*').trim();
+        let macros: HashMap<String, i64> = HashMap::new();
+        // Try to parse the count as a simple integer or expression
+        if let Ok(val) = before.parse::<i64>() {
+            return if val > 0 { Some(val as usize) } else { None };
+        }
+        // Try parenthesized expression like (10/2)
+        let _ = macros; // text-based fallback doesn't use AST evaluation
+    }
+    None
+}
+
+/// Find the operator text in a binary_expression.
+fn find_operator_text<'a>(node: &Node, source: &'a str) -> &'a str {
+    for i in 0..node.child_count() {
+        if let Some(c) = node.child(i) {
+            let k = c.kind();
+            if matches!(
+                k,
+                "+" | "-" | "*" | "/" | "%" | "==" | "!=" | "<" | ">" | "<=" | ">="
+            ) {
+                return c.utf8_text(source.as_bytes()).unwrap_or("");
+            }
+        }
+    }
+    ""
+}
+
+/// Check if a subscript write should keep MallocUninitialized (partial init).
+/// Returns true if the write is inside a for-loop whose bound is less than
+/// the variable's allocation count.
+fn is_partial_init_write(alloc_count: usize, node: &Node, source: &str) -> bool {
+    // Walk up AST to find enclosing for_statement
+    let mut current = node.parent();
+    while let Some(n) = current {
+        if n.kind() == "for_statement" {
+            // Extract the condition (second child after the first ";")
+            if let Some(condition) = n.child_by_field_name("condition") {
+                if let Some(bound) = extract_for_upper_bound(&condition, source) {
+                    return bound < alloc_count;
+                }
+            }
+            return false; // in a for-loop but can't evaluate → safe default
+        }
+        // Don't walk past function boundaries
+        if n.kind() == "function_definition" {
+            break;
+        }
+        current = n.parent();
+    }
+    false
+}
+
+/// Extract the upper bound from a for-loop condition like `i < N` or `i <= N`.
+fn extract_for_upper_bound(condition: &Node, source: &str) -> Option<usize> {
+    if condition.kind() != "binary_expression" {
+        return None;
+    }
+    let op = find_operator_text(condition, source);
+    let right = condition.child_by_field_name("right")?;
+    let macros = HashMap::new();
+    match op {
+        "<" => {
+            let val = const_eval::try_evaluate_expr(&right, source, &macros)?;
+            if val > 0 {
+                Some(val as usize)
+            } else {
+                None
+            }
+        }
+        "<=" => {
+            let val = const_eval::try_evaluate_expr(&right, source, &macros)?;
+            if val >= 0 {
+                Some((val + 1) as usize)
+            } else {
+                None
+            }
+        }
+        _ => None,
+    }
+}
+
 /// Process an expression for initialization effects.
 fn process_expression(
     node: &Node,
@@ -550,8 +716,15 @@ fn process_expression(
                         if left.kind() == "identifier" {
                             if let Some(right) = node.child_by_field_name("right") {
                                 info.state = classify_initializer(&right, source, config);
+                                if matches!(info.state, InitState::MallocUninitialized) {
+                                    info.allocation_count =
+                                        extract_allocation_count(&right, source);
+                                } else {
+                                    info.allocation_count = None;
+                                }
                             } else {
                                 info.state = InitState::Initialized;
+                                info.allocation_count = None;
                             }
                         } else {
                             match info.state {
@@ -563,7 +736,18 @@ fn process_expression(
                                     // But arr[0].field = val (subscript in chain)
                                     // should upgrade — it's writing content.
                                     if left.kind() != "field_expression" || has_subscript_in_chain {
-                                        info.state = InitState::MallocInitialized;
+                                        // Check for partial initialization: if inside a
+                                        // for-loop whose bound < allocation_count, the
+                                        // loop only initializes a fraction of elements.
+                                        if let Some(alloc_count) = info.allocation_count {
+                                            if is_partial_init_write(alloc_count, node, source) {
+                                                // Keep MallocUninitialized — partial init
+                                            } else {
+                                                info.state = InitState::MallocInitialized;
+                                            }
+                                        } else {
+                                            info.state = InitState::MallocInitialized;
+                                        }
                                     }
                                 }
                                 InitState::Uninitialized => {
@@ -735,8 +919,9 @@ fn process_call_expression(
 
     // Unknown function: assume &var initializes (conservative — most functions
     // that take pointer params write to them), UNLESS the specific parameter is
-    // known to be only conditionally initialized.
+    // known to be only conditionally initialized or read-only dereferenced.
     let cond_param_indices = config.conditionally_init_fns.get(&func_name);
+    let read_only_indices = config.read_only_deref_fns.get(&func_name);
 
     if let Some(args) = node.child_by_field_name("arguments") {
         let mut arg_idx: usize = 0;
@@ -745,8 +930,9 @@ fn process_call_expression(
                 if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
                     continue;
                 }
-                let skip_this_arg =
-                    cond_param_indices.is_some_and(|indices| indices.contains(&arg_idx));
+                let skip_this_arg = cond_param_indices
+                    .is_some_and(|indices| indices.contains(&arg_idx))
+                    || read_only_indices.is_some_and(|indices| indices.contains(&arg_idx));
                 // &var pattern — assume function writes to it (unless this param is conditionally-init)
                 if !skip_this_arg && arg.kind() == "pointer_expression" {
                     let arg_text = arg.utf8_text(source.as_bytes()).unwrap_or("");
@@ -877,6 +1063,24 @@ pub fn analyze_init_states_with_statics(
             if !visited.contains(pred_id) {
                 continue;
             }
+
+            // Dead-branch elimination: if a predecessor block has a condition
+            // that evaluates to a known constant, skip the impossible edge.
+            if matches!(edge_kind, CfgEdge::TrueBranch | CfgEdge::FalseBranch) {
+                let pred_block = &cfg.blocks[*pred_id];
+                if let Some(cond_val) = try_evaluate_block_condition(
+                    pred_block,
+                    &body,
+                    source,
+                    &config.file_scope_constants,
+                ) {
+                    let on_true_edge = matches!(edge_kind, CfgEdge::TrueBranch);
+                    if cond_val != on_true_edge {
+                        continue; // dead edge — skip
+                    }
+                }
+            }
+
             let pred_exit = exit_states.get(pred_id).cloned().unwrap_or_default();
 
             if first {
@@ -1277,6 +1481,75 @@ fn collect_file_scope_statics_recursive(node: &Node, source: &str, state: &mut I
             }
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// File-scope constant collection (for dead-branch elimination)
+// ---------------------------------------------------------------------------
+
+/// Collect file-scope constants: `static [const] TYPE NAME = VALUE;` and
+/// `const TYPE NAME = VALUE;` where VALUE is a compile-time constant.
+/// Used by init-state dead-branch elimination to resolve opaque predicates.
+pub fn collect_file_scope_constants(root: &Node, source: &str) -> HashMap<String, i64> {
+    let mut constants = HashMap::new();
+    collect_constants_recursive(root, source, &mut constants);
+    constants
+}
+
+fn collect_constants_recursive(node: &Node, source: &str, constants: &mut HashMap<String, i64>) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "declaration" => {
+                    let type_text = extract_type_text(&child, source);
+                    // Accept: static const, static, or const at file scope
+                    let is_static_or_const =
+                        type_text.contains("static") || type_text.contains("const");
+                    if !is_static_or_const {
+                        continue;
+                    }
+                    // Walk declarators looking for init_declarator with a value
+                    for j in 0..child.child_count() {
+                        if let Some(decl) = child.child(j) {
+                            if decl.kind() == "init_declarator" {
+                                let name = get_declarator_name(&decl, source);
+                                if name.is_empty() {
+                                    continue;
+                                }
+                                if let Some(value) = decl.child_by_field_name("value") {
+                                    let empty_macros: HashMap<String, i64> = HashMap::new();
+                                    if let Some(val) =
+                                        const_eval::try_evaluate_expr(&value, source, &empty_macros)
+                                    {
+                                        constants.insert(name, val);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                "preproc_ifdef" | "preproc_if" | "preproc_else" | "preproc_elif" => {
+                    collect_constants_recursive(&child, source, constants);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Try to evaluate a condition in a CFG block as a compile-time constant.
+/// Returns `Some(true)` if always true, `Some(false)` if always false, `None` if unknown.
+pub fn try_evaluate_block_condition(
+    block: &BasicBlock,
+    body: &Node,
+    source: &str,
+    constants: &HashMap<String, i64>,
+) -> Option<bool> {
+    let (cond_start, cond_end) = block.condition_range?;
+    let cond_node = body.descendant_for_byte_range(cond_start, cond_end)?;
+    // Use file-scope constants as macro constants for evaluation
+    let val = const_eval::try_evaluate_expr(&cond_node, source, constants)?;
+    Some(val != 0) // C truthiness: 0 is false, anything else is true
 }
 
 #[cfg(test)]
