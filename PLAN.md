@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-31 (v0.3.54)
+Last Updated: 2026-03-31 (v0.3.54, paper tasks added)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -955,4 +955,139 @@ state file (start_time/end_time per run) and passes them to
 ingest_realworld_run(). Surfaced in get_results(), get_project_history(),
 and the new get_dashboard() MCP tool. Historical runs remain NULL (no
 retroactive timing data). New runs will populate duration_s automatically.
+
+---
+
+# Task ID: 46
+# Title: Paper — runtime performance data for all 5 codebases
+# Status: pending
+# Dependencies: none
+# Priority: P1
+# Description: Collect wall-clock scan times for curl, sqlite, and hostap to
+  complete Table 7 in paper/sqc.tex.
+# Details:
+libcrc (6s) and mosquitto (4m10s) already measured on 4-core laptop.
+Need curl, sqlite, and hostap timing under same conditions (single process,
+cross-file analysis enabled, warm cache).  Also measure cold-cache overhead
+(first run adds ~50-60%).  Record CPU model and core count.
+
+Paper impact: Table 7 (Runtime Performance) currently has only 2 rows.
+Need all 5 to show LOC/s scaling characteristics.  Expect LOC/s to decrease
+for larger codebases due to cross-file prescan overhead.
+
+---
+
+# Task ID: 47
+# Title: Paper — real bug case study
+# Status: pending
+# Dependencies: 46
+# Priority: P2
+# Description: Find and document a confirmed real defect in one of the 5
+  open-source benchmark codebases detected by SqC but missed by cppcheck
+  and clang-tidy.
+# Details:
+Strongest paper contribution would be a confirmed bug (ideally with a CVE
+or upstream fix) found by SqC.  Candidates:
+
+  - EXP34-C on mosquitto (8,657 violations) — high volume, likely contains
+    real null dereference paths.  Cross-reference with mosquitto's issue tracker.
+  - ERR33-C on curl (unchecked return values) — curl has strict error handling
+    conventions, violations may be real.
+  - MEM30-C on any project — use-after-free is high-severity.
+
+Process: run sqc on latest versions, export JSON, filter by high-severity
+rules, manually verify top candidates, check if upstream has acknowledged
+or fixed the issue.
+
+Paper impact: new Section "Case Study" between Worked Example and Limitations.
+
+---
+
+# Task ID: 48
+# Title: Paper — Infer and Frama-C direct comparison
+# Status: pending
+# Dependencies: 33
+# Priority: P3
+# Description: Run Infer and Frama-C on the same Juliet CWE subset to get
+  comparable TP/FP numbers for the paper.
+# Details:
+Currently paper/sqc.tex Related Work discusses Infer and Frama-C qualitatively.
+A direct comparison table (tool × TP × FP × TP rate × CWEs covered) would
+significantly strengthen the evaluation.
+
+Scope: run on overlapping CWEs only (null deref, use-after-free, resource leaks
+for Infer; same + integer overflow for Frama-C Eva).  Don't need full 70-CWE
+coverage — even 5-10 CWEs with head-to-head data is valuable.
+
+Paper impact: new table in Section 5 (Results), new comparison graph.
+
+---
+
+# Task ID: 49
+# Title: Paper — taint tracking for CWE-78/CWE-89 (future work)
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Expand cross-function taint tracking for injection CWEs,
+  referenced in paper future work section.
+# Details:
+Paper Conclusion mentions "improving cross-function taint tracking for
+injection-related CWEs (CWE-78, CWE-89)" as future work.  Current taint
+tracking (STR02-C intra-function, ENV03-C function-scoped) is limited.
+
+Cross-function taint needs:
+  - Prescan taint source identification (recv, fgets, getenv, etc.)
+  - Taint propagation through function params and return values
+  - Sink detection at system(), exec*, SQL query functions
+
+This is a significant new analysis capability.  Could improve CWE-78 from
+62.8% to potentially 70%+ precision by reducing FPs from sanitized paths.
+
+---
+
+# Task ID: 50
+# Title: Paper — address 10 zero-detection CWEs
+# Status: pending
+# Dependencies: 11
+# Priority: P3
+# Description: Develop rules for highest-value zero-detection CWEs to
+  demonstrate continued improvement in paper revisions.
+# Details:
+Paper Limitations section (Section 8) notes 10 CWEs with zero detection.
+Highest value targets by file count:
+
+  - CWE-789 (560 files): Uncontrolled Memory Allocation.  Needs taint tracking
+    for user input → malloc size.  Medium-high effort.
+  - CWE-114 (672 files): Process Control.  Needs taint tracking for untrusted
+    input → LoadLibrary.  Medium-high effort.
+  - CWE-468 (36 files): Incorrect Pointer Scaling.  AST pattern for implicit
+    void* casts.  Low effort, but low file count.
+  - CWE-459 (36 files): Incomplete Cleanup.  Resource tracking for cleanup
+    handlers.  Medium effort.
+
+Each CWE resolved reduces the zero-detection count in the paper and
+demonstrates coverage expansion capability.
+
+---
+
+# Task ID: 51
+# Title: Paper — finalization and submission
+# Status: pending
+# Dependencies: 46, 47
+# Priority: P1
+# Description: Final paper revisions, formatting, and submission preparation.
+# Details:
+Current state: paper/sqc.tex compiles to 10 pages, two-column, with 5 figures,
+8 tables, and 11 references.  Uses plain article class.
+
+Remaining items:
+  - Update numbers when tasks 46-47 complete
+  - Choose target venue and switch to appropriate template:
+    * IEEE S&P / USENIX Security / ACM CCS (top tier, competitive)
+    * NDSS / ACSAC (strong security venues)
+    * IEEE SecDev / SCORED (tools-focused, better fit)
+    * ICSME / ASE (software engineering, tool papers track)
+  - Add Eric and Tristan's institutional affiliation if not BISSELL
+  - Review by co-authors
+  - Proofread and style consistency pass
 
