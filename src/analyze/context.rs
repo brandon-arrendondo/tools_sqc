@@ -26,6 +26,10 @@ pub struct ProjectContext {
     /// Struct field types: maps `struct_name -> field_name -> type_text`.
     /// Enables resolving types of `field_expression` nodes (e.g., `s->count` → "int").
     pub struct_field_types: HashMap<String, HashMap<String, String>>,
+    /// Global constants: `[const] TYPE NAME = VALUE;` from across all scanned files.
+    /// Used by init-state analysis for dead-branch elimination.
+    #[serde(default)]
+    pub global_constants: HashMap<String, i64>,
 }
 
 impl ProjectContext {
