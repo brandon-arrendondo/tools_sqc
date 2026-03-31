@@ -308,7 +308,7 @@ suppression (integer casts like (unsigned)time(NULL) should not trigger).
 
 # Task ID: 15
 # Title: Expand wiki-only rule test coverage
-# Status: in-progress
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Add tests for ~105 rules with only 2 test files each.
@@ -333,9 +333,15 @@ and safe usage patterns (pass/).
 Batch 3 (20 rules): FIO11-C, FIO13-C, FIO14-C, FIO17-C, FIO40-C, FIO46-C,
   FIO50-C, FLP04-C, FLP36-C, FLP37-C, PRE04-C, PRE09-C, API02-C, API04-C,
   API09-C, API10-C, MEM07-C, MSC33-C, MSC39-C, EXP15-C.
-53 new test files. All 3155 tests pass.
+53 new test files.
 
-Remaining: 25 rules still at 2 tests (CON, POS, WIN families).
+Batch 4 (25 rules): CON01-C, CON04-C, CON05-C, CON06-C, CON31-C, CON33-C,
+  CON35-C, CON36-C, CON37-C, CON39-C, POS02-C, POS04-C, POS05-C, POS36-C,
+  POS39-C, POS44-C, POS48-C, POS51-C, POS52-C, POS53-C, POS54-C, WIN00-C,
+  WIN01-C, WIN02-C, WIN04-C.
+49 new test files. All 3204 tests pass.
+
+No rules remaining at 2 tests. Task complete.
 
 ---
 
