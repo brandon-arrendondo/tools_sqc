@@ -328,9 +328,14 @@ Rules expanded (2 → 4-7 tests each):
     DCL38-C, DCL41-C, INT12-C, INT13-C.
 
 Each rule gained 2-5 new tests covering additional violation patterns (fail/)
-and safe usage patterns (pass/). All 3102 tests pass.
+and safe usage patterns (pass/).
 
-Remaining: 45 rules still at 2 tests (mostly CON, POS, FIO, WIN families).
+Batch 3 (20 rules): FIO11-C, FIO13-C, FIO14-C, FIO17-C, FIO40-C, FIO46-C,
+  FIO50-C, FLP04-C, FLP36-C, FLP37-C, PRE04-C, PRE09-C, API02-C, API04-C,
+  API09-C, API10-C, MEM07-C, MSC33-C, MSC39-C, EXP15-C.
+53 new test files. All 3155 tests pass.
+
+Remaining: 25 rules still at 2 tests (CON, POS, WIN families).
 
 ---
 
