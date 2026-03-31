@@ -477,6 +477,91 @@ fn with_d_flag_suppresses_cross_file_function() {
     );
 }
 
+// ─── Cross-file global null (EXP34-C variant 68) ────────────────────────────
+
+fn manifest_exp34() -> PathBuf {
+    fixtures().join("manifest_exp34.toml")
+}
+
+#[test]
+fn crossfile_global_null_deref_detected_with_d_flag() {
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let (code, _, _) = run_sqc(&[
+        fixtures().join("crossfile_null/sink.c").to_str().unwrap(),
+        "-m",
+        manifest_exp34().to_str().unwrap(),
+        "-d",
+        fixtures().join("crossfile_null").to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    assert!(
+        !violations.is_empty(),
+        "With -d, shared_buffer=NULL should be detected from source.c and flagged in sink.c"
+    );
+    assert_eq!(violations[0]["rule_id"], "EXP34-C");
+}
+
+#[test]
+fn crossfile_global_null_guard_not_flagged() {
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let (code, _, _) = run_sqc(&[
+        fixtures()
+            .join("crossfile_null/sink_safe.c")
+            .to_str()
+            .unwrap(),
+        "-m",
+        manifest_exp34().to_str().unwrap(),
+        "-d",
+        fixtures().join("crossfile_null").to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let exp34_violations: Vec<&serde_json::Value> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "EXP34-C")
+        .collect();
+    assert!(
+        exp34_violations.is_empty(),
+        "With null guard, shared_buffer dereference should not be flagged"
+    );
+}
+
+#[test]
+fn crossfile_global_null_not_detected_without_d_flag() {
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let (code, _, _) = run_sqc(&[
+        fixtures().join("crossfile_null/sink.c").to_str().unwrap(),
+        "-m",
+        manifest_exp34().to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let exp34_violations: Vec<&serde_json::Value> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "EXP34-C")
+        .collect();
+    assert!(
+        exp34_violations.is_empty(),
+        "Without -d, cross-file global null state is unknown — no EXP34-C violation expected"
+    );
+}
+
 // ─── Diff mode ───────────────────────────────────────────────────────────────
 
 #[test]
