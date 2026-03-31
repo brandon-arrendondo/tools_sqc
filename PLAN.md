@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-31 (v0.3.52)
+Last Updated: 2026-03-31 (v0.3.54)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -159,13 +159,13 @@ null propagation.
 # Details:
 Split into sub-tasks 41-45. See individual tasks for details.
 
-Current CWE-476 baseline (v0.3.52): 337 TP / 403 FP (45.5% TP rate),
-82.5% per-file detection. EXP34-C: 247 TP / 263 FP (48.4%).
-CWE-690: 520 TP / 38 FP (93.2% TP rate), 46.4% per-file detection.
+v0.3.53 results (tasks 41-43 complete):
+  Overall: 52.0% TP rate (+0.1pp from v0.3.52). +58 TP, -6 FP.
+  CWE-476: 355 TP / 397 FP (47.2%, +1.7pp). +18 TP, -6 FP.
+  CWE-690: 560 TP / 38 FP (93.6%, +0.4pp). +40 TP, 0 FP.
+  Realworld: EXP34-C +159, API00-C -147. No performance regression.
 
-Juliet CWE-476 has 6 inter-procedural variants (63-68), each with 12 files
-(6 data types × 2 source/sink files). ~72 files total, likely accounting
-for most of the 65 undetected files.
+Remaining: task 44 (variants 63-67, P3 hard). Task 45 (regression tests) done.
 
 ---
 
@@ -308,7 +308,7 @@ suppression (integer casts like (unsigned)time(NULL) should not trigger).
 
 # Task ID: 15
 # Title: Expand wiki-only rule test coverage
-# Status: pending
+# Status: in-progress
 # Dependencies: none
 # Priority: P2
 # Description: Add tests for ~105 rules with only 2 test files each.
@@ -317,6 +317,20 @@ Prioritize top-FP rules from real-world benchmarks:
 - EXP33-C (6,100 real-world violations) — only 10 wiki tests
 - EXP34-C (5,267) — 6 wiki tests
 - ERR33-C (989) — 11 wiki tests
+
+v0.3.54: Batch 1 — 81 new test files across 29 rules (73 → 45 rules at 2 tests).
+
+Rules expanded (2 → 4-7 tests each):
+  Batch 1 (11 rules): MEM01-C, MEM00-C, EXP12-C, ERR00-C, FIO24-C, FIO37-C,
+    FIO38-C, DCL18-C, STR01-C, STR04-C, PRE08-C.
+  Batch 2 (18 rules): EXP03-C, EXP07-C, EXP09-C, EXP13-C, EXP14-C, EXP32-C,
+    FIO08-C, FIO09-C, FIO39-C, STR06-C, STR09-C, STR11-C, ERR04-C, ERR06-C,
+    DCL38-C, DCL41-C, INT12-C, INT13-C.
+
+Each rule gained 2-5 new tests covering additional violation patterns (fail/)
+and safe usage patterns (pass/). All 3102 tests pass.
+
+Remaining: 45 rules still at 2 tests (mostly CON, POS, FIO, WIN families).
 
 ---
 
@@ -745,21 +759,24 @@ architectural investment.
 
 # Task ID: 39
 # Title: FLP03-C test coverage
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Add test cases for FLP03-C guard detection and conversion removal.
 # Details:
-v0.3.44 removed overbroad check_fp_conversion() and added division guard
-detection (fabs/fabsf/fabsl, != 0, > 0 / < 0). Need tests:
+6 new tests (4 → 10 total FLP03-C tests):
 
-- fail/division_no_guard.c: FP division without any guard or fenv checking
-- fail/division_ge_zero.c: Division inside `if (x >= 0)` (does NOT exclude zero)
-- pass/division_fabs_guard.c: Division inside `if (fabs(x) > 0.000001)`
-- pass/division_ne_zero.c: Division inside `if (x != 0)`
-- pass/division_gt_zero.c: Division inside `if (x > 0)`
-- pass/division_fenv.c: Division with feclearexcept/fetestexcept (already exists as wiki_c.c)
-- pass/conversion_only.c: Cast to float/double without division (should not flag)
+fail/ (2 new):
+  division_no_guard.c — FP division without any guard or fenv checking
+  division_ge_zero.c — Division inside `if (x >= 0)` (does NOT exclude zero)
+
+pass/ (4 new):
+  division_fabs_guard.c — Division inside `if (fabs(x) > 0.000001)`
+  division_ne_zero.c — Division inside `if (x != 0)`
+  division_gt_zero.c — Division inside `if (x > 0)`
+  conversion_only.c — Cast to float/double without division (not flagged)
+
+division_fenv.c already covered by existing wiki_c.c.
 
 ---
 
@@ -840,8 +857,13 @@ Performance: Juliet CWE-476 (372 files) completes prescan in 1.7s total.
 Convergence is fast — most codebases converge in 1-2 passes since deep
 relay chains are rare. No measurable slowdown.
 
-Benchmark impact will be visible in next full Juliet run (any relay chains
-in CWE-690 that were previously Unknown should now resolve).
+v0.3.53 benchmark results:
+  CWE-690: +40 TP, 0 FP (93.2% → 93.6%). Confirms deep relay chains
+    existed — iterative propagation resolved them cleanly.
+  CWE-476: +18 TP, -6 FP (45.5% → 47.2%). Combined effect with task 42.
+  Realworld: EXP34-C +159 new detections across 5 codebases.
+    API00-C -147 FP (better param state resolution benefits suppression).
+  Duration: Juliet 29 min, realworld 42 min — unchanged from v0.3.52.
 
 ---
 
@@ -880,17 +902,33 @@ independent. Recommend implementing in order 67 → 63 → 66 → 64 → 65
 
 # Task ID: 45
 # Title: EXP34-C Phase 4 regression tests
-# Status: pending
+# Status: done
 # Dependencies: 41, 42, 43
 # Priority: P2
 # Description: Add regression tests for all Phase 4 improvements.
 # Details:
-After implementing tasks 41-43, add targeted .c test files:
-- Cross-file global null deref (variant 68 pattern)
-- Deep relay chain (3+ hop null propagation)
-- FP regression fixes from task 41 (if applicable)
-Test files go in src/rules/cert_c/EXP/EXP34-C/tests/fail/ and pass/.
-Use `// sqc-test: prescan` marker for tests requiring prescan context.
+8 new unit tests (47 → 55 total EXP34-C tests):
+
+fail/ (4 new):
+  testcases_global_null_deref.c — file-scope global = NULL, deref without check
+  testcases_global_null_assign_deref.c — global assigned NULL in function, deref later
+  testcases_relay_null_to_callee.c — local var NULL relay to callee (prescan, 1-hop)
+  testcases_relay_two_hop.c — NULL through relay function chain (prescan, 2-hop)
+
+pass/ (4 new):
+  testcases_global_null_guard.c — global = NULL but checked before deref
+  testcases_global_string_literal.c — global = string literal (NotNull)
+  testcases_relay_null_guard_callee.c — NULL relayed but callee has early-return guard
+  testcases_relay_nonnull.c — address-of local relayed to callee (NotNull)
+
+3 new CLI integration tests (cross-file variant 68):
+  crossfile_global_null_deref_detected_with_d_flag — source.c defines global=NULL,
+    sink.c has extern + deref. With -d flag, violation detected.
+  crossfile_global_null_guard_not_flagged — sink_safe.c has null check, no violation.
+  crossfile_global_null_not_detected_without_d_flag — without -d, no cross-file
+    context, no violation.
+
+Task 41 (FP regressions) confirmed stale — no regression tests needed.
 
 ---
 
