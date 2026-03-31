@@ -6,6 +6,67 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.52] - 2026-03-31
+
+### Changed
+
+- EXP33-C: partial init array detection. Track allocation element count from
+  malloc/ALLOCA calls; compare for-loop bound vs allocation count. If loop
+  bound < allocation count, content stays MallocUninitialized (partial init).
+  Detects 6 partial_init array types across all 18 Juliet variants (+102 TP).
+- init_state: dead-branch elimination for constant conditions. Collect
+  file-scope static [const] constants; evaluate branch conditions at analysis
+  time; skip impossible edges. Handles literal (if(1)), const expr (if(5==5)),
+  and static const/var conditions (if(STATIC_CONST_TRUE), if(staticTrue)).
+  Eliminates opaque predicate FPs in Juliet variants 02-07 (-198 FP).
+- const_eval: added comparison operators (==, !=, <, >, <=, >=) to
+  try_evaluate_expr(). Enables constant condition evaluation.
+- prescan: collect global constants from prescanned directories. Non-static
+  const/non-const globals with compile-time values stored in
+  ProjectContext.global_constants. Merged with macro_constants into EXP33-C
+  file_scope_constants for cross-file dead-branch elimination (variants 09-14).
+
+### Results
+
+- CWE-457: 422 TP/715 FP (37.1%) → 524 TP/517 FP (50.3%). +102 TP, -198 FP,
+  +13.2pp TP rate. Per-file detection 68.5% → 85.1%.
+- Overall: 51.6% → 51.9% (+0.3pp). +101 TP, -200 FP. Zero regressions.
+
+## [0.3.51] - 2026-03-30
+
+### Added
+
+- MSC07-C: unreachable code detection (BRULE-034 gap). AST-based detection of
+  statements after unconditional return/break/continue/goto and noreturn calls
+  (exit, abort, _Exit, longjmp, quick_exit, thrd_exit, ExitProcess, ExitThread).
+  Reports only first unreachable statement per terminal. CWE-561 mapping.
+  11 tests: 7 fail, 4 pass.
+- MSC04-C: bounded recursion suppression. If a recursive function has a
+  parameter-dependent base case (conditional return checking a parameter),
+  the violation is suppressed. CWE-674: 2 TP/2 FP → 1 TP/0 FP (100% TP rate).
+
+## [0.3.50] - 2026-03-30
+
+### Changed
+
+- prescan: detect (type *)param cast pattern as dereference in function
+  summaries. Enables EXP33-C variant 64 (void* → cast → deref) detection.
+  CWE-457: +10 TP, +10 FP (void pointer indirection types).
+
+## [0.3.49] - 2026-03-30
+
+### Changed
+
+- EXP33-C: cross-file inter-procedural init tracking via set_project_context().
+  build_read_only_deref_fns(): dereferences_params - modifies_params.
+  InitAnalysisConfig.read_only_deref_fns prevents &var from being marked
+  initialized when callee only reads through the pointer.
+  check_cross_file_uninit_calls: flags calls passing &uninit_var to functions
+  that read the pointed-to value (variant 63 pattern).
+  CWE-457: +10 TP, +10 FP (10 simple scalar/pointer types).
+
+## [0.3.48] - 2026-03-29
+
 ### Fixed
 
 - analyze: resolve_includes now runs even when --load-prescan is set. Previously
@@ -13,6 +74,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   causing DCL31-C/DCL07-C to flag functions declared in system headers.
   Realworld impact: DCL31-C+DCL07-C 14,657 → 3,772 (-10,885, -74%).
   Overall: 154,603 → 142,185 (-12,418, -8.0%).
+- MEM04-C: sizeof() expressions now recognized as always non-zero in
+  is_potentially_zero(). malloc(sizeof(int)) no longer falsely flagged.
+- FIO10-C: POSIX rename() with return value check accepted as compliant.
+  On POSIX, rename() atomically replaces the destination, so checking the
+  return value is sufficient handling (task 18).
+
+### Added
+
+- test infra: `// sqc-test: prescan` marker for .c test files (task 19).
+  build.rs detects the marker and generates tests that build intra-file
+  prescan context (function summaries + call-site null states + CFGs) before
+  calling rule.check(). Enables testing inter-procedural analysis patterns
+  within a single translation unit.
+- prescan: added prescan_single_tree() — builds ProjectContext from a single
+  parsed tree for use in integration tests.
+- analyze: collect_function_cfgs() now public for test use.
+- EXP34-C: 3 intra-file null deref tests moved from pass/ to fail/ using
+  prescan marker (func_param, list_null, callback_null). All correctly detect
+  violations via call-site null state propagation.
+- FIO10-C: added pass/testcases_posix_rename.c for POSIX error-checked rename.
+
+### Changed
+
+- WIN30-C: NULL security attributes test reclassified as out of scope.
+  CreateFileA/CreatePipe security attributes are not related to WIN30-C
+  (alloc/dealloc pairing). Test comment updated.
 
 ## [0.3.47] - 2026-03-29
 

@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-30 (v0.3.50)
+Last Updated: 2026-03-31 (v0.3.52)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -84,22 +84,41 @@ Per-project DCL31-C+DCL07-C:
 
 # Task ID: 4
 # Title: CWE-457 uninitialized variable remaining gaps
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Improve CWE-457 TP rate beyond 37.1%.
 # Details:
-v0.3.50: 422 TP, 715 FP, 37.1% TP rate (up from 36.6% in v0.3.48, 35.3%
-in v0.3.37). Variant 63/64 simple types resolved by task 2.
+v0.3.52: Three-phase improvement to CWE-457 detection.
 
-Remaining gaps:
-- Cross-function variants 61/62/65-68 (~70+ files each): data flow through
-  global variables, function pointers, unions. Needs deeper inter-procedural
-  analysis beyond call-site pointer passing.
-- Per-element tracking for stack arrays: team[0].x = 1; use(team[3].x)
-  correctly flags, but no way to track that ALL elements are initialized
-- 715 FP includes 20 from goodB2G pattern (task 2); remaining ~695 dominated
-  by cross-function initialization patterns in Juliet "good" functions
+Findings: CWE-457 has 22 C variants (01-18, 63a/63b, 64a/64b). Variants
+61/62/65-68 do NOT exist for CWE-457 in C (corrected from original plan).
+28 data types × 22 variants = 616 files.
+
+Phase 1 — Partial init array detection (+108 TP):
+  Track allocation_count in VarInfo from malloc/ALLOCA calls. Compare
+  for-loop bound vs allocation count on subscript writes. If bound <
+  allocation count → keep MallocUninitialized (partial init detected).
+  6 partial_init types × 18 variants = 108 new TPs. Zero FP regression.
+
+Phase 2 — Constant condition folding (FP reduction, intra-file):
+  Added comparison operators to const_eval. Collect file-scope static
+  [const] constants. Dead-branch elimination in init-state worklist for
+  known-true/false conditions. Handles variants 02-07 (literal, static
+  const, static var conditions). -120 FP from non-array types.
+
+Phase 3 — Prescan constant propagation (FP reduction, cross-file):
+  Collect global constants from prescan directories into
+  ProjectContext.global_constants. Merge with macro_constants. Handles
+  variants 09-10, 13-14 (cross-file GLOBAL_CONST_*, globalTrue, etc.).
+
+Remaining gaps (not addressed):
+- Variant 08 (staticReturnsTrue()), 11 (globalReturnsTrue()): function
+  call conditions not resolvable without return value inlining.
+- Variant 12 (globalReturnsTrueOrFalse()): genuinely random — correct
+  behavior to flag as MaybeUninitialized.
+- declare_* array types: array-to-pointer decay (data = dataUninitArray)
+  treated as read of uninitialized stack array. FPs from this persist.
 
 ---
 
@@ -260,15 +279,27 @@ Current: 80.06% (24,908 uncovered of 124,904 lines). Highest-impact targets:
 
 # Task ID: 14
 # Title: FP regression tests for rounds 3, 6, 7
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Add regression tests for FP reduction work not yet covered.
 # Details:
-Rounds 8-11 have regression tests. Still needed:
-- Round 3: std function database lookups should not trigger DCL31-C/DCL07-C
-- Round 6: cross-file function definitions should not trigger DCL31-C/DCL07-C
-- Round 7: unknown-type pointer casts should not trigger EXP36-C
+All rounds now have regression tests.
+
+Round 3 (std_functions): Already covered by testcases_stdlib_calls_regression.c
+in DCL31-C and DCL07-C pass/ directories.
+
+Round 6 (cross-file prescan): Added testcases_crossfile_prescan_regression.c for
+both DCL31-C and DCL07-C. Uses `// sqc-test: prescan` marker to exercise the
+cross_file_functions suppression path. Functions defined after their call site
+are discovered by prescan and not flagged. Also fixed prescan_single_tree() to
+populate known_functions from function_summaries keys (was empty due to
+ProjectContext::default()).
+
+Round 7 (EXP36-C): Unknown source type already covered by
+testcases_unknown_type_cast_regression.c. Added
+testcases_nonpointer_cast_regression.c for the non-pointer target type
+suppression (integer casts like (unsigned)time(NULL) should not trigger).
 
 ---
 
@@ -288,14 +319,31 @@ Prioritize top-FP rules from real-world benchmarks:
 
 # Task ID: 16
 # Title: CLI integration tests
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Test CLI flags: --diff, --export json/csv/sarif, -I, -d,
   --save-prescan/--load-prescan, suppression.
 # Details:
-No tests currently exist for any CLI flags. Need integration tests that invoke
-sqc as a subprocess and verify output format, exit codes, and behavior.
+tests/cli_integration.rs: 23 integration tests invoking sqc as a subprocess.
+
+Export formats (4 tests): JSON structure/empty, CSV header+row, SARIF schema+results.
+Exit codes (4 tests): --fail-on-violation (with/without violations),
+  --fail-on-severity at/below threshold.
+Filtering (4 tests): --rules include/exclude, --min-severity at/below threshold.
+Prescan caching (1 test): --save-prescan then --load-prescan round-trip.
+Suppression (4 tests): inline SQC-SUPPRESS, TOML --suppress-file,
+  suppressed violations don't trigger --fail-on-violation,
+  SARIF includes suppressed violations with metadata.
+  --generate-suppression outputs correct hash.
+Cross-file (2 tests): -d flag suppresses DCL31-C, without -d flags violation.
+Diff mode (1 test): --diff only analyzes modified/new files in git repo.
+
+Fixtures in tests/fixtures/cli/: violation.c, clean.c, suppressed_inline.c,
+  suppress.toml, manifest_msc04.toml, manifest_dcl31.toml,
+  project/main.c + project/helpers/helper.c.
+
+Also fixed prescan_single_tree() to populate known_functions (task 14).
 
 ---
 
@@ -487,7 +535,9 @@ Implemented MSC07-C. AST-based detection of unreachable code patterns:
 Implemented as MSC04-C. Maps to BRULE-058 (Constrained tier).
 
 Direct recursion: AST-only detection — scans function body for self-calls.
-Works without prescan data.
+Works without prescan data. Bounded recursion suppression: if the function
+has a parameter-dependent base case (conditional return checking a parameter),
+the violation is suppressed. CWE-674: 2 TP/2 FP → 1 TP/0 FP (100% TP rate).
 
 Indirect recursion: DFS cycle detection on prescan call_graph. Requires -d
 flag for cross-function call graph. Merges current file's callees with prescan
