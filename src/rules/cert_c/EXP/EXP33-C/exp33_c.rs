@@ -26,6 +26,8 @@ pub struct Exp33C {
     conditionally_init_fns: RefCell<HashMap<String, HashSet<usize>>>,
     /// Cross-file function summaries from prescan (for inter-procedural init tracking).
     cross_file_summaries: RefCell<HashMap<String, FunctionSummary>>,
+    /// File-scope constants for dead-branch elimination in init-state analysis.
+    file_scope_constants: RefCell<HashMap<String, i64>>,
 }
 
 impl Exp33C {
@@ -36,6 +38,7 @@ impl Exp33C {
             realloc_wrapper_fns: RefCell::new(HashSet::new()),
             conditionally_init_fns: RefCell::new(HashMap::new()),
             cross_file_summaries: RefCell::new(HashMap::new()),
+            file_scope_constants: RefCell::new(HashMap::new()),
         }
     }
 
@@ -81,6 +84,16 @@ impl CertRule for Exp33C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.cross_file_summaries.borrow_mut() = context.function_summaries.clone();
+        // Merge prescan global constants into file-scope constants.
+        // File-scope constants (set later during check()) take precedence.
+        let mut constants = self.file_scope_constants.borrow_mut();
+        for (k, v) in &context.global_constants {
+            constants.entry(k.clone()).or_insert(*v);
+        }
+        // Also include prescan macro constants (from #define directives)
+        for (k, v) in &context.macro_constants {
+            constants.entry(k.clone()).or_insert(*v);
+        }
     }
 
     fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
@@ -95,6 +108,15 @@ impl CertRule for Exp33C {
         if node.kind() == "translation_unit" {
             let statics = init_state::collect_file_scope_statics(node, source);
             *self.file_scope_statics.borrow_mut() = statics;
+
+            // Collect file-scope constants for dead-branch elimination.
+            // Merge with prescan global constants (file-scope wins on conflict).
+            let file_constants = init_state::collect_file_scope_constants(node, source);
+            {
+                let mut constants = self.file_scope_constants.borrow_mut();
+                // File-scope constants override prescan globals
+                constants.extend(file_constants);
+            }
 
             // Pre-scan for realloc wrapper functions
             let mut wrappers = HashSet::new();
@@ -125,10 +147,12 @@ impl CertRule for Exp33C {
                 let cond_fns = self.conditionally_init_fns.borrow();
                 let realloc_fns = self.realloc_wrapper_fns.borrow();
                 let read_only_fns = self.build_read_only_deref_fns();
+                let file_constants = self.file_scope_constants.borrow();
                 let config = init_state::InitAnalysisConfig {
                     conditionally_init_fns: cond_fns.clone(),
                     realloc_wrapper_fns: realloc_fns.clone(),
                     read_only_deref_fns: read_only_fns.clone(),
+                    file_scope_constants: file_constants.clone(),
                 };
                 let analysis = init_state::analyze_init_states_with_statics(
                     cfg, node, source, &statics, &config,

@@ -29,6 +29,7 @@ pub fn prescan_directories(
     let mut macro_constants = HashMap::new();
     let mut macro_aliases = HashMap::new();
     let mut struct_field_types = HashMap::new();
+    let mut global_constants: HashMap<String, i64> = HashMap::new();
     let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
     let mut source_files: Vec<PathBuf> = Vec::new();
     let mut parser = CParser::new()?;
@@ -84,6 +85,9 @@ pub fn prescan_directories(
                 // Collect struct field types from struct definitions
                 collect_struct_definitions(&root, &source, &mut struct_field_types);
 
+                // Collect global constants for dead-branch elimination
+                collect_global_constants(&root, &source, &mut global_constants);
+
                 // Collect call-site argument null states in the same pass
                 // (avoids re-parsing all files in a second directory walk)
                 if !is_header {
@@ -125,6 +129,7 @@ pub fn prescan_directories(
         macro_constants,
         macro_aliases,
         struct_field_types,
+        global_constants,
     })
 }
 
@@ -147,7 +152,10 @@ pub fn prescan_single_tree(root: &Node, source: &str) -> ProjectContext {
     let empty_headers = HashSet::new();
     aggregate_callsite_null_states(&callsite_args, &mut function_summaries, &empty_headers);
 
+    let known_functions: HashSet<String> = function_summaries.keys().cloned().collect();
+
     ProjectContext {
+        known_functions,
         function_summaries,
         macro_constants: macros,
         ..ProjectContext::default()
@@ -974,6 +982,84 @@ fn collect_calls_with_locals(
 // ---------------------------------------------------------------------------
 // Struct field type collection
 // ---------------------------------------------------------------------------
+
+/// Collect global constants (`[const] TYPE NAME = VALUE;`) from file-scope declarations.
+/// Only collects non-static constants (static ones are file-local and handled by
+/// `init_state::collect_file_scope_constants` within each file).
+fn collect_global_constants(root: &Node, source: &str, constants: &mut HashMap<String, i64>) {
+    for i in 0..root.child_count() {
+        if let Some(child) = root.child(i) {
+            match child.kind() {
+                "declaration" => {
+                    let type_text = {
+                        let mut text = String::new();
+                        for j in 0..child.child_count() {
+                            if let Some(tc) = child.child(j) {
+                                if tc.kind() == "storage_class_specifier"
+                                    || tc.kind() == "type_qualifier"
+                                    || tc.kind() == "primitive_type"
+                                    || tc.kind() == "sized_type_specifier"
+                                {
+                                    if let Ok(t) = tc.utf8_text(source.as_bytes()) {
+                                        text.push_str(t);
+                                        text.push(' ');
+                                    }
+                                }
+                            }
+                        }
+                        text
+                    };
+                    // Skip static declarations (handled per-file in init_state)
+                    if type_text.contains("static") {
+                        continue;
+                    }
+                    // Accept: const TYPE NAME = VALUE; or TYPE NAME = VALUE;
+                    // (non-const globals are included for benchmark support)
+                    for j in 0..child.child_count() {
+                        if let Some(decl) = child.child(j) {
+                            if decl.kind() == "init_declarator" {
+                                let name = extract_declarator_name(&decl, source);
+                                if name.is_empty() {
+                                    continue;
+                                }
+                                if let Some(value) = decl.child_by_field_name("value") {
+                                    let empty_macros: HashMap<String, i64> = HashMap::new();
+                                    if let Some(val) =
+                                        const_eval::try_evaluate_expr(&value, source, &empty_macros)
+                                    {
+                                        constants.insert(name, val);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                "preproc_ifdef" | "preproc_if" | "preproc_else" | "preproc_elif" => {
+                    collect_global_constants(&child, source, constants);
+                }
+                _ => {}
+            }
+        }
+    }
+}
+
+/// Extract declarator name from an init_declarator node.
+fn extract_declarator_name(decl: &Node, source: &str) -> String {
+    for i in 0..decl.child_count() {
+        if let Some(child) = decl.child(i) {
+            match child.kind() {
+                "identifier" => {
+                    return child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+                }
+                "pointer_declarator" => {
+                    return extract_declarator_name(&child, source);
+                }
+                _ => {}
+            }
+        }
+    }
+    String::new()
+}
 
 /// Collect struct field types from struct definitions and typedefs.
 ///

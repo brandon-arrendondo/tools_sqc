@@ -482,7 +482,21 @@ pub fn try_evaluate_expr(node: &Node, source: &str, macros: &MacroConstantMap) -
                 for i in 0..node.child_count() {
                     if let Some(c) = node.child(i) {
                         let k = c.kind();
-                        if matches!(k, "+" | "-" | "*" | "/" | "%" | "<<" | ">>") {
+                        if matches!(
+                            k,
+                            "+" | "-"
+                                | "*"
+                                | "/"
+                                | "%"
+                                | "<<"
+                                | ">>"
+                                | "=="
+                                | "!="
+                                | "<"
+                                | ">"
+                                | "<="
+                                | ">="
+                        ) {
                             return Some(c);
                         }
                     }
@@ -524,6 +538,12 @@ pub fn try_evaluate_expr(node: &Node, source: &str, macros: &MacroConstantMap) -
                         Some(lv >> rv)
                     }
                 }
+                "==" => Some(if lv == rv { 1 } else { 0 }),
+                "!=" => Some(if lv != rv { 1 } else { 0 }),
+                "<" => Some(if lv < rv { 1 } else { 0 }),
+                ">" => Some(if lv > rv { 1 } else { 0 }),
+                "<=" => Some(if lv <= rv { 1 } else { 0 }),
+                ">=" => Some(if lv >= rv { 1 } else { 0 }),
                 _ => None,
             }
         }
