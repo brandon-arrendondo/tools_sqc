@@ -160,7 +160,8 @@ mapping that enables systematic benchmarking.
 
 \subsection{NIST Juliet Test Suite}
 
-The Juliet Test Suite v1.3~\cite{juliet} is developed by NIST's
+The Juliet Test Suite v1.3~\cite{juliet} (commit \texttt{f88433e})
+is developed by NIST's
 Software Assurance Metrics and Tool Evaluation (SAMATE) project.
 It contains 64,099 C/C++ test cases across 118 CWE categories,
 organized into ``good'' functions (correct code that should not
@@ -339,17 +340,17 @@ analyzed with SqC, cppcheck (v2.10), and clang-tidy (v21.1.6).
 \begin{table}[t]
 \centering
 \footnotesize
-\begin{tabular}{@{}lrr@{}}
+\begin{tabular}{@{}lrrl@{}}
 \toprule
-\textbf{Project} & \textbf{C Files} & \textbf{LOC} \\
+\textbf{Project} & \textbf{C Files} & \textbf{LOC} & \textbf{Commit} \\
 \midrule
-libcrc & 16 & 2,130 \\
-mosquitto & 384 & 88,717 \\
-curl & 697 & 240,412 \\
-sqlite & 310 & 402,321 \\
-hostap & 505 & 541,441 \\
+libcrc & 16 & 2,130 & \texttt{7719e21} \\
+mosquitto & 384 & 88,717 & \texttt{d3ee5c5} \\
+curl & 696 & 240,331 & \texttt{3e198f7} \\
+sqlite & 312 & 404,701 & \texttt{b1a73ba} \\
+hostap & 504 & 539,617 & \texttt{dcee604} \\
 \midrule
-\textbf{Total} & \textbf{1,912} & \textbf{1,275,021} \\
+\textbf{Total} & \textbf{1,912} & \textbf{1,275,496} & \\
 \bottomrule
 \end{tabular}
 \caption{Real-world benchmark codebases.}
@@ -599,11 +600,86 @@ fundamental tradeoff between coverage and precision that different users
 will weight differently.
 
 \subsection{Runtime Performance}
+\label{sec:runtime}
 
-SqC processes approximately 355 lines of code per second on a 4-core
-laptop (single process, cross-file analysis enabled).
+To characterize SqC's runtime behavior across hardware configurations,
+we ran single-process scans (cross-file analysis enabled, no prescan
+cache) on four machines (\cref{tab:testbed}).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}clccc@{}}
+\toprule
+\textbf{ID} & \textbf{CPU} & \textbf{Cores} & \textbf{RAM} & \textbf{Disk} \\
+\midrule
+M1 & Xeon E5-2640 @ 2.50\,GHz & 6/24 & 192\,GB & SSD \\
+M2 & Ryzen 5 PRO 2400GE @ 3.20\,GHz & 4/8  & 16\,GB  & SSD \\
+M3 & i7-7700T @ 2.90\,GHz    & 4/8  & 16\,GB  & SSD \\
+M4 & i7-9750H @ 2.60\,GHz    & 6/12 & 16\,GB  & HDD \\
+\bottomrule
+\end{tabular}
+\caption{Test machines.  Cores listed as physical/logical.
+All run Linux 6.x.  M1 is a rack server; M2--M4 are desktop/laptop
+class.}
+\label{tab:testbed}
+\end{table}
+
+\Cref{tab:runtime} shows wall-clock times for single-process analysis
+of sqlite (404K LOC) across all four machines with cross-file analysis
+enabled and no prescan cache (cold start).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}crr@{}}
+\toprule
+\textbf{Machine} & \textbf{Time (s)} & \textbf{LOC/s} \\
+\midrule
+M1 & 3{,}470 & 117 \\
+M2 & 3{,}116 & 130 \\
+M3 & 2{,}363 & 171 \\
+M4 & 1{,}986 & 204 \\
+\bottomrule
+\end{tabular}
+\caption{Single-process analysis time for sqlite (404,701 LOC,
+cross-file analysis enabled, cold cache).}
+\label{tab:runtime}
+\end{table}
+
+In single-process mode, loading a cached prescan saves less than 1\%
+of wall time across all four machines---the prescan is a small fraction
+of total analysis cost.  The cache's primary benefit is enabling
+parallel analysis.
+
+\textbf{Parallel mode.}  SqC's prescan cache enables external
+parallelism: a single prescan pass builds the cross-file context
+(function summaries, call graph, null states) and serializes it to
+disk.  Multiple worker processes then analyze file subsets
+independently, each loading the shared cache via
+\texttt{-{}-load-prescan}.  \Cref{tab:parallel} shows the impact on
+M1 (8 workers, 19 subdirectory units).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Mode} & \textbf{Wall (s)} & \textbf{LOC/s} & \textbf{Speedup} \\
+\midrule
+Single-process     & 3{,}470 & 117 & 1.0$\times$ \\
+Parallel (cold)    & 1{,}899 & 213 & 1.8$\times$ \\
+Parallel (cached)  & 1{,}056 & 383 & 3.3$\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Parallel scan speedup on M1 for sqlite.  ``Cold'' includes
+prescan generation; ``cached'' loads a pre-built 3.1\,MB prescan
+cache, eliminating 14 minutes of cross-file analysis setup.}
+\label{tab:parallel}
+\end{table}
+
 The Juliet benchmark (70 CWEs, fast mode) completes in approximately
-8 minutes with 12 parallel processes on a 4-core laptop.
+30 minutes on M1 using per-CWE parallelism.
 
 %% ============================================================
 \section{Iterative False Positive Reduction}
