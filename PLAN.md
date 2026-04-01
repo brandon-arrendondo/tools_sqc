@@ -982,6 +982,28 @@ Paper impact: Table 7 (Runtime Performance) currently has only 2 rows.
 Need all 5 to show LOC/s scaling characteristics.  Expect LOC/s to decrease
 for larger codebases due to cross-file prescan overhead.
 
+Issues found (2026-03-31):
+  - v0.3.55 realworld results are in benchmarks.db but duration_s values are
+    from parallel mode (24-core), not single-process. Paper needs single-process
+    runs for fair LOC/s comparison.
+  - realworld_results.loc and c_files are 0 for parallel runs — ingest doesn't
+    populate these. Paper Table 7 needs LOC to compute LOC/s.
+  - Need to run sqc in single-process mode (no sqc_parallel_scan.py) on each
+    codebase, record wall-clock time, LOC, and CPU model.
+
+Single-process cold-cache measurements (v0.3.55, sqlite 404,701 LOC):
+  M1 Xeon E5-2640 @ 2.50GHz, 6c/24t, 192GB, SSD:  57m50s (3470s), 117 LOC/s.
+  M2 Ryzen 5 PRO 2400GE @ 3.20GHz, 4c/8t, 16GB, SSD:  51m56s (3116s), 130 LOC/s. Warm: 51m43s (-13s).
+  M3 i7-7700T @ 2.90GHz, 4c/8t, 16GB, SSD:  39m23s (2363s), 171 LOC/s. Warm: 39m10s (-13s).
+  M4 i7-9750H @ 2.60GHz, 6c/12t, 16GB, HDD: 33m06s (1986s), 204 LOC/s. Warm: 32m59s (-7s).
+  M1 warm-cache (--load-prescan): 57m43s (3463s), 117 LOC/s. Delta: -7s (0.2%).
+    Prescan cache 3.1MB. Negligible savings in single-process mode —
+    prescan is fast relative to per-file analysis of sqlite3.c amalgamation.
+  M1 parallel cold (8 workers, 19 units): 31m39s wall (73m00s CPU), 213 LOC/s.
+  M1 parallel warm (cached prescan):      17m36s wall (58m57s CPU), 383 LOC/s.
+    Parallel warm = 3.3x single-process. Prescan cache saves 14m in parallel
+    mode by eliminating the prescan generation step.
+
 ---
 
 # Task ID: 47
