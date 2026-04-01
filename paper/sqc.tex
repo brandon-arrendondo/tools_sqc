@@ -647,10 +647,42 @@ cross-file analysis enabled, cold cache).}
 \label{tab:runtime}
 \end{table}
 
+\textbf{Scaling across codebases.}
+\Cref{tab:runtime-scaling} shows how throughput varies with codebase
+size on M1.  Throughput generally decreases for larger codebases
+because cross-file analysis cost grows with the number of
+inter-procedural edges.  The exception is sqlite, whose throughput
+(117 LOC/s) is lower than the larger hostap (155 LOC/s).  This is
+because sqlite ships as a single 230K-line amalgamation file
+(\texttt{sqlite3.c}) with dense internal cross-references, whereas
+hostap distributes its code across 504 files averaging $\sim$1{,}070
+LOC each.  Per-file analysis cost is dominated by intra-file
+complexity, not total codebase size.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Project} & \textbf{LOC} & \textbf{Time (s)} & \textbf{LOC/s} \\
+\midrule
+libcrc    &   2{,}130 &     2 &   888 \\
+mosquitto &  88{,}717 &   172 &   516 \\
+curl      & 240{,}331 &   609 &   395 \\
+hostap    & 539{,}617 & 3{,}479 & 155 \\
+sqlite    & 404{,}701 & 3{,}470 & 117 \\
+\bottomrule
+\end{tabular}
+\caption{Single-process throughput on M1 across all five benchmark
+codebases (cross-file analysis, cold cache).  sqlite's lower
+throughput despite fewer LOC than hostap reflects the cost of
+analyzing its 230K-line amalgamation file.}
+\label{tab:runtime-scaling}
+\end{table}
+
 In single-process mode, loading a cached prescan saves less than 1\%
-of wall time across all four machines---the prescan is a small fraction
-of total analysis cost.  The cache's primary benefit is enabling
-parallel analysis.
+of wall time---the prescan is a small fraction of total analysis cost.
+The cache's primary benefit is enabling parallel analysis.
 
 \textbf{Parallel mode.}  SqC's prescan cache enables external
 parallelism: a single prescan pass builds the cross-file context
