@@ -326,6 +326,22 @@ fn process_declaration_null(
                                     }
                                 }
                             }
+                            // Propagate from pointer dereference: data = *dataPtr
+                            // Variant 63: pointer-to-pointer null propagation
+                            if rval == NullState::NotNull && value.kind() == "pointer_expression" {
+                                if let Some(op) = value.child_by_field_name("operator") {
+                                    if get_text(&op, source) == "*" {
+                                        if let Some(arg) = value.child_by_field_name("argument") {
+                                            let arg_name = get_text(&arg, source);
+                                            let deref_key = format!("*{}", arg_name);
+                                            if let Some(&deref_state) = state.get(&deref_key) {
+                                                state.insert(var_name, deref_state);
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             state.insert(var_name, rval);
                         }
                     } else if is_ptr {
@@ -391,6 +407,21 @@ fn process_expression_null(
                         if base_state.is_unsafe() {
                             state.insert(left_name, NullState::PossiblyNull);
                             return;
+                        }
+                    }
+                }
+            }
+            // Propagate from pointer dereference: data = *dataPtr (variant 63)
+            if new_state == NullState::NotNull && right.kind() == "pointer_expression" {
+                if let Some(op) = right.child_by_field_name("operator") {
+                    if get_text(&op, source) == "*" {
+                        if let Some(arg) = right.child_by_field_name("argument") {
+                            let arg_name = get_text(&arg, source);
+                            let deref_key = format!("*{}", arg_name);
+                            if let Some(&deref_state) = state.get(&deref_key) {
+                                state.insert(left_name, deref_state);
+                                return;
+                            }
                         }
                     }
                 }
@@ -848,6 +879,25 @@ pub fn analyze_null_states_with_globals(
                                 let key = format!("{}.{}", param_name, field_name);
                                 initial_state.insert(key, state);
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Seed pointer-to-pointer pointee null states: "*paramName" → NullState
+        // Enables variant 63 detection (pointer-to-pointer null propagation)
+        // When caller passes &data where data=NULL, sink receives **param and
+        // *param yields the NULL pointer.
+        if let Some(summary) = func_summary {
+            if !summary.callsite_param_pointee_null_states.is_empty() {
+                let param_names =
+                    crate::analyze::function_summary::collect_param_names(func_node, source);
+                for (param_idx, &state) in &summary.callsite_param_pointee_null_states {
+                    if let Some(param_name) = param_names.get(*param_idx) {
+                        if !param_name.is_empty() {
+                            let key = format!("*{}", param_name);
+                            initial_state.insert(key, state);
                         }
                     }
                 }

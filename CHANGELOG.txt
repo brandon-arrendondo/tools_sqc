@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.56] - 2026-04-01
+
+### Added
+
+- EXP34-C: variant 63 pointer-to-pointer null propagation. When caller passes
+  &data where data=NULL, prescan tracks the pointee null state through
+  callsite_param_pointee_null_states in FunctionSummary. Null state analysis
+  seeds "*paramName" into initial state; transfer function propagates *ptr
+  dereference. +6 TP, 0 FP across all 6 data types in CWE-476 variant 63.
+  2 new regression tests (fail: ptr_to_ptr_null_deref, pass: ptr_to_ptr_null_guard).
+
 ## [0.3.52] - 2026-03-31
 
 ### Changed
