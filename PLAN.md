@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-03-31 (v0.3.55)
+Last Updated: 2026-04-01 (v0.3.56)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -167,9 +167,11 @@ v0.3.53 results (tasks 41-43 complete):
 
 v0.3.55: Task 44 variant 67 (struct field null propagation) implemented.
   Smoke test: +6 TP, 0 FP across all 6 data types in CWE-476 variant 67.
-  Benchmark results pending.
 
-Remaining: task 44 variants 63-66 (P3 hard). Task 45 (regression tests) done.
+v0.3.56: Task 44 variant 63 (pointer-to-pointer null propagation) implemented.
+  Smoke test: +6 TP, 0 FP across all 6 data types in CWE-476 variant 63.
+
+Remaining: task 44 variants 64-66 (P3 hard). Task 45 (regression tests) done.
 
 ---
 
@@ -899,10 +901,13 @@ Variant 67 (struct field): DONE in v0.3.55. NULL in struct field, struct
   checks dotted key on field_expression RHS.
   +6 TP, 0 FP across all 6 data types. 2 new regression tests.
 
-Variant 63 (pointer-to-pointer): Caller passes &data where data=NULL.
-  Sink receives char **dataPtr, dereferences *dataPtr. Needs pointed-to-value
-  tracking in prescan — current callsite args track NullState of the argument
-  itself, not what it points to.
+Variant 63 (pointer-to-pointer): DONE in v0.3.56. Caller passes &data where
+  data=NULL. Sink receives int **dataPtr, dereferences *dataPtr. Implemented
+  via callsite_param_pointee_null_states in FunctionSummary. Prescan detects
+  &var arguments, looks up var in local_states, aggregates pointee states.
+  Null state analysis seeds "*paramName" into initial_state, transfer function
+  propagates *ptr dereference state.
+  +6 TP, 0 FP across all 6 data types. 2 new regression tests.
 
 Variant 64 (void pointer): Same as 63 but with type erasure through void*.
   Needs type recovery after void* cast.
@@ -913,7 +918,7 @@ Variant 65 (function pointer): Call through function pointer. Needs indirect
 Variant 66 (array element): NULL embedded in array element, array passed to
   sink. Needs array element tracking in prescan.
 
-48 files remaining (4 variants × 12 files). Variants 64-65 may not be worth
+36 files remaining (3 variants × 12 files). Variants 64-65 may not be worth
 the effort.
 
 ---
@@ -967,29 +972,15 @@ retroactive timing data). New runs will populate duration_s automatically.
 
 # Task ID: 46
 # Title: Paper — runtime performance data for all 5 codebases
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P1
-# Description: Collect wall-clock scan times for curl, sqlite, and hostap to
-  complete Table 7 in paper/sqc.tex.
+# Description: Collect wall-clock scan times for all 5 codebases to
+  complete runtime scaling table in paper/sqc.tex.
 # Details:
-libcrc (6s) and mosquitto (4m10s) already measured on 4-core laptop.
-Need curl, sqlite, and hostap timing under same conditions (single process,
-cross-file analysis enabled, warm cache).  Also measure cold-cache overhead
-(first run adds ~50-60%).  Record CPU model and core count.
-
-Paper impact: Table 7 (Runtime Performance) currently has only 2 rows.
-Need all 5 to show LOC/s scaling characteristics.  Expect LOC/s to decrease
-for larger codebases due to cross-file prescan overhead.
-
-Issues found (2026-03-31):
-  - v0.3.55 realworld results are in benchmarks.db but duration_s values are
-    from parallel mode (24-core), not single-process. Paper needs single-process
-    runs for fair LOC/s comparison.
-  - realworld_results.loc and c_files are 0 for parallel runs — ingest doesn't
-    populate these. Paper Table 7 needs LOC to compute LOC/s.
-  - Need to run sqc in single-process mode (no sqc_parallel_scan.py) on each
-    codebase, record wall-clock time, LOC, and CPU model.
+All 5 codebases measured on M1 in single-process mode (cross-file analysis,
+cold cache). Paper updated with tab:runtime-scaling table and prose explaining
+sqlite amalgamation outlier.
 
 Single-process cold-cache measurements (v0.3.55, sqlite 404,701 LOC):
   M1 Xeon E5-2640 @ 2.50GHz, 6c/24t, 192GB, SSD:  57m50s (3470s), 117 LOC/s.
