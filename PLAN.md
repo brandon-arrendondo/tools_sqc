@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-01 (v0.3.56)
+Last Updated: 2026-04-01 (v0.3.57)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -221,10 +221,10 @@ as potentially modified.
 ---
 
 # Task ID: 11
-# Title: Zero-detection CWEs — deferred
-# Status: deferred
+# Title: Zero-detection CWEs
+# Status: pending
 # Dependencies: none
-# Priority: P3
+# Priority: P2
 # Description: Remaining zero-detection CWEs requiring new capabilities.
 # Details:
 CWEs that will auto-benefit when rules are added:
@@ -994,7 +994,7 @@ Single-process cold-cache measurements (v0.3.55, sqlite 404,701 LOC):
 # Title: Paper — real bug case study
 # Status: pending
 # Dependencies: 46
-# Priority: P2
+# Priority: P3
 # Description: Find and document a confirmed real defect in one of the 5
   open-source benchmark codebases detected by SqC but missed by cppcheck
   and clang-tidy.
@@ -1087,7 +1087,7 @@ demonstrates coverage expansion capability.
 # Title: Paper — finalization and submission
 # Status: pending
 # Dependencies: 46, 47
-# Priority: P1
+# Priority: P3
 # Description: Final paper revisions, formatting, and submission preparation.
 # Details:
 Current state: paper/sqc.tex compiles to 10 pages, two-column, with 5 figures,
