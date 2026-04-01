@@ -514,25 +514,25 @@ impl Arr39C {
 
     fn looks_like_pointer(&self, node: &Node, source: &str) -> bool {
         let text = &source[node.start_byte()..node.end_byte()];
+        let lower = text.to_lowercase();
 
-        // Simple heuristics for pointer identification
-        // Be more lenient - many pointers don't follow naming conventions
-        text.ends_with("_ptr")
+        // Simple heuristics for pointer identification (case-insensitive)
+        lower.ends_with("_ptr")
             || text.ends_with("*")
-            || text.ends_with("s")     // Plural names often pointers to arrays
-            || text.contains("buf")
-            || text.contains("array")
-            || text.contains("ptr")
-            || text.contains("start")  // Common pointer name
-            || text.contains("end")    // Common pointer name
-            || text == "s"             // Common pointer name
-            || text == "p"             // Common pointer name
-            || text.contains("data")
-            || text.contains("dest")   // Common pointer name for memcpy etc
-            || text.contains("src")    // Common pointer name
-            || text.contains("message") // Common pointer/buffer name
-            || text.contains("record")  // Common pointer name
-            || text.contains("append") // Common in string operations
+            || lower.contains("pointer")
+            || lower.contains("buf")
+            || lower.contains("array")
+            || lower.contains("ptr")
+            || lower.contains("start")
+            || lower.contains("end")
+            || text == "s"
+            || text == "p"
+            || lower.contains("data")
+            || lower.contains("dest")
+            || lower.contains("src")
+            || lower.contains("message")
+            || lower.contains("record")
+            || lower.contains("append")
     }
 
     fn is_char_pointer(&self, node: &Node, source: &str) -> bool {
