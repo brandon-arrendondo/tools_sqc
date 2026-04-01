@@ -152,12 +152,12 @@ null propagation.
 
 # Task ID: 7
 # Title: EXP34-C Phase 4 edge cases
-# Status: in-progress
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Address remaining EXP34-C inter-procedural gaps.
 # Details:
-Split into sub-tasks 41-45. See individual tasks for details.
+Split into sub-tasks 41-45. All complete (variant 65 deferred — function pointer).
 
 v0.3.53 results (tasks 41-43 complete):
   Overall: 52.0% TP rate (+0.1pp from v0.3.52). +58 TP, -6 FP.
@@ -168,11 +168,11 @@ v0.3.53 results (tasks 41-43 complete):
 v0.3.55: Task 44 variant 67 (struct field null propagation) implemented.
   Smoke test: +6 TP, 0 FP across all 6 data types in CWE-476 variant 67.
 
-v0.3.56: Task 44 variants 63, 64, 66 implemented.
-  Variant 63 (pointer-to-pointer): +6 TP, 0 FP.
-  Variant 64 (void pointer cast): +6 TP, 0 FP.
-  Variant 66 (array element): +6 TP, 0 FP.
-  Combined: +18 TP, 0 FP. 6 new regression tests.
+v0.3.56 results (task 44 variants 63, 64, 66 + v0.3.55 variant 67):
+  Overall: 52.1% TP rate (+0.1pp from v0.3.55). +78 TP, 0 FP.
+  CWE-476: 379 TP / 397 FP (48.8%, +1.2pp). +18 TP, 0 FP.
+  CWE-690: 640 TP / 38 FP (94.4%, +0.5pp). +60 TP, 0 FP.
+  Zero regressions on all 70 CWEs. Per-file detection 38.5%→38.7%.
 
 Remaining: variant 65 only (function pointer, deferred). Task 45 (regression tests) done.
 
@@ -889,7 +889,7 @@ v0.3.53 benchmark results:
 
 # Task ID: 44
 # Title: EXP34-C variants 63-67 — indirect data flow
-# Status: in-progress
+# Status: done
 # Dependencies: 7
 # Priority: P3
 # Description: Cross-file null propagation through indirect data flow mechanisms.
