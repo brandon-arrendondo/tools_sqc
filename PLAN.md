@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-01 (v0.3.59)
+Last Updated: 2026-04-01 (v0.3.60)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -1310,7 +1310,7 @@ specific #define placement within nested preprocessor conditionals.
 
 # Task ID: 58
 # Title: CWE-188 struct memory layout assumption detection
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Detect pointer arithmetic that assumes struct field offsets.
@@ -1334,7 +1334,7 @@ Partial overlap with ARR37-C (pointer arithmetic on non-array).
 
 # Task ID: 59
 # Title: CWE-459 incomplete temp file cleanup
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Detect temporary files created but never deleted.
@@ -1360,7 +1360,7 @@ Map to CWE-459. Create CWE-459.toml manifest.
 
 # Task ID: 60
 # Title: CWE-666 socket operation ordering
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Detect socket API calls in wrong lifecycle order.
@@ -1386,7 +1386,7 @@ Map to CWE-666. Create CWE-666.toml manifest.
 
 # Task ID: 61
 # Title: CWE-226 sensitive data not cleared before release
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Detect buffers containing sensitive data released without zeroing.
@@ -1412,7 +1412,7 @@ Shares infrastructure with CWE-259 (credential identification).
 
 # Task ID: 62
 # Title: CWE-789 unbounded memory allocation from input
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Detect malloc/calloc with size from untrusted input without bound check.
@@ -1436,7 +1436,7 @@ infrastructure investment rather than single-CWE fix.
 
 # Task ID: 63
 # Title: CWE-114 untrusted library path / process control
-# Status: pending
+# Status: done
 # Dependencies: 62
 # Priority: P3
 # Description: Detect LoadLibrary/dlopen with path from untrusted input.
