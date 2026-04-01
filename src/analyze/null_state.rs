@@ -326,18 +326,45 @@ fn process_declaration_null(
                                     }
                                 }
                             }
+                            // Propagate from array subscript: data = arr[idx]
+                            // Variant 66: array element null propagation (uses "arr.idx" dotted key)
+                            if rval == NullState::NotNull && value.kind() == "subscript_expression"
+                            {
+                                if let (Some(arg), Some(idx)) = (
+                                    value.child_by_field_name("argument"),
+                                    value.child_by_field_name("index"),
+                                ) {
+                                    let base = get_text(&arg, source);
+                                    let index = get_text(&idx, source);
+                                    let dotted = format!("{}.{}", base, index);
+                                    if let Some(&elem_state) = state.get(&dotted) {
+                                        state.insert(var_name, elem_state);
+                                        continue;
+                                    }
+                                }
+                            }
                             // Propagate from pointer dereference: data = *dataPtr
-                            // Variant 63: pointer-to-pointer null propagation
-                            if rval == NullState::NotNull && value.kind() == "pointer_expression" {
-                                if let Some(op) = value.child_by_field_name("operator") {
-                                    if get_text(&op, source) == "*" {
-                                        if let Some(arg) = value.child_by_field_name("argument") {
-                                            let arg_name = get_text(&arg, source);
-                                            let deref_key = format!("*{}", arg_name);
-                                            if let Some(&deref_state) = state.get(&deref_key) {
-                                                state.insert(var_name, deref_state);
-                                                continue;
-                                            }
+                            // or data = (*dataPtr) (parenthesized form in variant 64)
+                            // Variant 63/64: pointer-to-pointer null propagation
+                            if rval == NullState::NotNull {
+                                if let Some(deref_state) =
+                                    extract_deref_pointee_state(&value, source, state)
+                                {
+                                    state.insert(var_name, deref_state);
+                                    continue;
+                                }
+                            }
+                            // Propagate pointee state through cast: dataPtr = (T*)voidPtr
+                            // Variant 64: void pointer cast preserves pointee null state
+                            if value.kind() == "cast_expression" {
+                                if let Some(inner) = value.child_by_field_name("value") {
+                                    let inner = unwrap_parens(&inner);
+                                    if inner.kind() == "identifier" {
+                                        let inner_name = get_text(&inner, source);
+                                        let src_key = format!("*{}", inner_name);
+                                        if let Some(&s) = state.get(&src_key) {
+                                            let dst_key = format!("*{}", var_name);
+                                            state.insert(dst_key, s);
                                         }
                                     }
                                 }
@@ -411,17 +438,39 @@ fn process_expression_null(
                     }
                 }
             }
-            // Propagate from pointer dereference: data = *dataPtr (variant 63)
-            if new_state == NullState::NotNull && right.kind() == "pointer_expression" {
-                if let Some(op) = right.child_by_field_name("operator") {
-                    if get_text(&op, source) == "*" {
-                        if let Some(arg) = right.child_by_field_name("argument") {
-                            let arg_name = get_text(&arg, source);
-                            let deref_key = format!("*{}", arg_name);
-                            if let Some(&deref_state) = state.get(&deref_key) {
-                                state.insert(left_name, deref_state);
-                                return;
-                            }
+            // Propagate from array subscript: data = arr[idx] (variant 66)
+            if new_state == NullState::NotNull && right.kind() == "subscript_expression" {
+                if let (Some(arg), Some(idx)) = (
+                    right.child_by_field_name("argument"),
+                    right.child_by_field_name("index"),
+                ) {
+                    let base = get_text(&arg, source);
+                    let index = get_text(&idx, source);
+                    let dotted = format!("{}.{}", base, index);
+                    if let Some(&elem_state) = state.get(&dotted) {
+                        state.insert(left_name, elem_state);
+                        return;
+                    }
+                }
+            }
+            // Propagate from pointer dereference: data = *dataPtr or (*dataPtr)
+            // Variant 63/64: pointer-to-pointer null propagation
+            if new_state == NullState::NotNull {
+                if let Some(deref_state) = extract_deref_pointee_state(&right, source, state) {
+                    state.insert(left_name, deref_state);
+                    return;
+                }
+            }
+            // Propagate pointee state through cast: dataPtr = (T*)voidPtr (variant 64)
+            if right.kind() == "cast_expression" {
+                if let Some(inner) = right.child_by_field_name("value") {
+                    let inner = unwrap_parens(&inner);
+                    if inner.kind() == "identifier" {
+                        let inner_name = get_text(&inner, source);
+                        let src_key = format!("*{}", inner_name);
+                        if let Some(&s) = state.get(&src_key) {
+                            let dst_key = format!("*{}", left_name);
+                            state.insert(dst_key, s);
                         }
                     }
                 }
@@ -489,6 +538,39 @@ fn process_assert_for_null_state(node: &Node, source: &str, state: &mut StateMap
             }
         }
     }
+}
+
+/// Unwrap parenthesized_expression nodes to get the inner expression.
+fn unwrap_parens<'a>(node: &'a Node<'a>) -> Node<'a> {
+    let mut n = *node;
+    while n.kind() == "parenthesized_expression" {
+        if let Some(inner) = n.child(1) {
+            n = inner;
+        } else {
+            break;
+        }
+    }
+    n
+}
+
+/// Extract pointee null state from a dereference expression (*ptr or (*ptr)).
+/// Returns Some(state) if the dereference target has a "*name" key in state.
+fn extract_deref_pointee_state(node: &Node, source: &str, state: &StateMap) -> Option<NullState> {
+    let inner = unwrap_parens(node);
+    if inner.kind() == "pointer_expression" {
+        if let Some(op) = inner.child_by_field_name("operator") {
+            if get_text(&op, source) == "*" {
+                if let Some(arg) = inner.child_by_field_name("argument") {
+                    let arg_name = get_text(&arg, source);
+                    let deref_key = format!("*{}", arg_name);
+                    if let Some(&deref_state) = state.get(&deref_key) {
+                        return Some(deref_state);
+                    }
+                }
+            }
+        }
+    }
+    None
 }
 
 /// Classify the null state resulting from an rvalue expression.

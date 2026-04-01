@@ -168,10 +168,13 @@ v0.3.53 results (tasks 41-43 complete):
 v0.3.55: Task 44 variant 67 (struct field null propagation) implemented.
   Smoke test: +6 TP, 0 FP across all 6 data types in CWE-476 variant 67.
 
-v0.3.56: Task 44 variant 63 (pointer-to-pointer null propagation) implemented.
-  Smoke test: +6 TP, 0 FP across all 6 data types in CWE-476 variant 63.
+v0.3.56: Task 44 variants 63, 64, 66 implemented.
+  Variant 63 (pointer-to-pointer): +6 TP, 0 FP.
+  Variant 64 (void pointer cast): +6 TP, 0 FP.
+  Variant 66 (array element): +6 TP, 0 FP.
+  Combined: +18 TP, 0 FP. 6 new regression tests.
 
-Remaining: task 44 variants 64-66 (P3 hard). Task 45 (regression tests) done.
+Remaining: variant 65 only (function pointer, deferred). Task 45 (regression tests) done.
 
 ---
 
@@ -909,17 +912,24 @@ Variant 63 (pointer-to-pointer): DONE in v0.3.56. Caller passes &data where
   propagates *ptr dereference state.
   +6 TP, 0 FP across all 6 data types. 2 new regression tests.
 
-Variant 64 (void pointer): Same as 63 but with type erasure through void*.
-  Needs type recovery after void* cast.
+Variant 64 (void pointer): DONE in v0.3.56. Same as 63 but sink takes void*
+  and casts to int**. Added cast_expression propagation for "*" state keys
+  and parenthesized_expression unwrapping for (*dataPtr) form. Reuses
+  variant 63 pointee tracking.
+  +6 TP, 0 FP across all 6 data types. 2 new regression tests.
 
 Variant 65 (function pointer): Call through function pointer. Needs indirect
   call resolution in prescan call_graph. Currently only direct calls tracked.
+  Not worth the effort — requires function pointer analysis.
 
-Variant 66 (array element): NULL embedded in array element, array passed to
-  sink. Needs array element tracking in prescan.
+Variant 66 (array element): DONE in v0.3.56. NULL stored in array element,
+  array passed to sink. Reuses struct field dotted-key mechanism: prescan
+  tracks "arr.idx" keys from subscript_expression assignments. Transfer
+  function handles subscript_expression lookups in both declarations and
+  assignments.
+  +6 TP, 0 FP across all 6 data types. 2 new regression tests.
 
-36 files remaining (3 variants × 12 files). Variants 64-65 may not be worth
-the effort.
+12 files remaining (variant 65 only — function pointer, deferred).
 
 ---
 

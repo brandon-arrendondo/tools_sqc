@@ -15,7 +15,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   callsite_param_pointee_null_states in FunctionSummary. Null state analysis
   seeds "*paramName" into initial state; transfer function propagates *ptr
   dereference. +6 TP, 0 FP across all 6 data types in CWE-476 variant 63.
-  2 new regression tests (fail: ptr_to_ptr_null_deref, pass: ptr_to_ptr_null_guard).
+- EXP34-C: variant 64 void pointer cast propagation. Cast expressions
+  (dataPtr = (int**)dataVoidPtr) preserve "*" state keys. Parenthesized
+  dereference form (*dataPtr) unwrapped for variant 63/64. +6 TP, 0 FP.
+- EXP34-C: variant 66 array element null propagation. Prescan tracks
+  subscript_expression assignments (arr[idx] = expr) as "arr.idx" dotted
+  keys, reusing the struct field mechanism. Transfer function handles
+  subscript_expression lookups. +6 TP, 0 FP.
+- 6 new EXP34-C regression tests for variants 63, 64, and 66.
 
 ## [0.3.52] - 2026-03-31
 
