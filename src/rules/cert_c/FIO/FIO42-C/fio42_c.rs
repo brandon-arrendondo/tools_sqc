@@ -146,6 +146,9 @@ impl FileResourceTracker {
 
             // Check for unclosed resources
             self.check_unclosed_resources(violations);
+
+            // CWE-459: check for temp file creation without cleanup
+            self.check_temp_file_cleanup(&body, source, violations);
         }
     }
 
@@ -434,5 +437,74 @@ impl FileResourceTracker {
         }
 
         None
+    }
+
+    // ── CWE-459: Temp file creation without cleanup ─────────────────────────
+
+    /// Check if a function creates temp files but never deletes them
+    fn check_temp_file_cleanup(
+        &self,
+        body: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let mut temp_creations: Vec<(usize, usize)> = Vec::new();
+        let mut has_cleanup = false;
+        self.scan_temp_file_calls(body, source, &mut temp_creations, &mut has_cleanup);
+
+        if !has_cleanup {
+            for (line, col) in &temp_creations {
+                violations.push(RuleViolation {
+                    rule_id: "FIO42-C".to_string(),
+                    message:
+                        "Temporary file created but never deleted (missing unlink/remove call)"
+                            .to_string(),
+                    severity: Severity::Medium,
+                    line: *line,
+                    column: *col,
+                    file_path: String::new(),
+                    suggestion: Some(
+                        "Call unlink() or remove() on the temporary file before function returns"
+                            .to_string(),
+                    ),
+                    requires_manual_review: None,
+                });
+            }
+        }
+    }
+
+    /// Recursively scan for temp file creation and cleanup calls
+    fn scan_temp_file_calls(
+        &self,
+        node: &Node,
+        source: &str,
+        temp_creations: &mut Vec<(usize, usize)>,
+        has_cleanup: &mut bool,
+    ) {
+        if node.kind() == "call_expression" {
+            if let Some(func) = node.child_by_field_name("function") {
+                let name = get_node_text(&func, source).trim().to_string();
+                match name.as_str() {
+                    "mkstemp" | "MKSTEMP" | "_mkstemp" | "mktemp" | "MKTEMP" | "_wmktemp"
+                    | "mkdtemp" | "tmpnam" => {
+                        temp_creations.push((
+                            node.start_position().row + 1,
+                            node.start_position().column + 1,
+                        ));
+                    }
+                    "unlink" | "UNLINK" | "_unlink" | "_wunlink" | "remove" | "DeleteFile"
+                    | "DeleteFileA" | "DeleteFileW" => {
+                        *has_cleanup = true;
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.scan_temp_file_calls(&child, source, temp_creations, has_cleanup);
+            }
+        }
     }
 }
