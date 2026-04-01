@@ -77,6 +77,9 @@ impl Mem03C {
             let mut cleared_ptrs: HashSet<String> = HashSet::new();
 
             self.analyze_block(&body, source, violations, &mut cleared_ptrs);
+
+            // CWE-226: check for sensitive data buffers not cleared before function exit
+            self.check_sensitive_data_cleanup(&body, source, violations);
         }
     }
 
@@ -278,6 +281,140 @@ impl Mem03C {
             if let Some(child) = node.child(i) {
                 if let Some(ptr) = self.find_realloc_in_node(&child, source) {
                     return Some(ptr);
+                }
+            }
+        }
+        None
+    }
+
+    // ── CWE-226: Sensitive data not cleared before release ──────────────────
+
+    const SENSITIVE_NAMES: &'static [&'static str] =
+        &["password", "passwd", "secret", "credential", "passphrase"];
+
+    /// Check if sensitive-named buffers are cleared before function exit
+    fn check_sensitive_data_cleanup(
+        &self,
+        body: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let mut sensitive_vars: Vec<(String, usize, usize)> = Vec::new();
+        let mut cleared_vars: HashSet<String> = HashSet::new();
+
+        self.scan_sensitive_vars_and_clears(body, source, &mut sensitive_vars, &mut cleared_vars);
+
+        for (var_name, line, col) in &sensitive_vars {
+            if !cleared_vars.contains(var_name) {
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::Medium,
+                    message: format!(
+                        "Sensitive buffer '{}' not cleared before function exit",
+                        var_name
+                    ),
+                    file_path: String::new(),
+                    line: *line,
+                    column: *col,
+                    suggestion: Some(format!(
+                        "Call SecureZeroMemory({0}, size) or memset({0}, 0, size) before the buffer goes out of scope",
+                        var_name
+                    )),
+                    ..Default::default()
+                });
+            }
+        }
+    }
+
+    fn scan_sensitive_vars_and_clears(
+        &self,
+        node: &Node,
+        source: &str,
+        sensitive_vars: &mut Vec<(String, usize, usize)>,
+        cleared_vars: &mut HashSet<String>,
+    ) {
+        match node.kind() {
+            "declaration" => {
+                // Check for sensitive-named pointer/array declarations (buffers only)
+                let decl_text = get_node_text(node, source);
+                let decl_lower = decl_text.to_lowercase();
+                // Must be a buffer type (pointer or array), not a scalar like size_t
+                let is_buffer = decl_text.contains('*') || decl_text.contains('[');
+                if is_buffer {
+                    for name in Self::SENSITIVE_NAMES {
+                        if decl_lower.contains(name) {
+                            if let Some(var_name) = self.extract_decl_var_name(node, source) {
+                                let lower = var_name.to_lowercase();
+                                if Self::SENSITIVE_NAMES.iter().any(|n| lower.contains(n)) {
+                                    sensitive_vars.push((
+                                        var_name,
+                                        node.start_position().row + 1,
+                                        node.start_position().column + 1,
+                                    ));
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            "call_expression" => {
+                // Check for clearing functions
+                if let Some(func) = node.child_by_field_name("function") {
+                    let func_name = get_node_text(&func, source);
+                    if CLEAR_FUNCS.contains(&func_name) {
+                        if let Some(args) = node.child_by_field_name("arguments") {
+                            for j in 0..args.child_count() {
+                                if let Some(arg) = args.child(j) {
+                                    let kind = arg.kind();
+                                    if kind != "(" && kind != ")" && kind != "," {
+                                        let ptr = self.extract_base_ptr(&arg, source);
+                                        cleared_vars.insert(ptr);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.scan_sensitive_vars_and_clears(&child, source, sensitive_vars, cleared_vars);
+            }
+        }
+    }
+
+    fn extract_decl_var_name(&self, decl: &Node, source: &str) -> Option<String> {
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                match child.kind() {
+                    "init_declarator" => {
+                        if let Some(declarator) = child.child_by_field_name("declarator") {
+                            return self.find_identifier_in(&declarator, source);
+                        }
+                    }
+                    "pointer_declarator" | "array_declarator" | "identifier" => {
+                        return self.find_identifier_in(&child, source);
+                    }
+                    _ => {}
+                }
+            }
+        }
+        None
+    }
+
+    fn find_identifier_in(&self, node: &Node, source: &str) -> Option<String> {
+        if node.kind() == "identifier" {
+            return Some(get_node_text(node, source).to_string());
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if let Some(name) = self.find_identifier_in(&child, source) {
+                    return Some(name);
                 }
             }
         }
