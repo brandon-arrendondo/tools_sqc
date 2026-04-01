@@ -667,6 +667,9 @@ pub mod msc40_c;
 #[path = "MSC/MSC41-C/msc41_c.rs"]
 pub mod msc41_c;
 
+#[path = "MSC/MSC42-C/msc42_c.rs"]
+pub mod msc42_c;
+
 #[path = "POS/POS01-C/pos01_c.rs"]
 pub mod pos01_c;
 
@@ -1072,6 +1075,7 @@ impl RuleRegistry {
         registry.register(Box::new(msc33_c::Msc33C));
         registry.register(Box::new(msc40_c::Msc40C));
         registry.register(Box::new(msc41_c::Msc41C::new()));
+        registry.register(Box::new(msc42_c::Msc42C::new()));
         registry.register(Box::new(pos01_c::Pos01C));
         registry.register(Box::new(pos04_c::Pos04C));
         registry.register(Box::new(pos05_c::Pos05C));
@@ -1141,6 +1145,7 @@ impl RuleRegistry {
         registry.register(Box::new(win02_c::Win02C));
         registry.register(Box::new(win03_c::Win03C::new()));
         registry.register(Box::new(win04_c::Win04C));
+        registry.register(Box::new(win05_c::Win05C::new()));
         registry.register(Box::new(win30_c::Win30C::new()));
 
         registry
@@ -1180,6 +1185,9 @@ pub mod win03_c;
 
 #[path = "WIN/WIN04-C/win04_c.rs"]
 pub mod win04_c;
+
+#[path = "WIN/WIN05-C/win05_c.rs"]
+pub mod win05_c;
 
 #[path = "WIN/WIN30-C/win30_c.rs"]
 pub mod win30_c;
