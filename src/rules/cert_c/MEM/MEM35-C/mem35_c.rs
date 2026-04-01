@@ -272,6 +272,117 @@ impl Mem35C {
             Self::check_sizeof_in_node(&child, call_node, source, call_text, violations);
         }
     }
+
+    // ── CWE-789: Unbounded memory allocation from untrusted input ──────
+
+    const TAINT_SOURCES: &'static [&'static str] = &[
+        "recv", "fgets", "fscanf", "scanf", "rand", "read", "getenv", "listen", "connect", "accept",
+    ];
+
+    const TAINT_CONVERTERS: &'static [&'static str] =
+        &["strtoul", "strtol", "atoi", "atol", "atoll", "strtoull"];
+
+    fn check_unbounded_alloc_from_input(
+        node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "function_definition" {
+            if let Some(body) = node.child_by_field_name("body") {
+                Self::check_function_for_taint_alloc(&body, source, violations);
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                Self::check_unbounded_alloc_from_input(&child, source, violations);
+            }
+        }
+    }
+
+    fn check_function_for_taint_alloc(
+        body: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let mut has_taint_source = false;
+        let mut alloc_positions: Vec<(usize, usize)> = Vec::new();
+        let mut has_upper_bound = false;
+
+        Self::scan_taint_alloc_bounds(
+            body,
+            source,
+            &mut has_taint_source,
+            &mut alloc_positions,
+            &mut has_upper_bound,
+        );
+
+        if has_taint_source && !has_upper_bound {
+            for (line, col) in &alloc_positions {
+                violations.push(RuleViolation {
+                    rule_id: "MEM35-C".to_string(),
+                    severity: Severity::High,
+                    message:
+                        "Memory allocation with size from untrusted input without upper-bound check"
+                            .to_string(),
+                    file_path: String::new(),
+                    line: *line,
+                    column: *col,
+                    suggestion: Some(
+                        "Add an upper-bound check (e.g., if (size < MAX_SIZE)) before allocating"
+                            .to_string(),
+                    ),
+                    requires_manual_review: None,
+                });
+            }
+        }
+    }
+
+    fn scan_taint_alloc_bounds(
+        node: &Node,
+        source: &str,
+        has_taint: &mut bool,
+        alloc_pos: &mut Vec<(usize, usize)>,
+        has_bound: &mut bool,
+    ) {
+        if node.kind() == "call_expression" {
+            if let Some(func) = node.child_by_field_name("function") {
+                let name = get_node_text(&func, source).trim().to_string();
+                if Self::TAINT_SOURCES.contains(&name.as_str())
+                    || Self::TAINT_CONVERTERS.contains(&name.as_str())
+                {
+                    *has_taint = true;
+                }
+                if matches!(name.as_str(), "malloc" | "calloc" | "realloc") {
+                    alloc_pos.push((
+                        node.start_position().row + 1,
+                        node.start_position().column + 1,
+                    ));
+                }
+            }
+        }
+
+        // Check for upper-bound comparisons: data < CONSTANT
+        if node.kind() == "binary_expression" {
+            let children: Vec<_> = (0..node.child_count())
+                .filter_map(|i| node.child(i))
+                .collect();
+            for (i, child) in children.iter().enumerate() {
+                let op = get_node_text(child, source);
+                if (op == "<" || op == "<=") && i + 1 < children.len() {
+                    let right = &children[i + 1];
+                    if right.kind() == "number_literal" {
+                        *has_bound = true;
+                    }
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                Self::scan_taint_alloc_bounds(&child, source, has_taint, alloc_pos, has_bound);
+            }
+        }
+    }
 }
 
 impl CertRule for Mem35C {
@@ -298,6 +409,7 @@ impl CertRule for Mem35C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
         Self::check_allocations(node, source, &mut violations);
+        Self::check_unbounded_alloc_from_input(node, source, &mut violations);
         violations
     }
 }
