@@ -1039,6 +1039,36 @@ fn collect_assignments_recursive(
                                         }
                                     }
                                 }
+                            } else if left.kind() == "subscript_expression" {
+                                // Track array element assignments: arr[idx] = expr
+                                // Used for variant 66 cross-function array element null propagation
+                                // Stored as "arr.idx" in local_states (reuses field dotted-key mechanism)
+                                if let (Some(arg), Some(idx)) = (
+                                    left.child_by_field_name("argument"),
+                                    left.child_by_field_name("index"),
+                                ) {
+                                    if arg.kind() == "identifier" && idx.kind() == "number_literal"
+                                    {
+                                        let arr_name =
+                                            arg.utf8_text(source.as_bytes()).unwrap_or("");
+                                        let idx_text =
+                                            idx.utf8_text(source.as_bytes()).unwrap_or("");
+                                        if !arr_name.is_empty() && !idx_text.is_empty() {
+                                            let key = format!("{}.{}", arr_name, idx_text);
+                                            let state = infer_rhs_null_state(&right, source);
+                                            if state != NullState::Unknown {
+                                                states.insert(key, state);
+                                            } else if right.kind() == "identifier" {
+                                                let rhs_name = right
+                                                    .utf8_text(source.as_bytes())
+                                                    .unwrap_or("");
+                                                if let Some(&local_state) = states.get(rhs_name) {
+                                                    states.insert(key, local_state);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
