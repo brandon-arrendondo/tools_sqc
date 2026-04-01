@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-01 (v0.3.57)
+Last Updated: 2026-04-01 (v0.3.58)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -222,15 +222,33 @@ as potentially modified.
 
 # Task ID: 11
 # Title: Zero-detection CWEs
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Remaining zero-detection CWEs requiring new capabilities.
 # Details:
-CWEs that will auto-benefit when rules are added:
-- CWE-364 Signal Handler Race Condition (18 files)
-- CWE-674 Uncontrolled Recursion (2 files)
-- CWE-563 Unused Variable (2 files), CWE-398 Poor Code Quality (1 file)
+v0.3.58: Resolved 3 actionable zero-detection CWEs:
+
+CWE-364 Signal Handler Race Condition (18 files):
+  Mapped SIG31-C + SIG34-C to CWE-364. SIG31-C already detects shared
+  object access in signal handlers — the exact CWE-364 pattern.
+  Created CWE-364.toml manifest.
+
+CWE-398 Poor Code Quality (181 C files):
+  Extended MSC12-C with 7 new detection patterns: empty control flow
+  bodies (if/else/for/while), empty function bodies, standalone empty
+  blocks, empty switch cases, stray semicolons, arithmetic no-effect
+  (a + b;), bare literals (5;), self-assignment (x = x). All 11
+  Juliet sub-patterns detected (1 violation each in bad functions).
+
+CWE-563 Unused Variable (366 C files):
+  New MSC13-C rule. Detects unused initialized/uninitialized local
+  variables and dead stores (value overwritten before read). Struct
+  field write (data.field = x) not counted as read. All 6 data types
+  × all variants detected (20/20 on spot checks). Global/parameter
+  variants (4 single-file cases) not detected — local-only analysis.
+
+CWE-674 already working (MSC04-C, 1 TP/0 FP since v0.3.47).
 
 Deferred CWEs requiring new analysis:
 - CWE-789 (560 files): taint tracking for user input -> malloc size
@@ -246,7 +264,8 @@ Deferred CWEs requiring new analysis:
 
 10 formerly zero-detection CWEs resolved in v0.3.35-v0.3.42. 4 more
 resolved in v0.3.47 (CWE-675 double-close, CWE-273 Windows privilege
-APIs, CWE-562 analyzer fix, CWE-561 mapping). 13 are Windows-only
+APIs, CWE-562 analyzer fix, CWE-561 mapping). 3 more resolved in
+v0.3.58 (CWE-364, CWE-398, CWE-563). 13 are Windows-only
 (not actionable).
 
 ---
