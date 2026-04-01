@@ -171,11 +171,17 @@ impl Str03C {
                 if let Some(condition) = child.child_by_field_name("condition") {
                     let cond_text = ast_utils::get_node_text(&condition, source);
                     if self.is_length_validation(&cond_text) {
-                        // Check if the call is in the else branch (safe path)
+                        // Accept if the call is in the else branch (safe path)
                         if let Some(alternative) = child.child_by_field_name("alternative") {
                             if self.is_ancestor(&alternative, call_line) {
                                 return true;
                             }
+                        }
+                        // Accept if the length check precedes the call in the
+                        // same scope — the if handles the overlong case (e.g.,
+                        // error/return), so code after the if is safe.
+                        if child.end_position().row < call_line {
+                            return true;
                         }
                     }
                 }
