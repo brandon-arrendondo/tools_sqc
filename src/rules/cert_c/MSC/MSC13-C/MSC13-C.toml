@@ -1,0 +1,26 @@
+[metadata]
+id = "MSC13-C"
+type = "recommendation"
+category = "MSC"
+number = 13
+title = "Detect and remove unused values"
+description = """
+Assignments to variables that are never subsequently read constitute dead stores.
+Dead stores waste computation and indicate potential logic errors where the
+programmer intended to use the variable but forgot. This includes local variables
+that are initialized but never read, and values that are assigned but overwritten
+before being used.
+"""
+severity = "Low"
+likelihood = "Unlikely"
+priority = "P2"
+level = "L3"
+cert_version = "2016 Edition (Wiki)"
+last_modified = "Apr 01, 2026"
+
+[rules.cert_c.MSC13-C]
+enabled = true
+
+[references]
+wiki = "https://wiki.sei.cmu.edu/confluence/display/c/MSC13-C.+Detect+and+remove+unused+values"
+cwe = ["CWE-563"]
