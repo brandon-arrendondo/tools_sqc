@@ -250,17 +250,17 @@ CWE-563 Unused Variable (366 C files):
 
 CWE-674 already working (MSC04-C, 1 TP/0 FP since v0.3.47).
 
-Deferred CWEs requiring new analysis:
-- CWE-789 (560 files): taint tracking for user input -> malloc size
-- CWE-114 (672 files): taint tracking for untrusted input -> LoadLibrary
-- CWE-272 (252 files): Windows-only HKEY_LOCAL_MACHINE vs HKEY_CURRENT_USER
-- CWE-259 (112 files): password/credential string pattern matching
-- CWE-666 (90 files): state machine for resource lifecycle
-- CWE-226 (72 files): MEM03-C only checks free/realloc, not stack scope exit
-- CWE-327 (54 files): crypto API knowledge (RC5 vs AES)
-- CWE-468 (36 files): implicit void* casts losing type info
-- CWE-459 (36 files): resource tracking for incomplete cleanup
-- CWE-188 (36 files): struct padding/alignment analysis
+Remaining 10 zero-detection CWEs now have individual tasks:
+- CWE-327 (54 files): task 54, LOW effort — crypto algorithm blacklist
+- CWE-468 (36 files): task 55, LOW-MEDIUM — pointer scaling detection
+- CWE-272 (252 files): task 56, LOW — unquoted CreateProcess path
+- CWE-259 (112 files): task 57, MEDIUM — hard-coded password detection
+- CWE-188 (36 files): task 58, MEDIUM — struct layout assumptions
+- CWE-459 (36 files): task 59, MEDIUM — temp file cleanup tracking
+- CWE-666 (90 files): task 60, MEDIUM-HIGH — socket operation ordering
+- CWE-226 (72 files): task 61, HIGH — sensitive data clearing
+- CWE-789 (560 files): task 62, HIGH — taint tracking for malloc size
+- CWE-114 (672 files): task 63, HIGH — taint tracking for LoadLibrary
 
 10 formerly zero-detection CWEs resolved in v0.3.35-v0.3.42. 4 more
 resolved in v0.3.47 (CWE-675 double-close, CWE-273 Windows privilege
@@ -1159,4 +1159,254 @@ Packaging targets:
 
 CI/CD integration: GitHub Actions matrix build with release artifacts uploaded
 on tag push. Use cross for cross-compilation where needed.
+
+---
+
+# Task ID: 54
+# Title: CWE-327 broken crypto algorithm detection
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Detect use of deprecated/weak cryptographic algorithms.
+# Details:
+Juliet: 54 files, 3 sub-patterns (DES, 3DES, RC5).
+Bad pattern: CryptDeriveKey(hCryptProv, CALG_DES, ...) — uses weak cipher.
+Good fix: CryptDeriveKey(hCryptProv, CALG_AES_256, ...) — uses modern cipher.
+
+Implementation: new rule (MSC or WIN category). Build a constant database
+of weak algorithm identifiers:
+  - Windows Crypto API: CALG_DES, CALG_3DES, CALG_RC2, CALG_RC4, CALG_RC5,
+    CALG_MD5, CALG_SHA (SHA-1)
+  - OpenSSL: EVP_des_*, EVP_rc4, EVP_md5, EVP_sha1
+  - Generic: DES_*, MD5_*, SHA1_*
+Pattern match: flag calls to CryptDeriveKey, CryptEncrypt, EVP_EncryptInit
+etc. where the algorithm parameter matches the weak-algorithm set.
+
+Effort: LOW (~200-300 LOC). Pure AST pattern matching + constant lookup.
+No taint tracking needed. Map to CWE-327. Create CWE-327.toml manifest.
+Expected: high TP rate (direct constant match).
+
+---
+
+# Task ID: 55
+# Title: CWE-468 incorrect pointer scaling detection
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Detect pointer arithmetic with incorrect size scaling.
+# Details:
+Juliet: 36 files, 2 C sub-patterns (char_ptr_to_int, int).
+Bad pattern 1: char *p = (char*)intArray; *(p + 2) — should be p + 2*sizeof(int).
+  Char pointer used to index into non-char array without sizeof scaling.
+Bad pattern 2: int *p = intArray; *(p + 2*sizeof(int)) — double-scaling.
+  Int pointer already auto-scales, explicit sizeof multiplication is wrong.
+
+Implementation: new rule or extend ARR37-C. Track:
+  1. Cast expressions that change pointer element type (e.g., int* → char*)
+  2. Subsequent pointer arithmetic on the cast pointer
+  3. For downcasts (int*→char*): flag if offset doesn't include sizeof(original_type)
+  4. For same-type ptrs: flag if offset includes sizeof() (double-scaling)
+
+Effort: LOW-MEDIUM (~250-350 LOC). Needs type tracking through casts +
+pointer arithmetic pattern detection. Map to CWE-468. Create CWE-468.toml.
+
+---
+
+# Task ID: 56
+# Title: CWE-272 unquoted CreateProcess path detection
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Detect unquoted paths with spaces in CreateProcess calls.
+# Details:
+Juliet: 252 files, 2 sub-patterns (CreateProcess, CreateProcessAsUser).
+Bad pattern: CreateProcessA(NULL, "C:\\Program Files\\App arg1", ...) —
+  unquoted path with space. Windows tries C:\Program.exe first → hijack.
+Good fix: CreateProcessA(NULL, "\"C:\\Program Files\\App\" arg1", ...) —
+  quoted path is unambiguous.
+
+Implementation: new WIN-category rule. Pattern match:
+  1. Find CreateProcessA/W calls
+  2. Extract the lpCommandLine argument (2nd param)
+  3. If it's a string literal containing a space but NOT starting with \"
+     (escaped quote), flag as unquoted path vulnerability.
+  4. Also check for paths containing "Program Files", "Program Files (x86)",
+     or other known space-containing Windows directories.
+
+Effort: LOW (~150-200 LOC). Pure AST + string literal inspection.
+Map to CWE-272. Create CWE-272.toml manifest. Windows-only rule.
+Expected: high TP rate.
+
+---
+
+# Task ID: 57
+# Title: CWE-259 hard-coded password detection
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Detect hard-coded credentials in source code.
+# Details:
+Juliet: 112 files, 2 sub-patterns (char, wchar_t).
+Bad pattern: #define PASSWORD "ABCD1234!" → strcpy(pw, PASSWORD) →
+  LogonUserA(user, domain, pw, ...). Credential embedded in binary.
+Good fix: fgets(pw, 100, stdin) — read at runtime, not compiled-in.
+
+Implementation: new MSC or WIN category rule. Two-phase detection:
+  1. Identify credential sinks: LogonUserA/W, any function with "password",
+     "credential", "secret", "auth" in parameter names or API name.
+  2. Check if the credential argument traces back to a string literal,
+     #define macro, or const char* initialization.
+  3. Naming heuristic: flag #define or const char* whose name contains
+     password/passwd/secret/key/credential/token (case-insensitive).
+
+Effort: MEDIUM (~200-300 LOC). String literal tracing + naming heuristics +
+credential sink database. Map to CWE-259. Create CWE-259.toml manifest.
+
+---
+
+# Task ID: 58
+# Title: CWE-188 struct memory layout assumption detection
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Detect pointer arithmetic that assumes struct field offsets.
+# Details:
+Juliet: 36 files, 2 sub-patterns (modify_local, union).
+Bad pattern 1: char *p = &s.field1; *(int*)(p + sizeof(int)) = 5; —
+  assumes field2 is at offset sizeof(int), ignoring padding.
+Bad pattern 2: union { struct { char c1,c2,c3,c4; } s; long l; } u;
+  u.l = 0x10203040; u.s.c4 |= 0x80; — assumes byte order.
+
+Implementation: extend EXP36-C or create new rule. Detect:
+  1. Address-of struct field → cast to different pointer type → arithmetic
+  2. Union member access patterns where both fields are accessed (type punning)
+Pattern: if pointer to struct member is cast and offset-dereferenced,
+flag as layout-dependent. For unions, flag mixed-member access.
+
+Effort: MEDIUM (~300-400 LOC). AST pattern matching + type tracking.
+Partial overlap with ARR37-C (pointer arithmetic on non-array).
+
+---
+
+# Task ID: 59
+# Title: CWE-459 incomplete temp file cleanup
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Detect temporary files created but never deleted.
+# Details:
+Juliet: 36 files, 2 sub-patterns (char, wchar_t).
+Bad pattern: mkstemp(filename) → fdopen → fprintf → fclose — file
+  created and closed but never unlinked. Temp file persists on disk.
+Good fix: fclose(pFile); unlink(filename); — delete after closing.
+
+Implementation: new FIO-category rule. Resource lifecycle tracking:
+  1. Identify temp file creation: mkstemp, tmpfile, mkdtemp, tmpnam,
+     GetTempFileName, CreateFile with FILE_FLAG_DELETE_ON_CLOSE.
+  2. Track the filename variable through the function.
+  3. At function exit, check if unlink/remove/DeleteFile was called
+     on the filename. If not, flag as incomplete cleanup.
+  4. Use CFG to check all exit paths (early returns, error paths).
+
+Effort: MEDIUM (~350-500 LOC). Needs variable tracking + CFG exit path
+analysis. Similar to existing resource leak detection in MEM31-C.
+Map to CWE-459. Create CWE-459.toml manifest.
+
+---
+
+# Task ID: 60
+# Title: CWE-666 socket operation ordering
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Detect socket API calls in wrong lifecycle order.
+# Details:
+Juliet: 90 files, 5 sub-patterns (different orderings of accept/bind/listen).
+Bad pattern: accept() called before bind() and/or listen() on same socket.
+  Socket not yet bound/listening → accept fails or undefined behavior.
+Good fix: socket() → bind() → listen() → accept() — correct order.
+
+Implementation: new POS or FIO category rule. Call-sequence state machine:
+  1. Track socket variable from socket() creation
+  2. Model states: Created → Bound (after bind) → Listening (after listen)
+     → Accepting (after accept)
+  3. Flag if accept() called in Created or Bound state (before listen)
+  4. Flag if listen() called in Created state (before bind)
+  5. Scope: intra-procedural (within single function body)
+
+Effort: MEDIUM-HIGH (~400-500 LOC). Needs call-graph ordering analysis
+with state machine per socket variable. Could reuse CFG infrastructure.
+Map to CWE-666. Create CWE-666.toml manifest.
+
+---
+
+# Task ID: 61
+# Title: CWE-226 sensitive data not cleared before release
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Detect buffers containing sensitive data released without zeroing.
+# Details:
+Juliet: 72 files, 4 sub-patterns (char/wchar_t × alloca/declare).
+Bad pattern: char *pw = alloca(100); strcpy(pw, PASSWORD); ... fclose();
+  — password buffer on stack, never cleared before function returns.
+Good fix: SecureZeroMemory(pw, len); before function return.
+
+Implementation: new MEM or MSC category rule. Requires:
+  1. Identify sensitive buffers: variables named password/secret/key/credential,
+     or buffers that receive data from credential-related functions.
+  2. Track buffer through function to all exit points.
+  3. Check if memset/SecureZeroMemory/explicit_bzero is called on buffer
+     before each exit path.
+  4. Use CFG for exit-path completeness.
+
+Effort: HIGH (~500-800 LOC). Needs naming heuristics for sensitive data +
+CFG-based exit path analysis + secure zeroing function database.
+Shares infrastructure with CWE-259 (credential identification).
+
+---
+
+# Task ID: 62
+# Title: CWE-789 unbounded memory allocation from input
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Detect malloc/calloc with size from untrusted input without bound check.
+# Details:
+Juliet: 560 files. Size flows from recv/fscanf/fgets → strtoul → malloc(size).
+Bad pattern: data from network → malloc(data * sizeof(char)) with no upper bound.
+Good fix: add if (data < MAX_SIZE) check before allocation.
+
+Implementation: requires taint tracking infrastructure:
+  1. Taint sources: recv, fgets, fscanf, getenv, read, stdin functions
+  2. Taint sinks: malloc, calloc, realloc, alloca size parameter
+  3. Taint propagation: through assignments, arithmetic, strtol/strtoul
+  4. Sanitizers: comparisons against constant upper bounds (if data < MAX)
+
+Effort: HIGH. Requires inter-procedural taint tracking — a new analysis
+capability beyond current sqc architecture. Would also benefit CWE-114
+and potentially CWE-78 (command injection). Consider as foundational
+infrastructure investment rather than single-CWE fix.
+
+---
+
+# Task ID: 63
+# Title: CWE-114 untrusted library path / process control
+# Status: pending
+# Dependencies: 62
+# Priority: P3
+# Description: Detect LoadLibrary/dlopen with path from untrusted input.
+# Details:
+Juliet: 672 files. Library path flows from recv/fgets/getenv → LoadLibraryA.
+Bad pattern: data from network → LoadLibraryA(data) — attacker controls DLL.
+Good fix: hard-code absolute path to known-good library.
+
+Implementation: depends on taint tracking (task 62). Additional needs:
+  1. Taint sinks: LoadLibraryA/W, dlopen, system, exec*
+  2. Path validation: check if path is absolute, from whitelist, etc.
+  3. Cross-function: data may flow through helper functions
+
+Effort: HIGH. Depends on taint tracking infrastructure from task 62.
+Incremental cost after taint is available: ~200-300 LOC for sink
+definitions + path validation logic.
 
