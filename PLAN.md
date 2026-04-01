@@ -434,58 +434,41 @@ call-site null state propagation.
 
 # Task ID: 21
 # Title: Fix remaining implementation bugs
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
-# Description: 3 remaining implementation bugs.
+# Description: All 6 implementation bugs fixed.
 # Details:
 3 of 6 fixed in v0.3.48 (MEM04-C, FIO10-C, WIN30-C). See CHANGELOG.txt.
 
-Remaining:
-- STR03-C: strncpy with prior strlen validation still flagged (Low).
-    str03_c.rs has find_length_check_in_scope() (line ~135) which looks for
-    strlen/sizeof checks in if statements, but only accepts the call if it's
-    in the else branch (line ~175). Should also accept strncpy when a preceding
-    strlen check validates the buffer size, regardless of branch placement.
-    Test: pass/wiki_adequate_space.c uses strcpy (not strncpy) so passes.
-    Need a new fail test with strncpy preceded by strlen that currently flags.
-- INT00-C: unsigned subtraction without guard not detected (Medium).
-    int00_c.rs only checks format specifier mismatches (line ~56) and unsafe
-    cast+multiplication patterns (lines 416-490). Does NOT check for unsigned
-    integer wrap on subtraction. Fix requires adding a new check: binary
-    expressions with `-` operator on unsigned types without prior range
-    validation (a >= b). Test: pass/testcases_unsigned_wrap.c should move to
-    fail/ once implemented.
-- INT16-C: signed-to-unsigned conversion without range check not detected
-    (Medium). int16_c.rs focuses entirely on bitwise operations on signed
-    integers (lines 166-224). Does NOT detect assignments/returns of
-    potentially negative signed values to unsigned types. Fix requires
-    tracking both signed AND unsigned variables and detecting cross-type
-    assignment/return without range check (e.g., `if (x >= 0)`). This is a
-    different analysis pattern than what the rule currently implements.
-    Test: pass/testcases_signed_unsigned_conversion.c should move to fail/.
-
-INT00-C and INT16-C are pattern mismatches — significant rule redesign needed.
+Remaining 3 fixed in v0.3.57:
+- STR03-C: find_length_check_in_scope() now accepts strncpy when a strlen
+    validation if-statement precedes the call in the same scope (not just
+    in the else branch). New pass test: testcases_strncpy_strlen_guard.c.
+- INT00-C: added check_unsigned_subtraction() — collects unsigned variable
+    types from params + locals, flags `a - b` on unsigned types without
+    enclosing `a >= b` guard. Test moved to fail/testcases_unsigned_wrap.c.
+- INT16-C: added find_signed_to_unsigned_conversions() — detects unsigned
+    init/assignment/return from signed variables without `>= 0` guard.
+    Test moved to fail/testcases_signed_unsigned_conversion.c. New pass
+    test: testcases_safe_signed_to_unsigned.c.
 
 ---
 
 # Task ID: 22
 # Title: Fake-passing tests periodic review
-# Status: pending
+# Status: done
 # Dependencies: 21
 # Priority: P2
-# Description: Review and fix tests that pass only due to implementation gaps.
+# Description: All fake-passing tests resolved.
 # Details:
-2 remaining fake-passing tests (11 fixed in v0.3.42, 5 resolved here):
+All 18 fake-passing tests resolved (11 in v0.3.42, 5 in tasks 18/19, 2 in task 21):
 
-Resolved:
 - EXP34-C: 3 tests moved to fail/ with prescan marker (task 19)
 - FIO10-C: POSIX rename() now accepted as compliant (task 18)
 - WIN30-C: Reclassified as out of scope (not a fake pass)
-
-Remaining:
-- INT00-C pass/testcases_unsigned_wrap.c — pattern mismatch
-- INT16-C pass/testcases_signed_unsigned_conversion.c — pattern mismatch
+- INT00-C: testcases_unsigned_wrap.c moved to fail/ (task 21, v0.3.57)
+- INT16-C: testcases_signed_unsigned_conversion.c moved to fail/ (task 21, v0.3.57)
 
 ---
 
