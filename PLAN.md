@@ -66,14 +66,17 @@ analysis for variants that span multiple functions within a file.
 
 # Task ID: 31
 # Title: Post-init malloc detection (BRULE-060)
-# Status: pending
+# Status: done (v0.3.67)
 # Dependencies: none
 # Priority: P3
 # Description: Flag malloc/free calls outside main()/init functions.
 # Details:
-BRULE-060 (Constrained tier) prohibits dynamic allocation after
-initialization. Heuristic: identify init functions (main, *_init, *_setup) and
-flag malloc/calloc/realloc/free in all other functions. Medium effort.
+BRULE-060 implemented. Flags malloc/calloc/realloc/free/aligned_alloc in
+non-initialization functions. Init heuristic (case-insensitive): exact names
+(main, init, setup, initialize), suffixes (*_init, *_setup, *_initialize,
+*_create, *_new, *_alloc), prefixes (init_*, setup_*, create_*, new_*, alloc_*).
+Test cases: fail/runtime_alloc.c (5 violations), pass/init_alloc.c (9 init
+functions, 0 violations).
 
 ---
 

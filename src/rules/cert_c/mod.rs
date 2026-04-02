@@ -874,6 +874,7 @@ impl RuleRegistry {
         registry.register(Box::new(arr37_c::Arr37C));
         registry.register(Box::new(arr38_c::Arr38C));
         registry.register(Box::new(arr39_c::Arr39C));
+        registry.register(Box::new(super::brules::brule060::Brule060));
         registry.register(Box::new(super::brules::brule065::Brule065));
         registry.register(Box::new(con39_c::Con39C));
         registry.register(Box::new(con43_c::Con43C));
