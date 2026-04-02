@@ -39,28 +39,55 @@ increment heuristic (with real-world FP impact analysis).
 
 # Task ID: 6
 # Title: CWE-690 per-file detection improvement
-# Status: pending
+# Status: done (v0.3.67)
 # Dependencies: 7
 # Priority: P2
 # Description: Raise CWE-690 per-file detection rate from 18.1% toward 30%.
 # Details:
-v0.3.37: 203 TP, 12 FP, 94.4% TP rate, 18.1% per-file. Best precision of any
-high-volume CWE. 74% undetected are likely cross-function patterns. Improving
-per-file rate depends on EXP34-C Phase 4 (task 7) for deeper inter-procedural
-null propagation.
+Target was 30% per-file. Achieved 58.9% per-file as of v0.3.67 (660 TP,
+38 FP, 94.6% TP rate). Phases 1-3 of EXP34-C null state analysis plus
+subsequent improvements (return-value null seeding, call-site propagation,
+relay parameter propagation, voting-based aggregation) far exceeded the
+target without requiring a separate Phase 4.
+
+---
+
+# Task ID: 7
+# Title: EXP34-C Phase 4 — deeper inter-procedural null propagation
+# Status: done (v0.3.67)
+# Dependencies: none
+# Priority: P2
+# Description: Deeper inter-procedural null propagation for CWE-690.
+# Details:
+Originally scoped as a prerequisite for task 6 (CWE-690 ≥ 30%). The
+capabilities that would have comprised Phase 4 were incrementally delivered
+across Phases 1-3 and subsequent versions:
+  - Return-value null seeding via is_nullable_function() + can_return_null
+  - Call-site null propagation with voting-based aggregation
+  - Relay parameter propagation (3-hop, multi-pass)
+  - Pointer-to-pointer, void pointer, array element propagation
+  - Global pointer null state tracking
+CWE-690 reached 58.9% per-file, making a separate Phase 4 unnecessary.
 
 ---
 
 # Task ID: 34
 # Title: Per-file detection >= 30% on top 10 CWEs
 # Status: pending
-# Dependencies: 32
+# Dependencies: none
 # Priority: P2
 # Description: Tier 3 competitive milestone — per-file detection rate.
 # Details:
 Per-file detection measures whether at least one TP is found per Juliet test
-file. Current rates vary widely. Improving requires better cross-function
-analysis for variants that span multiple functions within a file.
+file. As of v0.3.67, 7/10 top CWEs (by file count) meet the 30% threshold:
+
+  Pass (7): CWE-121 41.4%, CWE-78 30.2%, CWE-190 43.3%, CWE-191 47.7%,
+            CWE-124 34.8%, CWE-195 67.9%, CWE-194 62.5%.
+  Fail (3): CWE-122 17.1% (heap overflow), CWE-134 17.9% (format string),
+            CWE-127 24.2% (buffer underread).
+
+CWE-127 is closest to threshold. CWE-122 and CWE-134 require cross-function
+analysis improvements (most undetected patterns are variants 41-68).
 
 ---
 
@@ -122,23 +149,38 @@ as potentially modified.
 
 ---
 
+# Task ID: 19
+# Title: Prescan test infrastructure
+# Status: done
+# Dependencies: none
+# Priority: P3
+# Description: `// sqc-test: prescan` marker for .c test files.
+# Details:
+build.rs detects the marker and generates tests that build intra-file
+prescan context (function summaries + call-site null states + CFGs) before
+calling rule.check(). Enables testing inter-procedural analysis patterns
+within a single translation unit. Added prescan_single_tree() API.
+
+---
+
 # Task ID: 20
 # Title: Inter-procedural .c test cases
 # Status: pending
-# Dependencies: 19
+# Dependencies: none
 # Priority: P3
 # Description: Multi-file C test cases for prescan/call-site propagation.
 # Details:
-Need test infrastructure that can compile and analyze multiple .c files
-together to exercise prescan context, cross-file function resolution, and
-call-site null state propagation.
+Task 19 (prescan test infrastructure) is complete. Remaining work: add
+multi-file C test cases that exercise cross-file function resolution and
+call-site null state propagation. Current prescan tests are single-file
+only (intra-file inter-procedural).
 
 ---
 
 # Task ID: 33
 # Title: Direct benchmark comparison with Infer and Frama-C
 # Status: pending
-# Dependencies: 32
+# Dependencies: none
 # Priority: P3
 # Description: Tier 3 competitive milestone — run Infer and Frama-C on same
   Juliet suite.
@@ -281,27 +323,18 @@ This is a significant new analysis capability.  Could improve CWE-78 from
 ---
 
 # Task ID: 50
-# Title: Paper — address 10 zero-detection CWEs
-# Status: pending
-# Dependencies: 11
+# Title: Paper — address zero-detection CWEs
+# Status: done (v0.3.67)
+# Dependencies: none
 # Priority: P3
-# Description: Develop rules for highest-value zero-detection CWEs to
-  demonstrate continued improvement in paper revisions.
+# Description: Develop rules for highest-value zero-detection CWEs.
 # Details:
-Paper Limitations section (Section 8) notes 10 CWEs with zero detection.
-Highest value targets by file count:
-
-  - CWE-789 (560 files): Uncontrolled Memory Allocation.  Needs taint tracking
-    for user input → malloc size.  Medium-high effort.
-  - CWE-114 (672 files): Process Control.  Needs taint tracking for untrusted
-    input → LoadLibrary.  Medium-high effort.
-  - CWE-468 (36 files): Incorrect Pointer Scaling.  AST pattern for implicit
-    void* casts.  Low effort, but low file count.
-  - CWE-459 (36 files): Incomplete Cleanup.  Resource tracking for cleanup
-    handlers.  Medium effort.
-
-Each CWE resolved reduces the zero-detection count in the paper and
-demonstrates coverage expansion capability.
+All 4 highest-value targets now have detection as of v0.3.67:
+  - CWE-789: 190 TP, 33.9% per-file (was zero)
+  - CWE-114: 126 TP, 18.8% per-file (was zero)
+  - CWE-468: 19 TP, 52.8% per-file (was zero)
+  - CWE-459: 34 TP, 94.4% per-file (was zero)
+Paper Limitations section needs updating to reflect current coverage.
 
 ---
 

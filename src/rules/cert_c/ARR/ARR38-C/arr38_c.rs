@@ -24,9 +24,9 @@ struct BufferInfo {
 struct PointerOffsetInfo {
     /// Base buffer name
     base_buffer: String,
-    /// Offset in bytes/elements (if known)
-    offset: Option<usize>,
-    /// Offset expression (e.g., "15", "n")
+    /// Offset in bytes/elements (if known); negative means before buffer start
+    offset: Option<i64>,
+    /// Offset expression (e.g., "15", "-8", "n")
     offset_expr: String,
 }
 
@@ -279,15 +279,31 @@ impl Arr38C {
             }
         }
 
-        // Check for pointer offset assignments: char *ptr = buffer + offset;
-        if text.contains('*') && text.contains('=') && text.contains('+') {
-            if let Some((ptr_name, base, offset)) = self.extract_pointer_offset(&text) {
+        // Check for pointer offset assignments: char *ptr = buffer + offset; or buffer - offset;
+        if text.contains('*') && text.contains('=') && (text.contains('+') || text.contains('-')) {
+            if let Some((ptr_name, base, offset, negative)) =
+                self.extract_pointer_offset_signed(&text)
+            {
+                let offset_val =
+                    self.try_parse_size(&offset).map(
+                        |v| {
+                            if negative {
+                                -(v as i64)
+                            } else {
+                                v as i64
+                            }
+                        },
+                    );
                 pointer_offsets.insert(
                     ptr_name,
                     PointerOffsetInfo {
                         base_buffer: base,
-                        offset: self.try_parse_size(&offset),
-                        offset_expr: offset,
+                        offset: offset_val,
+                        offset_expr: if negative {
+                            format!("-{}", offset)
+                        } else {
+                            offset
+                        },
                     },
                 );
             }
@@ -343,15 +359,34 @@ impl Arr38C {
             }
         }
 
-        // Check for pointer offset assignments: ptr = buffer + offset;
-        if text.contains('=') && text.contains('+') && !text.contains("malloc") {
-            if let Some((ptr_name, base, offset)) = self.extract_pointer_offset(&text) {
+        // Check for pointer offset assignments: ptr = buffer + offset; or buffer - offset;
+        if text.contains('=')
+            && (text.contains('+') || text.contains('-'))
+            && !text.contains("malloc")
+        {
+            if let Some((ptr_name, base, offset, negative)) =
+                self.extract_pointer_offset_signed(&text)
+            {
+                let offset_val =
+                    self.try_parse_size(&offset).map(
+                        |v| {
+                            if negative {
+                                -(v as i64)
+                            } else {
+                                v as i64
+                            }
+                        },
+                    );
                 pointer_offsets.insert(
                     ptr_name,
                     PointerOffsetInfo {
                         base_buffer: base,
-                        offset: self.try_parse_size(&offset),
-                        offset_expr: offset,
+                        offset: offset_val,
+                        offset_expr: if negative {
+                            format!("-{}", offset)
+                        } else {
+                            offset
+                        },
                     },
                 );
             }
@@ -425,10 +460,17 @@ impl Arr38C {
                         violations,
                         buffer_info,
                         size_vars,
+                        pointer_offsets,
                     );
                 }
                 "wmemcpy" | "wmemmove" | "wmemset" | "wmemcmp" | "wmemchr" => {
-                    self.check_wide_memory_function(node, source, function_name, violations);
+                    self.check_wide_memory_function(
+                        node,
+                        source,
+                        function_name,
+                        violations,
+                        pointer_offsets,
+                    );
                 }
                 "wcscpy" | "wcsncpy" | "wcscat" | "wcsncat" | "wcscmp" | "wcsncmp" => {
                     self.check_wide_string_function(
@@ -437,6 +479,7 @@ impl Arr38C {
                         function_name,
                         violations,
                         buffer_info,
+                        pointer_offsets,
                     );
                 }
                 "malloc" | "calloc" | "realloc" | "aligned_alloc" => {
@@ -493,13 +536,25 @@ impl Arr38C {
         match function_name {
             "memcpy" | "memmove" => {
                 if args.len() >= 3 {
-                    // First check for pointer offset issues
+                    // First check for pointer offset issues (destination)
                     if let Some(violation) = self.check_pointer_offset_overflow(
                         &args,
                         node,
                         function_name,
                         buffer_info,
                         size_vars,
+                        pointer_offsets,
+                    ) {
+                        violations.push(violation);
+                        return;
+                    }
+
+                    // Check source pointer offset (buffer underread)
+                    if let Some(violation) = self.check_source_pointer_offset(
+                        &args,
+                        1,
+                        node,
+                        function_name,
                         pointer_offsets,
                     ) {
                         violations.push(violation);
@@ -556,8 +611,19 @@ impl Arr38C {
         violations: &mut Vec<RuleViolation>,
         buffer_info: &HashMap<String, BufferInfo>,
         size_vars: &HashMap<String, String>,
+        pointer_offsets: &HashMap<String, PointerOffsetInfo>,
     ) {
         let args = self.get_function_arguments(node, source);
+
+        // Check source pointer offset for all string functions (source is arg[1])
+        if args.len() >= 2 {
+            if let Some(violation) =
+                self.check_source_pointer_offset(&args, 1, node, function_name, pointer_offsets)
+            {
+                violations.push(violation);
+                return;
+            }
+        }
 
         match function_name {
             "strncpy" | "strncat" | "strncmp" => {
@@ -588,8 +654,19 @@ impl Arr38C {
         source: &str,
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
+        pointer_offsets: &HashMap<String, PointerOffsetInfo>,
     ) {
         let args = self.get_function_arguments(node, source);
+
+        // Check source pointer offset (buffer underread) — source is arg[1] for wmemcpy/wmemmove
+        if args.len() >= 2 {
+            if let Some(violation) =
+                self.check_source_pointer_offset(&args, 1, node, function_name, pointer_offsets)
+            {
+                violations.push(violation);
+                return;
+            }
+        }
 
         if args.len() >= 3 {
             // Wide character functions expect size in terms of wchar_t, not bytes
@@ -643,8 +720,19 @@ impl Arr38C {
         function_name: &str,
         violations: &mut Vec<RuleViolation>,
         buffer_info: &HashMap<String, BufferInfo>,
+        pointer_offsets: &HashMap<String, PointerOffsetInfo>,
     ) {
         let args = self.get_function_arguments(node, source);
+
+        // Check source pointer offset for all wide string functions (source is arg[1])
+        if args.len() >= 2 {
+            if let Some(violation) =
+                self.check_source_pointer_offset(&args, 1, node, function_name, pointer_offsets)
+            {
+                violations.push(violation);
+                return;
+            }
+        }
 
         if function_name.contains("wcsn") && args.len() >= 3 {
             let dest_arg = &args[0];
@@ -1635,7 +1723,24 @@ impl Arr38C {
                 if let Some(base_size) = base_info.size {
                     // Calculate remaining space after offset
                     if let Some(offset_val) = offset_info.offset {
-                        let remaining = base_size.saturating_sub(offset_val);
+                        if offset_val < 0 {
+                            // Negative offset — pointer is before buffer start
+                            let start_point = node.start_position();
+                            return Some(RuleViolation {
+                                rule_id: self.rule_id().to_string(),
+                                severity: Severity::High,
+                                message: format!(
+                                    "Function '{}': destination '{}' points {} bytes before '{}' buffer start",
+                                    function_name, dest_arg, -offset_val, offset_info.base_buffer
+                                ),
+                                file_path: String::new(),
+                                line: start_point.row + 1,
+                                column: start_point.column + 1,
+                                suggestion: Some("Do not form pointers before the start of allocated memory".to_string()),
+                                ..Default::default()
+                            });
+                        }
+                        let remaining = base_size.saturating_sub(offset_val as usize);
 
                         // Resolve the size argument
                         let size_arg_owned = size_arg.to_string();
@@ -1676,6 +1781,46 @@ impl Arr38C {
                             }
                         }
                     }
+                }
+            }
+        }
+        None
+    }
+
+    /// Check if source argument has a negative pointer offset (reading before buffer start)
+    fn check_source_pointer_offset(
+        &self,
+        args: &[String],
+        src_index: usize,
+        node: &Node,
+        function_name: &str,
+        pointer_offsets: &HashMap<String, PointerOffsetInfo>,
+    ) -> Option<RuleViolation> {
+        if args.len() <= src_index {
+            return None;
+        }
+        let src_arg = args[src_index].trim();
+
+        if let Some(offset_info) = pointer_offsets.get(src_arg) {
+            if let Some(offset_val) = offset_info.offset {
+                if offset_val < 0 {
+                    let start_point = node.start_position();
+                    return Some(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: format!(
+                            "Function '{}': source '{}' points {} bytes before '{}' buffer start (buffer underread)",
+                            function_name, src_arg, -offset_val, offset_info.base_buffer
+                        ),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Do not form pointers before the start of allocated memory"
+                                .to_string(),
+                        ),
+                        ..Default::default()
+                    });
                 }
             }
         }
@@ -2237,6 +2382,7 @@ impl Arr38C {
 
     /// Extract pointer offset from declaration like "char *ptr = buffer + 15;"
     /// Returns (ptr_name, base_buffer, offset_expr)
+    #[allow(dead_code)]
     fn extract_pointer_offset(&self, text: &str) -> Option<(String, String, String)> {
         // Pattern: type *ptr = base + offset;
         if let Some(eq_pos) = text.find('=') {
@@ -2259,6 +2405,58 @@ impl Arr38C {
 
                     if !base.is_empty() && !offset.is_empty() {
                         return Some((ptr_name.to_string(), base.to_string(), offset.to_string()));
+                    }
+                }
+            }
+        }
+        None
+    }
+
+    /// Extract pointer offset with sign: returns (ptr_name, base, offset, is_negative)
+    fn extract_pointer_offset_signed(&self, text: &str) -> Option<(String, String, String, bool)> {
+        if let Some(eq_pos) = text.find('=') {
+            let before = &text[..eq_pos];
+            let after = &text[eq_pos + 1..];
+
+            let parts: Vec<&str> = before.split_whitespace().collect();
+            if let Some(last) = parts.last() {
+                let ptr_name = last.trim_start_matches('*').trim();
+                if ptr_name.is_empty() {
+                    return None;
+                }
+
+                let rhs = after.trim().trim_end_matches(';').trim();
+
+                // Try subtraction first (more specific: avoid matching cast minus like (type*)expr - n)
+                // Look for pattern: identifier - number/identifier
+                if let Some(minus_pos) = rhs.rfind(" - ") {
+                    let base = rhs[..minus_pos].trim();
+                    let offset = rhs[minus_pos + 3..].trim();
+                    if !base.is_empty()
+                        && !offset.is_empty()
+                        && !base.contains('(')
+                        && base.chars().all(|c| c.is_alphanumeric() || c == '_')
+                    {
+                        return Some((
+                            ptr_name.to_string(),
+                            base.to_string(),
+                            offset.to_string(),
+                            true,
+                        ));
+                    }
+                }
+
+                // Try addition
+                if let Some(plus_pos) = rhs.find('+') {
+                    let base = rhs[..plus_pos].trim();
+                    let offset = rhs[plus_pos + 1..].trim();
+                    if !base.is_empty() && !offset.is_empty() {
+                        return Some((
+                            ptr_name.to_string(),
+                            base.to_string(),
+                            offset.to_string(),
+                            false,
+                        ));
                     }
                 }
             }
