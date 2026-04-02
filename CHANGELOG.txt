@@ -6,6 +6,90 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.60] - 2026-04-01
+
+### Added
+
+- EXP39-C: CWE-188 struct memory layout assumption detection. Two new checks:
+  (1) struct field pointer arithmetic — flags *(T*)(ptr + offset) where ptr was
+  assigned from &struct.field, (2) union type punning — flags sub-field access
+  into struct member of union after writing to a different scalar member.
+  36 TP/0 FP (100%). All 36 Juliet files detected.
+- FIO42-C: CWE-459 incomplete temp file cleanup. Detects mkstemp/mktemp/MKSTEMP
+  /MKTEMP calls without corresponding unlink/remove/DeleteFile cleanup in the
+  same function. 34 TP/0 FP (100%). 34/36 files (variant-12 mixed branches missed).
+- POS55-C: new rule for CWE-666 socket operation ordering. State machine enforces
+  bind() → listen() → accept() order. Flags accept before listen/bind, listen
+  before bind. 162 TP/0 FP (100%). All 90 Juliet files detected.
+- MEM03-C: CWE-226 sensitive data not cleared before release. Detects pointer/array
+  variables with sensitive names (password, secret, credential, passphrase) not
+  cleared with SecureZeroMemory/memset/explicit_bzero before function exit.
+  68 TP/0 FP (100%). 68/72 files (variant-12 missed).
+- MEM35-C: CWE-789 unbounded memory allocation from untrusted input.
+  Intra-procedural taint analysis flags malloc/calloc/realloc in functions with
+  taint sources (recv, fgets, fscanf, rand) and no upper-bound check (< constant).
+  190 TP/0 FP (100%). Cross-function variants need inter-procedural taint.
+- ERR07-C: CWE-114 untrusted library path / process control. Intra-procedural
+  taint analysis flags LoadLibraryA/W/dlopen in functions with taint sources.
+  126 TP/0 FP (100%). Cross-function variants need inter-procedural taint.
+
+### Results
+
+- Juliet v0.3.60: 24,408 TP / 21,117 FP — 53.6% TP rate (+0.7pp from v0.3.59).
+  +730 TP, 0 FP. 31 CWEs at 100% precision (up from 25). Per-file rate 40.9%.
+  Only 2 zero-detection CWEs remaining (CWE-259, CWE-328).
+- Bonus: CWE-680 +80 TP/0 FP (MEM35-C taint caught integer-overflow-to-buffer-
+  overflow), CWE-244 +34 TP/0 FP (MEM03-C sensitive data caught heap inspection).
+
+## [0.3.59] - 2026-04-01
+
+### Added
+
+- MSC42-C: new rule for CWE-327 broken/weak crypto algorithm detection. Blacklist:
+  CALG_DES, CALG_3DES, CALG_RC5, CALG_RC2, CALG_RC4 in CryptDeriveKey/CryptGenKey.
+  Also detects weak OpenSSL ciphers (EVP_des_*, DES_*, EVP_rc4, EVP_rc2_*).
+  54 TP/0 FP (100%).
+- WIN05-C: new rule for CWE-272 unquoted CreateProcess path detection. Two
+  sub-patterns: unquoted paths with spaces in CreateProcessA/W/AsUser (path
+  interception), HKEY_LOCAL_MACHINE in registry operations (excessive privilege).
+  254 TP/64 FP (79.9%).
+- ARR39-C: CWE-468 incorrect pointer scaling fix. Case-insensitive pointer name
+  matching, added "pointer" keyword. Detects double-scaling pattern.
+  19 TP/32 FP (37.3%).
+- MSC41-C: CWE-259 hard-coded password improvements. Added "logon" to sensitive
+  function keywords, added #define macro detection for sensitive-named macros.
+  0 TP/0 FP on Juliet (tree-sitter preprocessor limitation).
+
+### Results
+
+- Juliet v0.3.59: 23,678 TP / 21,117 FP — 52.9% TP rate (+0.3pp from v0.3.58).
+  +327 TP, +96 FP. 74 CWEs covered (up from 70).
+
+## [0.3.58] - 2026-04-01
+
+### Added
+
+- SIG31-C + SIG34-C: CWE-364 signal handler race condition detection. Mapped
+  existing rules to CWE-364. 54 TP/51 FP (51.4%).
+- MSC12-C: CWE-398 poor code quality — extended with 7 new patterns: empty
+  control flow bodies, empty function bodies, standalone empty blocks, empty
+  switch cases, stray semicolons, arithmetic no-effect, self-assignment.
+  181 TP/2 FP (98.9%).
+- MSC13-C: new rule for CWE-563 unused variable detection. Detects unused
+  initialized/uninitialized local variables and dead stores. Struct field write
+  not counted as read. 289 TP/0 FP (100%).
+
+### Results
+
+- Juliet v0.3.58: 23,351 TP / 21,021 FP — 52.6% TP rate (+0.5pp from v0.3.56).
+  +524 TP, +53 FP. Zero regressions on 70 existing CWEs.
+
+## [0.3.57] - 2026-04-01
+
+### Fixed
+
+- STR03-C, INT00-C, INT16-C: resolved 3 remaining implementation bugs.
+
 ## [0.3.56] - 2026-04-01
 
 ### Added
