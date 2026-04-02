@@ -161,18 +161,22 @@ impl Msc13C {
         };
 
         match parent.kind() {
-            // Left side of assignment — this is a write, not a read
+            // Assignment expression — check if simple (=) or compound (+=, -=, etc.)
             "assignment_expression" => {
                 if let Some(left) = parent.child_by_field_name("left") {
                     if left.id() == node.id() {
-                        return false;
+                        // Compound assignment LHS (+=, -=, *=, etc.) is both read and write
+                        if let Some(op) = parent.child_by_field_name("operator") {
+                            let op_text = get_node_text(&op, source);
+                            if op_text != "=" {
+                                return true; // compound: LHS is read
+                            }
+                        }
+                        return false; // simple =: LHS is pure write
                     }
                 }
                 true
             }
-            // Compound assignment (+=, -=, etc.) — left side is both read and write
-            // But if var is only used in +=, the original init is still dead
-            // For simplicity, treat compound assignment LHS as a read
             // Init declarator — this is the declaration itself, not a read
             "init_declarator" => false,
             // Declaration — not a read
@@ -393,15 +397,22 @@ impl Msc13C {
         assignments: &mut Vec<(String, usize, usize)>,
     ) {
         if node.kind() == "assignment_expression" {
-            if let Some(left) = node.child_by_field_name("left") {
-                if left.kind() == "identifier" {
-                    let name = get_node_text(&left, source);
-                    if var_names.contains(name) {
-                        assignments.push((
-                            name.to_string(),
-                            node.start_position().row + 1,
-                            node.start_byte(),
-                        ));
+            // Only collect simple assignments (=), not compound (+=, -=, etc.)
+            // Compound assignments read the LHS, so they aren't pure overwrites
+            let is_simple = node
+                .child_by_field_name("operator")
+                .is_none_or(|op| get_node_text(&op, source) == "=");
+            if is_simple {
+                if let Some(left) = node.child_by_field_name("left") {
+                    if left.kind() == "identifier" {
+                        let name = get_node_text(&left, source);
+                        if var_names.contains(name) {
+                            assignments.push((
+                                name.to_string(),
+                                node.start_position().row + 1,
+                                node.start_byte(),
+                            ));
+                        }
                     }
                 }
             }

@@ -1,9 +1,9 @@
 /*
  * Rule: INT34-C
- * Status: PASS - Unsigned right shift with naming convention hint
+ * Status: PASS - Unsigned right shift detected via parameter type declaration
  */
 
-void f(unsigned int ui_val, unsigned int ui_shift) {
-    /* ui_ prefix signals unsigned; right-shift on unsigned is safe */
-    unsigned int result = ui_val >> ui_shift;
+void f(unsigned int val, unsigned int shift) {
+    /* unsigned int detected from AST; right-shift on unsigned is safe */
+    unsigned int result = val >> shift;
 }
