@@ -14,6 +14,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::collections::HashMap;
 use tree_sitter::Node;
 
 pub struct Int00C;
@@ -62,6 +63,11 @@ impl Int00C {
         // Check for unsafe type size assumptions (cast + multiplication)
         if node.kind() == "assignment_expression" {
             self.check_unsafe_cast_multiplication(node, source, violations);
+        }
+
+        // Check function bodies for unsigned subtraction without guard
+        if node.kind() == "function_definition" {
+            self.check_unsigned_subtraction(node, source, violations);
         }
 
         // Recursively check children
@@ -410,6 +416,211 @@ impl Int00C {
             "%p" => var_type.contains("*") || var_type == "void *",
             _ => true, // Unknown specifier, don't flag
         }
+    }
+
+    /// Check for unsigned integer subtraction without a guard (a >= b).
+    fn check_unsigned_subtraction(
+        &self,
+        func_node: &Node,
+        source: &str,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let mut var_types: HashMap<String, String> = HashMap::new();
+
+        // Collect unsigned types from parameters
+        if let Some(declarator) = func_node.child_by_field_name("declarator") {
+            if let Some(params) = declarator.child_by_field_name("parameters") {
+                let mut cursor = params.walk();
+                for param in params.children(&mut cursor) {
+                    if param.kind() == "parameter_declaration" {
+                        if let (Some(type_text), Some(name)) = (
+                            self.extract_param_type(&param, source),
+                            self.extract_param_name(&param, source),
+                        ) {
+                            var_types.insert(name, type_text);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Collect unsigned types from local declarations
+        if let Some(body) = func_node.child_by_field_name("body") {
+            self.collect_local_unsigned_vars(&body, source, &mut var_types);
+        }
+
+        // Find unguarded unsigned subtractions
+        if let Some(body) = func_node.child_by_field_name("body") {
+            self.find_unguarded_unsigned_sub(&body, source, &var_types, violations);
+        }
+    }
+
+    fn extract_param_type(&self, param: &Node, source: &str) -> Option<String> {
+        // Get the type specifier (first child that is a type)
+        let mut cursor = param.walk();
+        let mut type_parts = Vec::new();
+        for child in param.children(&mut cursor) {
+            if matches!(
+                child.kind(),
+                "primitive_type" | "sized_type_specifier" | "type_identifier"
+            ) {
+                type_parts.push(get_node_text(&child, source).trim().to_string());
+            }
+            if child.kind() == "type_qualifier" {
+                // skip qualifiers like const
+            }
+        }
+        if type_parts.is_empty() {
+            None
+        } else {
+            Some(type_parts.join(" "))
+        }
+    }
+
+    fn extract_param_name(&self, param: &Node, source: &str) -> Option<String> {
+        if let Some(declarator) = param.child_by_field_name("declarator") {
+            let text = get_node_text(&declarator, source).trim().to_string();
+            // Strip pointer markers
+            let name = text.trim_start_matches('*').trim().to_string();
+            if !name.is_empty() {
+                return Some(name);
+            }
+        }
+        None
+    }
+
+    fn collect_local_unsigned_vars(
+        &self,
+        node: &Node,
+        source: &str,
+        var_types: &mut HashMap<String, String>,
+    ) {
+        if node.kind() == "declaration" {
+            let mut cursor = node.walk();
+            let mut type_text = String::new();
+            for child in node.children(&mut cursor) {
+                if matches!(
+                    child.kind(),
+                    "primitive_type" | "sized_type_specifier" | "type_identifier"
+                ) {
+                    type_text = get_node_text(&child, source).trim().to_string();
+                }
+                if child.kind() == "init_declarator" {
+                    if let Some(decl) = child.child_by_field_name("declarator") {
+                        let name = get_node_text(&decl, source).trim().to_string();
+                        if !name.is_empty() && !type_text.is_empty() {
+                            var_types.insert(name, type_text.clone());
+                        }
+                    }
+                }
+            }
+        }
+
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.collect_local_unsigned_vars(&child, source, var_types);
+        }
+    }
+
+    fn is_unsigned_type(type_text: &str) -> bool {
+        type_text.starts_with("unsigned")
+            || matches!(
+                type_text,
+                "size_t" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" | "uintptr_t"
+            )
+    }
+
+    fn find_unguarded_unsigned_sub(
+        &self,
+        node: &Node,
+        source: &str,
+        var_types: &HashMap<String, String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "binary_expression" {
+            if let Some(op) = node.child_by_field_name("operator") {
+                let op_text = get_node_text(&op, source);
+                if op_text.trim() == "-" {
+                    if let (Some(left), Some(right)) = (
+                        node.child_by_field_name("left"),
+                        node.child_by_field_name("right"),
+                    ) {
+                        let left_name = get_node_text(&left, source).trim().to_string();
+                        let right_name = get_node_text(&right, source).trim().to_string();
+
+                        let left_unsigned = var_types
+                            .get(&left_name)
+                            .is_some_and(|t| Self::is_unsigned_type(t));
+                        let right_unsigned = var_types
+                            .get(&right_name)
+                            .is_some_and(|t| Self::is_unsigned_type(t));
+
+                        if left_unsigned && right_unsigned {
+                            if !self.has_subtraction_guard(node, &left_name, &right_name, source) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    message: format!(
+                                        "Unsigned subtraction '{} - {}' without guard assumes non-negative result",
+                                        left_name, right_name
+                                    ),
+                                    severity: self.severity(),
+                                    line: node.start_position().row + 1,
+                                    column: node.start_position().column + 1,
+                                    file_path: String::new(),
+                                    suggestion: Some(
+                                        "Add a guard: if (a >= b) before unsigned subtraction a - b"
+                                            .to_string(),
+                                    ),
+                                    requires_manual_review: None,
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        let mut cursor = node.walk();
+        for child in node.children(&mut cursor) {
+            self.find_unguarded_unsigned_sub(&child, source, var_types, violations);
+        }
+    }
+
+    /// Check if the subtraction is guarded by `left >= right` or `right <= left`.
+    fn has_subtraction_guard(
+        &self,
+        node: &Node,
+        left_name: &str,
+        right_name: &str,
+        source: &str,
+    ) -> bool {
+        // Walk up to find enclosing if/while/for condition
+        let mut current = node.parent();
+        while let Some(ancestor) = current {
+            if matches!(
+                ancestor.kind(),
+                "if_statement" | "while_statement" | "for_statement"
+            ) {
+                if let Some(condition) = ancestor.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    // Check for a >= b, b <= a, a > b, b < a patterns
+                    if cond_text.contains(left_name)
+                        && cond_text.contains(right_name)
+                        && (cond_text.contains(">=")
+                            || cond_text.contains("<=")
+                            || cond_text.contains(">")
+                            || cond_text.contains("<"))
+                    {
+                        return true;
+                    }
+                }
+            }
+            if ancestor.kind() == "function_definition" {
+                break;
+            }
+            current = ancestor.parent();
+        }
+        false
     }
 
     /// Check for unsafe cast + multiplication patterns

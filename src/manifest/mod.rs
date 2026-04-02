@@ -12,6 +12,8 @@ pub struct RuleManifest {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RuleNamespaces {
     pub cert_c: HashMap<String, RuleConfig>,
+    #[serde(default)]
+    pub brules: HashMap<String, RuleConfig>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -112,15 +114,23 @@ impl RuleManifest {
         self.rules
             .cert_c
             .iter()
+            .chain(self.rules.brules.iter())
             .filter(|(_, config)| config.enabled)
     }
 
     pub fn get_rule(&self, rule_id: &str) -> Option<&RuleConfig> {
-        self.rules.cert_c.get(rule_id)
+        self.rules
+            .cert_c
+            .get(rule_id)
+            .or_else(|| self.rules.brules.get(rule_id))
     }
 
     pub fn get_rule_mut(&mut self, rule_id: &str) -> Option<&mut RuleConfig> {
-        self.rules.cert_c.get_mut(rule_id)
+        if self.rules.cert_c.contains_key(rule_id) {
+            self.rules.cert_c.get_mut(rule_id)
+        } else {
+            self.rules.brules.get_mut(rule_id)
+        }
     }
 }
 
@@ -162,6 +172,7 @@ impl Default for RuleManifest {
             },
             rules: RuleNamespaces {
                 cert_c: cert_c_rules,
+                brules: HashMap::new(),
             },
         }
     }

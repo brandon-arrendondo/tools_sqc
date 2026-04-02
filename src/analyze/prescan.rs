@@ -32,6 +32,9 @@ pub fn prescan_directories(
     let mut global_constants: HashMap<String, i64> = HashMap::new();
     let mut global_var_null_states: HashMap<String, NullState> = HashMap::new();
     let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+    let mut callsite_field_args: HashMap<String, Vec<Vec<HashMap<String, NullState>>>> =
+        HashMap::new();
+    let mut callsite_pointee_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
     let mut source_files: Vec<PathBuf> = Vec::new();
     let mut parser = CParser::new()?;
 
@@ -97,7 +100,13 @@ pub fn prescan_directories(
                 // Collect call-site argument null states in the same pass
                 // (avoids re-parsing all files in a second directory walk)
                 if !is_header {
-                    collect_callsite_args_from_tree(&root, &source, &mut callsite_args);
+                    collect_callsite_args_from_tree(
+                        &root,
+                        &source,
+                        &mut callsite_args,
+                        &mut callsite_field_args,
+                        &mut callsite_pointee_args,
+                    );
                     source_files.push(entry.path().to_path_buf());
                 }
             }
@@ -110,6 +119,12 @@ pub fn prescan_directories(
         &mut function_summaries,
         &header_declared_functions,
     );
+
+    // Aggregate struct field null states from call sites
+    aggregate_callsite_field_null_states(&callsite_field_args, &mut function_summaries);
+
+    // Aggregate pointee null states from address-of arguments (variant 63)
+    aggregate_callsite_pointee_null_states(&callsite_pointee_args, &mut function_summaries);
 
     // Iterative propagation: resolve parameter null states through relay chains.
     // Each pass resolves one additional hop. Runs up to MAX_PROPAGATION_PASSES
@@ -154,10 +169,21 @@ pub fn prescan_single_tree(root: &Node, source: &str) -> ProjectContext {
     let mut function_summaries = function_summary::compute_summaries(root, source, &macros, false);
 
     let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
-    collect_callsite_args_from_tree(root, source, &mut callsite_args);
+    let mut callsite_field_args: HashMap<String, Vec<Vec<HashMap<String, NullState>>>> =
+        HashMap::new();
+    let mut callsite_pointee_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+    collect_callsite_args_from_tree(
+        root,
+        source,
+        &mut callsite_args,
+        &mut callsite_field_args,
+        &mut callsite_pointee_args,
+    );
 
     let empty_headers = HashSet::new();
     aggregate_callsite_null_states(&callsite_args, &mut function_summaries, &empty_headers);
+    aggregate_callsite_field_null_states(&callsite_field_args, &mut function_summaries);
+    aggregate_callsite_pointee_null_states(&callsite_pointee_args, &mut function_summaries);
 
     let known_functions: HashSet<String> = function_summaries.keys().cloned().collect();
 
@@ -491,6 +517,101 @@ fn aggregate_callsite_null_states(
     }
 }
 
+/// Aggregate struct field null states from call sites into function summaries.
+///
+/// For each callee, aggregates per-field null states across all call sites using
+/// the same voting scheme as `aggregate_callsite_null_states`: any DefinitelyNull
+/// or majority PossiblyNull → PossiblyNull, otherwise NotNull.
+fn aggregate_callsite_field_null_states(
+    callsite_field_args: &HashMap<String, Vec<Vec<HashMap<String, NullState>>>>,
+    summaries: &mut HashMap<String, FunctionSummary>,
+) {
+    for (callee_name, call_sites) in callsite_field_args {
+        if let Some(summary) = summaries.get_mut(callee_name) {
+            // Determine max params across all call sites
+            let max_params = call_sites.iter().map(|v| v.len()).max().unwrap_or(0);
+            for param_idx in 0..max_params {
+                // Collect all field names seen across call sites for this param
+                let mut field_counts: HashMap<String, (usize, usize, usize)> = HashMap::new();
+                for site in call_sites {
+                    if let Some(fields) = site.get(param_idx) {
+                        for (field_name, &state) in fields {
+                            let entry = field_counts.entry(field_name.clone()).or_insert((0, 0, 0));
+                            match state {
+                                NullState::DefinitelyNull => entry.0 += 1,
+                                NullState::PossiblyNull => entry.1 += 1,
+                                NullState::NotNull => entry.2 += 1,
+                                NullState::Unknown => {}
+                            }
+                        }
+                    }
+                }
+                // Aggregate each field
+                let mut field_states = HashMap::new();
+                for (field_name, (null_count, possibly_count, not_null_count)) in &field_counts {
+                    let total = null_count + possibly_count + not_null_count;
+                    if total > 0 {
+                        let aggregated = if *null_count > 0 || possibly_count > not_null_count {
+                            NullState::PossiblyNull
+                        } else {
+                            NullState::NotNull
+                        };
+                        field_states.insert(field_name.clone(), aggregated);
+                    }
+                }
+                if !field_states.is_empty() {
+                    summary
+                        .callsite_param_field_null_states
+                        .insert(param_idx, field_states);
+                }
+            }
+        }
+    }
+}
+
+/// Aggregate pointee null states from address-of arguments at call sites.
+///
+/// When a caller passes `&data` where `data = NULL`, the pointed-to value is NULL.
+/// This function aggregates those pointee states across all call sites using the same
+/// voting scheme as `aggregate_callsite_null_states`.
+/// Used for variant 63 pointer-to-pointer null propagation across functions.
+fn aggregate_callsite_pointee_null_states(
+    callsite_pointee_args: &HashMap<String, Vec<Vec<NullState>>>,
+    summaries: &mut HashMap<String, FunctionSummary>,
+) {
+    for (callee_name, call_sites) in callsite_pointee_args {
+        if let Some(summary) = summaries.get_mut(callee_name) {
+            let max_params = call_sites.iter().map(|v| v.len()).max().unwrap_or(0);
+            for param_idx in 0..max_params {
+                let mut null_count: usize = 0;
+                let mut possibly_count: usize = 0;
+                let mut not_null_count: usize = 0;
+                for site in call_sites {
+                    if let Some(&state) = site.get(param_idx) {
+                        match state {
+                            NullState::DefinitelyNull => null_count += 1,
+                            NullState::PossiblyNull => possibly_count += 1,
+                            NullState::NotNull => not_null_count += 1,
+                            NullState::Unknown => {}
+                        }
+                    }
+                }
+                let total_known = null_count + possibly_count + not_null_count;
+                if total_known > 0 {
+                    let aggregated = if null_count > 0 || possibly_count > not_null_count {
+                        NullState::PossiblyNull
+                    } else {
+                        NullState::NotNull
+                    };
+                    summary
+                        .callsite_param_pointee_null_states
+                        .insert(param_idx, aggregated);
+                }
+            }
+        }
+    }
+}
+
 /// Second pass: propagate parameter null states through relay functions.
 ///
 /// After the first aggregation, each function has `callsite_param_null_states` derived
@@ -531,6 +652,9 @@ fn propagate_param_null_states(
 
         // Re-collect callsite args with parameter state awareness
         let mut new_callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+        let mut new_callsite_field_args: HashMap<String, Vec<Vec<HashMap<String, NullState>>>> =
+            HashMap::new();
+        let mut new_callsite_pointee_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
 
         for file_path in source_files {
             if let Ok((tree, source)) = parser.parse_file(&file_path.to_string_lossy()) {
@@ -540,6 +664,8 @@ fn propagate_param_null_states(
                     &source,
                     &param_states_snapshot,
                     &mut new_callsite_args,
+                    &mut new_callsite_field_args,
+                    &mut new_callsite_pointee_args,
                 );
             }
         }
@@ -588,6 +714,8 @@ fn collect_callsite_args_with_param_states(
     source: &str,
     param_states: &HashMap<String, HashMap<usize, NullState>>,
     callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
+    callsite_field_args: &mut HashMap<String, Vec<Vec<HashMap<String, NullState>>>>,
+    callsite_pointee_args: &mut HashMap<String, Vec<Vec<NullState>>>,
 ) {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
@@ -617,7 +745,14 @@ fn collect_callsite_args_with_param_states(
                             }
                         }
 
-                        collect_calls_with_locals(&body, source, &local_states, callsite_args);
+                        collect_calls_with_locals(
+                            &body,
+                            source,
+                            &local_states,
+                            callsite_args,
+                            callsite_field_args,
+                            callsite_pointee_args,
+                        );
                     }
                 }
                 kind if kind.starts_with("preproc_") => {
@@ -626,15 +761,18 @@ fn collect_callsite_args_with_param_states(
                         source,
                         param_states,
                         callsite_args,
+                        callsite_field_args,
+                        callsite_pointee_args,
                     );
                 }
                 "linkage_specification" => {
-                    // Handle extern "C" { ... } blocks
                     collect_callsite_args_with_param_states(
                         &child,
                         source,
                         param_states,
                         callsite_args,
+                        callsite_field_args,
+                        callsite_pointee_args,
                     );
                 }
                 "declaration_list" => {
@@ -643,6 +781,8 @@ fn collect_callsite_args_with_param_states(
                         source,
                         param_states,
                         callsite_args,
+                        callsite_field_args,
+                        callsite_pointee_args,
                     );
                 }
                 _ => {}
@@ -702,6 +842,8 @@ fn collect_callsite_args_from_tree(
     node: &Node,
     source: &str,
     callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
+    callsite_field_args: &mut HashMap<String, Vec<Vec<HashMap<String, NullState>>>>,
+    callsite_pointee_args: &mut HashMap<String, Vec<Vec<NullState>>>,
 ) {
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
@@ -713,11 +855,24 @@ fn collect_callsite_args_from_tree(
                         // Detect early-return null guards: `if (p == NULL) return;`
                         // After the guard, p is guaranteed NotNull.
                         collect_early_return_null_guards(&body, source, &mut local_states);
-                        collect_calls_with_locals(&body, source, &local_states, callsite_args);
+                        collect_calls_with_locals(
+                            &body,
+                            source,
+                            &local_states,
+                            callsite_args,
+                            callsite_field_args,
+                            callsite_pointee_args,
+                        );
                     }
                 }
                 kind if kind.starts_with("preproc_") => {
-                    collect_callsite_args_from_tree(&child, source, callsite_args);
+                    collect_callsite_args_from_tree(
+                        &child,
+                        source,
+                        callsite_args,
+                        callsite_field_args,
+                        callsite_pointee_args,
+                    );
                 }
                 _ => {}
             }
@@ -855,6 +1010,65 @@ fn collect_assignments_recursive(
                                         states.insert(var_name, state);
                                     }
                                 }
+                            } else if left.kind() == "field_expression" {
+                                // Track struct field assignments: myStruct.field = expr
+                                // Used for variant 67 cross-function struct field null propagation
+                                if let (Some(base), Some(field)) = (
+                                    left.child_by_field_name("argument"),
+                                    left.child_by_field_name("field"),
+                                ) {
+                                    if base.kind() == "identifier" {
+                                        let base_name =
+                                            base.utf8_text(source.as_bytes()).unwrap_or("");
+                                        let field_name =
+                                            field.utf8_text(source.as_bytes()).unwrap_or("");
+                                        if !base_name.is_empty() && !field_name.is_empty() {
+                                            let key = format!("{}.{}", base_name, field_name);
+                                            let state = infer_rhs_null_state(&right, source);
+                                            if state != NullState::Unknown {
+                                                states.insert(key, state);
+                                            } else if right.kind() == "identifier" {
+                                                // Relay: myStruct.field = data
+                                                let rhs_name = right
+                                                    .utf8_text(source.as_bytes())
+                                                    .unwrap_or("");
+                                                if let Some(&local_state) = states.get(rhs_name) {
+                                                    states.insert(key, local_state);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else if left.kind() == "subscript_expression" {
+                                // Track array element assignments: arr[idx] = expr
+                                // Used for variant 66 cross-function array element null propagation
+                                // Stored as "arr.idx" in local_states (reuses field dotted-key mechanism)
+                                if let (Some(arg), Some(idx)) = (
+                                    left.child_by_field_name("argument"),
+                                    left.child_by_field_name("index"),
+                                ) {
+                                    if arg.kind() == "identifier" && idx.kind() == "number_literal"
+                                    {
+                                        let arr_name =
+                                            arg.utf8_text(source.as_bytes()).unwrap_or("");
+                                        let idx_text =
+                                            idx.utf8_text(source.as_bytes()).unwrap_or("");
+                                        if !arr_name.is_empty() && !idx_text.is_empty() {
+                                            let key = format!("{}.{}", arr_name, idx_text);
+                                            let state = infer_rhs_null_state(&right, source);
+                                            if state != NullState::Unknown {
+                                                states.insert(key, state);
+                                            } else if right.kind() == "identifier" {
+                                                let rhs_name = right
+                                                    .utf8_text(source.as_bytes())
+                                                    .unwrap_or("");
+                                                if let Some(&local_state) = states.get(rhs_name) {
+                                                    states.insert(key, local_state);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -965,6 +1179,8 @@ fn collect_calls_with_locals(
     source: &str,
     local_states: &HashMap<String, NullState>,
     callsite_args: &mut HashMap<String, Vec<Vec<NullState>>>,
+    callsite_field_args: &mut HashMap<String, Vec<Vec<HashMap<String, NullState>>>>,
+    callsite_pointee_args: &mut HashMap<String, Vec<Vec<NullState>>>,
 ) {
     if node.kind() == "call_expression" {
         if let Some(function) = node.child_by_field_name("function") {
@@ -973,6 +1189,10 @@ fn collect_calls_with_locals(
                 if !callee_name.is_empty() {
                     if let Some(args_node) = node.child_by_field_name("arguments") {
                         let mut arg_states = Vec::new();
+                        let mut arg_field_states = Vec::new();
+                        let mut arg_pointee_states = Vec::new();
+                        let mut has_field_states = false;
+                        let mut has_pointee_states = false;
                         for i in 0..args_node.child_count() {
                             if let Some(arg) = args_node.child(i) {
                                 if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
@@ -993,6 +1213,29 @@ fn collect_calls_with_locals(
                                 } else {
                                     arg_states.push(NullState::Unknown);
                                 }
+
+                                // Collect struct field null states for this argument
+                                let mut fields = HashMap::new();
+                                if arg.kind() == "identifier" {
+                                    let arg_name = arg.utf8_text(source.as_bytes()).unwrap_or("");
+                                    let prefix = format!("{}.", arg_name);
+                                    for (key, &st) in local_states {
+                                        if let Some(field_name) = key.strip_prefix(&prefix) {
+                                            fields.insert(field_name.to_string(), st);
+                                            has_field_states = true;
+                                        }
+                                    }
+                                }
+                                arg_field_states.push(fields);
+
+                                // Track pointee null state for &var arguments (variant 63).
+                                // When caller passes &data where data=NULL, the pointee is NULL.
+                                let pointee =
+                                    extract_address_of_pointee_state(&arg, source, local_states);
+                                if pointee != NullState::Unknown {
+                                    has_pointee_states = true;
+                                }
+                                arg_pointee_states.push(pointee);
                             }
                         }
                         if !arg_states.is_empty() {
@@ -1000,6 +1243,18 @@ fn collect_calls_with_locals(
                                 .entry(callee_name.to_string())
                                 .or_default()
                                 .push(arg_states);
+                        }
+                        if has_field_states {
+                            callsite_field_args
+                                .entry(callee_name.to_string())
+                                .or_default()
+                                .push(arg_field_states);
+                        }
+                        if has_pointee_states {
+                            callsite_pointee_args
+                                .entry(callee_name.to_string())
+                                .or_default()
+                                .push(arg_pointee_states);
                         }
                     }
                 }
@@ -1009,9 +1264,55 @@ fn collect_calls_with_locals(
 
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
-            collect_calls_with_locals(&child, source, local_states, callsite_args);
+            collect_calls_with_locals(
+                &child,
+                source,
+                local_states,
+                callsite_args,
+                callsite_field_args,
+                callsite_pointee_args,
+            );
         }
     }
+}
+
+/// Extract pointee null state from an address-of argument.
+/// For `&data`, looks up `data` in local_states and returns its null state.
+/// Returns Unknown if the argument is not an address-of expression.
+fn extract_address_of_pointee_state(
+    arg: &Node,
+    source: &str,
+    local_states: &HashMap<String, NullState>,
+) -> NullState {
+    // tree-sitter-c represents &x as pointer_expression or unary_expression
+    let is_addr_of = (arg.kind() == "pointer_expression" || arg.kind() == "unary_expression")
+        && arg
+            .child_by_field_name("operator")
+            .map(|op| op.utf8_text(source.as_bytes()).unwrap_or("") == "&")
+            .unwrap_or(false);
+    if !is_addr_of {
+        return NullState::Unknown;
+    }
+    if let Some(inner) = arg.child_by_field_name("argument") {
+        if inner.kind() == "identifier" {
+            let inner_name = inner.utf8_text(source.as_bytes()).unwrap_or("");
+            if let Some(&state) = local_states.get(inner_name) {
+                return state;
+            }
+        }
+    }
+    // For unary_expression, the operand field may be named differently
+    if arg.kind() == "unary_expression" {
+        if let Some(inner) = arg.child(1) {
+            if inner.kind() == "identifier" {
+                let inner_name = inner.utf8_text(source.as_bytes()).unwrap_or("");
+                if let Some(&state) = local_states.get(inner_name) {
+                    return state;
+                }
+            }
+        }
+    }
+    NullState::Unknown
 }
 
 // ---------------------------------------------------------------------------
@@ -2053,7 +2354,15 @@ mod tests {
         let code = "void caller(void) { sink(NULL); }";
         let (tree, source) = parse_c(code);
         let mut args = HashMap::new();
-        collect_callsite_args_from_tree(&tree.root_node(), &source, &mut args);
+        let mut field_args = HashMap::new();
+        let mut pointee_args = HashMap::new();
+        collect_callsite_args_from_tree(
+            &tree.root_node(),
+            &source,
+            &mut args,
+            &mut field_args,
+            &mut pointee_args,
+        );
         assert_eq!(args.get("sink").unwrap()[0][0], NullState::DefinitelyNull);
     }
 
@@ -2062,7 +2371,15 @@ mod tests {
         let code = r#"void caller(void) { char *s = "hi"; sink(s); }"#;
         let (tree, source) = parse_c(code);
         let mut args = HashMap::new();
-        collect_callsite_args_from_tree(&tree.root_node(), &source, &mut args);
+        let mut field_args = HashMap::new();
+        let mut pointee_args = HashMap::new();
+        collect_callsite_args_from_tree(
+            &tree.root_node(),
+            &source,
+            &mut args,
+            &mut field_args,
+            &mut pointee_args,
+        );
         assert_eq!(args.get("sink").unwrap()[0][0], NullState::NotNull);
     }
 

@@ -1,8 +1,7 @@
 /*
  * Rule: INT16-C
  * Source: testcases
- * Status: PASS - Known limitation: signed-to-unsigned conversion not detected
- * TODO: Move to fail/ when implemented (see PLAN.md)
+ * Status: FAIL - Signed-to-unsigned conversion without range check
  */
 
 #include <limits.h>
