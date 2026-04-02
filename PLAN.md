@@ -285,21 +285,60 @@ v0.3.59 benchmark: +327 TP/+96 FP. TP rate 52.6%→52.9% (+0.3pp).
   Cumulative v0.3.56→v0.3.59: +851 TP/+149 FP (5.7:1 ratio).
   TP rate 52.1%→52.9% (+0.8pp). 74 CWEs covered.
 
-Remaining 6 zero-detection CWEs (all require new analysis capabilities):
-- CWE-259 (112 files): task 57, needs investigation — rule exists but
-    Juliet detection blocked by preprocessor limitation
-- CWE-188 (36 files): task 58, MEDIUM — struct layout assumptions
-- CWE-459 (36 files): task 59, MEDIUM — temp file cleanup tracking
-- CWE-666 (90 files): task 60, MEDIUM-HIGH — socket operation ordering
-- CWE-226 (72 files): task 61, HIGH — sensitive data clearing
-- CWE-789 (560 files): task 62, HIGH — taint tracking for malloc size
-- CWE-114 (672 files): task 63, HIGH — taint tracking for LoadLibrary
+v0.3.60: Resolved final 6 zero-detection CWEs (tasks 58-63):
+
+CWE-188 Struct Layout Assumptions (EXP39-C extended, task 58):
+  36 TP/0 FP (100%). Two new checks: struct field pointer arithmetic
+  (*(T*)(ptr + offset) where ptr = &struct.field) and union type punning
+  (sub-field access into struct member of union after writing scalar member).
+
+CWE-459 Incomplete Temp File Cleanup (FIO42-C extended, task 59):
+  34 TP/0 FP (100%). Detects mkstemp/mktemp calls without unlink/remove
+  cleanup in same function. 2 missed are variant-12 (mixed branches).
+
+CWE-666 Socket Operation Ordering (new POS55-C, task 60):
+  162 TP/0 FP (100%). State machine: bind() → listen() → accept().
+  Flags any call in wrong order (accept before listen/bind, listen
+  before bind). All 5 sub-patterns × 18 variants detected.
+
+CWE-226 Sensitive Data Not Cleared (MEM03-C extended, task 61):
+  68 TP/0 FP (100%). Detects pointer/array variables with sensitive names
+  (password, secret, credential, passphrase) not cleared with
+  SecureZeroMemory/memset/explicit_bzero before function exit.
+  4 missed are variant-12 (mixed branches).
+
+CWE-789 Unbounded Memory Allocation (MEM35-C extended, task 62):
+  190 TP/0 FP (100%). Intra-procedural taint: flags malloc/calloc/realloc
+  in functions with taint sources (recv, fgets, fscanf, rand) and no
+  upper-bound check (< constant). 370 cross-function variants need
+  inter-procedural taint tracking.
+
+CWE-114 Untrusted Library Path (ERR07-C extended, task 63):
+  126 TP/0 FP (100%). Intra-procedural taint: flags LoadLibraryA/W/dlopen
+  in functions with taint sources. 546 cross-function variants need
+  inter-procedural taint tracking.
+
+Bonus: CWE-680 +80 TP/0 FP (MEM35-C taint check caught integer-overflow-
+  to-buffer-overflow patterns). CWE-244 +34 TP/0 FP (MEM03-C sensitive
+  data check also caught heap inspection patterns).
+
+v0.3.60 benchmark: +730 TP/0 FP. TP rate 52.9%→53.6% (+0.7pp).
+  24,408 TP / 21,117 FP across 74 CWEs (50,038 files).
+  31 CWEs at 100% precision (up from 25). Per-file rate 40.9%.
+  Cumulative v0.3.56→v0.3.60: +1,581 TP/+149 FP (10.6:1 ratio).
+
+Remaining 2 zero-detection CWEs:
+- CWE-259 (112 files): Hard-coded password — MSC41-C rule exists but
+    tree-sitter can't expand preprocessor macros in Juliet's Windows headers
+- CWE-328 (54 files): Reversible one-way hash — needs new crypto rule
 
 10 formerly zero-detection CWEs resolved in v0.3.35-v0.3.42. 4 more
 resolved in v0.3.47 (CWE-675 double-close, CWE-273 Windows privilege
 APIs, CWE-562 analyzer fix, CWE-561 mapping). 3 more resolved in
-v0.3.58 (CWE-364, CWE-398, CWE-563). 13 are Windows-only
-(not actionable).
+v0.3.58 (CWE-364, CWE-398, CWE-563). 4 more resolved in v0.3.59
+(CWE-327, CWE-272, CWE-468, CWE-259 attempted). 6 more resolved in
+v0.3.60 (CWE-188, CWE-459, CWE-666, CWE-226, CWE-789, CWE-114).
+13 are Windows-only (not actionable).
 
 ---
 
