@@ -1,9 +1,10 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-02 (v0.3.65)
+Last Updated: 2026-04-02 (v0.3.67)
 
-Juliet benchmark v0.3.63: 24,408 TP / 21,117 FP (53.6% TP rate), 40.9% per-file.
-Zero delta from v0.3.60 — correctness fixes and infrastructure only, no detection changes.
+Juliet benchmark v0.3.67: 25,552 TP / 22,407 FP (53.3% TP rate), 42.4% per-file.
+v0.3.67 vs v0.3.63: +1,144 TP, +1,290 FP (+2,434 total). Per-file +1.5pp.
+CWE-190 per-file 35.0%→43.3%, CWE-191 per-file 40.5%→47.7%.
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -41,15 +42,38 @@ Paper updated with results and Graham 1969 citation.
 
 # Task ID: 5
 # Title: CWE-190/191 integer overflow coverage
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Improve CWE-190/191 detection beyond current stable rates.
 # Details:
-v0.3.37: CWE-190 655 TP/790 FP (45.3%), CWE-191 560 TP/716 FP (43.9%).
-Unchanged since v0.3.28. INT30-C/INT32-C matched. Stable after VRA. Gap is
-coverage not precision — additional detection requires new analysis patterns,
-not FP reduction.
+v0.3.67: Two bugs in resolve_local_var_range (const_eval.rs) caused
+INT32-C/INT30-C to miss overflow in the primary Juliet patterns:
+
+1. Returned first assignment, not last: `data = 0; data = INT_MAX;`
+   resolved to [0,0] instead of [INT_MAX,INT_MAX]. (v0.3.66)
+2. Unevaluable assignments not tracked: `data = rand()` or
+   `fscanf(stdin, "%d", &data)` left stale range from prior assignment.
+   New stmt_modifies_var() invalidates range on unevaluable assignment
+   or pointer-modifying call (&var in argument list). (v0.3.67)
+
+Also fixed benchmark runner: -d JULIET_BASE prescanned 58K files per CWE
+(~4 min each × 74 CWEs). Changed to -d cwe_dir (CWE-scoped prescan) and
+-j 1 (runner parallelizes at CWE level). Benchmark time: hours → 7 min.
+
+Results (v0.3.63 → v0.3.67):
+  CWE-190: 1,763→2,322 TP (+559), per-file 35.0%→43.3% (+8.3pp)
+  CWE-191: 1,563→1,973 TP (+410), per-file 40.5%→47.7% (+7.2pp)
+  CWE-680: 404→559 TP (+155), TP rate 48.7%→51.4% (+2.7pp)
+  Overall: +1,144 TP, +1,290 FP. TP rate 53.6%→53.3% (-0.3pp).
+  FP increase proportional — same ~45% TP rate on new detections.
+
+Remaining coverage gaps (not addressed):
+  - rand() source: suppressed by is_small_increment_of_opaque (deliberate
+    FP heuristic for strlen()+1 patterns). Fixing would hurt real-world FP.
+  - Cross-function variants (41-68): need inter-procedural VRA.
+  - Conditional flow variants (12-18): syntactic resolver can't follow
+    branches; VRA handles some but not all.
 
 ---
 
