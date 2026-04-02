@@ -1,20 +1,20 @@
 /*
  * Rule: INT34-C
  * Source: testcases
- * Status: PASS - Unsigned right shifts with naming convention detection
+ * Status: PASS - Unsigned right shifts detected via parameter type declarations
  */
 
-/* ui_ prefix identifies unsigned — right shift safe */
-unsigned int ui_right_shift_basic(unsigned int ui_val, unsigned int ui_amt) {
-    return ui_val >> ui_amt;
+/* Unsigned type inferred from parameter declaration — right shift safe */
+unsigned int right_shift_basic(unsigned int val, unsigned int amt) {
+    return val >> amt;
 }
 
-/* u_ prefix identifies unsigned — right shift safe */
-unsigned int u_right_shift_basic(unsigned int u_val, unsigned int u_amt) {
-    return u_val >> u_amt;
+/* Multiple unsigned params with natural names */
+unsigned int right_shift_mask(unsigned int data, unsigned int shift) {
+    return data >> shift;
 }
 
-/* unsigned_ prefix identifies unsigned — right shift safe */
-unsigned int unsigned_prefix_right(unsigned int unsigned_val, unsigned int unsigned_amt) {
-    return unsigned_val >> unsigned_amt;
+/* Unsigned long variant */
+unsigned long right_shift_long(unsigned long value, unsigned int bits) {
+    return value >> bits;
 }

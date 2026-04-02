@@ -1,3 +1,4 @@
+pub mod brules;
 mod cert_c;
 
 use crate::analyze::cfg::FunctionCfg;

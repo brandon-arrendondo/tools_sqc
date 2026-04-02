@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-01 (v0.3.62)
+Last Updated: 2026-04-01 (v0.3.63)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -109,14 +109,16 @@ Gate threshold updated to 81 in coverage-gate.sh.
 
 # Task ID: 17
 # Title: expected_fail test category
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Add expected_fail/ test directory for known limitations.
 # Details:
-For cases like EXP34-C intra-file null deref without call-site analysis.
-Tests that document known gaps without falsely passing. Requires build.rs
-changes to generate test expectations differently for this directory.
+Done in v0.3.63. build.rs scans tests/expected_fail/ alongside fail/ and pass/.
+Tests generated with #[ignore = "Known limitation: ..."] and fail-like assertions.
+Run with `cargo test -- --ignored` to check if tool has improved. Added example:
+EXP34-C/tests/expected_fail/cross_function_null_deref.c. Also supports
+src/rules/brules/ directory for non-CERT rules.
 
 ---
 
@@ -189,13 +191,16 @@ of done.
 
 # Task ID: 30
 # Title: Pointer indirection depth check (BRULE-065)
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: Flag declarations with excessive pointer indirection (e.g., ***p).
 # Details:
-BRULE-065 (All tier) limits pointer indirection depth. Simple AST check:
-count * depth in declarations. Straightforward implementation, low effort.
+Done in v0.3.63. Created src/rules/brules/BRULE-065/ with AST-based pointer
+depth counting. Flags declarations exceeding depth 2 (e.g., int ***p). Handles
+parameter declarations, init_declarators, and nested declarator chains. First
+non-CERT rule — established src/rules/brules/ directory structure with separate
+module, TOML namespace ([rules.brules.*]), and build.rs scanning.
 
 ---
 
@@ -419,48 +424,35 @@ on tag push. Use cross for cross-compilation where needed.
 
 # Task ID: 54
 # Title: MSC13-C dead store: compound assignment LHS not recognized as read
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: MSC13-C dead store analysis does not recognize compound assignment
   LHS (+=, -=, etc.) as a read of the variable.
 # Details:
-Pattern: `int x = 10; x += 5; printf("%d", x);` — the first assignment is
-flagged as a dead store because `x += 5` is treated as a pure write. In reality,
-`x += 5` reads the current value of `x` before writing.
-
-Root cause: `is_read_context()` returns false for any `assignment_expression`
-LHS, including compound assignments. The `collect_all_assignments()` function
-collects compound assignments as assignment sites. Between the init and the
-compound assignment, `has_read_between()` finds no read (because the `x` in
-`x += 5` is on the assignment line itself, and is_read_context returns false
-for it).
-
-Fix: In `collect_all_assignments()`, skip compound assignment operators
-(+=, -=, *=, /=, etc.) since they implicitly read the LHS. Or: in
-`is_read_context()`, detect compound assignment and return true for the LHS.
-Low effort, localized change.
+Done in v0.3.63. Two fixes in msc13_c.rs:
+1. is_read_context(): checks assignment operator — compound (+=, -=, etc.)
+   returns true for LHS (it's a read), simple (=) returns false.
+2. collect_all_assignments(): only collects simple = assignments, skips
+   compound operators since they aren't pure overwrites.
+Added tests/pass/used_in_compound_assignment.c (7 operator patterns).
 
 ---
 
 # Task ID: 55
 # Title: INT34-C: cannot infer unsigned from parameter type declarations
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: INT34-C `is_likely_unsigned()` fails to detect unsigned types
   from function parameter type declarations.
 # Details:
-Pattern: `void f(unsigned int val, unsigned int n) { val >> n; }` — the rule
-cannot determine that `val` is unsigned from its parameter declaration. Instead
-it relies on naming conventions (ui_, u_ prefixes) or text-search heuristics
-that fail with multi-parameter declarations.
-
-Root cause: `is_likely_unsigned()` searches param declarations with
-`param_text.contains(var_name) && param_text.contains("unsigned")`, but
-tree-sitter's `parameter_declaration` may not resolve type specifiers
-precisely. The function also checks local declarations with string matching.
-
-Fix: Walk the parameter_declaration AST to extract the type specifier node
-and check for the `unsigned` keyword directly, rather than string matching
-on the full declaration text.
+Done in v0.3.63. Replaced string matching with AST-based type extraction:
+1. New decl_has_unsigned_var(): walks declaration AST for sized_type_specifier
+   containing "unsigned" and matches declarator identifier.
+2. New find_parameter_list(): correctly traverses function_definition →
+   function_declarator → parameter_list (was using nonexistent "parameters"
+   field name on function_definition).
+3. New body_has_unsigned_var(): checks local variable declarations.
+Updated existing tests to remove ui_/u_ naming convention workarounds —
+now uses natural variable names with proper AST-based type detection.
