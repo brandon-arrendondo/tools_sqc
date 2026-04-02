@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-01 (v0.3.61)
+Last Updated: 2026-04-01 (v0.3.62)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -83,24 +83,27 @@ as potentially modified.
 
 # Task ID: 13
 # Title: Raise coverage gate to 81%
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
-# Description: Raise test coverage gate from 80% to 81% (~1,175 additional lines).
+# Description: Raised test coverage gate from 80% to 81% (1,350 additional lines).
 # Details:
-Current: 80.06% (24,908 uncovered of 124,904 lines). Highest-impact targets:
+Done. Coverage raised from 80.02% (26,148 uncovered) to 81.05% (24,798 uncovered).
+Added 75+ .c test files across 10 rules:
 
-  ARR38-C: 759 uncovered, 70.7% coverage. Add .c test cases for library
-    patterns.
-  value_range.rs: 567 uncovered, 70.9%. Add unit tests for condition/assignment
-    handlers.
-  ERR33-C: 550 uncovered, 71.2%. Add .c test cases for stdlib error checks.
-  INT31-C: 516 uncovered, 70.1%. Add .c tests for integer conversion patterns.
-  INT34-C: 451 uncovered, 54.7%. Add .c tests for VRA and range paths.
-  analyze/mod.rs: 401 uncovered, 40.4%. Integration test for analyze_project
-    (needs manifest + source fixture).
-# Test Strategy: Run scripts/coverage-gate.sh after adding tests. Must reach
-80.99% minimum to round to 81%.
+  MSC13-C: 1.3% → 82.9% (8 fail + 9 pass tests). Unused vars, dead stores.
+  WIN05-C: 2.8% → 90.6% (8 fail + 5 pass tests). CreateProcess, registry, SHReg.
+  POS55-C: 1.8% → ~80% (3 fail + 2 pass tests). Socket ordering.
+  MSC42-C: 4.8% → ~80% (4 fail + 2 pass tests). Weak crypto.
+  INT34-C: 51.0% → 67.2% (1 fail + 7 pass tests). VRA, modulo, loop bounds.
+  ERR33-C: 71.2% → 72.0% (3 fail + 4 pass tests). Realloc, strtol, fopen.
+  INT31-C: 70.1% → 74.6% (4 fail + 4 pass tests). Narrowing, pointer casts.
+  ERR07-C: 49.1% → ~70% (5 fail + 1 pass tests). CWE-114 taint, atof, ctime.
+  MSC12-C: 59.6% → ~68% (5 fail + 2 pass tests). Empty bodies, self-assign.
+  DCL02-C: 61.5% → 62.4% (4 fail + 1 pass tests). Visual similarity pairs.
+  DCL30-C: 62.2% → 64.2% (2 fail + 3 pass tests). Return locals.
+
+Gate threshold updated to 81 in coverage-gate.sh.
 
 ---
 
@@ -411,3 +414,53 @@ Packaging targets:
 
 CI/CD integration: GitHub Actions matrix build with release artifacts uploaded
 on tag push. Use cross for cross-compilation where needed.
+
+---
+
+# Task ID: 54
+# Title: MSC13-C dead store: compound assignment LHS not recognized as read
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: MSC13-C dead store analysis does not recognize compound assignment
+  LHS (+=, -=, etc.) as a read of the variable.
+# Details:
+Pattern: `int x = 10; x += 5; printf("%d", x);` — the first assignment is
+flagged as a dead store because `x += 5` is treated as a pure write. In reality,
+`x += 5` reads the current value of `x` before writing.
+
+Root cause: `is_read_context()` returns false for any `assignment_expression`
+LHS, including compound assignments. The `collect_all_assignments()` function
+collects compound assignments as assignment sites. Between the init and the
+compound assignment, `has_read_between()` finds no read (because the `x` in
+`x += 5` is on the assignment line itself, and is_read_context returns false
+for it).
+
+Fix: In `collect_all_assignments()`, skip compound assignment operators
+(+=, -=, *=, /=, etc.) since they implicitly read the LHS. Or: in
+`is_read_context()`, detect compound assignment and return true for the LHS.
+Low effort, localized change.
+
+---
+
+# Task ID: 55
+# Title: INT34-C: cannot infer unsigned from parameter type declarations
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: INT34-C `is_likely_unsigned()` fails to detect unsigned types
+  from function parameter type declarations.
+# Details:
+Pattern: `void f(unsigned int val, unsigned int n) { val >> n; }` — the rule
+cannot determine that `val` is unsigned from its parameter declaration. Instead
+it relies on naming conventions (ui_, u_ prefixes) or text-search heuristics
+that fail with multi-parameter declarations.
+
+Root cause: `is_likely_unsigned()` searches param declarations with
+`param_text.contains(var_name) && param_text.contains("unsigned")`, but
+tree-sitter's `parameter_declaration` may not resolve type specifiers
+precisely. The function also checks local declarations with string matching.
+
+Fix: Walk the parameter_declaration AST to extract the type specifier node
+and check for the `unsigned` keyword directly, rather than string matching
+on the full declaration text.

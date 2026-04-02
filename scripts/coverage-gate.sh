@@ -10,7 +10,7 @@
 
 set -euo pipefail
 
-THRESHOLD="${1:-80}"
+THRESHOLD="${1:-81}"
 # Exclude untestable code: ui/ (GUI), main.rs (CLI entry), integration.rs (test harness),
 # progress.rs (terminal I/O), export/ (SARIF/Excel output), files/ (git/directory I/O),
 # manifest/ (TOML config loading)
