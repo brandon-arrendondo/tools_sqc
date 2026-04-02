@@ -16,15 +16,26 @@ then Juliet benchmark and real-world benchmark to validate.
 
 # Task ID: 24
 # Title: File-size-aware batching for parallel analysis
-# Status: in-progress
+# Status: done
 # Dependencies: none
 # Priority: P1
-# Description: Balance parallel work by file size for better load distribution.
+# Description: LPT scheduling with demand-driven dispatch for parallel analysis.
 # Details:
-Rayon's work-stealing helps but isn't optimal — large files clustered together
-can still cause tail latency. Research well-founded scheduling heuristics (LPT,
-multifit, etc.) and implement file-size-aware ordering or partitioning before
-par_iter dispatch.
+Done in v0.3.66. Applied Graham's LPT heuristic (1969): files sorted by size
+descending, dispatched via rayon par_bridge() (demand-driven, one file at a time
+to idle threads). Key insight from rayon community: par_iter() splits by index,
+so descending sort clusters large files on one thread — par_bridge() avoids this
+by dispatching on demand.
+
+Results at -j 4 (3 runs each, cross-file analysis):
+  curl (696 files, 43x max/median skew):
+    Baseline: 178.5s avg, 193.4s worst, σ=13.0s
+    LPT:      176.4s avg, 176.5s worst, σ=0.1s  (-1.2% avg, -8.7% worst, -99% variance)
+  sqlite (312 files, 37x max/median skew):
+    Baseline: 1197s avg, 1280s worst, σ=71.8s, 83% CPU efficiency
+    LPT:      1169s avg, 1204s worst, σ=34.3s, 96% CPU efficiency  (-2.3% avg, -6% worst, -52% variance)
+
+Paper updated with results and Graham 1969 citation.
 
 ---
 

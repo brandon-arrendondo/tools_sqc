@@ -119,11 +119,18 @@ pub fn analyze_project(
         eprintln!("These rules will be skipped during analysis.\n");
     }
 
-    let c_files = if diff_only {
+    let mut c_files = if diff_only {
         project_source.get_modified_c_files()?
     } else {
         project_source.get_c_files()?
     };
+
+    // LPT scheduling: sort files by size descending so largest files are dispatched first.
+    // Combined with par_bridge() demand-driven dispatch, this implements Graham's LPT
+    // algorithm (1969) for makespan minimization — (4/3 - 1/3m) approximation ratio.
+    c_files
+        .sort_by_cached_key(|f| std::cmp::Reverse(fs::metadata(f).map(|m| m.len()).unwrap_or(0)));
+
     let total_files = c_files.len();
     let mut suppression_manager = SuppressionManager::new();
 
@@ -175,7 +182,8 @@ pub fn analyze_project(
 
         let results: Vec<_> = pool.install(|| {
             c_files
-                .par_iter()
+                .iter()
+                .par_bridge()
                 .map(|file_path| {
                     if let Some(reporter) = progress {
                         if reporter.is_cancelled() {
