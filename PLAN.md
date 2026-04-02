@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-02 (v0.3.63)
+Last Updated: 2026-04-02 (v0.3.65)
 
 Juliet benchmark v0.3.63: 24,408 TP / 21,117 FP (53.6% TP rate), 40.9% per-file.
 Zero delta from v0.3.60 — correctness fixes and infrastructure only, no detection changes.
@@ -14,11 +14,25 @@ then Juliet benchmark and real-world benchmark to validate.
 
 ---
 
+# Task ID: 24
+# Title: File-size-aware batching for parallel analysis
+# Status: in-progress
+# Dependencies: none
+# Priority: P1
+# Description: Balance parallel work by file size for better load distribution.
+# Details:
+Rayon's work-stealing helps but isn't optimal — large files clustered together
+can still cause tail latency. Research well-founded scheduling heuristics (LPT,
+multifit, etc.) and implement file-size-aware ordering or partitioning before
+par_iter dispatch.
+
+---
+
 # Task ID: 5
 # Title: CWE-190/191 integer overflow coverage
 # Status: pending
 # Dependencies: none
-# Priority: P3
+# Priority: P2
 # Description: Improve CWE-190/191 detection beyond current stable rates.
 # Details:
 v0.3.37: CWE-190 655 TP/790 FP (45.3%), CWE-191 560 TP/716 FP (43.9%).
@@ -32,13 +46,52 @@ not FP reduction.
 # Title: CWE-690 per-file detection improvement
 # Status: pending
 # Dependencies: 7
-# Priority: P3
+# Priority: P2
 # Description: Raise CWE-690 per-file detection rate from 18.1% toward 30%.
 # Details:
 v0.3.37: 203 TP, 12 FP, 94.4% TP rate, 18.1% per-file. Best precision of any
 high-volume CWE. 74% undetected are likely cross-function patterns. Improving
 per-file rate depends on EXP34-C Phase 4 (task 7) for deeper inter-procedural
 null propagation.
+
+---
+
+# Task ID: 25
+# Title: Incremental parsing
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Only re-parse changed files on subsequent runs.
+# Details:
+Track file modification times or content hashes. Skip parsing and re-use
+cached ASTs for unchanged files. Significant speedup for iterative development
+workflows.
+
+---
+
+# Task ID: 34
+# Title: Per-file detection >= 30% on top 10 CWEs
+# Status: pending
+# Dependencies: 32
+# Priority: P2
+# Description: Tier 3 competitive milestone — per-file detection rate.
+# Details:
+Per-file detection measures whether at least one TP is found per Juliet test
+file. Current rates vary widely. Improving requires better cross-function
+analysis for variants that span multiple functions within a file.
+
+---
+
+# Task ID: 31
+# Title: Post-init malloc detection (BRULE-060)
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Flag malloc/free calls outside main()/init functions.
+# Details:
+BRULE-060 (Constrained tier) prohibits dynamic allocation after
+initialization. Heuristic: identify init functions (main, *_init, *_setup) and
+flag malloc/calloc/realloc/free in all other functions. Medium effort.
 
 ---
 
@@ -84,47 +137,6 @@ as potentially modified.
 
 ---
 
-# Task ID: 13
-# Title: Raise coverage gate to 81%
-# Status: done
-# Dependencies: none
-# Priority: P2
-# Description: Raised test coverage gate from 80% to 81% (1,350 additional lines).
-# Details:
-Done. Coverage raised from 80.02% (26,148 uncovered) to 81.05% (24,798 uncovered).
-Added 75+ .c test files across 10 rules:
-
-  MSC13-C: 1.3% → 82.9% (8 fail + 9 pass tests). Unused vars, dead stores.
-  WIN05-C: 2.8% → 90.6% (8 fail + 5 pass tests). CreateProcess, registry, SHReg.
-  POS55-C: 1.8% → ~80% (3 fail + 2 pass tests). Socket ordering.
-  MSC42-C: 4.8% → ~80% (4 fail + 2 pass tests). Weak crypto.
-  INT34-C: 51.0% → 67.2% (1 fail + 7 pass tests). VRA, modulo, loop bounds.
-  ERR33-C: 71.2% → 72.0% (3 fail + 4 pass tests). Realloc, strtol, fopen.
-  INT31-C: 70.1% → 74.6% (4 fail + 4 pass tests). Narrowing, pointer casts.
-  ERR07-C: 49.1% → ~70% (5 fail + 1 pass tests). CWE-114 taint, atof, ctime.
-  MSC12-C: 59.6% → ~68% (5 fail + 2 pass tests). Empty bodies, self-assign.
-  DCL02-C: 61.5% → 62.4% (4 fail + 1 pass tests). Visual similarity pairs.
-  DCL30-C: 62.2% → 64.2% (2 fail + 3 pass tests). Return locals.
-
-Gate threshold updated to 81 in coverage-gate.sh.
-
----
-
-# Task ID: 17
-# Title: expected_fail test category
-# Status: done
-# Dependencies: none
-# Priority: P3
-# Description: Add expected_fail/ test directory for known limitations.
-# Details:
-Done in v0.3.63. build.rs scans tests/expected_fail/ alongside fail/ and pass/.
-Tests generated with #[ignore = "Known limitation: ..."] and fail-like assertions.
-Run with `cargo test -- --ignored` to check if tool has improved. Added example:
-EXP34-C/tests/expected_fail/cross_function_null_deref.c. Also supports
-src/rules/brules/ directory for non-CERT rules.
-
----
-
 # Task ID: 20
 # Title: Inter-procedural .c test cases
 # Status: pending
@@ -135,92 +147,6 @@ src/rules/brules/ directory for non-CERT rules.
 Need test infrastructure that can compile and analyze multiple .c files
 together to exercise prescan context, cross-file function resolution, and
 call-site null state propagation.
-
----
-
-# Task ID: 23
-# Title: Internal parallelization (rayon)
-# Status: done
-# Dependencies: none
-# Priority: P3
-# Description: File-level parallelism within a single sqc invocation using rayon.
-# Details:
-Done in v0.3.64. Added `-j/--jobs <N>` flag (default 0 = auto-detect CPUs).
-Uses rayon with per-file parser + rule registry instances (avoids RefCell/Send
-issues). Sequential path (`-j 1`) unchanged. Results sorted deterministically.
-Python parallel wrapper (`scripts/sqc_parallel_scan.py`) removed — no longer
-needed. MCP realworld server updated to use `sqc -j N` directly.
-
-Performance on 24-core machine:
-  curl (696 files): 9m38s → 59s (9.8x with -j 0)
-  mosquitto (470 files): 2m42s → 34s (4.8x with -j 8)
-
----
-
-# Task ID: 24
-# Title: File-size-aware batching
-# Status: pending
-# Dependencies: none
-# Priority: P3
-# Description: Balance parallel work by file size instead of directory.
-# Details:
-Rayon's work-stealing largely addresses this — large files don't block other
-threads. Could further optimize by sorting files largest-first before par_iter
-so large files start early while small files fill gaps.
-
----
-
-# Task ID: 25
-# Title: Incremental parsing
-# Status: pending
-# Dependencies: none
-# Priority: P3
-# Description: Only re-parse changed files on subsequent runs.
-# Details:
-Track file modification times or content hashes. Skip parsing and re-use
-cached ASTs for unchanged files. Significant speedup for iterative development
-workflows.
-
----
-
-# Task ID: 27
-# Title: Docker image
-# Status: pending
-# Dependencies: none
-# Priority: P3
-# Description: Containerized CI/CD distribution of sqc.
-# Details:
-Dockerfile for sqc with all dependencies. Enables drop-in CI/CD usage without
-local Rust toolchain installation. Part of Tier 2 production quality definition
-of done.
-
----
-
-# Task ID: 30
-# Title: Pointer indirection depth check (BRULE-065)
-# Status: done
-# Dependencies: none
-# Priority: P3
-# Description: Flag declarations with excessive pointer indirection (e.g., ***p).
-# Details:
-Done in v0.3.63. Created src/rules/brules/BRULE-065/ with AST-based pointer
-depth counting. Flags declarations exceeding depth 2 (e.g., int ***p). Handles
-parameter declarations, init_declarators, and nested declarator chains. First
-non-CERT rule — established src/rules/brules/ directory structure with separate
-module, TOML namespace ([rules.brules.*]), and build.rs scanning.
-
----
-
-# Task ID: 31
-# Title: Post-init malloc detection (BRULE-060)
-# Status: pending
-# Dependencies: none
-# Priority: P3
-# Description: Flag malloc/free calls outside main()/init functions.
-# Details:
-BRULE-060 (Constrained tier) prohibits dynamic allocation after
-initialization. Heuristic: identify init functions (main, *_init, *_setup) and
-flag malloc/calloc/realloc/free in all other functions. Medium effort.
 
 ---
 
@@ -235,19 +161,6 @@ flag malloc/calloc/realloc/free in all other functions. Medium effort.
 See docs/bibliography.rst for tool references. Need to install Infer and
 Frama-C, run on Juliet test suite with equivalent CWE coverage, and compare
 TP/FP rates directly.
-
----
-
-# Task ID: 34
-# Title: Per-file detection >= 30% on top 10 CWEs
-# Status: pending
-# Dependencies: 32
-# Priority: P3
-# Description: Tier 3 competitive milestone — per-file detection rate.
-# Details:
-Per-file detection measures whether at least one TP is found per Juliet test
-file. Current rates vary widely. Improving requires better cross-function
-analysis for variants that span multiple functions within a file.
 
 ---
 
@@ -276,6 +189,43 @@ These limitations collectively cap TP rate at ~45-48% without major
 architectural investment.
 
 ---
+
+# Task ID: 27
+# Title: Docker image
+# Status: pending
+# Dependencies: none
+# Priority: P4
+# Description: Containerized CI/CD distribution of sqc.
+# Details:
+Dockerfile for sqc with all dependencies. Enables drop-in CI/CD usage without
+local Rust toolchain installation. Part of Tier 2 production quality definition
+of done.
+
+---
+
+# Task ID: 53
+# Title: Binary distribution packages
+# Status: pending
+# Dependencies: none
+# Priority: P4
+# Description: Generate AppImage, Windows .exe, .deb, and .rpm packages for sqc.
+# Details:
+Packaging targets:
+  - AppImage (Linux portable): use cargo-appimage or linuxdeploy with sqc binary +
+    .desktop file + icon. Single self-contained executable for any Linux distro.
+  - Windows .exe: cross-compile with x86_64-pc-windows-gnu or -msvc target.
+    Optionally wrap in an MSI installer via cargo-wix.
+  - .deb (Debian/Ubuntu): use cargo-deb. Include sqc binary in /usr/bin/,
+    man page (task 52) in /usr/share/man/man1/, config examples in
+    /usr/share/doc/sqc/. Set dependencies (libc6).
+  - .rpm (Fedora/RHEL): use cargo-generate-rpm. Same file layout as .deb.
+
+CI/CD integration: GitHub Actions matrix build with release artifacts uploaded
+on tag push. Use cross for cross-compilation where needed.
+
+---
+
+# Paper Tasks (P3)
 
 # Task ID: 47
 # Title: Paper — real bug case study
@@ -392,105 +342,3 @@ Remaining items:
   - Proofread and style consistency pass
 
 ---
-
-# Task ID: 52
-# Title: Man page for sqc
-# Status: done
-# Dependencies: none
-# Priority: P2
-# Description: Create a man page (sqc.1) documenting CLI usage, options, and examples.
-# Details:
-Done in v0.3.61. Created docs/sqc.1 in roff format covering all 16 CLI options
-(grouped by category), exit codes, rules manifest and suppression file config,
-7 usage examples, and cross-references to cppcheck/clang-tidy/gcc.
-View with: man -l docs/sqc.1
-
----
-
-# Task ID: 53
-# Title: Binary distribution packages
-# Status: pending
-# Dependencies: none
-# Priority: P3
-# Description: Generate AppImage, Windows .exe, .deb, and .rpm packages for sqc.
-# Details:
-Packaging targets:
-  - AppImage (Linux portable): use cargo-appimage or linuxdeploy with sqc binary +
-    .desktop file + icon. Single self-contained executable for any Linux distro.
-  - Windows .exe: cross-compile with x86_64-pc-windows-gnu or -msvc target.
-    Optionally wrap in an MSI installer via cargo-wix.
-  - .deb (Debian/Ubuntu): use cargo-deb. Include sqc binary in /usr/bin/,
-    man page (task 52) in /usr/share/man/man1/, config examples in
-    /usr/share/doc/sqc/. Set dependencies (libc6).
-  - .rpm (Fedora/RHEL): use cargo-generate-rpm. Same file layout as .deb.
-
-CI/CD integration: GitHub Actions matrix build with release artifacts uploaded
-on tag push. Use cross for cross-compilation where needed.
-
----
-
-# Task ID: 54
-# Title: MSC13-C dead store: compound assignment LHS not recognized as read
-# Status: done
-# Dependencies: none
-# Priority: P3
-# Description: MSC13-C dead store analysis does not recognize compound assignment
-  LHS (+=, -=, etc.) as a read of the variable.
-# Details:
-Done in v0.3.63. Two fixes in msc13_c.rs:
-1. is_read_context(): checks assignment operator — compound (+=, -=, etc.)
-   returns true for LHS (it's a read), simple (=) returns false.
-2. collect_all_assignments(): only collects simple = assignments, skips
-   compound operators since they aren't pure overwrites.
-Added tests/pass/used_in_compound_assignment.c (7 operator patterns).
-
----
-
-# Task ID: 55
-# Title: INT34-C: cannot infer unsigned from parameter type declarations
-# Status: done
-# Dependencies: none
-# Priority: P3
-# Description: INT34-C `is_likely_unsigned()` fails to detect unsigned types
-  from function parameter type declarations.
-# Details:
-Done in v0.3.63. Replaced string matching with AST-based type extraction:
-1. New decl_has_unsigned_var(): walks declaration AST for sized_type_specifier
-   containing "unsigned" and matches declarator identifier.
-2. New find_parameter_list(): correctly traverses function_definition →
-   function_declarator → parameter_list (was using nonexistent "parameters"
-   field name on function_definition).
-3. New body_has_unsigned_var(): checks local variable declarations.
-Updated existing tests to remove ui_/u_ naming convention workarounds —
-now uses natural variable names with proper AST-based type detection.
-
----
-
-# Task ID: 56
-# Title: Fix cross-file state leakage in sequential mode
-# Status: pending
-# Dependencies: none
-# Priority: P2
-# Description: Some rules accumulate state across files via RefCell when run
-  sequentially, producing different results than parallel mode without -d.
-# Details:
-Discovered during task 23 (rayon parallelism). In sequential mode (`-j 1`),
-a single RuleRegistry is shared across all files. Rules with RefCell state
-(e.g., DCL31-C's `cross_file_functions: RefCell<HashSet<String>>`) accumulate
-data from earlier files, accidentally suppressing violations in later files.
-In parallel mode each file gets a fresh registry, so this leakage doesn't occur.
-
-With `-d` prescan both modes produce identical results — the leakage only
-matters when `-d` is not used. The parallel behavior is strictly more correct.
-
-Fix options:
-  1. Reset per-file state at the start of each `check()` call (targeted fix
-     per affected rule — DCL31-C confirmed, others to audit).
-  2. Add a `reset()` method to CertRule trait, called before each file in the
-     sequential loop.
-  3. Create a fresh RuleRegistry per file in sequential mode too (simplest but
-     adds ~150 allocations/file — benchmarked as negligible).
-
-Affected rules (confirmed or suspected): DCL31-C, DCL07-C, ERR01-C, ERR33-C,
-ENV33-C, ENV03-C, ENV02-C, API00-C, INT30-C, SIG00-C, SIG02-C, WIN03-C,
-WIN05-C, WIN30-C (all rules using RefCell for mutable state).

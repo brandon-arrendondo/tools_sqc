@@ -6,6 +6,66 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.65] - 2026-04-02
+
+### Fixed
+
+- Sequential mode (`-j 1`) now creates a fresh RuleRegistry per file, matching
+  parallel mode behavior. Previously, rules with RefCell state (DCL31-C, DCL07-C,
+  ERR01-C, ERR33-C, ENV33-C, ENV03-C, ENV02-C, API00-C, INT30-C, SIG00-C,
+  SIG02-C, WIN03-C, WIN05-C, WIN30-C) accumulated data across files, causing
+  false suppressions in later files. Sequential and parallel modes now produce
+  identical output.
+
+## [0.3.64] - 2026-04-02
+
+### Added
+
+- Built-in parallel analysis with rayon (`-j`/`--jobs` flag). Default `-j 0`
+  auto-detects CPU count. Per-file parser and rule registry instances avoid
+  RefCell/Send issues. Results sorted deterministically. Python parallel wrapper
+  (`scripts/sqc_parallel_scan.py`) removed — no longer needed.
+  Performance: curl 9m38s → 59s (9.8x), mosquitto 2m42s → 34s (4.8x).
+
+## [0.3.63] - 2026-04-01
+
+### Added
+
+- BRULE-065: pointer indirection depth check. Flags declarations with excessive
+  pointer indirection (e.g., `int ***p`). Handles parameter declarations,
+  init_declarators, and nested declarator chains. First non-CERT rule —
+  established `src/rules/brules/` directory structure.
+- `expected_fail/` test directory for known analysis limitations. build.rs
+  generates tests with `#[ignore = "Known limitation: ..."]`. Run with
+  `cargo test -- --ignored` to check for improvements.
+
+### Fixed
+
+- MSC13-C: compound assignment LHS (`+=`, `-=`, etc.) now recognized as a read.
+  `is_read_context()` checks assignment operator type; `collect_all_assignments()`
+  only collects simple `=` assignments.
+- INT34-C: AST-based unsigned type detection from function parameter declarations.
+  Replaced string matching with `decl_has_unsigned_var()` and correct
+  `find_parameter_list()` traversal.
+- Number of additional fixes (see commit history).
+
+## [0.3.62] - 2026-04-01
+
+### Fixed
+
+- Resolved all 5 pre-existing test failures (CON08-C, DCL20-C, INT08-C, EXP15-C).
+  Zero test failures remain.
+
+## [0.3.61] - 2026-04-01
+
+### Added
+
+- Man page (`docs/sqc.1`) covering all 16 CLI options, exit codes, rules manifest
+  and suppression file config, 7 usage examples, and cross-references.
+  View with: `man -l docs/sqc.1`.
+- Test coverage gate raised from 80% to 81% (1,350 additional lines covered).
+  75+ new `.c` test files across 10 rules.
+
 ## [0.3.60] - 2026-04-01
 
 ### Added
