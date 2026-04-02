@@ -898,8 +898,10 @@ pub fn resolve_local_var_range(
     let mut current = node.parent();
     while let Some(parent) = current {
         if parent.kind() == "compound_statement" {
-            // Scan statements before our node
+            // Scan statements before our node, keeping the LAST assignment
+            // (not the first) since later assignments overwrite earlier ones.
             let node_start = node.start_byte();
+            let mut last_range: Option<ValueRange> = None;
             for i in 0..parent.child_count() {
                 if let Some(stmt) = parent.child(i) {
                     if stmt.start_byte() >= node_start {
@@ -909,9 +911,12 @@ pub fn resolve_local_var_range(
                     if let Some(range) =
                         check_stmt_for_var_assignment(&stmt, var_name, source, macros, loop_ranges)
                     {
-                        return Some(range);
+                        last_range = Some(range);
                     }
                 }
+            }
+            if last_range.is_some() {
+                return last_range;
             }
         }
         if parent.kind() == "function_definition" {

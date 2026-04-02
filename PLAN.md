@@ -67,19 +67,6 @@ null propagation.
 
 ---
 
-# Task ID: 25
-# Title: Incremental parsing
-# Status: pending
-# Dependencies: none
-# Priority: P2
-# Description: Only re-parse changed files on subsequent runs.
-# Details:
-Track file modification times or content hashes. Skip parsing and re-use
-cached ASTs for unchanged files. Significant speedup for iterative development
-workflows.
-
----
-
 # Task ID: 34
 # Title: Per-file detection >= 30% on top 10 CWEs
 # Status: pending
