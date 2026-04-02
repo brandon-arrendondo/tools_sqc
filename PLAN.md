@@ -1,10 +1,9 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-02 (v0.3.67)
+Last Updated: 2026-04-02 (v0.3.69)
 
-Juliet benchmark v0.3.67: 25,552 TP / 22,407 FP (53.3% TP rate), 42.4% per-file.
-v0.3.67 vs v0.3.63: +1,144 TP, +1,290 FP (+2,434 total). Per-file +1.5pp.
-CWE-190 per-file 35.0%→43.3%, CWE-191 per-file 40.5%→47.7%.
+Juliet benchmark v0.3.69: 25,912 TP / 22,407 FP (53.6% TP rate), 43.1% per-file.
+v0.3.69 vs v0.3.67: +360 TP, +0 FP. CWE-127 per-file 24.2%→36.8%.
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -79,15 +78,20 @@ CWE-690 reached 58.9% per-file, making a separate Phase 4 unnecessary.
 # Description: Tier 3 competitive milestone — per-file detection rate.
 # Details:
 Per-file detection measures whether at least one TP is found per Juliet test
-file. As of v0.3.67, 7/10 top CWEs (by file count) meet the 30% threshold:
+file. As of v0.3.69, 8/10 top CWEs (by file count) meet the 30% threshold:
 
-  Pass (7): CWE-121 41.4%, CWE-78 30.2%, CWE-190 43.3%, CWE-191 47.7%,
-            CWE-124 34.8%, CWE-195 67.9%, CWE-194 62.5%.
-  Fail (3): CWE-122 17.1% (heap overflow), CWE-134 17.9% (format string),
-            CWE-127 24.2% (buffer underread).
+  Pass (8): CWE-121 41.4%, CWE-78 30.2%, CWE-190 43.3%, CWE-191 47.7%,
+            CWE-124 34.8%, CWE-195 67.9%, CWE-194 62.5%,
+            CWE-127 36.8% (was 24.2%, fixed in v0.3.69).
+  Fail (2): CWE-122 17.1% (heap overflow), CWE-134 17.9% (format string).
 
-CWE-127 is closest to threshold. CWE-122 and CWE-134 require cross-function
-analysis improvements (most undetected patterns are variants 41-68).
+v0.3.69: ARR38-C negative pointer offset detection for source buffers
+(buffer underread). Function-scoped pointer offset tracking to prevent
+cross-function FP contamination. +360 TP, +0 FP.
+
+CWE-122 and CWE-134 both need ~400+ additional files detected to reach 30%.
+CWE-122 requires cross-function buffer size propagation for variants 41-68.
+CWE-134 requires cross-function taint tracking for format string arguments.
 
 ---
 
