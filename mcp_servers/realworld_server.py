@@ -506,47 +506,19 @@ def _fetch_remote_results(host: str, version_dir: Path, run_id: str) -> dict:
     return {"fetched": fetched, "failed": failed}
 
 
-PARALLEL_SCRIPT = PROJECT_DIR / "scripts" / "sqc_parallel_scan.py"
-PRESCAN_CACHE_DIR = PROJECT_DIR / "data" / "prescan_cache"
-
-
 def _build_sqc_cmd(codebase: str, cfg: dict, results_dir: Path, run_id: str,
-                   rebuild_prescan: bool = False) -> list[str]:
+                   **_kwargs) -> list[str]:
     path = str(cfg["path"])
     scan_path = cfg["sqc"].get("scan_path") or path
     output_file = results_dir / f"{run_id}.json"
     extra = _expand(cfg["sqc"].get("extra_args", []), path)
     includes = _expand(cfg["sqc"].get("includes", []), path)
 
-    # Use parallel wrapper — it auto-detects whether parallelism is beneficial
-    # (falls back to single process for small codebases)
-    if PARALLEL_SCRIPT.exists():
-        cmd = [
-            "python3", str(PARALLEL_SCRIPT), scan_path,
-            "--sqc", str(SQC_BIN),
-            "-m", str(MANIFEST),
-            "-e", str(output_file),
-            "-d", path,
-            "--jobs", str(min(os.cpu_count() or 4, 8)),
-            "--prescan-cache-dir", str(PRESCAN_CACHE_DIR),
-        ]
-        if rebuild_prescan:
-            cmd.append("--rebuild-prescan")
-        # Add extra -d dirs from codebase config
-        for i, arg in enumerate(extra):
-            if arg == "-d" and i + 1 < len(extra):
-                cmd.extend(["-d", extra[i + 1]])
-        # Add -I include paths
-        for i, arg in enumerate(includes):
-            if arg == "-I" and i + 1 < len(includes):
-                cmd.extend(["-I", includes[i + 1]])
-        return cmd
-
-    # Fallback: direct sqc invocation
     cmd = [
         str(SQC_BIN), scan_path,
         "--manifest", str(MANIFEST),
         "--export", str(output_file),
+        "--jobs", str(min(os.cpu_count() or 4, 8)),
     ]
     if "-d" not in extra:
         cmd.extend(["-d", path])
