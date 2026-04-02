@@ -54,12 +54,12 @@ constructs per-function control-flow graphs, performs forward dataflow
 analysis for null pointer state tracking, and employs inter-procedural
 function summaries to reduce false positives across translation units.
 
-We evaluate SqC against the NIST Juliet Test Suite v1.3 (49,419 test
-files across 70 CWE categories) and 5 real-world open-source C codebases
+We evaluate SqC against the NIST Juliet Test Suite v1.3 (50,038 test
+files across 74 CWE categories) and 5 real-world open-source C codebases
 totaling 1.27 million lines of code.  Over 12 rounds of iterative
 refinement, false positives were reduced by 80.7\% from baseline while
-improving the true positive rate from 41.1\% to 52.0\%.  Of 70 CWEs
-tested, 23 achieve 100\% precision (zero false positives).  On real-world
+improving the true positive rate from 41.1\% to 53.6\%.  Of 74 CWEs
+tested, 31 achieve 100\% precision (zero false positives).  On real-world
 code, SqC detects vulnerability classes---including POSIX misuse, integer
 overflow, and inter-procedural null dereference---that cppcheck and
 clang-tidy do not cover.
@@ -378,25 +378,25 @@ the Juliet Test Suite in fast mode.
 \toprule
 \textbf{Metric} & \textbf{Value} \\
 \midrule
-Rules implemented & 287 \\
-CWEs scanned (fast mode) & 70 \\
-Test files & 49,419 \\
-True Positives & 22,723 \\
-False Positives & 20,968 \\
-TP Rate (precision) & 52.0\% \\
-100\% precision CWEs & 23 \\
+Rules implemented & 290 \\
+CWEs scanned (fast mode) & 74 \\
+Test files & 50,038 \\
+True Positives & 24,408 \\
+False Positives & 21,117 \\
+TP Rate (precision) & 53.6\% \\
+100\% precision CWEs & 31 \\
 \bottomrule
 \end{tabular}
-\caption{SqC v0.3.53 Juliet benchmark summary (fast mode).}
+\caption{SqC v0.3.60 Juliet benchmark summary (fast mode).}
 \label{tab:juliet-summary}
 \end{table}
 
 \subsubsection{Precision Tiers}
 
-The 70 CWEs tested fall into four precision tiers, shown in
-\cref{tab:precision-tiers}.  The distribution is encouraging: a third
-of CWEs achieve either perfect or high precision, while only two CWEs
-fall below 33\%.
+The 74 CWEs tested fall into four precision tiers, shown in
+\cref{tab:precision-tiers}.  The distribution is encouraging: nearly
+two-thirds of CWEs achieve either perfect or high precision, while
+only two CWEs fall below 33\%.
 
 \begin{table}[t]
 \centering
@@ -405,21 +405,21 @@ fall below 33\%.
 \toprule
 \textbf{Tier} & \textbf{CWEs} & \textbf{TP Rate} & \textbf{TP} \\
 \midrule
-100\% Precision & 23 & 100\% & 1,709 \\
-High ($>$50\%) & 13 & 50--94\% & 7,083 \\
-Medium (33--50\%) & 18 & 33--50\% & 12,830 \\
+100\% Precision & 31 & 100\% & 2,539 \\
+High ($>$50\%) & 16 & 50--99\% & 7,519 \\
+Medium (33--50\%) & 19 & 33--50\% & 14,343 \\
 Low ($<$33\%) & 2 & 3--8\% & 7 \\
-Zero Detection & 10 & --- & 0 \\
+Zero Detection & 2 & --- & 0 \\
 \midrule
-\textbf{Total} & \textbf{66}\textsuperscript{$\dagger$} & & \textbf{21,629} \\
+\textbf{Total} & \textbf{70}\textsuperscript{$\dagger$} & & \textbf{24,408} \\
 \bottomrule
 \end{tabular}
-\caption{CWE distribution by precision tier (fast mode, v0.3.53).
+\caption{CWE distribution by precision tier (fast mode, v0.3.60).
 \textsuperscript{$\dagger$}4 CWEs had no test files.}
 \label{tab:precision-tiers}
 \end{table}
 
-\Cref{tab:perfect-cwes} lists the 23 CWEs with 100\% precision.  These
+\Cref{tab:perfect-cwes} lists the 31 CWEs with 100\% precision.  These
 represent vulnerability classes where SqC produces zero false
 positives---every reported violation is a true defect.
 
@@ -431,21 +431,21 @@ positives---every reported violation is a true defect.
 \textbf{CWE} & \textbf{Description} & \textbf{TP} \\
 \midrule
 CWE-253 & Incorrect Check of Return Value & 432 \\
+CWE-563 & Unused Variable & 289 \\
 CWE-761 & Free Pointer Not at Start & 276 \\
 CWE-590 & Free Memory Not on Heap & 240 \\
+CWE-789 & Uncontrolled Mem Alloc & 190 \\
+CWE-398 & Poor Code Quality & 181 \\
+CWE-666 & Wrong Phase of Lifetime & 162 \\
 CWE-252 & Unchecked Return Value & 144 \\
+CWE-114 & Process Control & 126 \\
+CWE-244 & Heap Inspection & 98 \\
 CWE-591 & Data in Improperly Locked Mem & 74 \\
 CWE-273 & Dropped Privileges & 72 \\
-CWE-244 & Heap Inspection & 64 \\
-CWE-479 & Non-Reentrant Signal Handler & 54 \\
-CWE-467 & sizeof on Pointer Type & 54 \\
-CWE-843 & Type Confusion & 40 \\
-CWE-464 & Data Structure Sentinel & 38 \\
-CWE-367 & TOC/TOU Race Condition & 36 \\
-CWE-469 & Pointer Subtraction for Size & 36 \\
-\multicolumn{2}{@{}l}{\emph{+ 10 more CWEs}} & 99 \\
+CWE-226 & Sensitive Info Uncleared & 68 \\
+\multicolumn{2}{@{}l}{\emph{+ 18 more CWEs}} & 187 \\
 \midrule
-\textbf{Total} & & \textbf{1,709} \\
+\textbf{Total} & & \textbf{2,539} \\
 \bottomrule
 \end{tabular}
 \caption{CWEs with 100\% precision (zero false positives).}
@@ -476,7 +476,7 @@ EXP33-C & 1,110 & 888  & 44 & 457, 758, 665 \\
 INT30-C & 922  & 1,233 & 57 & 190, 191, 680 \\
 ENV03-C & 912  & 1,272 & 58 & 78, 426 \\
 ARR30-C & 878  & 888  & 50 & 121, 122, 126 \\
-EXP34-C & 825  & 301  & 27 & 690, 476 \\
+EXP34-C & 929  & 301  & 24 & 690, 476 \\
 \bottomrule
 \end{tabular}
 \caption{Top 10 rules by true positive volume (fast mode).}
@@ -489,7 +489,7 @@ EXP34-C & 825  & 301  & 27 & 690, 476 \\
 the project's development history.  The full-suite baseline started at
 41.1\% (v0.2.1); after 12 rounds of FP reduction, it reached 44.6\%
 (v0.2.25).  The switch to fast-mode benchmarking (v0.3.20) established
-a new baseline of 45.8\%, which has since improved to 52.0\%.
+a new baseline of 45.8\%, which has since improved to 53.6\%.
 
 \begin{figure}[t]
 \centering
@@ -499,9 +499,9 @@ a new baseline of 45.8\%, which has since improved to 52.0\%.
     height=5cm,
     xlabel={Version},
     ylabel={TP Rate (\%)},
-    ymin=40, ymax=54,
+    ymin=40, ymax=56,
     xtick=data,
-    xticklabels={v0.2.1, v0.2.7, v0.2.23, v0.3.20, v0.3.37, v0.3.53},
+    xticklabels={v0.2.1, v0.2.7, v0.2.23, v0.3.20, v0.3.37, v0.3.53, v0.3.60},
     xticklabel style={rotate=45, anchor=east, font=\footnotesize},
     ylabel style={font=\footnotesize},
     xlabel style={font=\footnotesize},
@@ -513,12 +513,12 @@ a new baseline of 45.8\%, which has since improved to 52.0\%.
     grid style={dashed, gray!30},
 ]
 \addplot[color=blue, mark=*, thick] coordinates {
-    (1, 41.1) (2, 44.5) (3, 44.6) (4, 45.8) (5, 48.4) (6, 52.0)
+    (1, 41.1) (2, 44.5) (3, 44.6) (4, 45.8) (5, 48.4) (6, 52.0) (7, 53.6)
 };
 \end{axis}
 \end{tikzpicture}
 \caption{TP rate progression from baseline (v0.2.1) through current
-(v0.3.53).  The gap between v0.2.23 and v0.3.20 reflects the switch
+(v0.3.60).  The gap between v0.2.23 and v0.3.20 reflects the switch
 from full-suite to fast-mode benchmarking.}
 \label{fig:tp-rate-progression}
 \end{figure}
@@ -720,7 +720,7 @@ The Juliet benchmark (70 CWEs, fast mode) completes in approximately
 Reducing false positives while maintaining detection is the central
 engineering challenge for a broad-coverage static analyzer.  This
 section walks through the techniques that achieved an 80.7\% cumulative
-FP reduction, organized by the insight that motivated each change.
+FP reduction (full-suite measurement), organized by the insight that motivated each change.
 
 \Cref{fig:fp-reduction} shows the TP and FP counts across 12
 optimization rounds.
@@ -949,11 +949,11 @@ plus CFG plus null-state dataflow plus inter-procedural summaries---likely
 caps the Juliet TP rate at approximately 55--60\% without adding
 alias analysis or symbolic execution.
 
-The 10 CWEs with zero detection (\cref{tab:precision-tiers}) also
-reveal coverage gaps: CWE-114 (Process Control), CWE-789 (Uncontrolled
-Memory Allocation), and CWE-259 (Hard-Coded Password) have no mapped
-CERT C rules in SqC, indicating areas where rule development would
-expand coverage.
+The 2 remaining CWEs with zero detection (\cref{tab:precision-tiers})
+reveal residual coverage gaps: CWE-259 (Hard-Coded Password) is blocked
+by tree-sitter's inability to expand preprocessor macros in Juliet's
+Windows headers, and CWE-328 (Reversible One-Way Hash) requires a new
+cryptographic algorithm detection rule.
 
 %% ============================================================
 \section{Related Work}
@@ -1017,10 +1017,11 @@ compilation database, or preprocessing step.  For teams that need
 broad CERT C coverage with minimal integration effort, this tradeoff
 is worthwhile.
 
-Future work includes expanding value-range analysis, improving
+Future work includes expanding value-range analysis and improving
 cross-function taint tracking for injection-related CWEs (CWE-78,
-CWE-89), and addressing the 10 CWEs with zero detection through
-new rule development.
+CWE-89).  Inter-procedural taint propagation would also improve
+coverage for CWE-789 and CWE-114, where only intra-procedural
+variants are currently detected.
 
 \bibliographystyle{plainnat}
 
