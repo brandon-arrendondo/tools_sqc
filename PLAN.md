@@ -140,15 +140,20 @@ call-site null state propagation.
 
 # Task ID: 23
 # Title: Internal parallelization (rayon)
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P3
 # Description: File-level parallelism within a single sqc invocation using rayon.
 # Details:
-Currently parallelism is external via scripts/sqc_parallel_scan.py with
-subdirectory splitting + prescan cache. Internal parallelism via rayon would
-simplify deployment (single binary, no Python wrapper) and enable finer-grained
-work distribution.
+Done in v0.3.64. Added `-j/--jobs <N>` flag (default 0 = auto-detect CPUs).
+Uses rayon with per-file parser + rule registry instances (avoids RefCell/Send
+issues). Sequential path (`-j 1`) unchanged. Results sorted deterministically.
+Python parallel wrapper (`scripts/sqc_parallel_scan.py`) removed — no longer
+needed. MCP realworld server updated to use `sqc -j N` directly.
+
+Performance on 24-core machine:
+  curl (696 files): 9m38s → 59s (9.8x with -j 0)
+  mosquitto (470 files): 2m42s → 34s (4.8x with -j 8)
 
 ---
 
@@ -159,10 +164,9 @@ work distribution.
 # Priority: P3
 # Description: Balance parallel work by file size instead of directory.
 # Details:
-Current subdir splitting can leave one large unit dominating wall time (e.g.,
-wpa_supplicant/ 69 files = 1061s). Batch by file size rather than directory to
-balance work across workers. Applies to both external (sqc_parallel_scan.py)
-and future internal parallelism.
+Rayon's work-stealing largely addresses this — large files don't block other
+threads. Could further optimize by sorting files largest-first before par_iter
+so large files start early while small files fill gaps.
 
 ---
 
@@ -459,3 +463,34 @@ Done in v0.3.63. Replaced string matching with AST-based type extraction:
 3. New body_has_unsigned_var(): checks local variable declarations.
 Updated existing tests to remove ui_/u_ naming convention workarounds —
 now uses natural variable names with proper AST-based type detection.
+
+---
+
+# Task ID: 56
+# Title: Fix cross-file state leakage in sequential mode
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Some rules accumulate state across files via RefCell when run
+  sequentially, producing different results than parallel mode without -d.
+# Details:
+Discovered during task 23 (rayon parallelism). In sequential mode (`-j 1`),
+a single RuleRegistry is shared across all files. Rules with RefCell state
+(e.g., DCL31-C's `cross_file_functions: RefCell<HashSet<String>>`) accumulate
+data from earlier files, accidentally suppressing violations in later files.
+In parallel mode each file gets a fresh registry, so this leakage doesn't occur.
+
+With `-d` prescan both modes produce identical results — the leakage only
+matters when `-d` is not used. The parallel behavior is strictly more correct.
+
+Fix options:
+  1. Reset per-file state at the start of each `check()` call (targeted fix
+     per affected rule — DCL31-C confirmed, others to audit).
+  2. Add a `reset()` method to CertRule trait, called before each file in the
+     sequential loop.
+  3. Create a fresh RuleRegistry per file in sequential mode too (simplest but
+     adds ~150 allocations/file — benchmarked as negligible).
+
+Affected rules (confirmed or suspected): DCL31-C, DCL07-C, ERR01-C, ERR33-C,
+ENV33-C, ENV03-C, ENV02-C, API00-C, INT30-C, SIG00-C, SIG02-C, WIN03-C,
+WIN05-C, WIN30-C (all rules using RefCell for mutable state).

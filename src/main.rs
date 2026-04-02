@@ -143,7 +143,7 @@ fn run() -> Result<i32> {
         .arg(
             Arg::new("save_prescan")
                 .long("save-prescan")
-                .help("Save prescan context to a binary cache file (for parallel scanning)")
+                .help("Save prescan context to a binary cache file (for CI/CD caching)")
                 .value_name("FILE"),
         )
         .arg(
@@ -151,6 +151,15 @@ fn run() -> Result<i32> {
                 .long("load-prescan")
                 .help("Load prescan context from cache instead of scanning -d directories")
                 .value_name("FILE"),
+        )
+        .arg(
+            Arg::new("jobs")
+                .long("jobs")
+                .short('j')
+                .help("Number of parallel analysis threads (0 = auto-detect, 1 = sequential)")
+                .value_name("N")
+                .default_value("0")
+                .value_parser(clap::value_parser!(usize)),
         )
         .get_matches();
 
@@ -182,6 +191,7 @@ fn run() -> Result<i32> {
     let verbosity = matches.get_count("verbose");
     let save_prescan = matches.get_one::<String>("save_prescan");
     let load_prescan = matches.get_one::<String>("load_prescan");
+    let jobs = *matches.get_one::<usize>("jobs").unwrap();
 
     // Verify the path and determine source type
     let project_source = ProjectSource::open(path)?;
@@ -222,6 +232,7 @@ fn run() -> Result<i32> {
         suppress_file.map(|s| s.as_str()),
         save_prescan.map(|s| s.as_str()),
         load_prescan.map(|s| s.as_str()),
+        jobs,
     )?;
 
     let mut violations = results.violations;
