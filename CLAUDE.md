@@ -238,7 +238,7 @@ SQLite first, falling back to legacy text files for old runs. 46 Juliet runs
 - `bench/` - Benchmark infrastructure (runner, analyzer, SQLite DB, CLI)
 - `mcp_servers/` - MCP servers for Juliet and real-world benchmarks
 - `data/` - Benchmark database (benchmarks.db), prescan caches
-- `scripts/` - Workflow helpers, parallel scan, coverage gate
+- `scripts/` - Workflow helpers, coverage gate
 - `docs/` - Developer guide (index.rst), bibliography
 - `AGENTS/PROPOSALS/ACTIVE/` - Proposals to implement
 - `AGENTS/PROPOSALS/STAGED/` - Completed proposals

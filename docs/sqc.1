@@ -98,12 +98,18 @@ Exit with code 1 if any violations are found.
 \fB\-\-fail\-on\-severity\fR \fILEVEL\fR
 Exit with code 1 if any violation meets or exceeds the specified severity.
 \fILEVEL\fR is one of: \fBLow\fR, \fBMedium\fR, \fBHigh\fR, \fBCritical\fR.
-.SS "Performance & Caching"
+.SS "Performance & Parallelism"
+.TP
+\fB\-j\fR, \fB\-\-jobs\fR \fIN\fR
+Number of parallel analysis threads. \fB0\fR (default) auto-detects the
+number of CPU cores. \fB1\fR forces sequential single-threaded analysis.
+Each thread gets its own parser and rule registry; cross-file context is
+shared read-only via \fB\-d\fR prescan data.
 .TP
 \fB\-\-save\-prescan\fR \fIFILE\fR
 Save pre-scan context (function summaries, macro aliases, type information)
-to a binary cache file. Used with parallel scanning workflows to avoid
-redundant directory traversals.
+to a binary cache file. Useful for CI/CD workflows where prescan data can
+be computed once and reused across runs.
 .TP
 \fB\-\-load\-prescan\fR \fIFILE\fR
 Load pre-scan context from a cache file instead of scanning \fB\-d\fR
@@ -216,16 +222,11 @@ sqc --generate-suppression src/main.c:42:ARR30-C .
 .fi
 .RE
 .PP
-Parallel scanning with prescan cache:
+Parallel analysis using 8 threads:
 .PP
 .RS
 .nf
-# Step 1: generate cache
-sqc --save-prescan cache.bin -d src/ -d lib/ src/
-
-# Step 2: workers load cache (no re-scan)
-sqc --load-prescan cache.bin src/module_a/
-sqc --load-prescan cache.bin src/module_b/
+sqc -j 8 -d src/ -d lib/ src/
 .fi
 .RE
 .SH FILES
