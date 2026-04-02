@@ -55,21 +55,20 @@ impl CertRule for Arr38C {
         let mut violations = Vec::new();
         let mut buffer_info: HashMap<String, BufferInfo> = HashMap::new();
         let mut size_vars: HashMap<String, String> = HashMap::new();
-        let mut pointer_offsets: HashMap<String, PointerOffsetInfo> = HashMap::new();
+        let mut unused_offsets: HashMap<String, PointerOffsetInfo> = HashMap::new();
 
-        // First pass: collect buffer allocations, size variable assignments, and pointer offsets
-        // (file-wide — buffer names like dataBadBuffer/dataGoodBuffer are unique)
+        // First pass: collect buffer allocations and size variable assignments (file-wide)
         self.collect_buffer_info(
             node,
             source,
             &mut buffer_info,
             &mut size_vars,
-            &mut pointer_offsets,
+            &mut unused_offsets,
         );
 
-        // Second pass: check each function independently with function-scoped alias resolution.
-        // This prevents cross-function contamination where "data = dataBadBuffer" (bad fn) and
-        // "data = dataGoodBuffer" (good fn) would share the same alias entry in a file-wide map.
+        // Second pass: check each function independently with function-scoped resolution.
+        // This prevents cross-function contamination where "data = dataBadBuffer - 8" (bad fn)
+        // and "data = dataGoodBuffer" (good fn) would share the same offset/alias entry.
         let functions = self.collect_function_definitions(node);
         for func_node in &functions {
             let aliases = self.collect_pointer_aliases(func_node, source);
@@ -80,13 +79,17 @@ impl CertRule for Arr38C {
                 }
             }
 
+            // Collect pointer offsets per-function to avoid cross-function contamination
+            let mut func_pointer_offsets: HashMap<String, PointerOffsetInfo> = HashMap::new();
+            self.collect_pointer_offsets_in_node(func_node, source, &mut func_pointer_offsets);
+
             self.check_node(
                 func_node,
                 source,
                 &mut violations,
                 &func_buffer_info,
                 &size_vars,
-                &pointer_offsets,
+                &func_pointer_offsets,
             );
         }
 
@@ -2488,6 +2491,102 @@ impl Arr38C {
     }
 
     /// Collect simple pointer aliases from assignment statements (e.g., "data = dataBuffer")
+    /// Collect pointer offset assignments within a single function node
+    fn collect_pointer_offsets_in_node(
+        &self,
+        node: &Node,
+        source: &str,
+        offsets: &mut HashMap<String, PointerOffsetInfo>,
+    ) {
+        let text = get_node_text(node, source);
+
+        // Check declarations (init_declarator): char *data = buffer - 8;
+        if node.kind() == "declaration" || node.kind() == "init_declarator" {
+            if text.contains('=') && (text.contains('+') || text.contains(" - ")) {
+                if let Some((ptr_name, base, offset, negative)) =
+                    self.extract_pointer_offset_signed(&text)
+                {
+                    let offset_val = self.try_parse_size(&offset).map(|v| {
+                        if negative {
+                            -(v as i64)
+                        } else {
+                            v as i64
+                        }
+                    });
+                    offsets.insert(
+                        ptr_name,
+                        PointerOffsetInfo {
+                            base_buffer: base,
+                            offset: offset_val,
+                            offset_expr: if negative {
+                                format!("-{}", offset)
+                            } else {
+                                offset
+                            },
+                        },
+                    );
+                    return;
+                }
+            }
+        }
+
+        // Check expression statements: data = buffer - 8;
+        if node.kind() == "expression_statement" {
+            if text.contains('=') && (text.contains('+') || text.contains(" - ")) {
+                if let Some((ptr_name, base, offset, negative)) =
+                    self.extract_pointer_offset_signed(&text)
+                {
+                    let offset_val = self.try_parse_size(&offset).map(|v| {
+                        if negative {
+                            -(v as i64)
+                        } else {
+                            v as i64
+                        }
+                    });
+                    offsets.insert(
+                        ptr_name,
+                        PointerOffsetInfo {
+                            base_buffer: base,
+                            offset: offset_val,
+                            offset_expr: if negative {
+                                format!("-{}", offset)
+                            } else {
+                                offset
+                            },
+                        },
+                    );
+                    return;
+                }
+            }
+            // Plain assignment (data = buffer) clears any stale offset
+            let trimmed = text.trim().trim_end_matches(';').trim();
+            if let Some(eq_pos) = trimmed.find('=') {
+                if eq_pos > 0
+                    && !matches!(
+                        trimmed.as_bytes().get(eq_pos.wrapping_sub(1)),
+                        Some(b'!' | b'<' | b'>')
+                    )
+                    && trimmed.as_bytes().get(eq_pos + 1) != Some(&b'=')
+                {
+                    let lhs = trimmed[..eq_pos].trim();
+                    // If LHS is a tracked pointer being reassigned without offset, clear it
+                    if offsets.contains_key(lhs) {
+                        let rhs = trimmed[eq_pos + 1..].trim();
+                        if !rhs.contains('+') && !rhs.contains(" - ") {
+                            offsets.remove(lhs);
+                        }
+                    }
+                }
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.collect_pointer_offsets_in_node(&child, source, offsets);
+            }
+        }
+    }
+
     fn collect_pointer_aliases(&self, node: &Node, source: &str) -> Vec<(String, String)> {
         let mut aliases = Vec::new();
         self.collect_pointer_aliases_recursive(node, source, &mut aliases);
