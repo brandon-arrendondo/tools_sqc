@@ -41,7 +41,7 @@ impl Msc41C {
         // A "word boundary" means the keyword is preceded by '_' or is at the
         // start of the name. We only check the leading boundary — "authenticate"
         // should match "auth" but "p2p_dbg" should not match "db".
-        let boundary_keywords = ["auth", "login", "pwd", "database"];
+        let boundary_keywords = ["auth", "login", "logon", "pwd", "database"];
         for keyword in &boundary_keywords {
             if let Some(pos) = name_lower.find(keyword) {
                 let before_ok = pos == 0 || name_lower.as_bytes()[pos - 1] == b'_';
@@ -350,11 +350,59 @@ impl Msc41C {
         }
     }
 
+    /// Check #define macros for hard-coded sensitive values.
+    /// Pattern: `#define PASSWORD "ABCD1234!"`
+    fn check_preproc_def(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+        if node.kind() != "preproc_def" {
+            return;
+        }
+
+        // Get macro name
+        let macro_name = node
+            .child_by_field_name("name")
+            .map(|n| get_node_text(&n, source).to_string())
+            .unwrap_or_default();
+
+        if macro_name.is_empty() || !Self::is_sensitive_variable_name(&macro_name) {
+            return;
+        }
+
+        // Check if the value contains a string literal
+        if let Some(value) = node.child_by_field_name("value") {
+            let value_text = get_node_text(&value, source);
+            // Check for string literal (starts with " or L")
+            let trimmed = value_text.trim();
+            if (trimmed.starts_with('"') && trimmed.ends_with('"'))
+                || (trimmed.starts_with("L\"") && trimmed.ends_with('"'))
+            {
+                violations.push(RuleViolation {
+                    rule_id: "MSC41-C".to_string(),
+                    severity: Severity::High,
+                    message: format!(
+                        "Macro '{}' contains hard-coded sensitive information: {}. \
+                         Sensitive data should not be embedded in source code.",
+                        macro_name, trimmed
+                    ),
+                    file_path: String::new(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    suggestion: Some(
+                        "Read sensitive data from environment variables, configuration files, \
+                         or user input at runtime."
+                            .to_string(),
+                    ),
+                    requires_manual_review: None,
+                });
+            }
+        }
+    }
+
     /// Recursively check all nodes
     fn check_node(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Check this node
         Self::check_call_expression(node, source, violations);
         Self::check_declaration(node, source, violations);
+        Self::check_preproc_def(node, source, violations);
 
         // Recursively check children
         let mut cursor = node.walk();

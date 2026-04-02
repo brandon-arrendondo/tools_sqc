@@ -134,8 +134,8 @@ fn generate_rules_all_toml() -> Result<()> {
             // Read full content
             match fs::read_to_string(toml_path) {
                 Ok(content) => {
-                    // Extract only the [rules.cert_c.RULE-ID] section
-                    if let Some(start_idx) = content.find("[rules.cert_c.") {
+                    // Extract the [rules.*] section (cert_c, brules, etc.)
+                    if let Some(start_idx) = content.find("[rules.") {
                         let section_content = &content[start_idx..];
 
                         // Find the end of this section (next section or end of file)
@@ -264,6 +264,7 @@ fn generate_integration_tests() -> Result<()> {
                 }
             };
 
+            let rule_base_path = format!("src/rules/cert_c/{}/{}", category_name, rule_id);
             let rule_tests_dir = rule_path.join("tests");
 
             if !rule_tests_dir.exists() {
@@ -316,9 +317,50 @@ fn generate_integration_tests() -> Result<()> {
                         generate_test_function(
                             &mut rule_file,
                             rule_id,
-                            category_name,
+                            &rule_base_path,
                             &test_path,
                             "fail",
+                        )
+                        .context(format!("Failed to generate test for {:?}", test_path))?;
+                    }
+                }
+            }
+
+            // Generate tests for expected_fail/ directory (known limitations)
+            let expected_fail_dir = rule_tests_dir.join("expected_fail");
+            if expected_fail_dir.exists() {
+                let ef_entries = match fs::read_dir(&expected_fail_dir) {
+                    Ok(entries) => entries,
+                    Err(e) => {
+                        eprintln!(
+                            "Warning: Could not read expected_fail directory for {}: {}",
+                            rule_id, e
+                        );
+                        continue;
+                    }
+                };
+
+                for test_file in ef_entries {
+                    let test_file = match test_file {
+                        Ok(file) => file,
+                        Err(e) => {
+                            eprintln!(
+                                "Warning: Skipping test file in {}/expected_fail: {}",
+                                rule_id, e
+                            );
+                            continue;
+                        }
+                    };
+
+                    let test_path = test_file.path();
+
+                    if test_path.extension().is_some_and(|e| e == "c") {
+                        generate_test_function(
+                            &mut rule_file,
+                            rule_id,
+                            &rule_base_path,
+                            &test_path,
+                            "expected_fail",
                         )
                         .context(format!("Failed to generate test for {:?}", test_path))?;
                     }
@@ -354,11 +396,73 @@ fn generate_integration_tests() -> Result<()> {
                         generate_test_function(
                             &mut rule_file,
                             rule_id,
-                            category_name,
+                            &rule_base_path,
                             &test_path,
                             "pass",
                         )
                         .context(format!("Failed to generate test for {:?}", test_path))?;
+                    }
+                }
+            }
+        }
+    }
+
+    // Walk through src/rules/brules/ (flat: RULE-ID directories, no category level)
+    let brules_dir = PathBuf::from("src/rules/brules");
+    if brules_dir.exists() {
+        if let Ok(brule_entries) = fs::read_dir(&brules_dir) {
+            for brule_entry in brule_entries {
+                let brule_entry = match brule_entry {
+                    Ok(entry) => entry,
+                    Err(_) => continue,
+                };
+
+                let rule_path = brule_entry.path();
+                if !rule_path.is_dir() {
+                    continue;
+                }
+
+                let rule_id = match rule_path.file_name().and_then(|n| n.to_str()) {
+                    Some(id) => id,
+                    None => continue,
+                };
+
+                let rule_base_path = format!("src/rules/brules/{}", rule_id);
+                let rule_tests_dir = rule_path.join("tests");
+                if !rule_tests_dir.exists() {
+                    continue;
+                }
+
+                let rule_snake = rule_id.to_lowercase().replace('-', "_");
+                let rule_test_file = tests_dir.join(format!("{}_tests.rs", rule_snake));
+                let mut rule_file = match File::create(&rule_test_file) {
+                    Ok(f) => f,
+                    Err(_) => continue,
+                };
+
+                writeln!(rule_file, "// Auto-generated tests for {}", rule_id)?;
+                writeln!(rule_file, "// DO NOT EDIT - Generated by build.rs\n")?;
+                rule_modules.push(rule_snake.clone());
+
+                for test_type in &["fail", "expected_fail", "pass"] {
+                    let type_dir = rule_tests_dir.join(test_type);
+                    if !type_dir.exists() {
+                        continue;
+                    }
+                    if let Ok(entries) = fs::read_dir(&type_dir) {
+                        for entry in entries.flatten() {
+                            let test_path = entry.path();
+                            if test_path.extension().is_some_and(|e| e == "c") {
+                                generate_test_function(
+                                    &mut rule_file,
+                                    rule_id,
+                                    &rule_base_path,
+                                    &test_path,
+                                    test_type,
+                                )
+                                .context(format!("Failed to generate test for {:?}", test_path))?;
+                            }
+                        }
                     }
                 }
             }
@@ -394,6 +498,7 @@ fn generate_integration_tests() -> Result<()> {
     writeln!(main_file, "}}")?;
 
     println!("cargo:rerun-if-changed=src/rules/cert_c");
+    println!("cargo:rerun-if-changed=src/rules/brules");
     println!("Generated {} per-rule test files", rule_modules.len());
     Ok(())
 }
@@ -401,9 +506,9 @@ fn generate_integration_tests() -> Result<()> {
 fn generate_test_function(
     f: &mut File,
     rule_id: &str,
-    category: &str,
+    rule_base_path: &str, // e.g. "src/rules/cert_c/EXP/EXP34-C" or "src/rules/brules/BRULE-065"
     test_path: &std::path::Path,
-    test_type: &str, // "fail" or "pass"
+    test_type: &str, // "fail", "pass", or "expected_fail"
 ) -> Result<()> {
     // Convert rule_id to snake_case for function name
     let rule_snake = rule_id.to_lowercase().replace('-', "_");
@@ -423,16 +528,13 @@ fn generate_test_function(
         .file_name()
         .and_then(|n| n.to_str())
         .context("Invalid test filename")?;
-    let relative_path = format!(
-        "src/rules/cert_c/{}/{}/tests/{}/{}",
-        category, rule_id, test_type, test_filename
-    );
+    let relative_path = format!("{}/tests/{}/{}", rule_base_path, test_type, test_filename);
 
     // Check if the test file requests intra-file prescan context
     let needs_prescan = check_test_needs_prescan(test_path);
 
     // Check if rule is implemented by reading the TOML file
-    let toml_path = format!("src/rules/cert_c/{}/{}/{}.toml", category, rule_id, rule_id);
+    let toml_path = format!("{}/{}.toml", rule_base_path, rule_id);
     let is_enabled = check_if_rule_enabled(&toml_path)?;
 
     writeln!(f, "#[test]")?;
@@ -440,6 +542,12 @@ fn generate_test_function(
     // If rule is not enabled/implemented, mark test as ignored
     if !is_enabled {
         writeln!(f, "#[ignore = \"Rule {} not yet implemented\"]", rule_id)?;
+    } else if test_type == "expected_fail" {
+        writeln!(
+            f,
+            "#[ignore = \"Known limitation: {} cannot detect this pattern yet\"]",
+            rule_id
+        )?;
     }
     writeln!(f, "fn {}() {{", test_fn_name)?;
     writeln!(f, "    let registry = RuleRegistry::new();")?;
@@ -493,11 +601,15 @@ fn generate_test_function(
     )?;
     writeln!(f, "    ")?;
 
-    if test_type == "fail" {
+    if test_type == "fail" || test_type == "expected_fail" {
         writeln!(f, "    let detected_violation = !violations.is_empty();")?;
         writeln!(f, "    ")?;
         writeln!(f, "    // Record result for report generation")?;
-        writeln!(f, "    // For fail tests: we expect violations to be detected (detected_violation should be true)")?;
+        if test_type == "expected_fail" {
+            writeln!(f, "    // For expected_fail tests: known limitation — violation expected but tool cannot detect it yet")?;
+        } else {
+            writeln!(f, "    // For fail tests: we expect violations to be detected (detected_violation should be true)")?;
+        }
         writeln!(
             f,
             "    super::record_test_result(\"{}\", detected_violation, true);",
@@ -559,14 +671,14 @@ fn check_if_rule_enabled(toml_path: &str) -> Result<bool> {
             eprintln!("Warning: Failed to parse TOML {}: {}", toml_path, e);
             eprintln!("         Falling back to string matching");
             // Fallback to string matching if TOML parse fails
-            return Ok(content.contains("[rules.cert_c.") && content.contains("enabled = true"));
+            return Ok(content.contains("[rules.") && content.contains("enabled = true"));
         }
     };
 
-    // Check for implemented rule format: [rules.cert_c.RULE-ID] enabled = true
+    // Check for implemented rule format: [rules.<namespace>.RULE-ID] enabled = true
     if let Some(rules) = config.rules {
-        if let Some(cert_c_rules) = rules.get("cert_c") {
-            for settings in cert_c_rules.values() {
+        for namespace_rules in rules.values() {
+            for settings in namespace_rules.values() {
                 if settings.enabled {
                     return Ok(true);
                 }

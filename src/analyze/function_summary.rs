@@ -30,6 +30,16 @@ pub struct FunctionSummary {
     /// Aggregated null states of arguments at all call sites (populated by prescan second pass).
     /// Maps parameter index → joined NullState from all callers.
     pub callsite_param_null_states: HashMap<usize, NullState>,
+    /// Aggregated null states of struct fields within arguments at all call sites.
+    /// Maps parameter index → field name → joined NullState from all callers.
+    /// Used for variant 67 struct field null propagation across functions.
+    #[serde(default)]
+    pub callsite_param_field_null_states: HashMap<usize, HashMap<String, NullState>>,
+    /// Aggregated null states of pointed-to values in address-of arguments.
+    /// Maps parameter index → null state of the variable whose address was taken.
+    /// Used for variant 63 pointer-to-pointer null propagation across functions.
+    #[serde(default)]
+    pub callsite_param_pointee_null_states: HashMap<usize, NullState>,
     /// Computed return value range for integer-returning functions.
     /// `Some(range)` when all return paths provably return values in [min, max].
     /// `None` for void, pointer-returning, or unevaluable return expressions.

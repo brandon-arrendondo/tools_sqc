@@ -1,0 +1,1093 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{listings}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage[numbers]{natbib}
+\usepackage{hyperref}
+\usepackage[capitalize]{cleveref}
+
+\pgfplotsset{compat=1.18}
+
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  language=C,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
+  showstringspaces=false
+}
+
+\begin{document}
+
+\title{SqC: A Tree-Sitter Based Static Analyzer for\\CERT C Coding Standard Compliance}
+
+\author{Brandon Arrendondo\\
+{\tt\small brandon.arrendondo@bissell.com}
+\and
+Eric Buehler\\
+{\tt\small eric.buehler@bissell.com}
+\and
+Tristan Vanfossen\\
+{\tt\small tristan.vanfossen@bissell.com}
+}
+\maketitle
+
+\begin{abstract}
+Static analysis tools for C either cover narrow subsets of known
+vulnerability classes or require heavyweight build infrastructure that
+limits adoption.  This paper presents SqC, a static analyzer that
+checks C source code for compliance with 287 rules from the SEI CERT C
+Coding Standard---significantly broader coverage than any single
+open-source alternative.  SqC uses tree-sitter for incremental parsing,
+constructs per-function control-flow graphs, performs forward dataflow
+analysis for null pointer state tracking, and employs inter-procedural
+function summaries to reduce false positives across translation units.
+
+We evaluate SqC against the NIST Juliet Test Suite v1.3 (50,038 test
+files across 74 CWE categories) and 5 real-world open-source C codebases
+totaling 1.27 million lines of code.  Over 12 rounds of iterative
+refinement, false positives were reduced by 80.7\% from baseline while
+improving the true positive rate from 41.1\% to 53.6\%.  Of 74 CWEs
+tested, 31 achieve 100\% precision (zero false positives).  On real-world
+code, SqC detects vulnerability classes---including POSIX misuse, integer
+overflow, and inter-procedural null dereference---that cppcheck and
+clang-tidy do not cover.
+\end{abstract}
+
+%% ============================================================
+\section{Introduction}
+\label{sec:intro}
+
+The C programming language remains dominant in systems software,
+embedded systems, and security-critical infrastructure.  Despite decades
+of research in programming language safety, C's lack of memory safety
+guarantees continues to produce vulnerabilities: buffer overflows, null
+pointer dereferences, integer overflows, and use-after-free defects
+account for the majority of CVEs in C codebases~\cite{cwe-top25}.
+
+The SEI CERT C Coding Standard~\cite{cert-c} codifies 120+ rules and
+200+ recommendations spanning 17 categories, from integer handling to
+concurrency to POSIX-specific interfaces.  While the standard is widely
+referenced in secure coding guidelines (e.g., MISRA C, IEC 62443),
+tool support for comprehensive CERT C checking remains fragmented.
+Commercial tools such as Coverity~\cite{coverity}, Klocwork, and
+Polyspace implement subsets of CERT C rules alongside proprietary
+checkers, but their closed-source nature limits reproducibility.
+Open-source alternatives like cppcheck~\cite{cppcheck} and
+clang-tidy~\cite{clang-tidy} implement approximately 20 CERT C checks
+each, leaving the majority of the standard uncovered.
+
+This paper presents SqC (\textbf{S}oftware Code \textbf{Q}uality for
+\textbf{C}), a static analysis tool that implements 287 CERT C rules
+across all 17 categories.  The paper describes the tool's architecture,
+the iterative process used to reduce false positives, and the results of
+evaluating SqC against both a standardized benchmark and real-world
+codebases.
+
+The rest of this paper is organized as follows.  \Cref{sec:background}
+covers the CERT C standard and the Juliet benchmark.
+\Cref{sec:architecture} describes SqC's architecture.
+\Cref{sec:methodology} details the testing methodology.
+\Cref{sec:results} presents benchmark results.
+\Cref{sec:fp-reduction} walks through the iterative false positive
+reduction process.  \Cref{sec:worked-example} provides a worked
+example.  \Cref{sec:limitations} discusses limitations.
+\Cref{sec:related} covers related work.  \Cref{sec:conclusion}
+concludes.
+
+%% ============================================================
+\section{Background}
+\label{sec:background}
+
+\subsection{SEI CERT C Coding Standard}
+
+The SEI CERT C Coding Standard is maintained by the Software
+Engineering Institute at Carnegie Mellon University.  It defines rules
+and recommendations organized into 17 categories, shown in
+\cref{tab:cert-categories}.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}llr@{}}
+\toprule
+\textbf{Prefix} & \textbf{Category} & \textbf{Rules} \\
+\midrule
+API & API Usage & 3 \\
+ARR & Arrays & 10 \\
+CON & Concurrency & 9 \\
+DCL & Declarations & 16 \\
+ENV & Environment & 5 \\
+ERR & Error Handling & 7 \\
+EXP & Expressions & 14 \\
+FIO & File I/O & 13 \\
+FLP & Floating Point & 7 \\
+INT & Integers & 11 \\
+MEM & Memory Mgmt & 8 \\
+MSC & Miscellaneous & 8 \\
+POS & POSIX & 6 \\
+PRE & Preprocessor & 4 \\
+SIG & Signals & 3 \\
+STR & Strings & 6 \\
+WIN & Windows & 3 \\
+\midrule
+& \textbf{Total} & \textbf{287}\textsuperscript{$\dagger$} \\
+\bottomrule
+\end{tabular}
+\caption{CERT C rule categories implemented in SqC.
+\textsuperscript{$\dagger$}Includes both mandatory rules and advisory
+recommendations.}
+\label{tab:cert-categories}
+\end{table}
+
+Each rule addresses a specific class of undefined behavior, security
+vulnerability, or quality defect.  For example, EXP34-C (``Do not
+dereference null pointers'') maps directly to CWE-476; INT32-C
+(``Ensure that operations on signed integers do not result in
+overflow'') maps to CWE-190.  The standard provides a rule-to-CWE
+mapping that enables systematic benchmarking.
+
+\subsection{NIST Juliet Test Suite}
+
+The Juliet Test Suite v1.3~\cite{juliet} (commit \texttt{f88433e})
+is developed by NIST's
+Software Assurance Metrics and Tool Evaluation (SAMATE) project.
+It contains 64,099 C/C++ test cases across 118 CWE categories,
+organized into ``good'' functions (correct code that should not
+trigger warnings) and ``bad'' functions (code containing the
+specified vulnerability).
+
+Juliet provides a controlled evaluation environment: each test case
+isolates a single vulnerability type with known ground truth, enabling
+precise measurement of true positive (TP) and false positive (FP) rates
+per CWE.
+
+Juliet also has known limitations worth acknowledging.  Test cases use
+synthetic patterns that may not reflect real-world coding idioms.  The
+structured naming conventions (functions prefixed with \texttt{bad} or
+\texttt{good}) can inadvertently advantage or disadvantage
+pattern-matching tools.  And Juliet uses explicit C types
+(\texttt{int}, \texttt{unsigned int}) rather than \texttt{stdint.h}
+typedefs (\texttt{uint32\_t}), so fixes targeting typedef resolution
+show impact on real-world code but not on Juliet.
+
+These limitations are why we supplement Juliet with real-world
+evaluation.
+
+\subsection{Real-World Benchmarks}
+
+Five open-source C projects serve as real-world benchmarks:
+libcrc (2K LOC), mosquitto (89K LOC), curl (240K LOC),
+sqlite (402K LOC), and hostap (541K LOC).  These span embedded
+libraries, network servers, databases, and large-scale infrastructure.
+
+%% ============================================================
+\section{Architecture}
+\label{sec:architecture}
+
+SqC is implemented in Rust (2021 edition) and uses tree-sitter for
+parsing.  The analysis pipeline proceeds in four stages, illustrated
+in \cref{fig:pipeline}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+    node distance=0.6cm,
+    box/.style={rectangle, draw, fill=blue!8, text width=5.8cm,
+                minimum height=0.7cm, align=center, font=\footnotesize},
+    arrow/.style={->, thick}
+]
+\node[box] (parse) {1. Tree-sitter Parse $\rightarrow$ Concrete Syntax Tree};
+\node[box, below=of parse] (prescan) {2. Cross-file Prescan $\rightarrow$ Function Summaries};
+\node[box, below=of prescan] (cfg) {3. Per-function CFG + Dataflow Analysis};
+\node[box, below=of cfg] (rules) {4. Rule Evaluation (287 CERT C checkers)};
+\draw[arrow] (parse) -- (prescan);
+\draw[arrow] (prescan) -- (cfg);
+\draw[arrow] (cfg) -- (rules);
+\end{tikzpicture}
+\caption{SqC analysis pipeline.  Each stage enriches the context
+available to subsequent stages.}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{Stage 1: Parsing with Tree-sitter}
+
+SqC uses tree-sitter~\cite{tree-sitter} to produce a concrete syntax
+tree (CST) for each C source file.  Unlike tools built on Clang's AST
+(which requires a full compilation database), tree-sitter operates on
+individual files without preprocessing.  This trades semantic precision
+for practical deployability: SqC can analyze any C file without build
+system integration.
+
+The primary limitation is the inability to resolve preprocessor macros
+and \texttt{\#include} directives.  SqC mitigates this through a
+built-in database of approximately 370 standard library and platform
+API functions (\cref{sec:stdlib-db}).
+
+\subsection{Stage 2: Cross-File Prescan}
+\label{sec:prescan}
+
+When invoked with the \texttt{-d} (directory) flag, SqC performs a
+pre-scan pass over all C files in the specified directories, collecting:
+
+\begin{itemize}
+    \item \textbf{Function definitions}: name, file, parameter count,
+        and return type.
+    \item \textbf{Function summaries}: per-parameter null state
+        (DefinitelyNull, PossiblyNull, NotNull, Unknown) derived from
+        call-site argument analysis across the project.
+    \item \textbf{Local variable states}: within each function body,
+        assignments to local variables are tracked to resolve argument
+        values passed at call sites.
+\end{itemize}
+
+This was the single largest contributor to false positive reduction,
+removing 148,622 FPs (31.2\%) in one iteration (\cref{sec:fp-cross-file}).
+
+\subsection{Stage 3: Control-Flow Graphs and Dataflow}
+
+For each function, SqC constructs a control-flow graph (CFG) handling
+\texttt{if}/\texttt{else}, \texttt{switch}/\texttt{case}, loops with
+\texttt{break}/\texttt{continue}, early returns, and \texttt{goto}
+statements.
+
+On the CFG, SqC performs forward dataflow analysis for null pointer
+state tracking.  The null state lattice is:
+
+\begin{equation}
+\text{NullState} \in \{\text{Unknown}, \text{DefinitelyNull},
+    \text{PossiblyNull}, \text{NotNull}\}
+\end{equation}
+
+Edge refinement propagates null information through branch conditions:
+after \texttt{if (p != NULL)}, the true branch marks \texttt{p} as
+NotNull while the false branch marks it as PossiblyNull.
+
+The CFG infrastructure also supports:
+\begin{itemize}
+    \item A \textbf{constant evaluator} that resolves \texttt{sizeof}
+        expressions, C standard limit macros (\texttt{INT\_MAX},
+        \texttt{UINT64\_MAX}), and compile-time arithmetic.
+    \item \textbf{Initialization state tracking} for detecting
+        use of uninitialized variables through conditional paths.
+    \item \textbf{Value-range analysis} for integer overflow rules.
+\end{itemize}
+
+\subsection{Stage 4: Rule Evaluation}
+
+Each of the 287 rules is implemented as a Rust struct implementing
+the \texttt{CertRule} trait.  Rules range from simple AST pattern
+matchers (e.g., MSC24-C: obsolete function detection) to complex
+multi-pass analyzers (e.g., EXP34-C: null dereference detection
+using CFG-based dataflow with inter-procedural call-site propagation).
+
+\subsection{Standard Function Database}
+\label{sec:stdlib-db}
+
+Since tree-sitter cannot follow \texttt{\#include} directives, SqC
+maintains a built-in database of approximately 370 known functions:
+$\sim$180 C11 standard library, $\sim$90 POSIX, and $\sim$100 Windows
+API functions.  This database serves multiple purposes: DCL31-C/DCL07-C
+use it to avoid flagging standard library calls as undeclared; ERR33-C
+uses it to identify functions whose return values must be checked;
+EXP10-C uses a pure-function whitelist to exclude side-effect-free
+calls from unsequenced evaluation warnings.
+
+%% ============================================================
+\section{Testing Methodology}
+\label{sec:methodology}
+
+\subsection{Juliet Benchmark Protocol}
+
+The Juliet benchmark operates in two modes:
+
+\textbf{Full mode}: All 287 rules are applied to all 118 CWEs.  This
+measures overall tool behavior but introduces noise from rules
+triggering on CWEs they were not designed to detect.
+
+\textbf{Fast mode}: Per-CWE rule manifests restrict each scan to only
+the CERT C rules mapped to that CWE.  A mapping script generates 147
+TOML manifest files from the official CERT C rule-to-CWE mapping.
+This eliminates cross-CWE noise and reduces scan time by approximately
+10$\times$.
+
+For each CWE directory, the benchmark invokes SqC with cross-file
+analysis enabled, then classifies each violation by file name:
+violations in \texttt{*bad*} files are True Positives; violations in
+\texttt{*good*} files are False Positives.  Results are stored in a
+SQLite database with per-violation granularity.
+
+\textbf{TP rate} is defined as $\frac{\text{TP}}{\text{TP}+\text{FP}}$
+(precision), not recall.  A ``bad'' file may contain multiple violation
+types, but only the intended CWE is scored as TP.
+
+\subsection{Real-World Benchmark Protocol}
+
+Five open-source C projects (\cref{tab:realworld-codebases}) are
+analyzed with SqC, cppcheck (v2.10), and clang-tidy (v21.1.6).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrl@{}}
+\toprule
+\textbf{Project} & \textbf{C Files} & \textbf{LOC} & \textbf{Commit} \\
+\midrule
+libcrc & 16 & 2,130 & \texttt{7719e21} \\
+mosquitto & 384 & 88,717 & \texttt{d3ee5c5} \\
+curl & 696 & 240,331 & \texttt{3e198f7} \\
+sqlite & 312 & 404,701 & \texttt{b1a73ba} \\
+hostap & 504 & 539,617 & \texttt{dcee604} \\
+\midrule
+\textbf{Total} & \textbf{1,912} & \textbf{1,275,496} & \\
+\bottomrule
+\end{tabular}
+\caption{Real-world benchmark codebases.}
+\label{tab:realworld-codebases}
+\end{table}
+
+An important caveat for interpreting the cross-tool results: SqC
+implements 287 rules while cppcheck and clang-tidy implement
+approximately 20 each.  The 100$\times$ difference in raw violation
+counts reflects coverage breadth, not false positive rate.
+
+%% ============================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Juliet Benchmark Results}
+
+\Cref{tab:juliet-summary} summarizes SqC v0.3.53's performance on
+the Juliet Test Suite in fast mode.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Rules implemented & 290 \\
+CWEs scanned (fast mode) & 74 \\
+Test files & 50,038 \\
+True Positives & 24,408 \\
+False Positives & 21,117 \\
+TP Rate (precision) & 53.6\% \\
+100\% precision CWEs & 31 \\
+\bottomrule
+\end{tabular}
+\caption{SqC v0.3.60 Juliet benchmark summary (fast mode).}
+\label{tab:juliet-summary}
+\end{table}
+
+\subsubsection{Precision Tiers}
+
+The 74 CWEs tested fall into four precision tiers, shown in
+\cref{tab:precision-tiers}.  The distribution is encouraging: nearly
+two-thirds of CWEs achieve either perfect or high precision, while
+only two CWEs fall below 33\%.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Tier} & \textbf{CWEs} & \textbf{TP Rate} & \textbf{TP} \\
+\midrule
+100\% Precision & 31 & 100\% & 2,539 \\
+High ($>$50\%) & 16 & 50--99\% & 7,519 \\
+Medium (33--50\%) & 19 & 33--50\% & 14,343 \\
+Low ($<$33\%) & 2 & 3--8\% & 7 \\
+Zero Detection & 2 & --- & 0 \\
+\midrule
+\textbf{Total} & \textbf{70}\textsuperscript{$\dagger$} & & \textbf{24,408} \\
+\bottomrule
+\end{tabular}
+\caption{CWE distribution by precision tier (fast mode, v0.3.60).
+\textsuperscript{$\dagger$}4 CWEs had no test files.}
+\label{tab:precision-tiers}
+\end{table}
+
+\Cref{tab:perfect-cwes} lists the 31 CWEs with 100\% precision.  These
+represent vulnerability classes where SqC produces zero false
+positives---every reported violation is a true defect.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{CWE} & \textbf{Description} & \textbf{TP} \\
+\midrule
+CWE-253 & Incorrect Check of Return Value & 432 \\
+CWE-563 & Unused Variable & 289 \\
+CWE-761 & Free Pointer Not at Start & 276 \\
+CWE-590 & Free Memory Not on Heap & 240 \\
+CWE-789 & Uncontrolled Mem Alloc & 190 \\
+CWE-398 & Poor Code Quality & 181 \\
+CWE-666 & Wrong Phase of Lifetime & 162 \\
+CWE-252 & Unchecked Return Value & 144 \\
+CWE-114 & Process Control & 126 \\
+CWE-244 & Heap Inspection & 98 \\
+CWE-591 & Data in Improperly Locked Mem & 74 \\
+CWE-273 & Dropped Privileges & 72 \\
+CWE-226 & Sensitive Info Uncleared & 68 \\
+\multicolumn{2}{@{}l}{\emph{+ 18 more CWEs}} & 187 \\
+\midrule
+\textbf{Total} & & \textbf{2,539} \\
+\bottomrule
+\end{tabular}
+\caption{CWEs with 100\% precision (zero false positives).}
+\label{tab:perfect-cwes}
+\end{table}
+
+\subsubsection{Top Rules by Detection Volume}
+
+\Cref{tab:top-rules} shows the 10 rules contributing the most true
+positives.  These rules account for 73\% of all TPs.  The FP rates
+vary significantly: ERR33-C achieves 5\% FP rate, while INT32-C is
+at 55\%.  This variation is expected---detecting unchecked return
+values is structurally simpler than proving integer overflow.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+\textbf{Rule} & \textbf{TP} & \textbf{FP} & \textbf{FP\%} & \textbf{Primary CWEs} \\
+\midrule
+ARR38-C & 2,747 & 2,778 & 50 & 121, 126, 124 \\
+INT32-C & 2,728 & 3,315 & 55 & 190, 191, 680 \\
+INT31-C & 2,608 & 2,496 & 49 & 195, 194, 197 \\
+STR31-C & 1,692 & 2,453 & 59 & 121, 122, 124 \\
+ENV33-C & 1,550 & 500  & 24 & 78 \\
+EXP33-C & 1,110 & 888  & 44 & 457, 758, 665 \\
+INT30-C & 922  & 1,233 & 57 & 190, 191, 680 \\
+ENV03-C & 912  & 1,272 & 58 & 78, 426 \\
+ARR30-C & 878  & 888  & 50 & 121, 122, 126 \\
+EXP34-C & 929  & 301  & 24 & 690, 476 \\
+\bottomrule
+\end{tabular}
+\caption{Top 10 rules by true positive volume (fast mode).}
+\label{tab:top-rules}
+\end{table}
+
+\subsubsection{TP Rate Progression}
+
+\Cref{fig:tp-rate-progression} shows the TP rate progression across
+the project's development history.  The full-suite baseline started at
+41.1\% (v0.2.1); after 12 rounds of FP reduction, it reached 44.6\%
+(v0.2.25).  The switch to fast-mode benchmarking (v0.3.20) established
+a new baseline of 45.8\%, which has since improved to 53.6\%.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\columnwidth,
+    height=5cm,
+    xlabel={Version},
+    ylabel={TP Rate (\%)},
+    ymin=40, ymax=56,
+    xtick=data,
+    xticklabels={v0.2.1, v0.2.7, v0.2.23, v0.3.20, v0.3.37, v0.3.53, v0.3.60},
+    xticklabel style={rotate=45, anchor=east, font=\footnotesize},
+    ylabel style={font=\footnotesize},
+    xlabel style={font=\footnotesize},
+    tick label style={font=\footnotesize},
+    nodes near coords,
+    nodes near coords style={font=\tiny},
+    every node near coord/.append style={anchor=south},
+    grid=major,
+    grid style={dashed, gray!30},
+]
+\addplot[color=blue, mark=*, thick] coordinates {
+    (1, 41.1) (2, 44.5) (3, 44.6) (4, 45.8) (5, 48.4) (6, 52.0) (7, 53.6)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{TP rate progression from baseline (v0.2.1) through current
+(v0.3.60).  The gap between v0.2.23 and v0.3.20 reflects the switch
+from full-suite to fast-mode benchmarking.}
+\label{fig:tp-rate-progression}
+\end{figure}
+
+\subsection{Real-World Results}
+
+\Cref{tab:realworld-results} compares SqC against cppcheck and
+clang-tidy.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Project} & \textbf{sqc} & \textbf{cppcheck} & \textbf{clang-tidy} \\
+\midrule
+libcrc & 734 & 43 & 2 \\
+sqlite & 129,035 & 1,181 & 135 \\
+mosquitto & 29,824 & 747 & 44 \\
+curl & 63,207 & 519 & 114 \\
+hostap & 179,833 & 2,118 & 2,279 \\
+\midrule
+\textbf{Total} & \textbf{402,633} & \textbf{4,608} & \textbf{2,574} \\
+\bottomrule
+\end{tabular}
+\caption{Violation counts (sqc v0.3.5, cppcheck v2.10, clang-tidy
+v21.1.6).  The 100$\times$ difference reflects SqC's 287-rule coverage
+vs.~$\sim$20 checks in competitors.}
+\label{tab:realworld-results}
+\end{table}
+
+\Cref{fig:realworld-reduction} shows that FP reductions developed on
+Juliet transfer to real-world code: total violations across all five
+codebases dropped 26.5\% from v0.2.7 to v0.3.5.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\columnwidth,
+    height=5cm,
+    ybar,
+    xlabel={SqC Version},
+    ylabel={Total Violations (K)},
+    ymin=0, ymax=620,
+    xtick=data,
+    xticklabels={v0.2.7, v0.2.13, v0.2.16, v0.2.21, v0.3.5},
+    xticklabel style={rotate=45, anchor=east, font=\footnotesize},
+    ylabel style={font=\footnotesize},
+    xlabel style={font=\footnotesize},
+    tick label style={font=\footnotesize},
+    bar width=12pt,
+    nodes near coords,
+    nodes near coords style={font=\tiny, rotate=90, anchor=west},
+    ymajorgrids=true,
+    grid style={dashed, gray!30},
+]
+\addplot[fill=blue!40, draw=blue!60] coordinates {
+    (1, 548.0)
+    (2, 462.3)
+    (3, 456.4)
+    (4, 410.9)
+    (5, 402.6)
+};
+\end{axis}
+\end{tikzpicture}
+\caption{Total SqC violations across 5 real-world codebases by
+version.  Reduction: $-$145,394 ($-$26.5\%).}
+\label{fig:realworld-reduction}
+\end{figure}
+
+For the one rule where all three tools have overlapping coverage
+(null pointer dereference), the difference in analysis philosophy is
+stark.  On mosquitto, SqC reports 8,657 EXP34-C violations compared
+to cppcheck's 2 \texttt{nullPointer} findings.  cppcheck fires only
+when it can \emph{prove} a null dereference path exists; SqC flags all
+paths that \emph{may} dereference a null pointer.  This is a
+fundamental tradeoff between coverage and precision that different users
+will weight differently.
+
+\subsection{Runtime Performance}
+\label{sec:runtime}
+
+To characterize SqC's runtime behavior across hardware configurations,
+we ran single-process scans (cross-file analysis enabled, no prescan
+cache) on four machines (\cref{tab:testbed}).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}clccc@{}}
+\toprule
+\textbf{ID} & \textbf{CPU} & \textbf{Cores} & \textbf{RAM} & \textbf{Disk} \\
+\midrule
+M1 & Xeon E5-2640 @ 2.50\,GHz & 6/24 & 192\,GB & SSD \\
+M2 & Ryzen 5 PRO 2400GE @ 3.20\,GHz & 4/8  & 16\,GB  & SSD \\
+M3 & i7-7700T @ 2.90\,GHz    & 4/8  & 16\,GB  & SSD \\
+M4 & i7-9750H @ 2.60\,GHz    & 6/12 & 16\,GB  & HDD \\
+\bottomrule
+\end{tabular}
+\caption{Test machines.  Cores listed as physical/logical.
+All run Linux 6.x.  M1 is a rack server; M2--M4 are desktop/laptop
+class.}
+\label{tab:testbed}
+\end{table}
+
+\Cref{tab:runtime} shows wall-clock times for single-process analysis
+of sqlite (404K LOC) across all four machines with cross-file analysis
+enabled and no prescan cache (cold start).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}crr@{}}
+\toprule
+\textbf{Machine} & \textbf{Time (s)} & \textbf{LOC/s} \\
+\midrule
+M1 & 3{,}470 & 117 \\
+M2 & 3{,}116 & 130 \\
+M3 & 2{,}363 & 171 \\
+M4 & 1{,}986 & 204 \\
+\bottomrule
+\end{tabular}
+\caption{Single-process analysis time for sqlite (404,701 LOC,
+cross-file analysis enabled, cold cache).}
+\label{tab:runtime}
+\end{table}
+
+\textbf{Scaling across codebases.}
+\Cref{tab:runtime-scaling} shows how throughput varies with codebase
+size on M1.  Throughput generally decreases for larger codebases
+because cross-file analysis cost grows with the number of
+inter-procedural edges.  The exception is sqlite, whose throughput
+(117 LOC/s) is lower than the larger hostap (155 LOC/s).  This is
+because sqlite ships as a single 230K-line amalgamation file
+(\texttt{sqlite3.c}) with dense internal cross-references, whereas
+hostap distributes its code across 504 files averaging $\sim$1{,}070
+LOC each.  Per-file analysis cost is dominated by intra-file
+complexity, not total codebase size.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Project} & \textbf{LOC} & \textbf{Time (s)} & \textbf{LOC/s} \\
+\midrule
+libcrc    &   2{,}130 &     2 &   888 \\
+mosquitto &  88{,}717 &   172 &   516 \\
+curl      & 240{,}331 &   609 &   395 \\
+hostap    & 539{,}617 & 3{,}479 & 155 \\
+sqlite    & 404{,}701 & 3{,}470 & 117 \\
+\bottomrule
+\end{tabular}
+\caption{Single-process throughput on M1 across all five benchmark
+codebases (cross-file analysis, cold cache).  sqlite's lower
+throughput despite fewer LOC than hostap reflects the cost of
+analyzing its 230K-line amalgamation file.}
+\label{tab:runtime-scaling}
+\end{table}
+
+In single-process mode, loading a cached prescan saves less than 1\%
+of wall time---the prescan is a small fraction of total analysis cost.
+The cache's primary benefit is enabling parallel analysis.
+
+\textbf{Parallel mode.}  SqC's prescan cache enables external
+parallelism: a single prescan pass builds the cross-file context
+(function summaries, call graph, null states) and serializes it to
+disk.  Multiple worker processes then analyze file subsets
+independently, each loading the shared cache via
+\texttt{-{}-load-prescan}.  \Cref{tab:parallel} shows the impact on
+M1 (8 workers, 19 subdirectory units).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Mode} & \textbf{Wall (s)} & \textbf{LOC/s} & \textbf{Speedup} \\
+\midrule
+Single-process     & 3{,}470 & 117 & 1.0$\times$ \\
+Parallel (cold)    & 1{,}899 & 213 & 1.8$\times$ \\
+Parallel (cached)  & 1{,}056 & 383 & 3.3$\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Parallel scan speedup on M1 for sqlite.  ``Cold'' includes
+prescan generation; ``cached'' loads a pre-built 3.1\,MB prescan
+cache, eliminating 14 minutes of cross-file analysis setup.}
+\label{tab:parallel}
+\end{table}
+
+The Juliet benchmark (70 CWEs, fast mode) completes in approximately
+30 minutes on M1 using per-CWE parallelism.
+
+%% ============================================================
+\section{Iterative False Positive Reduction}
+\label{sec:fp-reduction}
+
+Reducing false positives while maintaining detection is the central
+engineering challenge for a broad-coverage static analyzer.  This
+section walks through the techniques that achieved an 80.7\% cumulative
+FP reduction (full-suite measurement), organized by the insight that motivated each change.
+
+\Cref{fig:fp-reduction} shows the TP and FP counts across 12
+optimization rounds.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=\columnwidth,
+    height=5.5cm,
+    xlabel={Optimization Round},
+    ylabel={Count (thousands)},
+    ymin=100, ymax=900,
+    xmin=0, xmax=13,
+    xtick={1,2,3,4,5,6,7,8,9,10,11,12},
+    ylabel style={font=\footnotesize},
+    xlabel style={font=\footnotesize},
+    tick label style={font=\footnotesize},
+    grid=major,
+    grid style={dashed, gray!30},
+    legend style={font=\tiny, at={(0.97,0.97)}, anchor=north east},
+]
+\addplot[color=red, mark=triangle*, thick] coordinates {
+    (0, 839.3)
+    (1, 752.4) (2, 736.6) (3, 537.6) (4, 492.6)
+    (5, 475.8) (6, 327.2) (7, 301.5) (8, 296.4)
+    (9, 243.8) (10, 239.7) (11, 215.7) (12, 161.5)
+};
+\addlegendentry{FP}
+\addplot[color=blue, mark=*, thick] coordinates {
+    (0, 586.5)
+    (1, 552.6) (2, 555.7) (3, 402.0) (4, 363.9)
+    (5, 340.9) (6, 247.8) (7, 231.1) (8, 231.0)
+    (9, 189.9) (10, 189.0) (11, 172.8) (12, 130.2)
+};
+\addlegendentry{TP}
+\end{axis}
+\end{tikzpicture}
+\caption{TP and FP counts across optimization rounds (full Juliet
+suite, thousands).  Both decline as overly-broad rules are tightened;
+the key metric is TP rate, which improved from 41.1\% to 44.6\%.}
+\label{fig:fp-reduction}
+\end{figure}
+
+\subsection{The Header Problem}
+\label{sec:fp-cross-file}
+
+The first and largest source of false positives came from a fundamental
+limitation of the tree-sitter approach: without \texttt{\#include}
+resolution, every call to a function defined in another file looks like
+a call to an undeclared function.  Rules DCL31-C and DCL07-C would flag
+every \texttt{malloc()}, \texttt{printf()}, and \texttt{CreateFile()}
+call.
+
+The fix came in two stages.  First, a built-in database of standard
+functions (Round 3, $-$198,974 FPs).  Second, cross-file analysis: a
+pre-scan of project directories to discover all function definitions
+(Round 6, $-$148,622 FPs).  Together, these two changes account for
+41\% of the total FP reduction.
+
+Later, adding $\sim$100 Windows API functions to the database
+(Round 9) removed another 36K FPs from DCL31-C/DCL07-C alone---the
+biggest single-rule win of any round.
+
+\subsection{Type-Aware Analysis}
+
+Several integer rules initially operated on the text of expressions
+without considering the types of the operands.  This produced false
+positives on non-integer types:
+
+\begin{itemize}
+    \item \texttt{char data; data + 1} was flagged as signed integer
+        overflow (INT32-C).  Fix: \texttt{infer\_type()} returns
+        ``not applicable'' for non-integer types.
+    \item \texttt{ptr + n} was flagged as unsigned integer wrap
+        (INT30-C).  Fix: pointer arithmetic is identified as valid C.
+    \item Float-to-int assignments with unknown types were flagged
+        (FLP34-C).  Fix: only flag when both sides have known,
+        mismatched types.
+\end{itemize}
+
+The lesson: \emph{don't flag when uncertain.}  Suppressing warnings
+for unknown or ambiguous types consistently improved the FP-to-TP
+ratio.
+
+\subsection{Bounds-Check Detection}
+
+INT32-C and INT30-C gained AST-ancestor walking to detect enclosing
+bounds checks.  The algorithm walks up to 15 ancestors looking for an
+enclosing \texttt{if\_statement} whose condition references a type-limit
+macro (\texttt{INT\_MAX}, \texttt{UINT64\_MAX}, etc.) \emph{and} at
+least one arithmetic operand.
+
+This achieved a 12.5:1 FP-to-TP reduction ratio for INT32-C.  One
+important implementation detail: we use word-boundary matching for
+macro names, because \texttt{ULONG\_MAX} contains \texttt{LONG\_MAX}
+as a substring.
+
+\subsection{Constant Evaluation}
+
+The constant evaluator resolves $\sim$35 C standard limit macros,
+$\sim$20 type sizes via \texttt{sizeof}, and arithmetic on these
+values.  This produced the largest single-round FP reduction since
+cross-file analysis ($-$12,088 FPs in Round 12), because it enabled
+every integer rule to reason about allocation sizes, buffer bounds,
+and guard conditions.
+
+\subsection{Diminishing Returns}
+
+\Cref{tab:fp-milestones} shows selected milestones.  The pattern of
+diminishing returns is clear: Round 3 removed 199K FPs; by Round 8,
+only 5K.  Each successive round requires more sophisticated analysis
+for smaller gains.
+
+\begin{table}[t]
+\centering
+\footnotesize
+\begin{tabular}{@{}rlrrr@{}}
+\toprule
+\textbf{Rd} & \textbf{Key Change} & \textbf{FP} & \textbf{$\Delta$FP} & \textbf{TP\%} \\
+\midrule
+0 & Baseline & 839K & --- & 41.1 \\
+3 & Std function DB & 538K & $-$199K & 42.8 \\
+6 & Cross-file analysis & 327K & $-$149K & 43.1 \\
+9 & Windows API + types & 244K & $-$53K & 43.8 \\
+12 & Const eval + macros & 162K & $-$12K & 44.6 \\
+\bottomrule
+\end{tabular}
+\caption{FP reduction milestones (full suite).  Cumulative: $-$677K
+FPs ($-$80.7\%).}
+\label{tab:fp-milestones}
+\end{table}
+
+\subsection{Principles That Emerged}
+
+Four principles emerged from this iterative process:
+
+\begin{enumerate}
+    \item \textbf{Don't flag when uncertain.}  If the type, origin,
+        or value of an operand is unknown, suppress the warning.
+    \item \textbf{Target absolute FP counts, not rates.}  A rule with
+        99\% FP rate and 100 violations matters less than one with
+        50\% FP rate and 10K violations.
+    \item \textbf{Zero-TP rules are free FP reductions.}  DCL40-C's
+        31-character identifier prefix check produced 12K FPs and 0 TPs
+        on Juliet.  Removing it was cost-free.
+    \item \textbf{Verify on both benchmarks.}  Fixes targeting
+        \texttt{uint32\_t} resolution show impact on real-world code
+        but not on Juliet, which uses explicit C types.
+\end{enumerate}
+
+%% ============================================================
+\section{Worked Example: Null Dereference Detection}
+\label{sec:worked-example}
+
+To make the analysis pipeline concrete, consider this C function:
+
+\begin{lstlisting}
+void process(FILE *log) {
+    char *buf = malloc(256);
+    if (buf == NULL) {
+        fprintf(log, "alloc failed\n");
+        return;
+    }
+    /* buf is NotNull here */
+    strcpy(buf, "initialized");
+    free(buf);
+}
+\end{lstlisting}
+
+SqC's analysis proceeds through the four stages:
+
+\textbf{Stage 1 (Parse):} Tree-sitter produces a CST.  The
+\texttt{malloc} call, \texttt{if} statement, \texttt{return},
+\texttt{strcpy}, and \texttt{free} are all represented as nodes.
+
+\textbf{Stage 2 (Prescan):} If cross-file analysis is enabled,
+\texttt{malloc} is recognized from the standard function database
+as a function that may return NULL.
+
+\textbf{Stage 3 (CFG + Dataflow):} The CFG has four basic blocks:
+entry (malloc call), the null-check branch, the error path (fprintf +
+return), and the success path (strcpy + free).  The null-state dataflow
+computes:
+\begin{itemize}
+    \item After \texttt{malloc}: \texttt{buf} $=$ PossiblyNull
+    \item True branch (\texttt{buf == NULL}): \texttt{buf} $=$ DefinitelyNull
+    \item False branch: \texttt{buf} $=$ NotNull
+    \item At \texttt{strcpy}: \texttt{buf} $=$ NotNull (the DefinitelyNull
+        path returned early)
+\end{itemize}
+
+\textbf{Stage 4 (Rule Evaluation):} EXP34-C checks every dereference
+of a pointer.  At the \texttt{strcpy} call, \texttt{buf} is NotNull,
+so no violation is reported.  If the \texttt{if (buf == NULL)} check
+were removed, \texttt{buf} would still be PossiblyNull at \texttt{strcpy},
+and EXP34-C would flag the violation.
+
+%% ============================================================
+\section{Limitations}
+\label{sec:limitations}
+
+SqC has several architectural limitations that cap its achievable
+precision:
+
+\textbf{No preprocessor expansion.}  Macros appear as identifier
+tokens or function calls.  SqC cannot determine whether
+\texttt{SAFE\_FREE(p)} performs a null check internally.
+
+\textbf{No alias analysis.}  Pointer aliasing is unresolved.  If
+\texttt{p} and \texttt{q} point to the same memory and \texttt{q}
+is checked for null, SqC does not propagate that information to
+\texttt{p}.
+
+\textbf{No symbolic execution.}  SqC's value-range analysis handles
+constant expressions but cannot reason about symbolic relationships
+(e.g., that \texttt{n} is always less than \texttt{sizeof(buf)}).
+
+\textbf{No SSA form.}  Without static single assignment, use-def
+chains are approximate, limiting the precision of dataflow analyses.
+
+These gaps are fundamental to the tree-sitter approach.  A tool built
+on Clang's AST would resolve macros and includes automatically but
+would require a compilation database.  The current architecture---AST
+plus CFG plus null-state dataflow plus inter-procedural summaries---likely
+caps the Juliet TP rate at approximately 55--60\% without adding
+alias analysis or symbolic execution.
+
+The 2 remaining CWEs with zero detection (\cref{tab:precision-tiers})
+reveal residual coverage gaps: CWE-259 (Hard-Coded Password) is blocked
+by tree-sitter's inability to expand preprocessor macros in Juliet's
+Windows headers, and CWE-328 (Reversible One-Way Hash) requires a new
+cryptographic algorithm detection rule.
+
+%% ============================================================
+\section{Related Work}
+\label{sec:related}
+
+\textbf{Commercial tools.}
+Coverity~\cite{coverity}, Klocwork, and Polyspace use inter-procedural
+dataflow, symbolic execution, and abstract interpretation, generally
+achieving lower false positive rates than SqC on comparable checks.
+However, their closed-source nature prevents independent benchmarking,
+and licensing costs limit adoption.
+
+\textbf{cppcheck}~\cite{cppcheck} implements $\sim$20 CERT C checks
+with low false positive rates.  On our benchmarks, cppcheck's
+\texttt{nullPointer} check finds 2 violations on mosquitto compared
+to SqC's 8,657---cppcheck requires proof while SqC flags potential
+paths.
+
+\textbf{clang-tidy}~\cite{clang-tidy} implements $\sim$20 CERT C
+checks via its \texttt{cert-*} module.  It benefits from Clang's full
+semantic analysis but requires a compilation database.
+
+\textbf{Infer}~\cite{infer} uses bi-abduction and separation logic
+for memory safety.  It achieves high precision on null dereference
+and resource leaks but covers a narrower set of defect classes.
+
+\textbf{Frama-C}~\cite{frama-c} provides formal verification via
+abstract interpretation and deductive verification.  More precise
+than SqC for the classes it covers, but requires annotation effort
+that limits adoption for legacy codebases.
+
+The coverage gap is notable: Kaner~\cite{kaner} argues that 100\%
+coverage of any single metric is misleading---what matters is
+reasonable coverage across \emph{many} dimensions.
+Marick~\cite{marick} demonstrates that code coverage tools are
+most useful as guides for what to test next, not as proof of
+correctness.  SqC's approach of implementing 287 rules (broad
+coverage) rather than perfecting a handful aligns with this
+philosophy.
+
+%% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have presented SqC, a static analysis tool implementing 287 CERT C
+rules across 17 categories.  Through tree-sitter-based parsing,
+control-flow graph construction, null-state dataflow analysis, and
+inter-procedural function summaries, SqC achieves a 52.0\% true
+positive rate on the Juliet benchmark (23 CWEs at 100\% precision)
+while reducing false positives by 80.7\% from baseline through 12
+rounds of iterative refinement.
+
+On real-world codebases totaling 1.27 million lines of code, SqC
+detects vulnerability classes that existing open-source tools do not
+cover, including POSIX thread misuse, integer overflow, and
+inter-procedural null dereference.
+
+The tool's primary limitation---its tree-sitter foundation---is also
+its key advantage: SqC analyzes any C file without a build system,
+compilation database, or preprocessing step.  For teams that need
+broad CERT C coverage with minimal integration effort, this tradeoff
+is worthwhile.
+
+Future work includes expanding value-range analysis and improving
+cross-function taint tracking for injection-related CWEs (CWE-78,
+CWE-89).  Inter-procedural taint propagation would also improve
+coverage for CWE-789 and CWE-114, where only intra-procedural
+variants are currently detected.
+
+\bibliographystyle{plainnat}
+
+\begin{thebibliography}{11}
+
+\bibitem{cert-c}
+Software Engineering Institute.
+\newblock {SEI CERT C Coding Standard}.
+\newblock \url{https://wiki.sei.cmu.edu/confluence/display/c/SEI+CERT+C+Coding+Standard}, 2016.
+
+\bibitem{juliet}
+P.~E. Black.
+\newblock {Juliet 1.3 Test Suite: Changes From 1.2}.
+\newblock NIST Technical Note 1995, National Institute of Standards and
+  Technology, 2018.
+
+\bibitem{cwe-top25}
+{MITRE Corporation}.
+\newblock {2024 CWE Top 25 Most Dangerous Software Weaknesses}.
+\newblock \url{https://cwe.mitre.org/top25/archive/2024/2024_cwe_top25.html}, 2024.
+
+\bibitem{tree-sitter}
+M.~Brunsfeld.
+\newblock {Tree-sitter: An incremental parsing system for programming tools}.
+\newblock \url{https://tree-sitter.github.io/tree-sitter/}, 2018.
+
+\bibitem{cppcheck}
+D.~Marjam{\"a}ki.
+\newblock {Cppcheck: A tool for static C/C++ code analysis}.
+\newblock \url{https://cppcheck.sourceforge.io/}, 2007.
+
+\bibitem{clang-tidy}
+{LLVM Project}.
+\newblock {clang-tidy --- Extra Clang Tools documentation}.
+\newblock \url{https://clang.llvm.org/extra/clang-tidy/}, 2014.
+
+\bibitem{coverity}
+A.~Bessey, K.~Block, B.~Chelf, A.~Chou, B.~Fulton, S.~Hallem, C.~Henri-Gros,
+  A.~Kamsky, S.~McPeak, and D.~Engler.
+\newblock A few billion lines of code later: Using static analysis to find bugs
+  in the real world.
+\newblock \emph{Communications of the ACM}, 53(2):66--75, 2010.
+
+\bibitem{infer}
+C.~Calcagno, D.~Distefano, J.~Dubreil, D.~Gabi, P.~Hooimeijer, M.~Luca,
+  P.~O'Hearn, I.~Papakonstantinou, J.~Purbrick, and D.~Rodriguez.
+\newblock Moving fast with software verification.
+\newblock In \emph{NASA Formal Methods}, pages 3--11. Springer, 2015.
+
+\bibitem{frama-c}
+P.~Cuoq, F.~Kirchner, N.~Kosmatov, V.~Prevosto, J.~Signoles, and
+  B.~Yakobowski.
+\newblock {Frama-C: A software analysis perspective}.
+\newblock In \emph{Intl.\ Conf.\ Software Engineering and Formal
+  Methods}, pages 233--247. Springer, 2012.
+
+\bibitem{kaner}
+C.~Kaner.
+\newblock Software negligence and testing coverage.
+\newblock In \emph{STAR Conference}, Orlando, FL, 1996.
+
+\bibitem{marick}
+B.~Marick.
+\newblock How to misuse code coverage.
+\newblock In \emph{Intl.\ Conf.\ on Testing Computer Software}, 1999.
+
+\end{thebibliography}
+
+\end{document}

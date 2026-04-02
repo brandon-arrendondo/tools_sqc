@@ -73,6 +73,9 @@ impl CertRule for Int16C {
         // Find bitwise operations on signed integer variables
         self.find_bitwise_operations(node, source, &signed_int_vars, &mut violations);
 
+        // Find signed-to-unsigned conversions without range check
+        self.find_signed_to_unsigned_conversions(node, source, &signed_int_vars, &mut violations);
+
         violations
     }
 }
@@ -330,5 +333,242 @@ impl Int16C {
             }
         }
         None
+    }
+
+    /// Detect signed-to-unsigned conversions without range checks.
+    fn find_signed_to_unsigned_conversions(
+        &self,
+        node: &Node,
+        source: &str,
+        signed_int_vars: &HashMap<String, (usize, usize)>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        // Check function definitions for unsigned return type + signed return value
+        if node.kind() == "function_definition" {
+            if self.has_unsigned_return_type(node, source) {
+                if let Some(body) = node.child_by_field_name("body") {
+                    self.check_unsigned_return_signed(&body, source, signed_int_vars, violations);
+                }
+            }
+        }
+
+        // Check declarations: unsigned var = signed_var
+        if node.kind() == "declaration" {
+            self.check_unsigned_init_from_signed(node, source, signed_int_vars, violations);
+        }
+
+        // Check assignments: unsigned_var = signed_var
+        if node.kind() == "assignment_expression" {
+            self.check_unsigned_assign_from_signed(node, source, signed_int_vars, violations);
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.find_signed_to_unsigned_conversions(
+                    &child,
+                    source,
+                    signed_int_vars,
+                    violations,
+                );
+            }
+        }
+    }
+
+    fn is_unsigned_type_text(text: &str) -> bool {
+        text.contains("unsigned")
+            || matches!(
+                text.trim(),
+                "size_t" | "uint8_t" | "uint16_t" | "uint32_t" | "uint64_t" | "uintptr_t"
+            )
+    }
+
+    fn has_unsigned_return_type(&self, func_node: &Node, source: &str) -> bool {
+        // Check type specifiers before the declarator
+        let mut cursor = func_node.walk();
+        for child in func_node.children(&mut cursor) {
+            if matches!(
+                child.kind(),
+                "sized_type_specifier" | "primitive_type" | "type_identifier"
+            ) {
+                let type_text = get_node_text(&child, source);
+                if Self::is_unsigned_type_text(type_text) {
+                    return true;
+                }
+            }
+            // Stop at declarator
+            if child.kind() == "function_declarator" || child.kind() == "pointer_declarator" {
+                break;
+            }
+        }
+        false
+    }
+
+    /// Check return statements that return a signed variable from an unsigned function.
+    fn check_unsigned_return_signed(
+        &self,
+        node: &Node,
+        source: &str,
+        signed_int_vars: &HashMap<String, (usize, usize)>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if node.kind() == "return_statement" {
+            // Get the returned expression (skip "return" keyword)
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    if child.kind() == "identifier" {
+                        let name = get_node_text(&child, source).to_string();
+                        if signed_int_vars.contains_key(&name) {
+                            if !self.has_non_negative_guard(node, &name, source) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    message: format!(
+                                        "Signed variable '{}' returned as unsigned without range check",
+                                        name
+                                    ),
+                                    severity: self.severity(),
+                                    line: node.start_position().row + 1,
+                                    column: node.start_position().column + 1,
+                                    file_path: String::new(),
+                                    suggestion: Some(format!(
+                                        "Add a range check: if ({} >= 0) before returning as unsigned",
+                                        name
+                                    )),
+                                    requires_manual_review: None,
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Recurse
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.check_unsigned_return_signed(&child, source, signed_int_vars, violations);
+            }
+        }
+    }
+
+    /// Check `unsigned int x = signed_var;` declarations.
+    fn check_unsigned_init_from_signed(
+        &self,
+        decl_node: &Node,
+        source: &str,
+        signed_int_vars: &HashMap<String, (usize, usize)>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        let decl_text = get_node_text(decl_node, source);
+        if !Self::is_unsigned_type_text(decl_text) {
+            return;
+        }
+
+        // Look for init_declarator with an identifier initializer
+        let mut cursor = decl_node.walk();
+        for child in decl_node.children(&mut cursor) {
+            if child.kind() == "init_declarator" {
+                if let Some(value) = child.child_by_field_name("value") {
+                    if value.kind() == "identifier" {
+                        let init_name = get_node_text(&value, source).to_string();
+                        if signed_int_vars.contains_key(&init_name) {
+                            if !self.has_non_negative_guard(decl_node, &init_name, source) {
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    message: format!(
+                                        "Signed variable '{}' assigned to unsigned without range check",
+                                        init_name
+                                    ),
+                                    severity: self.severity(),
+                                    line: decl_node.start_position().row + 1,
+                                    column: decl_node.start_position().column + 1,
+                                    file_path: String::new(),
+                                    suggestion: Some(format!(
+                                        "Add a range check: if ({} >= 0) before assigning to unsigned",
+                                        init_name
+                                    )),
+                                    requires_manual_review: None,
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check `unsigned_var = signed_var;` assignments.
+    fn check_unsigned_assign_from_signed(
+        &self,
+        assign_node: &Node,
+        source: &str,
+        signed_int_vars: &HashMap<String, (usize, usize)>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if let Some(right) = assign_node.child_by_field_name("right") {
+            if right.kind() == "identifier" {
+                let right_name = get_node_text(&right, source).to_string();
+                if !signed_int_vars.contains_key(&right_name) {
+                    return;
+                }
+
+                // Check if left side is an unsigned variable (not in signed_int_vars, and declared as unsigned)
+                if let Some(left) = assign_node.child_by_field_name("left") {
+                    let left_name = get_node_text(&left, source).to_string();
+                    // If left is known signed, skip (signed = signed is fine for this rule)
+                    if signed_int_vars.contains_key(&left_name) {
+                        return;
+                    }
+                    // If left is not in signed_int_vars, it might be unsigned
+                    // We flag it and rely on the unsigned declaration check
+                    if !self.has_non_negative_guard(assign_node, &right_name, source) {
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            message: format!(
+                                "Signed variable '{}' assigned to potentially unsigned variable without range check",
+                                right_name
+                            ),
+                            severity: self.severity(),
+                            line: assign_node.start_position().row + 1,
+                            column: assign_node.start_position().column + 1,
+                            file_path: String::new(),
+                            suggestion: Some(format!(
+                                "Add a range check: if ({} >= 0) before assigning to unsigned",
+                                right_name
+                            )),
+                            requires_manual_review: None,
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check if the node is inside a guard like `if (var >= 0)` or `if (var > 0)`.
+    fn has_non_negative_guard(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        let mut current = node.parent();
+        while let Some(ancestor) = current {
+            if matches!(
+                ancestor.kind(),
+                "if_statement" | "while_statement" | "for_statement"
+            ) {
+                if let Some(condition) = ancestor.child_by_field_name("condition") {
+                    let cond_text = get_node_text(&condition, source);
+                    if cond_text.contains(var_name)
+                        && (cond_text.contains(">= 0")
+                            || cond_text.contains("> 0")
+                            || cond_text.contains("!= -")
+                            || cond_text.contains(">= 0"))
+                    {
+                        return true;
+                    }
+                }
+            }
+            if ancestor.kind() == "function_definition" {
+                break;
+            }
+            current = ancestor.parent();
+        }
+        false
     }
 }

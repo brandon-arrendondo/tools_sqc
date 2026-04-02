@@ -284,23 +284,108 @@ impl Int34C {
             return true;
         }
 
-        // Try to find the variable declaration
         if let Some(func) = ast_utils::find_containing_function(node) {
-            // Check function parameters
-            if let Some(params) = func.child_by_field_name("parameters") {
-                for i in 0..params.named_child_count() {
-                    if let Some(param) = params.named_child(i) {
-                        if param.kind() == "parameter_declaration" {
-                            let param_text = ast_utils::get_node_text(&param, source);
-                            if param_text.contains(var_name) && param_text.contains("unsigned") {
-                                return true;
+            // Check function parameters via function_declarator → parameter_list
+            if let Some(param_list) = self.find_parameter_list(&func) {
+                for i in 0..param_list.child_count() {
+                    if let Some(param) = param_list.child(i) {
+                        if param.kind() == "parameter_declaration"
+                            && self.decl_has_unsigned_var(&param, var_name, source)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            // Check local variable declarations in function body
+            if let Some(body) = func.child_by_field_name("body") {
+                if self.body_has_unsigned_var(&body, var_name, source) {
+                    return true;
+                }
+            }
+        }
+
+        false
+    }
+
+    /// Find the parameter_list node within a function_definition.
+    /// Traverses: function_definition → function_declarator → parameter_list
+    fn find_parameter_list<'a>(&self, func: &'a Node) -> Option<Node<'a>> {
+        for i in 0..func.child_count() {
+            if let Some(child) = func.child(i) {
+                if child.kind() == "function_declarator" {
+                    for j in 0..child.child_count() {
+                        if let Some(grandchild) = child.child(j) {
+                            if grandchild.kind() == "parameter_list" {
+                                return Some(grandchild);
                             }
                         }
                     }
                 }
             }
         }
+        None
+    }
 
+    /// Check if a declaration node declares `var_name` with an unsigned type.
+    /// Works for both parameter_declaration and declaration nodes.
+    fn decl_has_unsigned_var(&self, decl: &Node, var_name: &str, source: &str) -> bool {
+        let mut has_unsigned = false;
+        let mut declares_var = false;
+
+        for i in 0..decl.child_count() {
+            if let Some(child) = decl.child(i) {
+                match child.kind() {
+                    "sized_type_specifier" => {
+                        let text = ast_utils::get_node_text(&child, source);
+                        if text.contains("unsigned") {
+                            has_unsigned = true;
+                        }
+                    }
+                    "identifier" => {
+                        if ast_utils::get_node_text(&child, source) == var_name {
+                            declares_var = true;
+                        }
+                    }
+                    "pointer_declarator" | "array_declarator" | "init_declarator" => {
+                        if self.declarator_contains_name(&child, var_name, source) {
+                            declares_var = true;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        has_unsigned && declares_var
+    }
+
+    /// Recursively check if a declarator subtree contains an identifier matching var_name.
+    fn declarator_contains_name(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        if node.kind() == "identifier" {
+            return ast_utils::get_node_text(node, source) == var_name;
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.declarator_contains_name(&child, var_name, source) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Walk a compound_statement looking for local declarations of var_name with unsigned type.
+    fn body_has_unsigned_var(&self, body: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..body.child_count() {
+            if let Some(child) = body.child(i) {
+                if child.kind() == "declaration"
+                    && self.decl_has_unsigned_var(&child, var_name, source)
+                {
+                    return true;
+                }
+            }
+        }
         false
     }
 

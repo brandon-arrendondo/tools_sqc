@@ -42,7 +42,7 @@
 use super::super::{CertRule, RuleViolation};
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
 pub struct Exp39C;
@@ -79,12 +79,33 @@ impl CertRule for Exp39C {
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
 
-        // First pass: collect variable type information
+        // First pass: collect variable type information and layout tracking
         let mut var_types = HashMap::new();
-        self.collect_var_types(node, source, &mut var_types);
+        let mut struct_field_ptrs = HashSet::new();
+        let mut union_vars = HashSet::new();
+        self.collect_var_types(
+            node,
+            source,
+            &mut var_types,
+            &mut struct_field_ptrs,
+            &mut union_vars,
+        );
 
-        // Second pass: check for violations
-        self.check_node(node, source, &mut violations, &var_types);
+        // Second pass: check for violations and track union member accesses
+        let mut union_member_accesses: HashMap<String, Vec<(String, usize, usize, bool)>> =
+            HashMap::new();
+        self.check_node(
+            node,
+            source,
+            &mut violations,
+            &var_types,
+            &struct_field_ptrs,
+            &union_vars,
+            &mut union_member_accesses,
+        );
+
+        // Post-pass: check union type punning (CWE-188)
+        self.check_union_type_punning(&union_vars, &union_member_accesses, &mut violations);
 
         violations
     }
@@ -97,15 +118,28 @@ impl Exp39C {
         node: &Node,
         source: &str,
         var_types: &mut HashMap<String, VarTypeInfo>,
+        struct_field_ptrs: &mut HashSet<String>,
+        union_vars: &mut HashSet<String>,
     ) {
         if node.kind() == "declaration" {
             self.process_declaration(node, source, var_types);
+            self.check_union_declaration(node, source, union_vars);
+        }
+
+        // Track struct field pointer assignments: ptr = &struct.field
+        if node.kind() == "assignment_expression" {
+            self.check_struct_field_ptr_assignment(node, source, struct_field_ptrs);
+        }
+
+        // Track struct field pointer initializations: type *ptr = &struct.field
+        if node.kind() == "init_declarator" {
+            self.check_struct_field_ptr_init(node, source, struct_field_ptrs);
         }
 
         // Recurse into children
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.collect_var_types(&child, source, var_types);
+                self.collect_var_types(&child, source, var_types, struct_field_ptrs, union_vars);
             }
         }
     }
@@ -275,10 +309,14 @@ impl Exp39C {
         source: &str,
         violations: &mut Vec<RuleViolation>,
         var_types: &HashMap<String, VarTypeInfo>,
+        struct_field_ptrs: &HashSet<String>,
+        union_vars: &HashSet<String>,
+        union_member_accesses: &mut HashMap<String, Vec<(String, usize, usize, bool)>>,
     ) {
         // Look for cast_expression nodes
         if node.kind() == "cast_expression" {
             self.check_cast_expression(node, source, violations, var_types);
+            self.check_struct_field_ptr_arithmetic(node, source, struct_field_ptrs, violations);
         }
 
         // Check for realloc with struct type casting
@@ -291,10 +329,23 @@ impl Exp39C {
             self.check_init_declarator(node, source, violations, var_types);
         }
 
+        // Track union member accesses for CWE-188 type punning detection
+        if node.kind() == "field_expression" {
+            self.track_union_member_access(node, source, union_vars, union_member_accesses);
+        }
+
         // Recursively check child nodes
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_node(&child, source, violations, var_types);
+                self.check_node(
+                    &child,
+                    source,
+                    violations,
+                    var_types,
+                    struct_field_ptrs,
+                    union_vars,
+                    union_member_accesses,
+                );
             }
         }
     }
@@ -756,5 +807,302 @@ impl Exp39C {
             ),
             ..Default::default()
         });
+    }
+
+    // ── CWE-188: Struct memory layout assumption detection ──────────────────
+
+    /// Check if a declaration is a union type and track the variable name
+    fn check_union_declaration(&self, node: &Node, source: &str, union_vars: &mut HashSet<String>) {
+        let mut has_union = false;
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "union_specifier" {
+                    has_union = true;
+                    break;
+                }
+            }
+        }
+        if !has_union {
+            return;
+        }
+        // Extract variable name from direct children (not from union body)
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                match child.kind() {
+                    "identifier" => {
+                        let name = get_node_text(&child, source).trim().to_string();
+                        union_vars.insert(name);
+                    }
+                    "init_declarator" | "pointer_declarator" => {
+                        if let Some(name) = self.find_var_name(&child, source) {
+                            union_vars.insert(name);
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+    }
+
+    /// Check if an assignment stores &struct.field into a variable
+    fn check_struct_field_ptr_assignment(
+        &self,
+        node: &Node,
+        source: &str,
+        struct_field_ptrs: &mut HashSet<String>,
+    ) {
+        if let Some(left) = node.child_by_field_name("left") {
+            if left.kind() == "identifier" {
+                if let Some(right) = node.child_by_field_name("right") {
+                    if self.is_address_of_struct_field(&right, source) {
+                        let var_name = get_node_text(&left, source).trim().to_string();
+                        struct_field_ptrs.insert(var_name);
+                    }
+                }
+            }
+        }
+    }
+
+    /// Check if an init_declarator initializes with &struct.field
+    fn check_struct_field_ptr_init(
+        &self,
+        node: &Node,
+        source: &str,
+        struct_field_ptrs: &mut HashSet<String>,
+    ) {
+        if let Some(value) = node.child_by_field_name("value") {
+            if self.is_address_of_struct_field(&value, source) {
+                if let Some(var_name) = self.find_var_name(node, source) {
+                    struct_field_ptrs.insert(var_name);
+                }
+            }
+        }
+    }
+
+    /// Check if a node is &struct_var.field (address-of a struct field)
+    fn is_address_of_struct_field(&self, node: &Node, source: &str) -> bool {
+        if node.kind() != "pointer_expression" {
+            return false;
+        }
+        let text = get_node_text(node, source).trim();
+        if !text.starts_with('&') {
+            return false;
+        }
+        if let Some(arg) = node.child_by_field_name("argument") {
+            return arg.kind() == "field_expression";
+        }
+        false
+    }
+
+    /// Detect cast expressions involving struct field pointer arithmetic (CWE-188 modify_local)
+    /// Pattern: *(int*)(charPtr + sizeof(int)) where charPtr = &struct.field
+    fn check_struct_field_ptr_arithmetic(
+        &self,
+        cast_node: &Node,
+        source: &str,
+        struct_field_ptrs: &HashSet<String>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        if struct_field_ptrs.is_empty() {
+            return;
+        }
+        // Must be a pointer cast
+        if let Some(type_node) = cast_node.child_by_field_name("type") {
+            let target_type = get_node_text(&type_node, source);
+            if !target_type.contains('*') {
+                return;
+            }
+        } else {
+            return;
+        }
+        // Check if value involves pointer arithmetic with a struct field pointer
+        if let Some(value) = cast_node.child_by_field_name("value") {
+            if self.contains_struct_field_ptr_arithmetic(&value, source, struct_field_ptrs) {
+                let start = cast_node.start_position();
+                let text = get_node_text(cast_node, source).trim().to_string();
+                violations.push(RuleViolation {
+                    rule_id: self.rule_id().to_string(),
+                    severity: Severity::Medium,
+                    message: format!(
+                        "Pointer arithmetic on struct field address with type cast assumes specific memory layout: {}",
+                        if text.len() > 60 { format!("{}...", &text[..60]) } else { text }
+                    ),
+                    file_path: String::new(),
+                    line: start.row + 1,
+                    column: start.column + 1,
+                    suggestion: Some(
+                        "Access struct fields by name instead of using pointer arithmetic with assumed offsets. Struct layout may include padding.".to_string()
+                    ),
+                    ..Default::default()
+                });
+            }
+        }
+    }
+
+    /// Check if an expression contains pointer arithmetic with a struct field pointer
+    fn contains_struct_field_ptr_arithmetic(
+        &self,
+        node: &Node,
+        source: &str,
+        struct_field_ptrs: &HashSet<String>,
+    ) -> bool {
+        match node.kind() {
+            "binary_expression" => {
+                // Check if either operand is a struct field pointer
+                for field in &["left", "right"] {
+                    if let Some(operand) = node.child_by_field_name(field) {
+                        if operand.kind() == "identifier" {
+                            let name = get_node_text(&operand, source).trim().to_string();
+                            if struct_field_ptrs.contains(&name) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                false
+            }
+            "parenthesized_expression" => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if child.kind() != "(" && child.kind() != ")" {
+                            return self.contains_struct_field_ptr_arithmetic(
+                                &child,
+                                source,
+                                struct_field_ptrs,
+                            );
+                        }
+                    }
+                }
+                false
+            }
+            _ => false,
+        }
+    }
+
+    /// Track union member accesses for type punning detection
+    fn track_union_member_access(
+        &self,
+        node: &Node,
+        source: &str,
+        union_vars: &HashSet<String>,
+        union_member_accesses: &mut HashMap<String, Vec<(String, usize, usize, bool)>>,
+    ) {
+        if union_vars.is_empty() {
+            return;
+        }
+        // Only process outermost field_expression in a chain
+        // Skip if parent is also a field_expression and we're its argument
+        if let Some(parent) = node.parent() {
+            if parent.kind() == "field_expression" {
+                if let Some(parent_arg) = parent.child_by_field_name("argument") {
+                    if parent_arg.id() == node.id() {
+                        return;
+                    }
+                }
+            }
+        }
+
+        // Check if this is a "deep" access (u.struct_member.field — 3+ levels)
+        // This indicates sub-field access into a struct union member, which is
+        // layout-dependent (byte-order, alignment)
+        let is_deep = node
+            .child_by_field_name("argument")
+            .map(|arg| arg.kind() == "field_expression")
+            .unwrap_or(false);
+
+        let (root, member) = self.get_field_access_root_and_member(node, source);
+        if let (Some(root_name), Some(member_name)) = (root, member) {
+            if union_vars.contains(&root_name) {
+                union_member_accesses.entry(root_name).or_default().push((
+                    member_name,
+                    node.start_position().row + 1,
+                    node.start_position().column + 1,
+                    is_deep,
+                ));
+            }
+        }
+    }
+
+    /// Walk a field_expression chain to find root variable and first member name
+    /// For u.a → (u, a); for u.a.b.c → (u, a)
+    fn get_field_access_root_and_member(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> (Option<String>, Option<String>) {
+        let mut current = *node;
+        loop {
+            if current.kind() != "field_expression" {
+                break;
+            }
+            if let Some(arg) = current.child_by_field_name("argument") {
+                if arg.kind() == "field_expression" {
+                    current = arg;
+                } else {
+                    // arg is the root (identifier)
+                    let root = get_node_text(&arg, source).trim().to_string();
+                    let member = current
+                        .child_by_field_name("field")
+                        .map(|f| get_node_text(&f, source).trim().to_string());
+                    return (Some(root), member);
+                }
+            } else {
+                break;
+            }
+        }
+        (None, None)
+    }
+
+    /// Post-pass: flag union variables with layout-dependent type punning
+    /// Only flags when: (1) multiple different members accessed AND (2) at least one
+    /// access is "deep" (u.struct_member.field), indicating byte-order/alignment dependency
+    fn check_union_type_punning(
+        &self,
+        union_vars: &HashSet<String>,
+        union_member_accesses: &HashMap<String, Vec<(String, usize, usize, bool)>>,
+        violations: &mut Vec<RuleViolation>,
+    ) {
+        for (var_name, accesses) in union_member_accesses {
+            if !union_vars.contains(var_name) {
+                continue;
+            }
+            let unique_members: HashSet<&str> =
+                accesses.iter().map(|(m, _, _, _)| m.as_str()).collect();
+            if unique_members.len() < 2 {
+                continue;
+            }
+            let has_deep = accesses.iter().any(|(_, _, _, deep)| *deep);
+            if !has_deep {
+                continue;
+            }
+            // Flag the deep accesses (sub-field access into struct union member)
+            let mut seen_members: HashSet<&str> = HashSet::new();
+            let mut first_member: Option<&str> = None;
+            for (member, line, col, is_deep) in accesses {
+                if first_member.is_none() {
+                    first_member = Some(member);
+                    seen_members.insert(member);
+                } else if let Some(first) = first_member {
+                    if !seen_members.contains(member.as_str()) && *is_deep {
+                        violations.push(RuleViolation {
+                            rule_id: self.rule_id().to_string(),
+                            severity: Severity::Medium,
+                            message: format!(
+                                "Accessing union '{}' member '{}' after writing to '{}' relies on data memory layout (byte-order, alignment, packing)",
+                                var_name, member, first
+                            ),
+                        file_path: String::new(),
+                        line: *line,
+                        column: *col,
+                        suggestion: Some(
+                            "Avoid relying on byte-order or alignment of union fields. Use type-appropriate bitwise operations instead of union type punning.".to_string()
+                        ),
+                            ..Default::default()
+                        });
+                        seen_members.insert(member);
+                    }
+                }
+            }
+        }
     }
 }

@@ -32,6 +32,9 @@ impl CertRule for Err07C {
         // Recursively check all function calls in the AST
         check_function_calls(node, source, &mut violations, self.rule_id());
 
+        // CWE-114: check for untrusted input flowing to library-loading functions
+        check_tainted_library_loads(node, source, &mut violations);
+
         violations
     }
 }
@@ -85,6 +88,93 @@ fn check_call_expression(
                 )),
                 ..Default::default()
             });
+        }
+    }
+}
+
+// ── CWE-114: Untrusted input flowing to library-loading functions ────
+
+const TAINT_SOURCES: &[&str] = &[
+    "recv", "fgets", "fscanf", "scanf", "read", "getenv", "listen", "connect",
+];
+
+const LIBRARY_LOAD_SINKS: &[&str] = &[
+    "LoadLibraryA",
+    "LoadLibraryW",
+    "LoadLibrary",
+    "LoadLibraryExA",
+    "LoadLibraryExW",
+    "dlopen",
+];
+
+fn check_tainted_library_loads(node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
+    if node.kind() == "function_definition" {
+        if let Some(body) = node.child_by_field_name("body") {
+            check_function_for_taint_to_library(&body, source, violations);
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            check_tainted_library_loads(&child, source, violations);
+        }
+    }
+}
+
+fn check_function_for_taint_to_library(
+    body: &Node,
+    source: &str,
+    violations: &mut Vec<RuleViolation>,
+) {
+    let mut has_taint = false;
+    let mut load_positions: Vec<(String, usize, usize)> = Vec::new();
+    scan_taint_and_loads(body, source, &mut has_taint, &mut load_positions);
+
+    if has_taint {
+        for (func_name, line, col) in &load_positions {
+            violations.push(RuleViolation {
+                rule_id: "ERR07-C".to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "{}() called with path from untrusted input — attacker may control which library is loaded",
+                    func_name
+                ),
+                file_path: String::new(),
+                line: *line,
+                column: *col,
+                suggestion: Some(
+                    "Use a hard-coded absolute path to a known-good library instead of data from external input"
+                        .to_string(),
+                ),
+                ..Default::default()
+            });
+        }
+    }
+}
+
+fn scan_taint_and_loads(
+    node: &Node,
+    source: &str,
+    has_taint: &mut bool,
+    load_positions: &mut Vec<(String, usize, usize)>,
+) {
+    if node.kind() == "call_expression" {
+        if let Some(func) = node.child_by_field_name("function") {
+            let name = ast_utils::get_node_text(&func, source).trim().to_string();
+            if TAINT_SOURCES.contains(&name.as_str()) {
+                *has_taint = true;
+            }
+            if LIBRARY_LOAD_SINKS.contains(&name.as_str()) {
+                load_positions.push((
+                    name,
+                    node.start_position().row + 1,
+                    node.start_position().column + 1,
+                ));
+            }
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            scan_taint_and_loads(&child, source, has_taint, load_positions);
         }
     }
 }

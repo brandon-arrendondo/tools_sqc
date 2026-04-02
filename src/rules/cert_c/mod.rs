@@ -640,6 +640,9 @@ pub mod msc07_c;
 #[path = "MSC/MSC12-C/msc12_c.rs"]
 pub mod msc12_c;
 
+#[path = "MSC/MSC13-C/msc13_c.rs"]
+pub mod msc13_c;
+
 #[path = "MSC/MSC30-C/msc30_c.rs"]
 pub mod msc30_c;
 
@@ -663,6 +666,9 @@ pub mod msc40_c;
 
 #[path = "MSC/MSC41-C/msc41_c.rs"]
 pub mod msc41_c;
+
+#[path = "MSC/MSC42-C/msc42_c.rs"]
+pub mod msc42_c;
 
 #[path = "POS/POS01-C/pos01_c.rs"]
 pub mod pos01_c;
@@ -723,6 +729,9 @@ pub mod pos53_c;
 
 #[path = "POS/POS54-C/pos54_c.rs"]
 pub mod pos54_c;
+
+#[path = "POS/POS55-C/pos55_c.rs"]
+pub mod pos55_c;
 
 #[path = "PRE/PRE01-C/pre01_c.rs"]
 pub mod pre01_c;
@@ -865,6 +874,7 @@ impl RuleRegistry {
         registry.register(Box::new(arr37_c::Arr37C));
         registry.register(Box::new(arr38_c::Arr38C));
         registry.register(Box::new(arr39_c::Arr39C));
+        registry.register(Box::new(super::brules::brule065::Brule065));
         registry.register(Box::new(con39_c::Con39C));
         registry.register(Box::new(con43_c::Con43C));
         registry.register(Box::new(con01_c::Con01C));
@@ -1060,6 +1070,7 @@ impl RuleRegistry {
         registry.register(Box::new(msc04_c::Msc04C::new()));
         registry.register(Box::new(msc07_c::Msc07C::new()));
         registry.register(Box::new(msc12_c::Msc12C::new()));
+        registry.register(Box::new(msc13_c::Msc13C::new()));
         registry.register(Box::new(msc30_c::Msc30C::new()));
         registry.register(Box::new(msc37_c::Msc37C::new()));
         registry.register(Box::new(msc38_c::Msc38C::new()));
@@ -1068,6 +1079,7 @@ impl RuleRegistry {
         registry.register(Box::new(msc33_c::Msc33C));
         registry.register(Box::new(msc40_c::Msc40C));
         registry.register(Box::new(msc41_c::Msc41C::new()));
+        registry.register(Box::new(msc42_c::Msc42C::new()));
         registry.register(Box::new(pos01_c::Pos01C));
         registry.register(Box::new(pos04_c::Pos04C));
         registry.register(Box::new(pos05_c::Pos05C));
@@ -1088,6 +1100,7 @@ impl RuleRegistry {
         registry.register(Box::new(pos52_c::Pos52C));
         registry.register(Box::new(pos53_c::Pos53C));
         registry.register(Box::new(pos54_c::Pos54C));
+        registry.register(Box::new(pos55_c::Pos55C));
         registry.register(Box::new(pre01_c::Pre01C::new()));
         registry.register(Box::new(pre02_c::Pre02C::new()));
         registry.register(Box::new(pre04_c::Pre04C::new()));
@@ -1137,6 +1150,7 @@ impl RuleRegistry {
         registry.register(Box::new(win02_c::Win02C));
         registry.register(Box::new(win03_c::Win03C::new()));
         registry.register(Box::new(win04_c::Win04C));
+        registry.register(Box::new(win05_c::Win05C::new()));
         registry.register(Box::new(win30_c::Win30C::new()));
 
         registry
@@ -1176,6 +1190,9 @@ pub mod win03_c;
 
 #[path = "WIN/WIN04-C/win04_c.rs"]
 pub mod win04_c;
+
+#[path = "WIN/WIN05-C/win05_c.rs"]
+pub mod win05_c;
 
 #[path = "WIN/WIN30-C/win30_c.rs"]
 pub mod win30_c;
