@@ -1,6 +1,9 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-01 (v0.3.63)
+Last Updated: 2026-04-02 (v0.3.63)
+
+Juliet benchmark v0.3.63: 24,408 TP / 21,117 FP (53.6% TP rate), 40.9% per-file.
+Zero delta from v0.3.60 — correctness fixes and infrastructure only, no detection changes.
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
