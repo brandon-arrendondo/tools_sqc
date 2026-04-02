@@ -6,6 +6,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.67] - 2026-04-02
+
+### Fixed
+
+- resolve_local_var_range returned first assignment instead of last. For
+  `data = 0; data = INT_MAX; result = data + 1;`, resolved data to [0,0]
+  instead of [INT_MAX,INT_MAX], causing INT32-C/INT30-C false suppression.
+- Unevaluable assignments (data = rand(), fscanf(&data)) left stale range
+  from prior assignment. New stmt_modifies_var() invalidates range on
+  unevaluable assignment or pointer-modifying call.
+- Juliet benchmark runner: -d JULIET_BASE prescanned 58K files per CWE
+  (~4 min each × 74 CWEs). Changed to CWE-scoped prescan and -j 1.
+  Benchmark time: hours → 7 min.
+
+### Results
+
+- CWE-190: 1,763→2,322 TP (+559), per-file 35.0%→43.3% (+8.3pp)
+- CWE-191: 1,563→1,973 TP (+410), per-file 40.5%→47.7% (+7.2pp)
+- CWE-680: 404→559 TP (+155), TP rate 48.7%→51.4% (+2.7pp)
+- Overall: +1,144 TP, +1,290 FP. TP rate 53.6%→53.3% (-0.3pp).
+
+## [0.3.66] - 2026-04-02
+
+### Added
+
+- LPT file-size scheduling for parallel analysis. Graham's LPT heuristic
+  (1969): files sorted by size descending, dispatched via rayon par_bridge()
+  (demand-driven). Reduces worst-case runtime variance by 52-99% and improves
+  CPU efficiency from 83% to 96% on skewed workloads (sqlite, curl).
+
 ## [0.3.65] - 2026-04-02
 
 ### Fixed
