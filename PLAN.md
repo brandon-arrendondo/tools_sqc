@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-01 (v0.3.60)
+Last Updated: 2026-04-01 (v0.3.61)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -380,16 +380,15 @@ Remaining items:
 
 # Task ID: 52
 # Title: Man page for sqc
-# Status: pending
+# Status: done
 # Dependencies: none
 # Priority: P2
 # Description: Create a man page (sqc.1) documenting CLI usage, options, and examples.
 # Details:
-Write sqc.1 in roff format covering: synopsis, all CLI flags (--rules, --diff,
---fail-on-violation, --fail-on-severity, -d, -I, --save-prescan, --load-prescan,
---export, --format, --min-severity, --suppress-file, --generate-suppression),
-configuration file format, exit codes, examples, and environment variables.
-Install via Cargo build script or Makefile. Include in deb/rpm packages (task 53).
+Done in v0.3.61. Created docs/sqc.1 in roff format covering all 16 CLI options
+(grouped by category), exit codes, rules manifest and suppression file config,
+7 usage examples, and cross-references to cppcheck/clang-tidy/gcc.
+View with: man -l docs/sqc.1
 
 ---
 
