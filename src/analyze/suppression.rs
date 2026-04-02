@@ -50,6 +50,7 @@ pub struct TomlWildcardEntry {
 }
 
 /// Compiled wildcard suppression, ready for matching.
+#[derive(Clone)]
 struct CompiledWildcard {
     file_glob: Option<regex::Regex>,
     rule: Option<String>,
@@ -156,7 +157,7 @@ impl Suppression {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct SuppressionManager {
     /// Inline comment suppressions, keyed by full file path.
     suppressions: HashMap<String, Vec<Suppression>>,

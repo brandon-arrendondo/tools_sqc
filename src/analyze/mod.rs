@@ -17,8 +17,10 @@ use super::rules::{RuleRegistry, RuleViolation};
 use suppression::SuppressionManager;
 
 use anyhow::Result;
+use rayon::prelude::*;
 use std::collections::HashMap;
 use std::fs;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 /// A violation that was suppressed by an inline SQC-SUPPRESS comment.
 pub struct SuppressedViolation {
@@ -42,6 +44,7 @@ pub fn analyze_project(
     suppress_file: Option<&str>,
     save_prescan: Option<&str>,
     load_prescan: Option<&str>,
+    jobs: usize,
 ) -> Result<AnalysisResults> {
     let mut violations = Vec::new();
     let mut suppressed = Vec::new();
@@ -122,7 +125,6 @@ pub fn analyze_project(
         project_source.get_c_files()?
     };
     let total_files = c_files.len();
-    let mut parser = CParser::new()?;
     let mut suppression_manager = SuppressionManager::new();
 
     // Load TOML suppression file if provided or auto-detected
@@ -153,6 +155,131 @@ pub fn analyze_project(
             }
         }
     }
+
+    // Determine effective parallelism
+    let effective_jobs = if jobs == 0 {
+        std::thread::available_parallelism()
+            .map(|n| n.get())
+            .unwrap_or(1)
+    } else {
+        jobs
+    };
+
+    if effective_jobs > 1 && total_files > 1 {
+        // Parallel analysis with rayon — per-file parser and rule registry
+        let pool = rayon::ThreadPoolBuilder::new()
+            .num_threads(effective_jobs)
+            .build()?;
+        let has_cross_file_data = context.has_cross_file_data();
+        let file_counter = AtomicUsize::new(0);
+
+        let results: Vec<_> = pool.install(|| {
+            c_files
+                .par_iter()
+                .map(|file_path| {
+                    if let Some(reporter) = progress {
+                        if reporter.is_cancelled() {
+                            return (Vec::new(), Vec::new());
+                        }
+                    }
+
+                    let mut parser = match CParser::new() {
+                        Ok(p) => p,
+                        Err(_) => return (Vec::new(), Vec::new()),
+                    };
+                    let file_registry = RuleRegistry::new();
+                    if has_cross_file_data {
+                        for rule in file_registry.all_rules() {
+                            rule.set_project_context(&context);
+                        }
+                    }
+                    let mut file_supp = suppression_manager.clone();
+
+                    let mut file_violations = Vec::new();
+                    let mut file_suppressed = Vec::new();
+
+                    if let Ok((tree, source)) = parser.parse_file(file_path) {
+                        let root_node = tree.root_node();
+                        let mut function_cfgs: HashMap<usize, cfg::FunctionCfg> = HashMap::new();
+                        collect_function_cfgs(&root_node, &source, &mut function_cfgs);
+                        let vra_results = compute_vra_if_needed(
+                            needs_vra,
+                            &function_cfgs,
+                            &root_node,
+                            &source,
+                            &context.function_summaries,
+                        );
+                        file_supp.extract_from_source(file_path, &source);
+
+                        for (rule_id, rule_config) in manifest.enabled_rules() {
+                            if let Some(rule) = file_registry.get_rule(rule_id) {
+                                if !rule.applies_to_file(file_path) {
+                                    continue;
+                                }
+                                rule.set_function_cfgs(&function_cfgs);
+                                if !vra_results.is_empty() {
+                                    rule.set_vra_results(&vra_results);
+                                }
+                                let mut rule_violations = rule.check(&root_node, &source);
+                                for v in &mut rule_violations {
+                                    v.file_path = file_path.clone();
+                                    v.severity = rule_config
+                                        .severity
+                                        .clone()
+                                        .unwrap_or_else(|| rule.severity());
+                                }
+                                for v in rule_violations {
+                                    if let Some(j) = file_supp.should_suppress(
+                                        file_path, rule_id, v.line, &source, &v.message,
+                                    ) {
+                                        file_suppressed.push(SuppressedViolation {
+                                            justification: j.to_string(),
+                                            violation: v,
+                                        });
+                                    } else {
+                                        file_violations.push(v);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    let completed = file_counter.fetch_add(1, Ordering::Relaxed) + 1;
+                    if let Some(reporter) = progress {
+                        reporter.report_file(completed, total_files, file_path, "");
+                    }
+
+                    (file_violations, file_suppressed)
+                })
+                .collect()
+        });
+
+        for (v, s) in results {
+            violations.extend(v);
+            suppressed.extend(s);
+        }
+
+        // Sort for deterministic output
+        violations.sort_by(|a, b| {
+            a.file_path
+                .cmp(&b.file_path)
+                .then(a.line.cmp(&b.line))
+                .then(a.column.cmp(&b.column))
+                .then(a.rule_id.cmp(&b.rule_id))
+        });
+
+        if let Some(reporter) = progress {
+            reporter.report_complete(violations.len());
+        }
+
+        return Ok(AnalysisResults {
+            violations,
+            suppressed,
+        });
+    }
+
+    // Sequential analysis (single-threaded)
+    let mut parser = CParser::new()?;
 
     for (file_idx, file_path) in c_files.iter().enumerate() {
         // Check for cancellation before processing each file
