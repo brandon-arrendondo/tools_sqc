@@ -15,65 +15,25 @@ then Juliet benchmark and real-world benchmark to validate.
 
 ---
 
-# Task ID: 24
-# Title: File-size-aware batching for parallel analysis
-# Status: done
-# Dependencies: none
-# Priority: P1
-# Description: LPT scheduling with demand-driven dispatch for parallel analysis.
-# Details:
-Done in v0.3.66. Applied Graham's LPT heuristic (1969): files sorted by size
-descending, dispatched via rayon par_bridge() (demand-driven, one file at a time
-to idle threads). Key insight from rayon community: par_iter() splits by index,
-so descending sort clusters large files on one thread — par_bridge() avoids this
-by dispatching on demand.
-
-Results at -j 4 (3 runs each, cross-file analysis):
-  curl (696 files, 43x max/median skew):
-    Baseline: 178.5s avg, 193.4s worst, σ=13.0s
-    LPT:      176.4s avg, 176.5s worst, σ=0.1s  (-1.2% avg, -8.7% worst, -99% variance)
-  sqlite (312 files, 37x max/median skew):
-    Baseline: 1197s avg, 1280s worst, σ=71.8s, 83% CPU efficiency
-    LPT:      1169s avg, 1204s worst, σ=34.3s, 96% CPU efficiency  (-2.3% avg, -6% worst, -52% variance)
-
-Paper updated with results and Graham 1969 citation.
-
----
-
 # Task ID: 5
-# Title: CWE-190/191 integer overflow coverage
-# Status: done
+# Title: CWE-190/191 remaining coverage gaps
+# Status: pending
 # Dependencies: none
-# Priority: P2
-# Description: Improve CWE-190/191 detection beyond current stable rates.
+# Priority: P3
+# Description: Address remaining CWE-190/191 detection gaps after v0.3.67 fixes.
 # Details:
-v0.3.67: Two bugs in resolve_local_var_range (const_eval.rs) caused
-INT32-C/INT30-C to miss overflow in the primary Juliet patterns:
+v0.3.67 raised CWE-190 per-file from 35.0% to 43.3% and CWE-191 from
+40.5% to 47.7%. Remaining undetected patterns:
 
-1. Returned first assignment, not last: `data = 0; data = INT_MAX;`
-   resolved to [0,0] instead of [INT_MAX,INT_MAX]. (v0.3.66)
-2. Unevaluable assignments not tracked: `data = rand()` or
-   `fscanf(stdin, "%d", &data)` left stale range from prior assignment.
-   New stmt_modifies_var() invalidates range on unevaluable assignment
-   or pointer-modifying call (&var in argument list). (v0.3.67)
-
-Also fixed benchmark runner: -d JULIET_BASE prescanned 58K files per CWE
-(~4 min each × 74 CWEs). Changed to -d cwe_dir (CWE-scoped prescan) and
--j 1 (runner parallelizes at CWE level). Benchmark time: hours → 7 min.
-
-Results (v0.3.63 → v0.3.67):
-  CWE-190: 1,763→2,322 TP (+559), per-file 35.0%→43.3% (+8.3pp)
-  CWE-191: 1,563→1,973 TP (+410), per-file 40.5%→47.7% (+7.2pp)
-  CWE-680: 404→559 TP (+155), TP rate 48.7%→51.4% (+2.7pp)
-  Overall: +1,144 TP, +1,290 FP. TP rate 53.6%→53.3% (-0.3pp).
-  FP increase proportional — same ~45% TP rate on new detections.
-
-Remaining coverage gaps (not addressed):
   - rand() source: suppressed by is_small_increment_of_opaque (deliberate
     FP heuristic for strlen()+1 patterns). Fixing would hurt real-world FP.
-  - Cross-function variants (41-68): need inter-procedural VRA.
+  - Cross-function variants (41-68): need inter-procedural VRA to propagate
+    value ranges through function arguments and return values.
   - Conditional flow variants (12-18): syntactic resolver can't follow
     branches; VRA handles some but not all.
+
+Further improvement requires inter-procedural VRA or relaxing the opaque
+increment heuristic (with real-world FP impact analysis).
 
 ---
 
