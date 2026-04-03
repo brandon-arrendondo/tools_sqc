@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.75] - 2026-04-03
+
+### Added
+
+- bench/competitors.py: benchmark runner for Infer and Frama-C on Juliet.
+  Runs competitor tools on overlapping CWE subsets, classifies TP/FP using
+  Juliet ground truth (OMITBAD/OMITGOOD guards + procedure names).
+  Infer: 11 CWEs (memory safety). Frama-C EVA: 6 CWEs (value analysis).
+- playbooks/install-static-analyzers.yml: Ansible playbook for installing
+  Infer v1.2.0 (prebuilt) and Frama-C 32.0 Germanium (via opam) on Debian 12.
+- docs/benchmark-setup.rst: Infer and Frama-C installation instructions.
+- docs/benchmark-running.rst: competitor benchmark usage, timing, classification.
+- paper/sqc.tex: preliminary Infer/Frama-C comparison data (CWE-476 pilot).
+- PLAN.md: split task 33 into 33a (Infer) and 33b (Frama-C) with run commands.
+
 ## [0.3.74] - 2026-04-03
 
 ### Added

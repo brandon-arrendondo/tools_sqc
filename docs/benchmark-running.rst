@@ -170,6 +170,84 @@ Real-World
     compare_runs(base_version="0.2.6", target_version="0.2.7")
     compare_runs(base_version="0.2.6", target_version="0.2.7", tool="sqc", codebase="sqlite")
 
+Competitor Benchmarks (Infer / Frama-C)
+----------------------------------------
+
+The ``bench/competitors.py`` module runs Facebook Infer and Frama-C EVA on
+Juliet test cases and classifies findings as TP/FP using the same ground truth
+as the sqc benchmark (``OMITBAD``/``OMITGOOD`` guards and procedure names).
+
+Results are written to ``data/competitor_results/<tool>_<timestamp>.json``.
+
+Infrastructure
+~~~~~~~~~~~~~~
+
+::
+
+    bench/
+      competitors.py   Infer + Frama-C runners, TP/FP classification, comparison
+
+Default CWE sets:
+
+===========  ==================================================================
+Tool         CWEs
+===========  ==================================================================
+Infer        476, 690, 416, 401, 415, 761, 762, 121, 122, 124, 127
+Frama-C      190, 191, 476, 369, 197, 680
+===========  ==================================================================
+
+Running
+~~~~~~~
+
+.. code-block:: bash
+
+    # Run Infer on default CWEs (~80 min on 24-core)
+    python3 -m bench.competitors infer --jobs 8
+
+    # Run Frama-C on default CWEs (~7-9 hours)
+    eval $(opam env) && python3 -m bench.competitors framac --jobs 8
+
+    # Run a specific subset
+    python3 -m bench.competitors infer --cwes CWE476,CWE690
+
+    # Compare results
+    python3 -m bench.competitors compare \
+      data/competitor_results/infer_*.json \
+      data/competitor_results/framac_*.json
+
+Timing Estimates
+~~~~~~~~~~~~~~~~
+
+===========  ============  ===============  =============
+Tool         CWEs          Files            Estimated Time
+===========  ============  ===============  =============
+Infer        11            17,232           ~80 min
+Frama-C      6             11,628           ~7--9 hours
+===========  ============  ===============  =============
+
+Infer uses incremental capture (``infer capture --continue``) per file then a
+single ``infer analyze`` pass per CWE.  Frama-C runs EVA per-function per-file
+(``-main <func>``), which is the main bottleneck.
+
+Classification Logic
+~~~~~~~~~~~~~~~~~~~~
+
+**Infer**: Findings include a ``procedure`` field (e.g.
+``CWE476_..._01_bad``).  If the procedure contains ``_bad`` or ``Bad`` it is
+classified as TP; if it contains ``good`` it is FP.  Unresolved findings fall
+back to line-level classification using ``parse_c_file_sections()``.
+
+**Frama-C**: Each file is analyzed once per entry point (``_bad`` function and
+``_good``/``goodN`` functions).  Alarms found when the entry point is a bad
+function are TP; alarms under a good entry point are FP.
+
+Key Frama-C flags:
+
+- ``-machdep gcc_x86_64`` — enables GCC extensions (required for Juliet headers)
+- ``-lib-entry`` — incomplete application analysis (no ``main``)
+- ``-warn-signed-overflow -warn-signed-downcast`` — needed for CWE-190/191
+- ``-eva-precision 1`` — reasonable precision/speed tradeoff
+
 Troubleshooting
 ---------------
 
