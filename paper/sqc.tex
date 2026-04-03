@@ -997,13 +997,22 @@ checks via its \texttt{cert-*} module.  It benefits from Clang's full
 semantic analysis but requires a compilation database.
 
 \textbf{Infer}~\cite{infer} uses bi-abduction and separation logic
-for memory safety.  It achieves high precision on null dereference
-and resource leaks but covers a narrower set of defect classes.
+for memory safety.  We ran Infer~v1.2.0 on the same Juliet test
+files across 11 overlapping CWEs (null dereference, use-after-free,
+memory leak, double-free, buffer overflow).  On CWE-476 (null
+pointer dereference), Infer achieves 66.1\% TP rate (242~TP / 124~FP)
+compared to SqC's 38.5\%.  Infer's separation-logic engine is more
+precise for null paths it can model, but covers fewer defect classes
+overall.  Full results across all 11 CWEs are pending.
 
 \textbf{Frama-C}~\cite{frama-c} provides formal verification via
-abstract interpretation and deductive verification.  More precise
-than SqC for the classes it covers, but requires annotation effort
-that limits adoption for legacy codebases.
+abstract interpretation (EVA plugin) and deductive verification (WP).
+We ran Frama-C~32.0 (Germanium) EVA on 6 overlapping CWEs (integer
+overflow, null dereference, divide-by-zero, numeric truncation).
+On CWE-476, Frama-C achieves 64.2\% TP rate (373~TP / 208~FP).
+Frama-C requires per-function entry points and GCC machdep
+configuration; its analysis is more precise but takes $\sim$6$\times$
+longer per file than SqC.  Full results are pending.
 
 The coverage gap is notable: Kaner~\cite{kaner} argues that 100\%
 coverage of any single metric is misleading---what matters is

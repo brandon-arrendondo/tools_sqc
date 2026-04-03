@@ -205,17 +205,49 @@ only (intra-file inter-procedural).
 
 ---
 
-# Task ID: 33
-# Title: Direct benchmark comparison with Infer and Frama-C
-# Status: pending
+# Task ID: 33a
+# Title: Juliet benchmark — Infer v1.2.0
+# Status: in-progress
 # Dependencies: none
 # Priority: P3
-# Description: Tier 3 competitive milestone — run Infer and Frama-C on same
-  Juliet suite.
+# Description: Run Infer on 11 overlapping Juliet CWEs, classify TP/FP.
 # Details:
-See docs/bibliography.rst for tool references. Need to install Infer and
-Frama-C, run on Juliet test suite with equivalent CWE coverage, and compare
-TP/FP rates directly.
+Infer v1.2.0 installed via prebuilt tarball (playbooks/install-static-analyzers.yml).
+Benchmark runner: bench/competitors.py. CWE-476 pilot: 242 TP / 124 FP (66.1%).
+
+  CWEs: 476, 690, 416, 401, 415, 761, 762, 121, 122, 124, 127
+  Estimated time: ~80 min (17,232 files, ~0.3s/file capture)
+
+  To run:
+    python3 -m bench.competitors infer --jobs 8
+
+  Results go to: data/competitor_results/infer_<timestamp>.json
+
+---
+
+# Task ID: 33b
+# Title: Juliet benchmark — Frama-C 32.0 (Germanium)
+# Status: in-progress
+# Dependencies: none
+# Priority: P3
+# Description: Run Frama-C EVA on 6 overlapping Juliet CWEs, classify TP/FP.
+# Details:
+Frama-C 32.0 installed via opam (playbooks/install-static-analyzers.yml).
+Benchmark runner: bench/competitors.py. CWE-476 pilot: 373 TP / 208 FP (64.2%).
+
+  CWEs: 190, 191, 476, 369, 197, 680
+  Estimated time: ~7-9 hours (11,628 files, ~0.9s/function, 2 functions/file)
+
+  To run:
+    eval $(opam env) && python3 -m bench.competitors framac --jobs 8
+
+  Results go to: data/competitor_results/framac_<timestamp>.json
+
+  Key flags:
+  - -machdep gcc_x86_64 (GCC extensions for Juliet headers)
+  - -lib-entry -main <func> (per-function entry point)
+  - -warn-signed-overflow -warn-signed-downcast (for CWE-190/191)
+  - -eva-precision 1 (speed/precision tradeoff)
 
 ---
 
@@ -311,7 +343,7 @@ Paper impact: new Section "Case Study" between Worked Example and Limitations.
 # Task ID: 48
 # Title: Paper — Infer and Frama-C direct comparison
 # Status: pending
-# Dependencies: 33
+# Dependencies: 33a, 33b
 # Priority: P3
 # Description: Run Infer and Frama-C on the same Juliet CWE subset to get
   comparable TP/FP numbers for the paper.
