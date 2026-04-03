@@ -1462,6 +1462,12 @@ impl Arr30C {
                 } else if child.kind() == "call_expression" {
                     right_node = Some(child);
                     break;
+                } else if child.kind() == "cast_expression" {
+                    // Handle (type *)malloc(...) — unwrap cast to find call_expression
+                    if let Some(inner_call) = Self::unwrap_cast_to_call(&child) {
+                        right_node = Some(inner_call);
+                        break;
+                    }
                 }
             }
         }
@@ -1522,6 +1528,19 @@ impl Arr30C {
             return Some((var_name.to_string(), buffer_info));
         }
 
+        None
+    }
+
+    /// Unwrap cast_expression to find inner call_expression
+    /// Handles: (char *)malloc(...), (int *)calloc(...), etc.
+    fn unwrap_cast_to_call<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "call_expression" {
+                    return Some(child);
+                }
+            }
+        }
         None
     }
 
@@ -3822,11 +3841,21 @@ impl Arr30C {
                 let count_expr = args[2].trim();
 
                 if let Some(dest_info) = buffers.get(dest_name) {
-                    // Try to parse count
+                    // Try to parse count — handle plain numbers, N*sizeof(T), and sizeof(src) patterns
                     let count = if let Ok(c) = count_expr.parse::<usize>() {
                         Some(c)
+                    } else if count_expr.contains("sizeof") && count_expr.contains('*') {
+                        // N*sizeof(T) pattern — evaluate as element count
+                        if let Some(size) = self.calculate_malloc_size(count_expr) {
+                            match size {
+                                BufferSize::Static(s) | BufferSize::DynamicCalculated(s) => Some(s),
+                                _ => None,
+                            }
+                        } else {
+                            None
+                        }
                     } else if count_expr.contains("sizeof") {
-                        // Check for sizeof(src) pattern
+                        // sizeof(src) pattern — use source buffer size
                         if let Some(src_info) = buffers.get(src_name) {
                             match src_info.size {
                                 BufferSize::Static(s) | BufferSize::DynamicCalculated(s) => Some(s),
