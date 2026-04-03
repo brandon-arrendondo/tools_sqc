@@ -898,20 +898,38 @@ pub fn resolve_local_var_range(
     let mut current = node.parent();
     while let Some(parent) = current {
         if parent.kind() == "compound_statement" {
-            // Scan statements before our node
+            // Scan statements before our node, keeping the LAST assignment
+            // (not the first) since later assignments overwrite earlier ones.
+            // If the last modification is unevaluable (e.g., data = rand(),
+            // or fscanf(stdin, "%d", &data)), return None so callers don't
+            // use a stale range from an earlier assignment.
             let node_start = node.start_byte();
+            let mut last_range: Option<ValueRange> = None;
+            let mut invalidated = false;
             for i in 0..parent.child_count() {
                 if let Some(stmt) = parent.child(i) {
                     if stmt.start_byte() >= node_start {
                         break;
                     }
-                    // Look for `var_name = expr` or `type var_name = expr`
+                    // Check for evaluable assignment (data = CONST or data = expr)
                     if let Some(range) =
                         check_stmt_for_var_assignment(&stmt, var_name, source, macros, loop_ranges)
                     {
-                        return Some(range);
+                        last_range = Some(range);
+                        invalidated = false;
+                    } else if stmt_modifies_var(&stmt, var_name, source) {
+                        // Assignment found but RHS unevaluable (e.g., rand()),
+                        // or variable modified through pointer (e.g., fscanf(&var))
+                        last_range = None;
+                        invalidated = true;
                     }
                 }
+            }
+            if invalidated {
+                return None;
+            }
+            if last_range.is_some() {
+                return last_range;
             }
         }
         if parent.kind() == "function_definition" {
@@ -970,6 +988,72 @@ fn check_stmt_for_var_assignment(
         _ => {}
     }
     None
+}
+
+/// Check if a statement modifies `var_name` in a way that `check_stmt_for_var_assignment`
+/// couldn't evaluate. Covers:
+/// - Direct assignment with unevaluable RHS: `var = rand();`, `var = RAND32();`
+/// - Pointer modification via function call: `fscanf(stdin, "%d", &var);`
+fn stmt_modifies_var(stmt: &Node, var_name: &str, source: &str) -> bool {
+    match stmt.kind() {
+        "expression_statement" => {
+            for i in 0..stmt.child_count() {
+                if let Some(child) = stmt.child(i) {
+                    // Direct assignment: var = <unevaluable>
+                    if child.kind() == "assignment_expression" {
+                        if let Some(left) = child.child_by_field_name("left") {
+                            if left.kind() == "identifier" {
+                                let name = left.utf8_text(source.as_bytes()).unwrap_or("");
+                                if name == var_name {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                    // Pointer modification: func(..., &var, ...)
+                    if child.kind() == "call_expression" {
+                        if call_takes_address_of(&child, var_name, source) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        "declaration" => {
+            for i in 0..stmt.child_count() {
+                if let Some(child) = stmt.child(i) {
+                    if child.kind() == "init_declarator" {
+                        if let Some(declarator) = child.child_by_field_name("declarator") {
+                            let name = extract_leaf_identifier(&declarator, source);
+                            if name == var_name && child.child_by_field_name("value").is_some() {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+    false
+}
+
+/// Check if a call expression passes `&var_name` as an argument.
+fn call_takes_address_of(call: &Node, var_name: &str, source: &str) -> bool {
+    if let Some(args) = call.child_by_field_name("arguments") {
+        for i in 0..args.child_count() {
+            if let Some(arg) = args.child(i) {
+                // Match &var_name (unary_expression with & operator)
+                if arg.kind() == "pointer_expression" || arg.kind() == "unary_expression" {
+                    let text = arg.utf8_text(source.as_bytes()).unwrap_or("");
+                    if text == format!("&{}", var_name) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    false
 }
 
 /// Extract leaf identifier from a declarator chain (pointer_declarator → identifier).

@@ -124,9 +124,10 @@ def _scan_single_cwe(db_path: str, run_id: str, scan_id: int,
         cmd = [
             str(SQC_BIN), str(cwe_dir),
             "-m", manifest,
-            "-d", str(JULIET_BASE),
+            "-d", str(cwe_dir),
             "-d", str(JULIET_BASE.parent / "testcasesupport"),
             "-e", csv_path,
+            "-j", "1",  # single-threaded: runner parallelizes at CWE level
         ]
         proc = subprocess.run(
             cmd, capture_output=True, timeout=3600,

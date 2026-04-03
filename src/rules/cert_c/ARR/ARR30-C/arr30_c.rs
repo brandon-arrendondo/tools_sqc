@@ -59,6 +59,7 @@ struct BufferInfo {
     size: BufferSize,
     element_type: String,
     allocation_line: usize,
+    alloc_bytes: Option<usize>, // Raw allocation byte count (for byte-level comparisons)
 }
 
 /// Represents the size of a buffer
@@ -505,6 +506,7 @@ impl Arr30C {
                             size: BufferSize::Static(size),
                             element_type: "struct_member".to_string(),
                             allocation_line: node.start_position().row + 1,
+                            alloc_bytes: None,
                         });
                     }
                 }
@@ -572,6 +574,7 @@ impl Arr30C {
                 size: BufferSize::Symbolic(expr),
                 element_type: "unknown".to_string(),
                 allocation_line: node.start_position().row + 1,
+                alloc_bytes: None,
             })
         } else {
             None
@@ -707,6 +710,7 @@ impl Arr30C {
                                     size: BufferSize::Static(size),
                                     element_type: type_name.to_string(),
                                     allocation_line: line_idx + 1,
+                                    alloc_bytes: None,
                                 },
                             );
                         }
@@ -716,9 +720,26 @@ impl Arr30C {
         }
     }
 
-    /// Extract numeric value from string
+    /// Extract numeric value from string, including simple arithmetic like "10+1"
     fn extract_numeric_value(&self, s: &str) -> Option<usize> {
-        s.trim().parse().ok()
+        let trimmed = s.trim();
+        // Strip outer parentheses: "(10+1)" → "10+1"
+        let inner = if trimmed.starts_with('(') && trimmed.ends_with(')') {
+            &trimmed[1..trimmed.len() - 1]
+        } else {
+            trimmed
+        };
+        // Try direct parse first
+        if let Ok(v) = inner.parse() {
+            return Some(v);
+        }
+        // Try evaluating simple arithmetic (e.g., "10+1")
+        let result = self.evaluate_simple_arithmetic(inner)?;
+        if result >= 0 {
+            Some(result as usize)
+        } else {
+            None
+        }
     }
 
     /// Calculate size from malloc arguments
@@ -745,6 +766,10 @@ impl Arr30C {
                     // Store element count, not byte count
                     return Some(BufferSize::DynamicCalculated(c));
                 }
+                // Count is a variable (e.g., data*sizeof(char)) — size is unknown
+                // Do NOT fall through to pattern 3 which would misinterpret
+                // "data*sizeof(char)" as sizeof(char)=1
+                return Some(BufferSize::Dynamic(trimmed.to_string()));
             }
         }
 
@@ -757,14 +782,183 @@ impl Arr30C {
         Some(BufferSize::Dynamic(trimmed.to_string()))
     }
 
+    /// Calculate raw byte count of a malloc/realloc allocation expression.
+    /// Returns the total allocation in bytes, unlike calculate_malloc_size which
+    /// returns element count for N*sizeof(T) patterns.
+    fn calculate_alloc_bytes(&self, malloc_args: &str) -> Option<usize> {
+        let trimmed = malloc_args.trim();
+
+        // Pattern 1: Simple number - malloc(100) → 100 bytes
+        if let Some(size) = self.extract_numeric_value(trimmed) {
+            return Some(size);
+        }
+
+        // Pattern 2: COUNT * sizeof(TYPE) - malloc(5 * sizeof(int)) → 5 * 4 = 20 bytes
+        if trimmed.contains('*') && trimmed.contains("sizeof") {
+            if let Some(mult_pos) = trimmed.find('*') {
+                let count_str = trimmed[..mult_pos].trim();
+                let sizeof_str = trimmed[mult_pos + 1..].trim();
+
+                let count = self.extract_numeric_value(count_str);
+                let sizeof_val = self.extract_sizeof_value(sizeof_str);
+
+                if let (Some(c), Some(s)) = (count, sizeof_val) {
+                    return Some(c * s);
+                }
+            }
+        }
+
+        // Pattern 3: Just sizeof(TYPE) - malloc(sizeof(struct foo))
+        if let Some(sizeof_val) = self.extract_sizeof_value(trimmed) {
+            return Some(sizeof_val);
+        }
+
+        None
+    }
+
+    /// Evaluate a memcpy/memmove count expression as a byte count.
+    /// Handles:
+    ///   - N*sizeof(T) → N * type_size_bytes
+    ///   - (strlen(VAR)+1)*sizeof(char) → source_array_size * 1 (CWE-193)
+    ///   - (wcslen(VAR)+1)*sizeof(wchar_t) → source_array_size * 4 (CWE-193)
+    ///   - Plain number → that many bytes
+    fn evaluate_count_bytes(
+        &self,
+        count_expr: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Option<usize> {
+        let trimmed = count_expr.trim();
+
+        // Plain number
+        if let Ok(n) = trimmed.parse::<usize>() {
+            return Some(n);
+        }
+
+        // N*sizeof(T) → N * sizeof_bytes
+        if trimmed.contains('*') && trimmed.contains("sizeof") {
+            // Try strlen/wcslen resolution first
+            if let Some(bytes) = self.resolve_strlen_sizeof_bytes(trimmed, buffers) {
+                return Some(bytes);
+            }
+            // Fall back to plain N*sizeof(T)
+            if let Some(mult_pos) = trimmed.find('*') {
+                let count_str = trimmed[..mult_pos].trim();
+                let sizeof_str = trimmed[mult_pos + 1..].trim();
+
+                let count = self.extract_numeric_value(count_str);
+                let sizeof_val = self.extract_sizeof_value(sizeof_str);
+
+                if let (Some(c), Some(s)) = (count, sizeof_val) {
+                    return Some(c * s);
+                }
+            }
+        }
+
+        // strlen(VAR) + 1 (without sizeof, implies sizeof(char)=1)
+        if let Some(bytes) = self.resolve_strlen_plus_one(trimmed, buffers) {
+            return Some(bytes);
+        }
+
+        None
+    }
+
+    /// Resolve (strlen(VAR)+1)*sizeof(char) or (wcslen(VAR)+1)*sizeof(wchar_t)
+    /// to byte count using the source array size.
+    fn resolve_strlen_sizeof_bytes(
+        &self,
+        expr: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Option<usize> {
+        // Detect strlen or wcslen function call
+        let (fn_name, elem_size) = if expr.contains("strlen") {
+            ("strlen", 1usize)
+        } else if expr.contains("wcslen") {
+            ("wcslen", 4usize) // sizeof(wchar_t) = 4
+        } else {
+            return None;
+        };
+
+        // Extract variable name from strlen(VAR) or wcslen(VAR)
+        let fn_start = expr.find(fn_name)?;
+        let paren_start = expr[fn_start..].find('(')? + fn_start + 1;
+        let paren_end = expr[paren_start..].find(')')? + paren_start;
+        let var_name = expr[paren_start..paren_end].trim();
+
+        // Look up variable in buffers
+        let var_info = buffers.get(var_name)?;
+        let var_elements = match var_info.size {
+            BufferSize::Static(s) | BufferSize::DynamicCalculated(s) => s,
+            _ => return None,
+        };
+
+        // Check for +1 pattern (null terminator inclusion)
+        let has_plus_one = expr.contains("+ 1") || expr.contains("+1");
+
+        // strlen(VAR) returns at most var_elements - 1
+        // strlen(VAR) + 1 returns at most var_elements
+        let count_elements = if has_plus_one {
+            var_elements
+        } else {
+            var_elements.saturating_sub(1)
+        };
+
+        // Apply sizeof multiplier from the expression
+        let sizeof_val = if expr.contains("sizeof") {
+            self.extract_sizeof_value(expr).unwrap_or(elem_size)
+        } else {
+            elem_size
+        };
+
+        Some(count_elements * sizeof_val)
+    }
+
+    /// Resolve strlen(VAR)+1 or wcslen(VAR)+1 (without sizeof wrapper)
+    /// Used for strncpy(dest, src, strlen(src)+1) patterns
+    fn resolve_strlen_plus_one(
+        &self,
+        expr: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Option<usize> {
+        let fn_name = if expr.contains("strlen") {
+            "strlen"
+        } else if expr.contains("wcslen") {
+            "wcslen"
+        } else {
+            return None;
+        };
+
+        // Extract variable name
+        let fn_start = expr.find(fn_name)?;
+        let paren_start = expr[fn_start..].find('(')? + fn_start + 1;
+        let paren_end = expr[paren_start..].find(')')? + paren_start;
+        let var_name = expr[paren_start..paren_end].trim();
+
+        // Look up variable in buffers
+        let var_info = buffers.get(var_name)?;
+        let var_elements = match var_info.size {
+            BufferSize::Static(s) | BufferSize::DynamicCalculated(s) => s,
+            _ => return None,
+        };
+
+        // Check for +1
+        let has_plus_one = expr.contains("+ 1") || expr.contains("+1");
+
+        if has_plus_one {
+            Some(var_elements)
+        } else {
+            Some(var_elements.saturating_sub(1))
+        }
+    }
+
     /// Extract size from sizeof expression - using common type sizes
     fn extract_sizeof_value(&self, s: &str) -> Option<usize> {
         if !s.contains("sizeof") {
             return None;
         }
 
-        // Common type sizes (assuming typical 64-bit system)
+        // Common type sizes (assuming typical 64-bit Linux system)
         let type_sizes = [
+            ("wchar_t", 4),
             ("int", 4),
             ("char", 1),
             ("short", 2),
@@ -774,6 +968,7 @@ impl Arr30C {
             ("void*", 8),
             ("int*", 8),
             ("char*", 8),
+            ("wchar_t*", 8),
         ];
 
         for (type_name, size) in &type_sizes {
@@ -1462,6 +1657,12 @@ impl Arr30C {
                 } else if child.kind() == "call_expression" {
                     right_node = Some(child);
                     break;
+                } else if child.kind() == "cast_expression" {
+                    // Handle (type *)malloc(...) — unwrap cast to find call_expression
+                    if let Some(inner_call) = Self::unwrap_cast_to_call(&child) {
+                        right_node = Some(inner_call);
+                        break;
+                    }
                 }
             }
         }
@@ -1489,8 +1690,9 @@ impl Arr30C {
             // Extract the base array name from subscript
             let base_array = self.get_base_array_from_subscript(&left, source)?;
 
-            // Extract allocation size from malloc/calloc/realloc
-            let buffer_size = self.extract_malloc_size_from_call(&right, source)?;
+            // Extract allocation size and byte count from malloc/calloc/realloc
+            let (buffer_size, alloc_bytes) =
+                self.extract_malloc_size_and_bytes_from_call(&right, source)?;
 
             // Create a wildcard buffer name: base_array[*]
             let buffer_name = format!("{}[*]", base_array);
@@ -1500,6 +1702,7 @@ impl Arr30C {
                 size: buffer_size,
                 element_type: "unknown".to_string(),
                 allocation_line: node.start_position().row + 1,
+                alloc_bytes,
             };
 
             return Some((buffer_name, buffer_info));
@@ -1509,19 +1712,34 @@ impl Arr30C {
         if left.kind() == "identifier" {
             let var_name = &source[left.start_byte()..left.end_byte()];
 
-            // Extract allocation size from malloc/calloc/realloc
-            let buffer_size = self.extract_malloc_size_from_call(&right, source)?;
+            // Extract allocation size and byte count from malloc/calloc/realloc
+            let (buffer_size, alloc_bytes) =
+                self.extract_malloc_size_and_bytes_from_call(&right, source)?;
 
             let buffer_info = BufferInfo {
                 name: var_name.to_string(),
                 size: buffer_size,
                 element_type: "unknown".to_string(),
                 allocation_line: node.start_position().row + 1,
+                alloc_bytes,
             };
 
             return Some((var_name.to_string(), buffer_info));
         }
 
+        None
+    }
+
+    /// Unwrap cast_expression to find inner call_expression
+    /// Handles: (char *)malloc(...), (int *)calloc(...), etc.
+    fn unwrap_cast_to_call<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if child.kind() == "call_expression" {
+                    return Some(child);
+                }
+            }
+        }
         None
     }
 
@@ -1547,8 +1765,12 @@ impl Arr30C {
         Some(text.to_string())
     }
 
-    /// Extract malloc/realloc size from call expression
-    fn extract_malloc_size_from_call(&self, node: &Node, source: &str) -> Option<BufferSize> {
+    /// Extract both element-count size and raw byte count from malloc/calloc/realloc call
+    fn extract_malloc_size_and_bytes_from_call(
+        &self,
+        node: &Node,
+        source: &str,
+    ) -> Option<(BufferSize, Option<usize>)> {
         // Get function name to determine which argument contains the size
         let func_name_node = node.child(0)?;
         let func_name = &source[func_name_node.start_byte()..func_name_node.end_byte()];
@@ -1567,7 +1789,9 @@ impl Arr30C {
                             if arg.kind() != "(" && arg.kind() != ")" && arg.kind() != "," {
                                 if current_arg == arg_index {
                                     let arg_text = &source[arg.start_byte()..arg.end_byte()];
-                                    return self.calculate_malloc_size(arg_text);
+                                    let size = self.calculate_malloc_size(arg_text)?;
+                                    let alloc_bytes = self.calculate_alloc_bytes(arg_text);
+                                    return Some((size, alloc_bytes));
                                 }
                                 current_arg += 1;
                             }
@@ -2264,6 +2488,48 @@ impl Arr30C {
         pointers
     }
 
+    /// Pre-scan a function body to find all buffer declarations and malloc assignments,
+    /// including those in nested scopes (if-blocks, loops, compound statements).
+    /// This ensures that `data = (char *)malloc(50)` inside `if(1) { ... }` is visible
+    /// to memcpy checks in sibling scopes.
+    fn prescan_function_buffers(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &mut HashMap<String, BufferInfo>,
+    ) {
+        // Check declarations (char buf[100], char *p = malloc(n))
+        if node.kind() == "declaration" {
+            if let Some(new_buffer) = self.extract_buffer_from_declaration(node, source) {
+                buffers.insert(new_buffer.name.clone(), new_buffer);
+            }
+        }
+
+        // Check assignment expressions (data = (char *)malloc(50))
+        let assign_node = if node.kind() == "assignment_expression" {
+            Some(*node)
+        } else if node.kind() == "expression_statement" {
+            node.child(0)
+                .filter(|c| c.kind() == "assignment_expression")
+        } else {
+            None
+        };
+
+        if let Some(assign) = assign_node {
+            if let Some((buf_name, buf_info)) = self.extract_buffer_from_assignment(&assign, source)
+            {
+                buffers.insert(buf_name, buf_info);
+            }
+        }
+
+        // Recurse into all children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.prescan_function_buffers(&child, source, buffers);
+            }
+        }
+    }
+
     /// Check for malloc/calloc/realloc calls without proper NULL checks before pointer arithmetic
     /// Detects patterns where malloc() result is used in pointer arithmetic without NULL validation
     fn check_malloc_null_pointer_arithmetic(
@@ -2852,6 +3118,12 @@ impl Arr30C {
                 ));
             }
             "function_definition" => {
+                // Pre-scan entire function body for buffer declarations and malloc
+                // assignments. This ensures buffers allocated in nested scopes (if-blocks,
+                // loops) are visible to sibling scopes for overflow checks.
+                if let Some(body) = node.child_by_field_name("body") {
+                    self.prescan_function_buffers(&body, source, &mut local_buffers);
+                }
                 // Check for malloc/calloc/realloc without proper NULL checks
                 violations.extend(self.check_malloc_null_pointer_arithmetic(node, source));
                 // Check for insufficient malloc of flexible array structs
@@ -3193,6 +3465,27 @@ impl Arr30C {
                         let size_str = &source[child.start_byte()..child.end_byte()];
                         size = size_str.parse().ok();
                     }
+                    // Handle binary expressions like 10+1 in array size declarations
+                    "binary_expression" => {
+                        let expr_text = &source[child.start_byte()..child.end_byte()];
+                        if let Some(val) = self.evaluate_simple_arithmetic(expr_text) {
+                            if val >= 0 {
+                                size = Some(val as usize);
+                            }
+                        } else {
+                            size_expr = Some(expr_text.to_string());
+                        }
+                    }
+                    // Handle parenthesized expressions like (10+1) in array sizes
+                    "parenthesized_expression" => {
+                        let expr_text = &source[child.start_byte()..child.end_byte()];
+                        let inner = expr_text.trim_start_matches('(').trim_end_matches(')');
+                        if let Some(val) = self.evaluate_simple_arithmetic(inner) {
+                            if val >= 0 {
+                                size = Some(val as usize);
+                            }
+                        }
+                    }
                     // Handle complex declarators (function pointers, nested pointers, etc.)
                     "function_declarator" | "pointer_declarator" | "parenthesized_declarator" => {
                         if var_name.is_none() {
@@ -3213,6 +3506,7 @@ impl Arr30C {
                 size: BufferSize::Static(s),
                 element_type: "unknown".to_string(),
                 allocation_line: line,
+                alloc_bytes: None,
             })
         } else {
             size_expr.map(|expr| BufferInfo {
@@ -3220,6 +3514,7 @@ impl Arr30C {
                 size: BufferSize::Symbolic(expr),
                 element_type: "unknown".to_string(),
                 allocation_line: line,
+                alloc_bytes: None,
             })
         }
     }
@@ -3297,6 +3592,7 @@ impl Arr30C {
                             size,
                             element_type: "array_element".to_string(),
                             allocation_line: line,
+                            alloc_bytes: None,
                         },
                     );
                 }
@@ -3408,12 +3704,14 @@ impl Arr30C {
                     if let Some(child) = arg_list.child(i) {
                         if child.kind() != "(" && child.kind() != ")" && child.kind() != "," {
                             let arg_text = &source[child.start_byte()..child.end_byte()];
+                            let alloc_bytes = self.calculate_alloc_bytes(arg_text);
                             let size = self.calculate_malloc_size(arg_text)?;
                             return Some(BufferInfo {
                                 name: var_name.to_string(),
                                 size,
                                 element_type: "unknown".to_string(),
                                 allocation_line: line,
+                                alloc_bytes,
                             });
                         }
                     }
@@ -3430,12 +3728,14 @@ impl Arr30C {
                     }
                 }
                 if args.len() >= 2 {
+                    let alloc_bytes = self.calculate_alloc_bytes(args[1]);
                     let size = self.calculate_malloc_size(args[1])?;
                     return Some(BufferInfo {
                         name: var_name.to_string(),
                         size,
                         element_type: "unknown".to_string(),
                         allocation_line: line,
+                        alloc_bytes,
                     });
                 }
             }
@@ -3451,12 +3751,13 @@ impl Arr30C {
                 }
                 if args.len() >= 2 {
                     if let Some(count) = self.extract_numeric_value(args[0]) {
-                        if self.extract_sizeof_value(args[1]).is_some() {
+                        if let Some(sizeof_val) = self.extract_sizeof_value(args[1]) {
                             return Some(BufferInfo {
                                 name: var_name.to_string(),
                                 size: BufferSize::DynamicCalculated(count),
                                 element_type: "unknown".to_string(),
                                 allocation_line: line,
+                                alloc_bytes: Some(count * sizeof_val),
                             });
                         }
                     }
@@ -3488,6 +3789,7 @@ impl Arr30C {
                             size: BufferSize::Static(size),
                             element_type: type_name.to_string(),
                             allocation_line: decl_node.start_position().row + 1,
+                            alloc_bytes: None,
                         });
                     }
                 }
@@ -3635,9 +3937,14 @@ impl Arr30C {
             let func_name = &source[func_name_node.start_byte()..func_name_node.end_byte()];
 
             match func_name {
-                "strcpy" => violations.extend(self.check_strcpy(node, source, buffers)),
+                "strcpy" | "wcscpy" => violations.extend(self.check_strcpy(node, source, buffers)),
                 "strcat" => violations.extend(self.check_strcat(node, source, buffers)),
-                "memcpy" | "memmove" => violations.extend(self.check_memcpy(node, source, buffers)),
+                "memcpy" | "memmove" | "wmemcpy" | "wmemmove" => {
+                    violations.extend(self.check_memcpy(node, source, buffers))
+                }
+                "strncpy" | "wcsncpy" => {
+                    violations.extend(self.check_strncpy(node, source, buffers))
+                }
                 "sprintf" => violations.extend(self.check_sprintf(node, source, buffers)),
                 "gets" => violations.extend(self.check_gets(node, source, buffers)),
                 _ => {}
@@ -3761,14 +4068,21 @@ impl Arr30C {
                     }
 
                     // Even if we can't determine exact sizes, strcpy is inherently unsafe
-                    // Only flag if source is unknown (not a literal)
+                    // Only flag if source is unknown (not a literal) AND destination has
+                    // a known size. For Dynamic-sized buffers (e.g., malloc(n*sizeof(char)))
+                    // we can't prove overflow, so skip the warning.
                     if !src_text.starts_with('"') && src_size.is_none() {
-                        violations.push(self.create_library_violation(
-                            node,
-                            dest_name,
-                            dest_info,
-                            "strcpy with unknown source size can cause buffer overflow",
-                        ));
+                        if matches!(
+                            dest_info.size,
+                            BufferSize::Static(_) | BufferSize::DynamicCalculated(_)
+                        ) {
+                            violations.push(self.create_library_violation(
+                                node,
+                                dest_name,
+                                dest_info,
+                                "strcpy with unknown source size can cause buffer overflow",
+                            ));
+                        }
                     }
                 }
             }
@@ -3792,12 +4106,81 @@ impl Arr30C {
 
                 if let Some(dest_info) = buffers.get(dest_name) {
                     // strcat is dangerous without knowing current string length
-                    violations.push(self.create_library_violation(
-                        node,
-                        dest_name,
-                        dest_info,
-                        "strcat can cause buffer overflow without length checks",
-                    ));
+                    // Only flag for known-size buffers; Dynamic-sized buffers can't be proven unsafe
+                    if matches!(
+                        dest_info.size,
+                        BufferSize::Static(_) | BufferSize::DynamicCalculated(_)
+                    ) {
+                        violations.push(self.create_library_violation(
+                            node,
+                            dest_name,
+                            dest_info,
+                            "strcat can cause buffer overflow without length checks",
+                        ));
+                    }
+                }
+            }
+        }
+
+        violations
+    }
+
+    /// Check strncpy/wcsncpy calls for buffer overflow potential
+    /// strncpy(dest, src, count) — overflow when count > dest size
+    fn check_strncpy(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &HashMap<String, BufferInfo>,
+    ) -> Vec<RuleViolation> {
+        let mut violations = Vec::new();
+
+        // strncpy(dest, src, count)
+        if let Some(args) = self.get_function_arguments(node, source) {
+            if args.len() >= 3 {
+                let dest_name = args[0].trim();
+                let count_expr = args[2].trim();
+
+                if let Some(dest_info) = buffers.get(dest_name) {
+                    // Try plain numeric count
+                    let count = if let Ok(c) = count_expr.parse::<usize>() {
+                        Some(c)
+                    } else {
+                        // Try strlen/wcslen resolution (e.g., strlen(source) + 1)
+                        self.resolve_strlen_plus_one(count_expr, buffers)
+                    };
+
+                    if let Some(c) = count {
+                        if let BufferSize::Static(dest_s) | BufferSize::DynamicCalculated(dest_s) =
+                            dest_info.size
+                        {
+                            if c > dest_s {
+                                violations.push(self.create_library_violation(
+                                    node,
+                                    dest_name,
+                                    dest_info,
+                                    &format!(
+                                        "strncpy copies {} bytes into {}-byte buffer",
+                                        c, dest_s
+                                    ),
+                                ));
+                            }
+                        }
+                        // Also check byte-level for malloc(N) without sizeof
+                        if let Some(dest_bytes) = dest_info.alloc_bytes {
+                            if c > dest_bytes && violations.is_empty() {
+                                violations.push(self.create_library_violation(
+                                    node,
+                                    dest_name,
+                                    dest_info,
+                                    &format!(
+                                        "strncpy copies {} bytes into {}-byte buffer",
+                                        c, dest_bytes
+                                    ),
+                                ));
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -3822,11 +4205,21 @@ impl Arr30C {
                 let count_expr = args[2].trim();
 
                 if let Some(dest_info) = buffers.get(dest_name) {
-                    // Try to parse count
+                    // Try to parse count — handle plain numbers, N*sizeof(T), and sizeof(src) patterns
                     let count = if let Ok(c) = count_expr.parse::<usize>() {
                         Some(c)
+                    } else if count_expr.contains("sizeof") && count_expr.contains('*') {
+                        // N*sizeof(T) pattern — evaluate as element count
+                        if let Some(size) = self.calculate_malloc_size(count_expr) {
+                            match size {
+                                BufferSize::Static(s) | BufferSize::DynamicCalculated(s) => Some(s),
+                                _ => None,
+                            }
+                        } else {
+                            None
+                        }
                     } else if count_expr.contains("sizeof") {
-                        // Check for sizeof(src) pattern
+                        // sizeof(src) pattern — use source buffer size
                         if let Some(src_info) = buffers.get(src_name) {
                             match src_info.size {
                                 BufferSize::Static(s) | BufferSize::DynamicCalculated(s) => Some(s),
@@ -3839,7 +4232,8 @@ impl Arr30C {
                         None
                     };
 
-                    // Check if count exceeds destination size
+                    // Check 1: Element-count comparison (existing logic)
+                    let mut already_flagged = false;
                     if let Some(c) = count {
                         if let BufferSize::Static(dest_s) | BufferSize::DynamicCalculated(dest_s) =
                             dest_info.size
@@ -3854,6 +4248,31 @@ impl Arr30C {
                                         c, dest_s
                                     ),
                                 ));
+                                already_flagged = true;
+                            }
+                        }
+                    }
+
+                    // Check 2: Byte-level comparison (CWE-131 and CWE-193 detection)
+                    // This catches cases where element counts match but byte counts don't
+                    // (e.g., malloc(10) vs 10*sizeof(int)), and strlen-based count
+                    // expressions (e.g., (strlen(src)+1)*sizeof(char))
+                    if !already_flagged {
+                        if let Some(dest_bytes) = dest_info.alloc_bytes {
+                            if let Some(count_bytes) =
+                                self.evaluate_count_bytes(count_expr, buffers)
+                            {
+                                if count_bytes > dest_bytes {
+                                    violations.push(self.create_library_violation(
+                                        node,
+                                        dest_name,
+                                        dest_info,
+                                        &format!(
+                                            "memcpy copies {} bytes into {}-byte buffer",
+                                            count_bytes, dest_bytes
+                                        ),
+                                    ));
+                                }
                             }
                         }
                     }
@@ -3878,12 +4297,18 @@ impl Arr30C {
                 let dest_name = args[0].trim();
 
                 if let Some(dest_info) = buffers.get(dest_name) {
-                    violations.push(self.create_library_violation(
-                        node,
-                        dest_name,
-                        dest_info,
-                        "sprintf can cause buffer overflow; use snprintf instead",
-                    ));
+                    // Only flag for known-size buffers; Dynamic-sized buffers can't be proven unsafe
+                    if matches!(
+                        dest_info.size,
+                        BufferSize::Static(_) | BufferSize::DynamicCalculated(_)
+                    ) {
+                        violations.push(self.create_library_violation(
+                            node,
+                            dest_name,
+                            dest_info,
+                            "sprintf can cause buffer overflow; use snprintf instead",
+                        ));
+                    }
                 }
             }
         }

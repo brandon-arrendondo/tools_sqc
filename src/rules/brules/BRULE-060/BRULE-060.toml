@@ -1,0 +1,26 @@
+[metadata]
+id = "BRULE-060"
+type = "rule"
+category = "BRULE"
+number = 60
+title = "Do not use dynamic memory allocation after initialization"
+description = """
+Dynamic memory allocation (malloc, calloc, realloc, free) should be confined to
+main() and initialization functions (*_init, *_setup, *_initialize). Allocating
+or freeing memory in runtime logic increases fragmentation risk, complicates
+error handling, and is prohibited in many safety-critical standards (e.g.,
+MISRA C, JPL, Power of 10).
+"""
+severity = "Medium"
+likelihood = "Likely"
+priority = "P4"
+level = "L2"
+cert_version = "Custom"
+last_modified = "Apr 02, 2026"
+
+[rules.brules.BRULE-060]
+enabled = true
+
+[references]
+wiki = ""
+cwe = ["CWE-401", "CWE-415", "CWE-416"]
