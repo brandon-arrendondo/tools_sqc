@@ -745,6 +745,10 @@ impl Arr30C {
                     // Store element count, not byte count
                     return Some(BufferSize::DynamicCalculated(c));
                 }
+                // Count is a variable (e.g., data*sizeof(char)) — size is unknown
+                // Do NOT fall through to pattern 3 which would misinterpret
+                // "data*sizeof(char)" as sizeof(char)=1
+                return Some(BufferSize::Dynamic(trimmed.to_string()));
             }
         }
 
@@ -3780,14 +3784,21 @@ impl Arr30C {
                     }
 
                     // Even if we can't determine exact sizes, strcpy is inherently unsafe
-                    // Only flag if source is unknown (not a literal)
+                    // Only flag if source is unknown (not a literal) AND destination has
+                    // a known size. For Dynamic-sized buffers (e.g., malloc(n*sizeof(char)))
+                    // we can't prove overflow, so skip the warning.
                     if !src_text.starts_with('"') && src_size.is_none() {
-                        violations.push(self.create_library_violation(
-                            node,
-                            dest_name,
-                            dest_info,
-                            "strcpy with unknown source size can cause buffer overflow",
-                        ));
+                        if matches!(
+                            dest_info.size,
+                            BufferSize::Static(_) | BufferSize::DynamicCalculated(_)
+                        ) {
+                            violations.push(self.create_library_violation(
+                                node,
+                                dest_name,
+                                dest_info,
+                                "strcpy with unknown source size can cause buffer overflow",
+                            ));
+                        }
                     }
                 }
             }
@@ -3811,12 +3822,18 @@ impl Arr30C {
 
                 if let Some(dest_info) = buffers.get(dest_name) {
                     // strcat is dangerous without knowing current string length
-                    violations.push(self.create_library_violation(
-                        node,
-                        dest_name,
-                        dest_info,
-                        "strcat can cause buffer overflow without length checks",
-                    ));
+                    // Only flag for known-size buffers; Dynamic-sized buffers can't be proven unsafe
+                    if matches!(
+                        dest_info.size,
+                        BufferSize::Static(_) | BufferSize::DynamicCalculated(_)
+                    ) {
+                        violations.push(self.create_library_violation(
+                            node,
+                            dest_name,
+                            dest_info,
+                            "strcat can cause buffer overflow without length checks",
+                        ));
+                    }
                 }
             }
         }
@@ -3907,12 +3924,18 @@ impl Arr30C {
                 let dest_name = args[0].trim();
 
                 if let Some(dest_info) = buffers.get(dest_name) {
-                    violations.push(self.create_library_violation(
-                        node,
-                        dest_name,
-                        dest_info,
-                        "sprintf can cause buffer overflow; use snprintf instead",
-                    ));
+                    // Only flag for known-size buffers; Dynamic-sized buffers can't be proven unsafe
+                    if matches!(
+                        dest_info.size,
+                        BufferSize::Static(_) | BufferSize::DynamicCalculated(_)
+                    ) {
+                        violations.push(self.create_library_violation(
+                            node,
+                            dest_name,
+                            dest_info,
+                            "sprintf can cause buffer overflow; use snprintf instead",
+                        ));
+                    }
                 }
             }
         }
