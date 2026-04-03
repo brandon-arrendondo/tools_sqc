@@ -998,12 +998,13 @@ semantic analysis but requires a compilation database.
 
 \textbf{Infer}~\cite{infer} uses bi-abduction and separation logic
 for memory safety.  We ran Infer~v1.2.0 on the same Juliet test
-files across 11 overlapping CWEs (null dereference, use-after-free,
-memory leak, double-free, buffer overflow).  On CWE-476 (null
-pointer dereference), Infer achieves 66.1\% TP rate (242~TP / 124~FP)
-compared to SqC's 38.5\%.  Infer's separation-logic engine is more
-precise for null paths it can model, but covers fewer defect classes
-overall.  Full results across all 11 CWEs are pending.
+files across 10 overlapping CWEs (17{,}232 files).  Overall, Infer
+achieves 43.6\% TP rate (4{,}971~TP / 6{,}428~FP).  Infer is
+strongest on null dereference (CWE-476: 66.1\%, CWE-690: 60.0\%)
+and double-free (CWE-415: 63.0\%), but weaker on buffer overflow
+CWEs (33--39\%) and near-zero on use-after-free (CWE-416: 2.0\%).
+SqC covers a broader set of defect classes (118 CWEs vs.\ Infer's
+$\sim$10) at a comparable aggregate TP rate.
 
 \textbf{Frama-C}~\cite{frama-c} provides formal verification via
 abstract interpretation (EVA plugin) and deductive verification (WP).

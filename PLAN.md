@@ -207,21 +207,33 @@ only (intra-file inter-procedural).
 
 # Task ID: 33a
 # Title: Juliet benchmark — Infer v1.2.0
-# Status: in-progress
+# Status: done (2026-04-03)
 # Dependencies: none
 # Priority: P3
 # Description: Run Infer on 11 overlapping Juliet CWEs, classify TP/FP.
 # Details:
 Infer v1.2.0 installed via prebuilt tarball (playbooks/install-static-analyzers.yml).
-Benchmark runner: bench/competitors.py. CWE-476 pilot: 242 TP / 124 FP (66.1%).
+Benchmark runner: bench/competitors.py. 83.7 min on 17,232 files.
 
-  CWEs: 476, 690, 416, 401, 415, 761, 762, 121, 122, 124, 127
-  Estimated time: ~80 min (17,232 files, ~0.3s/file capture)
+  Results: data/competitor_results/infer_20260403_164943.json
+  Overall: 4,971 TP / 6,428 FP (43.6% TP rate)
 
-  To run:
-    python3 -m bench.competitors infer --jobs 8
+  Per-CWE:
+    CWE-476 (Null Deref):         242 TP / 124 FP (66.1%)
+    CWE-690 (Null From Return):   456 TP / 304 FP (60.0%)
+    CWE-416 (Use After Free):       1 TP /  48 FP ( 2.0%)
+    CWE-401 (Memory Leak):        548 TP / 454 FP (54.7%)
+    CWE-415 (Double Free):        204 TP / 120 FP (63.0%)
+    CWE-761 (Free Not At Start):  528 TP / 380 FP (58.1%)
+    CWE-762 (Mismatched Mgmt):      0 — no Juliet directory
+    CWE-121 (Stack BOF):         1976 TP /3121 FP (38.8%)
+    CWE-122 (Heap BOF):           346 TP / 569 FP (37.8%)
+    CWE-124 (Buffer Underwrite):  338 TP / 660 FP (33.9%)
+    CWE-127 (Buffer Underread):   332 TP / 648 FP (33.9%)
 
-  Results go to: data/competitor_results/infer_<timestamp>.json
+  Infer strongest on null deref (66%) and double free (63%).
+  Weakest on buffer overflow CWEs (34-39%) and use-after-free (2%).
+  CWE-762 has no Juliet test directory (0 files).
 
 ---
 
