@@ -6,6 +6,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.74] - 2026-04-03
+
+### Added
+
+- is_full_range_return_function() denylist in std_functions.rs: atoi, atol,
+  atoll, strtol, strtoul, strtoll, strtoull, strtoimax, strtoumax, wcstol,
+  wcstoul, wcstoll, wcstoull, wcstoimax, wcstoumax, rand, random, lrand48,
+  mrand48, rand_r, RAND32, ntohl, ntohs. Functions whose return values can
+  span the full integer range are no longer suppressed by the opaque
+  increment heuristic in INT32-C and INT30-C.
+- resolve_identifier_call_name() in INT32-C/INT30-C: traces the callee
+  function name through switch, case, for, while, if, compound, and preproc
+  blocks. Enables the denylist check for deeply nested call assignments.
+- VRA collect_local_decl_types(): records declared types for uninitialized
+  local variables (e.g. `int data;`). Prevents fallback to [i64::MIN,
+  i64::MAX] when the variable is later assigned from an unevaluable call.
+- VRA local_types lookup in process_expression_range(): uses declared type
+  as fallback when existing VRA entry has no type info.
+
+### Fixed
+
+- INT32-C/INT30-C: is_small_increment_of_opaque no longer blanket-suppresses
+  `atoi(buf) + 1`, `rand() + 1`, and similar patterns. Known full-range
+  functions bypass suppression. Local functions with wide VRA return ranges
+  also bypass. strlen()+1 and other bounded-return patterns remain suppressed.
+- VRA: `int data; data = atoi(buf);` now correctly uses [INT_MIN, INT_MAX]
+  instead of [i64::MIN, i64::MAX] for the fallback range. Fixes incorrect
+  VRA suppression of overflow checks for uninit-declared variables.
+
+### Results
+
+- CWE-190: 2,322→2,538 TP (+216), FP -6. TP rate 45.1%→47.4% (+2.3pp).
+- CWE-191: 1,973→2,091 TP (+118), FP -6. TP rate 44.0%→45.5% (+1.5pp).
+- CWE-680: 559→617 TP (+58), FP unchanged. TP rate 51.4%→53.9% (+2.5pp).
+- Overall: +392 TP, -12 FP. TP rate 54.4%→54.8% (+0.4pp). Per-file 45.4%→45.7%.
+- Zero CWE regressions. INT32-C: +360 TP / -12 FP (30:1 improvement ratio).
+
 ## [0.3.67] - 2026-04-02
 
 ### Fixed
