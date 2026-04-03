@@ -1,11 +1,11 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-03 (v0.3.73)
+Last Updated: 2026-04-03 (v0.3.74)
 
-Juliet benchmark v0.3.73: 27,490 TP / 23,015 FP (54.4% TP rate), 45.4% per-file.
-v0.3.73 vs v0.3.72: +410 TP, +245 FP (+0.1pp TP rate, +0.6pp per-file).
-CWE-122 per-file 26.4%→32.3% (target 30% met). CWE-121 bonus +116 TP.
-All 10 top CWEs now above 30% per-file threshold.
+Juliet benchmark v0.3.74: 27,882 TP / 23,003 FP (54.8% TP rate), 45.7% per-file.
+v0.3.74 vs v0.3.73: +392 TP, -12 FP (+0.4pp TP rate, +0.3pp per-file).
+CWE-190 45.1%→47.4% (+216 TP), CWE-191 44.0%→45.5% (+118 TP), CWE-680 +58 TP.
+Zero regressions. INT32-C: +360 TP / -12 FP (30:1 ratio).
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -18,23 +18,35 @@ then Juliet benchmark and real-world benchmark to validate.
 
 # Task ID: 5
 # Title: CWE-190/191 remaining coverage gaps
-# Status: pending
+# Status: done (v0.3.74)
 # Dependencies: none
 # Priority: P3
 # Description: Address remaining CWE-190/191 detection gaps after v0.3.67 fixes.
 # Details:
 v0.3.67 raised CWE-190 per-file from 35.0% to 43.3% and CWE-191 from
-40.5% to 47.7%. Remaining undetected patterns:
+40.5% to 47.7%. v0.3.74 addresses the opaque increment heuristic gap:
 
-  - rand() source: suppressed by is_small_increment_of_opaque (deliberate
-    FP heuristic for strlen()+1 patterns). Fixing would hurt real-world FP.
-  - Cross-function variants (41-68): need inter-procedural VRA to propagate
-    value ranges through function arguments and return values.
-  - Conditional flow variants (12-18): syntactic resolver can't follow
-    branches; VRA handles some but not all.
+  Implemented:
+  - is_full_range_return_function() denylist: atoi, strtol, rand, RAND32, etc.
+    are no longer suppressed by is_small_increment_of_opaque. +216 TP on CWE-190.
+  - VRA local declaration type fix: collect_local_decl_types() ensures `int data;`
+    (uninit) preserves i32 type through later assignments, preventing incorrect
+    [i64::MIN, i64::MAX] fallback range.
+  - resolve_identifier_call_name: traces call sources through switch, case, for,
+    while, if, compound, and preproc blocks.
 
-Further improvement requires inter-procedural VRA or relaxing the opaque
-increment heuristic (with real-world FP impact analysis).
+  Results: CWE-190 45.1%→47.4%, CWE-191 44.0%→45.5%, CWE-680 51.4%→53.9%.
+  Overall: +392 TP, -12 FP, zero regressions. INT32-C: 30:1 improvement ratio.
+
+  Remaining undetected patterns:
+  - Variant 12 (globalReturnsTrueOrFalse): cross-file function — needs prescan
+    to resolve external boolean function results.
+  - Variant 15 (switch constant): VRA doesn't model switch constant propagation
+    through case blocks.
+  - Variant 42 (local wrapper): badSource() wraps atoi() — compute_return_range
+    uses empty var_ranges so wrapper return range is None.
+  - Cross-function variants (41-68) where source is in caller: parameter sink
+    detection works (41, 44, 45), but return-value wrappers (42) don't.
 
 ---
 
