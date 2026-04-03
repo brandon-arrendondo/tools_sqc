@@ -119,11 +119,18 @@ pub fn analyze_project(
         eprintln!("These rules will be skipped during analysis.\n");
     }
 
-    let c_files = if diff_only {
+    let mut c_files = if diff_only {
         project_source.get_modified_c_files()?
     } else {
         project_source.get_c_files()?
     };
+
+    // LPT scheduling: sort files by size descending so largest files are dispatched first.
+    // Combined with par_bridge() demand-driven dispatch, this implements Graham's LPT
+    // algorithm (1969) for makespan minimization — (4/3 - 1/3m) approximation ratio.
+    c_files
+        .sort_by_cached_key(|f| std::cmp::Reverse(fs::metadata(f).map(|m| m.len()).unwrap_or(0)));
+
     let total_files = c_files.len();
     let mut suppression_manager = SuppressionManager::new();
 
@@ -175,7 +182,8 @@ pub fn analyze_project(
 
         let results: Vec<_> = pool.install(|| {
             c_files
-                .par_iter()
+                .iter()
+                .par_bridge()
                 .map(|file_path| {
                     if let Some(reporter) = progress {
                         if reporter.is_cancelled() {
@@ -279,7 +287,9 @@ pub fn analyze_project(
     }
 
     // Sequential analysis (single-threaded)
+    // Fresh registry per file to prevent cross-file state leakage from RefCell fields
     let mut parser = CParser::new()?;
+    let has_cross_file_data = context.has_cross_file_data();
 
     for (file_idx, file_path) in c_files.iter().enumerate() {
         // Check for cancellation before processing each file
@@ -309,6 +319,14 @@ pub fn analyze_project(
             // Extract suppressions from the current file
             suppression_manager.extract_from_source(file_path, &source);
 
+            // Create fresh rule instances per file (matches parallel mode behavior)
+            let file_registry = RuleRegistry::new();
+            if has_cross_file_data {
+                for rule in file_registry.all_rules() {
+                    rule.set_project_context(&context);
+                }
+            }
+
             for (rule_id, rule_config) in manifest.enabled_rules() {
                 // Check cancellation between rules
                 if let Some(reporter) = progress {
@@ -320,7 +338,7 @@ pub fn analyze_project(
                 }
 
                 // Check if rule is implemented
-                if let Some(rule) = registry.get_rule(rule_id) {
+                if let Some(rule) = file_registry.get_rule(rule_id) {
                     // Skip rules that don't apply to this file type (e.g. header-only rules)
                     if !rule.applies_to_file(file_path) {
                         continue;

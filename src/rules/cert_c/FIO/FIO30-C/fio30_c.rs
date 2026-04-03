@@ -121,6 +121,11 @@ struct FormatStringAnalyzer {
     param_positions: HashMap<String, usize>,
     // Macro aliases: e.g., GETENV → getenv
     macro_aliases: HashMap<String, String>,
+    // Functions that internally contain user input sources (fgets, recv, etc.)
+    // Return values from these functions should be treated as tainted
+    taint_source_functions: HashSet<String>,
+    // Global/static variables that are assigned tainted data in any function
+    tainted_globals: HashSet<String>,
 }
 
 impl FormatStringAnalyzer {
@@ -133,6 +138,8 @@ impl FormatStringAnalyzer {
             current_function: String::new(),
             param_positions: HashMap::new(),
             macro_aliases: HashMap::new(),
+            taint_source_functions: HashSet::new(),
+            tainted_globals: HashSet::new(),
         }
     }
 
@@ -149,8 +156,101 @@ impl FormatStringAnalyzer {
         // First collect user input vars
         self.collect_user_input_sources(node, source);
 
+        // Identify functions that internally contain user input sources
+        // and global variables assigned from tainted data
+        self.identify_taint_source_functions(node, source);
+
         // Then find calls to user-defined functions with tainted first arg
         self.scan_for_tainted_wrapper_calls(node, source);
+    }
+
+    /// Identify functions whose body contains user input calls (fgets, recv, getenv, etc.)
+    /// and global/static variables assigned from tainted data
+    fn identify_taint_source_functions(&mut self, node: &Node, source: &str) {
+        if node.kind() == "function_definition" {
+            if let Some(declarator) = node.child_by_field_name("declarator") {
+                let func_name = self.get_function_name(&declarator, source);
+                if let Some(body) = node.child_by_field_name("body") {
+                    if self.body_contains_user_input_call(&body, source) {
+                        self.taint_source_functions.insert(func_name.clone());
+                    }
+                    // Check for assignments to global/static variables from tainted data
+                    self.scan_global_taint_assignments(&body, source);
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.identify_taint_source_functions(&child, source);
+            }
+        }
+    }
+
+    /// Check if a function body contains any user input source calls
+    fn body_contains_user_input_call(&self, node: &Node, source: &str) -> bool {
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let raw_name = ast_utils::get_node_text_owned(&function, source);
+                let func_name = self.resolve_func_name(&raw_name);
+                if matches!(
+                    func_name,
+                    "fgets"
+                        | "fgetws"
+                        | "gets"
+                        | "getline"
+                        | "fread"
+                        | "read"
+                        | "recv"
+                        | "recvfrom"
+                        | "recvmsg"
+                        | "scanf"
+                        | "fscanf"
+                        | "wscanf"
+                        | "fwscanf"
+                        | "getenv"
+                        | "_wgetenv"
+                ) {
+                    return true;
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.body_contains_user_input_call(&child, source) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Scan for assignments to global/static variables from user input sources
+    fn scan_global_taint_assignments(&mut self, node: &Node, source: &str) {
+        if node.kind() == "assignment_expression" {
+            if let (Some(left), Some(right)) = (
+                node.child_by_field_name("left"),
+                node.child_by_field_name("right"),
+            ) {
+                // Check if right side is tainted (from pre-scan user_input_vars)
+                let right_tainted = if right.kind() == "identifier" {
+                    let var_name = ast_utils::get_node_text_owned(&right, source);
+                    self.user_input_vars.contains(&var_name)
+                } else {
+                    false
+                };
+
+                if right_tainted {
+                    if let Some(var_name) = self.get_base_variable(&left, source) {
+                        self.tainted_globals.insert(var_name);
+                    }
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.scan_global_taint_assignments(&child, source);
+            }
+        }
     }
 
     fn collect_user_input_sources(&mut self, node: &Node, source: &str) {
@@ -162,7 +262,7 @@ impl FormatStringAnalyzer {
 
                 if matches!(
                     func_name.as_str(),
-                    "fgets" | "gets" | "getline" | "fread" | "read"
+                    "fgets" | "fgetws" | "gets" | "getline" | "fread" | "read"
                 ) {
                     if let Some(arguments) = node.child_by_field_name("arguments") {
                         let args: Vec<_> = (0..arguments.child_count())
@@ -177,7 +277,10 @@ impl FormatStringAnalyzer {
                     }
                 }
 
-                if matches!(func_name.as_str(), "scanf" | "fscanf") {
+                if matches!(
+                    func_name.as_str(),
+                    "scanf" | "fscanf" | "wscanf" | "fwscanf" | "swscanf"
+                ) {
                     if let Some(arguments) = node.child_by_field_name("arguments") {
                         let args: Vec<_> = (0..arguments.child_count())
                             .filter_map(|i| arguments.child(i))
@@ -343,10 +446,16 @@ impl FormatStringAnalyzer {
                                 self.safe_vars.insert(var_name);
                             } else if value.kind() == "identifier" {
                                 let source_var = ast_utils::get_node_text_owned(&value, source);
-                                if self.user_input_vars.contains(&source_var) {
+                                if self.user_input_vars.contains(&source_var)
+                                    || self.tainted_globals.contains(&source_var)
+                                {
                                     self.user_input_vars.insert(var_name);
                                 } else if self.safe_vars.contains(&source_var) {
                                     self.safe_vars.insert(var_name);
+                                }
+                            } else if value.kind() == "call_expression" {
+                                if self.call_returns_tainted_data(&value, source) {
+                                    self.user_input_vars.insert(var_name);
                                 }
                             }
                         }
@@ -372,7 +481,9 @@ impl FormatStringAnalyzer {
                     self.user_input_vars.remove(&var_name);
                 } else if right.kind() == "identifier" {
                     let source_var = ast_utils::get_node_text_owned(&right, source);
-                    if self.user_input_vars.contains(&source_var) {
+                    if self.user_input_vars.contains(&source_var)
+                        || self.tainted_globals.contains(&source_var)
+                    {
                         self.user_input_vars.insert(var_name.clone());
                         self.safe_vars.remove(&var_name);
                     } else if self.safe_vars.contains(&source_var) {
@@ -403,7 +514,7 @@ impl FormatStringAnalyzer {
             // Handle functions that write user input to their first argument
             if matches!(
                 func_name.as_str(),
-                "fgets" | "gets" | "getline" | "fread" | "read"
+                "fgets" | "fgetws" | "gets" | "getline" | "fread" | "read"
             ) {
                 if let Some(arguments) = node.child_by_field_name("arguments") {
                     let args = self.extract_arguments(&arguments, source);
@@ -431,12 +542,19 @@ impl FormatStringAnalyzer {
             }
 
             // Handle scanf family - all arguments after format string receive user input
-            if matches!(func_name.as_str(), "scanf" | "fscanf" | "sscanf") {
+            if matches!(
+                func_name.as_str(),
+                "scanf" | "fscanf" | "sscanf" | "wscanf" | "fwscanf" | "swscanf"
+            ) {
                 if let Some(arguments) = node.child_by_field_name("arguments") {
                     let args = self.extract_arguments(&arguments, source);
                     // scanf/fscanf: first arg is format, rest are pointers to receive input
-                    // sscanf: first two args are string and format, rest are pointers
-                    let start_index = if func_name == "sscanf" { 2 } else { 1 };
+                    // sscanf/swscanf: first two args are string and format, rest are pointers
+                    let start_index = if func_name == "sscanf" || func_name == "swscanf" {
+                        2
+                    } else {
+                        1
+                    };
                     for arg in args.iter().skip(start_index) {
                         if let Some(dest_name) = self.get_base_variable(arg, source) {
                             self.user_input_vars.insert(dest_name.clone());
@@ -446,10 +564,21 @@ impl FormatStringAnalyzer {
                 }
             }
 
-            // Handle strcpy, strcat, sprintf, snprintf - first arg gets tainted if source is tainted
+            // Handle strcpy, strcat, sprintf, snprintf and wide variants - first arg gets tainted if source is tainted
             if matches!(
                 func_name.as_str(),
-                "strcpy" | "strcat" | "sprintf" | "snprintf" | "strncpy" | "strncat"
+                "strcpy"
+                    | "strcat"
+                    | "sprintf"
+                    | "snprintf"
+                    | "strncpy"
+                    | "strncat"
+                    | "wcscpy"
+                    | "wcscat"
+                    | "wcsncpy"
+                    | "wcsncat"
+                    | "swprintf"
+                    | "_snwprintf"
             ) {
                 if let Some(arguments) = node.child_by_field_name("arguments") {
                     let args = self.extract_arguments(&arguments, source);
@@ -593,23 +722,33 @@ impl FormatStringAnalyzer {
             if matches!(
                 func_name,
                 "fgets"
+                    | "fgetws"
                     | "gets"
                     | "getline"
                     | "getdelim"
                     | "fgetc"
+                    | "fgetwc"
                     | "getc"
+                    | "getwc"
                     | "getchar"
+                    | "getwchar"
                     | "fread"
                     | "read"
                     | "recv"
                     | "recvfrom"
                     | "recvmsg"
                     | "getenv"
+                    | "_wgetenv"
                     | "getpwnam"
                     | "getpwuid"
                     | "getgrnam"
                     | "getgrgid"
             ) {
+                return true;
+            }
+
+            // Functions that internally contain user input sources (identified during pre-scan)
+            if self.taint_source_functions.contains(func_name) {
                 return true;
             }
 
@@ -709,7 +848,15 @@ impl FormatStringAnalyzer {
                         // where format comes from the wrapper's caller with a literal
                         let is_vprintf_family = matches!(
                             func_name.as_str(),
-                            "vprintf" | "vfprintf" | "vsprintf" | "vsnprintf" | "vdprintf"
+                            "vprintf"
+                                | "vfprintf"
+                                | "vsprintf"
+                                | "vsnprintf"
+                                | "vdprintf"
+                                | "vwprintf"
+                                | "vfwprintf"
+                                | "vswprintf"
+                                | "_vsnwprintf"
                         );
                         if is_vprintf_family && format_arg.kind() == "identifier" {
                             let arg_name = ast_utils::get_node_text_owned(&format_arg, source);
@@ -772,9 +919,20 @@ impl FormatStringAnalyzer {
                 | "vsprintf"
                 | "vsnprintf"
                 | "vdprintf"
+                | "wprintf"
+                | "fwprintf"
+                | "swprintf"
+                | "vwprintf"
+                | "vfwprintf"
+                | "vswprintf"
+                | "_vsnwprintf"
+                | "_snwprintf"
                 | "scanf"
                 | "fscanf"
                 | "sscanf"
+                | "wscanf"
+                | "fwscanf"
+                | "swscanf"
                 | "syslog"
                 | "err"
                 | "errx"
@@ -786,16 +944,16 @@ impl FormatStringAnalyzer {
 
     fn get_format_arg_index(&self, func_name: &str) -> usize {
         match func_name {
-            "snprintf" | "vsnprintf" => 2, // Third argument is format string (buffer, size, format, ...)
+            "snprintf" | "vsnprintf" | "swprintf" | "vswprintf" | "_vsnwprintf" | "_snwprintf" => 2, // Third argument is format string (buffer, size, format, ...)
             "sprintf" | "vsprintf" | "sscanf" | "fprintf" | "fscanf" | "vfprintf" | "syslog"
-            | "dprintf" | "vdprintf" => 1, // Second argument is format string
+            | "dprintf" | "vdprintf" | "fwprintf" | "vfwprintf" | "fwscanf" | "swscanf" => 1, // Second argument is format string
             // BSD/POSIX err/errx have an initial exit/status code, then format string
             "err" | "errx" => 1,
             // warn/warnx take the format string as first argument
             "warn" | "warnx" => 0,
             // GNU error(int status, int errnum, const char *format, ...) => format at index 2
             "error" => 2,
-            _ => 0, // First argument is format string (printf, scanf, vprintf, etc.)
+            _ => 0, // First argument is format string (printf, scanf, wprintf, vprintf, etc.)
         }
     }
 
@@ -808,18 +966,23 @@ impl FormatStringAnalyzer {
                     return matches!(
                         func_name,
                         "fgets"
+                            | "fgetws"
                             | "gets"
                             | "getline"
                             | "getdelim"
                             | "fgetc"
+                            | "fgetwc"
                             | "getc"
+                            | "getwc"
                             | "getchar"
+                            | "getwchar"
                             | "fread"
                             | "read"
                             | "recv"
                             | "recvfrom"
                             | "recvmsg"
                             | "getenv"
+                            | "_wgetenv"
                             | "getpwnam"
                             | "getpwuid"
                             | "getgrnam"
@@ -922,7 +1085,14 @@ impl FormatStringAnalyzer {
                     // Functions that typically return user-controlled data
                     return matches!(
                         func_name,
-                        "fgets" | "gets" | "getline" | "getenv" | "getpwnam" | "readline"
+                        "fgets"
+                            | "fgetws"
+                            | "gets"
+                            | "getline"
+                            | "getenv"
+                            | "_wgetenv"
+                            | "getpwnam"
+                            | "readline"
                     );
                 }
                 true // Conservative: assume unknown function calls could be unsafe

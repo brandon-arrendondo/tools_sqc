@@ -684,34 +684,54 @@ In single-process mode, loading a cached prescan saves less than 1\%
 of wall time---the prescan is a small fraction of total analysis cost.
 The cache's primary benefit is enabling parallel analysis.
 
-\textbf{Parallel mode.}  SqC's prescan cache enables external
-parallelism: a single prescan pass builds the cross-file context
-(function summaries, call graph, null states) and serializes it to
-disk.  Multiple worker processes then analyze file subsets
-independently, each loading the shared cache via
-\texttt{-{}-load-prescan}.  \Cref{tab:parallel} shows the impact on
-M1 (8 workers, 19 subdirectory units).
+\textbf{Parallel mode.}  SqC provides built-in file-level parallelism
+via the \texttt{-j}/\texttt{-{}-jobs} flag (default: auto-detect CPU
+count).  Each worker thread receives its own parser and rule registry
+instance, avoiding shared mutable state.  After a single-threaded
+prescan builds the cross-file context (function summaries, call graph,
+null states), files are analyzed in parallel with results merged
+deterministically.
+
+\textbf{LPT scheduling.}  Real-world C codebases exhibit highly skewed
+file-size distributions: curl's largest file (169\,KB) is 44$\times$
+the median, and sqlite's amalgamation file (630\,KB) is 37$\times$ the
+median.  Na\"ive parallel dispatch can leave threads idle while a
+straggler processes a large file.  SqC applies Graham's
+Longest-Processing-Time-first (LPT) heuristic~\cite{graham-lpt}: files
+are sorted by size in descending order and dispatched via demand-driven
+scheduling, where each thread pulls the next unprocessed file upon
+becoming idle.  This achieves a $(4/3 - 1/3m)$-approximation to the
+optimal makespan, where $m$ is the thread count.
+
+\Cref{tab:parallel} shows the impact on a 24-core server.  LPT
+scheduling reduces worst-case latency by 6--9\% and, critically,
+reduces run-to-run variance by 52--99\%, making analysis times
+predictable for CI/CD integration.
 
 \begin{table}[t]
 \centering
 \footnotesize
-\begin{tabular}{@{}lrrr@{}}
+\begin{tabular}{@{}llrrrr@{}}
 \toprule
-\textbf{Mode} & \textbf{Wall (s)} & \textbf{LOC/s} & \textbf{Speedup} \\
+\textbf{Project} & \textbf{Mode} & \textbf{Avg (s)} & \textbf{Worst (s)} & \textbf{$\sigma$ (s)} & \textbf{CPU eff.} \\
 \midrule
-Single-process     & 3{,}470 & 117 & 1.0$\times$ \\
-Parallel (cold)    & 1{,}899 & 213 & 1.8$\times$ \\
-Parallel (cached)  & 1{,}056 & 383 & 3.3$\times$ \\
+curl    & par\_iter (baseline) & 178.5 & 193.4 & 13.0 & --- \\
+curl    & LPT + par\_bridge   & 176.4 & 176.5 &  0.1 & --- \\
+\addlinespace
+sqlite  & par\_iter (baseline) & 1{,}197 & 1{,}280 & 71.8 & 83\% \\
+sqlite  & LPT + par\_bridge   & 1{,}169 & 1{,}204 & 34.3 & 96\% \\
 \bottomrule
 \end{tabular}
-\caption{Parallel scan speedup on M1 for sqlite.  ``Cold'' includes
-prescan generation; ``cached'' loads a pre-built 3.1\,MB prescan
-cache, eliminating 14 minutes of cross-file analysis setup.}
+\caption{LPT scheduling impact at $-j\,4$ (3 runs each, cross-file
+analysis enabled).  CPU efficiency is CPU time divided by wall time
+divided by thread count; 100\% means zero idle time.  LPT's primary
+benefit is variance reduction and worst-case improvement, not average
+speedup.}
 \label{tab:parallel}
 \end{table}
 
 The Juliet benchmark (70 CWEs, fast mode) completes in approximately
-30 minutes on M1 using per-CWE parallelism.
+15 minutes on the 24-core server using per-CWE parallelism.
 
 %% ============================================================
 \section{Iterative False Positive Reduction}
@@ -1025,7 +1045,7 @@ variants are currently detected.
 
 \bibliographystyle{plainnat}
 
-\begin{thebibliography}{11}
+\begin{thebibliography}{12}
 
 \bibitem{cert-c}
 Software Engineering Institute.
@@ -1087,6 +1107,11 @@ C.~Kaner.
 B.~Marick.
 \newblock How to misuse code coverage.
 \newblock In \emph{Intl.\ Conf.\ on Testing Computer Software}, 1999.
+
+\bibitem{graham-lpt}
+R.~L. Graham.
+\newblock Bounds on multiprocessing timing anomalies.
+\newblock \emph{SIAM Journal on Applied Mathematics}, 17(2):416--429, 1969.
 
 \end{thebibliography}
 
