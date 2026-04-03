@@ -2287,6 +2287,48 @@ impl Arr30C {
         pointers
     }
 
+    /// Pre-scan a function body to find all buffer declarations and malloc assignments,
+    /// including those in nested scopes (if-blocks, loops, compound statements).
+    /// This ensures that `data = (char *)malloc(50)` inside `if(1) { ... }` is visible
+    /// to memcpy checks in sibling scopes.
+    fn prescan_function_buffers(
+        &self,
+        node: &Node,
+        source: &str,
+        buffers: &mut HashMap<String, BufferInfo>,
+    ) {
+        // Check declarations (char buf[100], char *p = malloc(n))
+        if node.kind() == "declaration" {
+            if let Some(new_buffer) = self.extract_buffer_from_declaration(node, source) {
+                buffers.insert(new_buffer.name.clone(), new_buffer);
+            }
+        }
+
+        // Check assignment expressions (data = (char *)malloc(50))
+        let assign_node = if node.kind() == "assignment_expression" {
+            Some(*node)
+        } else if node.kind() == "expression_statement" {
+            node.child(0)
+                .filter(|c| c.kind() == "assignment_expression")
+        } else {
+            None
+        };
+
+        if let Some(assign) = assign_node {
+            if let Some((buf_name, buf_info)) = self.extract_buffer_from_assignment(&assign, source)
+            {
+                buffers.insert(buf_name, buf_info);
+            }
+        }
+
+        // Recurse into all children
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.prescan_function_buffers(&child, source, buffers);
+            }
+        }
+    }
+
     /// Check for malloc/calloc/realloc calls without proper NULL checks before pointer arithmetic
     /// Detects patterns where malloc() result is used in pointer arithmetic without NULL validation
     fn check_malloc_null_pointer_arithmetic(
@@ -2875,6 +2917,12 @@ impl Arr30C {
                 ));
             }
             "function_definition" => {
+                // Pre-scan entire function body for buffer declarations and malloc
+                // assignments. This ensures buffers allocated in nested scopes (if-blocks,
+                // loops) are visible to sibling scopes for overflow checks.
+                if let Some(body) = node.child_by_field_name("body") {
+                    self.prescan_function_buffers(&body, source, &mut local_buffers);
+                }
                 // Check for malloc/calloc/realloc without proper NULL checks
                 violations.extend(self.check_malloc_null_pointer_arithmetic(node, source));
                 // Check for insufficient malloc of flexible array structs
