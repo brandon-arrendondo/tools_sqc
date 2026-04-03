@@ -1,10 +1,13 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-03 (v0.3.70)
+Last Updated: 2026-04-03 (v0.3.71)
 
 Juliet benchmark v0.3.70: 26,873 TP / 23,392 FP (53.4% TP rate), 44.5% per-file.
 v0.3.70 vs v0.3.69: +961 TP, +985 FP. CWE-134 per-file 17.9%→37.0%.
 CWE-122 per-file 17.1%→18.5%. CWE-789 FP regression (+530).
+v0.3.71: fix CWE-789 FP regression — ARR30-C calculate_malloc_size
+returned 1 for variable*sizeof(char) instead of Dynamic. Blanket
+strcpy/strcat/sprintf warnings now skip Dynamic-sized buffers.
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
