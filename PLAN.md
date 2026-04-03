@@ -1,11 +1,11 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-03 (v0.3.72)
+Last Updated: 2026-04-03 (v0.3.73)
 
-Juliet benchmark v0.3.72: 27,080 TP / 22,770 FP (54.3% TP rate), 44.8% per-file.
-v0.3.72 vs v0.3.69: +1,168 TP, +363 FP (+0.7pp TP rate, +1.9pp per-file).
-CWE-134 per-file 17.9%→37.0%. CWE-122 per-file 17.1%→26.4%.
-Zero regressions on all other 71 CWEs.
+Juliet benchmark v0.3.73: 27,490 TP / 23,015 FP (54.4% TP rate), 45.4% per-file.
+v0.3.73 vs v0.3.72: +410 TP, +245 FP (+0.1pp TP rate, +0.6pp per-file).
+CWE-122 per-file 26.4%→32.3% (target 30% met). CWE-121 bonus +116 TP.
+All 10 top CWEs now above 30% per-file threshold.
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -74,18 +74,17 @@ CWE-690 reached 58.9% per-file, making a separate Phase 4 unnecessary.
 
 # Task ID: 34
 # Title: Per-file detection >= 30% on top 10 CWEs
-# Status: pending
+# Status: done (v0.3.73)
 # Dependencies: none
 # Priority: P2
 # Description: Tier 3 competitive milestone — per-file detection rate.
 # Details:
 Per-file detection measures whether at least one TP is found per Juliet test
-file. As of v0.3.72, 9/10 top CWEs (by file count) meet the 30% threshold:
+file. As of v0.3.73, all 10/10 top CWEs (by file count) meet the 30% threshold:
 
-  Pass (9): CWE-121 41.4%, CWE-78 30.2%, CWE-190 43.3%, CWE-191 47.7%,
-            CWE-124 34.8%, CWE-195 67.9%, CWE-194 62.5%,
-            CWE-127 36.8%, CWE-134 37.0% (was 17.9%, fixed in v0.3.70).
-  Fail (1): CWE-122 26.4% (heap overflow, was 17.1%).
+  Pass (10): CWE-121 41.4%, CWE-78 30.2%, CWE-190 43.3%, CWE-191 47.7%,
+             CWE-124 34.8%, CWE-195 67.9%, CWE-194 62.5%,
+             CWE-127 36.8%, CWE-134 37.0%, CWE-122 32.3%.
 
 v0.3.70: FIO30-C wide-char format string support (wprintf/fwprintf/swprintf
 families, fgetws/wscanf taint sources, wcscpy/wcscat propagation). Cross-
@@ -96,12 +95,14 @@ v0.3.71: fix CWE-789 FP regression from v0.3.70 malloc tracking.
 v0.3.72: ARR30-C per-function buffer prescan for nested scope visibility.
 Malloc assignments inside if-blocks/compound statements now visible to
 sibling scopes. CWE805 variants 02-18 all detected.
-Cumulative: CWE-134 +642 TP/+375 FP. CWE-122 +526 TP/+40 FP.
+v0.3.73: ARR30-C byte-level memcpy comparison. CWE-193 off-by-one via
+strlen/wcslen resolution. CWE-131 malloc(N) vs N*sizeof(T) mismatch.
+strncpy/wcsncpy overflow detection. Simple arithmetic in array sizes (N+M).
+CWE-122 +294 TP/+139 FP (1.7:1 ratio). CWE-121 bonus +116 TP/+106 FP.
+Cumulative: CWE-134 +642 TP/+375 FP. CWE-122 +820 TP/+179 FP.
 
-CWE-122 needs ~130 more files to reach 30%. Remaining undetected patterns:
-  - CWE193 off-by-one: memcpy count is (strlen(source)+1)*sizeof(char)
-  - CWE131: incorrect buffer size calculation
-  - CWE805/CWE806 loop variants: overflow via loop iteration
+Remaining undetected CWE-122 patterns (not needed for 30% target):
+  - CWE193/CWE131 loop variants: overflow via loop iteration
   - CWE805 cross-function variants 41-68: malloc in different function
 
 ---
