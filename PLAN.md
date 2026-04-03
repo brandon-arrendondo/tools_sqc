@@ -1,13 +1,11 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-03 (v0.3.71)
+Last Updated: 2026-04-03 (v0.3.72)
 
-Juliet benchmark v0.3.70: 26,873 TP / 23,392 FP (53.4% TP rate), 44.5% per-file.
-v0.3.70 vs v0.3.69: +961 TP, +985 FP. CWE-134 per-file 17.9%→37.0%.
-CWE-122 per-file 17.1%→18.5%. CWE-789 FP regression (+530).
-v0.3.71: fix CWE-789 FP regression — ARR30-C calculate_malloc_size
-returned 1 for variable*sizeof(char) instead of Dynamic. Blanket
-strcpy/strcat/sprintf warnings now skip Dynamic-sized buffers.
+Juliet benchmark v0.3.72: 27,080 TP / 22,770 FP (54.3% TP rate), 44.8% per-file.
+v0.3.72 vs v0.3.69: +1,168 TP, +363 FP (+0.7pp TP rate, +1.9pp per-file).
+CWE-134 per-file 17.9%→37.0%. CWE-122 per-file 17.1%→26.4%.
+Zero regressions on all other 71 CWEs.
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -82,24 +80,29 @@ CWE-690 reached 58.9% per-file, making a separate Phase 4 unnecessary.
 # Description: Tier 3 competitive milestone — per-file detection rate.
 # Details:
 Per-file detection measures whether at least one TP is found per Juliet test
-file. As of v0.3.70, 9/10 top CWEs (by file count) meet the 30% threshold:
+file. As of v0.3.72, 9/10 top CWEs (by file count) meet the 30% threshold:
 
   Pass (9): CWE-121 41.4%, CWE-78 30.2%, CWE-190 43.3%, CWE-191 47.7%,
             CWE-124 34.8%, CWE-195 67.9%, CWE-194 62.5%,
             CWE-127 36.8%, CWE-134 37.0% (was 17.9%, fixed in v0.3.70).
-  Fail (1): CWE-122 18.5% (heap overflow, was 17.1%).
+  Fail (1): CWE-122 26.4% (heap overflow, was 17.1%).
 
 v0.3.70: FIO30-C wide-char format string support (wprintf/fwprintf/swprintf
 families, fgetws/wscanf taint sources, wcscpy/wcscat propagation). Cross-
 function taint: taint_source_functions pre-scan for return-value taint (v42),
 tainted_globals for static variable flow (v45). ARR30-C: cast_expression
 unwrapping for malloc assignments, N*sizeof(T) memcpy count evaluation.
-CWE-134: +642 TP, +375 FP. CWE-122: +124 TP, +80 FP.
+v0.3.71: fix CWE-789 FP regression from v0.3.70 malloc tracking.
+v0.3.72: ARR30-C per-function buffer prescan for nested scope visibility.
+Malloc assignments inside if-blocks/compound statements now visible to
+sibling scopes. CWE805 variants 02-18 all detected.
+Cumulative: CWE-134 +642 TP/+375 FP. CWE-122 +526 TP/+40 FP.
 
-CWE-122 still needs ~400 additional files to reach 30%. Most undetected
-patterns are CWE805 cross-function variants (41-68) where malloc allocation
-is in a different function, and CWE193/CWE131 off-by-one patterns where
-the copy count is dynamic (strlen(source)+1).
+CWE-122 needs ~130 more files to reach 30%. Remaining undetected patterns:
+  - CWE193 off-by-one: memcpy count is (strlen(source)+1)*sizeof(char)
+  - CWE131: incorrect buffer size calculation
+  - CWE805/CWE806 loop variants: overflow via loop iteration
+  - CWE805 cross-function variants 41-68: malloc in different function
 
 ---
 
