@@ -1,11 +1,26 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-03 (v0.3.74)
+Last Updated: 2026-04-04 (v0.3.75)
 
 Juliet benchmark v0.3.74: 27,882 TP / 23,003 FP (54.8% TP rate), 45.7% per-file.
-v0.3.74 vs v0.3.73: +392 TP, -12 FP (+0.4pp TP rate, +0.3pp per-file).
-CWE-190 45.1%→47.4% (+216 TP), CWE-191 44.0%→45.5% (+118 TP), CWE-680 +58 TP.
-Zero regressions. INT32-C: +360 TP / -12 FP (30:1 ratio).
+
+## Competitor Benchmark Summary (v0.3.75)
+
+5-tool comparison on 15 overlapping Juliet CWEs (28,488 files):
+
+  clang-tidy: 13,952 TP /    116 FP (91.6%) — highest precision
+  Frama-C:     8,609 TP /  5,510 FP (61.0%)
+  SqC:        27,882 TP / 23,003 FP (54.8%) — broadest coverage (118 CWEs)
+  Infer:       4,971 TP /  6,428 FP (43.6%)
+  cppcheck:   29,377 TP / 51,361 FP (36.4%) — highest recall
+
+SqC wins outright on CWE-690 (94.6%) and CWE-761 (100%).
+Biggest gaps vs best competitor (clang-tidy unless noted):
+  CWE-369: 36.9% vs 94.7% (−57.8pp) — INT33-C/FLP03-C FP reduction
+  CWE-190: 47.4% vs 94.3% (−46.9pp) — INT32-C/INT30-C FP reduction
+  CWE-191: 45.5% vs 94.4% (−48.9pp) — INT32-C/INT30-C FP reduction
+  CWE-476: 50.8% vs 94.3% (−43.5pp) — EXP34-C FP reduction
+  CWE-121: 48.8% vs 86.6% (−37.8pp) — STR31-C/ARR38-C FP reduction
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -132,6 +147,168 @@ non-initialization functions. Init heuristic (case-insensitive): exact names
 *_create, *_new, *_alloc), prefixes (init_*, setup_*, create_*, new_*, alloc_*).
 Test cases: fail/runtime_alloc.c (5 violations), pass/init_alloc.c (9 init
 functions, 0 violations).
+
+---
+
+# Competitor Parity Tasks (derived from 5-tool benchmark, 2026-04-04)
+#
+# Ranked by impact: gap_pp × FP_volume. Each task targets the rules
+# responsible for the largest TP rate gap between SqC and the best
+# competitor on that CWE. "FP target" = FPs allowed to match best rate.
+#
+# These are FP reduction tasks — no new rules needed, just tighter
+# guards on existing checks.
+
+# Task ID: 54
+# Title: INT32-C/INT30-C FP reduction for CWE-190/191
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Reduce INT32-C/INT30-C FPs on CWE-190/191.
+#   CWE-190: 47.4% vs clang-tidy 94.3% (−46.9pp, 2820 FP → target 153)
+#   CWE-191: 45.5% vs clang-tidy 94.4% (−48.9pp, 2508 FP → target 124)
+#   Combined impact: ~2,549 FP savings needed.
+# Details:
+INT32-C has 2095 TP / 2337 FP on CWE-190 and 1749 TP / 2040 FP on CWE-191.
+INT30-C has 443 TP / 483 FP on CWE-190 and 342 TP / 468 FP on CWE-191.
+
+  Analysis needed:
+  - Sample FPs from CWE-190/191 to identify dominant patterns
+  - clang-tidy achieves 94%+ with zero FP — what patterns does it skip?
+  - Likely: guarded arithmetic (existing bounds-check detection needs expansion),
+    constant expressions not resolved by VRA, Juliet's cross-function variants
+
+  Approaches:
+  - Expand bounds-check detection (is_inside_bounds_checked_block) to cover
+    more guard patterns (switch-case, ternary, function-call guards)
+  - VRA improvements: better constant propagation through assignments
+  - const_eval: resolve more sizeof/limit-macro combinations
+  - Cross-function guard recognition: caller checks bound before calling
+
+---
+
+# Task ID: 55
+# Title: INT33-C/FLP03-C FP reduction for CWE-369
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Reduce INT33-C/FLP03-C FPs on CWE-369 (divide by zero).
+#   CWE-369: 36.9% vs clang-tidy 94.7% (−57.8pp, 1488 FP → target 48)
+#   Impact: ~1,440 FP savings needed. Largest per-CWE gap.
+# Details:
+INT33-C has 644 TP / 1176 FP. FLP03-C has 228 TP / 312 FP.
+
+  Analysis needed:
+  - INT33-C likely flags division where denominator is guarded by != 0 check
+    in a different scope or branch that SqC can't see
+  - FLP03-C may flag float division that is inherently safe (denominator from
+    known-positive function return)
+
+  Approaches:
+  - Add zero-guard detection to INT33-C (similar to bounds-check detection
+    for INT32-C): walk AST ancestors for if(x != 0) / if(x > 0) guards
+  - Improve VRA to track non-zero constraints from branch conditions
+  - Suppress division where denominator provably non-zero from const_eval
+
+---
+
+# Task ID: 56
+# Title: STR31-C/ARR38-C FP reduction for CWE-121/124/127
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Reduce buffer overflow FPs on CWE-121/124/127.
+#   CWE-121: 48.8% vs clang-tidy 86.6% (−37.8pp, 2954 FP → target 436)
+#   CWE-124: 52.1% vs clang-tidy 90.4% (−38.3pp, 606 FP → target 70)
+#   CWE-127: 55.6% vs clang-tidy 93.2% (−37.6pp, 652 FP → target 59)
+#   Combined impact: ~3,647 FP savings needed.
+# Details:
+CWE-121: ARR38-C 1564 TP/1424 FP, STR31-C 743 TP/1082 FP, ARR30-C 514 TP/448 FP.
+CWE-124: ARR38-C 414 TP/248 FP, STR31-C 212 TP/294 FP.
+CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
+
+  Analysis needed:
+  - ARR38-C: investigate why 50% FP rate — likely flagging safe memcpy/memmove
+    where size is bounded but SqC can't prove it
+  - STR31-C: 59% FP on CWE-121 — string copy to adequately-sized buffer not
+    recognized
+
+  Approaches:
+  - Buffer size resolution: better sizeof/allocation tracking across scopes
+  - STR31-C: recognize strncpy with n <= sizeof(dest) as safe
+  - ARR38-C: VRA-assisted bounds proof for memcpy size arguments
+  - Cross-function buffer size propagation via prescan
+
+---
+
+# Task ID: 57
+# Title: EXP34-C FP reduction for CWE-476
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Reduce EXP34-C FPs on CWE-476 (null pointer dereference).
+#   CWE-476: 50.8% vs clang-tidy 94.3% (−43.5pp, 367 FP → target 22)
+#   Impact: ~345 FP savings needed.
+# Details:
+EXP34-C has 289 TP / 233 FP. API00-C has 90 TP / 134 FP.
+
+  The gap is large in percentage but moderate in absolute FPs (367 total).
+  clang-tidy uses Clang's full path-sensitive analysis to eliminate FPs that
+  SqC's CFG-based null state cannot. Most FPs likely come from:
+  - Infeasible paths that SqC can't prune (path sensitivity limitation)
+  - API00-C flagging callers that don't check return but the callee never
+    actually returns null
+
+  Approaches:
+  - Improve null-state dataflow precision at branch merge points
+  - API00-C: refine can_return_null to eliminate functions that always succeed
+  - Reduce API00-C scope to only functions with documented null-return semantics
+
+---
+
+# Task ID: 58
+# Title: MEM01-C/MEM30-C FP reduction for CWE-415/416
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Reduce memory management FPs on CWE-415/416.
+#   CWE-415: 43.4% vs clang-tidy 80.0% (−36.6pp, 720 FP → target 138)
+#   CWE-416: 43.9% vs clang-tidy 60.3% (−16.4pp, 192 FP → target 98)
+#   Combined impact: ~676 FP savings needed.
+# Details:
+CWE-415: MEM01-C 438 TP/606 FP, MEM30-C 60 TP/60 FP.
+CWE-416: MEM01-C 132 TP/192 FP, MEM30-C 18 TP/0 FP.
+
+  MEM01-C is the main FP source. It flags patterns where free() is called
+  in good-path code that SqC can't distinguish from double-free.
+
+  Approaches:
+  - Track free'd state through CFG (similar to null-state dataflow)
+  - Recognize free-in-error-path vs free-in-normal-path patterns
+  - Relates to deferred tasks 8 (MEM30-C field tracking) and 9 (ownership)
+
+---
+
+# Task ID: 59
+# Title: MEM31-C FP reduction for CWE-401
+# Status: pending
+# Dependencies: 9
+# Priority: P3
+# Description: Reduce MEM31-C FPs on CWE-401 (memory leak).
+#   CWE-401: 50.7% vs clang-tidy 83.9% (−33.2pp, 763 FP → target 150)
+#   Impact: ~613 FP savings needed.
+# Details:
+MEM31-C has 786 TP / 763 FP. Nearly 1:1 TP:FP ratio.
+
+  FPs likely from cross-function ownership transfer: malloc in one function,
+  pointer stored in struct or passed to another function that frees it.
+  This is the same ownership tracking problem as task 9.
+
+  Approaches:
+  - Prescan-based ownership: if a function receives a pointer and calls free(),
+    suppress MEM31-C at the allocation site
+  - Return-value tracking: if malloc result is returned, suppress leak warning
+  - Partial overlap with task 9 (MEM31-C ownership model)
 
 ---
 
