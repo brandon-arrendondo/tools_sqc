@@ -214,7 +214,7 @@ INT33-C has 644 TP / 1176 FP. FLP03-C has 228 TP / 312 FP.
 
 # Task ID: 56
 # Title: STR31-C/ARR38-C FP reduction for CWE-121/124/127
-# Status: pending
+# Status: in-progress
 # Dependencies: none
 # Priority: P2
 # Description: Reduce buffer overflow FPs on CWE-121/124/127.
@@ -227,17 +227,32 @@ CWE-121: ARR38-C 1564 TP/1424 FP, STR31-C 743 TP/1082 FP, ARR30-C 514 TP/448 FP.
 CWE-124: ARR38-C 414 TP/248 FP, STR31-C 212 TP/294 FP.
 CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
 
-  Analysis needed:
-  - ARR38-C: investigate why 50% FP rate — likely flagging safe memcpy/memmove
-    where size is bounded but SqC can't prove it
-  - STR31-C: 59% FP on CWE-121 — string copy to adequately-sized buffer not
-    recognized
+  Dominant FP patterns identified (v0.3.74 analysis):
 
-  Approaches:
-  - Buffer size resolution: better sizeof/allocation tracking across scopes
-  - STR31-C: recognize strncpy with n <= sizeof(dest) as safe
-  - ARR38-C: VRA-assisted bounds proof for memcpy size arguments
-  - Cross-function buffer size propagation via prescan
+  Fix 1 — STR31-C pointer alias + ALLOCA resolution (~537 FPs):
+    find_buffer_size() doesn't follow `data = dataBuffer` aliases or recognize
+    ALLOCA(N*sizeof(T)). CWE-124/127 good functions use this pattern extensively.
+    Also extend ALLOCA(strlen(x)+1) recognition (currently only malloc handled).
+    TP-safe: bad functions use `data = buffer - 8` (pointer arithmetic ≠ simple alias).
+
+  Fix 2 — ARR38-C strlen-bounded memcpy suppression (~250 FPs):
+    `memcpy(dest, src, strlen(src)*sizeof(char))` flagged as "potentially invalid
+    size calculation" because is_dangerous_size_calculation() matches sizeof*mult
+    heuristic. Exempt strlen(x)*sizeof(T) pattern.
+
+  Fix 3 — STR31-C strlen-bounded memcpy handling (~150 FPs):
+    is_string_memcpy() flags `strlen(data)*sizeof(char)` as missing +1 for null
+    terminator. Add: if dest has known size and content fits, suppress. Or detect
+    manual null-termination (`dest[N-1] = '\0'`) on following line.
+
+  Fix 4 — Content-size from memset for strcpy (~160 FPs):
+    `memset(data, 'A', 49); data[49]='\0'; strcpy(dest, data)` where dest[50] —
+    safe but SqC can't resolve strlen(data)=49 from memset. Track memset-based
+    content size within function scope.
+
+  Fix 5 — ARR38-C alias propagation in declarations (~200 FPs):
+    collect_pointer_aliases() handles expression_statement but may miss
+    declaration-time assignments. Verify and fix coverage.
 
 ---
 
