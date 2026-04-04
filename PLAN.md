@@ -1,8 +1,8 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-04 (v0.3.75)
+Last Updated: 2026-04-04 (v0.3.77)
 
-Juliet benchmark v0.3.74: 27,882 TP / 23,003 FP (54.8% TP rate), 45.7% per-file.
+Juliet benchmark v0.3.77: 27,146 TP / 21,719 FP (55.6% TP rate), 44.6% per-file.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -229,16 +229,23 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
 
   Dominant FP patterns identified (v0.3.74 analysis):
 
-  Fix 1 — STR31-C pointer alias + ALLOCA resolution (~537 FPs):
-    find_buffer_size() doesn't follow `data = dataBuffer` aliases or recognize
-    ALLOCA(N*sizeof(T)). CWE-124/127 good functions use this pattern extensively.
-    Also extend ALLOCA(strlen(x)+1) recognition (currently only malloc handled).
-    TP-safe: bad functions use `data = buffer - 8` (pointer arithmetic ≠ simple alias).
+  Fix 1 — STR31-C pointer alias + ALLOCA resolution (v0.3.76, done):
+    find_buffer_size() now follows `data = dataBuffer` aliases (function-scoped,
+    excludes pointer arithmetic like `data = buf - 8`). Recognizes ALLOCA(N*sizeof(T))
+    and ALLOCA(N). Array size arithmetic (N*M, N+M, N-M) also supported.
+    Results: CWE-127 55.6%→64.4% (+8.8pp), CWE-124 52.1%→55.0% (+2.9pp).
+    -272 FP, -8 TP (34:1 ratio). Zero regressions.
 
-  Fix 2 — ARR38-C strlen-bounded memcpy suppression (~250 FPs):
-    `memcpy(dest, src, strlen(src)*sizeof(char))` flagged as "potentially invalid
-    size calculation" because is_dangerous_size_calculation() matches sizeof*mult
-    heuristic. Exempt strlen(x)*sizeof(T) pattern.
+  Fix 2 — ARR38-C strlen-bounded memcpy suppression (v0.3.77, done):
+    is_dangerous_size_calculation() exempts strlen(x)*sizeof(T) — legitimate byte
+    count, not sizeof double-scaling. Broader than expected: also hit CWE-126.
+    Results: CWE-121 48.8%→49.9% (+1.1pp), CWE-126 43.3%→44.8% (+1.5pp).
+    -1012 FP, -728 TP (1.4:1 ratio). Per-file 45.7%→44.6% (-1.1pp).
+    Tradeoff: heuristic was only detection for some bad-function files.
+
+  Cumulative v0.3.74→v0.3.77: -1284 FP, -736 TP. TP rate 54.8%→55.6% (+0.8pp).
+
+  Remaining (not yet implemented):
 
   Fix 3 — STR31-C strlen-bounded memcpy handling (~150 FPs):
     is_string_memcpy() flags `strlen(data)*sizeof(char)` as missing +1 for null
