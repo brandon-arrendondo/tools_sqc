@@ -1045,13 +1045,39 @@ impl Str31C {
         }
 
         // Check if size argument is a strlen() call without + 1 — definite bug
+        // But suppress if the destination is manually null-terminated on a following line
         if arguments.child_count() > 0 {
             let args_text = &source[arguments.start_byte()..arguments.end_byte()];
             if args_text.contains("strlen")
                 && !args_text.contains("+ 1")
                 && !args_text.contains("+1")
             {
-                return true;
+                // Check for manual null-termination: dest[...] = '\0' on subsequent lines
+                if let Some(dest) = dest_name {
+                    let call_line = arguments.start_position().row;
+                    let lines: Vec<&str> = source.lines().collect();
+                    let mut has_null_term = false;
+                    for offset in 1..=3 {
+                        let idx = call_line + offset;
+                        if idx < lines.len() {
+                            let line = lines[idx].trim();
+                            if line.contains(dest)
+                                && line.contains('[')
+                                && line.contains(']')
+                                && line.contains('=')
+                                && (line.contains("'\\0'") || line.contains("= 0;"))
+                            {
+                                has_null_term = true;
+                                break;
+                            }
+                        }
+                    }
+                    if !has_null_term {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
             }
         }
 
