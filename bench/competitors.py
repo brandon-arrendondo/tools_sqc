@@ -1,9 +1,11 @@
-"""Run Infer and Frama-C on Juliet test cases and classify TP/FP.
+"""Run competitor tools on Juliet test cases and classify TP/FP.
 
 Usage:
   python -m bench.competitors infer [--cwes CWE-476,CWE-690] [--jobs 8]
   python -m bench.competitors framac [--cwes CWE-190,CWE-476] [--jobs 8]
-  python -m bench.competitors both [--jobs 8]
+  python -m bench.competitors cppcheck [--cwes CWE-476,...] [--jobs 8]
+  python -m bench.competitors clangtidy [--cwes CWE-476,...] [--jobs 8]
+  python -m bench.competitors all [--jobs 8]
   python -m bench.competitors compare <results1.json> <results2.json>
 
 Results are written to data/competitor_results/<tool>_<timestamp>.json
@@ -18,6 +20,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import xml.etree.ElementTree as ET
 from collections import defaultdict
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass, field
@@ -38,6 +41,12 @@ INFER_CWES = [
 FRAMAC_CWES = [
     "CWE190", "CWE191", "CWE476", "CWE369", "CWE197", "CWE680",
 ]
+
+# Union of all CWEs tested by any tool
+ALL_CWES = sorted(set(INFER_CWES) | set(FRAMAC_CWES))
+
+CPPCHECK_CWES = ALL_CWES
+CLANGTIDY_CWES = ALL_CWES
 
 # Infer bug_type -> CWE mapping (for CWE-matched TP classification)
 INFER_BUG_CWE = {
@@ -394,6 +403,183 @@ def _run_framac_cwe(cwe_id: str, cwe_dir: Path) -> dict:
     }
 
 
+# ── cppcheck runner ──────────────────────────────────────────────────────────
+
+def _run_cppcheck_cwe(cwe_id: str, cwe_dir: Path) -> dict:
+    """Run cppcheck on all .c files in a CWE directory.
+
+    Uses --xml for structured output, classifies by line number.
+    """
+    c_files = _collect_c_files(cwe_dir)
+    if not c_files:
+        return {"cwe_id": cwe_id, "tp": 0, "fp": 0, "unknown": 0,
+                "findings": [], "duration_s": 0, "files": 0, "errors": []}
+
+    start = time.monotonic()
+    tp = fp = unknown = 0
+    findings = []
+    errors = []
+    sections_cache = {}
+
+    for filepath in c_files:
+        try:
+            proc = subprocess.run(
+                ["cppcheck", "--enable=all", "--std=c11",
+                 "--xml", "--xml-version=2",
+                 "--suppress=missingIncludeSystem",
+                 f"-I{JULIET_SUPPORT}",
+                 str(filepath)],
+                capture_output=True, text=True, timeout=60,
+            )
+        except subprocess.TimeoutExpired:
+            errors.append(f"timeout: {filepath.name}")
+            continue
+        except Exception as e:
+            errors.append(f"error {filepath.name}: {e}")
+            continue
+
+        # Parse XML from stderr
+        xml_output = proc.stderr
+        if not xml_output.strip() or '<results' not in xml_output:
+            continue
+
+        try:
+            root = ET.fromstring(xml_output)
+        except ET.ParseError:
+            continue
+
+        for error_elem in root.findall('.//error'):
+            error_id = error_elem.get('id', '')
+            severity = error_elem.get('severity', '')
+            # Skip style/information findings that aren't real bugs
+            if severity in ('information',):
+                continue
+
+            loc = error_elem.find('location')
+            if loc is None:
+                continue
+            line = int(loc.get('line', 0))
+            loc_file = loc.get('file', '')
+
+            # Only count findings in our target file
+            if filepath.name not in loc_file:
+                continue
+
+            # Classify by line
+            fpath_str = str(filepath)
+            if fpath_str not in sections_cache:
+                sections_cache[fpath_str] = parse_c_file_sections(filepath)
+            classification = _classify_by_line(line, sections_cache[fpath_str])
+
+            if classification == 'tp':
+                tp += 1
+            elif classification == 'fp':
+                fp += 1
+            else:
+                unknown += 1
+
+            findings.append({
+                "file": filepath.name,
+                "line": line,
+                "check_id": error_id,
+                "severity": severity,
+                "classification": classification,
+            })
+
+    duration_s = round(time.monotonic() - start, 1)
+    return {
+        "cwe_id": cwe_id,
+        "cwe_dir": cwe_dir.name,
+        "tp": tp, "fp": fp, "unknown": unknown,
+        "findings": findings,
+        "duration_s": duration_s,
+        "files": len(c_files),
+        "errors": errors,
+    }
+
+
+# ── clang-tidy runner ────────────────────────────────────────────────────────
+
+_CLANGTIDY_WARN_RE = re.compile(
+    r'^(.+?):(\d+):\d+:\s+warning:\s+(.+?)\s+\[([^\]]+)\]',
+)
+
+
+def _run_clangtidy_cwe(cwe_id: str, cwe_dir: Path) -> dict:
+    """Run clang-tidy on all .c files in a CWE directory.
+
+    Uses cert-* and clang-analyzer-* checks.
+    """
+    c_files = _collect_c_files(cwe_dir)
+    if not c_files:
+        return {"cwe_id": cwe_id, "tp": 0, "fp": 0, "unknown": 0,
+                "findings": [], "duration_s": 0, "files": 0, "errors": []}
+
+    start = time.monotonic()
+    tp = fp = unknown = 0
+    findings = []
+    errors = []
+    sections_cache = {}
+
+    for filepath in c_files:
+        try:
+            proc = subprocess.run(
+                ["clang-tidy",
+                 "-checks=-*,cert-*,clang-analyzer-*",
+                 str(filepath),
+                 "--", "-std=c11",
+                 f"-I{JULIET_SUPPORT}"],
+                capture_output=True, text=True, timeout=60,
+            )
+        except subprocess.TimeoutExpired:
+            errors.append(f"timeout: {filepath.name}")
+            continue
+        except Exception as e:
+            errors.append(f"error {filepath.name}: {e}")
+            continue
+
+        output = proc.stdout + proc.stderr
+
+        for m in _CLANGTIDY_WARN_RE.finditer(output):
+            warn_file = m.group(1)
+            line = int(m.group(2))
+            check_id = m.group(4)
+
+            # Only count findings in our target file
+            if filepath.name not in warn_file:
+                continue
+
+            fpath_str = str(filepath)
+            if fpath_str not in sections_cache:
+                sections_cache[fpath_str] = parse_c_file_sections(filepath)
+            classification = _classify_by_line(line, sections_cache[fpath_str])
+
+            if classification == 'tp':
+                tp += 1
+            elif classification == 'fp':
+                fp += 1
+            else:
+                unknown += 1
+
+            findings.append({
+                "file": filepath.name,
+                "line": line,
+                "check_id": check_id,
+                "classification": classification,
+            })
+
+    duration_s = round(time.monotonic() - start, 1)
+    return {
+        "cwe_id": cwe_id,
+        "cwe_dir": cwe_dir.name,
+        "tp": tp, "fp": fp, "unknown": unknown,
+        "findings": findings,
+        "duration_s": duration_s,
+        "files": len(c_files),
+        "errors": errors,
+    }
+
+
 # ── Parallel orchestration ───────────────────────────────────────────────────
 
 def run_tool(tool: str, cwe_list: list[str] | None = None,
@@ -401,12 +587,16 @@ def run_tool(tool: str, cwe_list: list[str] | None = None,
     """Run a competitor tool on specified CWEs.
 
     Args:
-        tool: 'infer' or 'framac'
+        tool: 'infer', 'framac', 'cppcheck', or 'clangtidy'
         cwe_list: list of CWE IDs (e.g. ['CWE476']). None = use defaults.
         jobs: parallel workers (for Infer capture; Frama-C is per-CWE serial)
     """
+    default_cwes = {
+        "infer": INFER_CWES, "framac": FRAMAC_CWES,
+        "cppcheck": CPPCHECK_CWES, "clangtidy": CLANGTIDY_CWES,
+    }
     if cwe_list is None:
-        cwe_list = INFER_CWES if tool == "infer" else FRAMAC_CWES
+        cwe_list = default_cwes.get(tool, ALL_CWES)
 
     print(f"{'='*70}")
     print(f"COMPETITOR BENCHMARK: {tool}")
@@ -433,8 +623,14 @@ def run_tool(tool: str, cwe_list: list[str] | None = None,
 
         if tool == "infer":
             cwe_result = _run_infer_cwe(cwe_id, cwe_dir, jobs=jobs)
-        else:
+        elif tool == "framac":
             cwe_result = _run_framac_cwe(cwe_id, cwe_dir)
+        elif tool == "cppcheck":
+            cwe_result = _run_cppcheck_cwe(cwe_id, cwe_dir)
+        elif tool == "clangtidy":
+            cwe_result = _run_clangtidy_cwe(cwe_id, cwe_dir)
+        else:
+            raise ValueError(f"Unknown tool: {tool}")
 
         total = cwe_result["tp"] + cwe_result["fp"] + cwe_result["unknown"]
         tp_rate = (cwe_result["tp"] / total * 100) if total else 0
@@ -498,13 +694,25 @@ def _get_tool_version(tool: str) -> str:
             r = subprocess.run(["infer", "--version"], capture_output=True,
                                text=True, timeout=5)
             return r.stdout.strip().split('\n')[0]
-        else:
+        elif tool == "framac":
             r = subprocess.run(
                 ["bash", "-c", "eval $(opam env) && frama-c -version"],
                 capture_output=True, text=True, timeout=10)
             return f"Frama-C {r.stdout.strip()}"
+        elif tool == "cppcheck":
+            r = subprocess.run(["cppcheck", "--version"], capture_output=True,
+                               text=True, timeout=5)
+            return r.stdout.strip()
+        elif tool == "clangtidy":
+            r = subprocess.run(["clang-tidy", "--version"], capture_output=True,
+                               text=True, timeout=5)
+            for line in r.stdout.splitlines():
+                if 'LLVM version' in line:
+                    return f"clang-tidy {line.strip()}"
+            return r.stdout.strip().split('\n')[0]
     except Exception:
-        return "unknown"
+        pass
+    return "unknown"
 
 
 # ── Comparison ───────────────────────────────────────────────────────────────
@@ -563,8 +771,16 @@ def main():
     p_framac.add_argument("--cwes", help="Comma-separated CWE IDs")
     p_framac.add_argument("--jobs", type=int, default=8)
 
-    p_both = sub.add_parser("both", help="Run both tools")
-    p_both.add_argument("--jobs", type=int, default=8)
+    p_cppcheck = sub.add_parser("cppcheck", help="Run cppcheck")
+    p_cppcheck.add_argument("--cwes", help="Comma-separated CWE IDs")
+    p_cppcheck.add_argument("--jobs", type=int, default=8)
+
+    p_clangtidy = sub.add_parser("clangtidy", help="Run clang-tidy")
+    p_clangtidy.add_argument("--cwes", help="Comma-separated CWE IDs")
+    p_clangtidy.add_argument("--jobs", type=int, default=8)
+
+    p_all = sub.add_parser("all", help="Run all four tools")
+    p_all.add_argument("--jobs", type=int, default=8)
 
     p_cmp = sub.add_parser("compare", help="Compare two result files")
     p_cmp.add_argument("file1")
@@ -572,13 +788,12 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command in ("infer", "framac"):
+    if args.command in ("infer", "framac", "cppcheck", "clangtidy"):
         cwes = args.cwes.split(",") if args.cwes else None
-        run_tool(args.command if args.command == "infer" else "framac",
-                 cwes, args.jobs)
-    elif args.command == "both":
-        run_tool("infer", jobs=args.jobs)
-        run_tool("framac", jobs=args.jobs)
+        run_tool(args.command, cwes, args.jobs)
+    elif args.command == "all":
+        for tool in ("cppcheck", "clangtidy", "infer", "framac"):
+            run_tool(tool, jobs=args.jobs)
     elif args.command == "compare":
         compare_results(args.file1, args.file2)
     else:
