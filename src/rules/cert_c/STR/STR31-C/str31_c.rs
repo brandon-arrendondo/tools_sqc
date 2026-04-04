@@ -136,15 +136,37 @@ impl Str31C {
 
         let lines: Vec<&str> = source.lines().collect();
 
-        // Look for array declarations like: char var_name[SIZE]
+        // Look for array declarations like: char var_name[SIZE] or char var_name[N*M]
         for line in &lines {
             if line.contains(var_name) && line.contains("[") && line.contains("]") {
-                // Use regex to extract array size
+                // Try simple numeric size first: var_name[N]
                 let pattern = format!(r"\b{}\s*\[\s*(\d+)\s*\]", regex::escape(var_name));
                 if let Ok(re) = regex::Regex::new(&pattern) {
                     if let Some(captures) = re.captures(line) {
                         if let Ok(size) = captures[1].parse::<usize>() {
                             return Some(size);
+                        }
+                    }
+                }
+                // Try arithmetic expression: var_name[N*M] or var_name[N+M] or var_name[N-M]
+                let arith_pattern = format!(
+                    r"\b{}\s*\[\s*(\d+)\s*([*+\-])\s*(\d+)\s*\]",
+                    regex::escape(var_name)
+                );
+                if let Ok(re) = regex::Regex::new(&arith_pattern) {
+                    if let Some(captures) = re.captures(line) {
+                        if let (Ok(a), Ok(b)) =
+                            (captures[1].parse::<usize>(), captures[3].parse::<usize>())
+                        {
+                            let size = match &captures[2] {
+                                "*" => a.checked_mul(b),
+                                "+" => a.checked_add(b),
+                                "-" => a.checked_sub(b),
+                                _ => None,
+                            };
+                            if let Some(s) = size {
+                                return Some(s);
+                            }
                         }
                     }
                 }
@@ -191,6 +213,41 @@ impl Str31C {
             }
         }
 
+        // Look for ALLOCA/alloca assignments: var = (type *)ALLOCA(N*sizeof(type))
+        if let Ok(assign_re) = regex::Regex::new(&format!(r"\b{}\s*=", regex::escape(var_name))) {
+            let alloca_sizeof_re =
+                regex::Regex::new(r"(?:ALLOCA|alloca)\s*\(\s*(\d+)\s*\*\s*sizeof\s*\(");
+            let alloca_simple_re = regex::Regex::new(r"(?:ALLOCA|alloca)\s*\(\s*(\d+)\s*\)");
+            for line in &lines {
+                // Use word-boundary regex to avoid "data" matching "dataBuffer"
+                if !assign_re.is_match(line)
+                    || !(line.contains("ALLOCA") || line.contains("alloca"))
+                {
+                    continue;
+                }
+                // strlen/wcslen directly in ALLOCA call → safe dynamic size
+                if line.contains("strlen") || line.contains("wcslen") {
+                    return Some(usize::MAX);
+                }
+                // Pattern: ALLOCA(N*sizeof(type)) — N is the element count
+                if let Ok(ref re) = alloca_sizeof_re {
+                    if let Some(caps) = re.captures(line) {
+                        if let Ok(n) = caps[1].parse::<usize>() {
+                            return Some(n);
+                        }
+                    }
+                }
+                // Simpler: ALLOCA(N) without sizeof
+                if let Ok(ref re) = alloca_simple_re {
+                    if let Some(caps) = re.captures(line) {
+                        if let Ok(n) = caps[1].parse::<usize>() {
+                            return Some(n);
+                        }
+                    }
+                }
+            }
+        }
+
         None
     }
 
@@ -213,6 +270,80 @@ impl Str31C {
             }
         }
         false
+    }
+
+    /// Find the line range (0-based) of the enclosing function_definition for a node.
+    fn find_enclosing_function_lines(node: &Node) -> Option<(usize, usize)> {
+        let mut current = node.parent();
+        while let Some(n) = current {
+            if n.kind() == "function_definition" {
+                return Some((n.start_position().row, n.end_position().row));
+            }
+            current = n.parent();
+        }
+        None
+    }
+
+    /// Resolve a simple pointer alias within the enclosing function.
+    /// Matches `var_name = otherIdentifier;` (no arithmetic/pointer offset).
+    /// Returns the alias target name if found.
+    fn resolve_pointer_alias_in_function(
+        call_node: &Node,
+        var_name: &str,
+        source: &str,
+    ) -> Option<String> {
+        let (start_line, end_line) = Self::find_enclosing_function_lines(call_node)?;
+        let lines: Vec<&str> = source.lines().collect();
+
+        // Match: var_name = identifier; (with optional cast)
+        // Must NOT match: var_name = identifier - 8; or var_name = identifier + N;
+        let pattern = format!(
+            r"\b{}\s*=\s*(?:\([^)]*\)\s*)?(\w+)\s*;",
+            regex::escape(var_name)
+        );
+        let re = regex::Regex::new(&pattern).ok()?;
+
+        let end = end_line.min(lines.len().saturating_sub(1));
+        for line in &lines[start_line..=end] {
+            if let Some(caps) = re.captures(line) {
+                let target = &caps[1];
+                // Skip self-assignment, NULL, and numeric literals
+                if target == var_name || target == "NULL" || target == "0" {
+                    continue;
+                }
+                // Skip if it looks like a function call (ALLOCA, malloc, etc.)
+                if line.contains("ALLOCA")
+                    || line.contains("alloca")
+                    || line.contains("malloc")
+                    || line.contains("calloc")
+                {
+                    continue;
+                }
+                return Some(target.to_string());
+            }
+        }
+        None
+    }
+
+    /// Try find_buffer_size for a variable, falling back to alias resolution.
+    fn find_buffer_size_with_alias(
+        &self,
+        var_name: &str,
+        root: &Node,
+        source: &str,
+        call_node: &Node,
+    ) -> Option<usize> {
+        // Direct lookup first
+        if let Some(size) = self.find_buffer_size(var_name, root, source) {
+            return Some(size);
+        }
+        // Try alias resolution (one level)
+        if let Some(alias_target) =
+            Self::resolve_pointer_alias_in_function(call_node, var_name, source)
+        {
+            return self.find_buffer_size(&alias_target, root, source);
+        }
+        None
     }
 
     /// Check if there was a prior safe realloc for this variable
@@ -280,7 +411,9 @@ impl Str31C {
                 return true; // Safe due to prior reallocation
             }
 
-            if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
+            if let Some(buffer_size) =
+                self.find_buffer_size_with_alias(dest, root, source, arguments)
+            {
                 // Check if it's a dynamic allocation with strlen + 1
                 if buffer_size == usize::MAX {
                     return true; // Safe dynamic allocation
@@ -318,8 +451,10 @@ impl Str31C {
                         return false; // Environment variables are unlimited size
                     }
 
-                    // Check if source is a larger buffer
-                    if let Some(src_buffer_size) = self.find_buffer_size(src_name, root, source) {
+                    // Check if source is a larger buffer (with alias resolution)
+                    if let Some(src_buffer_size) =
+                        self.find_buffer_size_with_alias(src_name, root, source, arguments)
+                    {
                         if src_buffer_size > buffer_size {
                             return false; // Source is larger than destination - dangerous
                         }
@@ -345,8 +480,10 @@ impl Str31C {
                         return true; // Known safe pattern from test cases
                     }
 
-                    // Try to find source buffer size for array-to-array copy
-                    if let Some(src_buffer_size) = self.find_buffer_size(src_name, root, source) {
+                    // Try to find source buffer size for array-to-array copy (with alias)
+                    if let Some(src_buffer_size) =
+                        self.find_buffer_size_with_alias(src_name, root, source, arguments)
+                    {
                         if buffer_size >= src_buffer_size {
                             return true; // Destination is at least as large as source
                         }
@@ -458,7 +595,9 @@ impl Str31C {
                 return true; // Safe due to prior reallocation
             }
 
-            if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
+            if let Some(buffer_size) =
+                self.find_buffer_size_with_alias(dest, root, source, arguments)
+            {
                 // For buffers >= 20, analyze the concatenation more carefully
                 if buffer_size >= 20 {
                     // ENHANCED: Estimate total string length after concatenation
@@ -523,7 +662,9 @@ impl Str31C {
 
         // If we have destination name, try to find its size
         if let Some(dest) = dest_name {
-            if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
+            if let Some(buffer_size) =
+                self.find_buffer_size_with_alias(dest, root, source, arguments)
+            {
                 // Check the format string for unbounded format specifiers
                 if let Some(fmt) = format_string {
                     let fmt_clean = fmt.trim_matches('"');
@@ -819,7 +960,9 @@ impl Str31C {
 
         // Check if the copy size equals the buffer size (common mistake)
         if let (Some(dest), Some(copy_sz)) = (dest_name, copy_size) {
-            if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
+            if let Some(buffer_size) =
+                self.find_buffer_size_with_alias(dest, root, source, arguments)
+            {
                 if copy_sz == buffer_size {
                     // This is dangerous - no room for null terminator if string fills buffer
                     return false;
@@ -1182,7 +1325,9 @@ impl Str31C {
 
         // Check if buffer size is reasonable for wide char conversion
         if let Some(dest) = dest_name {
-            if let Some(buffer_size) = self.find_buffer_size(dest, root, source) {
+            if let Some(buffer_size) =
+                self.find_buffer_size_with_alias(dest, root, source, arguments)
+            {
                 // Wide chars can expand significantly when converted to multibyte
                 // A reasonable buffer should be at least 4x the wide string length
                 // For safety, we consider buffers < 64 as potentially unsafe
