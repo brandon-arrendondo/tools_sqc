@@ -1008,12 +1008,14 @@ $\sim$10) at a comparable aggregate TP rate.
 
 \textbf{Frama-C}~\cite{frama-c} provides formal verification via
 abstract interpretation (EVA plugin) and deductive verification (WP).
-We ran Frama-C~32.0 (Germanium) EVA on 6 overlapping CWEs (integer
-overflow, null dereference, divide-by-zero, numeric truncation).
-On CWE-476, Frama-C achieves 64.2\% TP rate (373~TP / 208~FP).
-Frama-C requires per-function entry points and GCC machdep
-configuration; its analysis is more precise but takes $\sim$6$\times$
-longer per file than SqC.  Full results are pending.
+We ran Frama-C~32.0 (Germanium) EVA on 6 overlapping CWEs
+(5{,}430 files).  Overall, Frama-C achieves 61.0\% TP rate
+(8{,}609~TP / 5{,}510~FP)---the highest among tested tools.
+CWE-197 (numeric truncation) reaches 100\% precision (912~TP, 0~FP),
+and CWE-680 (integer overflow to buffer overflow) reaches 82.6\%.
+However, Frama-C requires per-function entry points and
+GCC-specific configuration, and takes $\sim$6$\times$ longer per file
+than SqC.  It covers 6 CWEs here vs.\ SqC's 118.
 
 The coverage gap is notable: Kaner~\cite{kaner} argues that 100\%
 coverage of any single metric is misleading---what matters is

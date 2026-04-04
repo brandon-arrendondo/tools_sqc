@@ -239,27 +239,29 @@ Benchmark runner: bench/competitors.py. 83.7 min on 17,232 files.
 
 # Task ID: 33b
 # Title: Juliet benchmark — Frama-C 32.0 (Germanium)
-# Status: in-progress
+# Status: done (2026-04-04)
 # Dependencies: none
 # Priority: P3
 # Description: Run Frama-C EVA on 6 overlapping Juliet CWEs, classify TP/FP.
 # Details:
 Frama-C 32.0 installed via opam (playbooks/install-static-analyzers.yml).
-Benchmark runner: bench/competitors.py. CWE-476 pilot: 373 TP / 208 FP (64.2%).
+Benchmark runner: bench/competitors.py. 165 min on 5,430 files.
 
-  CWEs: 190, 191, 476, 369, 197, 680
-  Estimated time: ~7-9 hours (11,628 files, ~0.9s/function, 2 functions/file)
+  Results: data/competitor_results/framac_20260403_222053.json
+  Overall: 8,609 TP / 5,510 FP (61.0% TP rate)
 
-  To run:
-    eval $(opam env) && python3 -m bench.competitors framac --jobs 8
+  Per-CWE:
+    CWE-190 (Integer Overflow):      3573 TP / 2577 FP (58.1%)
+    CWE-191 (Integer Underflow):     2406 TP / 1407 FP (63.1%)
+    CWE-476 (Null Deref):             373 TP /  208 FP (64.2%)
+    CWE-369 (Divide by Zero):         947 TP / 1234 FP (43.4%)
+    CWE-197 (Numeric Truncation):     912 TP /    0 FP (100.0%)
+    CWE-680 (Int Overflow -> BOF):    398 TP /   84 FP (82.6%)
 
-  Results go to: data/competitor_results/framac_<timestamp>.json
-
-  Key flags:
-  - -machdep gcc_x86_64 (GCC extensions for Juliet headers)
-  - -lib-entry -main <func> (per-function entry point)
-  - -warn-signed-overflow -warn-signed-downcast (for CWE-190/191)
-  - -eva-precision 1 (speed/precision tradeoff)
+  Frama-C strongest on numeric truncation (100%, zero FP) and integer
+  overflow to buffer overflow (82.6%). Weakest on divide-by-zero (43.4%).
+  Overall 61.0% TP rate is higher than both sqc (54.8%) and Infer (43.6%)
+  on overlapping CWEs, but covers only 6 CWEs vs sqc's 118.
 
 ---
 
