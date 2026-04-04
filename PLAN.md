@@ -1,8 +1,8 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-04 (v0.3.77)
+Last Updated: 2026-04-04 (v0.3.78)
 
-Juliet benchmark v0.3.77: 27,146 TP / 21,719 FP (55.6% TP rate), 44.6% per-file.
+Juliet benchmark v0.3.78: 26,926 TP / 21,413 FP (55.7% TP rate), 44.2% per-file.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -243,14 +243,16 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
     -1012 FP, -728 TP (1.4:1 ratio). Per-file 45.7%→44.6% (-1.1pp).
     Tradeoff: heuristic was only detection for some bad-function files.
 
-  Cumulative v0.3.74→v0.3.77: -1284 FP, -736 TP. TP rate 54.8%→55.6% (+0.8pp).
+  Cumulative v0.3.74→v0.3.78: -1590 FP, -956 TP. TP rate 54.8%→55.7% (+0.9pp).
 
   Remaining (not yet implemented):
 
-  Fix 3 — STR31-C strlen-bounded memcpy handling (~150 FPs):
-    is_string_memcpy() flags `strlen(data)*sizeof(char)` as missing +1 for null
-    terminator. Add: if dest has known size and content fits, suppress. Or detect
-    manual null-termination (`dest[N-1] = '\0'`) on following line.
+  Fix 3 — STR31-C strlen-bounded memcpy handling (v0.3.78, done):
+    is_string_memcpy() now checks next 3 lines for manual null-termination
+    (dest[...] = '\0'). If programmer explicitly null-terminates after memcpy,
+    STR31-C concern is addressed; buffer overflow is a separate ARR38-C concern.
+    Results: -306 FP, -220 TP (1.4:1 ratio). Zero regressions.
+    CWE-126 +1.2pp, CWE-121 +0.3pp, CWE-122 +0.6pp. Per-file -0.4pp.
 
   Fix 4 — Content-size from memset for strcpy (~160 FPs):
     `memset(data, 'A', 49); data[49]='\0'; strcpy(dest, data)` where dest[50] —
