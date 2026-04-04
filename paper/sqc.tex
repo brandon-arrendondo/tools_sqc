@@ -523,6 +523,69 @@ from full-suite to fast-mode benchmarking.}
 \label{fig:tp-rate-progression}
 \end{figure}
 
+\subsection{Competitor Comparison}
+\label{sec:competitor}
+
+\Cref{tab:competitor} compares SqC against Facebook Infer~v1.2.0 and
+Frama-C~32.0 (Germanium EVA) on overlapping Juliet CWEs.  Each tool
+was run on the same test files with TP/FP classified using identical
+Juliet ground truth (procedure names and \texttt{OMITBAD}/\texttt{OMITGOOD}
+guards).
+
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\textbf{CWE} & \textbf{Description} & \textbf{SqC} & \textbf{Infer} & \textbf{Frama-C} \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{Memory Safety (Infer overlap)}} \\
+476 & Null Pointer Deref    & 50.8 & \textbf{66.1} & 64.2 \\
+690 & Null Deref from Return & \textbf{94.6} & 60.0 & --- \\
+415 & Double Free           & 43.4 & \textbf{63.0} & --- \\
+401 & Memory Leak           & 50.7 & \textbf{54.7} & --- \\
+416 & Use After Free        & \textbf{43.9} & 2.0  & --- \\
+761 & Free Not at Start     & \textbf{100.0} & 58.1 & --- \\
+121 & Stack Buffer Overflow & \textbf{48.8} & 38.8 & --- \\
+122 & Heap Buffer Overflow  & \textbf{58.5} & 37.8 & --- \\
+124 & Buffer Underwrite     & \textbf{52.1} & 33.9 & --- \\
+127 & Buffer Underread      & \textbf{55.6} & 33.9 & --- \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{Value Analysis (Frama-C overlap)}} \\
+190 & Integer Overflow      & 47.4 & --- & \textbf{58.1} \\
+191 & Integer Underflow     & 45.5 & --- & \textbf{63.1} \\
+197 & Numeric Truncation    & 70.2 & --- & \textbf{100.0} \\
+369 & Divide by Zero        & 36.9 & --- & \textbf{43.4} \\
+680 & Int Overflow $\to$ BOF & 53.9 & --- & \textbf{82.6} \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{CWEs tested}} & \textbf{118} & 10 & 6 \\
+\bottomrule
+\end{tabular}
+\caption{TP rate (\%) comparison on overlapping Juliet CWEs.
+\textbf{Bold} = highest per row.  ``---'' = CWE not tested.
+SqC v0.3.74; Infer v1.2.0 (17{,}232 files); Frama-C 32.0 EVA (5{,}430 files).}
+\label{tab:competitor}
+\end{table}
+
+Three patterns emerge.  First, Infer and Frama-C achieve higher precision
+on their core competencies: Infer on null dereference (66.1\% vs.\
+50.8\%) and double-free (63.0\% vs.\ 43.4\%); Frama-C on numeric
+truncation (100\% vs.\ 70.2\%) and integer overflow (58--63\% vs.\
+45--47\%).  This reflects their use of separation logic and abstract
+interpretation, respectively.
+
+Second, SqC outperforms Infer on CWEs where Juliet's cross-function
+patterns challenge Infer's procedure-level analysis: CWE-690 (94.6\%
+vs.\ 60.0\%), CWE-761 (100\% vs.\ 58.1\%), and all four buffer
+overflow CWEs (49--59\% vs.\ 34--39\%).
+
+Third, the coverage gap is stark: SqC tests 118 CWEs spanning 17
+CERT~C categories, while Infer and Frama-C cover 10 and 6 CWEs
+respectively on this benchmark.  A hypothetical ``best of all three''
+ensemble would cover more CWEs with higher per-CWE precision, suggesting
+that these tools are complementary rather than competitive.
+
 \subsection{Real-World Results}
 
 \Cref{tab:realworld-results} compares SqC against cppcheck and
@@ -997,25 +1060,17 @@ checks via its \texttt{cert-*} module.  It benefits from Clang's full
 semantic analysis but requires a compilation database.
 
 \textbf{Infer}~\cite{infer} uses bi-abduction and separation logic
-for memory safety.  We ran Infer~v1.2.0 on the same Juliet test
-files across 10 overlapping CWEs (17{,}232 files).  Overall, Infer
-achieves 43.6\% TP rate (4{,}971~TP / 6{,}428~FP).  Infer is
-strongest on null dereference (CWE-476: 66.1\%, CWE-690: 60.0\%)
-and double-free (CWE-415: 63.0\%), but weaker on buffer overflow
-CWEs (33--39\%) and near-zero on use-after-free (CWE-416: 2.0\%).
-SqC covers a broader set of defect classes (118 CWEs vs.\ Infer's
-$\sim$10) at a comparable aggregate TP rate.
+for memory safety.  On the Juliet benchmark (\cref{tab:competitor}),
+Infer achieves higher precision on null dereference and double-free
+but lower precision on buffer overflow CWEs.  It covers $\sim$10
+defect classes vs.\ SqC's 118.
 
 \textbf{Frama-C}~\cite{frama-c} provides formal verification via
-abstract interpretation (EVA plugin) and deductive verification (WP).
-We ran Frama-C~32.0 (Germanium) EVA on 6 overlapping CWEs
-(5{,}430 files).  Overall, Frama-C achieves 61.0\% TP rate
-(8{,}609~TP / 5{,}510~FP)---the highest among tested tools.
-CWE-197 (numeric truncation) reaches 100\% precision (912~TP, 0~FP),
-and CWE-680 (integer overflow to buffer overflow) reaches 82.6\%.
-However, Frama-C requires per-function entry points and
-GCC-specific configuration, and takes $\sim$6$\times$ longer per file
-than SqC.  It covers 6 CWEs here vs.\ SqC's 118.
+abstract interpretation (EVA plugin).  On overlapping CWEs
+(\cref{tab:competitor}), Frama-C achieves the highest per-CWE
+precision, including 100\% on numeric truncation.  However, it
+requires per-function entry points, takes $\sim$6$\times$ longer per
+file, and covers 6 CWEs here vs.\ SqC's 118.
 
 The coverage gap is notable: Kaner~\cite{kaner} argues that 100\%
 coverage of any single metric is misleading---what matters is
