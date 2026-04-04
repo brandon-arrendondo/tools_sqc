@@ -1453,6 +1453,13 @@ impl Arr38C {
             return false;
         }
 
+        // Pattern: strlen(x)*sizeof(T) or wcslen(x)*sizeof(T) — byte count of string content
+        if (size_expr.contains("strlen(") || size_expr.contains("wcslen("))
+            && size_expr.contains("sizeof(")
+        {
+            return false;
+        }
+
         // Pattern: sizeof(buffer) - 1 - this is correct for string functions
         if size_expr.contains("sizeof(") && size_expr.contains("- 1") {
             return false;
