@@ -1,8 +1,8 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-04 (v0.3.78)
+Last Updated: 2026-04-04 (v0.3.79)
 
-Juliet benchmark v0.3.78: 26,926 TP / 21,413 FP (55.7% TP rate), 44.2% per-file.
+Juliet benchmark v0.3.79: 26,926 TP / 21,209 FP (55.9% TP rate), 44.2% per-file.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -243,7 +243,7 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
     -1012 FP, -728 TP (1.4:1 ratio). Per-file 45.7%→44.6% (-1.1pp).
     Tradeoff: heuristic was only detection for some bad-function files.
 
-  Cumulative v0.3.74→v0.3.78: -1590 FP, -956 TP. TP rate 54.8%→55.7% (+0.9pp).
+  Cumulative v0.3.74→v0.3.79: -1794 FP, -956 TP. TP rate 54.8%→55.9% (+1.1pp).
 
   Remaining (not yet implemented):
 
@@ -254,14 +254,26 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
     Results: -306 FP, -220 TP (1.4:1 ratio). Zero regressions.
     CWE-126 +1.2pp, CWE-121 +0.3pp, CWE-122 +0.6pp. Per-file -0.4pp.
 
-  Fix 4 — Content-size from memset for strcpy (~160 FPs):
-    `memset(data, 'A', 49); data[49]='\0'; strcpy(dest, data)` where dest[50] —
-    safe but SqC can't resolve strlen(data)=49 from memset. Track memset-based
-    content size within function scope.
+  Fix 4 — Content-size from memset for strcpy (v0.3.79, done):
+    get_memset_content_length() scans enclosing function for memset/wmemset
+    initialization + null-termination pattern. Infers strlen(data) from fill
+    count. Max-across-branches for control flow variants. Placed before source
+    buffer size comparison so content length overrides container size.
+    Results: -204 FP, 0 TP (pure FP elimination). Zero regressions.
+    CWE-121 +1.4pp, CWE-122 +1.7pp.
 
   Fix 5 — ARR38-C alias propagation in declarations (~200 FPs):
     collect_pointer_aliases() handles expression_statement but may miss
     declaration-time assignments. Verify and fix coverage.
+
+  Fix 6 — Review TP loss from Fixes 1-3 (pending):
+    Cumulative: -956 TP across Fixes 1-3. Per-file dropped 44.6%→44.2%.
+    Fix 2 (ARR38-C strlen*sizeof exemption) was the worst: 1.4:1 ratio,
+    per-file -1.1pp. Some files lost their ONLY detection. Investigate
+    whether ARR38-C/STR31-C can recover TPs on bad-function files where
+    the heuristic was the sole detector, without re-introducing FPs on
+    good-function files. May need buffer-size-aware suppression rather
+    than blanket pattern suppression.
 
 ---
 
