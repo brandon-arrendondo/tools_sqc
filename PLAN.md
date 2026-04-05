@@ -1,8 +1,8 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-05 (v0.3.81)
+Last Updated: 2026-04-05 (v0.3.82)
 
-Juliet benchmark v0.3.81: 27,078 TP / 20,985 FP (56.3% TP rate), 44.5% per-file.
+Juliet benchmark v0.3.82: 27,081 TP / 20,607 FP (56.8% TP rate), 44.5% per-file.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -285,7 +285,7 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
 
 # Task ID: 57
 # Title: EXP34-C FP reduction for CWE-476
-# Status: pending
+# Status: done (v0.3.82)
 # Dependencies: none
 # Priority: P3
 # Description: Reduce EXP34-C FPs on CWE-476 (null pointer dereference).
@@ -294,17 +294,33 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
 # Details:
 EXP34-C has 289 TP / 233 FP. API00-C has 90 TP / 134 FP.
 
-  The gap is large in percentage but moderate in absolute FPs (367 total).
-  clang-tidy uses Clang's full path-sensitive analysis to eliminate FPs that
-  SqC's CFG-based null state cannot. Most FPs likely come from:
-  - Infeasible paths that SqC can't prune (path sensitivity limitation)
-  - API00-C flagging callers that don't check return but the callee never
-    actually returns null
+  Fix 1 — CFG constant condition pruning + null-state improvements (v0.3.82):
+    CFG builder: evaluate if(0)/if(1)/while(1)/for(;;) as constant conditions,
+    emit only the feasible branch edge. Also evaluate literal comparisons
+    (5==5, 5!=5). Eliminates infeasible-path FPs from Juliet variants 02, 03, 16.
+    null_state: walk switch_statement bodies for declarations/assignments
+    (previously opaque — single statement in CFG). Fixes variant 15.
+    EXP34-C: AST-level null guard fallback — walk ancestors for enclosing
+    if(var != NULL) blocks to suppress dereferences inside null guards that
+    the CFG can't see (e.g., inside switch case bodies).
+    API00-C: relay function suppression — when a parameter is only passed to
+    callees that check for null, skip the validation warning.
+    CWE-476: +3 TP, -70 FP (50.8% → 56.3% TP rate).
+    EXP34-C: +3 TP, -90 FP (across all CWEs). API00-C: 0 TP, -18 FP.
+    Broad spillover from CFG constant-condition pruning:
+      INT31-C -180 FP, INT33-C -60 FP, INT30-C -30 FP.
+      CWE-195 -150 FP, CWE-369 -60 FP, CWE-690 -38 FP (now 100% TP rate).
+    Overall: +3 TP, -378 FP (56.3% → 56.8%), zero regressions.
 
-  Approaches:
-  - Improve null-state dataflow precision at branch merge points
-  - API00-C: refine can_return_null to eliminate functions that always succeed
-  - Reduce API00-C scope to only functions with documented null-return semantics
+  Remaining FPs (297 on CWE-476):
+  - Variants 04-14 (140 FPs): non-literal constant conditions using Juliet
+    infrastructure variables (STATIC_CONST_TRUE, globalTrue, etc.) that
+    require value analysis to evaluate. Not fixable without VRA integration.
+  - Variant 17 (7 FPs): for(h=0;h<1;h++) loop — requires loop-bound analysis.
+  - Cross-function goodB2G (24 FPs): EXP34-C flags null-arg passing to callees
+    that DO check null, but prescan has name collisions on static functions.
+  - API00-C goodG2B/goodB2G (116 FPs): caller-aware suppression limited by
+    relay chain propagation depth and non-relay sink functions.
 
 ---
 
