@@ -782,6 +782,16 @@ impl Int30C {
                             return;
                         }
                     }
+                    // Skip if VRA proves the result fits in 32-bit unsigned
+                    if const_eval::expression_fits_in_unsigned_vra(
+                        node,
+                        source,
+                        &self.current_macros.borrow(),
+                        32,
+                        self.vra_var_ranges_at(node).as_ref(),
+                    ) {
+                        return;
+                    }
                     if !self.has_overflow_check_update(node, source) {
                         let start_point = node.start_position();
                         let expr_text = get_node_text(node, source);

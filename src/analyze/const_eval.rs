@@ -335,6 +335,18 @@ fn try_evaluate_text(text: &str, macros: &MacroConstantMap) -> Option<i64> {
         return macros.get(text).copied();
     }
 
+    // Try sizeof(type_or_expr) — resolve known types exactly, fall back to
+    // conservative minimum of 1 for unknown identifiers (sizeof >= 1 always).
+    if let Some(inner) = strip_sizeof_call(text) {
+        if let Some(sz) = resolve_sizeof_type(inner) {
+            return Some(sz);
+        }
+        // Unknown type/variable: sizeof(x) >= 1 on all platforms
+        if is_c_identifier(inner) {
+            return Some(1);
+        }
+    }
+
     // Try simple binary expressions: A op B
     // Search for operator from right to left (respecting precedence: +/- before */<<)
     if let Some(val) = try_evaluate_binary_text(text, macros) {
@@ -350,6 +362,17 @@ fn try_evaluate_text(text: &str, macros: &MacroConstantMap) -> Option<i64> {
     }
 
     None
+}
+
+/// Extract the inner text from a sizeof(...) call in text form.
+fn strip_sizeof_call(text: &str) -> Option<&str> {
+    let rest = text.strip_prefix("sizeof")?;
+    let rest = rest.trim();
+    if rest.starts_with('(') && rest.ends_with(')') {
+        Some(rest[1..rest.len() - 1].trim())
+    } else {
+        None
+    }
 }
 
 /// Try to evaluate a binary expression in text form.
@@ -674,6 +697,30 @@ pub fn try_evaluate_range(
             try_evaluate_range(&value, source, macros, var_ranges)
         }
         "sizeof_expression" => resolve_sizeof_node(node, source).map(ValueRange::exact),
+        "update_expression" => {
+            // data++ / data-- / ++data / --data
+            let arg = node.child_by_field_name("argument")?;
+            let op = node.child_by_field_name("operator").or_else(|| {
+                // Operator may be first or last child depending on prefix/postfix
+                for i in 0..node.child_count() {
+                    if let Some(c) = node.child(i) {
+                        let k = c.kind();
+                        if k == "++" || k == "--" {
+                            return Some(c);
+                        }
+                    }
+                }
+                None
+            })?;
+            let op_text = op.utf8_text(source.as_bytes()).ok()?;
+            let r = try_evaluate_range(&arg, source, macros, var_ranges)?;
+            let one = ValueRange::exact(1);
+            match op_text {
+                "++" => r.add(&one),
+                "--" => r.sub(&one),
+                _ => None,
+            }
+        }
         _ => None,
     }
 }
