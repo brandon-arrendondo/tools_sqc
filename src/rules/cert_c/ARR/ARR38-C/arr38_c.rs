@@ -802,6 +802,11 @@ impl Arr38C {
                 }
             }
 
+            // If dest buffer size is known and count fits, skip heuristic checks.
+            if self.is_size_within_known_buffer(dest_arg, size_arg, buffer_info, None) {
+                return;
+            }
+
             // Check for hardcoded sizes that likely exceed buffer
             if self.is_hardcoded_large_count(size_arg) {
                 let start_point = node.start_position();
@@ -1000,6 +1005,11 @@ impl Arr38C {
                     }
                 }
             }
+        }
+
+        // If dest buffer size is known and size fits, skip heuristic checks.
+        if self.is_size_within_known_buffer(dest_arg, size_arg, buffer_info, Some(size_vars)) {
+            return;
         }
 
         // Check for hardcoded sizes that are suspiciously large
@@ -1227,6 +1237,11 @@ impl Arr38C {
                         }
                     }
                 }
+            }
+
+            // If dest buffer size is known and size fits, skip heuristic checks.
+            if self.is_size_within_known_buffer(buf_arg, size_arg, buffer_info, Some(size_vars)) {
+                return;
             }
 
             // Check for hardcoded sizes that are suspiciously large
@@ -1546,23 +1561,8 @@ impl Arr38C {
         // If the dest buffer has known size and the copy fits, skip heuristic checks.
         // The concrete size comparison above is authoritative; heuristics like
         // is_hardcoded_large_size are only useful when buffer size is unknown.
-        let dest_size_known = buffer_info
-            .get(dest_arg.trim())
-            .and_then(|info| info.size)
-            .is_some();
-        if dest_size_known {
-            if let Some(size_val) = self.try_parse_size(
-                size_vars
-                    .get(size_arg.trim())
-                    .map(|s| s.as_str())
-                    .unwrap_or(size_arg),
-            ) {
-                if let Some(buf_size) = buffer_info.get(dest_arg.trim()).and_then(|i| i.size) {
-                    if size_val <= buf_size {
-                        return; // Verified safe — skip heuristic checks
-                    }
-                }
-            }
+        if self.is_size_within_known_buffer(dest_arg, size_arg, buffer_info, Some(size_vars)) {
+            return;
         }
 
         // For memcpy/memmove, also check source buffer
@@ -2165,6 +2165,31 @@ impl Arr38C {
             }
         }
         None
+    }
+
+    /// Check if a numeric size argument fits within a known buffer.
+    /// Returns true if buffer size is known AND the size fits, meaning
+    /// heuristic checks (is_hardcoded_large_size) should be skipped.
+    fn is_size_within_known_buffer(
+        &self,
+        buf_arg: &str,
+        size_arg: &str,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: Option<&HashMap<String, String>>,
+    ) -> bool {
+        let buf_name = buf_arg.trim();
+        if let Some(buf_info) = buffer_info.get(buf_name) {
+            if let Some(buf_size) = buf_info.size {
+                let resolved = size_vars
+                    .and_then(|sv| sv.get(size_arg.trim()))
+                    .map(|s| s.as_str())
+                    .unwrap_or(size_arg);
+                if let Some(size_val) = self.try_parse_size(resolved) {
+                    return size_val <= buf_size;
+                }
+            }
+        }
+        false
     }
 
     /// Check if a size is a hardcoded large value
