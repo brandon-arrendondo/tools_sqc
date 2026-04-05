@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.84] - 2026-04-05
+
+### Changed
+
+- INT33-C: all-assignments-nonzero check for divisor variables. If ALL
+  assignments to the divisor in the containing function are non-zero constants,
+  the division is safe. Loop update detection (i--, i++) prevents false
+  suppression of loop variables.
+- INT33-C: fabs()/fabsf()/fabsl() magnitude guard recognition. Float
+  divide-by-zero guards like `if(fabs(data) > 0.000001)` now suppress.
+- FLP03-C: constant-aware divisor non-zero detection. Two-strategy approach:
+  all-assignments-nonzero, and feasible-branch walk using file-scope constants
+  to determine last reaching assignment.
+- CFG builder: resolve static const int variables as constant conditions.
+  Enables dead-branch pruning for `if(STATIC_CONST_TRUE)` patterns.
+- const_eval: collect file-scope `static const int` declarations as constants.
+- const_eval: float literal to i64 fallback (e.g., 2.0F → 2) for VRA tracking.
+- CWE-369 TP rate 37.9% → 53.9% (+16.0pp). -882 FP, -8 TP overall.
+  Bonus: INT31-C -144 FP, EXP34-C -24 FP from CFG constant resolution.
+
 ## [0.3.83] - 2026-04-05
 
 ### Changed
