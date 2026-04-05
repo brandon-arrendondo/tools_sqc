@@ -214,7 +214,7 @@ INT33-C has 644 TP / 1176 FP. FLP03-C has 228 TP / 312 FP.
 
 # Task ID: 56
 # Title: STR31-C/ARR38-C FP reduction for CWE-121/124/127
-# Status: in-progress
+# Status: done (v0.3.81)
 # Dependencies: none
 # Priority: P2
 # Description: Reduce buffer overflow FPs on CWE-121/124/127.
@@ -244,8 +244,6 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
     Tradeoff: heuristic was only detection for some bad-function files.
 
   Cumulative v0.3.74→v0.3.80 (Fixes 1-5): -2066 FP, -1004 TP. TP rate 54.8%→56.2% (+1.4pp).
-
-  Remaining (not yet implemented):
 
   Fix 3 — STR31-C strlen-bounded memcpy handling (v0.3.78, done):
     is_string_memcpy() now checks next 3 lines for manual null-termination
