@@ -1,8 +1,8 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-05 (v0.3.82)
+Last Updated: 2026-04-05 (v0.3.83)
 
-Juliet benchmark v0.3.82: 27,081 TP / 20,607 FP (56.8% TP rate), 44.5% per-file.
+Juliet benchmark v0.3.83: 25,693 TP / 17,847 FP (59.0% TP rate), 42.7% per-file.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -161,7 +161,7 @@ functions, 0 violations).
 
 # Task ID: 54
 # Title: INT32-C/INT30-C FP reduction for CWE-190/191
-# Status: pending
+# Status: done (v0.3.83)
 # Dependencies: none
 # Priority: P2
 # Description: Reduce INT32-C/INT30-C FPs on CWE-190/191.
@@ -172,18 +172,27 @@ functions, 0 violations).
 INT32-C has 2095 TP / 2337 FP on CWE-190 and 1749 TP / 2040 FP on CWE-191.
 INT30-C has 443 TP / 483 FP on CWE-190 and 342 TP / 468 FP on CWE-191.
 
-  Analysis needed:
-  - Sample FPs from CWE-190/191 to identify dominant patterns
-  - clang-tidy achieves 94%+ with zero FP — what patterns does it skip?
-  - Likely: guarded arithmetic (existing bounds-check detection needs expansion),
-    constant expressions not resolved by VRA, Juliet's cross-function variants
+  Fix 1 — VRA for increment/decrement (v0.3.83):
+    Added update_expression handling to try_evaluate_range() in const_eval.
+    INT32-C/INT30-C check_increment_decrement() now consults VRA before flagging.
+    data++ where data is known [2,2] → result [3,3] fits in i32 → suppressed.
 
-  Approaches:
-  - Expand bounds-check detection (is_inside_bounds_checked_block) to cover
-    more guard patterns (switch-case, ternary, function-call guards)
-  - VRA improvements: better constant propagation through assignments
-  - const_eval: resolve more sizeof/limit-macro combinations
-  - Cross-function guard recognition: caller checks bound before calling
+  Fix 2 — sizeof() in text-level macro evaluation (v0.3.83):
+    try_evaluate_text() now handles sizeof(type) via resolve_sizeof_type() and
+    sizeof(variable) conservatively as 1 (sizeof >= 1 always). Enables resolution
+    of CHAR_ARRAY_SIZE = (3 * sizeof(data) + 2) → minimum 5. CHAR_ARRAY_SIZE - 1
+    evaluates to 4, proving subtraction safe.
+
+  Results: -2,760 FP, -1,388 TP. TP rate 56.8% → 59.0% (+2.2pp).
+  CWE-190: 47.4% → 58.6% (+11.2pp). CWE-191: 45.5% → 53.9% (+8.4pp).
+  INT32-C: -2,568 FP/-1,348 TP (1.9:1 ratio). INT30-C: -192 FP/-40 TP (4.8:1).
+  CWE-680 spillover: -76 TP/0 FP (VRA proves some bad-function arithmetic safe).
+  Zero regressions on all other CWEs.
+
+  Remaining FPs (~2,568 on CWE-190/191 combined):
+  - Cross-function safe source variants 21-68 (~1,310 FPs): would need
+    inter-procedural VRA or caller-aware suppression. High effort.
+  - Remaining macro/constant patterns not resolved by current const_eval
 
 ---
 
