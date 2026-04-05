@@ -95,6 +95,105 @@ impl Str31C {
         None
     }
 
+    /// Get content length from memset/wmemset initialization pattern.
+    /// Scoped to the enclosing function of `call_node` to avoid cross-function
+    /// pollution. Returns the LAST matching memset size before the call site,
+    /// so that control-flow variants pick up the nearest initialization.
+    ///
+    /// Matches patterns like:
+    ///   memset(var, 'A', 49);  var[49] = '\0';   → content length 49
+    ///   wmemset(var, L'A', 49); var[49] = L'\0';  → content length 49
+    ///   memset(var, 'A', 50-1); var[50-1] = '\0'; → content length 49
+    fn get_memset_content_length(
+        &self,
+        var_name: &str,
+        source: &str,
+        call_node: &Node,
+    ) -> Option<usize> {
+        let (fn_start, fn_end) = Self::find_enclosing_function_lines(call_node)?;
+        let call_line = call_node.start_position().row;
+        let lines: Vec<&str> = source.lines().collect();
+
+        let mut best_size: Option<usize> = None;
+
+        for i in fn_start..std::cmp::min(call_line, fn_end + 1) {
+            if i >= lines.len() {
+                break;
+            }
+            let trimmed = lines[i].trim();
+
+            // Find wmemset( or memset( call
+            let call_start = if let Some(pos) = trimmed.find("wmemset(") {
+                pos + "wmemset(".len()
+            } else if let Some(pos) = trimmed.find("memset(") {
+                pos + "memset(".len()
+            } else {
+                continue;
+            };
+
+            // Extract arguments between parens
+            let after_call = &trimmed[call_start..];
+            let close_paren = match after_call.rfind(')') {
+                Some(p) => p,
+                None => continue,
+            };
+            let args_str = &after_call[..close_paren];
+            let parts: Vec<&str> = args_str.splitn(3, ',').collect();
+            if parts.len() != 3 {
+                continue;
+            }
+
+            // First arg must be exactly our variable name
+            if parts[0].trim() != var_name {
+                continue;
+            }
+
+            // Third arg is the fill count
+            let size_str = parts[2].trim();
+            let size = match self.parse_simple_size_expr(size_str) {
+                Some(s) => s,
+                None => continue,
+            };
+
+            // Verify null termination follows within next 3 lines
+            let null_term_prefix = format!("{}[", var_name);
+            let search_end = std::cmp::min(i + 4, lines.len());
+            for next_line in lines[(i + 1)..search_end].iter().map(|l| l.trim()) {
+                if next_line.contains(&null_term_prefix)
+                    && (next_line.contains("'\\0'") || next_line.contains("L'\\0'"))
+                {
+                    // Keep the largest content size seen (conservative: if multiple
+                    // branches set different sizes, use the worst case)
+                    best_size = Some(match best_size {
+                        Some(prev) => std::cmp::max(prev, size),
+                        None => size,
+                    });
+                    break;
+                }
+            }
+        }
+        best_size
+    }
+
+    /// Parse simple size expressions: "49", "50-1", "100-1"
+    fn parse_simple_size_expr(&self, expr: &str) -> Option<usize> {
+        let expr = expr.trim();
+        if let Ok(n) = expr.parse::<usize>() {
+            return Some(n);
+        }
+        // N-M pattern (use rfind to handle potential negative results)
+        if let Some(pos) = expr.rfind('-') {
+            if pos > 0 {
+                let left = expr[..pos].trim();
+                let right = expr[pos + 1..].trim();
+                if let (Ok(l), Ok(r)) = (left.parse::<usize>(), right.parse::<usize>()) {
+                    return l.checked_sub(r);
+                }
+            }
+        }
+        None
+    }
+
     /// Find #define constants used in array declarations
     fn find_define_constant(&self, var_name: &str, _root: &Node, source: &str) -> Option<usize> {
         let lines: Vec<&str> = source.lines().collect();
@@ -449,6 +548,18 @@ impl Str31C {
                     // Check if variable comes from getenv() call
                     if self.is_variable_from_getenv(src_name, source) {
                         return false; // Environment variables are unlimited size
+                    }
+
+                    // Try to get content length from memset initialization.
+                    // This must come BEFORE source buffer size comparison because
+                    // memset content length (actual string length) is more precise
+                    // than the container buffer size.
+                    if let Some(content_len) =
+                        self.get_memset_content_length(src_name, source, arguments)
+                    {
+                        if buffer_size > content_len {
+                            return true; // Buffer has room for memset content + null terminator
+                        }
                     }
 
                     // Check if source is a larger buffer (with alias resolution)
