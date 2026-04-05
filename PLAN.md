@@ -1,8 +1,8 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-04 (v0.3.79)
+Last Updated: 2026-04-05 (v0.3.80)
 
-Juliet benchmark v0.3.79: 26,926 TP / 21,209 FP (55.9% TP rate), 44.2% per-file.
+Juliet benchmark v0.3.80: 26,878 TP / 20,937 FP (56.2% TP rate), 44.1% per-file.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -243,7 +243,7 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
     -1012 FP, -728 TP (1.4:1 ratio). Per-file 45.7%→44.6% (-1.1pp).
     Tradeoff: heuristic was only detection for some bad-function files.
 
-  Cumulative v0.3.74→v0.3.79: -1794 FP, -956 TP. TP rate 54.8%→55.9% (+1.1pp).
+  Cumulative v0.3.74→v0.3.80: -2066 FP, -1004 TP. TP rate 54.8%→56.2% (+1.4pp).
 
   Remaining (not yet implemented):
 
@@ -262,9 +262,14 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
     Results: -204 FP, 0 TP (pure FP elimination). Zero regressions.
     CWE-121 +1.4pp, CWE-122 +1.7pp.
 
-  Fix 5 — ARR38-C alias propagation in declarations (~200 FPs):
-    collect_pointer_aliases() handles expression_statement but may miss
-    declaration-time assignments. Verify and fix coverage.
+  Fix 5 — ARR38-C skip heuristic when buffer size known (v0.3.80, done):
+    is_size_within_known_buffer() helper: when check_size_exceeds_buffer
+    confirms size fits, skip is_hardcoded_large_size/count heuristics.
+    Applied to check_string_size_parameter, check_buffer_function,
+    check_wide_string_function. CWE805 good-function patterns (strncat,
+    snprintf, wcsncat with correctly-sized alias buffers) no longer flagged.
+    Results: -272 FP, -48 TP (5.7:1 ratio). Zero regressions.
+    CWE-121 51.6%→54.3% (+2.7pp).
 
   Fix 6 — Review TP loss from Fixes 1-3 (pending):
     Cumulative: -956 TP across Fixes 1-3. Per-file dropped 44.6%→44.2%.
