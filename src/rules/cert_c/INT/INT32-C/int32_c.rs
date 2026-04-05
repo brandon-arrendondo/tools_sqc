@@ -1080,6 +1080,17 @@ impl Int32C {
                     return;
                 }
 
+                // Skip if VRA proves the result fits in 32-bit signed
+                if const_eval::expression_fits_in_signed_vra(
+                    node,
+                    source,
+                    &self.current_macros.borrow(),
+                    32,
+                    self.vra_var_ranges_at(node).as_ref(),
+                ) {
+                    return;
+                }
+
                 let operator = self.get_update_operator(node, source);
                 if (operator == "++" || operator == "--")
                     && !self.has_overflow_check_update(node, source)
