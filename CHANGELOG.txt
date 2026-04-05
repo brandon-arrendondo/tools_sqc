@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.83] - 2026-04-05
+
+### Changed
+
+- INT32-C/INT30-C: VRA now consulted for increment/decrement operations.
+  check_increment_decrement() uses expression_fits_in_signed/unsigned_vra()
+  to suppress data++ when VRA proves the operand is safely within bounds.
+- const_eval: try_evaluate_range() handles update_expression nodes (++/--)
+  by resolving the argument range and adding/subtracting 1.
+- const_eval: try_evaluate_text() resolves sizeof(type) via resolve_sizeof_type()
+  and sizeof(variable) conservatively as 1 (sizeof >= 1 on all platforms).
+  Enables CHAR_ARRAY_SIZE = (3 * sizeof(data) + 2) macro resolution.
+- CWE-190: 47.4% → 58.6% (+11.2pp). CWE-191: 45.5% → 53.9% (+8.4pp).
+- Overall: -2,760 FP, -1,388 TP. TP rate 56.8% → 59.0% (+2.2pp).
+
 ## [0.3.82] - 2026-04-05
 
 ### Changed
