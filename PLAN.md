@@ -198,26 +198,39 @@ INT30-C has 443 TP / 483 FP on CWE-190 and 342 TP / 468 FP on CWE-191.
 
 # Task ID: 55
 # Title: INT33-C/FLP03-C FP reduction for CWE-369
-# Status: pending
+# Status: done (v0.3.84)
 # Dependencies: none
 # Priority: P2
 # Description: Reduce INT33-C/FLP03-C FPs on CWE-369 (divide by zero).
-#   CWE-369: 36.9% vs clang-tidy 94.7% (−57.8pp, 1488 FP → target 48)
-#   Impact: ~1,440 FP savings needed. Largest per-CWE gap.
+#   CWE-369: 37.9% vs clang-tidy 94.7% (−56.8pp, 1428 FP → target 48)
+#   Impact: ~1,380 FP savings needed. Largest per-CWE gap.
 # Details:
-INT33-C has 644 TP / 1176 FP. FLP03-C has 228 TP / 312 FP.
+INT33-C has 644 TP / 1116 FP. FLP03-C has 228 TP / 312 FP.
 
-  Analysis needed:
-  - INT33-C likely flags division where denominator is guarded by != 0 check
-    in a different scope or branch that SqC can't see
-  - FLP03-C may flag float division that is inherently safe (denominator from
-    known-positive function return)
+  Fix 1 — INT33-C all-assignments-nonzero + fabs guard + CFG const (v0.3.84):
+    All-assignments-nonzero check: collect ALL assignments to divisor variable
+    in containing function; if all are non-zero constants, suppress violation.
+    Catches Juliet "goodG2B" pattern: `data = -1; data = 7; 100 / data;`.
+    Loop update detection (i--, i++) prevents false suppression of loop vars.
+    fabs()/fabsf()/fabsl() magnitude guard recognition in is_divisor_checked().
+    CFG builder: resolve static const int variables as constant conditions,
+    enabling dead-branch pruning for if(STATIC_CONST_TRUE) patterns.
+    const_eval: collect file-scope static const int declarations.
+    const_eval: float literal to i64 fallback for VRA zero-checking.
+    Results: INT33-C -660 FP/-8 TP (82.5:1 ratio). CWE-369 37.9%→53.9% (+16.0pp).
 
-  Approaches:
-  - Add zero-guard detection to INT33-C (similar to bounds-check detection
-    for INT32-C): walk AST ancestors for if(x != 0) / if(x > 0) guards
-  - Improve VRA to track non-zero constraints from branch conditions
-  - Suppress division where denominator provably non-zero from const_eval
+  Fix 2 — FLP03-C divisor non-zero constant detection (v0.3.84):
+    Two-strategy approach: (1) all-assignments-nonzero for integer-like cases,
+    (2) constant-aware walk using file-scope constants to resolve conditions
+    and follow only feasible branches for last-reaching-assignment tracking.
+    Results: FLP03-C -30 FP/0 TP. Remaining 282 FP from non-const control flow.
+
+  Bonus — CFG constant resolution broader impact:
+    INT31-C -144 FP (CWE-195/194/680 dead-branch pruning).
+    EXP34-C -24 FP (CWE-476). INT30-C -24 FP.
+
+  Cumulative v0.3.83→v0.3.84: -882 FP, -8 TP. TP rate 59.0%→60.2% (+1.2pp).
+  Zero regressions across all 74 CWEs.
 
 ---
 
