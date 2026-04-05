@@ -1,8 +1,8 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-05 (v0.3.80)
+Last Updated: 2026-04-05 (v0.3.81)
 
-Juliet benchmark v0.3.80: 26,878 TP / 20,937 FP (56.2% TP rate), 44.1% per-file.
+Juliet benchmark v0.3.81: 27,078 TP / 20,985 FP (56.3% TP rate), 44.5% per-file.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -243,7 +243,7 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
     -1012 FP, -728 TP (1.4:1 ratio). Per-file 45.7%→44.6% (-1.1pp).
     Tradeoff: heuristic was only detection for some bad-function files.
 
-  Cumulative v0.3.74→v0.3.80: -2066 FP, -1004 TP. TP rate 54.8%→56.2% (+1.4pp).
+  Cumulative v0.3.74→v0.3.80 (Fixes 1-5): -2066 FP, -1004 TP. TP rate 54.8%→56.2% (+1.4pp).
 
   Remaining (not yet implemented):
 
@@ -271,14 +271,17 @@ CWE-127: ARR38-C 572 TP/294 FP, STR31-C 212 TP/294 FP.
     Results: -272 FP, -48 TP (5.7:1 ratio). Zero regressions.
     CWE-121 51.6%→54.3% (+2.7pp).
 
-  Fix 6 — Review TP loss from Fixes 1-3 (pending):
-    Cumulative: -956 TP across Fixes 1-3. Per-file dropped 44.6%→44.2%.
-    Fix 2 (ARR38-C strlen*sizeof exemption) was the worst: 1.4:1 ratio,
-    per-file -1.1pp. Some files lost their ONLY detection. Investigate
-    whether ARR38-C/STR31-C can recover TPs on bad-function files where
-    the heuristic was the sole detector, without re-introducing FPs on
-    good-function files. May need buffer-size-aware suppression rather
-    than blanket pattern suppression.
+  Fix 6 — ARR38-C strlen*sizeof src-vs-dest buffer comparison (v0.3.81, done):
+    extract_strlen_from_sizeof_expr() helper extracts strlen/wcslen argument
+    from strlen(x)*sizeof(T) patterns. Added to check_buffer_size_mismatch
+    and check_string_size_parameter: compares source vs dest buffer sizes.
+    When source > dest, flags overflow (recovers TPs). When sizes unknown
+    or source fits, Fix 2's blanket exemption still applies (preserves FPs).
+    Results: +200 TP, +48 FP (4.2:1 ratio). Zero regressions.
+    CWE-121 54.3%→55.7% (+1.4pp). Per-file 44.1%→44.5% (+0.4pp).
+
+  Cumulative v0.3.74→v0.3.81: -1818 FP, -756 TP. TP rate 54.8%→56.3% (+1.5pp).
+  Per-file 45.7%→44.5% (-1.2pp).
 
 ---
 
