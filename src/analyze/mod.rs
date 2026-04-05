@@ -539,19 +539,31 @@ fn find_function_at_byte<'a>(
 
 /// Collect CFGs for all function_definition nodes in the AST.
 /// Keyed by the function's start byte offset.
+/// Uses file-level constants for dead-branch pruning in conditions.
 pub fn collect_function_cfgs(
     node: &tree_sitter::Node,
     source: &str,
     cfgs: &mut HashMap<usize, cfg::FunctionCfg>,
 ) {
+    let constants = const_eval::collect_macro_constants(node, source);
+    collect_function_cfgs_with_constants(node, source, cfgs, &constants);
+}
+
+fn collect_function_cfgs_with_constants(
+    node: &tree_sitter::Node,
+    source: &str,
+    cfgs: &mut HashMap<usize, cfg::FunctionCfg>,
+    constants: &const_eval::MacroConstantMap,
+) {
     if node.kind() == "function_definition" {
-        if let Some(function_cfg) = cfg::build_function_cfg(node, source) {
+        if let Some(function_cfg) = cfg::build_function_cfg_with_constants(node, source, constants)
+        {
             cfgs.insert(node.start_byte(), function_cfg);
         }
     }
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
-            collect_function_cfgs(&child, source, cfgs);
+            collect_function_cfgs_with_constants(&child, source, cfgs, constants);
         }
     }
 }

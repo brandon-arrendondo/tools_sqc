@@ -5,6 +5,7 @@
 //! a sequence of statements with a single entry and single exit. Edges represent
 //! control flow between blocks (fallthrough, branches, back edges, returns).
 
+use super::const_eval::MacroConstantMap;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
@@ -98,10 +99,12 @@ struct CfgBuilder {
     /// Pending goto edges: (source_block, label_name) to wire after all labels are seen.
     pending_gotos: Vec<(BlockId, String)>,
     function_start_byte: usize,
+    /// File-level constants (static const int, #define) for condition evaluation.
+    constants: MacroConstantMap,
 }
 
 impl CfgBuilder {
-    fn new(function_start_byte: usize) -> Self {
+    fn new(function_start_byte: usize, constants: MacroConstantMap) -> Self {
         let entry_block = BasicBlock {
             id: 0,
             statements: Vec::new(),
@@ -116,6 +119,7 @@ impl CfgBuilder {
             label_blocks: HashMap::new(),
             pending_gotos: Vec::new(),
             function_start_byte,
+            constants,
         }
     }
 
@@ -255,7 +259,7 @@ impl CfgBuilder {
             if let Some(block) = self.blocks.get_mut(self.current_block) {
                 block.condition_range = Some((condition.start_byte(), condition.end_byte()));
             }
-            evaluate_constant_condition(&condition, source)
+            evaluate_constant_condition(&condition, source, &self.constants)
         } else {
             None
         };
@@ -316,7 +320,7 @@ impl CfgBuilder {
             if let Some(block) = self.blocks.get_mut(header_block) {
                 block.condition_range = Some((condition.start_byte(), condition.end_byte()));
             }
-            evaluate_constant_condition(&condition, source)
+            evaluate_constant_condition(&condition, source, &self.constants)
         } else {
             None
         };
@@ -359,7 +363,7 @@ impl CfgBuilder {
             if let Some(block) = self.blocks.get_mut(header_block) {
                 block.condition_range = Some((condition.start_byte(), condition.end_byte()));
             }
-            evaluate_constant_condition(&condition, source)
+            evaluate_constant_condition(&condition, source, &self.constants)
         } else {
             // No condition = for(;;) = always true
             Some(true)
@@ -475,7 +479,11 @@ impl CfgBuilder {
 /// Evaluate whether a condition node is a compile-time constant.
 /// Returns `Some(true)` for truthy constants (non-zero integer, `true`),
 /// `Some(false)` for `0` / `false`, and `None` for non-constant expressions.
-fn evaluate_constant_condition(condition: &Node, source: &str) -> Option<bool> {
+fn evaluate_constant_condition(
+    condition: &Node,
+    source: &str,
+    constants: &MacroConstantMap,
+) -> Option<bool> {
     // The condition field of an if/while is a parenthesized_expression in C.
     let inner = unwrap_parens_cfg(condition);
     match inner.kind() {
@@ -491,6 +499,12 @@ fn evaluate_constant_condition(condition: &Node, source: &str) -> Option<bool> {
         }
         "true" => Some(true),
         "false" => Some(false),
+        // Resolve identifiers via file-level constants (static const int, #define).
+        // E.g., `static const int STATIC_CONST_TRUE = 1;` → if(STATIC_CONST_TRUE) is truthy.
+        "identifier" => {
+            let name = inner.utf8_text(source.as_bytes()).ok()?;
+            constants.get(name).map(|&v| v != 0)
+        }
         // Handle constant comparisons: 5==5, 5!=5, etc.
         "binary_expression" => {
             let left = inner.child_by_field_name("left")?;
@@ -498,21 +512,11 @@ fn evaluate_constant_condition(condition: &Node, source: &str) -> Option<bool> {
             let right = inner.child_by_field_name("right")?;
             let left = unwrap_parens_cfg(&left);
             let right = unwrap_parens_cfg(&right);
-            if left.kind() != "number_literal" || right.kind() != "number_literal" {
-                return None;
-            }
-            let lv = left
-                .utf8_text(source.as_bytes())
-                .ok()?
-                .trim()
-                .parse::<i64>()
-                .ok()?;
-            let rv = right
-                .utf8_text(source.as_bytes())
-                .ok()?
-                .trim()
-                .parse::<i64>()
-                .ok()?;
+
+            // Resolve each operand: number literal or identifier via constants
+            let lv = resolve_constant_operand(&left, source, constants)?;
+            let rv = resolve_constant_operand(&right, source, constants)?;
+
             let op = operator.utf8_text(source.as_bytes()).ok()?;
             match op.trim() {
                 "==" => Some(lv == rv),
@@ -523,6 +527,25 @@ fn evaluate_constant_condition(condition: &Node, source: &str) -> Option<bool> {
                 ">=" => Some(lv >= rv),
                 _ => None,
             }
+        }
+        _ => None,
+    }
+}
+
+/// Resolve a single operand node to an i64 value (number literal or constant identifier).
+fn resolve_constant_operand(
+    node: &Node,
+    source: &str,
+    constants: &MacroConstantMap,
+) -> Option<i64> {
+    match node.kind() {
+        "number_literal" => {
+            let text = node.utf8_text(source.as_bytes()).ok()?.trim().to_string();
+            text.parse::<i64>().ok()
+        }
+        "identifier" => {
+            let name = node.utf8_text(source.as_bytes()).ok()?;
+            constants.get(name).copied()
         }
         _ => None,
     }
@@ -544,6 +567,16 @@ fn unwrap_parens_cfg<'a>(node: &'a Node<'a>) -> Node<'a> {
 /// Build a CFG from a function_definition node.
 /// Returns None if the node is not a function_definition or has no body.
 pub fn build_function_cfg(func_node: &Node, source: &str) -> Option<FunctionCfg> {
+    build_function_cfg_with_constants(func_node, source, &MacroConstantMap::new())
+}
+
+/// Build a CFG with file-level constant resolution (static const int, #define).
+/// This enables dead-branch pruning for patterns like `if(STATIC_CONST_TRUE)`.
+pub fn build_function_cfg_with_constants(
+    func_node: &Node,
+    source: &str,
+    constants: &MacroConstantMap,
+) -> Option<FunctionCfg> {
     if func_node.kind() != "function_definition" {
         return None;
     }
@@ -553,7 +586,7 @@ pub fn build_function_cfg(func_node: &Node, source: &str) -> Option<FunctionCfg>
         return None;
     }
 
-    let mut builder = CfgBuilder::new(func_node.start_byte());
+    let mut builder = CfgBuilder::new(func_node.start_byte(), constants.clone());
     builder.build_from_compound_statement(&body, source);
     Some(builder.build())
 }
