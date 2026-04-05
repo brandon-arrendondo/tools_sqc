@@ -249,6 +249,13 @@ fn process_statement_for_null_state(
         "assignment_expression" => {
             process_expression_null(node, source, state, declared_pointers, summaries);
         }
+        // Switch statements are opaque in the CFG — walk the body to find
+        // declarations and assignments inside case/default blocks.
+        "switch_statement" => {
+            if let Some(body) = node.child_by_field_name("body") {
+                walk_switch_body_for_null_state(&body, source, state, declared_pointers, summaries);
+            }
+        }
         // Condition expressions (parenthesized_expression at top level of if/while)
         // are added as statements in the condition block. We don't mutate null state
         // from conditions — that's handled by edge refinement.
@@ -268,6 +275,45 @@ fn process_statement_for_null_state(
                         );
                     }
                 }
+            }
+        }
+    }
+}
+
+/// Recursively walk the body of a switch_statement (compound_statement containing
+/// case_statement / default nodes) and process all declarations and assignments
+/// for null-state tracking.  The switch is opaque in the CFG, so we process
+/// all reachable statements sequentially as an approximation.
+fn walk_switch_body_for_null_state(
+    node: &Node,
+    source: &str,
+    state: &mut StateMap,
+    declared_pointers: &mut HashSet<String>,
+    summaries: &HashMap<String, FunctionSummary>,
+) {
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            match child.kind() {
+                "case_statement" | "compound_statement" => {
+                    // Recurse into case/default bodies and compound blocks
+                    walk_switch_body_for_null_state(
+                        &child,
+                        source,
+                        state,
+                        declared_pointers,
+                        summaries,
+                    );
+                }
+                "declaration" | "expression_statement" | "assignment_expression" => {
+                    process_statement_for_null_state(
+                        &child,
+                        source,
+                        state,
+                        declared_pointers,
+                        summaries,
+                    );
+                }
+                _ => {}
             }
         }
     }
