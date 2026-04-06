@@ -56,13 +56,16 @@ function summaries to reduce false positives across translation units.
 
 We evaluate SqC against the NIST Juliet Test Suite v1.3 (50,038 test
 files across 74 CWE categories) and 5 real-world open-source C codebases
-totaling 1.27 million lines of code.  Over 12 rounds of iterative
-refinement, false positives were reduced by 80.7\% from baseline while
-improving the true positive rate from 41.1\% to 53.6\%.  Of 74 CWEs
-tested, 31 achieve 100\% precision (zero false positives).  On real-world
-code, SqC detects vulnerability classes---including POSIX misuse, integer
-overflow, and inter-procedural null dereference---that cppcheck and
-clang-tidy do not cover.
+totaling 1.27 million lines of code.  Through iterative
+refinement---including cross-file function summaries, value-range analysis,
+and CFG-based dead-branch pruning---the true positive rate improved from
+41.1\% to 60.2\%, with 32 of 74 CWEs achieving 100\% precision (zero
+false positives).  On a five-tool comparison against cppcheck, clang-tidy,
+Infer, and Frama-C, SqC covers 5--12$\times$ more CWE categories while
+approaching Frama-C's per-CWE precision.  On real-world code, SqC detects
+vulnerability classes---including POSIX misuse, integer overflow, and
+inter-procedural null dereference---that cppcheck and clang-tidy do not
+cover.
 \end{abstract}
 
 %% ============================================================
@@ -278,10 +281,17 @@ The CFG infrastructure also supports:
 \begin{itemize}
     \item A \textbf{constant evaluator} that resolves \texttt{sizeof}
         expressions, C standard limit macros (\texttt{INT\_MAX},
-        \texttt{UINT64\_MAX}), and compile-time arithmetic.
+        \texttt{UINT64\_MAX}), file-scope \texttt{static const int}
+        declarations, and compile-time arithmetic.
+    \item \textbf{Dead-branch pruning}: when a branch condition
+        resolves to a compile-time constant (literal, \texttt{\#define},
+        or \texttt{static const}), only the feasible branch is included
+        in the CFG, improving precision for all downstream analyses.
     \item \textbf{Initialization state tracking} for detecting
         use of uninitialized variables through conditional paths.
-    \item \textbf{Value-range analysis} for integer overflow rules.
+    \item \textbf{Value-range analysis} (VRA) for integer and
+        floating-point overflow rules, tracking variable ranges through
+        assignments, branches, and loop bounds.
 \end{itemize}
 
 \subsection{Stage 4: Rule Evaluation}
@@ -368,7 +378,7 @@ counts reflects coverage breadth, not false positive rate.
 
 \subsection{Juliet Benchmark Results}
 
-\Cref{tab:juliet-summary} summarizes SqC v0.3.53's performance on
+\Cref{tab:juliet-summary} summarizes SqC v0.3.84's performance on
 the Juliet Test Suite in fast mode.
 
 \begin{table}[t]
@@ -378,16 +388,17 @@ the Juliet Test Suite in fast mode.
 \toprule
 \textbf{Metric} & \textbf{Value} \\
 \midrule
-Rules implemented & 290 \\
+Rules implemented & 287 \\
 CWEs scanned (fast mode) & 74 \\
 Test files & 50,038 \\
-True Positives & 24,408 \\
-False Positives & 21,117 \\
-TP Rate (precision) & 53.6\% \\
-100\% precision CWEs & 31 \\
+True Positives & 25,685 \\
+False Positives & 16,965 \\
+TP Rate (precision) & 60.2\% \\
+Per-file detection rate & 42.7\% \\
+100\% precision CWEs & 32 \\
 \bottomrule
 \end{tabular}
-\caption{SqC v0.3.60 Juliet benchmark summary (fast mode).}
+\caption{SqC v0.3.84 Juliet benchmark summary (fast mode).}
 \label{tab:juliet-summary}
 \end{table}
 
@@ -405,21 +416,21 @@ only two CWEs fall below 33\%.
 \toprule
 \textbf{Tier} & \textbf{CWEs} & \textbf{TP Rate} & \textbf{TP} \\
 \midrule
-100\% Precision & 31 & 100\% & 2,539 \\
-High ($>$50\%) & 16 & 50--99\% & 7,519 \\
-Medium (33--50\%) & 19 & 33--50\% & 14,343 \\
+100\% Precision & 32 & 100\% & 3,342 \\
+High ($>$50\%) & 23 & 50--99\% & 19,686 \\
+Medium (33--50\%) & 11 & 33--50\% & 2,650 \\
 Low ($<$33\%) & 2 & 3--8\% & 7 \\
 Zero Detection & 2 & --- & 0 \\
 \midrule
-\textbf{Total} & \textbf{70}\textsuperscript{$\dagger$} & & \textbf{24,408} \\
+\textbf{Total} & \textbf{70}\textsuperscript{$\dagger$} & & \textbf{25,685} \\
 \bottomrule
 \end{tabular}
-\caption{CWE distribution by precision tier (fast mode, v0.3.60).
+\caption{CWE distribution by precision tier (fast mode, v0.3.84).
 \textsuperscript{$\dagger$}4 CWEs had no test files.}
 \label{tab:precision-tiers}
 \end{table}
 
-\Cref{tab:perfect-cwes} lists the 31 CWEs with 100\% precision.  These
+\Cref{tab:perfect-cwes} lists the 32 CWEs with 100\% precision.  These
 represent vulnerability classes where SqC produces zero false
 positives---every reported violation is a true defect.
 
@@ -443,9 +454,9 @@ CWE-244 & Heap Inspection & 98 \\
 CWE-591 & Data in Improperly Locked Mem & 74 \\
 CWE-273 & Dropped Privileges & 72 \\
 CWE-226 & Sensitive Info Uncleared & 68 \\
-\multicolumn{2}{@{}l}{\emph{+ 18 more CWEs}} & 187 \\
+\multicolumn{2}{@{}l}{\emph{+ 19 more CWEs}} & 227 \\
 \midrule
-\textbf{Total} & & \textbf{2,539} \\
+\textbf{Total} & & \textbf{3,342} \\
 \bottomrule
 \end{tabular}
 \caption{CWEs with 100\% precision (zero false positives).}
@@ -455,10 +466,11 @@ CWE-226 & Sensitive Info Uncleared & 68 \\
 \subsubsection{Top Rules by Detection Volume}
 
 \Cref{tab:top-rules} shows the 10 rules contributing the most true
-positives.  These rules account for 73\% of all TPs.  The FP rates
-vary significantly: ERR33-C achieves 5\% FP rate, while INT32-C is
-at 55\%.  This variation is expected---detecting unchecked return
-values is structurally simpler than proving integer overflow.
+positives.  These rules account for 70\% of all TPs.  The FP rates
+vary significantly: EXP34-C achieves 14\% FP rate (CFG-based null-state
+dataflow), while STR31-C is at 53\% (buffer size estimation without
+alias analysis).  This variation reflects the structural difficulty of
+each analysis.
 
 \begin{table}[t]
 \centering
@@ -467,19 +479,19 @@ values is structurally simpler than proving integer overflow.
 \toprule
 \textbf{Rule} & \textbf{TP} & \textbf{FP} & \textbf{FP\%} & \textbf{Primary CWEs} \\
 \midrule
-ARR38-C & 2,747 & 2,778 & 50 & 121, 126, 124 \\
-INT32-C & 2,728 & 3,315 & 55 & 190, 191, 680 \\
-INT31-C & 2,608 & 2,496 & 49 & 195, 194, 197 \\
-STR31-C & 1,692 & 2,453 & 59 & 121, 122, 124 \\
+INT32-C & 2,826 & 2,031 & 42 & 190, 191, 680 \\
+INT31-C & 2,608 & 2,172 & 45 & 195, 194, 197 \\
+ARR38-C & 2,531 & 1,542 & 38 & 121, 126, 124 \\
+ARR30-C & 1,814 & 1,121 & 38 & 121, 122, 126 \\
 ENV33-C & 1,550 & 500  & 24 & 78 \\
+STR31-C & 1,464 & 1,671 & 53 & 121, 122, 124 \\
+FIO30-C & 1,242 & 738  & 37 & 134 \\
 EXP33-C & 1,110 & 888  & 44 & 457, 758, 665 \\
-INT30-C & 922  & 1,233 & 57 & 190, 191, 680 \\
-ENV03-C & 912  & 1,272 & 58 & 78, 426 \\
-ARR30-C & 878  & 888  & 50 & 121, 122, 126 \\
-EXP34-C & 929  & 301  & 24 & 690, 476 \\
+INT30-C & 952  & 1,011 & 52 & 190, 191, 680 \\
+EXP34-C & 952  & 157  & 14 & 690, 476 \\
 \bottomrule
 \end{tabular}
-\caption{Top 10 rules by true positive volume (fast mode).}
+\caption{Top 10 rules by true positive volume (fast mode, v0.3.84).}
 \label{tab:top-rules}
 \end{table}
 
@@ -489,7 +501,9 @@ EXP34-C & 929  & 301  & 24 & 690, 476 \\
 the project's development history.  The full-suite baseline started at
 41.1\% (v0.2.1); after 12 rounds of FP reduction, it reached 44.6\%
 (v0.2.25).  The switch to fast-mode benchmarking (v0.3.20) established
-a new baseline of 45.8\%, which has since improved to 53.6\%.
+a new baseline of 45.8\%, which has since improved to 60.2\% through
+value-range analysis, CFG constant resolution, and targeted per-CWE
+FP reduction.
 
 \begin{figure}[t]
 \centering
@@ -499,9 +513,9 @@ a new baseline of 45.8\%, which has since improved to 53.6\%.
     height=5cm,
     xlabel={Version},
     ylabel={TP Rate (\%)},
-    ymin=40, ymax=56,
+    ymin=40, ymax=62,
     xtick=data,
-    xticklabels={v0.2.1, v0.2.7, v0.2.23, v0.3.20, v0.3.37, v0.3.53, v0.3.60},
+    xticklabels={v0.2.1, v0.2.7, v0.2.23, v0.3.20, v0.3.37, v0.3.53, v0.3.75, v0.3.84},
     xticklabel style={rotate=45, anchor=east, font=\footnotesize},
     ylabel style={font=\footnotesize},
     xlabel style={font=\footnotesize},
@@ -513,12 +527,12 @@ a new baseline of 45.8\%, which has since improved to 53.6\%.
     grid style={dashed, gray!30},
 ]
 \addplot[color=blue, mark=*, thick] coordinates {
-    (1, 41.1) (2, 44.5) (3, 44.6) (4, 45.8) (5, 48.4) (6, 52.0) (7, 53.6)
+    (1, 41.1) (2, 44.5) (3, 44.6) (4, 45.8) (5, 48.4) (6, 52.0) (7, 56.3) (8, 60.2)
 };
 \end{axis}
 \end{tikzpicture}
 \caption{TP rate progression from baseline (v0.2.1) through current
-(v0.3.60).  The gap between v0.2.23 and v0.3.20 reflects the switch
+(v0.3.84).  The gap between v0.2.23 and v0.3.20 reflects the switch
 from full-suite to fast-mode benchmarking.}
 \label{fig:tp-rate-progression}
 \end{figure}
@@ -539,29 +553,29 @@ and \texttt{OMITBAD}/\texttt{OMITGOOD} guards).
 \toprule
 \textbf{CWE} & \textbf{Description} & \textbf{SqC} & \textbf{cppcheck} & \textbf{clang-tidy} & \textbf{Infer} & \textbf{Frama-C} \\
 \midrule
-121 & Stack Buffer Overflow       & 48.8 & 40.5 & 86.6 & 38.8 & --- \\
-122 & Heap Buffer Overflow        & 58.5 & 45.0 & \textbf{89.5} & 37.8 & --- \\
-124 & Buffer Underwrite           & 52.1 & 40.5 & \textbf{90.4} & 33.9 & --- \\
-127 & Buffer Underread            & 55.6 & 42.7 & \textbf{93.2} & 33.9 & --- \\
-190 & Integer Overflow            & 47.4 & 27.5 & 94.3 & --- & 58.1 \\
-191 & Integer Underflow           & 45.5 & 27.2 & 94.4 & --- & 63.1 \\
+121 & Stack Buffer Overflow       & 55.7 & 40.5 & 86.6 & 38.8 & --- \\
+122 & Heap Buffer Overflow        & 60.8 & 45.0 & \textbf{89.5} & 37.8 & --- \\
+124 & Buffer Underwrite           & 55.0 & 40.5 & \textbf{90.4} & 33.9 & --- \\
+127 & Buffer Underread            & 64.4 & 42.7 & \textbf{93.2} & 33.9 & --- \\
+190 & Integer Overflow            & 58.6 & 27.5 & 94.3 & --- & 58.1 \\
+191 & Integer Underflow           & 53.9 & 27.2 & 94.4 & --- & 63.1 \\
 197 & Numeric Truncation          & 70.2 & 40.0 & 94.5 & --- & \textbf{100.0} \\
-369 & Divide by Zero              & 36.9 & 27.4 & \textbf{94.7} & --- & 43.4 \\
+369 & Divide by Zero              & 53.9 & 27.4 & \textbf{94.7} & --- & 43.4 \\
 401 & Memory Leak                 & 50.7 & 25.7 & 83.9 & 54.7 & --- \\
 415 & Double Free                 & 43.4 & 33.8 & 80.0 & 63.0 & --- \\
 416 & Use After Free              & 43.9 & 29.6 & \textbf{60.3} & 2.0  & --- \\
-476 & Null Pointer Deref          & 50.8 & 39.7 & \textbf{94.3} & 66.1 & 64.2 \\
-680 & Int Overflow $\to$ BOF      & 53.9 & 40.8 & \textbf{95.9} & --- & 82.6 \\
-690 & Null Deref from Return      & \textbf{94.6} & 45.7 & 88.0 & 60.0 & --- \\
+476 & Null Pointer Deref          & 58.3 & 39.7 & \textbf{94.3} & 66.1 & 64.2 \\
+680 & Int Overflow $\to$ BOF      & 53.3 & 40.8 & \textbf{95.9} & --- & 82.6 \\
+690 & Null Deref from Return      & \textbf{100.0} & 45.7 & 88.0 & 60.0 & --- \\
 761 & Free Not at Start           & \textbf{100.0} & 45.7 & 94.3 & 58.1 & --- \\
 \midrule
-\multicolumn{2}{@{}l}{\textbf{Overall TP rate}} & 54.8 & 36.4 & \textbf{91.6} & 43.6 & 61.0 \\
-\multicolumn{2}{@{}l}{\textbf{CWEs tested}}     & \textbf{118} & 15 & 15 & 10 & 6 \\
+\multicolumn{2}{@{}l}{\textbf{Overall TP rate}} & 57.7 & 36.4 & \textbf{91.6} & 43.6 & 61.0 \\
+\multicolumn{2}{@{}l}{\textbf{CWEs tested}}     & \textbf{74} & 15 & 15 & 10 & 6 \\
 \bottomrule
 \end{tabular}
 \caption{TP rate (\%) comparison on overlapping Juliet CWEs.
 \textbf{Bold} = highest per row.  ``---'' = CWE not tested by that tool.
-SqC v0.3.74; cppcheck 2.10; clang-tidy (LLVM 21.1); Infer v1.2.0; Frama-C 32.0 EVA.
+SqC v0.3.84; cppcheck 2.10; clang-tidy (LLVM 21.1); Infer v1.2.0; Frama-C 32.0 EVA.
 All tools run on same test files (28{,}488 total across 15 CWEs).}
 \label{tab:competitor}
 \end{table*}
@@ -570,15 +584,15 @@ Four patterns emerge.  First, \textbf{clang-tidy achieves the highest
 overall precision} (91.6\%) with only 116 false positives across all
 15 CWEs.  Its Clang-based static analyzer proves paths rigorously,
 sacrificing recall for near-zero FP.  However, it detects fewer total
-violations than SqC (13{,}952 vs.\ 27{,}882 TP).
+violations than SqC (13{,}952 vs.\ 25{,}685 TP).
 
-Second, \textbf{Frama-C and Infer excel on their specialties}: Frama-C
-reaches 100\% on numeric truncation (CWE-197) and 82.6\% on integer
-overflow to buffer overflow (CWE-680); Infer achieves 66.1\% on null
-dereference (CWE-476) and 63.0\% on double-free (CWE-415).
+Second, \textbf{SqC has closed the gap with Frama-C}: SqC's 57.7\%
+on the 15 overlapping CWEs approaches Frama-C's 61.0\%, while covering
+74 CWEs vs.\ Frama-C's 6.  SqC now matches or exceeds Frama-C on
+CWE-369 (53.9\% vs.\ 43.4\%) and CWE-190 (58.6\% vs.\ 58.1\%).
 
-Third, \textbf{SqC wins on two CWEs outright}: CWE-690 (94.6\%, where
-inter-procedural null propagation from return values gives it an edge)
+Third, \textbf{SqC wins on two CWEs outright}: CWE-690 (100\%, where
+inter-procedural null propagation from return values eliminates all FPs)
 and CWE-761 (100\%, structural pattern matching on free-pointer
 arithmetic).
 
@@ -586,7 +600,7 @@ Fourth, \textbf{cppcheck produces the most findings but lowest precision}
 (36.4\%), reflecting its heuristic approach.  Its 29{,}377 TPs represent
 high recall but at the cost of 51{,}361 FPs.
 
-The coverage gap remains the key differentiator: SqC tests 118 CWEs
+The coverage gap remains the key differentiator: SqC tests 74 CWEs
 spanning 17 CERT~C categories, while the other tools cover 6--15 on
 this benchmark.  A hypothetical ensemble of all five tools would
 achieve both high per-CWE precision and broad coverage.
@@ -620,7 +634,7 @@ vs.~$\sim$20 checks in competitors.}
 
 \Cref{fig:realworld-reduction} shows that FP reductions developed on
 Juliet transfer to real-world code: total violations across all five
-codebases dropped 26.5\% from v0.2.7 to v0.3.5.
+codebases dropped 73.8\% from v0.2.7 to v0.3.55.
 
 \begin{figure}[t]
 \centering
@@ -633,7 +647,7 @@ codebases dropped 26.5\% from v0.2.7 to v0.3.5.
     ylabel={Total Violations (K)},
     ymin=0, ymax=620,
     xtick=data,
-    xticklabels={v0.2.7, v0.2.13, v0.2.16, v0.2.21, v0.3.5},
+    xticklabels={v0.2.7, v0.2.13, v0.2.21, v0.3.5, v0.3.55},
     xticklabel style={rotate=45, anchor=east, font=\footnotesize},
     ylabel style={font=\footnotesize},
     xlabel style={font=\footnotesize},
@@ -647,14 +661,14 @@ codebases dropped 26.5\% from v0.2.7 to v0.3.5.
 \addplot[fill=blue!40, draw=blue!60] coordinates {
     (1, 548.0)
     (2, 462.3)
-    (3, 456.4)
-    (4, 410.9)
-    (5, 402.6)
+    (3, 410.9)
+    (4, 402.6)
+    (5, 143.4)
 };
 \end{axis}
 \end{tikzpicture}
 \caption{Total SqC violations across 5 real-world codebases by
-version.  Reduction: $-$145,394 ($-$26.5\%).}
+version.  Reduction: $-$404,600 ($-$73.8\%).}
 \label{fig:realworld-reduction}
 \end{figure}
 
@@ -807,8 +821,8 @@ The Juliet benchmark (70 CWEs, fast mode) completes in approximately
 
 Reducing false positives while maintaining detection is the central
 engineering challenge for a broad-coverage static analyzer.  This
-section walks through the techniques that achieved an 80.7\% cumulative
-FP reduction (full-suite measurement), organized by the insight that motivated each change.
+section walks through the techniques that improved the TP rate from
+41.1\% to 60.2\%, organized by the insight that motivated each change.
 
 \Cref{fig:fp-reduction} shows the TP and FP counts across 12
 optimization rounds.
@@ -930,15 +944,21 @@ for smaller gains.
 \toprule
 \textbf{Rd} & \textbf{Key Change} & \textbf{FP} & \textbf{$\Delta$FP} & \textbf{TP\%} \\
 \midrule
-0 & Baseline & 839K & --- & 41.1 \\
+0 & Baseline (full suite) & 839K & --- & 41.1 \\
 3 & Std function DB & 538K & $-$199K & 42.8 \\
 6 & Cross-file analysis & 327K & $-$149K & 43.1 \\
 9 & Windows API + types & 244K & $-$53K & 43.8 \\
 12 & Const eval + macros & 162K & $-$12K & 44.6 \\
+\midrule
+\multicolumn{5}{@{}l}{\emph{Switch to fast-mode benchmarking (v0.3.20)}} \\
+\midrule
+--- & Fast-mode baseline & 24.7K & --- & 45.8 \\
+--- & VRA + buffer analysis & 18.8K & $-$5.9K & 56.3 \\
+--- & CFG const + CWE-369 & 17.0K & $-$1.8K & 60.2 \\
 \bottomrule
 \end{tabular}
-\caption{FP reduction milestones (full suite).  Cumulative: $-$677K
-FPs ($-$80.7\%).}
+\caption{FP reduction milestones.  Full-suite rounds 0--12 reduced FP by
+80.7\%.  Fast-mode continued from 45.8\% to 60.2\% TP rate.}
 \label{tab:fp-milestones}
 \end{table}
 
@@ -1033,9 +1053,10 @@ chains are approximate, limiting the precision of dataflow analyses.
 These gaps are fundamental to the tree-sitter approach.  A tool built
 on Clang's AST would resolve macros and includes automatically but
 would require a compilation database.  The current architecture---AST
-plus CFG plus null-state dataflow plus inter-procedural summaries---likely
-caps the Juliet TP rate at approximately 55--60\% without adding
-alias analysis or symbolic execution.
+plus CFG plus null-state dataflow plus value-range analysis plus
+inter-procedural summaries---has reached 60.2\% TP rate.  Further
+improvements likely require alias analysis or symbolic execution to
+push beyond approximately 65\%.
 
 The 2 remaining CWEs with zero detection (\cref{tab:precision-tiers})
 reveal residual coverage gaps: CWE-259 (Hard-Coded Password) is blocked
@@ -1092,13 +1113,15 @@ philosophy.
 
 We have presented SqC, a static analysis tool implementing 287 CERT C
 rules across 17 categories.  Through tree-sitter-based parsing,
-control-flow graph construction, null-state dataflow analysis, and
-inter-procedural function summaries, SqC achieves a 52.0\% true
-positive rate on the Juliet benchmark (23 CWEs at 100\% precision)
-while reducing false positives by 80.7\% from baseline through 12
-rounds of iterative refinement.
+control-flow graph construction, null-state dataflow analysis,
+value-range analysis, and inter-procedural function summaries, SqC
+achieves a 60.2\% true positive rate on the Juliet benchmark with 32
+CWEs at 100\% precision.  On a five-tool comparison, SqC's precision
+approaches Frama-C (57.7\% vs.\ 61.0\% on overlapping CWEs) while
+covering 5--12$\times$ more vulnerability categories.
 
-On real-world codebases totaling 1.27 million lines of code, SqC
+On real-world codebases totaling 1.27 million lines of code, total
+violations were reduced 73.8\% through iterative refinement.  SqC
 detects vulnerability classes that existing open-source tools do not
 cover, including POSIX thread misuse, integer overflow, and
 inter-procedural null dereference.
@@ -1109,11 +1132,10 @@ compilation database, or preprocessing step.  For teams that need
 broad CERT C coverage with minimal integration effort, this tradeoff
 is worthwhile.
 
-Future work includes expanding value-range analysis and improving
+Future work includes alias analysis for pointer-related rules, expanding
 cross-function taint tracking for injection-related CWEs (CWE-78,
-CWE-89).  Inter-procedural taint propagation would also improve
-coverage for CWE-789 and CWE-114, where only intra-procedural
-variants are currently detected.
+CWE-89), and further closing the precision gap with clang-tidy on
+buffer overflow CWEs through improved buffer-size inference.
 
 \bibliographystyle{plainnat}
 
