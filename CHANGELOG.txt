@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.85] - 2026-04-05
+
+### Changed
+
+- MEM01-C: CFG-based forward reachability replaces naive "next statement is
+  NULL?" check. For each free(ptr), BFS through CFG successor blocks — only
+  flags when ptr is actually used or freed again on a reachable path. Suppresses
+  when ptr goes out of scope or is reassigned. Declaration-as-reassignment
+  handling for loop-scoped variables. Inline CFG building fallback for tests.
+- CWE-415: 43.4% → 58.2% (+14.8pp). CWE-416: 43.9% → 92.9% (+49.0pp).
+- MEM01-C: -654 FP, -204 TP (3.2:1 ratio). Rule TP rate 41.7% → 71.8%.
+- Overall: 25,481 TP / 16,311 FP. TP rate 60.2% → 61.0% (+0.8pp).
+  Zero regressions across all 74 CWEs.
+
 ## [0.3.84] - 2026-04-05
 
 ### Changed
