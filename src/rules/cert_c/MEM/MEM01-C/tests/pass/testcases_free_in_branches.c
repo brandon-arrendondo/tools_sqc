@@ -1,8 +1,8 @@
 /*
  * Rule: MEM01-C
  * Source: testcases
- * Status: FAIL - Should trigger MEM01-C violation
- * Description: Free in control flow branches without NULL assignment
+ * Status: PASS - Should NOT trigger MEM01-C violation
+ * Description: Free in control flow branches - no reuse after free
  */
 
 #include <stdlib.h>
@@ -13,10 +13,10 @@ void free_in_if_else(int condition) {
 
     if (condition) {
         /* Process one way */
-        free(data);  /* Violation: not set to NULL */
+        free(data);  /* No reuse after free */
     } else {
         /* Process another way */
-        free(data);  /* Violation: not set to NULL */
+        free(data);  /* No reuse after free */
     }
 }
 
@@ -25,6 +25,6 @@ void free_in_loop(int count) {
         char *tmp = malloc(64);
         if (tmp == NULL) continue;
         /* Use tmp */
-        free(tmp);  /* Violation: not set to NULL */
+        free(tmp);  /* Loop-scoped, no reuse */
     }
 }
