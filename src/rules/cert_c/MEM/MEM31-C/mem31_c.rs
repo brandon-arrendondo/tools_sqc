@@ -1,10 +1,23 @@
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils;
+use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
-pub struct Mem31C;
+pub struct Mem31C {
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+}
+
+impl Mem31C {
+    pub fn new() -> Self {
+        Self {
+            function_summaries: RefCell::new(HashMap::new()),
+        }
+    }
+}
 
 impl CertRule for Mem31C {
     fn rule_id(&self) -> &'static str {
@@ -27,12 +40,17 @@ impl CertRule for Mem31C {
         "MEM31-C"
     }
 
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+    }
+
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
         let mut violations = Vec::new();
+        let summaries = self.function_summaries.borrow();
 
         // Analyze each function independently for memory leaks
         if node.kind() == "function_definition" {
-            let mut analyzer = MemoryLeakAnalyzer::new();
+            let mut analyzer = MemoryLeakAnalyzer::new(&summaries);
             analyzer.analyze_function(node, source, &mut violations);
         }
 
@@ -47,7 +65,7 @@ impl CertRule for Mem31C {
     }
 }
 
-struct MemoryLeakAnalyzer {
+struct MemoryLeakAnalyzer<'a> {
     // Track allocated memory by variable name
     allocated_memory: HashMap<String, AllocInfo>,
     // Track freed memory: var_name -> (line, column) of free call
@@ -72,6 +90,8 @@ struct MemoryLeakAnalyzer {
     signal_registered: bool,
     // Track loop allocation/free patterns: array_base -> (alloc_condition, free_condition)
     loop_array_patterns: HashMap<String, (Option<String>, Option<String>)>,
+    // Function summaries from prescan for inter-procedural analysis
+    function_summaries: &'a HashMap<String, FunctionSummary>,
 }
 
 #[derive(Debug, Clone)]
@@ -81,8 +101,8 @@ struct AllocInfo {
     alloc_type: String,
 }
 
-impl MemoryLeakAnalyzer {
-    fn new() -> Self {
+impl<'a> MemoryLeakAnalyzer<'a> {
+    fn new(function_summaries: &'a HashMap<String, FunctionSummary>) -> Self {
         Self {
             allocated_memory: HashMap::new(),
             freed_memory: HashMap::new(),
@@ -96,6 +116,7 @@ impl MemoryLeakAnalyzer {
             realloc_relations: HashMap::new(),
             signal_registered: false,
             loop_array_patterns: HashMap::new(),
+            function_summaries,
         }
     }
 
@@ -583,8 +604,14 @@ impl MemoryLeakAnalyzer {
                             });
                         }
                     }
-                    // Keep true_freed state (conservative - assume path where it was freed)
-                    self.freed_memory = true_freed;
+                    // Use UNION of both branches: if freed in either path, consider
+                    // it freed. The conditional leak check above already reported
+                    // the case where only one branch frees.
+                    let mut merged = true_freed;
+                    for (k, v) in else_freed {
+                        merged.entry(k).or_insert(v);
+                    }
+                    self.freed_memory = merged;
                 }
                 // else: no else clause - just keep current state
             }
@@ -1031,9 +1058,34 @@ impl MemoryLeakAnalyzer {
                     }
                 }
             } else {
-                // Check if passing allocated memory to a function (might transfer ownership)
-                // For now, we'll be conservative and not mark it as escaped
-                // unless it's a known ownership-transferring function
+                // Check if passing allocated memory to a function that frees it.
+                // Use prescan function summaries to determine if the callee frees
+                // the parameter at the corresponding index.
+                if let Some(summary) = self.function_summaries.get(&func_name) {
+                    if let Some(arguments) = node.child_by_field_name("arguments") {
+                        let mut param_idx = 0usize;
+                        for i in 0..arguments.child_count() {
+                            if let Some(arg) = arguments.child(i) {
+                                if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                                    continue;
+                                }
+                                if arg.kind() == "identifier" {
+                                    let var_name = ast_utils::get_node_text_owned(&arg, source);
+                                    if self.allocated_memory.contains_key(&var_name)
+                                        && summary.frees_params.contains(&param_idx)
+                                    {
+                                        let free_pos = node.start_position();
+                                        self.freed_memory.insert(
+                                            var_name,
+                                            (free_pos.row + 1, free_pos.column + 1),
+                                        );
+                                    }
+                                }
+                                param_idx += 1;
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -1062,7 +1062,7 @@ impl RuleRegistry {
         registry.register(Box::new(mem11_c::Mem11C));
         registry.register(Box::new(mem12_c::Mem12C));
         registry.register(Box::new(mem30_c::Mem30C));
-        registry.register(Box::new(mem31_c::Mem31C));
+        registry.register(Box::new(mem31_c::Mem31C::new()));
         registry.register(Box::new(mem33_c::Mem33C::new()));
         registry.register(Box::new(mem34_c::Mem34C));
         registry.register(Box::new(mem07_c::Mem07C));
