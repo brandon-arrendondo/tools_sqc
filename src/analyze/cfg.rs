@@ -5,6 +5,7 @@
 //! a sequence of statements with a single entry and single exit. Edges represent
 //! control flow between blocks (fallthrough, branches, back edges, returns).
 
+use super::const_eval::MacroConstantMap;
 use std::collections::HashMap;
 use tree_sitter::Node;
 
@@ -98,10 +99,12 @@ struct CfgBuilder {
     /// Pending goto edges: (source_block, label_name) to wire after all labels are seen.
     pending_gotos: Vec<(BlockId, String)>,
     function_start_byte: usize,
+    /// File-level constants (static const int, #define) for condition evaluation.
+    constants: MacroConstantMap,
 }
 
 impl CfgBuilder {
-    fn new(function_start_byte: usize) -> Self {
+    fn new(function_start_byte: usize, constants: MacroConstantMap) -> Self {
         let entry_block = BasicBlock {
             id: 0,
             statements: Vec::new(),
@@ -116,6 +119,7 @@ impl CfgBuilder {
             label_blocks: HashMap::new(),
             pending_gotos: Vec::new(),
             function_start_byte,
+            constants,
         }
     }
 
@@ -249,45 +253,57 @@ impl CfgBuilder {
     }
 
     fn process_if<'a>(&mut self, node: &Node<'a>, source: &str) {
-        // Add the condition to the current block
-        if let Some(condition) = node.child_by_field_name("condition") {
+        // Add the condition to the current block and check for constant value
+        let const_val = if let Some(condition) = node.child_by_field_name("condition") {
             self.add_statement(condition.start_byte(), condition.end_byte());
-            // Record condition range for edge refinement (null-state analysis)
             if let Some(block) = self.blocks.get_mut(self.current_block) {
                 block.condition_range = Some((condition.start_byte(), condition.end_byte()));
             }
-        }
+            evaluate_constant_condition(&condition, source, &self.constants)
+        } else {
+            None
+        };
 
         let condition_block = self.current_block;
         let then_block = self.new_block();
         let join_block = self.new_block();
 
-        // True branch
-        self.add_edge(condition_block, then_block, CfgEdge::TrueBranch);
-        self.current_block = then_block;
+        // True branch — skip if condition is constant false
+        if const_val != Some(false) {
+            self.add_edge(condition_block, then_block, CfgEdge::TrueBranch);
+            self.current_block = then_block;
 
-        if let Some(consequence) = node.child_by_field_name("consequence") {
-            self.process_statement(&consequence, source);
-        }
-        self.add_edge(self.current_block, join_block, CfgEdge::Fallthrough);
-
-        // False branch
-        if let Some(alternative) = node.child_by_field_name("alternative") {
-            let else_block = self.new_block();
-            self.add_edge(condition_block, else_block, CfgEdge::FalseBranch);
-            self.current_block = else_block;
-
-            // else_clause has a child that is the actual statement
-            for i in 0..alternative.child_count() {
-                if let Some(child) = alternative.child(i) {
-                    if child.kind() != "else" {
-                        self.process_statement(&child, source);
-                    }
-                }
+            if let Some(consequence) = node.child_by_field_name("consequence") {
+                self.process_statement(&consequence, source);
             }
             self.add_edge(self.current_block, join_block, CfgEdge::Fallthrough);
-        } else {
-            self.add_edge(condition_block, join_block, CfgEdge::FalseBranch);
+        }
+
+        // False branch — skip if condition is constant true
+        if const_val != Some(true) {
+            if let Some(alternative) = node.child_by_field_name("alternative") {
+                let else_block = self.new_block();
+                self.add_edge(condition_block, else_block, CfgEdge::FalseBranch);
+                self.current_block = else_block;
+
+                // else_clause has a child that is the actual statement
+                for i in 0..alternative.child_count() {
+                    if let Some(child) = alternative.child(i) {
+                        if child.kind() != "else" {
+                            self.process_statement(&child, source);
+                        }
+                    }
+                }
+                self.add_edge(self.current_block, join_block, CfgEdge::Fallthrough);
+            } else {
+                self.add_edge(condition_block, join_block, CfgEdge::FalseBranch);
+            }
+        }
+
+        // If condition is constant, ensure join block is reachable from exactly one side.
+        // When the constant makes one branch dead AND there's no else, connect directly.
+        if const_val == Some(false) && node.child_by_field_name("alternative").is_none() {
+            self.add_edge(condition_block, join_block, CfgEdge::Fallthrough);
         }
 
         self.current_block = join_block;
@@ -299,18 +315,25 @@ impl CfgBuilder {
 
         // Add condition to header block
         self.current_block = header_block;
-        if let Some(condition) = node.child_by_field_name("condition") {
+        let const_val = if let Some(condition) = node.child_by_field_name("condition") {
             self.add_statement(condition.start_byte(), condition.end_byte());
             if let Some(block) = self.blocks.get_mut(header_block) {
                 block.condition_range = Some((condition.start_byte(), condition.end_byte()));
             }
-        }
+            evaluate_constant_condition(&condition, source, &self.constants)
+        } else {
+            None
+        };
 
         let body_block = self.new_block();
         let exit_block = self.new_block();
 
         self.add_edge(header_block, body_block, CfgEdge::TrueBranch);
-        self.add_edge(header_block, exit_block, CfgEdge::FalseBranch);
+        // Skip FalseBranch for while(1) — the loop never exits via condition.
+        // Exit is only reachable via break edges from the body.
+        if const_val != Some(true) {
+            self.add_edge(header_block, exit_block, CfgEdge::FalseBranch);
+        }
 
         // Process body
         self.loop_stack.push((header_block, exit_block));
@@ -333,21 +356,28 @@ impl CfgBuilder {
         let header_block = self.new_block();
         self.add_edge(self.current_block, header_block, CfgEdge::Fallthrough);
 
-        // Condition in header block
+        // Condition in header block — for(;;) has no condition (always-true)
         self.current_block = header_block;
-        if let Some(condition) = node.child_by_field_name("condition") {
+        let const_val = if let Some(condition) = node.child_by_field_name("condition") {
             self.add_statement(condition.start_byte(), condition.end_byte());
             if let Some(block) = self.blocks.get_mut(header_block) {
                 block.condition_range = Some((condition.start_byte(), condition.end_byte()));
             }
-        }
+            evaluate_constant_condition(&condition, source, &self.constants)
+        } else {
+            // No condition = for(;;) = always true
+            Some(true)
+        };
 
         let body_block = self.new_block();
         let update_block = self.new_block();
         let exit_block = self.new_block();
 
         self.add_edge(header_block, body_block, CfgEdge::TrueBranch);
-        self.add_edge(header_block, exit_block, CfgEdge::FalseBranch);
+        // Skip FalseBranch for for(;;) or for(;1;) — loop only exits via break
+        if const_val != Some(true) {
+            self.add_edge(header_block, exit_block, CfgEdge::FalseBranch);
+        }
 
         // Process body
         self.loop_stack.push((update_block, exit_block));
@@ -446,9 +476,107 @@ impl CfgBuilder {
     }
 }
 
+/// Evaluate whether a condition node is a compile-time constant.
+/// Returns `Some(true)` for truthy constants (non-zero integer, `true`),
+/// `Some(false)` for `0` / `false`, and `None` for non-constant expressions.
+fn evaluate_constant_condition(
+    condition: &Node,
+    source: &str,
+    constants: &MacroConstantMap,
+) -> Option<bool> {
+    // The condition field of an if/while is a parenthesized_expression in C.
+    let inner = unwrap_parens_cfg(condition);
+    match inner.kind() {
+        "number_literal" => {
+            let text = inner.utf8_text(source.as_bytes()).ok()?;
+            let trimmed = text.trim();
+            if trimmed == "0" {
+                Some(false)
+            } else {
+                // Accept any integer literal that isn't 0 as truthy
+                trimmed.parse::<i64>().ok().map(|n| n != 0)
+            }
+        }
+        "true" => Some(true),
+        "false" => Some(false),
+        // Resolve identifiers via file-level constants (static const int, #define).
+        // E.g., `static const int STATIC_CONST_TRUE = 1;` → if(STATIC_CONST_TRUE) is truthy.
+        "identifier" => {
+            let name = inner.utf8_text(source.as_bytes()).ok()?;
+            constants.get(name).map(|&v| v != 0)
+        }
+        // Handle constant comparisons: 5==5, 5!=5, etc.
+        "binary_expression" => {
+            let left = inner.child_by_field_name("left")?;
+            let operator = inner.child_by_field_name("operator")?;
+            let right = inner.child_by_field_name("right")?;
+            let left = unwrap_parens_cfg(&left);
+            let right = unwrap_parens_cfg(&right);
+
+            // Resolve each operand: number literal or identifier via constants
+            let lv = resolve_constant_operand(&left, source, constants)?;
+            let rv = resolve_constant_operand(&right, source, constants)?;
+
+            let op = operator.utf8_text(source.as_bytes()).ok()?;
+            match op.trim() {
+                "==" => Some(lv == rv),
+                "!=" => Some(lv != rv),
+                "<" => Some(lv < rv),
+                ">" => Some(lv > rv),
+                "<=" => Some(lv <= rv),
+                ">=" => Some(lv >= rv),
+                _ => None,
+            }
+        }
+        _ => None,
+    }
+}
+
+/// Resolve a single operand node to an i64 value (number literal or constant identifier).
+fn resolve_constant_operand(
+    node: &Node,
+    source: &str,
+    constants: &MacroConstantMap,
+) -> Option<i64> {
+    match node.kind() {
+        "number_literal" => {
+            let text = node.utf8_text(source.as_bytes()).ok()?.trim().to_string();
+            text.parse::<i64>().ok()
+        }
+        "identifier" => {
+            let name = node.utf8_text(source.as_bytes()).ok()?;
+            constants.get(name).copied()
+        }
+        _ => None,
+    }
+}
+
+/// Unwrap parenthesized_expression nodes for CFG condition evaluation.
+fn unwrap_parens_cfg<'a>(node: &'a Node<'a>) -> Node<'a> {
+    let mut n = *node;
+    while n.kind() == "parenthesized_expression" {
+        if let Some(inner) = n.child(1) {
+            n = inner;
+        } else {
+            break;
+        }
+    }
+    n
+}
+
 /// Build a CFG from a function_definition node.
 /// Returns None if the node is not a function_definition or has no body.
 pub fn build_function_cfg(func_node: &Node, source: &str) -> Option<FunctionCfg> {
+    build_function_cfg_with_constants(func_node, source, &MacroConstantMap::new())
+}
+
+/// Build a CFG with file-level constant resolution (static const int, #define).
+/// This enables dead-branch pruning for patterns like `if(STATIC_CONST_TRUE)`.
+pub fn build_function_cfg_with_constants(
+    func_node: &Node,
+    source: &str,
+    constants: &MacroConstantMap,
+) -> Option<FunctionCfg> {
     if func_node.kind() != "function_definition" {
         return None;
     }
@@ -458,7 +586,7 @@ pub fn build_function_cfg(func_node: &Node, source: &str) -> Option<FunctionCfg>
         return None;
     }
 
-    let mut builder = CfgBuilder::new(func_node.start_byte());
+    let mut builder = CfgBuilder::new(func_node.start_byte(), constants.clone());
     builder.build_from_compound_statement(&body, source);
     Some(builder.build())
 }

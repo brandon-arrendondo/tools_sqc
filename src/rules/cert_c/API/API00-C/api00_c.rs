@@ -201,6 +201,14 @@ impl Api00C {
                         }
                     }
 
+                    // Suppress relay-only parameters: if the parameter is only
+                    // passed as an argument to other function calls (never
+                    // dereferenced, indexed, or member-accessed locally), the
+                    // function is a relay and validation is the callee's concern.
+                    if self.is_relay_only_parameter(&body, param_name, source) {
+                        continue;
+                    }
+
                     // Check if the parameter is actually used in the function
                     if self.is_parameter_used(&body, param_name, source) {
                         self.report_violation(
@@ -677,6 +685,102 @@ impl Api00C {
     }
 
     /// Check if a parameter is actually used in the function body
+    /// Check if a parameter is only relayed to callees that validate it.
+    /// Returns true when the parameter is never directly used and every callee
+    /// that receives it either checks for null or itself relays to a checker.
+    fn is_relay_only_parameter(&self, body: &Node, param_name: &str, source: &str) -> bool {
+        let summaries = self.function_summaries.borrow();
+        let mut relay_callees: Vec<(String, usize)> = Vec::new();
+        let mut found_direct_use = false;
+        self.classify_param_uses(
+            body,
+            param_name,
+            source,
+            &mut relay_callees,
+            &mut found_direct_use,
+        );
+        if found_direct_use || relay_callees.is_empty() {
+            return false;
+        }
+        // Every callee that receives this parameter must validate it
+        for (callee_name, arg_idx) in &relay_callees {
+            if let Some(callee_summary) = summaries.get(callee_name.as_str()) {
+                if !callee_summary.checks_null_params.contains(arg_idx) {
+                    return false; // Callee doesn't validate → not safe to suppress
+                }
+            } else {
+                return false; // Unknown callee → not safe
+            }
+        }
+        true
+    }
+
+    fn classify_param_uses(
+        &self,
+        node: &Node,
+        param_name: &str,
+        source: &str,
+        relay_callees: &mut Vec<(String, usize)>,
+        found_direct_use: &mut bool,
+    ) {
+        if node.kind() == "identifier" {
+            let text = get_node_text(node, source);
+            if text == param_name {
+                if let Some(parent) = node.parent() {
+                    // Check: is this inside a call_expression's argument list?
+                    if parent.kind() == "argument_list" {
+                        if let Some(call_expr) = parent.parent() {
+                            if call_expr.kind() == "call_expression" {
+                                if let Some(func) = call_expr.child_by_field_name("function") {
+                                    let callee = get_node_text(&func, source);
+                                    // Determine which positional arg this is
+                                    let arg_idx = self.get_arg_index(node, &parent);
+                                    relay_callees.push((callee.to_string(), arg_idx));
+                                    return;
+                                }
+                            }
+                        }
+                        *found_direct_use = true;
+                        return;
+                    }
+                    if self.is_in_validation_context(node) || self.is_in_void_cast(node, source) {
+                        return;
+                    }
+                }
+                *found_direct_use = true;
+            }
+        }
+
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.classify_param_uses(
+                    &child,
+                    param_name,
+                    source,
+                    relay_callees,
+                    found_direct_use,
+                );
+            }
+        }
+    }
+
+    /// Get the positional index of an argument within an argument_list.
+    fn get_arg_index(&self, arg_node: &Node, arg_list: &Node) -> usize {
+        let mut idx = 0;
+        for i in 0..arg_list.child_count() {
+            if let Some(child) = arg_list.child(i) {
+                if child.kind() == "(" || child.kind() == ")" || child.kind() == "," {
+                    continue;
+                }
+                if child.id() == arg_node.id() {
+                    return idx;
+                }
+                idx += 1;
+            }
+        }
+        idx
+    }
+
     fn is_parameter_used(&self, body: &Node, param_name: &str, source: &str) -> bool {
         self.check_parameter_usage(body, param_name, source)
     }

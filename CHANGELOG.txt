@@ -6,6 +6,189 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.84] - 2026-04-05
+
+### Changed
+
+- INT33-C: all-assignments-nonzero check for divisor variables. If ALL
+  assignments to the divisor in the containing function are non-zero constants,
+  the division is safe. Loop update detection (i--, i++) prevents false
+  suppression of loop variables.
+- INT33-C: fabs()/fabsf()/fabsl() magnitude guard recognition. Float
+  divide-by-zero guards like `if(fabs(data) > 0.000001)` now suppress.
+- FLP03-C: constant-aware divisor non-zero detection. Two-strategy approach:
+  all-assignments-nonzero, and feasible-branch walk using file-scope constants
+  to determine last reaching assignment.
+- CFG builder: resolve static const int variables as constant conditions.
+  Enables dead-branch pruning for `if(STATIC_CONST_TRUE)` patterns.
+- const_eval: collect file-scope `static const int` declarations as constants.
+- const_eval: float literal to i64 fallback (e.g., 2.0F → 2) for VRA tracking.
+- CWE-369 TP rate 37.9% → 53.9% (+16.0pp). -882 FP, -8 TP overall.
+  Bonus: INT31-C -144 FP, EXP34-C -24 FP from CFG constant resolution.
+
+## [0.3.83] - 2026-04-05
+
+### Changed
+
+- INT32-C/INT30-C: VRA now consulted for increment/decrement operations.
+  check_increment_decrement() uses expression_fits_in_signed/unsigned_vra()
+  to suppress data++ when VRA proves the operand is safely within bounds.
+- const_eval: try_evaluate_range() handles update_expression nodes (++/--)
+  by resolving the argument range and adding/subtracting 1.
+- const_eval: try_evaluate_text() resolves sizeof(type) via resolve_sizeof_type()
+  and sizeof(variable) conservatively as 1 (sizeof >= 1 on all platforms).
+  Enables CHAR_ARRAY_SIZE = (3 * sizeof(data) + 2) macro resolution.
+- CWE-190: 47.4% → 58.6% (+11.2pp). CWE-191: 45.5% → 53.9% (+8.4pp).
+- Overall: -2,760 FP, -1,388 TP. TP rate 56.8% → 59.0% (+2.2pp).
+
+## [0.3.82] - 2026-04-05
+
+### Changed
+
+- CFG: constant condition pruning for if(0)/if(1)/while(1)/for(;;).
+  Only the feasible branch edge is emitted, eliminating infeasible-path FPs.
+  Also evaluates literal comparisons (5==5, 5!=5) in conditions.
+- null_state: walk switch_statement bodies for declarations and assignments.
+  Previously the switch was treated as a single opaque statement in the CFG.
+- EXP34-C: AST-level null guard fallback — walk ancestors for enclosing
+  if(var != NULL) blocks to suppress dereferences inside null guards that
+  the CFG cannot model (e.g., inside switch case bodies).
+- API00-C: relay function suppression — skip validation warning when a
+  pointer parameter is only passed to callees that check for null.
+
+### Benchmark
+
+- Overall: +3 TP, −378 FP (56.3% → 56.8%). Zero regressions.
+- CWE-476: +3 TP, −70 FP (50.8% → 56.3%).
+- CWE-690: −38 FP (94.6% → 100.0% TP rate).
+- Spillover: CWE-195 −150 FP, CWE-369 −60 FP, CWE-680 −30 FP.
+- Per-rule: INT31-C −180 FP, EXP34-C −90 FP, INT33-C −60 FP, API00-C −18 FP.
+
+## [0.3.81] - 2026-04-05
+
+### Changed
+
+- ARR38-C: extract_strlen_from_sizeof_expr() helper extracts strlen/wcslen
+  argument from strlen(x)*sizeof(T) patterns.  Added to check_buffer_size_mismatch
+  and check_string_size_parameter: compares source vs dest buffer sizes.
+  When source > dest, flags overflow (recovers TPs lost by Fix 2 blanket exemption).
+
+### Benchmark
+
+- +200 TP, +48 FP (4.2:1 ratio). CWE-121 54.3% → 55.7%.
+
+## [0.3.80] - 2026-04-05
+
+### Changed
+
+- ARR38-C: is_size_within_known_buffer() helper — when check_size_exceeds_buffer
+  confirms size fits, skip is_hardcoded_large_size/count heuristics.
+  Applied to check_string_size_parameter, check_buffer_function,
+  check_wide_string_function.
+
+### Benchmark
+
+- −272 FP, −48 TP (5.7:1 ratio). CWE-121 51.6% → 54.3%.
+
+## [0.3.79] - 2026-04-04
+
+### Changed
+
+- STR31-C: get_memset_content_length() scans enclosing function for
+  memset/wmemset initialization + null-termination pattern.  Infers strlen(data)
+  from fill count.  Max-across-branches for control flow variants.
+
+### Benchmark
+
+- −204 FP, 0 TP (pure FP elimination). CWE-121 +1.4pp, CWE-122 +1.7pp.
+
+## [0.3.78] - 2026-04-04
+
+### Changed
+
+- STR31-C: is_string_memcpy() now checks next 3 lines for manual null-termination
+  (dest[...] = '\0').  If programmer explicitly null-terminates after memcpy,
+  STR31-C concern is addressed; buffer overflow is a separate ARR38-C concern.
+
+### Benchmark
+
+- −306 FP, −220 TP (1.4:1 ratio). CWE-126 +1.2pp, CWE-121 +0.3pp.
+
+## [0.3.77] - 2026-04-04
+
+### Changed
+
+- ARR38-C: is_dangerous_size_calculation() exempts strlen(x)*sizeof(T) —
+  legitimate byte count, not sizeof double-scaling.
+
+### Benchmark
+
+- −1012 FP, −728 TP (1.4:1 ratio). CWE-121 48.8% → 49.9%, CWE-126 +1.5pp.
+
+## [0.3.76] - 2026-04-04
+
+### Changed
+
+- STR31-C: find_buffer_size() follows `data = dataBuffer` pointer aliases
+  (function-scoped, excludes pointer arithmetic).  Recognizes ALLOCA(N*sizeof(T))
+  and ALLOCA(N).  Array size arithmetic (N*M, N+M, N-M) also supported.
+
+### Benchmark
+
+- −272 FP, −8 TP (34:1 ratio). CWE-127 55.6% → 64.4%, CWE-124 52.1% → 55.0%.
+
+## [0.3.75] - 2026-04-03
+
+### Added
+
+- bench/competitors.py: benchmark runner for Infer and Frama-C on Juliet.
+  Runs competitor tools on overlapping CWE subsets, classifies TP/FP using
+  Juliet ground truth (OMITBAD/OMITGOOD guards + procedure names).
+  Infer: 11 CWEs (memory safety). Frama-C EVA: 6 CWEs (value analysis).
+- playbooks/install-static-analyzers.yml: Ansible playbook for installing
+  Infer v1.2.0 (prebuilt) and Frama-C 32.0 Germanium (via opam) on Debian 12.
+- docs/benchmark-setup.rst: Infer and Frama-C installation instructions.
+- docs/benchmark-running.rst: competitor benchmark usage, timing, classification.
+- paper/sqc.tex: preliminary Infer/Frama-C comparison data (CWE-476 pilot).
+- PLAN.md: split task 33 into 33a (Infer) and 33b (Frama-C) with run commands.
+
+## [0.3.74] - 2026-04-03
+
+### Added
+
+- is_full_range_return_function() denylist in std_functions.rs: atoi, atol,
+  atoll, strtol, strtoul, strtoll, strtoull, strtoimax, strtoumax, wcstol,
+  wcstoul, wcstoll, wcstoull, wcstoimax, wcstoumax, rand, random, lrand48,
+  mrand48, rand_r, RAND32, ntohl, ntohs. Functions whose return values can
+  span the full integer range are no longer suppressed by the opaque
+  increment heuristic in INT32-C and INT30-C.
+- resolve_identifier_call_name() in INT32-C/INT30-C: traces the callee
+  function name through switch, case, for, while, if, compound, and preproc
+  blocks. Enables the denylist check for deeply nested call assignments.
+- VRA collect_local_decl_types(): records declared types for uninitialized
+  local variables (e.g. `int data;`). Prevents fallback to [i64::MIN,
+  i64::MAX] when the variable is later assigned from an unevaluable call.
+- VRA local_types lookup in process_expression_range(): uses declared type
+  as fallback when existing VRA entry has no type info.
+
+### Fixed
+
+- INT32-C/INT30-C: is_small_increment_of_opaque no longer blanket-suppresses
+  `atoi(buf) + 1`, `rand() + 1`, and similar patterns. Known full-range
+  functions bypass suppression. Local functions with wide VRA return ranges
+  also bypass. strlen()+1 and other bounded-return patterns remain suppressed.
+- VRA: `int data; data = atoi(buf);` now correctly uses [INT_MIN, INT_MAX]
+  instead of [i64::MIN, i64::MAX] for the fallback range. Fixes incorrect
+  VRA suppression of overflow checks for uninit-declared variables.
+
+### Results
+
+- CWE-190: 2,322→2,538 TP (+216), FP -6. TP rate 45.1%→47.4% (+2.3pp).
+- CWE-191: 1,973→2,091 TP (+118), FP -6. TP rate 44.0%→45.5% (+1.5pp).
+- CWE-680: 559→617 TP (+58), FP unchanged. TP rate 51.4%→53.9% (+2.5pp).
+- Overall: +392 TP, -12 FP. TP rate 54.4%→54.8% (+0.4pp). Per-file 45.4%→45.7%.
+- Zero CWE regressions. INT32-C: +360 TP / -12 FP (30:1 improvement ratio).
+
 ## [0.3.67] - 2026-04-02
 
 ### Fixed

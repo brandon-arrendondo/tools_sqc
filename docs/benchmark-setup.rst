@@ -59,6 +59,62 @@ Required for clang-tidy on projects with build systems:
 
     sudo apt install -y bear
 
+Facebook Infer
+~~~~~~~~~~~~~~
+
+Infer v1.2.0 is installed from prebuilt Linux binaries.  The playbook at
+``playbooks/install-static-analyzers.yml`` automates this:
+
+.. code-block:: bash
+
+    ansible-playbook playbooks/install-static-analyzers.yml \
+      -i "localhost," -c local --ask-become-pass
+
+Manual install:
+
+.. code-block:: bash
+
+    # libtinfo5 required (Infer links against libtinfo.so.5)
+    sudo apt install -y libtinfo5 || \
+      sudo ln -s /usr/lib/x86_64-linux-gnu/libtinfo.so.6 \
+                  /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+
+    VERSION=1.2.0
+    curl -sSL "https://github.com/facebook/infer/releases/download/v$VERSION/infer-linux-x86_64-v$VERSION.tar.xz" \
+      | sudo tar -C /opt -xJ
+    sudo ln -s "/opt/infer-linux-x86_64-v$VERSION/bin/infer" /usr/local/bin/infer
+
+    # Verify
+    infer --version
+    # Expected: Infer version v1.2.0
+
+Frama-C
+~~~~~~~
+
+Frama-C is installed via opam (the Debian 12 apt package is version 25/Manganese,
+too old for benchmarking).  The playbook handles this automatically.
+
+Manual install:
+
+.. code-block:: bash
+
+    sudo apt install -y opam gcc g++ make m4 pkg-config autoconf \
+      libgmp-dev zlib1g-dev libgtk-3-dev libgtksourceview-3.0-dev graphviz
+
+    opam init --bare --no-setup --disable-sandboxing
+    opam switch create default 4.14.2
+    eval $(opam env)
+    opam install -y frama-c
+
+    # Verify (requires eval $(opam env) in each shell session)
+    frama-c -version
+    # Expected: 32.0 (Germanium)
+
+.. note::
+
+    Add ``eval $(opam env)`` to your shell profile (``~/.bashrc``) to make
+    ``frama-c`` available without manual activation.
+
 Juliet Test Suite Setup
 -----------------------
 
@@ -468,6 +524,21 @@ Output Format Reference
     [{"rule_id": "ARR30-C", "severity": "High", "file": "example.c", "line": 5, "message": "..."}]
 
 **sqc SARIF**: SARIF 2.1.0 compatible output with ``ruleId`` matching CERT C rule IDs.
+
+**Infer JSON** (``infer-out/report.json``):
+
+.. code-block:: json
+
+    [{"bug_type": "NULLPTR_DEREFERENCE", "procedure": "func_bad",
+      "file": "test.c", "line": 26, "severity": "ERROR"}]
+
+**Frama-C EVA** (stderr, no structured output):
+
+::
+
+    [eva:alarm] test.c:26: Warning:
+      out of bounds read. assert \valid_read(&ptr->field);
+    assertion 'Eva,mem_access' got final status invalid.
 
 Distributed Benchmarking with GNU Parallel
 -------------------------------------------

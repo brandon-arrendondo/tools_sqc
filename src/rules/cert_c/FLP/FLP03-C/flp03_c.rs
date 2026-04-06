@@ -46,6 +46,7 @@
 //! ```
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::const_eval;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use std::collections::HashSet;
@@ -264,6 +265,18 @@ impl Flp03C {
                     return;
                 }
 
+                // Check if the divisor is provably non-zero (all assignments
+                // to it are non-zero constants). Catches goodG2B pattern:
+                // `data = 2.0F; 100.0 / data;`
+                if let Some(right) = node.child_by_field_name("right") {
+                    if right.kind() == "identifier" {
+                        let var_name = get_node_text(&right, source);
+                        if Self::divisor_provably_nonzero_fp(node, var_name, source) {
+                            return;
+                        }
+                    }
+                }
+
                 // Check if there's error checking in the containing function
                 if let Some(containing_func) = self.find_containing_function(node) {
                     if !self.contains_fp_error_checking(&containing_func, source) {
@@ -356,6 +369,257 @@ impl Flp03C {
         }
 
         false
+    }
+
+    /// Check if the divisor variable is provably non-zero at the division point.
+    /// Two strategies:
+    /// 1. ALL assignments in the function are non-zero constants (catches `data=-1; data=7;`)
+    /// 2. Constant-aware walk: track last assignment through feasible branches,
+    ///    using file-scope constants to prune dead code (catches branched patterns
+    ///    like `data=0.0F; if(STATIC_CONST_TRUE) { data=2.0F; } use(data);`)
+    fn divisor_provably_nonzero_fp(div_node: &Node, var_name: &str, source: &str) -> bool {
+        // Find containing function and translation unit root
+        let mut current = Some(*div_node);
+        let func = loop {
+            match current {
+                Some(n) if n.kind() == "function_definition" => break n,
+                Some(n) => current = n.parent(),
+                None => return false,
+            }
+        };
+        let body = match func.child_by_field_name("body") {
+            Some(b) => b,
+            None => return false,
+        };
+
+        // Strategy 1: all assignments are non-zero
+        let mut all_nonzero = true;
+        let mut found_any = false;
+        Self::check_all_assignments(&body, var_name, source, &mut all_nonzero, &mut found_any);
+        if found_any && all_nonzero {
+            return true;
+        }
+
+        // Strategy 2: constant-aware walk
+        // Collect file-scope constants for condition resolution
+        let root = {
+            let mut n = func;
+            while let Some(p) = n.parent() {
+                n = p;
+            }
+            n
+        };
+        let constants = const_eval::collect_macro_constants(&root, source);
+        let div_line = div_node.start_position().row;
+        let last_val =
+            Self::walk_scope_for_last_assignment(&body, var_name, source, div_line, &constants);
+        if last_val == Some(true) {
+            return true;
+        }
+
+        false
+    }
+
+    /// Walk a scope tracking the last assignment to `var_name` before `div_line`.
+    /// For if-statements with constant conditions, only follows the feasible branch.
+    /// Returns Some(true) if last reaching assignment is non-zero, Some(false) if zero,
+    /// None if no assignment found.
+    fn walk_scope_for_last_assignment(
+        scope: &Node,
+        var_name: &str,
+        source: &str,
+        div_line: usize,
+        constants: &const_eval::MacroConstantMap,
+    ) -> Option<bool> {
+        let mut last_val: Option<bool> = None;
+        for i in 0..scope.named_child_count() {
+            let child = match scope.named_child(i) {
+                Some(c) => c,
+                None => continue,
+            };
+            if child.start_position().row >= div_line {
+                break;
+            }
+            // Direct assignment
+            if let Some(is_nz) = Self::get_assignment_value(&child, var_name, source) {
+                last_val = Some(is_nz);
+                continue;
+            }
+            // If-statement: resolve condition if possible
+            if child.kind() == "if_statement" {
+                if let Some(cond) = child.child_by_field_name("condition") {
+                    let const_val = Self::eval_condition_const(&cond, source, constants);
+                    match const_val {
+                        Some(true) => {
+                            // Only then-branch is feasible
+                            if let Some(then_br) = child.child_by_field_name("consequence") {
+                                if let Some(v) = Self::walk_scope_for_last_assignment(
+                                    &then_br, var_name, source, div_line, constants,
+                                ) {
+                                    last_val = Some(v);
+                                }
+                            }
+                        }
+                        Some(false) => {
+                            // Only else-branch is feasible
+                            if let Some(else_br) = child.child_by_field_name("alternative") {
+                                if let Some(v) = Self::walk_scope_for_last_assignment(
+                                    &else_br, var_name, source, div_line, constants,
+                                ) {
+                                    last_val = Some(v);
+                                }
+                            }
+                        }
+                        None => {
+                            // Unknown condition: conservatively don't update last_val
+                            // (both branches are possible, can't guarantee which)
+                        }
+                    }
+                }
+                continue;
+            }
+            // Recurse into compound statements
+            if child.kind() == "compound_statement" {
+                if let Some(v) = Self::walk_scope_for_last_assignment(
+                    &child, var_name, source, div_line, constants,
+                ) {
+                    last_val = Some(v);
+                }
+            }
+        }
+        last_val
+    }
+
+    /// Evaluate an if-condition as a constant boolean, using file-scope constants.
+    fn eval_condition_const(
+        cond: &Node,
+        source: &str,
+        constants: &const_eval::MacroConstantMap,
+    ) -> Option<bool> {
+        // Unwrap parenthesized_expression
+        let inner = if cond.kind() == "parenthesized_expression" {
+            cond.named_child(0).unwrap_or(*cond)
+        } else {
+            *cond
+        };
+        match inner.kind() {
+            "number_literal" => {
+                let text = get_node_text(&inner, source);
+                text.parse::<i64>().ok().map(|n| n != 0)
+            }
+            "identifier" => {
+                let name = get_node_text(&inner, source);
+                constants.get(name).map(|&v| v != 0)
+            }
+            "true" => Some(true),
+            "false" => Some(false),
+            _ => None,
+        }
+    }
+
+    /// Walk all assignments to var_name, tracking if all are non-zero.
+    fn check_all_assignments(
+        scope: &Node,
+        var_name: &str,
+        source: &str,
+        all_nonzero: &mut bool,
+        found_any: &mut bool,
+    ) {
+        for i in 0..scope.named_child_count() {
+            let child = match scope.named_child(i) {
+                Some(c) => c,
+                None => continue,
+            };
+            if let Some(is_nz) = Self::get_assignment_value(&child, var_name, source) {
+                *found_any = true;
+                if !is_nz {
+                    *all_nonzero = false;
+                }
+            } else {
+                Self::check_all_assignments(&child, var_name, source, all_nonzero, found_any);
+            }
+        }
+    }
+
+    /// If `node` is a declaration or assignment to `var_name`, return Some(is_nonzero).
+    fn get_assignment_value(node: &Node, var_name: &str, source: &str) -> Option<bool> {
+        match node.kind() {
+            "declaration" => {
+                for j in 0..node.named_child_count() {
+                    if let Some(gc) = node.named_child(j) {
+                        if gc.kind() == "init_declarator" {
+                            // Check if it's our variable
+                            let has_var = (0..gc.named_child_count()).any(|k| {
+                                gc.named_child(k).is_some_and(|n| {
+                                    n.kind() == "identifier"
+                                        && get_node_text(&n, source) == var_name
+                                })
+                            });
+                            if has_var {
+                                if let Some(val) = gc.named_child(gc.named_child_count() - 1) {
+                                    if val.kind() != "identifier"
+                                        || get_node_text(&val, source) != var_name
+                                    {
+                                        return Some(Self::is_nonzero_literal(&val, source));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                None
+            }
+            "expression_statement" => {
+                let expr = node.named_child(0)?;
+                if expr.kind() != "assignment_expression" {
+                    return None;
+                }
+                let lhs = expr.child_by_field_name("left")?;
+                if lhs.kind() == "identifier" && get_node_text(&lhs, source) == var_name {
+                    let rhs = expr.child_by_field_name("right")?;
+                    return Some(Self::is_nonzero_literal(&rhs, source));
+                }
+                None
+            }
+            _ => None,
+        }
+    }
+
+    /// Check if a node is a non-zero numeric literal (int or float).
+    fn is_nonzero_literal(node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "number_literal" => {
+                let text = get_node_text(node, source)
+                    .trim_end_matches('f')
+                    .trim_end_matches('F')
+                    .trim_end_matches('l')
+                    .trim_end_matches('L')
+                    .to_string();
+                if let Ok(v) = text.parse::<f64>() {
+                    return v != 0.0;
+                }
+                if let Ok(v) = text.parse::<i64>() {
+                    return v != 0;
+                }
+                false
+            }
+            "unary_expression" => {
+                // Handle -(literal)
+                if let Some(arg) = node.child_by_field_name("argument") {
+                    Self::is_nonzero_literal(&arg, source)
+                } else {
+                    false
+                }
+            }
+            "parenthesized_expression" => {
+                if let Some(inner) = node.named_child(0) {
+                    Self::is_nonzero_literal(&inner, source)
+                } else {
+                    false
+                }
+            }
+            _ => false,
+        }
     }
 }
 

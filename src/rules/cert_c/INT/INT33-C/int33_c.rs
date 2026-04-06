@@ -479,6 +479,16 @@ impl Int33C {
                             return true;
                         }
                     }
+                    // Also check for fabs/fabsf/fabsl magnitude guards
+                    // e.g., if(fabs(data) > 0.000001) { ... / data; }
+                    if Self::is_fabs_guard(&condition, divisor_text, source)
+                        || (base_var_name != divisor_text
+                            && Self::is_fabs_guard(&condition, &base_var_name, source))
+                    {
+                        if self.is_in_safe_branch(&node, div_node) {
+                            return true;
+                        }
+                    }
                 }
             }
 
@@ -488,6 +498,15 @@ impl Int33C {
         // Value-range analysis: check if enclosing conditions prove divisor >= 1
         // This catches patterns like `if (lower < upper) { total / (upper - lower); }`
         if self.divisor_provably_nonzero(div_node, divisor, source) {
+            return true;
+        }
+
+        // Check if ALL assignments to the divisor variable in the containing
+        // function are provably non-zero constants.  This catches the common
+        // Juliet "goodG2B" pattern: `data = -1; data = 7; 100 / data;`
+        if divisor.kind() == "identifier"
+            && self.all_assignments_nonzero(div_node, divisor_text, source)
+        {
             return true;
         }
 
@@ -742,6 +761,33 @@ impl Int33C {
         value_range::eval_expr_range_at(vra, cfg, &body, source, &file_macros, divisor)
     }
 
+    /// Check if a condition is a floating-point magnitude guard like
+    /// `fabs(var) > 0.000001`.  This implies `var` is non-zero.
+    fn is_fabs_guard(condition: &Node, var_name: &str, source: &str) -> bool {
+        let cond_text = ast_utils::get_node_text(condition, source);
+        // Must contain fabs/fabsf/fabsl of the variable and a > comparison
+        let has_fabs = (cond_text.contains("fabs(")
+            || cond_text.contains("fabsf(")
+            || cond_text.contains("fabsl("))
+            && cond_text.contains(var_name)
+            && cond_text.contains('>');
+        if has_fabs {
+            return true;
+        }
+        // Also handle compound conditions with &&
+        if condition.kind() == "binary_expression" || condition.kind() == "parenthesized_expression"
+        {
+            for i in 0..condition.named_child_count() {
+                if let Some(child) = condition.named_child(i) {
+                    if Self::is_fabs_guard(&child, var_name, source) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
     /// Walk up to enclosing if_statement ancestors and extract variable
     /// bounds from their conditions. Only applies when the division is
     /// inside the consequence (then-branch) of the if — the condition is
@@ -915,6 +961,258 @@ impl Int33C {
             }
             _ => {}
         }
+    }
+
+    /// Check if ALL assignments to `var_name` in the containing function are
+    /// provably non-zero constants.  Returns false if any assignment is unknown,
+    /// zero, or if the variable is a function parameter (no assignments found).
+    fn all_assignments_nonzero(&self, div_node: &Node, var_name: &str, source: &str) -> bool {
+        let func = match ast_utils::find_containing_function(div_node) {
+            Some(f) => f,
+            None => return false,
+        };
+        let body = match func.child_by_field_name("body") {
+            Some(b) => b,
+            None => return false,
+        };
+        let file_macros = self.file_macros.borrow();
+        let mut found_any = false;
+        if !Self::collect_assignments_all_nonzero(
+            &body,
+            var_name,
+            source,
+            &file_macros,
+            &mut found_any,
+        ) {
+            return false;
+        }
+        // Also check the declaration initializer (e.g., `int data = -1;`)
+        // which is inside the body but might also be a parameter — check params
+        // If no assignments found at all (e.g., parameter), can't prove non-zero
+        found_any
+    }
+
+    /// Recursively walk `scope` collecting assignments to `var_name`.
+    /// Returns false immediately if any assignment is zero or non-constant.
+    fn collect_assignments_all_nonzero(
+        scope: &Node,
+        var_name: &str,
+        source: &str,
+        macros: &MacroConstantMap,
+        found_any: &mut bool,
+    ) -> bool {
+        for i in 0..scope.named_child_count() {
+            let child = match scope.named_child(i) {
+                Some(c) => c,
+                None => continue,
+            };
+
+            match child.kind() {
+                "declaration" => {
+                    // Check `int data = EXPR;`
+                    if Self::declaration_assigns_to(&child, var_name, source) {
+                        if let Some(val_node) =
+                            Self::declaration_init_value(&child, var_name, source)
+                        {
+                            if !Self::is_nonzero_constant(&val_node, source, macros) {
+                                return false;
+                            }
+                            *found_any = true;
+                        }
+                        // `int data;` without init — not an assignment
+                    }
+                }
+                "expression_statement" => {
+                    // Check `data = EXPR;`
+                    if let Some(expr) = child.named_child(0) {
+                        if expr.kind() == "assignment_expression" {
+                            if let Some(lhs) = expr.child_by_field_name("left") {
+                                if lhs.kind() == "identifier"
+                                    && ast_utils::get_node_text(&lhs, source) == var_name
+                                {
+                                    if let Some(rhs) = expr.child_by_field_name("right") {
+                                        if !Self::is_nonzero_constant(&rhs, source, macros) {
+                                            return false;
+                                        }
+                                        *found_any = true;
+                                    }
+                                }
+                            }
+                        }
+                        // Check for update_expression (i++, i--, ++i, --i)
+                        // or compound assignments (+=, -=, etc.) that modify the variable
+                        if Self::is_variable_modified_by_update(&expr, var_name, source) {
+                            return false;
+                        }
+                    }
+                }
+                // Also check for-loop update expressions (the update clause of for(;;update))
+                "for_statement" => {
+                    // Check if the for-loop's update or body modifies the variable
+                    let text = ast_utils::get_node_text(&child, source);
+                    if text.contains(var_name) {
+                        if let Some(update) = child.child_by_field_name("update") {
+                            if Self::is_variable_modified_by_update(&update, var_name, source) {
+                                return false;
+                            }
+                        }
+                    }
+                    // Still recurse into the for body
+                    if !Self::collect_assignments_all_nonzero(
+                        &child, var_name, source, macros, found_any,
+                    ) {
+                        return false;
+                    }
+                }
+                _ => {
+                    // Recurse into compound statements, if-bodies, etc.
+                    if !Self::collect_assignments_all_nonzero(
+                        &child, var_name, source, macros, found_any,
+                    ) {
+                        return false;
+                    }
+                }
+            }
+        }
+        true
+    }
+
+    /// Check if `node` contains an update expression (++, --, +=, -=, etc.)
+    /// that modifies `var_name`. Returns true if found.
+    fn is_variable_modified_by_update(node: &Node, var_name: &str, source: &str) -> bool {
+        match node.kind() {
+            "update_expression" => {
+                // i++, i--, ++i, --i
+                let text = ast_utils::get_node_text(node, source);
+                text.contains(var_name)
+            }
+            "assignment_expression" => {
+                // Check for compound assignments (+=, -=, *=, /=, etc.)
+                if let Some(lhs) = node.child_by_field_name("left") {
+                    if lhs.kind() == "identifier"
+                        && ast_utils::get_node_text(&lhs, source) == var_name
+                    {
+                        let full_text = ast_utils::get_node_text(node, source);
+                        if full_text.contains("+=")
+                            || full_text.contains("-=")
+                            || full_text.contains("*=")
+                            || full_text.contains("/=")
+                            || full_text.contains("%=")
+                        {
+                            return true;
+                        }
+                    }
+                }
+                false
+            }
+            _ => {
+                for i in 0..node.named_child_count() {
+                    if let Some(child) = node.named_child(i) {
+                        if Self::is_variable_modified_by_update(&child, var_name, source) {
+                            return true;
+                        }
+                    }
+                }
+                false
+            }
+        }
+    }
+
+    /// Check if `node` evaluates to a provably non-zero constant.
+    fn is_nonzero_constant(node: &Node, source: &str, macros: &MacroConstantMap) -> bool {
+        // Try integer const_eval first
+        if let Some(val) = const_eval::try_evaluate_expr(node, source, macros) {
+            return val != 0;
+        }
+        // Try float literal (e.g., 2.0F, 1e-40, -3.14)
+        if let Some(val) = Self::try_parse_float_literal(node, source) {
+            return val != 0.0;
+        }
+        false
+    }
+
+    /// Try to parse a node as a floating-point literal, handling suffixes and
+    /// unary negation.
+    fn try_parse_float_literal(node: &Node, source: &str) -> Option<f64> {
+        match node.kind() {
+            "number_literal" => {
+                let text = ast_utils::get_node_text(node, source);
+                let text = text
+                    .trim_end_matches('f')
+                    .trim_end_matches('F')
+                    .trim_end_matches('l')
+                    .trim_end_matches('L');
+                text.parse::<f64>().ok()
+            }
+            "unary_expression" => {
+                // Handle -(literal)
+                let op = node.child(0).map(|c| ast_utils::get_node_text(&c, source));
+                let arg = node.child_by_field_name("argument")?;
+                if op == Some("-") {
+                    Self::try_parse_float_literal(&arg, source).map(|v| -v)
+                } else {
+                    None
+                }
+            }
+            "parenthesized_expression" => {
+                let inner = node.named_child(0)?;
+                Self::try_parse_float_literal(&inner, source)
+            }
+            _ => None,
+        }
+    }
+
+    /// Check if a declaration assigns to `var_name`.
+    fn declaration_assigns_to(decl: &Node, var_name: &str, source: &str) -> bool {
+        for i in 0..decl.named_child_count() {
+            if let Some(child) = decl.named_child(i) {
+                if child.kind() == "init_declarator" {
+                    // Look for the identifier
+                    for j in 0..child.named_child_count() {
+                        if let Some(gc) = child.named_child(j) {
+                            if gc.kind() == "identifier"
+                                && ast_utils::get_node_text(&gc, source) == var_name
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Get the initializer value node from a declaration like `int data = EXPR;`.
+    fn declaration_init_value<'a>(
+        decl: &'a Node<'a>,
+        var_name: &str,
+        source: &str,
+    ) -> Option<Node<'a>> {
+        for i in 0..decl.named_child_count() {
+            if let Some(child) = decl.named_child(i) {
+                if child.kind() == "init_declarator" {
+                    let mut found_name = false;
+                    let mut value_node = None;
+                    for j in 0..child.named_child_count() {
+                        if let Some(gc) = child.named_child(j) {
+                            if gc.kind() == "identifier"
+                                && ast_utils::get_node_text(&gc, source) == var_name
+                            {
+                                found_name = true;
+                            } else if found_name && gc.kind() != "=" {
+                                value_node = Some(gc);
+                                break;
+                            }
+                        }
+                    }
+                    if found_name {
+                        return value_node;
+                    }
+                }
+            }
+        }
+        None
     }
 
     /// Check if a struct field is validated for non-zero in a constructor/setter

@@ -2,9 +2,11 @@ use super::super::{CertRule, RuleViolation};
 use crate::analyze::cfg::FunctionCfg;
 use crate::analyze::const_eval::{self, MacroConstantMap, VarRangeMap};
 use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::analyze::value_range::RangeAnalysisResult;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::{self, get_node_text};
+use crate::utility::cert_c::std_functions;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use tree_sitter::Node;
@@ -15,6 +17,7 @@ pub struct Int30C {
     struct_field_types: RefCell<HashMap<String, HashMap<String, String>>>,
     function_cfgs: RefCell<HashMap<usize, FunctionCfg>>,
     vra_results: RefCell<HashMap<usize, RangeAnalysisResult>>,
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
 }
 
 impl Int30C {
@@ -25,6 +28,7 @@ impl Int30C {
             struct_field_types: RefCell::new(HashMap::new()),
             function_cfgs: RefCell::new(HashMap::new()),
             vra_results: RefCell::new(HashMap::new()),
+            function_summaries: RefCell::new(HashMap::new()),
         }
     }
 
@@ -98,6 +102,7 @@ impl CertRule for Int30C {
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_macros.borrow_mut() = context.macro_constants.clone();
         *self.struct_field_types.borrow_mut() = context.struct_field_types.clone();
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
     }
 
     fn set_function_cfgs(&self, cfgs: &HashMap<usize, FunctionCfg>) {
@@ -296,8 +301,13 @@ impl Int30C {
                     return;
                 }
 
-                // Skip opaque_value + small_literal (e.g. FUNC() + 1, buflen + 1)
-                if Self::is_small_increment_of_opaque(node, source) {
+                // Skip opaque_value + small_literal (e.g. strlen() + 1)
+                // but NOT for known full-range functions (atoi, rand, etc.)
+                if Self::is_small_increment_of_opaque(
+                    node,
+                    source,
+                    &self.function_summaries.borrow(),
+                ) {
                     return;
                 }
 
@@ -772,6 +782,16 @@ impl Int30C {
                             return;
                         }
                     }
+                    // Skip if VRA proves the result fits in 32-bit unsigned
+                    if const_eval::expression_fits_in_unsigned_vra(
+                        node,
+                        source,
+                        &self.current_macros.borrow(),
+                        32,
+                        self.vra_var_ranges_at(node).as_ref(),
+                    ) {
+                        return;
+                    }
                     if !self.has_overflow_check_update(node, source) {
                         let start_point = node.start_position();
                         let expr_text = get_node_text(node, source);
@@ -1216,9 +1236,17 @@ impl Int30C {
 
     /// Returns true if this binary_expression is `opaque + small_literal` or
     /// `small_literal + opaque`, where "opaque" is a call_expression or an
-    /// identifier whose value comes from a call_expression.  Adding a small
-    /// constant (0..=10) to any realistic function return value cannot overflow.
-    fn is_small_increment_of_opaque(node: &Node, source: &str) -> bool {
+    /// identifier whose value comes from a call_expression, AND the callee is
+    /// not known to return full-range values.
+    ///
+    /// Functions like `strlen()` return bounded values where +1 is safe.
+    /// Functions like `atoi()` or `rand()` can return any value in the type
+    /// range, so their result + small literal is a genuine overflow risk.
+    fn is_small_increment_of_opaque(
+        node: &Node,
+        source: &str,
+        summaries: &HashMap<String, FunctionSummary>,
+    ) -> bool {
         if node.kind() != "binary_expression" {
             return false;
         }
@@ -1238,43 +1266,72 @@ impl Int30C {
             text.parse::<u64>().is_ok_and(|v| v <= 10)
         };
 
-        let is_opaque = |n: &Node| -> bool {
+        // Resolve the callee function name from a call_expression or an
+        // identifier initialized from a call_expression.
+        let resolve_callee = |n: &Node| -> Option<String> {
             if n.kind() == "call_expression" {
-                return true;
+                return n
+                    .child_by_field_name("function")
+                    .and_then(|f| f.utf8_text(source.as_bytes()).ok())
+                    .map(|s| s.trim().to_string());
             }
-            // Identifier whose initializer is a call_expression
             if n.kind() == "identifier" {
                 let var_name = get_node_text(n, source);
-                if let Some(func) = crate::utility::cert_c::ast_utils::find_containing_function(n) {
+                if let Some(func) = ast_utils::find_containing_function(n) {
                     if let Some(body) = func.child_by_field_name("body") {
-                        if Self::identifier_initialized_from_call(&body, var_name, source, n) {
-                            return true;
-                        }
+                        return Self::resolve_identifier_call_name(&body, var_name, source, n);
                     }
                 }
             }
-            false
+            None
         };
 
-        (is_opaque(&left) && is_small_literal(&right))
-            || (is_small_literal(&left) && is_opaque(&right))
+        let callee = if is_small_literal(&right) {
+            resolve_callee(&left)
+        } else if is_small_literal(&left) {
+            resolve_callee(&right)
+        } else {
+            return false;
+        };
+
+        let callee = match callee {
+            Some(name) => name,
+            None => return false,
+        };
+
+        // Known full-range functions: never suppress
+        if std_functions::is_full_range_return_function(&callee) {
+            return false;
+        }
+
+        // Local function with proven wide return range: don't suppress
+        if let Some(summary) = summaries.get(&callee) {
+            if let Some(ref return_range) = summary.return_range {
+                let unsigned_danger = u32::MAX as i64 - 10;
+                if return_range.max >= unsigned_danger {
+                    return false;
+                }
+            }
+        }
+
+        // Default: suppress (safe for strlen, wcslen, unknown helpers)
+        true
     }
 
-    /// Check if an identifier was initialized from a call_expression earlier in the same scope.
-    /// Searches recursively into preproc blocks and nested compound statements.
-    fn identifier_initialized_from_call(
+    /// Resolve the callee function name for an identifier that was initialized
+    /// name instead of just a boolean.
+    fn resolve_identifier_call_name(
         scope: &Node,
         var_name: &str,
         source: &str,
         usage_node: &Node,
-    ) -> bool {
+    ) -> Option<String> {
         let usage_row = usage_node.start_position().row;
         for i in 0..scope.named_child_count() {
             if let Some(child) = scope.named_child(i) {
                 if child.start_position().row >= usage_row {
                     break;
                 }
-                // declaration: type var = call();
                 if child.kind() == "declaration" {
                     if let Some(declarator) = child.child_by_field_name("declarator") {
                         if declarator.kind() == "init_declarator" {
@@ -1285,14 +1342,16 @@ impl Int30C {
                             if decl_name == Some(var_name) {
                                 if let Some(init_node) = init {
                                     if init_node.kind() == "call_expression" {
-                                        return true;
+                                        return init_node
+                                            .child_by_field_name("function")
+                                            .and_then(|f| f.utf8_text(source.as_bytes()).ok())
+                                            .map(|s| s.trim().to_string());
                                     }
                                 }
                             }
                         }
                     }
                 }
-                // assignment: var = call();
                 if child.kind() == "expression_statement" {
                     if let Some(expr) = child.named_child(0) {
                         if expr.kind() == "assignment_expression" {
@@ -1302,25 +1361,32 @@ impl Int30C {
                                 if get_node_text(&l, source) == var_name
                                     && r.kind() == "call_expression"
                                 {
-                                    return true;
+                                    return r
+                                        .child_by_field_name("function")
+                                        .and_then(|f| f.utf8_text(source.as_bytes()).ok())
+                                        .map(|s| s.trim().to_string());
                                 }
                             }
                         }
                     }
                 }
-                // Recurse into preproc blocks and compound statements
                 if child.kind().starts_with("preproc_")
                     || child.kind() == "compound_statement"
                     || child.kind() == "if_statement"
+                    || child.kind() == "switch_statement"
+                    || child.kind() == "case_statement"
+                    || child.kind() == "for_statement"
+                    || child.kind() == "while_statement"
                 {
-                    if Self::identifier_initialized_from_call(&child, var_name, source, usage_node)
+                    if let Some(name) =
+                        Self::resolve_identifier_call_name(&child, var_name, source, usage_node)
                     {
-                        return true;
+                        return Some(name);
                     }
                 }
             }
         }
-        false
+        None
     }
 
     fn is_unsigned_type(&self, type_str: &str) -> bool {
