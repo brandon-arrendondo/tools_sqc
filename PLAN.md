@@ -1,8 +1,8 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-05 (v0.3.85)
+Last Updated: 2026-04-06 (v0.3.86)
 
-Juliet benchmark v0.3.85: 25,481 TP / 16,311 FP (61.0% TP rate), 42.6% per-file.
+Juliet benchmark v0.3.86: 25,456 TP / 15,768 FP (61.8% TP rate), 42.6% per-file.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -23,6 +23,7 @@ Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.85 current):
   CWE-121: 55.7% vs 86.6% (−30.9pp) — STR31-C/ARR38-C (was −37.8pp, task 56 done)
   CWE-415: 58.2% vs 80.0% (−21.8pp) — MEM01-C (was −36.6pp, task 58 done)
   CWE-416: 92.9% vs 60.3% (+32.6pp) — MEM01-C EXCEEDS target (task 58 done)
+  CWE-401: 77.6% vs 83.9% (−6.3pp) — MEM31-C (was −33.2pp, task 59 done)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -44,24 +45,21 @@ then Juliet benchmark and real-world benchmark to validate.
 
 # Task ID: 59
 # Title: MEM31-C FP reduction for CWE-401
-# Status: pending
+# Status: done (v0.3.86)
 # Dependencies: 9
 # Priority: P3
 # Description: Reduce MEM31-C FPs on CWE-401 (memory leak).
-#   CWE-401: 50.7% vs clang-tidy 83.9% (−33.2pp, 763 FP → target 150)
-#   Impact: ~613 FP savings needed.
+#   CWE-401: 77.6% vs clang-tidy 83.9% (−6.3pp, 220 FP remaining)
 # Details:
-MEM31-C has 786 TP / 763 FP. Nearly 1:1 TP:FP ratio.
+DONE. MEM31-C: 786 TP/763 FP → 761 TP/220 FP (-543 FP, -25 TP, 21.7:1 ratio).
+CWE-401 TP rate 50.7% → 77.6% (+26.9pp). Rule FP rate 49.3% → 22.4%.
 
-  FPs likely from cross-function ownership transfer: malloc in one function,
-  pointer stored in struct or passed to another function that frees it.
-  This is the same ownership tracking problem as task 9.
+  Three fixes:
+  1. Prescan callee-frees-param: integrate FunctionSummary.frees_params.
+  2. Transitive free propagation: param pass-through + fixpoint in prescan.
+  3. If/else branch merge: UNION of freed memory from both branches.
 
-  Approaches:
-  - Prescan-based ownership: if a function receives a pointer and calls free(),
-    suppress MEM31-C at the allocation site
-  - Return-value tracking: if malloc result is returned, suppress leak warning
-  - Partial overlap with task 9 (MEM31-C ownership model)
+  Remaining 220 FPs: switch constants, pointer-to-pointer, global variables.
 
 ---
 
