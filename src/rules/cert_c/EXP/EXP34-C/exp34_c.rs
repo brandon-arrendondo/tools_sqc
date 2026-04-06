@@ -574,6 +574,14 @@ fn is_in_expression_guard(var_name: &str, node: &Node, source: &str) -> bool {
         current = parent.parent();
     }
 
+    // AST-level null guard: dereference inside if(var != NULL) { ... }
+    // This handles cases where the CFG treats the enclosing context as a single
+    // opaque block (e.g., inside switch_statement case bodies), so CFG-based
+    // edge refinement cannot see the null guard.
+    if is_inside_ast_null_guard(var_name, node, source) {
+        return true;
+    }
+
     // Pragmatic dominance check: if there's an if-statement earlier in the same
     // function that checks (var == NULL) and the dereference is AFTER that
     // if-statement, treat it as safe. This matches the common pattern:
@@ -583,6 +591,48 @@ fn is_in_expression_guard(var_name: &str, node: &Node, source: &str) -> bool {
         return true;
     }
 
+    false
+}
+
+/// Check if a dereference is inside the true branch of an `if(var != NULL)` statement.
+/// Walks AST ancestors to find an enclosing if-statement that null-checks the variable.
+fn is_inside_ast_null_guard(var_name: &str, node: &Node, source: &str) -> bool {
+    let mut current = node.parent();
+    while let Some(parent) = current {
+        if parent.kind() == "function_definition" {
+            break;
+        }
+        if parent.kind() == "if_statement" {
+            if let Some(condition) = parent.child_by_field_name("condition") {
+                if let Some(checked_var) = get_null_check_var(&condition, source) {
+                    if checked_var == var_name {
+                        // Check if we're in the consequence (true branch)
+                        if let Some(consequence) = parent.child_by_field_name("consequence") {
+                            if node_is_within(&consequence, node) {
+                                // var != NULL → true branch means var is non-null → safe
+                                if analyze_condition_for_safety(&condition, var_name, source, false)
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        // Check if we're in the alternative (else branch)
+                        if let Some(alternative) = parent.child_by_field_name("alternative") {
+                            if node_is_within(&alternative, node) {
+                                // var == NULL → true branch means null, else branch means non-null → safe
+                                if !analyze_condition_for_safety(
+                                    &condition, var_name, source, false,
+                                ) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        current = parent.parent();
+    }
     false
 }
 

@@ -276,11 +276,19 @@ fn apply_range_transfer(
     source: &str,
     macros: &MacroConstantMap,
     summaries: &HashMap<String, FunctionSummary>,
+    local_types: &HashMap<String, VarType>,
 ) -> RangeMap {
     let mut state = entry.clone();
     for &(start, end) in &block.statements {
         if let Some(stmt_node) = find_node_at_range(body, start, end) {
-            process_statement_for_ranges(&stmt_node, source, macros, summaries, &mut state);
+            process_statement_for_ranges(
+                &stmt_node,
+                source,
+                macros,
+                summaries,
+                &mut state,
+                local_types,
+            );
         }
     }
     state
@@ -293,6 +301,7 @@ fn process_statement_for_ranges(
     macros: &MacroConstantMap,
     summaries: &HashMap<String, FunctionSummary>,
     state: &mut RangeMap,
+    local_types: &HashMap<String, VarType>,
 ) {
     match node.kind() {
         "declaration" => {
@@ -300,7 +309,7 @@ fn process_statement_for_ranges(
         }
         "expression_statement" => {
             if let Some(expr) = node.child(0) {
-                process_expression_range(&expr, source, macros, summaries, state);
+                process_expression_range(&expr, source, macros, summaries, state, local_types);
             }
         }
         _ => {
@@ -310,7 +319,14 @@ fn process_statement_for_ranges(
                     if child.kind() == "assignment_expression"
                         || child.kind() == "update_expression"
                     {
-                        process_expression_range(&child, source, macros, summaries, state);
+                        process_expression_range(
+                            &child,
+                            source,
+                            macros,
+                            summaries,
+                            state,
+                            local_types,
+                        );
                     }
                 }
             }
@@ -405,6 +421,7 @@ fn process_expression_range(
     macros: &MacroConstantMap,
     summaries: &HashMap<String, FunctionSummary>,
     state: &mut RangeMap,
+    local_types: &HashMap<String, VarType>,
 ) {
     match node.kind() {
         "assignment_expression" => {
@@ -432,13 +449,17 @@ fn process_expression_range(
                                     state.get(&var_name).and_then(|t| t.var_type.clone());
                                 state.insert(var_name, TypedRange { range, var_type });
                             } else {
-                                // Can't evaluate RHS — widen to type range
+                                // Can't evaluate RHS — widen to type range.
+                                // Look up type from existing state first, then fall back
+                                // to local_types (for `int data;` without init).
                                 let existing = state.get(&var_name);
-                                let type_range = existing
-                                    .and_then(|e| e.var_type.as_ref())
+                                let var_type = existing
+                                    .and_then(|e| e.var_type.clone())
+                                    .or_else(|| local_types.get(&var_name).cloned());
+                                let type_range = var_type
+                                    .as_ref()
                                     .map(|t| t.full_range())
                                     .unwrap_or(ValueRange::new(i64::MIN, i64::MAX));
-                                let var_type = existing.and_then(|e| e.var_type.clone());
                                 state.insert(
                                     var_name,
                                     TypedRange {
@@ -896,6 +917,12 @@ pub fn analyze_value_ranges(
     if let Some(declarator) = func_node.child_by_field_name("declarator") {
         collect_param_ranges(&declarator, source, &mut initial_state);
     }
+    // Collect types for uninitialized local declarations (e.g. `int data;`).
+    // These are NOT added to the initial state (would cause stale entry ranges),
+    // but passed as a fallback type lookup so that assignments like `data = atoi()`
+    // use [INT_MIN, INT_MAX] instead of [i64::MIN, i64::MAX].
+    let mut local_types: HashMap<String, VarType> = HashMap::new();
+    collect_local_decl_types(&body, source, &mut local_types);
 
     let mut entry_ranges: HashMap<BlockId, RangeMap> = HashMap::new();
     let mut exit_ranges: HashMap<BlockId, RangeMap> = HashMap::new();
@@ -915,6 +942,7 @@ pub fn analyze_value_ranges(
         source,
         macros,
         summaries,
+        &local_types,
     );
     exit_ranges.insert(cfg.entry, entry_exit);
 
@@ -988,7 +1016,15 @@ pub fn analyze_value_ranges(
 
         // Compute exit state
         let block = &cfg.blocks[block_id];
-        let new_exit = apply_range_transfer(block, &new_entry, &body, source, macros, summaries);
+        let new_exit = apply_range_transfer(
+            block,
+            &new_entry,
+            &body,
+            source,
+            macros,
+            summaries,
+            &local_types,
+        );
 
         // Check convergence
         let old_exit = exit_ranges.get(&block_id);
@@ -1048,7 +1084,15 @@ pub fn get_var_range_at(
             break;
         }
         if let Some(stmt_node) = find_node_at_range(body, start, end) {
-            process_statement_for_ranges(&stmt_node, source, macros, &replay_summaries, &mut state);
+            let empty_types = HashMap::new();
+            process_statement_for_ranges(
+                &stmt_node,
+                source,
+                macros,
+                &replay_summaries,
+                &mut state,
+                &empty_types,
+            );
         }
     }
 
@@ -1072,12 +1116,20 @@ pub fn eval_expr_range_at(
     // Use return ranges stored during the main analysis for intra-block replay.
     let replay_summaries = build_replay_summaries(&result.return_ranges);
     let mut state = entry.clone();
+    let empty_types = HashMap::new();
     for &(start, end) in &block.statements {
         if start >= byte_offset {
             break;
         }
         if let Some(stmt_node) = find_node_at_range(body, start, end) {
-            process_statement_for_ranges(&stmt_node, source, macros, &replay_summaries, &mut state);
+            process_statement_for_ranges(
+                &stmt_node,
+                source,
+                macros,
+                &replay_summaries,
+                &mut state,
+                &empty_types,
+            );
         }
     }
 
@@ -1323,6 +1375,42 @@ fn collect_param_ranges(declarator: &Node, source: &str, state: &mut RangeMap) {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+/// Collect types for uninitialized local variable declarations (e.g., `int data;`).
+/// The type information is used as a fallback in assignment processing so that
+/// `data = atoi(buf)` uses [INT_MIN, INT_MAX] instead of [i64::MIN, i64::MAX].
+fn collect_local_decl_types(body: &Node, source: &str, types: &mut HashMap<String, VarType>) {
+    for i in 0..body.named_child_count() {
+        if let Some(child) = body.named_child(i) {
+            if child.kind() == "declaration" {
+                if let Some(var_type) = extract_var_type_from_declaration(&child, source) {
+                    if let Some(decl) = child.child_by_field_name("declarator") {
+                        if !is_pointer_or_array(&decl) {
+                            let name = get_declarator_name(&decl, source);
+                            if !name.is_empty() {
+                                types.entry(name).or_insert(var_type.clone());
+                            }
+                        }
+                        // Also handle init_declarator
+                        if decl.kind() == "init_declarator" {
+                            if let Some(inner) = decl.child_by_field_name("declarator") {
+                                if !is_pointer_or_array(&inner) {
+                                    let name = get_declarator_name(&inner, source);
+                                    if !name.is_empty() {
+                                        types.entry(name).or_insert(var_type);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if child.kind() == "compound_statement" || child.kind().starts_with("preproc_") {
+                collect_local_decl_types(&child, source, types);
             }
         }
     }

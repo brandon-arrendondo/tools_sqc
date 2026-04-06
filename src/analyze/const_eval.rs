@@ -239,6 +239,8 @@ pub fn collect_macro_constants(root: &Node, source: &str) -> MacroConstantMap {
     // Two-pass: first collect all raw definitions, then resolve references
     let mut raw_defs: Vec<(String, String)> = Vec::new();
     collect_preproc_defs(root, source, &mut raw_defs);
+    // Also collect file-scope `static const int NAME = VALUE;` declarations
+    collect_static_const_defs(root, source, &mut raw_defs);
 
     // Iteratively resolve — handles forward references and chains
     let mut changed = true;
@@ -296,6 +298,59 @@ fn collect_preproc_defs(node: &Node, source: &str, defs: &mut Vec<(String, Strin
     }
 }
 
+/// Collect file-scope `static const int NAME = VALUE;` and `const int NAME = VALUE;`
+/// declarations. These behave as compile-time constants in C.
+fn collect_static_const_defs(root: &Node, source: &str, defs: &mut Vec<(String, String)>) {
+    for i in 0..root.child_count() {
+        let child = match root.child(i) {
+            Some(c) => c,
+            None => continue,
+        };
+        if child.kind() != "declaration" {
+            continue;
+        }
+        let decl_text = child.utf8_text(source.as_bytes()).unwrap_or("").to_string();
+        // Must contain "const" and an integer/bool type
+        if !decl_text.contains("const") {
+            continue;
+        }
+        // Check for integer type keywords
+        let has_int_type = decl_text.contains("int")
+            || decl_text.contains("long")
+            || decl_text.contains("short")
+            || decl_text.contains("char")
+            || decl_text.contains("_Bool");
+        if !has_int_type {
+            continue;
+        }
+        // Extract init_declarator children for `NAME = VALUE`
+        for j in 0..child.named_child_count() {
+            let gc = match child.named_child(j) {
+                Some(c) => c,
+                None => continue,
+            };
+            if gc.kind() != "init_declarator" {
+                continue;
+            }
+            // Look for identifier and value
+            let mut name = None;
+            let mut value = None;
+            for k in 0..gc.named_child_count() {
+                if let Some(ggc) = gc.named_child(k) {
+                    if ggc.kind() == "identifier" && name.is_none() {
+                        name = ggc.utf8_text(source.as_bytes()).ok().map(|s| s.to_string());
+                    } else if ggc.kind() == "number_literal" && name.is_some() {
+                        value = ggc.utf8_text(source.as_bytes()).ok().map(|s| s.to_string());
+                    }
+                }
+            }
+            if let (Some(n), Some(v)) = (name, value) {
+                defs.push((n, v));
+            }
+        }
+    }
+}
+
 /// Try to evaluate a text string as an integer constant expression.
 /// Handles: decimal, hex, octal literals, macro references, simple arithmetic.
 fn try_evaluate_text(text: &str, macros: &MacroConstantMap) -> Option<i64> {
@@ -335,6 +390,18 @@ fn try_evaluate_text(text: &str, macros: &MacroConstantMap) -> Option<i64> {
         return macros.get(text).copied();
     }
 
+    // Try sizeof(type_or_expr) — resolve known types exactly, fall back to
+    // conservative minimum of 1 for unknown identifiers (sizeof >= 1 always).
+    if let Some(inner) = strip_sizeof_call(text) {
+        if let Some(sz) = resolve_sizeof_type(inner) {
+            return Some(sz);
+        }
+        // Unknown type/variable: sizeof(x) >= 1 on all platforms
+        if is_c_identifier(inner) {
+            return Some(1);
+        }
+    }
+
     // Try simple binary expressions: A op B
     // Search for operator from right to left (respecting precedence: +/- before */<<)
     if let Some(val) = try_evaluate_binary_text(text, macros) {
@@ -350,6 +417,17 @@ fn try_evaluate_text(text: &str, macros: &MacroConstantMap) -> Option<i64> {
     }
 
     None
+}
+
+/// Extract the inner text from a sizeof(...) call in text form.
+fn strip_sizeof_call(text: &str) -> Option<&str> {
+    let rest = text.strip_prefix("sizeof")?;
+    let rest = rest.trim();
+    if rest.starts_with('(') && rest.ends_with(')') {
+        Some(rest[1..rest.len() - 1].trim())
+    } else {
+        None
+    }
 }
 
 /// Try to evaluate a binary expression in text form.
@@ -464,7 +542,17 @@ pub fn try_evaluate_expr(node: &Node, source: &str, macros: &MacroConstantMap) -
     match node.kind() {
         "number_literal" => {
             let text = node.utf8_text(source.as_bytes()).ok()?;
-            parse_integer_literal(strip_integer_suffix(text.trim()))
+            let trimmed = strip_integer_suffix(text.trim());
+            parse_integer_literal(trimmed).or_else(|| {
+                // Fallback: parse float literals (e.g., 0.0F, 2.0, 1e-40) and truncate to i64.
+                // Enables VRA to track float variable assignments for zero-checking.
+                let cleaned = trimmed
+                    .trim_end_matches('f')
+                    .trim_end_matches('F')
+                    .trim_end_matches('l')
+                    .trim_end_matches('L');
+                cleaned.parse::<f64>().ok().map(|f| f as i64)
+            })
         }
         "identifier" => {
             let name = node.utf8_text(source.as_bytes()).ok()?;
@@ -674,6 +762,30 @@ pub fn try_evaluate_range(
             try_evaluate_range(&value, source, macros, var_ranges)
         }
         "sizeof_expression" => resolve_sizeof_node(node, source).map(ValueRange::exact),
+        "update_expression" => {
+            // data++ / data-- / ++data / --data
+            let arg = node.child_by_field_name("argument")?;
+            let op = node.child_by_field_name("operator").or_else(|| {
+                // Operator may be first or last child depending on prefix/postfix
+                for i in 0..node.child_count() {
+                    if let Some(c) = node.child(i) {
+                        let k = c.kind();
+                        if k == "++" || k == "--" {
+                            return Some(c);
+                        }
+                    }
+                }
+                None
+            })?;
+            let op_text = op.utf8_text(source.as_bytes()).ok()?;
+            let r = try_evaluate_range(&arg, source, macros, var_ranges)?;
+            let one = ValueRange::exact(1);
+            match op_text {
+                "++" => r.add(&one),
+                "--" => r.sub(&one),
+                _ => None,
+            }
+        }
         _ => None,
     }
 }

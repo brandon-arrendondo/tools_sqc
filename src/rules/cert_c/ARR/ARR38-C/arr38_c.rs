@@ -802,6 +802,11 @@ impl Arr38C {
                 }
             }
 
+            // If dest buffer size is known and count fits, skip heuristic checks.
+            if self.is_size_within_known_buffer(dest_arg, size_arg, buffer_info, None) {
+                return;
+            }
+
             // Check for hardcoded sizes that likely exceed buffer
             if self.is_hardcoded_large_count(size_arg) {
                 let start_point = node.start_position();
@@ -1000,6 +1005,48 @@ impl Arr38C {
                     }
                 }
             }
+        }
+
+        // Check for strlen(src)*sizeof(T) as size argument where src buffer > dest buffer
+        if let Some(strlen_arg) = self.extract_strlen_from_sizeof_expr(size_arg) {
+            let strlen_arg = strlen_arg.trim();
+            let src_trimmed = src_arg.trim();
+            if strlen_arg == src_trimmed {
+                let effective_src_size = self
+                    .find_content_size_in_function(node, strlen_arg, source)
+                    .or_else(|| buffer_info.get(strlen_arg).and_then(|info| info.size));
+                if let Some(src_size) = effective_src_size {
+                    if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                        if let Some(dest_size) = dest_info.size {
+                            if src_size > dest_size {
+                                let start_point = node.start_position();
+                                violations.push(RuleViolation {
+                                    rule_id: self.rule_id().to_string(),
+                                    severity: Severity::High,
+                                    message: format!(
+                                        "Function '{}': string length of '{}' (buffer size {}) may exceed destination '{}' size {}",
+                                        function_name, strlen_arg, src_size, dest_arg.trim(), dest_size
+                                    ),
+                                    file_path: String::new(),
+                                    line: start_point.row + 1,
+                                    column: start_point.column + 1,
+                                    suggestion: Some(format!(
+                                        "Use sizeof({}) as the size limit",
+                                        dest_arg.trim()
+                                    )),
+                                    ..Default::default()
+                                });
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // If dest buffer size is known and size fits, skip heuristic checks.
+        if self.is_size_within_known_buffer(dest_arg, size_arg, buffer_info, Some(size_vars)) {
+            return;
         }
 
         // Check for hardcoded sizes that are suspiciously large
@@ -1229,6 +1276,11 @@ impl Arr38C {
                 }
             }
 
+            // If dest buffer size is known and size fits, skip heuristic checks.
+            if self.is_size_within_known_buffer(buf_arg, size_arg, buffer_info, Some(size_vars)) {
+                return;
+            }
+
             // Check for hardcoded sizes that are suspiciously large
             if self.is_hardcoded_large_size(size_arg) {
                 let start_point = node.start_position();
@@ -1453,6 +1505,13 @@ impl Arr38C {
             return false;
         }
 
+        // Pattern: strlen(x)*sizeof(T) or wcslen(x)*sizeof(T) — byte count of string content
+        if (size_expr.contains("strlen(") || size_expr.contains("wcslen("))
+            && size_expr.contains("sizeof(")
+        {
+            return false;
+        }
+
         // Pattern: sizeof(buffer) - 1 - this is correct for string functions
         if size_expr.contains("sizeof(") && size_expr.contains("- 1") {
             return false;
@@ -1539,23 +1598,8 @@ impl Arr38C {
         // If the dest buffer has known size and the copy fits, skip heuristic checks.
         // The concrete size comparison above is authoritative; heuristics like
         // is_hardcoded_large_size are only useful when buffer size is unknown.
-        let dest_size_known = buffer_info
-            .get(dest_arg.trim())
-            .and_then(|info| info.size)
-            .is_some();
-        if dest_size_known {
-            if let Some(size_val) = self.try_parse_size(
-                size_vars
-                    .get(size_arg.trim())
-                    .map(|s| s.as_str())
-                    .unwrap_or(size_arg),
-            ) {
-                if let Some(buf_size) = buffer_info.get(dest_arg.trim()).and_then(|i| i.size) {
-                    if size_val <= buf_size {
-                        return; // Verified safe — skip heuristic checks
-                    }
-                }
-            }
+        if self.is_size_within_known_buffer(dest_arg, size_arg, buffer_info, Some(size_vars)) {
+            return;
         }
 
         // For memcpy/memmove, also check source buffer
@@ -1601,6 +1645,43 @@ impl Arr38C {
                                         });
                                         return;
                                     }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Check for strlen(src)*sizeof(T) where source buffer > dest buffer
+            // Recovers TPs from the blanket strlen*sizeof exemption in is_dangerous_size_calculation
+            if let Some(strlen_arg) = self.extract_strlen_from_sizeof_expr(resolved_size) {
+                let strlen_arg = strlen_arg.trim();
+                if strlen_arg == src_arg.trim() {
+                    let effective_src_size = self
+                        .find_content_size_in_function(node, strlen_arg, source)
+                        .or_else(|| buffer_info.get(strlen_arg).and_then(|info| info.size));
+                    if let Some(src_size) = effective_src_size {
+                        if let Some(dest_info) = buffer_info.get(dest_arg.trim()) {
+                            if let Some(dest_size) = dest_info.size {
+                                if src_size > dest_size {
+                                    let start_point = node.start_position();
+                                    violations.push(RuleViolation {
+                                        rule_id: self.rule_id().to_string(),
+                                        severity: Severity::High,
+                                        message: format!(
+                                            "Function '{}': string length of '{}' (buffer size {}) may exceed destination '{}' size {}",
+                                            function_name, strlen_arg, src_size, dest_arg.trim(), dest_size
+                                        ),
+                                        file_path: String::new(),
+                                        line: start_point.row + 1,
+                                        column: start_point.column + 1,
+                                        suggestion: Some(format!(
+                                            "Use sizeof({}) as the size limit",
+                                            dest_arg.trim()
+                                        )),
+                                        ..Default::default()
+                                    });
+                                    return;
                                 }
                             }
                         }
@@ -2160,6 +2241,31 @@ impl Arr38C {
         None
     }
 
+    /// Check if a numeric size argument fits within a known buffer.
+    /// Returns true if buffer size is known AND the size fits, meaning
+    /// heuristic checks (is_hardcoded_large_size) should be skipped.
+    fn is_size_within_known_buffer(
+        &self,
+        buf_arg: &str,
+        size_arg: &str,
+        buffer_info: &HashMap<String, BufferInfo>,
+        size_vars: Option<&HashMap<String, String>>,
+    ) -> bool {
+        let buf_name = buf_arg.trim();
+        if let Some(buf_info) = buffer_info.get(buf_name) {
+            if let Some(buf_size) = buf_info.size {
+                let resolved = size_vars
+                    .and_then(|sv| sv.get(size_arg.trim()))
+                    .map(|s| s.as_str())
+                    .unwrap_or(size_arg);
+                if let Some(size_val) = self.try_parse_size(resolved) {
+                    return size_val <= buf_size;
+                }
+            }
+        }
+        false
+    }
+
     /// Check if a size is a hardcoded large value
     fn is_hardcoded_large_size(&self, size_arg: &str) -> bool {
         // Try to parse as a number
@@ -2662,6 +2768,26 @@ impl Arr38C {
                 if !arg.is_empty() {
                     return Some(arg);
                 }
+            }
+        }
+        None
+    }
+
+    /// Extract strlen/wcslen argument from `strlen(x)*sizeof(T)` or `sizeof(T)*strlen(x)` patterns.
+    /// Returns the inner argument (e.g., "data" from "strlen(data)*sizeof(char)").
+    fn extract_strlen_from_sizeof_expr<'a>(&self, expr: &'a str) -> Option<&'a str> {
+        if let Some(star_idx) = expr.find('*') {
+            let left = expr[..star_idx].trim();
+            let right = expr[star_idx + 1..].trim();
+            if right.starts_with("sizeof(") {
+                return self
+                    .extract_strlen_argument(left)
+                    .or_else(|| self.extract_wcslen_argument(left));
+            }
+            if left.starts_with("sizeof(") {
+                return self
+                    .extract_strlen_argument(right)
+                    .or_else(|| self.extract_wcslen_argument(right));
             }
         }
         None

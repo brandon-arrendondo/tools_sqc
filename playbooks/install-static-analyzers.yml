@@ -1,0 +1,162 @@
+---
+# Ansible playbook: Install Infer and Frama-C on Debian 12 (bookworm)
+#
+# Usage:
+#   ansible-playbook playbooks/install-static-analyzers.yml --ask-become-pass
+#
+# What it installs:
+#   - Facebook Infer v1.2.0 (prebuilt binary) -> /opt/infer-linux-x86_64-v1.2.0/
+#   - Frama-C latest (via opam) -> ~/.opam/
+#
+# After running:
+#   infer --version
+#   frama-c -eva file.c
+
+- name: Install Infer and Frama-C on Debian 12
+  hosts: all
+  vars:
+    infer_version: "1.2.0"
+    infer_sha256: "21504063fb3a1dbc7919f34dc6e50ca0d35f50b996d91deb7b8bea8243d52d82"
+    infer_install_dir: "/opt/infer-linux-x86_64-v{{ infer_version }}"
+    opam_root: "{{ ansible_env.HOME }}/.opam"
+
+  tasks:
+    # ── Infer (prebuilt binary) ──────────────────────────────────────────
+
+    - name: Check if Infer is already installed
+      stat:
+        path: "{{ infer_install_dir }}/bin/infer"
+      register: infer_bin
+
+    - name: Install libtinfo5 (Infer links against libtinfo.so.5)
+      become: true
+      apt:
+        name: libtinfo5
+        state: present
+      register: libtinfo5_apt
+      failed_when: false
+
+    - name: Symlink libtinfo.so.6 as libtinfo.so.5 (fallback if libtinfo5 unavailable)
+      become: true
+      file:
+        src: /usr/lib/x86_64-linux-gnu/libtinfo.so.6
+        dest: /usr/lib/x86_64-linux-gnu/libtinfo.so.5
+        state: link
+      when: libtinfo5_apt.rc is defined and libtinfo5_apt.rc != 0
+
+    - name: Download Infer v{{ infer_version }} tarball
+      get_url:
+        url: "https://github.com/facebook/infer/releases/download/v{{ infer_version }}/infer-linux-x86_64-v{{ infer_version }}.tar.xz"
+        dest: "/tmp/infer-linux-x86_64-v{{ infer_version }}.tar.xz"
+        checksum: "sha256:{{ infer_sha256 }}"
+      when: not infer_bin.stat.exists
+
+    - name: Create /opt directory for Infer
+      become: true
+      file:
+        path: /opt
+        state: directory
+        mode: "0755"
+
+    - name: Extract Infer to /opt
+      become: true
+      unarchive:
+        src: "/tmp/infer-linux-x86_64-v{{ infer_version }}.tar.xz"
+        dest: /opt
+        remote_src: true
+        creates: "{{ infer_install_dir }}/bin/infer"
+
+    - name: Symlink infer to /usr/local/bin
+      become: true
+      file:
+        src: "{{ infer_install_dir }}/bin/infer"
+        dest: /usr/local/bin/infer
+        state: link
+
+    - name: Verify Infer installation
+      command: infer --version
+      register: infer_version_out
+      changed_when: false
+
+    - name: Show Infer version
+      debug:
+        var: infer_version_out.stdout_lines
+
+    # ── Frama-C (via opam) ───────────────────────────────────────────────
+
+    - name: Install system dependencies for opam and Frama-C
+      become: true
+      apt:
+        name:
+          # opam and OCaml build essentials
+          - opam
+          - gcc
+          - make
+          - m4
+          - pkg-config
+          - autoconf
+          - g++
+          # Frama-C dependencies
+          - libgmp-dev
+          - zlib1g-dev
+          - libgtk-3-dev
+          - libgtksourceview-3.0-dev
+          # Optional: graphviz for call graph output
+          - graphviz
+        state: present
+        update_cache: true
+
+    - name: Check if opam is initialized
+      stat:
+        path: "{{ opam_root }}/config"
+      register: opam_config
+
+    - name: Initialize opam (non-interactive)
+      command: opam init --bare --no-setup --disable-sandboxing
+      when: not opam_config.stat.exists
+
+    - name: Check if opam default switch exists
+      command: opam switch list --short
+      register: opam_switches
+      changed_when: false
+
+    - name: Create opam switch with OCaml 4.14
+      command: opam switch create default 4.14.2
+      when: "'default' not in opam_switches.stdout"
+      environment:
+        OPAMYES: "1"
+
+    - name: Check if Frama-C is installed
+      shell: eval $(opam env) && which frama-c
+      register: framac_check
+      changed_when: false
+      failed_when: false
+
+    - name: Install Frama-C via opam (this takes ~10-20 minutes)
+      shell: eval $(opam env) && opam install frama-c
+      environment:
+        OPAMYES: "1"
+      when: framac_check.rc != 0
+      # opam builds from source; give it time
+      async: 3600
+      poll: 30
+
+    - name: Verify Frama-C installation
+      shell: eval $(opam env) && frama-c -version
+      register: framac_version_out
+      changed_when: false
+
+    - name: Show Frama-C version
+      debug:
+        var: framac_version_out.stdout_lines
+
+    # ── Summary ──────────────────────────────────────────────────────────
+
+    - name: Installation summary
+      debug:
+        msg:
+          - "Infer:   {{ infer_version_out.stdout_lines[0] | default('installed') }}"
+          - "Frama-C: {{ framac_version_out.stdout_lines[0] | default('installed') }}"
+          - ""
+          - "Add to your shell profile for Frama-C:"
+          - "  eval $(opam env)"

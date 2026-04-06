@@ -314,3 +314,28 @@ pub fn is_known_standard_function(name: &str) -> bool {
         _ => false,
     }
 }
+
+/// Returns true if the given function is known to return values that can span
+/// the full range of an integer type, making `func() + small_literal` a
+/// potential overflow/wrap risk.
+///
+/// Used by INT32-C and INT30-C to refine the opaque-call suppression heuristic:
+/// `strlen(buf) + 1` remains suppressed, but `atoi(buf) + 1` is flagged.
+pub fn is_full_range_return_function(name: &str) -> bool {
+    matches!(
+        name,
+        // String-to-integer parsers: return arbitrary user-supplied values
+        "atoi" | "atol" | "atoll"
+        | "strtol" | "strtoul" | "strtoll" | "strtoull"
+        | "strtoimax" | "strtoumax"
+        // Wide-char string-to-integer parsers
+        | "wcstol" | "wcstoul" | "wcstoll" | "wcstoull"
+        | "wcstoimax" | "wcstoumax"
+        // Random number generators: values can reach INT_MAX / RAND_MAX
+        | "rand" | "random" | "lrand48" | "mrand48" | "rand_r"
+        // Juliet-specific macro (expands to rand())
+        | "RAND32"
+        // Network byte order (can return full 32-bit range)
+        | "ntohl" | "ntohs"
+    )
+}
