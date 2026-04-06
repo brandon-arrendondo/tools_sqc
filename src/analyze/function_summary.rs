@@ -44,6 +44,11 @@ pub struct FunctionSummary {
     /// `Some(range)` when all return paths provably return values in [min, max].
     /// `None` for void, pointer-returning, or unevaluable return expressions.
     pub return_range: Option<ValueRange>,
+    /// Parameter pass-through: which of this function's params are forwarded to
+    /// callees. Maps caller_param_idx → Vec<(callee_name, callee_param_idx)>.
+    /// Used for transitive free propagation (MEM31-C).
+    #[serde(default)]
+    pub param_passthroughs: HashMap<usize, Vec<(String, usize)>>,
 }
 
 /// Compute function summaries for all function definitions in the AST.
@@ -317,6 +322,94 @@ fn analyze_param_usage(
             || body_text.contains(&format!("*){}", param_name))
         {
             summary.dereferences_params.insert(idx);
+        }
+    }
+
+    // Detect param pass-through: when a parameter is forwarded to a callee
+    collect_param_passthroughs(body, source, params, summary);
+}
+
+/// Detect param pass-through patterns: when a function parameter is directly
+/// forwarded as an argument to a callee. Used for transitive free propagation.
+fn collect_param_passthroughs(
+    node: &Node,
+    source: &str,
+    params: &[String],
+    summary: &mut FunctionSummary,
+) {
+    if node.kind() == "call_expression" {
+        if let Some(func_node) = node.child_by_field_name("function") {
+            let callee_name = func_node
+                .utf8_text(source.as_bytes())
+                .unwrap_or("")
+                .to_string();
+            // Skip free/realloc — already handled by frees_params
+            if !callee_name.is_empty() && callee_name != "free" && callee_name != "realloc" {
+                if let Some(arguments) = node.child_by_field_name("arguments") {
+                    let mut callee_idx = 0usize;
+                    for i in 0..arguments.child_count() {
+                        if let Some(arg) = arguments.child(i) {
+                            if arg.kind() == "," || arg.kind() == "(" || arg.kind() == ")" {
+                                continue;
+                            }
+                            if arg.kind() == "identifier" {
+                                let arg_text = arg.utf8_text(source.as_bytes()).unwrap_or("");
+                                for (param_idx, param_name) in params.iter().enumerate() {
+                                    if !param_name.is_empty() && arg_text == param_name {
+                                        summary
+                                            .param_passthroughs
+                                            .entry(param_idx)
+                                            .or_default()
+                                            .push((callee_name.clone(), callee_idx));
+                                    }
+                                }
+                            }
+                            callee_idx += 1;
+                        }
+                    }
+                }
+            }
+        }
+        return; // Don't recurse into call_expression children
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_param_passthroughs(&child, source, params, summary);
+        }
+    }
+}
+
+/// Propagate transitive frees through param pass-through chains.
+///
+/// If function B passes param 0 to callee C at param 0, and C frees param 0,
+/// then B transitively frees param 0. Iterates to fixpoint for deep chains
+/// (e.g., A → B → C → D where D calls free).
+pub fn propagate_transitive_frees(summaries: &mut HashMap<String, FunctionSummary>) {
+    for _pass in 0..10 {
+        let mut changed = false;
+        let frees_snapshot: HashMap<String, HashSet<usize>> = summaries
+            .iter()
+            .map(|(n, s)| (n.clone(), s.frees_params.clone()))
+            .collect();
+
+        for summary in summaries.values_mut() {
+            for (caller_idx, callees) in &summary.param_passthroughs {
+                for (callee_name, callee_idx) in callees {
+                    if let Some(callee_frees) = frees_snapshot.get(callee_name) {
+                        if callee_frees.contains(callee_idx)
+                            && !summary.frees_params.contains(caller_idx)
+                        {
+                            summary.frees_params.insert(*caller_idx);
+                            changed = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        if !changed {
+            break;
         }
     }
 }

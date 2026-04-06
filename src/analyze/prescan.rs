@@ -138,6 +138,10 @@ pub fn prescan_directories(
         &header_declared_functions,
     );
 
+    // Propagate transitive frees through param pass-through chains.
+    // E.g., relay(data) { next(data); } where next() calls free(data).
+    function_summary::propagate_transitive_frees(&mut function_summaries);
+
     if let Some(reporter) = progress {
         reporter.report_prescan_complete(known_functions.len());
     }

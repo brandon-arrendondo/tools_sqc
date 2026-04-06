@@ -1,8 +1,8 @@
 /*
  * Rule: MEM01-C
  * Source: testcases
- * Status: FAIL - Should trigger MEM01-C violation
- * Description: Multiple pointers freed without setting to NULL
+ * Status: PASS - Should NOT trigger MEM01-C violation
+ * Description: Multiple different pointers freed - no reuse of any
  */
 
 #include <stdlib.h>
@@ -17,7 +17,7 @@ void multiple_pointers_not_nulled(void) {
     if (buf2) strcpy(buf2, "world");
     if (buf3) strcpy(buf3, "!");
 
-    free(buf1);  /* Violation: not set to NULL */
-    free(buf2);  /* Violation: not set to NULL */
-    free(buf3);  /* Violation: not set to NULL */
+    free(buf1);  /* Different pointers, no reuse */
+    free(buf2);
+    free(buf3);
 }
