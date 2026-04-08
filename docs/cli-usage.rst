@@ -58,10 +58,18 @@ and DCL07-C (type mismatches) that would otherwise flag externally-defined symbo
 
 The pre-scan collects:
 
-- **Function definitions**: names, parameter counts, return types
-- **Function summaries**: null return behavior, freed parameters, no-return annotations
-- **Macro aliases**: ``#define SYSTEM system`` patterns resolved for taint tracking
-- **Local variable states**: assignments within function bodies for call-site analysis
+- **Function definitions**: names, parameter counts, return types across all ``.c``/``.h`` files
+- **Header prototypes**: functions declared in ``.h`` files (public API detection for DCL15-C)
+- **Function summaries**: null return behavior, freed parameters, no-return annotations,
+  parameter dereferences, return value ranges, parameter pass-through chains
+- **Call graph**: caller → callee relationships for transitive analysis
+- **Call-site argument states**: null state of arguments at each call site, aggregated
+  per parameter for inter-procedural null propagation
+- **Macro constants and aliases**: ``#define`` values for constant evaluation and
+  ``#define SYSTEM system`` patterns for taint tracking
+- **Struct field types**: struct definitions for type resolution (INT32-C, INT30-C)
+- **Global constants**: file-scope ``const`` variables for dead-branch elimination
+- **Global pointer null states**: cross-file ``extern`` pointer tracking (EXP34-C)
 
 
 Export Formats
