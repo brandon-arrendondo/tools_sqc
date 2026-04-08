@@ -672,3 +672,338 @@ fn sarif_includes_suppressed_violations() {
         "SARIF should include suppressed violations with suppressions array"
     );
 }
+
+// ─── Cross-file callsite null propagation (EXP34-C) ─────────────────────────
+
+#[test]
+fn crossfile_callsite_null_detected_with_d_flag() {
+    // caller_bad.c calls process_data(NULL); callee.c dereferences param.
+    // With -d, prescan should propagate NULL arg → EXP34-C flags dereference.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_callsite_null");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("callee.c").to_str().unwrap(),
+        "-m",
+        manifest_exp34().to_str().unwrap(),
+        "-d",
+        fixture_dir.to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let exp34: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "EXP34-C")
+        .collect();
+    assert!(
+        !exp34.is_empty(),
+        "With -d, callsite NULL propagation should cause EXP34-C to flag dereference in callee.c"
+    );
+}
+
+#[test]
+fn crossfile_callsite_null_not_detected_without_d_flag() {
+    // Without -d, no cross-file context — callee.c alone has no reason to flag.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_callsite_null");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("callee.c").to_str().unwrap(),
+        "-m",
+        manifest_exp34().to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let exp34: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "EXP34-C")
+        .collect();
+    assert!(
+        exp34.is_empty(),
+        "Without -d, callee.c has no NULL context — no EXP34-C expected"
+    );
+}
+
+#[test]
+fn crossfile_callsite_safe_not_flagged() {
+    // caller_safe.c passes &value (NotNull) to process_data().
+    // Analyzing callee.c with -d should NOT flag when all callers pass non-NULL.
+    // We analyze with only callee.c + caller_safe.c (exclude caller_bad.c).
+    let dir = tempfile::tempdir().unwrap();
+    let safe_dir = dir.path().join("safe_only");
+    std::fs::create_dir_all(&safe_dir).unwrap();
+    let fixture_dir = fixtures().join("crossfile_callsite_null");
+
+    // Copy only callee.c and caller_safe.c
+    std::fs::copy(fixture_dir.join("callee.c"), safe_dir.join("callee.c")).unwrap();
+    std::fs::copy(
+        fixture_dir.join("caller_safe.c"),
+        safe_dir.join("caller_safe.c"),
+    )
+    .unwrap();
+
+    let out = dir.path().join("out.json");
+    let (code, _, _) = run_sqc(&[
+        safe_dir.join("callee.c").to_str().unwrap(),
+        "-m",
+        manifest_exp34().to_str().unwrap(),
+        "-d",
+        safe_dir.to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let exp34: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "EXP34-C")
+        .collect();
+    assert!(
+        exp34.is_empty(),
+        "With only safe callers (non-NULL args), callee.c should not be flagged"
+    );
+}
+
+// ─── Cross-file can_return_null (EXP34-C) ───────────────────────────────────
+
+#[test]
+fn crossfile_nullable_return_detected_with_d_flag() {
+    // nullable_provider.c wraps malloc (can_return_null = true).
+    // nullable_user_bad.c calls it and dereferences without NULL check.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_callsite_null");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("nullable_user_bad.c").to_str().unwrap(),
+        "-m",
+        manifest_exp34().to_str().unwrap(),
+        "-d",
+        fixture_dir.to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let exp34: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "EXP34-C")
+        .collect();
+    assert!(
+        !exp34.is_empty(),
+        "With -d, get_buffer() can_return_null → dereference without check should flag EXP34-C"
+    );
+}
+
+#[test]
+fn crossfile_nullable_return_safe_not_flagged() {
+    // nullable_user_safe.c checks for NULL before dereference — no violation.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_callsite_null");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("nullable_user_safe.c").to_str().unwrap(),
+        "-m",
+        manifest_exp34().to_str().unwrap(),
+        "-d",
+        fixture_dir.to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let exp34: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "EXP34-C")
+        .collect();
+    assert!(
+        exp34.is_empty(),
+        "NULL check after get_buffer() should suppress EXP34-C"
+    );
+}
+
+// ─── Cross-file frees_params (MEM31-C) ──────────────────────────────────────
+
+fn manifest_mem31() -> PathBuf {
+    fixtures().join("manifest_mem31.toml")
+}
+
+#[test]
+fn crossfile_frees_param_suppresses_leak() {
+    // caller_good.c allocates and passes to cleanup_buffer() (defined in cleanup.c).
+    // With -d, prescan knows cleanup_buffer frees param 0 → no MEM31-C leak.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_frees");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("caller_good.c").to_str().unwrap(),
+        "-m",
+        manifest_mem31().to_str().unwrap(),
+        "-d",
+        fixture_dir.to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let mem31: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "MEM31-C")
+        .collect();
+    assert!(
+        mem31.is_empty(),
+        "With -d, cleanup_buffer() frees param 0 → no MEM31-C leak in caller_good.c"
+    );
+}
+
+#[test]
+fn crossfile_frees_param_not_suppressed_without_d_flag() {
+    // Without -d, sqc can't know that cleanup_buffer frees param → MEM31-C flags leak.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_frees");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("caller_good.c").to_str().unwrap(),
+        "-m",
+        manifest_mem31().to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let mem31: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "MEM31-C")
+        .collect();
+    assert!(
+        !mem31.is_empty(),
+        "Without -d, cleanup_buffer() is unknown → MEM31-C should flag leak"
+    );
+}
+
+#[test]
+fn crossfile_actual_leak_detected() {
+    // caller_leak.c allocates and never frees — MEM31-C should flag regardless of -d.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_frees");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("caller_leak.c").to_str().unwrap(),
+        "-m",
+        manifest_mem31().to_str().unwrap(),
+        "-d",
+        fixture_dir.to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let mem31: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "MEM31-C")
+        .collect();
+    assert!(
+        !mem31.is_empty(),
+        "Actual leak (no free, no cleanup call) should be flagged even with -d"
+    );
+}
+
+// ─── Cross-file header-declared functions (DCL15-C) ─────────────────────────
+
+fn manifest_dcl15() -> PathBuf {
+    fixtures().join("manifest_dcl15.toml")
+}
+
+#[test]
+fn crossfile_header_declared_suppresses_dcl15c() {
+    // impl.c defines compute_value() and print_result() prototyped in public_api.h.
+    // With -d, prescan sees the header prototypes → DCL15-C should NOT flag them.
+    // internal_helper() has no header prototype → should still be flagged.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_header");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("impl.c").to_str().unwrap(),
+        "-m",
+        manifest_dcl15().to_str().unwrap(),
+        "-d",
+        fixture_dir.to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let dcl15: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "DCL15-C")
+        .collect();
+
+    // Should flag internal_helper but NOT compute_value or print_result
+    let flagged_names: Vec<String> = dcl15
+        .iter()
+        .map(|v| v["message"].as_str().unwrap_or("").to_string())
+        .collect();
+    assert!(
+        !flagged_names.iter().any(|m| m.contains("compute_value")),
+        "compute_value() has header prototype — DCL15-C should not flag it"
+    );
+    assert!(
+        !flagged_names.iter().any(|m| m.contains("print_result")),
+        "print_result() has header prototype — DCL15-C should not flag it"
+    );
+    assert!(
+        flagged_names.iter().any(|m| m.contains("internal_helper")),
+        "internal_helper() has no header prototype — DCL15-C should flag it"
+    );
+}
+
+#[test]
+fn crossfile_header_not_suppressed_without_d_flag() {
+    // Without -d, prescan has no header info → DCL15-C should flag all non-static functions.
+    let dir = tempfile::tempdir().unwrap();
+    let out = dir.path().join("out.json");
+    let fixture_dir = fixtures().join("crossfile_header");
+    let (code, _, _) = run_sqc(&[
+        fixture_dir.join("impl.c").to_str().unwrap(),
+        "-m",
+        manifest_dcl15().to_str().unwrap(),
+        "-e",
+        out.to_str().unwrap(),
+    ]);
+    assert_eq!(code, 0);
+
+    let content = std::fs::read_to_string(&out).unwrap();
+    let violations: Vec<serde_json::Value> = serde_json::from_str(&content).unwrap();
+    let dcl15: Vec<_> = violations
+        .iter()
+        .filter(|v| v["rule_id"] == "DCL15-C")
+        .collect();
+
+    // Without -d, all three functions should be flagged
+    assert!(
+        dcl15.len() >= 3,
+        "Without -d, all non-static functions should be flagged (got {})",
+        dcl15.len()
+    );
+}
