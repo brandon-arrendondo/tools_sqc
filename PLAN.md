@@ -132,27 +132,17 @@ prescan capabilities:
 
 # Task ID: 37
 # Title: Analysis capabilities roadmap
-# Status: pending
+# Status: done (v0.3.87)
 # Dependencies: none
 # Priority: P3
 # Description: Track fundamental analysis limitations and potential improvements.
 # Details:
-Current limitations:
-- No preprocessor expansion (macros appear as function calls; macro aliases
-  partially addressed via collect_macro_aliases)
-- No alias analysis (pointer aliasing not resolved; file-scoped alias
-  collection causes cross-function issues)
-- No symbolic execution
-- No SSA form (beyond reaching definitions)
-- VRA is intra-procedural with inter-procedural return ranges (v0.3.23-v0.3.24).
-  No inter-procedural argument ranges or field-sensitive VRA.
-- Limited whole-program analysis (function summaries + call-site null state +
-  multi-pass relay + local variable tracking + -I header resolution)
-- Struct field type resolution limited to structs visible during prescan
-  (INT32-C/INT30-C only)
-
-These limitations collectively cap TP rate at ~45-48% without major
-architectural investment.
+DONE. Updated docs/architecture.rst with comprehensive inventory of all 10
+analysis modules, current capabilities table (17 entries), known limitations
+table (8 entries with impact descriptions), per-CWE ceiling analysis, and
+updated competitor landscape from 5-tool benchmark. Previous version was
+heavily outdated (referenced "No VRA", "No whole-program analysis", 48% TP
+rate — all now incorrect).
 
 ---
 
