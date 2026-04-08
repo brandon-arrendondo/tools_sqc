@@ -6,6 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.87] - 2026-04-07
+
+### Added
+
+- 13 multi-file CLI integration tests for cross-file prescan capabilities:
+  callsite null propagation (EXP34-C), can_return_null (EXP34-C),
+  frees_params (MEM31-C), header_declared_functions (DCL15-C).
+  Each scenario tests with-d, without-d, and safe variants.
+  (Task 20)
+- Test fixtures: crossfile_callsite_null/, crossfile_frees/, crossfile_header/
+  with manifests for MEM31-C and DCL15-C.
+
+### Changed
+
+- docs/architecture.rst: comprehensive rewrite. Inventory of all 10 analysis
+  modules, capabilities table expanded from 10 to 17 entries, limitations
+  table updated (8 entries with impact), per-CWE ceiling analysis, updated
+  competitor landscape from 5-tool benchmark. Removed outdated claims
+  ("No VRA", "No whole-program analysis", 48% TP rate). (Task 37)
+- README.md: benchmark table updated (48.4% → 61.8% TP rate, 16 → 32
+  perfect CWEs, added per-file detection rate 42.6%).
+- docs/sqc.1: man page version 0.3.61 → 0.3.87.
+- docs/cli-usage.rst: prescan collection list expanded from 4 to 9 items
+  (added header prototypes, call graph, call-site arg states, struct field
+  types, global constants, global null states).
+
 ## [0.3.86] - 2026-04-06
 
 ### Changed
