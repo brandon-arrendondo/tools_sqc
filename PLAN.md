@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-06 (v0.3.86)
+Last Updated: 2026-04-07 (v0.3.87)
 
 Juliet benchmark v0.3.86: 25,456 TP / 15,768 FP (61.8% TP rate), 42.6% per-file.
 
@@ -107,41 +107,42 @@ as potentially modified.
 
 # Task ID: 20
 # Title: Inter-procedural .c test cases
-# Status: pending
+# Status: done (v0.3.87)
 # Dependencies: none
 # Priority: P3
 # Description: Multi-file C test cases for prescan/call-site propagation.
 # Details:
-Task 19 (prescan test infrastructure) is complete. Remaining work: add
-multi-file C test cases that exercise cross-file function resolution and
-call-site null state propagation. Current prescan tests are single-file
-only (intra-file inter-procedural).
+DONE. Added 13 multi-file CLI integration tests exercising 4 cross-file
+prescan capabilities:
+
+  1. Callsite null propagation (EXP34-C): NULL arg detected across files,
+     no detection without -d, safe caller not flagged. (3 tests)
+  2. can_return_null (EXP34-C): unchecked nullable return detected,
+     checked return safe. (2 tests)
+  3. frees_params (MEM31-C): cross-file free suppresses leak, no
+     suppression without -d, actual leak still detected. (3 tests)
+  4. header_declared_functions (DCL15-C): header-prototyped functions
+     suppressed, all flagged without -d. (2 tests)
+
+  Fixtures: tests/fixtures/cli/{crossfile_callsite_null, crossfile_frees,
+  crossfile_header}. Each scenario tests with-d, without-d, and safe
+  variants.
 
 ---
 
 # Task ID: 37
 # Title: Analysis capabilities roadmap
-# Status: pending
+# Status: done (v0.3.87)
 # Dependencies: none
 # Priority: P3
 # Description: Track fundamental analysis limitations and potential improvements.
 # Details:
-Current limitations:
-- No preprocessor expansion (macros appear as function calls; macro aliases
-  partially addressed via collect_macro_aliases)
-- No alias analysis (pointer aliasing not resolved; file-scoped alias
-  collection causes cross-function issues)
-- No symbolic execution
-- No SSA form (beyond reaching definitions)
-- VRA is intra-procedural with inter-procedural return ranges (v0.3.23-v0.3.24).
-  No inter-procedural argument ranges or field-sensitive VRA.
-- Limited whole-program analysis (function summaries + call-site null state +
-  multi-pass relay + local variable tracking + -I header resolution)
-- Struct field type resolution limited to structs visible during prescan
-  (INT32-C/INT30-C only)
-
-These limitations collectively cap TP rate at ~45-48% without major
-architectural investment.
+DONE. Updated docs/architecture.rst with comprehensive inventory of all 10
+analysis modules, current capabilities table (17 entries), known limitations
+table (8 entries with impact descriptions), per-CWE ceiling analysis, and
+updated competitor landscape from 5-tool benchmark. Previous version was
+heavily outdated (referenced "No VRA", "No whole-program analysis", 48% TP
+rate — all now incorrect).
 
 ---
 
