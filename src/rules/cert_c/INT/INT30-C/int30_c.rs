@@ -285,6 +285,21 @@ impl Int30C {
                     return;
                 }
 
+                // Skip when one operand is narrow unsigned and the other is not a
+                // wider unsigned type. C promotes the narrow unsigned to int (signed),
+                // so the arithmetic is signed and cannot cause unsigned wrap.
+                // Example: uint8_t + 1 → int + int → no unsigned wrap.
+                if self.narrow_promotion_is_safe(&left_type, &right_type) {
+                    return;
+                }
+
+                // Skip if the addition result is immediately masked by bitwise AND.
+                // Pattern: (x + 1) & MASK — common ring buffer index idiom.
+                // The mask bounds the result regardless of intermediate wrap.
+                if self.is_addition_masked_by_bitand(node, source) {
+                    return;
+                }
+
                 // Check for var + 1 or 1 + var bounded by enclosing loop condition
                 if self.is_add_one_bounded_by_loop(node, source) {
                     return;
@@ -372,6 +387,12 @@ impl Int30C {
                     return;
                 }
 
+                // Skip when one operand is narrow unsigned and the other is not a
+                // wider unsigned type. C promotes to int (signed) — no unsigned wrap.
+                if self.narrow_promotion_is_safe(&left_type, &right_type) {
+                    return;
+                }
+
                 // Skip var - 1 / var - 1U when guarded by positive check or preceded by increment
                 if self.is_subtract_one_guarded(node, source) {
                     return;
@@ -447,6 +468,37 @@ impl Int30C {
                     && (left_type.contains("8") || right_type.contains("8"))
                 {
                     return;
+                }
+
+                // Skip when one operand is narrow unsigned and the other is signed/literal.
+                // For multiplication, only safe when at least one is 8-bit (max product
+                // 255*INT_MAX fits in 64-bit but not 32-bit, so be conservative: only
+                // skip when one operand is uint8_t and other is not wide unsigned).
+                if (self.is_narrow_unsigned_type(&left_type)
+                    && left_type.contains("8")
+                    && !self.is_wide_unsigned_type(&right_type))
+                    || (self.is_narrow_unsigned_type(&right_type)
+                        && right_type.contains("8")
+                        && !self.is_wide_unsigned_type(&left_type))
+                {
+                    return;
+                }
+
+                // Skip when both operands' original (pre-cast) types are uint8_t.
+                // Pattern: (uint32_t)a * b where a and b are both uint8_t.
+                // Max product: 255 * 255 = 65025, fits in uint32_t.
+                {
+                    let left_orig = self.get_pre_cast_type(&left, source, type_map);
+                    let right_orig = self.get_pre_cast_type(&right, source, type_map);
+                    let left_eff = left_orig.as_deref().unwrap_or(&left_type);
+                    let right_eff = right_orig.as_deref().unwrap_or(&right_type);
+                    if self.is_narrow_unsigned_type(left_eff)
+                        && left_eff.contains("8")
+                        && self.is_narrow_unsigned_type(right_eff)
+                        && right_eff.contains("8")
+                    {
+                        return;
+                    }
                 }
 
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
@@ -923,6 +975,26 @@ impl Int30C {
     fn infer_type(&self, node: &Node, source: &str, type_map: &HashMap<String, String>) -> String {
         let text = get_node_text(node, source);
 
+        // Cast expressions: extract the actual target type from the type descriptor.
+        // This provides precise type info (e.g., "uint8_t" instead of generic "unsigned")
+        // which is critical for narrow-type checks.
+        if node.kind() == "cast_expression" {
+            if let Some(type_node) = node.child_by_field_name("type") {
+                let cast_type = get_node_text(&type_node, source).trim().to_string();
+                let base_type = Self::strip_type_qualifiers(&cast_type);
+                if base_type.contains('*') {
+                    return "not_applicable".to_string();
+                }
+                if self.is_unsigned_type(&base_type) {
+                    return base_type;
+                }
+                if base_type == "void" {
+                    return "not_applicable".to_string();
+                }
+                return "int".to_string();
+            }
+        }
+
         // Look for explicit unsigned indicators in the text
         if text.contains("unsigned") || text.contains("size_t") || text.contains("uint") {
             return "unsigned".to_string();
@@ -1008,16 +1080,19 @@ impl Int30C {
                     node, source, type_map, &sft,
                 )
             {
-                if field_type.contains('*') {
+                // Strip qualifiers (volatile, const) for type classification
+                let base_type = Self::strip_type_qualifiers(&field_type);
+                if base_type.contains('*') {
                     return "not_applicable".to_string();
                 }
-                if self.is_unsigned_type(&field_type) {
-                    return "unsigned".to_string();
+                if self.is_unsigned_type(&base_type) {
+                    // Return actual type to preserve narrow-type info (uint8_t, uint16_t)
+                    return base_type;
                 }
-                if !field_type.contains("int")
-                    && !field_type.contains("short")
-                    && !field_type.contains("long")
-                    && field_type != "signed"
+                if !base_type.contains("int")
+                    && !base_type.contains("short")
+                    && !base_type.contains("long")
+                    && base_type != "signed"
                 {
                     return "not_applicable".to_string();
                 }
@@ -1410,6 +1485,110 @@ impl Int30C {
                 | "unsigned char"
                 | "unsigned short"
         )
+    }
+
+    /// For a cast_expression node, return the type of the inner (pre-cast) value.
+    /// For non-cast nodes, return None. This lets callers see through widening casts
+    /// like `(uint32_t)narrow_var` to detect that the original value is narrow.
+    fn get_pre_cast_type(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> Option<String> {
+        if node.kind() == "cast_expression" {
+            if let Some(value) = node.child_by_field_name("value") {
+                let inner_type = self.infer_type(&value, source, type_map);
+                if inner_type != "unknown" {
+                    return Some(inner_type);
+                }
+            }
+        }
+        None
+    }
+
+    /// Strip type qualifiers (volatile, const, _Atomic) from a type string.
+    fn strip_type_qualifiers(type_str: &str) -> String {
+        type_str
+            .replace("volatile ", "")
+            .replace("const ", "")
+            .replace("_Atomic ", "")
+            .trim()
+            .to_string()
+    }
+
+    /// Returns true if the type is a "wide" unsigned integer (32-bit or larger).
+    /// When a narrow unsigned is combined with a wide unsigned, C promotes to
+    /// the wide unsigned type — the result IS unsigned and can wrap.
+    fn is_wide_unsigned_type(&self, type_str: &str) -> bool {
+        self.is_unsigned_type(type_str) && !self.is_narrow_unsigned_type(type_str)
+    }
+
+    /// Returns true if one operand is narrow unsigned and the other is NOT a
+    /// wider unsigned type. In this case, C promotes the narrow unsigned to
+    /// `int` (signed 32-bit), making the arithmetic signed — no unsigned wrap.
+    fn narrow_promotion_is_safe(&self, left_type: &str, right_type: &str) -> bool {
+        let left_narrow = self.is_narrow_unsigned_type(left_type);
+        let right_narrow = self.is_narrow_unsigned_type(right_type);
+
+        if left_narrow && !self.is_wide_unsigned_type(right_type) {
+            return true;
+        }
+        if right_narrow && !self.is_wide_unsigned_type(left_type) {
+            return true;
+        }
+        // Both narrow — already handled by the existing check, but include for completeness
+        left_narrow && right_narrow
+    }
+
+    /// Check if text is a valid C operand expression (simple identifier or
+    /// field expression like `ctx->field` or `obj.member`).
+    fn is_valid_operand_expr(&self, text: &str) -> bool {
+        if text.is_empty() {
+            return false;
+        }
+        // Split on -> and . to get component parts
+        for part in text.split("->").flat_map(|s| s.split('.')) {
+            let part = part.trim();
+            if part.is_empty() {
+                return false;
+            }
+            if !part.chars().all(|c| c.is_alphanumeric() || c == '_')
+                || !part
+                    .chars()
+                    .next()
+                    .is_some_and(|c| c.is_alphabetic() || c == '_')
+            {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// Check if a binary addition is immediately masked by bitwise AND.
+    /// Pattern: `(expr + N) & MASK` — result is bounded by the mask regardless
+    /// of whether the addition wraps. Common in ring buffer index arithmetic.
+    fn is_addition_masked_by_bitand(&self, node: &Node, source: &str) -> bool {
+        // The addition node's parent should be a binary_expression with operator &
+        if let Some(parent) = node.parent() {
+            // Check for parenthesized_expression wrapping
+            let effective_parent = if parent.kind() == "parenthesized_expression" {
+                parent.parent()
+            } else {
+                Some(parent)
+            };
+            if let Some(p) = effective_parent {
+                if p.kind() == "binary_expression" {
+                    if let Some(op) = p.child_by_field_name("operator") {
+                        let op_text = get_node_text(&op, source);
+                        if op_text == "&" {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        false
     }
 
     fn is_64bit_unsigned_declared(&self, type_str: &str) -> bool {
@@ -2007,6 +2186,8 @@ impl Int30C {
     /// Check if `a - b` is inside a block guarded by `a >= b`, `a > b`, `b <= a`, or `b < a`.
     /// Walks ancestors for if_statement, while_statement, for_statement — same pattern
     /// as `is_guarded_by_gt_zero` but checks for a comparison between the two operands.
+    /// Also handles else-branch: if inside `else` of `if (b > a)`, then `a - b` is NOT safe
+    /// but `b - a` IS safe (the else implies `a >= b` is false, i.e., `b >= a`).
     fn is_subtraction_guarded_by_comparison(
         &self,
         node: &Node,
@@ -2014,8 +2195,9 @@ impl Int30C {
         right_name: &str,
         source: &str,
     ) -> bool {
-        // Only apply when both operands are simple identifiers (not complex expressions)
-        if !self.is_simple_identifier(left_name) || !self.is_simple_identifier(right_name) {
+        // Apply when both operands are valid operand expressions (simple identifiers
+        // or field expressions like ctx->field, obj.member)
+        if !self.is_valid_operand_expr(left_name) || !self.is_valid_operand_expr(right_name) {
             return false;
         }
 
@@ -2027,8 +2209,9 @@ impl Int30C {
             ) {
                 if let Some(condition) = parent.child_by_field_name("condition") {
                     let cond_text = get_node_text(&condition, source);
+
+                    // True-branch: if (left >= right) { left - right } is safe
                     if self.condition_implies_a_gte_b(&cond_text, left_name, right_name) {
-                        // For if_statement, verify we're in the true branch (consequence)
                         if parent.kind() == "if_statement" {
                             if let Some(consequence) = parent.child_by_field_name("consequence") {
                                 if current.start_byte() >= consequence.start_byte()
@@ -2040,6 +2223,21 @@ impl Int30C {
                         } else {
                             // while/for: loop body is always the true branch
                             return true;
+                        }
+                    }
+
+                    // Else-branch: if (right > left) { ... } else { left - right }
+                    // In the else branch, !(right > left) implies left >= right,
+                    // so left - right is safe.
+                    if parent.kind() == "if_statement" {
+                        if self.condition_implies_a_gte_b(&cond_text, right_name, left_name) {
+                            if let Some(alternative) = parent.child_by_field_name("alternative") {
+                                if current.start_byte() >= alternative.start_byte()
+                                    && current.end_byte() <= alternative.end_byte()
+                                {
+                                    return true;
+                                }
+                            }
                         }
                     }
                 }
@@ -2105,16 +2303,6 @@ impl Int30C {
             }
         }
         false
-    }
-
-    /// Check if text is a simple C identifier (no operators, spaces, or punctuation).
-    fn is_simple_identifier(&self, text: &str) -> bool {
-        !text.is_empty()
-            && text.chars().all(|c| c.is_alphanumeric() || c == '_')
-            && text
-                .chars()
-                .next()
-                .is_some_and(|c| c.is_alphabetic() || c == '_')
     }
 
     fn get_function_arguments(&self, node: &Node, source: &str) -> Vec<String> {
