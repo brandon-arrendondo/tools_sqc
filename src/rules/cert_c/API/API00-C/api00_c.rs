@@ -455,6 +455,8 @@ impl Api00C {
                                 // Case 3: if/else chain — param is checked in condition and
                                 // actual work is in the else branch.
                                 //   if (NULL == ptr) { result = ERR; } else { work(ptr); }
+                                // Also handles if/else-if/else chains:
+                                //   if (NULL == a) { err; } else if (NULL == b) { err; } else { work(a,b); }
                                 let validated_in_condition = self
                                     .extract_validated_params_from_condition(
                                         &condition,
@@ -464,6 +466,13 @@ impl Api00C {
                                 for param in validated_in_condition {
                                     validated.insert(param);
                                 }
+                                // Walk into chained else-if conditions to collect more validated params
+                                self.collect_else_if_chain_validations(
+                                    &child,
+                                    pointer_params,
+                                    source,
+                                    validated,
+                                );
                             } else {
                                 // Case 2: positive guard pattern
                                 //   if (ptr != NULL) { /* all usage inside */ }
@@ -521,6 +530,55 @@ impl Api00C {
                     _ => {}
                 }
             }
+        }
+    }
+
+    /// Walk an if/else-if chain to collect validated params from all conditions.
+    /// For `if (NULL == a) { err; } else if (NULL == b) { err; } else { work(a,b); }`,
+    /// both `a` and `b` are validated in the final else block.
+    /// Tree-sitter wraps else-if in `else_clause { if_statement { ... } }`.
+    fn collect_else_if_chain_validations(
+        &self,
+        if_node: &Node,
+        pointer_params: &[String],
+        source: &str,
+        validated: &mut HashSet<String>,
+    ) {
+        let mut current = *if_node;
+        while let Some(alternative) = current.child_by_field_name("alternative") {
+            // Tree-sitter wraps `else if` in an else_clause node
+            let next_if = if alternative.kind() == "else_clause" {
+                // Look for an if_statement inside the else_clause
+                let mut inner_if = None;
+                for i in 0..alternative.child_count() {
+                    if let Some(child) = alternative.child(i) {
+                        if child.kind() == "if_statement" {
+                            inner_if = Some(child);
+                            break;
+                        }
+                    }
+                }
+                match inner_if {
+                    Some(if_stmt) => if_stmt,
+                    None => break, // Plain else { ... } — end of chain
+                }
+            } else if alternative.kind() == "if_statement" {
+                alternative
+            } else {
+                break;
+            };
+
+            if let Some(condition) = next_if.child_by_field_name("condition") {
+                let params_in_cond = self.extract_validated_params_from_condition(
+                    &condition,
+                    pointer_params,
+                    source,
+                );
+                for param in params_in_cond {
+                    validated.insert(param);
+                }
+            }
+            current = next_if;
         }
     }
 
@@ -702,8 +760,12 @@ impl Api00C {
         if found_direct_use || relay_callees.is_empty() {
             return false;
         }
-        // Every callee that receives this parameter must validate it
+        // Every callee that receives this parameter must validate it or accept NULL
         for (callee_name, arg_idx) in &relay_callees {
+            // Standard library functions that accept NULL pointers — no validation needed
+            if Self::is_null_accepting_stdlib(callee_name, *arg_idx) {
+                continue;
+            }
             if let Some(callee_summary) = summaries.get(callee_name.as_str()) {
                 if !callee_summary.checks_null_params.contains(arg_idx) {
                     return false; // Callee doesn't validate → not safe to suppress
@@ -765,6 +827,21 @@ impl Api00C {
     }
 
     /// Get the positional index of an argument within an argument_list.
+    /// Standard library functions that accept NULL pointer arguments by design.
+    /// free(NULL) is a no-op per C11 7.22.3.3. realloc(NULL, size) is equivalent
+    /// to malloc(size) per C11 7.22.3.5. These functions do NOT need callers to
+    /// validate pointer arguments before calling.
+    fn is_null_accepting_stdlib(func_name: &str, arg_idx: usize) -> bool {
+        matches!(
+            (func_name, arg_idx),
+            ("free", 0)
+                | ("realloc", 0)
+                | ("cfree", 0)
+                | ("Memory_Free", 0)
+                | ("Memory_Realloc", 0)
+        )
+    }
+
     fn get_arg_index(&self, arg_node: &Node, arg_list: &Node) -> usize {
         let mut idx = 0;
         for i in 0..arg_list.child_count() {
