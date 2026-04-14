@@ -35,39 +35,29 @@ impl Mem05C {
     fn check_node(&self, node: &Node, source: &str, violations: &mut Vec<RuleViolation>) {
         // Look for array declarations with variable size (VLA)
         if node.kind() == "declaration" {
-            let text = node.utf8_text(source.as_bytes()).unwrap_or("");
-
-            // Check for array declaration pattern: type name[variable]
-            // VLAs have a non-constant size in brackets
-            if text.contains('[') && text.contains(']') && !text.contains("malloc") {
-                // Extract the part in brackets
-                if let Some(start) = text.find('[') {
-                    if let Some(end) = text.find(']') {
-                        let size_expr = &text[start + 1..end].trim();
-
-                        // If size is not a numeric constant, it might be a VLA.
-                        // But ALL_CAPS identifiers are likely preprocessor constants
-                        // (e.g., SSL_CERT_BUFFER_SIZE), not runtime values.
-                        if !size_expr.is_empty()
-                            && !size_expr.chars().all(|c| c.is_numeric())
-                            && !Self::is_likely_macro_constant(size_expr)
-                        {
-                            violations.push(RuleViolation {
-                                rule_id: self.rule_id().to_string(),
-                                severity: self.severity(),
-                                line: node.start_position().row + 1,
-                                column: node.start_position().column + 1,
-                                file_path: String::new(),
-                                message: "Variable-length array with runtime-sized allocation; \
+            // Use AST-based detection: look for array_declarator in the declaration.
+            // This avoids false positives from array subscripts in initializers
+            // (e.g., `uint8_t x = arr[i]` is NOT a VLA, but `uint8_t arr[n]` IS).
+            if let Some(size_expr) = Self::find_array_declarator_size(node, source) {
+                let size_expr = size_expr.trim();
+                // If size is not a numeric constant, it might be a VLA.
+                // ALL_CAPS identifiers are likely preprocessor constants.
+                if !size_expr.is_empty()
+                    && !size_expr.chars().all(|c| c.is_numeric())
+                    && !Self::is_likely_macro_constant(size_expr)
+                {
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: self.severity(),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        file_path: String::new(),
+                        message: "Variable-length array with runtime-sized allocation; \
                                      use malloc instead"
-                                    .to_string(),
-                                suggestion: Some(
-                                    "Use malloc/calloc for dynamic allocation".to_string(),
-                                ),
-                                requires_manual_review: None,
-                            });
-                        }
-                    }
+                            .to_string(),
+                        suggestion: Some("Use malloc/calloc for dynamic allocation".to_string()),
+                        requires_manual_review: None,
+                    });
                 }
             }
         }
@@ -111,6 +101,52 @@ impl Mem05C {
 
     /// Check if a size expression is likely a preprocessor macro constant.
     /// ALL_CAPS identifiers with optional underscores are conventionally macros.
+    /// Walk a declaration's AST to find an array_declarator and return its size expression.
+    /// Returns None if the declaration doesn't contain an array_declarator (e.g., it's a
+    /// scalar declaration like `uint8_t x = arr[i]` where `[i]` is a subscript, not a size).
+    fn find_array_declarator_size(decl_node: &Node, source: &str) -> Option<String> {
+        Self::find_array_size_recursive(decl_node, source)
+    }
+
+    fn find_array_size_recursive(node: &Node, source: &str) -> Option<String> {
+        if node.kind() == "array_declarator" {
+            // The array size is the child in brackets, typically the `size` field
+            // or the last child before `]`
+            if let Some(size_node) = node.child_by_field_name("size") {
+                let size_text = size_node
+                    .utf8_text(source.as_bytes())
+                    .unwrap_or("")
+                    .to_string();
+                return Some(size_text);
+            }
+            // Fallback: extract text between [ and ]
+            let text = node.utf8_text(source.as_bytes()).unwrap_or("");
+            if let (Some(start), Some(end)) = (text.find('['), text.find(']')) {
+                let size = text[start + 1..end].trim().to_string();
+                if !size.is_empty() {
+                    return Some(size);
+                }
+            }
+            return None;
+        }
+        // Recurse into children but skip init_declarator's value (the initializer)
+        // to avoid matching subscript expressions on the RHS of assignments
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                // Skip the value/initializer — subscripts there are NOT array declarations
+                if node.kind() == "init_declarator"
+                    && node.child_by_field_name("value").map(|v| v.id()) == Some(child.id())
+                {
+                    continue;
+                }
+                if let Some(size) = Self::find_array_size_recursive(&child, source) {
+                    return Some(size);
+                }
+            }
+        }
+        None
+    }
+
     fn is_likely_macro_constant(expr: &str) -> bool {
         !expr.is_empty()
             && expr
