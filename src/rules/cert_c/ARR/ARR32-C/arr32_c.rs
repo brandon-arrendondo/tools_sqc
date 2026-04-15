@@ -115,7 +115,11 @@ fn is_variable_length_array(size_node: &Node, source: &str) -> bool {
             let name = &source[size_node.start_byte()..size_node.end_byte()];
             !is_likely_macro_constant(name)
         }
-        "binary_expression" => true,
+        "binary_expression" => {
+            // Check if all leaf identifiers are macro constants.
+            // `MACRO_A * MACRO_B` is a compile-time constant expression.
+            !is_all_constant_expression(size_node, source)
+        }
         "call_expression" => true,
         "number_literal" => false,
         _ => {
@@ -315,6 +319,38 @@ fn has_prior_validation(body_node: &Node, source: &str, var_name: &str, vla_line
 }
 
 /// ALL_CAPS identifiers are conventionally preprocessor constants (not runtime variables)
+/// Check if an expression tree consists entirely of compile-time constants:
+/// numeric literals, ALL_CAPS macro identifiers, sizeof, and arithmetic operators.
+fn is_all_constant_expression(node: &Node, source: &str) -> bool {
+    match node.kind() {
+        "number_literal" => true,
+        "identifier" => {
+            let name = &source[node.start_byte()..node.end_byte()];
+            is_likely_macro_constant(name)
+        }
+        "binary_expression" | "parenthesized_expression" => {
+            // All children must be constant
+            for i in 0..node.child_count() {
+                if let Some(child) = node.child(i) {
+                    match child.kind() {
+                        // Operators and parens are fine
+                        "+" | "-" | "*" | "/" | "%" | "<<" | ">>" | "&" | "|" | "^" | "(" | ")" => {
+                        }
+                        _ => {
+                            if !is_all_constant_expression(&child, source) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            true
+        }
+        "sizeof_expression" => true,
+        _ => false,
+    }
+}
+
 fn is_likely_macro_constant(name: &str) -> bool {
     !name.is_empty()
         && name

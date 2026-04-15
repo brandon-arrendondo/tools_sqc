@@ -1,6 +1,6 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-07 (v0.3.87)
+Last Updated: 2026-04-14 (v0.3.87)
 
 Juliet benchmark v0.3.86: 25,456 TP / 15,768 FP (61.8% TP rate), 42.6% per-file.
 
@@ -60,6 +60,231 @@ CWE-401 TP rate 50.7% → 77.6% (+26.9pp). Rule FP rate 49.3% → 22.4%.
   3. If/else branch merge: UNION of freed memory from both branches.
 
   Remaining 220 FPs: switch constants, pointer-to-pointer, global variables.
+
+---
+
+# ───────────────────────────────────────────────────────────────────
+# Real-World FP Reduction (derived from d_lib_common, d_lib_networking,
+# d_lib_serial_leds, d_lib_airpath_debris_sensing triage — 2026-04-14)
+#
+# These 4 embedded C codebases have ~100 suppressed FPs across 12+ rules.
+# Tasks below are ranked by total FP count across all codebases.
+# ───────────────────────────────────────────────────────────────────
+
+# Task ID: 60
+# Title: INT30-C embedded guard/bound pattern recognition
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Reduce INT30-C FPs on bounded embedded arithmetic (~31 FPs
+#   across 3 codebases).
+# Details:
+Biggest single FP source across all 4 embedded codebases. Patterns to add:
+
+  1. **Bitmask wrapping**: `(x + 1) & (SIZE - 1)` where SIZE is power-of-2.
+     Ring buffer idiom — result is always < SIZE. (airpath 2 FPs)
+  2. **uint32_t intermediate cast**: `(uint32_t)(a - b) * SCALE` where
+     subtraction is guarded by `a > b + MARGIN`. C integer promotion to
+     uint32_t prevents uint8_t/uint16_t wrap. (airpath 5 FPs)
+  3. **Guard-before-decrement**: `if (ctx->speed_hold_time > interval)
+     ctx->speed_hold_time -= interval`. Existing `is_guarded_by_gt_zero()`
+     only handles `> 0`, not `> other_var`. (airpath 1 FP, common ~3 FPs)
+  4. **Loop-bounded counters**: `for (i = 0; i < count; i++)` where `count`
+     is clamped at init time. Loop increment can't wrap uint8_t when
+     bound < 255. (serial_leds 16 FPs)
+  5. **Same-array subtraction**: `result - arr` where result comes from
+     bsearch within arr. (common 1 FP)
+  6. **Widened comparison**: `if ((uint32_t)length + HDR_SIZE > bufferSize)`
+     — the cast widens BEFORE the add, preventing wrap. (common 1 FP)
+
+  Fix approach: extend `is_inside_checked_block()` and add new pattern
+  matchers for bitmask, intermediate cast, and loop-bounded patterns.
+
+---
+
+# Task ID: 61
+# Title: EXP34-C null safety through if-guards and &stack_var
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Reduce EXP34-C FPs where null safety is established by
+#   if-guard-with-early-return or &stack_variable callers (~16 FPs).
+# Details:
+Second biggest FP source. Two distinct sub-problems:
+
+  A. **If-guard-with-early-return** (~5 FPs in d_lib_common):
+     ```c
+     if (ptr == NULL) return ERROR;
+     // ptr used here — sqc still flags as potentially null
+     ```
+     The CFG-based null_state.rs should handle this via edge refinement,
+     but these FPs suggest the refinement isn't reaching all dereference
+     points. Investigate whether the issue is:
+     - Null state not propagated past the if-return block
+     - Function parameters not entering as Unknown (entering as PossiblyNull?)
+     - Multiple params checked in sequence losing state
+
+  B. **&stack_variable callers** (9 FPs in d_lib_common):
+     ```c
+     void readTlvHeader(uint16_t *tag, ...) { *tag = ...; }
+     // Always called as: readTlvHeader(&local_tag, ...)
+     ```
+     Prescan already tracks callsite args. Enhance to detect &expr args
+     and mark corresponding params as NotNull in FunctionSummary.
+     Already partially done for array args (v0.2.20); extend to &var.
+
+  C. **Callback void* params** (2 FPs in d_lib_networking):
+     `void my_debug(void *ctx, ...)` — ctx always non-null from mbedtls.
+     Lower priority; requires trust annotations or library modeling.
+
+---
+
+# Task ID: 62
+# Title: API00-C validation look-ahead past variable declarations
+# Status: pending
+# Dependencies: none
+# Priority: P2
+# Description: Reduce API00-C FPs where parameter validation exists but
+#   is not detected due to intervening variable declarations (~12 FPs).
+# Details:
+Two sub-patterns:
+
+  A. **Validation past var decls** (~8 FPs in d_lib_common):
+     ```c
+     void writeTlv(RingBuffer *ptr, TLV *tlv) {
+       uint16_t tag = tlv->tag;   // var decl
+       uint16_t len = tlv->length; // var decl
+       if (ptr == NULL) return;    // ← validation IS here
+     ```
+     Current API00-C checks first N statements. Fix: scan deeper into
+     function body, skipping `declaration` nodes, looking for if-guard
+     patterns within first ~10 statements or first compound block.
+
+  B. **Embedded API contract — no NULL check by design** (3 FPs in airpath):
+     ISR-context functions where NULL check adds unacceptable overhead.
+     Consider: API00-C could skip functions marked with a
+     `SQC-SUPPRESS: API00-C` on the function signature (already works).
+     Or: reduce severity for `static`/internal functions. Or: recognize
+     Doxygen @pre annotations as documented contracts.
+
+  C. **void* container where NULL is valid** (1 FP in d_lib_common):
+     `ArrayList_Append(self, void *item)` — NULL is a valid item for a
+     generic container. API00-C should not require validation when the
+     type is `void *` and the param is not dereferenced.
+
+---
+
+# Task ID: 63
+# Title: MEM05-C / ARR32-C false VLA and stack allocation fixes
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Fix false VLA detection and spurious stack allocation
+#   warnings (3 FPs across 2 codebases).
+# Details:
+Three distinct bugs:
+
+  1. **ARR32-C on header-defined constant** (serial_leds):
+     `output_buf[SERIAL_LEDS_MAX_LEDS * SERIAL_LEDS_BYTES_PER_LED]` in
+     a header struct definition. Both macros are `#define` constants.
+     sqc already has `is_likely_macro_constant()` for ALL_CAPS — may need
+     to handle multiplication of two ALL_CAPS identifiers.
+
+  2. **MEM05-C on array subscript** (airpath):
+     `ctx->adc_ring_buf[ctx->adc_ring_tail]` — sqc misidentifies this
+     as a VLA declaration. It's an array element access, not a declaration.
+     Bug: MEM05-C VLA check triggering on subscript_expression inside
+     an assignment, not a declaration context.
+
+  3. **MEM05-C on 1-byte stack variable** (serial_leds):
+     `uint8_t idx` flagged as "large stack allocation". 1 byte is not
+     a stack concern. Add minimum size threshold (e.g., skip < 256 bytes).
+
+---
+
+# Task ID: 64
+# Title: EXP02-C extended short-circuit guard recognition
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Extend EXP02-C guard pattern recognition beyond
+#   NULL_CHECK && fn_call to cover all common guard idioms (4 FPs).
+# Details:
+sqc already suppresses `ptr != NULL && fn(ptr)` but still flags:
+
+  - `file_size > 0 && buflen >= file_size && fseek(...)` — value guard
+  - `self == NULL || IntSet_Contains(self, element)` — NULL || pattern
+  - `len == capacity && !growCapacity(self)` — equality check + mutation
+  - `arr->len == arr->cap && !ArrayList_growCapacity(arr)` — same pattern
+
+General principle: when the LHS of && or || is a GUARD (comparison that
+determines whether the RHS should execute), the short-circuit IS the
+intent. Recognize patterns where:
+  - LHS is a comparison (==, !=, <, >, <=, >=)
+  - RHS is a function call
+  - The pattern is `GUARD && ACTION` or `GUARD || ACTION`
+
+This subsumes the existing NULL-check fix and covers all d_lib_common
+Pattern 19 cases.
+
+---
+
+# Task ID: 65
+# Title: DCL19-C / DCL00-C scope and const-qualify FP fixes
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Fix DCL19-C flagging public API functions and DCL00-C
+#   flagging loop counter variables (6 FPs in serial_leds).
+# Details:
+  A. **DCL19-C on public API** (3 FPs): Functions declared in public
+     headers (`SerialLeds_set`, `SerialLeds_set_rgb`, etc.) cannot have
+     their scope minimized. Fix: if function has external linkage AND
+     is declared in a header (via prescan or -I), suppress DCL19-C.
+
+  B. **DCL00-C on loop counters** (3 FPs): `uint8_t g` in
+     `for (g = 0; g < num_groups; g++)` — loop counters are modified
+     each iteration and cannot be const. Fix: if variable appears as
+     the loop variable in a for-statement (init or update clause),
+     suppress DCL00-C.
+
+---
+
+# Task ID: 66
+# Title: Miscellaneous embedded FP fixes (small wins)
+# Status: pending
+# Dependencies: none
+# Priority: P3
+# Description: Fix assorted small FP patterns found across embedded
+#   codebases (~20 FPs total across multiple rules).
+# Details:
+Collection of lower-count FPs that don't warrant individual tasks:
+
+  1. **INT32-C sizeof(*ctx)** (serial_leds 1 FP): `sizeof(*ctx)` in
+     memset is not signed overflow. sizeof always returns size_t.
+  2. **INT33-C provably non-zero divisor** (serial_leds 2 FPs):
+     Animation period set by API, never zero. Requires caller context.
+  3. **DCL13-C direct call flagged as function pointer** (serial_leds
+     2 FPs): Functions called directly, not through pointers.
+  4. **ARR00-C/ARR01-C bounded array access** (serial_leds 4 FPs):
+     Loop counter bounded by clamped struct field. sizeof(*ptr) is
+     correct pattern for struct size.
+  5. **INT01-C protocol field types** (common 4 FPs): uint16_t params
+     matching TLV struct field types — intentional, not size_t.
+  6. **DCL30-C struct member pointer** (serial_leds 1 FP): Returning
+     pointer to caller-owned struct member (lifetime > function call).
+  7. **INT00-C explicit uint32_t casts** (serial_leds 1 FP):
+     Intentional integer promotion via cast.
+  8. **MEM30-C sequential frees** (common 1 FP): `free(self->items);
+     free(self);` — different pointers, not use-after-free.
+  9. **EXP33-C for-loop init** (common 1 FP): `size_t i; for (i=0;...)`
+     — variable IS initialized at first read.
+  10. **ARR36-C integer comparison** (common 1 FP): bsearch result
+      subtraction within same array.
+
+  Fix approach: pick off the easiest wins first (sizeof, for-loop init,
+  sequential frees, direct call detection). Leave value-range-dependent
+  ones (INT33-C, ARR00-C) for later.
 
 ---
 

@@ -34,6 +34,11 @@ impl CertRule for Dcl00C {
             if let Some(declarator) = node.child_by_field_name("declarator") {
                 if let Some(value) = node.child_by_field_name("value") {
                     if let Some(parent_decl) = find_parent_declaration(node) {
+                        // Skip variables declared in for-loop init clauses — these are
+                        // loop counters modified by the update expression (++i, etc.)
+                        if is_in_for_loop_init(&parent_decl) {
+                            return violations;
+                        }
                         // Skip if already const-qualified
                         if !has_const_qualifier(&parent_decl, source) {
                             let var_name =
@@ -83,6 +88,21 @@ fn find_parent_declaration<'a>(node: &'a Node<'a>) -> Option<Node<'a>> {
         current = parent.parent();
     }
     None
+}
+
+/// Check if a declaration is inside a for-loop's initializer clause.
+/// Variables declared in `for (int i = 0; ...)` are loop counters that
+/// are modified by the update expression — not candidates for const.
+fn is_in_for_loop_init(decl_node: &Node) -> bool {
+    if let Some(parent) = decl_node.parent() {
+        if parent.kind() == "for_statement" {
+            // Check if this declaration is the initializer field
+            if let Some(init) = parent.child_by_field_name("initializer") {
+                return init.id() == decl_node.id();
+            }
+        }
+    }
+    false
 }
 
 fn has_const_qualifier(node: &Node, source: &str) -> bool {
