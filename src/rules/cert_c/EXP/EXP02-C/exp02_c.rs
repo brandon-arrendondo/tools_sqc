@@ -65,14 +65,16 @@ impl Exp02C {
                 // Only check logical AND (&&) and OR (||) operators
                 if matches!(op_text, "&&" | "||") {
                     if let Some(right) = node.child_by_field_name("right") {
-                        // Exempt null-guard && function-call pattern:
-                        // `ptr != NULL && func(ptr)` is a standard guard idiom
-                        if op_text == "&&" {
-                            if let Some(left) = node.child_by_field_name("left") {
-                                if self.is_null_guard_pattern(&left, source) {
-                                    // This is intentional short-circuit guarding
-                                    return;
-                                }
+                        // Exempt null-guard short-circuit idioms for both && and ||:
+                        // `ptr != NULL && func(ptr)` — standard null guard (&&)
+                        // `ptr == NULL || fallback(ptr)` — null guard (|| variant)
+                        // Only exempt when the RHS has no assignment/mutation side effects
+                        // (pure function calls are OK, but `q = malloc()` is not).
+                        if let Some(left) = node.child_by_field_name("left") {
+                            if self.is_null_guard_pattern(&left, source)
+                                && !self.has_mutation_side_effects(&right, source)
+                            {
+                                return;
                             }
                         }
 
@@ -110,8 +112,8 @@ impl Exp02C {
         }
     }
 
-    /// Check if the left operand of && is a null/validity guard pattern
-    /// e.g., `ptr != NULL`, `ptr`, `!ptr`, `ptr != 0`
+    /// Check if the left operand of && or || is a null/validity guard pattern.
+    /// e.g., `ptr != NULL`, `ptr`, `!ptr`, `ptr == 0`
     fn is_null_guard_pattern(&self, node: &Node, source: &str) -> bool {
         let text = get_node_text(node, source);
 
@@ -148,6 +150,25 @@ impl Exp02C {
             }
         }
 
+        false
+    }
+
+    /// Check if a node contains mutation side effects: assignment (=), compound
+    /// assignment (+=, etc.), increment (++), or decrement (--).
+    /// Pure function calls are NOT considered mutations — they're common in
+    /// intentional guard patterns like `ptr == NULL || fallback()`.
+    fn has_mutation_side_effects(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "assignment_expression" | "update_expression" => return true,
+            _ => {}
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                if self.has_mutation_side_effects(&child, source) {
+                    return true;
+                }
+            }
+        }
         false
     }
 

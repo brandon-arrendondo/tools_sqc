@@ -1,10 +1,23 @@
+use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::prelude::RuleViolation;
 use crate::rules::cert_c::CertRule;
 use crate::utility::cert_c::ast_utils::get_node_text;
+use std::cell::RefCell;
+use std::collections::HashSet;
 use tree_sitter::Node;
 
-pub struct DCL19C;
+pub struct DCL19C {
+    header_declared: RefCell<HashSet<String>>,
+}
+
+impl DCL19C {
+    pub fn new() -> Self {
+        Self {
+            header_declared: RefCell::new(HashSet::new()),
+        }
+    }
+}
 
 impl CertRule for DCL19C {
     fn rule_id(&self) -> &'static str {
@@ -25,6 +38,10 @@ impl CertRule for DCL19C {
 
     fn category(&self) -> RuleCategory {
         RuleCategory::Rule
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.header_declared.borrow_mut() = context.header_declared_functions.clone();
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -60,9 +77,13 @@ impl CertRule for DCL19C {
             }
 
             // Check: if a function is defined (non-static) AND called within same file,
-            // it should be static
+            // it should be static — UNLESS it's declared in a header (public API)
+            let header_funcs = self.header_declared.borrow();
             for (func_name, (func_node, is_static)) in &defined_functions {
-                if !is_static && called_functions.contains(func_name.as_str()) {
+                if !is_static
+                    && called_functions.contains(func_name.as_str())
+                    && !header_funcs.contains(func_name.as_str())
+                {
                     let start = func_node.start_position();
                     violations.push(RuleViolation {
                         rule_id: self.rule_id().to_string(),
