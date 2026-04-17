@@ -906,11 +906,15 @@ impl Int30C {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = &source[function_node.start_byte()..function_node.end_byte()];
 
-            match function_name {
-                "malloc" | "calloc" | "realloc" => {
-                    self.check_allocation_overflow(node, source, function_name, violations);
-                }
-                _ => {}
+            // malloc/realloc multiplication overflow is already covered by
+            // the generic `check_multiplication` walker on the inner `*`
+            // binary expression — flagging the allocation call again would
+            // produce a duplicate diagnostic on the same line. Only calloc
+            // needs a dedicated check because its multiplication is implicit
+            // (`calloc(nmemb, size)`) and thus invisible to the binary-
+            // expression walk.
+            if function_name == "calloc" {
+                self.check_allocation_overflow(node, source, function_name, violations);
             }
         }
     }
@@ -924,91 +928,28 @@ impl Int30C {
     ) {
         let args = self.get_function_arguments(node, source);
 
-        match function_name {
-            "malloc" => {
-                if !args.is_empty()
-                    && self.contains_multiplication(&args[0])
-                    && !self.has_allocation_overflow_guard(node, source)
-                {
-                    self.flag_allocation_overflow(
-                        node,
-                        source,
-                        function_name,
-                        &args[0],
-                        violations,
-                    );
-                }
-            }
-            "calloc" => {
-                if args.len() >= 2 {
-                    // calloc(count, size) - multiplication is implicit
-                    if !self.has_calloc_overflow_check(node, source) {
-                        let start_point = node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::High,
-                            message: format!(
-                                "calloc({}, {}) may cause integer overflow in size calculation",
-                                args[0], args[1]
-                            ),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some("Check for overflow: if (count > SIZE_MAX / size) { /* handle error */ }".to_string()),
-                        ..Default::default()
-                        });
-                    }
-                }
-            }
-            "realloc" => {
-                if args.len() >= 2
-                    && self.contains_multiplication(&args[1])
-                    && !self.has_allocation_overflow_guard(node, source)
-                {
-                    self.flag_allocation_overflow(
-                        node,
-                        source,
-                        function_name,
-                        &args[1],
-                        violations,
-                    );
-                }
-            }
-            _ => {}
+        if function_name == "calloc"
+            && args.len() >= 2
+            && !self.has_calloc_overflow_check(node, source)
+        {
+            let start_point = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "calloc({}, {}) may cause integer overflow in size calculation",
+                    args[0], args[1]
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(
+                    "Check for overflow: if (count > SIZE_MAX / size) { /* handle error */ }"
+                        .to_string(),
+                ),
+                ..Default::default()
+            });
         }
-    }
-
-    /// True if the enclosing function contains a `SIZE_MAX / x` style overflow
-    /// guard (for `malloc(n * sizeof(T))` / `realloc(p, n * sizeof(T))`), or
-    /// if the call is inside a block guarded by such a check. Shared with
-    /// `has_calloc_overflow_check`.
-    fn has_allocation_overflow_guard(&self, node: &Node, source: &str) -> bool {
-        self.has_function_context_check(node, source, &["SIZE_MAX", " / "])
-            || self.is_inside_checked_block(node, source)
-    }
-
-    fn flag_allocation_overflow(
-        &self,
-        node: &Node,
-        _source: &str,
-        function_name: &str,
-        size_arg: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
-        let start_point = node.start_position();
-        violations.push(RuleViolation {
-            rule_id: self.rule_id().to_string(),
-            severity: Severity::High,
-            message: format!(
-                "{}() called with multiplication that may cause integer overflow: '{}'",
-                function_name, size_arg
-            ),
-            file_path: String::new(),
-            line: start_point.row + 1,
-            column: start_point.column + 1,
-            suggestion: Some("Add overflow check before allocation".to_string()),
-            ..Default::default()
-        });
     }
 
     fn infer_type(&self, node: &Node, source: &str, type_map: &HashMap<String, String>) -> String {
@@ -2075,10 +2016,6 @@ impl Int30C {
             }
         }
         false
-    }
-
-    fn contains_multiplication(&self, expr: &str) -> bool {
-        expr.contains('*') && !expr.contains("/*") && !expr.contains("*/")
     }
 
     fn get_operator(&self, node: &Node, source: &str) -> Option<String> {
