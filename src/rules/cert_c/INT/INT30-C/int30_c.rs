@@ -305,6 +305,20 @@ impl Int30C {
                     return;
                 }
 
+                // Skip `(uint32_t)a + (uint32_t)b` (or mixed with a plain narrow operand)
+                // when both operands' pre-cast types are narrow unsigned. Max sum:
+                // 65535 + 65535 = 131070, well within uint32_t.
+                if self.both_operands_narrow_pre_cast(&left, &right, source, type_map) {
+                    return;
+                }
+
+                // Skip `(uint32_t)narrow + SMALL_CONST` — widened narrow plus a known
+                // small constant (literal or const-evaluable macro) cannot overflow
+                // uint32_t. Catches patterns like `(uint32_t)length + HDR_SIZE`.
+                if self.is_narrow_cast_plus_small_const(&left, &right, source, type_map) {
+                    return;
+                }
+
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
                 if const_eval::expression_fits_in_unsigned_vra(
                     node,
@@ -484,21 +498,20 @@ impl Int30C {
                     return;
                 }
 
-                // Skip when both operands' original (pre-cast) types are uint8_t.
-                // Pattern: (uint32_t)a * b where a and b are both uint8_t.
-                // Max product: 255 * 255 = 65025, fits in uint32_t.
-                {
-                    let left_orig = self.get_pre_cast_type(&left, source, type_map);
-                    let right_orig = self.get_pre_cast_type(&right, source, type_map);
-                    let left_eff = left_orig.as_deref().unwrap_or(&left_type);
-                    let right_eff = right_orig.as_deref().unwrap_or(&right_type);
-                    if self.is_narrow_unsigned_type(left_eff)
-                        && left_eff.contains("8")
-                        && self.is_narrow_unsigned_type(right_eff)
-                        && right_eff.contains("8")
-                    {
-                        return;
-                    }
+                // Skip when both operands' effective (pre-cast) types are narrow unsigned.
+                // Pattern: `(uint32_t)a * (uint32_t)b` or `(uint32_t)a * b` where `a` and
+                // `b` are each uint8_t or uint16_t. Max product: 65535 * 65535 ≈ 4.29×10⁹,
+                // which fits in uint32_t (max 4.29×10⁹ + ~131K).
+                if self.both_operands_narrow_pre_cast(&left, &right, source, type_map) {
+                    return;
+                }
+
+                // Skip `(uint32_t)NARROW_BOUNDED * SMALL_CONST` — a narrow value
+                // widened by a cast, multiplied by a small constant (≤ 65535).
+                // Product fits uint32_t. Catches patterns like
+                // `(uint32_t)(a - b) * SCALE` when the subtraction is guarded.
+                if self.is_narrow_cast_times_small_const(&left, &right, source, type_map) {
+                    return;
                 }
 
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
@@ -1591,6 +1604,133 @@ impl Int30C {
         false
     }
 
+    /// Return the effective (pre-cast if applicable) type of an operand.
+    fn effective_operand_type(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> String {
+        if let Some(pre) = self.get_pre_cast_type(node, source, type_map) {
+            return pre;
+        }
+        if self.is_cast_over_guarded_narrow_sub(node, source, type_map) {
+            return "uint16_t".to_string();
+        }
+        self.infer_type(node, source, type_map)
+    }
+
+    /// True when `node` is `(WIDE)(a - b)` with both operands narrow unsigned
+    /// and the subtraction is guarded by an enclosing `if (a > b)` / `if (a >= b)`
+    /// (or equivalent). In that branch the subtraction result is in the narrow
+    /// unsigned range, so the cast behaves like a narrow-to-wide widening.
+    fn is_cast_over_guarded_narrow_sub(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        if node.kind() != "cast_expression" {
+            return false;
+        }
+        let Some(value) = node.child_by_field_name("value") else {
+            return false;
+        };
+        // Peek through parens to the inner expression.
+        let mut inner = value;
+        while inner.kind() == "parenthesized_expression" {
+            match inner.child(1) {
+                Some(c) => inner = c,
+                None => return false,
+            }
+        }
+        if inner.kind() != "binary_expression" {
+            return false;
+        }
+        match self.get_operator(&inner, source).as_deref() {
+            Some("-") => {}
+            _ => return false,
+        }
+        let (Some(l), Some(r)) = (
+            inner.child_by_field_name("left"),
+            inner.child_by_field_name("right"),
+        ) else {
+            return false;
+        };
+        let lt = self.infer_type(&l, source, type_map);
+        let rt = self.infer_type(&r, source, type_map);
+        if !self.is_narrow_unsigned_type(&lt) || !self.is_narrow_unsigned_type(&rt) {
+            return false;
+        }
+        let lname = get_node_text(&l, source);
+        let rname = get_node_text(&r, source);
+        self.is_subtraction_guarded_by_comparison(node, lname.trim(), rname.trim(), source)
+    }
+
+    /// True when both operands' effective (pre-cast) types are narrow unsigned
+    /// (uint8_t or uint16_t). Max sum/product fits in uint32_t.
+    fn both_operands_narrow_pre_cast(
+        &self,
+        left: &Node,
+        right: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        let l = self.effective_operand_type(left, source, type_map);
+        let r = self.effective_operand_type(right, source, type_map);
+        self.is_narrow_unsigned_type(&l) && self.is_narrow_unsigned_type(&r)
+    }
+
+    /// True when one operand is a narrow unsigned (possibly widened by a cast)
+    /// and the other const-evaluates to a small non-negative integer
+    /// (≤ `UINT16_MAX`, ~65535). Result cannot exceed ~131K, fitting uint32_t.
+    fn is_narrow_cast_plus_small_const(
+        &self,
+        left: &Node,
+        right: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        let macros = self.current_macros.borrow();
+        let check = |narrow: &Node, small: &Node| -> bool {
+            let t = self.effective_operand_type(narrow, source, type_map);
+            if !self.is_narrow_unsigned_type(&t) {
+                return false;
+            }
+            if let Some(val) = const_eval::try_evaluate_expr(small, source, &macros) {
+                return (0..=65535).contains(&val);
+            }
+            false
+        };
+        check(left, right) || check(right, left)
+    }
+
+    /// True when one operand is narrow unsigned (directly or via cast from
+    /// narrow) and the other const-evaluates to a non-negative integer whose
+    /// product with `UINT16_MAX` (65535) fits in uint32_t. In other words
+    /// `small ≤ UINT32_MAX / UINT16_MAX ≈ 65538`.
+    fn is_narrow_cast_times_small_const(
+        &self,
+        left: &Node,
+        right: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        let macros = self.current_macros.borrow();
+        const MAX_FACTOR: i64 = (u32::MAX as i64) / 65535; // ≈ 65538
+        let check = |narrow: &Node, small: &Node| -> bool {
+            let t = self.effective_operand_type(narrow, source, type_map);
+            if !self.is_narrow_unsigned_type(&t) {
+                return false;
+            }
+            if let Some(val) = const_eval::try_evaluate_expr(small, source, &macros) {
+                return (0..=MAX_FACTOR).contains(&val);
+            }
+            false
+        };
+        check(left, right) || check(right, left)
+    }
+
     fn is_64bit_unsigned_declared(&self, type_str: &str) -> bool {
         type_str == "uint64_t"
             || type_str == "unsigned long long"
@@ -2300,6 +2440,38 @@ impl Int30C {
             let lt_pat = format!("{} < {}", b, a);
             if cond.contains(&lte_pat) || cond.contains(&lt_pat) {
                 return true;
+            }
+            // Pattern: `a > (b + POS)` or `a > b + POS` where POS evaluates to a
+            // positive integer. Implies a > b.
+            if self.cond_gt_b_plus_positive(cond, a, b) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// True when `cond` matches `a > (b + C)` / `a > b + C` / `a >= b + C` with
+    /// `C` a non-negative const-evaluable expression. In that case `a > b`.
+    fn cond_gt_b_plus_positive(&self, cond: &str, a: &str, b: &str) -> bool {
+        for op in [" > ", " >= "] {
+            let key = format!("{}{}", a, op);
+            let Some(pos) = cond.find(&key) else { continue };
+            let rhs = cond[pos + key.len()..].trim();
+            let rhs = rhs.trim_start_matches('(').trim_end_matches(')').trim();
+            // Need a `+` at top level connecting `b` and a positive tail.
+            let Some(plus_pos) = rhs.find(" + ") else {
+                continue;
+            };
+            let left_of_plus = rhs[..plus_pos].trim();
+            let right_of_plus = rhs[plus_pos + 3..].trim();
+            if left_of_plus != b {
+                continue;
+            }
+            let macros = self.current_macros.borrow();
+            if let Some(v) = const_eval::try_evaluate_text_public(right_of_plus, &macros) {
+                if v > 0 {
+                    return true;
+                }
             }
         }
         false
