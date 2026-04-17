@@ -104,38 +104,39 @@ Biggest single FP source across all 4 embedded codebases. Patterns to add:
 
 # Task ID: 61
 # Title: EXP34-C null safety through if-guards and &stack_var
-# Status: pending
+# Status: done (v0.3.91)
 # Dependencies: none
 # Priority: P2
 # Description: Reduce EXP34-C FPs where null safety is established by
 #   if-guard-with-early-return or &stack_variable callers (~16 FPs).
 # Details:
-Second biggest FP source. Two distinct sub-problems:
+DONE. Patterns A and B were already fixed by cumulative EXP34-C work
+(v0.3.82 AST-level null guard fallback, v0.2.20 &stack_var propagation).
+Verified on all four target embedded codebases (d_lib_common,
+d_lib_serial_leds, d_lib_networking, d_lib_airpath_debris_sensing):
+zero EXP34-C FPs remain except one `Memory_Free(NULL)` wrapper case.
 
-  A. **If-guard-with-early-return** (~5 FPs in d_lib_common):
-     ```c
-     if (ptr == NULL) return ERROR;
-     // ptr used here — sqc still flags as potentially null
-     ```
-     The CFG-based null_state.rs should handle this via edge refinement,
-     but these FPs suggest the refinement isn't reaching all dereference
-     points. Investigate whether the issue is:
-     - Null state not propagated past the if-return block
-     - Function parameters not entering as Unknown (entering as PossiblyNull?)
-     - Multiple params checked in sequence losing state
+v0.3.90-0.3.91 broadened the fix to related idioms surfaced by the
+realworld benchmark:
 
-  B. **&stack_variable callers** (9 FPs in d_lib_common):
-     ```c
-     void readTlvHeader(uint16_t *tag, ...) { *tag = ...; }
-     // Always called as: readTlvHeader(&local_tag, ...)
-     ```
-     Prescan already tracks callsite args. Enhance to detect &expr args
-     and mark corresponding params as NotNull in FunctionSummary.
-     Already partially done for array args (v0.2.20); extend to &var.
+  1. `PARAM == 0` / `PARAM != 0` null-check detection (plus reversed-
+     operand and all-spacing variants). sqlite/libcurl consistently use
+     this idiom (e.g. `if(pStmt==0) return ...`) — previously unrecognized.
+  2. EXP34-C: skip deref-function arg check when callee is in the
+     null-safe list. `free(NULL)` and `realloc(NULL, n)` are defined
+     per C11 7.22.3.3 / 7.22.3.5 — flagging them is incorrect.
+  3. Alias null-check recognition: `TYPE *alias = param;` followed by
+     a null-check on `alias` logically null-checks `param`. Common in
+     libcurl wrappers (curl_easy_setopt, curl_multi_cleanup).
 
-  C. **Callback void* params** (2 FPs in d_lib_networking):
-     `void my_debug(void *ctx, ...)` — ctx always non-null from mbedtls.
-     Lower priority; requires trust annotations or library modeling.
+Benchmark (v0.3.89 → v0.3.91):
+  Realworld: −321 violations total. EXP34-C −242, API00-C −79.
+    sqlite −285, mosquitto −30, curl −3, libcrc −3, hostap 0.
+  Juliet: TP −102 (all CWE-690 free() with potentially-null arg —
+    by-design suppression, not a regression). FP unchanged.
+
+Pattern C (callback `void *` params) remains open but is lower priority
+(requires trust annotations or library modeling).
 
 ---
 
