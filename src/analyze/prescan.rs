@@ -191,10 +191,14 @@ pub fn prescan_single_tree(root: &Node, source: &str) -> ProjectContext {
 
     let known_functions: HashSet<String> = function_summaries.keys().cloned().collect();
 
+    let mut struct_field_types = HashMap::new();
+    collect_struct_definitions(root, source, &mut struct_field_types);
+
     ProjectContext {
         known_functions,
         function_summaries,
         macro_constants: macros,
+        struct_field_types,
         ..ProjectContext::default()
     }
 }
@@ -1804,6 +1808,9 @@ fn collect_from_typedef(
 }
 
 /// Extract field name → type text from a `field_declaration_list` node.
+///
+/// Anonymous `struct`/`union` members inside the body have their inner fields
+/// flattened into the parent, matching C's transparent-access semantics.
 fn extract_struct_fields(body: &Node, source: &str) -> HashMap<String, String> {
     let mut fields = HashMap::new();
     for i in 0..body.child_count() {
@@ -1811,11 +1818,32 @@ fn extract_struct_fields(body: &Node, source: &str) -> HashMap<String, String> {
             if child.kind() == "field_declaration" {
                 if let Some((field_name, type_text)) = extract_field_decl(&child, source) {
                     fields.insert(field_name, type_text);
+                } else if let Some(inner) = find_anonymous_inner_body(&child) {
+                    for (k, v) in extract_struct_fields(&inner, source) {
+                        fields.insert(k, v);
+                    }
                 }
             }
         }
     }
     fields
+}
+
+/// For an anonymous `union`/`struct` inside a `field_declaration`, return the
+/// inner `field_declaration_list`. Returns `None` for named or non-anonymous
+/// specifiers — those are treated as typed fields, not flattened.
+fn find_anonymous_inner_body<'a>(field_decl: &Node<'a>) -> Option<Node<'a>> {
+    for i in 0..field_decl.child_count() {
+        let child = field_decl.child(i)?;
+        if matches!(child.kind(), "union_specifier" | "struct_specifier")
+            && child.child_by_field_name("name").is_none()
+        {
+            if let Some(body) = child.child_by_field_name("body") {
+                return Some(body);
+            }
+        }
+    }
+    None
 }
 
 /// Extract (field_name, type_text) from a single `field_declaration` node.
