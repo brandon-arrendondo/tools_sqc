@@ -6,6 +6,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.92] - 2026-04-17
+
+### Changed
+
+- INT30-C: three targeted FP reductions on embedded codebases:
+  1. Skip plain `++`/`--` of a wide-unsigned struct/union field
+     (`ctx->tick++`, `obj.seq--`). Monotonic counter fields wrap at 2^32
+     or 2^64 — practically never in real systems. Juliet CWE-190/191
+     only exercises local-variable increments, so TP detection is
+     preserved.
+  2. Skip the calloc overflow warning when both `calloc` arguments are
+     function parameters of the enclosing function (thin-wrapper
+     pattern). Overflow detection is delegated to C11 calloc itself
+     (§7.22.3.2).
+  3. Extend subtraction guard detection to preceding
+     early-exit `if` siblings. `if (a < b) return; /* ... a - b */`
+     places the subtraction on an implicit else-path where `a >= b`.
+- INT30-C: `get_function_arguments` now iterates named children of the
+  argument list instead of all children. Previously it returned
+  punctuation tokens (`(`) as the first "argument", which silently
+  suppressed `malloc`/`realloc` multiplication overflow detection and
+  produced malformed `calloc((, nmemb)` messages. Added missing
+  `SIZE_MAX / size` guard recognition for `malloc` and `realloc`
+  (calloc already had it) so the fix does not regress pass tests.
+- INT30-C: `has_function_context_check` falls back to the translation
+  unit when the call has no containing function, so top-level wiki-
+  snippet tests continue to recognize overflow guards.
+
+### Benchmark
+
+- Targets task 60 follow-up: embedded FPs identified after v0.3.88
+  library benchmark. On the 4 target embedded codebases (suppressions
+  stripped for measurement):
+    d_lib_common:          1 → 0 INT30-C FPs
+    d_lib_serial_leds:    12 → 8 INT30-C FPs (−3 tick increments,
+                                             −1 implicit-else guard)
+    d_lib_airpath:         2 → 2 (unchanged — bounded-shift compound
+                                 addition, out of scope)
+  All 3319 existing tests still pass; new
+  `testcases_embedded_patterns.c` pass test covers the three new
+  patterns.
+
 ## [0.3.91] - 2026-04-17
 
 ### Changed
