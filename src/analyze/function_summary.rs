@@ -298,7 +298,13 @@ fn analyze_param_usage(
         // Check if parameter is null-checked.
         // Handles all spacings and both NULL/0/nullptr literals since C
         // allows any of these to denote the null pointer.
-        if body_matches_null_check(body_text, param_name) {
+        //
+        // Also recognizes alias null-checks: `TYPE *alias = param;` followed
+        // by a null check on `alias` logically null-checks `param` too.
+        // Common in libcurl/sqlite wrappers that cast-copy the param first.
+        if body_matches_null_check(body_text, param_name)
+            || body_matches_alias_null_check(body_text, param_name)
+        {
             summary.checks_null_params.insert(idx);
         }
 
@@ -486,6 +492,75 @@ fn contains_lit_with_op_word(text: &str, lit: &str, op: &str, word: &str) -> boo
 
 fn is_ident_continue(b: u8) -> bool {
     b.is_ascii_alphanumeric() || b == b'_'
+}
+
+/// Detect alias null-check patterns: `TYPE *alias = param;` (or
+/// `alias = param;`) followed by a null check on `alias`. Common in
+/// libcurl/sqlite wrappers that cast-copy the pointer param first, then
+/// null-check the copy (e.g. `struct Curl_easy *data = d; if(!data) ...`).
+fn body_matches_alias_null_check(body_text: &str, param_name: &str) -> bool {
+    // Scan for `= param_name` occurrences. Each is a candidate assignment.
+    // Then find the alias identifier (LHS of that assignment) and check if
+    // the body has a null check on the alias.
+    let bytes = body_text.as_bytes();
+    let mut search_from = 0;
+    while search_from < bytes.len() {
+        // Find `= param_name` — plain assignment. Must be preceded by non-`=`
+        // (to exclude `==`, `!=`) and followed by `;`, `,`, or `)`.
+        let needle = format!("= {}", param_name);
+        let pos = match body_text[search_from..].find(&needle) {
+            Some(p) => search_from + p,
+            None => break,
+        };
+        search_from = pos + 1;
+
+        // Preceded by `=`, `!`, `<`, `>` → not a simple assignment
+        if pos > 0 {
+            let prev = bytes[pos - 1];
+            if prev == b'=' || prev == b'!' || prev == b'<' || prev == b'>' {
+                continue;
+            }
+        }
+        let after = pos + needle.len();
+        // Must end the identifier: next char not identifier-continuing
+        let next = bytes.get(after).copied().unwrap_or(0);
+        if is_ident_continue(next) {
+            continue;
+        }
+        // Must be a statement terminator within a few chars
+        if next != b';' && next != b',' && next != b')' && !next.is_ascii_whitespace() {
+            continue;
+        }
+
+        // Scan backward from pos to find the LHS identifier: skip whitespace,
+        // then read identifier chars. Stop at `=` / `(` / `,` / `;` / `*`.
+        let mut end = pos;
+        while end > 0 && (bytes[end - 1] == b' ' || bytes[end - 1] == b'\t') {
+            end -= 1;
+        }
+        let lhs_end = end;
+        while end > 0 && is_ident_continue(bytes[end - 1]) {
+            end -= 1;
+        }
+        let lhs_start = end;
+        if lhs_start >= lhs_end {
+            continue;
+        }
+        let alias = &body_text[lhs_start..lhs_end];
+        if alias == param_name {
+            continue;
+        }
+        // Sanity: alias must start with a letter/underscore
+        if !matches!(alias.as_bytes()[0], b'a'..=b'z' | b'A'..=b'Z' | b'_') {
+            continue;
+        }
+
+        // Now check if the body null-checks the alias
+        if body_matches_null_check(body_text, alias) {
+            return true;
+        }
+    }
+    false
 }
 
 /// Detect param pass-through patterns: when a function parameter is directly
