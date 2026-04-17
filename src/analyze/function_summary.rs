@@ -295,13 +295,10 @@ fn analyze_param_usage(
             summary.frees_params.insert(idx);
         }
 
-        // Check if parameter is null-checked
-        if body_text.contains(&format!("{} == NULL", param_name))
-            || body_text.contains(&format!("NULL == {}", param_name))
-            || body_text.contains(&format!("{} != NULL", param_name))
-            || body_text.contains(&format!("NULL != {}", param_name))
-            || body_text.contains(&format!("!{}", param_name))
-        {
+        // Check if parameter is null-checked.
+        // Handles all spacings and both NULL/0/nullptr literals since C
+        // allows any of these to denote the null pointer.
+        if body_matches_null_check(body_text, param_name) {
             summary.checks_null_params.insert(idx);
         }
 
@@ -327,6 +324,168 @@ fn analyze_param_usage(
 
     // Detect param pass-through: when a parameter is forwarded to a callee
     collect_param_passthroughs(body, source, params, summary);
+}
+
+/// Match a null-check expression on `param_name` anywhere in `body_text`.
+///
+/// Recognizes all spacings of `PARAM op LIT` / `LIT op PARAM` where op is
+/// `==`/`!=` and LIT is `NULL`/`0`/`nullptr`, plus the `!PARAM` unary form.
+/// Guards against false matches on substrings (e.g., `foo` matching inside
+/// `foobar`) via word-boundary checks.
+fn body_matches_null_check(body_text: &str, param_name: &str) -> bool {
+    // Fast reject: body must at least contain the param name
+    if !body_text.contains(param_name) {
+        return false;
+    }
+
+    // `!{param}` — matches the unary negation null-check idiom
+    if contains_word_after_prefix(body_text, "!", param_name) {
+        return true;
+    }
+
+    for op in ["==", "!="] {
+        for lit in ["NULL", "0", "nullptr"] {
+            // PARAM op LIT — various spacings
+            if contains_word_with_op(body_text, param_name, op, lit) {
+                return true;
+            }
+            // LIT op PARAM — various spacings
+            if contains_lit_with_op_word(body_text, lit, op, param_name) {
+                return true;
+            }
+        }
+    }
+
+    false
+}
+
+/// True if `text` contains `prefix` immediately followed by `word` at a
+/// word boundary (prev char not identifier-continuing, next char not
+/// identifier-continuing). Used for `!PARAM`.
+fn contains_word_after_prefix(text: &str, prefix: &str, word: &str) -> bool {
+    let needle = format!("{}{}", prefix, word);
+    let bytes = text.as_bytes();
+    let needle_bytes = needle.as_bytes();
+    let mut start = 0;
+    while start + needle_bytes.len() <= bytes.len() {
+        if let Some(pos) = text[start..].find(&needle) {
+            let absolute = start + pos;
+            let after = absolute + needle_bytes.len();
+            let next_is_ident = bytes
+                .get(after)
+                .map(|b| is_ident_continue(*b))
+                .unwrap_or(false);
+            if !next_is_ident {
+                return true;
+            }
+            start = absolute + 1;
+        } else {
+            break;
+        }
+    }
+    false
+}
+
+/// True if `text` contains `word` followed by `op` and `lit`, with word
+/// boundaries around the identifiers and arbitrary whitespace between tokens.
+/// Uses a hand-rolled scan to avoid pulling in a regex dep for one pattern.
+fn contains_word_with_op(text: &str, word: &str, op: &str, lit: &str) -> bool {
+    let bytes = text.as_bytes();
+    let word_bytes = word.as_bytes();
+    let mut start = 0;
+    while start + word_bytes.len() <= bytes.len() {
+        let pos = match text[start..].find(word) {
+            Some(p) => start + p,
+            None => break,
+        };
+        // Word boundary before
+        let prev_is_ident = if pos == 0 {
+            false
+        } else {
+            is_ident_continue(bytes[pos - 1])
+        };
+        let after = pos + word_bytes.len();
+        let next_is_ident = bytes
+            .get(after)
+            .map(|b| is_ident_continue(*b))
+            .unwrap_or(false);
+        if !prev_is_ident && !next_is_ident {
+            // Skip whitespace, then op, then whitespace, then lit (with word boundary after if applicable)
+            let mut idx = after;
+            while idx < bytes.len() && (bytes[idx] == b' ' || bytes[idx] == b'\t') {
+                idx += 1;
+            }
+            if bytes[idx..].starts_with(op.as_bytes()) {
+                idx += op.len();
+                while idx < bytes.len() && (bytes[idx] == b' ' || bytes[idx] == b'\t') {
+                    idx += 1;
+                }
+                if bytes[idx..].starts_with(lit.as_bytes()) {
+                    let lit_end = idx + lit.len();
+                    let next = bytes
+                        .get(lit_end)
+                        .map(|b| is_ident_continue(*b))
+                        .unwrap_or(false);
+                    if !next {
+                        return true;
+                    }
+                }
+            }
+        }
+        start = pos + 1;
+    }
+    false
+}
+
+/// Symmetric to `contains_word_with_op` but with `lit` on the left, `word` on the right.
+fn contains_lit_with_op_word(text: &str, lit: &str, op: &str, word: &str) -> bool {
+    let bytes = text.as_bytes();
+    let lit_bytes = lit.as_bytes();
+    let mut start = 0;
+    while start + lit_bytes.len() <= bytes.len() {
+        let pos = match text[start..].find(lit) {
+            Some(p) => start + p,
+            None => break,
+        };
+        let prev_is_ident = if pos == 0 {
+            false
+        } else {
+            is_ident_continue(bytes[pos - 1])
+        };
+        let after = pos + lit_bytes.len();
+        let next_is_ident = bytes
+            .get(after)
+            .map(|b| is_ident_continue(*b))
+            .unwrap_or(false);
+        if !prev_is_ident && !next_is_ident {
+            let mut idx = after;
+            while idx < bytes.len() && (bytes[idx] == b' ' || bytes[idx] == b'\t') {
+                idx += 1;
+            }
+            if bytes[idx..].starts_with(op.as_bytes()) {
+                idx += op.len();
+                while idx < bytes.len() && (bytes[idx] == b' ' || bytes[idx] == b'\t') {
+                    idx += 1;
+                }
+                if bytes[idx..].starts_with(word.as_bytes()) {
+                    let word_end = idx + word.len();
+                    let next = bytes
+                        .get(word_end)
+                        .map(|b| is_ident_continue(*b))
+                        .unwrap_or(false);
+                    if !next {
+                        return true;
+                    }
+                }
+            }
+        }
+        start = pos + 1;
+    }
+    false
+}
+
+fn is_ident_continue(b: u8) -> bool {
+    b.is_ascii_alphanumeric() || b == b'_'
 }
 
 /// Detect param pass-through patterns: when a function parameter is directly
