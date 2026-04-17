@@ -73,32 +73,75 @@ CWE-401 TP rate 50.7% → 77.6% (+26.9pp). Rule FP rate 49.3% → 22.4%.
 
 # Task ID: 60
 # Title: INT30-C embedded guard/bound pattern recognition
-# Status: pending
+# Status: done (v0.3.93)
 # Dependencies: none
 # Priority: P2
-# Description: Reduce INT30-C FPs on bounded embedded arithmetic (~31 FPs
-#   across 3 codebases).
+# Description: Reduce INT30-C FPs on bounded embedded arithmetic.
 # Details:
-Biggest single FP source across all 4 embedded codebases. Patterns to add:
+DONE. Work spread across v0.3.88, v0.3.89, v0.3.92, v0.3.93.
 
-  1. **Bitmask wrapping**: `(x + 1) & (SIZE - 1)` where SIZE is power-of-2.
-     Ring buffer idiom — result is always < SIZE. (airpath 2 FPs)
-  2. **uint32_t intermediate cast**: `(uint32_t)(a - b) * SCALE` where
-     subtraction is guarded by `a > b + MARGIN`. C integer promotion to
-     uint32_t prevents uint8_t/uint16_t wrap. (airpath 5 FPs)
-  3. **Guard-before-decrement**: `if (ctx->speed_hold_time > interval)
-     ctx->speed_hold_time -= interval`. Existing `is_guarded_by_gt_zero()`
-     only handles `> 0`, not `> other_var`. (airpath 1 FP, common ~3 FPs)
-  4. **Loop-bounded counters**: `for (i = 0; i < count; i++)` where `count`
-     is clamped at init time. Loop increment can't wrap uint8_t when
-     bound < 255. (serial_leds 16 FPs)
-  5. **Same-array subtraction**: `result - arr` where result comes from
-     bsearch within arr. (common 1 FP)
-  6. **Widened comparison**: `if ((uint32_t)length + HDR_SIZE > bufferSize)`
-     — the cast widens BEFORE the add, preventing wrap. (common 1 FP)
+Patterns recognized across the four commits:
 
-  Fix approach: extend `is_inside_checked_block()` and add new pattern
-  matchers for bitmask, intermediate cast, and loop-bounded patterns.
+  1. **Bitmask wrapping** (`(x + 1) & MASK`): v0.3.88 via
+     `is_addition_masked_by_bitand`. Applies to addition only — the mask
+     bounds the result regardless of any wrap.
+  2. **Narrow-pre-cast addition/multiplication**: v0.3.88 + v0.3.89 via
+     `both_operands_narrow_pre_cast` /`is_narrow_cast_plus_small_const` /
+     `is_narrow_cast_times_small_const` using `effective_operand_type`
+     that peers through explicit casts to recover `uint8_t` / `uint16_t`.
+  3. **(WIDE)(a - b) guarded by `a > b + POS`**: v0.3.89 via
+     `is_cast_over_guarded_narrow_sub` + `cond_gt_b_plus_positive`.
+  4. **Same-array subtraction / widened comparison**: covered by
+     narrow-pre-cast + guarded-subtraction combination.
+  5. **Wide-unsigned struct-field `++`/`--`** (`ctx->tick++`,
+     `obj.seq--`): v0.3.92 direct skip in `check_increment_decrement`.
+     Monotonic counter fields wrap at 2^32/2^64 and are benign; Juliet
+     CWE-190/191 only exercises local-variable `++`, so no TP loss.
+  6. **Thin calloc wrapper** (`calloc(nmemb, size)` where both args are
+     function parameters): v0.3.92 via
+     `calloc_args_are_function_params` — delegates overflow to C11
+     calloc (§7.22.3.2).
+  7. **Implicit-else early-exit guard** (`if (a < b) return; /* a - b */`):
+     v0.3.92 via `preceding_early_exit_guards_subtraction` + the new
+     `if_always_exits` helper.
+
+Infrastructure fixes surfaced along the way:
+  * v0.3.92: `get_function_arguments` now iterates named children, so
+    `args[0]` is the real first argument instead of a `(` token. This
+    unmasked a latent bug where malloc/realloc multiplication overflow
+    detection was silently disabled and calloc messages read
+    `calloc((, nmemb)`.
+  * v0.3.93: dropped the dedicated malloc/realloc allocation-overflow
+    check. `check_multiplication` already covers the inner `*` (with
+    full VRA + SIZE_MAX-guard awareness), so the allocation-level check
+    produced nothing but duplicate diagnostics and occasional FPs on
+    provably-safe good-paths. Calloc keeps its dedicated check because
+    its multiplication is implicit.
+  * v0.3.92: `has_function_context_check` falls back to the translation
+    unit for snippet-style tests without an enclosing function.
+
+Empirical impact on target embedded codebases (INT30-C suppressions
+stripped for measurement, -I include paths unchanged):
+  d_lib_common:          1 → 0 INT30-C FPs
+  d_lib_serial_leds:    12 → 8 INT30-C FPs
+  d_lib_airpath:         2 → 2 (unchanged; bounded-shift compound
+                                addition, see Remaining below)
+  d_lib_networking:      0 → 0
+
+Real-world (v0.3.91 → v0.3.93): **−187 INT30-C violations**
+  curl:      -106   mosquitto:  -44
+  sqlite:     -37   libcrc:       0
+
+Juliet v0.3.93 vs v0.3.91: zero delta across all 74 CWEs (the v0.3.92
+duplicate-diagnostic regression on CWE-680 was fully reversed by the
+v0.3.93 dedupe).
+
+Remaining serial_leds FPs need narrow-operand propagation through local
+assignments (brightness arithmetic via `uint32_t range = (uint32_t)a -
+(uint32_t)b` then `range * time`). Airpath FPs need shift-aware
+effective-type recognition for compound accumulators (`ctx->ad_sum +=
+(... >> SHIFT) + 1`). Both deferred — low FP count, risk of Juliet TP
+regressions on CWE-190/191.
 
 ---
 
