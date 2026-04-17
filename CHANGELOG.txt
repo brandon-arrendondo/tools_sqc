@@ -6,6 +6,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.93] - 2026-04-17
+
+### Changed
+
+- INT30-C: drop the dedicated `malloc()` / `realloc()` multiplication
+  overflow check. The inner `*` expression is already covered by the
+  generic `check_multiplication` walker (which correctly skips under
+  VRA / constant-folding / SIZE_MAX-guard conditions), so the
+  allocation-level check only produced duplicate diagnostics on every
+  hit and occasional false positives on good-path cases where the
+  inner check had proved the multiplication safe (e.g. Juliet
+  `malloc(data * sizeof(int))` with `data = 20`). Calloc's dedicated
+  check remains — its multiplication is implicit and not visible to
+  the binary-expression walk.
+- INT30-C: removed now-dead `flag_allocation_overflow` and
+  `contains_multiplication` helpers.
+
+### Benchmark
+
+- Follow-up to v0.3.92: the v0.3.92 get_function_arguments fix
+  restored the previously-broken malloc/realloc check, adding 525
+  duplicate diagnostics on CWE-680 (TP +207, FP +318, TP rate
+  −4.7pp). Deduplicating the check brings CWE-680 back to baseline
+  while preserving the v0.3.92 embedded FP reductions and the
+  calloc-wrapper / message-cleanup improvements.
+
 ## [0.3.92] - 2026-04-17
 
 ### Changed
