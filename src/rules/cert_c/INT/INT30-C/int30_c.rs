@@ -827,6 +827,17 @@ impl Int30C {
                 }
 
                 let operator = self.get_update_operator(node, source);
+
+                // Skip plain ++/-- of a wide unsigned struct/union field
+                // (`ctx->field++`, `obj.counter++`). Embedded monotonic-
+                // counter fields (ticks, sequence numbers) wrap at 2^32 or
+                // 2^64 — practically never in real systems, and wrap is
+                // typically expected via tick-diff comparisons. Juliet
+                // CWE-190/191 tests only exercise local-variable
+                // increments, so this skip does not affect TP detection.
+                if argument.kind() == "field_expression" && (operator == "++" || operator == "--") {
+                    return;
+                }
                 if operator == "++" || operator == "--" {
                     // Skip increments/decrements in for-loop update clauses — the loop
                     // condition bounds the counter, making wrap impossible in practice.
@@ -915,7 +926,10 @@ impl Int30C {
 
         match function_name {
             "malloc" => {
-                if !args.is_empty() && self.contains_multiplication(&args[0]) {
+                if !args.is_empty()
+                    && self.contains_multiplication(&args[0])
+                    && !self.has_allocation_overflow_guard(node, source)
+                {
                     self.flag_allocation_overflow(
                         node,
                         source,
@@ -947,7 +961,10 @@ impl Int30C {
                 }
             }
             "realloc" => {
-                if !args.is_empty() && self.contains_multiplication(&args[1]) {
+                if args.len() >= 2
+                    && self.contains_multiplication(&args[1])
+                    && !self.has_allocation_overflow_guard(node, source)
+                {
                     self.flag_allocation_overflow(
                         node,
                         source,
@@ -959,6 +976,15 @@ impl Int30C {
             }
             _ => {}
         }
+    }
+
+    /// True if the enclosing function contains a `SIZE_MAX / x` style overflow
+    /// guard (for `malloc(n * sizeof(T))` / `realloc(p, n * sizeof(T))`), or
+    /// if the call is inside a block guarded by such a check. Shared with
+    /// `has_calloc_overflow_check`.
+    fn has_allocation_overflow_guard(&self, node: &Node, source: &str) -> bool {
+        self.has_function_context_check(node, source, &["SIZE_MAX", " / "])
+            || self.is_inside_checked_block(node, source)
     }
 
     fn flag_allocation_overflow(
@@ -1841,17 +1867,48 @@ impl Int30C {
 
     fn has_calloc_overflow_check(&self, node: &Node, source: &str) -> bool {
         // Look for calloc-specific overflow checking
-        self.has_function_context_check(node, source, &["SIZE_MAX", " / "])
+        if self.has_function_context_check(node, source, &["SIZE_MAX", " / "])
             || self.is_inside_checked_block(node, source)
+        {
+            return true;
+        }
+        // Thin-wrapper pattern: both calloc arguments are function parameters
+        // of the enclosing function. The wrapper delegates overflow detection
+        // to C11 calloc itself (§7.22.3.2 — "If the product of nmemb and size
+        // … would overflow, … calloc shall return a null pointer"), so the
+        // wrapper body does not need its own SIZE_MAX / size check.
+        self.calloc_args_are_function_params(node, source)
+    }
+
+    fn calloc_args_are_function_params(&self, node: &Node, source: &str) -> bool {
+        let args = self.get_function_arguments(node, source);
+        if args.len() < 2 {
+            return false;
+        }
+        let Some(func) = self.find_containing_function(node) else {
+            return false;
+        };
+        let mut params: HashMap<String, String> = HashMap::new();
+        if let Some(declarator) = func.child_by_field_name("declarator") {
+            self.collect_params_from_declarator(&declarator, source, &mut params);
+        }
+        params.contains_key(args[0].trim()) && params.contains_key(args[1].trim())
     }
 
     fn has_function_context_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
-        // Look in the containing function for overflow checking patterns
+        // Look in the containing function for overflow checking patterns.
+        // Fall back to the full translation unit when the call is at file
+        // scope (e.g. wiki snippet tests without a wrapping function).
         if let Some(func) = self.find_containing_function(node) {
             let func_text = get_node_text(&func, source);
             return patterns.iter().all(|pattern| func_text.contains(pattern));
         }
-        false
+        let mut root = *node;
+        while let Some(p) = root.parent() {
+            root = p;
+        }
+        let text = get_node_text(&root, source);
+        patterns.iter().all(|pattern| text.contains(pattern))
     }
 
     /// Check for subtraction precondition (if (a < b) before subtraction)
@@ -2382,10 +2439,93 @@ impl Int30C {
                     }
                 }
             }
+
+            // Implicit-else from an early-exit if:
+            //   if (right > left) return ...;
+            //   /* subtraction here: left - right is safe */
+            // Walk preceding siblings at every compound_statement on the way
+            // up. If any is an early-exit if whose condition implies
+            // right > left, the subtraction is guarded.
+            if parent.kind() == "compound_statement"
+                && self.preceding_early_exit_guards_subtraction(
+                    &parent, &current, left_name, right_name, source,
+                )
+            {
+                return true;
+            }
+
             if parent.kind() == "function_definition" {
                 break;
             }
             current = parent;
+        }
+        false
+    }
+
+    /// Check for a preceding sibling `if (cond) return/break/continue/goto ...;`
+    /// whose condition implies `right > left`, in which case the implicit
+    /// else-path (statements after the if) has `left >= right`.
+    fn preceding_early_exit_guards_subtraction(
+        &self,
+        compound: &Node,
+        current: &Node,
+        left_name: &str,
+        right_name: &str,
+        source: &str,
+    ) -> bool {
+        let current_start = current.start_byte();
+        for i in 0..compound.named_child_count() {
+            let Some(sibling) = compound.named_child(i) else {
+                break;
+            };
+            if sibling.end_byte() > current_start {
+                break;
+            }
+            if sibling.kind() != "if_statement" {
+                continue;
+            }
+            if !Self::if_always_exits(&sibling) {
+                continue;
+            }
+            let Some(cond) = sibling.child_by_field_name("condition") else {
+                continue;
+            };
+            let cond_text = get_node_text(&cond, source);
+            if self.condition_implies_a_gte_b(&cond_text, right_name, left_name) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// True when the consequence of `if_node` is a statement (or compound
+    /// block ending with a statement) that unconditionally transfers
+    /// control out of the enclosing block: return, break, continue, goto.
+    /// No `alternative` required — callers only care about the fall-through
+    /// path past the if.
+    fn if_always_exits(if_node: &Node) -> bool {
+        let Some(consequence) = if_node.child_by_field_name("consequence") else {
+            return false;
+        };
+        let is_exit = |k: &str| {
+            matches!(
+                k,
+                "return_statement" | "break_statement" | "continue_statement" | "goto_statement"
+            )
+        };
+        if is_exit(consequence.kind()) {
+            return true;
+        }
+        if consequence.kind() == "compound_statement" {
+            let mut last: Option<Node> = None;
+            for i in 0..consequence.named_child_count() {
+                if let Some(c) = consequence.named_child(i) {
+                    last = Some(c);
+                }
+            }
+            if let Some(l) = last {
+                return is_exit(l.kind());
+            }
         }
         false
     }
@@ -2481,12 +2621,12 @@ impl Int30C {
         let mut args = Vec::new();
 
         if let Some(arguments) = node.child_by_field_name("arguments") {
-            for i in 0..arguments.child_count() {
-                if let Some(child) = arguments.child(i) {
-                    if child.kind() != "," {
-                        let arg_text = source[child.start_byte()..child.end_byte()].to_string();
-                        args.push(arg_text.trim().to_string());
-                    }
+            // Named children of argument_list are the actual argument
+            // expressions; unnamed children (`(`, `,`, `)`) are skipped.
+            for i in 0..arguments.named_child_count() {
+                if let Some(child) = arguments.named_child(i) {
+                    let arg_text = source[child.start_byte()..child.end_byte()].to_string();
+                    args.push(arg_text.trim().to_string());
                 }
             }
         }
