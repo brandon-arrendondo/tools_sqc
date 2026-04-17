@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.91] - 2026-04-17
+
+### Changed
+
+- FunctionSummary: recognize alias null-checks as param null-checks.
+  Pattern: `TYPE *alias = param;` followed by a null check on `alias`.
+  Common in libcurl/sqlite wrappers that cast-copy the pointer param first
+  (e.g. `struct Curl_easy *data = d; if(!data) ...`). Without this,
+  `d` was not detected as null-checked, causing caller-side EXP34-C FPs
+  on curl wrappers.
+
+### Benchmark
+
+- Addresses v0.3.90 curl EXP34-C regression (+45 FPs from unmasked short
+  param-name substring matches revealing previously-hidden violations on
+  curl wrapper patterns).
+
 ## [0.3.90] - 2026-04-17
 
 ### Changed
