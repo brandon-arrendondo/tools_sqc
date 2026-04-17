@@ -31,6 +31,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   −4.7pp). Deduplicating the check brings CWE-680 back to baseline
   while preserving the v0.3.92 embedded FP reductions and the
   calloc-wrapper / message-cleanup improvements.
+- Juliet v0.3.93 vs v0.3.91 (baseline): zero delta across all 74
+  CWEs — TP 25354, FP 15768, TP rate 61.7%, unchanged. The v0.3.92
+  CWE-680 regression is fully reversed.
+- Real-world v0.3.93 vs v0.3.91: **−187 INT30-C violations** across
+  four codebases (hostap's pre-existing stack overflow unrelated).
+    curl:      -106 INT30-C
+    mosquitto:  -44 INT30-C
+    sqlite:     -37 INT30-C, -1 FIO05-C
+    libcrc:       0
+  Total: -188 violations overall. Closes task 60.
 
 ## [0.3.92] - 2026-04-17
 
