@@ -6,6 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.90] - 2026-04-17
+
+### Changed
+
+- FunctionSummary.checks_null_params: recognize `PARAM == 0` / `PARAM != 0`
+  and reversed-operand variants as null checks. Previously only the `== NULL`
+  / `!= NULL` spellings matched, so idioms like `if(pStmt==0)` (common in
+  sqlite, libcurl) did not register the param as null-checked. The new
+  `body_matches_null_check()` helper also handles arbitrary whitespace
+  between tokens and uses word-boundary checks to avoid matching substrings.
+- EXP34-C: skip deref-function arg check when callee is in the null-safe
+  list (free, realloc). `free(NULL)` is defined as no-op per C11 7.22.3.3
+  and `realloc(NULL, n)` per C11 7.22.3.5; flagging them as null-deref sites
+  is incorrect.
+- EXP34-C null-safe function list: added `realloc`.
+
+### Task
+
+- Task 61 (partial): EXP34-C FP reduction for null-safe wrappers and the
+  `== 0` null-check idiom. The originally-listed 16 FPs in d_lib_common
+  (Patterns 9 + 18) were already addressed by earlier EXP34-C work
+  (v0.3.82 AST-level null guard + v0.2.20 &stack_var propagation). This
+  changeset targets the remaining `Memory_Free(NULL)` wrapper FP and the
+  sqlite-style `== 0` null-check idiom surfaced by the realworld benchmark.
+
 ## [0.3.87] - 2026-04-07
 
 ### Added
