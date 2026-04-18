@@ -17,8 +17,10 @@
 //!   setenv("IFS", " \t\n", 1);
 //!   system("/bin/ls");  // Environment sanitized in same function
 
+use crate::analyze::cfg;
 use crate::analyze::const_eval;
 use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::manifest::{RuleCategory, Severity};
 use crate::rules::{CertRule, RuleViolation};
 use crate::utility::cert_c::ast_utils::{get_node_text, is_function_parameter};
@@ -66,6 +68,10 @@ const TAINT_SOURCES: &[&str] = &[
 pub struct Env03C {
     project_aliases: RefCell<HashMap<String, String>>,
     current_aliases: RefCell<HashMap<String, String>>,
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+    /// Reverse call graph: callee_name → set of caller names. Built from
+    /// ProjectContext's forward `call_graph`.
+    callers: RefCell<HashMap<String, HashSet<String>>>,
 }
 
 impl Env03C {
@@ -73,6 +79,8 @@ impl Env03C {
         Self {
             project_aliases: RefCell::new(HashMap::new()),
             current_aliases: RefCell::new(HashMap::new()),
+            function_summaries: RefCell::new(HashMap::new()),
+            callers: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -106,6 +114,20 @@ impl CertRule for Env03C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_aliases.borrow_mut() = context.macro_aliases.clone();
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+
+        // Invert the forward call_graph (caller → callees) into a reverse
+        // map (callee → callers) for fast lookup.
+        let mut callers: HashMap<String, HashSet<String>> = HashMap::new();
+        for (caller, callees) in &context.call_graph {
+            for callee in callees {
+                callers
+                    .entry(callee.clone())
+                    .or_default()
+                    .insert(caller.clone());
+            }
+        }
+        *self.callers.borrow_mut() = callers;
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -291,7 +313,12 @@ impl Env03C {
 
         let var_name = get_node_text(&arg, source);
         if is_function_parameter(scope, var_name, source) {
-            return true;
+            // Cross-function caller taint check: the command variable is
+            // this function's parameter, so defer to callers. If every
+            // caller's body is free of taint sources, treat the param as
+            // safe (Juliet goodG2BSink pattern). If any caller taints
+            // data, or we have no caller info, stay conservative.
+            return !self.callers_are_all_clean(scope, source);
         }
 
         if scope_has_taint_source(scope, source) {
@@ -299,6 +326,32 @@ impl Env03C {
         }
 
         !is_command_var_locally_safe(scope, var_name, source)
+    }
+
+    /// Return true when we can prove every caller of `scope`'s function
+    /// has no taint-source call in its body. False when we lack caller
+    /// info or when at least one caller is tainted.
+    fn callers_are_all_clean(&self, scope: &Node, source: &str) -> bool {
+        let Some(scope_name) = cfg::get_function_name(scope, source) else {
+            return false;
+        };
+
+        let callers = self.callers.borrow();
+        let Some(caller_set) = callers.get(scope_name) else {
+            return false;
+        };
+        if caller_set.is_empty() {
+            return false;
+        }
+
+        let summaries = self.function_summaries.borrow();
+        for caller in caller_set {
+            match summaries.get(caller) {
+                Some(s) if !s.has_env03_taint_source => {}
+                _ => return false,
+            }
+        }
+        true
     }
 }
 
