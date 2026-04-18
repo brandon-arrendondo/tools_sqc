@@ -1,8 +1,10 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-14 (v0.3.87)
+Last Updated: 2026-04-18 (v0.3.96)
 
-Juliet benchmark v0.3.86: 25,456 TP / 15,768 FP (61.8% TP rate), 42.6% per-file.
+Juliet benchmark v0.3.96: 24,628 TP / 14,238 FP (63.4% TP rate), 41.6% per-file.
+Cumulative v0.3.93 → v0.3.96 (three cross-function taint rounds): TP rate
++1.7pp, FP −1,530 (−9.7%), zero net other-rule regressions.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -15,15 +17,18 @@ Juliet benchmark v0.3.86: 25,456 TP / 15,768 FP (61.8% TP rate), 42.6% per-file.
   cppcheck:   29,377 TP / 51,361 FP (36.4%) — highest recall
 
 SqC wins outright on CWE-690 (94.6%) and CWE-761 (100%).
-Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.85 current):
+Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.96 current):
   CWE-190: 58.6% vs 94.3% (−35.7pp) — INT32-C/INT30-C (was −46.9pp, task 54 done)
   CWE-191: 53.9% vs 94.4% (−40.5pp) — INT32-C/INT30-C (was −48.9pp, task 54 done)
   CWE-369: 53.9% vs 94.7% (−40.8pp) — INT33-C/FLP03-C (was −57.8pp, task 55 done)
-  CWE-476: 58.3% vs 94.3% (−36.0pp) — EXP34-C (was −43.5pp, task 57 done)
+  CWE-476: 58.9% vs 94.3% (−35.4pp) — EXP34-C (was −43.5pp, task 57 done)
   CWE-121: 55.7% vs 86.6% (−30.9pp) — STR31-C/ARR38-C (was −37.8pp, task 56 done)
   CWE-415: 58.2% vs 80.0% (−21.8pp) — MEM01-C (was −36.6pp, task 58 done)
   CWE-416: 92.9% vs 60.3% (+32.6pp) — MEM01-C EXCEEDS target (task 58 done)
   CWE-401: 77.6% vs 83.9% (−6.3pp) — MEM31-C (was −33.2pp, task 59 done)
+  CWE-78:  74.1% (+11.3pp since v0.3.93) — ENV03-C taint-aware (tasks 67-68)
+  CWE-194: 67.9% (+ 9.5pp since v0.3.95) — INT31-C taint-aware (task 69)
+  CWE-195: 51.9% (+ 3.2pp since v0.3.95) — INT31-C taint-aware (task 69)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -180,6 +185,109 @@ Benchmark (v0.3.89 → v0.3.91):
 
 Pattern C (callback `void *` params) remains open but is lower priority
 (requires trust annotations or library modeling).
+
+---
+
+# Task ID: 67
+# Title: ENV03-C locally-safe popen/system command var suppression
+# Status: done (v0.3.94)
+# Dependencies: none
+# Priority: P2
+# Description: Reduce ENV03-C FPs on Juliet CWE-78 goodG2B functions where
+#   the command variable is provably derived from string literals only.
+# Details:
+DONE. ENV03-C FP 1272→612 (-660), TP 912→752 (-160). **4.1:1 FP:TP**,
+cleanest ratio since v0.2.23.
+
+Approach: new `is_command_var_locally_safe()` in env03_c.rs. Fixpoint over
+char-array declarations and pointer aliases, then walks every write to the
+command variable. Suppress only when every write is from a string literal,
+a locally-initialized buffer, or strcat/strcpy with a literal source.
+
+Short-circuits that still flag:
+  - Direct string literal (defense-in-depth preserved for existing tests).
+  - Function parameter (caller-supplied, handled by task 68).
+  - Any taint-source call in scope (recv, fgets, scanf, getenv, etc.).
+
+Required allowing macro-identifier initializers on char arrays — `char
+buf[N] = FULL_COMMAND;` is legal C only for macros, so any identifier in
+that position is treated as a literal.
+
+CWE-78 TP rate 62.8% → 72.3% (+9.5pp). Overall TP rate 61.7% → 62.5%
+(+0.8pp). Zero other-rule regressions.
+
+---
+
+# Task ID: 68
+# Title: ENV03-C cross-function taint for helper-sink variants
+# Status: done (v0.3.95)
+# Dependencies: 67
+# Priority: P2
+# Description: Suppress ENV03-C FPs in Juliet CWE-78 variants 41-45 where
+#   the popen/system call lives in a helper function receiving data as a
+#   parameter.
+# Details:
+DONE. ENV03-C FP 612→468 (-144), TP 752→652 (-100). 1.44:1 FP:TP —
+diminishing returns as the remaining target shrinks.
+
+New infrastructure:
+  * `FunctionSummary.has_env03_taint_source` bit — populated via body
+    text scan for recv/fgets/scanf/getenv-style calls (~25 functions).
+  * ENV03-C parameter path consults reverse call graph (callee → callers)
+    built from `ProjectContext.call_graph`. Suppress only when every
+    caller's summary is clean.
+
+Prescan bug fix (affects other inter-procedural rules too):
+  * `collect_call_graph` used `.insert()`, so multiple files with `static
+    void goodG2B()` overwrote each other and dropped caller edges.
+    Changed to `.entry().or_default().extend()` for call edges, and
+    OR-merge for `has_env03_taint_source`. Same-named static merging is
+    conservative (any tainted def poisons the merged summary).
+
+Results: CWE-78 TP rate 72.3% → 74.1% (+1.8pp). Overall TP rate 62.5% →
+62.7% (+0.2pp). Side effect: EXP34-C -6 FP / 0 TP (prescan merging
+recovered a few missed caller links).
+
+CWE-426 (Untrusted Search Path): -24 TP / -24 FP — neutral. Remaining
+~468 ENV03-C FPs are v42/v22a-style (`data = helper(data)` return-tainted
+assignments) and v45-style (global-static pointers) — need return-value
+taint or global-write tracking to shrink further.
+
+---
+
+# Task ID: 69
+# Title: INT31-C taint-aware suppression for signed→size_t conversions
+# Status: done (v0.3.96)
+# Dependencies: 68
+# Priority: P2
+# Description: Reuse ENV03-C's taint-source summary bit to suppress
+#   INT31-C FPs on Juliet CWE-194/195 helper-function variants.
+# Details:
+DONE. INT31-C FP 2172→1452 (-720), TP 2608→2142 (-466). 1.54:1 FP:TP.
+
+Approach: when the converted variable is inside an `if (var < LIT)`
+upper-bound guard (positive literal), suppress iff:
+  * the containing function's summary has no taint source, AND
+  * no `var = fn(...)` assignment targets a tainted callee, AND
+  * for parameters, every caller is taint-free too.
+
+Local-variable case additionally requires evidence of at least one
+call-return assignment from a clean callee — prevents over-suppression
+of v45-style `int data = global_static;` reads where the global could
+have been tainted elsewhere in the project.
+
+Substring bug trap: `decl_text.contains(var_name)` matched `dataBuffer`
+when looking for `data`. Fixed by walking the declarator tree to its
+leaf identifier for an exact match.
+
+Results: CWE-194 TP rate 58.4% → **67.9%** (+9.5pp). CWE-195 TP rate
+48.7% → 51.9% (+3.2pp). Overall TP rate 62.7% → **63.4%** (+0.7pp).
+Zero other-rule regressions.
+
+Remaining INT31-C FPs are in v42-style `data = helper(data)` returning
+tainted values, v45-style global pointers, and v65a/b function-pointer
+cross-file patterns (no call-graph edge). Function-pointer and
+return-value taint would be the next wins if pursued.
 
 ---
 
@@ -480,23 +588,43 @@ Paper impact: new Section "Case Study" between Worked Example and Limitations.
 
 # Task ID: 49
 # Title: Paper — taint tracking for CWE-78/CWE-89 (future work)
-# Status: pending
+# Status: partial (v0.3.94-0.3.96 — tasks 67-69 delivered first-pass)
 # Dependencies: none
 # Priority: P3
 # Description: Expand cross-function taint tracking for injection CWEs,
   referenced in paper future work section.
 # Details:
-Paper Conclusion mentions "improving cross-function taint tracking for
-injection-related CWEs (CWE-78, CWE-89)" as future work.  Current taint
-tracking (STR02-C intra-function, ENV03-C function-scoped) is limited.
+Partial delivery via tasks 67-69 (CWE-78 62.8% → 74.1%, CWE-194 58.4% →
+67.9%, CWE-195 48.7% → 51.9%). Remaining scope below.
 
-Cross-function taint needs:
-  - Prescan taint source identification (recv, fgets, getenv, etc.)
-  - Taint propagation through function params and return values
-  - Sink detection at system(), exec*, SQL query functions
+Delivered infrastructure:
+  - `FunctionSummary.has_env03_taint_source` — body text scan for ~25
+    taint sources (recv, fgets, scanf, getenv, Win32 I/O, etc.)
+  - Reverse call graph built in each consuming rule from
+    `ProjectContext.call_graph`
+  - Same-named static function merging in prescan (any tainted def
+    poisons the merged summary)
 
-This is a significant new analysis capability.  Could improve CWE-78 from
-62.8% to potentially 70%+ precision by reducing FPs from sanitized paths.
+Rule integrations so far:
+  - ENV03-C: parameter path → caller summary lookup (task 68)
+  - INT31-C: signed→size_t inside upper-bound guards → caller / callee /
+    local-assignment summary lookups (task 69)
+
+Remaining gaps for CWE-78 (~468 FPs) and CWE-194/195 (~1224 FPs):
+  - Return-value taint propagation (`data = helperSource(data)` where
+    the helper transforms but does not call taint sources itself)
+  - Global/static pointer read tracking (v45-style `char *data =
+    g_goodG2BData;` where `g_goodG2BData` was last written elsewhere)
+  - Function-pointer cross-file calls (v65a/b, v67 variants — no
+    call-graph edge for `funcPtr(data)`)
+  - CWE-89 sinks: add SQL injection entry points (sqlite3_exec,
+    mysql_query, PQexec) and the STR02-C or a new taint-sink rule
+
+Rule candidates that would benefit from the existing taint bit once
+integrated: FIO30-C, STR02-C, FMT variants for format-string injection.
+
+This task stays open as the coordinating umbrella; individual
+rule-integration rounds are tracked as follow-ons to tasks 68/69.
 
 ---
 
