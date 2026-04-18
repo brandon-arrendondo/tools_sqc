@@ -49,6 +49,51 @@ pub struct FunctionSummary {
     /// Used for transitive free propagation (MEM31-C).
     #[serde(default)]
     pub param_passthroughs: HashMap<usize, Vec<(String, usize)>>,
+    /// True if the function body contains a call to a known taint-source
+    /// function (recv, fgets, scanf, getenv, ...). Used by ENV03-C to
+    /// decide whether a helper function's callers are passing in
+    /// externally-controlled data.
+    #[serde(default)]
+    pub has_env03_taint_source: bool,
+}
+
+/// Names of functions that read externally-controlled data into their
+/// arguments or return values. A function whose body calls any of these
+/// is treated as a potential taint origin for ENV03-C caller analysis.
+/// Keep in sync with `env03_c::TAINT_SOURCES`.
+pub const ENV03_TAINT_SOURCE_FUNCTIONS: &[&str] = &[
+    "recv",
+    "recvfrom",
+    "recvmsg",
+    "WSARecv",
+    "WSARecvFrom",
+    "accept",
+    "read",
+    "fread",
+    "fgets",
+    "gets",
+    "getchar",
+    "getc",
+    "fgetc",
+    "scanf",
+    "fscanf",
+    "sscanf",
+    "vscanf",
+    "vfscanf",
+    "getenv",
+    "secure_getenv",
+    "ReadFile",
+    "ReadConsole",
+    "ReadConsoleA",
+    "ReadConsoleW",
+    "RegQueryValueExA",
+    "RegQueryValueExW",
+];
+
+fn body_contains_taint_source(body_text: &str) -> bool {
+    ENV03_TAINT_SOURCE_FUNCTIONS
+        .iter()
+        .any(|name| body_text.contains(&format!("{}(", name)))
 }
 
 /// Compute function summaries for all function definitions in the AST.
@@ -158,6 +203,10 @@ fn analyze_function(
             || body_text.contains("calloc(")
             || body_text.contains("realloc(")
             || body_text.contains("aligned_alloc(");
+
+        // Quick text scan for taint-source calls — used by ENV03-C to
+        // classify callers as tainted/clean.
+        summary.has_env03_taint_source = body_contains_taint_source(body_text);
 
         // Check for NULL return
         if !summary.can_return_null {

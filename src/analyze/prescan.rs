@@ -24,7 +24,7 @@ pub fn prescan_directories(
 ) -> Result<ProjectContext> {
     let mut known_functions = HashSet::new();
     let mut header_declared_functions = HashSet::new();
-    let mut function_summaries = HashMap::new();
+    let mut function_summaries: HashMap<String, function_summary::FunctionSummary> = HashMap::new();
     let mut call_graph = HashMap::new();
     let mut macro_constants = HashMap::new();
     let mut macro_aliases = HashMap::new();
@@ -76,7 +76,18 @@ pub fn prescan_directories(
                 let file_summaries =
                     function_summary::compute_summaries(&root, &source, &file_macros, needs_vra);
                 for (name, summary) in file_summaries {
-                    function_summaries.insert(name, summary);
+                    // When multiple files define `static` functions with
+                    // the same name, OR together the taint-source bits so
+                    // any tainted definition poisons the merged summary.
+                    // Conservative for ENV03-C caller analysis.
+                    match function_summaries.get_mut(&name) {
+                        Some(existing) => {
+                            existing.has_env03_taint_source |= summary.has_env03_taint_source;
+                        }
+                        None => {
+                            function_summaries.insert(name, summary);
+                        }
+                    }
                 }
 
                 // Build call graph for this file
@@ -401,7 +412,11 @@ fn collect_call_graph(
                     if let Some(func_name) = extract_function_name_from_declarator(&child, source) {
                         let mut callees = HashSet::new();
                         collect_callees(&child, source, &mut callees);
-                        call_graph.insert(func_name, callees);
+                        // Merge instead of overwrite — multiple files can
+                        // each define a `static` function with the same
+                        // name. Without merging, only the last file's
+                        // callees would survive.
+                        call_graph.entry(func_name).or_default().extend(callees);
                     }
                 }
                 kind if kind.starts_with("preproc_")
