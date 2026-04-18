@@ -21,10 +21,47 @@ use crate::analyze::const_eval;
 use crate::analyze::context::ProjectContext;
 use crate::manifest::{RuleCategory, Severity};
 use crate::rules::{CertRule, RuleViolation};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils::{get_node_text, is_function_parameter};
 use std::cell::RefCell;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
+
+/// Functions that read externally-controlled data into a variable.
+/// If none of these appear in the containing function, a local-variable
+/// command argument to system/popen is treated as program-controlled
+/// (no taint path) and the ENV03-C warning is suppressed.
+const TAINT_SOURCES: &[&str] = &[
+    // Sockets / network
+    "recv",
+    "recvfrom",
+    "recvmsg",
+    "WSARecv",
+    "WSARecvFrom",
+    "accept",
+    // File / stream I/O
+    "read",
+    "fread",
+    "fgets",
+    "gets",
+    "getchar",
+    "getc",
+    "fgetc",
+    "scanf",
+    "fscanf",
+    "sscanf",
+    "vscanf",
+    "vfscanf",
+    // Environment / command line
+    "getenv",
+    "secure_getenv",
+    // Windows stdin / registry
+    "ReadFile",
+    "ReadConsole",
+    "ReadConsoleA",
+    "ReadConsoleW",
+    "RegQueryValueExA",
+    "RegQueryValueExW",
+];
 
 pub struct Env03C {
     project_aliases: RefCell<HashMap<String, String>>,
@@ -111,7 +148,8 @@ impl Env03C {
                     let mut has_sanitization = false;
                     self.check_for_sanitization(&scope_node, source, &mut has_sanitization);
 
-                    if !has_sanitization {
+                    if !has_sanitization && self.command_arg_is_untrusted(node, &scope_node, source)
+                    {
                         let start_point = node.start_position();
                         let call_text = get_node_text(node, source);
 
@@ -224,4 +262,456 @@ impl Env03C {
             }
         }
     }
+
+    /// Decide whether the command argument of a system()/popen() call is
+    /// untrusted enough to warrant an ENV03-C finding.
+    ///
+    /// Returns true (flag) by default. Returns false (suppress) only when we
+    /// can positively prove the argument is a local variable whose value is
+    /// entirely program-controlled: initialized from a local literal-backed
+    /// buffer, never assigned from a function call or foreign identifier,
+    /// and only mutated via strcat/strcpy with string-literal sources.
+    fn command_arg_is_untrusted(&self, call: &Node, scope: &Node, source: &str) -> bool {
+        let Some(args) = call.child_by_field_name("arguments") else {
+            return true;
+        };
+        let Some(first_arg) = first_non_paren_arg(&args) else {
+            return true;
+        };
+
+        let arg = strip_casts_and_parens(first_arg);
+
+        if arg.kind() != "identifier" {
+            return true;
+        }
+
+        if scope.kind() != "function_definition" {
+            return true;
+        }
+
+        let var_name = get_node_text(&arg, source);
+        if is_function_parameter(scope, var_name, source) {
+            return true;
+        }
+
+        if scope_has_taint_source(scope, source) {
+            return true;
+        }
+
+        !is_command_var_locally_safe(scope, var_name, source)
+    }
+}
+
+/// Return the first argument node of an `argument_list`, skipping the
+/// surrounding `(` / `)` punctuation tokens.
+fn first_non_paren_arg<'a>(args: &Node<'a>) -> Option<Node<'a>> {
+    for i in 0..args.child_count() {
+        if let Some(child) = args.child(i) {
+            if child.is_named() {
+                return Some(child);
+            }
+        }
+    }
+    None
+}
+
+/// Peel off redundant parens and C-style casts so we can inspect the
+/// underlying expression (e.g. `(char *)data` → `data`).
+fn strip_casts_and_parens<'a>(mut node: Node<'a>) -> Node<'a> {
+    loop {
+        match node.kind() {
+            "parenthesized_expression" => {
+                if let Some(inner) = node.named_child(0) {
+                    node = inner;
+                    continue;
+                }
+                break;
+            }
+            "cast_expression" => {
+                if let Some(value) = node.child_by_field_name("value") {
+                    node = value;
+                    continue;
+                }
+                break;
+            }
+            _ => break,
+        }
+    }
+    node
+}
+
+/// True if any call_expression under `scope` targets a known taint source.
+fn scope_has_taint_source(scope: &Node, source: &str) -> bool {
+    let mut found = false;
+    walk_for_taint(scope, source, &mut found);
+    found
+}
+
+fn walk_for_taint(node: &Node, source: &str, found: &mut bool) {
+    if *found {
+        return;
+    }
+    if node.kind() == "call_expression" {
+        if let Some(function) = node.child_by_field_name("function") {
+            let name = get_node_text(&function, source);
+            let ident = trailing_identifier(name);
+            if TAINT_SOURCES.contains(&ident) {
+                *found = true;
+                return;
+            }
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            walk_for_taint(&child, source, found);
+            if *found {
+                return;
+            }
+        }
+    }
+}
+
+/// Take the trailing identifier token from a possibly-qualified name
+/// (e.g. `std::foo`, `obj->bar`, `POPEN`). Keeps alnum + underscores.
+fn trailing_identifier(name: &str) -> &str {
+    name.rsplit(|c: char| !c.is_alphanumeric() && c != '_')
+        .next()
+        .unwrap_or(name)
+}
+
+/// Can we prove the local variable `var_name` in this function scope is
+/// entirely program-controlled up to the point of use? "Safe" means:
+/// - every assignment's RHS is a string literal, or an identifier that
+///   names a local buffer with a literal initializer;
+/// - no assignment comes from a function call;
+/// - the declaration initializer (if any) is similarly restricted;
+/// - any in-place mutation is `strcat`/`strcpy` with a string-literal
+///   source argument.
+///
+/// The aim is to recognize Juliet `goodG2B` patterns like
+/// ```c
+/// char data_buf[100] = "ls ";
+/// char *data = data_buf;
+/// strcat(data, "*.*");
+/// popen(data, "w");
+/// ```
+/// without suppressing Juliet `*_bad` variants where `data` is assigned
+/// from a helper-function return value, a static global, or receives
+/// taint from `recv`/`fgets`/`scanf`/etc.
+fn is_command_var_locally_safe(scope: &Node, var_name: &str, source: &str) -> bool {
+    let body = match scope.child_by_field_name("body") {
+        Some(b) => b,
+        None => return false,
+    };
+    let local_buffers = collect_local_literal_buffers(&body, source);
+
+    let mut all_safe = true;
+    check_writes(&body, var_name, &local_buffers, source, &mut all_safe);
+    all_safe
+}
+
+/// Identifiers of local variables whose declarations make them safe
+/// sources for the command variable. Starts with `char`/`wchar_t` arrays
+/// initialized from string literals (or macros), then iterates to fold in
+/// pointer variables initialized from an already-safe identifier.
+fn collect_local_literal_buffers(body: &Node, source: &str) -> HashSet<String> {
+    let mut buffers = HashSet::new();
+    // Pass 1: arrays with literal/macro initializers.
+    walk_buffer_decls(body, source, &mut buffers);
+    // Passes 2+: propagate through pointer aliases until fixpoint.
+    loop {
+        let before = buffers.len();
+        walk_pointer_aliases(body, source, &mut buffers);
+        if buffers.len() == before {
+            break;
+        }
+    }
+    buffers
+}
+
+fn walk_buffer_decls(node: &Node, source: &str, out: &mut HashSet<String>) {
+    if node.kind() == "declaration" {
+        for i in 0..node.child_count() {
+            let Some(child) = node.child(i) else { continue };
+            let (decl_node, init_node) = match child.kind() {
+                "array_declarator" => (child, None),
+                "init_declarator" => {
+                    let Some(d) = child.child_by_field_name("declarator") else {
+                        continue;
+                    };
+                    if d.kind() != "array_declarator" {
+                        continue;
+                    }
+                    (d, child.child_by_field_name("value"))
+                }
+                _ => continue,
+            };
+            if !initializer_is_safe_for_buffer(&init_node) {
+                continue;
+            }
+            if let Some(name) = extract_declarator_name(&decl_node, source) {
+                out.insert(name);
+            }
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            walk_buffer_decls(&child, source, out);
+        }
+    }
+}
+
+fn walk_pointer_aliases(node: &Node, source: &str, out: &mut HashSet<String>) {
+    match node.kind() {
+        "declaration" => {
+            for i in 0..node.child_count() {
+                let Some(child) = node.child(i) else { continue };
+                if child.kind() != "init_declarator" {
+                    continue;
+                }
+                let Some(decl) = child.child_by_field_name("declarator") else {
+                    continue;
+                };
+                if decl.kind() != "pointer_declarator" {
+                    continue;
+                }
+                let Some(value) = child.child_by_field_name("value") else {
+                    continue;
+                };
+                if rhs_is_safe(Some(&value), out, source) {
+                    if let Some(name) = extract_declarator_name(&decl, source) {
+                        out.insert(name);
+                    }
+                }
+            }
+        }
+        "assignment_expression" => {
+            if let Some(lhs) = node.child_by_field_name("left") {
+                let lhs = strip_casts_and_parens(lhs);
+                if lhs.kind() == "identifier" {
+                    let op_is_plain = node_operator(node, source)
+                        .map(|op| op == "=")
+                        .unwrap_or(true);
+                    if op_is_plain {
+                        let rhs = node.child_by_field_name("right");
+                        if rhs_is_safe(rhs.as_ref(), out, source) {
+                            out.insert(get_node_text(&lhs, source).to_string());
+                        }
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            walk_pointer_aliases(&child, source, out);
+        }
+    }
+}
+
+fn initializer_is_safe_for_buffer(init: &Option<Node>) -> bool {
+    let Some(init) = init else {
+        return true;
+    };
+    // `char buf[N] = X;` is only legal C when X is a string literal, an
+    // initializer list, or a macro that expands to one of those, so any
+    // bare identifier here is treated as a macro-backed literal.
+    matches!(
+        init.kind(),
+        "string_literal" | "concatenated_string" | "initializer_list" | "identifier"
+    )
+}
+
+fn extract_declarator_name(decl: &Node, source: &str) -> Option<String> {
+    let mut current = *decl;
+    loop {
+        match current.kind() {
+            "identifier" | "field_identifier" | "type_identifier" => {
+                return Some(get_node_text(&current, source).to_string());
+            }
+            _ => {
+                if let Some(inner) = current.child_by_field_name("declarator") {
+                    current = inner;
+                    continue;
+                }
+                // Try named children until we find one shaped like an
+                // inner declarator.
+                let mut next = None;
+                for i in 0..current.child_count() {
+                    if let Some(c) = current.child(i) {
+                        if c.is_named() && c.kind() != "number_literal" {
+                            next = Some(c);
+                            break;
+                        }
+                    }
+                }
+                match next {
+                    Some(n) => current = n,
+                    None => return None,
+                }
+            }
+        }
+    }
+}
+
+fn check_writes(
+    node: &Node,
+    var: &str,
+    safe_sources: &HashSet<String>,
+    source: &str,
+    all_safe: &mut bool,
+) {
+    if !*all_safe {
+        return;
+    }
+
+    match node.kind() {
+        "init_declarator" => {
+            if let Some(decl) = node.child_by_field_name("declarator") {
+                if declarator_names(&decl, source).iter().any(|n| n == var) {
+                    let value = node.child_by_field_name("value");
+                    if !rhs_is_safe(value.as_ref(), safe_sources, source) {
+                        *all_safe = false;
+                        return;
+                    }
+                }
+            }
+        }
+        "assignment_expression" => {
+            let Some(lhs) = node.child_by_field_name("left") else {
+                // Fall through to recursion
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        check_writes(&child, var, safe_sources, source, all_safe);
+                        if !*all_safe {
+                            return;
+                        }
+                    }
+                }
+                return;
+            };
+            let lhs = strip_casts_and_parens(lhs);
+            // Only plain `var = ...` matters. `var[i] = ...` is an index
+            // write, which doesn't change the pointer itself; treat as
+            // neutral (and let strcat/recv checks cover buffer contents).
+            if lhs.kind() == "identifier" && get_node_text(&lhs, source) == var {
+                let op_matches = node_operator(node, source)
+                    .map(|op| op == "=")
+                    .unwrap_or(true);
+                if op_matches {
+                    let rhs = node.child_by_field_name("right");
+                    if !rhs_is_safe(rhs.as_ref(), safe_sources, source) {
+                        *all_safe = false;
+                        return;
+                    }
+                } else {
+                    // += / -= etc. on a char pointer command variable is
+                    // unusual; be conservative.
+                    *all_safe = false;
+                    return;
+                }
+            }
+        }
+        "call_expression" => {
+            if let Some(function) = node.child_by_field_name("function") {
+                let name = get_node_text(&function, source);
+                let ident = trailing_identifier(name);
+                // strcat(var, X) or strcpy(var, X) — dest is var; check X.
+                if matches!(
+                    ident,
+                    "strcat" | "strcpy" | "strncat" | "strncpy" | "wcscat" | "wcscpy"
+                ) {
+                    if let Some(args) = node.child_by_field_name("arguments") {
+                        let named: Vec<_> = (0..args.child_count())
+                            .filter_map(|i| args.child(i))
+                            .filter(|c| c.is_named())
+                            .collect();
+                        if let Some(first) = named.first() {
+                            let first_stripped = strip_casts_and_parens(*first);
+                            if first_stripped.kind() == "identifier"
+                                && get_node_text(&first_stripped, source) == var
+                            {
+                                let second = named.get(1);
+                                let second_safe = match second {
+                                    Some(n) => {
+                                        let s = strip_casts_and_parens(*n);
+                                        matches!(s.kind(), "string_literal" | "concatenated_string")
+                                    }
+                                    None => false,
+                                };
+                                if !second_safe {
+                                    *all_safe = false;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            check_writes(&child, var, safe_sources, source, all_safe);
+            if !*all_safe {
+                return;
+            }
+        }
+    }
+}
+
+fn rhs_is_safe(rhs: Option<&Node>, safe_sources: &HashSet<String>, source: &str) -> bool {
+    let Some(rhs) = rhs else {
+        // No initializer — the declared pointer is null, technically safe
+        // from a taint perspective (a later null-check would be ENV03-C
+        // unrelated).
+        return true;
+    };
+    let rhs = strip_casts_and_parens(*rhs);
+    match rhs.kind() {
+        "string_literal" | "concatenated_string" => true,
+        "null" | "number_literal" => true,
+        "identifier" => safe_sources.contains(get_node_text(&rhs, source)),
+        // Taking the address of a local buffer: `&data_buf`.
+        "pointer_expression" | "unary_expression" => {
+            if let Some(arg) = rhs.child_by_field_name("argument") {
+                let a = strip_casts_and_parens(arg);
+                if a.kind() == "identifier" {
+                    return safe_sources.contains(get_node_text(&a, source));
+                }
+            }
+            false
+        }
+        _ => false,
+    }
+}
+
+fn node_operator<'a>(node: &'a Node<'a>, source: &'a str) -> Option<&'a str> {
+    // Prefer the explicit field when available.
+    if let Some(op) = node.child_by_field_name("operator") {
+        return Some(get_node_text(&op, source));
+    }
+    // Otherwise find the unnamed operator token between LHS and RHS.
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if !child.is_named() {
+                let text = get_node_text(&child, source);
+                if text.contains('=') {
+                    return Some(text);
+                }
+            }
+        }
+    }
+    None
+}
+
+fn declarator_names(decl: &Node, source: &str) -> Vec<String> {
+    let mut names = Vec::new();
+    if let Some(name) = extract_declarator_name(decl, source) {
+        names.push(name);
+    }
+    names
 }
