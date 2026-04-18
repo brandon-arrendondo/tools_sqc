@@ -8,11 +8,13 @@
 //! - time_t comparison with -1 without proper cast
 
 use super::super::{CertRule, RuleViolation};
-use crate::analyze::cfg::FunctionCfg;
+use crate::analyze::cfg::{self, FunctionCfg};
 use crate::analyze::const_eval::{self, MacroConstantMap, VarRangeMap};
+use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::analyze::value_range::RangeAnalysisResult;
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::{self, get_node_text};
+use crate::utility::cert_c::ast_utils::{self, get_node_text, is_function_parameter};
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
@@ -20,6 +22,9 @@ use tree_sitter::Node;
 pub struct Int31C {
     function_cfgs: RefCell<HashMap<usize, FunctionCfg>>,
     vra_results: RefCell<HashMap<usize, RangeAnalysisResult>>,
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+    /// Reverse call graph: callee_name → set of caller names.
+    callers: RefCell<HashMap<String, HashSet<String>>>,
 }
 
 impl Int31C {
@@ -27,6 +32,8 @@ impl Int31C {
         Self {
             function_cfgs: RefCell::new(HashMap::new()),
             vra_results: RefCell::new(HashMap::new()),
+            function_summaries: RefCell::new(HashMap::new()),
+            callers: RefCell::new(HashMap::new()),
         }
     }
 
@@ -113,6 +120,360 @@ impl Int31C {
 
         false
     }
+
+    /// Heuristic: is the value of `var_name` in the enclosing function
+    /// provably free of any externally-controlled input path?
+    ///
+    /// A "taint-free" value within a bounded block (`if (var < LIT)`) is
+    /// overwhelmingly non-negative in practice, because programs rarely
+    /// pair a fixed-source positive literal with a `< LIMIT` guard unless
+    /// they mean the value to be a size. Returns true only when:
+    /// - the containing function's summary has no taint-source call, AND
+    /// - every `var = someFn(...)` assignment in the body targets a callee
+    ///   whose summary is also taint-free, AND
+    /// - when `var` is a parameter, every caller is taint-free too.
+    ///
+    /// If any callee, caller, or summary lookup is missing, the check
+    /// conservatively returns false (preserving the flag).
+    fn var_is_taint_free(&self, node: &Node, var_name: &str, source: &str) -> bool {
+        let func = match ast_utils::find_containing_function(node) {
+            Some(f) => f,
+            None => return false,
+        };
+
+        let func_name = match cfg::get_function_name(&func, source) {
+            Some(n) => n,
+            None => return false,
+        };
+
+        let summaries = self.function_summaries.borrow();
+        if summaries.is_empty() {
+            // No cross-file context — don't second-guess the rule's
+            // existing VRA/guard checks.
+            return false;
+        }
+
+        let func_summary = match summaries.get(func_name) {
+            Some(s) => s,
+            None => return false,
+        };
+        if func_summary.has_env03_taint_source {
+            return false;
+        }
+
+        let body = match func.child_by_field_name("body") {
+            Some(b) => b,
+            None => return false,
+        };
+
+        if body_has_tainted_call_assignment_to(&body, var_name, &summaries, source) {
+            return false;
+        }
+
+        if is_function_parameter(&func, var_name, source) {
+            // Parameter case: defer taint judgement to callers.
+            let callers = self.callers.borrow();
+            let caller_set = match callers.get(func_name) {
+                Some(set) if !set.is_empty() => set,
+                _ => return false,
+            };
+            for caller in caller_set {
+                match summaries.get(caller) {
+                    Some(s) if !s.has_env03_taint_source => {}
+                    _ => return false,
+                }
+            }
+            return true;
+        }
+
+        // Local variable: only suppress when we see a call-return assignment
+        // from at least one clean callee. Without such evidence the var may
+        // have been sourced from a file-scope global, an address-of read,
+        // or another channel we can't inspect — stay conservative.
+        body_has_any_call_assignment_to(&body, var_name, source)
+    }
+}
+
+/// Walk `body` looking for any assignment or initializer that stores a
+/// call-expression result into `var_name`. If the callee's summary has
+/// a taint source, the assignment is tainted — return true.
+fn body_has_tainted_call_assignment_to(
+    body: &Node,
+    var_name: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+    source: &str,
+) -> bool {
+    let mut found = false;
+    walk_for_tainted_assignment(body, var_name, summaries, source, &mut found);
+    found
+}
+
+fn walk_for_tainted_assignment(
+    node: &Node,
+    var_name: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+    source: &str,
+    found: &mut bool,
+) {
+    if *found {
+        return;
+    }
+    match node.kind() {
+        "assignment_expression" => {
+            if let Some(lhs) = node.child_by_field_name("left") {
+                let lhs_text = get_node_text(&lhs, source).trim();
+                if lhs_text == var_name {
+                    if let Some(rhs) = node.child_by_field_name("right") {
+                        if call_rhs_has_taint_source(&rhs, summaries, source) {
+                            *found = true;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        "init_declarator" => {
+            if let Some(decl) = node.child_by_field_name("declarator") {
+                if declarator_name_matches(&decl, var_name, source) {
+                    if let Some(value) = node.child_by_field_name("value") {
+                        if call_rhs_has_taint_source(&value, summaries, source) {
+                            *found = true;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            walk_for_tainted_assignment(&child, var_name, summaries, source, found);
+            if *found {
+                return;
+            }
+        }
+    }
+}
+
+/// Returns true when the identifier embedded in a declarator (handling
+/// pointer/array wrappers) exactly equals `var_name`.
+fn declarator_name_matches(decl: &Node, var_name: &str, source: &str) -> bool {
+    let mut current = *decl;
+    loop {
+        match current.kind() {
+            "identifier" | "field_identifier" => {
+                return get_node_text(&current, source).trim() == var_name;
+            }
+            _ => {
+                if let Some(inner) = current.child_by_field_name("declarator") {
+                    current = inner;
+                    continue;
+                }
+                // Try first named child as fallback
+                let mut next = None;
+                for i in 0..current.child_count() {
+                    if let Some(c) = current.child(i) {
+                        if c.is_named() {
+                            next = Some(c);
+                            break;
+                        }
+                    }
+                }
+                match next {
+                    Some(n) => current = n,
+                    None => return false,
+                }
+            }
+        }
+    }
+}
+
+/// Walk `body` looking for any assignment or initializer that stores a
+/// call-expression result into `var_name`. Returns true if at least one
+/// such `var = fn(...)` exists, regardless of the callee's taint status.
+fn body_has_any_call_assignment_to(body: &Node, var_name: &str, source: &str) -> bool {
+    let mut found = false;
+    walk_for_any_call_assignment(body, var_name, source, &mut found);
+    found
+}
+
+fn walk_for_any_call_assignment(node: &Node, var_name: &str, source: &str, found: &mut bool) {
+    if *found {
+        return;
+    }
+    match node.kind() {
+        "assignment_expression" => {
+            if let Some(lhs) = node.child_by_field_name("left") {
+                if get_node_text(&lhs, source).trim() == var_name {
+                    if let Some(rhs) = node.child_by_field_name("right") {
+                        if unwrap_to_call(rhs).kind() == "call_expression" {
+                            *found = true;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        "init_declarator" => {
+            if let Some(decl) = node.child_by_field_name("declarator") {
+                if declarator_name_matches(&decl, var_name, source) {
+                    if let Some(value) = node.child_by_field_name("value") {
+                        if unwrap_to_call(value).kind() == "call_expression" {
+                            *found = true;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            walk_for_any_call_assignment(&child, var_name, source, found);
+            if *found {
+                return;
+            }
+        }
+    }
+}
+
+/// Returns true if `rhs` is (or contains at the top level) a call whose
+/// callee's summary reports a taint source.
+fn call_rhs_has_taint_source(
+    rhs: &Node,
+    summaries: &HashMap<String, FunctionSummary>,
+    source: &str,
+) -> bool {
+    let call = unwrap_to_call(*rhs);
+    if call.kind() != "call_expression" {
+        return false;
+    }
+    let func = match call.child_by_field_name("function") {
+        Some(f) => f,
+        None => return false,
+    };
+    let name = get_node_text(&func, source);
+    let ident = name
+        .rsplit(|c: char| !c.is_alphanumeric() && c != '_')
+        .next()
+        .unwrap_or(name);
+    match summaries.get(ident) {
+        Some(s) => s.has_env03_taint_source,
+        None => false,
+    }
+}
+
+fn unwrap_to_call(mut node: Node) -> Node {
+    loop {
+        match node.kind() {
+            "parenthesized_expression" => {
+                if let Some(inner) = node.named_child(0) {
+                    node = inner;
+                    continue;
+                }
+                break;
+            }
+            "cast_expression" => {
+                if let Some(value) = node.child_by_field_name("value") {
+                    node = value;
+                    continue;
+                }
+                break;
+            }
+            _ => break,
+        }
+    }
+    node
+}
+
+/// Returns true when `node` sits inside an `if (ident < N)` / `if (ident <= N)`
+/// guard where `N` is a non-negative integer literal (or `ident > -1` style).
+/// Looks up through 15 ancestors for the enclosing `if_statement`.
+fn is_inside_upper_bound_guard(node: &Node, source: &str, ident: &str) -> bool {
+    if ident.is_empty() {
+        return false;
+    }
+    let mut current = *node;
+    for _ in 0..15 {
+        let parent = match current.parent() {
+            Some(p) => p,
+            None => break,
+        };
+        if parent.kind() == "if_statement" {
+            if let Some(condition) = parent.child_by_field_name("condition") {
+                let cond_text = get_node_text(&condition, source);
+                if condition_is_upper_bound_on(cond_text, ident) {
+                    return true;
+                }
+            }
+        }
+        current = parent;
+    }
+    false
+}
+
+fn condition_is_upper_bound_on(cond: &str, ident: &str) -> bool {
+    // Strip parens and whitespace for simpler matching.
+    let trimmed = cond.replace([' ', '\t', '\n', '('], "").replace(')', "");
+    // Patterns that establish an upper bound on `ident`:
+    // - ident<N, ident<=N with N a non-negative literal
+    // - N>ident, N>=ident (flipped)
+    for op in ["<=", "<"] {
+        let needle = format!("{}{}", ident, op);
+        if let Some(idx) = trimmed.find(&needle) {
+            let rest = &trimmed[idx + needle.len()..];
+            if let Some(n) = leading_integer(rest) {
+                if n >= 0 {
+                    return true;
+                }
+            }
+        }
+    }
+    for op in [">=", ">"] {
+        let needle = format!("{}{}", op, ident);
+        if let Some(idx) = trimmed.find(&needle) {
+            let before = &trimmed[..idx];
+            if let Some(n) = trailing_integer(before) {
+                if n >= 0 {
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
+
+fn leading_integer(s: &str) -> Option<i64> {
+    let mut end = 0;
+    let bytes = s.as_bytes();
+    if bytes.first() == Some(&b'-') {
+        end = 1;
+    }
+    while end < bytes.len() && bytes[end].is_ascii_digit() {
+        end += 1;
+    }
+    if end == 0 || (end == 1 && bytes[0] == b'-') {
+        return None;
+    }
+    s[..end].parse().ok()
+}
+
+fn trailing_integer(s: &str) -> Option<i64> {
+    let bytes = s.as_bytes();
+    let mut start = bytes.len();
+    while start > 0 && bytes[start - 1].is_ascii_digit() {
+        start -= 1;
+    }
+    if start > 0 && bytes[start - 1] == b'-' {
+        start -= 1;
+    }
+    if start == bytes.len() {
+        return None;
+    }
+    s[start..].parse().ok()
 }
 
 /// Returns the bit-width of a known integer type, or None for unknown types.
@@ -290,6 +651,21 @@ impl CertRule for Int31C {
             );
         }
         *self.vra_results.borrow_mut() = stored;
+    }
+
+    fn set_project_context(&self, context: &ProjectContext) {
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+
+        let mut callers: HashMap<String, HashSet<String>> = HashMap::new();
+        for (caller, callees) in &context.call_graph {
+            for callee in callees {
+                callers
+                    .entry(callee.clone())
+                    .or_default()
+                    .insert(caller.clone());
+            }
+        }
+        *self.callers.borrow_mut() = callers;
     }
 
     fn needs_vra(&self) -> bool {
@@ -758,6 +1134,17 @@ impl Int31C {
 
             // Suppression: enclosed in an if-condition that checks var >= 0
             if Self::is_inside_non_negative_guard(node, source, &ident) {
+                continue;
+            }
+
+            // Suppression: cross-function taint-free check. If the value is
+            // bounded above (via an `if (ident < LIT)` or equivalent guard)
+            // and no taint-source call touches the variable — directly, via
+            // call-return assignment, or via a caller when `ident` is a
+            // parameter — treat as safe.
+            if is_inside_upper_bound_guard(node, source, &ident)
+                && self.var_is_taint_free(node, &ident, source)
+            {
                 continue;
             }
 
