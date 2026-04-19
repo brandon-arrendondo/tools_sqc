@@ -1,10 +1,10 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-19 (v0.3.97)
+Last Updated: 2026-04-19 (v0.3.98)
 
-Juliet benchmark v0.3.97: 24,622 TP / 14,226 FP (63.4% TP rate), 41.6% per-file.
-Cumulative v0.3.93 → v0.3.97: TP rate +1.7pp, FP −1,542 (−9.8%), zero net
-other-rule regressions.
+Juliet benchmark v0.3.98: 24,622 TP / 14,226 FP (63.4% TP rate), 41.6% per-file.
+Cumulative v0.3.93 → v0.3.98: TP rate +1.7pp, FP −1,542 (−9.8%), zero net
+other-rule regressions. Real-world v0.3.93 → v0.3.98: −343 violations.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -350,83 +350,103 @@ Three sub-patterns triaged:
 
 # Task ID: 63
 # Title: MEM05-C / ARR32-C false VLA and stack allocation fixes
-# Status: pending
+# Status: done (v0.3.88)
 # Dependencies: none
 # Priority: P3
 # Description: Fix false VLA detection and spurious stack allocation
 #   warnings (3 FPs across 2 codebases).
 # Details:
-Three distinct bugs:
+DONE. All three embedded FPs resolved by a single root-cause fix: the
+MEM05-C VLA detector was text-matching `[...]` anywhere in a
+declaration, so array subscripts inside initializers were
+misclassified as variable-length sizes.
 
-  1. **ARR32-C on header-defined constant** (serial_leds):
-     `output_buf[SERIAL_LEDS_MAX_LEDS * SERIAL_LEDS_BYTES_PER_LED]` in
-     a header struct definition. Both macros are `#define` constants.
-     sqc already has `is_likely_macro_constant()` for ALL_CAPS — may need
-     to handle multiplication of two ALL_CAPS identifiers.
+  1. **ARR32-C on header-defined constant** — `is_all_constant_expression`
+     recursively walks binary_expression leaves, so
+     `[MAX_LEDS * BYTES_PER_LED]` now passes as a constant expression
+     when both identifiers are ALL_CAPS macros.
+  2. **MEM05-C on array subscript** — `find_array_declarator_size`
+     looks for an actual `array_declarator` node instead of bracket
+     text, and `init_declarator`'s value field is explicitly skipped
+     so `uint8_t x = arr[i]` is no longer a "VLA".
+  3. **MEM05-C on 1-byte stack variable** — same AST-level fix. The
+     "large stack allocation" message never fires; previous FPs were
+     subscripts-in-initializers misclassified as VLAs. No size
+     threshold was needed.
 
-  2. **MEM05-C on array subscript** (airpath):
-     `ctx->adc_ring_buf[ctx->adc_ring_tail]` — sqc misidentifies this
-     as a VLA declaration. It's an array element access, not a declaration.
-     Bug: MEM05-C VLA check triggering on subscript_expression inside
-     an assignment, not a declaration context.
-
-  3. **MEM05-C on 1-byte stack variable** (serial_leds):
-     `uint8_t idx` flagged as "large stack allocation". 1 byte is not
-     a stack concern. Add minimum size threshold (e.g., skip < 256 bytes).
+Empirical impact (serial_leds / airpath, suppressions stripped):
+  serial_leds MEM05-C: 1 → 0
+  serial_leds ARR32-C: 1 → 0
+  airpath     MEM05-C: 1 → 0
 
 ---
 
 # Task ID: 64
 # Title: EXP02-C extended short-circuit guard recognition
-# Status: pending
+# Status: done (v0.3.98)
 # Dependencies: none
 # Priority: P3
 # Description: Extend EXP02-C guard pattern recognition beyond
 #   NULL_CHECK && fn_call to cover all common guard idioms (4 FPs).
 # Details:
-sqc already suppresses `ptr != NULL && fn(ptr)` but still flags:
+DONE. Landed over two rounds.
 
-  - `file_size > 0 && buflen >= file_size && fseek(...)` — value guard
-  - `self == NULL || IntSet_Contains(self, element)` — NULL || pattern
-  - `len == capacity && !growCapacity(self)` — equality check + mutation
-  - `arr->len == arr->cap && !ArrayList_growCapacity(arr)` — same pattern
+v0.3.88 (task 64 initial): extended the NULL-guard exemption to `||`
+and added `has_mutation_side_effects` so `p || (p = malloc(...))`
+and `i++ > 10` still flag.
 
-General principle: when the LHS of && or || is a GUARD (comparison that
-determines whether the RHS should execute), the short-circuit IS the
-intent. Recognize patterns where:
-  - LHS is a comparison (==, !=, <, >, <=, >=)
-  - RHS is a function call
-  - The pattern is `GUARD && ACTION` or `GUARD || ACTION`
+v0.3.98 (task 64 remaining): generalized the guard check from
+null-specific substring matching to AST-based comparison detection.
+`is_guard_pattern` now recognises any `binary_expression` whose
+operator is `==`, `!=`, `<`, `>`, `<=`, or `>=`, plus compound
+`&&` / `||` chains whose leaves are guards (recursive),
+plus truthiness (bare identifier / `!x`) and parenthesized
+wrappers. Combined with the preserved mutation check, the rule now
+correctly suppresses:
 
-This subsumes the existing NULL-check fix and covers all d_lib_common
-Pattern 19 cases.
+  file_size > 0 && buflen >= file_size && fseek(...)
+  self == NULL || IntSet_Contains(self, element)
+  len == capacity && !growCapacity(self)
+  arr->len == arr->cap && !ArrayList_growCapacity(arr)
+
+while still flagging:
+
+  p || (p = malloc(...))           — assignment in RHS
+  a > 0 && ++count > 10            — update in RHS
+
+Juliet: zero delta (all 4 EXP02-C tests still pass, CWE-taxonomy
+totals unchanged). Real-world: EXP02-C delta below the top-5
+per-rule threshold (task 64 targets d_lib_common, outside the
+real-world benchmark set).
 
 ---
 
 # Task ID: 65
 # Title: DCL19-C / DCL00-C scope and const-qualify FP fixes
-# Status: pending
+# Status: done (v0.3.88)
 # Dependencies: none
 # Priority: P3
 # Description: Fix DCL19-C flagging public API functions and DCL00-C
 #   flagging loop counter variables (6 FPs in serial_leds).
 # Details:
-  A. **DCL19-C on public API** (3 FPs): Functions declared in public
-     headers (`SerialLeds_set`, `SerialLeds_set_rgb`, etc.) cannot have
-     their scope minimized. Fix: if function has external linkage AND
-     is declared in a header (via prescan or -I), suppress DCL19-C.
+DONE. Both fixes landed in v0.3.88 via commit 2c78eac2.
 
-  B. **DCL00-C on loop counters** (3 FPs): `uint8_t g` in
-     `for (g = 0; g < num_groups; g++)` — loop counters are modified
-     each iteration and cannot be const. Fix: if variable appears as
-     the loop variable in a for-statement (init or update clause),
-     suppress DCL00-C.
+  A. **DCL19-C on public API** — `set_project_context` receives
+     `header_declared_functions` from prescan; the "should be static"
+     check now skips any function whose name appears in a header
+     traversed via `-I`. serial_leds `SerialLeds_set`,
+     `SerialLeds_set_rgb`, `SerialLeds_set_brightness`: 3 → 0.
+
+  B. **DCL00-C on loop counters** — `is_in_for_loop_init` walks up
+     the declaration's parent chain to detect when the declaration is
+     itself the init clause of a `for_statement`. serial_leds
+     `uint8_t g` across three for-loops: 3 → 0.
 
 ---
 
 # Task ID: 66
 # Title: Miscellaneous embedded FP fixes (small wins)
-# Status: pending
+# Status: partial (v0.3.98 — item 1 done)
 # Dependencies: none
 # Priority: P3
 # Description: Fix assorted small FP patterns found across embedded
@@ -436,6 +456,13 @@ Collection of lower-count FPs that don't warrant individual tasks:
 
   1. **INT32-C sizeof(*ctx)** (serial_leds 1 FP): `sizeof(*ctx)` in
      memset is not signed overflow. sizeof always returns size_t.
+     DONE (v0.3.98). `check_memory_function_overflow` now early-returns
+     when the size argument is a `sizeof_expression`, alongside the
+     existing `field_expression` exemption. The text-based
+     `contains_arithmetic` false-matched the `*` inside
+     `sizeof(*ctx)`. Real-world impact: INT32-C −239 (sqlite −169,
+     curl −67, mosquitto −3); libcrc/hostap unaffected. Juliet zero
+     delta.
   2. **INT33-C provably non-zero divisor** (serial_leds 2 FPs):
      Animation period set by API, never zero. Requires caller context.
   3. **DCL13-C direct call flagged as function pointer** (serial_leds

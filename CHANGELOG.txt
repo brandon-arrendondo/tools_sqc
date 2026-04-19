@@ -26,7 +26,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Benchmark
 
-- Full Juliet + realworld results filled in on publish.
+- Juliet v0.3.97 → v0.3.98: **zero delta** across all 74 CWEs —
+  TP 24,622, FP 14,226, TP rate 63.4% (unchanged). The EXP02-C guard
+  extension and INT32-C sizeof skip target real-world idioms (sizeof
+  in memset, compound comparison chains, equality-plus-call patterns)
+  that Juliet does not exercise.
+- Real-world v0.3.93 → v0.3.98: **−343 violations** (spans v0.3.94-
+  0.3.98 work combined). INT32-C −239 is almost entirely v0.3.98's
+  sizeof fix (v0.3.94-0.3.97 did not touch INT32-C); API00-C −111
+  and INT31-C −2 come from tasks 68/69/62C. Per-project INT32-C
+  deltas: sqlite −169, curl −67, mosquitto −3. MSC04-C +8 minor
+  regression carried over from the v0.3.94-0.3.97 range.
 
 ## [0.3.97] - 2026-04-19
 
