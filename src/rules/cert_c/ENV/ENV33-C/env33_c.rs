@@ -259,25 +259,45 @@ impl Env33C {
         true
     }
 
-    /// True when we can prove every caller of `func_node`'s function is free
-    /// of direct taint sources and transitively-tainted return values. False
-    /// when caller info is missing or any caller is tainted.
+    /// True when we can prove every transitive caller of `func_node`'s
+    /// function is free of direct taint sources and transitively-tainted
+    /// return values. False when caller info is missing at any level or any
+    /// ancestor caller is tainted.
+    ///
+    /// The reverse call graph is walked BFS-style because Juliet's variants
+    /// 52/53/54 route data through multi-level forwarding sinks where the
+    /// immediate caller is a clean pass-through but a grand-caller reads
+    /// from a taint source (e.g. recv).
     fn callers_are_all_clean(&self, func_node: &Node, source: &str) -> bool {
         let Some(name) = cfg::get_function_name(func_node, source) else {
             return false;
         };
         let callers = self.callers.borrow();
-        let Some(caller_set) = callers.get(name) else {
+        let Some(root_callers) = callers.get(name) else {
             return false;
         };
-        if caller_set.is_empty() {
+        if root_callers.is_empty() {
             return false;
         }
+
         let summaries = self.function_summaries.borrow();
-        for caller in caller_set {
-            match summaries.get(caller) {
+        let mut visited: HashSet<String> = HashSet::new();
+        let mut stack: Vec<String> = root_callers.iter().cloned().collect();
+
+        while let Some(current) = stack.pop() {
+            if !visited.insert(current.clone()) {
+                continue;
+            }
+            match summaries.get(&current) {
                 Some(s) if !s.has_env03_taint_source && !s.returns_tainted => {}
                 _ => return false,
+            }
+            if let Some(next) = callers.get(&current) {
+                for c in next {
+                    if !visited.contains(c) {
+                        stack.push(c.clone());
+                    }
+                }
             }
         }
         true
