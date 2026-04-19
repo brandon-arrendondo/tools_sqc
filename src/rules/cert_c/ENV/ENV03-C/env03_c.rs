@@ -325,7 +325,8 @@ impl Env03C {
             return true;
         }
 
-        !is_command_var_locally_safe(scope, var_name, source)
+        let summaries = self.function_summaries.borrow();
+        !is_command_var_locally_safe(scope, var_name, source, &summaries)
     }
 
     /// Return true when we can prove every caller of `scope`'s function
@@ -451,15 +452,27 @@ fn trailing_identifier(name: &str) -> &str {
 /// without suppressing Juliet `*_bad` variants where `data` is assigned
 /// from a helper-function return value, a static global, or receives
 /// taint from `recv`/`fgets`/`scanf`/etc.
-fn is_command_var_locally_safe(scope: &Node, var_name: &str, source: &str) -> bool {
+fn is_command_var_locally_safe(
+    scope: &Node,
+    var_name: &str,
+    source: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+) -> bool {
     let body = match scope.child_by_field_name("body") {
         Some(b) => b,
         None => return false,
     };
-    let local_buffers = collect_local_literal_buffers(&body, source);
+    let local_buffers = collect_local_literal_buffers(&body, source, summaries);
 
     let mut all_safe = true;
-    check_writes(&body, var_name, &local_buffers, source, &mut all_safe);
+    check_writes(
+        &body,
+        var_name,
+        &local_buffers,
+        source,
+        summaries,
+        &mut all_safe,
+    );
     all_safe
 }
 
@@ -467,14 +480,18 @@ fn is_command_var_locally_safe(scope: &Node, var_name: &str, source: &str) -> bo
 /// sources for the command variable. Starts with `char`/`wchar_t` arrays
 /// initialized from string literals (or macros), then iterates to fold in
 /// pointer variables initialized from an already-safe identifier.
-fn collect_local_literal_buffers(body: &Node, source: &str) -> HashSet<String> {
+fn collect_local_literal_buffers(
+    body: &Node,
+    source: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+) -> HashSet<String> {
     let mut buffers = HashSet::new();
     // Pass 1: arrays with literal/macro initializers.
     walk_buffer_decls(body, source, &mut buffers);
     // Passes 2+: propagate through pointer aliases until fixpoint.
     loop {
         let before = buffers.len();
-        walk_pointer_aliases(body, source, &mut buffers);
+        walk_pointer_aliases(body, source, summaries, &mut buffers);
         if buffers.len() == before {
             break;
         }
@@ -514,7 +531,12 @@ fn walk_buffer_decls(node: &Node, source: &str, out: &mut HashSet<String>) {
     }
 }
 
-fn walk_pointer_aliases(node: &Node, source: &str, out: &mut HashSet<String>) {
+fn walk_pointer_aliases(
+    node: &Node,
+    source: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+    out: &mut HashSet<String>,
+) {
     match node.kind() {
         "declaration" => {
             for i in 0..node.child_count() {
@@ -531,7 +553,7 @@ fn walk_pointer_aliases(node: &Node, source: &str, out: &mut HashSet<String>) {
                 let Some(value) = child.child_by_field_name("value") else {
                     continue;
                 };
-                if rhs_is_safe(Some(&value), out, source) {
+                if rhs_is_safe(Some(&value), out, source, summaries) {
                     if let Some(name) = extract_declarator_name(&decl, source) {
                         out.insert(name);
                     }
@@ -547,7 +569,7 @@ fn walk_pointer_aliases(node: &Node, source: &str, out: &mut HashSet<String>) {
                         .unwrap_or(true);
                     if op_is_plain {
                         let rhs = node.child_by_field_name("right");
-                        if rhs_is_safe(rhs.as_ref(), out, source) {
+                        if rhs_is_safe(rhs.as_ref(), out, source, summaries) {
                             out.insert(get_node_text(&lhs, source).to_string());
                         }
                     }
@@ -558,7 +580,7 @@ fn walk_pointer_aliases(node: &Node, source: &str, out: &mut HashSet<String>) {
     }
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
-            walk_pointer_aliases(&child, source, out);
+            walk_pointer_aliases(&child, source, summaries, out);
         }
     }
 }
@@ -613,6 +635,7 @@ fn check_writes(
     var: &str,
     safe_sources: &HashSet<String>,
     source: &str,
+    summaries: &HashMap<String, FunctionSummary>,
     all_safe: &mut bool,
 ) {
     if !*all_safe {
@@ -624,7 +647,7 @@ fn check_writes(
             if let Some(decl) = node.child_by_field_name("declarator") {
                 if declarator_names(&decl, source).iter().any(|n| n == var) {
                     let value = node.child_by_field_name("value");
-                    if !rhs_is_safe(value.as_ref(), safe_sources, source) {
+                    if !rhs_is_safe(value.as_ref(), safe_sources, source, summaries) {
                         *all_safe = false;
                         return;
                     }
@@ -636,7 +659,7 @@ fn check_writes(
                 // Fall through to recursion
                 for i in 0..node.child_count() {
                     if let Some(child) = node.child(i) {
-                        check_writes(&child, var, safe_sources, source, all_safe);
+                        check_writes(&child, var, safe_sources, source, summaries, all_safe);
                         if !*all_safe {
                             return;
                         }
@@ -654,7 +677,7 @@ fn check_writes(
                     .unwrap_or(true);
                 if op_matches {
                     let rhs = node.child_by_field_name("right");
-                    if !rhs_is_safe(rhs.as_ref(), safe_sources, source) {
+                    if !rhs_is_safe(rhs.as_ref(), safe_sources, source, summaries) {
                         *all_safe = false;
                         return;
                     }
@@ -708,7 +731,7 @@ fn check_writes(
 
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
-            check_writes(&child, var, safe_sources, source, all_safe);
+            check_writes(&child, var, safe_sources, source, summaries, all_safe);
             if !*all_safe {
                 return;
             }
@@ -716,7 +739,12 @@ fn check_writes(
     }
 }
 
-fn rhs_is_safe(rhs: Option<&Node>, safe_sources: &HashSet<String>, source: &str) -> bool {
+fn rhs_is_safe(
+    rhs: Option<&Node>,
+    safe_sources: &HashSet<String>,
+    source: &str,
+    summaries: &HashMap<String, FunctionSummary>,
+) -> bool {
     let Some(rhs) = rhs else {
         // No initializer — the declared pointer is null, technically safe
         // from a taint perspective (a later null-check would be ENV03-C
@@ -738,7 +766,28 @@ fn rhs_is_safe(rhs: Option<&Node>, safe_sources: &HashSet<String>, source: &str)
             }
             false
         }
+        // `data = helper(...)` — safe iff the helper has no taint-source
+        // call and its return value is not transitively tainted. Suppresses
+        // Juliet v42-style goodG2B(Source) wrappers without masking the
+        // corresponding `data = badSource(...)` bad paths.
+        "call_expression" => call_is_clean(&rhs, source, summaries),
         _ => false,
+    }
+}
+
+/// Return true when `call`'s callee has a summary that proves it does not
+/// introduce taint into the caller's variable. Requires both a direct
+/// taint-source bit and the transitive `returns_tainted` bit to be false,
+/// plus a known summary (unknown callees remain conservative).
+fn call_is_clean(call: &Node, source: &str, summaries: &HashMap<String, FunctionSummary>) -> bool {
+    let Some(func) = call.child_by_field_name("function") else {
+        return false;
+    };
+    let raw = get_node_text(&func, source);
+    let name = trailing_identifier(raw);
+    match summaries.get(name) {
+        Some(s) => !s.has_env03_taint_source && !s.returns_tainted,
+        None => false,
     }
 }
 

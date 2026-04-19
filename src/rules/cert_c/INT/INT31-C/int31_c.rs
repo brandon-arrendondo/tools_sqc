@@ -361,7 +361,10 @@ fn call_rhs_has_taint_source(
         .next()
         .unwrap_or(name);
     match summaries.get(ident) {
-        Some(s) => s.has_env03_taint_source,
+        // A helper that transitively returns taint (`return recv_wrapper()`)
+        // is flagged via `returns_tainted` even when its own body contains
+        // no direct taint source.
+        Some(s) => s.has_env03_taint_source || s.returns_tainted,
         None => false,
     }
 }

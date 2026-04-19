@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.99] - 2026-04-19
+
+### Changed
+
+- FunctionSummary: new `returns_tainted` bit and
+  `returns_from_callees` set. Seeded in prescan from
+  `has_env03_taint_source` on non-void returns, then propagated to
+  fixpoint via a new `propagate_return_taint` pass so wrapper chains
+  (`char *wrap() { return readIt(); }`) inherit a callee's taint bit.
+  Same-named static merging ORs the new bits (mirrors the existing
+  `has_env03_taint_source` merge).
+- ENV03-C: extend `rhs_is_safe` with a `call_expression` arm. A
+  `data = helper(...)` assignment is now treated as safe when
+  `helper`'s summary is known and has neither
+  `has_env03_taint_source` nor `returns_tainted`. Unknown callees stay
+  conservative. Suppresses Juliet CWE-78 v42-style goodG2B(Source)
+  patterns while still flagging the corresponding `data =
+  badSource(...)` bad paths (badSource contains `recv`).
+- INT31-C: `call_rhs_has_taint_source` now recognises callees whose
+  summary has `returns_tainted` set. Catches transitive wrappers
+  without requiring a direct taint-source call in the immediate
+  callee's body.
+
+### Benchmark
+
+- Pending. Expected target: Juliet CWE-78 ENV03-C FPs (~280 before)
+  and CWE-194/195 INT31-C FPs via transitive return-taint.
+
 ## [0.3.98] - 2026-04-19
 
 ### Changed
