@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.98] - 2026-04-19
+
+### Changed
+
+- EXP02-C: extend guard-pattern recognition beyond null-checks. Any
+  comparison (`==`, `!=`, `<`, `>`, `<=`, `>=`) on the LHS of `&&` or
+  `||`, or a compound `&&`/`||` chain whose leaves are comparisons,
+  is now treated as a short-circuit guard. The RHS is still required
+  to be mutation-free (no `=`, `+=`, `++`, `--`) so patterns like
+  `file_size > 0 && buflen >= file_size && fseek(...)` and
+  `arr->len == arr->cap && !growCapacity(arr)` are no longer flagged,
+  while `p || (p = malloc(...))` and `a > 0 && ++count > 10` still
+  trigger. Closes task 64.
+- INT32-C: skip `sizeof(...)` arguments to `memcpy` / `memmove` /
+  `memset` size positions. `sizeof(*ctx)` always yields `size_t` and
+  has no signed overflow risk, but the text-based `contains_arithmetic`
+  helper false-matched the `*` inside the sizeof. Closes task 66 item 1.
+
+### Benchmark
+
+- Full Juliet + realworld results filled in on publish.
+
 ## [0.3.97] - 2026-04-19
 
 ### Changed
