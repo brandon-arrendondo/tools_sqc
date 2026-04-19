@@ -1,9 +1,9 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-19 (v0.3.99)
+Last Updated: 2026-04-19 (v0.3.101)
 
-Juliet benchmark v0.3.99: 24,590 TP / 14,082 FP (63.6% TP rate), 41.5% per-file.
-Cumulative v0.3.93 → v0.3.99: TP rate +1.9pp, FP −1,686 (−10.7%), zero net
+Juliet benchmark v0.3.101: 24,478 TP / 13,632 FP (64.2% TP rate), 41.4% per-file.
+Cumulative v0.3.93 → v0.3.101: TP rate +2.5pp, FP −2,136 (−13.5%), zero net
 other-rule regressions. Real-world v0.3.93 → v0.3.98: −343 violations.
 
 ## Competitor Benchmark Summary (v0.3.75)
@@ -26,7 +26,7 @@ Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.96 current):
   CWE-415: 58.2% vs 80.0% (−21.8pp) — MEM01-C (was −36.6pp, task 58 done)
   CWE-416: 92.9% vs 60.3% (+32.6pp) — MEM01-C EXCEEDS target (task 58 done)
   CWE-401: 77.6% vs 83.9% (−6.3pp) — MEM31-C (was −33.2pp, task 59 done)
-  CWE-78:  76.6% (+13.8pp since v0.3.93) — ENV03-C return-taint (tasks 67-68, 49A)
+  CWE-78:  87.7% (+24.9pp since v0.3.93) — ENV03-C + ENV33-C taint-aware (tasks 67-68, 49A + 49B)
   CWE-194: 67.9% (+ 9.5pp since v0.3.95) — INT31-C taint-aware (task 69)
   CWE-195: 51.9% (+ 3.2pp since v0.3.95) — INT31-C taint-aware (task 69)
 
@@ -637,14 +637,15 @@ Paper impact: new Section "Case Study" between Worked Example and Limitations.
 
 # Task ID: 49
 # Title: Paper — taint tracking for CWE-78/CWE-89 (future work)
-# Status: partial (v0.3.94-0.3.99 — tasks 67-69 + 49A delivered)
+# Status: partial (v0.3.94-0.3.101 — tasks 67-69 + 49A/49B delivered)
 # Dependencies: none
 # Priority: P3
 # Description: Expand cross-function taint tracking for injection CWEs,
   referenced in paper future work section.
 # Details:
-Partial delivery via tasks 67-69 plus v0.3.99 (49A). CWE-78 62.8% →
-76.6% (+13.8pp), CWE-194 58.4% → 67.9%, CWE-195 48.7% → 51.9%.
+Partial delivery via tasks 67-69 plus v0.3.99 (49A) and v0.3.101
+(49B). CWE-78 62.8% → **87.7%** (+24.9pp), CWE-194 58.4% → 67.9%,
+CWE-195 48.7% → 51.9%.
 
 Delivered infrastructure:
   - `FunctionSummary.has_env03_taint_source` — body text scan for ~25
@@ -663,6 +664,9 @@ Rule integrations so far:
   - ENV03-C: parameter path → caller summary lookup (task 68); local
     command var `data = helper(...)` → callee clean-summary check
     (task 49A).
+  - ENV33-C: pointer-parameter helper-sink path → transitive caller
+    summary walk (task 49B). Mirrors ENV03-C task 68, with a BFS
+    over the reverse call graph for Juliet variants 52c/53d/54e.
   - INT31-C: signed→size_t inside upper-bound guards → caller / callee /
     local-assignment summary lookups (task 69); `call_rhs_has_taint_source`
     now also treats `returns_tainted` callees as tainted (task 49A).
@@ -677,8 +681,23 @@ exists in real-world code but Juliet CWE-194/195 v42 templates call
 taint sources directly inside `badSource`, so the new transitive
 bit had no additional TPs to catch there.
 
-Remaining gaps for CWE-78 (~324 ENV03-C FPs, plus 500 ENV33-C + 140
-STR02-C) and CWE-194/195 (~1224 INT31-C FPs):
+## Sub-task 49B — ENV33-C caller-aware suppression (DONE v0.3.101)
+
+ENV33-C FP 500 → **50** (−450), TP 1550 → 1438 (−112). **4.02:1
+FP:TP** — matches the task 49 umbrella 4:1 projection. CWE-78 TP
+rate 76.6% → **87.7%** (+11.1pp). Zero other-rule regressions.
+
+Approach: mirror the ENV03-C task 68 / 49A pattern. Replace the
+blanket "pointer parameter → flag" check with a caller-aware
+transitive walk of the reverse call graph. Suppress iff every
+reachable ancestor's summary has both `has_env03_taint_source` and
+`returns_tainted` false. BFS with a visited set handles cycles and
+multi-level forwarding chains (Juliet variants 52c/53d/54e have
+intermediate clean pass-through sinks whose grand-caller holds the
+recv/fgets).
+
+Remaining gaps for CWE-78 (~50 ENV33-C FPs, plus ~324 ENV03-C FPs
+and 140 STR02-C) and CWE-194/195 (~1224 INT31-C FPs):
   - Global/static pointer read tracking (v45-style `char *data =
     g_goodG2BData;` where `g_goodG2BData` was last written elsewhere)
   - Function-pointer cross-file calls (v65a/b, v67 variants — no
