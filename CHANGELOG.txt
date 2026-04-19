@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.97] - 2026-04-19
+
+### Changed
+
+- API00-C: suppress `void *` / `const void *` parameters that are never
+  dereferenced locally and only pass through to null-accepting stdlib
+  sinks (free/realloc/cfree/Memory_Free/Memory_Realloc) or callees
+  whose summary validates the argument. NULL is a valid value for
+  generic-container slot parameters (e.g., `ArrayList_Append(self,
+  void *item)`).
+
+### Benchmark
+
+- Juliet v0.3.96 → v0.3.97: TP 24,628→24,622 (-6), FP 14,238→14,226
+  (-12). API00-C was the only affected rule (2.0:1 FP:TP ratio).
+  CWE-476 (null deref) TP rate 58.9% → 59.6% (+0.7pp). Overall TP
+  rate unchanged at 63.4%. Zero other-rule regressions.
+- Real-world d_lib_common: API00-C 1 → 0 FP with
+  suppressions stripped.
+
 ## [0.3.93] - 2026-04-17
 
 ### Changed
