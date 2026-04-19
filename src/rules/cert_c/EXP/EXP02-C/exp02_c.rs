@@ -65,13 +65,18 @@ impl Exp02C {
                 // Only check logical AND (&&) and OR (||) operators
                 if matches!(op_text, "&&" | "||") {
                     if let Some(right) = node.child_by_field_name("right") {
-                        // Exempt null-guard short-circuit idioms for both && and ||:
-                        // `ptr != NULL && func(ptr)` — standard null guard (&&)
-                        // `ptr == NULL || fallback(ptr)` — null guard (|| variant)
-                        // Only exempt when the RHS has no assignment/mutation side effects
-                        // (pure function calls are OK, but `q = malloc()` is not).
+                        // Exempt guarded short-circuit idioms for both && and ||.
+                        // A guard is any comparison (==, !=, <, >, <=, >=), a
+                        // truthiness check, or an &&/|| chain of guards.
+                        // Exempt only when the RHS carries no assignment, compound
+                        // assignment, or increment/decrement — pure function calls
+                        // are the expected payload.
+                        //   `ptr != NULL && func(ptr)`
+                        //   `ptr == NULL || fallback(ptr)`
+                        //   `file_size > 0 && buflen >= file_size && fseek(...)`
+                        //   `len == capacity && !grow(self)`
                         if let Some(left) = node.child_by_field_name("left") {
-                            if self.is_null_guard_pattern(&left, source)
+                            if self.is_guard_pattern(&left, source)
                                 && !self.has_mutation_side_effects(&right, source)
                             {
                                 return;
@@ -112,45 +117,52 @@ impl Exp02C {
         }
     }
 
-    /// Check if the left operand of && or || is a null/validity guard pattern.
-    /// e.g., `ptr != NULL`, `ptr`, `!ptr`, `ptr == 0`
-    fn is_null_guard_pattern(&self, node: &Node, source: &str) -> bool {
-        let text = get_node_text(node, source);
-
-        // Pattern: `expr != NULL` or `expr != 0` or `NULL != expr`
-        if text.contains("!= NULL")
-            || text.contains("!=NULL")
-            || text.contains("!= 0")
-            || text.contains("!=0")
-            || text.contains("NULL !=")
-            || text.contains("NULL!=")
-        {
-            return true;
-        }
-
-        // Pattern: `expr == NULL` or `expr == 0` (negative check, still a guard)
-        if text.contains("== NULL")
-            || text.contains("==NULL")
-            || text.contains("== 0")
-            || text.contains("==0")
-        {
-            return true;
-        }
-
-        // Pattern: bare identifier or `!identifier` (truthiness check)
-        if node.kind() == "identifier" || node.kind() == "unary_expression" {
-            return true;
-        }
-
-        // Pattern: parenthesized expression containing null check
-        if node.kind() == "parenthesized_expression" {
-            let inner_text = get_node_text(node, source);
-            if inner_text.contains("NULL") || inner_text.contains("!") {
-                return true;
+    /// Check if the left operand of && or || is a guard pattern — a predicate
+    /// whose truth value controls whether the RHS runs. Recognized shapes:
+    ///   * comparison:    a == b, a != b, a < b, a > b, a <= b, a >= b
+    ///   * truthiness:    ident, !ident, ptr->field, obj.field
+    ///   * compound:      (guard) && (guard), (guard) || (guard)
+    ///   * parenthesized: any of the above wrapped in parens
+    fn is_guard_pattern(&self, node: &Node, source: &str) -> bool {
+        match node.kind() {
+            "binary_expression" => {
+                if let Some(op) = node.child_by_field_name("operator") {
+                    let op_text = get_node_text(&op, source);
+                    if matches!(op_text, "==" | "!=" | "<" | ">" | "<=" | ">=") {
+                        return true;
+                    }
+                    if matches!(op_text, "&&" | "||") {
+                        let left_guard = node
+                            .child_by_field_name("left")
+                            .map(|l| self.is_guard_pattern(&l, source))
+                            .unwrap_or(false);
+                        let right_guard = node
+                            .child_by_field_name("right")
+                            .map(|r| self.is_guard_pattern(&r, source))
+                            .unwrap_or(false);
+                        return left_guard && right_guard;
+                    }
+                }
+                false
             }
+            "identifier"
+            | "unary_expression"
+            | "field_expression"
+            | "pointer_expression"
+            | "subscript_expression" => true,
+            "parenthesized_expression" => {
+                for i in 0..node.child_count() {
+                    if let Some(child) = node.child(i) {
+                        if matches!(child.kind(), "(" | ")") {
+                            continue;
+                        }
+                        return self.is_guard_pattern(&child, source);
+                    }
+                }
+                false
+            }
+            _ => false,
         }
-
-        false
     }
 
     /// Check if a node contains mutation side effects: assignment (=), compound
