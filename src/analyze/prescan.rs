@@ -83,6 +83,10 @@ pub fn prescan_directories(
                     match function_summaries.get_mut(&name) {
                         Some(existing) => {
                             existing.has_env03_taint_source |= summary.has_env03_taint_source;
+                            existing.returns_tainted |= summary.returns_tainted;
+                            existing
+                                .returns_from_callees
+                                .extend(summary.returns_from_callees);
                         }
                         None => {
                             function_summaries.insert(name, summary);
@@ -152,6 +156,10 @@ pub fn prescan_directories(
     // Propagate transitive frees through param pass-through chains.
     // E.g., relay(data) { next(data); } where next() calls free(data).
     function_summary::propagate_transitive_frees(&mut function_summaries);
+
+    // Propagate return-value taint through wrapper chains.
+    // E.g., wrap() { return readIt(); } inherits readIt()'s taint bit.
+    function_summary::propagate_return_taint(&mut function_summaries);
 
     if let Some(reporter) = progress {
         reporter.report_prescan_complete(known_functions.len());

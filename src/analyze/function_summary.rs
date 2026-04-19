@@ -55,6 +55,17 @@ pub struct FunctionSummary {
     /// externally-controlled data.
     #[serde(default)]
     pub has_env03_taint_source: bool,
+    /// True if this function's return value may carry externally-controlled
+    /// data. Seeded from `has_env03_taint_source` for non-void returns, then
+    /// propagated to fixpoint through `returns_from_callees` so a wrapper
+    /// like `char *wrap() { return readIt(); }` is also marked tainted.
+    #[serde(default)]
+    pub returns_tainted: bool,
+    /// Names of callees whose return values flow directly to a `return`
+    /// statement in this function's body. Used for transitive return-value
+    /// taint propagation in prescan.
+    #[serde(default)]
+    pub returns_from_callees: HashSet<String>,
 }
 
 /// Names of functions that read externally-controlled data into their
@@ -207,6 +218,18 @@ fn analyze_function(
         // Quick text scan for taint-source calls — used by ENV03-C to
         // classify callers as tainted/clean.
         summary.has_env03_taint_source = body_contains_taint_source(body_text);
+
+        // Seed return-value taint: a function that directly calls a taint
+        // source and returns non-void may carry that taint back to callers.
+        // Refined in the cross-function fixpoint pass.
+        if !is_void_return {
+            summary.returns_tainted = summary.has_env03_taint_source;
+        }
+
+        // Collect callees whose returns flow directly to this function's
+        // return statements. Consumed by `propagate_return_taint` after all
+        // summaries are computed.
+        collect_returns_from_callees(&body, source, &mut summary.returns_from_callees);
 
         // Check for NULL return
         if !summary.can_return_null {
@@ -686,6 +709,89 @@ pub fn propagate_transitive_frees(summaries: &mut HashMap<String, FunctionSummar
                             summary.frees_params.insert(*caller_idx);
                             changed = true;
                         }
+                    }
+                }
+            }
+        }
+
+        if !changed {
+            break;
+        }
+    }
+}
+
+/// Walk every `return_statement` under `body` and, when the return
+/// expression unwraps to a call, record the callee identifier. Used as
+/// the transitive-propagation seed for `returns_tainted`.
+fn collect_returns_from_callees(body: &Node, source: &str, out: &mut HashSet<String>) {
+    let mut returns = Vec::new();
+    collect_return_expressions(body, &mut returns);
+    for ret in returns {
+        let inner = unwrap_to_call_node(ret);
+        if inner.kind() == "call_expression" {
+            if let Some(func) = inner.child_by_field_name("function") {
+                let name = func.utf8_text(source.as_bytes()).unwrap_or("");
+                let ident = name
+                    .rsplit(|c: char| !c.is_alphanumeric() && c != '_')
+                    .next()
+                    .unwrap_or(name);
+                if !ident.is_empty() {
+                    out.insert(ident.to_string());
+                }
+            }
+        }
+    }
+}
+
+/// Peel `parenthesized_expression` / `cast_expression` wrappers so we can
+/// see whether the underlying expression is a `call_expression`.
+fn unwrap_to_call_node<'a>(mut node: Node<'a>) -> Node<'a> {
+    loop {
+        match node.kind() {
+            "parenthesized_expression" => {
+                if let Some(inner) = node.named_child(0) {
+                    node = inner;
+                    continue;
+                }
+                break;
+            }
+            "cast_expression" => {
+                if let Some(value) = node.child_by_field_name("value") {
+                    node = value;
+                    continue;
+                }
+                break;
+            }
+            _ => break,
+        }
+    }
+    node
+}
+
+/// Propagate `returns_tainted` through the call chain formed by
+/// `returns_from_callees`. If `g` returns the result of `f(...)` and
+/// `f.returns_tainted`, then `g.returns_tainted` too.
+///
+/// Bounded at 10 passes (matches `propagate_transitive_frees`) to keep
+/// prescan cost predictable; Juliet's deepest wrapper chains are 2-3 hops.
+pub fn propagate_return_taint(summaries: &mut HashMap<String, FunctionSummary>) {
+    for _pass in 0..10 {
+        let mut changed = false;
+        let snapshot: HashMap<String, bool> = summaries
+            .iter()
+            .map(|(n, s)| (n.clone(), s.returns_tainted))
+            .collect();
+
+        for summary in summaries.values_mut() {
+            if summary.returns_tainted {
+                continue;
+            }
+            for callee in &summary.returns_from_callees {
+                if let Some(&callee_tainted) = snapshot.get(callee) {
+                    if callee_tainted {
+                        summary.returns_tainted = true;
+                        changed = true;
+                        break;
                     }
                 }
             }
