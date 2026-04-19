@@ -1,10 +1,10 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-18 (v0.3.96)
+Last Updated: 2026-04-19 (v0.3.97)
 
-Juliet benchmark v0.3.96: 24,628 TP / 14,238 FP (63.4% TP rate), 41.6% per-file.
-Cumulative v0.3.93 → v0.3.96 (three cross-function taint rounds): TP rate
-+1.7pp, FP −1,530 (−9.7%), zero net other-rule regressions.
+Juliet benchmark v0.3.97: 24,622 TP / 14,226 FP (63.4% TP rate), 41.6% per-file.
+Cumulative v0.3.93 → v0.3.97: TP rate +1.7pp, FP −1,542 (−9.8%), zero net
+other-rule regressions.
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -293,36 +293,58 @@ return-value taint would be the next wins if pursued.
 
 # Task ID: 62
 # Title: API00-C validation look-ahead past variable declarations
-# Status: pending
+# Status: done (v0.3.97) — A already covered, C implemented, B deferred
 # Dependencies: none
 # Priority: P2
 # Description: Reduce API00-C FPs where parameter validation exists but
 #   is not detected due to intervening variable declarations (~12 FPs).
 # Details:
-Two sub-patterns:
+Three sub-patterns triaged:
 
-  A. **Validation past var decls** (~8 FPs in d_lib_common):
-     ```c
-     void writeTlv(RingBuffer *ptr, TLV *tlv) {
-       uint16_t tag = tlv->tag;   // var decl
-       uint16_t len = tlv->length; // var decl
-       if (ptr == NULL) return;    // ← validation IS here
-     ```
-     Current API00-C checks first N statements. Fix: scan deeper into
-     function body, skipping `declaration` nodes, looking for if-guard
-     patterns within first ~10 statements or first compound block.
+  A. **Validation past var decls** — already handled pre-v0.3.97. The
+     existing `check_validation_patterns` walks the entire body (not just
+     the first N statements) and `collect_else_if_chain_validations`
+     traverses full if/else-if/else chains, so cases like
+     `Ringbuffer_read` (if/else-if/else with NULL checks after a
+     `result_e result = …;` declaration) no longer FP. Verified on
+     d_lib_common with API00-C suppressions stripped — zero FPs for this
+     sub-pattern.
 
-  B. **Embedded API contract — no NULL check by design** (3 FPs in airpath):
-     ISR-context functions where NULL check adds unacceptable overhead.
-     Consider: API00-C could skip functions marked with a
-     `SQC-SUPPRESS: API00-C` on the function signature (already works).
-     Or: reduce severity for `static`/internal functions. Or: recognize
-     Doxygen @pre annotations as documented contracts.
+  C. **void\* container where NULL is valid** — implemented in v0.3.97.
+     New type-aware suppression: a `void *` / `const void *` parameter
+     that is never dereferenced locally (`*p`, `p->x`, `p[i]`) and
+     passes through only to null-accepting stdlib sinks (free, realloc,
+     Memory_Free, Memory_Realloc, cfree) or callees whose summary
+     validates the corresponding argument is treated as a generic-
+     container slot where NULL is a valid value.
 
-  C. **void* container where NULL is valid** (1 FP in d_lib_common):
-     `ArrayList_Append(self, void *item)` — NULL is a valid item for a
-     generic container. API00-C should not require validation when the
-     type is `void *` and the param is not dereferenced.
+     Helpers: `is_generic_void_pointer_type` (bare `void *`, rejects
+     `void **` and array decls) + `is_void_ptr_storage_safe` (walks the
+     body, collects every parent-kind, returns true only if every use is
+     storage-like or a verified safe call).
+
+     Results (Juliet v0.3.96 → v0.3.97):
+       - API00-C: TP 90→84 (-6), FP 116→104 (-12). **2.0:1 FP:TP**.
+       - CWE-476 TP rate 58.9% → **59.6%** (+0.7pp).
+       - Overall TP rate unchanged at 63.4%.
+       - Zero other-rule regressions.
+
+     Real-world d_lib_common: 1 → 0 API00-C FP (ArrayList_Append).
+
+  B. **Embedded API contract — no NULL check by design** (3 FPs in
+     airpath, ~17 FPs in serial_leds). Deferred. All remaining real-
+     world API00-C FPs are public-API functions that dereference `ctx`
+     without validation by hardware-contract design (e.g.
+     `DebrisSensor_AdcSample`, `SerialLeds_set_*`). No clean AST-level
+     signal distinguishes these from genuine FPs — continuing to rely
+     on `SQC-SUPPRESS: API00-C` at the function site. Options considered
+     and rejected:
+       * Skip all public API with `_set_` / `_Init` / `_update` prefixes
+         — too broad; masks real bugs in other projects.
+       * Require explicit header prototype + Doxygen `@pre` — no
+         reliable way to parse `@pre` contracts from tree-sitter.
+       * Switch API00-C severity to Low for non-static functions —
+         doesn't reduce FP count, only its visibility.
 
 ---
 
