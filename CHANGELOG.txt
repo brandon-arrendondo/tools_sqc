@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.101] - 2026-04-19
+
+### Changed
+
+- ENV33-C: walk the reverse call graph transitively in
+  `callers_are_all_clean`. v0.3.100 only checked direct callers, which
+  lost TPs on Juliet CWE-78 variants 52c/53d/54e where intermediate
+  forwarding sinks are clean pass-throughs but a grand-caller holds the
+  recv/fgets. BFS-style walk with a visited set guards against cycles.
+
 ## [0.3.100] - 2026-04-19
 
 ### Changed
