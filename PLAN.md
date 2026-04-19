@@ -1,9 +1,9 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-19 (v0.3.98)
+Last Updated: 2026-04-19 (v0.3.99)
 
-Juliet benchmark v0.3.98: 24,622 TP / 14,226 FP (63.4% TP rate), 41.6% per-file.
-Cumulative v0.3.93 → v0.3.98: TP rate +1.7pp, FP −1,542 (−9.8%), zero net
+Juliet benchmark v0.3.99: 24,590 TP / 14,082 FP (63.6% TP rate), 41.5% per-file.
+Cumulative v0.3.93 → v0.3.99: TP rate +1.9pp, FP −1,686 (−10.7%), zero net
 other-rule regressions. Real-world v0.3.93 → v0.3.98: −343 violations.
 
 ## Competitor Benchmark Summary (v0.3.75)
@@ -21,12 +21,12 @@ Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.96 current):
   CWE-190: 58.6% vs 94.3% (−35.7pp) — INT32-C/INT30-C (was −46.9pp, task 54 done)
   CWE-191: 53.9% vs 94.4% (−40.5pp) — INT32-C/INT30-C (was −48.9pp, task 54 done)
   CWE-369: 53.9% vs 94.7% (−40.8pp) — INT33-C/FLP03-C (was −57.8pp, task 55 done)
-  CWE-476: 58.9% vs 94.3% (−35.4pp) — EXP34-C (was −43.5pp, task 57 done)
+  CWE-476: 59.6% vs 94.3% (−34.7pp) — EXP34-C (was −43.5pp, task 57 done)
   CWE-121: 55.7% vs 86.6% (−30.9pp) — STR31-C/ARR38-C (was −37.8pp, task 56 done)
   CWE-415: 58.2% vs 80.0% (−21.8pp) — MEM01-C (was −36.6pp, task 58 done)
   CWE-416: 92.9% vs 60.3% (+32.6pp) — MEM01-C EXCEEDS target (task 58 done)
   CWE-401: 77.6% vs 83.9% (−6.3pp) — MEM31-C (was −33.2pp, task 59 done)
-  CWE-78:  74.1% (+11.3pp since v0.3.93) — ENV03-C taint-aware (tasks 67-68)
+  CWE-78:  76.6% (+13.8pp since v0.3.93) — ENV03-C return-taint (tasks 67-68, 49A)
   CWE-194: 67.9% (+ 9.5pp since v0.3.95) — INT31-C taint-aware (task 69)
   CWE-195: 51.9% (+ 3.2pp since v0.3.95) — INT31-C taint-aware (task 69)
 
@@ -637,43 +637,63 @@ Paper impact: new Section "Case Study" between Worked Example and Limitations.
 
 # Task ID: 49
 # Title: Paper — taint tracking for CWE-78/CWE-89 (future work)
-# Status: partial (v0.3.94-0.3.96 — tasks 67-69 delivered first-pass)
+# Status: partial (v0.3.94-0.3.99 — tasks 67-69 + 49A delivered)
 # Dependencies: none
 # Priority: P3
 # Description: Expand cross-function taint tracking for injection CWEs,
   referenced in paper future work section.
 # Details:
-Partial delivery via tasks 67-69 (CWE-78 62.8% → 74.1%, CWE-194 58.4% →
-67.9%, CWE-195 48.7% → 51.9%). Remaining scope below.
+Partial delivery via tasks 67-69 plus v0.3.99 (49A). CWE-78 62.8% →
+76.6% (+13.8pp), CWE-194 58.4% → 67.9%, CWE-195 48.7% → 51.9%.
 
 Delivered infrastructure:
   - `FunctionSummary.has_env03_taint_source` — body text scan for ~25
     taint sources (recv, fgets, scanf, getenv, Win32 I/O, etc.)
+  - `FunctionSummary.returns_tainted` + `returns_from_callees`
+    (v0.3.99, task 49A) — seeded from `has_env03_taint_source` on non-
+    void returns, then propagated to fixpoint via
+    `propagate_return_taint` so wrapper chains
+    (`char *wrap() { return readIt(); }`) inherit the bit.
   - Reverse call graph built in each consuming rule from
-    `ProjectContext.call_graph`
+    `ProjectContext.call_graph`.
   - Same-named static function merging in prescan (any tainted def
-    poisons the merged summary)
+    poisons the merged summary; OR-merges both taint bits).
 
 Rule integrations so far:
-  - ENV03-C: parameter path → caller summary lookup (task 68)
+  - ENV03-C: parameter path → caller summary lookup (task 68); local
+    command var `data = helper(...)` → callee clean-summary check
+    (task 49A).
   - INT31-C: signed→size_t inside upper-bound guards → caller / callee /
-    local-assignment summary lookups (task 69)
+    local-assignment summary lookups (task 69); `call_rhs_has_taint_source`
+    now also treats `returns_tainted` callees as tainted (task 49A).
 
-Remaining gaps for CWE-78 (~468 FPs) and CWE-194/195 (~1224 FPs):
-  - Return-value taint propagation (`data = helperSource(data)` where
-    the helper transforms but does not call taint sources itself)
+## Sub-task 49A — Return-value taint (DONE v0.3.99)
+
+ENV03-C FP 468 → **324** (−144), TP 652 → 620 (−32). **4.5:1 FP:TP**
+— cleanest ratio since task 67. CWE-78 TP rate 74.1% → **76.6%**
+(+2.5pp). CWE-426 side benefit: FP −24 (1:1). Zero other-rule
+regressions. INT31-C was neutral on Juliet; the wrapper pattern
+exists in real-world code but Juliet CWE-194/195 v42 templates call
+taint sources directly inside `badSource`, so the new transitive
+bit had no additional TPs to catch there.
+
+Remaining gaps for CWE-78 (~324 ENV03-C FPs, plus 500 ENV33-C + 140
+STR02-C) and CWE-194/195 (~1224 INT31-C FPs):
   - Global/static pointer read tracking (v45-style `char *data =
     g_goodG2BData;` where `g_goodG2BData` was last written elsewhere)
   - Function-pointer cross-file calls (v65a/b, v67 variants — no
     call-graph edge for `funcPtr(data)`)
+  - Extend the same clean-callee `rhs_is_safe` pattern to ENV33-C —
+    same template as ENV03-C, likely similar 4:1 ratio (~500 FP
+    candidates).
   - CWE-89 sinks: add SQL injection entry points (sqlite3_exec,
-    mysql_query, PQexec) and the STR02-C or a new taint-sink rule
+    mysql_query, PQexec) and the STR02-C or a new taint-sink rule.
 
-Rule candidates that would benefit from the existing taint bit once
+Rule candidates that would benefit from the existing taint bits once
 integrated: FIO30-C, STR02-C, FMT variants for format-string injection.
 
 This task stays open as the coordinating umbrella; individual
-rule-integration rounds are tracked as follow-ons to tasks 68/69.
+rule-integration rounds are tracked as follow-ons to tasks 68/69/49A.
 
 ---
 

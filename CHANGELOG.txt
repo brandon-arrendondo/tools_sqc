@@ -31,8 +31,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Benchmark
 
-- Pending. Expected target: Juliet CWE-78 ENV03-C FPs (~280 before)
-  and CWE-194/195 INT31-C FPs via transitive return-taint.
+- Juliet v0.3.98 → v0.3.99: TP 24,622→24,590 (−32), FP 14,226→14,082
+  (**−144**), TP rate 63.4% → **63.6%** (+0.2pp). ENV03-C is the only
+  affected rule: TP 652→620, FP 468→**324** — a **4.5:1 FP:TP
+  ratio**, the cleanest ratio for ENV03-C since task 67 (v0.3.94's
+  4.1:1). CWE-78 TP rate 74.1% → **76.6%** (+2.5pp). CWE-426 side
+  benefit: FP 188→164 (−24, 1:1 with TP drop). Zero other-rule
+  regressions. INT31-C was neutral on Juliet — the transitive-wrapper
+  pattern exists in real-world code but not in the Juliet v42 CWE-194/
+  195 templates, which use direct taint-source calls inside their
+  `badSource` helpers.
 
 ## [0.3.98] - 2026-04-19
 
