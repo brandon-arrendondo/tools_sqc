@@ -16,6 +16,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   forwarding sinks are clean pass-throughs but a grand-caller holds the
   recv/fgets. BFS-style walk with a visited set guards against cycles.
 
+### Benchmark
+
+- Juliet v0.3.99 → v0.3.101: TP 24,590 → 24,478 (−112), FP 14,082 →
+  13,632 (**−450**), TP rate 63.6% → **64.2%** (+0.6pp). ENV33-C is
+  the only affected rule: TP 1550 → 1438, FP 500 → **50** — a
+  **4.02:1 FP:TP ratio**, matching the PLAN.md task 49 projection for
+  CWE-78 helper-sink suppression. CWE-78 TP rate 76.6% → **87.7%**
+  (+11.1pp). Zero other-CWE regressions. The remaining 50 ENV33-C FPs
+  are all v65b function-pointer variants where the call graph has no
+  edge for `funcPtr(data)` — future work requires function-pointer
+  call-graph edges (same limitation noted in task 49A).
+
 ## [0.3.100] - 2026-04-19
 
 ### Changed
