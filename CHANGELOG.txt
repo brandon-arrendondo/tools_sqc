@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.100] - 2026-04-19
+
+### Changed
+
+- ENV33-C: replace blanket "pointer parameter → flag" suppression
+  with caller-aware lookup. When the containing function has
+  pointer/string parameters and no direct taint-source call in its
+  body, defer to the reverse call graph: suppress only when every
+  caller's prescan summary shows both `has_env03_taint_source` and
+  `returns_tainted` are false. Unknown callers stay flagging.
+  Mirrors the ENV03-C task 68 pattern.
+
 ## [0.3.99] - 2026-04-19
 
 ### Changed
