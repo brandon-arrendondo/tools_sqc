@@ -50,7 +50,7 @@ stages:
               set -e
               source $HOME/.cargo/env
               echo "Running Clippy linter..."
-              cargo clippy -- -D warnings || {
+              cargo clippy --all-targets --all-features -- -D warnings || {
                 echo "Clippy linting failed. Fix all warnings before proceeding."
                 exit 1
               }
