@@ -6,6 +6,53 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.104] - 2026-04-20
+
+### Changed
+
+- ENV03-C: extend caller-aware suppression to local command variables
+  derived from a function parameter. When the `system()` / `popen()`
+  argument is a local like `char *data = *dataPtr` (variant 63),
+  `char *data = dataArray[2]` (variant 66), `char *data =
+  myStruct.structFirst` (variant 67), or a chain through a cast such as
+  `char **dataPtr = (char **)dataVoidPtr; char *data = *dataPtr;`
+  (variant 64), walk writes to the command var and — if every write is
+  derived via deref / subscript / field / cast from a function
+  parameter (possibly through other parameter-derived locals) —
+  reuse `callers_are_all_clean`. Suppress iff every caller's summary
+  has `has_env03_taint_source` false. New helper
+  `is_command_var_parameter_derived` + write-collection fixpoint.
+- `function_summary::ENV03_TAINT_SOURCE_FUNCTIONS` and the matching
+  scope-local list in `env03_c` now cover wide-character and Windows
+  input equivalents: `fgetws`, `getwchar`, `getwc`, `fgetwc`,
+  `wscanf`/`fwscanf`/`swscanf`/`vwscanf`/`vfwscanf`, `_getws`,
+  `_getws_s`, `_wgetenv`, `_wgetenv_s`. Juliet's
+  `wchar_t_console_*` / `wchar_t_file_*` variants read via `fgetws`;
+  with these absent, the bad-path caller's summary was (incorrectly)
+  clean and the new parameter-derived fix was over-suppressing the
+  wchar_t bad-sink TPs. Mirrors the narrow-char coverage.
+
+### Benchmark
+
+- Juliet CWE-78 (single-rule ENV03-C measurement, prescan enabled):
+  - Pre-change: 660 violations (520 TP / 140 FP, 78.8% TP rate).
+  - Post-change: 680 violations (620 TP / 60 FP, **91.2% TP rate**).
+  - FP −80, TP +100 — **0.8:1 FP:TP ratio** (net gain of TPs
+    exceeds FPs eliminated). Both axes move in the right direction
+    because the wide-char taint expansion recovers bad-path TPs that
+    were previously silently suppressed by the clean-caller check.
+  - Variant-level: v63/v64/v66/v67 FPs go to 0 each (80 FPs cleared);
+    wchar_t bad-sink TPs (variants v01-v18, v21-v68) recover 4 each
+    across ~25 variants.
+  - Remaining 60 ENV03-C CWE-78 FPs: v34 (union field access, 20),
+    v45 (static global pointer read, 20), v68 (extern global pointer
+    read cross-file, 20). These need type-aware field analysis or
+    global-write tracking, out of scope here.
+- Full Juliet + real-world rerun deferred (changes reuse existing
+  `FunctionSummary` fields; wide-char taint additions affect ENV33-C /
+  INT31-C / STR02-C identically to ENV03-C but those are all
+  conservative additions — a missing source was letting taint through).
+
 ## [0.3.103] - 2026-04-19
 
 ### Changed
