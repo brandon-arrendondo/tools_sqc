@@ -49,6 +49,68 @@ pub struct FunctionSummary {
     /// Used for transitive free propagation (MEM31-C).
     #[serde(default)]
     pub param_passthroughs: HashMap<usize, Vec<(String, usize)>>,
+    /// True if the function body contains a call to a known taint-source
+    /// function (recv, fgets, scanf, getenv, ...). Used by ENV03-C to
+    /// decide whether a helper function's callers are passing in
+    /// externally-controlled data.
+    #[serde(default)]
+    pub has_env03_taint_source: bool,
+    /// True if this function's return value may carry externally-controlled
+    /// data. Seeded from `has_env03_taint_source` for non-void returns, then
+    /// propagated to fixpoint through `returns_from_callees` so a wrapper
+    /// like `char *wrap() { return readIt(); }` is also marked tainted.
+    #[serde(default)]
+    pub returns_tainted: bool,
+    /// Names of callees whose return values flow directly to a `return`
+    /// statement in this function's body. Used for transitive return-value
+    /// taint propagation in prescan.
+    #[serde(default)]
+    pub returns_from_callees: HashSet<String>,
+}
+
+/// Names of functions that read externally-controlled data into their
+/// arguments or return values. A function whose body calls any of these
+/// is treated as a potential taint origin for ENV03-C caller analysis.
+/// Keep in sync with `env03_c::TAINT_SOURCES`.
+pub const ENV03_TAINT_SOURCE_FUNCTIONS: &[&str] = &[
+    "recv",
+    "recvfrom",
+    "recvmsg",
+    "WSARecv",
+    "WSARecvFrom",
+    "accept",
+    "read",
+    "fread",
+    "fgets",
+    "gets",
+    "getchar",
+    "getc",
+    "fgetc",
+    "scanf",
+    "fscanf",
+    "sscanf",
+    "vscanf",
+    "vfscanf",
+    "getenv",
+    "secure_getenv",
+    "ReadFile",
+    "ReadConsole",
+    "ReadConsoleA",
+    "ReadConsoleW",
+    "RegQueryValueExA",
+    "RegQueryValueExW",
+];
+
+fn body_contains_taint_source(body_text: &str) -> bool {
+    ENV03_TAINT_SOURCE_FUNCTIONS
+        .iter()
+        .any(|name| body_text.contains(&format!("{}(", name)))
+}
+
+fn body_contains_alias(body_text: &str, aliases: &[String]) -> bool {
+    aliases
+        .iter()
+        .any(|alias| body_text.contains(&format!("{}(", alias)))
 }
 
 /// Compute function summaries for all function definitions in the AST.
@@ -61,10 +123,18 @@ pub fn compute_summaries(
     source: &str,
     macros: &MacroConstantMap,
     compute_return_ranges: bool,
+    taint_source_aliases: &[String],
 ) -> HashMap<String, FunctionSummary> {
     let mut summaries = HashMap::new();
 
-    collect_function_summaries(root, source, macros, compute_return_ranges, &mut summaries);
+    collect_function_summaries(
+        root,
+        source,
+        macros,
+        compute_return_ranges,
+        taint_source_aliases,
+        &mut summaries,
+    );
 
     summaries
 }
@@ -74,11 +144,18 @@ fn collect_function_summaries(
     source: &str,
     macros: &MacroConstantMap,
     compute_return_ranges: bool,
+    taint_source_aliases: &[String],
     summaries: &mut HashMap<String, FunctionSummary>,
 ) {
     if node.kind() == "function_definition" {
         if let Some(name) = extract_function_name(node, source) {
-            let summary = analyze_function(node, source, macros, compute_return_ranges);
+            let summary = analyze_function(
+                node,
+                source,
+                macros,
+                compute_return_ranges,
+                taint_source_aliases,
+            );
             summaries.insert(name, summary);
         }
     }
@@ -89,8 +166,13 @@ fn collect_function_summaries(
             match child.kind() {
                 "function_definition" => {
                     if let Some(name) = extract_function_name(&child, source) {
-                        let summary =
-                            analyze_function(&child, source, macros, compute_return_ranges);
+                        let summary = analyze_function(
+                            &child,
+                            source,
+                            macros,
+                            compute_return_ranges,
+                            taint_source_aliases,
+                        );
                         summaries.insert(name, summary);
                     }
                 }
@@ -100,6 +182,7 @@ fn collect_function_summaries(
                         source,
                         macros,
                         compute_return_ranges,
+                        taint_source_aliases,
                         summaries,
                     );
                 }
@@ -110,11 +193,16 @@ fn collect_function_summaries(
 }
 
 /// Analyze a single function definition to produce its summary.
+///
+/// `taint_source_aliases` names any macro identifier whose target resolves to
+/// a taint source (e.g. `#define GETENV getenv`) — treated as additional
+/// text-scan keywords when computing `has_env03_taint_source`.
 fn analyze_function(
     func_node: &Node,
     source: &str,
     macros: &MacroConstantMap,
     compute_return_ranges: bool,
+    taint_source_aliases: &[String],
 ) -> FunctionSummary {
     let mut summary = FunctionSummary::default();
 
@@ -158,6 +246,26 @@ fn analyze_function(
             || body_text.contains("calloc(")
             || body_text.contains("realloc(")
             || body_text.contains("aligned_alloc(");
+
+        // Quick text scan for taint-source calls — used by ENV03-C to
+        // classify callers as tainted/clean. Also matches any macro
+        // identifier that aliases a known taint source (e.g.
+        // `#define GETENV getenv`) so Juliet macro-wrapped sources still
+        // poison the caller's summary.
+        summary.has_env03_taint_source = body_contains_taint_source(body_text)
+            || body_contains_alias(body_text, taint_source_aliases);
+
+        // Seed return-value taint: a function that directly calls a taint
+        // source and returns non-void may carry that taint back to callers.
+        // Refined in the cross-function fixpoint pass.
+        if !is_void_return {
+            summary.returns_tainted = summary.has_env03_taint_source;
+        }
+
+        // Collect callees whose returns flow directly to this function's
+        // return statements. Consumed by `propagate_return_taint` after all
+        // summaries are computed.
+        collect_returns_from_callees(&body, source, &mut summary.returns_from_callees);
 
         // Check for NULL return
         if !summary.can_return_null {
@@ -295,12 +403,15 @@ fn analyze_param_usage(
             summary.frees_params.insert(idx);
         }
 
-        // Check if parameter is null-checked
-        if body_text.contains(&format!("{} == NULL", param_name))
-            || body_text.contains(&format!("NULL == {}", param_name))
-            || body_text.contains(&format!("{} != NULL", param_name))
-            || body_text.contains(&format!("NULL != {}", param_name))
-            || body_text.contains(&format!("!{}", param_name))
+        // Check if parameter is null-checked.
+        // Handles all spacings and both NULL/0/nullptr literals since C
+        // allows any of these to denote the null pointer.
+        //
+        // Also recognizes alias null-checks: `TYPE *alias = param;` followed
+        // by a null check on `alias` logically null-checks `param` too.
+        // Common in libcurl/sqlite wrappers that cast-copy the param first.
+        if body_matches_null_check(body_text, param_name)
+            || body_matches_alias_null_check(body_text, param_name)
         {
             summary.checks_null_params.insert(idx);
         }
@@ -327,6 +438,237 @@ fn analyze_param_usage(
 
     // Detect param pass-through: when a parameter is forwarded to a callee
     collect_param_passthroughs(body, source, params, summary);
+}
+
+/// Match a null-check expression on `param_name` anywhere in `body_text`.
+///
+/// Recognizes all spacings of `PARAM op LIT` / `LIT op PARAM` where op is
+/// `==`/`!=` and LIT is `NULL`/`0`/`nullptr`, plus the `!PARAM` unary form.
+/// Guards against false matches on substrings (e.g., `foo` matching inside
+/// `foobar`) via word-boundary checks.
+fn body_matches_null_check(body_text: &str, param_name: &str) -> bool {
+    // Fast reject: body must at least contain the param name
+    if !body_text.contains(param_name) {
+        return false;
+    }
+
+    // `!{param}` — matches the unary negation null-check idiom
+    if contains_word_after_prefix(body_text, "!", param_name) {
+        return true;
+    }
+
+    for op in ["==", "!="] {
+        for lit in ["NULL", "0", "nullptr"] {
+            // PARAM op LIT — various spacings
+            if contains_word_with_op(body_text, param_name, op, lit) {
+                return true;
+            }
+            // LIT op PARAM — various spacings
+            if contains_lit_with_op_word(body_text, lit, op, param_name) {
+                return true;
+            }
+        }
+    }
+
+    false
+}
+
+/// True if `text` contains `prefix` immediately followed by `word` at a
+/// word boundary (prev char not identifier-continuing, next char not
+/// identifier-continuing). Used for `!PARAM`.
+fn contains_word_after_prefix(text: &str, prefix: &str, word: &str) -> bool {
+    let needle = format!("{}{}", prefix, word);
+    let bytes = text.as_bytes();
+    let needle_bytes = needle.as_bytes();
+    let mut start = 0;
+    while start + needle_bytes.len() <= bytes.len() {
+        if let Some(pos) = text[start..].find(&needle) {
+            let absolute = start + pos;
+            let after = absolute + needle_bytes.len();
+            let next_is_ident = bytes
+                .get(after)
+                .map(|b| is_ident_continue(*b))
+                .unwrap_or(false);
+            if !next_is_ident {
+                return true;
+            }
+            start = absolute + 1;
+        } else {
+            break;
+        }
+    }
+    false
+}
+
+/// True if `text` contains `word` followed by `op` and `lit`, with word
+/// boundaries around the identifiers and arbitrary whitespace between tokens.
+/// Uses a hand-rolled scan to avoid pulling in a regex dep for one pattern.
+fn contains_word_with_op(text: &str, word: &str, op: &str, lit: &str) -> bool {
+    let bytes = text.as_bytes();
+    let word_bytes = word.as_bytes();
+    let mut start = 0;
+    while start + word_bytes.len() <= bytes.len() {
+        let pos = match text[start..].find(word) {
+            Some(p) => start + p,
+            None => break,
+        };
+        // Word boundary before
+        let prev_is_ident = if pos == 0 {
+            false
+        } else {
+            is_ident_continue(bytes[pos - 1])
+        };
+        let after = pos + word_bytes.len();
+        let next_is_ident = bytes
+            .get(after)
+            .map(|b| is_ident_continue(*b))
+            .unwrap_or(false);
+        if !prev_is_ident && !next_is_ident {
+            // Skip whitespace, then op, then whitespace, then lit (with word boundary after if applicable)
+            let mut idx = after;
+            while idx < bytes.len() && (bytes[idx] == b' ' || bytes[idx] == b'\t') {
+                idx += 1;
+            }
+            if bytes[idx..].starts_with(op.as_bytes()) {
+                idx += op.len();
+                while idx < bytes.len() && (bytes[idx] == b' ' || bytes[idx] == b'\t') {
+                    idx += 1;
+                }
+                if bytes[idx..].starts_with(lit.as_bytes()) {
+                    let lit_end = idx + lit.len();
+                    let next = bytes
+                        .get(lit_end)
+                        .map(|b| is_ident_continue(*b))
+                        .unwrap_or(false);
+                    if !next {
+                        return true;
+                    }
+                }
+            }
+        }
+        start = pos + 1;
+    }
+    false
+}
+
+/// Symmetric to `contains_word_with_op` but with `lit` on the left, `word` on the right.
+fn contains_lit_with_op_word(text: &str, lit: &str, op: &str, word: &str) -> bool {
+    let bytes = text.as_bytes();
+    let lit_bytes = lit.as_bytes();
+    let mut start = 0;
+    while start + lit_bytes.len() <= bytes.len() {
+        let pos = match text[start..].find(lit) {
+            Some(p) => start + p,
+            None => break,
+        };
+        let prev_is_ident = if pos == 0 {
+            false
+        } else {
+            is_ident_continue(bytes[pos - 1])
+        };
+        let after = pos + lit_bytes.len();
+        let next_is_ident = bytes
+            .get(after)
+            .map(|b| is_ident_continue(*b))
+            .unwrap_or(false);
+        if !prev_is_ident && !next_is_ident {
+            let mut idx = after;
+            while idx < bytes.len() && (bytes[idx] == b' ' || bytes[idx] == b'\t') {
+                idx += 1;
+            }
+            if bytes[idx..].starts_with(op.as_bytes()) {
+                idx += op.len();
+                while idx < bytes.len() && (bytes[idx] == b' ' || bytes[idx] == b'\t') {
+                    idx += 1;
+                }
+                if bytes[idx..].starts_with(word.as_bytes()) {
+                    let word_end = idx + word.len();
+                    let next = bytes
+                        .get(word_end)
+                        .map(|b| is_ident_continue(*b))
+                        .unwrap_or(false);
+                    if !next {
+                        return true;
+                    }
+                }
+            }
+        }
+        start = pos + 1;
+    }
+    false
+}
+
+fn is_ident_continue(b: u8) -> bool {
+    b.is_ascii_alphanumeric() || b == b'_'
+}
+
+/// Detect alias null-check patterns: `TYPE *alias = param;` (or
+/// `alias = param;`) followed by a null check on `alias`. Common in
+/// libcurl/sqlite wrappers that cast-copy the pointer param first, then
+/// null-check the copy (e.g. `struct Curl_easy *data = d; if(!data) ...`).
+fn body_matches_alias_null_check(body_text: &str, param_name: &str) -> bool {
+    // Scan for `= param_name` occurrences. Each is a candidate assignment.
+    // Then find the alias identifier (LHS of that assignment) and check if
+    // the body has a null check on the alias.
+    let bytes = body_text.as_bytes();
+    let mut search_from = 0;
+    while search_from < bytes.len() {
+        // Find `= param_name` — plain assignment. Must be preceded by non-`=`
+        // (to exclude `==`, `!=`) and followed by `;`, `,`, or `)`.
+        let needle = format!("= {}", param_name);
+        let pos = match body_text[search_from..].find(&needle) {
+            Some(p) => search_from + p,
+            None => break,
+        };
+        search_from = pos + 1;
+
+        // Preceded by `=`, `!`, `<`, `>` → not a simple assignment
+        if pos > 0 {
+            let prev = bytes[pos - 1];
+            if prev == b'=' || prev == b'!' || prev == b'<' || prev == b'>' {
+                continue;
+            }
+        }
+        let after = pos + needle.len();
+        // Must end the identifier: next char not identifier-continuing
+        let next = bytes.get(after).copied().unwrap_or(0);
+        if is_ident_continue(next) {
+            continue;
+        }
+        // Must be a statement terminator within a few chars
+        if next != b';' && next != b',' && next != b')' && !next.is_ascii_whitespace() {
+            continue;
+        }
+
+        // Scan backward from pos to find the LHS identifier: skip whitespace,
+        // then read identifier chars. Stop at `=` / `(` / `,` / `;` / `*`.
+        let mut end = pos;
+        while end > 0 && (bytes[end - 1] == b' ' || bytes[end - 1] == b'\t') {
+            end -= 1;
+        }
+        let lhs_end = end;
+        while end > 0 && is_ident_continue(bytes[end - 1]) {
+            end -= 1;
+        }
+        let lhs_start = end;
+        if lhs_start >= lhs_end {
+            continue;
+        }
+        let alias = &body_text[lhs_start..lhs_end];
+        if alias == param_name {
+            continue;
+        }
+        // Sanity: alias must start with a letter/underscore
+        if !matches!(alias.as_bytes()[0], b'a'..=b'z' | b'A'..=b'Z' | b'_') {
+            continue;
+        }
+
+        // Now check if the body null-checks the alias
+        if body_matches_null_check(body_text, alias) {
+            return true;
+        }
+    }
+    false
 }
 
 /// Detect param pass-through patterns: when a function parameter is directly
@@ -403,6 +745,89 @@ pub fn propagate_transitive_frees(summaries: &mut HashMap<String, FunctionSummar
                             summary.frees_params.insert(*caller_idx);
                             changed = true;
                         }
+                    }
+                }
+            }
+        }
+
+        if !changed {
+            break;
+        }
+    }
+}
+
+/// Walk every `return_statement` under `body` and, when the return
+/// expression unwraps to a call, record the callee identifier. Used as
+/// the transitive-propagation seed for `returns_tainted`.
+fn collect_returns_from_callees(body: &Node, source: &str, out: &mut HashSet<String>) {
+    let mut returns = Vec::new();
+    collect_return_expressions(body, &mut returns);
+    for ret in returns {
+        let inner = unwrap_to_call_node(ret);
+        if inner.kind() == "call_expression" {
+            if let Some(func) = inner.child_by_field_name("function") {
+                let name = func.utf8_text(source.as_bytes()).unwrap_or("");
+                let ident = name
+                    .rsplit(|c: char| !c.is_alphanumeric() && c != '_')
+                    .next()
+                    .unwrap_or(name);
+                if !ident.is_empty() {
+                    out.insert(ident.to_string());
+                }
+            }
+        }
+    }
+}
+
+/// Peel `parenthesized_expression` / `cast_expression` wrappers so we can
+/// see whether the underlying expression is a `call_expression`.
+fn unwrap_to_call_node<'a>(mut node: Node<'a>) -> Node<'a> {
+    loop {
+        match node.kind() {
+            "parenthesized_expression" => {
+                if let Some(inner) = node.named_child(0) {
+                    node = inner;
+                    continue;
+                }
+                break;
+            }
+            "cast_expression" => {
+                if let Some(value) = node.child_by_field_name("value") {
+                    node = value;
+                    continue;
+                }
+                break;
+            }
+            _ => break,
+        }
+    }
+    node
+}
+
+/// Propagate `returns_tainted` through the call chain formed by
+/// `returns_from_callees`. If `g` returns the result of `f(...)` and
+/// `f.returns_tainted`, then `g.returns_tainted` too.
+///
+/// Bounded at 10 passes (matches `propagate_transitive_frees`) to keep
+/// prescan cost predictable; Juliet's deepest wrapper chains are 2-3 hops.
+pub fn propagate_return_taint(summaries: &mut HashMap<String, FunctionSummary>) {
+    for _pass in 0..10 {
+        let mut changed = false;
+        let snapshot: HashMap<String, bool> = summaries
+            .iter()
+            .map(|(n, s)| (n.clone(), s.returns_tainted))
+            .collect();
+
+        for summary in summaries.values_mut() {
+            if summary.returns_tainted {
+                continue;
+            }
+            for callee in &summary.returns_from_callees {
+                if let Some(&callee_tainted) = snapshot.get(callee) {
+                    if callee_tainted {
+                        summary.returns_tainted = true;
+                        changed = true;
+                        break;
                     }
                 }
             }
@@ -575,7 +1000,7 @@ mod tests {
         parser.set_language(&tree_sitter_c::language()).unwrap();
         let tree = parser.parse(code, None).unwrap();
         let macros = const_eval::collect_macro_constants(&tree.root_node(), code);
-        compute_summaries(&tree.root_node(), code, &macros, true)
+        compute_summaries(&tree.root_node(), code, &macros, true, &[])
     }
 
     #[test]

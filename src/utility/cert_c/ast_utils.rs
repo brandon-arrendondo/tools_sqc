@@ -506,12 +506,24 @@ pub fn find_containing_if_statement<'a>(node: &Node<'a>) -> Option<Node<'a>> {
 pub fn extract_struct_name_from_type(type_str: &str) -> Option<&str> {
     let trimmed = type_str.trim();
 
-    // Strip pointer/const qualifiers from the end
-    let base = trimmed
+    // Strip pointer/const/volatile qualifiers from both ends
+    let mut base = trimmed
         .trim_end_matches('*')
         .trim_end()
         .trim_end_matches("const")
+        .trim_end_matches("volatile")
         .trim();
+    loop {
+        let next = base
+            .strip_prefix("const ")
+            .or_else(|| base.strip_prefix("volatile "))
+            .unwrap_or(base)
+            .trim();
+        if next == base {
+            break;
+        }
+        base = next;
+    }
 
     // Skip obvious primitives
     if matches!(
@@ -586,19 +598,30 @@ pub fn resolve_field_expression_type(
     let field_name = field_node.utf8_text(source.as_bytes()).ok()?;
     let argument = node.child_by_field_name("argument")?;
 
-    // Get the base variable name
-    let base_name = match argument.kind() {
-        "identifier" => argument.utf8_text(source.as_bytes()).ok()?,
+    // Resolve the struct type of the argument. Supports chained access
+    // (`a.b.c`, `a->b.c`) by recursing through nested field_expressions.
+    let base_type = match argument.kind() {
+        "identifier" => {
+            let base_name = argument.utf8_text(source.as_bytes()).ok()?;
+            type_map.get(base_name)?.clone()
+        }
+        "field_expression" => {
+            resolve_field_expression_type(&argument, source, type_map, struct_field_types)?
+        }
+        "pointer_expression" => {
+            // `*p.field` — dereference one pointer level from `p`'s type.
+            let inner = argument.child_by_field_name("argument")?;
+            let inner_name = inner.utf8_text(source.as_bytes()).ok()?;
+            let t = type_map.get(inner_name)?;
+            t.strip_suffix(" *")
+                .or_else(|| t.strip_suffix('*'))
+                .map(|s| s.trim().to_string())?
+        }
         _ => return None,
     };
 
-    // Look up base variable's declared type
-    let base_type = type_map.get(base_name)?;
+    let struct_name = extract_struct_name_from_type(&base_type)?;
 
-    // Extract struct name from the type
-    let struct_name = extract_struct_name_from_type(base_type)?;
-
-    // Look up field type in struct database
     struct_field_types
         .get(struct_name)
         .and_then(|fields| fields.get(field_name))

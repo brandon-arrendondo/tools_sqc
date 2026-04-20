@@ -241,6 +241,8 @@ pub fn collect_macro_constants(root: &Node, source: &str) -> MacroConstantMap {
     collect_preproc_defs(root, source, &mut raw_defs);
     // Also collect file-scope `static const int NAME = VALUE;` declarations
     collect_static_const_defs(root, source, &mut raw_defs);
+    // Collect `enum { NAME = VALUE, ... }` enumerators as compile-time constants
+    collect_enum_constants(root, source, &mut raw_defs);
 
     // Iteratively resolve — handles forward references and chains
     let mut changed = true;
@@ -349,6 +351,65 @@ fn collect_static_const_defs(root: &Node, source: &str, defs: &mut Vec<(String, 
             }
         }
     }
+}
+
+/// Collect enumerator names + value expressions from any `enum { ... }` in the
+/// tree. Enumerators without an explicit value inherit `previous + 1` (default
+/// C semantics), seeded at `0` at the start of each enum body.
+fn collect_enum_constants(root: &Node, source: &str, defs: &mut Vec<(String, String)>) {
+    fn walk(node: &Node, source: &str, defs: &mut Vec<(String, String)>) {
+        if node.kind() == "enumerator_list" {
+            let mut prev_name: Option<String> = None;
+            let mut implicit_idx: i64 = 0;
+            for i in 0..node.named_child_count() {
+                let Some(e) = node.named_child(i) else {
+                    continue;
+                };
+                if e.kind() != "enumerator" {
+                    continue;
+                }
+                let name = e
+                    .child_by_field_name("name")
+                    .and_then(|n| n.utf8_text(source.as_bytes()).ok())
+                    .map(str::to_string);
+                let value = e
+                    .child_by_field_name("value")
+                    .and_then(|n| n.utf8_text(source.as_bytes()).ok())
+                    .map(str::to_string);
+
+                if let Some(n) = name {
+                    let expr = match value {
+                        Some(v) => {
+                            implicit_idx = 1;
+                            prev_name = Some(n.clone());
+                            v.trim().to_string()
+                        }
+                        None => {
+                            let expr = match &prev_name {
+                                Some(p) => format!("{} + {}", p, implicit_idx),
+                                None => implicit_idx.to_string(),
+                            };
+                            implicit_idx += 1;
+                            expr
+                        }
+                    };
+                    defs.push((n, expr));
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(c) = node.child(i) {
+                walk(&c, source, defs);
+            }
+        }
+    }
+    walk(root, source, defs);
+}
+
+/// Public wrapper around `try_evaluate_text` for callers that already hold
+/// the expression as a textual snippet (e.g., substrings of a condition).
+pub fn try_evaluate_text_public(text: &str, macros: &MacroConstantMap) -> Option<i64> {
+    try_evaluate_text(text, macros)
 }
 
 /// Try to evaluate a text string as an integer constant expression.
@@ -872,9 +933,9 @@ fn extract_bound_from_condition(
     let op = get_operator_text(&cond, source);
 
     match op.as_str() {
-        "<" => {
+        "<"
             // var < BOUND → var in [0, BOUND-1] (assuming non-negative loop counter)
-            if left.kind() == "identifier" {
+            if left.kind() == "identifier" => {
                 if let Some(bound) = try_evaluate_expr(&right, source, macros) {
                     let var_name = left.utf8_text(source.as_bytes()).unwrap_or("");
                     if !var_name.is_empty() {
@@ -888,9 +949,8 @@ fn extract_bound_from_condition(
                     }
                 }
             }
-        }
-        "<=" => {
-            if left.kind() == "identifier" {
+        "<="
+            if left.kind() == "identifier" => {
                 if let Some(bound) = try_evaluate_expr(&right, source, macros) {
                     let var_name = left.utf8_text(source.as_bytes()).unwrap_or("");
                     if !var_name.is_empty() {
@@ -903,10 +963,9 @@ fn extract_bound_from_condition(
                     }
                 }
             }
-        }
-        ">" => {
+        ">"
             // BOUND > var → same as var < BOUND
-            if right.kind() == "identifier" {
+            if right.kind() == "identifier" => {
                 if let Some(bound) = try_evaluate_expr(&left, source, macros) {
                     let var_name = right.utf8_text(source.as_bytes()).unwrap_or("");
                     if !var_name.is_empty() {
@@ -919,9 +978,8 @@ fn extract_bound_from_condition(
                     }
                 }
             }
-        }
-        ">=" => {
-            if right.kind() == "identifier" {
+        ">="
+            if right.kind() == "identifier" => {
                 if let Some(bound) = try_evaluate_expr(&left, source, macros) {
                     let var_name = right.utf8_text(source.as_bytes()).unwrap_or("");
                     if !var_name.is_empty() {
@@ -934,7 +992,6 @@ fn extract_bound_from_condition(
                     }
                 }
             }
-        }
         _ => {}
     }
 }

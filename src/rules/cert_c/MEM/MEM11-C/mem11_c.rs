@@ -84,11 +84,11 @@ impl Mem11C {
     ) {
         // Look for loop statements
         match node.kind() {
-            "while_statement" | "do_statement" | "for_statement" => {
+            "while_statement" | "do_statement" | "for_statement"
                 // Check if this loop contains memory allocations
-                if self.contains_memory_allocation(node, source) {
+                if self.contains_memory_allocation(node, source)
                     // Check if there's a bound check (like a counter)
-                    if !self.has_bound_check(node, source) {
+                    && !self.has_bound_check(node, source) => {
                         violations.push(RuleViolation {
                             rule_id: self.rule_id().to_string(),
                             message: "Memory allocation in loop without upper bound check. \
@@ -108,8 +108,6 @@ impl Mem11C {
                             requires_manual_review: Some(true),
                         });
                     }
-                }
-            }
             _ => {}
         }
 

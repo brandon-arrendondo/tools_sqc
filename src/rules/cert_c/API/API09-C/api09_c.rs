@@ -152,10 +152,10 @@ impl Api09C {
         for i in 0..function_node.child_count() {
             if let Some(child) = function_node.child(i) {
                 match child.kind() {
-                    "primitive_type" | "type_identifier" | "sized_type_specifier" => {
-                        if return_type.is_empty() {
-                            return_type = get_node_text(&child, source).to_string();
-                        }
+                    "primitive_type" | "type_identifier" | "sized_type_specifier"
+                        if return_type.is_empty() =>
+                    {
+                        return_type = get_node_text(&child, source).to_string();
                     }
                     "function_declarator" => {
                         // Extract function name

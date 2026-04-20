@@ -33,8 +33,7 @@ pub fn export_all_violations_to_excel(
     }
 
     // Write all violations
-    let mut row = 1;
-    for violation in violations {
+    for (row, violation) in (1u32..).zip(violations.iter()) {
         let file_hash = calculate_file_hash(&violation.file_path)?;
 
         let title = format!(
@@ -55,8 +54,6 @@ pub fn export_all_violations_to_excel(
         worksheet.write_string(row, 3, "Proposed")?;
         worksheet.write_string(row, 4, "1 - Critical")?;
         worksheet.write_string(row, 5, "1")?;
-
-        row += 1;
     }
 
     // Auto-fit columns

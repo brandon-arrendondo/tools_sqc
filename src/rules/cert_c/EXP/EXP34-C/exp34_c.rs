@@ -296,9 +296,10 @@ fn check_dereferences_cfg(
                     }
                 }
 
-                // Check deref-function arguments
+                // Check deref-function arguments. Skip when the callee is
+                // known to accept NULL (free/fclose no-op on NULL per C standard).
                 let func_name = ast_utils::get_node_text_owned(&function, source);
-                if is_deref_function(&func_name) {
+                if is_deref_function(&func_name) && !is_null_safe_function(&func_name) {
                     if let Some(args) = node.child_by_field_name("arguments") {
                         check_function_arguments_cfg(
                             &args,
@@ -459,10 +460,16 @@ fn check_callsite_null_args(
 }
 
 /// Functions that safely handle NULL arguments (no dereference concern).
+///
+/// Includes:
+/// - C standard: `free(NULL)` (C11 7.22.3.3) and `realloc(NULL, n)` (C11 7.22.3.5)
+///   are defined as no-op / equivalent-to-malloc.
+/// - Juliet test harness print helpers (null-tolerant stubs).
 fn is_null_safe_function(name: &str) -> bool {
     matches!(
         name,
         "free"
+            | "realloc"
             | "printLine"
             | "printWLine"
             | "printIntLine"
@@ -761,15 +768,11 @@ fn analyze_condition_for_safety(node: &Node, var_name: &str, source: &str, negat
             if let Some(operator) = node.child_by_field_name("operator") {
                 let op = ast_utils::get_node_text_owned(&operator, source);
                 match op.as_str() {
-                    "==" => {
-                        if is_null_comparison(node, var_name, source) {
-                            return negated;
-                        }
+                    "==" if is_null_comparison(node, var_name, source) => {
+                        return negated;
                     }
-                    "!=" => {
-                        if is_null_comparison(node, var_name, source) {
-                            return !negated;
-                        }
+                    "!=" if is_null_comparison(node, var_name, source) => {
+                        return !negated;
                     }
                     "&&" => {
                         if let (Some(left), Some(right)) = (

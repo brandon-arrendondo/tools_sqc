@@ -305,6 +305,20 @@ impl Int30C {
                     return;
                 }
 
+                // Skip `(uint32_t)a + (uint32_t)b` (or mixed with a plain narrow operand)
+                // when both operands' pre-cast types are narrow unsigned. Max sum:
+                // 65535 + 65535 = 131070, well within uint32_t.
+                if self.both_operands_narrow_pre_cast(&left, &right, source, type_map) {
+                    return;
+                }
+
+                // Skip `(uint32_t)narrow + SMALL_CONST` — widened narrow plus a known
+                // small constant (literal or const-evaluable macro) cannot overflow
+                // uint32_t. Catches patterns like `(uint32_t)length + HDR_SIZE`.
+                if self.is_narrow_cast_plus_small_const(&left, &right, source, type_map) {
+                    return;
+                }
+
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
                 if const_eval::expression_fits_in_unsigned_vra(
                     node,
@@ -484,21 +498,20 @@ impl Int30C {
                     return;
                 }
 
-                // Skip when both operands' original (pre-cast) types are uint8_t.
-                // Pattern: (uint32_t)a * b where a and b are both uint8_t.
-                // Max product: 255 * 255 = 65025, fits in uint32_t.
-                {
-                    let left_orig = self.get_pre_cast_type(&left, source, type_map);
-                    let right_orig = self.get_pre_cast_type(&right, source, type_map);
-                    let left_eff = left_orig.as_deref().unwrap_or(&left_type);
-                    let right_eff = right_orig.as_deref().unwrap_or(&right_type);
-                    if self.is_narrow_unsigned_type(left_eff)
-                        && left_eff.contains("8")
-                        && self.is_narrow_unsigned_type(right_eff)
-                        && right_eff.contains("8")
-                    {
-                        return;
-                    }
+                // Skip when both operands' effective (pre-cast) types are narrow unsigned.
+                // Pattern: `(uint32_t)a * (uint32_t)b` or `(uint32_t)a * b` where `a` and
+                // `b` are each uint8_t or uint16_t. Max product: 65535 * 65535 ≈ 4.29×10⁹,
+                // which fits in uint32_t (max 4.29×10⁹ + ~131K).
+                if self.both_operands_narrow_pre_cast(&left, &right, source, type_map) {
+                    return;
+                }
+
+                // Skip `(uint32_t)NARROW_BOUNDED * SMALL_CONST` — a narrow value
+                // widened by a cast, multiplied by a small constant (≤ 65535).
+                // Product fits uint32_t. Catches patterns like
+                // `(uint32_t)(a - b) * SCALE` when the subtraction is guarded.
+                if self.is_narrow_cast_times_small_const(&left, &right, source, type_map) {
+                    return;
                 }
 
                 // Skip if constant evaluation proves the result fits in 32-bit unsigned
@@ -814,6 +827,17 @@ impl Int30C {
                 }
 
                 let operator = self.get_update_operator(node, source);
+
+                // Skip plain ++/-- of a wide unsigned struct/union field
+                // (`ctx->field++`, `obj.counter++`). Embedded monotonic-
+                // counter fields (ticks, sequence numbers) wrap at 2^32 or
+                // 2^64 — practically never in real systems, and wrap is
+                // typically expected via tick-diff comparisons. Juliet
+                // CWE-190/191 tests only exercise local-variable
+                // increments, so this skip does not affect TP detection.
+                if argument.kind() == "field_expression" && (operator == "++" || operator == "--") {
+                    return;
+                }
                 if operator == "++" || operator == "--" {
                     // Skip increments/decrements in for-loop update clauses — the loop
                     // condition bounds the counter, making wrap impossible in practice.
@@ -882,11 +906,15 @@ impl Int30C {
         if let Some(function_node) = node.child_by_field_name("function") {
             let function_name = &source[function_node.start_byte()..function_node.end_byte()];
 
-            match function_name {
-                "malloc" | "calloc" | "realloc" => {
-                    self.check_allocation_overflow(node, source, function_name, violations);
-                }
-                _ => {}
+            // malloc/realloc multiplication overflow is already covered by
+            // the generic `check_multiplication` walker on the inner `*`
+            // binary expression — flagging the allocation call again would
+            // produce a duplicate diagnostic on the same line. Only calloc
+            // needs a dedicated check because its multiplication is implicit
+            // (`calloc(nmemb, size)`) and thus invisible to the binary-
+            // expression walk.
+            if function_name == "calloc" {
+                self.check_allocation_overflow(node, source, function_name, violations);
             }
         }
     }
@@ -900,76 +928,28 @@ impl Int30C {
     ) {
         let args = self.get_function_arguments(node, source);
 
-        match function_name {
-            "malloc" => {
-                if !args.is_empty() && self.contains_multiplication(&args[0]) {
-                    self.flag_allocation_overflow(
-                        node,
-                        source,
-                        function_name,
-                        &args[0],
-                        violations,
-                    );
-                }
-            }
-            "calloc" => {
-                if args.len() >= 2 {
-                    // calloc(count, size) - multiplication is implicit
-                    if !self.has_calloc_overflow_check(node, source) {
-                        let start_point = node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::High,
-                            message: format!(
-                                "calloc({}, {}) may cause integer overflow in size calculation",
-                                args[0], args[1]
-                            ),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some("Check for overflow: if (count > SIZE_MAX / size) { /* handle error */ }".to_string()),
-                        ..Default::default()
-                        });
-                    }
-                }
-            }
-            "realloc" => {
-                if !args.is_empty() && self.contains_multiplication(&args[1]) {
-                    self.flag_allocation_overflow(
-                        node,
-                        source,
-                        function_name,
-                        &args[1],
-                        violations,
-                    );
-                }
-            }
-            _ => {}
+        if function_name == "calloc"
+            && args.len() >= 2
+            && !self.has_calloc_overflow_check(node, source)
+        {
+            let start_point = node.start_position();
+            violations.push(RuleViolation {
+                rule_id: self.rule_id().to_string(),
+                severity: Severity::High,
+                message: format!(
+                    "calloc({}, {}) may cause integer overflow in size calculation",
+                    args[0], args[1]
+                ),
+                file_path: String::new(),
+                line: start_point.row + 1,
+                column: start_point.column + 1,
+                suggestion: Some(
+                    "Check for overflow: if (count > SIZE_MAX / size) { /* handle error */ }"
+                        .to_string(),
+                ),
+                ..Default::default()
+            });
         }
-    }
-
-    fn flag_allocation_overflow(
-        &self,
-        node: &Node,
-        _source: &str,
-        function_name: &str,
-        size_arg: &str,
-        violations: &mut Vec<RuleViolation>,
-    ) {
-        let start_point = node.start_position();
-        violations.push(RuleViolation {
-            rule_id: self.rule_id().to_string(),
-            severity: Severity::High,
-            message: format!(
-                "{}() called with multiplication that may cause integer overflow: '{}'",
-                function_name, size_arg
-            ),
-            file_path: String::new(),
-            line: start_point.row + 1,
-            column: start_point.column + 1,
-            suggestion: Some("Add overflow check before allocation".to_string()),
-            ..Default::default()
-        });
     }
 
     fn infer_type(&self, node: &Node, source: &str, type_map: &HashMap<String, String>) -> String {
@@ -1591,6 +1571,133 @@ impl Int30C {
         false
     }
 
+    /// Return the effective (pre-cast if applicable) type of an operand.
+    fn effective_operand_type(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> String {
+        if let Some(pre) = self.get_pre_cast_type(node, source, type_map) {
+            return pre;
+        }
+        if self.is_cast_over_guarded_narrow_sub(node, source, type_map) {
+            return "uint16_t".to_string();
+        }
+        self.infer_type(node, source, type_map)
+    }
+
+    /// True when `node` is `(WIDE)(a - b)` with both operands narrow unsigned
+    /// and the subtraction is guarded by an enclosing `if (a > b)` / `if (a >= b)`
+    /// (or equivalent). In that branch the subtraction result is in the narrow
+    /// unsigned range, so the cast behaves like a narrow-to-wide widening.
+    fn is_cast_over_guarded_narrow_sub(
+        &self,
+        node: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        if node.kind() != "cast_expression" {
+            return false;
+        }
+        let Some(value) = node.child_by_field_name("value") else {
+            return false;
+        };
+        // Peek through parens to the inner expression.
+        let mut inner = value;
+        while inner.kind() == "parenthesized_expression" {
+            match inner.child(1) {
+                Some(c) => inner = c,
+                None => return false,
+            }
+        }
+        if inner.kind() != "binary_expression" {
+            return false;
+        }
+        match self.get_operator(&inner, source).as_deref() {
+            Some("-") => {}
+            _ => return false,
+        }
+        let (Some(l), Some(r)) = (
+            inner.child_by_field_name("left"),
+            inner.child_by_field_name("right"),
+        ) else {
+            return false;
+        };
+        let lt = self.infer_type(&l, source, type_map);
+        let rt = self.infer_type(&r, source, type_map);
+        if !self.is_narrow_unsigned_type(&lt) || !self.is_narrow_unsigned_type(&rt) {
+            return false;
+        }
+        let lname = get_node_text(&l, source);
+        let rname = get_node_text(&r, source);
+        self.is_subtraction_guarded_by_comparison(node, lname.trim(), rname.trim(), source)
+    }
+
+    /// True when both operands' effective (pre-cast) types are narrow unsigned
+    /// (uint8_t or uint16_t). Max sum/product fits in uint32_t.
+    fn both_operands_narrow_pre_cast(
+        &self,
+        left: &Node,
+        right: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        let l = self.effective_operand_type(left, source, type_map);
+        let r = self.effective_operand_type(right, source, type_map);
+        self.is_narrow_unsigned_type(&l) && self.is_narrow_unsigned_type(&r)
+    }
+
+    /// True when one operand is a narrow unsigned (possibly widened by a cast)
+    /// and the other const-evaluates to a small non-negative integer
+    /// (≤ `UINT16_MAX`, ~65535). Result cannot exceed ~131K, fitting uint32_t.
+    fn is_narrow_cast_plus_small_const(
+        &self,
+        left: &Node,
+        right: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        let macros = self.current_macros.borrow();
+        let check = |narrow: &Node, small: &Node| -> bool {
+            let t = self.effective_operand_type(narrow, source, type_map);
+            if !self.is_narrow_unsigned_type(&t) {
+                return false;
+            }
+            if let Some(val) = const_eval::try_evaluate_expr(small, source, &macros) {
+                return (0..=65535).contains(&val);
+            }
+            false
+        };
+        check(left, right) || check(right, left)
+    }
+
+    /// True when one operand is narrow unsigned (directly or via cast from
+    /// narrow) and the other const-evaluates to a non-negative integer whose
+    /// product with `UINT16_MAX` (65535) fits in uint32_t. In other words
+    /// `small ≤ UINT32_MAX / UINT16_MAX ≈ 65538`.
+    fn is_narrow_cast_times_small_const(
+        &self,
+        left: &Node,
+        right: &Node,
+        source: &str,
+        type_map: &HashMap<String, String>,
+    ) -> bool {
+        let macros = self.current_macros.borrow();
+        const MAX_FACTOR: i64 = (u32::MAX as i64) / 65535; // ≈ 65538
+        let check = |narrow: &Node, small: &Node| -> bool {
+            let t = self.effective_operand_type(narrow, source, type_map);
+            if !self.is_narrow_unsigned_type(&t) {
+                return false;
+            }
+            if let Some(val) = const_eval::try_evaluate_expr(small, source, &macros) {
+                return (0..=MAX_FACTOR).contains(&val);
+            }
+            false
+        };
+        check(left, right) || check(right, left)
+    }
+
     fn is_64bit_unsigned_declared(&self, type_str: &str) -> bool {
         type_str == "uint64_t"
             || type_str == "unsigned long long"
@@ -1701,17 +1808,48 @@ impl Int30C {
 
     fn has_calloc_overflow_check(&self, node: &Node, source: &str) -> bool {
         // Look for calloc-specific overflow checking
-        self.has_function_context_check(node, source, &["SIZE_MAX", " / "])
+        if self.has_function_context_check(node, source, &["SIZE_MAX", " / "])
             || self.is_inside_checked_block(node, source)
+        {
+            return true;
+        }
+        // Thin-wrapper pattern: both calloc arguments are function parameters
+        // of the enclosing function. The wrapper delegates overflow detection
+        // to C11 calloc itself (§7.22.3.2 — "If the product of nmemb and size
+        // … would overflow, … calloc shall return a null pointer"), so the
+        // wrapper body does not need its own SIZE_MAX / size check.
+        self.calloc_args_are_function_params(node, source)
+    }
+
+    fn calloc_args_are_function_params(&self, node: &Node, source: &str) -> bool {
+        let args = self.get_function_arguments(node, source);
+        if args.len() < 2 {
+            return false;
+        }
+        let Some(func) = self.find_containing_function(node) else {
+            return false;
+        };
+        let mut params: HashMap<String, String> = HashMap::new();
+        if let Some(declarator) = func.child_by_field_name("declarator") {
+            self.collect_params_from_declarator(&declarator, source, &mut params);
+        }
+        params.contains_key(args[0].trim()) && params.contains_key(args[1].trim())
     }
 
     fn has_function_context_check(&self, node: &Node, source: &str, patterns: &[&str]) -> bool {
-        // Look in the containing function for overflow checking patterns
+        // Look in the containing function for overflow checking patterns.
+        // Fall back to the full translation unit when the call is at file
+        // scope (e.g. wiki snippet tests without a wrapping function).
         if let Some(func) = self.find_containing_function(node) {
             let func_text = get_node_text(&func, source);
             return patterns.iter().all(|pattern| func_text.contains(pattern));
         }
-        false
+        let mut root = *node;
+        while let Some(p) = root.parent() {
+            root = p;
+        }
+        let text = get_node_text(&root, source);
+        patterns.iter().all(|pattern| text.contains(pattern))
     }
 
     /// Check for subtraction precondition (if (a < b) before subtraction)
@@ -1878,10 +2016,6 @@ impl Int30C {
             }
         }
         false
-    }
-
-    fn contains_multiplication(&self, expr: &str) -> bool {
-        expr.contains('*') && !expr.contains("/*") && !expr.contains("*/")
     }
 
     fn get_operator(&self, node: &Node, source: &str) -> Option<String> {
@@ -2242,10 +2376,93 @@ impl Int30C {
                     }
                 }
             }
+
+            // Implicit-else from an early-exit if:
+            //   if (right > left) return ...;
+            //   /* subtraction here: left - right is safe */
+            // Walk preceding siblings at every compound_statement on the way
+            // up. If any is an early-exit if whose condition implies
+            // right > left, the subtraction is guarded.
+            if parent.kind() == "compound_statement"
+                && self.preceding_early_exit_guards_subtraction(
+                    &parent, &current, left_name, right_name, source,
+                )
+            {
+                return true;
+            }
+
             if parent.kind() == "function_definition" {
                 break;
             }
             current = parent;
+        }
+        false
+    }
+
+    /// Check for a preceding sibling `if (cond) return/break/continue/goto ...;`
+    /// whose condition implies `right > left`, in which case the implicit
+    /// else-path (statements after the if) has `left >= right`.
+    fn preceding_early_exit_guards_subtraction(
+        &self,
+        compound: &Node,
+        current: &Node,
+        left_name: &str,
+        right_name: &str,
+        source: &str,
+    ) -> bool {
+        let current_start = current.start_byte();
+        for i in 0..compound.named_child_count() {
+            let Some(sibling) = compound.named_child(i) else {
+                break;
+            };
+            if sibling.end_byte() > current_start {
+                break;
+            }
+            if sibling.kind() != "if_statement" {
+                continue;
+            }
+            if !Self::if_always_exits(&sibling) {
+                continue;
+            }
+            let Some(cond) = sibling.child_by_field_name("condition") else {
+                continue;
+            };
+            let cond_text = get_node_text(&cond, source);
+            if self.condition_implies_a_gte_b(&cond_text, right_name, left_name) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// True when the consequence of `if_node` is a statement (or compound
+    /// block ending with a statement) that unconditionally transfers
+    /// control out of the enclosing block: return, break, continue, goto.
+    /// No `alternative` required — callers only care about the fall-through
+    /// path past the if.
+    fn if_always_exits(if_node: &Node) -> bool {
+        let Some(consequence) = if_node.child_by_field_name("consequence") else {
+            return false;
+        };
+        let is_exit = |k: &str| {
+            matches!(
+                k,
+                "return_statement" | "break_statement" | "continue_statement" | "goto_statement"
+            )
+        };
+        if is_exit(consequence.kind()) {
+            return true;
+        }
+        if consequence.kind() == "compound_statement" {
+            let mut last: Option<Node> = None;
+            for i in 0..consequence.named_child_count() {
+                if let Some(c) = consequence.named_child(i) {
+                    last = Some(c);
+                }
+            }
+            if let Some(l) = last {
+                return is_exit(l.kind());
+            }
         }
         false
     }
@@ -2301,6 +2518,38 @@ impl Int30C {
             if cond.contains(&lte_pat) || cond.contains(&lt_pat) {
                 return true;
             }
+            // Pattern: `a > (b + POS)` or `a > b + POS` where POS evaluates to a
+            // positive integer. Implies a > b.
+            if self.cond_gt_b_plus_positive(cond, a, b) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// True when `cond` matches `a > (b + C)` / `a > b + C` / `a >= b + C` with
+    /// `C` a non-negative const-evaluable expression. In that case `a > b`.
+    fn cond_gt_b_plus_positive(&self, cond: &str, a: &str, b: &str) -> bool {
+        for op in [" > ", " >= "] {
+            let key = format!("{}{}", a, op);
+            let Some(pos) = cond.find(&key) else { continue };
+            let rhs = cond[pos + key.len()..].trim();
+            let rhs = rhs.trim_start_matches('(').trim_end_matches(')').trim();
+            // Need a `+` at top level connecting `b` and a positive tail.
+            let Some(plus_pos) = rhs.find(" + ") else {
+                continue;
+            };
+            let left_of_plus = rhs[..plus_pos].trim();
+            let right_of_plus = rhs[plus_pos + 3..].trim();
+            if left_of_plus != b {
+                continue;
+            }
+            let macros = self.current_macros.borrow();
+            if let Some(v) = const_eval::try_evaluate_text_public(right_of_plus, &macros) {
+                if v > 0 {
+                    return true;
+                }
+            }
         }
         false
     }
@@ -2309,12 +2558,12 @@ impl Int30C {
         let mut args = Vec::new();
 
         if let Some(arguments) = node.child_by_field_name("arguments") {
-            for i in 0..arguments.child_count() {
-                if let Some(child) = arguments.child(i) {
-                    if child.kind() != "," {
-                        let arg_text = source[child.start_byte()..child.end_byte()].to_string();
-                        args.push(arg_text.trim().to_string());
-                    }
+            // Named children of argument_list are the actual argument
+            // expressions; unnamed children (`(`, `,`, `)`) are skipped.
+            for i in 0..arguments.named_child_count() {
+                if let Some(child) = arguments.named_child(i) {
+                    let arg_text = source[child.start_byte()..child.end_byte()].to_string();
+                    args.push(arg_text.trim().to_string());
                 }
             }
         }
