@@ -538,6 +538,7 @@ fn generate_test_function(
     let is_enabled = check_if_rule_enabled(&toml_path)?;
 
     writeln!(f, "#[test]")?;
+    writeln!(f, "#[allow(non_snake_case)]")?;
 
     // If rule is not enabled/implemented, mark test as ignored
     if !is_enabled {

@@ -529,8 +529,9 @@ mod tests {
             hash_err, hash_exp, code_line
         );
 
-        let s1 = Suppression::parse(source.lines().nth(0).unwrap(), 0).unwrap();
-        let s2 = Suppression::parse(source.lines().nth(1).unwrap(), 1).unwrap();
+        let mut lines = source.lines();
+        let s1 = Suppression::parse(lines.next().unwrap(), 0).unwrap();
+        let s2 = Suppression::parse(lines.next().unwrap(), 1).unwrap();
 
         // Both should match violations on line 3
         assert!(s1.matches(&source, 3));
