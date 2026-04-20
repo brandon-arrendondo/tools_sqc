@@ -1683,10 +1683,9 @@ int f(int x) {
         let root = tree.root_node();
         let macros = const_eval::collect_macro_constants(&root, &source);
         let summaries =
-            crate::analyze::function_summary::compute_summaries(&root, &source, &macros, true);
+            crate::analyze::function_summary::compute_summaries(&root, &source, &macros, true, &[]);
 
         // Find the last function_definition (the caller)
-        let mut last_func = None;
         fn find_functions<'a>(node: &Node<'a>, out: &mut Vec<Node<'a>>) {
             if node.kind() == "function_definition" {
                 out.push(*node);
@@ -1699,9 +1698,7 @@ int f(int x) {
         }
         let mut funcs = Vec::new();
         find_functions(&root, &mut funcs);
-        last_func = funcs.last().copied();
-
-        let func_node = last_func?;
+        let func_node = funcs.last().copied()?;
         let function_cfg = cfg::build_function_cfg(&func_node, &source)?;
         let body = func_node.child_by_field_name("body")?;
         let result = analyze_value_ranges(&function_cfg, &func_node, &source, &macros, &summaries);

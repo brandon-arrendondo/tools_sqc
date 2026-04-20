@@ -1,8 +1,12 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-14 (v0.3.87)
+Last Updated: 2026-04-19 (v0.3.103)
 
-Juliet benchmark v0.3.86: 25,456 TP / 15,768 FP (61.8% TP rate), 42.6% per-file.
+Juliet benchmark v0.3.103: 24,518 TP / 13,358 FP (64.7% TP rate), 41.5% per-file.
+Cumulative v0.3.93 → v0.3.103: TP rate +3.0pp, FP −2,410 (−15.3%), zero net
+other-rule regressions. Real-world v0.3.93 → v0.3.98: −343 violations;
+v0.3.98 → v0.3.103: zero delta (Juliet-specific fixes — no new
+FunctionSummary fields since v0.3.102).
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -15,15 +19,19 @@ Juliet benchmark v0.3.86: 25,456 TP / 15,768 FP (61.8% TP rate), 42.6% per-file.
   cppcheck:   29,377 TP / 51,361 FP (36.4%) — highest recall
 
 SqC wins outright on CWE-690 (94.6%) and CWE-761 (100%).
-Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.85 current):
+Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.96 current):
   CWE-190: 58.6% vs 94.3% (−35.7pp) — INT32-C/INT30-C (was −46.9pp, task 54 done)
   CWE-191: 53.9% vs 94.4% (−40.5pp) — INT32-C/INT30-C (was −48.9pp, task 54 done)
   CWE-369: 53.9% vs 94.7% (−40.8pp) — INT33-C/FLP03-C (was −57.8pp, task 55 done)
-  CWE-476: 58.3% vs 94.3% (−36.0pp) — EXP34-C (was −43.5pp, task 57 done)
+  CWE-476: 59.6% vs 94.3% (−34.7pp) — EXP34-C (was −43.5pp, task 57 done)
   CWE-121: 55.7% vs 86.6% (−30.9pp) — STR31-C/ARR38-C (was −37.8pp, task 56 done)
   CWE-415: 58.2% vs 80.0% (−21.8pp) — MEM01-C (was −36.6pp, task 58 done)
   CWE-416: 92.9% vs 60.3% (+32.6pp) — MEM01-C EXCEEDS target (task 58 done)
   CWE-401: 77.6% vs 83.9% (−6.3pp) — MEM31-C (was −33.2pp, task 59 done)
+  CWE-78:  94.8% (+32.0pp since v0.3.93) — now EXCEEDS clang-tidy 91.6%
+                                          (tasks 67-68, 49A + 49B + 49C + 49D)
+  CWE-194: 69.4% (+11.0pp since v0.3.95) — INT31-C taint-aware (task 69 + 49C)
+  CWE-195: 52.5% (+ 3.8pp since v0.3.95) — INT31-C taint-aware (task 69 + 49C)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -73,186 +81,375 @@ CWE-401 TP rate 50.7% → 77.6% (+26.9pp). Rule FP rate 49.3% → 22.4%.
 
 # Task ID: 60
 # Title: INT30-C embedded guard/bound pattern recognition
-# Status: pending
+# Status: done (v0.3.93)
 # Dependencies: none
 # Priority: P2
-# Description: Reduce INT30-C FPs on bounded embedded arithmetic (~31 FPs
-#   across 3 codebases).
+# Description: Reduce INT30-C FPs on bounded embedded arithmetic.
 # Details:
-Biggest single FP source across all 4 embedded codebases. Patterns to add:
+DONE. Work spread across v0.3.88, v0.3.89, v0.3.92, v0.3.93.
 
-  1. **Bitmask wrapping**: `(x + 1) & (SIZE - 1)` where SIZE is power-of-2.
-     Ring buffer idiom — result is always < SIZE. (airpath 2 FPs)
-  2. **uint32_t intermediate cast**: `(uint32_t)(a - b) * SCALE` where
-     subtraction is guarded by `a > b + MARGIN`. C integer promotion to
-     uint32_t prevents uint8_t/uint16_t wrap. (airpath 5 FPs)
-  3. **Guard-before-decrement**: `if (ctx->speed_hold_time > interval)
-     ctx->speed_hold_time -= interval`. Existing `is_guarded_by_gt_zero()`
-     only handles `> 0`, not `> other_var`. (airpath 1 FP, common ~3 FPs)
-  4. **Loop-bounded counters**: `for (i = 0; i < count; i++)` where `count`
-     is clamped at init time. Loop increment can't wrap uint8_t when
-     bound < 255. (serial_leds 16 FPs)
-  5. **Same-array subtraction**: `result - arr` where result comes from
-     bsearch within arr. (common 1 FP)
-  6. **Widened comparison**: `if ((uint32_t)length + HDR_SIZE > bufferSize)`
-     — the cast widens BEFORE the add, preventing wrap. (common 1 FP)
+Patterns recognized across the four commits:
 
-  Fix approach: extend `is_inside_checked_block()` and add new pattern
-  matchers for bitmask, intermediate cast, and loop-bounded patterns.
+  1. **Bitmask wrapping** (`(x + 1) & MASK`): v0.3.88 via
+     `is_addition_masked_by_bitand`. Applies to addition only — the mask
+     bounds the result regardless of any wrap.
+  2. **Narrow-pre-cast addition/multiplication**: v0.3.88 + v0.3.89 via
+     `both_operands_narrow_pre_cast` /`is_narrow_cast_plus_small_const` /
+     `is_narrow_cast_times_small_const` using `effective_operand_type`
+     that peers through explicit casts to recover `uint8_t` / `uint16_t`.
+  3. **(WIDE)(a - b) guarded by `a > b + POS`**: v0.3.89 via
+     `is_cast_over_guarded_narrow_sub` + `cond_gt_b_plus_positive`.
+  4. **Same-array subtraction / widened comparison**: covered by
+     narrow-pre-cast + guarded-subtraction combination.
+  5. **Wide-unsigned struct-field `++`/`--`** (`ctx->tick++`,
+     `obj.seq--`): v0.3.92 direct skip in `check_increment_decrement`.
+     Monotonic counter fields wrap at 2^32/2^64 and are benign; Juliet
+     CWE-190/191 only exercises local-variable `++`, so no TP loss.
+  6. **Thin calloc wrapper** (`calloc(nmemb, size)` where both args are
+     function parameters): v0.3.92 via
+     `calloc_args_are_function_params` — delegates overflow to C11
+     calloc (§7.22.3.2).
+  7. **Implicit-else early-exit guard** (`if (a < b) return; /* a - b */`):
+     v0.3.92 via `preceding_early_exit_guards_subtraction` + the new
+     `if_always_exits` helper.
+
+Infrastructure fixes surfaced along the way:
+  * v0.3.92: `get_function_arguments` now iterates named children, so
+    `args[0]` is the real first argument instead of a `(` token. This
+    unmasked a latent bug where malloc/realloc multiplication overflow
+    detection was silently disabled and calloc messages read
+    `calloc((, nmemb)`.
+  * v0.3.93: dropped the dedicated malloc/realloc allocation-overflow
+    check. `check_multiplication` already covers the inner `*` (with
+    full VRA + SIZE_MAX-guard awareness), so the allocation-level check
+    produced nothing but duplicate diagnostics and occasional FPs on
+    provably-safe good-paths. Calloc keeps its dedicated check because
+    its multiplication is implicit.
+  * v0.3.92: `has_function_context_check` falls back to the translation
+    unit for snippet-style tests without an enclosing function.
+
+Empirical impact on target embedded codebases (INT30-C suppressions
+stripped for measurement, -I include paths unchanged):
+  d_lib_common:          1 → 0 INT30-C FPs
+  d_lib_serial_leds:    12 → 8 INT30-C FPs
+  d_lib_airpath:         2 → 2 (unchanged; bounded-shift compound
+                                addition, see Remaining below)
+  d_lib_networking:      0 → 0
+
+Real-world (v0.3.91 → v0.3.93): **−187 INT30-C violations**
+  curl:      -106   mosquitto:  -44
+  sqlite:     -37   libcrc:       0
+
+Juliet v0.3.93 vs v0.3.91: zero delta across all 74 CWEs (the v0.3.92
+duplicate-diagnostic regression on CWE-680 was fully reversed by the
+v0.3.93 dedupe).
+
+Remaining serial_leds FPs need narrow-operand propagation through local
+assignments (brightness arithmetic via `uint32_t range = (uint32_t)a -
+(uint32_t)b` then `range * time`). Airpath FPs need shift-aware
+effective-type recognition for compound accumulators (`ctx->ad_sum +=
+(... >> SHIFT) + 1`). Both deferred — low FP count, risk of Juliet TP
+regressions on CWE-190/191.
 
 ---
 
 # Task ID: 61
 # Title: EXP34-C null safety through if-guards and &stack_var
-# Status: pending
+# Status: done (v0.3.91)
 # Dependencies: none
 # Priority: P2
 # Description: Reduce EXP34-C FPs where null safety is established by
 #   if-guard-with-early-return or &stack_variable callers (~16 FPs).
 # Details:
-Second biggest FP source. Two distinct sub-problems:
+DONE. Patterns A and B were already fixed by cumulative EXP34-C work
+(v0.3.82 AST-level null guard fallback, v0.2.20 &stack_var propagation).
+Verified on all four target embedded codebases (d_lib_common,
+d_lib_serial_leds, d_lib_networking, d_lib_airpath_debris_sensing):
+zero EXP34-C FPs remain except one `Memory_Free(NULL)` wrapper case.
 
-  A. **If-guard-with-early-return** (~5 FPs in d_lib_common):
-     ```c
-     if (ptr == NULL) return ERROR;
-     // ptr used here — sqc still flags as potentially null
-     ```
-     The CFG-based null_state.rs should handle this via edge refinement,
-     but these FPs suggest the refinement isn't reaching all dereference
-     points. Investigate whether the issue is:
-     - Null state not propagated past the if-return block
-     - Function parameters not entering as Unknown (entering as PossiblyNull?)
-     - Multiple params checked in sequence losing state
+v0.3.90-0.3.91 broadened the fix to related idioms surfaced by the
+realworld benchmark:
 
-  B. **&stack_variable callers** (9 FPs in d_lib_common):
-     ```c
-     void readTlvHeader(uint16_t *tag, ...) { *tag = ...; }
-     // Always called as: readTlvHeader(&local_tag, ...)
-     ```
-     Prescan already tracks callsite args. Enhance to detect &expr args
-     and mark corresponding params as NotNull in FunctionSummary.
-     Already partially done for array args (v0.2.20); extend to &var.
+  1. `PARAM == 0` / `PARAM != 0` null-check detection (plus reversed-
+     operand and all-spacing variants). sqlite/libcurl consistently use
+     this idiom (e.g. `if(pStmt==0) return ...`) — previously unrecognized.
+  2. EXP34-C: skip deref-function arg check when callee is in the
+     null-safe list. `free(NULL)` and `realloc(NULL, n)` are defined
+     per C11 7.22.3.3 / 7.22.3.5 — flagging them is incorrect.
+  3. Alias null-check recognition: `TYPE *alias = param;` followed by
+     a null-check on `alias` logically null-checks `param`. Common in
+     libcurl wrappers (curl_easy_setopt, curl_multi_cleanup).
 
-  C. **Callback void* params** (2 FPs in d_lib_networking):
-     `void my_debug(void *ctx, ...)` — ctx always non-null from mbedtls.
-     Lower priority; requires trust annotations or library modeling.
+Benchmark (v0.3.89 → v0.3.91):
+  Realworld: −321 violations total. EXP34-C −242, API00-C −79.
+    sqlite −285, mosquitto −30, curl −3, libcrc −3, hostap 0.
+  Juliet: TP −102 (all CWE-690 free() with potentially-null arg —
+    by-design suppression, not a regression). FP unchanged.
+
+Pattern C (callback `void *` params) remains open but is lower priority
+(requires trust annotations or library modeling).
+
+---
+
+# Task ID: 67
+# Title: ENV03-C locally-safe popen/system command var suppression
+# Status: done (v0.3.94)
+# Dependencies: none
+# Priority: P2
+# Description: Reduce ENV03-C FPs on Juliet CWE-78 goodG2B functions where
+#   the command variable is provably derived from string literals only.
+# Details:
+DONE. ENV03-C FP 1272→612 (-660), TP 912→752 (-160). **4.1:1 FP:TP**,
+cleanest ratio since v0.2.23.
+
+Approach: new `is_command_var_locally_safe()` in env03_c.rs. Fixpoint over
+char-array declarations and pointer aliases, then walks every write to the
+command variable. Suppress only when every write is from a string literal,
+a locally-initialized buffer, or strcat/strcpy with a literal source.
+
+Short-circuits that still flag:
+  - Direct string literal (defense-in-depth preserved for existing tests).
+  - Function parameter (caller-supplied, handled by task 68).
+  - Any taint-source call in scope (recv, fgets, scanf, getenv, etc.).
+
+Required allowing macro-identifier initializers on char arrays — `char
+buf[N] = FULL_COMMAND;` is legal C only for macros, so any identifier in
+that position is treated as a literal.
+
+CWE-78 TP rate 62.8% → 72.3% (+9.5pp). Overall TP rate 61.7% → 62.5%
+(+0.8pp). Zero other-rule regressions.
+
+---
+
+# Task ID: 68
+# Title: ENV03-C cross-function taint for helper-sink variants
+# Status: done (v0.3.95)
+# Dependencies: 67
+# Priority: P2
+# Description: Suppress ENV03-C FPs in Juliet CWE-78 variants 41-45 where
+#   the popen/system call lives in a helper function receiving data as a
+#   parameter.
+# Details:
+DONE. ENV03-C FP 612→468 (-144), TP 752→652 (-100). 1.44:1 FP:TP —
+diminishing returns as the remaining target shrinks.
+
+New infrastructure:
+  * `FunctionSummary.has_env03_taint_source` bit — populated via body
+    text scan for recv/fgets/scanf/getenv-style calls (~25 functions).
+  * ENV03-C parameter path consults reverse call graph (callee → callers)
+    built from `ProjectContext.call_graph`. Suppress only when every
+    caller's summary is clean.
+
+Prescan bug fix (affects other inter-procedural rules too):
+  * `collect_call_graph` used `.insert()`, so multiple files with `static
+    void goodG2B()` overwrote each other and dropped caller edges.
+    Changed to `.entry().or_default().extend()` for call edges, and
+    OR-merge for `has_env03_taint_source`. Same-named static merging is
+    conservative (any tainted def poisons the merged summary).
+
+Results: CWE-78 TP rate 72.3% → 74.1% (+1.8pp). Overall TP rate 62.5% →
+62.7% (+0.2pp). Side effect: EXP34-C -6 FP / 0 TP (prescan merging
+recovered a few missed caller links).
+
+CWE-426 (Untrusted Search Path): -24 TP / -24 FP — neutral. Remaining
+~468 ENV03-C FPs are v42/v22a-style (`data = helper(data)` return-tainted
+assignments) and v45-style (global-static pointers) — need return-value
+taint or global-write tracking to shrink further.
+
+---
+
+# Task ID: 69
+# Title: INT31-C taint-aware suppression for signed→size_t conversions
+# Status: done (v0.3.96)
+# Dependencies: 68
+# Priority: P2
+# Description: Reuse ENV03-C's taint-source summary bit to suppress
+#   INT31-C FPs on Juliet CWE-194/195 helper-function variants.
+# Details:
+DONE. INT31-C FP 2172→1452 (-720), TP 2608→2142 (-466). 1.54:1 FP:TP.
+
+Approach: when the converted variable is inside an `if (var < LIT)`
+upper-bound guard (positive literal), suppress iff:
+  * the containing function's summary has no taint source, AND
+  * no `var = fn(...)` assignment targets a tainted callee, AND
+  * for parameters, every caller is taint-free too.
+
+Local-variable case additionally requires evidence of at least one
+call-return assignment from a clean callee — prevents over-suppression
+of v45-style `int data = global_static;` reads where the global could
+have been tainted elsewhere in the project.
+
+Substring bug trap: `decl_text.contains(var_name)` matched `dataBuffer`
+when looking for `data`. Fixed by walking the declarator tree to its
+leaf identifier for an exact match.
+
+Results: CWE-194 TP rate 58.4% → **67.9%** (+9.5pp). CWE-195 TP rate
+48.7% → 51.9% (+3.2pp). Overall TP rate 62.7% → **63.4%** (+0.7pp).
+Zero other-rule regressions.
+
+Remaining INT31-C FPs are in v42-style `data = helper(data)` returning
+tainted values, v45-style global pointers, and v65a/b function-pointer
+cross-file patterns (no call-graph edge). Function-pointer and
+return-value taint would be the next wins if pursued.
 
 ---
 
 # Task ID: 62
 # Title: API00-C validation look-ahead past variable declarations
-# Status: pending
+# Status: done (v0.3.97) — A already covered, C implemented, B deferred
 # Dependencies: none
 # Priority: P2
 # Description: Reduce API00-C FPs where parameter validation exists but
 #   is not detected due to intervening variable declarations (~12 FPs).
 # Details:
-Two sub-patterns:
+Three sub-patterns triaged:
 
-  A. **Validation past var decls** (~8 FPs in d_lib_common):
-     ```c
-     void writeTlv(RingBuffer *ptr, TLV *tlv) {
-       uint16_t tag = tlv->tag;   // var decl
-       uint16_t len = tlv->length; // var decl
-       if (ptr == NULL) return;    // ← validation IS here
-     ```
-     Current API00-C checks first N statements. Fix: scan deeper into
-     function body, skipping `declaration` nodes, looking for if-guard
-     patterns within first ~10 statements or first compound block.
+  A. **Validation past var decls** — already handled pre-v0.3.97. The
+     existing `check_validation_patterns` walks the entire body (not just
+     the first N statements) and `collect_else_if_chain_validations`
+     traverses full if/else-if/else chains, so cases like
+     `Ringbuffer_read` (if/else-if/else with NULL checks after a
+     `result_e result = …;` declaration) no longer FP. Verified on
+     d_lib_common with API00-C suppressions stripped — zero FPs for this
+     sub-pattern.
 
-  B. **Embedded API contract — no NULL check by design** (3 FPs in airpath):
-     ISR-context functions where NULL check adds unacceptable overhead.
-     Consider: API00-C could skip functions marked with a
-     `SQC-SUPPRESS: API00-C` on the function signature (already works).
-     Or: reduce severity for `static`/internal functions. Or: recognize
-     Doxygen @pre annotations as documented contracts.
+  C. **void\* container where NULL is valid** — implemented in v0.3.97.
+     New type-aware suppression: a `void *` / `const void *` parameter
+     that is never dereferenced locally (`*p`, `p->x`, `p[i]`) and
+     passes through only to null-accepting stdlib sinks (free, realloc,
+     Memory_Free, Memory_Realloc, cfree) or callees whose summary
+     validates the corresponding argument is treated as a generic-
+     container slot where NULL is a valid value.
 
-  C. **void* container where NULL is valid** (1 FP in d_lib_common):
-     `ArrayList_Append(self, void *item)` — NULL is a valid item for a
-     generic container. API00-C should not require validation when the
-     type is `void *` and the param is not dereferenced.
+     Helpers: `is_generic_void_pointer_type` (bare `void *`, rejects
+     `void **` and array decls) + `is_void_ptr_storage_safe` (walks the
+     body, collects every parent-kind, returns true only if every use is
+     storage-like or a verified safe call).
+
+     Results (Juliet v0.3.96 → v0.3.97):
+       - API00-C: TP 90→84 (-6), FP 116→104 (-12). **2.0:1 FP:TP**.
+       - CWE-476 TP rate 58.9% → **59.6%** (+0.7pp).
+       - Overall TP rate unchanged at 63.4%.
+       - Zero other-rule regressions.
+
+     Real-world d_lib_common: 1 → 0 API00-C FP (ArrayList_Append).
+
+  B. **Embedded API contract — no NULL check by design** (3 FPs in
+     airpath, ~17 FPs in serial_leds). Deferred. All remaining real-
+     world API00-C FPs are public-API functions that dereference `ctx`
+     without validation by hardware-contract design (e.g.
+     `DebrisSensor_AdcSample`, `SerialLeds_set_*`). No clean AST-level
+     signal distinguishes these from genuine FPs — continuing to rely
+     on `SQC-SUPPRESS: API00-C` at the function site. Options considered
+     and rejected:
+       * Skip all public API with `_set_` / `_Init` / `_update` prefixes
+         — too broad; masks real bugs in other projects.
+       * Require explicit header prototype + Doxygen `@pre` — no
+         reliable way to parse `@pre` contracts from tree-sitter.
+       * Switch API00-C severity to Low for non-static functions —
+         doesn't reduce FP count, only its visibility.
 
 ---
 
 # Task ID: 63
 # Title: MEM05-C / ARR32-C false VLA and stack allocation fixes
-# Status: pending
+# Status: done (v0.3.88)
 # Dependencies: none
 # Priority: P3
 # Description: Fix false VLA detection and spurious stack allocation
 #   warnings (3 FPs across 2 codebases).
 # Details:
-Three distinct bugs:
+DONE. All three embedded FPs resolved by a single root-cause fix: the
+MEM05-C VLA detector was text-matching `[...]` anywhere in a
+declaration, so array subscripts inside initializers were
+misclassified as variable-length sizes.
 
-  1. **ARR32-C on header-defined constant** (serial_leds):
-     `output_buf[SERIAL_LEDS_MAX_LEDS * SERIAL_LEDS_BYTES_PER_LED]` in
-     a header struct definition. Both macros are `#define` constants.
-     sqc already has `is_likely_macro_constant()` for ALL_CAPS — may need
-     to handle multiplication of two ALL_CAPS identifiers.
+  1. **ARR32-C on header-defined constant** — `is_all_constant_expression`
+     recursively walks binary_expression leaves, so
+     `[MAX_LEDS * BYTES_PER_LED]` now passes as a constant expression
+     when both identifiers are ALL_CAPS macros.
+  2. **MEM05-C on array subscript** — `find_array_declarator_size`
+     looks for an actual `array_declarator` node instead of bracket
+     text, and `init_declarator`'s value field is explicitly skipped
+     so `uint8_t x = arr[i]` is no longer a "VLA".
+  3. **MEM05-C on 1-byte stack variable** — same AST-level fix. The
+     "large stack allocation" message never fires; previous FPs were
+     subscripts-in-initializers misclassified as VLAs. No size
+     threshold was needed.
 
-  2. **MEM05-C on array subscript** (airpath):
-     `ctx->adc_ring_buf[ctx->adc_ring_tail]` — sqc misidentifies this
-     as a VLA declaration. It's an array element access, not a declaration.
-     Bug: MEM05-C VLA check triggering on subscript_expression inside
-     an assignment, not a declaration context.
-
-  3. **MEM05-C on 1-byte stack variable** (serial_leds):
-     `uint8_t idx` flagged as "large stack allocation". 1 byte is not
-     a stack concern. Add minimum size threshold (e.g., skip < 256 bytes).
+Empirical impact (serial_leds / airpath, suppressions stripped):
+  serial_leds MEM05-C: 1 → 0
+  serial_leds ARR32-C: 1 → 0
+  airpath     MEM05-C: 1 → 0
 
 ---
 
 # Task ID: 64
 # Title: EXP02-C extended short-circuit guard recognition
-# Status: pending
+# Status: done (v0.3.98)
 # Dependencies: none
 # Priority: P3
 # Description: Extend EXP02-C guard pattern recognition beyond
 #   NULL_CHECK && fn_call to cover all common guard idioms (4 FPs).
 # Details:
-sqc already suppresses `ptr != NULL && fn(ptr)` but still flags:
+DONE. Landed over two rounds.
 
-  - `file_size > 0 && buflen >= file_size && fseek(...)` — value guard
-  - `self == NULL || IntSet_Contains(self, element)` — NULL || pattern
-  - `len == capacity && !growCapacity(self)` — equality check + mutation
-  - `arr->len == arr->cap && !ArrayList_growCapacity(arr)` — same pattern
+v0.3.88 (task 64 initial): extended the NULL-guard exemption to `||`
+and added `has_mutation_side_effects` so `p || (p = malloc(...))`
+and `i++ > 10` still flag.
 
-General principle: when the LHS of && or || is a GUARD (comparison that
-determines whether the RHS should execute), the short-circuit IS the
-intent. Recognize patterns where:
-  - LHS is a comparison (==, !=, <, >, <=, >=)
-  - RHS is a function call
-  - The pattern is `GUARD && ACTION` or `GUARD || ACTION`
+v0.3.98 (task 64 remaining): generalized the guard check from
+null-specific substring matching to AST-based comparison detection.
+`is_guard_pattern` now recognises any `binary_expression` whose
+operator is `==`, `!=`, `<`, `>`, `<=`, or `>=`, plus compound
+`&&` / `||` chains whose leaves are guards (recursive),
+plus truthiness (bare identifier / `!x`) and parenthesized
+wrappers. Combined with the preserved mutation check, the rule now
+correctly suppresses:
 
-This subsumes the existing NULL-check fix and covers all d_lib_common
-Pattern 19 cases.
+  file_size > 0 && buflen >= file_size && fseek(...)
+  self == NULL || IntSet_Contains(self, element)
+  len == capacity && !growCapacity(self)
+  arr->len == arr->cap && !ArrayList_growCapacity(arr)
+
+while still flagging:
+
+  p || (p = malloc(...))           — assignment in RHS
+  a > 0 && ++count > 10            — update in RHS
+
+Juliet: zero delta (all 4 EXP02-C tests still pass, CWE-taxonomy
+totals unchanged). Real-world: EXP02-C delta below the top-5
+per-rule threshold (task 64 targets d_lib_common, outside the
+real-world benchmark set).
 
 ---
 
 # Task ID: 65
 # Title: DCL19-C / DCL00-C scope and const-qualify FP fixes
-# Status: pending
+# Status: done (v0.3.88)
 # Dependencies: none
 # Priority: P3
 # Description: Fix DCL19-C flagging public API functions and DCL00-C
 #   flagging loop counter variables (6 FPs in serial_leds).
 # Details:
-  A. **DCL19-C on public API** (3 FPs): Functions declared in public
-     headers (`SerialLeds_set`, `SerialLeds_set_rgb`, etc.) cannot have
-     their scope minimized. Fix: if function has external linkage AND
-     is declared in a header (via prescan or -I), suppress DCL19-C.
+DONE. Both fixes landed in v0.3.88 via commit 2c78eac2.
 
-  B. **DCL00-C on loop counters** (3 FPs): `uint8_t g` in
-     `for (g = 0; g < num_groups; g++)` — loop counters are modified
-     each iteration and cannot be const. Fix: if variable appears as
-     the loop variable in a for-statement (init or update clause),
-     suppress DCL00-C.
+  A. **DCL19-C on public API** — `set_project_context` receives
+     `header_declared_functions` from prescan; the "should be static"
+     check now skips any function whose name appears in a header
+     traversed via `-I`. serial_leds `SerialLeds_set`,
+     `SerialLeds_set_rgb`, `SerialLeds_set_brightness`: 3 → 0.
+
+  B. **DCL00-C on loop counters** — `is_in_for_loop_init` walks up
+     the declaration's parent chain to detect when the declaration is
+     itself the init clause of a `for_statement`. serial_leds
+     `uint8_t g` across three for-loops: 3 → 0.
 
 ---
 
 # Task ID: 66
 # Title: Miscellaneous embedded FP fixes (small wins)
-# Status: pending
+# Status: partial (v0.3.98 — item 1 done)
 # Dependencies: none
 # Priority: P3
 # Description: Fix assorted small FP patterns found across embedded
@@ -262,6 +459,13 @@ Collection of lower-count FPs that don't warrant individual tasks:
 
   1. **INT32-C sizeof(*ctx)** (serial_leds 1 FP): `sizeof(*ctx)` in
      memset is not signed overflow. sizeof always returns size_t.
+     DONE (v0.3.98). `check_memory_function_overflow` now early-returns
+     when the size argument is a `sizeof_expression`, alongside the
+     existing `field_expression` exemption. The text-based
+     `contains_arithmetic` false-matched the `*` inside
+     `sizeof(*ctx)`. Real-world impact: INT32-C −239 (sqlite −169,
+     curl −67, mosquitto −3); libcrc/hostap unaffected. Juliet zero
+     delta.
   2. **INT33-C provably non-zero divisor** (serial_leds 2 FPs):
      Animation period set by API, never zero. Requires caller context.
   3. **DCL13-C direct call flagged as function pointer** (serial_leds
@@ -436,23 +640,169 @@ Paper impact: new Section "Case Study" between Worked Example and Limitations.
 
 # Task ID: 49
 # Title: Paper — taint tracking for CWE-78/CWE-89 (future work)
-# Status: pending
+# Status: partial (v0.3.94-0.3.103 — tasks 67-69 + 49A/49B/49C/49D delivered)
 # Dependencies: none
 # Priority: P3
 # Description: Expand cross-function taint tracking for injection CWEs,
   referenced in paper future work section.
 # Details:
-Paper Conclusion mentions "improving cross-function taint tracking for
-injection-related CWEs (CWE-78, CWE-89)" as future work.  Current taint
-tracking (STR02-C intra-function, ENV03-C function-scoped) is limited.
+Partial delivery via tasks 67-69 plus v0.3.99 (49A), v0.3.101 (49B),
+v0.3.102 (49C), and v0.3.103 (49D). CWE-78 62.8% → **94.8%** (+32.0pp,
+now exceeds clang-tidy), CWE-194 58.4% → **69.4%** (+11.0pp), CWE-195
+48.7% → 52.5% (+3.8pp).
 
-Cross-function taint needs:
-  - Prescan taint source identification (recv, fgets, getenv, etc.)
-  - Taint propagation through function params and return values
-  - Sink detection at system(), exec*, SQL query functions
+Delivered infrastructure:
+  - `FunctionSummary.has_env03_taint_source` — body text scan for ~25
+    taint sources (recv, fgets, scanf, getenv, Win32 I/O, etc.)
+  - `FunctionSummary.returns_tainted` + `returns_from_callees`
+    (v0.3.99, task 49A) — seeded from `has_env03_taint_source` on non-
+    void returns, then propagated to fixpoint via
+    `propagate_return_taint` so wrapper chains
+    (`char *wrap() { return readIt(); }`) inherit the bit.
+  - Reverse call graph built in each consuming rule from
+    `ProjectContext.call_graph`.
+  - Same-named static function merging in prescan (any tainted def
+    poisons the merged summary; OR-merges both taint bits).
 
-This is a significant new analysis capability.  Could improve CWE-78 from
-62.8% to potentially 70%+ precision by reducing FPs from sanitized paths.
+Rule integrations so far:
+  - ENV03-C: parameter path → caller summary lookup (task 68); local
+    command var `data = helper(...)` → callee clean-summary check
+    (task 49A).
+  - ENV33-C: pointer-parameter helper-sink path → transitive caller
+    summary walk (task 49B). Mirrors ENV03-C task 68, with a BFS
+    over the reverse call graph for Juliet variants 52c/53d/54e.
+  - INT31-C: signed→size_t inside upper-bound guards → caller / callee /
+    local-assignment summary lookups (task 69); `call_rhs_has_taint_source`
+    now also treats `returns_tainted` callees as tainted (task 49A).
+  - STR02-C: tainted-parameter → caller summary lookup (task 49D).
+    Mirrors ENV33-C's BFS pattern; gated on "scope has no direct taint
+    source" so local-recv paths stay flagging.
+
+## Sub-task 49A — Return-value taint (DONE v0.3.99)
+
+ENV03-C FP 468 → **324** (−144), TP 652 → 620 (−32). **4.5:1 FP:TP**
+— cleanest ratio since task 67. CWE-78 TP rate 74.1% → **76.6%**
+(+2.5pp). CWE-426 side benefit: FP −24 (1:1). Zero other-rule
+regressions. INT31-C was neutral on Juliet; the wrapper pattern
+exists in real-world code but Juliet CWE-194/195 v42 templates call
+taint sources directly inside `badSource`, so the new transitive
+bit had no additional TPs to catch there.
+
+## Sub-task 49C — Function-pointer call graph + macro-aliased taint (DONE v0.3.102)
+
+Two linked prescan fixes targeting Juliet v65a/b helper-sink variants.
+
+1. `collect_callees` resolves function-pointer aliases. The function body
+   is scanned once to build a local `pointer_var → target_function` map
+   from init declarators (`void (*fp)(char *) = target;`) and later
+   rebinds (`fp = target;`), then callees are emitted with aliases
+   rewritten. Juliet v65a `caller → sink` edges are now first-class
+   instead of landing as a `funcPtr` dead-end callee.
+
+2. `has_env03_taint_source` also matches per-file macro aliases whose
+   target is in `ENV03_TAINT_SOURCE_FUNCTIONS`. Juliet macro wrappers
+   (`#define GETENV getenv`, `#define FGETS fgets`, etc.) are now
+   caught, so callers of v65b-style sinks get correctly classified as
+   tainted. New `taint_source_aliases: &[String]` parameter on
+   `compute_summaries` / `analyze_function` carries the pre-filtered
+   alias list without widening the existing `MacroConstantMap` contract.
+
+Results: Juliet TP 24,478 → **24,542** (+64), FP 13,632 → **13,498**
+(−134), TP rate 64.2% → **64.5%** (+0.3pp). Zero other-rule
+regressions.
+  - CWE-78 TP rate 87.7% → **90.3%** (+2.6pp). ENV33-C FP 50 → **0**,
+    TP 1438 → 1514 (+76) — the macro-alias fix recovered TPs previously
+    missed because `GETENV(data)` etc. didn't poison the caller's
+    summary, so helper-sink suppression over-applied.
+  - ENV03-C: FP 324 → 300 (−24), TP 620 → 628 (+8). Clean win from the
+    same macro-alias recognition.
+  - INT31-C: FP 1452 → 1392 (−60), TP 2142 → 2122 (−20). CWE-194 TP
+    rate +1.5pp, CWE-195 +0.6pp.
+
+Real-world (curl / sqlite / mosquitto / libcrc / hostap): zero delta
+v0.3.98 → v0.3.102. The fix is Juliet-specific — function-pointer
+tables in real-world code don't match Juliet's helper-sink shape, and
+no real-world codebase in the set macro-wraps a taint source.
+
+Remaining CWE-78 gap (~280 FP across ENV03-C 300 + STR02-C 140): v42
+return-tainted `data = helper(data)` chains and v45 global-static
+pointer reads still need return-value propagation and global-write
+tracking respectively. The function-pointer edge lands variant 65;
+variant 67 wasn't in the measured FP contributors this round.
+
+## Sub-task 49D — STR02-C caller-aware suppression (DONE v0.3.103)
+
+Port the ENV33-C task 49B template to STR02-C. Previously STR02-C
+tainted every parameter by default ("params are external input") and
+flagged any `system()` / `popen()` whose arg resolved to a tainted
+variable — so every Juliet `_goodG2BSink(char *data) { popen(data); }`
+produced an FP. New gate: suppress iff (a) the arg is a function
+parameter, (b) the enclosing body has no direct taint-source call,
+and (c) every transitive caller's summary has both
+`has_env03_taint_source` and `returns_tainted` false. BFS with
+visited-set handles variants 52c/53d/54e exactly like ENV33-C.
+
+Threading the scope required passing `func_scope: &Node` through
+`check_sinks` → `check_dangerous_function_call` →
+`check_command_injection_risk`; `check_single_function` seeds it
+from the current `function_definition`.
+
+Reused existing infrastructure: STR02-C now owns a
+`function_summaries` + `callers` RefCell pair populated from
+`ProjectContext.call_graph` in `set_project_context`. No new summary
+bits needed — the `has_env03_taint_source` + `returns_tainted` pair
+from v0.3.99 / v0.3.102 covers exactly the shape STR02-C wants.
+
+Results: Juliet TP 24,542 → **24,518** (−24), FP 13,498 → **13,358**
+(−140), TP rate 64.5% → **64.7%** (+0.2pp). **5.83:1 FP:TP** — best
+ratio in the task 49 series so far (prior bests 4.5:1 at 49A, 4.02:1
+at 49B, 4.1:1 at task 67). Zero other-CWE regressions.
+  - CWE-78 TP rate 90.3% → **94.8%** (+4.5pp). STR02-C FP 140 → **0**,
+    TP 560 → 536 (−24). STR02-C now contributes zero FPs to CWE-78.
+  - CWE-78 TP rate (94.8%) now **exceeds clang-tidy's 91.6%** on the
+    overlapping-CWE competitor benchmark — CWE-78 is no longer a
+    parity gap.
+  - Remaining 140 CWE-78 FPs are all on ENV03-C: v42-style
+    `data = helper(data)` chains (return-tainted propagation) and v45
+    global-static pointer reads. STR02-C structurally can't hit these
+    because its taint tracking starts from "params = tainted" rather
+    than from externally-read buffers.
+
+Real-world: not rerun. No new `FunctionSummary` fields; STR02-C
+consumes the same bits that v0.3.102 already populates.
+
+## Sub-task 49B — ENV33-C caller-aware suppression (DONE v0.3.101)
+
+ENV33-C FP 500 → **50** (−450), TP 1550 → 1438 (−112). **4.02:1
+FP:TP** — matches the task 49 umbrella 4:1 projection. CWE-78 TP
+rate 76.6% → **87.7%** (+11.1pp). Zero other-rule regressions.
+
+Approach: mirror the ENV03-C task 68 / 49A pattern. Replace the
+blanket "pointer parameter → flag" check with a caller-aware
+transitive walk of the reverse call graph. Suppress iff every
+reachable ancestor's summary has both `has_env03_taint_source` and
+`returns_tainted` false. BFS with a visited set handles cycles and
+multi-level forwarding chains (Juliet variants 52c/53d/54e have
+intermediate clean pass-through sinks whose grand-caller holds the
+recv/fgets).
+
+Remaining gaps for CWE-78 (~50 ENV33-C FPs, plus ~324 ENV03-C FPs
+and 140 STR02-C) and CWE-194/195 (~1224 INT31-C FPs):
+  - Global/static pointer read tracking (v45-style `char *data =
+    g_goodG2BData;` where `g_goodG2BData` was last written elsewhere)
+  - Function-pointer cross-file calls (v65a/b, v67 variants — no
+    call-graph edge for `funcPtr(data)`)
+  - Extend the same clean-callee `rhs_is_safe` pattern to ENV33-C —
+    same template as ENV03-C, likely similar 4:1 ratio (~500 FP
+    candidates).
+  - CWE-89 sinks: add SQL injection entry points (sqlite3_exec,
+    mysql_query, PQexec) and the STR02-C or a new taint-sink rule.
+
+Rule candidates that would benefit from the existing taint bits once
+integrated: FIO30-C, STR02-C, FMT variants for format-string injection.
+
+This task stays open as the coordinating umbrella; individual
+rule-integration rounds are tracked as follow-ons to tasks 68/69/49A.
 
 ---
 

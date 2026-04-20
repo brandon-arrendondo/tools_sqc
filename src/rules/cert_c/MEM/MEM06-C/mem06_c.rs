@@ -132,12 +132,11 @@ impl Mem06C {
                     // Windows secure allocation
                     "VirtualAlloc" => return true,
                     // POSIX resource limits (core dump disable)
-                    "setrlimit" => {
+                    "setrlimit"
                         // Check if this is specifically for RLIMIT_CORE
-                        if self.is_rlimit_core_call(node, source) {
+                        if self.is_rlimit_core_call(node, source) => {
                             return true;
                         }
-                    }
                     _ => {}
                 }
             }

@@ -1233,6 +1233,11 @@ impl Int32C {
                         if arg_node.kind() == "field_expression" {
                             return;
                         }
+                        // sizeof(...) always yields size_t, no signed overflow.
+                        // contains_arithmetic() false-matches the `*` in `sizeof(*ctx)`.
+                        if arg_node.kind() == "sizeof_expression" {
+                            return;
+                        }
                         let arg_text = get_node_text(&arg_node, source);
                         if self.contains_arithmetic(arg_text) {
                             // Use const_eval to check if the arithmetic provably fits

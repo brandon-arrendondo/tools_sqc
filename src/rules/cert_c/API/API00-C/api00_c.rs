@@ -158,6 +158,12 @@ impl Api00C {
             .map(|(name, _)| name.clone())
             .collect();
 
+        // Map param name → type text for downstream type-aware checks.
+        let param_types: HashMap<&str, &str> = params
+            .iter()
+            .map(|(name, ty)| (name.as_str(), ty.as_str()))
+            .collect();
+
         // Filter for integer parameters that could overflow
         let integer_params: Vec<String> = params
             .iter()
@@ -207,6 +213,18 @@ impl Api00C {
                     // function is a relay and validation is the callee's concern.
                     if self.is_relay_only_parameter(&body, param_name, source) {
                         continue;
+                    }
+
+                    // Suppress `void *` parameters that are never dereferenced
+                    // locally and pass through only to null-safe sinks. Typical
+                    // generic-container slot parameter (e.g., ArrayList_Append's
+                    // `void *item`) — NULL is a valid value.
+                    if let Some(param_type) = param_types.get(param_name.as_str()) {
+                        if Self::is_generic_void_pointer_type(param_type)
+                            && self.is_void_ptr_storage_safe(&body, param_name, source, &summaries)
+                        {
+                            continue;
+                        }
                     }
 
                     // Check if the parameter is actually used in the function
@@ -840,6 +858,148 @@ impl Api00C {
                 | ("Memory_Free", 0)
                 | ("Memory_Realloc", 0)
         )
+    }
+
+    /// Return true if `param_type` is a bare `void *` (optionally const-qualified).
+    /// Rejects `void **`, arrays, and anything with a concrete type name.
+    fn is_generic_void_pointer_type(param_type: &str) -> bool {
+        let trimmed = param_type.trim();
+        if trimmed.contains('[') {
+            return false;
+        }
+        if trimmed.chars().filter(|c| *c == '*').count() != 1 {
+            return false;
+        }
+        if !trimmed.contains("void") {
+            return false;
+        }
+        // The text before the `*` must contain only void / const / volatile tokens.
+        let before_star = trimmed.split('*').next().unwrap_or("").trim();
+        for token in before_star.split_whitespace() {
+            if !matches!(token, "const" | "volatile" | "void") {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// Walk the body and decide whether every use of a `void *` parameter is
+    /// safe for a NULL value. Safe uses: stored as RHS of an assignment, used
+    /// as a local initializer, passed to a null-accepting stdlib function, or
+    /// passed to a callee whose summary validates the corresponding argument.
+    /// A single dereference (`*item`, `item->x`, `item[i]`) or a call to a
+    /// callee of unknown null-handling behavior makes the parameter unsafe.
+    fn is_void_ptr_storage_safe(
+        &self,
+        body: &Node,
+        param_name: &str,
+        source: &str,
+        summaries: &HashMap<String, FunctionSummary>,
+    ) -> bool {
+        let mut saw_any_use = false;
+        let mut safe = true;
+        self.void_ptr_storage_walk(
+            body,
+            param_name,
+            source,
+            summaries,
+            &mut safe,
+            &mut saw_any_use,
+        );
+        // If the parameter never appears, `is_parameter_used` will return false
+        // anyway; don't claim responsibility for that path.
+        saw_any_use && safe
+    }
+
+    fn void_ptr_storage_walk(
+        &self,
+        node: &Node,
+        param_name: &str,
+        source: &str,
+        summaries: &HashMap<String, FunctionSummary>,
+        safe: &mut bool,
+        saw_any_use: &mut bool,
+    ) {
+        if !*safe {
+            return;
+        }
+        if node.kind() == "identifier" {
+            let text = get_node_text(node, source);
+            if text == param_name {
+                *saw_any_use = true;
+                if let Some(parent) = node.parent() {
+                    // Skip identifiers that are used as a struct field name or
+                    // subscript index rather than as the dereference target —
+                    // those are unrelated uses of the same identifier text.
+                    let is_self_as_target = |field: &str| {
+                        parent
+                            .child_by_field_name(field)
+                            .map(|t| t.id() == node.id())
+                            .unwrap_or(false)
+                    };
+                    match parent.kind() {
+                        "pointer_expression" => {
+                            // Could be `*item` (deref) or `&item` (address-of).
+                            // Address-of a pointer itself doesn't deref it, but
+                            // the resulting `void **` is highly atypical and we
+                            // treat it as unsafe conservatively.
+                            *safe = false;
+                            return;
+                        }
+                        "field_expression" if is_self_as_target("argument") => {
+                            *safe = false;
+                            return;
+                        }
+                        "subscript_expression" if is_self_as_target("argument") => {
+                            *safe = false;
+                            return;
+                        }
+                        "argument_list" => {
+                            if let Some(call_expr) = parent.parent() {
+                                if call_expr.kind() == "call_expression" {
+                                    if let Some(func) = call_expr.child_by_field_name("function") {
+                                        let callee = get_node_text(&func, source);
+                                        let arg_idx = self.get_arg_index(node, &parent);
+                                        if Self::is_null_accepting_stdlib(callee, arg_idx) {
+                                            // ok
+                                        } else if let Some(s) = summaries.get(callee) {
+                                            if !s.checks_null_params.contains(&arg_idx) {
+                                                *safe = false;
+                                                return;
+                                            }
+                                        } else {
+                                            *safe = false;
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        "cast_expression" => {
+                            // `(void *)item` or `(T *)item` — a cast is still just a
+                            // value read, treat it as storage-like and keep walking.
+                        }
+                        _ => {
+                            // Other parents: assignment RHS, initializer in a
+                            // declaration, return expression, comparison, etc.
+                            // All safe for a NULL value.
+                        }
+                    }
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.void_ptr_storage_walk(
+                    &child,
+                    param_name,
+                    source,
+                    summaries,
+                    safe,
+                    saw_any_use,
+                );
+            }
+        }
     }
 
     fn get_arg_index(&self, arg_node: &Node, arg_list: &Node) -> usize {

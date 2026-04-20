@@ -46,10 +46,8 @@ impl CertRule for Exp35C {
             }
             // Pattern 3: Read-only access to temporary array members
             // This is a violation in C99, but allowed in C11+
-            "call_expression" => {
-                if !has_c11_guard {
-                    self.check_c99_temporary_access(node, source, &mut violations);
-                }
+            "call_expression" if !has_c11_guard => {
+                self.check_c99_temporary_access(node, source, &mut violations);
             }
             _ => {}
         }

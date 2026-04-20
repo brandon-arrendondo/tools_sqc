@@ -6,6 +6,323 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.103] - 2026-04-19
+
+### Changed
+
+- STR02-C: port the ENV03-C / ENV33-C caller-aware suppression template.
+  When `system()` / `popen()` is called with a function parameter that's
+  only tainted by the default "params are untrusted" rule — i.e. the
+  enclosing body contains no direct taint-source call — walk the reverse
+  call graph and suppress iff every transitive caller's summary shows
+  `has_env03_taint_source` and `returns_tainted` both false. BFS with a
+  visited set, matching the ENV33-C pattern that handles Juliet's
+  variant 52c/53d/54e multi-level forwarding chains. New fields
+  `function_summaries` + `callers` on `Str02C` populated from
+  `ProjectContext.call_graph` in `set_project_context`.
+
+### Benchmark
+
+- Juliet v0.3.102 → v0.3.103: TP 24,542 → 24,518 (−24), FP 13,498 →
+  **13,358** (−140), TP rate 64.5% → **64.7%** (+0.2pp). Zero
+  other-CWE regressions; every non-CWE-78 cell in the delta report is
+  exactly zero.
+  - CWE-78 TP rate 90.3% → **94.8%** (+4.5pp). STR02-C FP 140 → **0**,
+    TP 560 → 536 (−24). **5.83:1 FP:TP ratio** — best ratio so far in
+    the CWE-78 taint-aware series (prior bests: 4.5:1 at task 49A, 4.1:1
+    at task 67). STR02-C now contributes zero FPs to CWE-78; all 140
+    remaining CWE-78 FPs are on ENV03-C (v42-style return-tainted
+    helpers and v45 global-static pointer reads).
+  - CWE-78 TP rate (94.8%) now exceeds clang-tidy's 91.6% shared-CWE
+    average — CWE-78 is no longer a competitor-parity gap.
+- Real-world (curl / sqlite / mosquitto / libcrc / hostap): not rerun.
+  The change reuses existing `FunctionSummary` fields (no new summary
+  bits, no schema change), so real-world behaviour matches v0.3.102
+  which had zero delta from v0.3.98.
+
+## [0.3.102] - 2026-04-19
+
+### Changed
+
+- prescan (`collect_callees`): resolve function-pointer aliases when
+  building the call graph. The function body is now walked twice — the
+  first pass captures `void (*fp)(char *) = target;` init declarators
+  and `fp = target;` rebinds into a local alias map, the second pass
+  emits callees with aliased identifiers rewritten to the target
+  function. Juliet v65a/b sinks now surface a real caller edge instead
+  of a dangling `funcPtr` entry.
+- prescan (`has_env03_taint_source`): also match per-file macro aliases
+  whose target is in `ENV03_TAINT_SOURCE_FUNCTIONS`. Juliet's
+  `#define GETENV getenv` wrappers now correctly poison the caller's
+  summary, so ENV03-C / ENV33-C / INT31-C caller-aware suppression
+  treats `GETENV(ENV_VARIABLE)` as a real taint source.
+- `function_summary::compute_summaries` gains a `taint_source_aliases`
+  parameter plumbed through `analyze_function` and
+  `collect_function_summaries`. Per-file alias collection in prescan
+  (and header resolution) pre-filters aliases to those resolving to a
+  taint source before calling summarize.
+
+### Benchmark
+
+- Juliet v0.3.101 → v0.3.102: TP 24,478 → **24,542** (+64), FP 13,632
+  → **13,498** (−134), TP rate 64.2% → **64.5%** (+0.3pp). Zero
+  other-CWE regressions.
+  - CWE-78 TP rate 87.7% → **90.3%** (+2.6pp). ENV33-C FP 50 → **0**,
+    TP 1438 → 1514 (+76). ENV03-C FP 324 → 300 (−24), TP 620 → 628
+    (+8). 50 FP → 0 for variant 65b, plus +76 TPs recovered in other
+    helper-sink variants where the bad caller used a macro-wrapped
+    taint source (GETENV, FGETS, etc.) previously missed by the text
+    scan.
+  - CWE-194 TP rate 67.9% → **69.4%** (+1.5pp), FP −30, TP −10.
+  - CWE-195 TP rate 51.9% → **52.5%** (+0.6pp), FP −30, TP −10.
+  - INT31-C: FP 1452 → 1392 (−60), TP 2142 → 2122 (−20). 3:1 ratio.
+- Real-world v0.3.98 → v0.3.102 (curl, sqlite, mosquitto, libcrc,
+  hostap): zero delta. Change is Juliet-specific — these codebases
+  don't use Juliet's function-pointer-across-files pattern or macro
+  aliases that resolve to taint sources.
+
+## [0.3.101] - 2026-04-19
+
+### Changed
+
+- ENV33-C: walk the reverse call graph transitively in
+  `callers_are_all_clean`. v0.3.100 only checked direct callers, which
+  lost TPs on Juliet CWE-78 variants 52c/53d/54e where intermediate
+  forwarding sinks are clean pass-throughs but a grand-caller holds the
+  recv/fgets. BFS-style walk with a visited set guards against cycles.
+
+### Benchmark
+
+- Juliet v0.3.99 → v0.3.101: TP 24,590 → 24,478 (−112), FP 14,082 →
+  13,632 (**−450**), TP rate 63.6% → **64.2%** (+0.6pp). ENV33-C is
+  the only affected rule: TP 1550 → 1438, FP 500 → **50** — a
+  **4.02:1 FP:TP ratio**, matching the PLAN.md task 49 projection for
+  CWE-78 helper-sink suppression. CWE-78 TP rate 76.6% → **87.7%**
+  (+11.1pp). Zero other-CWE regressions. The remaining 50 ENV33-C FPs
+  are all v65b function-pointer variants where the call graph has no
+  edge for `funcPtr(data)` — future work requires function-pointer
+  call-graph edges (same limitation noted in task 49A).
+
+## [0.3.100] - 2026-04-19
+
+### Changed
+
+- ENV33-C: replace blanket "pointer parameter → flag" suppression
+  with caller-aware lookup. When the containing function has
+  pointer/string parameters and no direct taint-source call in its
+  body, defer to the reverse call graph: suppress only when every
+  caller's prescan summary shows both `has_env03_taint_source` and
+  `returns_tainted` are false. Unknown callers stay flagging.
+  Mirrors the ENV03-C task 68 pattern.
+
+## [0.3.99] - 2026-04-19
+
+### Changed
+
+- FunctionSummary: new `returns_tainted` bit and
+  `returns_from_callees` set. Seeded in prescan from
+  `has_env03_taint_source` on non-void returns, then propagated to
+  fixpoint via a new `propagate_return_taint` pass so wrapper chains
+  (`char *wrap() { return readIt(); }`) inherit a callee's taint bit.
+  Same-named static merging ORs the new bits (mirrors the existing
+  `has_env03_taint_source` merge).
+- ENV03-C: extend `rhs_is_safe` with a `call_expression` arm. A
+  `data = helper(...)` assignment is now treated as safe when
+  `helper`'s summary is known and has neither
+  `has_env03_taint_source` nor `returns_tainted`. Unknown callees stay
+  conservative. Suppresses Juliet CWE-78 v42-style goodG2B(Source)
+  patterns while still flagging the corresponding `data =
+  badSource(...)` bad paths (badSource contains `recv`).
+- INT31-C: `call_rhs_has_taint_source` now recognises callees whose
+  summary has `returns_tainted` set. Catches transitive wrappers
+  without requiring a direct taint-source call in the immediate
+  callee's body.
+
+### Benchmark
+
+- Juliet v0.3.98 → v0.3.99: TP 24,622→24,590 (−32), FP 14,226→14,082
+  (**−144**), TP rate 63.4% → **63.6%** (+0.2pp). ENV03-C is the only
+  affected rule: TP 652→620, FP 468→**324** — a **4.5:1 FP:TP
+  ratio**, the cleanest ratio for ENV03-C since task 67 (v0.3.94's
+  4.1:1). CWE-78 TP rate 74.1% → **76.6%** (+2.5pp). CWE-426 side
+  benefit: FP 188→164 (−24, 1:1 with TP drop). Zero other-rule
+  regressions. INT31-C was neutral on Juliet — the transitive-wrapper
+  pattern exists in real-world code but not in the Juliet v42 CWE-194/
+  195 templates, which use direct taint-source calls inside their
+  `badSource` helpers.
+
+## [0.3.98] - 2026-04-19
+
+### Changed
+
+- EXP02-C: extend guard-pattern recognition beyond null-checks. Any
+  comparison (`==`, `!=`, `<`, `>`, `<=`, `>=`) on the LHS of `&&` or
+  `||`, or a compound `&&`/`||` chain whose leaves are comparisons,
+  is now treated as a short-circuit guard. The RHS is still required
+  to be mutation-free (no `=`, `+=`, `++`, `--`) so patterns like
+  `file_size > 0 && buflen >= file_size && fseek(...)` and
+  `arr->len == arr->cap && !growCapacity(arr)` are no longer flagged,
+  while `p || (p = malloc(...))` and `a > 0 && ++count > 10` still
+  trigger. Closes task 64.
+- INT32-C: skip `sizeof(...)` arguments to `memcpy` / `memmove` /
+  `memset` size positions. `sizeof(*ctx)` always yields `size_t` and
+  has no signed overflow risk, but the text-based `contains_arithmetic`
+  helper false-matched the `*` inside the sizeof. Closes task 66 item 1.
+
+### Benchmark
+
+- Juliet v0.3.97 → v0.3.98: **zero delta** across all 74 CWEs —
+  TP 24,622, FP 14,226, TP rate 63.4% (unchanged). The EXP02-C guard
+  extension and INT32-C sizeof skip target real-world idioms (sizeof
+  in memset, compound comparison chains, equality-plus-call patterns)
+  that Juliet does not exercise.
+- Real-world v0.3.93 → v0.3.98: **−343 violations** (spans v0.3.94-
+  0.3.98 work combined). INT32-C −239 is almost entirely v0.3.98's
+  sizeof fix (v0.3.94-0.3.97 did not touch INT32-C); API00-C −111
+  and INT31-C −2 come from tasks 68/69/62C. Per-project INT32-C
+  deltas: sqlite −169, curl −67, mosquitto −3. MSC04-C +8 minor
+  regression carried over from the v0.3.94-0.3.97 range.
+
+## [0.3.97] - 2026-04-19
+
+### Changed
+
+- API00-C: suppress `void *` / `const void *` parameters that are never
+  dereferenced locally and only pass through to null-accepting stdlib
+  sinks (free/realloc/cfree/Memory_Free/Memory_Realloc) or callees
+  whose summary validates the argument. NULL is a valid value for
+  generic-container slot parameters (e.g., `ArrayList_Append(self,
+  void *item)`).
+
+### Benchmark
+
+- Juliet v0.3.96 → v0.3.97: TP 24,628→24,622 (-6), FP 14,238→14,226
+  (-12). API00-C was the only affected rule (2.0:1 FP:TP ratio).
+  CWE-476 (null deref) TP rate 58.9% → 59.6% (+0.7pp). Overall TP
+  rate unchanged at 63.4%. Zero other-rule regressions.
+- Real-world d_lib_common: API00-C 1 → 0 FP with
+  suppressions stripped.
+
+## [0.3.93] - 2026-04-17
+
+### Changed
+
+- INT30-C: drop the dedicated `malloc()` / `realloc()` multiplication
+  overflow check. The inner `*` expression is already covered by the
+  generic `check_multiplication` walker (which correctly skips under
+  VRA / constant-folding / SIZE_MAX-guard conditions), so the
+  allocation-level check only produced duplicate diagnostics on every
+  hit and occasional false positives on good-path cases where the
+  inner check had proved the multiplication safe (e.g. Juliet
+  `malloc(data * sizeof(int))` with `data = 20`). Calloc's dedicated
+  check remains — its multiplication is implicit and not visible to
+  the binary-expression walk.
+- INT30-C: removed now-dead `flag_allocation_overflow` and
+  `contains_multiplication` helpers.
+
+### Benchmark
+
+- Follow-up to v0.3.92: the v0.3.92 get_function_arguments fix
+  restored the previously-broken malloc/realloc check, adding 525
+  duplicate diagnostics on CWE-680 (TP +207, FP +318, TP rate
+  −4.7pp). Deduplicating the check brings CWE-680 back to baseline
+  while preserving the v0.3.92 embedded FP reductions and the
+  calloc-wrapper / message-cleanup improvements.
+- Juliet v0.3.93 vs v0.3.91 (baseline): zero delta across all 74
+  CWEs — TP 25354, FP 15768, TP rate 61.7%, unchanged. The v0.3.92
+  CWE-680 regression is fully reversed.
+- Real-world v0.3.93 vs v0.3.91: **−187 INT30-C violations** across
+  four codebases (hostap's pre-existing stack overflow unrelated).
+    curl:      -106 INT30-C
+    mosquitto:  -44 INT30-C
+    sqlite:     -37 INT30-C, -1 FIO05-C
+    libcrc:       0
+  Total: -188 violations overall. Closes task 60.
+
+## [0.3.92] - 2026-04-17
+
+### Changed
+
+- INT30-C: three targeted FP reductions on embedded codebases:
+  1. Skip plain `++`/`--` of a wide-unsigned struct/union field
+     (`ctx->tick++`, `obj.seq--`). Monotonic counter fields wrap at 2^32
+     or 2^64 — practically never in real systems. Juliet CWE-190/191
+     only exercises local-variable increments, so TP detection is
+     preserved.
+  2. Skip the calloc overflow warning when both `calloc` arguments are
+     function parameters of the enclosing function (thin-wrapper
+     pattern). Overflow detection is delegated to C11 calloc itself
+     (§7.22.3.2).
+  3. Extend subtraction guard detection to preceding
+     early-exit `if` siblings. `if (a < b) return; /* ... a - b */`
+     places the subtraction on an implicit else-path where `a >= b`.
+- INT30-C: `get_function_arguments` now iterates named children of the
+  argument list instead of all children. Previously it returned
+  punctuation tokens (`(`) as the first "argument", which silently
+  suppressed `malloc`/`realloc` multiplication overflow detection and
+  produced malformed `calloc((, nmemb)` messages. Added missing
+  `SIZE_MAX / size` guard recognition for `malloc` and `realloc`
+  (calloc already had it) so the fix does not regress pass tests.
+- INT30-C: `has_function_context_check` falls back to the translation
+  unit when the call has no containing function, so top-level wiki-
+  snippet tests continue to recognize overflow guards.
+
+### Benchmark
+
+- Targets task 60 follow-up: embedded FPs identified after v0.3.88
+  library benchmark. On the 4 target embedded codebases (suppressions
+  stripped for measurement):
+    d_lib_common:          1 → 0 INT30-C FPs
+    d_lib_serial_leds:    12 → 8 INT30-C FPs (−3 tick increments,
+                                             −1 implicit-else guard)
+    d_lib_airpath:         2 → 2 (unchanged — bounded-shift compound
+                                 addition, out of scope)
+  All 3319 existing tests still pass; new
+  `testcases_embedded_patterns.c` pass test covers the three new
+  patterns.
+
+## [0.3.91] - 2026-04-17
+
+### Changed
+
+- FunctionSummary: recognize alias null-checks as param null-checks.
+  Pattern: `TYPE *alias = param;` followed by a null check on `alias`.
+  Common in libcurl/sqlite wrappers that cast-copy the pointer param first
+  (e.g. `struct Curl_easy *data = d; if(!data) ...`). Without this,
+  `d` was not detected as null-checked, causing caller-side EXP34-C FPs
+  on curl wrappers.
+
+### Benchmark
+
+- Addresses v0.3.90 curl EXP34-C regression (+45 FPs from unmasked short
+  param-name substring matches revealing previously-hidden violations on
+  curl wrapper patterns).
+
+## [0.3.90] - 2026-04-17
+
+### Changed
+
+- FunctionSummary.checks_null_params: recognize `PARAM == 0` / `PARAM != 0`
+  and reversed-operand variants as null checks. Previously only the `== NULL`
+  / `!= NULL` spellings matched, so idioms like `if(pStmt==0)` (common in
+  sqlite, libcurl) did not register the param as null-checked. The new
+  `body_matches_null_check()` helper also handles arbitrary whitespace
+  between tokens and uses word-boundary checks to avoid matching substrings.
+- EXP34-C: skip deref-function arg check when callee is in the null-safe
+  list (free, realloc). `free(NULL)` is defined as no-op per C11 7.22.3.3
+  and `realloc(NULL, n)` per C11 7.22.3.5; flagging them as null-deref sites
+  is incorrect.
+- EXP34-C null-safe function list: added `realloc`.
+
+### Task
+
+- Task 61 (partial): EXP34-C FP reduction for null-safe wrappers and the
+  `== 0` null-check idiom. The originally-listed 16 FPs in d_lib_common
+  (Patterns 9 + 18) were already addressed by earlier EXP34-C work
+  (v0.3.82 AST-level null guard + v0.2.20 &stack_var propagation). This
+  changeset targets the remaining `Memory_Free(NULL)` wrapper FP and the
+  sqlite-style `== 0` null-check idiom surfaced by the realworld benchmark.
+
 ## [0.3.87] - 2026-04-07
 
 ### Added

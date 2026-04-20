@@ -24,7 +24,7 @@ pub fn prescan_directories(
 ) -> Result<ProjectContext> {
     let mut known_functions = HashSet::new();
     let mut header_declared_functions = HashSet::new();
-    let mut function_summaries = HashMap::new();
+    let mut function_summaries: HashMap<String, function_summary::FunctionSummary> = HashMap::new();
     let mut call_graph = HashMap::new();
     let mut macro_constants = HashMap::new();
     let mut macro_aliases = HashMap::new();
@@ -72,18 +72,49 @@ pub fn prescan_directories(
                 let file_macros = const_eval::collect_macro_constants(&root, &source);
                 macro_constants.extend(file_macros.clone());
 
+                // Collect macro aliases first so function summaries can treat
+                // macro-wrapped taint sources (e.g. `#define GETENV getenv`)
+                // as real taint for caller classification.
+                let file_aliases = const_eval::collect_macro_aliases(&root, &source);
+                let file_taint_aliases: Vec<String> = file_aliases
+                    .iter()
+                    .filter(|(_, target)| {
+                        function_summary::ENV03_TAINT_SOURCE_FUNCTIONS.contains(&target.as_str())
+                    })
+                    .map(|(alias, _)| alias.clone())
+                    .collect();
+
                 // Compute function summaries for this file
-                let file_summaries =
-                    function_summary::compute_summaries(&root, &source, &file_macros, needs_vra);
+                let file_summaries = function_summary::compute_summaries(
+                    &root,
+                    &source,
+                    &file_macros,
+                    needs_vra,
+                    &file_taint_aliases,
+                );
                 for (name, summary) in file_summaries {
-                    function_summaries.insert(name, summary);
+                    // When multiple files define `static` functions with
+                    // the same name, OR together the taint-source bits so
+                    // any tainted definition poisons the merged summary.
+                    // Conservative for ENV03-C caller analysis.
+                    match function_summaries.get_mut(&name) {
+                        Some(existing) => {
+                            existing.has_env03_taint_source |= summary.has_env03_taint_source;
+                            existing.returns_tainted |= summary.returns_tainted;
+                            existing
+                                .returns_from_callees
+                                .extend(summary.returns_from_callees);
+                        }
+                        None => {
+                            function_summaries.insert(name, summary);
+                        }
+                    }
                 }
 
                 // Build call graph for this file
                 collect_call_graph(&root, &source, &mut call_graph);
 
-                // Collect macro aliases (#define ALIAS identifier)
-                let file_aliases = const_eval::collect_macro_aliases(&root, &source);
+                // Merge per-file macro aliases into the project-wide map.
                 macro_aliases.extend(file_aliases);
 
                 // Collect struct field types from struct definitions
@@ -142,6 +173,10 @@ pub fn prescan_directories(
     // E.g., relay(data) { next(data); } where next() calls free(data).
     function_summary::propagate_transitive_frees(&mut function_summaries);
 
+    // Propagate return-value taint through wrapper chains.
+    // E.g., wrap() { return readIt(); } inherits readIt()'s taint bit.
+    function_summary::propagate_return_taint(&mut function_summaries);
+
     if let Some(reporter) = progress {
         reporter.report_prescan_complete(known_functions.len());
     }
@@ -170,7 +205,16 @@ pub fn prescan_directories(
 #[cfg(test)]
 pub fn prescan_single_tree(root: &Node, source: &str) -> ProjectContext {
     let macros = const_eval::collect_macro_constants(root, source);
-    let mut function_summaries = function_summary::compute_summaries(root, source, &macros, false);
+    let aliases = const_eval::collect_macro_aliases(root, source);
+    let taint_aliases: Vec<String> = aliases
+        .iter()
+        .filter(|(_, target)| {
+            function_summary::ENV03_TAINT_SOURCE_FUNCTIONS.contains(&target.as_str())
+        })
+        .map(|(alias, _)| alias.clone())
+        .collect();
+    let mut function_summaries =
+        function_summary::compute_summaries(root, source, &macros, false, &taint_aliases);
 
     let mut callsite_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
     let mut callsite_field_args: HashMap<String, Vec<Vec<HashMap<String, NullState>>>> =
@@ -191,10 +235,14 @@ pub fn prescan_single_tree(root: &Node, source: &str) -> ProjectContext {
 
     let known_functions: HashSet<String> = function_summaries.keys().cloned().collect();
 
+    let mut struct_field_types = HashMap::new();
+    collect_struct_definitions(root, source, &mut struct_field_types);
+
     ProjectContext {
         known_functions,
         function_summaries,
         macro_constants: macros,
+        struct_field_types,
         ..ProjectContext::default()
     }
 }
@@ -205,14 +253,13 @@ fn collect_header_declarations(node: &Node, source: &str, names: &mut HashSet<St
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
             match child.kind() {
-                "declaration" => {
+                "declaration"
                     // Only collect non-static function prototypes
-                    if !has_static_specifier(&child, source) {
+                    if !has_static_specifier(&child, source) => {
                         if let Some(name) = extract_function_name_from_declaration(&child, source) {
                             names.insert(name);
                         }
                     }
-                }
                 kind if kind.starts_with("preproc_")
                     || kind == "linkage_specification"
                     || kind == "declaration_list" =>
@@ -397,7 +444,11 @@ fn collect_call_graph(
                     if let Some(func_name) = extract_function_name_from_declarator(&child, source) {
                         let mut callees = HashSet::new();
                         collect_callees(&child, source, &mut callees);
-                        call_graph.insert(func_name, callees);
+                        // Merge instead of overwrite — multiple files can
+                        // each define a `static` function with the same
+                        // name. Without merging, only the last file's
+                        // callees would survive.
+                        call_graph.entry(func_name).or_default().extend(callees);
                     }
                 }
                 kind if kind.starts_with("preproc_")
@@ -413,13 +464,31 @@ fn collect_call_graph(
 }
 
 /// Collect all function names called within a node (recursive walk).
+///
+/// Resolves function-pointer aliases: if the body contains a declaration or
+/// assignment of the form `void (*fp)(...) = some_function;` followed by
+/// `fp(args)`, `some_function` is recorded as a callee. This lets cross-file
+/// Juliet v65a/b patterns (command-injection, INT31-C, etc.) link the
+/// function-pointer caller to the real sink function.
 fn collect_callees(node: &Node, source: &str, callees: &mut HashSet<String>) {
+    let mut aliases: HashMap<String, String> = HashMap::new();
+    collect_fn_ptr_aliases(node, source, &mut aliases);
+    collect_callees_resolving(node, source, &aliases, callees);
+}
+
+fn collect_callees_resolving(
+    node: &Node,
+    source: &str,
+    aliases: &HashMap<String, String>,
+    callees: &mut HashSet<String>,
+) {
     if node.kind() == "call_expression" {
         if let Some(function) = node.child_by_field_name("function") {
             if function.kind() == "identifier" {
                 if let Ok(name) = function.utf8_text(source.as_bytes()) {
                     if !name.is_empty() {
-                        callees.insert(name.to_string());
+                        let resolved = aliases.get(name).map(String::as_str).unwrap_or(name);
+                        callees.insert(resolved.to_string());
                     }
                 }
             }
@@ -427,8 +496,148 @@ fn collect_callees(node: &Node, source: &str, callees: &mut HashSet<String>) {
     }
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
-            collect_callees(&child, source, callees);
+            collect_callees_resolving(&child, source, aliases, callees);
         }
+    }
+}
+
+/// Populate `aliases` with function-pointer variable → target-function mappings
+/// found inside `node`'s subtree. Matches both init declarators
+/// (`void (*fp)(char *) = foo;`) and plain assignments to a name previously
+/// declared as a function pointer (`fp = foo;`). Non-identifier initializers
+/// and compound RHS expressions are ignored.
+fn collect_fn_ptr_aliases(node: &Node, source: &str, aliases: &mut HashMap<String, String>) {
+    match node.kind() {
+        "declaration" => {
+            for i in 0..node.child_count() {
+                let Some(child) = node.child(i) else { continue };
+                if child.kind() != "init_declarator" {
+                    continue;
+                }
+                let Some(decl) = child.child_by_field_name("declarator") else {
+                    continue;
+                };
+                if !declarator_is_function_pointer(&decl) {
+                    continue;
+                }
+                let Some(name) = extract_innermost_identifier(&decl, source) else {
+                    continue;
+                };
+                if let Some(value) = child.child_by_field_name("value") {
+                    if let Some(target) = rhs_target_function_name(&value, source) {
+                        aliases.insert(name, target);
+                    }
+                }
+            }
+        }
+        "assignment_expression" => {
+            // Rebind an existing function-pointer alias. Only applies when the
+            // LHS is already known to be a function pointer.
+            if let (Some(lhs), Some(rhs)) = (
+                node.child_by_field_name("left"),
+                node.child_by_field_name("right"),
+            ) {
+                if lhs.kind() == "identifier" {
+                    if let Ok(lhs_name) = lhs.utf8_text(source.as_bytes()) {
+                        if aliases.contains_key(lhs_name) {
+                            if let Some(target) = rhs_target_function_name(&rhs, source) {
+                                aliases.insert(lhs_name.to_string(), target);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_fn_ptr_aliases(&child, source, aliases);
+        }
+    }
+}
+
+/// True when a declarator subtree shapes a function pointer: it contains
+/// both a `function_declarator` (the callable signature) and a
+/// `pointer_declarator` (the indirection). A bare `function_declarator`
+/// indicates a function prototype, and a bare `pointer_declarator` is a
+/// plain pointer.
+fn declarator_is_function_pointer(node: &Node) -> bool {
+    has_descendant_kind(node, "function_declarator")
+        && has_descendant_kind(node, "pointer_declarator")
+}
+
+fn has_descendant_kind(node: &Node, kind: &str) -> bool {
+    if node.kind() == kind {
+        return true;
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if has_descendant_kind(&child, kind) {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+/// Find the deepest identifier under a declarator chain (the name being
+/// declared). For `(*fp)` this is `fp`.
+fn extract_innermost_identifier(node: &Node, source: &str) -> Option<String> {
+    if node.kind() == "identifier" {
+        return node.utf8_text(source.as_bytes()).ok().map(String::from);
+    }
+    if let Some(inner) = node.child_by_field_name("declarator") {
+        if let Some(name) = extract_innermost_identifier(&inner, source) {
+            return Some(name);
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            if let Some(name) = extract_innermost_identifier(&child, source) {
+                return Some(name);
+            }
+        }
+    }
+    None
+}
+
+/// Return the target-function identifier for a function-pointer RHS.
+/// Accepts `foo` and `&foo`; anything else is None.
+fn rhs_target_function_name(node: &Node, source: &str) -> Option<String> {
+    let mut n = *node;
+    // Unwrap parens/casts and leading `&`.
+    loop {
+        match n.kind() {
+            "parenthesized_expression" => {
+                if let Some(inner) = n.named_child(0) {
+                    n = inner;
+                    continue;
+                }
+                return None;
+            }
+            "cast_expression" => {
+                if let Some(value) = n.child_by_field_name("value") {
+                    n = value;
+                    continue;
+                }
+                return None;
+            }
+            "pointer_expression" | "unary_expression" => {
+                // `&foo` — unwrap to `foo`.
+                if let Some(arg) = n.child_by_field_name("argument") {
+                    n = arg;
+                    continue;
+                }
+                return None;
+            }
+            _ => break,
+        }
+    }
+    if n.kind() == "identifier" {
+        n.utf8_text(source.as_bytes()).ok().map(String::from)
+    } else {
+        None
     }
 }
 
@@ -1804,6 +2013,9 @@ fn collect_from_typedef(
 }
 
 /// Extract field name → type text from a `field_declaration_list` node.
+///
+/// Anonymous `struct`/`union` members inside the body have their inner fields
+/// flattened into the parent, matching C's transparent-access semantics.
 fn extract_struct_fields(body: &Node, source: &str) -> HashMap<String, String> {
     let mut fields = HashMap::new();
     for i in 0..body.child_count() {
@@ -1811,11 +2023,32 @@ fn extract_struct_fields(body: &Node, source: &str) -> HashMap<String, String> {
             if child.kind() == "field_declaration" {
                 if let Some((field_name, type_text)) = extract_field_decl(&child, source) {
                     fields.insert(field_name, type_text);
+                } else if let Some(inner) = find_anonymous_inner_body(&child) {
+                    for (k, v) in extract_struct_fields(&inner, source) {
+                        fields.insert(k, v);
+                    }
                 }
             }
         }
     }
     fields
+}
+
+/// For an anonymous `union`/`struct` inside a `field_declaration`, return the
+/// inner `field_declaration_list`. Returns `None` for named or non-anonymous
+/// specifiers — those are treated as typed fields, not flattened.
+fn find_anonymous_inner_body<'a>(field_decl: &Node<'a>) -> Option<Node<'a>> {
+    for i in 0..field_decl.child_count() {
+        let child = field_decl.child(i)?;
+        if matches!(child.kind(), "union_specifier" | "struct_specifier")
+            && child.child_by_field_name("name").is_none()
+        {
+            if let Some(body) = child.child_by_field_name("body") {
+                return Some(body);
+            }
+        }
+    }
+    None
 }
 
 /// Extract (field_name, type_text) from a single `field_declaration` node.
@@ -1956,12 +2189,25 @@ pub fn resolve_includes(
                 let header_macros = const_eval::collect_macro_constants(&root, &hsource);
                 context.macro_constants.extend(header_macros.clone());
 
-                let file_summaries =
-                    function_summary::compute_summaries(&root, &hsource, &header_macros, needs_vra);
+                let header_aliases = const_eval::collect_macro_aliases(&root, &hsource);
+                let header_taint_aliases: Vec<String> = header_aliases
+                    .iter()
+                    .filter(|(_, target)| {
+                        function_summary::ENV03_TAINT_SOURCE_FUNCTIONS.contains(&target.as_str())
+                    })
+                    .map(|(alias, _)| alias.clone())
+                    .collect();
+
+                let file_summaries = function_summary::compute_summaries(
+                    &root,
+                    &hsource,
+                    &header_macros,
+                    needs_vra,
+                    &header_taint_aliases,
+                );
                 for (name, summary) in file_summaries {
                     context.function_summaries.insert(name, summary);
                 }
-                let header_aliases = const_eval::collect_macro_aliases(&root, &hsource);
                 context.macro_aliases.extend(header_aliases);
 
                 // Collect struct field types from resolved headers
@@ -2148,6 +2394,66 @@ mod tests {
         assert!(graph.get("a").unwrap().contains("b"));
         assert!(graph.get("a").unwrap().contains("c"));
         assert!(graph.get("b").unwrap().contains("c"));
+    }
+
+    #[test]
+    fn test_collect_call_graph_resolves_fn_ptr_alias() {
+        // Juliet variant 65a pattern: function pointer assigned to a sink
+        // function, then invoked via the pointer. The call graph should
+        // record the underlying function as a callee of `caller`.
+        let code = "void target(char *d) {}\n\
+                    void caller(void) {\n\
+                        void (*fp)(char *) = target;\n\
+                        char *data = 0;\n\
+                        fp(data);\n\
+                    }";
+        let (tree, source) = parse_c(code);
+        let mut graph = HashMap::new();
+        collect_call_graph(&tree.root_node(), &source, &mut graph);
+        let callees = graph.get("caller").expect("caller present");
+        assert!(
+            callees.contains("target"),
+            "expected 'target' in callees, got {callees:?}"
+        );
+    }
+
+    #[test]
+    fn test_collect_call_graph_resolves_fn_ptr_address_of() {
+        // Initializer uses the address-of form `&target`, exercising the
+        // unary-argument unwrap in `rhs_target_function_name`.
+        let code = "void target(int x) {}\n\
+                    void caller(void) {\n\
+                        int (*fp)(int) = &target;\n\
+                        fp(1);\n\
+                    }";
+        let (tree, source) = parse_c(code);
+        let mut graph = HashMap::new();
+        collect_call_graph(&tree.root_node(), &source, &mut graph);
+        let callees = graph.get("caller").expect("caller present");
+        assert!(
+            callees.contains("target"),
+            "expected 'target' in callees, got {callees:?}"
+        );
+    }
+
+    #[test]
+    fn test_collect_call_graph_plain_pointer_not_aliased() {
+        // A plain pointer assignment `void *p = some_var;` is not a function
+        // pointer — make sure we don't pollute the call graph with `some_var`
+        // as a callee just because p is later indirected somehow.
+        let code = "void caller(void) {\n\
+                        int x = 0;\n\
+                        int *p = &x;\n\
+                        *p = 1;\n\
+                    }";
+        let (tree, source) = parse_c(code);
+        let mut graph = HashMap::new();
+        collect_call_graph(&tree.root_node(), &source, &mut graph);
+        let callees = graph.get("caller").cloned().unwrap_or_default();
+        assert!(
+            !callees.contains("x"),
+            "plain pointer decl should not produce callee edge: {callees:?}"
+        );
     }
 
     // -- collect_local_var_states --

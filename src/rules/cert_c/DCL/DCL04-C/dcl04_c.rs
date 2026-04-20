@@ -119,12 +119,11 @@ impl Dcl04C {
                     "pointer_declarator"
                     | "array_declarator"
                     | "function_declarator"
-                    | "identifier" => {
+                    | "identifier"
                         // Check if this is a direct declarator (not part of init_declarator)
-                        if self.is_direct_declarator(&child, declaration_node) {
+                        if self.is_direct_declarator(&child, declaration_node) => {
                             count += 1;
                         }
-                    }
                     _ => {}
                 }
             }

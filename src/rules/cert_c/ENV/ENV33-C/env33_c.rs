@@ -42,17 +42,22 @@
 //! - Suggest safer alternatives like exec() family functions
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::cfg;
 use crate::analyze::const_eval;
 use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::manifest::{RuleCategory, Severity};
 use crate::utility::cert_c::ast_utils::get_node_text;
 use std::cell::RefCell;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
 
 pub struct Env33C {
     project_aliases: RefCell<HashMap<String, String>>,
     current_aliases: RefCell<HashMap<String, String>>,
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+    /// Reverse call graph: callee_name → caller names.
+    callers: RefCell<HashMap<String, HashSet<String>>>,
 }
 
 impl Env33C {
@@ -60,6 +65,8 @@ impl Env33C {
         Self {
             project_aliases: RefCell::new(HashMap::new()),
             current_aliases: RefCell::new(HashMap::new()),
+            function_summaries: RefCell::new(HashMap::new()),
+            callers: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -93,6 +100,18 @@ impl CertRule for Env33C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_aliases.borrow_mut() = context.macro_aliases.clone();
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+
+        let mut callers: HashMap<String, HashSet<String>> = HashMap::new();
+        for (caller, callees) in &context.call_graph {
+            for callee in callees {
+                callers
+                    .entry(callee.clone())
+                    .or_default()
+                    .insert(caller.clone());
+            }
+        }
+        *self.callers.borrow_mut() = callers;
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
@@ -222,18 +241,65 @@ impl Env33C {
             None => return false,
         };
 
-        // If the function has any pointer/string parameters, external data
-        // might flow through them to the system() argument via snprintf/strcpy
-        if Self::has_pointer_parameters(&func_node, source) {
-            return false;
-        }
-
-        // Check if the containing function calls any tainted source functions
+        // Direct taint-source call in this scope (e.g. fgets, recv, getenv)
+        // means whatever the command var holds could be externally controlled.
         if self.function_has_tainted_source(&func_node, source) {
             return false;
         }
 
+        // Helper-sink pattern: the function takes a pointer/string param that
+        // could carry untrusted data from callers. Defer to callers: suppress
+        // only when every caller's prescan summary shows no taint source and
+        // no transitive return-tainted path. Unknown callers stay flagging.
+        if Self::has_pointer_parameters(&func_node, source) {
+            return self.callers_are_all_clean(&func_node, source);
+        }
+
         // No pointer params and no tainted sources → data is locally-constructed
+        true
+    }
+
+    /// True when we can prove every transitive caller of `func_node`'s
+    /// function is free of direct taint sources and transitively-tainted
+    /// return values. False when caller info is missing at any level or any
+    /// ancestor caller is tainted.
+    ///
+    /// The reverse call graph is walked BFS-style because Juliet's variants
+    /// 52/53/54 route data through multi-level forwarding sinks where the
+    /// immediate caller is a clean pass-through but a grand-caller reads
+    /// from a taint source (e.g. recv).
+    fn callers_are_all_clean(&self, func_node: &Node, source: &str) -> bool {
+        let Some(name) = cfg::get_function_name(func_node, source) else {
+            return false;
+        };
+        let callers = self.callers.borrow();
+        let Some(root_callers) = callers.get(name) else {
+            return false;
+        };
+        if root_callers.is_empty() {
+            return false;
+        }
+
+        let summaries = self.function_summaries.borrow();
+        let mut visited: HashSet<String> = HashSet::new();
+        let mut stack: Vec<String> = root_callers.iter().cloned().collect();
+
+        while let Some(current) = stack.pop() {
+            if !visited.insert(current.clone()) {
+                continue;
+            }
+            match summaries.get(&current) {
+                Some(s) if !s.has_env03_taint_source && !s.returns_tainted => {}
+                _ => return false,
+            }
+            if let Some(next) = callers.get(&current) {
+                for c in next {
+                    if !visited.contains(c) {
+                        stack.push(c.clone());
+                    }
+                }
+            }
+        }
         true
     }
 

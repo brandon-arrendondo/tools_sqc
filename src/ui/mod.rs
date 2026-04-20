@@ -496,23 +496,21 @@ impl TerminalUI {
                                     self.preview_scroll_offset = 0;
                                 }
                             }
-                            KeyCode::Char('s') => {
+                            KeyCode::Char('s')
                                 // Trigger scan (only in Violations tab)
-                                if self.current_tab == Tab::Violations {
+                                if self.current_tab == Tab::Violations => {
                                     self.scan_repository(terminal)?;
                                 }
-                            }
-                            KeyCode::Char('i') => {
+                            KeyCode::Char('i')
                                 // Ignore/suppress selected violations
                                 if self.current_tab == Tab::Violations
                                     && !self.checked_violations.is_empty()
-                                {
+                                => {
                                     self.initiate_suppression();
                                 }
-                            }
-                            KeyCode::Char('h') => {
+                            KeyCode::Char('h')
                                 // Toggle hidden items visibility (suppressed violations and clean files)
-                                if self.current_tab == Tab::Violations {
+                                if self.current_tab == Tab::Violations => {
                                     self.show_suppressed = !self.show_suppressed;
                                     self.show_clean_files = !self.show_clean_files;
                                     if self.show_suppressed {
@@ -521,7 +519,6 @@ impl TerminalUI {
                                     self.update_display_violations();
                                     self.update_sort();
                                 }
-                            }
                             KeyCode::Char(' ') => {
                                 if self.current_tab == Tab::Configuration {
                                     // Toggle rule enabled/disabled in Configuration tab
@@ -615,12 +612,11 @@ impl TerminalUI {
                                     self.preview_focused = false; // Reset focus if preview is hidden
                                 }
                             }
-                            KeyCode::Tab => {
+                            KeyCode::Tab
                                 // Switch focus between violations list and file preview (only in Violations tab)
-                                if self.current_tab == Tab::Violations && self.show_file_preview {
+                                if self.current_tab == Tab::Violations && self.show_file_preview => {
                                     self.preview_focused = !self.preview_focused;
                                 }
-                            }
                             KeyCode::Char('c') => {
                                 // Switch to Configuration tab
                                 self.current_tab = Tab::Configuration;
@@ -692,9 +688,9 @@ impl TerminalUI {
                         }
                     }
                 }
-                Event::Mouse(mouse_event) => {
+                Event::Mouse(mouse_event)
                     // Only handle mouse events when not in save dialog
-                    if !self.show_save_dialog {
+                    if !self.show_save_dialog => {
                         match mouse_event.kind {
                             MouseEventKind::ScrollUp => {
                                 if self.preview_focused && self.show_file_preview {
@@ -713,7 +709,6 @@ impl TerminalUI {
                             _ => {}
                         }
                     }
-                }
                 _ => {}
             }
         }
@@ -2508,7 +2503,7 @@ impl TerminalUI {
 
         // Sort violations by line number in reverse order to avoid index shifting
         let mut sorted_violations = violations.to_vec();
-        sorted_violations.sort_by(|a, b| b.line.cmp(&a.line));
+        sorted_violations.sort_by_key(|v| std::cmp::Reverse(v.line));
 
         // Get user information
         let user_info = self.get_user_info();
