@@ -946,17 +946,13 @@ impl Api00C {
                             *safe = false;
                             return;
                         }
-                        "field_expression" => {
-                            if is_self_as_target("argument") {
-                                *safe = false;
-                                return;
-                            }
+                        "field_expression" if is_self_as_target("argument") => {
+                            *safe = false;
+                            return;
                         }
-                        "subscript_expression" => {
-                            if is_self_as_target("argument") {
-                                *safe = false;
-                                return;
-                            }
+                        "subscript_expression" if is_self_as_target("argument") => {
+                            *safe = false;
+                            return;
                         }
                         "argument_list" => {
                             if let Some(call_expr) = parent.parent() {

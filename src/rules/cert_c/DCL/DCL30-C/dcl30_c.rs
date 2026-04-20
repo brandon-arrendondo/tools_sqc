@@ -638,9 +638,9 @@ impl Dcl30C {
                         ..Default::default()
                     });
                 }
-                "identifier" => {
+                "identifier"
                     // Check if left is a global variable (declared outside function)
-                    if self.is_global_or_static(&left, source) {
+                    if self.is_global_or_static(&left, source) => {
                         // Only flag when the local is a pointer or array type.
                         // Assigning a scalar value (e.g., global_int = local_int)
                         // just copies the value — no dangling reference is created.
@@ -674,7 +674,6 @@ impl Dcl30C {
                             ..Default::default()
                         });
                     }
-                }
                 _ => {}
             }
         }

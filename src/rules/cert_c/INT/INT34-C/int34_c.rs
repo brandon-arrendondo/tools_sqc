@@ -342,15 +342,13 @@ impl Int34C {
                             has_unsigned = true;
                         }
                     }
-                    "identifier" => {
-                        if ast_utils::get_node_text(&child, source) == var_name {
-                            declares_var = true;
-                        }
+                    "identifier" if ast_utils::get_node_text(&child, source) == var_name => {
+                        declares_var = true;
                     }
-                    "pointer_declarator" | "array_declarator" | "init_declarator" => {
-                        if self.declarator_contains_name(&child, var_name, source) {
-                            declares_var = true;
-                        }
+                    "pointer_declarator" | "array_declarator" | "init_declarator"
+                        if self.declarator_contains_name(&child, var_name, source) =>
+                    {
+                        declares_var = true;
                     }
                     _ => {}
                 }

@@ -537,70 +537,60 @@ impl Arr38C {
         let args = self.get_function_arguments(node, source);
 
         match function_name {
-            "memcpy" | "memmove" => {
-                if args.len() >= 3 {
-                    // First check for pointer offset issues (destination)
-                    if let Some(violation) = self.check_pointer_offset_overflow(
-                        &args,
-                        node,
-                        function_name,
-                        buffer_info,
-                        size_vars,
-                        pointer_offsets,
-                    ) {
-                        violations.push(violation);
-                        return;
-                    }
+            "memcpy" | "memmove" if args.len() >= 3 => {
+                // First check for pointer offset issues (destination)
+                if let Some(violation) = self.check_pointer_offset_overflow(
+                    &args,
+                    node,
+                    function_name,
+                    buffer_info,
+                    size_vars,
+                    pointer_offsets,
+                ) {
+                    violations.push(violation);
+                    return;
+                }
 
-                    // Check source pointer offset (buffer underread)
-                    if let Some(violation) = self.check_source_pointer_offset(
-                        &args,
-                        1,
-                        node,
-                        function_name,
-                        pointer_offsets,
-                    ) {
-                        violations.push(violation);
-                        return;
-                    }
+                // Check source pointer offset (buffer underread)
+                if let Some(violation) =
+                    self.check_source_pointer_offset(&args, 1, node, function_name, pointer_offsets)
+                {
+                    violations.push(violation);
+                    return;
+                }
 
-                    // Check for buffer/size mismatches
-                    self.check_buffer_size_mismatch(
-                        &args,
-                        node,
-                        source,
-                        function_name,
-                        violations,
-                        buffer_info,
-                        size_vars,
-                    );
-                }
+                // Check for buffer/size mismatches
+                self.check_buffer_size_mismatch(
+                    &args,
+                    node,
+                    source,
+                    function_name,
+                    violations,
+                    buffer_info,
+                    size_vars,
+                );
             }
-            "memset" => {
-                if args.len() >= 3 {
-                    self.check_buffer_size_mismatch(
-                        &args,
-                        node,
-                        source,
-                        function_name,
-                        violations,
-                        buffer_info,
-                        size_vars,
-                    );
-                }
+            "memset" if args.len() >= 3 => {
+                self.check_buffer_size_mismatch(
+                    &args,
+                    node,
+                    source,
+                    function_name,
+                    violations,
+                    buffer_info,
+                    size_vars,
+                );
             }
-            "memcmp" | "memchr" => {
-                if args.len() >= 3 {
-                    self.check_buffer_size_mismatch(
-                        &args,
-                        node,
-                        source,
-                        function_name,
-                        violations,
-                        buffer_info,
-                        size_vars,
-                    );
-                }
+            "memcmp" | "memchr" if args.len() >= 3 => {
+                self.check_buffer_size_mismatch(
+                    &args,
+                    node,
+                    source,
+                    function_name,
+                    violations,
+                    buffer_info,
+                    size_vars,
+                );
             }
             _ => {}
         }
@@ -629,23 +619,19 @@ impl Arr38C {
         }
 
         match function_name {
-            "strncpy" | "strncat" | "strncmp" => {
-                if args.len() >= 3 {
-                    self.check_string_size_parameter(
-                        &args,
-                        node,
-                        source,
-                        function_name,
-                        violations,
-                        buffer_info,
-                        size_vars,
-                    );
-                }
+            "strncpy" | "strncat" | "strncmp" if args.len() >= 3 => {
+                self.check_string_size_parameter(
+                    &args,
+                    node,
+                    source,
+                    function_name,
+                    violations,
+                    buffer_info,
+                    size_vars,
+                );
             }
-            "strcpy" | "strcat" => {
-                if args.len() >= 2 {
-                    self.check_unbounded_string_function(&args, node, function_name, violations);
-                }
+            "strcpy" | "strcat" if args.len() >= 2 => {
+                self.check_unbounded_string_function(&args, node, function_name, violations);
             }
             _ => {}
         }
@@ -839,68 +825,62 @@ impl Arr38C {
         let args = self.get_function_arguments(node, source);
 
         match function_name {
-            "calloc" => {
-                if args.len() >= 2 {
-                    // calloc(count, size) - check for potential overflow
-                    let count_arg = &args[0];
-                    let size_arg = &args[1];
+            "calloc" if args.len() >= 2 => {
+                // calloc(count, size) - check for potential overflow
+                let count_arg = &args[0];
+                let size_arg = &args[1];
 
-                    if self.could_cause_overflow(count_arg, size_arg) {
-                        let start_point = node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::Medium,
-                            message: "calloc() arguments may cause integer overflow".to_string(),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some(
-                                "Check for potential overflow in calloc arguments".to_string(),
-                            ),
-                            ..Default::default()
-                        });
-                    }
+                if self.could_cause_overflow(count_arg, size_arg) {
+                    let start_point = node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::Medium,
+                        message: "calloc() arguments may cause integer overflow".to_string(),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Check for potential overflow in calloc arguments".to_string(),
+                        ),
+                        ..Default::default()
+                    });
                 }
             }
-            "realloc" => {
-                if args.len() >= 2 {
-                    let size_arg = &args[1];
-                    if self.is_dangerous_size_calculation(size_arg) {
-                        let start_point = node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::High,
-                            message: "realloc() called with potentially incorrect size".to_string(),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some(
-                                "Verify realloc size is correct for the new allocation".to_string(),
-                            ),
-                            ..Default::default()
-                        });
-                    }
+            "realloc" if args.len() >= 2 => {
+                let size_arg = &args[1];
+                if self.is_dangerous_size_calculation(size_arg) {
+                    let start_point = node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: "realloc() called with potentially incorrect size".to_string(),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Verify realloc size is correct for the new allocation".to_string(),
+                        ),
+                        ..Default::default()
+                    });
                 }
             }
-            "aligned_alloc" => {
-                if args.len() >= 2 {
-                    let size_arg = &args[1];
-                    if self.is_dangerous_size_calculation(size_arg) {
-                        let start_point = node.start_position();
-                        violations.push(RuleViolation {
-                            rule_id: self.rule_id().to_string(),
-                            severity: Severity::High,
-                            message: "aligned_alloc() called with potentially incorrect size"
-                                .to_string(),
-                            file_path: String::new(),
-                            line: start_point.row + 1,
-                            column: start_point.column + 1,
-                            suggestion: Some(
-                                "Verify aligned_alloc size matches intended allocation".to_string(),
-                            ),
-                            ..Default::default()
-                        });
-                    }
+            "aligned_alloc" if args.len() >= 2 => {
+                let size_arg = &args[1];
+                if self.is_dangerous_size_calculation(size_arg) {
+                    let start_point = node.start_position();
+                    violations.push(RuleViolation {
+                        rule_id: self.rule_id().to_string(),
+                        severity: Severity::High,
+                        message: "aligned_alloc() called with potentially incorrect size"
+                            .to_string(),
+                        file_path: String::new(),
+                        line: start_point.row + 1,
+                        column: start_point.column + 1,
+                        suggestion: Some(
+                            "Verify aligned_alloc size matches intended allocation".to_string(),
+                        ),
+                        ..Default::default()
+                    });
                 }
             }
             _ => {}
@@ -1333,9 +1313,9 @@ impl Arr38C {
         let args = self.get_function_arguments(node, source);
 
         match function_name {
-            "bsearch" => {
+            "bsearch"
                 // bsearch(key, base, count, size, compare)
-                if args.len() >= 5 {
+                if args.len() >= 5 => {
                     let base_arg = &args[1];
                     let count_arg = &args[2];
 
@@ -1386,10 +1366,9 @@ impl Arr38C {
                         });
                     }
                 }
-            }
-            "qsort" => {
+            "qsort"
                 // qsort(base, count, size, compare)
-                if args.len() >= 4 {
+                if args.len() >= 4 => {
                     let base_arg = &args[0];
                     let count_arg = &args[1];
                     let size_arg = &args[2];
@@ -1464,7 +1443,6 @@ impl Arr38C {
                         });
                     }
                 }
-            }
             _ => {}
         }
     }

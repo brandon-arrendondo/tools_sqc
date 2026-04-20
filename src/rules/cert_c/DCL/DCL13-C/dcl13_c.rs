@@ -714,26 +714,24 @@ fn analyze_parameter(param: &Node, source: &str) -> Option<(String, bool, bool, 
                         col = pos.column + 1;
                     }
                 }
-                "identifier" => {
+                "identifier"
                     // Direct identifier (might be non-pointer parameter)
-                    if param_name.is_empty() {
+                    if param_name.is_empty() => {
                         param_name = ast_utils::get_node_text(&child, source).to_string();
                         let pos = child.start_position();
                         line = pos.row + 1;
                         col = pos.column + 1;
                     }
-                }
                 "primitive_type" | "type_identifier" | "struct_specifier" | "union_specifier"
-                | "enum_specifier" => {
+                | "enum_specifier"
                     // Type specifier - check if followed by pointer
-                    if i + 1 < param.child_count() {
+                    if i + 1 < param.child_count() => {
                         if let Some(next) = param.child(i + 1) {
                             if next.kind() == "*" || next.kind() == "abstract_pointer_declarator" {
                                 is_pointer = true;
                             }
                         }
                     }
-                }
                 _ => {}
             }
         }

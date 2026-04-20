@@ -887,13 +887,12 @@ impl FlexibleArrayAnalyzer {
         let init_text = source[init_node.start_byte()..init_node.end_byte()].to_string();
 
         match init_node.kind() {
-            "pointer_expression" => {
+            "pointer_expression"
                 // Direct dereference: *shared_flex
-                if init_text.starts_with("*") {
+                if init_text.starts_with("*") => {
                     let dereferenced_var = init_text.trim_start_matches("*").trim();
                     return self.is_likely_flexible_struct_pointer(dereferenced_var);
                 }
-            }
             "identifier" => {
                 // Direct variable copy: local_copy (without dereference)
                 // Since we're in the context of initializing a flexible array struct,
@@ -905,15 +904,14 @@ impl FlexibleArrayAnalyzer {
                        var_name.contains("copy") || var_name.contains("local") ||
                        var_name.contains("another") || var_name.contains("temp");
             }
-            "compound_literal_expression" => {
+            "compound_literal_expression"
                 // Compound literal: (struct flex_array_struct){...}
                 // Any compound literal of a flexible array struct is problematic
-                if init_text.contains("flex_array_struct")
-                    || self.flexible_structs.keys().any(|k| init_text.contains(k))
-                {
+                if (init_text.contains("flex_array_struct")
+                    || self.flexible_structs.keys().any(|k| init_text.contains(k)))
+                => {
                     return true;
                 }
-            }
             "subscript_expression" => {
                 // Array element copy: flex_array[0]
                 return self.is_likely_flexible_struct_array_access(&init_text);
@@ -1181,16 +1179,16 @@ impl FlexibleArrayAnalyzer {
         for i in 0..declaration.child_count() {
             if let Some(child) = declaration.child(i) {
                 match child.kind() {
-                    "struct_specifier" => {
+                    "struct_specifier"
                         // Only consider struct_specifier if it's actually the type being declared,
                         // not part of an initializer expression
-                        if i == 0
+                        if (i == 0
                             || (i == 1
                                 && declaration.child(0).is_some_and(|c| {
                                     c.kind() == "storage_class_specifier"
                                         || c.kind() == "type_qualifier"
-                                }))
-                        {
+                                })))
+                        => {
                             // Look for type identifier in struct
                             for j in 0..child.child_count() {
                                 if let Some(type_child) = child.child(j) {
@@ -1203,31 +1201,28 @@ impl FlexibleArrayAnalyzer {
                                 }
                             }
                         }
-                    }
-                    "type_identifier" => {
+                    "type_identifier"
                         // Only consider if it's the first type identifier (the declaration type)
-                        if i == 0
+                        if (i == 0
                             || (i == 1
                                 && declaration.child(0).is_some_and(|c| {
                                     c.kind() == "storage_class_specifier"
                                         || c.kind() == "type_qualifier"
-                                }))
-                        {
+                                })))
+                        => {
                             return Some(source[child.start_byte()..child.end_byte()].to_string());
                         }
-                    }
-                    "primitive_type" => {
+                    "primitive_type"
                         // Handle primitive types like size_t, int, etc.
-                        if i == 0
+                        if (i == 0
                             || (i == 1
                                 && declaration.child(0).is_some_and(|c| {
                                     c.kind() == "storage_class_specifier"
                                         || c.kind() == "type_qualifier"
-                                }))
-                        {
+                                })))
+                        => {
                             return Some(source[child.start_byte()..child.end_byte()].to_string());
                         }
-                    }
                     _ => {}
                 }
             }
@@ -3044,10 +3039,8 @@ impl FlexibleArrayAnalyzer {
                             }
                         }
                     }
-                    "type_identifier" => {
-                        if !is_struct_type {
-                            type_name = source[child.start_byte()..child.end_byte()].to_string();
-                        }
+                    "type_identifier" if !is_struct_type => {
+                        type_name = source[child.start_byte()..child.end_byte()].to_string();
                     }
                     "field_identifier" => {
                         member_name = source[child.start_byte()..child.end_byte()].to_string();
@@ -3175,10 +3168,8 @@ impl FlexibleArrayAnalyzer {
                             }
                         }
                     }
-                    "type_identifier" => {
-                        if type_name.is_empty() {
-                            type_name = source[child.start_byte()..child.end_byte()].to_string();
-                        }
+                    "type_identifier" if type_name.is_empty() => {
+                        type_name = source[child.start_byte()..child.end_byte()].to_string();
                     }
                     "field_identifier" => {
                         field_name = source[child.start_byte()..child.end_byte()].to_string();

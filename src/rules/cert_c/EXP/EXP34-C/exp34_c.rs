@@ -768,15 +768,11 @@ fn analyze_condition_for_safety(node: &Node, var_name: &str, source: &str, negat
             if let Some(operator) = node.child_by_field_name("operator") {
                 let op = ast_utils::get_node_text_owned(&operator, source);
                 match op.as_str() {
-                    "==" => {
-                        if is_null_comparison(node, var_name, source) {
-                            return negated;
-                        }
+                    "==" if is_null_comparison(node, var_name, source) => {
+                        return negated;
                     }
-                    "!=" => {
-                        if is_null_comparison(node, var_name, source) {
-                            return !negated;
-                        }
+                    "!=" if is_null_comparison(node, var_name, source) => {
+                        return !negated;
                     }
                     "&&" => {
                         if let (Some(left), Some(right)) = (

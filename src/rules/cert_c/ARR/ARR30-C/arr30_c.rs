@@ -1080,10 +1080,8 @@ impl Arr30C {
         // Find the buffer size by searching for declaration in source
         if let Some(size) = self.find_array_size_in_source(var_name, source) {
             match op {
-                "-" => {
-                    if operand <= size {
-                        return Some((size - operand) as isize);
-                    }
+                "-" if operand <= size => {
+                    return Some((size - operand) as isize);
                 }
                 "+" => return Some((size + operand) as isize),
                 _ => {}
@@ -3081,15 +3079,13 @@ impl Arr30C {
                     macro_constants,
                 ));
             }
-            "assignment_expression" => {
-                if self.is_pointer_arithmetic_assignment(node, source) {
-                    violations.extend(self.check_pointer_arithmetic(
-                        node,
-                        source,
-                        &local_buffers,
-                        &local_aliases,
-                    ));
-                }
+            "assignment_expression" if self.is_pointer_arithmetic_assignment(node, source) => {
+                violations.extend(self.check_pointer_arithmetic(
+                    node,
+                    source,
+                    &local_buffers,
+                    &local_aliases,
+                ));
             }
             "call_expression" => {
                 violations.extend(self.check_dangerous_function_call(node, source, &local_buffers));
@@ -3487,10 +3483,10 @@ impl Arr30C {
                         }
                     }
                     // Handle complex declarators (function pointers, nested pointers, etc.)
-                    "function_declarator" | "pointer_declarator" | "parenthesized_declarator" => {
-                        if var_name.is_none() {
-                            var_name = find_identifier_in_declarator(&child, source);
-                        }
+                    "function_declarator" | "pointer_declarator" | "parenthesized_declarator"
+                        if var_name.is_none() =>
+                    {
+                        var_name = find_identifier_in_declarator(&child, source);
                     }
                     _ => {}
                 }

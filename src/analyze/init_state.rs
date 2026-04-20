@@ -728,14 +728,14 @@ fn process_expression(
                             }
                         } else {
                             match info.state {
-                                InitState::MallocUninitialized => {
+                                InitState::MallocUninitialized
                                     // Field writes (ptr->field = val) don't fully
                                     // initialize malloc'd memory — other fields/flexible
                                     // array members may remain uninitialized. Only
                                     // subscript/deref writes upgrade content state.
                                     // But arr[0].field = val (subscript in chain)
                                     // should upgrade — it's writing content.
-                                    if left.kind() != "field_expression" || has_subscript_in_chain {
+                                    if (left.kind() != "field_expression" || has_subscript_in_chain) => {
                                         // Check for partial initialization: if inside a
                                         // for-loop whose bound < allocation_count, the
                                         // loop only initializes a fraction of elements.
@@ -749,7 +749,6 @@ fn process_expression(
                                             info.state = InitState::MallocInitialized;
                                         }
                                     }
-                                }
                                 InitState::Uninitialized => {
                                     if left.kind() == "field_expression" && !has_subscript_in_chain
                                     {

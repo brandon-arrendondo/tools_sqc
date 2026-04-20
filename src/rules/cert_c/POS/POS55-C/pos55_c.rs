@@ -155,20 +155,14 @@ impl Pos55C {
                     node.start_position().column + 1,
                 );
                 match name.as_str() {
-                    "bind" => {
-                        if bind_pos.is_none() {
-                            *bind_pos = Some(pos);
-                        }
+                    "bind" if bind_pos.is_none() => {
+                        *bind_pos = Some(pos);
                     }
-                    "listen" => {
-                        if listen_pos.is_none() {
-                            *listen_pos = Some(pos);
-                        }
+                    "listen" if listen_pos.is_none() => {
+                        *listen_pos = Some(pos);
                     }
-                    "accept" => {
-                        if accept_pos.is_none() {
-                            *accept_pos = Some(pos);
-                        }
+                    "accept" if accept_pos.is_none() => {
+                        *accept_pos = Some(pos);
                     }
                     _ => {}
                 }
