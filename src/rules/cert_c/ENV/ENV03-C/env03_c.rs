@@ -32,6 +32,11 @@ use tree_sitter::Node;
 /// If none of these appear in the containing function, a local-variable
 /// command argument to system/popen is treated as program-controlled
 /// (no taint path) and the ENV03-C warning is suppressed.
+///
+/// Must stay in sync with
+/// `function_summary::ENV03_TAINT_SOURCE_FUNCTIONS` so that the
+/// scope-local scan here and the cross-function summary bit agree on
+/// which calls introduce taint.
 const TAINT_SOURCES: &[&str] = &[
     // Sockets / network
     "recv",
@@ -53,9 +58,23 @@ const TAINT_SOURCES: &[&str] = &[
     "sscanf",
     "vscanf",
     "vfscanf",
+    // Wide-character input
+    "fgetws",
+    "getwchar",
+    "getwc",
+    "fgetwc",
+    "wscanf",
+    "fwscanf",
+    "swscanf",
+    "vwscanf",
+    "vfwscanf",
+    "_getws",
+    "_getws_s",
     // Environment / command line
     "getenv",
     "secure_getenv",
+    "_wgetenv",
+    "_wgetenv_s",
     // Windows stdin / registry
     "ReadFile",
     "ReadConsole",
@@ -325,6 +344,17 @@ impl Env03C {
             return true;
         }
 
+        // Command var is a local, not a parameter. But if it's initialized
+        // solely from parameter-derived expressions (*p, p[i], p.f, p->f,
+        // chained through casts and intermediate locals), then taint is
+        // upstream — defer to the same caller-aware check. Juliet variants
+        // 63/64/66/67 use this shape: a cross-file sink receives data via
+        // pointer-to-pointer / void* / array / struct parameter, then copies
+        // it into a local before the popen call.
+        if is_command_var_parameter_derived(scope, var_name, source) {
+            return !self.callers_are_all_clean(scope, source);
+        }
+
         let summaries = self.function_summaries.borrow();
         !is_command_var_locally_safe(scope, var_name, source, &summaries)
     }
@@ -431,6 +461,172 @@ fn trailing_identifier(name: &str) -> &str {
     name.rsplit(|c: char| !c.is_alphanumeric() && c != '_')
         .next()
         .unwrap_or(name)
+}
+
+/// Return true when every write to `var_name` in `scope` is an expression
+/// derived from a function parameter via deref (`*p`), subscript (`p[i]`),
+/// field access (`p.f` / `p->f`), or cast (`(T)p`) — possibly chained
+/// through intermediate locals that are themselves parameter-derived.
+///
+/// Targets Juliet CWE-78 variants 63/64/66/67 where a cross-file "sink"
+/// function receives tainted-or-not data via a pointer-to-pointer / void*
+/// / array / struct parameter and copies it into a local before calling
+/// popen/system. Combined with `callers_are_all_clean`, this suppresses
+/// the goodG2BSink FP without affecting the badSink TP (the bad caller
+/// has recv/fgets so its summary is tainted).
+///
+/// Requires at least one write so an uninitialised pointer never counts.
+fn is_command_var_parameter_derived(scope: &Node, var_name: &str, source: &str) -> bool {
+    let Some(body) = scope.child_by_field_name("body") else {
+        return false;
+    };
+    let params: HashSet<String> = collect_param_names(scope, source).into_iter().collect();
+    if params.is_empty() {
+        return false;
+    }
+
+    // Collect every variable's write-RHS list once, then iterate a
+    // fixpoint: add `v` to `derived` when every RHS evaluates to a
+    // parameter-derived expression under the current `derived` set.
+    let mut writes: HashMap<String, Vec<Node>> = HashMap::new();
+    collect_variable_writes(&body, source, &mut writes);
+
+    let mut derived = params.clone();
+    loop {
+        let before = derived.len();
+        for (name, rhs_list) in &writes {
+            if derived.contains(name) {
+                continue;
+            }
+            if !rhs_list.is_empty()
+                && rhs_list
+                    .iter()
+                    .all(|r| is_param_derived_expr(r, &derived, source))
+            {
+                derived.insert(name.clone());
+            }
+        }
+        if derived.len() == before {
+            break;
+        }
+    }
+
+    // The var itself must be present (has at least one write) and every
+    // write must be derived — i.e. var_name was added to derived by the
+    // loop above. Parameters aren't command vars here (handled earlier).
+    !params.contains(var_name) && derived.contains(var_name)
+}
+
+/// Parameter-declarator identifiers for a `function_definition` node.
+fn collect_param_names(scope: &Node, source: &str) -> Vec<String> {
+    let mut names = Vec::new();
+    let Some(decl) = scope.child_by_field_name("declarator") else {
+        return names;
+    };
+    let Some(params) = find_parameter_list(&decl) else {
+        return names;
+    };
+    for i in 0..params.child_count() {
+        let Some(child) = params.child(i) else {
+            continue;
+        };
+        if child.kind() != "parameter_declaration" {
+            continue;
+        }
+        let Some(pd) = child.child_by_field_name("declarator") else {
+            continue;
+        };
+        if let Some(name) = extract_declarator_name(&pd, source) {
+            names.push(name);
+        }
+    }
+    names
+}
+
+fn find_parameter_list<'a>(node: &Node<'a>) -> Option<Node<'a>> {
+    if node.kind() == "function_declarator" {
+        for i in 0..node.child_count() {
+            if let Some(c) = node.child(i) {
+                if c.kind() == "parameter_list" {
+                    return Some(c);
+                }
+            }
+        }
+    }
+    // Nested declarators (e.g. pointer_declarator → function_declarator).
+    for i in 0..node.child_count() {
+        if let Some(c) = node.child(i) {
+            if let Some(found) = find_parameter_list(&c) {
+                return Some(found);
+            }
+        }
+    }
+    None
+}
+
+/// Gather `(var_name, Vec<rhs>)` for every assignment to a named local
+/// variable under `body`. Covers both `init_declarator` (declaration with
+/// initializer) and plain `lhs = rhs` assignment expressions. Only `=` is
+/// tracked; compound assignments like `+=` are ignored (they mean the
+/// write isn't purely derived from the RHS).
+fn collect_variable_writes<'a>(
+    node: &Node<'a>,
+    source: &str,
+    writes: &mut HashMap<String, Vec<Node<'a>>>,
+) {
+    match node.kind() {
+        "init_declarator" => {
+            if let Some(decl) = node.child_by_field_name("declarator") {
+                if let Some(name) = extract_declarator_name(&decl, source) {
+                    if let Some(value) = node.child_by_field_name("value") {
+                        writes.entry(name).or_default().push(value);
+                    }
+                }
+            }
+        }
+        "assignment_expression" => {
+            if let Some(lhs) = node.child_by_field_name("left") {
+                let lhs = strip_casts_and_parens(lhs);
+                if lhs.kind() == "identifier" {
+                    let op_is_plain = node_operator(node, source)
+                        .map(|op| op == "=")
+                        .unwrap_or(true);
+                    if op_is_plain {
+                        if let Some(rhs) = node.child_by_field_name("right") {
+                            let name = get_node_text(&lhs, source).to_string();
+                            writes.entry(name).or_default().push(rhs);
+                        }
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            collect_variable_writes(&child, source, writes);
+        }
+    }
+}
+
+/// True if `expr` is a parameter-derived expression given the current
+/// `derived` set. Peels casts/parens, then unwraps deref, subscript, and
+/// field access to reach an identifier, which must be in `derived`.
+fn is_param_derived_expr(expr: &Node, derived: &HashSet<String>, source: &str) -> bool {
+    let e = strip_casts_and_parens(*expr);
+    match e.kind() {
+        "identifier" => derived.contains(get_node_text(&e, source)),
+        "pointer_expression" | "unary_expression" => e
+            .child_by_field_name("argument")
+            .is_some_and(|a| is_param_derived_expr(&a, derived, source)),
+        "subscript_expression" => e
+            .child_by_field_name("argument")
+            .is_some_and(|a| is_param_derived_expr(&a, derived, source)),
+        "field_expression" => e
+            .child_by_field_name("argument")
+            .is_some_and(|a| is_param_derived_expr(&a, derived, source)),
+        _ => false,
+    }
 }
 
 /// Can we prove the local variable `var_name` in this function scope is
