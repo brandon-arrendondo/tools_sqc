@@ -134,7 +134,7 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                 if fail_dir.exists() {
                     for test_file in fs::read_dir(&fail_dir)? {
                         let test_file = test_file?;
-                        if test_file.path().extension().map_or(false, |e| e == "c") {
+                        if test_file.path().extension().is_some_and(|e| e == "c") {
                             let file_name = test_file.file_name().to_string_lossy().to_string();
                             let test_name = file_name.trim_end_matches(".c");
                             let func_name = format!(
@@ -156,7 +156,7 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
                 if pass_dir.exists() {
                     for test_file in fs::read_dir(&pass_dir)? {
                         let test_file = test_file?;
-                        if test_file.path().extension().map_or(false, |e| e == "c") {
+                        if test_file.path().extension().is_some_and(|e| e == "c") {
                             let file_name = test_file.file_name().to_string_lossy().to_string();
                             let test_name = file_name.trim_end_matches(".c");
                             let func_name = format!(
@@ -197,7 +197,7 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
 
             categories
                 .entry(category_name.clone())
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(rule_info);
         }
     }
@@ -274,7 +274,7 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
             ));
         }
     }
-    report.push_str("\n");
+    report.push('\n');
 
     // Detailed sections by category
     for (category, rules) in &categories {
@@ -363,7 +363,7 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
 
                     report.push_str(&format!("- {} `{}` → `{}`\n", status, test.name, func_name));
                 }
-                report.push_str("\n");
+                report.push('\n');
             }
 
             if !rule.pass_tests.is_empty() {
@@ -388,7 +388,7 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
 
                     report.push_str(&format!("- {} `{}` → `{}`\n", status, test.name, func_name));
                 }
-                report.push_str("\n");
+                report.push('\n');
             }
 
             report.push_str("---\n\n");
@@ -416,7 +416,7 @@ fn create_test_summary_report() -> Result<(), Box<dyn std::error::Error>> {
             avg
         ));
     }
-    report.push_str("\n");
+    report.push('\n');
 
     fs::write(&output_path, report)?;
     println!("Generated test summary report: {}", output_path.display());

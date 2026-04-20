@@ -979,7 +979,7 @@ mod tests {
         // After reassignment, only the NULL def should reach the last block
         // The malloc def should be killed
         let last_block = cfg.blocks.last().unwrap();
-        let p_reaching = reaching.defs_reaching_block(last_block.id, "p");
+        let _p_reaching = reaching.defs_reaching_block(last_block.id, "p");
         // If this is a single basic block, all defs of p in that block
         // are in the gen set with only the last surviving
         // Verify definitions exist
