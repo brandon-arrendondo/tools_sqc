@@ -107,6 +107,12 @@ fn body_contains_taint_source(body_text: &str) -> bool {
         .any(|name| body_text.contains(&format!("{}(", name)))
 }
 
+fn body_contains_alias(body_text: &str, aliases: &[String]) -> bool {
+    aliases
+        .iter()
+        .any(|alias| body_text.contains(&format!("{}(", alias)))
+}
+
 /// Compute function summaries for all function definitions in the AST.
 ///
 /// When `compute_return_ranges` is true, also computes return value ranges
@@ -117,10 +123,18 @@ pub fn compute_summaries(
     source: &str,
     macros: &MacroConstantMap,
     compute_return_ranges: bool,
+    taint_source_aliases: &[String],
 ) -> HashMap<String, FunctionSummary> {
     let mut summaries = HashMap::new();
 
-    collect_function_summaries(root, source, macros, compute_return_ranges, &mut summaries);
+    collect_function_summaries(
+        root,
+        source,
+        macros,
+        compute_return_ranges,
+        taint_source_aliases,
+        &mut summaries,
+    );
 
     summaries
 }
@@ -130,11 +144,18 @@ fn collect_function_summaries(
     source: &str,
     macros: &MacroConstantMap,
     compute_return_ranges: bool,
+    taint_source_aliases: &[String],
     summaries: &mut HashMap<String, FunctionSummary>,
 ) {
     if node.kind() == "function_definition" {
         if let Some(name) = extract_function_name(node, source) {
-            let summary = analyze_function(node, source, macros, compute_return_ranges);
+            let summary = analyze_function(
+                node,
+                source,
+                macros,
+                compute_return_ranges,
+                taint_source_aliases,
+            );
             summaries.insert(name, summary);
         }
     }
@@ -145,8 +166,13 @@ fn collect_function_summaries(
             match child.kind() {
                 "function_definition" => {
                     if let Some(name) = extract_function_name(&child, source) {
-                        let summary =
-                            analyze_function(&child, source, macros, compute_return_ranges);
+                        let summary = analyze_function(
+                            &child,
+                            source,
+                            macros,
+                            compute_return_ranges,
+                            taint_source_aliases,
+                        );
                         summaries.insert(name, summary);
                     }
                 }
@@ -156,6 +182,7 @@ fn collect_function_summaries(
                         source,
                         macros,
                         compute_return_ranges,
+                        taint_source_aliases,
                         summaries,
                     );
                 }
@@ -166,11 +193,16 @@ fn collect_function_summaries(
 }
 
 /// Analyze a single function definition to produce its summary.
+///
+/// `taint_source_aliases` names any macro identifier whose target resolves to
+/// a taint source (e.g. `#define GETENV getenv`) — treated as additional
+/// text-scan keywords when computing `has_env03_taint_source`.
 fn analyze_function(
     func_node: &Node,
     source: &str,
     macros: &MacroConstantMap,
     compute_return_ranges: bool,
+    taint_source_aliases: &[String],
 ) -> FunctionSummary {
     let mut summary = FunctionSummary::default();
 
@@ -216,8 +248,12 @@ fn analyze_function(
             || body_text.contains("aligned_alloc(");
 
         // Quick text scan for taint-source calls — used by ENV03-C to
-        // classify callers as tainted/clean.
-        summary.has_env03_taint_source = body_contains_taint_source(body_text);
+        // classify callers as tainted/clean. Also matches any macro
+        // identifier that aliases a known taint source (e.g.
+        // `#define GETENV getenv`) so Juliet macro-wrapped sources still
+        // poison the caller's summary.
+        summary.has_env03_taint_source = body_contains_taint_source(body_text)
+            || body_contains_alias(body_text, taint_source_aliases);
 
         // Seed return-value taint: a function that directly calls a taint
         // source and returns non-void may carry that taint back to callers.
@@ -964,7 +1000,7 @@ mod tests {
         parser.set_language(&tree_sitter_c::language()).unwrap();
         let tree = parser.parse(code, None).unwrap();
         let macros = const_eval::collect_macro_constants(&tree.root_node(), code);
-        compute_summaries(&tree.root_node(), code, &macros, true)
+        compute_summaries(&tree.root_node(), code, &macros, true, &[])
     }
 
     #[test]
