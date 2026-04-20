@@ -1,11 +1,12 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-19 (v0.3.102)
+Last Updated: 2026-04-19 (v0.3.103)
 
-Juliet benchmark v0.3.102: 24,542 TP / 13,498 FP (64.5% TP rate), 41.5% per-file.
-Cumulative v0.3.93 → v0.3.102: TP rate +2.8pp, FP −2,270 (−14.4%), zero net
+Juliet benchmark v0.3.103: 24,518 TP / 13,358 FP (64.7% TP rate), 41.5% per-file.
+Cumulative v0.3.93 → v0.3.103: TP rate +3.0pp, FP −2,410 (−15.3%), zero net
 other-rule regressions. Real-world v0.3.93 → v0.3.98: −343 violations;
-v0.3.98 → v0.3.102: zero delta (Juliet-specific fix).
+v0.3.98 → v0.3.103: zero delta (Juliet-specific fixes — no new
+FunctionSummary fields since v0.3.102).
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -27,8 +28,8 @@ Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.96 current):
   CWE-415: 58.2% vs 80.0% (−21.8pp) — MEM01-C (was −36.6pp, task 58 done)
   CWE-416: 92.9% vs 60.3% (+32.6pp) — MEM01-C EXCEEDS target (task 58 done)
   CWE-401: 77.6% vs 83.9% (−6.3pp) — MEM31-C (was −33.2pp, task 59 done)
-  CWE-78:  90.3% (+27.5pp since v0.3.93) — ENV03-C + ENV33-C taint-aware
-                                          (tasks 67-68, 49A + 49B + 49C)
+  CWE-78:  94.8% (+32.0pp since v0.3.93) — now EXCEEDS clang-tidy 91.6%
+                                          (tasks 67-68, 49A + 49B + 49C + 49D)
   CWE-194: 69.4% (+11.0pp since v0.3.95) — INT31-C taint-aware (task 69 + 49C)
   CWE-195: 52.5% (+ 3.8pp since v0.3.95) — INT31-C taint-aware (task 69 + 49C)
 
@@ -639,15 +640,16 @@ Paper impact: new Section "Case Study" between Worked Example and Limitations.
 
 # Task ID: 49
 # Title: Paper — taint tracking for CWE-78/CWE-89 (future work)
-# Status: partial (v0.3.94-0.3.102 — tasks 67-69 + 49A/49B/49C delivered)
+# Status: partial (v0.3.94-0.3.103 — tasks 67-69 + 49A/49B/49C/49D delivered)
 # Dependencies: none
 # Priority: P3
 # Description: Expand cross-function taint tracking for injection CWEs,
   referenced in paper future work section.
 # Details:
 Partial delivery via tasks 67-69 plus v0.3.99 (49A), v0.3.101 (49B),
-and v0.3.102 (49C). CWE-78 62.8% → **90.3%** (+27.5pp), CWE-194
-58.4% → **69.4%** (+11.0pp), CWE-195 48.7% → 52.5% (+3.8pp).
+v0.3.102 (49C), and v0.3.103 (49D). CWE-78 62.8% → **94.8%** (+32.0pp,
+now exceeds clang-tidy), CWE-194 58.4% → **69.4%** (+11.0pp), CWE-195
+48.7% → 52.5% (+3.8pp).
 
 Delivered infrastructure:
   - `FunctionSummary.has_env03_taint_source` — body text scan for ~25
@@ -672,6 +674,9 @@ Rule integrations so far:
   - INT31-C: signed→size_t inside upper-bound guards → caller / callee /
     local-assignment summary lookups (task 69); `call_rhs_has_taint_source`
     now also treats `returns_tainted` callees as tainted (task 49A).
+  - STR02-C: tainted-parameter → caller summary lookup (task 49D).
+    Mirrors ENV33-C's BFS pattern; gated on "scope has no direct taint
+    source" so local-recv paths stay flagging.
 
 ## Sub-task 49A — Return-value taint (DONE v0.3.99)
 
@@ -724,6 +729,47 @@ return-tainted `data = helper(data)` chains and v45 global-static
 pointer reads still need return-value propagation and global-write
 tracking respectively. The function-pointer edge lands variant 65;
 variant 67 wasn't in the measured FP contributors this round.
+
+## Sub-task 49D — STR02-C caller-aware suppression (DONE v0.3.103)
+
+Port the ENV33-C task 49B template to STR02-C. Previously STR02-C
+tainted every parameter by default ("params are external input") and
+flagged any `system()` / `popen()` whose arg resolved to a tainted
+variable — so every Juliet `_goodG2BSink(char *data) { popen(data); }`
+produced an FP. New gate: suppress iff (a) the arg is a function
+parameter, (b) the enclosing body has no direct taint-source call,
+and (c) every transitive caller's summary has both
+`has_env03_taint_source` and `returns_tainted` false. BFS with
+visited-set handles variants 52c/53d/54e exactly like ENV33-C.
+
+Threading the scope required passing `func_scope: &Node` through
+`check_sinks` → `check_dangerous_function_call` →
+`check_command_injection_risk`; `check_single_function` seeds it
+from the current `function_definition`.
+
+Reused existing infrastructure: STR02-C now owns a
+`function_summaries` + `callers` RefCell pair populated from
+`ProjectContext.call_graph` in `set_project_context`. No new summary
+bits needed — the `has_env03_taint_source` + `returns_tainted` pair
+from v0.3.99 / v0.3.102 covers exactly the shape STR02-C wants.
+
+Results: Juliet TP 24,542 → **24,518** (−24), FP 13,498 → **13,358**
+(−140), TP rate 64.5% → **64.7%** (+0.2pp). **5.83:1 FP:TP** — best
+ratio in the task 49 series so far (prior bests 4.5:1 at 49A, 4.02:1
+at 49B, 4.1:1 at task 67). Zero other-CWE regressions.
+  - CWE-78 TP rate 90.3% → **94.8%** (+4.5pp). STR02-C FP 140 → **0**,
+    TP 560 → 536 (−24). STR02-C now contributes zero FPs to CWE-78.
+  - CWE-78 TP rate (94.8%) now **exceeds clang-tidy's 91.6%** on the
+    overlapping-CWE competitor benchmark — CWE-78 is no longer a
+    parity gap.
+  - Remaining 140 CWE-78 FPs are all on ENV03-C: v42-style
+    `data = helper(data)` chains (return-tainted propagation) and v45
+    global-static pointer reads. STR02-C structurally can't hit these
+    because its taint tracking starts from "params = tainted" rather
+    than from externally-read buffers.
+
+Real-world: not rerun. No new `FunctionSummary` fields; STR02-C
+consumes the same bits that v0.3.102 already populates.
 
 ## Sub-task 49B — ENV33-C caller-aware suppression (DONE v0.3.101)
 

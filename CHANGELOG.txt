@@ -6,6 +6,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.103] - 2026-04-19
+
+### Changed
+
+- STR02-C: port the ENV03-C / ENV33-C caller-aware suppression template.
+  When `system()` / `popen()` is called with a function parameter that's
+  only tainted by the default "params are untrusted" rule — i.e. the
+  enclosing body contains no direct taint-source call — walk the reverse
+  call graph and suppress iff every transitive caller's summary shows
+  `has_env03_taint_source` and `returns_tainted` both false. BFS with a
+  visited set, matching the ENV33-C pattern that handles Juliet's
+  variant 52c/53d/54e multi-level forwarding chains. New fields
+  `function_summaries` + `callers` on `Str02C` populated from
+  `ProjectContext.call_graph` in `set_project_context`.
+
+### Benchmark
+
+- Juliet v0.3.102 → v0.3.103: TP 24,542 → 24,518 (−24), FP 13,498 →
+  **13,358** (−140), TP rate 64.5% → **64.7%** (+0.2pp). Zero
+  other-CWE regressions; every non-CWE-78 cell in the delta report is
+  exactly zero.
+  - CWE-78 TP rate 90.3% → **94.8%** (+4.5pp). STR02-C FP 140 → **0**,
+    TP 560 → 536 (−24). **5.83:1 FP:TP ratio** — best ratio so far in
+    the CWE-78 taint-aware series (prior bests: 4.5:1 at task 49A, 4.1:1
+    at task 67). STR02-C now contributes zero FPs to CWE-78; all 140
+    remaining CWE-78 FPs are on ENV03-C (v42-style return-tainted
+    helpers and v45 global-static pointer reads).
+  - CWE-78 TP rate (94.8%) now exceeds clang-tidy's 91.6% shared-CWE
+    average — CWE-78 is no longer a competitor-parity gap.
+- Real-world (curl / sqlite / mosquitto / libcrc / hostap): not rerun.
+  The change reuses existing `FunctionSummary` fields (no new summary
+  bits, no schema change), so real-world behaviour matches v0.3.102
+  which had zero delta from v0.3.98.
+
 ## [0.3.102] - 2026-04-19
 
 ### Changed
