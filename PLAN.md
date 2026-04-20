@@ -1,10 +1,11 @@
 # SqC — Plans & Roadmap
 
-Last Updated: 2026-04-19 (v0.3.101)
+Last Updated: 2026-04-19 (v0.3.102)
 
-Juliet benchmark v0.3.101: 24,478 TP / 13,632 FP (64.2% TP rate), 41.4% per-file.
-Cumulative v0.3.93 → v0.3.101: TP rate +2.5pp, FP −2,136 (−13.5%), zero net
-other-rule regressions. Real-world v0.3.93 → v0.3.98: −343 violations.
+Juliet benchmark v0.3.102: 24,542 TP / 13,498 FP (64.5% TP rate), 41.5% per-file.
+Cumulative v0.3.93 → v0.3.102: TP rate +2.8pp, FP −2,270 (−14.4%), zero net
+other-rule regressions. Real-world v0.3.93 → v0.3.98: −343 violations;
+v0.3.98 → v0.3.102: zero delta (Juliet-specific fix).
 
 ## Competitor Benchmark Summary (v0.3.75)
 
@@ -26,9 +27,10 @@ Biggest gaps vs best competitor (clang-tidy unless noted, v0.3.96 current):
   CWE-415: 58.2% vs 80.0% (−21.8pp) — MEM01-C (was −36.6pp, task 58 done)
   CWE-416: 92.9% vs 60.3% (+32.6pp) — MEM01-C EXCEEDS target (task 58 done)
   CWE-401: 77.6% vs 83.9% (−6.3pp) — MEM31-C (was −33.2pp, task 59 done)
-  CWE-78:  87.7% (+24.9pp since v0.3.93) — ENV03-C + ENV33-C taint-aware (tasks 67-68, 49A + 49B)
-  CWE-194: 67.9% (+ 9.5pp since v0.3.95) — INT31-C taint-aware (task 69)
-  CWE-195: 51.9% (+ 3.2pp since v0.3.95) — INT31-C taint-aware (task 69)
+  CWE-78:  90.3% (+27.5pp since v0.3.93) — ENV03-C + ENV33-C taint-aware
+                                          (tasks 67-68, 49A + 49B + 49C)
+  CWE-194: 69.4% (+11.0pp since v0.3.95) — INT31-C taint-aware (task 69 + 49C)
+  CWE-195: 52.5% (+ 3.8pp since v0.3.95) — INT31-C taint-aware (task 69 + 49C)
 
 For completed work, see CHANGELOG.txt.
 For benchmark data, see JULIET_RESULTS.md and REALWORLD_RESULTS.md.
@@ -637,15 +639,15 @@ Paper impact: new Section "Case Study" between Worked Example and Limitations.
 
 # Task ID: 49
 # Title: Paper — taint tracking for CWE-78/CWE-89 (future work)
-# Status: partial (v0.3.94-0.3.101 — tasks 67-69 + 49A/49B delivered)
+# Status: partial (v0.3.94-0.3.102 — tasks 67-69 + 49A/49B/49C delivered)
 # Dependencies: none
 # Priority: P3
 # Description: Expand cross-function taint tracking for injection CWEs,
   referenced in paper future work section.
 # Details:
-Partial delivery via tasks 67-69 plus v0.3.99 (49A) and v0.3.101
-(49B). CWE-78 62.8% → **87.7%** (+24.9pp), CWE-194 58.4% → 67.9%,
-CWE-195 48.7% → 51.9%.
+Partial delivery via tasks 67-69 plus v0.3.99 (49A), v0.3.101 (49B),
+and v0.3.102 (49C). CWE-78 62.8% → **90.3%** (+27.5pp), CWE-194
+58.4% → **69.4%** (+11.0pp), CWE-195 48.7% → 52.5% (+3.8pp).
 
 Delivered infrastructure:
   - `FunctionSummary.has_env03_taint_source` — body text scan for ~25
@@ -680,6 +682,48 @@ regressions. INT31-C was neutral on Juliet; the wrapper pattern
 exists in real-world code but Juliet CWE-194/195 v42 templates call
 taint sources directly inside `badSource`, so the new transitive
 bit had no additional TPs to catch there.
+
+## Sub-task 49C — Function-pointer call graph + macro-aliased taint (DONE v0.3.102)
+
+Two linked prescan fixes targeting Juliet v65a/b helper-sink variants.
+
+1. `collect_callees` resolves function-pointer aliases. The function body
+   is scanned once to build a local `pointer_var → target_function` map
+   from init declarators (`void (*fp)(char *) = target;`) and later
+   rebinds (`fp = target;`), then callees are emitted with aliases
+   rewritten. Juliet v65a `caller → sink` edges are now first-class
+   instead of landing as a `funcPtr` dead-end callee.
+
+2. `has_env03_taint_source` also matches per-file macro aliases whose
+   target is in `ENV03_TAINT_SOURCE_FUNCTIONS`. Juliet macro wrappers
+   (`#define GETENV getenv`, `#define FGETS fgets`, etc.) are now
+   caught, so callers of v65b-style sinks get correctly classified as
+   tainted. New `taint_source_aliases: &[String]` parameter on
+   `compute_summaries` / `analyze_function` carries the pre-filtered
+   alias list without widening the existing `MacroConstantMap` contract.
+
+Results: Juliet TP 24,478 → **24,542** (+64), FP 13,632 → **13,498**
+(−134), TP rate 64.2% → **64.5%** (+0.3pp). Zero other-rule
+regressions.
+  - CWE-78 TP rate 87.7% → **90.3%** (+2.6pp). ENV33-C FP 50 → **0**,
+    TP 1438 → 1514 (+76) — the macro-alias fix recovered TPs previously
+    missed because `GETENV(data)` etc. didn't poison the caller's
+    summary, so helper-sink suppression over-applied.
+  - ENV03-C: FP 324 → 300 (−24), TP 620 → 628 (+8). Clean win from the
+    same macro-alias recognition.
+  - INT31-C: FP 1452 → 1392 (−60), TP 2142 → 2122 (−20). CWE-194 TP
+    rate +1.5pp, CWE-195 +0.6pp.
+
+Real-world (curl / sqlite / mosquitto / libcrc / hostap): zero delta
+v0.3.98 → v0.3.102. The fix is Juliet-specific — function-pointer
+tables in real-world code don't match Juliet's helper-sink shape, and
+no real-world codebase in the set macro-wraps a taint source.
+
+Remaining CWE-78 gap (~280 FP across ENV03-C 300 + STR02-C 140): v42
+return-tainted `data = helper(data)` chains and v45 global-static
+pointer reads still need return-value propagation and global-write
+tracking respectively. The function-pointer edge lands variant 65;
+variant 67 wasn't in the measured FP contributors this round.
 
 ## Sub-task 49B — ENV33-C caller-aware suppression (DONE v0.3.101)
 
