@@ -580,12 +580,11 @@ impl Fio34C {
     /// Check if function contains a loop comparing to EOF
     fn has_eof_comparison_in_loop(&self, node: &Node, source: &str) -> bool {
         match node.kind() {
-            "while_statement" | "do_statement" | "for_statement" => {
+            "while_statement" | "do_statement" | "for_statement"
                 // Check if this loop compares to EOF
-                if self.loop_compares_to_eof(node, source) {
+                if self.loop_compares_to_eof(node, source) => {
                     return true;
                 }
-            }
             _ => {}
         }
 
@@ -676,10 +675,10 @@ impl Fio34C {
         violations: &mut Vec<RuleViolation>,
     ) {
         match node.kind() {
-            "while_statement" | "do_statement" | "for_statement" => {
-                if self.loop_compares_to_eof(node, source) {
-                    self.report_eof_verification_violation(node, source, violations);
-                }
+            "while_statement" | "do_statement" | "for_statement"
+                if self.loop_compares_to_eof(node, source) =>
+            {
+                self.report_eof_verification_violation(node, source, violations);
             }
             _ => {}
         }

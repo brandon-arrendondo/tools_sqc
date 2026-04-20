@@ -933,9 +933,9 @@ fn extract_bound_from_condition(
     let op = get_operator_text(&cond, source);
 
     match op.as_str() {
-        "<" => {
+        "<"
             // var < BOUND → var in [0, BOUND-1] (assuming non-negative loop counter)
-            if left.kind() == "identifier" {
+            if left.kind() == "identifier" => {
                 if let Some(bound) = try_evaluate_expr(&right, source, macros) {
                     let var_name = left.utf8_text(source.as_bytes()).unwrap_or("");
                     if !var_name.is_empty() {
@@ -949,9 +949,8 @@ fn extract_bound_from_condition(
                     }
                 }
             }
-        }
-        "<=" => {
-            if left.kind() == "identifier" {
+        "<="
+            if left.kind() == "identifier" => {
                 if let Some(bound) = try_evaluate_expr(&right, source, macros) {
                     let var_name = left.utf8_text(source.as_bytes()).unwrap_or("");
                     if !var_name.is_empty() {
@@ -964,10 +963,9 @@ fn extract_bound_from_condition(
                     }
                 }
             }
-        }
-        ">" => {
+        ">"
             // BOUND > var → same as var < BOUND
-            if right.kind() == "identifier" {
+            if right.kind() == "identifier" => {
                 if let Some(bound) = try_evaluate_expr(&left, source, macros) {
                     let var_name = right.utf8_text(source.as_bytes()).unwrap_or("");
                     if !var_name.is_empty() {
@@ -980,9 +978,8 @@ fn extract_bound_from_condition(
                     }
                 }
             }
-        }
-        ">=" => {
-            if right.kind() == "identifier" {
+        ">="
+            if right.kind() == "identifier" => {
                 if let Some(bound) = try_evaluate_expr(&left, source, macros) {
                     let var_name = right.utf8_text(source.as_bytes()).unwrap_or("");
                     if !var_name.is_empty() {
@@ -995,7 +992,6 @@ fn extract_bound_from_condition(
                     }
                 }
             }
-        }
         _ => {}
     }
 }

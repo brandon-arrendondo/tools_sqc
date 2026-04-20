@@ -58,12 +58,11 @@ impl Arr37C {
             "update_expression" => {
                 self.check_pointer_increment_decrement(node, source, analyzer, violations);
             }
-            "assignment_expression" => {
+            "assignment_expression"
                 // Check if this is a compound assignment (+=, -=)
-                if node_text.contains("+=") || node_text.contains("-=") {
+                if (node_text.contains("+=") || node_text.contains("-=")) => {
                     self.check_compound_assignment(node, source, analyzer, violations);
                 }
-            }
             "subscript_expression" => {
                 self.check_subscript_on_non_array(node, source, analyzer, violations);
             }

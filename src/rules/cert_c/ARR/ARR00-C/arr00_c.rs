@@ -2217,18 +2217,16 @@ fn is_array_identifier(node: &Node, source: &str) -> bool {
 /// anywhere in the given scope node. Returns false for pointer declarations.
 fn has_array_declaration(scope: &Node, var_name: &str, source: &str) -> bool {
     match scope.kind() {
-        "declaration" => {
+        "declaration"
             // Check if this declaration declares var_name as an array
-            if declaration_is_array_for(scope, var_name, source) {
+            if declaration_is_array_for(scope, var_name, source) => {
                 return true;
             }
-        }
-        "parameter_declaration" => {
+        "parameter_declaration"
             // Array parameters (e.g., `int arr[]`) — check for array_declarator
-            if param_is_array_for(scope, var_name, source) {
+            if param_is_array_for(scope, var_name, source) => {
                 return true;
             }
-        }
         _ => {}
     }
 

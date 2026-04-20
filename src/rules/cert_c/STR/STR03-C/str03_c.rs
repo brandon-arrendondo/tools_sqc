@@ -41,9 +41,9 @@ impl Str03C {
                 let func_name = ast_utils::get_node_text(&function, source);
 
                 match func_name {
-                    "strncpy" | "strncat" | "snprintf" => {
+                    "strncpy" | "strncat" | "snprintf"
                         // Check if there's proper length validation before this call
-                        if !self.has_length_validation_before(node, source) {
+                        if !self.has_length_validation_before(node, source) => {
                             violations.push(RuleViolation {
                                 rule_id: self.rule_id().to_string(),
                                 severity: self.severity(),
@@ -61,7 +61,6 @@ impl Str03C {
                                 requires_manual_review: Some(true),
                             });
                         }
-                    }
                     _ => {}
                 }
             }

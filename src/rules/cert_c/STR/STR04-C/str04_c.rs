@@ -176,12 +176,11 @@ impl STR04C {
                     type_text.push_str(text);
                     type_text.push(' ');
                 }
-                "init_declarator" | "array_declarator" => {
+                "init_declarator" | "array_declarator"
                     // Check if this declarator contains our target variable
-                    if self.contains_identifier(&child, target_name, source) {
+                    if self.contains_identifier(&child, target_name, source) => {
                         found_name = true;
                     }
-                }
                 _ => {}
             }
         }

@@ -253,14 +253,13 @@ fn collect_header_declarations(node: &Node, source: &str, names: &mut HashSet<St
     for i in 0..node.child_count() {
         if let Some(child) = node.child(i) {
             match child.kind() {
-                "declaration" => {
+                "declaration"
                     // Only collect non-static function prototypes
-                    if !has_static_specifier(&child, source) {
+                    if !has_static_specifier(&child, source) => {
                         if let Some(name) = extract_function_name_from_declaration(&child, source) {
                             names.insert(name);
                         }
                     }
-                }
                 kind if kind.starts_with("preproc_")
                     || kind == "linkage_specification"
                     || kind == "declaration_list" =>
