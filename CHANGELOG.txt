@@ -6,6 +6,47 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.102] - 2026-04-19
+
+### Changed
+
+- prescan (`collect_callees`): resolve function-pointer aliases when
+  building the call graph. The function body is now walked twice — the
+  first pass captures `void (*fp)(char *) = target;` init declarators
+  and `fp = target;` rebinds into a local alias map, the second pass
+  emits callees with aliased identifiers rewritten to the target
+  function. Juliet v65a/b sinks now surface a real caller edge instead
+  of a dangling `funcPtr` entry.
+- prescan (`has_env03_taint_source`): also match per-file macro aliases
+  whose target is in `ENV03_TAINT_SOURCE_FUNCTIONS`. Juliet's
+  `#define GETENV getenv` wrappers now correctly poison the caller's
+  summary, so ENV03-C / ENV33-C / INT31-C caller-aware suppression
+  treats `GETENV(ENV_VARIABLE)` as a real taint source.
+- `function_summary::compute_summaries` gains a `taint_source_aliases`
+  parameter plumbed through `analyze_function` and
+  `collect_function_summaries`. Per-file alias collection in prescan
+  (and header resolution) pre-filters aliases to those resolving to a
+  taint source before calling summarize.
+
+### Benchmark
+
+- Juliet v0.3.101 → v0.3.102: TP 24,478 → **24,542** (+64), FP 13,632
+  → **13,498** (−134), TP rate 64.2% → **64.5%** (+0.3pp). Zero
+  other-CWE regressions.
+  - CWE-78 TP rate 87.7% → **90.3%** (+2.6pp). ENV33-C FP 50 → **0**,
+    TP 1438 → 1514 (+76). ENV03-C FP 324 → 300 (−24), TP 620 → 628
+    (+8). 50 FP → 0 for variant 65b, plus +76 TPs recovered in other
+    helper-sink variants where the bad caller used a macro-wrapped
+    taint source (GETENV, FGETS, etc.) previously missed by the text
+    scan.
+  - CWE-194 TP rate 67.9% → **69.4%** (+1.5pp), FP −30, TP −10.
+  - CWE-195 TP rate 51.9% → **52.5%** (+0.6pp), FP −30, TP −10.
+  - INT31-C: FP 1452 → 1392 (−60), TP 2142 → 2122 (−20). 3:1 ratio.
+- Real-world v0.3.98 → v0.3.102 (curl, sqlite, mosquitto, libcrc,
+  hostap): zero delta. Change is Juliet-specific — these codebases
+  don't use Juliet's function-pointer-across-files pattern or macro
+  aliases that resolve to taint sources.
+
 ## [0.3.101] - 2026-04-19
 
 ### Changed
