@@ -25,10 +25,12 @@
 //! ```
 
 use super::super::{CertRule, RuleViolation};
+use crate::analyze::cfg;
 use crate::analyze::const_eval;
 use crate::analyze::context::ProjectContext;
+use crate::analyze::function_summary::FunctionSummary;
 use crate::manifest::{RuleCategory, Severity};
-use crate::utility::cert_c::ast_utils::get_node_text;
+use crate::utility::cert_c::ast_utils::{get_node_text, is_function_parameter};
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use tree_sitter::Node;
@@ -50,6 +52,10 @@ const TAINT_PROPAGATORS: &[&str] = &[
 pub struct Str02C {
     project_aliases: RefCell<HashMap<String, String>>,
     current_aliases: RefCell<HashMap<String, String>>,
+    function_summaries: RefCell<HashMap<String, FunctionSummary>>,
+    /// Reverse call graph: callee_name → set of caller names. Built from
+    /// ProjectContext's forward `call_graph` in `set_project_context`.
+    callers: RefCell<HashMap<String, HashSet<String>>>,
 }
 
 impl Str02C {
@@ -57,6 +63,8 @@ impl Str02C {
         Self {
             project_aliases: RefCell::new(HashMap::new()),
             current_aliases: RefCell::new(HashMap::new()),
+            function_summaries: RefCell::new(HashMap::new()),
+            callers: RefCell::new(HashMap::new()),
         }
     }
 
@@ -118,7 +126,7 @@ impl Str02C {
         self.collect_tainted_vars(func_node, source, &mut tainted);
 
         // Check sinks (system/popen/exec) for tainted arguments
-        self.check_sinks(func_node, source, &tainted, violations);
+        self.check_sinks(func_node, source, &tainted, func_node, violations);
     }
 
     /// Extract parameter names from a function definition and mark them as tainted.
@@ -267,15 +275,16 @@ impl Str02C {
         node: &Node,
         source: &str,
         tainted: &HashSet<String>,
+        func_scope: &Node,
         violations: &mut Vec<RuleViolation>,
     ) {
         if node.kind() == "call_expression" {
-            self.check_dangerous_function_call(node, source, tainted, violations);
+            self.check_dangerous_function_call(node, source, tainted, func_scope, violations);
         }
 
         for i in 0..node.child_count() {
             if let Some(child) = node.child(i) {
-                self.check_sinks(&child, source, tainted, violations);
+                self.check_sinks(&child, source, tainted, func_scope, violations);
             }
         }
     }
@@ -286,6 +295,7 @@ impl Str02C {
         node: &Node,
         source: &str,
         tainted: &HashSet<String>,
+        func_scope: &Node,
         violations: &mut Vec<RuleViolation>,
     ) {
         if node.kind() != "call_expression" {
@@ -299,7 +309,7 @@ impl Str02C {
             match resolved.as_str() {
                 "system" | "popen" => {
                     self.check_command_injection_risk(
-                        node, source, &func_name, &resolved, tainted, violations,
+                        node, source, &func_name, &resolved, tainted, func_scope, violations,
                     );
                 }
                 "execl" | "execle" | "execlp" | "execv" | "execvp" | "execve" | "_execl"
@@ -320,6 +330,7 @@ impl Str02C {
         display_name: &str,
         resolved_name: &str,
         tainted: &HashSet<String>,
+        func_scope: &Node,
         violations: &mut Vec<RuleViolation>,
     ) {
         if let Some(args_node) = node.child_by_field_name("arguments") {
@@ -334,6 +345,19 @@ impl Str02C {
 
                 // Only flag if the argument is tainted by external input
                 if !tainted.contains(&base_var) {
+                    return;
+                }
+
+                // Cross-function suppression (Juliet helper-sink pattern):
+                // when the tainted arg is this function's parameter AND the
+                // function body itself has no direct taint-source call, the
+                // only taint path is through the caller. If every transitive
+                // caller's prescan summary is clean (no taint source, no
+                // returns_tainted), suppress.
+                if is_function_parameter(func_scope, &base_var, source)
+                    && !self.scope_has_taint_source(func_scope, source)
+                    && self.callers_are_all_clean(func_scope, source)
+                {
                     return;
                 }
 
@@ -521,6 +545,90 @@ impl Str02C {
     fn is_string_literal(&self, node: &Node) -> bool {
         node.kind() == "string_literal" || node.kind() == "concatenated_string"
     }
+
+    /// True if any call_expression under `scope` targets a known taint source.
+    /// Resolves macro aliases before matching.
+    fn scope_has_taint_source(&self, scope: &Node, source: &str) -> bool {
+        let mut found = false;
+        self.walk_for_taint(scope, source, &mut found);
+        found
+    }
+
+    fn walk_for_taint(&self, node: &Node, source: &str, found: &mut bool) {
+        if *found {
+            return;
+        }
+        if node.kind() == "call_expression" {
+            if let Some(function) = node.child_by_field_name("function") {
+                let raw = get_node_text(&function, source);
+                let ident = trailing_identifier(raw);
+                let resolved = self.resolve_name(ident);
+                if TAINT_SOURCES.contains(&resolved.as_str()) || TAINT_SOURCES.contains(&ident) {
+                    *found = true;
+                    return;
+                }
+            }
+        }
+        for i in 0..node.child_count() {
+            if let Some(child) = node.child(i) {
+                self.walk_for_taint(&child, source, found);
+                if *found {
+                    return;
+                }
+            }
+        }
+    }
+
+    /// BFS over the reverse call graph: returns true when every transitive
+    /// caller of `scope`'s function has a prescan summary showing no direct
+    /// taint source and no transitively-tainted return value. Returns false
+    /// when caller info is missing at any level or any caller is tainted.
+    ///
+    /// Multi-level walk matches Juliet's variants 52/53/54 where data is
+    /// forwarded through several clean pass-through sinks before reaching
+    /// the actual bad source.
+    fn callers_are_all_clean(&self, scope: &Node, source: &str) -> bool {
+        let Some(name) = cfg::get_function_name(scope, source) else {
+            return false;
+        };
+        let callers = self.callers.borrow();
+        let Some(root_callers) = callers.get(name) else {
+            return false;
+        };
+        if root_callers.is_empty() {
+            return false;
+        }
+
+        let summaries = self.function_summaries.borrow();
+        let mut visited: HashSet<String> = HashSet::new();
+        let mut stack: Vec<String> = root_callers.iter().cloned().collect();
+
+        while let Some(current) = stack.pop() {
+            if !visited.insert(current.clone()) {
+                continue;
+            }
+            match summaries.get(&current) {
+                Some(s) if !s.has_env03_taint_source && !s.returns_tainted => {}
+                _ => return false,
+            }
+            if let Some(next) = callers.get(&current) {
+                for c in next {
+                    if !visited.contains(c) {
+                        stack.push(c.clone());
+                    }
+                }
+            }
+        }
+        true
+    }
+}
+
+/// Take the trailing identifier token from a possibly-qualified name
+/// (e.g. `obj->bar`, `POPEN`). Keeps alnum + underscores.
+fn trailing_identifier(name: &str) -> &str {
+    name.rsplit(|c: char| !c.is_alphanumeric() && c != '_')
+        .next()
+        .unwrap_or(name)
 }
 
 /// Extract the base variable name from an expression.
@@ -608,6 +716,20 @@ impl CertRule for Str02C {
 
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_aliases.borrow_mut() = context.macro_aliases.clone();
+        *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+
+        // Invert the forward call_graph (caller → callees) into a reverse
+        // map (callee → callers) for fast caller lookup.
+        let mut callers: HashMap<String, HashSet<String>> = HashMap::new();
+        for (caller, callees) in &context.call_graph {
+            for callee in callees {
+                callers
+                    .entry(callee.clone())
+                    .or_default()
+                    .insert(caller.clone());
+            }
+        }
+        *self.callers.borrow_mut() = callers;
     }
 
     fn check(&self, node: &Node, source: &str) -> Vec<RuleViolation> {
