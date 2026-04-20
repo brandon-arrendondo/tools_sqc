@@ -91,6 +91,12 @@ pub struct Env03C {
     /// Reverse call graph: callee_name → set of caller names. Built from
     /// ProjectContext's forward `call_graph`.
     callers: RefCell<HashMap<String, HashSet<String>>>,
+    /// File-scope static pointer writers from prescan: global_name → writer
+    /// function names. A read like `char *data = g_static;` is treated as
+    /// clean iff every writer's summary has `has_env03_taint_source == false`
+    /// and `returns_tainted == false`. Targets Juliet CWE-78 variant 45
+    /// (goodG2BSink pattern).
+    global_writers: RefCell<HashMap<String, HashSet<String>>>,
 }
 
 impl Env03C {
@@ -100,6 +106,7 @@ impl Env03C {
             current_aliases: RefCell::new(HashMap::new()),
             function_summaries: RefCell::new(HashMap::new()),
             callers: RefCell::new(HashMap::new()),
+            global_writers: RefCell::new(HashMap::new()),
         }
     }
 }
@@ -134,6 +141,7 @@ impl CertRule for Env03C {
     fn set_project_context(&self, context: &ProjectContext) {
         *self.project_aliases.borrow_mut() = context.macro_aliases.clone();
         *self.function_summaries.borrow_mut() = context.function_summaries.clone();
+        *self.global_writers.borrow_mut() = context.global_writers.clone();
 
         // Invert the forward call_graph (caller → callees) into a reverse
         // map (callee → callers) for fast lookup.
@@ -356,7 +364,8 @@ impl Env03C {
         }
 
         let summaries = self.function_summaries.borrow();
-        !is_command_var_locally_safe(scope, var_name, source, &summaries)
+        let global_writers = self.global_writers.borrow();
+        !is_command_var_locally_safe(scope, var_name, source, &summaries, &global_writers)
     }
 
     /// Return true when we can prove every caller of `scope`'s function
@@ -653,12 +662,13 @@ fn is_command_var_locally_safe(
     var_name: &str,
     source: &str,
     summaries: &HashMap<String, FunctionSummary>,
+    global_writers: &HashMap<String, HashSet<String>>,
 ) -> bool {
     let body = match scope.child_by_field_name("body") {
         Some(b) => b,
         None => return false,
     };
-    let local_buffers = collect_local_literal_buffers(&body, source, summaries);
+    let local_buffers = collect_local_literal_buffers(&body, source, summaries, global_writers);
 
     let mut all_safe = true;
     check_writes(
@@ -676,12 +686,26 @@ fn is_command_var_locally_safe(
 /// sources for the command variable. Starts with `char`/`wchar_t` arrays
 /// initialized from string literals (or macros), then iterates to fold in
 /// pointer variables initialized from an already-safe identifier.
+///
+/// Also seeds with file-scope static globals whose every writer function
+/// has a taint-free summary — the Juliet v45 goodG2BSink pattern where
+/// `char *data = g_goodG2BData;` reads a global that's only written by
+/// functions that don't introduce taint.
 fn collect_local_literal_buffers(
     body: &Node,
     source: &str,
     summaries: &HashMap<String, FunctionSummary>,
+    global_writers: &HashMap<String, HashSet<String>>,
 ) -> HashSet<String> {
     let mut buffers = HashSet::new();
+    for (global_name, writers) in global_writers {
+        if writers.iter().all(|w| match summaries.get(w) {
+            Some(s) => !s.has_env03_taint_source && !s.returns_tainted,
+            None => false,
+        }) {
+            buffers.insert(global_name.clone());
+        }
+    }
     // Pass 1: arrays with literal/macro initializers.
     walk_buffer_decls(body, source, &mut buffers);
     // Passes 2+: propagate through pointer aliases until fixpoint.

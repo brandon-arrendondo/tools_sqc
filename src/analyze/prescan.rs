@@ -35,6 +35,7 @@ pub fn prescan_directories(
     let mut callsite_field_args: HashMap<String, Vec<Vec<HashMap<String, NullState>>>> =
         HashMap::new();
     let mut callsite_pointee_args: HashMap<String, Vec<Vec<NullState>>> = HashMap::new();
+    let mut global_writers: HashMap<String, HashSet<String>> = HashMap::new();
     let mut source_files: Vec<PathBuf> = Vec::new();
     let mut parser = CParser::new()?;
 
@@ -128,6 +129,18 @@ pub fn prescan_directories(
                     collect_global_var_null_states(&root, &source, &mut global_var_null_states);
                 }
 
+                // Collect file-scope static pointer globals and their writer
+                // functions. Scoped per-file: each file's static names are
+                // paired with writers from that same file only. Cross-file
+                // collisions (same static name in two TUs) fall back to
+                // conservative union — any writer across files poisons the
+                // merged set — which is acceptable for taint classification.
+                if !is_header {
+                    let mut file_statics: HashSet<String> = HashSet::new();
+                    collect_static_pointer_globals(&root, &source, &mut file_statics);
+                    collect_global_writers(&root, &source, &file_statics, &mut global_writers);
+                }
+
                 // Collect call-site argument null states in the same pass
                 // (avoids re-parsing all files in a second directory walk)
                 if !is_header {
@@ -191,6 +204,7 @@ pub fn prescan_directories(
         struct_field_types,
         global_constants,
         global_var_null_states,
+        global_writers,
     })
 }
 
@@ -238,11 +252,17 @@ pub fn prescan_single_tree(root: &Node, source: &str) -> ProjectContext {
     let mut struct_field_types = HashMap::new();
     collect_struct_definitions(root, source, &mut struct_field_types);
 
+    let mut file_statics: HashSet<String> = HashSet::new();
+    collect_static_pointer_globals(root, source, &mut file_statics);
+    let mut global_writers: HashMap<String, HashSet<String>> = HashMap::new();
+    collect_global_writers(root, source, &file_statics, &mut global_writers);
+
     ProjectContext {
         known_functions,
         function_summaries,
         macro_constants: macros,
         struct_field_types,
+        global_writers,
         ..ProjectContext::default()
     }
 }
@@ -1804,6 +1824,124 @@ fn collect_prescan_pointer_globals(
                 collect_prescan_pointer_globals(&child, source, global_vars, states);
             }
             _ => {}
+        }
+    }
+}
+
+/// Collect names of file-scope `static <type> *<name>[ = ...];` declarations.
+/// Narrowed to pointer types because they are the taint-relevant read-site
+/// pattern that ENV03-C/ENV33-C watch for (`char *data = g_static;`).
+fn collect_static_pointer_globals(node: &Node, source: &str, out: &mut HashSet<String>) {
+    for i in 0..node.child_count() {
+        let Some(child) = node.child(i) else { continue };
+        match child.kind() {
+            "declaration" => {
+                let mut has_static = false;
+                for j in 0..child.child_count() {
+                    if let Some(tc) = child.child(j) {
+                        if tc.kind() == "storage_class_specifier"
+                            && tc.utf8_text(source.as_bytes()).unwrap_or("") == "static"
+                        {
+                            has_static = true;
+                            break;
+                        }
+                    }
+                }
+                if !has_static {
+                    continue;
+                }
+                for j in 0..child.child_count() {
+                    let Some(decl) = child.child(j) else { continue };
+                    match decl.kind() {
+                        "init_declarator" => {
+                            if let Some(inner) = decl.child_by_field_name("declarator") {
+                                if inner.kind() == "pointer_declarator" {
+                                    let name = extract_declarator_name(&inner, source);
+                                    if !name.is_empty() {
+                                        out.insert(name);
+                                    }
+                                }
+                            }
+                        }
+                        "pointer_declarator" => {
+                            let name = extract_declarator_name(&decl, source);
+                            if !name.is_empty() {
+                                out.insert(name);
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            k if k.starts_with("preproc_") => {
+                collect_static_pointer_globals(&child, source, out);
+            }
+            _ => {}
+        }
+    }
+}
+
+/// For each function definition in `node`, record the function name as a
+/// writer of any file-scope static global in `file_globals` that it assigns
+/// to (plain `=` assignment with an identifier LHS). Feeds
+/// [`ProjectContext::global_writers`] so consumers (ENV03-C) can decide
+/// whether a read from the global brings in taint.
+fn collect_global_writers(
+    node: &Node,
+    source: &str,
+    file_globals: &HashSet<String>,
+    writers: &mut HashMap<String, HashSet<String>>,
+) {
+    if file_globals.is_empty() {
+        return;
+    }
+    for i in 0..node.child_count() {
+        let Some(child) = node.child(i) else { continue };
+        match child.kind() {
+            "function_definition" => {
+                if let Some(func_name) = extract_function_name(&child, source) {
+                    if let Some(body) = child.child_by_field_name("body") {
+                        scan_body_for_global_writes(
+                            &body,
+                            source,
+                            &func_name,
+                            file_globals,
+                            writers,
+                        );
+                    }
+                }
+            }
+            k if k.starts_with("preproc_") => {
+                collect_global_writers(&child, source, file_globals, writers);
+            }
+            _ => {}
+        }
+    }
+}
+
+fn scan_body_for_global_writes(
+    node: &Node,
+    source: &str,
+    func_name: &str,
+    file_globals: &HashSet<String>,
+    writers: &mut HashMap<String, HashSet<String>>,
+) {
+    if node.kind() == "assignment_expression" {
+        if let Some(left) = node.child_by_field_name("left") {
+            if left.kind() == "identifier" {
+                let name = left.utf8_text(source.as_bytes()).unwrap_or("");
+                if file_globals.contains(name) {
+                    writers
+                        .entry(name.to_string())
+                        .or_default()
+                        .insert(func_name.to_string());
+                }
+            }
+        }
+    }
+    for i in 0..node.child_count() {
+        if let Some(child) = node.child(i) {
+            scan_body_for_global_writes(&child, source, func_name, file_globals, writers);
         }
     }
 }
