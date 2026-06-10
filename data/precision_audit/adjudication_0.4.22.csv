@@ -1,0 +1,201 @@
+rule,idx,project,file,line,verdict,reason
+MEM30-C,0,curl,lib/doh.c,1334,FP,data->state is embedded struct never freed; Curl_safefree frees member once
+MEM30-C,1,curl,lib/ftp.c,3119,FP,free-then-reassign: most_recent_ftp_entrypath strdup'd on prior line
+MEM30-C,2,curl,lib/url.c,537,FP,sequential frees of distinct members; socks_proxy embedded struct not freed
+MEM30-C,3,curl,src/tool_operate.c,776,FP,etag_save embedded struct; filename freed once
+MEM30-C,4,hostap,hostapd/config_file.c,2772,FP,freed ca_cert member then accessed acct_server (different member)
+MEM30-C,5,hostap,hostapd/config_file.c,3620,FP,conf never freed in function; else-if config chain
+MEM30-C,6,hostap,src/ap/eap_user_db.c,209,FP,hapd->conf not freed anywhere in function
+MEM30-C,7,hostap,src/ap/hostapd.c,2711,FP,deinit_no_free does not free hapd; cleanup order valid
+MEM30-C,8,hostap,src/ap/hostapd.c,3009,FP,bss_deinit_no_free does not free hapd
+MEM30-C,9,hostap,src/ap/ieee802_1x.c,1623,FP,free-then-reassign: aaaEapKeyData os_malloc on prior line
+MEM30-C,10,hostap,src/ap/sta_info.c,394,FP,ieee802_1x_free_station frees station data not hapd
+MEM30-C,11,hostap,src/ap/wps_hostapd.c,1062,FP,free-then-reassign: application_ext wpabuf_dup/NULL before read
+MEM30-C,12,hostap,src/drivers/driver_ndis.c,563,FP,oid is integer param; free in other #if branch frees o
+MEM30-C,13,hostap,src/drivers/driver_wext.c,358,FP,free-then-reassign: assoc_req_ies os_memdup on prior line
+MEM30-C,14,hostap,src/eap_peer/eap_fast.c,822,FP,free-then-reassign: session_id rederived on prior line
+MEM30-C,15,hostap,src/eap_server/eap_server_ttls.c,1246,FP,free-then-reassign: identity os_malloc on prior line
+MEM30-C,16,hostap,src/p2p/p2p.c,2268,FP,freed wfd_subelems then reassigned; access is other dev->info members
+MEM30-C,17,hostap,src/p2p/p2p_pd.c,1983,FP,p2ps_prov_free frees member and only on goto-out path
+MEM30-C,18,hostap,src/tls/tlsv1_client_read.c,509,FP,conn->cred never freed in function
+MEM30-C,19,hostap,src/tls/tlsv1_client_read.c,701,FP,dh_p freshly os_memdup'd and NULL-checked before use
+MEM30-C,20,hostap,src/tls/tlsv1_client_read.c,726,FP,pos is cursor into message buffer; never freed
+MEM30-C,21,hostap,wpa_supplicant/ap.c,1419,FP,flagged line IS the free of ap_pin member; hapd->conf not freed
+MEM30-C,22,hostap,wpa_supplicant/config.c,1795,FP,bin_clear_free of password member then reassign; ssid->eap embedded
+MEM30-C,23,hostap,wpa_supplicant/config.c,3069,FP,num_domain is scalar member; cred itself not yet freed
+MEM30-C,24,hostap,wpa_supplicant/wpa_supplicant.c,8111,FP,conf->non_pref_chan never freed in function
+MEM30-C,25,mosquitto,lib/net_ws.c,336,FP,freed out_packet in other branch; access is payloadlen member
+MEM30-C,26,mosquitto,lib/will_mosq.c,98,FP,will freshly calloc'd; payloadlen scalar member
+MEM30-C,27,mosquitto,plugins/dynamic-security/roles.c,332,FP,frees in continue-branches affect prior loop iteration's role
+MEM30-C,28,mosquitto,src/handle_publish.c,123,FP,only free is inside #if 0 block (compiled out)
+MEM30-C,29,mosquitto,src/persist_read.c,333,FP,cleanup label unreachable after success-path frees; distinct members
+MEM30-C,30,mosquitto,test/lib/c/09-util-topic-tokenise.c,95,FP,topic_count is stack int; tokens_free frees array not count
+MEM30-C,31,sqlite,autosetup/jimsh0.c,11565,FP,free-list walk happens before Jim_Free loop
+MEM30-C,32,sqlite,ext/expert/sqlite3expert.c,1004,FP,free-then-reassign: zName mprintf'd and NULL-checked in loop
+MEM30-C,33,sqlite,ext/fts5/fts5_main.c,1592,FP,pCsr never freed in function
+MEM30-C,34,sqlite,ext/fts5/fts5_main.c,1610,FP,pCsr never freed in function
+MEM30-C,35,sqlite,ext/rbu/sqlite3rbu.c,3581,FP,prepareFreeAndCollectError frees SQL string not zStateDb
+MEM30-C,36,sqlite,ext/session/changeset.c,425,FP,zSQLTabName not freed in loop body; per-table reassign pattern
+MEM30-C,37,sqlite,src/main.c,851,FP,lookaside is embedded struct; buffer freshly allocated
+MEM30-C,38,sqlite,src/os_unix.c,6217,FP,pInode assigned by findInodeInfo; not freed
+MEM30-C,39,sqlite,src/tclsqlite.c,634,FP,sequential frees of distinct pDb members
+MEM30-C,40,sqlite,src/test6.c,325,FP,pWrite not freed before use; zGarbage freed after loop
+MEM30-C,41,sqlite,src/vdbe.c,1468,FP,pOp->p3 is int opcode operand not pointer
+MEM30-C,42,sqlite,src/vdbe.c,4189,FP,pOp->p1 is int opcode operand not pointer
+MEM30-C,43,sqlite,src/vdbe.c,4261,FP,pOp->p3 is int opcode operand not pointer
+MEM30-C,44,sqlite,src/vdbe.c,5910,FP,p->nCursor is int member not pointer
+MEM30-C,45,sqlite,src/vdbe.c,6511,FP,pOp->p1 is int opcode operand not pointer
+MEM30-C,46,sqlite,src/vdbe.c,9131,FP,pOp->p3 is int opcode operand not pointer
+MEM30-C,47,sqlite,src/vdbemem.c,277,FP,free-then-reassign: zMalloc reallocated before NULL check
+MEM30-C,48,sqlite,test/optfuzz.c,260,FP,azIn never freed in loop; only zSql freed
+MEM30-C,49,sqlite,tool/sqldiff.c,1724,FP,element-free loop frees each azCol[i] exactly once
+DCL13-C,0,curl,lib/cf-h1-proxy.c,83,TP,static helper; cf unused ((void)cf); const feasible
+DCL13-C,1,curl,lib/ftp.c,4342,FP,hash dtor callback; signature fixed by function-pointer type
+DCL13-C,2,curl,lib/hash.c,342,FP,hash key comparator; signature fixed by Curl_hash API
+DCL13-C,3,curl,lib/http2.c,2981,FP,nghttp2 allocator callback; signature fixed by nghttp2
+DCL13-C,4,curl,lib/multi_ev.c,137,TP,static helper reads e->conn only; const feasible
+DCL13-C,5,curl,lib/pingpong.c,351,TP,reads pp->sendleft only; const feasible
+DCL13-C,6,curl,lib/vtls/vtls.c,1633,FP,cfilter cntrl vtable impl; signature fixed
+DCL13-C,7,curl,lib/vtls/vtls.c,1656,FP,cfilter is_alive vtable impl; signature fixed
+DCL13-C,8,curl,tests/libtest/lib1555.c,32,FP,CURLOPT_PROGRESSFUNCTION callback; signature fixed
+DCL13-C,9,hostap,src/ap/acs.c,646,FP,returns non-const chan pointer derived from mode->channels
+DCL13-C,10,hostap,src/ap/hostapd.c,2070,FP,eloop timeout callback; signature fixed
+DCL13-C,11,hostap,src/ap/hw_features.c,1244,TP,reads iface members only; const feasible
+DCL13-C,12,hostap,src/ap/ieee802_11_shared.c,619,TP,reads hapd->conf members only; const feasible
+DCL13-C,13,hostap,src/ap/wps_hostapd.h,50,FP,inline stub must match real CONFIG_WPS prototype
+DCL13-C,14,hostap,src/ap/x_snoop.h,35,FP,inline stub must match real CONFIG_PROXYARP prototype
+DCL13-C,15,hostap,src/common/dpp_tcp.c,1916,FP,msg_ctx stored into non-const void* field
+DCL13-C,16,hostap,src/crypto/dh_group5.c,32,FP,crypto backend API; signature shared across implementations
+DCL13-C,17,hostap,src/drivers/driver_ndis.c,789,TP,reads ssid->SsidLength/Ssid only; const feasible
+DCL13-C,18,hostap,src/eap_peer/eap_mschapv2.c,141,FP,EAP method vtable deinit; signature fixed
+DCL13-C,19,hostap,src/eap_server/tncs.c,511,TP,iterates tncs->imv read-only; const feasible
+DCL13-C,20,hostap,tests/fuzzing/ap-mgmt/ap-mgmt.c,38,FP,eloop callback; signature fixed
+DCL13-C,21,hostap,wpa_supplicant/bgscan.h,64,FP,inline stub must match real CONFIG_BGSCAN prototype
+DCL13-C,22,hostap,wpa_supplicant/ctrl_iface.c,4506,TP,reads capa fields only; const feasible
+DCL13-C,23,hostap,wpa_supplicant/ctrl_iface.c,12616,TP,verified full body reads wpa_s only; const feasible
+DCL13-C,24,hostap,wpa_supplicant/p2p_supplicant.c,6207,TP,reads ssid->sae_password only; const feasible
+DCL13-C,25,hostap,wpa_supplicant/wpa_cli.c,2111,FP,wpa_cli command-table function pointer; signature fixed
+DCL13-C,26,hostap,wpa_supplicant/wpa_supplicant.c,8303,TP,iface copied by value into t_iface; const feasible
+DCL13-C,27,hostap,wpa_supplicant/wps_supplicant.h,123,FP,inline stub must match real CONFIG_WPS prototype
+DCL13-C,28,mosquitto,plugins/persist-sqlite/restore.c,359,TP,uses ms->db pointer member read-only; const feasible
+DCL13-C,29,mosquitto,test/broker/c/bad_v2_1.c,23,FP,mosquitto auth plugin ABI; signature fixed
+DCL13-C,30,mosquitto,test/lib/c/03-publish-c2b-qos1-receive-maximum.c,10,FP,libmosquitto on_connect callback; signature fixed
+DCL13-C,31,mosquitto,test/lib/c/03-publish-c2b-qos2-disconnect.c,35,FP,libmosquitto on_disconnect callback; signature fixed
+DCL13-C,32,sqlite,autosetup/jimsh0.c,2271,TP,reads af->flags only; const feasible
+DCL13-C,33,sqlite,ext/fts5/fts5_expr.c,1075,TP,comparator reads p1 fields only; const feasible
+DCL13-C,34,sqlite,ext/fts5/fts5_main.c,2206,FP,Fts5ExtensionApi vtable function; signature fixed
+DCL13-C,35,sqlite,ext/fts5/fts5_tcl.c,1613,FP,Tcl command proc; signature fixed
+DCL13-C,36,sqlite,ext/jni/src/c/sqlite3-jni.c,1395,FP,JNIEnv must stay non-const for JNI calls in callees
+DCL13-C,37,sqlite,ext/rtree/geopoly.c,1740,FP,sqlite3_module xFindFunction; signature fixed
+DCL13-C,38,sqlite,ext/wasm/c-pp-lite.c,1820,FP,cmpp_keyword_f function-pointer impl; signature fixed
+DCL13-C,39,sqlite,src/btree.c,4870,TP,debug comparator reads only; const feasible
+DCL13-C,40,sqlite,src/build.c,3748,TP,pParse object itself never written; const compiles
+DCL13-C,41,sqlite,src/expr.c,4730,FP,pParse assigned to non-const Walker.pParse field
+DCL13-C,42,sqlite,src/os_unix.c,8113,TP,extracts path from pFile read-only; const feasible
+DCL13-C,43,sqlite,src/os_win.c,4881,FP,sqlite3_io_methods xUnfetch; signature fixed
+DCL13-C,44,sqlite,src/resolve.c,35,FP,Walker xExprCallback; signature fixed
+DCL13-C,45,sqlite,src/test1.c,89,FP,parser artifact: flagged Tcl CONST macro as parameter; Tcl proc signature fixed
+DCL13-C,46,sqlite,src/test1.c,3176,FP,parser artifact: flagged Tcl CONST macro as parameter; Tcl proc signature fixed
+DCL13-C,47,sqlite,src/test1.c,6783,FP,Tcl command proc; signature fixed
+DCL13-C,48,sqlite,src/test1.c,8962,FP,Tcl command proc; signature fixed
+DCL13-C,49,sqlite,src/test_journal.c,688,FP,sqlite3_io_methods vtable; signature fixed
+INT32-C,0,curl,lib/easy.c,264,FP,decrement guarded by !initialized early return; counter >= 1
+INT32-C,1,curl,lib/hostip.c,487,FP,counts addrinfo list; length bounded far below INT_MAX
+INT32-C,2,curl,tests/libtest/lib530.c,81,FP,i < count loop invariant makes count-(i+1) >= 0
+INT32-C,3,curl,tests/libtest/lib557.c,481,FP,straight-line test code; i is small constant
+INT32-C,4,curl,tests/libtest/lib557.c,484,FP,straight-line test code; i is small constant
+INT32-C,5,curl,tests/server/dnsd.c,440,FP,arg bounded by argc
+INT32-C,6,curl,tests/server/rtspd.c,1072,FP,arg bounded by argc
+INT32-C,7,hostap,hs20/client/osu_client.c,834,TP,len from remote XML base64 unchecked before len*2+1 malloc size
+INT32-C,8,hostap,src/common/ieee802_11_common.c,1695,FP,freq bounded by preceding range check
+INT32-C,9,hostap,src/drivers/driver_macsec_qca.c,899,FP,sum of few small error codes
+INT32-C,10,hostap,src/eap_common/eap_sim_common.c,610,FP,u8*256+u8 max 65535 in int
+INT32-C,11,hostap,src/eap_server/eap_server_eke.c,777,FP,nonce_len protocol-bounded small
+INT32-C,12,hostap,src/p2p/p2p.c,3569,FP,pending-query counter; cannot realistically reach INT_MIN
+INT32-C,13,hostap,src/utils/common.c,1032,FP,size_t arithmetic; array length bounded
+INT32-C,14,hostap,wpa_supplicant/wpa_cli.c,4349,FP,pos is CLI cursor position bounded by line length
+INT32-C,15,hostap,wpa_supplicant/wpa_supplicant.c,4621,FP,ie[1] is u8 <= 255
+INT32-C,16,mosquitto,client/client_shared.c,1639,FP,len bounded by argv option string length
+INT32-C,17,mosquitto,src/keepalive.c,189,FP,time_t + 5 cannot realistically overflow
+INT32-C,18,sqlite,autosetup/jimsh0.c,20249,FP,argc validated by command dispatch
+INT32-C,19,sqlite,autosetup/jimsh0.c,20292,FP,argc==2 handled; argc-2 >= 1
+INT32-C,20,sqlite,ext/fts3/fts3_write.c,2753,FP,explicit (i64) widening cast before addition
+INT32-C,21,sqlite,ext/fts5/fts5_index.c,4900,FP,segment counts bounded
+INT32-C,22,sqlite,ext/fts5/fts5_index.c,5443,FP,page numbers positive and bounded
+INT32-C,23,sqlite,ext/fts5/fts5_index.c,7143,TP,int accumulation of up to 16 poslist sizes can exceed INT_MAX on adversarial DB
+INT32-C,24,sqlite,ext/fts5/fts5_tokenize.c,1049,FP,guarded by nBuf>6
+INT32-C,25,sqlite,ext/misc/base64.c,242,FP,nv <= 1GB SQLITE_MAX_LENGTH; 3*((nv+3)/4) < INT_MAX
+INT32-C,26,sqlite,ext/misc/dbdump.c,274,FP,error counter bounded
+INT32-C,27,sqlite,ext/misc/spellfix.c,1288,FP,i<nIn loop invariant
+INT32-C,28,sqlite,ext/recover/dbdata.c,643,FP,varint length <= 5 added to page-bounded offset
+INT32-C,29,sqlite,ext/rtree/rtree.c,2179,FP,nDim2 <= 10
+INT32-C,30,sqlite,ext/session/session_speed_test.c,98,FP,index over argv string
+INT32-C,31,sqlite,ext/wasm/api/sqlite3-wasm.c,1340,FP,nBuf positive constant; INT_MIN%-1 impossible
+INT32-C,32,sqlite,src/btmutex.c,147,FP,assert wantToLock>0 before decrement
+INT32-C,33,sqlite,src/btree.c,7291,FP,hdr is 0 or 100 page header offset
+INT32-C,34,sqlite,src/btree.c,7374,FP,sz bounded by page usableSize <= 65536
+INT32-C,35,sqlite,src/dbstat.c,654,FP,iPage bounded by ArraySize check on next line
+INT32-C,36,sqlite,src/expr.c,5022,FP,aff is affinity char in A-F range
+INT32-C,37,sqlite,src/expr.c,5074,FP,iSelfTab is small cursor number
+INT32-C,38,sqlite,src/os_win.c,2834,FP,guarded by nRead<amt
+INT32-C,39,sqlite,src/pager.c,1074,FP,i bounded by nSavepoint
+INT32-C,40,sqlite,src/select.c,1756,FP,column counts bounded by SQLITE_MAX_COLUMN
+INT32-C,41,sqlite,src/test1.c,6281,FP,digit counter bounded by string
+INT32-C,42,sqlite,src/wal.c,1337,FP,idx >= 1 by construction (asserted)
+INT32-C,43,sqlite,src/where.c,1363,FP,VDBE address bounded by program size
+INT32-C,44,sqlite,src/where.c,7787,FP,VDBE address bounded by program size
+INT32-C,45,sqlite,test/speedtest1.c,45,TP,unbounded hex digit loop shifts v<<4 on user CLI input; genuine UB possible
+INT32-C,46,sqlite,tool/fuzzershell.c,465,FP,iRowid is sqlite3_int64; bounded by query
+INT32-C,47,sqlite,tool/lemon.c,4692,FP,grammar state count small
+INT32-C,48,sqlite,tool/lemon.c,4888,FP,line counter bounded
+INT32-C,49,sqlite,tool/sqldiff.c,388,FP,j <= i loop invariant
+EXP34-C,0,curl,docs/examples/hiperfifo.c,178,FP,msg non-NULL per while-loop condition
+EXP34-C,1,curl,lib/cf-socket.c,994,FP,cf->ctx invariant non-NULL inside cfilter framework
+EXP34-C,2,curl,lib/cf-socket.c,2178,FP,cf set by Curl_cf_create with checked result before call
+EXP34-C,3,curl,lib/curl_fnmatch.c,261,FP,internal static; pattern param non-NULL by caller contract
+EXP34-C,4,curl,lib/ftp.c,1379,FP,ai validated by earlier bind step in same chain
+EXP34-C,5,curl,lib/vssh/libssh.c,2064,FP,deref inside else-if(sshc->slash_pos) guard
+EXP34-C,6,curl,tests/libtest/lib2402.c,95,FP,multi_init test macro aborts on NULL
+EXP34-C,7,curl,tests/server/getpart.c,383,FP,end points into buffer; non-NULL by construction
+EXP34-C,8,hostap,hs20/client/osu_client.c,94,FP,xml_node_get_text_free checks if(val) before xmlFree
+EXP34-C,9,hostap,src/ap/ieee802_11.c,2481,FP,call inside if(pub) guard
+EXP34-C,10,hostap,src/ap/ieee802_11_shared.c,246,FP,os_free is free(); NULL-safe
+EXP34-C,11,hostap,src/ap/wpa_auth_ft.c,1551,FP,flagged the zalloc assignment; NULL-checked next line
+EXP34-C,12,hostap,src/common/dpp_pkex.c,450,FP,ec initialized when Qi non-NULL (checked goto fail)
+EXP34-C,13,hostap,src/common/hw_features_common.c,993,FP,chan param non-NULL by caller contract
+EXP34-C,14,hostap,src/common/proc_coord.c,733,FP,handler from dl_list_for_each; non-NULL in loop
+EXP34-C,15,hostap,src/drivers/driver_nl80211.c,15119,FP,flagged the zalloc assignment; NULL-checked next line
+EXP34-C,16,hostap,src/drivers/netlink.c,96,FP,flagged the zalloc assignment; NULL-checked next line
+EXP34-C,17,hostap,src/eap_common/eap_pwd_common.c,225,FP,prfbuf allocated and checked earlier in function
+EXP34-C,18,hostap,src/eap_peer/eap_md5.c,49,FP,printing NULL with %p is not a dereference
+EXP34-C,19,hostap,src/pae/ieee802_1x_kay.c,596,FP,flagged the zalloc assignment; NULL-checked next line
+EXP34-C,20,hostap,src/rsn_supp/wpa.c,6113,FP,pub NULL-checked with goto fail two lines above
+EXP34-C,21,hostap,src/tls/tlsv1_cred.c,235,FP,NULL cert is valid no-cert config; callee handles
+EXP34-C,22,hostap,src/utils/edit.c,305,FP,h from dl_list_for_each_reverse; non-NULL in loop
+EXP34-C,23,hostap,wpa_supplicant/eapol_test.c,843,FP,assert(dot1x != NULL) guards next use; test tool
+EXP34-C,24,mosquitto,plugins/dynamic-security/groups.c,681,FP,json_get_string success guarantees username set
+EXP34-C,25,mosquitto,src/plugin_acl_check.c,131,FP,cb_base from list iteration; non-NULL in loop
+EXP34-C,26,mosquitto,test/unit/lib/property_user_read.c,454,FP,CUnit-asserted; helper tolerates NULL proplist
+EXP34-C,27,sqlite,autosetup/jimsh0.c,21437,FP,objPtr param non-NULL by API contract
+EXP34-C,28,sqlite,ext/expert/sqlite3expert.c,1737,FP,aStat NULL only when rc!=OK; loop guarded by rc==OK
+EXP34-C,29,sqlite,ext/fts3/fts3_tokenizer.c,316,FP,xCreate OK contract implies pTokenizer set
+EXP34-C,30,sqlite,ext/fts3/fts3_write.c,4844,FP,pReplace set when fts3SqlStmt returns OK; guarded
+EXP34-C,31,sqlite,ext/fts5/fts5_main.c,2514,FP,sqlite3Fts5Tokenize handles NULL/empty text
+EXP34-C,32,sqlite,ext/fts5/fts5_tcl.c,1633,FP,db set when f5tDbPointer succeeds; error path returns
+EXP34-C,33,sqlite,ext/intck/sqlite3intck.c,834,FP,p param non-NULL by public API contract
+EXP34-C,34,sqlite,ext/misc/sha1.c,328,FP,prepare error returns before loop; pStmt non-NULL
+EXP34-C,35,sqlite,ext/misc/zipfile.c,1637,TP,sqlite3_value_text can return NULL on OOM; strlen(NULL) crash; type check does not cover conversion failure
+EXP34-C,36,sqlite,ext/qrf/qrf.c,1820,FP,aw non-NULL when nCol>1 (nCol==1 path returns early)
+EXP34-C,37,sqlite,ext/rbu/sqlite3rbu.c,2728,FP,rc==SQLITE_OK short-circuits before step; pStmt valid
+EXP34-C,38,sqlite,ext/rbu/sqlite3rbu.c,3633,FP,rbuFinalize->sqlite3_finalize is NULL-safe
+EXP34-C,39,sqlite,ext/rtree/rtree.c,1997,FP,nodeRelease checks pNode internally
+EXP34-C,40,sqlite,ext/session/sqlite3session.c,6104,FP,pTab guarded by rc==SQLITE_OK chain
+EXP34-C,41,sqlite,src/build.c,4504,FP,pThis assigned with !=0 test in loop condition
+EXP34-C,42,sqlite,src/expr.c,749,FP,pR set by exprVectorRegister per construction
+EXP34-C,43,sqlite,src/expr.c,1854,FP,pNewExpr !=0 checked in enclosing condition
+EXP34-C,44,sqlite,src/pager.c,6056,FP,pPg->pPager invariant non-NULL
+EXP34-C,45,sqlite,src/pcache1.c,626,FP,lru list anchor sentinel guarantees non-NULL
+EXP34-C,46,sqlite,src/prepare.c,897,FP,sqlite3VdbeDb non-NULL invariant
+EXP34-C,47,sqlite,src/treeview.c,1137,FP,TreeView debug functions tolerate/allocate NULL pView
+EXP34-C,48,sqlite,src/trigger.c,1069,FP,pNew NULL implies nErr set; guarded by nErr==0
+EXP34-C,49,sqlite,src/vdbe.c,3213,FP,zData non-NULL per record format parsing
