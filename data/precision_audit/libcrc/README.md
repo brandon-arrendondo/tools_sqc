@@ -134,3 +134,73 @@ write-`fclose`, because run #34's benchmark manifest does not emit EXP12-C at
 all (`Run# 0`). That, and the several FP-labeled rules also showing `Run# 0`,
 illustrate the design: the oracle is a commit-pinned **superset** of labels, and
 each run is scored only against the subset of rules it actually produced.
+
+---
+
+## File-at-a-time audited corpus (2026-06-11, sqc 0.4.24, run #37) — COMPLETE
+
+libcrc is the **first codebase converted to the file-at-a-time audited-corpus
+model** (`audited_files` table; `bench audit-score` / `audit-coverage`). The file
+is the atomic unit of "done": every sqc finding in it is labelled **and** the file
+was read independently for missed bugs (FNs). libcrc is now **19/19 files = 100%
+coverage**.
+
+### Config-correctness fix (important)
+
+The earlier "Measured against run #34" numbers were scored against a run whose
+findings were produced with the **base benchmark manifest, not
+`conf/realworld/libcrc-rules.toml`** — because the running real-world MCP server
+process (started 11:27) pre-dated the per-codebase-manifest plumbing (committed
+13:38). It silently used `rules_templates/rules-benchmark.toml`, so runs #33/#34/#35
+all emitted 277 findings *including* rules the project config disables (POS05-C,
+API05-C, FIO50-C, WIN03-C, …) and *omitting* advisory rules it enables
+(DCL06-C, EXP12-C, EXP19-C, …). This is exactly the "settle the per-codebase
+scope first" principle: out-of-scope rules (Windows on POSIX, chroot on a
+non-privileged tool, …) are FP **by design** and must never reach the oracle.
+
+After restarting the MCP server, a config-correct scan (`--manifest
+conf/realworld/libcrc-rules.toml`) reproduces the full audit's **422 findings**
+(POS05/API05/FIO50/WIN03 = 0; DCL06=42, EXP12=60), ingested as **run #37**. All
+422 findings collapse to the 372 distinct (file,line,rule) keys already labelled —
+**0 unlabelled**. (A latent `ingest_realworld_run` bug that globbed `*.json` and
+choked on the `.meta.json` sidecar was fixed at the same time.)
+
+### Result (`bench audit-score`, run #37)
+
+| Metric | Value |
+|--------|-------|
+| Files audited | **19 / 19 (100 %)** |
+| Findings (config-correct) | **372** distinct |
+| True positives | **13** |
+| False positives | **359** |
+| **Precision** | **3.5 %** |
+| False negatives (recall denom) | **1** |
+| **Recall** | **92.9 % (13/14)** |
+
+Honest recall is now possible because each file was read for misses, not just
+sqc's own output. The standout signal: **INT31-C precision 0/12, recall 0/1** —
+sqc's INT31-C detector fires only on false positives (lossless `(unsigned char)
+ch` casts) and *misses* the one real narrowing in the tree.
+
+### False negatives — two kinds
+
+1. **Detector-recall gap (recorded as an `FN` ground-truth row):**
+   - `test/testcrc.c:104` **INT31-C** — `int len = strlen(...)` narrows `size_t`→`int`.
+     sqc emits 12 INT31-C in libcrc (all FP) yet misses this real narrowing.
+     Confidence medium; provenance uncorroborated. This sits in the INT31-C recall
+     denominator and flips to "detected" if sqc's INT31-C detector improves.
+
+2. **Coverage gaps (no enabled rule cleanly fits — documented, not inserted, so
+   per-rule recall stays honest):**
+   - `precalc/precalc.c:136` — `generate_table()` returns `0` (success) on `fopen`
+     failure; `main()` does `exit(retval)`, so an unopenable table-file is reported
+     to the build as success. No CERT rule cleanly targets "returns a success
+     constant on an error path." Add a TP/FN label if a suitable detector lands.
+   - Low-confidence candidates (documented, not inserted): `src/crc8.c:99` DCL40-C
+     (`update_crc_8` param `unsigned char` vs `uint8_t` decl — benign unless
+     `uint8_t` isn't `unsigned char`); `precalc/precalc.h:44` & `test/testall.h:37`
+     (`main` prototyped in a shared header). The testcrc.c:163 "stray X" format
+     observation is **already** flagged by sqc (FIO47-C), so it is not an FN.
+
+This supersedes the run-#34 measurement above; run #34 remains as the record of
+the config-incorrect baseline that motivated the fix.
