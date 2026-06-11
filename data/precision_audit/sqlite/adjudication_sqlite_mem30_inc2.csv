@@ -1,0 +1,46 @@
+rule,idx,project,file,line,verdict,reason
+MEM30-C,0,sqlite,src/vtab.c,349,FP,"loop frees azArg[i] strings; line frees the distinct azArg array itself, not p->u"
+MEM30-C,1,sqlite,src/trigger.c,279,FP,pTrigger is being constructed (members assigned above); free is only on the unreached trigger_cleanup error path
+MEM30-C,2,sqlite,src/vdbe.c,6838,FP,pOp is the live VDBE program-counter opcode; never freed during bytecode execution
+MEM30-C,3,sqlite,src/vdbe.c,7030,FP,"pOp is the live VDBE opcode; pOp->p1 is a db index, not freed"
+MEM30-C,4,sqlite,src/btree.c,2780,FP,"shared-cache linked-list insertion (p->pNext->pPrev=p); p is a live Btree being linked in, not freed"
+MEM30-C,5,sqlite,src/os_win.c,5195,FP,single free + immediate return on this error branch; the 'other' free is on the mutually-exclusive success path (path-insensitive)
+MEM30-C,6,sqlite,src/vdbeaux.c,3756,FP,"loop frees distinct DblquoteStr nodes (pThis via pNxt); db is the allocator handle, not the freed object"
+MEM30-C,7,sqlite,src/trigger.c,250,FP,pParse passed to sqlite3AuthCheck; not freed (cleanup frees other objects on a different path)
+MEM30-C,8,sqlite,src/vdbe.c,8672,FP,"p is the live Vdbe; p->napArg read in an assert, not freed"
+MEM30-C,9,sqlite,src/wal.c,1512,FP,"pWal is the live WAL handle during recovery; hdr members assigned, not freed"
+MEM30-C,10,sqlite,src/vdbe.c,2839,FP,"pOp is the live VDBE opcode; pOp->p4.i read, not freed"
+MEM30-C,11,sqlite,ext/rbu/sqlite3rbu.c,2725,FP,&p->zErrmsg is an out-param; prepareFreeAndCollectError frees then reassigns it (free-then-reassign)
+MEM30-C,12,sqlite,ext/fts5/fts5_main.c,1452,FP,"fts5FreeCursorComponents frees the cursor's components; the memset clears fields of pCsr itself, which is not freed"
+MEM30-C,13,sqlite,src/vdbe.c,6833,FP,"pOp is the live VDBE opcode; pOp->p4.i read, not freed"
+MEM30-C,14,sqlite,src/vdbe.c,4222,FP,"pOp is the live VDBE opcode; pOp->p3 read, not freed"
+MEM30-C,15,sqlite,src/vdbe.c,4657,FP,"pOp is the live VDBE opcode; pOp->p1 read in an assert, not freed"
+MEM30-C,16,sqlite,ext/misc/amatch.c,880,FP,free(pNew->zVocabLang) then reassign from amatchDequote; line reads the reassigned value (free-then-reassign)
+MEM30-C,17,sqlite,src/prepare.c,588,FP,cleanupParse loop frees distinct pCleanup nodes; pParse itself is not freed
+MEM30-C,18,sqlite,src/vdbeapi.c,940,FP,"sqlite3DbFree frees the member v->zErrMsg; db is the allocator handle, not freed"
+MEM30-C,19,sqlite,src/vdbe.c,8367,FP,pOp is the live VDBE opcode; pOp->p1 is a db index read in an assert
+MEM30-C,20,sqlite,ext/rbu/sqlite3rbu.c,2110,FP,"rbuFinalize finalizes the pXInfo statement; p->dbMain is the live db handle, not freed"
+MEM30-C,21,sqlite,src/pragma.c,1397,FP,pParse is the live parse context; sqlite3CodeVerifySchema does not free it
+MEM30-C,22,sqlite,src/vdbeapi.c,2274,FP,"p is the live PreUpdate object; p->pTab->nCol read in an assert, not freed"
+MEM30-C,23,sqlite,src/btree.c,7903,FP,editPage: pageFreeArray frees cells within the page; pPg (MemPage) and its aCellIdx are not freed
+MEM30-C,24,sqlite,src/vdbeaux.c,1409,FP,if/else: sqlite3ValueFree and freeP4Mem are mutually exclusive branches on the same p4 (path-insensitive)
+MEM30-C,25,sqlite,src/btree.c,10001,FP,"releasePage releases page refs in pCur->apPage[]; pCur (the BtCursor) is not freed, passed live to balance()"
+MEM30-C,26,sqlite,src/wal.c,1516,FP,"pWal is the live WAL handle; hdr.aFrameCksum read, not freed"
+MEM30-C,27,sqlite,src/vdbe.c,1993,FP,pOp is the live VDBE opcode; pOp->p4type read in an assert
+MEM30-C,28,sqlite,src/btree.c,7933,FP,editPage: pData points into the page buffer aData (not heap-freed); pageInsertArray edits cells in place
+MEM30-C,29,sqlite,src/prepare.c,593,FP,cleanupParse: pParse is not freed; pParse->db (the live db) read in an assert
+MEM30-C,30,sqlite,ext/rbu/sqlite3rbu.c,2509,FP,p->zStateDb is a live string member used to format SQL; not freed here
+MEM30-C,31,sqlite,src/vdbe.c,2806,FP,pOp is the live VDBE opcode; pOp->p1/p3 read in asserts
+MEM30-C,32,sqlite,src/trigger.c,196,FP,db is the live connection handle passed to sqlite3NameFromToken; not freed
+MEM30-C,33,sqlite,ext/fts5/fts5_main.c,1606,FP,"pCsr is the live cursor (struct reused, not freed); fts5StmtType reads it and &pCsr->pStmt is an out-param"
+MEM30-C,34,sqlite,src/btree.c,9665,FP,"pPage is edited in place (dropCell/insertCellFast); pPage->nOverflow read, MemPage not freed"
+MEM30-C,35,sqlite,ext/misc/fuzzer.c,626,FP,(*pzBuf)=sqlite3_realloc((*pzBuf),...) then NULL-check; realloc reassigns the out-param (free-then-reassign)
+MEM30-C,36,sqlite,src/main.c,1429,FP,"loop frees distinct FuncDef nodes (p); db is the live connection, &db->aFunc not freed"
+MEM30-C,37,sqlite,src/btree.c,7894,FP,"editPage: pageFreeArray frees cells; aData is the page buffer (not heap-freed), indexed here"
+MEM30-C,38,sqlite,src/vdbe.c,4928,FP,pOp is the live VDBE opcode; pOp->opcode read in an assert
+MEM30-C,39,sqlite,ext/qrf/qrf.c,2912,FP,single sqlite3_str_finish(p->pOut)+free in this branch; line 2914 is the mutually-exclusive else (path-insensitive)
+MEM30-C,40,sqlite,src/wal.c,1543,FP,aPrivate = &aData[szPage] is a pointer into a buffer (never heap-freed); compared element-wise
+MEM30-C,41,sqlite,src/vdbe.c,9001,FP,"pOp is the live VDBE opcode; p->aOp is the live program array, compared in an assert"
+MEM30-C,42,sqlite,ext/fts3/fts3.c,4415,FP,"pPhrase is a live Fts3Phrase; doclist members assigned, not freed"
+MEM30-C,43,sqlite,src/os_win.c,5221,FP,zBuf is freed only on earlier error branches that returned; reached here only on the success path (path-insensitive)
+MEM30-C,44,sqlite,src/btree.c,10392,FP,"freePage marks the database page free (b-tree freelist); releasePage releases the in-memory MemPage ref — distinct operations, not a double-free"

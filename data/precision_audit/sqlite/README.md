@@ -58,12 +58,54 @@ false positives; genuine TPs require unbounded external input.
 Combined with the 32 INT32-C sqlite labels from the v0.4.22 sample, the oracle
 now has ~47 INT32-C sqlite labels.
 
+### Increment 2 (2026-06-11, sqc 0.4.24) — MEM30-C, 45 in-scope findings
+
+`adjudication_sqlite_mem30_inc2.csv` — sampled `realworld-unlabeled … --rule
+MEM30-C --project sqlite --seed 20260611 --limit 60`, 48 in-scope of which 45
+labelled (see scope note below), each verdict from reading the source.
+
+**45 FP / 0 TP.** Every finding is an analyzer misfire; sqlite's UAF/double-free
+discipline is sound on the sampled sites. The FPs cluster into five systemic
+free→use matcher defects worth fixing:
+
+1. **Live VDBE opcode `pOp`** (~14, all `src/vdbe.c`) — `pOp` is the program
+   counter during bytecode execution and is never freed; the matcher flags every
+   `pOp->p1/p3/p4/opcode` read (most inside asserts). Largest single class.
+2. **Allocator/connection handle misread as the freed object** — `sqlite3DbFree(db,
+   member)` / `Tcl_Free`, then a later use of `db` (the *allocator*, first arg) or
+   a sibling member is flagged (`vdbeaux.c:3756`, `vdbeapi.c:940`, `main.c:1429`,
+   `trigger.c:196/250`).
+3. **Loop frees distinct list nodes, parent flagged** — frees `azArg[i]` /
+   `pCleanup` / `DblquoteStr` / `FuncDef` nodes in a loop, then the container or a
+   following sibling access is flagged (`vtab.c:349`, `prepare.c:588`, `main.c:1429`).
+4. **Free-then-reassign (incl. realloc out-params)** — `free(x->m); x->m = f();`
+   or `*p = realloc(*p, …)`, then the reassigned value is read (`amatch.c:880`,
+   `fuzzer.c:626`, `rbu` out-param `&p->zErrmsg`).
+5. **Path-insensitive "double-free"** — mutually-exclusive if/else or
+   error-branch-then-return counted as two frees on one path (`os_win.c:5195/5221`,
+   `vdbeaux.c:1409`, `qrf.c:2912`). Also **in-place page edits** misread as frees:
+   `pageFreeArray`/`dropCell` reorganise cells *within* a MemPage but free no heap,
+   yet `pPg`/`aData`/`pData` access is flagged (`btree.c:7894/7903/7933/9665`), and
+   `freePage`+`releasePage` (free the *db page* vs release the *in-memory ref* —
+   distinct ops) is flagged as a double-free (`btree.c:10392`).
+
+MEM30-C stays **enabled**: it is a genuine memory-safety rule, so these misfires
+are recorded as oracle labels (not suppressed) to drive the matcher fixes above.
+
+**Scope note:** `src/tclsqlite.c` (the Tcl language binding, not the shipped
+engine — same rationale as the `ext/jni`/`ext/wasm` exclusion) and
+`ext/fts5/fts5_test_tok.c` (a test tokenizer, matching the `*test*` test-glue
+exclusion) are treated as out-of-scope; their 3 sampled MEM30-C findings (all
+also FP) are not labelled.
+
+MEM30-C oracle now has 99 sqlite labels (54 prior + 45). Overall measured
+sqlite-inclusive precision: 7.5% (TP 33 / 438 labeled).
+
 ## Next increments (priority order)
 
-1. **MEM30-C** (2384, unlabeled) — free→use matcher; expect free-then-reassign,
-   sibling-member, and non-pointer-field FPs.
-2. **API00-C** (1377, unlabeled) — alias-validation FPs (cf. libcrc).
-3. **EXP34-C** / **DCL13-C** — extend the existing v0.4.22 samples.
+1. **API00-C** (1377, unlabeled) — alias-validation FPs (cf. libcrc).
+2. **EXP34-C** / **DCL13-C** — extend the existing v0.4.22 samples.
+3. **INT30-C** (940), **EXP33-C** (692), **INT14-C** (631), **ARR00-C/ARR30-C**.
 
 ## Re-running / extending
 
