@@ -1,0 +1,24 @@
+rule,idx,project,file,line,verdict,reason
+DCL13-C,0,sqlite,ext/fts5/fts5_index.c,1484,TP,"fts5SegmentSize: static getter, returns 1+pSeg->pgnoLast-pSeg->pgnoFirst; pSeg read-only, const compiles"
+DCL13-C,1,sqlite,src/alter.c,2657,FP,addConstraintFunc is an SQL function impl; argv signature fixed by the xFunc function-pointer type (sqlite3_create_function)
+DCL13-C,2,sqlite,src/date.c,1413,FP,strftimeFunc is an SQL function impl; argv signature fixed by the xFunc function-pointer type
+DCL13-C,3,sqlite,src/vdbeaux.c,1502,TP,"sqlite3VdbeReleaseRegisters reads pParse->db/pVdbe/nMem and emits VDBE ops via pParse->pVdbe; pParse object itself never written, bare pParse not passed — const compiles"
+DCL13-C,4,sqlite,src/status.c,188,TP,"sqlite3LookasideUsed reads db->lookaside.* only (counts slot lists); db never written, bare db not passed — const compiles"
+DCL13-C,5,sqlite,ext/misc/spellfix.c,1820,FP,transliterateSqlFunc is an SQL function impl; argv signature fixed by the xFunc function-pointer type
+DCL13-C,6,sqlite,src/expr.c,1448,TP,sqlite3ClearOnOrUsing reads p->pOn/p->pUsing and frees those member-pointees; the OnOrUsing object *p itself is never written — const compiles (C const only promises *p unwritten)
+DCL13-C,7,sqlite,src/pcache.c,846,TP,"sqlite3PcachePagecount: getter, asserts then returns count; pCache read-only, const compiles"
+DCL13-C,8,sqlite,ext/fts5/fts5_index.c,3937,FP,"fts5MultiIterNew stores pColset into pNew->pColset, a non-const 'Fts5Colset *pColset' field — declaring the param const would not compile"
+DCL13-C,9,sqlite,src/where.c,717,TP,"translateColumnToCopy reads pParse->pVdbe/db and rewrites VDBE ops (OP_Column->OP_Copy); pParse object itself never written, bare pParse not passed — const compiles"
+DCL13-C,10,sqlite,src/wherecode.c,336,TP,"sqlite3WhereAddScanStatus reads pLvl->pWLoop/iFrom/addr*/iTabCur/iIdxCur only; pLvl never written, bare pLvl not passed — const compiles"
+DCL13-C,11,sqlite,ext/misc/blobio.c,88,FP,writeblobFunc is an SQL function impl; argv signature fixed by the xFunc function-pointer type
+DCL13-C,12,sqlite,ext/misc/fossildelta.c,809,FP,deltaparsevtabConnect is a vtab xConnect method; pzErr signature fixed by sqlite3_module.xConnect
+DCL13-C,13,sqlite,src/carray.c,244,FP,carrayEof is a vtab xEof method; cur signature fixed by sqlite3_module.xEof
+DCL13-C,14,sqlite,src/btree.c,7792,TP,"pageFreeArray reads pCArray->apCell[i]/szCell[i] as a reference while editing the page pPg; pCArray never written, not passed bare — const compiles"
+DCL13-C,15,sqlite,src/alter.c,968,FP,"renameTokenFind walks '&pParse->pRename' and unlinks nodes via '*pp = pToken->pNext', mutating pParse->pRename — pParse IS modified, const infeasible"
+DCL13-C,16,sqlite,ext/fts5/fts5_expr.c,2885,FP,fts5ExprFold is an SQL function impl; apVal signature fixed by the xFunc function-pointer type
+DCL13-C,17,sqlite,src/main.c,1719,FP,sqliteDefaultBusyCallback is a busy-handler callback; ptr signature fixed by sqlite3_busy_handler's function-pointer type
+DCL13-C,18,sqlite,src/vdbeaux.c,5333,TP,"sqlite3ExpirePreparedStatements loops 'for(p=db->pVdbe; p; …) p->expired=…'; reads db, mutates the Vdbe objects (not db); bare db not passed — const compiles"
+DCL13-C,19,sqlite,src/json.c,3961,FP,jsonArrayLengthFunc is an SQL function impl; argv signature fixed by the xFunc function-pointer type
+DCL13-C,20,sqlite,ext/misc/vfslog.c,480,FP,vlogSync is a VFS xSync method; pFile signature fixed by sqlite3_io_methods.xSync
+DCL13-C,21,sqlite,src/notify.c,151,FP,sqlite3_unlock_notify is a public API; pArg is an opaque user pointer whose type is fixed by the published signature
+DCL13-C,22,sqlite,src/window.c,1657,TP,"windowAggStep reads p->pParse only (no p->X= writes in 1656-1760, bare p not passed); const WindowCodeArg* compiles"

@@ -183,6 +183,45 @@ measured sqlite-inclusive precision: 6.3% (TP 33 / 522 labeled).
 3. Revisit the **API00-C categorical-disable** decision once sub-class-1 (assert/
    guard recognition) is either fixed or ruled out.
 
+### Increment 5 (2026-06-11, sqc 0.4.24) — DCL13-C, 23 in-scope findings
+
+`adjudication_sqlite_dcl13_inc5.csv` — sampled `realworld-unlabeled … --rule
+DCL13-C --project sqlite --seed 20260612 --limit 50`, 23 in-scope (3 test files
+excluded: `test_rtreedoc.c`, `test_expert.c`, `fts5_tcl.c`). DCL13-C
+("declare unmodified pointer params const") is genuinely the highest-precision
+rule, so verdicts follow the v0.4.22 framework: **TP** = the flagged param object
+is itself never written and `const` would compile (C `const T*` only promises the
+immediately-pointed-to object is unwritten — reading non-const member pointers and
+mutating *their* pointees is still const-valid); **FP** = the signature is fixed by
+a function-pointer type, or the param is stored into a non-const field, or the
+param object is mutated.
+
+**10 TP / 13 FP** (43%, in line with the prior 34%).
+
+- **TP (10)** — internal read-only helpers: getters (`fts5SegmentSize`,
+  `sqlite3PcachePagecount`, `sqlite3LookasideUsed`), codegen helpers that read the
+  param and mutate *other* objects reached through it (`sqlite3VdbeReleaseRegisters`,
+  `translateColumnToCopy`, `sqlite3WhereAddScanStatus`,
+  `sqlite3ExpirePreparedStatements`, `windowAggStep`), a reference-array consumer
+  (`pageFreeArray` reads `pCArray` while editing the page), and a member-pointee
+  destructor whose own struct is unwritten (`sqlite3ClearOnOrUsing`).
+- **FP (13)** — 11 **API-mandated signatures**: SQL-function impls (`argv`/`apVal`
+  in `strftimeFunc`, `jsonArrayLengthFunc`, `writeblobFunc`, `transliterateSqlFunc`,
+  `fts5ExprFold`, `addConstraintFunc`), vtab methods (`carrayEof` xEof,
+  `deltaparsevtabConnect` xConnect), a VFS method (`vlogSync` xSync), a busy-handler
+  callback (`sqliteDefaultBusyCallback`), and a public-API opaque pointer
+  (`sqlite3_unlock_notify`'s `pArg`) — none can take `const` without breaking the
+  published function-pointer type. Plus `fts5MultiIterNew` (stores `pColset` into a
+  non-const field) and `renameTokenFind` (unlinks nodes from `pParse->pRename`,
+  mutating `pParse`).
+
+The signature-fixed FPs are the analyzer-improvement target: sqc should suppress
+DCL13-C when the function's address is taken as a callback / assigned to a
+fixed-prototype function pointer (xFunc, xConnect, sqlite3_io_methods, etc.).
+
+DCL13-C oracle now has 73 sqlite labels (50 prior + 23; 27 TP / 46 FP). Overall
+measured sqlite-inclusive precision: 7.9% (TP 43 / 545 labeled).
+
 ## Re-running / extending
 
     # pull the next unlabeled batch for a rule (reproducible):
