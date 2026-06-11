@@ -1,0 +1,37 @@
+rule,idx,project,file,line,verdict,reason
+EXP34-C,0,sqlite,ext/fts5/fts5_index.c,7795,FP,pBlob=0 then sqlite3_blob_open(&pBlob); on rc==SQLITE_OK the API guarantees pBlob non-null — sqc doesn't model success=>non-null
+EXP34-C,1,sqlite,src/util.c,276,FP,guarded by 'if(db==0 || (pParse=db->pParse)==0) return' — pParse non-null past the assignment-in-condition guard (sqc missed it)
+EXP34-C,2,sqlite,src/pager.c,1252,FP,debug helper pager_set_pagehash; pPage is a live PgHdr guaranteed non-null by the caller (CHECK_PAGES build)
+EXP34-C,3,sqlite,ext/session/sqlite3session.c,5043,FP,"pUp is a prepared stmt bound above (sessionBindValue); non-null by prior prepare, and sqlite3_step(NULL) is MISUSE-safe anyway"
+EXP34-C,4,sqlite,src/vdbeaux.c,228,FP,"growOp3(Vdbe *p,...); p is the live Vdbe guaranteed non-null by the caller (assert precondition)"
+EXP34-C,5,sqlite,ext/misc/vtablog.c,124,FP,"z is a non-null input; vtablog_skip_whitespace returns a pointer within the string, never NULL"
+EXP34-C,6,sqlite,ext/fts5/fts5_main.c,870,FP,"fts5SorterNext is only entered for sorter cursors, so pCsr->pSorter is non-null by that invariant (would crash universally otherwise)"
+EXP34-C,7,sqlite,ext/rbu/sqlite3rbu.c,3656,FP,while(p->rc==SQLITE_OK && sqlite3_step(pSql)): pSql set by prepareAndCollectError only when p->rc==OK; short-circuits otherwise (and sqlite3_step is MISUSE-safe)
+EXP34-C,8,sqlite,ext/rtree/rtree.c,2885,FP,pNode already dereferenced above (nodeInsertCell at 2879); non-null by caller invariant
+EXP34-C,9,sqlite,src/upsert.c,230,FP,guarded by 'if(NEVER(pUpsert==0)) return 0' immediately above — sqc missed the NEVER() null guard
+EXP34-C,10,sqlite,ext/fts5/fts5_index.c,4857,FP,pIter is the live multi-iterator established by the enclosing merge loop; non-null by invariant
+EXP34-C,11,sqlite,src/where.c,6529,FP,"whereOmitNoopJoin; comment states 'Preconditions checked by the caller' — pWInfo non-null, read in an assert"
+EXP34-C,12,sqlite,ext/expert/sqlite3expert.c,1085,FP,"idxFindConstraint(pList,p) loops 'for(pCmp=pList; pCmp; …)' which never derefs a NULL pList — the loop condition IS the null check"
+EXP34-C,13,sqlite,ext/fts3/fts3_snippet.c,1433,FP,reached only on rc==SQLITE_OK where aOut was successfully allocated above; non-null on this path
+EXP34-C,14,sqlite,src/where.c,4379,FP,"termFromWhereClause returns &pWC->a[iTermOffset], a valid element pointer (never NULL) for an in-range offset"
+EXP34-C,15,sqlite,ext/misc/dbdump.c,194,FP,sqlite3_prepare_v2(&pStmt); 'if(rc) return 0' above — pStmt non-null when rc==0 (and sqlite3_step is MISUSE-safe)
+EXP34-C,16,sqlite,ext/session/sqlite3session.c,1620,FP,sessionSerializeValue opens with 'if(pValue){…}' — it explicitly handles a NULL value (size-measurement pass); sqc missed the guard
+EXP34-C,17,sqlite,src/where.c,5092,FP,pWInfo is the live WhereInfo guaranteed non-null by the caller of this static helper
+EXP34-C,18,sqlite,ext/fts5/fts5_index.c,7281,FP,fts5 OOM-sets-p->rc: pNew non-null whenever p->rc==SQLITE_OK (the rc!=0 path closed pNew and broke at 7277)
+EXP34-C,19,sqlite,ext/misc/amatch.c,1009,FP,"amatchStrcat(dest,src); dest is a caller-provided buffer, non-null by contract"
+EXP34-C,20,sqlite,ext/session/sqlite3session.c,5190,FP,pIter2 already dereferenced above (pIter2->bPatchset=… at 5181); non-null on this path
+EXP34-C,21,sqlite,src/os_win.c,4269,FP,'sizeof(*pShmNode)' is an unevaluated operand — sizeof does NOT dereference pShmNode; sqc wrongly treats it as a runtime deref
+EXP34-C,22,sqlite,ext/rbu/sqlite3rbu.c,2091,FP,rbuFinalize wraps sqlite3_finalize which is NULL-safe; passing a NULL stmt is harmless
+EXP34-C,23,sqlite,src/where.c,5276,FP,'(pIndex=pLoop->u.btree.pIndex)==0 || pIndex->bUnordered': short-circuit means pIndex->bUnordered is read only when pIndex!=0
+EXP34-C,24,sqlite,ext/session/changeset.c,442,FP,pIter is the live changeset iterator driven by the render loop; non-null by invariant (sqlite3changeset_old tolerates it regardless)
+EXP34-C,25,sqlite,src/wherecode.c,1283,FP,codeDeferredSeek; pParse=pWInfo->pParse with pWInfo non-null by caller; pParse->pVdbe deref is safe
+EXP34-C,26,sqlite,ext/rtree/rtree.c,2997,FP,pRoot already dereferenced above (nodeGetRowid at 2988); non-null by caller invariant
+EXP34-C,27,sqlite,src/select.c,2599,FP,nOrderBy=(pOrderBy!=0)?pOrderBy->nExpr:0; the 'for(i<nOrderBy)' body runs only when pOrderBy!=0 — correlated guard not modeled
+EXP34-C,28,sqlite,ext/misc/csv.c,458,FP,"z is a non-null input; csv_skip_whitespace returns a pointer within the string, never NULL"
+EXP34-C,29,sqlite,src/vdbemem.c,696,FP,"z=pMem->z is the text buffer of a MEM_Str value, non-null by the string-cell invariant on this branch"
+EXP34-C,30,sqlite,ext/rbu/sqlite3rbu.c,2222,FP,"p=sqlite3_user_data(pCtx) is the registered RBU context, non-null by registration; read in an assert"
+EXP34-C,31,sqlite,src/btree.c,7232,FP,releasePage is NULL-safe ('if(pPage) releasePageNotNull(pPage)'); the assert at 7224 shows pToRelease==0 is an expected state
+EXP34-C,32,sqlite,src/btree.c,10337,FP,releasePage is NULL-safe; passing a possibly-null pPage is harmless by design
+EXP34-C,33,sqlite,ext/fts5/fts5_index.c,1283,FP,"fts5 OOM-sets-p->rc: fts5DataRead returns NULL only with p->rc!=OK, so pData is non-null inside 'if(p->rc==SQLITE_OK)'"
+EXP34-C,34,sqlite,ext/fts3/fts3.c,3023,FP,sqlite3Fts3SegReaderNew sets pSeg on success; 'if(rc!=OK) goto finished' above means pSeg non-null here
+EXP34-C,35,sqlite,src/vacuum.c,238,FP,sqlite3PagerFile always returns a valid sqlite3_file* (id non-null); the id->pMethods!=0 check handles the no-op-file case

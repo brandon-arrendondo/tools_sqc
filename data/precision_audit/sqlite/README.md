@@ -139,9 +139,46 @@ decision; deferring keeps the fixable sub-class-1 misfires on the books.
 API00-C oracle now has 62 sqlite labels (14 prior + 48). Overall measured
 sqlite-inclusive precision: 6.8% (TP 33 / 486 labeled).
 
+### Increment 4 (2026-06-11, sqc 0.4.24) — EXP34-C, 36 in-scope findings
+
+`adjudication_sqlite_exp34_inc4.csv` — sampled `realworld-unlabeled … --rule
+EXP34-C --project sqlite --seed 20260612 --limit 50`, 36 in-scope, each verdict
+from tracing where the pointer originates and whether NULL is reachable at the
+deref. EXP34-C (null-deref) is the rule most likely to hold a real TP, so each
+site was read carefully.
+
+**36 FP / 0 TP.** sqlite's null-safety holds at every sampled site. The FPs
+expose several distinct analyzer gaps:
+
+1. **`sizeof(*p)` misread as a dereference** (`os_win.c:4269`,
+   `pNew = sqlite3MallocZero(sizeof(*pShmNode)+…)`) — `sizeof`'s operand is
+   unevaluated; flagging it as a runtime deref is a clear bug.
+2. **OOM-sets-error-code correlation** — the fts5/rbu idiom `p = alloc(); if(
+   p->rc==SQLITE_OK){ use p }` where the allocator sets `p->rc` (or the engine's
+   `mallocFailed`) on failure, so the pointer is non-null exactly when `rc==OK`.
+   sqc doesn't model success⇒non-null (`fts5_index.c:7281/1283`, `7795` blob-open,
+   `fts3.c:3023`, `rbu` step loops).
+3. **NULL-safe callees not recognized** — `releasePage` (`if(pPage) …`),
+   `sqlite3_step` (MISUSE-safe), `sessionSerializeValue`/`idxFindConstraint` (guard
+   their arg with `if(pValue)` / `for(pCmp=pList; pCmp; …)`), `rbuFinalize`
+   (wraps `sqlite3_finalize`) — passing a possibly-NULL pointer is harmless.
+4. **Correlated / short-circuit guards not modeled** — `(p=expr)==0 || p->field`,
+   `n=(p?p->nExpr:0); for(i<n) p->a[i]`, `if(NEVER(p==0)) return`, and
+   assignment-in-`if` (`if(db==0 || (pParse=db->pParse)==0) return`).
+5. **Caller-invariant / already-dereferenced-above** — the largest class: the
+   pointer is dereferenced safely a few lines earlier or is a static-helper param
+   guaranteed by the caller.
+
+These are *all* analyzer misfires (no genuine missing null-check), so EXP34-C
+stays enabled and the labels drive the fixes above — class 1 (`sizeof`) and class 2
+(OOM-rc correlation) are the highest-leverage.
+
+EXP34-C oracle now has 86 sqlite labels (50 prior + 36; 1 TP / 85 FP). Overall
+measured sqlite-inclusive precision: 6.3% (TP 33 / 522 labeled).
+
 ## Next increments (priority order)
 
-1. **EXP34-C** (1537) / **DCL13-C** (2070) — extend the existing v0.4.22 samples.
+1. **DCL13-C** (2070) — extend the existing v0.4.22 sample.
 2. **INT30-C** (940), **EXP33-C** (692), **INT14-C** (631), **ARR00-C/ARR30-C**.
 3. Revisit the **API00-C categorical-disable** decision once sub-class-1 (assert/
    guard recognition) is either fixed or ruled out.
