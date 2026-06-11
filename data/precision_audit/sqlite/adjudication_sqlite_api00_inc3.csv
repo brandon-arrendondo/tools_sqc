@@ -1,0 +1,50 @@
+rule,idx,project,file,line,verdict,reason
+API00-C,0,sqlite,src/vdbeapi.c,1396,FP,"public leaf accessor sqlite3_column_bytes16; pStmt validity is the caller's documented contract (UB on a bad handle), deliberately unchecked for speed"
+API00-C,1,sqlite,src/btree.c,11478,FP,internal sqlite3BtreeIncrblobCursor; pCur is a live cursor guaranteed by the caller (incrblob setup)
+API00-C,2,sqlite,src/pcache.c,738,FP,"internal sqlite3PcacheClear; non-null pCache is a precondition (sibling sqlite3PcacheClose asserts it) — assert-based house style, not runtime-checked"
+API00-C,3,sqlite,src/trigger.c,558,FP,"internal parser callback sqlite3TriggerUpdateStep; pEList supplied by the grammar, non-null by construction"
+API00-C,4,sqlite,src/vdbeapi.c,1087,FP,public sqlite3_vtab_in_first; ppOut is a caller-provided out-param (deref-to-store is the contract)
+API00-C,5,sqlite,src/vdbeaux.c,4575,FP,internal sqlite3MemCompare; pMem1/pMem2 are live Mem cells guaranteed by the VDBE caller
+API00-C,6,sqlite,ext/session/sqlite3session.c,6687,FP,public sqlite3rebaser_create; ppNew is a caller-provided out-param (deref-to-store is the contract)
+API00-C,7,sqlite,ext/fts5/fts5_expr.c,3240,FP,internal sqlite3Fts5ExprInstToken; pnOut/out-params provided by the xInstToken API caller
+API00-C,8,sqlite,src/vdbemem.c,2079,FP,internal sqlite3Stat4ValueFromExpr; ppVal is a caller-provided out-param
+API00-C,9,sqlite,src/wal.c,3809,FP,internal sqlite3WalSavepointUndo; pWal is the live WAL handle (sibling WalSavepoint asserts pWal->writeLock) — precondition by contract
+API00-C,10,sqlite,ext/fts5/fts5_storage.c,1037,FP,internal sqlite3Fts5StorageIndexInsert; apVal supplied by the storage-layer caller
+API00-C,11,sqlite,src/printf.c,1172,FP,sqlite3StrAccumFinish; p is a StrAccum that sqlite3_str_new never returns NULL for — non-null by contract
+API00-C,12,sqlite,ext/session/sqlite3session.c,5585,FP,public sqlite3changeset_apply; db validity is the caller's documented contract
+API00-C,13,sqlite,src/prepare.c,625,FP,"internal sqlite3ParserAddCleanup; pPtr/pParse provided by the parser, non-null by construction"
+API00-C,14,sqlite,src/update.c,285,FP,internal sqlite3Update; pOrderBy and other params supplied by the parser/code-generator
+API00-C,15,sqlite,src/build.c,2537,FP,internal sqlite3MarkAllShadowTablesOf; db is the live connection (sibling sqlite3IsShadowTableOf uses db unchecked) — precondition by contract
+API00-C,16,sqlite,src/expr.c,2093,FP,internal sqlite3ExprListAppendVector; pList documented 'Might be NULL' and the NULL case is handled downstream
+API00-C,17,sqlite,src/vdbeaux.c,438,FP,"internal sqlite3VdbeAddFunctionCall; pFunc/pParse supplied by the code-generator, non-null by construction"
+API00-C,18,sqlite,src/build.c,4709,FP,internal sqlite3IdListAppend; pParse is the live parse context (pParse->db deref) guaranteed by the parser
+API00-C,19,sqlite,src/printf.c,1249,FP,sqlite3_str_reset; p is a StrAccum from sqlite3_str_new which never returns NULL — non-null by contract
+API00-C,20,sqlite,ext/session/sqlite3session.c,5635,FP,public sqlite3changeset_apply_v2_strm; ppRebase is a caller-provided out-param
+API00-C,21,sqlite,src/vdbeaux.c,3900,FP,internal sqlite3VdbeSerialType; pLen is a caller-provided out-param
+API00-C,22,sqlite,src/vdbeapi.c,204,FP,"public leaf accessor sqlite3_value_int; pVal validity is the caller's documented contract (UB on a bad value), deliberately unchecked"
+API00-C,23,sqlite,src/trigger.c,19,FP,sqlite3DeleteTriggerStep ALREADY guards the deref with 'while(pTriggerStep)' (NULL-safe) — sqc missed the loop-condition guard
+API00-C,24,sqlite,ext/fts5/fts5_index.c,7684,FP,sqlite3Fts5IndexIterWriteTokendata flagged on integer param iOff (overflow advisory); iOff is a token byte-offset bounded by the row's token stream
+API00-C,25,sqlite,src/expr.c,191,FP,internal sqlite3ExprAddCollateString; pExpr supplied by the parser (may be NULL and is returned unchanged) — contract
+API00-C,26,sqlite,ext/misc/noop.c,60,FP,"extension entry sqlite3_noop_init; pApi is the SQLite API table supplied by the loader (SQLITE_EXTENSION_INIT), non-null by contract"
+API00-C,27,sqlite,src/os.c,179,FP,"VFS shim sqlite3OsShmMap; pp/id provided by the pager, non-null by contract (sibling sqlite3OsShmUnmap derefs id unchecked too)"
+API00-C,28,sqlite,src/build.c,1971,FP,internal sqlite3AddGenerated; pParse is the live parse context supplied by the parser
+API00-C,29,sqlite,src/where.c,54,FP,internal sqlite3WhereOutputRowCount; pWInfo is a live WhereInfo guaranteed by the planner caller
+API00-C,30,sqlite,ext/session/sqlite3session.c,2214,FP,public sqlite3session_diff; pzErrMsg is a caller-provided out-param
+API00-C,31,sqlite,src/pcache.c,863,FP,internal sqlite3PcacheSetCachesize; first statement asserts 'pCache->pCache!=0' (precondition) — sqc ignored the entry assert
+API00-C,32,sqlite,ext/fts5/fts5_main.c,1346,FP,internal sqlite3Fts5DecodeLocaleValue; ppLoc/out-params provided by the caller
+API00-C,33,sqlite,src/expr.c,2834,FP,"internal sqlite3ExprIsConstantOrGroupBy; pGroupBy supplied by the code-generator, non-null by construction"
+API00-C,34,sqlite,src/vdbeaux.c,438,FP,"internal sqlite3VdbeAddFunctionCall; pFunc/pParse supplied by the code-generator, non-null by construction"
+API00-C,35,sqlite,src/wherecode.c,333,FP,internal sqlite3WhereAddScanStatus; pSrclist is the live FROM clause guaranteed by the planner
+API00-C,36,sqlite,src/vtab.c,541,FP,internal parser callback sqlite3VtabArgExtend; pParse supplied by the grammar (sibling sqlite3VtabArgInit derefs pParse unchecked)
+API00-C,37,sqlite,src/vtab.c,1153,FP,internal sqlite3VtabOverloadFunction; pDef is a live FuncDef guaranteed by the caller
+API00-C,38,sqlite,ext/session/sqlite3session.c,3952,FP,public sqlite3changeset_op; pnCol etc. are caller-provided out-params
+API00-C,39,sqlite,ext/expert/sqlite3expert.c,1941,FP,internal registerUDFs; dbSrc/dbDst are open connections guaranteed by the expert-extension caller
+API00-C,40,sqlite,src/build.c,1651,FP,"internal sqlite3AffinityType; zIn is the column type-name text from the parser, non-null by construction"
+API00-C,41,sqlite,src/upsert.c,267,FP,internal sqlite3UpsertDoUpdate; pParse is the live parse context supplied by the code-generator
+API00-C,42,sqlite,ext/misc/normalize.c,685,FP,"standalone demo CLI main(); argv is supplied (and guaranteed non-null) by the C runtime, indexed under argc bounds (same pattern as libcrc argv FPs)"
+API00-C,43,sqlite,ext/session/sqlite3session.c,6253,FP,"public sqlite3changegroup_schema; pGrp is a handle from sqlite3changegroup_new, valid by the caller's contract"
+API00-C,44,sqlite,ext/fts5/fts5_expr.c,2905,FP,internal sqlite3Fts5ExprInit; db is the live connection supplied during registration
+API00-C,45,sqlite,ext/fts5/fts5_buffer.c,18,FP,internal sqlite3Fts5BufferSize; pRc is an in/out error-code pointer always provided by the caller
+API00-C,46,sqlite,ext/misc/fileio.c,1208,FP,"extension entry sqlite3_fileio_init; db supplied by the loader, non-null by contract"
+API00-C,47,sqlite,ext/fts3/fts3.c,6020,FP,internal sqlite3Fts3EvalPhrasePoslist; pCsr is a live FTS3 cursor guaranteed by the caller
+API00-C,48,sqlite,src/printf.c,1232,FP,sqlite3_str_truncate ALREADY validates with 'if( p!=0 && ... )' as its first statement — sqc missed the explicit null guard

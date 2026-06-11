@@ -101,11 +101,50 @@ also FP) are not labelled.
 MEM30-C oracle now has 99 sqlite labels (54 prior + 45). Overall measured
 sqlite-inclusive precision: 7.5% (TP 33 / 438 labeled).
 
+### Increment 3 (2026-06-11, sqc 0.4.24) — API00-C, 49 in-scope findings
+
+`adjudication_sqlite_api00_inc3.csv` — sampled `realworld-unlabeled … --rule
+API00-C --project sqlite --seed 20260611 --limit 60`, 49 in-scope (48 new + 1
+already labelled), each verdict from reading the function entry.
+
+**49 FP / 0 TP.** API00-C ("functions should validate their parameters") fires on
+any function that dereferences a pointer parameter with no preceding null-check in
+the same function — on sqlite that is essentially the whole codebase. The same
+false-positive class as libcrc (parameter guaranteed valid; sqc flags anyway), in
+two sub-classes:
+
+1. **Analyzer-fixable misses** — validation *is* present but sqc ignores it.
+   `sqlite3_str_truncate` opens with `if( p!=0 && … )` (printf.c:1232);
+   `sqlite3DeleteTriggerStep` guards every deref with `while(pTriggerStep)`
+   (trigger.c:19); `sqlite3PcacheSetCachesize` (pcache.c:863) and
+   `sqlite3WalSavepointUndo`'s sibling assert `pWal` non-null at entry. sqc should
+   treat a dominating `assert(p!=0)` / `if(p!=0)` / loop-condition guard as
+   validation (cf. the libcrc alias-miss).
+2. **Advisory-vs-house-style mismatch** (the bulk) — sqlite deliberately relies on
+   caller-guaranteed preconditions plus debug `assert`s rather than runtime
+   null-checks on internal routines, and documents NULL/invalid handles as misuse
+   /UB for public leaf accessors (`sqlite3_value_int`, `sqlite3_column_bytes16`)
+   for speed. Out-params (`ppNew`, `pzErrMsg`, `pnCol`, …) and extension-entry
+   handles (`sqlite3_*_init`'s `db`/`pApi`, supplied by the loader) are non-null by
+   contract. Requiring an explicit check would contradict the documented design and
+   is not actionable.
+
+**API00-C stays enabled** (not categorically disabled) for two reasons: sub-class 1
+is a real, fixable analyzer gap that must stay measured, and the rule retains some
+merit at public-API boundaries. It is, however, the **strongest categorical-disable
+candidate** found so far (advisory, ~100% structural FP, ~1377 in-scope findings —
+parallel to the already-disabled advisory DCL05-C) and is flagged here pending a
+decision; deferring keeps the fixable sub-class-1 misfires on the books.
+
+API00-C oracle now has 62 sqlite labels (14 prior + 48). Overall measured
+sqlite-inclusive precision: 6.8% (TP 33 / 486 labeled).
+
 ## Next increments (priority order)
 
-1. **API00-C** (1377, unlabeled) — alias-validation FPs (cf. libcrc).
-2. **EXP34-C** / **DCL13-C** — extend the existing v0.4.22 samples.
-3. **INT30-C** (940), **EXP33-C** (692), **INT14-C** (631), **ARR00-C/ARR30-C**.
+1. **EXP34-C** (1537) / **DCL13-C** (2070) — extend the existing v0.4.22 samples.
+2. **INT30-C** (940), **EXP33-C** (692), **INT14-C** (631), **ARR00-C/ARR30-C**.
+3. Revisit the **API00-C categorical-disable** decision once sub-class-1 (assert/
+   guard recognition) is either fixed or ruled out.
 
 ## Re-running / extending
 
