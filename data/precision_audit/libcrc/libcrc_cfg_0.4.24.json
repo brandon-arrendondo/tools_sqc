@@ -1,0 +1,3800 @@
+[
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 56,
+    "message": "Function 'main' does not validate pointer parameter 'argv' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'argv' at the start of the function, e.g., 'if (!argv) { return error_code; }'"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 56,
+    "message": "Program arguments (argv) used without validating argc or checking for null pointers",
+    "rule_id": "STR31-C",
+    "severity": "Medium",
+    "suggestion": "Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\""
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 58,
+    "message": "Fixed-size buffer may be used with environment variable",
+    "rule_id": "ENV01-C",
+    "severity": "High",
+    "suggestion": "Use dynamic allocation based on strlen() of getenv() result"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 83,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\ntstcrc: CRC algorithm sample program\\nCopyright (c) 1999-2016 Lammert Bies\\n\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\ntstcrc: CRC algorithm sample program\\nCopyright (c) 1999-2016 Lammert Bies\\n\\n\" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 87,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"Usage: tst_crc [-a|-x] file1 ...\\n\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"Usage: tst_crc [-a|-x] file1 ...\\n\\n\" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 88,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"    -a Program asks for ASCII input. Following parameters ignored.\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"    -a Program asks for ASCII input. Following parameters ignored.\\n\" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 89,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"    -x Program asks for hexadecimal input. Following parameters ignored.\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"    -x Program asks for hexadecimal input. Following parameters ignored.\\n\" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 90,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"       All other parameters are treated like filenames. The CRC values\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"       All other parameters are treated like filenames. The CRC values\\n\" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 91,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"       for each separate file will be calculated.\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"       for each separate file will be calculated.\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 96,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 7,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 96,
+    "message": "Implicit boolean test on 'strcmp( argv[1], \"-a\" )'. May be unclear what constitutes success or failure.",
+    "rule_id": "EXP20-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit test: strcmp( argv[1], \"-a\" ) == 0 or strcmp( argv[1], \"-a\" ) != 0 depending on success convention"
+  },
+  {
+    "column": 38,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 96,
+    "message": "Implicit boolean test on 'strcmp( argv[1], \"-A\" )'. May be unclear what constitutes success or failure.",
+    "rule_id": "EXP20-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit test: strcmp( argv[1], \"-A\" ) == 0 or strcmp( argv[1], \"-A\" ) != 0 depending on success convention"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 97,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 7,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 97,
+    "message": "Implicit boolean test on 'strcmp( argv[1], \"-x\" )'. May be unclear what constitutes success or failure.",
+    "rule_id": "EXP20-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit test: strcmp( argv[1], \"-x\" ) == 0 or strcmp( argv[1], \"-x\" ) != 0 depending on success convention"
+  },
+  {
+    "column": 38,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 97,
+    "message": "Implicit boolean test on 'strcmp( argv[1], \"-X\" )'. May be unclear what constitutes success or failure.",
+    "rule_id": "EXP20-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit test: strcmp( argv[1], \"-X\" ) == 0 or strcmp( argv[1], \"-X\" ) != 0 depending on success convention"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 101,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"Input: \" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"Input: \" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 102,
+    "message": "Buffer 'input_string' not reset after fgets() failure - buffer contents are indeterminate and must be reset",
+    "rule_id": "FIO40-C",
+    "severity": "Low",
+    "suggestion": "Reset buffer in failure branch: 'input_string[0] = '\\0';'"
+  },
+  {
+    "column": 7,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 102,
+    "message": "fgets() without truncation check. Input may be silently truncated.",
+    "rule_id": "FIO20-C",
+    "severity": "Medium",
+    "suggestion": "Check for newline character to detect truncation: if (strchr(buf, '\\n') == NULL) { /* handle truncation */ }"
+  },
+  {
+    "column": 27,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 110,
+    "message": "Variable 'input_string' may be used uninitialized (not assigned on all paths)",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize 'input_string' before use, e.g., at its declaration"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 111,
+    "message": "while statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the while statement body: while { /* body */ }"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 120,
+    "message": "Unbounded while loop with pointer increment. Loop increments 'dest' without size/length bounds checking.",
+    "rule_id": "ARR30-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 122,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 50,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 122,
+    "message": "Unsafe pointer-to-integer conversion to 'unsigned char' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 68,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 122,
+    "message": "Variable 'ptr' used with both bitwise and arithmetic operations (reduces code readability)",
+    "rule_id": "INT14-C",
+    "severity": "Medium",
+    "suggestion": "Use separate variables for bitwise and arithmetic operations, or refactor to use only arithmetic operators"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 123,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 50,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 123,
+    "message": "Unsafe pointer-to-integer conversion to 'unsigned char' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 68,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 123,
+    "message": "Signed integer addition '(*ptr) - 'A' + 10' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 124,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 50,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 124,
+    "message": "Unsafe pointer-to-integer conversion to 'unsigned char' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 68,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 124,
+    "message": "Signed integer addition '(*ptr) - 'a' + 10' may overflow without proper checking",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add overflow check: if ((b > 0 && a > INT_MAX - b) || (b < 0 && a < INT_MIN - b)) { /* handle error */ }"
+  },
+  {
+    "column": 24,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 145,
+    "message": "Hex constant '0xffffffffL' assumes specific bit-width and is implementation-dependent. Use -1 for all bits set, or shift expressions like ~(ULONG_MAX >> 1) for MSB.",
+    "rule_id": "INT17-C",
+    "severity": "High",
+    "suggestion": "Use -1 for all bits set (unsigned), or macros from <limits.h> for portable values"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 154,
+    "message": "Unbounded while loop with pointer increment. Loop increments 'ptr' without size/length bounds checking.",
+    "rule_id": "ARR30-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+    "column": 16,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 178,
+    "message": "Narrowing conversion: '( ( * ptr     &  '\\x0f' ) << 4 )' shifted left and cast to unsigned char may lose upper bits",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Ensure the shifted value fits in the target type or use a wider type"
+  },
+  {
+    "column": 16,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 178,
+    "message": "Unsafe pointer-to-integer conversion to 'unsigned char' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 16,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 179,
+    "message": "Unsafe pointer-to-integer conversion to 'unsigned char' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 9,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 205,
+    "message": "Return value from fopen() should be checked for errors",
+    "rule_id": "ERR00-C",
+    "severity": "Medium",
+    "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  },
+  {
+    "column": 9,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 205,
+    "message": "File operation 'fopen' uses tainted path 'argv[a]' without canonicalization. Use realpath() or canonicalize_file_name() before file operations.",
+    "rule_id": "FIO02-C",
+    "severity": "High",
+    "suggestion": "Canonicalize the path before use:\n  char *canonical = realpath(argv[a], NULL);\n  if (canonical == NULL) { /* handle error */ }\n  fopen(canonical, ...);\n  free(canonical);"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 208,
+    "message": "else statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the else statement body: else { /* body */ }"
+  },
+  {
+    "column": 5,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 210,
+    "message": "EOF comparison without feof()/ferror() verification: 'while( ( ch=fgetc( fp ) ) != EOF ) {'",
+    "rule_id": "FIO34-C",
+    "severity": "High",
+    "suggestion": "After EOF is detected, call feof() and ferror() to distinguish between end-of-file and I/O error"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 210,
+    "message": "Return value of 'fgetc' assigned to 'ch' but not checked for errors: 'fgetc( fp )' - Returns EOF on error or end of file",
+    "rule_id": "ERR33-C",
+    "severity": "High",
+    "suggestion": "Check if (c = fgetc(file)) != EOF and distinguish from actual EOF"
+  },
+  {
+    "column": 17,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 210,
+    "message": "Return value from fgetc() should be checked for errors",
+    "rule_id": "ERR00-C",
+    "severity": "Medium",
+    "suggestion": "Check if fgetc() returned an error value (NULL, -1, etc.)"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 212,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 212,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 213,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 213,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 214,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 214,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 215,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 215,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 216,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 216,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 217,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 217,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 218,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 218,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 219,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 219,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 220,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 66,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 220,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 18,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 222,
+    "message": "Signed to unsigned conversion of 'ch' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 18,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 222,
+    "message": "Narrowing conversion of 'ch' from int to unsigned char without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is within target type range before conversion"
+  },
+  {
+    "column": 5,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 225,
+    "message": "Return value from fclose() is ignored. Error handling is required.",
+    "rule_id": "ERR00-C",
+    "severity": "Medium",
+    "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+    "column": 5,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 225,
+    "message": "Return value of 'fclose' ignored: 'fclose( fp )' - Returns non-zero on error",
+    "rule_id": "ERR33-C",
+    "severity": "High",
+    "suggestion": "Check if (fclose(file) != 0) for close errors"
+  },
+  {
+    "column": 5,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 225,
+    "message": "Return value of function 'fclose' should not be ignored: 'fclose( fp )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fclose( fp );'"
+  },
+  {
+    "column": 9,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 228,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"%s : cannot open file\\n\", argv[a] )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"%s : cannot open file\\n\", argv[a] );'"
+  },
+  {
+    "column": 24,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 231,
+    "message": "Hex constant '0xffffffffL' assumes specific bit-width and is implementation-dependent. Use -1 for all bits set, or shift expressions like ~(ULONG_MAX >> 1) for MSB.",
+    "rule_id": "INT17-C",
+    "severity": "High",
+    "suggestion": "Use -1 for all bits set (unsigned), or macros from <limits.h> for portable values"
+  },
+  {
+    "column": 20,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 233,
+    "message": "Bitwise operation on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(~value)"
+  },
+  {
+    "column": 38,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 234,
+    "message": "Magic number '0xff00' appears 3 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0xff00 };"
+  },
+  {
+    "column": 20,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 235,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 38,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 235,
+    "message": "Magic number '0x00ff' appears 3 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00ff };"
+  },
+  {
+    "column": 20,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 239,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 20,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 243,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"%s%s%s :\\nCRC16              = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC16 (Modbus)     = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC16 (Sick)       = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0x0000) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0xffff) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0x1d0f) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (Kermit) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-DNP            = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC32              = 0x%08\" PRIX32 \"  /  %\" PRIu32 \"\\n\"\n\t\t\t\t, (   do_ascii  ||    do_hex ) ? \"\\\"\"    : \"\"\n\t\t\t\t, ( ! do_ascii  &&  ! do_hex ) ? argv[a] : input_string\n\t\t\t\t, (   do_ascii  ||    do_hex ) ? \"\\\"\"    : \"\"\n\t\t\t\t, crc_16_val,         crc_16_val\n\t\t\t\t, crc_16_modbus_val,  crc_16_modbus_val\n\t\t\t\t, crc_sick_val,       crc_sick_val\n\t\t\t\t, crc_ccitt_0000_val, crc_ccitt_0000_val\n\t\t\t\t, crc_ccitt_ffff_val, crc_ccitt_ffff_val\n\t\t\t\t, crc_ccitt_1d0f_val, crc_ccitt_1d0f_val\n\t\t\t\t, crc_kermit_val,     crc_kermit_val\n\t\t\t\t, crc_dnp_val,        crc_dnp_val\n\t\t\t\t, crc_32_val,         crc_32_val     )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"%s%s%s :\\nCRC16              = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC16 (Modbus)     = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC16 (Sick)       = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0x0000) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0xffff) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0x1d0f) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (Kermit) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-DNP            = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC32              = 0x%08\" PRIX32 \"  /  %\" PRIu32 \"\\n\"\n\t\t\t\t, (   do_ascii  ||    do_hex ) ? \"\\\"\"    : \"\"\n\t\t\t\t, ( ! do_ascii  &&  ! do_hex ) ? argv[a] : input_string\n\t\t\t\t, (   do_ascii  ||    do_hex ) ? \"\\\"\"    : \"\"\n\t\t\t\t, crc_16_val,         crc_16_val\n\t\t\t\t, crc_16_modbus_val,  crc_16_modbus_val\n\t\t\t\t, crc_sick_val,       crc_sick_val\n\t\t\t\t, crc_ccitt_0000_val, crc_ccitt_0000_val\n\t\t\t\t, crc_ccitt_ffff_val, crc_ccitt_ffff_val\n\t\t\t\t, crc_ccitt_1d0f_val, crc_ccitt_1d0f_val\n\t\t\t\t, crc_kermit_val,     crc_kermit_val\n\t\t\t\t, crc_dnp_val,        crc_dnp_val\n\t\t\t\t, crc_32_val,         crc_32_val     );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 9,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 11,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 246,
+    "message": "Argument to 'printf' contains preprocessor directive: '\"%s%s%s :\\nCRC16              = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC16 (Modbus)     = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC16 (Sick)       = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0x0000) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0xffff) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (0x1d0f) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-CCITT (Kermit) = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC-DNP            = 0x%04\" PRIX16 \"      /  %\" PRIu16 \"\\n\"\n\t\t\t\t  \"CRC32              = 0x%08\" PRIX32 \"  /  %\" PRIu32 \"\\n\"'",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Use conditional compilation to wrap the entire function call"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 268,
+    "message": "Signed integer increment 'a++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/examples/tstcrc.c",
+    "line": 272,
+    "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+    "rule_id": "FIO23-C",
+    "severity": "Medium",
+    "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc32_table.c",
+    "line": 52,
+    "message": "Magic number '256' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 256 };"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc32_table.c",
+    "line": 58,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 15,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc32_table.c",
+    "line": 58,
+    "message": "Magic number '0x00000001L' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00000001L };"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 55,
+    "message": "Magic number '256' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 256 };"
+  },
+  {
+    "column": 9,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 58,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 9,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 58,
+    "message": "Unsigned integer left shift 'i << 56' may cause overflow without checking",
+    "rule_id": "INT30-C",
+    "severity": "High",
+    "suggestion": "Add shift overflow check before shifting"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 58,
+    "message": "Magic number '56' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 56 };"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 62,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 23,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 62,
+    "message": "Magic number '0x8000000000000000ull' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x8000000000000000ull };"
+  },
+  {
+    "column": 23,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 62,
+    "message": "Integer literal '0x8000000000000000ull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x8000000000000000uLL"
+  },
+  {
+    "column": 55,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 62,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 55,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 62,
+    "message": "Unsigned integer left shift 'crc << 1' may cause overflow without checking",
+    "rule_id": "INT30-C",
+    "severity": "High",
+    "suggestion": "Add shift overflow check before shifting"
+  },
+  {
+    "column": 55,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 63,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 55,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 63,
+    "message": "Unsigned integer left shift 'crc << 1' may cause overflow without checking",
+    "rule_id": "INT30-C",
+    "severity": "High",
+    "suggestion": "Add shift overflow check before shifting"
+  },
+  {
+    "column": 8,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 65,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 8,
+    "file": "/home/brandon/toolchain/libcrc/precalc/crc64_table.c",
+    "line": 65,
+    "message": "Unsigned integer left shift 'c << 1' may cause overflow without checking",
+    "rule_id": "INT30-C",
+    "severity": "High",
+    "suggestion": "Add shift overflow check before shifting"
+  },
+  {
+    "column": 50,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 50,
+    "message": "Parameter 'const char *filename' appears to represent a size but doesn't use size_t",
+    "rule_id": "INT01-C",
+    "severity": "Medium",
+    "suggestion": "Use size_t for parameters representing object sizes"
+  },
+  {
+    "column": 26,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 56,
+    "message": "Array size '256' should use a symbolic constant instead of magic number.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { ARRAY_SIZE = 256 };"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 69,
+    "message": "Function 'main' does not validate pointer parameter 'argv' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'argv' at the start of the function, e.g., 'if (!argv) { return error_code; }'"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 69,
+    "message": "Program arguments (argv) used without validating argc or checking for null pointers",
+    "rule_id": "STR31-C",
+    "severity": "Medium",
+    "suggestion": "Validate argc and argv[0] before use: const char *prog = (argc && argv[0]) ? argv[0] : \"\""
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 75,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( stderr, \"\\nusage: precalc --type file\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( stderr, \"\\nusage: precalc --type file\\n\" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 76,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( stderr, \"       where --type is any of --crc64\\n\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( stderr, \"       where --type is any of --crc64\\n\\n\" );'"
+  },
+  {
+    "column": 50,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 96,
+    "message": "Parameter 'const char *filename' appears to represent a size but doesn't use size_t",
+    "rule_id": "INT01-C",
+    "severity": "Medium",
+    "suggestion": "Use size_t for parameters representing object sizes"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 106,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( stderr, \"\\nprecalc: Internal pointer error\\n\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( stderr, \"\\nprecalc: Internal pointer error\\n\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 110,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 12,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 110,
+    "message": "Implicit boolean test on 'strcmp( typename, \"--crc64\" )'. May be unclear what constitutes success or failure.",
+    "rule_id": "EXP20-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit test: strcmp( typename, \"--crc64\" ) == 0 or strcmp( typename, \"--crc64\" ) != 0 depending on success convention"
+  },
+  {
+    "column": 7,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 111,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 12,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 111,
+    "message": "Implicit boolean test on 'strcmp( typename, \"--crc32\" )'. May be unclear what constitutes success or failure.",
+    "rule_id": "EXP20-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit test: strcmp( typename, \"--crc32\" ) == 0 or strcmp( typename, \"--crc32\" ) != 0 depending on success convention"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 114,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( stderr, \"\\nprecalc: Unknown table type \\\"%s\\\" passed\\n\\n\", typename )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( stderr, \"\\nprecalc: Unknown table type \\\"%s\\\" passed\\n\\n\", typename );'"
+  },
+  {
+    "column": 7,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 131,
+    "message": "Return value from fopen() should be checked for errors",
+    "rule_id": "ERR00-C",
+    "severity": "Medium",
+    "suggestion": "Check if fopen() returned an error value (NULL, -1, etc.)"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 135,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( stderr, \"\\nprecalc: cannot open \\\"%s\\\" for writing\\n\\n\", filename )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( stderr, \"\\nprecalc: cannot open \\\"%s\\\" for writing\\n\\n\", filename );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 139,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \"/*\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \"/*\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 140,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" * Library: libcrc\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" * Library: libcrc\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 141,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" * File:    %s\\n\", filename )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" * File:    %s\\n\", filename );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 142,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" * Author:  Auto generated by the precalc program\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" * Author:  Auto generated by the precalc program\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 143,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" *\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" *\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 144,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" * PLEASE DO NOT CHANGE THIS FILE!\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" * PLEASE DO NOT CHANGE THIS FILE!\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 145,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" * ===============================\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" * ===============================\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 146,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" * This file was automatically generated and will be overwritten whenever the\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" * This file was automatically generated and will be overwritten whenever the\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 147,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" * library is recompiled. All manually added changes will be lost in that case.\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" * library is recompiled. All manually added changes will be lost in that case.\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 148,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \" */\\n\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \" */\\n\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 150,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \"const uint%d_t %s[256] = {\\n\", bits, tabname )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \"const uint%d_t %s[256] = {\\n\", bits, tabname );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 152,
+    "message": "Loop uses uninitialized variable 'a' as bound for array access. This has indeterminate value and can cause out-of-bounds access.",
+    "rule_id": "ARR00-C",
+    "severity": "Medium",
+    "suggestion": "Initialize 'a' to a valid value before using it in the loop"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 152,
+    "message": "Magic number '256' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 256 };"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 156,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \"\\t0x%02\"  PRIX8  \"\\x75\",   (uint8_t)  (crc_tab_precalc[a] & 0x00000000000000FFull) )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \"\\t0x%02\"  PRIX8  \"\\x75\",   (uint8_t)  (crc_tab_precalc[a] & 0x00000000000000FFull) );'"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 156,
+    "message": "Invalid format string in fprintf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 83,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 156,
+    "message": "Bitwise operation '&' on signed integer variable 'a'. Signed integer representation is implementation-defined. Use unsigned integers for bitwise operations or use arithmetic operators instead.",
+    "rule_id": "INT16-C",
+    "severity": "Medium",
+    "suggestion": "Change 'a' to 'unsigned int a' or avoid bitwise operations on signed integers"
+  },
+  {
+    "column": 88,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 156,
+    "message": "Magic number '0x00000000000000FFull' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00000000000000FFull };"
+  },
+  {
+    "column": 88,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 156,
+    "message": "Integer literal '0x00000000000000FFull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x00000000000000FFuLL"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 157,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \"\\t0x%04\"  PRIX16 \"\\x75\",   (uint16_t) (crc_tab_precalc[a] & 0x000000000000FFFFull) )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \"\\t0x%04\"  PRIX16 \"\\x75\",   (uint16_t) (crc_tab_precalc[a] & 0x000000000000FFFFull) );'"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 157,
+    "message": "Invalid format string in fprintf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 83,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 157,
+    "message": "Bitwise operation '&' on signed integer variable 'a'. Signed integer representation is implementation-defined. Use unsigned integers for bitwise operations or use arithmetic operators instead.",
+    "rule_id": "INT16-C",
+    "severity": "Medium",
+    "suggestion": "Change 'a' to 'unsigned int a' or avoid bitwise operations on signed integers"
+  },
+  {
+    "column": 88,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 157,
+    "message": "Magic number '0x000000000000FFFFull' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x000000000000FFFFull };"
+  },
+  {
+    "column": 88,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 157,
+    "message": "Integer literal '0x000000000000FFFFull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x000000000000FFFFuLL"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 158,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \"\\t0x%08\"  PRIX32 \"\\x75l\",  (uint32_t) (crc_tab_precalc[a] & 0x00000000FFFFFFFFull) )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \"\\t0x%08\"  PRIX32 \"\\x75l\",  (uint32_t) (crc_tab_precalc[a] & 0x00000000FFFFFFFFull) );'"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 158,
+    "message": "Invalid format string in fprintf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 83,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 158,
+    "message": "Bitwise operation '&' on signed integer variable 'a'. Signed integer representation is implementation-defined. Use unsigned integers for bitwise operations or use arithmetic operators instead.",
+    "rule_id": "INT16-C",
+    "severity": "Medium",
+    "suggestion": "Change 'a' to 'unsigned int a' or avoid bitwise operations on signed integers"
+  },
+  {
+    "column": 88,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 158,
+    "message": "Magic number '0x00000000FFFFFFFFull' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00000000FFFFFFFFull };"
+  },
+  {
+    "column": 88,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 158,
+    "message": "Integer literal '0x00000000FFFFFFFFull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x00000000FFFFFFFFuLL"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 159,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \"\\t0x%016\" PRIX64 \"\\x75ll\",             crc_tab_precalc[a]                          )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \"\\t0x%016\" PRIX64 \"\\x75ll\",             crc_tab_precalc[a]                          );'"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 159,
+    "message": "Invalid format string in fprintf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 161,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 12,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 161,
+    "message": "Magic number '255' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 255 };"
+  },
+  {
+    "column": 18,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 161,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \",\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \",\\n\" );'"
+  },
+  {
+    "column": 18,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 162,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \"\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \"\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 165,
+    "message": "Return value of function 'fprintf' should not be ignored: 'fprintf( fp, \"};\\n\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fprintf( fp, \"};\\n\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 167,
+    "message": "Return value from fclose() is ignored. Error handling is required.",
+    "rule_id": "ERR00-C",
+    "severity": "Medium",
+    "suggestion": "Store and check the return value from fclose()"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.c",
+    "line": 167,
+    "message": "Return value of function 'fclose' should not be ignored: 'fclose( fp )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) fclose( fp );'"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.h",
+    "line": 1,
+    "message": "Header file missing include guard",
+    "rule_id": "PRE06-C",
+    "severity": "Low",
+    "suggestion": "Add #ifndef HEADER_H / #define HEADER_H / #endif guard"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.h",
+    "line": 44,
+    "message": "Function has pointer parameter without size argument: 'int\t\t\tmain( int argc, char *argv[] );' - Add size_t parameter to specify array capacity",
+    "rule_id": "API02-C",
+    "severity": "High",
+    "suggestion": "Add a size_t parameter after 'char *argv[]' to specify the maximum number of elements in the array"
+  },
+  {
+    "column": 29,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.h",
+    "line": 44,
+    "message": "Array declaration 'argv[]' has implicit bounds; specify explicit size",
+    "rule_id": "ARR02-C",
+    "severity": "Medium",
+    "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+    "column": 34,
+    "file": "/home/brandon/toolchain/libcrc/precalc/precalc.h",
+    "line": 50,
+    "message": "Array size '256' should use a symbolic constant instead of magic number.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { ARRAY_SIZE = 256 };"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 40,
+    "message": "Shared variable 'crc_tab16_init' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+    "rule_id": "CON03-C",
+    "severity": "Medium",
+    "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+    "column": 35,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 41,
+    "message": "Array size '256' should use a symbolic constant instead of magic number.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { ARRAY_SIZE = 256 };"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 52,
+    "message": "Function 'crc_16' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 58,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 63,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 65,
+    "message": "Reading from 'crc_tab16' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tab16' before reading"
+  },
+  {
+    "column": 40,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 65,
+    "message": "Unsafe pointer-to-integer conversion to 'uint16_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 61,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 65,
+    "message": "Magic number '0x00FF' appears 3 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00FF };"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 80,
+    "message": "Function 'crc_modbus' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 86,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 91,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 93,
+    "message": "Reading from 'crc_tab16' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tab16' before reading"
+  },
+  {
+    "column": 40,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 93,
+    "message": "Unsafe pointer-to-integer conversion to 'uint16_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 109,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 111,
+    "message": "Shift operation on signed integer 'crc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+    "rule_id": "INT14-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 111,
+    "message": "Potentially unsafe array access with variable index '(crc ^ (uint16_t) c) & 0x00FF': Buffer 'crc_tab16' with size 256 (allocated at line 41)",
+    "rule_id": "ARR30-C",
+    "severity": "High",
+    "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 111,
+    "message": "Reading from 'crc_tab16' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tab16' before reading"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 131,
+    "message": "Magic number '256' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 256 };"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 138,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 138,
+    "message": "Magic number '0x0001' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x0001 };"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/src/crc16.c",
+    "line": 144,
+    "message": "Stack pointer escape: local array/VLA assigned to global 'crc_tab16'",
+    "rule_id": "MEM30-C",
+    "severity": "Critical",
+    "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 52,
+    "message": "Function 'crc_32' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 61,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 40,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 63,
+    "message": "Unsafe pointer-to-integer conversion to 'uint32_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 61,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 63,
+    "message": "Magic number '0x000000FFul' appears 2 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x000000FFul };"
+  },
+  {
+    "column": 61,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 63,
+    "message": "Integer literal '0x000000FFul' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x000000FFuL"
+  },
+  {
+    "column": 16,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 66,
+    "message": "Magic number '0xFFFFFFFFul' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0xFFFFFFFFul };"
+  },
+  {
+    "column": 16,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 66,
+    "message": "Integer literal '0xFFFFFFFFul' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0xFFFFFFFFuL"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 79,
+    "message": "Shift operation on signed integer 'crc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+    "rule_id": "INT14-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+    "column": 56,
+    "file": "/home/brandon/toolchain/libcrc/src/crc32.c",
+    "line": 79,
+    "message": "Integer literal '0x000000FFul' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x000000FFuL"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 52,
+    "message": "Function 'crc_64_ecma' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 61,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 63,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 63,
+    "message": "Unsigned integer left shift 'crc << 8' may cause overflow without checking",
+    "rule_id": "INT30-C",
+    "severity": "High",
+    "suggestion": "Add shift overflow check before shifting"
+  },
+  {
+    "column": 42,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 63,
+    "message": "Magic number '56' appears 3 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 56 };"
+  },
+  {
+    "column": 48,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 63,
+    "message": "Unsafe pointer-to-integer conversion to 'uint64_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 69,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 63,
+    "message": "Magic number '0x00000000000000FFull' appears 3 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00000000000000FFull };"
+  },
+  {
+    "column": 69,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 63,
+    "message": "Integer literal '0x00000000000000FFull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x00000000000000FFuLL"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 78,
+    "message": "Function 'crc_64_we' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 87,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 89,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 89,
+    "message": "Unsigned integer left shift 'crc << 8' may cause overflow without checking",
+    "rule_id": "INT30-C",
+    "severity": "High",
+    "suggestion": "Add shift overflow check before shifting"
+  },
+  {
+    "column": 48,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 89,
+    "message": "Unsafe pointer-to-integer conversion to 'uint64_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 69,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 89,
+    "message": "Integer literal '0x00000000000000FFull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x00000000000000FFuLL"
+  },
+  {
+    "column": 15,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 92,
+    "message": "Magic number '0xFFFFFFFFFFFFFFFFull' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0xFFFFFFFFFFFFFFFFull };"
+  },
+  {
+    "column": 15,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 92,
+    "message": "Integer literal '0xFFFFFFFFFFFFFFFFull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0xFFFFFFFFFFFFFFFFuLL"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 103,
+    "message": "Function 'update_crc_64' does not validate integer parameter 'crc' for overflow before arithmetic operations",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add overflow validation for 'crc' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 103,
+    "message": "Function 'update_crc_64' should be declared static if it doesn't need external linkage",
+    "rule_id": "DCL15-C",
+    "severity": "Low",
+    "suggestion": "Add 'static' storage-class specifier: static uint64_t update_crc_64"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 105,
+    "message": "Shift operation on signed integer 'crc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+    "rule_id": "INT14-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 105,
+    "message": "Unsigned integer left shift 'crc << 8' may cause overflow without checking",
+    "rule_id": "INT30-C",
+    "severity": "High",
+    "suggestion": "Add shift overflow check before shifting"
+  },
+  {
+    "column": 64,
+    "file": "/home/brandon/toolchain/libcrc/src/crc64.c",
+    "line": 105,
+    "message": "Integer literal '0x00000000000000FFull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x00000000000000FFuLL"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc8.c",
+    "line": 46,
+    "message": "Shared variable 'sht75_crc_table' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+    "rule_id": "CON03-C",
+    "severity": "Medium",
+    "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc8.c",
+    "line": 46,
+    "message": "Variable 'sht75_crc_table' is initialized but never modified, consider const-qualifying it",
+    "rule_id": "DCL00-C",
+    "severity": "Medium",
+    "suggestion": "Add 'const' qualifier: const sht75_crc_table = ..."
+  },
+  {
+    "column": 16,
+    "file": "/home/brandon/toolchain/libcrc/src/crc8.c",
+    "line": 46,
+    "message": "Array declaration 'sht75_crc_table[]' has implicit bounds; specify explicit size",
+    "rule_id": "ARR02-C",
+    "severity": "Medium",
+    "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crc8.c",
+    "line": 73,
+    "message": "Function 'crc_8' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crc8.c",
+    "line": 82,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 41,
+    "message": "Shared variable 'crc_tabccitt_init' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+    "rule_id": "CON03-C",
+    "severity": "Medium",
+    "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+    "column": 38,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 42,
+    "message": "Array size '256' should use a symbolic constant instead of magic number.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { ARRAY_SIZE = 256 };"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 99,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 104,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 106,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 106,
+    "message": "Reading from 'crc_tabccitt' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tabccitt' before reading"
+  },
+  {
+    "column": 50,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 106,
+    "message": "Unsafe pointer-to-integer conversion to 'uint16_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 71,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 106,
+    "message": "Magic number '0x00FF' appears 2 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00FF };"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 120,
+    "message": "Function 'update_crc_ccitt' does not validate integer parameter 'crc' for overflow before arithmetic operations",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add overflow validation for 'crc' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 122,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 124,
+    "message": "Shift operation on signed integer 'crc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+    "rule_id": "INT14-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 124,
+    "message": "Potentially unsafe array access with variable index '((crc >> 8) ^ (uint16_t) c) & 0x00FF': Buffer 'crc_tabccitt' with size 256 (allocated at line 42)",
+    "rule_id": "ARR30-C",
+    "severity": "High",
+    "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 124,
+    "message": "Reading from 'crc_tabccitt' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tabccitt' before reading"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 144,
+    "message": "Magic number '256' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 256 };"
+  },
+  {
+    "column": 9,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 147,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 151,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 151,
+    "message": "Magic number '0x8000' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x8000 };"
+  },
+  {
+    "column": 38,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 151,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 38,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 152,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 8,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 154,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/src/crcccitt.c",
+    "line": 157,
+    "message": "Stack pointer escape: local array/VLA assigned to global 'crc_tabccitt'",
+    "rule_id": "MEM30-C",
+    "severity": "Critical",
+    "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 42,
+    "message": "Shared variable 'crc_tabdnp_init' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+    "rule_id": "CON03-C",
+    "severity": "Medium",
+    "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+    "column": 36,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 43,
+    "message": "Array size '256' should use a symbolic constant instead of magic number.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { ARRAY_SIZE = 256 };"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 52,
+    "message": "Function 'crc_dnp' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 60,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 65,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 67,
+    "message": "Reading from 'crc_tabdnp' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tabdnp' before reading"
+  },
+  {
+    "column": 41,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 67,
+    "message": "Unsafe pointer-to-integer conversion to 'uint16_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 62,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 67,
+    "message": "Magic number '0x00FF' appears 2 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00FF };"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 70,
+    "message": "Bitwise operation on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(~value)"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 71,
+    "message": "Magic number '0xff00' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0xff00 };"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 72,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 72,
+    "message": "Magic number '0x00ff' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00ff };"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 88,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 90,
+    "message": "Shift operation on signed integer 'crc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+    "rule_id": "INT14-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 90,
+    "message": "Potentially unsafe array access with variable index '(crc ^ (uint16_t) c) & 0x00FF': Buffer 'crc_tabdnp' with size 256 (allocated at line 43)",
+    "rule_id": "ARR30-C",
+    "severity": "High",
+    "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 90,
+    "message": "Reading from 'crc_tabdnp' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tabdnp' before reading"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 110,
+    "message": "Magic number '256' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 256 };"
+  },
+  {
+    "column": 9,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 113,
+    "message": "Signed to unsigned conversion of 'i' without bounds check",
+    "rule_id": "INT31-C",
+    "severity": "High",
+    "suggestion": "Check that the value is non-negative before conversion"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 117,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 117,
+    "message": "Magic number '0x0001' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x0001 };"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/src/crcdnp.c",
+    "line": 123,
+    "message": "Stack pointer escape: local array/VLA assigned to global 'crc_tabdnp'",
+    "rule_id": "MEM30-C",
+    "severity": "Critical",
+    "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 40,
+    "message": "Shared variable 'crc_tab_init' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+    "rule_id": "CON03-C",
+    "severity": "Medium",
+    "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+    "column": 26,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 41,
+    "message": "Array size '256' should use a symbolic constant instead of magic number.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { ARRAY_SIZE = 256 };"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 51,
+    "message": "Function 'crc_kermit' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 59,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 64,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 66,
+    "message": "Reading from 'crc_tab' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tab' before reading"
+  },
+  {
+    "column": 38,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 66,
+    "message": "Unsafe pointer-to-integer conversion to 'uint16_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 59,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 66,
+    "message": "Magic number '0x00FF' appears 2 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00FF };"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 69,
+    "message": "Magic number '0xff00' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0xff00 };"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 70,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 70,
+    "message": "Magic number '0x00ff' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00ff };"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 86,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 10,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 88,
+    "message": "Shift operation on signed integer 'crc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+    "rule_id": "INT14-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 88,
+    "message": "Potentially unsafe array access with variable index '(crc ^ (uint16_t) c) & 0x00FF': Buffer 'crc_tab' with size 256 (allocated at line 41)",
+    "rule_id": "ARR30-C",
+    "severity": "High",
+    "suggestion": "Ensure array access is within allocated bounds. Add explicit bounds checking."
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 88,
+    "message": "Reading from 'crc_tab' which may contain uninitialized data",
+    "rule_id": "EXP33-C",
+    "severity": "High",
+    "suggestion": "Initialize the contents of 'crc_tab' before reading"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 108,
+    "message": "Magic number '256' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 256 };"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 115,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 115,
+    "message": "Magic number '0x0001' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x0001 };"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/src/crckrmit.c",
+    "line": 121,
+    "message": "Stack pointer escape: local array/VLA assigned to global 'crc_tab'",
+    "rule_id": "MEM30-C",
+    "severity": "Critical",
+    "suggestion": "Do not save pointers to stack-allocated memory in global variables."
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 45,
+    "message": "Function 'crc_sick' does not validate pointer parameter 'input_str' before use",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add validation check for 'input_str' at the start of the function, e.g., 'if (!input_str) { return error_code; }'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 59,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 13,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 61,
+    "message": "Magic number '0x00FF' appears 4 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x00FF };"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 61,
+    "message": "Unsafe pointer-to-integer conversion to 'uint16_t' (use uintptr_t or intptr_t for portable pointer storage)",
+    "rule_id": "INT36-C",
+    "severity": "Low",
+    "suggestion": "Use uintptr_t or intptr_t for safe pointer-to-integer conversions"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 63,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 63,
+    "message": "Magic number '0x8000' appears 2 times. Consider using a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0x8000 };"
+  },
+  {
+    "column": 31,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 63,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 31,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 64,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 13,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 67,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 72,
+    "message": "Magic number '0xFF00' should use a symbolic constant.",
+    "rule_id": "DCL06-C",
+    "severity": "Low",
+    "suggestion": "Define a constant: enum { CONSTANT_NAME = 0xFF00 };"
+  },
+  {
+    "column": 14,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 73,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 87,
+    "message": "Function 'update_crc_sick' does not validate integer parameter 'crc' for overflow before arithmetic operations",
+    "rule_id": "API00-C",
+    "severity": "Medium",
+    "suggestion": "Add overflow validation for 'crc' before arithmetic, e.g., check against INT_MAX/INT_MIN or use __builtin_*_overflow()"
+  },
+  {
+    "column": 13,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 93,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 95,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 30,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 95,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 30,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 95,
+    "message": "Shift operation on signed integer 'crc' may be used for arithmetic optimization (use explicit arithmetic instead)",
+    "rule_id": "INT14-C",
+    "severity": "Medium",
+    "suggestion": "Use explicit arithmetic operations like * or / instead of shift operations on signed integers"
+  },
+  {
+    "column": 30,
+    "file": "/home/brandon/toolchain/libcrc/src/crcsick.c",
+    "line": 96,
+    "message": "Bitwise operation '<<' on type smaller than int may cause unexpected integer promotion. Use explicit cast to control promotion behavior.",
+    "rule_id": "EXP14-C",
+    "severity": "Medium",
+    "suggestion": "Wrap the bitwise operation with an explicit cast: (uint8_t)(value & mask)"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/nmea-chk.c",
+    "line": 62,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/nmea-chk.c",
+    "line": 63,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/nmea-chk.c",
+    "line": 68,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/nmea-chk.c",
+    "line": 70,
+    "message": "Unbounded while loop with pointer increment. Loop increments 'ptr' without size/length bounds checking.",
+    "rule_id": "ARR30-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking to while condition (e.g., counter < max_size)"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/nmea-chk.c",
+    "line": 70,
+    "message": "while statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the while statement body: while { /* body */ }"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/nmea-chk.c",
+    "line": 72,
+    "message": "Return value of function 'snprintf' should not be ignored: 'snprintf( (char *) result, 3, \"%02hhX\", checksum )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) snprintf( (char *) result, 3, \"%02hhX\", checksum );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/src/nmea-chk.c",
+    "line": 72,
+    "message": "Call to snprintf may inadvertently truncate string without proper length validation",
+    "rule_id": "STR03-C",
+    "severity": "Medium",
+    "suggestion": "Validate string length before calling truncating functions, or use strcpy() after validation"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.c",
+    "line": 51,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.c",
+    "line": 54,
+    "message": "Signed integer compound addition 'problems += test_crc( true )' may overflow without checking",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.c",
+    "line": 55,
+    "message": "Signed integer compound addition 'problems += test_checksum_NMEA( true )' may overflow without checking",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add overflow check before compound assignment"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.c",
+    "line": 57,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n\" );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.c",
+    "line": 59,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 23,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.c",
+    "line": 59,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"**** All tests succeeded\\n\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"**** All tests succeeded\\n\\n\" );'"
+  },
+  {
+    "column": 23,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.c",
+    "line": 60,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"**** A TOTAL OF %d TESTS FAILED, PLEASE CORRECT THE DETECTED PROBLEMS ****\\n\\n\", problems )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"**** A TOTAL OF %d TESTS FAILED, PLEASE CORRECT THE DETECTED PROBLEMS ****\\n\\n\", problems );'"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.c",
+    "line": 62,
+    "message": "main() returns without calling fclose(stdout) - data may be unflushed",
+    "rule_id": "FIO23-C",
+    "severity": "Medium",
+    "suggestion": "Call fclose(stdout) before return to ensure data is flushed"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/test/testall.h",
+    "line": 1,
+    "message": "Header file missing include guard",
+    "rule_id": "PRE06-C",
+    "severity": "Low",
+    "suggestion": "Add #ifndef HEADER_H / #define HEADER_H / #endif guard"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 62,
+    "message": "Shared variable 'checks' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+    "rule_id": "CON03-C",
+    "severity": "Medium",
+    "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 62,
+    "message": "Array declaration 'checks[]' has implicit bounds; specify explicit size",
+    "rule_id": "ARR02-C",
+    "severity": "Medium",
+    "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+    "column": 34,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 63,
+    "message": "Integer literal '0xCBF43926ul' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0xCBF43926uL"
+  },
+  {
+    "column": 48,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 63,
+    "message": "Integer literal '0x6C40DF5F0B497347ull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x6C40DF5F0B497347uLL"
+  },
+  {
+    "column": 71,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 63,
+    "message": "Integer literal '0x62EC59E3F1A4F00Aull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x62EC59E3F1A4F00AuLL"
+  },
+  {
+    "column": 34,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 64,
+    "message": "Integer literal '0x43C04CA6ul' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x43C04CA6uL"
+  },
+  {
+    "column": 48,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 64,
+    "message": "Integer literal '0xF806F4F5C0F3257Cull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0xF806F4F5C0F3257CuLL"
+  },
+  {
+    "column": 71,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 64,
+    "message": "Integer literal '0xFE25A9F50630F789ull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0xFE25A9F50630F789uLL"
+  },
+  {
+    "column": 34,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 65,
+    "message": "Integer literal '0x00000000ul' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x00000000uL"
+  },
+  {
+    "column": 48,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 65,
+    "message": "Integer literal '0x0000000000000000ull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x0000000000000000uLL"
+  },
+  {
+    "column": 71,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 65,
+    "message": "Integer literal '0x0000000000000000ull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x0000000000000000uLL"
+  },
+  {
+    "column": 34,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 66,
+    "message": "Integer literal '0xE96CCF45ul' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0xE96CCF45uL"
+  },
+  {
+    "column": 48,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 66,
+    "message": "Integer literal '0xCC7AF1FF21C30BDEull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0xCC7AF1FF21C30BDEuLL"
+  },
+  {
+    "column": 71,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 66,
+    "message": "Integer literal '0x568617D9EF46BE26ull' uses lowercase 'l' suffix which can be confused with digit '1'",
+    "rule_id": "DCL16-C",
+    "severity": "Low",
+    "suggestion": "Use uppercase 'L': 0x568617D9EF46BE26uLL"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 98,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"Testing CRC routines: \" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"Testing CRC routines: \" );'"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 121,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 121,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL: CRC8 \\\"%s\\\" return 0x%02\" PRIX8 \", not 0x%02\" PRIX8\n\t\t\t\t\t\t\t, checks[a].input, crc8, checks[a].crc8 )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL: CRC8 \\\"%s\\\" return 0x%02\" PRIX8 \", not 0x%02\" PRIX8\n\t\t\t\t\t\t\t, checks[a].input, crc8, checks[a].crc8 );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 121,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 121,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 121,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 123,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 128,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 128,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL: CRC16 \\\"%s\\\" return 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crc16, checks[a].crc16 )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL: CRC16 \\\"%s\\\" return 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crc16, checks[a].crc16 );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 128,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 128,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 128,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 130,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 135,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 135,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL: CRC32 \\\"%s\\\" returns 0x%08\" PRIX32 \", not 0x%08\" PRIX32\n\t\t\t\t\t\t\t, checks[a].input, crc32, checks[a].crc32 )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL: CRC32 \\\"%s\\\" returns 0x%08\" PRIX32 \", not 0x%08\" PRIX32\n\t\t\t\t\t\t\t, checks[a].input, crc32, checks[a].crc32 );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 135,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 135,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 135,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 137,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 142,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 142,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL: CRC64 ECMA \\\"%s\\\" returns 0x%016\" PRIX64 \", not 0x%016\" PRIX64\n\t\t\t\t\t\t\t, checks[a].input, crc64_ecma, checks[a].crc64_ecma )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL: CRC64 ECMA \\\"%s\\\" returns 0x%016\" PRIX64 \", not 0x%016\" PRIX64\n\t\t\t\t\t\t\t, checks[a].input, crc64_ecma, checks[a].crc64_ecma );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 142,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 142,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 142,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 144,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 149,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 149,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL: CRC64 WE \\\"%s\\\" returns 0x%016\" PRIX64 \", not 0x%016\" PRIX64\n\t\t\t\t\t\t\t, checks[a].input, crc64_we, checks[a].crc64_we )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL: CRC64 WE \\\"%s\\\" returns 0x%016\" PRIX64 \", not 0x%016\" PRIX64\n\t\t\t\t\t\t\t, checks[a].input, crc64_we, checks[a].crc64_we );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 149,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 149,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 149,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 151,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 156,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 156,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL CRC DNP \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcdnp, checks[a].crcdnp )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL CRC DNP \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcdnp, checks[a].crcdnp );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 156,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 156,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 156,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 158,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 163,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 163,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL CRC Modbus \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04X\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcmodbus, checks[a].crcmodbus )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL CRC Modbus \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04X\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcmodbus, checks[a].crcmodbus );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 163,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 163,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 165,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 170,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 170,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL CRC Sick \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcsick, checks[a].crcsick )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL CRC Sick \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcsick, checks[a].crcsick );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 170,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 170,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 170,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 172,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 177,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 177,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL CRC Xmodem \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcxmodem, checks[a].crcxmodem )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL CRC Xmodem \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcxmodem, checks[a].crcxmodem );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 177,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 177,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 177,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 179,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 184,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 184,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL CRC CCITT 1d0f \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crc1d0f, checks[a].crc1d0f )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL CRC CCITT 1d0f \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crc1d0f, checks[a].crc1d0f );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 184,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 184,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 184,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 186,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 191,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 191,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL CRC CCITT ffff \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcffff, checks[a].crcffff )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL CRC CCITT ffff \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crcffff, checks[a].crcffff );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 191,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 191,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 191,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 193,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 198,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 198,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL CRC Kermit \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crckermit, checks[a].crckermit )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL CRC Kermit \\\"%s\\\" returns 0x%04\" PRIX16 \", not 0x%04\" PRIX16\n\t\t\t\t\t\t\t, checks[a].input, crckermit, checks[a].crckermit );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 198,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 198,
+    "message": "Invalid format string in printf(): Invalid conversion specifier: %\"",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Review format string syntax according to C standard"
+  },
+  {
+    "column": 25,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 198,
+    "message": "Function 'printf' called with preprocessor directives in arguments. This causes undefined behavior if the function is implemented as a macro",
+    "rule_id": "PRE32-C",
+    "severity": "High",
+    "suggestion": "Move preprocessor directives outside the function call using conditional compilation"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 200,
+    "message": "Signed integer increment 'errors++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 203,
+    "message": "Signed integer increment 'a++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 206,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 206,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"OK\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"OK\\n\" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 209,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 18,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 209,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    \" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    \" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/test/testcrc.c",
+    "line": 210,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"FAILED %d checks\\n\", errors )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"FAILED %d checks\\n\", errors );'"
+  },
+  {
+    "column": 1,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 49,
+    "message": "Shared variable 'checks' lacks proper synchronization (not volatile or atomic). This may cause visibility issues across threads.",
+    "rule_id": "CON03-C",
+    "severity": "Medium",
+    "suggestion": "Consider declaring the variable as 'volatile', using atomic types (atomic_int, etc.), or protecting access with mutexes"
+  },
+  {
+    "column": 22,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 49,
+    "message": "Array declaration 'checks[]' has implicit bounds; specify explicit size",
+    "rule_id": "ARR02-C",
+    "severity": "Medium",
+    "suggestion": "Explicitly specify array bounds even when using an initializer"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 209,
+    "message": "Multiple variables (2) declared in single declaration: int a, errors;",
+    "rule_id": "DCL04-C",
+    "severity": "Low",
+    "suggestion": "Declare each variable on its own line with an explanatory comment"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 214,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"Testing NMEA checksum: \" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"Testing NMEA checksum: \" );'"
+  },
+  {
+    "column": 4,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 221,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 221,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    FAIL: \\\"%s\\\" returns \\\"%s\\\" instead of \\\"%s\\\"\", checks[a].input, buffer, checks[a].output )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    FAIL: \\\"%s\\\" returns \\\"%s\\\" instead of \\\"%s\\\"\", checks[a].input, buffer, checks[a].output );'"
+  },
+  {
+    "column": 19,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 221,
+    "message": "Type mismatch in printf(): format specifier '%s' expects Pointer but argument 2 ('buffer') is Integer",
+    "rule_id": "FIO47-C",
+    "severity": "High",
+    "suggestion": "Ensure format specifiers match argument types"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 224,
+    "message": "Signed integer increment 'a++' may overflow at INT_MAX",
+    "rule_id": "INT32-C",
+    "severity": "High",
+    "suggestion": "Add bounds checking before increment/decrement"
+  },
+  {
+    "column": 2,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 227,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 21,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 227,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"OK\\n\" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"OK\\n\" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 230,
+    "message": "if statement body should be enclosed in braces {}",
+    "rule_id": "EXP19-C",
+    "severity": "Low",
+    "suggestion": "Add braces around the if statement body: if { /* body */ }"
+  },
+  {
+    "column": 18,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 230,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"\\n    \" )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"\\n    \" );'"
+  },
+  {
+    "column": 3,
+    "file": "/home/brandon/toolchain/libcrc/test/testnmea.c",
+    "line": 231,
+    "message": "Return value of function 'printf' should not be ignored: 'printf( \"FAILED %d checks\\n\", errors )'",
+    "rule_id": "EXP12-C",
+    "severity": "Medium",
+    "suggestion": "Check the return value or explicitly cast to (void) if intentionally ignoring: '(void) printf( \"FAILED %d checks\\n\", errors );'"
+  }
+]

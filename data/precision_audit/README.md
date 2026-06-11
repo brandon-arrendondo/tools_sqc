@@ -9,6 +9,23 @@ Files:
   file/line/col/message, then `random.Random(20260610).sample(...)`).
 - `adjudication_0.4.22.csv` — per-finding verdict (TP/FP) with one-line reason.
 
+These 200 labels seed the persistent ground-truth oracle (`ground_truth` table
+in `data/benchmarks.db`), pinned to each project's v0.4.22 codebase commit::
+
+    python -m bench realworld-import-labels \
+        data/precision_audit/adjudication_0.4.22.csv \
+        --run sqc-0.4.22-1c94dc95 --source precision_audit_0.4.22 \
+        --adjudicator manual --date 2026-06-10
+
+Because the checkouts are pinned to fixed git SHAs, the labels stay valid for
+later sqc versions: `python -m bench realworld-score RUN` reports measured
+precision/recall for any run that scanned the same commits. See the "Real-World
+Ground-Truth Oracle" section in `docs/benchmark-running.rst`.
+
+(Note: one transcription fix vs. the original adjudication sheet —
+`test/speedtest1.c` INT32-C TP line corrected 45 → 282 to match the actual
+finding location.)
+
 ## Results
 
 | Rule | Run count | Sample | TP | Precision |

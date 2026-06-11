@@ -1,0 +1,423 @@
+rule,idx,project,file,line,verdict,reason
+API00-C,0,libcrc,examples/tstcrc.c,56,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,1,libcrc,precalc/precalc.c,69,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,2,libcrc,src/crc16.c,52,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,3,libcrc,src/crc16.c,80,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,4,libcrc,src/crc32.c,52,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,5,libcrc,src/crc64.c,52,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,6,libcrc,src/crc64.c,78,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,7,libcrc,src/crc64.c,103,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,8,libcrc,src/crc8.c,73,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,9,libcrc,src/crcccitt.c,120,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,10,libcrc,src/crcdnp.c,52,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,11,libcrc,src/crckrmit.c,51,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,12,libcrc,src/crcsick.c,45,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API00-C,13,libcrc,src/crcsick.c,87,FP,input_str validated indirectly: 'ptr = input_str; if (ptr != NULL)' guards every deref (argv guarded by the argc check); sqc misses the alias
+API02-C,14,libcrc,precalc/precalc.h,44,FP,"main(int, char*[]) is the standard entry-point signature; a size parameter is inapplicable"
+ARR00-C,15,libcrc,precalc/precalc.c,152,FP,loop variable 'a' is initialized in the for-init (a=0); not uninitialized
+ARR02-C,16,libcrc,precalc/precalc.h,44,FP,standard C idiom ('char *argv[]' / 'extern T x[]'); the array size is defined elsewhere
+ARR02-C,17,libcrc,src/crc8.c,46,FP,standard C idiom ('char *argv[]' / 'extern T x[]'); the array size is defined elsewhere
+ARR02-C,18,libcrc,test/testcrc.c,62,FP,standard C idiom ('char *argv[]' / 'extern T x[]'); the array size is defined elsewhere
+ARR02-C,19,libcrc,test/testnmea.c,49,FP,standard C idiom ('char *argv[]' / 'extern T x[]'); the array size is defined elsewhere
+ARR30-C,20,libcrc,examples/tstcrc.c,120,FP,"NUL/sentinel-terminated string scan; the loop terminates, no buffer overflow"
+ARR30-C,21,libcrc,examples/tstcrc.c,154,FP,"NUL/sentinel-terminated string scan; the loop terminates, no buffer overflow"
+ARR30-C,22,libcrc,src/crc16.c,111,FP,table index is masked '& 0x00FF' to 0-255 against a 256-entry table; provably in-bounds
+ARR30-C,23,libcrc,src/crcccitt.c,124,FP,table index is masked '& 0x00FF' to 0-255 against a 256-entry table; provably in-bounds
+ARR30-C,24,libcrc,src/crcdnp.c,90,FP,table index is masked '& 0x00FF' to 0-255 against a 256-entry table; provably in-bounds
+ARR30-C,25,libcrc,src/crckrmit.c,88,FP,table index is masked '& 0x00FF' to 0-255 against a 256-entry table; provably in-bounds
+ARR30-C,26,libcrc,src/nmea-chk.c,70,FP,"NUL/sentinel-terminated string scan; the loop terminates, no buffer overflow"
+CON03-C,27,libcrc,src/crc16.c,40,TP,lazy table init (init flag + table write) is an unsynchronized data race if crc_* is called from multiple threads (known libcrc thread-safety issue)
+CON03-C,28,libcrc,src/crc8.c,46,FP,single-threaded test counter / read-only const table; no concurrent access
+CON03-C,29,libcrc,src/crcccitt.c,41,TP,lazy table init (init flag + table write) is an unsynchronized data race if crc_* is called from multiple threads (known libcrc thread-safety issue)
+CON03-C,30,libcrc,src/crcdnp.c,42,TP,lazy table init (init flag + table write) is an unsynchronized data race if crc_* is called from multiple threads (known libcrc thread-safety issue)
+CON03-C,31,libcrc,src/crckrmit.c,40,TP,lazy table init (init flag + table write) is an unsynchronized data race if crc_* is called from multiple threads (known libcrc thread-safety issue)
+CON03-C,32,libcrc,test/testcrc.c,62,FP,single-threaded test counter / read-only const table; no concurrent access
+CON03-C,33,libcrc,test/testnmea.c,49,FP,single-threaded test counter / read-only const table; no concurrent access
+DCL00-C,34,libcrc,src/crc8.c,46,TP,sht75_crc_table is initialized once and never modified; const-qualifying it is correct and implementable
+DCL04-C,35,libcrc,test/testnmea.c,209,FP,two related ints in one declaration; cosmetic
+DCL06-C,36,libcrc,examples/tstcrc.c,234,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,37,libcrc,examples/tstcrc.c,235,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,38,libcrc,precalc/crc32_table.c,52,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,39,libcrc,precalc/crc32_table.c,58,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,40,libcrc,precalc/crc64_table.c,55,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,41,libcrc,precalc/crc64_table.c,58,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,42,libcrc,precalc/crc64_table.c,62,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,43,libcrc,precalc/precalc.c,56,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,44,libcrc,precalc/precalc.c,152,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,45,libcrc,precalc/precalc.c,156,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,46,libcrc,precalc/precalc.c,157,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,47,libcrc,precalc/precalc.c,158,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,48,libcrc,precalc/precalc.c,161,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,49,libcrc,precalc/precalc.h,50,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,50,libcrc,src/crc16.c,41,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,51,libcrc,src/crc16.c,65,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,52,libcrc,src/crc16.c,131,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,53,libcrc,src/crc16.c,138,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,54,libcrc,src/crc32.c,63,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,55,libcrc,src/crc32.c,66,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,56,libcrc,src/crc64.c,63,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,57,libcrc,src/crc64.c,63,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,58,libcrc,src/crc64.c,92,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,59,libcrc,src/crcccitt.c,42,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,60,libcrc,src/crcccitt.c,106,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,61,libcrc,src/crcccitt.c,144,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,62,libcrc,src/crcccitt.c,151,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,63,libcrc,src/crcdnp.c,43,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,64,libcrc,src/crcdnp.c,67,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,65,libcrc,src/crcdnp.c,71,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,66,libcrc,src/crcdnp.c,72,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,67,libcrc,src/crcdnp.c,110,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,68,libcrc,src/crcdnp.c,117,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,69,libcrc,src/crckrmit.c,41,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,70,libcrc,src/crckrmit.c,66,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,71,libcrc,src/crckrmit.c,69,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,72,libcrc,src/crckrmit.c,70,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,73,libcrc,src/crckrmit.c,108,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,74,libcrc,src/crckrmit.c,115,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,75,libcrc,src/crcsick.c,61,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,76,libcrc,src/crcsick.c,63,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL06-C,77,libcrc,src/crcsick.c,72,FP,256/0xFF/0x0001 are intrinsic CRC constants; a symbolic name adds no safety
+DCL15-C,78,libcrc,src/crc64.c,103,TP,update_crc_64 has external linkage but is not declared in checksum.h nor used cross-file; should be static or given a prototype
+DCL16-C,79,libcrc,precalc/crc64_table.c,62,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,80,libcrc,precalc/precalc.c,156,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,81,libcrc,precalc/precalc.c,157,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,82,libcrc,precalc/precalc.c,158,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,83,libcrc,src/crc32.c,63,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,84,libcrc,src/crc32.c,66,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,85,libcrc,src/crc32.c,79,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,86,libcrc,src/crc64.c,63,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,87,libcrc,src/crc64.c,89,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,88,libcrc,src/crc64.c,92,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,89,libcrc,src/crc64.c,105,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,90,libcrc,test/testcrc.c,63,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,91,libcrc,test/testcrc.c,63,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,92,libcrc,test/testcrc.c,63,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,93,libcrc,test/testcrc.c,64,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,94,libcrc,test/testcrc.c,64,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,95,libcrc,test/testcrc.c,64,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,96,libcrc,test/testcrc.c,65,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,97,libcrc,test/testcrc.c,65,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,98,libcrc,test/testcrc.c,65,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,99,libcrc,test/testcrc.c,66,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,100,libcrc,test/testcrc.c,66,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+DCL16-C,101,libcrc,test/testcrc.c,66,FP,lowercase suffix follows hex digits/'u' (e.g. 0x..ull); negligible 'l'/'1' confusion risk
+ENV01-C,102,libcrc,examples/tstcrc.c,58,FP,no getenv()/environment-variable use in the flagged code
+ERR00-C,103,libcrc,examples/tstcrc.c,205,FP,fopen/fgetc return IS checked (if(fp..) / !=EOF); fclose on a read stream is benign
+ERR00-C,104,libcrc,examples/tstcrc.c,210,FP,fopen/fgetc return IS checked (if(fp..) / !=EOF); fclose on a read stream is benign
+ERR00-C,105,libcrc,examples/tstcrc.c,225,FP,fopen/fgetc return IS checked (if(fp..) / !=EOF); fclose on a read stream is benign
+ERR00-C,106,libcrc,precalc/precalc.c,131,FP,fopen/fgetc return IS checked (if(fp..) / !=EOF); fclose on a read stream is benign
+ERR00-C,107,libcrc,precalc/precalc.c,167,TP,fclose() on a written stream is unchecked; a close/flush failure (e.g. disk full) silently loses the generated table
+ERR33-C,108,libcrc,examples/tstcrc.c,210,FP,fgetc result is checked against EOF; an fclose failure on a read-only stream is inconsequential
+ERR33-C,109,libcrc,examples/tstcrc.c,225,FP,fgetc result is checked against EOF; an fclose failure on a read-only stream is inconsequential
+EXP12-C,110,libcrc,examples/tstcrc.c,83,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,111,libcrc,examples/tstcrc.c,87,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,112,libcrc,examples/tstcrc.c,88,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,113,libcrc,examples/tstcrc.c,89,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,114,libcrc,examples/tstcrc.c,90,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,115,libcrc,examples/tstcrc.c,91,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,116,libcrc,examples/tstcrc.c,101,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,117,libcrc,examples/tstcrc.c,225,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,118,libcrc,examples/tstcrc.c,228,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,119,libcrc,examples/tstcrc.c,246,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,120,libcrc,precalc/precalc.c,75,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,121,libcrc,precalc/precalc.c,76,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,122,libcrc,precalc/precalc.c,106,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,123,libcrc,precalc/precalc.c,114,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,124,libcrc,precalc/precalc.c,135,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,125,libcrc,precalc/precalc.c,139,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,126,libcrc,precalc/precalc.c,140,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,127,libcrc,precalc/precalc.c,141,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,128,libcrc,precalc/precalc.c,142,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,129,libcrc,precalc/precalc.c,143,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,130,libcrc,precalc/precalc.c,144,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,131,libcrc,precalc/precalc.c,145,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,132,libcrc,precalc/precalc.c,146,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,133,libcrc,precalc/precalc.c,147,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,134,libcrc,precalc/precalc.c,148,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,135,libcrc,precalc/precalc.c,150,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,136,libcrc,precalc/precalc.c,156,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,137,libcrc,precalc/precalc.c,157,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,138,libcrc,precalc/precalc.c,158,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,139,libcrc,precalc/precalc.c,159,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,140,libcrc,precalc/precalc.c,161,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,141,libcrc,precalc/precalc.c,162,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,142,libcrc,precalc/precalc.c,165,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,143,libcrc,precalc/precalc.c,167,TP,fclose() on a written stream is unchecked; a close/flush failure (e.g. disk full) silently loses the generated table
+EXP12-C,144,libcrc,src/nmea-chk.c,72,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,145,libcrc,test/testall.c,51,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,146,libcrc,test/testall.c,57,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,147,libcrc,test/testall.c,59,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,148,libcrc,test/testall.c,60,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,149,libcrc,test/testcrc.c,98,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,150,libcrc,test/testcrc.c,121,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,151,libcrc,test/testcrc.c,128,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,152,libcrc,test/testcrc.c,135,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,153,libcrc,test/testcrc.c,142,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,154,libcrc,test/testcrc.c,149,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,155,libcrc,test/testcrc.c,156,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,156,libcrc,test/testcrc.c,163,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,157,libcrc,test/testcrc.c,170,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,158,libcrc,test/testcrc.c,177,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,159,libcrc,test/testcrc.c,184,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,160,libcrc,test/testcrc.c,191,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,161,libcrc,test/testcrc.c,198,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,162,libcrc,test/testcrc.c,206,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,163,libcrc,test/testcrc.c,209,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,164,libcrc,test/testcrc.c,210,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,165,libcrc,test/testnmea.c,214,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,166,libcrc,test/testnmea.c,221,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,167,libcrc,test/testnmea.c,227,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,168,libcrc,test/testnmea.c,230,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP12-C,169,libcrc,test/testnmea.c,231,FP,ignoring the printf/fprintf/snprintf return value is idiomatic here; no error-handling consequence
+EXP14-C,170,libcrc,examples/tstcrc.c,233,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,171,libcrc,examples/tstcrc.c,235,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,172,libcrc,examples/tstcrc.c,239,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,173,libcrc,examples/tstcrc.c,243,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,174,libcrc,precalc/crc64_table.c,58,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,175,libcrc,precalc/crc64_table.c,62,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,176,libcrc,precalc/crc64_table.c,63,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,177,libcrc,precalc/crc64_table.c,65,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,178,libcrc,src/crc64.c,63,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,179,libcrc,src/crc64.c,89,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,180,libcrc,src/crcccitt.c,106,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,181,libcrc,src/crcccitt.c,147,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,182,libcrc,src/crcccitt.c,151,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,183,libcrc,src/crcccitt.c,152,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,184,libcrc,src/crcccitt.c,154,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,185,libcrc,src/crcdnp.c,70,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,186,libcrc,src/crcdnp.c,72,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,187,libcrc,src/crckrmit.c,70,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,188,libcrc,src/crcsick.c,63,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,189,libcrc,src/crcsick.c,64,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,190,libcrc,src/crcsick.c,67,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,191,libcrc,src/crcsick.c,73,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,192,libcrc,src/crcsick.c,93,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,193,libcrc,src/crcsick.c,95,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP14-C,194,libcrc,src/crcsick.c,96,FP,implicit promotion is benign and intended in the CRC bit math; values fit int and are masked back
+EXP19-C,195,libcrc,examples/tstcrc.c,96,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,196,libcrc,examples/tstcrc.c,97,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,197,libcrc,examples/tstcrc.c,111,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,198,libcrc,examples/tstcrc.c,122,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,199,libcrc,examples/tstcrc.c,123,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,200,libcrc,examples/tstcrc.c,124,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,201,libcrc,examples/tstcrc.c,208,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,202,libcrc,precalc/crc32_table.c,58,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,203,libcrc,precalc/crc64_table.c,62,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,204,libcrc,precalc/precalc.c,110,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,205,libcrc,precalc/precalc.c,111,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,206,libcrc,precalc/precalc.c,161,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,207,libcrc,src/crc16.c,58,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,208,libcrc,src/crc16.c,63,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,209,libcrc,src/crc16.c,86,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,210,libcrc,src/crc16.c,91,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,211,libcrc,src/crc16.c,109,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,212,libcrc,src/crc16.c,138,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,213,libcrc,src/crc32.c,61,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,214,libcrc,src/crc64.c,61,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,215,libcrc,src/crc64.c,87,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,216,libcrc,src/crc8.c,82,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,217,libcrc,src/crcccitt.c,99,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,218,libcrc,src/crcccitt.c,104,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,219,libcrc,src/crcccitt.c,122,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,220,libcrc,src/crcccitt.c,151,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,221,libcrc,src/crcdnp.c,60,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,222,libcrc,src/crcdnp.c,65,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,223,libcrc,src/crcdnp.c,88,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,224,libcrc,src/crcdnp.c,117,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,225,libcrc,src/crckrmit.c,59,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,226,libcrc,src/crckrmit.c,64,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,227,libcrc,src/crckrmit.c,86,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,228,libcrc,src/crckrmit.c,115,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,229,libcrc,src/crcsick.c,59,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,230,libcrc,src/crcsick.c,63,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,231,libcrc,src/crcsick.c,95,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,232,libcrc,src/nmea-chk.c,62,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,233,libcrc,src/nmea-chk.c,63,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,234,libcrc,src/nmea-chk.c,68,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,235,libcrc,src/nmea-chk.c,70,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,236,libcrc,test/testall.c,59,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,237,libcrc,test/testcrc.c,121,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,238,libcrc,test/testcrc.c,128,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,239,libcrc,test/testcrc.c,135,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,240,libcrc,test/testcrc.c,142,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,241,libcrc,test/testcrc.c,149,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,242,libcrc,test/testcrc.c,156,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,243,libcrc,test/testcrc.c,163,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,244,libcrc,test/testcrc.c,170,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,245,libcrc,test/testcrc.c,177,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,246,libcrc,test/testcrc.c,184,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,247,libcrc,test/testcrc.c,191,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,248,libcrc,test/testcrc.c,198,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,249,libcrc,test/testcrc.c,206,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,250,libcrc,test/testcrc.c,209,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,251,libcrc,test/testnmea.c,221,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,252,libcrc,test/testnmea.c,227,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP19-C,253,libcrc,test/testnmea.c,230,FP,"missing braces around a single-statement body; cosmetic, no defect"
+EXP20-C,254,libcrc,examples/tstcrc.c,96,FP,"'if(!strcmp(...))' is a standard, well-understood idiom"
+EXP20-C,255,libcrc,examples/tstcrc.c,96,FP,"'if(!strcmp(...))' is a standard, well-understood idiom"
+EXP20-C,256,libcrc,examples/tstcrc.c,97,FP,"'if(!strcmp(...))' is a standard, well-understood idiom"
+EXP20-C,257,libcrc,examples/tstcrc.c,97,FP,"'if(!strcmp(...))' is a standard, well-understood idiom"
+EXP20-C,258,libcrc,precalc/precalc.c,110,FP,"'if(!strcmp(...))' is a standard, well-understood idiom"
+EXP20-C,259,libcrc,precalc/precalc.c,111,FP,"'if(!strcmp(...))' is a standard, well-understood idiom"
+EXP33-C,260,libcrc,examples/tstcrc.c,110,TP,input_string may be read uninitialized after fgets() failure (same defect as FIO40-C)
+EXP33-C,261,libcrc,src/crc16.c,65,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+EXP33-C,262,libcrc,src/crc16.c,93,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+EXP33-C,263,libcrc,src/crc16.c,111,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+EXP33-C,264,libcrc,src/crcccitt.c,106,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+EXP33-C,265,libcrc,src/crcccitt.c,124,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+EXP33-C,266,libcrc,src/crcdnp.c,67,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+EXP33-C,267,libcrc,src/crcdnp.c,90,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+EXP33-C,268,libcrc,src/crckrmit.c,66,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+EXP33-C,269,libcrc,src/crckrmit.c,88,FP,CRC table is lazily initialized via 'if(!_init) init_tab()' before any read; fully populated when read
+FIO02-C,270,libcrc,examples/tstcrc.c,205,FP,demo CLI: the argv path is the intended user interface; no privilege boundary to canonicalize across
+FIO20-C,271,libcrc,examples/tstcrc.c,102,TP,fgets(MAX-1) truncation is never detected; long input is silently truncated
+FIO23-C,272,libcrc,examples/tstcrc.c,272,FP,stdout is flushed at normal program exit; no data loss
+FIO23-C,273,libcrc,test/testall.c,62,FP,stdout is flushed at normal program exit; no data loss
+FIO34-C,274,libcrc,examples/tstcrc.c,210,FP,'ch' is int; '(ch=fgetc())!=EOF' is the correct EOF-detection idiom
+FIO40-C,275,libcrc,examples/tstcrc.c,102,TP,"input_string is used in the do_ascii/do_hex paths after fgets() failure (lines 102-105 only perror, no reset) -> indeterminate read"
+FIO47-C,276,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,277,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,278,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,279,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,280,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,281,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,282,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,283,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,284,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,285,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,286,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,287,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,288,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,289,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,290,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,291,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,292,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,293,libcrc,examples/tstcrc.c,246,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,294,libcrc,precalc/precalc.c,156,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,295,libcrc,precalc/precalc.c,157,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,296,libcrc,precalc/precalc.c,158,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,297,libcrc,precalc/precalc.c,159,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,298,libcrc,test/testcrc.c,121,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,299,libcrc,test/testcrc.c,121,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,300,libcrc,test/testcrc.c,128,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,301,libcrc,test/testcrc.c,128,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,302,libcrc,test/testcrc.c,135,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,303,libcrc,test/testcrc.c,135,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,304,libcrc,test/testcrc.c,142,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,305,libcrc,test/testcrc.c,142,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,306,libcrc,test/testcrc.c,149,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,307,libcrc,test/testcrc.c,149,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,308,libcrc,test/testcrc.c,156,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,309,libcrc,test/testcrc.c,156,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,310,libcrc,test/testcrc.c,163,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,311,libcrc,test/testcrc.c,170,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,312,libcrc,test/testcrc.c,170,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,313,libcrc,test/testcrc.c,177,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,314,libcrc,test/testcrc.c,177,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,315,libcrc,test/testcrc.c,184,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,316,libcrc,test/testcrc.c,184,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,317,libcrc,test/testcrc.c,191,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,318,libcrc,test/testcrc.c,191,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,319,libcrc,test/testcrc.c,198,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,320,libcrc,test/testcrc.c,198,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+FIO47-C,321,libcrc,test/testnmea.c,221,FP,"<inttypes.h> PRIxNN/PRIuNN macros in the concatenated format literal are not expanded by sqc's format parser; '%""' is a macro-built specifier boundary, not an invalid one"
+INT01-C,322,libcrc,precalc/precalc.c,50,FP,"'filename' is a path string, not a size/count; size_t is inapplicable"
+INT01-C,323,libcrc,precalc/precalc.c,96,FP,"'filename' is a path string, not a size/count; size_t is inapplicable"
+INT14-C,324,libcrc,examples/tstcrc.c,122,FP,"'crc' is unsigned (uint16_t/uint64_t), not signed; the shift is part of the CRC algorithm"
+INT14-C,325,libcrc,src/crc16.c,111,FP,"'crc' is unsigned (uint16_t/uint64_t), not signed; the shift is part of the CRC algorithm"
+INT14-C,326,libcrc,src/crc32.c,79,FP,"'crc' is unsigned (uint16_t/uint64_t), not signed; the shift is part of the CRC algorithm"
+INT14-C,327,libcrc,src/crc64.c,105,FP,"'crc' is unsigned (uint16_t/uint64_t), not signed; the shift is part of the CRC algorithm"
+INT14-C,328,libcrc,src/crcccitt.c,124,FP,"'crc' is unsigned (uint16_t/uint64_t), not signed; the shift is part of the CRC algorithm"
+INT14-C,329,libcrc,src/crcdnp.c,90,FP,"'crc' is unsigned (uint16_t/uint64_t), not signed; the shift is part of the CRC algorithm"
+INT14-C,330,libcrc,src/crckrmit.c,88,FP,"'crc' is unsigned (uint16_t/uint64_t), not signed; the shift is part of the CRC algorithm"
+INT14-C,331,libcrc,src/crcsick.c,95,FP,"'crc' is unsigned (uint16_t/uint64_t), not signed; the shift is part of the CRC algorithm"
+INT16-C,332,libcrc,precalc/precalc.c,156,FP,"the '&' operand is the unsigned uint64_t element crc_tab_precalc[a]; 'a' is only the index, not the masked value"
+INT16-C,333,libcrc,precalc/precalc.c,157,FP,"the '&' operand is the unsigned uint64_t element crc_tab_precalc[a]; 'a' is only the index, not the masked value"
+INT16-C,334,libcrc,precalc/precalc.c,158,FP,"the '&' operand is the unsigned uint64_t element crc_tab_precalc[a]; 'a' is only the index, not the masked value"
+INT17-C,335,libcrc,examples/tstcrc.c,145,FP,0xffffffffL fits both 32- and 64-bit long and is masked into a uint32_t; no portability defect
+INT17-C,336,libcrc,examples/tstcrc.c,231,FP,0xffffffffL fits both 32- and 64-bit long and is masked into a uint32_t; no portability defect
+INT30-C,337,libcrc,precalc/crc64_table.c,58,FP,unsigned-shift wrap is well-defined and intended in the CRC algorithm; result is masked
+INT30-C,338,libcrc,precalc/crc64_table.c,62,FP,unsigned-shift wrap is well-defined and intended in the CRC algorithm; result is masked
+INT30-C,339,libcrc,precalc/crc64_table.c,63,FP,unsigned-shift wrap is well-defined and intended in the CRC algorithm; result is masked
+INT30-C,340,libcrc,precalc/crc64_table.c,65,FP,unsigned-shift wrap is well-defined and intended in the CRC algorithm; result is masked
+INT30-C,341,libcrc,src/crc64.c,63,FP,unsigned-shift wrap is well-defined and intended in the CRC algorithm; result is masked
+INT30-C,342,libcrc,src/crc64.c,89,FP,unsigned-shift wrap is well-defined and intended in the CRC algorithm; result is masked
+INT30-C,343,libcrc,src/crc64.c,105,FP,unsigned-shift wrap is well-defined and intended in the CRC algorithm; result is masked
+INT31-C,344,libcrc,examples/tstcrc.c,178,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,345,libcrc,examples/tstcrc.c,212,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,346,libcrc,examples/tstcrc.c,212,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,347,libcrc,examples/tstcrc.c,213,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,348,libcrc,examples/tstcrc.c,213,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,349,libcrc,examples/tstcrc.c,214,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,350,libcrc,examples/tstcrc.c,214,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,351,libcrc,examples/tstcrc.c,215,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,352,libcrc,examples/tstcrc.c,215,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,353,libcrc,examples/tstcrc.c,216,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,354,libcrc,examples/tstcrc.c,216,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,355,libcrc,examples/tstcrc.c,217,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,356,libcrc,examples/tstcrc.c,217,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,357,libcrc,examples/tstcrc.c,218,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,358,libcrc,examples/tstcrc.c,218,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,359,libcrc,examples/tstcrc.c,219,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,360,libcrc,examples/tstcrc.c,219,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,361,libcrc,examples/tstcrc.c,220,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,362,libcrc,examples/tstcrc.c,220,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,363,libcrc,examples/tstcrc.c,222,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,364,libcrc,examples/tstcrc.c,222,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT31-C,365,libcrc,src/crcdnp.c,113,FP,"value is bounded: ch in [0,255] after the !=EOF guard (fgetc contract) so '(unsigned char)ch' is lossless; nibble<<4 fits unsigned char"
+INT32-C,366,libcrc,examples/tstcrc.c,123,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,367,libcrc,examples/tstcrc.c,124,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,368,libcrc,examples/tstcrc.c,268,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,369,libcrc,test/testall.c,54,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,370,libcrc,test/testall.c,55,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,371,libcrc,test/testcrc.c,123,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,372,libcrc,test/testcrc.c,130,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,373,libcrc,test/testcrc.c,137,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,374,libcrc,test/testcrc.c,144,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,375,libcrc,test/testcrc.c,151,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,376,libcrc,test/testcrc.c,158,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,377,libcrc,test/testcrc.c,165,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,378,libcrc,test/testcrc.c,172,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,379,libcrc,test/testcrc.c,179,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,380,libcrc,test/testcrc.c,186,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,381,libcrc,test/testcrc.c,193,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,382,libcrc,test/testcrc.c,200,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,383,libcrc,test/testcrc.c,203,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT32-C,384,libcrc,test/testnmea.c,224,FP,counter bounded far below INT_MAX (test-failure count / argv index / byte value 0-255); no feasible overflow
+INT36-C,385,libcrc,examples/tstcrc.c,122,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,386,libcrc,examples/tstcrc.c,123,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,387,libcrc,examples/tstcrc.c,124,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,388,libcrc,examples/tstcrc.c,178,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,389,libcrc,examples/tstcrc.c,179,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,390,libcrc,src/crc16.c,65,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,391,libcrc,src/crc16.c,93,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,392,libcrc,src/crc32.c,63,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,393,libcrc,src/crc64.c,63,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,394,libcrc,src/crc64.c,89,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,395,libcrc,src/crcccitt.c,106,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,396,libcrc,src/crcdnp.c,67,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,397,libcrc,src/crckrmit.c,66,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+INT36-C,398,libcrc,src/crcsick.c,61,FP,'(uintNN_t) *ptr' dereferences ptr to a byte then widens; it is not a pointer-to-integer conversion (sqc confuses *ptr with ptr)
+MEM30-C,399,libcrc,src/crc16.c,144,FP,"target 'crc_tabXX' is a file-scope static array; init writes a scalar to a global element, no stack object escapes"
+MEM30-C,400,libcrc,src/crcccitt.c,157,FP,"target 'crc_tabXX' is a file-scope static array; init writes a scalar to a global element, no stack object escapes"
+MEM30-C,401,libcrc,src/crcdnp.c,123,FP,"target 'crc_tabXX' is a file-scope static array; init writes a scalar to a global element, no stack object escapes"
+MEM30-C,402,libcrc,src/crckrmit.c,121,FP,"target 'crc_tabXX' is a file-scope static array; init writes a scalar to a global element, no stack object escapes"
+PRE06-C,403,libcrc,precalc/precalc.h,1,TP,header genuinely lacks an include guard (no #ifndef/#define)
+PRE06-C,404,libcrc,test/testall.h,1,TP,header genuinely lacks an include guard (no #ifndef/#define)
+PRE32-C,405,libcrc,examples/tstcrc.c,246,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,406,libcrc,examples/tstcrc.c,246,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,407,libcrc,test/testcrc.c,121,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,408,libcrc,test/testcrc.c,128,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,409,libcrc,test/testcrc.c,135,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,410,libcrc,test/testcrc.c,142,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,411,libcrc,test/testcrc.c,149,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,412,libcrc,test/testcrc.c,156,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,413,libcrc,test/testcrc.c,163,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,414,libcrc,test/testcrc.c,170,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,415,libcrc,test/testcrc.c,177,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,416,libcrc,test/testcrc.c,184,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,417,libcrc,test/testcrc.c,191,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+PRE32-C,418,libcrc,test/testcrc.c,198,FP,"PRIxNN are object-like macros from <inttypes.h>; PRE32-C targets #if/#include directives passed as macro arguments, not standard format-string macros"
+STR03-C,419,libcrc,src/nmea-chk.c,72,FP,"snprintf(result, 3, ...) writes exactly 2 hex + NUL into the documented >=3-byte buffer; bounded by design"
+STR31-C,420,libcrc,examples/tstcrc.c,56,FP,argc is validated before argv use (argc<2 / argc!=3 -> exit)
+STR31-C,421,libcrc,precalc/precalc.c,69,FP,argc is validated before argv use (argc<2 / argc!=3 -> exit)
