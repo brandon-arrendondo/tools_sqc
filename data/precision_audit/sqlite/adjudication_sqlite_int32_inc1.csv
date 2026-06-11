@@ -1,0 +1,16 @@
+rule,idx,project,file,line,verdict,reason
+INT32-C,0,sqlite,src/os_unix.c,2027,FP,pInode->nLock is a per-inode lock refcount bounded by open file handles; cannot approach INT_MAX
+INT32-C,1,sqlite,src/util.c,898,FP,i is a buffer index in [0,22] (sizeof(u.a)-1 decremented by 2 in the digit loop); bounded small
+INT32-C,2,sqlite,src/vdbe.c,1212,FP,pCaller->p2 asserted >=0 and < p->nOp (a program counter); p2-1 cannot signed-overflow
+INT32-C,3,sqlite,ext/misc/scrub.c,112,FP,pgno is a page number >=1 so pgno-1>=0; the product is widened to sqlite3_int64
+INT32-C,4,sqlite,src/btree.c,8606,FP,cntNew[i-1] is a cumulative cell count bounded by cells-per-page; i bounded by the small NB sibling count
+INT32-C,5,sqlite,src/insert.c,2412,FP,iIdxCur and ix are cursor/index numbers bounded by the schema (small); no feasible overflow
+INT32-C,6,sqlite,src/os_kv.c,695,FP,iAmt asserted in [512,65536] so it is never -1 and iOfst>=0; INT_MIN/-1 division cannot occur
+INT32-C,7,sqlite,src/printf.c,604,FP,precision asserted >0 immediately before the decrement; bounded by printf format-spec parsing
+INT32-C,8,sqlite,ext/fts5/fts5_vocab.c,418,FP,nCol bounded by SQLITE_MAX_COLUMN (<=2000); sizeof(i64)*nCol <= ~16000
+INT32-C,9,sqlite,ext/fts5/fts5_aux.c,519,uncertain,nScore is an int snippet-score accumulator bounded only by user-controlled token/document count; signed overflow (UB) is possible on an extreme (~GB) indexed column
+INT32-C,10,sqlite,src/util.c,786,FP,nDigit++ guarded by 's < (LARGEST_INT64-9)/10'; stops after ~19 significant digits
+INT32-C,11,sqlite,src/select.c,2792,FP,pOrderBy->nExpr bounded by SQLITE_LIMIT_COLUMN (<=2000); nExpr+1 is tiny
+INT32-C,12,sqlite,ext/fts5/fts5_index.c,3067,FP,iOut indexes the segment merge tree; bounded by pIter->nSeg (segment count)
+INT32-C,13,sqlite,src/build.c,5231,FP,p->nSrc is the FROM-clause table count (<=64 for joins); loop guarded by ALWAYS(i>0)
+INT32-C,14,sqlite,src/wherecode.c,2456,FP,r is a temp-register base and iPk in [0,nPk); VDBE register numbers are bounded by SQLITE_LIMIT
