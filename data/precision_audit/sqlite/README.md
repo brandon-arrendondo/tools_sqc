@@ -222,7 +222,64 @@ fixed-prototype function pointer (xFunc, xConnect, sqlite3_io_methods, etc.).
 DCL13-C oracle now has 73 sqlite labels (50 prior + 23; 27 TP / 46 FP). Overall
 measured sqlite-inclusive precision: 7.9% (TP 43 / 545 labeled).
 
-## Re-running / extending
+## Methodology shift — file-at-a-time audited corpus (from 2026-06-11)
+
+Increments 1–5 above used **rule-stratified sampling**: pull N findings of one
+rule, label, repeat. That measures per-rule precision but (a) never reaches a
+defined "done" on a finite codebase, (b) requires per-rule×per-file bookkeeping,
+and (c) is **structurally precision-only** — it can never see a false negative,
+because an FN is a bug sqc never emitted, so it is never sampled. Recall measured
+that way is circular (recall against TPs found *inside* sqc's own output).
+
+The audit now proceeds **file-at-a-time**: the file is the atomic unit of "done".
+A file is *audited* when every sqc finding in it has been labeled (TP/FP/uncertain)
+**and** the file has been read independently for bugs sqc missed (recorded as
+`FN` ground-truth rows). The audited-file set grows monotonically toward full
+coverage (sqlite: 354 in-scope files), is reusable across every future sqc
+version, and yields honest **precision *and* recall** over the swept subset.
+The codebase is frozen at commit `b1a73ba34d`, so this is a finite, completable,
+versionable corpus. (The increment 1–5 rule-sampled labels remain valid as a
+separate precision-only dataset; they don't count toward audited-file
+completeness until their files are fully swept.)
+
+### File-at-a-time workflow
+
+    # 1. pull EVERY unlabeled finding in one file (all rules):
+    python -m bench realworld-unlabeled sqc-0.4.22-1c94dc95 \
+        --project sqlite --file ext/misc/basexx.c --json
+
+    # 2. read the whole file: label each finding TP/FP, AND record any bug sqc
+    #    MISSED as an FN row. CSV cols: rule,idx,project,file,line,verdict,
+    #    reason[,provenance,confidence]. verdict ∈ TP|FP|uncertain|FN.
+    #    For FN, provenance records corroboration (juliet:CWE-…, cross:<proj>,
+    #    cve:…, uncorroborated) and confidence ∈ high|medium|low.
+    python -m bench realworld-import-labels data/precision_audit/sqlite/<csv> \
+        --run sqc-0.4.22-1c94dc95 --source sqlite_<file> --adjudicator claude
+
+    # 3. mark the file done (refuses if any finding is still unlabeled):
+    python -m bench audit-complete --run sqc-0.4.22-1c94dc95 \
+        --project sqlite --file ext/misc/basexx.c
+
+    # 4. measure precision+recall over the audited corpus, track coverage:
+    python -m bench audit-score sqc-0.4.22-1c94dc95
+    python -m bench audit-coverage sqc-0.4.22-1c94dc95
+    # one-time: record the coverage denominator
+    python -m bench audit-coverage sqc-0.4.22-1c94dc95 --project sqlite \
+        --set-total 354 --note "src/ + ext/ shipped engine, excl test/tool/jni/wasm/tcl"
+
+    # 5. when a codebase reaches 100%, freeze a citable version for the paper:
+    python -m bench oracle-freeze v1.0 --run sqc-0.4.22-1c94dc95 \
+        --notes "sqlite@b1a73ba34d complete"
+    python -m bench oracle-versions
+
+How FN affects scoring: an `FN` row has no matching sqc finding, so it never
+touches precision, but it joins the recall denominator as a known real bug —
+"detected" only once a (better) sqc version emits a finding at that line+rule.
+When sqc is improved to catch a recorded FN, re-running `audit-score` shows
+recall rise, and the FN is re-adjudicated/cross-referenced (against Juliet, the
+other codebases, CVEs) and the label updated — bumping the frozen oracle version.
+
+## Re-running / extending (legacy rule-sampling — for reference)
 
     # pull the next unlabeled batch for a rule (reproducible):
     python -m bench realworld-unlabeled sqc-0.4.22-1c94dc95 \
