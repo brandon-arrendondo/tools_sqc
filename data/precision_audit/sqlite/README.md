@@ -290,3 +290,52 @@ other codebases, CVEs) and the label updated — bumping the frozen oracle versi
         --run sqc-0.4.22-1c94dc95 --source sqlite_<rule>_incN --adjudicator claude
 
     python -m bench realworld-score sqc-0.4.22-1c94dc95   # measured precision/recall
+
+---
+
+## File-at-a-time audited corpus — Batch 1 (2026-06-11, sqc 0.4.24, run #40)
+
+First file-at-a-time batch against the **config-correct** run #40 (`sqlite-rules.toml`,
+39,215 distinct findings; in-scope universe **220 files**). All 259 increment-1–5
+labels reconcile to run #40 with **zero orphans**. Coverage denominator pinned at 220.
+
+`adjudication_sqlite_batch1.csv` — the 29 smallest in-scope files (≤6 findings each;
+`src/tclsqlite.h` excluded as the Tcl binding). 89 findings adjudicated:
+**22 TP / 67 FP**, plus 2 false negatives.
+
+### The reveal: noise is in the *semantic* rules; *lexical/preprocessor* rules find real issues
+
+| High-precision (real) | | Pure noise (all FP) |
+|---|---|---|
+| **DCL37-C 100% (9/9)** reserved-identifier include guards (`_FTS5_H`, `_SQLITE_OS_H_`, …) | | API00-C, API02-C 0/21 each |
+| **PRE02-C 100% (3/3)** unparenthesized `-1`/`-2000` macro bodies | | MEM30-C, EXP33-C, DCL13-C |
+| **PRE06-C 86% (6/7)** missing include guards | | INT30/INT32/INT14/INT16-C |
+| **PRE01-C, PRE11-C 75%** macro-param parens / trailing `;` | | EXP12/14/19-C (advisory, base-disabled elsewhere) |
+| **DCL15-C 33%** should-be-static | | EXP37-C, STR31-C, INT12-C, MSC04/37-C |
+
+sqlite's enormous finding count is dominated by **semantic-analysis false positives**
+(use-after-free matcher, null/uninit, integer overflow, param-validation, const-
+correctness) — the same misfire classes found in increments 2–5. The
+preprocessor/declaration rules, by contrast, correctly flag genuine (if low-severity)
+standards violations sqlite pervasively commits (reserved identifiers for header
+guards, bare negative macro literals, macros ending in `;`).
+
+### False negatives found (in just 29 small files)
+
+1. **`ext/misc/sqlar.c:94` — INT31-C (security-relevant), recorded as FN.**
+   `sqlite3_int64 sz` (the uncompressed size read from a sqlar blob — attacker-
+   controllable via a malicious archive) is passed to `sqlite3_malloc(int)`. For
+   `sz > INT_MAX` the size truncates, under-allocating `pOut`, after which
+   `uncompress` writes the full `szf` bytes → **heap overflow**. sqc emits 12
+   INT31-C in sqlite (all FP) yet misses this real narrowing. Confidence medium.
+2. **`src/pcache.h:16` — PRE06-C, recorded as FN.** `#ifndef _PCACHE_H_` has **no
+   matching `#define`**, so the include guard never arms (re-inclusion unprotected);
+   `_PCACHE_H_` is also a reserved identifier. sqc's PRE06 detector (86% precision
+   here) misses the broken-guard variant. Confidence medium.
+3. `ext/misc/basexx.c:81` — `BASE64_EXPOSE(db,pzErr)` is called twice (the second
+   should be `BASE85_EXPOSE`); base85 is never registered. A real copy-paste defect,
+   but no enabled rule cleanly fits (MSC12-C dead-code) → documented, not inserted.
+
+**Coverage: 29/220 files (13.2%).** sqlite audited subset so far: precision 24.7%
+(22 TP / 89), recall 22/24. (Both FN-1 and FN-2 map to rules sqc *has*, so they sit
+in the INT31-C / PRE06-C recall denominators.)
