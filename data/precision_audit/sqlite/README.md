@@ -493,3 +493,35 @@ memory/null/array semantic engines remain **0% precise** on hardened C. All othe
 TPs are declaration/macro/const/dead-code. Per-rule across the audited corpus:
 MEM30-C **0/875**, EXP34-C **0/202**, ARR30-C **0/97** vs DCL13-C **65% (100 TP)**.
 sqlite coverage 32/220 (14.5%).
+
+---
+
+## File-at-a-time — Batch 2 (2026-06-11, run #40): 27 small files (coverage push)
+
+`adjudication_sqlite_batch2.csv` — the next 27 smallest in-scope files (7–18
+findings each: ext/misc demos, mutex/threads layer, internal headers).
+364 findings: **25 TP / 321 FP / 18 uncertain**, plus **2 FNs**. Coverage
+27→59/220 (12→27%). Adjudicated via 5 lightweight parallel reviewer subagents.
+
+The pattern is now firmly established and unchanged: **every TP is declaration/
+macro/dead-code** — PRE01 ×6 (unparenthesized macro params, e.g. `MX_CELL_SIZE(pBt)`
+→ `pBt->pageSize`), PRE11 ×6 (macro ending in `;`, e.g. the `VdbeCoverage*` macros),
+DCL03 ×4 (`assert(SQLITE_MUTEX_*` relations) → static_assert), PRE10 ×3 (bare-`if`
+macros not in do/while), DCL13 ×2 (read-only helpers in notify.c), DCL37 ×1
+(`_OS_COMMON_H_` reserved guard), DCL01 ×1 (shadowed `z` in zorder.c). Every
+semantic finding (MEM30/INT/ARR/EXP33/34/API00/API02/CON) is FP.
+
+### 2 false negatives (recorded, EXP34-C, upstream-PR candidates)
+
+`ext/misc/compress.c` — both functions allocate with `sqlite3_malloc64` and use the
+result with **no NULL check**:
+- `compressFunc` (~63): `pOut=sqlite3_malloc64(nOut+5)` then `pOut[j]=…` / `compress(&pOut[j],…)` → null-write on OOM.
+- `uncompressFunc` (~102): `nOut` is decoded from the **input blob** (attacker-controllable, up to ~2³⁵) → `sqlite3_malloc64(nOut+1)` → `uncompress(pOut,…)` with no NULL check → reliable OOM null-write.
+sqc fired 200+ EXP34-C false positives across the corpus yet missed these two real
+unchecked-allocation null-derefs — a detector-recall gap, and upstream-PR candidates
+for sqlite's compress extension (see task 164).
+
+Running coverage: **sqlite 59/220 (26.8%)**, libcrc 19/19. Audited-corpus tally so
+far: only semantic TPs remain the 2 fts5 structure-overflows; declaration/macro/const
+rules carry all other TPs; 4 FNs total (sqlar heap-overflow, pcache broken guard,
+2× compress null-deref).
