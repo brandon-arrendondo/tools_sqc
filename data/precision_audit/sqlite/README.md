@@ -800,3 +800,52 @@ match data), and even there sqc's *found* TPs are still all declaration/macro/co
 real semantic defect was a recall gap requiring interprocedural size-vs-index analysis sqc lacks.
 Confirmed-real bug count now **7/7, zero false alarms** (3 fixed sec + 1 fixed matchinfo + 1 fixed
 sqlar + … ). sqlite coverage **64/220 (29.1%)**, 6 FNs.
+
+---
+
+## File-at-a-time — fts3_write.c (2026-06-12, run #40, HIGH-effort): the write path holds, FTS3 family complete
+
+`adjudication_sqlite_fts3_write.csv` — `ext/fts3/fts3_write.c` (the FTS3 WRITE path: segment-btree
+writer, doclist builder, segment merge/incrmerge, and the `fts3SpecialInsert` control commands,
+5856 lines), **571 raw → 494 distinct findings**. A strong needle: it *writes* the serialized
+segment data, *reads it back* during merge from corruptible shadow tables, and parses untrusted
+control-command text (`INSERT INTO t(t) VALUES('merge=A,B' / 'automerge=N' / 'optimize' / …)`).
+9 rule-class reviewers (INT32 split in two — 172 of them) + 2 FN-hunters (segment-reader/merge,
+and control-command paths).
+
+**42 TP / 452 FP / 0 uncertain / 0 FN** (distinct; raw 46 TP / 525 FP).
+
+**0 semantic TP across 525 findings** — INT32 0/172 (allocations done in i64/`sqlite3_malloc64`;
+pending-data capped at `0x3fffffff`; counts schema-bounded by `nColumn`; the `merge=`/`automerge=`
+parser `fts3Getint` explicitly clamps `<214748363`), EXP34 0/55 (the `fts3SqlStmt` `rc==SQLITE_OK ⇒
+pointer non-null` idiom), API00 0/53 (all internal handles / OUT-params / asserted; `xUpdate`
+validates *values* not pointers), MEM30 0/34 (realloc-reassign, null-after-free, and the disjoint
+index-range frees in `fts3IncrmergeRelease`), ARR 0/44 (FTS3_NODE_PADDING + `FTS_CORRUPT_VTAB`),
+STR 0/41 (char\* pointer-op misreads; the 2 genuine char widenings at 4351/5126 are range-guarded).
+All 46 raw TP are the precise class: **DCL13 ×33, MSC04 ×4** (the `fts3SegmentMerge`↔
+`fts3AllocateSegdirIdx` cycle + `fts3NodeWrite`/`fts3NodeFree` self-recursion), **INT13 ×3 / INT10
+×2 / INT14 ×1** (signed bitwise/modulo), DCL03 ×1, ERR07/ERR34 ×1 (a debug-only unchecked `atoi`).
+
+### FN-hunt: clean (0 FN) — both attack surfaces verified
+
+The **segment-reader/merge** hunter confirmed the untrusted-decode surface is hardened by the same
+invariants as fts3.c: `sqlite3Fts3ReadBlock` allocates `(i64)nByte + FTS3_NODE_PADDING` with the pad
+zeroed; `nPrefix`/`nSuffix`/`nDoclist` are range-checked against the node end with `FTS_CORRUPT_VTAB`
+returns; size math is `i64` exactly where `int` would wrap (`fts3SegWriterAdd`'s `i64 nReq`,
+`(i64)nPrefix+nSuffix`). One low-confidence asymmetry — `fts3IncrmergeAppend` (4059/4101) sums
+`nSpace`/`pLeaf->block.n` in `int` while the sibling writer uses `i64` — was judged **not practically
+reachable** (requires a multi-GB single-term doclist actually allocated and merged first) and **not
+recorded as FN**. The **control-command** hunter found the parser hardened intentionally: `fts3Getint`
+clamps to `<214748363` (no overflow, always ≥0), every offset (`&zVal[6]` etc.) is length-guarded,
+`merge=A,B` rejects `nMin<2` and trailing garbage, the only `atoi` uses are `SQLITE_DEBUG`-gated and
+range-checked.
+
+### FTS3 family complete (4 files, 1,759 distinct findings): bifurcation holds end-to-end
+
+fts3.c + fts3_expr.c + fts3_snippet.c + fts3_write.c — the entire FTS3 read/parse/write/query surface
+audited. **Found-TPs: 0 semantic, 100% declaration/macro/const/portability.** The *only* real semantic
+defect in the whole family was the matchinfo('b') OOB write — a **false negative** sqc missed, not a
+finding it made. This is the cleanest statement of the thesis yet: across a genuinely-untrusted-input
+extension family, sqc's semantic engines contributed **zero** correct findings; its value was entirely
+in the lexical/declaration class, and the one real semantic bug present was a recall gap.
+sqlite coverage **65/220 (29.5%)**, 6 FNs.
