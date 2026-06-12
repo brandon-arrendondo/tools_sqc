@@ -1,0 +1,621 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR00-C,0,sqlite,ext/fts3/fts3.c,338,FP,do-while always writes >=1 byte so q[-1] is within buffer; assert confirms <=FTS3_VARINT_MAX,,high
+PRE00-C,1,sqlite,ext/fts3/fts3.c,343,TP,GETVARINT_STEP is a function-like macro that evaluates param v multiple times,,high
+PRE01-C,2,sqlite,ext/fts3/fts3.c,343,TP,param v used unparenthesized in (v & mask1)/(v & mask2); precedence hazard for expression args,,high
+PRE01-C,3,sqlite,ext/fts3/fts3.c,343,TP,"ptr appears as (*..(ptr++)); param itself not wrapped, *q-style arg would misbehave",,med
+PRE01-C,4,sqlite,ext/fts3/fts3.c,343,FP,var used only as lvalue assignment target 'var = v'; no precedence hazard,,high
+PRE01-C,5,sqlite,ext/fts3/fts3.c,343,FP,ret used only in 'return ret;' statement context; parens pointless,,high
+PRE02-C,6,sqlite,ext/fts3/fts3.c,343,FP,"replacement is a statement list (assign + if), cannot be parenthesized as an expression",,high
+PRE10-C,7,sqlite,ext/fts3/fts3.c,343,TP,two statements not wrapped in do-while; breaks in unbraced if,,high
+PRE12-C,8,sqlite,ext/fts3/fts3.c,343,TP,v evaluated multiple times in the macro body,,high
+PRE00-C,9,sqlite,ext/fts3/fts3.c,346,TP,GETVARINT_INIT function-like macro evaluates v multiple times,,high
+PRE01-C,10,sqlite,ext/fts3/fts3.c,346,TP,v unparenthesized in (v & mask2); precedence hazard for expression args,,high
+PRE01-C,11,sqlite,ext/fts3/fts3.c,346,TP,"ptr used as (*ptr++); param not wrapped in own parens, *q-style arg misbehaves",,med
+PRE01-C,12,sqlite,ext/fts3/fts3.c,346,FP,var used only as lvalue target 'var = v'; no hazard,,high
+PRE01-C,13,sqlite,ext/fts3/fts3.c,346,FP,ret used only in 'return ret;'; no hazard,,high
+PRE02-C,14,sqlite,ext/fts3/fts3.c,346,FP,replacement is a statement list; cannot parenthesize,,high
+PRE10-C,15,sqlite,ext/fts3/fts3.c,346,TP,two statements not wrapped in do-while,,high
+PRE12-C,16,sqlite,ext/fts3/fts3.c,346,TP,v evaluated multiple times,,high
+API00-C,17,sqlite,ext/fts3/fts3.c,350,FP,sqlite3Fts3GetVarintU is internal FTS3 amalgamation helper; callers pass valid buffer; non-API boundary,,high
+API00-C,18,sqlite,ext/fts3/fts3.c,350,FP,param v is out-pointer written by caller-controlled internal callers; not untrusted API boundary,,high
+EXP33-C,19,sqlite,ext/fts3/fts3.c,357,FP,GETVARINT_INIT macro assigns a = (*ptr++) before any use,,high
+INT14-C,20,sqlite,ext/fts3/fts3.c,363,TP,shift (int) used in arithmetic (shift+=7) and as bitwise shift count at 365,,high
+DCL00-C,21,sqlite,ext/fts3/fts3.c,364,TP,"u64 c = *p++ then only read in (c&0x7F); never reassigned, fresh per iteration",,high
+INT13-C,22,sqlite,ext/fts3/fts3.c,365,TP,<< with signed int 'shift' as shift count; (c&0x7F)<<shift,,high
+INT34-C,23,sqlite,ext/fts3/fts3.c,365,FP,shift bounded by loop counter (28..63 step 7); shifted value masked c&0x7F in u64; standard varint decode,,high
+STR00-C,24,sqlite,ext/fts3/fts3.c,365,FP,"'c' is u64 (widened from unsigned char *p), not plain char; mask+nonzero test",,high
+STR00-C,25,sqlite,ext/fts3/fts3.c,366,FP,"'c' is u64; (c&0x80)==0 is mask + equality, sign-extension irrelevant",,high
+API00-C,26,sqlite,ext/fts3/fts3.c,377,FP,sqlite3Fts3GetVarint is thin wrapper over GetVarintU; internal helper not public API,,high
+API00-C,27,sqlite,ext/fts3/fts3.c,377,FP,v out-pointer; internal caller-guaranteed,,high
+API00-C,28,sqlite,ext/fts3/fts3.c,387,FP,sqlite3Fts3GetVarintBounded internal varint reader; pEnd bound supplied by trusted callers,,high
+API00-C,29,sqlite,ext/fts3/fts3.c,387,FP,v out-pointer; internal helper,,high
+INT14-C,30,sqlite,ext/fts3/fts3.c,397,TP,shift (int) used arithmetically (shift+=7) and as shift count at 400,,high
+ARR36-C,31,sqlite,ext/fts3/fts3.c,398,FP,p<pX IS the bound check in GetVarintBounded; legitimate comparison of buf vs end,,high
+DCL00-C,32,sqlite,ext/fts3/fts3.c,398,TP,u64 c = p<pX?*p:0 then only read; never reassigned,,high
+INT13-C,33,sqlite,ext/fts3/fts3.c,400,TP,<< with signed int 'shift' as shift count; (c&0x7F)<<shift,,high
+INT34-C,34,sqlite,ext/fts3/fts3.c,400,FP,shift bounded by loop counter (0..63 step 7); masked c&0x7F in u64; bounded varint decode,,high
+STR00-C,35,sqlite,ext/fts3/fts3.c,400,FP,'c' is u64 from unsigned char *p; bit op on already-unsigned value,,high
+STR00-C,36,sqlite,ext/fts3/fts3.c,401,FP,"'c' is u64; (c&0x80)==0 mask + equality, no sign issue",,high
+API00-C,37,sqlite,ext/fts3/fts3.c,411,FP,sqlite3Fts3GetVarint32 internal varint helper; p from trusted FTS3 buffers,,high
+API00-C,38,sqlite,ext/fts3/fts3.c,411,FP,pi out-pointer; internal helper,,high
+EXP33-C,39,sqlite,ext/fts3/fts3.c,416,FP,GETVARINT_INIT macro assigns a before use (or assert path sets a),,high
+EXP07-C,40,sqlite,ext/fts3/fts3.c,426,FP,"intentional varint bit-assembly (*ptr & 0x07)<<28; correctly cast, no defect",,high
+INT36-C,41,sqlite,ext/fts3/fts3.c,426,FP,"not a pointer-to-int conversion; (u32)(*ptr&0x07)<<28 is byte arithmetic, misclassified",,high
+INT32-C,42,sqlite,ext/fts3/fts3.c,438,FP,i counts varint bytes (max ~10); loop terminates when v>>=7 reaches 0; cannot reach INT_MAX,,high
+INT14-C,43,sqlite,ext/fts3/fts3.c,439,FP,v is sqlite3_uint64 (unsigned); 'v>>=7' not a signed operand,,high
+API00-C,44,sqlite,ext/fts3/fts3.c,458,FP,sqlite3Fts3Dequote internal in-place dequote; z always valid string from FTS3 parser,,high
+INT32-C,45,sqlite,ext/fts3/fts3.c,473,FP,iIn indexes a NUL-terminated dequote string; bounded by string length,,high
+INT32-C,46,sqlite,ext/fts3/fts3.c,475,FP,iIn indexes NUL-terminated string; bounded by string length,,high
+STR34-C,47,sqlite,ext/fts3/fts3.c,489,FP,*pp passed to varint reader which casts to unsigned char internally; no widening here,,high
+EXP33-C,48,sqlite,ext/fts3/fts3.c,490,FP,iVal written by callee sqlite3Fts3GetVarint via &iVal output param before *pVal += iVal,,high
+DCL13-C,49,sqlite,ext/fts3/fts3.c,504,TP,pStart only used in comparison p>=pStart; pointed data never modified,,high
+INT32-C,50,sqlite,ext/fts3/fts3.c,513,FP,(*pp)-2 is pointer-bounded reverse scan guarded by p>=pStart; not integer overflow,,high
+DCL30-C,51,sqlite,ext/fts3/fts3.c,515,FP,*pp=p where p derived from (*pp)-2 walked over caller buffer; writes pointer-into-buffer not addr of local,,high
+STR34-C,52,sqlite,ext/fts3/fts3.c,515,FP,"*pp = p is pointer assignment, no char-value widening",,high
+EXP33-C,53,sqlite,ext/fts3/fts3.c,518,FP,iVal written by callee sqlite3Fts3GetVarint before *pVal = iVal,,high
+MEM30-C,54,sqlite,ext/fts3/fts3.c,543,FP,"tokenizer xDestroy(pTokenizer) is a destructor call, not use-after-free; pTokenizer not freed before this",,high
+MEM30-C,55,sqlite,ext/fts3/fts3.c,543,FP,"same call; path-insensitive misfire, no prior free of pTokenizer/pModule",,high
+MEM30-C,56,sqlite,ext/fts3/fts3.c,543,FP,same call line; no free of p->pTokenizer reachable before 543,,high
+MEM30-C,57,sqlite,ext/fts3/fts3.c,543,FP,duplicate of pTokenizer finding on same destructor call,,high
+API00-C,58,sqlite,ext/fts3/fts3.c,552,FP,sqlite3Fts3ErrMsg internal printf-style error setter; pzErr is FTS3-owned out param,,high
+STR34-C,59,sqlite,ext/fts3/fts3.c,556,FP,"*pzErr = sqlite3_vmprintf() is char* pointer assignment, not char widening",,high
+DCL13-C,60,sqlite,ext/fts3/fts3.c,627,TP,"fts3DeclareVtab reads p->fields only, no p->x= writes; const Fts3Table* valid",,high
+API00-C,61,sqlite,ext/fts3/fts3.c,665,FP,sqlite3Fts3CreateStatTable internal; pRc is FTS3-owned status out param,,high
+STR00-C,62,sqlite,ext/fts3/fts3.c,764,FP,"p->nPgsz is int field assigned 1024, not a char",,high
+ARR30-C,63,sqlite,ext/fts3/fts3.c,790,FP,zCsr scans NUL-terminated config string; loop returns on '\\0',,high
+DCL30-C,64,sqlite,ext/fts3/fts3.c,800,FP,*pzValue=zValue where zValue is heap from sqlite3_mprintf; not address of local,,high
+STR34-C,65,sqlite,ext/fts3/fts3.c,800,FP,"*pzValue = zValue pointer assignment, no widening",,high
+STR34-C,66,sqlite,ext/fts3/fts3.c,826,FP,"*pz = z pointer assignment, no widening",,high
+EXP34-C,67,sqlite,ext/fts3/fts3.c,843,FP,both call sites guard fts3QuoteId(zFunc) inside else of if(!zFunc); zFunc non-null,,high
+INT32-C,68,sqlite,ext/fts3/fts3.c,843,FP,zInput is a schema identifier (short); computed then stored in i64 nRet; no realistic overflow,,high
+INT32-C,69,sqlite,ext/fts3/fts3.c,843,FP,schema identifier length; benign config-time size computation,,high
+INT32-C,70,sqlite,ext/fts3/fts3.c,843,FP,"strlen of schema identifier *2; bounded short name, no overflow",,high
+STR34-C,71,sqlite,ext/fts3/fts3.c,848,FP,"char-to-char copy in quote builder, no integer widening",,high
+STR34-C,72,sqlite,ext/fts3/fts3.c,850,FP,equality compare =='\' and char copy,,high
+STR34-C,73,sqlite,ext/fts3/fts3.c,851,FP,"char-to-char copy, no widening",,high
+STR34-C,74,sqlite,ext/fts3/fts3.c,853,FP,"char literal store, no widening",,high
+STR34-C,75,sqlite,ext/fts3/fts3.c,854,FP,"char literal store, no widening",,high
+DCL30-C,76,sqlite,ext/fts3/fts3.c,856,FP,returns zRet which holds heap addr from sqlite3_malloc64; returns pointer value not addr of local,,high
+DCL13-C,77,sqlite,ext/fts3/fts3.c,882,TP,fts3ReadExprList reads p->zContentTbl/nColumn/azColumn etc only; no writes to *p,,high
+DCL30-C,78,sqlite,ext/fts3/fts3.c,916,FP,returns zRet heap string built via fts3Appendf/sqlite3_malloc; pointer value not local addr,,high
+DCL13-C,79,sqlite,ext/fts3/fts3.c,939,TP,fts3WriteExprList reads p fields only; no writes to *p,,high
+DCL30-C,80,sqlite,ext/fts3/fts3.c,958,FP,returns zRet heap string from fts3Appendf; pointer value not local addr,,high
+API00-C,81,sqlite,ext/fts3/fts3.c,966,FP,sqlite3Fts3ReadInt internal numeric parser; z is trusted FTS3 buffer,,high
+API00-C,82,sqlite,ext/fts3/fts3.c,966,FP,pnOut out-pointer; internal helper,,high
+STR34-C,83,sqlite,ext/fts3/fts3.c,1002,FP,"*pp += nByte is char* pointer arithmetic, no char widening",,high
+INT30-C,84,sqlite,ext/fts3/fts3.c,1039,FP,nIndex bounded by comma count in CREATE prefix= param; i64 malloc; config-time,,high
+DCL30-C,85,sqlite,ext/fts3/fts3.c,1040,FP,*apIndex=aIndex where aIndex is heap from sqlite3_malloc64; not addr of local,,high
+ARR38-C,86,sqlite,ext/fts3/fts3.c,1045,FP,"memset size = sizeof*nIndex, identical to the malloc on line 1039",,high
+INT30-C,87,sqlite,ext/fts3/fts3.c,1045,FP,nIndex schema-bounded (comma count); no wrap,,high
+INT32-C,88,sqlite,ext/fts3/fts3.c,1045,FP,"memset size = sizeof*nIndex, nIndex schema-bounded; matches allocation",,high
+EXP34-C,89,sqlite,ext/fts3/fts3.c,1125,FP,pStmt reached only inside if(rc==SQLITE_OK); rc==OK implies prepare succeeded and pStmt set,,high
+INT32-C,90,sqlite,ext/fts3/fts3.c,1128,FP,nStr is i64; sum of column-name lengths bounded by SQLITE_MAX_COLUMN; config-time,,high
+INT30-C,91,sqlite,ext/fts3/fts3.c,1132,FP,nCol bounded by sqlite3_column_count (<=SQLITE_MAX_COLUMN); i64 malloc,,high
+INT32-C,92,sqlite,ext/fts3/fts3.c,1139,FP,n = strlen(column name)+1; schema-bounded short identifier,,high
+STR34-C,93,sqlite,ext/fts3/fts3.c,1139,FP,"int n = (int)strlen(zCol)+1; size_t from strlen, not char widening",,high
+EXP05-C,94,sqlite,ext/fts3/fts3.c,1140,FP,"writing into freshly-malloc'd azCol buffer; const only on declared type, no truly-const object",,med
+INT31-C,95,sqlite,ext/fts3/fts3.c,1140,FP,"memcpy n = column-name length, allocation sized to hold it; bounded",,high
+INT31-C,96,sqlite,ext/fts3/fts3.c,1142,FP,"p is char* pointer increment, not a narrowing assignment; misclassified",,high
+STR34-C,97,sqlite,ext/fts3/fts3.c,1150,FP,*pazCol = azCol pointer assignment,,high
+DCL13-C,98,sqlite,ext/fts3/fts3.c,1170,FP,pAux cast to hash and &hash passed to InitTokenizer which inserts; pointed-to data is modified,,high
+STR34-C,99,sqlite,ext/fts3/fts3.c,1187,FP,argv[0][3]=='4' equality compare to ASCII; sign-extension cannot change equality,,high
+INT32-C,100,sqlite,ext/fts3/fts3.c,1210,FP,"strlen(db name)+1; schema identifier, bounded",,high
+INT32-C,101,sqlite,ext/fts3/fts3.c,1211,FP,"strlen(table name)+1; schema identifier, bounded",,high
+INT30-C,102,sqlite,ext/fts3/fts3.c,1213,FP,"argc is CREATE arg count, small; i64 nByte; config-time",,high
+INT32-C,103,sqlite,ext/fts3/fts3.c,1213,FP,argc-2 where argc>=3 by construction (module/db/table); bounded small,,high
+ARR38-C,104,sqlite,ext/fts3/fts3.c,1216,FP,nByte = sizeof(char*)*(argc-2); argc>=3 guaranteed by asserts; matches malloc,,high
+EXP05-C,105,sqlite,ext/fts3/fts3.c,1216,FP,"memset of own malloc'd aCol buffer; const-cast benign, no write-through of const object",,med
+INT31-C,106,sqlite,ext/fts3/fts3.c,1216,FP,"nByte is i64 sized = sizeof*(argc-2); positive, matches alloc",,high
+ARR38-C,107,sqlite,ext/fts3/fts3.c,1220,FP,same nByte as matching azNotindexed malloc on 1217,,high
+INT31-C,108,sqlite,ext/fts3/fts3.c,1220,FP,"nByte i64 positive, matches preceding malloc64; benign",,high
+EXP33-C,109,sqlite,ext/fts3/fts3.c,1241,FP,zVal written by fts3IsSpecialColumn (sets *pzValue=zValue when returns 1) before any read,,high
+ARR02-C,110,sqlite,ext/fts3/fts3.c,1257,FP,local initializer-sized array aFts4Opt[]; size well-defined by braces (style nit),,high
+ARR00-C,111,sqlite,ext/fts3/fts3.c,1272,FP,"iOpt is the for-loop counter, initialized to 0 and bounded by SizeofArray; rule misread",,high
+EXP34-C,112,sqlite,ext/fts3/fts3.c,1281,FP,reached inside else where if(!zVal) handled; zVal non-null in this branch,,high
+EXP34-C,113,sqlite,ext/fts3/fts3.c,1309,FP,reached inside else branch where zVal already known non-null,,high
+INT32-C,114,sqlite,ext/fts3/fts3.c,1345,FP,nString accumulates schema column-name lengths; SQLITE_MAX_COLUMN bounded,,high
+MEM30-C,115,sqlite,ext/fts3/fts3.c,1358,FP,zCompress freed then set to 0 (line 1360); cleanup free at 1527 is free(NULL),,high
+MEM30-C,116,sqlite,ext/fts3/fts3.c,1359,FP,zUncompress freed then set to 0 (line 1361); cleanup free at 1528 is free(NULL),,high
+EXP05-C,117,sqlite,ext/fts3/fts3.c,1363,FP,sqlite3_free((void*)aCol) of own buffer; benign const-cast,,med
+MEM30-C,118,sqlite,ext/fts3/fts3.c,1365,FP,"argv never freed; vtab arg array owned by SQLite, not freed in this function",,high
+MEM30-C,119,sqlite,ext/fts3/fts3.c,1365,FP,zContent not freed before 1365; freed only at cleanup 1529 after reassignment,,high
+MEM30-C,120,sqlite,ext/fts3/fts3.c,1365,FP,argv array never freed in this function,,high
+MEM30-C,121,sqlite,ext/fts3/fts3.c,1372,FP,zLanguageid not freed before 1372; cleanup free at 1530 after p takes ownership,,high
+MEM30-C,122,sqlite,ext/fts3/fts3.c,1397,FP,zPrefix not freed before 1397; only freed at cleanup 1525,,high
+MEM30-C,123,sqlite,ext/fts3/fts3.c,1399,FP,zPrefix live; not freed before this assert,,high
+MEM30-C,124,sqlite,ext/fts3/fts3.c,1400,FP,zPrefix live; freed only at cleanup label 1525,,high
+ARR39-C,125,sqlite,ext/fts3/fts3.c,1405,FP,nByte sum of config-derived sizes; allocated and memset consistently,,high
+ARR39-C,126,sqlite,ext/fts3/fts3.c,1405,FP,duplicate of above; pointer/size arithmetic for Fts3Table allocation is consistent,,high
+INT30-C,127,sqlite,ext/fts3/fts3.c,1405,FP,struct-table allocation; all addends schema-bounded (nCol/nIndex/nName/nDb/nString); i64,,high
+INT30-C,128,sqlite,ext/fts3/fts3.c,1407,FP,nIndex schema-bounded; i64 size arithmetic,,high
+INT30-C,129,sqlite,ext/fts3/fts3.c,1408,FP,nCol schema-bounded; i64 size arithmetic,,high
+ARR38-C,130,sqlite,ext/fts3/fts3.c,1417,FP,"memset(p,0,nByte) matches the malloc(nByte) on 1412",,high
+INT31-C,131,sqlite,ext/fts3/fts3.c,1417,FP,nByte i64 positive matches alloc; benign memset,,high
+STR00-C,132,sqlite,ext/fts3/fts3.c,1428,FP,"p->nAutoincrmerge sentinel set to 0xff; only compared, no arithmetic consequence",,high
+STR00-C,133,sqlite,ext/fts3/fts3.c,1433,FP,"p->inTransaction is int field (TESTONLY), assigned -1",,high
+STR00-C,134,sqlite,ext/fts3/fts3.c,1434,FP,"p->mxSavepoint is int field (TESTONLY), assigned -1",,high
+ARR38-C,135,sqlite,ext/fts3/fts3.c,1437,FP,memcpy sizeof(Fts3Index)*nIndex into p->aIndex region sized for exactly nIndex,,high
+EXP34-C,136,sqlite,ext/fts3/fts3.c,1437,FP,aIndex non-null when rc==OK (fts3PrefixParameter NOMEM goto'd out at 1402); nIndex>=1,,high
+INT30-C,137,sqlite,ext/fts3/fts3.c,1437,FP,nIndex schema-bounded; no wrap,,high
+INT32-C,138,sqlite,ext/fts3/fts3.c,1437,FP,"memcpy size sizeof*nIndex, nIndex schema-bounded, matches alloc",,high
+INT31-C,139,sqlite,ext/fts3/fts3.c,1447,FP,"nName = table-name length, memcpy into buffer sized to include it",,high
+MEM30-C,140,sqlite,ext/fts3/fts3.c,1447,FP,argv (vtab args) never freed; SQLite owns it,,high
+MEM30-C,141,sqlite,ext/fts3/fts3.c,1447,FP,argv array not freed,,high
+INT31-C,142,sqlite,ext/fts3/fts3.c,1450,FP,"nDb = db-name length, memcpy into buffer sized to include it",,high
+MEM30-C,143,sqlite,ext/fts3/fts3.c,1450,FP,argv not freed before memcpy,,high
+MEM30-C,144,sqlite,ext/fts3/fts3.c,1450,FP,argv array not freed,,high
+EXP05-C,145,sqlite,ext/fts3/fts3.c,1459,FP,"(char*)sqlite3Fts3NextToken token ptr; z only read via memcpy, no write-through",,med
+EXP34-C,146,sqlite,ext/fts3/fts3.c,1459,FP,"memcpy(zCsr,z,n) guarded by if(n>0); z valid token when n>0",,high
+MEM30-C,147,sqlite,ext/fts3/fts3.c,1459,FP,"z derived from aCol[iCol]; aCol freed only at cleanup 1532, after use",,high
+MEM30-C,148,sqlite,ext/fts3/fts3.c,1472,FP,azNotindexed not freed before loop; freed at cleanup 1533,,high
+MEM30-C,149,sqlite,ext/fts3/fts3.c,1473,FP,zNot=azNotindexed[i] live; entries freed at 1477 then nulled,,high
+MEM30-C,150,sqlite,ext/fts3/fts3.c,1474,FP,zNot live at strnicmp; free happens after match at 1477,,high
+MEM30-C,151,sqlite,ext/fts3/fts3.c,1477,FP,zNot freed once on match then azNotindexed[i]=0; no double-free,,high
+INT32-C,152,sqlite,ext/fts3/fts3.c,1515,FP,nPgsz is DB page size (512..65536); nPgsz-35 cannot overflow,,high
+MEM30-C,153,sqlite,ext/fts3/fts3.c,1525,FP,"zPrefix freed once at cleanup; consumed into aIndex earlier, no double-free",,high
+MEM31-C,154,sqlite,ext/fts3/fts3.c,1527,FP,zCompress is NULL (set 0 at 1360) or owned-once; free is free(NULL) or single free,,high
+MEM31-C,155,sqlite,ext/fts3/fts3.c,1528,FP,zUncompress NULL or single free at cleanup; no double-free path,,high
+EXP34-C,156,sqlite,ext/fts3/fts3.c,1531,FP,loop bounded by nNotindexed which is 0 at early NOMEM goto; azNotindexed non-null otherwise,,high
+EXP05-C,157,sqlite,ext/fts3/fts3.c,1532,FP,sqlite3_free((void*)aCol) of own buffer; benign,,med
+MEM30-C,158,sqlite,ext/fts3/fts3.c,1532,FP,aCol freed once at cleanup; earlier free at 1363 is followed by aCol=0 reassign,,high
+MEM33-C,159,sqlite,ext/fts3/fts3.c,1542,FP,"*ppVTab = &p->base assigns address of embedded base, not flexible-array struct copy",,high
+DCL13-C,160,sqlite,ext/fts3/fts3.c,1606,TP,fts3BestIndexMethod reads p->bLock/nColumn/pSegments only; *pVTab not modified,,high
+EXP07-C,161,sqlite,ext/fts3/fts3.c,1638,FP,"intentional ((sqlite3_int64)1)<<50 cost-estimate constant, correctly cast",,high
+INT32-C,162,sqlite,ext/fts3/fts3.c,1638,FP,((i64)1)<<50 is a constant well within i64 range,,high
+MEM12-C,163,sqlite,ext/fts3/fts3.c,1746,FP,"malloc fail path: pCsr is NULL, nothing leaked; returns NOMEM",,high
+MEM12-C,164,sqlite,ext/fts3/fts3.c,1749,FP,"cursor stored in *ppCsr output param; caller owns it, not a leak",,high
+INT30-C,165,sqlite,ext/fts3/fts3.c,1782,FP,"compile-time struct size difference, embedded first member; cannot wrap",,high
+INT32-C,166,sqlite,ext/fts3/fts3.c,1782,FP,sizeof(Fts3Cursor)-sizeof(sqlite3_vtab_cursor) is compile-time positive constant (embedded base),,high
+MEM30-C,167,sqlite,ext/fts3/fts3.c,1782,FP,fts3ClearCursor frees only members; pCsr freed by caller after return (1794),,high
+MEM30-C,168,sqlite,ext/fts3/fts3.c,1782,FP,memset on embedded base struct; pCsr not freed in this function,,high
+MEM30-C,169,sqlite,ext/fts3/fts3.c,1782,FP,"pCsr not freed here; members freed, struct survives",,high
+INT32-C,170,sqlite,ext/fts3/fts3.c,1818,FP,bLock is a balanced recursion-guard flag; never near INT_MAX,,high
+INT32-C,171,sqlite,ext/fts3/fts3.c,1820,FP,bLock balanced decrement of guard flag; never near INT_MIN,,high
+INT32-C,172,sqlite,ext/fts3/fts3.c,1839,FP,"bLock recursion-guard, balanced inc/dec",,high
+INT32-C,173,sqlite,ext/fts3/fts3.c,1843,FP,"bLock recursion-guard, balanced inc/dec",,high
+INT32-C,174,sqlite,ext/fts3/fts3.c,1846,FP,"bLock recursion-guard, balanced inc/dec",,high
+ARR30-C,175,sqlite,ext/fts3/fts3.c,1890,FP,zEnd=&zCsr[nNode] forms a one-past-end pointer; used only as bound below,,high
+EXP34-C,176,sqlite,ext/fts3/fts3.c,1890,FP,&zCsr[nNode] is address arithmetic not a deref; zNode caller-guaranteed buffer,,high
+STR34-C,177,sqlite,ext/fts3/fts3.c,1890,FP,"zEnd = &zCsr[nNode] pointer arithmetic, no char widening",,high
+ARR36-C,178,sqlite,ext/fts3/fts3.c,1912,FP,zCsr>zEnd IS the corruption bound check (returns FTS_CORRUPT_VTAB),,high
+ARR36-C,179,sqlite,ext/fts3/fts3.c,1916,FP,zCsr<zEnd is the loop bound check; both derived from same zNode buffer,,high
+ARR36-C,180,sqlite,ext/fts3/fts3.c,1934,FP,zCsr-zNode within same buffer; guarded by nPrefix>zCsr-zNode corruption check,,high
+INT07-C,181,sqlite,ext/fts3/fts3.c,1934,FP,zEnd is const char* pointer; zEnd-zCsr is pointer subtraction not char-as-numeric,,high
+INT32-C,182,sqlite,ext/fts3/fts3.c,1940,FP,nPrefix/nSuffix validated against buffer extents (l.1934); cast (i64) before *2 prevents overflow,,high
+MEM30-C,183,sqlite,ext/fts3/fts3.c,1948,FP,realloc pattern: zBuffer reassigned from zNew (1946) before use; only free at 1980,,high
+INT31-C,184,sqlite,ext/fts3/fts3.c,1949,FP,memcpy nSuffix validated nSuffix<=zEnd-zCsr and nSuffix>=0 (l.1934); safe,,high
+MEM30-C,185,sqlite,ext/fts3/fts3.c,1949,FP,"zBuffer is reallocated buffer, not freed; single free at finish_scan",,high
+MEM30-C,186,sqlite,ext/fts3/fts3.c,1949,FP,realloc result used; no free before this memcpy,,high
+MEM30-C,187,sqlite,ext/fts3/fts3.c,1949,FP,zBuffer live realloc buffer,,high
+INT31-C,188,sqlite,ext/fts3/fts3.c,1951,FP,"zCsr is const char* pointer increment, not narrowing assignment; misclassified",,high
+EXP34-C,189,sqlite,ext/fts3/fts3.c,1962,FP,"memcmp(zTerm,...); zTerm is search term, caller-guaranteed non-null; zBuffer asserted non-null",,med
+INT31-C,190,sqlite,ext/fts3/fts3.c,1962,FP,"memcmp len = min(nBuffer,nTerm); both bounded/validated",,high
+MEM30-C,191,sqlite,ext/fts3/fts3.c,1962,FP,zBuffer live; only freed at 1980 after loop,,high
+MEM05-C,192,sqlite,ext/fts3/fts3.c,2006,FP,fts3SelectLeaf recursion bounded by strictly decreasing tree height (iNewHeight<iHeight at 2044),,med
+MSC04-C,193,sqlite,ext/fts3/fts3.c,2006,TP,fts3SelectLeaf recurses at lines 2031 and 2047 (direct recursion present),,high
+ARR36-C,194,sqlite,ext/fts3/fts3.c,2022,FP,"assert compares dereferenced *piLeaf<=*piLeaf2 (values), not pointers; rule misread",,high
+EXP34-C,195,sqlite,ext/fts3/fts3.c,2022,FP,*piLeaf in assert guarded by short-circuit !piLeaf ||,,high
+EXP34-C,196,sqlite,ext/fts3/fts3.c,2022,FP,*piLeaf2 in assert guarded by short-circuit !piLeaf2 ||,,high
+EXP34-C,197,sqlite,ext/fts3/fts3.c,2031,FP,zBlob set by sqlite3Fts3ReadBlock then used only if rc==SQLITE_OK,,high
+DCL00-C,198,sqlite,ext/fts3/fts3.c,2042,FP,iNewHeight passed by address to fts3GetVarint32 which writes it,,high
+EXP34-C,199,sqlite,ext/fts3/fts3.c,2047,FP,"zBlob set by ReadBlock at 2039, used only if rc==SQLITE_OK",,high
+MEM31-C,200,sqlite,ext/fts3/fts3.c,2050,FP,zBlob freed at 2033 then set to 0 (2035) and re-read; second free at 2050 on new buffer,,high
+INT32-C,201,sqlite,ext/fts3/fts3.c,2066,FP,"iVal-*piPrev is delta-encode of validated positions; by-design, i64",,high
+STR34-C,202,sqlite,ext/fts3/fts3.c,2066,FP,*pp += PutVarint() pointer arithmetic,,high
+STR34-C,203,sqlite,ext/fts3/fts3.c,2085,FP,char *pEnd = *ppPoslist pointer assignment,,high
+DCL00-C,204,sqlite,ext/fts3/fts3.c,2086,FP,c reassigned in loop: c = *pEnd++ & 0x80,,high
+ARR30-C,205,sqlite,ext/fts3/fts3.c,2098,FP,poslist scan relies on FTS3_BUFFER_PADDING zero-termination invariant enforced on all doclist allocs,,med
+INT14-C,206,sqlite,ext/fts3/fts3.c,2098,TP,*pEnd (signed char) bitwise OR'd with c (char) in while(*pEnd|c); pEnd also ptr-arith,,high
+ARR37-C,207,sqlite,ext/fts3/fts3.c,2099,FP,pEnd++ over poslist terminated by POS_END/padding; standard FTS3 idiom,,med
+ARR37-C,208,sqlite,ext/fts3/fts3.c,2102,FP,pEnd++ past terminator; bounded by zeroed padding appended to every doclist buffer,,med
+STR34-C,209,sqlite,ext/fts3/fts3.c,2105,FP,"int n = (int)(pEnd - *ppPoslist) pointer difference, not char widening",,high
+STR34-C,210,sqlite,ext/fts3/fts3.c,2105,FP,pointer difference for memcpy length; sign-safe,,high
+STR34-C,211,sqlite,ext/fts3/fts3.c,2105,FP,"ppPoslist pointer arithmetic, no char value widened",,high
+EXP40-C,212,sqlite,ext/fts3/fts3.c,2106,FP,char *p = *pp where pp is char** (fts3PoslistCopy); no const involved,,high
+STR34-C,213,sqlite,ext/fts3/fts3.c,2106,FP,char *p = *pp pointer assignment,,high
+EXP43-C,214,sqlite,ext/fts3/fts3.c,2107,FP,"memcpy(p,*ppPoslist,n): dest from *pp, src from *ppPoslist; distinct caller buffers, not aliased",,high
+INT31-C,215,sqlite,ext/fts3/fts3.c,2107,FP,memcpy n = pointer-bounded poslist span; output buffer caller-sized,,high
+INT31-C,216,sqlite,ext/fts3/fts3.c,2108,FP,"p is char* pointer increment, not narrowing; misclassified",,high
+STR34-C,217,sqlite,ext/fts3/fts3.c,2109,FP,*pp = p pointer assignment,,high
+DCL30-C,218,sqlite,ext/fts3/fts3.c,2111,FP,*ppPoslist=pEnd where pEnd walks caller buffer (*ppPoslist); pointer-into-buffer not local addr,,high
+STR34-C,219,sqlite,ext/fts3/fts3.c,2111,FP,*ppPoslist = pEnd pointer assignment,,high
+STR34-C,220,sqlite,ext/fts3/fts3.c,2132,FP,char *pEnd = *ppPoslist pointer assignment,,high
+DCL00-C,221,sqlite,ext/fts3/fts3.c,2133,FP,c reassigned in loop: c = *pEnd++ & 0x80,,high
+ARR30-C,222,sqlite,ext/fts3/fts3.c,2138,FP,columnlist scan bounded by 0x01/0x00 terminator and zeroed padding,,med
+INT14-C,223,sqlite,ext/fts3/fts3.c,2138,TP,signed char bitwise: 0xFE & (*pEnd|c); pEnd also ptr-arith,,high
+ARR37-C,224,sqlite,ext/fts3/fts3.c,2139,FP,pEnd++ over columnlist; terminator/padding guaranteed,,med
+STR34-C,225,sqlite,ext/fts3/fts3.c,2143,FP,"int n = pointer difference, not char widening",,high
+STR34-C,226,sqlite,ext/fts3/fts3.c,2143,FP,pointer difference for length,,high
+STR34-C,227,sqlite,ext/fts3/fts3.c,2143,FP,ppPoslist pointer arithmetic,,high
+EXP40-C,228,sqlite,ext/fts3/fts3.c,2144,FP,char *p = *pp; pp is char** (fts3ColumnlistCopy); no const,,high
+STR34-C,229,sqlite,ext/fts3/fts3.c,2144,FP,char *p = *pp pointer assignment,,high
+EXP43-C,230,sqlite,ext/fts3/fts3.c,2145,FP,"memcpy dest *pp and src *ppPoslist are distinct buffers, not overlapping",,high
+INT31-C,231,sqlite,ext/fts3/fts3.c,2145,FP,memcpy n = pointer-bounded columnlist span; output buffer caller-sized,,high
+INT31-C,232,sqlite,ext/fts3/fts3.c,2146,FP,"p is char* pointer increment, not narrowing; misclassified",,high
+STR34-C,233,sqlite,ext/fts3/fts3.c,2147,FP,*pp = p pointer assignment,,high
+DCL30-C,234,sqlite,ext/fts3/fts3.c,2149,FP,*ppPoslist=pEnd walks caller buffer; not addr of local,,high
+STR34-C,235,sqlite,ext/fts3/fts3.c,2149,FP,*ppPoslist = pEnd pointer assignment,,high
+STR34-C,236,sqlite,ext/fts3/fts3.c,2183,FP,"*pp += GetVarint32() pointer arithmetic; (**pp)&0xFE is mask+nonzero, sign-safe",,high
+EXP40-C,237,sqlite,ext/fts3/fts3.c,2203,FP,char *p = *pp; both char* (fts3PutColNumber); no const,,high
+STR34-C,238,sqlite,ext/fts3/fts3.c,2203,FP,char *p = *pp pointer assignment,,high
+STR34-C,239,sqlite,ext/fts3/fts3.c,2205,FP,"*p = 0x01 literal store, no widening",,high
+MEM33-C,240,sqlite,ext/fts3/fts3.c,2206,FP,*p=0x01 writes one byte to output buffer; not a flexible-array struct assignment,,high
+STR34-C,241,sqlite,ext/fts3/fts3.c,2206,FP,*pp = &p[n] pointer assignment/arith,,high
+STR34-C,242,sqlite,ext/fts3/fts3.c,2206,FP,"pointer arithmetic, no char value widened",,high
+STR34-C,243,sqlite,ext/fts3/fts3.c,2206,FP,"&p[n] pointer indexing, no char widening",,high
+EXP40-C,244,sqlite,ext/fts3/fts3.c,2223,FP,char *p = *pp; both char* (fts3PoslistMerge); no const,,high
+STR34-C,245,sqlite,ext/fts3/fts3.c,2223,FP,char *p = *pp pointer assignment,,high
+STR34-C,246,sqlite,ext/fts3/fts3.c,2224,FP,char *p1 = *pp1 pointer assignment,,high
+STR34-C,247,sqlite,ext/fts3/fts3.c,2225,FP,char *p2 = *pp2 pointer assignment,,high
+EXP34-C,248,sqlite,ext/fts3/fts3.c,2227,FP,"*p1/*p2 in while: p1=*pp1,p2=*pp2 caller-provided poslist buffers, non-null by contract",,med
+EXP34-C,249,sqlite,ext/fts3/fts3.c,2227,FP,"p2 derives from *pp2, caller-guaranteed valid poslist",,med
+STR34-C,250,sqlite,ext/fts3/fts3.c,2249,FP,"int n = fts3PutColNumber() return; char* args, no widening",,high
+STR34-C,251,sqlite,ext/fts3/fts3.c,2249,FP,"p passed as char**, no char value widened",,high
+INT31-C,252,sqlite,ext/fts3/fts3.c,2250,FP,"p1 is char* pointer increment, not narrowing; misclassified",,high
+INT31-C,253,sqlite,ext/fts3/fts3.c,2251,FP,"p2 is char* pointer increment, not narrowing; misclassified",,high
+INT32-C,254,sqlite,ext/fts3/fts3.c,2269,FP,iPrev-=2 is by-design position delta decode (positions stored +2); i64,,high
+STR34-C,255,sqlite,ext/fts3/fts3.c,2288,FP,*p++ = POS_END literal store,,high
+DCL30-C,256,sqlite,ext/fts3/fts3.c,2289,FP,*pp=p where p is output buffer pointer (caller-supplied); not addr of local,,high
+STR34-C,257,sqlite,ext/fts3/fts3.c,2289,FP,*pp = p pointer assignment,,high
+STR34-C,258,sqlite,ext/fts3/fts3.c,2290,FP,*pp1 = p1+1 pointer assignment/arith,,high
+STR34-C,259,sqlite,ext/fts3/fts3.c,2291,FP,*pp2 = p2+1 pointer assignment/arith,,high
+EXP40-C,260,sqlite,ext/fts3/fts3.c,2326,FP,char *p = *pp; both char* (fts3PoslistPhraseMerge); no const,,high
+STR34-C,261,sqlite,ext/fts3/fts3.c,2326,FP,char *p = *pp pointer assignment,,high
+STR34-C,262,sqlite,ext/fts3/fts3.c,2327,FP,char *p1 = *pp1 pointer assignment,,high
+STR34-C,263,sqlite,ext/fts3/fts3.c,2328,FP,char *p2 = *pp2 pointer assignment,,high
+ARR30-C,264,sqlite,ext/fts3/fts3.c,2350,FP,while(1) increments output pointer p into caller-sized merge buffer; breaks on data conditions,,high
+EXP40-C,265,sqlite,ext/fts3/fts3.c,2352,FP,char *pSave = p; both char*; no const,,high
+INT32-C,266,sqlite,ext/fts3/fts3.c,2358,FP,"p is char* output pointer increment, not integer; misclassified",,high
+STR34-C,267,sqlite,ext/fts3/fts3.c,2358,FP,*p++ = POS_COLUMN literal store,,high
+INT32-C,268,sqlite,ext/fts3/fts3.c,2359,FP,p is char* pointer advance by PutVarint return; not integer overflow,,high
+INT32-C,269,sqlite,ext/fts3/fts3.c,2362,FP,iPos1-=2 by-design delta decode; i64,,high
+INT32-C,270,sqlite,ext/fts3/fts3.c,2363,FP,iPos2-=2 by-design delta decode; i64,,high
+INT32-C,271,sqlite,ext/fts3/fts3.c,2372,FP,"iSave+2 re-encode of decoded position; i64, by-design",,high
+INT32-C,272,sqlite,ext/fts3/fts3.c,2372,FP,iPrev-=2 by-design delta decode; i64,,high
+INT32-C,273,sqlite,ext/fts3/fts3.c,2378,FP,iPos2-=2 by-design delta decode; i64,,high
+INT32-C,274,sqlite,ext/fts3/fts3.c,2381,FP,iPos1-=2 by-design delta decode; i64,,high
+DCL30-C,275,sqlite,ext/fts3/fts3.c,2421,FP,"*pp1=p1 where p1 init from *pp1 (caller buffer), advanced; not addr of local",,high
+STR34-C,276,sqlite,ext/fts3/fts3.c,2421,FP,*pp1 = p1 pointer assignment,,high
+DCL30-C,277,sqlite,ext/fts3/fts3.c,2422,FP,*pp2=p2 where p2 init from *pp2 (caller buffer); not addr of local,,high
+STR34-C,278,sqlite,ext/fts3/fts3.c,2422,FP,*pp2 = p2 pointer assignment,,high
+INT32-C,279,sqlite,ext/fts3/fts3.c,2426,FP,p is char* output pointer increment; misclassified,,high
+STR34-C,280,sqlite,ext/fts3/fts3.c,2426,FP,*p++ = 0x00 literal store,,high
+DCL30-C,281,sqlite,ext/fts3/fts3.c,2427,FP,*pp=p output buffer pointer; not addr of local,,high
+STR34-C,282,sqlite,ext/fts3/fts3.c,2427,FP,*pp = p pointer assignment,,high
+DCL13-C,283,sqlite,ext/fts3/fts3.c,2448,FP,aTmp is temp buffer written via pTmp1 (=aTmp) by fts3PoslistPhraseMerge; data modified,,med
+STR34-C,284,sqlite,ext/fts3/fts3.c,2454,FP,char *p1 = *pp1 pointer assignment,,high
+STR34-C,285,sqlite,ext/fts3/fts3.c,2455,FP,char *p2 = *pp2 pointer assignment,,high
+DCL30-C,286,sqlite,ext/fts3/fts3.c,2464,FP,*pp1=p1 restoring saved input pointer; not addr of local,,high
+STR34-C,287,sqlite,ext/fts3/fts3.c,2464,FP,*pp1 = p1 pointer assignment,,high
+DCL30-C,288,sqlite,ext/fts3/fts3.c,2465,FP,*pp2=p2 restoring saved input pointer; not addr of local,,high
+STR34-C,289,sqlite,ext/fts3/fts3.c,2465,FP,*pp2 = p2 pointer assignment,,high
+DCL13-C,290,sqlite,ext/fts3/fts3.c,2506,TP,pEnd only used in comparison *pp>=pEnd; never derefed for write,,high
+ARR36-C,291,sqlite,ext/fts3/fts3.c,2510,FP,*pp>=pEnd IS the end-of-buffer bound check in fts3GetDeltaVarint3,,high
+STR34-C,292,sqlite,ext/fts3/fts3.c,2511,FP,*pp = 0 pointer null assignment,,high
+STR34-C,293,sqlite,ext/fts3/fts3.c,2514,FP,*pp += GetVarintU() pointer arithmetic; varint reader casts unsigned internally,,high
+INT32-C,294,sqlite,ext/fts3/fts3.c,2516,FP,"deliberate (u64) unsigned wraparound for docid delta decode; well-defined, benign",,high
+INT32-C,295,sqlite,ext/fts3/fts3.c,2518,FP,deliberate (u64) unsigned wraparound for docid delta decode; well-defined,,high
+INT32-C,296,sqlite,ext/fts3/fts3.c,2548,FP,deliberate (u64)-(u64) unsigned delta encode; well-defined,,high
+INT32-C,297,sqlite,ext/fts3/fts3.c,2548,FP,"(u64)*piPrev cast, no multiplication; delta encode, well-defined",,high
+INT32-C,298,sqlite,ext/fts3/fts3.c,2551,FP,deliberate (u64)-(u64) unsigned delta encode; well-defined,,high
+INT32-C,299,sqlite,ext/fts3/fts3.c,2551,FP,"(u64)*piPrev cast; delta encode, well-defined",,high
+STR34-C,300,sqlite,ext/fts3/fts3.c,2555,FP,*pp += PutVarint() pointer arithmetic,,high
+PRE00-C,301,sqlite,ext/fts3/fts3.c,2571,TP,"DOCID_CMP function-like macro evaluates i1 thrice, i2 twice",,high
+PRE01-C,302,sqlite,ext/fts3/fts3.c,2571,TP,i1 unparenthesized in i1>i2 / i1==i2; precedence hazard for expression args,,high
+PRE01-C,303,sqlite,ext/fts3/fts3.c,2571,TP,i2 unparenthesized in i1>i2 / i1==i2; precedence hazard,,high
+PRE12-C,304,sqlite,ext/fts3/fts3.c,2571,TP,i1 evaluated multiple times,,high
+DCL13-C,305,sqlite,ext/fts3/fts3.c,2589,TP,"a1 used as input doclist (p1=a1, read via GetDeltaVarint3/PoslistCopy); data not modified",,med
+DCL13-C,306,sqlite,ext/fts3/fts3.c,2590,TP,"a2 used as input doclist; data not modified, only read",,med
+ARR30-C,307,sqlite,ext/fts3/fts3.c,2597,FP,pEnd1=&a1[n1] one-past-end pointer from buffer size n1,,high
+STR34-C,308,sqlite,ext/fts3/fts3.c,2597,FP,char *pEnd1 = &a1[n1] pointer arithmetic,,high
+ARR30-C,309,sqlite,ext/fts3/fts3.c,2598,FP,pEnd2=&a2[n2] one-past-end pointer from buffer size n2,,high
+EXP34-C,310,sqlite,ext/fts3/fts3.c,2598,FP,&a2[n2] is address arithmetic not a deref; a2 caller-provided doclist,,high
+STR34-C,311,sqlite,ext/fts3/fts3.c,2598,FP,char *pEnd2 = &a2[n2] pointer arithmetic,,high
+STR34-C,312,sqlite,ext/fts3/fts3.c,2605,FP,*paOut = 0 pointer null assignment,,high
+INT32-C,313,sqlite,ext/fts3/fts3.c,2637,FP,"(i64)n1+n2+const: n1,n2 are int doclist sizes (<=SQLITE_MAX_LENGTH); i64 sum cannot overflow",,high
+INT32-C,314,sqlite,ext/fts3/fts3.c,2637,FP,(i64)n1+n2 with int operands cast to i64; cannot overflow,,high
+ARR00-C,315,sqlite,ext/fts3/fts3.c,2669,FP,p-aOut within the malloc'd aOut buffer; assert bounds it to n1+n2+VARINT_MAX-1,,high
+ARR00-C,316,sqlite,ext/fts3/fts3.c,2670,FP,"no use-after-free: aOut freed only in rc!=OK branch; this is the else branch, memset within alloc",,high
+ARR00-C,317,sqlite,ext/fts3/fts3.c,2670,FP,p-aOut within-allocation subtraction; offset into valid aOut,,high
+DCL30-C,318,sqlite,ext/fts3/fts3.c,2672,FP,*paOut=aOut where aOut is heap (sqlite3_malloc64) or =aRight caller buffer; not addr of local,,high
+STR34-C,319,sqlite,ext/fts3/fts3.c,2672,FP,*paOut = aOut pointer assignment,,high
+ARR00-C,320,sqlite,ext/fts3/fts3.c,2673,FP,p-aOut within-allocation; computes output length,,high
+MEM30-C,321,sqlite,ext/fts3/fts3.c,2673,FP,"error path frees aOut and sets p=aOut=0; p-aOut at 2673 is 0-0, success path no free",,high
+DCL13-C,322,sqlite,ext/fts3/fts3.c,2692,TP,aLeft is left input (read only); right list is the one overwritten per the function doc,,high
+STR34-C,323,sqlite,ext/fts3/fts3.c,2698,FP,char *aRight = *paRight pointer assignment,,high
+ARR30-C,324,sqlite,ext/fts3/fts3.c,2699,FP,pEnd1=&aLeft[nLeft] one-past-end pointer,,high
+STR34-C,325,sqlite,ext/fts3/fts3.c,2699,FP,char *pEnd1 = &aLeft[nLeft] pointer arithmetic,,high
+ARR37-C,326,sqlite,ext/fts3/fts3.c,2700,FP,aRight[*pnRight] forms end pointer pEnd2 from buffer size; not an OOB access,,high
+STR34-C,327,sqlite,ext/fts3/fts3.c,2700,FP,char *pEnd2 = &aRight[*pnRight] pointer arithmetic,,high
+INT32-C,328,sqlite,ext/fts3/fts3.c,2709,FP,(i64)*pnRight + const; *pnRight int cast to i64; no overflow,,high
+INT32-C,329,sqlite,ext/fts3/fts3.c,2709,FP,"(i64) cast of int *pnRight, no multiplication; benign",,high
+EXP40-C,330,sqlite,ext/fts3/fts3.c,2722,FP,char *pSave = p; both char*; no const,,high
+DCL30-C,331,sqlite,ext/fts3/fts3.c,2746,FP,*paRight=aOut where aOut is heap from sqlite3_malloc64; not addr of local,,high
+MEM30-C,332,sqlite,ext/fts3/fts3.c,2746,FP,"aRight freed at 2745, *paRight set to freshly malloc'd aOut (2709); writing new buffer",,high
+STR34-C,333,sqlite,ext/fts3/fts3.c,2746,FP,*paRight = aOut pointer assignment,,high
+API00-C,334,sqlite,ext/fts3/fts3.c,2760,FP,sqlite3Fts3FirstFilter internal poslist helper; pList from trusted FTS3 buffers,,high
+API00-C,335,sqlite,ext/fts3/fts3.c,2760,FP,pOut output buffer sized by internal caller; not untrusted API boundary,,high
+ARR30-C,336,sqlite,ext/fts3/fts3.c,2769,FP,pEnd=&pList[nList] one-past-end pointer in FirstFilter,,high
+EXP34-C,337,sqlite,ext/fts3/fts3.c,2769,FP,&pList[nList] is address arithmetic not a deref; pList caller-provided,,high
+STR34-C,338,sqlite,ext/fts3/fts3.c,2769,FP,char *pEnd = &pList[nList] pointer arithmetic; *p==0x01/0x02 are equality,,high
+EXP34-C,339,sqlite,ext/fts3/fts3.c,2771,FP,"*p where p=pList; pList is position list, caller-guaranteed non-null",,med
+INT32-C,340,sqlite,ext/fts3/fts3.c,2773,FP,nOut bounded by output buffer caller-sized to nList; PutVarint returns <=10,,high
+ARR30-C,341,sqlite,ext/fts3/fts3.c,2780,FP,while(p<pEnd) bounded; inner varint reads rely on poslist terminator/padding,,med
+ARR36-C,342,sqlite,ext/fts3/fts3.c,2780,FP,p and pEnd both derived from pList; same array,,high
+INT32-C,343,sqlite,ext/fts3/fts3.c,2786,FP,nOut bounded by caller-sized output buffer,,high
+EXP33-C,344,sqlite,ext/fts3/fts3.c,2790,FP,iCol written by sqlite3Fts3GetVarint output param at 2783 before use,,high
+INT32-C,345,sqlite,ext/fts3/fts3.c,2790,FP,nOut bounded by caller-sized output buffer,,high
+DCL13-C,346,sqlite,ext/fts3/fts3.c,2812,TP,fts3TermSelectFinishMerge reads p->bDescIdx only; no writes to *p,,high
+ARR30-C,347,sqlite,ext/fts3/fts3.c,2824,FP,"anOutput[i], i bounded by for i<SizeofArray(aaOutput)",,high
+EXP33-C,348,sqlite,ext/fts3/fts3.c,2828,FP,aNew written by fts3DoclistOrMerge output param (sets *paOut=0); used only after rc==OK,,high
+ARR30-C,349,sqlite,ext/fts3/fts3.c,2831,FP,"aaOutput[i]/anOutput[i], i bounded by SizeofArray loop",,high
+STR34-C,350,sqlite,ext/fts3/fts3.c,2831,FP,"char* args passed to OrMerge, no char value widened",,high
+STR34-C,351,sqlite,ext/fts3/fts3.c,2831,FP,"aNew/aOut are char* pointers, pointer assignment context",,high
+STR34-C,352,sqlite,ext/fts3/fts3.c,2831,FP,"aNew pointer arithmetic, no char widening",,high
+EXP33-C,353,sqlite,ext/fts3/fts3.c,2842,FP,nNew written by fts3DoclistOrMerge output param before nOut=nNew,,high
+DCL13-C,354,sqlite,ext/fts3/fts3.c,2867,TP,fts3TermSelectMerge reads p->bDescIdx only; no writes to *p,,high
+INT32-C,355,sqlite,ext/fts3/fts3.c,2889,FP,(i64)nDoclist+const; nDoclist int doclist size cast to i64; no overflow,,high
+INT32-C,356,sqlite,ext/fts3/fts3.c,2889,FP,(i64)nDoclist+const; benign i64 size,,high
+INT31-C,357,sqlite,ext/fts3/fts3.c,2892,FP,memcpy nDoclist into buffer sized (i64)nDoclist+VARINT_MAX+1; bounded,,high
+ARR00-C,358,sqlite,ext/fts3/fts3.c,2893,FP,aaOutput[0][nDoclist] within malloc(nDoclist+VARINT_MAX+1); nDoclist is the alloc basis,,high
+ARR00-C,359,sqlite,ext/fts3/fts3.c,2902,FP,iOut is for-loop counter bounded by SizeofArray(aaOutput); rule misread as uninitialized,,high
+ARR30-C,360,sqlite,ext/fts3/fts3.c,2906,FP,"aaOutput[iOut], iOut bounded by SizeofArray loop",,high
+EXP33-C,361,sqlite,ext/fts3/fts3.c,2909,FP,aNew written by fts3DoclistOrMerge output param; used after rc==OK,,high
+STR34-C,362,sqlite,ext/fts3/fts3.c,2912,FP,"aMerge is char* arg, no char value widened",,high
+ARR30-C,363,sqlite,ext/fts3/fts3.c,2913,FP,aaOutput[iOut]/anOutput[iOut] bounded by SizeofArray,,high
+STR34-C,364,sqlite,ext/fts3/fts3.c,2913,FP,"aNew char* pointer, no widening",,high
+STR34-C,365,sqlite,ext/fts3/fts3.c,2913,FP,"aNew pointer arithmetic, no char widening",,high
+EXP33-C,366,sqlite,ext/fts3/fts3.c,2925,FP,nNew written by fts3DoclistOrMerge output param,,high
+ARR30-C,367,sqlite,ext/fts3/fts3.c,2928,FP,"aaOutput[iOut] at iOut==SizeofArray-1, in bounds",,high
+INT30-C,368,sqlite,ext/fts3/fts3.c,2945,FP,nSegment incremented one per DB row; 2^31 segments impossible; i64 nByte,,high
+INT32-C,369,sqlite,ext/fts3/fts3.c,2945,FP,nSegment+16; segment count bounded by DB rows; cannot overflow,,high
+INT32-C,370,sqlite,ext/fts3/fts3.c,2953,FP,nSegment++ realloc'd every 16; bounded by DB row count,,high
+MEM30-C,371,sqlite,ext/fts3/fts3.c,2953,FP,realloc pattern: apSegment reassigned from apNew (2951) before write; fail path returns,,high
+EXP30-C,372,sqlite,ext/fts3/fts3.c,2998,FP,rc==SQLITE_OK and rc=sqlite3_step() separated by && sequence point,,high
+EXP34-C,373,sqlite,ext/fts3/fts3.c,2998,FP,pStmt set by sqlite3Fts3AllSegdirs when rc==OK; loop runs only if rc==OK,,high
+DCL00-C,374,sqlite,ext/fts3/fts3.c,3011,TP,pi assigned once (isPrefix?&iLeavesEndBlock:0) and never reassigned; int64* const valid,,high
+INT32-C,375,sqlite,ext/fts3/fts3.c,3017,FP,nSegment+1; bounded segment count,,high
+API00-C,376,sqlite,ext/fts3/fts3.c,3038,FP,sqlite3Fts3SegReaderCursor internal; p validated via assert(iIndex<p->nIndex),,high
+API00-C,377,sqlite,ext/fts3/fts3.c,3038,FP,zTerm internal term buffer; caller guaranteed,,high
+API00-C,378,sqlite,ext/fts3/fts3.c,3038,FP,pCsr internal cursor populated by FTS3 callers,,high
+DCL03-C,379,sqlite,ext/fts3/fts3.c,3055,TP,assert(FTS3_SEGCURSOR_ALL<0 && FTS3_SEGCURSOR_PENDING<0) is purely constant; static_assert applicable,,high
+DCL13-C,380,sqlite,ext/fts3/fts3.c,3096,TP,fts3TermSegReaderCursor reads pCsr->base.pVtab/iLangid only; *pCsr not modified,,high
+DCL30-C,381,sqlite,ext/fts3/fts3.c,3145,FP,*ppSegcsr=pSegcsr where pSegcsr=sqlite3_malloc heap object; not addr of local,,high
+EXP00-C,382,sqlite,ext/fts3/fts3.c,3176,FP,"all ternary operands parenthesized; | left-associative, no precedence ambiguity",,high
+EXP30-C,383,sqlite,ext/fts3/fts3.c,3185,FP,rc read and rc=SegReaderStep() separated by && sequence point,,high
+EXP34-C,384,sqlite,ext/fts3/fts3.c,3188,FP,caller at 4334 guards fts3TermSelect with if(pToken->pSegcsr); pSegcsr non-null,,high
+STR34-C,385,sqlite,ext/fts3/fts3.c,3195,FP,*ppOut = tsc.aaOutput[0] pointer assignment,,high
+DCL13-C,386,sqlite,ext/fts3/fts3.c,3218,TP,"aList only read (p=aList, *p++ skip, PoslistCopy(0,&p)); data not modified",,high
+ARR30-C,387,sqlite,ext/fts3/fts3.c,3221,FP,aEnd=&aList[nList] one-past-end pointer in CountDocids,,high
+STR34-C,388,sqlite,ext/fts3/fts3.c,3221,FP,char *aEnd = &aList[nList] pointer arithmetic; (*p++)&0x80 mask+nonzero,,high
+ARR36-C,389,sqlite,ext/fts3/fts3.c,3223,FP,p and aEnd both derived from aList; same array; while(p<aEnd) bounded,,high
+INT32-C,390,sqlite,ext/fts3/fts3.c,3224,FP,nDoc++ counts docids; bounded by doclist byte size (<=SQLITE_MAX_LENGTH<INT_MAX),,high
+INT32-C,391,sqlite,ext/fts3/fts3.c,3249,FP,"bLock recursion-guard, balanced",,high
+INT32-C,392,sqlite,ext/fts3/fts3.c,3257,FP,"bLock recursion-guard, balanced",,high
+DCL13-C,393,sqlite,ext/fts3/fts3.c,3301,TP,apVal[i] elements read into pCons/pLangid etc; array and elements not modified,,med
+INT32-C,394,sqlite,ext/fts3/fts3.c,3393,FP,"bLock recursion-guard, balanced",,high
+INT32-C,395,sqlite,ext/fts3/fts3.c,3395,FP,"bLock recursion-guard, balanced",,high
+DCL13-C,396,sqlite,ext/fts3/fts3.c,3430,TP,fts3RowidMethod only reads pCsr->iPrevId; *pCursor not modified,,high
+INT32-C,397,sqlite,ext/fts3/fts3.c,3459,FP,iCol-p->nColumn asserted 0<=iCol<=nColumn+2 by SQLite core; bounded,,high
+INT32-C,398,sqlite,ext/fts3/fts3.c,3487,FP,iCol+1 bounded by sqlite3_data_count check; safe column index,,high
+INT32-C,399,sqlite,ext/fts3/fts3.c,3552,FP,A=nLeafAdd*mxLevel then A+=A/2; values are small transaction/level counts; not attacker-driven to INT_MAX,,med
+STR34-C,400,sqlite,ext/fts3/fts3.c,3571,FP,"int res = column_metadata(); zTbl passed as char*, no widening",,high
+STR00-C,401,sqlite,ext/fts3/fts3.c,3596,FP,"p->mxSavepoint int field (SQLITE_DEBUG), assigned -1",,high
+STR00-C,402,sqlite,ext/fts3/fts3.c,3614,FP,"p->mxSavepoint int field (TESTONLY), assigned -1",,high
+STR00-C,403,sqlite,ext/fts3/fts3.c,3627,FP,"p->mxSavepoint int field (TESTONLY), assigned -1",,high
+DCL13-C,404,sqlite,ext/fts3/fts3.c,3637,TP,pStart used only in comparison p>pStart; never modified,,high
+STR34-C,405,sqlite,ext/fts3/fts3.c,3638,FP,char *p = &(*ppPoslist)[-2] pointer arithmetic,,high
+DCL00-C,406,sqlite,ext/fts3/fts3.c,3639,FP,c reassigned in loops: (c=*p--) and c=*p--,,high
+ARR36-C,407,sqlite,ext/fts3/fts3.c,3642,FP,p>pStart bounds the backward scan in ReversePoslist; same poslist buffer,,high
+EXP30-C,408,sqlite,ext/fts3/fts3.c,3642,FP,while(p>pStart && (c=*p--)==0): && is sequence point; *p-- well-defined,,high
+STR34-C,409,sqlite,ext/fts3/fts3.c,3642,FP,(c=*p--)==0 equality with zero; sign-extension cannot change zero test,,high
+STR34-C,410,sqlite,ext/fts3/fts3.c,3642,FP,*p-- pointer decrement; char copy compared ==0,,high
+ARR36-C,411,sqlite,ext/fts3/fts3.c,3647,FP,p>pStart bound check; both within same poslist,,high
+STR34-C,412,sqlite,ext/fts3/fts3.c,3648,FP,c=*p-- char copy; used only in masked nonzero test at 3647,,high
+STR34-C,413,sqlite,ext/fts3/fts3.c,3648,FP,*p-- pointer decrement,,high
+ARR36-C,414,sqlite,ext/fts3/fts3.c,3665,FP,p>pStart / p[2] comparisons within same poslist buffer,,high
+EXP40-C,415,sqlite,ext/fts3/fts3.c,3665,FP,"p = &p[2]; p is char*, no const-qualified pointer-to-pointer",,high
+STR34-C,416,sqlite,ext/fts3/fts3.c,3665,FP,*ppPoslist>&p[2] pointer compare; p=&p[2] pointer arith,,high
+STR34-C,417,sqlite,ext/fts3/fts3.c,3665,FP,&p[2] pointer indexing,,high
+DCL30-C,418,sqlite,ext/fts3/fts3.c,3667,FP,*ppPoslist=p where p walks aDoclist caller buffer; not addr of local,,high
+STR34-C,419,sqlite,ext/fts3/fts3.c,3667,FP,*ppPoslist = p pointer assignment; *p++&0x80 mask+nonzero,,high
+DCL13-C,420,sqlite,ext/fts3/fts3.c,3705,TP,fts3SnippetFunc reads apVal[0..5] only; array/elements not modified,,high
+EXP37-C,421,sqlite,ext/fts3/fts3.c,3710,FP,"line is a string-literal initializer, not a variadic declaration; misfire",,high
+INT07-C,422,sqlite,ext/fts3/fts3.c,3737,FP,zEllipsis is const char* pointer; !zEllipsis is null-check not char-as-numeric,,high
+INT07-C,423,sqlite,ext/fts3/fts3.c,3737,FP,zEnd is const char* pointer; !zEnd is null-check not char-as-numeric,,high
+INT07-C,424,sqlite,ext/fts3/fts3.c,3737,FP,zStart is const char* pointer; !zStart is null-check not char-as-numeric,,high
+DCL13-C,425,sqlite,ext/fts3/fts3.c,3752,TP,fts3OffsetsFunc reads apVal[0] only; not modified,,high
+DCL13-C,426,sqlite,ext/fts3/fts3.c,3778,TP,fts3OptimizeFunc reads apVal[0] only; not modified,,high
+EXP34-C,427,sqlite,ext/fts3/fts3.c,3788,FP,fts3FunctionArg returns nonzero (->return) if *ppCsr==0; pCursor non-null when reached,,high
+DCL13-C,428,sqlite,ext/fts3/fts3.c,3812,TP,fts3MatchinfoFunc reads apVal[0]/apVal[1] only; not modified,,high
+ARR02-C,429,sqlite,ext/fts3/fts3.c,3839,FP,local initializer-sized aOverload[]; size well-defined (style nit),,high
+WIN04-C,430,sqlite,ext/fts3/fts3.c,3839,FP,aOverload[] is an ordinary local read-only dispatch table; EncodePointer hardening inapplicable,,high
+INT32-C,431,sqlite,ext/fts3/fts3.c,3949,FP,"iSavepoint+1; savepoint nesting depth from core, never near INT_MAX",,high
+INT32-C,432,sqlite,ext/fts3/fts3.c,3964,FP,"iSavepoint-1; savepoint depth, bounded",,high
+ARR02-C,433,sqlite,ext/fts3/fts3.c,3990,FP,static initializer-sized azName[]; loop bounded by sizeof(azName)/sizeof(azName[0]),,high
+INT13-C,434,sqlite,ext/fts3/fts3.c,4019,TP,(rc&0xFF) bitwise & on signed int rc,,high
+STR34-C,435,sqlite,ext/fts3/fts3.c,4020,FP,*pzErr = sqlite3_mprintf() pointer assignment,,high
+STR34-C,436,sqlite,ext/fts3/fts3.c,4025,FP,*pzErr = sqlite3_mprintf() pointer assignment,,high
+INT32-C,437,sqlite,ext/fts3/fts3.c,4070,FP,nRef module refcount (max ~3); never near INT_MIN,,high
+EXP05-C,438,sqlite,ext/fts3/fts3.c,4142,FP,const tokenizer module cast to void* for opaque hash storage; never written through,,med
+EXP05-C,439,sqlite,ext/fts3/fts3.c,4143,FP,const pPorter module cast to void* for hash value; no write-through,,med
+EXP05-C,440,sqlite,ext/fts3/fts3.c,4146,FP,const pUnicode module cast to void* for hash value; no write-through,,med
+EXP05-C,441,sqlite,ext/fts3/fts3.c,4149,FP,const pIcu module cast to void* for hash value; no write-through,,med
+EXP30-C,442,sqlite,ext/fts3/fts3.c,4166,FP,chained SQLITE_OK==rc && SQLITE_OK==(rc=...); && are sequence points,,high
+INT32-C,443,sqlite,ext/fts3/fts3.c,4174,FP,"nRef module refcount, max 3",,high
+INT32-C,444,sqlite,ext/fts3/fts3.c,4179,FP,"nRef module refcount, max 3",,high
+INT32-C,445,sqlite,ext/fts3/fts3.c,4185,FP,"nRef module refcount, max 3",,high
+MEM05-C,446,sqlite,ext/fts3/fts3.c,4216,FP,fts3EvalAllocateReaders recurses over query expr tree; bounded by parser depth limit,,med
+DCL13-C,447,sqlite,ext/fts3/fts3.c,4259,TP,fts3EvalPhraseMergeToken reads pTab->bDescIdx only; *pTab not modified,,high
+MEM30-C,448,sqlite,ext/fts3/fts3.c,4269,FP,frees p->doclist.aAll then sets it 0 (4270); null-after-free idiom,,high
+INT32-C,449,sqlite,ext/fts3/fts3.c,4295,FP,"iToken-iDoclistToken; token indices in phrase, branch guarantees positive; bounded",,high
+INT32-C,450,sqlite,ext/fts3/fts3.c,4301,FP,"iDoclistToken-iToken; token indices, branch-guaranteed positive; bounded",,high
+DCL13-C,451,sqlite,ext/fts3/fts3.c,4323,TP,fts3EvalPhraseLoad reads pCsr->base.pVtab only; *pCsr not modified,,high
+DCL13-C,452,sqlite,ext/fts3/fts3.c,4359,TP,fts3EvalDeferredPhrase reads pCsr->iPrevId only; *pCsr not modified,,high
+ARR00-C,453,sqlite,ext/fts3/fts3.c,4366,FP,iToken is for-loop counter bounded by pPhrase->nToken (size of aToken[]); rule misread,,high
+EXP33-C,454,sqlite,ext/fts3/fts3.c,4371,FP,pList written by sqlite3Fts3DeferredTokenList output param before if(pList==0),,high
+STR34-C,455,sqlite,ext/fts3/fts3.c,4373,FP,"int rc = DeferredTokenList(); pList passed as char**, no widening",,high
+STR34-C,456,sqlite,ext/fts3/fts3.c,4373,FP,"pList char* arg, no char value widened",,high
+EXP33-C,457,sqlite,ext/fts3/fts3.c,4385,FP,nList written by sqlite3Fts3DeferredTokenList output param before nPoslist=nList,,high
+INT32-C,458,sqlite,ext/fts3/fts3.c,4393,FP,"iToken-iPrev; token indices, assert iPrev>=0; bounded by phrase length",,high
+MEM30-C,459,sqlite,ext/fts3/fts3.c,4412,FP,pPhrase not freed in this function; member assignment,,high
+MEM30-C,460,sqlite,ext/fts3/fts3.c,4413,FP,pPhrase not freed; member assignment,,high
+MEM30-C,461,sqlite,ext/fts3/fts3.c,4414,FP,pPhrase not freed; member assignment,,high
+MEM30-C,462,sqlite,ext/fts3/fts3.c,4434,FP,aPoslist freed once on NOMEM early-return; 4448 free is on disjoint success path,,high
+MEM30-C,463,sqlite,ext/fts3/fts3.c,4440,FP,p1/p2 point to aPoslist or doclist.pList; neither freed before merge (aPoslist freed at 4448 after),,high
+MEM30-C,464,sqlite,ext/fts3/fts3.c,4440,FP,p2 live; freed only after merge call,,high
+MEM30-C,465,sqlite,ext/fts3/fts3.c,4440,FP,p1 live at merge,,high
+MEM30-C,466,sqlite,ext/fts3/fts3.c,4440,FP,p2 live at merge,,high
+MEM30-C,467,sqlite,ext/fts3/fts3.c,4448,FP,aPoslist freed once in else branch; mutually exclusive with 4434 early-return,,high
+API00-C,468,sqlite,ext/fts3/fts3.c,4532,FP,sqlite3Fts3DoclistPrev internal iterator; params validated via asserts; not public API,,high
+API00-C,469,sqlite,ext/fts3/fts3.c,4532,FP,ppIter IN/OUT pointer into trusted doclist buffer,,high
+API00-C,470,sqlite,ext/fts3/fts3.c,4532,FP,piDocid IN/OUT; internal helper,,high
+API00-C,471,sqlite,ext/fts3/fts3.c,4532,FP,pnList out-pointer; internal helper,,high
+API00-C,472,sqlite,ext/fts3/fts3.c,4532,FP,pbEof asserted (*pbEof==0); internal helper,,high
+STR34-C,473,sqlite,ext/fts3/fts3.c,4541,FP,char *p = *ppIter pointer assignment,,high
+ARR30-C,474,sqlite,ext/fts3/fts3.c,4546,FP,&aDoclist[nDoclist] one-past-end pointer in assert,,high
+ARR36-C,475,sqlite,ext/fts3/fts3.c,4546,FP,assert p>aDoclist && p<&aDoclist[nDoclist]; within-array bound assert,,high
+ARR30-C,476,sqlite,ext/fts3/fts3.c,4552,FP,pEnd=&aDoclist[nDoclist] one-past-end pointer,,high
+STR34-C,477,sqlite,ext/fts3/fts3.c,4552,FP,char *pEnd = &aDoclist[nDoclist] pointer arithmetic,,high
+ARR30-C,478,sqlite,ext/fts3/fts3.c,4555,FP,while(pDocid<pEnd) bounded; inner varint/poslist rely on padding,,med
+ARR36-C,479,sqlite,ext/fts3/fts3.c,4555,FP,pDocid and pEnd both from aDoclist; same array,,high
+EXP33-C,480,sqlite,ext/fts3/fts3.c,4558,FP,iDelta written by sqlite3Fts3GetVarint output param at 4557 before use,,high
+INT30-C,481,sqlite,ext/fts3/fts3.c,4558,FP,iMul*iDelta (iMul=+/-1) docid delta; benign value-only consequence,,med
+INT32-C,482,sqlite,ext/fts3/fts3.c,4558,FP,"iDocid += iMul*iDelta: docid delta decode; overflow only yields wrong docid, loop bounds are pointer-based; no memory unsafety",,med
+INT32-C,483,sqlite,ext/fts3/fts3.c,4558,FP,"iMul*iDelta docid delta decode; consequence is mismatched row, not OOB",,med
+ARR36-C,484,sqlite,ext/fts3/fts3.c,4561,FP,pDocid<pEnd same-array comparison,,high
+EXP34-C,485,sqlite,ext/fts3/fts3.c,4561,FP,*pDocid guarded by pDocid<pEnd short-circuit; pDocid=aDoclist non-null,,high
+ARR36-C,486,sqlite,ext/fts3/fts3.c,4565,FP,pEnd-pNext within same aDoclist buffer; computes list length,,high
+STR34-C,487,sqlite,ext/fts3/fts3.c,4566,FP,*ppIter = pNext pointer assignment,,high
+INT30-C,488,sqlite,ext/fts3/fts3.c,4572,FP,iMul*iDelta reverse docid delta; benign value-only consequence,,med
+INT32-C,489,sqlite,ext/fts3/fts3.c,4572,FP,iMul*iDelta reverse docid delta; no memory consequence,,med
+EXP40-C,490,sqlite,ext/fts3/fts3.c,4577,FP,char *pSave = p; both char*; no const,,high
+DCL30-C,491,sqlite,ext/fts3/fts3.c,4581,FP,*ppIter=p where p points into aDoclist caller buffer; not addr of local,,high
+STR34-C,492,sqlite,ext/fts3/fts3.c,4581,FP,*ppIter = p pointer assignment,,high
+API00-C,493,sqlite,ext/fts3/fts3.c,4588,FP,sqlite3Fts3DoclistNext internal iterator; params asserted; not public API,,high
+API00-C,494,sqlite,ext/fts3/fts3.c,4588,FP,ppIter IN/OUT pointer into doclist buffer,,high
+API00-C,495,sqlite,ext/fts3/fts3.c,4588,FP,piDocid IN/OUT; internal helper,,high
+API00-C,496,sqlite,ext/fts3/fts3.c,4588,FP,pbEof asserted; internal helper,,high
+DCL13-C,497,sqlite,ext/fts3/fts3.c,4590,TP,"aDoclist only read (p=aDoclist, GetVarint/PoslistCopy); data not modified",,high
+STR34-C,498,sqlite,ext/fts3/fts3.c,4596,FP,char *p = *ppIter pointer assignment; *p==0 equality,,high
+EXP33-C,499,sqlite,ext/fts3/fts3.c,4614,FP,iVar written by sqlite3Fts3GetVarint output param at 4613 before use,,high
+INT32-C,500,sqlite,ext/fts3/fts3.c,4614,FP,"(bDescIdx?-1:1)*iVar docid delta decode; value-only consequence, pointer bounds independent",,med
+DCL30-C,501,sqlite,ext/fts3/fts3.c,4618,FP,*ppIter=p where p points into aDoclist caller buffer; not addr of local,,high
+STR34-C,502,sqlite,ext/fts3/fts3.c,4618,FP,*ppIter = p pointer assignment,,high
+DCL13-C,503,sqlite,ext/fts3/fts3.c,4626,TP,fts3EvalDlPhraseNext reads pTab->bDescIdx only; *pTab not modified,,high
+EXP33-C,504,sqlite,ext/fts3/fts3.c,4647,FP,iDelta written by sqlite3Fts3GetVarint output param at 4645 before use,,high
+INT32-C,505,sqlite,ext/fts3/fts3.c,4647,FP,pDL->iDocid += iDelta docid delta decode; benign value consequence,,med
+INT32-C,506,sqlite,ext/fts3/fts3.c,4649,FP,pDL->iDocid -= iDelta docid delta decode; benign value consequence,,med
+ARR00-C,507,sqlite,ext/fts3/fts3.c,4700,FP,"aToken[iToken]; iToken from internal query-structure loop (i<nToken), not untrusted DB data",,med
+ARR00-C,508,sqlite,ext/fts3/fts3.c,4706,FP,aToken[iToken] same as 4700; index from controlled phrase-token iteration,,med
+DCL13-C,509,sqlite,ext/fts3/fts3.c,4742,TP,fts3EvalIncrPhraseNext reads pCsr->base.pVtab/bDesc only; *pCsr not modified,,high
+ENV01-C,510,sqlite,ext/fts3/fts3.c,4762,FP,"a[] is a struct TokenDoclist array, not a getenv buffer; no environment variable involved",,high
+ARR00-C,511,sqlite,ext/fts3/fts3.c,4775,FP,array a[] is memset to 0 on line 4764 before use; i<p->nToken<=MAX_INCR_PHRASE_TOKENS,,high
+ARR00-C,512,sqlite,ext/fts3/fts3.c,4776,FP,a[] initialized via memset 4764; index bounded; rule's uninitialized claim wrong,,high
+ARR00-C,513,sqlite,ext/fts3/fts3.c,4781,FP,a[p->nToken-1] bounded; array zeroed at 4764,,high
+STR00-C,514,sqlite,ext/fts3/fts3.c,4781,FP,"index is p->nToken-1 (int on struct ptr p), not a char index; sqc misread 'p'",,high
+ARR00-C,515,sqlite,ext/fts3/fts3.c,4790,FP,a[i] i<p->nToken; initialized array,,high
+ARR00-C,516,sqlite,ext/fts3/fts3.c,4800,FP,a[p->nToken-1].nList; nToken<=MAX_INCR_PHRASE_TOKENS asserted; initialized,,high
+INT32-C,517,sqlite,ext/fts3/fts3.c,4800,FP,p->nToken-1 phrase token count >=1; bounded small,,high
+STR00-C,518,sqlite,ext/fts3/fts3.c,4800,FP,"a[p->nToken-1] indexed by int expression, not char; misclassified",,high
+ARR00-C,519,sqlite,ext/fts3/fts3.c,4803,FP,a[p->nToken-1].pList read; array zeroed at 4764,,high
+ARR38-C,520,sqlite,ext/fts3/fts3.c,4803,FP,memcpy nByte+1 into malloc(nByte+FTS3_BUFFER_PADDING); padding>=1; source has padding too,,high
+INT31-C,521,sqlite,ext/fts3/fts3.c,4803,FP,memcpy nByte+1 into buffer sized (i64)nByte+FTS3_BUFFER_PADDING(20); bounded,,high
+INT32-C,522,sqlite,ext/fts3/fts3.c,4803,FP,p->nToken-1 phrase token count; bounded,,high
+INT32-C,523,sqlite,ext/fts3/fts3.c,4803,FP,nByte+1 list size; allocation includes padding; bounded,,high
+STR00-C,524,sqlite,ext/fts3/fts3.c,4803,FP,a[p->nToken-1] indexed by int; 'p' is struct pointer not char,,high
+ARR00-C,525,sqlite,ext/fts3/fts3.c,4807,FP,a[i] i<p->nToken-1; initialized array,,high
+INT32-C,526,sqlite,ext/fts3/fts3.c,4811,FP,p->nToken-1-i loop-bounded (i<nToken-1); small phrase token index,,high
+INT32-C,527,sqlite,ext/fts3/fts3.c,4811,FP,p->nToken-1 phrase token count; bounded,,high
+STR34-C,528,sqlite,ext/fts3/fts3.c,4812,FP,"int res = PhraseMerge(); char** args, no char value widened",,high
+STR34-C,529,sqlite,ext/fts3/fts3.c,4812,FP,"pOut char* arg, no widening",,high
+STR34-C,530,sqlite,ext/fts3/fts3.c,4812,FP,"pL char* arg, no widening",,high
+STR34-C,531,sqlite,ext/fts3/fts3.c,4812,FP,"pL pointer, no char value widened",,high
+STR34-C,532,sqlite,ext/fts3/fts3.c,4812,FP,"pR char* arg, no widening",,high
+STR34-C,533,sqlite,ext/fts3/fts3.c,4812,FP,"pR pointer, no char value widened",,high
+MEM05-C,534,sqlite,ext/fts3/fts3.c,4881,FP,fts3EvalStartReaders recurses over expr tree; bounded by parsed query depth,,med
+MSC04-C,535,sqlite,ext/fts3/fts3.c,4881,TP,fts3EvalStartReaders recurses at lines 4898 and 4899,,high
+MEM05-C,536,sqlite,ext/fts3/fts3.c,4934,FP,fts3EvalTokenCosts recurses over expr tree; bounded by parsed query depth,,med
+MSC04-C,537,sqlite,ext/fts3/fts3.c,4934,TP,fts3EvalTokenCosts recurses at lines 4966 and 4972,,high
+DCL13-C,538,sqlite,ext/fts3/fts3.c,4937,TP,pExpr only read (eType/pPhrase/pLeft/pRight); Fts3Expr node bytes not modified (shallow const valid),,high
+ARR30-C,539,sqlite,ext/fts3/fts3.c,5014,FP,"&a[column_bytes] uses actual blob length for pEnd; 'a' is const char* blob, NOT the a[] at 4762 (rule conflated two different vars)",,high
+STR34-C,540,sqlite,ext/fts3/fts3.c,5014,FP,pEnd = &a[column_bytes()] pointer arithmetic on const char*,,high
+STR34-C,541,sqlite,ext/fts3/fts3.c,5014,FP,"index is int from column_bytes(), pointer arithmetic",,high
+INT32-C,542,sqlite,ext/fts3/fts3.c,5026,FP,cost estimate; nByte/nDoc/nPgsz from %_stat; consequence is bad estimate not memory unsafety; assert nRowAvg>0,,med
+INT32-C,543,sqlite,ext/fts3/fts3.c,5026,FP,nByte/nDoc both positive byte/doc counts; INT_MIN/-1 not reachable,,high
+INT33-C,544,sqlite,ext/fts3/fts3.c,5026,FP,divisor nDoc guarded nonzero by FTS_CORRUPT_VTAB check at l.5020,,high
+INT33-C,545,sqlite,ext/fts3/fts3.c,5026,FP,"divisor p->nPgsz is DB page size, nonzero",,high
+DCL13-C,546,sqlite,ext/fts3/fts3.c,5051,TP,pRoot only used in pointer comparison aTC[ii].pRoot==pRoot; never derefed/modified,,high
+DCL13-C,547,sqlite,ext/fts3/fts3.c,5052,FP,aTC[iTC].pToken = 0 written at line 5164; pointed-to data is modified,,high
+INT32-C,548,sqlite,ext/fts3/fts3.c,5079,FP,nOvfl accumulates overflow page counts; bounded by DB size,,high
+INT33-C,549,sqlite,ext/fts3/fts3.c,5126,FP,"nLoad4/4 divisor: ii=0 always takes else-branch (ii&& short-circuits) setting nLoad4=4, so nLoad4>=4 when ii>=1; divisor>=1",,med
+INT32-C,550,sqlite,ext/fts3/fts3.c,5139,FP,nLoad4*4 capped by ii<12 guard to 4^12=2^24; comment confirms intent,,high
+ARR39-C,551,sqlite,ext/fts3/fts3.c,5196,FP,alloc = sizeof(TokenAndCost)*nToken + sizeof(Expr*)*nOr*2; apOr=&aTC[nToken]; consistent,,high
+INT30-C,552,sqlite,ext/fts3/fts3.c,5196,FP,sizeof*nToken; nToken query-parser bounded; i64 malloc,,high
+INT30-C,553,sqlite,ext/fts3/fts3.c,5197,FP,sizeof*nOr*2; nOr query-parser bounded; i64 malloc,,high
+EXP40-C,554,sqlite,ext/fts3/fts3.c,5203,FP,apOr = (Fts3Expr**)&aTC[nToken]: type-pun into own malloc'd buffer (reserved space); no const,,high
+ARR37-C,555,sqlite,ext/fts3/fts3.c,5215,FP,"apOr[ii], ii<nOr where nOr=ppOr-apOr<=allocated nOr*2; within allocation",,high
+MEM30-C,556,sqlite,ext/fts3/fts3.c,5233,FP,frees doclist.pList then nulls pList/nList/bFreeList (5235-5237); null-after-free idiom,,high
+INT32-C,557,sqlite,ext/fts3/fts3.c,5269,FP,"nNear+nToken: NEAR distance and phrase token count, both query-bounded small",,high
+INT32-C,558,sqlite,ext/fts3/fts3.c,5270,FP,nNear+*pnToken query-bounded small values,,high
+INT32-C,559,sqlite,ext/fts3/fts3.c,5283,FP,(int)(pOut-pList)-1 pointer diff; nNew then validated 0<=nNew<=nList,,high
+INT32-C,560,sqlite,ext/fts3/fts3.c,5287,FP,memset size nList-nNew guarded by nNew<=nList check at l.5285; non-negative,,high
+INT32-C,561,sqlite,ext/fts3/fts3.c,5287,FP,nList-nNew validated nNew<=nList; non-negative subtraction,,high
+STR34-C,562,sqlite,ext/fts3/fts3.c,5290,FP,*paPoslist = pPhrase->doclist.pList pointer assignment,,high
+MEM05-C,563,sqlite,ext/fts3/fts3.c,5338,FP,fts3EvalNextRow recurses over expr tree; bounded by parsed query depth,,med
+MSC04-C,564,sqlite,ext/fts3/fts3.c,5338,TP,fts3EvalNextRow recurses (e.g. line 5357),,high
+DCL13-C,565,sqlite,ext/fts3/fts3.c,5480,TP,fts3EvalNearTest reads pExpr fields; in-place poslist edits go through non-const phrase members; Fts3Expr node not modified,,med
+INT32-C,566,sqlite,ext/fts3/fts3.c,5514,FP,"nTmp i64 accumulates int doclist sizes over NEAR chain; bounded, no overflow",,high
+INT32-C,567,sqlite,ext/fts3/fts3.c,5516,FP,nTmp i64 += int doclist size; bounded,,high
+MEM05-C,568,sqlite,ext/fts3/fts3.c,5562,FP,fts3EvalTestExpr recurses over expr tree; bounded by parsed query depth,,med
+MSC04-C,569,sqlite,ext/fts3/fts3.c,5562,TP,fts3EvalTestExpr recurses at lines 5573-5574,,high
+API00-C,570,sqlite,ext/fts3/fts3.c,5675,FP,sqlite3Fts3EvalTestDeferred internal eval helper; pCsr is FTS3-owned cursor,,high
+API00-C,571,sqlite,ext/fts3/fts3.c,5675,FP,pRc checked (rc==SQLITE_OK) and written; internal status param,,high
+MEM05-C,572,sqlite,ext/fts3/fts3.c,5746,FP,fts3EvalRestart recurses over expr tree; bounded by parsed query depth,,med
+MSC04-C,573,sqlite,ext/fts3/fts3.c,5746,TP,fts3EvalRestart recurses at lines 5776-5777,,high
+API00-C,574,sqlite,ext/fts3/fts3.c,5786,FP,sqlite3Fts3MsrCancel internal eval helper; pExpr FTS3-owned expr node,,high
+MEM05-C,575,sqlite,ext/fts3/fts3.c,5807,FP,fts3EvalUpdateCounts recurses over expr tree; bounded by parsed query depth,,med
+MSC04-C,576,sqlite,ext/fts3/fts3.c,5807,TP,fts3EvalUpdateCounts recurses at lines 5833-5834,,high
+DCL00-C,577,sqlite,ext/fts3/fts3.c,5815,FP,c reassigned in loop: c = *p++ & 0x80,,high
+ARR30-C,578,sqlite,ext/fts3/fts3.c,5817,FP,poslist scan terminates on 0x00 via zeroed FTS3_BUFFER_PADDING appended to doclist,,med
+INT14-C,579,sqlite,ext/fts3/fts3.c,5817,TP,*p (signed char) | c (u8) mixes signed/unsigned in 0xFE & (*p|c); p also ptr-arith,,high
+INT32-C,580,sqlite,ext/fts3/fts3.c,5818,FP,iCnt counts positions in column-list; bounded by doclist byte size,,high
+STR00-C,581,sqlite,ext/fts3/fts3.c,5818,FP,"'c' is u8 (unsigned); (c&0x80)==0 mask+equality, no sign issue",,high
+DCL13-C,582,sqlite,ext/fts3/fts3.c,5843,TP,"fts3AllocateMSI callback: pCtx cast to pTab, reads pTab->nColumn only; pointed-to data not modified here",,med
+INT30-C,583,sqlite,ext/fts3/fts3.c,5847,FP,nColumn*3*sizeof(u32); nColumn<=SQLITE_MAX_COLUMN(2000); 24000 bytes max,,high
+INT32-C,584,sqlite,ext/fts3/fts3.c,5847,FP,nColumn*3; nColumn<=2000; no overflow,,high
+ARR38-C,585,sqlite,ext/fts3/fts3.c,5850,FP,memset nColumn*3*sizeof(u32) matches malloc on 5847,,high
+INT30-C,586,sqlite,ext/fts3/fts3.c,5850,FP,nColumn*3*sizeof(u32) bounded by SQLITE_MAX_COLUMN,,high
+INT32-C,587,sqlite,ext/fts3/fts3.c,5850,FP,"memset nColumn*3*sizeof(u32); bounded, matches alloc",,high
+INT32-C,588,sqlite,ext/fts3/fts3.c,5850,FP,nColumn*3 bounded,,high
+DCL13-C,589,sqlite,ext/fts3/fts3.c,5867,FP,fts3EvalGatherStats's purpose is to populate pExpr->aMI (alloc+write 5847/5850 via ExprIterate); const param would be wrong,,high
+API00-C,590,sqlite,ext/fts3/fts3.c,5972,FP,sqlite3Fts3EvalPhraseStats internal eval helper; pCsr FTS3-owned,,high
+API00-C,591,sqlite,ext/fts3/fts3.c,5972,FP,aiOut output array sized by internal caller (nColumn*3),,high
+ARR00-C,592,sqlite,ext/fts3/fts3.c,5983,FP,iCol is for-loop counter bounded by pTab->nColumn; aiOut sized by caller; rule misread,,high
+INT32-C,593,sqlite,ext/fts3/fts3.c,5984,FP,iCol*3+1: iCol loop counter <nColumn(<=2000); index into nColumn*3 array; bounded,,high
+INT32-C,594,sqlite,ext/fts3/fts3.c,5984,FP,iCol*3 bounded loop counter <nColumn,,high
+INT32-C,595,sqlite,ext/fts3/fts3.c,5985,FP,iCol*3+2 bounded loop counter index,,high
+INT32-C,596,sqlite,ext/fts3/fts3.c,5985,FP,iCol*3 bounded loop counter,,high
+INT32-C,597,sqlite,ext/fts3/fts3.c,5992,FP,iCol*3+1 bounded loop counter <nColumn index into aMI[nColumn*3],,high
+INT32-C,598,sqlite,ext/fts3/fts3.c,5992,FP,iCol*3 bounded loop counter,,high
+INT32-C,599,sqlite,ext/fts3/fts3.c,5992,FP,iCol*3+1 bounded loop counter (duplicate finding),,high
+INT32-C,600,sqlite,ext/fts3/fts3.c,5992,FP,iCol*3 bounded loop counter (duplicate),,high
+INT32-C,601,sqlite,ext/fts3/fts3.c,5993,FP,iCol*3+2 bounded loop counter index,,high
+INT32-C,602,sqlite,ext/fts3/fts3.c,5993,FP,iCol*3 bounded loop counter,,high
+INT32-C,603,sqlite,ext/fts3/fts3.c,5993,FP,iCol*3+2 bounded loop counter (duplicate),,high
+INT32-C,604,sqlite,ext/fts3/fts3.c,5993,FP,iCol*3 bounded loop counter (duplicate),,high
+DCL13-C,605,sqlite,ext/fts3/fts3.c,6022,TP,"sqlite3Fts3EvalPhrasePoslist reads pExpr fields; mods go through phrases/ancestors, leaf node *pExpr not modified",,high
+STR34-C,606,sqlite,ext/fts3/fts3.c,6034,FP,*ppOut = 0 pointer null assignment,,high
+EXP40-C,607,sqlite,ext/fts3/fts3.c,6095,FP,Fts3Expr *pTest = p; both non-const Fts3Expr*; no const,,high
+ARR30-C,608,sqlite,ext/fts3/fts3.c,6142,FP,while(iThis<iCol) pIter scan bounded by 0x00 terminator (checked line 6144) and padding,,med
+STR34-C,609,sqlite,ext/fts3/fts3.c,6152,FP,*ppOut = (cond?pIter:0) pointer assignment,,high
+API00-C,610,sqlite,ext/fts3/fts3.c,6163,FP,sqlite3Fts3EvalPhraseCleanup null-checks pPhrase (if(pPhrase)); validation present,,high
+MEM30-C,611,sqlite,ext/fts3/fts3.c,6166,FP,"sqlite3_free(doclist.aAll) is the free itself; doclist is embedded struct, pPhrase not freed",,high
+MEM30-C,612,sqlite,ext/fts3/fts3.c,6168,FP,memset on embedded doclist struct; not freed memory,,high
+MEM30-C,613,sqlite,ext/fts3/fts3.c,6169,FP,pPhrase->nToken read; pPhrase not freed in this function,,high
+MEM30-C,614,sqlite,ext/fts3/fts3.c,6170,FP,aToken[] embedded in pPhrase allocation; not freed here,,high
+MEM30-C,615,sqlite,ext/fts3/fts3.c,6171,FP,aToken[i].pSegcsr set to 0 after free; null-after-free idiom,,high
+MSC37-C,616,sqlite,ext/fts3/fts3.c,6191,FP,line is __declspec(dllexport) attribute; function sqlite3_fts3_init does return at 6199,,high
+DCL13-C,617,sqlite,ext/fts3/fts3.c,6194,FP,db passed to sqlite3Fts3Init which registers modules and modifies the connection; const sqlite3* wrong,,high
+DCL13-C,618,sqlite,ext/fts3/fts3.c,6195,TP,"pzErrMsg is unused in body; pointed-to data not modified (fixed extension-entry ABI, const harmless)",,med
+DCL31-C,619,sqlite,ext/fts3/fts3.c,6198,FP,SQLITE_EXTENSION_INIT2(pApi) is a macro statement; tool misparsed it as an implicit-int declaration,,high

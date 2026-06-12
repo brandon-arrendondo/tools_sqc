@@ -675,3 +675,65 @@ real OOB-read); every other TP is declaration/macro/const. The 3 hardened-core f
 (btree/vdbe/where) yield **0 semantic TP and 0 substantive FN**; the 2 untrusted-blob
 extensions (fts5/session) are where the real semantic bugs surfaced. sqlite coverage
 61/220 (27.7%).
+
+---
+
+## File-at-a-time — fts3.c (2026-06-12, run #40, HIGH-effort): bifurcation holds in an EXTENSION
+
+`adjudication_sqlite_fts3.csv` — `ext/fts3/fts3.c` (the FTS3 full-text-search core /
+vtab-dispatch module, 6,203 lines), **620 raw findings → 536 distinct (rule,line)
+oracle keys** (e.g. PRE01@343 flagged once per macro param collapses to one key). This
+is the **strongest test of the bifurcation yet**: fts3 is a genuine untrusted-input
+extension (it parses MATCH query strings and attacker-corruptible serialized
+segment/doclist/varint data from the `%_segments`/`%_segdir` shadow tables — the same
+threat profile as fts5/session, where real semantic bugs *did* surface). 8 high-effort
+rule-class reviewer subagents + 2 FN-hunt subagents.
+
+**60 TP / 476 FP / 0 uncertain / 0 FN** (distinct-key counts; raw 65 TP / 555 FP).
+
+**The semantic engines still produced pure noise — 0 TP across 531 semantic findings:**
+INT-core (INT30/31/32/33/34/36) **0/148**, STR (STR34/00/37) **0/123**, MEM (MEM30/05/31/33/12)
+**0/66**, ARR (00/30/36/37/38/39/02) **0/74**, EXP (33/34/40/05/30/…) **0/67**, API00+DCL30
+**0/53**. The misfires are the *documented* classes — and notably, here they misfire on the
+code's own hardening: validated-before-use untrusted lengths (`fts3ScanInteriorNode`
+bounds `nPrefix`/`nSuffix` vs the node buffer, returns `FTS_CORRUPT_VTAB`), deliberate
+well-defined `u64` delta-codec wraparound (`DOCID_CMP`), `char*` *pointer* ops misread as
+char-value sign-extension (the entire STR34 set) or integer narrowing, OOM-sets-rc-guarded
+derefs, end-pointer (`&a[n]`) sentinels read as OOB, null-after-free idiom, ownership-transfer
+frees, internal helpers read as unvalidated public API, and heap/caller-buffer addresses
+read as escaping locals (DCL30).
+
+**All 65 raw TP (60 distinct) are declaration/macro/const + INT13/14 portability:** DCL13 ×32
+(read-only pointer params → const), MSC04 ×7, PRE01 ×6 (unparenthesized macro params in the
+`GETVARINT_*` macros), INT14 ×5 / INT13 ×3 (signed/mixed-sign bitwise in the varint shift +
+poslist-scan idioms — benign but genuine), PRE12 ×3 / PRE00 ×3 / DCL00 ×3 (the multistatement
+`GETVARINT_*` / `DOCID_CMP` macro hazards), PRE10 ×2, DCL03 ×1.
+
+### FN-hunt: clean (0 FN)
+
+Two FN-hunters swept the untrusted-data paths. **Serialized-data parsers** (varint decoders,
+`fts3ScanInteriorNode`/`fts3SelectLeaf` segment-btree, `fts3DoclistMerge`/poslist mergers):
+uniformly guarded by `FTS_CORRUPT_VTAB` range checks + the `FTS3_NODE_PADDING`(20)/`FTS3_BUFFER_PADDING`(8)
+zero-fill invariants. The one structural oddity — `FTS3_VARINT_MAX`=10 > `FTS3_BUFFER_PADDING`=8,
+so the *unbounded* `sqlite3Fts3GetVarintU` could in theory read 10 bytes off an 8-byte-padded
+buffer — was **run down and confirmed NOT an over-read**: the merge buffers are `memset(…,0,
+FTS3_BUFFER_PADDING)` (fts3.c:2672), and the reader's loop breaks on the first byte with the
+high bit clear (`if((c&0x80)==0) break`), which a 0x00 pad byte always triggers. So it can
+never walk past the zeroed pad into adjacent memory. **Not recorded as an FN.**
+
+**Scope note (drives next targets):** the real untrusted-query attack surface — the MATCH
+expression parser, tokenizer arg parsing, `fts3SpecialInsert` control commands, and
+matchinfo/snippet format-char loops — does **not** live in fts3.c. It's in `fts3_expr.c`,
+`fts3_tokenizer.c`, `fts3_write.c`, and `fts3_snippet.c`. fts3.c is the vtab/dispatch shell;
+its own query/config code (`sqlite3Fts3ReadInt`, `fts3GobbleInt`, `Dequote`, the incr-phrase
+`MAX_INCR_PHRASE_TOKENS` stack array) is well-guarded. **If hunting for a real semantic needle
+in FTS3, those four sibling files — esp. `fts3_expr.c` and `fts3_snippet.c` — are the place.**
+
+### Running tally (6 large files: btree+vdbe+fts5+session+where+fts3 = 4,711 distinct findings)
+
+Semantic TPs remain **6** (2 fts5 + 4 session). fts3 — despite being an extension on the
+fts5/session profile — added **0 semantic TP and 0 FN**, because the *needle is in fts5/session
+specifically* (and likely the fts3 sibling parser files), not in every extension module.
+Refinement to the thesis: the split is not "core vs extension" but **"hardened/fuzzed code vs
+the specific less-fuzzed routines that parse untrusted serialized input"** — and fts3.c is
+itself mature, heavily-fuzzed dispatch code. sqlite coverage **62/220 (28.2%)**.
