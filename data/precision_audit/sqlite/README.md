@@ -1127,3 +1127,59 @@ here is a true negative.
 sqlite coverage **72/220 (32.7%)** — 72 files audited; 7 FNs. The two largest remaining files
 (vdbeaux.c, select.c) are now both done with 0 semantic TP; found-semantic-TP stays at **2** (both
 fts5_index raw-decode). No core-engine file has produced a semantic TP.
+
+---
+
+## File-at-a-time — Batch 3 (2026-06-12, run #40): 8 untrusted-input decoders, a sqc-caught OOB-read + a missed over-read
+
+`adjudication_sqlite_batch3.csv` — the **needle-target batch**: 8 files that decode untrusted serialized
+input, where the campaign's real bugs have all clustered. One reviewer per file (each read whole) + per-file
+FN-hunt. **1088 raw findings -> 23 TP / 1065 FP**, and crucially **the two material results the thesis
+predicted both landed here, not in any core-engine file**:
+
+| File | findings | TP | FP | note |
+|------|---------:|---:|---:|------|
+| ext/session/changeset.c | 106 | 0 | 106 | changeset reader; CLI+iterator, all guarded |
+| ext/misc/zipfile.c | 182 | 0 | 182 | **FN: zipfileScanExtra over-read** (see below) |
+| ext/misc/fossildelta.c | 165 | 2 | 163 | **semantic TP: delta INSERT OOB-read, sqc-caught** |
+| ext/misc/regexp.c | 174 | 2 | 172 | NFA engine clean; 2 MSC04 recursion |
+| ext/misc/csv.c | 87 | 0 | 87 | CSV parser; growable buffer correctly sized |
+| ext/misc/decimal.c | 187 | 0 | 187 | bignum parse/mul; digit arrays int64-sized |
+| ext/misc/base85.c | 100 | 16 | 84 | decoder clean; 16 lexical TP incl 2 real STR00/STR37 |
+| ext/recover/dbdata.c | 87 | 4 | 83 | raw-page parser; 100-byte page padding + asserts |
+
+### The semantic TP — sqc caught a real OOB-read (fossildelta.c:941, INT30-C)
+
+`deltaparsevtabColumn` DELTAPARSEVTAB_A2 / INSERT branch:
+`if( pCur->a2 + pCur->a1 > pCur->nDelta ){ zeroblob }else{ result_blob(aDelta+a2, a1, TRANSIENT) }`.
+`a1`/`a2` are **`unsigned int`**, `a1` is the insert length decoded by `deltaGetInt` (`v=(v<<6)+c`, **no cap —
+full 32-bit attacker control**), `nDelta` is a small `int` that promotes to unsigned in the compare. A crafted
+delta with `a1 ≈ 2³² − a2` makes `a2 + a1` **wrap below `nDelta`**, bypassing the guard, so `result_blob`
+copies `a1` (~4 GB) bytes from a small heap buffer — a massive heap **out-of-bounds read** reachable via
+`SELECT a2 FROM deltaparse(:crafted_blob)`. sqc flagged the wrap (idx 152, INT30-C @941). This is the audit's
+clearest sqc-caught semantic bug outside the session/fts5 set, and it lands exactly where the thesis says to
+look: a less-fuzzed untrusted-serialized-input decoder. (Confirmed by code reading; trunk-validation pending,
+cf. the session/matchinfo precedent.)
+
+### The FN — sqc missed an over-read (zipfile.c:714, ARR30-C, recorded FN)
+
+`zipfileScanExtra` reads the 4-byte extra-field header (two `zipfileRead16`) and the 5-byte `0x5455`
+timestamp record (`p[0]` then `zipfileGetU32(&p[1])`) after only the `while(p<pEnd)` guard, **without
+checking 4–5 bytes remain**. A CDS extra field with a timestamp record at the tail over-reads up to ~4 bytes
+past the `cds.nExtra` scan region. Contained in the comment region in most paths (escapes only when
+`cds.nComment<5` and the entry sits at the buffer end), so marginal — recorded as a low-confidence FN, not a
+clean exploitable overflow. sqc did not flag it (needs the missing-remaining-bytes check sqc lacks).
+
+### Everything else confirms the bifurcation even in decoders
+
+The other 6 files gave **0 semantic TP**. The 21 non-fossildelta TPs are all lexical/declaration: DCL13 ×11
+(const-eligible read-only params on static helpers), MSC04 ×2 (regexp `re_subcompile_re`/`_string` genuine
+indirect recursion), PRE00/PRE12 ×4 (base85 `B85_CLASS`/`base85Numeral` multi-eval macros), PRE01 ×1
+(dbdata `DBDATA_MX_CELL`), DCL00 ×1 (base85 `zHelp`), and **STR00+STR37 ×2** — a genuine `isspace(c)` on a
+plain (signed) `char` in base85 `allBase85`, real CERT-C UB. The semantic-rule misfires are the usual classes
+(live `db` handle read-as-freed, varint/serial counters bounded, `#if 0` dead code, signature-fixed callbacks,
+OOM-sets-rc). The decoders' length/offset math is otherwise uniformly bounds-checked or input-bounded.
+
+sqlite coverage **80/220 (36.4%)** — 80 files audited; **8 FNs** (zipfile over-read added). Confirmed real
+bugs now **8** (2 fts5_index + 4 session + matchinfo + fossildelta), every one in a less-fuzzed
+untrusted-serialized-input parser; still **no core-engine semantic TP** across the whole corpus.
