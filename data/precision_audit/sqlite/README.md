@@ -339,3 +339,55 @@ guards, bare negative macro literals, macros ending in `;`).
 **Coverage: 29/220 files (13.2%).** sqlite audited subset so far: precision 24.7%
 (22 TP / 89), recall 22/24. (Both FN-1 and FN-2 map to rules sqc *has*, so they sit
 in the INT31-C / PRE06-C recall denominators.)
+
+---
+
+## File-at-a-time — btree.c (2026-06-11, run #40): the hardest single file
+
+`adjudication_sqlite_btree.csv` — `src/btree.c` (the b-tree engine, ~11K lines),
+**1,056 distinct findings**, the largest single file. Adjudicated via 8 rule-group
+reviewer subagents + spot-checks, then 3 dedicated FN-hunt subagents over the
+corruption-prone paths.
+
+**88 TP / 963 FP / 5 uncertain / 0 FN.**
+
+### The reveal, confirmed at scale: precision bifurcates by rule *class*
+
+Every TP is a **declaration / const-correctness / macro-hygiene** finding; every
+**semantic** finding (memory, integer, array, pointer) is a false positive.
+
+| High-precision (real) on btree.c | | ~0% precision (all FP) |
+|---|---|---|
+| DCL03-C 88% (15/17) `assert(sizeof…)`→`static_assert` | | INT32-C 0/249 |
+| MSC04-C 86% (6/7) genuine (self/indirect) recursion | | MEM30-C 0/178 |
+| DCL13-C 70% (54/77) read-only helpers/getters → `const` | | ARR-family 0/157 |
+| PRE01-C 67% (6/9) unparenthesized macro params | | EXP-family 0/144 |
+| (PRE00/PRE10/PRE12 macro hygiene also real) | | API00-C 0/90, INT-other 0/129 |
+
+btree.c parses the untrusted on-disk database format, the classic sqlite
+vulnerability surface — yet **all** of the integer-overflow (INT32/INT30/INT31/
+INT33), out-of-bounds (ARR30/37/36), use-after-free (MEM30) and null/uninit
+(EXP33/34) findings are false positives: every dangerous read/write/size-arith is
+gated by a **release-active** `SQLITE_CORRUPT_PAGE`/`SQLITE_CORRUPT_BKPT` check, a
+`maskPage`/`usableSize` bound, an `SQLITE_MAX_LENGTH` upstream clamp, or an
+`i64` pre-cast. The analyzer's bounded-counter / live-handle / in-place-page-edit
+misfire classes (documented in increments 2–5) account for the entire 963-FP set.
+
+### FN-hunt: 0 false negatives
+
+Three subagents read the highest-risk clusters in full — cell parse/alloc
+(`btreeParseCellPtr`, `allocateSpace`, `freeSpace`, `defragmentPage`), tree
+restructuring (`balance_nonroot`, `insertCell`, `editPage`, `pageInsertArray`),
+and overflow/freelist/ptrmap/payload (`accessPayload`, `allocateBtreePage`,
+`freePage2`, `clearDatabasePage`) — and found **no** unguarded defect. Notable:
+`clearDatabasePage`'s recursion is cycle-safe via the page-refcount check;
+`(k-1)*4` trunk copies and `nLeaf` writes are `usableSize/4`-bounded; the
+`assert`-only bounds are all redundant with release-active CORRUPT returns.
+Consistent with btree.c being the most-fuzzed C code in existence.
+
+### Analyzer takeaway
+
+For a future sqc effort the conclusion is sharp: **FP-reduction must target the
+semantic engines** (use-after-free matcher, integer-range, array-bounds, null/
+uninit), which are ~0% precise on hardened production C; the **declaration/macro/
+const rules are already paper-worthy** (67–88%). sqlite coverage now 30/220 (13.6%).
