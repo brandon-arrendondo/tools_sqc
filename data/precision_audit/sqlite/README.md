@@ -923,3 +923,45 @@ class). **Trunk-checked: byte-identical, last touched 2014** — unchanged for ~
 accepts it (unlike matchinfo/session/sqlar/compress, all fixed within months of our pin). Recorded as
 a **low-confidence FN / hardening gap** (consistent with the where.c INT34 precedent — real-but-benign,
 still-present), NOT among the 7 confirmed real bugs. sqlite coverage **67/220 (30.5%)**, 7 FNs.
+
+---
+
+## File-at-a-time — fts5_main.c (2026-06-12, run #40, HIGH-effort): the public trust boundary, 0 semantic TP
+
+`adjudication_sqlite_fts5_main.csv` — `ext/fts5/fts5_main.c` (the FTS5 virtual-table interface:
+xConnect/xBestIndex/xFilter/xColumn/xUpdate, cursor lifecycle, the `fts5_api` aux-function interface,
+rank/config/special-insert commands, 3875 lines), **329 findings**. This is the *public trust
+boundary* — where untrusted SQL values, the MATCH argument, and column indices enter fts5. 7
+rule-class reviewers (MEM30 x98 split in two) + 2 FN-hunters (vtab entry points; cursor/aux-data
+lifecycle).
+
+**27 TP / 302 FP / 0 uncertain / 0 FN.** Bifurcation holds *even at the boundary*: **0 semantic TP**
+— MEM30 **0/98** (the largest MEM30 cluster yet; both lifecycle FN-hunters confirmed it is correctly
+balanced — free-then-null / idempotent-memset cursor reset, the `ePlan!=FTS5_PLAN_SOURCE` guard for the
+*borrowed* sort-cursor expression, and `fts5ApiGetAuxdata(bClear)` nulling both ptr+destructor for
+ownership transfer), INT 0/73, EXP34 0/37, STR 0/24, ARR 0. All 27 TP are declaration/macro: DCL13
+x15, **DCL03 x8** (assert-of-constant -> static_assert), PRE01 x2 / PRE00 / PRE12. The vtab entry
+points all bound their column index (`iCol<0||iCol>=nCol -> SQLITE_RANGE`).
+
+### Methodology note — an FN candidate that dissolved under verification (recorded as NOT-a-bug)
+
+The vtab FN-hunter flagged `fts5BestIndexMethod:671` medium-high confidence: the LIKE/GLOB branch does
+`idxStr += strlen(&idxStr[iIdxStr])` (advancing the **base pointer**) where the parallel MATCH branch
+(660) does `iIdxStr += strlen(...)` (advancing the **index**) — claiming idxStr corruption / heap OOB
+reachable via `col LIKE ?` on an fts5 column. **Hard verification refuted it:** `pInfo->idxStr = idxStr`
+is captured at line 636 (pointer value = base `B`) *before* the loop, and the write cursor is always
+`local_idxStr + iIdxStr`, which both branches keep equal to `B + total_chars_written` (MATCH adds
+opcode+digits to `iIdxStr`; LIKE adds digits to `base` and the opcode to `iIdxStr` — identical sum). So
+`pInfo->idxStr` stays `B`, the content at `B[0..total]` is correct, the terminator lands at `B[total]`,
+and every write stays within the `nConstraint*8+1` buffer. **Trunk keeps it byte-identical for ~5 years**
+(since the 2020 trigram-LIKE commit `33a99fad08`), corroborating correct-if-confusing, not a defect.
+Recorded as investigated-not-a-bug, **NOT an FN** — a clean example of the trunk-diff + manual-arithmetic
+discipline catching an over-eager FN-hunter claim. (Also: 2 aux-API `aIdx[iPhrase]`@2685 uncertains -> FP
+— `iPhrase` is an extension aux-function *contract* parameter, not untrusted SQL/DB input.)
+
+### fts5 needle sweep (index + expr + main + storage)
+
+The found-semantic-TP count holds at **2** (both in fts5_index's raw-blob `fts5StructureDecode`); the
+query parser, the vtab boundary, and the storage layer each contributed **0 semantic TP**. Confirmed:
+sqc's semantic value is confined to the narrow raw-decode-arithmetic class, and the trust boundary itself
+is fully guarded. sqlite coverage **68/220 (30.9%)**, 7 FNs.
