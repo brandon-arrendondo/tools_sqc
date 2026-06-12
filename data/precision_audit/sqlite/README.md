@@ -893,3 +893,33 @@ thesis is now very precise: sqc's semantic value in this whole untrusted-input s
 contained integer overflows in one raw-blob-decode function — everything else it correctly finds is
 lexical, and the one real bug it *missed* (matchinfo OOB) was a recall gap. **sqlite coverage 66/220
 (30.0%)** — a third of the in-scope corpus audited; 6 FNs.
+
+---
+
+## File-at-a-time — fts5_storage.c (2026-06-12, run #40, HIGH-effort): the raw-decode analog, still clean
+
+`adjudication_sqlite_fts5_storage.csv` — `ext/fts5/fts5_storage.c` (the FTS5 storage layer:
+`%_content`/`%_docsize`/`%_config` read/write + integrity-check, 1530 lines), **129 findings**.
+Chosen as the closest remaining raw-decode analog to fts5_index.c (it decodes the untrusted
+`%_docsize` varint stream). 4 rule-class reviewers + 1 FN-hunter on the docsize/config decode.
+
+**9 TP / 120 FP / 0 uncertain / 1 low-confidence FN.** Bifurcation holds: 0 semantic TP
+(INT32 0/45 — `nCol`-bounded / i64-sized / the decoded docsize values feed only an *equality
+oracle*, never an alloc or index; API00 0/31 internal handles; EXP34 0/16 `rc==OK` idiom; ARR/STR 0).
+All 9 TP are DCL13 (read-only `pConfig`/`apVal`/`pBuf` params).
+
+### 1 low-confidence FN — a benign, upstream-accepted varint over-read
+
+`fts5StorageDecodeSizeArray` (1405): the `%_docsize` decode loop guards `iOff>=nBlob` but that only
+ensures the *first* byte of each varint is in bounds; `fts5GetVarint32` reads up to ~9 bytes chasing
+continuation bits. On the **on-page read path** (`sqlite3VdbeMemFromBtreeZeroOffset`, where
+`sqlite3_column_blob` returns a `MEM_Ephem` pointer *directly into the btree page buffer* with no
+added terminator), a crafted `%_docsize` blob whose last byte has the continuation bit set reads a few
+bytes of adjacent in-page data. **Benign**: no write; the read stays within the `pageSize` allocation;
+the decoded value is consumed only as a size-comparison oracle (mismatch → `FTS5_CORRUPT`). Two
+reviewers split on it (one called it mitigated by sqlite's blob slack, the FN-hunter flagged the
+missing `FTS5_DATA_PADDING` that the *sibling* fts5_index.c adds for exactly this varint-over-read
+class). **Trunk-checked: byte-identical, last touched 2014** — unchanged for ~12 years, so upstream
+accepts it (unlike matchinfo/session/sqlar/compress, all fixed within months of our pin). Recorded as
+a **low-confidence FN / hardening gap** (consistent with the where.c INT34 precedent — real-but-benign,
+still-present), NOT among the 7 confirmed real bugs. sqlite coverage **67/220 (30.5%)**, 7 FNs.

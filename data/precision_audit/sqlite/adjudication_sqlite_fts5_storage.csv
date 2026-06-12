@@ -1,0 +1,131 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR00-C,0,sqlite,ext/fts5/fts5_storage.c,99,FP,eStmt bounded by assert( eStmt>=0 && eStmt<ArraySize(p->aStmt) ) at line 98,,high
+ARR02-C,1,sqlite,ext/fts5/fts5_storage.c,100,FP,azStmt[] size fixed by initializer and validated by assert(ArraySize(azStmt)==ArraySize(p->aStmt)); stylistic misfire,,high
+INT32-C,2,sqlite,ext/fts5/fts5_storage.c,158,FP,"i bounded by loop i<nCol+1; nCol is schema column count (<=32767), i-1 cannot overflow",,high
+EXP34-C,3,sqlite,ext/fts5/fts5_storage.c,159,FP,"sqlite3Fts5Mprintf is the fts5 OOM idiom: takes &rc, %z accepts NULL zBind intentionally (zBind?',':'' guards)",,high
+INT32-C,4,sqlite,ext/fts5/fts5_storage.c,159,FP,"i+1 bounded by nCol+1; small schema column count, no overflow",,high
+EXP34-C,5,sqlite,ext/fts5/fts5_storage.c,168,FP,same %z mprintf idiom; zBind NULL on first iteration is expected and handled,,high
+INT32-C,6,sqlite,ext/fts5/fts5_storage.c,168,FP,"pC->nCol+i+2 bounded by ~2*nCol; nCol<=SQLITE_MAX_COLUMN, no overflow",,high
+INT32-C,7,sqlite,ext/fts5/fts5_storage.c,168,FP,"pC->nCol+i bounded by ~2*nCol; small, no overflow",,high
+EXP34-C,8,sqlite,ext/fts5/fts5_storage.c,173,FP,sqlite3Fts5Mprintf checks rc internally; zBind NULL fine for %s/%z; result feeds %s arg,,high
+INT32-C,9,sqlite,ext/fts5/fts5_storage.c,201,FP,"bLock is a balanced ++/-- statement-prep guard, not attacker-driven to INT_MAX",,high
+ARR00-C,10,sqlite,ext/fts5/fts5_storage.c,202,FP,same assert at 98 bounds eStmt; index into p->aStmt[12] safe,,high
+INT32-C,11,sqlite,ext/fts5/fts5_storage.c,203,FP,bLock-- balanced against ++ at 201; cannot underflow,,high
+STR34-C,12,sqlite,ext/fts5/fts5_storage.c,206,FP,*pzErrMsg is char* assignment target of sqlite3_mprintf result; no char-to-int sign extension,,high
+ARR00-C,13,sqlite,ext/fts5/fts5_storage.c,216,FP,p->aStmt[eStmt] bounded by assert(eStmt>=0 && eStmt<ArraySize) at function entry; same class as 99/202,,high
+API00-C,14,sqlite,ext/fts5/fts5_storage.c,250,FP,"sqlite3Fts5DropAll internal API; pConfig is trusted Fts5Config from FTS5 vtab, never untrusted",,high
+DCL13-C,15,sqlite,ext/fts5/fts5_storage.c,250,TP,pConfig only read (db/zDb/zName/bColumnsize/eContent); never modified -> const feasible,,med
+DCL13-C,16,sqlite,ext/fts5/fts5_storage.c,275,TP,pConfig members only read for ALTER printf; not modified -> const feasible,,med
+API00-C,17,sqlite,ext/fts5/fts5_storage.c,288,FP,sqlite3Fts5StorageRename internal; pStorage trusted handle from xRename caller,,high
+API00-C,18,sqlite,ext/fts5/fts5_storage.c,288,FP,"zName is new table name passed by SQLite ALTER path; internal trusted, not validated by design",,high
+API00-C,19,sqlite,ext/fts5/fts5_storage.c,308,FP,sqlite3Fts5CreateTable internal; pConfig trusted Fts5Config,,high
+API00-C,20,sqlite,ext/fts5/fts5_storage.c,308,FP,"pzErr is OUT pointer, dereferenced only on error path; internal caller",,high
+DCL13-C,21,sqlite,ext/fts5/fts5_storage.c,309,TP,pConfig members only read for CREATE printf; not modified -> const feasible,,med
+EXP34-C,22,sqlite,ext/fts5/fts5_storage.c,318,FP,pConfig is a caller-supplied param; CreateTable callers guarantee non-null config object,,high
+STR34-C,23,sqlite,ext/fts5/fts5_storage.c,326,FP,*pzErr is char* assignment target of sqlite3_mprintf; no sign extension,,high
+API00-C,24,sqlite,ext/fts5/fts5_storage.c,343,FP,sqlite3Fts5StorageOpen internal constructor; pConfig trusted,,high
+API00-C,25,sqlite,ext/fts5/fts5_storage.c,343,FP,pIndex trusted Fts5Index handle from FTS5 init,,high
+API00-C,26,sqlite,ext/fts5/fts5_storage.c,343,FP,pp is OUT pointer set to new object; internal caller guarantees,,high
+DCL13-C,27,sqlite,ext/fts5/fts5_storage.c,345,FP,pIndex stored into non-const struct field p->pIndex at line 362; const param would break assignment,,high
+INT30-C,28,sqlite,ext/fts5/fts5_storage.c,354,FP,"nByte is sqlite3_int64; sizeof+nCol*sizeof(i64) tiny, malloc64, no wrap",,high
+EXP34-C,29,sqlite,ext/fts5/fts5_storage.c,355,FP,pConfig is caller-supplied param in StorageOpen; deref before any local alloc; caller guarantees non-null,,high
+INT30-C,30,sqlite,ext/fts5/fts5_storage.c,355,FP,"nCol*sizeof(i64) in i64 context; nCol<=32767 so max ~256KB, no wrap",,high
+INT31-C,31,sqlite,ext/fts5/fts5_storage.c,359,FP,nByte non-negative small i64 cast to size_t for memset; bounded by alloc above,,high
+INT32-C,32,sqlite,ext/fts5/fts5_storage.c,368,FP,"32+nCol*10 with nCol<=32767 max ~328K, fits int, no overflow",,high
+INT32-C,33,sqlite,ext/fts5/fts5_storage.c,368,FP,"nCol*10 bounded by small column count, no overflow",,high
+INT32-C,34,sqlite,ext/fts5/fts5_storage.c,369,FP,"32+(i64)nCol*20 computed in i64, no overflow",,high
+INT32-C,35,sqlite,ext/fts5/fts5_storage.c,369,FP,"(i64)nCol*20 in 64-bit, no overflow",,high
+INT32-C,36,sqlite,ext/fts5/fts5_storage.c,381,FP,"nDefn-iOff bounded by zDefn buffer size 32+nCol*10; iOff<=nDefn, no overflow",,high
+INT32-C,37,sqlite,ext/fts5/fts5_storage.c,382,FP,"iOff accumulates strlen within bounded zDefn buffer, cannot overflow int",,high
+INT32-C,38,sqlite,ext/fts5/fts5_storage.c,388,FP,nDefn-iOff bounded by buffer; benign,,high
+INT32-C,39,sqlite,ext/fts5/fts5_storage.c,389,FP,"iOff accumulates strlen within bounded zDefn buffer, no overflow",,high
+INT32-C,40,sqlite,ext/fts5/fts5_storage.c,463,FP,"szCol is per-column token count, bounded by document token count (int), no realistic overflow",,high
+INT32-C,41,sqlite,ext/fts5/fts5_storage.c,465,FP,"szCol-1 with szCol>=1 after ++ on line 463, no overflow",,high
+API00-C,42,sqlite,ext/fts5/fts5_storage.c,478,FP,sqlite3Fts5StorageFindDeleteRow internal; p validated via assert(p->pSavedRow==0),,high
+EXP34-C,43,sqlite,ext/fts5/fts5_storage.c,486,FP,pSeek set by fts5StorageGetStmt; step guarded by if(rc==SQLITE_OK) at 484; OK path yields non-null stmt,,high
+DCL13-C,44,sqlite,ext/fts5/fts5_storage.c,509,TP,apVal only read (apVal[iCol-1]); outer pointers unmodified -> sqlite3_value *const* feasible,,med
+DCL03-C,45,sqlite,ext/fts5/fts5_storage.c,521,FP,"assert(FTS5_STMT_LOOKUP2==FTS5_STMT_LOOKUP+1) is macro-constant; sqlite uses #if-error elsewhere, runtime assert intentional but static_assert technically applicable -> borderline, leaning misfire on sqlite convention",,med
+EXP34-C,46,sqlite,ext/fts5/fts5_storage.c,531,FP,guarded by if(rc!=SQLITE_OK) return at 529; GetStmt OK path sets pSeek non-null,,high
+INT32-C,47,sqlite,ext/fts5/fts5_storage.c,553,FP,"iCol-1 with iCol>=1 (loop from iCol=1), indexes apVal/abUnindexed, bounded by nCol",,high
+EXP30-C,48,sqlite,ext/fts5/fts5_storage.c,563,FP,pFree=pVal=sqlite3_value_dup(pVal): arg read sequenced before call return/assignment; no unsequenced read-modify,,high
+INT32-C,49,sqlite,ext/fts5/fts5_storage.c,572,FP,"iCol+nCol bounded by ~2*nCol column index, small, no overflow",,high
+INT32-C,50,sqlite,ext/fts5/fts5_storage.c,573,FP,"iCol+nCol bounded by ~2*nCol, no overflow",,high
+INT32-C,51,sqlite,ext/fts5/fts5_storage.c,584,FP,"iCol-1 with iCol>=1, array index into aTotalSize, bounded",,high
+API00-C,52,sqlite,ext/fts5/fts5_storage.c,614,FP,sqlite3Fts5StorageReleaseDeleteRow internal; pStorage trusted handle,,high
+EXP34-C,53,sqlite,ext/fts5/fts5_storage.c,643,FP,pLookup set by GetStmt; step inside if(rc==SQLITE_OK) at 641,,high
+DCL13-C,54,sqlite,ext/fts5/fts5_storage.c,667,TP,"pBuf only read (pBuf->p, pBuf->n) for bind_blob; not modified -> const Fts5Buffer* feasible",,med
+EXP34-C,55,sqlite,ext/fts5/fts5_storage.c,683,FP,pReplace set by GetStmt; step inside if(rc==SQLITE_OK) at 681,,high
+DCL13-C,56,sqlite,ext/fts5/fts5_storage.c,717,TP,"p fields only read (nTotalRow,aTotalSize); mutation is via p->pIndex which stays non-const under const Fts5Storage* -> const feasible but semantically misleading",,low
+API00-C,57,sqlite,ext/fts5/fts5_storage.c,739,FP,sqlite3Fts5StorageDelete internal; p trusted storage handle,,high
+EXP34-C,58,sqlite,ext/fts5/fts5_storage.c,776,FP,pDel set by GetStmt; step inside if(rc==SQLITE_OK) at 774,,high
+EXP34-C,59,sqlite,ext/fts5/fts5_storage.c,790,FP,pDel set by GetStmt; step inside if(rc==SQLITE_OK) at 788,,high
+API00-C,60,sqlite,ext/fts5/fts5_storage.c,801,FP,sqlite3Fts5StorageDeleteAll internal; p trusted storage handle,,high
+API00-C,61,sqlite,ext/fts5/fts5_storage.c,837,FP,sqlite3Fts5StorageRebuild internal; p trusted storage handle,,high
+EXP34-C,62,sqlite,ext/fts5/fts5_storage.c,855,FP,pScan set by GetStmt at 852; while loop condition rc==SQLITE_OK guards step,,high
+INT32-C,63,sqlite,ext/fts5/fts5_storage.c,868,FP,"ctx.iCol+1 with iCol bounded by nCol loop, column index, no overflow",,high
+INT32-C,64,sqlite,ext/fts5/fts5_storage.c,877,FP,"ctx.iCol+1+nCol bounded by ~2*nCol, locale column index, no overflow",,high
+INT32-C,65,sqlite,ext/fts5/fts5_storage.c,877,FP,"ctx.iCol+1 bounded by nCol, no overflow",,high
+API00-C,66,sqlite,ext/fts5/fts5_storage.c,914,FP,"sqlite3Fts5StorageOptimize internal; p trusted, delegates to index layer",,high
+DCL13-C,67,sqlite,ext/fts5/fts5_storage.c,914,FP,"sqlite3Fts5StorageOptimize mutates index via p->pIndex; const would misrepresent intent, public API fixed signature",,med
+API00-C,68,sqlite,ext/fts5/fts5_storage.c,918,FP,sqlite3Fts5StorageMerge internal; p trusted storage handle,,high
+DCL13-C,69,sqlite,ext/fts5/fts5_storage.c,918,FP,sqlite3Fts5StorageMerge mutates index via p->pIndex; public API fixed signature,,med
+API00-C,70,sqlite,ext/fts5/fts5_storage.c,922,FP,sqlite3Fts5StorageReset internal; p trusted storage handle,,high
+DCL13-C,71,sqlite,ext/fts5/fts5_storage.c,922,FP,sqlite3Fts5StorageReset mutates index via p->pIndex; public API fixed signature,,med
+EXP34-C,72,sqlite,ext/fts5/fts5_storage.c,943,FP,pReplace set by GetStmt; step inside if(rc==SQLITE_OK) at 940,,high
+API00-C,73,sqlite,ext/fts5/fts5_storage.c,956,FP,"sqlite3Fts5StorageContentInsert internal; apVal from xUpdate sqlite3_value array, trusted",,high
+API00-C,74,sqlite,ext/fts5/fts5_storage.c,956,FP,piRowid is OUT pointer; internal caller,,high
+API00-C,75,sqlite,ext/fts5/fts5_storage.c,956,FP,bReplace validated by assert(bReplace==0||bReplace==1); not arithmetic overflow,,high
+DCL13-C,76,sqlite,ext/fts5/fts5_storage.c,959,TP,apVal only read; outer pointer array unmodified -> sqlite3_value *const* feasible,,med
+DCL03-C,77,sqlite,ext/fts5/fts5_storage.c,978,FP,assert(FTS5_STMT_INSERT_CONTENT+1==FTS5_STMT_REPLACE_CONTENT) macro-constant; same sqlite convention as 521,,med
+INT32-C,78,sqlite,ext/fts5/fts5_storage.c,989,FP,"i-2 with loop i from 2, indexes abUnindexed, bounded by nCol",,high
+INT32-C,79,sqlite,ext/fts5/fts5_storage.c,996,FP,"i-1 with i>=2, column index into pSavedRow, bounded",,high
+INT32-C,80,sqlite,ext/fts5/fts5_storage.c,998,FP,"nCol+i bounded by ~2*nCol bind index, no overflow",,high
+INT32-C,81,sqlite,ext/fts5/fts5_storage.c,999,FP,"nCol+i-1 bounded by ~2*nCol column index, no overflow",,high
+INT32-C,82,sqlite,ext/fts5/fts5_storage.c,999,FP,"nCol+i bounded by ~2*nCol, no overflow",,high
+INT32-C,83,sqlite,ext/fts5/fts5_storage.c,1013,FP,"nCol+i bound bind index, small, no overflow",,high
+DCL13-C,84,sqlite,ext/fts5/fts5_storage.c,1039,TP,apVal only read (apVal[ctx.iCol+2]); not modified -> const feasible,,med
+INT32-C,85,sqlite,ext/fts5/fts5_storage.c,1062,FP,"ctx.iCol+2 with iCol bounded by nCol loop, apVal index, no overflow",,high
+INT32-C,86,sqlite,ext/fts5/fts5_storage.c,1064,FP,"ctx.iCol+1 bounded by nCol column index, no overflow",,high
+INT32-C,87,sqlite,ext/fts5/fts5_storage.c,1066,FP,"ctx.iCol+1+nCol bounded by ~2*nCol locale column index, no overflow",,high
+INT32-C,88,sqlite,ext/fts5/fts5_storage.c,1066,FP,"ctx.iCol+1 bounded by nCol, no overflow",,high
+INT32-C,89,sqlite,ext/fts5/fts5_storage.c,1071,FP,"ctx.iCol+2 bounded by nCol, no overflow",,high
+DCL13-C,90,sqlite,ext/fts5/fts5_storage.c,1104,TP,fts5StorageCount reads p->pConfig only; p not modified -> const feasible,,low
+EXP34-C,91,sqlite,ext/fts5/fts5_storage.c,1118,FP,pCnt set by sqlite3_prepare_v2; step inside if(rc==SQLITE_OK) at 1117,,high
+INT32-C,92,sqlite,ext/fts5/fts5_storage.c,1166,FP,"szCol per-column token count, bounded by document size, no realistic overflow",,high
+INT32-C,93,sqlite,ext/fts5/fts5_storage.c,1171,FP,"szCol-1 with szCol>=1 after ++, no overflow",,high
+STR34-C,94,sqlite,ext/fts5/fts5_storage.c,1196,FP,pToken passed as const char* pointer arg to CharlenToBytelen; not widened to integer here,,high
+INT32-C,95,sqlite,ext/fts5/fts5_storage.c,1198,FP,"ii+1 with ii<nPrefix (max FTS5_MAX_PREFIX_INDEXES=31), tiny, no overflow",,high
+INT32-C,96,sqlite,ext/fts5/fts5_storage.c,1201,FP,"ii+1 bounded by nPrefix<=31, no overflow",,high
+API00-C,97,sqlite,ext/fts5/fts5_storage.c,1216,FP,sqlite3Fts5StorageIntegrity internal; p trusted storage handle,,high
+INT30-C,98,sqlite,ext/fts5/fts5_storage.c,1227,FP,"sizeof(int)+sizeof(i64) is compile-time constant 12, cannot wrap",,high
+INT32-C,99,sqlite,ext/fts5/fts5_storage.c,1227,FP,"nCol*(sizeof(int)+sizeof(i64)) in size_t for malloc64; nCol<=32767 max ~393KB, no wrap",,high
+ARR38-C,100,sqlite,ext/fts5/fts5_storage.c,1230,FP,memset size sizeof(i64)*nCol <= allocation nCol*(sizeof(int)+sizeof(i64)); within bounds,,high
+INT30-C,101,sqlite,ext/fts5/fts5_storage.c,1230,FP,"sizeof(i64)*nCol size_t bounded by nCol<=32767, max ~256KB, no wrap",,high
+INT32-C,102,sqlite,ext/fts5/fts5_storage.c,1230,FP,"sizeof(i64)*nCol memset size bounded by aTotalSize alloc above, no wrap",,high
+INT32-C,103,sqlite,ext/fts5/fts5_storage.c,1257,FP,"i+1 column index bounded by nCol loop, no overflow",,high
+INT32-C,104,sqlite,ext/fts5/fts5_storage.c,1267,FP,"i+1+nCol bounded by ~2*nCol locale column index, no overflow",,high
+INT32-C,105,sqlite,ext/fts5/fts5_storage.c,1267,FP,"i+1 bounded by nCol, no overflow",,high
+ARR37-C,106,sqlite,ext/fts5/fts5_storage.c,1298,FP,aColSize points into allocation holding nCol ints; aColSize[i] with i<nCol is in-bounds; pointer-subscript misfire,,high
+API00-C,107,sqlite,ext/fts5/fts5_storage.c,1356,FP,sqlite3Fts5StorageStmt internal; p trusted storage handle,,high
+API00-C,108,sqlite,ext/fts5/fts5_storage.c,1356,FP,pp is OUT pointer for prepared stmt; internal caller,,high
+API00-C,109,sqlite,ext/fts5/fts5_storage.c,1356,FP,pzErrMsg is OUT pointer for error message; internal caller,,high
+ARR00-C,110,sqlite,ext/fts5/fts5_storage.c,1369,FP,eStmt asserted to SCAN_ASC/DESC/LOOKUP (0/1/2) at line 1363; valid index into aStmt[12],,high
+ARR30-C,111,sqlite,ext/fts5/fts5_storage.c,1369,FP,same assert at 1363 bounds eStmt,,high
+ARR00-C,112,sqlite,ext/fts5/fts5_storage.c,1370,FP,eStmt bounded by assert at 1363,,high
+ARR30-C,113,sqlite,ext/fts5/fts5_storage.c,1370,FP,eStmt bounded by assert at 1363,,high
+API00-C,114,sqlite,ext/fts5/fts5_storage.c,1380,FP,sqlite3Fts5StorageStmtRelease internal; p trusted storage handle,,high
+ARR00-C,115,sqlite,ext/fts5/fts5_storage.c,1389,FP,eStmt asserted at 1385 to SCAN_ASC/DESC/LOOKUP; valid index,,high
+ARR00-C,116,sqlite,ext/fts5/fts5_storage.c,1391,FP,eStmt bounded by assert at 1385,,high
+DCL13-C,117,sqlite,ext/fts5/fts5_storage.c,1398,FP,aCol is the OUT array populated via aCol[i] at line 1405; modified -> const wrong,,high
+INT32-C,118,sqlite,ext/fts5/fts5_storage.c,1405,FP,"iOff accumulates varint byte-lengths (<=5 each) over nCol iters, bounded by nBlob check; decoded value only used as corruption equality oracle, never alloc/index",,high
+API00-C,119,sqlite,ext/fts5/fts5_storage.c,1418,FP,sqlite3Fts5StorageDocsize internal; p trusted storage handle,,high
+API00-C,120,sqlite,ext/fts5/fts5_storage.c,1447,FP,sqlite3Fts5StorageSize internal; p trusted storage handle,,high
+API00-C,121,sqlite,ext/fts5/fts5_storage.c,1447,FP,pnToken is OUT pointer for count; internal caller,,high
+ARR00-C,122,sqlite,ext/fts5/fts5_storage.c,1457,FP,"iCol bounded: iCol<0 branch at 1451, else-if iCol<p->pConfig->nCol at 1456 before aTotalSize[iCol]",,high
+API00-C,123,sqlite,ext/fts5/fts5_storage.c,1465,FP,sqlite3Fts5StorageRowCount internal; p trusted storage handle,,high
+API00-C,124,sqlite,ext/fts5/fts5_storage.c,1465,FP,pnRow is OUT pointer for count; internal caller,,high
+API00-C,125,sqlite,ext/fts5/fts5_storage.c,1482,FP,sqlite3Fts5StorageSync internal; p trusted storage handle,,high
+API00-C,126,sqlite,ext/fts5/fts5_storage.c,1498,FP,sqlite3Fts5StorageRollback internal; p trusted storage handle,,high
+EXP34-C,127,sqlite,ext/fts5/fts5_storage.c,1518,FP,pReplace set by GetStmt; step inside if(rc==SQLITE_OK) at 1511,,high
+INT32-C,128,sqlite,ext/fts5/fts5_storage.c,1523,FP,"iCookie config version counter incremented once per config write, not attacker-driven to INT_MAX",,high
+ARR30-C,129,sqlite,ext/fts5/fts5_storage.c,1405,FN,fts5StorageDecodeSizeArray: iOff>=nBlob guards only the first varint byte; fts5GetVarint32 reads up to ~9 chasing continuation bits -> reads adjacent in-page bytes past the %_docsize blob on the on-page (ZeroOffset MEM_Ephem) read path. sqc emitted no finding here.,"STILL PRESENT on sqlite-main 124f449319 (byte-identical, last touched 2014 4a165c0af4) - benign: no write, in-pageSize-allocation read, decoded value only a size-comparison oracle (->FTS5_CORRUPT); fts5_index.c uses FTS5_DATA_PADDING for this varint-overread class but this storage path relies on btree page-buffer slack. Low-severity hardening gap, accepted by upstream.",low
