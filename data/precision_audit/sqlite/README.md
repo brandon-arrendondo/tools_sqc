@@ -638,3 +638,40 @@ surfaces genuine defects, and it grounds the precision/recall numbers in verifie
 reality rather than self-judged labels. The 2 still-present findings are the
 legitimate upstream-contribution candidates (task 164); the 3 fixed ones need no
 action.
+
+---
+
+## File-at-a-time — where.c (2026-06-12, run #40, HIGH-effort): bifurcation holds in a 3rd core file
+
+`adjudication_sqlite_where.csv` — `src/where.c` (the query planner/optimizer, ~7K
+lines), **571 findings**. Core sqlite (operates on parsed SQL + schema, not an
+untrusted serialized blob). 7 high-effort reviewer subagents + 2 FN-hunt subagents.
+
+**61 TP / 508 FP / 2 uncertain / 1 low-confidence FN.**
+
+Bifurcation holds exactly as in btree.c/vdbe.c: **0 semantic-rule TP** (INT32 0/90,
+ARR 0/99 — all bounded by BMS=64 / schema limits / misclassified integer fields,
+MEM30 0/35, EXP34 0/55 — OOM/planner-invariant guards), **all 61 TP are
+declaration/macro/const**: DCL13 ×46 (read-only planner inspectors), MSC04 ×6
+(the WHERE solver's genuine direct/indirect recursion), DCL03 ×5 (static_assert),
+EXP45 ×2 (assignment-in-condition), EXP05 ×1 (cast-away-const), PRE01 ×1. The
+34 PRE32-C findings are all FP — the documented misfire on `WHERETRACE`/printf trace
+macros (no real `#`/`##`/directive-in-arg). 2 benign uncertains (INT34 shift in a
+SQLITE_DEBUG-only `WhereLoopPrint`; an EXP33 discarded-value read).
+
+### 1 low-confidence FN (INT34, still present on trunk)
+
+`whereLoopAddVirtualOne`: `MASKBIT32(iTerm)` (and `1<<iTerm` for omitMask) where
+`iTerm = pUsage[i].argvIndex-1` is bounded only by `nConstraint`. A query with **≥32
+constraints on a virtual table** drives `iTerm≥32` → shift ≥ operand width (INT34-C
+UB). Consequence is a wrong optimization mask bit, **not** memory corruption — narrow
+and benign. Verified **still present on sqlite-main `124f449319`** (lines 4457/4466
+byte-identical). Recorded as a low-confidence FN / minor hardening candidate (task 164).
+
+### Running tally (5 large files: btree+vdbe+fts5+session+where = 4,175 findings)
+
+Semantic TPs remain **6** (2 fts5 + 4 session, the session ones a confirmed-fixed
+real OOB-read); every other TP is declaration/macro/const. The 3 hardened-core files
+(btree/vdbe/where) yield **0 semantic TP and 0 substantive FN**; the 2 untrusted-blob
+extensions (fts5/session) are where the real semantic bugs surfaced. sqlite coverage
+61/220 (27.7%).
