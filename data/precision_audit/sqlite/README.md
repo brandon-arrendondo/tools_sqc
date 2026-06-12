@@ -435,3 +435,61 @@ complex files in sqlite's core: 0 semantic-rule TP, 0 FN, every TP in the
 declaration/macro/const/dead-code class.** The bifurcation is not an artifact of
 one subsystem (on-disk-format parsing) — it reproduces in the bytecode engine.
 sqlite coverage now 31/220 (14.1%).
+
+---
+
+## File-at-a-time — fts5_index.c (2026-06-11, run #40, HIGH-effort): the bifurcation's first crack
+
+`adjudication_sqlite_fts5_index.csv` — `ext/fts5/fts5_index.c` (the FTS5 full-text
+INDEX engine, ~9.5K lines), **911 findings**, the largest *extension* file. Chosen
+deliberately: fts5 parses its OWN on-disk format (varint blobs in the `%_data`
+shadow table — attacker-controllable via a crafted DB) and is far less fuzzed than
+core btree/vdbe, so the likeliest place a real semantic finding surfaces. 9
+high-effort reviewer subagents + 2 FN-hunt subagents + adversarial verification.
+
+**64 TP / 839 FP / 8 uncertain / 0 confirmed FN.**
+
+### First genuine semantic TPs in the whole audit
+
+Unlike btree.c/vdbe.c (0 semantic TP), fts5StructureDecode yields **2 real INT32-C
+true positives**: `fts5SegmentSize` (1485) and 1551 compute `1 + pSeg->pgnoLast -
+pSeg->pgnoFirst`, where `pgnoLast`/`pgnoFirst` are read from the untrusted structure
+blob via `fts5GetVarint32` with only a relational check (`pgnoLast>=pgnoFirst`), no
+upper bound → **signed-overflow UB** for `pgnoLast` near INT_MAX on a crafted index.
+Low real-world impact (feeds merge heuristics; pgnos are revalidated at page-read,
+so not memory corruption) but genuine UB on untrusted input — exactly the
+less-fuzzed-extension scenario predicted.
+
+Plus **8 uncertains**, all in the same fts5StructureDecode integer cluster:
+`nTotal * sizeof(Fts5StructureSegment)` allocation (1166/1169/1171 — 64-bit-safe,
+latent 32-bit multiply wrap requiring an implausibly large blob), the
+`pgnoFirst`/`pgnoLast` u32→int reads (1184/1185), a poslist column-delta (3518),
+and bounded recursion (MEM05 1619/1722).
+
+### The rest of the semantic mass: still ~0% FP
+
+MEM30-C 0/12, **EXP34-C 0/101** (the fts5 OOM-sets-`p->rc` idiom — pointers non-null
+when rc==OK), ARR00/ARR30 0/106, ARR37/etc 0/50, INT-other 0/120. Every TP outside
+the 2 structure-overflows is declaration/macro/style: DCL13 37 (read-only helpers),
+EXP45 3 (assignment-in-condition), PRE00/01/10/12 18 (macro hygiene), MSC04 2
+(recursion), ERR33 1.
+
+### FN-hunt: 0 confirmed (one candidate adversarially dismissed)
+
+A subagent flagged `fts5DlidxLvlPrev` (1706): `while(a[ii]==0){ii++}` lacks an
+explicit `ii<nn` bound (a real asymmetry with the nn-bounded sibling
+`fts5DlidxLvlNext`). On adversarial review this is **not** a reachable OOB: `Prev`
+re-walks only the `[iFirstOff, iOff)` range that forward `Next` already validated to
+contain non-zero varint terminators; the all-zero tail that would run the scan off
+the end lies *past* `iOff`, which `Prev` never reaches (it breaks at `ii>=iOff`). A
+defensive-hardening gap, not a bug — consistent with sqlite's heavy corrupt-DB
+fuzzing. Documented, not recorded as FN.
+
+### Running tally (3 large files: btree + vdbe + fts5_index = 2,976 findings)
+
+The bifurcation holds, with one nuance: the **only** semantic TPs in ~3,000
+findings are 2 contained signed-overflows in fts5's untrusted-blob parser; the
+memory/null/array semantic engines remain **0% precise** on hardened C. All other
+TPs are declaration/macro/const/dead-code. Per-rule across the audited corpus:
+MEM30-C **0/875**, EXP34-C **0/202**, ARR30-C **0/97** vs DCL13-C **65% (100 TP)**.
+sqlite coverage 32/220 (14.5%).
