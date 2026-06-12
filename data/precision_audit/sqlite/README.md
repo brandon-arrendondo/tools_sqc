@@ -525,3 +525,61 @@ Running coverage: **sqlite 59/220 (26.8%)**, libcrc 19/19. Audited-corpus tally 
 far: only semantic TPs remain the 2 fts5 structure-overflows; declaration/macro/const
 rules carry all other TPs; 4 FNs total (sqlar heap-overflow, pcache broken guard,
 2× compress null-deref).
+
+---
+
+## File-at-a-time — sqlite3session.c (2026-06-12, run #40, HIGH-effort): the bifurcation's biggest crack — a candidate OOB-read
+
+`adjudication_sqlite_session.csv` — `ext/session/sqlite3session.c` (the session /
+changeset extension, ~6.8K lines), **628 findings**, largest remaining file. Chosen
+as a prime needle target: it parses untrusted changeset/patchset blobs
+(`sqlite3changeset_apply`/`_start`/`_invert`/`_concat`). 8 high-effort reviewer
+subagents + adversarial verification.
+
+**47 TP / 566 FP / 15 uncertain / 0 confirmed FN.**
+
+### Candidate OOB-read in changeset invert/concat (4 INT32-C TP + 14 INT31-C uncertain)
+
+Two subagents independently converged on `sessionChangesetBufferRecord` (the
+raw-record fast path used by invert/concat/merge, NOT the value-decode path):
+
+- It reads each field length via the **unsafe `sessionVarintGet`** (no remaining-
+  buffer bound, unlike `sessionVarintGetSafe` in the validated `sessionReadRecord`)
+  and accumulates `nByte += n` (3691/3692/3695) with **no `nByte<0`/overflow/bounds
+  check** — a genuine signed-overflow on attacker-controlled blob data (**4 INT32-C
+  TP**: 3691, 3692, 3695, 4184).
+- `sessionInputBuffer` is a **no-op for non-streaming input** (`xInput==0`, the
+  in-memory `sqlite3changeset_*` blob case), so it provides no bound either.
+- The callers then use the unbounded `nByte` without validating it against the
+  input size: the iterator does `*paRec=&aData[iNext]; iNext+=nByte` (3848), and
+  **`sqlite3changeset_invert` does `sessionAppendBlob(&sOut, &aData[iNext], nByte, …)`
+  (4187)** — copying `nByte` bytes from the blob. A crafted changeset with an
+  inflated field-length varint can drive `nByte` past the input → **out-of-bounds
+  read** (and the 14 INT31-C uncertains are the merge/rebase `sessionSerialLen →
+  memcpy` consumers of the same unvalidated lengths).
+
+This is the audit's most security-relevant finding. It is a **candidate** (pinned to
+`b1a73ba34d`; needs confirmation against current sqlite trunk and a crafted-changeset
+repro) and is tracked for **responsible disclosure**, NOT a casual PR — see the
+dedicated security task. Contrast with btree.c/vdbe.c where every dangerous path was
+release-guarded: the session raw-record fast path is the one place the validation is
+genuinely absent.
+
+### Everything else: bifurcation holds
+
+The other 43 TP are all declaration/macro/const: DCL13 ×30 (read-only helpers),
+DCL03 ×5 (static_assert), PRE00/02/12 ×7 (multiple-eval/unparenthesized macros:
+`SESSION_UINT32`, `HASH_APPEND`), DCL00 ×1. The semantic mass is FP as ever:
+EXP34 0/102 (rc-propagation idiom), MEM30 0/28, ARR 0/56, STR34 0/22 (the changeset
+byte reads use `u8*`, no sign-extension bug), API00 0/47. 1 CON03 uncertain
+(`sessions_strm_chunk_size` global, race only under API-contract-violating
+concurrent use).
+
+### Running tally (4 large files: btree+vdbe+fts5+session = 3,604 findings)
+
+Semantic-rule TPs now total **6** — 2 contained fts5 structure-overflows + 4 session
+changeset-overflows (the latter a candidate real OOB-read). All other ~270 TPs are
+declaration/macro/const. The pattern: sqc's semantic engines are ~0% precise on
+hardened core, but on **less-fuzzed extensions parsing untrusted serialized input**
+they occasionally fire on genuine integer-overflow/validation gaps. sqlite coverage
+60/220 (27.3%).
