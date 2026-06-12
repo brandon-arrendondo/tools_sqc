@@ -363,5 +363,5 @@ FLP34-C,360,sqlite,src/vdbevtab.c,385,FP,(double)100 is a constant literal conve
 CON03-C,361,sqlite,src/vdbevtab.c,407,FP,bytecodevtabModule is an effectively read-only static module table after init,,
 API00-C,362,sqlite,src/vdbevtab.c,436,FP,db is caller-supplied connection with API precondition; internal init entry,,
 DCL13-C,363,sqlite,src/vdbevtab.c,445,FP,db is param of the stub init in the alternate compile branch; caller precondition,,
-EXP34-C,364,sqlite,ext/misc/compress.c,63,FN,compressFunc: pOut=sqlite3_malloc64(nOut+5) written with no NULL check; OOM -> null write,uncorroborated,medium
-EXP34-C,365,sqlite,ext/misc/compress.c,102,FN,uncompressFunc: nOut from input blob (attacker-controllable) -> sqlite3_malloc64 to uncompress() no NULL check -> OOM null-write,uncorroborated,medium
+EXP34-C,364,sqlite,ext/misc/compress.c,63,FN,compressFunc: pOut=sqlite3_malloc64(nOut+5) written with no NULL check; OOM -> null write,"CONFIRMED REAL + FIXED upstream: compress.c OOM null-checks added in 1c0a370472 (2026-06-03) ""Make ext/misc/compress.c routines responsive to OOM conditions"". Audited b1a73ba34d predates it. sqc FN validated against ground truth.",medium
+EXP34-C,365,sqlite,ext/misc/compress.c,102,FN,uncompressFunc: nOut from input blob (attacker-controllable) -> sqlite3_malloc64 to uncompress() no NULL check -> OOM null-write,CONFIRMED REAL + FIXED upstream: compress.c uncompressFunc OOM null-check added in 1c0a370472 (2026-06-03). sqc FN validated against ground truth.,medium
