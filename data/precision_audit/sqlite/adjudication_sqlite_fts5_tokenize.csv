@@ -1,0 +1,282 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+CON03-C,0,sqlite,ext/fts5/fts5_tokenize.c,25,FP,"static table written only by static init; read-only after (memcpy source at L81), no race",,high
+STR00-C,1,sqlite,ext/fts5/fts5_tokenize.c,48,FP,"(zArg[i] & 0x80)==0 is a deliberate high-bit/ASCII test; negative char still yields nonzero, gating the index use correctly",,high
+ARR30-C,2,sqlite,ext/fts5/fts5_tokenize.c,49,FP,index guarded by (zArg[i] & 0x80)==0 so byte is 0..127 within aTokenChar[128],,high
+EXP34-C,3,sqlite,ext/fts5/fts5_tokenize.c,49,FP,caller fts5AsciiCreate guards p!=0 (line 76) before calling; p non-null at deref,,high
+INT31-C,4,sqlite,ext/fts5/fts5_tokenize.c,49,FP,"bTokenChars is literal 0/1 (lines 85/88); narrowing 0/1 to uchar harmless, not attacker-controlled",,high
+INT10-C,5,sqlite,ext/fts5/fts5_tokenize.c,72,FP,"nArg is a non-negative config arg count; signed modulo result well-defined, no negative path",,med
+STR04-C,6,sqlite,ext/fts5/fts5_tokenize.c,81,FP,"memcpy between two unsigned char[128] lookup tables; byte copy, signedness irrelevant, not a character-set string",,high
+INT32-C,7,sqlite,ext/fts5/fts5_tokenize.c,83,FP,"i is loop counter over nArg config args (tiny, even); i+1 indexes azArg, no overflow",,high
+DCL00-C,8,sqlite,ext/fts5/fts5_tokenize.c,108,FP,c is modified: c += 32 at L109,,high
+INT07-C,9,sqlite,ext/fts5/fts5_tokenize.c,109,TP,plain char c used in numeric compare/add (c>='A'; c+=32) — genuine plain-char-as-number construct,,high
+INT32-C,10,sqlite,ext/fts5/fts5_tokenize.c,109,FP,"c is char in 'A'..'Z' (65-90); c+=32 yields 97-122, no overflow",,high
+STR09-C,11,sqlite,ext/fts5/fts5_tokenize.c,109,FP,asciiFold range compare c>='A'&&c<='Z' in SQLite's documented ASCII-only tokenizer; non-portable-EBCDIC concern is out of scope,,high
+DCL13-C,12,sqlite,ext/fts5/fts5_tokenize.c,118,FP,fixed fts5_tokenizer xTokenize callback signature; cannot const-qualify,,high
+INT32-C,13,sqlite,ext/fts5/fts5_tokenize.c,146,FP,"is bounded by nText (document length, int); is+1 benign offset",,high
+INT32-C,14,sqlite,ext/fts5/fts5_tokenize.c,152,FP,"ie-is both in [0,nText], ie>=is, result non-negative bounded by nText",,high
+INT32-C,15,sqlite,ext/fts5/fts5_tokenize.c,155,FP,explicit (sqlite3_int64) cast before *2; well-defined 64-bit alloc size,,high
+INT32-C,16,sqlite,ext/fts5/fts5_tokenize.c,160,FP,nByte*2 int; nByte=ie-is bounded by token run length; reached only after i64 alloc succeeded; document token runs not near INT_MAX/2,,med
+MEM30-C,17,sqlite,ext/fts5/fts5_tokenize.c,162,FP,free at 154 immediately followed by realloc-reassign at 155; pFold valid (free-then-reassign idiom),,high
+DCL31-C,18,sqlite,ext/fts5/fts5_tokenize.c,165,FP,"xToken is a function-pointer parameter (L122), not an undeclared function",,high
+MEM30-C,19,sqlite,ext/fts5/fts5_tokenize.c,165,FP,same fold buffer reassigned after free; no UAF on this path,,high
+INT32-C,20,sqlite,ext/fts5/fts5_tokenize.c,166,FP,ie bounded by nText<=INT_MAX; ie+1 benign loop advance,,high
+MEM30-C,21,sqlite,ext/fts5/fts5_tokenize.c,169,FP,path-insensitive; 154 free only on realloc with reassign; 169 frees current valid buffer once,,high
+ARR02-C,22,sqlite,ext/fts5/fts5_tokenize.c,186,FP,sqlite3Utf8Trans1 fully initialized with 64 elems; indexed [c-0xc0] for c>=0xc0 => 0..63; style-only note,,high
+PRE00-C,23,sqlite,ext/fts5/fts5_tokenize.c,197,TP,READ_UTF8 evaluates zIn multiple times via *(zIn++) and loop reads,,high
+PRE01-C,24,sqlite,ext/fts5/fts5_tokenize.c,197,TP,macro param zIn used unparenthesized in replacement text,,med
+PRE02-C,25,sqlite,ext/fts5/fts5_tokenize.c,197,FP,statement macro cannot be parenthesized as an expression; PRE10 is the right rule,,med
+PRE10-C,26,sqlite,ext/fts5/fts5_tokenize.c,197,TP,multi-statement macro not wrapped in do-while; unsafe in braceless if,,high
+PRE12-C,27,sqlite,ext/fts5/fts5_tokenize.c,197,TP,zIn evaluated multiple times (post-increment + loop conditions),,high
+PRE00-C,28,sqlite,ext/fts5/fts5_tokenize.c,210,TP,WRITE_UTF8 evaluates c and zOut multiple times across branches,,high
+PRE01-C,29,sqlite,ext/fts5/fts5_tokenize.c,210,TP,macro param zOut unparenthesized in replacement text,,med
+PRE02-C,30,sqlite,ext/fts5/fts5_tokenize.c,210,FP,statement macro cannot be expression-parenthesized; PRE10 covers it,,med
+PRE10-C,31,sqlite,ext/fts5/fts5_tokenize.c,210,TP,multi-statement macro wrapped in bare {} not do-while,,high
+PRE12-C,32,sqlite,ext/fts5/fts5_tokenize.c,210,TP,zOut evaluated multiple times via repeated *zOut++,,high
+PRE00-C,33,sqlite,ext/fts5/fts5_tokenize.c,232,TP,FTS5_SKIP_UTF8 evaluates zIn multiple times (*(zIn++) then loop),,high
+PRE01-C,34,sqlite,ext/fts5/fts5_tokenize.c,232,TP,macro param zIn unparenthesized in replacement text,,med
+PRE02-C,35,sqlite,ext/fts5/fts5_tokenize.c,232,FP,statement macro cannot be expression-parenthesized; PRE10 covers it,,med
+PRE10-C,36,sqlite,ext/fts5/fts5_tokenize.c,232,TP,multi-statement macro wrapped in bare {} not do-while,,high
+PRE12-C,37,sqlite,ext/fts5/fts5_tokenize.c,232,TP,zIn evaluated multiple times (post-increment + loop reads),,high
+API01-C,38,sqlite,ext/fts5/fts5_tokenize.c,240,FP,"heuristic struct-layout flag; aTokenChar indexed by guarded iCode<128, no overflow path",,med
+STR34-C,39,sqlite,ext/fts5/fts5_tokenize.c,261,FP,"(int)strlen(z) widens a size_t length, not a char value; no sign extension of a byte",,high
+EXP34-C,40,sqlite,ext/fts5/fts5_tokenize.c,265,FP,caller fts5UnicodeCreate guards if(p) (line 371); p non-null,,high
+INT30-C,41,sqlite,ext/fts5/fts5_tokenize.c,266,FP,"(n+nException)*sizeof(int): config-time only, requires enormous tokenchars string; deep-semantic wrap unreachable in practice",,med
+INT32-C,42,sqlite,ext/fts5/fts5_tokenize.c,266,FP,"config-time; n=strlen of trusted CREATE arg, p->nException tiny; sizeof promotes mul to size_t",,high
+ARR36-C,43,sqlite,ext/fts5/fts5_tokenize.c,271,FP,zCsr and zTerm both derive from z/&z[n]; same allocation,,high
+EXP33-C,44,sqlite,ext/fts5/fts5_tokenize.c,274,FP,READ_UTF8 macro first stmt assigns iCode (c=*(zIn++)) before any read,,high
+ARR30-C,45,sqlite,ext/fts5/fts5_tokenize.c,276,FP,p->aTokenChar[iCode] inside if(iCode<128) guard; size 128,,high
+INT31-C,46,sqlite,ext/fts5/fts5_tokenize.c,276,FP,"bTokenChars is literal 0/1 (lines 407/410); narrowing harmless, not text-controlled",,high
+ARR30-C,47,sqlite,ext/fts5/fts5_tokenize.c,278,FP,aCategory[32] indexed by sqlite3Fts5UnicodeCategory() whose range is the fixed category enumeration (<32),,med
+ARR38-C,48,sqlite,ext/fts5/fts5_tokenize.c,286,FP,memmove writes up to index nNew; aNew sized n+nException >= nNew; within allocation,,high
+EXP05-C,49,sqlite,ext/fts5/fts5_tokenize.c,286,FP,aNew is int* (non-const); no const cast away; lexical misfire,,high
+INT30-C,50,sqlite,ext/fts5/fts5_tokenize.c,286,FP,"(nNew-i)*sizeof(int): i in [0,nNew] so factor non-negative and bounded; no wrap",,high
+INT32-C,51,sqlite,ext/fts5/fts5_tokenize.c,286,FP,"i,nNew bounded by tiny exception array; sizeof promotes to size_t",,high
+INT32-C,52,sqlite,ext/fts5/fts5_tokenize.c,288,FP,nNew increments per exception char; bounded by config string length,,high
+DCL13-C,53,sqlite,ext/fts5/fts5_tokenize.c,305,TP,"p only read (p->nException, p->aiException); never modified, can be const",,high
+INT32-C,54,sqlite,ext/fts5/fts5_tokenize.c,309,FP,nException tiny array size; nException-1 benign,,high
+INT32-C,55,sqlite,ext/fts5/fts5_tokenize.c,312,FP,iHi+iLo binary-search indices bounded by tiny array size,,high
+INT32-C,56,sqlite,ext/fts5/fts5_tokenize.c,316,FP,iTest+1 bounded by array size,,high
+INT32-C,57,sqlite,ext/fts5/fts5_tokenize.c,318,FP,"iTest-1 bounded by array size, >=0 region",,high
+DCL13-C,58,sqlite,ext/fts5/fts5_tokenize.c,339,FP,p->aCategory/aTokenChar passed to mutators CatParse and UnicodeAscii,,high
+ARR30-C,59,sqlite,ext/fts5/fts5_tokenize.c,342,FP,"loop over null-terminated config 'categories' string (CREATE arg, not document text); stops at NUL",,high
+EXP34-C,60,sqlite,ext/fts5/fts5_tokenize.c,344,FP,caller passes p after if(p) guard (371->390); p non-null,,high
+INT10-C,61,sqlite,ext/fts5/fts5_tokenize.c,367,FP,nArg non-negative config count; signed modulo well-defined here,,med
+INT30-C,62,sqlite,ext/fts5/fts5_tokenize.c,378,FP,"nFold is constant 64, sizeof(char)=1; product=64, no wrap",,high
+INT32-C,63,sqlite,ext/fts5/fts5_tokenize.c,386,FP,i loop counter over nArg config args; i+1 indexes azArg,,high
+INT32-C,64,sqlite,ext/fts5/fts5_tokenize.c,394,FP,i loop counter over nArg config args; i+1 indexes azArg,,high
+ARR30-C,65,sqlite,ext/fts5/fts5_tokenize.c,437,FP,aCategory[32] indexed by category function bounded by category enumeration (<32),,med
+ARR30-C,66,sqlite,ext/fts5/fts5_tokenize.c,453,FP,"&pText[nText] is one-past-end sentinel computation, not a dereference",,high
+EXP05-C,67,sqlite,ext/fts5/fts5_tokenize.c,454,FP,casts const char* pText to unsigned char* but zCsr is read-only; no modification of const object,,med
+INT32-C,68,sqlite,ext/fts5/fts5_tokenize.c,459,FP,"nFold starts at 64; nFold-6 pointer offset, no overflow",,high
+STR34-C,69,sqlite,ext/fts5/fts5_tokenize.c,459,FP,"pEnd = &aFold[nFold-6] is pointer arithmetic, no char value widened into index",,high
+ARR30-C,70,sqlite,ext/fts5/fts5_tokenize.c,465,FP,loop bounded by zCsr>=zTerm end-pointer sentinel,,high
+ARR30-C,71,sqlite,ext/fts5/fts5_tokenize.c,472,FP,inner loop has if(zCsr>=zTerm) goto tokenize_done before any deref,,high
+ARR36-C,72,sqlite,ext/fts5/fts5_tokenize.c,473,FP,zCsr and zTerm both derive from pText; same array,,high
+INT14-C,73,sqlite,ext/fts5/fts5_tokenize.c,474,FP,"*zCsr is unsigned char (zCsr is unsigned char*); bitwise on already-unsigned value, ptr ++ is separate — misclassification",,high
+EXP05-C,74,sqlite,ext/fts5/fts5_tokenize.c,477,FP,read-only cast; pText never written through cast,,med
+EXP33-C,75,sqlite,ext/fts5/fts5_tokenize.c,478,FP,READ_UTF8 assigns iCode before read,,high
+EXP05-C,76,sqlite,ext/fts5/fts5_tokenize.c,484,FP,read-only cast of pText; no modification,,med
+ARR30-C,77,sqlite,ext/fts5/fts5_tokenize.c,493,FP,while(zCsr<zTerm) bounded by end-pointer sentinel,,high
+ARR36-C,78,sqlite,ext/fts5/fts5_tokenize.c,493,FP,compared pointers both derive from pText,,high
+INT32-C,79,sqlite,ext/fts5/fts5_tokenize.c,498,FP,explicit (sqlite3_int64) cast before *2; well-defined alloc size,,high
+STR34-C,80,sqlite,ext/fts5/fts5_tokenize.c,503,FP,"zOut = &aFold[zOut - p->aFold] is a pointer difference/offset, no char widening",,high
+INT31-C,81,sqlite,ext/fts5/fts5_tokenize.c,504,FP,"nFold positive, doubles from 64; bounded buffer size, no negative/truncation",,high
+EXP30-C,82,sqlite,ext/fts5/fts5_tokenize.c,507,FP,chained assignment p->nFold=nFold=nFold*2 is fully sequenced; no unsequenced modify+access,,high
+INT32-C,83,sqlite,ext/fts5/fts5_tokenize.c,507,FP,"nFold*2 int doubling; bounded by token length growth, not near INT_MAX",,med
+INT32-C,84,sqlite,ext/fts5/fts5_tokenize.c,508,FP,nFold-6 pointer offset; nFold>=64,,high
+STR34-C,85,sqlite,ext/fts5/fts5_tokenize.c,508,FP,"pEnd = &aFold[nFold-6] pointer arithmetic, no char widening",,high
+MEM30-C,86,sqlite,ext/fts5/fts5_tokenize.c,517,FP,line 505 frees p->aFold (buffer) not p; p->eRemoveDiacritic is separate int field,,high
+INT30-C,87,sqlite,ext/fts5/fts5_tokenize.c,528,FP,"*zCsr unsigned char guarded to 'A'-'Z' (65-90); +32 promoted to int, no wrap",,high
+INT32-C,88,sqlite,ext/fts5/fts5_tokenize.c,528,FP,*zCsr is unsigned char in 'A'..'Z' (65-90); +32 yields 97-122,,high
+STR34-C,89,sqlite,ext/fts5/fts5_tokenize.c,528,FP,*zCsr is unsigned char* (line 451/454); reached only in ASCII branch (a[*zCsr]!=0); no sign extension,,high
+MEM33-C,90,sqlite,ext/fts5/fts5_tokenize.c,530,FP,*zOut++=*zCsr is a byte copy; no flexible-array struct assignment,,high
+STR34-C,91,sqlite,ext/fts5/fts5_tokenize.c,530,FP,"*zCsr is unsigned char*; ASCII-range store, read as unsigned, no sign extension",,high
+EXP05-C,92,sqlite,ext/fts5/fts5_tokenize.c,534,FP,read-only cast of pText,,med
+ARR36-C,93,sqlite,ext/fts5/fts5_tokenize.c,538,FP,zOut-aFold within current fold buffer (aFold is the live p->aFold allocation),,high
+DCL31-C,94,sqlite,ext/fts5/fts5_tokenize.c,538,FP,"xToken is a function-pointer parameter (L447), not undeclared function",,high
+INT32-C,95,sqlite,ext/fts5/fts5_tokenize.c,601,FP,nArg config-arg count; nArg-1 guarded by nArg>0 ternary,,high
+EXP34-C,96,sqlite,ext/fts5/fts5_tokenize.c,603,FP,pRet non-null (malloc guarded at 594 sets rc=NOMEM else); rc==OK guard at 600,,high
+DCL13-C,97,sqlite,ext/fts5/fts5_tokenize.c,632,TP,aRule never modified but inside #if 0 dead code,,low
+INT32-C,98,sqlite,ext/fts5/fts5_tokenize.c,645,FP,"dead code (#if 0 block); nBuf bounded, guarded by nBuf>=nSuffix",,high
+ARR30-C,99,sqlite,ext/fts5/fts5_tokenize.c,647,FP,code is inside #if 0 block (lines 631-655); never compiled,,high
+INT32-C,100,sqlite,ext/fts5/fts5_tokenize.c,648,FP,dead code (#if 0); nStem+nOutput tiny token-buffer sizes,,high
+DCL13-C,101,sqlite,ext/fts5/fts5_tokenize.c,663,TP,zStem only read in fts5PorterGobbleVC; can be const,,med
+EXP30-C,102,sqlite,ext/fts5/fts5_tokenize.c,669,FP,bCons read as fn-arg is sequenced before assignment via function-call boundary,,high
+EXP45-C,103,sqlite,ext/fts5/fts5_tokenize.c,674,FP,intentional assignment in condition (porter stemmer); correct logic,,med
+INT32-C,104,sqlite,ext/fts5/fts5_tokenize.c,674,FP,i loop index over nStem (<=64 token len); i+1 return value bounded,,high
+INT32-C,105,sqlite,ext/fts5/fts5_tokenize.c,688,FP,nStem<=64 (porter MAX_TOKEN); nStem-n non-negative subset of stem,,high
+DCL13-C,106,sqlite,ext/fts5/fts5_tokenize.c,705,TP,zStem only read in fts5Porter_Ostar; can be const,,med
+INT13-C,107,sqlite,ext/fts5/fts5_tokenize.c,715,TP,"mask<<1 on signed int mask — genuine signed-shift construct; benign, value bounded to low bits",,low
+INT14-C,108,sqlite,ext/fts5/fts5_tokenize.c,715,TP,"mask is plain int used with << and + together — genuine mixed bitwise/arithmetic construct (benign, mask stays small)",,low
+INT32-C,109,sqlite,ext/fts5/fts5_tokenize.c,715,FP,mask<<1 over nStem<=64 iters can overflow int sign bit (technical UB) but result only used as mask&0x0007; no consequence,,med
+INT13-C,110,sqlite,ext/fts5/fts5_tokenize.c,717,TP,mask & 0x0007 on signed int mask — genuine signed bitwise-AND construct; benign,,low
+DCL13-C,111,sqlite,ext/fts5/fts5_tokenize.c,729,TP,zStem only read in fts5Porter_Vowel; can be const,,med
+INT32-C,112,sqlite,ext/fts5/fts5_tokenize.c,748,FP,nBuf<=64 porter token (nToken<=FTS5_PORTER_MAX_TOKEN); nBuf-2 with nBuf>=3,,high
+INT32-C,113,sqlite,ext/fts5/fts5_tokenize.c,752,FP,nBuf<=64; nBuf-2 guarded by nBuf>2,,high
+INT32-C,114,sqlite,ext/fts5/fts5_tokenize.c,753,FP,nBuf<=64; nBuf-2 guarded by nBuf>2,,high
+INT32-C,115,sqlite,ext/fts5/fts5_tokenize.c,760,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,116,sqlite,ext/fts5/fts5_tokenize.c,761,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,117,sqlite,ext/fts5/fts5_tokenize.c,764,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,118,sqlite,ext/fts5/fts5_tokenize.c,765,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,119,sqlite,ext/fts5/fts5_tokenize.c,772,FP,nBuf<=64; nBuf-2 guarded by nBuf>2,,high
+INT32-C,120,sqlite,ext/fts5/fts5_tokenize.c,773,FP,nBuf<=64; nBuf-2 guarded by nBuf>2,,high
+INT32-C,121,sqlite,ext/fts5/fts5_tokenize.c,780,FP,nBuf<=64; nBuf-2 guarded by nBuf>2,,high
+INT32-C,122,sqlite,ext/fts5/fts5_tokenize.c,781,FP,nBuf<=64; nBuf-2 guarded by nBuf>2,,high
+INT32-C,123,sqlite,ext/fts5/fts5_tokenize.c,788,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,124,sqlite,ext/fts5/fts5_tokenize.c,789,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,125,sqlite,ext/fts5/fts5_tokenize.c,792,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,126,sqlite,ext/fts5/fts5_tokenize.c,793,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,127,sqlite,ext/fts5/fts5_tokenize.c,800,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,128,sqlite,ext/fts5/fts5_tokenize.c,801,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,129,sqlite,ext/fts5/fts5_tokenize.c,804,FP,nBuf<=64; nBuf-5 guarded by nBuf>5,,high
+INT32-C,130,sqlite,ext/fts5/fts5_tokenize.c,805,FP,nBuf<=64; nBuf-5 guarded by nBuf>5,,high
+INT32-C,131,sqlite,ext/fts5/fts5_tokenize.c,808,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,132,sqlite,ext/fts5/fts5_tokenize.c,809,FP,nBuf<=64; nBuf-4 guarded by nBuf>4,,high
+INT32-C,133,sqlite,ext/fts5/fts5_tokenize.c,812,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,134,sqlite,ext/fts5/fts5_tokenize.c,813,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,135,sqlite,ext/fts5/fts5_tokenize.c,820,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,136,sqlite,ext/fts5/fts5_tokenize.c,821,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,137,sqlite,ext/fts5/fts5_tokenize.c,824,FP,nBuf<=64; nBuf-2 guarded by nBuf>2,,high
+INT32-C,138,sqlite,ext/fts5/fts5_tokenize.c,825,FP,nBuf<=64; nBuf-2 guarded by nBuf>2,,high
+INT32-C,139,sqlite,ext/fts5/fts5_tokenize.c,832,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,140,sqlite,ext/fts5/fts5_tokenize.c,833,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,141,sqlite,ext/fts5/fts5_tokenize.c,840,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,142,sqlite,ext/fts5/fts5_tokenize.c,841,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,143,sqlite,ext/fts5/fts5_tokenize.c,844,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,144,sqlite,ext/fts5/fts5_tokenize.c,845,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,145,sqlite,ext/fts5/fts5_tokenize.c,852,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,146,sqlite,ext/fts5/fts5_tokenize.c,853,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,147,sqlite,ext/fts5/fts5_tokenize.c,860,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,148,sqlite,ext/fts5/fts5_tokenize.c,861,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,149,sqlite,ext/fts5/fts5_tokenize.c,868,FP,nBuf<=64; nBuf-3 guarded by nBuf>3,,high
+INT32-C,150,sqlite,ext/fts5/fts5_tokenize.c,869,FP,nBuf bounded 3..64 by line 1194 guard (nToken>FTS5_PORTER_MAX_TOKEN||nToken<3); nBuf-3 cannot overflow int32,,high
+INT32-C,151,sqlite,ext/fts5/fts5_tokenize.c,882,FP,"switch on aBuf[nBuf-2]; nBuf bounded 3..~67; nBuf-2 small positive, no overflow",,high
+INT32-C,152,sqlite,ext/fts5/fts5_tokenize.c,886,FP,nBuf bounded; guarded by nBuf>2 before memcmp at nBuf-2; no overflow,,high
+INT32-C,153,sqlite,ext/fts5/fts5_tokenize.c,887,FP,"nBuf-2+3 with nBuf<=~64 yields ~65, far from INT_MAX; bounded",,high
+INT32-C,154,sqlite,ext/fts5/fts5_tokenize.c,894,FP,guarded nBuf>2; nBuf bounded; nBuf-2 no overflow,,high
+INT32-C,155,sqlite,ext/fts5/fts5_tokenize.c,895,FP,nBuf-2+3 bounded ~65; no overflow,,high
+INT32-C,156,sqlite,ext/fts5/fts5_tokenize.c,902,FP,guarded nBuf>2; nBuf bounded; nBuf-2 no overflow,,high
+INT32-C,157,sqlite,ext/fts5/fts5_tokenize.c,903,FP,nBuf-2+3 bounded ~65; no overflow,,high
+INT32-C,158,sqlite,ext/fts5/fts5_tokenize.c,916,FP,switch aBuf[nBuf-2]; nBuf bounded 3..~67; no overflow,,high
+INT32-C,159,sqlite,ext/fts5/fts5_tokenize.c,920,FP,guarded nBuf>7; nBuf bounded; nBuf-7 no overflow,,high
+INT32-C,160,sqlite,ext/fts5/fts5_tokenize.c,921,FP,nBuf-7 guarded by nBuf>7; bounded; memcpy dest within 128B buf,,high
+INT32-C,161,sqlite,ext/fts5/fts5_tokenize.c,922,FP,nBuf-7+3 bounded; no overflow,,high
+INT32-C,162,sqlite,ext/fts5/fts5_tokenize.c,925,FP,guarded nBuf>6; nBuf bounded; nBuf-6 no overflow,,high
+INT32-C,163,sqlite,ext/fts5/fts5_tokenize.c,926,FP,nBuf-6 guarded; bounded; no overflow,,high
+INT32-C,164,sqlite,ext/fts5/fts5_tokenize.c,927,FP,nBuf-6+4 bounded; no overflow,,high
+INT32-C,165,sqlite,ext/fts5/fts5_tokenize.c,934,FP,guarded nBuf>4; nBuf bounded; nBuf-4 no overflow,,high
+INT32-C,166,sqlite,ext/fts5/fts5_tokenize.c,935,FP,nBuf-4 guarded; bounded; no overflow,,high
+INT32-C,167,sqlite,ext/fts5/fts5_tokenize.c,936,FP,nBuf-4 used in pnBuf update; bounded; no overflow,,high
+INT32-C,168,sqlite,ext/fts5/fts5_tokenize.c,939,FP,guarded nBuf>4; nBuf bounded; nBuf-4 no overflow,,high
+INT32-C,169,sqlite,ext/fts5/fts5_tokenize.c,940,FP,nBuf-4 guarded; bounded; no overflow,,high
+INT32-C,170,sqlite,ext/fts5/fts5_tokenize.c,941,FP,nBuf-4+4 bounded; no overflow,,high
+INT32-C,171,sqlite,ext/fts5/fts5_tokenize.c,948,FP,guarded nBuf>4; nBuf bounded; nBuf-4 no overflow,,high
+INT32-C,172,sqlite,ext/fts5/fts5_tokenize.c,949,FP,nBuf-4 guarded; bounded; no overflow,,high
+INT32-C,173,sqlite,ext/fts5/fts5_tokenize.c,950,FP,nBuf-4+3 bounded; no overflow,,high
+INT32-C,174,sqlite,ext/fts5/fts5_tokenize.c,957,FP,guarded nBuf>4; nBuf bounded; nBuf-4 no overflow,,high
+INT32-C,175,sqlite,ext/fts5/fts5_tokenize.c,958,FP,nBuf-4 guarded; bounded; no overflow,,high
+INT32-C,176,sqlite,ext/fts5/fts5_tokenize.c,959,FP,nBuf-4+3 bounded; no overflow,,high
+INT32-C,177,sqlite,ext/fts5/fts5_tokenize.c,966,FP,guarded nBuf>3; nBuf bounded; nBuf-3 no overflow,,high
+INT32-C,178,sqlite,ext/fts5/fts5_tokenize.c,967,FP,nBuf-3 guarded; bounded; no overflow,,high
+INT32-C,179,sqlite,ext/fts5/fts5_tokenize.c,968,FP,nBuf-3+3 bounded; no overflow,,high
+INT32-C,180,sqlite,ext/fts5/fts5_tokenize.c,971,FP,guarded nBuf>4; nBuf bounded; nBuf-4 no overflow,,high
+INT32-C,181,sqlite,ext/fts5/fts5_tokenize.c,972,FP,nBuf-4 guarded; bounded; no overflow,,high
+INT32-C,182,sqlite,ext/fts5/fts5_tokenize.c,973,FP,nBuf-4+2 bounded; no overflow,,high
+INT32-C,183,sqlite,ext/fts5/fts5_tokenize.c,976,FP,guarded nBuf>5; nBuf bounded; nBuf-5 no overflow,,high
+INT32-C,184,sqlite,ext/fts5/fts5_tokenize.c,977,FP,nBuf-5 guarded; bounded; no overflow,,high
+INT32-C,185,sqlite,ext/fts5/fts5_tokenize.c,978,FP,nBuf-5+3 bounded; no overflow,,high
+INT32-C,186,sqlite,ext/fts5/fts5_tokenize.c,981,FP,guarded nBuf>3; nBuf bounded; nBuf-3 no overflow,,high
+INT32-C,187,sqlite,ext/fts5/fts5_tokenize.c,982,FP,nBuf-3 guarded; bounded; no overflow,,high
+INT32-C,188,sqlite,ext/fts5/fts5_tokenize.c,983,FP,nBuf-3+1 bounded; no overflow,,high
+INT32-C,189,sqlite,ext/fts5/fts5_tokenize.c,986,FP,guarded nBuf>5; nBuf bounded; nBuf-5 no overflow,,high
+INT32-C,190,sqlite,ext/fts5/fts5_tokenize.c,987,FP,nBuf-5 guarded; bounded; no overflow,,high
+INT32-C,191,sqlite,ext/fts5/fts5_tokenize.c,988,FP,nBuf-5+3 bounded; no overflow,,high
+INT32-C,192,sqlite,ext/fts5/fts5_tokenize.c,995,FP,guarded nBuf>7; nBuf bounded; nBuf-7 no overflow,,high
+INT32-C,193,sqlite,ext/fts5/fts5_tokenize.c,996,FP,nBuf-7 guarded; bounded; no overflow,,high
+INT32-C,194,sqlite,ext/fts5/fts5_tokenize.c,997,FP,nBuf-7+3 bounded; no overflow,,high
+INT32-C,195,sqlite,ext/fts5/fts5_tokenize.c,1000,FP,guarded nBuf>5; nBuf bounded; nBuf-5 no overflow,,high
+INT32-C,196,sqlite,ext/fts5/fts5_tokenize.c,1001,FP,nBuf-5 guarded; bounded; no overflow,,high
+INT32-C,197,sqlite,ext/fts5/fts5_tokenize.c,1002,FP,nBuf-5+3 bounded; no overflow,,high
+INT32-C,198,sqlite,ext/fts5/fts5_tokenize.c,1005,FP,guarded nBuf>4; nBuf bounded; nBuf-4 no overflow,,high
+INT32-C,199,sqlite,ext/fts5/fts5_tokenize.c,1006,FP,nBuf-4 guarded; bounded; no overflow,,high
+INT32-C,200,sqlite,ext/fts5/fts5_tokenize.c,1007,FP,nBuf-4+3 bounded; no overflow,,high
+INT32-C,201,sqlite,ext/fts5/fts5_tokenize.c,1014,FP,guarded nBuf>5; nBuf bounded; nBuf-5 no overflow,,high
+INT32-C,202,sqlite,ext/fts5/fts5_tokenize.c,1015,FP,nBuf-5 guarded; bounded; no overflow,,high
+INT32-C,203,sqlite,ext/fts5/fts5_tokenize.c,1016,FP,nBuf-5+2 bounded; no overflow,,high
+INT32-C,204,sqlite,ext/fts5/fts5_tokenize.c,1019,FP,nBuf bounded [3..64] by guard at line 1194 (nToken<=FTS5_PORTER_MAX_TOKEN); arithmetic tiny,,high
+INT32-C,205,sqlite,ext/fts5/fts5_tokenize.c,1020,FP,nBuf bounded [3..64] by guard at line 1194; nBuf-7 cannot overflow,,high
+INT32-C,206,sqlite,ext/fts5/fts5_tokenize.c,1021,FP,nBuf bounded [3..64]; nBuf-7+3 is small,,high
+INT32-C,207,sqlite,ext/fts5/fts5_tokenize.c,1024,FP,nBuf bounded [3..64] by line-1194 guard,,high
+INT32-C,208,sqlite,ext/fts5/fts5_tokenize.c,1025,FP,nBuf bounded [3..64]; nBuf-7 small,,high
+INT32-C,209,sqlite,ext/fts5/fts5_tokenize.c,1026,FP,nBuf bounded [3..64]; nBuf-7+3 small,,high
+INT32-C,210,sqlite,ext/fts5/fts5_tokenize.c,1029,FP,nBuf bounded [3..64] by line-1194 guard,,high
+INT32-C,211,sqlite,ext/fts5/fts5_tokenize.c,1030,FP,nBuf bounded [3..64]; nBuf-7 small,,high
+INT32-C,212,sqlite,ext/fts5/fts5_tokenize.c,1031,FP,nBuf bounded [3..64]; nBuf-7+3 small,,high
+INT32-C,213,sqlite,ext/fts5/fts5_tokenize.c,1038,FP,nBuf bounded [3..64] by line-1194 guard,,high
+INT32-C,214,sqlite,ext/fts5/fts5_tokenize.c,1039,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,215,sqlite,ext/fts5/fts5_tokenize.c,1040,FP,nBuf bounded [3..64]; nBuf-5+2 small,,high
+INT32-C,216,sqlite,ext/fts5/fts5_tokenize.c,1043,FP,nBuf bounded [3..64] by line-1194 guard,,high
+INT32-C,217,sqlite,ext/fts5/fts5_tokenize.c,1044,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,218,sqlite,ext/fts5/fts5_tokenize.c,1045,FP,nBuf bounded [3..64]; nBuf-5+3 small,,high
+INT32-C,219,sqlite,ext/fts5/fts5_tokenize.c,1048,FP,nBuf bounded [3..64]; nBuf-6 small,,high
+INT32-C,220,sqlite,ext/fts5/fts5_tokenize.c,1050,FP,nBuf bounded [3..64]; nBuf-6+3 small,,high
+INT32-C,221,sqlite,ext/fts5/fts5_tokenize.c,1063,FP,nBuf bounded [3..64]; nBuf-2 small (Step3),,high
+INT32-C,222,sqlite,ext/fts5/fts5_tokenize.c,1067,FP,nBuf bounded [3..64]; nBuf-4 small,,high
+INT32-C,223,sqlite,ext/fts5/fts5_tokenize.c,1068,FP,nBuf bounded [3..64]; nBuf-4 small,,high
+INT32-C,224,sqlite,ext/fts5/fts5_tokenize.c,1069,FP,nBuf bounded [3..64]; nBuf-4+2 small,,high
+INT32-C,225,sqlite,ext/fts5/fts5_tokenize.c,1076,FP,nBuf bounded [3..64]; nBuf-4 small,,high
+INT32-C,226,sqlite,ext/fts5/fts5_tokenize.c,1077,FP,nBuf bounded [3..64]; nBuf-4 small,,high
+INT32-C,227,sqlite,ext/fts5/fts5_tokenize.c,1084,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,228,sqlite,ext/fts5/fts5_tokenize.c,1085,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,229,sqlite,ext/fts5/fts5_tokenize.c,1086,FP,nBuf bounded [3..64]; nBuf-5+2 small,,high
+INT32-C,230,sqlite,ext/fts5/fts5_tokenize.c,1089,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,231,sqlite,ext/fts5/fts5_tokenize.c,1090,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,232,sqlite,ext/fts5/fts5_tokenize.c,1091,FP,nBuf bounded [3..64]; nBuf-5+2 small,,high
+INT32-C,233,sqlite,ext/fts5/fts5_tokenize.c,1098,FP,nBuf bounded [3..64]; nBuf-3 small,,high
+INT32-C,234,sqlite,ext/fts5/fts5_tokenize.c,1099,FP,nBuf bounded [3..64]; nBuf-3 small,,high
+INT32-C,235,sqlite,ext/fts5/fts5_tokenize.c,1106,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,236,sqlite,ext/fts5/fts5_tokenize.c,1107,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,237,sqlite,ext/fts5/fts5_tokenize.c,1114,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,238,sqlite,ext/fts5/fts5_tokenize.c,1115,FP,nBuf bounded [3..64]; nBuf-5 small,,high
+INT32-C,239,sqlite,ext/fts5/fts5_tokenize.c,1116,FP,nBuf bounded [3..64]; nBuf-5+2 small,,high
+INT32-C,240,sqlite,ext/fts5/fts5_tokenize.c,1129,FP,nBuf bounded [3..64]; nBuf-2 small (Step1B),,high
+INT32-C,241,sqlite,ext/fts5/fts5_tokenize.c,1133,FP,nBuf bounded [3..64]; nBuf-3 small,,high
+INT32-C,242,sqlite,ext/fts5/fts5_tokenize.c,1134,FP,nBuf bounded [3..64]; nBuf-3 small,,high
+INT32-C,243,sqlite,ext/fts5/fts5_tokenize.c,1135,FP,nBuf bounded [3..64]; nBuf-3+2 small,,high
+INT32-C,244,sqlite,ext/fts5/fts5_tokenize.c,1138,FP,nBuf bounded [3..64]; nBuf-2 small,,high
+INT32-C,245,sqlite,ext/fts5/fts5_tokenize.c,1139,FP,nBuf bounded [3..64]; nBuf-2 small,,high
+INT32-C,246,sqlite,ext/fts5/fts5_tokenize.c,1147,FP,nBuf bounded [3..64]; nBuf-3 small,,high
+INT32-C,247,sqlite,ext/fts5/fts5_tokenize.c,1148,FP,nBuf bounded [3..64]; nBuf-3 small,,high
+DCL13-C,248,sqlite,ext/fts5/fts5_tokenize.c,1163,TP,aBuf only read in fts5PorterStep1A; only *pnBuf written,,high
+INT32-C,249,sqlite,ext/fts5/fts5_tokenize.c,1172,FP,nBuf bounded [3..64] in Step1A; nBuf-1 small,,high
+INT32-C,250,sqlite,ext/fts5/fts5_tokenize.c,1176,FP,nBuf bounded [3..64]; nBuf-1 small,,high
+MSC37-C,251,sqlite,ext/fts5/fts5_tokenize.c,1181,FP,all paths return: L1241 normal return and L1244 pass_through return,,high
+DCL13-C,252,sqlite,ext/fts5/fts5_tokenize.c,1182,FP,pCtx->aBuf written via memcpy at L1197; fixed xToken callback signature,,high
+INT31-C,253,sqlite,ext/fts5/fts5_tokenize.c,1197,FP,"nBuf=nToken guarded to [3,64] before memcpy into aBuf[128]; positive and bounded",,high
+STR31-C,254,sqlite,ext/fts5/fts5_tokenize.c,1197,FP,"memcpy(aBuf,pToken,nBuf) bounded: nBuf<=FTS5_PORTER_MAX_TOKEN(64)<sizeof aBuf(128) via guard at line 1194; counted copy not a C-string",,high
+DCL00-C,255,sqlite,ext/fts5/fts5_tokenize.c,1203,TP,"c read-only after init (IsVowel, c!='l', c==aBuf[nBuf-2]); can be const",,high
+INT32-C,256,sqlite,ext/fts5/fts5_tokenize.c,1203,FP,nBuf bounded near [3..65] in PorterCb; nBuf-1 small,,high
+INT32-C,257,sqlite,ext/fts5/fts5_tokenize.c,1207,FP,nBuf small positive (~3..65); nBuf-- nowhere near INT_MIN,,high
+INT32-C,258,sqlite,ext/fts5/fts5_tokenize.c,1209,FP,nBuf small (<=65); nBuf++ nowhere near INT_MAX; aBuf[128] has room,,high
+INT32-C,259,sqlite,ext/fts5/fts5_tokenize.c,1215,FP,nBuf small; nBuf-1 cannot overflow,,high
+INT32-C,260,sqlite,ext/fts5/fts5_tokenize.c,1216,FP,nBuf small; nBuf-1 cannot overflow,,high
+INT32-C,261,sqlite,ext/fts5/fts5_tokenize.c,1227,FP,nBuf small; nBuf-1 cannot overflow,,high
+INT32-C,262,sqlite,ext/fts5/fts5_tokenize.c,1228,FP,nBuf small; nBuf-1 cannot overflow,,high
+INT32-C,263,sqlite,ext/fts5/fts5_tokenize.c,1230,FP,nBuf small positive; nBuf-- nowhere near INT_MIN,,high
+INT32-C,264,sqlite,ext/fts5/fts5_tokenize.c,1236,FP,nBuf small; nBuf-1 cannot overflow,,high
+MSC07-C,265,sqlite,ext/fts5/fts5_tokenize.c,1243,FP,pass_through label reachable via goto at L1194; not unreachable,,high
+DCL13-C,266,sqlite,ext/fts5/fts5_tokenize.c,1251,FP,fixed fts5_tokenizer_v2 xTokenize callback signature,,high
+DCL13-C,267,sqlite,ext/fts5/fts5_tokenize.c,1252,FP,fixed v2 callback signature; pCtx forwarded to sub-tokenizer,,high
+INT10-C,268,sqlite,ext/fts5/fts5_tokenize.c,1296,FP,nArg non-negative config count; signed modulo well-defined here,,med
+INT32-C,269,sqlite,ext/fts5/fts5_tokenize.c,1308,FP,"i is loop index bounded by nArg (config args, not attacker text); i+1 tiny",,high
+DCL13-C,270,sqlite,ext/fts5/fts5_tokenize.c,1344,FP,fixed fts5_tokenizer xTokenize callback signature,,high
+ARR30-C,271,sqlite,ext/fts5/fts5_tokenize.c,1356,FP,"&zIn[nText] one-past-end sentinel, guarded by (zIn?...:0); not a deref",,high
+ARR00-C,272,sqlite,ext/fts5/fts5_tokenize.c,1363,FP,ii is the for-loop counter initialized to 0 at for(ii=0;...); not uninitialized,,high
+DCL31-C,273,sqlite,ext/fts5/fts5_tokenize.c,1397,FP,"xToken is a function-pointer parameter (L1348), not undeclared function",,high
+EXP05-C,274,sqlite,ext/fts5/fts5_tokenize.c,1404,FP,zOut-z1 is pointer subtraction (ptrdiff_t); no const cast away,,high
+INT32-C,275,sqlite,ext/fts5/fts5_tokenize.c,1404,FP,"zOut-z1 is small pointer diff within aBuf[32] (<=~12 bytes), zOut>=z1; no overflow",,high
+DCL13-C,276,sqlite,ext/fts5/fts5_tokenize.c,1430,TP,"pTok only read; exported non-callback fn, can be const TrigramTokenizer*",,med
+API00-C,277,sqlite,ext/fts5/fts5_tokenize.c,1446,FP,internal API; p caller-guaranteed non-null per contract,,high
+DCL13-C,278,sqlite,ext/fts5/fts5_tokenize.c,1446,TP,"p only read (p->nArg, p->azArg); exported fn, can be const Fts5TokenizerConfig*",,med
+API00-C,279,sqlite,ext/fts5/fts5_tokenize.c,1454,FP,internal init; pApi caller-guaranteed non-null,,high
+ARR02-C,280,sqlite,ext/fts5/fts5_tokenize.c,1458,FP,"aBuiltin[] initialized with 3 elems, iterated via ArraySize(); no OOB",,high

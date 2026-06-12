@@ -965,3 +965,46 @@ The found-semantic-TP count holds at **2** (both in fts5_index's raw-blob `fts5S
 query parser, the vtab boundary, and the storage layer each contributed **0 semantic TP**. Confirmed:
 sqc's semantic value is confined to the narrow raw-decode-arithmetic class, and the trust boundary itself
 is fully guarded. sqlite coverage **68/220 (30.9%)**, 7 FNs.
+
+---
+
+## File-at-a-time — fts5_tokenize.c (2026-06-12, run #40, HIGH-effort): the two hardest classes, both clean
+
+`adjudication_sqlite_fts5_tokenize.csv` — `ext/fts5/fts5_tokenize.c` (the FTS5 built-in tokenizers:
+ascii, unicode61, porter stemmer, trigram — all process UNTRUSTED document + query text byte-by-byte,
+1490 lines), **321 raw -> 281 distinct findings**. This file is the single best stress-test of two
+otherwise-untestable hypotheses: (1) **INT32** dominates at **207 findings (65%)** — the tokenizer's
+offset/length arithmetic on attacker bytes; (2) **STR34** (signed-char sign-extension) is most
+plausible *here* of anywhere in the corpus, since the tokenizer's whole job is classifying/folding raw
+bytes. 8 rule-class reviewers (INT32 split in three) + 2 FN-hunters (ascii/unicode61; porter/trigram).
+
+**25 TP / 256 FP / 0 uncertain / 0 FN.** Both hard classes came back clean on the merits:
+- **INT32 0/207** — token lengths are bounded by `FTS5_MAX_TOKEN_SIZE` and the porter cap (`nToken>64
+  -> pass_through` unstemmed; `nToken<3` rejected), fold-buffer growth is `sqlite3_malloc64`/i64-cast,
+  and the porter arithmetic operates on `nBuf in [3,65]` into a 128-byte buffer. The one technically-real
+  signed-shift UB (`mask<<1` at 715) is consumed only as `&0x07` — benign, and sqc *did* flag it (not an FN).
+- **STR34 0/8** — every flagged byte is read through an `unsigned char*` cursor or is a pointer-op
+  misread. **sqlite deliberately routes all untrusted bytes through `unsigned char*`**, and the one raw
+  `char`-cast table index (`a[(int)pText[is]]` in the ascii tokenizer) is short-circuit guarded by
+  `(pText[is]&0x80)==0`. The file where a real STR34 was most likely is clean — on the merits, not by
+  assumption.
+
+All 25 TP are declaration/macro/portability: **DCL13 x8**, the **PRE00/PRE01/PRE10/PRE12** hazards on the
+`READ_UTF8`/`WRITE_UTF8`/`FTS5_SKIP_UTF8` multi-eval/multi-statement macros, and INT13/14/07 (benign
+signed-bitwise/plain-char in byte math).
+
+### FN-hunt: clean (0 FN) — the classic spots are all explicitly defended
+
+ascii/unicode61: signed-char table index `(c&0x80)==0` short-circuit guarded; fold-buffer headroom
+invariant (`pEnd=&aFold[nFold-6]`, 1:1 fold so no expansion); UTF-8 decode bounded by `zIn<zTerm`;
+category index `&0x1F` (<32). porter/trigram: the porter fixed buffer is safe because over-length tokens
+bypass stemming (`pass_through` before the `memcpy`) and short tokens are rejected (protecting the
+backward `aBuf[nBuf-2]` suffix indexing); trigram `aBuf[32]` holds <=12 bytes with guarded window
+arithmetic. A correctly-coded, well-fuzzed result.
+
+### fts5 family essentially swept (index+expr+main+storage+tokenize)
+
+Found-semantic-TP holds at **2** (fts5_index raw-decode). The two classes most likely to break in a
+tokenizer — bulk integer offset math and signed-byte classification — produced **0 TP across 215
+findings**, because the code is bounded (token caps) and disciplined (`unsigned char*`). sqlite coverage
+**69/220 (31.4%)**, 7 FNs.
