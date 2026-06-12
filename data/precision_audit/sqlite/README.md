@@ -737,3 +737,66 @@ specifically* (and likely the fts3 sibling parser files), not in every extension
 Refinement to the thesis: the split is not "core vs extension" but **"hardened/fuzzed code vs
 the specific less-fuzzed routines that parse untrusted serialized input"** — and fts3.c is
 itself mature, heavily-fuzzed dispatch code. sqlite coverage **62/220 (28.2%)**.
+
+---
+
+## File-at-a-time — fts3_expr.c + fts3_snippet.c (2026-06-12, run #40, HIGH-effort): the FN-hunt lands a 7th real bug
+
+Per the fts3.c scope note, the real FTS3 untrusted-query attack surface lives in the *sibling*
+parser files, so we audited the two highest-value ones together. 8 rule-class reviewer subagents
+(4 per file) + 2 dedicated FN-hunt subagents (one on the expression parser, one on matchinfo).
+
+### `fts3_expr.c` — the MATCH expression/phrase PARSER (1316 lines, 139 findings)
+
+**10 TP / 129 FP / 0 FN.** Bifurcation holds in a genuinely less-fuzzed recursive-descent parser:
+**0 deep-semantic TP** — MEM30 0/38 (tree-cleanup paths use disciplined detach-then-free; recursion
+capped at `SQLITE_MAX_EXPR_DEPTH`=1000), INT 0/32 (all token/offset arithmetic bounded by query
+length ≤ `SQLITE_MAX_LENGTH`, allocs in i64), EXP34/EXP33/ARR 0/30 (parser state-machine invariants
++ OOM-rc guards). The 10 TP are the precise class: **MSC04 ×5** (the genuine `getNextToken` /
+`getNextNode`↔`fts3ExprParse` / `fts3ExprBalance` recursion), **DCL13 ×4**, **INT13 ×1**. FN-hunt
+clean: NEAR-distance overflow is benign (`sqlite3Fts3ReadInt` clamps to `0x7FFFFFFF`), the query
+buffer is always NUL-terminated (sole caller passes `n=-1`), parenthesis nesting is hard-capped.
+
+### `fts3_snippet.c` — snippet()/offsets()/matchinfo() (1778 lines, 185 findings)
+
+**17 TP / 168 FP / 1 confirmed FN.** Semantic mass again FP: INT32 0/51 (matchinfo `aMatchinfo[]`
+indices bounded by a 64-bit-sized allocation; `nCol ≤ SQLITE_MAX_COLUMN`), the column-mask shifts
+0/x (`1<<(iCol&0x1F)` masked to 0–31; snippet shifts bounded by `nSnippet≤64`), ARR/EXP 0/33
+(`iCol≥nCol → FTS_CORRUPT_VTAB` at 897). 17 TP: **DCL13 ×11**, **MSC04 ×2**, **INT13 ×2 / INT07 ×1**
+(signed-char bitwise), **PRE11 ×1**.
+
+### THE FN: a real heap OOB write in matchinfo('b'), confirmed + fixed upstream
+
+The matchinfo FN-hunter found — and direct code reading + trunk diff confirmed — a genuine bug sqc
+**missed**. In `fts3ExprLHits` (line 890, the `'b'`/`LHITS_BM` bitmask packer):
+
+```c
+// audited b1a73ba34d (BUGGY):
+p->aMatchinfo[iStart + (iCol+1)/32] |= (1 << (iCol&0x1F));
+```
+The `'b'` region is sized `nPhrase * ((nCol+31)/32)` u32 words (`fts3MatchinfoSize`, 1030), i.e. a
+per-phrase stride of `(nCol+31)/32`. But the write indexes the word with `(iCol+1)/32` while the bit
+uses `iCol&0x1F` (= `iCol%32`) — **inconsistent**: bit `iCol` belongs in word `iCol/32`, not
+`(iCol+1)/32`. When **`nCol` is a multiple of 32** (32, 64, 96, … — "a large number of columns"),
+column `iCol=nCol-1` writes word index `nCol/32`, which equals the allocated word count → **one past
+the region**; for the last phrase with `'b'` as the final directive that is a **heap OOB write**
+(a `1<<31` OR; the `1<<31` is also signed-shift UB). Reachable from `matchinfo(t,'b')` (untrusted
+format char) on a wide-enough table with a hit in the boundary column.
+
+**CONFIRMED against trunk** `sqlite-main 124f449319`: line 890 now reads
+`p->aMatchinfo[iStart + iCol/32] |= (1U << (iCol&0x1F));` — sqlite fixed **both** issues in
+**`1192d6f5b1`** (2026-05-18): *"Fix an off-by-one error in matchinfo('b') for FTS3 when there are a
+large number of columns. [bugs:/forumpost/42d5f799d1]"*. Our audited commit (2026-02-24) predates the
+fix. Already fixed → **no disclosure needed.** Recorded as an `ARR30-C` FN (the OOB write; secondary
+INT34/left-shift UB). This is the **first FN surfaced by the file-at-a-time FN-hunt that maps to a
+real sqlite-acknowledged fix** — concrete validation of the audit's recall side.
+
+### Running tally (8 files in the fts3/snippet family + 6 large prior = 5,015 distinct findings)
+
+Semantic-rule TPs that sqc *found* remain **6** (2 fts5 + 4 session). The matchinfo bug is the **7th
+confirmed real bug** of the audit but a **false negative** — it strengthens the thesis from a new
+angle: the needle was again in a **less-fuzzed untrusted-input parser** (matchinfo format string +
+match data), and even there sqc's *found* TPs are still all declaration/macro/const while the one
+real semantic defect was a recall gap requiring interprocedural size-vs-index analysis sqc lacks.
+Confirmed-real bug count now **7/7, zero false alarms** (3 fixed sec + 1 fixed matchinfo + 1 fixed
+sqlar + … ). sqlite coverage **64/220 (29.1%)**, 6 FNs.

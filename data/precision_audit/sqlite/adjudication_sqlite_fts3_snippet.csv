@@ -1,0 +1,187 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API05-C,0,sqlite,ext/fts3/fts3_snippet.c,135,FP,zMatchinfo is a string pointer not an array; conformant-array-syntax suggestion is a stylistic misfire,,high
+INT30-C,1,sqlite,ext/fts3/fts3_snippet.c,137,FP,"nByte computed in sqlite3_int64 with explicit (sqlite3_int64) cast on nElem; nElem bounded by matchinfo size (cols*phrases), no wrap",,high
+INT31-C,2,sqlite,ext/fts3/fts3_snippet.c,137,FP,"nElem is size_t param but values are small matchinfo counts; cast (int)nElem only at 145/146, here it stays 64-bit",,high
+INT32-C,3,sqlite,ext/fts3/fts3_snippet.c,137,FP,"computed in sqlite3_int64 (2*(sqlite3_int64)nElem+1); nElem bounded by matchinfo sizes, no 32-bit overflow",,high
+INT32-C,4,sqlite,ext/fts3/fts3_snippet.c,137,FP,"multiplication promoted to sqlite3_int64; nElem bounded, allocation guards size",,high
+STR34-C,5,sqlite,ext/fts3/fts3_snippet.c,139,FP,strlen(zMatchinfo) takes char* and returns size_t; no per-char value widening,,high
+INT32-C,6,sqlite,ext/fts3/fts3_snippet.c,141,FP,"nByte/nStr are sqlite3_int64; addition for MallocZero is 64-bit, no overflow",,high
+INT32-C,7,sqlite,ext/fts3/fts3_snippet.c,141,FP,64-bit nByte+nStr; allocation size computed in int64,,high
+INT30-C,8,sqlite,ext/fts3/fts3_snippet.c,144,FP,"index 1+nElem into aMI[]; nElem small bounded count, not an arithmetic wrap with consequence",,high
+INT30-C,9,sqlite,ext/fts3/fts3_snippet.c,145,FP,"sizeof(u32)*((int)nElem+1) added to 64-bit aMI[0]; nElem small, no wrap",,high
+INT31-C,10,sqlite,ext/fts3/fts3_snippet.c,145,FP,"(int)nElem truncation of size_t; nElem is sum of fts3MatchinfoSize values, realistically small; no demonstrated overflow",,med
+INT32-C,11,sqlite,ext/fts3/fts3_snippet.c,145,FP,(int)nElem+1 where nElem already used to size successful allocation; bounded by nMatchinfo,,med
+INT31-C,12,sqlite,ext/fts3/fts3_snippet.c,146,FP,"pRet->nElem=(int)nElem; same bounded matchinfo count, stored as int as designed",,med
+INT32-C,13,sqlite,ext/fts3/fts3_snippet.c,147,FP,pointer arithmetic ((char*)pRet)+nByte misclassified as integer overflow,,high
+ARR38-C,14,sqlite,ext/fts3/fts3_snippet.c,148,FP,"memcpy nStr+1 into zMatchinfo; buffer sized nByte+nStr+1, bounded by strlen",,high
+INT31-C,15,sqlite,ext/fts3/fts3_snippet.c,148,FP,nStr=strlen(zMatchinfo) of user format string (tiny); memcpy size benign,,high
+INT32-C,16,sqlite,ext/fts3/fts3_snippet.c,148,FP,"nStr=strlen(zMatchinfo) is size_t/int64; nStr+1 memcpy of just-allocated buffer, no overflow",,high
+DCL30-C,17,sqlite,ext/fts3/fts3_snippet.c,152,FP,"pRet is a heap pointer from sqlite3Fts3MallocZero, not automatic storage",,high
+DCL13-C,18,sqlite,ext/fts3/fts3_snippet.c,155,FP,p is a void* callback param interchanged with sqlite3_free; const would break the void(*)(void*) signature,,med
+WIN04-C,19,sqlite,ext/fts3/fts3_snippet.c,173,FP,ordinary destructor function-pointer store; EncodePointer hardening irrelevant,,high
+INT32-C,20,sqlite,ext/fts3/fts3_snippet.c,183,FP,p->nElem+2 indexes buffer already allocated with that many slots; bounded,,high
+INT30-C,21,sqlite,ext/fts3/fts3_snippet.c,186,FP,"p->nElem*sizeof(u32) for malloc64; nElem small int count, sqlite3_malloc64 is 64-bit",,high
+ARR38-C,22,sqlite,ext/fts3/fts3_snippet.c,189,FP,copies p->nElem*sizeof(u32) into aOut malloc'd same size; bounded,,high
+INT30-C,23,sqlite,ext/fts3/fts3_snippet.c,189,FP,"memcpy size p->nElem*sizeof(u32); same bounded nElem, mirrors allocation",,high
+INT32-C,24,sqlite,ext/fts3/fts3_snippet.c,189,FP,p->nElem*sizeof(u32): sizeof is size_t so computed in size_t; copies just-allocated region,,high
+DCL30-C,25,sqlite,ext/fts3/fts3_snippet.c,193,FP,"*paOut=aOut writes a pointer VALUE (heap or caller struct) out, not the address of a local",,high
+ARR38-C,26,sqlite,ext/fts3/fts3_snippet.c,199,FP,copies nElem u32 into &aMI[2+nElem] from &aMI[1]; both within allocation,,high
+EXP43-C,27,sqlite,ext/fts3/fts3_snippet.c,199,FP,"src &aMI[1] and dst &aMI[2+nElem] are disjoint regions in same array, no overlap",,high
+INT30-C,28,sqlite,ext/fts3/fts3_snippet.c,199,FP,"memcpy size p->nElem*sizeof(u32); bounded, matches allocated buffer",,high
+INT32-C,29,sqlite,ext/fts3/fts3_snippet.c,199,FP,p->nElem*sizeof(u32) size_t arithmetic; memcpy within allocated buffer,,high
+INT32-C,30,sqlite,ext/fts3/fts3_snippet.c,199,FP,2+p->nElem indexes within allocated MatchinfoBuffer; bounded,,high
+API00-C,31,sqlite,ext/fts3/fts3_snippet.c,205,FP,sqlite3Fts3MIBufferFree validates with if(p) and is internal API,,high
+STR34-C,32,sqlite,ext/fts3/fts3_snippet.c,242,FP,*pp is a char* lvalue incremented by an int; no char value sign-extension,,high
+INT32-C,33,sqlite,ext/fts3/fts3_snippet.c,243,FP,"iVal from fts3GetVarint32 (max ~2^32 truncated to int); iVal-2 well-defined delta, accumulated into i64 piPos; benign",,high
+MEM05-C,34,sqlite,ext/fts3/fts3_snippet.c,249,FP,fts3ExprIterate2 recurses on query expr tree; depth bounded by parser limits,,high
+MSC04-C,35,sqlite,ext/fts3/fts3_snippet.c,249,TP,fts3ExprIterate2 genuinely recurses directly over the expression tree,,high
+API00-C,36,sqlite,ext/fts3/fts3_snippet.c,281,FP,"sqlite3Fts3ExprIterate is internal FTS3 API, not an untrusted public entrypoint (pExpr)",,high
+API00-C,37,sqlite,ext/fts3/fts3_snippet.c,281,FP,internal API; x is a trusted callback pointer set by FTS3 code,,high
+API00-C,38,sqlite,ext/fts3/fts3_snippet.c,281,FP,internal API; pCtx is a trusted caller-owned context,,high
+DCL13-C,39,sqlite,ext/fts3/fts3_snippet.c,295,TP,pExpr only read (pExpr->pPhrase); could be const Fts3Expr*,,high
+INT32-C,40,sqlite,ext/fts3/fts3_snippet.c,302,FP,"p->nPhrase++ counts query phrases, bounded by expression size/depth limits; cannot reach INT_MAX",,high
+INT32-C,41,sqlite,ext/fts3/fts3_snippet.c,303,FP,nToken accumulates phrase token counts; bounded by query expression size,,high
+DCL13-C,42,sqlite,ext/fts3/fts3_snippet.c,319,TP,"pCsr only read/stored; not modified, could be const (sCtx.pCsr field is non-const though)",,med
+DCL13-C,43,sqlite,ext/fts3/fts3_snippet.c,332,FP,ctx is void* used to mutate target via (*(int*)ctx)++; pointer not modified but writes through it,,med
+INT32-C,44,sqlite,ext/fts3/fts3_snippet.c,333,FP,phrase counter increment bounded by number of phrases in query expression,,high
+STR34-C,45,sqlite,ext/fts3/fts3_snippet.c,349,FP,char* to char* assignment; no char value widening,,high
+DCL30-C,46,sqlite,ext/fts3/fts3_snippet.c,363,FP,"*ppIter=pIter writes back the caller-buffer pointer, no automatic-storage escape",,high
+STR34-C,47,sqlite,ext/fts3/fts3_snippet.c,363,FP,char* to char* assignment; no sign extension,,high
+INT32-C,48,sqlite,ext/fts3/fts3_snippet.c,402,FP,"iEnd is a token position from poslist (bounded by doc token count); iEnd-nSnippet+1 benign, snippet shift math",,med
+INT32-C,49,sqlite,ext/fts3/fts3_snippet.c,402,FP,"iEnd-nSnippet token-position subtraction; positions bounded by document size, no security consequence",,med
+INT32-C,50,sqlite,ext/fts3/fts3_snippet.c,405,FP,iEnd+1 token position; bounded by document token count,,med
+DCL13-C,51,sqlite,ext/fts3/fts3_snippet.c,418,TP,pIter only read; could be const SnippetIter*,,high
+INT14-C,52,sqlite,ext/fts3/fts3_snippet.c,437,FP,iStart used in comparison/addition with iCsr; no bitwise op on iStart itself - misclassification,,high
+INT10-C,53,sqlite,ext/fts3/fts3_snippet.c,439,FP,"i%64: i is loop index 0..nPhrase-1, always non-negative; signed modulo result well-defined here",,high
+INT13-C,54,sqlite,ext/fts3/fts3_snippet.c,439,FP,"'<<' operand is (u64)1 (unsigned); i is only the bounded shift count (i%64), not the signed bitwise operand",,med
+INT14-C,55,sqlite,ext/fts3/fts3_snippet.c,439,FP,"i used as shift count i%64 and loop arithmetic; shift operand is constant (u64)1, not i - construct is bounded by %64",,high
+INT14-C,56,sqlite,ext/fts3/fts3_snippet.c,440,FP,"iCsr arithmetic (iCsr-iStart) feeds shift count; operand is (u64)1, mixed arith/bitwise is benign",,high
+INT34-C,57,sqlite,ext/fts3/fts3_snippet.c,440,FP,"(u64)1<<(iCsr-iStart): loop guard iCsr<iStart+nSnippet && iCsr>=iStart, nSnippet<=64, assert bounds shift 0..64",,high
+INT32-C,58,sqlite,ext/fts3/fts3_snippet.c,446,FP,iScore+=1000 in scoring loop bounded by number of snippet candidates/positions; not reachable to INT_MAX,,high
+INT13-C,59,sqlite,ext/fts3/fts3_snippet.c,451,FP,"'>>' applied to mPos(u64); j is only bounded shift count, not a signed bitwise operand",,med
+INT34-C,60,sqlite,ext/fts3/fts3_snippet.c,451,FP,"mPos>>j: j bounded by j<nToken && j<nSnippet, nSnippet<=64; right shift of u64, in range",,high
+DCL13-C,61,sqlite,ext/fts3/fts3_snippet.c,472,FP,ctx is void* cast to SnippetIter* whose members are written (line 478); mutates through pointer,,med
+ARR00-C,62,sqlite,ext/fts3/fts3_snippet.c,474,FP,"aPhrase sized nList(=nPhrase); iPhrase from ExprIterate over same expr, bounded",,high
+ARR30-C,63,sqlite,ext/fts3/fts3_snippet.c,474,FP,iPhrase bounded by nPhrase; aPhrase allocated to nList=nPhrase,,high
+EXP33-C,64,sqlite,ext/fts3/fts3_snippet.c,546,FP,nList written by fts3ExprLoadDoclists(&nList) at 538 with rc checked before read,,high
+INT30-C,65,sqlite,ext/fts3/fts3_snippet.c,546,FP,"sizeof(SnippetPhrase)*nList into sqlite3_int64 nByte; nList=phrase count (small), 64-bit",,high
+INT10-C,66,sqlite,ext/fts3/fts3_snippet.c,568,FP,"i%64: i is loop index 0..nList-1, non-negative; modulo result well-defined",,high
+INT13-C,67,sqlite,ext/fts3/fts3_snippet.c,568,FP,'<<' operand is (u64)1 unsigned; i only the bounded (i%64) shift count,,med
+INT14-C,68,sqlite,ext/fts3/fts3_snippet.c,568,FP,"i used as i%64 shift count and loop arithmetic; shift operand (u64)1, bounded",,high
+INT32-C,69,sqlite,ext/fts3/fts3_snippet.c,618,FP,"nAlloc computed in sqlite3_int64 (pStr->nAlloc+(sqlite3_int64)nAppend+100); 64-bit, realloc64 guards",,high
+INT32-C,70,sqlite,ext/fts3/fts3_snippet.c,618,FP,64-bit addition into sqlite3_int64 nAlloc; no 32-bit overflow,,high
+INT31-C,71,sqlite,ext/fts3/fts3_snippet.c,629,FP,nAppend>=0 guaranteed (negated at 609-611) before memcpy; non-negative int to size_t is safe,,high
+INT32-C,72,sqlite,ext/fts3/fts3_snippet.c,630,FP,pStr->n+=nAppend; buffer growth guarded by realloc success at line 617-624; n bounded by allocated size,,med
+DCL13-C,73,sqlite,ext/fts3/fts3_snippet.c,657,TP,pTab only read (pTab->pTokenizer); could be const Fts3Table*,,high
+INT13-C,74,sqlite,ext/fts3/fts3_snippet.c,672,FP,"'&' on hlmask(u64); nLeft only the shift count, not signed bitwise operand",,med
+INT14-C,75,sqlite,ext/fts3/fts3_snippet.c,672,FP,"nLeft used as shift count and incremented; shift operand (u64)1, search terminates at set hlmask bit",,high
+INT34-C,76,sqlite,ext/fts3/fts3_snippet.c,672,FP,"(u64)1<<nLeft: nLeft scans for first set bit of nonzero hlmask(u64), terminates within 0..63",,med
+INT13-C,77,sqlite,ext/fts3/fts3_snippet.c,673,FP,'&' on hlmask(u64); nSnippet only part of shift-count arithmetic,,med
+INT14-C,78,sqlite,ext/fts3/fts3_snippet.c,673,FP,"nSnippet/nRight arithmetic feeding shift count; operand (u64)1, assert at 674 bounds to 0..63",,high
+INT14-C,79,sqlite,ext/fts3/fts3_snippet.c,673,FP,"nRight same - shift count arithmetic, benign",,high
+INT32-C,80,sqlite,ext/fts3/fts3_snippet.c,673,FP,"nSnippet-1-nRight: nSnippet small (snippet token count, default ~15, capped); assert bounds to <=63",,high
+INT32-C,81,sqlite,ext/fts3/fts3_snippet.c,673,FP,nSnippet-1 small snippet length; bounded,,high
+INT34-C,82,sqlite,ext/fts3/fts3_snippet.c,673,FP,(u64)1<<(nSnippet-1-nRight): assert (nSnippet-1-nRight)<=63 && >=0; hlmask nonzero guarantees termination,,med
+INT32-C,83,sqlite,ext/fts3/fts3_snippet.c,675,FP,(nLeft-nRight)/2: nLeft/nRight bit positions <64; benign,,high
+DCL00-C,84,sqlite,ext/fts3/fts3_snippet.c,700,FP,DUMMY1 passed by address to xNext (&DUMMY1) and written through the pointer,,high
+DCL00-C,85,sqlite,ext/fts3/fts3_snippet.c,700,FP,DUMMY2 passed by address to xNext and written,,high
+DCL00-C,86,sqlite,ext/fts3/fts3_snippet.c,700,FP,DUMMY3 passed by address to xNext and written,,high
+INT32-C,87,sqlite,ext/fts3/fts3_snippet.c,706,FP,"iCurrent token counter from tokenizer bounded by doc size; nShift math benign, asserted <=nDesired",,med
+INT32-C,88,sqlite,ext/fts3/fts3_snippet.c,706,FP,(rc==SQLITE_DONE)+iCurrent bounded token counter; benign,,med
+INT13-C,89,sqlite,ext/fts3/fts3_snippet.c,710,TP,"hlmask>>nShift where nShift is signed int; genuine signed value as shift amount, though guarded nShift>0 and <=nDesired<=63",,med
+DCL13-C,90,sqlite,ext/fts3/fts3_snippet.c,722,TP,"pCsr only read (base.pVtab, pStmt, iLangid); could be const Fts3Cursor*",,high
+DCL13-C,91,sqlite,ext/fts3/fts3_snippet.c,723,TP,"pFragment only read (iPos, hlmask, iCol); could be const SnippetFragment*",,high
+INT32-C,92,sqlite,ext/fts3/fts3_snippet.c,741,FP,pFragment->iCol+1 column index; iCol bounded by nColumn<=SQLITE_MAX_COLUMN(2000),,high
+DCL00-C,93,sqlite,ext/fts3/fts3_snippet.c,763,FP,DUMMY1 passed by address to xNext (&DUMMY1) and written,,high
+INT14-C,94,sqlite,ext/fts3/fts3_snippet.c,813,FP,iPos arithmetic only; no bitwise op on iPos - misclassification (shift count iCurrent-iPos at 821),,high
+INT13-C,95,sqlite,ext/fts3/fts3_snippet.c,821,FP,'&' on hlmask(u64); iCurrent only part of shift-count arithmetic,,med
+INT14-C,96,sqlite,ext/fts3/fts3_snippet.c,821,FP,"iCurrent-iPos feeds shift count; operand (u64)1, hlmask masking - benign mixed use",,high
+INT34-C,97,sqlite,ext/fts3/fts3_snippet.c,821,FP,"(u64)1<<(iCurrent-iPos): loop breaks at iCurrent>=iPos+nSnippet (813), nSnippet<=64 so shift in 0..63",,med
+STR34-C,98,sqlite,ext/fts3/fts3_snippet.c,850,FP,char* to char* assignment (pEnd=*ppCollist); no char value widening,,high
+DCL00-C,99,sqlite,ext/fts3/fts3_snippet.c,851,FP,c is reassigned in the loop (c = *pEnd++ & 0x80),,high
+ARR30-C,100,sqlite,ext/fts3/fts3_snippet.c,855,FP,column-list loop terminated by 0x00/0x01 sentinel byte; idiomatic doclist parse,,med
+INT13-C,101,sqlite,ext/fts3/fts3_snippet.c,855,TP,"(*pEnd | c) where c is char; genuine signed-char bitwise OR, though masked with 0xFE/0x80 it is a real signed-char construct",,med
+INT07-C,102,sqlite,ext/fts3/fts3_snippet.c,857,TP,char c used in numeric/bitwise context (c=*pEnd++ & 0x80); plain char signedness genuinely used,,med
+INT32-C,103,sqlite,ext/fts3/fts3_snippet.c,857,FP,"nEntry counts column-list entries; bounded by poslist length in doclist, far below INT_MAX in practice",,high
+DCL30-C,104,sqlite,ext/fts3/fts3_snippet.c,860,FP,*ppCollist=pEnd writes back the caller-buffer pointer; no automatic-storage escape,,high
+STR34-C,105,sqlite,ext/fts3/fts3_snippet.c,860,FP,char* to char* assignment; no sign extension,,high
+DCL13-C,106,sqlite,ext/fts3/fts3_snippet.c,868,TP,"pExpr only read (pPhrase, iPhrase, iColumn); could be const Fts3Expr*",,high
+INT32-C,107,sqlite,ext/fts3/fts3_snippet.c,879,FP,"iStart=iPhrase*nCol; nCol<=2000, iPhrase bounded by nPhrase; overflow needs >1M phrases, allocation(size_t) fails NOMEM first",,med
+INT32-C,108,sqlite,ext/fts3/fts3_snippet.c,881,FP,iPhrase*((nCol+31)/32) index; bounded by nCol<=2000 and nPhrase; allocation in size_t guards,,med
+INT32-C,109,sqlite,ext/fts3/fts3_snippet.c,881,FP,p->nCol+31 with nCol<=SQLITE_MAX_COLUMN(2000); no overflow,,high
+ARR30-C,110,sqlite,ext/fts3/fts3_snippet.c,884,FP,while(1) terminated by *pIter!=0x01; iCol validated <nCol at 897; iStart=iPhrase*nCol bounded,,high
+STR34-C,111,sqlite,ext/fts3/fts3_snippet.c,885,FP,"fts3ColumnlistCount(&pIter): pIter is char*, &pIter is char**; no char value widening",,high
+STR34-C,112,sqlite,ext/fts3/fts3_snippet.c,885,FP,"pIter is a char* pointer, not a char value being widened",,high
+INT14-C,113,sqlite,ext/fts3/fts3_snippet.c,888,FP,iCol arithmetic (iStart+iCol) index only; bitwise is at 890 on different sub-expression,,high
+INT13-C,114,sqlite,ext/fts3/fts3_snippet.c,890,FP,"(1<<(iCol&0x1F)): shift amount masked to 0..31 by &0x1F; '1' literal, no signed bitwise operand issue",,high
+INT32-C,115,sqlite,ext/fts3/fts3_snippet.c,890,FP,"iStart+(iCol+1)/32 bitmap index; iCol<nCol<=2000, iStart bounded; within allocated array",,high
+ARR37-C,116,sqlite,ext/fts3/fts3_snippet.c,895,FP,"pIter++ over doclist varint stream; idiomatic pointer walk, sentinel-terminated",,high
+ARR37-C,117,sqlite,ext/fts3/fts3_snippet.c,896,FP,pIter+=varint advance over doclist buffer; idiomatic varint parse,,high
+MEM05-C,118,sqlite,ext/fts3/fts3_snippet.c,905,FP,fts3ExprLHitGather recurses on expr tree; depth bounded by parse depth,,high
+MSC04-C,119,sqlite,ext/fts3/fts3_snippet.c,905,TP,fts3ExprLHitGather genuinely recurses directly over the expression tree,,high
+INT32-C,120,sqlite,ext/fts3/fts3_snippet.c,956,FP,"3*iPhrase*nCol index into aMatchinfo; allocation sized via fts3MatchinfoSize using size_t casts, overflow needs ~8GB alloc (NOMEM first)",,med
+INT32-C,121,sqlite,ext/fts3/fts3_snippet.c,956,FP,3*iPhrase bounded by 3*nPhrase; index guarded by successful size_t allocation,,med
+INT32-C,122,sqlite,ext/fts3/fts3_snippet.c,972,FP,"iPhrase*nCol*3 index; allocation computed in size_t (line 1035), 32-bit index overflow requires alloc that fails NOMEM",,med
+INT32-C,123,sqlite,ext/fts3/fts3_snippet.c,972,FP,iPhrase*nCol bounded; index guarded by allocation,,med
+INT32-C,124,sqlite,ext/fts3/fts3_snippet.c,979,FP,iStart+i*3 with i<nCol<=2000; iStart bounded; within allocated array,,med
+INT32-C,125,sqlite,ext/fts3/fts3_snippet.c,979,FP,"i*3 with i<nCol<=2000; max 6000, no overflow",,high
+INT32-C,126,sqlite,ext/fts3/fts3_snippet.c,981,FP,iStart+i*3 index within allocated aMatchinfo; bounded,,med
+INT32-C,127,sqlite,ext/fts3/fts3_snippet.c,981,FP,i*3 with i<nCol<=2000; no overflow,,high
+DCL13-C,128,sqlite,ext/fts3/fts3_snippet.c,989,TP,"pTab only read (bFts4, bHasDocsize); could be const Fts3Table*",,high
+DCL13-C,129,sqlite,ext/fts3/fts3_snippet.c,1009,TP,"pInfo only read (nCol, nPhrase); could be const MatchInfo*",,high
+INT30-C,130,sqlite,ext/fts3/fts3_snippet.c,1026,FP,(size_t)nCol*nPhrase cast to size_t (64-bit on LP64); nCol/nPhrase small schema-bounded counts,,high
+INT30-C,131,sqlite,ext/fts3/fts3_snippet.c,1030,FP,"(size_t)nPhrase*((nCol+31)/32); size_t arithmetic, bounded small counts",,high
+INT32-C,132,sqlite,ext/fts3/fts3_snippet.c,1030,FP,pInfo->nCol+31 with nCol<=SQLITE_MAX_COLUMN(2000); no overflow,,high
+INT30-C,133,sqlite,ext/fts3/fts3_snippet.c,1035,FP,"(size_t)nCol*nPhrase*3; size_t arithmetic, bounded; leftmost cast makes whole expr 64-bit",,high
+INT30-C,134,sqlite,ext/fts3/fts3_snippet.c,1035,FP,(size_t)nCol*nPhrase inner product; same bounded size_t arithmetic,,high
+EXP20-C,135,sqlite,ext/fts3/fts3_snippet.c,1061,FP,"assert(data_count==1) verifies doctotal query shape; intentional exact equality, not bool test",,high
+DCL30-C,136,sqlite,ext/fts3/fts3_snippet.c,1075,FP,"*paLen=a writes a pointer into the sqlite column blob (statement-owned), not a local address",,high
+STR34-C,137,sqlite,ext/fts3/fts3_snippet.c,1075,FP,const char* to const char* assignment; no char value widening,,high
+DCL30-C,138,sqlite,ext/fts3/fts3_snippet.c,1076,FP,*ppEnd=pEnd writes a pointer into the column blob; no automatic-storage escape,,high
+STR34-C,139,sqlite,ext/fts3/fts3_snippet.c,1076,FP,const char* to const char* assignment; no sign extension,,high
+PRE11-C,140,sqlite,ext/fts3/fts3_snippet.c,1098,TP,"LCS_ITERATOR_FINISHED macro definition genuinely ends with a semicolon (macro is unused, so impact nil)",,high
+DCL13-C,141,sqlite,ext/fts3/fts3_snippet.c,1101,TP,pExpr only read then stored into Fts3Expr* field; not modified (field is non-const),,med
+ARR30-C,142,sqlite,ext/fts3/fts3_snippet.c,1106,FP,"aIter sized pCsr->nPhrase; iPhrase from ExprIterate over pCsr->pExpr, bounded",,high
+EXP34-C,143,sqlite,ext/fts3/fts3_snippet.c,1121,FP,pIter null-guarded by NEVER(pIter==0) return at 1120 before pRead deref,,high
+EXP33-C,144,sqlite,ext/fts3/fts3_snippet.c,1123,FP,"iRead written by sqlite3Fts3GetVarint(pRead,&iRead) at 1122 before read",,high
+INT32-C,145,sqlite,ext/fts3/fts3_snippet.c,1127,FP,"pIter->iPos+=(int)(iRead-2); iRead varint position delta from doclist; accumulated position bounded by doc size, benign LCS math",,med
+INT32-C,146,sqlite,ext/fts3/fts3_snippet.c,1127,FP,iRead-2 position delta; iRead>=2 enforced by branch above (==0/==1 handled); benign,,med
+INT30-C,147,sqlite,ext/fts3/fts3_snippet.c,1155,FP,"sizeof(LcsIterator)*pCsr->nPhrase for MallocZero; nPhrase small phrase count, size_t",,high
+INT32-C,148,sqlite,ext/fts3/fts3_snippet.c,1161,FP,nToken-=phrase->nToken accumulates negative offset; magnitude bounded by total query tokens,,med
+ARR00-C,149,sqlite,ext/fts3/fts3_snippet.c,1165,FP,"iCol is for-loop var initialized to 0, bounded by pInfo->nCol; not uninitialized",,high
+ARR00-C,150,sqlite,ext/fts3/fts3_snippet.c,1197,FP,"pIter[-1] short-circuited: nThisLcs==0 true at i=0 (reset each while iter), so i>=1 when evaluated",,high
+ARR37-C,151,sqlite,ext/fts3/fts3_snippet.c,1197,FP,pIter[-1] indexes aIter[i-1]; only reached when i>=1 via nThisLcs short-circuit,,high
+ARR00-C,152,sqlite,ext/fts3/fts3_snippet.c,1272,FP,"iCol is for-loop var initialized to 0, bounded by pInfo->nCol; not uninitialized",,high
+INT13-C,153,sqlite,ext/fts3/fts3_snippet.c,1280,FP,"(nToken&0xffffffff): nToken is sqlite3_int64; '&' with 0xffffffff is intentional low-32 mask, not a portability defect",,high
+INT14-C,154,sqlite,ext/fts3/fts3_snippet.c,1280,FP,"nToken used in (nToken&0xffffffff) mask and additive arithmetic; nToken is sqlite3_int64 from varint, masking is intentional",,high
+INT32-C,155,sqlite,ext/fts3/fts3_snippet.c,1280,FP,"(u32)(nToken&0xffffffff)+nDoc/2 done in u32/unsigned context; well-defined wraparound, average-length computation",,high
+INT33-C,156,sqlite,ext/fts3/fts3_snippet.c,1280,FP,"divide/mod by nDoc: AVGLENGTH path runs only on a matched row (bGlobal), so nDoc>=1; not reachable as zero",,med
+INT30-C,157,sqlite,ext/fts3/fts3_snippet.c,1317,FP,fts3MatchinfoSize()*sizeof(u32) is size_t; size bounded by schema cols*phrases,,high
+STR34-C,158,sqlite,ext/fts3/fts3_snippet.c,1317,FP,zArg[i] format char only ==-compared to ASCII matchinfo constants; no widening into index/size,,high
+ARR38-C,159,sqlite,ext/fts3/fts3_snippet.c,1318,FP,memset size=fts3MatchinfoSize*u32; aMatchinfo guaranteed >= that size per contract,,high
+WIN04-C,160,sqlite,ext/fts3/fts3_snippet.c,1366,FP,ordinary destructor function-pointer store; EncodePointer hardening irrelevant to non-Windows table dispatch,,high
+EXP34-C,161,sqlite,ext/fts3/fts3_snippet.c,1397,FP,zErr NULL only on ErrMsg OOM; sqlite3_result_error handles NULL z; idiomatic OOM path,,med
+INT30-C,162,sqlite,ext/fts3/fts3_snippet.c,1401,FP,"nMatchinfo += fts3MatchinfoSize(); size_t accumulation over short format string, bounded",,high
+INT30-C,163,sqlite,ext/fts3/fts3_snippet.c,1432,FP,nElem*sizeof(u32) for result_blob length; nElem bounded matchinfo count,,high
+API00-C,164,sqlite,ext/fts3/fts3_snippet.c,1440,FP,"nToken is explicitly clamped to [-64,+64] at lines 1472-1473 before any arithmetic",,high
+INT33-C,165,sqlite,ext/fts3/fts3_snippet.c,1482,FP,"(nToken+nSnippet-1)/nSnippet: nSnippet is for-loop counter starting at 1, never zero",,high
+ARR00-C,166,sqlite,ext/fts3/fts3_snippet.c,1490,FP,pFragment=&aSnippet[iSnip] then memset writes before read; iSnip<nSnippet<=4,,high
+ARR30-C,167,sqlite,ext/fts3/fts3_snippet.c,1490,FP,"iSnip bounded 0..nSnippet-1, nSnippet capped at SizeofArray(aSnippet)=4 at 1521",,high
+ARR00-C,168,sqlite,ext/fts3/fts3_snippet.c,1527,FP,aSnippet[0..nSnippet-1] written in loop above (memset+assign); i bounded <nSnippet<=4,,high
+ARR30-C,169,sqlite,ext/fts3/fts3_snippet.c,1527,FP,i bounded 0..nSnippet-1 <4; aSnippet[i] populated in preceding loop,,high
+INT32-C,170,sqlite,ext/fts3/fts3_snippet.c,1581,FP,"nTerm-iTerm-1: iTerm<nTerm loop bound; nTerm=phrase token count bounded by query; result in [0,nTerm)",,high
+INT32-C,171,sqlite,ext/fts3/fts3_snippet.c,1581,FP,"nTerm-iTerm within loop iTerm<nTerm; always positive, bounded",,high
+DCL13-C,172,sqlite,ext/fts3/fts3_snippet.c,1594,TP,ctx (TermOffsetCtx*) only read in this callback; could be const-qualified target,,med
+EXP33-C,173,sqlite,ext/fts3/fts3_snippet.c,1633,FP,"nToken written by fts3ExprLoadDoclists(...,&nToken) at 1629 with rc checked before read",,high
+INT30-C,174,sqlite,ext/fts3/fts3_snippet.c,1633,FP,"sizeof(TermOffset)*nToken for MallocZero; nToken=query term count, size_t, bounded",,high
+ARR00-C,175,sqlite,ext/fts3/fts3_snippet.c,1650,FP,"iCol is for-loop var initialized to 0, bounded by pTab->nColumn; not uninitialized",,high
+EXP33-C,176,sqlite,ext/fts3/fts3_snippet.c,1651,FP,"pC written by sqlite3Fts3OpenTokenizer(...,&pC) at 1687, rc checked, before use at 1692",,high
+EXP33-C,177,sqlite,ext/fts3/fts3_snippet.c,1652,FP,"ZDUMMY is xNext output param written before read; dummy, never meaningfully read",,high
+DCL00-C,178,sqlite,ext/fts3/fts3_snippet.c,1653,FP,"NDUMMY passed by address to xNext (&NDUMMY, line 1692) and written through the pointer",,high
+INT32-C,179,sqlite,ext/fts3/fts3_snippet.c,1676,FP,"iCol+1 column index, iCol<nColumn<=SQLITE_MAX_COLUMN(2000); no overflow",,high
+INT32-C,180,sqlite,ext/fts3/fts3_snippet.c,1677,FP,iCol+1 column index bounded by nColumn<=2000,,high
+EXP34-C,181,sqlite,ext/fts3/fts3_snippet.c,1711,FP,pTerm set only when pT->pList nonzero (1700); else-branch guards !pTerm; pList guaranteed non-null,,high
+INT14-C,182,sqlite,ext/fts3/fts3_snippet.c,1711,FP,"pTerm is a pointer; '0xFE&*pTerm->pList' is bitwise on dereferenced char, 'pTerm-sCtx.aTerm' is pointer subtraction - misclassification",,high
+EXP33-C,183,sqlite,ext/fts3/fts3_snippet.c,1721,FP,aBuffer written by sqlite3_snprintf at 1721 before read at 1724,,high
+INT32-C,184,sqlite,ext/fts3/fts3_snippet.c,1746,FP,res.n-1 strips nul terminator; res.n>=1 after fts3StringAppend always writes >=nul; benign length,,high
+ARR30-C,185,sqlite,ext/fts3/fts3_snippet.c,890,FN,matchinfo('b') fts3ExprLHits: aMatchinfo[iStart+(iCol+1)/32] inconsistent with (nCol+31)/32 sizing -> heap OOB write when nCol%32==0; also signed 1<<31 UB. sqc emitted no finding here.,"CONFIRMED REAL + FIXED upstream: matchinfo('b') OOB heap write, sqlite 1192d6f5b1 (2026-05-18) '(iCol+1)/32'->'iCol/32' + '1<<'->'1U<<'; bug 42d5f799d1. Audited b1a73ba34d predates fix. sqc FN (missed ARR30/INT34).",high

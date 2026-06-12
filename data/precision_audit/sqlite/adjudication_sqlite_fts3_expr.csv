@@ -1,0 +1,140 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR38-C,0,sqlite,ext/fts3/fts3_expr.c,127,FP,"memset guarded by if(pRet); nByte is the alloc size, standard MallocZero idiom",,high
+INT31-C,1,sqlite,ext/fts3/fts3_expr.c,127,FP,nByte is sqlite3_int64 already validated by preceding sqlite3_malloc64; int64->size_t is identity on 64-bit,,high
+API00-C,2,sqlite,ext/fts3/fts3_expr.c,131,FP,sqlite3Fts3OpenTokenizer is internal FTS3 helper; callers (getNextToken/getNextString) guarantee valid pTokenizer/ppCsr,,high
+API00-C,3,sqlite,ext/fts3/fts3_expr.c,131,FP,ppCsr is internal OUT param from trusted in-module callers,,high
+EXP34-C,4,sqlite,ext/fts3/fts3_expr.c,138,FP,pTokenizer non-null by caller contract (always a validated tokenizer module),,high
+EXP34-C,5,sqlite,ext/fts3/fts3_expr.c,142,FP,pModule = pTokenizer->pModule with valid tokenizer; module pointer always set,,high
+EXP34-C,6,sqlite,ext/fts3/fts3_expr.c,145,FP,pCsr deref inside if(rc==SQLITE_OK); xOpen sets pCsr on success (assert rc!=OK || pCsr==0 inverse),,high
+DCL30-C,7,sqlite,ext/fts3/fts3_expr.c,154,FP,*ppCsr = pCsr where pCsr is heap cursor from xOpen or 0 — not an automatic address,,high
+MEM05-C,8,sqlite,ext/fts3/fts3_expr.c,193,FP,getNextToken recursion bounded: recurses with iBarred<iEnd<=n so buffer strictly shrinks each level; depth capped by query length,,high
+MSC04-C,9,sqlite,ext/fts3/fts3_expr.c,193,TP,getNextToken recurses directly at line 223 (getNextToken(pParse,,high
+STR34-C,10,sqlite,ext/fts3/fts3_expr.c,220,FP,z passed to findBarredChar where bytes only ==-compared to ASCII quote/paren; no widening into index/size,,high
+INT30-C,11,sqlite,ext/fts3/fts3_expr.c,226,FP,sizeof + nToken (int bounded by query length ~1e9) in sqlite3_int64; no 64-bit wrap,,high
+EXP34-C,12,sqlite,ext/fts3/fts3_expr.c,237,FP,zToken set by xNext inside rc==SQLITE_OK guard before memcpy; nToken defaults 0,,high
+INT32-C,13,sqlite,ext/fts3/fts3_expr.c,249,FP,iStart-- guarded by iStart>0; cannot reach INT_MIN,,high
+INT32-C,14,sqlite,ext/fts3/fts3_expr.c,252,FP,iStart-- guarded by iStart>0; cannot reach INT_MIN,,high
+STR34-C,15,sqlite,ext/fts3/fts3_expr.c,261,FP,same findBarredChar call; char bytes only ==-compared to ASCII,,high
+DCL30-C,16,sqlite,ext/fts3/fts3_expr.c,271,FP,*ppExpr = pRet where pRet is heap (sqlite3Fts3MallocZero) or 0,,high
+DCL13-C,17,sqlite,ext/fts3/fts3_expr.c,301,TP,pParse fields only read in getNextString (pTokenizer/iLangid/iDefaultCol); *pParse never written,,med
+INT30-C,18,sqlite,ext/fts3/fts3_expr.c,313,FP,"nSpace = sizeof(Fts3Expr)+SZ_FTS3PHRASE(1), all compile-time constants",,high
+INT30-C,19,sqlite,ext/fts3/fts3_expr.c,346,FP,"ii is token-index bounded by query length; size_t arithmetic on 64-bit, realloc fails before wrap",,med
+MEM30-C,20,sqlite,ext/fts3/fts3_expr.c,354,FP,p reassigned from fts3ReallocOrFree at 346 and NULL-checked at 348 before deref; freed-original case returns NULL and goto NOMEM,,high
+MEM30-C,21,sqlite,ext/fts3/fts3_expr.c,354,FP,"same: p is realloc result, checked non-NULL at 348 before aToken access",,high
+MEM30-C,22,sqlite,ext/fts3/fts3_expr.c,355,FP,pToken points into reassigned/checked p; not freed,,high
+ARR38-C,23,sqlite,ext/fts3/fts3_expr.c,357,FP,memcpy size nByte bounded by zTemp realloc to nTemp+nByte just above,,high
+EXP34-C,24,sqlite,ext/fts3/fts3_expr.c,357,FP,zByte set by xNext inside rc==SQLITE_OK guard before memcpy,,high
+MEM30-C,25,sqlite,ext/fts3/fts3_expr.c,357,FP,zTemp reassigned from fts3ReallocOrFree at 347 and NULL-checked at 348 before memcpy,,high
+MEM30-C,26,sqlite,ext/fts3/fts3_expr.c,357,FP,"same zTemp realloc result, checked before deref",,high
+MEM30-C,27,sqlite,ext/fts3/fts3_expr.c,357,FP,same zTemp array access on checked pointer,,high
+INT32-C,28,sqlite,ext/fts3/fts3_expr.c,363,FP,"nToken=ii+1; ii token count bounded by query length, far from INT_MAX",,high
+INT30-C,29,sqlite,ext/fts3/fts3_expr.c,372,FP,nToken/nTemp bounded by query length; size_t arithmetic on 64-bit,,med
+EXP05-C,30,sqlite,ext/fts3/fts3_expr.c,377,FP,p is Fts3Expr* (non-const); cast used only for pointer-difference size computation,,high
+EXP05-C,31,sqlite,ext/fts3/fts3_expr.c,377,FP,same line second cast; no const qualifier actually removed,,high
+INT32-C,32,sqlite,ext/fts3/fts3_expr.c,377,FP,fixed struct-offset pointer subtraction (constant); misclassified as overflow-prone,,high
+MEM30-C,33,sqlite,ext/fts3/fts3_expr.c,377,FP,p reassigned at 372 and NULL-checked at 373 before memset,,high
+MEM30-C,34,sqlite,ext/fts3/fts3_expr.c,377,FP,pointer arithmetic on checked realloc result p,,high
+MEM30-C,35,sqlite,ext/fts3/fts3_expr.c,377,FP,deref of checked realloc result p,,high
+MEM30-C,36,sqlite,ext/fts3/fts3_expr.c,377,FP,array access on checked realloc result p,,high
+MEM30-C,37,sqlite,ext/fts3/fts3_expr.c,386,FP,zTemp not freed yet here; freed once at 400 after this use,,high
+STR31-C,38,sqlite,ext/fts3/fts3_expr.c,386,FP,memcpy of token bytes (length-tracked aToken.n),,high
+ARR00-C,39,sqlite,ext/fts3/fts3_expr.c,389,FP,"jj is the loop counter initialized to 0 in the for; nToken is the bound, not jj",,high
+MEM30-C,40,sqlite,ext/fts3/fts3_expr.c,400,FP,single free of zTemp at cleanup; no second free on any path,,high
+MEM30-C,41,sqlite,ext/fts3/fts3_expr.c,402,FP,sqlite3_free(p) once; zTemp(400) and p(402) are distinct allocations,,high
+DCL30-C,42,sqlite,ext/fts3/fts3_expr.c,405,FP,*ppExpr = p where p is heap (fts3ReallocOrFree) or 0,,high
+MSC04-C,43,sqlite,ext/fts3/fts3_expr.c,417,TP,getNextNode->fts3ExprParse (line 525) -> getNextNode (line 654): genuine indirect recursion,,high
+ARR02-C,44,sqlite,ext/fts3/fts3_expr.c,428,FP,aKeyword[] has explicit 4-element initializer; implicit-size is intentional/safe,,high
+ARR00-C,45,sqlite,ext/fts3/fts3_expr.c,457,FP,ii is the loop counter initialized to 0; bound is sizeof(aKeyword)/sizeof element,,high
+INT13-C,46,sqlite,ext/fts3/fts3_expr.c,460,TP,genuine ~ complement on signed int operand sqlite3_fts3_enable_parentheses; benign on two's complement but construct matches,,low
+INT32-C,47,sqlite,ext/fts3/fts3_expr.c,473,FP,"nKey starts at 4, ReadInt returns digit count bounded by query length; nNear clamped to 0x7FFFFFFF",,high
+INT32-C,48,sqlite,ext/fts3/fts3_expr.c,473,FP,nKey+1 indexing offset; nKey small/bounded,,high
+DCL30-C,49,sqlite,ext/fts3/fts3_expr.c,491,FP,*ppExpr = pRet where pRet is heap (sqlite3Fts3MallocZero),,high
+INT32-C,50,sqlite,ext/fts3/fts3_expr.c,492,FP,(zInput-z)+nKey are byte offsets bounded by query length n (<=SQLITE_MAX_LENGTH 1e9),,med
+INT32-C,51,sqlite,ext/fts3/fts3_expr.c,509,FP,(zInput-z)+ii+1 byte offsets bounded by query length,,med
+INT32-C,52,sqlite,ext/fts3/fts3_expr.c,509,FP,(zInput-z)+ii byte offsets bounded by query length,,med
+INT32-C,53,sqlite,ext/fts3/fts3_expr.c,513,FP,"ii-1; ii>=1 in this loop (started at 1), no underflow",,high
+INT32-C,54,sqlite,ext/fts3/fts3_expr.c,519,FP,nNest++ bounded by depth check (<=1000 or SQLITE_MAX_EXPR_DEPTH) on next line,,high
+PRE32-C,55,sqlite,ext/fts3/fts3_expr.c,520,FP,#if is a standalone directive between statements,,high
+PRE32-C,56,sqlite,ext/fts3/fts3_expr.c,522,FP,#elif standalone directive,,high
+INT32-C,57,sqlite,ext/fts3/fts3_expr.c,525,FP,nInput-1; nInput>0 guaranteed (checked ==0 returns earlier),,high
+INT32-C,58,sqlite,ext/fts3/fts3_expr.c,526,FP,(int)(zInput-z)+1+nConsumed byte offsets bounded by query length,,med
+INT32-C,59,sqlite,ext/fts3/fts3_expr.c,526,FP,(int)(zInput-z)+1 byte offset bounded by query length,,med
+INT32-C,60,sqlite,ext/fts3/fts3_expr.c,529,FP,"nNest--; only decrements on matching ')', mismatch caught later, bounded",,high
+INT32-C,61,sqlite,ext/fts3/fts3_expr.c,530,FP,(zInput-z)+1 byte offset bounded by query length,,med
+STR34-C,62,sqlite,ext/fts3/fts3_expr.c,551,FP,zStr passed to strlen (char* arg); no char value widened into integer,,high
+INT32-C,63,sqlite,ext/fts3/fts3_expr.c,556,FP,"(zInput-z)+nStr+1 offsets; nStr=strlen(column name) bounded, sum within int",,med
+INT32-C,64,sqlite,ext/fts3/fts3_expr.c,556,FP,(zInput-z)+nStr offset bounded by query length and column name length,,med
+INT32-C,65,sqlite,ext/fts3/fts3_expr.c,560,FP,n-iColLen; iColLen is offset <= n by construction,,high
+DCL13-C,66,sqlite,ext/fts3/fts3_expr.c,584,TP,opPrecedence only reads p->eType; p never modified,,high
+EXP34-C,67,sqlite,ext/fts3/fts3_expr.c,585,FP,opPrecedence callers pass allocated/checked binary nodes; never NULL,,high
+EXP34-C,68,sqlite,ext/fts3/fts3_expr.c,611,FP,pSplit=pPrev; pPrev non-null at all insertBinaryOperator callsites (697 assert; 736 reached only after a phrase set pPrev),,med
+EXP34-C,69,sqlite,ext/fts3/fts3_expr.c,618,FP,pNew allocated and NULL-checked by caller; pSplit->pParent checked at 615,,high
+MSC04-C,70,sqlite,ext/fts3/fts3_expr.c,636,TP,fts3ExprParse->getNextNode->fts3ExprParse: genuine indirect recursion,,high
+MEM30-C,71,sqlite,ext/fts3/fts3_expr.c,700,FP,"p (fresh node) freed once; goto frees pRet/pNotBranch which are distinct trees, p not yet linked in",,high
+MEM30-C,72,sqlite,ext/fts3/fts3_expr.c,722,FP,p (fresh node) freed once; pRet/pNotBranch at cleanup are distinct from p,,high
+EXP34-C,73,sqlite,ext/fts3/fts3_expr.c,730,FP,assert(pPrev && pPrev->pLeft) at 729 inside if(pRet); pPrev set whenever pRet set,,high
+EXP34-C,74,sqlite,ext/fts3/fts3_expr.c,736,FP,"pPrev non-null here: binary op cannot be first node (isRequirePhrase guard at 688 errors), so a prior phrase set pPrev",,med
+MEM30-C,75,sqlite,ext/fts3/fts3_expr.c,736,FP,insertBinaryOperator receives freshly-allocated p; not freed on this path,,high
+INT32-C,76,sqlite,ext/fts3/fts3_expr.c,745,FP,nIn-=nByte guarded by assert(nByte>0 && nByte<=nIn) immediately above,,high
+MEM30-C,77,sqlite,ext/fts3/fts3_expr.c,760,FP,pNotBranch not freed on this success path (rc==DONE); cleanup-path free is path-insensitive,,high
+MEM30-C,78,sqlite,ext/fts3/fts3_expr.c,761,FP,"same: pIter walks live pNotBranch tree, not freed here",,high
+ARR00-C,79,sqlite,ext/fts3/fts3_expr.c,769,FP,"n and nIn are ints not pointers; this is integer subtraction, not pointer arithmetic",,high
+INT32-C,80,sqlite,ext/fts3/fts3_expr.c,769,FP,n-nIn; nIn<=n by loop invariant,,high
+MEM30-C,81,sqlite,ext/fts3/fts3_expr.c,773,FP,sqlite3Fts3ExprFree(pRet) once; pRet and pNotBranch are disjoint trees on error path,,high
+MEM30-C,82,sqlite,ext/fts3/fts3_expr.c,774,FP,pNotBranch freed once; distinct tree from pRet (joined only on success path at 765),,high
+DCL30-C,83,sqlite,ext/fts3/fts3_expr.c,777,FP,*ppExpr = pRet where pRet is heap node or 0,,high
+DCL13-C,84,sqlite,ext/fts3/fts3_expr.c,785,TP,fts3ExprCheckDepth only reads p->pLeft/pRight; p never modified,,high
+MEM05-C,85,sqlite,ext/fts3/fts3_expr.c,785,FP,"fts3ExprCheckDepth bounded: recurses nMaxDepth-1, returns at nMaxDepth<0",,high
+MSC04-C,86,sqlite,ext/fts3/fts3_expr.c,785,TP,fts3ExprCheckDepth recurses directly (lines 791,,high
+MEM05-C,87,sqlite,ext/fts3/fts3_expr.c,811,FP,"fts3ExprBalance bounded: recurses nMaxDepth-1, errors at nMaxDepth==0",,high
+MSC04-C,88,sqlite,ext/fts3/fts3_expr.c,811,TP,fts3ExprBalance recurses directly (lines 853,,high
+EXP34-C,89,sqlite,ext/fts3/fts3_expr.c,815,FP,pRoot=*pp non-null: callsite 1066 guards if(*ppExpr); recursive calls pass set nodes,,high
+INT30-C,90,sqlite,ext/fts3/fts3_expr.c,824,FP,"nMaxDepth bounded by SQLITE_FTS3_MAX_EXPR_DEPTH=12, ==0 guarded; tiny multiply",,high
+ARR38-C,91,sqlite,ext/fts3/fts3_expr.c,828,FP,memset size matches the sqlite3_malloc64 size on line 824; inside if not 0==apLeaf,,high
+INT30-C,92,sqlite,ext/fts3/fts3_expr.c,828,FP,same bounded nMaxDepth (<=12) multiply,,high
+EXP34-C,93,sqlite,ext/fts3/fts3_expr.c,836,FP,pRoot non-null; loop asserts p->pLeft&&p->pRight for eType nodes so p stays valid,,high
+INT32-C,94,sqlite,ext/fts3/fts3_expr.c,853,FP,nMaxDepth-1; nMaxDepth>=1 here (==0 errors earlier),,high
+MEM30-C,95,sqlite,ext/fts3/fts3_expr.c,912,FP,"pFree is a live free-list node, not freed; member write valid",,high
+MEM30-C,96,sqlite,ext/fts3/fts3_expr.c,913,FP,same live pFree node member write,,high
+MEM30-C,97,sqlite,ext/fts3/fts3_expr.c,916,FP,reads pParent of live pFree node before any free,,high
+EXP34-C,98,sqlite,ext/fts3/fts3_expr.c,931,FP,pDel assigned from pFree in while condition; loop body entered only when pDel!=0,,high
+MEM30-C,99,sqlite,ext/fts3/fts3_expr.c,931,FP,pDel->pParent read before sqlite3_free(pDel) at 932; valid,,high
+MEM30-C,100,sqlite,ext/fts3/fts3_expr.c,932,FP,each free-list node freed exactly once via while loop; no double-free,,high
+EXP34-C,101,sqlite,ext/fts3/fts3_expr.c,945,FP,NOT node reaching balance always has both children (trailing-operator parse errors out at 749); assert pLeft&&pRight at 957,,med
+EXP34-C,102,sqlite,ext/fts3/fts3_expr.c,946,FP,same NOT-node invariant; pRight non-null for a fully-parsed NOT node,,med
+INT32-C,103,sqlite,ext/fts3/fts3_expr.c,948,FP,nMaxDepth-1; nMaxDepth>=1 here,,high
+INT32-C,104,sqlite,ext/fts3/fts3_expr.c,950,FP,nMaxDepth-1; nMaxDepth>=1 here,,high
+MEM30-C,105,sqlite,ext/fts3/fts3_expr.c,955,FP,pLeft/pRight are disjoint detached subtrees (943-946); each freed once,,high
+MEM30-C,106,sqlite,ext/fts3/fts3_expr.c,967,FP,pRoot freed once; pLeft/pRight zeroed at 943-944 so no overlap with prior frees,,high
+DCL30-C,107,sqlite,ext/fts3/fts3_expr.c,970,FP,*pp = pRoot where pRoot is heap expression node or 0,,high
+MEM30-C,108,sqlite,ext/fts3/fts3_expr.c,970,FP,*pp write through caller pointer-to-pointer; pp not freed,,high
+DCL13-C,109,sqlite,ext/fts3/fts3_expr.c,986,FP,pTokenizer stored in sParse then passed to xOpen (mutates tokenizer/opens cursor); tokenizer-API signature,,high
+DCL13-C,110,sqlite,ext/fts3/fts3_expr.c,988,FP,azCol matches fixed public sqlite3Fts3ExprParse signature; cast/stored as data,,high
+API00-C,111,sqlite,ext/fts3/fts3_expr.c,1048,FP,sqlite3Fts3ExprParse is internal FTS3 entrypoint called by trusted in-tree callers; args validated upstream (z==0 handled in Unbalanced),,high
+API00-C,112,sqlite,ext/fts3/fts3_expr.c,1048,FP,z handled (z==0 branch in fts3ExprParseUnbalanced); internal caller-guaranteed,,high
+API00-C,113,sqlite,ext/fts3/fts3_expr.c,1048,FP,ppExpr internal OUT param from trusted callers,,high
+STR34-C,114,sqlite,ext/fts3/fts3_expr.c,1060,FP,azCol (char**) and z (char*) passed as pointers,,high
+STR34-C,115,sqlite,ext/fts3/fts3_expr.c,1060,FP,z passed as pointer to fts3ExprParseUnbalanced; no char-value sign extension here,,high
+API00-C,116,sqlite,ext/fts3/fts3_expr.c,1106,FP,sqlite3Fts3ExprFree is internal free routine; pDel==0 tolerated; trusted callers,,high
+DCL13-C,117,sqlite,ext/fts3/fts3_expr.c,1106,FP,pDel tree is freed (fts3FreeExprNode frees nodes starting at pDel) — object destroyed,,high
+MEM30-C,118,sqlite,ext/fts3/fts3_expr.c,1115,FP,"pParent saved at 1113 before freeing p; pParent is live parent node, member read valid",,high
+MEM30-C,119,sqlite,ext/fts3/fts3_expr.c,1115,FP,"p==pParent->pLeft compares dangling pointer value (UB-by-letter) but no deref, no consequence",,med
+MEM30-C,120,sqlite,ext/fts3/fts3_expr.c,1116,FP,pParent->pRight read on live parent; p reassigned to live node,,high
+MEM30-C,121,sqlite,ext/fts3/fts3_expr.c,1117,FP,p reassigned at 1116 to live pParent->pRight before deref,,high
+MEM30-C,122,sqlite,ext/fts3/fts3_expr.c,1117,FP,"same: p is live node, not freed",,high
+MEM30-C,123,sqlite,ext/fts3/fts3_expr.c,1118,FP,p live node member access in inner walk loop,,high
+MEM30-C,124,sqlite,ext/fts3/fts3_expr.c,1118,FP,same live p access,,high
+MEM30-C,125,sqlite,ext/fts3/fts3_expr.c,1119,FP,"p live node, pLeft/pRight walk valid",,high
+MEM30-C,126,sqlite,ext/fts3/fts3_expr.c,1119,FP,same live p access,,high
+MEM30-C,127,sqlite,ext/fts3/fts3_expr.c,1119,FP,same live p access,,high
+DCL13-C,128,sqlite,ext/fts3/fts3_expr.c,1146,TP,exprToString (test code) only reads pExpr->eType/pPhrase/pLeft/pRight; never modified,,med
+DCL13-C,129,sqlite,ext/fts3/fts3_expr.c,1207,FP,argv is fixed sqlite3_create_function callback signature (sqlite3_value**); cannot add const,,high
+EXP34-C,130,sqlite,ext/fts3/fts3_expr.c,1235,FP,test-only code; sqlite3_result_error tolerates NULL z; zErr typically set on non-NOMEM error,,med
+INT30-C,131,sqlite,ext/fts3/fts3_expr.c,1244,FP,SQLITE_TEST-only code; nCol=argc-2 bounded by SQLITE_MAX_FUNCTION_ARG; size_t 64-bit,,high
+EXP34-C,132,sqlite,ext/fts3/fts3_expr.c,1256,FP,"pTokenizer set by InitTokenizer at 1230; early return at 1231 if rc!=OK, so non-null here",,high
+EXP33-C,133,sqlite,ext/fts3/fts3_expr.c,1258,FP,pExpr is OUT param always written by callee (set on OK path; *ppExpr=0 on every error path) before assert reads it,,high
+EXP34-C,134,sqlite,ext/fts3/fts3_expr.c,1262,FP,pTokenizer non-null after the rc!=OK early return at 1231,,high
+EXP45-C,135,sqlite,ext/fts3/fts3_expr.c,1268,FP,intentional assignment-in-condition idiom (zBuf = exprToString(...)),,high
+EXP34-C,136,sqlite,ext/fts3/fts3_expr.c,1271,FP,reached only in else where !(...|| !zBuf) holds; zBuf guaranteed non-null by short-circuit,,high
+API00-C,137,sqlite,ext/fts3/fts3_expr.c,1303,FP,sqlite3Fts3ExprInitTestInterface is test-only registration; db/pHash from trusted SQLITE_TEST harness,,high
+API00-C,138,sqlite,ext/fts3/fts3_expr.c,1303,FP,pHash test-harness arg; trusted caller,,high
