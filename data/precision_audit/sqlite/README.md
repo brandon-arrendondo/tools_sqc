@@ -583,3 +583,29 @@ declaration/macro/const. The pattern: sqc's semantic engines are ~0% precise on
 hardened core, but on **less-fuzzed extensions parsing untrusted serialized input**
 they occasionally fire on genuine integer-overflow/validation gaps. sqlite coverage
 60/220 (27.3%).
+
+### UPDATE (2026-06-12): the changeset OOB-read is CONFIRMED REAL and already fixed upstream
+
+Verified against current sqlite trunk (`sqlite-main` @ `124f449319`). The candidate is
+a **genuine bug that sqlite has since fixed** — our audited commit `b1a73ba34d`
+(2026-02-24) predates the fix:
+
+- **`535b1f2875` (2026-04-09) — "Fix some buffer overreads that might occur in the
+  session module when handling corrupt changesets."** Changed `sessionChangesetBufferRecord`
+  exactly where we flagged: `int nByte` → `i64 nByte`, unsafe `sessionVarintGet` →
+  `sessionVarintGetSafe(…, nRem, …)`, and added `iNext+nByte>=nData → CORRUPT` plus a
+  post-accumulation `iNext+nByte>nData → CORRUPT`. Also touched `sessionChangeMerge`.
+- **`4da2ddf50e` (2026-05-19) — "Avoid a potential 1 byte overread in
+  sqlite3changegroup_add() when processing a corrupt changeset buffer."** — same root function.
+
+So the **4 INT32-C TPs (sessionChangesetBufferRecord nByte overflow) are confirmed
+true positives** against ground truth: sqc independently rediscovered a real,
+security-relevant, since-fixed sqlite buffer-overread. The 14 INT31-C consumer findings
+stay *uncertain* (sqlite fixed at the root, not per-consumer; their truncations were
+real but governed by the now-added root validation). **No responsible disclosure needed
+— already fixed.** Security task 165 closed.
+
+This is the headline real-world validation: across 3,604 findings in 4 large files, the
+audit's most security-relevant TP corresponds to an actual sqlite-acknowledged CVE-class
+fix — concrete evidence that the analyzer's semantic findings, when properly adjudicated,
+catch genuine bugs in less-fuzzed extension code parsing untrusted serialized input.
