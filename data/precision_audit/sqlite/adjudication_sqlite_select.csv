@@ -1,0 +1,621 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC04-C,0,sqlite,src/select.c,82,TP,"clearSelect genuinely participates in indirect recursion via sqlite3WithDelete back to clearSelect, factual call-graph cycle",,high
+API00-C,1,sqlite,src/select.c,112,FP,"pDest is caller-guaranteed non-null internal init routine, always passed address of a SelectDest",,high
+API00-C,2,sqlite,src/select.c,126,FP,"pParse non-null by caller contract, immediately deref'd as pParse->db throughout parser",,high
+API00-C,3,sqlite,src/select.c,126,FP,"pEList may be 0 and is explicitly handled at line 144 if(pEList==0), not an unchecked deref",,high
+API00-C,4,sqlite,src/select.c,126,FP,"pSrc may be 0 and is explicitly handled at line 155 if(pSrc==0), not an unchecked deref",,high
+API00-C,5,sqlite,src/select.c,126,FP,"pWhere only stored into pNew->pWhere, never dereferenced here",,high
+API00-C,6,sqlite,src/select.c,126,FP,"pGroupBy only stored into pNew->pGroupBy, never dereferenced",,high
+API00-C,7,sqlite,src/select.c,126,FP,"pHaving only stored into pNew->pHaving, never dereferenced",,high
+API00-C,8,sqlite,src/select.c,126,FP,"pOrderBy only stored into pNew->pOrderBy, never dereferenced",,high
+API00-C,9,sqlite,src/select.c,126,FP,"pLimit only stored into pNew->pLimit, never dereferenced",,high
+DCL13-C,10,sqlite,src/select.c,128,FP,"pEList stored into non-const field pNew->pEList and reassigned, const would break assignment",,high
+DCL13-C,11,sqlite,src/select.c,129,FP,"pSrc stored into non-const field pNew->pSrc and reassigned, const invalid",,high
+DCL13-C,12,sqlite,src/select.c,130,FP,"pWhere stored into non-const Expr* field pNew->pWhere, const invalid",,high
+DCL13-C,13,sqlite,src/select.c,131,FP,"pGroupBy stored into non-const field pNew->pGroupBy, const invalid",,high
+DCL13-C,14,sqlite,src/select.c,132,FP,"pHaving stored into non-const field pNew->pHaving, const invalid",,high
+DCL13-C,15,sqlite,src/select.c,133,FP,"pOrderBy stored into non-const field pNew->pOrderBy, const invalid",,high
+DCL13-C,16,sqlite,src/select.c,135,FP,"pLimit stored into non-const field pNew->pLimit, const invalid",,high
+EXP30-C,17,sqlite,src/select.c,139,FP,"single chained assignment pAllocated=pNew=malloc(), no double modification between sequence points",,high
+EXP33-C,18,sqlite,src/select.c,139,FP,"pNew is initialized by the malloc assignment on line 139, not uninitialized",,high
+EXP34-C,19,sqlite,src/select.c,139,FP,"if pNew==0 it is reassigned to &standin (line 142) before any deref, derefs always valid",,high
+INT32-C,20,sqlite,src/select.c,153,FP,"nSelect counts SELECT stmts in one parse, structurally bounded far below INT_MAX",,high
+DCL30-C,21,sqlite,src/select.c,175,FP,"pAllocated holds heap pointer or 0; in the &standin path mallocFailed sets pAllocated=0, never returns local address",,high
+MSC04-C,22,sqlite,src/select.c,182,TP,"sqlite3SelectDelete reaches clearSelect which recurses via WithDelete, factual indirect recursion",,high
+DCL13-C,23,sqlite,src/select.c,192,FP,"findRightmost returns p as mutable Select* mutated by callers, const param would force const return",,med
+API00-C,24,sqlite,src/select.c,260,FP,"pA accessed only via apAll[i] loop guarded by && apAll[i], null-safe",,high
+API00-C,25,sqlite,src/select.c,260,FP,"pB explicitly null-handled at line 305 if(pB==0), null-safe",,high
+API00-C,26,sqlite,src/select.c,260,FP,"pC explicitly null-handled at line 306 if(pC==0), null-safe",,high
+ARR02-C,27,sqlite,src/select.c,270,FP,"aKeyword[] is a fully-initialized static aggregate, implicit size is well-defined and used with ArraySize()",,high
+STR00-C,28,sqlite,src/select.c,287,FP,"misread: index is aKeyword[j].i (u8 member) into zKeyText, the char array name is not an index",,high
+API00-C,29,sqlite,src/select.c,318,FP,"pTab non-null by caller contract, callers pass validated pSrc->a[i].pSTab",,high
+DCL13-C,30,sqlite,src/select.c,318,TP,"pTab is only read (aCol/nCol/aHx), never written through, const Table* would compile",,med
+EXP34-C,31,sqlite,src/select.c,325,FP,"pTab non-null by caller contract, internal helper with guaranteed precondition",,high
+ARR01-C,32,sqlite,src/select.c,329,FP,"aHx is a real array member u8 aHx[16], sizeof yields 16, not a decayed pointer param",,high
+INT10-C,33,sqlite,src/select.c,329,FP,"h is u8 and sizeof is size_t, both operands unsigned, no signed modulo",,high
+ARR36-C,34,sqlite,src/select.c,330,FP,"expression is an array subscript yielding a u8, not a pointer comparison between arrays",,high
+EXP34-C,35,sqlite,src/select.c,331,FP,aCol=pTab->aCol is non-null table invariant when nCol>0 (assert i<nCol implies populated),,high
+ARR36-C,36,sqlite,src/select.c,346,FP,"same array-subscript misread, no inter-array pointer comparison occurs",,high
+API00-C,37,sqlite,src/select.c,354,FP,pItem non-null by caller contract and asserted (assert pItem!=0 line 355),,high
+ARR00-C,38,sqlite,src/select.c,365,FP,iCol bounded by assert(iCol>=0 && iCol<pResults->nExpr) at line 364 before subscript,,high
+EXP34-C,39,sqlite,src/select.c,403,FP,assert (piTab==0)==(piCol==0) guarantees piCol non-null inside if(piTab) block,,high
+API00-C,40,sqlite,src/select.c,437,FP,"while(p) loop guards null, body skipped if p==0, no deref of null",,high
+MEM05-C,41,sqlite,src/select.c,437,FP,"recursion depth bounded by enforced SQLITE_LIMIT_EXPR_DEPTH on expression tree, not unbounded stack",,med
+MSC04-C,42,sqlite,src/select.c,437,TP,"sqlite3SetJoinExpr calls itself directly at lines 448 and 452, factual direct recursion",,high
+MEM05-C,43,sqlite,src/select.c,471,FP,unsetJoinExpr recursion bounded by enforced expression-tree depth limit,,med
+MSC04-C,44,sqlite,src/select.c,471,TP,"unsetJoinExpr calls itself directly at lines 486 and 490, factual direct recursion",,high
+INT14-C,45,sqlite,src/select.c,525,FP,"readability misfire: bitwise & is on member jointype, pSrc is only used for array access",,high
+EXP33-C,46,sqlite,src/select.c,543,FP,zName assigned at line 546 before its use at 552 on every loop iteration,,high
+INT32-C,47,sqlite,src/select.c,552,FP,"nId>0 asserted at line 550, nId-1 cannot underflow",,high
+EXP33-C,48,sqlite,src/select.c,594,FP,"iLeft written by tableAndColumnIndex only on nonzero return, required to reach line 594",,high
+EXP33-C,49,sqlite,src/select.c,594,FP,iLeftCol written on the same nonzero-return path required to reach line 594,,high
+INT14-C,50,sqlite,src/select.c,634,FP,"readability misfire: & is on jointype member, i is only used in arithmetic/indexing",,high
+INT32-C,51,sqlite,src/select.c,638,FP,"i is a column index < nCol <= SQLITE_MAX_COLUMN, i+1 cannot overflow",,high
+EXP34-C,52,sqlite,src/select.c,646,FP,assert(pE2!=0 || pEq==0) means inside if(pEq) pE2 is non-null,,high
+MSC04-C,53,sqlite,src/select.c,688,TP,"innerLoopLoadRow participates in the codegen recursion cycle through pushOntoSorter, factual edge",,med
+DCL13-C,54,sqlite,src/select.c,690,TP,"pSelect only read (pSelect->pEList value passed onward), never written, const Select* valid",,med
+DCL13-C,55,sqlite,src/select.c,691,TP,"pInfo only read (regResult/ecelFlags/pExtra), freeing pExtra pointee does not modify pInfo",,med
+MSC04-C,56,sqlite,src/select.c,709,TP,"makeSorterRecord participates in the codegen recursion cycle, factual edge",,med
+DCL13-C,57,sqlite,src/select.c,711,TP,"pSort only read (nOBSat/pDeferredRowLoad), never written, const SortCtx* valid",,med
+EXP34-C,58,sqlite,src/select.c,716,FP,"pSort non-null by caller contract, always passed a valid SortCtx",,high
+INT32-C,59,sqlite,src/select.c,718,FP,"nMem is the register-allocation counter, structurally bounded well below INT_MAX",,high
+INT32-C,60,sqlite,src/select.c,722,FP,regBase+nOBSat are register indices bounded by statement column counts,,high
+INT32-C,61,sqlite,src/select.c,722,FP,"nBase-nOBSat are bounded register counts, nBase>=nOBSat by construction",,high
+MSC04-C,62,sqlite,src/select.c,730,TP,"pushOntoSorter participates in the codegen recursion cycle, factual edge",,med
+EXP34-C,63,sqlite,src/select.c,740,FP,pSort non-null by caller contract,,high
+INT14-C,64,sqlite,src/select.c,740,FP,"readability misfire: & is on sortFlags member, pSort not used in arithmetic",,high
+INT32-C,65,sqlite,src/select.c,742,FP,nExpr+bSeq+nData are small bounded register/field counts,,high
+INT32-C,66,sqlite,src/select.c,742,FP,"nExpr+bSeq bounded, bSeq is 0/1 and nExpr is ORDER BY term count",,high
+INT32-C,67,sqlite,src/select.c,773,FP,"regData-nPrefixReg are register indices, bounded",,high
+INT32-C,68,sqlite,src/select.c,775,FP,"nMem+1 register counter, bounded",,high
+INT32-C,69,sqlite,src/select.c,776,FP,"nMem += nBase register counter increment, bounded",,high
+INT32-C,70,sqlite,src/select.c,779,FP,"iOffset is a register number int, bounded, +1 cannot overflow",,high
+INT32-C,71,sqlite,src/select.c,784,FP,"regBase+nExpr register indices, bounded",,high
+INT32-C,72,sqlite,src/select.c,787,FP,"regBase+nExpr+bSeq register indices, bounded",,high
+INT32-C,73,sqlite,src/select.c,787,FP,"regBase+nExpr register indices, bounded",,high
+INT32-C,74,sqlite,src/select.c,798,FP,"nMem+1 register counter, bounded",,high
+INT32-C,75,sqlite,src/select.c,799,FP,"nMem += nOBSat register counter increment, bounded",,high
+INT32-C,76,sqlite,src/select.c,800,FP,nExpr-nOBSat+bSeq small bounded term counts,,high
+INT32-C,77,sqlite,src/select.c,800,FP,"nExpr-nOBSat bounded, nOBSat<=nExpr by construction",,high
+INT32-C,78,sqlite,src/select.c,802,FP,"regBase+nExpr register indices, bounded",,high
+EXP34-C,79,sqlite,src/select.c,810,FP,"pOp is a live VDBE opcode pointer from GetOp, mallocFailed checked at 809, non-null on success path",,high
+INT32-C,80,sqlite,src/select.c,810,FP,nKey+nData small bounded sorter-field counts,,high
+INT32-C,81,sqlite,src/select.c,821,FP,"nMem increment register counter, bounded",,high
+INT32-C,82,sqlite,src/select.c,853,FP,"regBase+nOBSat register indices, bounded",,high
+INT32-C,83,sqlite,src/select.c,853,FP,nExpr-nOBSat bounded term counts,,high
+INT32-C,84,sqlite,src/select.c,866,FP,"regBase+nOBSat register indices, bounded",,high
+INT32-C,85,sqlite,src/select.c,866,FP,nBase-nOBSat bounded register counts,,high
+INT32-C,86,sqlite,src/select.c,872,FP,"CurrentAddr()-1 is a VDBE address >=1 here, bounded",,high
+DCL13-C,87,sqlite,src/select.c,938,TP,"pEList only read (nExpr, a[i].pExpr), never written, const ExprList* valid",,med
+INT32-C,88,sqlite,src/select.c,952,FP,"nMem+1 register counter, bounded",,high
+INT32-C,89,sqlite,src/select.c,953,FP,nMem += nResultCol register counter bounded by column count,,high
+INT32-C,90,sqlite,src/select.c,955,FP,CurrentAddr()+nResultCol bounded VDBE address plus small column count,,high
+INT32-C,91,sqlite,src/select.c,959,FP,"regElem+i register indices, i<nResultCol bounded",,high
+INT32-C,92,sqlite,src/select.c,959,FP,"regPrev+i register indices, bounded",,high
+INT32-C,93,sqlite,src/select.c,962,FP,"regElem+i register indices, bounded",,high
+INT32-C,94,sqlite,src/select.c,962,FP,"regPrev+i register indices, bounded",,high
+INT32-C,95,sqlite,src/select.c,969,FP,"nResultCol = pEList->nExpr >= 1 for a result set, nResultCol-1 safe",,high
+DCL13-C,96,sqlite,src/select.c,1018,TP,"pParse only read (nErr, pVdbe), object not written, const Parse* would compile",,med
+INT32-C,97,sqlite,src/select.c,1029,FP,"iOpenEphAddr is a VDBE address, bounded, +1 cannot overflow",,high
+EXP34-C,98,sqlite,src/select.c,1037,FP,"pOp is a live VDBE opcode pointer from GetOp under nErr==0 guard, non-null",,high
+DCL13-C,99,sqlite,src/select.c,1072,FP,"pItem=&pEList->a[i] then pItem->fg.bSorterRef=1 writes through pEList, const invalid",,high
+EXP30-C,100,sqlite,src/select.c,1083,FP,"pTab assigned within && short-circuit chain at line 1086, no sequence-point violation",,high
+EXP33-C,101,sqlite,src/select.c,1087,FP,pTab assigned in (pTab=pExpr->y.pTab)!=0 which must be true to reach use at line 1087,,high
+EXP34-C,102,sqlite,src/select.c,1088,FP,same short-circuit chain guarantees pTab non-null before member access at line 1088,,high
+EXP34-C,103,sqlite,src/select.c,1092,FP,"pSort is a parameter, non-null by caller contract",,high
+EXP34-C,104,sqlite,src/select.c,1103,FP,pPk from sqlite3PrimaryKeyIndex is non-null for a WITHOUT ROWID table (guarded by !HasRowid),,med
+DCL30-C,105,sqlite,src/select.c,1126,FP,"line 1126 writes pExtra through output param ppExtra into caller-owned storage, not a dangling local address",,high
+MSC04-C,106,sqlite,src/select.c,1139,FP,"indirect recursion through codegen helpers is bounded by query-tree depth, not unbounded",,med
+DCL13-C,107,sqlite,src/select.c,1144,TP,pDistinct only read (eTnctType/tabTnct/addrTnct) in selectInnerLoop; const DistinctCtx* would compile,,med
+INT14-C,108,sqlite,src/select.c,1182,FP,"pSort & SORTFLAG_UseSorter is a flag test on a struct field, not pointer arithmetic; INT14 misread",,high
+INT32-C,109,sqlite,src/select.c,1182,FP,"nPrefixReg is ORDER BY nExpr plus 1, bounded by SQLITE_MAX_COLUMN, cannot reach INT_MAX",,high
+INT32-C,110,sqlite,src/select.c,1183,FP,pParse->nMem is an internal register counter bounded by statement size,,high
+INT32-C,111,sqlite,src/select.c,1185,FP,nMem+1 register index bounded by compiled statement size,,high
+INT32-C,112,sqlite,src/select.c,1186,FP,nMem += nResultCol where nResultCol=pEList->nExpr bounded by column limit,,high
+INT32-C,113,sqlite,src/select.c,1193,FP,"nMem += nResultCol register accounting, structurally bounded",,high
+INT32-C,114,sqlite,src/select.c,1199,FP,"regResult+i indexes result registers, i<nResultCol bounded",,high
+INT32-C,115,sqlite,src/select.c,1228,FP,"j-1 with j=iOrderByCol>0 indexes pEList, small bounded index",,high
+INT32-C,116,sqlite,src/select.c,1228,FP,i+1-pSort->nOBSat sort-key index arithmetic bounded by ORDER BY nExpr,,high
+INT32-C,117,sqlite,src/select.c,1228,FP,i+1 ORDER BY index bounded by nExpr,,high
+INT32-C,118,sqlite,src/select.c,1240,FP,"pOp->p2 += extra column count, bounded by column limits",,high
+INT32-C,119,sqlite,src/select.c,1242,FP,"nMem += pExtra->nExpr extra PK column count, bounded small",,high
+INT32-C,120,sqlite,src/select.c,1273,FP,"regResult+nResultCol register address arithmetic, bounded",,high
+INT32-C,121,sqlite,src/select.c,1274,FP,"nResultCol += pExtra->nExpr column count, bounded by column limit",,high
+EXP34-C,122,sqlite,src/select.c,1294,FP,hasDistinct guard derives from pDistinct?...:NOOP so pDistinct non-null in this block,,high
+INT32-C,123,sqlite,src/select.c,1311,FP,"nPrefixReg+1 temp-range size, small bounded count",,high
+INT32-C,124,sqlite,src/select.c,1316,FP,"r1+nPrefixReg register index, bounded",,high
+INT32-C,125,sqlite,src/select.c,1335,FP,iParm+1 is a cursor number bounded by nTab,,high
+INT32-C,126,sqlite,src/select.c,1337,FP,"iParm+1 cursor number, bounded",,high
+INT32-C,127,sqlite,src/select.c,1343,FP,"r1+nPrefixReg register index, bounded",,high
+INT32-C,128,sqlite,src/select.c,1351,FP,"nPrefixReg+1 temp-range size, bounded",,high
+INT32-C,129,sqlite,src/select.c,1369,FP,"regResult+(i2<0) adds 0 or 1 to a register index, bounded",,high
+INT32-C,130,sqlite,src/select.c,1369,FP,"nResultCol-(i2<0) column count minus 0/1, bounded",,high
+INT32-C,131,sqlite,src/select.c,1433,FP,"nResultCol-1 copy count, >=0 by assert nResultCol==nSdst",,high
+INT32-C,132,sqlite,src/select.c,1473,FP,"nKey+2 sort-key count plus fixed 2, bounded by ORDER BY nExpr",,high
+INT32-C,133,sqlite,src/select.c,1474,FP,"r2+nKey+1 register index, bounded",,high
+INT32-C,134,sqlite,src/select.c,1474,FP,"r2+nKey register index, bounded",,high
+INT32-C,135,sqlite,src/select.c,1479,FP,"iParm+1 cursor number, bounded",,high
+INT32-C,136,sqlite,src/select.c,1485,FP,"iParm+1 cursor number, bounded",,high
+EXP33-C,137,sqlite,src/select.c,1488,FP,i is function-scope loop var initialized by for(i=0;i<nKey;i++) before use at 1491,,high
+INT32-C,138,sqlite,src/select.c,1491,FP,"r2+i register index, i<nKey bounded",,high
+INT32-C,139,sqlite,src/select.c,1493,FP,"r2+nKey register index, bounded",,high
+INT32-C,140,sqlite,src/select.c,1494,FP,nKey+2 bounded by ORDER BY nExpr,,high
+INT32-C,141,sqlite,src/select.c,1495,FP,nKey+2 bounded,,high
+INT32-C,142,sqlite,src/select.c,1498,FP,nKey+2 bounded,,high
+API00-C,143,sqlite,src/select.c,1531,FP,db is caller-guaranteed connection handle for an internal alloc routine,,high
+API00-C,144,sqlite,src/select.c,1531,FP,N bounded; NEVER(N+X>0xffff) guard at 1535 rejects oversize before use,,high
+API00-C,145,sqlite,src/select.c,1531,FP,X checked by assert(X>=0) and NEVER(N+X>0xffff) overflow guard,,high
+INT32-C,146,sqlite,src/select.c,1532,FP,N+X guarded by NEVER(N+X>0xffff) so product cannot overflow int,,med
+INT36-C,147,sqlite,src/select.c,1532,FP,INT36 misreads SZ_KEYINFO(0)+nExtra byte count as int-to-pointer; it is a malloc size argument,,high
+DCL03-C,148,sqlite,src/select.c,1534,FP,"assert(X>=0) is a runtime precondition on a variable, not a constant expression for static_assert",,high
+INT32-C,149,sqlite,src/select.c,1536,FP,"SZ_KEYINFO(0)+nExtra is a size_t malloc byte count, nExtra bounded by 0xffff guard",,high
+INT32-C,150,sqlite,src/select.c,1538,FP,N+X guarded by NEVER(N+X>0xffff),,high
+INT32-C,151,sqlite,src/select.c,1540,FP,N+X guarded by NEVER(N+X>0xffff),,high
+INT31-C,152,sqlite,src/select.c,1544,FP,"nExtra=(N+X)*(sizeof+1) is non-negative with N,X bounded; memset size safe",,high
+DCL30-C,153,sqlite,src/select.c,1548,FP,"returns p, a heap pointer from sqlite3DbMallocRawNN, not automatic storage",,high
+API00-C,154,sqlite,src/select.c,1554,FP,"sqlite3KeyInfoUnref guards with if(p) and asserts, null-safe by design",,high
+API00-C,155,sqlite,src/select.c,1566,FP,"sqlite3KeyInfoRef guards with if(p), null-safe",,high
+API00-C,156,sqlite,src/select.c,1581,FP,debug-only writeable check; callers pass non-null KeyInfo by contract,,med
+DCL13-C,157,sqlite,src/select.c,1581,TP,sqlite3KeyInfoIsWriteable only reads p->nRef; const KeyInfo* would compile,,med
+EXP34-C,158,sqlite,src/select.c,1581,FP,p->nRef read only in SQLITE_DEBUG assert helper; callers guarantee non-null,,high
+API00-C,159,sqlite,src/select.c,1598,FP,"pParse caller-guaranteed in parser context, dereferenced under that contract",,high
+API00-C,160,sqlite,src/select.c,1598,FP,pList caller contract; ORDER BY/result list always present when called,,high
+API00-C,161,sqlite,src/select.c,1598,FP,"iStart is an internal column index <= nExpr, no overflow concern",,high
+API00-C,162,sqlite,src/select.c,1598,FP,nExtra is a small internal count passed to a bounded allocator,,high
+DCL13-C,163,sqlite,src/select.c,1600,TP,pList ExprList object not written (only members and pointees read); const ExprList* valid,,med
+INT32-C,164,sqlite,src/select.c,1611,FP,"nExpr-iStart key column count, bounded and non-negative",,high
+INT32-C,165,sqlite,src/select.c,1611,FP,"nExtra+1 small column count, bounded",,high
+INT32-C,166,sqlite,src/select.c,1614,FP,"pList->a+iStart points into the array with iStart<=nExpr, valid element pointer",,high
+INT32-C,167,sqlite,src/select.c,1615,FP,"i-iStart array index in 0..nExpr-iStart, bounded",,high
+INT32-C,168,sqlite,src/select.c,1616,FP,i-iStart bounded array index,,high
+DCL30-C,169,sqlite,src/select.c,1619,FP,"returns pInfo, heap pointer from sqlite3KeyInfoAlloc, not automatic storage",,high
+DCL30-C,170,sqlite,src/select.c,1633,FP,"returns z, a string literal pointer (static), not automatic storage",,high
+DCL13-C,171,sqlite,src/select.c,1647,FP,ExplainQueryPlan passes pParse to a mutating vdbe routine in EXPLAIN builds; const would not compile,,high
+PRE01-C,172,sqlite,src/select.c,1658,TP,"explainSetInteger(a,b) expands to a=b with a unparenthesized; precedence risk on compound lvalue arg",,med
+PRE01-C,173,sqlite,src/select.c,1658,TP,"same macro, b unparenthesized in a=b; defensive parenthesization absent per PRE01",,low
+MSC04-C,174,sqlite,src/select.c,1673,FP,"generateSortTail recursion through codegen is query-tree bounded, not unbounded",,med
+DCL13-C,175,sqlite,src/select.c,1675,TP,p->pEList read only in generateSortTail; const Select* plausibly compiles,,low
+DCL13-C,176,sqlite,src/select.c,1676,FP,pSort fields read and pSort passed onward to non-const consumers; const risky,,med
+DCL13-C,177,sqlite,src/select.c,1678,TP,pDest fields read only here; const SelectDest* plausibly compiles,,low
+INT14-C,178,sqlite,src/select.c,1702,FP,"pSort->sortFlags & SORTFLAG_UseSorter is a flag test, not arithmetic on pointer",,high
+INT32-C,179,sqlite,src/select.c,1702,FP,"pOrderBy->nExpr - pSort->nOBSat sort-key count, bounded and non-negative",,high
+EXP33-C,180,sqlite,src/select.c,1725,FP,"i initialized by for(i=0,iCol=...;i<nColumn;i++) at 1772 before any use",,high
+INT32-C,181,sqlite,src/select.c,1750,FP,++pParse->nMem register counter bounded by statement size,,high
+INT32-C,182,sqlite,src/select.c,1751,FP,pParse->nTab++ cursor counter bounded by statement size,,high
+INT32-C,183,sqlite,src/select.c,1772,FP,"nKey+bSeq-1 sort column index, bounded",,high
+INT32-C,184,sqlite,src/select.c,1772,FP,"nKey+bSeq sort column index, bounded",,high
+INT32-C,185,sqlite,src/select.c,1780,FP,"iCol+1 sorter column index, bounded",,high
+INT32-C,186,sqlite,src/select.c,1798,FP,"regKey+k register index, k<nKey bounded",,high
+INT32-C,187,sqlite,src/select.c,1801,FP,"iJmp+2 is a VDBE program address offset, bounded by program size",,high
+INT32-C,188,sqlite,src/select.c,1802,FP,"iJmp+3 VDBE address offset, bounded",,high
+INT32-C,189,sqlite,src/select.c,1809,FP,"nColumn-1 loop bound, nColumn>=0",,high
+INT32-C,190,sqlite,src/select.c,1830,FP,"nKey+bSeq sorter column index, bounded",,high
+INT32-C,191,sqlite,src/select.c,1852,FP,"regRow+(i2<0) register index +0/1, bounded",,high
+INT32-C,192,sqlite,src/select.c,1852,FP,"nColumn-(i2<0) column count -0/1, bounded",,high
+INT32-C,193,sqlite,src/select.c,1888,FP,"sqlite3VdbeCurrentAddr(v)-1 program address, bounded and >=0",,high
+DCL13-C,194,sqlite,src/select.c,1920,FP,pNC stored into non-const sNC.pNext and reassigned; const NameContext* would break,,high
+EXP33-C,195,sqlite,src/select.c,1951,FP,j declared at function top and initialized by for(j=0;j<pTabList->nSrc;j++) before use,,high
+EXP34-C,196,sqlite,src/select.c,2045,FP,pS=pExpr->x.pSelect under ExprUseXSelect assert; subquery select invariant guarantees pSelect/pEList,,med
+STR34-C,197,sqlite,src/select.c,2058,FP,"*pzOrigDb = zOrigDb assigns a const char* pointer, not a char-value sign-extension",,high
+STR34-C,198,sqlite,src/select.c,2059,FP,"*pzOrigTab assigns a const char* pointer, no char sign-extension",,high
+STR34-C,199,sqlite,src/select.c,2060,FP,"*pzOrigCol assigns a const char* pointer, no char sign-extension",,high
+INT32-C,200,sqlite,src/select.c,2198,FP,"i+1 builds column%d name, i bounded by pEList->nExpr",,high
+API00-C,201,sqlite,src/select.c,2227,FP,pnCol caller-guaranteed out-param; *pnCol written under contract,,high
+API00-C,202,sqlite,src/select.c,2227,FP,paCol caller-guaranteed out-param; *paCol written under contract,,high
+DCL13-C,203,sqlite,src/select.c,2229,TP,pEList ExprList object not written (only members and pointees read); const ExprList* valid,,med
+EXP33-C,204,sqlite,src/select.c,2246,FP,"aCol allocated by sqlite3DbMallocZero so it is zero-filled, not uninitialized",,high
+INT30-C,205,sqlite,src/select.c,2246,FP,sizeof(aCol[0])*nCol with nCol=pEList->nExpr bounded by column limit; size_t product cannot wrap,,high
+DCL30-C,206,sqlite,src/select.c,2255,FP,"*paCol=aCol stores a heap pointer through the caller out-param, not an escaping local address",,high
+ARR37-C,207,sqlite,src/select.c,2257,FP,"pCol walks the heap-allocated aCol[] array bounded by i<nCol, valid pointer arithmetic",,high
+EXP34-C,208,sqlite,src/select.c,2258,FP,loop runs only when nCol>0 (requires pEList!=0) and OOM sets pParse->nErr which gates loop entry,,high
+EXP34-C,209,sqlite,src/select.c,2266,FP,pColExpr guarded by ALWAYS(pColExpr!=0) in the while condition before any deref,,high
+INT32-C,210,sqlite,src/select.c,2290,FP,"i is a column index bounded by nCol<=32767, i+1 cannot overflow",,high
+EXP34-C,211,sqlite,src/select.c,2298,FP,pCollide dereferenced only inside while where (pCollide=...)!=0 guarantees non-null,,high
+EXP34-C,212,sqlite,src/select.c,2299,FP,on OOM aCol=0 but pParse->nErr is set so the loop body and this deref are never reached,,high
+EXP34-C,213,sqlite,src/select.c,2325,FP,cleanup loop only entered after a real iteration where aCol was non-null; OOM gates loop entry via nErr,,high
+MEM30-C,214,sqlite,src/select.c,2327,FP,db is the allocator handle never freed; aCol is freed exactly once here,,high
+MEM30-C,215,sqlite,src/select.c,2330,FP,pParse is never freed; only db-owned buffers are freed,,high
+MEM30-C,216,sqlite,src/select.c,2330,FP,pParse is never freed; returning pParse->rc reads a live object,,high
+API00-C,217,sqlite,src/select.c,2346,FP,"internal routine, pParse non-null by caller contract (db=pParse->db used unconditionally)",,high
+API00-C,218,sqlite,src/select.c,2346,FP,pSelect non-null by caller contract and asserted at 2360,,high
+DCL13-C,219,sqlite,src/select.c,2349,FP,const Select* would not compile: a[i].pExpr passed to non-const ExprAffinity/ExprDataType/columnType,,med
+ARR37-C,220,sqlite,src/select.c,2369,FP,"pCol walks pTab->aCol[] bounded by i<pTab->nCol, valid array pointer arithmetic",,high
+MEM30-C,221,sqlite,src/select.c,2421,FP,"zCnName was reassigned by ReallocOrFree to a new block (or 0, guarded), not freed memory",,high
+ARR38-C,222,sqlite,src/select.c,2422,FP,buffer realloc'd to n+k+2 bytes; memcpy writes k+1 bytes at offset n+1 ending exactly at n+k+2,,high
+EXP05-C,223,sqlite,src/select.c,2422,FP,"k+1 is an integer rvalue (i64), no pointer/const cast involved",,high
+INT32-C,224,sqlite,src/select.c,2422,FP,"k=strlen(zType) for a tiny standard-type name, k+1 cannot overflow",,high
+MEM30-C,225,sqlite,src/select.c,2422,FP,"zCnName holds the valid reallocated block (guarded by if), not freed memory",,high
+MEM30-C,226,sqlite,src/select.c,2426,FP,pParse is never freed; passed live to sqlite3ExprCollSeq,,high
+MEM30-C,227,sqlite,src/select.c,2429,FP,"db is the live connection handle, never freed",,high
+API00-C,228,sqlite,src/select.c,2439,FP,"internal routine, pSelect non-null by caller contract; db=pParse->db used unconditionally",,high
+EXP34-C,229,sqlite,src/select.c,2450,FP,"pSelect non-null by caller contract, checked after SelectPrep/nErr then walked via pPrior",,high
+DCL30-C,230,sqlite,src/select.c,2465,FP,"pTab is heap-allocated via sqlite3DbMallocZero, not an automatic local",,high
+MSC04-C,231,sqlite,src/select.c,2508,FP,recursion is bounded by query-nesting limits and intentional; not a genuine defect,,med
+DCL00-C,232,sqlite,src/select.c,2510,FP,iLimit IS modified at 2526 (iLimit=++pParse->nMem); const would be incorrect,,high
+INT32-C,233,sqlite,src/select.c,2526,FP,pParse->nMem register counter bounded by expr/column limits far below INT_MAX,,high
+INT32-C,234,sqlite,src/select.c,2545,FP,pParse->nMem register counter bounded far below INT_MAX,,high
+INT32-C,235,sqlite,src/select.c,2546,FP,pParse->nMem register counter bounded far below INT_MAX,,high
+EXP43-C,236,sqlite,src/select.c,2550,FP,"arguments are integer register indices, not overlapping memory regions",,high
+INT32-C,237,sqlite,src/select.c,2550,FP,"iOffset is a small register number, iOffset+1 cannot overflow",,high
+DCL13-C,238,sqlite,src/select.c,2565,FP,const Select* would not compile: a[iCol].pExpr passed to non-const sqlite3ExprCollSeq,,med
+MSC04-C,239,sqlite,src/select.c,2565,FP,direct recursion bounded by compound-select depth and intentional,,med
+DCL30-C,240,sqlite,src/select.c,2579,FP,"pRet is a CollSeq* from recursion/ExprCollSeq, not the address of a local",,high
+INT32-C,241,sqlite,src/select.c,2595,FP,"nOrderBy=pOrderBy->nExpr bounded by SQLITE_MAX_COLUMN, nExtra small",,high
+MSC04-C,242,sqlite,src/select.c,2657,FP,indirect recursion bounded by query nesting and intentional,,med
+INT32-C,243,sqlite,src/select.c,2713,FP,pParse->nTab cursor counter bounded far below INT_MAX,,high
+INT32-C,244,sqlite,src/select.c,2716,FP,pParse->nTab cursor counter bounded far below INT_MAX,,high
+INT32-C,245,sqlite,src/select.c,2723,FP,pParse->nMem register counter bounded far below INT_MAX,,high
+INT32-C,246,sqlite,src/select.c,2727,FP,"pOrderBy->nExpr bounded by SQLITE_MAX_COLUMN, +2 cannot overflow",,high
+MSC04-C,247,sqlite,src/select.c,2853,FP,indirect recursion bounded and intentional in compound-select handling,,med
+EXP34-C,248,sqlite,src/select.c,2863,FP,p non-null by caller (multiSelect asserts p&&p->pPrior); reassigned only after if(p->pPrior==0)break,,high
+INT32-C,249,sqlite,src/select.c,2872,FP,"nRow counts VALUES terms (compound-select limited), bShowAll is 0/1",,high
+DCL13-C,250,sqlite,src/select.c,2890,TP,hasAnchor only reads p->selFlags and reassigns the local pointer; const Select* compiles cleanly,,med
+EXP34-C,251,sqlite,src/select.c,2891,FP,p->selFlags dereferenced only inside while(p && ...) which guards non-null,,high
+MSC04-C,252,sqlite,src/select.c,2926,FP,multiSelect recursion bounded by compound-select limits and intentional,,med
+INT14-C,253,sqlite,src/select.c,2942,FP,line is an assert mixing & on selFlags with comparisons; no genuine defect,,high
+DCL00-C,254,sqlite,src/select.c,2999,FP,nLimit IS modified at 3037 via &nLimit to sqlite3ExprIsInteger; const would be wrong,,high
+EXP43-C,255,sqlite,src/select.c,3025,FP,"arguments are integer register indices, not overlapping memory regions",,high
+INT32-C,256,sqlite,src/select.c,3026,FP,"p->iOffset is a small register number, +1 cannot overflow",,high
+API00-C,257,sqlite,src/select.c,3067,FP,"internal routine, p non-null by caller contract; p->selFlags read unconditionally",,high
+DCL13-C,258,sqlite,src/select.c,3067,TP,sqlite3SelectWrongNumTermsError only reads p->selFlags/p->op; const Select* compiles,,med
+DCL13-C,259,sqlite,src/select.c,3099,TP,generateOutputSubroutine only reads p->iOffset and p->iLimit; const Select* compiles cleanly,,med
+DCL13-C,260,sqlite,src/select.c,3100,TP,pIn (SelectDest*) is read-only (iSdst/nSdst/eDest); writes target pDest; const SelectDest* applies,,med
+INT32-C,261,sqlite,src/select.c,3121,FP,"regPrev is a register number, regPrev+1 cannot overflow",,high
+INT32-C,262,sqlite,src/select.c,3125,FP,"regPrev is a register number, regPrev+1 cannot overflow",,high
+INT32-C,263,sqlite,src/select.c,3125,FP,"pIn->nSdst is a column count >=1, nSdst-1 cannot meaningfully underflow",,high
+INT32-C,264,sqlite,src/select.c,3168,FP,"iParm is a cursor number, iParm+1 cannot overflow",,high
+INT32-C,265,sqlite,src/select.c,3251,FP,"nKey=pSO->nExpr bounded by SQLITE_MAX_COLUMN, nKey+2 cannot overflow",,high
+INT32-C,266,sqlite,src/select.c,3252,FP,"r2 register base plus bounded nKey, cannot overflow",,high
+INT32-C,267,sqlite,src/select.c,3252,FP,"r2 register base plus bounded nKey, cannot overflow",,high
+INT32-C,268,sqlite,src/select.c,3263,FP,"iParm cursor number (line is in #if 0 dead code), iParm+1 cannot overflow",,high
+INT32-C,269,sqlite,src/select.c,3270,FP,"iParm is a cursor number, iParm+1 cannot overflow",,high
+INT32-C,270,sqlite,src/select.c,3276,FP,"r2 register base plus loop index ii<nKey (bounded), cannot overflow",,high
+INT32-C,271,sqlite,src/select.c,3278,FP,"r2 register base plus bounded nKey, cannot overflow",,high
+INT32-C,272,sqlite,src/select.c,3279,FP,"nKey bounded by SQLITE_MAX_COLUMN, nKey+2 cannot overflow",,high
+INT32-C,273,sqlite,src/select.c,3280,FP,"nKey bounded by SQLITE_MAX_COLUMN, nKey+2 cannot overflow",,high
+INT32-C,274,sqlite,src/select.c,3285,FP,"nKey bounded by SQLITE_MAX_COLUMN, nKey+2 cannot overflow",,high
+MSC04-C,275,sqlite,src/select.c,3408,TP,"multiSelectByMerge does participate in indirect recursion via sqlite3Select, bounded by SQLite parser depth limits",,low
+EXP34-C,276,sqlite,src/select.c,3474,FP,pOrderBy guarded by assert(pOrderBy) at 3464 plus p->pOrderBy!=0 contract; non-null here,,high
+EXP30-C,277,sqlite,src/select.c,3482,FP,chained assignment p->pOrderBy=pOrderBy=f(pOrderBy); RHS fully sequenced before either store,,high
+INT30-C,278,sqlite,src/select.c,3494,FP,nOrderBy is ORDER BY term count bounded far below UINT_MAX; sizeof*(n+1) cannot wrap,,high
+INT32-C,279,sqlite,src/select.c,3494,FP,nOrderBy bounded by column/expr limits; nOrderBy+1 cannot overflow int,,high
+MEM30-C,280,sqlite,src/select.c,3521,FP,"db is the live connection handle, never freed; sqlite3DbFreeNN frees aPermute not db",,high
+INT32-C,281,sqlite,src/select.c,3522,FP,pParse->nMem register counter bounded by query size; +1 safe,,high
+INT32-C,282,sqlite,src/select.c,3523,FP,nMem register counter bounded by query size; compound add cannot overflow,,high
+INT32-C,283,sqlite,src/select.c,3523,FP,nExpr is result-column count bounded by SQLITE_MAX_COLUMN; +1 safe,,high
+MEM30-C,284,sqlite,src/select.c,3525,FP,"db is live connection handle, never freed; passed live to sqlite3KeyInfoAlloc",,high
+MEM30-C,285,sqlite,src/select.c,3539,FP,db connection handle never freed; passed live to VDBE helpers,,high
+MEM30-C,286,sqlite,src/select.c,3557,FP,db connection handle never freed; member access on live connection,,high
+INT32-C,287,sqlite,src/select.c,3565,FP,++nMem register counter bounded by query size; no INT_MAX approach,,high
+INT32-C,288,sqlite,src/select.c,3566,FP,++nMem register counter bounded; safe,,high
+INT32-C,289,sqlite,src/select.c,3567,FP,p->iOffset is a register index bounded by query size; +1 safe,,high
+MEM30-C,290,sqlite,src/select.c,3573,FP,"db is live connection handle, never freed",,high
+INT32-C,291,sqlite,src/select.c,3576,FP,++nMem register counter bounded; safe,,high
+INT32-C,292,sqlite,src/select.c,3577,FP,++nMem register counter bounded; safe,,high
+INT32-C,293,sqlite,src/select.c,3578,FP,++nMem register counter bounded; safe,,high
+INT32-C,294,sqlite,src/select.c,3579,FP,++nMem register counter bounded; safe,,high
+INT32-C,295,sqlite,src/select.c,3677,FP,addrAltB is a VDBE program address bounded by program size; ++ safe,,high
+INT32-C,296,sqlite,src/select.c,3692,FP,addrAgtB is a VDBE program address bounded by program size; ++ safe,,high
+MEM30-C,297,sqlite,src/select.c,3711,FP,"nOrderBy is an int passed by value, never a freed pointer; misread",,high
+MEM30-C,298,sqlite,src/select.c,3733,FP,db is live connection handle never freed; passed to sqlite3ExprListDelete,,high
+EXP34-C,299,sqlite,src/select.c,3860,FP,pNew non-null after the mallocFailed check at 3853 returns on OOM,,high
+MSC04-C,300,sqlite,src/select.c,3913,TP,"substExprList genuinely participates in indirect recursion (substExpr/substSelect), bounded by expr-depth limit",,low
+MEM05-C,301,sqlite,src/select.c,3923,FP,recursion depth bounded by SQLITE_MAX_EXPR_DEPTH; no real excessive-stack risk,,med
+INT32-C,302,sqlite,src/select.c,3932,FP,nSelDepth is subquery recursion depth bounded by SQLITE_MAX_EXPR_DEPTH; ++ safe,,high
+EXP30-C,303,sqlite,src/select.c,3949,FP,"p=p->pPrior is a single assignment; read sequenced before store, no violation",,high
+EXP30-C,304,sqlite,src/select.c,3949,FP,same do-while condition; single properly-sequenced assignment,,high
+INT32-C,305,sqlite,src/select.c,3950,FP,"nSelDepth decrement paired with increment, bounded depth; no INT_MIN approach",,high
+DCL13-C,306,sqlite,src/select.c,3962,FP,"signature fixed by Walker xExprCallback typedef int(*)(Walker*,Expr*); const not permitted",,high
+MEM05-C,307,sqlite,src/select.c,4000,FP,srclistRenumberCursors recursion bounded by nested-subquery/parser depth limits,,med
+MSC04-C,308,sqlite,src/select.c,4000,TP,srclistRenumberCursors genuinely calls itself directly for nested subqueries,,high
+DCL13-C,309,sqlite,src/select.c,4003,FP,"pSrc->a is a flexarray member; writing pItem->iCursor mutates the SrcList object, const would not compile",,high
+EXP33-C,310,sqlite,src/select.c,4010,FP,Select *p assigned in for-init before any use; not read uninitialized,,high
+EXP34-C,311,sqlite,src/select.c,4011,FP,"aCsrMap is caller-allocated, guaranteed non-null and sized; assert guards index",,high
+INT32-C,312,sqlite,src/select.c,4013,FP,iCursor is a cursor number bounded by nTab; +1 used within sized array,,high
+INT32-C,313,sqlite,src/select.c,4015,FP,iCursor bounded by nTab; +1 safe array index,,high
+DCL13-C,314,sqlite,src/select.c,4028,TP,"renumberCursorDoMapping is a plain helper not a callback; pWalker only read, const Walker* would compile",,med
+INT32-C,315,sqlite,src/select.c,4032,FP,iCsr is a cursor number bounded by aCsrMap[0]; +1 safe within guarded bound,,high
+DCL13-C,316,sqlite,src/select.c,4090,TP,"findLeftmostExprlist never writes through pSel; const Select* compiles, return type unaffected",,med
+DCL13-C,317,sqlite,src/select.c,4101,TP,compoundHasDifferentAffinities only reads p members; const Select* would compile,,med
+ARR00-C,318,sqlite,src/select.c,4108,FP,ii is the for-loop induction variable initialized at for(ii=0;...); not uninitialized,,high
+ARR00-C,319,sqlite,src/select.c,4328,FP,iFrom bounded by assert(iFrom>=0 && iFrom<pSrc->nSrc) at 4327 per caller contract,,high
+ARR00-C,320,sqlite,src/select.c,4440,FP,ii is for-loop induction variable initialized to 0; not uninitialized,,high
+INT30-C,321,sqlite,src/select.c,4454,FP,"(i64)pParse->nTab cast to 64-bit before *sizeof; nTab bounded, no wrap",,high
+INT32-C,322,sqlite,src/select.c,4454,FP,multiplication performed in i64 domain after explicit cast; nTab bounded,,high
+INT32-C,323,sqlite,src/select.c,4454,FP,"(i64)nTab+1 addition is 64-bit; nTab bounded, no overflow",,high
+PRE32-C,324,sqlite,src/select.c,4460,FP,"TREETRACE arg list has no preprocessor directive; %u/%p/\n are format specifiers, misread",,high
+PRE32-C,325,sqlite,src/select.c,4460,FP,"string literal contains format specifiers and \n, not a # preprocessor directive",,high
+EXP33-C,326,sqlite,src/select.c,4466,FP,TESTONLY(i=) and testcase(i==..) are both empty or both active together; i assigned whenever read,,high
+MEM30-C,327,sqlite,src/select.c,4479,FP,"frees distinct fields zName and zAlias, not db; db is not double-freed",,high
+MEM30-C,328,sqlite,src/select.c,4527,FP,"db is pParse->db live allocator handle, never freed; sqlite3DbFree frees other objects not db",,high
+MEM30-C,329,sqlite,src/select.c,4535,FP,pParse is live parse context never freed; pNew->selId=++pParse->nSelect is normal use,,high
+MEM30-C,330,sqlite,src/select.c,4536,FP,"db is the live allocator handle, not freed; db->mallocFailed read is valid",,high
+MEM30-C,331,sqlite,src/select.c,4537,FP,"pParse live; renumberCursors(pParse,...) uses live context, no free of pParse occurred",,high
+MEM30-C,332,sqlite,src/select.c,4543,FP,pParse live parse context passed to TREETRACE; nothing freed pParse,,high
+PRE32-C,333,sqlite,src/select.c,4543,FP,"TREETRACE arg is string-literal concatenation, no preprocessor directive present",,high
+PRE32-C,334,sqlite,src/select.c,4543,FP,"argument is concatenated string literals, not a preprocessor directive; analyzer misread",,high
+MEM30-C,335,sqlite,src/select.c,4548,FP,"sqlite3DbFree(db,aCsrMap) frees aCsrMap; db is the allocator handle, never the freed object",,high
+MEM30-C,336,sqlite,src/select.c,4549,FP,db is live allocator handle; db->mallocFailed access is valid post-free-of-other-objects,,high
+MEM30-C,337,sqlite,src/select.c,4553,FP,"pParse live; sqlite3SrcItemAttachSubquery(pParse,...) uses live context",,high
+MEM30-C,338,sqlite,src/select.c,4567,FP,"pParse live parse context, never freed; sqlite3SrcListEnlarge(pParse,...) is valid",,high
+INT32-C,339,sqlite,src/select.c,4614,FP,"nSubSrc=pSubSrc->nSrc bounded by SQLITE_LIMIT_SRCLIST, nSubSrc-1 cannot overflow",,high
+INT32-C,340,sqlite,src/select.c,4614,FP,"iFrom is a FROM-clause index asserted <pSrc->nSrc, iFrom+1 structurally bounded",,high
+MEM30-C,341,sqlite,src/select.c,4614,FP,"pParse is live parse context, not freed",,high
+ARR00-C,342,sqlite,src/select.c,4617,FP,pSrc->a[iFrom] safe: iFrom asserted 0<=iFrom<pSrc->nSrc at entry and pSrc just enlarged,,high
+INT32-C,343,sqlite,src/select.c,4625,FP,i<nSubSrc and iFrom small FROM indices; i+iFrom structurally bounded,,high
+MEM30-C,344,sqlite,src/select.c,4630,FP,"db is live allocator handle passed to sqlite3IdListDelete, not a freed pointer",,high
+MEM30-C,345,sqlite,src/select.c,4676,FP,"pParse live parse context, never freed",,high
+MEM30-C,346,sqlite,src/select.c,4681,FP,db is the live allocator handle; db->mallocFailed read is valid,,high
+INT32-C,347,sqlite,src/select.c,4712,FP,"i+iFrom are small FROM-clause indices, structurally bounded well below INT_MAX",,high
+MEM30-C,348,sqlite,src/select.c,4718,FP,pParse live parse context,,high
+MEM30-C,349,sqlite,src/select.c,4720,FP,"db is live allocator handle passed to recomputeColumnsUsed indirectly, not freed",,high
+MEM30-C,350,sqlite,src/select.c,4724,FP,pParse live parse context,,high
+INT32-C,351,sqlite,src/select.c,4776,FP,i<nConst (count of WHERE COLUMN=CONST terms) bounded; i*2 cannot overflow,,high
+DCL03-C,352,sqlite,src/select.c,4784,FP,"assert checks compile-time relation TK_GT==TK_EQ+1 etc; advisory, runtime assert is intentional idiom",,med
+INT32-C,353,sqlite,src/select.c,4789,FP,"nConst counts deduplicated WHERE equality terms, bounded by expr count; no INT_MAX risk",,high
+MEM30-C,354,sqlite,src/select.c,4790,FP,"pConst->pParse is live parse context, never freed",,high
+INT30-C,355,sqlite,src/select.c,4791,FP,"nConst small; nConst*2*sizeof(Expr*) is realloc size in size_t, no practical wrap",,high
+INT32-C,356,sqlite,src/select.c,4791,FP,nConst bounded small; nConst*2 cannot overflow signed int,,high
+MEM30-C,357,sqlite,src/select.c,4791,FP,"pConst->nConst is an int field of live WhereConst, not a freed pointer",,high
+MEM30-C,358,sqlite,src/select.c,4792,FP,"pConst->apExpr is live (just realloc'd, null-checked); not a freed pointer",,high
+INT32-C,359,sqlite,src/select.c,4795,FP,nConst bounded; nConst*2-2 cannot overflow,,high
+INT32-C,360,sqlite,src/select.c,4795,FP,nConst bounded small; nConst*2 cannot overflow,,high
+MEM30-C,361,sqlite,src/select.c,4795,FP,"apExpr live after successful realloc (else branch), not freed",,high
+INT32-C,362,sqlite,src/select.c,4796,FP,nConst bounded; nConst*2-1 cannot overflow,,high
+INT32-C,363,sqlite,src/select.c,4796,FP,nConst bounded small; nConst*2 cannot overflow,,high
+MEM30-C,364,sqlite,src/select.c,4796,FP,"apExpr live in else branch (realloc succeeded), not freed",,high
+MEM05-C,365,sqlite,src/select.c,4806,FP,findConstInWhere recursion bounded by SQLITE_MAX_EXPR_DEPTH on the AND-tree; stack safe,,med
+INT32-C,366,sqlite,src/select.c,4856,FP,i<nConst bounded; i*2 cannot overflow,,high
+DCL03-C,367,sqlite,src/select.c,4860,FP,assert on TK_* ordinal relation is compile-time-known but intentional defensive runtime assert,,med
+INT32-C,368,sqlite,src/select.c,4869,FP,i<nConst bounded; i*2+1 cannot overflow,,high
+INT32-C,369,sqlite,src/select.c,4869,FP,i<nConst bounded; i*2 cannot overflow,,high
+DCL13-C,370,sqlite,src/select.c,4892,FP,signature fixed by Walker xExprCallback typedef; const cannot be applied,,high
+DCL03-C,371,sqlite,src/select.c,4894,FP,compile-time assert of TK_GT==TK_EQ+1; intentional defensive runtime assert idiom,,med
+DCL03-C,372,sqlite,src/select.c,4895,FP,compile-time assert TK_LE==TK_EQ+2; intentional idiom,,med
+DCL03-C,373,sqlite,src/select.c,4896,FP,compile-time assert TK_LT==TK_EQ+3; intentional idiom,,med
+DCL03-C,374,sqlite,src/select.c,4897,FP,compile-time assert TK_GE==TK_EQ+4; intentional idiom,,med
+DCL13-C,375,sqlite,src/select.c,4964,FP,"pParse passed to non-const APIs (sqlite3WalkExpr,sqlite3DbReallocOrFree) and stored in x.pParse; cannot be const",,high
+DCL13-C,376,sqlite,src/select.c,4965,TP,"propagateConstants reads p only (p->pSrc,p->pWhere); WHERE-tree mutation is via pointee, const Select* compiles",,med
+MEM30-C,377,sqlite,src/select.c,4998,FP,"x.pParse is live parse context, never freed; x is a local SubstContext",,high
+INT32-C,378,sqlite,src/select.c,4999,FP,nChng accumulates propagation counts bounded by iteration count; no overflow,,high
+DCL13-C,379,sqlite,src/select.c,5025,TP,pushDownWindowCheck only reads pSubq members; const Select* would compile,,med
+MEM05-C,380,sqlite,src/select.c,5143,FP,pushDownWhereTerms recursion bounded by AND-tree depth (SQLITE_MAX_EXPR_DEPTH); stack safe,,med
+ARR00-C,381,sqlite,src/select.c,5153,FP,pSrcList->a[iSrc]: iSrc is caller-guaranteed valid FROM index per internal contract,,high
+ARR00-C,382,sqlite,src/select.c,5184,FP,"ii is initialized in for-init (ii=0); analyzer misread, not uninitialized",,high
+INT32-C,383,sqlite,src/select.c,5215,FP,"nChng sums recursive pushdown counts, bounded; no overflow",,high
+EXP34-C,384,sqlite,src/select.c,5278,FP,guarded by pParse->nErr==0 && before pNew->op deref; assert pNew!=0||nErr!=0 above,,high
+DCL13-C,385,sqlite,src/select.c,5314,TP,"disableUnusedSubqueryResultColumns reads pItem only; subquery mutation is through pointee, const SrcItem* compiles",,med
+EXP00-C,386,sqlite,src/select.c,5358,FP,shift expression already clearly parenthesized; precedence is unambiguous,,med
+INT14-C,387,sqlite,src/select.c,5358,FP,BMS is a named macro constant; use as BMS-1 and comparison is not a confusing reused variable,,med
+INT34-C,388,sqlite,src/select.c,5358,FP,"shift amount clamped to [0,BMS-1]=[0,63] for 64-bit Bitmask; shift well-defined",,high
+DCL13-C,389,sqlite,src/select.c,5450,TP,isSimpleCount reads p only; const Select* would compile,,med
+DCL13-C,390,sqlite,src/select.c,5450,TP,"isSimpleCount reads pAggInfo only (nFunc,aFunc); const AggInfo* would compile",,med
+EXP34-C,391,sqlite,src/select.c,5460,FP,pAggInfo is caller-guaranteed non-null AggInfo for internal isSimpleCount; deref safe,,high
+DCL30-C,392,sqlite,src/select.c,5479,FP,"returns p->pSrc->a[0].pSTab, a heap Table pointer, not a local; analyzer misread pTab",,high
+API00-C,393,sqlite,src/select.c,5489,FP,"sqlite3IndexedByLookup internal; pParse caller-guaranteed non-null, asserts dominate use",,high
+API00-C,394,sqlite,src/select.c,5489,FP,"pFrom caller-guaranteed non-null; pFrom->pSTab asserted non-null, pFrom->fg.isIndexedBy asserted",,high
+DCL13-C,395,sqlite,src/select.c,5531,FP,"pWalker is xSelectCallback; signature fixed by function-pointer typedef, const impossible",,high
+INT14-C,396,sqlite,src/select.c,5554,FP,p is a Select pointer; nExpr-1 arithmetic does not make p a bitwise/arithmetic mixed variable,,med
+INT32-C,397,sqlite,src/select.c,5554,FP,p->pOrderBy->nExpr is column count bounded by SQLITE_LIMIT_COLUMN; nExpr-1 cannot overflow,,high
+EXP33-C,398,sqlite,src/select.c,5563,FP,line 5563 is pNew=sqlite3DbMallocZero assignment not a deref; null-checked at 5564 before use,,high
+MEM33-C,399,sqlite,src/select.c,5572,FP,Select has no flexible array member; *pNew=*p is the standard fixed-struct copy idiom,,high
+DCL13-C,400,sqlite,src/select.c,5600,TP,"cannotBeFunction reads pFrom only (fg.isTabFunc,zName); const SrcItem* would compile",,med
+DCL13-C,401,sqlite,src/select.c,5620,FP,"searchWith returns &pWith->a[i] as mutable interior to caller, so pWith cannot be const without breaking the returned-alias contract",,high
+DCL13-C,402,sqlite,src/select.c,5621,TP,"pItem only read (pItem->zName, pItem->fg flags) in searchWith; const SrcItem* would compile",,med
+DCL30-C,403,sqlite,src/select.c,5632,FP,"p is a local iterator over a heap-allocated With list; returned &p->a[i] points into heap not a local, no dangling-address defect",,high
+API00-C,404,sqlite,src/select.c,5658,FP,"pParse is the caller-guaranteed non-null parser context, used per documented precondition",,high
+API00-C,405,sqlite,src/select.c,5658,FP,pWith is explicitly guarded by if( pWith ) before any dereference,,high
+EXP30-C,406,sqlite,src/select.c,5748,FP,pCteUse assigned then read across statements separated by sequence points; no unsequenced modify-and-access,,high
+EXP34-C,407,sqlite,src/select.c,5748,FP,pCteUse is malloc'd and null-checked (return 2 on 0) before pCteUse->eM10d/nUse++ are touched,,high
+INT32-C,408,sqlite,src/select.c,5776,FP,"nUse is an int CTE reference counter bounded by number of FROM-clause uses, structurally far below INT_MAX",,high
+EXP33-C,409,sqlite,src/select.c,5813,FP,"pWith is set by searchWith's out-param and this branch only runs when pCte!=0, which guarantees pWith was written",,high
+API00-C,410,sqlite,src/select.c,5875,FP,pWalker is the non-null Walker callback argument by walker contract; pWalker->pParse deref is documented,,high
+API00-C,411,sqlite,src/select.c,5875,FP,p is the non-null Select callback argument; p->pPrior read after OK_IF_ALWAYS_TRUE(pParse->pWith) guard,,high
+DCL13-C,412,sqlite,src/select.c,5875,FP,"signature fixed by xSelectCallback2 function-pointer typedef, so const cannot be applied even though pWalker is read-only here",,high
+API00-C,413,sqlite,src/select.c,5894,FP,pParse non-null by caller contract; pParse->db dereferenced per precondition,,high
+API00-C,414,sqlite,src/select.c,5894,FP,"pFrom non-null by caller with documenting asserts (fg.isSubquery, u4.pSubq!=0)",,high
+DCL13-C,415,sqlite,src/select.c,5937,TP,"inAnyUsingClause only reads through pBase; passing the IdList* member to a non-const API is const-valid, so const SrcItem* compiles",,med
+INT32-C,416,sqlite,src/select.c,5996,FP,"nSelect is an int selId counter bounded by SELECT-statement count in the query, far below INT_MAX",,high
+EXP33-C,417,sqlite,src/select.c,6021,FP,pTab assigned on every reachable branch before use; the pFrom->pSTab!=0 path takes continue and never reaches the use,,high
+INT14-C,418,sqlite,src/select.c,6076,FP,"flags holds db->flags bitmask; mixing bitwise mask and equality compare is the intended idiom, no defect",,high
+INT13-C,419,sqlite,src/select.c,6136,FP,flags holds u32 db->flags bit constants; masking SQLITE_FullColNames never engages the sign bit,,high
+INT13-C,420,sqlite,src/select.c,6137,FP,same db-flags masking idiom with SQLITE_ShortColNames; no signed-bit hazard,,high
+EXP34-C,421,sqlite,src/select.c,6141,FP,pE=pEList->a[k].pExpr is a valid in-bounds ExprList entry; pE->op read within k<nExpr loop after asserts,,high
+EXP34-C,422,sqlite,src/select.c,6145,FP,pRight=pE->pRight guarded by assert(op!=TK_DOT||pRight!=0) and only deref'd on the TK_DOT branch,,high
+INT32-C,423,sqlite,src/select.c,6151,FP,pNew->nExpr-1 indexes the just-appended element under if(pNew); nExpr>=1 after a successful append,,high
+INT32-C,424,sqlite,src/select.c,6152,FP,same append-then-index pattern; nExpr-1 valid and small after non-null pNew,,high
+EXP33-C,425,sqlite,src/select.c,6176,FP,pNestedFrom assigned in both the isNestedFrom and else branches before any use,,high
+EXP33-C,426,sqlite,src/select.c,6180,FP,pUsing assigned in both branches (pFrom[1].u3.pUsing or 0) before use,,high
+ARR00-C,427,sqlite,src/select.c,6208,FP,"ii is the for-loop induction variable initialized in for(ii=0;ii<pUsing->nId;...), not uninitialized",,high
+EXP33-C,428,sqlite,src/select.c,6214,FP,pX=&pNew->a[pNew->nExpr-1] assigned and used only inside the if(pNew) guard,,high
+INT32-C,429,sqlite,src/select.c,6214,FP,"pNew->nExpr-1 append index, valid after successful append, small bound",,high
+INT32-C,430,sqlite,src/select.c,6282,FP,"pTabList->nSrc-i-1 is a small FROM-term count minus loop index, kept >=0 by i<nSrc; no overflow",,high
+INT32-C,431,sqlite,src/select.c,6282,FP,pTabList->nSrc-i bounded small positive by loop; no signed overflow,,high
+INT32-C,432,sqlite,src/select.c,6305,FP,"pNew->nExpr-1 append index pattern, valid and small",,high
+API00-C,433,sqlite,src/select.c,6369,FP,"NotUsed is a debug assert(0) callback param, never dereferenced (UNUSED_PARAMETER2)",,high
+API00-C,434,sqlite,src/select.c,6369,FP,NotUsed2 likewise unused; marked by UNUSED_PARAMETER2,,high
+DCL03-C,435,sqlite,src/select.c,6371,FP,"assert(0) is the deliberate unreachable-code marker, not a constant-condition check to migrate to static_assert",,high
+DCL13-C,436,sqlite,src/select.c,6387,FP,pParse is passed to sqlite3SelectExpand/ResolveSelectNames which mutate it; not const-eligible,,high
+DCL13-C,437,sqlite,src/select.c,6417,FP,selectAddSubqueryTypeInfo signature is fixed by the xSelectCallback2 typedef; cannot add const,,high
+DCL13-C,438,sqlite,src/select.c,6448,FP,pParse passed to sqlite3WalkSelect which mutates it; not const-eligible,,high
+API00-C,439,sqlite,src/select.c,6472,FP,pOuterNC is caller-supplied and forwarded to sqlite3ResolveSelectNames; non-null by contract,,high
+EXP34-C,440,sqlite,src/select.c,6495,FP,"printAggInfo is debug-only, pAggInfo always passed live by caller; selId/nColumn read after function entry",,high
+ARR00-C,441,sqlite,src/select.c,6496,FP,"ii is the induction variable of for(ii=0;ii<pAggInfo->nColumn;...), initialized, not uninitialized",,high
+INT32-C,442,sqlite,src/select.c,6502,FP,"iFirstReg+ii are VDBE register indices bounded by pParse->nMem, far below INT_MAX",,high
+INT32-C,443,sqlite,src/select.c,6509,FP,iFirstReg+nColumn+ii register index bounded by allocated nMem; no realistic overflow,,high
+INT32-C,444,sqlite,src/select.c,6509,FP,iFirstReg+nColumn register index bounded small; no overflow,,high
+DCL13-C,445,sqlite,src/select.c,6533,FP,"optimizeAggregateUseOfIndexedExpr writes pAggInfo->nColumn and ->nSortingColumn directly; struct mutated, cannot be const",,high
+EXP34-C,446,sqlite,src/select.c,6573,FP,pAggInfo non-null per caller/assert; nColumn/nAccumulator read after assert(iFirstReg==0),,high
+INT32-C,447,sqlite,src/select.c,6578,FP,pGroupBy asserted non-null (line 6575); nExpr-1 on a small GROUP BY clause count is safe,,high
+INT32-C,448,sqlite,src/select.c,6584,FP,mx+1 derived from small group-by/sorter column counts; no overflow,,high
+PRE32-C,449,sqlite,src/select.c,6590,FP,"TREETRACE call arguments contain no preprocessor directives; the #if guards the whole block, the rule misread directive placement",,high
+PRE32-C,450,sqlite,src/select.c,6594,FP,"printf args are plain ints from IndexedExpr fields; #if TREETRACE_ENABLED wraps the block, no directives split the call",,high
+DCL13-C,451,sqlite,src/select.c,6633,FP,"assignAggregateRegisters writes pAggInfo->iFirstReg directly; the struct is mutated, cannot be const",,high
+EXP34-C,452,sqlite,src/select.c,6638,FP,"pAggInfo non-null by assert(pAggInfo!=0); iFirstReg read then written, safe",,high
+INT32-C,453,sqlite,src/select.c,6664,FP,"pParse->nMem+1 is a VDBE register count bounded by query complexity, far below INT_MAX",,high
+INT32-C,454,sqlite,src/select.c,6665,FP,nMem += nColumn+nFunc: register/aggregate counts bounded by SQLITE_MAX_COLUMN-scale limits,,high
+INT32-C,455,sqlite,src/select.c,6665,FP,nColumn+nFunc are small aggregate-entry counts; sum far below INT_MAX,,high
+DCL13-C,456,sqlite,src/select.c,6676,TP,"resetAccumulator only reads AggInfo fields and writes through aFunc[] element pointers (pFunc->iDistinct), which const AggInfo* permits, so const compiles",,med
+EXP34-C,457,sqlite,src/select.c,6680,FP,pAggInfo non-null by caller; nFunc/nColumn/iFirstReg read after assert(iFirstReg>0),,high
+INT32-C,458,sqlite,src/select.c,6680,FP,nFunc+nColumn small aggregate counts; sum far below INT_MAX,,high
+INT32-C,459,sqlite,src/select.c,6687,FP,"iFirstReg+nReg-1 is a register-range index, iFirstReg>0 asserted and nReg small; bounded",,high
+INT32-C,460,sqlite,src/select.c,6687,FP,iFirstReg+nReg register index bounded by nMem; no overflow,,high
+EXP34-C,461,sqlite,src/select.c,6689,FP,"pFunc iterates aFunc[] (pFunc=aFunc;i<nFunc); each in-bounds entry, pFunc->iDistinct read validly",,high
+EXP34-C,462,sqlite,src/select.c,6692,FP,pE=pFunc->pFExpr deref'd after assert(ExprUseXList(pE)); pFExpr non-null for aggregate entries,,high
+INT32-C,463,sqlite,src/select.c,6720,FP,nExtra += pList->nExpr accumulates a small function-argument count; bounded well below INT_MAX,,high
+INT32-C,464,sqlite,src/select.c,6723,FP,same small arg-count accumulation into nExtra; no overflow,,high
+EXP34-C,465,sqlite,src/select.c,6727,FP,"pKeyInfo->nKeyField++ guarded by pParse->nErr==0, and OOM (the only NULL path) sets pParse->nErr via sqlite3OomFault, so non-null when reached",,high
+INT32-C,466,sqlite,src/select.c,6730,FP,"pOBList->nExpr+nExtra is an ORDER BY expr count plus a few extra columns, bounded far below INT_MAX",,high
+EXP34-C,467,sqlite,src/select.c,6746,FP,pAggInfo non-null by caller contract (callers pass live AggInfo); asserts on iFirstReg/nErr guard internal state,,high
+EXP34-C,468,sqlite,src/select.c,6748,FP,pF iterates pAggInfo->aFunc bounded by nFunc; never null inside loop body,,high
+INT32-C,469,sqlite,src/select.c,6776,FP,nArg=pList->nExpr is a column count bounded by SQLITE_MAX_COLUMN; nArg-1 cannot overflow INT32,,high
+INT32-C,470,sqlite,src/select.c,6777,FP,nKey/j small VDBE column indices bounded by column count; sum far below INT_MAX,,high
+INT32-C,471,sqlite,src/select.c,6777,FP,regAgg temp-register index bounded by nMem allocation; regAgg+j no overflow,,high
+INT32-C,472,sqlite,src/select.c,6781,FP,nKey+nArg+bool all bounded by column counts; structurally far below INT_MAX,,high
+INT32-C,473,sqlite,src/select.c,6781,FP,nKey+nArg are ORDER BY/arg column counts bounded by SQLITE_MAX_COLUMN,,high
+INT32-C,474,sqlite,src/select.c,6782,FP,nArg-1 with nArg from GetTempRange(nArg); bounded column count,,high
+INT32-C,475,sqlite,src/select.c,6783,FP,iBaseCol+j are VDBE column indices bounded by column counts,,high
+INT32-C,476,sqlite,src/select.c,6784,FP,regAgg+j temp-register index bounded by register allocation,,high
+MSC04-C,477,sqlite,src/select.c,6817,FP,indirect recursion through codegen bounded by SQLITE_MAX_EXPR_DEPTH; not a defect,,high
+EXP34-C,478,sqlite,src/select.c,6830,FP,pAggInfo non-null by caller contract; asserted iFirstReg>0 dominates,,high
+EXP34-C,479,sqlite,src/select.c,6840,FP,pF iterates aFunc within nFunc bound; non-null,,high
+INT32-C,480,sqlite,src/select.c,6885,FP,"regAggSz accumulates small ORDER BY/arg column counts, bounded below INT_MAX",,high
+INT32-C,481,sqlite,src/select.c,6888,FP,regAggSz accumulation of bounded column counts,,high
+INT32-C,482,sqlite,src/select.c,6896,FP,regAgg+jj temp-register index bounded by register allocation,,high
+INT32-C,483,sqlite,src/select.c,6900,FP,regAgg+jj bounded register index,,high
+INT32-C,484,sqlite,src/select.c,6902,FP,jj+=nArg accumulates bounded column counts,,high
+INT32-C,485,sqlite,src/select.c,6908,FP,regBase+kk bounded register/column index,,high
+INT32-C,486,sqlite,src/select.c,6908,FP,regAgg+jj bounded register index,,high
+INT32-C,487,sqlite,src/select.c,6929,FP,regAggSz-1 with regAggSz>=1 (includes +1 for MakeRecord result); bounded,,high
+INT32-C,488,sqlite,src/select.c,6930,FP,regAgg+regAggSz-1 bounded register index,,high
+INT32-C,489,sqlite,src/select.c,6930,FP,regAgg+regAggSz bounded register index,,high
+INT32-C,490,sqlite,src/select.c,6931,FP,regAgg+regAggSz-1 bounded register index,,high
+INT32-C,491,sqlite,src/select.c,6931,FP,regAgg+regAggSz bounded register index,,high
+INT32-C,492,sqlite,src/select.c,6932,FP,"regAggSz-1 bounded, regAggSz>=1",,high
+EXP34-C,493,sqlite,src/select.c,6968,FP,pC iterates pAggInfo->aCol bounded by nAccumulator; non-null in loop,,high
+EXP34-C,494,sqlite,src/select.c,6993,FP,pIdx guarded by (pIdx!=0 && ...) before pIdx->zName deref at 6993,,high
+DCL13-C,495,sqlite,src/select.c,7080,TP,"isSelfJoinView only reads/indexes pTabList, never writes it; const SrcList* would compile",,high
+DCL13-C,496,sqlite,src/select.c,7081,TP,"isSelfJoinView only reads pThis members (compares pointees), never writes pThis object; const-eligible",,med
+EXP33-C,497,sqlite,src/select.c,7091,FP,pS1 assigned at 7100 before its only use at 7101 on same path; not uninitialized,,high
+DCL30-C,498,sqlite,src/select.c,7111,FP,"isSelfJoinView returns pItem pointing into caller pTabList->a[], not automatic storage; DCL30 misfire",,high
+MEM30-C,499,sqlite,src/select.c,7122,FP,"agginfoFree frees distinct members p->aCol/p->aFunc; db is allocator handle, not freed",,high
+MEM30-C,500,sqlite,src/select.c,7123,FP,p->aFunc freed once; db not double-freed,,high
+DCL13-C,501,sqlite,src/select.c,7229,TP,"sameSrcAlias only reads/indexes pSrc and recurses, never writes pSrc; const-eligible",,high
+MEM05-C,502,sqlite,src/select.c,7229,FP,sameSrcAlias recursion bounded by nested-FROM depth (parser/expr depth limits); not excessive,,high
+DCL13-C,503,sqlite,src/select.c,7276,TP,"fromClauseTermCanBeCoroutine only reads pParse (db flags, optimization bits); const-eligible",,med
+INT32-C,504,sqlite,src/select.c,7302,FP,i-- in coroutine loop has i==0 break before decrement; cannot reach INT_MIN,,high
+MEM05-C,505,sqlite,src/select.c,7335,FP,existsToJoin recursion bounded by WHERE AND/EXISTS nesting (expr depth limit); not excessive,,high
+INT30-C,506,sqlite,src/select.c,7366,FP,(nTab+2)*sizeof(int): nTab small cursor count; product far below SIZE_MAX,,high
+INT32-C,507,sqlite,src/select.c,7366,FP,"nTab+2 small cursor count; multiply by sizeof bounded, no signed overflow",,high
+INT32-C,508,sqlite,src/select.c,7366,FP,"pParse->nTab+2 small cursor count, no overflow",,high
+INT32-C,509,sqlite,src/select.c,7368,FP,"pParse->nTab+1 small cursor count, no overflow",,high
+ARR01-C,510,sqlite,src/select.c,7372,FP,"sizeof(*pWhere) yields sizeof(Expr) for memset; intended struct size, not decayed array",,high
+MEM30-C,511,sqlite,src/select.c,7378,FP,pParse not freed; only aCsrMap freed at 7370; pParse passed live to recursion,,high
+MEM30-C,512,sqlite,src/select.c,7380,FP,pParse live; no free of pParse in existsToJoin,,high
+MEM30-C,513,sqlite,src/select.c,7384,FP,pParse live and valid; TREETRACE uses it with no prior free,,high
+MEM30-C,514,sqlite,src/select.c,7387,FP,"pParse live; passed to TREETRACE, never freed",,high
+PRE32-C,515,sqlite,src/select.c,7387,FP,TREETRACE is a normal variadic macro inside #if guard; no preprocessor-in-argument UB,,high
+MEM30-C,516,sqlite,src/select.c,7392,FP,pParse passed live to recursive existsToJoin; not freed,,high
+ARR30-C,517,sqlite,src/select.c,7430,FP,"hasRightJoin is a simple field-access macro; statically analyzable, safe",,high
+API00-C,518,sqlite,src/select.c,7494,FP,sqlite3SelectCheckOnClauses: pParse non-null by caller contract; internal entry relies on precondition,,high
+API00-C,519,sqlite,src/select.c,7494,FP,pSelect non-null by caller contract; asserts on selFlags/pSrc at 7498-7499 dominate use,,high
+DCL13-C,520,sqlite,src/select.c,7494,FP,pParse stored into non-const Walker.pParse field; const param would not compile,,high
+ARR00-C,521,sqlite,src/select.c,7514,FP,ii initialized by enclosing for(ii=0;...) at 7514; not uninitialized,,high
+DCL13-C,522,sqlite,src/select.c,7534,TP,"sqlite3CopySortOrder writes only p1; p2 solely read, const ExprList* would compile",,high
+ARR00-C,523,sqlite,src/select.c,7538,FP,ii initialized by for(ii=0;...) at 7538; not uninitialized,,high
+API00-C,524,sqlite,src/select.c,7596,FP,pDest non-null by caller contract; pDest->eDest deref relies on valid SelectDest,,high
+MEM05-C,525,sqlite,src/select.c,7596,FP,sqlite3Select recursion bounded by subquery nesting depth (expr depth limit); not excessive,,high
+EXP33-C,526,sqlite,src/select.c,7726,FP,i is for-loop counter initialized in for(i=0;...) before use; not uninitialized,,high
+PRE32-C,527,sqlite,src/select.c,7755,FP,TREETRACE variadic macro within #if guard; PRE32 misfire,,high
+PRE32-C,528,sqlite,src/select.c,7759,FP,TREETRACE variadic macro; PRE32 misfire,,high
+EXP33-C,529,sqlite,src/select.c,7766,FP,j is for-loop counter at 7766 (for(j=i+1;...)); initialized before use,,high
+INT14-C,530,sqlite,src/select.c,7766,FP,i used as index and in i+1; no genuine bitwise+arithmetic mix on same value,,low
+INT32-C,531,sqlite,src/select.c,7766,FP,i+1 small FROM-term index bounded by nSrc; no overflow,,high
+PRE32-C,532,sqlite,src/select.c,7770,FP,TREETRACE variadic macro; PRE32 misfire,,high
+PRE32-C,533,sqlite,src/select.c,7774,FP,TREETRACE variadic macro; PRE32 misfire,,high
+INT14-C,534,sqlite,src/select.c,7781,FP,pTabList is a pointer not used in bitwise ops; INT14 misreads pTabList->a indexing,,high
+INT32-C,535,sqlite,src/select.c,7781,FP,"pTabList->nSrc-1 with nSrc>=1; small FROM-term count, no overflow",,high
+INT14-C,536,sqlite,src/select.c,7783,FP,j is a loop counter; no genuine bitwise+arithmetic confusion,,low
+PRE32-C,537,sqlite,src/select.c,7850,FP,TREETRACE variadic macro within #if guard; PRE32 misfire,,high
+INT32-C,538,sqlite,src/select.c,7851,FP,i+1 small FROM-term index bounded by nSrc; no overflow,,high
+EXP33-C,539,sqlite,src/select.c,8003,FP,pSubq assigned from pItem->u4.pSubq at 8002 before the assert/use at 8003,,high
+EXP34-C,540,sqlite,src/select.c,8004,FP,guarded by isSubquery==0 continue; u4.pSubq valid and asserted non-null before pSub=pSubq->pSelect,,high
+INT32-C,541,sqlite,src/select.c,8016,FP,"pParse->nHeight is bounded by SQLITE_MAX_EXPR_DEPTH-class query height, far below INT_MAX",,high
+EXP33-C,542,sqlite,src/select.c,8025,FP,pSub assigned at 8004 (pSubq->pSelect) before use at 8025,,high
+PRE32-C,543,sqlite,src/select.c,8029,FP,TREETRACE call has no preprocessor directive in its arg list; surrounding #if is separate text,,high
+PRE32-C,544,sqlite,src/select.c,8048,FP,same TREETRACE call; no # directive inside the macro argument,,high
+PRE32-C,545,sqlite,src/select.c,8049,FP,"argument is a parenthesized printf-style string literal, not a preprocessor directive",,high
+EXP33-C,546,sqlite,src/select.c,8076,FP,"dest filled by sqlite3SelectDestInit(&dest,...) at 8071 before dest.iSdst read at 8076",,high
+INT32-C,547,sqlite,src/select.c,8079,FP,"addrTop is a VDBE address (current addr +1), bounded by program size, cannot overflow",,high
+EXP33-C,548,sqlite,src/select.c,8097,FP,pPrior assigned and tested !=0 in the else-if condition at 8093 before use,,high
+EXP34-C,549,sqlite,src/select.c,8097,FP,pPrior non-null by the (pPrior=...)!=0 branch guard; asserted isSubquery at 8097,,high
+INT32-C,550,sqlite,src/select.c,8118,FP,"topAddr is a VDBE instruction address, structurally bounded well below INT_MAX",,high
+INT32-C,551,sqlite,src/select.c,8135,FP,"topAddr+1 is a VDBE address bound, no realistic overflow",,high
+INT32-C,552,sqlite,src/select.c,8149,FP,"pParse->nHeight bounded by expression-depth limit, cannot overflow on subtraction",,high
+INT32-C,553,sqlite,src/select.c,8198,FP,"i indexes pGroupBy->nExpr (column count <= SQLITE_MAX_COLUMN), i+1 cannot overflow",,high
+EXP34-C,554,sqlite,src/select.c,8227,FP,"pEList is p->pEList, non-null for a coded SELECT result set; reached only when sSort.pOrderBy set",,high
+INT32-C,555,sqlite,src/select.c,8228,FP,"pParse->nTab is a VDBE cursor counter bounded by query size, not INT_MAX-reachable",,high
+INT32-C,556,sqlite,src/select.c,8231,FP,"operands are ORDER BY / result-set expr counts (<= SQLITE_MAX_COLUMN), sum cannot overflow",,high
+INT32-C,557,sqlite,src/select.c,8231,FP,"nExpr+1 on bounded column count, no overflow",,high
+INT32-C,558,sqlite,src/select.c,8246,FP,"pEList->nExpr-1 with nExpr>=1 here (NestedFrom result list), positive small int",,high
+MEM30-C,559,sqlite,src/select.c,8248,FP,loop frees individual element members; pEList->a array itself is not freed,,high
+MEM30-C,560,sqlite,src/select.c,8249,FP,"pEList->nExpr is an int field decremented in place, not a freed pointer",,high
+MEM30-C,561,sqlite,src/select.c,8251,FP,"nExpr is an int counter, no free involved",,high
+MEM30-C,562,sqlite,src/select.c,8252,FP,element member fg.bUsed read on still-live array; only per-element pExpr/zEName were freed,,high
+MEM30-C,563,sqlite,src/select.c,8252,FP,"fg is an in-struct flag field of a live ExprList_item, not freed",,high
+MEM30-C,564,sqlite,src/select.c,8252,FP,"pEList->a array is never freed in this block, only its elements' pExpr/zEName",,high
+MEM30-C,565,sqlite,src/select.c,8252,FP,a[ii].pExpr for surviving ii is live; freed ones were trimmed via nExpr-- not reused,,high
+MEM30-C,566,sqlite,src/select.c,8252,FP,pEList->a array not freed; misread of per-element ExprDelete as array free,,high
+INT32-C,567,sqlite,src/select.c,8272,FP,"pParse->nTab cursor counter bounded by query complexity, no INT_MAX overflow",,high
+INT32-C,568,sqlite,src/select.c,8336,FP,"pParse->nMem register counter bounded by query size, cannot reach INT_MAX",,high
+EXP30-C,569,sqlite,src/select.c,8353,FP,both args are pure read-only accessors (WhereContinue/BreakLabel) with no side effects,,high
+MEM30-C,570,sqlite,src/select.c,8419,FP,"db is the live sqlite3 connection/allocator handle, never freed in this function",,high
+MEM30-C,571,sqlite,src/select.c,8424,FP,"db is the allocator handle, not a freed object",,high
+EXP34-C,572,sqlite,src/select.c,8427,FP,pAggInfo non-null after mallocZero + db->mallocFailed goto guard at 8424,,high
+MEM30-C,573,sqlite,src/select.c,8452,FP,"db is the live connection handle passed as allocator, not freed",,high
+MEM30-C,574,sqlite,src/select.c,8457,FP,"db handle accessed, never freed here",,high
+EXP34-C,575,sqlite,src/select.c,8464,FP,inside if(minMaxFlag) so pMinMaxOrderBy is non-null; debug-only and callee is null-tolerant,,high
+MEM30-C,576,sqlite,src/select.c,8495,FP,"db is the connection/allocator handle, not freed",,high
+MEM30-C,577,sqlite,src/select.c,8496,FP,"db is the connection/allocator handle, not freed",,high
+INT32-C,578,sqlite,src/select.c,8506,FP,"pParse->nTab cursor counter, structurally bounded, no overflow",,high
+INT32-C,579,sqlite,src/select.c,8515,FP,"pParse->nMem register counter, bounded by query size",,high
+INT32-C,580,sqlite,src/select.c,8516,FP,"pParse->nMem register counter, bounded",,high
+INT32-C,581,sqlite,src/select.c,8517,FP,"pParse->nMem register counter, bounded",,high
+INT32-C,582,sqlite,src/select.c,8519,FP,"pParse->nMem register counter, bounded",,high
+INT32-C,583,sqlite,src/select.c,8521,FP,"nMem+1 register address, bounded well below INT_MAX",,high
+INT32-C,584,sqlite,src/select.c,8522,FP,"nMem += pGroupBy->nExpr; both bounded by query size, no overflow",,high
+INT32-C,585,sqlite,src/select.c,8523,FP,"nMem+1 register address, bounded",,high
+INT32-C,586,sqlite,src/select.c,8524,FP,"nMem += nExpr bounded register allocation, no overflow",,high
+INT32-C,587,sqlite,src/select.c,8527,FP,"iAMem+nExpr-1 register range, bounded by query size",,high
+INT32-C,588,sqlite,src/select.c,8527,FP,"iAMem+nExpr register address arithmetic, bounded",,high
+EXP00-C,589,sqlite,src/select.c,8538,FP,the ternary operands are already parenthesized; precedence is explicit and correct,,high
+EXP00-C,590,sqlite,src/select.c,8538,FP,same parenthesized ternary; no ambiguous precedence,,high
+INT13-C,591,sqlite,src/select.c,8539,FP,bitwise OR of defined non-negative flag constants and 0/1 orderByGrp; behavior well-defined,,high
+MEM30-C,592,sqlite,src/select.c,8542,FP,"db is the connection/allocator handle, not freed",,high
+INT32-C,593,sqlite,src/select.c,8593,FP,"j+regBase are sorter column index and temp-register base, bounded by query width",,high
+INT32-C,594,sqlite,src/select.c,8602,FP,"sqlite3VdbeCurrentAddr(v)-2 is a VDBE address minus 2, positive and bounded",,high
+INT32-C,595,sqlite,src/select.c,8607,FP,"pParse->nTab cursor counter, bounded",,high
+PRE32-C,596,sqlite,src/select.c,8627,FP,"TREETRACE arg is a parenthesized string literal, no preprocessor directive present",,high
+MEM30-C,597,sqlite,src/select.c,8642,FP,"db is the connection/allocator handle, not freed",,high
+INT32-C,598,sqlite,src/select.c,8663,FP,"iBMem+j register address, j<nExpr, bounded by query size",,high
+INT32-C,599,sqlite,src/select.c,8666,FP,"iBMem+j register address, bounded",,high
+INT32-C,600,sqlite,src/select.c,8670,FP,iOrderByCol-1 guarded by if(iOrderByCol) and is a 1-based bounded column index,,high
+EXP34-C,601,sqlite,src/select.c,8672,FP,pBase access guarded by ALWAYS(pBase!=0) before dereference,,high
+INT32-C,602,sqlite,src/select.c,8680,FP,"iAMem+j register address, bounded by query size",,high
+INT32-C,603,sqlite,src/select.c,8687,FP,"addr1+1 VDBE address, bounded below INT_MAX",,high
+INT32-C,604,sqlite,src/select.c,8687,FP,"addr1+1 VDBE address, bounded",,high
+MEM30-C,605,sqlite,src/select.c,8724,FP,"db is the connection/allocator handle, not freed",,high
+INT32-C,606,sqlite,src/select.c,8748,FP,"addrOutputRow+2 VDBE address, bounded",,high
+INT32-C,607,sqlite,src/select.c,8753,FP,"addrOutputRow+1 VDBE address, bounded",,high
+INT32-C,608,sqlite,src/select.c,8756,FP,"addrOutputRow+1 VDBE address, bounded",,high
+EXP34-C,609,sqlite,src/select.c,8792,FP,pTab non-null inside if((pTab=isSimpleCount(...))!=0) branch,,high
+INT32-C,610,sqlite,src/select.c,8793,FP,"pParse->nTab cursor counter, bounded",,high
+INT32-C,611,sqlite,src/select.c,8864,FP,"pParse->nMem register counter, bounded",,high
+MEM30-C,612,sqlite,src/select.c,8932,FP,"pEList live (assert p->pEList==pEList at 8931); nExpr is an int, no free",,high
+MEM30-C,613,sqlite,src/select.c,8947,FP,"db is the connection/allocator handle, not freed",,high
+MEM30-C,614,sqlite,src/select.c,8947,FP,"db is the connection/allocator handle, not freed",,high
+MEM30-C,615,sqlite,src/select.c,8948,FP,"db is the connection/allocator handle, not freed",,high
+EXP34-C,616,sqlite,src/select.c,8949,FP,sqlite3ExprListDelete checks if(pList) and is null-safe; message premise is wrong,,high
+MEM30-C,617,sqlite,src/select.c,8949,FP,"db is the connection/allocator handle, not freed",,high
+MEM30-C,618,sqlite,src/select.c,8952,FP,"db is the connection/allocator handle, not freed",,high
+EXP33-C,619,sqlite,src/select.c,8960,FP,pExpr assigned at declaration from aCol[i].pCExpr then null-checked with continue,,high

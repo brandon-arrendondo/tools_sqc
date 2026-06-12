@@ -1083,3 +1083,47 @@ all NULL-check before the next deref. sqc emitting no real bug here is a true ne
 sqlite coverage **71/220 (32.3%)** — 71 files audited; 7 FNs. The single largest file in the corpus is now
 done, and the found-semantic-TP count stays at **2** (both in fts5_index raw-decode); no core-engine file
 (btree/vdbe/vdbeaux/where) has yielded a semantic TP.
+
+---
+
+## File-at-a-time — select.c (2026-06-12, run #40, HIGH-effort): the SELECT codegen core, 0 semantic TP
+
+`adjudication_sqlite_select.csv` — `src/select.c` (the SELECT query-planner + result-set codegen:
+result-column expansion, sorter push/pop, compound-SELECT/UNION, subquery flattening, constant
+propagation, aggregate/GROUP BY codegen, 8982 lines), the 2nd-largest remaining file at **620 raw -> 552
+distinct findings**. Adjudicated via 8 parallel line-range reviewers + per-range FN-hunt.
+
+**45 TP / 575 FP / 0 FN** (raw; 43 TP / 509 FP distinct after dedup vs prior increments). Bifurcation
+holds: **0 semantic TP across 620 findings.** TP breakdown: **DCL13 x33** (read-only pointer params that
+could take `const`: `sqlite3ColumnIndex`, the sorter/distinct helpers, `sqlite3KeyInfoIsWriteable`,
+`isSimpleCount`, `isSelfJoinView`, `sameSrcAlias`, `cannotBeFunction`, `sqlite3CopySortOrder`,
+`propagateConstants`, …), **MSC04 x10** (functions that genuinely participate in direct/indirect
+recursion — `clearSelect`↔`sqlite3WithDelete`, `sqlite3SetJoinExpr`, `substExpr`/`substSelect`,
+`srclistRenumberCursors`, `multiSelect`, `sqlite3Select`; the recursion is real but bounded by
+`SQLITE_MAX_EXPR_DEPTH`/parser depth limits, so accurate-as-a-structural-fact yet not a memory-safety
+bug), **PRE01 x2** (the `explainSetInteger(a,b)`→`a=b` macro args are unparenthesized).
+
+The semantic FP classes are again the dominant ones: the huge **INT32** population (243 findings) is
+register counters (`pParse->nMem`), cursor counters (`pParse->nTab`), VDBE program addresses, sorter-key
+indices, and column counts — all structurally bounded by `SQLITE_MAX_COLUMN`/`SQLITE_LIMIT_*` and the
+`(i64)`-widened products; **MEM30** misreads the live allocator handle `db` (= `pParse->db`, never freed)
+threaded into `sqlite3DbFree(db, X)`, plus the result-column-trim loop that per-element-frees `pEList->a[i]`
+and decrements `nExpr` (the array and the `int` field are never freed); **EXP33/EXP34** on variables
+assigned-before-use, OOM-sets-`nErr`-gated derefs, and `ALWAYS()`/branch-guarded pointers; **PRE32** on
+`TREETRACE(...)` calls (the `#if` guards the whole block, not an in-argument directive); **DCL13 FPs** are
+the Walker-callback params (signature fixed by `xExprCallback`/`xSelectCallback2` typedefs) and `pParse`
+stored into the non-const `Walker.pParse` field.
+
+### FN-hunt: clean (0 FN) — the OOM and trim paths are the danger and they are guarded
+
+The two spots most likely to hide a bug are the **OOM result-column path** (`selectColumnsFromExprList`:
+`aCol=DbMallocZero(); ... loop`) and the **unused-column trim** (`disableUnusedSubqueryResultColumns`
+decrements `pEList->nExpr`). Both are safe: every OOM allocator (`sqlite3OomFault`) sets `pParse->nErr`,
+and the loops are gated on `pParse->nErr==0`, so the null-`aCol`/`pKeyInfo` derefs are unreachable; the
+trim path runs only under `SRT_EphemTab`+`SF_NestedFrom` and never feeds the aggregate `iOrderByCol-1`
+indexing (separate path, guarded by `if(iOrderByCol)` on a 1-based bounded index). sqc finding no real bug
+here is a true negative.
+
+sqlite coverage **72/220 (32.7%)** — 72 files audited; 7 FNs. The two largest remaining files
+(vdbeaux.c, select.c) are now both done with 0 semantic TP; found-semantic-TP stays at **2** (both
+fts5_index raw-decode). No core-engine file has produced a semantic TP.
