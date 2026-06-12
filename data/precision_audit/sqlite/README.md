@@ -1008,3 +1008,33 @@ Found-semantic-TP holds at **2** (fts5_index raw-decode). The two classes most l
 tokenizer — bulk integer offset math and signed-byte classification — produced **0 TP across 215
 findings**, because the code is bounded (token caps) and disciplined (`unsigned char*`). sqlite coverage
 **69/220 (31.4%)**, 7 FNs.
+
+---
+
+## File-at-a-time — fts5_config.c (2026-06-12, run #40, HIGH-effort): the config parser, fully hardened
+
+`adjudication_sqlite_fts5_config.csv` — `ext/fts5/fts5_config.c` (the FTS5 config parser: CREATE-VTAB
+options `tokenize=`/`content=`/`prefix=`/`columnsize=`/`detail=`, string dequoting, and the `%_config`
+shadow-table cookie/value reader, 1127 lines), **116 raw -> 105 distinct findings**. 5 rule-class
+reviewers + 1 FN-hunter (option parser + `%_config` reader).
+
+**2 TP / 114 FP / 0 uncertain / 0 FN** — the *lowest precision file of the campaign* (2/105 = 1.9%),
+and an instructive one: it's almost pure parser/error-message code, so it has almost no const-eligible
+read-only helpers (the precise DCL13 class). Bifurcation holds: 0 semantic TP — STR34 **0/37** (all
+`*pzErr=sqlite3_mprintf(...)` pointer-stores, `strlen` casts, or ASCII-equality; sqlite reads config
+bytes unsigned and the one raw-`char` table index goes through `sqlite3Fts5IsBareword`'s `(c&0x80)`
+short-circuit), API00 0/16 (internal), INT 0/14 (`nPre` clamped `<1000`; the version cookie is
+compared, not used in arithmetic), EXP34 0/12, ARR/MEM/DCL30 0. The only 2 TP are DCL13
+(`sqlite3Fts5ConfigDeclareVtab`/`ConfigErrmsg`, read-only `pConfig`).
+
+### FN-hunt: clean (0 FN) — the config attack surface is defensively written
+
+The `%_config` table and CREATE options are the realistic injection points, and every danger is guarded:
+`prefix=` is bounded by `FTS5_MAX_PREFIX_INDEXES=31` with the capacity check *before* the `aPrefix[]`
+write; individual prefix lengths are double-bounded (`<1000` in the digit loop AND a post-check);
+`azCol[nCol++]` cannot exceed the `nArg`-sized allocation; the **`%_config` `version` cookie is rejected
+unless it is exactly 4 or 5**; every integer config value (`pgsz`/`hashsize`/`automerge`/`usermerge`/
+`crisismerge`/`deletemerge`) is range-clamped before use as a size/count; and `fts5Dequote` is in-place
+with output always shorter than input (no overflow). sqc emitting nothing real here is a true negative.
+
+sqlite coverage **70/220 (31.8%)** — 70 files audited; 7 FNs.

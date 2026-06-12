@@ -1,0 +1,117 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL30-C,0,sqlite,ext/fts5/fts5_config.c,48,FP,"p holds pointer into caller's const string pIn, not address of an automatic",,high
+EXP34-C,1,sqlite,ext/fts5/fts5_config.c,58,FP,"p=pIn (caller arg); all callers (314,471,880) pass non-null after skipwhitespace/strlen",,high
+DCL30-C,2,sqlite,ext/fts5/fts5_config.c,60,FP,"p points into caller buffer pIn (bareword scan), not a local automatic",,high
+CON43-C,3,sqlite,ext/fts5/fts5_config.c,71,FP,single-threaded string parser; no concurrent double-fetch,,high
+EXP34-C,4,sqlite,ext/fts5/fts5_config.c,71,FP,p=pIn; fts5ConfigSkipArgs breaks loop on p==0 before re-calling; other caller p2 non-null,,high
+STR34-C,5,sqlite,ext/fts5/fts5_config.c,74,FP,p=&p[4] is pointer arithmetic after ASCII switch; no char value widened,,high
+STR34-C,6,sqlite,ext/fts5/fts5_config.c,74,FP,p[4] is pointer-offset misread; *p compared to ASCII 'n'/'N' only,,high
+ARR36-C,7,sqlite,ext/fts5/fts5_config.c,90,FP,p and pIn point into the same string (p initialized from pIn),,high
+INT10-C,8,sqlite,ext/fts5/fts5_config.c,90,FP,"(p-pIn)%2 pointer diff; p only advances from pIn so operand always non-negative, not implementation-defined",,high
+ARR30-C,9,sqlite,ext/fts5/fts5_config.c,102,FP,quoted-literal scan bounded by nul terminator (if(*p==0) p=0),,high
+ARR00-C,10,sqlite,ext/fts5/fts5_config.c,129,FP,p is a pointer into caller string,,high
+DCL30-C,11,sqlite,ext/fts5/fts5_config.c,129,FP,returns pointer into caller string,,high
+EXP34-C,12,sqlite,ext/fts5/fts5_config.c,149,FP,z is caller-supplied dequote-in-place buffer; gobbleword path checks zOut!=0 first,,high
+INT32-C,13,sqlite,ext/fts5/fts5_config.c,159,FP,"iIn indexes in-place nul-terminated string; loop bounded by string length, no overflow consequence",,high
+INT32-C,14,sqlite,ext/fts5/fts5_config.c,165,FP,"iIn += 2 bounded by string length in fts5Dequote; far below INT_MAX, no bad index/alloc",,high
+INT32-C,15,sqlite,ext/fts5/fts5_config.c,169,FP,iIn++ string index bounded by buffer length; benign,,high
+API00-C,16,sqlite,ext/fts5/fts5_config.c,190,FP,"internal; asserts !iswhitespace(z[0]), caller passes non-null malloc'd pSpace",,high
+EXP34-C,17,sqlite,ext/fts5/fts5_config.c,193,FP,"z caller-supplied buffer; assert on z[0] is dequote-in-place contract, never null",,high
+STR34-C,18,sqlite,ext/fts5/fts5_config.c,212,FP,strlen(zEnum) returns size_t; no char value sign-extended,,high
+STR34-C,19,sqlite,ext/fts5/fts5_config.c,243,FP,strlen(zCmd) returns size_t; no char value sign-extended,,high
+ARR30-C,20,sqlite,ext/fts5/fts5_config.c,255,FP,prefix-list scan bounded by '\0' check and digit tests,,high
+STR34-C,21,sqlite,ext/fts5/fts5_config.c,266,FP,"*pzErr = sqlite3_mprintf(...) is a char* pointer store, not value widen",,high
+STR34-C,22,sqlite,ext/fts5/fts5_config.c,272,FP,*pzErr pointer store of mprintf result,,high
+INT32-C,23,sqlite,ext/fts5/fts5_config.c,280,FP,"nPre*10+digit inside while(nPre<1000) guard; clamped to <1000, max ~9999, no overflow",,high
+INT32-C,24,sqlite,ext/fts5/fts5_config.c,280,FP,nPre*10 bounded by while(nPre<1000) loop condition; explicitly range-clamped,,high
+STR34-C,25,sqlite,ext/fts5/fts5_config.c,285,FP,*pzErr pointer store; nPre arithmetic guarded by '0'..'9' range check,,high
+INT32-C,26,sqlite,ext/fts5/fts5_config.c,291,FP,nPrefix++ guarded by ==FTS5_MAX_PREFIX_INDEXES break above; bounded,,high
+STR34-C,27,sqlite,ext/fts5/fts5_config.c,300,FP,strlen(zArg) returns size_t; no char widened,,high
+EXP40-C,28,sqlite,ext/fts5/fts5_config.c,301,FP,lexical: assigning malloc result to char** local azArg; no const qualifier involved,,high
+STR34-C,29,sqlite,ext/fts5/fts5_config.c,306,FP,*pzErr pointer store of mprintf result,,high
+EXP34-C,30,sqlite,ext/fts5/fts5_config.c,311,FP,p2=SkipWhitespace(p); loop cond 'p && *p' guarantees p non-null so p2 non-null,,high
+EXP05-C,31,sqlite,ext/fts5/fts5_config.c,317,FP,"p-p2 is ptrdiff_t of two const char*; no const cast, lexical misfire",,high
+INT32-C,32,sqlite,ext/fts5/fts5_config.c,317,FP,"memcpy size p-p2 is token length within strlen-bounded zArg; non-negative, buffer sized for it",,high
+ARR37-C,33,sqlite,ext/fts5/fts5_config.c,320,FP,pSpace arithmetic stays within azArg allocation sized (sizeof(char*)+2)*nArg,,high
+INT32-C,34,sqlite,ext/fts5/fts5_config.c,320,FP,"(p-p2)+1 pointer diff within strlen-bounded string; non-negative, no overflow",,high
+STR34-C,35,sqlite,ext/fts5/fts5_config.c,325,FP,*pzErr pointer store of mprintf result,,high
+STR34-C,36,sqlite,ext/fts5/fts5_config.c,341,FP,*pzErr pointer store of mprintf result,,high
+STR34-C,37,sqlite,ext/fts5/fts5_config.c,356,FP,*pzErr pointer store; zArg[0] only equality-compared to '0'/'1',,high
+STR34-C,38,sqlite,ext/fts5/fts5_config.c,366,FP,*pzErr pointer store; zArg[0] equality-compared to ASCII,,high
+STR34-C,39,sqlite,ext/fts5/fts5_config.c,376,FP,*pzErr pointer store of mprintf result,,high
+STR34-C,40,sqlite,ext/fts5/fts5_config.c,386,FP,*pzErr pointer store; zArg[0] equality-compared to ASCII,,high
+STR34-C,41,sqlite,ext/fts5/fts5_config.c,396,FP,*pzErr pointer store; zArg[0] equality-compared to ASCII,,high
+ARR02-C,42,sqlite,ext/fts5/fts5_config.c,405,FP,static aDetail[] uses sentinel {0,,high
+EXP45-C,43,sqlite,ext/fts5/fts5_config.c,412,FP,intentional parenthesized assign-in-condition idiom: rc captured then tested,,high
+STR34-C,44,sqlite,ext/fts5/fts5_config.c,413,FP,*pzErr pointer store; zArg passed by pointer to SetEnum,,high
+STR34-C,45,sqlite,ext/fts5/fts5_config.c,420,FP,*pzErr pointer store; zArg[0] equality-compared to ASCII,,high
+STR34-C,46,sqlite,ext/fts5/fts5_config.c,428,FP,*pzErr pointer store of mprintf result,,high
+EXP34-C,47,sqlite,ext/fts5/fts5_config.c,455,FP,strlen(zIn); both callers pass non-null (zOrig=azArg[i] or z guarded by 'z && z[0]'),,high
+STR34-C,48,sqlite,ext/fts5/fts5_config.c,455,FP,strlen(zIn) returns size_t; no char widened,,high
+STR34-C,49,sqlite,ext/fts5/fts5_config.c,460,FP,*pzOut = 0 is char* pointer store,,high
+ARR38-C,50,sqlite,ext/fts5/fts5_config.c,465,FP,zOut allocated nIn+1 bytes (line 456); memcpy of nIn+1 is exact fit,,high
+INT32-C,51,sqlite,ext/fts5/fts5_config.c,465,FP,"memcpy nIn+1 where nIn=strlen(zIn) int64; zOut allocated exactly nIn+1, copies own size",,high
+STR34-C,52,sqlite,ext/fts5/fts5_config.c,467,FP,"int ii = fts5Dequote(zOut) passes pointer; return is int, no char widen",,high
+STR34-C,53,sqlite,ext/fts5/fts5_config.c,468,FP,"zRet=&zIn[ii] pointer arithmetic, ii is bounded int offset",,high
+STR34-C,54,sqlite,ext/fts5/fts5_config.c,468,FP,zIn[ii] pointer-offset misread; not a char value widen,,high
+ARR36-C,55,sqlite,ext/fts5/fts5_config.c,473,FP,"zRet from SkipBareword(zIn) points into zIn; same array, zOut parallel size nIn+1",,high
+DCL30-C,56,sqlite,ext/fts5/fts5_config.c,481,FP,zOut is a heap buffer from sqlite3_malloc64; ownership transferred to *pzOut,,high
+STR34-C,57,sqlite,ext/fts5/fts5_config.c,481,FP,*pzOut = zOut is char* pointer store,,high
+DCL30-C,58,sqlite,ext/fts5/fts5_config.c,484,FP,zRet points into caller string zIn (or zRet=0); not a local automatic,,high
+STR34-C,59,sqlite,ext/fts5/fts5_config.c,498,FP,*pzErr pointer store of mprintf result,,high
+STR00-C,60,sqlite,ext/fts5/fts5_config.c,502,FP,"index p->nCol is an int field; 'p' is Fts5Config* struct ptr, not a char",,high
+STR34-C,61,sqlite,ext/fts5/fts5_config.c,505,FP,*pzErr pointer store of mprintf result,,high
+INT32-C,62,sqlite,ext/fts5/fts5_config.c,510,FP,nCol++ bounded by CREATE VTAB arg count; azCol sized from nArg,,high
+STR00-C,63,sqlite,ext/fts5/fts5_config.c,510,FP,"index p->nCol is int field; 'p' is struct pointer, not a char index",,high
+API00-C,64,sqlite,ext/fts5/fts5_config.c,565,FP,"pGlobal from trusted vtab framework, not untrusted input",,high
+API00-C,65,sqlite,ext/fts5/fts5_config.c,565,FP,"db supplied by SQLite vtab machinery, internal trusted pointer",,high
+API00-C,66,sqlite,ext/fts5/fts5_config.c,565,FP,"ppOut is OUT pointer from xCreate/xConnect, written before use",,high
+API00-C,67,sqlite,ext/fts5/fts5_config.c,565,FP,pzErr is OUT pointer supplied by trusted vtab caller,,high
+API00-C,68,sqlite,ext/fts5/fts5_config.c,565,FP,"nArg guaranteed >=3 by vtab contract; nByte is int64 so multiply promoted, no overflow",,med
+DCL13-C,69,sqlite,ext/fts5/fts5_config.c,566,FP,pGlobal stored into pRet->pGlobal (non-const Fts5Global*); pointee escapes,,high
+DCL13-C,70,sqlite,ext/fts5/fts5_config.c,567,FP,db stored into pRet->db (non-const sqlite3*) and used; pointee escapes,,high
+MEM12-C,71,sqlite,ext/fts5/fts5_config.c,580,FP,pRet is NULL on this return (malloc failed); *ppOut==NULL; nothing leaked,,high
+INT30-C,72,sqlite,ext/fts5/fts5_config.c,586,FP,"sizeof(char*)+sizeof(u8) compile-time constant sum, cannot wrap; misclassification",,high
+ARR00-C,73,sqlite,ext/fts5/fts5_config.c,588,FP,&azCol[nArg] is end-of-region sentinel; azCol allocated for nArg entries,,high
+ARR30-C,74,sqlite,ext/fts5/fts5_config.c,588,FP,nArg matches the azCol allocation size by construction; in-bounds,,high
+STR34-C,75,sqlite,ext/fts5/fts5_config.c,597,FP,*pzErr pointer store of mprintf result,,high
+STR34-C,76,sqlite,ext/fts5/fts5_config.c,627,FP,*pzErr pointer store of mprintf result,,high
+EXP34-C,77,sqlite,ext/fts5/fts5_config.c,637,FP,callee fts5ConfigParseColumn checks zArg via 'else if(zArg)' at line 500; zTwo-null handled,,high
+STR34-C,78,sqlite,ext/fts5/fts5_config.c,652,FP,*pzErr pointer store of mprintf result,,high
+STR34-C,79,sqlite,ext/fts5/fts5_config.c,663,FP,*pzErr pointer store of mprintf result,,high
+STR34-C,80,sqlite,ext/fts5/fts5_config.c,676,FP,*pzErr pointer store of mprintf result,,high
+MEM12-C,81,sqlite,ext/fts5/fts5_config.c,717,FP,error path calls sqlite3Fts5ConfigFree(pRet) and sets *ppOut=0,,high
+API00-C,82,sqlite,ext/fts5/fts5_config.c,723,FP,explicit if(pConfig) null guard at line 724,,high
+MEM30-C,83,sqlite,ext/fts5/fts5_config.c,733,FP,sequential free of distinct field t.azArg; freed once,,high
+MEM30-C,84,sqlite,ext/fts5/fts5_config.c,733,FP,pConfig->t is a struct member read/free of its fields; no UAF,,high
+MEM30-C,85,sqlite,ext/fts5/fts5_config.c,736,FP,nCol is an int loop bound; not freed; no UAF,,high
+MEM30-C,86,sqlite,ext/fts5/fts5_config.c,737,FP,azCol[i] freed in loop then azCol freed after; each freed once,,high
+API00-C,87,sqlite,ext/fts5/fts5_config.c,755,FP,internal; pConfig from trusted vtab construction state,,high
+DCL13-C,88,sqlite,ext/fts5/fts5_config.c,755,TP,"pConfig only read (nCol/azCol/zName/db); const feasible, no mutation",,med
+EXP34-C,89,sqlite,ext/fts5/fts5_config.c,761,FP,pConfig caller-supplied table config (fts5_main.c:437); not an OOM path,,high
+API00-C,90,sqlite,ext/fts5/fts5_config.c,801,FP,"internal; pConfig trusted, pText null-checked at line 809",,high
+ARR30-C,91,sqlite,ext/fts5/fts5_config.c,837,FP,SkipArgs loop breaks on p==0 or *p==')'; bounded,,high
+DCL30-C,92,sqlite,ext/fts5/fts5_config.c,849,FP,returns p pointing into caller string pIn; not a local automatic,,high
+API00-C,93,sqlite,ext/fts5/fts5_config.c,861,FP,zIn null-checked via if(p==0) at line 875,,high
+API00-C,94,sqlite,ext/fts5/fts5_config.c,861,FP,"pzRank is OUT pointer, written *pzRank=0 before any use",,high
+API00-C,95,sqlite,ext/fts5/fts5_config.c,861,FP,"pzRankArgs is OUT pointer, written *pzRankArgs=0 before use",,high
+STR34-C,96,sqlite,ext/fts5/fts5_config.c,872,FP,*pzRank = 0 is char* pointer store,,high
+STR34-C,97,sqlite,ext/fts5/fts5_config.c,873,FP,*pzRankArgs = 0 is char* pointer store,,high
+EXP05-C,98,sqlite,ext/fts5/fts5_config.c,884,FP,p-pRank ptrdiff of const char*; no const cast,,high
+EXP34-C,99,sqlite,ext/fts5/fts5_config.c,884,FP,"pRank=p non-null (875 checks p==0, 882 checks if(p)); memcpy guarded by if(zRank)",,high
+INT32-C,100,sqlite,ext/fts5/fts5_config.c,884,FP,"memcpy p-pRank pointer diff within rank string; zRank allocated 1+p-pRank, non-negative",,high
+EXP05-C,101,sqlite,ext/fts5/fts5_config.c,904,FP,p-pArgs ptrdiff of const char*; no const cast,,high
+EXP34-C,102,sqlite,ext/fts5/fts5_config.c,904,FP,pArgs=p non-null after 898 deref/checks; memcpy guarded by if(zRankArgs),,high
+INT32-C,103,sqlite,ext/fts5/fts5_config.c,904,FP,"memcpy p-pArgs pointer diff within rank string; zRankArgs allocated 1+p-pArgs, non-negative",,high
+DCL30-C,104,sqlite,ext/fts5/fts5_config.c,914,FP,zRank is heap from sqlite3Fts5MallocZero; ownership transferred to *pzRank,,high
+STR34-C,105,sqlite,ext/fts5/fts5_config.c,914,FP,*pzRank = zRank is char* pointer store,,high
+DCL30-C,106,sqlite,ext/fts5/fts5_config.c,915,FP,zRankArgs is heap from sqlite3Fts5MallocZero; ownership transferred,,high
+STR34-C,107,sqlite,ext/fts5/fts5_config.c,915,FP,*pzRankArgs = zRankArgs is char* pointer store,,high
+API00-C,108,sqlite,ext/fts5/fts5_config.c,920,FP,"internal; pConfig trusted, called from ConfigLoad/fts5_main",,high
+API00-C,109,sqlite,ext/fts5/fts5_config.c,920,FP,pbBadkey is OUT pointer from caller local (&bDummy / &bBadkey),,high
+API00-C,110,sqlite,ext/fts5/fts5_config.c,1051,FP,internal; pConfig from trusted Fts5Config object,,high
+EXP34-C,111,sqlite,ext/fts5/fts5_config.c,1074,FP,sqlite3_step(p): rc==SQLITE_OK guard (1073) implies prepare succeeded so p non-null,,high
+API00-C,112,sqlite,ext/fts5/fts5_config.c,1111,FP,internal; pConfig->pzErrmsg null-checked at line 1117,,high
+DCL13-C,113,sqlite,ext/fts5/fts5_config.c,1111,TP,"pConfig struct not modified; only *pConfig->pzErrmsg written, const feasible",,med
+EXP34-C,114,sqlite,ext/fts5/fts5_config.c,1117,FP,pConfig caller-supplied (fts5_main.c:1049 etc); never null on reachable path,,high
+DCL30-C,115,sqlite,ext/fts5/fts5_config.c,1119,FP,zMsg is heap from sqlite3_vmprintf; ownership transferred to *pzErrmsg,,high
