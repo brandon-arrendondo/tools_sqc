@@ -391,3 +391,47 @@ For a future sqc effort the conclusion is sharp: **FP-reduction must target the
 semantic engines** (use-after-free matcher, integer-range, array-bounds, null/
 uninit), which are ~0% precise on hardened production C; the **declaration/macro/
 const rules are already paper-worthy** (67–88%). sqlite coverage now 30/220 (13.6%).
+
+---
+
+## File-at-a-time — vdbe.c (2026-06-11, run #40, HIGH-effort): the bifurcation holds in a 2nd engine
+
+`adjudication_sqlite_vdbe.csv` — `src/vdbe.c` (the bytecode interpreter, ~9.3K
+lines), **1,009 distinct findings**, the 2nd-largest file. High-effort pass: 8
+rule-group reviewer subagents (5 of them splitting the 685 MEM30-C findings by
+line range, each reading every free→use pair), 3 FN-hunt subagents over the
+highest-risk opcodes, and adversarial resolution of all 4 uncertains.
+
+**24 TP / 985 FP / 0 uncertain / 0 FN.**
+
+vdbe.c is **68% MEM30-C** (685 findings) — the matcher reading the VM's live
+program counter (`pOp`), register file (`aMem[]`/`pOut`/`pIn*`) and cursor array
+(`apCsr[]`) as freed memory. **All 685 are FP** (these structures live for the
+whole VM run; the genuine frees in the file are free-then-reassign or
+distinct-object). Same outcome for the other semantic rules: INT-family 0/115,
+ARR-family 0/114, EXP/API 0. Every one of the **24 TP is declaration / macro /
+dead-code**: DCL13 (read-only helpers `out2Prerelease`, `MemPrettyPrint`,
+`RegisterDump`, …), DCL03 (`assert(sizeof…)`/enum-equality → `static_assert`),
+PRE00/PRE10/PRE12 (`HAS_UPDATE_HOOK`/`Deephemeralize` evaluate their arg twice),
+MSC07 (genuinely dead `return`/`break`), and one ARR00 — `pOp=&aOp[-1]` forms a
+pointer before the array start (UB per C11 §6.5.6) in live dispatch-sentinel code.
+
+### FN-hunt: 0 false negatives (high-effort, 3 subagents)
+
+Record/serial-type decode (`OP_Column`, `OP_MakeRecord`), function/aggregate/vtab
+arg marshaling (`OP_Function`, `OP_AggStep`, `OP_VFilter`), and sorter/blob/seek
+(`OP_Concat`, `OP_RowData`, `OP_SeekGE`, `UnpackedRecord` building) all read in
+full. Every untrusted on-disk value is gated by a release-active check
+(`aLimit[SQLITE_LIMIT_LENGTH]`, `payloadSize`, `>2147483645`, `SQLITE_CORRUPT_BKPT`)
+before any allocation/index/memcpy. The register/cursor indices that lack a
+release-build bound (`&aMem[pOp->p3]`, `apCsr[pOp->p3]`) are **codegen-emitted
+constants, not input** — trusted-bytecode invariants a conservative analyzer
+should not flag, and sqc correctly does not → no FN.
+
+### Two giant core files, same verdict
+
+btree.c (1,056) + vdbe.c (1,009) = **2,065 findings across the two largest, most
+complex files in sqlite's core: 0 semantic-rule TP, 0 FN, every TP in the
+declaration/macro/const/dead-code class.** The bifurcation is not an artifact of
+one subsystem (on-disk-format parsing) — it reproduces in the bytecode engine.
+sqlite coverage now 31/220 (14.1%).
