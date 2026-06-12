@@ -204,3 +204,26 @@ ch` casts) and *misses* the one real narrowing in the tree.
 
 This supersedes the run-#34 measurement above; run #34 remains as the record of
 the config-incorrect baseline that motivated the fix.
+
+---
+
+## Trunk-validation pass (2026-06-12): upstream is unmaintained — all findings still present
+
+Checked against canonical libcrc upstream (`github.com/lammertb/libcrc`, cloned to
+`~/data-enterprise/libcrc-main`). Upstream HEAD =
+`7719e2112a9a960b1bba130d02bebdf58e8701f1` — **identical to our audited commit
+`7719e21`** — last commit `2021-04-21` ("Added Travis CI status image", Travis-CI
+era). **libcrc is effectively unmaintained** (no commits in 4+ years).
+
+Consequence: trunk == the commit we audited, so **all libcrc findings — the 13 TPs
+and the INT31 FN — are still present on current upstream** (spot-confirmed: the
+CON03 lazy-init data race `crc_tab16_init` in crc16/ccitt/dnp/krmit, the non-`const`
+`sht75_crc_table` in crc8.c, the missing include guards in precalc.h/testall.h).
+
+**Contrast with sqlite** (see sqlite/README.md trunk-validation pass): sqlite is
+actively maintained and heavily fuzzed, so 3 of our 5 security-relevant sqlite
+findings were *independently fixed* upstream — strong external corroboration that
+they were real. libcrc, being abandoned, offers no such fix history; its findings
+are validated only as "genuine and still-present," and are weak upstream-PR
+candidates (an unmaintained project is unlikely to merge). The CON03 thread-safety
+race is in any case a long-documented libcrc limitation.
