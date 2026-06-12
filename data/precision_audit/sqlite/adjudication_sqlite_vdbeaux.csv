@@ -1,0 +1,621 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,0,sqlite,src/vdbeaux.c,25,FP,pParse non-null by caller contract (codegen always supplies Parse); db deref relies on internal precondition,,high
+EXP08-C,1,sqlite,src/vdbeaux.c,30,FP,"&p->aOp uses offsetof member addressing, standard struct-tail zeroing, not raw byte ptr arithmetic",,high
+INT30-C,2,sqlite,src/vdbeaux.c,30,FP,"sizeof(Vdbe) > offsetof(Vdbe,aOp) since aOp is last member; subtraction cannot underflow",,high
+INT32-C,3,sqlite,src/vdbeaux.c,30,FP,"memset size is compile-time constant struct-tail size, far below SIZE_MAX",,high
+DCL30-C,4,sqlite,src/vdbeaux.c,46,FP,p is heap-allocated via sqlite3DbMallocRawNN; returning it is not returning automatic storage,,high
+DCL13-C,5,sqlite,src/vdbeaux.c,52,FP,"p read-only in sqlite3VdbeParser; const Vdbe* compiles, low-value lexical flag",,med
+API00-C,6,sqlite,src/vdbeaux.c,59,FP,p non-null by callers reporting errors on a live Vdbe; internal contract,,high
+MEM30-C,7,sqlite,src/vdbeaux.c,63,FP,"p->db is the allocator handle passed to sqlite3DbFree, not the freed object",,high
+API00-C,8,sqlite,src/vdbeaux.c,70,FP,"z is a data param; sqlite3DbStrNDup is NULL-tolerant, p is NULL-checked",,high
+API00-C,9,sqlite,src/vdbeaux.c,84,FP,p explicitly NULL-checked at line 85 before any dereference,,high
+STR34-C,10,sqlite,src/vdbeaux.c,86,FP,"sqlite3Strlen30(z) is strlen-style length, no char sign-extension defect in semantics",,high
+ARR39-C,11,sqlite,src/vdbeaux.c,88,FP,sizeof(*pStr)+n+1-sizeof(pStr->z) is the standard flexible-array struct-hack size,,high
+INT30-C,12,sqlite,src/vdbeaux.c,88,FP,"sizeof(*pStr)+n+1 always >= sizeof(pStr->z)=8, subtraction never underflows",,high
+INT30-C,13,sqlite,src/vdbeaux.c,88,FP,n bounded <2^30 by Strlen30; sizeof+n cannot wrap size_t,,high
+ARR38-C,14,sqlite,src/vdbeaux.c,92,FP,memcpy size n+1 matches allocation (z[8] + n+1 - 8); size calc valid,,high
+EXP05-C,15,sqlite,src/vdbeaux.c,92,FP,"n+1 is plain int arithmetic, no const qualifier cast away",,high
+INT31-C,16,sqlite,src/vdbeaux.c,92,FP,"n non-negative and <2^30, conversion to size_t is value-preserving",,high
+DCL13-C,17,sqlite,src/vdbeaux.c,104,FP,"pVdbe read-only; const Vdbe* compiles, low-value lexical flag",,med
+API00-C,18,sqlite,src/vdbeaux.c,127,FP,pA non-null by reprepare caller; assert pA->db==pB->db dominates,,high
+API00-C,19,sqlite,src/vdbeaux.c,127,FP,pB non-null by same reprepare caller contract,,high
+MEM33-C,20,sqlite,src/vdbeaux.c,132,FP,*pA=*pB whole-struct swap is intentional; flexible aOp content not copied by value,,high
+DCL30-C,21,sqlite,src/vdbeaux.c,133,FP,"tmp holds *pA transiently; pointers re-swapped explicitly, no dangling address escapes",,high
+ARR01-C,22,sqlite,src/vdbeaux.c,150,FP,"sizeof(pB->aCounter) is sizeof an array member of *pB, not a decayed parameter",,high
+INT32-C,23,sqlite,src/vdbeaux.c,176,FP,2*(sqlite3_int64)nOpAlloc widened to 64-bit; nOpAlloc bounded by SQLITE_LIMIT_VDBE_OP,,high
+INT32-C,24,sqlite,src/vdbeaux.c,177,FP,"(sqlite3_int64)nOpAlloc+nOp in 64-bit, both bounded small ints",,high
+INT32-C,25,sqlite,src/vdbeaux.c,179,FP,same 64-bit doubling bounded by VDBE_OP limit checked at line 185,,high
+INT30-C,26,sqlite,src/vdbeaux.c,192,FP,"nNew*sizeof(Op): nNew bounded by aLimit[VDBE_OP], product fits size_t",,high
+MEM30-C,27,sqlite,src/vdbeaux.c,194,FP,"p->db is allocator handle for DbRealloc/OomFault, not freed memory",,high
+CON07-C,28,sqlite,src/vdbeaux.c,213,FP,"static n is SQLITE_DEBUG-only single-thread debug counter, no real concurrency",,high
+DCL13-C,29,sqlite,src/vdbeaux.c,213,FP,pOp is (void)pOp unused in debug stub; const irrelevant,,med
+CON03-C,30,sqlite,src/vdbeaux.c,214,FP,"n is debug-only counter under SQLITE_DEBUG, not a real shared variable",,high
+ERR05-C,31,sqlite,src/vdbeaux.c,218,FP,"abort() only on n==LARGEST_UINT64, an unreachable warning-suppression branch",,high
+MSC04-C,32,sqlite,src/vdbeaux.c,227,FP,growOp3->AddOp3->growOp3 recursion bounded one level; growOpArray guarantees nOpAlloc>nOp,,high
+API00-C,33,sqlite,src/vdbeaux.c,266,FP,p non-null by codegen caller contract; accessed under VDBE_INIT_STATE assert,,high
+API00-C,34,sqlite,src/vdbeaux.c,269,FP,"p non-null by codegen caller contract, same as AddOp3",,high
+MSC04-C,35,sqlite,src/vdbeaux.c,272,FP,"indirect recursion bounded: after grow, AddOp3 takes non-grow path; one level",,high
+EXP34-C,36,sqlite,src/vdbeaux.c,276,FP,p validated by callers; growOp3 guarantees allocation before nOp access,,high
+INT32-C,37,sqlite,src/vdbeaux.c,283,FP,"p->nOp bounded by SQLITE_LIMIT_VDBE_OP, never near INT_MAX",,high
+INT32-C,38,sqlite,src/vdbeaux.c,332,FP,same nOp VDBE_OP bound; increment cannot reach INT_MAX,,high
+API00-C,39,sqlite,src/vdbeaux.c,369,FP,p non-null by caller; delegates to AddOp3 under same contract,,high
+API00-C,40,sqlite,src/vdbeaux.c,391,FP,"iDest is a register index bounded by Parse allocation, not unbounded input",,high
+INT32-C,41,sqlite,src/vdbeaux.c,399,FP,iDest+i: bounded register index plus zTypes-length i; far below INT_MAX,,high
+INT32-C,42,sqlite,src/vdbeaux.c,401,FP,same bounded register-index arithmetic,,high
+EXP05-C,43,sqlite,src/vdbeaux.c,454,FP,(FuncDef*)pFunc cast for freeEphemeralFunction ownership; idiomatic intentional const cast,,med
+EXP05-C,44,sqlite,src/vdbeaux.c,458,FP,"(FuncDef*)pFunc stored into pCtx->pFunc; intentional const cast, FuncDef used non-const downstream",,med
+DCL13-C,45,sqlite,src/vdbeaux.c,493,FP,"pParse only read in ExplainParent; const compiles, low-value flag",,med
+EXP34-C,46,sqlite,src/vdbeaux.c,497,FP,addrExplain!=0 guard at 495 ensures GetOp returns a valid non-null op,,high
+API00-C,47,sqlite,src/vdbeaux.c,517,FP,pParse non-null by codegen caller contract,,high
+API00-C,48,sqlite,src/vdbeaux.c,548,FP,pParse non-null by caller; delegates to ExplainParent,,high
+API00-C,49,sqlite,src/vdbeaux.c,562,FP,p non-null by schema-codegen caller contract,,high
+API00-C,50,sqlite,src/vdbeaux.c,562,FP,"zWhere is an ownership-transfer data string, NULL handled by P4_DYNAMIC path",,high
+API00-C,51,sqlite,src/vdbeaux.c,610,FP,pParse non-null by codegen caller contract,,high
+INT32-C,52,sqlite,src/vdbeaux.c,611,FP,"nLabel is negative label count bounded by query size, far from INT_MIN",,high
+DCL13-C,53,sqlite,src/vdbeaux.c,619,FP,"v read-only in resizeResolveLabel; const compiles, low-value flag",,med
+INT32-C,54,sqlite,src/vdbeaux.c,620,FP,"10 - p->nLabel = 10 + label count, bounded by query size; no overflow",,high
+ARR01-C,55,sqlite,src/vdbeaux.c,622,FP,"sizeof(p->aLabel[0]) is sizeof the int element type, not a decayed parameter",,high
+INT30-C,56,sqlite,src/vdbeaux.c,622,FP,"nNewSize*sizeof(int): nNewSize bounded by query label count, fits size_t",,high
+MEM30-C,57,sqlite,src/vdbeaux.c,622,FP,p->aLabel reassigned from ReallocOrFree then NULL-checked at 623 before deref; no UAF,,high
+MEM30-C,58,sqlite,src/vdbeaux.c,623,FP,aLabel write at 628 is in else-branch where realloc succeeded; valid memory,,high
+MEM30-C,59,sqlite,src/vdbeaux.c,628,FP,"nLabelAlloc is an int field, not a freed pointer; misread",,high
+MEM30-C,60,sqlite,src/vdbeaux.c,628,FP,aLabel[i] write at 628 inside else after successful realloc; valid,,high
+MEM30-C,61,sqlite,src/vdbeaux.c,630,FP,"nLabelAlloc is an int field assignment, no freed memory",,high
+ARR00-C,62,sqlite,src/vdbeaux.c,634,FP,j=ADDR(x) bounded by dominating asserts j>=0 and j<-p->nLabel; in-bounds,,high
+ARR30-C,63,sqlite,src/vdbeaux.c,634,FP,j validated by asserts at 641-642 against allocated label count,,high
+MEM30-C,64,sqlite,src/vdbeaux.c,634,FP,aLabel[j] write at 634 in else-branch after successful realloc; valid,,high
+INT32-C,65,sqlite,src/vdbeaux.c,641,FP,"-p->nLabel: nLabel negative bounded by label count, negation cannot hit -INT_MIN",,high
+INT14-C,66,sqlite,src/vdbeaux.c,644,FP,"ADDR(x)=~x plus index arithmetic is intentional label encoding, readability noise",,high
+DCL11-C,67,sqlite,src/vdbeaux.c,645,FP,"printf(""%d"", x) with x of type int; format matches argument exactly",,high
+INT32-C,68,sqlite,src/vdbeaux.c,714,FP,"p->iSub-1 only reached in else of iSub==0, so iSub>=1; no underflow",,high
+INT32-C,69,sqlite,src/vdbeaux.c,715,FP,same iSub-1 guarded by iSub!=0 branch,,high
+INT32-C,70,sqlite,src/vdbeaux.c,720,FP,p->iAddr++ bounded by nOp (asserted iAddr<nOp); VDBE size limited,,high
+INT32-C,71,sqlite,src/vdbeaux.c,722,FP,"p->iSub++ bounded by subprogram count, small; no INT_MAX risk",,high
+INT30-C,72,sqlite,src/vdbeaux.c,727,FP,"(1+(u64)nSub)*sizeof(SubProgram*): nSub bounded subprogram count, fits size_t",,high
+INT32-C,73,sqlite,src/vdbeaux.c,727,FP,1+(u64)nSub computed in u64 with small nSub; no overflow,,high
+MEM30-C,74,sqlite,src/vdbeaux.c,734,FP,p->apSub reassigned from ReallocOrFree then NULL-checked at 734 before deref; no UAF,,high
+INT32-C,75,sqlite,src/vdbeaux.c,737,FP,"p->nSub++ bounded by distinct subprogram count, small",,high
+MEM30-C,76,sqlite,src/vdbeaux.c,737,FP,apSub[nSub++] write at 737 inside else after successful realloc; valid,,high
+DCL30-C,77,sqlite,src/vdbeaux.c,743,FP,"pRet points into heap aOp/apSub arrays, not automatic local storage; misread",,high
+DCL13-C,78,sqlite,src/vdbeaux.c,769,FP,"v read-only in AssertMayAbort debug helper; const compiles, low-value flag",,med
+EXP34-C,79,sqlite,src/vdbeaux.c,783,FP,pOp guarded non-null by while(pOp!=0) loop condition before member access,,high
+MEM30-C,80,sqlite,src/vdbeaux.c,818,FP,"v==0 guard at line 778 returns early; v->db is the live allocator handle never freed, MEM30 misread",,high
+MEM30-C,81,sqlite,src/vdbeaux.c,818,FP,"v->db is a live sqlite3 connection handle, never freed in this function; not a use-after-free",,high
+API00-C,82,sqlite,src/vdbeaux.c,829,FP,sqlite3VdbeIncrWriteCounter is SQLITE_DEBUG-only internal callee with caller-guaranteed non-null p,,high
+API00-C,83,sqlite,src/vdbeaux.c,829,FP,pC is explicitly null-checked (pC==0) before any dereference at line 830,,high
+DCL13-C,84,sqlite,src/vdbeaux.c,829,TP,"pC is only read (eCurType/isEphemeral), never written through, so const VdbeCursor* would compile",,med
+API00-C,85,sqlite,src/vdbeaux.c,845,FP,"sqlite3VdbeAssertAbortable internal debug routine; p non-null by caller contract, only used in assert",,high
+DCL13-C,86,sqlite,src/vdbeaux.c,845,TP,"p is only read (p->nWrite, p->usesStmtJournal) inside assert, never modified, const-qualifiable",,med
+INT32-C,87,sqlite,src/vdbeaux.c,880,FP,p->nOp is opcode count bounded by SQLITE_MAX_*; subtraction of 1 cannot overflow on a non-empty program,,high
+INT14-C,88,sqlite,src/vdbeaux.c,925,FP,"INT14 readability flag on pOp pointer arithmetic/indexing; pOp is a program-counter pointer, no real defect",,high
+ARR00-C,89,sqlite,src/vdbeaux.c,926,FP,pOp[-1] is guarded by assert((pOp - p->aOp) >= 3) at line 925; OP_Integer precedes VFilter by construction,,high
+ARR00-C,90,sqlite,src/vdbeaux.c,927,FP,"same OP_VFilter context, pOp[-1] valid per the >=3 assert, not a negative subscript at runtime",,high
+ARR00-C,91,sqlite,src/vdbeaux.c,928,FP,"same OP_VFilter context, pOp[-1].p2 access guarded by prior assert, safe",,high
+INT32-C,92,sqlite,src/vdbeaux.c,940,FP,"-pParse->nLabel inside assert only; nLabel is a small label count, never INT_MIN, no real overflow",,high
+MEM30-C,93,sqlite,src/vdbeaux.c,971,FP,"p->btreeMask read in assert via DbMaskAllZero; not freed, MEM30 misread of an in-struct mask field",,high
+API00-C,94,sqlite,src/vdbeaux.c,995,FP,v validated by assert(v!=0) at line 1005 before any use; debug-only internal routine,,high
+ARR00-C,95,sqlite,src/vdbeaux.c,1011,FP,iFirst bounded by caller contract; asserts iLast>=iFirst and iLast<v->nOp constrain the loop range,,high
+INT32-C,96,sqlite,src/vdbeaux.c,1024,FP,"-pParse->nLabel used only in assert/branch comparison; nLabel small label count, no INT_MIN overflow",,high
+MEM31-C,97,sqlite,src/vdbeaux.c,1040,FP,pErr from sqlite3_str_new is finished via sqlite3_str_finish at line 1054 then zErr freed; not leaked,,high
+MEM31-C,98,sqlite,src/vdbeaux.c,1057,FP,pErr is finished and converted to zErr which is freed at 1056; sqlite3_str_finish releases the str object,,high
+DCL13-C,99,sqlite,src/vdbeaux.c,1065,TP,"sqlite3VdbeCurrentAddr only reads p->nOp/p->eVdbeState, p never modified, const-qualifiable",,med
+API00-C,100,sqlite,src/vdbeaux.c,1079,FP,"N used only in assert(p->nOp+N<=p->nOpAlloc); debug verifier, no overflow with realistic opcode counts",,high
+DCL13-C,101,sqlite,src/vdbeaux.c,1079,TP,"sqlite3VdbeVerifyNoMallocRequired only reads p->nOp/p->nOpAlloc in assert, p const-qualifiable",,med
+DCL13-C,102,sqlite,src/vdbeaux.c,1092,TP,"sqlite3VdbeVerifyNoResultRow only reads p->nOp and p->aOp[i].opcode, never writes p, const-qualifiable",,med
+API00-C,103,sqlite,src/vdbeaux.c,1122,FP,"sqlite3VdbeTakeOpArray writes p->aOp=0 at line 1131; p IS used; asserts guarantee non-null, contract met",,high
+API00-C,104,sqlite,src/vdbeaux.c,1122,FP,pnMaxArg passed to resolveP2Values which dereferences it; caller contract guarantees non-null,,high
+API00-C,105,sqlite,src/vdbeaux.c,1122,FP,pnOp written at line 1130; caller contract guarantees non-null internal pointer,,high
+DCL30-C,106,sqlite,src/vdbeaux.c,1132,FP,"aOp is p->aOp (heap array) reassigned from member, not an automatic local; ownership transferred to caller",,high
+API00-C,107,sqlite,src/vdbeaux.c,1142,FP,"aOp is const VdbeOpList* template, dereferenced in loop with caller-guaranteed non-null; internal API contract",,high
+API00-C,108,sqlite,src/vdbeaux.c,1142,FP,"iLineno only used as iLineno+i for iSrcLine under SQLITE_VDBE_COVERAGE; source line number, no real overflow",,high
+INT14-C,109,sqlite,src/vdbeaux.c,1152,FP,INT14 readability flag on p (Vdbe*) pointer usage; no genuine defect,,high
+ARR00-C,110,sqlite,src/vdbeaux.c,1156,FP,"nOp is a function parameter with assert(nOp>0) at line 1150, not uninitialized; analyzer misread the loop bound",,high
+EXP34-C,111,sqlite,src/vdbeaux.c,1157,FP,pOut points into p->aOp after growOpArray success (non-null path returns 0 on fail at 1153); not null on deref,,high
+INT32-C,112,sqlite,src/vdbeaux.c,1162,FP,"pOut->p2 += p->nOp on jump targets; values bounded by program size << INT_MAX, no real overflow",,high
+INT32-C,113,sqlite,src/vdbeaux.c,1172,FP,iLineno+i is source line plus small loop index for coverage iSrcLine; no realistic overflow,,high
+INT32-C,114,sqlite,src/vdbeaux.c,1178,FP,"i+p->nOp indexes p->aOp under SQLITE_DEBUG trace; bounded by allocated array, no overflow",,high
+INT32-C,115,sqlite,src/vdbeaux.c,1178,FP,"duplicate of 114, same bounded i+p->nOp index, no overflow",,high
+INT32-C,116,sqlite,src/vdbeaux.c,1182,FP,"p->nOp += nOp; opcode count bounded by SQLITE_MAX_* far below INT_MAX, no overflow",,high
+DCL30-C,117,sqlite,src/vdbeaux.c,1183,FP,"pFirst = &p->aOp[p->nOp] points into heap array, not automatic storage; DCL30 misread",,high
+API00-C,118,sqlite,src/vdbeaux.c,1190,FP,"sqlite3VdbeScanStatus internal API; p non-null by caller contract, p->db deref guarded by build config",,high
+INT30-C,119,sqlite,src/vdbeaux.c,1199,FP,"(1+(i64)p->nScan)*sizeof(ScanStatus): nScan is small scan count in i64, product far below i64 max, no wrap",,high
+INT32-C,120,sqlite,src/vdbeaux.c,1199,FP,"1+(i64)p->nScan in 64-bit; nScan small count, cannot overflow i64",,high
+MEM30-C,121,sqlite,src/vdbeaux.c,1209,FP,"p->db is live connection handle passed to sqlite3DbRealloc, not freed; MEM30 misread",,high
+API00-C,122,sqlite,src/vdbeaux.c,1222,FP,sqlite3VdbeScanStatusRange internal API; p non-null by caller contract,,high
+ARR00-C,123,sqlite,src/vdbeaux.c,1231,FP,"ii initialized as ii=p->nScan-1 in the for-loop at 1231; not uninitialized, analyzer misread",,high
+INT32-C,124,sqlite,src/vdbeaux.c,1237,FP,"sqlite3VdbeCurrentAddr(p)-1 returns p->nOp-1; nOp bounded program count, no overflow",,high
+INT32-C,125,sqlite,src/vdbeaux.c,1241,FP,"ii+1 indexes aAddrRange bounded by ArraySize loop; small fixed array, no overflow",,high
+API00-C,126,sqlite,src/vdbeaux.c,1254,FP,sqlite3VdbeScanStatusCounters internal API; p non-null by caller contract,,high
+DCL13-C,127,sqlite,src/vdbeaux.c,1255,TP,"p only used to read p->db, p->nScan, p->aScan members; p itself never modified, const-qualifiable",,med
+ARR00-C,128,sqlite,src/vdbeaux.c,1263,FP,"ii initialized as ii=p->nScan-1 at line 1263; not uninitialized, analyzer misread the for-loop",,high
+API00-C,129,sqlite,src/vdbeaux.c,1281,FP,"sqlite3VdbeChangeOpcode internal API; p non-null by contract, addr>=0 asserted, GetOp bounds-checks",,high
+API00-C,130,sqlite,src/vdbeaux.c,1285,FP,"sqlite3VdbeChangeP1 internal API; p non-null by contract, addr>=0 asserted",,high
+INT32-C,131,sqlite,src/vdbeaux.c,1299,FP,"p->nOp-1 with assert(p->nOp>0||mallocFailed) at 1298; bounded count, no overflow",,high
+EXP34-C,132,sqlite,src/vdbeaux.c,1310,FP,"pOp from sqlite3VdbeGetLastOp; on valid program non-null, the OP_ReleaseReg backtrack loop is DEBUG-bounded; not a reachable null deref",,high
+ARR00-C,133,sqlite,src/vdbeaux.c,1340,FP,"addr==p->nOp-1 guarded; assert checks p->aOp[addr].opcode; addr derived from valid program, in-bounds",,high
+ARR00-C,134,sqlite,src/vdbeaux.c,1341,FP,"same JumpHereOrPopInst context, addr in-bounds by the addr==p->nOp-1 branch guard",,high
+ARR00-C,135,sqlite,src/vdbeaux.c,1342,FP,"same context, p->aOp[addr] accessed only under the validated addr branch",,high
+ARR00-C,136,sqlite,src/vdbeaux.c,1343,FP,"same context, p4type access on validated in-bounds addr",,high
+INT32-C,137,sqlite,src/vdbeaux.c,1347,FP,p->nOp-- when addr==p->nOp-1 so nOp>0; cannot underflow to INT_MIN,,high
+MEM30-C,138,sqlite,src/vdbeaux.c,1370,FP,"db is the allocator handle threaded into freeP4FuncCtx; not itself freed, MEM30 double-free misread",,high
+MEM30-C,139,sqlite,src/vdbeaux.c,1375,FP,"db passed to freeP4Mem/free as allocator context, never freed; MEM30 misread",,high
+MEM30-C,140,sqlite,src/vdbeaux.c,1388,FP,"db is allocator handle in P4_DYNAMIC free; not double-freed, only p4 payload freed once",,high
+MEM30-C,141,sqlite,src/vdbeaux.c,1388,FP,p4 freed once per opcode in distinct case branches (mutually exclusive p4type); path-insensitive misread,,high
+MEM30-C,142,sqlite,src/vdbeaux.c,1392,FP,"db->pnBytesFreed is a member read on the live handle; db not freed, MEM30 misread",,high
+MEM30-C,143,sqlite,src/vdbeaux.c,1392,FP,"p4 passed to sqlite3KeyInfoUnref once on this path; not previously freed, mutually-exclusive cases",,high
+MEM30-C,144,sqlite,src/vdbeaux.c,1397,FP,"db passed to sqlite3ExprDelete as allocator context; live handle, not freed",,high
+MEM30-C,145,sqlite,src/vdbeaux.c,1397,FP,p4 passed to sqlite3ExprDelete once in P4_EXPR branch; not previously freed,,high
+MEM30-C,146,sqlite,src/vdbeaux.c,1402,FP,db is allocator handle in P4_FUNCDEF branch; not double-freed,,high
+MEM30-C,147,sqlite,src/vdbeaux.c,1402,FP,p4 freed once in freeEphemeralFunction for this distinct case; mutually-exclusive branch,,high
+MEM30-C,148,sqlite,src/vdbeaux.c,1406,FP,db->pnBytesFreed member read on live handle in P4_MEM branch; not freed,,high
+MEM30-C,149,sqlite,src/vdbeaux.c,1407,FP,p4 freed once via sqlite3ValueFree or freeP4Mem (exclusive if/else); not double-free,,high
+MEM30-C,150,sqlite,src/vdbeaux.c,1414,FP,db->pnBytesFreed read on live handle in P4_VTAB branch; db not freed,,high
+MEM30-C,151,sqlite,src/vdbeaux.c,1414,FP,p4 passed to sqlite3VtabUnlock once in P4_VTAB branch; not previously freed,,high
+MEM30-C,152,sqlite,src/vdbeaux.c,1418,FP,db->pnBytesFreed read on live handle in P4_TABLEREF branch; db not freed,,high
+MEM30-C,153,sqlite,src/vdbeaux.c,1418,FP,db passed to sqlite3DeleteTable as allocator context; live handle not freed,,high
+MEM30-C,154,sqlite,src/vdbeaux.c,1418,FP,p4 passed once to sqlite3DeleteTable in P4_TABLEREF branch; not previously freed,,high
+MEM30-C,155,sqlite,src/vdbeaux.c,1423,FP,db is allocator handle for pSig->zAff free in P4_SUBRTNSIG; not freed,,high
+MEM30-C,156,sqlite,src/vdbeaux.c,1424,FP,"db is allocator handle for pSig free; db itself not freed, MEM30 misread",,high
+MEM30-C,157,sqlite,src/vdbeaux.c,1424,FP,pSig->zAff and pSig are distinct allocations freed once each; not double-free,,high
+INT32-C,158,sqlite,src/vdbeaux.c,1439,FP,"nOp-1 in vdbeFreeOpArray with assert(nOp>=0) and guarded by if(aOp); bounded count, no overflow",,high
+MEM30-C,159,sqlite,src/vdbeaux.c,1441,FP,pOp->p4 passed to freeP4 once per opcode while iterating distinct slots; not use-after-free,,high
+MEM30-C,160,sqlite,src/vdbeaux.c,1443,FP,db is allocator handle passed to sqlite3DbFree for zComment; not freed itself,,high
+MEM30-C,161,sqlite,src/vdbeaux.c,1448,FP,"db passed to sqlite3DbNNFreeNN for aOp once after loop; allocator handle, single free of aOp",,high
+API00-C,162,sqlite,src/vdbeaux.c,1457,FP,sqlite3VdbeLinkSubProgram internal API; pVdbe non-null by caller contract,,high
+DCL13-C,163,sqlite,src/vdbeaux.c,1465,FP,pVdbe is written (pVdbe->pProgram = p) at line 1459; cannot be const,,high
+DCL13-C,164,sqlite,src/vdbeaux.c,1472,TP,"sqlite3VdbeHasSubProgram only reads pVdbe->pProgram, never modifies pVdbe, const-qualifiable",,med
+ARR00-C,165,sqlite,src/vdbeaux.c,1476,FP,addr guarded by assert(addr>=0 && addr<p->nOp) at line 1475; in-bounds,,high
+MEM30-C,166,sqlite,src/vdbeaux.c,1477,FP,pOp->p4 passed to freeP4 once at line 1477 then p4type cleared to P4_NOTUSED; not reused/freed twice,,high
+MEM30-C,167,sqlite,src/vdbeaux.c,1479,FP,pOp->p4.z set to 0 after the single freeP4 call; not a use-after-free,,high
+INT32-C,168,sqlite,src/vdbeaux.c,1490,FP,p->nOp-1 guarded by p->nOp>0 at line 1489; bounded count no overflow,,high
+API00-C,169,sqlite,src/vdbeaux.c,1501,FP,"iFirst validated by assert(iFirst>=1) and assert(iFirst+N-1<=pParse->nMem); debug routine, bounded",,high
+API00-C,170,sqlite,src/vdbeaux.c,1501,FP,"N guarded by N==0 early return and assert(iFirst+N-1<=nMem); register count bounded, no overflow",,high
+INT14-C,171,sqlite,src/vdbeaux.c,1511,FP,"INT14 readability flag on N used with mask bit ops and decrement; intentional mask logic, no defect",,high
+INT32-C,172,sqlite,src/vdbeaux.c,1515,FP,"iFirst++ within while(N>0) skipping masked registers; bounded by nMem, no INT_MAX overflow",,high
+INT32-C,173,sqlite,src/vdbeaux.c,1519,FP,N-1 in MASKBIT32(N-1) under N>0 && N<=32 guard; cannot underflow,,high
+CON07-C,174,sqlite,src/vdbeaux.c,1547,FP,"CON07 flags n as shared static but n is a local int parameter of vdbeChangeP4Full, not shared state; misread",,med
+MSC04-C,175,sqlite,src/vdbeaux.c,1547,FP,"recursion vdbeChangeP4Full->sqlite3VdbeChangeP4 only when n<0, and back only when n>=0; bounded, terminates safely",,high
+MSC04-C,176,sqlite,src/vdbeaux.c,1566,FP,"same bounded mutual recursion guarded by sign of n; not unbounded, no stack-exhaustion defect",,high
+EXP36-C,177,sqlite,src/vdbeaux.c,1574,FP,cast char*->void* in sqlite3DbStrNDup arg path imposes no alignment requirement on void*; EXP36 misread,,med
+INT32-C,178,sqlite,src/vdbeaux.c,1580,FP,"p->nOp-1 with assert(p->nOp>0) at 1577; bounded program count, no overflow",,high
+ARR00-C,179,sqlite,src/vdbeaux.c,1582,FP,addr validated by assert(addr<p->nOp) and addr<0 remapped to nOp-1 at 1580; in-bounds before p->aOp[addr],,high
+EXP05-C,180,sqlite,src/vdbeaux.c,1594,FP,"(void*)zP4 cast passes a string to be stored as P4 payload; const intentionally dropped for storage, freeP4 handles lifetime; benign per SQLite design",,high
+EXP05-C,181,sqlite,src/vdbeaux.c,1596,FP,"Cast (VTable*)zP4 documented-safe: zP4 is a VTable* passed through generic const char* API, never written via const path",,high
+DCL13-C,182,sqlite,src/vdbeaux.c,1609,TP,sqlite3VdbeAppendP4 never writes any member of *p (only p->aOp[i] pointee and p->db arg); const Vdbe* would compile per strict C const rule,,med
+INT32-C,183,sqlite,src/vdbeaux.c,1618,FP,p->nOp guarded by assert(nOp>0) and bounded by SQLITE_MAX_VDBE_OP; nOp-1 cannot underflow,,high
+API00-C,184,sqlite,src/vdbeaux.c,1629,FP,pParse caller-guaranteed non-null internal Parse*; v=pParse->pVdbe then asserted,,high
+API00-C,185,sqlite,src/vdbeaux.c,1629,FP,"pIdx non-null by contract, confirmed by assert(pIdx!=0)",,high
+INT32-C,186,sqlite,src/vdbeaux.c,1650,FP,nOp-1 only evaluated inside if(p->nOp) with assert(nOp>0||aOp==0); bounded,,high
+MEM30-C,187,sqlite,src/vdbeaux.c,1650,FP,"p->aOp is the live VDBE program array, never freed; only the zComment slot is freed/reassigned",,high
+INT32-C,188,sqlite,src/vdbeaux.c,1651,FP,"guarded nOp>0; nOp bounded, no overflow",,high
+MEM30-C,189,sqlite,src/vdbeaux.c,1651,FP,"p->aOp not freed; sqlite3DbFree releases prior zComment string, array stays valid",,high
+MEM30-C,190,sqlite,src/vdbeaux.c,1651,FP,"p->db is the allocator handle given to sqlite3DbFree, not the freed object",,high
+API00-C,191,sqlite,src/vdbeaux.c,1677,FP,v flows to GetLastOp/GetOp which assert state and return dummy on OOM; internal non-null contract,,high
+DCL13-C,192,sqlite,src/vdbeaux.c,1695,TP,sqlite3VdbeGetOp writes no member of *p; &p->aOp[addr] yields VdbeOp* under const Vdbe*; const compiles,,med
+INT32-C,193,sqlite,src/vdbeaux.c,1711,FP,nOp-1 passed to GetOp which asserts addr in range or mallocFailed; bounded,,high
+API00-C,194,sqlite,src/vdbeaux.c,1740,FP,pOp valid caller-supplied Op* on EXPLAIN display path; non-null by contract,,high
+EXP33-C,195,sqlite,src/vdbeaux.c,1760,FP,zAlt read (as zSynopsis) only inside same branch after sqlite3_snprintf fills it; never read uninitialized,,high
+ARR30-C,196,sqlite,src/vdbeaux.c,1763,FP,ii bounded by NUL-terminator loop over fixed compile-time synopsis literal; snprintf caps zAlt at 50,,high
+INT32-C,197,sqlite,src/vdbeaux.c,1778,FP,"ii steps within NUL-terminated fixed synopsis literal; tiny values, no INT_MAX overflow",,high
+ARR30-C,198,sqlite,src/vdbeaux.c,1779,FP,index into fixed NUL-terminated synopsis literal; bounded,,high
+INT32-C,199,sqlite,src/vdbeaux.c,1781,FP,ii increment over short fixed literal; no overflow,,high
+INT32-C,200,sqlite,src/vdbeaux.c,1787,FP,"v1,v2 are small bounded opcode operands (register indices); v1+v2-1 cannot overflow",,high
+INT32-C,201,sqlite,src/vdbeaux.c,1787,FP,"operand sums of bounded register indices, far below INT_MAX",,high
+INT32-C,202,sqlite,src/vdbeaux.c,1800,FP,ii steps over short fixed synopsis literal; bounded,,high
+INT32-C,203,sqlite,src/vdbeaux.c,1804,FP,ii steps over short fixed synopsis literal; bounded,,high
+MEM05-C,204,sqlite,src/vdbeaux.c,1830,FP,displayP4Expr recursion bounded by Expr tree depth (<=SQLITE_MAX_EXPR_DEPTH=1000); debug/EXPLAIN-only,,high
+MSC04-C,205,sqlite,src/vdbeaux.c,1830,FP,"direct recursion is intentional bounded expr-tree walk, not a defect",,med
+API00-C,206,sqlite,src/vdbeaux.c,1905,FP,pOp valid caller-provided Op* on display path; non-null by contract,,high
+DCL13-C,207,sqlite,src/vdbeaux.c,1905,TP,"sqlite3VdbeDisplayP4 only reads pOp members, never writes *pOp; const Op* compiles",,med
+ARR02-C,208,sqlite,src/vdbeaux.c,1935,FP,"encnames[] gets explicit size 4 from initializer; standard idiom, guarded by assert(enc<4)",,high
+DCL13-C,209,sqlite,src/vdbeaux.c,2031,FP,"sqlite3VdbeUsesBtree writes p->btreeMask via DbMaskSet, mutating *p; const would not compile",,high
+ARR01-C,210,sqlite,src/vdbeaux.c,2033,FP,"sizeof is applied to member p->btreeMask, not a decayed pointer param",,high
+ARR00-C,211,sqlite,src/vdbeaux.c,2035,FP,p->db->aDb[i] guarded by assert(i>=0 && i<p->db->nDb) plus caller contract,,high
+DCL13-C,212,sqlite,src/vdbeaux.c,2062,TP,"sqlite3VdbeEnter only reads p->lockMask/p->db, never writes *p; const Vdbe* compiles",,med
+DCL13-C,213,sqlite,src/vdbeaux.c,2083,TP,"vdbeLeave only reads p members, never writes *p; const Vdbe* compiles",,med
+API00-C,214,sqlite,src/vdbeaux.c,2107,FP,"pOut debug-print param; routine substitutes stdout if null, no untrusted deref",,high
+API00-C,215,sqlite,src/vdbeaux.c,2107,FP,pOp debug-print param valid by caller contract on debug-only path,,high
+ERR33-C,216,sqlite,src/vdbeaux.c,2129,FP,"fflush on debug-only diagnostic print (VDBE_PROFILE/SQLITE_DEBUG); ignored return is intentional, no shipped defect",,med
+DCL13-C,217,sqlite,src/vdbeaux.c,2151,FP,"db is stored into non-const field p->db, so const sqlite3* would not compile",,high
+DCL13-C,218,sqlite,src/vdbeaux.c,2229,TP,sqlite3VdbeFrameIsValid only reads pFrame->iFrameMagic; const VdbeFrame* compiles,,med
+API00-C,219,sqlite,src/vdbeaux.c,2258,FP,internal EXPLAIN routine; p valid by caller (sqlite3VdbeList) contract,,high
+API00-C,220,sqlite,src/vdbeaux.c,2258,FP,pSub explicitly checked (if(pSub!=0)) before deref,,high
+API00-C,221,sqlite,src/vdbeaux.c,2258,FP,piPc is caller out-param on stack; non-null by contract,,high
+API00-C,222,sqlite,src/vdbeaux.c,2258,FP,"piAddr caller out-param, written at end; non-null by contract",,high
+API00-C,223,sqlite,src/vdbeaux.c,2258,FP,"paOp caller out-param, written at end; non-null by contract",,high
+INT14-C,224,sqlite,src/vdbeaux.c,2283,FP,"bitwise pSub->flags&MEM_Blob and arithmetic pSub->n/sizeof act on distinct members, not the pointer",,high
+EXP34-C,225,sqlite,src/vdbeaux.c,2290,FP,apSub set from pSub->z only in MEM_Blob branch with nSub>0; loop runs only when nSub>0,,high
+INT32-C,226,sqlite,src/vdbeaux.c,2290,FP,"nOp bounded by SQLITE_MAX_VDBE_OP, subprogram count bounded; sum far below INT_MAX",,high
+ARR37-C,227,sqlite,src/vdbeaux.c,2295,FP,"iPc is an int rowid, not a pointer; ARR37 misreads the type",,high
+INT32-C,228,sqlite,src/vdbeaux.c,2295,FP,iPc bounded by nRow (sum of bounded nOps); no INT_MAX overflow,,high
+INT32-C,229,sqlite,src/vdbeaux.c,2309,FP,"i>=p->nOp in else branch; i is a bounded program index, subtraction stays non-negative",,high
+INT32-C,230,sqlite,src/vdbeaux.c,2313,FP,loop condition i>=apSub[j]->nOp keeps i bounded; no overflow,,high
+INT30-C,231,sqlite,src/vdbeaux.c,2325,FP,nSub is small distinct-subprogram count; (nSub+1)*sizeof cannot wrap,,high
+INT32-C,232,sqlite,src/vdbeaux.c,2325,FP,nSub+1 bounded by subprogram count,,high
+INT32-C,233,sqlite,src/vdbeaux.c,2337,FP,nSub++ bounded by number of distinct subprograms,,high
+INT30-C,234,sqlite,src/vdbeaux.c,2339,FP,nSub*sizeof bounded,,high
+INT32-C,235,sqlite,src/vdbeaux.c,2340,FP,nOp bounded; running nRow sum far below INT_MAX,,high
+DCL30-C,236,sqlite,src/vdbeaux.c,2360,FP,"aOp points into persistent heap VDBE program (p->aOp / apSub[j]->aOp), not a stack local; address stays valid",,high
+API00-C,237,sqlite,src/vdbeaux.c,2370,FP,p non-null by internal contract; assert(sqlite3VdbeFrameIsValid(p)),,high
+EXP40-C,238,sqlite,src/vdbeaux.c,2373,FP,"&aMem[p->nChildMem] is in-allocation pointer arithmetic to the cursor array following the Mem array, not const circumvention",,high
+ARR37-C,239,sqlite,src/vdbeaux.c,2376,FP,apCsr indexes the contiguous frame cursor array of nChildCsr entries; valid array access,,high
+ARR37-C,240,sqlite,src/vdbeaux.c,2376,FP,same: apCsr[i] is valid access into the frame's cursor array,,high
+MEM30-C,241,sqlite,src/vdbeaux.c,2378,FP,p->nChildMem read while p still live; p freed only later at line 2380,,high
+MEM30-C,242,sqlite,src/vdbeaux.c,2379,FP,p->v->db read before p freed; v is not freed,,high
+MEM30-C,243,sqlite,src/vdbeaux.c,2379,FP,p->v read while p live; not freed,,high
+MEM30-C,244,sqlite,src/vdbeaux.c,2379,FP,&p->pAuxData passed to be cleared while p live; not use-after-free,,high
+MEM30-C,245,sqlite,src/vdbeaux.c,2380,FP,p->v->db read to free p; v not freed and the read precedes the free of p,,high
+ARR37-C,246,sqlite,src/vdbeaux.c,2455,FP,pMem=&p->aMem[1] is into the register array; pMem+0..+2 access valid result cells (8 reserved),,high
+ARR37-C,247,sqlite,src/vdbeaux.c,2456,FP,"same aMem register-array element access, not arithmetic on a standalone object",,high
+ARR37-C,248,sqlite,src/vdbeaux.c,2457,FP,same aMem register-array element access,,high
+ARR37-C,249,sqlite,src/vdbeaux.c,2460,FP,same aMem register-array element access (pMem+0),,high
+ARR37-C,250,sqlite,src/vdbeaux.c,2461,FP,same aMem register-array element access (pMem+1),,high
+ARR37-C,251,sqlite,src/vdbeaux.c,2463,FP,same aMem register-array element access (pMem+2),,high
+ARR37-C,252,sqlite,src/vdbeaux.c,2464,FP,same aMem register-array element access (pMem+3),,high
+ARR37-C,253,sqlite,src/vdbeaux.c,2465,FP,same aMem register-array element access (pMem+4),,high
+ARR37-C,254,sqlite,src/vdbeaux.c,2467,FP,same aMem register-array element access (pMem+6),,high
+ARR37-C,255,sqlite,src/vdbeaux.c,2471,FP,same aMem register-array element access (pMem+7),,high
+ARR37-C,256,sqlite,src/vdbeaux.c,2474,FP,same aMem register-array element access (pMem+5),,high
+ARR37-C,257,sqlite,src/vdbeaux.c,2476,FP,pMem+N all within the 8-cell result-set slice of aMem; bounded by assert(nResColumn==8),,high
+API00-C,258,sqlite,src/vdbeaux.c,2497,FP,SQLITE_DEBUG-only internal print routine; caller passes a valid live Vdbe by contract,,high
+DCL13-C,259,sqlite,src/vdbeaux.c,2497,TP,p is only read (zSql/nOp/aOp) and never modified; const Vdbe* would compile,,med
+ARR30-C,260,sqlite,src/vdbeaux.c,2505,FP,z points at nul-terminated SQL string from p4.z; isspace('\0')==0 terminates the loop,,high
+FIO47-C,261,sqlite,src/vdbeaux.c,2508,FP,z is const char* and %s correctly expects a pointer; no type mismatch,,high
+DCL13-C,262,sqlite,src/vdbeaux.c,2516,TP,"p only read (nOp, aOp[0]); parameter could be declared const Vdbe*",,med
+EXP33-C,263,sqlite,src/vdbeaux.c,2525,FP,z[1000] is fully written by sqlite3_snprintf (nul-terminated) before any read,,high
+ARR00-C,264,sqlite,src/vdbeaux.c,2526,FP,z populated by snprintf before the loop; not uninitialized,,high
+ARR30-C,265,sqlite,src/vdbeaux.c,2526,FP,loop bounded by nul terminator within 1000-byte buffer; j<=i so writes in-bounds,,high
+ARR00-C,266,sqlite,src/vdbeaux.c,2527,FP,z initialized by snprintf prior to read,,high
+ARR00-C,267,sqlite,src/vdbeaux.c,2528,FP,z initialized by snprintf prior to read,,high
+ARR00-C,268,sqlite,src/vdbeaux.c,2529,FP,z initialized by snprintf prior to read,,high
+INT32-C,269,sqlite,src/vdbeaux.c,2575,FP,"nFree is i64 and guarded by nByte<=p->nFree, so result stays >=0",,high
+INT32-C,270,sqlite,src/vdbeaux.c,2578,FP,"nNeeded is i64 accumulating prep-time alloc sizes, structurally bounded far below i64 max",,high
+API00-C,271,sqlite,src/vdbeaux.c,2643,FP,internal routine with assert(pParse!=0) and caller contract pParse==p->pParse,,high
+CON07-C,272,sqlite,src/vdbeaux.c,2643,FP,"n is a local int, not a shared static variable; no concurrency concern",,high
+INT32-C,273,sqlite,src/vdbeaux.c,2675,FP,"nMem/nCursor are parse counts bounded by SQLITE_MAX_* limits, no int overflow",,high
+INT32-C,274,sqlite,src/vdbeaux.c,2676,FP,nMem++ only when nCursor==0; bounded by parse limits,,high
+INT30-C,275,sqlite,src/vdbeaux.c,2682,FP,p->nOp bounded by program size; sizeof(Op)*nOp within size_t range in practice,,high
+INT32-C,276,sqlite,src/vdbeaux.c,2685,FP,szOpAlloc>=n by construction; assert(x.nFree>=0) confirms non-negative,,high
+INT30-C,277,sqlite,src/vdbeaux.c,2709,FP,nMem bounded by parse limits; sizeof(Mem)*nMem within size_t,,high
+INT30-C,278,sqlite,src/vdbeaux.c,2710,FP,nVar bounded by SQLITE_MAX_VARIABLE_NUMBER; no wrap,,high
+INT30-C,279,sqlite,src/vdbeaux.c,2711,FP,nArg bounded by max function args; no wrap,,high
+INT30-C,280,sqlite,src/vdbeaux.c,2712,FP,nCursor bounded by parse nTab; no wrap,,high
+INT30-C,281,sqlite,src/vdbeaux.c,2717,FP,second-pass same bounded nMem multiplication,,high
+INT30-C,282,sqlite,src/vdbeaux.c,2718,FP,second-pass same bounded nVar multiplication,,high
+INT30-C,283,sqlite,src/vdbeaux.c,2719,FP,second-pass same bounded nArg multiplication,,high
+INT30-C,284,sqlite,src/vdbeaux.c,2720,FP,second-pass same bounded nCursor multiplication,,high
+ARR38-C,285,sqlite,src/vdbeaux.c,2737,FP,memset size matches the exact allocSpace allocation for apCsr; valid,,high
+INT30-C,286,sqlite,src/vdbeaux.c,2737,FP,"nCursor*sizeof bounded; matches allocation, no wrap",,high
+MSC04-C,287,sqlite,src/vdbeaux.c,2749,FP,recursion terminates: freeCursorWithCache clears pCx->colCache before re-entry so guard is false,,med
+MSC04-C,288,sqlite,src/vdbeaux.c,2761,FP,"single-level controlled recursion, guarded by pCx->colCache which is cleared first",,med
+INT32-C,289,sqlite,src/vdbeaux.c,2781,FP,assert(pVCur->pVtab->nRef>0) dominates the decrement; cannot underflow to INT_MIN,,high
+MEM30-C,290,sqlite,src/vdbeaux.c,2797,FP,loop frees distinct cursors and sets apCsr[i]=0; no double-free,,high
+API00-C,291,sqlite,src/vdbeaux.c,2808,FP,internal routine; pFrame guaranteed valid by caller (closeAllCursors/halt path),,high
+API00-C,292,sqlite,src/vdbeaux.c,2862,FP,nResColumn is a trusted compile-time count cast to u16; no overflow defect,,high
+CON07-C,293,sqlite,src/vdbeaux.c,2862,FP,"n is a local int, not a shared static variable",,high
+INT30-C,294,sqlite,src/vdbeaux.c,2872,FP,n=nResColumn*COLNAME_N bounded by column limit; sizeof(Mem)*n no wrap,,high
+MEM30-C,295,sqlite,src/vdbeaux.c,2872,FP,"db is the allocator handle, never freed; misread as freed object",,high
+MEM30-C,296,sqlite,src/vdbeaux.c,2873,FP,aColName freed at line 2868 then reassigned by fresh malloc at 2872 before the read,,high
+MEM30-C,297,sqlite,src/vdbeaux.c,2874,FP,"p is the live Vdbe, never freed",,high
+MEM30-C,298,sqlite,src/vdbeaux.c,2874,FP,"db is the allocator handle, never freed",,high
+MEM30-C,299,sqlite,src/vdbeaux.c,2874,FP,"aColName is the freshly-allocated (non-null-checked) buffer, not freed",,high
+API00-C,300,sqlite,src/vdbeaux.c,2887,FP,xDel is a caller-supplied callback per documented contract; null is valid for static names,,high
+API00-C,301,sqlite,src/vdbeaux.c,2887,FP,idx validated by assert(idx<p->nResAlloc); internal contract,,high
+API00-C,302,sqlite,src/vdbeaux.c,2887,FP,var validated by assert(var<COLNAME_N); internal contract,,high
+DCL13-C,303,sqlite,src/vdbeaux.c,2888,TP,"p never written directly; only aColName pointee mutated, which is const Vdbe* valid",,med
+ARR02-C,304,sqlite,src/vdbeaux.c,2950,FP,aMJNeeded[] size is fixed by its 6-element initializer; index bounded by journal mode enum,,med
+MEM30-C,305,sqlite,src/vdbeaux.c,3157,FP,db not freed in commit phase-two loop; member access on live handle,,high
+MEM30-C,306,sqlite,src/vdbeaux.c,3158,FP,db not freed; db->aDb[i].pBt access on live handle,,high
+MEM30-C,307,sqlite,src/vdbeaux.c,3158,FP,db->aDb array not freed; live handle,,high
+MEM30-C,308,sqlite,src/vdbeaux.c,3160,FP,pBt=db->aDb[i].pBt is live; CommitPhaseTwo does not free it,,high
+MEM30-C,309,sqlite,src/vdbeaux.c,3166,FP,db not freed; passed live to sqlite3VtabCommit,,high
+DCL13-C,310,sqlite,src/vdbeaux.c,3183,TP,"db only read (pVdbe, nVdbeActive); parameter could be declared const sqlite3*",,med
+EXP05-C,311,sqlite,src/vdbeaux.c,3190,FP,p is non-const Vdbe*; casting to sqlite3_stmt* removes no const qualifier,,high
+INT32-C,312,sqlite,src/vdbeaux.c,3191,FP,"cnt counts active vdbes in a bounded linked list; debug-only assert, no overflow",,high
+INT32-C,313,sqlite,src/vdbeaux.c,3192,FP,"nWrite is a debug-only (NDEBUG-gated) self-check counter bounded by number of active VDBEs, cannot approach INT_MAX",,high
+INT32-C,314,sqlite,src/vdbeaux.c,3193,FP,"nRead is a debug self-check counter bounded by active VDBE count, no realistic overflow",,high
+INT32-C,315,sqlite,src/vdbeaux.c,3219,FP,"p->iStatement-1 where iStatement==nStatement+nSavepoint, small bounded transaction-nesting count, asserts guard it",,high
+INT32-C,316,sqlite,src/vdbeaux.c,3240,FP,"db->nStatement-- guarded by assert(nStatement>0) at 3222, bounded statement-transaction count",,high
+API00-C,317,sqlite,src/vdbeaux.c,3291,FP,"sqlite3VdbeCheckFkDeferred p is internal VDBE pointer, non-null by caller contract (called from sqlite3VdbeHalt with valid p)",,high
+API00-C,318,sqlite,src/vdbeaux.c,3311,FP,"sqlite3VdbeHalt p guaranteed non-null by callers (sqlite3VdbeReset/step), assert(p->eVdbeState==VDBE_RUN_STATE) dominates",,high
+INT32-C,319,sqlite,src/vdbeaux.c,3491,FP,"db->nVdbeActive-- bounded by live VDBE count, followed by assert(nVdbeActive>=0) invariants",,high
+INT32-C,320,sqlite,src/vdbeaux.c,3492,FP,"db->nVdbeWrite-- bounded by writer-VDBE count, assert(nVdbeWrite>=0) holds invariant",,high
+INT32-C,321,sqlite,src/vdbeaux.c,3493,FP,"db->nVdbeRead-- bounded by reader-VDBE count, assert chain enforces non-negativity",,high
+API00-C,322,sqlite,src/vdbeaux.c,3520,FP,"sqlite3VdbeResetStepResult p non-null by caller contract, internal one-line setter",,high
+API00-C,323,sqlite,src/vdbeaux.c,3532,FP,"sqlite3VdbeTransferError p non-null, called only with valid VDBE from VdbeReset",,high
+DCL13-C,324,sqlite,src/vdbeaux.c,3532,TP,"sqlite3VdbeTransferError only reads p->rc and p->zErrMsg, never writes through p, const Vdbe* would compile",,med
+API00-C,325,sqlite,src/vdbeaux.c,3582,FP,"sqlite3VdbeReset p non-null by public/internal callers, immediately deref p->db with no prior guard by design",,high
+ERR00-C,326,sqlite,src/vdbeaux.c,3633,FP,"fopen result IS checked: if(out) guards entire block at 3634, under VDBE_PROFILE only",,high
+ERR33-C,327,sqlite,src/vdbeaux.c,3633,FP,"same as 326, return value of fopen assigned to out and checked via if(out)",,high
+FIO06-C,328,sqlite,src/vdbeaux.c,3633,FP,"VDBE_PROFILE dev-only profiling file, not a security-sensitive path; FIO06 inapplicable",,high
+WIN03-C,329,sqlite,src/vdbeaux.c,3633,FP,"VDBE_PROFILE dev diagnostic, Windows handle-inheritance irrelevant to profiling output",,high
+INT33-C,330,sqlite,src/vdbeaux.c,3657,FP,"cycles/cnt guarded by cnt>0 ternary at 3657, division never executes when cnt==0",,high
+FIO47-C,331,sqlite,src/vdbeaux.c,3659,FP,"zHdr is char[100] array decaying to char*, matches %s correctly; analyzer misread the array type",,high
+ERR00-C,332,sqlite,src/vdbeaux.c,3662,FP,fclose under VDBE_PROFILE dev-only profiling; ignoring close on diagnostic append file is benign,,high
+ERR33-C,333,sqlite,src/vdbeaux.c,3662,FP,"same as 332, fclose on profiling output, no data-integrity consequence",,high
+MEM30-C,334,sqlite,src/vdbeaux.c,3666,FP,"db is the allocator handle passed to sqlite3DbFree, never freed itself; member read is valid",,high
+API00-C,335,sqlite,src/vdbeaux.c,3673,FP,"sqlite3VdbeFinalize p non-null by caller contract, asserts and p->eVdbeState read by design",,high
+DCL03-C,336,sqlite,src/vdbeaux.c,3675,FP,"assert(VDBE_RUN_STATE>VDBE_READY_STATE) is a compile-portable invariant check; static_assert advice but runtime assert is idiomatic, not a defect",,high
+DCL03-C,337,sqlite,src/vdbeaux.c,3676,FP,"same constant-assert idiom, harmless invariant documentation",,high
+DCL03-C,338,sqlite,src/vdbeaux.c,3677,FP,same constant-assert idiom on state-enum ordering,,high
+INT13-C,339,sqlite,src/vdbeaux.c,3680,FP,"rc & db->errMask both nonnegative SQLITE_ result codes/masks, masking is correct idiom not a sign defect",,med
+API00-C,340,sqlite,src/vdbeaux.c,3702,FP,"sqlite3VdbeDeleteAuxData pp non-null by callers, while(*pp) handles empty list, no unguarded deref",,high
+DCL13-C,341,sqlite,src/vdbeaux.c,3730,TP,sqlite3VdbeClearObject frees pointees and reads fields but never writes the struct; const Vdbe* arguably viable,,med
+MEM30-C,342,sqlite,src/vdbeaux.c,3738,FP,"p->pProgram is loop head being walked then freed node-by-node (pSub/pNext), distinct nodes, not use-after-free",,high
+MEM30-C,343,sqlite,src/vdbeaux.c,3740,FP,"db is allocator handle reused across many DbFree calls, not a double-free of db",,high
+MEM30-C,344,sqlite,src/vdbeaux.c,3741,FP,"db passed to sqlite3DbFree repeatedly as the allocator context, never itself freed",,high
+MEM30-C,345,sqlite,src/vdbeaux.c,3743,FP,"p->eVdbeState read to decide cleanup branch, p not freed here, no UAF",,high
+MEM30-C,346,sqlite,src/vdbeaux.c,3744,FP,"p->aVar passed to releaseMemArray, valid member of live object being cleared",,high
+MEM30-C,347,sqlite,src/vdbeaux.c,3744,FP,"p->nVar is a count read alongside aVar, not a freed pointer",,high
+MEM30-C,348,sqlite,src/vdbeaux.c,3745,FP,"p->pVList freed via DbNNFreeNN after non-null guard, single free of distinct member",,high
+MEM30-C,349,sqlite,src/vdbeaux.c,3745,FP,"db is allocator handle, not double-freed",,high
+MEM30-C,350,sqlite,src/vdbeaux.c,3746,FP,"p->pFree freed once after if(p->pFree) guard, distinct member",,high
+MEM30-C,351,sqlite,src/vdbeaux.c,3746,FP,"db allocator handle reuse, not double-free",,high
+MEM30-C,352,sqlite,src/vdbeaux.c,3748,FP,db allocator handle reuse across frees,,high
+MEM30-C,353,sqlite,src/vdbeaux.c,3749,FP,"p->zSql freed once after guard, distinct member pointer",,high
+MEM30-C,354,sqlite,src/vdbeaux.c,3749,FP,db allocator handle reuse,,high
+MEM30-C,355,sqlite,src/vdbeaux.c,3751,FP,db allocator handle reuse,,high
+MEM30-C,356,sqlite,src/vdbeaux.c,3754,FP,"p->pDblStr is loop head walked node-by-node (pThis/pNxt), distinct nodes freed, no UAF",,high
+MEM30-C,357,sqlite,src/vdbeaux.c,3763,FP,"p->nScan is loop-bound count read, not a freed pointer",,high
+MEM30-C,358,sqlite,src/vdbeaux.c,3764,FP,db allocator handle reuse in scanstatus block,,high
+MEM30-C,359,sqlite,src/vdbeaux.c,3764,FP,"p->aScan[i].zName freed in loop then aScan freed once; reads precede frees, no UAF on array",,high
+MEM30-C,360,sqlite,src/vdbeaux.c,3766,FP,db allocator handle reuse,,high
+API00-C,361,sqlite,src/vdbeaux.c,3774,FP,"sqlite3VdbeDelete p non-null, assert(p!=0) at 3777 and caller contract",,high
+API00-C,362,sqlite,src/vdbeaux.c,3797,FP,"sqlite3VdbeFinishMoveto p VdbeCursor non-null by caller, asserts on p->deferredMoveto dominate",,high
+DCL15-C,363,sqlite,src/vdbeaux.c,3797,FP,"function is non-static public API (sqlite3-prefixed, declared in header, called cross-file from vdbe.c)",,high
+INT32-C,364,sqlite,src/vdbeaux.c,3809,FP,"sqlite3_search_count is SQLITE_TEST-only diagnostic counter, monotonic test instrumentation, no overflow concern",,high
+API00-C,365,sqlite,src/vdbeaux.c,3823,FP,"sqlite3VdbeHandleMovedCursor p non-null by caller (sqlite3VdbeCursorRestore), asserts dominate",,high
+DCL15-C,366,sqlite,src/vdbeaux.c,3823,FP,"sqlite3-prefixed public routine declared in vdbeInt.h, called from vdbe.c, cannot be static",,high
+DCL19-C,367,sqlite,src/vdbeaux.c,3823,FP,"same, function used cross-file from the bytecode engine, external linkage required",,high
+CON07-C,368,sqlite,src/vdbeaux.c,3900,FP,"n is a function-local u32 (line 3902), not a shared static; CON07 misidentified scope",,high
+INT13-C,369,sqlite,src/vdbeaux.c,3905,FP,"flags & MEM_Null on int flags is standard SQLite flag-test idiom, MEM_* are positive bitmasks, no sign defect",,med
+INT14-C,370,sqlite,src/vdbeaux.c,3905,FP,"flags participates only in bitwise tests and a return expression add of unrelated terms, no genuine mixed-semantics defect",,med
+INT13-C,371,sqlite,src/vdbeaux.c,3909,FP,"flags & (MEM_Int|MEM_IntReal) flag test, positive masks, safe idiom",,med
+INT13-C,372,sqlite,src/vdbeaux.c,3914,FP,"flags & MEM_Int test in testcase macro, safe flag test",,med
+INT13-C,373,sqlite,src/vdbeaux.c,3915,FP,"flags & MEM_IntReal flag test, safe",,med
+INT13-C,374,sqlite,src/vdbeaux.c,3917,FP,"~i where i is i64 value already known >=0; bitwise complement on signed used to fold magnitude, intentional and correct",,med
+INT13-C,375,sqlite,src/vdbeaux.c,3922,FP,"(i&1)==i tests low bit of bounded small int, intentional idiom checking i in {0,1}, no sign issue",,med
+INT13-C,376,sqlite,src/vdbeaux.c,3935,FP,"flags & MEM_IntReal flag test, safe positive mask",,med
+FLP34-C,377,sqlite,src/vdbeaux.c,3939,FP,"(double)pMem->u.i conversion of i64 already determined to need 8 bytes; i64->double well-defined, dead code under #if 0 anyway",,high
+INT13-C,378,sqlite,src/vdbeaux.c,3946,FP,"flags & MEM_Real flag test, safe",,med
+INT13-C,379,sqlite,src/vdbeaux.c,3950,FP,"flags & (MEM_Str|MEM_Blob) flag test in assert, safe",,med
+INT14-C,380,sqlite,src/vdbeaux.c,3950,FP,"MEM_Str used in (flags&MEM_Str)!=0 boolean then added as 0/1, deliberate compact encoding not a readability defect",,low
+INT13-C,381,sqlite,src/vdbeaux.c,3953,FP,"flags & MEM_Zero flag test, safe",,med
+INT13-C,382,sqlite,src/vdbeaux.c,3957,FP,"(flags&MEM_Str)!=0 flag test producing 0/1, safe",,med
+INT32-C,383,sqlite,src/vdbeaux.c,3957,FP,"(n*2)+12+bool where n bounded by SQLITE_MAX_LENGTH (<2^31), serial type fits u32, no overflow; dead code under #if 0",,med
+INT32-C,384,sqlite,src/vdbeaux.c,3957,FP,"(n*2)+12 with n bounded by max blob/text length far below INT_MAX, dead code under #if 0",,med
+DCL15-C,385,sqlite,src/vdbeaux.c,3964,FP,"sqlite3SmallTypeSizes is intentionally global const, declared extern in vdbeInt.h and read from vdbe.c, cannot be static",,high
+DCL19-C,386,sqlite,src/vdbeaux.c,3964,FP,"same global const lookup table shared cross-file, external linkage required by design",,high
+PRE00-C,387,sqlite,src/vdbeaux.c,4053,TP,TWO_BYTE_INT textually evaluates its pointer arg (x)[0] and (x)[1] multiple times; genuine function-like-macro multiple-evaluation,,med
+PRE12-C,388,sqlite,src/vdbeaux.c,4053,TP,same macro re-evaluates parameter x multiple times; PRE12 multiple-evaluation holds,,med
+PRE00-C,389,sqlite,src/vdbeaux.c,4054,TP,THREE_BYTE_INT evaluates (x) three times in expansion,,med
+PRE12-C,390,sqlite,src/vdbeaux.c,4054,TP,"macro re-evaluates x multiple times, accurate",,med
+PRE00-C,391,sqlite,src/vdbeaux.c,4055,TP,FOUR_BYTE_UINT evaluates (x) four times,,med
+PRE12-C,392,sqlite,src/vdbeaux.c,4055,TP,"macro re-evaluates x multiple times, accurate",,med
+PRE00-C,393,sqlite,src/vdbeaux.c,4056,TP,FOUR_BYTE_INT evaluates (x) four times,,med
+PRE12-C,394,sqlite,src/vdbeaux.c,4056,TP,"macro re-evaluates x multiple times, accurate",,med
+ARR30-C,395,sqlite,src/vdbeaux.c,4072,FP,buf[0..7] access bounded by serial-type/header contract in serialGet; safe,,high
+ARR30-C,396,sqlite,src/vdbeaux.c,4073,FP,FOUR_BYTE_UINT(buf+4) reads bytes guaranteed present for serial type 6/7,,high
+INT14-C,397,sqlite,src/vdbeaux.c,4074,FP,"x in byte-merge macro; readability heuristic, no defect",,low
+EXP42-C,398,sqlite,src/vdbeaux.c,4094,FP,"memcmp compares &r1(double) vs &t2(u64) scalars in an endian-check assert, no struct padding",,high
+ARR01-C,399,sqlite,src/vdbeaux.c,4096,FP,"sizeof(pMem->u.r) is sizeof a struct member, not a decayed pointer param",,high
+DCL03-C,400,sqlite,src/vdbeaux.c,4096,TP,assert(sizeof(x)==8 && sizeof(pMem->u.r)==8) is a pure constant expression; static_assert apt,,med
+ARR30-C,401,sqlite,src/vdbeaux.c,4106,FP,buf access bounded by serial-type contract; safe,,high
+ARR30-C,402,sqlite,src/vdbeaux.c,4107,FP,FOUR_BYTE_UINT(buf+4) bounded by serial type 7,,high
+INT14-C,403,sqlite,src/vdbeaux.c,4108,FP,"x byte-merge decode base; readability heuristic, no defect",,low
+ARR01-C,404,sqlite,src/vdbeaux.c,4109,FP,"sizeof(pMem->u.r) is a struct member, not a decayed array param",,high
+DCL03-C,405,sqlite,src/vdbeaux.c,4109,TP,assert(sizeof(x)==8 ...) is a compile-time constant; static_assert preferable,,med
+API00-C,406,sqlite,src/vdbeaux.c,4119,FP,buf non-null by caller contract; internal serial-decode API,,high
+ARR30-C,407,sqlite,src/vdbeaux.c,4141,FP,"ONE_BYTE_INT(buf) reads buf[0], present for serial type 1",,high
+ARR30-C,408,sqlite,src/vdbeaux.c,4149,FP,"TWO_BYTE_INT reads buf[0..1], bounded by serial type 2",,high
+ARR30-C,409,sqlite,src/vdbeaux.c,4157,FP,"THREE_BYTE_INT reads buf[0..2], bounded by serial type 3",,high
+ARR30-C,410,sqlite,src/vdbeaux.c,4165,FP,"FOUR_BYTE_INT reads buf[0..3], bounded by serial type 4",,high
+INT14-C,411,sqlite,src/vdbeaux.c,4168,FP,"buf in byte-merge macro; readability heuristic, no defect",,low
+ARR30-C,412,sqlite,src/vdbeaux.c,4177,FP,FOUR_BYTE_UINT(buf+2) bounded by serial type 5,,high
+ARR30-C,413,sqlite,src/vdbeaux.c,4177,FP,TWO_BYTE_INT(buf) bounded by serial type 5,,high
+INT14-C,414,sqlite,src/vdbeaux.c,4193,FP,"serial_type byte-merge readability heuristic, no defect",,low
+ARR02-C,415,sqlite,src/vdbeaux.c,4202,FP,"aFlag[] has a 2-element initializer so its size is explicit, not unbounded",,high
+EXP05-C,416,sqlite,src/vdbeaux.c,4203,TP,(char*)buf casts away const from const unsigned char* before storing into pMem->z,,med
+INT13-C,417,sqlite,src/vdbeaux.c,4205,FP,serial_type is u32 (unsigned) here; INT13 misreads operand type,,high
+API00-C,418,sqlite,src/vdbeaux.c,4218,FP,pKeyInfo non-null by caller contract; internal alloc helper,,high
+DCL13-C,419,sqlite,src/vdbeaux.c,4219,FP,"pKeyInfo is stored into non-const field p->pKeyInfo, so const would not compile",,high
+DCL03-C,420,sqlite,src/vdbeaux.c,4223,TP,assert(sizeof(UnpackedRecord)+sizeof(Mem)*65536 < 0x7fffffff) is a pure constant expr,,med
+INT30-C,421,sqlite,src/vdbeaux.c,4223,FP,operands are compile-time sizeof constants in an assert bounded < 0x7fffffff; no runtime wrap,,high
+INT30-C,422,sqlite,src/vdbeaux.c,4223,FP,sizeof(Mem)*65536 is a constant in an assert; no wrap,,high
+INT30-C,423,sqlite,src/vdbeaux.c,4224,FP,nKeyField bounded by SQLITE_MAX_COLUMN; u64 product cannot wrap,,high
+EXP05-C,424,sqlite,src/vdbeaux.c,4227,FP,p is a non-const UnpackedRecord*; (char*)p casts no const qualifier away,,high
+EXP36-C,425,sqlite,src/vdbeaux.c,4227,FP,p from sqlite3DbMallocRaw is 8-aligned and aMem placed at ROUND8P offset; alignment guaranteed,,high
+DCL30-C,426,sqlite,src/vdbeaux.c,4230,FP,"p is a heap pointer from sqlite3DbMallocRaw, not automatic storage; returning it is valid",,high
+API00-C,427,sqlite,src/vdbeaux.c,4238,FP,p non-null by caller contract (record-unpack internal API),,high
+EXP34-C,428,sqlite,src/vdbeaux.c,4248,FP,p->aMem deref safe; p guaranteed non-null by caller,,high
+EXP33-C,429,sqlite,src/vdbeaux.c,4253,FP,"szHdr set by getVarint32(aKey,szHdr) before any use",,high
+ARR37-C,430,sqlite,src/vdbeaux.c,4259,FP,aKey indexes the nKey-byte record buffer; bounded by d<=nKey loop guard,,high
+EXP33-C,431,sqlite,src/vdbeaux.c,4259,FP,"serial_type set by getVarint32(&aKey[idx],serial_type) before use",,high
+EXP34-C,432,sqlite,src/vdbeaux.c,4260,FP,pMem derives from non-null p->aMem,,high
+EXP34-C,433,sqlite,src/vdbeaux.c,4260,FP,pKeyInfo derives from non-null p->pKeyInfo,,high
+ARR37-C,434,sqlite,src/vdbeaux.c,4265,FP,aKey[d] index bounded by d<=(u32)nKey loop guard,,high
+ARR37-C,435,sqlite,src/vdbeaux.c,4268,FP,"pMem++ walks the allocated aMem[] array, bounded by ++u>=p->nField break",,high
+DCL03-C,436,sqlite,src/vdbeaux.c,4271,FP,"assert(CORRUPT_DB) operand is a runtime global-config check, not a constant expression",,med
+EXP33-C,437,sqlite,src/vdbeaux.c,4325,FP,"idx1 set by getVarint32(aKey1,szHdr1) before use",,high
+EXP33-C,438,sqlite,src/vdbeaux.c,4325,FP,szHdr1 set by getVarint32 before use,,high
+EXP33-C,439,sqlite,src/vdbeaux.c,4336,FP,"serial_type1 set by getVarint32(aKey1+idx1,serial_type1) before use",,high
+INT32-C,440,sqlite,src/vdbeaux.c,4373,FP,"rc is a small comparison result, never INT_MIN",,high
+INT32-C,441,sqlite,src/vdbeaux.c,4376,FP,rc negation again on bounded comparison result; cannot be INT_MIN,,high
+INT32-C,442,sqlite,src/vdbeaux.c,4380,FP,i bounded by pPKey2->nField (column count <= SQLITE_MAX_COLUMN),,high
+EXP33-C,443,sqlite,src/vdbeaux.c,4427,FP,szHdr set by getVarint32 before use,,high
+EXP33-C,444,sqlite,src/vdbeaux.c,4431,FP,notUsed set by getVarint32 before use,,high
+INT32-C,445,sqlite,src/vdbeaux.c,4432,FP,nField bounded by header length / column count; cannot reach INT_MAX,,high
+EXP34-C,446,sqlite,src/vdbeaux.c,4456,FP,pMem1 non-null by caller contract in encoding-change compare,,high
+EXP34-C,447,sqlite,src/vdbeaux.c,4460,FP,pColl checked non-null by caller (if(pColl)) before this path,,high
+EXP34-C,448,sqlite,src/vdbeaux.c,4478,FP,pMem1 non-null by caller contract in vdbeCompareMemString,,high
+EXP34-C,449,sqlite,src/vdbeaux.c,4478,FP,"pColl non-null on this path, guarded by if(pColl) in caller",,high
+EXP34-C,450,sqlite,src/vdbeaux.c,4481,FP,pMem2 non-null by caller contract,,high
+ARR30-C,451,sqlite,src/vdbeaux.c,4494,FP,"isAllZero loops i<n over z=pB->z, n=pB->n; bound is blob length, no fixed 1000-byte buffer",,high
+API00-C,452,sqlite,src/vdbeaux.c,4504,FP,pB1 non-null by caller contract (MemCompare blob path),,high
+API00-C,453,sqlite,src/vdbeaux.c,4504,FP,pB2 non-null by caller contract,,high
+EXP34-C,454,sqlite,src/vdbeaux.c,4506,FP,pB1->n deref safe; pB1 non-null by contract,,high
+EXP34-C,455,sqlite,src/vdbeaux.c,4507,FP,pB2->n deref safe; pB2 non-null by contract,,high
+INT14-C,456,sqlite,src/vdbeaux.c,4513,FP,pB1 used in flags bit-tests and n1-n2; readability heuristic misreads pointer var,,low
+INT14-C,457,sqlite,src/vdbeaux.c,4514,FP,"pB2 likewise; readability heuristic, no defect",,low
+INT31-C,458,sqlite,src/vdbeaux.c,4527,FP,n1/n2 are non-negative bounded blob lengths passed to memcmp; size_t conversion safe,,high
+INT32-C,459,sqlite,src/vdbeaux.c,4529,FP,"n1,n2 small non-negative blob lengths; n1-n2 cannot overflow int",,high
+FLP02-C,460,sqlite,src/vdbeaux.c,4539,FP,sqlite3IntFloatCompare uses == deliberately in a 3-way compare with prior range guards,,high
+FLP34-C,461,sqlite,src/vdbeaux.c,4559,FP,(i64)r guarded by explicit r<-2^63 and r>=2^63 range checks at 4554-4555,,high
+FLP34-C,462,sqlite,src/vdbeaux.c,4560,FP,"(double)i is widening i64->double, always defined",,high
+FLP34-C,463,sqlite,src/vdbeaux.c,4561,FP,"(double)i widening, always safe",,high
+FLP34-C,464,sqlite,src/vdbeaux.c,4562,FP,"(double)i widening, always safe",,high
+FLP34-C,465,sqlite,src/vdbeaux.c,4562,FP,"(double)i widening, always safe",,high
+EXP34-C,466,sqlite,src/vdbeaux.c,4579,FP,pMem1 non-null by caller contract in sqlite3MemCompare,,high
+EXP34-C,467,sqlite,src/vdbeaux.c,4580,FP,pMem2 non-null by caller contract,,high
+INT13-C,468,sqlite,src/vdbeaux.c,4581,FP,f1 holds widened non-negative u16 Mem.flags; bitwise OR has no sign hazard,,high
+INT13-C,469,sqlite,src/vdbeaux.c,4587,FP,combined_flags is OR of non-negative u16 flags; no sign issue,,high
+INT14-C,470,sqlite,src/vdbeaux.c,4587,FP,MEM_Null is a positive flag constant; INT14 misidentifies it as a mixed-use variable,,low
+INT13-C,471,sqlite,src/vdbeaux.c,4588,FP,f1 from non-negative u16 flags; & safe,,high
+INT13-C,472,sqlite,src/vdbeaux.c,4593,FP,combined_flags non-negative flag bits; & safe,,high
+INT13-C,473,sqlite,src/vdbeaux.c,4594,FP,combined_flags non-negative; & safe,,high
+INT13-C,474,sqlite,src/vdbeaux.c,4595,FP,combined_flags non-negative; & safe,,high
+INT13-C,475,sqlite,src/vdbeaux.c,4596,FP,combined_flags non-negative; & safe,,high
+INT13-C,476,sqlite,src/vdbeaux.c,4597,FP,f1 non-negative flags; & safe,,high
+INT13-C,477,sqlite,src/vdbeaux.c,4598,FP,f1 non-negative flags; & safe,,high
+INT13-C,478,sqlite,src/vdbeaux.c,4599,FP,f1 non-negative flags; & safe,,high
+INT13-C,479,sqlite,src/vdbeaux.c,4604,FP,f1 non-negative flags; & safe,,high
+INT13-C,480,sqlite,src/vdbeaux.c,4609,FP,f1 non-negative flags; & safe,,high
+INT13-C,481,sqlite,src/vdbeaux.c,4610,FP,f1 non-negative flags; & safe,,high
+INT13-C,482,sqlite,src/vdbeaux.c,4611,FP,f1 non-negative flags; & safe,,high
+INT13-C,483,sqlite,src/vdbeaux.c,4622,FP,f1 non-negative flags; & safe,,high
+INT13-C,484,sqlite,src/vdbeaux.c,4637,FP,combined_flags non-negative; & safe,,high
+INT13-C,485,sqlite,src/vdbeaux.c,4638,FP,f1 non-negative flags; & safe,,high
+ARR37-C,486,sqlite,src/vdbeaux.c,4680,FP,"aKey[0] reads first record byte, present for the serial type decoded",,high
+INT14-C,487,sqlite,src/vdbeaux.c,4680,FP,"aKey decode base in byte-merge macros; readability heuristic, no defect",,low
+ARR30-C,488,sqlite,src/vdbeaux.c,4681,FP,"ONE_BYTE_INT(aKey) reads aKey[0], bounded",,high
+ARR37-C,489,sqlite,src/vdbeaux.c,4683,FP,"aKey[0] decode, bounded",,high
+ARR30-C,490,sqlite,src/vdbeaux.c,4684,FP,TWO_BYTE_INT(aKey) bounded by serial type 2,,high
+ARR37-C,491,sqlite,src/vdbeaux.c,4686,FP,"aKey[0] decode, bounded",,high
+ARR30-C,492,sqlite,src/vdbeaux.c,4687,FP,THREE_BYTE_INT bounded by serial type 3,,high
+ARR37-C,493,sqlite,src/vdbeaux.c,4689,FP,"aKey[0] decode, bounded",,high
+ARR30-C,494,sqlite,src/vdbeaux.c,4690,FP,FOUR_BYTE_UINT bounded by serial type 4,,high
+INT32-C,495,sqlite,src/vdbeaux.c,4691,FP,"line 4691 is (i64)*(int*)&y, a reinterpret cast not a multiplication; misread",,high
+ARR37-C,496,sqlite,src/vdbeaux.c,4694,FP,"aKey[0] decode, bounded",,high
+ARR00-C,497,sqlite,src/vdbeaux.c,4695,FP,aKey points into a record buffer not a 1-element array; aKey+2 in-bounds for serial type 5,,high
+ARR30-C,498,sqlite,src/vdbeaux.c,4695,FP,FOUR_BYTE_UINT(aKey+2) bounded by serial type 5,,high
+ARR30-C,499,sqlite,src/vdbeaux.c,4695,FP,TWO_BYTE_INT(aKey) bounded by serial type 5,,high
+ARR37-C,500,sqlite,src/vdbeaux.c,4695,FP,aKey is a buffer pointer; arithmetic within record bounds is valid,,high
+INT14-C,501,sqlite,src/vdbeaux.c,4695,FP,FOUR_BYTE_UINT is a macro name not a variable; INT14 misidentifies it,,low
+ARR30-C,502,sqlite,src/vdbeaux.c,4698,FP,FOUR_BYTE_UINT(aKey) bounded by serial type 6,,high
+ARR37-C,503,sqlite,src/vdbeaux.c,4699,FP,"aKey[0] decode, bounded",,high
+ARR00-C,504,sqlite,src/vdbeaux.c,4700,FP,aKey+4 in-bounds for serial type 6 (8-byte) within record buffer,,high
+ARR30-C,505,sqlite,src/vdbeaux.c,4700,FP,FOUR_BYTE_UINT(aKey+4) bounded by serial type 6,,high
+ARR37-C,506,sqlite,src/vdbeaux.c,4700,FP,"aKey buffer arithmetic within bounds, valid",,high
+INT14-C,507,sqlite,src/vdbeaux.c,4700,FP,"x byte-merge decode base; readability heuristic, no defect",,low
+API00-C,508,sqlite,src/vdbeaux.c,4729,FP,pKey1 non-null by caller contract (record-compare hot path),,high
+INT31-C,509,sqlite,src/vdbeaux.c,4767,FP,"nKey1 is a record size (>=0); (unsigned)nKey1 conversion safe, d1 bound-checked after",,high
+ARR30-C,510,sqlite,src/vdbeaux.c,4778,FP,while(1) bounded by explicit break on idx1<szHdr1/i>=nField and d1 vs nKey1 corruption checks,,high
+INT14-C,511,sqlite,src/vdbeaux.c,4782,FP,pRhs used in flags bit-test and pRhs++ walk; readability heuristic misreads pointer,,low
+EXP33-C,512,sqlite,src/vdbeaux.c,4836,FP,"getVarint32NR(&aKey1[idx1],serial_type) assigns serial_type before use",,high
+INT13-C,513,sqlite,src/vdbeaux.c,4840,FP,"serial_type declared u32 at line 4779, not signed",,high
+INT14-C,514,sqlite,src/vdbeaux.c,4840,FP,serial_type is u32; mixing & with arithmetic on serial types is intentional and safe,,med
+EXP33-C,515,sqlite,src/vdbeaux.c,4844,FP,"only mem1.n written/read here; field-by-field stack Mem, szMalloc set via VVA_ONLY",,high
+INT31-C,516,sqlite,src/vdbeaux.c,4844,FP,explicit (unsigned)nKey1 cast; record length non-negative,,high
+INT31-C,517,sqlite,src/vdbeaux.c,4845,FP,"explicit (unsigned)nKey1 cast, bounded length",,high
+INT31-C,518,sqlite,src/vdbeaux.c,4846,FP,explicit (unsigned)nKey1 cast in corruption guard,,high
+EXP45-C,519,sqlite,src/vdbeaux.c,4847,TP,EXP45-C: embedded assignment pKeyInfo=pPKey2->pKeyInfo inside if controlling expression,,med
+EXP34-C,520,sqlite,src/vdbeaux.c,4851,FP,pKeyInfo=pPKey2->pKeyInfo which is asserted/deref'd non-null throughout (4773-4777),,high
+INT31-C,521,sqlite,src/vdbeaux.c,4861,FP,"nCmp=MIN(mem1.n,pRhs->n), both non-negative lengths",,high
+INT13-C,522,sqlite,src/vdbeaux.c,4872,FP,serial_type is u32 here,,high
+INT31-C,523,sqlite,src/vdbeaux.c,4876,FP,"explicit (unsigned)nKey1 cast, bounded",,high
+INT31-C,524,sqlite,src/vdbeaux.c,4877,FP,"explicit (unsigned)nKey1 cast, bounded",,high
+INT31-C,525,sqlite,src/vdbeaux.c,4878,FP,explicit (unsigned)nKey1 cast in corruption guard,,high
+INT31-C,526,sqlite,src/vdbeaux.c,4889,FP,"nCmp=MIN(nStr,pRhs->n), non-negative lengths",,high
+INT13-C,527,sqlite,src/vdbeaux.c,4911,FP,"sortFlags holds u8 KEYINFO flag bits (0-255), & well-defined",,med
+INT13-C,528,sqlite,src/vdbeaux.c,4912,FP,"sortFlags small flag bitmask, & well-defined",,med
+INT32-C,529,sqlite,src/vdbeaux.c,4915,FP,"rc is comparison result -1/0/+1, never INT_MIN",,high
+INT32-C,530,sqlite,src/vdbeaux.c,4923,FP,i bounded by pPKey2->nField (small field count),,high
+INT31-C,531,sqlite,src/vdbeaux.c,4927,FP,"d1>(unsigned)nKey1 explicit cast, bounded",,high
+API00-C,532,sqlite,src/vdbeaux.c,4950,FP,internal record-compare; caller contract guarantees valid OP_MakeRecord blob,,high
+EXP05-C,533,sqlite,src/vdbeaux.c,4980,FP,"(u8*)pKey1 cast used only for read in assert/indexing, no mutation",,med
+ARR30-C,534,sqlite,src/vdbeaux.c,4983,FP,"ONE_BYTE_INT reads aKey within record buffer with guaranteed >=74-byte padding, header<=63",,high
+EXP33-C,535,sqlite,src/vdbeaux.c,4984,FP,lhs assigned by ONE_BYTE_INT(aKey) on this line before use,,high
+ARR30-C,536,sqlite,src/vdbeaux.c,4988,FP,"TWO_BYTE_INT reads within padded buffer, safe by design",,high
+ARR30-C,537,sqlite,src/vdbeaux.c,4993,FP,"THREE_BYTE_INT reads within padded buffer, safe by design",,high
+ARR30-C,538,sqlite,src/vdbeaux.c,4998,FP,"FOUR_BYTE_UINT reads within padded buffer, safe by design",,high
+INT32-C,539,sqlite,src/vdbeaux.c,4999,FP,"line is lhs=(i64)*(int*)&y, a reinterpret cast not a multiplication",,high
+ARR30-C,540,sqlite,src/vdbeaux.c,5004,FP,FOUR_BYTE_UINT within padded buffer,,high
+ARR30-C,541,sqlite,src/vdbeaux.c,5004,FP,TWO_BYTE_INT within padded buffer,,high
+ARR37-C,542,sqlite,src/vdbeaux.c,5004,FP,aKey+2 arithmetic stays within padded record buffer,,high
+INT14-C,543,sqlite,src/vdbeaux.c,5004,FP,"aKey is pointer into record buffer; macro byte-OR vs pointer offset, intentional",,med
+INT14-C,544,sqlite,src/vdbeaux.c,5004,FP,"macro assembles integer from bytes via shift/or, intentional",,med
+ARR30-C,545,sqlite,src/vdbeaux.c,5009,FP,FOUR_BYTE_UINT(aKey) within padded buffer,,high
+ARR30-C,546,sqlite,src/vdbeaux.c,5010,FP,FOUR_BYTE_UINT(aKey+4) within padded buffer,,high
+ARR37-C,547,sqlite,src/vdbeaux.c,5010,FP,aKey+4 within padded record buffer,,high
+EXP33-C,548,sqlite,src/vdbeaux.c,5010,FP,x=FOUR_BYTE_UINT(aKey) at 5009 assigns x before use at 5010,,high
+INT14-C,549,sqlite,src/vdbeaux.c,5070,FP,"& at 5070 tests aMem[0].flags&MEM_Str, not bitwise on pPKey2",,high
+DCL03-C,550,sqlite,src/vdbeaux.c,5081,FP,"CORRUPT_DB is runtime global (sqlite3Config.neverCorrupt==0), not constant",,high
+INT13-C,551,sqlite,src/vdbeaux.c,5084,FP,"serial_type non-negative here (>=12 or positive signed-char), & well-defined",,med
+INT14-C,552,sqlite,src/vdbeaux.c,5084,FP,stylistic; serial_type arithmetic on validated serial type,,med
+INT31-C,553,sqlite,src/vdbeaux.c,5097,FP,"nCmp=MIN(pPKey2->n,nStr), non-negative lengths",,high
+INT32-C,554,sqlite,src/vdbeaux.c,5104,FP,nStr and pPKey2->n are bounded small string lengths,,high
+API00-C,555,sqlite,src/vdbeaux.c,5132,FP,internal find-compare; p->pKeyInfo asserted (5146),,high
+EXP34-C,556,sqlite,src/vdbeaux.c,5146,FP,p non-null by caller contract; aSortFlags asserted at 5146,,high
+INT13-C,557,sqlite,src/vdbeaux.c,5159,FP,"flags is MEM_* bitmask field, & well-defined",,med
+INT13-C,558,sqlite,src/vdbeaux.c,5163,FP,"flags bitmask, & well-defined",,med
+INT13-C,559,sqlite,src/vdbeaux.c,5164,FP,"flags bitmask, & well-defined",,med
+INT13-C,560,sqlite,src/vdbeaux.c,5165,FP,"flags bitmask, & well-defined",,med
+INT13-C,561,sqlite,src/vdbeaux.c,5166,FP,"flags bitmask, & well-defined",,med
+INT13-C,562,sqlite,src/vdbeaux.c,5169,FP,"flags bitmask, & well-defined",,med
+API00-C,563,sqlite,src/vdbeaux.c,5187,FP,"db is allocator handle to MemInit, NULL-tolerant, caller contract",,high
+API00-C,564,sqlite,src/vdbeaux.c,5187,FP,pCur asserted valid via sqlite3BtreeCursorIsValid (5200),,high
+API00-C,565,sqlite,src/vdbeaux.c,5187,FP,"rowid is out-param written on success, caller contract",,high
+EXP33-C,566,sqlite,src/vdbeaux.c,5212,FP,getVarint32NR assigns szHdr before use,,high
+EXP33-C,567,sqlite,src/vdbeaux.c,5223,FP,getVarint32NR assigns typeRowid before use,,high
+ARR30-C,568,sqlite,src/vdbeaux.c,5235,FP,typeRowid validated 1-9 (5232) before indexing 128-entry array,,high
+MSC07-C,569,sqlite,src/vdbeaux.c,5249,FP,"line 5249 is goto label idx_rowid_corruption, reachable via goto",,high
+API00-C,570,sqlite,src/vdbeaux.c,5266,FP,"internal; db allocator handle, caller contract",,high
+API00-C,571,sqlite,src/vdbeaux.c,5266,FP,pC asserted eCurType==CURTYPE_BTREE and cursor valid (5277-5279),,high
+API00-C,572,sqlite,src/vdbeaux.c,5266,FP,"pUnpacked passed through to record-compare, caller contract",,high
+API00-C,573,sqlite,src/vdbeaux.c,5266,FP,"res out-param written, caller contract",,high
+DCL13-C,574,sqlite,src/vdbeaux.c,5268,TP,"pC only read (eCurType, uc.pCursor); const VdbeCursor* would compile",,med
+API00-C,575,sqlite,src/vdbeaux.c,5301,FP,"db validated via assert(sqlite3_mutex_held(db->mutex)), caller contract",,high
+API00-C,576,sqlite,src/vdbeaux.c,5333,FP,"iCode is internal advisory code (1/2), bounded",,high
+INT32-C,577,sqlite,src/vdbeaux.c,5336,FP,"iCode is small constant 1/2, no overflow",,high
+DCL13-C,578,sqlite,src/vdbeaux.c,5343,TP,sqlite3VdbeDb only reads v->db; const Vdbe* would compile,,med
+API00-C,579,sqlite,src/vdbeaux.c,5350,FP,"internal accessor, caller contract guarantees v",,high
+DCL13-C,580,sqlite,src/vdbeaux.c,5350,TP,sqlite3VdbePrepareFlags only reads v->prepFlags; const Vdbe* compiles,,med
+API00-C,581,sqlite,src/vdbeaux.c,5362,FP,function explicitly guards with if(v) at line 5364,,high
+API00-C,582,sqlite,src/vdbeaux.c,5362,FP,"assert(iVar>0), iVar bounded by bound-parameter count",,high
+DCL13-C,583,sqlite,src/vdbeaux.c,5362,TP,v read-only through const-valid member access (writes go through pMem element pointer),,med
+INT32-C,584,sqlite,src/vdbeaux.c,5365,FP,"assert(iVar>0) so iVar>=1, no underflow",,high
+API00-C,585,sqlite,src/vdbeaux.c,5385,FP,"internal, caller contract guarantees v",,high
+API00-C,586,sqlite,src/vdbeaux.c,5385,FP,"assert(iVar>0), iVar bounded",,high
+INT14-C,587,sqlite,src/vdbeaux.c,5392,FP,iVar arithmetic/shift; values bounded <32 in else branch,,med
+INT32-C,588,sqlite,src/vdbeaux.c,5392,FP,assert(iVar>0) and iVar<32 in this branch,,high
+INT34-C,589,sqlite,src/vdbeaux.c,5392,FP,"guarded by if(iVar>=32) else, shift amount in [0,30], valid",,high
+API00-C,590,sqlite,src/vdbeaux.c,5438,FP,"debug-only Walker callback, caller passes valid pWalker",,high
+API00-C,591,sqlite,src/vdbeaux.c,5438,FP,"debug-only callback, pExpr non-null by walker contract",,high
+DCL13-C,592,sqlite,src/vdbeaux.c,5438,FP,signature fixed by xExprCallback function-pointer typedef,,high
+DCL13-C,593,sqlite,src/vdbeaux.c,5438,FP,"signature fixed by xExprCallback typedef int(*)(Walker*,Expr*)",,high
+API00-C,594,sqlite,src/vdbeaux.c,5452,FP,"internal; p->db deref, caller contract",,high
+API00-C,595,sqlite,src/vdbeaux.c,5452,FP,pVtab->zErrMsg checked before use,,high
+MEM30-C,596,sqlite,src/vdbeaux.c,5456,FP,"db is connection/allocator handle, not freed; only p->zErrMsg freed",,high
+API00-C,597,sqlite,src/vdbeaux.c,5493,FP,"internal; v->db deref, caller contract",,high
+API00-C,598,sqlite,src/vdbeaux.c,5493,FP,pCsr asserted non-null (5531) and eCurType (5532),,high
+API00-C,599,sqlite,src/vdbeaux.c,5493,FP,"zDb passed to callback, caller contract",,high
+API00-C,600,sqlite,src/vdbeaux.c,5493,FP,"pTab deref for zName, caller-guaranteed non-null",,high
+DCL13-C,601,sqlite,src/vdbeaux.c,5494,FP,v is stored into non-const field preupdate.v,,high
+DCL13-C,602,sqlite,src/vdbeaux.c,5495,FP,pCsr is stored into non-const field preupdate.pCsr,,high
+EXP34-C,603,sqlite,src/vdbeaux.c,5506,FP,pTab caller-guaranteed non-null (modified table always present),,med
+ARR00-C,604,sqlite,src/vdbeaux.c,5525,FP,"iReg is codegen-emitted register index, guaranteed valid by VDBE",,med
+ARR30-C,605,sqlite,src/vdbeaux.c,5525,FP,"iReg bounded by VDBE register allocation, internal codegen invariant",,med
+MEM30-C,606,sqlite,src/vdbeaux.c,5555,FP,"db is allocator handle to sqlite3DbFree, not a freed object",,high
+MEM30-C,607,sqlite,src/vdbeaux.c,5555,FP,"pKeyinfo points to stack &preupdate.uKey, never freed",,high
+MEM30-C,608,sqlite,src/vdbeaux.c,5555,FP,"pKeyinfo is &preupdate.uKey (stack), live throughout",,high
+MEM30-C,609,sqlite,src/vdbeaux.c,5556,FP,"db is allocator handle, not freed",,high
+MEM30-C,610,sqlite,src/vdbeaux.c,5556,FP,pKeyinfo is live stack member &preupdate.uKey,,high
+MEM30-C,611,sqlite,src/vdbeaux.c,5556,FP,pKeyinfo never freed (stack-embedded),,high
+MEM30-C,612,sqlite,src/vdbeaux.c,5557,FP,"sqlite3VdbeMemRelease frees internal allocs of live stack Mem, not a freed pointer",,high
+MEM30-C,613,sqlite,src/vdbeaux.c,5558,FP,"aNew elements released then array freed in correct order, no UAF",,high
+MEM30-C,614,sqlite,src/vdbeaux.c,5561,FP,"aNew[i] released before array free at 5563, correct order",,high
+MEM30-C,615,sqlite,src/vdbeaux.c,5563,FP,"db is allocator handle, not freed",,high
+MEM30-C,616,sqlite,src/vdbeaux.c,5565,FP,apDflt elements freed then array freed in correct order,,high
+MEM30-C,617,sqlite,src/vdbeaux.c,5568,FP,"apDflt[i] freed before array free at 5570, correct order",,high
+MEM30-C,618,sqlite,src/vdbeaux.c,5570,FP,"db is allocator handle, not freed",,high
+API00-C,619,sqlite,src/vdbeaux.c,5579,FP,assert(pCtx!=0) at line 5580 immediately validates,,high

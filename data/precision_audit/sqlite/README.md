@@ -1038,3 +1038,48 @@ unless it is exactly 4 or 5**; every integer config value (`pgsz`/`hashsize`/`au
 with output always shorter than input (no overflow). sqc emitting nothing real here is a true negative.
 
 sqlite coverage **70/220 (31.8%)** — 70 files audited; 7 FNs.
+
+---
+
+## File-at-a-time — vdbeaux.c (2026-06-12, run #40, HIGH-effort): the largest remaining core file, 0 semantic TP
+
+`adjudication_sqlite_vdbeaux.csv` — `src/vdbeaux.c` (the VDBE prep / op-array build / P4 management /
+serialize-record / record-compare / finalize / preupdate-hook code, 5584 lines), the **largest remaining
+in-scope file** at **620 raw -> 560 distinct findings**. Adjudicated via 7 parallel line-range reviewers
+(each reading the full enclosing functions + struct/macro defs) plus an FN-hunt over every range.
+
+**36 TP / 584 FP / 0 uncertain / 0 FN** (raw; 38 TP / 522 FP distinct after dedup against prior MEM30/
+DCL13 increments that had already labeled some vdbeaux sites). Bifurcation holds, hard: **every one of the
+36 TP is a declaration/macro/portability finding — 0 semantic TP across 620 findings.** TP breakdown:
+**DCL13 x23** (read-only pointer params that could take `const`: `sqlite3VdbeGetOp`, `VdbeEnter`/`vdbeLeave`,
+`VdbeDisplayP4`, `VdbeFrameIsValid`, `VdbeDb`, `VdbePrepareFlags`, the various `Verify*`/`CurrentAddr`/
+`TransferError`/scan-status accessors, …), **PRE00 x4 + PRE12 x4** (the `ONE/TWO/THREE/FOUR_BYTE_INT/UINT`
+deserialization macros textually re-evaluate their byte-pointer argument), **DCL03 x3** (`assert(sizeof(x)==8 …)`
+and the `sizeof(UnpackedRecord)+sizeof(Mem)*65536 < 0x7fffffff` invariant — pure constant expressions that
+`static_assert` would express better), **EXP05 x1** (`(char*)buf` drops `const` off the decode cursor before
+storing into `pMem->z`), **EXP45 x1** (`(pKeyInfo = pPKey2->pKeyInfo)->nAllField` embedded assignment in an
+`if` controlling expression).
+
+The semantic FP classes are the now-familiar ones, here at scale: **MEM30** misreads the allocator handle
+`db` threaded into `sqlite3DbFree(db, member)` as the freed object (the entire `freeP4`/`sqlite3VdbeClearObject`/
+`vdbeFreeUnpacked` cleanup surface), and reads the live `pOp` program counter / loop-head list nodes / stack-
+embedded `preupdate.uKey` as freed; **INT30/31/32/13/14** fires on opcode/register/cursor/scan counts that are
+structurally bounded by `SQLITE_LIMIT_VDBE_OP` / `SQLITE_MAX_COLUMN` / the 64-bit-widened `(i64)` doublings, and
+on the serial-type byte-merge macros (non-negative, bounded); **API00/EXP33/EXP34** on internal routines whose
+pointer params are non-null by caller contract or already getVarint32-initialized; **ARR00/30/37** on the
+`aMem` register-array slice and the record-decode `aKey` cursor (a buffer pointer, not a 1-element array);
+**EXP36** on `sizeof(*p)` / `(char*)p` reinterprets; **DCL15** on `sqlite3`-prefixed cross-file exports.
+
+### FN-hunt: clean (0 FN) — the record codec is the attack surface and it is fully guarded
+
+The realistic injection point is the on-disk **record decode/compare** path (`VdbeRecordUnpack`,
+`sqlite3VdbeRecordCompareWithSkip`, `vdbeRecordDecodeInt`, `serialGet`): every serial-type byte read is
+bounded by the header length with explicit `CORRUPT_DB` guards, the `vdbeRecordCompareInt`/`String` fast
+paths rely on the documented `>=74`-byte record-buffer padding, all `memcmp` lengths are `MIN()`-clamped,
+the rowid varint at `szHdr-1` is reached only after `szHdr>=3`, and `typeRowid` is validated `1..9` before
+the `SmallTypeSizes[]` lookup. The realloc-grow paths (`growOpArray`, label/sub-program arrays, scan-status)
+all NULL-check before the next deref. sqc emitting no real bug here is a true negative.
+
+sqlite coverage **71/220 (32.3%)** — 71 files audited; 7 FNs. The single largest file in the corpus is now
+done, and the found-semantic-TP count stays at **2** (both in fts5_index raw-decode); no core-engine file
+(btree/vdbe/vdbeaux/where) has yielded a semantic TP.
