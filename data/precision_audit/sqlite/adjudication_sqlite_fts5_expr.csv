@@ -1,0 +1,373 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,ext/fts5/fts5_expr.c,96,TP,Fts5NodeIsString(p) expands (p)->eType twice; genuine multi-eval function-like macro,,high
+PRE12-C,1,sqlite,ext/fts5/fts5_expr.c,96,TP,parameter p evaluated twice in macro body,,high
+PRE00-C,2,sqlite,ext/fts5/fts5_expr.c,102,TP,"fts5ExprNodeNext(a,b,c,d) expands (b) twice; genuine multi-eval macro",,high
+PRE12-C,3,sqlite,ext/fts5/fts5_expr.c,102,TP,parameter b evaluated twice in macro body,,high
+DCL13-C,4,sqlite,ext/fts5/fts5_expr.c,166,TP,p only read (eType/iHeight/nChild/apChild); recursion passes child pointer not p,,high
+MEM05-C,5,sqlite,ext/fts5/fts5_expr.c,166,FP,assert_expr_depth_ok is NDEBUG-only and recurses over tree capped at SQLITE_FTS5_MAX_EXPR_DEPTH=256,,high
+MSC04-C,6,sqlite,ext/fts5/fts5_expr.c,166,TP,assert_expr_depth_ok recurses on apChild at line 176,,high
+ARR00-C,7,sqlite,ext/fts5/fts5_expr.c,173,FP,ii initialized in for-loop bounded by p->nChild; NDEBUG-only assert; false uninitialized claim,,high
+API00-C,8,sqlite,ext/fts5/fts5_expr.c,186,FP,"internal; pParse is Fts5Parse* owned by parser, always valid; rc-state trusted",,high
+STR34-C,9,sqlite,ext/fts5/fts5_expr.c,209,FP,"const char *z = *pz is a pointer (char*) assignment, not a char value widened",,high
+CON43-C,10,sqlite,ext/fts5/fts5_expr.c,217,FP,switch(*z) single-threaded string parse; not a concurrent double-fetch,,high
+ARR37-C,11,sqlite,ext/fts5/fts5_expr.c,234,FP,z2 walks nul-terminated query string with '\0' sentinel termination,,high
+STR34-C,12,sqlite,ext/fts5/fts5_expr.c,234,FP,"z2[0]=='\' is char==ASCII compare; message about *z[1] misreads pointer arithmetic""",,high
+STR34-C,13,sqlite,ext/fts5/fts5_expr.c,234,FP,"pointer-walk loop, no char widened into index/size",,high
+ARR37-C,14,sqlite,ext/fts5/fts5_expr.c,235,FP,z2[0] read of nul-terminated string scan; sentinel-bounded,,high
+EXP34-C,15,sqlite,ext/fts5/fts5_expr.c,235,FP,"z2 walks nul-terminated string from &z[1]; valid pointer, loop exits on \0",,high
+ARR37-C,16,sqlite,ext/fts5/fts5_expr.c,236,FP,z2++ in quoted-string scan terminated by '\0' check,,high
+ARR37-C,17,sqlite,ext/fts5/fts5_expr.c,237,FP,z2[0] read after ++ still before '\0' check; sentinel-bounded,,high
+ARR37-C,18,sqlite,ext/fts5/fts5_expr.c,239,FP,z2[0]=='\0' is the terminating sentinel check itself,,high
+ARR37-C,19,sqlite,ext/fts5/fts5_expr.c,255,FP,bareword scan z2++ bounded by IsBareword predicate over nul-terminated string,,high
+STR34-C,20,sqlite,ext/fts5/fts5_expr.c,255,FP,*z2 passed to bareword classifier in loop cond; not widened into index/size,,high
+STR34-C,21,sqlite,ext/fts5/fts5_expr.c,255,FP,"pointer increment loop, no sign-extension into larger type",,high
+MEM33-C,22,sqlite,ext/fts5/fts5_expr.c,264,FP,"line is *pz=&pToken->p[pToken->n] pointer arithmetic into token buffer, no flexible-array struct assignment",,high
+STR34-C,23,sqlite,ext/fts5/fts5_expr.c,264,FP,"*pz = &pToken->p[...] is a pointer assignment, not a char value",,high
+API00-C,24,sqlite,ext/fts5/fts5_expr.c,271,FP,sqlite3Fts5ExprNew pConfig from internal caller (fts5_main); object always valid,,high
+API00-C,25,sqlite,ext/fts5/fts5_expr.c,271,FP,"ppNew is OUT pointer, written *ppNew=0; internal caller passes &expr",,high
+API00-C,26,sqlite,ext/fts5/fts5_expr.c,271,FP,"pzErr is OUT pointer, written *pzErr=0; internal caller passes valid addr",,high
+DCL13-C,27,sqlite,ext/fts5/fts5_expr.c,272,FP,"pConfig stored into non-const fields (pNew->pConfig, sParse.pConfig); const would break",,med
+STR34-C,28,sqlite,ext/fts5/fts5_expr.c,287,FP,*pzErr = 0 assigns NULL to a char*; pointer not char,,high
+FIO34-C,29,sqlite,ext/fts5/fts5_expr.c,294,FP,"FTS5_EOF is a token constant (0) for string parse, not stdio EOF; no file I/O",,high
+EXP34-C,30,sqlite,ext/fts5/fts5_expr.c,305,FP,pConfig is required non-null config param supplied by FTS5 core; invariant,,high
+MEM30-C,31,sqlite,ext/fts5/fts5_expr.c,336,FP,sParse.zErr is a stack struct member never freed; transferred to *pzErr or freed once,,high
+STR34-C,32,sqlite,ext/fts5/fts5_expr.c,336,FP,"*pzErr = sParse.zErr is a char* assignment, not a char widening",,high
+MEM12-C,33,sqlite,ext/fts5/fts5_expr.c,340,FP,no leak: *ppNew is output ownership transfer; apPhrase/zErr/pExpr/pEngine all handled,,high
+MEM30-C,34,sqlite,ext/fts5/fts5_expr.c,340,FP,sParse.rc is a stack int return value not a freed pointer,,high
+STR00-C,35,sqlite,ext/fts5/fts5_expr.c,351,TP,plain char z[ii] used in bitwise & 0xC0; genuine plain-char-in-bitop pattern (benign here but matches rule),,med
+API00-C,36,sqlite,ext/fts5/fts5_expr.c,364,FP,ExprPattern pConfig internal trigram caller; valid config object,,high
+API00-C,37,sqlite,ext/fts5/fts5_expr.c,364,FP,pp is OUT pointer set by caller; internal,,high
+INT32-C,38,sqlite,ext/fts5/fts5_expr.c,409,FP,i is query-text index bounded by nText (SQLite max length); i+1 cannot overflow in practice,,high
+API00-C,39,sqlite,ext/fts5/fts5_expr.c,435,FP,ParseNodeFree guards with if(p); NULL-safe by design,,high
+MEM05-C,40,sqlite,ext/fts5/fts5_expr.c,435,FP,sqlite3Fts5ParseNodeFree recurses over tree capped at depth 256 (line 2438),,high
+MSC04-C,41,sqlite,ext/fts5/fts5_expr.c,435,TP,sqlite3Fts5ParseNodeFree recurses on apChild at line 439,,high
+API00-C,42,sqlite,ext/fts5/fts5_expr.c,449,FP,ExprFree guards with if(p); NULL-safe by design,,high
+INT32-C,43,sqlite,ext/fts5/fts5_expr.c,463,FP,nPhrase is bounded parser counter (per-query phrase count); sum far below INT_MAX; alloc fails first,,high
+INT30-C,44,sqlite,ext/fts5/fts5_expr.c,470,FP,nPhrase*sizeof done by sqlite3_realloc (size_t); nPhrase small bounded counter,,high
+ARR37-C,45,sqlite,ext/fts5/fts5_expr.c,476,FP,ap[p2->nPhrase] within realloc'd nPhrase-element buffer,,high
+ARR38-C,46,sqlite,ext/fts5/fts5_expr.c,476,FP,ap realloc'd to nPhrase=p1+p2 elems; memmove of p1->nPhrase to offset p2->nPhrase within bounds,,high
+EXP33-C,47,sqlite,ext/fts5/fts5_expr.c,476,FP,ap is realloc result checked !=0; memmove reads initialized p1->apExprPhrase data,,high
+INT30-C,48,sqlite,ext/fts5/fts5_expr.c,476,FP,"same memmove size; nPhrase bounded, no wrap",,high
+INT32-C,49,sqlite,ext/fts5/fts5_expr.c,476,FP,"memmove size p1->nPhrase*sizeof; bounded parser counter, allocated buffer just realloc'd",,high
+ARR37-C,50,sqlite,ext/fts5/fts5_expr.c,478,FP,"ap[i], i<p2->nPhrase <= nPhrase; within realloc'd buffer",,high
+DCL13-C,51,sqlite,ext/fts5/fts5_expr.c,497,TP,"pTerm only read; loop walks p=pTerm->pSynonym, no writes through pTerm",,high
+DCL13-C,52,sqlite,ext/fts5/fts5_expr.c,523,TP,pTerm only read in synonym-list walk; not modified,,high
+INT30-C,53,sqlite,ext/fts5/fts5_expr.c,541,FP,"nByte is i64; sizeof*nAlloc*2 in 64-bit; nAlloc grows from 4 by doubling, synonym count bounded",,high
+ARR38-C,54,sqlite,ext/fts5/fts5_expr.c,547,FP,aNew sized nAlloc*2; memcpy nIter==nAlloc < nAlloc*2 elements; within bounds,,high
+EXP43-C,55,sqlite,ext/fts5/fts5_expr.c,547,FP,aNew is fresh malloc64; aIter is distinct old buffer; no overlap,,high
+INT30-C,56,sqlite,ext/fts5/fts5_expr.c,547,FP,same; computed in i64,,high
+INT32-C,57,sqlite,ext/fts5/fts5_expr.c,547,FP,memcpy size i64 sizeof*nIter; nIter bounded synonym count,,high
+INT32-C,58,sqlite,ext/fts5/fts5_expr.c,548,FP,nAlloc*2 doubling of small synonym-iter capacity; cannot reach INT_MAX,,high
+ARR00-C,59,sqlite,ext/fts5/fts5_expr.c,552,FP,aIter reassigned to aNew after old buffer freed; not UAF; aIter[nIter] valid,,high
+MEM30-C,60,sqlite,ext/fts5/fts5_expr.c,552,FP,aIter live; only free at 549 is followed by aIter=aNew reassignment (free-then-reassign),,high
+MEM30-C,61,sqlite,ext/fts5/fts5_expr.c,552,FP,aIter reassigned to aNew at 550 after free; use is on live buffer,,high
+MEM30-C,62,sqlite,ext/fts5/fts5_expr.c,552,FP,aStatic never freed; aIter points to live realloc target,,high
+ARR00-C,63,sqlite,ext/fts5/fts5_expr.c,553,FP,aIter points at live aNew; free was of prior buffer; not UAF,,high
+MEM30-C,64,sqlite,ext/fts5/fts5_expr.c,553,FP,aIter live after reassignment to aNew,,high
+MEM30-C,65,sqlite,ext/fts5/fts5_expr.c,553,FP,free-then-reassign; aIter=aNew at 550,,high
+ARR00-C,66,sqlite,ext/fts5/fts5_expr.c,559,FP,aIter[0] read on live buffer; no UAF,,high
+MEM30-C,67,sqlite,ext/fts5/fts5_expr.c,559,FP,aIter is live aStatic or reassigned aNew; no use-after-free,,high
+MEM30-C,68,sqlite,ext/fts5/fts5_expr.c,559,FP,free-then-reassign idiom,,high
+ARR00-C,69,sqlite,ext/fts5/fts5_expr.c,560,FP,aIter[0].n read on live buffer; no UAF,,high
+MEM30-C,70,sqlite,ext/fts5/fts5_expr.c,560,FP,aIter live; only stale pointer was old aIter freed at 549 before reassignment,,high
+MEM30-C,71,sqlite,ext/fts5/fts5_expr.c,560,FP,free-then-reassign idiom,,high
+ARR00-C,72,sqlite,ext/fts5/fts5_expr.c,569,FP,aIter[i] i<nIter on live buffer; not UAF,,high
+ARR30-C,73,sqlite,ext/fts5/fts5_expr.c,569,FP,"i bounded by i<nIter, nIter<=nAlloc allocation count",,high
+MEM30-C,74,sqlite,ext/fts5/fts5_expr.c,569,FP,aIter live throughout loop; reassigned on grow,,high
+MEM30-C,75,sqlite,ext/fts5/fts5_expr.c,569,FP,free-then-reassign idiom,,high
+ARR00-C,76,sqlite,ext/fts5/fts5_expr.c,570,FP,aIter[i] live buffer; not UAF,,high
+ARR30-C,77,sqlite,ext/fts5/fts5_expr.c,570,FP,i<nIter bounded by allocation count,,high
+MEM30-C,78,sqlite,ext/fts5/fts5_expr.c,570,FP,aIter live; no dereference of freed pointer,,high
+MEM30-C,79,sqlite,ext/fts5/fts5_expr.c,570,FP,free-then-reassign idiom,,high
+ARR00-C,80,sqlite,ext/fts5/fts5_expr.c,571,FP,aIter[i] live buffer; not UAF,,high
+ARR30-C,81,sqlite,ext/fts5/fts5_expr.c,571,FP,i<nIter bounded by allocation count,,high
+MEM30-C,82,sqlite,ext/fts5/fts5_expr.c,571,FP,&aIter[i] passed is live buffer,,high
+MEM30-C,83,sqlite,ext/fts5/fts5_expr.c,571,FP,aIter dereference on live buffer,,high
+MEM30-C,84,sqlite,ext/fts5/fts5_expr.c,571,FP,free-then-reassign idiom,,high
+ARR00-C,85,sqlite,ext/fts5/fts5_expr.c,573,FP,aIter[i] live buffer; not UAF,,high
+ARR30-C,86,sqlite,ext/fts5/fts5_expr.c,573,FP,i<nIter bounded by allocation count,,high
+MEM30-C,87,sqlite,ext/fts5/fts5_expr.c,573,FP,aIter live,,high
+MEM30-C,88,sqlite,ext/fts5/fts5_expr.c,573,FP,free-then-reassign idiom,,high
+ARR00-C,89,sqlite,ext/fts5/fts5_expr.c,574,FP,aIter[i] live buffer; not UAF,,high
+ARR30-C,90,sqlite,ext/fts5/fts5_expr.c,574,FP,i<nIter bounded by allocation count,,high
+MEM30-C,91,sqlite,ext/fts5/fts5_expr.c,574,FP,aIter live,,high
+MEM30-C,92,sqlite,ext/fts5/fts5_expr.c,574,FP,free-then-reassign idiom,,high
+MEM30-C,93,sqlite,ext/fts5/fts5_expr.c,579,FP,iMin is an i64 value not a freed pointer; passed by value to writer append,,high
+MEM30-C,94,sqlite,ext/fts5/fts5_expr.c,589,FP,"aStatic never freed; single sqlite3_free(aIter) on heap path only, no double-free",,high
+DCL13-C,95,sqlite,ext/fts5/fts5_expr.c,606,TP,pNode only read (pNode->iRowid); writes go to pPhrase poslist not pNode,,high
+INT30-C,96,sqlite,ext/fts5/fts5_expr.c,622,FP,nByte i64 = sizeof*pPhrase->nTerm; nTerm bounded parser counter; 64-bit mul,,high
+ARR38-C,97,sqlite,ext/fts5/fts5_expr.c,626,FP,memset of aIter sized for pPhrase->nTerm; matches allocation,,high
+INT30-C,98,sqlite,ext/fts5/fts5_expr.c,626,FP,same; i64,,high
+INT32-C,99,sqlite,ext/fts5/fts5_expr.c,626,FP,memset size same i64 product; bounded nTerm,,high
+ARR30-C,100,sqlite,ext/fts5/fts5_expr.c,646,FP,aIter[i] i<pPhrase->nTerm; aIter sized nTerm,,high
+MEM30-C,101,sqlite,ext/fts5/fts5_expr.c,646,FP,aIter freed only at 685 after all uses; 646 precedes free on same path,,high
+ARR30-C,102,sqlite,ext/fts5/fts5_expr.c,647,FP,aIter[i] i<pPhrase->nTerm bounded,,high
+ARR30-C,103,sqlite,ext/fts5/fts5_expr.c,648,FP,aIter[i] i<pPhrase->nTerm bounded,,high
+ARR30-C,104,sqlite,ext/fts5/fts5_expr.c,657,FP,aIter[i] i<pPhrase->nTerm bounded,,high
+ARR30-C,105,sqlite,ext/fts5/fts5_expr.c,676,FP,aIter[i] i<pPhrase->nTerm bounded,,high
+ARR30-C,106,sqlite,ext/fts5/fts5_expr.c,683,FP,aIter[i] i<pPhrase->nTerm bounded,,high
+ARR30-C,107,sqlite,ext/fts5/fts5_expr.c,683,FP,aIter[i].a free in cleanup loop i<nTerm bounded,,high
+MEM30-C,108,sqlite,ext/fts5/fts5_expr.c,683,FP,aIter[i].a freed inside cleanup loop; not used after its own free,,high
+DCL13-C,109,sqlite,ext/fts5/fts5_expr.c,743,FP,poslist buffers mutated through pNear->apPhrase[i]->poslist; const would be a lie,,high
+MSC37-C,110,sqlite,ext/fts5/fts5_expr.c,743,FP,all paths return: early return 0 and ismatch_out block returns bRet; loop only exits via goto,,high
+INT30-C,111,sqlite,ext/fts5/fts5_expr.c,757,FP,nByte i64 = sizeof*pNear->nPhrase; bounded phrase count; 64-bit,,high
+ARR30-C,112,sqlite,ext/fts5/fts5_expr.c,777,FP,a[i] i<pNear->nPhrase; a sized nPhrase (or aStatic[4] when <=4),,high
+ARR30-C,113,sqlite,ext/fts5/fts5_expr.c,779,FP,a[i] i<pNear->nPhrase bounded,,high
+ARR30-C,114,sqlite,ext/fts5/fts5_expr.c,793,FP,a[i] i<pNear->nPhrase bounded,,high
+ARR30-C,115,sqlite,ext/fts5/fts5_expr.c,807,FP,a[i] i<pNear->nPhrase bounded,,high
+ARR30-C,116,sqlite,ext/fts5/fts5_expr.c,808,FP,a[i] i<pNear->nPhrase bounded,,high
+ARR30-C,117,sqlite,ext/fts5/fts5_expr.c,809,FP,a[i] i<pNear->nPhrase bounded,,high
+ARR30-C,118,sqlite,ext/fts5/fts5_expr.c,810,FP,a[i] i<pNear->nPhrase bounded,,high
+ARR30-C,119,sqlite,ext/fts5/fts5_expr.c,817,FP,a[i] i<pNear->nPhrase bounded,,high
+ARR30-C,120,sqlite,ext/fts5/fts5_expr.c,818,FP,a[i] i<pNear->nPhrase bounded,,high
+ARR30-C,121,sqlite,ext/fts5/fts5_expr.c,822,FP,"a[iAdv]; iAdv set within i<nPhrase loop, default 0; bounded",,high
+DCL13-C,122,sqlite,ext/fts5/fts5_expr.c,900,TP,pExpr only read (pConfig->eDetail); mutations target pNode/pNear not pExpr,,high
+DCL13-C,123,sqlite,ext/fts5/fts5_expr.c,958,TP,"pExpr struct only read; pExpr->pIndex passed by value to query, struct unmodified",,med
+DCL13-C,124,sqlite,ext/fts5/fts5_expr.c,1020,TP,pExpr only read (pExpr->bDesc) in fts5RowidCmp,,high
+MEM05-C,125,sqlite,ext/fts5/fts5_expr.c,1034,FP,fts5ExprSetEof recurses over tree capped at depth 256,,high
+MSC04-C,126,sqlite,ext/fts5/fts5_expr.c,1034,TP,fts5ExprSetEof recurses on apChild at line 1039,,high
+DCL13-C,127,sqlite,ext/fts5/fts5_expr.c,1043,FP,writes pPhrase->poslist.n=0 through pNode->pNear; const would break,,high
+MEM05-C,128,sqlite,ext/fts5/fts5_expr.c,1043,FP,fts5ExprNodeZeroPoslist recurses over tree capped at depth 256,,high
+MSC04-C,129,sqlite,ext/fts5/fts5_expr.c,1043,TP,fts5ExprNodeZeroPoslist recurses on apChild at line 1054,,high
+DCL13-C,130,sqlite,ext/fts5/fts5_expr.c,1076,TP,p2 only read (bEof/iRowid); not modified,,high
+DCL13-C,131,sqlite,ext/fts5/fts5_expr.c,1230,TP,pExpr only read (pConfig->eDetail); writes target pNode not pExpr,,high
+ARR00-C,132,sqlite,ext/fts5/fts5_expr.c,1345,FP,iChild initialized in for-loop bounded by pAnd->nChild; false uninitialized claim,,high
+MEM05-C,133,sqlite,ext/fts5/fts5_expr.c,1493,FP,fts5ExprNodeFirst recurses over tree capped at depth 256,,high
+MSC04-C,134,sqlite,ext/fts5/fts5_expr.c,1493,TP,fts5ExprNodeFirst recurses on apChild at line 1508,,high
+INT32-C,135,sqlite,ext/fts5/fts5_expr.c,1510,FP,nEof += bEof where bEof asserted 0 or 1; sum bounded by nChild,,high
+API00-C,136,sqlite,ext/fts5/fts5_expr.c,1552,FP,ExprFirst p is Fts5Expr* from sqlite3Fts5ExprNew; internal caller guarantees,,high
+API00-C,137,sqlite,ext/fts5/fts5_expr.c,1552,FP,pIdx Fts5Index* from internal storage layer; valid,,high
+DCL13-C,138,sqlite,ext/fts5/fts5_expr.c,1554,FP,pIdx stored into non-const p->pIndex then used to mutate; const breaks assignment,,high
+API00-C,139,sqlite,ext/fts5/fts5_expr.c,1592,FP,ExprNext p validated by asserts on pRoot; internal caller after First,,high
+API00-C,140,sqlite,ext/fts5/fts5_expr.c,1606,FP,"ExprEof p->pRoot accessed; internal, valid expr object",,high
+DCL13-C,141,sqlite,ext/fts5/fts5_expr.c,1606,TP,p only read (p->pRoot->bEof),,high
+API00-C,142,sqlite,ext/fts5/fts5_expr.c,1610,FP,"ExprRowid p->pRoot accessed; internal, valid expr object",,high
+DCL13-C,143,sqlite,ext/fts5/fts5_expr.c,1610,TP,p only read (p->pRoot->iRowid),,high
+DCL13-C,144,sqlite,ext/fts5/fts5_expr.c,1614,TP,"pToken only read (pToken->p, pToken->n) for strndup",,high
+STR34-C,145,sqlite,ext/fts5/fts5_expr.c,1616,FP,"*pz = sqlite3Fts5Strndup(...) is a char* assignment, not a char widening",,high
+EXP33-C,146,sqlite,ext/fts5/fts5_expr.c,1628,FP,pNext assigned (pNext=pSyn->pSynonym) at loop-body top before use in increment,,high
+MEM30-C,147,sqlite,ext/fts5/fts5_expr.c,1631,FP,pTerm->pIter closed inside free routine fts5ExprPhraseFree; teardown not use-after-free,,high
+MEM30-C,148,sqlite,ext/fts5/fts5_expr.c,1632,FP,pTerm->pSynonym iterated during struct teardown; freeing members then struct,,high
+API00-C,149,sqlite,ext/fts5/fts5_expr.c,1648,FP,ParseSetCaret guards with if(pPhrase && ..); NULL-safe,,high
+API00-C,150,sqlite,ext/fts5/fts5_expr.c,1662,FP,ParseNearset pParse internal parser ctx; guarded by rc==OK,,high
+API00-C,151,sqlite,ext/fts5/fts5_expr.c,1662,FP,"pNear may be NULL by contract, handled (if pNear==0 branch)",,high
+API00-C,152,sqlite,ext/fts5/fts5_expr.c,1662,FP,pPhrase from parser; handled within rc-guarded block,,high
+INT31-C,153,sqlite,ext/fts5/fts5_expr.c,1678,FP,nByte is i64 from SZ_FTS5EXPRNEARSET(SZALLOC+1)=constant small positive; cast to size_t benign,,high
+INT32-C,154,sqlite,ext/fts5/fts5_expr.c,1681,FP,nNew = nPhrase+SZALLOC(8); nPhrase bounded parser counter,,high
+INT32-C,155,sqlite,ext/fts5/fts5_expr.c,1684,FP,nNew+1 small bounded; feeds i64 SZ macro,,high
+INT32-C,156,sqlite,ext/fts5/fts5_expr.c,1700,FP,nPhrase-1 with assert nPhrase>=2; bounded,,high
+INT32-C,157,sqlite,ext/fts5/fts5_expr.c,1707,FP,"nPhrase-- guarded, nPhrase>0 (just decremented from >=2)",,high
+INT32-C,158,sqlite,ext/fts5/fts5_expr.c,1708,FP,pParse->nPhrase-- bounded positive parser counter,,high
+INT32-C,159,sqlite,ext/fts5/fts5_expr.c,1712,FP,nPhrase-2 with assert nPhrase>=2,,high
+INT32-C,160,sqlite,ext/fts5/fts5_expr.c,1713,FP,nPhrase-- bounded positive,,high
+INT32-C,161,sqlite,ext/fts5/fts5_expr.c,1714,FP,nPhrase-- bounded positive,,high
+MEM30-C,162,sqlite,ext/fts5/fts5_expr.c,1714,FP,pRet is realloc64 result (realloc-reassign); pNear is the old freed pointer not pRet,,high
+INT32-C,163,sqlite,ext/fts5/fts5_expr.c,1717,FP,nPhrase++ bounded by query length; alloc fails long before INT_MAX,,high
+MEM30-C,164,sqlite,ext/fts5/fts5_expr.c,1717,FP,pRet is live realloc target; old pNear was the freed pointer,,high
+MEM30-C,165,sqlite,ext/fts5/fts5_expr.c,1719,FP,returning live realloc result pRet; realloc-reassign FP,,high
+INT13-C,166,sqlite,ext/fts5/fts5_expr.c,1751,FP,tflags & FTS5_TOKEN_COLOCATED is benign flag-mask test; sign bit never set,,high
+INT30-C,167,sqlite,ext/fts5/fts5_expr.c,1753,FP,sizeof+sizeof compile-time constants; nByte i64; nToken already clamped to FTS5_MAX_TOKEN_SIZE,,high
+INT31-C,168,sqlite,ext/fts5/fts5_expr.c,1758,FP,(size_t)nByte where nByte i64 small positive; benign,,high
+ARR39-C,169,sqlite,ext/fts5/fts5_expr.c,1759,FP,(char*)pSyn base makes sizeof byte-counts correct; no double scaling; within malloc'd nByte,,high
+INT30-C,170,sqlite,ext/fts5/fts5_expr.c,1759,FP,pointer arithmetic into allocated pSyn buffer misread as unsigned addition,,high
+INT30-C,171,sqlite,ext/fts5/fts5_expr.c,1759,FP,pointer arithmetic; sizeof constant; no wrap,,high
+INT31-C,172,sqlite,ext/fts5/fts5_expr.c,1764,FP,memcpy nToken clamped to FTS5_MAX_TOKEN_SIZE and positive; buffer sized nToken+1,,high
+INT32-C,173,sqlite,ext/fts5/fts5_expr.c,1765,FP,nTerm-1 under nTerm>0 guard,,high
+INT32-C,174,sqlite,ext/fts5/fts5_expr.c,1766,FP,nTerm-1 under nTerm>0 guard,,high
+INT32-C,175,sqlite,ext/fts5/fts5_expr.c,1772,FP,SZALLOC+nTerm; bounded parser counter,,high
+INT32-C,176,sqlite,ext/fts5/fts5_expr.c,1775,FP,nNew+1 bounded; feeds i64 SZ_FTS5EXPRPHRASE macro,,high
+INT32-C,177,sqlite,ext/fts5/fts5_expr.c,1782,FP,nNew-SZALLOC restores nTerm; bounded,,high
+INT32-C,178,sqlite,ext/fts5/fts5_expr.c,1787,FP,nTerm++ bounded by query token count,,high
+MEM30-C,179,sqlite,ext/fts5/fts5_expr.c,1787,FP,pPhrase reassigned to realloc result pNew at 1781; use on live buffer,,high
+MEM30-C,180,sqlite,ext/fts5/fts5_expr.c,1787,FP,realloc-reassign; pPhrase=pNew,,high
+MEM30-C,181,sqlite,ext/fts5/fts5_expr.c,1788,FP,pTerm points into live reassigned pPhrase,,high
+MEM30-C,182,sqlite,ext/fts5/fts5_expr.c,1792,FP,pTerm live; points into reassigned pPhrase,,high
+MEM30-C,183,sqlite,ext/fts5/fts5_expr.c,1792,FP,realloc-reassign idiom,,high
+API00-C,184,sqlite,ext/fts5/fts5_expr.c,1805,FP,ParsePhraseFree delegates to fts5ExprPhraseFree which guards if(pPhrase),,high
+API00-C,185,sqlite,ext/fts5/fts5_expr.c,1812,FP,ParseNearsetFree guards with if(pNear); NULL-safe,,high
+API00-C,186,sqlite,ext/fts5/fts5_expr.c,1823,FP,ParseFinished pParse internal parser ctx; assert(pParse->pExpr==0),,high
+API00-C,187,sqlite,ext/fts5/fts5_expr.c,1823,FP,p is node from parser; assigned to pExpr; internal,,high
+DCL13-C,188,sqlite,ext/fts5/fts5_expr.c,1823,FP,p stored into non-const pParse->pExpr; const would break assignment,,high
+INT30-C,189,sqlite,ext/fts5/fts5_expr.c,1830,FP,sizeof*(nPhrase+8) via sqlite3_realloc64 (i64); nPhrase bounded,,high
+INT32-C,190,sqlite,ext/fts5/fts5_expr.c,1830,FP,nPhrase+8 bounded parser counter,,high
+API00-C,191,sqlite,ext/fts5/fts5_expr.c,1847,FP,ParseTerm pParse internal lemon-parser ctx; valid,,high
+API00-C,192,sqlite,ext/fts5/fts5_expr.c,1847,FP,pAppend may be NULL by contract (pAppend==0 handled),,high
+API00-C,193,sqlite,ext/fts5/fts5_expr.c,1847,FP,pToken from parser token stream; valid,,high
+DCL13-C,194,sqlite,ext/fts5/fts5_expr.c,1849,FP,pAppend stored into sCtx.pPhrase then realloc'd/mutated; escapes into mutable storage,,high
+EXP34-C,195,sqlite,ext/fts5/fts5_expr.c,1866,FP,z non-null inside if(rc==SQLITE_OK): Strndup success implies z set,,high
+EXP34-C,196,sqlite,ext/fts5/fts5_expr.c,1867,FP,same guarded block; z non-null when rc==SQLITE_OK,,high
+EXP34-C,197,sqlite,ext/fts5/fts5_expr.c,1868,FP,same guarded block; z non-null when rc==SQLITE_OK,,high
+EXP30-C,198,sqlite,ext/fts5/fts5_expr.c,1871,FP,|| imposes sequence point between rc read and (rc=sCtx.rc); no UB; intentional idiom,,high
+EXP45-C,199,sqlite,ext/fts5/fts5_expr.c,1871,FP,intentional assignment-in-condition idiom guarded by short-circuit ||,,high
+INT32-C,200,sqlite,ext/fts5/fts5_expr.c,1882,FP,nPhrase++ bounded parser counter,,high
+INT32-C,201,sqlite,ext/fts5/fts5_expr.c,1890,FP,nTerm-1 under nTerm guard (else-if sCtx.pPhrase->nTerm),,high
+INT32-C,202,sqlite,ext/fts5/fts5_expr.c,1893,FP,"nPhrase-1; nPhrase just incremented, >=1",,high
+API00-C,203,sqlite,ext/fts5/fts5_expr.c,1903,FP,ClonePhrase validates pExpr (if !pExpr); ppNew OUT pointer from internal caller,,high
+DCL13-C,204,sqlite,ext/fts5/fts5_expr.c,1904,TP,"pExpr struct only read; pointer members copied out, struct itself unmodified",,med
+ARR00-C,205,sqlite,ext/fts5/fts5_expr.c,1915,FP,iPhrase bounds-checked at line 1912 (>=0 && <nPhrase) before access,,high
+EXP34-C,206,sqlite,ext/fts5/fts5_expr.c,1919,FP,pNew set by MallocZero; reached only when rc==SQLITE_OK so alloc succeeded,,high
+EXP34-C,207,sqlite,ext/fts5/fts5_expr.c,1930,FP,guarded by ALWAYS(pOrig!=0) at line 1929,,high
+EXP43-C,208,sqlite,ext/fts5/fts5_expr.c,1937,FP,pColset fresh MallocZero; pColsetOrig is existing distinct object; no overlap,,high
+INT31-C,209,sqlite,ext/fts5/fts5_expr.c,1937,FP,(size_t)nByte i64 colset size = nCol*sizeof+header bounded positive,,high
+EXP40-C,210,sqlite,ext/fts5/fts5_expr.c,1950,FP,lexical const misfire on p=&pOrig->aTerm[i] iterator assignment,,high
+DCL30-C,211,sqlite,ext/fts5/fts5_expr.c,1992,FP,"pNew is heap (sqlite3Fts5MallocZero), not automatic; *ppNew=pNew is fine",,high
+API00-C,212,sqlite,ext/fts5/fts5_expr.c,2002,FP,"ParseNear pTok parser token; deref n/p, valid token from grammar",,high
+DCL13-C,213,sqlite,ext/fts5/fts5_expr.c,2002,TP,"pTok only read (pTok->n, pTok->p)",,high
+API00-C,214,sqlite,ext/fts5/fts5_expr.c,2010,FP,ParseSetDistance pNear guarded by if(pNear); NULL-safe,,high
+API00-C,215,sqlite,ext/fts5/fts5_expr.c,2010,FP,p is Fts5Token* from parser; valid token,,high
+DCL13-C,216,sqlite,ext/fts5/fts5_expr.c,2013,TP,"p only read (p->n, p->p)",,high
+DCL00-C,217,sqlite,ext/fts5/fts5_expr.c,2020,TP,"char c initialized from p->p[i], only compared thereafter; const-qualifiable",,high
+INT32-C,218,sqlite,ext/fts5/fts5_expr.c,2027,FP,explicit guard 'if(nNear<214748363)' prevents overflow; sqc missed the guard,,high
+INT32-C,219,sqlite,ext/fts5/fts5_expr.c,2027,FP,nNear*10 guarded by nNear<214748363 (comment: prevent integer overflow),,high
+INT32-C,220,sqlite,ext/fts5/fts5_expr.c,2057,FP,nCol+1 bounded by SQLITE_MAX_COLUMN; SZ macro yields i64,,high
+DCL30-C,221,sqlite,ext/fts5/fts5_expr.c,2064,FP,"pNew is sqlite3_realloc64 heap pointer, not automatic storage",,high
+INT32-C,222,sqlite,ext/fts5/fts5_expr.c,2068,FP,"j-1 array shift index, j>i>=0",,high
+INT32-C,223,sqlite,ext/fts5/fts5_expr.c,2071,FP,nCol+1 bounded column count,,high
+DCL30-C,224,sqlite,ext/fts5/fts5_expr.c,2079,FP,"pNew is heap (realloc), not automatic storage",,high
+API00-C,225,sqlite,ext/fts5/fts5_expr.c,2087,FP,ColsetInvert pParse internal ctx; pConfig->nCol trusted,,high
+API00-C,226,sqlite,ext/fts5/fts5_expr.c,2087,FP,"p colset from parser; deref inside, internal-built object",,high
+INT32-C,227,sqlite,ext/fts5/fts5_expr.c,2092,FP,"nCol+1 = config nCol +1, bounded by SQLITE_MAX_COLUMN",,high
+DCL30-C,228,sqlite,ext/fts5/fts5_expr.c,2107,FP,"pRet is sqlite3Fts5MallocZero heap pointer, not automatic",,high
+API00-C,229,sqlite,ext/fts5/fts5_expr.c,2110,FP,ParseColset pParse internal parser ctx; valid,,high
+API00-C,230,sqlite,ext/fts5/fts5_expr.c,2110,FP,p Fts5Token* from parser; valid token,,high
+DCL13-C,231,sqlite,ext/fts5/fts5_expr.c,2113,TP,"p (Fts5Token) only read (p->p, p->n)",,high
+ARR00-C,232,sqlite,ext/fts5/fts5_expr.c,2123,FP,iCol initialized in for-loop bounded by pConfig->nCol; false uninitialized claim,,high
+INT31-C,233,sqlite,ext/fts5/fts5_expr.c,2156,FP,(size_t)nByte i64 colset size bounded positive,,high
+DCL30-C,234,sqlite,ext/fts5/fts5_expr.c,2161,FP,"pRet is heap (MallocZero), not automatic storage",,high
+DCL13-C,235,sqlite,ext/fts5/fts5_expr.c,2167,TP,"pMerge only read (nCol, aiCol); pColset is the one mutated",,high
+MEM05-C,236,sqlite,ext/fts5/fts5_expr.c,2193,FP,fts5ParseSetColset recurses over tree capped at depth 256,,high
+MSC04-C,237,sqlite,ext/fts5/fts5_expr.c,2193,TP,fts5ParseSetColset recurses on apChild at line 2222,,high
+API00-C,238,sqlite,ext/fts5/fts5_expr.c,2231,FP,ParseSetColset pParse internal; pConfig deref trusted,,high
+API00-C,239,sqlite,ext/fts5/fts5_expr.c,2231,FP,"pColset may be valid/NULL; assigned to pFree, freed; internal",,high
+EXP34-C,240,sqlite,ext/fts5/fts5_expr.c,2248,FP,internal helper; callers pass allocated node (e.g. pRet after if(pRet)),,high
+EXP34-C,241,sqlite,ext/fts5/fts5_expr.c,2251,FP,pNear set for FTS5_STRING nodes during construction; structural invariant,,med
+EXP34-C,242,sqlite,ext/fts5/fts5_expr.c,2284,FP,internal helper; caller passes valid allocated parent node,,high
+EXP34-C,243,sqlite,ext/fts5/fts5_expr.c,2285,FP,internal helper; caller passes valid child node pSub,,high
+INT30-C,244,sqlite,ext/fts5/fts5_expr.c,2286,FP,sizeof*pSub->nChild; nChild bounded; memcpy into preallocated apChild,,high
+INT31-C,245,sqlite,ext/fts5/fts5_expr.c,2287,FP,"int nByte = sizeof*nChild; nChild bounded parser counter, small",,high
+INT32-C,246,sqlite,ext/fts5/fts5_expr.c,2288,FP,"nChild += pSub->nChild; bounded by query, tree depth capped SQLITE_FTS5_MAX_EXPR_DEPTH",,high
+INT32-C,247,sqlite,ext/fts5/fts5_expr.c,2291,FP,nChild++ bounded parser counter,,high
+MEM30-C,248,sqlite,ext/fts5/fts5_expr.c,2293,FP,p is fts5ExprAddChildren param (live node) not freed; loop sets p->iHeight,,high
+EXP43-C,249,sqlite,ext/fts5/fts5_expr.c,2294,FP,MAX is a comparison macro not memcpy; no restrict params; misclassification,,high
+MEM30-C,250,sqlite,ext/fts5/fts5_expr.c,2294,FP,p is live node param; pSub was freed at 2289 not p,,high
+MEM30-C,251,sqlite,ext/fts5/fts5_expr.c,2294,FP,p live; only pSub freed when merged,,high
+MEM30-C,252,sqlite,ext/fts5/fts5_expr.c,2294,FP,p->apChild arithmetic on live node,,high
+MEM30-C,253,sqlite,ext/fts5/fts5_expr.c,2294,FP,p->iHeight on live node,,high
+MEM30-C,254,sqlite,ext/fts5/fts5_expr.c,2294,FP,p is live node not freed array,,high
+MSC04-C,255,sqlite,ext/fts5/fts5_expr.c,2309,TP,fts5ParsePhraseToAnd -> sqlite3Fts5ParseNode -> back; genuine indirect recursion,,high
+EXP34-C,256,sqlite,ext/fts5/fts5_expr.c,2313,FP,pNear passed by caller in phrase-to-and path; asserted nPhrase==1,,med
+INT32-C,257,sqlite,ext/fts5/fts5_expr.c,2321,FP,nTerm+1 feeds i64 SZ_FTS5EXPRNODE; nTerm bounded,,high
+INT32-C,258,sqlite,ext/fts5/fts5_expr.c,2328,FP,nPhrase-- bounded positive parser counter,,high
+DCL30-C,259,sqlite,ext/fts5/fts5_expr.c,2359,FP,"pRet is sqlite3Fts5MallocZero heap pointer, not automatic",,high
+API00-C,260,sqlite,ext/fts5/fts5_expr.c,2366,FP,ParseNode pParse internal parser ctx; guarded by rc==OK,,high
+API00-C,261,sqlite,ext/fts5/fts5_expr.c,2366,FP,pLeft child node from parser; NULL handled (pLeft==0 returns pRight),,high
+API00-C,262,sqlite,ext/fts5/fts5_expr.c,2366,FP,pRight child node from parser; NULL handled,,high
+API00-C,263,sqlite,ext/fts5/fts5_expr.c,2366,FP,pNear nearset from parser; NULL handled (eType==STRING && pNear==0),,high
+MSC04-C,264,sqlite,ext/fts5/fts5_expr.c,2366,TP,sqlite3Fts5ParseNode participates in indirect recursion with fts5ParsePhraseToAnd,,high
+INT32-C,265,sqlite,ext/fts5/fts5_expr.c,2396,FP,nChild += pLeft->nChild-1; bounded by query/depth cap,,high
+INT32-C,266,sqlite,ext/fts5/fts5_expr.c,2396,FP,pLeft->nChild-1; AND/OR node child count >=1,,high
+INT32-C,267,sqlite,ext/fts5/fts5_expr.c,2397,FP,nChild += pRight->nChild-1; bounded,,high
+INT32-C,268,sqlite,ext/fts5/fts5_expr.c,2397,FP,pRight->nChild-1; child count >=1,,high
+ARR00-C,269,sqlite,ext/fts5/fts5_expr.c,2409,FP,iPhrase initialized in for-loop bounded by pNear->nPhrase; false uninitialized claim,,high
+API00-C,270,sqlite,ext/fts5/fts5_expr.c,2460,FP,ParseImplicitAnd pParse internal; rc guarded,,high
+API00-C,271,sqlite,ext/fts5/fts5_expr.c,2460,FP,pLeft node from parser; asserts on eType; internal grammar invariant,,high
+API00-C,272,sqlite,ext/fts5/fts5_expr.c,2460,FP,pRight node from parser; asserts on eType; internal,,high
+INT32-C,273,sqlite,ext/fts5/fts5_expr.c,2485,FP,pLeft->nChild-1; FTS5_AND node has >=1 children,,high
+INT32-C,274,sqlite,ext/fts5/fts5_expr.c,2500,FP,nPhrase-- bounded positive,,high
+INT32-C,275,sqlite,ext/fts5/fts5_expr.c,2508,FP,nChild-1; AND node child count >=1,,high
+INT32-C,276,sqlite,ext/fts5/fts5_expr.c,2512,FP,"nPhrase-1-nPhrase index; values bounded parser counters, asserted relationships",,high
+INT32-C,277,sqlite,ext/fts5/fts5_expr.c,2512,FP,nPhrase-1 bounded positive,,high
+ARR37-C,278,sqlite,ext/fts5/fts5_expr.c,2513,FP,ap into parser apPhrase at parser-invariant offset; asserted; parser-internal not untrusted data,,med
+ARR37-C,279,sqlite,ext/fts5/fts5_expr.c,2514,FP,ap[1] within parser apPhrase array; parser-internal,,med
+ARR38-C,280,sqlite,ext/fts5/fts5_expr.c,2514,FP,memmove of pRight->pNear->nPhrase ptrs within parser apPhrase array; parser-internal counts,,med
+INT30-C,281,sqlite,ext/fts5/fts5_expr.c,2514,FP,sizeof*pRight->pNear->nPhrase bounded phrase count,,high
+INT32-C,282,sqlite,ext/fts5/fts5_expr.c,2514,FP,memmove size sizeof*nPhrase; bounded; within apPhrase array,,high
+INT32-C,283,sqlite,ext/fts5/fts5_expr.c,2515,FP,nPhrase-- bounded positive,,high
+DCL13-C,284,sqlite,ext/fts5/fts5_expr.c,2528,TP,pTerm only read in synonym/term print walk,,high
+INT32-C,285,sqlite,ext/fts5/fts5_expr.c,2535,FP,nQueryTerm bounded by FTS5_MAX_TOKEN_SIZE; *2+5 cannot overflow; nByte i64; debug-only,,high
+INT32-C,286,sqlite,ext/fts5/fts5_expr.c,2535,FP,nQueryTerm*2+3+2 bounded token length; debug build only,,high
+INT32-C,287,sqlite,ext/fts5/fts5_expr.c,2535,FP,nQueryTerm*2+3 bounded,,high
+INT32-C,288,sqlite,ext/fts5/fts5_expr.c,2535,FP,nQueryTerm*2 token length bounded by FTS5_MAX_TOKEN_SIZE,,high
+STR34-C,289,sqlite,ext/fts5/fts5_expr.c,2543,FP,"char *zEnd = &zIn[...] is pointer arithmetic/char* assignment, not char widening",,high
+ARR30-C,290,sqlite,ext/fts5/fts5_expr.c,2545,FP,while(zIn<zEnd) bounded by zEnd=&zIn[nQueryTerm] sentinel; debug-only print code,,high
+ARR36-C,291,sqlite,ext/fts5/fts5_expr.c,2545,FP,zIn IS p->pTerm; same array as zEnd; false different-array claim; debug-only,,high
+STR34-C,292,sqlite,ext/fts5/fts5_expr.c,2547,FP,"*zIn=='\' is char==ASCII compare; not widened into larger type""",,high
+STR34-C,293,sqlite,ext/fts5/fts5_expr.c,2547,FP,zQuoted[i++]=*zIn++ copies char to char array; no widening to larger type,,high
+ARR00-C,294,sqlite,ext/fts5/fts5_expr.c,2558,FP,"zQuoted is sqlite3_malloc64 heap, not local array; no dangling pointer",,high
+DCL30-C,295,sqlite,ext/fts5/fts5_expr.c,2558,FP,"zQuoted is sqlite3_malloc64 heap pointer, not automatic",,high
+DCL30-C,296,sqlite,ext/fts5/fts5_expr.c,2573,FP,"zNew is sqlite3_vmprintf/mprintf heap pointer, not automatic",,high
+MEM30-C,297,sqlite,ext/fts5/fts5_expr.c,2573,FP,zNew reassigned to zNew2 at 2570; freed pointer at 2572 is zApp not zNew,,high
+DCL13-C,298,sqlite,ext/fts5/fts5_expr.c,2585,TP,"pExpr only read; recursion passes apChild[i], struct unmodified",,high
+DCL13-C,299,sqlite,ext/fts5/fts5_expr.c,2665,TP,pExpr only read in print walk; not modified,,high
+ARR00-C,300,sqlite,ext/fts5/fts5_expr.c,2679,FP,ii initialized in for-loop bounded by pColset->nCol; debug-only print code,,high
+EXP34-C,301,sqlite,ext/fts5/fts5_expr.c,2681,FP,pConfig is required non-null config object in fts5ExprPrint,,high
+ARR00-C,302,sqlite,ext/fts5/fts5_expr.c,2701,FP,iTerm initialized in for-loop bounded by pPhrase->nTerm; debug-only print code,,high
+DCL00-C,303,sqlite,ext/fts5/fts5_expr.c,2738,TP,int e = ...eType only read in following bool expr; const-qualifiable,,high
+DCL13-C,304,sqlite,ext/fts5/fts5_expr.c,2759,TP,apVal array elements only read; could be sqlite3_value *const *apVal,,med
+INT32-C,305,sqlite,ext/fts5/fts5_expr.c,2790,FP,3+(nArg-iArg); nArg = SQL function arg count bounded by SQLITE_MAX_FUNCTION_ARG; test-only fn,,high
+INT30-C,306,sqlite,ext/fts5/fts5_expr.c,2791,FP,sizeof(char*)*nConfig via sqlite3_malloc64 i64; nConfig bounded by arg count,,high
+EXP34-C,307,sqlite,ext/fts5/fts5_expr.c,2809,FP,pConfig set by ConfigParse; reached only when rc==SQLITE_OK,,high
+EXP34-C,308,sqlite,ext/fts5/fts5_expr.c,2809,FP,pConfig->nCol safe; pConfig non-null when ConfigParse returned OK,,high
+EXP34-C,309,sqlite,ext/fts5/fts5_expr.c,2813,FP,pExpr set by ExprNew on success; inside if(rc==SQLITE_OK),,high
+EXP34-C,310,sqlite,ext/fts5/fts5_expr.c,2816,FP,pConfig valid in success block,,high
+EXP34-C,311,sqlite,ext/fts5/fts5_expr.c,2818,FP,pConfig valid in success block,,high
+EXP05-C,312,sqlite,ext/fts5/fts5_expr.c,2836,FP,"casting away const for sqlite3_free((void*)azConfig); idiomatic, harmless",,high
+EXP34-C,313,sqlite,ext/fts5/fts5_expr.c,2837,FP,sqlite3Fts5ConfigFree is null-safe,,high
+EXP34-C,314,sqlite,ext/fts5/fts5_expr.c,2838,FP,sqlite3Fts5ExprFree checks if(p) at line 450; null-safe,,high
+DCL13-C,315,sqlite,ext/fts5/fts5_expr.c,2864,TP,apVal array only read (apVal[0]); outer pointer const-qualifiable,,med
+ARR30-C,316,sqlite,ext/fts5/fts5_expr.c,2879,FP,index sqlite3Fts5UnicodeCategory()&0x1F max 31 < 32; aArr[32]; debug-only,,high
+ARR02-C,317,sqlite,ext/fts5/fts5_expr.c,2910,FP,"aFunc[] sized by initializer, iterated via ArraySize; style nit no bug",,high
+WIN04-C,318,sqlite,ext/fts5/fts5_expr.c,2910,FP,ordinary function-pointer table in portable SQLite; EncodePointer is Windows-only mitigation,,high
+API00-C,319,sqlite,ext/fts5/fts5_expr.c,2942,FP,ExprPhraseCount validates pExpr (ternary pExpr ? : 0); NULL-safe,,high
+DCL13-C,320,sqlite,ext/fts5/fts5_expr.c,2942,TP,pExpr only read (pExpr->nPhrase),,high
+DCL13-C,321,sqlite,ext/fts5/fts5_expr.c,2949,TP,"pExpr only read (nPhrase, apExprPhrase[]->nTerm)",,high
+ARR00-C,322,sqlite,ext/fts5/fts5_expr.c,2951,FP,iPhrase bounds-checked at line 2950 before access,,high
+API00-C,323,sqlite,ext/fts5/fts5_expr.c,2958,FP,ExprPoslist pExpr from internal match loop; valid expr object,,high
+API00-C,324,sqlite,ext/fts5/fts5_expr.c,2958,FP,pa is OUT pointer set by caller; internal,,high
+DCL13-C,325,sqlite,ext/fts5/fts5_expr.c,2958,TP,"pExpr only read; *pa set from poslist.p, no write through pExpr",,high
+ARR00-C,326,sqlite,ext/fts5/fts5_expr.c,2960,FP,apExprPhrase[iPhrase] release-build unchecked but all in-tree callers (fts5_main.c) validate via PhraseCount; API contract not attacker-controlled,,med
+ARR30-C,327,sqlite,ext/fts5/fts5_expr.c,2960,FP,iPhrase is API/loop param bounded by PhraseCount at every caller; not position-list-derived,,med
+API00-C,328,sqlite,ext/fts5/fts5_expr.c,2987,FP,ExprClearPoslists pExpr internal; valid expr object,,high
+DCL13-C,329,sqlite,ext/fts5/fts5_expr.c,2987,FP,writes pBuf->n=0 via pExpr->apExprPhrase[i]->poslist; const would break,,high
+INT30-C,330,sqlite,ext/fts5/fts5_expr.c,2989,FP,sizeof*nPhrase via sqlite3_malloc64 i64; nPhrase bounded parser counter,,high
+ARR38-C,331,sqlite,ext/fts5/fts5_expr.c,2992,FP,memset of pRet sized sizeof*nPhrase matches allocation,,high
+INT30-C,332,sqlite,ext/fts5/fts5_expr.c,2992,FP,same; i64,,high
+INT32-C,333,sqlite,ext/fts5/fts5_expr.c,2992,FP,memset size sizeof*nPhrase; i64 product; bounded,,high
+DCL30-C,334,sqlite,ext/fts5/fts5_expr.c,3006,FP,"pRet is sqlite3_malloc64 heap pointer, not automatic",,high
+DCL13-C,335,sqlite,ext/fts5/fts5_expr.c,3019,TP,"pColset only read (nCol, aiCol)",,high
+INT13-C,336,sqlite,ext/fts5/fts5_expr.c,3058,FP,tflags & FTS5_TOKEN_COLOCATED benign flag-mask test; sign bit unset,,high
+EXP33-C,337,sqlite,ext/fts5/fts5_expr.c,3060,FP,pT assigned in for-init (pT=&...aTerm[0]) before any use,,high
+API00-C,338,sqlite,ext/fts5/fts5_expr.c,3084,FP,PopulatePoslists pConfig internal storage caller; valid,,high
+API00-C,339,sqlite,ext/fts5/fts5_expr.c,3084,FP,pExpr internal; valid expr object,,high
+API00-C,340,sqlite,ext/fts5/fts5_expr.c,3084,FP,aPopulator from ClearPoslists; internal-allocated array,,high
+API00-C,341,sqlite,ext/fts5/fts5_expr.c,3084,FP,"z document text from internal storage; tokenized, not deref'd raw",,high
+DCL13-C,342,sqlite,ext/fts5/fts5_expr.c,3086,FP,pExpr stored into sCtx.pExpr and poslists mutated via callback; escapes into mutable ctx,,high
+INT13-C,343,sqlite,ext/fts5/fts5_expr.c,3095,FP,shift operand cast to (i64) first; iCol small positive column index; intentional packing,,high
+INT14-C,344,sqlite,ext/fts5/fts5_expr.c,3095,FP,"((i64)iCol<<32)-1 deliberate bit-packing idiom; bitwise+arith intentional, correct",,high
+INT32-C,345,sqlite,ext/fts5/fts5_expr.c,3095,FP,"(i64)iCol<<32 - 1 in i64; iCol bounded column index; fits i64, no overflow",,high
+MEM05-C,346,sqlite,ext/fts5/fts5_expr.c,3114,FP,fts5ExprClearPoslists recurses over tree capped at depth 256,,high
+MSC04-C,347,sqlite,ext/fts5/fts5_expr.c,3114,TP,fts5ExprClearPoslists recurses on apChild at line 3120,,high
+MEM05-C,348,sqlite,ext/fts5/fts5_expr.c,3125,FP,fts5ExprCheckPoslists recurses over tree capped at depth 256,,high
+API00-C,349,sqlite,ext/fts5/fts5_expr.c,3170,FP,ExprCheckPoslists pExpr internal; pRoot deref trusted,,high
+DCL13-C,350,sqlite,ext/fts5/fts5_expr.c,3170,FP,pExpr->pRoot passed to fts5ExprCheckPoslists which writes iRowid/bEof; const breaks,,high
+API00-C,351,sqlite,ext/fts5/fts5_expr.c,3177,FP,ExprPhraseCollist pExpr internal; asserts iPhrase range & detail mode,,high
+API00-C,352,sqlite,ext/fts5/fts5_expr.c,3177,FP,ppCollist OUT pointer set by caller; internal,,high
+API00-C,353,sqlite,ext/fts5/fts5_expr.c,3177,FP,pnCollist OUT pointer set by caller; internal,,high
+DCL13-C,354,sqlite,ext/fts5/fts5_expr.c,3178,FP,pTerm->pIter mutated via synonym list path reachable through pExpr; const breaks,,med
+ARR00-C,355,sqlite,ext/fts5/fts5_expr.c,3183,FP,apExprPhrase[iPhrase] release-unchecked (assert at 3187); caller fts5ApiPhraseFirstColumn passes aux-fn iPhrase bounded by xPhraseCount; API contract not untrusted data,,med
+EXP05-C,356,sqlite,ext/fts5/fts5_expr.c,3198,FP,lexical cast-away-const (u8**)ppCollist for output param,,high
+API00-C,357,sqlite,ext/fts5/fts5_expr.c,3215,FP,ExprQueryToken validates iPhrase/iToken ranges; ppOut OUT pointer internal,,high
+API00-C,358,sqlite,ext/fts5/fts5_expr.c,3215,FP,pnOut OUT pointer set by caller; internal,,high
+DCL13-C,359,sqlite,ext/fts5/fts5_expr.c,3216,TP,"read-only pointer param, never modified -> const-eligible (dropped by reviewer, in its TP list)",,high
+ARR00-C,360,sqlite,ext/fts5/fts5_expr.c,3227,FP,iPhrase bounds-checked at line 3224 before access,,high
+ARR00-C,361,sqlite,ext/fts5/fts5_expr.c,3232,FP,iToken bounds-checked at line 3228 before access,,high
+STR34-C,362,sqlite,ext/fts5/fts5_expr.c,3232,FP,"*ppOut = pTerm->pTerm is a char* assignment (const char**), not char widening",,high
+ARR00-C,363,sqlite,ext/fts5/fts5_expr.c,3233,FP,iToken bounds-checked at line 3228 before access,,high
+DCL13-C,364,sqlite,ext/fts5/fts5_expr.c,3241,FP,pTerm->pIter passed to mutating sqlite3Fts5IterToken; const would break,,high
+ARR00-C,365,sqlite,ext/fts5/fts5_expr.c,3257,FP,iPhrase bounds-checked at line 3254 before access,,high
+ARR00-C,366,sqlite,ext/fts5/fts5_expr.c,3261,FP,iToken bounds-checked at line 3258 before access,,high
+INT32-C,367,sqlite,ext/fts5/fts5_expr.c,3265,FP,iOff+iToken: iToken validated < nTerm (small); iOff token offset; no memory-safety consequence here,,med
+STR34-C,368,sqlite,ext/fts5/fts5_expr.c,3268,FP,"*ppOut = pTerm->pTerm is a char* assignment, not char widening",,high
+API00-C,369,sqlite,ext/fts5/fts5_expr.c,3278,FP,ExprClearTokens pExpr internal; iterates nPhrase; valid expr,,high
+DCL13-C,370,sqlite,ext/fts5/fts5_expr.c,3278,FP,pT->pIter passed to mutating IterClearTokendata; const would break,,high
+ARR00-C,371,sqlite,ext/fts5/fts5_expr.c,3280,FP,ii initialized in for-loop bounded by pExpr->nPhrase; false uninitialized claim,,high

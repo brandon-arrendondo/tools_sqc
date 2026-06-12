@@ -849,3 +849,47 @@ finding it made. This is the cleanest statement of the thesis yet: across a genu
 extension family, sqc's semantic engines contributed **zero** correct findings; its value was entirely
 in the lexical/declaration class, and the one real semantic bug present was a recall gap.
 sqlite coverage **65/220 (29.5%)**, 6 FNs.
+
+---
+
+## File-at-a-time — fts5_expr.c (2026-06-12, run #40, HIGH-effort): the fts5 query parser, clean (30% milestone)
+
+`adjudication_sqlite_fts5_expr.csv` — `ext/fts5/fts5_expr.c` (the FTS5 MATCH expression parser +
+phrase/NEAR matching engine, 3286 lines), **372 raw → 321 distinct findings**. Chosen as the next
+fts5 needle: fts5_index.c (already audited) yielded the audit's only 2 semantic TPs, so its sibling
+that parses untrusted MATCH queries *and* walks position-lists during matching was a prime suspect.
+6 rule-class reviewers + 2 FN-hunters (parser, and the position-list matching engine).
+
+**44 TP / 277 FP / 0 uncertain / 0 FN** (distinct; raw 43 TP / 329 FP).
+
+**0 semantic TP across all 238 semantic findings** — ARR 0/69 (the phrase/NEAR matchers index only
+parse-time-bounded `nPhrase`/`nTerm`/`nCol` arrays; decoded positions are used as i64 comparison
+scalars, never as subscripts), INT 0/82 (bounded counters, i64/`malloc64` sizing, the NEAR-distance
+accumulator already clamps `<214748363`), MEM30 0/43 (free-then-reassign + the depth-capped tree
+recursion), EXP34 0/31 (`rc==SQLITE_OK` idiom), API00 0/56 (internal handles / OUT-params). All 43
+raw TP are the precise class: **DCL13 ×27, MSC04 ×9** (genuine expr-tree recursion), **PRE00/PRE12 ×4**
+(the `Fts5NodeIsString`/`fts5ExprNodeNext` multi-eval macros), DCL00 ×2, STR00 ×1.
+
+### FN-hunt: clean (0 FN) — and it explains WHY fts5_index had TPs but this file doesn't
+
+The parser hunter confirmed full hardening: expression depth hard-capped at
+`SQLITE_FTS5_MAX_EXPR_DEPTH=256` (rejects deep-nest stack overflow), NEAR distance clamped
+`<214748363`, token size clamped to `FTS5_MAX_TOKEN_SIZE`, `sqlite3Fts5IsBareword` short-circuits the
+high-byte sign-extension before the table index, and column filters resolve by *name* (no
+attacker-controlled column number reaches an array). The matching-engine hunter found the key
+structural reason this file is clean while its sibling fts5_index.c was not: **fts5_expr.c delegates
+all position-list decoding to `sqlite3Fts5PoslistNext64`, which masks every decoded position to 31
+bits (`& 0x7FFFFFFF`) and is backed by the `FTS5_DATA_PADDING` zero-fill invariant; it then indexes
+only parse-bounded arrays.** fts5_index.c, by contrast, does *raw* delta accumulation and leaf-array
+indexing on decoded data — which is exactly where its 2 genuine INT32 overflows lived. The needle is
+specific to the raw-decode routine, not the whole subsystem. (2 minor DCL13 const-miss recall gaps at
+1073/1076 noted, not recorded; one `SQLITE_TEST`-only `fts5ExprTermPrint` sizing quirk, out of scope.)
+
+### Tally (now 9 fts3/fts5 needle files audited)
+
+Across the entire fts3 family (4 files) + fts5_index + fts5_expr, the only sqc-*found* semantic TPs
+remain the **2 fts5_index structure-overflows**; every other found-TP is declaration/macro/const. The
+thesis is now very precise: sqc's semantic value in this whole untrusted-input subsystem is two
+contained integer overflows in one raw-blob-decode function — everything else it correctly finds is
+lexical, and the one real bug it *missed* (matchinfo OOB) was a recall gap. **sqlite coverage 66/220
+(30.0%)** — a third of the in-scope corpus audited; 6 FNs.
