@@ -1,0 +1,583 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MEM31-C,0,sqlite,src/os_unix.c,1,FP,aMutex[] elements freed in matching loop at 4820-4822 guarded by same SQLITE_ENABLE_SETLK_TIMEOUT as alloc loop 5021,,0.95
+PRE00-C,1,sqlite,src/os_unix.c,232,TP,IS_LOCK_ERROR(x) macro evaluates x twice; genuine macro-hygiene PRE finding though x is always a simple var/expr in practice,,0.7
+PRE01-C,2,sqlite,src/os_unix.c,232,TP,macro parameter x unparenthesized in replacement text; benign here but real PRE01 hygiene defect,,0.6
+PRE12-C,3,sqlite,src/os_unix.c,232,TP,IS_LOCK_ERROR evaluates x twice; same as idx1 PRE12 multiple-evaluation,,0.7
+CON03-C,4,sqlite,src/os_unix.c,318,FP,randomnessPid is a process-scope fork-detection pid guarded by big-lock usage patterns not a cross-thread race; CON03 misfire on hardened core,,0.85
+POS01-C,5,sqlite,src/os_unix.c,410,FP,posixOpen is the syscall wrapper; O_NOFOLLOW handling is policy-controlled elsewhere and inputs are trusted pager paths not attacker symlinks,,0.9
+CON03-C,6,sqlite,src/os_unix.c,423,FP,aSyscall is the syscall override table mutated only under documented single-thread setup; not a concurrency defect,,0.9
+ERR02-C,7,sqlite,src/os_unix.c,423,FP,ssize_t is the natural POSIX read/return type used with explicit n<=0 error checks; ERR02 misfire,,0.9
+ARR02-C,8,sqlite,src/os_unix.c,427,FP,aSyscall[] uses initializer-determined bounds (idiomatic C); explicit size not required and ArraySize used everywhere,,0.9
+WIN04-C,9,sqlite,src/os_unix.c,427,FP,WIN04 EncodePointer is Windows-only DEP nonsense applied to a Unix syscall table; not applicable,,0.95
+ARR38-C,10,sqlite,src/os_unix.c,649,FP,"memcpy(a,lit,16) into char a[16] param exactly fills the 16-byte buffer; bound is exact not exceeded",,0.95
+EXP05-C,11,sqlite,src/os_unix.c,649,FP,a is char a[16] non-const param; no const to cast away EXP05 misfire,,0.95
+EXP33-C,12,sqlite,src/os_unix.c,650,FP,z is char z[2000] local fully written via snprintf/osRead before use; not uninitialized,,0.9
+INT30-C,13,sqlite,src/os_unix.c,655,FP,sizeof(z)-1 is sizeof(2000-byte array)-1 a compile-time constant 1999 never wraps,,0.85
+ARR30-C,14,sqlite,src/os_unix.c,658,FP,"z[n] with n=osRead return clamped to sizeof(z)-1 and n<=0 rejected so n in [1,1999] within 2000-byte z",,0.85
+ARR00-C,15,sqlite,src/os_unix.c,673,FP,pNext[-1] points one byte before a strstr match that is >=6 bytes into z; valid in-buffer write not negative-index defect,,0.85
+ERR33-C,16,sqlite,src/os_unix.c,685,FP,"strtoll return assigned to iLast then range-checked against PENDING_BYTE/128; error value would simply not match any branch (benign), debug-only fdinfo parser",,0.8
+ERR01-C,17,sqlite,src/os_unix.c,685,FP,errno not consulted; parsed value range-checked instead; debug/FILESTAT-only code with trusted /proc input,,0.8
+ERR30-C,18,sqlite,src/os_unix.c,685,FP,errno not reset before strtoll but value used only in range comparisons not as error oracle; debug-only path,,0.8
+STR34-C,19,sqlite,src/os_unix.c,686,FP,*x is a char from /proc text used as char index/value not sign-extended into array index incorrectly; STR34 misfire,,0.85
+ERR33-C,20,sqlite,src/os_unix.c,689,FP,second strtoll same as idx16: result range-checked not used as error indicator,,0.8
+ERR01-C,21,sqlite,src/os_unix.c,689,FP,same as idx17 errno not checked but value range-validated,,0.8
+ERR30-C,22,sqlite,src/os_unix.c,689,FP,same as idx18 errno not reset; debug-only parser,,0.8
+MSC37-C,23,sqlite,src/os_unix.c,717,FP,robustFchown returns in both #if/#else branches; no fall-through,,0.95
+ARR01-C,24,sqlite,src/os_unix.c,745,FP,sizeof(aSyscall)/sizeof(aSyscall[0]) operates on the real file-scope array not a decayed param; aSyscall is a global array here,,0.95
+ARR01-C,25,sqlite,src/os_unix.c,745,FP,same as idx24 aSyscall is global array not a parameter,,0.95
+ARR01-C,26,sqlite,src/os_unix.c,754,FP,same aSyscall global-array sizeof idiom in unixSetSystemCall,,0.95
+ARR01-C,27,sqlite,src/os_unix.c,754,FP,same global-array sizeof idiom,,0.95
+ARR01-C,28,sqlite,src/os_unix.c,781,FP,same aSyscall global array in unixGetSystemCall,,0.95
+ARR01-C,29,sqlite,src/os_unix.c,781,FP,same global-array sizeof idiom,,0.95
+EXP33-C,30,sqlite,src/os_unix.c,861,FP,statbuf only read when osFstat(...)==0 via short-circuit && so it is populated before use,,0.9
+DCL18-C,31,sqlite,src/os_unix.c,862,FP,0777 is intentional Unix file-mode octal; DCL18 misfire on POSIX permission bits,,0.9
+CON03-C,32,sqlite,src/os_unix.c,898,FP,unixBigLock is mutex pointer set once at init and accessed via mutex APIs; CON03 misfire,,0.85
+DCL03-C,33,sqlite,src/os_unix.c,961,FP,assert with PENDING_BYTE+1==RESERVED_BYTE style constants are sqlite design asserts; DCL03 static_assert suggestion is stylistic not a defect (runtime assert on constant is harmless),,0.85
+EXP33-C,34,sqlite,src/os_unix.c,967,FP,zType assigned in every reachable branch (else is assert(0)); used at 967 only after assignment; SQLITE_LOCK_TRACE debug-only,,0.9
+DCL03-C,35,sqlite,src/os_unix.c,980,FP,DCL03 stylistic static_assert suggestion on a design invariant assert; not a defect,,0.85
+CON03-C,36,sqlite,src/os_unix.c,1078,FP,vxworksFileList guarded by vxworksMutex on all read/write paths; CON03 misfire,,0.85
+CON03-C,37,sqlite,src/os_unix.c,1079,FP,vxworksMutex set at init and used via mutex APIs; CON03 misfire,,0.85
+ARR30-C,38,sqlite,src/os_unix.c,1098,FP,z[i+1] indexed with i<n and bounds i+2<n/i+3<n checks; vxworks path operates on NUL-terminated canonical name within allocated buffer,,0.85
+INT30-C,39,sqlite,src/os_unix.c,1101,FP,i is int loop index over a bounded name buffer not unsigned-wrap prone; i+=1 bounded by n,,0.85
+INT30-C,40,sqlite,src/os_unix.c,1107,FP,i+=2 bounded by loop condition i<n on a path-length-bounded buffer; no wrap,,0.85
+ARR30-C,41,sqlite,src/os_unix.c,1111,FP,same bounded vxworks name buffer access,,0.85
+INT30-C,42,sqlite,src/os_unix.c,1135,FP,sizeof(*pNew)+(n+1) where n=strlen of a real pathname (bounded by MAX_PATHNAME); sqlite3_malloc64 takes u64 no wrap,,0.85
+EXP33-C,43,sqlite,src/os_unix.c,1135,FP,pNew is the result of sqlite3_malloc64 and NULL-checked at 1136 before deref; not uninitialized,,0.9
+INT32-C,44,sqlite,src/os_unix.c,1135,FP,n=strlen(pathname) bounded; n+1 cannot overflow int for a real filesystem path,,0.85
+ARR38-C,45,sqlite,src/os_unix.c,1138,FP,memcpy size n+1 equals the bytes allocated for zCanonicalName (sizeof(*pNew)+(n+1)); exact-fit copy,,0.85
+INT31-C,46,sqlite,src/os_unix.c,1138,FP,n is strlen result non-negative; conversion to size_t well-defined,,0.85
+EXP05-C,47,sqlite,src/os_unix.c,1138,FP,n+1 is an int size argument not a const-qualified object being cast; EXP05 misfire,,0.9
+INT32-C,48,sqlite,src/os_unix.c,1138,FP,n+1 bounded by pathname length; no overflow,,0.85
+INT31-C,49,sqlite,src/os_unix.c,1148,FP,memcmp size n non-negative strlen-derived; safe size_t conversion,,0.85
+DCL30-C,50,sqlite,src/os_unix.c,1153,FP,pCandidate points into heap-allocated vxworksFileList nodes not automatic storage; intentional return of list node,,0.95
+DCL30-C,51,sqlite,src/os_unix.c,1161,FP,pNew is sqlite3_malloc64 heap memory linked into global list by design; not a dangling-local,,0.95
+DCL30-C,52,sqlite,src/os_unix.c,1163,FP,pNew is heap-allocated; returning it (now owned by global list) is correct not a dangling pointer,,0.95
+INT32-C,53,sqlite,src/os_unix.c,1173,FP,pId->nRef-- guarded by assert(pId->nRef>0) under vxworksMutex; ref counts never reach INT_MIN in practice,,0.85
+CON03-C,54,sqlite,src/os_unix.c,1349,FP,inodeList guarded by unixBigLock per documented contract (assert unixMutexHeld); CON03 misfire,,0.85
+API00-C,55,sqlite,src/os_unix.c,1357,FP,unixFileMutexHeld asserts pFile->pInode before deref; assert-only debug helper with trusted caller,,0.85
+DCL13-C,56,sqlite,src/os_unix.c,1357,FP,signature is fixed; pFile->pInode is read but pFile is dereferenced; could be const but DCL13 here is debug-only assert helper - pFile not written yet const would compile - borderline but contract is assert-helper not API; treat as FP misfire (pInode read does not require const flag and function is SQLITE_DEBUG-only),,0.9
+API00-C,57,sqlite,src/os_unix.c,1361,FP,same as 55 debug assert helper validates via assert(pFile->pInode),,0.85
+DCL13-C,58,sqlite,src/os_unix.c,1361,FP,same as 56 unixFileMutexNotheld debug-only assert helper,,0.9
+MSC37-C,59,sqlite,src/os_unix.c,1384,FP,unixLogErrorAtLine returns errcode at end on all paths; no fall-through,,0.95
+INT30-C,60,sqlite,src/os_unix.c,1421,FP,sizeof(aErr)-1 is compile-time constant 79 (aErr is char[80]); never wraps,,0.85
+ENV34-C,61,sqlite,src/os_unix.c,1428,FP,ENV34 only triggers in non-threadsafe build (#else strerror branch); value consumed immediately by sqlite3_log not stored long-term,,0.85
+CON33-C,62,sqlite,src/os_unix.c,1428,FP,strerror reached only in non-threadsafe build (SQLITE_THREADSAFE==0) where thread-safety is irrelevant; threadsafe builds use strerror_r,,0.8
+CON34-C,63,sqlite,src/os_unix.c,1428,FP,same CON34: strerror branch is compiled only when SQLITE_THREADSAFE==0 so static storage is not shared between threads,,0.8
+EXP33-C,64,sqlite,src/os_unix.c,1434,FP,"zErr assigned on every preprocessor branch (aErr, strerror_r result, empty string, or strerror); not uninitialized",,0.9
+DCL13-C,65,sqlite,src/os_unix.c,1453,FP,robust_close signature passes pFile to unixLogErrorAtLine reading pFile->zPath; const would compile but param semantically a borrowed handle and other locking variants store into it via typedef - FP per io_methods consistency,,0.9
+INT32-C,66,sqlite,src/os_unix.c,1495,FP,pInode->nRef-- guarded by ALWAYS(pInode) and unixMutexHeld; ref count bounded,,0.85
+EXP42-C,67,sqlite,src/os_unix.c,1590,FP,"memcmp on unixFileId is sqlite-controlled struct zeroed via memset(&fileId,0,sizeof) before populate so padding is deterministic; EXP42 mitigated by the memset",,0.8
+MEM31-C,68,sqlite,src/os_unix.c,1601,FP,pInode->pLockMutex freed in releaseInodeInfo at 1512 and on the NOMEM error path at 1603; not leaked,,0.9
+DCL30-C,69,sqlite,src/os_unix.c,1612,FP,pInode is heap-allocated and linked into inodeList by design; not a dangling local,,0.95
+INT32-C,70,sqlite,src/os_unix.c,1614,FP,pInode->nRef++ guarded by unixMutexHeld; bounded ref count never reaches INT_MAX,,0.85
+DCL30-C,71,sqlite,src/os_unix.c,1616,FP,*ppInode=pInode returns heap/list object via out-param by contract; not address of a local,,0.95
+MEM31-C,72,sqlite,src/os_unix.c,1617,FP,on NOMEM at 1602 pLockMutex is null and pInode freed at 1603; the successful path links pInode (owning mutex) into list freed later; no leak,,0.9
+MSC37-C,73,sqlite,src/os_unix.c,1623,FP,fileHasMoved returns in both #if/#else branches; no fall-through,,0.95
+DCL13-C,74,sqlite,src/os_unix.c,1623,FP,fileHasMoved reads pFile->pInode/zPath only; const would compile but signature parallels io-methods style helpers; per campaign DCL13 on fixed helper sigs - FP,,0.85
+DCL31-C,75,sqlite,src/os_unix.c,1682,FP,line 1682 is SimulateIOError(return SQLITE_IOERR_CHECKRESERVEDLOCK;) macro expansion; not a real type-less declaration,,0.9
+EXP33-C,76,sqlite,src/os_unix.c,1703,FP,SQLITE_IOERR_CHECKRESERVEDLOCK is an enum constant inside SimulateIOError macro arg; not an uninitialized variable,,0.95
+INT32-C,77,sqlite,src/os_unix.c,1769,FP,tm-- bounded by while(tm>0) and tm=iBusyTimeout (small ms count); SQLITE_TEST-only; never INT_MIN,,0.85
+INT32-C,78,sqlite,src/os_unix.c,1818,FP,pInode->nLock++ under pLockMutex; bounded lock count,,0.85
+PRE32-C,79,sqlite,src/os_unix.c,1914,FP,OSTRACE is a debug macro (sqlite3DebugPrintf X) and the args contain no actual preprocessor directives - PRE32 misfire on multi-line macro args,,0.9
+PRE32-C,80,sqlite,src/os_unix.c,1914,FP,"same OSTRACE multi-line argument; no #directive present, just continuation lines",,0.9
+PRE32-C,81,sqlite,src/os_unix.c,1924,FP,OSTRACE debug macro; no preprocessor directive in args,,0.9
+PRE32-C,82,sqlite,src/os_unix.c,1924,FP,same OSTRACE continuation-line false PRE32,,0.9
+INT32-C,83,sqlite,src/os_unix.c,1963,FP,pInode->nShared++ under pLockMutex; bounded shared-lock count,,0.85
+INT32-C,84,sqlite,src/os_unix.c,1964,FP,pInode->nLock++ under pLockMutex; bounded,,0.85
+PRE32-C,85,sqlite,src/os_unix.c,2092,FP,OSTRACE debug macro multi-line args no real directive,,0.9
+PRE32-C,86,sqlite,src/os_unix.c,2092,FP,same OSTRACE continuation false PRE32,,0.9
+PRE32-C,87,sqlite,src/os_unix.c,2131,FP,OSTRACE UNLOCK trace; no directive in args,,0.9
+PRE32-C,88,sqlite,src/os_unix.c,2131,FP,same OSTRACE continuation false PRE32,,0.9
+DCL03-C,89,sqlite,src/os_unix.c,2231,FP,assert(PENDING_BYTE+1==RESERVED_BYTE) is a sqlite design invariant; DCL03 static_assert is stylistic not a defect,,0.85
+INT32-C,90,sqlite,src/os_unix.c,2245,FP,pInode->nShared-- after nShared>0 invariant; assert(nLock>=0) guards; bounded,,0.85
+INT32-C,91,sqlite,src/os_unix.c,2264,FP,pInode->nLock-- with assert(pInode->nLock>=0); bounded counter,,0.85
+EXP05-C,92,sqlite,src/os_unix.c,2334,FP,"sizeof(unixFile) in memset(pFile,0,sizeof(unixFile)) is a size_t not a const object being cast; EXP05 misfire",,0.9
+DCL13-C,93,sqlite,src/os_unix.c,2452,FP,dotlockCheckReservedLock id param is sqlite3_file* fixed by io_methods xCheckReservedLock typedef and cast to unixFile* then read/written; cannot add const,,0.9
+DCL31-C,94,sqlite,src/os_unix.c,2454,FP,line 2454 SimulateIOError macro expansion; not a type-less declaration,,0.9
+EXP40-C,95,sqlite,src/os_unix.c,2459,FP,*pResOut is an int out-param (int*) not const; the assignment is the function contract; EXP40 misfire,,0.85
+DCL18-C,96,sqlite,src/os_unix.c,2513,FP,0777 is intentional Unix directory mode for osMkdir; DCL18 misfire,,0.9
+PRE32-C,97,sqlite,src/os_unix.c,2548,FP,OSTRACE dotlock trace; no real preprocessor directive in args,,0.9
+PRE32-C,98,sqlite,src/os_unix.c,2548,FP,same OSTRACE continuation false PRE32,,0.9
+DCL31-C,99,sqlite,src/os_unix.c,2638,FP,line 2638 SimulateIOError macro expansion; not a type-less declaration,,0.9
+PRE32-C,100,sqlite,src/os_unix.c,2716,FP,OSTRACE flock trace; no directive in args,,0.9
+PRE32-C,101,sqlite,src/os_unix.c,2716,FP,same OSTRACE continuation false PRE32,,0.9
+INT13-C,102,sqlite,src/os_unix.c,2719,FP,rc&0xff masks a signed int error code under SQLITE_IGNORE_FLOCK_LOCK_ERRORS; rc holds small non-negative SQLITE_ codes; INT13 stylistic not a defect,,0.8
+PRE32-C,103,sqlite,src/os_unix.c,2738,FP,OSTRACE flock unlock trace; no directive,,0.9
+PRE32-C,104,sqlite,src/os_unix.c,2738,FP,same OSTRACE continuation false PRE32,,0.9
+DCL31-C,105,sqlite,src/os_unix.c,2802,FP,line 2802 SimulateIOError macro expansion; not a type-less declaration,,0.9
+EXP33-C,106,sqlite,src/os_unix.c,2818,FP,SQLITE_IOERR_CHECKRESERVEDLOCK enum constant inside SimulateIOError macro arg; not uninitialized variable,,0.95
+MSC37-C,107,sqlite,src/os_unix.c,2864,FP,semXLock returns rc via sem_end_lock label on all paths; no fall-through,,0.95
+PRE32-C,108,sqlite,src/os_unix.c,2903,FP,OSTRACE sem unlock trace; no directive,,0.9
+PRE32-C,109,sqlite,src/os_unix.c,2903,FP,same OSTRACE continuation false PRE32,,0.9
+PRE32-C,110,sqlite,src/os_unix.c,3010,FP,OSTRACE afp trace; no directive in args,,0.9
+PRE32-C,111,sqlite,src/os_unix.c,3010,FP,same OSTRACE continuation false PRE32,,0.9
+PRE32-C,112,sqlite,src/os_unix.c,3017,FP,OSTRACE afp failure trace; strerror result is an arg to debug macro consumed immediately not a real preprocessor directive,,0.9
+PRE32-C,113,sqlite,src/os_unix.c,3017,FP,same OSTRACE continuation false PRE32,,0.9
+CON33-C,114,sqlite,src/os_unix.c,3018,FP,strerror inside OSTRACE is Apple-AFP-only debug trace consumed immediately by DebugPrintf; not a thread-safety defect in shipping path,,0.85
+CON34-C,115,sqlite,src/os_unix.c,3018,FP,same CON34 strerror in debug-only AFP OSTRACE,,0.85
+DCL31-C,116,sqlite,src/os_unix.c,3046,FP,line 3046 SimulateIOError macro expansion; not a type-less declaration,,0.9
+PRE32-C,117,sqlite,src/os_unix.c,3116,FP,OSTRACE arg is multi-line string+expr list with no actual preprocessor directive token (no leading hash); analyzer misreads continued macro call as containing a directive,,0.93
+PRE32-C,118,sqlite,src/os_unix.c,3116,FP,"Same OSTRACE call as 117 — argument text contains no # directive, just a wrapped format-string arg list",,0.93
+PRE32-C,119,sqlite,src/os_unix.c,3125,FP,OSTRACE 'already held' trace — no preprocessor directive inside the macro argument,,0.93
+PRE32-C,120,sqlite,src/os_unix.c,3125,FP,Duplicate of 119; wrapped string literal misclassified as directive,,0.93
+INT32-C,121,sqlite,src/os_unix.c,3164,FP,"pInode->nShared is reference count of SHARED locks held by threads in one process under pLockMutex; bounded by thread/fd count, cannot reach INT_MAX",,0.9
+INT32-C,122,sqlite,src/os_unix.c,3165,FP,"pInode->nLock is per-inode lock refcount under mutex; bounded by open handles, no realistic INT_MAX overflow",,0.9
+MSC32-C,123,sqlite,src/os_unix.c,3197,FP,"random() seeding is deliberately irrelevant here — comment states 'quality of the randomness does not matter'; value only picks a sharedByte slot, not security-sensitive",,0.92
+INT14-C,124,sqlite,src/os_unix.c,3198,FP,"mask used as bitmask (lk & mask) then %(SHARED_SIZE-1); style-only INT14 noise, no defect",,0.95
+INT13-C,125,sqlite,src/os_unix.c,3198,FP,lk masked with explicit positive mask (LARGEST_INT64 or 0x7fffffff) guaranteeing non-negative before &; intentional and correct,,0.92
+INT32-C,126,sqlite,src/os_unix.c,3218,FP,"pInode->nLock increment under pLockMutex bounded by handle count, no INT_MAX reach",,0.9
+EXP45-C,127,sqlite,src/os_unix.c,3245,FP,"EXP45 misfire: 'failed = afpSetLock(...)' is a plain assignment statement not in an if condition; even if it were, assignment-in-condition is idiomatic and guarded",,0.9
+EXP45-C,128,sqlite,src/os_unix.c,3251,FP,'failed2 = afpSetLock(...)' assignment inside if is intentional sqlite idiom with explicit comparison; not a defect,,0.9
+INT13-C,129,sqlite,src/os_unix.c,3256,FP,"failed holds an SQLITE_ error code; (failed & 0xff)==SQLITE_IOERR extracts primary code — correct intentional masking, value non-negative",,0.92
+PRE32-C,130,sqlite,src/os_unix.c,3279,FP,OSTRACE afp lock trace — no preprocessor directive in argument,,0.93
+PRE32-C,131,sqlite,src/os_unix.c,3279,FP,Duplicate of 130; wrapped ternary string arg misread as directive,,0.93
+PRE32-C,132,sqlite,src/os_unix.c,3299,FP,OSTRACE UNLOCK trace — no # directive in args,,0.93
+PRE32-C,133,sqlite,src/os_unix.c,3299,FP,Duplicate of 132,,0.93
+INT18-C,134,sqlite,src/os_unix.c,3357,FP,"SHARED_FIRST and sharedByte are small fixed lock-byte constants; sum is tiny, assigned to unsigned long long, no overflow possible",,0.9
+INT32-C,135,sqlite,src/os_unix.c,3358,FP,"pInode->nShared-- guarded by surrounding logic (nShared>0 invariant, asserted); refcount decrement, no INT_MIN underflow",,0.9
+INT32-C,136,sqlite,src/os_unix.c,3369,FP,"pInode->nLock-- with assert(nLock>=0) immediately after; refcount, no underflow",,0.9
+INT14-C,137,sqlite,src/os_unix.c,3470,FP,cnt used only in masking assert and as byte-count loop var; INT14 style noise,,0.95
+INT32-C,138,sqlite,src/os_unix.c,3495,FP,cnt is read byte count constrained by assert(cnt==(cnt&0x1ffff)) so <=131071; cnt-=got cannot overflow,,0.9
+INT32-C,139,sqlite,src/os_unix.c,3496,FP,"offset is i64 file offset, got is bounded read count; offset+=got cannot overflow in practice",,0.9
+INT32-C,140,sqlite,src/os_unix.c,3497,FP,"prior accumulates bytes already read, bounded by cnt(<=131071); no overflow",,0.9
+INT32-C,141,sqlite,src/os_unix.c,3498,FP,"got+(char*)pBuf is pointer arithmetic advancing buffer by bytes read; bounded, well-defined",,0.9
+PRE32-C,142,sqlite,src/os_unix.c,3502,FP,OSTRACE READ trace — no preprocessor directive in argument,,0.93
+PRE32-C,143,sqlite,src/os_unix.c,3502,FP,Duplicate of 142,,0.93
+INT32-C,144,sqlite,src/os_unix.c,3503,FP,"got+prior bounded by original cnt(<=131071); trace-only computation, no overflow",,0.9
+INT32-C,145,sqlite,src/os_unix.c,3503,FP,offset-prior both bounded i64 quantities; no overflow,,0.9
+INT32-C,146,sqlite,src/os_unix.c,3504,FP,got+prior return value bounded by cnt; no overflow,,0.9
+INT31-C,147,sqlite,src/os_unix.c,3538,FP,amt asserted >0 in unixRead and bounded by caller (page-sized); signed->size_t conversion is safe non-negative,,0.88
+INT31-C,148,sqlite,src/os_unix.c,3542,FP,"nCopy = mmapSize-offset computed inside offset<mmapSize && offset+amt>mmapSize branch, so positive and < amt; safe to size_t",,0.88
+INT32-C,149,sqlite,src/os_unix.c,3544,FP,"amt-=nCopy where nCopy<amt by branch condition; stays positive, no overflow",,0.9
+INT32-C,150,sqlite,src/os_unix.c,3545,FP,"offset (i64) += nCopy (positive, < amt); no overflow",,0.9
+INT31-C,151,sqlite,src/os_unix.c,3576,FP,"memset amt-got where got<0 branch already handled; here got>=0 and amt>got (short read), so amt-got positive; conversion safe",,0.88
+INT32-C,152,sqlite,src/os_unix.c,3576,FP,"amt-got in short-read branch (got>=0, got<amt) yields positive count; no overflow",,0.9
+EXP05-C,153,sqlite,src/os_unix.c,3649,FP,id is 'sqlite3_file *id' (non-const); (unixFile*)id casts type not const — no const qualification removed,,0.95
+EXP05-C,154,sqlite,src/os_unix.c,3678,FP,pBuf is const void* but cast to char* only to feed memcmp (read-only) and index for compare; data is not modified through the cast,,0.85
+INT31-C,155,sqlite,src/os_unix.c,3690,FP,"amt>0 asserted, bounded page size; signed->size_t safe",,0.88
+INT31-C,156,sqlite,src/os_unix.c,3694,FP,nCopy positive by mmap branch condition; conversion safe,,0.88
+EXP05-C,157,sqlite,src/os_unix.c,3695,FP,(u8*)pBuf cast assigns to local pBuf pointer to advance it; underlying const data never written through the cast,,0.85
+INT32-C,158,sqlite,src/os_unix.c,3696,FP,"amt-=nCopy with nCopy<amt; positive, no overflow",,0.9
+INT32-C,159,sqlite,src/os_unix.c,3697,FP,offset(i64)+=nCopy positive; no overflow,,0.9
+EXP30-C,160,sqlite,src/os_unix.c,3702,FP,"wrote assigned once in while-condition then read in body; single assignment per iteration, no unsequenced modify/access",,0.9
+INT32-C,161,sqlite,src/os_unix.c,3703,FP,amt-=wrote where loop guarantees 0<wrote<amt; no overflow,,0.9
+INT32-C,162,sqlite,src/os_unix.c,3704,FP,offset(i64)+=wrote positive bounded; no overflow,,0.9
+EXP05-C,163,sqlite,src/os_unix.c,3705,FP,(char*)pBuf cast advances local const pointer; const data not mutated through cast,,0.85
+INT32-C,164,sqlite,src/os_unix.c,3801,FP,sqlite3_fullsync_count is SQLITE_TEST-only diagnostic counter; not reachable in production build and not a CERT defect,,0.9
+INT32-C,165,sqlite,src/os_unix.c,3802,FP,sqlite3_sync_count is SQLITE_TEST-only counter; benign,,0.9
+EXP33-C,166,sqlite,src/os_unix.c,3829,FP,rc in full_fsync is assigned on every #ifdef path before the flagged 'if(rc) rc=fsync(fd)' (set at F_FULLFSYNC branch); not uninitialized,,0.95
+ENV01-C,167,sqlite,src/os_unix.c,3877,FP,"zDirname is fixed MAX_PATHNAME+1 stack buffer holding a derived directory path, not an environment variable; ENV01 misfire",,0.9
+MEM05-C,168,sqlite,src/os_unix.c,3877,FP,"zDirname is a fixed-size array char[MAX_PATHNAME+1], not a runtime-sized VLA; MEM05 misclassification",,0.95
+EXP33-C,169,sqlite,src/os_unix.c,3879,FP,zDirname is fully initialized by sqlite3_snprintf at line 3879 before any read; not uninitialized,,0.95
+ARR00-C,170,sqlite,src/os_unix.c,3880,FP,zDirname populated by snprintf before the loop at 3880 reads it; not uninitialized array read,,0.95
+FIO42-C,171,sqlite,src/os_unix.c,3887,FP,"openDirectory documents the caller owns *pFd and must close() it; fd is returned via *pFd by contract, not leaked",,0.85
+INT13-C,172,sqlite,src/os_unix.c,3915,FP,"flags&SQLITE_SYNC_DATAONLY — flag bit-test on a small enum-valued int; intentional, value non-negative",,0.93
+INT13-C,173,sqlite,src/os_unix.c,3916,FP,(flags&0x0F)==SQLITE_SYNC_FULL bit-test idiom; correct,,0.93
+INT13-C,174,sqlite,src/os_unix.c,3919,FP,"flags&0x0F masking in assert; correct, non-negative",,0.93
+INT13-C,175,sqlite,src/os_unix.c,3920,FP,flags&0x0F in assert; correct,,0.93
+PRE32-C,176,sqlite,src/os_unix.c,3943,FP,OSTRACE DIRSYNC trace — no preprocessor directive in argument,,0.93
+PRE32-C,177,sqlite,src/os_unix.c,3943,FP,"Duplicate of 176; HAVE_FULLFSYNC and isFullsync are evaluated args, not directives",,0.93
+INT32-C,178,sqlite,src/os_unix.c,3973,FP,"nByte is i64 file size, szChunk>0 guarded; rounding-up multiply on realistic file sizes far below i64 overflow; defensive code",,0.85
+INT33-C,179,sqlite,src/os_unix.c,3973,FP,division guarded by enclosing if(pFile->szChunk>0); divisor cannot be zero,,0.92
+INT32-C,180,sqlite,src/os_unix.c,4058,FP,"Same chunk rounding in fcntlSizeHint, guarded by szChunk>0; realistic sizes, no overflow",,0.85
+INT33-C,181,sqlite,src/os_unix.c,4058,FP,guarded by if(pFile->szChunk>0); divisor nonzero,,0.92
+INT33-C,182,sqlite,src/os_unix.c,4082,FP,nBlk=buf.st_blksize from fstat of a valid open fd; filesystems report nonzero block size; fallback path only,,0.8
+INT33-C,183,sqlite,src/os_unix.c,4084,FP,"Same nBlk from fstat block size, nonzero in practice; iWrite%nBlk in assert",,0.8
+INT10-C,184,sqlite,src/os_unix.c,4084,FP,(iWrite+1)%nBlk in assert; iWrite and nBlk both non-negative (file offset and block size); implementation-defined-negative concern does not arise,,0.85
+API02-C,185,sqlite,src/os_unix.c,4129,FP,"API02 on unixGetTempname(int nBuf, char *zBuf) — nBuf IS the size argument for zBuf; the size parameter the rule asks for already exists",,0.9
+INT31-C,186,sqlite,src/os_unix.c,4212,FP,iNew<0 case handled explicitly (sets 0x7FFFFFFF); (unsigned)iNew only taken when iNew>=0; bounds covered,,0.85
+ARR02-C,187,sqlite,src/os_unix.c,4285,FP,"azLock[] = {literals} has size inferred from initializer (4) at compile time; idiomatic and safe, not an unbounded declaration",,0.9
+EXP20-C,188,sqlite,src/os_unix.c,4390,FP,QNX-only setDeviceCharacteristics; strcmp==0 test idiom for filesystem type match; clear and standard,,0.95
+EXP00-C,189,sqlite,src/os_unix.c,4393,FP,"Bitwise-OR of IOCAP flag constants terminated by 0; precedence is unambiguous, EXP00 style noise",,0.95
+EXP00-C,190,sqlite,src/os_unix.c,4403,FP,IOCAP flag OR expression; precedence clear,,0.95
+INT14-C,191,sqlite,src/os_unix.c,4403,FP,"pFile appears only as struct member access pFile->sectorSize within an arithmetic+OR expr; INT14 misattribution, no real mixed-use defect",,0.92
+INT14-C,192,sqlite,src/os_unix.c,4403,FP,"SQLITE_IOCAP_ATOMIC512 is a flag constant used in sectorSize/512*ATOMIC512; intentional scaling, style noise",,0.92
+EXP20-C,193,sqlite,src/os_unix.c,4409,FP,strcmp==0 filesystem-type test (qnx6); standard idiom,,0.95
+EXP00-C,194,sqlite,src/os_unix.c,4412,FP,IOCAP flag OR list; precedence unambiguous,,0.95
+EXP20-C,195,sqlite,src/os_unix.c,4418,FP,strcmp==0 test (qnx4); standard idiom,,0.95
+EXP00-C,196,sqlite,src/os_unix.c,4422,FP,IOCAP bitset computation with explicit parens already present; style noise,,0.95
+INT32-C,197,sqlite,src/os_unix.c,4422,FP,"sectorSize is small device sector size (multiple of 512), /512*512<<1 stays tiny; -2 cannot overflow",,0.85
+EXP00-C,198,sqlite,src/os_unix.c,4430,FP,Same IOCAP bitset expr; precedence fine,,0.95
+INT32-C,199,sqlite,src/os_unix.c,4430,FP,Same small sectorSize-derived bitset; no overflow,,0.85
+EXP00-C,200,sqlite,src/os_unix.c,4436,FP,IOCAP flag OR list terminated by 0; precedence clear,,0.95
+MSC37-C,201,sqlite,src/os_unix.c,4494,FP,unixGetpagesize: every #if/#elif/#else branch returns a value; no path falls through to function end,,0.9
+DCL13-C,202,sqlite,src/os_unix.c,4609,TP,"unixDescribeShm(...,unixShm *pShm): pShm only read (pShm->pShmNode/id/sharedMask/exclMask), never written or stored mutably; internal diagnostic helper not bound by a vfs typedef, const would compile",,0.6
+DCL13-C,203,sqlite,src/os_unix.c,4633,TP,"unixFcntlExternalReader(unixFile *pFile,...): pFile only read (pFile->pShm, pFile->iBusyTimeout); internal helper forward-declared, not an io_methods typedef; const-qualifying compiles",,0.6
+DCL13-C,204,sqlite,src/os_unix.c,4679,TP,"unixIsSharingShmNode(unixFile *pFile): pFile only read (pFile->pShm, pFile->ctrlFlags); internal helper, not vfs-typedef-bound; const would compile",,0.6
+EXP20-C,205,sqlite,src/os_unix.c,4686,FP,"AtomicLoad(&pShmNode->nRef)==1 inside assert documents an exact-state invariant (single ref expected here); ==1 is intentional, not a boolean test",,0.9
+EXP05-C,206,sqlite,src/os_unix.c,4688,FP,&lock taken on a local non-const struct flock 'lock'; passed to osFcntl which needs mutable pointer; no const qualification cast away,,0.92
+ARR00-C,207,sqlite,src/os_unix.c,4727,FP,ii loop is in SQLITE_ENABLE_SETLK_TIMEOUT branch; for(ii=ofst-UNIX_SHM_BASE; ...) initializes ii in the for-init before any use; not uninitialized,,0.92
+INT32-C,208,sqlite,src/os_unix.c,4766,FP,"ofst,n are small lock-byte counts asserted in range (n<=SQLITE_SHM_NLOCK, ofst<=UNIX_SHM_DMS); ofst+n-1 trace arg cannot overflow",,0.9
+INT32-C,209,sqlite,src/os_unix.c,4766,FP,"ofst+n bounded by asserts; trace-only, no overflow",,0.9
+INT32-C,210,sqlite,src/os_unix.c,4768,FP,Bounded ofst+n-1 in OSTRACE; no overflow,,0.9
+INT32-C,211,sqlite,src/os_unix.c,4768,FP,Bounded ofst+n; no overflow,,0.9
+INT32-C,212,sqlite,src/os_unix.c,4771,FP,Bounded lock-range trace; no overflow,,0.9
+INT32-C,213,sqlite,src/os_unix.c,4771,FP,Bounded; no overflow,,0.9
+INT32-C,214,sqlite,src/os_unix.c,4775,FP,Bounded lock-range trace; no overflow,,0.9
+INT32-C,215,sqlite,src/os_unix.c,4775,FP,Bounded; no overflow,,0.9
+INT32-C,216,sqlite,src/os_unix.c,4777,FP,Bounded lock-range trace; no overflow,,0.9
+INT32-C,217,sqlite,src/os_unix.c,4777,FP,Bounded; no overflow,,0.9
+INT32-C,218,sqlite,src/os_unix.c,4780,FP,Bounded lock-range trace; no overflow,,0.9
+INT32-C,219,sqlite,src/os_unix.c,4780,FP,Bounded; no overflow,,0.9
+INT13-C,220,sqlite,src/os_unix.c,4800,FP,((pgsz-1)&pgsz)==0 power-of-2 check in assert; intentional bit test on positive page size,,0.92
+INT14-C,221,sqlite,src/os_unix.c,4800,FP,"pgsz used in power-of-2 assert and pgsz/shmsz; INT14 style noise, page size positive",,0.92
+INT32-C,222,sqlite,src/os_unix.c,4802,FP,pgsz/shmsz where shmsz=32*1024 constant nonzero and pgsz positive; INT_MIN/-1 impossible (divisor positive constant),,0.9
+EXP33-C,223,sqlite,src/os_unix.c,4820,FP,i in unixShmPurge declared then used as for-loop counter initialized in for-init (for(i=0;...)) on each loop; not uninitialized,,0.92
+MEM30-C,224,sqlite,src/os_unix.c,4821,FP,p->aMutex freed by sqlite3_mutex_free which frees the mutex object not the array p->aMutex; array memory belongs to pShmNode still alive; no use-after-free,,0.92
+MEM30-C,225,sqlite,src/os_unix.c,4824,FP,p->nRegion is an int field of live struct p (freed only at 4837 after this loop); reading it here is not use-after-free,,0.95
+INT30-C,226,sqlite,src/os_unix.c,4824,FP,"i is int loop counter not unsigned; i+=nShmPerMap bounded by p->nRegion; no wrap, and INT30 (unsigned wrap) misapplied to signed int",,0.9
+MEM30-C,227,sqlite,src/os_unix.c,4825,FP,p->hShm read while p still allocated (freed at 4837); not freed yet,,0.95
+MEM30-C,228,sqlite,src/os_unix.c,4826,FP,p->apRegion array contents read before sqlite3_free(p->apRegion) at 4831; p and apRegion still live in this loop,,0.95
+MEM30-C,229,sqlite,src/os_unix.c,4826,FP,p->szRegion field of live struct p; not freed; not use-after-free,,0.95
+MEM30-C,230,sqlite,src/os_unix.c,4828,FP,"p->apRegion[i] freed via sqlite3_free of the element, then p->apRegion array freed AFTER loop at 4831; ordering correct",,0.95
+MEM30-C,231,sqlite,src/os_unix.c,4832,FP,p->hShm read at robust_close after the apRegion loop; p still allocated until 4837,,0.95
+MEM30-C,232,sqlite,src/os_unix.c,4833,FP,p->hShm assigned -1 after close; p live; no use-after-free,,0.95
+MEM30-C,233,sqlite,src/os_unix.c,4836,FP,p->pInode dereferenced (p->pInode->pShmNode=0) while p still allocated; sqlite3_free(p) only at 4837 after this; correct teardown order,,0.95
+EXP05-C,234,sqlite,src/os_unix.c,4963,FP,p is void* from sqlite3_malloc64 not const-qualified the memset writes through it no const cast away,,high
+INT30-C,235,sqlite,src/os_unix.c,4989,FP,sizeof(SQLITE_SHM_DIRECTORY)+31 is a compile-time constant build-config dependent no runtime overflow,,high
+INT32-C,236,sqlite,src/os_unix.c,4991,FP,nShmFilename=6+strlen(zBasePath) path bounded by mxPathname filename overflow impossible in practice hardened VFS,,high
+INT30-C,237,sqlite,src/os_unix.c,4993,FP,sizeof(*pShmNode)+nShmFilename feeds sqlite3_malloc64 nShmFilename bounded by pathname length no realistic wrap,,high
+INT32-C,238,sqlite,src/os_unix.c,4998,FP,same bounded allocation size reused for memset of just-allocated block sizes identical no overflow,,high
+INT30-C,239,sqlite,src/os_unix.c,4998,FP,sizeof(*pShmNode)+nShmFilename bounded by path length no wrap matches malloc just done,,high
+MEM31-C,240,sqlite,src/os_unix.c,5012,FP,pShmMutex freed via unixShmPurge in shm_open_err goto and in unixShmUnmap not a leak,,high
+MEM31-C,241,sqlite,src/os_unix.c,5021,FP,aMutex[ii] freed by unixShmPurge on error path and at refcount zero analyzer misses purge,,high
+DCL18-C,242,sqlite,src/os_unix.c,5034,FP,0777 is intentional POSIX file mode octal correct idiom not a typo,,high
+FIO42-C,243,sqlite,src/os_unix.c,5037,FP,hShm tracked in pShmNode closed by unixShmPurge when nRef hits zero lifetime is object-scoped not function-scoped,,high
+DCL18-C,244,sqlite,src/os_unix.c,5038,FP,0777 intentional POSIX mode octal correct,,high
+INT32-C,245,sqlite,src/os_unix.c,5062,FP,nRef++ refcount on shared shm node bounded by number of db connections cannot reach INT_MAX,,high
+MEM12-C,246,sqlite,src/os_unix.c,5077,FP,shm_open_err path calls unixShmPurge which frees hShm hShm is not function-local leaked the goto chain is correct,,high
+MSC07-C,247,sqlite,src/os_unix.c,5080,FP,line 5080 shm_open_err label is the goto target reached via goto not fallthrough not unreachable after return,,high
+MEM12-C,248,sqlite,src/os_unix.c,5084,FP,same as 246 hShm freed by unixShmPurge analyzer false leak,,high
+INT32-C,249,sqlite,src/os_unix.c,5140,FP,iRegion bounded small region index nShmPerMap fixed page ratio product cannot overflow int in practice,,high
+INT33-C,250,sqlite,src/os_unix.c,5140,FP,nShmPerMap=unixShmRegionPerMap() returns a fixed nonzero page ratio never zero,,high
+INT32-C,251,sqlite,src/os_unix.c,5140,FP,iRegion+nShmPerMap both small bounded values no overflow,,high
+INT32-C,252,sqlite,src/os_unix.c,5144,FP,nReqRegion*szRegion szRegion is wal-index page size bounded region count small no realistic overflow,,high
+INT32-C,253,sqlite,src/os_unix.c,5179,FP,nByte%pgsz pgsz is static const 4096 not -1 INT_MIN%-1 impossible,,high
+INT10-C,254,sqlite,src/os_unix.c,5179,FP,nByte nonnegative file size pgsz positive const 4096 remainder well-defined assert guards it,,high
+INT30-C,255,sqlite,src/os_unix.c,5194,FP,nReqRegion*sizeof(char*) bounded region count no wrap feeds realloc,,high
+ARR30-C,256,sqlite,src/os_unix.c,5201,FP,while loop bounded by nReqRegion increments nRegion by nShmPerMap terminates not unbounded,,high
+INT32-C,257,sqlite,src/os_unix.c,5202,FP,szRegion*nShmPerMap both bounded page-size values no overflow,,high
+INT32-C,258,sqlite,src/os_unix.c,5208,FP,szRegion*(i64)pShmNode->nRegion cast to i64 64-bit math no overflow,,high
+INT31-C,259,sqlite,src/os_unix.c,5220,FP,nMap=szRegion*nShmPerMap positive bounded conversion to size_t safe,,high
+MEM30-C,260,sqlite,src/os_unix.c,5224,FP,apRegion freshly assigned from successful realloc above not freed not use-after-free,,high
+INT30-C,261,sqlite,src/os_unix.c,5224,FP,szRegion*i loop index i bounded by nShmPerMap small no wrap,,high
+INT32-C,262,sqlite,src/os_unix.c,5224,FP,szRegion*i same bounded loop index no overflow,,high
+ARR00-C,263,sqlite,src/os_unix.c,5232,FP,iRegion guarded by if pShmNode->nRegion>iRegion before subscript access bounds-checked,,high
+MEM30-C,264,sqlite,src/os_unix.c,5232,FP,apRegion valid allocated array not freed analyzer false UAF,,high
+MSC37-C,265,sqlite,src/os_unix.c,5249,FP,assertLockingArrayOk both branches return SQLITE_DEBUG branch returns 1 else branch returns memcmp result all paths return,,high
+DCL13-C,266,sqlite,src/os_unix.c,5249,FP,pShmNode used as pShmNode->pFirst and pShmNode->aLock and passed to memcmp not const-qualifiable cleanly also debug-only contract function,,high
+ARR00-C,267,sqlite,src/os_unix.c,5261,FP,"aLock initialized by memset(aLock,0,sizeof(aLock)) at line 5256 before the loop reads it not uninitialized",,high
+INT14-C,268,sqlite,src/os_unix.c,5294,FP,INT14 readability advisory ofst used in shift and add in mask formula intentional clear bitmask idiom,,high
+INT14-C,269,sqlite,src/os_unix.c,5294,FP,INT14 readability n in mask formula intentional bitmask construction not a defect,,high
+INT32-C,270,sqlite,src/os_unix.c,5294,FP,1<<(ofst+n) result stored in u16 mask ofst+n<=SQLITE_SHM_NLOCK asserted small no overflow,,high
+INT34-C,271,sqlite,src/os_unix.c,5294,FP,shift amount ofst+n asserted ofst>=0 and ofst+n<=SQLITE_SHM_NLOCK at line 5305 bounded valid,,high
+INT32-C,272,sqlite,src/os_unix.c,5294,FP,ofst+n both asserted small nonnegative no overflow,,high
+INT32-C,273,sqlite,src/os_unix.c,5294,FP,1<<ofst ofst asserted >=0 and small no overflow into u16 mask,,high
+INT34-C,274,sqlite,src/os_unix.c,5294,FP,1<<ofst ofst asserted nonnegative and bounded by SQLITE_SHM_NLOCK valid shift,,high
+INT13-C,275,sqlite,src/os_unix.c,5311,FP,flags is a fixed small enum of SQLITE_SHM_* bitflags & is correct intended bitmask test signed-ness irrelevant,,high
+INT13-C,276,sqlite,src/os_unix.c,5330,FP,flags SQLITE_SHM_* flag test signed int harmless intended,,high
+INT32-C,277,sqlite,src/os_unix.c,5334,FP,1<<ofst in SETLK debug assert ofst bounded small valid shift,,high
+INT34-C,278,sqlite,src/os_unix.c,5334,FP,1<<ofst shift amount ofst bounded valid debug-only assert,,high
+INT13-C,279,sqlite,src/os_unix.c,5351,FP,flags & SQLITE_SHM_UNLOCK intended flag test signed harmless,,high
+ARR00-C,280,sqlite,src/os_unix.c,5373,FP,iMutex initialized in for(iMutex=ofst ...) before use not uninitialized bound is ofst+n asserted valid,,high
+INT13-C,281,sqlite,src/os_unix.c,5386,FP,flags & SQLITE_SHM_UNLOCK intended bitflag test no defect,,high
+INT13-C,282,sqlite,src/os_unix.c,5390,FP,flags & SQLITE_SHM_EXCLUSIVE intended flag test,,high
+INT13-C,283,sqlite,src/os_unix.c,5391,FP,flags & SQLITE_SHM_SHARED intended flag test,,high
+INT13-C,284,sqlite,src/os_unix.c,5397,FP,flags & SQLITE_SHM_SHARED intended flag test,,high
+ARR38-C,285,sqlite,src/os_unix.c,5410,FP,"memset(&aLock[ofst],0,sizeof(int)*n) n asserted bounded ofst+n<=NLOCK aLock has NLOCK ints in bounds",,high
+EXP05-C,286,sqlite,src/os_unix.c,5410,FP,sizeof(int)*n is the memset size argument not a const-pointer cast no const violation,,high
+INT30-C,287,sqlite,src/os_unix.c,5410,FP,sizeof(int)*n n small asserted bounded no wrap,,high
+INT32-C,288,sqlite,src/os_unix.c,5410,FP,sizeof(int)*n n bounded by SQLITE_SHM_NLOCK no overflow,,high
+INT13-C,289,sqlite,src/os_unix.c,5415,FP,flags & SQLITE_SHM_SHARED intended flag test,,high
+ARR00-C,290,sqlite,src/os_unix.c,5440,FP,ii initialized in for(ii=ofst ...) before array use loop bound ofst+n asserted in-range,,high
+ARR30-C,291,sqlite,src/os_unix.c,5441,FP,"aLock[ii] ii in [ofst,ofst+n) and ofst+n<=SQLITE_SHM_NLOCK==8 in bounds asserted",,high
+ARR30-C,292,sqlite,src/os_unix.c,5454,FP,aLock[ii] same asserted bound ofst+n<=NLOCK in-range write,,high
+PRE32-C,293,sqlite,src/os_unix.c,5473,FP,OSTRACE no preprocessor directive in this OSTRACE call args are plain printf-style no #if PRE32 misfire,,high
+PRE32-C,294,sqlite,src/os_unix.c,5473,FP,OSTRACE args contain no preprocessor directive just format string and exprs analyzer misparse not real PRE32,,high
+DCL13-C,295,sqlite,src/os_unix.c,5504,FP,fd is the io_methods xShmUnmap parameter signature fixed by sqlite3_io_methods typedef cannot const-qualify,,high
+INT32-C,296,sqlite,src/os_unix.c,5536,FP,nRef-- guarded by assert nRef>0 at 5535 refcount cannot underflow to INT_MIN,,high
+DCL00-C,297,sqlite,src/os_unix.c,5590,FP,h=pFd->h read-only local but const advisory not a defect and DCL00 cosmetic harmless either way actually h never modified so technically true but trivial style not CERT defect,,high
+DCL03-C,298,sqlite,src/os_unix.c,5601,FP,assert(MAP_FAILED!=0) is a compile-time invariant check on a platform macro legitimate runtime assert idiom not a defect,,high
+INT14-C,299,sqlite,src/os_unix.c,5612,FP,INT14 readability szSyspage used in subtract and bitwise-and page-align idiom intentional clear,,high
+INT32-C,300,sqlite,src/os_unix.c,5612,FP,szSyspage-1 osGetpagesize returns positive power-of-two page size subtraction cannot overflow,,high
+MEM33-C,301,sqlite,src/os_unix.c,5732,FP,line 5732 is *pp=&((u8*)pFd->pMapRegion)[iOff] a pointer assignment not a struct/flexible-array copy MEM33 misfire,,high
+PRE01-C,302,sqlite,src/os_unix.c,5818,FP,IOMETHODS METHOD param is the struct object name used as a declarator identifier parenthesizing is impossible and wrong,,high
+PRE01-C,303,sqlite,src/os_unix.c,5818,FP,VERSION param is a struct field initializer value parenthesizing harmless-but the macro is correct CERT PRE01 not applicable to initializer-list use,,high
+DCL13-C,304,sqlite,src/os_unix.c,5972,FP,pNew is the finder signature fixed by finder_type typedef and pNew->h is read also field access cannot const-qualify,,high
+ARR02-C,305,sqlite,src/os_unix.c,5977,FP,aMap[] initialized with brace list compiler infers size explicit size unnecessary and not a CERT defect for static init,,high
+WIN04-C,306,sqlite,src/os_unix.c,6024,FP,WIN04 EncodePointer is Windows-only mitigation irrelevant on Unix VFS not applicable,,high
+DCL13-C,307,sqlite,src/os_unix.c,6036,FP,pNew finder signature fixed by finder_type typedef pNew->h read cannot const,,high
+WIN04-C,308,sqlite,src/os_unix.c,6060,FP,WIN04 EncodePointer Windows-only not applicable to Unix,,high
+MSC37-C,309,sqlite,src/os_unix.c,6080,FP,fillInUnixFile all paths assign rc and reach return rc at 6256 no path falls through without return,,high
+DCL13-C,310,sqlite,src/os_unix.c,6081,FP,pVfs used as pNew->pVfs=pVfs storing into field and pVfs->zName pVfs->pAppData read also signature fixed by VFS contract cannot const,,high
+INT13-C,311,sqlite,src/os_unix.c,6094,FP,ctrlFlags & UNIXFILE_NOLOCK intended flag test signed harmless,,high
+INT13-C,312,sqlite,src/os_unix.c,6104,FP,ctrlFlags & UNIXFILE_URI intended flag test,,high
+INT13-C,313,sqlite,src/os_unix.c,6120,FP,ctrlFlags & UNIXFILE_NOLOCK intended flag test,,high
+EXP05-C,314,sqlite,src/os_unix.c,6128,FP,(void*)zFilename cast to void* stored in lockingContext does not cast away const it adds void no qualifier removed and stored where treated opaque,,high
+PRE32-C,315,sqlite,src/os_unix.c,6133,FP,OSTRACE at 6133 region the #if is APPLE locking-style guarded code not a directive inside the OSTRACE macro args analyzer misattribution,,high
+EXP30-C,316,sqlite,src/os_unix.c,6170,FP,pCtx assigned then dereferenced in else branch after null check single assignment no sequence-point violation,,high
+EXP33-C,317,sqlite,src/os_unix.c,6170,FP,pCtx=sqlite3_malloc64 assigned and checked if(pCtx==0) before dereference in else not uninitialized,,high
+EXP34-C,318,sqlite,src/os_unix.c,6170,FP,pCtx null-checked at 6171 dereferenced only in else branch where nonnull no null deref,,high
+MEM31-C,319,sqlite,src/os_unix.c,6184,FP,pNew is the unixFile object never freed here robust_close closes fd does not free pNew no double free,,high
+MEM31-C,320,sqlite,src/os_unix.c,6184,FP,h is an int fd not heap robust_close closes it not free double-free nonsensical,,high
+MEM31-C,321,sqlite,src/os_unix.c,6184,FP,__LINE__ is a literal int macro arg to robust_close not a freeable pointer analyzer confusion,,high
+INT32-C,322,sqlite,src/os_unix.c,6199,FP,strlen(zFilename)+6 zFilename bounded by mxPathname no realistic int overflow hardened path,,high
+MEM30-C,323,sqlite,src/os_unix.c,6215,FP,pNew->pInode set by findInodeInfo not freed VxWorks-only path no use-after-free,,high
+MEM30-C,324,sqlite,src/os_unix.c,6216,FP,pInode->pSem accessed after findInodeInfo success not freed no UAF,,high
+MEM30-C,325,sqlite,src/os_unix.c,6216,FP,pNew->pInode valid from findInodeInfo not freed analyzer false UAF,,high
+MEM30-C,326,sqlite,src/os_unix.c,6220,FP,pNew->pId->zCanonicalName VxWorks pId from vxworksFindFileId not freed valid,,high
+MEM30-C,327,sqlite,src/os_unix.c,6220,FP,pNew->pId valid VxWorks file id not freed no UAF,,high
+FIO42-C,328,sqlite,src/os_unix.c,6223,FP,pSem is a named POSIX semaphore object-lifetime closed via sem_close at inode teardown not a file descriptor leak,,high
+MEM30-C,329,sqlite,src/os_unix.c,6223,FP,pNew->pInode valid not freed no UAF,,high
+DCL18-C,330,sqlite,src/os_unix.c,6223,FP,0666 intentional POSIX semaphore mode octal correct,,high
+MEM30-C,331,sqlite,src/os_unix.c,6224,FP,pInode->pSem just opened valid not freed no UAF,,high
+MEM30-C,332,sqlite,src/os_unix.c,6224,FP,pNew->pInode valid not freed no UAF,,high
+MEM30-C,333,sqlite,src/os_unix.c,6226,FP,aSemName is an inode-embedded buffer not freed no UAF,,high
+MEM31-C,334,sqlite,src/os_unix.c,6237,FP,pNew not freed robust_close closes fd not free no double free,,high
+MEM31-C,335,sqlite,src/os_unix.c,6237,FP,h is int fd not heap no double free,,high
+MEM31-C,336,sqlite,src/os_unix.c,6237,FP,__LINE__ literal not a pointer no double free,,high
+MEM30-C,337,sqlite,src/os_unix.c,6240,FP,pNew->ctrlFlags is a u8 bitfield member access not a freed pointer analyzer confusion,,high
+MEM30-C,338,sqlite,src/os_unix.c,6243,FP,pNew->pId VxWorks id valid then released exactly once via vxworksReleaseFileId not UAF,,high
+MEM30-C,339,sqlite,src/os_unix.c,6244,FP,pNew->pId set to 0 after release no UAF only accessed once before clearing,,high
+ARR02-C,340,sqlite,src/os_unix.c,6262,FP,azTempDirs[] static brace-initialized array size inferred by compiler not a CERT defect,,high
+ENV34-C,341,sqlite,src/os_unix.c,6275,FP,getenv stored in azTempDirs is consumed during single-threaded init and used promptly hardened idiom but ENV34 technically the lifetime concern is real SQLite caches before any overwrite acceptable design,,medium
+ERR33-C,342,sqlite,src/os_unix.c,6275,FP,getenv NULL return is the intended sentinel azTempDirs entries may be 0 and unixTempFileDir tolerates null entries no error to check,,high
+STR30-C,343,sqlite,src/os_unix.c,6275,FP,azTempDirs[0]/[1] are non-const char* slots assigned a getenv pointer not modifying a string literal STR30 misfire,,high
+CON34-C,344,sqlite,src/os_unix.c,6275,FP,getenv shared static storage but unixTempFileInit runs once at init before threads CON34 not reachable concurrently in practice,,medium
+ENV34-C,345,sqlite,src/os_unix.c,6276,FP,same as 341 getenv TMPDIR consumed at single-threaded init acceptable,,medium
+ERR33-C,346,sqlite,src/os_unix.c,6276,FP,getenv TMPDIR NULL is intended sentinel tolerated by unixTempFileDir no check needed,,high
+STR30-C,347,sqlite,src/os_unix.c,6276,FP,azTempDirs[1] non-const slot assigned getenv result not literal modification,,high
+CON34-C,348,sqlite,src/os_unix.c,6276,FP,getenv at init-time single-threaded CON34 not concurrently reachable,,medium
+EXP33-C,349,sqlite,src/os_unix.c,6294,FP,"buf is struct stat written by osStat only read under && short-circuit after osStat(zDir,&buf)==0 succeeds so buf valid when S_ISDIR reads it",,high
+DCL18-C,350,sqlite,src/os_unix.c,6295,FP,03 octal access mode mask for osAccess intentional POSIX idiom equals decimal 3 correct,,high
+DCL30-C,351,sqlite,src/os_unix.c,6297,FP,zDir is a const char* pointer (not a local array); it points to static storage sqlite3_temp_directory or static azTempDirs[i] - returning the pointer value is correct,,0.97
+ARR00-C,352,sqlite,src/os_unix.c,6297,FP,"same as 351 - zDir is a pointer not an automatic array; pointee lives in static storage, no dangling pointer",,0.97
+ARR01-C,353,sqlite,src/os_unix.c,6299,FP,azTempDirs is a file-scope static array declared at line 6262 not a decayed parameter; sizeof(arr)/sizeof(arr[0]) is the correct element-count idiom,,0.98
+ARR01-C,354,sqlite,src/os_unix.c,6299,FP,duplicate of 353 - static file-scope array sizeof idiom is correct,,0.98
+DCL00-C,355,sqlite,src/os_unix.c,6312,FP,iLimit IS modified - postincrement (iLimit++)>10 at line 6334 inside the do-while loop,,0.98
+INT32-C,356,sqlite,src/os_unix.c,6331,FP,nBuf guarded by assert(nBuf>2) at line 6330 immediately before zBuf[nBuf-2]; no underflow possible,,0.95
+DCL30-C,357,sqlite,src/os_unix.c,6413,FP,pUnused is UnixUnusedFd* pointing to inode-list/heap memory not an automatic local object; returning the pointer is correct,,0.97
+DCL18-C,358,sqlite,src/os_unix.c,6428,FP,0777 is intentional POSIX permission bitmask (st_mode & 0777) - octal is the correct and idiomatic form for file mode bits,,0.98
+INT13-C,359,sqlite,src/os_unix.c,6469,FP,flags & (SQLITE_OPEN_*) is idiomatic bitflag testing on an int flags word; no defect,,0.97
+ENV01-C,360,sqlite,src/os_unix.c,6470,FP,zDb[MAX_PATHNAME+1] is a fixed pathname buffer not sized from an environment variable,,0.95
+MEM05-C,361,sqlite,src/os_unix.c,6470,FP,"zDb[MAX_PATHNAME+1] is a fixed-size array with a compile-time bound, not a runtime-sized VLA",,0.96
+INT13-C,362,sqlite,src/os_unix.c,6501,FP,flags & SQLITE_OPEN_DELETEONCLOSE idiomatic bitflag test,,0.97
+DCL18-C,363,sqlite,src/os_unix.c,6502,FP,0600 is intentional octal file-permission mode bits,,0.98
+INT13-C,364,sqlite,src/os_unix.c,6503,FP,flags & SQLITE_OPEN_URI idiomatic bitflag test,,0.97
+INT13-C,365,sqlite,src/os_unix.c,6548,FP,flags&0x0FFF00 idiomatic mask to extract file-type field,,0.97
+INT13-C,366,sqlite,src/os_unix.c,6553,FP,flags & SQLITE_OPEN_EXCLUSIVE idiomatic bitflag test,,0.97
+INT13-C,367,sqlite,src/os_unix.c,6554,FP,flags & SQLITE_OPEN_DELETEONCLOSE idiomatic bitflag test,,0.97
+INT13-C,368,sqlite,src/os_unix.c,6555,FP,flags & SQLITE_OPEN_CREATE idiomatic bitflag test,,0.97
+INT13-C,369,sqlite,src/os_unix.c,6556,FP,flags & SQLITE_OPEN_READONLY idiomatic bitflag test,,0.97
+INT13-C,370,sqlite,src/os_unix.c,6557,FP,flags & SQLITE_OPEN_READWRITE idiomatic bitflag test,,0.97
+INT13-C,371,sqlite,src/os_unix.c,6559,FP,flags & SQLITE_OPEN_AUTOPROXY idiomatic bitflag test,,0.97
+ENV01-C,372,sqlite,src/os_unix.c,6578,FP,zTmpname[MAX_PATHNAME+2] is a fixed pathname buffer not env-var sized,,0.95
+MEM05-C,373,sqlite,src/os_unix.c,6578,FP,zTmpname[MAX_PATHNAME+2] is a fixed-size array not a runtime VLA,,0.96
+EXP05-C,374,sqlite,src/os_unix.c,6622,FP,"memset(p,0,sizeof(unixFile)) - p is unixFile* (non-const); no const cast away occurs",,0.97
+INT13-C,375,sqlite,src/os_unix.c,6645,FP,assert((flags & SQLITE_OPEN_URI)||...) idiomatic bitflag test,,0.97
+FIO42-C,376,sqlite,src/os_unix.c,6675,FP,rc is an int SQLite return code; no CreateFile/HANDLE exists in this POSIX code - analyzer Windows-API misfire,,0.98
+INT13-C,377,sqlite,src/os_unix.c,6683,FP,"openFlags is the locally-built O_* mask; & test is idiomatic, value fully controlled",,0.97
+FIO42-C,378,sqlite,src/os_unix.c,6702,FP,fd from robust_open is stored into the unixFile/UnixUnusedFd or closed via robust_close/goto open_finished on every path; not leaked,,0.9
+STR34-C,379,sqlite,src/os_unix.c,6707,FP,zName at line 6707 is passed as a const char* to unixLogError for an error message; no char-to-int sign-extension conversion occurs,,0.95
+INT13-C,380,sqlite,src/os_unix.c,6724,FP,flags & (SQLITE_OPEN_WAL|SQLITE_OPEN_MAIN_JOURNAL) idiomatic bitflag test,,0.97
+INT13-C,381,sqlite,src/os_unix.c,6736,FP,flags & (SQLITE_OPEN_READONLY|SQLITE_OPEN_READWRITE) idiomatic mask,,0.97
+MEM12-C,382,sqlite,src/os_unix.c,6746,FP,"line 6746 path returns SQLITE_NOMEM after robust_close(p,fd) already closed fd; not leaked",,0.9
+MEM12-C,383,sqlite,src/os_unix.c,6762,FP,"line 6762 path calls robust_close(p,fd) before returning SQLITE_IOERR_ACCESS; fd closed",,0.9
+INT13-C,384,sqlite,src/os_unix.c,6778,FP,flags & SQLITE_OPEN_URI idiomatic bitflag test,,0.97
+ENV34-C,385,sqlite,src/os_unix.c,6785,FP,"getenv result stored in char* envforce read immediately via atoi on the next lines before any other getenv call; transient single-threaded use, value consumed at once - established hardened-core ENV34 misfire",,0.85
+CON34-C,386,sqlite,src/os_unix.c,6785,FP,getenv at 6785 used once under SQLITE_ENABLE_LOCKING_STYLE open path guarded by global mutex context; established hardened-core CON34 misfire,,0.8
+ERR07-C,387,sqlite,src/os_unix.c,6791,FP,"atoi(envforce) reads a developer-set debug env var SQLITE_FORCE_PROXY_LOCKING; only sign of result used, error checking irrelevant - hardened-core",,0.85
+ERR34-C,388,sqlite,src/os_unix.c,6791,FP,"same as 387 - atoi on a controlled debug env var, only >0 tested",,0.85
+MEM12-C,389,sqlite,src/os_unix.c,6805,FP,line 6805 unixClose(pFile) is called before return rc which releases fd and all resources; not leaked,,0.85
+MEM12-C,390,sqlite,src/os_unix.c,6825,FP,line 6825 (open_finished) frees p->pPreallocatedUnused; fd ownership already transferred to pFile or closed earlier; not a leak,,0.85
+DCL31-C,391,sqlite,src/os_unix.c,6888,FP,line 6888 SimulateIOError macro expansion - no missing type specifier in real code; analyzer macro-expansion misfire,,0.95
+EXP33-C,392,sqlite,src/os_unix.c,6898,FP,buf is struct stat used only under flags==SQLITE_ACCESS_EXISTS branch where osStat fills it before S_ISREG/st_size read; initialized by osStat on the used path,,0.95
+MSC04-C,393,sqlite,src/os_unix.c,6923,TP,appendOnePathElement genuinely calls appendAllPathElements at line 6975 which calls back appendOnePathElement - real indirect recursion exists; MSC04 recursion-detection is accurate though bounded by nSymlink/SQLITE_MAX_SYMLINK,,0.6
+INT32-C,394,sqlite,src/os_unix.c,6935,FP,"--pPath->nUsed only entered when pPath->nUsed>1 (line 6933) and zOut[0]=='/' guarantees loop terminates; nUsed is small positive path length, never near INT_MIN",,0.92
+INT32-C,395,sqlite,src/os_unix.c,6944,FP,pPath->nUsed++ bounded by prior check nUsed+nName+2 < nOut (line 6940) where nOut is the path buffer size; cannot reach INT_MAX,,0.92
+INT31-C,396,sqlite,src/os_unix.c,6945,FP,nName asserted >0 (line 6928) and bounded by the buffer-fit check at 6940; benign small positive int to size_t in memcpy,,0.9
+INT32-C,397,sqlite,src/os_unix.c,6946,FP,pPath->nUsed += nName guarded by nUsed+nName+2 < nOut check at line 6940; bounded by buffer size,,0.92
+ENV01-C,398,sqlite,src/os_unix.c,6959,FP,zLnk[SQLITE_MAX_PATHLEN+2] is a fixed pathname buffer not env-var sized,,0.95
+MEM05-C,399,sqlite,src/os_unix.c,6959,FP,zLnk[SQLITE_MAX_PATHLEN+2] is fixed-size not a runtime VLA,,0.96
+INT32-C,400,sqlite,src/os_unix.c,6960,FP,nSymlink++ checked > SQLITE_MAX_SYMLINK immediately (line 6960) bounding the count to a small value; cannot overflow,,0.92
+INT30-C,401,sqlite,src/os_unix.c,6964,FP,"sizeof(zLnk)-2 where zLnk is char[SQLITE_MAX_PATHLEN+2]; sizeof is a large compile-time constant, -2 cannot wrap",,0.95
+INT32-C,402,sqlite,src/os_unix.c,6973,FP,nUsed -= nName+1 only in the relative-symlink branch where nUsed was just increased by nName+1 (the '/' plus nName); stays non-negative and bounded,,0.92
+INT32-C,403,sqlite,src/os_unix.c,6973,FP,nName+1 where nName is a small positive path-element length bounded by buffer fit; no overflow,,0.92
+MSC04-C,404,sqlite,src/os_unix.c,6984,TP,"appendAllPathElements genuinely calls appendOnePathElement (line 6993) which can call back appendAllPathElements (6975) - real indirect recursion, accurately detected; bounded by symlink limit",,0.6
+INT32-C,405,sqlite,src/os_unix.c,6991,FP,i++ iterates over a nul-terminated path string of bounded length (MAX_PATHNAME-class); cannot approach INT_MAX,,0.92
+INT30-C,406,sqlite,src/os_unix.c,6993,FP,"i-j where i>j is guaranteed by the enclosing if(i>j) at line 6992; result is a small positive element length, no wrap",,0.92
+INT32-C,407,sqlite,src/os_unix.c,6995,FP,i+1 indexes within a bounded path string; no overflow,,0.92
+INT32-C,408,sqlite,src/os_unix.c,6996,FP,i++ in do-while over bounded path string; no overflow,,0.92
+ENV01-C,409,sqlite,src/os_unix.c,7022,FP,zPwd[SQLITE_MAX_PATHLEN+2] fixed pathname buffer not env-var sized,,0.95
+MEM05-C,410,sqlite,src/os_unix.c,7022,FP,zPwd[SQLITE_MAX_PATHLEN+2] fixed-size not a runtime VLA,,0.96
+INT30-C,411,sqlite,src/os_unix.c,7023,FP,sizeof(zPwd)-2 is a large compile-time constant minus 2; cannot underflow,,0.95
+STR00-C,412,sqlite,src/os_unix.c,7029,FP,line 7029 zOut[path.nUsed]=0 - path.nUsed is an int byte count not a plain-char index; analyzer mischaracterized the index variable,,0.9
+INT31-C,413,sqlite,src/os_unix.c,7102,FP,nBuf asserted >= sizeof(time_t)+sizeof(int) at line 7102 before any (size_t)nBuf use; positive and bounded,,0.92
+INT31-C,414,sqlite,src/os_unix.c,7116,FP,"memset(zBuf,0,nBuf) - nBuf positive per assert at 7102; benign signed-to-size_t of a validated positive count",,0.92
+FIO42-C,415,sqlite,src/os_unix.c,7121,FP,"fd from robust_open(""/dev/urandom"") is closed via robust_close at line 7131 on the success branch; the fd<0 branch never opened anything",,0.92
+EXP05-C,416,sqlite,src/os_unix.c,7125,FP,sizeof(t) is a size_t compile-time constant used as an offset in memcpy; no const qualifier is being cast away,,0.95
+EXP05-C,417,sqlite,src/os_unix.c,7126,FP,&zBuf[sizeof(t)] takes the address of a non-const char buffer element; no const cast,,0.95
+ARR39-C,418,sqlite,src/os_unix.c,7126,FP,zBuf[sizeof(t)] is normal byte-offset indexing into a char buffer; no double scaling - char element size is 1,,0.9
+INT30-C,419,sqlite,src/os_unix.c,7127,FP,"sizeof(t)+sizeof(randomnessPid) are tiny compile-time constants; cannot wrap, and guarded by assert <= nBuf at 7127",,0.95
+INT31-C,420,sqlite,src/os_unix.c,7127,FP,nBuf validated positive by assert at 7102; signed-to-size_t conversion is safe,,0.92
+INT30-C,421,sqlite,src/os_unix.c,7128,FP,sizeof(t)+sizeof(randomnessPid) compile-time constant sum cannot overflow,,0.95
+MSC37-C,422,sqlite,src/os_unix.c,7147,FP,"unixSleep returns in every #if/#elif/#else branch (lines 7160,7165,7170); each compiled variant has an explicit return - analyzer confused by preprocessor branches",,0.9
+INT32-C,423,sqlite,src/os_unix.c,7151,FP,"(microseconds%1000000)*1000 - microseconds is a sleep duration argument, small non-negative in practice; product max 999999*1000 fits in int",,0.92
+INT10-C,424,sqlite,src/os_unix.c,7151,FP,microseconds is a non-negative sleep duration; modulo result non-negative; implementation-defined-sign concern not reachable,,0.9
+INT10-C,425,sqlite,src/os_unix.c,7163,FP,microseconds non-negative sleep duration; modulo sign concern not reachable,,0.9
+INT10-C,426,sqlite,src/os_unix.c,7163,FP,same as 425 - microseconds%1000000 on a non-negative argument,,0.9
+INT32-C,427,sqlite,src/os_unix.c,7167,FP,microseconds+999999 where microseconds is a bounded sleep argument; no realistic overflow,,0.9
+INT32-C,428,sqlite,src/os_unix.c,7170,FP,seconds*1000000 where seconds derived from a small sleep duration; bounded,,0.9
+INT32-C,429,sqlite,src/os_unix.c,7194,FP,24405875*(sqlite3_int64)8640000 is a compile-time 64-bit constant (the Julian epoch) that fits in sqlite3_int64; no overflow,,0.95
+INT32-C,430,sqlite,src/os_unix.c,7199,FP,((sqlite3_int64)t)*1000+unixEpoch - 64-bit time arithmetic with values that fit comfortably in int64 milliseconds-since-Julian-epoch,,0.92
+INT32-C,431,sqlite,src/os_unix.c,7199,FP,((sqlite3_int64)t)*1000 - time_t seconds promoted to int64 then *1000 fits in int64,,0.92
+INT32-C,432,sqlite,src/os_unix.c,7203,FP,"unixEpoch+1000*sNow.tv_sec - 64-bit Julian-millisecond arithmetic, values fit in int64",,0.92
+INT32-C,433,sqlite,src/os_unix.c,7203,FP,1000*(sqlite3_int64)sNow.tv_sec promoted to int64 before multiply; fits,,0.92
+FLP03-C,434,sqlite,src/os_unix.c,7203,FP,line 7203 has no floating-point division; tv_nsec/1000000 and tv_sec are integer operations - analyzer FLP03 misfire,,0.95
+INT32-C,435,sqlite,src/os_unix.c,7207,FP,"unixEpoch+1000*tv_sec int64 arithmetic, fits",,0.92
+INT32-C,436,sqlite,src/os_unix.c,7207,FP,"1000*(sqlite3_int64)sNow.tv_sec int64 multiply, fits",,0.92
+FLP03-C,437,sqlite,src/os_unix.c,7207,FP,"line 7207 tv_usec/1000 is integer division, no floating point - FLP03 misfire",,0.95
+INT32-C,438,sqlite,src/os_unix.c,7212,FP,"1000*sqlite3_current_time+unixEpoch - test-only path, int64 arithmetic fits",,0.92
+INT32-C,439,sqlite,src/os_unix.c,7212,FP,"1000*(sqlite3_int64)sqlite3_current_time int64 multiply, fits",,0.92
+FLP03-C,440,sqlite,src/os_unix.c,7230,FP,line 7230 i/86400000.0 is a double division of a bounded Julian-ms value; no error checking needed for a finite non-trapping divide by a nonzero constant,,0.85
+DCL09-C,441,sqlite,src/os_unix.c,7243,FP,unixGetLastError returns int per the sqlite3_vfs xGetLastError function-pointer contract; return type is fixed by the VFS typedef and cannot be errno_t,,0.85
+API05-C,442,sqlite,src/os_unix.c,7432,FP,"proxyGetLockPath signature (const char*, char*, size_t) is an internal helper; pointer-vs-array-syntax is stylistic - established declaration-class non-defect here",,0.9
+API05-C,443,sqlite,src/os_unix.c,7432,FP,duplicate of 442 - both pointer params are conventional C string buffers; API05 array-syntax is purely stylistic,,0.9
+API04-C,444,sqlite,src/os_unix.c,7438,FP,strlcpy return (len) IS captured and used (lPath[len-1] check at 7454); BSD strlcpy semantics intentionally used in this Apple-only proxy code,,0.85
+PRE32-C,445,sqlite,src/os_unix.c,7443,FP,"OSTRACE expands to ""if(sqlite3OSTrace) sqlite3DebugPrintf X"" taking a single parenthesized argument; the call at 7443 contains only a format string and expressions - no preprocessor directive in the argument, PRE32 misfire",,0.95
+PRE32-C,446,sqlite,src/os_unix.c,7443,FP,"same call - the OSTRACE argument is a multi-line string literal plus lPath,errno,osGetpid(0); contains no #if/#endif directive",,0.95
+API04-C,447,sqlite,src/os_unix.c,7447,FP,strlcat return captured into len and used at 7454; BSD strlcat intentionally used in Apple proxy code,,0.85
+API04-C,448,sqlite,src/os_unix.c,7450,FP,strlcpy return captured into len and used in the lPath[len-1] check; intentional BSD API use,,0.85
+API04-C,449,sqlite,src/os_unix.c,7455,FP,strlcat return captured into len used at 7454; intentional,,0.85
+INT30-C,450,sqlite,src/os_unix.c,7460,FP,i+len in lockPath loop bounded by the loop guard (i+len+7)<(int)maxLen at line 7460; cannot wrap,,0.92
+INT31-C,451,sqlite,src/os_unix.c,7460,FP,"maxLen cast to int once for the bound comparison; maxLen is a small MAXPATHLEN-class size_t, fits in int; benign",,0.9
+DCL00-C,452,sqlite,src/os_unix.c,7461,FP,"c IS used to compute lPath[i+len]=(c=='/')?'_':c at line 7462; const-qualifying a loop-body copy is stylistic, not a defect, and analyzer claim it is never modified is moot",,0.85
+INT30-C,453,sqlite,src/os_unix.c,7462,FP,i+len bounded by loop guard (i+len+7)<maxLen; no wrap,,0.92
+INT32-C,454,sqlite,src/os_unix.c,7462,FP,i+len bounded by loop guard at 7460; small positive path indices,,0.92
+INT30-C,455,sqlite,src/os_unix.c,7464,FP,i+len at 7464 (lPath[i+len]='\0') - i and len both bounded by the just-exited loop guard; safe,,0.92
+INT32-C,456,sqlite,src/os_unix.c,7464,FP,same as 455 - bounded indices,,0.92
+API04-C,457,sqlite,src/os_unix.c,7465,FP,"strlcat(lPath,"":auto:"",maxLen) - return ignored intentionally; truncation-safe BSD API, buffer pre-sized to maxLen",,0.85
+ENV01-C,458,sqlite,src/os_unix.c,7475,FP,buf[MAXPATHLEN] is a fixed pathname buffer not env-var sized,,0.95
+ARR30-C,459,sqlite,src/os_unix.c,7483,FP,"lockPath is the const char* parameter; buf[MAXPATHLEN] indexed by i<len where len=strlen(lockPath) and lockPath fits MAXPATHLEN by caller contract; bounded loop, analyzer conflated buf and lockPath sizing",,0.9
+INT30-C,460,sqlite,src/os_unix.c,7483,FP,"i-start where loop guards (i-start>0) at line 7483 ensure i>start; result positive, no wrap",,0.92
+INT30-C,461,sqlite,src/os_unix.c,7485,FP,i-start guarded i>start; no wrap,,0.92
+INT30-C,462,sqlite,src/os_unix.c,7485,FP,i-start guarded by i-start>0 / i-start==1 / i-start==2 conditions; positive,,0.92
+INT30-C,463,sqlite,src/os_unix.c,7486,FP,i-start positive per the enclosing guards; no underflow,,0.92
+PRE32-C,464,sqlite,src/os_unix.c,7491,FP,"OSTRACE single-arg macro; the call at 7491 contains only string literals and buf,strerror(err),lockPath,osGetpid(0) - no preprocessor directive, PRE32 misfire",,0.95
+PRE32-C,465,sqlite,src/os_unix.c,7491,FP,"same - the OSTRACE argument has no #if/#endif directive, just a concatenated string literal and expressions",,0.95
+CON33-C,466,sqlite,src/os_unix.c,7493,FP,strerror used only inside OSTRACE diagnostic trace (compiled out unless tracing enabled); Apple-only proxy code; established hardened-core CON33 non-defect,,0.8
+CON34-C,467,sqlite,src/os_unix.c,7493,FP,"strerror static-storage thread-safety concern inside a debug-only OSTRACE trace; not acted upon, hardened-core CON34 non-defect",,0.8
+INT30-C,468,sqlite,src/os_unix.c,7498,FP,i bounded by len=strlen(lockPath) which fits in MAXPATHLEN path buffer; i+1 cannot wrap,,0.97
+INT32-C,469,sqlite,src/os_unix.c,7498,FP,i is small loop index bounded by strlen of a pathname (< MAXPATHLEN); no signed overflow possible,,0.97
+ARR30-C,470,sqlite,src/os_unix.c,7500,FP,"buf indexed by i<len=strlen(lockPath); index strictly bounded, buffer is MAXPATHLEN path buffer not size-1024",,0.96
+FIO42-C,471,sqlite,src/os_unix.c,7552,FP,fd is closed/owned via robust_close in end_create_proxy goto chain or stored in pUnused->fd then into pNew; analyzer misses ownership transfer,,0.9
+MEM12-C,472,sqlite,src/os_unix.c,7557,FP,early return on fd<0 path; fd was never opened (fd<0) so nothing to leak; pUnused leak is the only real issue but fd is not a leak here,,0.92
+MEM12-C,473,sqlite,src/os_unix.c,7561,FP,return SQLITE_PERM on fd<0; no open fd to leak; analyzer fd-leak heuristic misfires on error returns,,0.92
+MEM12-C,474,sqlite,src/os_unix.c,7563,FP,return SQLITE_IOERR_LOCK on fd<0; no open descriptor exists to leak,,0.92
+MEM12-C,475,sqlite,src/os_unix.c,7565,FP,return SQLITE_CANTOPEN_BKPT on fd<0; no descriptor leaked,,0.92
+EXP33-C,476,sqlite,src/os_unix.c,7569,FP,pNew is assigned by malloc64 at 7569 and NULL-checked before use at 7574; not dereferenced uninitialized,,0.95
+EXP05-C,477,sqlite,src/os_unix.c,7574,FP,sizeof(unixFile) is a size_t constant cast; no const qualifier is being cast away; analyzer misparse of malloc64 cast,,0.95
+DCL30-C,478,sqlite,src/os_unix.c,7585,FP,pNew is heap memory from sqlite3_malloc64 not a local; storing into *ppFile is the documented contract (caller frees),,0.95
+MEM12-C,479,sqlite,src/os_unix.c,7586,FP,return SQLITE_OK at 7586 is success path; fd ownership passed into pNew via pPreallocatedUnused; no leak,,0.9
+MEM31-C,480,sqlite,src/os_unix.c,7590,FP,robust_close at 7589 does not free pNew; only sqlite3_free(pNew) frees it once; no double free,,0.95
+MEM30-C,481,sqlite,src/os_unix.c,7591,FP,pUnused freed exactly once at 7591; no prior free; analyzer false double-free,,0.95
+MEM12-C,482,sqlite,src/os_unix.c,7592,FP,"end_create_proxy frees pNew/pUnused and closes fd via the goto chain; this is the cleanup label, not a leak",,0.9
+DCL03-C,483,sqlite,src/os_unix.c,7611,FP,"assert(PROXY_HOSTIDLEN==sizeof(uuid_t)) is a sanity check on a type size; converting to static_assert is style-only, not a CERT defect here",,0.9
+INT14-C,484,sqlite,src/os_unix.c,7630,FP,sqlite3_hostid_num is SQLITE_TEST-only debug code; mixed bitwise/arith on a test-injection counter is intentional and readability-only,,0.85
+INT13-C,485,sqlite,src/os_unix.c,7630,FP,signed & 0xFF on a test-only host-id simulator value; masked to a byte; benign and SQLITE_TEST-gated,,0.85
+ENV01-C,486,sqlite,src/os_unix.c,7653,FP,lockPath/buffers are filesystem path buffers sized MAXPATHLEN not driven by getenv; ENV01 misfire,,0.9
+ENV01-C,487,sqlite,src/os_unix.c,7654,FP,same fixed-size path buffer heuristic; not an environment-variable sink,,0.9
+DCL00-C,488,sqlite,src/os_unix.c,7658,FP,"errmsg is a char[64] written by sqlite3_snprintf later (7667/7673/etc); it IS modified, cannot be const",,0.8
+API04-C,489,sqlite,src/os_unix.c,7664,FP,strlcpy return value pathLen IS checked at 7665; consistent error handling present,,0.9
+API04-C,490,sqlite,src/os_unix.c,7666,FP,strlcpy return value (==5) IS explicitly checked in the same condition at 7666,,0.9
+INT30-C,491,sqlite,src/os_unix.c,7666,FP,"pathLen guarded pathLen<6 just before, so pathLen-5 >= 1; no underflow",,0.92
+FIO42-C,492,sqlite,src/os_unix.c,7677,FP,fd is closed via robust_close at 7700 in end_breaklock cleanup or transferred to conchFile->h at 7693,,0.9
+MEM31-C,493,sqlite,src/os_unix.c,7700,FP,"robust_close(pFile,...) at 7700 does not free pFile; pFile is the function parameter, not freed",,0.95
+MEM31-C,494,sqlite,src/os_unix.c,7700,FP,"__LINE__ is the line-number macro argument to robust_close, not a freeable pointer; nonsensical double-free",,0.97
+FIO47-C,495,sqlite,src/os_unix.c,7702,FP,errmsg is char[64]; %s with errmsg is a valid string pointer; analyzer mistyped the array as integer,,0.9
+INT32-C,496,sqlite,src/os_unix.c,7720,FP,nTries bounded by do/while nTries<3 loop; reaches at most 3; cannot approach INT_MAX,,0.95
+ENV01-C,497,sqlite,src/os_unix.c,7747,FP,"tBuf is a fixed conch-length stack buffer, not an environment-variable sink",,0.9
+ARR00-C,498,sqlite,src/os_unix.c,7753,FP,tBuf is filled by osPread at 7748 (len bytes read) before any read; tBuf[0] read only after len>PROXY_PATHINDEX check,,0.92
+MSC37-C,499,sqlite,src/os_unix.c,7788,FP,proxyTakeConch has explicit return rc at 8001 and return SQLITE_OK at 7792; all paths return; the do/while(1) only exits via return,,0.9
+ENV01-C,500,sqlite,src/os_unix.c,7797,FP,"readBuf is fixed conch-length stack buffer, not env-driven",,0.9
+ENV01-C,501,sqlite,src/os_unix.c,7798,FP,"lockPath is MAXPATHLEN path buffer, not an environment-variable sink",,0.9
+PRE32-C,502,sqlite,src/os_unix.c,7807,FP,OSTRACE arg contains line continuations not real preprocessor directives; OSTRACE is a debug trace macro with parenthesized varargs; no # directive in args,,0.85
+PRE32-C,503,sqlite,src/os_unix.c,7807,FP,"the flagged content is a multi-line string-literal trace call, not a preprocessor directive inside the macro arg",,0.85
+EXP33-C,504,sqlite,src/os_unix.c,7811,FP,myHostID is filled by proxyGetHostID at 7811 (memset+gethostuuid) before use at 7841/7904; not uninitialized,,0.9
+INT13-C,505,sqlite,src/os_unix.c,7812,FP,(rc&0xff)==SQLITE_IOERR masks an SQLite result code to its primary code; idiomatic and correct; signedness benign,,0.92
+EXP33-C,506,sqlite,src/os_unix.c,7828,FP,readBuf is populated by seekAndRead at 7821 returning readLen; readBuf[0] read only after readLen length checks,,0.9
+EXP20-C,507,sqlite,src/os_unix.c,7841,FP,"memcmp result negated into hostIdMatch; idiomatic comparison, clear semantics; EXP20 style-only",,0.85
+ARR00-C,508,sqlite,src/os_unix.c,7854,FP,readBuf filled by seekAndRead before the do-loop; the loop reads validated bytes within readLen,,0.9
+EXP20-C,509,sqlite,src/os_unix.c,7862,FP,strncmp in a boolean context guarded by hostIdMatch; idiomatic; style-only,,0.85
+INT31-C,510,sqlite,src/os_unix.c,7862,FP,readLen is non-negative here (negative handled/goto at 7822) so conversion to size_t is safe; bounded by PROXY_MAXCONCHLEN,,0.9
+ARR00-C,511,sqlite,src/os_unix.c,7862,FP,readBuf was filled by seekAndRead; not uninitialized in the loop,,0.9
+ENV01-C,512,sqlite,src/os_unix.c,7900,FP,"writeBuffer is fixed conch-length stack buffer, not env-driven",,0.9
+EXP33-C,513,sqlite,src/os_unix.c,7900,FP,writeBuffer[0] set at 7903 and filled via memcpy/strlcpy before unixWrite at 7913; fully initialized on the rc==SQLITE_OK path,,0.9
+API04-C,514,sqlite,src/os_unix.c,7906,FP,strlcpy into fixed conch buffer with MAXPATHLEN cap; writeSize recomputed from strlen after; no missing check,,0.9
+API04-C,515,sqlite,src/os_unix.c,7909,FP,strlcpy into writeBuffer at PATHINDEX with MAXPATHLEN bound; result handled by subsequent strlen/truncate,,0.9
+EXP33-C,516,sqlite,src/os_unix.c,7922,FP,buf here is struct stat filled by osFstat at 7920 inside SQLITE_PROXY_DEBUG; used only after err==0; not uninitialized,,0.85
+PRE32-C,517,sqlite,src/os_unix.c,7933,FP,"fprintf args contain string literals/line-continuations not preprocessor directives; PRE32 misfire (this is real stderr fprintf, not a macro)",,0.85
+DCL11-C,518,sqlite,src/os_unix.c,7934,FP,cmode is mode_t passed to %o; on the relevant platforms mode_t promotes to unsigned int via default arg promotions; SQLITE_PROXY_DEBUG-only diagnostic,,0.8
+EXP33-C,519,sqlite,src/os_unix.c,7934,FP,code is assigned errno at 7932 before the fprintf at 7934 uses it; not uninitialized,,0.85
+CON33-C,520,sqlite,src/os_unix.c,7934,FP,strerror in SQLITE_PROXY_DEBUG-only single-threaded diagnostic path; CON33 technically applies but unreachable in production builds,,0.7
+CON34-C,521,sqlite,src/os_unix.c,7934,FP,same SQLITE_PROXY_DEBUG diagnostic; strerror static-storage concern not reachable in normal builds,,0.7
+DCL11-C,522,sqlite,src/os_unix.c,7936,FP,cmode mode_t to %o under default arg promotion to unsigned int; debug-only,,0.8
+PRE32-C,523,sqlite,src/os_unix.c,7940,FP,fprintf to stderr with string literal args; line continuations are not preprocessor directives,,0.85
+CON33-C,524,sqlite,src/os_unix.c,7941,FP,strerror in debug-only STAT-FAILED branch; not production-reachable,,0.7
+CON34-C,525,sqlite,src/os_unix.c,7941,FP,same debug-only strerror static-storage concern,,0.7
+FIO42-C,526,sqlite,src/os_unix.c,7956,FP,"fd here (7951-7959) is stored into pFile->h on success or rc set to CANTOPEN on failure; ownership retained by pFile, closed at close time",,0.9
+EXP33-C,527,sqlite,src/os_unix.c,7966,FP,path at 7966 is assigned ternary tempLockPath?:lockProxyPath before use at 7967; both branches defined,,0.9
+PRE32-C,528,sqlite,src/os_unix.c,7999,FP,OSTRACE trace-macro call with multi-line string literal; no preprocessor directive in argument,,0.85
+PRE32-C,529,sqlite,src/os_unix.c,7999,FP,"flagged content is a string-literal trace arg, not a preprocessor directive",,0.85
+DCL13-C,530,sqlite,src/os_unix.c,8010,FP,proxyReleaseConch signature is fixed by the proxy xUnlock/io-methods call convention; pFile->lockingContext is read and conchFile->pMethod->xUnlock mutates state reachable via pFile; const would not match usage,,0.9
+PRE32-C,531,sqlite,src/os_unix.c,8017,FP,OSTRACE multi-line trace string; no real preprocessor directive in arg,,0.85
+PRE32-C,532,sqlite,src/os_unix.c,8017,FP,"trace string-literal arg, not a preprocessor directive",,0.85
+PRE32-C,533,sqlite,src/os_unix.c,8024,FP,OSTRACE trace macro with string literal; not a preprocessor directive,,0.85
+PRE32-C,534,sqlite,src/os_unix.c,8024,FP,trace string-literal arg,,0.85
+STR34-C,535,sqlite,src/os_unix.c,8042,FP,dbPath chars used in strlen; no integer promotion of a plain-char index used as array subscript or sign-sensitive arithmetic; STR34 misfire,,0.85
+STR34-C,536,sqlite,src/os_unix.c,8047,FP,"*pConchPath assignment is a pointer-to-buffer store (conchPath=malloc), not a char-to-int sign extension; analyzer misparse",,0.85
+INT32-C,537,sqlite,src/os_unix.c,8047,FP,len=strlen(dbPath) of a real pathname (bounded by MAXPATHLEN); len+8 cannot overflow int,,0.92
+ARR38-C,538,sqlite,src/os_unix.c,8051,FP,"memcpy(conchPath, dbPath, len+1) copies a strlen-measured pathname into a len+8 allocation; size valid and bounded",,0.9
+INT31-C,539,sqlite,src/os_unix.c,8051,FP,"len is strlen result, non-negative, bounded by path length; size_t conversion safe",,0.9
+INT32-C,540,sqlite,src/os_unix.c,8051,FP,len is a bounded pathname length; len+1 cannot overflow,,0.92
+INT32-C,541,sqlite,src/os_unix.c,8054,FP,len bounded pathname length; len-1 cannot overflow (len>=0),,0.92
+INT30-C,542,sqlite,src/os_unix.c,8062,FP,i is a loop index over the pathname (< len < MAXPATHLEN); i+1 cannot wrap,,0.92
+INT32-C,543,sqlite,src/os_unix.c,8062,FP,i bounded by path length; no signed overflow,,0.92
+INT30-C,544,sqlite,src/os_unix.c,8063,FP,i++ over bounded pathname loop; cannot reach UINT max,,0.92
+EXP05-C,545,sqlite,src/os_unix.c,8067,FP,&conchPath[i+1] is address-of into a mutable malloc'd buffer; no const being cast away,,0.9
+INT30-C,546,sqlite,src/os_unix.c,8067,FP,i+1 over bounded pathname index; no wrap,,0.92
+INT32-C,547,sqlite,src/os_unix.c,8067,FP,i+1 bounded pathname index; no signed overflow,,0.92
+DCL13-C,548,sqlite,src/os_unix.c,8077,FP,"switchLockProxyPath signature matches proxy helper usage; pFile->lockingContext fields (lockProxy, conchHeld, lockProxyPath) are mutated through pCtx derived from pFile; const param impossible",,0.9
+EXP20-C,549,sqlite,src/os_unix.c,8087,FP,"strcmp(path,"":auto:"") in boolean guard; idiomatic; style-only",,0.85
+EXP20-C,550,sqlite,src/os_unix.c,8088,FP,"strncmp(oldPath,path,MAXPATHLEN) in boolean guard combined with oldPath null-check; idiomatic",,0.85
+MEM30-C,551,sqlite,src/os_unix.c,8099,FP,oldPath = pCtx->lockProxyPath freed once at 8099; pCtx->lockProxyPath reassigned to fresh dup at 8100; no double free,,0.93
+API04-C,552,sqlite,src/os_unix.c,8119,FP,"strlcpy into dbPath (MAXPATHLEN+1 buffer) with MAXPATHLEN cap, guarded by assert on source length; consistent",,0.9
+ARR38-C,553,sqlite,src/os_unix.c,8127,FP,"memcpy(dbPath, lockingContext, len+1) where len is derived from strlen minus suffix; dbPath is MAXPATHLEN+1; bounded",,0.9
+INT31-C,554,sqlite,src/os_unix.c,8127,FP,len = strlen(...) - strlen(DOTLOCK_SUFFIX); for a dotlock file the suffix is always present so len is non-negative; conversion safe,,0.85
+INT32-C,555,sqlite,src/os_unix.c,8127,FP,len from path-length subtraction; len+1 cannot overflow int,,0.9
+API04-C,556,sqlite,src/os_unix.c,8131,FP,strlcpy into dbPath MAXPATHLEN+1 buffer with MAXPATHLEN cap guarded by assert on source length,,0.9
+ENV01-C,557,sqlite,src/os_unix.c,8146,FP,"dbPath is MAXPATHLEN+1 stack buffer, not an environment-variable sink",,0.9
+MEM05-C,558,sqlite,src/os_unix.c,8146,FP,"dbPath[MAXPATHLEN+1] is a fixed compile-time-sized array (MAXPATHLEN is a constant), not a runtime VLA",,0.85
+EXP20-C,559,sqlite,src/os_unix.c,8154,FP,"strcmp(path,"":auto:"") boolean guard; idiomatic; style-only",,0.85
+EXP05-C,560,sqlite,src/os_unix.c,8157,FP,(char*)path discards const intentionally to assign lockPath which is only read (passed to OSTRACE/proxyCreateConchPathname-style use); but pointee not mutated; benign cast in Apple-only code,,0.9
+PRE32-C,561,sqlite,src/os_unix.c,8160,FP,"OSTRACE trace macro, multi-line string literal arg; no preprocessor directive",,0.85
+PRE32-C,562,sqlite,src/os_unix.c,8160,FP,"trace string-literal arg, not a preprocessor directive",,0.85
+EXP33-C,563,sqlite,src/os_unix.c,8163,FP,pCtx assigned by sqlite3_malloc64 at 8163 and NULL-checked at 8164 before any deref at 8167; not uninitialized,,0.9
+PRE32-C,564,sqlite,src/os_unix.c,8221,FP,OSTRACE trace macro string-literal arg; no preprocessor directive,,0.85
+PRE32-C,565,sqlite,src/os_unix.c,8221,FP,trace string-literal arg,,0.85
+EXP20-C,566,sqlite,src/os_unix.c,8268,FP,"strcmp(pArg,"":auto:"") boolean guard; idiomatic; style-only",,0.85
+EXP20-C,567,sqlite,src/os_unix.c,8270,FP,strncmp boolean guard with lockProxyPath null-check; idiomatic,,0.85
+DCL03-C,568,sqlite,src/os_unix.c,8284,FP,assert(0) unreachable-default sentinel; converting to static_assert would change semantics (it must trap at runtime); not a defect,,0.85
+DCL03-C,569,sqlite,src/os_unix.c,8287,FP,"assert(0) NOTREACHED sentinel; runtime trap is intentional, static_assert(0) would fail compile; FP",,0.85
+MEM30-C,570,sqlite,src/os_unix.c,8404,FP,"proxyReleaseConch(pFile) at 8404 does not free pFile; pFile still valid; conchFile is freed afterward at 8409, not pFile",,0.93
+MEM30-C,571,sqlite,src/os_unix.c,8409,FP,conchFile freed once at 8409 after xClose; lockProxy freed separately at 8399; no double free of conchFile,,0.93
+MEM30-C,572,sqlite,src/os_unix.c,8415,FP,"pCtx->oldLockingContext read at 8415 before pCtx freed at 8417; restoring saved context, no use-after-free",,0.93
+MEM30-C,573,sqlite,src/os_unix.c,8416,FP,pCtx->pOldMethod read at 8416 before sqlite3_free(pCtx) at 8417; ordered correctly,,0.93
+MEM30-C,574,sqlite,src/os_unix.c,8417,FP,pCtx freed exactly once at 8417; its fields are read into pFile before the free; no double free,,0.93
+MEM30-C,575,sqlite,src/os_unix.c,8418,FP,id (==pFile) passed to xClose at 8418 is the still-live original file; pFile not freed in this function; only pCtx/conchFile/lockProxy freed,,0.9
+MEM30-C,576,sqlite,src/os_unix.c,8418,FP,"pFile->pMethod (restored from pCtx->pOldMethod at 8416) accessed at 8418; pFile is the live param, never freed; the final xClose closes the underlying file",,0.92
+MSC04-C,577,sqlite,src/os_unix.c,8448,FP,MSC04 indirect-recursion chain is guarded by sqlite3_initialize's run-once flag; sqlite3OsInit->sqlite3_os_init is not re-entered (initialization guard breaks the cycle); not genuine unbounded recursion,,0.85
+ARR30-C,578,sqlite,src/os_unix.c,8501,FP,aVfs[] indexed by unsigned i in for(i=0;i<sizeof(aVfs)/sizeof(...);i++) loop; index strictly bounded by array size; the empty parameter name in the message indicates an analyzer parse gap,,0.85
+DCL03-C,579,sqlite,src/os_unix.c,8552,FP,assert(SQLITE_SHM_NLOCK==8) is a compile-time invariant sanity check; documented use of runtime assert for build-config validation; style-only,,0.85
+DCL03-C,580,sqlite,src/os_unix.c,8553,FP,assert(UNIX_SHM_BASE==120) build-invariant assert; style-only not a defect,,0.85
+DCL03-C,581,sqlite,src/os_unix.c,8565,FP,assert(UNIX_SHM_DMS==128) build-invariant assert; style-only,,0.85

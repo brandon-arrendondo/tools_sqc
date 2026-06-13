@@ -1,0 +1,107 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL23-C,0,sqlite,ext/misc/fileio.c,105,FP,DCL23 win32 symbol naming heuristic on external sqlite3_win32_utf8_to_unicode decl not a defect,,high
+ERR00-C,1,sqlite,ext/misc/fileio.c,185,FP,fseek SEEK_END failure leaves ftell to report position rewind resets contract tolerant for local fs read,,med
+ERR33-C,2,sqlite,ext/misc/fileio.c,185,FP,fseek rc ignored but size validated against mxBlob and fread count checked so unchecked fseek not exploitable defect,,med
+FIO14-C,3,sqlite,ext/misc/fileio.c,185,FP,FIO14 SEEK_END on binary stream advisory not a CERT memory defect here,,low
+FIO19-C,4,sqlite,ext/misc/fileio.c,185,FP,FIO19 fseek/ftell size advisory style not a defect,,low
+ERR33-C,5,sqlite,ext/misc/fileio.c,186,FP,ftell -1 flows into nIn but -1>mxBlob is false then malloc64(1) and fread cast (size_t)-1 huge fread returns short so IOERR set no overflow,,med
+ERR07-C,6,sqlite,ext/misc/fileio.c,187,FP,rewind error-checking advisory not a reachable memory defect,,low
+ERR00-C,7,sqlite,ext/misc/fileio.c,192,FP,fclose return ignored on read-only stream not a defect,,low
+ERR00-C,8,sqlite,ext/misc/fileio.c,198,FP,fclose return ignored not a defect,,low
+FIO24-C,9,sqlite,ext/misc/fileio.c,198,FP,line192 and line198 are mutually exclusive early returns no double close,,high
+FIO17-C,10,sqlite,ext/misc/fileio.c,201,FP,fread into sized blob buffer not a C string no null terminator required,,high
+INT31-C,11,sqlite,ext/misc/fileio.c,201,FP,nIn already bounded by mxBlob>=0 check before cast to size_t so signed-to-unsigned safe,,med
+ERR00-C,12,sqlite,ext/misc/fileio.c,207,FP,fclose return ignored not a defect,,low
+FIO24-C,13,sqlite,ext/misc/fileio.c,207,FP,line207 reached only when 192 path not taken returns are exclusive no double close,,high
+DCL13-C,14,sqlite,ext/misc/fileio.c,218,TP,argv read-only in readfileFunc but signature fixed by sqlite3 UDF function-pointer contract so const not applicable FP,,med
+FLP03-C,15,sqlite,ext/misc/fileio.c,265,FP,FLP03 fileTimeToUnixTime integer division not floating point misfire,,high
+MSC37-C,16,sqlite,ext/misc/fileio.c,274,FP,fileStat all paths return rc misfire on win32 branch,,high
+MSC37-C,17,sqlite,ext/misc/fileio.c,307,FP,fileLinkStat returns on both branches misfire,,high
+STR38-C,18,sqlite,ext/misc/fileio.c,338,FP,zCopy is char* not wide string strlen correct STR38 misfire,,high
+STR34-C,19,sqlite,ext/misc/fileio.c,338,FP,strlen returns size_t no sign-extension of char zCopy STR34 misfire,,high
+DCL18-C,20,sqlite,ext/misc/fileio.c,351,FP,0777 intentional POSIX mode bits DCL18 octal misfire,,high
+INT32-C,21,sqlite,ext/misc/fileio.c,356,FP,i bounded by nCopy=strlen path length cannot reach INT_MAX INT32 misfire,,high
+EXP33-C,22,sqlite,ext/misc/fileio.c,395,FP,sStat only read after fileStat returns 0 success populates it EXP33 misfire,,high
+DCL18-C,23,sqlite,ext/misc/fileio.c,396,FP,0777 intentional mode mask misfire,,high
+DCL18-C,24,sqlite,ext/misc/fileio.c,396,FP,0777 intentional mode mask misfire,,high
+POS02-C,25,sqlite,ext/misc/fileio.c,396,FP,POS02 chmod privilege drop not applicable to library UDF,,low
+DCL18-C,26,sqlite,ext/misc/fileio.c,396,FP,0777 intentional mode mask misfire,,high
+ERR33-C,27,sqlite,ext/misc/fileio.c,409,FP,fwrite return assigned to n and compared to nWrite for error rc set so checked,,med
+ERR00-C,28,sqlite,ext/misc/fileio.c,409,FP,fwrite return checked against expected count rc=1 on mismatch,,med
+FIO18-C,29,sqlite,ext/misc/fileio.c,409,FP,writing blob DATA by sqlite3_value_bytes is correct not a C string strlen wrong here FIO18 misfire,,high
+STR34-C,30,sqlite,ext/misc/fileio.c,409,FP,z is blob bytes passed to fwrite not integer-promoted no sign extension STR34 misfire,,high
+ERR00-C,31,sqlite,ext/misc/fileio.c,415,FP,fclose return ignored not a defect,,low
+ERR33-C,32,sqlite,ext/misc/fileio.c,415,FP,fclose return ignored not a defect,,low
+POS02-C,33,sqlite,ext/misc/fileio.c,416,FP,POS02 chmod privilege drop not applicable,,low
+DCL18-C,34,sqlite,ext/misc/fileio.c,416,FP,0777 intentional mode mask misfire,,high
+DCL23-C,35,sqlite,ext/misc/fileio.c,433,FP,DCL23 win32 symbol naming heuristic not a defect,,high
+INT32-C,36,sqlite,ext/misc/fileio.c,437,FP,win32 mtime math dead on unix and mtime is int64 host-controlled arg not untrusted overflow misfire,,high
+INT32-C,37,sqlite,ext/misc/fileio.c,437,FP,mtime multiplication win32-only advisory not reachable defect,,high
+ERR33-C,38,sqlite,ext/misc/fileio.c,460,FP,time(0) return advisory dead utimensat branch (#if 0) not compiled,,low
+ERR33-C,39,sqlite,ext/misc/fileio.c,474,FP,time(0) tv_sec sets access time failure benign advisory not a defect,,med
+DCL13-C,40,sqlite,ext/misc/fileio.c,493,TP,argv const but signature fixed by UDF function-pointer typedef const not applicable FP,,med
+DCL13-C,41,sqlite,ext/misc/fileio.c,543,TP,argv const but signature fixed by UDF function-pointer typedef const not applicable FP,,med
+STR00-C,42,sqlite,ext/misc/fileio.c,550,FP,z is char[16] not wchar_t narrow constant correct STR00 misfire,,high
+STR00-C,43,sqlite,ext/misc/fileio.c,552,FP,z is char array narrow constant correct misfire,,high
+STR00-C,44,sqlite,ext/misc/fileio.c,554,FP,z is char array narrow constant correct misfire,,high
+STR00-C,45,sqlite,ext/misc/fileio.c,556,FP,z is char array narrow constant correct misfire,,high
+INT13-C,46,sqlite,ext/misc/fileio.c,559,FP,iMode>>shift on st_mode bits values small no UB in practice INT13 style advisory,,med
+INT14-C,47,sqlite,ext/misc/fileio.c,559,FP,i used in shift and index readability advisory not a defect,,low
+INT32-C,48,sqlite,ext/misc/fileio.c,559,FP,2-i with i in 0..2 cannot overflow INT32 misfire,,high
+INT32-C,49,sqlite,ext/misc/fileio.c,560,FP,1+i*3 with i in 0..2 yields max 7 no overflow misfire,,high
+ARR37-C,50,sqlite,ext/misc/fileio.c,561,FP,a points into z[16] array a[0] valid index ARR37 misfire,,high
+ARR37-C,51,sqlite,ext/misc/fileio.c,562,FP,a[1] within z[16] valid misfire,,high
+ARR37-C,52,sqlite,ext/misc/fileio.c,563,FP,a[2] within z[16] valid (max index z[9]) misfire,,high
+STR00-C,53,sqlite,ext/misc/fileio.c,565,FP,z char array narrow nul correct misfire,,high
+DCL13-C,54,sqlite,ext/misc/fileio.c,608,FP,pAux unused cast void DCL13 not applicable signature fixed by xConnect typedef,,high
+DCL13-C,55,sqlite,ext/misc/fileio.c,611,FP,pzErr fixed by xConnect signature const not applicable,,high
+EXP33-C,56,sqlite,ext/misc/fileio.c,623,FP,pNew zeroed by memset before any read EXP33 misfire,,high
+DCL13-C,57,sqlite,ext/misc/fileio.c,641,FP,p unused fixed by xOpen signature const not applicable,,high
+EXP33-C,58,sqlite,ext/misc/fileio.c,644,FP,pCur assigned from malloc then memset and members set before deref EXP33 misfire,,high
+MEM33-C,59,sqlite,ext/misc/fileio.c,648,FP,fsdir_cursor has no flexible array assignment is plain struct memset MEM33 misfire,,high
+INT32-C,60,sqlite,ext/misc/fileio.c,704,FP,iRowid is int64 rowid counter bounded by filesystem entries cannot reach INT_MAX INT32 misfire,,high
+INT32-C,61,sqlite,ext/misc/fileio.c,707,FP,iLvl+1 bounded by mxLvl recursion guard iLvl+3<mxLvl small INT32 misfire,,high
+INT32-C,62,sqlite,ext/misc/fileio.c,710,FP,iNew+1 bounded same recursion guard misfire,,high
+INT30-C,63,sqlite,ext/misc/fileio.c,711,FP,nNew bounded by directory depth times sizeof small no wrap realloc64 takes int64 INT30 misfire,,med
+ARR38-C,64,sqlite,ext/misc/fileio.c,714,FP,memset size nNew-nLvl is positive small directory depth ARR38 misfire,,high
+INT32-C,65,sqlite,ext/misc/fileio.c,714,FP,sizeof*(nNew-nLvl) bounded small no overflow misfire,,high
+INT30-C,66,sqlite,ext/misc/fileio.c,714,FP,same bounded multiplication no wrap misfire,,high
+INT32-C,67,sqlite,ext/misc/fileio.c,714,FP,nNew-nLvl positive (iNew>=nLvl guard) small no overflow misfire,,high
+STR30-C,68,sqlite,ext/misc/fileio.c,725,FP,fsdirSetErrmsg fmt is printf format string vmprintf does not modify it STR30 misfire,,high
+CON34-C,69,sqlite,ext/misc/fileio.c,732,FP,readdir static storage true but cursor is single-threaded per-statement use CON34 advisory not a reachable defect here,,med
+MEM30-C,70,sqlite,ext/misc/fileio.c,741,FP,sStat is embedded struct in cursor not freed pointer no use-after-free MEM30 misfire,,high
+STR30-C,71,sqlite,ext/misc/fileio.c,742,FP,format string literal to vmprintf not modified STR30 misfire,,high
+INT32-C,72,sqlite,ext/misc/fileio.c,751,FP,iLvl-- bounded by loop iLvl>=0 cannot underflow INT_MIN misfire,,high
+POS30-C,73,sqlite,ext/misc/fileio.c,796,FP,readlink returns count not nul-terminated and code uses returned n as length not strlen POS30 misfire,,high
+INT32-C,74,sqlite,ext/misc/fileio.c,799,FP,nBuf*2 grows from 64 bounded by symlink target length PATH_MAX practically no overflow INT32 misfire,,med
+MEM30-C,75,sqlite,ext/misc/fileio.c,807,FP,aBuf reused in grow loop freed only on realloc path then reassigned not use-after-free MEM30 misfire,,high
+MEM30-C,76,sqlite,ext/misc/fileio.c,808,FP,aBuf freed once per loop iteration before realloc and final free is exclusive no double-free misfire,,high
+INT32-C,77,sqlite,ext/misc/fileio.c,816,FP,iLvl+2 small level value no overflow INT32 misfire,,high
+DCL13-C,78,sqlite,ext/misc/fileio.c,833,FP,cur fixed by xRowid signature DCL13 not applicable,,high
+DCL13-C,79,sqlite,ext/misc/fileio.c,843,FP,cur fixed by xEof signature not applicable,,high
+DCL13-C,80,sqlite,ext/misc/fileio.c,860,FP,argv fixed by xFilter signature not applicable,,high
+STR30-C,81,sqlite,ext/misc/fileio.c,869,FP,format literal to vmprintf not modified STR30 misfire,,high
+STR30-C,82,sqlite,ext/misc/fileio.c,876,FP,format literal to vmprintf not modified misfire,,high
+INT32-C,83,sqlite,ext/misc/fileio.c,887,FP,mxLvl bounded user level value not INT_MAX path INT32 misfire,,high
+INT32-C,84,sqlite,ext/misc/fileio.c,893,FP,strlen(zBase)+1 cast int path length bounded by allocator not INT_MAX INT32 misfire,,med
+STR38-C,85,sqlite,ext/misc/fileio.c,893,FP,zBase is char* not wide string strlen correct STR38 misfire,,high
+STR30-C,86,sqlite,ext/misc/fileio.c,903,FP,format literal to vmprintf not modified misfire,,high
+DCL13-C,87,sqlite,ext/misc/fileio.c,926,FP,tab unused cast void fixed by xBestIndex signature not applicable,,high
+CON03-C,88,sqlite,ext/misc/fileio.c,1024,FP,fsdirModule static const module struct read-only init CON03 misfire,,high
+MSC37-C,89,sqlite,ext/misc/fileio.c,1064,FP,portable_realpath returns zOut on all branches misfire,,high
+ENV01-C,90,sqlite,ext/misc/fileio.c,1070,FP,zBuf[PATH_MAX+1] used with realpath output not env var ENV01 misfire,,med
+MEM05-C,91,sqlite,ext/misc/fileio.c,1070,FP,zBuf is fixed PATH_MAX+1 stack array not VLA MEM05 misfire,,med
+MEM30-C,92,sqlite,ext/misc/fileio.c,1103,FP,z freed once via free(z) after unicode_to_utf8 not use-after-free MEM30 misfire (win32 branch),,high
+MEM30-C,93,sqlite,ext/misc/fileio.c,1104,FP,z freed exactly once on win32 path no double-free misfire,,high
+MEM31-C,94,sqlite,ext/misc/fileio.c,1104,FP,z single free MEM31 misfire,,high
+DCL13-C,95,sqlite,ext/misc/fileio.c,1124,TP,argv const but realpathFunc signature fixed by UDF typedef const not applicable FP,,med
+STR38-C,96,sqlite,ext/misc/fileio.c,1142,FP,zOut is char* path strlen correct STR38 misfire,,high
+INT30-C,97,sqlite,ext/misc/fileio.c,1143,FP,len-1 guarded by len>1 in loop condition so len>=2 no wrap INT30 misfire,,high
+INT30-C,98,sqlite,ext/misc/fileio.c,1143,FP,len-1 same guard len>1 no wrap misfire,,high
+INT30-C,99,sqlite,ext/misc/fileio.c,1144,FP,len-- inside while len>1 guard len stays >=1 no wrap at zero misfire,,med
+INT30-C,100,sqlite,ext/misc/fileio.c,1156,FP,len-1 assigned to size_t i but len>=1 here (from prior path) i could be 0 then while i>0 guards no deref underflow,,med
+INT30-C,101,sqlite,ext/misc/fileio.c,1159,FP,i-- inside while i>0 guard cannot wrap at zero misfire,,high
+STR38-C,102,sqlite,ext/misc/fileio.c,1182,FP,zOut char* path strlen correct STR38 misfire,,high
+INT30-C,103,sqlite,ext/misc/fileio.c,1187,FP,i+=1 index into zOut bounded by loop i<n guarded with i+2<n checks INT30 misfire,,high
+INT30-C,104,sqlite,ext/misc/fileio.c,1193,FP,i+=2 bounded by i+3<n check before access no wrap misfire,,high
+DCL13-C,105,sqlite,ext/misc/fileio.c,1212,FP,pzErrMsg unused cast void fixed by extension init signature const not applicable,,high

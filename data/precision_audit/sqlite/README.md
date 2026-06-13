@@ -1362,3 +1362,62 @@ core-engine semantic TP** anywhere in the corpus. Both batch-6 bugs are again sq
 campaign's real-bug recall is dominated by integer-truncation-before-alloc and missing-bound patterns sqc's
 detectors don't model. date.c and utf.c — the two heavily-fuzzed transcoder/parser cores in this batch — gave
 0 semantic TP / 0 FN, exactly as the bifurcation predicts for mature code.
+
+## File-at-a-time — Batch 7 (2026-06-12, run #40): last decoders + first hardened-core (build.c, os_unix.c)
+
+`adjudication_sqlite_{changesetfuzz,fileio,series,build,os_unix}.csv` — the last remaining minor decoders plus
+the two biggest hardened-core files to advance coverage. **changesetfuzz.c** (standalone changeset-fuzzing CLI),
+**ext/misc/fileio.c** (readfile/writefile/fsdir), **ext/misc/series.c** (generate_series), **src/build.c** (DDL
+codegen, hardened core), **src/os_unix.c** (Unix VFS, hardened core). 13 line-range reviewers + FN-hunt.
+**1517 raw findings -> 40 TP / 1477 FP.**
+
+| File | findings | TP | FP | note |
+|------|---------:|---:|---:|------|
+| src/build.c | 589 | 22 | 567 | hardened core — DCL13 + MSC04 deletion recursion only |
+| src/os_unix.c | 582 | 8 | 574 | hardened VFS — DCL13 + appendOnePathElement recursion + PRE |
+| ext/session/changesetfuzz.c | 140 | 6 | 134 | standalone fuzzing CLI; 1 tool-scope INT32 overflow TP |
+| ext/misc/fileio.c | 106 | 4 | 102 | size/path math bounded; fsdir recursion depth-guarded |
+| ext/misc/series.c | 100 | 0 | 100 | span64/add64/sub64 wraparound-safe by design; 0 TP |
+
+### The bifurcation holds hard on the first hardened-core files
+
+build.c (589) and os_unix.c (582) — **1171 findings, 30 TP, 0 FN, 0 semantic TP.** Exactly the predicted
+profile. The 30 TPs are all declaration/macro/recursion: **DCL13** const-params (codeTableLocks, isDupColumn,
+tableMayNotBeDropped, sqlite3IdListIndex, the os_unix internal shm helpers unixDescribeShm/unixFcntlExternalReader/
+unixIsSharingShmNode, …), **MSC04** genuine deletion/path recursion (sqlite3SrcListAssignCursors,
+sqlite3SubqueryDelete↔SrcListDelete, cteClear↔WithDelete, appendOnePathElement↔appendAllPathElements), **DCL03**
+static_assert on constant-folding asserts, **PRE/DCL00/DCL30**. Every semantic finding is a misfire against a
+concrete guard: the huge **MEM30 "use-after-free" clusters in both files** are the same root error — sqc reads the
+`db`/`pFile` *context* argument of `sqlite3DbFree(db,x)` / `robust_close(pFile)` / `sqlite3*Delete(db,x)` as the
+freed object, when the live handle is never freed and only the second arg (read first) is released. The dense
+**os_unix PRE32 cluster** is a uniform misfire: the analyzer reads multi-line `OSTRACE((...))` argument
+continuation lines as "preprocessor directives in macro arguments" — there are no `#` directives there at all.
+build.c's INT/ARR are bounded by i16 column counts (asserted ≤32767), `SQLITE_LIMIT_COLUMN`, and i64 size math;
+os_unix's are errno-checked syscalls, fixed `[MAXPATHLEN]` buffers, and mutex-guarded refcounts.
+
+### The one semantic TP is tool-scope, not library
+
+**changesetfuzz.c:506 (INT32, idx 65, TP — but TOOL-SCOPE).** `*pSz = 1 + sz + nTxt` where `nTxt` is a varint
+read from the changeset file (up to INT_MAX) — a genuine signed-overflow with no guard, which sqc correctly
+flagged. **But changesetfuzz.c is a standalone command-line fuzzing utility** (its own `main()`; reads a
+developer-supplied changeset file and emits fuzzed variants), NOT part of the library and not reachable through any
+API. So this does NOT count against the "zero semantic TP in the production library/extensions" thesis — it is a
+defect in a dev fuzzing tool, the same out-of-production class as batch-5's `SQLITE_TEST`-only `fts3_tokenizer`
+`testFunc`. The reviewer also surfaced several over-reads in changesetfuzz's parser (fuzzGetVarint at 370 with no
+end-pointer; fuzzParseHeader `p+=nCol` at 459/463; the bIndirect read at 581) — all genuine but **tool-scope**,
+so dismissed (not recorded as library FNs), consistent with prior tool/test-only treatment. fileio.c and series.c
+(the two real-but-tiny extensions) gave 0 FN: fileio's read/write size math is `mxBlob`-checked and the fsdir walk
+is depth-guarded (`iLvl+3<mxLvl`); series.c's sequence arithmetic is deliberately wraparound-safe (`span64`/`add64`/
+`sub64` type-pun to unsigned, `iStep` normalized non-zero before any divide).
+
+### Integrity gate
+
+The gate corrected one reviewer verdict-field typo: **changesetfuzz idx 114** was emitted `TP` but its own reason
+said "misfire on a well-bounded caller index" (`apGroup[iGrp]`, `iGrp` bounded by the caller's `for` loop) — fixed
+TP→FP. No other corrections; the only surviving semantic TP is the tool-scope idx 65 above.
+
+sqlite coverage **103/220 (46.8%)** — 103 files audited; **13 FNs** (unchanged — 0 new this batch). Confirmed real
+bugs still **13**, every one in a less-fuzzed untrusted-input parser; **still no production semantic TP in the
+hardened core** (build.c + os_unix.c = 1171 findings, 0). The remaining ~117 in-scope files are now almost entirely
+hardened core (os_win.c, expr.c, main.c, pager.c, wal.c, util.c, func.c, …) — coverage filler the thesis predicts
+will keep yielding only decl/macro/const TPs.

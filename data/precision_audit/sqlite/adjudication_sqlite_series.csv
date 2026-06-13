@@ -1,0 +1,101 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT30-C,0,sqlite,ext/misc/series.c,187,FP,span64 uses type-pun unsigned subtraction by design with assert(a>=b) so the unsigned difference is the intended exact magnitude not a wrap bug,,high
+DCL13-C,1,sqlite,ext/misc/series.c,220,FP,pUnused is a void* unused parameter cast (void) and the signature is fixed by the sqlite3_module xConnect function-pointer typedef so const cannot be added,,high
+DCL13-C,2,sqlite,ext/misc/series.c,223,FP,pzErrUnused signature is fixed by the xConnect callback typedef so const-qualifying would break the required prototype,,high
+EXP33-C,3,sqlite,ext/misc/series.c,242,FP,pNew is assigned from sqlite3_malloc and NULL-checked before any deref the EXP33 uninit claim misreads the assign-then-test,,high
+MEM12-C,4,sqlite,ext/misc/series.c,243,FP,on NOMEM path SQLITE_NOMEM is returned and pNew is NULL so nothing leaks SQLite frees vtab via xDisconnect on success,,high
+MEM12-C,5,sqlite,ext/misc/series.c,247,FP,allocated vtab is owned by SQLite and released through seriesDisconnect this is the documented vtab lifecycle not a leak,,high
+DCL13-C,6,sqlite,ext/misc/series.c,261,FP,pUnused is unused void* param with signature fixed by xOpen typedef const not applicable,,high
+EXP33-C,7,sqlite,ext/misc/series.c,264,FP,pCur is malloc-checked for NULL before deref via memset so not an uninitialized-pointer dereference,,high
+MEM33-C,8,sqlite,ext/misc/series.c,267,FP,*ppCursor = &pCur->base is a pointer assignment of base-class address not a flexible-array struct copy MEM33 misfire,,high
+DCL13-C,9,sqlite,ext/misc/series.c,302,FP,cur param signature fixed by xColumn callback typedef const cannot be applied,,high
+DCL13-C,10,sqlite,ext/misc/series.c,327,FP,cur param signature fixed by xRowid callback typedef,,high
+DCL13-C,11,sqlite,ext/misc/series.c,337,FP,cur param signature fixed by xEof callback typedef,,high
+DCL13-C,12,sqlite,ext/misc/series.c,354,FP,pCur passed to seriesSteps is internal helper but it reads bDesc and member values; const-correct in principle yet the object semantics are read-only making the warning cosmetic not a defect,,high
+INT33-C,13,sqlite,ext/misc/series.c,357,FP,iStep is set non-zero in seriesFilter (0 mapped to 1 or to LARGEST_INT64+1) so the divisor is never zero at this point,,high
+INT33-C,14,sqlite,ext/misc/series.c,360,FP,same as 13 iStep guaranteed non-zero by seriesFilter normalization before seriesSteps is ever called,,high
+FLP02-C,15,sqlite,ext/misc/series.c,383,FP,r!=r is the canonical NaN test the inequality is intentional not a precision-comparison bug,,high
+FLP02-C,16,sqlite,ext/misc/series.c,387,FP,r==(double)x compares a double against the exact double round-trip of its int64 cast this exactness check is intentional ceil logic,,high
+FLP00-C,17,sqlite,ext/misc/series.c,387,FP,same intentional exact-roundtrip equality in home-grown seriesCeil not a defect,,high
+FLP34-C,18,sqlite,ext/misc/series.c,387,FP,cast of integer x back to double is exact for the bounded range guarded by the prior 4503599627370496.0 magnitude checks,,high
+FLP34-C,19,sqlite,ext/misc/series.c,388,FP,(double)x conversion bounded by the magnitude guard so no range issue,,high
+INT32-C,20,sqlite,ext/misc/series.c,388,FP,x++ here x is bounded below 4503599627370496 by the earlier guard so cannot reach INT_MAX overflow,,high
+FLP34-C,21,sqlite,ext/misc/series.c,389,FP,(double)x exact conversion within the guarded 2^52 magnitude range,,high
+FLP02-C,22,sqlite,ext/misc/series.c,393,FP,r!=r NaN test in seriesFloor intentional,,high
+FLP02-C,23,sqlite,ext/misc/series.c,397,FP,r==(double)x exact-roundtrip equality intentional floor logic,,high
+FLP00-C,24,sqlite,ext/misc/series.c,397,FP,direct equality is the intended exactness test not a representation bug,,high
+FLP34-C,25,sqlite,ext/misc/series.c,397,FP,conversion bounded by magnitude guard,,high
+FLP34-C,26,sqlite,ext/misc/series.c,398,FP,(double)x bounded conversion,,high
+INT32-C,27,sqlite,ext/misc/series.c,398,FP,x-- with x bounded below 2^52 by guard cannot underflow INT_MIN,,high
+FLP34-C,28,sqlite,ext/misc/series.c,399,FP,(double)x bounded conversion,,high
+DCL13-C,29,sqlite,ext/misc/series.c,433,FP,argv is sqlite3_value** whose signature is fixed by the xFilter callback typedef and is the input array const cannot be added without breaking prototype,,high
+DCL00-C,30,sqlite,ext/misc/series.c,440,FP,iLimit is reassigned at line 508 from sqlite3_value_int64 inside the 0x20 branch so it is not effectively const,,med
+INT13-C,31,sqlite,ext/misc/series.c,457,FP,idxNum is an internal query-plan bitmask fully controlled by seriesBestIndex bitwise-on-signed-int is idiomatic and values are small positive flags,,high
+INT13-C,32,sqlite,ext/misc/series.c,462,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,33,sqlite,ext/misc/series.c,467,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,34,sqlite,ext/misc/series.c,480,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,35,sqlite,ext/misc/series.c,480,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,36,sqlite,ext/misc/series.c,483,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,37,sqlite,ext/misc/series.c,483,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT32-C,38,sqlite,ext/misc/series.c,494,FP,pCur->iStep is sqlite3_uint64 not signed int and this branch sets it to LARGEST_INT64 then ++ yields exactly 2^63 the documented intended unsigned value not an overflow,,high
+INT13-C,39,sqlite,ext/misc/series.c,507,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,40,sqlite,ext/misc/series.c,509,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,41,sqlite,ext/misc/series.c,517,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,42,sqlite,ext/misc/series.c,518,FP,idxNum internal bitmask bitwise test idiomatic,,high
+DCL00-C,43,sqlite,ext/misc/series.c,520,FP,r is reassigned via sqlite3_value_double at this line within the conditional so const-qualification is not applicable,,med
+FLP06-C,44,sqlite,ext/misc/series.c,520,FP,r initialized by sqlite3_value_double return not integer arithmetic FLP06 misreads the double-typed assignment,,high
+FLP02-C,45,sqlite,ext/misc/series.c,521,FP,r==seriesCeil(r) is the intended integral-value test for a float value constraint not a precision defect,,high
+FLP34-C,46,sqlite,ext/misc/series.c,522,FP,(double)SMALLEST_INT64 is a compile-time constant range bound conversion not an unchecked runtime conversion,,high
+FLP34-C,47,sqlite,ext/misc/series.c,523,FP,(double)LARGEST_INT64 constant range-bound conversion,,high
+INT13-C,48,sqlite,ext/misc/series.c,533,FP,idxNum internal bitmask bitwise test idiomatic,,high
+DCL00-C,49,sqlite,ext/misc/series.c,535,FP,r reassigned from sqlite3_value_double in this branch not effectively const,,med
+FLP06-C,50,sqlite,ext/misc/series.c,535,FP,r assigned from sqlite3_value_double not integer arithmetic,,high
+FLP34-C,51,sqlite,ext/misc/series.c,536,FP,(double)SMALLEST_INT64 constant bound conversion,,high
+INT13-C,52,sqlite,ext/misc/series.c,538,FP,idxNum internal bitmask bitwise test idiomatic,,high
+FLP02-C,53,sqlite,ext/misc/series.c,538,FP,r==seriesCeil(r) intentional integral test,,high
+INT13-C,54,sqlite,ext/misc/series.c,545,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT32-C,55,sqlite,ext/misc/series.c,549,FP,iMin++ is guarded by the immediately preceding check iMin==LARGEST_INT64 goto no_rows so increment cannot overflow,,high
+INT13-C,56,sqlite,ext/misc/series.c,554,FP,idxNum internal bitmask bitwise test idiomatic,,high
+DCL00-C,57,sqlite,ext/misc/series.c,556,FP,r reassigned from sqlite3_value_double in this branch,,med
+FLP06-C,58,sqlite,ext/misc/series.c,556,FP,r assigned from sqlite3_value_double not integer arithmetic,,high
+FLP34-C,59,sqlite,ext/misc/series.c,557,FP,(double)LARGEST_INT64 constant bound conversion,,high
+INT13-C,60,sqlite,ext/misc/series.c,559,FP,idxNum internal bitmask bitwise test idiomatic,,high
+FLP02-C,61,sqlite,ext/misc/series.c,559,FP,r==seriesFloor(r) intentional integral test,,high
+INT13-C,62,sqlite,ext/misc/series.c,566,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT32-C,63,sqlite,ext/misc/series.c,570,FP,iMax-- is guarded by the immediately preceding iMax==SMALLEST_INT64 goto no_rows so decrement cannot underflow,,high
+ARR36-C,64,sqlite,ext/misc/series.c,575,FP,SMALLEST_INT64 and LARGEST_INT64 are integer-constant macros not pointers ARR36 misclassifies the constant comparison,,high
+INT32-C,65,sqlite,ext/misc/series.c,586,FP,(span/iStep)*iStep cannot exceed span which is a valid uint64 magnitude and the result feeds add64 which uses defined unsigned wraparound so no signed overflow,,high
+INT33-C,66,sqlite,ext/misc/series.c,586,FP,iStep normalized non-zero in seriesFilter before this line divisor never zero,,high
+INT32-C,67,sqlite,ext/misc/series.c,600,FP,(span/iStep)*iStep bounded by span feeds sub64 unsigned-defined arithmetic no signed overflow,,high
+INT33-C,68,sqlite,ext/misc/series.c,600,FP,iStep non-zero by normalization,,high
+INT33-C,69,sqlite,ext/misc/series.c,621,FP,iStep non-zero divisor guaranteed by seriesFilter normalization assert(iStep!=0) holds,,high
+INT33-C,70,sqlite,ext/misc/series.c,627,FP,iStep non-zero divisor guaranteed,,high
+INT13-C,71,sqlite,ext/misc/series.c,633,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,72,sqlite,ext/misc/series.c,634,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,73,sqlite,ext/misc/series.c,644,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT32-C,74,sqlite,ext/misc/series.c,649,FP,iStep*iOffset is gated by seriesSteps(pCur) >= iOffset check at line 646 bounding the product within the series span and result feeds sub64 unsigned-defined arithmetic,,med
+INT32-C,75,sqlite,ext/misc/series.c,651,FP,iStep*iOffset same guard via the seriesSteps offset bound feeding add64 defined unsigned arithmetic,,med
+INT32-C,76,sqlite,ext/misc/series.c,655,FP,(iLimit-1)*iStep is reached only when seriesSteps(pCur)>iLimit so iLimit is within the series span and the product feeds add64 defined-wraparound arithmetic staying in range,,med
+INT32-C,77,sqlite,ext/misc/series.c,655,FP,iLimit-1 reached only when iLimit>=0 and seriesSteps>iLimit so iLimit is small-positive and minus one cannot overflow,,high
+MSC07-C,78,sqlite,ext/misc/series.c,662,FP,line 662 is the series_no_rows label body that is reached via goto from many sites not unreachable dead code MSC07 misreads the label after the prior return,,high
+DCL03-C,79,sqlite,ext/misc/series.c,730,FP,assert(SERIES_COLUMN_STOP==SERIES_COLUMN_START+1) on macro constants is a documented layout invariant DCL03 static_assert preference is style not a defect and runtime assert here is acceptable per guidance,,high
+DCL03-C,80,sqlite,ext/misc/series.c,731,FP,assert(SERIES_COLUMN_STEP==SERIES_COLUMN_START+2) same constant-layout invariant style note,,high
+INT14-C,81,sqlite,ext/misc/series.c,746,FP,idxNum is built and tested as a bitmask flag set mixing bit ops and arithmetic indexing is idiomatic and harmless readability note only,,low
+INT13-C,82,sqlite,ext/misc/series.c,772,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,83,sqlite,ext/misc/series.c,782,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,84,sqlite,ext/misc/series.c,792,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,85,sqlite,ext/misc/series.c,799,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT32-C,86,sqlite,ext/misc/series.c,811,FP,1<<iCol where iCol is asserted 0..2 (line 810) so the shift is well within int width no overflow,,high
+INT34-C,87,sqlite,ext/misc/series.c,811,FP,iCol validated by assert(iCol>=0 && iCol<=2) immediately before the shift so amount is non-negative and bounded,,high
+INT13-C,88,sqlite,ext/misc/series.c,811,FP,iCol is small bounded loop-derived index shifting by 0..2 idiomatic mask construction,,high
+ARR30-C,89,sqlite,ext/misc/series.c,822,FP,aIdx has size 7 and iCol is asserted 0..2 then used as aIdx[iCol] well within bounds; ARR30 misreads the bounded index,,high
+INT13-C,90,sqlite,ext/misc/series.c,849,FP,unusableMask is an internally accumulated flag mask bitwise-and idiomatic,,high
+INT13-C,91,sqlite,ext/misc/series.c,855,FP,idxNum internal bitmask bitwise test idiomatic,,high
+FLP34-C,92,sqlite,ext/misc/series.c,858,FP,(double)((idxNum&4)!=0) conversion of a 0/1 boolean to double is exact no range issue,,high
+INT32-C,93,sqlite,ext/misc/series.c,858,FP,2-((idxNum&4)!=0) is 2 minus 0 or 1 yielding 1 or 2 cannot overflow,,high
+INT13-C,94,sqlite,ext/misc/series.c,858,FP,idxNum internal bitmask bitwise test idiomatic,,high
+INT13-C,95,sqlite,ext/misc/series.c,868,FP,idxNum internal bitmask bitwise test idiomatic,,high
+CON03-C,96,sqlite,ext/misc/series.c,888,FP,seriesModule is a static const-effectively module vtable read-only after init CON03 thread-visibility warning does not apply to this immutable dispatch table,,high
+API00-C,97,sqlite,ext/misc/series.c,919,FP,db is the loader-supplied connection handle passed by SQLite extension framework never NULL by contract API00 entrypoint pointer-validation not warranted,,high
+API00-C,98,sqlite,ext/misc/series.c,919,FP,pApi is supplied by SQLITE_EXTENSION_INIT2 and the extension loader contract guarantees it non-NULL,,high
+STR34-C,99,sqlite,ext/misc/series.c,930,FP,*pzErrMsg is assigned a char* from sqlite3_mprintf no char-value dereference or sign extension occurs STR34 misreads the pointer assignment,,high

@@ -1,0 +1,590 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT30-C,0,sqlite,src/build.c,72,FP,nBytes guarded by assert(nTableLock<0x7fff0000) so sizeof(TableLock)*(n+1) cannot wrap an int,,high
+MEM30-C,1,sqlite,src/build.c,75,FP,pToplevel->aTableLock is the realloc result not a freed pointer; guarded by if(aTableLock) before use,,high
+MEM30-C,2,sqlite,src/build.c,76,FP,same realloc-result access inside the if(aTableLock) success branch; no free occurred,,high
+MEM30-C,3,sqlite,src/build.c,83,FP,pToplevel->db is the connection passed to ReallocOrFree as arg0 not freed; OOM path calls OomFault(db) legitimately,,high
+API00-C,4,sqlite,src/build.c,86,FP,sqlite3TableLock has fixed contract; zName flows to P4_STATIC and may be a literal; callers pass valid name,,high
+ARR00-C,5,sqlite,src/build.c,94,FP,iDb bounded by caller; assert(iDb>=0) and iDb==1 early-return; aDb[iDb] valid by parser invariant,,high
+DCL13-C,6,sqlite,src/build.c,102,TP,codeTableLocks reads pParse fields only never writes through it; const Parse* would compile (DCL13 declaration-class TP),,medium
+INT32-C,7,sqlite,src/build.c,185,FP,reg+i bounded by nRetCol VDBE register count; not attacker-controlled to INT_MAX,,high
+EXP33-C,8,sqlite,src/build.c,206,FP,pSchema assigned db->aDb[iDb].pSchema before use on every iteration that passes the cookieMask test,,high
+EXP33-C,9,sqlite,src/build.c,222,FP,i is a loop counter initialized in for(i=0;...) on every use path,,high
+INT32-C,10,sqlite,src/build.c,311,FP,nErr is a small bounded error counter; cannot reach INT_MAX in a single parse,,high
+API00-C,11,sqlite,src/build.c,337,FP,sqlite3FindTable asserts mutex; db is a valid connection by internal contract,,high
+EXP34-C,12,sqlite,src/build.c,344,FP,db dereferenced only after assert holding mutexes; db non-null by caller contract,,high
+API00-C,13,sqlite,src/build.c,408,FP,zName/zDbase contract: callers pass valid strings; zDbase NULL handled explicitly,,high
+API00-C,14,sqlite,src/build.c,408,FP,same as 13; LocateTable dereferences pParse->db with established non-null contract,,high
+DCL30-C,15,sqlite,src/build.c,469,FP,p is sqlite3FindTable result returned by value (Table*) not address of local; no DCL30 issue,,high
+API00-C,16,sqlite,src/build.c,481,FP,pParse used to reach db; internal contract guarantees non-null,,high
+API00-C,17,sqlite,src/build.c,481,FP,p (SrcItem*) member access guarded by parser-built SrcList; non-null by contract,,high
+DCL13-C,18,sqlite,src/build.c,484,FP,p->fg/p->u4/p->zName only read in LocateTableItem; but signature is part of locate API and p fields read-only here so const candidate is borderline; pointee not mutated,,medium
+API00-C,19,sqlite,src/build.c,502,FP,"zName read-only contract; not a defect, system literal table names",,high
+API00-C,20,sqlite,src/build.c,526,FP,db non-null by FindIndex contract with mutex assert,,high
+INT13-C,21,sqlite,src/build.c,532,FP,i^1 is intentional TEMP/MAIN swap on small bounded index; INT13 bitwise-on-signed is a stylistic FP here,,high
+API00-C,22,sqlite,src/build.c,546,FP,FreeIndex db is connection arg passed to DbFree; not validated by design,,high
+API00-C,23,sqlite,src/build.c,546,FP,p index pointer freed at end; caller guarantees non-null (UnlinkAndDelete checks ALWAYS(pIndex)),,high
+MSC04-C,24,sqlite,src/build.c,546,FP,recursion path passes through sqlite3DeleteTable->deleteTable but is bounded by schema tree depth and nTabRef refcount; not unbounded MSC04 defect,,high
+EXP34-C,25,sqlite,src/build.c,550,FP,p non-null guaranteed by caller ALWAYS(pIndex) before sqlite3FreeIndex call,,high
+MEM30-C,26,sqlite,src/build.c,553,FP,"p->isResized read before sqlite3DbFree(db,p); p freed only at the final line, not before",,high
+MEM30-C,27,sqlite,src/build.c,553,FP,sqlite3DbFree frees its 2nd arg not db; db is the connection never freed,,high
+MEM30-C,28,sqlite,src/build.c,553,FP,p->azColl read before p is freed; no use-after-free,,high
+MEM30-C,29,sqlite,src/build.c,557,FP,db is connection arg to DbFree not the freed object,,high
+API00-C,30,sqlite,src/build.c,566,FP,UnlinkAndDeleteIndex db non-null by contract with SchemaMutexHeld assert,,high
+ARR00-C,31,sqlite,src/build.c,571,FP,"iDb bounded by assert(SchemaMutexHeld(db,iDb,0)) and caller invariant; aDb[iDb] valid",,high
+ARR30-C,32,sqlite,src/build.c,571,FP,same iDb; ARR30 misfire on parser/schema-guarded index,,high
+EXP34-C,33,sqlite,src/build.c,574,FP,pIndex guarded by if(ALWAYS(pIndex)) before pIndex->pTable access,,high
+MEM30-C,34,sqlite,src/build.c,609,FP,db is connection passed to DbFree as arg0; aDb assignment is array copy not free,,high
+MEM30-C,35,sqlite,src/build.c,609,FP,same; db->aDb[j]=db->aDb[i] is struct copy; db not freed,,high
+MEM30-C,36,sqlite,src/build.c,614,FP,db->nDb member write; db is live connection,,high
+MEM30-C,37,sqlite,src/build.c,614,FP,db->aDbStatic/aDb compared; db live,,high
+MEM30-C,38,sqlite,src/build.c,614,FP,db live connection member access; not freed,,high
+ARR38-C,39,sqlite,src/build.c,615,FP,memcpy size 2*sizeof(db->aDb[0]) is compile-time constant; dest aDbStatic sized for 2 entries by struct,,high
+EXP43-C,40,sqlite,src/build.c,615,FP,aDbStatic and aDb are distinct buffers in the nDb<=2 && aDb!=aDbStatic branch; no overlap,,high
+INT32-C,41,sqlite,src/build.c,615,FP,2*sizeof(...) is a compile-time constant product; cannot overflow,,high
+MEM30-C,42,sqlite,src/build.c,615,FP,"db passed to DbFree(db,db->aDb) frees aDb not db; db reused validly",,high
+MEM30-C,43,sqlite,src/build.c,615,FP,db live after freeing db->aDb; assigns db->aDb=db->aDbStatic,,high
+MEM30-C,44,sqlite,src/build.c,615,FP,same live-connection member access,,high
+INT30-C,45,sqlite,src/build.c,615,FP,2*sizeof constant multiply cannot wrap,,high
+ARR01-C,46,sqlite,src/build.c,615,FP,sizeof(db->aDb[0]) is sizeof of array element type via pointer deref not sizeof(pointer); correct usage,,medium
+MEM30-C,47,sqlite,src/build.c,615,FP,db->aDb freed but db itself live; assigned aDbStatic immediately,,high
+MEM30-C,48,sqlite,src/build.c,617,FP,db->aDbStatic is fixed in-struct array; never freed,,high
+API00-C,49,sqlite,src/build.c,626,FP,ResetOneSchema db non-null by contract; assert(iDb<db->nDb),,high
+API00-C,50,sqlite,src/build.c,674,FP,CommitInternalChanges db non-null connection contract,,high
+API00-C,51,sqlite,src/build.c,683,FP,pParse contract non-null; used only to reach db in append,,high
+API00-C,52,sqlite,src/build.c,683,FP,pCol contract: assert(IsOrdinaryTable(pTab)); pCol from table column array,,high
+INT32-C,53,sqlite,src/build.c,696,FP,pList->nExpr+1 bounded by SQLITE_LIMIT_COLUMN; cannot overflow int,,high
+DCL13-C,54,sqlite,src/build.c,709,FP,pCol IS modified: pCol->iDflt=0 check then iDflt set in branch; const would not compile,,high
+API00-C,55,sqlite,src/build.c,720,FP,ColumnSetColl db non-null connection contract,,high
+API00-C,56,sqlite,src/build.c,720,FP,"pCol mutated (zCnName,colFlags written); valid param",,high
+INT14-C,57,sqlite,src/build.c,729,FP,INT14 readability rule; pCol pointer used in member access not real bitwise/arith mix defect,,high
+ARR38-C,58,sqlite,src/build.c,737,FP,memcpy size nColl is strlen-derived bounded; dest zNew sized nColl+n by realloc,,high
+EXP05-C,59,sqlite,src/build.c,737,FP,pCol->zCnName+n is char* pointer arithmetic into a writable buffer; not casting away const (zNew is char*),,high
+DCL13-C,60,sqlite,src/build.c,745,FP,"pCol read-only in ColumnColl (reads zCnName,colFlags); const candidate but signature is accessor convention; not a defect",,high
+EXP34-C,61,sqlite,src/build.c,747,FP,pCol contract non-null; colFlags read after caller guarantees valid Column,,high
+EXP34-C,62,sqlite,src/build.c,749,FP,z=pCol->zCnName is a valid nul-terminated name guaranteed by COLFLAG_HASCOLL invariant,,high
+API00-C,63,sqlite,src/build.c,760,FP,DeleteColumnNames db non-null asserted db!=0,,high
+MSC04-C,64,sqlite,src/build.c,760,FP,recursion bounded by finite schema/expr tree; deletion recursion terminates; not MSC04 defect,,high
+ARR37-C,65,sqlite,src/build.c,766,FP,pCol++ walks the aCol[] array which IS an array; ARR37 misfire,,high
+EXP34-C,66,sqlite,src/build.c,767,FP,pCol valid within i<nCol loop over aCol array,,high
+MEM30-C,67,sqlite,src/build.c,770,FP,sqlite3DbNNFreeNN frees pTable->aCol not db; double-free FP,,high
+MEM30-C,68,sqlite,src/build.c,772,FP,db connection passed to ExprListDelete; pTable->u.tab.pDfltList freed not db,,high
+MEM30-C,69,sqlite,src/build.c,772,FP,pDfltList read as arg then freed by ExprListDelete; not use-after-free,,high
+MEM30-C,70,sqlite,src/build.c,772,FP,u.tab union member access on live pTable; guarded by IsOrdinaryTable,,high
+MEM30-C,71,sqlite,src/build.c,772,FP,pTable->u union member; pTable live,,high
+MEM30-C,72,sqlite,src/build.c,774,FP,db->pnBytesFreed read; db live connection,,high
+MSC04-C,73,sqlite,src/build.c,799,FP,deleteTable recursion bounded by table/select/srclist tree depth; terminates; not a defect,,high
+MEM30-C,74,sqlite,src/build.c,834,FP,db passed to FkDelete frees FK structs not db; db live,,high
+MEM30-C,75,sqlite,src/build.c,838,FP,db passed to VtabClear; db live connection,,high
+MEM30-C,76,sqlite,src/build.c,843,FP,db passed to SelectDelete frees view select not db,,high
+MEM30-C,77,sqlite,src/build.c,848,FP,db passed to DeleteColumnNames; db live,,high
+MEM30-C,78,sqlite,src/build.c,849,FP,"DbFree(db,pTable->zName) frees zName not db",,high
+MEM30-C,79,sqlite,src/build.c,850,FP,"DbFree(db,pTable->zColAff) frees zColAff not db",,high
+MEM30-C,80,sqlite,src/build.c,851,FP,db passed to ExprListDelete(pTable->pCheck); db live,,high
+MEM30-C,81,sqlite,src/build.c,851,FP,pTable->pCheck read as arg then freed; not use-after-free,,high
+MEM30-C,82,sqlite,src/build.c,852,FP,"DbFree(db,pTable) frees pTable; db is connection arg not freed",,high
+MEM30-C,83,sqlite,src/build.c,855,FP,assert(nLookaside...) reads db via LookasideUsed; db live,,high
+MSC04-C,84,sqlite,src/build.c,857,FP,DeleteTable->deleteTable->SelectDelete recursion bounded by tree depth; terminates,,high
+API00-C,85,sqlite,src/build.c,873,FP,UnlinkAndDeleteTable db non-null asserted db!=0,,high
+API00-C,86,sqlite,src/build.c,873,FP,zTabName asserted non-null; testcase covers empty string explicitly,,high
+ARR00-C,87,sqlite,src/build.c,882,FP,iDb asserted iDb>=0 && iDb<db->nDb before aDb[iDb],,high
+DCL30-C,88,sqlite,src/build.c,909,FP,zName is DbStrNDup heap result returned to caller (must be freed by caller); not address of local,,high
+API00-C,89,sqlite,src/build.c,916,FP,OpenSchemaTable p non-null Parse contract; GetVdbe handles null v,,high
+API00-C,90,sqlite,src/build.c,931,FP,FindDbName db non-null connection contract,,high
+DCL13-C,91,sqlite,src/build.c,931,FP,FindDbName reads db->nDb and db->aDb only; const candidate but db is connection-handle convention not a real defect; pointee not mutated,,medium
+EXP34-C,92,sqlite,src/build.c,935,FP,db->nDb access; db non-null by contract; loop init reads nDb-1,,high
+INT32-C,93,sqlite,src/build.c,935,FP,db->nDb-1 where nDb>=1 always (main db); cannot underflow to overflow,,high
+API00-C,94,sqlite,src/build.c,951,FP,FindDb db non-null connection contract,,high
+API00-C,95,sqlite,src/build.c,976,FP,TwoPartName pParse non-null; db=pParse->db with contract,,high
+API00-C,96,sqlite,src/build.c,976,FP,pName2 asserted non-null assert(pName2!=0); read n field,,high
+API00-C,97,sqlite,src/build.c,976,FP,pUnqual written *pUnqual=... ; output param valid by contract,,high
+DCL13-C,98,sqlite,src/build.c,979,FP,pName2 IS dereferenced (pName2->n) and stored into *pUnqual; pointee semantics but param itself read-only; not a defect,,high
+API00-C,99,sqlite,src/build.c,1009,FP,WritableSchema db non-null contract; reads db->flags,,high
+DCL13-C,100,sqlite,src/build.c,1009,FP,WritableSchema reads db->flags only; const candidate but connection-handle convention; pointee not mutated,,medium
+API00-C,101,sqlite,src/build.c,1031,FP,CheckObjectName pParse non-null; db=pParse->db contract,,high
+API00-C,102,sqlite,src/build.c,1069,FP,PrimaryKeyIndex pTab non-null contract; walks pIndex list,,high
+DCL13-C,103,sqlite,src/build.c,1069,FP,PrimaryKeyIndex reads pTab->pIndex only; const candidate but Table* handle convention; not a defect,,medium
+EXP34-C,104,sqlite,src/build.c,1071,FP,pTab->pIndex read; pTab non-null by caller contract,,high
+DCL30-C,105,sqlite,src/build.c,1072,FP,p is loop var assigned to returned Index* (heap object) not address of local p,,high
+API00-C,106,sqlite,src/build.c,1081,FP,TableColumnToIndex pIdx non-null; asserts on nColumn bound,,high
+DCL13-C,107,sqlite,src/build.c,1081,FP,TableColumnToIndex reads pIdx->nColumn/aiColumn only; const candidate but not a defect,,medium
+EXP34-C,108,sqlite,src/build.c,1085,FP,pIdx->nColumn read after assert(pIdx->nColumn<=...); pIdx non-null by contract,,high
+API00-C,109,sqlite,src/build.c,1107,FP,StorageColumnToTable pTab non-null; reads tabFlags/aCol,,high
+DCL13-C,110,sqlite,src/build.c,1107,FP,StorageColumnToTable reads pTab fields only; const candidate but not a defect; pointee not mutated,,medium
+DCL13-C,111,sqlite,src/build.c,1155,FP,TableColumnToStorage reads pTab->tabFlags/aCol only; const candidate; pointee not mutated,,medium
+EXP34-C,112,sqlite,src/build.c,1158,FP,pTab->nCol read after assert(iCol<pTab->nCol); pTab non-null contract,,high
+INT14-C,113,sqlite,src/build.c,1159,FP,INT14 readability misfire; pTab in tabFlags&MASK test plus aCol[i] index is normal idiom,,high
+INT14-C,114,sqlite,src/build.c,1161,FP,INT14 readability misfire on loop var i in array index and increment,,high
+INT32-C,115,sqlite,src/build.c,1182,FP,++pParse->nMem register counter bounded by parse complexity; cannot reach INT_MAX,,high
+API00-C,116,sqlite,src/build.c,1206,FP,StartTable pParse non-null Parse contract,,high
+API00-C,117,sqlite,src/build.c,1206,FP,isTemp is a 0/1 boolean flag; no overflow-prone arithmetic on it,,high
+API00-C,118,sqlite,src/build.c,1206,FP,isView is a 0/1 bool flag (assert isView==0||isView==1 at line 1251); no overflow possible in any arithmetic on it,,0.97
+EXP33-C,119,sqlite,src/build.c,1238,FP,pName is set in both branches of the if/else (line 1226 or via sqlite3TwoPartName out-param at 1229) before use at 1238; not uninitialized,,0.96
+EXP34-C,120,sqlite,src/build.c,1243,FP,pName assigned pName1 or sqlite3TwoPartName out-param before line 1243; sqlite3TwoPartName guarantees *pName set when iDb>=0 which is checked at 1230,,0.95
+ARR02-C,121,sqlite,src/build.c,1253,FP,aCode[] is a static const initializer with 4 elements; size is implicit-by-initializer which is valid C and intentional,,0.98
+INT32-C,122,sqlite,src/build.c,1263,FP,isTemp and isView are asserted 0/1 (lines 1250-1251); isTemp+2*isView ranges 0..3 indexing a 4-element table; no overflow,,0.97
+INT32-C,123,sqlite,src/build.c,1304,FP,pParse->nErr counts parse errors bounded by statement size limits; reaching INT_MAX errors is infeasible and parse aborts long before,,0.95
+ARR02-C,124,sqlite,src/build.c,1332,FP,nullRow[] is a static const char initializer with 6 explicit elements; implicit-by-initializer bound is valid and intentional,,0.98
+INT32-C,125,sqlite,src/build.c,1345,FP,pParse->nMem is the VDBE register counter bounded by statement complexity (SQLITE_LIMIT); cannot approach INT_MAX in a parse,,0.94
+INT32-C,126,sqlite,src/build.c,1346,FP,same nMem register counter increment; bounded by parser limits,,0.94
+INT32-C,127,sqlite,src/build.c,1347,FP,same nMem register counter increment; bounded by parser limits,,0.94
+MSC07-C,128,sqlite,src/build.c,1391,FP,begin_table_error label after the return at 1388 is a goto target reached from earlier error paths; not unreachable dead code,,0.96
+MEM30-C,129,sqlite,src/build.c,1393,FP,"zName freed once at 1393 in the error path; no double free, sqlite3DbFree is the sole free and control returns immediately",,0.96
+ARR00-C,130,sqlite,src/build.c,1405,FP,pCol[-1] guarded by pCol!=pTab->aCol (line 1405) ensuring pCol points past element 0 so [-1] is the valid prior Column; intentional prev-column peek,,0.93
+ARR37-C,131,sqlite,src/build.c,1405,FP,pCol points into the aCol[] array (Column*); pCol[-1] is valid pointer arithmetic guarded by pCol!=pTab->aCol; not a non-array pointer,,0.93
+API00-C,132,sqlite,src/build.c,1439,FP,"pParse is the parser context, never NULL by sqlite contract; every parser action receives a valid Parse*",,0.9
+API00-C,133,sqlite,src/build.c,1439,FP,pList may legitimately be processed/deleted on OOM; sqlite3AddReturning handles it via sqlite3ExprListDelete; not an unchecked deref defect,,0.9
+EXP33-C,134,sqlite,src/build.c,1449,FP,pRet assigned from sqlite3DbMallocZero at 1449 then NULL-checked at 1450 (returns) before any deref; not uninitialized,,0.95
+EXP34-C,135,sqlite,src/build.c,1503,FP,p=pParse->pNewTable checked ==0 return at line 1502 before all member access; not a null deref,,0.95
+INT30-C,136,sqlite,src/build.c,1514,FP,sType.n-6 guarded by sType.n>=16 at line 1513; n-6 cannot wrap,,0.94
+INT30-C,137,sqlite,src/build.c,1516,FP,sType.n-=6 guarded by sType.n>=16; result stays positive,,0.94
+INT30-C,138,sqlite,src/build.c,1517,FP,sType.n-1 reached only after sType.n>0 (ALWAYS guard at 1517); no wrap,,0.93
+INT30-C,139,sqlite,src/build.c,1519,FP,sType.n-9 guarded by sType.n>=9 at line 1518; no wrap,,0.93
+INT30-C,140,sqlite,src/build.c,1521,FP,sType.n-=9 guarded by sType.n>=9; no wrap,,0.93
+INT30-C,141,sqlite,src/build.c,1522,FP,sType.n-1 reached only inside while(sType.n>0) loop at 1522; no wrap,,0.93
+INT32-C,142,sqlite,src/build.c,1536,FP,"i is the std-type loop index 0..SQLITE_N_STDTYPE; i+1 (eType) is tiny, no overflow",,0.93
+INT32-C,143,sqlite,src/build.c,1544,FP,allocation size computed in i64 with token lengths bounded by SQL statement length limit; cannot overflow i64,,0.95
+INT32-C,144,sqlite,src/build.c,1544,FP,i64 token-length arithmetic bounded by statement length; no overflow,,0.95
+INT32-C,145,sqlite,src/build.c,1544,FP,i64 token-length arithmetic bounded by statement length; no overflow,,0.95
+INT30-C,146,sqlite,src/build.c,1555,FP,((i64)nCol+1)*sizeof is i64 arithmetic; nCol bounded by SQLITE_LIMIT_COLUMN (checked at 1503); cannot wrap,,0.94
+INT32-C,147,sqlite,src/build.c,1555,FP,(i64)nCol+1 in i64; nCol bounded by SQLITE_LIMIT_COLUMN; no overflow,,0.95
+DCL00-C,148,sqlite,src/build.c,1589,TP,h is computed once (pCol->hName % sizeof(p->aHx)) and only read; const-qualifying the local u8 h is valid and would compile,,0.6
+API00-C,149,sqlite,src/build.c,1604,FP,"pParse is parser context, never NULL by sqlite contract",,0.9
+DCL13-C,150,sqlite,src/build.c,1604,TP,pParse pointee is never written in sqlite3AddNotNull (only pParse->pNewTable read); const Parse* compiles; meets strict DCL13 criterion,,0.55
+DCL00-C,151,sqlite,src/build.c,1652,FP,h at line 1652 is reassigned inside the loop (h=(h<<8)+... at 1659); it IS modified so const would not compile; DCL00 misfire,,0.92
+EXP05-C,152,sqlite,src/build.c,1658,FP,(u8*)zIn casts const char* to u8* for byte read only (UpperToLower lookup); pointee never written so no const violation in practice; benign EXP05 stylistic but the original zIn is const-correct read,,0.9
+INT14-C,153,sqlite,src/build.c,1659,FP,"h uses shift and add to build a 32-bit rolling hash; bitwise+arithmetic mix is the intended hash algorithm, readability heuristic only",,0.85
+PRE32-C,154,sqlite,src/build.c,1672,FP,the #ifndef SQLITE_OMIT_AUTHORIZATION at 1672-region is not inside an assert() argument list; directive sits between statements; analyzer mis-association,,0.95
+PRE32-C,155,sqlite,src/build.c,1682,FP,no assert macro invocation spans this preprocessor directive; misfire,,0.95
+PRE32-C,156,sqlite,src/build.c,1707,FP,#ifdef near 1707 is not within an assert() argument; misfire,,0.95
+INT32-C,157,sqlite,src/build.c,1712,FP,"v is a small size estimate (0..~64), v/4+1 cannot overflow; then clamped to 255 at 1713",,0.93
+API00-C,158,sqlite,src/build.c,1729,FP,pParse never NULL by sqlite parser contract,,0.9
+API00-C,159,sqlite,src/build.c,1729,FP,pExpr default-value expr is validated by sqlite3ExprIsConstantOrFunction and may be NULL-handled; not an unchecked-deref defect,,0.85
+PRE32-C,160,sqlite,src/build.c,1745,FP,#ifndef SQLITE_OMIT_GENERATED_COLUMNS not inside an assert/memset invocation; misfire,,0.95
+PRE32-C,161,sqlite,src/build.c,1750,FP,preprocessor directive not within a function-like macro invocation; misfire,,0.95
+MEM30-C,162,sqlite,src/build.c,1762,FP,"x.u.zToken freed at 1762 AFTER sqlite3ExprDup copied it at 1761; x is a stack Expr, the freed token is the temporary span, not used after free",,0.92
+MEM30-C,163,sqlite,src/build.c,1763,FP,pParse is not freed; sqlite3DbFree at 1762 freed x.u.zToken only; passing pParse to sqlite3ColumnSetExpr is valid,,0.92
+MEM30-C,164,sqlite,src/build.c,1767,FP,pParse not freed anywhere here; sqlite3RenameExprUnmap receives a live pParse,,0.92
+MEM30-C,165,sqlite,src/build.c,1769,FP,"db not freed; sqlite3ExprDelete(db,pExpr) uses a live db handle",,0.92
+EXP34-C,166,sqlite,src/build.c,1800,FP,pCol=&p->aCol[p->nCol-1] valid since p->nCol>=1 guaranteed when pNewTable exists with a column; COLFLAG_PRIMKEY set on a real column,,0.93
+PRE32-C,167,sqlite,src/build.c,1801,FP,#ifndef directive at 1801 not inside a memset() invocation; misfire,,0.95
+API00-C,168,sqlite,src/build.c,1829,FP,pParse never NULL by parser contract,,0.9
+API00-C,169,sqlite,src/build.c,1829,FP,pList may be NULL legitimately (single-column PK case handled at 1847); function checks pList==0; not an unchecked-deref,,0.85
+API00-C,170,sqlite,src/build.c,1829,FP,autoInc is a 0/1 flag (assert autoInc==0||autoInc==1 at 1879); no overflow in arithmetic,,0.96
+INT14-C,171,sqlite,src/build.c,1841,FP,pTab pointer used in flag OR (tabFlags|=) and comparisons; bitwise+arithmetic heuristic misfire on flag manipulation,,0.85
+INT32-C,172,sqlite,src/build.c,1880,FP,autoInc is 0/1 (asserted at 1879); autoInc*TF_Autoincrement is 0 or the flag bit; no overflow,,0.96
+PRE32-C,173,sqlite,src/build.c,1884,FP,memset preprocessor mis-association; #ifndef not inside memset() args,,0.95
+API00-C,174,sqlite,src/build.c,1902,FP,pParse never NULL by parser contract,,0.9
+API00-C,175,sqlite,src/build.c,1902,FP,pCheckExpr handled (appended or deleted) including NULL/OOM paths; not unchecked deref,,0.85
+API00-C,176,sqlite,src/build.c,1902,FP,zStart only dereferenced inside the guarded branch (pTab && !IN_DECLARE_VTAB...) with constraint logic; contract-provided non-null,,0.85
+API00-C,177,sqlite,src/build.c,1902,FP,zEnd same guarded branch; contract-provided text bounds from parser,,0.85
+PRE32-C,178,sqlite,src/build.c,1908,FP,#ifndef SQLITE_OMIT_CHECK not inside a memset invocation; misfire,,0.95
+ARR00-C,179,sqlite,src/build.c,1922,FP,zEnd[-1] guarded by the constraint that zStart<zEnd (parser provides valid (...) span); intentional trailing-whitespace trim,,0.9
+API00-C,180,sqlite,src/build.c,1938,FP,"pToken provided by parser, valid; sqlite3NameFromToken handles it; p NULL-checked at 1944",,0.9
+EXP34-C,181,sqlite,src/build.c,1945,FP,p=pParse->pNewTable checked ==0 return at 1944 before member access at 1945,,0.93
+DCL13-C,182,sqlite,src/build.c,1971,TP,"pType (Token*) only read (pType->n, pType->z) in sqlite3AddGenerated; const Token* compiles; meets strict DCL13 criterion",,0.6
+PRE32-C,183,sqlite,src/build.c,1972,FP,memset preprocessor mis-association; misfire,,0.95
+PRE32-C,184,sqlite,src/build.c,2020,FP,#else directive not inside a memset invocation; misfire,,0.95
+API00-C,185,sqlite,src/build.c,2047,FP,pParse never NULL by parser contract,,0.9
+DCL13-C,186,sqlite,src/build.c,2047,TP,pParse pointee never written in sqlite3ChangeCookie (only db and pVdbe read); const Parse* compiles,,0.6
+INT30-C,187,sqlite,src/build.c,2052,FP,"schema_cookie wrap is explicitly intended and documented (1-in-2^32, comment lines 2038-2042); cast to unsigned makes wrap defined",,0.95
+ARR00-C,188,sqlite,src/build.c,2052,FP,"iDb is a validated database index; callers pass iDb from sqlite3TwoPartName/schema iteration, always 0..db->nDb-1; mutex-asserted at 2050",,0.92
+ARR30-C,189,sqlite,src/build.c,2052,FP,"same iDb is internally validated database index, never attacker-controlled out of range",,0.92
+INT32-C,190,sqlite,src/build.c,2097,FP,i in identPut is a buffer offset bounded by the pre-sized buffer n; loop count bounded by identifier length; no INT_MAX,,0.93
+INT32-C,191,sqlite,src/build.c,2102,FP,same identPut offset increment bounded by allocated buffer; no overflow,,0.93
+DCL13-C,192,sqlite,src/build.c,2112,TP,"p (Table*) only read in createTableStmt (aCol,nCol,zName); const Table* compiles; meets strict DCL13 criterion",,0.6
+ARR37-C,193,sqlite,src/build.c,2119,FP,"pCol++ walks the aCol[] array within i<p->nCol loop bound; valid array pointer iteration, not non-array",,0.9
+ARR38-C,194,sqlite,src/build.c,2139,FP,"memcpy(zStmt,""CREATE TABLE "",13) copies a 13-byte literal into buffer sized n>14 (asserted at 2138); size is exact, in bounds",,0.95
+ARR37-C,195,sqlite,src/build.c,2143,FP,pCol++ iterates aCol[] within i<p->nCol; valid array iteration,,0.9
+ARR02-C,196,sqlite,src/build.c,2144,FP,azType[] static const array with 6 explicit initializers; implicit-by-initializer bound valid and intentional,,0.98
+INT31-C,197,sqlite,src/build.c,2156,FP,"len=sqlite3Strlen30(...) returns a bounded non-negative int (<2^30); conversion to size_t in memcpy is safe, asserted k+len<n",,0.9
+INT31-C,198,sqlite,src/build.c,2176,FP,"len from sqlite3Strlen30 is non-negative bounded int; safe size_t conversion, asserted in bounds",,0.9
+ARR38-C,199,sqlite,src/build.c,2182,FP,"memcpy(&zStmt[k],zEnd,len+1) bounded by assert k+len<n at 2181; buffer pre-sized; size valid",,0.92
+INT31-C,200,sqlite,src/build.c,2182,FP,len non-negative bounded; safe conversion,,0.9
+DCL30-C,201,sqlite,src/build.c,2183,TP,"zStmt is sqlite3DbMallocRaw heap allocation returned to caller, NOT a local automatic array; analyzer misread the local char* as automatic storage",,0.2
+ARR00-C,202,sqlite,src/build.c,2183,FP,zStmt points to heap memory from sqlite3DbMallocRaw (line 2133); returning it is correct (caller frees per doc); not a dangling local-array return,,0.95
+DCL13-C,203,sqlite,src/build.c,2190,TP,pParse pointee never written in resizeIndexObject (only pParse->db read); const Parse* compiles,,0.6
+DCL03-C,204,sqlite,src/build.c,2196,FP,assert(N>0) at 2196 tests runtime parameter N not a constant expression; static_assert inapplicable; DCL03 misfire,,0.9
+DCL03-C,205,sqlite,src/build.c,2197,FP,assert N<=SQLITE_MAX_COLUMN*2 mixes runtime N with constants; not purely constant so static_assert not applicable; misfire,,0.6
+ARR39-C,206,sqlite,src/build.c,2200,FP,sizeof(char*)+sizeof(LogEst)+sizeof(i16) is a per-element byte stride summed then multiplied by N; intended layout arithmetic not double-scaling,,0.9
+INT30-C,207,sqlite,src/build.c,2200,FP,sum of small sizeof constants then *(u64)N; N bounded by SQLITE_MAX_COLUMN*2 (asserted 2197); no wrap,,0.92
+INT30-C,208,sqlite,src/build.c,2200,FP,sizeof+sizeof constant addition cannot wrap u64,,0.92
+ARR38-C,209,sqlite,src/build.c,2203,FP,memcpy size sizeof(char*)*pIdx->nColumn; nColumn bounded by column limit; source/dest pre-sized via nByte at 2200; valid,,0.92
+INT32-C,210,sqlite,src/build.c,2203,FP,"sizeof(char*)*nColumn in u64-context, nColumn small bounded by SQLITE_MAX_COLUMN; no overflow",,0.92
+INT30-C,211,sqlite,src/build.c,2203,FP,same multiplication bounded; no wrap,,0.92
+INT30-C,212,sqlite,src/build.c,2205,FP,sizeof(char*)*N with N asserted <=SQLITE_MAX_COLUMN*2; no wrap; pointer advance within allocated nByte,,0.92
+ARR38-C,213,sqlite,src/build.c,2206,FP,memcpy sizeof(LogEst)*(nKeyCol+1); nKeyCol bounded; dest within nByte allocation; valid,,0.92
+INT32-C,214,sqlite,src/build.c,2206,FP,sizeof(LogEst)*(nKeyCol+1) bounded by column limits; no overflow,,0.92
+INT30-C,215,sqlite,src/build.c,2206,FP,same bounded multiplication; no wrap,,0.92
+INT30-C,216,sqlite,src/build.c,2208,FP,sizeof(LogEst)*N bounded by asserted N; no wrap,,0.92
+ARR38-C,217,sqlite,src/build.c,2209,FP,memcpy sizeof(i16)*nColumn; bounded; within nByte; valid,,0.92
+INT32-C,218,sqlite,src/build.c,2209,FP,sizeof(i16)*nColumn bounded; no overflow,,0.92
+INT30-C,219,sqlite,src/build.c,2209,FP,same bounded; no wrap,,0.92
+INT30-C,220,sqlite,src/build.c,2211,FP,sizeof(i16)*N bounded by asserted N; no wrap,,0.92
+INT30-C,221,sqlite,src/build.c,2227,FP,wTable+=szEst; szEst is a u8 (<=255) summed over nCol columns into unsigned; total bounded well below UINT_MAX; no wrap,,0.9
+EXP34-C,222,sqlite,src/build.c,2239,FP,"pIdx->pTable->aCol accessed; pIdx is a valid Index in estimateIndexWidth, aiColumn entries asserted x<nCol; not null",,0.93
+INT30-C,223,sqlite,src/build.c,2243,FP,"wIndex+=(x<0?1:aCol[x].szEst); szEst u8, bounded sum; no wrap",,0.9
+INT32-C,224,sqlite,src/build.c,2253,FP,"nCol-- in hasColumn loop while(nCol-->0); nCol is a count >=0, decrements toward 0, never reaches INT_MIN",,0.85
+DCL13-C,225,sqlite,src/build.c,2274,TP,pIdx only read in isDupColumn (asserts/aiColumn/azColl reads); const Index* compiles; meets strict DCL13 criterion,,0.6
+DCL13-C,226,sqlite,src/build.c,2274,TP,"pPk only read in isDupColumn (nColumn,nKeyCol,idxType,aiColumn,azColl); const Index* compiles",,0.6
+EXP34-C,227,sqlite,src/build.c,2276,FP,"pIdx asserts nKey<=pIdx->nColumn at 2276; pIdx is valid Index parameter, not null in this internal helper",,0.93
+EXP34-C,228,sqlite,src/build.c,2277,FP,"pPk asserts present (idxType==PRIMARYKEY at 2278); valid internal Index parameter, not null",,0.93
+ARR00-C,229,sqlite,src/build.c,2282,FP,"iCol asserted iCol<MAX(pPk->nColumn,pPk->nKeyCol) at 2277 before aiColumn[iCol] access at 2282; bounds-checked",,0.9
+ARR00-C,230,sqlite,src/build.c,2287,FP,same iCol bounds-asserted at 2277 before use; pPk->azColl[iCol] in bounds,,0.9
+EXP34-C,231,sqlite,src/build.c,2317,FP,pIdx valid Index in recomputeColumnsNotIndexed; pTable=pIdx->pTable dereferenced for a constructed index; not null,,0.93
+INT14-C,232,sqlite,src/build.c,2318,FP,pIdx used in pointer member access and flag math; bitwise+arithmetic heuristic misfire,,0.85
+EXP34-C,233,sqlite,src/build.c,2320,FP,pTab=pIdx->pTable; pTab->aCol[x] accessed with x>=0 guard at 2320; pTab non-null for a built index,,0.92
+EXP07-C,234,sqlite,src/build.c,2327,FP,"colNotIdxed>>63 is a documented invariant (high bit always 1, note-20221022-a, asserted); not an unwarranted constant assumption",,0.9
+EXP34-C,235,sqlite,src/build.c,2412,FP,pPk=sqlite3PrimaryKeyIndex(pTab) with assert pPk->nKeyCol==1 at 2412; pPk guaranteed non-null after the PK index is created/located in this WITHOUT ROWID path,,0.93
+EXP43-C,236,sqlite,src/build.c,2423,FP,"isDupColumn reads pIdx and pPk only; passing same Index for both is read-only comparison, no restrict params, no UB",,high
+INT32-C,237,sqlite,src/build.c,2492,FP,nPk+nExtra bounded by table column count capped by SQLITE_LIMIT_COLUMN well below INT_MAX; resizeIndexObject checks alloc,,high
+PRE32-C,238,sqlite,src/build.c,2509,FP,line 2509 is #ifndef guarding a function definition not inside any memcpy macro invocation; analyzer misattributes preprocessor context,,high
+API00-C,239,sqlite,src/build.c,2514,FP,db is an internal sqlite3* always valid from connection; never null at this call path; API00 N/A to internal core,,high
+PRE32-C,240,sqlite,src/build.c,2530,FP,line 2530 is #ifndef guarding a function definition not inside a memcpy macro invocation,,high
+INT14-C,241,sqlite,src/build.c,2554,FP,pOther is a pointer compared/dereferenced not mixed bitwise+arithmetic; INT14 misfire on tabFlags bit test,,high
+PRE32-C,242,sqlite,src/build.c,2565,FP,line 2565 is #ifndef guarding a function definition not inside a memcpy macro invocation,,high
+API00-C,243,sqlite,src/build.c,2573,FP,db internal sqlite3* always valid; sqlite3DbStrNDup tolerates and checks; API00 N/A,,high
+API00-C,244,sqlite,src/build.c,2573,FP,zName checked via strrchr then used; null zName never reaches here from callers; API00 N/A internal,,high
+MEM30-C,245,sqlite,src/build.c,2584,FP,db not freed here; sqlite3DbFree frees zCopy not db; no use-after-free,,high
+PRE32-C,246,sqlite,src/build.c,2589,FP,line 2589 is #ifdef SQLITE_DEBUG guarding a definition not inside a memcpy macro invocation,,high
+DCL13-C,247,sqlite,src/build.c,2596,FP,pWalker signature fixed by Walker xExprCallback function-pointer typedef and is (void)pWalker unused; const cannot be added,,high
+PRE32-C,248,sqlite,src/build.c,2611,FP,line 2611 is #else of SQLITE_DEBUG block not inside a memcpy macro invocation,,high
+API00-C,249,sqlite,src/build.c,2636,FP,pParse internal Parse* always valid in parser action; API00 N/A to core,,high
+API00-C,250,sqlite,src/build.c,2636,FP,pCons is a parser-supplied Token*; signature fixed by grammar dispatch; checked before deref,,high
+DCL13-C,251,sqlite,src/build.c,2638,FP,pCons reassigned (pCons=pEnd at 2978) so it is written; signature fixed by parser action contract; const impossible,,high
+DCL13-C,252,sqlite,src/build.c,2639,FP,pEnd pointee read via pEnd->z and signature fixed by grammar action; const would not match yacc dispatch table usage,,high
+ARR00-C,253,sqlite,src/build.c,2688,FP,ii initialized in for(ii=0;...) at line 2688; not uninitialized; analyzer misread loop init,,high
+INT32-C,254,sqlite,src/build.c,2847,FP,pParse->nErr increment bounded by parse error count far below INT_MAX; cannot overflow in a single parse,,high
+INT32-C,255,sqlite,src/build.c,2850,FP,pParse->nTab cursor count bounded by statement complexity well below INT_MAX,,high
+INT32-C,256,sqlite,src/build.c,2851,FP,pParse->nMem register count bounded by statement size below INT_MAX,,high
+INT32-C,257,sqlite,src/build.c,2852,FP,pParse->nMem register count bounded by statement size below INT_MAX,,high
+INT32-C,258,sqlite,src/build.c,2853,FP,pParse->nMem register count bounded by statement size below INT_MAX,,high
+INT32-C,259,sqlite,src/build.c,2873,FP,addrTop is a small VDBE address; addrTop-1 cannot overflow; addrTop set from CurrentAddr+1,,high
+INT32-C,260,sqlite,src/build.c,2891,FP,n is token-offset length bounded by SQL text size; pEnd2->n is a token length; no realistic overflow,,high
+MEM30-C,261,sqlite,src/build.c,2915,FP,pParse not freed; sqlite3DbFree frees zStmt not pParse; no use-after-free,,high
+MEM30-C,262,sqlite,src/build.c,2922,FP,"db not freed; sqlite3DbFree(db,zStmt) frees zStmt; db dereferenced afterward is valid",,high
+MEM30-C,263,sqlite,src/build.c,2922,FP,db->aDb is a valid live array; db not freed; no freed-array access,,high
+MEM30-C,264,sqlite,src/build.c,2923,FP,db not freed; passed to sqlite3ChangeCookie validly,,high
+MEM30-C,265,sqlite,src/build.c,2924,FP,pDb=&db->aDb[iDb] valid stack pointer into live array; not freed,,high
+MEM30-C,266,sqlite,src/build.c,2925,FP,pParse not freed; passed to sqlite3NestedParse validly,,high
+MEM30-C,267,sqlite,src/build.c,2925,FP,pDb valid pointer into db->aDb; not freed,,high
+MEM30-C,268,sqlite,src/build.c,2927,FP,pDb->zDbSName access on valid live Db; not freed,,high
+MEM30-C,269,sqlite,src/build.c,2935,FP,db valid; sqlite3MPrintf does not free db; no UAF,,high
+MEM30-C,270,sqlite,src/build.c,2941,FP,db valid; sqlite3MPrintf does not free db; no UAF,,high
+MEM30-C,271,sqlite,src/build.c,2942,FP,db->aDb member access on live connection; not freed,,high
+MEM30-C,272,sqlite,src/build.c,2942,FP,db->aDb live array; not freed,,high
+MEM30-C,273,sqlite,src/build.c,2948,FP,db->aDb member access on live connection; not freed,,high
+MEM30-C,274,sqlite,src/build.c,2951,FP,db valid; sqlite3HashInsert does not free db,,high
+MEM30-C,275,sqlite,src/build.c,2956,FP,db valid; sqlite3OomFault does not free the connection,,high
+MEM30-C,276,sqlite,src/build.c,2968,FP,db valid; no free of db occurred on this path,,high
+EXP34-C,277,sqlite,src/build.c,2977,FP,pCons guarded by assert(pCons && pEnd) and reassigned to pEnd if pCons->z==0; not null at deref,,high
+INT32-C,278,sqlite,src/build.c,2980,FP,pCons->z - sNameToken.z is a small SQL-text byte offset; +13 cannot overflow int,,high
+API00-C,279,sqlite,src/build.c,2989,FP,pParse internal Parse* always valid in parser action sqlite3CreateView; API00 N/A,,high
+API00-C,280,sqlite,src/build.c,2989,FP,pBegin parser-supplied Token*; valid in grammar action; API00 N/A,,high
+API00-C,281,sqlite,src/build.c,2989,FP,pName1 parser-supplied Token*; valid; API00 N/A,,high
+API00-C,282,sqlite,src/build.c,2989,FP,pName2 parser-supplied Token*; valid; API00 N/A,,high
+API00-C,283,sqlite,src/build.c,2989,FP,pCNames may be null but is handled by callees (ExprListDup tolerates null); API00 N/A,,high
+API00-C,284,sqlite,src/build.c,2989,FP,pSelect handled and deleted on fail path; API00 N/A to core parser action,,high
+DCL13-C,285,sqlite,src/build.c,2991,FP,pBegin signature fixed by parser action contract; pointee read; cannot const-qualify without breaking grammar dispatch,,high
+EXP34-C,286,sqlite,src/build.c,3031,FP,sqlite3FixInit only stores pName into pFix->pName without dereferencing; null pName is explicitly allowed,,high
+INT32-C,287,sqlite,src/build.c,3062,FP,n is CREATE-VIEW text length asserted n>0; n-1 within SQL text size; no overflow,,high
+INT32-C,288,sqlite,src/build.c,3062,FP,n-- in whitespace-trim loop bounded by n>0 (assert at 3060) and z buffer; cannot reach INT_MIN,,high
+STR34-C,289,sqlite,src/build.c,3063,FP,sqlite3Isspace uses unsigned-safe macro on z[n-1]; sign-extension guarded by sqlite ctype table,,high
+STR34-C,290,sqlite,src/build.c,3063,FP,same whitespace check; sqlite3Isspace is unsigned-byte-safe; no sign-extension defect,,high
+INT32-C,291,sqlite,src/build.c,3063,FP,n-1 index into SQL text within bounds; no overflow,,high
+EXP33-C,292,sqlite,src/build.c,3146,FP,pSel assigned by sqlite3SelectDup at 3145 then guarded by if(pSel); used only inside the non-null branch,,high
+EXP33-C,293,sqlite,src/build.c,3164,FP,pSelTab assigned by sqlite3ResultSetOfSelect at 3157/3160 before any use; not uninitialized,,high
+INT32-C,294,sqlite,src/build.c,3207,FP,nErr and pParse->nErr are small parse error counts; sum cannot overflow int,,high
+API00-C,295,sqlite,src/build.c,3209,FP,pParse always valid; sqlite3ViewGetColumnNames is internal; API00 N/A,,high
+FLP30-C,296,sqlite,src/build.c,3224,FP,i is HashElem* loop iterator not a float; FLP30 misfire on sqliteHashFirst loop,,high
+ARR00-C,297,sqlite,src/build.c,3224,FP,idx here is the database index param of sqliteViewResetAll bounded by caller (SchemaMutexHeld assert); db->aDb[idx] valid,,high
+API00-C,298,sqlite,src/build.c,3254,FP,db internal connection always valid; API00 N/A,,high
+ARR00-C,299,sqlite,src/build.c,3260,FP,"iDb validated by caller; assert(sqlite3SchemaMutexHeld(db,iDb,0)); db->aDb[iDb] in-bounds",,high
+ARR30-C,300,sqlite,src/build.c,3260,FP,iDb constrained by SchemaMutexHeld precondition; callers pass validated iDb; safe array access,,high
+ARR00-C,301,sqlite,src/build.c,3303,FP,iDb validated by sqlite3SchemaToIndex result in destroyTable caller; db->aDb[iDb] in-bounds,,high
+ARR30-C,302,sqlite,src/build.c,3303,FP,iDb derived from sqlite3SchemaToIndex with assert iDb in range; safe,,high
+DCL13-C,303,sqlite,src/build.c,3314,FP,destroyTable passes pTab->pSchema to non-const sqlite3SchemaToIndex and traverses pTab->pIndex; const Table* would not compile,,high
+ARR00-C,304,sqlite,src/build.c,3370,FP,iDb param of sqlite3CodeDropTable validated by callers; db->aDb[iDb] in-bounds,,high
+ARR30-C,305,sqlite,src/build.c,3370,FP,iDb validated upstream in DROP TABLE flow; safe array access,,high
+EXP33-C,306,sqlite,src/build.c,3373,FP,zTab is a char[24] buffer filled by sqlite3_snprintf at 3373 before use; not uninitialized,,high
+API00-C,307,sqlite,src/build.c,3386,FP,pParse internal Parse* always valid; API00 N/A,,high
+ARR00-C,308,sqlite,src/build.c,3390,FP,iDb validated by caller; db->aDb[iDb] in-bounds,,high
+ARR30-C,309,sqlite,src/build.c,3390,FP,iDb validated upstream; safe,,high
+DCL13-C,310,sqlite,src/build.c,3475,TP,tableMayNotBeDropped reads only pTab->zName and pTab->tabFlags via const-safe StrNICmp; const Table* would compile cleanly,,medium
+INT14-C,311,sqlite,src/build.c,3477,FP,pTab used in bit test (tabFlags & TF_Shadow) plus pointer arith on zName+7; INT14 readability misfire not a defect,,high
+API00-C,312,sqlite,src/build.c,3494,FP,pParse internal Parse* always valid; API00 N/A,,high
+API00-C,313,sqlite,src/build.c,3494,FP,pName SrcList* validated by parser flow; sqlite3DropTable checks before use; API00 N/A,,high
+API00-C,314,sqlite,src/build.c,3616,FP,pParse internal Parse* always valid; API00 N/A,,high
+API00-C,315,sqlite,src/build.c,3616,FP,pFromCol may be null and is explicitly handled (if pFromCol==0); API00 N/A,,high
+INT30-C,316,sqlite,src/build.c,3653,FP,"SZ_FKEY(nCol)+pTo->n+1 computed in i64 nByte; nCol capped by column limit, pTo->n token length; no wrap",,high
+INT30-C,317,sqlite,src/build.c,3674,FP,pTo->n+1 accumulated into i64 nByte; token length small; no wrap,,high
+ARR38-C,318,sqlite,src/build.c,3705,FP,memcpy size n is sqlite3Strlen30 result (capped at 0x3fffffff) within allocated nByte; size valid,,high
+INT31-C,319,sqlite,src/build.c,3705,FP,n from sqlite3Strlen30 is non-negative and bounded to 0x3fffffff; conversion to size_t safe,,high
+INT14-C,320,sqlite,src/build.c,3712,FP,flags>>8 extracts ON UPDATE action byte; intentional bit extraction not an arithmetic-optimization defect,,high
+MEM30-C,321,sqlite,src/build.c,3737,FP,db valid; sqlite3ExprListDelete does not free db; no UAF,,high
+MEM30-C,322,sqlite,src/build.c,3738,FP,db valid; sqlite3ExprListDelete does not free db; no UAF,,high
+EXP34-C,323,sqlite,src/build.c,3772,FP,pIndex is non-null contract of sqlite3RefillIndex (caller passes valid index); pIndex->pTable read safely,,high
+INT32-C,324,sqlite,src/build.c,3773,FP,pParse->nTab cursor count bounded by statement complexity below INT_MAX,,high
+INT32-C,325,sqlite,src/build.c,3774,FP,pParse->nTab bounded below INT_MAX,,high
+EXP34-C,326,sqlite,src/build.c,3794,FP,pTab=pIndex->pTable is the indexed table always set for a valid index; not null on this path,,high
+INT32-C,327,sqlite,src/build.c,3807,FP,pParse->nTab bounded below INT_MAX,,high
+EXP00-C,328,sqlite,src/build.c,3826,FP,EXP00 parenthesization advisory; the expression OPFLAG_BULKCSR|((cond)?A:0) is already correctly parenthesized; not a defect,,low
+API00-C,329,sqlite,src/build.c,3877,FP,db internal connection always valid; API00 N/A,,high
+API00-C,330,sqlite,src/build.c,3877,FP,ppExtra is a required out-param always provided by callers; API00 N/A,,high
+API00-C,331,sqlite,src/build.c,3877,FP,nCol bounded by assert(nCol<=2*aLimit[SQLITE_LIMIT_COLUMN]); validated before arithmetic,,high
+API00-C,332,sqlite,src/build.c,3877,FP,nExtra is a caller-computed byte count; arithmetic in i64 nByte; no overflow concern,,high
+ARR39-C,333,sqlite,src/build.c,3887,FP,nByte computed in i64 with ROUND8; sizes bounded by column limit; this is struct+array sizing not pointer double-scaling,,high
+INT30-C,334,sqlite,src/build.c,3888,FP,sizeof(char*)*nCol in i64 nByte; nCol capped by column limit; no wrap,,high
+ARR39-C,335,sqlite,src/build.c,3889,FP,aggregate i64 size arithmetic bounded by column limit; not pointer double-scaling,,high
+ARR39-C,336,sqlite,src/build.c,3889,FP,aggregate i64 size arithmetic bounded; not double scaling,,high
+INT30-C,337,sqlite,src/build.c,3889,FP,sizeof(LogEst)*(nCol+1) in i64; nCol bounded; no wrap,,high
+INT32-C,338,sqlite,src/build.c,3889,FP,nCol+1 with nCol bounded by 2*SQLITE_LIMIT_COLUMN; no overflow,,high
+INT30-C,339,sqlite,src/build.c,3890,FP,sizeof(i16)*nCol in i64; nCol bounded; no wrap,,high
+INT30-C,340,sqlite,src/build.c,3891,FP,sizeof(u8)*nCol in i64; nCol bounded; no wrap,,high
+INT30-C,341,sqlite,src/build.c,3895,FP,sizeof(char*)*nCol pointer-advance bounded by same nByte allocation; nCol capped; no wrap,,high
+INT30-C,342,sqlite,src/build.c,3896,FP,sizeof(LogEst)*(nCol+1) pointer advance within nByte allocation; bounded,,high
+INT32-C,343,sqlite,src/build.c,3896,FP,nCol+1 bounded by column limit; no overflow,,high
+INT30-C,344,sqlite,src/build.c,3897,FP,sizeof(i16)*nCol pointer advance within allocation; bounded,,high
+INT32-C,345,sqlite,src/build.c,3901,FP,nCol-1 with assert(nCol>0) at 3899 guarantees non-negative; no overflow,,high
+STR34-C,346,sqlite,src/build.c,3902,FP,*ppExtra is set to a char* address not a dereferenced signed char; STR34 sign-extension N/A to pointer assignment,,high
+DCL30-C,347,sqlite,src/build.c,3904,FP,p is sqlite3DbMallocZero heap allocation returned to caller not a stack local; DCL30 misfire,,high
+API00-C,348,sqlite,src/build.c,3912,FP,pList may be null and is explicitly handled (if pList) before any deref; API00 N/A,,high
+DCL13-C,349,sqlite,src/build.c,3912,TP,sqlite3HasExplicitNulls only reads pList->nExpr and pList->a[i].fg; pList never written and not propagated to non-const; const ExprList* compiles,,medium
+API00-C,350,sqlite,src/build.c,3940,FP,pParse internal Parse* always valid; API00 N/A,,high
+API00-C,351,sqlite,src/build.c,3940,FP,pList ExprList* may be null and handled downstream; API00 N/A,,high
+API00-C,352,sqlite,src/build.c,3940,FP,pPIWhere Expr* may be null and handled downstream; API00 N/A,,high
+DCL13-C,353,sqlite,src/build.c,3947,FP,pStart signature fixed by parser action grammar contract; cannot const-qualify the yacc-dispatched Token* param meaningfully,,high
+EXP34-C,354,sqlite,src/build.c,4006,FP,pName2 deref at 4006 guarded by assert(pName1 && pName2) at 3994 inside same pTblName!=0 block,,0.97
+EXP34-C,355,sqlite,src/build.c,4012,FP,pName passed to sqlite3FixInit is the &pName output set by sqlite3TwoPartName then assert(pName && pName->z) at 3997,,0.95
+DCL03-C,356,sqlite,src/build.c,4016,FP,assert(0) is a should-never-reach runtime assert not a constant expression suitable for static_assert,,0.95
+EXP33-C,357,sqlite,src/build.c,4123,FP,i is an authorization-code int assigned SQLITE_CREATE_INDEX before use; fully initialized on the path that reads it,,0.95
+INT14-C,358,sqlite,src/build.c,4135,FP,pTab is a pointer used in normal member access not mixed bitwise/arithmetic; analyzer misread,,0.9
+INT32-C,359,sqlite,src/build.c,4156,FP,nExtra accumulates sqlite3Strlen30 results capped at ~1GB each over a length-checked ExprList; no realistic overflow,,0.92
+INT32-C,360,sqlite,src/build.c,4166,FP,pList->nExpr+nExtraCol asserted <=32767 at 4165 (fits in i16); bounded,,0.93
+INT32-C,361,sqlite,src/build.c,4167,FP,"nName+nExtra+1 bounded: nName is Strlen30 of a name and nExtra from collation names, both schema-bounded",,0.92
+INT32-C,362,sqlite,src/build.c,4167,FP,same nName+nExtra expression bounded by schema name and collation length limits,,0.92
+EXP34-C,363,sqlite,src/build.c,4171,FP,pIndex deref at 4171 follows db->mallocFailed check at 4168 which goto-exits when allocation failed,,0.95
+ARR38-C,364,sqlite,src/build.c,4175,FP,memcpy size nName+1 is the allocated name length; allocation sized nName+nExtra+1 covers it,,0.93
+INT31-C,365,sqlite,src/build.c,4175,FP,nName from sqlite3Strlen30 is non-negative and bounded; safe size_t conversion,,0.92
+INT32-C,366,sqlite,src/build.c,4175,FP,nName+1 cannot overflow; nName bounded by Strlen30 (max ~1GB),,0.92
+EXP34-C,367,sqlite,src/build.c,4220,FP,pCExpr from sqlite3ExprSkipCollate; preceding sqlite3ResolveSelfReference + nErr check ensure non-null expr tree,,0.95
+ARR38-C,368,sqlite,src/build.c,4257,FP,memcpy size nColl computed from Strlen30 of zToken+1; dest zExtra sized via assert(nExtra>=nColl) at 4256,,0.93
+INT31-C,369,sqlite,src/build.c,4257,FP,nColl non-negative bounded value; safe conversion to size_t,,0.92
+INT31-C,370,sqlite,src/build.c,4259,FP,zExtra is char* pointer arithmetic not a char narrowing assignment; analyzer misread,,0.85
+INT32-C,371,sqlite,src/build.c,4260,FP,nExtra-=nColl guarded by assert(nExtra>=nColl) so result stays non-negative; no overflow,,0.92
+INT13-C,372,sqlite,src/build.c,4269,FP,"sortOrderMask is -1 or 0 mask used intentionally for sort-flag masking; idiomatic, not a defect",,0.9
+EXP33-C,373,sqlite,src/build.c,4345,FP,z1 assigned pIdx->azColl[k] at 4349 before use at 4351 on every loop iteration,,0.95
+EXP33-C,374,sqlite,src/build.c,4346,FP,z2 assigned pIndex->azColl[k] at 4350 before use at 4351 on every loop iteration,,0.95
+DCL03-C,375,sqlite,src/build.c,4389,FP,assert(pParse->nErr==0) is a runtime condition not a compile-time constant for static_assert,,0.95
+INT32-C,376,sqlite,src/build.c,4425,FP,++pParse->nMem register counter bounded by statement complexity limits; INT_MAX unreachable in practice,,0.9
+INT30-C,377,sqlite,src/build.c,4446,FP,token pointer-difference n cast to int is bounded by tokenizer input length; addition cannot wrap realistically,,0.88
+EXP34-C,378,sqlite,src/build.c,4446,FP,pName->z deref at 4446 guarded by assert(pName!=0 || pStart==0) at 4444 and this branch is if(pStart),,0.95
+INT32-C,379,sqlite,src/build.c,4447,FP,n-- at 4447 only when pName->z[n-1]==';' so n>=1; no INT_MIN underflow,,0.92
+MEM30-C,380,sqlite,src/build.c,4473,FP,sqlite3RefillIndex does not free pParse; pParse is the live parse context used throughout,,0.97
+MEM30-C,381,sqlite,src/build.c,4474,FP,sqlite3ChangeCookie does not free pParse; still-live context,,0.97
+MEM30-C,382,sqlite,src/build.c,4476,FP,sqlite3MPrintf takes db but does not free the connection; db lives for the statement,,0.97
+MEM30-C,383,sqlite,src/build.c,4483,FP,db->aDb access valid; sqlite3DbFree(zStmt) frees zStmt not db,,0.97
+MEM30-C,384,sqlite,src/build.c,4489,FP,pParse not freed; member access of live parse context,,0.97
+MEM30-C,385,sqlite,src/build.c,4496,FP,sqlite3DbFree frees the passed buffer not db; no double free of connection,,0.96
+EXP33-C,386,sqlite,src/build.c,4505,FP,pNext assigned via (pNext=pThis->pNext) before any read at 4507,,0.95
+EXP30-C,387,sqlite,src/build.c,4507,FP,pNext assignment-in-condition then test is well-sequenced; no sequence-point violation,,0.9
+EXP34-C,388,sqlite,src/build.c,4507,FP,pNext deref guarded by the !=0 test in the while condition at 4507,,0.95
+MEM30-C,389,sqlite,src/build.c,4526,FP,sqlite3ExprDelete takes db but does not free the connection,,0.97
+MEM30-C,390,sqlite,src/build.c,4527,FP,sqlite3ExprListDelete takes db; does not free connection,,0.97
+MEM30-C,391,sqlite,src/build.c,4528,FP,sqlite3SrcListDelete takes db; does not free connection,,0.97
+MEM30-C,392,sqlite,src/build.c,4529,FP,"sqlite3DbFree(db, zName) frees zName not db; not a double free",,0.96
+API00-C,393,sqlite,src/build.c,4550,FP,API00 internal contract: callers pass valid pIdx; preceded by asserts; SQLite internal API,,0.9
+ARR02-C,394,sqlite,src/build.c,4552,FP,static const LogEst aVal[]={...} has explicit initializer giving implicit but well-defined bounds; idiomatic,,0.92
+EXP34-C,395,sqlite,src/build.c,4553,FP,pIdx contract non-null per internal API; deref of well-formed Index,,0.9
+EXP34-C,396,sqlite,src/build.c,4577,FP,a=pIdx->aiRowLogEst is a fixed in-struct array; a[0] access in bounds,,0.92
+ARR38-C,397,sqlite,src/build.c,4581,FP,"memcpy nCopy=MIN(ArraySize(aVal),pIdx->nKeyCol) bounded by aVal size (5); dest a[] sized for nKeyCol+1",,0.93
+INT32-C,398,sqlite,src/build.c,4581,FP,nCopy*sizeof(LogEst): nCopy<=5 so product tiny; no overflow,,0.93
+EXP05-C,399,sqlite,src/build.c,4581,FP,&a[1] dest is non-const LogEst*; aVal const is the source; no const cast away,,0.85
+INT30-C,400,sqlite,src/build.c,4581,FP,nCopy bounded by 5 so multiplication cannot wrap,,0.93
+API00-C,401,sqlite,src/build.c,4594,FP,API00 internal: sqlite3DropIndex always invoked by parser with valid pParse,,0.9
+API00-C,402,sqlite,src/build.c,4594,FP,API00 internal: pName SrcList supplied by parser; contract guarantees validity,,0.9
+API00-C,403,sqlite,src/build.c,4679,FP,API00 internal: pArray may legitimately be NULL (handled via realloc); not a defect,,0.9
+API00-C,404,sqlite,src/build.c,4679,FP,API00 internal: pnEntry deref'd per documented contract (*pnEntry holds count),,0.9
+API00-C,405,sqlite,src/build.c,4679,FP,API00 internal: pIdx written *pIdx=*pnEntry per contract,,0.9
+API00-C,406,sqlite,src/build.c,4679,FP,szEntry small struct size from callers; products bounded; internal contract,,0.9
+MEM33-C,407,sqlite,src/build.c,4687,FP,n=*pIdx=*pnEntry is scalar int64 assignment chain not flexible-array struct copy; analyzer misread,,0.92
+INT14-C,408,sqlite,src/build.c,4688,FP,n used in (n & (n-1)) power-of-two test and arithmetic intentionally; idiomatic capacity-doubling,,0.88
+INT32-C,409,sqlite,src/build.c,4689,FP,2*n where n is array count bounded by entry counts; sqlite3_int64 arithmetic; no realistic overflow,,0.9
+INT32-C,410,sqlite,src/build.c,4690,FP,sz*szEntry in int64; sz bounded by doubling of small entry counts; checked by realloc failure,,0.9
+INT31-C,411,sqlite,src/build.c,4698,FP,szEntry non-negative small struct size; safe size_t conversion,,0.92
+INT32-C,412,sqlite,src/build.c,4698,FP,n*szEntry int64; n bounded; no overflow in practice,,0.9
+INT32-C,413,sqlite,src/build.c,4717,FP,pList->nId+1 for IdList bounded by parser identifier limits; no overflow,,0.92
+INT32-C,414,sqlite,src/build.c,4724,FP,pList->nId++ bounded by realistic identifier list size; INT_MAX unreachable,,0.92
+MEM30-C,415,sqlite,src/build.c,4725,FP,sqlite3IdListDelete takes db but does not free the connection,,0.97
+API00-C,416,sqlite,src/build.c,4735,FP,API00 internal: db non-null guaranteed; assert(db!=0) at 4737 documents contract,,0.9
+MEM30-C,417,sqlite,src/build.c,4740,FP,pList->a[i].zName freed in loop is per-element; pList itself freed after loop; no UAF,,0.95
+MEM30-C,418,sqlite,src/build.c,4742,FP,"sqlite3DbNNFreeNN(db,pList) frees pList not db; not a double free of db",,0.96
+API00-C,419,sqlite,src/build.c,4749,FP,API00 internal: assert(pList!=0) at 4751 documents the caller contract,,0.9
+DCL13-C,420,sqlite,src/build.c,4749,TP,sqlite3IdListIndex pList only read (nId and a[i].zName via const StrICmp); const IdList* would compile; genuine DCL13,,0.7
+API00-C,421,sqlite,src/build.c,4790,FP,API00 internal: pParse always supplied valid by parser; asserts present,,0.9
+API00-C,422,sqlite,src/build.c,4790,FP,API00 internal: nExtra asserted >=1 at 4800; overflow paths bounded by SQLITE_MAX_SRCLIST cap,,0.9
+API00-C,423,sqlite,src/build.c,4790,FP,API00 internal: iStart asserted >=0 and <=nSrc at 4799/4802,,0.9
+INT32-C,424,sqlite,src/build.c,4807,FP,2*(int64)nSrc+nExtra computed in int64 then capped to SQLITE_MAX_SRCLIST(200); no overflow,,0.92
+INT32-C,425,sqlite,src/build.c,4807,FP,2*(int64)nSrc in int64; nSrc bounded by 200 cap; no overflow,,0.92
+ARR00-C,426,sqlite,src/build.c,4827,FP,iStart is a parameter (not uninitialized local); asserted 0<=iStart<=nSrc; valid loop bound,,0.93
+INT32-C,427,sqlite,src/build.c,4827,FP,nSrc-1 with nSrc>=1 here (enlarge always has slots); no underflow,,0.92
+INT32-C,428,sqlite,src/build.c,4828,FP,i+nExtra index bounded by nAlloc which was sized for nSrc+nExtra; in bounds,,0.92
+INT32-C,429,sqlite,src/build.c,4830,FP,nSrc+=nExtra bounded by SQLITE_MAX_SRCLIST 200 cap; no overflow,,0.92
+ARR38-C,430,sqlite,src/build.c,4833,FP,memset size sizeof(a[0])*nExtra; nExtra small and dest sized via prior realloc,,0.93
+INT32-C,431,sqlite,src/build.c,4833,FP,sizeof(a[0])*nExtra bounded by 200-cap nExtra; no overflow,,0.93
+ARR01-C,432,sqlite,src/build.c,4833,FP,sizeof(pSrc->a[0]) is sizeof a struct element via valid pointer not a decayed parameter array,,0.88
+INT30-C,433,sqlite,src/build.c,4833,FP,product bounded by capped nExtra; no wrap,,0.92
+API00-C,434,sqlite,src/build.c,4878,FP,API00 internal: pParse supplied valid; assert(pParse!=0) at 4887,,0.9
+API00-C,435,sqlite,src/build.c,4878,FP,API00 internal: pList==0 explicitly handled (creates new list); not a defect,,0.9
+ARR01-C,436,sqlite,src/build.c,4895,FP,sizeof(pList->a[0]) is sizeof a struct member element not decayed param array,,0.88
+INT32-C,437,sqlite,src/build.c,4906,FP,pList->nSrc-1 with nSrc>=1 after append/enlarge; no underflow,,0.92
+API00-C,438,sqlite,src/build.c,4925,FP,API00 internal: pParse used as nTab source; valid by contract,,0.9
+API00-C,439,sqlite,src/build.c,4925,FP,API00 internal: assert(pList || db->mallocFailed) + ALWAYS(pList) guard at 4928-4929,,0.9
+MEM05-C,440,sqlite,src/build.c,4925,FP,MEM05 recursion is real but bounded by query subquery nesting depth limit SQLITE_MAX_EXPR_DEPTH; advisory not a defect,,0.6
+MSC04-C,441,sqlite,src/build.c,4925,TP,sqlite3SrcListAssignCursors calls itself at 4937 for subquery FROM clauses; genuine direct recursion,,0.85
+ARR37-C,442,sqlite,src/build.c,4930,FP,pItem++ walks pList->a[] which is a real array of nSrc elements; valid pointer iteration not non-array,,0.88
+API00-C,443,sqlite,src/build.c,4946,FP,API00 internal: assert(pSubq!=0 && pSubq->pSelect!=0) at 4947 documents contract,,0.9
+API00-C,444,sqlite,src/build.c,4946,FP,API00 internal: pSubq validated by assert at 4947,,0.9
+MSC04-C,445,sqlite,src/build.c,4946,TP,sqlite3SubqueryDelete->sqlite3SelectDelete->clearSelect->sqlite3SrcListDelete->sqlite3SubqueryDelete genuine indirect recursion over nested subqueries,,0.8
+API00-C,446,sqlite,src/build.c,4956,FP,API00 internal: pItem validated by assert(pItem!=0) at 4958,,0.9
+API00-C,447,sqlite,src/build.c,4956,FP,API00 internal: assert(pItem!=0) at 4958,,0.9
+MEM30-C,448,sqlite,src/build.c,4961,FP,pItem->u4 read at 4960 before sqlite3DbFree(pItem->u4.pSubq) at 4961; then set to 0; no UAF,,0.95
+DCL30-C,449,sqlite,src/build.c,4964,FP,"returns pSel which holds pItem->u4.pSubq->pSelect (heap), not a local automatic; analyzer misread",,0.93
+API00-C,450,sqlite,src/build.c,4970,FP,API00 internal: assert(db!=0) at 4973 documents contract; pList==0 handled,,0.9
+MSC04-C,451,sqlite,src/build.c,4970,TP,sqlite3SrcListDelete->sqlite3DeleteTable->deleteTable->sqlite3SelectDelete->clearSelect->sqlite3SrcListDelete genuine indirect recursion,,0.8
+ARR37-C,452,sqlite,src/build.c,4975,FP,pItem++ iterates pList->a[] real array of nSrc entries; valid,,0.88
+MEM30-C,453,sqlite,src/build.c,4985,FP,pItem->zAlias read/freed before pList freed at end; member free not connection free,,0.95
+MEM30-C,454,sqlite,src/build.c,4985,FP,sqlite3DbNNFreeNN frees zAlias not db; not double free,,0.96
+MEM30-C,455,sqlite,src/build.c,4986,FP,pItem->fg.isSubquery read on live pItem; pList freed only after loop completes,,0.95
+MEM30-C,456,sqlite,src/build.c,4986,FP,pItem->fg flags read on live SrcItem during cleanup; no UAF,,0.95
+MEM30-C,457,sqlite,src/build.c,4987,FP,sqlite3SubqueryDelete takes db but does not free the connection,,0.97
+MEM30-C,458,sqlite,src/build.c,4987,FP,pItem->u4.pSubq passed to delete on live pItem; freed inside callee not before,,0.95
+MEM30-C,459,sqlite,src/build.c,4987,FP,pItem->u4 union access on live pItem; valid,,0.95
+MEM30-C,460,sqlite,src/build.c,4988,FP,pItem->fg.fixedSchema flag read on live SrcItem; no UAF,,0.95
+MEM30-C,461,sqlite,src/build.c,4988,FP,pItem->fg read on live SrcItem during normal cleanup,,0.95
+MEM30-C,462,sqlite,src/build.c,4988,FP,pItem->u4.zDatabase freed here on live pItem; pList still valid,,0.95
+MEM30-C,463,sqlite,src/build.c,4988,FP,pItem->u4 union read on live pItem,,0.95
+MEM30-C,464,sqlite,src/build.c,4989,FP,"sqlite3DbFree(db,u1.zIndexedBy) frees member not db; not double free",,0.96
+MEM30-C,465,sqlite,src/build.c,4989,FP,pItem->u4 read on live pItem,,0.95
+MEM30-C,466,sqlite,src/build.c,4991,FP,pItem->fg.isIndexedBy flag read on live SrcItem,,0.95
+MEM30-C,467,sqlite,src/build.c,4991,FP,pItem->fg read on live SrcItem,,0.95
+MEM30-C,468,sqlite,src/build.c,4991,FP,"sqlite3ExprListDelete(db,u1.pFuncArg) frees member not db; not double free",,0.96
+MEM30-C,469,sqlite,src/build.c,4991,FP,pItem->u1 union read on live pItem,,0.95
+MEM30-C,470,sqlite,src/build.c,4992,FP,pItem->fg.isTabFunc flag read on live SrcItem,,0.95
+MEM30-C,471,sqlite,src/build.c,4992,FP,pItem->fg read on live SrcItem,,0.95
+MEM30-C,472,sqlite,src/build.c,4992,FP,db is the connection handle never freed here; loop frees per-item members not db,,0.97
+MEM30-C,473,sqlite,src/build.c,4992,FP,sqlite3ExprListDelete frees pItem->u1.pFuncArg once; not previously freed,,0.97
+MEM30-C,474,sqlite,src/build.c,4992,FP,u1 union member read under isTabFunc guard; no prior free,,0.97
+MEM30-C,475,sqlite,src/build.c,4993,FP,db connection handle not freed; passed as allocator/free context only,,0.97
+MEM30-C,476,sqlite,src/build.c,4993,FP,sqlite3DeleteTable frees pItem->pSTab once; no prior free,,0.97
+MEM30-C,477,sqlite,src/build.c,4994,FP,fg.isUsing flag read; not a freed pointer,,0.97
+MEM30-C,478,sqlite,src/build.c,4994,FP,fg is an inline bitfield struct not a heap pointer,,0.97
+MEM30-C,479,sqlite,src/build.c,4995,FP,db handle not freed,,0.97
+MEM30-C,480,sqlite,src/build.c,4995,FP,u3.pUsing freed once under isUsing branch,,0.97
+MEM30-C,481,sqlite,src/build.c,4995,FP,u3 union read; mutually exclusive branches prevent double free,,0.97
+MEM30-C,482,sqlite,src/build.c,4996,FP,u3.pOn freed once in else branch,,0.97
+MEM30-C,483,sqlite,src/build.c,4996,FP,u3 union read in disjoint branch,,0.97
+MEM30-C,484,sqlite,src/build.c,4997,FP,db handle not freed,,0.97
+MEM30-C,485,sqlite,src/build.c,4997,FP,u3.pOn freed once,,0.97
+MEM30-C,486,sqlite,src/build.c,4997,FP,u3 union read,,0.97
+MEM30-C,487,sqlite,src/build.c,5000,FP,"sqlite3DbNNFreeNN(db,pList) frees pList once; db itself never freed in this function",,0.96
+API00-C,488,sqlite,src/build.c,5018,FP,internal API; pParse non-null by SQLite caller contract and downstream asserts,,0.9
+API00-C,489,sqlite,src/build.c,5018,FP,pItem validity guaranteed by caller; asserts at 5025-5026,,0.9
+API00-C,490,sqlite,src/build.c,5018,FP,pSelect asserted non-null at 5025,,0.9
+DCL13-C,491,sqlite,src/build.c,5019,FP,pParse->db passed to allocators that mutate db state through the handle,,0.85
+EXP34-C,492,sqlite,src/build.c,5026,FP,pItem fields asserted valid at 5026; caller-guaranteed non-null,,0.9
+MEM30-C,493,sqlite,src/build.c,5031,FP,pParse->db is the live connection handle never freed,,0.96
+MEM30-C,494,sqlite,src/build.c,5035,FP,db handle not freed,,0.96
+MEM30-C,495,sqlite,src/build.c,5038,FP,db handle not freed,,0.96
+MEM30-C,496,sqlite,src/build.c,5040,FP,db handle not freed,,0.96
+INT32-C,497,sqlite,src/build.c,5046,FP,sizeof(*p)-sizeof(p->pSelect) are compile-time constants Subquery larger than a pointer,,0.95
+INT30-C,498,sqlite,src/build.c,5046,FP,pointer-plus-sizeof is constant offset within allocated Subquery no wrap,,0.95
+INT30-C,499,sqlite,src/build.c,5046,FP,constant sizeof subtraction sizeof(Subquery)>sizeof(pointer),,0.95
+API00-C,500,sqlite,src/build.c,5067,FP,internal API pParse non-null by contract,,0.9
+API00-C,501,sqlite,src/build.c,5067,FP,p may be NULL and is explicitly handled; not an unchecked-deref defect,,0.9
+API00-C,502,sqlite,src/build.c,5067,FP,pDatabase NULL handled via asserts and ALWAYS guard,,0.9
+API00-C,503,sqlite,src/build.c,5067,FP,pAlias asserted non-null at 5096,,0.9
+INT32-C,504,sqlite,src/build.c,5089,FP,guarded by assert(p->nSrc>0) at 5088,,0.95
+EXP34-C,505,sqlite,src/build.c,5093,FP,access guarded by ALWAYS(pDatabase) at 5093,,0.93
+EXP34-C,506,sqlite,src/build.c,5108,FP,pOnUsing==0 checked first at 5110 before any deref,,0.9
+MSC07-C,507,sqlite,src/build.c,5120,FP,append_from_error is a goto target reachable via goto statements not dead code,,0.95
+API00-C,508,sqlite,src/build.c,5131,FP,internal API non-null contract,,0.9
+API00-C,509,sqlite,src/build.c,5131,FP,p NULL handled by if(p) guard at 5133,,0.9
+API00-C,510,sqlite,src/build.c,5131,FP,pIndexedBy asserted non-null at 5132,,0.9
+DCL13-C,511,sqlite,src/build.c,5131,FP,pParse->db passed to NameFromToken which mutates db through handle,,0.85
+DCL13-C,512,sqlite,src/build.c,5131,FP,"p pointee mutated via pItem (pItem->u1.zIndexedBy, fg flags) into p->a",,0.95
+INT32-C,513,sqlite,src/build.c,5136,FP,guarded by assert(p->nSrc>0) at 5135,,0.95
+API00-C,514,sqlite,src/build.c,5157,FP,internal API,,0.9
+API00-C,515,sqlite,src/build.c,5157,FP,p1 asserted non-null at 5158,,0.9
+API00-C,516,sqlite,src/build.c,5157,FP,p2 NULL handled; asserts cover it,,0.9
+ARR38-C,517,sqlite,src/build.c,5169,FP,p2->nSrc asserted >=1 and enlarge sized destination; no invalid size,,0.93
+INT32-C,518,sqlite,src/build.c,5169,FP,p2->nSrc bounded by SrcList limits; sizeof constant; no wrap,,0.93
+INT30-C,519,sqlite,src/build.c,5169,FP,same bounded multiplication,,0.93
+API00-C,520,sqlite,src/build.c,5183,FP,internal API,,0.9
+DCL13-C,521,sqlite,src/build.c,5183,FP,pParse->db passed to ExprListDelete which mutates db,,0.85
+DCL13-C,522,sqlite,src/build.c,5183,FP,"p pointee mutated (pItem->u1.pFuncArg, fg.isTabFunc) into p->a",,0.95
+INT32-C,523,sqlite,src/build.c,5185,FP,guarded by p having nSrc>0 (notIndexed asserts imply populated list),,0.95
+API00-C,524,sqlite,src/build.c,5218,FP,p NULL handled by if(p && p->nSrc>1) at 5220,,0.9
+DCL13-C,525,sqlite,src/build.c,5218,TP,pParse is (void)pParse-cast unused; never read or written; const compiles,,0.85
+INT14-C,526,sqlite,src/build.c,5221,FP,INT14 readability advisory on jointype flag manipulation; not a defect,,0.8
+INT32-C,527,sqlite,src/build.c,5221,FP,guarded by p->nSrc>1 at 5220 so nSrc-1>=1,,0.95
+INT14-C,528,sqlite,src/build.c,5224,FP,INT14 readability advisory on loop index; not a defect,,0.8
+INT32-C,529,sqlite,src/build.c,5224,FP,loop body runs with i>=1 due to (--i)>0 guard,,0.95
+INT32-C,530,sqlite,src/build.c,5225,FP,i bounded by small nSrc; cannot reach INT_MIN,,0.93
+INT32-C,531,sqlite,src/build.c,5232,FP,i bounded small positive,,0.93
+INT32-C,532,sqlite,src/build.c,5236,FP,i bounded small positive,,0.93
+API00-C,533,sqlite,src/build.c,5302,FP,internal API,,0.9
+API00-C,534,sqlite,src/build.c,5302,FP,pName NULL tolerated by NameFromToken,,0.9
+ARR02-C,535,sqlite,src/build.c,5307,FP,static const char*const az[] with initializer; implicit size is correct C,,0.85
+DCL03-C,536,sqlite,src/build.c,5308,TP,assert() on compile-time constant SAVEPOINT_* values; static_assert advisory applies,,0.7
+API00-C,537,sqlite,src/build.c,5322,FP,internal API; pParse->db asserted non-null elsewhere,,0.9
+ARR00-C,538,sqlite,src/build.c,5359,FP,iDb bounds asserted (iDb>=0 && iDb<nDb) at line 5358 before subscript,,0.93
+API00-C,539,sqlite,src/build.c,5369,FP,internal API,,0.9
+API00-C,540,sqlite,src/build.c,5378,FP,internal API,,0.9
+API00-C,541,sqlite,src/build.c,5402,FP,internal API,,0.9
+API00-C,542,sqlite,src/build.c,5416,FP,internal API,,0.9
+API00-C,543,sqlite,src/build.c,5437,FP,internal API,,0.9
+API00-C,544,sqlite,src/build.c,5447,FP,internal API,,0.9
+API00-C,545,sqlite,src/build.c,5447,FP,p4 is an error message string passed through to VdbeAddOp4,,0.9
+API00-C,546,sqlite,src/build.c,5469,FP,internal API,,0.9
+API00-C,547,sqlite,src/build.c,5469,FP,pIdx non-null by caller contract,,0.9
+EXP34-C,548,sqlite,src/build.c,5477,FP,pIdx caller-guaranteed; used to build constraint message,,0.9
+EXP34-C,549,sqlite,src/build.c,5487,FP,pTab=pIdx->pTable used only in aColExpr==0 branch with valid columns,,0.9
+API00-C,550,sqlite,src/build.c,5505,FP,internal API,,0.9
+DCL13-C,551,sqlite,src/build.c,5508,TP,"pTab only read (iPKey, zName, aCol); never written through; const compiles",,0.85
+DCL13-C,552,sqlite,src/build.c,5529,TP,"collationMatch reads pIndex (nColumn, azColl, aiColumn) only; const compiles",,0.85
+API00-C,553,sqlite,src/build.c,5601,FP,pName2 NULL handled via NEVER(pName2==0) check at 5620,,0.9
+MEM30-C,554,sqlite,src/build.c,5633,FP,pParse is live parse context not freed,,0.95
+MEM30-C,555,sqlite,src/build.c,5635,FP,db is connection handle not freed,,0.95
+EXP33-C,556,sqlite,src/build.c,5635,FP,pObjName set by sqlite3TwoPartName(&pObjName) at 5633 before use at 5635,,0.95
+MEM30-C,557,sqlite,src/build.c,5637,FP,db handle not freed; db->aDb member access valid,,0.95
+MEM30-C,558,sqlite,src/build.c,5637,FP,db->aDb is a valid array on the live connection,,0.95
+MEM30-C,559,sqlite,src/build.c,5638,FP,db handle not freed,,0.95
+MEM30-C,560,sqlite,src/build.c,5640,FP,pParse live context not freed,,0.95
+MEM30-C,561,sqlite,src/build.c,5641,FP,"sqlite3DbFree(db,z) frees local string z not db; no double free",,0.95
+MEM30-C,562,sqlite,src/build.c,5644,FP,db handle not freed,,0.95
+MEM30-C,563,sqlite,src/build.c,5645,FP,frees of z/zColl are local strings not db,,0.95
+MEM30-C,564,sqlite,src/build.c,5647,FP,db handle not freed,,0.95
+MEM30-C,565,sqlite,src/build.c,5648,FP,pParse not freed,,0.95
+MEM30-C,566,sqlite,src/build.c,5649,FP,pParse not freed,,0.95
+MEM30-C,567,sqlite,src/build.c,5652,FP,pParse not freed,,0.95
+API00-C,568,sqlite,src/build.c,5662,FP,internal API; pIdx non-null contract,,0.9
+EXP34-C,569,sqlite,src/build.c,5664,FP,pIdx caller-guaranteed non-null,,0.9
+INT32-C,570,sqlite,src/build.c,5669,FP,nKeyCol <= nColumn structural invariant; nCol-nKey >= 0,,0.92
+DCL30-C,571,sqlite,src/build.c,5704,FP,pKey is heap pointer from sqlite3KeyInfoAlloc not automatic storage,,0.95
+API00-C,572,sqlite,src/build.c,5711,FP,internal API,,0.9
+DCL13-C,573,sqlite,src/build.c,5712,FP,pParse->db passed to allocator that mutates db,,0.85
+EXP33-C,574,sqlite,src/build.c,5721,FP,pNew assigned by sqlite3DbMallocZero at 5721 before any deref,,0.95
+DCL30-C,575,sqlite,src/build.c,5733,FP,pNew is heap pointer from MallocZero not local automatic,,0.95
+MSC04-C,576,sqlite,src/build.c,5740,TP,genuine indirect recursion cteClear->...->sqlite3WithDelete->cteClear via nested CTE/subquery deletes,,0.85
+DCL13-C,577,sqlite,src/build.c,5740,FP,cteClear releases owned resources via pCte members (semantic mutation of the object),,0.6
+API00-C,578,sqlite,src/build.c,5750,FP,internal API; db non-null contract; pCte asserted at 5751,,0.9
+API00-C,579,sqlite,src/build.c,5762,FP,internal API,,0.9
+INT32-C,580,sqlite,src/build.c,5788,FP,nCte bounded by SQLITE limits; +1 cannot overflow int,,0.92
+MEM30-C,581,sqlite,src/build.c,5792,FP,db handle not freed; db->mallocFailed read valid,,0.95
+MEM30-C,582,sqlite,src/build.c,5794,FP,db->mallocFailed read on live handle,,0.95
+MEM30-C,583,sqlite,src/build.c,5795,FP,db handle not freed,,0.95
+INT32-C,584,sqlite,src/build.c,5798,FP,nCte bounded small; ++ cannot reach INT_MAX,,0.92
+DCL30-C,585,sqlite,src/build.c,5802,FP,pNew is heap pointer not automatic storage,,0.95
+API00-C,586,sqlite,src/build.c,5808,FP,internal API; pWith NULL handled by if(pWith) at 5809,,0.9
+MSC04-C,587,sqlite,src/build.c,5808,TP,genuine indirect recursion sqlite3WithDelete->cteClear->...->sqlite3WithDelete via nested deletes,,0.85
+API00-C,588,sqlite,src/build.c,5817,FP,internal API; thin generic wrapper casting void* to With*,,0.9
