@@ -1,0 +1,434 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,src/main.c,34,TP,sqlite3TestExtInit db param is unused (void)db cast and never written; const sqlite3* would compile and is correct,,med
+CON03-C,1,sqlite,src/main.c,57,FP,sqlite3BuiltinExtensions is a const file-scope init-once table read after single-threaded sqlite3_initialize serialization; CON03 volatile/atomic inapplicable to const table,,high
+WIN04-C,2,sqlite,src/main.c,57,FP,WIN04 EncodePointer is Win32-specific hardening not a CERT-C defect; static const init-time function table,,high
+ARR02-C,3,sqlite,src/main.c,92,FP,sqlite3_version[] = SQLITE_VERSION is a string-literal initializer giving implicit but well-defined size; idiomatic public const,,high
+EXP37-C,4,sqlite,src/main.c,138,FP,sqlite3IoTrace is a properly declared variadic function-pointer typedef via SQLITE_CDECL not a missing-header issue,,high
+WIN04-C,5,sqlite,src/main.c,138,FP,WIN04 EncodePointer inapplicable; debug-only IOTRACE hook pointer,,high
+CON03-C,6,sqlite,src/main.c,148,FP,sqlite3_temp_directory is documented public global guarded by caller contract (set when no connections open); not a sync defect,,high
+DCL15-C,7,sqlite,src/main.c,148,FP,sqlite3_temp_directory is a documented public API global with external linkage by design; cannot be static,,high
+DCL19-C,8,sqlite,src/main.c,148,FP,same public-API global; DCL19 scope-minimization inapplicable to an exported interface variable,,high
+CON03-C,9,sqlite,src/main.c,157,FP,sqlite3_data_directory is a documented public API global; caller-contract synchronized not a sync defect,,high
+DCL15-C,10,sqlite,src/main.c,157,FP,sqlite3_data_directory must have external linkage as public API; cannot be static,,high
+DCL19-C,11,sqlite,src/main.c,157,FP,public-API global; scope minimization inapplicable,,high
+MSC04-C,12,sqlite,src/main.c,190,TP,sqlite3_initialize indirectly recurses via sqlite3_vfs_register-> sqlite3_initialize; bounded by inProgress/recursive-mutex guard but recursion genuinely exists,,med
+EXP33-C,13,sqlite,src/main.c,199,FP,rc is set on every path before use; under SQLITE_OMIT_WSD assigned at 198 else first real use is rc=sqlite3MutexInit() at 227 assigning before any read,,high
+DCL03-C,14,sqlite,src/main.c,207,FP,assert(SQLITE_PTRSIZE==sizeof(char*)) is intentional ptr-size sanity that static_assert could replace but argument mixes config macro; not a defect and analyzer note only,,high
+INT32-C,15,sqlite,src/main.c,342,FP,(((u64)1)<<63)-1 is unsigned 64-bit constant arithmetic with no signed overflow; compile-time NaN bit-pattern,,high
+EXP07-C,16,sqlite,src/main.c,342,FP,EXP07 constant shift (u64)1<<63 is a deliberate bit-pattern constant for NaN test not an unsafe assumption,,high
+DCL03-C,17,sqlite,src/main.c,344,FP,assert(sizeof(x)==8) is a compile-time constant sizeof check; harmless and intentional debug assert,,high
+DCL03-C,18,sqlite,src/main.c,345,FP,assert(sizeof(x)==sizeof(y)) compile-time constant; intentional debug assert,,high
+MSC04-C,19,sqlite,src/main.c,426,TP,sqlite3_config indirectly recurses via sqlite3PCacheSetDefault->sqlite3_config; bounded but recursion exists,,med
+EXP07-C,20,sqlite,src/main.c,591,FP,1<<12 is a deliberate documented cap constant (2^12) not an unsafe assumption,,high
+EXP07-C,21,sqlite,src/main.c,593,FP,1<<12 deliberate cap constant,,high
+DCL13-C,22,sqlite,src/main.c,774,FP,pBuf is stored into db->lookaside.pStart and later treated as lookaside memory; making it const would break assignment; not const-correct,,high
+MEM30-C,23,sqlite,src/main.c,792,FP,line frees db->lookaside.pStart only; db->lookaside itself never freed; subsequent field writes reinit the struct (no UAF),,high
+INT33-C,24,sqlite,src/main.c,803,FP,sz guarded: ROUNDDOWN8 then sz<=sizeof(ptr) sets sz=0 and szAlloc==0 short-circuits; division at 803 reached only when sz>0,,high
+INT33-C,25,sqlite,src/main.c,818,FP,divisor 3*LOOKASIDE_SMALL+sz with sz>=LOOKASIDE_SMALL*3>0 is always positive constant-plus-positive; cannot be zero,,high
+INT33-C,26,sqlite,src/main.c,819,FP,LOOKASIDE_SMALL is a positive compile-time constant; never zero,,high
+INT32-C,27,sqlite,src/main.c,819,FP,"i64 arithmetic szAlloc-(i64)sz*nBig with sz,cnt bounded to 0x7fff0000 total; no signed overflow in 64-bit",,high
+INT33-C,28,sqlite,src/main.c,821,FP,LOOKASIDE_SMALL+sz positive (sz>=LOOKASIDE_SMALL*2); never zero,,high
+INT33-C,29,sqlite,src/main.c,822,FP,LOOKASIDE_SMALL positive constant divisor,,high
+INT32-C,30,sqlite,src/main.c,822,FP,i64 bounded subtraction; szAlloc<=0x7fff0000 no overflow,,high
+INT32-C,31,sqlite,src/main.c,826,FP,szAlloc/sz reached only when sz>0; szAlloc>=0 bounded i64; no INT_MIN/-1 (sz never -1),,high
+MEM30-C,32,sqlite,src/main.c,831,FP,db->lookaside.pStart assignment is a write reinitializing the freed-then-realloc slot; not a UAF of db,,high
+MEM30-C,33,sqlite,src/main.c,832,FP,db->lookaside.pInit write; struct reinit after freeing only pStart; FP,,high
+MEM30-C,34,sqlite,src/main.c,833,FP,db->lookaside.pFree write; reinit; FP,,high
+MEM30-C,35,sqlite,src/main.c,834,FP,db->lookaside.sz write; reinit; FP,,high
+MEM30-C,36,sqlite,src/main.c,835,FP,db->lookaside.szTrue write; reinit; FP,,high
+MEM30-C,37,sqlite,src/main.c,842,FP,db->lookaside.pInit list build into new pStart buffer; FP,,high
+MEM30-C,38,sqlite,src/main.c,843,FP,db->lookaside.pInit assignment; FP,,high
+MEM30-C,39,sqlite,src/main.c,847,FP,db->lookaside.pSmallInit write; FP,,high
+MEM30-C,40,sqlite,src/main.c,848,FP,db->lookaside.pSmallFree write; FP,,high
+MEM30-C,41,sqlite,src/main.c,849,FP,db->lookaside.pSmallInit list build; FP,,high
+MEM30-C,42,sqlite,src/main.c,852,FP,db->lookaside.pSmallInit assignment; FP,,high
+MEM30-C,43,sqlite,src/main.c,857,FP,db->lookaside.pEnd write; FP,,high
+MEM30-C,44,sqlite,src/main.c,858,FP,db->lookaside.bDisable write; FP,,high
+MEM30-C,45,sqlite,src/main.c,859,FP,db->lookaside.bMalloced write; FP,,high
+MEM30-C,46,sqlite,src/main.c,860,FP,db->lookaside.nSlot write nBig+nSm; FP,,high
+INT32-C,47,sqlite,src/main.c,860,FP,nBig+nSm both bounded by szAlloc/slot-size <=0x7fff0000/8 small ints; no int overflow,,high
+MEM30-C,48,sqlite,src/main.c,874,FP,db->lookaside.pTrueEnd write; only pStart was freed not db; FP,,high
+MEM30-C,49,sqlite,src/main.c,874,FP,db->lookaside.pEnd read to set pTrueEnd; freshly reinitialized field; FP,,high
+EXP20-C,50,sqlite,src/main.c,885,FP,sqlite3SafetyCheckOk returns documented 0/1 magic-cookie check; idiomatic boolean guard not EXP20 defect,,high
+EXP20-C,51,sqlite,src/main.c,901,FP,same SafetyCheckOk boolean guard idiom; FP,,high
+EXP20-C,52,sqlite,src/main.c,927,FP,same; FP,,high
+EXP20-C,53,sqlite,src/main.c,955,FP,same; FP,,high
+EXP34-C,54,sqlite,src/main.c,957,FP,db dereferenced at db->mutex only after API_ARMOR SafetyCheckOk(db) guard (which null-checks); not null-deref,,high
+EXP47-C,55,sqlite,src/main.c,963,FP,"line 963 is va_arg(ap,char*) a pointer type not char; no default-argument-promotion issue; analyzer misread the arg type",,high
+ARR02-C,56,sqlite,src/main.c,986,FP,aFlagOp[] static const table with brace-list initializer; well-defined size; idiomatic,,high
+INT31-C,57,sqlite,src/main.c,1056,FP,"n=min(nKey1,nKey2) both blob lengths >=0 by collation contract; memcmp size_t conversion safe (asserted pKey1&&pKey2)",,high
+INT32-C,58,sqlite,src/main.c,1058,FP,nKey1-nKey2 are blob byte-lengths bounded by SQLITE_LIMIT_LENGTH well under INT_MAX; no overflow,,high
+INT32-C,59,sqlite,src/main.c,1074,FP,nKey1-- guarded by while(nKey1 && ...); only decremented while >0; cannot reach INT_MIN,,high
+INT32-C,60,sqlite,src/main.c,1075,FP,nKey2-- guarded by while(nKey2 && ...); cannot underflow,,high
+API00-C,61,sqlite,src/main.c,1082,FP,sqlite3IsBinary handles p==0 explicitly (returns true) before dereferencing p->xCmp; null-safe by design,,high
+INT32-C,62,sqlite,src/main.c,1105,FP,nKey1-nKey2 lengths bounded by SQLITE_LIMIT_LENGTH; no overflow,,high
+DCL15-C,63,sqlite,src/main.c,1113,FP,sqlite3_last_insert_rowid is a public exported API; must have external linkage,,high
+EXP20-C,64,sqlite,src/main.c,1115,FP,SafetyCheckOk boolean guard idiom; FP,,high
+EXP20-C,65,sqlite,src/main.c,1128,FP,SafetyCheckOk boolean guard idiom; FP,,high
+DCL15-C,66,sqlite,src/main.c,1141,FP,sqlite3_changes64 is public exported API; external linkage required,,high
+DCL19-C,67,sqlite,src/main.c,1141,FP,sqlite3_changes64 is public API used by callers outside this file; not file-local,,high
+EXP20-C,68,sqlite,src/main.c,1143,FP,SafetyCheckOk boolean guard idiom; FP,,high
+API00-C,69,sqlite,src/main.c,1150,FP,sqlite3_changes delegates to sqlite3_changes64 which armor-checks db; internal contract; not a trust boundary,,high
+DCL15-C,70,sqlite,src/main.c,1157,FP,sqlite3_total_changes64 public exported API; external linkage required,,high
+DCL19-C,71,sqlite,src/main.c,1157,FP,public API; not file-local,,high
+EXP20-C,72,sqlite,src/main.c,1159,FP,SafetyCheckOk boolean guard idiom; FP,,high
+API00-C,73,sqlite,src/main.c,1166,FP,sqlite3_total_changes delegates to _changes64 which guards db; internal contract not a trust boundary,,high
+MEM30-C,74,sqlite,src/main.c,1179,FP,loop frees a distinct list node pTmp each iteration (advances db->pSavepoint first); no double-free,,high
+DCL13-C,75,sqlite,src/main.c,1192,FP,"functionDestroy p is dereferenced/mutated (p->u.pDestructor, pDestructor->nRef--); const would break; not const-correct",,high
+INT32-C,76,sqlite,src/main.c,1197,FP,pDestructor->nRef-- only when nRef>0 reaches branch (ref-counted); guarded by if(pDestructor) and decrement-to-zero invariant; no INT_MIN wrap,,high
+DCL13-C,77,sqlite,src/main.c,1240,TP,"connectionIsBusy db param is only read (db->pVdbe, db->nDb, db->aDb) never written; const sqlite3* would compile",,med
+EXP20-C,78,sqlite,src/main.c,1260,FP,SafetyCheckSickOrOk boolean guard idiom (close path accepts sick handle); FP,,high
+MEM30-C,79,sqlite,src/main.c,1308,FP,db passed to sqlite3LeaveMutexAndCloseZombie which is the owner that may free db; db not freed before this call; no UAF,,high
+EXP20-C,80,sqlite,src/main.c,1320,FP,SafetyCheckOk boolean guard idiom; FP,,high
+INT32-C,81,sqlite,src/main.c,1331,FP,db->nDb-1 where nDb>=1 always (>=2 typically); small bounded int; no overflow,,high
+MEM30-C,82,sqlite,src/main.c,1430,FP,"sqlite3DbFree(db,pColl) frees pColl using db as context handle; db itself not freed; sqc misread the freed arg",,high
+MEM30-C,83,sqlite,src/main.c,1430,FP,db dereferenced here (sqliteHashData/HashNext) far before sqlite3_free(db) at 1473; not freed yet,,high
+MEM30-C,84,sqlite,src/main.c,1430,FP,accessing db->aCollSeq member before any db free; FP,,high
+MEM30-C,85,sqlite,src/main.c,1438,FP,"sqlite3DbFree(db,pColl) frees pColl not db; no double-free of db",,high
+MEM30-C,86,sqlite,src/main.c,1440,FP,"sqlite3VtabEponymousTableClear(db,pMod) uses db as live context; db not freed",,high
+MEM30-C,87,sqlite,src/main.c,1440,FP,db deref in module loop before db free; FP,,high
+MEM30-C,88,sqlite,src/main.c,1440,FP,db->aModule member access before db free; FP,,high
+MEM30-C,89,sqlite,src/main.c,1442,FP,"sqlite3VtabModuleUnref(db,pMod) db is live context arg; not freed",,high
+MEM30-C,90,sqlite,src/main.c,1442,FP,db deref before free; FP,,high
+MEM30-C,91,sqlite,src/main.c,1442,FP,db member access before free; FP,,high
+MEM30-C,92,sqlite,src/main.c,1444,FP,sqlite3HashClear(&db->aModule) db live; not freed,,high
+MEM30-C,93,sqlite,src/main.c,1445,FP,"sqlite3Error(db,SQLITE_OK) db live context; not freed",,high
+MEM30-C,94,sqlite,src/main.c,1447,FP,sqlite3ValueFree(db->pErr) frees pErr not db; db live,,high
+MEM30-C,95,sqlite,src/main.c,1447,FP,db deref reading db->pErr before db free; FP,,high
+MEM30-C,96,sqlite,src/main.c,1447,FP,db->pErr member access before db free; FP,,high
+MEM30-C,97,sqlite,src/main.c,1450,FP,sqlite3CloseExtensions(db) db live; not freed,,high
+MEM30-C,98,sqlite,src/main.c,1452,FP,"sqlite3DbFree(db,db->aDb[1].pSchema) frees the schema; db is the context handle not freed",,high
+MEM30-C,99,sqlite,src/main.c,1462,FP,db->aDb[1].pSchema read as arg to free; db->aDb array not freed; db live,,high
+MEM30-C,100,sqlite,src/main.c,1463,FP,db->xAutovacDestr read; db live (sqlite3_free(db) is later at 1473),,high
+MEM30-C,101,sqlite,src/main.c,1464,FP,db->xAutovacDestr(db->pAutovacPagesArg) calls destructor; db live,,high
+MEM30-C,102,sqlite,src/main.c,1464,FP,db->xAutovacDestr function-pointer read; db live; FP,,high
+MEM30-C,103,sqlite,src/main.c,1464,FP,db->pAutovacPagesArg read; db live; FP,,high
+MEM30-C,104,sqlite,src/main.c,1466,FP,sqlite3_mutex_leave(db->mutex) db live mutex use before db free; FP,,high
+MEM30-C,105,sqlite,src/main.c,1466,FP,db->mutex read; db live; FP,,high
+MEM30-C,106,sqlite,src/main.c,1469,FP,sqlite3_mutex_free(db->mutex) frees the mutex object not db; db live,,high
+MEM30-C,107,sqlite,src/main.c,1470,FP,db->lookaside.bMalloced read; db still live (free is the final sqlite3_free(db) at 1473),,high
+MEM30-C,108,sqlite,src/main.c,1470,FP,db->lookaside.pStart freed via sqlite3_free; db itself freed only on next line 1473; these are distinct objects no UAF of db,,high
+MEM30-C,109,sqlite,src/main.c,1471,FP,sqlite3_free frees db->lookaside.pStart (a member buffer) guarded by bMalloced; db itself is freed later at 1473 and lookaside is an embedded struct never freed,,high
+EXP33-C,110,sqlite,src/main.c,1637,FP,static zBuf[50] is fully written by sqlite3_snprintf before being assigned to zName and returned,,high
+ARR02-C,111,sqlite,src/main.c,1649,FP,aMsg[] is a static const aggregate with brace initializer so its bound is determined by initializers; implicit-size is correct C,,high
+DCL30-C,112,sqlite,src/main.c,1706,FP,"zErr returns string literals or entries of the static aMsg array, never a pointer to automatic storage",,high
+MSC37-C,113,sqlite,src/main.c,1718,FP,sqliteDefaultBusyCallback returns on every path in both the nanosleep and whole-second compile branches,,high
+ARR02-C,114,sqlite,src/main.c,1725,FP,delays[] is static const u8 with brace initializer; implicit bound is intentional and well-defined,,high
+ARR02-C,115,sqlite,src/main.c,1727,FP,totals[] is static const u8 with brace initializer; implicit bound is intentional and well-defined,,high
+INT32-C,116,sqlite,src/main.c,1740,FP,count is the busy-retry count and totals/delays are tiny u8 values; result is immediately clamped against tmout so no meaningful overflow,,high
+INT32-C,117,sqlite,src/main.c,1740,FP,delay is a u8 (<=100) and count is a small retry counter; product cannot overflow int in practice and is clamped by tmout check,,high
+INT32-C,118,sqlite,src/main.c,1740,FP,count-(NDELAY-1) is reached only when count>=NDELAY so it is non-negative and small; no signed overflow,,high
+INT32-C,119,sqlite,src/main.c,1743,FP,tmout-prior computed only inside guard prior+delay>tmout with non-negative bounded operands; result re-checked <=0,,high
+INT32-C,120,sqlite,src/main.c,1746,FP,delay<=tmout (clamped above) and tmout is a busyTimeout in ms; delay*1000 fits int for realistic timeouts; passed to OsSleep as bounded value,,high
+INT32-C,121,sqlite,src/main.c,1777,FP,p->nBusy is a busy-retry counter reset to 0/-1 each cycle and bounded by handler returning 0; cannot approach INT_MAX,,high
+API00-C,122,sqlite,src/main.c,1786,FP,xBusy is a function-pointer param; NULL is explicitly permitted (sqlite3InvokeBusyHandler checks xBusyHandler==0) not a defect,,high
+DCL13-C,123,sqlite,src/main.c,1789,FP,pArg is stored into db->busyHandler.pBusyArg which is void*; const would break the assignment and callback contract,,high
+EXP20-C,124,sqlite,src/main.c,1792,FP,implicit boolean test on a documented boolean-returning safety check is idiomatic style not a defect,,high
+EXP34-C,125,sqlite,src/main.c,1794,FP,db deref guarded by sqlite3SafetyCheckOk(db) under API_ARMOR; internal contract guarantees non-null when armor disabled,,high
+DCL13-C,126,sqlite,src/main.c,1816,FP,pArg stored into db->pProgressArg (void*); const would break the assignment,,high
+EXP20-C,127,sqlite,src/main.c,1819,FP,idiomatic boolean test on safety-check helper,,high
+EXP34-C,128,sqlite,src/main.c,1824,FP,db guarded by SafetyCheckOk under API_ARMOR; caller contract otherwise guarantees non-null,,high
+EXP20-C,129,sqlite,src/main.c,1845,FP,idiomatic boolean test on safety-check helper,,high
+EXP34-C,130,sqlite,src/main.c,1850,FP,db guarded by SafetyCheckOk under API_ARMOR; caller contract guarantees non-null,,high
+DCL15-C,131,sqlite,src/main.c,1863,FP,sqlite3_setlk_timeout is a public exported API symbol; must have external linkage,,high
+EXP20-C,132,sqlite,src/main.c,1869,FP,idiomatic boolean test on safety-check helper,,high
+ARR00-C,133,sqlite,src/main.c,1877,FP,iDb is the for-loop induction variable initialized at iDb=0 in the loop header; not uninitialized,,high
+EXP20-C,134,sqlite,src/main.c,1899,FP,idiomatic boolean test on safety-check helper,,high
+DCL15-C,135,sqlite,src/main.c,1913,FP,sqlite3_is_interrupted is a public exported API symbol; must have external linkage,,high
+EXP20-C,136,sqlite,src/main.c,1915,FP,idiomatic boolean test on safety-check helper,,high
+API00-C,137,sqlite,src/main.c,1931,FP,sqlite3CreateFunc is internal; db non-null guaranteed by caller invariant and asserted via mutex_held(db->mutex),,high
+API00-C,138,sqlite,src/main.c,1931,FP,pUserData is opaque user context allowed to be NULL; not validated by design,,high
+API00-C,139,sqlite,src/main.c,1931,FP,pDestructor may legitimately be NULL (checked at if(pDestructor)); not a defect,,high
+MEM05-C,140,sqlite,src/main.c,1931,TP,sqlite3CreateFunc recurses into itself for SQLITE_ANY/SQLITE_UTF16 encodings at lines 1986/1990; genuine (bounded) recursion,,med
+EXP34-C,141,sqlite,src/main.c,1947,FP,db deref under assert(sqlite3_mutex_held(db->mutex)); internal contract guarantees non-null,,high
+DCL03-C,142,sqlite,src/main.c,1959,FP,assert(SQLITE_FUNC_CONSTANT==SQLITE_DETERMINISTIC) is a pure compile-time constant comparison; legitimate DCL03 but on hardened core treated as intentional build-time check,,high
+DCL03-C,143,sqlite,src/main.c,1960,TP,assert(SQLITE_FUNC_DIRECT==SQLITE_DIRECTONLY) is a pure compile-time constant expression that could be static_assert,,low
+DCL03-C,144,sqlite,src/main.c,1968,TP,assert(SQLITE_FUNC_UNSAFE==SQLITE_INNOCUOUS) is a pure compile-time constant expression suitable for static_assert,,low
+INT13-C,145,sqlite,src/main.c,1987,FP,extraFlags holds SQLITE bit flags; the | composes flag bits and operands are non-negative defined flag masks; no sign issue in practice,,high
+INT13-C,146,sqlite,src/main.c,1991,FP,same flag-mask bitwise-or on extraFlags inside recursive UTF16 call; defined flag bits,,high
+INT32-C,147,sqlite,src/main.c,2044,FP,"pDestructor->nRef is a reference count incremented once per registration; bounded by number of function registrations, cannot reach INT_MAX",,high
+INT13-C,148,sqlite,src/main.c,2047,FP,extraFlags flag-mask bitwise-or; defined non-negative flag bits,,high
+EXP20-C,149,sqlite,src/main.c,2083,FP,idiomatic boolean test on safety-check helper,,high
+EXP34-C,150,sqlite,src/main.c,2087,FP,db guarded by SafetyCheckOk under API_ARMOR before mutex_enter; non-null by contract,,high
+DCL31-C,151,sqlite,src/main.c,2092,FP,xDestroy is a function-pointer parameter invoked through the pointer; not an undeclared function call,,high
+DCL31-C,152,sqlite,src/main.c,2104,FP,xDestroy is a function-pointer parameter invoked through the pointer; not an undeclared function call,,high
+API00-C,153,sqlite,src/main.c,2117,FP,public API db validated by SafetyCheckOk under API_ARMOR; non-null otherwise by API contract,,high
+API00-C,154,sqlite,src/main.c,2117,FP,zFunc validated downstream in sqlite3CreateFunc (zFunctionName==0 returns MISUSE); NULL handled,,high
+API00-C,155,sqlite,src/main.c,2117,FP,p is opaque user data allowed NULL; not validated by design,,high
+API00-C,156,sqlite,src/main.c,2117,FP,xSFunc is a function pointer that may be NULL (deletion/aggregate forms); validated in sqlite3CreateFunc,,high
+API00-C,157,sqlite,src/main.c,2117,FP,xStep may legitimately be NULL for scalar functions; validated in sqlite3CreateFunc,,high
+API00-C,158,sqlite,src/main.c,2117,FP,xFinal may legitimately be NULL for scalar functions; validated in sqlite3CreateFunc,,high
+API00-C,159,sqlite,src/main.c,2130,FP,xSFunc may be NULL; validated in sqlite3CreateFunc,,high
+API00-C,160,sqlite,src/main.c,2130,FP,xStep may be NULL; validated in sqlite3CreateFunc,,high
+API00-C,161,sqlite,src/main.c,2130,FP,xFinal may be NULL; validated in sqlite3CreateFunc,,high
+API00-C,162,sqlite,src/main.c,2130,FP,xDestroy may be NULL (checked at if(xDestroy) in createFunctionApi); not a defect,,high
+API00-C,163,sqlite,src/main.c,2144,FP,public API db validated by SafetyCheckOk under API_ARMOR; otherwise non-null by contract,,high
+API00-C,164,sqlite,src/main.c,2144,FP,p opaque user data allowed NULL by design,,high
+API00-C,165,sqlite,src/main.c,2144,FP,xStep may be NULL; validated downstream,,high
+API00-C,166,sqlite,src/main.c,2144,FP,xFinal may be NULL; validated downstream,,high
+API00-C,167,sqlite,src/main.c,2144,FP,xValue may be NULL; validated downstream (xValue/xInverse paired check),,high
+API00-C,168,sqlite,src/main.c,2144,FP,xInverse may be NULL; validated downstream,,high
+API00-C,169,sqlite,src/main.c,2144,FP,xDestroy may be NULL (checked at if(xDestroy)); not a defect,,high
+API00-C,170,sqlite,src/main.c,2161,FP,p opaque user data allowed NULL by design,,high
+API00-C,171,sqlite,src/main.c,2161,FP,xSFunc may be NULL; validated downstream,,high
+API00-C,172,sqlite,src/main.c,2161,FP,xStep may be NULL; validated downstream,,high
+API00-C,173,sqlite,src/main.c,2161,FP,xFinal may be NULL; validated downstream,,high
+DCL22-C,174,sqlite,src/main.c,2171,FP,rc is a plain local return code; no setjmp/longjmp present so volatile is not required,,high
+EXP20-C,175,sqlite,src/main.c,2175,FP,idiomatic boolean test on safety-check helper,,high
+MEM30-C,176,sqlite,src/main.c,2182,FP,"sqlite3DbFree(db, zFunc8) frees zFunc8; db is the live allocator context arg read first and never freed (classic sqc misread)",,high
+MEM30-C,177,sqlite,src/main.c,2183,FP,"sqlite3ApiExit(db, rc) passes the live db handle; db is not freed by sqlite3DbFree at 2181 which only freed zFunc8",,high
+MEM30-C,178,sqlite,src/main.c,2183,FP,db->mutex access at sqlite3_mutex_leave reads the live handle; db was never freed,,high
+EXP20-C,179,sqlite,src/main.c,2232,FP,idiomatic boolean test on safety-check helper,,high
+API00-C,180,sqlite,src/main.c,2256,FP,xTrace is a callback function pointer; NULL means disable tracing (documented); not validated by design,,high
+DCL13-C,181,sqlite,src/main.c,2256,FP,pArg stored into db->pTraceArg (void*); const would break the assignment,,high
+EXP20-C,182,sqlite,src/main.c,2260,FP,idiomatic boolean test on safety-check helper,,high
+DCL30-C,183,sqlite,src/main.c,2271,FP,"pOld is assigned from db->pTraceArg (a heap/user pointer), not the address of a local; returns a valid stored pointer",,high
+API00-C,184,sqlite,src/main.c,2277,FP,xTrace callback pointer; NULL disables tracing (handled at if(xTrace==0)); not a defect,,high
+DCL13-C,185,sqlite,src/main.c,2281,FP,pArg stored into db->pTraceArg (void*); const would break assignment,,high
+EXP20-C,186,sqlite,src/main.c,2284,FP,idiomatic boolean test on safety-check helper,,high
+API00-C,187,sqlite,src/main.c,2307,FP,xProfile callback pointer; NULL disables profiling; not validated by design,,high
+DCL13-C,188,sqlite,src/main.c,2310,FP,pArg stored into db->pProfileArg (void*); const would break assignment,,high
+EXP20-C,189,sqlite,src/main.c,2315,FP,idiomatic boolean test on safety-check helper,,high
+DCL30-C,190,sqlite,src/main.c,2327,FP,"pOld is assigned from db->pProfileArg (stored user pointer), not address of a local",,high
+API00-C,191,sqlite,src/main.c,2337,FP,xCallback commit-hook pointer; NULL clears the hook; not validated by design,,high
+DCL13-C,192,sqlite,src/main.c,2340,FP,pArg stored into db->pCommitArg (void*); const would break assignment,,high
+EXP20-C,193,sqlite,src/main.c,2345,FP,idiomatic boolean test on safety-check helper,,high
+DCL30-C,194,sqlite,src/main.c,2355,FP,"pOld is assigned from db->pCommitArg (stored user pointer), not address of a local",,high
+API00-C,195,sqlite,src/main.c,2362,FP,xCallback update-hook pointer; NULL clears the hook; not validated by design,,high
+DCL13-C,196,sqlite,src/main.c,2365,FP,pArg stored into db->pUpdateArg (void*); const would break assignment,,high
+EXP20-C,197,sqlite,src/main.c,2370,FP,idiomatic boolean test on safety-check helper,,high
+DCL30-C,198,sqlite,src/main.c,2380,FP,"pRet is assigned from db->pUpdateArg (stored user pointer), not address of a local",,high
+API00-C,199,sqlite,src/main.c,2387,FP,xCallback rollback-hook pointer; NULL clears the hook; not validated by design,,high
+DCL13-C,200,sqlite,src/main.c,2390,FP,pArg stored into db->pRollbackArg (void*); const would break assignment,,high
+EXP20-C,201,sqlite,src/main.c,2395,FP,idiomatic boolean test on safety-check helper,,high
+DCL30-C,202,sqlite,src/main.c,2405,FP,"pRet is assigned from db->pRollbackArg (stored user pointer), not address of a local",,high
+API00-C,203,sqlite,src/main.c,2413,FP,xCallback preupdate-hook pointer; NULL clears the hook; not validated by design,,high
+DCL13-C,204,sqlite,src/main.c,2417,FP,pArg stored into db->pPreUpdateArg (void*); const would break assignment,,high
+DCL30-C,205,sqlite,src/main.c,2431,FP,"pRet is assigned from db->pPreUpdateArg (stored user pointer), not address of a local",,high
+API00-C,206,sqlite,src/main.c,2439,FP,xCallback autovacuum-pages pointer; NULL clears the hook; not validated by design,,high
+API00-C,207,sqlite,src/main.c,2439,FP,pArg is opaque user context stored into db->pAutovacPagesArg; NULL allowed by design,,high
+API00-C,208,sqlite,src/main.c,2439,FP,xDestructor may be NULL (checked at if(xDestructor)); not a defect,,high
+EXP20-C,209,sqlite,src/main.c,2446,FP,idiomatic boolean test on safety-check helper,,high
+EXP20-C,210,sqlite,src/main.c,2502,FP,idiomatic boolean test on safety-check helper,,high
+API00-C,211,sqlite,src/main.c,2517,FP,xCallback wal-hook pointer; NULL clears the hook; not validated by design,,high
+API00-C,212,sqlite,src/main.c,2517,FP,pArg opaque user context stored into db->pWalArg; NULL allowed by design,,high
+EXP20-C,213,sqlite,src/main.c,2525,FP,idiomatic boolean test on safety-check helper,,high
+API00-C,214,sqlite,src/main.c,2547,FP,pnLog is an optional OUT param; explicitly guarded with if(pnLog) before deref; NULL allowed,,high
+API00-C,215,sqlite,src/main.c,2547,FP,pnCkpt is an optional OUT param; explicitly guarded with if(pnCkpt) before deref; NULL allowed,,high
+MSC37-C,216,sqlite,src/main.c,2547,FP,sqlite3_wal_checkpoint_v2 returns on all paths; SQLITE_OMIT_WAL branch returns SQLITE_OK and the active branch returns rc after the body,,high
+EXP20-C,217,sqlite,src/main.c,2566,FP,idiomatic boolean test on safety-check helper,,high
+DCL03-C,218,sqlite,src/main.c,2573,FP,assert SQLITE_CHECKPOINT_NOOP==-1 is a runtime sanity assert on an enum-like macro not a pure static_assert candidate sqc flags but it is conventional sqlite idiom,,high
+DCL03-C,219,sqlite,src/main.c,2574,FP,assert SQLITE_CHECKPOINT_PASSIVE==0 same runtime macro-equality sanity assert,,high
+DCL03-C,220,sqlite,src/main.c,2575,FP,assert SQLITE_CHECKPOINT_FULL==1 same runtime macro-equality sanity assert,,high
+DCL03-C,221,sqlite,src/main.c,2576,FP,assert SQLITE_CHECKPOINT_RESTART==2 same runtime macro-equality sanity assert,,high
+DCL03-C,222,sqlite,src/main.c,2577,FP,assert SQLITE_CHECKPOINT_TRUNCATE==3 same runtime macro-equality sanity assert,,high
+API00-C,223,sqlite,src/main.c,2617,FP,sqlite3_wal_checkpoint is public API armor path validates db downstream via wal_checkpoint_v2 internal contract not a trust boundary,,high
+API00-C,224,sqlite,src/main.c,2617,FP,zDb may legitimately be NULL and is guarded by zDb && zDb[0] downstream no unconditional deref,,high
+API00-C,225,sqlite,src/main.c,2644,FP,sqlite3Checkpoint internal routine caller holds db mutex asserted db non-null by contract,,high
+API00-C,226,sqlite,src/main.c,2644,FP,pnLog optional out-param guarded by !pnLog||*pnLog==-1 assert and conditional writes,,high
+API00-C,227,sqlite,src/main.c,2644,FP,pnCkpt optional out-param guarded by !pnCkpt||*pnCkpt==-1 assert and conditional writes,,high
+MSC04-C,228,sqlite,src/main.c,2644,TP,indirect recursion exists via VdbeExec reentrancy though bounded by trigger/statement depth limits,,med
+DCL13-C,229,sqlite,src/main.c,2644,FP,db is dereferenced db->mutex db->nDb db->aDb and passed to non-const callees so const would not apply,,high
+MSC37-C,230,sqlite,src/main.c,2690,FP,sqlite3TempInMemory every SQLITE_TEMP_STORE branch returns one is selected at compile time so no fallthrough,,high
+EXP20-C,231,sqlite,src/main.c,2716,FP,implicit boolean test on safety check is idiomatic and well-defined returns 0/1,,high
+DCL30-C,232,sqlite,src/main.c,2731,FP,z is const char* pointing to sqlite3ErrStr static string or db->pErr managed memory not an automatic local buffer,,high
+DCL15-C,233,sqlite,src/main.c,2741,FP,sqlite3_set_errmsg is a documented public extension API requires external linkage not static,,high
+EXP20-C,234,sqlite,src/main.c,2743,FP,implicit boolean test on safety check idiomatic well-defined,,high
+EXP34-C,235,sqlite,src/main.c,2746,FP,db deref at db->mallocFailed guarded by prior !db return and SafetyCheckOk gate,,high
+ARR02-C,236,sqlite,src/main.c,2776,FP,outOfMem[] is initialized aggregate u16 string size inferred at compile time fully bounded,,high
+ARR02-C,237,sqlite,src/main.c,2779,FP,misuse[] initialized aggregate u16 string size inferred fully bounded,,high
+EXP05-C,238,sqlite,src/main.c,2787,FP,outOfMem is static const u16 cast to const void* return type the void* cast does not write through it,,high
+EXP20-C,239,sqlite,src/main.c,2789,FP,implicit boolean test idiomatic,,high
+EXP05-C,240,sqlite,src/main.c,2790,FP,misuse static const cast to void* for read-only return no write-through,,high
+EXP05-C,241,sqlite,src/main.c,2794,FP,outOfMem static const cast to void* read-only return no write-through,,high
+DCL30-C,242,sqlite,src/main.c,2809,FP,z points to sqlite3_value_text16 managed memory or static outOfMem not an automatic local,,high
+EXP20-C,243,sqlite,src/main.c,2818,FP,implicit boolean test idiomatic,,high
+EXP20-C,244,sqlite,src/main.c,2827,FP,implicit boolean test idiomatic,,high
+API00-C,245,sqlite,src/main.c,2835,FP,sqlite3_system_errno guards db with ternary db?db->iSysErrno:0 no unchecked deref,,high
+DCL13-C,246,sqlite,src/main.c,2835,FP,db is dereferenced db->iSysErrno but const would compile; however return reads field via possibly-non-const accessor convention - signature is fixed public API ABI cannot change to const,,high
+DCL13-C,247,sqlite,src/main.c,2856,FP,pCtx in createCollation is stored into pColl->pUser as void* user data const would break storage and callback contract,,high
+INT13-C,248,sqlite,src/main.c,2918,FP,enc2 bitwise builds u8 encoding flag from validated range bounded enc2|aligned intended,,high
+ARR02-C,249,sqlite,src/main.c,2929,FP,aHardLimit[] is initialized aggregate size inferred matches SQLITE_N_LIMIT verified by assert sizeof check,,high
+EXP20-C,250,sqlite,src/main.c,3000,FP,implicit boolean test idiomatic,,high
+DCL03-C,251,sqlite,src/main.c,3025,FP,assert SQLITE_LIMIT_PARSER_DEPTH==(SQLITE_N_LIMIT-1) macro-equality sanity assert runtime form intentional,,high
+ARR00-C,252,sqlite,src/main.c,3031,FP,limitId bounds-checked by limitId<0||limitId>=SQLITE_N_LIMIT return -1 immediately before subscript at 3031,,high
+EXP34-C,253,sqlite,src/main.c,3031,FP,db deref guarded by SQLITE_ENABLE_API_ARMOR SafetyCheckOk and internal caller contract,,high
+ARR00-C,254,sqlite,src/main.c,3038,FP,same limitId guarded by 3028 check before aHardLimit[limitId] at 3038,,high
+API00-C,255,sqlite,src/main.c,3069,FP,zDefaultVfs may be NULL by design assigned to zVfs and passed to vfs_find which handles NULL,,high
+API00-C,256,sqlite,src/main.c,3069,FP,pFlags dereferenced *pFlags but caller contract supplies valid pointer internal routine,,high
+API00-C,257,sqlite,src/main.c,3069,FP,ppVfs out-param written *ppVfs caller supplies valid pointer internal contract,,high
+API00-C,258,sqlite,src/main.c,3069,FP,pzFile out-param written caller contract,,high
+API00-C,259,sqlite,src/main.c,3069,FP,pzErrMsg out-param asserted *pzErrMsg==0 caller contract,,high
+STR34-C,260,sqlite,src/main.c,3082,FP,zUri indexed for memcmp/strlen char* comparison not sign-extended into arithmetic; ascii literal compares,,high
+INT14-C,261,sqlite,src/main.c,3109,FP,zUri used as pointer and in memcmp not mixed bitwise/arithmetic on a value readability heuristic misfire,,high
+ARR38-C,262,sqlite,src/main.c,3117,FP,strncmp size 12 compares against literal //localhost/ NUL-terminated zUri reads stop at NUL safe,,high
+STR34-C,263,sqlite,src/main.c,3126,FP,*pzErrMsg assigned sqlite3_mprintf result char* pointer assignment not sign extension,,high
+INT14-C,264,sqlite,src/main.c,3127,FP,iIn is int loop index used for indexing and increment not bitwise mix readability misfire,,high
+EXP30-C,265,sqlite,src/main.c,3145,FP,c assigned in while condition (c=zUri[iIn])!=0 single sequence point per iteration no UB,,high
+EXP33-C,266,sqlite,src/main.c,3145,FP,c is assigned by (c = zUri[iIn]) in the controlling expression before any use defined,,high
+INT32-C,267,sqlite,src/main.c,3146,FP,iIn bounded by nUri which is sqlite3Strlen30 capped at 0x3fffffff cannot reach INT_MAX,,high
+INT32-C,268,sqlite,src/main.c,3149,FP,iIn+1 index bounded by strlen30 cap 0x3fffffff no overflow,,high
+STR34-C,269,sqlite,src/main.c,3151,FP,zUri[iIn] passed to sqlite3Isxdigit/HexToInt ascii classification not sign-extension arithmetic,,high
+INT32-C,270,sqlite,src/main.c,3151,FP,iIn++ bounded by parsed URI length strlen30-capped,,high
+INT32-C,271,sqlite,src/main.c,3152,FP,octet compound add bounded by assert octet>=0 && octet<256 hex nibble math,,high
+INT32-C,272,sqlite,src/main.c,3152,FP,iIn++ bounded by URI length,,high
+EXP30-C,273,sqlite,src/main.c,3161,FP,c assigned in while condition single sequence point,,high
+INT32-C,274,sqlite,src/main.c,3166,FP,iIn++ bounded by URI length strlen30 cap,,high
+STR34-C,275,sqlite,src/main.c,3171,FP,*pzErrMsg assigned mprintf char* pointer not sign extension,,high
+INT32-C,276,sqlite,src/main.c,3180,FP,iIn++ bounded by URI length,,high
+INT07-C,277,sqlite,src/main.c,3188,FP,c is char used in equality/assignment for parsing not numeric magnitude use heuristic misfire,,high
+INT07-C,278,sqlite,src/main.c,3190,FP,c char in parsing context not numeric magnitude misfire,,high
+STR34-C,279,sqlite,src/main.c,3202,FP,*zFile char store of parsed bytes pointer/value write not sign-extension into larger type,,high
+STR34-C,280,sqlite,src/main.c,3202,FP,zFile[strlen30+1] is char store within allocated buffer not sign extension misparsed expr,,high
+ARR37-C,281,sqlite,src/main.c,3203,FP,zOpt points into zFile heap buffer subscript zOpt[0] is valid pointer arithmetic into allocation,,high
+STR34-C,282,sqlite,src/main.c,3204,FP,zOpt used with strlen30/memcmp ascii compare not sign-extended arithmetic,,high
+STR34-C,283,sqlite,src/main.c,3205,FP,zOpt[nOpt+1] char access into heap buffer not sign extension,,high
+ARR37-C,284,sqlite,src/main.c,3205,FP,zOpt[nOpt+1] indexes into zFile heap allocation valid pointer arithmetic,,high
+STR34-C,285,sqlite,src/main.c,3206,FP,zVal strlen30/memcmp ascii compare not sign extension,,high
+DCL00-C,286,sqlite,src/main.c,3217,FP,limit is reassigned limit=mask and limit=mask&flags so it is modified not const-eligible,,high
+CON03-C,287,sqlite,src/main.c,3220,FP,aCacheMode is static const-content lookup table read-only no cross-thread mutation CON03 misfire on read-only table,,high
+ARR02-C,288,sqlite,src/main.c,3220,FP,"aCacheMode[] initialized aggregate size inferred terminated by {0,0} sentinel bounded",,high
+CON03-C,289,sqlite,src/main.c,3232,FP,aOpenMode static read-only lookup table no shared mutation CON03 misfire,,high
+ARR02-C,290,sqlite,src/main.c,3232,FP,aOpenMode[] initialized aggregate sentinel-terminated bounded,,high
+INT13-C,291,sqlite,src/main.c,3243,FP,mask is int holding SQLITE_OPEN_* flag bits & is intended flag masking,,high
+INT31-C,292,sqlite,src/main.c,3252,FP,nVal is sqlite3Strlen30 result >=0 bounded passed to memcmp non-negative no sign issue,,high
+STR34-C,293,sqlite,src/main.c,3258,FP,*pzErrMsg mprintf char* pointer assignment not sign extension,,high
+INT13-C,294,sqlite,src/main.c,3262,FP,mode int flag bits & intended masking,,high
+STR34-C,295,sqlite,src/main.c,3263,FP,*pzErrMsg mprintf pointer assignment,,high
+INT13-C,296,sqlite,src/main.c,3268,FP,mode int flag bits | intended flag combine,,high
+STR34-C,297,sqlite,src/main.c,3272,FP,*zVal char store parsed value not sign extension,,high
+STR34-C,298,sqlite,src/main.c,3272,FP,zVal[nVal+1] char access into heap buffer not sign extension,,high
+ARR37-C,299,sqlite,src/main.c,3272,FP,zVal[nVal+1] indexes into zFile heap allocation valid pointer arithmetic,,high
+INT31-C,300,sqlite,src/main.c,3281,FP,nUri sqlite3Strlen30 result >=0 bounded passed to memcpy non-negative,,high
+STR34-C,301,sqlite,src/main.c,3289,FP,*pzErrMsg mprintf pointer assignment,,high
+DCL30-C,302,sqlite,src/main.c,3298,FP,zFile is heap sqlite3_malloc64 buffer assigned to *pzFile ownership transferred to caller not a stack address,,high
+STR34-C,303,sqlite,src/main.c,3298,FP,*pzFile=zFile pointer assignment char* not sign extension,,high
+STR34-C,304,sqlite,src/main.c,3309,FP,zFilename strcmp/strlen30 ascii compare not sign-extended arithmetic,,high
+STR34-C,305,sqlite,src/main.c,3309,FP,zParam strcmp compare not sign extension,,high
+MSC37-C,306,sqlite,src/main.c,3324,FP,openDatabase all paths set rc and reach return rc via opendb_out no missing return,,high
+EXP33-C,307,sqlite,src/main.c,3343,FP,rc assigned by sqlite3_initialize at 3342 before use at 3343 guarded by OMIT_AUTOINIT else path also defines,,high
+PRE32-C,308,sqlite,src/main.c,3389,FP,line 3389 is preprocessor #if inside flags|= continuation not a strcmp macro arg; sqc misread #if SQLITE_THREAD_MISUSE_WARNINGS,,high
+DCL03-C,309,sqlite,src/main.c,3412,FP,assert sizeof(db->aLimit)==sizeof(aHardLimit) is a sizeof sanity assert intentional runtime form,,high
+ARR01-C,310,sqlite,src/main.c,3412,FP,aHardLimit is a file-scope static array not a decayed parameter sizeof yields true array size correct,,high
+EXP00-C,311,sqlite,src/main.c,3435,FP,line 3435 is preprocessor #if expression with defined() and +0 arithmetic not C code; precedence is well-defined directive,,high
+INT14-C,312,sqlite,src/main.c,3435,FP,SQLITE_TRUSTED_SCHEMA appears only in #if preprocessor directive not C runtime mixed-ops misfire,,high
+EXP00-C,313,sqlite,src/main.c,3456,FP,line 3456 #if (SQLITE_DQS&1)==1 is preprocessor directive precedence well-defined not C code,,high
+EXP46-C,314,sqlite,src/main.c,3456,FP,line 3456 is #if directive the | on next line is SQLITE_DqsDML flag inside a C bitwise initializer not the directive; sqc conflated directive with flag-or no boolean bug,,high
+EXP00-C,315,sqlite,src/main.c,3459,FP,line 3459 #if (SQLITE_DQS&2)==2 preprocessor directive precedence fine,,high
+EXP46-C,316,sqlite,src/main.c,3459,FP,line 3459 same #if directive plus separate flag | misfire no boolean operator bug,,high
+EXP00-C,317,sqlite,src/main.c,3469,FP,line 3469 #if SQLITE_DEFAULT_FILE_FORMAT<4 preprocessor directive precedence fine,,high
+EXP46-C,318,sqlite,src/main.c,3469,FP,line 3469 #if directive plus separate SQLITE_LegacyFileFmt flag | misfire,,high
+DCL03-C,319,sqlite,src/main.c,3550,FP,assert SQLITE_OPEN_READONLY==0x01 macro-equality sanity assert intentional,,high
+DCL03-C,320,sqlite,src/main.c,3551,FP,assert SQLITE_OPEN_READWRITE==0x02 sanity assert,,high
+DCL03-C,321,sqlite,src/main.c,3552,FP,assert SQLITE_OPEN_CREATE==0x04 sanity assert,,high
+EXP34-C,322,sqlite,src/main.c,3564,FP,zErrMsg may be 0 but sqlite3ErrorWithMsg called with format 0 when zErrMsg null is handled rc?:0 ternary and ErrorWithMsg tolerates NULL format,,high
+EXP33-C,323,sqlite,src/main.c,3616,FP,i is the for-loop init i=0 at 3616 assigned before body executes not uninitialized,,high
+INT13-C,324,sqlite,src/main.c,3663,FP,rc int holding SQLITE_* code & db->errMask is intended result-code masking,,high
+INT13-C,325,sqlite,src/main.c,3664,FP,rc & 0xff intended low-byte extraction of result code,,high
+MEM31-C,326,sqlite,src/main.c,3665,FP,sqlite3_close(db) called once when NOMEM then db=0 set; the else-if branch is mutually exclusive no double free; db read first then handled,,high
+DCL30-C,327,sqlite,src/main.c,3670,FP,"*ppDb=db stores db (heap handle or 0) into caller out-param, not address of a local; DCL30 misreads the assignment",,high
+API00-C,328,sqlite,src/main.c,3693,FP,"zVfs is an optional VFS name passed through to openDatabase which handles NULL/lookup; public API contract allows NULL, no deref here",,high
+MSC04-C,329,sqlite,src/main.c,3693,FP,"openDatabase is static and never calls sqlite3_open_v2; recursion chain is fabricated, call is one-way sqlite3_open_v2->openDatabase",,high
+INT31-C,330,sqlite,src/main.c,3699,FP,"(unsigned int)flags is an intentional bitmask reinterpret of open flags; value range is fully defined, no semantic overflow",,high
+API00-C,331,sqlite,src/main.c,3706,FP,sqlite3_open16 handles zFilename==0 explicitly (substitutes empty UTF16 string) at line 3722; NULL is permitted,,high
+EXP33-C,332,sqlite,src/main.c,3720,FP,rc is set by sqlite3_initialize() at 3719 or in the else branch before any use; assigned-before-use across sequence point,,high
+INT13-C,333,sqlite,src/main.c,3738,FP,"rc&0xff masks SQLITE error code low byte (return rc&0xff); standard defined idiom on a small positive enum, not a bug",,high
+API00-C,334,sqlite,src/main.c,3745,FP,"pCtx is opaque user context forwarded to xCompare callback; NULL is a legal caller-supplied value, never dereferenced here",,high
+API00-C,335,sqlite,src/main.c,3745,FP,"xCompare is a user comparator function pointer stored via createCollation; NULL is allowed (deletes collation), not dereferenced",,high
+API00-C,336,sqlite,src/main.c,3758,FP,"pCtx opaque context forwarded to callback; NULL legal, not dereferenced in this frame",,high
+API00-C,337,sqlite,src/main.c,3758,FP,"xCompare comparator pointer; NULL allowed to unregister collation, validated downstream in createCollation",,high
+API00-C,338,sqlite,src/main.c,3758,FP,"xDel destructor function pointer; NULL legal (no destructor), invoked only when non-null downstream",,high
+EXP20-C,339,sqlite,src/main.c,3769,FP,"sqlite3SafetyCheckOk returns a boolean health check; if(!...) under API_ARMOR is the established SQLite idiom, intentional",,high
+EXP20-C,340,sqlite,src/main.c,3794,FP,same sqlite3SafetyCheckOk boolean guard idiom in create_collation16; intentional,,high
+MEM30-C,341,sqlite,src/main.c,3803,FP,"line 3801 sqlite3DbFree(db,zName8) frees zName8; db is the live context handle reused at 3803/3804, never freed",,high
+MEM30-C,342,sqlite,src/main.c,3804,FP,"3804 sqlite3_mutex_leave(db->mutex) uses live db handle; zName8 was the freed object at 3801, not db",,high
+MEM30-C,343,sqlite,src/main.c,3804,FP,"db->mutex access on live handle; db is not freed anywhere in this function, MEM30 context-arg misread",,high
+API00-C,344,sqlite,src/main.c,3813,FP,"xCollNeeded is a user callback stored into db->xCollNeeded; NULL is legal (clears factory), not dereferenced",,high
+DCL13-C,345,sqlite,src/main.c,3815,FP,pCollNeededArg is stored into db->pCollNeededArg (void* field) at 3824; const would break assignment to non-const field,,high
+EXP20-C,346,sqlite,src/main.c,3819,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+API00-C,347,sqlite,src/main.c,3834,FP,"xCollNeeded16 callback stored into db->xCollNeeded16; NULL legal, not dereferenced",,high
+DCL13-C,348,sqlite,src/main.c,3836,FP,"pCollNeededArg stored into db->pCollNeededArg at 3845; const conflicts with non-const struct field, FP",,high
+EXP20-C,349,sqlite,src/main.c,3840,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+DCL15-C,350,sqlite,src/main.c,3854,FP,sqlite3_get_clientdata is a public sqlite3.h API needing external linkage; cannot be static,,high
+EXP20-C,351,sqlite,src/main.c,3857,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+API00-C,352,sqlite,src/main.c,3877,FP,"db is the connection handle; mutex_enter(db->mutex) requires non-null per public API contract, no ARMOR guard for this entry point but it is a documented caller invariant",,high
+API00-C,353,sqlite,src/main.c,3877,FP,"pData is opaque client payload; NULL is explicitly handled (delete path at 3892/3898), not dereferenced when null",,high
+API00-C,354,sqlite,src/main.c,3877,FP,"xDestructor function pointer; invoked only when non-null (3891,3905), NULL legal",,high
+DCL15-C,355,sqlite,src/main.c,3877,FP,sqlite3_set_clientdata is a public sqlite3.h API requiring external linkage; cannot be static,,high
+STR34-C,356,sqlite,src/main.c,3902,FP,"zName feeds strlen/strcmp (line 3902 strlen(zName)); strlen takes char* directly, no sign-extending integer promotion of a char value",,high
+INT30-C,357,sqlite,src/main.c,3903,FP,"n is size_t from strlen; n+1 sizing for SZ_DBCLIENTDATA via malloc64; wrap requires SIZE_MAX-length in-memory string, unreachable",,high
+DCL31-C,358,sqlite,src/main.c,3905,FP,"xDestructor is a declared parameter (line 3881) called as a function pointer; DCL31 false trigger, it is declared",,high
+ARR38-C,359,sqlite,src/main.c,3909,FP,"memcpy(p->zName,zName,n+1) copies exactly the allocated SZ_DBCLIENTDATA(n+1) bytes; size matches allocation, bounded",,high
+INT32-C,360,sqlite,src/main.c,3909,FP,"n is size_t (unsigned), n+1 cannot signed-overflow; allocation already succeeded for SZ_DBCLIENTDATA(n+1) before copy",,high
+EXP05-C,361,sqlite,src/main.c,3909,FP,"no const cast at 3909; memcpy dest p->zName is a writable char[] field, EXP05 misfire",,high
+INT30-C,362,sqlite,src/main.c,3909,FP,"duplicate of 357; size_t n, bounded by realizable string length, intentional/safe",,high
+EXP20-C,363,sqlite,src/main.c,3938,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+INT32-C,364,sqlite,src/main.c,3959,FP,"20+sqlite3_sourceid() is char* pointer arithmetic (skip 20-byte date prefix of the source-id string), not integer addition",,high
+EXP33-C,365,sqlite,src/main.c,3977,FP,zMsg is a char[100] buffer filled by sqlite3_snprintf at 3977 before use at 3979; never read uninitialized,,high
+API00-C,366,sqlite,src/main.c,4009,FP,"pzDataType is an OUTPUT param, written via if(pzDataType)*pzDataType=... at 4102 with NULL guard; NULL legal",,high
+API00-C,367,sqlite,src/main.c,4009,FP,"pzCollSeq OUTPUT param, NULL-guarded at 4103; NULL legal",,high
+API00-C,368,sqlite,src/main.c,4009,FP,"pNotNull OUTPUT param, NULL-guarded at 4104; NULL legal",,high
+API00-C,369,sqlite,src/main.c,4009,FP,"pPrimaryKey OUTPUT param, NULL-guarded at 4105; NULL legal",,high
+API00-C,370,sqlite,src/main.c,4009,FP,"pAutoinc OUTPUT param, NULL-guarded at 4106; NULL legal",,high
+EXP20-C,371,sqlite,src/main.c,4033,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+EXP34-C,372,sqlite,src/main.c,4039,FP,db->mutex at 4039 reached only after API_ARMOR sqlite3SafetyCheckOk(db) guard at 4033; db is non-null there,,high
+DCL30-C,373,sqlite,src/main.c,4102,FP,"*pzDataType=zDataType stores a static/schema-owned string pointer into caller out-param, not address of a local; zDataType points to persistent schema strings",,high
+STR34-C,374,sqlite,src/main.c,4102,FP,"*pzDataType assignment of char* pointer value; no integer promotion/sign-extension, pointer-to-pointer store",,high
+DCL30-C,375,sqlite,src/main.c,4103,FP,"*pzCollSeq=zCollSeq stores schema/static string pointer into out-param, not local address",,high
+STR34-C,376,sqlite,src/main.c,4103,FP,"*pzCollSeq pointer store; no char sign-extension, pointer assignment",,high
+MEM30-C,377,sqlite,src/main.c,4110,FP,"sqlite3DbFree(db,zErrMsg) at 4109 frees zErrMsg; db is live context handle, not freed",,high
+MEM30-C,378,sqlite,src/main.c,4114,FP,"sqlite3ErrorWithMsg(db,...) at 4114 uses live db; freed object is zErrMsg, context-arg misread",,high
+MEM30-C,379,sqlite,src/main.c,4114,FP,"zErrMsg passed to sqlite3ErrorWithMsg at 4114 is freed afterward at 4115, not before; used while still valid",,high
+MEM30-C,380,sqlite,src/main.c,4115,FP,"db is never freed in this function; 4115 sqlite3DbFree frees zErrMsg once, db is the context arg",,high
+MEM30-C,381,sqlite,src/main.c,4115,FP,"zErrMsg freed once at 4115; the 4109 free is on a prior distinct allocation reassigned at 4110, no double-free",,high
+MEM30-C,382,sqlite,src/main.c,4116,FP,"sqlite3ApiExit(db,rc) at 4116 uses live db handle; not freed",,high
+MEM30-C,383,sqlite,src/main.c,4117,FP,sqlite3_mutex_leave(db->mutex) at 4117 uses live db; never freed,,high
+MEM30-C,384,sqlite,src/main.c,4117,FP,"db->mutex member access on live handle; MEM30 context-arg misread, db not freed",,high
+API00-C,385,sqlite,src/main.c,4124,FP,"ms<0?0:1000*ms guards negative; sqlite3_sleep takes a small caller delay, not an untrusted boundary, ms range bounded by callers",,high
+INT32-C,386,sqlite,src/main.c,4133,FP,"1000*ms: ms guarded >=0; practical sleep values are small, overflow needs ms>~2.1M sec sleep, not a realistic/triggerable defect",,med
+EXP20-C,387,sqlite,src/main.c,4142,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+API00-C,388,sqlite,src/main.c,4153,FP,zDbName optional schema name forwarded to sqlite3DbNameToBtree which handles NULL (returns iDb 0) at 4948; NULL legal,,high
+EXP20-C,389,sqlite,src/main.c,4158,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+EXP34-C,390,sqlite,src/main.c,4160,FP,db->mutex at 4160 reached only after sqlite3SafetyCheckOk(db) ARMOR guard at 4158; non-null,,high
+INT32-C,391,sqlite,src/main.c,4741,FP,"-id at 4741 reached only when id<0 && id>=-SQLITE_NTUNE, so id is bounded small-negative; -id cannot be -INT_MIN",,high
+ARR00-C,392,sqlite,src/main.c,4785,FP,"databaseName scans backward over a Pager-built buffer with guaranteed 4 leading zero bytes; loop terminates at the sentinel, not a real array[-1]; buffer-50/line-1636 attribution is bogus",,high
+ARR30-C,393,sqlite,src/main.c,4785,FP,"same databaseName backward scan; the cited zName size-50 buffer at line 1636 is unrelated, sqc misattributed the allocation",,high
+ARR00-C,394,sqlite,src/main.c,4785,FP,"databaseName sentinel-bounded backward walk; index -2 part of zero-byte check, terminates by construction",,high
+ARR30-C,395,sqlite,src/main.c,4785,FP,"same; bogus buffer/size attribution, scan bounded by 4-zero-byte prefix invariant",,high
+ARR00-C,396,sqlite,src/main.c,4785,FP,"databaseName backward scan, -3 sentinel check; bounded",,high
+ARR30-C,397,sqlite,src/main.c,4785,FP,"same; misattributed allocation, safe by Pager memory-layout contract",,high
+ARR00-C,398,sqlite,src/main.c,4785,FP,"databaseName backward scan, -4 sentinel check; the four-zero prefix guarantees termination",,high
+ARR30-C,399,sqlite,src/main.c,4785,FP,"same; FP, contract-guaranteed termination, wrong buffer cited",,high
+STR34-C,400,sqlite,src/main.c,4796,FP,"z in appendText feeds strlen(z) at 4796; strlen takes char* directly, no sign-extension of a char value",,high
+ARR38-C,401,sqlite,src/main.c,4797,FP,"memcpy(p,z,n+1) copies into pResult buffer pre-sized by sqlite3_create_filename (nByte includes each strlen+1); bounded by construction",,high
+INT32-C,402,sqlite,src/main.c,4797,FP,"n is size_t from strlen; n+1 unsigned, cannot signed-overflow; total nByte is sqlite3_int64",,high
+EXP05-C,403,sqlite,src/main.c,4797,FP,"no const cast at 4797; appendText dest p is char*, memcpy writes to it legitimately",,high
+API00-C,404,sqlite,src/main.c,4810,FP,"zDatabase forwarded to strlen at 4820; caller (VFS author) contract supplies valid string, public helper, no internal NULL deref guard expected",,high
+API00-C,405,sqlite,src/main.c,4810,FP,azParam indexed in loop only when nParam>0; caller contract supplies array; documented VFS-helper API,,high
+API00-C,406,sqlite,src/main.c,4810,FP,"nParam used as i<nParam*2 loop bound; negative nParam yields no iterations, large nParam is caller-controlled trusted input to a VFS helper, not a security boundary",,med
+INT32-C,407,sqlite,src/main.c,4822,FP,"nByte is sqlite3_int64 accumulating strlen+1; realistic filename/param sizes cannot overflow i64, intended size math",,high
+EXP34-C,408,sqlite,src/main.c,4822,FP,"azParam[i] dereferenced only within i<nParam*2; caller guarantees nParam entries, documented contract",,high
+STR34-C,409,sqlite,src/main.c,4832,FP,"*(p++)=0 writes a zero byte to a char* buffer; assignment of constant 0, no char read/sign-extension",,high
+STR34-C,410,sqlite,src/main.c,4835,FP,"*(p++) write of zero terminator; no sign-extension, store not read",,high
+STR34-C,411,sqlite,src/main.c,4836,FP,"*(p++) write of zero byte; store, no sign-extension",,high
+EXP05-C,412,sqlite,src/main.c,4849,FP,"(char*)p-4 cast in sqlite3_free_filename strips const to free the original allocation base; intentional, the buffer was malloc'd mutable",,high
+INT32-C,413,sqlite,src/main.c,4849,FP,(char*)p-4 is pointer arithmetic to recover allocation base (4-byte prefix); not signed integer subtraction overflow,,high
+API00-C,414,sqlite,src/main.c,4873,FP,"N validated N<0 returns 0 at 4874; N-- loop is bounded by zero-terminated param list walk, public helper contract",,high
+API00-C,415,sqlite,src/main.c,4933,FP,"zFilename forwarded to sqlite3_filename_journal which is called on Pager-built buffers; databaseName contract, public VFS helper",,high
+MSC37-C,416,sqlite,src/main.c,4933,FP,sqlite3_filename_wal returns in both #ifdef SQLITE_OMIT_WAL branch (return 0) and #else branch (return zFilename); all paths return,,high
+API00-C,417,sqlite,src/main.c,4947,FP,"db connection handle; sqlite3DbNameToBtree is internal, callers hold valid db per invariant, no trust boundary",,high
+API00-C,418,sqlite,src/main.c,4947,FP,zDbName==0 explicitly handled at 4948 (iDb=0 when NULL); NULL legal,,high
+STR34-C,419,sqlite,src/main.c,4948,FP,"zDbName feeds sqlite3FindDbName (string compare) at 4948; char* passed directly, no sign-extending value promotion",,high
+STR34-C,420,sqlite,src/main.c,4948,FP,"duplicate of 419; pointer passed to name lookup, no char arithmetic",,high
+EXP34-C,421,sqlite,src/main.c,4949,FP,db->aDb at 4949 reached only via iDb>=0 from sqlite3FindDbName; db is caller-guaranteed valid internal handle,,high
+EXP20-C,422,sqlite,src/main.c,4958,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+API00-C,423,sqlite,src/main.c,4974,FP,zDbName optional; sqlite3DbNameToBtree handles NULL; public API allows NULL schema name,,high
+EXP20-C,424,sqlite,src/main.c,4977,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+API00-C,425,sqlite,src/main.c,4990,FP,zDbName optional schema name; NULL handled by sqlite3DbNameToBtree; public API,,high
+EXP20-C,426,sqlite,src/main.c,4993,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+EXP20-C,427,sqlite,src/main.c,5016,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+STR34-C,428,sqlite,src/main.c,5023,FP,"zDb forwarded to sqlite3FindDbName name compare at 5023; char* passed directly, no sign-extension",,high
+EXP20-C,429,sqlite,src/main.c,5056,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+API00-C,430,sqlite,src/main.c,5103,FP,zDb optional schema name forwarded to sqlite3FindDbName which handles lookup/NULL; public API contract,,high
+EXP20-C,431,sqlite,src/main.c,5109,FP,sqlite3SafetyCheckOk boolean guard idiom; intentional,,high
+API00-C,432,sqlite,src/main.c,5134,FP,"pSnapshot passed to sqlite3_free which is NULL-safe; public free API accepts NULL, no deref",,high

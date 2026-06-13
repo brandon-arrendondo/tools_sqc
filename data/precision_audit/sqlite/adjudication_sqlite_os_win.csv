@@ -1,0 +1,540 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,src/os_win.c,168,TP,winIsDirSep(a) expands (a) twice so a side-effecting argument is double-evaluated,,high
+PRE12-C,1,sqlite,src/os_win.c,168,TP,same macro winIsDirSep references parameter a in two comparisons multi-evaluating it,,high
+PRE01-C,2,sqlite,src/os_win.c,287,TP,winFileBusyTimeout(pDbFd) uses pDbFd->iBusyTimeout with the param left unparenthesized,,low
+CON03-C,3,sqlite,src/os_win.c,436,FP,win_mem_data is guarded by STATIC_MEM/STATIC_MAIN mutexes per SQLite design not volatile,,high
+PRE10-C,4,sqlite,src/os_win.c,449,TP,winMemAssertMagic() expands to two statements not wrapped in do-while breaking if without braces,,high
+PRE11-C,5,sqlite,src/os_win.c,449,TP,winMemAssertMagic() definition ends with a trailing semicolon producing a stray empty statement,,high
+DCL36-C,6,sqlite,src/os_win.c,484,FP,lines 482/484 are mutually-exclusive ifdef SQLITE_TEST branches of one var and SQLITE_WIN32_VOLATILE is a qualifier macro not a linked identifier,,high
+CON03-C,7,sqlite,src/os_win.c,505,FP,aSyscall is only mutated by the test/sandbox xSetSystemCall override under static mutex not concurrently,,high
+ERR02-C,8,sqlite,src/os_win.c,505,FP,no ssize_t at line 509 the field is sqlite3_syscall_ptr a function-pointer typedef,,high
+ARR02-C,9,sqlite,src/os_win.c,509,FP,aSyscall[] implicit bound is compile-time sized from its initializer and accessed via ArraySize,,high
+WIN04-C,10,sqlite,src/os_win.c,509,FP,WIN04 EncodePointer is a recommendation SQLite intentionally stores syscall pointers for override/testing,,high
+DCL31-C,11,sqlite,src/os_win.c,526,FP,osCharLowerW is a macro at line 526 casting aSyscall[1].pCurrent not an undeclared function,,high
+DCL31-C,12,sqlite,src/os_win.c,534,FP,osCharUpperW is a macro casting aSyscall[2].pCurrent,,high
+DCL31-C,13,sqlite,src/os_win.c,538,FP,osCloseHandle is a macro casting aSyscall[3].pCurrent,,high
+DCL31-C,14,sqlite,src/os_win.c,546,FP,osCreateFileA is a macro casting aSyscall[4].pCurrent,,high
+DCL31-C,15,sqlite,src/os_win.c,555,FP,osCreateFileW is a macro casting aSyscall[5].pCurrent,,high
+DCL31-C,16,sqlite,src/os_win.c,566,FP,osCreateFileMappingA is a macro casting aSyscall[6].pCurrent,,high
+DCL31-C,17,sqlite,src/os_win.c,576,FP,osCreateFileMappingW is a macro casting aSyscall[7].pCurrent,,high
+DCL31-C,18,sqlite,src/os_win.c,585,FP,osCreateMutexW is a macro casting aSyscall[8].pCurrent,,high
+DCL31-C,19,sqlite,src/os_win.c,594,FP,osDeleteFileA is a macro casting aSyscall[9].pCurrent,,high
+DCL31-C,20,sqlite,src/os_win.c,602,FP,osDeleteFileW is a macro casting aSyscall[10].pCurrent,,high
+DCL31-C,21,sqlite,src/os_win.c,610,FP,osFileTimeToLocalFileTime is a macro casting aSyscall[11].pCurrent,,high
+DCL31-C,22,sqlite,src/os_win.c,619,FP,osFileTimeToSystemTime is a macro casting aSyscall[12].pCurrent,,high
+DCL31-C,23,sqlite,src/os_win.c,624,FP,osFlushFileBuffers is a macro casting aSyscall[13].pCurrent,,high
+DCL31-C,24,sqlite,src/os_win.c,632,FP,osFormatMessageA is a macro casting aSyscall[14].pCurrent,,high
+DCL31-C,25,sqlite,src/os_win.c,641,FP,osFormatMessageW is a macro casting aSyscall[15].pCurrent,,high
+DCL31-C,26,sqlite,src/os_win.c,650,FP,osFreeLibrary is a macro casting aSyscall[16].pCurrent,,high
+DCL31-C,27,sqlite,src/os_win.c,654,FP,osGetCurrentProcessId is a macro casting aSyscall[17].pCurrent,,high
+DCL31-C,28,sqlite,src/os_win.c,662,FP,osGetDiskFreeSpaceA is a macro casting aSyscall[18].pCurrent,,high
+DCL31-C,29,sqlite,src/os_win.c,671,FP,osGetDiskFreeSpaceW is a macro casting aSyscall[19].pCurrent,,high
+DCL31-C,30,sqlite,src/os_win.c,680,FP,osGetFileAttributesA is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,31,sqlite,src/os_win.c,688,FP,osGetFileAttributesW is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,32,sqlite,src/os_win.c,696,FP,osGetFileAttributesExW is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,33,sqlite,src/os_win.c,701,FP,osGetFileSize is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,34,sqlite,src/os_win.c,709,FP,osGetFullPathNameA is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,35,sqlite,src/os_win.c,718,FP,osGetFullPathNameW is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,36,sqlite,src/os_win.c,729,FP,osGetLastError is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,37,sqlite,src/os_win.c,744,FP,osGetProcAddressA is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,38,sqlite,src/os_win.c,748,FP,osGetSystemInfo is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,39,sqlite,src/os_win.c,751,FP,osGetSystemTime is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,40,sqlite,src/os_win.c,759,FP,osGetSystemTimeAsFileTime is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,41,sqlite,src/os_win.c,768,FP,osGetTempPathA is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,42,sqlite,src/os_win.c,776,FP,osGetTempPathW is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,43,sqlite,src/os_win.c,780,FP,osGetTickCount is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,44,sqlite,src/os_win.c,788,FP,osGetVersionExA is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,45,sqlite,src/os_win.c,798,FP,osGetVersionExW is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,46,sqlite,src/os_win.c,803,FP,osHeapAlloc is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,47,sqlite,src/os_win.c,808,FP,osHeapCreate is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,48,sqlite,src/os_win.c,813,FP,osHeapDestroy is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,49,sqlite,src/os_win.c,817,FP,osHeapFree is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,50,sqlite,src/os_win.c,821,FP,osHeapReAlloc is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,51,sqlite,src/os_win.c,826,FP,osHeapSize is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,52,sqlite,src/os_win.c,831,FP,osHeapValidate is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,53,sqlite,src/os_win.c,840,FP,osHeapCompact is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,54,sqlite,src/os_win.c,848,FP,osLoadLibraryA is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,55,sqlite,src/os_win.c,857,FP,osLoadLibraryW is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,56,sqlite,src/os_win.c,861,FP,osLocalFree is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,57,sqlite,src/os_win.c,881,FP,osLockFileEx is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,58,sqlite,src/os_win.c,891,FP,osMapViewOfFile is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,59,sqlite,src/os_win.c,896,FP,osMultiByteToWideChar is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,60,sqlite,src/os_win.c,901,FP,osQueryPerformanceCounter is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,61,sqlite,src/os_win.c,906,FP,osReadFile is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,62,sqlite,src/os_win.c,911,FP,osSetEndOfFile is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,63,sqlite,src/os_win.c,915,FP,osSetFilePointer is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,64,sqlite,src/os_win.c,920,FP,osSleep is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,65,sqlite,src/os_win.c,924,FP,osSystemTimeToFileTime is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,66,sqlite,src/os_win.c,944,FP,osUnlockFileEx is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,67,sqlite,src/os_win.c,953,FP,osUnmapViewOfFile is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,68,sqlite,src/os_win.c,957,FP,osWideCharToMultiByte is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,69,sqlite,src/os_win.c,962,FP,osWriteFile is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,70,sqlite,src/os_win.c,973,FP,osWaitForSingleObject is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,71,sqlite,src/os_win.c,982,FP,osWaitForSingleObjectEx is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,72,sqlite,src/os_win.c,987,FP,osGetNativeSystemInfo is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,73,sqlite,src/os_win.c,996,FP,osOutputDebugStringA is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,74,sqlite,src/os_win.c,1004,FP,osOutputDebugStringW is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,75,sqlite,src/os_win.c,1008,FP,osGetProcessHeap is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,76,sqlite,src/os_win.c,1022,FP,osInterlockedCompareExchange is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,77,sqlite,src/os_win.c,1032,FP,osUuidCreate is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,78,sqlite,src/os_win.c,1040,FP,osUuidCreateSequential is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,79,sqlite,src/os_win.c,1049,FP,osFlushViewOfFile is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,80,sqlite,src/os_win.c,1065,FP,osCreateEvent is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,81,sqlite,src/os_win.c,1084,FP,osCancelIo is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,82,sqlite,src/os_win.c,1092,FP,osGetModuleHandleW is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,83,sqlite,src/os_win.c,1100,FP,osGetenv is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,84,sqlite,src/os_win.c,1108,FP,osGetcwd is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,85,sqlite,src/os_win.c,1116,FP,osReadlink is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,86,sqlite,src/os_win.c,1124,FP,osLstat is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,87,sqlite,src/os_win.c,1132,FP,osErrno is a macro casting an aSyscall slot pCurrent,,high
+DCL31-C,88,sqlite,src/os_win.c,1140,FP,osCygwin_conv_path is a macro casting an aSyscall slot pCurrent,,high
+API00-C,89,sqlite,src/os_win.c,1236,FP,pnLargest is an LPUINT output only written via *pnLargest=nLargest no arithmetic on it,,high
+STR31-C,90,sqlite,src/os_win.c,1336,FP,memcpy into pre-memset zDbgBuf with nMin>0 and nMin<SQLITE_WIN32_DBG_BUF_SIZE guaranteed bounded,,high
+EXP33-C,91,sqlite,src/os_win.c,1345,FP,zDbgBuf is memset to zero at line 1342 before any read,,high
+STR31-C,92,sqlite,src/os_win.c,1352,FP,memcpy into pre-memset zDbgBuf with nMin bounded by asserts not a defect,,high
+FIO47-C,93,sqlite,src/os_win.c,1353,FP,zDbgBuf is a char array decaying to char* matching %s sqc misclassified it as Integer,,high
+DCL31-C,94,sqlite,src/os_win.c,1362,FP,osSleep is a macro casting aSyscall slot pCurrent not an undeclared function,,high
+MSC37-C,95,sqlite,src/os_win.c,1401,FP,every ifdef/elif/else branch of sqlite3_win32_is_nt ends in a return so no path falls through,,high
+INT31-C,96,sqlite,src/os_win.c,1448,FP,assert(nBytes>=0) at line 1447 guards the (SIZE_T)nBytes cast,,high
+DCL30-C,97,sqlite,src/os_win.c,1453,FP,p holds the heap pointer returned by osHeapAlloc not the address of a local variable,,high
+MEM30-C,98,sqlite,src/os_win.c,1471,FP,pPrior after osHeapFree is passed to sqlite3_log only as a %p value to print not dereferenced or refreed,,high
+MEM30-C,99,sqlite,src/os_win.c,1471,FP,hHeap is the heap handle never freed it is only logged as %p,,high
+INT31-C,100,sqlite,src/os_win.c,1492,FP,assert(nBytes>=0) at line 1490 guards the (SIZE_T)nBytes cast,,high
+INT31-C,101,sqlite,src/os_win.c,1494,FP,assert(nBytes>=0) at line 1490 guards this (SIZE_T)nBytes cast too,,high
+DCL30-C,102,sqlite,src/os_win.c,1501,FP,p holds the heap pointer from osHeapAlloc/osHeapReAlloc not a local address,,high
+INT31-C,103,sqlite,src/os_win.c,1525,FP,n is a heap block size from osHeapSize for an int-sized request fitting in int the cast is benign,,high
+MSC04-C,104,sqlite,src/os_win.c,1632,FP,sqlite3_config stores the malloc methods and never calls back into sqlite3MemSetDefault no real recursion,,high
+INT30-C,105,sqlite,src/os_win.c,1651,FP,nChar is the wide-char count for an existing in-memory UTF-8 string so nChar*2 cannot wrap addressable size,,high
+DCL31-C,106,sqlite,src/os_win.c,1674,FP,osWideCharToMultiByte is a macro casting aSyscall slot pCurrent,,high
+DCL31-C,107,sqlite,src/os_win.c,1682,FP,osWideCharToMultiByte is a macro casting aSyscall slot pCurrent,,high
+DCL30-C,108,sqlite,src/os_win.c,1688,FP,zText is heap pointer from sqlite3MallocZero not a local array; returning heap ptr is fine,,high
+DCL31-C,109,sqlite,src/os_win.c,1702,FP,osMultiByteToWideChar is an os-layer wrapper macro routed via osXxx struct not an undeclared fn,,high
+INT30-C,110,sqlite,src/os_win.c,1707,FP,nWideChar is GetMBCS-derived count bounded by input length; sizeof(WCHAR)*count i64-promoted alloc size intended,,high
+DCL31-C,111,sqlite,src/os_win.c,1711,FP,osMultiByteToWideChar is os-layer wrapper macro not undeclared,,high
+DCL30-C,112,sqlite,src/os_win.c,1746,FP,zText is heap pointer from sqlite3MallocZero not automatic-storage local,,high
+DCL30-C,113,sqlite,src/os_win.c,1765,FP,zTextUtf8 is heap pointer returned from winUnicodeToUtf8 not a local array,,high
+DCL30-C,114,sqlite,src/os_win.c,1784,FP,zTextMbcs is heap pointer returned from winUnicodeToMbcs not a local array,,high
+API00-C,115,sqlite,src/os_win.c,1889,FP,zValue may legitimately be NULL (reset directory); guarded by zValue && zValue[0] at line 1911,,high
+EXP33-C,116,sqlite,src/os_win.c,1897,FP,"rc assigned in every branch (init, OK, ERROR, NOMEM) before any use or return; not uninitialized",,high
+STR34-C,117,sqlite,src/os_win.c,1919,FP,*ppDirectory is a char* assigned a char* (zCopy); no sign-extension; sqc char-ptr misread,,high
+API00-C,118,sqlite,src/os_win.c,1955,FP,zValue may legitimately be NULL to reset directory; forwarded to set_directory16 which null-checks,,high
+DCL31-C,119,sqlite,src/os_win.c,1978,FP,osFormatMessageW is os-layer wrapper macro not undeclared,,high
+DCL31-C,120,sqlite,src/os_win.c,1993,FP,osLocalFree is os-layer wrapper macro not undeclared,,high
+ARR30-C,121,sqlite,src/os_win.c,2059,FP,zMsg[i] loop bounded by NUL terminator winGetLastErrorMsg guarantees in 500-byte local buffer,,high
+ARR30-C,122,sqlite,src/os_win.c,2059,FP,same loop over zMsg bounded by NUL within 500-byte buffer,,high
+ARR30-C,123,sqlite,src/os_win.c,2059,FP,same loop over zMsg bounded by NUL within 500-byte buffer,,high
+CON03-C,124,sqlite,src/os_win.c,2081,FP,winIoerrRetry is a process-config global set at init not concurrent shared state; volatile not required,,high
+CON03-C,125,sqlite,src/os_win.c,2082,FP,winIoerrRetryDelay is a process-config global not concurrent shared state,,high
+PRE00-C,126,sqlite,src/os_win.c,2101,TP,winIoerrCanRetry1(a) function-like macro evaluates parameter a seven times,,med
+PRE12-C,127,sqlite,src/os_win.c,2101,TP,same macro multi-evaluates parameter a; inline function preferred,,med
+DCL00-C,128,sqlite,src/os_win.c,2116,TP,DWORD e is read but never modified and could be const-qualified; compiles fine,,low
+DCL31-C,129,sqlite,src/os_win.c,2116,FP,osGetLastError is os-layer wrapper macro not undeclared,,high
+INT32-C,130,sqlite,src/os_win.c,2124,FP,*pnRetry bounded below winIoerrRetry (default 10) by the >= check above; 1+small no overflow,,high
+INT32-C,131,sqlite,src/os_win.c,2130,FP,same bounded retry counter; no overflow,,high
+INT32-C,132,sqlite,src/os_win.c,2148,FP,winIoerrRetryDelay (25) times small nRetry retry count; bounded no overflow,,high
+INT32-C,133,sqlite,src/os_win.c,2148,FP,same bounded retry math,,high
+INT32-C,134,sqlite,src/os_win.c,2148,FP,nRetry small bounded retry count; nRetry+1 no overflow,,high
+API00-C,135,sqlite,src/os_win.c,2164,FP,localtime CRT-replacement signature fixed by standard prototype; t is contract non-null,,high
+INT14-C,136,sqlite,src/os_win.c,2171,FP,t64 is sqlite3_int64 date math; bitwise mask + arithmetic intentional readability-only,,high
+INT32-C,137,sqlite,src/os_win.c,2171,FP,t64 i64 FILETIME conversion arithmetic; bounded time_t range no overflow,,high
+ARR37-C,138,sqlite,src/os_win.c,2171,FP,t64 is sqlite3_int64 scalar not a pointer; ARR37 pointer-arith misread of integer addition,,high
+INT32-C,139,sqlite,src/os_win.c,2171,FP,t64 i64 date arithmetic; bounded no overflow,,high
+ARR01-C,140,sqlite,src/os_win.c,2225,FP,sizeof(pFile->local) is sizeof a struct member not a decayed pointer; correct,,high
+FIO42-C,141,sqlite,src/os_win.c,2251,FP,hShared is closed on map failure (line 2274) and in winceDestroyLock; not leaked,,high
+MSC37-C,142,sqlite,src/os_win.c,2474,FP,winLockFile every compiled config path returns; fallthrough only in NT-and-non-ANSI-impossible build,,med
+INT13-C,143,sqlite,src/os_win.c,2523,FP,bExcl?LOCKFILE_EXCLUSIVE_LOCK:0 then |'d into flags; intentional flag composition readability-only,,high
+EXP43-C,144,sqlite,src/os_win.c,2538,FP,"osCreateEvent(NULL,TRUE,FALSE,NULL) args are distinct literals not aliased in/out pointer",,high
+MSC37-C,145,sqlite,src/os_win.c,2593,FP,winUnlockFile every compiled config path returns; same NT/ANSI build invariant,,med
+INT13-C,146,sqlite,src/os_win.c,2658,FP,iOffset & mask is intentional dword split of i64 offset; readability-only,,high
+INT14-C,147,sqlite,src/os_win.c,2658,FP,iOffset>>32 intentional hi-dword extraction of file offset not arithmetic-optimization bug,,high
+INT13-C,148,sqlite,src/os_win.c,2659,FP,iOffset & 0xffffffff intentional lo-dword extraction; readability-only,,high
+DCL31-C,149,sqlite,src/os_win.c,2661,FP,osSetFilePointer is os-layer wrapper macro not undeclared,,high
+DCL31-C,150,sqlite,src/os_win.c,2670,FP,osGetLastError is os-layer wrapper macro not undeclared,,high
+DCL31-C,151,sqlite,src/os_win.c,2689,FP,osGetLastError is os-layer wrapper macro not undeclared,,high
+PRE32-C,152,sqlite,src/os_win.c,2722,FP,OSTRACE arg is multi-line format-string continuation with no # token; PRE32 misfire,,high
+PRE32-C,153,sqlite,src/os_win.c,2722,FP,same OSTRACE multi-line string continuation no preprocessor directive,,high
+DCL31-C,154,sqlite,src/os_win.c,2723,FP,osGetCurrentProcessId is os-layer wrapper macro not undeclared,,high
+DCL31-C,155,sqlite,src/os_win.c,2730,FP,osCloseHandle is os-layer wrapper macro not undeclared,,high
+PRE32-C,156,sqlite,src/os_win.c,2757,FP,OSTRACE multi-line format string continuation no # token,,high
+PRE32-C,157,sqlite,src/os_win.c,2757,FP,same OSTRACE continuation no directive,,high
+DCL31-C,158,sqlite,src/os_win.c,2758,FP,osGetCurrentProcessId os-layer wrapper macro not undeclared,,high
+DCL31-C,159,sqlite,src/os_win.c,2760,FP,osGetLastError os-layer wrapper macro not undeclared,,high
+MEM30-C,160,sqlite,src/os_win.c,2761,FP,pFile->zPath only read (passed to winLogError as const char*) in winClose; never freed here so no UAF,,high
+PRE32-C,161,sqlite,src/os_win.c,2786,FP,OSTRACE multi-line READ format string continuation no # token,,high
+PRE32-C,162,sqlite,src/os_win.c,2786,FP,same OSTRACE continuation no directive,,high
+DCL31-C,163,sqlite,src/os_win.c,2787,FP,osGetCurrentProcessId os-layer wrapper macro not undeclared,,high
+PRE32-C,164,sqlite,src/os_win.c,2796,FP,OSTRACE READ-MMAP continuation no directive,,high
+PRE32-C,165,sqlite,src/os_win.c,2796,FP,same OSTRACE continuation no directive,,high
+PRE32-C,166,sqlite,src/os_win.c,2811,FP,OSTRACE READ SQLITE_FULL continuation no directive,,high
+PRE32-C,167,sqlite,src/os_win.c,2811,FP,same OSTRACE continuation no directive,,high
+DCL31-C,168,sqlite,src/os_win.c,2812,FP,osGetCurrentProcessId os-layer wrapper macro not undeclared,,high
+DCL31-C,169,sqlite,src/os_win.c,2815,FP,osReadFile os-layer wrapper macro not undeclared,,high
+DCL31-C,170,sqlite,src/os_win.c,2820,FP,osReadFile os-layer wrapper macro not undeclared,,high
+DCL31-C,171,sqlite,src/os_win.c,2821,FP,osGetLastError os-layer wrapper macro not undeclared,,high
+PRE32-C,172,sqlite,src/os_win.c,2826,FP,OSTRACE IOERR_READ continuation no directive,,high
+PRE32-C,173,sqlite,src/os_win.c,2826,FP,same OSTRACE continuation no directive,,high
+DCL31-C,174,sqlite,src/os_win.c,2827,FP,osGetCurrentProcessId os-layer wrapper macro not undeclared,,high
+PRE32-C,175,sqlite,src/os_win.c,2835,FP,OSTRACE SHORT_READ continuation no directive,,high
+PRE32-C,176,sqlite,src/os_win.c,2835,FP,same OSTRACE continuation no directive,,high
+DCL31-C,177,sqlite,src/os_win.c,2836,FP,osGetCurrentProcessId os-layer wrapper macro not undeclared,,high
+PRE32-C,178,sqlite,src/os_win.c,2840,FP,OSTRACE READ OK continuation no directive,,high
+PRE32-C,179,sqlite,src/os_win.c,2840,FP,same OSTRACE continuation no directive,,high
+DCL31-C,180,sqlite,src/os_win.c,2841,FP,osGetCurrentProcessId os-layer wrapper macro not undeclared,,high
+PRE32-C,181,sqlite,src/os_win.c,2864,FP,OSTRACE WRITE continuation no directive,,high
+PRE32-C,182,sqlite,src/os_win.c,2864,FP,same OSTRACE continuation no directive,,high
+DCL31-C,183,sqlite,src/os_win.c,2865,FP,osGetCurrentProcessId os-layer wrapper macro not undeclared,,high
+PRE32-C,184,sqlite,src/os_win.c,2874,FP,OSTRACE WRITE-MMAP continuation no directive,,high
+PRE32-C,185,sqlite,src/os_win.c,2874,FP,same OSTRACE continuation no directive,,high
+ARR37-C,186,sqlite,src/os_win.c,2926,FP,aRem advances within caller buffer of amt bytes; nWrite<=nRem asserted/checked (2916-2917) so in-bounds,,high
+PRE32-C,187,sqlite,src/os_win.c,2938,FP,OSTRACE WRITE FULL continuation no directive,,high
+PRE32-C,188,sqlite,src/os_win.c,2938,FP,same OSTRACE continuation no directive,,high
+PRE32-C,189,sqlite,src/os_win.c,2943,FP,OSTRACE WRITE IOERR continuation no directive,,high
+PRE32-C,190,sqlite,src/os_win.c,2943,FP,same OSTRACE continuation no directive,,high
+PRE32-C,191,sqlite,src/os_win.c,2950,FP,OSTRACE WRITE OK continuation no directive,,high
+PRE32-C,192,sqlite,src/os_win.c,2950,FP,same OSTRACE continuation no directive,,high
+INT14-C,193,sqlite,src/os_win.c,2981,FP,upperBits is i64-offset hi-dword mask+shift; readability-only intentional dword split,,high
+PRE32-C,194,sqlite,src/os_win.c,3031,FP,OSTRACE TRUNCATE continuation no directive,,high
+PRE32-C,195,sqlite,src/os_win.c,3031,FP,same OSTRACE continuation no directive,,high
+INT32-C,196,sqlite,src/os_win.c,3040,FP,nByte/szChunk are i64 file-size and app-config chunk; bounded chunk-rounding math no overflow,,high
+INT33-C,197,sqlite,src/os_win.c,3040,FP,szChunk guarded >0 by if(pFile->szChunk>0) at line 3039 before division; no div-by-zero,,high
+INT32-C,198,sqlite,src/os_win.c,3040,FP,i64 chunk-rounding subtraction bounded by file size; no overflow,,high
+INT32-C,199,sqlite,src/os_win.c,3040,FP,i64 chunk-rounding addition bounded by file size; no overflow,,high
+PRE32-C,200,sqlite,src/os_win.c,3073,FP,OSTRACE TRUNCATE rc continuation no directive,,high
+PRE32-C,201,sqlite,src/os_win.c,3073,FP,same OSTRACE continuation no directive,,high
+MSC37-C,202,sqlite,src/os_win.c,3090,FP,"winSync every compiled config branch (NO_SYNC, mmap, flush) returns a value",,med
+PRE32-C,203,sqlite,src/os_win.c,3119,FP,OSTRACE SYNC continuation no directive,,high
+PRE32-C,204,sqlite,src/os_win.c,3119,FP,same OSTRACE continuation no directive,,high
+INT32-C,205,sqlite,src/os_win.c,3127,FP,sqlite3_fullsync_count is SQLITE_TEST-only instrumentation counter; bounded by test runs,,high
+INT32-C,206,sqlite,src/os_win.c,3129,FP,sqlite3_sync_count is SQLITE_TEST-only instrumentation counter; bounded by test runs,,high
+PRE32-C,207,sqlite,src/os_win.c,3136,FP,OSTRACE SYNC-NOP continuation no directive,,high
+PRE32-C,208,sqlite,src/os_win.c,3136,FP,same OSTRACE continuation no directive,,high
+PRE32-C,209,sqlite,src/os_win.c,3143,FP,OSTRACE SYNC-MMAP continuation no directive,,high
+PRE32-C,210,sqlite,src/os_win.c,3143,FP,same OSTRACE continuation no directive,,high
+PRE32-C,211,sqlite,src/os_win.c,3148,FP,OSTRACE SYNC-MMAP IOERR continuation no directive,,high
+PRE32-C,212,sqlite,src/os_win.c,3148,FP,same OSTRACE continuation no directive,,high
+PRE32-C,213,sqlite,src/os_win.c,3159,FP,OSTRACE SYNC OK continuation no directive,,high
+PRE32-C,214,sqlite,src/os_win.c,3159,FP,same OSTRACE continuation no directive,,high
+PRE32-C,215,sqlite,src/os_win.c,3164,FP,OSTRACE SYNC continuation no directive,,high
+PRE32-C,216,sqlite,src/os_win.c,3164,FP,OSTRACE arg is a multi-line printf-style string continuation with no preprocessor # token (established OSTRACE PRE32 misfire),,high
+INT14-C,217,sqlite,src/os_win.c,3189,FP,upperBits is a DWORD holding the high 32 bits of file size shifted into i64 then added intentional size composition not a readability defect,,high
+INT32-C,218,sqlite,src/os_win.c,3189,FP,((sqlite3_int64)upperBits)<<32 operand cast to signed 64-bit first upperBits<=0xFFFFFFFF so shift fits in i64 no overflow,,high
+PRE32-C,219,sqlite,src/os_win.c,3197,FP,OSTRACE macro arg has no preprocessor directive established misfire,,high
+PRE32-C,220,sqlite,src/os_win.c,3197,FP,OSTRACE arg is a multi-line format string with no # token FP,,high
+INT13-C,221,sqlite,src/os_win.c,3258,FP,lk is randomized bits masked with 0x7fffffff before use the & is intentional bit masking on a value treated as bits,,high
+INT10-C,222,sqlite,src/os_win.c,3258,FP,(lk&0x7fffffff)%(SHARED_SIZE-1) operand forced non-negative by mask so modulo result is well-defined and non-negative,,high
+PRE32-C,223,sqlite,src/os_win.c,3330,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,224,sqlite,src/os_win.c,3330,FP,OSTRACE multi-line format string no # token FP,,high
+PRE32-C,225,sqlite,src/os_win.c,3382,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,226,sqlite,src/os_win.c,3382,FP,OSTRACE multi-line format string spanning lines no # token FP,,high
+PRE32-C,227,sqlite,src/os_win.c,3389,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,228,sqlite,src/os_win.c,3389,FP,OSTRACE multi-line format string no # token FP,,high
+PRE32-C,229,sqlite,src/os_win.c,3466,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,230,sqlite,src/os_win.c,3466,FP,OSTRACE multi-line format string no # token FP,,high
+PRE32-C,231,sqlite,src/os_win.c,3470,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,232,sqlite,src/os_win.c,3470,FP,OSTRACE multi-line format string no # token FP,,high
+DCL31-C,233,sqlite,src/os_win.c,3484,FP,line is the SimulateIOError macro expansion (return statement) not a real declaration DCL31 misfire on macro expansion,,high
+PRE32-C,234,sqlite,src/os_win.c,3500,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,235,sqlite,src/os_win.c,3500,FP,OSTRACE multi-line format string no # token FP,,high
+PRE32-C,236,sqlite,src/os_win.c,3522,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,237,sqlite,src/os_win.c,3522,FP,OSTRACE multi-line format string no # token FP,,high
+PRE32-C,238,sqlite,src/os_win.c,3544,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,239,sqlite,src/os_win.c,3544,FP,OSTRACE multi-line format string no # token FP,,high
+PRE32-C,240,sqlite,src/os_win.c,3691,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,241,sqlite,src/os_win.c,3691,FP,OSTRACE multi-line format string no # token FP,,high
+STR34-C,242,sqlite,src/os_win.c,3703,FP,*zTFile is never read as an integer here zTFile is an out-param filename string char* dereference misread as sign-extension,,high
+STR34-C,243,sqlite,src/os_win.c,3703,FP,zTFile is a char* filename pointer not converted to a larger integer pointer assignment misread STR34 misfire,,high
+ARR02-C,244,sqlite,src/os_win.c,3765,FP,"azLock[] is a static const initialized array bounds inferred from 4 initializers (SHARED RESERVED PENDING EXCLUSIVE) index pFile->locktype-1 in [0,3]",,high
+DCL13-C,245,sqlite,src/os_win.c,3796,FP,id is fixed by sqlite3_io_methods xSectorSize typedef cannot add const to signature,,high
+DCL13-C,246,sqlite,src/os_win.c,3804,FP,id is fixed by sqlite3_io_methods xDeviceCharacteristics typedef and cast to winFile* then read FP,,high
+EXP34-C,247,sqlite,src/os_win.c,3845,FP,zFilename guarded by osIsNT/Cygwin paths and callers pass non-null path zFilename[2] indexing follows length checks no null deref,,high
+INT32-C,248,sqlite,src/os_win.c,3852,FP,12+(u64)nByte where nByte>0 from cygwin_conv_path which returns a bounded path length (path>32k fails earlier) no overflow,,high
+INT13-C,249,sqlite,src/os_win.c,3861,FP,convertflag is a local bitmask of CCP_* constants the & is intentional flag testing not arithmetic on tainted data,,high
+EXP43-C,250,sqlite,src/os_win.c,3862,FP,memmove explicitly handles overlapping regions EXP43 restrict-UB warning does not apply to memmove,,high
+ARR38-C,251,sqlite,src/os_win.c,3867,FP,"memcpy of 14 bytes of L""\\\\?\\UNC"" into zWideFilename allocated with nChar*sizeof(WCHAR)+12 headroom only on nChar>MAX_PATH path bounds ok",,high
+EXP43-C,252,sqlite,src/os_win.c,3869,FP,memmove handles overlap intentionally not restrict-qualified FP,,high
+INT30-C,253,sqlite,src/os_win.c,3880,FP,nChar from MultiByteToWideChar bounded by path length (<32k WCHARs) nChar*sizeof(WCHAR) cannot wrap size_t,,high
+MEM30-C,254,sqlite,src/os_win.c,3884,FP,zWideFilename/zConverted freed at 3873 only on conv_path failure then reassigned to fresh alloc at 3880 before any use no UAF,,high
+MEM30-C,255,sqlite,src/os_win.c,3887,FP,single free at 3873 reached only when conv_path!=0 the return-paths above never reach it no double-free,,high
+ARR38-C,256,sqlite,src/os_win.c,3892,FP,memmove size nChar*sizeof(WCHAR) on buffer allocated with +12 headroom on nChar>MAX_PATH guard valid,,high
+EXP43-C,257,sqlite,src/os_win.c,3892,FP,memmove handles overlap (prefix insertion +4) not restrict UB FP,,high
+INT32-C,258,sqlite,src/os_win.c,3892,FP,nChar bounded by path length no overflow in nChar*sizeof(WCHAR),,high
+MEM30-C,259,sqlite,src/os_win.c,3892,FP,zWideFilename at 3892 is the live buffer from 3880 not freed UAF misread,,high
+MEM30-C,260,sqlite,src/os_win.c,3892,FP,pointer arithmetic zWideFilename+4 on live buffer not freed FP,,high
+INT30-C,261,sqlite,src/os_win.c,3892,FP,nChar*sizeof(WCHAR) bounded no wrap FP,,high
+ARR00-C,262,sqlite,src/os_win.c,3893,FP,zWideFilename[2]='\\' writes into live buffer from 3880 not freed ARR00 misread,,high
+MEM30-C,263,sqlite,src/os_win.c,3893,FP,zWideFilename access at 3893 is live buffer not freed FP,,high
+MEM30-C,264,sqlite,src/os_win.c,3894,FP,memcpy into live zWideFilename from 3880 not freed FP,,high
+ARR38-C,265,sqlite,src/os_win.c,3898,FP,memmove size on buffer with +12 headroom valid on nChar>MAX_PATH guard,,high
+EXP43-C,266,sqlite,src/os_win.c,3898,FP,memmove handles overlap intentionally FP,,high
+INT32-C,267,sqlite,src/os_win.c,3898,FP,nChar bounded no overflow FP,,high
+MEM30-C,268,sqlite,src/os_win.c,3898,FP,zWideFilename live buffer from 3880 not freed FP,,high
+MEM30-C,269,sqlite,src/os_win.c,3898,FP,pointer arithmetic zWideFilename+6 on live buffer FP,,high
+INT30-C,270,sqlite,src/os_win.c,3898,FP,nChar*sizeof(WCHAR) bounded no wrap FP,,high
+ARR38-C,271,sqlite,src/os_win.c,3899,FP,"memcpy 14 bytes L""\\\\?\\UNC"" into buffer with headroom on nChar>MAX_PATH guard valid",,high
+MEM30-C,272,sqlite,src/os_win.c,3899,FP,zWideFilename live buffer from 3880 FP,,high
+MEM30-C,273,sqlite,src/os_win.c,3912,FP,zConverted returned is the live allocation (winUtf8ToUnicode result or zWideFilename) free at 3873 is a different earlier failed buffer FP,,high
+CON03-C,274,sqlite,src/os_win.c,3930,FP,winBigLock is guarded by sqlite3_mutex primitives (enter/leave) which provide the required memory barriers CON03 misfire on mutex-protected global,,high
+CON03-C,275,sqlite,src/os_win.c,4005,FP,winShmNodeList is protected by winShmEnterMutex/winShmMutexHeld asserts not a volatile/atomic requirement FP,,high
+PRE32-C,276,sqlite,src/os_win.c,4044,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,277,sqlite,src/os_win.c,4044,FP,OSTRACE multi-line format string no # token FP,,high
+EXP40-C,278,sqlite,src/os_win.c,4046,FP,pp is winShmNode** standard linked-list head walk no const-qualification mismatch EXP40 misfire,,high
+EXP34-C,279,sqlite,src/os_win.c,4048,FP,p assigned from (p=*pp)!=0 loop guard so non-null inside the loop body no null deref,,high
+MEM30-C,280,sqlite,src/os_win.c,4051,FP,p->nRegion read at 4051 occurs before sqlite3_free(p) at 4071 not after free MEM30 misread,,high
+MEM30-C,281,sqlite,src/os_win.c,4052,FP,p->aRegion[i].pMap read before free at 4071 FP,,high
+MEM30-C,282,sqlite,src/os_win.c,4052,FP,p->aRegion accessed before free at 4070-4071 FP,,high
+PRE32-C,283,sqlite,src/os_win.c,4053,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,284,sqlite,src/os_win.c,4053,FP,OSTRACE multi-line format string no # token FP,,high
+MEM30-C,285,sqlite,src/os_win.c,4056,FP,p->aRegion[i].hMap read at 4056 before free FP,,high
+MEM30-C,286,sqlite,src/os_win.c,4056,FP,p->aRegion accessed before free FP,,high
+PRE32-C,287,sqlite,src/os_win.c,4057,FP,OSTRACE macro arg no preprocessor directive FP,,high
+PRE32-C,288,sqlite,src/os_win.c,4057,FP,OSTRACE multi-line format string no # token FP,,high
+MEM30-C,289,sqlite,src/os_win.c,4061,FP,p->hSharedShm read at 4061 before free at 4071 FP,,high
+MEM30-C,290,sqlite,src/os_win.c,4065,FP,p->zFilename read at 4065 before free FP,,high
+MEM30-C,291,sqlite,src/os_win.c,4069,FP,p->pNext read at 4069 (*pp=p->pNext) before sqlite3_free(p) at 4071 FP,,high
+EXP40-C,292,sqlite,src/os_win.c,4073,FP,pp=&p->pNext is standard linked-list iterator winShmNode** no const mismatch FP,,high
+DCL00-C,293,sqlite,src/os_win.c,4084,FP,"h aliases pShmNode->hSharedShm but is passed by-address to winUnlockFile(&h,...) at 4100 which may modify it not const-eligible",,high
+INT13-C,294,sqlite,src/os_win.c,4101,FP,rc&0xFF tests low byte of an SQLite result code intentional extended-code masking not arithmetic,,high
+MEM05-C,295,sqlite,src/os_win.c,4123,TP,winHandleOpen recurses on read-only fallback (line 4184) recursion genuinely exists though bounded to depth 1,,high
+MSC04-C,296,sqlite,src/os_win.c,4123,TP,winHandleOpen calls itself directly at line 4184 for the bReadonly retry direct recursion present,,high
+DCL00-C,297,sqlite,src/os_win.c,4131,FP,h is INVALID_HANDLE_VALUE init but reassigned in the if(rc==SQLITE_OK) block via winHandleOpen out-param &h not constant,,high
+INT13-C,298,sqlite,src/os_win.c,4159,FP,bReadonly is a local int flag the | builds a Win32 access mask intentional bit composition not arithmetic,,high
+FIO42-C,299,sqlite,src/os_win.c,4170,FP,h opened by osCreateFileW/A is returned via *ph to caller (winOpenSharedMemory) which owns and closes it via winHandleClose/CloseHandle ownership transferred not leaked,,high
+INT13-C,300,sqlite,src/os_win.c,4171,FP,bReadonly local flag | builds access mask intentional FP,,high
+EXP40-C,301,sqlite,src/os_win.c,4217,FP,pp=&pShmNode->pWinShmList is a winShm** list-head iterator no const-pointer mismatch EXP40 misfire,,high
+EXP40-C,302,sqlite,src/os_win.c,4217,FP,pp=&(*pp)->pWinShmNext standard list traversal no const mismatch FP,,high
+EXP33-C,303,sqlite,src/os_win.c,4266,FP,p=sqlite3MallocZero at 4266 is an assignment then guarded if(p==0)return at 4267 deref only after success not uninitialized,,high
+INT30-C,304,sqlite,src/os_win.c,4269,FP,sizeof(*pShmNode)+(i64)nName where nName=sqlite3Strlen30 bounded to 0x3fffffff i64 sum cannot wrap,,high
+INT32-C,305,sqlite,src/os_win.c,4278,FP,nName+15 with nName bounded by sqlite3Strlen30 (<=0x3fffffff) no signed overflow,,high
+MEM31-C,306,sqlite,src/os_win.c,4294,FP,pShmNode->mutex is freed on the error path at 4313 and otherwise stored/owned by the linked winShmNode not leaked,,high
+DCL00-C,307,sqlite,src/os_win.c,4300,FP,h init INVALID_HANDLE_VALUE then set by winHandleOpen out-param &h at 4302 not constant,,high
+MEM30-C,308,sqlite,src/os_win.c,4314,FP,pShmNode->hSharedShm read at 4314 in error branch is a live object never freed here MEM30 misread,,high
+MEM30-C,309,sqlite,src/os_win.c,4315,FP,pShmNode->hSharedShm read at 4315 (CloseHandle) live object not freed FP,,high
+MEM30-C,310,sqlite,src/os_win.c,4323,FP,pShmNode->mutex at 4323 is live (only freed on the other rc!=OK branch) no UAF,,high
+MEM30-C,311,sqlite,src/os_win.c,4325,FP,pShmNode->pWinShmList at 4325 live object not freed FP,,high
+MEM30-C,312,sqlite,src/os_win.c,4328,FP,pShmNode->nextShmId at 4328 live object not freed FP,,high
+MEM30-C,313,sqlite,src/os_win.c,4331,FP,pShmNode->mutex at 4331 (mutex_leave) live FP,,high
+MEM30-C,314,sqlite,src/os_win.c,4336,FP,pShmNode->isUnlocked in assert at 4336 live object FP,,high
+MEM30-C,315,sqlite,src/os_win.c,4336,FP,pShmNode->nRegion in assert at 4336 live object FP,,high
+MEM30-C,316,sqlite,src/os_win.c,4343,FP,pShmNode->bUseSharedLockHandle at 4343 live object FP,,high
+MEM30-C,317,sqlite,src/os_win.c,4345,FP,p passed to winHandleOpen via &p->hShm path at 4345 is the live linked winShm (freed only in else-if rc!=OK branch not taken here) FP,,high
+MEM30-C,318,sqlite,src/os_win.c,4345,FP,pShmNode->zFilename at 4345 live object not freed FP,,high
+MEM30-C,319,sqlite,src/os_win.c,4345,FP,p dereferenced p->bReadonly at 4344-4345 is live not freed FP,,high
+MEM30-C,320,sqlite,src/os_win.c,4345,FP,p member access at 4345 live object FP,,high
+MEM30-C,321,sqlite,src/os_win.c,4345,FP,p dereference at 4345 live FP,,high
+MEM30-C,322,sqlite,src/os_win.c,4345,FP,p member access at 4345 live FP,,high
+MEM30-C,323,sqlite,src/os_win.c,4347,FP,p->hShm member access at 4347 assert live object never freed in this branch FP,,high
+INT14-C,324,sqlite,src/os_win.c,4379,FP,n is winShmLock param bounded by asserts ofst>=0 and ofst+n<=SQLITE_SHM_NLOCK (8) n>=1; bitwise+arith mix is a style note not a defect,,high
+INT14-C,325,sqlite,src/os_win.c,4379,FP,ofst likewise bounded 0..8 by the same asserts; readability-only INT14 flag on hardened mask computation,,high
+INT30-C,326,sqlite,src/os_win.c,4379,FP,1U<<(ofst+n) with ofst+n<=8 (SQLITE_SHM_NLOCK) asserted so no unsigned-shift overflow of 1U,,high
+INT34-C,327,sqlite,src/os_win.c,4379,FP,shift amount ofst+n in 1..8 by SQLITE_SHM_NLOCK assert is well within unsigned int width and non-negative,,high
+INT32-C,328,sqlite,src/os_win.c,4379,FP,ofst+n bounded <=8 by assert ofst+n<=SQLITE_SHM_NLOCK; cannot overflow signed int,,high
+INT30-C,329,sqlite,src/os_win.c,4379,FP,1U<<ofst with ofst in 0..7 (asserted ofst>=0 ofst+n<=8 n>=1) cannot overflow unsigned int,,high
+INT34-C,330,sqlite,src/os_win.c,4379,FP,shift amount ofst asserted 0..7 well within width and non-negative,,high
+INT32-C,331,sqlite,src/os_win.c,4412,FP,1<<ofst lives in SQLITE_DEBUG-only block guarded by ofst<3 disjunct and ofst<=7 invariant so small positive shift is defined,,high
+INT34-C,332,sqlite,src/os_win.c,4412,FP,same SQLITE_DEBUG block; ofst bounded by winShmLock entry asserts to 0..7 so shift amount is valid,,high
+DCL00-C,333,sqlite,src/os_win.c,4432,FP,h is reassigned later (h=pShmNode->hSharedShm at 4443 and 4474) so it is not effectively const,,high
+DCL02-C,334,sqlite,src/os_win.c,4432,FP,DCL02 visual-similarity h-vs-n is a spurious style heuristic not a CERT-C defect,,high
+PRE32-C,335,sqlite,src/os_win.c,4507,FP,OSTRACE arg is a multi-line printf format string and varargs no preprocessor # token present,,high
+PRE32-C,336,sqlite,src/os_win.c,4507,FP,the flagged content is a string-literal continuation and arg list not a real directive in macro args,,high
+INT32-C,337,sqlite,src/os_win.c,4585,FP,nByte=(iRegion+1)*szRegion bounded by SQLITE_SHM_NLOCK region count and szRegion (wal page size) far below INT_MAX,,high
+INT32-C,338,sqlite,src/os_win.c,4585,FP,iRegion+1 where iRegion is a small wal region index bounded by caller cannot overflow int,,high
+INT30-C,339,sqlite,src/os_win.c,4616,FP,(iRegion+1)*sizeof(ShmRegion) via sqlite3_realloc64 with tiny iRegion cannot wrap size_t,,high
+INT32-C,340,sqlite,src/os_win.c,4616,FP,iRegion+1 small wal-region index addition cannot overflow,,high
+EXP33-C,341,sqlite,src/os_win.c,4616,FP,apNew is the sqlite3_realloc64 return checked non-null then stored to aRegion; not read uninitialized,,high
+FIO42-C,342,sqlite,src/os_win.c,4636,FP,hMap stored into pShmNode->aRegion[].hMap at 4661 and closed by winShmUnmap not leaked; on failure osCloseHandle(hMap) at 4656,,high
+PRE32-C,343,sqlite,src/os_win.c,4639,FP,OSTRACE multi-line format string no preprocessor directive token,,high
+PRE32-C,344,sqlite,src/os_win.c,4639,FP,string-literal continuation in OSTRACE args misread as directive,,high
+INT32-C,345,sqlite,src/os_win.c,4643,FP,pShmNode->nRegion*szRegion region offset bounded by NLOCK regions and page-size szRegion below INT_MAX,,high
+INT33-C,346,sqlite,src/os_win.c,4644,FP,winSysInfo.dwAllocationGranularity is a system constant always nonzero on Windows set at init,,high
+INT32-C,347,sqlite,src/os_win.c,4646,FP,iOffset - iOffsetShift where iOffsetShift=iOffset%gran so result is non-negative aligned offset no overflow,,high
+INT32-C,348,sqlite,src/os_win.c,4646,FP,szRegion + iOffsetShift both small bounded values cannot overflow int,,high
+PRE32-C,349,sqlite,src/os_win.c,4648,FP,OSTRACE multi-line format string no directive token,,high
+PRE32-C,350,sqlite,src/os_win.c,4648,FP,string-literal continuation in OSTRACE args misread as directive,,high
+MEM30-C,351,sqlite,src/os_win.c,4660,FP,aRegion is the realloc'd live array stored at 4622; write to aRegion[nRegion].pMap is not a use-after-free,,high
+MEM30-C,352,sqlite,src/os_win.c,4661,FP,same live realloc'd aRegion array assigned hMap not freed memory,,high
+INT32-C,353,sqlite,src/os_win.c,4662,FP,nRegion++ counts wal regions bounded by SQLITE_SHM_NLOCK iterations far below INT_MAX,,high
+INT32-C,354,sqlite,src/os_win.c,4668,FP,iRegion*szRegion region offset bounded by NLOCK and page-size szRegion below INT_MAX,,high
+INT33-C,355,sqlite,src/os_win.c,4669,FP,dwAllocationGranularity is nonzero Windows system constant,,high
+ARR00-C,356,sqlite,src/os_win.c,4670,FP,iRegion guarded by enclosing if pShmNode->nRegion>iRegion at 4667 so index is within allocated aRegion,,high
+MEM30-C,357,sqlite,src/os_win.c,4670,FP,aRegion is the live realloc'd array read at shmpage_out not freed memory,,high
+PRE32-C,358,sqlite,src/os_win.c,4695,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,359,sqlite,src/os_win.c,4695,FP,string-literal continuation in OSTRACE args misread as directive,,high
+PRE32-C,360,sqlite,src/os_win.c,4702,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,361,sqlite,src/os_win.c,4702,FP,string-literal continuation misread as directive,,high
+PRE32-C,362,sqlite,src/os_win.c,4714,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,363,sqlite,src/os_win.c,4714,FP,string-literal continuation misread as directive,,high
+PRE32-C,364,sqlite,src/os_win.c,4721,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,365,sqlite,src/os_win.c,4721,FP,string-literal continuation misread as directive,,high
+PRE32-C,366,sqlite,src/os_win.c,4747,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,367,sqlite,src/os_win.c,4747,FP,string-literal continuation misread as directive,,high
+PRE32-C,368,sqlite,src/os_win.c,4755,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,369,sqlite,src/os_win.c,4755,FP,string-literal continuation misread as directive,,high
+INT14-C,370,sqlite,src/os_win.c,4763,FP,nMap mask-and-assign nMap&=~(pagesize-1) is a deliberate alignment idiom not a defect,,high
+INT14-C,371,sqlite,src/os_win.c,4763,FP,winSysInfo used in dwPageSize-1 mask is a system struct read not an arithmetic hazard,,high
+EXP30-C,372,sqlite,src/os_win.c,4781,FP,args to osCreateFileMappingW are pure shift/mask expressions of nMap not side-effecting calls so no unsequenced eval issue,,high
+FIO42-C,373,sqlite,src/os_win.c,4785,FP,pFd->hMap is stored and later released by winUnmapfile (4711) and on error path osCloseHandle at 4802; not leaked,,high
+EXP30-C,374,sqlite,src/os_win.c,4785,FP,osCreateFileMappingA args are shift/mask expressions of nMap no side-effecting unsequenced calls,,high
+PRE32-C,375,sqlite,src/os_win.c,4794,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,376,sqlite,src/os_win.c,4794,FP,string-literal continuation misread as directive,,high
+INT33-C,377,sqlite,src/os_win.c,4798,FP,dwPageSize is a nonzero Windows system constant set during VFS init,,high
+PRE32-C,378,sqlite,src/os_win.c,4808,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,379,sqlite,src/os_win.c,4808,FP,string-literal continuation misread as directive,,high
+PRE32-C,380,sqlite,src/os_win.c,4816,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,381,sqlite,src/os_win.c,4816,FP,string-literal continuation misread as directive,,high
+PRE32-C,382,sqlite,src/os_win.c,4840,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,383,sqlite,src/os_win.c,4840,FP,string-literal continuation misread as directive,,high
+PRE32-C,384,sqlite,src/os_win.c,4853,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,385,sqlite,src/os_win.c,4853,FP,string-literal continuation misread as directive,,high
+MEM33-C,386,sqlite,src/os_win.c,4860,FP,line 4860 is *pp=&((u8*)pFd->pMapRegion)[iOff] a pointer assignment not a flexible-array struct copy,,high
+PRE32-C,387,sqlite,src/os_win.c,4866,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,388,sqlite,src/os_win.c,4866,FP,string-literal continuation misread as directive,,high
+PRE32-C,389,sqlite,src/os_win.c,4893,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,390,sqlite,src/os_win.c,4893,FP,string-literal continuation misread as directive,,high
+PRE32-C,391,sqlite,src/os_win.c,4909,FP,OSTRACE multi-line format string no directive,,high
+PRE32-C,392,sqlite,src/os_win.c,4909,FP,string-literal continuation misread as directive,,high
+CON03-C,393,sqlite,src/os_win.c,4972,FP,winAppData is a static const-method VFS app-data table initialized at load; not a mutated shared var needing volatile,,high
+CON03-C,394,sqlite,src/os_win.c,4978,FP,winNolockAppData likewise a static init-time VFS table not a concurrently-mutated variable,,high
+STR34-C,395,sqlite,src/os_win.c,4998,FP,zBuf[nLen-1] passed to winIsDirSep which takes a char arg no widening sign-extension hazard; ctype not involved,,high
+DCL13-C,396,sqlite,src/os_win.c,5036,FP,pVfs is the sqlite3_vfs xGetTempname-style callback signature fixed by VFS method contract and pVfs->mxPathname is read; const cannot match required signature,,high
+INT32-C,397,sqlite,src/os_win.c,5057,FP,nBuf=2+(i64)nMax where nMax=pVfs->mxPathname is a small bounded i64 path-length cap cannot overflow i64,,high
+INT32-C,398,sqlite,src/os_win.c,5068,FP,nPre+15 where nPre is the small fixed temp-file-prefix strlen cannot overflow int,,high
+INT32-C,399,sqlite,src/os_win.c,5074,FP,nDirLen++ counts a path length bounded by mxPathname far below INT_MAX,,high
+ARR02-C,400,sqlite,src/os_win.c,5089,FP,azDirs[] is a brace-initialized static const char* array so size is implicit by design not a defect,,high
+ENV30-C,401,sqlite,src/os_win.c,5104,FP,azDirs[0]=osGetenv(...) assigns the array pointer element; it does not modify getenv's returned string,,high
+STR30-C,402,sqlite,src/os_win.c,5104,FP,azDirs is char* array not a string literal; assigning array element is legal no literal mutation,,high
+ENV30-C,403,sqlite,src/os_win.c,5105,FP,azDirs[1] assignment stores a pointer; getenv result string is not modified,,high
+STR30-C,404,sqlite,src/os_win.c,5105,FP,array element pointer assignment not literal mutation,,high
+ENV30-C,405,sqlite,src/os_win.c,5106,FP,azDirs[2] pointer-element store does not modify the getenv string,,high
+STR30-C,406,sqlite,src/os_win.c,5106,FP,array element assignment legal not literal mutation,,high
+ENV30-C,407,sqlite,src/os_win.c,5107,FP,azDirs[3] pointer-element store does not modify getenv string,,high
+STR30-C,408,sqlite,src/os_win.c,5107,FP,array element assignment legal not literal mutation,,high
+ENV30-C,409,sqlite,src/os_win.c,5108,FP,azDirs[4] pointer-element store does not modify getenv string,,high
+STR30-C,410,sqlite,src/os_win.c,5108,FP,array element assignment legal not literal mutation,,high
+EXP33-C,411,sqlite,src/os_win.c,5109,FP,i is the for-loop induction variable initialized i=0 at 5109 before use,,high
+EXP33-C,412,sqlite,src/os_win.c,5110,FP,zConverted is assigned by winConvertFromUtf8Filename at 5118 before any read on the only path that uses it,,high
+MEM30-C,413,sqlite,src/os_win.c,5129,FP,zConverted freed exactly once per loop iteration either at 5126 (break) or 5129; disjoint paths not double-free,,high
+MEM31-C,414,sqlite,src/os_win.c,5129,FP,same single-free-per-iteration; the two sqlite3_free calls are on mutually-exclusive branches,,high
+INT30-C,415,sqlite,src/os_win.c,5137,FP,nMax*sizeof(WCHAR) with nMax=mxPathname bounded path cap cannot wrap size_t,,high
+MEM30-C,416,sqlite,src/os_win.c,5167,FP,zBuf freed once at 5167 on the zMbcsPath alloc-failure return path; other frees are on disjoint return paths,,high
+MEM30-C,417,sqlite,src/os_win.c,5172,FP,zBuf freed once on the GetTempPathA-failure return path; mutually exclusive with other frees,,high
+MEM30-C,418,sqlite,src/os_win.c,5179,FP,zBuf passed to sqlite3_snprintf at 5179 is still live; the frees occur only on early returns not before this,,high
+MEM30-C,419,sqlite,src/os_win.c,5182,FP,zBuf freed once on the winMbcsToUtf8-failure path; disjoint from other returns,,high
+MEM30-C,420,sqlite,src/os_win.c,5194,FP,zBuf passed live to winMakeEndInDirSep at 5194; not previously freed on this path,,high
+INT32-C,421,sqlite,src/os_win.c,5194,FP,nDir+1 where nDir=nMax-(nPre+15) bounded by mxPathname cannot overflow int,,high
+MEM30-C,422,sqlite,src/os_win.c,5211,FP,zBuf still live when sqlite3Strlen30(zBuf) called at 5211; no prior free on success path,,high
+MEM30-C,423,sqlite,src/os_win.c,5213,FP,zBuf freed once at 5213 on the size-check-failure return; disjoint from success path,,high
+INT32-C,424,sqlite,src/os_win.c,5218,FP,nBuf-16-nLen bounded path arithmetic guarded by the 5212 size check ensuring positive remaining buffer,,high
+INT32-C,425,sqlite,src/os_win.c,5218,FP,nBuf-16 with nBuf=2+mxPathname small bounded i64 cannot underflow meaningfully here,,high
+MEM30-C,426,sqlite,src/os_win.c,5218,FP,zBuf+nLen pointer arithmetic on the live success-path buffer not a freed pointer,,high
+MEM30-C,427,sqlite,src/os_win.c,5220,FP,zBuf live at 5220 sqlite3Strlen30; the only frees were on earlier mutually-exclusive error returns,,high
+ARR00-C,428,sqlite,src/os_win.c,5221,FP,zBuf[j] write at 5221 area is into the live success-path buffer not freed memory,,high
+ARR00-C,429,sqlite,src/os_win.c,5224,FP,zBuf[j] read/write at 5224 in the suffix loop on the live buffer not freed,,high
+MEM30-C,430,sqlite,src/os_win.c,5224,FP,zBuf[j] access in the success-path randomization loop on live memory,,high
+ARR00-C,431,sqlite,src/os_win.c,5226,FP,zBuf[j]=... final-write on the live buffer just before *pzBuf=zBuf return; not freed,,high
+MEM30-C,432,sqlite,src/os_win.c,5226,FP,"zBuf is sqlite3MallocZero heap buffer freed only in error-return branches; success path at 5226 uses live buffer, sqc misread error-path free",,high
+INT33-C,433,sqlite,src/os_win.c,5226,FP,"zChars is a fixed string literal so sizeof(zChars)-1 is constant 62, never zero",,high
+ARR00-C,434,sqlite,src/os_win.c,5226,FP,zBuf is live on the success path; the sqlite3_free(zBuf) calls are all in mutually-exclusive error returns,,high
+INT30-C,435,sqlite,src/os_win.c,5226,FP,"sizeof(zChars)-1 is a compile-time constant (62), cannot wrap",,high
+ARR00-C,436,sqlite,src/os_win.c,5228,FP,zBuf[j]=0 writes the live buffer; no free reaches this point,,high
+ARR00-C,437,sqlite,src/os_win.c,5229,FP,zBuf[j+1]=0 writes the live buffer; no free reaches this point,,high
+DCL30-C,438,sqlite,src/os_win.c,5230,FP,"*pzBuf = zBuf stores a heap pointer (sqlite3MallocZero), not the address of a local",,high
+STR34-C,439,sqlite,src/os_win.c,5230,FP,*pzBuf=zBuf is a char-pointer assignment not a char value sign-extension,,high
+EXP45-C,440,sqlite,src/os_win.c,5250,FP,"while(!(rc=osGetFileAttributesExW(...)) ...) is an intentional parenthesized loop assignment, value used",,high
+EXP05-C,441,sqlite,src/os_win.c,5259,FP,"(char*)zConverted is an ANSI-API cast of a void* opaque buffer, no const qualifier removed",,high
+API02-C,442,sqlite,src/os_win.c,5266,FP,winAccess signature is fixed by the sqlite3_vfs xAccess function-pointer typedef,,high
+MEM05-C,443,sqlite,src/os_win.c,5282,TP,winOpen recurses on itself at line 5490 for the readonly retry; genuine recursion (bounded to depth 1),,low
+PRE32-C,444,sqlite,src/os_win.c,5329,FP,OSTRACE argument is a printf format string continuation with no preprocessor directive token,,high
+PRE32-C,445,sqlite,src/os_win.c,5329,FP,"same OSTRACE call, multi-line string/expr continuation not a directive",,high
+FIO42-C,446,sqlite,src/os_win.c,5464,FP,HANDLE h is stored into pFile->h at 5539 and closed later by winClose; not leaked,,high
+EXP33-C,447,sqlite,src/os_win.c,5470,FP,h is unconditionally assigned in the do-while body before any use,,high
+PRE32-C,448,sqlite,src/os_win.c,5483,FP,"OSTRACE format continuation, no directive token",,high
+PRE32-C,449,sqlite,src/os_win.c,5483,FP,"same OSTRACE call, format/expr continuation",,high
+PRE32-C,450,sqlite,src/os_win.c,5509,FP,"OSTRACE format continuation, no directive token",,high
+PRE32-C,451,sqlite,src/os_win.c,5509,FP,"same OSTRACE call, multi-line format continuation",,high
+MEM30-C,452,sqlite,src/os_win.c,5522,FP,zConverted freed once per mutually-exclusive return path; no double free,,high
+MEM30-C,453,sqlite,src/os_win.c,5523,FP,zTmpname freed once per return path; the WINCE and normal blocks are exclusive,,high
+MEM30-C,454,sqlite,src/os_win.c,5533,FP,zConverted freed once on the normal success path (5533),,high
+MEM30-C,455,sqlite,src/os_win.c,5536,FP,zTmpname freed once on the success path (5536),,high
+EXP33-C,456,sqlite,src/os_win.c,5625,FP,attr assigned at 5624 (osGetFileAttributesA) before the 5625 read,,high
+DCL31-C,457,sqlite,src/os_win.c,5681,FP,"line 5681 is the SimulateIOError() macro expansion, not a real declaration",,high
+PRE32-C,458,sqlite,src/os_win.c,5682,FP,"OSTRACE format continuation, no directive token",,high
+PRE32-C,459,sqlite,src/os_win.c,5682,FP,"same OSTRACE call, format continuation",,high
+PRE32-C,460,sqlite,src/os_win.c,5687,FP,"OSTRACE format continuation, no directive token",,high
+PRE32-C,461,sqlite,src/os_win.c,5687,FP,"same OSTRACE call, format/expr continuation",,high
+EXP45-C,462,sqlite,src/os_win.c,5701,FP,while(!(rc=osGetFileAttributesExW(...))...) intentional parenthesized assignment in loop,,high
+EXP33-C,463,sqlite,src/os_win.c,5723,FP,"SQLITE_IOERR_ACCESS is a returned #define constant, not an uninitialized variable",,high
+PRE32-C,464,sqlite,src/os_win.c,5749,FP,"OSTRACE format continuation, no directive token",,high
+PRE32-C,465,sqlite,src/os_win.c,5749,FP,"same OSTRACE call, format continuation",,high
+EXP34-C,466,sqlite,src/os_win.c,5772,FP,winIsDriveLetterAndColon short-circuits on sqlite3Isalpha(zPathname[0]) before reading [1]; callers pass non-null,,high
+INT32-C,467,sqlite,src/os_win.c,5834,FP,"i is a loop index over a path string, far from INT_MAX; z[i+2] bound by nul check",,high
+INT32-C,468,sqlite,src/os_win.c,5839,FP,i is a bounded path-string loop index; z[i+1] guarded,,high
+INT32-C,469,sqlite,src/os_win.c,5839,FP,same bounded loop index,,high
+STR34-C,470,sqlite,src/os_win.c,5857,FP,sqlite3Strlen30(zPath) passes a char* to strlen; no integer sign-extension,,high
+INT32-C,471,sqlite,src/os_win.c,5864,FP,"iOff bounded by output buffer size nOut (cwd length), not near INT_MAX",,high
+INT32-C,472,sqlite,src/os_win.c,5872,FP,nOut-iOff: the 5866 check guarantees iOff+nPath+1<=nOut so iOff<nOut,,high
+MSC37-C,473,sqlite,src/os_win.c,5882,FP,every preprocessor branch of winFullPathnameNoMutex returns; sqc confused by #if structure,,high
+INT32-C,474,sqlite,src/os_win.c,5897,FP,"zRelative+1 is pointer arithmetic on a path string, not integer overflow",,high
+INT32-C,475,sqlite,src/os_win.c,5898,FP,same pointer arithmetic,,high
+INT32-C,476,sqlite,src/os_win.c,5899,FP,"zRelative++ is a pointer increment, not integer overflow",,high
+INT32-C,477,sqlite,src/os_win.c,5906,FP,"nFull is the output buffer size (>0), nFull-1 cannot overflow",,high
+DCL18-C,478,sqlite,src/os_win.c,5927,FP,"0170000 is the standard Unix S_IFMT octal mask, intentional octal",,high
+DCL18-C,479,sqlite,src/os_win.c,5927,FP,"0120000 is the standard Unix S_IFLNK octal value, intentional octal",,high
+INT32-C,480,sqlite,src/os_win.c,5939,FP,nFull is buffer size; nFull-1 passed to readlink is intentional,,high
+ARR38-C,481,sqlite,src/os_win.c,5949,FP,memmove guarded by the nByte+n+1>nFull check at 5946 (else branch only),,high
+INT31-C,482,sqlite,src/os_win.c,5949,FP,"nByte is osReadlink result checked !=(DWORD)-1 at 5940, so non-negative",,high
+INT32-C,483,sqlite,src/os_win.c,5949,FP,"nByte bounded by nFull-1 from readlink, nByte+1 cannot overflow",,high
+EXP05-C,484,sqlite,src/os_win.c,5949,FP,zDel is a non-const char* (declared char *zDel=0); no const cast,,high
+INT32-C,485,sqlite,src/os_win.c,5949,FP,same bounded nByte+1,,high
+EXP05-C,486,sqlite,src/os_win.c,5950,FP,"n is an int local; memcpy(zDel,zIn,n) has no const cast",,high
+INT32-C,487,sqlite,src/os_win.c,5951,FP,nByte+=n stays within nFull bound,,high
+EXP30-C,488,sqlite,src/os_win.c,5988,FP,"snprintf args are independent function calls with no shared mutable object, well-sequenced",,high
+EXP30-C,489,sqlite,src/os_win.c,6011,FP,same independent-argument snprintf,,high
+INT32-C,490,sqlite,src/os_win.c,6028,FP,"nByte is osGetFullPathNameW required-size return, bounded by path length",,high
+INT30-C,491,sqlite,src/os_win.c,6029,FP,"nByte bounded path size times sizeof(WCHAR)=2, no wrap",,high
+MEM30-C,492,sqlite,src/os_win.c,6048,FP,"zConverted freed only in the NT branch (6041), this is the mutually-exclusive ANSI branch",,high
+MEM30-C,493,sqlite,src/os_win.c,6050,FP,zConverted freed once per return path,,high
+INT30-C,494,sqlite,src/os_win.c,6054,FP,"nByte bounded path length times sizeof(char), no wrap",,high
+ARR00-C,495,sqlite,src/os_win.c,6054,FP,"line 6054 is the sqlite3MallocZero allocation of zTemp, not a freed access",,high
+MEM30-C,496,sqlite,src/os_win.c,6054,FP,"zTemp just allocated at 6054, not freed",,high
+INT30-C,497,sqlite,src/os_win.c,6054,FP,3*sizeof(zTemp[0]) is a compile-time constant,,high
+ARR00-C,498,sqlite,src/os_win.c,6054,FP,line 6054 is the zTemp allocation,,high
+MEM30-C,499,sqlite,src/os_win.c,6054,FP,zTemp freshly allocated,,high
+MEM30-C,500,sqlite,src/os_win.c,6056,FP,zConverted freed once per path,,high
+MEM30-C,501,sqlite,src/os_win.c,6059,FP,zConverted not yet freed at 6059 (freed at 6066 after use),,high
+MEM30-C,502,sqlite,src/os_win.c,6059,FP,"zTemp freshly allocated, not freed at 6059",,high
+MEM30-C,503,sqlite,src/os_win.c,6061,FP,zConverted freed once per path,,high
+MEM30-C,504,sqlite,src/os_win.c,6062,FP,zTemp freed once per path,,high
+MEM30-C,505,sqlite,src/os_win.c,6066,FP,zConverted freed once per path,,high
+MEM30-C,506,sqlite,src/os_win.c,6067,FP,zTemp used by winMbcsToUtf8 at 6067 then freed at 6068 (use precedes free),,high
+MEM30-C,507,sqlite,src/os_win.c,6068,FP,zTemp freed once per path,,high
+STR34-C,508,sqlite,src/os_win.c,6079,FP,"*p='\\' is a char store, not a sign-extending integer conversion",,high
+STR34-C,509,sqlite,src/os_win.c,6083,FP,"*p comparison/assignment of char literals, no sign extension",,high
+EXP05-C,510,sqlite,src/os_win.c,6135,FP,h is a HANDLE (non-const); (void*)h removes no const,,high
+EXP05-C,511,sqlite,src/os_win.c,6137,FP,"return (void*)h on a non-const HANDLE, no const cast",,high
+PRE32-C,512,sqlite,src/os_win.c,6147,FP,"OSTRACE format continuation, no directive token",,high
+PRE32-C,513,sqlite,src/os_win.c,6147,FP,"same OSTRACE call, format continuation",,high
+DCL13-C,514,sqlite,src/os_win.c,6174,TP,x in xorMemory is only read (x[j]) never written and not propagated; const unsigned char* would compile,,med
+INT32-C,515,sqlite,src/os_win.c,6181,FP,"p->nXor accumulates a few struct-sizeof bytes of entropy, far from INT_MAX",,high
+MSC37-C,516,sqlite,src/os_win.c,6188,FP,"both preprocessor branches of winRandomness return (6192, 6230)",,high
+INT31-C,517,sqlite,src/os_win.c,6191,FP,"nBuf is the xRandomness buffer size, always a small positive value",,high
+INT31-C,518,sqlite,src/os_win.c,6196,FP,same positive nBuf,,high
+INT32-C,519,sqlite,src/os_win.c,6239,FP,"microsec is a small sleep value from internal callers, not near INT_MAX",,high
+INT32-C,520,sqlite,src/os_win.c,6241,FP,bounded sleep arithmetic on small microsec,,high
+INT32-C,521,sqlite,src/os_win.c,6241,FP,bounded microsec,,high
+INT32-C,522,sqlite,src/os_win.c,6268,FP,"compile-time constant cast to int64 (~1.99e14), fits int64",,high
+INT32-C,523,sqlite,src/os_win.c,6270,FP,compile-time constant ~2.1e14 fits int64,,high
+INT32-C,524,sqlite,src/os_win.c,6274,FP,"int64 constants building 2^32, fits int64",,high
+INT32-C,525,sqlite,src/os_win.c,6274,FP,"int64 constant addition, fits",,high
+INT32-C,526,sqlite,src/os_win.c,6288,FP,"all int64 FILETIME arithmetic, within range for any real date",,high
+FLP03-C,527,sqlite,src/os_win.c,6289,FP,"line 6289 is int64 division by literal 10000, not floating-point division",,high
+INT32-C,528,sqlite,src/os_win.c,6289,FP,full FILETIME as int64 (high*2^32+low) within int64 range,,high
+INT32-C,529,sqlite,src/os_win.c,6289,FP,dwHighDateTime*2^32 fits int64 for any realistic FILETIME,,high
+INT32-C,530,sqlite,src/os_win.c,6294,FP,"int64 test-only arithmetic, fits",,high
+INT32-C,531,sqlite,src/os_win.c,6294,FP,"int64 test-only multiply, fits",,high
+FLP03-C,532,sqlite,src/os_win.c,6311,FP,"division by nonzero literal 86400000.0; only benign inexact possible, no error check needed",,high
+DCL00-C,533,sqlite,src/os_win.c,6347,TP,local DWORD e is initialized from osGetLastError and never reassigned; const would compile,,low
+MSC04-C,534,sqlite,src/os_win.c,6356,TP,genuine call-graph cycle sqlite3_os_init->sqlite3_vfs_register->sqlite3_initialize->sqlite3OsInit->sqlite3_os_init,,med
+CON03-C,535,sqlite,src/os_win.c,6357,FP,winVfs is a once-initialized static registered under SQLite init mutex; not a shared mutable concurrency object,,high
+CON03-C,536,sqlite,src/os_win.c,6382,FP,winLongPathVfs is init-time-only static under the init mutex,,high
+CON03-C,537,sqlite,src/os_win.c,6407,FP,winNolockVfs is init-time-only static under the init mutex,,high
+CON03-C,538,sqlite,src/os_win.c,6432,FP,winLongPathNolockVfs is init-time-only static under the init mutex,,high

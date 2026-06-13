@@ -1421,3 +1421,42 @@ bugs still **13**, every one in a less-fuzzed untrusted-input parser; **still no
 hardened core** (build.c + os_unix.c = 1171 findings, 0). The remaining ~117 in-scope files are now almost entirely
 hardened core (os_win.c, expr.c, main.c, pager.c, wal.c, util.c, func.c, …) — coverage filler the thesis predicts
 will keep yielding only decl/macro/const TPs.
+
+## File-at-a-time — Batch 8 (2026-06-12, run #40, MEDIUM-effort core filler): os_win.c, main.c, util.c, vdbeapi.c
+
+First medium-effort batch (per the agreed plan: drop to medium for pure hardened-core/glue, keep the
+source-verification integrity gate non-negotiable). 16 line-range reviewers using the shared hardened-core
+framework (`/tmp/core_framework.md`). **1657 findings -> 31 TP / 1626 FP, 0 semantic TP, 0 recorded FN.**
+
+| File | findings | TP | FP |
+|------|---------:|---:|---:|
+| src/os_win.c (Windows VFS) | 539 | 14 | 525 |
+| src/main.c (connection/API layer) | 433 | 8 | 425 |
+| src/util.c (atoi/varint/number parsers) | 412 | 7 | 405 |
+| src/vdbeapi.c (sqlite3_* statement API) | 273 | 2 | 271 |
+
+All 31 TP are declaration/macro/recursion: **MSC04/MEM05 ×10** (genuine recursion — winHandleOpen/winOpen
+read-only retry, sqlite3_initialize↔vfs_register, sqlite3_config↔PCacheSetDefault, sqlite3CreateFunc UTF16
+self-call, sqlite3Step↔VdbeExec↔Checkpoint), **DCL13 ×7** const-params, **DCL03 ×5** static_assert on
+compile-time mask/sizeof equalities, **PRE00/01/10/11/12 ×7** (winIsDirSep/winIoerrCanRetry1 multi-eval,
+winMemAssertMagic non-do-while+trailing-`;`), **DCL00 ×2**. **Semantic-TP sweep: empty** (verified
+programmatically). The recurring misfires were exactly the established hardened-core classes, now confirmed at
+scale on the Windows VFS and API glue: the **os_win OSTRACE PRE32/DCL31 swarm** (the analyzer reads multi-line
+`OSTRACE((...))` continuation lines and the `osXxx` syscall-table `#define`s as preprocessor-directives /
+undeclared calls), the **MEM30 `db`/`pFile`-context-arg misread** (sqc treats the live handle arg of
+`sqlite3DbFree(db,x)`/`robust_close(pFile)`/`sqlite3*Delete(db,x)` as freed), `zBuf`/`zConverted` freed only on
+mutually-exclusive error paths, i64 FILETIME/size constants flagged as int overflow, and `u32`/`u64` operands
+in `sqlite3GetVarint`/atoi misread as signed `int` or `FILE*`.
+
+**FN-hunt: one low-severity item, noted not recorded** — util.c:1328 `sqlite3GetUInt32`'s guard `v>4294967296LL`
+accepts exactly 2^32 (one past UINT32_MAX), so `(u32)v` truncates a 2^32 input to `0` and returns success
+instead of rejecting it. A benign longstanding value-correctness quirk, not a memory/integrity (CERT-class)
+defect — not added to the oracle. util.c's real parsers (`sqlite3AtoF`, `sqlite3Atoi64`, the fp-decode helpers)
+are otherwise fully bounded (NUL/`zEnd`-guarded reads, mantissa/exponent caps, u64 accumulators with intended
+post-checked wrap).
+
+sqlite coverage **107/220 (48.6%)** — 107 files audited; **13 FNs** (0 new). Confirmed real bugs still **13**;
+the bifurcation is now confirmed across **4 large hardened-core files** (build.c, os_unix.c, os_win.c — the two
+VFS twins matched exactly — plus main.c) with **0 semantic TP / 0 FN** among 2828 core findings. Remaining
+~113 in-scope files are core/glue; the genuine-untrusted-input subset (pager.c, wal.c, func.c, printf.c,
+vdbesort.c) is reserved for high-effort batches.

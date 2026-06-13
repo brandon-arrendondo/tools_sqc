@@ -1,0 +1,274 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,0,sqlite,src/vdbeapi.c,29,FP,sqlite3_expired guards with p==0 before reading p->expired so use is checked not a trust-boundary defect,,high
+DCL13-C,1,sqlite,src/vdbeapi.c,29,FP,pStmt signature is the fixed public sqlite3_stmt API and is immediately cast to Vdbe* so const cannot be added,,high
+DCL13-C,2,sqlite,src/vdbeapi.c,40,FP,vdbeSafety reads p->db only but p is propagated to vdbeSafetyNotNull and callers that mutate the Vdbe so const is not appropriate,,med
+DCL13-C,3,sqlite,src/vdbeapi.c,62,FP,db in invokeProfileCallback is passed to OsCurrentTimeInt64 and xProfile/trace callbacks taking non-const sqlite3* so const will not compile,,high
+INT32-C,4,sqlite,src/vdbeapi.c,69,FP,iNow and p->startTime are sqlite3_int64 elapsed-time math bounded by wall clock not an attacker-controlled overflow,,high
+PRE00-C,5,sqlite,src/vdbeapi.c,84,FP,checkProfileCallback expands P once in a guard and once as arg with no side-effecting expression passed and is the documented core macro idiom,,high
+PRE10-C,6,sqlite,src/vdbeapi.c,84,FP,checkProfileCallback is a single guarded if statement not a multistatement block needing do-while wrapping in this usage,,med
+PRE12-C,7,sqlite,src/vdbeapi.c,84,FP,P is a simple Vdbe* lvalue with no side effects so multiple expansion is harmless,,high
+INT13-C,8,sqlite,src/vdbeapi.c,139,FP,rc & db->errMask is the documented SQLite error-mask idiom on a small bounded result code not an unsigned-bitfield concern,,high
+API00-C,9,sqlite,src/vdbeapi.c,182,FP,public sqlite3_value_blob API armor guards null elsewhere and contract guarantees a valid Mem from sqlite3_column/value paths,,high
+API00-C,10,sqlite,src/vdbeapi.c,195,FP,public sqlite3_value_bytes API just forwards pVal to sqlite3ValueBytes which handles it contract guarantees validity,,high
+API00-C,11,sqlite,src/vdbeapi.c,198,FP,sqlite3_value_bytes16 forwards to sqlite3ValueBytes contract guarantees a valid value object,,high
+API00-C,12,sqlite,src/vdbeapi.c,201,FP,sqlite3_value_double forwards to sqlite3VdbeRealValue which handles the Mem internal contract guarantees validity,,high
+API00-C,13,sqlite,src/vdbeapi.c,207,FP,sqlite3_value_int64 forwards to sqlite3VdbeIntValue internal contract guarantees a valid value object,,high
+DCL15-C,14,sqlite,src/vdbeapi.c,207,FP,sqlite3_value_int64 is a public exported API symbol declared in sqlite3.h so it cannot be made static,,high
+DCL19-C,15,sqlite,src/vdbeapi.c,207,FP,sqlite3_value_int64 is part of the documented public ABI exported via sqlite3.h not file-local,,high
+API00-C,16,sqlite,src/vdbeapi.c,210,FP,sqlite3_value_subtype reads pMem flags under documented contract that the value object is valid,,high
+DCL13-C,17,sqlite,src/vdbeapi.c,210,FP,pVal is the fixed public sqlite3_value API signature cast to Mem* and read so const cannot be added without ABI break,,high
+API00-C,18,sqlite,src/vdbeapi.c,214,FP,sqlite3_value_pointer reads pVal fields under documented contract guaranteeing validity,,high
+DCL13-C,19,sqlite,src/vdbeapi.c,214,FP,pVal is the fixed public sqlite3_value_pointer signature so const cannot be added without breaking the API,,high
+API00-C,20,sqlite,src/vdbeapi.c,245,FP,sqlite3_value_type reads pVal->flags under contract that the value comes from a valid column/value path,,high
+DCL13-C,21,sqlite,src/vdbeapi.c,245,FP,pVal is the fixed public sqlite3_value_type API signature so const is not addable,,high
+ARR02-C,22,sqlite,src/vdbeapi.c,246,FP,aType is a static const initializer list whose size is fixed by the initializer not an unbounded VLA,,high
+EXP34-C,23,sqlite,src/vdbeapi.c,315,FP,pVal->flags read is inside an SQLITE_DEBUG assert block reachable only when a valid value object is passed per contract,,high
+API00-C,24,sqlite,src/vdbeapi.c,329,FP,sqlite3_value_encoding reads pVal->enc under the documented valid-value contract,,high
+DCL13-C,25,sqlite,src/vdbeapi.c,329,FP,pVal is the fixed public sqlite3_value_encoding signature so const cannot be added,,high
+API00-C,26,sqlite,src/vdbeapi.c,334,FP,sqlite3_value_nochange reads pVal->flags under documented valid-value contract,,high
+DCL13-C,27,sqlite,src/vdbeapi.c,334,FP,pVal is the fixed public sqlite3_value_nochange signature so const cannot be added,,high
+EXP34-C,28,sqlite,src/vdbeapi.c,335,FP,pVal->flags access guarded by the same valid-value contract callers pass a real xUpdate column value,,high
+API00-C,29,sqlite,src/vdbeapi.c,339,FP,sqlite3_value_frombind reads pVal->flags under the documented valid-value contract,,high
+DCL13-C,30,sqlite,src/vdbeapi.c,339,FP,pVal is the fixed public sqlite3_value_frombind signature so const cannot be added,,high
+EXP33-C,31,sqlite,src/vdbeapi.c,348,FP,pNew is assigned from sqlite3_malloc and checked for 0 before any dereference so it is never used uninitialized,,high
+DCL30-C,32,sqlite,src/vdbeapi.c,365,FP,pNew is a heap pointer returned from sqlite3_malloc not a pointer to an automatic local variable,,high
+EXP34-C,33,sqlite,src/vdbeapi.c,405,FP,"z[n]==0 access at line 405 is inside an assert whose preceding ORed clauses (z==0, n<0, n>limit) short-circuit before indexing",,high
+DCL31-C,34,sqlite,src/vdbeapi.c,439,FP,xDel is a destructor function pointer invoked by call not a missing declaration this is sqc misreading an indirect call,,high
+EXP05-C,35,sqlite,src/vdbeapi.c,439,FP,(void*)p casts a const void* destroyed value to void* for the user destructor which is the documented destructor calling convention,,high
+API00-C,36,sqlite,src/vdbeapi.c,451,FP,sqlite3_result_blob guards z via API armor (n<0 path) and asserts mutex held contract supplies a valid context,,high
+API00-C,37,sqlite,src/vdbeapi.c,451,FP,xDel is a destructor pointer handled by invokeValueDestructor which checks 0/TRANSIENT not a deref defect,,high
+DCL13-C,38,sqlite,src/vdbeapi.c,487,FP,pCtx is the fixed public sqlite3_result_double signature and pCtx->pOut is mutated so const is wrong,,high
+DCL13-C,39,sqlite,src/vdbeapi.c,512,FP,pCtx is the fixed public sqlite3_result_int signature and the context output is mutated so const is wrong,,high
+DCL13-C,40,sqlite,src/vdbeapi.c,519,FP,pCtx is the fixed public sqlite3_result_int64 signature and output Mem is mutated so const is wrong,,high
+DCL13-C,41,sqlite,src/vdbeapi.c,526,FP,pCtx is the fixed public sqlite3_result_null signature mutating pCtx->pOut so const is wrong,,high
+API00-C,42,sqlite,src/vdbeapi.c,533,FP,sqlite3_result_pointer handles pPtr via invokeValueDestructor / VdbeMemSetPointer not an unchecked deref,,high
+API00-C,43,sqlite,src/vdbeapi.c,533,FP,xDestructor is a destructor function pointer dispatched safely not a dereferenced data pointer,,high
+DCL13-C,44,sqlite,src/vdbeapi.c,534,FP,pCtx is the fixed public sqlite3_result_pointer signature mutating the context so const is wrong,,high
+API00-C,45,sqlite,src/vdbeapi.c,574,FP,sqlite3_result_text guards z via API armor and forwards to setResultStrOrError under valid-context contract,,high
+API00-C,46,sqlite,src/vdbeapi.c,574,FP,xDel is a destructor pointer dispatched through invokeValueDestructor not dereferenced as data,,high
+API00-C,47,sqlite,src/vdbeapi.c,616,FP,xDel in sqlite3_result_text16 is a destructor pointer handled by the Mem set path not a deref defect,,high
+INT13-C,48,sqlite,src/vdbeapi.c,623,FP,n & ~(u64)1 clears the low bit of a length the signed-operand warning is spurious for this bit-mask idiom,,high
+API00-C,49,sqlite,src/vdbeapi.c,625,FP,xDel destructor pointer dispatched via the Mem set/destructor path not dereferenced,,high
+INT13-C,50,sqlite,src/vdbeapi.c,632,FP,n & ~(u64)1 length rounding bit-mask is intentional not a signed-bitwise misuse,,high
+API00-C,51,sqlite,src/vdbeapi.c,634,FP,xDel destructor pointer handled by the value-destructor path not dereferenced as data,,high
+INT13-C,52,sqlite,src/vdbeapi.c,641,FP,n & ~(u64)1 length-even rounding idiom intentional not a defect,,high
+MSC37-C,53,sqlite,src/vdbeapi.c,665,FP,"sqlite3_result_zeroblob64 returns on every path (TOOBIG branch returns, both ifndef/else branches return) no fallthrough",,high
+STR30-C,54,sqlite,src/vdbeapi.c,705,FP,sqlite3VdbeMemSetStr with SQLITE_STATIC destructor and a string literal does not modify the literal it stores it by reference,,high
+API00-C,55,sqlite,src/vdbeapi.c,725,FP,sqlite3ResultIntReal reads pCtx->pOut under the documented internal contract with mutex asserted held not a trust boundary,,high
+MSC04-C,56,sqlite,src/vdbeapi.c,771,TP,sqlite3Step does participate in indirect recursion through VdbeExec->Checkpoint->...->sqlite3_step->sqlite3Step even if practically depth-bounded,,high
+INT32-C,57,sqlite,src/vdbeapi.c,815,FP,db->nVdbeActive is a bounded active-statement counter that cannot realistically reach INT_MAX given handle limits,,high
+INT32-C,58,sqlite,src/vdbeapi.c,816,FP,db->nVdbeWrite is a bounded concurrent-write-statement counter not an attacker-driven overflow,,high
+INT32-C,59,sqlite,src/vdbeapi.c,817,FP,db->nVdbeRead is a bounded concurrent-reader counter not realistically overflowable,,high
+EXP30-C,60,sqlite,src/vdbeapi.c,840,FP,rc is assigned before being read across the if/else sequence points no unsequenced modify-and-access occurs,,high
+EXP33-C,61,sqlite,src/vdbeapi.c,840,FP,rc=p->rc&0xff is assigned on the only path that reads it (SQLITE_OMIT_AUTORESET branch) so it is not used uninitialized,,high
+EXP05-C,62,sqlite,src/vdbeapi.c,841,FP,(sqlite3_stmt*)p reinterprets a Vdbe* back to its opaque public type which is the documented round-trip cast not a const removal,,high
+EXP05-C,63,sqlite,src/vdbeapi.c,846,FP,(sqlite3_stmt*)p is the same documented Vdbe-to-opaque-handle cast not a const-qualification removal,,high
+INT32-C,64,sqlite,src/vdbeapi.c,862,FP,db->nVdbeExec is a balanced increment/decrement recursion-depth counter that cannot reach INT_MAX,,high
+INT32-C,65,sqlite,src/vdbeapi.c,864,FP,db->nVdbeExec-- pairs the preceding increment so it cannot underflow INT_MIN,,high
+INT13-C,66,sqlite,src/vdbeapi.c,903,FP,rc&0xff in the end_of_step assert is the documented low-byte error-code extraction not a signed-bitwise defect,,high
+INT13-C,67,sqlite,src/vdbeapi.c,905,FP,rc&db->errMask is the documented error-mask idiom on a small result code not a signed-bitwise misuse,,high
+API00-C,68,sqlite,src/vdbeapi.c,913,FP,sqlite3_step validates v via vdbeSafetyNotNull which returns MISUSE on null before any use,,high
+MSC04-C,69,sqlite,src/vdbeapi.c,913,TP,sqlite3_step genuinely participates in indirect recursion via sqlite3Step->VdbeExec->Checkpoint->...->sqlite3_step,,high
+MEM30-C,70,sqlite,src/vdbeapi.c,939,FP,"db is the live connection handle never freed; sqlite3DbFree(db, v->zErrMsg) frees zErrMsg and reads db as context arg only",,high
+EXP30-C,71,sqlite,src/vdbeapi.c,941,FP,rc is assigned (=sqlite3ApiExit) then read across sequence points in the assignment chain no unsequenced access,,high
+MEM30-C,72,sqlite,src/vdbeapi.c,941,FP,db passed to sqlite3DbStrDup is the live connection not a freed pointer the only thing freed was v->zErrMsg,,high
+MEM30-C,73,sqlite,src/vdbeapi.c,958,FP,db at line 958 sqlite3_mutex_leave(db->mutex) is the live connection handle never freed in this function,,high
+MEM30-C,74,sqlite,src/vdbeapi.c,958,FP,db->mutex access is on the live connection handle no free of db occurs in sqlite3_step,,high
+DCL13-C,75,sqlite,src/vdbeapi.c,967,FP,sqlite3_user_data reads p->pFunc but p is the fixed public sqlite3_context signature so const is not appropriate,,med
+DCL13-C,76,sqlite,src/vdbeapi.c,985,FP,sqlite3_context_db_handle reads p->pOut->db but p is the fixed public sqlite3_context API signature,,med
+DCL13-C,77,sqlite,src/vdbeapi.c,1008,FP,sqlite3_vtab_nochange forwards p->pOut to value_nochange but p is the fixed public sqlite3_context signature,,med
+API00-C,78,sqlite,src/vdbeapi.c,1024,FP,sqlite3VdbeValueListFree just forwards pToDelete to sqlite3_free which tolerates null no unchecked deref,,high
+DCL13-C,79,sqlite,src/vdbeapi.c,1033,FP,pVal is the fixed valueFromValueList signature stored/dereferenced through ValueList contract not const-able,,high
+EXP33-C,80,sqlite,src/vdbeapi.c,1069,FP,"iSerial is written by getVarint32(&zBuf[1], iSerial) (out-parameter) before being passed to VdbeSerialGet so it is initialized",,high
+API00-C,81,sqlite,src/vdbeapi.c,1095,FP,sqlite3_vtab_in_next forwards ppOut to valueFromValueList which writes *ppOut=0 first contract guarantees a valid out pointer,,high
+API00-C,82,sqlite,src/vdbeapi.c,1106,FP,sqlite3StmtCurrentTime reads p->pVdbe/p->pOut under internal contract with assert p->pVdbe!=0 not a trust boundary,,high
+DCL13-C,83,sqlite,src/vdbeapi.c,1106,FP,p is the fixed sqlite3StmtCurrentTime/context signature dereferenced for pVdbe and pOut so const is not appropriate,,med
+DCL13-C,84,sqlite,src/vdbeapi.c,1126,FP,createAggContext reads p->pMem and p->pFunc but writes through pMem so the context is mutated const is wrong,,med
+ARR38-C,85,sqlite,src/vdbeapi.c,1137,FP,"memset(pMem->z,0,nByte) runs only after nByte>0 guard and a successful ClearAndResize allocation so size is valid",,high
+DCL13-C,86,sqlite,src/vdbeapi.c,1169,FP,sqlite3_set_auxdata pCtx is the fixed public signature and pCtx->isError is mutated so const is wrong,,med
+API00-C,87,sqlite,src/vdbeapi.c,1200,FP,xDelete is a destructor function pointer invoked on the failure path not a dereferenced data pointer,,high
+MSC07-C,88,sqlite,src/vdbeapi.c,1241,FP,the code after the return in sqlite3_set_auxdata is the failed: label reached by goto from the STAT4 path not unreachable,,high
+DCL31-C,89,sqlite,src/vdbeapi.c,1243,FP,xDelete(pAux) is an indirect call through a destructor function pointer not a call to an undeclared function,,high
+API00-C,90,sqlite,src/vdbeapi.c,1257,FP,sqlite3_aggregate_count asserts p && p->pMem && p->pFunc and is a deprecated API under documented valid-context contract,,high
+DCL13-C,91,sqlite,src/vdbeapi.c,1257,FP,sqlite3_aggregate_count p is dereferenced (p->pMem->n) so const-pointee not applicable and signature is fixed public API,,high
+API00-C,92,sqlite,src/vdbeapi.c,1266,FP,sqlite3_column_count guards pVm==0 return 0 before deref so no missing validation,,high
+DCL13-C,93,sqlite,src/vdbeapi.c,1266,FP,signature is fixed public API sqlite3_stmt* and cast to Vdbe* read-only but const not part of stable ABI declaration; analyzer misfire on fixed API contract,,high
+API00-C,94,sqlite,src/vdbeapi.c,1276,FP,sqlite3_data_count guards pVm==0 and pResultRow==0 before use,,high
+DCL13-C,95,sqlite,src/vdbeapi.c,1276,FP,fixed public API signature sqlite3_stmt* cannot change to const without breaking ABI,,high
+DCL31-C,96,sqlite,src/vdbeapi.c,1297,FP,aligned is the __attribute__((aligned(8))) GCC attribute not a function call,,high
+PRE32-C,97,sqlite,src/vdbeapi.c,1312,FP,columnNullValue static initializer contains #if/#endif conditional compilation not a function-like macro with directive args,,high
+INT32-C,98,sqlite,src/vdbeapi.c,1312,FP,(Mem*)0 is a null pointer cast in struct initializer not signed integer multiplication,,high
+PRE32-C,99,sqlite,src/vdbeapi.c,1315,FP,line 1315 is #endif terminating a conditional block inside a static const struct initializer not a macro argument,,high
+DCL13-C,100,sqlite,src/vdbeapi.c,1326,FP,columnMem casts pStmt to Vdbe* and dereferences pVm fields; signature fixed; pOut points into pResultRow,,high
+DCL31-C,101,sqlite,src/vdbeapi.c,1331,FP,columnNullValue is defined static at line 1285 above its use; analyzer ordering misfire,,high
+DCL31-C,102,sqlite,src/vdbeapi.c,1338,FP,columnNullValue defined static at line 1285 prior to this call,,high
+DCL30-C,103,sqlite,src/vdbeapi.c,1340,FP,pOut points to pVm->pResultRow[i] or static nullMem not to an automatic local; no automatic storage returned,,high
+API00-C,104,sqlite,src/vdbeapi.c,1381,FP,columnMem handles pStmt==0 by returning static null Mem; no missing validation,,high
+DCL30-C,105,sqlite,src/vdbeapi.c,1389,FP,val holds return of sqlite3_value_blob (pointer into Mem) not address of local val variable,,high
+API00-C,106,sqlite,src/vdbeapi.c,1391,FP,columnMem null-safe via columnNullValue path,,high
+API00-C,107,sqlite,src/vdbeapi.c,1401,FP,columnMem null-safe; double returned by value,,high
+API00-C,108,sqlite,src/vdbeapi.c,1406,FP,columnMem null-safe,,high
+API00-C,109,sqlite,src/vdbeapi.c,1411,FP,columnMem null-safe,,high
+API00-C,110,sqlite,src/vdbeapi.c,1416,FP,columnMem null-safe; returns pointer owned by Mem,,high
+DCL30-C,111,sqlite,src/vdbeapi.c,1419,FP,val is the pointer returned by sqlite3_value_text into the Mem buffer not address of local,,high
+API00-C,112,sqlite,src/vdbeapi.c,1421,FP,columnMem null-safe; returns pointer to Mem within statement,,high
+API00-C,113,sqlite,src/vdbeapi.c,1431,FP,columnMem null-safe,,high
+DCL30-C,114,sqlite,src/vdbeapi.c,1434,FP,val holds value_text16 result pointer into Mem not address of automatic local,,high
+API00-C,115,sqlite,src/vdbeapi.c,1437,FP,columnMem null-safe,,high
+ARR02-C,116,sqlite,src/vdbeapi.c,1446,FP,azExplainColNames8 sized implicitly by its brace initializer which is correct C; explicit size unneeded,,high
+ARR02-C,117,sqlite,src/vdbeapi.c,1450,FP,azExplainColNames16data sized by initializer list; correct idiom,,high
+ARR02-C,118,sqlite,src/vdbeapi.c,1464,FP,iExplainColNames16 sized by initializer list; correct idiom,,high
+DCL13-C,119,sqlite,src/vdbeapi.c,1486,FP,columnName casts pStmt to Vdbe* read-only but signature is fixed public API and ARMOR-checks pStmt==0,,high
+INT32-C,120,sqlite,src/vdbeapi.c,1523,FP,N += useType*n bounded; useType is 0..4 enum and n is nResColumn (i16-bounded column count) so product cannot overflow int,,high
+INT30-C,121,sqlite,src/vdbeapi.c,1523,FP,"useType*n is signed int math not unsigned; values small (useType 0..4, n <=32767) no wrap",,high
+INT32-C,122,sqlite,src/vdbeapi.c,1523,FP,useType (0..4) times n (column count <=32767) is far below INT_MAX,,high
+DCL30-C,123,sqlite,src/vdbeapi.c,1543,FP,ret holds value_text result pointer or 0 not address of automatic local ret,,high
+API00-C,124,sqlite,src/vdbeapi.c,1550,FP,columnName ARMOR-guards pStmt==0 and asserts db; fixed API,,high
+API00-C,125,sqlite,src/vdbeapi.c,1554,FP,columnName null-safe via ARMOR check,,high
+API00-C,126,sqlite,src/vdbeapi.c,1573,FP,columnName null-safe via ARMOR check,,high
+API00-C,127,sqlite,src/vdbeapi.c,1577,FP,columnName null-safe via ARMOR check,,high
+API00-C,128,sqlite,src/vdbeapi.c,1589,FP,columnName null-safe via ARMOR check,,high
+API00-C,129,sqlite,src/vdbeapi.c,1593,FP,columnName null-safe via ARMOR check,,high
+API00-C,130,sqlite,src/vdbeapi.c,1603,FP,columnName null-safe via ARMOR check,,high
+API00-C,131,sqlite,src/vdbeapi.c,1607,FP,columnName null-safe via ARMOR check,,high
+API00-C,132,sqlite,src/vdbeapi.c,1617,FP,columnName null-safe via ARMOR check,,high
+API00-C,133,sqlite,src/vdbeapi.c,1621,FP,columnName null-safe via ARMOR check,,high
+EXP00-C,134,sqlite,src/vdbeapi.c,1687,FP,expression p->expmask & (i>=31 ? ... : (u32)1<<i) is already fully parenthesized with explicit ternary; precedence is unambiguous,,high
+INT13-C,135,sqlite,src/vdbeapi.c,1687,FP,i is unsigned int param of vdbeUnbind not signed int; the & combines u32 mask with u32 shift result,,high
+INT34-C,136,sqlite,src/vdbeapi.c,1687,FP,i is unsigned and bounded i<p->nVar<=32 by earlier check; ternary caps shift at 31 so shift amount always valid,,high
+INT32-C,137,sqlite,src/vdbeapi.c,1708,FP,i-1 is on int bind index passed as (u32); i>0 guaranteed and overflow on i-1 impossible for valid positive index,,high
+INT32-C,138,sqlite,src/vdbeapi.c,1712,FP,same i-1 bind-index pattern bounded by API contract; cast to u32 well-defined,,high
+EXP05-C,139,sqlite,src/vdbeapi.c,1722,FP,(u8*)zData cast drops const only to read the terminator byte in an assert (debug-only read); intentional and not written through,,high
+DCL31-C,140,sqlite,src/vdbeapi.c,1740,FP,xDel is a function pointer parameter being invoked not an undeclared function,,high
+EXP05-C,141,sqlite,src/vdbeapi.c,1740,FP,(void*)zData cast to pass to destructor callback whose signature takes void*; required by xDel contract not a const-correctness defect,,high
+API00-C,142,sqlite,src/vdbeapi.c,1749,FP,bindText/vdbeUnbind validate via vdbeSafetyNotNull; fixed public API,,high
+API00-C,143,sqlite,src/vdbeapi.c,1749,FP,zData may legitimately be NULL (handled in bindText if zData!=0); not a defect,,high
+API00-C,144,sqlite,src/vdbeapi.c,1749,FP,xDel may be SQLITE_STATIC/TRANSIENT sentinels (0/-1) checked before call; nullable by design,,high
+API00-C,145,sqlite,src/vdbeapi.c,1761,FP,sqlite3_bind_blob64 routes through bindText/vdbeUnbind null check,,high
+API00-C,146,sqlite,src/vdbeapi.c,1761,FP,zData nullable by design handled in bindText,,high
+API00-C,147,sqlite,src/vdbeapi.c,1761,FP,xDel sentinel-checked before invocation,,high
+API00-C,148,sqlite,src/vdbeapi.c,1771,FP,sqlite3_bind_double routes through vdbeUnbind null check,,high
+API00-C,149,sqlite,src/vdbeapi.c,1771,FP,i is a 1-based bind index; cast (u32)(i-1) and validated by vdbeUnbind range check; no arithmetic overflow,,high
+INT32-C,150,sqlite,src/vdbeapi.c,1774,FP,i-1 bind index; i>0 enforced by contract; (u32) cast well-defined,,high
+INT32-C,151,sqlite,src/vdbeapi.c,1777,FP,same bind-index i-1 pattern bounded,,high
+API00-C,152,sqlite,src/vdbeapi.c,1782,FP,sqlite3_bind_int delegates to bind_int64 which null-checks via vdbeUnbind,,high
+API00-C,153,sqlite,src/vdbeapi.c,1785,FP,sqlite3_bind_int64 null-checks via vdbeUnbind,,high
+API00-C,154,sqlite,src/vdbeapi.c,1785,FP,i is bind index cast (u32)(i-1) and range-validated by vdbeUnbind; no overflow,,high
+INT32-C,155,sqlite,src/vdbeapi.c,1788,FP,i-1 bind index bounded by contract,,high
+INT32-C,156,sqlite,src/vdbeapi.c,1791,FP,i-1 bind index bounded by contract,,high
+API00-C,157,sqlite,src/vdbeapi.c,1796,FP,sqlite3_bind_null null-checks via vdbeUnbind,,high
+API00-C,158,sqlite,src/vdbeapi.c,1796,FP,i bind index validated by vdbeUnbind range check,,high
+INT32-C,159,sqlite,src/vdbeapi.c,1799,FP,i-1 bind index bounded by contract,,high
+API00-C,160,sqlite,src/vdbeapi.c,1806,FP,sqlite3_bind_pointer null-checks via vdbeUnbind,,high
+API00-C,161,sqlite,src/vdbeapi.c,1806,FP,i bind index validated by vdbeUnbind,,high
+INT32-C,162,sqlite,src/vdbeapi.c,1815,FP,i-1 bind index bounded by contract,,high
+INT32-C,163,sqlite,src/vdbeapi.c,1818,FP,i-1 bind index bounded by contract,,high
+DCL31-C,164,sqlite,src/vdbeapi.c,1821,FP,xDestructor is a function pointer parameter being invoked not an undeclared function,,high
+API00-C,165,sqlite,src/vdbeapi.c,1825,FP,sqlite3_bind_text routes through bindText/vdbeUnbind null check,,high
+API00-C,166,sqlite,src/vdbeapi.c,1825,FP,zData nullable by design handled in bindText,,high
+API00-C,167,sqlite,src/vdbeapi.c,1825,FP,xDel sentinel-checked before call,,high
+API00-C,168,sqlite,src/vdbeapi.c,1834,FP,sqlite3_bind_text64 routes through bindText null check,,high
+API00-C,169,sqlite,src/vdbeapi.c,1834,FP,zData nullable by design,,high
+API00-C,170,sqlite,src/vdbeapi.c,1834,FP,xDel sentinel-checked,,high
+API00-C,171,sqlite,src/vdbeapi.c,1850,FP,sqlite3_bind_text16 routes through bindText null check,,high
+API00-C,172,sqlite,src/vdbeapi.c,1850,FP,zData nullable by design,,high
+API00-C,173,sqlite,src/vdbeapi.c,1850,FP,xDel sentinel-checked,,high
+INT13-C,174,sqlite,src/vdbeapi.c,1857,FP,n & ~(u64)1 clears low bit to round to even byte count; n is caller byte count and the mask is intentional not a sign-bit defect,,high
+API00-C,175,sqlite,src/vdbeapi.c,1860,FP,sqlite3_bind_value calls value_type then bind_* which null-check; fixed public API,,high
+API00-C,176,sqlite,src/vdbeapi.c,1860,FP,pValue is dereferenced after value_type which handles the value; internal contract supplies valid pValue; nullable misfire,,high
+EXP05-C,177,sqlite,src/vdbeapi.c,1862,FP,(sqlite3_value*)pValue casts away const only to pass to read-only value_type; value not mutated,,high
+FLP34-C,178,sqlite,src/vdbeapi.c,1870,FP,(double)pValue->u.i converts an i64 to double for binding; documented lossy-but-defined conversion not an unchecked range error,,high
+API00-C,179,sqlite,src/vdbeapi.c,1894,FP,sqlite3_bind_zeroblob null-checks via vdbeUnbind,,high
+API00-C,180,sqlite,src/vdbeapi.c,1894,FP,i bind index validated by vdbeUnbind range check,,high
+INT32-C,181,sqlite,src/vdbeapi.c,1897,FP,i-1 bind index bounded by contract; (u32) cast well-defined,,high
+INT32-C,182,sqlite,src/vdbeapi.c,1901,FP,i-1 reached only after assert i>0 (tag-20240917-01) and vdbeUnbind OK; index 1-based bounded,,high
+INT32-C,183,sqlite,src/vdbeapi.c,1903,FP,same SQLITE_OMIT_INCRBLOB branch as 182 guarded by i>0 assert and nVar bound,,high
+API00-C,184,sqlite,src/vdbeapi.c,1909,FP,API_ARMOR null-checks p==0 at 1913 before p->db deref; public API misuse-guarded,,high
+INT13-C,185,sqlite,src/vdbeapi.c,1919,FP,n is sqlite3_uint64 unsigned in assert (n & 0x7FFFFFFF)==n not signed int; sqc type misread,,high
+API00-C,186,sqlite,src/vdbeapi.c,1931,FP,sqlite3_bind_parameter_count uses p?p->nVar:0 ternary null-guard; no unchecked deref,,high
+DCL13-C,187,sqlite,src/vdbeapi.c,1931,FP,signature fixed by public sqlite3_bind_parameter_count ABI; const cannot change exported prototype,,high
+API00-C,188,sqlite,src/vdbeapi.c,1942,FP,sqlite3_bind_parameter_name checks p==0 return 0 before use,,high
+DCL13-C,189,sqlite,src/vdbeapi.c,1942,FP,public sqlite3_bind_parameter_name ABI signature fixed; const not part of contract,,high
+DCL13-C,190,sqlite,src/vdbeapi.c,1953,FP,sqlite3VdbeParameterIndex internal but signature paired with public wrapper; p checked p==0 anyway,,high
+API00-C,191,sqlite,src/vdbeapi.c,1957,FP,sqlite3_bind_parameter_index forwards to ParameterIndex which null-guards p and zName,,high
+API00-C,192,sqlite,src/vdbeapi.c,1957,FP,zName passed to sqlite3Strlen30 which tolerates null and ParameterIndex guards zName==0,,high
+API00-C,193,sqlite,src/vdbeapi.c,1964,FP,sqlite3TransferBindings internal-contract callers (transfer_bindings) guarantee valid stmts; asserts enforce,,high
+API00-C,194,sqlite,src/vdbeapi.c,1964,FP,pToStmt same internal contract; asserts pTo->db==pFrom->db enforce invariant,,high
+API00-C,195,sqlite,src/vdbeapi.c,1991,FP,deprecated public API documents misuse not checked by design; not a defect,,high
+API00-C,196,sqlite,src/vdbeapi.c,1991,FP,same deprecated documented-no-check contract for pToStmt,,high
+API00-C,197,sqlite,src/vdbeapi.c,2015,FP,sqlite3_db_handle uses pStmt?...:0 null-guard ternary,,high
+DCL13-C,198,sqlite,src/vdbeapi.c,2015,FP,public sqlite3_db_handle ABI signature fixed; const not in contract,,high
+API00-C,199,sqlite,src/vdbeapi.c,2023,FP,sqlite3_stmt_readonly null-guards pStmt?...:1,,high
+DCL13-C,200,sqlite,src/vdbeapi.c,2023,FP,public sqlite3_stmt_readonly ABI fixed signature,,high
+API00-C,201,sqlite,src/vdbeapi.c,2031,FP,sqlite3_stmt_isexplain null-guards pStmt?...:0,,high
+DCL13-C,202,sqlite,src/vdbeapi.c,2031,FP,public sqlite3_stmt_isexplain ABI fixed signature,,high
+INT14-C,203,sqlite,src/vdbeapi.c,2049,FP,INT14 readability style note on u32 v in stmt_status not a CERT defect; unsigned counter use intended,,high
+API00-C,204,sqlite,src/vdbeapi.c,2074,FP,sqlite3_stmt_busy guards v!=0 before deref,,high
+DCL13-C,205,sqlite,src/vdbeapi.c,2074,FP,public sqlite3_stmt_busy ABI fixed signature,,high
+DCL13-C,206,sqlite,src/vdbeapi.c,2085,FP,public sqlite3_next_stmt ABI fixed signature; pStmt cast not modified by design,,high
+EXP20-C,207,sqlite,src/vdbeapi.c,2088,FP,EXP20 SafetyCheckOk used in if guard is idiomatic boolean; documented misuse check,,high
+DCL30-C,208,sqlite,src/vdbeapi.c,2100,FP,pNext is a copy of heap pVdbe/pVNext pointer not address of local; returning pointer value not &local,,high
+ARR00-C,209,sqlite,src/vdbeapi.c,2129,FP,op bounds-checked by API_ARMOR (op<0||op>=ArraySize(aCounter)) at 2111 before subscript,,high
+ARR00-C,210,sqlite,src/vdbeapi.c,2130,FP,same aCounter[op] bounded by 2111 ARMOR check and MEMUSED branch excluded,,high
+API00-C,211,sqlite,src/vdbeapi.c,2138,FP,sqlite3_sql null-guards p?p->zSql:0,,high
+DCL13-C,212,sqlite,src/vdbeapi.c,2138,FP,public sqlite3_sql ABI fixed signature,,high
+API00-C,213,sqlite,src/vdbeapi.c,2152,FP,sqlite3_expanded_sql via sqlite3_sql null-guard; zSql==0 short-circuits before deref,,high
+MSC37-C,214,sqlite,src/vdbeapi.c,2152,FP,"both branches return (OMIT_TRACE returns 0, else returns z); MSC37 misfire on ifdef arms",,high
+API00-C,215,sqlite,src/vdbeapi.c,2172,FP,sqlite3_normalized_sql checks p==0 return 0 before use,,high
+ARR38-C,216,sqlite,src/vdbeapi.c,2199,FP,memset size sizeof(Mem)*(nKeyField+1) bounded; nKeyField a schema column count i16-bounded,,high
+INT32-C,217,sqlite,src/vdbeapi.c,2199,FP,nKeyField bounded by SQLITE_MAX_COLUMN schema limit; product cannot overflow size_t,,high
+EXP05-C,218,sqlite,src/vdbeapi.c,2199,FP,EXP05 misfire no const cast present; sizeof multiply is size_t arithmetic,,high
+INT30-C,219,sqlite,src/vdbeapi.c,2199,FP,unsigned sizeof product bounded by column-count schema limit; no wrap reachable,,high
+DCL30-C,220,sqlite,src/vdbeapi.c,2202,FP,pRet holds heap result of sqlite3VdbeAllocUnpackedRecord not a local; returns pointer value,,high
+MEM33-C,221,sqlite,src/vdbeapi.c,2266,FP,MEM33 p->pUnpacked->aMem[iStore] is array element addressed not flex-array struct assignment,,high
+MEM30-C,222,sqlite,src/vdbeapi.c,2266,FP,p is PreUpdate from db->pPreUpdate live handle never freed; sqc misreads context arg,,high
+MEM30-C,223,sqlite,src/vdbeapi.c,2266,FP,aMem array of live pUnpacked not freed; no free precedes line 2266,,high
+MEM30-C,224,sqlite,src/vdbeapi.c,2267,FP,p->pUnpacked->nField read from live struct; no free of p,,high
+MEM30-C,225,sqlite,src/vdbeapi.c,2270,FP,p->pTab->aCol live schema pointer not freed,,high
+MEM30-C,226,sqlite,src/vdbeapi.c,2270,FP,same live array p->pTab->aCol; no free,,high
+MEM30-C,227,sqlite,src/vdbeapi.c,2271,FP,pCol points into live p->pTab->aCol; no free,,high
+MEM30-C,228,sqlite,src/vdbeapi.c,2272,FP,p->apDflt live PreUpdate field never freed here,,high
+INT30-C,229,sqlite,src/vdbeapi.c,2274,FP,sizeof(ptr)*UMXV(nCol) bounded by assert <0x7fffffff at 2274; column count schema-bounded,,high
+INT30-C,230,sqlite,src/vdbeapi.c,2275,FP,nByte product bounded same as 229; no wrap,,high
+MEM30-C,231,sqlite,src/vdbeapi.c,2275,FP,p->pTab live; member read not after free,,high
+MEM30-C,232,sqlite,src/vdbeapi.c,2276,FP,db is live connection handle passed to malloc not freed; sqc misreads alloc context arg,,high
+MEM30-C,233,sqlite,src/vdbeapi.c,2277,FP,p->apDflt live field assigned not freed,,high
+MEM30-C,234,sqlite,src/vdbeapi.c,2279,FP,p->apDflt[iIdx] live array read no free,,high
+MEM30-C,235,sqlite,src/vdbeapi.c,2282,FP,p->pTab live read,,high
+MEM30-C,236,sqlite,src/vdbeapi.c,2282,FP,p passed as live context; sqlite3ValueFromExpr does not free it,,high
+MEM30-C,237,sqlite,src/vdbeapi.c,2282,FP,pCol->affinity live read; no free,,high
+MEM30-C,238,sqlite,src/vdbeapi.c,2283,FP,p->pTab->u.tab.pDfltList live read,,high
+MEM30-C,239,sqlite,src/vdbeapi.c,2283,FP,p->pTab->aCol live array read,,high
+MEM30-C,240,sqlite,src/vdbeapi.c,2284,FP,db live handle to ValueFromExpr; not freed,,high
+MEM30-C,241,sqlite,src/vdbeapi.c,2284,FP,pDflt live Expr from schema list; not freed,,high
+MEM30-C,242,sqlite,src/vdbeapi.c,2284,FP,pCol live; affinity read passed not after free,,high
+MEM30-C,243,sqlite,src/vdbeapi.c,2284,FP,db live handle context arg,,high
+MEM30-C,244,sqlite,src/vdbeapi.c,2284,FP,pCol->affinity live read,,high
+MEM30-C,245,sqlite,src/vdbeapi.c,2288,FP,p->pTab->aCol[iIdx].affinity live array read,,high
+MEM30-C,246,sqlite,src/vdbeapi.c,2290,FP,pMem->flags live Mem read no free,,high
+MEM30-C,247,sqlite,src/vdbeapi.c,2294,FP,p->pTab live struct member read,,high
+MEM30-C,248,sqlite,src/vdbeapi.c,2294,FP,p->pTab->aCol live array read,,high
+MEM30-C,249,sqlite,src/vdbeapi.c,2304,FP,db live handle to sqlite3Error context arg not freed,,high
+MEM30-C,250,sqlite,src/vdbeapi.c,2305,FP,db live handle to sqlite3ApiExit context arg not freed,,high
+API00-C,251,sqlite,src/vdbeapi.c,2314,FP,sqlite3_preupdate_count ARMOR guards db!=0; non-armor relies on documented callback-only contract,,high
+DCL13-C,252,sqlite,src/vdbeapi.c,2314,FP,public sqlite3_preupdate_count ABI fixed signature,,high
+API00-C,253,sqlite,src/vdbeapi.c,2337,FP,sqlite3_preupdate_depth ARMOR guards db!=0 else documented contract,,high
+DCL13-C,254,sqlite,src/vdbeapi.c,2337,FP,public sqlite3_preupdate_depth ABI fixed signature,,high
+API00-C,255,sqlite,src/vdbeapi.c,2353,FP,sqlite3_preupdate_blobwrite ARMOR guards db!=0 else documented contract,,high
+DCL13-C,256,sqlite,src/vdbeapi.c,2353,FP,public sqlite3_preupdate_blobwrite ABI fixed signature,,high
+INT30-C,257,sqlite,src/vdbeapi.c,2427,FP,sizeof(Mem)*UMXV(nField) bounded by assert <0x7fffffff at 2427; nField cursor field count bounded,,high
+INT30-C,258,sqlite,src/vdbeapi.c,2428,FP,same product bounded by assert; no wrap,,high
+INT32-C,259,sqlite,src/vdbeapi.c,2440,FP,iNewReg+1+iStore register index bounded by iStore<nField assert 2434 and register allocation invariants,,high
+INT32-C,260,sqlite,src/vdbeapi.c,2440,FP,iNewReg+1 register index within VDBE allocated aMem range; bounded by compiler invariants,,high
+DCL30-C,261,sqlite,src/vdbeapi.c,2445,FP,pMem=&p->aNew[iStore] points into heap p->aNew not a local; *ppValue gets live pointer,,high
+API00-C,262,sqlite,src/vdbeapi.c,2457,FP,scanstatus_v2 ARMOR null-checks p==0||pOut==0 at 2471,,high
+API00-C,263,sqlite,src/vdbeapi.c,2457,FP,iScan handled iScan<0 branch and idx bound idx>=nScan return 1; no unguarded arithmetic overflow,,high
+DCL13-C,264,sqlite,src/vdbeapi.c,2458,FP,public sqlite3_stmt_scanstatus_v2 ABI fixed signature,,high
+DCL13-C,265,sqlite,src/vdbeapi.c,2462,FP,pOut is OUT write target dereferenced for assignment; const would break write semantics,,high
+DCL00-C,266,sqlite,src/vdbeapi.c,2533,FP,DCL00 r local double recomputed in loop (r*=0.5) so it is modified; sqc misread,,high
+FLP34-C,267,sqlite,src/vdbeapi.c,2539,FP,FLP34 r*sqlite3LogEstToInt(x) double multiply written to double* not a narrowing conversion needing range check,,high
+INT32-C,268,sqlite,src/vdbeapi.c,2578,FP,ii+1 indexes aAddrRange (ArraySize fixed small array) ii<ArraySize step 2; bounded no overflow,,high
+API00-C,269,sqlite,src/vdbeapi.c,2611,FP,scanstatus forwards to v2 which ARMOR-checks pStmt==0,,high
+API00-C,270,sqlite,src/vdbeapi.c,2611,FP,pOut forwarded to v2 which ARMOR-checks pOut==0,,high
+API00-C,271,sqlite,src/vdbeapi.c,2623,FP,scanstatus_reset loops with p!=0 guard in for-condition before deref,,high
+DCL13-C,272,sqlite,src/vdbeapi.c,2623,FP,public sqlite3_stmt_scanstatus_reset ABI fixed signature,,high

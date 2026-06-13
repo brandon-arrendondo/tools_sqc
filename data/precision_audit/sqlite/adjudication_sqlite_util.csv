@@ -1,0 +1,413 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+WIN04-C,0,sqlite,src/util.c,45,FP,xTestCallback is sqlite3GlobalConfig field; WIN04 EncodePointer is Windows-only mitigation not a CERT-C defect for a function pointer load,,high
+DCL13-C,1,sqlite,src/util.c,104,FP,"pCol passed to strlen and field reads only but signature is fixed by callers using non-const Column; const not idiomatic here and pCol->zCnName etc not written, low value misfire",,med
+DCL13-C,2,sqlite,src/util.c,104,TP,zDflt is only returned unchanged never written through; const char* would compile and is correct,,low
+EXP34-C,3,sqlite,src/util.c,105,FP,pCol guaranteed non-null by all callers (build/select/pragma) reading a Column; internal contract not a trust boundary,,high
+INT14-C,4,sqlite,src/util.c,105,FP,colFlags bitwise test and eCType-1 arithmetic on distinct members is normal field access not a real INT14 readability defect,,high
+INT30-C,5,sqlite,src/util.c,109,FP,eCType branch entered only when eCType!=0 and asserted <=SQLITE_N_STDTYPE so eCType-1 is in-range index never wraps,,high
+API00-C,6,sqlite,src/util.c,144,FP,db non-null guaranteed by assert(db!=0) at line 145 and internal callers,,high
+ARR00-C,7,sqlite,src/util.c,162,FP,ii is the for-loop induction var initialized at line 162 for(ii=0;...); not uninitialized,,high
+API00-C,8,sqlite,src/util.c,192,FP,db non-null guaranteed by assert(db!=0) line 193 and internal contract,,high
+API00-C,9,sqlite,src/util.c,211,FP,p (Parse*) non-null by internal caller contract; p->db dereferenced under that invariant,,high
+INT32-C,10,sqlite,src/util.c,214,FP,"p->nErr is a bounded parse error counter; aborts long before INT_MAX, intended counter",,high
+INT32-C,11,sqlite,src/util.c,223,FP,"same nErr bounded parse error counter, no realistic overflow",,high
+API00-C,12,sqlite,src/util.c,242,FP,pParse non-null by internal contract; asserted db!=0 follows,,high
+MEM30-C,13,sqlite,src/util.c,255,FP,"MEM30 misfire: sqlite3DbFree(db,zMsg) frees zMsg not db; db is the live handle read first as context arg",,high
+INT32-C,14,sqlite,src/util.c,256,FP,"pParse->nErr bounded parse error counter, no overflow",,high
+MEM30-C,15,sqlite,src/util.c,256,FP,"MEM30 misfire: pParse not freed; sqlite3DbFree frees zErrMsg, pParse stays live",,high
+INT32-C,16,sqlite,src/util.c,260,FP,pParse->nErr bounded counter,,high
+DCL13-C,17,sqlite,src/util.c,273,FP,"db is read (db->pParse) only not written; but DCL13 const on sqlite3* internal handle is non-idiomatic, still pointee not mutated here so technically const-able",,med
+INT32-C,18,sqlite,src/util.c,277,FP,pParse->nErr bounded counter,,high
+ARR37-C,19,sqlite,src/util.c,302,FP,"ARR37 misfire: z is char* string buffer, z[0] is normal indexed string access guarded by z==0 check line 301",,high
+ARR37-C,20,sqlite,src/util.c,306,FP,z[i] normal string traversal with assert(z[i]) loop invariant,,high
+ARR37-C,21,sqlite,src/util.c,307,FP,"z[i] same dequote string scan, in-bounds by zero-terminator invariant",,high
+ARR37-C,22,sqlite,src/util.c,308,FP,z[i+1] read only after z[i]==quote so i+1 is within the terminated string,,high
+ARR37-C,23,sqlite,src/util.c,309,FP,"z[j++] write index j<=i always (compaction in place), bounded",,high
+ARR37-C,24,sqlite,src/util.c,315,FP,"z[j++] in-place compaction, j never exceeds i",,high
+ARR37-C,25,sqlite,src/util.c,315,FP,"z[i] string read, bounded by terminator",,high
+ARR37-C,26,sqlite,src/util.c,318,FP,"z[j]=0 final terminator write, j<=i in-bounds",,high
+API00-C,27,sqlite,src/util.c,320,FP,p (Expr*) non-null by asserts at 321-322 and caller contract,,high
+API00-C,28,sqlite,src/util.c,332,FP,pParse used only via sqlite3ErrorMsg under malloc-fail assert; non-null by contract,,high
+API00-C,29,sqlite,src/util.c,332,FP,p may be null but guarded: assert at 333 and if(p) at 334 gate all p uses,,med
+STR34-C,30,sqlite,src/util.c,337,FP,STR34 misfire: pIn[0]/pIn[1] compared to ASCII literals 'x'/'X'/'0'; equality compare no sign-extension hazard,,high
+STR34-C,31,sqlite,src/util.c,337,FP,"same char literal equality compare, no integer promotion bug",,high
+STR34-C,32,sqlite,src/util.c,337,FP,"same, comparing against '0'/'x' literals safely",,high
+MEM33-C,33,sqlite,src/util.c,343,FP,MEM33 misfire: *pOut++ = *pIn is single-char copy not a flexible-array struct assignment,,high
+STR34-C,34,sqlite,src/util.c,343,FP,"*pOut++ = *pIn char copy into same buffer; value-preserving in-place dequote, no sign-extension defect",,high
+STR34-C,35,sqlite,src/util.c,343,FP,"*pIn assigned to char *pOut, plain copy, no widening",,high
+STR34-C,36,sqlite,src/util.c,343,FP,"same char-to-char copy, no sign extension",,high
+ARR00-C,37,sqlite,src/util.c,346,FP,pIn[-1] is valid: loop guarantees pIn has advanced past at least the first char (separator never first per number-token grammar),,high
+ARR00-C,38,sqlite,src/util.c,347,FP,"pIn[-1]/pIn[1] reads bounded; quoted-number token grammar ensures separators are interior, prior digit exists",,high
+API00-C,39,sqlite,src/util.c,390,FP,p (Token*) non-null by caller contract,,high
+API00-C,40,sqlite,src/util.c,390,FP,z passed to sqlite3Strlen30 which itself null-checks; non-null by contract anyway,,high
+API00-C,41,sqlite,src/util.c,408,FP,zRight handled: function explicitly checks zLeft==0 then calls StrICmp; zRight null handled in stricmp branch,,high
+API00-C,42,sqlite,src/util.c,416,FP,"zLeft cast to unsigned char* and walked to NUL; callers pass valid C strings, internal contract",,high
+API00-C,43,sqlite,src/util.c,416,FP,"zRight same, valid C string by contract",,high
+CON07-C,44,sqlite,src/util.c,416,FP,"CON07 misfire: a,x are local autos in sqlite3StrICmp not shared statics; no concurrency issue",,high
+EXP05-C,45,sqlite,src/util.c,419,FP,"EXP05: (unsigned char*)zLeft casts away const to read bytes only; never written, idiomatic signed/unsigned reinterpret",,high
+EXP05-C,46,sqlite,src/util.c,420,FP,same const-cast for read-only byte access of zRight,,high
+INT32-C,47,sqlite,src/util.c,427,FP,"UpperToLower[] entries are 0..255 u8; difference fits int easily, no overflow",,high
+API00-C,48,sqlite,src/util.c,435,FP,zRight null handled by explicit zRight==0 branch line 439,,high
+API00-C,49,sqlite,src/util.c,435,FP,"N is a length count; N-- guarded by N-->0 test, no overflow on int loop counter",,high
+CON07-C,50,sqlite,src/util.c,435,FP,CON07 misfire: a is local register var not shared static,,high
+EXP05-C,51,sqlite,src/util.c,442,FP,EXP05 const-cast read-only byte access zLeft,,high
+EXP05-C,52,sqlite,src/util.c,443,FP,EXP05 const-cast read-only byte access zRight,,high
+INT32-C,53,sqlite,src/util.c,444,FP,N-- in while(N-->0) decrements a small length count toward 0; INT_MIN underflow unreachable for valid lengths,,high
+DCL00-C,54,sqlite,src/util.c,452,FP,"h is mutated: h += UpperToLower[...] in the loop at 455, so it is NOT init-and-never-modified; DCL00 misfire",,med
+ARR37-C,55,sqlite,src/util.c,454,FP,z[0] read after z==0 guard line 453; string byte access bounded by terminator,,high
+ARR37-C,56,sqlite,src/util.c,455,FP,z[0] in while loop guarded by z[0] truthiness; in-bounds,,high
+ARR37-C,57,sqlite,src/util.c,456,FP,"z++ pointer advance within NUL-terminated string, normal traversal",,high
+MSC37-C,58,sqlite,src/util.c,465,FP,sqlite3Multiply128 has return in every #if/#elif/#else branch; MSC37 misfire on preprocessor branches,,high
+INT14-C,59,sqlite,src/util.c,468,FP,INT14 on a (u64) in 128-bit multiply shift; deliberate bit math not a defect,,high
+INT14-C,60,sqlite,src/util.c,468,FP,INT14 on b same intentional bit/arith mix in mulhi,,high
+INT30-C,61,sqlite,src/util.c,468,FP,"(__uint128_t)a*b cannot overflow: 128-bit product of two u64 always fits, >>64 takes hi half by design",,high
+INT13-C,62,sqlite,src/util.c,475,FP,"b>>32 where b is u64 param not int; sign operand claim is wrong, value is unsigned",,high
+CON07-C,63,sqlite,src/util.c,516,FP,"CON07 misfire: aBase/aScale are const static lookup tables (read-only), x is local; no shared mutable state",,high
+ARR02-C,64,sqlite,src/util.c,517,FP,aBase[] sized implicitly by initializer list (27 entries); explicit size unnecessary and ARR02 is style-only here,,high
+ARR02-C,65,sqlite,src/util.c,546,FP,aScale[] same const initializer-sized table; safe,,high
+INT32-C,66,sqlite,src/util.c,582,FP,"g-- in p<0 branch where g=p/27 (p>=-348 so g>=-12); decrement bounded, no INT_MIN",,high
+ARR00-C,67,sqlite,src/util.c,586,FP,"aScale[g+13] index: p in [-348,-1] gives g+13 in [1,12]; bounded by assert(p>=POWERSOF10_FIRST) at 577",,high
+INT32-C,68,sqlite,src/util.c,591,FP,g+13 add small bounded ints; no overflow given asserted p range,,high
+EXP07-C,69,sqlite,src/util.c,620,FP,EXP07 misfire: (p*108853)>>15 is a deliberate fixed-point ratio approximation documented at 610-618,,high
+INT13-C,70,sqlite,src/util.c,620,FP,"p is int but range-bounded; >> used for documented rounding-toward-neg, intentional signed shift",,high
+INT14-C,71,sqlite,src/util.c,620,FP,"INT14 intentional fixed-point multiply-then-shift, documented algorithm",,high
+INT32-C,72,sqlite,src/util.c,620,FP,"p*108853 with p in [-348,347] gives ~3.78e7 max, far below INT_MAX; no overflow",,high
+EXP07-C,73,sqlite,src/util.c,621,FP,EXP07 same documented ratio 78913/262144 fixed-point constant,,high
+INT13-C,74,sqlite,src/util.c,621,FP,"p>>18 documented rounding signed shift, intentional",,high
+INT14-C,75,sqlite,src/util.c,621,FP,INT14 intentional fixed-point op,,high
+INT32-C,76,sqlite,src/util.c,621,FP,"p*78913 with |p|<=348 gives ~2.7e7, well below INT_MAX",,high
+MSC37-C,77,sqlite,src/util.c,626,FP,countLeadingZeros has return in builtin branch and full fallback; MSC37 misfire,,high
+INT32-C,78,sqlite,src/util.c,631,FP,"n+=32 in countLeadingZeros fallback; n accumulates to at most 64, no overflow",,high
+INT32-C,79,sqlite,src/util.c,632,FP,n+=16 bounded to <=64,,high
+INT32-C,80,sqlite,src/util.c,633,FP,n+=8 bounded to <=64,,high
+INT32-C,81,sqlite,src/util.c,634,FP,n+=4 bounded to <=64,,high
+INT32-C,82,sqlite,src/util.c,635,FP,n+=2 bounded to <=64,,high
+INT32-C,83,sqlite,src/util.c,636,FP,"n+=1 bounded; final n<=64 (clz of 64-bit), no overflow",,high
+DCL02-C,84,sqlite,src/util.c,651,FP,DCL02 misfire: h and n are short distinct locals in different scopes; no real confusability defect,,high
+INT14-C,85,sqlite,src/util.c,653,FP,INT14 on e in pwr2to10(e+63) call arg; small bounded exponent arithmetic,,high
+INT32-C,86,sqlite,src/util.c,653,FP,"n-1-pwr2to10(e+63): n in [1,18], e a bounded fp exponent; asserts at 655-656 bound the result, no overflow",,high
+INT32-C,87,sqlite,src/util.c,653,FP,"n-1 with n in [1,18] per assert line 652; cannot underflow int",,high
+INT14-C,88,sqlite,src/util.c,655,FP,INT14 on pwr10to2 fn name false-positive (treated as variable); not a real defect,,high
+INT14-C,89,sqlite,src/util.c,655,FP,"INT14 on p in pwr10to2(p); intentional bit/arith, bounded",,high
+INT14-C,90,sqlite,src/util.c,658,FP,"INT14 on h (u64 mantissa) shift; deliberate, h is unsigned",,high
+INT32-C,91,sqlite,src/util.c,658,FP,e+pwr10to2(p)+2 negated and asserted >=0 (line 655) and within range; bounded fp exponent math,,high
+INT32-C,92,sqlite,src/util.c,658,FP,e+pwr10to2(p) bounded by asserts; no overflow for valid double exponents,,high
+FIO50-C,93,sqlite,src/util.c,661,FP,FIO50 misfire: h is a u64 local variable not a FILE* stream; no I/O involved,,high
+INT34-C,94,sqlite,src/util.c,661,FP,"shift amount -(e+pwr10to2(p)+1) asserted in [0,63] at line 656 before use; validated by assert",,high
+INT32-C,95,sqlite,src/util.c,661,FP,e+pwr10to2(p)+1 bounded by asserts 655-656; no overflow,,high
+INT32-C,96,sqlite,src/util.c,661,FP,e+pwr10to2(p) bounded fp exponent arithmetic,,high
+INT32-C,97,sqlite,src/util.c,663,FP,-p where p=n-1-pwr2to10(...) is bounded small; -INT_MIN unreachable for valid range,,high
+INT13-C,98,sqlite,src/util.c,677,FP,"d & U64_BIT(63): d is u64 param (line 669), not signed int; INT13 operand-type claim wrong",,high
+INT14-C,99,sqlite,src/util.c,677,FP,"INT14 on d (u64) bit-test then arithmetic; d is unsigned, intentional",,high
+INT14-C,100,sqlite,src/util.c,677,FP,INT14 on U64_BIT macro misread as variable; (((u64)1)<<N) is a mask macro,,high
+INT32-C,101,sqlite,src/util.c,685,FP,"64-countLeadingZeros(d): clz returns [0,63] for d!=0 (asserted), so result in [1,64]; no overflow",,high
+INT14-C,102,sqlite,src/util.c,687,FP,"INT14 on b (int) computed from 64-clz then used in shifts; bounded value, intentional fp bit math",,high
+INT32-C,103,sqlite,src/util.c,687,FP,e1=53-b-lp with b in 1..64 and lp bounded by POWERSOF10 range; small bounded ints no overflow,,high
+INT32-C,104,sqlite,src/util.c,687,FP,53-b with b in 1..64 (d!=0 asserted) is bounded small int,,high
+INT32-C,105,sqlite,src/util.c,692,FP,e1-(64-b) bounded; e1<=1074 and b in 1..64 all small ints,,high
+INT32-C,106,sqlite,src/util.c,692,FP,64-b with b in 1..64 yields 0..63 no overflow,,high
+INT13-C,107,sqlite,src/util.c,693,FP,d is u64 not signed; bitwise shift on unsigned operand is correct,,high
+INT34-C,108,sqlite,src/util.c,693,FP,shift amount 64-b in 0..63 valid; d!=0 ensures b>=1 keeps shift in type width,,high
+INT32-C,109,sqlite,src/util.c,693,FP,64-b bounded 0..63 small ints no overflow,,high
+INT34-C,110,sqlite,src/util.c,696,FP,shift -(e2+lp+3) explicitly asserted >=0 and <64 at lines 694-695; range guaranteed by POWERSOF10 bounds,,high
+INT13-C,111,sqlite,src/util.c,696,FP,e2 used inside a negation/addition not as bitwise operand; h>>... operand is u64 h,,high
+INT32-C,112,sqlite,src/util.c,696,FP,e2+lp+3 are small bounded ints from clamped exponent range,,high
+INT32-C,113,sqlite,src/util.c,696,FP,e2+lp bounded by clamped POWERSOF10 exponent math,,high
+INT14-C,114,sqlite,src/util.c,698,FP,INT14 readability heuristic on out; bit/arith mix is intentional float assembly,,low
+INT32-C,115,sqlite,src/util.c,699,FP,e1 bounded <=1074 and >-972 region; decrement cannot reach INT_MIN,,high
+EXP07-C,116,sqlite,src/util.c,706,FP,EXP07 1075-e1<<52 is deliberate IEEE754 exponent field construction,,low
+EXP05-C,117,sqlite,src/util.c,708,FP,&r passed to memcpy non-const dest; r is local mutable double not const cast-away,,high
+API00-C,118,sqlite,src/util.c,743,FP,internal contract; callers always pass valid pResult; *pResult=0.0 set first deterministically,,high
+MSC37-C,119,sqlite,src/util.c,743,FP,MSC37 misfire; both #if branches return; non-OMIT branch falls through to explicit return paths,,high
+ARR37-C,120,sqlite,src/util.c,755,FP,z walks a NUL-terminated UTF-8 C string; pointer increment is idiomatic and bounded by terminator,,high
+ARR37-C,121,sqlite,src/util.c,760,FP,z++ after sign char; bounded by NUL terminator,,high
+ARR37-C,122,sqlite,src/util.c,762,FP,z++ idiomatic string walk bounded by NUL,,high
+ARR30-C,123,sqlite,src/util.c,766,FP,loop guarded by sqlite3Isdigit(*z) which is false at NUL; terminated string bounds it,,high
+ARR37-C,124,sqlite,src/util.c,768,FP,z++ in digit loop bounded by Isdigit guard,,high
+INT32-C,125,sqlite,src/util.c,768,FP,nDigit counts digits of a string; cannot realistically reach INT_MAX before NUL,,high
+ARR37-C,126,sqlite,src/util.c,772,FP,z++ in non-significant-digit skip loop bounded by Isdigit/NUL,,high
+INT32-C,127,sqlite,src/util.c,772,FP,d exponent shift bounded by digit count of input string far below INT_MAX,,high
+ARR37-C,128,sqlite,src/util.c,778,FP,z++ after decimal point bounded by NUL,,high
+INT32-C,129,sqlite,src/util.c,779,FP,eType increments at most twice (decimal + exponent); no overflow,,high
+ARR30-C,130,sqlite,src/util.c,782,FP,"while guarded by sqlite3Isdigit(*z), false at NUL terminator",,high
+INT32-C,131,sqlite,src/util.c,785,FP,d-- bounded by fractional digit count of finite string,,high
+ARR37-C,132,sqlite,src/util.c,788,FP,z++ in fractional loop bounded by Isdigit/NUL,,high
+ARR37-C,133,sqlite,src/util.c,795,FP,z++ after exponent marker bounded by NUL,,high
+INT32-C,134,sqlite,src/util.c,796,FP,eType++ second increment bounded,,high
+ARR37-C,135,sqlite,src/util.c,801,FP,z++ after exponent sign bounded by NUL,,high
+ARR37-C,136,sqlite,src/util.c,803,FP,z++ first exponent digit bounded by NUL,,high
+STR34-C,137,sqlite,src/util.c,807,FP,*z is a char from a NUL-terminated digit-validated string; '0'..'9' subtraction safe,,high
+STR34-C,138,sqlite,src/util.c,807,FP,z char to int via *z-'0' after Isdigit guard; value 0..9 no sign-extension hazard,,high
+ARR37-C,139,sqlite,src/util.c,808,FP,z++ in exponent digit loop bounded by NUL,,high
+ARR30-C,140,sqlite,src/util.c,809,FP,while guarded by sqlite3Isdigit(*z) false at NUL,,high
+INT32-C,141,sqlite,src/util.c,810,FP,exp explicitly capped exp<10000 ternary before multiply/add; no overflow,,high
+INT32-C,142,sqlite,src/util.c,810,FP,exp*10 guarded by exp<10000 clamp at line 810; result <100000,,high
+ARR37-C,143,sqlite,src/util.c,811,FP,z++ exponent loop bounded by Isdigit/NUL,,high
+INT32-C,144,sqlite,src/util.c,813,FP,d+=esign*exp with exp<=10000 and esign +-1; d stays small bounded int,,high
+INT32-C,145,sqlite,src/util.c,813,FP,esign*exp with esign +-1 and exp<=10000 bounded,,high
+ARR37-C,146,sqlite,src/util.c,820,FP,z++ trailing-space skip bounded by NUL via Isspace guard,,high
+ARR37-C,147,sqlite,src/util.c,832,FP,z[0] terminator check on NUL-terminated string; in-bounds read,,high
+CON07-C,148,sqlite,src/util.c,876,FP,sqlite3DigitPairs is const static read-only table; x is a local; CON07 misfire no shared mutable state,,high
+EXP07-C,149,sqlite,src/util.c,890,FP,EXP07 (u64)1<<63 deliberate SMALLEST_INT64 magnitude construction,,low
+INT30-C,150,sqlite,src/util.c,892,FP,sizeof(u.a)-1 is a compile-time size_t constant (22); no runtime wrap,,high
+EXP33-C,151,sqlite,src/util.c,892,FP,u.a is fully written before read; u.a[i]=0 then memcpy reads &u.a[i]; not uninitialized,,high
+ARR30-C,152,sqlite,src/util.c,893,FP,i=22 then decremented by 2; max 20 i64 digits stay within a[23]; indices bounded,,high
+INT32-C,153,sqlite,src/util.c,895,FP,x is u64 (x=v or (u64)-v); x%100 in 0..99 times 2 <=198 no overflow,,high
+INT10-C,154,sqlite,src/util.c,895,FP,x is u64 unsigned so % is well-defined non-negative; INT10 misfire,,high
+ARR30-C,155,sqlite,src/util.c,896,FP,kk=(x%100)*2 in 0..198 indexes sqlite3DigitPairs.a[201] not u.a; sqc misattributed buffer; in bounds,,high
+INT32-C,156,sqlite,src/util.c,897,FP,i-2 with i>=2 in loop (20 digits max from a[23]); index stays >=0,,high
+MEM33-C,157,sqlite,src/util.c,898,FP,*(u16*)(&u.a[i-2]) is aligned 2-byte store of digit pair not flexible-array struct assignment; MEM33 misfire,,high
+ARR30-C,158,sqlite,src/util.c,898,FP,"u.a[i-2] write with i decremented by 2; bounded within a[23], i>=2 maintained",,high
+INT32-C,159,sqlite,src/util.c,899,FP,i-=2 paired with x/=100; loop bounded by digit count (<=20) keeps i>=2,,high
+INT32-C,160,sqlite,src/util.c,903,FP,--i for trailing digit; i>=1 guaranteed after pair loop; no INT_MIN,,high
+INT32-C,161,sqlite,src/util.c,905,FP,--i for sign char only when v<0; i still >=0 bounded,,high
+INT32-C,162,sqlite,src/util.c,906,FP,memcpy size sizeof(u.a)-i with i in 0..22; positive bounded size_t no overflow,,high
+ARR30-C,163,sqlite,src/util.c,906,FP,&u.a[i] read with i>=0 and size sizeof(u.a)-i; in-bounds source,,high
+EXP05-C,164,sqlite,src/util.c,906,FP,sizeof(u.a)-i is a size_t length arg not a const-pointer cast-away; EXP05 misfire,,high
+INT30-C,165,sqlite,src/util.c,906,FP,sizeof(u.a)-i with i<=22 yields >=1 no unsigned wrap,,high
+INT30-C,166,sqlite,src/util.c,907,FP,sizeof(u.a)-1 compile-time constant 22; no wrap,,high
+DCL00-C,167,sqlite,src/util.c,925,FP,DCL00 c is reused/reassigned in loop body (c=(zNum[i*incr]-pow63[i])*10); not immutable,,low
+EXP34-C,168,sqlite,src/util.c,930,FP,zNum is internal 19-char compare buffer guaranteed valid by caller contract; not a trust boundary,,high
+API00-C,169,sqlite,src/util.c,957,FP,internal contract; zNum bounded by zEnd=zNum+length; all reads guarded zNum<zEnd,,high
+API00-C,170,sqlite,src/util.c,957,FP,pNum always written on every return path; internal callers pass valid pointer,,high
+API00-C,171,sqlite,src/util.c,957,FP,length used to compute zEnd bound; UTF16 path masks length&=~1; reads bounded by zEnd,,high
+DCL00-C,172,sqlite,src/util.c,962,FP,DCL00 c reassigned in for-loop (c=zNum[i]) and later c=i>19*incr?...; not const,,low
+INT14-C,173,sqlite,src/util.c,966,FP,INT14 length&=~1 then used arithmetically is intentional UTF16 even-length rounding,,low
+DCL03-C,174,sqlite,src/util.c,973,FP,DCL03 assert(enc==UTF8||UTF16LE||UTF16BE) is a runtime enum check not a pure compile-time constant,,high
+INT14-C,175,sqlite,src/util.c,974,FP,INT14 enc used in &1 and 3-enc arithmetic is intentional encoding-offset computation,,low
+EXP34-C,176,sqlite,src/util.c,974,FP,zNum reads bounded by i<length guard in the for loop; not a null deref,,high
+INT14-C,177,sqlite,src/util.c,974,FP,INT14 i used as loop counter with i+=2 and indexing; routine arithmetic,,low
+STR34-C,178,sqlite,src/util.c,976,FP,zNum[i] compared ==0 (NUL byte scan) not assigned to larger type; STR34 misfire on byte equality,,high
+STR34-C,179,sqlite,src/util.c,976,FP,zNum[i^1] address arithmetic for endian offset not a sign-extending char load; i^1 toggles low bit,,high
+INT13-C,180,sqlite,src/util.c,976,FP,i^1 is a deliberate endian byte-offset toggle on a small loop counter; intentional bit op,,high
+ARR36-C,181,sqlite,src/util.c,979,FP,zNum<zEnd compares pointers into the SAME input buffer (zEnd=zNum+length); valid same-object compare,,high
+ARR36-C,182,sqlite,src/util.c,980,FP,same-object pointer compare zNum<zEnd within the input string buffer,,high
+ARR36-C,183,sqlite,src/util.c,989,FP,&zNum[i]<zEnd both reference the single input buffer; valid pointer comparison,,high
+EXP30-C,184,sqlite,src/util.c,990,FP,"c assigned in for-test (c=zNum[i]) and compared in same expression across the comma/relational sequence; well-defined, single modification",,high
+INT32-C,185,sqlite,src/util.c,990,FP,i+=incr loop counter bounded by zEnd; finite input length no overflow,,high
+INT07-C,186,sqlite,src/util.c,991,FP,INT07 u is u64 not char here; sqc mis-typed; u=u*10+c-'0' on unsigned accumulator,,low
+INT30-C,187,sqlite,src/util.c,991,FP,u*10 unsigned; overflow handled afterward by u>LARGEST_INT64 clamp and 19-digit compare2pow63 path,,high
+INT07-C,188,sqlite,src/util.c,1003,FP,INT07 misfire; u is u64 mantissa accumulator not char,,low
+INT32-C,189,sqlite,src/util.c,1019,FP,jj+=incr trailing-text scan bounded by &zNum[jj]<zEnd; finite,,high
+INT07-C,190,sqlite,src/util.c,1041,FP,INT07 misfire; u is u64 not char,,low
+INT30-C,191,sqlite,src/util.c,1041,FP,"u-1 only evaluated in assert when u-1==LARGEST_INT64 (u=2^63 exact path); no wrap, well-defined",,high
+API00-C,192,sqlite,src/util.c,1060,FP,pOut always written via memcpy or sqlite3Atoi64; internal contract valid pointer,,high
+ARR37-C,193,sqlite,src/util.c,1062,FP,z[0] on NUL-terminated literal string; in-bounds; idiomatic prefix check,,high
+EXP34-C,194,sqlite,src/util.c,1062,FP,z is a NUL-terminated C string literal arg; z[0]/z[1] reads safe to terminator,,high
+ARR37-C,195,sqlite,src/util.c,1063,FP,z[1] read safe; if z[0]==0 short-circuit && prevents z[1] hazard; even so z[1] is the NUL-following byte in a C string,,high
+ARR37-C,196,sqlite,src/util.c,1063,FP,duplicate z[1] subscript; same NUL-terminated string bound,,high
+ARR37-C,197,sqlite,src/util.c,1067,FP,z[i] hex-prefix zero-skip loop guarded by z[i]=='0' false at NUL; bounded,,high
+ARR37-C,198,sqlite,src/util.c,1068,FP,z[k] guarded by sqlite3Isxdigit(z[k]) false at NUL; bounded walk,,high
+INT07-C,199,sqlite,src/util.c,1069,FP,INT07 misfire; u is u64 hex accumulator not char,,low
+INT14-C,200,sqlite,src/util.c,1069,FP,INT14 z used as index and pointer; idiomatic string indexing not real bit/arith confusion,,low
+INT30-C,201,sqlite,src/util.c,1069,FP,u*16 unsigned hex accumulate; over-length detected by k-i>16 return 2 afterward; intended,,high
+ARR37-C,202,sqlite,src/util.c,1069,FP,z[k] hex digit read guarded by Isxdigit/NUL,,high
+ARR37-C,203,sqlite,src/util.c,1073,FP,z[k] terminator check z[k]!=0 on NUL-terminated string; in bounds,,high
+STR34-C,204,sqlite,src/util.c,1078,FP,z bytes fed to strspn/sqlite3HexToInt; HexToInt indexes via validated xdigit; no sign-extend defect,,high
+ARR37-C,205,sqlite,src/util.c,1079,FP,z[n] read after strspn computes n; n bounded by 0x3fffffff mask and string contents; z NUL-terminated,,high
+API00-C,206,sqlite,src/util.c,1094,FP,API00 on internal sqlite3GetInt32 pValue; callers pass valid ptr by internal contract not a trust boundary,,high
+EXP34-C,207,sqlite,src/util.c,1098,FP,zNum non-null by internal contract; entry to number parser callers never pass null,,high
+INT07-C,208,sqlite,src/util.c,1109,FP,u at 1109 is declared u32 not char; sqc misread type,,high
+EXP33-C,209,sqlite,src/util.c,1112,FP,i is the for-loop induction var initialized in the for-init before use,,high
+INT07-C,210,sqlite,src/util.c,1113,FP,u is u32 not char,,high
+INT14-C,211,sqlite,src/util.c,1113,FP,u*16+hexdigit on u32 is intended hex accumulation readability rule only,,high
+INT30-C,212,sqlite,src/util.c,1113,FP,u32 hex accumulate bounded by i<8 (32 bits) and post-checked u&0x80000000; intended unsigned,,high
+EXP30-C,213,sqlite,src/util.c,1125,FP,c=zNum[i]-'0' then compared across && sequence point; no UB,,high
+EXP33-C,214,sqlite,src/util.c,1125,FP,c assigned in for-condition before use,,high
+INT32-C,215,sqlite,src/util.c,1126,FP,v is i64 bounded to i<11 digits then checked >2147483647; cannot overflow i64,,high
+INT32-C,216,sqlite,src/util.c,1143,FP,-v only after v confirmed within 32-bit range (v-neg<=2147483647); safe,,high
+API00-C,217,sqlite,src/util.c,1153,FP,API00 internal sqlite3Atoi z; internal contract,,high
+API00-C,218,sqlite,src/util.c,1176,FP,API00 internal FpDecode p; internal contract,,high
+API00-C,219,sqlite,src/util.c,1176,FP,iRound is small rounding-digit count from internal callers; no overflow,,high
+INT14-C,220,sqlite,src/util.c,1202,FP,v is u64 mantissa; (v>>52)&0x7ff is intended IEEE754 field extraction,,high
+EXP07-C,221,sqlite,src/util.c,1202,FP,v>>52 extracts IEEE754 exponent field; documented intended layout not a magic constant,,high
+INT32-C,222,sqlite,src/util.c,1204,FP,"1+(v!=const) is 1+{0,1}; no overflow",,high
+INT32-C,223,sqlite,src/util.c,1214,FP,nn is countLeadingZeros 0..63; -1074-nn small bounded,,high
+EXP07-C,224,sqlite,src/util.c,1216,FP,v<<11 normalizes IEEE754 mantissa; intended,,high
+FIO50-C,225,sqlite,src/util.c,1216,FP,v is a u64 mantissa not a file stream; FIO50 total misfire,,high
+INT32-C,226,sqlite,src/util.c,1217,FP,e is IEEE exponent 0..2047; e-=1086 bounded,,high
+INT32-C,227,sqlite,src/util.c,1219,FP,iRound small bounded rounding count,,high
+ARR01-C,228,sqlite,src/util.c,1224,FP,p->zBuf is a real char[20] array member; sizeof yields 20 correctly not decayed,,high
+INT30-C,229,sqlite,src/util.c,1224,FP,sizeof(p->zBuf)-1 = 19 compile-time constant; no wrap,,high
+INT32-C,230,sqlite,src/util.c,1228,FP,"(v%100)*2 in [0,198]; no overflow",,high
+ARR30-C,231,sqlite,src/util.c,1229,FP,"index is sqlite3DigitPairs.a[kk] kk in [0,198] within a[201]; cited size 23/line 880 is wrong attribution",,high
+INT32-C,232,sqlite,src/util.c,1230,FP,i is a small zBuf slot index (~19 down to 0); i-1 bounded,,high
+MEM33-C,233,sqlite,src/util.c,1231,FP,*(u16*)(&zBuf[i-1])=*(u16*)... is a u16 store not a flexible-array struct assignment,,high
+INT32-C,234,sqlite,src/util.c,1231,FP,same i-1 zBuf index; bounded,,high
+ARR30-C,235,sqlite,src/util.c,1231,FP,sqlite3DigitPairs.a[kk] bounded; misattributed buffer,,high
+INT32-C,236,sqlite,src/util.c,1232,FP,i-=2 stepping down zBuf index; bounded,,high
+INT32-C,237,sqlite,src/util.c,1237,FP,i-- small positive index; no INT_MIN reach,,high
+ARR01-C,238,sqlite,src/util.c,1239,FP,p->zBuf real array member; sizeof=20,,high
+INT30-C,239,sqlite,src/util.c,1239,FP,sizeof(p->zBuf)-1 constant 19,,high
+ARR01-C,240,sqlite,src/util.c,1240,FP,p->zBuf real array; sizeof=20,,high
+INT30-C,241,sqlite,src/util.c,1240,FP,sizeof(p->zBuf)-1 constant 19,,high
+ARR01-C,242,sqlite,src/util.c,1242,FP,p->zBuf real array; sizeof=20,,high
+ARR01-C,243,sqlite,src/util.c,1243,FP,p->zBuf real array; sizeof=20,,high
+INT30-C,244,sqlite,src/util.c,1243,FP,sizeof(p->zBuf)-1 constant 19,,high
+INT32-C,245,sqlite,src/util.c,1244,FP,n (<=19 digits) + exp (bounded base-10 exp from decode); no overflow,,high
+INT32-C,246,sqlite,src/util.c,1246,FP,p->iDP and iRound are small bounded digit positions,,high
+INT32-C,247,sqlite,src/util.c,1249,FP,i-- small positive zBuf index,,high
+INT32-C,248,sqlite,src/util.c,1250,FP,n is digit count <=19; n++ bounded,,high
+INT32-C,249,sqlite,src/util.c,1251,FP,p->iDP small bounded; ++ safe,,high
+STR34-C,250,sqlite,src/util.c,1254,FP,z=&zBuf[i+1] is a char* pointer assignment not a numeric sign-extension,,high
+STR34-C,251,sqlite,src/util.c,1254,FP,same pointer-into-buffer assignment misread as sign extension,,high
+INT32-C,252,sqlite,src/util.c,1254,FP,i+1 small bounded zBuf index,,high
+ARR37-C,253,sqlite,src/util.c,1263,FP,z is char* into zBuf[20]; z[15] bounded by 17-digit precision logic and asserts,,high
+ARR37-C,254,sqlite,src/util.c,1263,FP,z[14] bounded within zBuf,,high
+ARR37-C,255,sqlite,src/util.c,1266,FP,"z[jj-1] jj in (0,14]; bounded",,high
+ARR37-C,256,sqlite,src/util.c,1270,FP,z[0] bounded,,high
+ARR37-C,257,sqlite,src/util.c,1271,FP,z[kk] kk<jj<=14; bounded,,high
+ARR37-C,258,sqlite,src/util.c,1277,FP,z[15] bounded within zBuf,,high
+ARR37-C,259,sqlite,src/util.c,1277,FP,z[14] bounded,,high
+ARR37-C,260,sqlite,src/util.c,1277,FP,z[13] bounded,,high
+ARR37-C,261,sqlite,src/util.c,1280,FP,z[0] bounded,,high
+ARR37-C,262,sqlite,src/util.c,1281,FP,z[jj-1] jj>0 guarded by loop; bounded,,high
+ARR37-C,263,sqlite,src/util.c,1282,FP,z[0] bounded,,high
+ARR37-C,264,sqlite,src/util.c,1283,FP,z[kk] kk<jj; bounded,,high
+INT32-C,265,sqlite,src/util.c,1285,FP,jj+1 jj<=14; bounded,,high
+ARR37-C,266,sqlite,src/util.c,1290,FP,z[iRound] iRound<=mxRound<=n; bounded,,high
+INT32-C,267,sqlite,src/util.c,1291,FP,iRound-1 bounded positive,,high
+ARR37-C,268,sqlite,src/util.c,1293,FP,z[j] j=iRound-1 bounded,,high
+ARR37-C,269,sqlite,src/util.c,1294,FP,"z[j] in carry loop bounded, j decremented to 0",,high
+ARR37-C,270,sqlite,src/util.c,1295,FP,z[j] bounded,,high
+ARR37-C,271,sqlite,src/util.c,1297,FP,z-- only when j==0 with leading carry; z stays within zBuf (room reserved),,high
+ARR37-C,272,sqlite,src/util.c,1298,FP,z[0] after z-- still within zBuf,,high
+INT32-C,273,sqlite,src/util.c,1299,FP,n++ digit count bounded,,high
+INT32-C,274,sqlite,src/util.c,1300,FP,p->iDP++ small bounded,,high
+INT32-C,275,sqlite,src/util.c,1303,FP,j-- bounded positive,,high
+ARR37-C,276,sqlite,src/util.c,1309,FP,z[n-1] n>0 asserted; bounded,,high
+INT32-C,277,sqlite,src/util.c,1310,FP,n-- guarded by n>0 assert in loop,,high
+API00-C,278,sqlite,src/util.c,1323,FP,API00 internal sqlite3GetUInt32 pI; internal contract,,high
+ARR37-C,279,sqlite,src/util.c,1326,FP,z is untrusted char* but z[i] loop bounded by isdigit and NUL terminator; subscript legal,,high
+ARR37-C,280,sqlite,src/util.c,1327,FP,z[i] same bounded scan,,high
+ARR37-C,281,sqlite,src/util.c,1330,FP,z[i] terminating check; bounded,,high
+ARR30-C,282,sqlite,src/util.c,1384,FP,buf[10] in putVarint64; p[i]=buf[j] with n<=9 asserted so j<10; bounded,,high
+FIO50-C,283,sqlite,src/util.c,1394,FP,v is u32 not a file stream; FIO50 misfire,,high
+API00-C,284,sqlite,src/util.c,1418,FP,API00 internal sqlite3GetVarint v; internal contract,,high
+CON07-C,285,sqlite,src/util.c,1418,FP,'a' is a local u32 in sqlite3GetVarint not a shared static; CON07 misfire,,high
+EXP05-C,286,sqlite,src/util.c,1421,FP,(signed char*)p casts away const but only reads the byte to test sign bit; pointee never written through,,med
+MEM33-C,287,sqlite,src/util.c,1422,FP,*v=*p is a u64 integer assignment not a flexible-array struct copy,,high
+EXP05-C,288,sqlite,src/util.c,1425,FP,(signed char*)p read-only sign-bit test; const pointee not modified,,med
+INT14-C,289,sqlite,src/util.c,1426,FP,p[0]&0x7f<<7|p[1] operates on dereferenced bytes (cast to u32); intended varint decode,,high
+INT13-C,290,sqlite,src/util.c,1426,FP,operands are (u32)(p[0]&0x7f) unsigned; bytes not a signed int p,,high
+DCL03-C,291,sqlite,src/util.c,1431,TP,assert( SLOT_2_0 == ((0x7f<<14)|0x7f) ) argument is a pure compile-time constant expression,,high
+EXP07-C,292,sqlite,src/util.c,1431,FP,0x7f<<14 is a documented precomputed-mask constant inside a compile-time assert; intended,,high
+DCL03-C,293,sqlite,src/util.c,1432,TP,assert( SLOT_4_2_0 == ((0xfU<<28)|(0x7f<<14)|0x7f) ) is a pure compile-time constant expression,,high
+EXP07-C,294,sqlite,src/util.c,1432,FP,0xfU<<28 documented constant in assert; intended,,high
+EXP07-C,295,sqlite,src/util.c,1432,FP,0x7f<<14 documented constant in assert; intended,,high
+EXP07-C,296,sqlite,src/util.c,1434,FP,((u32)p[0])<<14 shifts a data byte not a magic constant,,high
+INT13-C,297,sqlite,src/util.c,1434,FP,(u32)p[0] is unsigned; shift on unsigned data,,high
+FIO50-C,298,sqlite,src/util.c,1443,FP,b is u32 not a file stream; FIO50 misfire,,high
+INT13-C,299,sqlite,src/util.c,1443,FP,b is u32 unsigned; intended bit pack,,high
+EXP07-C,300,sqlite,src/util.c,1452,FP,b<<14 shifts u32 varint data,,high
+INT13-C,301,sqlite,src/util.c,1452,FP,b is u32 unsigned,,high
+INT13-C,302,sqlite,src/util.c,1455,FP,b is u32 unsigned; & is intended mask,,high
+FIO50-C,303,sqlite,src/util.c,1460,FP,a is u32 not a file stream; FIO50 misfire,,high
+EXP07-C,304,sqlite,src/util.c,1476,FP,a<<14 shifts u32 data,,high
+INT13-C,305,sqlite,src/util.c,1485,FP,b is u32 unsigned,,high
+EXP07-C,306,sqlite,src/util.c,1487,FP,s>>18 shifts u32 data; intended,,high
+FIO50-C,307,sqlite,src/util.c,1493,FP,s is u32 not a file stream; FIO50 misfire,,high
+EXP07-C,308,sqlite,src/util.c,1498,FP,b<<14 shifts u32 data; intended,,high
+INT13-C,309,sqlite,src/util.c,1498,FP,"b is u32 (decl line 1419 a,b,s are u32) so the << is on an unsigned operand not signed int",,high
+INT13-C,310,sqlite,src/util.c,1501,FP,b is u32 so the & is on an unsigned operand,,high
+EXP07-C,311,sqlite,src/util.c,1508,FP,s is u32 right-shift in fixed-format varint decoder not a constant assumption,,high
+FIO50-C,312,sqlite,src/util.c,1508,FP,s is a u32 integer not a FILE stream FIO50 is nonsensical here,,high
+EXP07-C,313,sqlite,src/util.c,1514,FP,a is u32 fixed varint decode step not a constant assumption,,high
+INT13-C,314,sqlite,src/util.c,1521,FP,b is u32 shift on unsigned operand,,high
+EXP07-C,315,sqlite,src/util.c,1523,FP,s is u32 fixed varint decode shift,,high
+EXP07-C,316,sqlite,src/util.c,1531,FP,b is u32 fixed varint decode shift,,high
+INT13-C,317,sqlite,src/util.c,1531,FP,b is u32 shift on unsigned operand,,high
+INT13-C,318,sqlite,src/util.c,1534,FP,b is u32 mask on unsigned operand,,high
+EXP07-C,319,sqlite,src/util.c,1547,FP,a is u32 fixed varint decode shift,,high
+INT13-C,320,sqlite,src/util.c,1554,FP,b is u32 shift on unsigned operand,,high
+FIO50-C,321,sqlite,src/util.c,1557,FP,s is a u32 integer not a FILE stream,,high
+ARR00-C,322,sqlite,src/util.c,1558,FP,p has advanced via four p++ so p[-4] indexes back into the read buffer not a negative array index,,high
+FIO50-C,323,sqlite,src/util.c,1560,FP,b is a u32 integer not a FILE stream,,high
+INT13-C,324,sqlite,src/util.c,1560,FP,b is u32 shift on unsigned operand,,high
+API00-C,325,sqlite,src/util.c,1579,FP,internal contract caller via getVarint32 macro always passes a valid p; not a trust boundary,,high
+INT13-C,326,sqlite,src/util.c,1585,FP,p is const unsigned char* element promoted to int; mask intended,,high
+INT13-C,327,sqlite,src/util.c,1587,FP,p element mask intended in fixed varint decode,,high
+INT13-C,328,sqlite,src/util.c,1589,FP,p element OR intended in fixed varint decode,,high
+INT13-C,329,sqlite,src/util.c,1592,FP,p element mask intended,,high
+INT13-C,330,sqlite,src/util.c,1594,FP,p element OR intended,,high
+EXP07-C,331,sqlite,src/util.c,1594,FP,p[0]&0x7f is a small value promoted to int; shift cannot overflow,,high
+MSC37-C,332,sqlite,src/util.c,1622,FP,every #if/#else branch of sqlite3Get4byte ends in return; no fallthrough,,high
+INT13-C,333,sqlite,src/util.c,1636,FP,p is unsigned char element promoted to int; mask intended,,high
+INT13-C,334,sqlite,src/util.c,1637,FP,p element OR intended,,high
+INT30-C,335,sqlite,src/util.c,1637,FP,shift is explicitly (unsigned)p[0]<<24 author-intended big-endian assembly with testcase guard,,high
+API00-C,336,sqlite,src/util.c,1640,FP,internal contract sqlite3Put4byte callers always pass valid p,,high
+API00-C,337,sqlite,src/util.c,1664,FP,h validated by assert to be a hex char 0-9a-fA-F bounded value,,high
+INT14-C,338,sqlite,src/util.c,1667,FP,h bounded to ASCII hex range; bitwise+arith style note only,,high
+INT32-C,339,sqlite,src/util.c,1667,FP,h in 48..102 adding 9 cannot overflow int,,high
+INT32-C,340,sqlite,src/util.c,1670,FP,EBCDIC branch h bounded hex range adding 9 cannot overflow,,high
+API00-C,341,sqlite,src/util.c,1682,FP,internal contract db is a valid connection handle,,high
+API00-C,342,sqlite,src/util.c,1682,FP,z is the blob-literal text caller-guaranteed non-null,,high
+API00-C,343,sqlite,src/util.c,1682,FP,n is the literal byte length bounded by parser,,high
+INT32-C,344,sqlite,src/util.c,1686,FP,n is a small positive literal length n/2+1 cannot overflow int,,high
+INT32-C,345,sqlite,src/util.c,1687,FP,n is positive length decrement is safe far from INT_MIN,,high
+ARR00-C,346,sqlite,src/util.c,1689,FP,n is the function parameter (initialized) not an uninitialized variable,,high
+INT14-C,347,sqlite,src/util.c,1689,FP,i is the loop index style note only,,high
+ARR37-C,348,sqlite,src/util.c,1690,FP,z points to the input literal buffer; subscript is valid array access,,high
+EXP34-C,349,sqlite,src/util.c,1690,FP,z is caller-guaranteed non-null blob literal text,,high
+ARR37-C,350,sqlite,src/util.c,1690,FP,z[i+1] valid access into literal buffer i+1<n+1 within bounds,,high
+INT32-C,351,sqlite,src/util.c,1690,FP,i bounded by loop condition i<n; no overflow,,high
+DCL30-C,352,sqlite,src/util.c,1694,FP,zBlob is heap from sqlite3DbMallocRawNN not local storage; comment states malloc-owned,,high
+ARR00-C,353,sqlite,src/util.c,1694,FP,zBlob is heap-allocated and returned to caller to free; not a dangling local,,high
+DCL13-C,354,sqlite,src/util.c,1741,TP,db only read (db->eOpenState) never written nor propagated to non-const; const would compile,,low
+API00-C,355,sqlite,src/util.c,1761,FP,internal contract pA is a valid pointer to caller i64,,high
+MSC37-C,356,sqlite,src/util.c,1761,FP,both #if and #else paths return; no fallthrough,,high
+API00-C,357,sqlite,src/util.c,1781,FP,internal contract pA valid pointer,,high
+MSC37-C,358,sqlite,src/util.c,1781,FP,both #if and #else paths return,,high
+API00-C,359,sqlite,src/util.c,1796,FP,internal contract pA valid pointer,,high
+MSC37-C,360,sqlite,src/util.c,1796,FP,both #if and #else paths return,,high
+API00-C,361,sqlite,src/util.c,1822,FP,x==INT_MIN handled explicitly at line 1824 before any arithmetic,,high
+INT32-C,362,sqlite,src/util.c,1825,FP,-x reached only after the ==0x80000000 case returns so x>=INT_MIN+1 negation safe,,high
+INT32-C,363,sqlite,src/util.c,1853,FP,sz is Strlen30 result >=0; sz-1 cannot overflow,,high
+ARR37-C,364,sqlite,src/util.c,1853,FP,z is the filename buffer; subscript is valid array access,,high
+EXP34-C,365,sqlite,src/util.c,1853,FP,z is the filename param caller-guaranteed non-null,,high
+ARR37-C,366,sqlite,src/util.c,1853,FP,z valid array access into filename buffer,,high
+ARR37-C,367,sqlite,src/util.c,1854,FP,z valid array access,,high
+EXP05-C,368,sqlite,src/util.c,1854,FP,z is char* not const here; no const qualification to cast away,,high
+ARR37-C,369,sqlite,src/util.c,1854,FP,z[i+1] valid access guarded by loop bound,,high
+ARR37-C,370,sqlite,src/util.c,1854,FP,z[sz-3] guarded by ALWAYS(sz>i+4),,high
+INT32-C,371,sqlite,src/util.c,1854,FP,sz-3 reached only when sz>i+4>=4 so non-negative,,high
+ARR02-C,372,sqlite,src/util.c,1866,FP,x[] is a static const lookup-table initializer; implicit bounds correct and intentional,,high
+CON07-C,373,sqlite,src/util.c,1892,FP,a and x are static const read-only lookup tables not mutated shared state,,high
+CON03-C,374,sqlite,src/util.c,1893,FP,a is a static const read-only table; no synchronization needed,,high
+ARR02-C,375,sqlite,src/util.c,1893,FP,a[] static const initializer; implicit bounds intentional,,high
+INT14-C,376,sqlite,src/util.c,1897,FP,x is the u64 value style note only,,high
+INT32-C,377,sqlite,src/util.c,1900,FP,__builtin_clzll(x) in 0..63 so 60-clzll bounded; no overflow,,high
+INT32-C,378,sqlite,src/util.c,1901,FP,i = 60-clzll <=60 so i*10 bounded,,high
+ARR30-C,379,sqlite,src/util.c,1908,FP,x&7 masks index to 0..7 and a[] has 8 elements; in-bounds by construction,,high
+DCL03-C,380,sqlite,src/util.c,1918,TP,assert(sizeof(x)==8 && sizeof(a)==8) is a pure compile-time constant; static_assert fits,,med
+EXP05-C,381,sqlite,src/util.c,1921,FP,"a is a u64 local non-const; memcpy(&a,...) casts away nothing",,high
+INT14-C,382,sqlite,src/util.c,1922,FP,a is u64 raw double bits; bitwise+arith style note only,,high
+INT32-C,383,sqlite,src/util.c,1922,FP,a>>52 in 0..4095 for the reached path; minus 1022 cannot overflow,,high
+EXP07-C,384,sqlite,src/util.c,1922,FP,a>>52 extracts the exponent field; not a constant assumption,,high
+FIO50-C,385,sqlite,src/util.c,1922,FP,a is a u64 not a FILE stream,,high
+CON07-C,386,sqlite,src/util.c,1929,FP,x is the function parameter not a shared static variable; misfire,,high
+INT14-C,387,sqlite,src/util.c,1931,FP,x is LogEst parameter style note only,,high
+INT10-C,388,sqlite,src/util.c,1931,FP,x is non-negative LogEst; modulo well-defined; style note,,high
+INT14-C,389,sqlite,src/util.c,1933,FP,n is u64 local style note only,,high
+INT34-C,390,sqlite,src/util.c,1936,FP,shift guarded by x>=3 and x>60 returns early so x-3 in 0..57 < 64,,high
+FIO50-C,391,sqlite,src/util.c,1936,FP,(n+8) is an integer expression not a FILE stream,,high
+INT34-C,392,sqlite,src/util.c,1936,FP,else branch x<3 so 3-x in 1..3 valid shift amount,,high
+API00-C,393,sqlite,src/util.c,1975,FP,internal contract pIn may be NULL and is explicitly checked,,high
+API00-C,394,sqlite,src/util.c,1975,FP,internal contract zName valid; not a trust boundary,,high
+INT32-C,395,sqlite,src/util.c,1986,FP,nName is a name length; nName/4+3 cannot overflow int,,high
+INT32-C,396,sqlite,src/util.c,1990,FP,computed in sqlite3_int64 arithmetic; no overflow,,high
+INT32-C,397,sqlite,src/util.c,1990,FP,2*(sqlite3_int64)pIn[0] is explicit i64 cast; no 32-bit overflow,,high
+INT30-C,398,sqlite,src/util.c,1991,FP,nAlloc is i64 bounded; multiply for realloc size; not an unsigned wrap defect,,high
+INT32-C,399,sqlite,src/util.c,1991,FP,nAlloc is i64; sizeof promotes to size_t; result bounded by realloc contract,,high
+INT32-C,400,sqlite,src/util.c,1999,FP,i indexes into the just-allocated VList within nAlloc bound,,high
+INT32-C,401,sqlite,src/util.c,2000,FP,i+2 indexes within allocated VList,,high
+INT32-C,402,sqlite,src/util.c,2001,FP,i+nInt bounded by assert pIn[1]<=pIn[0] at line 2002,,high
+INT31-C,403,sqlite,src/util.c,2003,FP,nName is a non-negative length; conversion to size_t is benign,,high
+EXP05-C,404,sqlite,src/util.c,2003,FP,z is char* (cast from &pIn[i+2]); zName is the const source; no const cast on dest,,high
+ARR37-C,405,sqlite,src/util.c,2004,FP,z[nName] writes the terminator into the allocated VList slot; in-bounds,,high
+DCL13-C,406,sqlite,src/util.c,2013,TP,pIn only read in sqlite3VListNumToName; const would compile (return casts away on a copy),,low
+INT32-C,407,sqlite,src/util.c,2020,FP,pIn contents are trusted VList internal slot counts; no overflow,,high
+DCL13-C,408,sqlite,src/util.c,2029,TP,pIn only read in sqlite3VListNameToNum returning a copied int; const would compile,,low
+INT31-C,409,sqlite,src/util.c,2036,FP,nName is a non-negative length passed to strncmp; benign conversion,,high
+ARR37-C,410,sqlite,src/util.c,2036,FP,z[nName] checks the terminator within the VList buffer; in-bounds,,high
+INT32-C,411,sqlite,src/util.c,2037,FP,pIn slot counts trusted VList internal; no overflow,,high
