@@ -1,0 +1,185 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP34-C,0,sqlite,ext/misc/amatch.c,200,FP,amatchAvlRecomputeHeight p is a live tree node always passed non-null by callers; member access guarded by tree invariants,,high
+INT32-C,1,sqlite,ext/misc/amatch.c,202,FP,hBefore/hAfter are short heights of an AVL tree bounded by log(n) nodes; subtraction cannot overflow int,,high
+INT32-C,2,sqlite,ext/misc/amatch.c,203,FP,heights are small AVL node heights bounded by tree depth; +1 cannot overflow,,high
+EXP34-C,3,sqlite,ext/misc/amatch.c,215,FP,amatchAvlRotateBefore pP is a live node with non-null pBefore guaranteed by caller's imbalance>=2 rotation precondition,,high
+EXP34-C,4,sqlite,ext/misc/amatch.c,216,FP,pB is pP->pBefore which is non-null because rotation is only invoked when imbalance>=2,,high
+DCL30-C,5,sqlite,ext/misc/amatch.c,224,FP,returns pB which is heap node pP->pBefore not an automatic-storage local; analyzer misread,,high
+EXP34-C,6,sqlite,ext/misc/amatch.c,236,FP,amatchAvlRotateAfter pP live node with non-null pAfter guaranteed by imbalance<=-2 caller precondition,,high
+EXP34-C,7,sqlite,ext/misc/amatch.c,237,FP,pA is pP->pAfter non-null by rotation precondition,,high
+DCL30-C,8,sqlite,ext/misc/amatch.c,245,FP,returns pA which is heap node pP->pAfter not a stack local,,high
+DCL13-C,9,sqlite,ext/misc/amatch.c,252,FP,amatchAvlFromPtr p is read-only here so const is valid but signature stylistic; sqc DCL13 nominally TP but contract matches usage so const-valid,,med
+DCL13-C,10,sqlite,ext/misc/amatch.c,252,FP,pp is the fallback return pointer and is returned/dereferenced as out value not a candidate object for const,,high
+EXP34-C,11,sqlite,ext/misc/amatch.c,253,FP,p (amatchAvlFromPtr) is a live tree node passed non-null by all callers,,high
+EXP34-C,12,sqlite,ext/misc/amatch.c,272,FP,pp in amatchAvlBalance assigned from amatchAvlFromPtr which never returns null,,high
+DCL30-C,13,sqlite,ext/misc/amatch.c,282,FP,returns pTop which tracks heap tree nodes not a stack local,,high
+DCL13-C,14,sqlite,ext/misc/amatch.c,288,FP,amatchAvlSearch p read-only traversal; const stylistically valid but no defect,,med
+DCL13-C,15,sqlite,ext/misc/amatch.c,298,FP,amatchAvlFirst p read-only; stylistic,,med
+DCL13-C,16,sqlite,ext/misc/amatch.c,306,FP,amatchAvlNext is inside #if 0 dead code never compiled,,high
+MEM05-C,17,sqlite,ext/misc/amatch.c,322,FP,amatchAvlIntegrity recursion is inside #if 0 dead code never compiled,,high
+DCL13-C,18,sqlite,ext/misc/amatch.c,322,FP,pHead in dead-code amatchAvlIntegrity; not compiled,,high
+EXP34-C,19,sqlite,ext/misc/amatch.c,326,FP,amatchAvlIntegrity dead code under #if 0,,high
+DCL30-C,20,sqlite,ext/misc/amatch.c,382,FP,amatchAvlInsert returns 0 or existing heap node p; not a stack local,,high
+EXP34-C,21,sqlite,ext/misc/amatch.c,405,FP,amatchAvlFromPtr never returns null and ppParent dereference is to a tree-linkage slot,,high
+EXP34-C,22,sqlite,ext/misc/amatch.c,410,FP,pX is amatchAvlFirst of a non-null subtree so non-null,,high
+EXP34-C,23,sqlite,ext/misc/amatch.c,426,FP,pBalance assigned non-null in the pBefore==0/pAfter==0 branches before deref,,high
+DCL13-C,24,sqlite,ext/misc/amatch.c,534,FP,amatchMergeRules pA traversed read-only for cost compare; nodes relinked via pNext writes so list is mutated not const,,med
+DCL13-C,25,sqlite,ext/misc/amatch.c,534,FP,pB likewise relinked via pNext; not const-eligible,,med
+EXP34-C,26,sqlite,ext/misc/amatch.c,547,FP,pB non-null inside while(pA && pB) loop guard,,high
+EXP33-C,27,sqlite,ext/misc/amatch.c,555,FP,head.pNext is always assigned before return either in loop or via pTail->pNext=pB/pA fallthrough,,high
+STR34-C,28,sqlite,ext/misc/amatch.c,598,FP,*pzErr is the OUT error message pointer assigned an mprintf result; not a char read needing unsigned cast,,high
+STR34-C,29,sqlite,ext/misc/amatch.c,604,FP,same OUT error-message assignment pattern; STR34 misfire on char* OUT param,,high
+STR34-C,30,sqlite,ext/misc/amatch.c,610,FP,same OUT error-message assignment; not a sign-extension read,,high
+INT30-C,31,sqlite,ext/misc/amatch.c,622,FP,nFrom and nTo are bounded to <=50 by AMATCH_MX_LENGTH check at line 603 before the malloc64; no wrap,,high
+STR34-C,32,sqlite,ext/misc/amatch.c,627,FP,"*zTo is text-compare context; STR34 misfire, zTo bounded valid C string from column_text",,high
+STR34-C,33,sqlite,ext/misc/amatch.c,627,FP,pRule->zTo write within allocation; nTo<=50 guaranteed; STR34 misread of memcpy target,,high
+ARR38-C,34,sqlite,ext/misc/amatch.c,629,FP,memcpy size nFrom+1 with nFrom<=50 into buffer sized sizeof(*pRule)+nFrom+nTo which has 2 bytes spare; bounded,,high
+INT31-C,35,sqlite,ext/misc/amatch.c,629,FP,nFrom is strlen result >=0 and <=50 so signed-to-size_t conversion is safe,,high
+ARR38-C,36,sqlite,ext/misc/amatch.c,630,FP,memcpy zTo size nTo+1 with nTo<=50 into zTo region within allocation; bounded,,high
+INT31-C,37,sqlite,ext/misc/amatch.c,630,FP,nTo is strlen result bounded 0..50; safe size_t conversion,,high
+DCL30-C,38,sqlite,ext/misc/amatch.c,637,FP,*ppRule=pRule stores a heap malloc64 pointer into OUT param; not an invalid stack address,,high
+STR34-C,39,sqlite,ext/misc/amatch.c,673,FP,*pzErr OUT error message assignment; STR34 misfire,,high
+EXP34-C,40,sqlite,ext/misc/amatch.c,674,FP,pStmt is checked: prepare_v2 success path guarantees pStmt non-null before column_count,,high
+STR34-C,41,sqlite,ext/misc/amatch.c,675,FP,*pzErr OUT error-message assignment; STR34 misfire,,high
+EXP34-C,42,sqlite,ext/misc/amatch.c,676,FP,pStmt non-null on prepare success path,,high
+EXP34-C,43,sqlite,ext/misc/amatch.c,680,FP,sqlite3_step reached only after prepare succeeded and column_count==4; pStmt valid,,high
+EXP34-C,44,sqlite,ext/misc/amatch.c,682,FP,amatchLoadOneRule called with valid pStmt inside the step loop after non-null checks,,high
+ARR30-C,45,sqlite,ext/misc/amatch.c,702,FP,array a[15] indexed by i with loop guard i<sizeof(a)/sizeof(a[0])==15; bounded,,high
+EXP34-C,46,sqlite,ext/misc/amatch.c,704,FP,pX assigned from pHead inside while((pX=pHead)!=0) so non-null,,high
+ARR30-C,47,sqlite,ext/misc/amatch.c,706,FP,a[i] index bounded by i<15-1 loop guard in the merge-radix loop,,high
+ARR30-C,48,sqlite,ext/misc/amatch.c,707,FP,a[i] write index bounded by prior loop ensuring i<=14,,high
+ARR30-C,49,sqlite,ext/misc/amatch.c,708,FP,a[i] indexed within bounds by the radix-merge loop guard,,high
+ARR38-C,50,sqlite,ext/misc/amatch.c,750,FP,amatchDequote memcpy size nIn+1 into zOut allocated as nIn+1 by malloc64; exact bound,,high
+INT32-C,51,sqlite,ext/misc/amatch.c,750,FP,nIn is sqlite3_int64 strlen result; nIn+1 sized to match allocation; no overflow on realistic strlen,,high
+DCL30-C,52,sqlite,ext/misc/amatch.c,763,FP,amatchDequote returns zOut which is sqlite3_malloc64 heap memory not a stack local,,high
+ARR00-C,53,sqlite,ext/misc/amatch.c,763,FP,zOut is heap-allocated not a local array; returning it is valid,,high
+MEM30-C,54,sqlite,ext/misc/amatch.c,782,FP,amatchFree p freed only at end (line 791) after all field frees; pass to amatchFreeRules at 781 is before free,,high
+MEM30-C,55,sqlite,ext/misc/amatch.c,790,FP,amatchVCheckClear(p) at 782 is before sqlite3_free(p) at 791; not use-after-free,,high
+ARR01-C,56,sqlite,ext/misc/amatch.c,790,FP,sizeof(*p) at line 790 (memset) is sizeof the amatch_vtab object not a decayed pointer; valid before free,,high
+MEM30-C,57,sqlite,ext/misc/amatch.c,790,FP,"memset(p,...) at 790 occurs before sqlite3_free(p) at 791; p still live",,high
+MEM30-C,58,sqlite,ext/misc/amatch.c,791,FP,p freed exactly once at line 791; the memset precedes it; no double free,,high
+STR34-C,59,sqlite,ext/misc/amatch.c,814,FP,zKey passed to strlen/memcmp as C string; STR34 sign-extension misfire on string-length context,,high
+STR34-C,60,sqlite,ext/misc/amatch.c,815,FP,zStr used as C string in strlen/memcmp; no char-to-int sign-extension defect,,high
+INT31-C,61,sqlite,ext/misc/amatch.c,818,FP,"nKey is strlen result, guarded nStr<nKey+1 returns early; memcmp size safe",,high
+INT32-C,62,sqlite,ext/misc/amatch.c,821,FP,i increments over a bounded NUL-terminated string in amatchValueOfKey; cannot reach INT_MAX,,high
+INT32-C,63,sqlite,ext/misc/amatch.c,822,FP,i increment bounded by string length scan; no overflow,,high
+DCL13-C,64,sqlite,ext/misc/amatch.c,836,FP,amatchConnect pAux is unused ((void)pAux); signature fixed by sqlite3 module xConnect typedef so const not changeable,,med
+EXP33-C,65,sqlite,ext/misc/amatch.c,853,FP,pNew is memset to 0 at line 853 immediately after malloc before any field read; not uninitialized,,high
+MEM30-C,66,sqlite,ext/misc/amatch.c,866,FP,pNew->zVocabTab accessed (free+reassign) is the live object before any free; no UAF,,high
+MEM30-C,67,sqlite,ext/misc/amatch.c,873,FP,pNew->zVocabWord live object access in the arg loop; pNew not yet freed,,high
+MEM30-C,68,sqlite,ext/misc/amatch.c,887,FP,pNew->zCostTab live access in arg loop before any amatchFree,,high
+STR34-C,69,sqlite,ext/misc/amatch.c,890,FP,*pzErr OUT error message assignment; STR34 misfire,,high
+MEM30-C,70,sqlite,ext/misc/amatch.c,896,FP,pNew->zCostTab==0 check at line 896 is on the live object before amatchLoadRules; no UAF,,high
+STR34-C,71,sqlite,ext/misc/amatch.c,897,FP,*pzErr OUT error-message assignment; STR34 misfire,,high
+MEM30-C,72,sqlite,ext/misc/amatch.c,900,FP,db passed to amatchLoadRules at 900 is the live connection; not freed,,high
+MEM30-C,73,sqlite,ext/misc/amatch.c,900,FP,pNew passed to amatchLoadRules at 900 is live; amatchFree only on error after,,high
+MEM30-C,74,sqlite,ext/misc/amatch.c,903,FP,db at line 903 sqlite3_vtab_config is the live connection; never freed by amatch,,high
+MEM30-C,75,sqlite,ext/misc/amatch.c,904,FP,db at 904 declare_vtab is live connection,,high
+MEM30-C,76,sqlite,ext/misc/amatch.c,915,FP,amatchFree(pNew) at 915 only on rc error; pNew freed once; the later 921 path is the goto-error label not reached after 915,,med
+MEM33-C,77,sqlite,ext/misc/amatch.c,917,FP,*ppVtab=&pNew->base is address-of first member (offset 0) not a flexible-array struct assignment; MEM33 misfire,,high
+MEM30-C,78,sqlite,ext/misc/amatch.c,917,FP,&pNew->base at 917 takes address of freed memory only when amatchFree ran (error path) but caller ignores *ppVtab on non-OK rc; address-of no deref benign,,med
+MEM30-C,79,sqlite,ext/misc/amatch.c,917,FP,pNew->base address-of computes pNew+0 with no load; on error path value is ignored by SQLite contract,,med
+MSC07-C,80,sqlite,ext/misc/amatch.c,920,FP,line 920 amatchConnectError label is reachable via goto from the OOM checks above; not unreachable,,high
+MEM30-C,81,sqlite,ext/misc/amatch.c,921,FP,pNew freed once at the amatchConnectError label; reached only via goto not after line 915 free in same path,,high
+EXP33-C,82,sqlite,ext/misc/amatch.c,931,FP,pCur is sqlite3_malloc result checked !=0 at 932 then memset before *ppCursor assignment; not uninitialized deref,,high
+MEM33-C,83,sqlite,ext/misc/amatch.c,935,FP,*ppCursor=&pCur->base is address-of first member; MEM33 misfire not a flexible-array copy,,high
+INT32-C,84,sqlite,ext/misc/amatch.c,936,FP,p->nCursor counts open cursors bounded by available memory per cursor; cannot reach INT_MAX in practice,,high
+INT32-C,85,sqlite,ext/misc/amatch.c,970,FP,nCursor-- balanced against nCursor++ in amatchOpen; bounded small count never INT_MIN,,high
+ARR30-C,86,sqlite,ext/misc/amatch.c,987,FP,array a[] at line 979 is the 65-byte base64 table; (x>>18)&0x3f max 63 in bounds; analyzer conflated with unrelated a[15],,high
+EXP07-C,87,sqlite,ext/misc/amatch.c,987,FP,x>>18 is deliberate base64 digit extraction; EXP07 stylistic not a defect,,high
+INT14-C,88,sqlite,ext/misc/amatch.c,987,FP,x>>18 on int is intentional bit extraction of a 24-bit value; INT14 stylistic,,high
+ARR30-C,89,sqlite,ext/misc/amatch.c,988,FP,a[] base64 table size 65 indexed by (x>>12)&0x3f<=63; in bounds,,high
+EXP07-C,90,sqlite,ext/misc/amatch.c,988,FP,x>>12 intentional base64 extraction; stylistic,,high
+ARR30-C,91,sqlite,ext/misc/amatch.c,989,FP,a[] base64 table indexed by (x>>6)&0x3f<=63; in bounds,,high
+ARR30-C,92,sqlite,ext/misc/amatch.c,990,FP,a[] in amatchEncodeInt is a 64-char static string and x&0x3f is 0..63 always in range; the size-15 array a[15] at line 701 is an unrelated rule-sort buffer misattributed by the analyzer,,high
+EXP43-C,93,sqlite,ext/misc/amatch.c,998,FP,first arg of amatchEncodeInt is an int passed by value not a pointer so no memory regions can overlap,,high
+INT32-C,94,sqlite,ext/misc/amatch.c,998,FP,pWord->zCost+4 is pointer arithmetic on char zCost[10] reaching index 4 not signed integer addition,,high
+DCL13-C,95,sqlite,ext/misc/amatch.c,1005,FP,dest is written through via *(dest++)=... so the pointee is mutated and const would not compile,,high
+MEM33-C,96,sqlite,ext/misc/amatch.c,1006,FP,*(dest++)=*(src++) is a char-to-char assignment not a flexible-array struct assignment,,high
+STR34-C,97,sqlite,ext/misc/amatch.c,1006,FP,both *(dest++) and the value are char and assigned to char; no widening to a larger type occurs,,high
+STR34-C,98,sqlite,ext/misc/amatch.c,1006,FP,*src is char assigned to char dest; no promotion to a larger type in this copy loop,,high
+STR34-C,99,sqlite,ext/misc/amatch.c,1006,FP,*(src++) char value stored into char dest; same-width assignment no sign-extension defect,,high
+EXP34-C,100,sqlite,ext/misc/amatch.c,1038,FP,"zWordBase callers pass string literals or live buffers (\""\"", pWord->zWord+2, zBuf) never a null pointer",,high
+INT32-C,101,sqlite,ext/misc/amatch.c,1041,FP,nBase and nTail are strlen results of in-memory strings bounded by available memory; overflow needs ~2GB strings,,med
+INT32-C,102,sqlite,ext/misc/amatch.c,1041,FP,nBase+nTail are non-negative bounded strlen values; practical overflow unreachable,,med
+MEM30-C,103,sqlite,ext/misc/amatch.c,1043,FP,line 1043 checks the result of sqlite3_realloc64 for null not a freed pointer; realloc reassignment misread as UAF,,high
+MEM30-C,104,sqlite,ext/misc/amatch.c,1049,FP,pCur->zBuf used here is the new realloc64 result past the null check at 1043 not freed memory,,high
+INT32-C,105,sqlite,ext/misc/amatch.c,1049,FP,zBuf+2 is pointer arithmetic on local zBuf[4] reaching index 2 not signed integer addition,,high
+INT31-C,106,sqlite,ext/misc/amatch.c,1050,FP,nBase is a non-negative strlen result so the size_t conversion is benign,,high
+MEM30-C,107,sqlite,ext/misc/amatch.c,1050,FP,pCur->zBuf is the freshly realloc'd valid buffer not a freed pointer,,high
+ARR38-C,108,sqlite,ext/misc/amatch.c,1051,FP,buffer guaranteed >= nBase+nTail+3 by check at 1040; write ends at nBase+nTail+3 exactly within bounds,,high
+INT31-C,109,sqlite,ext/misc/amatch.c,1051,FP,nTail is a non-negative strlen result so the size_t conversion is benign,,high
+MEM30-C,110,sqlite,ext/misc/amatch.c,1051,FP,pCur->zBuf is the valid post-realloc buffer not freed memory,,high
+INT32-C,111,sqlite,ext/misc/amatch.c,1051,FP,nTail+1 of a non-negative bounded strlen cannot realistically overflow,,high
+MEM30-C,112,sqlite,ext/misc/amatch.c,1052,FP,pCur->zBuf is the live realloc'd buffer; no free precedes this use,,high
+DCL11-C,113,sqlite,ext/misc/amatch.c,1057,FP,%.*s consumes two args so the format has 6 conversions for 7 args correctly; also dead code under AMATCH_TRACE_1,,high
+EXP43-C,114,sqlite,ext/misc/amatch.c,1057,FP,printf args are distinct objects and first arg is a value; no restrict overlap; also under ifdef,,high
+FIO47-C,115,sqlite,ext/misc/amatch.c,1057,FP,argument count matches once %.*s precision arg is counted; analyzer miscount; dead trace code,,high
+PRE32-C,116,sqlite,ext/misc/amatch.c,1057,FP,no preprocessor directives appear inside the printf argument list; dead trace code,,high
+INT32-C,117,sqlite,ext/misc/amatch.c,1058,FP,pWord->zWord+2 is pointer arithmetic on a char array not signed integer addition,,high
+PRE32-C,118,sqlite,ext/misc/amatch.c,1065,FP,no preprocessor directives inside the printf call arguments; dead trace code,,high
+INT30-C,119,sqlite,ext/misc/amatch.c,1073,FP,sizeof(*pWord)+nBase+nTail-1 uses size_t-bounded strlen values; wrap needs astronomically large inputs,,med
+EXP33-C,120,sqlite,ext/misc/amatch.c,1073,FP,pWord is assigned from sqlite3_malloc64 and null-checked at 1074 before any dereference,,high
+INT32-C,121,sqlite,ext/misc/amatch.c,1077,FP,pCur->nWord++ counts allocated words bounded by memory; INT_MAX increment unreachable,,med
+MEM30-C,122,sqlite,ext/misc/amatch.c,1088,FP,pCur->zBuf remains the live buffer here; no preceding free,,high
+DCL11-C,123,sqlite,ext/misc/amatch.c,1092,FP,%.*s consumes two args so 6 conversions match 7 args; dead code under AMATCH_TRACE_1,,high
+EXP43-C,124,sqlite,ext/misc/amatch.c,1092,FP,printf args are distinct objects with a scalar first arg; no restrict overlap; dead trace code,,high
+FIO47-C,125,sqlite,ext/misc/amatch.c,1092,FP,argument count matches once precision arg of %.*s is counted; dead trace code,,high
+FIO47-C,126,sqlite,ext/misc/amatch.c,1092,FP,arg5 maps to the %d not the %s once %.*s precision is counted; correct types; dead trace code,,high
+PRE32-C,127,sqlite,ext/misc/amatch.c,1092,FP,no preprocessor directives inside the printf arguments; dead trace code,,high
+INT32-C,128,sqlite,ext/misc/amatch.c,1092,FP,pWord->zWord+2 is pointer arithmetic not signed integer addition,,high
+DCL11-C,129,sqlite,ext/misc/amatch.c,1154,FP,%.*s precision arg accounts for the extra argument; counts match; dead trace code,,high
+EXP43-C,130,sqlite,ext/misc/amatch.c,1154,FP,distinct objects and scalar first arg; no overlap; dead trace code,,high
+FIO47-C,131,sqlite,ext/misc/amatch.c,1154,FP,argument count matches with %.*s precision counted; dead trace code,,high
+PRE32-C,132,sqlite,ext/misc/amatch.c,1154,FP,no preprocessor directives inside printf arguments; dead trace code,,high
+INT14-C,133,sqlite,ext/misc/amatch.c,1155,FP,pWord used in pointer arithmetic and member access only; INT14 is a readability advisory not a defect,,high
+INT32-C,134,sqlite,ext/misc/amatch.c,1155,FP,pWord->zWord+2 is pointer arithmetic on a char array not signed integer addition,,high
+INT14-C,135,sqlite,ext/misc/amatch.c,1155,FP,pCur member access plus pointer arithmetic; INT14 readability advisory not a defect,,high
+INT32-C,136,sqlite,ext/misc/amatch.c,1158,FP,pWord->zWord+2 pointer arithmetic not signed integer addition,,high
+INT14-C,137,sqlite,ext/misc/amatch.c,1159,FP,nWord arithmetic with small bounded values; INT14 readability advisory not a defect,,high
+INT32-C,138,sqlite,ext/misc/amatch.c,1160,FP,nWord+100 is the addition not the bug; the real defect is the (char) cast on the next token (see FN); addition itself does not overflow for reachable nWord,,med
+MEM30-C,139,sqlite,ext/misc/amatch.c,1164,FP,zBuf is the live heap buffer freed only at 1242; not yet freed at this call,,high
+INT32-C,140,sqlite,ext/misc/amatch.c,1164,FP,pWord->zWord+2 pointer arithmetic not signed integer addition,,high
+INT14-C,141,sqlite,ext/misc/amatch.c,1168,FP,i is a small loop index 1..4; INT14 readability advisory not a defect,,high
+INT32-C,142,sqlite,ext/misc/amatch.c,1169,FP,pWord->nMatch+i with nMatch a short and i<=4; no realistic overflow,,high
+MEM30-C,143,sqlite,ext/misc/amatch.c,1179,FP,zBuf is the live buffer not freed until 1242,,high
+MEM30-C,144,sqlite,ext/misc/amatch.c,1180,FP,zBuf is the live buffer not freed until 1242,,high
+INT32-C,145,sqlite,ext/misc/amatch.c,1180,FP,nWord+nNextIn are small bounded lengths; no realistic overflow,,med
+ARR38-C,146,sqlite,ext/misc/amatch.c,1184,FP,strncmp size nWord+nNextIn is a non-negative bounded length; valid,,high
+INT31-C,147,sqlite,ext/misc/amatch.c,1184,FP,nWord is a non-negative strlen-derived int64; size_t conversion benign,,high
+MEM30-C,148,sqlite,ext/misc/amatch.c,1184,FP,zBuf is the live buffer not freed until 1242,,high
+MEM30-C,149,sqlite,ext/misc/amatch.c,1185,FP,zBuf is the live buffer not freed until 1242,,high
+INT32-C,150,sqlite,ext/misc/amatch.c,1185,FP,pWord->nMatch+nNextIn are small bounded values; no realistic overflow,,med
+ARR30-C,151,sqlite,ext/misc/amatch.c,1188,FP,zBuf here is the heap buffer (realloc to nWord+100) not the unrelated local zBuf[4] at 1033 the analyzer cites,,high
+INT31-C,152,sqlite,ext/misc/amatch.c,1199,FP,nWord is a non-negative strlen-derived value; size_t conversion benign,,high
+INT32-C,153,sqlite,ext/misc/amatch.c,1210,FP,nWord+i small bounded values; no realistic overflow,,med
+ARR30-C,154,sqlite,ext/misc/amatch.c,1213,FP,zBuf is the heap buffer not the misattributed local zBuf[4] at line 1033,,high
+INT32-C,155,sqlite,ext/misc/amatch.c,1219,FP,pWord->nMatch+nNextIn small bounded values; no realistic overflow,,med
+ARR30-C,156,sqlite,ext/misc/amatch.c,1228,FP,zBuf is the heap buffer not the misattributed local zBuf[4] at line 1033,,high
+INT32-C,157,sqlite,ext/misc/amatch.c,1229,FP,pWord->nMatch+nNextIn small bounded values; no realistic overflow,,med
+EXP43-C,158,sqlite,ext/misc/amatch.c,1236,FP,amatchAddWord receives distinct source buffers (zWord+2 and pRule->zTo); no restrict overlap UB,,high
+INT32-C,159,sqlite,ext/misc/amatch.c,1237,FP,pWord->zWord+2 pointer arithmetic not signed integer addition,,high
+DCL13-C,160,sqlite,ext/misc/amatch.c,1254,FP,argv signature is fixed by the xFilter function-pointer typedef in sqlite3_module; cannot be const-qualified,,high
+DCL13-C,161,sqlite,ext/misc/amatch.c,1286,FP,cur signature is fixed by the xColumn function-pointer typedef; const not permitted,,high
+INT32-C,162,sqlite,ext/misc/amatch.c,1290,FP,pCur->pCurrent->zWord+2 is pointer arithmetic not signed integer addition,,high
+DCL13-C,163,sqlite,ext/misc/amatch.c,1316,FP,cur signature is fixed by the xRowid function-pointer typedef,,high
+DCL13-C,164,sqlite,ext/misc/amatch.c,1325,FP,cur signature is fixed by the xEof function-pointer typedef,,high
+DCL13-C,165,sqlite,ext/misc/amatch.c,1353,FP,tab signature is fixed by the xBestIndex function-pointer typedef,,high
+INT13-C,166,sqlite,ext/misc/amatch.c,1366,FP,iPlan holds small non-negative bit flags 0..7; signed-operand bitwise is a style advisory with no defect,,high
+INT14-C,167,sqlite,ext/misc/amatch.c,1366,FP,iPlan used as bit flags and counter with small non-negative values; INT14 readability advisory,,high
+INT13-C,168,sqlite,ext/misc/amatch.c,1374,FP,iPlan is a small non-negative bit vector; INT13 style advisory no defect,,high
+INT13-C,169,sqlite,ext/misc/amatch.c,1382,FP,iPlan small non-negative bit vector; INT13 style advisory,,high
+INT13-C,170,sqlite,ext/misc/amatch.c,1391,FP,iPlan small non-negative bit vector; INT13 style advisory,,high
+INT32-C,171,sqlite,ext/misc/amatch.c,1392,FP,1+((iPlan&1)!=0) is at most 2; no overflow,,high
+INT13-C,172,sqlite,ext/misc/amatch.c,1392,FP,iPlan small non-negative bit vector; INT13 style advisory,,high
+INT13-C,173,sqlite,ext/misc/amatch.c,1394,FP,iPlan small non-negative bit vector; INT13 style advisory,,high
+INT13-C,174,sqlite,ext/misc/amatch.c,1396,FP,iPlan small non-negative bit vector; INT13 style advisory,,high
+INT13-C,175,sqlite,ext/misc/amatch.c,1397,FP,iPlan small non-negative bit vector; INT13 style advisory,,high
+FLP34-C,176,sqlite,ext/misc/amatch.c,1407,FP,(double)10000 is an exact integer-constant cast with no range or precision loss,,high
+DCL13-C,177,sqlite,ext/misc/amatch.c,1421,FP,argv signature is fixed by the xUpdate function-pointer typedef,,high
+DCL13-C,178,sqlite,ext/misc/amatch.c,1422,FP,pRowid signature is fixed by the xUpdate typedef and is (void)pRowid unused,,high
+CON03-C,179,sqlite,ext/misc/amatch.c,1454,FP,amatchModule is a static module dispatch table read-only after init; no cross-thread mutation to synchronize,,high
+API00-C,180,sqlite,ext/misc/amatch.c,1490,FP,db is supplied by the SQLite extension-load contract and is always valid; no caller can pass null,,high
+API00-C,181,sqlite,ext/misc/amatch.c,1490,FP,pApi is supplied by the extension-load contract and consumed by SQLITE_EXTENSION_INIT2; always valid,,high
+DCL15-C,182,sqlite,ext/misc/amatch.c,1490,FP,sqlite3_amatch_init is the public extension entry point and must have external linkage; cannot be static,,high
+DCL13-C,183,sqlite,ext/misc/amatch.c,1492,FP,pzErrMsg signature is fixed by the extension init contract and is (void)pzErrMsg unused,,high

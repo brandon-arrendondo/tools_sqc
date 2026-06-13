@@ -1,0 +1,129 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,ext/repair/checkindex.c,29,TP,get4byte is a function-like macro that evaluates its parameter four times - genuine PRE00 multiple-evaluation hazard,,high
+PRE12-C,1,sqlite,ext/repair/checkindex.c,29,TP,same macro x evaluated 4 times - PRE12 unparenthesized-multi-eval factual,,high
+DCL38-C,2,sqlite,ext/repair/checkindex.c,64,TP,aCol[1] is the struct-hack flexible array; DCL38 recommends [] - factually [1],,high
+STR31-C,3,sqlite,ext/repair/checkindex.c,64,FP,aCol is an array of CidxColumn structs not a character string buffer - STR31 misclassification,,high
+INT31-C,4,sqlite,ext/repair/checkindex.c,73,FP,n is asserted !=0 and is always a positive sizeof-derived constant from internal callers not attacker data,,high
+DCL13-C,5,sqlite,ext/repair/checkindex.c,94,FP,cidxConnect signature is fixed by the sqlite3_module xConnect function-pointer typedef,,high
+DCL13-C,6,sqlite,ext/repair/checkindex.c,97,FP,cidxConnect pzErr signature fixed by xConnect typedef,,high
+DCL13-C,7,sqlite,ext/repair/checkindex.c,145,FP,cidxBestIndex tab signature fixed by xBestIndex typedef,,high
+DCL13-C,8,sqlite,ext/repair/checkindex.c,183,FP,cidxOpen pVTab signature fixed by xOpen typedef,,high
+INT32-C,9,sqlite,ext/repair/checkindex.c,219,FP,iRowid is sqlite3_int64 row counter bounded by step iterations not reaching INT_MAX in practice,,high
+DCL13-C,10,sqlite,ext/repair/checkindex.c,228,FP,cidxEof pCursor signature fixed by xEof typedef,,high
+DCL30-C,11,sqlite,ext/repair/checkindex.c,273,FP,pRet is a sqlite3_stmt* heap object returned not the address of an automatic variable,,high
+API00-C,12,sqlite,ext/repair/checkindex.c,281,FP,pRc is an internal contract pointer always passed non-null by callers; API00 misfire on internal helper,,med
+DCL15-C,13,sqlite,ext/repair/checkindex.c,281,FP,cidxStrdup is intentionally external (non-static) as a shared helper; DCL15 misfire,,med
+STR34-C,14,sqlite,ext/repair/checkindex.c,284,FP,strlen(zStr) does not sign-extend a char; n is a length not a dereferenced char value,,high
+INT32-C,15,sqlite,ext/repair/checkindex.c,285,FP,n is strlen of a real string bounded well below INT_MAX; n+1 cannot overflow here,,high
+ARR38-C,16,sqlite,ext/repair/checkindex.c,286,FP,memcpy size n+1 matches the n+1 allocation from cidxMalloc on the same n,,high
+INT31-C,17,sqlite,ext/repair/checkindex.c,286,FP,n is a positive strlen result converted to size_t safely,,high
+STR31-C,18,sqlite,ext/repair/checkindex.c,286,FP,copy length n+1 includes the terminating NUL deliberately,,high
+EXP05-C,19,sqlite,ext/repair/checkindex.c,286,FP,n+1 is an int size argument not a cast away of const,,high
+INT32-C,20,sqlite,ext/repair/checkindex.c,286,FP,duplicate of 15; n bounded by strlen well below INT_MAX,,high
+ARR30-C,21,sqlite,ext/repair/checkindex.c,295,FP,aCol declared [1] is the struct-hack header; real allocation sizes aCol to nCol entries; index i bounded by i<nCol,,high
+MEM30-C,22,sqlite,ext/repair/checkindex.c,295,FP,pIdx->aCol is live heap memory freed only in cidxFreeIndex after this loop; no use-after-free,,high
+PRE32-C,23,sqlite,ext/repair/checkindex.c,315,FP,line 315 is a vtable column-index #define not a preprocessor directive spliced inside memcpy,,high
+ARR30-C,24,sqlite,ext/repair/checkindex.c,342,FP,z scans a NUL-terminated string from sqlite_schema; cidx_isspace stops at NUL so loop is bounded,,high
+DCL30-C,25,sqlite,ext/repair/checkindex.c,361,FP,*pzOut is set to point into the caller-owned input buffer z not to a local of cidxFindNext,,high
+STR34-C,26,sqlite,ext/repair/checkindex.c,361,FP,assigning a pointer value; no char sign-extension occurs on a pointer store,,high
+CON43-C,27,sqlite,ext/repair/checkindex.c,363,FP,switch on *z reads the stable NUL-terminated buffer once per state; no double-fetch race in single-threaded parser,,high
+STR34-C,28,sqlite,ext/repair/checkindex.c,376,FP,*z is compared as a character; no integer sign-extension defect,,high
+ARR30-C,29,sqlite,ext/repair/checkindex.c,378,FP,inner quote/comment scan is bounded by NUL terminator of the schema string,,high
+DCL03-C,30,sqlite,ext/repair/checkindex.c,400,FP,assert(0) marks unreachable code; this is intentional and not a candidate for static_assert,,high
+EXP34-C,31,sqlite,ext/repair/checkindex.c,411,FP,pIdx is non-null whenever index_xinfo returned rows; cidxParseSQL only called with a populated pIdx for an existing index,,med
+INT32-C,32,sqlite,ext/repair/checkindex.c,415,FP,z+1 is pointer arithmetic into a bounded NUL-terminated buffer not signed-int overflow,,high
+INT32-C,33,sqlite,ext/repair/checkindex.c,416,FP,z++ advances a pointer within the bounded buffer not an int near INT_MAX,,high
+ARR30-C,34,sqlite,ext/repair/checkindex.c,417,FP,loop bounded by the NUL-terminated schema buffer via cidxFindNext EOF handling,,high
+EXP34-C,35,sqlite,ext/repair/checkindex.c,422,FP,pCol points into pIdx->aCol which is allocated and populated before cidxParseSQL runs,,high
+ARR00-C,36,sqlite,ext/repair/checkindex.c,425,FP,z[-1] is backward pointer scan into the schema buffer past the opening paren not a negative array subscript,,med
+ARR00-C,37,sqlite,ext/repair/checkindex.c,426,FP,z[-3] backward read bounded by preceding CREATE INDEX text in the same allocation,,med
+ARR00-C,38,sqlite,ext/repair/checkindex.c,426,FP,z[-4] backward read within the same schema-string allocation,,med
+INT32-C,39,sqlite,ext/repair/checkindex.c,427,FP,z -= 3 is pointer decrement within the buffer not int overflow,,high
+ARR00-C,40,sqlite,ext/repair/checkindex.c,428,FP,z[-1] backward pointer read bounded by buffer content,,med
+ARR00-C,41,sqlite,ext/repair/checkindex.c,430,FP,z[-4] backward pointer read within allocation,,med
+ARR00-C,42,sqlite,ext/repair/checkindex.c,430,FP,z[-5] backward pointer read within allocation following the keyword/ident check,,med
+INT32-C,43,sqlite,ext/repair/checkindex.c,431,FP,z -= 4 is pointer decrement not int overflow,,high
+ARR00-C,44,sqlite,ext/repair/checkindex.c,432,FP,z[-1] backward pointer read within buffer,,med
+INT32-C,45,sqlite,ext/repair/checkindex.c,441,FP,nParen++ counts nesting of a bounded schema string; cannot reach INT_MAX,,high
+INT32-C,46,sqlite,ext/repair/checkindex.c,443,FP,z++ advances pointer within bounded buffer,,high
+MSC07-C,47,sqlite,ext/repair/checkindex.c,456,FP,assert(0) then return -1 is intentional unreachable defensive code,,high
+INT30-C,48,sqlite,ext/repair/checkindex.c,494,FP,nAlloc grows by 8 per realloc bounded by index_xinfo column count; size_t arithmetic cannot wrap for realistic column counts,,med
+INT30-C,49,sqlite,ext/repair/checkindex.c,494,FP,sizeof(CidxColumn)*(nAlloc+8) bounded by small column count; no practical wrap,,med
+INT32-C,50,sqlite,ext/repair/checkindex.c,496,FP,nAlloc += 8 bounded by index column count far below INT_MAX,,high
+MEM30-C,51,sqlite,ext/repair/checkindex.c,498,FP,realloc result reassigned to pIdx; potential null on OOM is the only issue not use-after-free,,med
+EXP34-C,52,sqlite,ext/repair/checkindex.c,498,FP,pIdx null-deref only on realloc OOM failure not attacker-controlled; flagged as EXP34 but is OOM path,,med
+MEM30-C,53,sqlite,ext/repair/checkindex.c,498,FP,pIdx is the realloc'd live buffer not freed memory; no use-after-free,,high
+MEM30-C,54,sqlite,ext/repair/checkindex.c,501,FP,p points into the just-realloc'd pIdx buffer which is live; OOM null is the only edge,,med
+DCL30-C,55,sqlite,ext/repair/checkindex.c,526,FP,*pzTab set to zTab a heap pointer assigned to caller out-param not a local address leak,,high
+STR34-C,56,sqlite,ext/repair/checkindex.c,526,FP,pointer store to *pzTab; no char sign extension,,high
+DCL30-C,57,sqlite,ext/repair/checkindex.c,527,FP,*ppIdx set to heap pIdx assigned to caller out-param not a stack-local address,,high
+EXP34-C,58,sqlite,ext/repair/checkindex.c,541,FP,zAfterKey non-null is guarded by the if(rc==SQLITE_OK && zAfterKey) at line 727 before cidxDecodeAfter,,med
+STR34-C,59,sqlite,ext/repair/checkindex.c,541,FP,strlen(zAfterKey) does not sign-extend; zAfterKey is a length source not a char promotion,,high
+INT30-C,60,sqlite,ext/repair/checkindex.c,543,FP,sizeof(char*)*nCol bounded by index column count; no practical wrap,,med
+ARR38-C,61,sqlite,ext/repair/checkindex.c,548,FP,memcpy of nAfterKey+1 matches the nAfterKey+1 reserved in the same cidxMalloc call,,high
+INT31-C,62,sqlite,ext/repair/checkindex.c,548,FP,nAfterKey is a positive strlen result safe as size_t,,high
+INT32-C,63,sqlite,ext/repair/checkindex.c,548,FP,nAfterKey+1 bounded by strlen of after_key string well below INT_MAX,,high
+ARR37-C,64,sqlite,ext/repair/checkindex.c,550,FP,p walks the copied after_key buffer which is a real char allocation; ARR37 misfire on heap pointer,,high
+ARR37-C,65,sqlite,ext/repair/checkindex.c,555,FP,p += 4 advances within the NUL-terminated copied buffer guarded by *p checks,,high
+ARR37-C,66,sqlite,ext/repair/checkindex.c,561,FP,p++ within bounded copied after_key buffer,,high
+ARR37-C,67,sqlite,ext/repair/checkindex.c,563,FP,p++ within bounded buffer,,high
+ARR30-C,68,sqlite,ext/repair/checkindex.c,564,FP,inner while is bounded by *p=='\0' goto parse_error at line 565 before any over-read,,high
+ARR37-C,69,sqlite,ext/repair/checkindex.c,567,FP,p++ within bounded buffer,,high
+ARR37-C,70,sqlite,ext/repair/checkindex.c,570,FP,p++ within bounded buffer,,high
+ARR37-C,71,sqlite,ext/repair/checkindex.c,580,FP,p++ within bounded numeric scan stopping at non-digit/NUL,,high
+ARR37-C,72,sqlite,ext/repair/checkindex.c,584,FP,p++ within bounded trailing-space scan stopping at NUL,,high
+STR34-C,73,sqlite,ext/repair/checkindex.c,588,FP,*p++ store of NUL terminator; no char sign-extension defect,,high
+ARR37-C,74,sqlite,ext/repair/checkindex.c,588,FP,p++ within bounded buffer writing the field terminator,,high
+DCL30-C,75,sqlite,ext/repair/checkindex.c,592,FP,*pazAfter set to azAfter heap pointer assigned to caller out-param not a local address,,high
+STR34-C,76,sqlite,ext/repair/checkindex.c,592,FP,pointer store to *pazAfter; no char sign extension,,high
+MSC07-C,77,sqlite,ext/repair/checkindex.c,595,FP,parse_error path code is reachable via goto; MSC07 false unreachable claim,,high
+STR34-C,78,sqlite,ext/repair/checkindex.c,597,FP,pointer store to *pazAfter on error path; no sign extension,,high
+DCL13-C,79,sqlite,ext/repair/checkindex.c,603,TP,aCol in cidxWhere is only read (aCol[i].zExpr aCol[i].bDesc) and could be declared const CidxColumn*,,med
+DCL13-C,80,sqlite,ext/repair/checkindex.c,603,TP,azAfter in cidxWhere is only read and could be declared char *const*,,med
+ARR00-C,81,sqlite,ext/repair/checkindex.c,609,FP,iGt is the function parameter (the i loop bound) passed by cidxGenerateScanSql not an uninitialized local,,high
+ARR30-C,82,sqlite,ext/repair/checkindex.c,611,FP,aCol indexed by i<iGt with iGt bounded by caller's i<pIdx->nCol; within allocated aCol,,high
+EXP34-C,83,sqlite,ext/repair/checkindex.c,611,FP,azAfter is non-null when cidxWhere is reached because cidxDecodeAfter succeeded under rc==SQLITE_OK,,med
+ARR30-C,84,sqlite,ext/repair/checkindex.c,617,FP,aCol[iGt] index iGt < nCol passed by caller; within allocated array,,high
+ARR30-C,85,sqlite,ext/repair/checkindex.c,621,FP,aCol[iGt] within bounds; iGt bounded by nCol,,high
+ARR30-C,86,sqlite,ext/repair/checkindex.c,621,FP,duplicate of 85; aCol[iGt] within bounds,,high
+ARR30-C,87,sqlite,ext/repair/checkindex.c,625,FP,aCol[iGt] within bounds,,high
+DCL13-C,88,sqlite,ext/repair/checkindex.c,644,TP,cidxColumnList only reads pIdx->nCol and pIdx->aCol members so pIdx could be const CidxIndex*,,med
+EXP34-C,89,sqlite,ext/repair/checkindex.c,653,FP,pIdx populated for an existing index before cidxColumnList iterates; null only on a path that returns rc!=OK earlier,,med
+ARR30-C,90,sqlite,ext/repair/checkindex.c,654,FP,aCol indexed by i<pIdx->nCol within the allocated array,,high
+ARR30-C,91,sqlite,ext/repair/checkindex.c,655,FP,aCol[i] within nCol bound,,high
+ARR30-C,92,sqlite,ext/repair/checkindex.c,655,FP,duplicate; aCol[i] within bound,,high
+INT32-C,93,sqlite,ext/repair/checkindex.c,659,FP,i+1 is a small column ordinal bounded by nCol not near INT_MAX,,high
+STR00-C,94,sqlite,ext/repair/checkindex.c,659,FP,p is a CidxColumn* pointer not a char used as index; message misidentifies the variable,,high
+API00-C,95,sqlite,ext/repair/checkindex.c,702,FP,pCsr passed by the vtab cursor machinery always non-null; API00 misfire on internal function,,med
+API00-C,96,sqlite,ext/repair/checkindex.c,702,FP,zIdxName is the index name from sqlite3_value_text guarded non-null at the cidxFilter call site,,med
+API00-C,97,sqlite,ext/repair/checkindex.c,702,FP,pzSqlOut is caller-provided out-param always non-null at both call sites,,med
+DCL15-C,98,sqlite,ext/repair/checkindex.c,702,FP,cidxGenerateScanSql is intentionally non-static shared with the cursor implementation,,med
+DCL19-C,99,sqlite,ext/repair/checkindex.c,702,FP,external linkage is intentional for this helper; DCL19 stylistic misfire,,med
+STR34-C,100,sqlite,ext/repair/checkindex.c,718,FP,*pzSqlOut = 0 stores a null pointer; no char sign extension,,high
+EXP34-C,101,sqlite,ext/repair/checkindex.c,721,FP,pIdx may be null only when cidxLookupIndex failed but cidxColumnList guards on *pRc==SQLITE_OK so it no-ops,,med
+EXP34-C,102,sqlite,ext/repair/checkindex.c,722,FP,same guard; cidxColumnList returns immediately when rc!=SQLITE_OK so pIdx not dereferenced,,med
+EXP34-C,103,sqlite,ext/repair/checkindex.c,723,FP,same *pRc guard protects against null pIdx deref,,med
+EXP34-C,104,sqlite,ext/repair/checkindex.c,724,FP,same *pRc guard,,med
+EXP34-C,105,sqlite,ext/repair/checkindex.c,725,FP,same *pRc guard,,med
+EXP34-C,106,sqlite,ext/repair/checkindex.c,728,FP,pIdx->zWhere read only when rc==SQLITE_OK meaning lookup succeeded and pIdx is valid,,med
+STR34-C,107,sqlite,ext/repair/checkindex.c,733,FP,*pzSqlOut store of mprintf result; no char sign extension,,high
+EXP34-C,108,sqlite,ext/repair/checkindex.c,736,FP,zTab null implies rc!=SQLITE_OK so this mprintf branch only runs under rc==SQLITE_OK with valid zTab,,med
+EXP34-C,109,sqlite,ext/repair/checkindex.c,737,FP,same rc guard ensures zTab valid in this branch,,med
+EXP34-C,110,sqlite,ext/repair/checkindex.c,748,FP,same rc guard,,med
+INT32-C,111,sqlite,ext/repair/checkindex.c,750,FP,pIdx->nCol-1 with nCol>=1 for any real index; loop guarded i>=0 anyway,,high
+ARR30-C,112,sqlite,ext/repair/checkindex.c,752,FP,aCol[i] within nCol bound in the descending loop,,high
+EXP34-C,113,sqlite,ext/repair/checkindex.c,752,FP,azAfter valid because cidxDecodeAfter succeeded under the same rc==SQLITE_OK guard,,med
+EXP34-C,114,sqlite,ext/repair/checkindex.c,754,FP,azAfter non-null on the rc==SQLITE_OK path reaching cidxWhere,,med
+EXP34-C,115,sqlite,ext/repair/checkindex.c,759,FP,rc guard ensures zTab valid,,med
+ARR30-C,116,sqlite,ext/repair/checkindex.c,765,FP,aCol[i] within nCol bound,,high
+STR34-C,117,sqlite,ext/repair/checkindex.c,768,FP,*pzSqlOut store of mprintf result; no char sign extension,,high
+EXP34-C,118,sqlite,ext/repair/checkindex.c,778,FP,cidxFreeIndex explicitly handles null pIdx via if(pIdx) guard at line 292,,high
+DCL13-C,119,sqlite,ext/repair/checkindex.c,790,FP,cidxFilter argv signature fixed by xFilter function-pointer typedef,,high
+EXP34-C,120,sqlite,ext/repair/checkindex.c,849,FP,sqlite3_result_text tolerates a null text pointer (yields NULL result); zVal null is intended,,high
+EXP34-C,121,sqlite,ext/repair/checkindex.c,867,FP,sqlite3_result_text tolerates null zSql pointer; documented contract,,high
+DCL13-C,122,sqlite,ext/repair/checkindex.c,875,FP,cidxRowid pCursor signature fixed by xRowid typedef,,high
+CON03-C,123,sqlite,ext/repair/checkindex.c,886,FP,cidx_module is a function-local static initialized once and registered; no cross-thread mutation,,high
+API00-C,124,sqlite,ext/repair/checkindex.c,922,FP,db is the extension entry-point handle guaranteed non-null by the loader contract,,med
+API00-C,125,sqlite,ext/repair/checkindex.c,922,FP,pApi is consumed by SQLITE_EXTENSION_INIT2 macro per the documented extension ABI,,med
+DCL15-C,126,sqlite,ext/repair/checkindex.c,922,FP,sqlite3_checkindex_init must be external; it is the extension entry point,,high
+DCL13-C,127,sqlite,ext/repair/checkindex.c,924,FP,pzErrMsg signature fixed by the extension entry-point convention,,high

@@ -1,0 +1,102 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,0,sqlite,src/utf.c,52,FP,sqlite3Utf8Trans1 is initialized with 64 explicit entries so the array bound is fixed by the initializer; implicit-size aggregate with full initializer is well-defined and intentional,,high
+PRE00-C,1,sqlite,src/utf.c,64,TP,WRITE_UTF8 expands zOut multiple times via repeated *zOut++ so the macro evaluates its zOut argument many times; genuine PRE00 macro-hygiene issue,,high
+PRE01-C,2,sqlite,src/utf.c,64,FP,zOut appears only as the lvalue *zOut++ where parenthesization cannot change precedence; SQLite idiom relies on a bare pointer lvalue not an expression,,high
+PRE01-C,3,sqlite,src/utf.c,64,TP,c is used in unparenthesized subexpressions like c>>6 and c&0x3F inside the replacement; passing a comma/additive expression as c could misparse so PRE01 applies,,med
+PRE02-C,4,sqlite,src/utf.c,64,FP,WRITE_UTF8 expands to a brace-enclosed statement block not a value expression so wrapping the replacement list in parentheses is inapplicable,,high
+PRE10-C,5,sqlite,src/utf.c,64,TP,WRITE_UTF8 is a multi-statement brace block not wrapped in do-while so use as an unbraced if body would break; genuine PRE10,,high
+PRE12-C,6,sqlite,src/utf.c,64,TP,zOut is incremented multiple times by the macro body so it is evaluated multiple times; PRE12 holds,,high
+PRE00-C,7,sqlite,src/utf.c,84,TP,WRITE_UTF16LE increments zOut multiple times so its argument is evaluated multiple times; genuine PRE00,,high
+PRE01-C,8,sqlite,src/utf.c,84,FP,zOut appears only as the *zOut++ lvalue; parenthesization cannot alter precedence for a bare pointer lvalue,,high
+PRE01-C,9,sqlite,src/utf.c,84,TP,"c is used in unparenthesized subexpressions (c>>8, c-0x10000) so an argument expression could misparse; PRE01 applies",,med
+PRE02-C,10,sqlite,src/utf.c,84,FP,replacement is a brace statement block not an expression so parenthesizing the list is inapplicable,,high
+PRE10-C,11,sqlite,src/utf.c,84,TP,multi-statement brace block not wrapped in do-while; PRE10 holds,,high
+PRE12-C,12,sqlite,src/utf.c,84,TP,zOut incremented multiple times; PRE12 holds,,high
+PRE00-C,13,sqlite,src/utf.c,96,TP,WRITE_UTF16BE increments zOut multiple times; genuine PRE00,,high
+PRE01-C,14,sqlite,src/utf.c,96,FP,zOut used only as *zOut++ lvalue; parenthesization irrelevant,,high
+PRE01-C,15,sqlite,src/utf.c,96,TP,c used in unparenthesized subexpressions; PRE01 applies,,med
+PRE02-C,16,sqlite,src/utf.c,96,FP,brace statement block not an expression; parenthesizing inapplicable,,high
+PRE10-C,17,sqlite,src/utf.c,96,TP,multi-statement brace block not wrapped in do-while; PRE10 holds,,high
+PRE12-C,18,sqlite,src/utf.c,96,TP,zOut evaluated multiple times; PRE12 holds,,high
+API00-C,19,sqlite,src/utf.c,114,FP,"sqlite3AppendOneUtf8Character contract requires caller to supply a 4-byte buffer; zOut is an internal trusted pointer never null in callers, API00 null-validation not applicable to this internal API",,high
+INT14-C,20,sqlite,src/utf.c,116,FP,"INT14 readability heuristic; v is a u32 codepoint deliberately manipulated with shifts and masks, standard correct UTF-8 encoding, no defect",,high
+EXP07-C,21,sqlite,src/utf.c,125,FP,EXP07 misfire; v>>12 is a normal bit extraction on a known-range value not an assumption of a constant,,high
+EXP07-C,22,sqlite,src/utf.c,130,FP,EXP07 misfire on v>>18 bit extraction; no defect,,high
+EXP07-C,23,sqlite,src/utf.c,131,FP,EXP07 misfire on v>>12 bit extraction; no defect,,high
+PRE00-C,24,sqlite,src/utf.c,164,TP,READ_UTF8 increments zIn multiple times via *(zIn++) so it evaluates the zIn argument multiple times; genuine PRE00,,high
+PRE01-C,25,sqlite,src/utf.c,164,FP,zIn appears only as the *(zIn++) lvalue; parenthesization cannot change precedence,,high
+PRE01-C,26,sqlite,src/utf.c,164,FP,zTerm appears only in the comparison zIn<zTerm as a bare operand; parenthesization cannot change result,,high
+PRE01-C,27,sqlite,src/utf.c,164,TP,c is used in unparenthesized subexpressions like c<<6 and c&0xFFFFF800; PRE01 applies,,med
+PRE02-C,28,sqlite,src/utf.c,164,FP,replacement is statement-level not an expression; parenthesizing the list inapplicable,,high
+PRE10-C,29,sqlite,src/utf.c,164,TP,READ_UTF8 is multi-statement and NOT brace-wrapped so it is unsafe as an unbraced if body; genuine PRE10,,high
+PRE12-C,30,sqlite,src/utf.c,164,TP,zIn incremented multiple times; PRE12 holds,,high
+API00-C,31,sqlite,src/utf.c,175,FP,sqlite3Utf8Read pz is an internal pointer always passed as the address of a live variable by callers; API00 null-check not applicable to this internal contract,,high
+INT14-C,32,sqlite,src/utf.c,185,FP,"INT14 readability heuristic on the UTF-8 decode accumulator c; correct decode arithmetic, no defect",,high
+INT30-C,33,sqlite,src/utf.c,187,FP,"c is unsigned int and the value built from Trans1 plus 6-bit groups stays well under 32 bits for valid lengths; c<<6 cannot overflow a u32 here and invalid results are folded to 0xFFFD, no INT30 defect",,high
+FLP02-C,34,sqlite,src/utf.c,191,FP,line 191 is an integer mask comparison (c&0xFFFFFFFE)==0xFFFE not a floating-point comparison; FLP02 misfire,,high
+API00-C,35,sqlite,src/utf.c,208,FP,sqlite3Utf8ReadLimited z is supplied by trusted internal callers with assert(n>0); API00 null-validation not applicable,,high
+API00-C,36,sqlite,src/utf.c,208,FP,piOut is an internal output pointer always valid in callers; API00 not applicable,,high
+INT14-C,37,sqlite,src/utf.c,218,FP,INT14 readability heuristic on decode accumulator c; no defect,,high
+INT30-C,38,sqlite,src/utf.c,218,FP,c-0xc0 is safe because the branch is guarded by c>=0xc0 so the subtraction never wraps and indexes Trans1 within its 64 entries; INT30 misfire,,high
+INT14-C,39,sqlite,src/utf.c,220,FP,INT14 readability heuristic on loop index i; no defect,,high
+INT14-C,40,sqlite,src/utf.c,220,FP,"INT14 readability heuristic; z is a pointer indexed normally, no defect",,high
+INT30-C,41,sqlite,src/utf.c,221,FP,"c<<6 on u32 with bounded i<n<=4 keeps c within 21 bits; no u32 overflow, INT30 misfire",,high
+API00-C,42,sqlite,src/utf.c,242,FP,pMem is an internal Mem* guaranteed non-null by callers and asserts; API00 null-validation not applicable,,high
+EXP34-C,43,sqlite,src/utf.c,250,FP,"asserts at 250-254 establish pMem is a valid string Mem; pMem is never null on this path, EXP34 misfire",,high
+INT14-C,44,sqlite,src/utf.c,251,FP,"INT14 misfire; line 251 is pMem->flags&MEM_Str a flag test on a struct member not arithmetic on pMem, no defect",,high
+ARR30-C,45,sqlite,src/utf.c,280,FP,"the byte-swap loop is bounded by zTerm=&zIn[pMem->n&~1]; while(zIn<zTerm) is a proper bound, not unbounded; ARR30 misfire",,high
+ARR36-C,46,sqlite,src/utf.c,280,FP,"zTerm derives from pMem->z so zIn and zTerm point into the same buffer; comparison is well-defined, ARR36 misfire",,high
+MEM33-C,47,sqlite,src/utf.c,282,FP,"line 282 *zIn=*(zIn+1) is a byte copy via dereference not a struct assignment; MEM33 misfire, no flexible-array struct involved",,high
+INT14-C,48,sqlite,src/utf.c,282,FP,"INT14 misfire; zIn is a byte pointer dereferenced and incremented normally, no defect",,high
+INT32-C,49,sqlite,src/utf.c,298,FP,len uses (sqlite3_int64) cast and pMem->n is a non-negative int so 2*n+1 cannot overflow a 64-bit value; INT32 misfire and worst-case-size is intentional,,high
+INT32-C,50,sqlite,src/utf.c,298,FP,2*(int64)pMem->n cannot overflow int64 for any int n; INT32 misfire,,high
+INT32-C,51,sqlite,src/utf.c,305,FP,2*(int64)pMem->n+2 in int64 cannot overflow for int n; INT32 misfire,,high
+INT32-C,52,sqlite,src/utf.c,305,FP,2*(int64)pMem->n cannot overflow int64; INT32 misfire,,high
+ARR36-C,53,sqlite,src/utf.c,325,FP,"zTerm and zIn both derive from pMem->z; same-object comparison, ARR36 misfire",,high
+ARR30-C,54,sqlite,src/utf.c,326,FP,READ_UTF8 reads are bounded by while(zIn<zTerm) inside the macro and the outer while(zIn<zTerm); output buffer pre-sized to 2*n+2 so the macro access is statically safe; ARR30 manual-review flag is not a defect,,high
+EXP33-C,55,sqlite,src/utf.c,326,FP,"c is the macro output parameter assigned c=*(zIn++) as the first macro statement before any read; not used uninitialized, EXP33 misfire",,high
+ARR36-C,56,sqlite,src/utf.c,332,FP,same-object pointer comparison zIn vs pMem->z-derived zTerm; ARR36 misfire,,high
+ARR30-C,57,sqlite,src/utf.c,333,FP,"READ_UTF8 bounded by zIn<zTerm and output sized 2*n+2; ARR30 manual-review flag, not a defect",,high
+ARR30-C,58,sqlite,src/utf.c,343,FP,UTF16LE->UTF8 loop bounded by while(zIn<zTerm) with pMem->n made even at line 297 so the two-byte reads stay in bounds; ARR30 misfire,,high
+ARR36-C,59,sqlite,src/utf.c,343,FP,"zIn and zTerm both derive from pMem->z; same-object comparison, ARR36 misfire",,high
+INT14-C,60,sqlite,src/utf.c,345,FP,INT14 readability heuristic on decode accumulator c; no defect,,high
+INT30-C,61,sqlite,src/utf.c,345,FP,c is unsigned int and c+=(*(zIn++))<<8 builds a 16-bit unit so cannot wrap a u32; INT30 misfire,,high
+ARR36-C,62,sqlite,src/utf.c,348,FP,zIn>=zTerm compares pointers into the same pMem->z buffer; ARR36 misfire,,high
+INT32-C,63,sqlite,src/utf.c,352,FP,c2 is a UTF-16 unit max 0xFFFF so c2+=byte<<8 cannot overflow int; INT32 misfire and this branch is behind SQLITE_REPLACE_INVALID_UTF,,high
+EXP07-C,64,sqlite,src/utf.c,357,FP,"EXP07 misfire; (c&0x3ff)<<10 is surrogate-pair reassembly bit math, not a constant assumption",,high
+INT13-C,65,sqlite,src/utf.c,357,FP,"c2 holds a 16-bit value so the &0x3ff result is non-negative; INT13 sign concern is benign here, no defect",,high
+ARR36-C,66,sqlite,src/utf.c,361,FP,same-object pointer comparison; ARR36 misfire,,high
+INT32-C,67,sqlite,src/utf.c,363,FP,c2 is a 16-bit UTF-16 unit; c2+=byte<<8 cannot overflow int; INT32 misfire,,high
+INT13-C,68,sqlite,src/utf.c,364,FP,"c2 holds a small non-negative value; INT13 bitwise-on-signed is benign, no defect",,high
+EXP07-C,69,sqlite,src/utf.c,364,FP,"EXP07 misfire; surrogate reassembly bit math, not constant assumption",,high
+EXP07-C,70,sqlite,src/utf.c,364,FP,"EXP07 misfire; surrogate reassembly bit math, not constant assumption",,high
+ARR30-C,71,sqlite,src/utf.c,372,FP,"UTF16BE->UTF8 loop bounded by while(zIn<zTerm) with even pMem->n; two-byte reads stay in bounds, ARR30 misfire",,high
+ARR36-C,72,sqlite,src/utf.c,372,FP,same-object comparison zIn vs zTerm; ARR36 misfire,,high
+INT30-C,73,sqlite,src/utf.c,374,FP,c is unsigned int building a 16-bit unit; c+=*(zIn++) cannot wrap a u32; INT30 misfire,,high
+ARR36-C,74,sqlite,src/utf.c,377,FP,same-object pointer comparison; ARR36 misfire,,high
+INT32-C,75,sqlite,src/utf.c,381,FP,c2 is a 16-bit UTF-16 unit; addition cannot overflow int; INT32 misfire,,high
+EXP07-C,76,sqlite,src/utf.c,386,FP,EXP07 misfire; surrogate reassembly bit math,,high
+INT13-C,77,sqlite,src/utf.c,386,FP,"c2 small non-negative; INT13 benign, no defect",,high
+ARR36-C,78,sqlite,src/utf.c,390,FP,same-object pointer comparison; ARR36 misfire,,high
+INT32-C,79,sqlite,src/utf.c,392,FP,c2 is a 16-bit unit; addition cannot overflow int; INT32 misfire,,high
+INT13-C,80,sqlite,src/utf.c,393,FP,"c2 small non-negative; INT13 benign, no defect",,high
+EXP07-C,81,sqlite,src/utf.c,393,FP,EXP07 misfire; surrogate reassembly bit math,,high
+EXP07-C,82,sqlite,src/utf.c,393,FP,EXP07 misfire; surrogate reassembly bit math,,high
+EXP34-C,83,sqlite,src/utf.c,441,FP,"sqlite3VdbeMemHandleBom asserts pMem->n>=0 and only dereferences pMem->z when pMem->n>1; pMem is a valid internal Mem, EXP34 misfire",,high
+INT32-C,84,sqlite,src/utf.c,444,FP,"((u8*)pMem->z)+1 is pointer arithmetic on a valid buffer guarded by pMem->n>1; not signed integer overflow, INT32 misfire",,high
+API00-C,85,sqlite,src/utf.c,475,FP,sqlite3Utf8CharLen zIn is an internal pointer; for nByte<0 callers pass a zero-terminated string per contract; API00 not applicable,,high
+DCL00-C,86,sqlite,src/utf.c,476,TP,r is initialized to 0 but the analyzer message conflates it; actually r IS modified by r++ at line 487 so DCL00 const suggestion is wrong - FP,,high
+ARR36-C,87,sqlite,src/utf.c,484,FP,"z and zTerm both derive from zIn; same-object comparison, ARR36 misfire",,high
+ARR36-C,88,sqlite,src/utf.c,485,FP,same-object pointer comparison z vs zTerm; ARR36 misfire,,high
+INT32-C,89,sqlite,src/utf.c,487,FP,"r counts characters in a buffer bounded by nByte; r cannot reach INT_MAX for any real input within the same buffer, INT32 misfire",,high
+API00-C,90,sqlite,src/utf.c,505,FP,"sqlite3Utf8To8 is a SQLITE_TEST/DEBUG-only helper; zIn is a trusted test pointer, API00 not applicable",,high
+EXP40-C,91,sqlite,src/utf.c,506,FP,"EXP40 misfire; sqlite3Utf8To8 takes unsigned char* not const and assigns local non-const pointers, no const-correctness violation at this line",,high
+EXP40-C,92,sqlite,src/utf.c,507,FP,"EXP40 misfire; assigning a non-const local pointer, no qualifier dropped",,high
+ARR00-C,93,sqlite,src/utf.c,517,FP,zOut and zStart both alias the same zIn buffer so (int)(zOut-zStart) is a valid same-object pointer difference; ARR00 misfire,,high
+API00-C,94,sqlite,src/utf.c,529,FP,sqlite3Utf16to8 db is an internal sqlite3* always valid; API00 null-validation not applicable to this internal API,,high
+DCL13-C,95,sqlite,src/utf.c,529,FP,"db is passed by value into m.db and used as db->mallocFailed; even if not written through, db is dereferenced through a non-const sqlite3* API contract and stored into non-const m.db, so const would break the contract; DCL13 FP",,high
+API00-C,96,sqlite,src/utf.c,551,FP,sqlite3Utf16ByteLen nByte is supplied by trusted internal callers; API00 integer-validation not applicable here,,high
+INT32-C,97,sqlite,src/utf.c,554,FP,nByte-1 is used to form zEnd=&z[nByte-1]; callers pass nByte>=2 for UTF-16 data so no signed overflow; INT32 misfire,,high
+ARR36-C,98,sqlite,src/utf.c,558,FP,"z and zEnd both derive from zIn; same-object comparison, ARR36 misfire",,high
+ARR36-C,99,sqlite,src/utf.c,561,FP,same-object pointer comparison z vs zEnd; ARR36 misfire,,high
+FLP02-C,100,sqlite,src/utf.c,591,FP,line 591 is (i&0xFFFFFFFE)==0xFFFE an integer mask comparison not a float comparison; FLP02 misfire,,high

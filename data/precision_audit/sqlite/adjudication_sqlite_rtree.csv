@@ -1,0 +1,447 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MEM31-C,0,sqlite,ext/rtree/rtree.c,1,FP,apSqlParam points into the same single pBlob allocation and dup'd values are freed in matching loop in rtreeMatchArgFree,,high
+PRE01-C,1,sqlite,ext/rtree/rtree.c,100,FP,standard offsetof idiom ST used only as cast target (ST*)0 where parenthesization is moot,,med
+PRE01-C,2,sqlite,ext/rtree/rtree.c,100,FP,M used only as member-access target ->M parenthesizing changes nothing,,med
+PRE00-C,3,sqlite,ext/rtree/rtree.c,270,TP,RTREE_MINCELLS evaluates parameter p twice in the division expression,,high
+PRE12-C,4,sqlite,ext/rtree/rtree.c,270,TP,RTREE_MINCELLS evaluates p multiple times factual macro multiple-evaluation,,high
+PRE01-C,5,sqlite,ext/rtree/rtree.c,332,FP,coord used only via member access coord.i parenthesization is semantically inert,,med
+PRE00-C,6,sqlite,ext/rtree/rtree.c,334,TP,DCOORD evaluates coord twice once as coord.f once as coord.i,,high
+PRE01-C,7,sqlite,ext/rtree/rtree.c,334,FP,coord used only via member access in DCOORD parenthesization inert,,med
+PRE00-C,8,sqlite,ext/rtree/rtree.c,435,TP,MAX evaluates x twice in conditional expression,,high
+PRE12-C,9,sqlite,ext/rtree/rtree.c,435,TP,MAX evaluates x multiple times factual,,high
+PRE00-C,10,sqlite,ext/rtree/rtree.c,438,TP,MIN evaluates x twice in conditional expression,,high
+PRE12-C,11,sqlite,ext/rtree/rtree.c,438,TP,MIN evaluates x multiple times factual,,high
+PRE10-C,12,sqlite,ext/rtree/rtree.c,460,TP,testcase expands to bare if{} not do-while genuine dangling-else hazard,,med
+DCL13-C,13,sqlite,ext/rtree/rtree.c,525,TP,readInt16 param p only read via p[0] p[1] const u8* would compile,,high
+INT14-C,14,sqlite,ext/rtree/rtree.c,526,FP,INT14 advisory byte-assembly shifts in readInt16 deserializer are intentional,,med
+EXP34-C,15,sqlite,ext/rtree/rtree.c,526,FP,p sourced from &pNode->zData internal helper never null,,high
+INT14-C,16,sqlite,ext/rtree/rtree.c,538,FP,INT14 advisory byte-assembly shifts in readInt64 intentional,,med
+MSC37-C,17,sqlite,ext/rtree/rtree.c,545,FP,readInt64 returns a value on every preprocessor branch,,high
+INT14-C,18,sqlite,ext/rtree/rtree.c,560,FP,INT14 advisory byte-assembly shifts intentional,,med
+INT13-C,19,sqlite,ext/rtree/rtree.c,578,FP,INT13 advisory writeInt16 i is non-negative int16 value masking well-defined,,low
+INT14-C,20,sqlite,ext/rtree/rtree.c,578,FP,INT14 advisory bit-packing shift in writeInt16 intentional,,low
+INT13-C,21,sqlite,ext/rtree/rtree.c,579,FP,INT13 advisory writeInt16 masking non-negative value,,low
+DCL13-C,22,sqlite,ext/rtree/rtree.c,581,TP,writeCoord pCoord only read via pCoord->u const RtreeCoord* would compile,,high
+DCL03-C,23,sqlite,ext/rtree/rtree.c,584,TP,assert(sizeof(RtreeCoord)==4) is constant expression static_assert applicable,,high
+DCL03-C,24,sqlite,ext/rtree/rtree.c,585,TP,assert(sizeof(u32)==4) is constant expression static_assert applicable,,high
+INT13-C,25,sqlite,ext/rtree/rtree.c,597,FP,INT13 misfire i in writeCoord is declared u32 unsigned not signed,,high
+EXP33-C,26,sqlite,ext/rtree/rtree.c,597,FP,i assigned i=pCoord->u before any read in writeCoord generic branch,,high
+INT13-C,27,sqlite,ext/rtree/rtree.c,598,FP,INT13 misfire i is u32 unsigned in writeCoord,,high
+INT13-C,28,sqlite,ext/rtree/rtree.c,599,FP,INT13 misfire i is u32 unsigned in writeCoord,,high
+INT13-C,29,sqlite,ext/rtree/rtree.c,600,FP,INT13 misfire i is u32 unsigned in writeCoord,,high
+INT13-C,30,sqlite,ext/rtree/rtree.c,614,FP,INT13 advisory writeInt64 two's-complement byte serialization correct on all targets,,low
+INT13-C,31,sqlite,ext/rtree/rtree.c,615,FP,INT13 advisory writeInt64 byte serialization intentional,,low
+INT13-C,32,sqlite,ext/rtree/rtree.c,616,FP,INT13 advisory writeInt64 byte serialization intentional,,low
+INT13-C,33,sqlite,ext/rtree/rtree.c,617,FP,INT13 advisory writeInt64 byte serialization intentional,,low
+INT13-C,34,sqlite,ext/rtree/rtree.c,618,FP,INT13 advisory writeInt64 byte serialization intentional,,low
+INT13-C,35,sqlite,ext/rtree/rtree.c,619,FP,INT13 advisory writeInt64 byte serialization intentional,,low
+INT13-C,36,sqlite,ext/rtree/rtree.c,620,FP,INT13 advisory writeInt64 byte serialization intentional,,low
+INT13-C,37,sqlite,ext/rtree/rtree.c,621,FP,INT13 advisory writeInt64 byte serialization intentional,,low
+INT32-C,38,sqlite,ext/rtree/rtree.c,632,FP,nRef is a live reference count bounded by node references not attacker-driven to INT_MAX,,high
+DCL13-C,39,sqlite,ext/rtree/rtree.c,639,TP,nodeZero reads only pRtree->iNodeSize const Rtree* would compile,,high
+INT32-C,40,sqlite,ext/rtree/rtree.c,640,FP,iNodeSize bounded >=448 at connect undersize check no overflow in iNodeSize-2,,high
+EXP34-C,41,sqlite,ext/rtree/rtree.c,640,FP,nodeZero callers always pass an allocated node p never null,,high
+INT32-C,42,sqlite,ext/rtree/rtree.c,640,FP,iNodeSize bounded >=448 subtraction cannot overflow,,high
+DCL13-C,43,sqlite,ext/rtree/rtree.c,656,TP,nodeHashLookup reads only pRtree->aHash const Rtree* would compile,,high
+DCL30-C,44,sqlite,ext/rtree/rtree.c,659,FP,nodeHashLookup returns pointer variable p value a heap RtreeNode* not address of local,,high
+EXP34-C,45,sqlite,ext/rtree/rtree.c,667,FP,nodeHashInsert caller passes valid node assert pNode->pNext==0,,high
+DCL13-C,46,sqlite,ext/rtree/rtree.c,676,FP,nodeHashDelete mutates pRtree->aHash[] through pp so pRtree pointee is modified,,high
+EXP34-C,47,sqlite,ext/rtree/rtree.c,678,FP,nodeHashDelete caller passes valid pNode,,high
+INT30-C,48,sqlite,ext/rtree/rtree.c,694,FP,iNodeSize bounded sizeof small no unsigned wrap in malloc64 size,,high
+INT32-C,49,sqlite,ext/rtree/rtree.c,696,FP,iNodeSize bounded memset size cannot overflow,,high
+INT30-C,50,sqlite,ext/rtree/rtree.c,696,FP,iNodeSize bounded no unsigned wrap,,high
+DCL30-C,51,sqlite,ext/rtree/rtree.c,704,FP,nodeNew returns heap pointer value pNode not address of local variable,,high
+EXP34-C,52,sqlite,ext/rtree/rtree.c,732,FP,pNode just looked up non-null inside the if guard in nodeAcquire,,high
+INT32-C,53,sqlite,ext/rtree/rtree.c,736,FP,nRef live reference count not attacker-controlled to INT_MAX,,high
+DCL30-C,54,sqlite,ext/rtree/rtree.c,737,FP,assigning heap pointer pNode to out-param *ppNode is valid not a dangling local,,high
+FIO42-C,55,sqlite,ext/rtree/rtree.c,752,FP,rc is an int return code from sqlite3_blob_open not a file descriptor,,high
+INT30-C,56,sqlite,ext/rtree/rtree.c,765,FP,iNodeSize bounded no unsigned wrap in malloc64,,high
+INT33-C,57,sqlite,ext/rtree/rtree.c,800,FP,nBytesPerCell = 8 + nDim2*4 always >=12 never zero,,high
+DCL30-C,58,sqlite,ext/rtree/rtree.c,814,FP,out-param assignment of heap pointer not a dangling local,,high
+MEM12-C,59,sqlite,ext/rtree/rtree.c,824,FP,rc is an int return code not a leaked resource,,high
+DCL13-C,60,sqlite,ext/rtree/rtree.c,831,TP,nodeOverwriteCell reads only pRtree->nBytesPerCell and nDim2 const Rtree* would compile,,high
+EXP34-C,61,sqlite,ext/rtree/rtree.c,837,FP,nodeOverwriteCell caller passes valid node,,high
+ARR00-C,62,sqlite,ext/rtree/rtree.c,839,FP,ii initialized to 0 in for(ii=0; ii<nDim2) loop not uninitialized,,high
+DCL13-C,63,sqlite,ext/rtree/rtree.c,848,TP,nodeDeleteCell reads only pRtree->nBytesPerCell const Rtree* would compile,,high
+EXP34-C,64,sqlite,ext/rtree/rtree.c,849,FP,nodeDeleteCell caller passes valid node,,high
+ARR37-C,65,sqlite,ext/rtree/rtree.c,850,FP,pDst points into zData node buffer subscript is valid pointer arithmetic within node,,high
+INT32-C,66,sqlite,ext/rtree/rtree.c,851,FP,NCELL validated <=maxcell in nodeAcquire iCell<NCELL by delete caller contract,,high
+INT32-C,67,sqlite,ext/rtree/rtree.c,851,FP,NCELL bounded by nodeAcquire corruption check no overflow,,high
+INT31-C,68,sqlite,ext/rtree/rtree.c,852,FP,nByte non-negative since deleted cell exists NCELL>iCell guaranteed,,high
+INT32-C,69,sqlite,ext/rtree/rtree.c,853,FP,NCELL>=1 when a cell is being deleted no overflow,,high
+INT33-C,70,sqlite,ext/rtree/rtree.c,871,FP,nBytesPerCell never zero always >=12,,high
+INT32-C,71,sqlite,ext/rtree/rtree.c,871,FP,iNodeSize bounded >=448 subtraction cannot overflow,,high
+EXP34-C,72,sqlite,ext/rtree/rtree.c,877,FP,nodeInsertCell caller passes valid node,,high
+MEM05-C,73,sqlite,ext/rtree/rtree.c,913,FP,nodeRelease recursion bounded by tree depth RTREE_MAX_DEPTH 40 cannot exhaust stack,,med
+MSC04-C,74,sqlite,ext/rtree/rtree.c,913,TP,nodeRelease calls itself on pNode->pParent direct recursion factually exists,,high
+INT32-C,75,sqlite,ext/rtree/rtree.c,918,FP,nRef live reference count not driven to INT_MIN,,high
+DCL13-C,76,sqlite,ext/rtree/rtree.c,943,TP,nodeGetRowid reads only pRtree->nBytesPerCell const Rtree* would compile,,high
+EXP34-C,77,sqlite,ext/rtree/rtree.c,948,FP,nodeGetRowid asserts iCell<NCELL caller passes valid node,,high
+DCL13-C,78,sqlite,ext/rtree/rtree.c,955,TP,nodeGetCoord reads only pRtree->nBytesPerCell const Rtree* would compile,,high
+INT32-C,79,sqlite,ext/rtree/rtree.c,962,FP,iCoord bounded by nDim2 <=10 4*iCoord max 40 no overflow,,high
+EXP34-C,80,sqlite,ext/rtree/rtree.c,979,FP,nodeGetCell caller passes valid node,,high
+INT32-C,81,sqlite,ext/rtree/rtree.c,983,FP,ii bounded by nDim2 loop ii+1 small no overflow,,high
+INT32-C,82,sqlite,ext/rtree/rtree.c,985,FP,ii bounded by nDim2 loop no overflow,,high
+MEM30-C,83,sqlite,ext/rtree/rtree.c,1131,FP,pRtree is the vtab not freed resetCursor only frees cursor-owned arrays,,high
+MEM30-C,84,sqlite,ext/rtree/rtree.c,1133,FP,pReadAux read after memset is the saved-then-restored statement still valid,,high
+MEM30-C,85,sqlite,ext/rtree/rtree.c,1135,FP,pCsr->base set after memset cursor not freed in resetCursor,,high
+MEM30-C,86,sqlite,ext/rtree/rtree.c,1156,FP,pRtree is the vtab object distinct from pCsr which was freed not pRtree,,high
+MEM30-C,87,sqlite,ext/rtree/rtree.c,1157,FP,pRtree->nCursor accessed pRtree not freed only pCsr was freed,,high
+MEM30-C,88,sqlite,ext/rtree/rtree.c,1157,FP,pRtree members valid pRtree not the freed pointer,,high
+MEM30-C,89,sqlite,ext/rtree/rtree.c,1158,FP,nodeBlobReset receives pRtree which was never freed,,high
+DCL13-C,90,sqlite,ext/rtree/rtree.c,1169,FP,rtreeEof signature fixed by xEof vtab method function-pointer typedef,,high
+PRE10-C,91,sqlite,ext/rtree/rtree.c,1186,TP,RTREE_DECODE_COORD is a brace block not do-while trailing-semicolon dangling-else hazard,,med
+PRE10-C,92,sqlite,ext/rtree/rtree.c,1192,TP,RTREE_DECODE_COORD brace block not do-while same hazard,,med
+PRE11-C,93,sqlite,ext/rtree/rtree.c,1198,FP,macro body ends with closing brace not a bare semicolon PRE11 misfire,,high
+PRE11-C,94,sqlite,ext/rtree/rtree.c,1206,FP,macro body ends with closing brace not a semicolon PRE11 misfire,,high
+PRE02-C,95,sqlite,ext/rtree/rtree.c,1212,FP,statement-block macro cannot and must not be wrapped in parentheses,,high
+PRE10-C,96,sqlite,ext/rtree/rtree.c,1212,TP,RTREE_DECODE_COORD brace block not do-while dangling-else hazard,,med
+DCL13-C,97,sqlite,ext/rtree/rtree.c,1225,TP,rtreeCallbackConstraint pConstraint only read mutating pInfo pointee is const-valid,,high
+DCL13-C,98,sqlite,ext/rtree/rtree.c,1228,TP,rtreeCallbackConstraint pSearch only read const RtreeSearchPoint* would compile,,high
+ENV01-C,99,sqlite,ext/rtree/rtree.c,1236,FP,aCoord is a fixed-size stack array nothing to do with environment variables,,high
+MEM05-C,100,sqlite,ext/rtree/rtree.c,1236,FP,aCoord[RTREE_MAX_DIMENSIONS*2] is fixed-size constant array not a VLA,,high
+EXP33-C,101,sqlite,ext/rtree/rtree.c,1248,FP,"c written by readCoord(...,&c) before each aCoord assignment",,high
+DCL13-C,102,sqlite,ext/rtree/rtree.c,1301,TP,rtreeNonleafConstraint p only read iCoord op u.rValue const-valid,,high
+INT14-C,103,sqlite,ext/rtree/rtree.c,1311,FP,INT14 advisory p->iCoord&0xfe mask intentional even-index alignment,,med
+EXP33-C,104,sqlite,ext/rtree/rtree.c,1321,FP,val written by RTREE_DECODE_COORD macro before use,,high
+DCL13-C,105,sqlite,ext/rtree/rtree.c,1358,TP,rtreeLeafConstraint p only read op iCoord u.rValue const-valid,,high
+INT32-C,106,sqlite,ext/rtree/rtree.c,1368,FP,iCoord derived from idxStr digit set by xBestIndex bounded 0..nDim2 by column validation no overflow,,high
+INT32-C,107,sqlite,ext/rtree/rtree.c,1368,FP,iCoord bounded <=nDim2 <=10 multiplication 4*iCoord max 40 no overflow,,high
+EXP33-C,108,sqlite,ext/rtree/rtree.c,1370,FP,xN written by RTREE_DECODE_COORD before the switch,,high
+DCL13-C,109,sqlite,ext/rtree/rtree.c,1410,TP,nodeParentIndex pNode only read pParent iNode const RtreeNode* would compile,,high
+EXP34-C,110,sqlite,ext/rtree/rtree.c,1411,FP,nodeParentIndex caller passes valid node pNode->pParent guarded by ALWAYS,,high
+ARR00-C,111,sqlite,ext/rtree/rtree.c,1445,FP,rtreeSearchPointSwap i j internal priority-queue indices with assert i<j maintained by caller,,high
+ARR00-C,112,sqlite,ext/rtree/rtree.c,1447,FP,i is a bounded heap index into aPoint passed by internal helper rtreeSearchPointSwap callers (rtreeEnqueue/rtreeSearchPointPop) with valid <nPoint positions; assert(i<j) holds,,high
+ARR00-C,113,sqlite,ext/rtree/rtree.c,1447,FP,j is a bounded heap index into aPoint passed by trusted internal callers; not attacker-supplied raw index,,high
+ARR00-C,114,sqlite,ext/rtree/rtree.c,1448,FP,same bounded internal heap index j into aPoint sized nPointAlloc,,high
+INT32-C,115,sqlite,ext/rtree/rtree.c,1449,FP,i is a small heap position (<RTREE_CACHE_SZ scale) far from INT_MAX; pure analyzer ceiling speculation,,high
+INT32-C,116,sqlite,ext/rtree/rtree.c,1449,FP,j similarly tiny heap index increment cannot approach INT_MAX,,high
+ARR00-C,117,sqlite,ext/rtree/rtree.c,1452,FP,aNode[i] access guarded by if(i<RTREE_CACHE_SZ) at line 1450 before this branch,,high
+ARR00-C,118,sqlite,ext/rtree/rtree.c,1453,FP,aNode[i] write guarded by the i<RTREE_CACHE_SZ check,,high
+ARR00-C,119,sqlite,ext/rtree/rtree.c,1455,FP,aNode[i] read inside else branch where i<RTREE_CACHE_SZ already proven,,high
+ARR00-C,120,sqlite,ext/rtree/rtree.c,1456,FP,aNode[i] write under proven i<RTREE_CACHE_SZ,,high
+ARR00-C,121,sqlite,ext/rtree/rtree.c,1456,FP,aNode[j] read under else branch where j<RTREE_CACHE_SZ (j<RTREE_CACHE_SZ since not >=),,high
+ARR00-C,122,sqlite,ext/rtree/rtree.c,1457,FP,aNode[j] write under proven j<RTREE_CACHE_SZ,,high
+DCL13-C,123,sqlite,ext/rtree/rtree.c,1465,FP,pCur cannot be const: function returns non-const pointers &pCur->sPoint and pCur->aPoint derived from it,,high
+INT32-C,124,sqlite,ext/rtree/rtree.c,1496,FP,nPointAlloc bounded by rtree fanout (nCell<200) and RTREE_MAX_DEPTH; *2+8 cannot reach INT_MAX in practice,,high
+INT32-C,125,sqlite,ext/rtree/rtree.c,1496,FP,nPointAlloc*2 bounded by tree geometry never near INT_MAX; no attacker-unbounded growth,,high
+INT30-C,126,sqlite,ext/rtree/rtree.c,1497,FP,nNew*sizeof passed to sqlite3_realloc64 (u64 arg); nNew bounded small so no wrap; OOM returns 0 handled,,high
+INT32-C,127,sqlite,ext/rtree/rtree.c,1497,FP,same bounded nNew; multiplication done in size_t and product is small,,high
+ARR01-C,128,sqlite,ext/rtree/rtree.c,1497,FP,sizeof(pCur->aPoint[0]) is sizeof of element type not the pointer; correct element-size idiom not a decayed-array misuse,,high
+MEM30-C,129,sqlite,ext/rtree/rtree.c,1497,FP,pCur->aPoint is reassigned to pNew from realloc64 only after NULL check; old pointer not used after free,,high
+INT32-C,130,sqlite,ext/rtree/rtree.c,1502,FP,nPoint bounded by node fanout/depth; cannot reach INT_MAX,,high
+INT32-C,131,sqlite,ext/rtree/rtree.c,1503,FP,aPoint + i is pointer arithmetic within freshly sized buffer; i<nPoint<=nPointAlloc,,high
+INT32-C,132,sqlite,ext/rtree/rtree.c,1510,FP,aPoint + j with j=(i-1)/2 a valid smaller heap index within allocation,,high
+DCL30-C,133,sqlite,ext/rtree/rtree.c,1516,FP,pNew is not a local; it points into pCur->aPoint heap allocation returned legitimately,,high
+EXP34-C,134,sqlite,ext/rtree/rtree.c,1533,FP,pFirst guarded: enclosing branch entered only when pFirst==0 OR rScore comparisons that short-circuit dereference,,high
+INT32-C,135,sqlite,ext/rtree/rtree.c,1539,FP,(pNew-aPoint) is 0 here (assert ii==1 means pNew==aPoint[0]); no overflow,,high
+INT32-C,136,sqlite,ext/rtree/rtree.c,1539,FP,pNew-aPoint pointer difference is 0/tiny within one allocation; well defined,,high
+DCL13-C,137,sqlite,ext/rtree/rtree.c,1561,TP,tracePoint param p (dead #if 0 trace code) is only read via p->iLevel/id/iCell/rScore/eWithin; const compiles,,med
+DCL13-C,138,sqlite,ext/rtree/rtree.c,1561,TP,tracePoint param pCur only read via pCur->aNode[idx]; const compiles,,med
+INT32-C,139,sqlite,ext/rtree/rtree.c,1566,FP,idx is a tiny queue index in trace code; cannot approach INT_MAX,,high
+ARR00-C,140,sqlite,ext/rtree/rtree.c,1568,FP,aNode[idx] read guarded by if(idx<RTREE_CACHE_SZ) at line 1567 (dead trace code anyway),,high
+ARR00-C,141,sqlite,ext/rtree/rtree.c,1579,FP,ii is the for-loop counter initialized ii=0 at line 1579; not uninitialized; bound is nPoint,,high
+INT32-C,142,sqlite,ext/rtree/rtree.c,1600,FP,anQueue decrement balanced against prior increments in rtreeSearchPointNew; counter never INT_MIN,,high
+INT32-C,143,sqlite,ext/rtree/rtree.c,1603,FP,anQueue[level] decrement balanced; bounded u32-domain counter cannot underflow to INT_MIN,,high
+INT32-C,144,sqlite,ext/rtree/rtree.c,1604,FP,nPoint decrement guarded by ALWAYS(p->nPoint) i.e. nPoint>0; cannot underflow,,high
+INT32-C,145,sqlite,ext/rtree/rtree.c,1612,FP,j+1 where j=i*2+1 and i is small heap index; product bounded by n<nPoint; no overflow,,high
+ARR30-C,146,sqlite,ext/rtree/rtree.c,1652,FP,p->iCell++ bounded by while(p->iCell<nCell) with nCell=NCELL(pNode) and assert(nCell<200),,high
+EXP30-C,147,sqlite,ext/rtree/rtree.c,1652,FP,p is assigned once from rtreeSearchPointFirst at loop head; no unsequenced modify-and-access,,high
+EXP33-C,148,sqlite,ext/rtree/rtree.c,1652,FP,p is assigned in the while condition before any use; not used uninitialized,,high
+EXP34-C,149,sqlite,ext/rtree/rtree.c,1652,FP,loop body entered only when p!=0 (condition (p=...)!=0); dereference safe,,high
+EXP34-C,150,sqlite,ext/rtree/rtree.c,1658,FP,pNode from rtreeNodeOfFirstSearchPoint; rc checked (if(rc)return) before NCELL(pNode) use,,high
+INT32-C,151,sqlite,ext/rtree/rtree.c,1660,FP,(sqlite3_rtree_dbl)-1 is a cast of constant -1 to double; no integer overflow,,high
+INT32-C,152,sqlite,ext/rtree/rtree.c,1663,FP,aConstraint + ii pointer arithmetic with ii<nConstraint valid index into allocated array,,high
+EXP33-C,153,sqlite,ext/rtree/rtree.c,1682,FP,x is RtreeSearchPoint; x.iLevel assigned line 1681 before use; fields set on all taken paths,,high
+EXP34-C,154,sqlite,ext/rtree/rtree.c,1744,FP,p guarded by if(rc==SQLITE_OK && ALWAYS(p)) before p->iCell access,,high
+EXP34-C,155,sqlite,ext/rtree/rtree.c,1766,FP,p guarded by NEVER(p==0) return at line 1765 before p->iCell use,,high
+INT32-C,156,sqlite,ext/rtree/rtree.c,1770,FP,i is the column index param (i<=nDim2 small); i-1 cannot overflow,,high
+INT30-C,157,sqlite,ext/rtree/rtree.c,1844,FP,sizeof(*pInfo)+pSrc->iSize: iSize is u32 from a pointer blob created by trusted geometry callback not raw DB bytes; realloc64 u64 arg,,high
+EXP33-C,158,sqlite,ext/rtree/rtree.c,1844,FP,pInfo assigned from sqlite3_malloc64 and NULL-checked (if(!pInfo)return) before memset deref,,high
+DCL13-C,159,sqlite,ext/rtree/rtree.c,1872,FP,argv signature fixed by xFilter function-pointer typedef and elements passed to non-const sqlite3_value APIs,,high
+INT30-C,160,sqlite,ext/rtree/rtree.c,1921,FP,sizeof(RtreeConstraint)*argc to sqlite3_malloc64 (u64); argc is bounded SQL constraint count not raw bytes,,high
+INT32-C,161,sqlite,ext/rtree/rtree.c,1921,FP,argc is small bounded query-constraint count; product fits size_t no overflow,,high
+ARR38-C,162,sqlite,ext/rtree/rtree.c,1926,FP,memset size sizeof(RtreeConstraint)*argc matches the just-allocated buffer; argc bounded,,high
+INT32-C,163,sqlite,ext/rtree/rtree.c,1926,FP,same bounded argc; arithmetic in size_t cannot overflow for realistic constraint counts,,high
+INT30-C,164,sqlite,ext/rtree/rtree.c,1926,FP,product bounded by small argc; no wrap,,high
+INT32-C,165,sqlite,ext/rtree/rtree.c,1926,FP,argc small; no signed overflow,,high
+ARR38-C,166,sqlite,ext/rtree/rtree.c,1927,FP,memset of anQueue sized sizeof(u32)*(iDepth+1); iDepth<=RTREE_MAX_DEPTH=40 and anQueue is [RTREE_MAX_DEPTH+1],,high
+INT32-C,167,sqlite,ext/rtree/rtree.c,1927,FP,iDepth bounded <=RTREE_MAX_DEPTH (checked at load line 789); +1 fits and matches array size,,high
+INT30-C,168,sqlite,ext/rtree/rtree.c,1927,FP,sizeof(u32)*(iDepth+1) bounded small; no wrap,,high
+INT32-C,169,sqlite,ext/rtree/rtree.c,1927,FP,iDepth+1 with iDepth<=40 cannot overflow,,high
+INT32-C,170,sqlite,ext/rtree/rtree.c,1933,FP,ii*2 where ii<argc small constraint index; no overflow,,high
+INT32-C,171,sqlite,ext/rtree/rtree.c,1934,FP,idxStr[ii*2+1]-'0' is a char-to-digit subtraction yielding small int; idxStr length asserted ==argc*2,,high
+INT32-C,172,sqlite,ext/rtree/rtree.c,1934,FP,ii*2+1 with ii<argc small; no overflow and within asserted idxStr length,,high
+INT32-C,173,sqlite,ext/rtree/rtree.c,1934,FP,ii*2 bounded small index; no overflow,,high
+INT32-C,174,sqlite,ext/rtree/rtree.c,1946,FP,iDepth+1 bounded by RTREE_MAX_DEPTH; no overflow,,high
+FLP34-C,175,sqlite,ext/rtree/rtree.c,1952,FP,(double)iVal is intentional int64-to-double conversion guarded by the >=1<<48 range adjustment that follows,,high
+EXP00-C,176,sqlite,ext/rtree/rtree.c,1953,FP,((sqlite3_int64)1)<<48 in comparison is unambiguous; precedence advisory only not a defect,,med
+INT32-C,177,sqlite,ext/rtree/rtree.c,1953,FP,1<<48 on a 64-bit sqlite3_int64 is well within range; no overflow or UB,,high
+INT32-C,178,sqlite,ext/rtree/rtree.c,1954,FP,-(1<<48) negation of a 64-bit value far from INT64_MIN; well defined,,high
+INT32-C,179,sqlite,ext/rtree/rtree.c,1954,FP,1<<48 on sqlite3_int64 well defined,,high
+INT32-C,180,sqlite,ext/rtree/rtree.c,1982,FP,iDepth+1 bounded by RTREE_MAX_DEPTH; no overflow,,high
+EXP34-C,181,sqlite,ext/rtree/rtree.c,1986,FP,pNew guarded by NEVER(pNew==0)return SQLITE_NOMEM before pNew->id write,,high
+DCL13-C,182,sqlite,ext/rtree/rtree.c,2036,FP,tab signature fixed by xBestIndex function-pointer typedef; cannot add const,,high
+ENV01-C,183,sqlite,ext/rtree/rtree.c,2044,FP,zIdxStr is a fixed local index-string buffer not an environment variable; ENV01 misclassification,,high
+MEM05-C,184,sqlite,ext/rtree/rtree.c,2044,FP,zIdxStr is fixed-size array RTREE_MAX_DIMENSIONS*8+1 (compile-time constant) not a VLA,,high
+ARR00-C,185,sqlite,ext/rtree/rtree.c,2051,FP,ii is the for-loop counter set ii=0 at line 2051; not uninitialized; bound is pIdxInfo->nConstraint,,high
+INT30-C,186,sqlite,ext/rtree/rtree.c,2058,FP,sizeof(zIdxStr)-1 is a compile-time constant (41-1); cannot underflow,,high
+INT14-C,187,sqlite,ext/rtree/rtree.c,2104,FP,iIdx bitwise/arithmetic mix is readability advisory; iIdx is bounded buffer index not a defect,,low
+ARR38-C,188,sqlite,ext/rtree/rtree.c,2117,FP,memcpy size iIdx+1 with iIdx<sizeof(zIdxStr)-1 loop bound; copies into freshly malloc'd iIdx+1 buffer,,high
+INT34-C,189,sqlite,ext/rtree/rtree.c,2120,FP,iIdx/2 is non-negative (iIdx starts 0 only increments) and < dimension count; shift amount valid for i64 nRowEst,,high
+INT13-C,190,sqlite,ext/rtree/rtree.c,2120,FP,iIdx>>division readability advisory; iIdx non-negative bounded; no signed-shift defect,,low
+FLP34-C,191,sqlite,ext/rtree/rtree.c,2121,FP,c.f to double is the intended REAL32 coordinate readout; values are finite floats from storage,,high
+FLP34-C,192,sqlite,ext/rtree/rtree.c,2121,FP,second coordinate c.f double conversion same intended readout,,high
+DCL13-C,193,sqlite,ext/rtree/rtree.c,2130,TP,"cellArea param pRtree only read (eCoordType,nDim); const compiles",,high
+DCL13-C,194,sqlite,ext/rtree/rtree.c,2130,TP,cellArea param p only read via p->aCoord[*]; pointees not mutated; const compiles,,high
+DCL13-C,195,sqlite,ext/rtree/rtree.c,2160,TP,cellMargin param pRtree only read (nDim2); const compiles,,high
+DCL13-C,196,sqlite,ext/rtree/rtree.c,2160,TP,cellMargin param p only read via DCOORD(p->aCoord[*]); const compiles,,high
+INT32-C,197,sqlite,ext/rtree/rtree.c,2164,FP,ii+1 with ii=nDim2-2<=8 small; no overflow,,high
+INT32-C,198,sqlite,ext/rtree/rtree.c,2165,FP,ii-=2 on small bounded loop variable; cannot underflow to INT_MIN,,high
+DCL13-C,199,sqlite,ext/rtree/rtree.c,2173,TP,cellUnion param pRtree only read (eCoordType); const compiles,,high
+DCL13-C,200,sqlite,ext/rtree/rtree.c,2173,TP,cellUnion param p2 only read; only p1 is written so p2 const compiles,,high
+INT32-C,201,sqlite,ext/rtree/rtree.c,2178,FP,ii+1 with ii<nDim2<=10 small; no overflow,,high
+INT32-C,202,sqlite,ext/rtree/rtree.c,2178,FP,ii+1 bounded small index; no overflow,,high
+INT32-C,203,sqlite,ext/rtree/rtree.c,2178,FP,ii+1 bounded small index; no overflow,,high
+INT32-C,204,sqlite,ext/rtree/rtree.c,2184,FP,ii+1 bounded small index in int branch; no overflow,,high
+INT32-C,205,sqlite,ext/rtree/rtree.c,2184,FP,ii+1 bounded small index; no overflow,,high
+INT32-C,206,sqlite,ext/rtree/rtree.c,2184,FP,ii+1 bounded small index; no overflow,,high
+INT32-C,207,sqlite,ext/rtree/rtree.c,2185,FP,ii+=2 on small bounded loop variable; no overflow,,high
+DCL13-C,208,sqlite,ext/rtree/rtree.c,2194,TP,"cellContains param pRtree only read (eCoordType,nDim2); const compiles",,high
+DCL13-C,209,sqlite,ext/rtree/rtree.c,2194,TP,cellContains param p1 only read via a1[0..1].i/f; const compiles,,high
+DCL13-C,210,sqlite,ext/rtree/rtree.c,2194,TP,cellContains param p2 only read via a2[0..1]; const compiles,,high
+ARR00-C,211,sqlite,ext/rtree/rtree.c,2197,FP,ii is for-loop counter ii=0 at line 2197; not uninitialized; bound nDim2,,high
+ARR37-C,212,sqlite,ext/rtree/rtree.c,2200,FP,a2 points to &p2->aCoord[ii]; a2[0]/a2[1] index the contiguous aCoord array legitimately not a non-array pointer,,high
+ARR37-C,213,sqlite,ext/rtree/rtree.c,2200,FP,a1 points into p1->aCoord array; a1[0] is valid array element access,,high
+ARR37-C,214,sqlite,ext/rtree/rtree.c,2200,FP,a2[1] indexes the next aCoord element within the bounded coordinate array,,high
+ARR37-C,215,sqlite,ext/rtree/rtree.c,2200,FP,a1[1] indexes valid adjacent aCoord element,,high
+ARR37-C,216,sqlite,ext/rtree/rtree.c,2206,FP,a2[0] valid aCoord element in float branch,,high
+ARR37-C,217,sqlite,ext/rtree/rtree.c,2206,FP,a1[0] valid aCoord element access,,high
+ARR37-C,218,sqlite,ext/rtree/rtree.c,2206,FP,a2[1] valid adjacent aCoord element,,high
+ARR37-C,219,sqlite,ext/rtree/rtree.c,2206,FP,a1[1] valid adjacent aCoord element,,high
+DCL13-C,220,sqlite,ext/rtree/rtree.c,2213,TP,cellOverlap param pRtree only read (nDim2 via DCOORD path); const compiles,,high
+DCL13-C,221,sqlite,ext/rtree/rtree.c,2214,TP,cellOverlap param p only read via p->aCoord[*]; const compiles,,high
+DCL13-C,222,sqlite,ext/rtree/rtree.c,2215,TP,cellOverlap param aCell only read via aCell[ii].aCoord[*]; const compiles,,high
+ARR00-C,223,sqlite,ext/rtree/rtree.c,2223,FP,jj is for-loop counter jj=0 at line 2223; not uninitialized; bound nDim2,,high
+EXP30-C,224,sqlite,ext/rtree/rtree.c,2225,FP,MAX macro double-evaluates but DCOORD args are plain member reads with no side effects,,high
+EXP30-C,225,sqlite,ext/rtree/rtree.c,2226,FP,MIN macro double-evaluates but DCOORD args are plain member reads with no side effects,,high
+INT32-C,226,sqlite,ext/rtree/rtree.c,2226,FP,"jj steps by 2 bounded by nDim2 (u8, max 10) so jj+1 cannot overflow",,high
+INT32-C,227,sqlite,ext/rtree/rtree.c,2226,FP,jj bounded by nDim2 max 10 so jj+1 cannot overflow,,high
+EXP34-C,228,sqlite,ext/rtree/rtree.c,2270,FP,pNode set by nodeAcquire and loop guarded by rc==SQLITE_OK so non-NULL here,,high
+EXP34-C,229,sqlite,ext/rtree/rtree.c,2289,FP,same ChooseLeaf loop guarded by rc==SQLITE_OK so pNode non-NULL,,high
+EXP34-C,230,sqlite,ext/rtree/rtree.c,2304,FP,nodeAcquire accepts and sets pNode by contract pNode valid under rc==SQLITE_OK guard,,high
+EXP34-C,231,sqlite,ext/rtree/rtree.c,2305,FP,nodeRelease tolerates and pNode valid in this rc==OK iteration,,high
+DCL30-C,232,sqlite,ext/rtree/rtree.c,2309,FP,ChooseLeaf intentionally outputs heap RtreeNode* via *ppLeaf not a stack address,,high
+EXP40-C,233,sqlite,ext/rtree/rtree.c,2323,FP,pNode param is non-const RtreeNode* assignment to p has no constness violation,,high
+EXP34-C,234,sqlite,ext/rtree/rtree.c,2326,FP,p equals pNode which is non-NULL by AdjustTree caller contract (rc==OK guarded),,high
+INT32-C,235,sqlite,ext/rtree/rtree.c,2331,FP,cnt++ guarded by NEVER(cnt>100) returning corrupt well before INT_MAX,,high
+EXP33-C,236,sqlite,ext/rtree/rtree.c,2342,FP,iCell initialized in for(iCell=0...) loop before any use,,high
+DCL13-C,237,sqlite,ext/rtree/rtree.c,2356,TP,rowidWrite only reads pRtree->pWriteRowid pointee const Rtree* would compile,,med
+DCL13-C,238,sqlite,ext/rtree/rtree.c,2366,TP,parentWrite only reads pRtree->pWriteParent pointee const Rtree* would compile,,med
+MEM05-C,239,sqlite,ext/rtree/rtree.c,2388,TP,SortByDimension is genuinely recursive so stack-growth concern is factual,,med
+MSC04-C,240,sqlite,ext/rtree/rtree.c,2388,TP,SortByDimension calls itself directly at 2406/2407 factual direct recursion,,high
+INT32-C,241,sqlite,ext/rtree/rtree.c,2402,FP,nLeft=nIdx/2 so nIdx-nLeft is positive and small no overflow,,high
+ARR38-C,242,sqlite,ext/rtree/rtree.c,2409,FP,sizeof(int)*nLeft with nLeft=nIdx/2 bounded by cell count no overflow,,high
+EXP43-C,243,sqlite,ext/rtree/rtree.c,2409,FP,aSpare and aLeft(aIdx) are distinct non-overlapping allocations/slices,,high
+INT30-C,244,sqlite,ext/rtree/rtree.c,2409,FP,nLeft bounded by cell count (16-bit NCELL) sizeof(int)*nLeft cannot wrap,,high
+INT32-C,245,sqlite,ext/rtree/rtree.c,2409,FP,same bounded nLeft no signed overflow,,high
+INT32-C,246,sqlite,ext/rtree/rtree.c,2412,FP,iDim bounded by nDim (u8 max 5) iDim*2 max 10,,high
+INT32-C,247,sqlite,ext/rtree/rtree.c,2413,FP,iDim*2+1 max 11 no overflow,,high
+INT32-C,248,sqlite,ext/rtree/rtree.c,2413,FP,iDim*2 max 10 no overflow,,high
+ARR37-C,249,sqlite,ext/rtree/rtree.c,2414,FP,aRight is &aIdx[nLeft] a valid array slice subscript is legitimate,,high
+INT32-C,250,sqlite,ext/rtree/rtree.c,2414,FP,iDim*2 bounded max 10,,high
+ARR37-C,251,sqlite,ext/rtree/rtree.c,2415,FP,aRight is valid array slice of aIdx,,high
+INT32-C,252,sqlite,ext/rtree/rtree.c,2415,FP,iDim*2+1 bounded max 11,,high
+INT32-C,253,sqlite,ext/rtree/rtree.c,2415,FP,iDim*2 bounded max 10,,high
+INT32-C,254,sqlite,ext/rtree/rtree.c,2420,FP,iLeft+iRight bounded by nIdx (cell count) no overflow,,high
+INT32-C,255,sqlite,ext/rtree/rtree.c,2423,FP,iLeft+iRight bounded by nIdx no overflow,,high
+ARR37-C,256,sqlite,ext/rtree/rtree.c,2423,FP,aRight valid slice of aIdx,,high
+INT32-C,257,sqlite,ext/rtree/rtree.c,2424,FP,iRight bounded by nRight (cell count) no overflow at INT_MAX,,high
+INT32-C,258,sqlite,ext/rtree/rtree.c,2433,FP,dead code under #if 0 jj bounded anyway,,high
+INT32-C,259,sqlite,ext/rtree/rtree.c,2433,FP,dead code under #if 0 iDim*2 bounded,,high
+INT32-C,260,sqlite,ext/rtree/rtree.c,2434,FP,dead code under #if 0,,high
+INT32-C,261,sqlite,ext/rtree/rtree.c,2434,FP,dead code under #if 0,,high
+INT32-C,262,sqlite,ext/rtree/rtree.c,2434,FP,dead code under #if 0,,high
+INT32-C,263,sqlite,ext/rtree/rtree.c,2435,FP,dead code under #if 0,,high
+INT32-C,264,sqlite,ext/rtree/rtree.c,2436,FP,dead code under #if 0,,high
+INT32-C,265,sqlite,ext/rtree/rtree.c,2436,FP,dead code under #if 0,,high
+DCL13-C,266,sqlite,ext/rtree/rtree.c,2451,FP,pLeft passed to nodeInsertCell which sets pLeft->isDirty so it is modified,,high
+DCL13-C,267,sqlite,ext/rtree/rtree.c,2452,FP,pRight passed to nodeInsertCell which sets pRight->isDirty so it is modified,,high
+INT32-C,268,sqlite,ext/rtree/rtree.c,2464,FP,nDim+1 max 6 nCell bounded by 16-bit NCELL product fits i64 no overflow,,high
+INT30-C,269,sqlite,ext/rtree/rtree.c,2464,FP,sizeof(int*)+nCell*sizeof(int) computed in 64-bit nByte no wrap for bounded nCell,,high
+INT32-C,270,sqlite,ext/rtree/rtree.c,2464,FP,same 64-bit sqlite3_int64 arithmetic bounded nCell,,high
+INT30-C,271,sqlite,ext/rtree/rtree.c,2464,FP,nCell*sizeof(int) bounded by 16-bit NCELL times 4 cannot wrap,,high
+INT32-C,272,sqlite,ext/rtree/rtree.c,2464,FP,nCell bounded no overflow,,high
+INT31-C,273,sqlite,ext/rtree/rtree.c,2472,FP,nByte computed from positive nDim and nCell so non-negative conversion safe,,high
+ARR00-C,274,sqlite,ext/rtree/rtree.c,2473,FP,ii initialized in for(ii=0; ii<pRtree->nDim; ii++) not uninitialized,,high
+INT32-C,275,sqlite,ext/rtree/rtree.c,2475,FP,ii bounded by nDim (max 5) nCell bounded ii*nCell no overflow,,high
+ARR00-C,276,sqlite,ext/rtree/rtree.c,2489,FP,nLeft is the for-loop control variable initialized in for(nLeft=RTREE_MINCELLS...),,high
+INT32-C,277,sqlite,ext/rtree/rtree.c,2501,FP,nCell-1 with nCell>=1 positive no overflow,,high
+ARR00-C,278,sqlite,ext/rtree/rtree.c,2502,FP,kk initialized in for(kk=1; kk<(nCell-1); kk++) not uninitialized,,high
+MSC04-C,279,sqlite,ext/rtree/rtree.c,2569,TP,SplitNode->rtreeInsertCell->SplitNode is genuine indirect recursion,,high
+INT32-C,280,sqlite,ext/rtree/rtree.c,2592,FP,(sizeof(RtreeCell)+sizeof(int))*(nCell+1) nCell 16-bit product fits malloc64 i64,,high
+INT30-C,281,sqlite,ext/rtree/rtree.c,2592,FP,sizeof(RtreeCell)+sizeof(int) compile-time constant cannot wrap,,high
+ARR38-C,282,sqlite,ext/rtree/rtree.c,2598,FP,sizeof(int)*(nCell+1) bounded by 16-bit nCell valid memset size,,high
+INT30-C,283,sqlite,ext/rtree/rtree.c,2598,FP,nCell+1 bounded no unsigned wrap,,high
+INT32-C,284,sqlite,ext/rtree/rtree.c,2598,FP,nCell bounded no signed overflow,,high
+INT32-C,285,sqlite,ext/rtree/rtree.c,2604,FP,nCell++ bounded by node cell capacity well below INT_MAX,,high
+EXP34-C,286,sqlite,ext/rtree/rtree.c,2606,FP,pNode is the SplitNode param non-NULL by caller contract,,high
+INT32-C,287,sqlite,ext/rtree/rtree.c,2609,FP,iDepth bounded by tree depth (small) no overflow,,high
+EXP34-C,288,sqlite,ext/rtree/rtree.c,2614,FP,pLeft used in else branch where pLeft=pNode (non-NULL),,high
+INT32-C,289,sqlite,ext/rtree/rtree.c,2615,FP,pLeft->nRef++ bounded reference count,,high
+INT32-C,290,sqlite,ext/rtree/rtree.c,2647,FP,iHeight is bounded tree height iHeight+1 no overflow,,high
+EXP33-C,291,sqlite,ext/rtree/rtree.c,2656,FP,iCell set by nodeParentIndex before use,,high
+EXP45-C,292,sqlite,ext/rtree/rtree.c,2664,TP,rc=rtreeInsertCell(...) is a genuine assignment inside if condition (EXP45),,low
+INT32-C,293,sqlite,ext/rtree/rtree.c,2664,FP,iHeight bounded tree height,,high
+EXP34-C,294,sqlite,ext/rtree/rtree.c,2720,FP,pChild non-NULL in fixLeafParent loop guarded by pChild->iNode!=1 reached only when set,,high
+MSC04-C,295,sqlite,ext/rtree/rtree.c,2752,TP,removeNode->deleteCell->removeNode is genuine indirect recursion,,high
+EXP34-C,296,sqlite,ext/rtree/rtree.c,2758,FP,pNode is removeNode param asserted nRef==1 so non-NULL,,high
+EXP33-C,297,sqlite,ext/rtree/rtree.c,2765,FP,iCell set by nodeParentIndex before use,,high
+INT32-C,298,sqlite,ext/rtree/rtree.c,2765,FP,iHeight bounded tree height,,high
+INT32-C,299,sqlite,ext/rtree/rtree.c,2796,FP,pNode->nRef++ bounded reference count,,high
+MEM05-C,300,sqlite,ext/rtree/rtree.c,2802,TP,fixBoundingBox is genuinely recursive so stack-growth concern is factual,,med
+MSC04-C,301,sqlite,ext/rtree/rtree.c,2802,TP,fixBoundingBox calls itself directly at 2819 factual direct recursion,,high
+EXP34-C,302,sqlite,ext/rtree/rtree.c,2803,FP,pNode is fixBoundingBox param non-NULL by caller contract,,high
+MSC04-C,303,sqlite,ext/rtree/rtree.c,2829,TP,deleteCell->removeNode->deleteCell is genuine indirect recursion,,high
+EXP34-C,304,sqlite,ext/rtree/rtree.c,2847,FP,pNode is deleteCell param non-NULL by caller contract,,high
+MSC04-C,305,sqlite,ext/rtree/rtree.c,2864,TP,rtreeInsertCell->SplitNode->rtreeInsertCell is genuine indirect recursion,,high
+EXP34-C,306,sqlite,ext/rtree/rtree.c,2907,FP,pNode is reinsertNodeContent param non-NULL by caller contract,,high
+DCL13-C,307,sqlite,ext/rtree/rtree.c,2923,TP,rtreeNewRowid only reads pRtree->pWriteRowid and db pointees const would compile,,med
+EXP33-C,308,sqlite,ext/rtree/rtree.c,2962,FP,iCell set by nodeRowidIndex before deleteCell use,,high
+EXP20-C,309,sqlite,ext/rtree/rtree.c,2985,FP,NCELL is an exact cell count and ==1 is a legitimate exact-count test not boolean,,high
+EXP34-C,310,sqlite,ext/rtree/rtree.c,2988,FP,pRoot set by nodeAcquire(1) under rc==SQLITE_OK guard so non-NULL,,high
+EXP34-C,311,sqlite,ext/rtree/rtree.c,2989,FP,pRoot non-NULL under rc==OK guard nodeAcquire contract,,high
+EXP34-C,312,sqlite,ext/rtree/rtree.c,2991,FP,pChild set by nodeAcquire under rc==OK guard before removeNode,,high
+INT32-C,313,sqlite,ext/rtree/rtree.c,2991,FP,iDepth>0 guaranteed by outer condition so iDepth-1 non-negative no overflow,,high
+EXP34-C,314,sqlite,ext/rtree/rtree.c,2993,FP,pChild valid and nodeRelease tolerates NULL anyway,,high
+INT32-C,315,sqlite,ext/rtree/rtree.c,2996,FP,iDepth-- bounded with iDepth>0 guard no INT_MIN underflow,,high
+MEM30-C,316,sqlite,ext/rtree/rtree.c,3003,FP,pRtree->pDeleted=pLeaf->pNext saved before free then loop re-reads pDeleted not pLeaf,,high
+EXP34-C,317,sqlite,ext/rtree/rtree.c,3014,FP,pRoot set by nodeAcquire(1) and nodeRelease tolerates NULL,,high
+EXP34-C,318,sqlite,ext/rtree/rtree.c,3016,FP,pRoot set by nodeAcquire(1) and nodeRelease tolerates NULL,,high
+FLP34-C,319,sqlite,ext/rtree/rtree.c,3035,FP,double->float overflow yields IEEE inf (defined) intentional rtree coord quantization,,med
+FLP34-C,320,sqlite,ext/rtree/rtree.c,3037,FP,same IEEE float conversion defined intentional coordinate rounding,,med
+FLP34-C,321,sqlite,ext/rtree/rtree.c,3043,FP,same IEEE float conversion defined intentional coordinate rounding,,med
+FLP34-C,322,sqlite,ext/rtree/rtree.c,3045,FP,same IEEE float conversion defined intentional coordinate rounding,,med
+INT10-C,323,sqlite,ext/rtree/rtree.c,3069,FP,iCol is a non-negative column index (assert iCol==0||iCol%2) so modulo well-defined,,high
+INT32-C,324,sqlite,ext/rtree/rtree.c,3086,FP,iCol small column index iCol+1 no overflow,,high
+DCL13-C,325,sqlite,ext/rtree/rtree.c,3105,FP,aData param signature fixed by xUpdate vtab method function-pointer typedef,,high
+EXP33-C,326,sqlite,ext/rtree/rtree.c,3151,FP,ii initialized in for(ii=0; ii<nn; ii+=2) not uninitialized,,high
+INT32-C,327,sqlite,ext/rtree/rtree.c,3152,FP,ii bounded by nn<=nDim2 (max 10) ii+3 no overflow,,high
+INT32-C,328,sqlite,ext/rtree/rtree.c,3153,FP,ii bounded max 10 ii+1 no overflow,,high
+INT32-C,329,sqlite,ext/rtree/rtree.c,3153,FP,ii bounded max 10 ii+4 no overflow,,high
+INT32-C,330,sqlite,ext/rtree/rtree.c,3155,FP,ii bounded max 10 ii+1 no overflow,,high
+INT32-C,331,sqlite,ext/rtree/rtree.c,3163,FP,ii bounded max 10 ii+3 no overflow,,high
+INT32-C,332,sqlite,ext/rtree/rtree.c,3164,FP,ii bounded max 10 ii+1 no overflow,,high
+INT32-C,333,sqlite,ext/rtree/rtree.c,3164,FP,ii bounded max 10 ii+4 no overflow,,high
+INT32-C,334,sqlite,ext/rtree/rtree.c,3166,FP,ii bounded max 10 ii+1 no overflow,,high
+EXP34-C,335,sqlite,ext/rtree/rtree.c,3223,FP,pLeaf set by ChooseLeaf under rc==SQLITE_OK guard before rtreeInsertCell,,high
+EXP34-C,336,sqlite,ext/rtree/rtree.c,3224,FP,nodeRelease begins with if(pNode) guard at line 915 so passing NULL pLeaf is explicitly handled,,high
+ARR00-C,337,sqlite,ext/rtree/rtree.c,3233,FP,jj is initialized to 0 in the for-loop header at 3233 not uninitialized and bound is nAux<=100,,high
+INT32-C,338,sqlite,ext/rtree/rtree.c,3234,FP,jj bounded 0..nAux-1 (nAux<=RTREE_MAX_AUX_COLUMN 100) so jj+2 cannot overflow int,,high
+ARR02-C,339,sqlite,ext/rtree/rtree.c,3356,FP,azName[] is a static const initializer-sized array of 3 elements implicit bound is correct C idiom,,high
+CON03-C,340,sqlite,ext/rtree/rtree.c,3369,FP,rtreeModule is a const module dispatch table written once at init not a mutable shared variable,,high
+MEM31-C,341,sqlite,ext/rtree/rtree.c,3449,FP,p built by sqlite3_str_new is consumed by sqlite3_str_finish at 3447 which frees the str object,,high
+MEM31-C,342,sqlite,ext/rtree/rtree.c,3454,FP,same str finished by sqlite3_str_finish at 3447 before the 3454 return so no leak,,high
+MEM31-C,343,sqlite,ext/rtree/rtree.c,3494,FP,p from sqlite3_str_new at 3494 is finished by sqlite3_str_finish at 3510 freeing the object,,high
+EXP43-C,344,sqlite,ext/rtree/rtree.c,3502,FP,appendf args are plain ints (ii ii+2 ii) not overlapping memory regions,,high
+INT32-C,345,sqlite,ext/rtree/rtree.c,3502,FP,ii bounded by nAux<=100 so ii+2 cannot overflow int,,high
+EXP43-C,346,sqlite,ext/rtree/rtree.c,3506,FP,appendf args are plain ints not overlapping memory regions,,high
+INT32-C,347,sqlite,ext/rtree/rtree.c,3506,FP,ii bounded by nAux<=100 so ii+2 cannot overflow int,,high
+MEM30-C,348,sqlite,ext/rtree/rtree.c,3514,FP,zSql is freed exactly once at 3515 after prepare_v3 consumed it no use after free,,high
+MEM30-C,349,sqlite,ext/rtree/rtree.c,3515,FP,zSql freed only once at 3515 single free path no double free,,high
+MEM31-C,350,sqlite,ext/rtree/rtree.c,3515,FP,zSql freed only once at 3515 not previously freed,,high
+MEM31-C,351,sqlite,ext/rtree/rtree.c,3520,FP,p finished by sqlite3_str_finish at 3510 before any return freeing the str object,,high
+EXP34-C,352,sqlite,ext/rtree/rtree.c,3536,FP,sqlite3_step reached only when rc==SQLITE_OK from prepare_v2 which guarantees pStmt non-null and step tolerates null,,high
+STR34-C,353,sqlite,ext/rtree/rtree.c,3578,FP,assigning sqlite3_mprintf char* result to *pzErr no char-to-int sign extension occurs,,high
+STR34-C,354,sqlite,ext/rtree/rtree.c,3587,FP,same mprintf char* assignment to *pzErr no sign extension defect,,high
+STR34-C,355,sqlite,ext/rtree/rtree.c,3591,FP,same mprintf char* assignment to *pzErr no sign extension defect,,high
+DCL13-C,356,sqlite,ext/rtree/rtree.c,3619,TP,pAux is only read via ternary (pAux ? ...) never written so const void* would compile,,med
+ARR02-C,357,sqlite,ext/rtree/rtree.c,3635,FP,aErrMsg[] static const initializer-sized array of 5 elements implicit bound is correct,,high
+DCL03-C,358,sqlite,ext/rtree/rtree.c,3643,FP,assert(RTREE_MAX_AUX_COLUMN<256) is a compile-time constant check; style suggestion not a defect,,high
+STR34-C,359,sqlite,ext/rtree/rtree.c,3645,FP,mprintf char* assigned to *pzErr no sign extension defect,,high
+INT32-C,360,sqlite,ext/rtree/rtree.c,3645,FP,argc bounded 6..RTREE_MAX_AUX_COLUMN+3 so 2+(argc>=6) is at most 3 no overflow,,high
+INT30-C,361,sqlite,ext/rtree/rtree.c,3656,FP,nDb=strlen positive and sizeof(Rtree)+nDb is size_t sum of small string-length values no realistic wrap,,high
+INT32-C,362,sqlite,ext/rtree/rtree.c,3656,FP,nName=strlen of a table name small positive value nName*2 cannot overflow int realistically,,high
+ARR38-C,363,sqlite,ext/rtree/rtree.c,3660,FP,memset size sizeof(Rtree)+nDb+nName*2+8 matches the prior sqlite3_malloc64 of identical expression,,high
+INT32-C,364,sqlite,ext/rtree/rtree.c,3660,FP,same expression as the malloc64 sizing string lengths small no overflow,,high
+INT30-C,365,sqlite,ext/rtree/rtree.c,3660,FP,size_t addition of small string lengths no wrap,,high
+INT32-C,366,sqlite,ext/rtree/rtree.c,3660,FP,nName*2 of a small table-name length no int overflow,,high
+INT32-C,367,sqlite,ext/rtree/rtree.c,3664,FP,nDb+1 string-length plus one no overflow,,high
+INT32-C,368,sqlite,ext/rtree/rtree.c,3665,FP,nName+1 string-length plus one no overflow,,high
+INT31-C,369,sqlite,ext/rtree/rtree.c,3667,FP,nDb is strlen result non-negative small value safe implicit size_t conversion,,high
+INT31-C,370,sqlite,ext/rtree/rtree.c,3668,FP,nName is strlen result non-negative small value safe implicit size_t conversion,,high
+INT31-C,371,sqlite,ext/rtree/rtree.c,3669,FP,nName is strlen result non-negative small value safe implicit size_t conversion,,high
+MEM31-C,372,sqlite,ext/rtree/rtree.c,3677,FP,pSql finished by sqlite3_str_finish at 3695 producing zSql which is freed at 3704,,high
+ARR00-C,373,sqlite,ext/rtree/rtree.c,3684,FP,zArg+1 valid: zArg[0]=='+' was tested so byte 1 exists (at worst the NUL terminator) standard string idiom,,high
+ARR00-C,374,sqlite,ext/rtree/rtree.c,3684,FP,same zArg+1 after zArg[0]=='+' check byte 1 is valid within the NUL-terminated string,,high
+ARR02-C,375,sqlite,ext/rtree/rtree.c,3688,FP,azFormat[] static const 2-element initializer-sized array indexed by eCoordType (0/1) correct,,high
+STR34-C,376,sqlite,ext/rtree/rtree.c,3699,FP,mprintf char* assigned to *pzErr no sign extension defect,,high
+STR34-C,377,sqlite,ext/rtree/rtree.c,3702,FP,mprintf char* assigned to *pzErr no sign extension defect,,high
+STR34-C,378,sqlite,ext/rtree/rtree.c,3717,FP,mprintf char* assigned to *pzErr no sign extension defect,,high
+MEM31-C,379,sqlite,ext/rtree/rtree.c,3718,FP,pSql already finished into zSql at 3695 before any goto; pSql no longer owns memory,,high
+STR34-C,380,sqlite,ext/rtree/rtree.c,3727,FP,mprintf char* assigned to *pzErr no sign extension defect,,high
+MEM31-C,381,sqlite,ext/rtree/rtree.c,3728,FP,pSql finished at 3695 before goto paths no leak,,high
+MEM31-C,382,sqlite,ext/rtree/rtree.c,3732,FP,pSql finished at 3695 the str object is already consumed before this return,,high
+MSC07-C,383,sqlite,ext/rtree/rtree.c,3734,FP,code after return SQLITE_OK at 3732 is the rtreeInit_fail label reachable via goto not dead code,,high
+MEM31-C,384,sqlite,ext/rtree/rtree.c,3739,FP,pSql finished at 3695 already consumed before reaching the fail label return,,high
+DCL13-C,385,sqlite,ext/rtree/rtree.c,3759,TP,apArg in rtreenode is only read via apArg[0]/apArg[1] never written so const-qualifying compiles,,med
+MEM31-C,386,sqlite,ext/rtree/rtree.c,3780,FP,pOut from sqlite3_str_new at 3780 is consumed by sqlite3_str_finish at 3799 freeing it,,high
+ARR00-C,387,sqlite,ext/rtree/rtree.c,3781,FP,ii initialized to 0 in for header at 3781 bound NCELL validated by nData check at 3778,,high
+ARR00-C,388,sqlite,ext/rtree/rtree.c,3788,FP,jj initialized to 0 bound nDim2<=10 and aCoord has RTREE_MAX_DIMENSIONS*2=10 elements,,high
+FLP34-C,389,sqlite,ext/rtree/rtree.c,3790,FP,(double)cell.aCoord[jj].f is a float-to-double widening conversion always lossless and safe,,high
+DCL13-C,390,sqlite,ext/rtree/rtree.c,3811,TP,apArg in rtreedepth only read via apArg[0] never written const-qualifying compiles,,med
+DCL30-C,391,sqlite,ext/rtree/rtree.c,3888,FP,pRet is a sqlite3_stmt* (heap object) returned by value not the address of a local; no dangling,,high
+INT32-C,392,sqlite,ext/rtree/rtree.c,3911,FP,nErr increment guarded by nErr<RTREE_CHECK_MAX_ERROR(100) at 3899 so it never reaches INT_MAX,,high
+INT31-C,393,sqlite,ext/rtree/rtree.c,3949,FP,nNode is sqlite3_column_bytes result (non-negative blob length) safe size_t conversion in memcpy,,high
+ARR00-C,394,sqlite,ext/rtree/rtree.c,3988,FP,bLeaf constrained by assert(bLeaf==0||bLeaf==1) at 3987 and callers pass literal 0/1; index in-range,,high
+ARR00-C,395,sqlite,ext/rtree/rtree.c,3989,FP,same bLeaf is 0 or 1 by contract and assert; aCheckMapping[2] indexed safely,,high
+ARR00-C,396,sqlite,ext/rtree/rtree.c,3995,FP,same bLeaf 0/1 contract; azSql[2] indexed safely,,high
+ARR37-C,397,sqlite,ext/rtree/rtree.c,4038,FP,pCell points into the validated node buffer; subscript notation into a byte buffer is the intended idiom,,high
+INT32-C,398,sqlite,ext/rtree/rtree.c,4038,FP,4*2*i with i<nDim is small; the dangerous overflow is nCell*(...) at 4102 not this per-coord index,,high
+ARR37-C,399,sqlite,ext/rtree/rtree.c,4039,FP,pCell points into validated node buffer subscript into byte buffer is intended,,high
+INT32-C,400,sqlite,ext/rtree/rtree.c,4039,FP,4*(2*i+1) with i<nDim small no overflow,,high
+INT32-C,401,sqlite,ext/rtree/rtree.c,4039,FP,2*i+1 with i<nDim small no overflow,,high
+INT32-C,402,sqlite,ext/rtree/rtree.c,4039,FP,2*i with i<nDim small no overflow,,high
+INT32-C,403,sqlite,ext/rtree/rtree.c,4049,FP,4*2*i parent-coord index with i<nDim small no overflow,,high
+INT32-C,404,sqlite,ext/rtree/rtree.c,4050,FP,4*(2*i+1) parent-coord index small no overflow,,high
+INT32-C,405,sqlite,ext/rtree/rtree.c,4050,FP,2*i+1 small no overflow,,high
+INT32-C,406,sqlite,ext/rtree/rtree.c,4050,FP,2*i small no overflow,,high
+MEM05-C,407,sqlite,ext/rtree/rtree.c,4072,TP,rtreeCheckNode recurses at 4115 (rtreeCheckNode calls itself) depth-bounded by iDepth<=RTREE_MAX_DEPTH but recursion is factual,,med
+ARR00-C,408,sqlite,ext/rtree/rtree.c,4101,FP,aNode is freed only at 4124 after the loop; line 4101 reads before the free no use-after-free,,high
+ARR00-C,409,sqlite,ext/rtree/rtree.c,4109,FP,aNode freed at 4124 after the loop; line 4109 indexes before the free no use-after-free,,high
+INT32-C,410,sqlite,ext/rtree/rtree.c,4109,FP,INTEGRITY-GATE(unreachable@default SQLITE_MAX_COLUMN): nCell from readInt16 (0..65535) attacker node bytes and nDim attacker table cols make 4+i*(8+nDim*8) overflow int reachable,,med
+INT32-C,411,sqlite,ext/rtree/rtree.c,4109,FP,INTEGRITY-GATE(unreachable@default SQLITE_MAX_COLUMN): i*(8+pCheck->nDim*2*4) overflows when nCell and nDim large (rtreecheck on attacker-chosen wide table) reachable OOB,,med
+INT32-C,412,sqlite,ext/rtree/rtree.c,4109,FP,8+pCheck->nDim*2*4 subterm itself does not overflow; the genuine overflow is the enclosing i*(..) product flagged at 410/411,,med
+INT32-C,413,sqlite,ext/rtree/rtree.c,4109,FP,pCheck->nDim*2*4 alone does not overflow for plausible nDim the overflow is in the enclosing product not this subterm,,med
+INT32-C,414,sqlite,ext/rtree/rtree.c,4109,FP,pCheck->nDim*2 alone is small the overflow risk is the enclosing nCell-scaled product not this subterm,,med
+ARR37-C,415,sqlite,ext/rtree/rtree.c,4111,FP,pCell points into validated node buffer pCell[8] is a byte-offset read in bounds after 4102 size check,,high
+ARR37-C,416,sqlite,ext/rtree/rtree.c,4115,FP,pCell[8] byte-offset read into validated node buffer in bounds,,high
+DCL13-C,417,sqlite,ext/rtree/rtree.c,4160,FP,db in rtreeCheckTable is passed to sqlite3_prepare/step which take non-const sqlite3* so const would not compile,,high
+INT32-C,418,sqlite,ext/rtree/rtree.c,4178,FP,sqlite3_column_count returns >=0 small value minus 2 no int overflow,,high
+INT32-C,419,sqlite,ext/rtree/rtree.c,4189,FP,column_count - 1 - nAux all small non-negative values no overflow,,high
+INT32-C,420,sqlite,ext/rtree/rtree.c,4189,FP,column_count - 1 small value no overflow,,high
+STR34-C,421,sqlite,ext/rtree/rtree.c,4213,FP,mprintf char* assigned to *pzReport no sign extension defect,,high
+DCL13-C,422,sqlite,ext/rtree/rtree.c,4221,TP,pVtab in rtreeIntegrity is only cast and its members read not written so const-qualifying compiles,,med
+STR34-C,423,sqlite,ext/rtree/rtree.c,4235,FP,mprintf char* assigned to *pzErr no sign extension defect,,high
+DCL13-C,424,sqlite,ext/rtree/rtree.c,4278,TP,apArg in rtreecheck only read via apArg[0]/apArg[1] never written const-qualifying compiles,,med
+API00-C,425,sqlite,ext/rtree/rtree.c,4315,FP,sqlite3RtreeInit is a public entry point db validity is an API contract; null db is caller error not a defect here,,high
+DCL00-C,426,sqlite,ext/rtree/rtree.c,4328,FP,c holds RTREE_COORD_* cast to void* and is passed to create_module_v2; flagging const is a style note not a defect,,high
+DCL00-C,427,sqlite,ext/rtree/rtree.c,4330,FP,same c is a local void* passed onward const-qualifying is cosmetic not a correctness issue,,high
+DCL00-C,428,sqlite,ext/rtree/rtree.c,4335,FP,same c local void* cosmetic const note,,high
+DCL13-C,429,sqlite,ext/rtree/rtree.c,4386,TP,aArg in geomCallback only read via aArg[i] never written const-qualifying compiles,,med
+INT30-C,430,sqlite,ext/rtree/rtree.c,4392,FP,nArg is the SQL function argument count small bounded value nArg*sizeof(ptr) within sqlite3_malloc64 i64 domain no wrap,,high
+EXP34-C,431,sqlite,ext/rtree/rtree.c,4399,FP,pGeomCtx from sqlite3_user_data is set at registration time always non-null for this registered function pGeomCtx[0] safe,,high
+ARR00-C,432,sqlite,ext/rtree/rtree.c,4400,FP,nArg is the function arg count and apSqlParam/aParam were sized for exactly nArg via SZ_RTREEMATCHARG no OOB,,high
+ARR30-C,433,sqlite,ext/rtree/rtree.c,4400,FP,index i<nArg over arrays allocated to hold nArg elements bounds match the allocation,,high
+MEM31-C,434,sqlite,ext/rtree/rtree.c,4403,FP,apSqlParam[i] freed by rtreeMatchArgFree (called on memErr at 4413 and as the result destructor) not leaked,,high
+API00-C,435,sqlite,ext/rtree/rtree.c,4423,FP,sqlite3_rtree_geometry_callback is a public API; null db is a caller-contract violation not an in-function defect,,high
+API00-C,436,sqlite,ext/rtree/rtree.c,4423,FP,xGeom is stored into pGeomCtx->xGeom; a null callback is a valid (no-op) API input not a defect,,high
+DCL13-C,437,sqlite,ext/rtree/rtree.c,4427,TP,pContext in geometry_callback is only stored into a void* field reading/passing it does not require mutation const compiles,,med
+API00-C,438,sqlite,ext/rtree/rtree.c,4447,FP,public API db null is caller contract not a defect,,high
+API00-C,439,sqlite,ext/rtree/rtree.c,4447,FP,xQueryFunc stored into struct field null is valid API input not a defect,,high
+API00-C,440,sqlite,ext/rtree/rtree.c,4447,FP,pContext stored into struct field as void* not a validation defect,,high
+API00-C,441,sqlite,ext/rtree/rtree.c,4447,FP,xDestructor stored and invoked on NOMEM path null is valid API input not a defect,,high
+MSC37-C,442,sqlite,ext/rtree/rtree.c,4473,FP,sqlite3_rtree_query_callback returns sqlite3_create_function_v2 result at 4466 or SQLITE_NOMEM at 4460 all paths return,,high
+DCL13-C,443,sqlite,ext/rtree/rtree.c,4476,FP,db in sqlite3_rtree_init is passed to sqlite3RtreeInit which takes non-const sqlite3* const would not compile,,high
+DCL13-C,444,sqlite,ext/rtree/rtree.c,4477,FP,pzErrMsg is the standard extension-init out-param signature fixed by the loadable-extension ABI cannot be const,,high
+DCL31-C,445,sqlite,ext/rtree/rtree.c,4480,FP,line 4480 is SQLITE_EXTENSION_INIT2(pApi) macro expansion not a declaration missing a type specifier,,high

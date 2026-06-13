@@ -1,0 +1,294 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,0,sqlite,src/date.c,115,FP,aMx[] is a const literal table indexed by zFormat[2]-'a' guarded by assert a..f; implicit bound is the literal count,,high
+STR00-C,1,sqlite,src/date.c,127,FP,zFormat is an internal literal format string never used as a negative index; values are constant chars,,high
+ARR30-C,2,sqlite,src/date.c,130,FP,loop bounded by N-- (2 or 4) and sqlite3Isdigit stops at NUL terminator,,high
+INT07-C,3,sqlite,src/date.c,130,FP,N is char holding 2 or 4 then decremented in a bounded loop; no out-of-range numeric use,,high
+INT32-C,4,sqlite,src/date.c,130,FP,N starts at 2 or 4 and loop exits at 0; never approaches INT_MIN,,high
+INT32-C,5,sqlite,src/date.c,134,FP,val holds at most 4 digits (max 9999) so val*10+digit cannot overflow int,,high
+INT32-C,6,sqlite,src/date.c,134,FP,val bounded to <=4 digits; addition stays well under INT_MAX,,high
+INT32-C,7,sqlite,src/date.c,134,FP,val*10 with val<=9999 cannot overflow int,,high
+ARR36-C,8,sqlite,src/date.c,137,FP,val is an int not a pointer; val>(int)max is an integer comparison misidentified as pointer compare,,high
+INT32-C,9,sqlite,src/date.c,142,FP,cnt counts at most a handful of fields from a fixed-length literal format; cannot reach INT_MAX,,high
+STR34-C,10,sqlite,src/date.c,172,FP,*zDate feeds sqlite3Isdigit which casts to unsigned char; val math is bounded,,high
+STR34-C,11,sqlite,src/date.c,172,FP,same dereference feeds ctype macro that casts to unsigned char; no harmful sign extension,,high
+POS49-C,12,sqlite,src/date.c,179,FP,p is a per-call stack DateTime not shared across threads,,high
+POS49-C,13,sqlite,src/date.c,180,FP,p is a per-call stack DateTime not shared across threads,,high
+INT32-C,14,sqlite,src/date.c,190,FP,nHr<=14 nMn<=59 from getDigits maxima; sgn*(nMn+nHr*60) far below INT_MAX,,high
+INT32-C,15,sqlite,src/date.c,190,FP,nMn+nHr*60 <= 899; no overflow,,high
+INT32-C,16,sqlite,src/date.c,190,FP,nHr<=14 so nHr*60<=840; no overflow,,high
+POS49-C,17,sqlite,src/date.c,192,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,18,sqlite,src/date.c,193,FP,per-call stack DateTime not shared across threads,,high
+ARR30-C,19,sqlite,src/date.c,223,FP,loop bounded by sqlite3Isspace stopping at NUL; zDate is a NUL-terminated string,,high
+POS49-C,20,sqlite,src/date.c,237,FP,per-call stack DateTime not shared across threads,,high
+EXP05-C,21,sqlite,src/date.c,250,FP,"memset(p,0,sizeof(*p)) where p is DateTime* non-const; no const cast occurs",,high
+ARR01-C,22,sqlite,src/date.c,250,FP,sizeof(*p) is sizeof(DateTime) the pointee struct not the decayed pointer,,high
+POS49-C,23,sqlite,src/date.c,251,FP,per-call stack DateTime not shared across threads,,high
+ARR37-C,24,sqlite,src/date.c,278,FP,Y is a local int not a pointer; Y-- is integer arithmetic,,high
+ARR37-C,25,sqlite,src/date.c,281,FP,Y is a local int; (Y+4800) is integer arithmetic not pointer arithmetic,,high
+ARR37-C,26,sqlite,src/date.c,283,FP,Y is a local int; 36525*(Y+4716) is integer arithmetic,,high
+INT32-C,27,sqlite,src/date.c,284,FP,Y bounded -4713..9999 (checked line 273); 306001*(M+1) with M<=13 fits int,,high
+INT32-C,28,sqlite,src/date.c,285,FP,operands form a double expression then cast to i64; result bounded by year range,,high
+INT32-C,29,sqlite,src/date.c,288,FP,all operands and target are sqlite3_int64; h<=24 m<=59 s bounded; iJD stays in valid range,,high
+INT32-C,30,sqlite,src/date.c,288,FP,p->m<=59 so m*60000<=3540000; no overflow and target is i64,,high
+INT32-C,31,sqlite,src/date.c,290,FP,target iJD is i64; tz bounded to +/-(59+14*60) minutes,,high
+INT32-C,32,sqlite,src/date.c,290,FP,p->tz minutes bounded by getDigits; tz*60000 small and target i64,,high
+POS49-C,33,sqlite,src/date.c,294,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,34,sqlite,src/date.c,295,FP,per-call stack DateTime not shared across threads,,high
+INT14-C,35,sqlite,src/date.c,312,FP,INT14 readability only; (1<<p->M)&0x15aa is not a defect,,high
+INT32-C,36,sqlite,src/date.c,312,FP,p->M asserted 0..12 (line 309); 1<<12 fits in int,,high
+INT34-C,37,sqlite,src/date.c,312,FP,shift amount p->M asserted 0..12 (line 309); non-negative and within width,,high
+INT32-C,38,sqlite,src/date.c,317,FP,p->D asserted 0..31 (line 308); D-28 cannot overflow,,high
+INT32-C,39,sqlite,src/date.c,319,FP,p->D asserted 0..31; D-29 cannot overflow,,high
+EXP05-C,40,sqlite,src/date.c,348,FP,(u8*)zDate casts away const for read-only NUL test; no mutation,,high
+INT32-C,41,sqlite,src/date.c,358,FP,Y from getDigits 40f max 9999; -Y never hits -INT_MIN,,high
+POS49-C,42,sqlite,src/date.c,380,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,43,sqlite,src/date.c,381,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,44,sqlite,src/date.c,397,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,45,sqlite,src/date.c,438,FP,per-call stack DateTime not shared across threads,,high
+INT32-C,46,sqlite,src/date.c,476,FP,iJD is i64 and validated <=464269060799999; +43200000 cannot overflow,,high
+INT32-C,47,sqlite,src/date.c,477,FP,expression operates on doubles cast to int; Z derived from bounded iJD,,high
+FLP03-C,48,sqlite,src/date.c,477,FP,"FLP03 style; division by constant 36524.25 of bounded value, no error path needed",,high
+INT32-C,49,sqlite,src/date.c,477,FP,Z+32044.75 is double arithmetic on bounded Z; not signed int overflow,,high
+INT32-C,50,sqlite,src/date.c,478,FP,alpha and Z bounded from valid julian day; intermediate ints stay in range,,high
+INT32-C,51,sqlite,src/date.c,478,FP,same bounded computation; no overflow with valid iJD range,,high
+INT32-C,52,sqlite,src/date.c,478,FP,Z+1+alpha bounded by valid julian day range,,high
+INT32-C,53,sqlite,src/date.c,478,FP,Z+1 bounded,,high
+INT32-C,54,sqlite,src/date.c,478,FP,alpha+100 bounded,,high
+FLP03-C,55,sqlite,src/date.c,480,FP,"FLP03 style; constant divisor 365.25, value bounded",,high
+INT14-C,56,sqlite,src/date.c,481,FP,INT14 readability only; C&32767 then arithmetic is intentional,,high
+FLP03-C,57,sqlite,src/date.c,482,FP,FLP03 style; constant divisor 30.6001,,high
+INT32-C,58,sqlite,src/date.c,498,FP,iJD i64 validated in range; +43200000 cannot overflow,,high
+INT10-C,59,sqlite,src/date.c,498,FP,(iJD+43200000) is non-negative after validJulianDay; modulo result well-defined,,high
+FLP03-C,60,sqlite,src/date.c,499,FP,FLP03 style; day_ms%60000 divided by 1000.0 constant,,high
+INT10-C,61,sqlite,src/date.c,499,FP,day_ms is non-negative (derived from validated non-negative iJD),,high
+INT10-C,62,sqlite,src/date.c,501,FP,day_min non-negative; %60 well-defined,,high
+POS49-C,63,sqlite,src/date.c,503,FP,per-call stack DateTime not shared across threads,,high
+ERR33-C,64,sqlite,src/date.c,566,FP,pX IS checked at line 578 (if pX) and rc set at 582 from pX==0,,high
+CON33-C,65,sqlite,src/date.c,566,FP,localtime call is wrapped in static-main mutex (enter 565 leave 580) and only on platforms lacking _r/_s,,high
+CON34-C,66,sqlite,src/date.c,566,FP,the static-storage localtime is mutex-guarded and *pTm copied under the lock,,high
+MEM33-C,67,sqlite,src/date.c,578,FP,*pTm=*pX is a plain struct tm copy; tm has no flexible array member,,high
+FLP03-C,68,sqlite,src/date.c,634,FP,FLP03 style; division of bounded iJD by 1000.0,,high
+INT32-C,69,sqlite,src/date.c,634,FP,x.iJD/1000 minus i64 constant; all i64 and bounded by valid julian day,,high
+INT32-C,70,sqlite,src/date.c,634,FP,21086676*(i64)10000 is a compile-time i64 constant; no runtime overflow,,high
+INT32-C,71,sqlite,src/date.c,637,FP,p->iJD/1000 minus i64 constant; i64 arithmetic bounded,,high
+INT32-C,72,sqlite,src/date.c,637,FP,i64 constant multiplication; no overflow,,high
+INT32-C,73,sqlite,src/date.c,643,FP,"sLocal.tm_year+1900-iYearDiff; tm_year from OS bounded, iYearDiff small",,high
+INT32-C,74,sqlite,src/date.c,643,FP,tm_year+1900 within int range for OS-returned years,,high
+INT32-C,75,sqlite,src/date.c,644,FP,tm_mon 0..11 so +1 trivially safe,,high
+INT32-C,76,sqlite,src/date.c,648,FP,"tm_sec plus fractional double; small int plus <1.0, no overflow",,high
+POS49-C,77,sqlite,src/date.c,652,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,78,sqlite,src/date.c,654,FP,per-call stack DateTime not shared across threads,,high
+ARR02-C,79,sqlite,src/date.c,672,FP,aXformType[] is a const literal table; bound is ArraySize used in the loop,,high
+POS49-C,80,sqlite,src/date.c,688,FP,per-call stack DateTime not shared across threads,,high
+DCL00-C,81,sqlite,src/date.c,692,TP,local r is initialized at declaration and never modified; const-qualifying would compile,,med
+POS49-C,82,sqlite,src/date.c,696,FP,per-call stack DateTime not shared across threads,,high
+INT32-C,83,sqlite,src/date.c,779,FP,nFloor is char 0..3; iJD i64; nFloor*86400000 small relative to i64,,high
+INT32-C,84,sqlite,src/date.c,779,FP,p->nFloor small (0..3); multiplication fits and target is i64,,high
+POS49-C,85,sqlite,src/date.c,798,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,86,sqlite,src/date.c,812,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,87,sqlite,src/date.c,813,FP,per-call stack DateTime not shared across threads,,high
+EXP33-C,88,sqlite,src/date.c,828,FP,r is assigned at line 827 (r=p->s*1000.0+...) before use at 828; not uninitialized,,high
+POS49-C,89,sqlite,src/date.c,832,FP,per-call stack DateTime not shared across threads,,high
+EXP05-C,90,sqlite,src/date.c,858,FP,"memset(p,0,sizeof(*p)); p is DateTime* non-const, no const cast",,high
+ARR01-C,91,sqlite,src/date.c,858,FP,"sizeof(*p) is sizeof(DateTime) struct, not the pointer",,high
+POS49-C,92,sqlite,src/date.c,861,FP,per-call stack DateTime not shared across threads,,high
+POS49-C,93,sqlite,src/date.c,862,FP,per-call stack DateTime not shared across threads,,high
+FLP02-C,94,sqlite,src/date.c,879,FP,FLP02 readability flag; r==(int)r is the intended integral-value check for weekday N,,high
+INT32-C,95,sqlite,src/date.c,885,FP,iJD i64 validated in range; +129600000 cannot overflow,,high
+INT10-C,96,sqlite,src/date.c,885,FP,(iJD+129600000) non-negative after validJulianDay; %7 well-defined,,high
+INT32-C,97,sqlite,src/date.c,886,FP,Z is i64 in 0..6 then optionally -7; Z-=7 cannot overflow,,high
+INT32-C,98,sqlite,src/date.c,887,FP,target iJD i64; (n-Z) small times 86400000 bounded,,high
+INT32-C,99,sqlite,src/date.c,887,FP,n 0..6 and Z -7..6; (n-Z)*86400000 small relative to i64,,high
+INT32-C,100,sqlite,src/date.c,887,FP,n-Z is small bounded difference,,high
+POS49-C,101,sqlite,src/date.c,910,FP,per-call stack DateTime not shared across threads,,high
+INT32-C,102,sqlite,src/date.c,916,FP,z is a pointer being advanced; z+=9 after confirming 9-byte prefix; not a signed-int overflow on attacker value,,high
+POS49-C,103,sqlite,src/date.c,921,FP,per-call stack DateTime not shared across threads,,high
+EXP20-C,104,sqlite,src/date.c,959,FP,getDigits with single-field format 40f can return at most 1; ==1 is the correct test,,high
+EXP20-C,105,sqlite,src/date.c,960,FP,getDigits with single-field 50f returns at most 1; ==1 correct,,high
+INT32-C,106,sqlite,src/date.c,982,FP,"z is a pointer increment on a NUL-terminated string, not a counter near INT_MAX",,high
+INT32-C,107,sqlite,src/date.c,998,FP,x=(p->M-1)/12 small; x*12 cannot overflow,,high
+INT32-C,108,sqlite,src/date.c,1003,FP,target iJD i64; (i64)D*86400000 with D<31 bounded,,high
+INT32-C,109,sqlite,src/date.c,1003,FP,D cast to i64 and D<31; multiplication fits i64,,high
+STR34-C,110,sqlite,src/date.c,1011,FP,*z feeds checks/copy with unsigned-char handling; bounded modifier scan,,high
+STR34-C,111,sqlite,src/date.c,1011,FP,z[12] dereference within validated modifier length; ctype handling casts unsigned,,high
+ARR37-C,112,sqlite,src/date.c,1017,FP,z2 points into a NUL-terminated string; z2[n] index n is bounded by the modifier scan,,high
+ARR37-C,113,sqlite,src/date.c,1026,FP,z2++ advances within a NUL-terminated string after digit check,,high
+INT32-C,114,sqlite,src/date.c,1030,FP,tx.iJD is i64 from computeJD; -=43200000 cannot overflow,,high
+FLP03-C,115,sqlite,src/date.c,1031,FP,FLP03 style; tx.iJD/86400000 integer divide of bounded i64,,high
+INT32-C,116,sqlite,src/date.c,1032,FP,target i64; day*86400000 reconstitutes a bounded i64 value,,high
+INT32-C,117,sqlite,src/date.c,1032,FP,day is i64 day-count; day*86400000 within i64,,high
+INT32-C,118,sqlite,src/date.c,1033,FP,tx.iJD is small remainder after day subtraction; -tx.iJD safe from -INT_MIN (i64),,high
+INT32-C,119,sqlite,src/date.c,1036,FP,p->iJD and tx.iJD both i64 bounded; sum stays in range and final validJulianDay check guards,,high
+INT32-C,120,sqlite,src/date.c,1043,FP,z+=n advances a string pointer; n bounded by modifier length scan,,high
+INT32-C,121,sqlite,src/date.c,1047,FP,n is a positive small length; n-- in a guarded context cannot reach INT_MIN,,high
+INT32-C,122,sqlite,src/date.c,1064,FP,x small quotient; x*12 cannot overflow,,high
+INT32-C,123,sqlite,src/date.c,1083,FP,r bounded by aXformType rLimit checks (line 1055); product cast to i64 within range,,high
+DCL13-C,124,sqlite,src/date.c,1110,FP,argv signature is fixed by the SQLite scalar-function handler typedef; elements read not mutated,,high
+EXP05-C,125,sqlite,src/date.c,1116,FP,"memset(p,0,sizeof(*p)); p is DateTime* non-const",,high
+ARR01-C,126,sqlite,src/date.c,1116,FP,sizeof(*p) is sizeof(DateTime) struct not the pointer,,high
+EXP30-C,127,sqlite,src/date.c,1121,FP,eType is assigned once in the condition and only compared; no double modification,,high
+EXP34-C,128,sqlite,src/date.c,1121,FP,isDate returns earlier when argc==0; for argc>0 SQLite guarantees argv[0] non-null,,high
+EXP33-C,129,sqlite,src/date.c,1122,FP,eType is assigned at line 1121 before being read at 1122; not uninitialized,,high
+EXP05-C,130,sqlite,src/date.c,1126,FP,(char*)z casts away const for read-only pass to parseDateOrTime which treats it const,,high
+EXP05-C,131,sqlite,src/date.c,1133,FP,(char*)z casts away const for read-only pass to parseModifier,,high
+FLP03-C,132,sqlite,src/date.c,1165,FP,FLP03 style; x.iJD/86400000.0 of bounded i64,,high
+FLP03-C,133,sqlite,src/date.c,1184,FP,FLP03 style; constant divisor 1000.0,,high
+INT32-C,134,sqlite,src/date.c,1184,FP,x.iJD minus i64 constant; i64 arithmetic bounded by valid julian day,,high
+INT32-C,135,sqlite,src/date.c,1184,FP,21086676*(i64)10000000 is a compile-time i64 constant,,high
+FLP03-C,136,sqlite,src/date.c,1186,FP,FLP03 style; divide by 1000.0,,high
+INT32-C,137,sqlite,src/date.c,1186,FP,x.iJD/1000 minus i64 constant; bounded i64,,high
+INT32-C,138,sqlite,src/date.c,1186,FP,i64 constant multiplication; no overflow,,high
+INT32-C,139,sqlite,src/date.c,1207,FP,Y from bounded x.Y; -Y safe from -INT_MIN,,high
+INT32-C,140,sqlite,src/date.c,1208,FP,'0'+(Y/1000)%10 produces a single ASCII digit char; no overflow,,high
+INT10-C,141,sqlite,src/date.c,1208,FP,Y is non-negative here (negated at 1207 if needed); (Y/1000)%10 well-defined,,high
+INT32-C,142,sqlite,src/date.c,1209,FP,'0'+(Y/100)%10 yields one ASCII digit,,high
+INT10-C,143,sqlite,src/date.c,1209,FP,Y non-negative; %10 well-defined,,high
+INT32-C,144,sqlite,src/date.c,1210,FP,'0'+(Y/10)%10 yields one ASCII digit,,high
+INT10-C,145,sqlite,src/date.c,1210,FP,Y non-negative; %10 well-defined,,high
+INT32-C,146,sqlite,src/date.c,1211,FP,'0'+(Y)%10 yields one ASCII digit,,high
+INT10-C,147,sqlite,src/date.c,1211,FP,(x.M/10)%10 operand is small non-negative int from computeHMS/YMD; no negative-modulo path,,high
+INT32-C,148,sqlite,src/date.c,1213,FP,'0'(48)+digit(0-9) max ~57 cannot overflow int,,high
+FLP03-C,149,sqlite,src/date.c,1213,FP,x.M/10 is integer division not float; benign formatting misfire,,high
+INT10-C,150,sqlite,src/date.c,1213,FP,"x.M in [1,12] non-negative so modulo result well-defined",,high
+INT32-C,151,sqlite,src/date.c,1214,FP,char plus single digit cannot overflow int,,high
+INT10-C,152,sqlite,src/date.c,1214,FP,x.M non-negative bounded value modulo 10,,high
+INT32-C,153,sqlite,src/date.c,1216,FP,char plus digit no overflow,,high
+FLP03-C,154,sqlite,src/date.c,1216,FP,x.D/10 integer division benign,,high
+INT10-C,155,sqlite,src/date.c,1216,FP,"x.D in [1,31] non-negative modulo",,high
+INT32-C,156,sqlite,src/date.c,1217,FP,char plus digit no overflow,,high
+INT10-C,157,sqlite,src/date.c,1217,FP,x.D non-negative modulo,,high
+INT32-C,158,sqlite,src/date.c,1219,FP,char plus digit no overflow,,high
+FLP03-C,159,sqlite,src/date.c,1219,FP,x.h/10 integer division benign,,high
+INT10-C,160,sqlite,src/date.c,1219,FP,"x.h in [0,24] non-negative modulo",,high
+INT32-C,161,sqlite,src/date.c,1220,FP,char plus digit no overflow,,high
+INT10-C,162,sqlite,src/date.c,1220,FP,x.h non-negative modulo,,high
+INT32-C,163,sqlite,src/date.c,1222,FP,char plus digit no overflow,,high
+FLP03-C,164,sqlite,src/date.c,1222,FP,x.m/10 integer division benign,,high
+INT10-C,165,sqlite,src/date.c,1222,FP,"x.m in [0,59] non-negative modulo",,high
+INT32-C,166,sqlite,src/date.c,1223,FP,char plus digit no overflow,,high
+INT10-C,167,sqlite,src/date.c,1223,FP,x.m non-negative modulo,,high
+INT32-C,168,sqlite,src/date.c,1227,FP,char plus digit no overflow,,high
+FLP03-C,169,sqlite,src/date.c,1227,FP,s/10000 integer division benign,,high
+INT10-C,170,sqlite,src/date.c,1227,FP,"s=(int)(1000.0*x.s+0.5) non-negative since x.s in [0,60)",,high
+INT32-C,171,sqlite,src/date.c,1228,FP,char plus digit no overflow,,high
+FLP03-C,172,sqlite,src/date.c,1228,FP,s/1000 integer division benign,,high
+INT10-C,173,sqlite,src/date.c,1228,FP,s non-negative bounded modulo,,high
+INT32-C,174,sqlite,src/date.c,1230,FP,char plus digit no overflow,,high
+FLP03-C,175,sqlite,src/date.c,1230,FP,s/100 integer division benign,,high
+INT10-C,176,sqlite,src/date.c,1230,FP,s non-negative modulo,,high
+INT32-C,177,sqlite,src/date.c,1231,FP,char plus digit no overflow,,high
+FLP03-C,178,sqlite,src/date.c,1231,FP,s/10 integer division benign,,high
+INT10-C,179,sqlite,src/date.c,1231,FP,s non-negative modulo,,high
+INT32-C,180,sqlite,src/date.c,1232,FP,char plus digit no overflow,,high
+INT10-C,181,sqlite,src/date.c,1232,FP,s=(int)x.s non-negative modulo,,high
+INT32-C,182,sqlite,src/date.c,1237,FP,char plus digit no overflow,,high
+FLP03-C,183,sqlite,src/date.c,1237,FP,s/10 integer division benign,,high
+INT10-C,184,sqlite,src/date.c,1237,FP,s non-negative modulo,,high
+INT32-C,185,sqlite,src/date.c,1238,FP,char plus digit no overflow,,high
+INT10-C,186,sqlite,src/date.c,1238,FP,s non-negative modulo,,high
+INT32-C,187,sqlite,src/date.c,1266,FP,char plus digit no overflow,,high
+FLP03-C,188,sqlite,src/date.c,1266,FP,x.h/10 integer division benign,,high
+INT10-C,189,sqlite,src/date.c,1266,FP,x.h non-negative modulo,,high
+INT32-C,190,sqlite,src/date.c,1267,FP,char plus digit no overflow,,high
+INT10-C,191,sqlite,src/date.c,1267,FP,x.h non-negative modulo,,high
+INT32-C,192,sqlite,src/date.c,1269,FP,char plus digit no overflow,,high
+FLP03-C,193,sqlite,src/date.c,1269,FP,x.m/10 integer division benign,,high
+INT10-C,194,sqlite,src/date.c,1269,FP,x.m non-negative modulo,,high
+INT32-C,195,sqlite,src/date.c,1270,FP,char plus digit no overflow,,high
+INT10-C,196,sqlite,src/date.c,1270,FP,x.m non-negative modulo,,high
+INT32-C,197,sqlite,src/date.c,1274,FP,char plus digit no overflow,,high
+FLP03-C,198,sqlite,src/date.c,1274,FP,s/10000 integer division benign,,high
+INT10-C,199,sqlite,src/date.c,1274,FP,s non-negative modulo,,high
+INT32-C,200,sqlite,src/date.c,1275,FP,char plus digit no overflow,,high
+FLP03-C,201,sqlite,src/date.c,1275,FP,s/1000 integer division benign,,high
+INT10-C,202,sqlite,src/date.c,1275,FP,s non-negative modulo,,high
+INT32-C,203,sqlite,src/date.c,1277,FP,char plus digit no overflow,,high
+FLP03-C,204,sqlite,src/date.c,1277,FP,s/100 integer division benign,,high
+INT10-C,205,sqlite,src/date.c,1277,FP,s non-negative modulo,,high
+INT32-C,206,sqlite,src/date.c,1278,FP,char plus digit no overflow,,high
+FLP03-C,207,sqlite,src/date.c,1278,FP,s/10 integer division benign,,high
+INT10-C,208,sqlite,src/date.c,1278,FP,s non-negative modulo,,high
+INT32-C,209,sqlite,src/date.c,1279,FP,char plus digit no overflow,,high
+INT10-C,210,sqlite,src/date.c,1279,FP,s non-negative modulo,,high
+INT32-C,211,sqlite,src/date.c,1284,FP,char plus digit no overflow,,high
+FLP03-C,212,sqlite,src/date.c,1284,FP,s/10 integer division benign,,high
+INT10-C,213,sqlite,src/date.c,1284,FP,s non-negative modulo,,high
+INT32-C,214,sqlite,src/date.c,1285,FP,char plus digit no overflow,,high
+INT10-C,215,sqlite,src/date.c,1285,FP,s non-negative modulo,,high
+INT32-C,216,sqlite,src/date.c,1309,FP,Y forced non-negative via if(Y<0)Y=-Y and bounded to year 9999 so -Y safe,,high
+INT32-C,217,sqlite,src/date.c,1310,FP,char plus digit no overflow,,high
+INT10-C,218,sqlite,src/date.c,1310,FP,Y made non-negative before modulo,,high
+INT32-C,219,sqlite,src/date.c,1311,FP,char plus digit no overflow,,high
+INT10-C,220,sqlite,src/date.c,1311,FP,Y non-negative modulo,,high
+INT32-C,221,sqlite,src/date.c,1312,FP,char plus digit no overflow,,high
+INT10-C,222,sqlite,src/date.c,1312,FP,Y non-negative modulo,,high
+INT32-C,223,sqlite,src/date.c,1313,FP,char plus digit no overflow,,high
+INT10-C,224,sqlite,src/date.c,1313,FP,Y non-negative modulo,,high
+INT32-C,225,sqlite,src/date.c,1315,FP,char plus digit no overflow,,high
+FLP03-C,226,sqlite,src/date.c,1315,FP,x.M/10 integer division benign,,high
+INT10-C,227,sqlite,src/date.c,1315,FP,x.M non-negative modulo,,high
+INT32-C,228,sqlite,src/date.c,1316,FP,char plus digit no overflow,,high
+INT10-C,229,sqlite,src/date.c,1316,FP,x.M non-negative modulo,,high
+INT32-C,230,sqlite,src/date.c,1318,FP,char plus digit no overflow,,high
+FLP03-C,231,sqlite,src/date.c,1318,FP,x.D/10 integer division benign,,high
+INT10-C,232,sqlite,src/date.c,1318,FP,x.D non-negative modulo,,high
+INT32-C,233,sqlite,src/date.c,1319,FP,char plus digit no overflow,,high
+INT10-C,234,sqlite,src/date.c,1319,FP,x.D non-negative modulo,,high
+DCL13-C,235,sqlite,src/date.c,1339,TP,daysAfterJan01 only reads pDate (copy and asserts) never writes through it const compiles,,high
+FLP03-C,236,sqlite,src/date.c,1348,FP,(pDate->iJD-jan01.iJD+43200000)/86400000 is integer division not float,,high
+INT32-C,237,sqlite,src/date.c,1348,FP,i64 arithmetic on validJulianDay-bounded iJD (<=~4.6e14) no 64-bit overflow,,high
+INT32-C,238,sqlite,src/date.c,1348,FP,both iJD bounded by validJulianDay subtraction safe in i64,,high
+DCL13-C,239,sqlite,src/date.c,1359,TP,daysAfterMonday only reads pDate->iJD never writes const compiles,,high
+INT32-C,240,sqlite,src/date.c,1361,FP,iJD+43200000 in i64 bounded by validJulianDay no overflow,,high
+INT10-C,241,sqlite,src/date.c,1361,FP,(iJD+43200000)/86400000 non-negative given iJD>=0 so %7 well-defined,,high
+DCL13-C,242,sqlite,src/date.c,1372,TP,daysAfterSunday only reads pDate->iJD never writes const compiles,,high
+INT32-C,243,sqlite,src/date.c,1374,FP,iJD+129600000 in i64 bounded no overflow,,high
+INT10-C,244,sqlite,src/date.c,1374,FP,non-negative dividend so %7 well-defined,,high
+INT32-C,245,sqlite,src/date.c,1424,FP,argc>=1 guaranteed by earlier argc==0 return so argc-1>=0 no overflow,,high
+ARR00-C,246,sqlite,src/date.c,1424,FP,argv has argc>=1 elements argv+1 is legal one-past base with count argc-1 not a deref,,high
+EXP34-C,247,sqlite,src/date.c,1426,FP,sqlite3_context_db_handle never returns null in a function callback,,high
+INT30-C,248,sqlite,src/date.c,1433,FP,guarded by if(j<i) so i-j>0 no unsigned wrap,,high
+INT30-C,249,sqlite,src/date.c,1434,FP,i is size_t string index bounded by zFmt length wrap impossible,,high
+INT30-C,250,sqlite,src/date.c,1435,FP,i+1 bounded by string length trailing percent reads NUL hits default and returns,,high
+INT32-C,251,sqlite,src/date.c,1458,FP,"y.iJD i64 += bounded delta [-259200000,259200000] no 64-bit overflow",,high
+INT32-C,252,sqlite,src/date.c,1458,FP,"(3-daysAfterMonday) in [-3,3] times 86400000 well under INT_MAX",,high
+INT32-C,253,sqlite,src/date.c,1458,FP,"daysAfterMonday returns 0-6 so 3-x in [-3,3] no overflow",,high
+DCL00-C,254,sqlite,src/date.c,1475,FP,h is modified (h-=12 and h=12) DCL00 never-modified premise is false,,high
+INT32-C,255,sqlite,src/date.c,1476,FP,"h=x.h in [0,24] guarded by h>12 so h-=12 safe",,high
+FLP03-C,256,sqlite,src/date.c,1486,FP,x.iJD/86400000.0 benign formatting division,,high
+FLP03-C,257,sqlite,src/date.c,1513,FP,benign division on bounded iJD,,high
+INT32-C,258,sqlite,src/date.c,1513,FP,i64 subtraction on validJulianDay-bounded iJD,,high
+INT32-C,259,sqlite,src/date.c,1513,FP,21086676*10000000=2.1e14 fits i64,,high
+FLP03-C,260,sqlite,src/date.c,1515,FP,benign division,,high
+INT32-C,261,sqlite,src/date.c,1515,FP,i64 subtraction bounded,,high
+INT32-C,262,sqlite,src/date.c,1515,FP,21086676*10000=2.1e11 fits i64,,high
+DCL00-C,263,sqlite,src/date.c,1530,FP,c is conditionally modified (c='7') DCL00 never-modified premise false,,high
+INT32-C,264,sqlite,src/date.c,1537,FP,daysAfterJan01 0-365 minus daysAfterSunday 0-6 plus 7 small no overflow,,high
+INT32-C,265,sqlite,src/date.c,1544,FP,i64 += bounded delta no overflow,,high
+INT32-C,266,sqlite,src/date.c,1544,FP,(3-daysAfterMonday)*86400000 well under INT_MAX,,high
+INT32-C,267,sqlite,src/date.c,1544,FP,"3-daysAfterMonday in [-3,3] no overflow",,high
+INT32-C,268,sqlite,src/date.c,1547,FP,daysAfterJan01/7+1 small value no overflow,,high
+INT32-C,269,sqlite,src/date.c,1552,FP,small bounded day-count arithmetic no overflow,,high
+INT30-C,270,sqlite,src/date.c,1569,FP,guarded by if(j<i) so i-j>0 no unsigned wrap,,high
+ARR37-C,271,sqlite,src/date.c,1642,FP,Y is plain int local not a pointer ARR37 misfire,,high
+INT32-C,272,sqlite,src/date.c,1642,FP,Y=d1.Y-d2.Y bounded years decremented by small loop counts no INT_MIN,,high
+ARR37-C,273,sqlite,src/date.c,1654,FP,Y is plain int local not a pointer ARR37 misfire,,high
+INT32-C,274,sqlite,src/date.c,1654,FP,Y bounded year difference no INT_MIN,,high
+INT32-C,275,sqlite,src/date.c,1664,FP,i64 subtraction both iJD bounded d1>=d2 in this branch,,high
+INT32-C,276,sqlite,src/date.c,1665,FP,1486995408*100000=1.48e14 u64 stored in bounded i64,,high
+ARR37-C,277,sqlite,src/date.c,1676,FP,Y is plain int local not a pointer ARR37 misfire,,high
+INT32-C,278,sqlite,src/date.c,1676,FP,Y bounded year difference no INT_MIN,,high
+ARR37-C,279,sqlite,src/date.c,1688,FP,Y is plain int local not a pointer ARR37 misfire,,high
+INT32-C,280,sqlite,src/date.c,1688,FP,Y bounded year difference no INT_MIN,,high
+INT32-C,281,sqlite,src/date.c,1699,FP,1486995408*100000 u64 added to bounded i64,,high
+INT32-C,282,sqlite,src/date.c,1705,FP,"d1.D from computeYMD in [1,31] so D-1>=0 no overflow",,high
+INT32-C,283,sqlite,src/date.c,1754,FP,iT/1000 minus i64 constant on sqlite3StmtCurrentTime bounded value,,high
+INT32-C,284,sqlite,src/date.c,1754,FP,10000*21086676=2.1e11 fits i64,,high
+ERR33-C,285,sqlite,src/date.c,1759,FP,pTm=gmtime(&t) return is checked by if(pTm) at line 1763 before use,,high
+CON33-C,286,sqlite,src/date.c,1759,TP,gmtime is a CERT non-thread-safe library function (mitigated by STATIC_MAIN mutex + memcpy but call is factual),,med
+CON34-C,287,sqlite,src/date.c,1759,TP,gmtime uses shared internal static storage (factual; code mitigates with mutex),,med
+EXP33-C,288,sqlite,src/date.c,1760,FP,pTm assigned by gmtime(&t) on line 1759 before use on 1760 not uninitialized,,high
+ERR33-C,289,sqlite,src/date.c,1764,TP,strftime return value ignored; on truncation buffer contents unspecified before strlen use (factual ERR33),,low
+EXP33-C,290,sqlite,src/date.c,1790,FP,x is populated by isDate and only used when isDate returns 0,,high
+CON03-C,291,sqlite,src/date.c,1806,FP,aDateTimeFuncs is a static one-time-initialized FuncDef table not a mutable shared var,,high
+ARR02-C,292,sqlite,src/date.c,1806,FP,array size is fully determined by its initializer list; idiomatic not implicit-unknown bounds,,high

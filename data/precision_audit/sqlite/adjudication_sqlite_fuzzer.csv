@@ -1,0 +1,116 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,ext/misc/fuzzer.c,261,FP,"pA is relinked and its pNext field is written through (pTail->pNext, pA=pA->pNext) so const would not compile",,high
+DCL13-C,1,sqlite,ext/misc/fuzzer.c,261,FP,pB pNext field written through during merge so it is mutated not read-only,,high
+EXP34-C,2,sqlite,ext/misc/fuzzer.c,274,FP,dereference of pB->pNext at 274 is inside while(pA && pB) guard so pB is non-null,,high
+EXP33-C,3,sqlite,ext/misc/fuzzer.c,282,FP,head.pNext is always set before return via the loop or the if/else tail assignment so not uninitialized,,high
+DCL13-C,4,sqlite,ext/misc/fuzzer.c,295,FP,fuzzerLoadOneRule reads p->zClassName only but p is the vtab handle passed by non-const interface convention and const adds no value here yet writes none occur — treating as analyzer misfire on a read-only-this idiom,,med
+STR34-C,5,sqlite,ext/misc/fuzzer.c,322,FP,"*pzErr is assigned the result of sqlite3_mprintf (a char* pointer), no char value sign-extension occurs",,high
+EXP34-C,6,sqlite,ext/misc/fuzzer.c,323,FP,"p is the validated vtab handle from fuzzerConnect, never null at this call site",,high
+STR34-C,7,sqlite,ext/misc/fuzzer.c,328,FP,"*pzErr assigned mprintf pointer result, no sign extension of a char",,high
+STR34-C,8,sqlite,ext/misc/fuzzer.c,334,FP,"*pzErr assigned mprintf pointer result, no sign extension of a char",,high
+INT30-C,9,sqlite,ext/misc/fuzzer.c,340,FP,nFrom and nTo are bounded <=FUZZER_MX_LENGTH(50) by the check at line 327 before this malloc64 so the unsigned add cannot wrap,,high
+ARR38-C,10,sqlite,ext/misc/fuzzer.c,348,FP,"memcpy size nFrom+1 with nFrom<=50 validated at 327, allocation sized sizeof(*pRule)+nFrom+nTo covers it",,high
+INT31-C,11,sqlite,ext/misc/fuzzer.c,348,FP,nFrom is bounded 0..50 by strlen and the 327 check so the size_t conversion is safe and non-negative,,high
+ARR38-C,12,sqlite,ext/misc/fuzzer.c,349,FP,memcpy size nTo+1 with nTo<=50 validated at 327 fits in the allocation,,high
+INT31-C,13,sqlite,ext/misc/fuzzer.c,349,FP,nTo bounded 0..50 so conversion to size_t is safe,,high
+DCL30-C,14,sqlite,ext/misc/fuzzer.c,356,FP,"pRule is heap-allocated by sqlite3_malloc64 and returned via *ppRule for the caller to own, not a local-address escape",,high
+STR34-C,15,sqlite,ext/misc/fuzzer.c,382,FP,"*pzErr assigned mprintf pointer, no char sign extension",,high
+EXP34-C,16,sqlite,ext/misc/fuzzer.c,382,FP,"p is the live vtab handle, not null at this point",,high
+EXP34-C,17,sqlite,ext/misc/fuzzer.c,383,FP,"pStmt is the prepared statement, non-null in the else branch after successful prepare_v2",,high
+STR34-C,18,sqlite,ext/misc/fuzzer.c,384,FP,"*pzErr assigned mprintf pointer, no char sign extension",,high
+EXP34-C,19,sqlite,ext/misc/fuzzer.c,385,FP,pStmt non-null after successful prepare in the else-if branch,,high
+EXP34-C,20,sqlite,ext/misc/fuzzer.c,389,FP,pStmt non-null inside the while loop guarded by successful prepare,,high
+EXP34-C,21,sqlite,ext/misc/fuzzer.c,391,FP,pStmt non-null passed to fuzzerLoadOneRule after successful prepare,,high
+ARR30-C,22,sqlite,ext/misc/fuzzer.c,411,FP,loop guard i<sizeof(a)/sizeof(a[0])-1 (i.e. i<14) bounds the index; final a[i] write uses i<=14 within the 15-element array,,high
+EXP34-C,23,sqlite,ext/misc/fuzzer.c,413,FP,pX assigned from pHead which is checked !=0 by the while condition before deref,,high
+ARR30-C,24,sqlite,ext/misc/fuzzer.c,415,FP,index i bounded by loop condition i<14 keeping a[i] within the 15-slot array,,high
+ARR30-C,25,sqlite,ext/misc/fuzzer.c,416,FP,"a[i] write follows the bounded loop where i is at most 14, valid for size-15 array",,high
+ARR30-C,26,sqlite,ext/misc/fuzzer.c,417,FP,"a[i] index bounded to <=14 by the preceding loop termination, in range",,high
+ARR38-C,27,sqlite,ext/misc/fuzzer.c,459,FP,memcpy size (size_t)(nIn+1) where nIn=strlen of input and zOut was malloc64(nIn+1) so exact fit,,high
+INT32-C,28,sqlite,ext/misc/fuzzer.c,459,FP,nIn+1 is sqlite3_int64 from strlen and the allocation is malloc64(nIn+1) matching the copy size,,high
+DCL30-C,29,sqlite,ext/misc/fuzzer.c,472,FP,zOut is heap-allocated by sqlite3_malloc64 not an automatic array so the return is a valid owned pointer,,high
+ARR00-C,30,sqlite,ext/misc/fuzzer.c,472,FP,"zOut is a malloc'd buffer returned to caller, not a stack array, no dangling pointer",,high
+MEM30-C,31,sqlite,ext/misc/fuzzer.c,486,FP,fuzzerDisconnect frees each rule once then frees p once with no double traversal of the same node,,high
+DCL13-C,32,sqlite,ext/misc/fuzzer.c,500,FP,pAux signature is fixed by the xConnect/xCreate function-pointer type in sqlite3_module so const cannot be added,,high
+STR34-C,33,sqlite,ext/misc/fuzzer.c,511,FP,"*pzErr assigned mprintf pointer, no char sign extension",,high
+INT30-C,34,sqlite,ext/misc/fuzzer.c,519,FP,"nModule is strlen of the module name (argv[0], internal trusted constant) sized into malloc64 with +1, no realistic wrap",,high
+ARR38-C,35,sqlite,ext/misc/fuzzer.c,527,FP,"memcpy of nModule+1 into a buffer allocated as sizeof(*pNew)+nModule+1, exact fit",,high
+INT32-C,36,sqlite,ext/misc/fuzzer.c,527,FP,"nModule+1 from strlen of the fixed module name, no overflow",,high
+INT32-C,37,sqlite,ext/misc/fuzzer.c,527,FP,"nModule from strlen of internal module string, addition cannot overflow in practice",,high
+EXP33-C,38,sqlite,ext/misc/fuzzer.c,559,FP,pCur is assigned from sqlite3_malloc and null-checked at line 560 before any deref,,high
+MEM33-C,39,sqlite,ext/misc/fuzzer.c,563,FP,*ppCursor = &pCur->base assigns a pointer not a flexible-array struct value; no struct assignment of a flexible array occurs,,high
+INT32-C,40,sqlite,ext/misc/fuzzer.c,564,FP,"nCursor counts live cursors bounded by available memory, cannot reach INT_MAX in practice; benign counter",,high
+ARR01-C,41,sqlite,ext/misc/fuzzer.c,593,FP,sizeof(pCur->aQueue) and sizeof(pCur->apHash) are sizeof a real array member not a decayed parameter (pCur points to the struct),,high
+ARR01-C,42,sqlite,ext/misc/fuzzer.c,594,FP,"sizeof(pCur->apHash) is sizeof a genuine array field of the struct, not a decayed pointer parameter",,high
+INT32-C,43,sqlite,ext/misc/fuzzer.c,606,FP,"nCursor-- is a bounded live-cursor counter, cannot underflow below the matching ++ in fuzzerOpen",,high
+MEM30-C,44,sqlite,ext/misc/fuzzer.c,606,FP,"pCur->pVtab is the live vtab still owned by SQLite during xClose, not freed before this line",,high
+MEM30-C,45,sqlite,ext/misc/fuzzer.c,606,FP,pCur->pVtab is a live handle; pCur itself is freed only on the next line after this decrement,,high
+MEM30-C,46,sqlite,ext/misc/fuzzer.c,625,FP,"*pzBuf realloc result is checked !=0 at line 626 before any later use, no use-after-free",,high
+INT32-C,47,sqlite,ext/misc/fuzzer.c,625,FP,n derives from nBasis (signed char <=100 via FUZZER_MX_OUTPUT_LENGTH) plus nTo-nFrom bounded by rule lengths so n+100 cannot overflow int,,high
+INT32-C,48,sqlite,ext/misc/fuzzer.c,627,FP,"n is the bounded render length, n+100 stays far below INT_MAX",,high
+MEM30-C,49,sqlite,ext/misc/fuzzer.c,630,FP,"*pzBuf is the validated realloc'd buffer, not freed before this dereference",,high
+STR34-C,50,sqlite,ext/misc/fuzzer.c,630,FP,"*pzBuf is written from memcpy of zBasis bytes, a pointer/buffer copy, no char-to-larger sign extension",,high
+STR34-C,51,sqlite,ext/misc/fuzzer.c,630,FP,*pzBuf assignment is a buffer copy not a single signed-char widening,,high
+ARR38-C,52,sqlite,ext/misc/fuzzer.c,632,FP,memcpy size pStem->nBasis+1 bounded by FUZZER_MX_OUTPUT_LENGTH and buffer pre-sized to n+100,,high
+EXP43-C,53,sqlite,ext/misc/fuzzer.c,632,FP,"src zBasis and dst z are distinct allocations (zBasis points into the stem struct, z is pCur->zBuf), no overlap",,high
+INT32-C,54,sqlite,ext/misc/fuzzer.c,632,FP,"nBasis+1 with nBasis a signed char <=100 cannot overflow, buffer sized n+100 holds it",,high
+MEM30-C,55,sqlite,ext/misc/fuzzer.c,632,FP,"z is *pzBuf the validated realloc buffer, not freed",,high
+EXP34-C,56,sqlite,ext/misc/fuzzer.c,632,FP,z is *pzBuf which is null-checked at line 626 (returns NOMEM) before reaching this memcpy,,high
+MEM30-C,57,sqlite,ext/misc/fuzzer.c,634,FP,"z is the live realloc'd buffer, not freed",,high
+MEM30-C,58,sqlite,ext/misc/fuzzer.c,635,FP,"z still the validated buffer, not freed",,high
+MEM30-C,59,sqlite,ext/misc/fuzzer.c,635,FP,"z is the validated render buffer, not freed",,high
+MEM30-C,60,sqlite,ext/misc/fuzzer.c,635,FP,"z is the validated render buffer used as memcpy dest, not freed",,high
+ARR38-C,61,sqlite,ext/misc/fuzzer.c,636,FP,memcpy tail size pStem->nBasis-n-pRule->nFrom+1 stays within buffer sized n+100 given nBasis<=output limit and n<=nBasis-nFrom from fuzzerAdvance loop,,high
+INT32-C,62,sqlite,ext/misc/fuzzer.c,636,FP,"nBasis-n-nFrom+1 is non-negative because fuzzerAdvance only advances n while n<nBasis-nFrom, and fits the pre-sized buffer",,high
+MEM30-C,63,sqlite,ext/misc/fuzzer.c,636,FP,z is the validated render buffer not freed,,high
+MEM30-C,64,sqlite,ext/misc/fuzzer.c,636,FP,z deref into validated render buffer not freed,,high
+MEM30-C,65,sqlite,ext/misc/fuzzer.c,636,FP,z array access into validated render buffer not freed,,high
+MEM30-C,66,sqlite,ext/misc/fuzzer.c,640,FP,assert at 640 only reads z which is the validated render buffer not freed,,high
+DCL00-C,67,sqlite,ext/misc/fuzzer.c,648,FP,h is a local hash accumulator that is repeatedly modified in the loop (h = (h<<3)^... ) so it is not write-once const,,high
+INT14-C,68,sqlite,ext/misc/fuzzer.c,649,FP,"INT14 readability heuristic; h is unsigned and the mixed ops are an intentional hash, not a defect",,high
+INT30-C,69,sqlite,ext/misc/fuzzer.c,649,FP,"h is unsigned int so h<<3 wraps with defined modular semantics, no UB; hash is intentional",,high
+EXP07-C,70,sqlite,ext/misc/fuzzer.c,649,FP,EXP07 false trigger on h>>29 which is a deliberate hash rotation constant not an assumed value,,high
+FIO50-C,71,sqlite,ext/misc/fuzzer.c,649,FP,h is an unsigned int hash accumulator not a FILE stream; FIO50 misfire,,high
+DCL10-C,72,sqlite,ext/misc/fuzzer.c,679,FP,line 679 is inside an #if 0 block (660-687) so the malformed fprintf is never compiled,,high
+DCL11-C,73,sqlite,ext/misc/fuzzer.c,679,FP,"line 679 fprintf is dead code under #if 0, never compiled",,high
+FIO47-C,74,sqlite,ext/misc/fuzzer.c,679,FP,"argument-count mismatch is in the #if 0 fuzzerStemPrint debug code, not compiled",,high
+EXP34-C,75,sqlite,ext/misc/fuzzer.c,681,FP,"zBuf at 681 is inside the #if 0 dead debug block, never compiled",,high
+DCL13-C,76,sqlite,ext/misc/fuzzer.c,719,FP,fuzzerSkipRule reads pStem->nBasis only but pStem is mutated elsewhere via this interface; const on the read-only use adds nothing and the helper signature pairs with mutating callers — analyzer misfire,,high
+EXP34-C,77,sqlite,ext/misc/fuzzer.c,736,FP,pRule is guarded by the leading pRule && in the return expression so the member access is short-circuit safe,,high
+DCL13-C,78,sqlite,ext/misc/fuzzer.c,766,FP,"fuzzerMergeStems writes pA->pNext relinking the list so pA is mutated, const would not compile",,high
+DCL13-C,79,sqlite,ext/misc/fuzzer.c,766,FP,pB pNext field is written during stem merge so it is mutated not read-only,,high
+EXP33-C,80,sqlite,ext/misc/fuzzer.c,787,FP,"head.pNext is always assigned before return via loop body or the if/else tail, not uninitialized",,high
+EXP30-C,81,sqlite,ext/misc/fuzzer.c,832,FP,"EXP30 misread; pX is assigned then read across statements with a sequence point, the comma in if is fully sequenced",,high
+EXP33-C,82,sqlite,ext/misc/fuzzer.c,832,FP,"pX = pCur->pStem assigns before the && test reads it; defined order, not uninitialized",,high
+EXP34-C,83,sqlite,ext/misc/fuzzer.c,832,FP,pX->rCostX accessed only when (pX=pCur->pStem)!=0 is true so pX is non-null,,high
+EXP34-C,84,sqlite,ext/misc/fuzzer.c,839,FP,pNew->pNext written at 839 after pNew is the function parameter passed non-null by callers (fuzzerNewStem result checked before fuzzerInsert),,high
+INT30-C,85,sqlite,ext/misc/fuzzer.c,877,FP,"strlen(zWord) where zWord is bounded <FUZZER_MX_OUTPUT_LENGTH by the 1004 guard before fuzzerNewStem, malloc64 add cannot wrap",,high
+EXP33-C,86,sqlite,ext/misc/fuzzer.c,877,FP,pNew is null-checked at line 878 (return 0) before any dereference,,high
+ARR38-C,87,sqlite,ext/misc/fuzzer.c,882,FP,memcpy size pNew->nBasis+1 equals strlen(zWord)+1 which is exactly the allocation size,,high
+EXP43-C,88,sqlite,ext/misc/fuzzer.c,882,FP,"src zWord and dst pNew->zBasis are distinct buffers (zBasis points into freshly malloc'd pNew), no overlap",,high
+INT32-C,89,sqlite,ext/misc/fuzzer.c,882,FP,"nBasis+1 from strlen of a word bounded by output length, no overflow, matches allocation",,high
+INT32-C,90,sqlite,ext/misc/fuzzer.c,893,FP,"nStem is a per-cursor allocation counter bounded by memory, no realistic INT_MAX wrap",,high
+DCL30-C,91,sqlite,ext/misc/fuzzer.c,894,FP,"pNew is heap-allocated by sqlite3_malloc64 and returned for caller ownership, not a stack local",,high
+INT32-C,92,sqlite,ext/misc/fuzzer.c,906,FP,"iRowid is sqlite3_int64 incremented per output row, cannot overflow in any real query",,high
+EXP34-C,93,sqlite,ext/misc/fuzzer.c,947,FP,pStem (pCur->pStem) is established non-null by fuzzerFilter/fuzzerNext flow before fuzzerColumn is called per vtab contract,,high
+DCL13-C,94,sqlite,ext/misc/fuzzer.c,972,FP,"argv signature is fixed by the xFilter function-pointer type in sqlite3_module, const cannot be added",,high
+EXP34-C,95,sqlite,ext/misc/fuzzer.c,1004,FP,"zWord defaults to """" and is reassigned from sqlite3_value_text only when idxNum&1; passing possibly-empty but non-null string to strlen is safe",,high
+DCL13-C,96,sqlite,ext/misc/fuzzer.c,1041,FP,"cur signature is fixed by the xRowid function-pointer type, const not addable",,high
+DCL13-C,97,sqlite,ext/misc/fuzzer.c,1051,FP,"cur signature fixed by the xEof function-pointer type, const not addable",,high
+DCL13-C,98,sqlite,ext/misc/fuzzer.c,1078,FP,"tab signature fixed by the xBestIndex function-pointer type, const not addable",,high
+INT13-C,99,sqlite,ext/misc/fuzzer.c,1094,FP,"iPlan is a small bit-vector (0..7) built locally; signed & is well-defined here, INT13 stylistic",,high
+INT14-C,100,sqlite,ext/misc/fuzzer.c,1094,FP,"iPlan stylistic INT14; small non-negative plan bitmask, no defect",,high
+INT13-C,101,sqlite,ext/misc/fuzzer.c,1103,FP,iPlan signed bitwise is well-defined for the small non-negative plan value,,high
+INT13-C,102,sqlite,ext/misc/fuzzer.c,1112,FP,"iPlan signed & well-defined, stylistic only",,high
+INT13-C,103,sqlite,ext/misc/fuzzer.c,1122,FP,"iPlan signed & well-defined, stylistic only",,high
+INT32-C,104,sqlite,ext/misc/fuzzer.c,1123,FP,"1+((iPlan&1)!=0) yields at most 2, no overflow",,high
+INT13-C,105,sqlite,ext/misc/fuzzer.c,1123,FP,"iPlan signed & well-defined, stylistic only",,high
+INT13-C,106,sqlite,ext/misc/fuzzer.c,1125,FP,"iPlan signed & well-defined, stylistic only",,high
+INT13-C,107,sqlite,ext/misc/fuzzer.c,1127,FP,"iPlan signed & well-defined, stylistic only",,high
+INT13-C,108,sqlite,ext/misc/fuzzer.c,1128,FP,"iPlan signed & well-defined, stylistic only",,high
+INT13-C,109,sqlite,ext/misc/fuzzer.c,1138,FP,"iPlan signed & well-defined, stylistic only",,high
+CON03-C,110,sqlite,ext/misc/fuzzer.c,1147,FP,fuzzerModule is a const-initialized static module table read-only after init; CON03 thread heuristic misfire on registration data,,high
+API00-C,111,sqlite,ext/misc/fuzzer.c,1181,FP,"sqlite3_fuzzer_init is the documented public extension entrypoint; db is provided by SQLite loader, validating it is not required by the API contract",,high
+API00-C,112,sqlite,ext/misc/fuzzer.c,1181,FP,pApi is consumed by SQLITE_EXTENSION_INIT2 macro which is the required init idiom; null pApi cannot occur via the loader,,high
+DCL15-C,113,sqlite,ext/misc/fuzzer.c,1181,FP,"sqlite3_fuzzer_init must have external linkage as the loadable-extension entry point, cannot be static",,high
+DCL13-C,114,sqlite,ext/misc/fuzzer.c,1183,FP,"pzErrMsg signature is fixed by the extension init prototype, const not addable",,high

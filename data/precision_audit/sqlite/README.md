@@ -1298,3 +1298,67 @@ the corpus. Notably both batch-5 bugs are sqc **recall gaps** (FNs), not catches
 bug (rbu) and the empty-buffer underflow (spellfix) both need analysis sqc lacks. sqc's two semantic flags in
 this batch were both FPs gated by sqlite-internal invariants — consistent with the bifurcation: in the
 hardened parts of even an untrusted decoder, sqc's semantic rules only misfire.
+
+## File-at-a-time — Batch 6 (2026-06-12, run #40): 6 remaining decoders, a heap-overflow WRITE missed, 0 sqc-caught semantic TP
+
+`adjudication_sqlite_{rtree,date,amatch,checkindex,fuzzer,utf}.csv` — the remaining untrusted-input decoders:
+**ext/rtree/rtree.c** (R*Tree node/coord blobs), **src/date.c** (date-string parser), **ext/misc/amatch.c**
+(approximate-match, spellfix sibling), **ext/repair/checkindex.c** (corrupt-DB index validator),
+**ext/misc/fuzzer.c** (fuzzer vtab rule table), **src/utf.c** (UTF-8/16 transcoder). 11 line-range reviewers +
+per-chunk/whole-file FN-hunt. **1267 raw findings -> 91 TP / 1176 FP.**
+
+| File | findings | TP | FP | note |
+|------|---------:|---:|---:|------|
+| ext/rtree/rtree.c | 446 | 61 | 385 | cell/coord decode bounded (NCELL<200, nDim2 u8); cellArea/Union/etc const DCL13 |
+| src/date.c | 293 | 7 | 286 | bounded julian-day i64 math; gmtime/strftime CON33/34/ERR33 TPs |
+| ext/misc/amatch.c | 184 | 0 | 184 | **missed (char)(nWord+100) heap-overflow WRITE** (FN) |
+| ext/repair/checkindex.c | 128 | 6 | 122 | **missed unterminated-`[` schema over-read** (FN) |
+| ext/misc/fuzzer.c | 115 | 0 | 115 | rule loader validates nFrom/nTo<=50 before alloc/copy |
+| src/utf.c | 101 | 17 | 84 | READ/WRITE_UTF8/16 macros: 11 genuine PRE00/10/12 hygiene TPs |
+
+### The headline FN — a heap-overflow WRITE sqc missed, that survived a dedicated hardening pass
+
+**ext/misc/amatch.c:1160 (INT31-C truncation -> ARR30-C OOB write, recorded FN, medium).** `amatchNext` does
+`nBuf = (char)(nWord+100); zBuf = sqlite3_realloc64(zBuf, nBuf); ... amatchStrcpy(zBuf, pWord->zWord+2);`.
+`nBuf` is `sqlite3_int64` but the RHS is truncated through a **signed char**: for a vocab/candidate word of
+length `nWord ∈ [156,283]`, `(char)(nWord+100) = nWord-156 ∈ [0,127]` — a small positive size — so `zBuf` is
+under-allocated and the unbounded `amatchStrcpy` then copies `nWord` bytes past it. Vocab words are uncapped
+(`AMATCH_MX_LENGTH=50` bounds only *rule* strings) and come from the user's vocab table. The most striking
+part: the Oct-2025 commit **4043096408** ("Additional defenses against over-sized inputs in the (unused)
+amatch.c demonstration code", *in* our audited tree) widened `nBuf` from `char`→`sqlite3_int64` and switched
+`sqlite3_realloc`→`realloc64` — drh clearly recognized the size variable was too narrow — **but left the
+`(char)` cast on the RHS**, so the truncation is still live at b1a73ba34d *and* at HEAD. sqc's idx-138 flagged
+only the harmless `nWord+100` addition, never the cast. CAVEAT: sqlite labels amatch.c "(unused) demonstration
+code," so real-world impact is limited — but it is a genuine, still-live heap *write* overflow and the first
+write-overflow recall gap in the campaign (all prior bugs were reads/leaks).
+
+### The 2nd FN — a corrupt-schema over-read (checkindex.c:389)
+
+`cidxFindNext` `case '[': while( *z++!=']' );` scans for a closing bracket with **no NUL guard**. checkindex
+analyzes *corrupt* databases, so the `CREATE INDEX` text it parses (from `sqlite_schema.sql`) is
+attacker-controlled; an unterminated `[identifier` runs `z` past the string terminator until a stray `]` in
+adjacent heap — a heap over-read (ARR30-C, recorded FN low). The reviewer surfaced 4 other checkindex
+candidates (a `(int)strlen` truncation at 541 needing >2GB, an unchecked-realloc OOM deref at 494, a
+NULL-`pIdx` deref on inconsistent schema at 411, a weak column-overflow guard at 422) — all corrupt-schema /
+OOM / >2GB-gated; noted but not recorded pending deeper verification.
+
+### Integrity gate: 0 semantic memory-safety TP survived
+
+All 91 TP are declaration/macro/recursion/library: **DCL13 ×43, PRE00/01/10/12 ×29** (the rtree DCOORD/MAX/MIN
+and utf READ/WRITE_UTF8/16 multi-eval + statement-block macros — genuine), **MSC04/MEM05 ×10** (factual rtree
+tree recursion: SortByDimension, SplitNode↔rtreeInsertCell, removeNode↔deleteCell, fixBoundingBox), **DCL03/00/38
+×5**, **EXP45 ×1** (rtree assignment-in-if), **CON33/CON34/ERR33 ×3** (date.c `gmtime`/`strftime` — factual
+thread-safety/unchecked-return, mutex-mitigated). **Zero semantic memory-safety TP** (no surviving
+MEM30/INT3x/ARR/EXP33-34/STR) across all 1267 findings. The gate reclassified the only two sqc semantic-TP
+claims to FP: **rtree idx 410/411** (INT32 overflow in `rtreeCheckNode`'s `4+nCell*(8+nDim*8)`) — under the
+**default `SQLITE_MAX_COLUMN`=2000** `nDim≤999`, so the product `≤65535·7999≈5.2e8` never overflows int and the
+`>nNode` guard correctly rejects the oversized node; the signed overflow needs `nDim>~4095` (a non-default
+`SQLITE_MAX_COLUMN` >~8000), so it is latent, not reachable under standard builds — the corresponding
+`rtreecheck` FN at line 4102/4189 was likewise NOT recorded.
+
+sqlite coverage **98/220 (44.5%)** — 98 files audited; **13 FNs** (amatch write-overflow + checkindex over-read
+added). Confirmed real bugs now **13**, every one in a less-fuzzed untrusted-input parser; still **no
+core-engine semantic TP** anywhere in the corpus. Both batch-6 bugs are again sqc **recall gaps** (FNs): the
+campaign's real-bug recall is dominated by integer-truncation-before-alloc and missing-bound patterns sqc's
+detectors don't model. date.c and utf.c — the two heavily-fuzzed transcoder/parser cores in this batch — gave
+0 semantic TP / 0 FN, exactly as the bifurcation predicts for mature code.
