@@ -1,0 +1,22 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,ext/fts3/fts3_tokenizer1.c,51,TP,simpleDelim only reads t->delim[c] and never writes through t so const simple_tokenizer *t compiles,,high
+ARR30-C,1,sqlite,ext/fts3/fts3_tokenizer1.c,52,FP,delim[c] reached only after short-circuit c<0x80 guard and c is unsigned char so index in 0..127 within delim[128],,high
+EXP33-C,2,sqlite,ext/fts3/fts3_tokenizer1.c,67,FP,t is assigned by sqlite3_malloc on line 67 and NULL-checked line 68 before any deref not uninitialized,,high
+EXP05-C,3,sqlite,ext/fts3/fts3_tokenizer1.c,69,FP,memset target t is non-const and no const qualifier is cast away here analyzer misfire,,high
+STR34-C,4,sqlite,ext/fts3/fts3_tokenizer1.c,77,FP,line 77 is strlen(argv[1]) for length no char-to-int sign extension the byte read on line 79 uses unsigned char ch,,high
+ARR30-C,5,sqlite,ext/fts3/fts3_tokenizer1.c,91,FP,loop index i bounded 1..0x7f and delim size is 128 so delim[i] always in range,,high
+MEM33-C,6,sqlite,ext/fts3/fts3_tokenizer1.c,95,FP,*ppTokenizer=&t->base is a pointer assignment struct has fixed delim[128] not a flexible array member,,high
+EXP33-C,7,sqlite,ext/fts3/fts3_tokenizer1.c,122,FP,c assigned by sqlite3_malloc line 122 and NULL-checked line 123 before deref not uninitialized,,high
+MEM33-C,8,sqlite,ext/fts3/fts3_tokenizer1.c,138,FP,*ppCursor=&c->base is a pointer assignment no flexible array member exists,,high
+DCL00-C,9,sqlite,ext/fts3/fts3_tokenizer1.c,147,TP,pointer c is never reassigned only its pointees freed so c could be const-qualified DCL00 advisory holds,,med
+DCL00-C,10,sqlite,ext/fts3/fts3_tokenizer1.c,165,TP,pointer c is never reassigned only c->fields mutated so the pointer itself can be const-qualified,,med
+INT32-C,11,sqlite,ext/fts3/fts3_tokenizer1.c,174,FP,iOffset incremented only while iOffset<nBytes loop guard prevents reaching INT_MAX nBytes bounded by SQLITE_MAX_LENGTH,,high
+INT32-C,12,sqlite,ext/fts3/fts3_tokenizer1.c,180,FP,same bounded delimiter-scan loop iOffset<nBytes guards every increment,,high
+INT32-C,13,sqlite,ext/fts3/fts3_tokenizer1.c,184,FP,iOffset>=iStartOffset by guard line 183 both in 0..nBytes so difference is non-negative and bounded,,high
+INT32-C,14,sqlite,ext/fts3/fts3_tokenizer1.c,187,FP,n equals iOffset-iStartOffset bounded by nBytes which SQLite caps at SQLITE_MAX_LENGTH default 1e9 so n+20 cannot overflow int,,med
+INT32-C,15,sqlite,ext/fts3/fts3_tokenizer1.c,196,FP,iStartOffset+i equals an offset < c->iOffset <= nBytes bounded well below INT_MAX,,high
+INT08-C,16,sqlite,ext/fts3/fts3_tokenizer1.c,197,FP,ch in A..Z gives ch-'A'+'a' in 97..122 fits int trivially no narrowing or overflow,,high
+STR34-C,17,sqlite,ext/fts3/fts3_tokenizer1.c,199,FP,line 199 is pointer assignment *ppToken=c->pToken not a char-to-int conversion,,high
+INT32-C,18,sqlite,ext/fts3/fts3_tokenizer1.c,203,FP,iToken counts tokens bounded by nBytes < SQLITE_MAX_LENGTH cannot reach INT_MAX,,high
+API00-C,19,sqlite,ext/fts3/fts3_tokenizer1.c,228,FP,trivial internal setter callers always pass a valid ppModule API00 advisory not reachable defect,,high
+MEM33-C,20,sqlite,ext/fts3/fts3_tokenizer1.c,231,FP,*ppModule assignment is a pointer store no flexible array member involved,,high

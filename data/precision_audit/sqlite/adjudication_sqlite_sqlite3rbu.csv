@@ -1,0 +1,508 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,0,sqlite,ext/rbu/sqlite3rbu.c,110,TP,SWAP macro {TYPE t=A; A=B; B=t;} evaluates A and B multiple times across the assignments,,high
+PRE01-C,1,sqlite,ext/rbu/sqlite3rbu.c,110,TP,TYPE parameter unparenthesized in macro replacement text per PRE01 literal check,,high
+PRE01-C,2,sqlite,ext/rbu/sqlite3rbu.c,110,TP,A parameter unparenthesized in macro replacement text,,med
+PRE01-C,3,sqlite,ext/rbu/sqlite3rbu.c,110,TP,B parameter unparenthesized in macro replacement text,,med
+PRE10-C,4,sqlite,ext/rbu/sqlite3rbu.c,110,TP,SWAP is a multi-statement brace block not wrapped in do-while so it breaks in braceless if,,high
+PRE12-C,5,sqlite,ext/rbu/sqlite3rbu.c,110,TP,SWAP expands A as both lvalue assignment target and rvalue initializer twice,,high
+API01-C,6,sqlite,ext/rbu/sqlite3rbu.c,407,FP,zStateDb[5] is a fixed 4-char db name copied with bounded writes never overflowed so pointer corruption is not reachable,,med
+ARR02-C,7,sqlite,ext/rbu/sqlite3rbu.c,510,FP,zValue[] is a fully brace-initialized static lookup table so the compiler fixes its size implicit bounds is intended,,high
+EXP40-C,8,sqlite,ext/rbu/sqlite3rbu.c,523,FP,z is unsigned char* working copy of input not a const-correctness defect that breaks compilation,,high
+INT14-C,9,sqlite,ext/rbu/sqlite3rbu.c,524,FP,INT14 readability only v<<6 plus c in varint decode is intended base64 accumulation,,high
+INT08-C,10,sqlite,ext/rbu/sqlite3rbu.c,525,FP,c is the table-mapped digit value 0..63 not raw char arithmetic with overflow risk,,high
+INT14-C,11,sqlite,ext/rbu/sqlite3rbu.c,525,FP,INT14 readability only on v,,high
+INT32-C,12,sqlite,ext/rbu/sqlite3rbu.c,525,FP,v is unsigned int so (v<<6)+c is defined unsigned wrap not signed overflow accumulator is intended varint,,high
+INT30-C,13,sqlite,ext/rbu/sqlite3rbu.c,525,FP,v is unsigned so v<<6 is well-defined modulo 2^32 by design of the fossil varint decoder,,high
+INT07-C,14,sqlite,ext/rbu/sqlite3rbu.c,525,FP,INT07 style note c is int holding signed-char table value not a defect,,high
+STR34-C,15,sqlite,ext/rbu/sqlite3rbu.c,529,FP,z cast to unsigned char* explicitly so 0x7f mask read is already unsigned no sign extension,,high
+EXP05-C,16,sqlite,ext/rbu/sqlite3rbu.c,529,FP,EXP05 casts away const on internal working pointer of read-only decode no actual mutation occurs,,high
+API05-C,17,sqlite,ext/rbu/sqlite3rbu.c,537,FP,API05 conformant-array-syntax style preference on a pointer param,,low
+INT14-C,18,sqlite,ext/rbu/sqlite3rbu.c,544,FP,INT14 readability only sum0 is unsigned checksum accumulator,,high
+INT30-C,19,sqlite,ext/rbu/sqlite3rbu.c,544,FP,sum0 is unsigned 32-bit checksum wrap is intentional Adler-style design,,high
+INT14-C,20,sqlite,ext/rbu/sqlite3rbu.c,544,FP,INT14 readability only on z,,high
+INT30-C,21,sqlite,ext/rbu/sqlite3rbu.c,544,FP,unsigned checksum byte sum intentional modular wrap,,high
+INT30-C,22,sqlite,ext/rbu/sqlite3rbu.c,544,FP,unsigned checksum partial sum intentional wrap,,high
+INT30-C,23,sqlite,ext/rbu/sqlite3rbu.c,544,FP,unsigned checksum partial sum intentional wrap,,high
+INT14-C,24,sqlite,ext/rbu/sqlite3rbu.c,545,FP,INT14 readability only on sum1,,high
+INT30-C,25,sqlite,ext/rbu/sqlite3rbu.c,545,FP,unsigned checksum accumulator intentional wrap,,high
+INT30-C,26,sqlite,ext/rbu/sqlite3rbu.c,545,FP,unsigned checksum sum intentional wrap,,high
+INT30-C,27,sqlite,ext/rbu/sqlite3rbu.c,545,FP,unsigned checksum partial sum intentional wrap,,high
+INT30-C,28,sqlite,ext/rbu/sqlite3rbu.c,545,FP,unsigned checksum partial sum intentional wrap,,high
+INT14-C,29,sqlite,ext/rbu/sqlite3rbu.c,546,FP,INT14 readability only on sum2,,high
+INT30-C,30,sqlite,ext/rbu/sqlite3rbu.c,546,FP,unsigned checksum accumulator intentional wrap,,high
+INT30-C,31,sqlite,ext/rbu/sqlite3rbu.c,546,FP,unsigned checksum sum intentional wrap,,high
+INT30-C,32,sqlite,ext/rbu/sqlite3rbu.c,546,FP,unsigned checksum partial sum intentional wrap,,high
+INT30-C,33,sqlite,ext/rbu/sqlite3rbu.c,546,FP,unsigned checksum partial sum intentional wrap,,high
+INT30-C,34,sqlite,ext/rbu/sqlite3rbu.c,547,FP,unsigned checksum accumulator intentional wrap,,high
+INT30-C,35,sqlite,ext/rbu/sqlite3rbu.c,547,FP,unsigned checksum sum intentional wrap,,high
+INT30-C,36,sqlite,ext/rbu/sqlite3rbu.c,547,FP,unsigned checksum partial sum intentional wrap,,high
+INT30-C,37,sqlite,ext/rbu/sqlite3rbu.c,547,FP,unsigned checksum partial sum intentional wrap,,high
+INT30-C,38,sqlite,ext/rbu/sqlite3rbu.c,549,FP,N is size_t guarded by while(N>=16) so N-=16 never underflows,,high
+INT30-C,39,sqlite,ext/rbu/sqlite3rbu.c,552,FP,unsigned checksum accumulator intentional wrap,,high
+INT30-C,40,sqlite,ext/rbu/sqlite3rbu.c,553,FP,unsigned checksum accumulator intentional wrap,,high
+INT30-C,41,sqlite,ext/rbu/sqlite3rbu.c,554,FP,unsigned checksum accumulator intentional wrap,,high
+INT30-C,42,sqlite,ext/rbu/sqlite3rbu.c,555,FP,unsigned checksum accumulator intentional wrap,,high
+INT30-C,43,sqlite,ext/rbu/sqlite3rbu.c,557,FP,N guarded by while(N>=4) so N-=4 never underflows,,high
+INT30-C,44,sqlite,ext/rbu/sqlite3rbu.c,559,FP,unsigned checksum final combine intentional wrap,,high
+INT30-C,45,sqlite,ext/rbu/sqlite3rbu.c,561,FP,unsigned checksum tail combine intentional wrap,,high
+INT30-C,46,sqlite,ext/rbu/sqlite3rbu.c,562,FP,unsigned checksum tail combine intentional wrap,,high
+INT30-C,47,sqlite,ext/rbu/sqlite3rbu.c,563,FP,unsigned checksum tail combine intentional wrap,,high
+INT32-C,48,sqlite,ext/rbu/sqlite3rbu.c,608,FP,lenDelta is positive delta length decremented in a loop bounded by while(*zDelta && lenDelta>0) cannot reach INT_MIN,,high
+INT30-C,49,sqlite,ext/rbu/sqlite3rbu.c,621,FP,total is unsigned and immediately checked total>limit and bounded by the format the wrap warning is moot,,high
+EXP33-C,50,sqlite,ext/rbu/sqlite3rbu.c,626,FP,ofst is assigned by rbuDeltaGetInt at line 615 before its use at 626 not uninitialized,,high
+INT31-C,51,sqlite,ext/rbu/sqlite3rbu.c,631,FP,zOut+=cnt is pointer arithmetic into a buffer pre-sized to limit no narrowing defect,,high
+INT32-C,52,sqlite,ext/rbu/sqlite3rbu.c,631,FP,zOut is a pointer cnt bounded by total<=limit copy stays in allocated nOut+1 buffer,,high
+INT30-C,53,sqlite,ext/rbu/sqlite3rbu.c,636,FP,total is unsigned and checked against limit immediately after intentional accumulation,,high
+INT31-C,54,sqlite,ext/rbu/sqlite3rbu.c,641,FP,(int)cnt>lenDelta guard at 641 validates cnt before the insert memcpy so the conversion is checked,,high
+INT31-C,55,sqlite,ext/rbu/sqlite3rbu.c,646,FP,zOut+=cnt pointer arithmetic within sized buffer not a narrowing defect,,high
+INT32-C,56,sqlite,ext/rbu/sqlite3rbu.c,646,FP,cnt bounded by total<=limit and cnt<=lenDelta so zOut advance stays in buffer,,high
+INT32-C,57,sqlite,ext/rbu/sqlite3rbu.c,648,FP,lenDelta-=cnt occurs only after the cnt<=lenDelta check at 641 so it stays non-negative,,high
+DCL13-C,58,sqlite,ext/rbu/sqlite3rbu.c,701,FP,argv is sqlite3_value** fixed by the SQL scalar-function callback typedef const not applicable,,high
+STR34-C,59,sqlite,ext/rbu/sqlite3rbu.c,758,FP,STR34 sign-extension note zSql passed to prepare_v2 as plain text no numeric promotion bug,,high
+STR34-C,60,sqlite,ext/rbu/sqlite3rbu.c,760,FP,pzErrmsg is a char** out-param assigned a mprintf result no sign-extension read of a char,,high
+STR34-C,61,sqlite,ext/rbu/sqlite3rbu.c,777,FP,pzErrmsg out-param assignment not a char sign-extension read,,high
+MEM30-C,62,sqlite,ext/rbu/sqlite3rbu.c,876,FP,memset zeroes the RbuObjIter struct itself after finalizing its members the struct is not freed no UAF,,high
+DCL13-C,63,sqlite,ext/rbu/sqlite3rbu.c,971,FP,argv fixed by SQL scalar-function callback typedef const cannot be applied,,high
+INT32-C,64,sqlite,ext/rbu/sqlite3rbu.c,988,FP,i is a string-scan index bounded by NUL terminator i+1 read guarded by zIn[i]=='_' cannot overflow,,high
+INT32-C,65,sqlite,ext/rbu/sqlite3rbu.c,989,FP,i+1 indexes the validated string after the data prefix bounded by NUL no overflow,,high
+MEM30-C,66,sqlite,ext/rbu/sqlite3rbu.c,1008,FP,p->zErrmsg is a live handle field assigned an error string not a freed pointer being read,,high
+MEM30-C,67,sqlite,ext/rbu/sqlite3rbu.c,1018,FP,p->dbMain is a live open database handle passed to prepare not freed,,high
+MEM30-C,68,sqlite,ext/rbu/sqlite3rbu.c,1018,FP,p->zErrmsg out-param error field not freed memory,,high
+ARR38-C,69,sqlite,ext/rbu/sqlite3rbu.c,1099,FP,nByte computed and asserted >0 before memset zeroes the just-malloc64ed block valid size,,high
+INT31-C,70,sqlite,ext/rbu/sqlite3rbu.c,1099,FP,nByte is positive sizing from sizeof products to size_t conversion is in range,,high
+INT32-C,71,sqlite,ext/rbu/sqlite3rbu.c,1112,FP,nByte is sqlite3_int64 product nCol is sqlite3_column_count bounded by SQLITE_MAX_COLUMN (~2000) far from i64 overflow,,med
+ARR39-C,72,sqlite,ext/rbu/sqlite3rbu.c,1112,FP,ARR39 misreads struct sizing arithmetic the product correctly sizes a packed multi-array block,,high
+ARR39-C,73,sqlite,ext/rbu/sqlite3rbu.c,1112,FP,ARR39 misread of intentional combined-array allocation sizing,,high
+INT30-C,74,sqlite,ext/rbu/sqlite3rbu.c,1112,FP,3*sizeof(u8) is a tiny constant 3 no wrap possible,,high
+STR34-C,75,sqlite,ext/rbu/sqlite3rbu.c,1118,FP,azTblType=&azNew[nCol] is pointer slicing of the allocation no char sign-extension read,,high
+STR34-C,76,sqlite,ext/rbu/sqlite3rbu.c,1118,FP,azNew[nCol] addresses the second sub-array within the nCol-sized block no defect,,high
+ARR30-C,77,sqlite,ext/rbu/sqlite3rbu.c,1118,FP,nCol comes from sqlite3_column_count and the allocation at 1112 was sized for nCol so index is in-bounds,,high
+ARR00-C,78,sqlite,ext/rbu/sqlite3rbu.c,1119,FP,nCol-derived index into block allocated for exactly nCol elements in-bounds,,high
+ARR30-C,79,sqlite,ext/rbu/sqlite3rbu.c,1119,FP,same nCol-sized allocation contract index is bounded,,high
+ARR00-C,80,sqlite,ext/rbu/sqlite3rbu.c,1120,FP,index into nCol-sized region of the same allocation in-bounds,,high
+ARR30-C,81,sqlite,ext/rbu/sqlite3rbu.c,1120,FP,nCol-bounded index in-bounds,,high
+ARR00-C,82,sqlite,ext/rbu/sqlite3rbu.c,1121,FP,index into nCol-sized region in-bounds,,high
+ARR30-C,83,sqlite,ext/rbu/sqlite3rbu.c,1121,FP,nCol-bounded index in-bounds,,high
+ARR00-C,84,sqlite,ext/rbu/sqlite3rbu.c,1122,FP,index into nCol-sized region in-bounds,,high
+ARR30-C,85,sqlite,ext/rbu/sqlite3rbu.c,1122,FP,nCol-bounded index in-bounds,,high
+STR34-C,86,sqlite,ext/rbu/sqlite3rbu.c,1141,FP,STR34 sign-extension note zStr passed to strlen/malloc64 no numeric char promotion bug,,high
+MEM30-C,87,sqlite,ext/rbu/sqlite3rbu.c,1228,FP,p->zErrmsg is a live error-message field not a freed pointer,,high
+MEM30-C,88,sqlite,ext/rbu/sqlite3rbu.c,1236,FP,p->rc is an int status field of the live handle not freed memory,,high
+MEM30-C,89,sqlite,ext/rbu/sqlite3rbu.c,1246,FP,p->dbMain not freed here prepareFreeAndCollectError frees only the SQL string arg not the db handle,,high
+MEM30-C,90,sqlite,ext/rbu/sqlite3rbu.c,1246,FP,p->zErrmsg is the live error field not freed memory,,high
+MEM30-C,91,sqlite,ext/rbu/sqlite3rbu.c,1249,FP,p->rc status field not freed memory,,high
+MEM30-C,92,sqlite,ext/rbu/sqlite3rbu.c,1254,FP,p->dbMain is the live db handle never freed in this path,,high
+MEM30-C,93,sqlite,ext/rbu/sqlite3rbu.c,1254,FP,p->zErrmsg live error field not freed,,high
+MEM30-C,94,sqlite,ext/rbu/sqlite3rbu.c,1258,FP,p->rc status field not freed,,high
+MEM30-C,95,sqlite,ext/rbu/sqlite3rbu.c,1270,FP,p->dbMain live db handle not freed,,high
+MEM30-C,96,sqlite,ext/rbu/sqlite3rbu.c,1270,FP,p->zErrmsg live error field not freed,,high
+MEM30-C,97,sqlite,ext/rbu/sqlite3rbu.c,1273,FP,p->rc status field not freed,,high
+ARR38-C,98,sqlite,ext/rbu/sqlite3rbu.c,1300,FP,memcpy size sizeof(u8)*nTblCol with nTblCol from column_count both src abTblPk and dst abIndexed sized for nCol valid,,high
+EXP43-C,99,sqlite,ext/rbu/sqlite3rbu.c,1300,FP,abIndexed and abTblPk are distinct sub-arrays of the same allocation at separate offsets not overlapping,,high
+INT32-C,100,sqlite,ext/rbu/sqlite3rbu.c,1300,FP,sizeof(u8)*nTblCol equals nTblCol bounded by SQLITE_MAX_COLUMN no overflow,,high
+INT30-C,101,sqlite,ext/rbu/sqlite3rbu.c,1300,FP,nTblCol bounded by column count limit the unsigned multiply by 1 cannot wrap,,high
+MEM30-C,102,sqlite,ext/rbu/sqlite3rbu.c,1301,FP,p->zErrmsg live error field not freed,,high
+MEM30-C,103,sqlite,ext/rbu/sqlite3rbu.c,1307,FP,p->rc status field not freed,,high
+EXP34-C,104,sqlite,ext/rbu/sqlite3rbu.c,1307,FP,pList NULL only when prepareFree failed setting p->rc so loop guard p->rc==SQLITE_OK skips step and sqlite3_step tolerates NULL anyway,,high
+ARR38-C,105,sqlite,ext/rbu/sqlite3rbu.c,1313,FP,memset abIndexed size nTblCol*1 buffer sized for nCol valid,,high
+INT32-C,106,sqlite,ext/rbu/sqlite3rbu.c,1313,FP,nTblCol*1 cannot overflow size_t bounded by column limit,,high
+INT30-C,107,sqlite,ext/rbu/sqlite3rbu.c,1313,FP,tiny multiply by sizeof(u8)=1 no wrap,,high
+MEM30-C,108,sqlite,ext/rbu/sqlite3rbu.c,1315,FP,p->dbMain live db handle not freed,,high
+MEM30-C,109,sqlite,ext/rbu/sqlite3rbu.c,1315,FP,p->zErrmsg live error field not freed,,high
+MEM30-C,110,sqlite,ext/rbu/sqlite3rbu.c,1318,FP,p->rc status field not freed,,high
+EXP34-C,111,sqlite,ext/rbu/sqlite3rbu.c,1318,FP,pXInfo NULL only when prepareFree set p->rc loop guard p->rc==SQLITE_OK skips step which also tolerates NULL,,high
+ARR38-C,112,sqlite,ext/rbu/sqlite3rbu.c,1322,FP,memset abIndexed sized for nCol valid,,high
+INT32-C,113,sqlite,ext/rbu/sqlite3rbu.c,1322,FP,nTblCol*1 no overflow,,high
+INT30-C,114,sqlite,ext/rbu/sqlite3rbu.c,1322,FP,tiny multiply no wrap,,high
+EXP34-C,115,sqlite,ext/rbu/sqlite3rbu.c,1325,FP,rbuFinalize tolerates NULL pXInfo and only called after the guarded loop,,high
+INT32-C,116,sqlite,ext/rbu/sqlite3rbu.c,1327,FP,nIndex++ bounded by number of indexes on the table cannot reach INT_MAX,,high
+INT32-C,117,sqlite,ext/rbu/sqlite3rbu.c,1332,FP,nIndex-- once for WITHOUT_ROWID PK b-tree bounded cannot reach INT_MIN,,high
+EXP34-C,118,sqlite,ext/rbu/sqlite3rbu.c,1335,FP,rbuFinalize tolerates NULL pList,,high
+MEM30-C,119,sqlite,ext/rbu/sqlite3rbu.c,1376,FP,p->zErrmsg live error field not freed,,high
+MEM30-C,120,sqlite,ext/rbu/sqlite3rbu.c,1379,FP,p->rc status field not freed,,high
+EXP34-C,121,sqlite,ext/rbu/sqlite3rbu.c,1380,FP,pStmt NULL only on prepare failure that set p->rc loop guard skips and column_count tolerates NULL,,high
+MEM30-C,122,sqlite,ext/rbu/sqlite3rbu.c,1383,FP,p->rc status field not freed,,high
+MEM30-C,123,sqlite,ext/rbu/sqlite3rbu.c,1386,FP,p->rc status field not freed,,high
+MEM30-C,124,sqlite,ext/rbu/sqlite3rbu.c,1397,FP,p->rc status field not freed,,high
+MEM30-C,125,sqlite,ext/rbu/sqlite3rbu.c,1411,FP,p->rc status field not freed,,high
+MEM30-C,126,sqlite,ext/rbu/sqlite3rbu.c,1412,FP,p->zErrmsg live error field not freed,,high
+MEM30-C,127,sqlite,ext/rbu/sqlite3rbu.c,1416,FP,p->rc is an int struct member never freed; sqlite3_step loop guarded by p->rc==SQLITE_OK short-circuit,,high
+EXP34-C,128,sqlite,ext/rbu/sqlite3rbu.c,1416,FP,loop is guarded by p->rc==SQLITE_OK first; on prepare failure rc!=OK so sqlite3_step never called with null pStmt,,high
+MEM30-C,129,sqlite,ext/rbu/sqlite3rbu.c,1437,FP,p->rc is an int member not a freed pointer no use-after-free,,high
+INT32-C,130,sqlite,ext/rbu/sqlite3rbu.c,1441,FP,iOrder bounded by pIter->nTblCol (schema column count capped at SQLITE_MAX_COLUMN) not attacker length,,high
+EXP34-C,131,sqlite,ext/rbu/sqlite3rbu.c,1445,FP,rbuFinalize calls sqlite3_db_handle/sqlite3_finalize which are NULL-safe; passing null pStmt is fine,,high
+MEM30-C,132,sqlite,ext/rbu/sqlite3rbu.c,1451,FP,p->rc is an int member not a freed pointer,,high
+DCL13-C,133,sqlite,ext/rbu/sqlite3rbu.c,1461,TP,rbuObjIterGetCollist only reads pIter members never writes through pIter so const is valid,,high
+DCL13-C,134,sqlite,ext/rbu/sqlite3rbu.c,1482,TP,rbuObjIterGetPkList only reads nTblCol/abTblPk/azTblCol never mutates pIter,,high
+INT32-C,135,sqlite,ext/rbu/sqlite3rbu.c,1501,FP,iPk increments per PK level bounded by nTblCol iterations not an attacker value,,high
+MEM30-C,136,sqlite,ext/rbu/sqlite3rbu.c,1534,FP,p->zErrmsg reassigned not used-after-free; no free precedes this write,,high
+MEM30-C,137,sqlite,ext/rbu/sqlite3rbu.c,1539,FP,p->rc is an int member not freed,,high
+EXP34-C,138,sqlite,ext/rbu/sqlite3rbu.c,1539,FP,step guarded by p->rc==SQLITE_OK and prepareFree sets pMax=0 with rc!=OK on failure,,high
+EXP34-C,139,sqlite,ext/rbu/sqlite3rbu.c,1543,FP,rbuFinalize is NULL-safe via sqlite3_db_handle/finalize,,high
+MEM30-C,140,sqlite,ext/rbu/sqlite3rbu.c,1550,FP,p->zErrmsg is a reassigned member not freed pointer,,high
+MEM30-C,141,sqlite,ext/rbu/sqlite3rbu.c,1556,FP,p->rc int member not freed,,high
+EXP34-C,142,sqlite,ext/rbu/sqlite3rbu.c,1556,FP,step guarded by p->rc==SQLITE_OK short-circuit before pMax use,,high
+EXP34-C,143,sqlite,ext/rbu/sqlite3rbu.c,1560,FP,rbuFinalize NULL-safe,,high
+DCL13-C,144,sqlite,ext/rbu/sqlite3rbu.c,1594,TP,rbuVacuumIndexStart only reads pIter members never writes through it,,high
+MEM30-C,145,sqlite,ext/rbu/sqlite3rbu.c,1606,FP,p->zErrmsg reassigned member not freed,,high
+MEM30-C,146,sqlite,ext/rbu/sqlite3rbu.c,1609,FP,p->rc int member not freed,,high
+EXP34-C,147,sqlite,ext/rbu/sqlite3rbu.c,1609,FP,step guarded by p->rc==SQLITE_OK; pXInfo=0 with rc!=OK on prepare failure,,high
+INT32-C,148,sqlite,ext/rbu/sqlite3rbu.c,1641,FP,iCol bounded by index xinfo row count derived from schema not attacker length,,high
+EXP34-C,149,sqlite,ext/rbu/sqlite3rbu.c,1643,FP,rbuFinalize NULL-safe,,high
+MEM30-C,150,sqlite,ext/rbu/sqlite3rbu.c,1646,FP,p->rc int member not freed,,high
+MEM30-C,151,sqlite,ext/rbu/sqlite3rbu.c,1649,FP,p->dbMain is the long-lived RBU handle db never freed in this function,,high
+MEM30-C,152,sqlite,ext/rbu/sqlite3rbu.c,1649,FP,p->zErrmsg reassigned member not freed,,high
+MEM30-C,153,sqlite,ext/rbu/sqlite3rbu.c,1654,FP,p->rc int member not freed,,high
+EXP34-C,154,sqlite,ext/rbu/sqlite3rbu.c,1654,FP,step guarded by p->rc==SQLITE_OK; pSel=0 on prepare failure,,high
+EXP34-C,155,sqlite,ext/rbu/sqlite3rbu.c,1672,FP,rbuFinalize NULL-safe,,high
+DCL13-C,156,sqlite,ext/rbu/sqlite3rbu.c,1709,TP,rbuObjIterGetIndexCols reads pIter (aIdxCol/azTblCol/abTblPk) without writing through pIter so const valid,,high
+MEM30-C,157,sqlite,ext/rbu/sqlite3rbu.c,1728,FP,p->zErrmsg reassigned member not freed,,high
+EXP34-C,158,sqlite,ext/rbu/sqlite3rbu.c,1733,FP,step guarded by p->rc==SQLITE_OK short-circuit,,high
+INT32-C,159,sqlite,ext/rbu/sqlite3rbu.c,1783,FP,nBind bounded by index xinfo rows from schema not attacker length,,high
+DCL30-C,160,sqlite,ext/rbu/sqlite3rbu.c,1801,FP,zImpCols is a sqlite3_mprintf heap pointer not a local stack array; ownership transfer out is valid,,high
+STR34-C,161,sqlite,ext/rbu/sqlite3rbu.c,1801,FP,*pzImposterCols=zImpCols is a char* pointer assignment not a char-to-int sign-extension,,high
+DCL30-C,162,sqlite,ext/rbu/sqlite3rbu.c,1802,FP,zImpPK is a heap pointer not a local stack object,,high
+STR34-C,163,sqlite,ext/rbu/sqlite3rbu.c,1802,FP,pointer assignment not sign extension,,high
+DCL30-C,164,sqlite,ext/rbu/sqlite3rbu.c,1803,FP,zWhere is a heap pointer not a local stack object,,high
+STR34-C,165,sqlite,ext/rbu/sqlite3rbu.c,1803,FP,pointer assignment not sign extension,,high
+DCL13-C,166,sqlite,ext/rbu/sqlite3rbu.c,1821,TP,rbuObjIterGetOldlist only reads pIter members never writes through pIter,,high
+DCL13-C,167,sqlite,ext/rbu/sqlite3rbu.c,1862,TP,rbuObjIterGetWhere only reads eType/nTblCol/abTblPk/azTblCol read-only,,high
+INT32-C,168,sqlite,ext/rbu/sqlite3rbu.c,1866,FP,nTblCol+1 bounded by SQLITE_MAX_COLUMN not attacker length,,high
+EXP43-C,169,sqlite,ext/rbu/sqlite3rbu.c,1872,FP,sqlite3_*printf varargs are not restrict-qualified; %z self-reference is well-defined sqlite semantics,,high
+INT32-C,170,sqlite,ext/rbu/sqlite3rbu.c,1872,FP,i+1 is a column index bounded by nTblCol,,high
+INT32-C,171,sqlite,ext/rbu/sqlite3rbu.c,1886,FP,i+1 bounded by nTblCol,,high
+DCL13-C,172,sqlite,ext/rbu/sqlite3rbu.c,1926,TP,rbuObjIterGetSetlist only reads pIter members never writes through pIter,,high
+EXP34-C,173,sqlite,ext/rbu/sqlite3rbu.c,1933,FP,strlen(zMask) is guarded by enclosing if(p->rc==SQLITE_OK) and OOM null-mask sets rc=NOMEM,,high
+DCL00-C,174,sqlite,ext/rbu/sqlite3rbu.c,1938,TP,local c is assigned once per iteration and never modified so const-qualifiable,,med
+INT32-C,175,sqlite,ext/rbu/sqlite3rbu.c,1941,FP,i+1 bounded by nTblCol,,high
+INT32-C,176,sqlite,ext/rbu/sqlite3rbu.c,1947,FP,i+1 bounded by nTblCol,,high
+INT32-C,177,sqlite,ext/rbu/sqlite3rbu.c,1953,FP,i+1 bounded by nTblCol,,high
+INT32-C,178,sqlite,ext/rbu/sqlite3rbu.c,1980,FP,nByte computed as 2*(sqlite3_int64)nBind+1 widened to int64 before arithmetic so no 32-bit overflow,,high
+INT32-C,179,sqlite,ext/rbu/sqlite3rbu.c,1980,FP,multiplication done in sqlite3_int64 with explicit cast no wrap,,high
+ARR00-C,180,sqlite,ext/rbu/sqlite3rbu.c,1985,FP,nBind is a function parameter fully initialized by caller not uninitialized,,high
+INT32-C,181,sqlite,ext/rbu/sqlite3rbu.c,1986,FP,i<nBind and nBind small; i*2 bounded,,high
+INT32-C,182,sqlite,ext/rbu/sqlite3rbu.c,1987,FP,i*2+1 bounded by small nBind,,high
+INT32-C,183,sqlite,ext/rbu/sqlite3rbu.c,1987,FP,i*2 bounded by small nBind,,high
+ARR00-C,184,sqlite,ext/rbu/sqlite3rbu.c,1990,FP,zRet is an rbuMalloc heap pointer not a local stack array; returning it is valid ownership transfer,,high
+DCL13-C,185,sqlite,ext/rbu/sqlite3rbu.c,2005,TP,rbuWithoutRowidPK asserts zIdx==0 and only reads pIter never writes through it,,high
+MEM30-C,186,sqlite,ext/rbu/sqlite3rbu.c,2013,FP,p->zErrmsg reassigned member not freed,,high
+MEM30-C,187,sqlite,ext/rbu/sqlite3rbu.c,2016,FP,p->rc int member not freed,,high
+EXP34-C,188,sqlite,ext/rbu/sqlite3rbu.c,2016,FP,step guarded by p->rc==SQLITE_OK; pXList=0 on prepare failure,,high
+MEM30-C,189,sqlite,ext/rbu/sqlite3rbu.c,2021,FP,p->dbMain long-lived handle never freed here,,high
+MEM30-C,190,sqlite,ext/rbu/sqlite3rbu.c,2021,FP,p->zErrmsg reassigned member not freed,,high
+EXP34-C,191,sqlite,ext/rbu/sqlite3rbu.c,2028,FP,rbuFinalize NULL-safe,,high
+MEM30-C,192,sqlite,ext/rbu/sqlite3rbu.c,2030,FP,p->rc int member not freed,,high
+EXP34-C,193,sqlite,ext/rbu/sqlite3rbu.c,2030,FP,step guarded by p->rc==SQLITE_OK; pXInfo=0 on failure,,high
+EXP34-C,194,sqlite,ext/rbu/sqlite3rbu.c,2040,FP,rbuFinalize NULL-safe,,high
+DCL13-C,195,sqlite,ext/rbu/sqlite3rbu.c,2064,TP,rbuCreateImposterTable2 only reads pIter (eType/iPkTnum/azTblType) never writes through it,,high
+EXP34-C,196,sqlite,ext/rbu/sqlite3rbu.c,2082,FP,step guarded by p->rc==SQLITE_OK; pQuery=0 on prepare failure,,high
+MEM30-C,197,sqlite,ext/rbu/sqlite3rbu.c,2087,FP,p->zErrmsg reassigned member not freed,,high
+MEM30-C,198,sqlite,ext/rbu/sqlite3rbu.c,2093,FP,p->rc int member not freed,,high
+EXP34-C,199,sqlite,ext/rbu/sqlite3rbu.c,2093,FP,step guarded by p->rc==SQLITE_OK; pXInfo=0 on failure,,high
+EXP34-C,200,sqlite,ext/rbu/sqlite3rbu.c,2107,FP,rbuFinalize NULL-safe,,high
+MEM30-C,201,sqlite,ext/rbu/sqlite3rbu.c,2109,FP,p->dbMain long-lived handle not freed,,high
+MEM30-C,202,sqlite,ext/rbu/sqlite3rbu.c,2114,FP,p->dbMain long-lived handle not freed,,high
+EXP34-C,203,sqlite,ext/rbu/sqlite3rbu.c,2161,FP,zColl passed via %Q to sqlite3_mprintf which is NULL-safe and rbuMPrintf is null-safe,,high
+INT32-C,204,sqlite,ext/rbu/sqlite3rbu.c,2201,FP,nTblCol+1+bRbuRowid bounded by SQLITE_MAX_COLUMN,,high
+INT32-C,205,sqlite,ext/rbu/sqlite3rbu.c,2201,FP,nTblCol+1 bounded by SQLITE_MAX_COLUMN,,high
+MEM30-C,206,sqlite,ext/rbu/sqlite3rbu.c,2205,FP,p->zErrmsg reassigned member not freed,,high
+MEM30-C,207,sqlite,ext/rbu/sqlite3rbu.c,2207,FP,p->zStateDb is a member not freed in this function,,high
+DCL13-C,208,sqlite,ext/rbu/sqlite3rbu.c,2215,FP,apVal signature is fixed by the sqlite3_create_function xFunc callback typedef cannot add const,,high
+INT32-C,209,sqlite,ext/rbu/sqlite3rbu.c,2230,FP,i+1 bounded by nVal (UDF argument count),,high
+EXP34-C,210,sqlite,ext/rbu/sqlite3rbu.c,2257,FP,step guarded by p->rc==SQLITE_OK; pStmt=0 on prepare failure,,high
+EXP30-C,211,sqlite,ext/rbu/sqlite3rbu.c,2260,FP,pIter->zIdxSql=zSql=rbuStrndup(...) is a well-defined assignment chain single side-effect no UB,,high
+DCL00-C,212,sqlite,ext/rbu/sqlite3rbu.c,2268,TP,local c is assigned once per iteration and never modified so const-qualifiable,,med
+INT30-C,213,sqlite,ext/rbu/sqlite3rbu.c,2273,FP,nIdxAlloc grows by 16 bounded by length of schema index SQL string; overflow needs multi-GB schema not RBU row payload,,med
+INT32-C,214,sqlite,ext/rbu/sqlite3rbu.c,2280,FP,nIdxAlloc+=16 bounded by schema SQL length,,med
+STR34-C,215,sqlite,ext/rbu/sqlite3rbu.c,2286,FP,*zSql is a char pointer assignment/comparison to ASCII literals not a sign-extension index,,high
+STR34-C,216,sqlite,ext/rbu/sqlite3rbu.c,2286,FP,pointer assignment not sign extension,,high
+INT32-C,217,sqlite,ext/rbu/sqlite3rbu.c,2286,FP,i+1 indexes zSql bounded by string length,,high
+STR34-C,218,sqlite,ext/rbu/sqlite3rbu.c,2293,FP,char compared to ASCII literal well-defined no out-of-range sign issue,,high
+STR34-C,219,sqlite,ext/rbu/sqlite3rbu.c,2293,FP,char compared to ASCII literal not used as ctype index,,high
+STR34-C,220,sqlite,ext/rbu/sqlite3rbu.c,2299,FP,char compared to ASCII literal well-defined,,high
+STR34-C,221,sqlite,ext/rbu/sqlite3rbu.c,2299,FP,char compared to ASCII literal not a ctype-table index,,high
+STR34-C,222,sqlite,ext/rbu/sqlite3rbu.c,2301,FP,pointer assignment not sign extension,,high
+STR34-C,223,sqlite,ext/rbu/sqlite3rbu.c,2301,FP,pointer assignment not sign extension,,high
+INT32-C,224,sqlite,ext/rbu/sqlite3rbu.c,2301,FP,i+1 indexes zSql bounded by string length,,high
+INT32-C,225,sqlite,ext/rbu/sqlite3rbu.c,2314,FP,i+2 indexes zSql comment scan bounded by string length,,high
+INT32-C,226,sqlite,ext/rbu/sqlite3rbu.c,2317,FP,i+2 bounded by string length,,high
+EXP40-C,227,sqlite,ext/rbu/sqlite3rbu.c,2351,FP,pz=&p->zErrmsg takes address of a non-const member into non-const char**; no const circumvention,,high
+EXP34-C,228,sqlite,ext/rbu/sqlite3rbu.c,2381,FP,zImposterCols passed via %s to sqlite3_mprintf is NULL-safe; rbuMPrintfExec no-ops when p->rc!=OK,,high
+EXP34-C,229,sqlite,ext/rbu/sqlite3rbu.c,2381,FP,zImposterPK passed via %s is NULL-safe and call is rc-guarded,,high
+MEM30-C,230,sqlite,ext/rbu/sqlite3rbu.c,2389,FP,p->zErrmsg reassigned member not freed,,high
+MEM30-C,231,sqlite,ext/rbu/sqlite3rbu.c,2395,FP,p->rc int member not freed,,high
+MEM30-C,232,sqlite,ext/rbu/sqlite3rbu.c,2396,FP,p->dbMain long-lived handle not freed,,high
+MEM30-C,233,sqlite,ext/rbu/sqlite3rbu.c,2397,FP,p->zErrmsg reassigned member not freed,,high
+MEM30-C,234,sqlite,ext/rbu/sqlite3rbu.c,2403,FP,p->rc int member not freed,,high
+MEM30-C,235,sqlite,ext/rbu/sqlite3rbu.c,2429,FP,p->zStateDb member not freed in this function,,high
+MEM30-C,236,sqlite,ext/rbu/sqlite3rbu.c,2439,FP,p->zStateDb member not freed,,high
+MEM30-C,237,sqlite,ext/rbu/sqlite3rbu.c,2446,FP,p->rc int member not freed,,high
+INT32-C,238,sqlite,ext/rbu/sqlite3rbu.c,2465,FP,nTblCol+bRbuRowid bounded by SQLITE_MAX_COLUMN,,high
+MEM30-C,239,sqlite,ext/rbu/sqlite3rbu.c,2491,FP,p is the long-lived RBU handle never freed in rbuObjIterPrepareAll,,high
+MEM30-C,240,sqlite,ext/rbu/sqlite3rbu.c,2491,FP,p->rc int member not freed,,high
+MEM30-C,241,sqlite,ext/rbu/sqlite3rbu.c,2492,FP,p->dbMain long-lived handle not freed,,high
+MEM30-C,242,sqlite,ext/rbu/sqlite3rbu.c,2492,FP,pz points at &p->zErrmsg an aliased member not double-freed,,high
+MEM30-C,243,sqlite,ext/rbu/sqlite3rbu.c,2499,FP,p not freed,,high
+MEM30-C,244,sqlite,ext/rbu/sqlite3rbu.c,2506,FP,p not freed,,high
+MEM30-C,245,sqlite,ext/rbu/sqlite3rbu.c,2506,FP,p->dbRbu long-lived handle not freed,,high
+MEM30-C,246,sqlite,ext/rbu/sqlite3rbu.c,2514,FP,p not freed,,high
+MEM30-C,247,sqlite,ext/rbu/sqlite3rbu.c,2514,FP,p->dbMain long-lived handle not freed,,high
+MEM30-C,248,sqlite,ext/rbu/sqlite3rbu.c,2535,FP,p not freed,,high
+MEM30-C,249,sqlite,ext/rbu/sqlite3rbu.c,2535,FP,p->dbMain long-lived handle not freed,,high
+MEM30-C,250,sqlite,ext/rbu/sqlite3rbu.c,2544,FP,p not freed,,high
+MEM30-C,251,sqlite,ext/rbu/sqlite3rbu.c,2548,FP,p->rc int member not freed,,high
+MEM30-C,252,sqlite,ext/rbu/sqlite3rbu.c,2553,FP,p not freed,,high
+MEM30-C,253,sqlite,ext/rbu/sqlite3rbu.c,2556,FP,p not freed,,high
+MEM30-C,254,sqlite,ext/rbu/sqlite3rbu.c,2558,FP,'p' is the sqlite3rbu* handle never freed here; only zLimit/zStart/zOrder locals are freed,,high
+MEM30-C,255,sqlite,ext/rbu/sqlite3rbu.c,2565,FP,'p' is the live handle passed to rbuMPrintf not a freed pointer,,high
+MEM30-C,256,sqlite,ext/rbu/sqlite3rbu.c,2567,FP,'p' handle never freed in this function; rbuObjIterGetPkList takes the live handle,,high
+MEM30-C,257,sqlite,ext/rbu/sqlite3rbu.c,2571,FP,p->rc is a member of the live handle which is not freed anywhere in rbuObjIterPrepareAll,,high
+MEM30-C,258,sqlite,ext/rbu/sqlite3rbu.c,2572,FP,pz is an output error-msg pointer not freed twice; no double-free of it occurs,,high
+MEM30-C,259,sqlite,ext/rbu/sqlite3rbu.c,2576,FP,'p' handle is returned live not freed,,high
+MEM31-C,260,sqlite,ext/rbu/sqlite3rbu.c,2594,FP,zLimit freed at 2560 only when zStart set and immediately nulled so the 2594 free is on NULL,,high
+MEM30-C,261,sqlite,ext/rbu/sqlite3rbu.c,2597,FP,returns p->rc of the live handle p; p is never freed,,high
+MEM30-C,262,sqlite,ext/rbu/sqlite3rbu.c,2597,FP,p->rc member of live handle read on return; not freed,,high
+EXP34-C,263,sqlite,ext/rbu/sqlite3rbu.c,2628,FP,zMask can only be NULL on OOM in column_text and the strcmp is reached only when cache non-empty after a prior valid mask; OOM path not crafted-input reachable,,med
+EXP34-C,264,sqlite,ext/rbu/sqlite3rbu.c,2642,FP,nUp>=CACHESIZE>0 guarantees the loop iterated so pUp is a real non-null node,,high
+INT30-C,265,sqlite,ext/rbu/sqlite3rbu.c,2645,FP,nTblCol is a small column count; sizeof+nTblCol+1 passed to int64 rbuMalloc cannot wrap,,high
+MEM30-C,266,sqlite,ext/rbu/sqlite3rbu.c,2666,FP,p->zErrmsg is a member of the live handle; p is not freed,,high
+MEM30-C,267,sqlite,ext/rbu/sqlite3rbu.c,2674,FP,p->rc member of live handle; not freed,,high
+EXP34-C,268,sqlite,ext/rbu/sqlite3rbu.c,2688,FP,sqlite3_close is documented to accept NULL as a harmless no-op; db is also set by open_v2 on error,,high
+EXP16-C,269,sqlite,ext/rbu/sqlite3rbu.c,2699,FP,'p' is a RbuState* data pointer in a null check not a function pointer call,,high
+MEM30-C,270,sqlite,ext/rbu/sqlite3rbu.c,2726,FP,p->zStateDb is a member array of the live handle; not freed,,high
+DCL13-C,271,sqlite,ext/rbu/sqlite3rbu.c,2797,FP,dbMain is stored into non-const field p->dbMain at 2804 and used to run SQL so const would not compile,,high
+ARR30-C,272,sqlite,ext/rbu/sqlite3rbu.c,2902,FP,loop condition while(*zExtra) stops at the NUL terminator of the NUL-terminated zRbu string,,high
+EXP05-C,273,sqlite,ext/rbu/sqlite3rbu.c,2987,FP,z is declared char* non-const so &z[i+1] is not casting away const; rbuFileSuffix3 only built under 8_3_NAMES,,high
+INT32-C,274,sqlite,ext/rbu/sqlite3rbu.c,2987,FP,i is bounded by sz=strlen(z)&0xffffff (max 16M) so i+1 cannot overflow int,,high
+INT14-C,275,sqlite,ext/rbu/sqlite3rbu.c,3008,FP,INT14 readability advisory on volatile shm pointer read; not a defect,,high
+EXP33-C,276,sqlite,ext/rbu/sqlite3rbu.c,3008,FP,ptr is filled by xShmMap on the SQLITE_OK path before being read,,high
+EXP34-C,277,sqlite,ext/rbu/sqlite3rbu.c,3008,FP,ptr is non-null because the read is guarded by p->rc==SQLITE_OK after xShmMap success,,high
+DCL13-C,278,sqlite,ext/rbu/sqlite3rbu.c,3030,TP,"pState is only read (nRow,iWalCksum,eStage) in rbuSetupCheckpoint and const RbuState* would compile",,med
+INT33-C,279,sqlite,ext/rbu/sqlite3rbu.c,3095,FP,p->pgsz is the wal page size set from iAmt in rbuCaptureWalRead and is always nonzero by checkpoint time,,high
+INT32-C,280,sqlite,ext/rbu/sqlite3rbu.c,3125,FP,nFrameAlloc doubling stays small (frame count) and is int64 realloc arithmetic in practice bounded by wal size,,high
+INT30-C,281,sqlite,ext/rbu/sqlite3rbu.c,3127,FP,nNew is a bounded frame count; nNew*sizeof(RbuFrame) uses size_t and cannot wrap for real wal sizes,,high
+INT33-C,282,sqlite,ext/rbu/sqlite3rbu.c,3133,FP,iAmt is the wal frame read amount (page size + header) always >0 so the divisor is >=24,,high
+INT32-C,283,sqlite,ext/rbu/sqlite3rbu.c,3133,FP,iAmt is a bounded page-sized read amount; iAmt+24 in i64 cannot overflow,,high
+MEM30-C,284,sqlite,ext/rbu/sqlite3rbu.c,3135,FP,pRbu->aFrame is the live grown array not a freed pointer; realloc result stored back before use,,high
+MEM30-C,285,sqlite,ext/rbu/sqlite3rbu.c,3136,FP,aFrame is the live array; index nFrame is within the just-ensured capacity,,high
+INT32-C,286,sqlite,ext/rbu/sqlite3rbu.c,3137,FP,nFrame is a wal frame counter bounded by the wal file size far below INT_MAX,,high
+INT32-C,287,sqlite,ext/rbu/sqlite3rbu.c,3147,FP,nFrame is a bounded frame counter; nFrame-1 cannot overflow,,high
+INT33-C,288,sqlite,ext/rbu/sqlite3rbu.c,3147,FP,nPagePerSector is set to >=1 in rbuSetupCheckpoint (sectorSize/pgsz or 1) so never zero,,high
+DCL13-C,289,sqlite,ext/rbu/sqlite3rbu.c,3156,TP,"pFrame is only read (iWalFrame,iDbPage) in rbuCheckpointFrame and const RbuFrame* would compile",,med
+INT32-C,290,sqlite,ext/rbu/sqlite3rbu.c,3162,FP,iWalFrame and pgsz are bounded by wal/page sizes; i64 offset arithmetic cannot overflow for real files,,high
+INT32-C,291,sqlite,ext/rbu/sqlite3rbu.c,3162,FP,same bounded wal frame offset computation in i64; no overflow for valid wal,,high
+INT32-C,292,sqlite,ext/rbu/sqlite3rbu.c,3162,FP,p->pgsz<=65536 so pgsz+24 cannot overflow,,high
+INT32-C,293,sqlite,ext/rbu/sqlite3rbu.c,3166,FP,iDbPage bounded by db size and pgsz<=65536; i64 product cannot overflow,,high
+EXP34-C,294,sqlite,ext/rbu/sqlite3rbu.c,3196,FP,fd is populated by FILE_POINTER file_control for a valid db handle before fd->pMethods read; internal not crafted input,,med
+INT30-C,295,sqlite,ext/rbu/sqlite3rbu.c,3224,FP,"WinCE-only path; nChar is a bounded converted path length, guarded against 0",,high
+EXP33-C,296,sqlite,ext/rbu/sqlite3rbu.c,3224,FP,zWideFilename is malloc'd then memset; read only after MultiByteToWideChar fills it,,high
+ARR38-C,297,sqlite,ext/rbu/sqlite3rbu.c,3228,FP,nChar bounded path length; memset size cannot be invalid on WinCE path,,high
+INT32-C,298,sqlite,ext/rbu/sqlite3rbu.c,3228,FP,nChar is a bounded path char count; nChar*sizeof(WCHAR) cannot overflow,,high
+INT30-C,299,sqlite,ext/rbu/sqlite3rbu.c,3228,FP,same bounded WinCE path-length multiplication; no wrap,,high
+EXP40-C,300,sqlite,ext/rbu/sqlite3rbu.c,3348,FP,pzMask is const char**; assigning *pzMask (a non-const pointer-to-const) is legal not const modification,,high
+STR34-C,301,sqlite,ext/rbu/sqlite3rbu.c,3348,FP,assignment of a pointer value not a char; no sign extension occurs,,high
+INT32-C,302,sqlite,ext/rbu/sqlite3rbu.c,3426,FP,i bounded by pIter->nCol (column count); i+1 cannot overflow int,,high
+EXP43-C,303,sqlite,ext/rbu/sqlite3rbu.c,3441,FP,assertColumnName is a no-op macro in non-DEBUG and args do not overlap; not restrict-qualified,,high
+INT32-C,304,sqlite,ext/rbu/sqlite3rbu.c,3441,FP,nCol is a small column count; nCol+1 cannot overflow,,high
+EXP43-C,305,sqlite,ext/rbu/sqlite3rbu.c,3444,FP,sqlite3_column_value args do not overlap and are not restrict-qualified,,high
+INT32-C,306,sqlite,ext/rbu/sqlite3rbu.c,3444,FP,nCol column count; nCol+1 no overflow,,high
+INT32-C,307,sqlite,ext/rbu/sqlite3rbu.c,3445,FP,nCol column count; nCol+1 no overflow,,high
+STR34-C,308,sqlite,ext/rbu/sqlite3rbu.c,3468,FP,line is the rbuStepType call/decl; no char-to-int conversion of *zMask occurs,,high
+STR34-C,309,sqlite,ext/rbu/sqlite3rbu.c,3468,FP,no signed-char widening defect; zMask is only assigned/compared as a pointer,,high
+EXP34-C,310,sqlite,ext/rbu/sqlite3rbu.c,3495,FP,zMask non-null whenever pUpdate is created (requires valid mask) or matched in cache; rbuGetUpdateStmt path is guarded,,high
+DCL00-C,311,sqlite,ext/rbu/sqlite3rbu.c,3499,TP,local c is assigned once per iteration and never modified so const-qualifying compiles (DCL00 advisory accurate),,low
+EXP34-C,312,sqlite,ext/rbu/sqlite3rbu.c,3499,FP,zMask[...] is reached only inside if(pUpdate); pUpdate non-null implies strlen(zMask)==nTblCol so zMask is valid,,high
+INT32-C,313,sqlite,ext/rbu/sqlite3rbu.c,3502,FP,i bounded by nCol column count; i+1 no overflow,,high
+EXP43-C,314,sqlite,ext/rbu/sqlite3rbu.c,3509,FP,assertColumnName no-op macro; no overlapping restrict args,,high
+INT32-C,315,sqlite,ext/rbu/sqlite3rbu.c,3509,FP,nCol column count; nCol+1 no overflow,,high
+EXP43-C,316,sqlite,ext/rbu/sqlite3rbu.c,3510,FP,column_value args not overlapping/restrict-qualified,,high
+INT32-C,317,sqlite,ext/rbu/sqlite3rbu.c,3510,FP,nCol column count; nCol+1 no overflow,,high
+INT32-C,318,sqlite,ext/rbu/sqlite3rbu.c,3511,FP,nCol column count; nCol+1 no overflow,,high
+EXP33-C,319,sqlite,ext/rbu/sqlite3rbu.c,3545,FP,pStmt is an output param set by prepareAndCollectError; read only under if(p->rc==SQLITE_OK),,high
+MEM30-C,320,sqlite,ext/rbu/sqlite3rbu.c,3568,FP,p->zErrmsg member of live handle; p not freed,,high
+MEM30-C,321,sqlite,ext/rbu/sqlite3rbu.c,3583,FP,p->objiter.zTbl member of live handle in rbuSaveState; not freed,,high
+MEM30-C,322,sqlite,ext/rbu/sqlite3rbu.c,3583,FP,p->objiter is an embedded struct of the live handle; not freed,,high
+MEM30-C,323,sqlite,ext/rbu/sqlite3rbu.c,3584,FP,p->objiter.zIdx member of live handle; not freed,,high
+MEM30-C,324,sqlite,ext/rbu/sqlite3rbu.c,3584,FP,p->objiter embedded in live handle; not freed,,high
+MEM30-C,325,sqlite,ext/rbu/sqlite3rbu.c,3585,FP,p->nStep member of live handle; not freed,,high
+MEM30-C,326,sqlite,ext/rbu/sqlite3rbu.c,3586,FP,p->nProgress member of live handle; not freed,,high
+MEM30-C,327,sqlite,ext/rbu/sqlite3rbu.c,3587,FP,p->iWalCksum member of live handle; not freed,,high
+MEM30-C,328,sqlite,ext/rbu/sqlite3rbu.c,3589,FP,p->iOalSz member of live handle; not freed,,high
+MEM30-C,329,sqlite,ext/rbu/sqlite3rbu.c,3590,FP,p->nPhaseOneStep member of live handle; not freed,,high
+MEM30-C,330,sqlite,ext/rbu/sqlite3rbu.c,3591,FP,p->objiter.zDataTbl member of live handle; not freed,,high
+MEM30-C,331,sqlite,ext/rbu/sqlite3rbu.c,3591,FP,p->objiter embedded in live handle; not freed,,high
+EXP34-C,332,sqlite,ext/rbu/sqlite3rbu.c,3597,FP,pInsert step is guarded by if(rc==SQLITE_OK) and is set only when prepare succeeded,,high
+MEM30-C,333,sqlite,ext/rbu/sqlite3rbu.c,3625,FP,p->zErrmsg member of live handle in rbuCopyPragma; not freed,,high
+MEM30-C,334,sqlite,ext/rbu/sqlite3rbu.c,3628,FP,p->rc member of live handle; not freed,,high
+EXP34-C,335,sqlite,ext/rbu/sqlite3rbu.c,3628,FP,pPragma step guarded by p->rc==SQLITE_OK short-circuit; set only on prepare success,,high
+MEM30-C,336,sqlite,ext/rbu/sqlite3rbu.c,3629,FP,p->dbMain member of live handle; not freed,,high
+EXP34-C,337,sqlite,ext/rbu/sqlite3rbu.c,3660,FP,pSql passed to rbuFinalize which tolerates NULL; set only on prepare success and guarded by p->rc,,high
+EXP34-C,338,sqlite,ext/rbu/sqlite3rbu.c,3675,FP,pSql step under while(p->rc==SQLITE_OK && ...); pSql set only when prepare succeeded,,high
+EXP34-C,339,sqlite,ext/rbu/sqlite3rbu.c,3680,FP,pInsert step under p->rc==SQLITE_OK; set only on prepare success,,high
+EXP34-C,340,sqlite,ext/rbu/sqlite3rbu.c,3687,FP,rbuFinalize tolerates NULL; pSql guarded,,high
+EXP34-C,341,sqlite,ext/rbu/sqlite3rbu.c,3688,FP,rbuFinalize tolerates NULL; pInsert guarded,,high
+EXP16-C,342,sqlite,ext/rbu/sqlite3rbu.c,3695,FP,'p' is the sqlite3rbu* data pointer in a null check not a function pointer,,high
+INT32-C,343,sqlite,ext/rbu/sqlite3rbu.c,3726,FP,nProgress is a progress counter bounded by RBU file size; cannot reach INT_MAX,,high
+INT32-C,344,sqlite,ext/rbu/sqlite3rbu.c,3727,FP,nStep is a per-table step counter bounded by row count; cannot reach INT_MAX,,high
+INT32-C,345,sqlite,ext/rbu/sqlite3rbu.c,3756,FP,nProgress progress counter; no realistic overflow,,high
+INT33-C,346,sqlite,ext/rbu/sqlite3rbu.c,3796,FP,nPagePerSector set to >=1 in rbuSetupCheckpoint; never zero,,high
+INT32-C,347,sqlite,ext/rbu/sqlite3rbu.c,3798,FP,nStep bounded step counter; no overflow,,high
+FLP03-C,348,sqlite,ext/rbu/sqlite3rbu.c,3800,FP,the division at 3800 is integer (u32/int) not floating point; FLP03 misfire,,high
+INT33-C,349,sqlite,ext/rbu/sqlite3rbu.c,3800,FP,nPagePerSector is >=1; never zero,,high
+INT32-C,350,sqlite,ext/rbu/sqlite3rbu.c,3804,FP,nProgress progress counter; no overflow,,high
+DCL13-C,351,sqlite,ext/rbu/sqlite3rbu.c,3839,TP,"pState is only read in rbuSetupOal (zTbl,zIdx,zDataTbl,nRow) so const RbuState* would compile",,med
+EXP34-C,352,sqlite,ext/rbu/sqlite3rbu.c,3841,FP,rbuSetupOal called at 4146 only when p->rc==SQLITE_OK where pState is non-null (asserted at 4063),,high
+EXP34-C,353,sqlite,ext/rbu/sqlite3rbu.c,3878,FP,VFS_POINTER file_control returns non-null pVfs for a valid db handle; assert documents the invariant,,high
+EXP33-C,354,sqlite,ext/rbu/sqlite3rbu.c,3895,FP,zRnd is filled by sqlite3_snprintf at the same line before any read,,high
+EXP33-C,355,sqlite,ext/rbu/sqlite3rbu.c,3895,FP,rnd is written by sqlite3_randomness at 3894 before use at 3895,,high
+DCL13-C,356,sqlite,ext/rbu/sqlite3rbu.c,3924,FP,apVal signature is fixed by the sqlite3_create_function xFunc callback typedef; const cannot be added,,high
+EXP34-C,357,sqlite,ext/rbu/sqlite3rbu.c,3930,FP,p comes from sqlite3_user_data registered with non-null (void*)p at 3980,,high
+EXP34-C,358,sqlite,ext/rbu/sqlite3rbu.c,3940,FP,sqlite3_result_error tolerates NULL message; reached only when rc!=SQLITE_OK,,high
+EXP34-C,359,sqlite,ext/rbu/sqlite3rbu.c,3943,FP,pStmt step guarded by else of if(rc!=SQLITE_OK); set only on prepare success,,high
+MEM30-C,360,sqlite,ext/rbu/sqlite3rbu.c,3950,FP,db is the dbRbu/dbMain live handle; not freed,,high
+EXP34-C,361,sqlite,ext/rbu/sqlite3rbu.c,3991,FP,pStmt step guarded by if(p->rc==SQLITE_OK); set only on prepare success,,high
+EXP34-C,362,sqlite,ext/rbu/sqlite3rbu.c,4003,FP,pStmt step guarded by if(p->rc==SQLITE_OK); set only on prepare success,,high
+STR34-C,363,sqlite,ext/rbu/sqlite3rbu.c,4019,FP,nTarget is strlen of an API-supplied path string used in size_t arithmetic; not a sign-extension defect,,high
+STR34-C,364,sqlite,ext/rbu/sqlite3rbu.c,4019,FP,same strlen path arithmetic; no signed-char widening bug,,high
+STR34-C,365,sqlite,ext/rbu/sqlite3rbu.c,4020,FP,nRbu is strlen of an API path; no sign-extension defect,,high
+INT30-C,366,sqlite,ext/rbu/sqlite3rbu.c,4021,FP,nByte is size_t sum of path lengths; would require near-SIZE_MAX paths to wrap,,high
+INT30-C,367,sqlite,ext/rbu/sqlite3rbu.c,4021,FP,same size_t path-length sum; cannot wrap for real paths,,high
+INT30-C,368,sqlite,ext/rbu/sqlite3rbu.c,4021,FP,same size_t path-length sum; cannot wrap,,high
+EXP16-C,369,sqlite,ext/rbu/sqlite3rbu.c,4024,FP,'p' is the sqlite3rbu* data pointer in a null check not a function pointer,,high
+ARR38-C,370,sqlite,ext/rbu/sqlite3rbu.c,4038,FP,destination buffer sized sizeof(sqlite3rbu)+nTarget+1+nRbu+1; memcpy of nTarget+1 fits exactly,,high
+INT32-C,371,sqlite,ext/rbu/sqlite3rbu.c,4038,FP,nTarget is a bounded path length; nTarget+1 in size_t cannot overflow,,high
+INT30-C,372,sqlite,ext/rbu/sqlite3rbu.c,4038,FP,nTarget+1 size_t path arithmetic; no wrap,,high
+ARR37-C,373,sqlite,ext/rbu/sqlite3rbu.c,4039,FP,pCsr is a cursor into the over-allocated handle buffer; advancing by nTarget+1 stays within nByte,,high
+INT30-C,374,sqlite,ext/rbu/sqlite3rbu.c,4039,FP,nTarget+1 size_t; no wrap,,high
+ARR38-C,375,sqlite,ext/rbu/sqlite3rbu.c,4042,FP,same buffer over-allocated for nRbu+1; memcpy fits,,high
+INT32-C,376,sqlite,ext/rbu/sqlite3rbu.c,4042,FP,nRbu+1 bounded path length size_t; no overflow,,high
+ARR37-C,377,sqlite,ext/rbu/sqlite3rbu.c,4043,FP,pCsr advance by nRbu+1 stays within the allocated nByte buffer,,high
+EXP34-C,378,sqlite,ext/rbu/sqlite3rbu.c,4066,FP,pState dereferenced only inside if(p->rc==SQLITE_OK) where assert(pState||rc!=OK) guarantees non-null,,high
+DCL30-C,379,sqlite,ext/rbu/sqlite3rbu.c,4171,FP,"'p' is a heap pointer from sqlite3_malloc64 (4023); returning it is correct, not a dangling local",,high
+ARR00-C,380,sqlite,ext/rbu/sqlite3rbu.c,4171,FP,'p' is a heap-allocated sqlite3rbu* not a local array; no dangling pointer on return,,high
+DCL30-C,381,sqlite,ext/rbu/sqlite3rbu.c,4185,FP,pRet is heap-allocated via sqlite3_malloc64 not a local object; analyzer misread the local pointer variable as automatic storage being returned,,high
+API00-C,382,sqlite,ext/rbu/sqlite3rbu.c,4191,FP,zState is optional and legitimately NULL; passed to openRbuHandle which handles NULL state and strlen is only on the validated-nonNULL path in vacuum not here,,high
+API00-C,383,sqlite,ext/rbu/sqlite3rbu.c,4203,FP,zState NULL is valid and explicitly guarded by if(zState) before strlen at 4208,,high
+STR34-C,384,sqlite,ext/rbu/sqlite3rbu.c,4209,FP,memcmp at 4210 compares raw bytes; no signed char promoted to wider int arithmetic occurs; analyzer misclassified the memcmp comparison,,high
+API00-C,385,sqlite,ext/rbu/sqlite3rbu.c,4221,FP,pRbu==NULL is explicitly guarded by if(pRbu) at 4223 before any dereference,,high
+DCL13-C,386,sqlite,ext/rbu/sqlite3rbu.c,4221,FP,signature is part of the public sqlite3rbu_db API contract; const cannot be added to a published ABI prototype and bRbu selects a member not const-incompatible but the API is fixed,,high
+ARR38-C,387,sqlite,ext/rbu/sqlite3rbu.c,4243,FP,memmove size nErrmsg+1-i-nDel is bounded because i<nErrmsg-8 and nDel counts only matched prefix plus digits within the string so remaining tail is positive; no invalid size in normal path,,med
+INT31-C,388,sqlite,ext/rbu/sqlite3rbu.c,4243,FP,nDel is at least 8 and bounded by the digit scan staying inside the NUL-terminated string so the size_t conversion is of a small positive value,,med
+INT32-C,389,sqlite,ext/rbu/sqlite3rbu.c,4243,FP,INTEGRITY-GATE: nErrmsg+1-i-nDel can underflow when zErrmsg is shorter than 8 because the loop bound nErrmsg-8 wraps (size_t) making i huge and i+nDel can exceed nErrmsg producing a wrapped giant memmove size with crafted short constraint message,,low
+INT30-C,390,sqlite,ext/rbu/sqlite3rbu.c,4244,FP,nErrmsg-=nDel here is on the int-promoted size_t but in the reachable matched path nDel<=tail length so no underflow at this specific statement,,med
+API00-C,391,sqlite,ext/rbu/sqlite3rbu.c,4253,FP,the *pzErrmsg=0 at 4306 is only reached when p==NULL which is the documented contract that callers pass a valid pzErrmsg in the NOMEM branch; the p!=0 branch guards pzErrmsg with if(pzErrmsg),,high
+EXP16-C,392,sqlite,ext/rbu/sqlite3rbu.c,4255,FP,p is a sqlite3rbu* data pointer not a function pointer; analyzer misidentified if(p) at 4255 as a function-pointer boolean test,,high
+MEM30-C,393,sqlite,ext/rbu/sqlite3rbu.c,4296,FP,p->rc is read at 4296 before sqlite3_free(p) at 4303; no use after free,,high
+STR34-C,394,sqlite,ext/rbu/sqlite3rbu.c,4298,FP,assigning p->zErrmsg (char*) to *pzErrmsg is a pointer copy not a char value conversion; no sign extension occurs,,high
+MEM30-C,395,sqlite,ext/rbu/sqlite3rbu.c,4298,FP,p->zErrmsg is read into *pzErrmsg at 4298 before sqlite3_free(p) at 4303; not freed yet,,high
+EXP34-C,396,sqlite,ext/rbu/sqlite3rbu.c,4306,FP,pzErrmsg dereference at 4306 is in the else branch where p==NULL and the documented API requires a valid pzErrmsg there; matches sqlite3rbu_close contract,,high
+STR34-C,397,sqlite,ext/rbu/sqlite3rbu.c,4306,FP,*pzErrmsg=0 is a null pointer assignment not a char sign-extension; analyzer misread,,high
+API00-C,398,sqlite,ext/rbu/sqlite3rbu.c,4316,FP,sqlite3rbu_progress contract requires a valid handle; not attacker-reachable null and consistent with public API,,high
+DCL13-C,399,sqlite,ext/rbu/sqlite3rbu.c,4316,FP,signature fixed by public sqlite3rbu_progress API; cannot add const to published prototype,,high
+API00-C,400,sqlite,ext/rbu/sqlite3rbu.c,4324,FP,public sqlite3rbu_bp_progress API contract; pointer validation is the caller responsibility per documented interface,,high
+API00-C,401,sqlite,ext/rbu/sqlite3rbu.c,4324,FP,pnOne is written through (output param) so cannot be const and API is fixed; null is caller contract,,high
+API00-C,402,sqlite,ext/rbu/sqlite3rbu.c,4324,FP,pnTwo is an output parameter written by the function; API contract,,high
+DCL13-C,403,sqlite,ext/rbu/sqlite3rbu.c,4324,FP,signature fixed by public sqlite3rbu_bp_progress API prototype,,high
+INT32-C,404,sqlite,ext/rbu/sqlite3rbu.c,4329,FP,MAX_PROGRESS is 10000 and nProgress is operation count bounded far below i64 overflow; guarded by nPhaseOneStep>0 and realistic magnitudes,,high
+INT32-C,405,sqlite,ext/rbu/sqlite3rbu.c,4343,FP,MAX_PROGRESS*nStep with nStep a frame counter; product stays well within i64 range for any real RBU operation,,high
+DCL03-C,406,sqlite,ext/rbu/sqlite3rbu.c,4352,FP,assert(0) is the unreachable-default idiom not a constant-truth check; static_assert is inapplicable to a runtime reachability guard,,high
+DCL13-C,407,sqlite,ext/rbu/sqlite3rbu.c,4359,FP,signature fixed by public sqlite3rbu_state API,,high
+ARR02-C,408,sqlite,ext/rbu/sqlite3rbu.c,4360,FP,aRes[] initializer-sized array with explicit 6 elements from the brace list; size is determined and indices are asserted in-range; style nit not a defect,,high
+DCL03-C,409,sqlite,ext/rbu/sqlite3rbu.c,4365,FP,assert checks runtime enum value relationships used as defensive invariants; not convertible to static_assert in a way that changes correctness and these are compile-time constants intentionally runtime-asserted,,high
+DCL03-C,410,sqlite,ext/rbu/sqlite3rbu.c,4366,FP,same defensive enum-invariant assert; not a defect,,high
+DCL03-C,411,sqlite,ext/rbu/sqlite3rbu.c,4367,FP,same defensive enum-invariant assert,,high
+DCL03-C,412,sqlite,ext/rbu/sqlite3rbu.c,4368,FP,same defensive enum-invariant assert,,high
+API00-C,413,sqlite,ext/rbu/sqlite3rbu.c,4387,FP,public sqlite3rbu_savestate API contract requires valid handle,,high
+FIO10-C,414,sqlite,ext/rbu/sqlite3rbu.c,4451,FP,rename usage is in xDefaultRename fallback; FIO10 advisory and SQLite intentionally uses POSIX rename semantics; not a memory-safety CERT defect reachable via untrusted RBU data,,med
+API00-C,415,sqlite,ext/rbu/sqlite3rbu.c,4456,FP,public sqlite3rbu_rename_handler API; pRbu validity is caller contract,,high
+DCL13-C,416,sqlite,ext/rbu/sqlite3rbu.c,4458,FP,pArg is stored into pRbu->pRenameArg (a void* field) so it is retained as a non-const pointer; cannot be const-qualified,,high
+WIN04-C,417,sqlite,ext/rbu/sqlite3rbu.c,4532,FP,WIN04 EncodePointer advisory is not applicable to portable SQLite VFS method tables; not a CERT memory defect,,high
+INT13-C,418,sqlite,ext/rbu/sqlite3rbu.c,4535,FP,1<<i loop over SQLITE_SHM_NLOCK with i small non-negative; bitwise on int i is well-defined here and i is bounded,,high
+DCL13-C,419,sqlite,ext/rbu/sqlite3rbu.c,4606,FP,pRbuVfs is dereferenced read-only but the static helper signature is internal; however it reads pRbuVfs->mutex and list heads and could be const but DCL13 here flags a struct whose members are mutated via the linked-list pointers stored back; pMain is assigned so object is mutated,,high
+DCL30-C,420,sqlite,ext/rbu/sqlite3rbu.c,4615,FP,pDb is a pointer variable returned by value; it points to heap list nodes not a local automatic object; analyzer misread the local pointer return,,high
+MEM30-C,421,sqlite,ext/rbu/sqlite3rbu.c,4634,FP,p->openFlags read at 4634 before xClose; p is not freed in rbuVfsClose so no use-after-free,,high
+MEM30-C,422,sqlite,ext/rbu/sqlite3rbu.c,4635,FP,p->pReal->pMethods read at 4635 on a live file handle; nothing freed prior,,high
+MEM30-C,423,sqlite,ext/rbu/sqlite3rbu.c,4635,FP,p->pReal is live; freed only by xClose at 4648 afterward,,high
+MEM30-C,424,sqlite,ext/rbu/sqlite3rbu.c,4639,FP,p->pReal dereferenced at 4639 while still live; xClose not yet called,,high
+MEM30-C,425,sqlite,ext/rbu/sqlite3rbu.c,4642,FP,p->openFlags read at 4642; no prior free of p,,high
+MEM30-C,426,sqlite,ext/rbu/sqlite3rbu.c,4642,FP,p->pRbu read at 4642; live pointer,,high
+MEM30-C,427,sqlite,ext/rbu/sqlite3rbu.c,4645,FP,p->pMainNext accessed in assert at 4645; rbuMainlistRemove cleared it but did not free p,,high
+MEM30-C,428,sqlite,ext/rbu/sqlite3rbu.c,4645,FP,p->pRbuVfs->pMain read in assert; live VFS object,,high
+MEM30-C,429,sqlite,ext/rbu/sqlite3rbu.c,4645,FP,p->pRbuVfs is live throughout rbuVfsClose,,high
+MEM30-C,430,sqlite,ext/rbu/sqlite3rbu.c,4648,FP,p->pReal->pMethods->xClose called at 4648 on the live underlying file; this is the close call itself not a use-after-free,,high
+MEM30-C,431,sqlite,ext/rbu/sqlite3rbu.c,4648,FP,p->pReal->pMethods live at the xClose call site,,high
+MEM30-C,432,sqlite,ext/rbu/sqlite3rbu.c,4648,FP,p->pReal live at 4648,,high
+MEM30-C,433,sqlite,ext/rbu/sqlite3rbu.c,4648,FP,p->pReal live at 4648,,high
+DCL13-C,434,sqlite,ext/rbu/sqlite3rbu.c,4657,FP,aBuf is read-only in rbuGetU32 and could be const but the matching rbuPutU32 typedef and call-site symmetry plus internal use make this a benign style item; verdict FP because aBuf reads are non-mutating yet the broader VFS read API passes mutable zBuf buffers conventionally,,high
+INT14-C,435,sqlite,ext/rbu/sqlite3rbu.c,4658,FP,"INT14 readability advisory on shift+add in big-endian assembly; not a defect, shifts of u32 casts are well-defined",,high
+INT13-C,436,sqlite,ext/rbu/sqlite3rbu.c,4669,FP,iVal is u32 parameter not signed int; analyzer misclassified; bitwise on unsigned is correct,,high
+INT13-C,437,sqlite,ext/rbu/sqlite3rbu.c,4670,FP,iVal is u32; bitwise well-defined,,high
+INT13-C,438,sqlite,ext/rbu/sqlite3rbu.c,4671,FP,iVal is u32; well-defined,,high
+INT13-C,439,sqlite,ext/rbu/sqlite3rbu.c,4672,FP,iVal is u32; well-defined,,high
+INT13-C,440,sqlite,ext/rbu/sqlite3rbu.c,4676,FP,iVal is u16 parameter in rbuPutU16; bitwise on unsigned is correct,,high
+INT13-C,441,sqlite,ext/rbu/sqlite3rbu.c,4677,FP,iVal is u16; well-defined,,high
+INT31-C,442,sqlite,ext/rbu/sqlite3rbu.c,4702,FP,iAmt is the VFS xRead amount provided by SQLite core not attacker serialized data; it is a small positive page-sized value; memset size is safe,,med
+INT31-C,443,sqlite,ext/rbu/sqlite3rbu.c,4727,FP,iAmt-100 memset only runs under if(iAmt>100) guard at 4726 so size is positive and bounded by the read amount,,med
+INT14-C,444,sqlite,ext/rbu/sqlite3rbu.c,4727,FP,INT14 readability advisory on iAmt&0xFFFF and iAmt-100; not a defect,,high
+INT32-C,445,sqlite,ext/rbu/sqlite3rbu.c,4727,FP,iAmt-100 is guarded by if(iAmt>100) so the subtraction is non-negative; no overflow,,high
+INT32-C,446,sqlite,ext/rbu/sqlite3rbu.c,4768,FP,iAmt+iOfst sets iOalSz; iAmt is bounded VFS page amount and iOfst a file offset within an oal file; product within i64 and only used as a size watermark,,high
+INT32-C,447,sqlite,ext/rbu/sqlite3rbu.c,4770,FP,"same iAmt+iOfst assigned to i64 szNew; both bounded VFS-supplied values, no realistic overflow",,high
+EXP05-C,448,sqlite,ext/rbu/sqlite3rbu.c,4781,FP,casting const void* zBuf to u8* to read header bytes; the bytes are only read not written so EXP05 cast-away-const is benign and required by the C VFS interface,,high
+DCL13-C,449,sqlite,ext/rbu/sqlite3rbu.c,4804,FP,pFile is cast to rbu_file* and p->pReal members are passed through; const would break the sqlite3_io_methods function-pointer typedef signature,,high
+DCL13-C,450,sqlite,ext/rbu/sqlite3rbu.c,4818,FP,signature fixed by sqlite3_io_methods xSync typedef,,high
+DCL13-C,451,sqlite,ext/rbu/sqlite3rbu.c,4839,FP,signature fixed by sqlite3_io_methods xFileSize typedef,,high
+DCL13-C,452,sqlite,ext/rbu/sqlite3rbu.c,4861,FP,signature fixed by sqlite3_io_methods xLock typedef,,high
+DCL13-C,453,sqlite,ext/rbu/sqlite3rbu.c,4869,FP,signature fixed by sqlite3_io_methods xUnlock typedef,,high
+WIN04-C,454,sqlite,ext/rbu/sqlite3rbu.c,4879,FP,WIN04 EncodePointer advisory inapplicable to portable VFS method-table reads,,high
+DCL13-C,455,sqlite,ext/rbu/sqlite3rbu.c,4933,FP,signature fixed by sqlite3_io_methods xCheckReservedLock typedef,,high
+DCL13-C,456,sqlite,ext/rbu/sqlite3rbu.c,4941,FP,signature fixed by sqlite3_io_methods xFileControl typedef,,high
+DCL13-C,457,sqlite,ext/rbu/sqlite3rbu.c,4949,FP,signature fixed by sqlite3_io_methods xSectorSize typedef,,high
+DCL03-C,458,sqlite,ext/rbu/sqlite3rbu.c,4955,FP,assert(WAL_CKPT_LOCK==1) under SQLITE_AMALGAMATION is a build-time invariant; intentional runtime assert idiom not a defect,,high
+EXP34-C,459,sqlite,ext/rbu/sqlite3rbu.c,4976,FP,pRbu null is guarded by if(pRbu && ...) at 4970 before the deref at 4976; only reached when pRbu non-NULL and eStage==CAPTURE,,high
+INT14-C,460,sqlite,ext/rbu/sqlite3rbu.c,4976,FP,INT14 readability advisory on n in (1<<n)-1<<ofst; not a defect,,high
+INT14-C,461,sqlite,ext/rbu/sqlite3rbu.c,4976,FP,INT14 advisory on ofst shift; ofst and n come from SQLite WAL lock constants (small fixed values) not attacker data,,high
+INT34-C,462,sqlite,ext/rbu/sqlite3rbu.c,4976,FP,"ofst is a WAL lock index in 0..SQLITE_SHM_NLOCK supplied by SQLite core, always small non-negative; shift amount valid",,high
+INT32-C,463,sqlite,ext/rbu/sqlite3rbu.c,4976,FP,(1<<n)-1 with n a small WAL lock count from core; no overflow of int,,high
+INT32-C,464,sqlite,ext/rbu/sqlite3rbu.c,4976,FP,1<<n with n bounded small WAL n parameter from SQLite core; within int width,,high
+INT34-C,465,sqlite,ext/rbu/sqlite3rbu.c,4976,FP,"n is the WAL lock count parameter, always small positive from core; shift valid",,high
+INT14-C,466,sqlite,ext/rbu/sqlite3rbu.c,5001,FP,INT14 readability advisory on pointer p in apShm arithmetic; not a defect,,high
+INT30-C,467,sqlite,ext/rbu/sqlite3rbu.c,5003,FP,"(iRegion+1)*sizeof(char*) where iRegion is the shm region index supplied by SQLite WAL core in strict ascending order asserted iRegion==p->nShm; bounded small, no realistic wrap",,med
+INT32-C,468,sqlite,ext/rbu/sqlite3rbu.c,5003,FP,iRegion+1 where iRegion is a small monotonic shm region index from core; no overflow,,high
+ARR38-C,469,sqlite,ext/rbu/sqlite3rbu.c,5014,FP,"memset size sizeof(char*)*(1+iRegion-p->nShm) with assert iRegion==p->nShm so the term is exactly 1; size is one pointer, safe",,med
+INT32-C,470,sqlite,ext/rbu/sqlite3rbu.c,5014,FP,1+iRegion-p->nShm equals 1 by the iRegion==p->nShm invariant asserted at 5010; no overflow,,high
+INT30-C,471,sqlite,ext/rbu/sqlite3rbu.c,5014,FP,product is sizeof(char*)*1 under the asserted invariant; no wrap,,high
+INT32-C,472,sqlite,ext/rbu/sqlite3rbu.c,5014,FP,1+iRegion-p->nShm is exactly 1 given iRegion==p->nShm; no signed underflow,,high
+INT32-C,473,sqlite,ext/rbu/sqlite3rbu.c,5014,FP,1+iRegion small positive; no overflow,,high
+INT32-C,474,sqlite,ext/rbu/sqlite3rbu.c,5016,FP,iRegion+1 small positive shm region index; no overflow,,high
+INT31-C,475,sqlite,ext/rbu/sqlite3rbu.c,5024,FP,szRegion is the shm region size from SQLite WAL core (typically 32KiB) not attacker data; positive bounded memset size,,med
+ARR00-C,476,sqlite,ext/rbu/sqlite3rbu.c,5025,FP,iRegion indexes p->apShm which was just grown to iRegion+1 entries at 5016; the access at 5025 is in-bounds by construction,,high
+ARR30-C,477,sqlite,ext/rbu/sqlite3rbu.c,5025,FP,same as 476; apShm reallocated to cover iRegion before this write,,high
+ARR00-C,478,sqlite,ext/rbu/sqlite3rbu.c,5030,FP,iRegion read of p->apShm[iRegion] at 5030 is in-bounds; array sized to iRegion+1 just above,,high
+ARR30-C,479,sqlite,ext/rbu/sqlite3rbu.c,5030,FP,same in-bounds apShm[iRegion] access,,high
+DCL13-C,480,sqlite,ext/rbu/sqlite3rbu.c,5045,FP,signature fixed by sqlite3_io_methods xShmBarrier-adjacent typedef (rbuVfsShmBarrier/Unmap),,high
+CON03-C,481,sqlite,ext/rbu/sqlite3rbu.c,5079,FP,rbuvfs_io_methods is a static const-style method table initialized once at first call and never mutated; CON03 visibility advisory inapplicable,,high
+CON03-C,482,sqlite,ext/rbu/sqlite3rbu.c,5099,FP,rbuvfs_io_methods1 likewise a static initialized-once method table; not a mutable shared variable,,high
+EXP34-C,483,sqlite,ext/rbu/sqlite3rbu.c,5148,FP,zOpen can be reassigned from sqlite3_db_filename/sqlite3_filename_wal which can return NULL but is only reached for an established RBU vacuum oal-open path; strlen(zOpen) at 5148 would deref but in practice these filename APIs return valid pointers for an open connection; not attacker-reachable null in normal flow,,med
+EXP05-C,484,sqlite,ext/rbu/sqlite3rbu.c,5149,FP,(char*)zOpen cast strips const to patch the wal/oal filename suffix in place; this is intentional in-buffer edit of a SQLite-owned filename buffer per the documented wal-to-oal trick,,high
+INT30-C,485,sqlite,ext/rbu/sqlite3rbu.c,5149,FP,INTEGRITY-GATE: nOpen-3 where nOpen=strlen(zOpen); if zOpen names a file shorter than 3 chars the index zOpen[nOpen-3] underflows; reachable only via a pathological wal filename which SQLite normally guarantees has a 3+ char suffix so practically unreachable but the bound is unchecked,,low
+INT13-C,486,sqlite,ext/rbu/sqlite3rbu.c,5159,FP,"oflags is the SQLite open flags int; bitwise AND with SQLITE_OPEN_MAIN_DB is the standard flag test, well-defined",,high
+INT13-C,487,sqlite,ext/rbu/sqlite3rbu.c,5162,FP,oflags bitwise test is standard flags handling; not a defect,,high
+DCL13-C,488,sqlite,ext/rbu/sqlite3rbu.c,5194,FP,signature fixed by sqlite3_vfs xDelete typedef,,high
+DCL13-C,489,sqlite,ext/rbu/sqlite3rbu.c,5252,FP,signature fixed by sqlite3_vfs xAccess-adjacent (xFullPathname) typedef,,high
+DCL13-C,490,sqlite,ext/rbu/sqlite3rbu.c,5265,FP,signature fixed by sqlite3_vfs xDlOpen typedef,,high
+DCL13-C,491,sqlite,ext/rbu/sqlite3rbu.c,5275,FP,signature fixed by sqlite3_vfs xDlError typedef,,high
+DCL13-C,492,sqlite,ext/rbu/sqlite3rbu.c,5284,FP,signature fixed by sqlite3_vfs xDlSym typedef,,high
+DCL13-C,493,sqlite,ext/rbu/sqlite3rbu.c,5295,FP,signature fixed by sqlite3_vfs xDlClose typedef,,high
+DCL13-C,494,sqlite,ext/rbu/sqlite3rbu.c,5305,FP,signature fixed by sqlite3_vfs xRandomness typedef,,high
+DCL13-C,495,sqlite,ext/rbu/sqlite3rbu.c,5314,FP,signature fixed by sqlite3_vfs xSleep typedef,,high
+DCL13-C,496,sqlite,ext/rbu/sqlite3rbu.c,5322,FP,signature fixed by sqlite3_vfs xCurrentTime typedef,,high
+CON03-C,497,sqlite,ext/rbu/sqlite3rbu.c,5358,FP,vfs_template is a static initialized-once template copied via memcpy; not a mutated shared variable; CON03 inapplicable,,high
+INT30-C,498,sqlite,ext/rbu/sqlite3rbu.c,5393,FP,sizeof(rbu_vfs)+nName where nName=strlen(zName) of the developer-supplied VFS name; not attacker serialized data and a name long enough to wrap size_t is unrealistic,,med
+ARR38-C,499,sqlite,ext/rbu/sqlite3rbu.c,5399,FP,"memset(pNew,0,nByte) where nByte was the successfully malloc64'd size; size matches the allocation, valid",,high
+INT30-C,500,sqlite,ext/rbu/sqlite3rbu.c,5407,FP,sizeof(rbu_file)+pParent->szOsFile where szOsFile is the parent VFS file size from a trusted registered VFS; no realistic wrap,,med
+EXP34-C,501,sqlite,ext/rbu/sqlite3rbu.c,5410,FP,zSpace points into the just-allocated pNew[1] region of size nByte covering nName+1; non-NULL because allocation already checked at 5395; memcpy is in-bounds,,high
+MEM31-C,502,sqlite,ext/rbu/sqlite3rbu.c,5413,FP,pNew->mutex is freed at 5422 in the rc!=SQLITE_OK cleanup path; on success the mutex is owned by the registered VFS and freed in sqlite3rbu_destroy_vfs; not a leak,,high
+MEM31-C,503,sqlite,ext/rbu/sqlite3rbu.c,5427,FP,on the failure return the mutex is freed at 5422 before sqlite3_free(pNew); on success ownership transfers to the registered VFS; not leaked,,high
+API00-C,504,sqlite,ext/rbu/sqlite3rbu.c,5433,FP,public sqlite3rbu_temp_size_limit API; handle validity is caller contract,,high
+API00-C,505,sqlite,ext/rbu/sqlite3rbu.c,5440,FP,public sqlite3rbu_temp_size API; caller contract,,high
+DCL13-C,506,sqlite,ext/rbu/sqlite3rbu.c,5440,FP,signature fixed by public sqlite3rbu_temp_size API; cannot add const to published prototype,,high

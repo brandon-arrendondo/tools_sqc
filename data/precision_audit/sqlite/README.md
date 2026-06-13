@@ -1240,3 +1240,61 @@ bugs now **9** (2 fts5_index + 4 session + matchinfo + fossildelta + normalize),
 untrusted-input parser; still **no core-engine semantic TP** anywhere in the corpus. Two of the nine
 (fossildelta, normalize) were caught by sqc as findings; the campaign's sqc-found real-bug count is rising
 specifically in the decoder class the thesis targets.
+
+## File-at-a-time — Batch 5 (2026-06-12, run #40): 3 big decoders + 4 fts3 tokenizers, 2 missed bugs, 0 sqc-caught semantic TP
+
+`adjudication_sqlite_{sqlite3rbu,spellfix,qrf,fts3_porter,fts3_tokenizer,fts3_aux,fts3_tokenizer1}.csv` — the
+third needle-target batch, hitting the largest remaining untrusted-input decoders plus the fts3 tokenizer
+siblings. 14 line-range reviewers + per-chunk/whole-file FN-hunt. **1479 raw findings -> 35 TP / 1444 FP.**
+
+| File | findings | TP | FP | note |
+|------|---------:|---:|---:|------|
+| ext/rbu/sqlite3rbu.c | 507 | 21 | 486 | RBU update-DB applier; **missed zMask over-read** (FN) |
+| ext/misc/spellfix.c | 404 | 0 | 404 | edit-distance/phonetic; **missed empty-pattern underflow** (FN) |
+| ext/qrf/qrf.c | 363 | 9 | 354 | query-result-format; UTF-8/EXPLAIN-indent latent asymmetries only |
+| ext/fts3/fts3_porter.c | 72 | 2 | 70 | Porter stemmer; 2 MSC04 mutual recursion (isVowel↔isConsonant) |
+| ext/fts3/fts3_tokenizer.c | 61 | 0 | 61 | tokenizer dispatch; pointer-from-blob path properly size+frombind gated |
+| ext/fts3/fts3_aux.c | 51 | 0 | 51 | fts3aux vtab; free-then-memset-zero-then-reuse misread as UAF |
+| ext/fts3/fts3_tokenizer1.c | 21 | 3 | 18 | simple tokenizer; 3 DCL13/DCL00 const-advisory |
+
+### The two FNs — both real bugs sqc MISSED, both in the decoder class the thesis targets
+
+**ext/rbu/sqlite3rbu.c:2654 (ARR30-C, recorded FN, medium).** `rbuGetUpdateStmt` does
+`memcpy(pUp->zMask, zMask, pIter->nTblCol)` where `zMask` is the untrusted `rbu_control` TEXT value
+(`sqlite3_column_text` of the RBU update DB). The length guard `strlen(zMask)!=nTblCol` lives in
+`rbuObjIterGetSetlist` (called one line earlier) — it sets the error via `rbuBadControlError` but does **not**
+return, so execution falls through to the memcpy, which reads `nTblCol` bytes from a `zMask` an attacker can
+make shorter. A crafted `data_xxx` row with a short `rbu_control` string triggers a bounded heap over-read
+before the error code is consulted (empty cache skips the prior `strcmp`). Found independently by **two**
+reviewers; verified against source (data flow: `rbuStepType` -> `*pzMask=sqlite3_column_text` -> `rbuStep` ->
+`rbuGetUpdateStmt`, no length check between).
+
+**ext/misc/spellfix.c:2597 (ARR30-C, recorded FN, medium).** `nPattern=(int)strlen(zPattern); if(zPattern[nPattern-1]=='*')`
+reads `zPattern[-1]` when the MATCH operand is empty: `transliterate("")` returns a non-NULL empty string, and
+the only guard is `zMatchThis==0` (misses empty-but-non-NULL). A 1-byte heap-buffer-underflow read reachable
+via `SELECT ... WHERE word MATCH ''`. Same defect class as batch-4's normalize.c:616. **sqc's idx-362
+INT32-C "nPattern-- may overflow at INT_MIN" at this same line is a misfire** (nPattern is a small strlen
+result) — corrected TP→FP by the integrity gate; the genuine ARR30 underflow is a separate rule sqc never
+emitted, hence FN not TP-catch.
+
+### Integrity gate caught 3 mislabels; 0 semantic TP survived
+
+All 35 TP are declaration/macro/recursion: **DCL13 ×21, DCL00 ×5, PRE00/01/10/12 ×5, MSC04 ×3** — zero
+semantic TP across all 1479 findings. The gate reclassified three reviewer/sqc TP→FP: spellfix idx 362
+(above); **sqlite3rbu idx 389** (INT32 memmove size `nErrmsg+1-i-nDel` — unsigned size_t arithmetic, ≥1 on the
+matched path; only underflows if the loop bound `nErrmsg-8` wraps, which needs a sub-8-char SQLITE_CONSTRAINT
+message sqlite never produces — unreachable); **sqlite3rbu idx 485** (INT30 `nOpen-3` wal→oal filename patch —
+guarded by sqlite's `-wal` suffix invariant, nOpen≥4 always — contract-safe). None recorded as FN (both
+unreachable). Latent asymmetries dismissed (not recorded): **qrf.c:2363-2364** (the `azGoto` indent branch
+indexes `abYield[p2op]`/writes `aiIndent[i>=p2op]` with only an upper-bound guard while the sibling `azNext`
+branch guards `p2op>0`, but `p2op=p2+(iOp-iAddr)` is provably ≥0 for well-formed sqlite EXPLAIN/bytecode);
+qrf UTF-8 decoders over-reading a *non-NUL-terminated* buffer (column text is NUL-terminated in practice);
+fts3_tokenizer `testFunc` `azArg[64]` overflow (SQLITE_TEST-only, not in production builds).
+
+sqlite coverage **92/220 (41.8%)** — 92 files audited; **11 FNs** (rbu over-read + spellfix underflow added).
+Confirmed real bugs now **11** (2 fts5_index + 4 session + matchinfo + fossildelta + normalize + rbu +
+spellfix), every one in a less-fuzzed untrusted-input parser; still **no core-engine semantic TP** anywhere in
+the corpus. Notably both batch-5 bugs are sqc **recall gaps** (FNs), not catches: the length-vs-copy ordering
+bug (rbu) and the empty-buffer underflow (spellfix) both need analysis sqc lacks. sqc's two semantic flags in
+this batch were both FPs gated by sqlite-internal invariants — consistent with the bifurcation: in the
+hardened parts of even an untrusted decoder, sqc's semantic rules only misfire.

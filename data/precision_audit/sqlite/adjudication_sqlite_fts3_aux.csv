@@ -1,0 +1,52 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT30-C,0,sqlite,ext/fts3/fts3_aux.c,100,FP,nByte is sqlite3_int64 sum of two compile-time sizeofs plus two int strlens of SQL identifier names bounded by parser limits cannot wrap 64-bit,,high
+ARR38-C,1,sqlite,ext/fts3/fts3_aux.c,103,FP,memset size nByte is the same just-malloc64'd allocation size positive and non-wrapping,,high
+INT31-C,2,sqlite,ext/fts3/fts3_aux.c,103,FP,nByte is non-negative small allocation size conversion to size_t is value-preserving,,high
+STR34-C,3,sqlite,ext/fts3/fts3_aux.c,107,FP,zDb is a const char* identifier name not dereferenced as a sign-extended char at this assignment it is pointer arithmetic,,high
+STR34-C,4,sqlite,ext/fts3/fts3_aux.c,107,FP,pointer arithmetic computing zName address from zDb[nDb+1] no char sign-extension defect,,high
+INT32-C,5,sqlite,ext/fts3/fts3_aux.c,107,FP,nDb is strlen of a SQL identifier bounded well below INT_MAX nDb+1 cannot overflow,,high
+INT31-C,6,sqlite,ext/fts3/fts3_aux.c,111,FP,nDb is strlen result non-negative and small conversion to size_t safe,,high
+INT31-C,7,sqlite,ext/fts3/fts3_aux.c,112,FP,nFts3 is strlen result non-negative and small conversion to size_t safe,,high
+MSC07-C,8,sqlite,ext/fts3/fts3_aux.c,118,FP,the return at line 116 is the success path label bad_args follows for the error path code is reachable not dead,,high
+INT32-C,9,sqlite,ext/fts3/fts3_aux.c,198,FP,idxNum starts at 0 and adds small constant flags 2 and 4 once each no overflow,,high
+INT32-C,10,sqlite,ext/fts3/fts3_aux.c,203,FP,idxNum bounded by GE plus LE constraint flags max 6 cannot overflow int,,high
+MEM30-C,11,sqlite,ext/fts3/fts3_aux.c,241,FP,fts3auxCloseMethod frees zTerm at line 241 then frees pCsr and returns no later read of freed pointer,,high
+MEM30-C,12,sqlite,ext/fts3/fts3_aux.c,241,FP,filter is an embedded struct member not a freed pointer freeing zTerm member does not free filter,,high
+INT30-C,13,sqlite,ext/fts3/fts3_aux.c,252,FP,nSize is a small column-count argument (2 or iCol+2) sizeof times it cannot wrap size_t,,high
+ARR38-C,14,sqlite,ext/fts3/fts3_aux.c,255,FP,memset size is product of small struct sizeof and grown count non-wrapping,,high
+INT32-C,15,sqlite,ext/fts3/fts3_aux.c,255,FP,nSize minus nStat is guarded positive by the nSize>nStat check at line 249 no overflow,,high
+INT30-C,16,sqlite,ext/fts3/fts3_aux.c,256,FP,same guarded positive difference times small sizeof no wrap,,high
+INT32-C,17,sqlite,ext/fts3/fts3_aux.c,256,FP,nSize>pCsr->nStat guard at line 249 makes the subtraction positive and bounded,,high
+INT32-C,18,sqlite,ext/fts3/fts3_aux.c,273,FP,iRowid is sqlite3_int64 pretend rowid incremented per row practically unreachable INT64_MAX,,high
+INT31-C,19,sqlite,ext/fts3/fts3_aux.c,290,FP,n is min of two non-negative lengths nStop and csr.nTerm conversion to size_t safe,,high
+ARR38-C,20,sqlite,ext/fts3/fts3_aux.c,298,FP,memset size is sizeof times pCsr->nStat a small grown column count non-wrapping,,high
+INT32-C,21,sqlite,ext/fts3/fts3_aux.c,298,FP,nStat is a small bounded column count product with sizeof cannot overflow,,high
+INT30-C,22,sqlite,ext/fts3/fts3_aux.c,298,FP,same small nStat times struct sizeof no wrap,,high
+DCL13-C,23,sqlite,ext/fts3/fts3_aux.c,370,FP,apVal is the sqlite3_module xFilter callback signature fixed by typedef cannot add const,,high
+MEM30-C,24,sqlite,ext/fts3/fts3_aux.c,411,FP,filter.zTerm freed at 411 then memset-zeroed at 414 before any reuse no UAF,,high
+MEM30-C,25,sqlite,ext/fts3/fts3_aux.c,411,FP,filter is an embedded struct member not a heap pointer freeing zTerm does not free filter,,high
+INT32-C,26,sqlite,ext/fts3/fts3_aux.c,414,FP,memset bound is pointer subtraction of struct addresses a fixed compile-time byte count no overflow,,high
+MEM30-C,27,sqlite,ext/fts3/fts3_aux.c,414,FP,csr is an embedded Fts3MultiSegReader member SegReaderFinish at 410 cleans internals not a freed pointer the memset zeroes it,,high
+MEM30-C,28,sqlite,ext/fts3/fts3_aux.c,414,FP,same csr member zeroed by memset at 414 then reused fresh no UAF,,high
+MEM30-C,29,sqlite,ext/fts3/fts3_aux.c,416,FP,filter member zeroed by memset at 414 before flags assignment no freed-pointer access,,high
+MEM30-C,30,sqlite,ext/fts3/fts3_aux.c,417,FP,filter member written after being zeroed at 414 not a UAF,,high
+MEM30-C,31,sqlite,ext/fts3/fts3_aux.c,423,FP,filter.zTerm was zeroed by the line-414 memset before this assignment writes a fresh mprintf result,,high
+MEM30-C,32,sqlite,ext/fts3/fts3_aux.c,424,FP,filter.zTerm assigned fresh sqlite3_mprintf result not a read of freed memory,,high
+MEM30-C,33,sqlite,ext/fts3/fts3_aux.c,424,FP,filter member is embedded and zeroed earlier assignment is a write not a UAF read,,high
+MEM30-C,34,sqlite,ext/fts3/fts3_aux.c,425,FP,filter member written after memset-zero no freed-pointer access,,high
+MEM30-C,35,sqlite,ext/fts3/fts3_aux.c,425,FP,filter.zTerm checked for 0 after fresh mprintf no use of freed pointer,,high
+MEM30-C,36,sqlite,ext/fts3/fts3_aux.c,425,FP,filter member write after zeroing no UAF,,high
+MEM30-C,37,sqlite,ext/fts3/fts3_aux.c,431,FP,zStop freed at 413 then zeroed by memset at 414 then assigned fresh mprintf at 430 no UAF,,high
+MEM30-C,38,sqlite,ext/fts3/fts3_aux.c,432,FP,zStop assigned fresh result then strlen of the new buffer not freed memory,,high
+MEM30-C,39,sqlite,ext/fts3/fts3_aux.c,448,FP,filter.zTerm holds fresh mprintf buffer passed to SegReaderCursor not freed memory,,high
+MEM30-C,40,sqlite,ext/fts3/fts3_aux.c,448,FP,filter is embedded member passing zTerm to a function is not a freed-pointer access,,high
+MEM30-C,41,sqlite,ext/fts3/fts3_aux.c,448,FP,filter.nTerm is an int member set from strlen not a freed pointer,,high
+MEM30-C,42,sqlite,ext/fts3/fts3_aux.c,448,FP,filter member read after being repopulated no UAF,,high
+MEM30-C,43,sqlite,ext/fts3/fts3_aux.c,448,FP,csr embedded member reinitialized by SegReaderCursor passed by address not freed memory,,high
+MEM30-C,44,sqlite,ext/fts3/fts3_aux.c,451,FP,csr embedded member passed to SegReaderStart freshly initialized no UAF,,high
+MEM30-C,45,sqlite,ext/fts3/fts3_aux.c,451,FP,filter member passed to SegReaderStart after repopulation no freed-pointer access,,high
+DCL13-C,46,sqlite,ext/fts3/fts3_aux.c,461,FP,pCursor is the xEof callback signature fixed by sqlite3_module typedef cannot add const,,high
+DCL13-C,47,sqlite,ext/fts3/fts3_aux.c,470,FP,pCursor is the xColumn callback signature fixed by typedef cannot add const,,high
+INT32-C,48,sqlite,ext/fts3/fts3_aux.c,484,FP,p->iCol guarded nonzero by the if(p->iCol) test at line 483 so iCol-1>=0 no overflow,,high
+DCL13-C,49,sqlite,ext/fts3/fts3_aux.c,511,FP,pCursor is the xRowid callback signature fixed by typedef cannot add const,,high
+API00-C,50,sqlite,ext/fts3/fts3_aux.c,523,FP,db is the registration entrypoint passed straight to sqlite3_create_module which null-checks internally per sqlite contract,,med

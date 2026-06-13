@@ -1,0 +1,73 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,0,sqlite,ext/fts3/fts3_porter.c,68,FP,t is assigned from sqlite3_malloc and NULL-checked at line 69 before deref at 71; not uninitialized,,high
+EXP05-C,1,sqlite,ext/fts3/fts3_porter.c,70,FP,"&t->base yields sqlite3_tokenizer* assigned to matching ppTokenizer type, no const cast away",,high
+MEM33-C,2,sqlite,ext/fts3/fts3_porter.c,71,FP,"*ppTokenizer=&t->base is a pointer assignment to a base subobject, not a flexible-array struct copy",,high
+EXP33-C,3,sqlite,ext/fts3/fts3_porter.c,98,FP,c is malloc'd line 98 and NULL-checked line 99 before any deref; not uninitialized,,high
+INT07-C,4,sqlite,ext/fts3/fts3_porter.c,103,FP,"c is the cursor pointer not a char; INT07 misfire, char usage here is a struct pointer member access",,high
+INT07-C,5,sqlite,ext/fts3/fts3_porter.c,109,FP,"stylistic INT07 on char c compared in [A-Z] ASCII range, value bounded and portable in practice",,med
+INT07-C,6,sqlite,ext/fts3/fts3_porter.c,110,FP,"stylistic INT07, c held in [A-Z] range used in case-fold arithmetic, no defect",,med
+INT07-C,7,sqlite,ext/fts3/fts3_porter.c,112,FP,"stylistic INT07 on char c in copy_stemmer, value range-checked before numeric use",,med
+MEM33-C,8,sqlite,ext/fts3/fts3_porter.c,114,FP,*ppCursor=&c->base is a pointer assignment to base subobject not a flexible-array struct copy,,high
+DCL00-C,9,sqlite,ext/fts3/fts3_porter.c,123,FP,"DCL00 style suggestion only; const would compile but c is a loop-local copy, no defect",,med
+ARR02-C,10,sqlite,ext/fts3/fts3_porter.c,131,FP,"cType[] is a file-scope initialized array; implicit bound is fully determined by initializer, valid C",,high
+MSC04-C,11,sqlite,ext/fts3/fts3_porter.c,150,TP,isConsonant and isVowel are genuinely mutually recursive via z+1; factual indirect recursion exists,,high
+STR34-C,12,sqlite,ext/fts3/fts3_porter.c,152,FP,STR34 style; x=*z guarded by assert x>='a'&&x<='z' so sign extension cannot occur in valid range,,med
+STR09-C,13,sqlite,ext/fts3/fts3_porter.c,154,FP,"STR09 style portability note on letter ordering, not a memory-safety defect",,med
+STR09-C,14,sqlite,ext/fts3/fts3_porter.c,154,FP,"STR09 style portability note on letter ordering, not a memory-safety defect",,med
+INT07-C,15,sqlite,ext/fts3/fts3_porter.c,155,FP,"stylistic INT07 on x in [a-z] range; cType index x-'a' is 0..25, in bounds",,med
+INT08-C,16,sqlite,ext/fts3/fts3_porter.c,155,FP,"INT08 style; x-'a' with x asserted in [a-z] cannot overflow, result 0..25",,med
+INT32-C,17,sqlite,ext/fts3/fts3_porter.c,155,FP,"x-'a' with x asserted a..z yields 0..25, cannot overflow signed int",,high
+MSC04-C,18,sqlite,ext/fts3/fts3_porter.c,159,TP,isVowel and isConsonant are genuinely mutually recursive via z+1; factual indirect recursion exists,,high
+STR34-C,19,sqlite,ext/fts3/fts3_porter.c,161,FP,"STR34 style; x=*z guarded by assert x>='a'&&x<='z', no sign extension in valid range",,med
+STR09-C,20,sqlite,ext/fts3/fts3_porter.c,163,FP,"STR09 style portability note, not a defect",,med
+STR09-C,21,sqlite,ext/fts3/fts3_porter.c,163,FP,"STR09 style portability note, not a defect",,med
+INT07-C,22,sqlite,ext/fts3/fts3_porter.c,164,FP,"stylistic INT07 on x in [a-z] range, index in bounds",,med
+INT08-C,23,sqlite,ext/fts3/fts3_porter.c,164,FP,INT08 style; x-'a' with x in a..z cannot overflow,,med
+INT32-C,24,sqlite,ext/fts3/fts3_porter.c,164,FP,"x-'a' with x asserted a..z yields 0..25, no overflow",,high
+INT32-C,25,sqlite,ext/fts3/fts3_porter.c,165,FP,"1-j where j is 0 or 1 (cType returns 0/1 when <2), result 0 or 1, no overflow",,high
+STR34-C,26,sqlite,ext/fts3/fts3_porter.c,275,FP,"STR34 style; *pz compared char-to-char against zFrom, equality compare unaffected by sign extension",,med
+MEM33-C,27,sqlite,ext/fts3/fts3_porter.c,280,FP,"*(--z)=*(zTo++) is a byte copy through char pointers, not a flexible-array struct assignment",,high
+STR34-C,28,sqlite,ext/fts3/fts3_porter.c,280,FP,"STR34 style; *(--z) is a byte store, sign extension irrelevant to char store",,med
+STR34-C,29,sqlite,ext/fts3/fts3_porter.c,280,FP,"STR34 style; *zTo char copied to char *z, both char, no larger-type widening defect",,med
+STR34-C,30,sqlite,ext/fts3/fts3_porter.c,280,FP,"STR34 style; *(zTo++) char-to-char copy, no sign-extension defect",,med
+DCL30-C,31,sqlite,ext/fts3/fts3_porter.c,282,FP,"z points into caller's buffer (*pz), not a function-local; *pz=z returns a still-valid caller pointer",,high
+STR34-C,32,sqlite,ext/fts3/fts3_porter.c,282,FP,"STR34 style; *pz char store, no sign-extension defect",,med
+DCL00-C,33,sqlite,ext/fts3/fts3_porter.c,298,FP,"DCL00 style only; c is loop-local copy, const would compile but no defect",,med
+STR09-C,34,sqlite,ext/fts3/fts3_porter.c,299,FP,"STR09 style portability note, not a defect",,med
+STR09-C,35,sqlite,ext/fts3/fts3_porter.c,299,FP,"STR09 style portability note, not a defect",,med
+INT07-C,36,sqlite,ext/fts3/fts3_porter.c,300,FP,"stylistic INT07 on c in [A-Z], case-fold arithmetic bounded",,med
+INT08-C,37,sqlite,ext/fts3/fts3_porter.c,300,FP,"INT08 style; c-'A'+'a' with c in A..Z stays in lowercase ASCII range, no overflow",,med
+INT32-C,38,sqlite,ext/fts3/fts3_porter.c,308,FP,nIn-mx runs only when nIn>mx*2 so nIn-mx>mx>=0; no overflow or underflow,,high
+INT30-C,39,sqlite,ext/fts3/fts3_porter.c,351,FP,sizeof(zReverse)-6=22 is a compile-time constant; unsigned subtraction of constants cannot wrap,,high
+DCL00-C,40,sqlite,ext/fts3/fts3_porter.c,352,FP,"DCL00 style only; c is loop-local copy, no defect",,med
+STR09-C,41,sqlite,ext/fts3/fts3_porter.c,353,FP,"STR09 style portability note, not a defect",,med
+STR09-C,42,sqlite,ext/fts3/fts3_porter.c,353,FP,"STR09 style portability note, not a defect",,med
+ARR30-C,43,sqlite,ext/fts3/fts3_porter.c,354,FP,"j starts at 22 decrementing with i<nIn<=20 so j ranges 22..3, well within zReverse[28]",,high
+INT07-C,44,sqlite,ext/fts3/fts3_porter.c,354,FP,"stylistic INT07 on c in [A-Z], bounded",,med
+INT08-C,45,sqlite,ext/fts3/fts3_porter.c,354,FP,"INT08 style; c+'a'-'A' with c in A..Z bounded in ASCII, no overflow",,med
+INT32-C,46,sqlite,ext/fts3/fts3_porter.c,354,FP,"INT32 style; c+'a' with c in A..Z (0x41-0x5A) sum well under INT_MAX, no overflow",,med
+STR09-C,47,sqlite,ext/fts3/fts3_porter.c,355,FP,"STR09 style portability note, not a defect",,med
+STR09-C,48,sqlite,ext/fts3/fts3_porter.c,355,FP,"STR09 style portability note, not a defect",,med
+ARR30-C,49,sqlite,ext/fts3/fts3_porter.c,356,FP,"j ranges 22..3 under nIn<=20, in bounds of zReverse[28]",,high
+INT30-C,50,sqlite,ext/fts3/fts3_porter.c,364,FP,"sizeof(zReverse)-5=23 compile-time constant, unsigned subtraction cannot wrap",,high
+INT32-C,51,sqlite,ext/fts3/fts3_porter.c,365,FP,"j+1 where j is bounded 3..22 in this loop, no overflow",,high
+STR34-C,52,sqlite,ext/fts3/fts3_porter.c,394,FP,"STR34 style; *(--z)='e' is a char store, sign extension irrelevant",,med
+STR34-C,53,sqlite,ext/fts3/fts3_porter.c,570,FP,"STR34 style; isDelim macro reads *z but masks with 0x80, controlled use",,med
+STR34-C,54,sqlite,ext/fts3/fts3_porter.c,570,FP,"STR34 style; *(z++) char read in isDelim with 0x80 mask, no defect",,med
+ARR02-C,55,sqlite,ext/fts3/fts3_porter.c,580,FP,"porterIdChar[] is file-scope initialized array, implicit bound determined by initializer",,high
+DCL00-C,56,sqlite,ext/fts3/fts3_porter.c,602,FP,"DCL00 style only; loop-local copy, no defect",,med
+STR00-C,57,sqlite,ext/fts3/fts3_porter.c,609,FP,STR00 note; isDelim macro guards index with (ch&0x80)==0 and ch>=0x30 before porterIdChar[ch-0x30],,med
+INT07-C,58,sqlite,ext/fts3/fts3_porter.c,610,FP,"stylistic INT07; the c here is the cursor pointer member, not a numeric char",,med
+INT32-C,59,sqlite,ext/fts3/fts3_porter.c,610,FP,"c->iOffset bounded by c->nInput (an int input length), increment within input bounds, no realistic INT_MAX",,low
+STR00-C,60,sqlite,ext/fts3/fts3_porter.c,615,FP,STR00 note; index guarded by isDelim 0x80 mask and ch>=0x30 check before array access,,med
+INT07-C,61,sqlite,ext/fts3/fts3_porter.c,616,FP,stylistic INT07; c is cursor pointer member access not numeric char,,med
+INT32-C,62,sqlite,ext/fts3/fts3_porter.c,616,FP,"c->iOffset bounded by c->nInput, no realistic INT_MAX wrap",,low
+INT07-C,63,sqlite,ext/fts3/fts3_porter.c,620,FP,stylistic INT07; c is cursor pointer not numeric,,med
+INT08-C,64,sqlite,ext/fts3/fts3_porter.c,620,FP,"INT08 style; n=iOffset-iStartOffset positive token length, n+20 bounded by input size",,low
+INT32-C,65,sqlite,ext/fts3/fts3_porter.c,620,FP,"c->iOffset>=iStartOffset guaranteed since scan only advances iOffset, subtraction non-negative",,med
+INT32-C,66,sqlite,ext/fts3/fts3_porter.c,623,FP,"n+20 where n is a token length bounded by nInput (int), no realistic overflow",,low
+STR34-C,67,sqlite,ext/fts3/fts3_porter.c,629,FP,STR34 style; *pzToken assignment is a pointer assignment not a char sign-extension,,med
+INT07-C,68,sqlite,ext/fts3/fts3_porter.c,632,FP,"stylistic INT07; c is cursor pointer member, not numeric char",,med
+INT32-C,69,sqlite,ext/fts3/fts3_porter.c,632,FP,"c->iToken++ bounded by token count over an int-length input, no realistic INT_MAX wrap",,low
+API00-C,70,sqlite,ext/fts3/fts3_porter.c,656,FP,"ppModule is set by internal sqlite caller per fixed contract, always non-null; API00 misfire",,med
+MEM33-C,71,sqlite,ext/fts3/fts3_porter.c,659,FP,"*ppModule=&porterTokenizerModule is a pointer assignment, not a flexible-array struct copy",,high

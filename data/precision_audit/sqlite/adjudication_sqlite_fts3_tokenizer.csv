@@ -1,0 +1,62 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,0,sqlite,ext/fts3/fts3_tokenizer.c,67,FP,argv signature fixed by sqlite3_create_function scalar-callback typedef; const cannot be added,,high
+EXP05-C,1,sqlite,ext/fts3/fts3_tokenizer.c,90,FP,(void*)zName cast for HashInsert key which is copied; const pointee never written through,,high
+ARR02-C,2,sqlite,ext/fts3/fts3_tokenizer.c,115,FP,isFtsIdChar[] has exactly 128 entries and is only indexed when c&0x80 is false so index is 0..127,,high
+INT13-C,3,sqlite,ext/fts3/fts3_tokenizer.c,125,FP,advisory portability rule; c&0x80 guard works correctly and gates the table access no defect,,high
+STR00-C,4,sqlite,ext/fts3/fts3_tokenizer.c,125,FP,advisory char-in-bitop rule; the c&0x80 test functions as intended no memory safety impact,,high
+API00-C,5,sqlite,ext/fts3/fts3_tokenizer.c,128,FP,internal function pn always receives &n from every caller; advisory not-validated rule,,high
+ARR30-C,6,sqlite,ext/fts3/fts3_tokenizer.c,134,FP,outer while(z2==0) scans NUL-terminated zCopy and case '\0' returns 0 bounding the loop,,high
+DCL00-C,7,sqlite,ext/fts3/fts3_tokenizer.c,135,FP,advisory const-qualify-local style suggestion not a defect,,high
+STR34-C,8,sqlite,ext/fts3/fts3_tokenizer.c,135,FP,*z1 only compared to char literals not used as array index so sign extension is harmless,,high
+EXP30-C,9,sqlite,ext/fts3/fts3_tokenizer.c,142,FP,&& and || are sequence points separating the ++z2 modifications; no unsequenced access,,high
+ARR37-C,10,sqlite,ext/fts3/fts3_tokenizer.c,142,FP,++z2 increments a valid pointer into zCopy; legal pointer arithmetic style rule,,high
+EXP30-C,11,sqlite,ext/fts3/fts3_tokenizer.c,142,FP,same as idx9 sequence points present between z2 modifications no UB,,high
+ARR37-C,12,sqlite,ext/fts3/fts3_tokenizer.c,142,FP,legal pointer increment over zCopy buffer,,high
+STR34-C,13,sqlite,ext/fts3/fts3_tokenizer.c,146,FP,*z1 compared to literal not used as index; no defect from sign extension,,high
+STR34-C,14,sqlite,ext/fts3/fts3_tokenizer.c,146,FP,z1[1] dereference used for comparison only not as array index,,high
+ARR37-C,15,sqlite,ext/fts3/fts3_tokenizer.c,147,FP,z2[0] reads a byte of zCopy compared to ']' legal access,,high
+ARR37-C,16,sqlite,ext/fts3/fts3_tokenizer.c,147,FP,z2++ legal pointer arithmetic within zCopy,,high
+ARR37-C,17,sqlite,ext/fts3/fts3_tokenizer.c,148,FP,z2++ legal pointer arithmetic within zCopy,,high
+STR34-C,18,sqlite,ext/fts3/fts3_tokenizer.c,153,FP,*z1 deref for comparison not index; sign extension harmless,,high
+STR34-C,19,sqlite,ext/fts3/fts3_tokenizer.c,153,FP,z1[1] deref for comparison not index,,high
+ARR37-C,20,sqlite,ext/fts3/fts3_tokenizer.c,154,FP,z2++ legal pointer increment within zCopy,,high
+ARR36-C,21,sqlite,ext/fts3/fts3_tokenizer.c,161,FP,z1 and z2 both point into the same zStr/zCopy buffer; subtraction is well-defined,,high
+DCL30-C,22,sqlite,ext/fts3/fts3_tokenizer.c,162,FP,z1 is a pointer into caller-supplied zStr not a local array; returning the pointer is correct,,high
+ARR00-C,23,sqlite,ext/fts3/fts3_tokenizer.c,162,FP,z1 is const char* into the input buffer not local storage; no dangling pointer,,high
+API00-C,24,sqlite,ext/fts3/fts3_tokenizer.c,165,FP,internal init function; advisory pointer-not-validated rule,,high
+API00-C,25,sqlite,ext/fts3/fts3_tokenizer.c,165,FP,internal init function; advisory pointer-not-validated rule,,high
+API00-C,26,sqlite,ext/fts3/fts3_tokenizer.c,165,FP,internal init function; advisory pointer-not-validated rule,,high
+EXP05-C,27,sqlite,ext/fts3/fts3_tokenizer.c,172,FP,(char*)zArg cast away const but z is reassigned before any write; zArg pointee never modified,,med
+STR34-C,28,sqlite,ext/fts3/fts3_tokenizer.c,180,FP,*zCopy deref not used as array index; sign extension harmless,,high
+STR34-C,29,sqlite,ext/fts3/fts3_tokenizer.c,180,FP,zCopy[strlen] deref bounds the NUL terminator not an index defect,,high
+ARR37-C,30,sqlite,ext/fts3/fts3_tokenizer.c,187,FP,z[n] writes the NUL terminator into zCopy within bounds; legal,,high
+INT32-C,31,sqlite,ext/fts3/fts3_tokenizer.c,190,FP,(int)strlen(z)+1 cannot overflow; token length capped by SQLITE_MAX_LENGTH well below INT_MAX,,high
+EXP40-C,32,sqlite,ext/fts3/fts3_tokenizer.c,197,FP,z=&z[n+1] is plain char* assignment not assignment to const pointer-to-pointer; misread,,high
+STR34-C,33,sqlite,ext/fts3/fts3_tokenizer.c,197,FP,*z deref for tokenizing not array index by char; harmless,,high
+STR34-C,34,sqlite,ext/fts3/fts3_tokenizer.c,197,FP,z[n+1] address computation within zCopy; not an index defect,,high
+ARR37-C,35,sqlite,ext/fts3/fts3_tokenizer.c,197,FP,z[n+1] subscript on valid pointer into zCopy; legal,,high
+ARR36-C,36,sqlite,ext/fts3/fts3_tokenizer.c,198,FP,z and zEnd both point into the same zCopy buffer; comparison well-defined,,high
+EXP30-C,37,sqlite,ext/fts3/fts3_tokenizer.c,198,FP,z<zEnd then && sequence point then z assigned from NextToken(z); no unsequenced access,,high
+EXP30-C,38,sqlite,ext/fts3/fts3_tokenizer.c,198,FP,same as idx37 sequence point separates read and assignment,,high
+EXP05-C,39,sqlite,ext/fts3/fts3_tokenizer.c,200,FP,(void*)aArg cast for sqlite3_realloc64; standard idiom no write through const pointee,,high
+EXP05-C,40,sqlite,ext/fts3/fts3_tokenizer.c,203,FP,(void*)aArg cast for sqlite3_free; standard free idiom,,high
+ARR37-C,41,sqlite,ext/fts3/fts3_tokenizer.c,208,FP,z[n] subscript writing NUL into zCopy within bounds,,high
+EXP40-C,42,sqlite,ext/fts3/fts3_tokenizer.c,210,FP,z=&z[n+1] plain char* assignment not const pointer-to-pointer; misread,,high
+STR34-C,43,sqlite,ext/fts3/fts3_tokenizer.c,210,FP,*z deref for tokenizing not index by char,,high
+STR34-C,44,sqlite,ext/fts3/fts3_tokenizer.c,210,FP,z[n+1] address computation within zCopy,,high
+ARR37-C,45,sqlite,ext/fts3/fts3_tokenizer.c,210,FP,z[n+1] subscript on valid pointer into zCopy,,high
+EXP05-C,46,sqlite,ext/fts3/fts3_tokenizer.c,219,FP,(void*)aArg cast for sqlite3_free; standard idiom,,high
+DCL13-C,47,sqlite,ext/fts3/fts3_tokenizer.c,260,FP,argv signature fixed by scalar-function callback typedef; const cannot be added,,high
+INT32-C,48,sqlite,ext/fts3/fts3_tokenizer.c,309,FP,i-1 cannot overflow loop starts at i=1 so i-1>=0,,high
+EXP33-C,49,sqlite,ext/fts3/fts3_tokenizer.c,312,FP,azArg[0..argc-3] all written by the loop before xCreate reads count argc-2; fully initialized,,high
+EXP34-C,50,sqlite,ext/fts3/fts3_tokenizer.c,317,FP,test-only; xCreate OK contract guarantees *ppTok non-null and line316 already dereferenced it,,med
+STR34-C,51,sqlite,ext/fts3/fts3_tokenizer.c,325,FP,&zInput[iStart] pointer arithmetic not char-as-index; harmless,,high
+STR34-C,52,sqlite,ext/fts3/fts3_tokenizer.c,325,FP,zInput[iStart] address computation not an index-by-char defect,,high
+EXP34-C,53,sqlite,ext/fts3/fts3_tokenizer.c,325,FP,test-only path; tokens only iterate after xOpen over zInput; address computation not deref,,med
+ARR00-C,54,sqlite,ext/fts3/fts3_tokenizer.c,364,FP,p is a plain pointer parameter not an array; sizeof(p)=pointer size is exactly intended for bind_blob,,high
+ARR01-C,55,sqlite,ext/fts3/fts3_tokenizer.c,364,FP,p is a pointer; binding sizeof(p) bytes of &p is the intentional pointer-as-blob mechanism,,high
+ARR01-C,56,sqlite,ext/fts3/fts3_tokenizer.c,390,FP,sizeof(*pp) is sizeof a module pointer; intentional and correct for the column_bytes check,,high
+EXP05-C,57,sqlite,ext/fts3/fts3_tokenizer.c,392,FP,(void*)pp memcpy destination writes the pointer slot *pp which is non-const; standard idiom,,high
+ARR01-C,58,sqlite,ext/fts3/fts3_tokenizer.c,392,FP,sizeof(*pp) pointer size; intentional memcpy length matching the bound blob,,high
+API00-C,59,sqlite,ext/fts3/fts3_tokenizer.c,473,FP,internal init function; advisory pointer-not-validated rule,,high
+API00-C,60,sqlite,ext/fts3/fts3_tokenizer.c,473,FP,internal init function; advisory pointer-not-validated rule,,high

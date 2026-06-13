@@ -1,0 +1,405 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,0,sqlite,ext/misc/spellfix.c,75,FP,"midClass[] is a const lookup table fully initialized by aggregate initializer indexed only by c&0x7f (0..127); 128 entries present, size implicit-but-complete",,high
+ARR02-C,1,sqlite,ext/misc/spellfix.c,125,FP,initClass[] same const fully-initialized 128-entry table indexed by c&0x7f; no out-of-bounds possible,,high
+STR04-C,2,sqlite,ext/misc/spellfix.c,176,FP,className/midClass are intentional unsigned char tables holding small class codes used as values not text; STR04 style-only and contract-correct,,high
+INT32-C,3,sqlite,ext/misc/spellfix.c,195,FP,nIn is sqlite3_value_bytes byte count bounded by SQLITE_MAX_LENGTH (<2GB) so nIn+1 cannot overflow int; sqlite3_malloc64 takes 64-bit arg,,high
+ARR00-C,4,sqlite,ext/misc/spellfix.c,212,FP,"nIn is a real parameter (sqlite3_value_bytes result), fully initialized before the loop; analyzer misread it as uninitialized",,high
+DCL00-C,5,sqlite,ext/misc/spellfix.c,213,FP,"c is reassigned repeatedly inside the loop (c=aClass[c&0x7f] etc); not a const candidate, DCL00 misfire",,high
+INT30-C,6,sqlite,ext/misc/spellfix.c,214,FP,"i is int loop counter bounded by nIn (byte length <2GB); i+1 compared only as array guard, no wrap",,high
+INT30-C,7,sqlite,ext/misc/spellfix.c,215,FP,"same bounded int loop index i; i+1 used as zIn index after i+1<nIn guard, no wrap",,high
+INT30-C,8,sqlite,ext/misc/spellfix.c,216,FP,"bounded int i, guarded by i+1<nIn before zIn[i+1] access, no overflow",,high
+INT30-C,9,sqlite,ext/misc/spellfix.c,216,FP,"same line guarded i+1<nIn, bounded loop index",,high
+INT30-C,10,sqlite,ext/misc/spellfix.c,217,FP,"i+2 used only inside the i+2<nIn guard; bounded, no overflow",,high
+INT30-C,11,sqlite,ext/misc/spellfix.c,218,FP,"i+1 inside i+2<nIn guard, bounded",,high
+INT30-C,12,sqlite,ext/misc/spellfix.c,218,FP,"i+2 inside i+2<nIn guard, bounded",,high
+INT13-C,13,sqlite,ext/misc/spellfix.c,221,FP,"c is unsigned char here (declared unsigned char c at line 213); c&0x7f is well-defined, not a signed-char op",,high
+ARR00-C,14,sqlite,ext/misc/spellfix.c,239,FP,"zOut is a sqlite3_malloc64 heap pointer not a local array; returning it is correct ownership transfer, not dangling",,high
+DCL13-C,15,sqlite,ext/misc/spellfix.c,249,FP,argv signature fixed by sqlite3 scalar-function callback typedef (sqlite3_value**); cannot be const-qualified,,high
+INT13-C,16,sqlite,ext/misc/spellfix.c,269,FP,c is the char parameter but indexes initClass[c&0x7f] which masks to 0..127; &0x7f makes index well-defined regardless of sign,,high
+INT13-C,17,sqlite,ext/misc/spellfix.c,269,FP,"same masked index midClass[c&0x7f]; well-defined, signedness irrelevant after mask",,high
+EXP43-C,18,sqlite,ext/misc/spellfix.c,292,FP,"characterClass(cPrev,cPrev) passes same value not same pointer; scalar char args by value, no restrict/aliasing UB",,high
+MEM05-C,19,sqlite,ext/misc/spellfix.c,375,FP,"mStack is a fixed int[75] stack array not a VLA; chosen only when nB is small enough to fit, else malloc path used",,high
+INT32-C,20,sqlite,ext/misc/spellfix.c,381,FP,nMatch counts common-prefix bytes bounded by string length <2GB; cannot reach INT_MAX,,high
+STR00-C,21,sqlite,ext/misc/spellfix.c,391,FP,zA elements masked/compared as plain ASCII; high-bit already rejected (return -2) before cost use; bit op is well-defined contract,,high
+STR00-C,22,sqlite,ext/misc/spellfix.c,394,FP,"zB same; non-ASCII rejected earlier so values are 0..127, signedness harmless",,high
+INT31-C,23,sqlite,ext/misc/spellfix.c,399,FP,"dc holds a prior ASCII char value (0..127) cast to char; in-range narrowing, no data loss",,high
+INT07-C,24,sqlite,ext/misc/spellfix.c,400,FP,res is int not char at line 400 (declared int res); INT07 misidentified type,,high
+INT32-C,25,sqlite,ext/misc/spellfix.c,401,FP,"cost values are small bounded constants (<=100) summed over ASCII-length string; res is int, sum cannot overflow for <2GB input of bounded per-step cost",,high
+INT32-C,26,sqlite,ext/misc/spellfix.c,401,FP,"xB is unsigned int loop counter < nB (string length); xB+1 used as zB index after NUL-terminated bound, no overflow",,high
+INT31-C,27,sqlite,ext/misc/spellfix.c,407,FP,"dc is ASCII value 0..127 narrowed to char, in range",,high
+INT07-C,28,sqlite,ext/misc/spellfix.c,408,FP,"res declared int at line 408, not char; INT07 type misread",,high
+INT32-C,29,sqlite,ext/misc/spellfix.c,409,FP,res int accumulating bounded per-char costs over <2GB ASCII string; no realistic overflow,,high
+INT30-C,30,sqlite,ext/misc/spellfix.c,409,FP,"xA unsigned loop index over NUL-terminated string; xA+1 bounded by terminator, no wrap",,high
+INT33-C,31,sqlite,ext/misc/spellfix.c,419,FP,divisor is (sizeof(mStack[0])*5) a nonzero compile-time constant; cannot be zero,,high
+INT30-C,32,sqlite,ext/misc/spellfix.c,419,FP,sizeof(mStack)*4 is a compile-time constant (300*4) far below SIZE_MAX; no wrap,,high
+INT30-C,33,sqlite,ext/misc/spellfix.c,419,FP,sizeof(mStack[0])*5 compile-time constant 20; no wrap,,high
+EXP33-C,34,sqlite,ext/misc/spellfix.c,419,FP,"mStack used only as cost matrix written before read (m[0]=0 then forward fill); EXP33 misfire, no uninitialized read",,high
+INT30-C,35,sqlite,ext/misc/spellfix.c,422,FP,nB bounded by string length (<2GB); (nB+1)*5*sizeof int /4 computed in 64-bit by malloc64; no wrap for realistic input,,high
+INT32-C,36,sqlite,ext/misc/spellfix.c,422,FP,(nB+1)*5 with nB being ASCII string length <2GB; result fits int range and is used in 64-bit malloc expression; no realistic overflow,,high
+INT32-C,37,sqlite,ext/misc/spellfix.c,422,FP,nB+1 where nB is bounded string length; no overflow,,high
+EXP33-C,38,sqlite,ext/misc/spellfix.c,422,FP,m matrix initialized m[0]=0 then forward-filled before any read at higher index; not uninitialized,,high
+INT32-C,39,sqlite,ext/misc/spellfix.c,425,FP,"nB+1 bounded string length, no overflow",,high
+ARR37-C,40,sqlite,ext/misc/spellfix.c,429,FP,cx is a real pointer into the allocated/stack matrix region (cx=(char*)&m[nB+1]); cx[0] is valid array indexing not pointer-misuse,,high
+INT31-C,41,sqlite,ext/misc/spellfix.c,429,FP,dc ASCII value narrowed to char in range,,high
+INT31-C,42,sqlite,ext/misc/spellfix.c,430,FP,dc ASCII value narrowed to char in range,,high
+ARR37-C,43,sqlite,ext/misc/spellfix.c,434,FP,cx[xB] valid: cx region sized (nB+1) chars by the /4 extra allocation; xB in 1..nB bounded,,high
+INT32-C,44,sqlite,ext/misc/spellfix.c,435,FP,cost matrix values bounded small ints summed; m entries stay well within int,,high
+INT31-C,45,sqlite,ext/misc/spellfix.c,438,FP,"dc ASCII narrowed to char, in range",,high
+INT30-C,46,sqlite,ext/misc/spellfix.c,441,FP,xA-1 where xA>=1 in the loop (for xA=1); xA underflow impossible since loop starts at 1,,high
+ARR37-C,47,sqlite,ext/misc/spellfix.c,445,FP,cx[0] valid array access into the matrix char region,,high
+INT08-C,48,sqlite,ext/misc/spellfix.c,446,FP,"cA already verified ASCII (high bit rejected); cost arithmetic on small bounded ints, no overflow",,high
+INT32-C,49,sqlite,ext/misc/spellfix.c,446,FP,"d plus bounded insertOrDeleteCost (<=100); int accumulator, no overflow",,high
+INT32-C,50,sqlite,ext/misc/spellfix.c,450,FP,xB is unsigned but loop range 1..nB guarantees xB>=1 so xB-1 well-defined; not a real signed underflow,,high
+ARR37-C,51,sqlite,ext/misc/spellfix.c,454,FP,"cx[xB-1] valid; xB>=1 in loop, cx sized nB+1",,high
+INT32-C,52,sqlite,ext/misc/spellfix.c,454,FP,xB-1 with xB>=1 in loop body; no underflow,,high
+ARR37-C,53,sqlite,ext/misc/spellfix.c,458,FP,cx[xB] valid index 1..nB within sized region,,high
+ARR37-C,54,sqlite,ext/misc/spellfix.c,461,FP,"cx[xB-1] valid, xB>=1",,high
+INT32-C,55,sqlite,ext/misc/spellfix.c,461,FP,xB-1 xB>=1 no underflow,,high
+INT32-C,56,sqlite,ext/misc/spellfix.c,464,FP,insCost+m[xB-1] both bounded small ints; no overflow,,high
+INT32-C,57,sqlite,ext/misc/spellfix.c,464,FP,xB-1 xB>=1 no underflow,,high
+INT32-C,58,sqlite,ext/misc/spellfix.c,471,FP,subCost+d bounded small ints; no overflow,,high
+INT00-C,59,sqlite,ext/misc/spellfix.c,475,FP,printf is inside #if 0 dead code; never compiled,,high
+PRE32-C,60,sqlite,ext/misc/spellfix.c,475,FP,"printf line is within #if 0 block, not compiled; no macro-arg UB",,high
+PRE32-C,61,sqlite,ext/misc/spellfix.c,475,FP,same #if 0 dead printf; not active code,,high
+DCL11-C,62,sqlite,ext/misc/spellfix.c,477,FP,dead #if 0 printf; format/type never executed,,high
+INT32-C,63,sqlite,ext/misc/spellfix.c,477,FP,xB-1 inside dead #if 0 block; also xB>=1; not reachable,,high
+DCL11-C,64,sqlite,ext/misc/spellfix.c,477,FP,dead #if 0 printf; not compiled,,high
+ARR37-C,65,sqlite,ext/misc/spellfix.c,483,FP,"cx[xB] valid array access, xB in loop range",,high
+ARR37-C,66,sqlite,ext/misc/spellfix.c,485,FP,cx[xB] valid array access,,high
+INT31-C,67,sqlite,ext/misc/spellfix.c,485,FP,"ncx holds a char-valued cost char (cA/cB), narrowing in range",,high
+INT32-C,68,sqlite,ext/misc/spellfix.c,497,FP,"xB+nMatch both bounded by string lengths <2GB; res-tracking index, no overflow",,high
+DCL13-C,69,sqlite,ext/misc/spellfix.c,521,FP,argv fixed by sqlite3 scalar-function callback typedef; cannot be const,,high
+EXP33-C,70,sqlite,ext/misc/spellfix.c,644,FP,pNext assigned inside while(pCost) before use at line 647 (pNext=pCost->pNext) then used; not used uninitialized,,high
+ARR30-C,71,sqlite,ext/misc/spellfix.c,645,FP,p->a[i] is the language array sized to p->nLang (the loop bound); a[4] is the cost struct flexible-tail not this buffer; ARR30 confused struct member a[4] with config array a,,high
+ARR01-C,72,sqlite,ext/misc/spellfix.c,653,FP,sizeof(*p) where p is EditDist3Config* gives struct size correctly for memset; not a decayed-array sizeof bug,,high
+DCL13-C,73,sqlite,ext/misc/spellfix.c,665,FP,"pA is read (pA->nFrom, pA->a) and never written; but signature must match use in editDist3CostMerge calls passing mutable list nodes; const would be valid here yet objects are list nodes intentionally non-const for merge; treat as FP signature/usage",,high
+DCL13-C,74,sqlite,ext/misc/spellfix.c,665,FP,pB same as pA; comparison-only read but part of merge node manipulation; FP,,high
+EXP34-C,75,sqlite,ext/misc/spellfix.c,666,FP,pA derives from a non-empty merge list (while pA&&pB guards) so pA!=0 at deref; null guarded by loop condition,,high
+EXP34-C,76,sqlite,ext/misc/spellfix.c,668,FP,pB guarded non-null by while(pA&&pB) loop condition before deref,,high
+INT31-C,77,sqlite,ext/misc/spellfix.c,669,FP,"n = min(pA->nFrom,pB->nFrom), both u8 (0..255) so non-negative; strncmp size_t conversion safe",,high
+EXP40-C,78,sqlite,ext/misc/spellfix.c,683,FP,"**ppTail=&pHead is internal singly-linked-list tail splicing on heap nodes; no const involved, EXP40 misread",,high
+EXP34-C,79,sqlite,ext/misc/spellfix.c,688,FP,pA non-null inside while(pA&&pB) guard before pA->pNext deref,,high
+EXP34-C,80,sqlite,ext/misc/spellfix.c,691,FP,pB non-null inside while(pA&&pB) guard,,high
+DCL30-C,81,sqlite,ext/misc/spellfix.c,693,FP,"p is a local pointer holding a heap list node, assigned to *ppTail (heap node's pNext); not taking address of a local that escapes",,high
+DCL30-C,82,sqlite,ext/misc/spellfix.c,701,FP,"returns pHead which is a heap-allocated list node pointer not a local object; DCL30 misread, no automatic-storage escape",,high
+DCL13-C,83,sqlite,ext/misc/spellfix.c,707,FP,"pList is consumed/relinked (p->pNext modified via list) so nodes are mutated; const not applicable, FP",,high
+ARR30-C,84,sqlite,ext/misc/spellfix.c,717,FP,"ap[60] merge-sort network; i bounded by mx which grows at most log2(list length); reaching i=60 needs 2^60 nodes, unreachable",,high
+ARR30-C,85,sqlite,ext/misc/spellfix.c,718,FP,"same ap[60] index i bounded by network depth, unreachable overflow",,high
+ARR30-C,86,sqlite,ext/misc/spellfix.c,719,FP,same bounded merge-sort network index,,high
+INT30-C,87,sqlite,ext/misc/spellfix.c,724,FP,i+1 where i is network depth <60 in practice; ap[i+1]=0 guarded by i>mx; no wrap,,high
+INT32-C,88,sqlite,ext/misc/spellfix.c,724,FP,i+1 small int network depth; no overflow,,high
+ARR30-C,89,sqlite,ext/misc/spellfix.c,729,FP,ap[i] read with i<=mx<60; in bounds,,high
+ARR30-C,90,sqlite,ext/misc/spellfix.c,729,FP,ap[i] same bounded read,,high
+DCL30-C,91,sqlite,ext/misc/spellfix.c,731,FP,returns p a heap list node pointer not a local; DCL30 misread,,high
+STR34-C,92,sqlite,ext/misc/spellfix.c,758,FP,zFrom from sqlite3_column_text used in memcpy sized by nFrom (<=100 after the nFrom>100 continue guard); no sign-extension index use of the char value here,,high
+STR34-C,93,sqlite,ext/misc/spellfix.c,760,FP,"zTo same, bounded by nTo<=100 guard before memcpy; no sign-extension defect",,high
+INT30-C,94,sqlite,ext/misc/spellfix.c,770,FP,"(p->nLang+1)*sizeof bounded; nLang increments once per distinct iLang from a query, realistically tiny; sqlite3_realloc64 64-bit sized, no wrap",,high
+INT32-C,95,sqlite,ext/misc/spellfix.c,770,FP,p->nLang+1 small int (distinct language count); no overflow,,high
+ARR01-C,96,sqlite,ext/misc/spellfix.c,770,FP,sizeof(p->a[0]) is sizeof(EditDist3Lang) a real struct type not a decayed pointer; correct,,high
+MEM30-C,97,sqlite,ext/misc/spellfix.c,770,FP,"p->a is reallocated into pNew then assigned p->a=pNew before use; not use-after-free, realloc semantics correct",,high
+INT32-C,98,sqlite,ext/misc/spellfix.c,774,FP,p->nLang counts distinct language IDs from a table; cannot approach INT_MAX,,high
+INT32-C,99,sqlite,ext/misc/spellfix.c,790,FP,"nFrom,nTo each <=100 (guarded); nFrom+nTo-4 max ~196, no overflow",,high
+INT32-C,100,sqlite,ext/misc/spellfix.c,790,FP,"nFrom+nTo each <=100; sum<=200, no overflow",,high
+INT30-C,101,sqlite,ext/misc/spellfix.c,792,FP,"nExtra clamped >=0 and <=196; sizeof(*pCost)+nExtra small, sqlite3_malloc64 64-bit; no wrap",,high
+EXP33-C,102,sqlite,ext/misc/spellfix.c,792,FP,pCost assigned from malloc and null-checked (if pCost==0 break) before dereference; not uninitialized deref,,high
+INT31-C,103,sqlite,ext/misc/spellfix.c,797,FP,nFrom>=0 (column_bytes) and <=100; size_t conversion of small non-negative value safe in memcpy,,high
+INT31-C,104,sqlite,ext/misc/spellfix.c,798,FP,nTo>=0 and <=100; safe memcpy size,,high
+INT32-C,105,sqlite,ext/misc/spellfix.c,798,FP,pCost->a + nFrom is pointer arithmetic within the allocated nExtra+struct region; nFrom<=100 and buffer sized nFrom+nTo; in bounds,,high
+ARR30-C,106,sqlite,ext/misc/spellfix.c,808,FP,"p->a[iLang] indexed by iLang<p->nLang the array size; in bounds, a[4] struct tail confusion in message",,high
+ARR30-C,107,sqlite,ext/misc/spellfix.c,808,FP,same bounded p->a[iLang] access,,high
+INT13-C,108,sqlite,ext/misc/spellfix.c,821,FP,c is unsigned char parameter in utf8Len; c&0xe0 well-defined unsigned op,,high
+INT13-C,109,sqlite,ext/misc/spellfix.c,823,FP,c unsigned char; c&0xf0 well-defined,,high
+DCL13-C,110,sqlite,ext/misc/spellfix.c,837,FP,"p read-only (p->a,p->nFrom,p->nTo) and could be const but signature shared with callers passing list nodes; FP signature-context",,high
+DCL13-C,111,sqlite,ext/misc/spellfix.c,849,FP,matchFrom reads p only; const-eligible in isolation but matches matchTo style and node usage; FP,,high
+DCL13-C,112,sqlite,ext/misc/spellfix.c,863,FP,pStr read-only here but it is the precompiled FROM string object reused mutably elsewhere; signature-context FP,,high
+ARR00-C,113,sqlite,ext/misc/spellfix.c,868,FP,"n1 is an index into pStr->a and pStr->z; callers pass i bounded by pStr->n during the matching loop; contract-checked by surrounding loop bounds, not an arbitrary attacker index",,med
+ARR00-C,114,sqlite,ext/misc/spellfix.c,871,FP,n1 same bounded by caller loop; pStr->z[n1] within the n+1 allocated string buffer,,med
+INT31-C,115,sqlite,ext/misc/spellfix.c,872,FP,b1 = pStr->a[n1].nByte from utf8Len (1..4) positive; strncmp size_t conversion of small positive int safe,,high
+ARR30-C,116,sqlite,ext/misc/spellfix.c,883,FP,p->a[i] indexes the EditDist3From array sized to p->n (loop bound i<p->n); a[4] in message is unrelated struct tail,,high
+MEM30-C,117,sqlite,ext/misc/spellfix.c,883,FP,"p->a here is the EditDist3From* array freed only after the loop (sqlite3_free(p) at end); accessed before free, not use-after-free",,high
+ARR30-C,118,sqlite,ext/misc/spellfix.c,884,FP,p->a[i].apSubst freed in same iteration; array itself freed only after loop; no UAF,,high
+MEM30-C,119,sqlite,ext/misc/spellfix.c,884,FP,"same; apSubst freed per element, the a[] block freed after; ordering correct",,high
+INT30-C,120,sqlite,ext/misc/spellfix.c,904,FP,sizeof(*pStr)+sizeof(a[0])*n+n+1 with n bounded by strlen of input (<2GB); sqlite3_malloc64 64-bit; no realistic wrap,,high
+EXP33-C,121,sqlite,ext/misc/spellfix.c,904,FP,pStr from malloc64 null-checked (if pStr==0 return 0) before any deref; not uninitialized,,high
+INT30-C,122,sqlite,ext/misc/spellfix.c,904,FP,sizeof(pStr->a[0])*n n bounded string length; 64-bit malloc context; no wrap,,high
+ARR38-C,123,sqlite,ext/misc/spellfix.c,907,FP,"memset(pStr->a,0,sizeof(a[0])*n) where pStr->a points into the just-allocated block sized to include sizeof(a[0])*n; size matches allocation",,high
+INT32-C,124,sqlite,ext/misc/spellfix.c,907,FP,"same memset size matches the allocation computed identically at line 904; bounded, no overflow",,high
+EXP05-C,125,sqlite,ext/misc/spellfix.c,907,FP,no const being cast away; pStr->a is non-const malloc memory; EXP05 misfire,,high
+INT30-C,126,sqlite,ext/misc/spellfix.c,907,FP,sizeof(a[0])*n bounded n; consistent with allocation; no wrap,,high
+ARR30-C,127,sqlite,ext/misc/spellfix.c,909,FP,pStr->a[n] not accessed; loop is i<n; a[n] message conflates struct a[4]; the EditDist3From array is sized n and indexed 0..n-1,,med
+ARR38-C,128,sqlite,ext/misc/spellfix.c,910,FP,"memcpy(pStr->z,z,n+1) copies n+1 bytes into z region; allocation reserved exactly n+1 bytes (the +n+1 term) for z; in bounds (caller guarantees z has n+1 incl NUL via strlen path or known n)",,high
+INT31-C,129,sqlite,ext/misc/spellfix.c,910,FP,"n>=0 (strlen or validated) converted to size_t for memcpy; non-negative, safe",,high
+EXP05-C,130,sqlite,ext/misc/spellfix.c,910,FP,"n+1 not a const-cast; EXP05 misfire, plain size arithmetic",,high
+INT32-C,131,sqlite,ext/misc/spellfix.c,910,FP,n+1 n bounded by strlen(<2GB); no overflow,,high
+INT32-C,132,sqlite,ext/misc/spellfix.c,913,FP,n-- only entered when n&&z[n-1]=='*' so n>=1; cannot underflow to INT_MIN,,high
+INT32-C,133,sqlite,ext/misc/spellfix.c,914,FP,pStr->n-- guarded by same n>=1 condition; pStr->n was just set to n>=1; no underflow,,high
+ARR30-C,134,sqlite,ext/misc/spellfix.c,921,FP,"p->a[i] EditDist3From array indexed i<p->n; in bounds, struct a[4] confusion in message",,high
+INT30-C,135,sqlite,ext/misc/spellfix.c,923,FP,loop bound i<n with n>=0 so n-i always positive non-wrapping; passed to utf8Len which clamps to N,,high
+INT32-C,136,sqlite,ext/misc/spellfix.c,923,FP,"n bounded by sqlite3_value_bytes/strlen and i<n so n-i in [1,n] no overflow",,high
+EXP33-C,137,sqlite,ext/misc/spellfix.c,925,FP,apNew assigned before every use in both realloc branches and break-on-null guards each path,,high
+INT30-C,138,sqlite,ext/misc/spellfix.c,926,FP,i and p->nFrom (u8<=100) small; guard i+p->nFrom>n precedes any use and n bounded,,high
+INT30-C,139,sqlite,ext/misc/spellfix.c,927,FP,n-i positive since i<n in loop; passed to matchFrom only after bound check,,high
+INT30-C,140,sqlite,ext/misc/spellfix.c,930,FP,sizeof*(nDel+1) via sqlite3_realloc64 64-bit; nDel bounded by number of cost entries (tiny),,high
+INT32-C,141,sqlite,ext/misc/spellfix.c,930,FP,pFrom->nDel is small bounded count of matching cost entries not attacker-sized,,high
+INT30-C,142,sqlite,ext/misc/spellfix.c,936,FP,sizeof*(nSubst+1) 64-bit realloc; nSubst bounded by cost-list length,,high
+INT32-C,143,sqlite,ext/misc/spellfix.c,936,FP,nSubst is a small bounded counter incremented per matching cost entry,,high
+DCL30-C,144,sqlite,ext/misc/spellfix.c,948,FP,returns pStr a heap pointer (sqlite3_malloc64) not a local automatic variable,,high
+ARR30-C,145,sqlite,ext/misc/spellfix.c,964,FP,"updateCost indices i,j are matrix offsets bounded by allocation; assert iCost>=0 holds",,high
+INT32-C,146,sqlite,ext/misc/spellfix.c,964,FP,m[j] cost values bounded (memset 0x01 then costs<10000); iCost<10000 by config guard,,high
+DCL13-C,147,sqlite,ext/misc/spellfix.c,991,FP,pFrom is dereferenced/copied only (f=*pFrom) never written through; const valid here,,high
+MEM05-C,148,sqlite,ext/misc/spellfix.c,1008,FP,stackSpace is fixed-size array SQLITE_SPELLFIX_STACKALLOC_SZ not a VLA; heap path used if too big,,high
+INT14-C,149,sqlite,ext/misc/spellfix.c,1011,FP,INT14 readability heuristic on f.n; not a defect,,low
+INT32-C,150,sqlite,ext/misc/spellfix.c,1011,FP,f.n is char count bounded by SQLITE_MAX_LENGTH; +1 cannot overflow int in practice,,high
+INT32-C,151,sqlite,ext/misc/spellfix.c,1011,FP,n2 bounded by value_bytes/SQLITE_MAX_LENGTH; +1 no overflow,,high
+INT13-C,152,sqlite,ext/misc/spellfix.c,1012,FP,INT13 style flag on (n+1)&~1 masking; intended even-rounding not a defect,,low
+INT14-C,153,sqlite,ext/misc/spellfix.c,1012,FP,INT14 readability heuristic on n; not a defect,,low
+INT32-C,154,sqlite,ext/misc/spellfix.c,1012,FP,n=(f.n+1)*(n2+1) bounded by SQLITE_MAX_LENGTH; even-round add no overflow in practice,,high
+ARR39-C,155,sqlite,ext/misc/spellfix.c,1013,FP,ARR39 double-scaling false alarm: m[0]/a2[0] are element-size sizeofs combined into byte total correctly,,med
+INT30-C,156,sqlite,ext/misc/spellfix.c,1013,FP,n*sizeof(m[0]) computed in sqlite3_uint64 nByte; 64-bit no wrap for SQLITE_MAX_LENGTH sizes,,med
+EXP33-C,157,sqlite,ext/misc/spellfix.c,1013,FP,m points at stackSpace or malloc64 buffer fully sized by nByte before any read,,high
+EXP34-C,158,sqlite,ext/misc/spellfix.c,1013,FP,m null-checked on heap path (return -1 if 0); stack path never null,,high
+INT30-C,159,sqlite,ext/misc/spellfix.c,1013,FP,sizeof(a2[0])*n2 in 64-bit nByte expression; n2 bounded no wrap,,med
+ARR37-C,160,sqlite,ext/misc/spellfix.c,1013,FP,a2 points into the m buffer past matrix; a2[i2] is valid indexing of EditDist3To region,,high
+EXP33-C,161,sqlite,ext/misc/spellfix.c,1013,FP,a2 region zeroed by memset at line 1022 before any read,,high
+EXP34-C,162,sqlite,ext/misc/spellfix.c,1013,FP,a2 derived from m which is null-checked; not independently null,,high
+ARR38-C,163,sqlite,ext/misc/spellfix.c,1022,FP,memset size sizeof(a2[0])*n2 matches a2 region carved from sized nByte allocation,,high
+INT32-C,164,sqlite,ext/misc/spellfix.c,1022,FP,size computed from n2 bounded by SQLITE_MAX_LENGTH; allocation already validated as 64-bit nByte,,med
+INT30-C,165,sqlite,ext/misc/spellfix.c,1022,FP,same sizeof(a2[0])*n2 product 64-bit-safe for bounded n2,,med
+ARR37-C,166,sqlite,ext/misc/spellfix.c,1022,FP,a2 is pointer into allocated matrix; a2[0] valid array element access,,high
+ARR37-C,167,sqlite,ext/misc/spellfix.c,1026,FP,a2[i2] with i2<n2 indexes the zeroed EditDist3To array within allocation,,high
+INT32-C,168,sqlite,ext/misc/spellfix.c,1026,FP,n2-i2 positive since i2<n2 loop bound; used as remaining-bytes arg to utf8Len,,high
+EXP33-C,169,sqlite,ext/misc/spellfix.c,1028,FP,apNew assigned from realloc and null-checked (goto abort) before use,,high
+ARR37-C,170,sqlite,ext/misc/spellfix.c,1033,FP,a2[i2] in-bounds (i2<n2) into allocated To-array,,high
+ARR37-C,171,sqlite,ext/misc/spellfix.c,1034,FP,a2[i2] in-bounds; nIns incremented then sized via realloc64,,high
+INT30-C,172,sqlite,ext/misc/spellfix.c,1034,FP,sizeof*(nIns) 64-bit realloc; nIns bounded by cost-list length per char,,high
+ARR37-C,173,sqlite,ext/misc/spellfix.c,1034,FP,a2[i2] in-bounds array access into To region,,high
+INT07-C,174,sqlite,ext/misc/spellfix.c,1036,FP,INT07 char-as-numeric style flag on res; bounded edit-distance value,,low
+ARR37-C,175,sqlite,ext/misc/spellfix.c,1039,FP,a2[i2] in-bounds; apIns null-checked before store,,high
+ARR37-C,176,sqlite,ext/misc/spellfix.c,1040,FP,a2[i2] in-bounds array access,,high
+ARR37-C,177,sqlite,ext/misc/spellfix.c,1040,FP,a2[i2].apIns[nIns-1] store after successful realloc to size nIns,,high
+INT32-C,178,sqlite,ext/misc/spellfix.c,1045,FP,f.n+1 bounded by SQLITE_MAX_LENGTH no int overflow in practice,,high
+ARR38-C,179,sqlite,ext/misc/spellfix.c,1046,FP,memset (n2+1)*szRow*sizeof targets m sized as n=(f.n+1)*(n2+1) rounded up; covers (n2+1)*szRow words,,high
+INT32-C,180,sqlite,ext/misc/spellfix.c,1046,FP,product matches the matrix size that was allocated; bounded by SQLITE_MAX_LENGTH,,med
+EXP05-C,181,sqlite,ext/misc/spellfix.c,1046,FP,m is unsigned int* not const-qualified; no const cast-away occurs here,,high
+INT30-C,182,sqlite,ext/misc/spellfix.c,1046,FP,(n2+1)*szRow*sizeof in 64-bit memset arg; matrix already sized to >= this,,med
+INT32-C,183,sqlite,ext/misc/spellfix.c,1046,FP,(n2+1)*szRow equals matrix word count bounded by SQLITE_MAX_LENGTH-derived n,,med
+INT32-C,184,sqlite,ext/misc/spellfix.c,1046,FP,n2+1 bounded; no overflow for realistic inputs,,high
+ARR00-C,185,sqlite,ext/misc/spellfix.c,1050,FP,i1 initialized in for-init (i1=0) before use as bound; not uninitialized,,high
+ARR30-C,186,sqlite,ext/misc/spellfix.c,1051,FP,a is the 4-byte EditDist3Cost.a flexible region; i1 indexes f.a[] not the 4-byte a; analyzer confused buffers,,med
+INT32-C,187,sqlite,ext/misc/spellfix.c,1052,FP,i1+b1 stride within f.n char positions; b1=nByte<=4 small; bounded,,high
+ARR37-C,188,sqlite,ext/misc/spellfix.c,1063,FP,a2[i2] in-bounds with i2<n2 stepped by b2,,high
+INT32-C,189,sqlite,ext/misc/spellfix.c,1064,FP,i2+b2 advances within n2; b2 small utf8 byte count,,high
+ARR37-C,190,sqlite,ext/misc/spellfix.c,1067,FP,a2[i2] in-bounds To-array access,,high
+ARR37-C,191,sqlite,ext/misc/spellfix.c,1068,FP,a2[i2].apIns valid after earlier sizing loop,,high
+ARR30-C,192,sqlite,ext/misc/spellfix.c,1076,FP,index into f.a[] info array sized to char positions; not the 4-byte cost a[] buffer,,med
+INT32-C,193,sqlite,ext/misc/spellfix.c,1077,FP,rx+i1 are matrix cell offsets bounded by allocation; updateCost reads/writes within m,,high
+INT32-C,194,sqlite,ext/misc/spellfix.c,1078,FP,cxp+b1 matrix offset within sized m buffer,,high
+INT32-C,195,sqlite,ext/misc/spellfix.c,1079,FP,rxp+i1 matrix offset within m,,high
+INT32-C,196,sqlite,ext/misc/spellfix.c,1080,FP,cxd+b1 matrix offset within m,,high
+INT32-C,197,sqlite,ext/misc/spellfix.c,1087,FP,n2-i2 positive since loop i2<n2; remaining bytes arg,,high
+INT32-C,198,sqlite,ext/misc/spellfix.c,1093,FP,n2-i2 positive in matchTo call; bounded,,high
+FIO47-C,199,sqlite,ext/misc/spellfix.c,1107,FP,line 1107 is inside #if 0 debug block (lines 1100-1119) dead code never compiled,,high
+INT32-C,200,sqlite,ext/misc/spellfix.c,1113,FP,(i2+1)*szRow+i1 inside #if 0 dead debug code,,high
+INT32-C,201,sqlite,ext/misc/spellfix.c,1113,FP,i2+1 inside #if 0 dead debug code,,high
+FIO47-C,202,sqlite,ext/misc/spellfix.c,1115,FP,line 1115 inside #if 0 dead debug block never compiled,,high
+INT32-C,203,sqlite,ext/misc/spellfix.c,1122,FP,szRow*(n2+1)-1 is final matrix cell index within allocated n words bounded,,high
+INT32-C,204,sqlite,ext/misc/spellfix.c,1122,FP,szRow*(n2+1) equals matrix size <= n allocated; bounded by SQLITE_MAX_LENGTH,,high
+INT32-C,205,sqlite,ext/misc/spellfix.c,1122,FP,n2+1 bounded no overflow,,high
+INT32-C,206,sqlite,ext/misc/spellfix.c,1126,FP,"szRow*i2-1 in-bounds cell index for i2 in [1,n2]",,high
+INT32-C,207,sqlite,ext/misc/spellfix.c,1129,FP,i2-1 with i2>=1 in loop; non-negative result,,high
+ARR00-C,208,sqlite,ext/misc/spellfix.c,1138,FP,ARR00 misfire: n and nExtra are plain ints not pointers; n-nExtra is integer subtraction,,high
+INT32-C,209,sqlite,ext/misc/spellfix.c,1138,FP,n-nExtra both non-negative char counts; nExtra<=n by construction; no overflow,,high
+ARR37-C,210,sqlite,ext/misc/spellfix.c,1142,FP,a2[i2] in abort loop with i2<n2 in-bounds,,high
+DCL13-C,211,sqlite,ext/misc/spellfix.c,1151,FP,"pConfig read-only (loops pConfig->nLang, returns &pConfig->a[i]); but returns non-const ptr into a[] so const param incompatible with return type",,high
+ARR30-C,212,sqlite,ext/misc/spellfix.c,1156,FP,a[] flag is EditDist3Cost.a 4-byte; index i here is into pConfig->a[] Lang array sized nLang; wrong buffer attributed,,med
+ARR30-C,213,sqlite,ext/misc/spellfix.c,1156,FP,same: i indexes pConfig->a[] language array bounded by i<nLang; not the 4-byte cost a[],,med
+DCL13-C,214,sqlite,ext/misc/spellfix.c,1173,FP,argv is sqlite3_value** read via sqlite3_value_text/int; values not mutated so const-compatible but SQLite vtab xFunc signature is fixed,,high
+ARR02-C,215,sqlite,ext/misc/spellfix.c,1243,FP,ARR02 style: sqlite3Utf8Trans1[] initialized with explicit 64 elements; size implicit-but-determined intentionally,,low
+INT07-C,216,sqlite,ext/misc/spellfix.c,1269,FP,INT07 style on c; immediately masked/compared as code point,,low
+INT08-C,217,sqlite,ext/misc/spellfix.c,1269,FP,INT08 style flag; c sourced from z[0] byte then table-indexed safely,,low
+INT14-C,218,sqlite,ext/misc/spellfix.c,1269,FP,INT14 readability heuristic on c,,low
+INT14-C,219,sqlite,ext/misc/spellfix.c,1270,FP,INT14 readability heuristic on i,,low
+INT14-C,220,sqlite,ext/misc/spellfix.c,1270,FP,INT14 readability heuristic on z,,low
+INT08-C,221,sqlite,ext/misc/spellfix.c,1271,FP,INT08 style on c continuation accumulation,,low
+INT13-C,222,sqlite,ext/misc/spellfix.c,1271,FP,c<<6 where c is the running code point (int); values bounded by valid utf8 to <=0x10FFFF no UB,,med
+INT32-C,223,sqlite,ext/misc/spellfix.c,1271,FP,c<<6 accumulates utf8 codepoint; max 4-byte sequence keeps c well below INT_MAX no overflow,,med
+INT30-C,224,sqlite,ext/misc/spellfix.c,1288,FP,nIn-i positive since loop i<nIn; passed as remaining-byte count to utf8Read,,high
+INT30-C,225,sqlite,ext/misc/spellfix.c,1289,FP,i+=sz where sz=utf8Read size>=1 and clamped; i advances toward nIn no wrap,,high
+ARR02-C,226,sqlite,ext/misc/spellfix.c,1306,FP,ARR02 style on translit[] which has fully enumerated initializer determining size,,low
+ARR01-C,227,sqlite,ext/misc/spellfix.c,1699,FP,sizeof(translit) is the global static table not a decayed parameter; ARR01 misread (translit is file-scope array),,high
+ARR01-C,228,sqlite,ext/misc/spellfix.c,1699,FP,same: sizeof on file-scope translit[] array yields true table size; not a pointer param,,high
+INT32-C,229,sqlite,ext/misc/spellfix.c,1715,FP,nIn*5+1 from value_bytes bounded by SQLITE_MAX_LENGTH; sqlite3_malloc64 64-bit and overflow yields alloc failure handled,,med
+INT32-C,230,sqlite,ext/misc/spellfix.c,1715,FP,nIn*5 with nIn bounded by SQLITE_MAX_LENGTH ~1e9; product fits in 64-bit malloc arg path,,med
+INT32-C,231,sqlite,ext/misc/spellfix.c,1717,FP,nIn*4+1 bounded; allocation failure null-checked at line 1720,,med
+INT32-C,232,sqlite,ext/misc/spellfix.c,1717,FP,nIn*4 bounded by SQLITE_MAX_LENGTH; 64-bit malloc,,med
+INT32-C,233,sqlite,ext/misc/spellfix.c,1725,FP,nIn-=sz with sz>=1 and loop nIn>0; decreases toward 0 no underflow,,high
+INT31-C,234,sqlite,ext/misc/spellfix.c,1727,FP,c<=127 branch casts to unsigned char; value already in 0..127 well-defined,,high
+INT31-C,235,sqlite,ext/misc/spellfix.c,1727,FP,(unsigned char)c only on c<=127 path; in-range narrowing well-defined,,high
+EXP33-C,236,sqlite,ext/misc/spellfix.c,1732,FP,xTop set by spellfixFindTranslit via *pxTop before the while loop uses it; always initialized,,high
+INT32-C,237,sqlite,ext/misc/spellfix.c,1733,FP,"xTop+xBtm are table indices in [0, tablesize-1]; sum bounded well below INT_MAX",,high
+EXP34-C,238,sqlite,ext/misc/spellfix.c,1734,FP,tbl is file-scope translit array returned by spellfixFindTranslit; never null,,high
+INT07-C,239,sqlite,ext/misc/spellfix.c,1750,FP,INT07 style on c,,low
+INT32-C,240,sqlite,ext/misc/spellfix.c,1753,FP,x-1 with x in valid binary-search range; xTop stays >=-1 bounded,,high
+INT32-C,241,sqlite,ext/misc/spellfix.c,1755,FP,x+1 bounded by table size; no overflow,,high
+ARR00-C,242,sqlite,ext/misc/spellfix.c,1762,FP,zOut is heap pointer from sqlite3_malloc64 not a local array; ARR00 misread,,high
+INT30-C,243,sqlite,ext/misc/spellfix.c,1777,FP,nIn-i positive since loop i<nIn; remaining byte count,,high
+INT32-C,244,sqlite,ext/misc/spellfix.c,1777,FP,nIn-i positive non-overflowing in loop,,high
+INT30-C,245,sqlite,ext/misc/spellfix.c,1778,FP,i+=sz with sz>=1 advances within nIn no wrap,,high
+EXP33-C,246,sqlite,ext/misc/spellfix.c,1785,FP,xTop initialized via spellfixFindTranslit *pxTop before while loop,,high
+INT32-C,247,sqlite,ext/misc/spellfix.c,1786,FP,xTop+xBtm table indices bounded; no overflow,,high
+EXP34-C,248,sqlite,ext/misc/spellfix.c,1787,FP,tbl is non-null file-scope translit array,,high
+INT32-C,249,sqlite,ext/misc/spellfix.c,1799,FP,x-1 within binary-search bound,,high
+INT32-C,250,sqlite,ext/misc/spellfix.c,1801,FP,x+1 within binary-search bound,,high
+DCL13-C,251,sqlite,ext/misc/spellfix.c,1851,FP,argv values read-only via value_text but SQLite xConnect/xCreate signature is fixed by vtab API,,high
+INT31-C,252,sqlite,ext/misc/spellfix.c,1867,FP,zIn is unsigned char* assigned from sqlite3_value_text (returns const unsigned char*); narrowing flag spurious,,high
+INT32-C,253,sqlite,ext/misc/spellfix.c,1868,FP,nIn-=sz sz>=1 loop nIn>0 decreases no underflow,,high
+INT13-C,254,sqlite,ext/misc/spellfix.c,1870,FP,INT13 style on c&0x7f; c is int code point masking low bits intentional,,low
+INT07-C,255,sqlite,ext/misc/spellfix.c,1887,FP,INT07 style on res inside #if 0? no res live but bounded edit value; style only,,low
+INT07-C,256,sqlite,ext/misc/spellfix.c,1888,FP,INT07 style on res; readability only,,low
+INT07-C,257,sqlite,ext/misc/spellfix.c,1889,FP,INT07 style on res; readability only,,low
+INT07-C,258,sqlite,ext/misc/spellfix.c,1890,FP,INT07 style on res; readability only,,low
+INT07-C,259,sqlite,ext/misc/spellfix.c,1891,FP,INT07 style on res; readability only,,low
+INT07-C,260,sqlite,ext/misc/spellfix.c,1892,FP,INT07 style on res; readability only,,low
+INT07-C,261,sqlite,ext/misc/spellfix.c,1893,FP,INT07 style on res; readability only,,low
+MEM30-C,262,sqlite,ext/misc/spellfix.c,1988,FP,"p->pConfig3 freed by editDist3ConfigDelete then p itself freed; pConfig3 not read after free, no use-after-free",,high
+STR00-C,263,sqlite,ext/misc/spellfix.c,2014,FP,isspace arg explicitly cast (unsigned char)zIn[0] at line 2009; line 2014 isspace is inside #if 0 dead block,,high
+STR37-C,264,sqlite,ext/misc/spellfix.c,2014,FP,line 2014 isspace(zOut[i-1]) is inside #if 0 dead code never compiled,,high
+INT30-C,265,sqlite,ext/misc/spellfix.c,2014,FP,i-1 at line 2014 inside #if 0 dead block; live code uses cast and bound guards,,high
+INT32-C,266,sqlite,ext/misc/spellfix.c,2014,FP,line 2014 i-1 inside #if 0 dead code,,high
+INT30-C,267,sqlite,ext/misc/spellfix.c,2014,FP,line 2014 i-- inside #if 0 dead code (while i>0 guard anyway),,high
+INT32-C,268,sqlite,ext/misc/spellfix.c,2014,FP,line 2014 i-- inside #if 0 dead code,,high
+DCL30-C,269,sqlite,ext/misc/spellfix.c,2031,FP,zOut is heap pointer from sqlite3_mprintf not a local automatic array; DCL30 misread,,high
+ARR00-C,270,sqlite,ext/misc/spellfix.c,2031,FP,zOut is sqlite3_mprintf heap allocation not a local array; returning it is correct ownership transfer,,high
+DCL13-C,271,sqlite,ext/misc/spellfix.c,2046,FP,pAux is the module client-data pointer passed to xConnect/xCreate by fixed sqlite3_module typedef signature; const not applicable,,high
+INT30-C,272,sqlite,ext/misc/spellfix.c,2060,FP,sizeof(*pNew)+nDbName uses sqlite3_malloc64 (64-bit) and nDbName is strlen of a schema db name bounded tiny not attacker-sized,,high
+ARR38-C,273,sqlite,ext/misc/spellfix.c,2066,FP,memcpy size nDbName+1 matches the just-allocated sizeof(*pNew)+nDbName+1 region exactly,,high
+INT31-C,274,sqlite,ext/misc/spellfix.c,2066,FP,nDbName is strlen of a trusted schema database name always non-negative and small,,high
+INT32-C,275,sqlite,ext/misc/spellfix.c,2066,FP,nDbName+1 is strlen+1 of a schema name far from INT_MAX,,high
+ARR38-C,276,sqlite,ext/misc/spellfix.c,2111,FP,strncmp with bound 16 over argv[i] which is a NUL-terminated C string; strncmp stops at NUL so no overread,,high
+STR34-C,277,sqlite,ext/misc/spellfix.c,2116,FP,*pzErr is assigned an mprintf result (char*) not a char value being sign-extended; analyzer misread,,high
+ARR30-C,278,sqlite,ext/misc/spellfix.c,2158,FP,pCur->a is heap realloc64 array sized to nRow not a fixed size-4 buffer; loop bound i<nRow is correct,,high
+MEM30-C,279,sqlite,ext/misc/spellfix.c,2158,FP,pCur->a is the live cursor array being iterated for cleanup not freed before this access,,high
+MEM30-C,280,sqlite,ext/misc/spellfix.c,2163,FP,pCur->pFullScan is a live stmt handle finalized here not previously freed,,high
+MEM30-C,281,sqlite,ext/misc/spellfix.c,2164,FP,pCur->pFullScan set to 0 immediately after finalize; no use-after-free,,high
+ARR01-C,282,sqlite,ext/misc/spellfix.c,2175,FP,sizeof(pCur->a[0]) is sizeof a struct element via pointer deref which is well-defined not a decayed-array misuse,,high
+INT30-C,283,sqlite,ext/misc/spellfix.c,2175,FP,sizeof(row)*N via sqlite3_realloc64 (size_t arithmetic 64-bit); N from iLimit allocator-bounded,,high
+MEM30-C,284,sqlite,ext/misc/spellfix.c,2175,FP,pCur->a passed to realloc as the live array; realloc frees-and-returns is correct not a use-after-free,,high
+DCL13-C,285,sqlite,ext/misc/spellfix.c,2217,FP,tab is sqlite3_vtab* with fixed xBestIndex typedef signature; pIdxInfo fields read/written but tab itself unused-const irrelevant to API contract,,high
+INT13-C,286,sqlite,ext/misc/spellfix.c,2231,FP,iPlan bitmask is internal plan flags with small positive constants; signedness benign INT13 stylistic,,high
+INT13-C,287,sqlite,ext/misc/spellfix.c,2241,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,288,sqlite,ext/misc/spellfix.c,2250,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,289,sqlite,ext/misc/spellfix.c,2259,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,290,sqlite,ext/misc/spellfix.c,2268,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,291,sqlite,ext/misc/spellfix.c,2282,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,292,sqlite,ext/misc/spellfix.c,2290,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,293,sqlite,ext/misc/spellfix.c,2299,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,294,sqlite,ext/misc/spellfix.c,2303,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,295,sqlite,ext/misc/spellfix.c,2307,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,296,sqlite,ext/misc/spellfix.c,2311,FP,iPlan bitmask stylistic INT13 no defect,,high
+INT13-C,297,sqlite,ext/misc/spellfix.c,2316,FP,iPlan bitmask stylistic INT13 no defect,,high
+DCL13-C,298,sqlite,ext/misc/spellfix.c,2331,FP,pVTab is cast to spellfix1_vtab and read for fields; fixed xOpen typedef signature so const not applicable,,high
+EXP33-C,299,sqlite,ext/misc/spellfix.c,2334,FP,pCur is assigned from sqlite3_malloc64 and NULL-checked at 2335 before any deref; not uninitialized,,high
+MEM33-C,300,sqlite,ext/misc/spellfix.c,2338,FP,"line 2336 is memset(pCur,0,sizeof(*pCur)) not a struct assignment of a flexible-array; analyzer misread",,high
+INT14-C,301,sqlite,ext/misc/spellfix.c,2348,FP,iRank>>=1 is a deliberate log2 loop on a non-negative rank value; arithmetic-shift stylistic INT14,,high
+INT32-C,302,sqlite,ext/misc/spellfix.c,2349,FP,iDistance from editDist3Core is a small bounded edit distance plus literal 32 minus small iLog2; no realistic overflow,,high
+INT32-C,303,sqlite,ext/misc/spellfix.c,2349,FP,iDistance+32 with iDistance a small edit-distance count far from INT_MAX,,high
+API01-C,304,sqlite,ext/misc/spellfix.c,2369,FP,API01 layout heuristic; zHash[32] is fixed and bounded by clamped iScope writes never overflowing into zPattern,,high
+EXP05-C,305,sqlite,ext/misc/spellfix.c,2407,FP,phoneticHash takes const unsigned char*; the (unsigned char*)zQuery cast is signedness not const-stripping and zQuery is read-only inside,,high
+INT32-C,306,sqlite,ext/misc/spellfix.c,2419,FP,"nClass clamped to [0,30] by prior logic; nClass-1 only used when nClass>2 so >=2 no underflow",,high
+INT31-C,307,sqlite,ext/misc/spellfix.c,2424,FP,"iScope clamped to [1,30] before this memcpy of iScope bytes into zHash1[32]; non-negative and bounded",,high
+INT31-C,308,sqlite,ext/misc/spellfix.c,2427,FP,"iScope bounded [1,30] memcpy into zHash2[32] safe",,high
+EXP33-C,309,sqlite,ext/misc/spellfix.c,2431,FP,i is the loop counter of the #if SPELLFIX_MX_RUN>1 block compiled out when MX_RUN==1; otherwise for-loop initializes i; not uninitialized,,high
+ARR38-C,310,sqlite,ext/misc/spellfix.c,2436,FP,memcpy size iScope+1 (<=31) into azPrior row of 32 bytes; bounded,,high
+INT31-C,311,sqlite,ext/misc/spellfix.c,2436,FP,"iScope bounded [1,30] in memcpy; non-negative",,high
+INT32-C,312,sqlite,ext/misc/spellfix.c,2436,FP,p->nRun bounded by SPELLFIX_MX_RUN (asserted nRun<1) so increment reaches at most 1 not INT_MAX,,high
+ARR30-C,313,sqlite,ext/misc/spellfix.c,2445,FP,pCur->a is heap array sized nAlloc; loop bound i<nRow<=nAlloc correct not size-4,,high
+ARR30-C,314,sqlite,ext/misc/spellfix.c,2446,FP,same heap array bounded index i<nRow correct,,high
+INT32-C,315,sqlite,ext/misc/spellfix.c,2467,FP,pCur->nSearch counts vocabulary rows examined bounded by table size not INT_MAX in practice,,high
+INT14-C,316,sqlite,ext/misc/spellfix.c,2475,FP,pCur is a pointer used in comparisons and member access; INT14 readability noise no defect,,high
+EXP43-C,317,sqlite,ext/misc/spellfix.c,2479,FP,"spellfix1ResizeCursor is not memcpy and takes (pCur,int) with no overlapping restrict pointers; analyzer misclassified",,high
+INT32-C,318,sqlite,ext/misc/spellfix.c,2479,FP,nAlloc*2+10 grows a result cap bounded by allocator failure (a==0 break); not attacker-driven to INT_MAX,,high
+INT32-C,319,sqlite,ext/misc/spellfix.c,2479,FP,nAlloc*2 growth bounded by allocation success check; realloc fails long before overflow,,high
+ARR30-C,320,sqlite,ext/misc/spellfix.c,2489,FP,"pCur->a heap array indexed by idx in [0,nAlloc); bounded not size-4",,high
+MEM30-C,321,sqlite,ext/misc/spellfix.c,2489,FP,pCur->a[idx].zWord freed then immediately reassigned at 2494; intentional replace not use-after-free,,high
+ARR30-C,322,sqlite,ext/misc/spellfix.c,2494,FP,pCur->a heap array idx bounded; not size-4,,high
+MEM30-C,323,sqlite,ext/misc/spellfix.c,2494,FP,pCur->a is live realloc array being written; not freed,,high
+ARR30-C,324,sqlite,ext/misc/spellfix.c,2495,FP,pCur->a heap array idx bounded,,high
+MEM30-C,325,sqlite,ext/misc/spellfix.c,2495,FP,a[idx].zWord was freed at 2489 then reassigned a fresh mprintf here at 2494; write to freed slot is a reassignment not UAF,,high
+MEM30-C,326,sqlite,ext/misc/spellfix.c,2495,FP,pCur->a live array not freed,,high
+ARR30-C,327,sqlite,ext/misc/spellfix.c,2499,FP,pCur->a heap array idx bounded,,high
+MEM30-C,328,sqlite,ext/misc/spellfix.c,2499,FP,pCur->a live array not freed,,high
+ARR30-C,329,sqlite,ext/misc/spellfix.c,2500,FP,pCur->a heap array idx bounded,,high
+MEM30-C,330,sqlite,ext/misc/spellfix.c,2500,FP,pCur->a live array not freed,,high
+ARR30-C,331,sqlite,ext/misc/spellfix.c,2501,FP,pCur->a heap array idx bounded,,high
+MEM30-C,332,sqlite,ext/misc/spellfix.c,2501,FP,pCur->a live array not freed,,high
+ARR30-C,333,sqlite,ext/misc/spellfix.c,2502,FP,pCur->a heap array idx bounded,,high
+MEM30-C,334,sqlite,ext/misc/spellfix.c,2502,FP,pCur->a live array not freed,,high
+ARR30-C,335,sqlite,ext/misc/spellfix.c,2503,FP,pCur->a heap array idx bounded,,high
+MEM30-C,336,sqlite,ext/misc/spellfix.c,2503,FP,pCur->a live array not freed,,high
+ARR38-C,337,sqlite,ext/misc/spellfix.c,2504,FP,memcpy into a[idx].zHash[32] of iScope+1 (<=31) bytes; bounded,,high
+INT31-C,338,sqlite,ext/misc/spellfix.c,2504,FP,"iScope bounded [1,30] in this memcpy",,high
+ARR30-C,339,sqlite,ext/misc/spellfix.c,2504,FP,pCur->a heap array idx bounded,,high
+MEM30-C,340,sqlite,ext/misc/spellfix.c,2504,FP,a[idx].zHash is a fixed 32-byte member written not freed; analyzer misread as freed pointer,,high
+MEM30-C,341,sqlite,ext/misc/spellfix.c,2504,FP,pCur->a live array not freed,,high
+MEM30-C,342,sqlite,ext/misc/spellfix.c,2505,FP,pCur->nRow is an int counter not a pointer and not freed,,high
+MEM30-C,343,sqlite,ext/misc/spellfix.c,2505,FP,pCur->nAlloc is an int counter not freed,,high
+INT32-C,344,sqlite,ext/misc/spellfix.c,2505,FP,nRow increment bounded by nAlloc (nRow<nAlloc guard) not INT_MAX,,high
+MEM30-C,345,sqlite,ext/misc/spellfix.c,2505,FP,nRow is a live int counter,,high
+MEM30-C,346,sqlite,ext/misc/spellfix.c,2506,FP,nRow live int counter not freed,,high
+MEM30-C,347,sqlite,ext/misc/spellfix.c,2506,FP,nAlloc live int counter not freed,,high
+MEM30-C,348,sqlite,ext/misc/spellfix.c,2507,FP,a[0].iScore read from live array not freed,,high
+MEM30-C,349,sqlite,ext/misc/spellfix.c,2507,FP,pCur->a live array not freed,,high
+MEM30-C,350,sqlite,ext/misc/spellfix.c,2509,FP,nRow live int counter not freed,,high
+ARR30-C,351,sqlite,ext/misc/spellfix.c,2510,FP,pCur->a heap array i bounded by i<nRow,,high
+MEM30-C,352,sqlite,ext/misc/spellfix.c,2510,FP,a[i].iScore from live array not freed,,high
+MEM30-C,353,sqlite,ext/misc/spellfix.c,2510,FP,pCur->a live array not freed,,high
+DCL13-C,354,sqlite,ext/misc/spellfix.c,2529,FP,argv is sqlite3_value** with fixed xFilter typedef signature; const not applicable,,high
+DCL00-C,355,sqlite,ext/misc/spellfix.c,2536,FP,iLimit=20 is reassigned later from sqlite3_value_int(argv) when idxNum&4; not actually immutable,,high
+INT13-C,356,sqlite,ext/misc/spellfix.c,2558,FP,idxNum bitmask test stylistic INT13 no defect,,high
+INT13-C,357,sqlite,ext/misc/spellfix.c,2561,FP,idxNum bitmask stylistic INT13,,high
+INT13-C,358,sqlite,ext/misc/spellfix.c,2565,FP,idxNum bitmask stylistic INT13,,high
+INT13-C,359,sqlite,ext/misc/spellfix.c,2570,FP,idxNum bitmask stylistic INT13,,high
+INT13-C,360,sqlite,ext/misc/spellfix.c,2572,FP,idxNum bitmask stylistic INT13,,high
+INT32-C,361,sqlite,ext/misc/spellfix.c,2572,FP,x.iMaxDist-- only when idxNum&16 set after assignment from value_int then clamped >=0; no INT_MIN reach,,high
+INT32-C,362,sqlite,ext/misc/spellfix.c,2597,FP,INTEGRITY-GATE: nPattern-- at empty-pattern path can underflow but the real defect is the preceding zPattern[nPattern-1] OOB read at 2597 when nPattern==0 see FN,,low
+MEM30-C,363,sqlite,ext/misc/spellfix.c,2624,FP,pCur->a is the live result array checked non-NULL before qsort; not freed,,high
+MEM30-C,364,sqlite,ext/misc/spellfix.c,2625,FP,pCur->a live array passed to qsort not freed,,high
+MEM30-C,365,sqlite,ext/misc/spellfix.c,2625,FP,pCur->nRow live int counter element count for qsort not freed,,high
+ARR01-C,366,sqlite,ext/misc/spellfix.c,2625,FP,sizeof(pCur->a[0]) is sizeof a struct element via pointer deref well-defined for qsort element size,,high
+MEM30-C,367,sqlite,ext/misc/spellfix.c,2625,FP,pCur->a live array not freed,,high
+DCL13-C,368,sqlite,ext/misc/spellfix.c,2644,FP,argv fixed xUpdate typedef signature; const not applicable,,high
+INT13-C,369,sqlite,ext/misc/spellfix.c,2655,FP,idxNum bitmask stylistic INT13,,high
+INT13-C,370,sqlite,ext/misc/spellfix.c,2660,FP,idxNum bitmask stylistic INT13,,high
+INT13-C,371,sqlite,ext/misc/spellfix.c,2689,FP,idxNum bitmask stylistic INT13,,high
+INT32-C,372,sqlite,ext/misc/spellfix.c,2710,FP,iRow increment bounded by nRow guard not INT_MAX,,high
+DCL13-C,373,sqlite,ext/misc/spellfix.c,2719,FP,cur is sqlite3_vtab_cursor* cast then dereferenced; fixed xEof typedef signature const not applicable,,high
+DCL13-C,374,sqlite,ext/misc/spellfix.c,2728,FP,cur fixed xColumn typedef signature const not applicable,,high
+STR34-C,375,sqlite,ext/misc/spellfix.c,2767,FP,zWord passed to strlen/transliterate/utf8Charlen which take char*/unsigned char* explicitly; no implicit sign-extending integer promotion defect,,med
+DCL13-C,376,sqlite,ext/misc/spellfix.c,2813,FP,cur fixed xRowid typedef signature const not applicable,,high
+ARR02-C,377,sqlite,ext/misc/spellfix.c,2829,FP,azConflict[] is a static const init list with explicit 5 elements; implicit size is well-defined and complete,,high
+DCL03-C,378,sqlite,ext/misc/spellfix.c,2839,FP,assert(eConflict==...) compares a runtime value sqlite3_vtab_on_conflict(db) not a constant expression; static_assert impossible,,high
+DCL03-C,379,sqlite,ext/misc/spellfix.c,2840,FP,assert(SQLITE_ROLLBACK==1) is a build-time invariant but DCL03 noise; harmless and idiomatic in this file,,high
+DCL03-C,380,sqlite,ext/misc/spellfix.c,2841,FP,assert constant invariant DCL03 noise,,high
+DCL03-C,381,sqlite,ext/misc/spellfix.c,2842,FP,assert constant invariant DCL03 noise,,high
+DCL03-C,382,sqlite,ext/misc/spellfix.c,2843,FP,assert constant invariant DCL03 noise,,high
+INT32-C,383,sqlite,ext/misc/spellfix.c,2845,FP,"eConflict-1 indexes azConflict[5]; eConflict asserted in [1,5] so index in [0,4] no underflow",,high
+DCL13-C,384,sqlite,ext/misc/spellfix.c,2854,FP,argv fixed xUpdate typedef signature const not applicable,,high
+INT32-C,385,sqlite,ext/misc/spellfix.c,2870,FP,SPELLFIX_COL_WORD+2 is a compile-time constant 2 used as argv index; no runtime overflow,,high
+INT32-C,386,sqlite,ext/misc/spellfix.c,2871,FP,SPELLFIX_COL_LANGID+2 compile-time constant index no overflow,,high
+INT32-C,387,sqlite,ext/misc/spellfix.c,2872,FP,SPELLFIX_COL_RANK+2 compile-time constant index no overflow,,high
+INT32-C,388,sqlite,ext/misc/spellfix.c,2875,FP,SPELLFIX_COL_SOUNDSLIKE+2 compile-time constant index no overflow,,high
+ARR38-C,389,sqlite,ext/misc/spellfix.c,2898,FP,strncmp bound 16 over zCmd a NUL-terminated string; stops at NUL no overread,,high
+MEM30-C,390,sqlite,ext/misc/spellfix.c,2903,FP,p->zCostTable freed at 2901 then reassigned a fresh spellfix1Dequote result; reassignment not UAF,,high
+MEM30-C,391,sqlite,ext/misc/spellfix.c,2904,FP,p->zCostTable[0] read after reassignment to live string; not freed,,high
+MEM30-C,392,sqlite,ext/misc/spellfix.c,2904,FP,p->zCostTable is live after reassignment at 2902; not freed pointer,,high
+MEM30-C,393,sqlite,ext/misc/spellfix.c,2905,FP,zCostTable freed at 2901 reassigned at 2902 then conditionally freed at 2905 with assignment to 0; single free per live value not double-free,,high
+STR09-C,394,sqlite,ext/misc/spellfix.c,2922,FP,comparison c>='A' on transliterate output which is ASCII by construction; STR09 portability noise not a defect on this codebase,,high
+STR09-C,395,sqlite,ext/misc/spellfix.c,2922,FP,c<='Z' on ASCII transliterate output; STR09 portability noise,,high
+CON03-C,396,sqlite,ext/misc/spellfix.c,2991,FP,spellfix1Module is a static const-init module struct registered once; CON03 thread-visibility noise not a real shared-mutable race,,high
+ARR01-C,397,sqlite,ext/misc/spellfix.c,3051,FP,sizeof(translit)/sizeof(translit[0]) on the file-scope global array translit[] which is in scope here not a decayed parameter; correct count,,high
+ARR01-C,398,sqlite,ext/misc/spellfix.c,3051,FP,same global translit[] sizeof is correct array-size computation,,high
+INT30-C,399,sqlite,ext/misc/spellfix.c,3052,FP,i+1 indexes translit[i+1] guarded by loop bound i<count-1 so i+1<count; no wrap or OOB,,high
+API00-C,400,sqlite,ext/misc/spellfix.c,3066,FP,db pointer is provided by the SQLite loader contract for an extension init function; not attacker-null,,high
+API00-C,401,sqlite,ext/misc/spellfix.c,3066,FP,pApi is set by SQLITE_EXTENSION_INIT2 loader contract; init entry point cannot validate the loader-supplied api table,,high
+DCL15-C,402,sqlite,ext/misc/spellfix.c,3066,FP,sqlite3_spellfix_init must have external linkage as the extension entry point; static would break loading,,high
+DCL13-C,403,sqlite,ext/misc/spellfix.c,3068,FP,pzErrMsg is the loader-owned error-message out-pointer with fixed init signature; const not applicable,,high

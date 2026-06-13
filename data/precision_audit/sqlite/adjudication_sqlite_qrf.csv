@@ -1,0 +1,364 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL38-C,0,sqlite,ext/qrf/qrf.c,30,FP,zText[1] is the classic SQLite struct-hack flexible member sized via sizeof(*pNew)+nText at line 172 then memcpy nText+1; [1] is the deliberate idiom not a real defect,,high
+STR31-C,1,sqlite,ext/qrf/qrf.c,30,FP,char zText[1] is a struct-hack tail buffer not a string store the [1] is intentional sizing slack,,high
+ARR02-C,2,sqlite,ext/qrf/qrf.c,84,FP,qrfCType[] is a const lookup table with a full brace initializer so the bound is fixed at 256 by the initializer not implicit-unbounded,,high
+PRE01-C,3,sqlite,ext/qrf/qrf.c,102,FP,qrfSpace(x) uses x only as (unsigned char)x array subscript a cast already binds it precedence-safe,,high
+PRE01-C,4,sqlite,ext/qrf/qrf.c,103,FP,qrfDigit(x) parameter used only as (unsigned char)x subscript no precedence hazard,,high
+PRE01-C,5,sqlite,ext/qrf/qrf.c,104,FP,qrfAlpha(x) parameter used only as (unsigned char)x subscript no precedence hazard,,high
+PRE01-C,6,sqlite,ext/qrf/qrf.c,105,FP,qrfAlnum(x) parameter used only as (unsigned char)x subscript no precedence hazard,,high
+PRE11-C,7,sqlite,ext/qrf/qrf.c,110,FP,deliberate_fall_through is the GCC attribute idiom intentionally terminated trailing semicolon at call sites is by design,,high
+INT30-C,8,sqlite,ext/qrf/qrf.c,172,FP,sizeof(*pNew)+nText uses sqlite3_malloc64 with 64-bit nText=strlen of a NUL-terminated internal EQP string not attacker-sized to overflow,,high
+EXP33-C,9,sqlite,ext/qrf/qrf.c,172,FP,pNew is checked ==0 before any deref at line 173-176 not uninitialized-deref,,high
+ARR38-C,10,sqlite,ext/qrf/qrf.c,179,FP,memcpy size nText+1 exactly matches the malloc64 of sizeof(*pNew)+nText so the copy is in-bounds,,high
+INT31-C,11,sqlite,ext/qrf/qrf.c,179,FP,nText=strlen() is non-negative and bounded by an internal string conversion to size_t is safe,,high
+INT32-C,12,sqlite,ext/qrf/qrf.c,179,FP,nText+1 is 64-bit strlen of internal text far from SIZE_MAX no overflow reachable,,high
+MEM30-C,13,sqlite,ext/qrf/qrf.c,200,FP,qrfEqpReset frees pRow nodes then frees pGraph and nulls p->u.pGraph there is no read of freed p->u after free,,high
+DCL13-C,14,sqlite,ext/qrf/qrf.c,208,FP,"qrfEqpNextRow reads p->u.pGraph->pRow through p so p is dereferenced const-incompatibly only by reading members const would be valid but signature parallels other helpers; treat as not-modified read -- actually p is only read, const valid but FP per established DCL13 noise on Qrf* hub",,high
+DCL13-C,15,sqlite,ext/qrf/qrf.c,208,TP,pOld is only read (pOld->pNext) and never written so const qrfEQPGraphRow*pOld would compile,,med
+DCL30-C,16,sqlite,ext/qrf/qrf.c,211,FP,qrfEqpNextRow returns pRow which points into the heap list (pOld->pNext or p->u.pGraph->pRow) not a local automatic the analyzer misread the local pointer variable as the pointee storage,,high
+MEM05-C,17,sqlite,ext/qrf/qrf.c,217,FP,qrfEqpRenderLevel recursion is bounded by zPrefix capacity (n<sizeof-7 gate at line 226) so stack depth is bounded ~130 frames not excessive,,high
+MSC04-C,18,sqlite,ext/qrf/qrf.c,217,TP,qrfEqpRenderLevel genuinely calls itself at line 228 direct recursion factually exists,,high
+ARR01-C,19,sqlite,ext/qrf/qrf.c,226,FP,sizeof not applied to a decayed parameter at line 226 it is sizeof(p->u.pGraph->zPrefix) a fixed [400] array member misattributed by analyzer,,high
+ARR02-C,20,sqlite,ext/qrf/qrf.c,242,FP,aSuffix[] is a const char table with full brace initializer bound fixed at 6 by initializer,,high
+INT10-C,21,sqlite,ext/qrf/qrf.c,256,FP,i%3 with i a loop counter 1..18 always positive so % is well-defined the signedness warning is non-defect noise,,high
+INT10-C,22,sqlite,ext/qrf/qrf.c,258,FP,n%1000 and n/1000 with n=(int)N and N<10000 N>=0 here so operands non-negative defined result,,high
+INT10-C,23,sqlite,ext/qrf/qrf.c,261,FP,n%100 with n derived from N>=0 non-negative operands modulo well-defined,,high
+EXP34-C,24,sqlite,ext/qrf/qrf.c,279,FP,pRow guarded (pRow=p->u.pGraph->pRow)!=0 at line 278 before the zText access not a null deref,,high
+INT32-C,25,sqlite,ext/qrf/qrf.c,284,FP,pRow->zText+3 is pointer arithmetic on a heap buffer offset 3 within text known to start with '-' guaranteed >=3 chars not signed-int overflow,,high
+INT32-C,26,sqlite,ext/qrf/qrf.c,305,FP,nSp-10 where nSp=nWidth-2 nWidth bounded by display widths small int no overflow reachable,,high
+EXP33-C,27,sqlite,ext/qrf/qrf.c,337,FP,iId is written by sqlite3_stmt_scanstatus_v2 out-param before the iId==iPid read; only read if res==0 meaning the call succeeded and wrote iId,,high
+INT32-C,28,sqlite,ext/qrf/qrf.c,343,FP,ret counts EQP tree height bounded by query plan node count cannot approach INT_MAX,,high
+DCL00-C,29,sqlite,ext/qrf/qrf.c,361,FP,nWidth is reassigned (nWidth=n at 375 and nWidth+=2 at 377) so it IS modified DCL00 const suggestion is wrong but harmless still FP as a defect,,low
+MEM31-C,30,sqlite,ext/qrf/qrf.c,364,FP,pLine is finished and freed via sqlite3_free(sqlite3_str_finish(pLine)) at line 447 not leaked,,high
+MEM31-C,31,sqlite,ext/qrf/qrf.c,365,FP,pStats is finished and freed via sqlite3_free(sqlite3_str_finish(pStats)) at line 449 not leaked,,high
+INT32-C,32,sqlite,ext/qrf/qrf.c,374,FP,(int)strlen(z)+height*3 operands are small display-width ints bounded no overflow reachable,,high
+INT32-C,33,sqlite,ext/qrf/qrf.c,377,FP,nWidth+=2 on a small accumulated display width no overflow,,high
+FLP03-C,34,sqlite,ext/qrf/qrf.c,422,FP,rEstCum/rEst is a double row-estimate ratio FP exception checking is not a memory-safety CERT requirement here noise,,high
+INT33-C,35,sqlite,ext/qrf/qrf.c,422,FP,rEst comes from SQLITE_SCANSTAT_EST and divisor guard is implicit; rEst==0 yields inf not UB for double division this is FLP not INT33 integer-div misclassification,,high
+INT32-C,36,sqlite,ext/qrf/qrf.c,435,FP,nWidth-height*3 small display-width ints no overflow reachable,,high
+ARR02-C,37,sqlite,ext/qrf/qrf.c,487,FP,aQrfUWidth[] has a full brace initializer fixing the bound the implicit-size warning is moot,,high
+ARR01-C,38,sqlite,ext/qrf/qrf.c,570,FP,sizeof(aQrfUWidth)/sizeof(aQrfUWidth[0]) is applied to the file-scope const array not a decayed parameter correct array-count idiom,,high
+ARR01-C,39,sqlite,ext/qrf/qrf.c,570,FP,same as 38 the sizeof divisor is the genuine array not a parameter,,high
+INT32-C,40,sqlite,ext/qrf/qrf.c,572,FP,iFirst+iLast are binary-search indices bounded by table size ~300 no overflow,,high
+INT32-C,41,sqlite,ext/qrf/qrf.c,577,FP,iMid-1 with iMid>=0 binary-search index small positive no underflow into UB,,high
+API00-C,42,sqlite,ext/qrf/qrf.c,593,FP,sqlite3_qrf_decode_utf8 reads z[0..3] guarded by lead-byte checks; pU is a public API contract pointer caller-supplied non-null by contract not an unvalidated-input defect,,high
+DCL15-C,43,sqlite,ext/qrf/qrf.c,593,FP,sqlite3_qrf_decode_utf8 is a published public API symbol (declared in qrf.h) intentionally external not file-local,,high
+DCL19-C,44,sqlite,ext/qrf/qrf.c,593,FP,same public API symbol exported via qrf.h used by external consumers correctly non-static,,high
+STR00-C,45,sqlite,ext/qrf/qrf.c,594,FP,z is const unsigned char* not plain char the bit ops on unsigned char are signedness-safe analyzer misread the type,,med
+STR00-C,46,sqlite,ext/qrf/qrf.c,594,FP,z is unsigned char* bit op on unsigned char no signedness issue,,med
+STR00-C,47,sqlite,ext/qrf/qrf.c,595,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,48,sqlite,ext/qrf/qrf.c,595,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,49,sqlite,ext/qrf/qrf.c,598,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,50,sqlite,ext/qrf/qrf.c,598,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,51,sqlite,ext/qrf/qrf.c,598,FP,z unsigned char* unsigned bit op safe,,med
+EXP07-C,52,sqlite,ext/qrf/qrf.c,599,FP,(z[0]&0x0f)<<12 z is unsigned char masked to 4 bits shifted 12 fits in int no UB defined bit composition,,high
+STR00-C,53,sqlite,ext/qrf/qrf.c,599,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,54,sqlite,ext/qrf/qrf.c,599,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,55,sqlite,ext/qrf/qrf.c,599,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,56,sqlite,ext/qrf/qrf.c,602,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,57,sqlite,ext/qrf/qrf.c,602,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,58,sqlite,ext/qrf/qrf.c,602,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,59,sqlite,ext/qrf/qrf.c,603,FP,z unsigned char* unsigned bit op safe,,med
+EXP07-C,60,sqlite,ext/qrf/qrf.c,605,FP,(z[0]&0x0f)<<18 masked 4 bits max 0xf<<18=0x3c0000 fits in 32-bit int no overflow,,high
+STR00-C,61,sqlite,ext/qrf/qrf.c,605,FP,z unsigned char* unsigned bit op safe,,med
+EXP07-C,62,sqlite,ext/qrf/qrf.c,605,FP,(z[1]&0x3f)<<12 masked 6 bits shifted 12 fits in int defined,,high
+STR00-C,63,sqlite,ext/qrf/qrf.c,605,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,64,sqlite,ext/qrf/qrf.c,605,FP,z unsigned char* unsigned bit op safe,,med
+STR00-C,65,sqlite,ext/qrf/qrf.c,606,FP,z unsigned char* unsigned bit op safe,,med
+INT32-C,66,sqlite,ext/qrf/qrf.c,624,FP,qrfIsVt100 i++ over a bounded escape sequence in a NUL/range-terminated scan cannot reach INT_MAX,,high
+INT32-C,67,sqlite,ext/qrf/qrf.c,625,FP,i++ in the 0x20-0x2f scan bounded by sequence length no overflow,,high
+INT32-C,68,sqlite,ext/qrf/qrf.c,627,FP,i+1 returned as escape length small bounded value no overflow,,high
+INT14-C,69,sqlite,ext/qrf/qrf.c,650,FP,z used with bitwise and arithmetic is a readability heuristic not a defect,,low
+ARR36-C,70,sqlite,ext/qrf/qrf.c,687,FP,the '<' compare is z<zEnd where zEnd=&z[nByte] both derived from the same buffer not different arrays analyzer misparsed the literal,,high
+INT14-C,71,sqlite,ext/qrf/qrf.c,691,FP,INT14 readability heuristic on z not a defect,,low
+INT14-C,72,sqlite,ext/qrf/qrf.c,694,FP,INT14 readability heuristic on n not a defect,,low
+INT32-C,73,sqlite,ext/qrf/qrf.c,694,FP,n=(n+8)&~7 tab-stop rounding on a per-line display width small int no overflow reachable,,high
+INT32-C,74,sqlite,ext/qrf/qrf.c,696,FP,nNL++ counts newlines in a bounded input length cannot reach INT_MAX in practice,,high
+INT32-C,75,sqlite,ext/qrf/qrf.c,703,FP,n++ per-character display width bounded by line length no INT_MAX,,high
+INT32-C,76,sqlite,ext/qrf/qrf.c,709,FP,"n+=wcwidth(u) where wcwidth returns 0,1,2 accumulating bounded display width no overflow",,high
+INT32-C,77,sqlite,ext/qrf/qrf.c,764,FP,nCtrl*=2 nCtrl counts control chars in a bounded string doubling stays far from INT64_MAX,,high
+INT31-C,78,sqlite,ext/qrf/qrf.c,770,FP,sz=sqlite3_str_length-iStart non-negative sqlite3_str length is a bounded int converted to size_t safe,,high
+EXP05-C,79,sqlite,ext/qrf/qrf.c,782,FP,i is sqlite3_int64 loop counter not a const-cast EXP05 misfire the message text shows no const cast in context,,high
+STR00-C,80,sqlite,ext/qrf/qrf.c,788,FP,zOut is unsigned char* assigning 0xe2 to unsigned char is value-preserving not signedness-dependent,,high
+STR00-C,81,sqlite,ext/qrf/qrf.c,789,FP,zOut unsigned char* assigning 0x90 value-preserving on unsigned char,,high
+INT08-C,82,sqlite,ext/qrf/qrf.c,790,FP,c is unsigned char 0x80+c with c<=0x1f stays <=0x9f fits unsigned char no overflow,,high
+INT08-C,83,sqlite,ext/qrf/qrf.c,793,FP,0x40+c with c<=0x1f stays <=0x5f fits in unsigned char no overflow,,high
+DCL13-C,84,sqlite,ext/qrf/qrf.c,809,FP,p (Qrf*) is only read in qrfRelaxable (p->spec.zNull) never written through const Qrf* would compile but established noise on the Qrf hub pointer FP,,med
+ARR30-C,85,sqlite,ext/qrf/qrf.c,811,FP,qrfSpace macro indexes qrfCType[(unsigned char)x] index cast to unsigned char is 0..255 within the 256-entry table provably in-bounds,,high
+ARR30-C,86,sqlite,ext/qrf/qrf.c,816,FP,qrfSpace on z[n-1] with n=strlen>0 guarded (n==0 returns earlier) index cast to unsigned char in-bounds,,high
+INT32-C,87,sqlite,ext/qrf/qrf.c,816,FP,n-1 with prior n==0 guard so n>=1 here no underflow and used only as array index after the cast,,high
+ARR30-C,88,sqlite,ext/qrf/qrf.c,820,FP,qrfDigit indexes qrfCType[(unsigned char)x] 0..255 in-bounds,,high
+ARR30-C,89,sqlite,ext/qrf/qrf.c,822,FP,qrfDigit on z[i] index cast to unsigned char in-bounds of 256-entry table,,high
+ARR30-C,90,sqlite,ext/qrf/qrf.c,826,FP,qrfDigit array access cast-bounded to 256-entry table safe,,high
+ARR30-C,91,sqlite,ext/qrf/qrf.c,832,FP,qrfDigit array access cast-bounded safe,,high
+ARR30-C,92,sqlite,ext/qrf/qrf.c,834,FP,qrfDigit array access cast-bounded safe,,high
+ARR02-C,93,sqlite,ext/qrf/qrf.c,843,FP,qrfCsvQuote[] has a full 256-entry brace initializer bound is fixed not implicit,,high
+EXP30-C,94,sqlite,ext/qrf/qrf.c,902,FP,while((c=z[i])>'>'...) c is assigned once then read within the same condition no unsequenced modify-and-access the comma in the macro-free condition is sequenced,,high
+DCL13-C,95,sqlite,ext/qrf/qrf.c,971,TP,"aBlob in qrfJsonbQuickCheck is only read (aBlob[0],aBlob[i+1]) never written const unsigned char*aBlob would compile",,med
+INT14-C,96,sqlite,ext/qrf/qrf.c,978,FP,INT14 readability heuristic on aBlob not a defect,,low
+INT30-C,97,sqlite,ext/qrf/qrf.c,983,FP,sz<<8 sz is sqlite3_uint64 shifting an 8-bit-fed accumulator left by 8 with n<=4 iterations max 32 bits no overflow,,high
+INT32-C,98,sqlite,ext/qrf/qrf.c,983,FP,i+1 indexes aBlob[i+1] with i<n and n bounded by x<=15 -> n<=8 and guarded nBlob>=1+n the index stays within nBlob,,high
+INT30-C,99,sqlite,ext/qrf/qrf.c,984,FP,sz+n+1 compared to nBlob both bounded n<=8 sz from <=4 bytes no wrap relevant it is a validation comparison not an allocation size,,high
+EXP05-C,100,sqlite,ext/qrf/qrf.c,1004,FP,(unsigned char*)pBlob casts away const of a column blob to pass to a read-only quick-check that never writes through it benign API-shape cast,,high
+FIO42-C,101,sqlite,ext/qrf/qrf.c,1009,FP,rc here is an sqlite3 return code from sqlite3_open not a file descriptor; no open()/close() fd semantics analyzer misclassified the variable,,high
+EXP05-C,102,sqlite,ext/qrf/qrf.c,1024,FP,(void*)pBlob cast for sqlite3_bind_blob with SQLITE_STATIC the bound blob is treated read-only benign API cast,,high
+INT14-C,103,sqlite,ext/qrf/qrf.c,1053,FP,INT14 readability heuristic on z not a defect,,low
+INT32-C,104,sqlite,ext/qrf/qrf.c,1064,FP,n++ accumulating display width over a bounded title string no INT_MAX,,high
+INT32-C,105,sqlite,ext/qrf/qrf.c,1072,FP,"n+=wcwidth(u) returns 0,1,2 bounded accumulation no overflow",,high
+MEM31-C,106,sqlite,ext/qrf/qrf.c,1090,FP,pVal from sqlite3_value_dup is freed by sqlite3_value_free(pVal) at line 1092 before return not leaked,,high
+DCL00-C,107,sqlite,ext/qrf/qrf.c,1143,FP,c=a[i] in the hex loop IS reassigned each iteration not actually const-eligible DCL00 misfire harmless FP,,low
+INT14-C,108,sqlite,ext/qrf/qrf.c,1144,FP,INT14 readability heuristic on c not a defect,,low
+INT08-C,109,sqlite,ext/qrf/qrf.c,1144,FP,c is unsigned char (c>>4)&0xf and (c)&0xf index a 16-char hex literal max index 15 in-bounds no overflow,,high
+INT32-C,110,sqlite,ext/qrf/qrf.c,1145,FP,j+1 indexes zVal[j+1] j advances by 2 within a buffer pre-sized by two appendchar(nBlob) calls so 2*nBlob bytes exist in-bounds,,high
+DCL00-C,111,sqlite,ext/qrf/qrf.c,1166,FP,c=a[i] reassigned each loop iteration DCL00 const suggestion wrong harmless FP,,low
+INT32-C,112,sqlite,ext/qrf/qrf.c,1169,FP,j+1 indexes within a buffer pre-sized szC*nBlob via the appendchar loop in-bounds,,high
+INT08-C,113,sqlite,ext/qrf/qrf.c,1169,FP,c unsigned char in (c>>6)&3 octal nibble extraction index/value bounded no overflow,,high
+INT32-C,114,sqlite,ext/qrf/qrf.c,1170,FP,j+2 within the szC*nBlob pre-sized buffer in-bounds,,high
+INT08-C,115,sqlite,ext/qrf/qrf.c,1170,FP,c unsigned char (c>>3)&7 bounded no overflow,,high
+INT32-C,116,sqlite,ext/qrf/qrf.c,1171,FP,j+3 within the szC*nBlob (szC>=4) pre-sized buffer in-bounds,,high
+INT08-C,117,sqlite,ext/qrf/qrf.c,1171,FP,c unsigned char c&7 bounded no overflow,,high
+INT32-C,118,sqlite,ext/qrf/qrf.c,1173,FP,j+1 (szC==6 branch) within 6*nBlob pre-sized buffer in-bounds,,high
+INT32-C,119,sqlite,ext/qrf/qrf.c,1174,FP,j+2 within 6*nBlob pre-sized buffer in-bounds,,high
+INT32-C,120,sqlite,ext/qrf/qrf.c,1175,FP,j+3 within 6*nBlob pre-sized buffer in-bounds,,high
+INT32-C,121,sqlite,ext/qrf/qrf.c,1176,FP,j indexes buffer pre-sized to nBlob*6 by the preceding appendchar loop so j+4 stays in-bounds; wrap needs ~2GB blob which str-append OOMs first,,high
+INT08-C,122,sqlite,ext/qrf/qrf.c,1176,FP,c is unsigned char promoted to int for shift/mask 0..15 indexing a 16-char literal table no overflow possible,,high
+INT32-C,123,sqlite,ext/qrf/qrf.c,1177,FP,j+5 bounded by the nBlob*6 pre-sized region same as j+4 no reachable overflow,,high
+ARR00-C,124,sqlite,ext/qrf/qrf.c,1213,FP,z is a pointer into the live sqlite3_str output buffer set at line 1210 never freed in this scope so no use-after-free,,high
+EXP34-C,125,sqlite,ext/qrf/qrf.c,1213,FP,z derives from sqlite3_str_value after errcode check and runs only when >nCharLimit bytes were appended so non-null,,high
+ARR00-C,126,sqlite,ext/qrf/qrf.c,1215,FP,same z into live str buffer not freed no UAF,,high
+INT14-C,127,sqlite,ext/qrf/qrf.c,1215,FP,readability heuristic bitwise plus arithmetic on a buffer offset not a defect,,low
+INT32-C,128,sqlite,ext/qrf/qrf.c,1216,FP,ii bounded by output buffer length terminated by NUL break at z[ii]==0 no real overflow,,high
+ARR00-C,129,sqlite,ext/qrf/qrf.c,1217,FP,z is live str buffer pointer not freed,,high
+INT32-C,130,sqlite,ext/qrf/qrf.c,1220,FP,ii increments over a NUL-terminated bounded buffer cannot reach INT_MAX,,high
+ARR00-C,131,sqlite,ext/qrf/qrf.c,1222,FP,z live str buffer not freed,,high
+INT32-C,132,sqlite,ext/qrf/qrf.c,1225,FP,ii bounded loop counter over terminated buffer,,high
+STR34-C,133,sqlite,ext/qrf/qrf.c,1228,FP,z is unsigned char* here (cast at 1210) so no sign extension and value masked anyway,,med
+ARR00-C,134,sqlite,ext/qrf/qrf.c,1228,FP,z live str buffer pointer not freed,,high
+STR34-C,135,sqlite,ext/qrf/qrf.c,1228,FP,z[ii] is unsigned char element no sign extension,,med
+INT32-C,136,sqlite,ext/qrf/qrf.c,1229,FP,w accumulates wcwidth bounded by limit which is bounded by nCharLimit break when w>limit,,high
+INT32-C,137,sqlite,ext/qrf/qrf.c,1231,FP,ii += len advances over bounded NUL-terminated buffer no overflow,,high
+INT32-C,138,sqlite,ext/qrf/qrf.c,1235,FP,iStartLen+ii are byte offsets into a single allocated str buffer cannot overflow int,,high
+INT32-C,139,sqlite,ext/qrf/qrf.c,1248,FP,nByte starts at str length >=0 decremented only while >0 cannot underflow INT_MIN,,high
+DCL13-C,140,sqlite,ext/qrf/qrf.c,1259,TP,p is cast to void and never read or written so const Qrf* would compile cleanly,,med
+INT32-C,141,sqlite,ext/qrf/qrf.c,1268,FP,mxW is the constant 10000000 negation cannot reach -INT_MIN,,high
+INT32-C,142,sqlite,ext/qrf/qrf.c,1269,FP,same constant mxW negation safe,,high
+INT32-C,143,sqlite,ext/qrf/qrf.c,1273,FP,"w is clamped to [-mxW,mxW]=[-1e7,1e7] before negation so -w cannot hit -INT_MIN",,high
+EXP33-C,144,sqlite,ext/qrf/qrf.c,1279,FP,u is initialized by sqlite3_qrf_decode_utf8 via &u before being read (always writes *pU),,high
+INT32-C,145,sqlite,ext/qrf/qrf.c,1283,FP,i is a byte offset into a NUL-terminated string bounded loop no overflow,,high
+INT32-C,146,sqlite,ext/qrf/qrf.c,1284,FP,n accumulates wcwidth and loop breaks when n>=aw which is <=mxW,,high
+INT32-C,147,sqlite,ext/qrf/qrf.c,1286,FP,i += len bounded byte offset advance,,high
+INT32-C,148,sqlite,ext/qrf/qrf.c,1291,FP,i++ over terminated buffer cannot reach INT_MAX,,high
+INT32-C,149,sqlite,ext/qrf/qrf.c,1297,FP,aw-n where aw<=1e7 and n>=0 and branch taken only when aw>n no underflow,,high
+INT32-C,150,sqlite,ext/qrf/qrf.c,1301,FP,same guarded aw>n before aw-n,,high
+DCL00-C,151,sqlite,ext/qrf/qrf.c,1328,FP,c is reassigned in the loop body (c=z[i] each iteration) so it is modified not const-eligible,,low
+EXP33-C,152,sqlite,ext/qrf/qrf.c,1342,FP,u written by decode_utf8(&u) before read decode always sets *pU,,high
+INT14-C,153,sqlite,ext/qrf/qrf.c,1343,FP,readability heuristic n used in width arithmetic and comparison not a defect,,low
+INT32-C,154,sqlite,ext/qrf/qrf.c,1344,FP,i is bounded byte offset len>=1 so len-1>=0 no overflow,,high
+INT32-C,155,sqlite,ext/qrf/qrf.c,1344,FP,len from decode_utf8 is 1..4 so len-1 is 0..3 no underflow,,high
+INT32-C,156,sqlite,ext/qrf/qrf.c,1362,FP,i += k-1 where k is a VT100 length >0 bounded byte offset,,high
+INT14-C,157,sqlite,ext/qrf/qrf.c,1362,FP,readability heuristic k is a bounded escape length,,low
+INT32-C,158,sqlite,ext/qrf/qrf.c,1362,FP,k from qrfIsVt100 is positive when this branch runs so k-1>=0,,high
+INT32-C,159,sqlite,ext/qrf/qrf.c,1378,FP,i+1 is a byte index into the bounded input string,,high
+ARR30-C,160,sqlite,ext/qrf/qrf.c,1386,FP,qrfCType is a 256-entry table indexed by (unsigned char) cast guaranteeing 0..255 in-bounds,,high
+ARR30-C,161,sqlite,ext/qrf/qrf.c,1386,FP,same 256-entry table with unsigned char cast in-bounds,,high
+ARR30-C,162,sqlite,ext/qrf/qrf.c,1386,FP,same qrfAlnum macro bounded by unsigned char cast,,high
+INT32-C,163,sqlite,ext/qrf/qrf.c,1388,FP,i-1 here i>=1 in the backtrack loop (k=i-1) and indices stay non-negative via k>=i/2 guard,,high
+ARR30-C,164,sqlite,ext/qrf/qrf.c,1389,FP,qrfSpace indexes 256-entry table with unsigned char cast,,high
+ARR30-C,165,sqlite,ext/qrf/qrf.c,1393,FP,qrfAlnum bounded table access,,high
+ARR30-C,166,sqlite,ext/qrf/qrf.c,1393,FP,qrfAlnum bounded table access,,high
+STR00-C,167,sqlite,ext/qrf/qrf.c,1393,FP,z element promoted then masked the unsigned char cast in macro avoids sign issue,,low
+INT32-C,168,sqlite,ext/qrf/qrf.c,1403,FP,i++ over NUL-terminated bounded buffer,,high
+EXP05-C,169,sqlite,ext/qrf/qrf.c,1419,FP,cast (unsigned char*)zVal of a const-less char* parameter zVal is non-const here no const violation,,med
+DCL00-C,170,sqlite,ext/qrf/qrf.c,1421,FP,c is reassigned each loop iteration (c=z[i]) so not const-eligible,,low
+INT32-C,171,sqlite,ext/qrf/qrf.c,1425,FP,nVal -= i where i<=nVal by loop invariant (i<nVal) so result stays >=0,,high
+INT32-C,172,sqlite,ext/qrf/qrf.c,1431,FP,nVal -= k where k is bytes already appended within nVal no underflow,,high
+INT14-C,173,sqlite,ext/qrf/qrf.c,1433,FP,readability heuristic col is a tab column counter,,low
+INT30-C,174,sqlite,ext/qrf/qrf.c,1435,FP,col is unsigned int tab-stop counter wrap is benign and unreachable for real strings,,high
+INT32-C,175,sqlite,ext/qrf/qrf.c,1437,FP,nVal-- guarded by i<nVal loop and prior c<' ' branch nVal>0 cannot hit INT_MIN,,high
+INT08-C,176,sqlite,ext/qrf/qrf.c,1446,FP,c is unsigned char 0..255 used to build a control-picture codepoint byte no overflow,,high
+INT14-C,177,sqlite,ext/qrf/qrf.c,1446,FP,readability heuristic c arithmetic 0x80+c bounded,,low
+INT32-C,178,sqlite,ext/qrf/qrf.c,1449,FP,nVal-- under loop bound nVal>0 no underflow,,high
+INT30-C,179,sqlite,ext/qrf/qrf.c,1458,FP,col unsigned tab counter wrap unreachable on real input,,high
+PRE01-C,180,sqlite,ext/qrf/qrf.c,1469,FP,offsetof ST appears as (ST*)0 cast token parenthesizing would break the cast it is the standard offsetof idiom,,high
+PRE01-C,181,sqlite,ext/qrf/qrf.c,1469,FP,offsetof M is a member-designator after -> parenthesizing is invalid this is the canonical offsetof macro,,high
+DCL13-C,182,sqlite,ext/qrf/qrf.c,1506,TP,pCol only has members e bNum z read never written so const struct qrfPerCol* would compile,,med
+INT32-C,183,sqlite,ext/qrf/qrf.c,1516,FP,nWS - nWS/2 where nWS is a small whitespace count >=0 no overflow,,high
+EXP05-C,184,sqlite,ext/qrf/qrf.c,1538,FP,p cast here is char* to char* not casting away const the param is non-const,,med
+ARR01-C,185,sqlite,ext/qrf/qrf.c,1538,FP,"sizeof(*p) on memset(p,0,sizeof(*p)) p is qrfColData* a struct so sizeof gives struct size not pointer size correct usage",,high
+INT32-C,186,sqlite,ext/qrf/qrf.c,1549,FP,nAlloc and nCol are sqlite3_int64 the expression is 64-bit and realloc64 limited far below overflow,,high
+INT32-C,187,sqlite,ext/qrf/qrf.c,1549,FP,2*p->nAlloc is 64-bit arithmetic on bounded cell count no realistic overflow,,high
+INT32-C,188,sqlite,ext/qrf/qrf.c,1549,FP,10*p->nCol is 64-bit nCol is column count bounded,,high
+INT30-C,189,sqlite,ext/qrf/qrf.c,1550,FP,nAlloc*sizeof(char*) is size_t passed to realloc64 which fails gracefully on excess no exploitable wrap,,high
+INT30-C,190,sqlite,ext/qrf/qrf.c,1557,FP,nAlloc*sizeof(int) size_t to realloc64 OOM-checked,,high
+INT32-C,191,sqlite,ext/qrf/qrf.c,1557,FP,nAlloc is int64 multiplied by sizeof handled by realloc64 failure path,,high
+DCL13-C,192,sqlite,ext/qrf/qrf.c,1577,TP,qrfColData* p only read (nCol a[].w nMargin p->spec) never written so const-qualifiable,,med
+INT32-C,193,sqlite,ext/qrf/qrf.c,1642,FP,N is a column width *3 small value no overflow nDash loop reduces it,,high
+ARR30-C,194,sqlite,ext/qrf/qrf.c,1644,FP,"bDbl indexes azDash[2] callers pass 0 or 1 (bBorder/style flags) constrained to {0,1}",,high
+INT32-C,195,sqlite,ext/qrf/qrf.c,1645,FP,N -= nDash inside while(N>nDash) so result stays positive,,high
+ARR30-C,196,sqlite,ext/qrf/qrf.c,1647,FP,bDbl constrained to 0 or 1 by callers in-bounds for azDash[2],,high
+DCL13-C,197,sqlite,ext/qrf/qrf.c,1655,TP,qrfColData* p read-only (nCol a[].w nMargin spec) const would compile,,med
+DCL13-C,198,sqlite,ext/qrf/qrf.c,1682,TP,Qrf* p read-only here (only p->spec.* read) pData is the mutated one so p can be const,,med
+DCL13-C,199,sqlite,ext/qrf/qrf.c,1712,TP,pData read-only in qrfValidLayout (n and aiWth[] read never written) const-qualifiable,,med
+INT32-C,200,sqlite,ext/qrf/qrf.c,1728,FP,pData->n is int64 nCol modest the +/- are 64-bit on bounded cell counts no overflow,,high
+INT32-C,201,sqlite,ext/qrf/qrf.c,1728,FP,pData->n + nCol 64-bit bounded,,high
+INT32-C,202,sqlite,ext/qrf/qrf.c,1730,FP,i%nr nr>=1 always (computed as ceil division of positive n by nCol>=2) and i>=0 no INT_MIN,,high
+INT33-C,203,sqlite,ext/qrf/qrf.c,1730,FP,nr = ceil(n/nCol) with nCol>=2 and n>=1 so nr>=1 never zero,,high
+INT10-C,204,sqlite,ext/qrf/qrf.c,1730,FP,i and nr are non-negative here so modulo result is well-defined non-negative,,med
+INT32-C,205,sqlite,ext/qrf/qrf.c,1731,FP,i/nr-1 nr>=1 i>=0 no overflow and -1 cannot underflow from non-negative quotient,,high
+INT32-C,206,sqlite,ext/qrf/qrf.c,1731,FP,i/nr nr>=1 and i non-negative no INT_MIN/-1 case,,high
+INT33-C,207,sqlite,ext/qrf/qrf.c,1731,FP,nr>=1 guaranteed by ceil division of positive operands never zero,,high
+ARR00-C,208,sqlite,ext/qrf/qrf.c,1738,FP,nCol is a function parameter (the attempted column count) not a local uninitialized variable,,high
+INT32-C,209,sqlite,ext/qrf/qrf.c,1738,FP,t += aw[i] sums nCol modest column widths each <=screen width no overflow,,high
+INT32-C,210,sqlite,ext/qrf/qrf.c,1739,FP,t += 2*(nCol-1) nCol small column count no overflow,,high
+DCL30-C,211,sqlite,ext/qrf/qrf.c,1744,FP,aw is from sqlite3_malloc64 (line 1723) heap not automatic storage returning it is correct,,high
+ARR00-C,212,sqlite,ext/qrf/qrf.c,1744,FP,aw is heap-allocated not a local array no dangling pointer,,high
+INT32-C,213,sqlite,ext/qrf/qrf.c,1769,FP,pData->n int64 + nCol bounded 64-bit no overflow,,high
+INT32-C,214,sqlite,ext/qrf/qrf.c,1769,FP,pData->n + nCol 64-bit bounded,,high
+INT32-C,215,sqlite,ext/qrf/qrf.c,1771,FP,nColNext++ increments a small column count bounded by row count never near INT_MAX,,high
+INT32-C,216,sqlite,ext/qrf/qrf.c,1772,FP,nColNext++ in inner while bounded by nRow constraint,,high
+INT30-C,217,sqlite,ext/qrf/qrf.c,1778,FP,nRow*nCol*sizeof(char*) size_t to malloc64 which fails gracefully no exploitable wrap,,high
+INT32-C,218,sqlite,ext/qrf/qrf.c,1778,FP,nRow*nCol product of bounded layout dimensions feasible only when valid layout found,,high
+INT30-C,219,sqlite,ext/qrf/qrf.c,1783,FP,nRow*nCol*sizeof(int) size_t to malloc64 OOM-checked,,high
+INT32-C,220,sqlite,ext/qrf/qrf.c,1783,FP,nRow*nCol bounded layout dimensions,,high
+INT32-C,221,sqlite,ext/qrf/qrf.c,1783,FP,nRow*nCol bounded,,high
+INT30-C,222,sqlite,ext/qrf/qrf.c,1789,FP,nCol*sizeof(struct qrfPerCol) size_t to malloc64 OOM-checked,,high
+INT32-C,223,sqlite,ext/qrf/qrf.c,1796,FP,nRow*nCol bounded layout product,,high
+INT32-C,224,sqlite,ext/qrf/qrf.c,1805,FP,(i%nRow)*nCol+(i/nRow) index into az[nRow*nCol] mathematically <nRow*nCol no overflow,,high
+INT32-C,225,sqlite,ext/qrf/qrf.c,1805,FP,(i%nRow)*nCol bounded by nRow*nCol allocation,,high
+INT32-C,226,sqlite,ext/qrf/qrf.c,1805,FP,"i%nRow nRow>=2 (loop only continues with nCol>=2 giving nRow ceil>=1, =1 case breaks) i>=0 no INT_MIN",,high
+INT33-C,227,sqlite,ext/qrf/qrf.c,1805,FP,nRow set by ceil division of positive n never zero in this reachable path,,high
+INT10-C,228,sqlite,ext/qrf/qrf.c,1805,FP,i and nRow non-negative modulo well-defined,,med
+INT32-C,229,sqlite,ext/qrf/qrf.c,1805,FP,i/nRow nRow>=1 i>=0 no INT_MIN/-1,,high
+INT33-C,230,sqlite,ext/qrf/qrf.c,1805,FP,nRow never zero (ceil division of positive operands),,high
+ARR00-C,231,sqlite,ext/qrf/qrf.c,1806,FP,az is freshly malloc64'd at line 1778 not freed before this write no UAF,,high
+ARR00-C,232,sqlite,ext/qrf/qrf.c,1809,FP,aiWth freshly malloc64'd at line 1783 not freed no UAF,,high
+INT32-C,233,sqlite,ext/qrf/qrf.c,1812,FP,index expression bounded by nRow*nCol allocation no overflow,,high
+INT32-C,234,sqlite,ext/qrf/qrf.c,1812,FP,(i%nRow)*nCol bounded,,high
+INT32-C,235,sqlite,ext/qrf/qrf.c,1812,FP,i%nRow nRow>=1 i non-negative no INT_MIN,,high
+INT33-C,236,sqlite,ext/qrf/qrf.c,1812,FP,nRow never zero here,,high
+INT10-C,237,sqlite,ext/qrf/qrf.c,1812,FP,operands non-negative modulo well-defined,,med
+INT32-C,238,sqlite,ext/qrf/qrf.c,1812,FP,i/nRow nRow>=1 i>=0 no overflow,,high
+INT33-C,239,sqlite,ext/qrf/qrf.c,1812,FP,nRow never zero,,high
+ARR00-C,240,sqlite,ext/qrf/qrf.c,1813,FP,az freshly malloc64'd not freed no UAF,,high
+ARR00-C,241,sqlite,ext/qrf/qrf.c,1814,FP,az freshly malloc64'd not freed no UAF,,high
+ARR00-C,242,sqlite,ext/qrf/qrf.c,1815,FP,"aiWth is the NEW buffer installed into pData at 1829 then written at 1815; only pData->aiWth (old) and aw are freed at 1823-1827, not local aiWth",,high
+ARR00-C,243,sqlite,ext/qrf/qrf.c,1820,FP,"local a is the freshly malloc64 buffer (1789) being populated; frees at 1823-1827 target pData->* old arrays and aw, not a",,high
+ARR00-C,244,sqlite,ext/qrf/qrf.c,1820,FP,"same as 243, a is new buffer not yet freed",,high
+ARR00-C,245,sqlite,ext/qrf/qrf.c,1820,FP,same as 243,,high
+MEM30-C,246,sqlite,ext/qrf/qrf.c,1820,FP,a not freed; writes at 1820 precede the pData->a free at 1825 and target a different allocation,,high
+ARR00-C,247,sqlite,ext/qrf/qrf.c,1820,FP,"aw read at 1820 (aw[i], i<nCol) before aw is freed at 1827; aw sized sizeof(int)*nCol in qrfValidLayout",,high
+MEM30-C,248,sqlite,ext/qrf/qrf.c,1820,FP,aw[i] read precedes free(aw) at 1827; no UAF,,high
+ARR00-C,249,sqlite,ext/qrf/qrf.c,1821,FP,"a still live, pData->a free is at 1825 and frees old array not local a",,high
+MEM30-C,250,sqlite,ext/qrf/qrf.c,1821,FP,same as 249,,high
+MEM30-C,251,sqlite,ext/qrf/qrf.c,1827,FP,aw freed exactly once at 1827; loop frees prior aw before reassigning aw=awNew so only the final aw reaches 1827,,high
+INT32-C,252,sqlite,ext/qrf/qrf.c,1833,FP,"nRow,nCol bounded by column_count and prior pData->n sizing; product already used to size mallocs at 1778-1796 with sqlite3_malloc64 which fails large; practically bounded",,med
+INT32-C,253,sqlite,ext/qrf/qrf.c,1834,FP,w sums per-column widths a[i].w which are display widths bounded by screen/wrap limits; not attacker-unbounded,,high
+ARR00-C,254,sqlite,ext/qrf/qrf.c,1834,FP,a is the new buffer loaded at 1820; free of pData->a (old) at 1825 is unrelated,,high
+MEM30-C,255,sqlite,ext/qrf/qrf.c,1834,FP,a member access at 1834 after install into pData; not freed,,high
+MEM30-C,256,sqlite,ext/qrf/qrf.c,1834,FP,same as 255,,high
+FLP03-C,257,sqlite,ext/qrf/qrf.c,1835,FP,"integer division of layout widths not floating point; FLP03 misfire, divisor guarded below",,low
+INT33-C,258,sqlite,ext/qrf/qrf.c,1835,FP,nCol here is >=2 because qrfSplitColumn only runs when a multi-column layout (nCol>1) was found; nCol-1 nonzero,,med
+INT32-C,259,sqlite,ext/qrf/qrf.c,1835,FP,nScreenWidth and w are bounded display widths; subtraction cannot overflow int range in practice,,high
+INT32-C,260,sqlite,ext/qrf/qrf.c,1835,FP,nCol small positive column count; nCol-1 cannot overflow,,high
+MEM30-C,261,sqlite,ext/qrf/qrf.c,1836,FP,"pData->nMargin is a struct member of a live qrfColData, not a freed pointer",,high
+DCL13-C,262,sqlite,ext/qrf/qrf.c,1842,FP,param p (Qrf*) is mutated via p->iErr and qrfOom side effects through helpers and used to write state; not const-eligible,,high
+INT32-C,263,sqlite,ext/qrf/qrf.c,1852,FP,nCol is column_count bounded small int; nCol*2-2 cannot overflow,,high
+INT32-C,264,sqlite,ext/qrf/qrf.c,1852,FP,nCol*2 bounded by small column count,,high
+INT32-C,265,sqlite,ext/qrf/qrf.c,1854,FP,nCol*3+1 bounded by small column count,,high
+INT32-C,266,sqlite,ext/qrf/qrf.c,1854,FP,nCol*3 bounded,,high
+INT32-C,267,sqlite,ext/qrf/qrf.c,1855,FP,sepW small bounded layout value,,high
+INT32-C,268,sqlite,ext/qrf/qrf.c,1858,FP,sumW accumulates bounded per-column widths,,high
+INT32-C,269,sqlite,ext/qrf/qrf.c,1864,FP,nCol-1 bounded small,,high
+INT32-C,270,sqlite,ext/qrf/qrf.c,1866,FP,nCol+1 bounded small,,high
+INT32-C,271,sqlite,ext/qrf/qrf.c,1867,FP,sepW bounded,,high
+INT32-C,272,sqlite,ext/qrf/qrf.c,1869,FP,nScreenWidth-sepW bounded layout arithmetic,,high
+EXP30-C,273,sqlite,ext/qrf/qrf.c,1890,FP,(w=...)>mx && w>... has sequence points at && operators; no unsequenced modify/access,,high
+EXP33-C,274,sqlite,ext/qrf/qrf.c,1892,FP,w is assigned by (w=pData->a[i].w) before any later read within the same && chain; cannot be uninitialized,,high
+INT32-C,275,sqlite,ext/qrf/qrf.c,1906,FP,sumW and targetW are bounded layout widths,,high
+INT32-C,276,sqlite,ext/qrf/qrf.c,1908,FP,sumW-=gain bounded,,high
+INT30-C,277,sqlite,ext/qrf/qrf.c,1941,FP,nColumn=p->nCol is sqlite3_column_count (bounded small int) so nColumn*sizeof wrap not reachable; sqlite3_malloc64 takes i64,,med
+ARR38-C,278,sqlite,ext/qrf/qrf.c,1946,FP,memset size nColumn*sizeof(qrfPerCol) with nColumn bounded column count,,high
+INT32-C,279,sqlite,ext/qrf/qrf.c,1946,FP,"same as 278, no overflow for bounded column count",,high
+INT30-C,280,sqlite,ext/qrf/qrf.c,1946,FP,same as 277,,high
+INT31-C,281,sqlite,ext/qrf/qrf.c,1954,FP,"nColumn is column_count >=0 in practice; memset(data.abNum,0,nColumn) widening of small nonneg int",,med
+MEM31-C,282,sqlite,ext/qrf/qrf.c,1959,FP,pStr is finished via sqlite3_str_finish at 1963 (frees the str object and returns the string stored into data.az); not leaked,,high
+INT32-C,283,sqlite,ext/qrf/qrf.c,1976,FP,"p->nRow is sqlite3_int64 (64-bit), not int; INT32 increment overflow inapplicable",,high
+MEM31-C,284,sqlite,ext/qrf/qrf.c,1987,FP,pStr finished at 1991 via sqlite3_str_finish storing result into data.az[n]; not leaked,,high
+INT32-C,285,sqlite,ext/qrf/qrf.c,1998,FP,p->nRow is sqlite3_int64; not an int32 overflow,,high
+MEM31-C,286,sqlite,ext/qrf/qrf.c,2002,FP,pStr is consumed by sqlite3_str_finish at 1991 each iteration; on error path qrfColDataFree frees the stored strings,,high
+INT14-C,287,sqlite,ext/qrf/qrf.c,2024,FP,"INT14 readability rule misfire; i used as index, no mixed bitwise/arith defect of significance",,low
+INT32-C,288,sqlite,ext/qrf/qrf.c,2028,FP,"w here is a spec width value clamped earlier; -w only taken when w<0 so result positive, INT_MIN unreachable given width bounds",,med
+EXP34-C,289,sqlite,ext/qrf/qrf.c,2133,FP,colSep assigned in every switch branch (Box/Table/Column/default Markdown) before use at 2133; cannot be null,,high
+INT32-C,290,sqlite,ext/qrf/qrf.c,2154,FP,i and j are loop counters bounded by data.n and nColumn; i+j indexes data.az within allocated n cells,,high
+INT32-C,291,sqlite,ext/qrf/qrf.c,2156,FP,same as 290,,high
+MEM31-C,292,sqlite,ext/qrf/qrf.c,2267,FP,pStr (pVal) is finished via sqlite3_str_finish at 2646; not leaked,,high
+ARR02-C,293,sqlite,ext/qrf/qrf.c,2316,FP,azNext[] is a const initializer-sized array; implicit bound is correct and intentional,,high
+ARR02-C,294,sqlite,ext/qrf/qrf.c,2318,FP,azYield[] const initializer-sized array; intentional,,high
+ARR02-C,295,sqlite,ext/qrf/qrf.c,2320,FP,azGoto[] const initializer-sized array; intentional,,high
+INT32-C,296,sqlite,ext/qrf/qrf.c,2342,FP,"p2,iAddr,iOp from EXPLAIN output; p2op used only under p2op>0 (2360) or p2op<iOp (2363) guards; see FN note for missing lower bound",,med
+INT32-C,297,sqlite,ext/qrf/qrf.c,2342,FP,iOp-iAddr is small opcode-index arithmetic from EXPLAIN; bounded in practice,,med
+ARR00-C,298,sqlite,ext/qrf/qrf.c,2357,FP,"abYield[iOp] write at 2357 is in the FIRST loop, executes before free(abYield) at 2367; not UAF",,high
+EXP34-C,299,sqlite,ext/qrf/qrf.c,2357,FP,abYield checked for null at 2349 (qrfOom and return if alloc failed) before 2357,,high
+MEM30-C,300,sqlite,ext/qrf/qrf.c,2357,FP,same as 298; free is at 2367 after the loop,,high
+ARR00-C,301,sqlite,ext/qrf/qrf.c,2358,FP,aiIndent[iOp] write at 2358 in first loop precedes free(aiIndent) at 2437,,high
+INT32-C,302,sqlite,ext/qrf/qrf.c,2359,FP,iOp+1 bounded by opcode count; nIndent assignment,,high
+ARR00-C,303,sqlite,ext/qrf/qrf.c,2361,FP,aiIndent[i] write at 2361 in first loop before free at 2437,,high
+ARR00-C,304,sqlite,ext/qrf/qrf.c,2363,FP,abYield[p2op] read at 2363 in first loop before free at 2367,,high
+MEM30-C,305,sqlite,ext/qrf/qrf.c,2363,FP,same as 304,,high
+ARR00-C,306,sqlite,ext/qrf/qrf.c,2364,FP,aiIndent[i] write at 2364 in first loop before free at 2437,,high
+ARR02-C,307,sqlite,ext/qrf/qrf.c,2372,FP,aExplainWidth[] const initializer-sized array; intentional implicit bound,,high
+ARR02-C,308,sqlite,ext/qrf/qrf.c,2373,FP,aExplainMap[] const initializer-sized; intentional,,high
+ARR02-C,309,sqlite,ext/qrf/qrf.c,2374,FP,aScanExpWidth[] const initializer-sized; intentional,,high
+ARR02-C,310,sqlite,ext/qrf/qrf.c,2375,FP,aScanExpMap[] const initializer-sized; intentional,,high
+ARR00-C,311,sqlite,ext/qrf/qrf.c,2424,FP,aiIndent read at 2424 guarded by (aiIndent && iOp<nIndent); freed only at 2437 after second pass,,high
+ARR30-C,312,sqlite,ext/qrf/qrf.c,2489,FP,qrfAlpha indexes qrfCType[(unsigned char)x] which is a 256-entry table indexed by unsigned char; always in bounds,,high
+ARR30-C,313,sqlite,ext/qrf/qrf.c,2491,FP,qrfAlnum same 256-entry table indexed by unsigned char cast; in bounds,,high
+CON07-C,314,sqlite,ext/qrf/qrf.c,2520,FP,"mxW is a local int (declared 2595), not a shared static variable; CON07 misfire",,high
+EXP33-C,315,sqlite,ext/qrf/qrf.c,2549,FP,i is assigned by for(i=0;...) in the Html branch before any use; not uninitialized,,high
+INT30-C,316,sqlite,ext/qrf/qrf.c,2599,FP,p->nCol is sqlite3_column_count (bounded small); nCol*sizeof(char*) wrap not reachable; malloc64 takes i64,,med
+MEM31-C,317,sqlite,ext/qrf/qrf.c,2618,FP,pVal finished via sqlite3_str_finish at 2646; not leaked,,high
+INT32-C,318,sqlite,ext/qrf/qrf.c,2620,FP,"mxWidth,nSep,mxColWth bounded display widths; subtraction in int range",,high
+EXP43-C,319,sqlite,ext/qrf/qrf.c,2633,FP,sqlite3_str_appendchar appends N copies of a single char to a growable string; no overlapping restrict regions,,high
+INT32-C,320,sqlite,ext/qrf/qrf.c,2681,FP,p->nRow is sqlite3_int64; not int32 increment overflow,,high
+DCL13-C,321,sqlite,ext/qrf/qrf.c,2691,FP,pzErr (char**) is stored into p->pzErr (non-const field) at 2695; making param const would break the store; not const-eligible,,high
+EXP05-C,322,sqlite,ext/qrf/qrf.c,2694,FP,"memset(p,0,sizeof(*p)) does not cast away const; p is non-const Qrf*; EXP05 misfire",,high
+ARR01-C,323,sqlite,ext/qrf/qrf.c,2694,FP,"sizeof(*p) is sizeof the pointee struct (correct), not sizeof of a decayed pointer",,high
+MEM31-C,324,sqlite,ext/qrf/qrf.c,2704,FP,"p->pOut allocated at 2704 is freed/consumed in qrfFinalize via sqlite3_str_finish; lifetime spans the API call, not leaked in qrfInitialize",,high
+MEM31-C,325,sqlite,ext/qrf/qrf.c,2732,FP,p->pOut is owned by the Qrf and finalized in qrfFinalize regardless of early returns; no goto leak,,high
+INT32-C,326,sqlite,ext/qrf/qrf.c,2783,FP,expMode is 0/1/2 from sqlite3_stmt_isexplain; expMode+1 cannot overflow,,high
+INT32-C,327,sqlite,ext/qrf/qrf.c,2791,FP,same as 326,,high
+MEM30-C,328,sqlite,ext/qrf/qrf.c,2850,FP,"realloc size sz+n+1 is always >=1 (sz=strlen>=0,n=length>=0,+1); never 0 so realloc never frees; failure path frees once and nulls pointer",,high
+MEM30-C,329,sqlite,ext/qrf/qrf.c,2875,FP,p->u.sLine is a live union member of the stack Qrf object; not a freed pointer,,high
+MEM30-C,330,sqlite,ext/qrf/qrf.c,2875,FP,p->u is the live union of the Qrf object; not freed,,high
+MEM30-C,331,sqlite,ext/qrf/qrf.c,2883,FP,p->pStmt is the caller-owned live statement handle; not freed here,,high
+MEM30-C,332,sqlite,ext/qrf/qrf.c,2896,FP,p->pOut is the live output string being finalized; not freed before this access,,high
+MEM30-C,333,sqlite,ext/qrf/qrf.c,2897,FP,p->spec.pzOutput is a caller-supplied live pointer; not freed,,high
+MEM30-C,334,sqlite,ext/qrf/qrf.c,2897,FP,p->spec is a live struct member; not freed,,high
+MEM30-C,335,sqlite,ext/qrf/qrf.c,2898,FP,"p->spec.pzOutput[0] accessed before any free; the str object is freed later via str_finish, not this pointer",,high
+MEM30-C,336,sqlite,ext/qrf/qrf.c,2901,FP,p->spec.pzOutput[0] strlen at 2901 on live caller buffer; not freed,,high
+MEM30-C,337,sqlite,ext/qrf/qrf.c,2902,FP,p->pOut live; sqlite3_str_length reads the live string object,,high
+MEM30-C,338,sqlite,ext/qrf/qrf.c,2903,FP,"p->spec.pzOutput[0] passed to realloc (the realloc itself), not a post-free access",,high
+INT30-C,339,sqlite,ext/qrf/qrf.c,2903,FP,"sz+n are sqlite3_int64 nonneg; sz from strlen, n from str_length both bounded by allocation success; sz+n+1 in i64 range",,med
+INT32-C,340,sqlite,ext/qrf/qrf.c,2903,FP,sz+n+1 is i64 arithmetic on nonneg values within practical memory bounds,,med
+INT32-C,341,sqlite,ext/qrf/qrf.c,2903,FP,same as 340,,med
+MEM30-C,342,sqlite,ext/qrf/qrf.c,2905,FP,"p->spec.pzOutput[0] assigned the realloc result; live pointer, not freed",,high
+MEM30-C,343,sqlite,ext/qrf/qrf.c,2906,FP,memcpy into zCombined (=pzOutput[0]); live buffer,,high
+MEM30-C,344,sqlite,ext/qrf/qrf.c,2909,FP,p->spec.pzOutput live caller buffer; not freed,,high
+ARR38-C,345,sqlite,ext/qrf/qrf.c,2910,FP,memcpy size n+1 where n=str_length>=0; n bounded by successful allocation just performed; size valid,,med
+INT31-C,346,sqlite,ext/qrf/qrf.c,2910,FP,n is sqlite3_int64 nonneg (str_length); widening to size_t safe,,med
+INT32-C,347,sqlite,ext/qrf/qrf.c,2910,FP,"n+1 in i64 nonneg arithmetic, allocation of sz+n+1 already succeeded so size is representable",,med
+MEM30-C,348,sqlite,ext/qrf/qrf.c,2910,FP,p->pOut live; sqlite3_str_value reads the live string,,high
+MEM30-C,349,sqlite,ext/qrf/qrf.c,2914,FP,p->spec.pzOutput[0] assignment of finish result; live,,high
+MEM30-C,350,sqlite,ext/qrf/qrf.c,2914,FP,p->pOut consumed by sqlite3_str_finish here (frees the str object); not a prior-free UAF,,high
+MEM30-C,351,sqlite,ext/qrf/qrf.c,2916,FP,"p->pOut accessed in the else-if (no pzOutput) branch; freed via str_finish here, not before",,high
+MEM30-C,352,sqlite,ext/qrf/qrf.c,2917,FP,same as 351,,high
+MEM30-C,353,sqlite,ext/qrf/qrf.c,2919,FP,p->expMode is a live int struct member; not a freed pointer,,high
+MEM30-C,354,sqlite,ext/qrf/qrf.c,2920,FP,p->pStmt live caller statement; sqlite3_stmt_explain on live handle,,high
+INT32-C,355,sqlite,ext/qrf/qrf.c,2920,FP,expMode is small (0..2)+1; expMode-1 cannot overflow,,high
+MEM30-C,356,sqlite,ext/qrf/qrf.c,2920,FP,p->expMode live int member,,high
+MEM30-C,357,sqlite,ext/qrf/qrf.c,2922,FP,p->actualWidth is a live owned pointer freed here once; not prior-freed,,high
+MEM30-C,358,sqlite,ext/qrf/qrf.c,2925,FP,p->pJTrans is a live owned statement freed here once,,high
+MEM30-C,359,sqlite,ext/qrf/qrf.c,2926,FP,p->pJTrans live; sqlite3_finalize called once,,high
+MEM30-C,360,sqlite,ext/qrf/qrf.c,2927,FP,p->pJTrans live; sqlite3_close on its db,,high
+API00-C,361,sqlite,ext/qrf/qrf.c,2938,FP,pzErr may be null by contract (docs: if pzErr not NULL); error helpers check p->pzErr before writing; null param is the documented optional case not a defect,,med
+EXP33-C,362,sqlite,ext/qrf/qrf.c,2948,FP,"qrf is initialized by qrfInitialize(&qrf,...) which memsets the whole struct at 2694 before any field use; not uninitialized",,high
