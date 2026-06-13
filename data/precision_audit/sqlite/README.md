@@ -1183,3 +1183,60 @@ OOM-sets-rc). The decoders' length/offset math is otherwise uniformly bounds-che
 sqlite coverage **80/220 (36.4%)** — 80 files audited; **8 FNs** (zipfile over-read added). Confirmed real
 bugs now **8** (2 fts5_index + 4 session + matchinfo + fossildelta), every one in a less-fuzzed
 untrusted-serialized-input parser; still **no core-engine semantic TP** across the whole corpus.
+
+---
+
+## File-at-a-time — Batch 4 (2026-06-12, run #40): 5 untrusted-text/blob parsers, a 2nd sqc-caught OOB + a missed leak
+
+`adjudication_sqlite_batch4.csv` — the second needle-target batch: 5 parsers of untrusted text/blobs —
+**src/json.c** (JSON/JSONB, the prime target), **ext/rtree/geopoly.c** (GeoJSON + polygon blobs),
+**ext/recover/sqlite3recover.c** (corrupt-DB recovery), **ext/fts5/fts5_hash.c** (pending-term hash),
+**ext/misc/normalize.c** (SQL normalizer). 11 line-range reviewers + per-chunk FN-hunt. **1274 raw
+findings -> 70 TP / 1204 FP.**
+
+| File | findings | TP | FP | note |
+|------|---------:|---:|---:|------|
+| src/json.c | 527 | 36 | 491 | JSON+JSONB decode fully bounds-checked by jsonbPayloadSize |
+| ext/rtree/geopoly.c | 271 | 7 | 264 | blob nVertex bound to nByte by an exact size_t equality |
+| ext/recover/sqlite3recover.c | 193 | 6 | 187 | raw-page validator over-allocates 2*nMax, all reads guarded |
+| ext/fts5/fts5_hash.c | 149 | 5 | 144 | entry grow keeps a 22-byte headroom invariant (assert-enforced) |
+| ext/misc/normalize.c | 134 | 16 | 118 | **semantic TP @616 + FN @628 (see below)** |
+
+### The semantic TP — sqc caught a heap-buffer-underflow read (normalize.c:616, ARR00-C)
+
+In `sqlite3_normalize`'s `in(...)` rewrite pass: `zIn = strstr(z+i, "in(")`, then
+`n = (int)(zIn-z)+3; if( n && IdChar(zIn[-1]) ) continue;`. The `n &&` guard was meant to suppress the
+`zIn[-1]` look-back when `"in("` is at the start, but **`n` is the index *past* `"in("`, so it is always
+`>= 3`** — the guard is dead. When the normalized output begins with `"in("` (reachable from input like
+`in(1)` -> `in(?);`, so `strstr` returns `zIn==z`), `IdChar(zIn[-1])` reads `z[-1]`: a **1-byte
+heap-buffer-underflow read**. sqc flagged it (idx 82, ARR00-C "array subscript -1 is negative"). This is the
+campaign's second sqc-caught semantic bug this session, again in a less-fuzzed untrusted-input parser. The
+remaining 15 normalize TPs are lexical (PRE12/PRE01/PRE11/EXP05) plus a cluster of genuine CERT
+error-handling findings (unchecked `fseek`/`ftell`/`fclose`, `SEEK_END`-on-binary, and the `ftell`-> `size_t`
+`fread` conversion) inside the `#ifdef SQLITE_NORMALIZE_CLI` harness — real but low-severity.
+
+### The FN — a missed OOM leak (normalize.c:628, MEM31-C, recorded FN)
+
+The same rewrite does `z = sqlite3_realloc64(z, ...); if( z==0 ) return 0;` — on OOM `realloc` leaves the
+original `z` allocated, so it leaks. sqc did not flag it. Low severity; recorded as a low-confidence FN.
+(Two further latent asymmetries were noted and dismissed as unreachable: `recoverBitmapSet` lacks the
+`iPg>0` guard its `Query` sibling has, but `freepgno` is read as a non-negative u32; and `recoverGetPage`
+passes `nPg-nReserve` to `result_blob`, but `sqlite_dbpage` always returns full pages — neither recorded.)
+
+### The other 4 parsers confirm the bifurcation
+
+**0 semantic TP** outside normalize idx 82. The 54 non-normalize TPs are entirely lexical: DCL13 ×10
+(const-eligible read-only params), MEM05/MSC04 ×15 (genuine but depth-bounded recursion in json
+translate/merge/validity, geopoly `geopolySine`, regexp not here), EXP05 ×8 (real `(u8*)`/`(char*)`
+const-discards in json UTF-8 compare and `zJson` ownership), DCL03 ×7 + DCL00 ×6 + ARR02 ×4 + PRE ×n
+(constant-expr asserts, const-able locals, implicit-bounds const tables, macro hygiene). The decoders'
+length/offset math is uniformly bounds-checked: json's `jsonbPayloadSize` validates `i+n+sz<=nBlob` before
+any payload read; geopoly binds the attacker's 3-byte `nVertex` to the real blob length via a size_t
+equality before allocating/copying; recover over-allocates the page validator to `2*nMax` and guards every
+`aUsed[]` write; fts5_hash keeps an assert-enforced 22-byte headroom before every varint append.
+
+sqlite coverage **85/220 (38.6%)** — 85 files audited; **9 FNs** (normalize OOM-leak added). Confirmed real
+bugs now **9** (2 fts5_index + 4 session + matchinfo + fossildelta + normalize), every one in a less-fuzzed
+untrusted-input parser; still **no core-engine semantic TP** anywhere in the corpus. Two of the nine
+(fossildelta, normalize) were caught by sqc as findings; the campaign's sqc-found real-bug count is rising
+specifically in the decoder class the thesis targets.
