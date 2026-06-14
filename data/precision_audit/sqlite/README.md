@@ -1901,3 +1901,27 @@ adversarial/dual review is not optional.
 Priority candidates: `os_kv.c:469` (shipped kvvfs heap-overflow WRITE), `sqlite3expert.c:305` (public-API heap
 overflow), `checkfreelist.c:277` (`sqlite_readint32` negative-offset OOB read), `prefixes.c:295` (`prefix_length`
 NULL deref). Most other confirmed bugs are in demo/repair/tool extensions or already fixed upstream.
+
+### Live-at-HEAD check (performed 2026-06-14; trunk tip `1b828b8770`, audit was `b1a73ba34d` Feb-24)
+Verified against the GitHub mirror `origin/master` (`git show`) and `raw.githubusercontent.com` (sqlite.org/src
+itself is CAPTCHA-gated to WebFetch). Findings:
+
+| Item | Live at HEAD? | Evidence |
+|------|---------------|----------|
+| `os_kv.c` kvvfsDecode hex-pair heap overflow | **YES — LIVE** | hex-pair `else` branch still writes `aOut[j]=c<<4; aOut[j++]+=c` with no `j<nOut` guard; only the zero-run branch checks `j+n>nOut`. `while(1)` loop, no outer bound. **Shipped code** (kvvfs, used by WASM/browser builds — not demo code). Highest-value disclosure target. Not found in a forum search → likely unreported. |
+| `sqlite3expert.c` idxNewConstraint heap overflow | **YES — LIVE** | byte-identical `idxMalloc(pRc, sizeof(IdxConstraint) * nColl + 1)` (the `*` should be `+`); `memcpy(pNew->zColl, zColl, nColl+1)` undersized for `nColl<=1`. |
+| `prefixes.c` `prefix_length` NULL deref | **NO — FIXED** | trunk now guards `if( zL==0 \|\| zR==0 ){ result 0; return; }` and adds `zL[i]==0` to the loop break. Already fixed upstream; drop from backlog. |
+| `checkfreelist.c` `sqlite_readint32` neg-offset OOB | **UNVERIFIED** | `ext/repair/` is absent from the GitHub mirror's `master` (raw URL 404s); canonical fossil CAPTCHA-blocked. Live as of audit; canonical-HEAD status not confirmable here. |
+| `scrub.c` scrubBackupVarint OOB (FN) | **UNVERIFIED** | also absent from the GitHub mirror tree; same caveat. |
+| `zipfile.c:714` extra-field OOB (FN) | **partially addressed** | trunk has a `pEnd`/9-byte bound on the extra-field scan; an active upstream branch `zipfile-buffer-overrun` exists → **devs already working a zipfile overrun**. A forum post "Heap buffer overflow in zipfileColumn" is already filed. |
+| `compress.c:63/102` uncompressFunc int-overflow (FN) | **already reported** | a forum post "integer overflow causing heap-buffer-overflow in compress extension (uncompressFunc)" already exists. |
+
+**Upstream posture (from the forum):** the SQLite team routinely classifies `ext/misc/*` as *"instructional demonstration
+code … not actually used by SQLite or its utility programs,"* and tends not to treat overflows there as security bugs.
+That down-weights amatch/spellfix/compress/zipfile/closure/sqlar/prefixes-class items. The standout exception is
+**`os_kv.c` (kvvfs)** — it is genuinely shipped/used (WASM) and is the one item that is both LIVE and outside the
+"demo code" carve-out, making it the single strongest disclosure candidate.
+
+Disclosure channel = the SQLite User Forum (`sqlite.org/forum`) / fossil bug tracker. NOTE: posting externally is an
+outward-facing action requiring explicit go-ahead, human accuracy review of every claim (no hallucinated line/offset),
+and disclosure of AI assistance — see "process notes" below.
