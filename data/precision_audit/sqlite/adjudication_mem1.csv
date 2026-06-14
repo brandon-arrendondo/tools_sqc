@@ -1,0 +1,20 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL37-C,1,sqlite,src/mem1.c,63,TP,"File-scope static '_sqliteZone_' begins with underscore, reserved identifier per DCL37",b15-adjudicator,high
+PRE11-C,2,sqlite,src/mem1.c,65,TP,SQLITE_FREE macro (line 65) ends with a stray semicolon after the function-call expansion,b15-adjudicator,high
+PRE00-C,3,sqlite,src/mem1.c,67,TP,"SQLITE_MALLOCSIZE expands x twice in the ternary (_sqliteZone_->size(...,x) : malloc_size(x))",b15-adjudicator,high
+PRE12-C,4,sqlite,src/mem1.c,67,TP,Same macro multi-evaluates parameter x; matches PRE12 multi-evaluation,b15-adjudicator,high
+INT32-C,5,sqlite,src/mem1.c,142,FP,nByte is int>0 bounded by higher-level SQLITE_MAX_ALLOCATION_SIZE far below INT_MAX-8; i64 size math,b15-adjudicator,high
+INT32-C,6,sqlite,src/mem1.c,145,FP,p is sqlite3_int64* so p++ is pointer arithmetic over a heap block not signed integer overflow,b15-adjudicator,high
+INT32-C,7,sqlite,src/mem1.c,168,FP,p is sqlite3_int64* so p-- is pointer arithmetic on a valid allocation not signed overflow,b15-adjudicator,high
+MEM30-C,8,sqlite,src/mem1.c,169,FP,Single SQLITE_FREE(p) of the decremented pPrior; no second free exists in the function,b15-adjudicator,high
+MSC37-C,9,sqlite,src/mem1.c,177,FP,Both #ifdef and #else branches of sqlite3MemSize end in a return; no fallthrough path,b15-adjudicator,high
+INT32-C,10,sqlite,src/mem1.c,185,FP,p is sqlite3_int64* so p-- is pointer arithmetic not signed integer overflow,b15-adjudicator,high
+INT32-C,11,sqlite,src/mem1.c,214,FP,p is sqlite3_int64* so p-- is pointer arithmetic not signed integer overflow,b15-adjudicator,high
+INT32-C,12,sqlite,src/mem1.c,215,FP,"nByte bounded int>0 (asserted ROUND8), nByte+8 cannot overflow given allocation cap; i64 alloc math",b15-adjudicator,high
+MEM30-C,13,sqlite,src/mem1.c,217,FP,p[0]=nByte writes through the SQLITE_REALLOC return value not a freed block,b15-adjudicator,high
+INT32-C,14,sqlite,src/mem1.c,218,FP,p is sqlite3_int64* so p++ is pointer arithmetic not signed integer overflow,b15-adjudicator,high
+MEM30-C,15,sqlite,src/mem1.c,223,FP,pPrior is not freed; realloc operated on p=pPrior-1 and on failure returns NULL leaving original block valid,b15-adjudicator,high
+MEM30-C,16,sqlite,src/mem1.c,225,FP,Returned p is the realloc result or NULL not a freed pointer,b15-adjudicator,high
+EXP33-C,17,sqlite,src/mem1.c,243,FP,_sqliteZone_ is a file-scope static so it is zero/NULL-initialized; the if(_sqliteZone_) guard reads that defined value,b15-adjudicator,high
+STR30-C,18,sqlite,src/mem1.c,256,FP,malloc_set_zone_name takes const char* and does not modify the literal name,b15-adjudicator,high
+MSC04-C,19,sqlite,src/mem1.c,277,FP,sqlite3_config(SQLITE_CONFIG_MALLOC) only copies the struct (main.c:500); the GETMALLOC case that calls back is never reached so no actual recursion,b15-adjudicator,high

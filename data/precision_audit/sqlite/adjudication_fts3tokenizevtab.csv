@@ -1,0 +1,29 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+STR34-C,1,sqlite,ext/fts3/fts3_tokenize_vtab.c,84,FP,zName passed to strlen/HashFind as length nName+1 not used in char arithmetic; no sign-extension defect,b15-adjudicator,high
+INT32-C,2,sqlite,ext/fts3/fts3_tokenize_vtab.c,86,FP,nName is strlen of a tokenizer name from CREATE VTAB args bounded to small DDL length; nName+1 cannot overflow INT_MAX,b15-adjudicator,high
+DCL30-C,3,sqlite,ext/fts3/fts3_tokenize_vtab.c,92,FP,p is a local copied into *pp output param by value (pointer copy) which is the documented contract not a dangling address,b15-adjudicator,high
+STR34-C,4,sqlite,ext/fts3/fts3_tokenize_vtab.c,115,FP,line 115 is *pazDequote=0 a null assignment no char dereference; sqc misread,b15-adjudicator,high
+INT32-C,5,sqlite,ext/fts3/fts3_tokenize_vtab.c,122,FP,nByte sums strlen+1 of DDL-arg strings bounded by SQL text length far below INT_MAX no overflow,b15-adjudicator,high
+INT30-C,6,sqlite,ext/fts3/fts3_tokenize_vtab.c,125,FP,sizeof(char*)*argc uses sqlite3_malloc64 64-bit arg; argc is small DDL arg count no practical wrap,b15-adjudicator,high
+STR34-C,7,sqlite,ext/fts3/fts3_tokenize_vtab.c,125,FP,line 125 has no *pazDequote char dereference; sqc misattribution,b15-adjudicator,high
+STR34-C,8,sqlite,ext/fts3/fts3_tokenize_vtab.c,131,FP,argv[i] passed to strlen not converted as char to int; no sign-extension defect,b15-adjudicator,high
+ARR38-C,9,sqlite,ext/fts3/fts3_tokenize_vtab.c,133,FP,memcpy size n+1 where n=strlen(argv[i]) and dest pSpace sized from same sum in same pass; bound matches exactly,b15-adjudicator,high
+EXP05-C,10,sqlite,ext/fts3/fts3_tokenize_vtab.c,133,FP,line 133 has no const-cast; memcpy src is const char* read-only no cast away const,b15-adjudicator,high
+INT31-C,11,sqlite,ext/fts3/fts3_tokenize_vtab.c,133,FP,n=strlen result always non-negative converted to size_t safely; not attacker-controlled past buffer,b15-adjudicator,high
+INT32-C,12,sqlite,ext/fts3/fts3_tokenize_vtab.c,133,FP,n+1 where n is strlen of bounded DDL arg string cannot overflow INT_MAX,b15-adjudicator,high
+ARR37-C,13,sqlite,ext/fts3/fts3_tokenize_vtab.c,135,FP,pSpace points into the single contiguous allocation sized as sum of n+1; advance stays within block by construction,b15-adjudicator,high
+INT32-C,14,sqlite,ext/fts3/fts3_tokenize_vtab.c,135,FP,same n+1 strlen bound as idx12 no overflow,b15-adjudicator,high
+INT32-C,15,sqlite,ext/fts3/fts3_tokenize_vtab.c,176,FP,argc-3 where argc is vtab arg count always >=4 (module/db/table/tokenizer) per module contract no underflow,b15-adjudicator,high
+EXP34-C,16,sqlite,ext/fts3/fts3_tokenize_vtab.c,184,FP,azDequote[0] only read when nDequote>=1 and alloc succeeded (rc==SQLITE_OK implies non-null array); guarded,b15-adjudicator,high
+EXP34-C,17,sqlite,ext/fts3/fts3_tokenize_vtab.c,193,FP,pMod->xCreate guarded by assert((rc==SQLITE_OK)==(pMod!=0)) and if(rc==SQLITE_OK); pMod non-null on this path,b15-adjudicator,high
+INT32-C,18,sqlite,ext/fts3/fts3_tokenize_vtab.c,193,FP,nDequote-1 only evaluated when nDequote>1 so result >=1 no underflow,b15-adjudicator,high
+MEM33-C,19,sqlite,ext/fts3/fts3_tokenize_vtab.c,207,FP,line 207 *ppVtab=&pTab->base is pointer assignment not flexible-array struct copy; sqc misread,b15-adjudicator,high
+INT32-C,20,sqlite,ext/fts3/fts3_tokenize_vtab.c,316,FP,iRowid is int incremented once per token of a single input string; reaching INT_MAX requires >2e9 tokens impractical,b15-adjudicator,med
+DCL13-C,21,sqlite,ext/fts3/fts3_tokenize_vtab.c,338,FP,apVal is a function-pointer-typedef-fixed xFilter signature; const cannot be added without breaking sqlite3_module contract,b15-adjudicator,high
+EXP34-C,22,sqlite,ext/fts3/fts3_tokenize_vtab.c,354,FP,zByte may be null but memcpy guarded by if(nByte>0); when text is null nByte is 0 so memcpy skipped,b15-adjudicator,high
+DCL13-C,23,sqlite,ext/fts3/fts3_tokenize_vtab.c,370,FP,pCursor signature fixed by xEof function-pointer typedef in sqlite3_module; const not addable,b15-adjudicator,high
+DCL13-C,24,sqlite,ext/fts3/fts3_tokenize_vtab.c,379,FP,pCursor signature fixed by xColumn function-pointer typedef in sqlite3_module; const not addable,b15-adjudicator,high
+DCL13-C,25,sqlite,ext/fts3/fts3_tokenize_vtab.c,411,FP,pCursor signature fixed by xRowid function-pointer typedef in sqlite3_module; const not addable,b15-adjudicator,high
+API00-C,26,sqlite,ext/fts3/fts3_tokenize_vtab.c,423,FP,db is an internal init entry from sqlite3 core always valid; passed straight to create_module which validates,b15-adjudicator,high
+API00-C,27,sqlite,ext/fts3/fts3_tokenize_vtab.c,423,FP,pHash is registration hash supplied by core init never null in this path,b15-adjudicator,high
+API00-C,28,sqlite,ext/fts3/fts3_tokenize_vtab.c,423,FP,xDestroy is a registration callback passed through to create_module_v2 which accepts null destructors,b15-adjudicator,high

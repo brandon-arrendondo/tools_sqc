@@ -1,0 +1,31 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/btreeinfo.c,112,FP,binfoConnect signature fixed by xConnect function-pointer typedef in sqlite3_module; const not addable,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/btreeinfo.c,115,FP,binfoConnect pzErr signature fixed by xConnect typedef,b15-adjudicator,high
+DCL13-C,3,sqlite,ext/misc/btreeinfo.c,159,FP,binfoBestIndex tab signature fixed by xBestIndex typedef,b15-adjudicator,high
+DCL13-C,4,sqlite,ext/misc/btreeinfo.c,182,FP,binfoOpen pVTab signature fixed by xOpen typedef,b15-adjudicator,high
+DCL13-C,5,sqlite,ext/misc/btreeinfo.c,221,FP,binfoEof pCursor signature fixed by xEof typedef,b15-adjudicator,high
+DCL13-C,6,sqlite,ext/misc/btreeinfo.c,231,FP,binfoFilter argv signature fixed by xFilter typedef,b15-adjudicator,high
+MEM30-C,7,sqlite,ext/misc/btreeinfo.c,249,FP,line 249 reads pCsr->zSchema just assigned at 240/242 not freed; no use-after-free,b15-adjudicator,high
+MEM30-C,8,sqlite,ext/misc/btreeinfo.c,250,FP,line 250 finalizes pStmt after building zSql; use-then-free order is correct not UAF,b15-adjudicator,high
+DCL13-C,9,sqlite,ext/misc/btreeinfo.c,262,TP,get_uint16 param a read-only never written; plain helper not typedef-bound; const unsigned char* compiles,b15-adjudicator,high
+DCL13-C,10,sqlite,ext/misc/btreeinfo.c,265,TP,get_uint32 param a read-only never written; plain helper; const would compile,b15-adjudicator,high
+EXP34-C,11,sqlite,ext/misc/btreeinfo.c,266,FP,aData null-checked at line 296 before any aData[] access; a is never null here,b15-adjudicator,high
+EXP34-C,12,sqlite,ext/misc/btreeinfo.c,289,FP,pStmt set by prepare_v2 at 282 and rc!=0 returns at 285 before sqlite3_step,b15-adjudicator,high
+INT32-C,13,sqlite,ext/misc/btreeinfo.c,302,FP,pgsz is dbpage page size (>=512) so pgsz-=100 cannot overflow,b15-adjudicator,high
+INT32-C,14,sqlite,ext/misc/btreeinfo.c,306,TP,nEntry*=(nCell+1) multiplies untrusted uint16 cell counts each loop iter with no overflow guard; int64 but unbounded product,b15-adjudicator,med
+INT32-C,15,sqlite,ext/misc/btreeinfo.c,308,TP,"nPage*=(nCell+1) on int with untrusted nCell up to 65535 overflows signed int in 2 deep iters (UB), no guard",b15-adjudicator,med
+ARR00-C,16,sqlite,ext/misc/btreeinfo.c,314,FP,aData+8 read only when nCell<=1 and guard at 309 ensures 14<pgsz so offset 8-11 within >=512B page,b15-adjudicator,high
+ARR00-C,17,sqlite,ext/misc/btreeinfo.c,316,FP,aData+12 read; guard at 309 ensures 14+2*(nCell/2)<pgsz so offset 12+2*(nCell/2)+1 in bounds,b15-adjudicator,high
+INT32-C,18,sqlite,ext/misc/btreeinfo.c,316,FP,2*(nCell/2) max ~65534 fits int; no overflow,b15-adjudicator,high
+INT32-C,19,sqlite,ext/misc/btreeinfo.c,317,FP,iCell from get_uint16 (0-65535); iCell-=100 cannot overflow signed int,b15-adjudicator,high
+INT32-C,20,sqlite,ext/misc/btreeinfo.c,324,FP,depth++ bounded by loop termination (leaf/corrupt break); cannot reach INT_MAX practically,b15-adjudicator,high
+INT32-C,21,sqlite,ext/misc/btreeinfo.c,356,FP,i is small column index (0-10); i+1 cannot overflow,b15-adjudicator,high
+DCL13-C,22,sqlite,ext/misc/btreeinfo.c,384,FP,binfoRowid pCursor signature fixed by xRowid typedef,b15-adjudicator,high
+API00-C,23,sqlite,ext/misc/btreeinfo.c,393,FP,sqlite3BinfoRegister db is internal-API contract caller passes valid handle; no untrusted path,b15-adjudicator,high
+DCL15-C,24,sqlite,ext/misc/btreeinfo.c,393,FP,sqlite3BinfoRegister intentionally external (extension entry); DCL15 misfire,b15-adjudicator,med
+DCL19-C,25,sqlite,ext/misc/btreeinfo.c,393,FP,sqlite3BinfoRegister is public API symbol used by other init code; not file-local,b15-adjudicator,med
+CON03-C,26,sqlite,ext/misc/btreeinfo.c,394,FP,binfo_module is static const-init module struct read-only after init; no thread-write race,b15-adjudicator,high
+API00-C,27,sqlite,ext/misc/btreeinfo.c,427,FP,sqlite3_btreeinfo_init db is loader-provided valid handle; extension-init contract,b15-adjudicator,high
+API00-C,28,sqlite,ext/misc/btreeinfo.c,427,FP,pApi consumed by SQLITE_EXTENSION_INIT2 macro contract; loader-provided,b15-adjudicator,high
+DCL15-C,29,sqlite,ext/misc/btreeinfo.c,427,FP,extension init must be external (dllexport); DCL15 misfire,b15-adjudicator,med
+DCL13-C,30,sqlite,ext/misc/btreeinfo.c,429,FP,sqlite3_btreeinfo_init pzErrMsg signature fixed by extension-init ABI; unused param,b15-adjudicator,high

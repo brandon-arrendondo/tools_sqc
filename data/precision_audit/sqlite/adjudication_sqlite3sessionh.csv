@@ -1,0 +1,36 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE06-C,1,sqlite,ext/session/sqlite3session.h,1,FP,Include guard does exist at line 2 (#if !defined(__SQLITESESSION_H_) && defined(SQLITE_ENABLE_SESSION)) with #define at line 3; PRE06 failed to recognize the compound !defined() form,b15-adjudicator,high
+DCL37-C,2,sqlite,ext/session/sqlite3session.h,3,TP,#define __SQLITESESSION_H_ uses a leading-double-underscore identifier reserved to the implementation per DCL37-C,b15-adjudicator,high
+API02-C,3,sqlite,ext/session/sqlite3session.h,251,FP,sqlite3session_table_filter takes an opaque sqlite3_session* handle plus a callback function pointer and void *pCtx context; no caller array buffer needs a size_t capacity,b15-adjudicator,high
+API02-C,4,sqlite,ext/session/sqlite3session.h,366,FP,sqlite3session_changeset pairs out-buffer void **ppChangeset with explicit size out-param int *pnChangeset; allocation owned by callee not caller,b15-adjudicator,high
+API02-C,5,sqlite,ext/session/sqlite3session.h,446,FP,sqlite3session_diff params are opaque handle and null-terminated const char* names plus char **pzErrMsg out-string; no array capacity applies,b15-adjudicator,high
+API02-C,6,sqlite,ext/session/sqlite3session.h,483,FP,sqlite3session_patchset pairs void **ppPatchset with size out-param int *pnPatchset; callee-allocated buffer,b15-adjudicator,high
+API02-C,7,sqlite,ext/session/sqlite3session.h,638,FP,"sqlite3changeset_op outputs are scalar/out-string pointers (pzTab,pnCol,pOp,pbIndirect) off an opaque iterator; no caller array",b15-adjudicator,high
+API02-C,8,sqlite,ext/session/sqlite3session.h,672,FP,sqlite3changeset_pk returns callee-owned PK array via unsigned char **pabPK with count in int *pnCol; size accompanies the pointer,b15-adjudicator,high
+API02-C,9,sqlite,ext/session/sqlite3session.h,782,FP,sqlite3changeset_fk_conflicts takes opaque iterator and single int *pnOut scalar out; no array buffer,b15-adjudicator,high
+API02-C,10,sqlite,ext/session/sqlite3session.h,848,FP,sqlite3changeset_invert signature has nIn paired with pIn and pnOut paired with ppOut; size args present,b15-adjudicator,high
+API02-C,11,sqlite,ext/session/sqlite3session.h,879,FP,sqlite3changeset_concat already has nA/pA and nB/pB size+buffer pairs plus pnOut/ppOut; size args present,b15-adjudicator,high
+API02-C,12,sqlite,ext/session/sqlite3session.h,1098,FP,sqlite3changegroup_output pairs void **ppData with int *pnData size out-param; callee-allocated,b15-adjudicator,high
+API02-C,13,sqlite,ext/session/sqlite3session.h,1280,FP,sqlite3changeset_apply has int nChangeset paired with void *pChangeset; remaining args are callbacks/handle/void *pCtx,b15-adjudicator,high
+API02-C,14,sqlite,ext/session/sqlite3session.h,1295,FP,sqlite3changeset_apply_v2 has nChangeset/pChangeset pair plus ppRebase/pnRebase out pair; sizes present,b15-adjudicator,high
+API02-C,15,sqlite,ext/session/sqlite3session.h,1312,FP,sqlite3changeset_apply_v3 has nChangeset/pChangeset pair plus ppRebase/pnRebase out pair; sizes present,b15-adjudicator,high
+API02-C,16,sqlite,ext/session/sqlite3session.h,1610,FP,sqlite3rebaser_rebase has nIn/pIn and pnOut/ppOut size+buffer pairs,b15-adjudicator,high
+API02-C,17,sqlite,ext/session/sqlite3session.h,1716,FP,sqlite3changeset_apply_strm uses callback xInput for input; void *pData inside callback carries its own int *pnData; no caller array,b15-adjudicator,high
+API02-C,18,sqlite,ext/session/sqlite3session.h,1716,FP,"duplicate flag on sqlite3changeset_apply_strm; same callback-driven I/O, no array capacity applies",b15-adjudicator,high
+API02-C,19,sqlite,ext/session/sqlite3session.h,1731,FP,sqlite3changeset_apply_v2_strm streams via xInput callback plus ppRebase/pnRebase out pair; no caller array buffer,b15-adjudicator,high
+API02-C,20,sqlite,ext/session/sqlite3session.h,1731,FP,"duplicate flag on sqlite3changeset_apply_v2_strm; callback-driven streaming, no capacity arg needed",b15-adjudicator,high
+API02-C,21,sqlite,ext/session/sqlite3session.h,1748,FP,sqlite3changeset_apply_v3_strm streams via xInput callback plus ppRebase/pnRebase pair; no caller array,b15-adjudicator,high
+API02-C,22,sqlite,ext/session/sqlite3session.h,1748,FP,duplicate flag on sqlite3changeset_apply_v3_strm; same callback streaming pattern,b15-adjudicator,high
+API02-C,23,sqlite,ext/session/sqlite3session.h,1765,FP,sqlite3changeset_concat_strm uses xInputA/xInputB/xOutput callbacks with void context ptrs; no caller array buffer,b15-adjudicator,high
+API02-C,24,sqlite,ext/session/sqlite3session.h,1765,FP,"duplicate flag on sqlite3changeset_concat_strm; callback-driven, no capacity arg",b15-adjudicator,high
+API02-C,25,sqlite,ext/session/sqlite3session.h,1765,FP,"duplicate flag on sqlite3changeset_concat_strm; callback-driven, no capacity arg",b15-adjudicator,high
+API02-C,26,sqlite,ext/session/sqlite3session.h,1773,FP,sqlite3changeset_invert_strm uses xInput/xOutput callbacks with void context ptrs; no caller array buffer,b15-adjudicator,high
+API02-C,27,sqlite,ext/session/sqlite3session.h,1773,FP,duplicate flag on sqlite3changeset_invert_strm; callback-driven streaming,b15-adjudicator,high
+API02-C,28,sqlite,ext/session/sqlite3session.h,1779,FP,sqlite3changeset_start_strm outputs iterator via pp and reads via xInput callback; no caller array buffer,b15-adjudicator,high
+API02-C,29,sqlite,ext/session/sqlite3session.h,1784,FP,"sqlite3changeset_start_v2_strm same as start_strm plus int flags; callback input, no capacity arg",b15-adjudicator,high
+API02-C,30,sqlite,ext/session/sqlite3session.h,1790,FP,sqlite3session_changeset_strm writes via xOutput callback with void *pOut; no caller array buffer,b15-adjudicator,high
+API02-C,31,sqlite,ext/session/sqlite3session.h,1795,FP,sqlite3session_patchset_strm writes via xOutput callback with void *pOut; no caller array buffer,b15-adjudicator,high
+API02-C,32,sqlite,ext/session/sqlite3session.h,1800,FP,sqlite3changegroup_add_strm reads via xInput callback with void *pIn; no caller array buffer,b15-adjudicator,high
+API02-C,33,sqlite,ext/session/sqlite3session.h,1804,FP,sqlite3changegroup_output_strm writes via xOutput callback with void *pOut; no caller array buffer,b15-adjudicator,high
+API02-C,34,sqlite,ext/session/sqlite3session.h,1808,FP,sqlite3rebaser_rebase_strm uses xInput/xOutput callbacks with void context ptrs; no caller array buffer,b15-adjudicator,high
+API02-C,35,sqlite,ext/session/sqlite3session.h,1808,FP,"duplicate flag on sqlite3rebaser_rebase_strm; callback-driven streaming, no capacity arg",b15-adjudicator,high

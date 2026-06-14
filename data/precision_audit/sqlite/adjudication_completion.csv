@@ -1,0 +1,31 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/completion.c,107,FP,pAux is the xConnect arg of the sqlite3_module function-pointer typedef; signature is fixed and cannot be const-qualified,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/completion.c,110,FP,pzErr is the fixed xConnect signature param (char**); not a const candidate and signature-locked by the module typedef,b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/completion.c,135,FP,pNew is assigned by sqlite3_malloc at 135 before any deref and NULL-checked at 137; not uninitialized,b15-adjudicator,high
+DCL13-C,4,sqlite,ext/misc/completion.c,155,FP,"p is the fixed xOpen signature param of the module typedef; signature-locked, cannot be const",b15-adjudicator,high
+EXP33-C,5,sqlite,ext/misc/completion.c,157,FP,pCur is assigned by sqlite3_malloc at 157 and NULL-checked at 158 before use; not uninitialized,b15-adjudicator,high
+MEM33-C,6,sqlite,ext/misc/completion.c,161,FP,"line 161 takes address of pCur->base (*ppCursor=&pCur->base); no flexible-array struct assignment occurs, structs have none",b15-adjudicator,high
+INT32-C,7,sqlite,ext/misc/completion.c,202,FP,iRowid is sqlite3_int64 incremented once per row over a bounded phase scan; no realistic path to INT64_MAX,b15-adjudicator,high
+FIO34-C,8,sqlite,ext/misc/completion.c,203,FP,"COMPLETION_EOF is a macro constant (11) for the phase state machine, not stdio EOF; feof/ferror is irrelevant",b15-adjudicator,high
+INT32-C,9,sqlite,ext/misc/completion.c,210,FP,pCur->j is bounded by sqlite3_keyword_count() guard at 206 before increment; cannot reach INT_MAX,b15-adjudicator,high
+MEM30-C,10,sqlite,ext/misc/completion.c,256,FP,"zSql passed to sqlite3_prepare_v2 at 267 is the live accumulated string, freed once afterward at 268; %z idiom frees prior value in-loop, not a UAF",b15-adjudicator,high
+MEM30-C,11,sqlite,ext/misc/completion.c,267,FP,"same as 10 in COLUMNS phase: zSql is live when prepared, then freed exactly once; no use-after-free",b15-adjudicator,high
+MEM30-C,12,sqlite,ext/misc/completion.c,268,FP,"zSql is freed only once (line 268) after prepare; the %z in mprintf frees the previous allocation, not a double-free of this pointer",b15-adjudicator,high
+DCL13-C,13,sqlite,ext/misc/completion.c,307,FP,"cur is the fixed xColumn signature param of the module typedef; signature-locked, cannot be const",b15-adjudicator,high
+DCL13-C,14,sqlite,ext/misc/completion.c,337,FP,"cur is the fixed xRowid signature param; signature-locked by module typedef, cannot be const",b15-adjudicator,high
+DCL13-C,15,sqlite,ext/misc/completion.c,347,FP,"cur is the fixed xEof signature param; signature-locked by module typedef, cannot be const",b15-adjudicator,high
+DCL13-C,16,sqlite,ext/misc/completion.c,361,FP,"argv is the fixed xFilter signature param (sqlite3_value**); signature-locked, values are read but signature cannot change",b15-adjudicator,high
+INT13-C,17,sqlite,ext/misc/completion.c,368,FP,idxNum is a small non-negative plan bitmask; signed & is benign style noise with no defect,b15-adjudicator,high
+INT13-C,18,sqlite,ext/misc/completion.c,377,FP,"same: idxNum>=0 bitmask, signed bitwise-AND has no overflow/sign defect here",b15-adjudicator,high
+INT32-C,19,sqlite,ext/misc/completion.c,387,FP,i-1 at 387 is guarded by loop condition i>0; subtraction cannot underflow,b15-adjudicator,high
+INT32-C,20,sqlite,ext/misc/completion.c,390,FP,"nPrefix=nLine-i where i is decremented from nLine and never below 0, so result is in [0,nLine]; no overflow",b15-adjudicator,high
+DCL13-C,21,sqlite,ext/misc/completion.c,413,FP,"tab is the fixed xBestIndex signature param; signature-locked by module typedef, cannot be const",b15-adjudicator,high
+FLP34-C,22,sqlite,ext/misc/completion.c,448,FP,"(double)5000 and 100*nArg are tiny compile-time-bounded ints; conversion to double is exact, no range issue",b15-adjudicator,high
+CON03-C,23,sqlite,ext/misc/completion.c,457,FP,completionModule is a static const-style module descriptor registered once; not shared mutable state needing volatile/atomic,b15-adjudicator,high
+API00-C,24,sqlite,ext/misc/completion.c,487,FP,db is supplied by SQLite core via create_module and is contract-guaranteed non-NULL; entry-point need not validate,b15-adjudicator,med
+DCL15-C,25,sqlite,ext/misc/completion.c,487,FP,"sqlite3CompletionVtabInit has external linkage by design (called from sqlite3 amalgamation init), must not be static",b15-adjudicator,high
+DCL19-C,26,sqlite,ext/misc/completion.c,487,FP,"same: it is referenced externally as a public vtab init entry point, static would break the build",b15-adjudicator,high
+API00-C,27,sqlite,ext/misc/completion.c,498,FP,db is the loadable-extension entry-point arg guaranteed non-NULL by SQLite; validation not required by contract,b15-adjudicator,med
+API00-C,28,sqlite,ext/misc/completion.c,498,FP,pApi is consumed by SQLITE_EXTENSION_INIT2 macro and guaranteed by the loader contract; entry point need not null-check,b15-adjudicator,med
+DCL15-C,29,sqlite,ext/misc/completion.c,498,FP,"sqlite3_completion_init is the dllexport loadable-extension entry point; must have external linkage, cannot be static",b15-adjudicator,high
+DCL13-C,30,sqlite,ext/misc/completion.c,500,FP,"pzErrMsg is the fixed extension-init signature (char**); explicitly unused via (void), signature-locked",b15-adjudicator,high

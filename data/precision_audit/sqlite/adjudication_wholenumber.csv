@@ -1,0 +1,35 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/wholenumber.c,44,FP,wholenumberConnect signature fixed by sqlite3_module xConnect typedef so pAux cannot be const,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/wholenumber.c,47,FP,pzErr param signature fixed by sqlite3_module xConnect typedef cannot be const,b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/wholenumber.c,50,FP,pNew assigned from sqlite3_malloc result before any deref and guarded by if(pNew==0) return; not uninitialized,b15-adjudicator,high
+MEM12-C,4,sqlite,ext/misc/wholenumber.c,51,FP,on NOMEM path pNew is null so nothing leaks; on success path *ppVtab is owned by sqlite and freed by xDisconnect not a leak,b15-adjudicator,high
+MEM12-C,5,sqlite,ext/misc/wholenumber.c,55,FP,line 55 returns SQLITE_OK with pNew installed into *ppVtab owned by caller and freed by wholenumberDisconnect not a leak,b15-adjudicator,high
+DCL13-C,6,sqlite,ext/misc/wholenumber.c,70,FP,wholenumberOpen signature fixed by sqlite3_module xOpen typedef param p cannot be const,b15-adjudicator,high
+EXP33-C,7,sqlite,ext/misc/wholenumber.c,72,FP,pCur assigned from sqlite3_malloc and guarded by if(pCur==0) return before memset deref not uninitialized,b15-adjudicator,high
+MEM33-C,8,sqlite,ext/misc/wholenumber.c,75,FP,line 75 takes address of base member then assigns the pointer not a flexible-array struct copy no struct assignment occurs,b15-adjudicator,high
+INT32-C,9,sqlite,ext/misc/wholenumber.c,93,FP,iValue bounded by mxValue=0xffffffff and Eof stops at iValue>mxValue so i64 increment never reaches INT64_MAX,b15-adjudicator,med
+DCL13-C,10,sqlite,ext/misc/wholenumber.c,101,FP,wholenumberColumn signature fixed by sqlite3_module xColumn typedef param cur cannot be const,b15-adjudicator,high
+DCL13-C,11,sqlite,ext/misc/wholenumber.c,113,FP,wholenumberRowid signature fixed by sqlite3_module xRowid typedef param cur cannot be const,b15-adjudicator,high
+DCL13-C,12,sqlite,ext/misc/wholenumber.c,123,FP,wholenumberEof signature fixed by sqlite3_module xEof typedef param cur cannot be const,b15-adjudicator,high
+DCL13-C,13,sqlite,ext/misc/wholenumber.c,149,FP,wholenumberFilter argv signature fixed by sqlite3_module xFilter typedef and argv already const-of-const cannot add const,b15-adjudicator,high
+INT13-C,14,sqlite,ext/misc/wholenumber.c,156,FP,idxNum is a small ORed bitmask 0-15 from BestIndex bitwise & is intended and safe stylistic only,b15-adjudicator,high
+INT14-C,15,sqlite,ext/misc/wholenumber.c,156,FP,idxNum dual bitwise/arith use is the documented constraint-mask decode readability heuristic not a defect,b15-adjudicator,high
+INT13-C,16,sqlite,ext/misc/wholenumber.c,157,FP,idxNum&1 on small bitmask intended bitwise stylistic FP,b15-adjudicator,high
+INT32-C,17,sqlite,ext/misc/wholenumber.c,157,FP,argv[0] is a user int64 but result v guarded by v>iValue and v<=mxValue before use adding (idxNum&1)=0or1 to arbitrary int64 cannot overflow in practice since extreme values fail the guard,b15-adjudicator,med
+INT13-C,18,sqlite,ext/misc/wholenumber.c,161,FP,idxNum&12 on small bitmask intended bitwise stylistic FP,b15-adjudicator,high
+INT13-C,19,sqlite,ext/misc/wholenumber.c,162,FP,(idxNum>>2)&1 on small bitmask intended bitwise stylistic FP,b15-adjudicator,high
+INT32-C,20,sqlite,ext/misc/wholenumber.c,162,FP,v subtracts 0or1 from user int64 then guarded by v>=iValue and v<mxValue before assignment INT64_MIN-1 wrap not reachable to a defect,b15-adjudicator,med
+DCL13-C,21,sqlite,ext/misc/wholenumber.c,179,FP,wholenumberBestIndex signature fixed by sqlite3_module xBestIndex typedef param tab cannot be const,b15-adjudicator,high
+INT13-C,22,sqlite,ext/misc/wholenumber.c,191,FP,idxNum&3 on small accumulator bitmask intended bitwise stylistic FP,b15-adjudicator,high
+INT13-C,23,sqlite,ext/misc/wholenumber.c,195,FP,idxNum&3 on small accumulator bitmask intended bitwise stylistic FP,b15-adjudicator,high
+INT13-C,24,sqlite,ext/misc/wholenumber.c,199,FP,idxNum&12 on small accumulator bitmask intended bitwise stylistic FP,b15-adjudicator,high
+INT13-C,25,sqlite,ext/misc/wholenumber.c,203,FP,idxNum&12 on small accumulator bitmask intended bitwise stylistic FP,b15-adjudicator,high
+INT13-C,26,sqlite,ext/misc/wholenumber.c,222,FP,idxNum&12 on small accumulator bitmask intended bitwise stylistic FP,b15-adjudicator,high
+INT13-C,27,sqlite,ext/misc/wholenumber.c,224,FP,idxNum&3 on small accumulator bitmask intended bitwise stylistic FP,b15-adjudicator,high
+FLP34-C,28,sqlite,ext/misc/wholenumber.c,225,FP,literal (double)5 conversion of integer constant 5 to double is exact no range issue,b15-adjudicator,high
+FLP34-C,29,sqlite,ext/misc/wholenumber.c,227,FP,literal (double)1 conversion of integer constant 1 to double is exact no range issue,b15-adjudicator,high
+CON03-C,30,sqlite,ext/misc/wholenumber.c,236,FP,wholenumberModule is a static const-style module table populated at init not a thread-shared mutable variable false concurrency flag,b15-adjudicator,high
+API00-C,31,sqlite,ext/misc/wholenumber.c,269,FP,sqlite3_wholenumber_init db is guaranteed non-null by sqlite extension-load contract internal API not a trust boundary,b15-adjudicator,high
+API00-C,32,sqlite,ext/misc/wholenumber.c,269,FP,pApi guaranteed non-null by sqlite extension-load contract used via SQLITE_EXTENSION_INIT2 internal API not a trust boundary,b15-adjudicator,high
+DCL15-C,33,sqlite,ext/misc/wholenumber.c,269,FP,init must be extern it is the dlopen-discovered entry point declared with __declspec(dllexport) cannot be static,b15-adjudicator,high
+DCL13-C,34,sqlite,ext/misc/wholenumber.c,271,FP,pzErrMsg param signature fixed by sqlite extension init entry-point prototype cannot be const,b15-adjudicator,high

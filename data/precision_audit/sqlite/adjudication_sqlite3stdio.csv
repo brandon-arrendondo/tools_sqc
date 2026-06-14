@@ -1,0 +1,50 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+PRE00-C,1,sqlite,ext/misc/sqlite3_stdio.c,60,TP,UseWtextForOutput(fd) macro at line 60 textually evaluates (fd) twice in (fd)==stdout||(fd)==stderr genuine PRE00 multi-evaluation,b15-adjudicator,med
+PRE12-C,2,sqlite,ext/misc/sqlite3_stdio.c,60,TP,same macro multi-evaluates parameter fd PRE12 valid on the function-like macro form,b15-adjudicator,med
+CON03-C,3,sqlite,ext/misc/sqlite3_stdio.c,78,FP,simBinaryStdout is a process-wide CLI/render mode flag set/read on the main thread not a cross-thread shared object CON03 misfire,b15-adjudicator,high
+CON03-C,4,sqlite,ext/misc/sqlite3_stdio.c,79,FP,simBinaryOther same single-threaded render-mode flag not synchronized because never concurrently accessed,b15-adjudicator,high
+DCL13-C,5,sqlite,ext/misc/sqlite3_stdio.c,85,FP,fd param of UseBinaryWText is FILE* compared by identity not modified but const FILE* changes semantics and is matched against stdout/stderr non-const globals declaring const is not idiomatic and pointee unused either way,b15-adjudicator,high
+API00-C,6,sqlite,ext/misc/sqlite3_stdio.c,97,FP,sqlite3_fopen passes zFilename to strlen which is the documented contract caller supplies valid string internal API not a trust boundary,b15-adjudicator,high
+EXP34-C,7,sqlite,ext/misc/sqlite3_stdio.c,102,FP,zFilename only used after strlen at line 102 never reached null since fopen contract requires valid path EXP34 misfire,b15-adjudicator,high
+EXP33-C,8,sqlite,ext/misc/sqlite3_stdio.c,104,FP,b1 read only after if(b1&&b2) and MultiByteToWideChar fills it before b1[sz1] write not uninitialized,b15-adjudicator,high
+INT30-C,9,sqlite,ext/misc/sqlite3_stdio.c,104,FP,(sz1+1)*sizeof wrap requires strlen near INT_MAX i.e. a preexisting ~2GB string idiomatic alloc bounded by existing allocation,b15-adjudicator,high
+INT32-C,10,sqlite,ext/misc/sqlite3_stdio.c,104,FP,sz1+1 overflow needs strlen==INT_MAX of an already-allocated string practically unreachable,b15-adjudicator,high
+INT30-C,11,sqlite,ext/misc/sqlite3_stdio.c,105,FP,sz2 sizing same idiom bounded by existing zMode length,b15-adjudicator,high
+INT32-C,12,sqlite,ext/misc/sqlite3_stdio.c,105,FP,sz2+1 overflow unreachable for same reason,b15-adjudicator,high
+FIO42-C,13,sqlite,ext/misc/sqlite3_stdio.c,111,FP,fp returned to caller who owns and closes it FIO42 misfire on a fopen-wrapper that returns the handle,b15-adjudicator,high
+FIO42-C,14,sqlite,ext/misc/sqlite3_stdio.c,111,FP,fp is _wfopen result returned not leaked caller owns it,b15-adjudicator,high
+MEM12-C,15,sqlite,ext/misc/sqlite3_stdio.c,116,FP,b1/b2 freed at lines 113-114 and fp is returned to caller no leak MEM12 misfire,b15-adjudicator,high
+API00-C,16,sqlite,ext/misc/sqlite3_stdio.c,123,FP,zCommand used via strlen popen wrapper contract requires valid string internal API,b15-adjudicator,high
+API00-C,17,sqlite,ext/misc/sqlite3_stdio.c,123,FP,zMode used via strlen popen wrapper contract requires valid string,b15-adjudicator,high
+EXP33-C,18,sqlite,ext/misc/sqlite3_stdio.c,130,FP,b1 filled by MultiByteToWideChar after if(b1&&b2) guard not uninitialized,b15-adjudicator,high
+INT30-C,19,sqlite,ext/misc/sqlite3_stdio.c,130,FP,(sz1+1)*sizeof wrap needs near-INT_MAX command string unreachable,b15-adjudicator,high
+INT32-C,20,sqlite,ext/misc/sqlite3_stdio.c,130,FP,sz1+1 overflow unreachable for already-allocated command string,b15-adjudicator,high
+INT30-C,21,sqlite,ext/misc/sqlite3_stdio.c,131,FP,sz2 sizing bounded by existing mode string length,b15-adjudicator,high
+INT32-C,22,sqlite,ext/misc/sqlite3_stdio.c,131,FP,sz2+1 overflow unreachable,b15-adjudicator,high
+FIO42-C,23,sqlite,ext/misc/sqlite3_stdio.c,137,FP,fp is _wpopen result returned to caller who owns/closes it not leaked,b15-adjudicator,high
+MEM12-C,24,sqlite,ext/misc/sqlite3_stdio.c,141,FP,b1/b2 freed at 139-140 fp returned no leak MEM12 misfire,b15-adjudicator,high
+API00-C,25,sqlite,ext/misc/sqlite3_stdio.c,147,FP,sz is caller buffer size used as sz*sizeof and sz/4 negative/huge sz makes malloc fail returning 0 no overflow defect contract is positive size,b15-adjudicator,high
+INT30-C,26,sqlite,ext/misc/sqlite3_stdio.c,154,FP,sz*sizeof(wchar_t) negative or huge sz yields malloc failure handled by if(b1==0) return 0 not a wrap exploit,b15-adjudicator,high
+INT32-C,27,sqlite,ext/misc/sqlite3_stdio.c,159,FP,sz-1 used as ReadConsoleW count under SQLITE_USE_W32 only sz is positive buffer size no overflow,b15-adjudicator,high
+ERR30-C,28,sqlite,ext/misc/sqlite3_stdio.c,166,FP,fgetws is not an errno-in-band function in the CERT ERR30 sense return checked ==0 errno reset not required here,b15-adjudicator,high
+FIO20-C,29,sqlite,ext/misc/sqlite3_stdio.c,166,FP,fgetws return checked for 0 and buffer sized to sz then null-terminated via WideCharToMultiByte no silent truncation defect,b15-adjudicator,high
+FIO20-C,30,sqlite,ext/misc/sqlite3_stdio.c,177,FP,fgets here is the passthrough file path returning result to caller standard fgets semantics truncation is caller-expected,b15-adjudicator,high
+ERR33-C,31,sqlite,ext/misc/sqlite3_stdio.c,193,FP,fflush(out) in piecemealOutput is best-effort console mode flush ignoring rc is intentional ERR33 misfire on hardened glue,b15-adjudicator,high
+FIO50-C,32,sqlite,ext/misc/sqlite3_stdio.c,195,FP,fputws at 195 (idx cites b1) is console output not a read-then-write-without-reposition on a dual-mode stream FIO50 misfire console path has no read,b15-adjudicator,high
+ERR33-C,33,sqlite,ext/misc/sqlite3_stdio.c,196,FP,fflush after fputws best-effort console flush rc intentionally ignored,b15-adjudicator,high
+INT32-C,34,sqlite,ext/misc/sqlite3_stdio.c,199,FP,"sz-=i where i in [1,sz] so sz stays >=0 loop invariant bounds it no underflow",b15-adjudicator,high
+ERR33-C,35,sqlite,ext/misc/sqlite3_stdio.c,201,FP,fflush(out) best-effort flush rc ignored intentionally,b15-adjudicator,high
+ERR00-C,36,sqlite,ext/misc/sqlite3_stdio.c,204,FP,fwrite of single byte to console-mode stream return intentionally unchecked best-effort console rendering,b15-adjudicator,high
+ERR33-C,37,sqlite,ext/misc/sqlite3_stdio.c,204,FP,fwrite return ignored intentional one-byte console write ERR33 misfire,b15-adjudicator,high
+FIO09-C,38,sqlite,ext/misc/sqlite3_stdio.c,204,FP,fwrite of a single byte &b1[0] is not structured/padded binary data FIO09 misfire it is one octet,b15-adjudicator,high
+ERR00-C,39,sqlite,ext/misc/sqlite3_stdio.c,206,FP,fwrite single byte in loop return intentionally ignored,b15-adjudicator,high
+ERR33-C,40,sqlite,ext/misc/sqlite3_stdio.c,206,FP,fwrite &b1[i] one byte return ignored intentional,b15-adjudicator,high
+FIO09-C,41,sqlite,ext/misc/sqlite3_stdio.c,206,FP,single-byte fwrite not structured binary data FIO09 misfire,b15-adjudicator,high
+ERR33-C,42,sqlite,ext/misc/sqlite3_stdio.c,208,FP,fflush best-effort console flush rc ignored,b15-adjudicator,high
+INT32-C,43,sqlite,ext/misc/sqlite3_stdio.c,211,FP,"sz-=i with i in [0,sz) keeps sz>=0 loop invariant no underflow",b15-adjudicator,high
+STR34-C,44,sqlite,ext/misc/sqlite3_stdio.c,228,FP,z param of sqlite3_fputs is passed to strlen/MultiByteToWideChar as a char* not sign-extended into a larger int STR34 misfire no ctype/index use of a single char,b15-adjudicator,high
+INT30-C,45,sqlite,ext/misc/sqlite3_stdio.c,229,FP,(sz+1)*sizeof wrap needs strlen(z) near INT_MAX of an existing string unreachable idiom,b15-adjudicator,high
+INT32-C,46,sqlite,ext/misc/sqlite3_stdio.c,229,FP,sz+1 overflow unreachable for already-allocated z string,b15-adjudicator,high
+ERR33-C,47,sqlite,ext/misc/sqlite3_stdio.c,283,FP,vfprintf rc assigned and returned to caller as the function result not silently dropped caller may inspect ERR33 misfire,b15-adjudicator,high
+ERR33-C,48,sqlite,ext/misc/sqlite3_stdio.c,302,FP,vfprintf rc assigned and returned from sqlite3_vfprintf to caller not ignored,b15-adjudicator,high
+ERR33-C,49,sqlite,ext/misc/sqlite3_stdio.c,313,FP,fflush(fp) in sqlite3_fsetmode best-effort mode-switch flush rc intentionally not checked,b15-adjudicator,high

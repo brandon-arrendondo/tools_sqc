@@ -1,0 +1,39 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP40-C,1,sqlite,src/memjournal.c,93,FP,zBuf is void* param (line 88) not const; assigning void*->u8* is legal no const cast away,b15-adjudicator,high
+INT32-C,2,sqlite,src/memjournal.c,108,FP,iOff is i64 accumulating nChunkSize (>=8 small int) bounded by iOfst loop guard; no signed overflow reachable,b15-adjudicator,high
+INT33-C,3,sqlite,src/memjournal.c,115,FP,nChunkSize always set >0 in sqlite3JournalOpen (line 374/376) never zero so modulo safe,b15-adjudicator,high
+INT32-C,4,sqlite,src/memjournal.c,117,FP,"iChunkOffset in [0,nChunkSize) by modulo so nChunkSize-iChunkOffset is positive bounded subtraction no overflow",b15-adjudicator,high
+INT32-C,5,sqlite,src/memjournal.c,118,FP,same nChunkSize-iChunkOffset bounded difference inside MIN no overflow,b15-adjudicator,high
+INT31-C,6,sqlite,src/memjournal.c,119,FP,"nCopy is MIN(nRead,space) >=0 and bounded by nChunkSize small positive; size_t conversion safe",b15-adjudicator,high
+INT32-C,7,sqlite,src/memjournal.c,119,FP,pointer+iChunkOffset where iChunkOffset<nChunkSize=alloc size of zChunk; in-bounds pointer arithmetic,b15-adjudicator,high
+INT32-C,8,sqlite,src/memjournal.c,121,FP,nRead -= iSpace on int counters bounded by iAmt (journal write size); loop terminates no overflow,b15-adjudicator,high
+EXP30-C,9,sqlite,src/memjournal.c,123,FP,pChunk assignment in while condition is a sequence point; single read in body next iteration no UB,b15-adjudicator,high
+EXP30-C,10,sqlite,src/memjournal.c,123,FP,same chunked loop pChunk=pChunk->pNext fully sequenced by while condition,b15-adjudicator,high
+EXP30-C,11,sqlite,src/memjournal.c,123,FP,same as idx9/10 sqc triple-counts the single pChunk update in the do-while guard,b15-adjudicator,high
+INT32-C,12,sqlite,src/memjournal.c,124,FP,iOfst+iAmt are i64+int already guarded at line 98 against endpoint.iOffset; values are file-size bounded,b15-adjudicator,high
+DCL13-C,13,sqlite,src/memjournal.c,133,TP,pFirst in memjrnlFreeChunks is only traversed/freed never written through and not a typedef-fixed signature so const-correct would compile,b15-adjudicator,med
+EXP05-C,14,sqlite,src/memjournal.c,150,FP,sizeof(MemJournal) is size_t arg to memset not a const-qualified pointer cast; EXP05 misfire,b15-adjudicator,high
+FLP30-C,15,sqlite,src/memjournal.c,156,FP,pIter is FileChunk* loop iterator not floating-point; FLP30 misfire on pointer,b15-adjudicator,high
+EXP05-C,16,sqlite,src/memjournal.c,195,FP,zBuf is const void* cast to u8* but only read via memcpy source (line 220/246); benign read-only cast,b15-adjudicator,high
+INT31-C,17,sqlite,src/memjournal.c,220,FP,iAmt is int write amount asserted nChunkSize>iAmt (line 219) so positive bounded; size_t conversion safe,b15-adjudicator,high
+INT33-C,18,sqlite,src/memjournal.c,224,FP,nChunkSize always >0 from sqlite3JournalOpen; modulo by nonzero safe,b15-adjudicator,high
+INT32-C,19,sqlite,src/memjournal.c,225,FP,"iChunkOffset=offset%nChunkSize in [0,nChunkSize) so difference positive bounded no overflow",b15-adjudicator,high
+INT31-C,20,sqlite,src/memjournal.c,246,FP,"iSpace=MIN(nWrite,space)>0 bounded by nChunkSize; size_t conversion safe",b15-adjudicator,high
+INT32-C,21,sqlite,src/memjournal.c,246,FP,pointer+iChunkOffset with iChunkOffset<nChunkSize=zChunk alloc size; in-bounds,b15-adjudicator,high
+INT32-C,22,sqlite,src/memjournal.c,248,FP,nWrite-=iSpace int counters bounded by iAmt; while(nWrite>0) terminates no overflow,b15-adjudicator,high
+INT32-C,23,sqlite,src/memjournal.c,249,FP,endpoint.iOffset is i64 incremented by small iSpace; file-size bounded no overflow,b15-adjudicator,high
+DCL13-C,24,sqlite,src/memjournal.c,290,FP,pJfd is sqlite3_file* param fixed by sqlite3_io_methods xClose typedef; cast to MemJournal and pMethods consulted,b15-adjudicator,high
+DCL13-C,25,sqlite,src/memjournal.c,310,FP,pJfd fixed by sqlite3_io_methods xFileSize typedef; cannot be const,b15-adjudicator,high
+API00-C,26,sqlite,src/memjournal.c,353,FP,pVfs is internal SQLite call contract (caller passes valid vfs or 0 handled at nSpill branch); not a trust boundary,b15-adjudicator,high
+API00-C,27,sqlite,src/memjournal.c,353,FP,zName may legitimately be 0 (asserted nSpill<0 covers it); internal contract not external trust boundary,b15-adjudicator,high
+API00-C,28,sqlite,src/memjournal.c,353,FP,pJfd is preallocated handle guaranteed by internal caller; memset on it; not external input,b15-adjudicator,high
+EXP05-C,29,sqlite,src/memjournal.c,368,FP,sizeof(MemJournal) is size_t to memset not const pointer cast; EXP05 misfire,b15-adjudicator,high
+ARR39-C,30,sqlite,src/memjournal.c,376,FP,8+DFLT-sizeof(FileChunk) is compile-time constant scalar assigned to int nChunkSize; no pointer scaling,b15-adjudicator,high
+INT30-C,31,sqlite,src/memjournal.c,376,FP,expression is compile-time constant DFLT(1024)+8-sizeof; result positive (1024-8+8=1024) no wrap; asserted line 377,b15-adjudicator,high
+API00-C,32,sqlite,src/memjournal.c,391,FP,pJfd preallocated handle from internal caller passed to sqlite3JournalOpen which memsets it; not external input,b15-adjudicator,high
+API00-C,33,sqlite,src/memjournal.c,403,FP,pJfd internal handle; sqlite3JournalCreate consults pJfd->pMethods after; internal contract,b15-adjudicator,high
+FIO42-C,34,sqlite,src/memjournal.c,419,FP,rc is an int return code not a Windows file HANDLE; CreateFile/CloseHandle false match on memjrnlCreateFile,b15-adjudicator,high
+API00-C,35,sqlite,src/memjournal.c,430,FP,p is sqlite3_file* fixed signature; only reads p->pMethods; internal handle always valid,b15-adjudicator,high
+DCL13-C,36,sqlite,src/memjournal.c,430,TP,p in sqlite3JournalIsInMemory only reads p->pMethods never written and this is a public helper not a typedef callback so const compiles,b15-adjudicator,med
+API00-C,37,sqlite,src/memjournal.c,438,FP,pVfs internal call always valid vfs; reads pVfs->szOsFile; not external trust boundary,b15-adjudicator,high
+DCL13-C,38,sqlite,src/memjournal.c,438,TP,pVfs in sqlite3JournalSize only read for szOsFile never written and signature is a free function so const would compile,b15-adjudicator,med

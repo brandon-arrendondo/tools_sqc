@@ -1,0 +1,27 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/explain.c,72,FP,xConnect signature fixed by sqlite3_module typedef (void *pAux); const not allowed,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/explain.c,75,FP,xConnect signature fixed by typedef (char **pzErr); cannot be const-qualified,b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/explain.c,95,FP,pNew assigned by sqlite3_malloc at 95 and NULL-checked at 97 before any deref; not uninitialized,b15-adjudicator,high
+DCL13-C,4,sqlite,ext/misc/explain.c,115,FP,xOpen signature fixed by typedef (sqlite3_vtab *p); const not allowed,b15-adjudicator,high
+EXP33-C,5,sqlite,ext/misc/explain.c,117,FP,pCur assigned by malloc at 117 and NULL-checked at 118 before deref at 119; not uninitialized,b15-adjudicator,high
+MEM33-C,6,sqlite,ext/misc/explain.c,121,FP,explain_cursor has no flexible array member; *ppCursor=&pCur->base is plain pointer assignment,b15-adjudicator,high
+DCL13-C,7,sqlite,ext/misc/explain.c,152,FP,xClose signature fixed by typedef (sqlite3_vtab_cursor *cur); const not allowed,b15-adjudicator,high
+DCL13-C,8,sqlite,ext/misc/explain.c,169,FP,xColumn signature fixed by typedef (sqlite3_vtab_cursor *cur); const not allowed,b15-adjudicator,high
+DCL13-C,9,sqlite,ext/misc/explain.c,179,FP,xRowid signature fixed by typedef (sqlite3_vtab_cursor *cur); const not allowed,b15-adjudicator,high
+DCL13-C,10,sqlite,ext/misc/explain.c,195,FP,xFilter signature fixed by typedef (sqlite3_value **argv); const not allowed,b15-adjudicator,high
+MEM30-C,11,sqlite,ext/misc/explain.c,208,FP,pCur->zSql freed at 206 then reassigned at 207; read at 208 is the new value not freed memory,b15-adjudicator,high
+MEM30-C,12,sqlite,ext/misc/explain.c,209,FP,line 209 reads pCur->zSql which is the live reassignment from 207 not the freed pointer,b15-adjudicator,high
+MEM30-C,13,sqlite,ext/misc/explain.c,214,FP,pCur->db is the live db handle passed to sqlite3_prepare_v2 never freed in this function,b15-adjudicator,high
+MEM30-C,14,sqlite,ext/misc/explain.c,220,FP,220 frees zSql in error path then sets to 0 at 221; the 206 free was followed by reassign; no double-free,b15-adjudicator,high
+MEM30-C,15,sqlite,ext/misc/explain.c,224,FP,pCur->rc is an int field assigned by sqlite3_step not freed memory; sqc context-arg misread,b15-adjudicator,high
+MEM30-C,16,sqlite,ext/misc/explain.c,224,FP,pCur->rc is int read at 224 comparison; not a freed pointer,b15-adjudicator,high
+MEM30-C,17,sqlite,ext/misc/explain.c,224,FP,duplicate misfire on int field pCur->rc at 224; no free involved,b15-adjudicator,high
+DCL13-C,18,sqlite,ext/misc/explain.c,236,FP,xBestIndex signature fixed by typedef (sqlite3_vtab *tab); const not allowed,b15-adjudicator,high
+CON03-C,19,sqlite,ext/misc/explain.c,271,FP,explainModule is a write-once module struct registered via create_module; not thread-mutated shared state,b15-adjudicator,high
+API00-C,20,sqlite,ext/misc/explain.c,301,FP,db non-null guaranteed by extension-init contract; internal call not a trust boundary,b15-adjudicator,high
+DCL15-C,21,sqlite,ext/misc/explain.c,301,FP,sqlite3ExplainVtabInit is an intentional internal init hook called from amalgamation glue; must be non-static,b15-adjudicator,high
+DCL19-C,22,sqlite,ext/misc/explain.c,301,FP,same as 21; symbol is part of SQLite internal init table not file-local,b15-adjudicator,high
+API00-C,23,sqlite,ext/misc/explain.c,312,FP,db non-null guaranteed by loader contract for extension entry point,b15-adjudicator,high
+API00-C,24,sqlite,ext/misc/explain.c,312,FP,pApi non-null guaranteed by loadable-extension loader; consumed by EXTENSION_INIT2 macro,b15-adjudicator,high
+DCL15-C,25,sqlite,ext/misc/explain.c,312,FP,sqlite3_explain_init is the loadable-extension entry point (referenced extern from test1.c); must be external,b15-adjudicator,high
+DCL13-C,26,sqlite,ext/misc/explain.c,314,FP,"extension-entry signature is fixed (sqlite3*, char**, const sqlite3_api_routines*); pzErrMsg cannot be const",b15-adjudicator,high

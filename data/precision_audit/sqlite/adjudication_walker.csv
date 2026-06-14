@@ -1,0 +1,26 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,src/walker.c,25,FP,walkWindowList passes pList nodes to callbacks that mutate the Expr/Window tree (resolver rewrites nodes) so const is semantically wrong and would not propagate,b15-adjudicator,high
+MSC04-C,2,sqlite,src/walker.c,25,TP,walkWindowList genuinely participates in indirect recursion via the expr/select tree walk,b15-adjudicator,high
+API00-C,3,sqlite,src/walker.c,64,FP,sqlite3WalkExprNN is internal Walker glue invoked only from sqlite3WalkExpr with a non-null pWalker per caller invariant not a trust boundary,b15-adjudicator,high
+MEM05-C,4,sqlite,src/walker.c,64,FP,recursion is bounded by SQLITE_LIMIT_EXPR_DEPTH on parse-tree depth so stack use is bounded by design,b15-adjudicator,med
+INT13-C,5,sqlite,src/walker.c,70,FP,rc & WRC_Abort masks a callback WRC_* return code with a constant idiomatic flag test not a signed-bitwise defect,b15-adjudicator,high
+API00-C,6,sqlite,src/walker.c,98,FP,sqlite3WalkExpr is internal tree-walk glue pWalker guaranteed non-null by callers not a trust boundary,b15-adjudicator,high
+API00-C,7,sqlite,src/walker.c,98,FP,pExpr is explicitly null-checked at line 99 (pExpr ? ... : WRC_Continue) before use,b15-adjudicator,high
+MSC04-C,8,sqlite,src/walker.c,98,TP,sqlite3WalkExpr participates in genuine indirect recursion through the expr/select walk,b15-adjudicator,high
+API00-C,9,sqlite,src/walker.c,106,FP,sqlite3WalkExprList is internal glue pWalker guaranteed non-null by callers not a trust boundary,b15-adjudicator,high
+DCL13-C,10,sqlite,src/walker.c,106,FP,p (ExprList) items are passed to callbacks that mutate Expr nodes during resolution so const is semantically wrong,b15-adjudicator,high
+MSC04-C,11,sqlite,src/walker.c,106,TP,sqlite3WalkExprList genuinely participates in indirect recursion,b15-adjudicator,high
+DCL13-C,12,sqlite,src/walker.c,133,FP,p (Select) fields are walked and mutated by resolver callbacks so const would not compile or propagate,b15-adjudicator,high
+MSC04-C,13,sqlite,src/walker.c,133,TP,sqlite3WalkSelectExpr genuinely participates in indirect recursion via subquery walk,b15-adjudicator,high
+DCL13-C,14,sqlite,src/walker.c,166,FP,p (Select) pSrc subqueries are passed to mutating select callbacks so const is semantically wrong,b15-adjudicator,high
+MSC04-C,15,sqlite,src/walker.c,166,TP,sqlite3WalkSelectFrom genuinely participates in indirect recursion via subquery select walk,b15-adjudicator,high
+MSC04-C,16,sqlite,src/walker.c,206,TP,sqlite3WalkSelect genuinely participates in indirect recursion via select/expr walk,b15-adjudicator,high
+INT13-C,17,sqlite,src/walker.c,212,FP,rc & WRC_Abort masks callback return code with WRC_Abort constant idiomatic flag test not a defect,b15-adjudicator,high
+API00-C,18,sqlite,src/walker.c,229,FP,sqlite3WalkerDepthIncrease is a Walker select-callback invoked internally with non-null pWalker not a trust boundary,b15-adjudicator,high
+INT32-C,19,sqlite,src/walker.c,231,FP,walkerDepth is bounded by SQLITE_LIMIT_EXPR_DEPTH subquery nesting never approaches INT_MAX and is balanced by decrease,b15-adjudicator,high
+API00-C,20,sqlite,src/walker.c,234,FP,sqlite3WalkerDepthDecrease is internal Walker callback with non-null pWalker not a trust boundary,b15-adjudicator,high
+INT32-C,21,sqlite,src/walker.c,236,FP,walkerDepth-- balances a prior increment bounded by nesting depth never near INT_MIN,b15-adjudicator,high
+API00-C,22,sqlite,src/walker.c,249,FP,sqlite3ExprWalkNoop is a Walker xExprCallback whose params are explicitly UNUSED_PARAMETER and signature fixed by callback typedef,b15-adjudicator,high
+API00-C,23,sqlite,src/walker.c,249,FP,sqlite3ExprWalkNoop NotUsed2 is explicitly unused via UNUSED_PARAMETER2 and never dereferenced,b15-adjudicator,high
+API00-C,24,sqlite,src/walker.c,258,FP,sqlite3SelectWalkNoop is a Walker xSelectCallback whose params are explicitly UNUSED_PARAMETER and signature fixed by typedef,b15-adjudicator,high
+API00-C,25,sqlite,src/walker.c,258,FP,sqlite3SelectWalkNoop NotUsed2 is explicitly unused via UNUSED_PARAMETER2 and never dereferenced,b15-adjudicator,high

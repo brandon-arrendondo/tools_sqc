@@ -1,0 +1,46 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,ext/rbu/rbu.c,25,FP,"zArgv0 is argv[0] from CLI entry passed to fprintf %s, never null in practice and not a trust boundary",b15-adjudicator,high
+DCL15-C,2,sqlite,ext/rbu/rbu.c,25,TP,"usage() has external linkage but is only used in this file, should be static",b15-adjudicator,high
+DCL19-C,3,sqlite,ext/rbu/rbu.c,25,TP,"same as idx2, usage() should be static to minimize scope",b15-adjudicator,high
+PRE32-C,4,sqlite,ext/rbu/rbu.c,26,FP,"fprintf args are adjacent string-literal continuations with no # token, classic PRE32 misfire",b15-adjudicator,high
+PRE32-C,5,sqlite,ext/rbu/rbu.c,27,FP,"same multi-line string literal, no preprocessor directive present",b15-adjudicator,high
+EXP34-C,6,sqlite,ext/rbu/rbu.c,53,FP,"zArgv0 is argv[0], never null when argc>=1 which is always true at program entry",b15-adjudicator,high
+ERR05-C,7,sqlite,ext/rbu/rbu.c,54,FP,"usage() is application-level CLI code where exit(1) is the intended termination, not app-independent library code",b15-adjudicator,med
+DCL15-C,8,sqlite,ext/rbu/rbu.c,57,TP,"report_default_vfs() only used in this file, should be static",b15-adjudicator,high
+DCL19-C,9,sqlite,ext/rbu/rbu.c,57,TP,same as idx8,b15-adjudicator,high
+API00-C,10,sqlite,ext/rbu/rbu.c,62,FP,"pRbu passed to sqlite3rbu_db which tolerates the value, internal helper contract not a trust boundary",b15-adjudicator,high
+DCL15-C,11,sqlite,ext/rbu/rbu.c,62,TP,"report_rbu_vfs() only used in this file, should be static",b15-adjudicator,high
+DCL19-C,12,sqlite,ext/rbu/rbu.c,62,TP,same as idx11,b15-adjudicator,high
+DCL11-C,13,sqlite,ext/rbu/rbu.c,68,FP,"zName is guarded by if(zName) at line 67 before the %s use at line 68, never null",b15-adjudicator,high
+API00-C,14,sqlite,ext/rbu/rbu.c,76,FP,"argv is the program entry parameter, not a validatable trust boundary",b15-adjudicator,high
+API00-C,15,sqlite,ext/rbu/rbu.c,76,FP,"argc is program entry, no attacker-controlled overflow; later arithmetic guarded by argc<3 check",b15-adjudicator,high
+INT32-C,16,sqlite,ext/rbu/rbu.c,89,FP,nArgc=argc-2 computed before but argc>=1 at entry so no signed overflow possible,b15-adjudicator,high
+STR34-C,17,sqlite,ext/rbu/rbu.c,94,FP,"nArg=strlen(zArg) is size_t-to-int, no char sign-extension into a larger int occurs here",b15-adjudicator,high
+INT31-C,18,sqlite,ext/rbu/rbu.c,95,FP,"nArg is strlen result guarded nArg>1 so positive, safe size_t conversion in memcmp",b15-adjudicator,high
+INT31-C,19,sqlite,ext/rbu/rbu.c,98,FP,"same, nArg>1 guarded positive",b15-adjudicator,high
+INT31-C,20,sqlite,ext/rbu/rbu.c,101,FP,"same, nArg>1 guarded positive",b15-adjudicator,high
+ERR07-C,21,sqlite,ext/rbu/rbu.c,103,TP,"atoi at line 103 lacks error detection per ERR07, strtol family preferred",b15-adjudicator,med
+ERR34-C,22,sqlite,ext/rbu/rbu.c,103,TP,atoi at line 103 lacks error detection per ERR34,b15-adjudicator,med
+INT31-C,23,sqlite,ext/rbu/rbu.c,105,FP,"nArg>1 guarded positive, safe size_t conversion",b15-adjudicator,high
+ERR07-C,24,sqlite,ext/rbu/rbu.c,108,TP,atoi at line 108 lacks error detection per ERR07,b15-adjudicator,med
+ERR34-C,25,sqlite,ext/rbu/rbu.c,108,TP,atoi at line 108 lacks error detection per ERR34,b15-adjudicator,med
+INT32-C,26,sqlite,ext/rbu/rbu.c,114,FP,"argc>=3 guaranteed by usage()/exit at line 91, argc-2 cannot overflow",b15-adjudicator,high
+INT32-C,27,sqlite,ext/rbu/rbu.c,115,FP,"argc>=3 guaranteed, argc-1 cannot overflow",b15-adjudicator,high
+FIO42-C,28,sqlite,ext/rbu/rbu.c,124,FP,pRbu is an sqlite3rbu* handle not a file descriptor and is released via sqlite3rbu_close at line 160,b15-adjudicator,high
+INT10-C,29,sqlite,ext/rbu/rbu.c,143,FP,"i is a loop counter from 0 and nStatStep is guarded >0 at line 143, modulo operands non-negative",b15-adjudicator,high
+INT32-C,30,sqlite,ext/rbu/rbu.c,143,FP,"nStatStep guarded >0 and i>=0, INT_MIN%-1 cannot occur",b15-adjudicator,high
+INT33-C,31,sqlite,ext/rbu/rbu.c,143,FP,division/modulo guarded by nStatStep>0 condition on same line,b15-adjudicator,high
+DCL11-C,32,sqlite,ext/rbu/rbu.c,147,FP,"sqlite3_int64 is a typedef for long long, %lld matches exactly",b15-adjudicator,high
+DCL11-C,33,sqlite,ext/rbu/rbu.c,147,FP,"same, sqlite3_int64 is long long",b15-adjudicator,high
+INT00-C,34,sqlite,ext/rbu/rbu.c,147,FP,"sqlite3_int64 is exactly i64, %lld is the correct portable specifier",b15-adjudicator,high
+INT00-C,35,sqlite,ext/rbu/rbu.c,147,FP,same as idx34,b15-adjudicator,high
+ERR33-C,36,sqlite,ext/rbu/rbu.c,156,FP,"fflush(stdout) on a CLI progress line, ignoring return is benign and intentional here",b15-adjudicator,med
+EXP33-C,37,sqlite,ext/rbu/rbu.c,166,FP,zBuf is filled by sqlite3_snprintf at line 166 before being read by fprintf at line 170,b15-adjudicator,high
+FIO47-C,38,sqlite,ext/rbu/rbu.c,170,FP,"zBuf is char[200] decaying to char*, sqc misclassified the array as integer",b15-adjudicator,high
+FIO47-C,39,sqlite,ext/rbu/rbu.c,178,FP,same array-to-pointer misclassification at line 178,b15-adjudicator,high
+DCL11-C,40,sqlite,ext/rbu/rbu.c,182,FP,"zErrmsg is set by sqlite3rbu_close on error before the default-case fprintf, glibc also prints (null) for %s NULL",b15-adjudicator,med
+EXP34-C,41,sqlite,ext/rbu/rbu.c,182,FP,"same, zErrmsg populated on the error path that reaches line 182",b15-adjudicator,med
+DCL11-C,42,sqlite,ext/rbu/rbu.c,190,FP,"sqlite3_int64 is long long, %lld matches",b15-adjudicator,high
+DCL11-C,43,sqlite,ext/rbu/rbu.c,190,FP,same as idx42,b15-adjudicator,high
+INT00-C,44,sqlite,ext/rbu/rbu.c,190,FP,"sqlite3_int64 is exactly i64, %lld correct",b15-adjudicator,high
+INT00-C,45,sqlite,ext/rbu/rbu.c,190,FP,same as idx44,b15-adjudicator,high

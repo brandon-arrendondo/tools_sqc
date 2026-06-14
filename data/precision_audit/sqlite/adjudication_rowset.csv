@@ -1,0 +1,26 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,src/rowset.c,130,FP,db is internal sqlite3 connection handle passed to DbMallocRawNN not a trust boundary,b15-adjudicator,high
+API00-C,2,sqlite,src/rowset.c,172,FP,pArg is internal destructor-callback arg with caller-guaranteed validity not a trust boundary,b15-adjudicator,high
+EXP33-C,3,sqlite,src/rowset.c,191,FP,pNew assigned by sqlite3DbMallocRawNN at 191 and null-checked at 192 before any deref,b15-adjudicator,high
+DCL13-C,4,sqlite,src/rowset.c,242,FP,rowSetEntryMerge reweaves list A nodes via pTail->pRight writes so pA pointees are mutated const breaks,b15-adjudicator,high
+DCL13-C,5,sqlite,src/rowset.c,243,FP,same merge reweaves list B nodes via pTail->pRight writes so pB pointees are mutated const breaks,b15-adjudicator,high
+EXP34-C,6,sqlite,src/rowset.c,255,FP,pA guarded by assert(pA!=0) at 249 and loop checks if(pA==0) break before reuse,b15-adjudicator,high
+EXP34-C,7,sqlite,src/rowset.c,262,FP,pB guarded by assert(pB!=0) at 249 and if(pB==0) break before reuse,b15-adjudicator,high
+EXP33-C,8,sqlite,src/rowset.c,269,FP,head.pRight is always written via pTail->pRight (pTail=&head) before the return head.pRight,b15-adjudicator,high
+ARR30-C,9,sqlite,src/rowset.c,284,FP,aBucket[40] index i bounded by design 40 buckets cover 2^40 entries unreachable in practice,b15-adjudicator,high
+ARR30-C,10,sqlite,src/rowset.c,285,FP,aBucket[40] index i bounded by design log2(N) buckets cannot exceed 40,b15-adjudicator,high
+ARR30-C,11,sqlite,src/rowset.c,286,FP,aBucket[40] index i bounded by design log2(N) buckets cannot exceed 40,b15-adjudicator,high
+ARR30-C,12,sqlite,src/rowset.c,293,FP,aBucket loop i runs 1..sizeof/sizeof bounded to 40 by construction,b15-adjudicator,high
+ARR30-C,13,sqlite,src/rowset.c,294,FP,aBucket loop i bounded to array size 40 by the for-condition,b15-adjudicator,high
+ARR30-C,14,sqlite,src/rowset.c,294,FP,aBucket loop i bounded to array size 40 by the for-condition,b15-adjudicator,high
+MEM05-C,15,sqlite,src/rowset.c,305,TP,rowSetTreeToList is genuinely recursive depth bounded by tree depth still real recursion,b15-adjudicator,high
+MSC04-C,16,sqlite,src/rowset.c,305,TP,rowSetTreeToList calls itself directly at 313 and 319 genuine direct recursion,b15-adjudicator,high
+EXP34-C,17,sqlite,src/rowset.c,314,FP,p set by rowSetTreeToList which always writes *ppLast before return (both branches),b15-adjudicator,high
+DCL30-C,18,sqlite,src/rowset.c,359,FP,pLeft holds heap pointer returned from rowSetNDeepTree not address of a local object,b15-adjudicator,high
+DCL30-C,19,sqlite,src/rowset.c,369,FP,p holds heap RowSetEntry pointer value returned not address of automatic storage,b15-adjudicator,high
+DCL13-C,20,sqlite,src/rowset.c,376,FP,rowSetListToTree writes p->pLeft and p->pRight relinking pList nodes pointees mutated,b15-adjudicator,high
+DCL30-C,21,sqlite,src/rowset.c,392,FP,p holds heap RowSetEntry pointer value not address of a local variable,b15-adjudicator,high
+API00-C,22,sqlite,src/rowset.c,408,FP,pRowid is internal SQLite output-arg contract caller guarantees valid address,b15-adjudicator,high
+API00-C,23,sqlite,src/rowset.c,442,FP,pRowSet is internal handle with caller invariant not a trust boundary,b15-adjudicator,high
+EXP40-C,24,sqlite,src/rowset.c,454,FP,&pRowSet->pForest is address-of-member assignment no const qualifier circumvented,b15-adjudicator,high
+EXP33-C,25,sqlite,src/rowset.c,465,FP,pAux set by rowSetTreeToList which always writes *ppFirst before returning,b15-adjudicator,high

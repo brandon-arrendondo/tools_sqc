@@ -1,0 +1,25 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT30-C,1,sqlite,ext/fts3/fts3_icu.c,63,FP,"sizeof(IcuTokenizer)+n passed to sqlite3_malloc64 (uint64); n=strlen+1 bounded by SQLITE_MAX_LENGTH so no wrap, alloc-failure returns NOMEM",b15-adjudicator,high
+EXP05-C,2,sqlite,ext/fts3/fts3_icu.c,71,FP,"line 71 memcpy(p->zLocale, argv[0], n) casts nothing away of const; argv[0] read-only source, no const violation; misfire",b15-adjudicator,high
+INT31-C,3,sqlite,ext/fts3/fts3_icu.c,71,FP,"n>=1 here (guarded by if(n)) and bounded by SQLITE_MAX_LENGTH; positive int to size_t in memcpy is safe, not attacker-negative",b15-adjudicator,high
+DCL13-C,4,sqlite,ext/fts3/fts3_icu.c,95,FP,icuDestroy signature is fixed by sqlite3_tokenizer_module.xDestroy function-pointer typedef; cannot add const,b15-adjudicator,high
+INT32-C,5,sqlite,ext/fts3/fts3_icu.c,119,FP,nInput+1 at line 119; nInput is SQL text length bounded by SQLITE_MAX_LENGTH (<2^31) so nChar=nInput+1 cannot overflow int,b15-adjudicator,high
+ARR39-C,6,sqlite,ext/fts3/fts3_icu.c,121,FP,"scaled alloc size at line 121 feeds sqlite3_malloc64(uint64); sizeof promotes terms to size_t, nInput bounded so no overflow, NOMEM checked",b15-adjudicator,high
+INT14-C,7,sqlite,ext/fts3/fts3_icu.c,121,FP,"INT14 readability: nChar used in (nChar+3)&~3 alignment idiom; intentional round-up, not a defect",b15-adjudicator,med
+INT30-C,8,sqlite,ext/fts3/fts3_icu.c,121,FP,"((nChar+3)&~3)*sizeof(UChar): sizeof is size_t so 64-bit multiply, nChar bounded by SQLITE_MAX_LENGTH, no wrap",b15-adjudicator,high
+INT13-C,9,sqlite,ext/fts3/fts3_icu.c,122,FP,"INT13 (nChar+3)&~3 alignment round-up on a positive bounded int; well-defined, standard idiom",b15-adjudicator,high
+INT30-C,10,sqlite,ext/fts3/fts3_icu.c,122,FP,((nChar+3)&~3)*sizeof(UChar) is 64-bit (size_t) multiply with bounded nChar; no overflow,b15-adjudicator,high
+INT32-C,11,sqlite,ext/fts3/fts3_icu.c,122,FP,nChar+3 with nChar=nInput+1 bounded by SQLITE_MAX_LENGTH; cannot reach INT_MAX,b15-adjudicator,high
+INT30-C,12,sqlite,ext/fts3/fts3_icu.c,123,FP,"(nChar+1)*sizeof(int): sizeof is size_t, 64-bit multiply, nChar bounded; no wrap",b15-adjudicator,high
+INT32-C,13,sqlite,ext/fts3/fts3_icu.c,123,FP,(nChar+1)*sizeof(int) promoted to size_t before multiply; nChar bounded so no signed overflow in the multiply,b15-adjudicator,high
+INT32-C,14,sqlite,ext/fts3/fts3_icu.c,123,FP,nChar+1 with nChar=nInput+1 bounded by SQLITE_MAX_LENGTH; no overflow,b15-adjudicator,high
+INT13-C,15,sqlite,ext/fts3/fts3_icu.c,130,FP,line 130 (nChar+3)&~3 alignment idiom on positive bounded int for aOffset pointer placement; well-defined,b15-adjudicator,high
+INT32-C,16,sqlite,ext/fts3/fts3_icu.c,130,FP,"nChar+3 at line 130, bounded as above; no overflow",b15-adjudicator,high
+EXP33-C,17,sqlite,ext/fts3/fts3_icu.c,133,FP,"c (UChar32) is set by U8_NEXT(zInput,...,c) at line 133 before the while(c>0) reads it; not uninitialized",b15-adjudicator,high
+FIO42-C,18,sqlite,ext/fts3/fts3_icu.c,151,FP,"pCsr->pIter is a UBreakIterator* from ubrk_open, freed by ubrk_close in icuClose; not a file descriptor, FIO42 misfire",b15-adjudicator,high
+EXP33-C,19,sqlite,ext/fts3/fts3_icu.c,202,FP,"c is written by U16_NEXT(pCsr->aChar,...,c) at line 202 before u_isspace(c) reads it; not uninitialized",b15-adjudicator,high
+INT32-C,20,sqlite,ext/fts3/fts3_icu.c,225,FP,"iEnd-iStart are ICU break-iterator offsets into aChar (0..nChar, bounded by input); difference is small non-negative, no overflow",b15-adjudicator,high
+STR34-C,21,sqlite,ext/fts3/fts3_icu.c,230,FP,"STR34 misfire: *ppToken set to pCsr->zBuffer (char*) at line 230, just a pointer store of UTF-8 output, no char-to-int sign extension",b15-adjudicator,med
+INT32-C,22,sqlite,ext/fts3/fts3_icu.c,234,FP,pCsr->iToken++ counts tokens in one string (<= nChar); cannot approach INT_MAX given SQLITE_MAX_LENGTH bound,b15-adjudicator,high
+API00-C,23,sqlite,ext/fts3/fts3_icu.c,255,FP,"ppModule is contract-guaranteed non-null by the tokenizer-registration API; internal caller never passes null, defensive-check noise",b15-adjudicator,high
+MEM33-C,24,sqlite,ext/fts3/fts3_icu.c,258,FP,"*ppModule = &icuTokenizerModule assigns a pointer, not a flexible-array struct copy; MEM33 misfire (module has no flexible array)",b15-adjudicator,high

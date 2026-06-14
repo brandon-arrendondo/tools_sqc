@@ -1,0 +1,35 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT31-C,1,sqlite,ext/fts3/fts3_hash.c,41,FP,"n comes from sizeof-based internal alloc sizes (Fts3HashElem, htbucket array, nKey); never negative, sqlite3_malloc64 takes i64 and memset bounds match alloc",b15-adjudicator,high
+API00-C,2,sqlite,ext/fts3/fts3_hash.c,59,FP,"pNew validated by assert(pNew!=0); contract requires caller pass valid struct, no untrusted ptr",b15-adjudicator,high
+API00-C,3,sqlite,ext/fts3/fts3_hash.c,74,FP,"pH validated by assert(pH!=0); internal contract, not attacker-controlled",b15-adjudicator,high
+DCL00-C,4,sqlite,ext/fts3/fts3_hash.c,99,FP,h at line 99 is reassigned in the while loop (h=(h<<3)^h^*z); not const-eligible (sqc misread),b15-adjudicator,med
+INT13-C,5,sqlite,ext/fts3/fts3_hash.c,102,FP,"h is unsigned at line 99 (unsigned h=0); shift/xor on unsigned is well-defined, no signed bitwise issue",b15-adjudicator,high
+INT13-C,6,sqlite,ext/fts3/fts3_hash.c,105,FP,h is unsigned (line 99); masking unsigned is defined and intended,b15-adjudicator,high
+INT31-C,7,sqlite,ext/fts3/fts3_hash.c,109,FP,"n1 is key length, equals n2 (checked) and bounded by stored nKey; strncmp size non-negative for valid keys",b15-adjudicator,high
+DCL00-C,8,sqlite,ext/fts3/fts3_hash.c,116,FP,h at line 116 is modified in loop (h=(h<<3)^h^*z); not const-eligible,b15-adjudicator,med
+INT32-C,9,sqlite,ext/fts3/fts3_hash.c,118,FP,"nKey-- bounded by loop nKey>0; for normal token lengths far from INT_MIN, not reachable with INT_MIN",b15-adjudicator,high
+INT13-C,10,sqlite,ext/fts3/fts3_hash.c,119,TP,fts3BinHash uses signed int h with (h<<3)^h on signed int; left shift of negative/overflow is technically UB per INT13/INT32 but practically benign hash,b15-adjudicator,med
+INT32-C,11,sqlite,ext/fts3/fts3_hash.c,119,TP,h<<3 on signed int h in fts3BinHash can overflow into sign bit (UB); genuine signed-shift defect though hash-benign,b15-adjudicator,med
+INT13-C,12,sqlite,ext/fts3/fts3_hash.c,121,FP,final return h & 0x7fffffff masks to non-negative; signed-& is defined and intended to clear sign bit,b15-adjudicator,high
+INT31-C,13,sqlite,ext/fts3/fts3_hash.c,125,FP,"n1==n2 checked at line 124 before memcmp; n1 is bounded stored key length, non-negative",b15-adjudicator,high
+INT14-C,14,sqlite,ext/fts3/fts3_hash.c,201,FP,"new_size used in & and arithmetic is readability heuristic only, not a defect; power-of-2 asserted",b15-adjudicator,low
+INT30-C,15,sqlite,ext/fts3/fts3_hash.c,202,FP,"new_size is internal power-of-2 (8, then doubling), tiny; new_size*sizeof bounded, sqlite3_malloc64 caps; no attacker control of new_size",b15-adjudicator,high
+MEM30-C,16,sqlite,ext/fts3/fts3_hash.c,207,FP,"line 207 reads pH->keyClass which is not freed; fts3HashFree(pH->ht) freed ht only, keyClass is a char field still valid",b15-adjudicator,high
+MEM30-C,17,sqlite,ext/fts3/fts3_hash.c,208,FP,line 208 reads pH->first which is not freed; only pH->ht was freed; first is a live list pointer,b15-adjudicator,high
+DCL00-C,18,sqlite,ext/fts3/fts3_hash.c,209,FP,"h at line 209 is computed and used (index into new_ht); single assignment but it IS the loop body value, const arguably ok but sqc heuristic FP on usage",b15-adjudicator,med
+INT32-C,19,sqlite,ext/fts3/fts3_hash.c,209,FP,"new_size-1 with new_size power-of-2 >=8; no overflow, used as mask",b15-adjudicator,high
+WIN04-C,20,sqlite,ext/fts3/fts3_hash.c,209,FP,"WIN04 EncodePointer is Windows-specific defense-in-depth noise; xHash is internal static fn ptr, not a security defect",b15-adjudicator,high
+INT32-C,21,sqlite,ext/fts3/fts3_hash.c,235,FP,"count is pEntry->count, bounded by elements in bucket (small positive); cannot reach INT_MIN",b15-adjudicator,high
+DCL30-C,22,sqlite,ext/fts3/fts3_hash.c,237,FP,"returns elem which is a parameter/list pointer (heap), not address of local; 'elem' is a pointer variable, returned value points to heap node",b15-adjudicator,high
+INT32-C,23,sqlite,ext/fts3/fts3_hash.c,274,FP,pH->count-- bounded by actual element count (positive); cannot underflow to INT_MIN in practice,b15-adjudicator,high
+INT13-C,24,sqlite,ext/fts3/fts3_hash.c,295,FP,"h & (htsize-1) — masking, result of valid hash; signed-& defined, htsize power-of-2",b15-adjudicator,high
+INT32-C,25,sqlite,ext/fts3/fts3_hash.c,295,FP,htsize-1 with htsize power-of-2 >=8 (or 0 guarded); no overflow,b15-adjudicator,high
+DCL13-C,26,sqlite,ext/fts3/fts3_hash.c,329,FP,"data is the value payload stored into elem->data (line 349/379); it is stored, not const-eligible",b15-adjudicator,high
+INT13-C,27,sqlite,ext/fts3/fts3_hash.c,342,FP,"hraw & (htsize-1) masking; signed-& defined, used as bucket index",b15-adjudicator,high
+INT32-C,28,sqlite,ext/fts3/fts3_hash.c,342,FP,"htsize-1, htsize power-of-2; asserted, no overflow",b15-adjudicator,high
+INT32-C,29,sqlite,ext/fts3/fts3_hash.c,355,FP,"htsize*2 doubling internal power-of-2; bounded by element count, no attacker-controlled wrap",b15-adjudicator,high
+INT31-C,30,sqlite,ext/fts3/fts3_hash.c,369,FP,"nKey is the same length used to malloc the dest buffer (line 364 fts3HashMalloc(nKey)); memcpy size matches alloc, non-negative for valid keys",b15-adjudicator,high
+EXP05-C,31,sqlite,ext/fts3/fts3_hash.c,371,FP,"(void*)pKey cast stores caller key when copyKey false; intentional API contract, const cast benign",b15-adjudicator,high
+INT32-C,32,sqlite,ext/fts3/fts3_hash.c,374,FP,pH->count++ bounded by number of distinct keys; INT_MAX unreachable for token hash,b15-adjudicator,high
+INT13-C,33,sqlite,ext/fts3/fts3_hash.c,377,FP,hraw & (htsize-1) masking with power-of-2 htsize; signed-& defined,b15-adjudicator,high
+INT32-C,34,sqlite,ext/fts3/fts3_hash.c,377,FP,"htsize-1 power-of-2 mask; asserted power-of-2, no overflow",b15-adjudicator,high

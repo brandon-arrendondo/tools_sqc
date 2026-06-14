@@ -1,0 +1,36 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ERR05-C,1,sqlite,ext/expert/expert.c,24,FP,option_requires_argument is part of this standalone CLI app not reusable library code so exit() is appropriate error handling,b15-adjudicator,high
+ERR07-C,2,sqlite,ext/expert/expert.c,28,TP,atoi at line 28 genuinely lacks error detection rule fires correctly though CLI verbosity arg is low impact,b15-adjudicator,med
+ERR34-C,3,sqlite,ext/expert/expert.c,28,TP,atoi lacks the strtol-style error detection ERR34 targets genuine pattern,b15-adjudicator,med
+DCL13-C,4,sqlite,ext/expert/expert.c,31,TP,usage param argv only read via argv[0] never written const char *const* would compile,b15-adjudicator,low
+EXP34-C,5,sqlite,ext/expert/expert.c,33,FP,usage reached only after argc<2 guard so argv[0] always exists per C runtime contract,b15-adjudicator,high
+ERR05-C,6,sqlite,ext/expert/expert.c,40,FP,usage is the CLI applications own help/exit path not application-independent code,b15-adjudicator,high
+ERR00-C,7,sqlite,ext/expert/expert.c,44,FP,fopen result is checked at line 49 if(in==0),b15-adjudicator,high
+FIO05-C,8,sqlite,ext/expert/expert.c,44,FP,CLI tool reading user-supplied SQL file is not a privilege boundary requiring fstat owner checks,b15-adjudicator,high
+WIN03-C,9,sqlite,ext/expert/expert.c,44,FP,N flag is a Windows portability nicety not a defect SQLite uses rb consistently,b15-adjudicator,high
+STR34-C,10,sqlite,ext/expert/expert.c,50,FP,*pzErr=sqlite3_mprintf is a char** pointer assignment not a char value read no sign extension,b15-adjudicator,high
+ERR00-C,11,sqlite,ext/expert/expert.c,53,TP,fseek return value at line 53 is genuinely ignored,b15-adjudicator,med
+ERR33-C,12,sqlite,ext/expert/expert.c,53,TP,fseek return value genuinely ignored failure of seek leaves nIn wrong,b15-adjudicator,med
+FIO14-C,13,sqlite,ext/expert/expert.c,53,TP,fseek SEEK_END on a binary stream opened rb is technically UB per FIO14,b15-adjudicator,low
+FIO19-C,14,sqlite,ext/expert/expert.c,53,TP,code uses fseek/ftell to size the file the FIO19 advisory pattern,b15-adjudicator,low
+ERR00-C,15,sqlite,ext/expert/expert.c,54,TP,ftell result nIn at line 54 not checked for -1 before use in malloc/fread,b15-adjudicator,med
+ERR33-C,16,sqlite,ext/expert/expert.c,54,TP,ftell can return -1 and nIn is used unchecked in size math,b15-adjudicator,med
+ERR07-C,17,sqlite,ext/expert/expert.c,55,TP,rewind silently discards error indicator rule advisory fires on real call,b15-adjudicator,low
+ERR00-C,18,sqlite,ext/expert/expert.c,57,FP,fread result nRead is checked at line 59 if(nRead!=1),b15-adjudicator,high
+ERR33-C,19,sqlite,ext/expert/expert.c,57,FP,fread return value is checked at line 59,b15-adjudicator,high
+INT31-C,20,sqlite,ext/expert/expert.c,57,TP,signed long nIn (possibly -1 from ftell) converts to size_t in fread genuine INT31,b15-adjudicator,med
+ERR00-C,21,sqlite,ext/expert/expert.c,58,TP,fclose return value at line 58 genuinely ignored,b15-adjudicator,low
+ERR33-C,22,sqlite,ext/expert/expert.c,58,TP,fclose return genuinely ignored,b15-adjudicator,low
+STR34-C,23,sqlite,ext/expert/expert.c,61,FP,*pzErr=sqlite3_mprintf pointer assignment not char read no sign extension,b15-adjudicator,high
+ARR00-C,24,sqlite,ext/expert/expert.c,64,FP,pBuf at line 64 is not yet freed free is at line 66 (and the line 60 free path returns) no UAF,b15-adjudicator,high
+API00-C,25,sqlite,ext/expert/expert.c,70,FP,argv is the runtime-supplied main parameter guaranteed valid by C startup contract,b15-adjudicator,high
+API00-C,26,sqlite,ext/expert/expert.c,70,FP,argc is the runtime arg count argc-1 guarded by argc>=2 check at line 80 no overflow,b15-adjudicator,high
+INT32-C,27,sqlite,ext/expert/expert.c,81,FP,argc>=2 guaranteed by line 80 guard so argc-1 cannot underflow/overflow,b15-adjudicator,high
+FIO42-C,28,sqlite,ext/expert/expert.c,83,FP,rc is an int return code from sqlite3_open not a file descriptor from open() db closed by destroy/sqlite handling,b15-adjudicator,high
+EXP34-C,29,sqlite,ext/expert/expert.c,89,FP,db assigned by sqlite3_open and rc==SQLITE_OK checked at line 84 before reaching line 89 db non-null,b15-adjudicator,high
+DCL11-C,30,sqlite,ext/expert/expert.c,91,TP,if expert_new fails leaving zErr=0 fprintf %s gets NULL which is UB,b15-adjudicator,med
+EXP34-C,31,sqlite,ext/expert/expert.c,91,TP,zErr may remain NULL after expert_new failure passed to fprintf %s UB,b15-adjudicator,med
+EXP34-C,32,sqlite,ext/expert/expert.c,136,TP,sqlite3_expert_report can return 0 (verified bRun/no-stmt/null-field) zCand passed to fprintf %s unguarded,b15-adjudicator,med
+INT32-C,33,sqlite,ext/expert/expert.c,144,FP,loop index i bounded by small nQuery statement count i+1 cannot realistically overflow,b15-adjudicator,high
+EXP34-C,34,sqlite,ext/expert/expert.c,145,TP,expert_report may return 0 zSql passed to fprintf %s while only zIdx is null-guarded at line 142,b15-adjudicator,med
+EXP34-C,35,sqlite,ext/expert/expert.c,147,TP,expert_report may return 0 zEQP passed to fprintf %s unguarded unlike zIdx,b15-adjudicator,med

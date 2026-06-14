@@ -1,0 +1,23 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL37-C,1,sqlite,ext/fts3/fts3Int.h,15,TP,'_FTSINT_H' leading-underscore+uppercase is a reserved identifier per C standard DCL37,b15-adjudicator,high
+PRE00-C,2,sqlite,ext/fts3/fts3Int.h,92,FP,SizeofArray uses X only inside sizeof which does not evaluate its operand so no real multi-eval,b15-adjudicator,high
+PRE01-C,3,sqlite,ext/fts3/fts3Int.h,92,TP,X appears as X[0] unparenthesized so a compound arg like a+b would misbind to a+(b[0]),b15-adjudicator,med
+PRE12-C,4,sqlite,ext/fts3/fts3Int.h,92,FP,same as idx2 sizeof operand is unevaluated so PRE12 multi-eval does not occur,b15-adjudicator,high
+PRE00-C,5,sqlite,ext/fts3/fts3Int.h,96,TP,"MIN(x,y) evaluates x and y twice each with possible side effects classic PRE00 multi-eval",b15-adjudicator,high
+PRE12-C,6,sqlite,ext/fts3/fts3Int.h,96,TP,MIN evaluates x twice genuine PRE12 multi-eval defect,b15-adjudicator,high
+PRE00-C,7,sqlite,ext/fts3/fts3Int.h,99,TP,"MAX(x,y) evaluates x and y twice each classic PRE00 multi-eval",b15-adjudicator,high
+PRE12-C,8,sqlite,ext/fts3/fts3Int.h,99,TP,MAX evaluates x twice genuine PRE12 multi-eval defect,b15-adjudicator,high
+PRE02-C,9,sqlite,ext/fts3/fts3Int.h,149,FP,replacement is a single assert(...) call expression already self-delimited no precedence hazard,b15-adjudicator,high
+PRE01-C,10,sqlite,ext/fts3/fts3Int.h,198,FP,TESTONLY(X) wraps declarations/statements not expressions parenthesizing would break its intended use,b15-adjudicator,high
+PRE01-C,11,sqlite,ext/fts3/fts3Int.h,212,FP,offsetof ST is a type name used as (ST*)0 cannot be parenthesized meaningfully,b15-adjudicator,high
+PRE01-C,12,sqlite,ext/fts3/fts3Int.h,212,FP,offsetof M is a member name used as ->M cannot be parenthesized,b15-adjudicator,high
+PRE02-C,13,sqlite,ext/fts3/fts3Int.h,549,TP,FTS3_SEGCURSOR_PENDING expands to bare -1 a leading unary minus can misbind so PRE02 parens advised,b15-adjudicator,low
+PRE02-C,14,sqlite,ext/fts3/fts3Int.h,550,TP,FTS3_SEGCURSOR_ALL expands to bare -2 same unparenthesized-negative-literal PRE02 hazard,b15-adjudicator,low
+PRE00-C,15,sqlite,ext/fts3/fts3Int.h,600,TP,fts3GetVarint32 evaluates p three times (test call and deref) genuine PRE00 multi-eval,b15-adjudicator,high
+PRE01-C,16,sqlite,ext/fts3/fts3Int.h,600,TP,piVal used as *piVal unparenthesized so compound arg would bind as *a+b not *(a+b),b15-adjudicator,med
+PRE12-C,17,sqlite,ext/fts3/fts3Int.h,600,TP,p multi-evaluated in fts3GetVarint32 genuine PRE12 multi-eval,b15-adjudicator,high
+EXP37-C,18,sqlite,ext/fts3/fts3Int.h,614,FP,sqlite3Fts3ErrMsg is a valid variadic prototype with ... not an EXP37 mismatch misfire,b15-adjudicator,high
+API02-C,19,sqlite,ext/fts3/fts3Int.h,626,FP,pRc is a single int* out-param (rc/error code) not an array needing a size_t bound,b15-adjudicator,high
+API02-C,20,sqlite,ext/fts3/fts3Int.h,627,FP,pnOut is a single int* out-param not an array needing a size argument,b15-adjudicator,high
+API02-C,21,sqlite,ext/fts3/fts3Int.h,684,FP,Fts3ExprIterate takes a callback+void* visitor not a sized buffer no size arg applicable,b15-adjudicator,high
+API02-C,22,sqlite,ext/fts3/fts3Int.h,686,FP,pbOk is a single int* boolean out-param not an array needing a size argument,b15-adjudicator,high

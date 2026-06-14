@@ -1,0 +1,30 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/prefixes.c,66,FP,prefixesConnect signature is fixed by sqlite3_module xConnect typedef (void *pAux); cannot change to const,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/prefixes.c,69,FP,pzErr param signature fixed by xConnect typedef (char **pzErr); const would break the function-pointer match,b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/prefixes.c,78,FP,pNew is assigned from sqlite3_malloc on line 78 before any deref; line 79 stores it then line 80 NULL-checks before memset,b15-adjudicator,high
+DCL13-C,4,sqlite,ext/misc/prefixes.c,99,FP,"prefixesOpen signature fixed by xOpen typedef (sqlite3_vtab *p); typedef-bound, cannot be const",b15-adjudicator,high
+EXP33-C,5,sqlite,ext/misc/prefixes.c,101,FP,"pCur assigned from sqlite3_malloc line 101, NULL-checked line 102 before memset deref; not uninitialized",b15-adjudicator,high
+MEM33-C,6,sqlite,ext/misc/prefixes.c,104,FP,"prefixes_vtab has no flexible array member (empty struct after base); memset/sizeof copy is correct, no FAM assignment",b15-adjudicator,high
+INT32-C,7,sqlite,ext/misc/prefixes.c,124,FP,"iRowid is sqlite3_int64 bounded by nStr (string length, int-range); cannot reach INT64_MAX in practice",b15-adjudicator,med
+DCL13-C,8,sqlite,ext/misc/prefixes.c,133,FP,prefixesColumn signature fixed by xColumn typedef (sqlite3_vtab_cursor *cur); typedef-bound,b15-adjudicator,high
+INT32-C,9,sqlite,ext/misc/prefixes.c,140,FP,"iRowid bounded 0..nStr by prefixesEof guard (iRowid>nStr stops); nStr-iRowid stays in 0..nStr, no overflow",b15-adjudicator,high
+DCL13-C,10,sqlite,ext/misc/prefixes.c,154,FP,"prefixesRowid signature fixed by xRowid typedef; typedef-bound, cannot be const",b15-adjudicator,high
+DCL13-C,11,sqlite,ext/misc/prefixes.c,164,FP,prefixesEof signature fixed by xEof typedef; typedef-bound,b15-adjudicator,high
+DCL13-C,12,sqlite,ext/misc/prefixes.c,178,FP,prefixesFilter signature fixed by xFilter typedef (sqlite3_value **argv); typedef-bound,b15-adjudicator,high
+MEM30-C,13,sqlite,ext/misc/prefixes.c,184,FP,"line 184 reads pCur->zStr after mprintf assigned it on 183; the free was on 181 of the OLD value, no use-after-free",b15-adjudicator,high
+MEM30-C,14,sqlite,ext/misc/prefixes.c,184,FP,"duplicate of 13; zStr is freshly assigned by mprintf before the strlen read, not freed",b15-adjudicator,high
+DCL13-C,15,sqlite,ext/misc/prefixes.c,200,FP,prefixesBestIndex signature fixed by xBestIndex typedef (sqlite3_vtab *tab); typedef-bound,b15-adjudicator,high
+FLP34-C,16,sqlite,ext/misc/prefixes.c,214,FP,(double)10 cast of integer literal 10 is exactly representable; no range/precision loss,b15-adjudicator,high
+FLP34-C,17,sqlite,ext/misc/prefixes.c,218,FP,(double)1000000000 is exactly representable in double (well under 2^53); no precision loss,b15-adjudicator,high
+CON03-C,18,sqlite,ext/misc/prefixes.c,227,FP,prefixesModule is a static const-style module table written once at init; SQLite module registration is single-threaded by contract,b15-adjudicator,high
+PRE00-C,19,sqlite,ext/misc/prefixes.c,261,TP,PREFIX_SKIP_UTF8 expands zIn++ then references zIn again; the macro genuinely evaluates the argument multiple times,b15-adjudicator,high
+PRE01-C,20,sqlite,ext/misc/prefixes.c,261,TP,macro parameter zIn is used unparenthesized (*(zIn++)) so a complex argument expression would mis-associate,b15-adjudicator,high
+PRE02-C,21,sqlite,ext/misc/prefixes.c,261,FP,the macro is a brace-wrapped statement block not an expression; wrapping the replacement list in parens is not applicable to a statement macro,b15-adjudicator,med
+PRE10-C,22,sqlite,ext/misc/prefixes.c,261,TP,PREFIX_SKIP_UTF8 is a multi-statement brace block not wrapped in do-while; breaks if used as a dangling-if body,b15-adjudicator,high
+PRE12-C,23,sqlite,ext/misc/prefixes.c,261,TP,same multiple-evaluation defect as 19; zIn (with embedded ++) is evaluated more than once,b15-adjudicator,high
+DCL13-C,24,sqlite,ext/misc/prefixes.c,283,FP,prefixLengthFunc signature fixed by sqlite3_create_function callback typedef (sqlite3_value **apVal); typedef-bound,b15-adjudicator,high
+EXP34-C,25,sqlite,ext/misc/prefixes.c,295,TP,"sqlite3_value_text returns NULL for a SQL NULL argument; prefix_length(NULL,'x') leaves zL=NULL then zL[i] derefs NULL with no check",b15-adjudicator,high
+EXP34-C,26,sqlite,ext/misc/prefixes.c,295,TP,"same as 25 for the right arg; prefix_length('x',NULL) gives zR=NULL then zR[i] derefs NULL unchecked",b15-adjudicator,high
+API00-C,27,sqlite,ext/misc/prefixes.c,304,FP,db is supplied by the SQLite loader contract and passed straight to sqlite3_create_module which validates internally; init entrypoints do not null-check db by convention,b15-adjudicator,high
+API00-C,28,sqlite,ext/misc/prefixes.c,304,FP,pApi is consumed by SQLITE_EXTENSION_INIT2 macro per the extension-loading contract; never directly dereferenced here,b15-adjudicator,high
+DCL13-C,29,sqlite,ext/misc/prefixes.c,308,FP,sqlite3_prefixes_init signature is the fixed extension-init ABI (char **pzErrMsg); const would break loader linkage,b15-adjudicator,high

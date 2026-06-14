@@ -1,0 +1,27 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MEM05-C,1,sqlite,src/vacuum.c,32,TP,execSql calls itself directly at line 50 so direct recursion genuinely exists (bounded by schema nesting),b15-adjudicator,med
+MSC04-C,2,sqlite,src/vacuum.c,32,TP,execSql recurses on itself at line 50 with zSubSql secondary statements,b15-adjudicator,high
+MSC04-C,3,sqlite,src/vacuum.c,62,TP,execSqlF->execSql->sqlite3_step->...->sqlite3RunVacuum->execSqlF is a genuine indirect recursion cycle,b15-adjudicator,high
+API00-C,4,sqlite,src/vacuum.c,105,FP,pParse is guaranteed non-null by the parser/codegen contract not a trust boundary,b15-adjudicator,high
+API00-C,5,sqlite,src/vacuum.c,105,FP,pNm is legitimately nullable and explicitly guarded by if(pNm) before any use,b15-adjudicator,high
+API00-C,6,sqlite,src/vacuum.c,105,FP,pInto is legitimately nullable and guarded by if(pInto && ...) and null-safe sqlite3ExprDelete,b15-adjudicator,high
+INT32-C,7,sqlite,src/vacuum.c,129,FP,pParse->nMem is a bounded register counter limited by expression complexity not attacker-controlled to INT_MAX,b15-adjudicator,high
+API00-C,8,sqlite,src/vacuum.c,143,FP,pzErrMsg is an internal VDBE-supplied out-param non-null by contract not a trust boundary,b15-adjudicator,high
+MSC04-C,9,sqlite,src/vacuum.c,143,TP,sqlite3RunVacuum->execSqlF->execSql->sqlite3_step->...->sqlite3RunVacuum is genuine indirect recursion,b15-adjudicator,high
+STR30-C,10,sqlite,src/vacuum.c,170,FP,sqlite3SetString takes const char* and dups the string it does not modify the literal,b15-adjudicator,high
+STR30-C,11,sqlite,src/vacuum.c,174,FP,sqlite3SetString takes const char* and dups the string it does not modify the literal,b15-adjudicator,high
+STR30-C,12,sqlite,src/vacuum.c,180,FP,sqlite3SetString takes const char* and dups the string it does not modify the literal,b15-adjudicator,high
+ARR00-C,13,sqlite,src/vacuum.c,205,FP,iDb is a validated attached-db index from OP_Vacuum/sqlite3Vacuum within db->aDb bounds,b15-adjudicator,high
+ARR30-C,14,sqlite,src/vacuum.c,205,FP,iDb bounded by attach-db invariant aDb[iDb] always valid for live VACUUM target,b15-adjudicator,high
+ARR00-C,15,sqlite,src/vacuum.c,206,FP,iDb is a validated attached-db index within db->aDb bounds,b15-adjudicator,high
+ARR30-C,16,sqlite,src/vacuum.c,206,FP,iDb bounded by attach-db invariant for live VACUUM target,b15-adjudicator,high
+EXP33-C,17,sqlite,src/vacuum.c,224,FP,zDbVacuum is a char[42] fully written by sqlite3_snprintf at line 224 before first use,b15-adjudicator,high
+EXP34-C,18,sqlite,src/vacuum.c,238,FP,sqlite3PagerFile returns the pager's embedded sqlite3_file never null and pMethods is the guard,b15-adjudicator,high
+STR30-C,19,sqlite,src/vacuum.c,240,FP,sqlite3SetString takes const char* and dups the string it does not modify the literal,b15-adjudicator,high
+ARR00-C,20,sqlite,src/vacuum.c,248,FP,iDb is a validated attached-db index within db->aDb bounds,b15-adjudicator,high
+ARR30-C,21,sqlite,src/vacuum.c,248,FP,iDb bounded by attach-db invariant for live VACUUM target,b15-adjudicator,high
+STR34-C,22,sqlite,src/vacuum.c,255,FP,zFilename is a const char* filename pointer passed to uri helper not a sign-extended char value,b15-adjudicator,high
+ARR00-C,23,sqlite,src/vacuum.c,260,FP,iDb is a validated attached-db index within db->aDb bounds,b15-adjudicator,high
+ARR30-C,24,sqlite,src/vacuum.c,260,FP,iDb bounded by attach-db invariant for live VACUUM target,b15-adjudicator,high
+ARR02-C,25,sqlite,src/vacuum.c,358,FP,aCopy[] is a static const initializer with compile-time-fixed size iterated via ArraySize idiomatic,b15-adjudicator,high
+INT32-C,26,sqlite,src/vacuum.c,374,FP,i is bounded i<ArraySize(aCopy) with i+=2 so i+1 cannot overflow,b15-adjudicator,high

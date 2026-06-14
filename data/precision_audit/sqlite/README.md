@@ -1817,3 +1817,87 @@ sqlite coverage **147 -> 169/220 (76.8%)** — three-quarters audited; **20 FNs*
 tool. Remaining ~51 in-scope files are the larger core/codegen engines (vdbe, btree, where, select, expr, build,
 os_unix/os_win, json, pager, wal) plus the heavier ext/ decoders (fts5_index, sqlite3session, fts3, sqlite3rbu,
 rtree, geopoly, spellfix, qrf) — the genuine-untrusted-input ones warrant the high-effort framework.
+
+## File-at-a-time — Batch 15 (46 files) — CORPUS COMPLETE (220/220, 100%)
+
+Final batch: audited every remaining in-scope file. 46 files, **1484 findings → 134 TP / 1350 FP**, 3 FNs.
+18 elevated-attention decoder/untrusted-input files (attacker framework) + 28 hardened-core/glue files (core
+framework). The integrity gate confirmed one sqc-caught real bug and three FNs, with **no reviewer-verdict
+overrides needed** this batch.
+
+This batch closes the audit. The 5-file gap to the 220 estimate is exactly `src/hash.h`, `src/msvc.h`,
+`src/os_setup.h`, `src/os_win.h`, `src/vxworks.h` — platform/setup headers sqc produced **zero** findings in
+(vacuously clean, recorded as 0-finding audited). There are **zero missed flagged files**.
+
+### sqc-caught real bug #18 — `prefixes.c:295` NULL deref in `prefix_length()`
+`prefixLengthFunc` reads `zL=sqlite3_value_text(apVal[0])` / `zR=...(apVal[1])` then `nByte=max(nL,nR)` and loops
+`for(i=0;i<nByte;i++){ if(zL[i]!=zR[i]) break; ... }`. For a SQL `NULL` argument `sqlite3_value_text` returns
+`NULL` while the *other* argument's length still drives `nByte>0`, so `zL[0]`/`zR[0]` dereferences NULL.
+`prefix_length` is a registered 2-arg SQL function (line 315), so `SELECT prefix_length(NULL,'abcd')` crashes once
+the `prefixes` extension is loaded. sqc flagged it correctly (EXP34 @295, idx 25/26) → **confirmed real bug**.
+
+Benign/factual semantic TPs (kept, not memory-safety): `btreeinfo.c:306/308` INT32 signed-multiply overflow on a
+row-count *estimate* (genuinely overflows on a crafted deep tree, but never sizes a buffer); `fts3_hash.c:119`
+INT13/INT32 signed-shift UB in the hash mixer (benign).
+
+### FNs recorded (3, all low confidence)
+- **scrub.c:442** (and 456) — `scrubBackupVarint(&a[pc])` reads up to 9 bytes with `pc` only bounded by
+  `pc<=szUsable-3`; with reserved-bytes==0 (`szUsable==szPage`) it overreads the page buffer by up to ~5 bytes on a
+  crafted source DB passed to `sqlite3_scrub_backup`.
+- **nextchar.c:184** — `readUtf8(zOut+p->nPrefix)` advances past the prefix, but a returned word can be byte-shorter
+  than `nPrefix` (binary-collation `"ac"` ≥ a 3-byte prefix), so `zOut+nPrefix` points past the buffer → OOB read in
+  the `next_char()` SQL function.
+- **fts3_term.c:232** — `fts3termNextMethod` reads up to 4 varints past the `pNext>=&aDoclist[nDoclist-1]` gate
+  without bounding `pNext` against the doclist end → OOB read on a truncated/corrupt FTS3 doclist (fts3term debug
+  vtab).
+
+Noted-not-recorded (standalone CLI-tool arg parsing, tool-scope): `rbu.c:98/101/105` next-arg guard uses the
+option-string length instead of `argc-1` (potential argv over-read); `expert.c:56` unchecked `malloc`/`ftell`
+feeding `fread` size math. Both in command-line `main()` shells, driven by CLI args not data.
+
+---
+
+## CAMPAIGN COMPLETE — full-corpus summary (sqlite @ b1a73ba34d, run #40)
+
+**220/220 in-scope files audited (100%).** 24,834 sqc findings adjudicated finding-by-finding across 15 batches,
+each gated by mandatory source-verification of every semantic-TP and FN candidate.
+
+| Metric | Value |
+|--------|------:|
+| Files audited | 220 / 220 (100%) |
+| Findings adjudicated | 24,834 |
+| True positives | 1,496 |
+| False positives | 22,154 |
+| **Overall precision** | **~6.3%** |
+| Uncertain | 48 |
+| False negatives recorded | 23 |
+| Confirmed real bugs | 18 |
+
+### The rule-class bifurcation, proven across the entire shipped corpus
+TP distribution by rule class: **DCL 769 + PRE 359 + MSC 214 = 1,342 (≈90%)** — declaration/macro/recursion.
+Everything semantic combined is a small minority: INT 41, ERR 34, MEM 31, EXP 26, ARR 11, STR 4, FIO 4, CON 2,
+API 1. And nearly all of *those* are benign-by-consequence (signed-overflow UB on counters/estimates, `atoi` with
+no error check, recursion-stack notes) rather than reachable memory-corruption. sqc's precision is overwhelmingly
+carried by the high-precision declaration/macro/recursion rules; its semantic memory-safety rules
+(MEM30/ARR30-38/EXP33-34/INT30-34/STR3x) fire almost entirely as false positives on hardened, heavily-fuzzed code.
+
+### Where the real defects actually live
+Every confirmed real bug and nearly every FN sits in **less-fuzzed, untrusted-input / structure-decoding /
+corrupt-DB paths** — never in the hardened core engine. The 18 confirmed sqc-caught bugs and the 23 FNs concentrate
+in: loadable extensions (prefixes, checkfreelist `sqlite_readint32`, closure UAF, sqlite3expert heap-overflow,
+amatch, spellfix, zipfile, compress, sqlar, normalize), corrupt-DB readers (dbstat, scrub, checkindex, intck,
+sqlite3rbu), decoders (os_kv kvvfs heap-overflow, fts3/fts5 doclist/segment parsers), and standalone tools
+(fts3view). The four production-core FNs (pager.c, dbstat.c, where.c, os_kv.c) are all corrupt-input/edge paths.
+
+### Operational finding: the integrity gate earned its keep
+Source-verifying every semantic-TP and FN candidate (rather than trusting the per-file LLM reviewer) changed
+reviewer verdicts in 4 separate batches and was responsible for *recovering or discovering* the highest-value
+items: the sqlite3expert heap-overflow (FP→TP), the os_kv kvvfs heap-overflow (reviewer disagreement resolved by
+source-read), and the checkfreelist `sqlite_readint32` OOB. It also caught bad reviewer TPs (checkfreelist
+signed/unsigned mislabel, fts3view "double-scaling", fts5_buffer short-circuit). On decode/corrupt-input paths,
+adversarial/dual review is not optional.
+
+### Disclosure backlog (deferred per user 2026-06-12; re-check live-at-HEAD at report time)
+Priority candidates: `os_kv.c:469` (shipped kvvfs heap-overflow WRITE), `sqlite3expert.c:305` (public-API heap
+overflow), `checkfreelist.c:277` (`sqlite_readint32` negative-offset OOB read), `prefixes.c:295` (`prefix_length`
+NULL deref). Most other confirmed bugs are in demo/repair/tool extensions or already fixed upstream.

@@ -1,0 +1,36 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+WIN04-C,1,sqlite,src/loadext.c,133,FP,WIN04 EncodePointer is a Windows-API-specific mitigation not applicable to portable C and the table is a static const dispatch vector,b15-adjudicator,high
+PRE00-C,2,sqlite,src/loadext.c,541,TP,DirSep(X) expands ((X)=='/'||(X)=='\\') evaluating X twice so it is a genuine multi-eval macro though call site passes side-effect-free zFile[iFile],b15-adjudicator,low
+PRE12-C,3,sqlite,src/loadext.c,541,TP,same DirSep macro evaluates param X twice in the SQLITE_OS_WIN expansion,b15-adjudicator,low
+ARR02-C,4,sqlite,src/loadext.c,576,FP,azEndings[] is a static const initializer with implicit size and is iterated via ArraySize so bound is exact and safe,b15-adjudicator,high
+STR34-C,5,sqlite,src/loadext.c,587,FP,*pzErrMsg = ... is a char-pointer assignment not an integer sign-extension; pzErrMsg is char**,b15-adjudicator,high
+STR34-C,6,sqlite,src/loadext.c,598,FP,"char* assignment to *pzErrMsg, no integer conversion or sign extension occurs",b15-adjudicator,high
+EXP33-C,7,sqlite,src/loadext.c,621,FP,ii is initialized in the for-init (for(ii=0;...)) before any use,b15-adjudicator,high
+STR34-C,8,sqlite,src/loadext.c,652,FP,zFile passed to sqlite3Strlen30(const char*); no widening integer conversion of a char value,b15-adjudicator,high
+INT32-C,9,sqlite,src/loadext.c,654,FP,ncFile from sqlite3Strlen30 is bounded to 0x3fffffff and zFile length already capped by SQLITE_MAX_PATHLEN so ncFile+30 cannot overflow,b15-adjudicator,high
+INT32-C,10,sqlite,src/loadext.c,661,FP,ncFile is a non-negative length so ncFile-1 cannot underflow int,b15-adjudicator,high
+INT32-C,11,sqlite,src/loadext.c,663,FP,iFile bounded by ncFile which is small length-bounded; iFile+=3 cannot overflow,b15-adjudicator,high
+EXP30-C,12,sqlite,src/loadext.c,664,FP,(c=zFile[iFile])!=0 && c!='.' has a sequence point at && so no unsequenced modify/access,b15-adjudicator,high
+EXP33-C,13,sqlite,src/loadext.c,664,FP,c is assigned in the for-condition (c=zFile[iFile]) before being read in the same expression,b15-adjudicator,high
+INT31-C,14,sqlite,src/loadext.c,666,FP,"(unsigned)c is the standard ctype/table-index cast for sqlite3UpperToLower lookup, intended and safe",b15-adjudicator,high
+STR34-C,15,sqlite,src/loadext.c,677,FP,"char* assignment to *pzErrMsg, not an integer sign extension",b15-adjudicator,high
+STR34-C,16,sqlite,src/loadext.c,694,FP,"char* assignment to *pzErrMsg, not an integer sign extension",b15-adjudicator,high
+INT30-C,17,sqlite,src/loadext.c,702,FP,db->nExtension is a small per-connection extension count; sizeof(handle)*(n+1) cannot wrap size_t in practice,b15-adjudicator,high
+INT32-C,18,sqlite,src/loadext.c,702,FP,"db->nExtension is a small bounded count, n+1 cannot overflow int",b15-adjudicator,high
+ARR38-C,19,sqlite,src/loadext.c,707,FP,memcpy size sizeof(handle)*nExtension matches the just-allocated aHandle buffer copying nExtension entries; bounded count,b15-adjudicator,high
+INT30-C,20,sqlite,src/loadext.c,707,FP,"same bounded nExtension count, multiplication cannot wrap",b15-adjudicator,high
+INT32-C,21,sqlite,src/loadext.c,707,FP,same bounded nExtension count in memcpy size,b15-adjudicator,high
+INT32-C,22,sqlite,src/loadext.c,712,FP,"db->nExtension is a small bounded extension count, increment cannot reach INT_MAX",b15-adjudicator,high
+MEM30-C,23,sqlite,src/loadext.c,712,FP,"db->aExtension was just reassigned to the new aHandle at line 710; the freed pointer was the old array, not db->aExtension",b15-adjudicator,high
+MSC07-C,24,sqlite,src/loadext.c,715,FP,"the line after return SQLITE_OK is the extension_not_found: label reachable via goto, not unreachable code",b15-adjudicator,high
+STR34-C,25,sqlite,src/loadext.c,718,FP,"char* assignment to *pzErrMsg, not an integer sign extension",b15-adjudicator,high
+MEM30-C,26,sqlite,src/loadext.c,723,FP,pVfs (db->pVfs) is never freed; it is only passed to OsDlError/OsDlClose which do not free it,b15-adjudicator,high
+API00-C,27,sqlite,src/loadext.c,728,FP,"internal contract; db non-null is guaranteed by caller, mutex use is API-armor-gated elsewhere, not a trust boundary",b15-adjudicator,high
+API00-C,28,sqlite,src/loadext.c,728,FP,zFile validity is a documented API precondition; not a trust-boundary deref defect,b15-adjudicator,high
+API00-C,29,sqlite,src/loadext.c,728,FP,pzErrMsg is explicitly NULL-checked (if(pzErrMsg)) throughout the function,b15-adjudicator,high
+EXP20-C,30,sqlite,src/loadext.c,761,FP,!sqlite3SafetyCheckOk(db) is the idiomatic boolean armor check returning a clear bool,b15-adjudicator,high
+MSC37-C,31,sqlite,src/loadext.c,783,FP,"line 783 is the sqlite3AutoExtList struct typedef/declaration, not a non-void function; parser misfire",b15-adjudicator,high
+INT30-C,32,sqlite,src/loadext.c,832,FP,wsdAutoext.nExt is a small registered-autoextension count; (nExt+1)*sizeof cannot wrap u64,b15-adjudicator,high
+INT13-C,33,sqlite,src/loadext.c,844,FP,assert((rc&0xff)==rc) is an idiomatic range assertion; bitwise AND on a small positive rc is well-defined,b15-adjudicator,high
+INT32-C,34,sqlite,src/loadext.c,871,FP,wsdAutoext.nExt is a small u32 count; (int)nExt-1 cannot overflow and loop guard i>=0 handles 0,b15-adjudicator,high
+EXP34-C,35,sqlite,src/loadext.c,940,FP,zErrmsg is passed as a %s vararg to sqlite3 printf which tolerates NULL; reached only when rc!=0 where xInit may have set it,b15-adjudicator,high

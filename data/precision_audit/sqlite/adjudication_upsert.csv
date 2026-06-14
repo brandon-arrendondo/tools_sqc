@@ -1,0 +1,36 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MEM30-C,1,sqlite,src/upsert.c,29,FP,"sqc reads db (allocator context) as freed object; only p is freed at line 29, db is never freed",b15-adjudicator,high
+API00-C,2,sqlite,src/upsert.c,41,FP,"internal API00 misfire; db non-null by SQLite caller contract, not a trust boundary",b15-adjudicator,high
+DCL13-C,3,sqlite,src/upsert.c,41,TP,"p is only read (field traversal/recursion), never written or propagated to non-const callee; const Upsert* compiles",b15-adjudicator,low
+EXP30-C,4,sqlite,src/upsert.c,43,FP,EXP30 unsequenced args are distinct ExprDup calls on separate sub-trees with shared read-only db; no conflicting side effects,b15-adjudicator,high
+API00-C,5,sqlite,src/upsert.c,55,FP,internal API00 misfire; db non-null by caller contract,b15-adjudicator,high
+DCL30-C,6,sqlite,src/upsert.c,80,FP,"pNew is sqlite3DbMallocZero heap allocation, not automatic-storage local; safe to return",b15-adjudicator,high
+API00-C,7,sqlite,src/upsert.c,90,FP,internal API00 misfire; pParse non-null by parser contract,b15-adjudicator,high
+API00-C,8,sqlite,src/upsert.c,90,FP,internal API00 misfire; pTabList validated by assert pTabList->nSrc==1 at line 106,b15-adjudicator,high
+API00-C,9,sqlite,src/upsert.c,90,FP,internal API00 misfire; pUpsert validated by assert pUpsert!=0 at line 108,b15-adjudicator,high
+DCL13-C,10,sqlite,src/upsert.c,92,FP,"pTabList stored into non-const field sNC.pSrcList at line 117, so const would not compile/propagate",b15-adjudicator,high
+INT32-C,11,sqlite,src/upsert.c,119,FP,"nClause counts ON CONFLICT clauses (parser/SQLITE_LIMIT bounded), cannot approach INT_MAX",b15-adjudicator,high
+EXP30-C,12,sqlite,src/upsert.c,129,FP,pTerm assigned at line 131 then read at 132 within && short-circuit sequence points,b15-adjudicator,high
+EXP45-C,13,sqlite,src/upsert.c,131,FP,"assignment in condition is deliberate assign-and-use idiom; result ->op is used, not a mistaken ==",b15-adjudicator,low
+EXP33-C,14,sqlite,src/upsert.c,132,FP,pTerm only reached at 132 after && short-circuit assigns it at 131; cannot be uninitialized,b15-adjudicator,high
+EXP34-C,15,sqlite,src/upsert.c,132,FP,pTerm=pTarget->a[0].pExpr is non-null in a resolved conflict-target list; guarded by nExpr==1,b15-adjudicator,high
+ARR00-C,16,sqlite,src/upsert.c,146,FP,"sCol fully zeroed by memset(sCol,0,sizeof(sCol)) at line 145 before any read",b15-adjudicator,high
+EXP33-C,17,sqlite,src/upsert.c,212,FP,zWhich is an output buffer written by sqlite3_snprintf at 212; not read while uninitialized,b15-adjudicator,high
+INT32-C,18,sqlite,src/upsert.c,212,FP,nClause is a small parser-bounded clause counter; nClause+1 cannot overflow,b15-adjudicator,high
+DCL13-C,19,sqlite,src/upsert.c,227,TP,"pUpsert only read (pNextUpsert traversal), never written or propagated to non-const; const compiles",b15-adjudicator,low
+EXP34-C,20,sqlite,src/upsert.c,230,FP,null deref guarded by NEVER(pUpsert==0) early return at line 229,b15-adjudicator,high
+API00-C,21,sqlite,src/upsert.c,247,FP,internal API00 misfire; null pUpsert handled by while-loop condition at 248-252,b15-adjudicator,high
+DCL13-C,22,sqlite,src/upsert.c,247,FP,"pUpsert is reassigned in the loop (pUpsert=pUpsert->pNextUpsert at 253), so it is modified",b15-adjudicator,high
+DCL13-C,23,sqlite,src/upsert.c,247,TP,"pIdx only compared (pUpsertIdx!=pIdx), never written or propagated; const Index* compiles",b15-adjudicator,low
+API00-C,24,sqlite,src/upsert.c,267,FP,internal API00 misfire; pParse non-null by codegen contract,b15-adjudicator,high
+API00-C,25,sqlite,src/upsert.c,267,FP,internal API00 misfire; pUpsert validated by assert pUpsert!=0 at line 282,b15-adjudicator,high
+API00-C,26,sqlite,src/upsert.c,267,FP,internal API00 misfire; pIdx is documented-nullable and explicitly checked at 286,b15-adjudicator,high
+MSC04-C,27,sqlite,src/upsert.c,267,TP,indirect recursion via sqlite3UpsertDoUpdate->sqlite3Update->sqlite3CodeRowTrigger->...->codeRowTrigger genuinely exists,b15-adjudicator,high
+EXP34-C,28,sqlite,src/upsert.c,295,FP,pPk=sqlite3PrimaryKeyIndex(pTab) non-null for WITHOUT ROWID table reached in else of HasRowid,b15-adjudicator,high
+INT32-C,29,sqlite,src/upsert.c,296,FP,"pParse->nMem is a VDBE register counter, not adversary-controlled; +1 cannot realistically overflow",b15-adjudicator,high
+INT32-C,30,sqlite,src/upsert.c,297,FP,nMem += nPk bounded by index key-column count; register counter cannot overflow,b15-adjudicator,high
+INT32-C,31,sqlite,src/upsert.c,302,FP,iPk+i bounded by loop i<nPk over PK columns; register index cannot overflow,b15-adjudicator,high
+EXP34-C,32,sqlite,src/upsert.c,317,FP,pTop=pUpsert and pUpsert!=0 asserted at line 282; pTop is non-null,b15-adjudicator,high
+INT32-C,33,sqlite,src/upsert.c,321,FP,pTop->regData+i bounded by loop i<pTab->nCol; register index cannot overflow,b15-adjudicator,high
+EXP30-C,34,sqlite,src/upsert.c,324,FP,EXP30 unsequenced args are distinct Dup calls on separate sub-trees; no conflicting side effects,b15-adjudicator,high
+EXP34-C,35,sqlite,src/upsert.c,324,FP,"pUpsert=sqlite3UpsertOfIndex(pTop,pIdx) non-null by invariant: failing index always has matching clause set in AnalyzeTarget",b15-adjudicator,med

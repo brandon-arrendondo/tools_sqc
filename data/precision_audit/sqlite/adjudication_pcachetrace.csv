@@ -1,0 +1,39 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,1,sqlite,ext/misc/pcachetrace.c,35,FP,pcachetraceOut has static storage duration so it is zero-initialized per C standard; read in if() never uninitialized,b15-adjudicator,high
+EXP33-C,2,sqlite,ext/misc/pcachetrace.c,38,FP,"pcacheBase is static so zero-initialized; xInit member only invoked after Activate populates it, not uninitialized read",b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/pcachetrace.c,45,FP,static pcachetraceOut zero-initialized; read-only test,b15-adjudicator,high
+EXP33-C,4,sqlite,ext/misc/pcachetrace.c,48,FP,static pcacheBase zero-initialized; xShutdown only reached after population,b15-adjudicator,high
+EXP33-C,5,sqlite,ext/misc/pcachetrace.c,52,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+PRE32-C,6,sqlite,ext/misc/pcachetrace.c,53,FP,fprintf args are a multi-line string/expression continuation with no # token; PRE32 misfire,b15-adjudicator,high
+EXP33-C,7,sqlite,ext/misc/pcachetrace.c,56,FP,static pcacheBase zero-initialized; xCreate member populated by sqlite3_config before use,b15-adjudicator,high
+PRE32-C,8,sqlite,ext/misc/pcachetrace.c,58,FP,fprintf line continuation has no preprocessor directive; PRE32 misfire,b15-adjudicator,high
+DCL11-C,9,sqlite,ext/misc/pcachetrace.c,59,TP,%p in fprintf requires void* but pRes is sqlite3_pcache_page*/sqlite3_pcache*; technically nonconforming variadic type though harmless in practice,b15-adjudicator,low
+DCL30-C,10,sqlite,ext/misc/pcachetrace.c,61,FP,"returns the pointer VALUE in pRes (heap object from xCreate), not the address of the local; sqc misread",b15-adjudicator,high
+EXP33-C,11,sqlite,ext/misc/pcachetrace.c,64,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+EXP33-C,12,sqlite,ext/misc/pcachetrace.c,67,FP,static pcacheBase zero-initialized; xCachesize populated before use,b15-adjudicator,high
+EXP33-C,13,sqlite,ext/misc/pcachetrace.c,71,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+EXP33-C,14,sqlite,ext/misc/pcachetrace.c,74,FP,static pcacheBase zero-initialized; xPagecount populated before use,b15-adjudicator,high
+EXP33-C,15,sqlite,ext/misc/pcachetrace.c,86,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+EXP33-C,16,sqlite,ext/misc/pcachetrace.c,89,FP,static pcacheBase zero-initialized; xFetch populated before use,b15-adjudicator,high
+PRE32-C,17,sqlite,ext/misc/pcachetrace.c,91,FP,fprintf line continuation has no # token; PRE32 misfire,b15-adjudicator,high
+DCL11-C,18,sqlite,ext/misc/pcachetrace.c,92,TP,%p expects void* but pRes is sqlite3_pcache_page*; pedantic variadic type mismatch,b15-adjudicator,low
+DCL30-C,19,sqlite,ext/misc/pcachetrace.c,94,FP,"returns pointer value held in pRes (heap page from xFetch), not address of local; sqc misread",b15-adjudicator,high
+EXP33-C,20,sqlite,ext/misc/pcachetrace.c,101,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+PRE32-C,21,sqlite,ext/misc/pcachetrace.c,102,FP,fprintf line continuation has no # token; PRE32 misfire,b15-adjudicator,high
+EXP33-C,22,sqlite,ext/misc/pcachetrace.c,105,FP,static pcacheBase zero-initialized; xUnpin populated before use,b15-adjudicator,high
+EXP33-C,23,sqlite,ext/misc/pcachetrace.c,113,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+PRE32-C,24,sqlite,ext/misc/pcachetrace.c,114,FP,fprintf line continuation has no # token; PRE32 misfire,b15-adjudicator,high
+EXP33-C,25,sqlite,ext/misc/pcachetrace.c,117,FP,static pcacheBase zero-initialized; xRekey populated before use,b15-adjudicator,high
+EXP33-C,26,sqlite,ext/misc/pcachetrace.c,120,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+EXP33-C,27,sqlite,ext/misc/pcachetrace.c,123,FP,static pcacheBase zero-initialized; xTruncate populated before use,b15-adjudicator,high
+EXP33-C,28,sqlite,ext/misc/pcachetrace.c,126,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+EXP33-C,29,sqlite,ext/misc/pcachetrace.c,129,FP,static pcacheBase zero-initialized; xDestroy populated before use,b15-adjudicator,high
+EXP33-C,30,sqlite,ext/misc/pcachetrace.c,132,FP,static pcachetraceOut zero-initialized,b15-adjudicator,high
+EXP33-C,31,sqlite,ext/misc/pcachetrace.c,135,FP,static pcacheBase zero-initialized; xShrink populated before use,b15-adjudicator,high
+CON03-C,32,sqlite,ext/misc/pcachetrace.c,139,FP,ersaztPcacheMethods is a const method table installed once via sqlite3_config before sqlite3_initialize; not mutated concurrently so volatile/atomic unneeded,b15-adjudicator,med
+API00-C,33,sqlite,ext/misc/pcachetrace.c,156,FP,out is an internal API contract param passed by the shell; not a trust boundary and NULL out simply disables tracing harmlessly,b15-adjudicator,high
+DCL13-C,34,sqlite,ext/misc/pcachetrace.c,156,FP,out stored into non-const FILE* pcachetraceOut via pcachetraceOut=out so const FILE* would not compile; DCL13 inapplicable,b15-adjudicator,high
+DCL15-C,35,sqlite,ext/misc/pcachetrace.c,156,FP,sqlite3PcacheTraceActivate is the public entry called from the CLI shell so external linkage is required; static would break the build,b15-adjudicator,high
+EXP33-C,36,sqlite,ext/misc/pcachetrace.c,158,FP,"static pcacheBase zero-initialized; xFetch field compared, never read uninitialized",b15-adjudicator,high
+DCL15-C,37,sqlite,ext/misc/pcachetrace.c,169,FP,sqlite3PcacheTraceDeactivate is public API called from the shell; needs external linkage,b15-adjudicator,high
+EXP33-C,38,sqlite,ext/misc/pcachetrace.c,171,FP,"static pcacheBase zero-initialized; xFetch field compared, never read uninitialized",b15-adjudicator,high

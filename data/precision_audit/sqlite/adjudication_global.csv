@@ -1,0 +1,35 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,1,sqlite,src/global.c,24,FP,sqlite3UpperToLower is fully brace-initialized (256+18 entries) so size is implicit-by-design; ARR02 style-only,b15-adjudicator,high
+DCL15-C,2,sqlite,src/global.c,24,FP,declared extern const in sqliteInt.h:5432 used across TUs; needs external linkage cannot be static,b15-adjudicator,high
+DCL19-C,3,sqlite,src/global.c,24,FP,exported API global used library-wide; file scope is required not reducible,b15-adjudicator,high
+DCL15-C,4,sqlite,src/global.c,86,FP,sqlite3aLTb extern const in sqliteInt.h:5433 used across TUs; needs external linkage,b15-adjudicator,high
+DCL19-C,5,sqlite,src/global.c,86,FP,exported pointer into shared table; file scope required,b15-adjudicator,high
+DCL15-C,6,sqlite,src/global.c,87,FP,sqlite3aEQb is exported library global (extern in sqliteInt.h); needs external linkage,b15-adjudicator,high
+DCL19-C,7,sqlite,src/global.c,87,FP,exported global; file scope required,b15-adjudicator,high
+DCL15-C,8,sqlite,src/global.c,88,FP,sqlite3aGTb exported library global; needs external linkage,b15-adjudicator,high
+DCL19-C,9,sqlite,src/global.c,88,FP,exported global; file scope required,b15-adjudicator,high
+DCL15-C,10,sqlite,src/global.c,118,FP,sqlite3CtypeMap extern const in sqliteInt.h:5436 used by ctype macros across TUs; needs external linkage,b15-adjudicator,high
+DCL19-C,11,sqlite,src/global.c,118,FP,exported global; file scope required,b15-adjudicator,high
+CON03-C,12,sqlite,src/global.c,238,FP,sqlite3Config set only via sqlite3_config which the API contract requires before threading begins so no concurrent access; CON03 misfire,b15-adjudicator,high
+DCL15-C,13,sqlite,src/global.c,238,FP,sqlite3Config extern in sqliteInt.h:5437 used library-wide; needs external linkage,b15-adjudicator,high
+DCL19-C,14,sqlite,src/global.c,238,FP,exported singleton; file scope required,b15-adjudicator,high
+CON03-C,15,sqlite,src/global.c,356,FP,sqlite3TreeTrace is a debug/test-control trace flag set via SQLITE_TESTCTRL_TRACEFLAGS not concurrently mutated in production paths; CON03 misfire,b15-adjudicator,high
+DCL15-C,16,sqlite,src/global.c,356,FP,sqlite3TreeTrace referenced from other TUs (vdbe/where); needs external linkage,b15-adjudicator,high
+DCL19-C,17,sqlite,src/global.c,356,FP,exported trace global; file scope required,b15-adjudicator,high
+CON03-C,18,sqlite,src/global.c,357,FP,sqlite3WhereTrace is a test-control trace flag not subject to real concurrent writes; CON03 misfire,b15-adjudicator,high
+DCL15-C,19,sqlite,src/global.c,357,FP,sqlite3WhereTrace referenced from where.c across TUs; needs external linkage,b15-adjudicator,high
+DCL19-C,20,sqlite,src/global.c,357,FP,exported trace global; file scope required,b15-adjudicator,high
+ARR02-C,21,sqlite,src/global.c,366,FP,sqlite3OpcodeProperty initialized from OPFLG_INITIALIZER macro full init; implicit size by design ARR02 style-only,b15-adjudicator,high
+DCL15-C,22,sqlite,src/global.c,366,FP,extern const in sqliteInt.h:5427 used by vdbe across TUs; needs external linkage,b15-adjudicator,high
+DCL19-C,23,sqlite,src/global.c,366,FP,exported opcode table; file scope required,b15-adjudicator,high
+DCL15-C,24,sqlite,src/global.c,371,FP,sqlite3StrBINARY extern const in sqliteInt.h:5428 used across TUs; needs external linkage,b15-adjudicator,high
+DCL19-C,25,sqlite,src/global.c,371,FP,exported collation-name global; file scope required,b15-adjudicator,high
+ARR02-C,26,sqlite,src/global.c,385,FP,"sqlite3StdTypeLen fully brace-initialized {3,4,3,7,4,4}; implicit size by design ARR02 style-only",b15-adjudicator,high
+DCL15-C,27,sqlite,src/global.c,385,FP,extern const in sqliteInt.h:5429 used across TUs; needs external linkage,b15-adjudicator,high
+DCL19-C,28,sqlite,src/global.c,385,FP,exported global; file scope required,b15-adjudicator,high
+ARR02-C,29,sqlite,src/global.c,386,FP,sqlite3StdTypeAffinity fully brace-initialized 6 entries; implicit size by design,b15-adjudicator,high
+DCL15-C,30,sqlite,src/global.c,386,FP,extern const in sqliteInt.h:5430 used across TUs; needs external linkage,b15-adjudicator,high
+DCL19-C,31,sqlite,src/global.c,386,FP,exported global; file scope required,b15-adjudicator,high
+ARR02-C,32,sqlite,src/global.c,394,FP,sqlite3StdType fully brace-initialized string array; implicit size by design,b15-adjudicator,high
+DCL15-C,33,sqlite,src/global.c,394,FP,extern const in sqliteInt.h:5431 used across TUs; needs external linkage,b15-adjudicator,high
+DCL19-C,34,sqlite,src/global.c,394,FP,exported global; file scope required,b15-adjudicator,high

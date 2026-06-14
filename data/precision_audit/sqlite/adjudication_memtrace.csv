@@ -1,0 +1,20 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,1,sqlite,ext/misc/memtrace.c,34,FP,memtraceOut is a static FILE* so zero-initialized per C standard; not uninitialized,b15-adjudicator,high
+PRE32-C,2,sqlite,ext/misc/memtrace.c,35,FP,fprintf args are a string literal plus an expression with no # preprocessor directive token present,b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/memtrace.c,36,FP,memtraceBase is a static struct so zero-initialized per C standard; not uninitialized,b15-adjudicator,high
+EXP33-C,4,sqlite,ext/misc/memtrace.c,42,FP,static memtraceOut zero-initialized by definition,b15-adjudicator,high
+EXP33-C,5,sqlite,ext/misc/memtrace.c,43,FP,static memtraceBase zero-initialized by definition,b15-adjudicator,high
+EXP33-C,6,sqlite,ext/misc/memtrace.c,53,FP,static memtraceOut zero-initialized by definition,b15-adjudicator,high
+EXP30-C,7,sqlite,ext/misc/memtrace.c,54,FP,xSize(p) and xRoundup(n) act on distinct objects p and n with no shared mutated state so no unsequenced conflict,b15-adjudicator,high
+PRE32-C,8,sqlite,ext/misc/memtrace.c,54,FP,fprintf args contain no # preprocessor directive only a format string and call expressions,b15-adjudicator,high
+EXP33-C,9,sqlite,ext/misc/memtrace.c,55,FP,static memtraceBase zero-initialized by definition,b15-adjudicator,high
+EXP33-C,10,sqlite,ext/misc/memtrace.c,60,FP,static memtraceBase zero-initialized by definition,b15-adjudicator,high
+EXP33-C,11,sqlite,ext/misc/memtrace.c,63,FP,static memtraceBase zero-initialized by definition,b15-adjudicator,high
+EXP33-C,12,sqlite,ext/misc/memtrace.c,66,FP,static memtraceBase zero-initialized by definition,b15-adjudicator,high
+EXP33-C,13,sqlite,ext/misc/memtrace.c,69,FP,static memtraceBase zero-initialized by definition,b15-adjudicator,high
+CON03-C,14,sqlite,ext/misc/memtrace.c,73,FP,ersaztMethods is a static method-dispatch table installed once via sqlite3_config before init not a concurrently-mutated shared var,b15-adjudicator,high
+DCL13-C,15,sqlite,ext/misc/memtrace.c,85,FP,out is stored into non-const FILE* memtraceOut so const would not compile,b15-adjudicator,high
+DCL15-C,16,sqlite,ext/misc/memtrace.c,85,FP,sqlite3MemTraceActivate is intentional public API called externally from shell.c and dbfuzz2.c so needs external linkage,b15-adjudicator,high
+EXP33-C,17,sqlite,ext/misc/memtrace.c,87,FP,static memtraceBase zero-initialized by definition,b15-adjudicator,high
+DCL15-C,18,sqlite,ext/misc/memtrace.c,98,FP,sqlite3MemTraceDeactivate is intentional public API called externally so needs external linkage,b15-adjudicator,high
+EXP33-C,19,sqlite,ext/misc/memtrace.c,100,FP,static memtraceBase zero-initialized by definition,b15-adjudicator,high

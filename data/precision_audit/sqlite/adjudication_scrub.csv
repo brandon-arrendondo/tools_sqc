@@ -1,0 +1,63 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MEM30-C,1,sqlite,ext/misc/scrub.c,88,FP,p->rcErr is an int field of ScrubState not a freed pointer; scrubBackupErr frees p->zErr not rcErr,b15-adjudicator,high
+DCL30-C,2,sqlite,ext/misc/scrub.c,97,FP,returns pPage which is heap from sqlite3_malloc not a local automatic object,b15-adjudicator,high
+INT32-C,3,sqlite,ext/misc/scrub.c,112,FP,cast to sqlite3_int64 makes the multiply 64-bit; pgno bounded by page_count and szPage<=65536 cannot overflow int64,b15-adjudicator,high
+INT32-C,4,sqlite,ext/misc/scrub.c,112,FP,pgno is page number from validated PRAGMA/sqlite_schema; pgno-1 cannot overflow int,b15-adjudicator,high
+DCL30-C,5,sqlite,ext/misc/scrub.c,120,FP,returns pOut which points to heap (pBuf or allocated page) not a local,b15-adjudicator,high
+INT32-C,6,sqlite,ext/misc/scrub.c,128,FP,same as idx3 the multiply is promoted to sqlite3_int64 and cannot overflow,b15-adjudicator,high
+INT32-C,7,sqlite,ext/misc/scrub.c,128,FP,pgno-1 on a valid page number cannot overflow int,b15-adjudicator,high
+DCL30-C,8,sqlite,ext/misc/scrub.c,152,FP,returns pStmt which is a heap stmt handle from sqlite3_prepare not a local object,b15-adjudicator,high
+INT14-C,9,sqlite,ext/misc/scrub.c,272,FP,INT14 readability only; a[] bytes combined via shifts to build big-endian u32 is idiomatic and safe,b15-adjudicator,high
+INT14-C,10,sqlite,ext/misc/scrub.c,282,FP,readability heuristic only; varint accumulation v<<7 is intended bitwise+arith,b15-adjudicator,high
+INT14-C,11,sqlite,ext/misc/scrub.c,282,FP,z is a byte pointer indexed by i; readability heuristic not a defect,b15-adjudicator,high
+INT14-C,12,sqlite,ext/misc/scrub.c,282,FP,i is a loop counter used to index z and returned; not a defect,b15-adjudicator,high
+INT32-C,13,sqlite,ext/misc/scrub.c,282,FP,v is sqlite3_int64 (64-bit); v<<7 over 8 iterations of 7 bits max stays within 56 bits no overflow,b15-adjudicator,high
+INT32-C,14,sqlite,ext/misc/scrub.c,285,FP,v<<8 final varint step on 64-bit v; total 64 bits well defined,b15-adjudicator,high
+INT14-C,15,sqlite,ext/misc/scrub.c,296,FP,readability heuristic only; loop index over varint bytes,b15-adjudicator,high
+INT32-C,16,sqlite,ext/misc/scrub.c,319,FP,memset size 4*(mx-n) bounded: n<mx guard ensures positive and n*4+8+4*(mx-n)=mx*4+8=szUsable within szPage buffer,b15-adjudicator,high
+INT32-C,17,sqlite,ext/misc/scrub.c,319,FP,mx=szUsable/4-2 and n<mx so 4*(mx-n) is small and within u32; no overflow,b15-adjudicator,high
+INT32-C,18,sqlite,ext/misc/scrub.c,329,FP,dead code under #if 0; never compiled,b15-adjudicator,high
+INT32-C,19,sqlite,ext/misc/scrub.c,329,FP,dead code under #if 0; never compiled,b15-adjudicator,high
+INT32-C,20,sqlite,ext/misc/scrub.c,356,FP,szUsable=szPage-page1[20]>=512-255=257 so szUsable-4 positive no underflow,b15-adjudicator,high
+MEM05-C,21,sqlite,ext/misc/scrub.c,374,FP,MEM05 recursion is real in scrubBackupBtree but depth is bounded by iDepth>50 guard at line 388 so not excessive,b15-adjudicator,med
+ARR37-C,22,sqlite,ext/misc/scrub.c,400,FP,aTop=&a[nPrefix] points into szPage page buffer; aTop[0] is a valid in-buffer byte read,b15-adjudicator,high
+ARR37-C,23,sqlite,ext/misc/scrub.c,400,FP,duplicate of idx22; aTop[0] read is in-bounds of the page buffer,b15-adjudicator,high
+INT32-C,24,sqlite,ext/misc/scrub.c,400,FP,szHdr=8+4*(bool) is at most 12; constant arithmetic cannot overflow int,b15-adjudicator,high
+INT32-C,25,sqlite,ext/misc/scrub.c,400,FP,4*(bool) is 0 or 4; no overflow,b15-adjudicator,high
+ARR37-C,26,sqlite,ext/misc/scrub.c,402,FP,aTop[3] within page buffer (nPrefix+3 < szPage); reads cell count field,b15-adjudicator,high
+ARR37-C,27,sqlite,ext/misc/scrub.c,406,FP,aTop[5] within page buffer; reads cell-content-area pointer,b15-adjudicator,high
+INT32-C,28,sqlite,ext/misc/scrub.c,410,FP,memset size x-y guarded by y>x corrupt-goto at 409 then y<x check; x bounded x<=szUsable so x-y within buffer,b15-adjudicator,high
+ARR37-C,29,sqlite,ext/misc/scrub.c,413,FP,aTop[1] within page buffer; reads first-freeblock pointer,b15-adjudicator,high
+INT32-C,30,sqlite,ext/misc/scrub.c,419,FP,n is szUsable from valid page; szUsable-4>=253 no underflow (n here is the field n not szUsable but subtraction bounded),b15-adjudicator,high
+ARR37-C,31,sqlite,ext/misc/scrub.c,435,FP,aTop[0] in-bounds page-buffer byte,b15-adjudicator,high
+ARR37-C,32,sqlite,ext/misc/scrub.c,435,FP,duplicate aTop[0] read in-bounds,b15-adjudicator,high
+ARR37-C,33,sqlite,ext/misc/scrub.c,440,FP,aTop[0] in-bounds page-buffer byte,b15-adjudicator,high
+ARR37-C,34,sqlite,ext/misc/scrub.c,444,FP,aTop[0] in-bounds page-buffer byte,b15-adjudicator,high
+INT32-C,35,sqlite,ext/misc/scrub.c,447,FP,szUsable>=257 so (szUsable-12)*64/255-23 computed on small u32 values no overflow,b15-adjudicator,high
+INT32-C,36,sqlite,ext/misc/scrub.c,447,FP,(szUsable-12)*64 with szUsable<=65536 max ~4.2M fits in u32 no overflow,b15-adjudicator,high
+INT32-C,37,sqlite,ext/misc/scrub.c,453,FP,(szUsable-12)*32/255-23 bounded same as idx35,b15-adjudicator,high
+INT32-C,38,sqlite,ext/misc/scrub.c,453,FP,(szUsable-12)*32 max ~2M fits u32 no overflow,b15-adjudicator,high
+INT10-C,39,sqlite,ext/misc/scrub.c,454,FP,"operands are u32 (szUsable u32, P sqlite3_int64) so modulo is on non-negative values not implementation-defined",b15-adjudicator,med
+INT33-C,40,sqlite,ext/misc/scrub.c,454,FP,szUsable=szPage-page1[20]>=257 so szUsable-4 never zero,b15-adjudicator,high
+ARR37-C,41,sqlite,ext/misc/scrub.c,455,FP,aTop[0] in-bounds page-buffer byte,b15-adjudicator,high
+ARR36-C,42,sqlite,ext/misc/scrub.c,459,FP,ARR36 misfire: M is a local u32 value compared to szUsable u32; no pointer arithmetic between different arrays here,b15-adjudicator,high
+INT32-C,43,sqlite,ext/misc/scrub.c,462,FP,P is sqlite3_int64 and nLocal u32; P>X>=local bound so P-nLocal positive; passed as u32 byte count to overflow copy,b15-adjudicator,high
+ARR37-C,44,sqlite,ext/misc/scrub.c,466,FP,aTop[0] in-bounds page-buffer byte,b15-adjudicator,high
+ARR37-C,45,sqlite,ext/misc/scrub.c,466,FP,duplicate aTop[0] read in-bounds,b15-adjudicator,high
+ARR37-C,46,sqlite,ext/misc/scrub.c,467,FP,aTop[8] within page buffer (nPrefix+8 < szPage); reads right-child pointer,b15-adjudicator,high
+MSC07-C,47,sqlite,ext/misc/scrub.c,475,FP,code after return at 473 is the btree_corrupt label reached via goto not unconditionally; not unreachable,b15-adjudicator,high
+MEM30-C,48,sqlite,ext/misc/scrub.c,478,FP,each scrubBackupBtree frees its own a once; recursive calls operate on separately-allocated pages no double free,b15-adjudicator,high
+INT32-C,49,sqlite,ext/misc/scrub.c,489,FP,1073742335/szPage with szPage>=512 nonzero; result small +1 no overflow,b15-adjudicator,high
+INT33-C,50,sqlite,ext/misc/scrub.c,489,FP,szPage from validated PRAGMA page_size is nonzero (power of 2 >=512),b15-adjudicator,high
+API00-C,51,sqlite,ext/misc/scrub.c,504,FP,API00 heuristic; zSrcFile passed to sqlite3_open_v2 which tolerates and reports bad paths; public API contract,b15-adjudicator,med
+API00-C,52,sqlite,ext/misc/scrub.c,504,FP,zDestFile same as idx51; passed to sqlite3_open_v2 which validates,b15-adjudicator,med
+DCL15-C,53,sqlite,ext/misc/scrub.c,504,FP,sqlite3_scrub_backup is the public exported API entry point; must have external linkage,b15-adjudicator,high
+DCL19-C,54,sqlite,ext/misc/scrub.c,504,FP,public API symbol declared in header for external callers; must not be static,b15-adjudicator,high
+EXP05-C,55,sqlite,ext/misc/scrub.c,513,FP,EXP05 misfire: &s is address of local non-const ScrubState; no const being cast away,b15-adjudicator,high
+MEM30-C,56,sqlite,ext/misc/scrub.c,542,FP,i is a u32 page-number value not a freed pointer; passed by value to scrubBackupBtree,b15-adjudicator,high
+MEM30-C,57,sqlite,ext/misc/scrub.c,570,FP,s.zErr assigned to *pzErr is a live heap string not freed on that path; freed only in the else branch,b15-adjudicator,high
+STR34-C,58,sqlite,ext/misc/scrub.c,570,FP,STR34 misfire: *pzErr is a char* pointer assignment not a char value sign-extension,b15-adjudicator,high
+MEM30-C,59,sqlite,ext/misc/scrub.c,574,FP,s.rcErr is an int field returned by value not a freed pointer,b15-adjudicator,high
+DCL13-C,60,sqlite,ext/misc/scrub.c,579,FP,pNotUsed is void* unused log-callback param fixed by sqlite3_config LOG callback typedef; cannot add const without signature mismatch,b15-adjudicator,high
+API00-C,61,sqlite,ext/misc/scrub.c,590,FP,main argv guaranteed non-null by C runtime; argc==3 checked before argv[1]/argv[2] use,b15-adjudicator,med
+DCL11-C,62,sqlite,ext/misc/scrub.c,604,FP,DCL11 misfire: argv[0] is char* matching %s in the Usage fprintf; not NULL in practice,b15-adjudicator,high

@@ -1,61 +1,61 @@
 rule,idx,project,file,line,verdict,reason,provenance,confidence
-ARR02-C,1,sqlite,ext/misc/carray.c,69,FP,azCarrayType[] is a file-scope const char* initialized by 5 string literals so size is fixed by initializer; implicit-bound on initialized aggregate is idiomatic and safe,b14-adjudicator,high
-FLP06-C,2,sqlite,ext/misc/carray.c,69,FP,line 69 is a char* string array initializer not a floating-point variable; FLP06 misfire on the (double) cast context confusion,b14-adjudicator,high
-DCL13-C,3,sqlite,ext/misc/carray.c,114,FP,pAux is a parameter of xConnect whose signature is fixed by the sqlite3_module xCreate/xConnect typedef so const cannot be added,b14-adjudicator,high
-DCL13-C,4,sqlite,ext/misc/carray.c,117,FP,pzErr is the char** error-out param of xConnect fixed by sqlite3_module typedef and is an output pointer not const-able,b14-adjudicator,high
-EXP33-C,5,sqlite,ext/misc/carray.c,131,FP,pNew is assigned from sqlite3_malloc before any deref at line 131 then null-checked at 132 so no uninitialized deref,b14-adjudicator,high
-MEM12-C,6,sqlite,ext/misc/carray.c,132,FP,on NOMEM at 132 pNew is null so nothing leaks and *ppVtab holds the same null; SQLITE_NOMEM return is correct vtab contract,b14-adjudicator,high
-MEM12-C,7,sqlite,ext/misc/carray.c,135,FP,line 135 returns rc after successful alloc or declare failure with no owned unreleased resource; pNew is stored into *ppVtab and owned by SQLite,b14-adjudicator,high
-DCL13-C,8,sqlite,ext/misc/carray.c,149,FP,p is the sqlite3_vtab* param of xOpen fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
-EXP33-C,9,sqlite,ext/misc/carray.c,151,FP,pCur assigned from sqlite3_malloc at 151 and null-checked at 152 before memset deref so not uninitialized,b14-adjudicator,high
-MEM33-C,10,sqlite,ext/misc/carray.c,154,FP,line 154 takes &pCur->base address it does not assign a flexible-array struct by value; MEM33 misfire,b14-adjudicator,high
-INT32-C,11,sqlite,ext/misc/carray.c,172,FP,iRowid is sqlite3_int64 bounded by iCnt via carrayEof; increment cannot reach INT_MAX in practice and i64 not int,b14-adjudicator,high
-DCL13-C,12,sqlite,ext/misc/carray.c,181,FP,cur is the cursor param of xRowid fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
-INT32-C,13,sqlite,ext/misc/carray.c,198,FP,iRowid is i64 set to 1 in xFilter and bounded by iCnt in xEof; iRowid-1 is a valid in-range index not an overflow,b14-adjudicator,high
-INT32-C,14,sqlite,ext/misc/carray.c,203,FP,same i64 iRowid-1 index path bounded by xFilter/xEof invariant; INT32 misfire on i64,b14-adjudicator,high
-FLP06-C,15,sqlite,ext/misc/carray.c,207,FP,line 207 declares double *p from a void* cast not a float initialized by integer arithmetic; FLP06 misfire,b14-adjudicator,high
-FLP34-C,16,sqlite,ext/misc/carray.c,207,FP,line 207 is a pointer cast (double*)pCur->pPtr not a value conversion to double so no range issue; FLP34 misfire,b14-adjudicator,high
-INT32-C,17,sqlite,ext/misc/carray.c,208,FP,i64 iRowid-1 index into double array bounded by xFilter/xEof; INT32 misfire on i64,b14-adjudicator,high
-INT32-C,18,sqlite,ext/misc/carray.c,213,FP,i64 iRowid-1 index into char* array bounded by xFilter/xEof; INT32 misfire on i64,b14-adjudicator,high
-INT32-C,19,sqlite,ext/misc/carray.c,219,FP,i64 iRowid-1 index into iovec array bounded by xFilter/xEof; INT32 misfire on i64,b14-adjudicator,high
-INT32-C,20,sqlite,ext/misc/carray.c,220,FP,second i64 iRowid-1 in same iovec result_blob call bounded by xFilter/xEof; INT32 misfire on i64,b14-adjudicator,high
-DCL13-C,21,sqlite,ext/misc/carray.c,234,FP,cur is the cursor param of xEof fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
-DCL13-C,22,sqlite,ext/misc/carray.c,244,FP,cur is the cursor param of carrayEof fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
-DCL13-C,23,sqlite,ext/misc/carray.c,256,FP,argv is sqlite3_value** param of xFilter fixed by sqlite3_module typedef; pointer-to-pointer is not const-able under contract,b14-adjudicator,high
-ARR01-C,24,sqlite,ext/misc/carray.c,279,FP,sizeof(azCarrayType) at line 279 operates on the genuine file-scope array not a decayed parameter so the element-count idiom is correct; ARR01 misfires treating the global array as a param,b14-adjudicator,high
-ARR01-C,25,sqlite,ext/misc/carray.c,279,FP,duplicate of idx24 same line; sizeof on the real file-scope array is valid not a decayed parameter,b14-adjudicator,high
-ARR39-C,26,sqlite,ext/misc/carray.c,279,FP,line 279 loop bound sizeof(azCarrayType)/sizeof(azCarrayType[0]) is the correct element count idiom and azCarrayType is a real array not a pointer; no double scaling,b14-adjudicator,high
-ARR01-C,27,sqlite,ext/misc/carray.c,282,FP,line 282 sizeof on real file-scope azCarrayType array is correct; not a decayed parameter,b14-adjudicator,high
-ARR01-C,28,sqlite,ext/misc/carray.c,282,FP,duplicate of idx27 same line; sizeof on real global array is correct,b14-adjudicator,high
-DCL13-C,29,sqlite,ext/misc/carray.c,318,FP,tab is sqlite3_vtab* param of xBestIndex fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
-INT32-C,30,sqlite,ext/misc/carray.c,331,FP,iColumn is a small schema column index (0..3) guarded by iColumn>=0 so 1<<iColumn cannot overflow; bounded by 4-column vtab,b14-adjudicator,high
-FLP34-C,31,sqlite,ext/misc/carray.c,348,FP,line 348 casts integer literal 1 to (double)1 a constant with no range concern; FLP34 misfire on constant,b14-adjudicator,high
-INT32-C,32,sqlite,ext/misc/carray.c,359,FP,1<<CARRAY_COLUMN_CTYPE is 1<<3 a compile-time constant well within int range; no overflow,b14-adjudicator,high
-INT34-C,33,sqlite,ext/misc/carray.c,359,FP,CARRAY_COLUMN_CTYPE is the constant 3 a fixed non-negative in-range shift amount; INT34 misfire on compile-time constant,b14-adjudicator,high
-INT32-C,34,sqlite,ext/misc/carray.c,364,FP,1<<CARRAY_COLUMN_COUNT is 1<<2 a compile-time constant within int range; no overflow,b14-adjudicator,high
-INT34-C,35,sqlite,ext/misc/carray.c,364,FP,CARRAY_COLUMN_COUNT is the constant 2 a fixed non-negative in-range shift amount; INT34 misfire on compile-time constant,b14-adjudicator,high
-FLP34-C,36,sqlite,ext/misc/carray.c,370,FP,line 370 casts integer literal to (double)2147483647 a representable constant; FLP34 misfire on constant,b14-adjudicator,high
-CON03-C,37,sqlite,ext/misc/carray.c,381,FP,carrayModule is a static const-data sqlite3_module table never mutated; read-only module registration needs no synchronization,b14-adjudicator,high
-API00-C,38,sqlite,ext/misc/carray.c,435,FP,pStmt is passed straight to sqlite3_bind_pointer which validates it; C-API contract requires caller supply a valid stmt not a trust boundary,b14-adjudicator,high
-DCL03-C,39,sqlite,ext/misc/carray.c,449,TP,assert(CARRAY_INT32==0 && CARRAY_INT64==1 && CARRAY_DOUBLE==2) is a pure compile-time constant expression suitable for static_assert,b14-adjudicator,high
-DCL03-C,40,sqlite,ext/misc/carray.c,450,TP,assert(CARRAY_TEXT==3 && CARRAY_BLOB==4) is a pure compile-time constant expression suitable for static_assert,b14-adjudicator,high
-INT32-C,41,sqlite,ext/misc/carray.c,467,FP,sz is sqlite3_int64 and nData is a caller-supplied count under C-API contract; sz*=4 on i64 with realistic counts does not overflow and this is API glue not untrusted input,b14-adjudicator,med
-INT32-C,42,sqlite,ext/misc/carray.c,468,FP,sz*=8 on i64 from caller-contract nData; no overflow under valid-array contract,b14-adjudicator,med
-INT32-C,43,sqlite,ext/misc/carray.c,469,FP,sz*=8 on i64 from caller-contract nData; no overflow under valid-array contract,b14-adjudicator,med
-INT32-C,44,sqlite,ext/misc/carray.c,470,FP,sz*=sizeof(char*) on i64 from caller-contract nData; no overflow under valid-array contract,b14-adjudicator,med
-INT32-C,45,sqlite,ext/misc/carray.c,471,FP,sz*=sizeof(struct iovec) on i64 from caller-contract nData; no overflow under valid-array contract,b14-adjudicator,med
-INT32-C,46,sqlite,ext/misc/carray.c,476,FP,sz+=strlen(z)+1 accumulates into i64 over caller-owned valid char* array; bounded by caller contract not untrusted data,b14-adjudicator,med
-INT32-C,47,sqlite,ext/misc/carray.c,480,FP,sz+=iov_len accumulates into i64 over caller-owned valid iovec array; caller contract bounds the magnitude,b14-adjudicator,med
-ARR30-C,48,sqlite,ext/misc/carray.c,492,FP,nData indexes aData which is the caller-owned array of exactly nData elements per the documented API contract; not an untrusted index,b14-adjudicator,high
-ARR38-C,49,sqlite,ext/misc/carray.c,502,FP,memcpy size sz was computed consistently from the same nData/mFlags above and the buffer was malloc64(sz); size matches the destination,b14-adjudicator,high
-EXP05-C,50,sqlite,ext/misc/carray.c,502,FP,z is char* pointing into freshly malloc'd pNew->aData not a const object; no const qualifier is being cast away,b14-adjudicator,high
-INT32-C,51,sqlite,ext/misc/carray.c,502,FP,n=strlen(zData) and n+1 bytes were already reserved in sz; memcpy into pre-sized buffer cannot overflow under the consistent sizing,b14-adjudicator,high
-ARR37-C,52,sqlite,ext/misc/carray.c,503,FP,z is a normal char* walking a malloc'd buffer; z+=n+1 is ordinary pointer arithmetic within the sized allocation not array-of-1,b14-adjudicator,high
-ARR30-C,53,sqlite,ext/misc/carray.c,507,FP,nData indexes caller-owned iovec array of nData elements per API contract; bounded by caller-supplied count,b14-adjudicator,high
-ARR37-C,54,sqlite,ext/misc/carray.c,512,FP,z is unsigned char* walking the malloc'd blob region; z+=n is in-bounds pointer arithmetic within the sized allocation,b14-adjudicator,high
-INT31-C,55,sqlite,ext/misc/carray.c,512,FP,z is a pointer assignment p[i].iov_base=z and z+=n not a narrowing integer conversion; INT31 misfire on pointer arithmetic,b14-adjudicator,high
-INT31-C,56,sqlite,ext/misc/carray.c,516,FP,sz is i64 >=0 by construction passed to malloc64/memcpy size_t; value is non-negative and bounded by prior sizing so conversion is safe,b14-adjudicator,high
-MSC07-C,57,sqlite,ext/misc/carray.c,527,FP,line 527 carray_bind_error: is a goto label reached by error paths not unreachable code after return; MSC07 misfire on goto target,b14-adjudicator,high
-API00-C,58,sqlite,ext/misc/carray.c,540,FP,pStmt forwarded to sqlite3_carray_bind_v2 then to sqlite3_bind_pointer which validates; C-API caller-contract not a trust boundary,b14-adjudicator,high
-API00-C,59,sqlite,ext/misc/carray.c,540,FP,xDestroy is a caller-supplied destructor callback compared against sentinels before invocation; null/sentinel handling is correct API contract,b14-adjudicator,high
-API00-C,60,sqlite,ext/misc/carray.c,554,FP,db is the connection handle in an internal registration routine invoked with a valid db by SQLite init; internal contract guarantees non-null,b14-adjudicator,high
+ARR02-C,1,sqlite,src/carray.c,69,FP,azCarrayType[] is a file-scope const char* initialized by 5 string literals so size is fixed by initializer; implicit-bound on initialized aggregate is idiomatic and safe,b14-adjudicator,high
+FLP06-C,2,sqlite,src/carray.c,69,FP,line 69 is a char* string array initializer not a floating-point variable; FLP06 misfire on the (double) cast context confusion,b14-adjudicator,high
+DCL13-C,3,sqlite,src/carray.c,114,FP,pAux is a parameter of xConnect whose signature is fixed by the sqlite3_module xCreate/xConnect typedef so const cannot be added,b14-adjudicator,high
+DCL13-C,4,sqlite,src/carray.c,117,FP,pzErr is the char** error-out param of xConnect fixed by sqlite3_module typedef and is an output pointer not const-able,b14-adjudicator,high
+EXP33-C,5,sqlite,src/carray.c,131,FP,pNew is assigned from sqlite3_malloc before any deref at line 131 then null-checked at 132 so no uninitialized deref,b14-adjudicator,high
+MEM12-C,6,sqlite,src/carray.c,132,FP,on NOMEM at 132 pNew is null so nothing leaks and *ppVtab holds the same null; SQLITE_NOMEM return is correct vtab contract,b14-adjudicator,high
+MEM12-C,7,sqlite,src/carray.c,135,FP,line 135 returns rc after successful alloc or declare failure with no owned unreleased resource; pNew is stored into *ppVtab and owned by SQLite,b14-adjudicator,high
+DCL13-C,8,sqlite,src/carray.c,149,FP,p is the sqlite3_vtab* param of xOpen fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
+EXP33-C,9,sqlite,src/carray.c,151,FP,pCur assigned from sqlite3_malloc at 151 and null-checked at 152 before memset deref so not uninitialized,b14-adjudicator,high
+MEM33-C,10,sqlite,src/carray.c,154,FP,line 154 takes &pCur->base address it does not assign a flexible-array struct by value; MEM33 misfire,b14-adjudicator,high
+INT32-C,11,sqlite,src/carray.c,172,FP,iRowid is sqlite3_int64 bounded by iCnt via carrayEof; increment cannot reach INT_MAX in practice and i64 not int,b14-adjudicator,high
+DCL13-C,12,sqlite,src/carray.c,181,FP,cur is the cursor param of xRowid fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
+INT32-C,13,sqlite,src/carray.c,198,FP,iRowid is i64 set to 1 in xFilter and bounded by iCnt in xEof; iRowid-1 is a valid in-range index not an overflow,b14-adjudicator,high
+INT32-C,14,sqlite,src/carray.c,203,FP,same i64 iRowid-1 index path bounded by xFilter/xEof invariant; INT32 misfire on i64,b14-adjudicator,high
+FLP06-C,15,sqlite,src/carray.c,207,FP,line 207 declares double *p from a void* cast not a float initialized by integer arithmetic; FLP06 misfire,b14-adjudicator,high
+FLP34-C,16,sqlite,src/carray.c,207,FP,line 207 is a pointer cast (double*)pCur->pPtr not a value conversion to double so no range issue; FLP34 misfire,b14-adjudicator,high
+INT32-C,17,sqlite,src/carray.c,208,FP,i64 iRowid-1 index into double array bounded by xFilter/xEof; INT32 misfire on i64,b14-adjudicator,high
+INT32-C,18,sqlite,src/carray.c,213,FP,i64 iRowid-1 index into char* array bounded by xFilter/xEof; INT32 misfire on i64,b14-adjudicator,high
+INT32-C,19,sqlite,src/carray.c,219,FP,i64 iRowid-1 index into iovec array bounded by xFilter/xEof; INT32 misfire on i64,b14-adjudicator,high
+INT32-C,20,sqlite,src/carray.c,220,FP,second i64 iRowid-1 in same iovec result_blob call bounded by xFilter/xEof; INT32 misfire on i64,b14-adjudicator,high
+DCL13-C,21,sqlite,src/carray.c,234,FP,cur is the cursor param of xEof fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
+DCL13-C,22,sqlite,src/carray.c,244,FP,cur is the cursor param of carrayEof fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
+DCL13-C,23,sqlite,src/carray.c,256,FP,argv is sqlite3_value** param of xFilter fixed by sqlite3_module typedef; pointer-to-pointer is not const-able under contract,b14-adjudicator,high
+ARR01-C,24,sqlite,src/carray.c,279,FP,sizeof(azCarrayType) at line 279 operates on the genuine file-scope array not a decayed parameter so the element-count idiom is correct; ARR01 misfires treating the global array as a param,b14-adjudicator,high
+ARR01-C,25,sqlite,src/carray.c,279,FP,duplicate of idx24 same line; sizeof on the real file-scope array is valid not a decayed parameter,b14-adjudicator,high
+ARR39-C,26,sqlite,src/carray.c,279,FP,line 279 loop bound sizeof(azCarrayType)/sizeof(azCarrayType[0]) is the correct element count idiom and azCarrayType is a real array not a pointer; no double scaling,b14-adjudicator,high
+ARR01-C,27,sqlite,src/carray.c,282,FP,line 282 sizeof on real file-scope azCarrayType array is correct; not a decayed parameter,b14-adjudicator,high
+ARR01-C,28,sqlite,src/carray.c,282,FP,duplicate of idx27 same line; sizeof on real global array is correct,b14-adjudicator,high
+DCL13-C,29,sqlite,src/carray.c,318,FP,tab is sqlite3_vtab* param of xBestIndex fixed by sqlite3_module typedef so const cannot be added,b14-adjudicator,high
+INT32-C,30,sqlite,src/carray.c,331,FP,iColumn is a small schema column index (0..3) guarded by iColumn>=0 so 1<<iColumn cannot overflow; bounded by 4-column vtab,b14-adjudicator,high
+FLP34-C,31,sqlite,src/carray.c,348,FP,line 348 casts integer literal 1 to (double)1 a constant with no range concern; FLP34 misfire on constant,b14-adjudicator,high
+INT32-C,32,sqlite,src/carray.c,359,FP,1<<CARRAY_COLUMN_CTYPE is 1<<3 a compile-time constant well within int range; no overflow,b14-adjudicator,high
+INT34-C,33,sqlite,src/carray.c,359,FP,CARRAY_COLUMN_CTYPE is the constant 3 a fixed non-negative in-range shift amount; INT34 misfire on compile-time constant,b14-adjudicator,high
+INT32-C,34,sqlite,src/carray.c,364,FP,1<<CARRAY_COLUMN_COUNT is 1<<2 a compile-time constant within int range; no overflow,b14-adjudicator,high
+INT34-C,35,sqlite,src/carray.c,364,FP,CARRAY_COLUMN_COUNT is the constant 2 a fixed non-negative in-range shift amount; INT34 misfire on compile-time constant,b14-adjudicator,high
+FLP34-C,36,sqlite,src/carray.c,370,FP,line 370 casts integer literal to (double)2147483647 a representable constant; FLP34 misfire on constant,b14-adjudicator,high
+CON03-C,37,sqlite,src/carray.c,381,FP,carrayModule is a static const-data sqlite3_module table never mutated; read-only module registration needs no synchronization,b14-adjudicator,high
+API00-C,38,sqlite,src/carray.c,435,FP,pStmt is passed straight to sqlite3_bind_pointer which validates it; C-API contract requires caller supply a valid stmt not a trust boundary,b14-adjudicator,high
+DCL03-C,39,sqlite,src/carray.c,449,TP,assert(CARRAY_INT32==0 && CARRAY_INT64==1 && CARRAY_DOUBLE==2) is a pure compile-time constant expression suitable for static_assert,b14-adjudicator,high
+DCL03-C,40,sqlite,src/carray.c,450,TP,assert(CARRAY_TEXT==3 && CARRAY_BLOB==4) is a pure compile-time constant expression suitable for static_assert,b14-adjudicator,high
+INT32-C,41,sqlite,src/carray.c,467,FP,sz is sqlite3_int64 and nData is a caller-supplied count under C-API contract; sz*=4 on i64 with realistic counts does not overflow and this is API glue not untrusted input,b14-adjudicator,med
+INT32-C,42,sqlite,src/carray.c,468,FP,sz*=8 on i64 from caller-contract nData; no overflow under valid-array contract,b14-adjudicator,med
+INT32-C,43,sqlite,src/carray.c,469,FP,sz*=8 on i64 from caller-contract nData; no overflow under valid-array contract,b14-adjudicator,med
+INT32-C,44,sqlite,src/carray.c,470,FP,sz*=sizeof(char*) on i64 from caller-contract nData; no overflow under valid-array contract,b14-adjudicator,med
+INT32-C,45,sqlite,src/carray.c,471,FP,sz*=sizeof(struct iovec) on i64 from caller-contract nData; no overflow under valid-array contract,b14-adjudicator,med
+INT32-C,46,sqlite,src/carray.c,476,FP,sz+=strlen(z)+1 accumulates into i64 over caller-owned valid char* array; bounded by caller contract not untrusted data,b14-adjudicator,med
+INT32-C,47,sqlite,src/carray.c,480,FP,sz+=iov_len accumulates into i64 over caller-owned valid iovec array; caller contract bounds the magnitude,b14-adjudicator,med
+ARR30-C,48,sqlite,src/carray.c,492,FP,nData indexes aData which is the caller-owned array of exactly nData elements per the documented API contract; not an untrusted index,b14-adjudicator,high
+ARR38-C,49,sqlite,src/carray.c,502,FP,memcpy size sz was computed consistently from the same nData/mFlags above and the buffer was malloc64(sz); size matches the destination,b14-adjudicator,high
+EXP05-C,50,sqlite,src/carray.c,502,FP,z is char* pointing into freshly malloc'd pNew->aData not a const object; no const qualifier is being cast away,b14-adjudicator,high
+INT32-C,51,sqlite,src/carray.c,502,FP,n=strlen(zData) and n+1 bytes were already reserved in sz; memcpy into pre-sized buffer cannot overflow under the consistent sizing,b14-adjudicator,high
+ARR37-C,52,sqlite,src/carray.c,503,FP,z is a normal char* walking a malloc'd buffer; z+=n+1 is ordinary pointer arithmetic within the sized allocation not array-of-1,b14-adjudicator,high
+ARR30-C,53,sqlite,src/carray.c,507,FP,nData indexes caller-owned iovec array of nData elements per API contract; bounded by caller-supplied count,b14-adjudicator,high
+ARR37-C,54,sqlite,src/carray.c,512,FP,z is unsigned char* walking the malloc'd blob region; z+=n is in-bounds pointer arithmetic within the sized allocation,b14-adjudicator,high
+INT31-C,55,sqlite,src/carray.c,512,FP,z is a pointer assignment p[i].iov_base=z and z+=n not a narrowing integer conversion; INT31 misfire on pointer arithmetic,b14-adjudicator,high
+INT31-C,56,sqlite,src/carray.c,516,FP,sz is i64 >=0 by construction passed to malloc64/memcpy size_t; value is non-negative and bounded by prior sizing so conversion is safe,b14-adjudicator,high
+MSC07-C,57,sqlite,src/carray.c,527,FP,line 527 carray_bind_error: is a goto label reached by error paths not unreachable code after return; MSC07 misfire on goto target,b14-adjudicator,high
+API00-C,58,sqlite,src/carray.c,540,FP,pStmt forwarded to sqlite3_carray_bind_v2 then to sqlite3_bind_pointer which validates; C-API caller-contract not a trust boundary,b14-adjudicator,high
+API00-C,59,sqlite,src/carray.c,540,FP,xDestroy is a caller-supplied destructor callback compared against sentinels before invocation; null/sentinel handling is correct API contract,b14-adjudicator,high
+API00-C,60,sqlite,src/carray.c,554,FP,db is the connection handle in an internal registration routine invoked with a valid db by SQLite init; internal contract guarantees non-null,b14-adjudicator,high

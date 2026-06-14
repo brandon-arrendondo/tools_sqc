@@ -1,0 +1,35 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+STR34-C,1,sqlite,ext/misc/vtshim.c,84,FP,*pzErr is char* assigned mprintf char* result; no char value read so no sign extension,b15-adjudicator,high
+EXP33-C,2,sqlite,ext/misc/vtshim.c,89,FP,pNew is assigned from sqlite3_malloc not dereferenced uninitialized; null-checked at line 91,b15-adjudicator,high
+STR34-C,3,sqlite,ext/misc/vtshim.c,123,FP,*pzErr is char* assigned mprintf char* result; no char value read so no sign extension,b15-adjudicator,high
+EXP33-C,4,sqlite,ext/misc/vtshim.c,128,FP,pNew is assigned from sqlite3_malloc not dereferenced uninitialized; null-checked at line 130,b15-adjudicator,high
+DCL13-C,5,sqlite,ext/misc/vtshim.c,148,FP,pBase signature fixed by sqlite3_module xBestIndex typedef; cannot add const,b15-adjudicator,high
+EXP33-C,6,sqlite,ext/misc/vtshim.c,195,FP,pCur assigned from sqlite3_malloc not dereferenced uninitialized; null-checked at line 196,b15-adjudicator,high
+MEM33-C,7,sqlite,ext/misc/vtshim.c,205,FP,"line 205 takes address of base member into pointer; sqlite3_vtab_cursor has no flexible array, no struct copy",b15-adjudicator,high
+DCL13-C,8,sqlite,ext/misc/vtshim.c,231,FP,pX signature fixed by sqlite3_module/cursor method typedef; cannot add const,b15-adjudicator,high
+DCL13-C,9,sqlite,ext/misc/vtshim.c,249,FP,pX signature fixed by sqlite3_module/cursor method typedef; cannot add const,b15-adjudicator,high
+DCL13-C,10,sqlite,ext/misc/vtshim.c,262,FP,pX signature fixed by sqlite3_module/cursor method typedef; cannot add const,b15-adjudicator,high
+DCL13-C,11,sqlite,ext/misc/vtshim.c,273,FP,pX signature fixed by sqlite3_module/cursor method typedef; cannot add const,b15-adjudicator,high
+DCL13-C,12,sqlite,ext/misc/vtshim.c,286,FP,pX signature fixed by sqlite3_module/cursor method typedef; cannot add const,b15-adjudicator,high
+DCL13-C,13,sqlite,ext/misc/vtshim.c,300,FP,pBase signature fixed by sqlite3_module xUpdate typedef; cannot add const,b15-adjudicator,high
+DCL13-C,14,sqlite,ext/misc/vtshim.c,316,FP,pBase signature fixed by sqlite3_module xBegin typedef; cannot add const,b15-adjudicator,high
+DCL13-C,15,sqlite,ext/misc/vtshim.c,328,FP,pBase signature fixed by sqlite3_module xSync typedef; cannot add const,b15-adjudicator,high
+DCL13-C,16,sqlite,ext/misc/vtshim.c,340,FP,pBase signature fixed by sqlite3_module xCommit typedef; cannot add const,b15-adjudicator,high
+DCL13-C,17,sqlite,ext/misc/vtshim.c,352,FP,pBase signature fixed by sqlite3_module xRollback typedef; cannot add const,b15-adjudicator,high
+DCL13-C,18,sqlite,ext/misc/vtshim.c,365,FP,pBase signature fixed by sqlite3_module xFindFunction typedef; cannot add const,b15-adjudicator,high
+DCL13-C,19,sqlite,ext/misc/vtshim.c,380,FP,pBase signature fixed by sqlite3_module xRename typedef; cannot add const,b15-adjudicator,high
+DCL13-C,20,sqlite,ext/misc/vtshim.c,392,FP,pBase signature fixed by sqlite3_module xSavepoint typedef; cannot add const,b15-adjudicator,high
+DCL13-C,21,sqlite,ext/misc/vtshim.c,404,FP,pBase signature fixed by sqlite3_module xRelease typedef; cannot add const,b15-adjudicator,high
+DCL13-C,22,sqlite,ext/misc/vtshim.c,416,FP,pBase signature fixed by sqlite3_module xRollbackTo typedef; cannot add const,b15-adjudicator,high
+EXP33-C,23,sqlite,ext/misc/vtshim.c,447,FP,p assigned from sqlite3_malloc not dereferenced uninitialized; null-checked at line 448,b15-adjudicator,high
+EXP05-C,24,sqlite,ext/misc/vtshim.c,449,FP,memcpy reads from const pMod into freshly-malloced mutable copy; no const stripped on source,b15-adjudicator,high
+DCL30-C,25,sqlite,ext/misc/vtshim.c,450,FP,p is heap memory from sqlite3_malloc not a local; address stays valid after return by design,b15-adjudicator,high
+API00-C,26,sqlite,ext/misc/vtshim.c,455,FP,public API contract; db passed to sqlite3_create_module_v2 which validates the handle,b15-adjudicator,high
+API00-C,27,sqlite,ext/misc/vtshim.c,455,FP,"public API contract; zName passed to null-tolerant sqlite3_mprintf(""%s"",..)",b15-adjudicator,high
+API00-C,28,sqlite,ext/misc/vtshim.c,455,FP,pClientData is opaque client cookie stored verbatim; no deref by this layer,b15-adjudicator,high
+API00-C,29,sqlite,ext/misc/vtshim.c,455,FP,xDestroy is null-checked at line 468 before being called,b15-adjudicator,high
+EXP33-C,30,sqlite,ext/misc/vtshim.c,467,FP,pAux assigned from sqlite3_malloc not dereferenced uninitialized; null-checked at line 468,b15-adjudicator,high
+DCL31-C,31,sqlite,ext/misc/vtshim.c,469,FP,xDestroy is a function-pointer parameter declared in signature line 462 not an undeclared function,b15-adjudicator,high
+API00-C,32,sqlite,ext/misc/vtshim.c,544,FP,pApi consumed by SQLITE_EXTENSION_INIT2 macro per extension contract; not a trust boundary,b15-adjudicator,high
+DCL13-C,33,sqlite,ext/misc/vtshim.c,547,FP,db signature fixed by extension init entry-point typedef sqlite3_loadext_entry; cannot add const,b15-adjudicator,high
+DCL13-C,34,sqlite,ext/misc/vtshim.c,548,FP,pzErrMsg signature fixed by extension init entry-point typedef; cannot add const,b15-adjudicator,high

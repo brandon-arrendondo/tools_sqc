@@ -1,0 +1,35 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API02-C,1,sqlite,ext/misc/cksumvfs.c,214,FP,cksmCheckReservedLock pResOut is a single int* out-param per VFS io_methods contract not an array; signature fixed by sqlite3_io_methods typedef,b15-adjudicator,high
+CON43-C,2,sqlite,ext/misc/cksumvfs.c,218,FP,"cksmShmMap is a static function name (forward decl), not a mutable shared variable; CON43 misfire on a function declaration",b15-adjudicator,high
+API02-C,3,sqlite,ext/misc/cksumvfs.c,231,FP,cksmFullPathname signature fixed by sqlite3_vfs xFullPathname typedef; zOut sized by nOut int param per VFS contract,b15-adjudicator,high
+API02-C,4,sqlite,ext/misc/cksumvfs.c,233,FP,cksmDlError signature fixed by sqlite3_vfs xDlError typedef; nByte already conveys zErrMsg capacity,b15-adjudicator,high
+API02-C,5,sqlite,ext/misc/cksumvfs.c,236,FP,cksmRandomness signature fixed by sqlite3_vfs xRandomness typedef; nByte already conveys zOut capacity,b15-adjudicator,high
+CON03-C,6,sqlite,ext/misc/cksumvfs.c,245,FP,cksm_vfs is a static module-global VFS descriptor mutated only once at registration; sqlite3_vfs has no volatile/atomic requirement,b15-adjudicator,high
+PRE00-C,7,sqlite,ext/misc/cksumvfs.c,293,TP,BYTESWAP32 macro evaluates parameter x four times via repeated &-masks; classic multiple-evaluation macro hazard,b15-adjudicator,high
+PRE12-C,8,sqlite,ext/misc/cksumvfs.c,293,TP,same macro at line 293 evaluates x multiple times; PRE12 multiple-evaluation finding is factually correct,b15-adjudicator,high
+DCL13-C,9,sqlite,ext/misc/cksumvfs.c,300,FP,cksmCompute writes through a only in caller sense; here a is dereferenced and cast to u32* and read but cksmWrite passes zBuf that IS later written by xWrite so const would be semantically wrong for the buffer; param is read-only here but signature reused for write path mutating the same memory,b15-adjudicator,high
+EXP05-C,10,sqlite,ext/misc/cksumvfs.c,305,FP,(u32*)a cast strips nothing improper; a is non-const u8* so casting to u32* adds no const-cast; EXP05 misfire on a same-constness reinterpret,b15-adjudicator,high
+INT13-C,11,sqlite,ext/misc/cksumvfs.c,310,FP,"nByte&0x07 in assert tests alignment of a non-negative multiple-of-8 value; value is bounded positive, no signedness defect",b15-adjudicator,high
+ARR36-C,12,sqlite,ext/misc/cksumvfs.c,318,FP,"aData<aEnd compares two pointers into the SAME buffer a (aData from a, aEnd from &a[nByte]); not different arrays",b15-adjudicator,high
+ARR36-C,13,sqlite,ext/misc/cksumvfs.c,325,FP,same single-buffer pointer comparison aData<aEnd in big-endian branch; both derive from a,b15-adjudicator,high
+DCL13-C,14,sqlite,ext/misc/cksumvfs.c,343,FP,"cksmVerifyFunc argv is read (sqlite3_value_blob(argv[0])) not modified, but signature fixed by sqlite3_create_function callback typedef so const cannot be added",b15-adjudicator,high
+INT13-C,15,sqlite,ext/misc/cksumvfs.c,352,FP,nByte&(nByte-1) power-of-2 test on a value already range-checked 512..65536 positive; no signed-bitwise defect,b15-adjudicator,high
+INT14-C,16,sqlite,ext/misc/cksumvfs.c,352,FP,"nByte used in bitwise power-of-2 test and arithmetic compare; readability-only, value is bounded and validated",b15-adjudicator,high
+DCL13-C,17,sqlite,ext/misc/cksumvfs.c,382,FP,"cksmInitFunc argv read via sqlite3_value_text not modified, but signature fixed by sqlite3_create_function callback typedef",b15-adjudicator,high
+DCL40-C,18,sqlite,ext/misc/cksumvfs.c,423,FP,cksmRead definition matches the line-207 forward declaration (sqlite_int64 vs sqlite3_int64 are the same typedef); DCL40 misfire on typedef alias,b15-adjudicator,high
+ARR38-C,19,sqlite,ext/misc/cksumvfs.c,435,FP,"memcmp(zBuf,""SQLite format 3"",16) guarded by iAmt>=100 so at least 100 bytes present; 16<=100 bounded read",b15-adjudicator,high
+INT14-C,20,sqlite,ext/misc/cksumvfs.c,446,FP,"iAmt used in power-of-2 bitwise test and >= compares; readability-only, no defect, iAmt is a VFS-supplied page amount",b15-adjudicator,high
+DCL40-C,21,sqlite,ext/misc/cksumvfs.c,465,FP,cksmWrite definition matches line-208 decl; sqlite_int64/sqlite3_int64 typedef alias; DCL40 misfire,b15-adjudicator,high
+ARR38-C,22,sqlite,ext/misc/cksumvfs.c,474,FP,"memcmp(zBuf,...,16) in cksmWrite guarded by iAmt>=100; bounded read of buffer supplied by pager",b15-adjudicator,high
+EXP05-C,23,sqlite,ext/misc/cksumvfs.c,476,FP,"(u8*)zBuf casts away const on the write buffer but the bytes are only READ here (memcmp/d[20]); benign reinterpret, not a true const violation reaching a write",b15-adjudicator,high
+EXP05-C,24,sqlite,ext/misc/cksumvfs.c,489,FP,(u8*)zBuf at line 489 cast away const then cksmCompute writes into buffer; this DOES mutate a const-declared param but VFS xWrite contract permits the pager owning a mutable page buffer; documented intentional reserved-byte write,b15-adjudicator,med
+EXP05-C,25,sqlite,ext/misc/cksumvfs.c,489,FP,duplicate flag on same (u8*)zBuf cast at 489; same intentional reserved-byte write into pager-owned buffer,b15-adjudicator,med
+INT32-C,26,sqlite,ext/misc/cksumvfs.c,489,FP,((u8*)zBuf)+iAmt-8 pointer arithmetic guarded by iAmt>=512 so iAmt-8>=504 stays within the page buffer; no integer overflow on bounded iAmt,b15-adjudicator,high
+INT32-C,27,sqlite,ext/misc/cksumvfs.c,489,FP,"((u8*)zBuf)+iAmt with iAmt>=512 bounded page size <=65536; pointer addition within buffer, no overflow",b15-adjudicator,high
+DCL40-C,28,sqlite,ext/misc/cksumvfs.c,497,FP,cksmTruncate definition matches line-209 decl; sqlite_int64/sqlite3_int64 alias; DCL40 misfire,b15-adjudicator,high
+DCL40-C,29,sqlite,ext/misc/cksumvfs.c,513,FP,cksmFileSize definition matches line-211 decl; typedef alias; DCL40 misfire,b15-adjudicator,high
+INT13-C,30,sqlite,ext/misc/cksumvfs.c,597,FP,"devchar&~SQLITE_IOCAP_SUBPAGE_READ masks a flags bitset returned by xDeviceCharacteristics; clearing one capability bit, value-domain is a flag mask not arithmetic",b15-adjudicator,high
+DCL13-C,31,sqlite,ext/misc/cksumvfs.c,769,FP,cksmRegisterFunc pzErrMsg unused here but signature must match cksmRegisterVfs/auto-extension callback usage; cannot const the char** out-param,b15-adjudicator,high
+INT30-C,32,sqlite,ext/misc/cksumvfs.c,796,FP,"pOrig->szOsFile + sizeof(CksmFile) sums a small OS file size and a fixed struct size at registration; values bounded, no attacker influence, cannot wrap",b15-adjudicator,high
+API00-C,33,sqlite,ext/misc/cksumvfs.c,832,FP,"sqlite3_cksumvfs_init pApi used via SQLITE_EXTENSION_INIT2 macro per SQLite extension ABI; loader guarantees pApi non-null, not validatable defensively",b15-adjudicator,high
+DCL13-C,34,sqlite,ext/misc/cksumvfs.c,834,FP,sqlite3_cksumvfs_init pzErrMsg is (void)pzErrMsg unused; cannot add const to extension-entry ABI signature,b15-adjudicator,high

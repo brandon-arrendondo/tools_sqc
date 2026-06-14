@@ -1,0 +1,28 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+INT32-C,1,sqlite,ext/misc/nextchar.c,87,FP,"nAlloc grows geometrically only as result chars accumulate one-per-row; reaching INT_MAX/2 requires astronomically many distinct next-chars (max ~1.1M Unicode), so overflow unreachable in practice",b15-adjudicator,med
+INT32-C,2,sqlite,ext/misc/nextchar.c,87,FP,"same as idx1; nAlloc*2 bounded by number of distinct Unicode code points appended, never approaches INT_MAX",b15-adjudicator,med
+INT30-C,3,sqlite,ext/misc/nextchar.c,88,FP,"n is small positive (nAlloc*2+30), n*sizeof(uint) cannot wrap; sqlite3_realloc64 takes 64-bit size so no truncation",b15-adjudicator,med
+INT32-C,4,sqlite,ext/misc/nextchar.c,97,FP,"nUsed counts distinct appended chars, bounded by ~1.1M max code points; cannot reach INT_MAX",b15-adjudicator,high
+INT14-C,5,sqlite,ext/misc/nextchar.c,106,FP,"INT14 readability heuristic; c is a UTF8 code point manipulated by design, no defect",b15-adjudicator,high
+EXP07-C,6,sqlite,ext/misc/nextchar.c,115,FP,"EXP07 false heuristic; c>>12 is intentional UTF8 bit extraction, correct",b15-adjudicator,high
+EXP07-C,7,sqlite,ext/misc/nextchar.c,120,FP,"EXP07 false heuristic; c>>18 is intentional UTF8 4-byte encoding, correct",b15-adjudicator,high
+EXP07-C,8,sqlite,ext/misc/nextchar.c,121,FP,"EXP07 false heuristic; c>>12 intentional UTF8 bit extraction, correct",b15-adjudicator,high
+ARR02-C,9,sqlite,ext/misc/nextchar.c,132,FP,"validBits[] is a brace-initialized static const lookup table with implicit-but-fixed size 64; correct C, indexed by c-0xc0 with c<0x100",b15-adjudicator,high
+DCL00-C,10,sqlite,ext/misc/nextchar.c,142,FP,"DCL00 style suggestion only, not a memory-safety defect; c is reassigned in loop at line 150 anyway",b15-adjudicator,high
+INT14-C,11,sqlite,ext/misc/nextchar.c,148,FP,INT14 readability heuristic on UTF8 decode arithmetic; no defect,b15-adjudicator,high
+INT14-C,12,sqlite,ext/misc/nextchar.c,149,FP,"INT14 readability heuristic; z is a byte pointer indexed by n, intentional",b15-adjudicator,high
+INT14-C,13,sqlite,ext/misc/nextchar.c,149,FP,"INT14 readability heuristic; n is loop index/byte count, intentional",b15-adjudicator,high
+FIO50-C,14,sqlite,ext/misc/nextchar.c,150,FP,"FIO50 misfire; c here is an unsigned int code point, not a FILE stream; no file I/O in this function",b15-adjudicator,high
+FLP02-C,15,sqlite,ext/misc/nextchar.c,152,FP,"FLP02 misfire; line 152 compares integers via bitmasks (c<0x80, c&0xFFFFF800), no floating point present",b15-adjudicator,high
+DCL13-C,16,sqlite,ext/misc/nextchar.c,204,FP,argv is sqlite3_value** whose signature is fixed by the sqlite3 function callback contract; cannot be const-qualified,b15-adjudicator,high
+EXP30-C,17,sqlite,ext/misc/nextchar.c,221,FP,"zWhere assigned once in the && short-circuit chain then read; no double-modify between sequence points, comma/&& provide sequencing",b15-adjudicator,high
+EXP34-C,18,sqlite,ext/misc/nextchar.c,223,FP,"zWhere[0] at line 223 only evaluated after zWhere!=0 succeeds in the && chain; guarded, not null",b15-adjudicator,high
+EXP30-C,19,sqlite,ext/misc/nextchar.c,233,FP,"zCollName assigned in && chain then read; sequenced by && operator, no UB",b15-adjudicator,high
+EXP34-C,20,sqlite,ext/misc/nextchar.c,235,FP,zCollName[0] at 235 only reached after zCollName!=0 in && chain; guarded,b15-adjudicator,high
+ARR00-C,21,sqlite,ext/misc/nextchar.c,254,FP,zWhereClause freed at 254 only if zWhereClause[0]; after free it is never dereferenced again (only zSql used); not a real UAF,b15-adjudicator,high
+INT32-C,22,sqlite,ext/misc/nextchar.c,272,FP,nUsed bounded by distinct code points (~1.1M); c.nUsed*4+1 cannot overflow int in practice; sqlite3_malloc64 is 64-bit,b15-adjudicator,med
+INT32-C,23,sqlite,ext/misc/nextchar.c,272,FP,"same as idx22; nUsed*4 bounded, no realistic overflow",b15-adjudicator,med
+INT32-C,24,sqlite,ext/misc/nextchar.c,279,FP,"n accumulates UTF8 byte writes into pRes sized nUsed*4+1; n<=nUsed*4 by construction, no overflow",b15-adjudicator,high
+API00-C,25,sqlite,ext/misc/nextchar.c,290,FP,API00 misfire; db is provided by sqlite loader contract and passed to sqlite3_create_function which validates; init contract guarantees non-null,b15-adjudicator,high
+API00-C,26,sqlite,ext/misc/nextchar.c,290,FP,API00 misfire; pApi passed to SQLITE_EXTENSION_INIT2 per extension-loading contract; non-null by loader,b15-adjudicator,high
+DCL13-C,27,sqlite,ext/misc/nextchar.c,294,FP,"pzErrMsg is char**; signature fixed by sqlite3 extension init ABI, cannot be const; also unused (cast to void)",b15-adjudicator,high

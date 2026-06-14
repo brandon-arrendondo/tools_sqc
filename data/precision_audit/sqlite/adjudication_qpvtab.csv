@@ -1,0 +1,27 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,1,sqlite,ext/misc/qpvtab.c,104,FP,azColname is a const initializer-list array whose size is fixed by its braces; implicit bound is correct C idiom,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/qpvtab.c,122,FP,pAux signature fixed by sqlite3_module xConnect typedef; cannot add const,b15-adjudicator,high
+DCL13-C,3,sqlite,ext/misc/qpvtab.c,125,FP,pzErr (char**) signature fixed by xConnect typedef; cannot add const,b15-adjudicator,high
+EXP33-C,4,sqlite,ext/misc/qpvtab.c,155,FP,line 155 is just assignment of malloc result; pNew is null-checked at 157 before any deref (memset at 158),b15-adjudicator,high
+DCL13-C,5,sqlite,ext/misc/qpvtab.c,175,FP,p (sqlite3_vtab*) signature fixed by xOpen typedef; cannot add const,b15-adjudicator,high
+EXP33-C,6,sqlite,ext/misc/qpvtab.c,177,FP,pCur is malloc result null-checked at 178 before memset/use at 179,b15-adjudicator,high
+MEM33-C,7,sqlite,ext/misc/qpvtab.c,180,FP,line 180 takes address of base member (&pCur->base) and assigns pointer; no flexible-array struct copy occurs,b15-adjudicator,high
+DCL13-C,8,sqlite,ext/misc/qpvtab.c,213,FP,cur (sqlite3_vtab_cursor*) signature fixed by xClose typedef; cannot add const,b15-adjudicator,high
+INT32-C,9,sqlite,ext/misc/qpvtab.c,227,FP,j counts constraint-field columns bounded by QPVTAB_NONE=12 loop break; cannot approach INT_MAX,b15-adjudicator,high
+ERR07-C,10,sqlite,ext/misc/qpvtab.c,232,TP,atoi at 232 on field text from idxStr lacks error checking per ERR07-C; demo code but genuine,b15-adjudicator,med
+ERR34-C,11,sqlite,ext/misc/qpvtab.c,232,TP,atoi at 232 lacks conversion-error detection per ERR34-C; same line as idx10,b15-adjudicator,med
+INT32-C,12,sqlite,ext/misc/qpvtab.c,240,FP,'a'+i-QPVTAB_A with i bounded to QPVTAB_A..QPVTAB_E yields chars a..e; no overflow,b15-adjudicator,high
+DCL13-C,13,sqlite,ext/misc/qpvtab.c,253,FP,cur signature fixed by xRowid typedef; cannot add const,b15-adjudicator,high
+DCL13-C,14,sqlite,ext/misc/qpvtab.c,263,FP,cur signature fixed by xEof typedef; cannot add const,b15-adjudicator,high
+DCL13-C,15,sqlite,ext/misc/qpvtab.c,277,FP,argv (sqlite3_value**) signature fixed by xFilter typedef; cannot add const,b15-adjudicator,high
+DCL00-C,16,sqlite,ext/misc/qpvtab.c,310,FP,"c is reassigned at 311 (c=' ') and used as buffer; not effectively const, and DCL00 on a loop-mutated var is misfire",b15-adjudicator,med
+EXP34-C,17,sqlite,ext/misc/qpvtab.c,310,FP,a[i] guarded by i<n loop where n=sqlite3_value_bytes; text ptr valid for SQLITE_TEXT case; no null deref,b15-adjudicator,high
+DCL13-C,18,sqlite,ext/misc/qpvtab.c,339,FP,tab (sqlite3_vtab*) signature fixed by xBestIndex typedef; cannot add const,b15-adjudicator,high
+MEM31-C,19,sqlite,ext/misc/qpvtab.c,342,FP,pStr from sqlite3_str_new is consumed by sqlite3_str_finish at 409 on the sole return path; not leaked,b15-adjudicator,high
+FLP34-C,20,sqlite,ext/misc/qpvtab.c,404,FP,"sqlite3_value_double returns a double directly; cast to double is identity, no range issue",b15-adjudicator,high
+MEM31-C,21,sqlite,ext/misc/qpvtab.c,411,FP,same pStr as idx19 freed via sqlite3_str_finish at 409 before the only return at 411,b15-adjudicator,high
+CON03-C,22,sqlite,ext/misc/qpvtab.c,418,FP,qpvtabModule is a const-init static module table read-only after init; CON03 thread-sync misfire,b15-adjudicator,high
+API00-C,23,sqlite,ext/misc/qpvtab.c,451,FP,db is supplied by SQLite loader contract (never null at init); internal API trust boundary not applicable,b15-adjudicator,high
+API00-C,24,sqlite,ext/misc/qpvtab.c,451,FP,pApi consumed by SQLITE_EXTENSION_INIT2 macro contract; guaranteed non-null by loader,b15-adjudicator,high
+DCL15-C,25,sqlite,ext/misc/qpvtab.c,451,FP,sqlite3_qpvtab_init must be externally visible loadable-extension entry point; static would break loading,b15-adjudicator,high
+DCL13-C,26,sqlite,ext/misc/qpvtab.c,453,FP,pzErrMsg (char**) signature fixed by extension-init entry-point prototype; cannot add const,b15-adjudicator,high

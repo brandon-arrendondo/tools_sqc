@@ -1,0 +1,25 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,src/dbpage.c,75,FP,"pAux param of dbpageConnect fixed by sqlite3_module xCreate/xConnect typedef, const would break signature",b15-adjudicator,high
+DCL13-C,2,sqlite,src/dbpage.c,78,FP,pzErr param of dbpageConnect fixed by xCreate/xConnect typedef,b15-adjudicator,high
+DCL13-C,3,sqlite,src/dbpage.c,122,FP,tab param of dbpageBestIndex fixed by xBestIndex typedef,b15-adjudicator,high
+DCL13-C,4,sqlite,src/dbpage.c,178,FP,pVTab param of dbpageOpen fixed by xOpen typedef,b15-adjudicator,high
+DCL13-C,5,sqlite,src/dbpage.c,214,FP,pCursor param of dbpageEof fixed by xEof typedef,b15-adjudicator,high
+DCL13-C,6,sqlite,src/dbpage.c,232,FP,argv param of dbpageFilter fixed by xFilter typedef,b15-adjudicator,high
+INT14-C,7,sqlite,src/dbpage.c,262,FP,"idxNum>>1 is the index plan (small positive 0-3) not an attacker buffer index, INT14 advisory only no defect",b15-adjudicator,med
+DCL13-C,8,sqlite,src/dbpage.c,279,FP,pCursor param of dbpageColumn fixed by xColumn typedef,b15-adjudicator,high
+INT33-C,9,sqlite,src/dbpage.c,292,FP,"szPage set from sqlite3BtreeGetPageSize in xFilter (power of two 512-65536) never zero, xFilter always runs before xColumn",b15-adjudicator,high
+EXP34-C,10,sqlite,src/dbpage.c,299,FP,line 299 runs only under rc==SQLITE_OK from PagerGet so pDbPage is valid,b15-adjudicator,high
+EXP34-C,11,sqlite,src/dbpage.c,302,FP,sqlite3PagerUnref checks if(pPg) (pager.c:5796) so NULL pDbPage is a no-op,b15-adjudicator,high
+EXP34-C,12,sqlite,src/dbpage.c,308,FP,sqlite3_context_db_handle never returns NULL for a live statement context,b15-adjudicator,high
+DCL13-C,13,sqlite,src/dbpage.c,315,FP,pCursor param of dbpageRowid fixed by xRowid typedef,b15-adjudicator,high
+DCL13-C,14,sqlite,src/dbpage.c,328,TP,"dbpageBeginTrans is a file-static helper not bound by module typedef and only reads pTab->db, const DbpageTable* compiles",b15-adjudicator,med
+DCL13-C,15,sqlite,src/dbpage.c,342,FP,argv param of dbpageUpdate fixed by xUpdate typedef,b15-adjudicator,high
+DCL13-C,16,sqlite,src/dbpage.c,343,FP,pRowid param of dbpageUpdate fixed by xUpdate typedef,b15-adjudicator,high
+EXP34-C,17,sqlite,src/dbpage.c,416,FP,line 416 sqlite3PagerWrite runs only under rc==SQLITE_OK from PagerGet so pDbPage valid,b15-adjudicator,high
+EXP34-C,18,sqlite,src/dbpage.c,417,FP,line 417 GetData runs only after PagerWrite succeeds on a valid pDbPage,b15-adjudicator,high
+INT31-C,19,sqlite,src/dbpage.c,418,FP,szPage from sqlite3BtreeGetPageSize is positive 512-65536 and blob size validated ==szPage at line 393,b15-adjudicator,high
+EXP34-C,20,sqlite,src/dbpage.c,425,FP,sqlite3PagerUnref is NULL-safe (pager.c:5796) for the pDbPage=0 OOM path,b15-adjudicator,high
+MSC07-C,21,sqlite,src/dbpage.c,428,FP,line 428 update_fail: is a goto label reachable from many goto sites not dead code after return,b15-adjudicator,high
+API00-C,22,sqlite,src/dbpage.c,470,FP,"sqlite3DbpageRegister is internal API with db valid by contract, API00 not applicable",b15-adjudicator,high
+CON03-C,23,sqlite,src/dbpage.c,471,FP,"dbpage_module is a function-local static init-once read-only struct, standard SQLite module pattern",b15-adjudicator,high
+DCL13-C,24,sqlite,src/dbpage.c,501,FP,"db param of sqlite3DbpageRegister stub is the public API signature, const would break it",b15-adjudicator,high

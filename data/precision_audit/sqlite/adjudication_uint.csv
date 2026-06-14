@@ -1,0 +1,25 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/uint.c,41,FP,notUsed is the xCompare-typedef-fixed void* param cast away via (void)notUsed never dereferenced const void* is meaningless here and signature is fixed,b15-adjudicator,high
+STR00-C,2,sqlite,ext/misc/uint.c,51,FP,zA is const unsigned char* so zA[i] is already unsigned char no negative value possible,b15-adjudicator,high
+STR37-C,3,sqlite,ext/misc/uint.c,51,FP,argument zA[i] is unsigned char already cannot be negative no UB,b15-adjudicator,high
+STR00-C,4,sqlite,ext/misc/uint.c,53,FP,zB[j] is unsigned char already cannot be negative no UB,b15-adjudicator,high
+STR37-C,5,sqlite,ext/misc/uint.c,53,FP,zB[j] is unsigned char already no UB,b15-adjudicator,high
+INT32-C,6,sqlite,ext/misc/uint.c,57,FP,i and k both bounded by nKey1<=SQLITE_MAX_LENGTH (~1e9) so i+k cannot reach INT_MAX,b15-adjudicator,high
+STR00-C,7,sqlite,ext/misc/uint.c,57,FP,zA[i+k] is unsigned char already no UB,b15-adjudicator,high
+STR37-C,8,sqlite,ext/misc/uint.c,57,FP,zA[i+k] is unsigned char already no UB,b15-adjudicator,high
+INT32-C,9,sqlite,ext/misc/uint.c,58,FP,j and k both bounded by nKey2<=SQLITE_MAX_LENGTH so j+k cannot overflow,b15-adjudicator,high
+STR00-C,10,sqlite,ext/misc/uint.c,58,FP,zB[j+k] is unsigned char already no UB,b15-adjudicator,high
+STR37-C,11,sqlite,ext/misc/uint.c,58,FP,zB[j+k] is unsigned char already no UB,b15-adjudicator,high
+INT32-C,12,sqlite,ext/misc/uint.c,59,FP,"k counts digit-run length bounded by min(nKey1,nKey2)<=~1e9 cannot reach INT_MAX",b15-adjudicator,high
+INT32-C,13,sqlite,ext/misc/uint.c,61,FP,i+k bounded by nKey1 cannot overflow,b15-adjudicator,high
+STR00-C,14,sqlite,ext/misc/uint.c,61,FP,zA[i+k] is unsigned char already no UB,b15-adjudicator,high
+STR37-C,15,sqlite,ext/misc/uint.c,61,FP,zA[i+k] is unsigned char already no UB,b15-adjudicator,high
+INT32-C,16,sqlite,ext/misc/uint.c,63,FP,j+k bounded by nKey2 cannot overflow,b15-adjudicator,high
+STR00-C,17,sqlite,ext/misc/uint.c,63,FP,zB[j+k] is unsigned char already no UB,b15-adjudicator,high
+STR37-C,18,sqlite,ext/misc/uint.c,63,FP,zB[j+k] is unsigned char already no UB,b15-adjudicator,high
+INT32-C,19,sqlite,ext/misc/uint.c,78,FP,nKey1>=i (i only incremented while i<nKey1) so nKey1-i>=0 no overflow,b15-adjudicator,high
+INT32-C,20,sqlite,ext/misc/uint.c,78,FP,nKey2>=j so nKey2-j>=0 no overflow,b15-adjudicator,high
+API00-C,21,sqlite,ext/misc/uint.c,84,FP,db is the loader-provided connection handle contract guarantees non-null passed straight to create_collation,b15-adjudicator,high
+API00-C,22,sqlite,ext/misc/uint.c,84,FP,pApi is loader-provided extension API contract non-null consumed by SQLITE_EXTENSION_INIT2,b15-adjudicator,high
+DCL15-C,23,sqlite,ext/misc/uint.c,84,FP,init entry point must have external linkage to be loadable as an extension static would break loading,b15-adjudicator,high
+DCL13-C,24,sqlite,ext/misc/uint.c,86,FP,pzErrMsg signature fixed by extension init contract and marked unused never written so const is moot and contract-fixed,b15-adjudicator,high

@@ -1,0 +1,33 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/memstat.c,72,FP,pAux is xConnect callback param; signature fixed by sqlite3_module typedef so const cannot be added,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/memstat.c,75,FP,pzErr is xConnect callback param; signature fixed by sqlite3_module typedef,b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/memstat.c,88,FP,pNew assigned from sqlite3_malloc and null-checked at line 90 before memset; not uninitialized,b15-adjudicator,high
+DCL13-C,4,sqlite,ext/misc/memstat.c,108,FP,p is xOpen callback param; signature fixed by typedef and p is cast/read into pCur->db,b15-adjudicator,high
+EXP33-C,5,sqlite,ext/misc/memstat.c,110,FP,pCur assigned from sqlite3_malloc and null-checked at line 111 before deref; not uninitialized,b15-adjudicator,high
+MEM33-C,6,sqlite,ext/misc/memstat.c,114,FP,line 114 takes address of base member (&pCur->base); no flexible-array struct copy occurs,b15-adjudicator,high
+EXP34-C,7,sqlite,ext/misc/memstat.c,144,FP,pStmt set by sqlite3_prepare_v2; early return on rc nonzero so pStmt valid at sqlite3_step,b15-adjudicator,high
+INT30-C,8,sqlite,ext/misc/memstat.c,146,FP,"nDb bounded by PRAGMA database_list schema count (handful); realloc64 takes u64 size, no wrap",b15-adjudicator,high
+INT32-C,9,sqlite,ext/misc/memstat.c,146,FP,pCur->nDb+1 bounded by schema count; cannot approach INT_MAX,b15-adjudicator,high
+INT32-C,10,sqlite,ext/misc/memstat.c,158,FP,nDb++ bounded by number of attached schemas; no overflow,b15-adjudicator,high
+ARR02-C,11,sqlite,ext/misc/memstat.c,193,FP,aMemstatColumn[] is an initialized const array; implicit bounds is correct idiomatic C,b15-adjudicator,high
+INT32-C,12,sqlite,ext/misc/memstat.c,237,FP,iRowid bounded by MSV_NROW (~25) via asserts/loop guard; subtraction cannot overflow,b15-adjudicator,high
+INT32-C,13,sqlite,ext/misc/memstat.c,238,FP,++iDb bounded by nDb (schema count); no overflow,b15-adjudicator,high
+INT32-C,14,sqlite,ext/misc/memstat.c,239,FP,iRowid++ bounded by MSV_NROW; loop returns when iRowid>MSV_NROW,b15-adjudicator,high
+DCL13-C,15,sqlite,ext/misc/memstat.c,285,FP,"cur is xColumn callback param; signature fixed by typedef, cur cast/read only",b15-adjudicator,high
+INT32-C,16,sqlite,ext/misc/memstat.c,292,FP,iRowid bounded by MSV_NROW per assert at line 291; subtraction safe,b15-adjudicator,high
+INT14-C,17,sqlite,ext/misc/memstat.c,293,FP,iCol is column index 0..3 (4-column table); shift used intentionally as bitmask test,b15-adjudicator,high
+INT32-C,18,sqlite,ext/misc/memstat.c,293,FP,1<<iCol with iCol in 0..3 bounded by declared 4 columns; no overflow/UB,b15-adjudicator,high
+INT34-C,19,sqlite,ext/misc/memstat.c,293,FP,iCol is small non-negative column ordinal supplied by SQLite core; shift amount valid,b15-adjudicator,high
+DCL13-C,20,sqlite,ext/misc/memstat.c,321,FP,cur is xRowid callback param; signature fixed by typedef,b15-adjudicator,high
+INT32-C,21,sqlite,ext/misc/memstat.c,323,FP,iRowid (<=~25) and iDb (small) make iRowid*1000+iDb tiny; no overflow,b15-adjudicator,high
+INT32-C,22,sqlite,ext/misc/memstat.c,323,FP,iRowid bounded by MSV_NROW so iRowid*1000 stays small; no overflow,b15-adjudicator,high
+DCL13-C,23,sqlite,ext/misc/memstat.c,331,FP,cur is xEof callback param; signature fixed by typedef,b15-adjudicator,high
+DCL13-C,24,sqlite,ext/misc/memstat.c,345,FP,argv is xFilter callback param; signature fixed by sqlite3_module typedef,b15-adjudicator,high
+DCL13-C,25,sqlite,ext/misc/memstat.c,362,FP,tab is xBestIndex callback param; signature fixed by typedef (param unused),b15-adjudicator,high
+FLP34-C,26,sqlite,ext/misc/memstat.c,365,FP,(double)500 is an exact integer-to-double conversion of a constant; no range loss,b15-adjudicator,high
+CON03-C,27,sqlite,ext/misc/memstat.c,374,FP,"memstatModule is a static module dispatch table, read-only after registration; no shared-write race",b15-adjudicator,high
+API00-C,28,sqlite,ext/misc/memstat.c,404,FP,db is internal init param guaranteed non-null by caller contract; not a trust boundary,b15-adjudicator,high
+DCL13-C,29,sqlite,ext/misc/memstat.c,406,FP,NotUsed1 is part of fixed vtab-init prototype and explicitly cast to void; signature fixed,b15-adjudicator,high
+API00-C,30,sqlite,ext/misc/memstat.c,422,FP,db is extension-init entry param fixed by sqlite3 loadable-extension prototype,b15-adjudicator,high
+API00-C,31,sqlite,ext/misc/memstat.c,422,FP,pApi is fixed extension-init param consumed by SQLITE_EXTENSION_INIT2; signature fixed,b15-adjudicator,high
+DCL13-C,32,sqlite,ext/misc/memstat.c,424,FP,pzErrMsg is part of fixed extension-init prototype; signature cannot be const-changed,b15-adjudicator,high

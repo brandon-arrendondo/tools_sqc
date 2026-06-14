@@ -1,0 +1,26 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,src/table.c,42,FP,argv signature fixed by sqlite3_callback typedef used by sqlite3_exec; const cannot be added,b15-adjudicator,high
+DCL13-C,2,sqlite,src/table.c,42,FP,colv signature fixed by sqlite3_callback typedef; const cannot be added,b15-adjudicator,high
+INT32-C,3,sqlite,src/table.c,52,FP,nCol is a result column count bounded by SQLITE_MAX_COLUMN (<=32767); nCol*2 cannot overflow int,b15-adjudicator,high
+INT30-C,4,sqlite,src/table.c,59,FP,"nAlloc is u32 grown from bounded row/col counts; intended size math, no attacker-driven wrap",b15-adjudicator,high
+STR34-C,5,sqlite,src/table.c,90,FP,sqlite3Strlen30 takes const char* directly; no char value sign-extended to int here,b15-adjudicator,high
+INT31-C,6,sqlite,src/table.c,93,FP,n = sqlite3Strlen30()+1 is always positive and bounded to 0x40000000; safe size_t conversion,b15-adjudicator,high
+MSC07-C,7,sqlite,src/table.c,101,FP,malloc_failed: is a goto label target reached from the goto statements; not unreachable,b15-adjudicator,high
+API00-C,8,sqlite,src/table.c,116,FP,"pnRow is optional and guarded by if(pnRow) before every deref (lines 132,178)",b15-adjudicator,high
+API00-C,9,sqlite,src/table.c,116,FP,"pnColumn is optional and guarded by if(pnColumn) before every deref (lines 131,177)",b15-adjudicator,high
+EXP20-C,10,sqlite,src/table.c,128,FP,idiomatic boolean predicate sqlite3SafetyCheckOk; style nit not a defect,b15-adjudicator,med
+STR34-C,11,sqlite,src/table.c,130,FP,assigns constant 0 to *pazResult char**; no character sign extension occurs,b15-adjudicator,high
+STR34-C,12,sqlite,src/table.c,133,FP,assigns 0 to *pzErrMsg under if(pzErrMsg) guard; no sign extension,b15-adjudicator,high
+INT30-C,13,sqlite,src/table.c,140,FP,nAlloc is constant 20 at this point; sizeof(char*)*20 cannot wrap,b15-adjudicator,high
+DCL03-C,14,sqlite,src/table.c,147,TP,assert argument sizeof(res.azResult[0])>=sizeof(res.nData) is a pure compile-time constant; static_assert applies,b15-adjudicator,med
+INT13-C,15,sqlite,src/table.c,149,FP,rc is a small non-negative result code; (rc&0xff) low-byte mask is well-defined and intended,b15-adjudicator,high
+STR34-C,16,sqlite,src/table.c,154,FP,assigns sqlite3_mprintf char* result to *pzErrMsg; pointer assignment not sign extension,b15-adjudicator,high
+MEM30-C,17,sqlite,src/table.c,163,FP,line 163 is in if(rc!=OK) branch that immediately returns rc; no use after the free,b15-adjudicator,high
+MEM30-C,18,sqlite,src/table.c,166,FP,line 166 reached only on rc==OK path where azResult was never freed; nData/nAlloc are live u32 fields,b15-adjudicator,high
+MEM30-C,19,sqlite,src/table.c,166,FP,nData is a live u32 counter field on the rc==OK path; not freed memory,b15-adjudicator,high
+INT30-C,20,sqlite,src/table.c,168,FP,"nData bounded by accumulated (nRow+1)*nColumn; intended realloc size math, no wrap",b15-adjudicator,high
+MEM30-C,21,sqlite,src/table.c,168,FP,azResult is live on rc==OK path; nData is a struct field not freed memory,b15-adjudicator,high
+MEM30-C,22,sqlite,src/table.c,170,FP,"realloc failure path: azNew==0 leaves original azResult valid; freed once then returns, no UAF",b15-adjudicator,high
+MEM33-C,23,sqlite,src/table.c,176,FP,"*pazResult=&res.azResult[1] is a plain pointer assignment, not a flexible-array struct copy",b15-adjudicator,high
+STR34-C,24,sqlite,src/table.c,176,FP,pointer assignment of char** element address; no character sign extension,b15-adjudicator,high
+API00-C,25,sqlite,src/table.c,185,FP,sqlite3_free_table guards azResult with if(azResult) at line 188 before any deref,b15-adjudicator,high

@@ -1,0 +1,22 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/stmt.c,78,FP,xConnect signature fixed by sqlite3_module typedef; pAux is void* unused cannot be const-qualified meaningfully,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/stmt.c,81,FP,xConnect signature fixed by sqlite3_module typedef; pzErr is char** out-param fixed by contract,b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/stmt.c,108,FP,pNew assigned by sqlite3_malloc64 then null-checked before any deref; memset/->db only run after non-null,b15-adjudicator,high
+DCL13-C,4,sqlite,ext/misc/stmt.c,128,FP,"stmtOpen is xOpen, signature fixed by sqlite3_module typedef; p cast to stmt_vtab and read only but typedef-bound",b15-adjudicator,high
+EXP33-C,5,sqlite,ext/misc/stmt.c,130,FP,pCur assigned by sqlite3_malloc64 then null-checked at line 131 before memset/deref,b15-adjudicator,high
+MEM33-C,6,sqlite,ext/misc/stmt.c,134,FP,StmtRow has no flexible array member; aCol is fixed int[11] and zSql is char* pointing to over-allocated tail no struct assignment occurs,b15-adjudicator,high
+DCL13-C,7,sqlite,ext/misc/stmt.c,174,FP,"stmtColumn is xColumn, signature fixed by sqlite3_module typedef cannot add const to cur",b15-adjudicator,high
+DCL13-C,8,sqlite,ext/misc/stmt.c,192,FP,"stmtRowid is xRowid, signature fixed by sqlite3_module typedef",b15-adjudicator,high
+DCL13-C,9,sqlite,ext/misc/stmt.c,202,FP,"stmtEof is xEof, signature fixed by sqlite3_module typedef",b15-adjudicator,high
+DCL13-C,10,sqlite,ext/misc/stmt.c,216,FP,"stmtFilter is xFilter, signature fixed by sqlite3_module typedef argv is sqlite3_value** unused here",b15-adjudicator,high
+STR34-C,11,sqlite,ext/misc/stmt.c,231,FP,zSql passed to strlen which takes const char* no sign-extension of any char element occurs,b15-adjudicator,high
+STR34-C,12,sqlite,ext/misc/stmt.c,231,FP,duplicate of idx11 same line strlen on zSql no sign extension,b15-adjudicator,high
+INT30-C,13,sqlite,ext/misc/stmt.c,232,FP,nSql is strlen+1 bounded by an in-memory C string length plus sizeof small struct cannot wrap a 64-bit size on real inputs,b15-adjudicator,high
+INT31-C,14,sqlite,ext/misc/stmt.c,238,FP,nSql = strlen(zSql)+1 is non-negative and small; sqlite3_int64 to size_t conversion safe value derived from same string copied,b15-adjudicator,high
+DCL13-C,15,sqlite,ext/misc/stmt.c,279,FP,"stmtBestIndex is xBestIndex, signature fixed by sqlite3_module typedef",b15-adjudicator,high
+FLP34-C,16,sqlite,ext/misc/stmt.c,283,FP,integer literal 500 to double is exact no range issue; assigning estimatedCost a constant,b15-adjudicator,high
+CON03-C,17,sqlite,ext/misc/stmt.c,292,FP,stmtModule is a static const-init module table read-only after init not a mutated shared variable; SQLite registers it under its own mutex,b15-adjudicator,high
+API00-C,18,sqlite,ext/misc/stmt.c,322,FP,sqlite3StmtVtabInit is internal init invoked by SQLite core with valid db handle by contract not a trust boundary,b15-adjudicator,high
+API00-C,19,sqlite,ext/misc/stmt.c,334,FP,sqlite3_stmt_init is extension entry; db provided by SQLite loader guaranteed valid by extension-load contract,b15-adjudicator,high
+API00-C,20,sqlite,ext/misc/stmt.c,334,FP,pApi consumed by SQLITE_EXTENSION_INIT2 macro per extension contract; loader always supplies valid pApi,b15-adjudicator,high
+DCL13-C,21,sqlite,ext/misc/stmt.c,336,FP,sqlite3_stmt_init signature fixed by extension-init contract; pzErrMsg is char** out-param unused here,b15-adjudicator,high

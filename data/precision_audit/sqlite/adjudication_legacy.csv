@@ -1,0 +1,24 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,src/legacy.c,30,FP,"zSql null-checked at line 44 (if zSql==0 zSql=""""); internal API, not a trust boundary",b15-adjudicator,high
+MSC04-C,2,sqlite,src/legacy.c,30,TP,sqlite3_exec->sqlite3_step->...->Checkpoint chain is genuine indirect recursion in the codebase,b15-adjudicator,high
+EXP20-C,3,sqlite,src/legacy.c,43,FP,EXP20 style misfire; !sqlite3SafetyCheckOk(db) is a well-defined int truth test,b15-adjudicator,high
+EXP34-C,4,sqlite,src/legacy.c,46,FP,db null-guarded at line 43 by sqlite3SafetyCheckOk which returns 0 (->MISUSE return) for db==0,b15-adjudicator,high
+INT30-C,5,sqlite,src/legacy.c,75,FP,"nCol is sqlite3_column_count bounded by SQLITE_LIMIT_COLUMN (i16, <=32767); product cannot wrap size_t",b15-adjudicator,high
+INT32-C,6,sqlite,src/legacy.c,75,FP,2*nCol+1 with nCol bounded <=32767 cannot overflow signed int,b15-adjudicator,high
+INT32-C,7,sqlite,src/legacy.c,75,FP,2*nCol with nCol bounded <=32767 cannot overflow signed int,b15-adjudicator,high
+STR34-C,8,sqlite,src/legacy.c,88,FP,"*azCols is a char* element assignment (column name pointer), not a char value sign-extended",b15-adjudicator,high
+STR34-C,9,sqlite,src/legacy.c,88,FP,"azCols[nCol] is a char* pointer slot write, not a char value sign extension",b15-adjudicator,high
+ARR37-C,10,sqlite,src/legacy.c,90,FP,azVals=&azCols[nCol]; azCols has 2*nCol+1 slots so azVals[i] for i<nCol is in bounds,b15-adjudicator,high
+ARR37-C,11,sqlite,src/legacy.c,91,FP,same bound; azVals[i] within allocated 2*nCol+1 region,b15-adjudicator,high
+ARR37-C,12,sqlite,src/legacy.c,96,FP,azVals[i]=0 at i==nCol still within the 2*nCol+1 allocation,b15-adjudicator,high
+DCL31-C,13,sqlite,src/legacy.c,98,FP,"xCallback is a sqlite3_callback function-pointer parameter, declared via the signature/typedef",b15-adjudicator,high
+MEM30-C,14,sqlite,src/legacy.c,125,FP,"sqlite3DbFree(db,azCols) frees azCols not db; db is the live context arg, never freed",b15-adjudicator,high
+MEM30-C,15,sqlite,src/legacy.c,127,FP,"sqlite3ApiExit(db,rc) uses live db handle; no free of db occurred",b15-adjudicator,high
+MEM30-C,16,sqlite,src/legacy.c,129,FP,"*pzErrMsg=sqlite3DbStrDup(0,sqlite3_errmsg(db)) reads live db; db not freed",b15-adjudicator,high
+STR34-C,17,sqlite,src/legacy.c,129,FP,"*pzErrMsg=... is a char* pointer assignment, not a char sign-extension",b15-adjudicator,high
+MEM30-C,18,sqlite,src/legacy.c,132,FP,"sqlite3Error(db,...) on live db handle; db never freed",b15-adjudicator,high
+STR34-C,19,sqlite,src/legacy.c,135,FP,"*pzErrMsg=0 is a pointer store, not a char sign-extension",b15-adjudicator,high
+INT13-C,20,sqlite,src/legacy.c,138,FP,rc&db->errMask in assert masks signed result codes intentionally; INT13 style misfire,b15-adjudicator,high
+MEM30-C,21,sqlite,src/legacy.c,138,FP,db->errMask access on live handle; db not freed,b15-adjudicator,high
+MEM30-C,22,sqlite,src/legacy.c,139,FP,sqlite3_mutex_leave(db->mutex) on live handle; db not freed,b15-adjudicator,high
+MEM30-C,23,sqlite,src/legacy.c,139,FP,db->mutex member access on live handle; db not freed,b15-adjudicator,high

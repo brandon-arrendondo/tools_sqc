@@ -1,0 +1,42 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR02-C,1,sqlite,src/tokenize.c,61,TP,aiClass[] declared with implicit bounds; factual ARR02 style finding,b15-adjudicator,med
+PRE01-C,2,sqlite,src/tokenize.c,112,TP,charMap(X) macro param X unparenthesized in (unsigned char)X index; factual PRE01,b15-adjudicator,med
+PRE01-C,3,sqlite,src/tokenize.c,115,TP,ebcdicToAscii macro charMap(X) param X unparenthesized; factual PRE01,b15-adjudicator,med
+ARR02-C,4,sqlite,src/tokenize.c,116,TP,ebcdicToAscii[] declared with implicit bounds; factual ARR02 style finding,b15-adjudicator,med
+PRE01-C,5,sqlite,src/tokenize.c,168,TP,IdChar(C) param C unparenthesized in array index; factual PRE01,b15-adjudicator,med
+ARR02-C,6,sqlite,src/tokenize.c,171,TP,sqlite3IsEbcdicIdChar[] declared with implicit bounds; factual ARR02 style finding,b15-adjudicator,med
+DCL30-C,7,sqlite,src/tokenize.c,212,FP,z points into caller-owned NUL-terminated SQL buffer not a local; storing it via *pz is the documented contract,b15-adjudicator,high
+CON43-C,8,sqlite,src/tokenize.c,276,FP,aiClass[*z] is a single fetch in a single-threaded tokenizer; no double-fetch concurrency hazard,b15-adjudicator,high
+EXP30-C,9,sqlite,src/tokenize.c,291,FP,(c=z[i])!=0 assigns then compares across != operator; well-defined no sequence-point violation,b15-adjudicator,high
+INT32-C,10,sqlite,src/tokenize.c,296,FP,2+(z[2]=='>') adds a 0/1 bool to constant 2; cannot overflow,b15-adjudicator,high
+EXP30-C,11,sqlite,src/tokenize.c,326,FP,c=z[i] inside && / || guarded loop condition has sequence points; well-defined,b15-adjudicator,high
+INT32-C,12,sqlite,src/tokenize.c,327,FP,i is i64 index into SQL bounded by SQLITE_LIMIT_SQL_LENGTH (<2^31); cannot wrap,b15-adjudicator,high
+INT32-C,13,sqlite,src/tokenize.c,337,FP,1+(z[1]=='=') adds 0/1 bool to constant 1; cannot overflow,b15-adjudicator,high
+INT32-C,14,sqlite,src/tokenize.c,412,FP,i is i64 token offset bounded by SQL length limit; i+1 cannot overflow,b15-adjudicator,high
+INT32-C,15,sqlite,src/tokenize.c,415,FP,i is i64 token offset bounded by SQL length limit; i+1 cannot overflow,b15-adjudicator,high
+INT32-C,16,sqlite,src/tokenize.c,476,FP,i is i64 bounded by SQL length limit; i+1 cannot overflow,b15-adjudicator,high
+INT32-C,17,sqlite,src/tokenize.c,477,FP,i is i64 bounded by SQL length limit; i+2 cannot overflow,b15-adjudicator,high
+INT32-C,18,sqlite,src/tokenize.c,481,FP,i is i64 bounded by SQL length limit; i+=2 cannot overflow,b15-adjudicator,high
+INT32-C,19,sqlite,src/tokenize.c,495,FP,i is i64 bounded by SQL length limit; i++ cannot reach INT_MAX,b15-adjudicator,high
+EXP30-C,20,sqlite,src/tokenize.c,500,FP,c=z[0]/z[i] in []-quote loop condition with sequence points; well-defined,b15-adjudicator,high
+EXP30-C,21,sqlite,src/tokenize.c,522,FP,c=z[i] in do-while condition with sequence point; well-defined,b15-adjudicator,high
+EXP30-C,22,sqlite,src/tokenize.c,522,FP,c=z[i] guarded by && operators providing sequence points; well-defined,b15-adjudicator,high
+INT10-C,23,sqlite,src/tokenize.c,558,FP,i%2 where i is i64 and >=2 here; operands always non-negative,b15-adjudicator,high
+INT32-C,24,sqlite,src/tokenize.c,560,FP,i is i64 bounded by SQL length limit; cannot reach INT_MAX,b15-adjudicator,high
+INT32-C,25,sqlite,src/tokenize.c,562,FP,i is i64 bounded by SQL length limit; cannot reach INT_MAX,b15-adjudicator,high
+INT32-C,26,sqlite,src/tokenize.c,592,FP,i is i64 bounded by SQL length limit; cannot reach INT_MAX,b15-adjudicator,high
+DCL31-C,27,sqlite,src/tokenize.c,612,FP,VVA_ONLY(u8 startedWithOom=...) has explicit type u8; analyzer misparsed the macro,b15-adjudicator,high
+API00-C,28,sqlite,src/tokenize.c,782,FP,sqlite3Normalize is internal; callers pass live Vdbe; reprepare path guarantees non-null pVdbe,b15-adjudicator,med
+API00-C,29,sqlite,src/tokenize.c,782,FP,zSql is internal-contract non-null on the reprepare path; doc NULL-return covers pVdbe absence only,b15-adjudicator,med
+MEM31-C,30,sqlite,src/tokenize.c,800,FP,pStr freed via sqlite3_str_finish(pStr) on the single return at line 897,b15-adjudicator,high
+INT32-C,31,sqlite,src/tokenize.c,802,FP,"i is int but SQL length bounded by SQLITE_MAX_LENGTH (<=2^31-1, default 1e9); i+=n cannot overflow",b15-adjudicator,high
+EXP05-C,32,sqlite,src/tokenize.c,806,TP,(unsigned char*)zSql casts away const on const char* zSql; factual EXP05,b15-adjudicator,med
+INT32-C,33,sqlite,src/tokenize.c,840,FP,iStartIN is int derived from pStr->nChar bounded by SQL length; iStartIN+1 cannot overflow,b15-adjudicator,high
+MEM30-C,34,sqlite,src/tokenize.c,862,FP,zId at line 862 is not yet freed; the only prior free (859) is followed by an immediate break,b15-adjudicator,high
+MEM30-C,35,sqlite,src/tokenize.c,863,FP,zId used at 863 before its free at 869; no prior free reaches this point,b15-adjudicator,high
+MEM30-C,36,sqlite,src/tokenize.c,865,FP,zId used at 865 before its free at 869; not freed yet on this path,b15-adjudicator,high
+MEM30-C,37,sqlite,src/tokenize.c,867,FP,zId used at 867 before its free at 869; not freed yet on this path,b15-adjudicator,high
+MEM30-C,38,sqlite,src/tokenize.c,869,FP,"db is never freed in this function; sqlite3DbFree(db,zId) frees zId not db",b15-adjudicator,high
+MEM30-C,39,sqlite,src/tokenize.c,869,FP,"zId freed once: either at 859 then break, or at 869; the two paths are mutually exclusive",b15-adjudicator,high
+EXP33-C,40,sqlite,src/tokenize.c,874,FP,j is assigned at line 850 in the TK_ID case before the while(j<...) at 874; always initialized,b15-adjudicator,high
+MEM31-C,41,sqlite,src/tokenize.c,897,FP,pStr is released by sqlite3_str_finish(pStr) at line 897 on every exit; no leak,b15-adjudicator,high

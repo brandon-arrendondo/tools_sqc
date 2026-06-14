@@ -1,0 +1,42 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MSC37-C,1,sqlite,src/status.c,28,FP,Line 28 is a struct-typedef variable definition not a function; MSC37 non-void-no-return is a parser misfire,b15-adjudicator,high
+ARR02-C,2,sqlite,src/status.c,37,FP,statMutex[] has implicit size but is fully initialized with 10 entries so bound is fixed at compile time and safe,b15-adjudicator,med
+ARR00-C,3,sqlite,src/status.c,75,FP,op indexed only after assert op>=0 && op<ArraySize and callers pass fixed status enum under held mutex,b15-adjudicator,high
+ARR00-C,4,sqlite,src/status.c,95,FP,wsdStat.nowValue[op] guarded by asserts op in range; internal contract caller holds mutex,b15-adjudicator,high
+ARR00-C,5,sqlite,src/status.c,96,FP,same asserted op-range guard in sqlite3StatusUp,b15-adjudicator,high
+ARR00-C,6,sqlite,src/status.c,96,FP,same asserted op-range guard in sqlite3StatusUp,b15-adjudicator,high
+ARR00-C,7,sqlite,src/status.c,97,FP,mxValue[op] write guarded by same op asserts,b15-adjudicator,high
+ARR00-C,8,sqlite,src/status.c,97,FP,mxValue[op] write guarded by same op asserts,b15-adjudicator,high
+DCL03-C,9,sqlite,src/status.c,102,FP,assert(N>=0) argument is a runtime parameter not a compile-time constant so static_assert is impossible,b15-adjudicator,high
+ARR00-C,10,sqlite,src/status.c,107,FP,nowValue[op] subscript guarded by op asserts in sqlite3StatusDown,b15-adjudicator,high
+DCL03-C,11,sqlite,src/status.c,117,FP,assert(X>=0) argument is runtime parameter not constant expression,b15-adjudicator,high
+ARR00-C,12,sqlite,src/status.c,126,FP,mxValue[op] subscript guarded by op asserts in sqlite3StatusHighwater,b15-adjudicator,high
+ARR00-C,13,sqlite,src/status.c,127,FP,mxValue[op] write guarded by op asserts,b15-adjudicator,high
+ARR00-C,14,sqlite,src/status.c,150,FP,sqlite3_status64 explicitly checks op<0||op>=ArraySize and returns MISUSE before this subscript,b15-adjudicator,high
+ARR00-C,15,sqlite,src/status.c,151,FP,same explicit op range check before nowValue[op]/mxValue[op] reads,b15-adjudicator,high
+ARR00-C,16,sqlite,src/status.c,153,FP,same explicit op range check guards mxValue[op] reset,b15-adjudicator,high
+ARR00-C,17,sqlite,src/status.c,153,FP,same explicit op range check guards mxValue[op] reset,b15-adjudicator,high
+DCL13-C,18,sqlite,src/status.c,176,FP,param p is reassigned p=p->pNext in the loop so const would not compile,b15-adjudicator,high
+API00-C,19,sqlite,src/status.c,188,FP,db non-null guaranteed by internal caller contract / API_ARMOR upstream not a trust boundary,b15-adjudicator,high
+API00-C,20,sqlite,src/status.c,188,FP,pHighwater is explicitly null-checked (if(pHighwater)) before deref at line 196,b15-adjudicator,high
+DCL13-C,21,sqlite,src/status.c,188,FP,db is a connection handle conventionally passed to non-const internal APIs; const propagation not used in core,b15-adjudicator,med
+API00-C,22,sqlite,src/status.c,203,FP,op is a switch selector not an arithmetic operand; no overflow possible,b15-adjudicator,high
+EXP20-C,23,sqlite,src/status.c,212,FP,EXP20 implicit boolean on !sqlite3SafetyCheckOk is idiomatic predicate use; style only,b15-adjudicator,low
+DCL00-C,24,sqlite,src/status.c,219,FP,"H is passed by address to sqlite3LookasideUsed(db,&H) and written through pointer so not const",b15-adjudicator,high
+INT33-C,25,sqlite,src/status.c,275,FP,sqlite3BtreeConnectionCount of an open Btree is always >=1 so no division by zero,b15-adjudicator,high
+INT32-C,26,sqlite,src/status.c,277,FP,"totalUsed is i64 accumulating int page-memory sizes; bounded by real memory, no overflow",b15-adjudicator,high
+INT32-C,27,sqlite,src/status.c,304,FP,nByte int accumulates schema element sizes bounded by realistic schema; intended counter math,b15-adjudicator,high
+INT30-C,28,sqlite,src/status.c,305,FP,hash .count fields are small unsigned counts; sum cannot wrap; intended unsigned arithmetic,b15-adjudicator,high
+INT30-C,29,sqlite,src/status.c,305,FP,same bounded unsigned hash-count sum,b15-adjudicator,high
+INT30-C,30,sqlite,src/status.c,305,FP,same bounded unsigned hash-count sum,b15-adjudicator,high
+INT32-C,31,sqlite,src/status.c,310,FP,nByte += msize bounded schema allocation size; no realistic overflow,b15-adjudicator,high
+INT32-C,32,sqlite,src/status.c,311,FP,nByte += msize bounded schema allocation size,b15-adjudicator,high
+INT32-C,33,sqlite,src/status.c,312,FP,nByte += msize bounded schema allocation size,b15-adjudicator,high
+INT32-C,34,sqlite,src/status.c,313,FP,nByte += msize bounded schema allocation size,b15-adjudicator,high
+EXP34-C,35,sqlite,src/status.c,344,FP,for-loop condition pVdbe; ensures member access only when pVdbe non-null,b15-adjudicator,high
+DCL03-C,36,sqlite,src/status.c,369,TP,assert(SQLITE_DBSTATUS_CACHE_MISS==SQLITE_DBSTATUS_CACHE_HIT+1) is a pure #define-constant expression suited to static_assert,b15-adjudicator,high
+DCL03-C,37,sqlite,src/status.c,370,TP,assert(SQLITE_DBSTATUS_CACHE_WRITE==SQLITE_DBSTATUS_CACHE_HIT+2) is a pure compile-time constant expression,b15-adjudicator,high
+DCL00-C,38,sqlite,src/status.c,433,FP,"C is passed by address to sqlite3_db_status64(&C,...) and written through so not const",b15-adjudicator,high
+DCL00-C,39,sqlite,src/status.c,433,FP,H is passed by address and written through so not const,b15-adjudicator,high
+EXP20-C,40,sqlite,src/status.c,436,FP,EXP20 implicit boolean on !sqlite3SafetyCheckOk is idiomatic; style only,b15-adjudicator,low
+INT13-C,41,sqlite,src/status.c,443,FP,H is a non-negative status counter; & 0x7fffffff strips sign for int return intentionally,b15-adjudicator,med

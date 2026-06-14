@@ -1,0 +1,28 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API00-C,1,sqlite,src/hash.c,23,FP,sqlite3HashInit guards pNew with assert(pNew!=0); internal contract callers never pass null not a trust boundary,b15-adjudicator,high
+API00-C,2,sqlite,src/hash.c,35,FP,sqlite3HashClear guards pH with assert(pH!=0); internal-only API,b15-adjudicator,high
+DCL00-C,3,sqlite,src/hash.c,56,FP,h IS modified (h += ... and h *= ...) inside the loop so it cannot be const; DCL00 misfire,b15-adjudicator,high
+INT30-C,4,sqlite,src/hash.c,66,FP,h is unsigned int; modular wraparound is the intended behavior of a hash function not a defect,b15-adjudicator,high
+INT30-C,5,sqlite,src/hash.c,68,FP,same unsigned hash accumulation; wrap is intentional Knuth multiplicative hashing,b15-adjudicator,high
+INT30-C,6,sqlite,src/hash.c,70,FP,h *= 0x9e3779b1 unsigned multiply wrap is the defined hash mixing step intended,b15-adjudicator,high
+INT30-C,7,sqlite,src/hash.c,118,FP,new_size clamped to SQLITE_MALLOC_SOFT_LIMIT/sizeof beforehand; product bounded by soft limit no overflow,b15-adjudicator,high
+INT30-C,8,sqlite,src/hash.c,133,FP,new_size already clamped by soft limit before this Malloc; bounded product,b15-adjudicator,high
+ARR38-C,9,sqlite,src/hash.c,140,FP,memset size new_size*sizeof from sqlite3MallocSize of the just-allocated block; size is exactly the alloc size valid,b15-adjudicator,high
+INT30-C,10,sqlite,src/hash.c,140,FP,new_size derived from sqlite3MallocSize(new_ht)/sizeof so product equals real allocation size no wrap,b15-adjudicator,high
+INT32-C,11,sqlite,src/hash.c,140,FP,same as 10; size arg equals the actual allocated byte count cannot overflow,b15-adjudicator,high
+MEM30-C,12,sqlite,src/hash.c,141,FP,loop reads next_elem=elem->next BEFORE insertElement; pH->first set to 0 not freed; no element freed in rehash,b15-adjudicator,high
+INT33-C,13,sqlite,src/hash.c,143,FP,new_size guaranteed nonzero: MallocSize of nonnull new_ht >= sizeof(_ht) so >=1; new_ht==0 returns earlier,b15-adjudicator,high
+CON03-C,14,sqlite,src/hash.c,161,FP,nullElement is a const sentinel (data==0) never written; SQLite hash not thread-shared without external mutex CON03 misfire,b15-adjudicator,high
+INT33-C,15,sqlite,src/hash.c,166,FP,htsize only nonzero when pH->ht nonzero (guarded by if(pH->ht)); division reached only inside that branch,b15-adjudicator,high
+DCL30-C,16,sqlite,src/hash.c,177,FP,returns &nullElement (static storage) not the local elem; DCL30 misreads static sentinel as automatic,b15-adjudicator,high
+INT33-C,17,sqlite,src/hash.c,202,FP,elem->h % pH->htsize reached only inside if(pH->ht) where htsize>0; guarded,b15-adjudicator,high
+API00-C,18,sqlite,src/hash.c,222,FP,sqlite3HashFind asserts pH!=0; internal contract not a trust boundary,b15-adjudicator,high
+API00-C,19,sqlite,src/hash.c,222,FP,sqlite3HashFind asserts pKey!=0; internal contract,b15-adjudicator,high
+API00-C,20,sqlite,src/hash.c,242,FP,sqlite3HashInsert asserts pH!=0; internal contract,b15-adjudicator,high
+API00-C,21,sqlite,src/hash.c,242,FP,sqlite3HashInsert asserts pKey!=0; internal contract,b15-adjudicator,high
+DCL13-C,22,sqlite,src/hash.c,242,FP,data is stored into elem->data (void*) and into new_elem->data; mutating the pointed-to ownership so const would break semantics,b15-adjudicator,high
+EXP34-C,23,sqlite,src/hash.c,250,FP,findElementWithHash never returns null; returns &nullElement sentinel when not found so elem->data deref is safe,b15-adjudicator,high
+EXP33-C,24,sqlite,src/hash.c,264,FP,"h is set via findElementWithHash(pH,pKey,&h) which always writes *pHash=h before this use; assigned-before-use",b15-adjudicator,high
+INT30-C,25,sqlite,src/hash.c,267,FP,2*pH->htsize unsigned; count bounded by entries (each a heap alloc) realistic htsize tiny; modular intended no defect,b15-adjudicator,high
+INT30-C,26,sqlite,src/hash.c,268,FP,pH->count*3 unsigned; count bounded by number of schema objects far below wrap; passed as new_size then clamped,b15-adjudicator,high
+INT33-C,27,sqlite,src/hash.c,270,FP,new_elem->h % pH->htsize reached only when pH->ht nonzero implying htsize>0; ternary guards the modulo,b15-adjudicator,high

@@ -1,0 +1,36 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/shathree.c,156,TP,KeccakF1600Step only reads p via state macros and never writes the pointer itself (writes pointees); const SHA3Context* would compile,b15-adjudicator,high
+ARR02-C,2,sqlite,ext/misc/shathree.c,161,FP,"RC[] is a static const initialized array; implicit bounds (24 elements) is idiomatic and correct, ARR02 here is style noise on a fixed table",b15-adjudicator,high
+PRE00-C,3,sqlite,ext/misc/shathree.c,200,TP,"ROL64(a,x) macro evaluates a twice (a<<x | a>>(64-x)); genuine multiple-evaluation, though all call args are pure variables so no side-effect bug",b15-adjudicator,high
+PRE01-C,4,sqlite,ext/misc/shathree.c,200,TP,"macro param a is unparenthesized in (a<<x)|(a>>(64-x)); precedence hazard real, though only invoked with parenthesized/atomic args here",b15-adjudicator,high
+PRE12-C,5,sqlite,ext/misc/shathree.c,200,TP,same multiple-evaluation of a as idx3; factual macro hazard,b15-adjudicator,high
+ARR01-C,6,sqlite,ext/misc/shathree.c,479,FP,"line 479 memset(p,0,sizeof(*p)) sizeof is on *p (the struct, 1600+ bytes), not a decayed pointer; sqc misread, *p is the object",b15-adjudicator,high
+INT13-C,7,sqlite,ext/misc/shathree.c,482,FP,"iSize&~31 at 482 is bounded arithmetic on a value already validated to 224..512 by caller; sign-bit untouched, mask is well-defined",b15-adjudicator,med
+INT14-C,8,sqlite,ext/misc/shathree.c,482,FP,"iSize bitwise+arith mix is the standard rate formula; readability lint, not a defect, value is small positive constant",b15-adjudicator,med
+INT32-C,9,sqlite,ext/misc/shathree.c,482,FP,"iSize validated to 224/256/384/512 before SHA3Init; (1600-((iSize+31)&~31)*2) ranges 576..1152, no overflow possible",b15-adjudicator,high
+INT32-C,10,sqlite,ext/misc/shathree.c,482,FP,"((iSize+31)&~31)*2 max = 1056*... for iSize=512 gives 1024, far from INT_MAX; iSize bounded, no multiplication overflow",b15-adjudicator,high
+CON03-C,11,sqlite,ext/misc/shathree.c,492,FP,"one is a function-local static used only for compile-time endianness probe; single-threaded read of constant 1, no real shared-state race",b15-adjudicator,high
+INT14-C,12,sqlite,ext/misc/shathree.c,516,FP,p (SHA3Context*) pointer arithmetic via p->u.s[...] indexing is normal struct access; INT14 readability misfire,b15-adjudicator,high
+INT14-C,13,sqlite,ext/misc/shathree.c,516,FP,"aData bitwise/arith is the pointer-alignment test (aData-(uchar*)0)&7 plus indexing; standard, not a defect",b15-adjudicator,high
+INT30-C,14,sqlite,ext/misc/shathree.c,519,FP,"p->nLoaded+=8 only inside loop where nLoaded<nRate<=144 then reset; cannot approach UINT_MAX, no wrap",b15-adjudicator,high
+INT14-C,15,sqlite,ext/misc/shathree.c,550,FP,p readability lint on struct member access in SHA3Final; not a defect,b15-adjudicator,high
+INT30-C,16,sqlite,ext/misc/shathree.c,550,FP,p->nRate-1 with nRate=72..144 (validated iSize) is always >=71; no unsigned underflow,b15-adjudicator,high
+INT30-C,17,sqlite,ext/misc/shathree.c,557,FP,"p->nRate-1 again with nRate>=72; no underflow, value always positive",b15-adjudicator,high
+INT13-C,18,sqlite,ext/misc/shathree.c,561,FP,"i^p->ixMask: i is small loop counter 0..nRate-1, ixMask is 0 or 7; XOR result bounded, INT13 style noise",b15-adjudicator,high
+INT14-C,19,sqlite,ext/misc/shathree.c,561,FP,i used in i+p->nRate and i^ixMask is bounded loop index; readability lint only,b15-adjudicator,high
+INT30-C,20,sqlite,ext/misc/shathree.c,561,FP,"i+p->nRate with i<nRate<=144 gives max 287; nLoaded/index well within u.x[1600], no wrap",b15-adjudicator,high
+DCL13-C,21,sqlite,ext/misc/shathree.c,580,TP,sha3Func reads argv[0]/argv[1] via sqlite3_value_* accessors (take sqlite3_value*); argv itself (the array of pointers) is never written; const-qualifiable,b15-adjudicator,high
+EXP33-C,22,sqlite,ext/misc/shathree.c,618,FP,"zBuf passed to sqlite3_vsnprintf which always NUL-terminates and writes before strlen; not used uninitialized, sqc flow miss",b15-adjudicator,high
+ARR30-C,23,sqlite,ext/misc/shathree.c,640,FP,"x[9] indexed x[j] for j=8..1; max index 8 < 9, fully in bounds",b15-adjudicator,high
+DCL00-C,24,sqlite,ext/misc/shathree.c,651,TP,"r (double) is set once from sqlite3_value_double and only read in memcpy; const double would compile, DCL00 valid",b15-adjudicator,med
+ARR30-C,25,sqlite,ext/misc/shathree.c,654,FP,"x[9] indexed j=8..1, max 8 in bounds; identical safe pattern to idx23",b15-adjudicator,high
+DCL13-C,26,sqlite,ext/misc/shathree.c,713,TP,sha3QueryFunc only reads argv via value accessors; argv array never mutated; const-qualifiable,b15-adjudicator,high
+EXP34-C,27,sqlite,ext/misc/shathree.c,755,FP,"pStmt is assigned by sqlite3_prepare_v2 (line 739) and rc-checked before column_count at 755; non-null on success path, not a null-deref",b15-adjudicator,high
+EXP05-C,28,sqlite,ext/misc/shathree.c,760,FP,"(unsigned char*)z casts away const on sqlite3_sql result, but SHA3Update only reads it (const param); benign cast, however EXP05 is technically a real cast-away-const occurrence",b15-adjudicator,med
+EXP34-C,29,sqlite,ext/misc/shathree.c,764,FP,"pStmt set by prepare_v2 and validated (rc==0, readonly) before sqlite3_step at 764; not null",b15-adjudicator,high
+DCL13-C,30,sqlite,ext/misc/shathree.c,781,TP,sha3AggStep reads argv via value accessors only; argv array not modified; const-qualifiable,b15-adjudicator,high
+EXP33-C,31,sqlite,ext/misc/shathree.c,784,FP,p assigned from sqlite3_aggregate_context (line 784) and checked p==0 return before any deref; not uninitialized/null at use,b15-adjudicator,high
+EXP33-C,32,sqlite,ext/misc/shathree.c,805,FP,p assigned from sqlite3_aggregate_context (805) and p==0 checked at 806 before deref; guarded,b15-adjudicator,high
+API00-C,33,sqlite,ext/misc/shathree.c,815,FP,db is the loader-supplied handle to an init entry point; SQLITE_EXTENSION_INIT2 and create_function contract guarantees validity; not attacker-controlled,b15-adjudicator,high
+API00-C,34,sqlite,ext/misc/shathree.c,815,FP,pApi consumed by SQLITE_EXTENSION_INIT2 macro per extension-loading contract; loader guarantees non-null,b15-adjudicator,high
+DCL13-C,35,sqlite,ext/misc/shathree.c,819,FP,"pzErrMsg is char** out-param explicitly (void)-cast unused at 824; cannot be const (it is an output slot by API contract), and it is not dereferenced here",b15-adjudicator,high

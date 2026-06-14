@@ -1,0 +1,47 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL37-C,1,sqlite,ext/fts5/fts5Int.h,15,TP,_FTS5INT_H has leading underscore + uppercase = reserved identifier used as include-guard macro name,b15-adjudicator,high
+PRE00-C,2,sqlite,ext/fts5/fts5Int.h,35,FP,ArraySize uses x only inside sizeof which is unevaluated so no real multiple evaluation,b15-adjudicator,high
+PRE01-C,3,sqlite,ext/fts5/fts5Int.h,35,FP,x appears only as sizeof(x) and x[0] subscript where operator precedence cannot be altered by missing parens,b15-adjudicator,med
+PRE12-C,4,sqlite,ext/fts5/fts5Int.h,35,FP,sizeof operand is unevaluated so no runtime multi-evaluation occurs,b15-adjudicator,high
+PRE00-C,5,sqlite,ext/fts5/fts5Int.h,54,TP,MIN evaluates x in comparison and again in result branch genuine multiple evaluation of side-effecting args,b15-adjudicator,high
+PRE12-C,6,sqlite,ext/fts5/fts5Int.h,54,TP,MIN multi-evaluates parameters in ternary genuine PRE12 multi-eval,b15-adjudicator,high
+PRE00-C,7,sqlite,ext/fts5/fts5Int.h,55,TP,MAX evaluates x in comparison and again in result branch genuine multiple evaluation,b15-adjudicator,high
+PRE12-C,8,sqlite,ext/fts5/fts5Int.h,55,TP,MAX multi-evaluates parameters in ternary genuine PRE12 multi-eval,b15-adjudicator,high
+PRE01-C,9,sqlite,ext/fts5/fts5Int.h,76,FP,offsetof ST is a type-name token used as (ST*)0 cast and cannot be parenthesized,b15-adjudicator,high
+PRE01-C,10,sqlite,ext/fts5/fts5Int.h,76,FP,offsetof M is a member-name token used as ->M and cannot be parenthesized,b15-adjudicator,high
+PRE02-C,11,sqlite,ext/fts5/fts5Int.h,130,FP,assert_nc replacement is a single assert(...) call statement with no exposed binary operator to misbind,b15-adjudicator,high
+PRE00-C,12,sqlite,ext/fts5/fts5Int.h,139,TP,fts5Memcmp evaluates n in the ternary test and again as memcmp length genuine multiple evaluation,b15-adjudicator,high
+PRE12-C,13,sqlite,ext/fts5/fts5Int.h,139,TP,fts5Memcmp multi-evaluates n PRE12 genuine,b15-adjudicator,high
+PRE01-C,14,sqlite,ext/fts5/fts5Int.h,166,TP,SZ_FTS5COLSET uses N as (N+2) unparenthesized so a low-precedence arg like a|b misbinds,b15-adjudicator,med
+API02-C,15,sqlite,ext/fts5/fts5Int.h,300,FP,API02 advisory on internal tokenize decl; pText paired with nText length arg no defect,b15-adjudicator,high
+API02-C,16,sqlite,ext/fts5/fts5Int.h,308,FP,sqlite3Fts5Dequote operates on NUL-terminated string by contract not a sized buffer API,b15-adjudicator,high
+EXP37-C,17,sqlite,ext/fts5/fts5Int.h,318,FP,EXP37 misfire; sqlite3Fts5ConfigErrmsg is a valid printf-style variadic decl,b15-adjudicator,high
+API02-C,18,sqlite,ext/fts5/fts5Int.h,345,FP,API02 advisory on internal printf-style buffer append decl no trust-boundary defect,b15-adjudicator,high
+EXP37-C,19,sqlite,ext/fts5/fts5Int.h,345,FP,valid printf-style variadic declaration EXP37 misfire,b15-adjudicator,high
+API02-C,20,sqlite,ext/fts5/fts5Int.h,347,FP,sqlite3Fts5Mprintf is valid printf-style variadic no defect,b15-adjudicator,high
+EXP37-C,21,sqlite,ext/fts5/fts5Int.h,347,FP,valid printf-style variadic declaration EXP37 misfire,b15-adjudicator,high
+PRE00-C,22,sqlite,ext/fts5/fts5Int.h,355,TP,fts5BufferGrow references pBuf three times including (pBuf)->n twice genuine multiple evaluation,b15-adjudicator,med
+PRE12-C,23,sqlite,ext/fts5/fts5Int.h,355,TP,fts5BufferGrow multi-evaluates pBuf PRE12 genuine,b15-adjudicator,med
+PRE01-C,24,sqlite,ext/fts5/fts5Int.h,364,TP,FTS5_POS2COLUMN uses iPos as iPos>>32 unparenthesized so low-precedence arg expression misbinds,b15-adjudicator,med
+PRE01-C,25,sqlite,ext/fts5/fts5Int.h,365,TP,FTS5_POS2OFFSET uses iPos as iPos&mask unparenthesized so additive/conditional arg misbinds with low-precedence &,b15-adjudicator,med
+API02-C,26,sqlite,ext/fts5/fts5Int.h,393,FP,API02 advisory internal poslist decl no sized-buffer defect,b15-adjudicator,high
+API02-C,27,sqlite,ext/fts5/fts5Int.h,400,FP,API02 advisory internal MallocZero decl takes explicit nByte size already,b15-adjudicator,high
+API02-C,28,sqlite,ext/fts5/fts5Int.h,401,FP,Strndup takes explicit nIn length argument API02 misfire,b15-adjudicator,high
+API02-C,29,sqlite,ext/fts5/fts5Int.h,410,FP,TermsetAdd takes explicit length int after const char* API02 misfire,b15-adjudicator,high
+API02-C,30,sqlite,ext/fts5/fts5Int.h,521,FP,API02 advisory internal IterToken decl no defect,b15-adjudicator,high
+PRE00-C,31,sqlite,ext/fts5/fts5Int.h,628,TP,fts5FastGetVarint32 evaluates a as (a)[iOff++] and &(a)[iOff] genuine multiple evaluation,b15-adjudicator,high
+PRE01-C,32,sqlite,ext/fts5/fts5Int.h,628,FP,iOff is an lvalue incremented with ++ and used as subscript so parenthesization is inapplicable,b15-adjudicator,high
+PRE01-C,33,sqlite,ext/fts5/fts5Int.h,628,FP,nVal is an output lvalue assigned and address-taken so it cannot be parenthesized,b15-adjudicator,high
+PRE02-C,34,sqlite,ext/fts5/fts5Int.h,628,FP,macro body is a statement block not an expression so parenthesizing the replacement list is inapplicable,b15-adjudicator,high
+PRE10-C,35,sqlite,ext/fts5/fts5Int.h,628,TP,fts5FastGetVarint32 is a multi-statement brace block not wrapped in do-while genuine PRE10 hazard in if without braces,b15-adjudicator,high
+PRE12-C,36,sqlite,ext/fts5/fts5Int.h,628,TP,fts5FastGetVarint32 multi-evaluates a PRE12 genuine,b15-adjudicator,high
+API02-C,37,sqlite,ext/fts5/fts5Int.h,666,FP,API02 advisory internal DecodeLocaleValue decl no sized-buffer defect,b15-adjudicator,high
+API02-C,38,sqlite,ext/fts5/fts5Int.h,666,FP,API02 advisory internal DecodeLocaleValue decl no sized-buffer defect,b15-adjudicator,high
+API02-C,39,sqlite,ext/fts5/fts5Int.h,682,FP,HashNew pnSize is an out-param for size not an unsized input buffer API02 misfire,b15-adjudicator,high
+API02-C,40,sqlite,ext/fts5/fts5Int.h,704,FP,API02 advisory internal HashQuery decl no defect,b15-adjudicator,high
+API02-C,41,sqlite,ext/fts5/fts5Int.h,718,FP,API02 advisory internal HashScanEntry decl no defect,b15-adjudicator,high
+API02-C,42,sqlite,ext/fts5/fts5Int.h,718,FP,API02 advisory internal HashScanEntry decl no defect,b15-adjudicator,high
+API02-C,43,sqlite,ext/fts5/fts5Int.h,758,FP,StorageDocsize aCol is caller-sized by column count contract API02 advisory,b15-adjudicator,high
+API02-C,44,sqlite,ext/fts5/fts5Int.h,799,FP,API02 advisory internal ExprNew decl no defect,b15-adjudicator,high
+EXP37-C,45,sqlite,ext/fts5/fts5Int.h,859,FP,valid printf-style variadic declaration EXP37 misfire,b15-adjudicator,high
+API02-C,46,sqlite,ext/fts5/fts5Int.h,926,FP,API02 advisory internal TokenizerPattern decl no defect,b15-adjudicator,high

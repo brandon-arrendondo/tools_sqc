@@ -1,0 +1,37 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+API02-C,1,sqlite,ext/misc/appendvfs.c,146,FP,API02-C on VFS method signature fixed by sqlite3_io_methods function-pointer typedef; cannot add size param,b15-adjudicator,high
+CON43-C,2,sqlite,ext/misc/appendvfs.c,150,FP,apndShmMap is a passthrough function not a variable; CON43 misreads the static function as a volatile shared var,b15-adjudicator,high
+API02-C,3,sqlite,ext/misc/appendvfs.c,163,FP,signature fixed by xFullPathname typedef; nOut already conveys capacity of zOut,b15-adjudicator,high
+API02-C,4,sqlite,ext/misc/appendvfs.c,165,FP,signature fixed by xDlError typedef; nByte already conveys buffer capacity,b15-adjudicator,high
+API02-C,5,sqlite,ext/misc/appendvfs.c,168,FP,signature fixed by xRandomness typedef; nByte already conveys buffer capacity,b15-adjudicator,high
+CON03-C,6,sqlite,ext/misc/appendvfs.c,177,FP,"apnd_vfs is a static dispatch-table registered once at init; sqlite3_vfs_register handles its own locking, no data race",b15-adjudicator,high
+DCL40-C,7,sqlite,ext/misc/appendvfs.c,235,FP,"sqlite_int64 vs sqlite3_int64 are the same typedef; declaration matches io_methods contract, not incompatible",b15-adjudicator,high
+INT32-C,8,sqlite,ext/misc/appendvfs.c,243,FP,"paf->iPgOne validated in apndReadMark to <= sz-25-512 within 1GiB file; iOfst from pager bounded, sum cannot overflow int64",b15-adjudicator,med
+EXP05-C,9,sqlite,ext/misc/appendvfs.c,261,FP,"no const cast at line 261; a[] is local unsigned char buffer written via memcpy, not a const-stripping cast",b15-adjudicator,high
+INT32-C,10,sqlite,ext/misc/appendvfs.c,266,FP,iWriteEnd bounded by APND_MAX_SIZE check upstream (apndWrite) and iPgOne<1GiB; int64 sum cannot overflow,b15-adjudicator,med
+DCL40-C,11,sqlite,ext/misc/appendvfs.c,277,FP,"sqlite_int64/sqlite3_int64 identical typedef; matches xWrite contract, not incompatible",b15-adjudicator,high
+INT32-C,12,sqlite,ext/misc/appendvfs.c,284,FP,"iOfst+iAmt both bounded (iAmt is page size, iOfst pager offset) and result checked against APND_MAX_SIZE same line region; no realistic int64 overflow",b15-adjudicator,med
+INT32-C,13,sqlite,ext/misc/appendvfs.c,292,FP,"iPgOne validated <1GiB by apndReadMark bound, iOfst pager-bounded; int64 sum safe",b15-adjudicator,med
+DCL40-C,14,sqlite,ext/misc/appendvfs.c,298,FP,sqlite_int64/sqlite3_int64 identical typedef; matches xTruncate contract,b15-adjudicator,high
+DCL13-C,15,sqlite,ext/misc/appendvfs.c,319,FP,"pFile is reassigned via ORIGFILE(pFile) and dereferenced through pMethods; object reached is mutated by xclose path, const would be wrong; signature fixed by typedef anyway",b15-adjudicator,high
+DCL40-C,16,sqlite,ext/misc/appendvfs.c,319,FP,sqlite_int64/sqlite3_int64 identical typedef; matches xFileSize contract,b15-adjudicator,high
+INT32-C,17,sqlite,ext/misc/appendvfs.c,321,FP,iMark and iPgOne both validated/bounded under 1GiB by apndReadMark; subtraction cannot overflow int64,b15-adjudicator,med
+INT32-C,18,sqlite,ext/misc/appendvfs.c,356,FP,iPgOne bounded <1GiB; FCNTL_SIZE_HINT arg is a sane file size; int64 add cannot overflow,b15-adjudicator,med
+INT32-C,19,sqlite,ext/misc/appendvfs.c,422,FP,"apndFetch guards iOfst+iAmt<=p->iMark and iMark<sz<1GiB before this add; iPgOne bounded, sum safe",b15-adjudicator,med
+INT32-C,20,sqlite,ext/misc/appendvfs.c,429,FP,apndUnfetch iOfst mirrors a prior validated fetch offset; iPgOne bounded <1GiB; int64 sum safe,b15-adjudicator,med
+INT13-C,21,sqlite,ext/misc/appendvfs.c,451,FP,msbs is a controlled loop counter 56..0 not attacker data; left-shift of masked 7-bit value by <=56 fits in int64,b15-adjudicator,high
+INT14-C,22,sqlite,ext/misc/appendvfs.c,451,FP,"INT14 readability rule on macro APND_MARK_PREFIX_SZ; stylistic, not a defect",b15-adjudicator,high
+INT14-C,23,sqlite,ext/misc/appendvfs.c,451,FP,"INT14 readability rule on loop var msbs; stylistic, not a defect",b15-adjudicator,high
+INT32-C,24,sqlite,ext/misc/appendvfs.c,451,FP,"a[17]&0x7f is 0..127, shifted by msbs<=56 yields max 127<<56 which fits in signed int64; no overflow",b15-adjudicator,high
+INT32-C,25,sqlite,ext/misc/appendvfs.c,453,FP,msbs steps 56->0 in fixed 7-iteration loop; cannot underflow or overflow,b15-adjudicator,high
+ARR00-C,26,sqlite,ext/misc/appendvfs.c,454,FP,array a[] is fully populated by xRead of APND_MARK_SIZE bytes at line 448 before the loop reads it; not uninitialized,b15-adjudicator,high
+INT13-C,27,sqlite,ext/misc/appendvfs.c,454,FP,msbs is controlled counter not attacker-controlled; shift well-defined,b15-adjudicator,high
+INT14-C,28,sqlite,ext/misc/appendvfs.c,454,FP,"INT14 readability on loop index i; stylistic, not a defect",b15-adjudicator,high
+INT32-C,29,sqlite,ext/misc/appendvfs.c,454,FP,a[i] byte shifted by msbs in 0..48; max 255<<48 fits signed int64; no overflow/UB,b15-adjudicator,high
+INT34-C,30,sqlite,ext/misc/appendvfs.c,454,FP,"msbs ranges 48..0 (positive, <64) across the fixed loop; shift amount always valid",b15-adjudicator,high
+EXP33-C,31,sqlite,ext/misc/appendvfs.c,496,FP,"zHdr in apndIsAppendvfsDatabase is filled by xRead before memcmp; only compared when rc==SQLITE_OK, so not used uninitialized",b15-adjudicator,high
+API00-C,32,sqlite,ext/misc/appendvfs.c,649,FP,"pApi is the loader-supplied API table; SQLITE_EXTENSION_INIT2 contract guarantees non-null from sqlite3 loader, not attacker input",b15-adjudicator,med
+DCL15-C,33,sqlite,ext/misc/appendvfs.c,649,FP,sqlite3_appendvfs_init must have external linkage as the documented extension entry point; cannot be static,b15-adjudicator,high
+DCL13-C,34,sqlite,ext/misc/appendvfs.c,650,FP,"db param is unused (cast to void) per extension-init ABI; signature is fixed by the loadable-extension contract, const not applicable",b15-adjudicator,high
+DCL13-C,35,sqlite,ext/misc/appendvfs.c,651,FP,"pzErrMsg param fixed by extension-init ABI signature; unused here, cannot change to const",b15-adjudicator,high
+INT30-C,36,sqlite,ext/misc/appendvfs.c,663,FP,szOsFile is a base VFS field (~few hundred bytes) plus small struct; sum at init time cannot wrap size_t; not attacker-controlled,b15-adjudicator,high

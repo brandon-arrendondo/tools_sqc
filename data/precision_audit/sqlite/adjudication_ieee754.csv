@@ -1,0 +1,42 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/ieee754.c,105,FP,"argv signature fixed by sqlite3_create_function xFunc typedef, cannot be const-qualified",b15-adjudicator,high
+DCL03-C,2,sqlite,ext/misc/ieee754.c,113,FP,"assert(sizeof(m)==sizeof(r)) is a deliberate compile-context invariant check, not a defect",b15-adjudicator,high
+FLP02-C,3,sqlite,ext/misc/ieee754.c,115,FP,"r<0.0 is a sign test on a freshly-set double not an equality of computed floats, benign",b15-adjudicator,high
+EXP34-C,4,sqlite,ext/misc/ieee754.c,121,FP,x from sqlite3_value_blob is guarded by value_type==BLOB and bytes==sizeof(r)==8 before x[i] read,b15-adjudicator,high
+EXP07-C,5,sqlite,ext/misc/ieee754.c,141,FP,"a>>52 on bit-pattern of non-negative double yields exponent 0..2047, well-defined informational",b15-adjudicator,high
+EXP07-C,6,sqlite,ext/misc/ieee754.c,142,FP,((sqlite3_int64)1)<<52 is a constant mask shift well within int64 range,b15-adjudicator,high
+INT32-C,7,sqlite,ext/misc/ieee754.c,142,FP,(1<<52)-1 is a constant mask computation no overflow possible,b15-adjudicator,high
+INT32-C,8,sqlite,ext/misc/ieee754.c,142,FP,1<<52 constant shift positive operand defined behavior,b15-adjudicator,high
+INT32-C,9,sqlite,ext/misc/ieee754.c,144,FP,"m<<=1 only when e==0 so m is a 52-bit subnormal mantissa, shift stays in range",b15-adjudicator,high
+EXP07-C,10,sqlite,ext/misc/ieee754.c,146,FP,constant mask shift 1<<52 well-defined,b15-adjudicator,high
+INT32-C,11,sqlite,ext/misc/ieee754.c,146,FP,constant shift 1<<52 well-defined,b15-adjudicator,high
+INT32-C,12,sqlite,ext/misc/ieee754.c,152,FP,"-m guarded: a==INT64_MIN handled separately at line 137, normal m here is positive 53-bit",b15-adjudicator,high
+CON43-C,13,sqlite,ext/misc/ieee754.c,154,FP,sqlite3_user_data returns stable per-function aux pointer not attacker double-fetch,b15-adjudicator,high
+EXP33-C,14,sqlite,ext/misc/ieee754.c,156,FP,"zResult only read in case 0 where sqlite3_snprintf writes it first, not used uninitialized",b15-adjudicator,high
+INT14-C,15,sqlite,ext/misc/ieee754.c,157,FP,e mixing bitwise/arithmetic is style informational not a defect,b15-adjudicator,high
+INT32-C,16,sqlite,ext/misc/ieee754.c,184,FP,-m in two-arg path guarded by m<-9223372036854775807LL return at line 182 so no INT_MIN negation,b15-adjudicator,high
+INT32-C,17,sqlite,ext/misc/ieee754.c,194,FP,"m<<=1 loop bounded: runs only while top bits clear, m stays in 53-bit normalized range",b15-adjudicator,high
+INT32-C,18,sqlite,ext/misc/ieee754.c,197,FP,"e clamped to [-10000,10000] before +1075, no overflow",b15-adjudicator,high
+EXP07-C,19,sqlite,ext/misc/ieee754.c,209,FP,constant mask 1<<52 well-defined,b15-adjudicator,high
+INT32-C,20,sqlite,ext/misc/ieee754.c,209,FP,constant (1<<52)-1 no overflow,b15-adjudicator,high
+INT32-C,21,sqlite,ext/misc/ieee754.c,209,FP,constant shift 1<<52 well-defined,b15-adjudicator,high
+EXP07-C,22,sqlite,ext/misc/ieee754.c,210,FP,e<<52 with e clamped to 0..0x7ff fits in int64 informational,b15-adjudicator,high
+INT13-C,23,sqlite,ext/misc/ieee754.c,210,FP,"e<<52 signed-operand style flag, e bounded 0..2047 so value defined",b15-adjudicator,high
+INT32-C,24,sqlite,ext/misc/ieee754.c,210,FP,"e<<52 with e in 0..0x7ff (max 2047) fits well within int64, no overflow",b15-adjudicator,high
+EXP07-C,25,sqlite,ext/misc/ieee754.c,211,FP,((sqlite3_uint64)1)<<63 unsigned constant shift defined behavior,b15-adjudicator,high
+DCL13-C,26,sqlite,ext/misc/ieee754.c,223,FP,"argv signature fixed by UDF xFunc typedef, cannot be const",b15-adjudicator,high
+EXP34-C,27,sqlite,ext/misc/ieee754.c,234,FP,x guarded by value_type==BLOB and bytes==sizeof(double)==8 before x[i],b15-adjudicator,high
+DCL13-C,28,sqlite,ext/misc/ieee754.c,243,FP,"argv signature fixed by UDF xFunc typedef, cannot be const",b15-adjudicator,high
+DCL00-C,29,sqlite,ext/misc/ieee754.c,249,FP,"r initialized from value_double and never modified, const valid but stylistic",b15-adjudicator,med
+MEM05-C,30,sqlite,ext/misc/ieee754.c,251,FP,a[sizeof(r)] is fixed 8-byte array (sizeof(double) is compile constant) not runtime VLA,b15-adjudicator,high
+INT30-C,31,sqlite,ext/misc/ieee754.c,255,FP,"sizeof(r)-i with i in 1..8 so result 7..0, no wrap; index a[sizeof(r)-i] in 0..7 bounded",b15-adjudicator,high
+DCL13-C,32,sqlite,ext/misc/ieee754.c,270,FP,"argv signature fixed by UDF xFunc typedef, cannot be const",b15-adjudicator,high
+DCL13-C,33,sqlite,ext/misc/ieee754.c,283,FP,"argv signature fixed by UDF xFunc typedef, cannot be const",b15-adjudicator,high
+DCL00-C,34,sqlite,ext/misc/ieee754.c,287,FP,"r set once from value_double never modified, const valid but stylistic",b15-adjudicator,med
+DCL13-C,35,sqlite,ext/misc/ieee754.c,310,FP,"argv signature fixed by UDF xFunc typedef, cannot be const",b15-adjudicator,high
+INT30-C,36,sqlite,ext/misc/ieee754.c,320,FP,"m1+N is uint64 modular by design (ieee754_inc intentionally casts/adds bit pattern), defined wraparound",b15-adjudicator,high
+API00-C,37,sqlite,ext/misc/ieee754.c,327,FP,"db passed by sqlite to init, contract guarantees non-null, sqlite3_create_function tolerates",b15-adjudicator,high
+API00-C,38,sqlite,ext/misc/ieee754.c,327,FP,pApi consumed by SQLITE_EXTENSION_INIT2 contract-required non-null at load,b15-adjudicator,high
+DCL13-C,39,sqlite,ext/misc/ieee754.c,331,FP,"pzErrMsg type char** fixed by init signature; written via (void)pzErrMsg, cannot be const",b15-adjudicator,high
+ARR02-C,40,sqlite,ext/misc/ieee754.c,339,FP,aFunc[] implicit size from initializer is idiomatic and bounded by sizeof/sizeof loop,b15-adjudicator,high
+WIN04-C,41,sqlite,ext/misc/ieee754.c,339,FP,WIN04 EncodePointer guidance is noise for a static const dispatch table,b15-adjudicator,high

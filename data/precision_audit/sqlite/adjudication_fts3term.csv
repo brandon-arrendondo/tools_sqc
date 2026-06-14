@@ -1,0 +1,22 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ERR07-C,1,sqlite,ext/fts3/fts3_term.c,78,FP,atoi on xCreate module arg argv[4] not attacker raw bytes test-only vtab failure yields iIndex=0 benign no memory defect,b15-adjudicator,med
+ERR34-C,2,sqlite,ext/fts3/fts3_term.c,78,FP,same atoi on SQL-level module argument no decode of untrusted serialized bytes ERR-class advisory not a memory bug here,b15-adjudicator,med
+INT30-C,3,sqlite,ext/fts3/fts3_term.c,105,FP,nByte is sqlite3_int64 and nDb/nFts3 are (int)strlen of bounded SQL identifiers wrap not reachable with realistic args,b15-adjudicator,high
+INT32-C,4,sqlite,ext/fts3/fts3_term.c,112,FP,nDb+1 used only as offset into a buffer allocated with nDb+nFts3+2 strlen-bounded small values no overflow,b15-adjudicator,high
+STR34-C,5,sqlite,ext/fts3/fts3_term.c,112,FP,line 112 is pointer arithmetic zName=&zDb[nDb+1] no char dereference assigned to wider type STR34 misread,b15-adjudicator,high
+STR34-C,6,sqlite,ext/fts3/fts3_term.c,112,FP,no such deref *p->pFts3Tab->zDb[nDb+1] exists at 112 only address computation analyzer misparse,b15-adjudicator,high
+INT32-C,7,sqlite,ext/fts3/fts3_term.c,114,FP,iIndex+1 stored to nIndex iIndex from atoi small test arg overflow not reachable,b15-adjudicator,high
+INT31-C,8,sqlite,ext/fts3/fts3_term.c,117,FP,"nDb is (int)strlen of zDb non-negative and bounded buffer sized nDb+nFts3+2 memcpy(zDb,zDb,nDb) safe",b15-adjudicator,high
+INT31-C,9,sqlite,ext/fts3/fts3_term.c,118,FP,nFts3 is (int)strlen of zFts3 non-negative bounded same allocation memcpy safe no truncation,b15-adjudicator,high
+MEM30-C,10,sqlite,ext/fts3/fts3_term.c,141,FP,Disconnect frees pFts3 then p once each distinct pointers no double-free single call path,b15-adjudicator,high
+INT32-C,11,sqlite,ext/fts3/fts3_term.c,211,FP,iRowid is sqlite3_int64 pretend counter wrap requires 2^63 rows not reachable,b15-adjudicator,high
+EXP33-C,12,sqlite,ext/fts3/fts3_term.c,233,FP,"v written by sqlite3Fts3GetVarint(...,&v) at line 232 before read at 233 initialized",b15-adjudicator,high
+INT32-C,13,sqlite,ext/fts3/fts3_term.c,235,FP,iDocid sqlite3_int64 accumulates internal FTS3 doclist deltas not externally bounded but matches index format wrap benign,b15-adjudicator,med
+INT32-C,14,sqlite,ext/fts3/fts3_term.c,243,FP,iCol int += (int)v from internal doclist varint test-only no memory effect,b15-adjudicator,med
+INT32-C,15,sqlite,ext/fts3/fts3_term.c,248,FP,iPos int += (int)(v-2) internal doclist position delta no memory-safety consequence,b15-adjudicator,med
+INT32-C,16,sqlite,ext/fts3/fts3_term.c,248,FP,v-2 on sqlite3_int64 v from doclist varint wrap is value-only no out-of-bounds effect,b15-adjudicator,med
+INT32-C,17,sqlite,ext/fts3/fts3_term.c,278,FP,memset size is compile-time struct-member pointer difference &pCsr[1]-&pCsr->csr constant positive not attacker arithmetic,b15-adjudicator,high
+DCL13-C,18,sqlite,ext/fts3/fts3_term.c,298,FP,pCursor cast to Fts3termCursor* and pCsr->isEof read object reached through it not const-eligible via vtab typedef signature,b15-adjudicator,high
+DCL13-C,19,sqlite,ext/fts3/fts3_term.c,307,FP,signature fixed by sqlite3_module xColumn function-pointer typedef cannot add const,b15-adjudicator,high
+DCL13-C,20,sqlite,ext/fts3/fts3_term.c,336,FP,signature fixed by sqlite3_module xRowid typedef pCursor->iRowid read const cannot change ABI,b15-adjudicator,high
+API00-C,21,sqlite,ext/fts3/fts3_term.c,348,FP,db forwarded to sqlite3_create_module which validates it API00 advisory contract guarantees non-null caller,b15-adjudicator,high

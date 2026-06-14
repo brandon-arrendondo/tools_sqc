@@ -1,0 +1,44 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+STR34-C,1,sqlite,ext/fts5/fts5_vocab.c,123,FP,*pzErr at 123 assigned a sqlite3_mprintf() char* pointer not dereferenced as a char value - no sign-extension read occurs,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/fts5/fts5_vocab.c,174,FP,pAux signature is fixed by the sqlite3_module xCreate/xConnect function-pointer typedef and is stored into pRet->pGlobal - const-incompatible,b15-adjudicator,high
+ARR02-C,3,sqlite,ext/fts5/fts5_vocab.c,180,FP,azSchema[] is a local initializer-sized array of string literals not attacker-driven and bounds are determined by the 3 initializers - stylistic only,b15-adjudicator,high
+STR34-C,4,sqlite,ext/fts5/fts5_vocab.c,193,FP,*pzErr at 193 assigned a sqlite3_mprintf() result pointer not dereferenced as a char - no sign extension,b15-adjudicator,high
+INT14-C,5,sqlite,ext/fts5/fts5_vocab.c,280,FP,pInfo is a struct pointer with member access and assignment not a numeric value mixing bitwise and arithmetic - analyzer misread,b15-adjudicator,high
+EXP34-C,6,sqlite,ext/fts5/fts5_vocab.c,360,FP,pStmt at 360 is guarded by 'if( pStmt && ...)' so sqlite3_step never receives NULL,b15-adjudicator,high
+ARR39-C,7,sqlite,ext/fts5/fts5_vocab.c,382,FP,nByte at 382 is i64 and nCol is config column count bounded by FTS5 limits (<~32k) not per-row attacker data - product cannot wrap i64,b15-adjudicator,high
+INT30-C,8,sqlite,ext/fts5/fts5_vocab.c,382,FP,i64 nByte addition of bounded nCol-scaled terms plus sizeof - no realistic 64-bit wrap from a config column count,b15-adjudicator,high
+INT30-C,9,sqlite,ext/fts5/fts5_vocab.c,382,FP,"nCol is the table column count (bounded, <~32768) times sizeof(i64) in i64 arithmetic - no wrap",b15-adjudicator,high
+ARR38-C,10,sqlite,ext/fts5/fts5_vocab.c,418,FP,memset size sizeof(i64)*nCol where nCol is bounded config column count matching the aCnt allocation at xOpen - sizing is correct,b15-adjudicator,high
+INT30-C,11,sqlite,ext/fts5/fts5_vocab.c,418,FP,sizeof(i64)*nCol with bounded nCol in size_t - no overflow possible from column count,b15-adjudicator,high
+INT32-C,12,sqlite,ext/fts5/fts5_vocab.c,418,FP,sizeof(i64)*nCol bounded by column-count limit - no realistic overflow,b15-adjudicator,high
+ARR38-C,13,sqlite,ext/fts5/fts5_vocab.c,419,FP,memset of aDoc with sizeof(i64)*nCol matches the xOpen allocation of nCol i64 doc slots - correct sizing,b15-adjudicator,high
+INT30-C,14,sqlite,ext/fts5/fts5_vocab.c,419,FP,same bounded nCol*sizeof(i64) - no overflow,b15-adjudicator,high
+INT32-C,15,sqlite,ext/fts5/fts5_vocab.c,419,FP,same bounded nCol*sizeof(i64) - no overflow,b15-adjudicator,high
+EXP34-C,16,sqlite,ext/fts5/fts5_vocab.c,446,FP,zTerm from sqlite3Fts5IterTerm is only read when nLeTerm>=0 guards the memcmp and BufferSet handles nTerm bytes - not a null deref reachable here,b15-adjudicator,high
+INT31-C,17,sqlite,ext/fts5/fts5_vocab.c,446,FP,"nCmp=MIN(nTerm,nLeTerm) both non-negative so the size_t conversion preserves value - safe",b15-adjudicator,high
+STR34-C,18,sqlite,ext/fts5/fts5_vocab.c,446,FP,zTerm passed to memcmp which compares bytes not sign-extends; no char promotion to wider int occurs,b15-adjudicator,high
+EXP34-C,19,sqlite,ext/fts5/fts5_vocab.c,520,FP,zTerm read under nLeTerm>=0 guard same as line 446 path - bounded compare,b15-adjudicator,high
+INT31-C,20,sqlite,ext/fts5/fts5_vocab.c,520,FP,"nCmp=MIN(nTerm,nLeTerm) non-negative - size_t conversion safe",b15-adjudicator,high
+STR34-C,21,sqlite,ext/fts5/fts5_vocab.c,520,FP,memcmp compares raw bytes; no sign-extending char promotion,b15-adjudicator,high
+ARR38-C,22,sqlite,ext/fts5/fts5_vocab.c,528,FP,memset aCnt nCol*sizeof(i64) matches allocation - bounded column count no overflow,b15-adjudicator,high
+INT30-C,23,sqlite,ext/fts5/fts5_vocab.c,528,FP,nCol*sizeof(i64) bounded by config column count - no wrap,b15-adjudicator,high
+INT32-C,24,sqlite,ext/fts5/fts5_vocab.c,528,FP,bounded nCol*sizeof(i64) - no overflow,b15-adjudicator,high
+ARR38-C,25,sqlite,ext/fts5/fts5_vocab.c,529,FP,memset aDoc nCol*sizeof(i64) matches allocation - bounded,b15-adjudicator,high
+INT30-C,26,sqlite,ext/fts5/fts5_vocab.c,529,FP,bounded nCol*sizeof(i64) - no wrap,b15-adjudicator,high
+INT32-C,27,sqlite,ext/fts5/fts5_vocab.c,529,FP,bounded nCol*sizeof(i64) - no overflow,b15-adjudicator,high
+INT32-C,28,sqlite,ext/fts5/fts5_vocab.c,616,FP,pCsr->iCol++ bounded by 'pCsr->iCol<nCol' loop guard; nCol is config column count far below INT_MAX,b15-adjudicator,high
+DCL13-C,29,sqlite,ext/fts5/fts5_vocab.c,632,FP,apVal signature fixed by sqlite3_module xFilter function-pointer typedef - const cannot be added,b15-adjudicator,high
+INT13-C,30,sqlite,ext/fts5/fts5_vocab.c,651,FP,idxNum & mask is standard flag testing; CERT INT13 stylistic only and masks are positive constants - no defect,b15-adjudicator,med
+INT13-C,31,sqlite,ext/fts5/fts5_vocab.c,652,FP,"idxNum & flag test - stylistic, no behavioral defect",b15-adjudicator,med
+INT13-C,32,sqlite,ext/fts5/fts5_vocab.c,653,FP,"idxNum & flag test - stylistic, no behavioral defect",b15-adjudicator,med
+INT13-C,33,sqlite,ext/fts5/fts5_vocab.c,654,FP,"idxNum & colused-mask - stylistic, no defect",b15-adjudicator,med
+INT32-C,34,sqlite,ext/fts5/fts5_vocab.c,669,FP,nLeTerm is sqlite3_value_bytes() of a bound SQL parameter (<=SQLITE_MAX_LENGTH ~1e9) so +1 cannot overflow int,b15-adjudicator,high
+ARR38-C,35,sqlite,ext/fts5/fts5_vocab.c,673,FP,memcpy size nLeTerm+1 matches the malloc(nLeTerm+1) on the line above and source zCopy is the value text - exact correct sizing,b15-adjudicator,high
+EXP43-C,36,sqlite,ext/fts5/fts5_vocab.c,673,FP,memcpy src zCopy and dst freshly malloc'd zLeTerm are distinct non-overlapping buffers - no aliasing,b15-adjudicator,high
+INT32-C,37,sqlite,ext/fts5/fts5_vocab.c,673,FP,nLeTerm bounded by SQLITE_MAX_LENGTH so nLeTerm+1 cannot overflow int,b15-adjudicator,high
+INT32-C,38,sqlite,ext/fts5/fts5_vocab.c,673,FP,nLeTerm from sqlite3_value_bytes bounded well below INT_MAX - +1 safe,b15-adjudicator,high
+DCL13-C,39,sqlite,ext/fts5/fts5_vocab.c,702,FP,pCursor is cast to Fts5VocabCursor* whose members are read/written; signature fixed by xEof function-pointer typedef - const-incompatible,b15-adjudicator,high
+DCL13-C,40,sqlite,ext/fts5/fts5_vocab.c,708,FP,pCursor cast and member written (sqlite3_result via pCsr->...); signature fixed by xColumn typedef,b15-adjudicator,high
+DCL13-C,41,sqlite,ext/fts5/fts5_vocab.c,780,FP,pCursor cast to read pCsr->rowid; signature fixed by xRowid function-pointer typedef - cannot be const,b15-adjudicator,high
+API00-C,42,sqlite,ext/fts5/fts5_vocab.c,788,FP,pGlobal is stored into module aux pointer; xInit is an internal init contract called only with a valid global - not an untrusted entry point,b15-adjudicator,high
+API00-C,43,sqlite,ext/fts5/fts5_vocab.c,788,FP,db is a valid open connection passed by the FTS5 init path; internal contract not attacker-facing - no validation needed,b15-adjudicator,high

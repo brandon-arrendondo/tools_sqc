@@ -1,0 +1,43 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+EXP33-C,1,sqlite,ext/icu/icu.c,63,FP,zBuf[128] is written by sqlite3_snprintf before any read (line 63) then NUL-terminated; not uninitialized use,b15-adjudicator,high
+ARR02-C,2,sqlite,ext/icu/icu.c,90,FP,"icuUtf8Trans1[] is a fully brace-initialized const lookup table; implicit bound is the count of initializers, intentional and safe",b15-adjudicator,high
+PRE00-C,3,sqlite,ext/icu/icu.c,101,TP,SQLITE_ICU_READ_UTF8 expands zIn multiple times via *(zIn++); factual multiple evaluation of macro arg,b15-adjudicator,high
+PRE01-C,4,sqlite,ext/icu/icu.c,101,TP,macro param zIn used unparenthesized as *(zIn++) and *zIn in replacement text,b15-adjudicator,high
+PRE01-C,5,sqlite,ext/icu/icu.c,101,TP,"macro param c used unparenthesized (c>=0xc0, c-0xc0); benign here but factually unparenthesized",b15-adjudicator,med
+PRE02-C,6,sqlite,ext/icu/icu.c,101,TP,"replacement list is a statement sequence not parenthesizable, but the const-subexpr concern is factually present per rule",b15-adjudicator,med
+PRE10-C,7,sqlite,ext/icu/icu.c,101,TP,SQLITE_ICU_READ_UTF8 is a multi-statement macro (assignment + if) not wrapped in do-while,b15-adjudicator,high
+PRE12-C,8,sqlite,ext/icu/icu.c,101,TP,zIn evaluated multiple times (post-increment plus loop reads); same as idx3,b15-adjudicator,high
+PRE00-C,9,sqlite,ext/icu/icu.c,110,TP,"SQLITE_ICU_SKIP_UTF8 expands zIn multiple times (*zIn assert, *(zIn++), loop *zIn)",b15-adjudicator,high
+PRE01-C,10,sqlite,ext/icu/icu.c,110,TP,macro param zIn unparenthesized as *zIn / *(zIn++) in replacement text,b15-adjudicator,high
+PRE02-C,11,sqlite,ext/icu/icu.c,110,TP,multi-statement macro replacement not parenthesizable; rule fires factually,b15-adjudicator,med
+PRE10-C,12,sqlite,ext/icu/icu.c,110,TP,SQLITE_ICU_SKIP_UTF8 is multi-statement (assert + if + while) not wrapped in do-while,b15-adjudicator,high
+PRE12-C,13,sqlite,ext/icu/icu.c,110,TP,zIn evaluated multiple times in SQLITE_ICU_SKIP_UTF8,b15-adjudicator,high
+MEM05-C,14,sqlite,ext/icu/icu.c,122,TP,icuLikeCompare recursively calls itself at line 165; recursion is real though pattern-length-bounded by SQLITE_MAX_LIKE_PATTERN_LENGTH,b15-adjudicator,med
+ARR30-C,15,sqlite,ext/icu/icu.c,132,FP,loop at 132/154 advances over zPattern but terminates on NUL byte (SQLITE_ICU_READ_UTF8 returns 0 at terminator); sqlite3_value_text guarantees NUL-terminated input,b15-adjudicator,high
+EXP33-C,16,sqlite,ext/icu/icu.c,136,FP,uPattern is assigned by SQLITE_ICU_READ_UTF8 (c=*(zIn++)) before use at line 137; macro always writes it,b15-adjudicator,high
+EXP30-C,17,sqlite,ext/icu/icu.c,154,FP,"line 154 reads c=*zPattern then compares; no double-modify-without-sequence-point, zPattern++ is separate statement; misread of macro/loop",b15-adjudicator,high
+EXP33-C,18,sqlite,ext/icu/icu.c,184,FP,uString is assigned by SQLITE_ICU_READ_UTF8 before use at line 185; macro always writes it,b15-adjudicator,high
+INT31-C,19,sqlite,ext/icu/icu.c,185,FP,"uString holds a decoded UTF codepoint <=0x1FFFFF; cast to UChar32 (int32) cannot lose data, value is bounded by UTF8 decode",b15-adjudicator,high
+INT31-C,20,sqlite,ext/icu/icu.c,186,FP,uPattern likewise a decoded codepoint bounded by UTF8 decode; UChar32 cast is lossless,b15-adjudicator,high
+DCL13-C,21,sqlite,ext/icu/icu.c,213,FP,"argv in icuLikeFunc is dereferenced as argv[0]/argv[1] read-only; but const sqlite3_value** would change the registered xFunc typedef signature (void(*)(...,sqlite3_value**)); FP per typedef-fixed-signature rule",b15-adjudicator,high
+DCL13-C,22,sqlite,ext/icu/icu.c,277,FP,apArg in icuRegexpFunc fixed by xFunc function-pointer typedef at line 541; cannot be const,b15-adjudicator,high
+FIO42-C,23,sqlite,ext/icu/icu.c,298,FP,"pExpr is a URegularExpression compiled by uregex_open, not a file descriptor; stored via sqlite3_set_auxdata with icuRegexpDelete destructor; no open()/close() leak",b15-adjudicator,high
+DCL13-C,24,sqlite,ext/icu/icu.c,361,FP,apArg in icuCaseFunc16 fixed by xFunc typedef signature; const not applicable,b15-adjudicator,high
+MEM30-C,25,sqlite,ext/icu/icu.c,361,FP,"sqlite3_realloc here is never called with size 0 (nOut==0 returns early at 382) and free path is mutually exclusive with use; SQLite realloc(p,0) frees and returns NULL but code frees zOutput only on NULL return without reuse; no double-free",b15-adjudicator,high
+DCL03-C,26,sqlite,ext/icu/icu.c,412,TP,assert() at line 412 uses constant expression assert(0); static_assert/unreachable idiom would be the static form per rule,b15-adjudicator,high
+EXP05-C,27,sqlite,ext/icu/icu.c,439,FP,"(UChar*)zLeft casts away const but ucol_strcoll takes const UChar* params; the cast is to UChar* matching ICU API which does not modify; nonetheless casting away const is factually... value read-only, API non-modifying, established-safe FP",b15-adjudicator,high
+EXP05-C,28,sqlite,ext/icu/icu.c,439,FP,(UChar*)zRight same as idx27; ICU ucol_strcoll does not mutate; cast-away-const is benign and required by signature mismatch,b15-adjudicator,high
+DCL13-C,29,sqlite,ext/icu/icu.c,465,FP,apArg in icuLoadCollation fixed by xFunc typedef; const not applicable,b15-adjudicator,high
+FIO42-C,30,sqlite,ext/icu/icu.c,483,FP,"pUCollator is an ICU UCollator from ucol_open, not a file descriptor; closed via ucol_close on error path (526) and via destructor icuCollationDel on success; no fd leak",b15-adjudicator,high
+ARR02-C,31,sqlite,ext/icu/icu.c,494,FP,"aStrength[] is fully brace-initialized const struct array; implicit bound = initializer count, intentional",b15-adjudicator,high
+ARR00-C,32,sqlite,ext/icu/icu.c,509,FP,"aStrength indexed by i over 0..count-1 via sizeof loop (503); subscript-0 warning is analyzer misread of sizeof(aStrength[0]) idiom, not an actual index",b15-adjudicator,high
+MEM31-C,33,sqlite,ext/icu/icu.c,510,FP,pStr from sqlite3_str_new is freed via sqlite3_free(sqlite3_str_finish(pStr)) at line 518 on this path; not leaked,b15-adjudicator,high
+ARR00-C,34,sqlite,ext/icu/icu.c,514,FP,same sizeof(aStrength[0]) idiom at line 514; not an out-of-bounds subscript,b15-adjudicator,high
+MEM31-C,35,sqlite,ext/icu/icu.c,519,FP,pStr is freed at line 518 before the return at 519; sqlite3_str_finish releases the buffer and sqlite3_free frees it; no leak,b15-adjudicator,high
+API00-C,36,sqlite,ext/icu/icu.c,534,FP,sqlite3IcuInit's db is passed straight to sqlite3_create_function which validates/uses it; SQLite contract is caller passes valid db; no deref before any guard that is missing,b15-adjudicator,med
+ARR02-C,37,sqlite,ext/icu/icu.c,542,FP,scalars[] is fully brace-initialized const struct array; implicit bound intentional,b15-adjudicator,high
+WIN04-C,38,sqlite,ext/icu/icu.c,542,FP,"WIN04 EncodePointer guidance is not applicable; xFunc pointers stored in a const init table for registration, not a security-sensitive callback store",b15-adjudicator,high
+MSC37-C,39,sqlite,ext/icu/icu.c,576,FP,"icuCollationColl returns via switch cases and a final return 0 at line 446; all paths return, MSC37 misfire (assert before final return)",b15-adjudicator,high
+DCL13-C,40,sqlite,ext/icu/icu.c,579,FP,db in sqlite3_icu_init is the entry-point signature fixed by sqlite3 extension ABI; passed to sqlite3IcuInit; const not applicable,b15-adjudicator,high
+DCL13-C,41,sqlite,ext/icu/icu.c,580,FP,pzErrMsg fixed by sqlite3 extension init ABI signature (char**); unused here but signature cannot change,b15-adjudicator,high
+DCL31-C,42,sqlite,ext/icu/icu.c,583,FP,"SQLITE_EXTENSION_INIT2(pApi) at line 583 is a macro statement, not a declaration missing a type specifier; analyzer misparse of the macro",b15-adjudicator,high

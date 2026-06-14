@@ -1,0 +1,21 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+DCL13-C,1,sqlite,ext/misc/templatevtab.c,89,FP,pAux param of xConnect is fixed by sqlite3_module xConnect typedef; const not permitted,b15-adjudicator,high
+DCL13-C,2,sqlite,ext/misc/templatevtab.c,92,FP,pzErr (char**) of xConnect is fixed by the xConnect typedef signature; cannot add const,b15-adjudicator,high
+EXP33-C,3,sqlite,ext/misc/templatevtab.c,104,FP,pNew is assigned by sqlite3_malloc before any deref and null-checked at line 106 before use,b15-adjudicator,high
+DCL13-C,4,sqlite,ext/misc/templatevtab.c,124,FP,p param of xDisconnect is fixed by sqlite3_module xDisconnect typedef,b15-adjudicator,high
+EXP33-C,5,sqlite,ext/misc/templatevtab.c,126,FP,pCur is assigned by sqlite3_malloc before deref and null-checked at line 127,b15-adjudicator,high
+MEM33-C,6,sqlite,ext/misc/templatevtab.c,129,FP,line 129 is &pCur->base address-of assignment to ppCursor not a flexible-array struct copy,b15-adjudicator,high
+INT32-C,7,sqlite,ext/misc/templatevtab.c,148,FP,iRowid bounded 1..10 by Filter setting 1 and Eof stopping at >=10; never reaches INT_MAX,b15-adjudicator,med
+DCL13-C,8,sqlite,ext/misc/templatevtab.c,157,FP,cur param of xColumn is fixed by sqlite3_module xColumn typedef,b15-adjudicator,high
+INT32-C,9,sqlite,ext/misc/templatevtab.c,164,FP,pCur->iRowid is in 1..10 (Filter/Eof bound); 1000+iRowid cannot overflow,b15-adjudicator,med
+INT32-C,10,sqlite,ext/misc/templatevtab.c,168,FP,pCur->iRowid is in 1..10 (Filter/Eof bound); 2000+iRowid cannot overflow,b15-adjudicator,med
+DCL13-C,11,sqlite,ext/misc/templatevtab.c,178,FP,cur param of xRowid is fixed by sqlite3_module xRowid typedef,b15-adjudicator,high
+DCL13-C,12,sqlite,ext/misc/templatevtab.c,188,FP,cur param of xEof is fixed by sqlite3_module xEof typedef,b15-adjudicator,high
+DCL13-C,13,sqlite,ext/misc/templatevtab.c,202,FP,argv param of xFilter is fixed by sqlite3_module xFilter typedef and unused here,b15-adjudicator,high
+DCL13-C,14,sqlite,ext/misc/templatevtab.c,216,FP,tab param of xBestIndex is fixed by sqlite3_module xBestIndex typedef,b15-adjudicator,high
+FLP34-C,15,sqlite,ext/misc/templatevtab.c,219,FP,conversion of integer literal 10 to double is exactly representable; no range issue,b15-adjudicator,high
+CON03-C,16,sqlite,ext/misc/templatevtab.c,228,FP,templatevtabModule is a static const-init module table read by SQLite under its own mutex; not a data race,b15-adjudicator,high
+API00-C,17,sqlite,ext/misc/templatevtab.c,260,FP,db is supplied non-null by the SQLite extension-load contract; internal trust boundary not user input,b15-adjudicator,high
+API00-C,18,sqlite,ext/misc/templatevtab.c,260,FP,pApi non-null guaranteed by extension-load contract; used only by SQLITE_EXTENSION_INIT2 macro,b15-adjudicator,high
+DCL15-C,19,sqlite,ext/misc/templatevtab.c,260,FP,"init must have external linkage; it is the dlopen entry point (sqlite3_*_init), cannot be static",b15-adjudicator,high
+DCL13-C,20,sqlite,ext/misc/templatevtab.c,262,FP,pzErrMsg (char**) signature is fixed by the sqlite3_*_init extension entry-point contract,b15-adjudicator,high

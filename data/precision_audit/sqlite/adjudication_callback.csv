@@ -1,0 +1,45 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+MEM30-C,1,sqlite,src/callback.c,32,FP,line 32 reads db->xCollNeeded16; db is the live connection handle never freed in this function,b15-adjudicator,high
+MEM30-C,2,sqlite,src/callback.c,34,FP,line 34 sqlite3ValueNew(db) takes db as live context arg not a freed pointer,b15-adjudicator,high
+MEM30-C,3,sqlite,src/callback.c,38,FP,line 38 passes live db as callback context arg never freed,b15-adjudicator,high
+MEM30-C,4,sqlite,src/callback.c,38,FP,line 38 same call db is live context not freed,b15-adjudicator,high
+MEM30-C,5,sqlite,src/callback.c,38,FP,zExternal at line 38 is the live UTF16 text from sqlite3ValueText guarded by if(zExternal); freed only later by sqlite3ValueFree(pTmp),b15-adjudicator,high
+MEM30-C,6,sqlite,src/callback.c,38,FP,line 38 ENC(db) reads live db handle never freed,b15-adjudicator,high
+MEM30-C,7,sqlite,src/callback.c,38,FP,line 38 db member access on live handle never freed here,b15-adjudicator,high
+MEM30-C,8,sqlite,src/callback.c,38,FP,line 38 db passed as live context arg not freed,b15-adjudicator,high
+EXP34-C,9,sqlite,src/callback.c,54,FP,pColl is a param dereferenced by callers holding a valid CollSeq; never null on this path,b15-adjudicator,high
+ARR02-C,10,sqlite,src/callback.c,56,FP,aEnc[] is a static const initialized array; size 3 is implicit-from-initializer which is valid C not a defect,b15-adjudicator,high
+EXP34-C,11,sqlite,src/callback.c,59,FP,pColl2=sqlite3FindCollSeq(create=0) returns the existing 3-block entry for an already-located collation so it is non-null here,b15-adjudicator,med
+API00-C,12,sqlite,src/callback.c,79,FP,internal contract: sqlite3CheckCollSeq always called with a valid Parse; pParse->db deref guarded by pColl&&xCmp==0 first,b15-adjudicator,high
+STR34-C,13,sqlite,src/callback.c,116,FP,zName used as memcpy source/strlen not as an integer index; no sign extension occurs,b15-adjudicator,high
+INT30-C,14,sqlite,src/callback.c,117,FP,3*sizeof(*pColl)+nName is size_t arithmetic with nName=strlen30+1 bounded to 2^30; cannot wrap,b15-adjudicator,high
+INT31-C,15,sqlite,src/callback.c,126,FP,nName=sqlite3Strlen30()+1 is bounded non-negative (<=2^30) so size_t conversion is safe,b15-adjudicator,high
+DCL30-C,16,sqlite,src/callback.c,141,FP,pColl is heap from sqlite3DbMallocZero not an automatic local; returning it is correct,b15-adjudicator,high
+DCL03-C,17,sqlite,src/callback.c,166,TP,assert(SQLITE_UTF8==1 && ...) at line 166 is a pure compile-time constant expression; static_assert would be appropriate,b15-adjudicator,med
+DCL30-C,18,sqlite,src/callback.c,174,FP,pColl returned is heap-allocated via findCollSeqEntry or db->pDfltColl not an automatic local,b15-adjudicator,high
+API00-C,19,sqlite,src/callback.c,205,FP,internal contract: pParse non-null by caller invariant; pParse->db deref is standard SQLite usage,b15-adjudicator,high
+API00-C,20,sqlite,src/callback.c,205,FP,pColl may be NULL by design (param doc) and code handles !p; not an unvalidated-use defect,b15-adjudicator,high
+DCL13-C,21,sqlite,src/callback.c,208,FP,"pColl is reassigned to p then written via synthCollSeq(db,p) which memcpys into it; cannot be const",b15-adjudicator,high
+DCL30-C,22,sqlite,src/callback.c,233,FP,p is heap from sqlite3FindCollSeq/pDfltColl not an automatic local,b15-adjudicator,high
+API00-C,23,sqlite,src/callback.c,256,FP,internal contract: pParse always valid; pParse->db deref is standard,b15-adjudicator,high
+API00-C,24,sqlite,src/callback.c,256,FP,zName may be passed through to FindCollSeq which tolerates NULL; not an unvalidated-deref defect,b15-adjudicator,high
+DCL30-C,25,sqlite,src/callback.c,267,FP,pColl returned is from sqlite3FindCollSeq (heap/static) not an automatic local,b15-adjudicator,high
+DCL13-C,26,sqlite,src/callback.c,300,FP,p is FuncDef param read-only here but signature is fixed and p->u.pHash iteration is the contract; const-correctness churn at most,b15-adjudicator,high
+INT14-C,27,sqlite,src/callback.c,316,FP,p is a FuncDef* pointer; no bitwise-and-arithmetic mix on a value occurs; misread of pointer iteration,b15-adjudicator,high
+INT32-C,28,sqlite,src/callback.c,329,FP,match is a small bounded score (0..6); match+=2 cannot overflow int,b15-adjudicator,high
+INT32-C,29,sqlite,src/callback.c,331,FP,match is bounded 0..6; match+=1 cannot overflow,b15-adjudicator,high
+FLP30-C,30,sqlite,src/callback.c,346,FP,p is a FuncDef* pointer-iterator not a floating-point loop counter; misclassification,b15-adjudicator,high
+DCL30-C,31,sqlite,src/callback.c,349,FP,p is a FuncDef* from hash search (heap/static) not an automatic local,b15-adjudicator,high
+API00-C,32,sqlite,src/callback.c,358,FP,internal contract: aDef is the builtin function array passed by trusted caller; bounded by nDef loop,b15-adjudicator,high
+STR34-C,33,sqlite,src/callback.c,366,FP,zName[0] used as hash macro input via (u8) cast context; no harmful sign extension,b15-adjudicator,high
+DCL00-C,34,sqlite,src/callback.c,367,FP,h is recomputed-free but is a loop-local recomputed each iteration; const churn only not a defect,b15-adjudicator,med
+STR34-C,35,sqlite,src/callback.c,367,FP,zName used as memcpy/hash source not as sign-extended integer index,b15-adjudicator,high
+EXP30-C,36,sqlite,src/callback.c,462,FP,"pBest assigned in the if-condition then used in body; assignment is a sequence point, no UB",b15-adjudicator,high
+EXP30-C,37,sqlite,src/callback.c,463,FP,pBest single assignment in condition then read in branch; well-defined,b15-adjudicator,high
+EXP34-C,38,sqlite,src/callback.c,463,FP,pBest deref guarded by the (pBest=...)!=0 condition of the enclosing if,b15-adjudicator,high
+INT30-C,39,sqlite,src/callback.c,463,FP,sizeof(*pBest)+nName is size_t math; nName bounded by Strlen30<=2^30 so no wrap,b15-adjudicator,high
+ARR38-C,40,sqlite,src/callback.c,469,FP,memcpy size nName+1 with nName=Strlen30(zName) matches the malloc'd nName+1; size is valid,b15-adjudicator,high
+INT31-C,41,sqlite,src/callback.c,469,FP,nName=sqlite3Strlen30() bounded non-negative <=2^30; size_t conversion safe,b15-adjudicator,high
+MEM30-C,42,sqlite,src/callback.c,474,FP,"sqlite3DbFree(db,pBest) frees pBest; db is the live context arg not freed",b15-adjudicator,high
+INT32-C,43,sqlite,src/callback.c,521,FP,"iGeneration is u32 generation counter; intended wraparound, not a defect, bounded by schema reloads",b15-adjudicator,high
+DCL30-C,44,sqlite,src/callback.c,546,FP,p is heap from sqlite3BtreeSchema/sqlite3DbMallocZero not an automatic local,b15-adjudicator,high
