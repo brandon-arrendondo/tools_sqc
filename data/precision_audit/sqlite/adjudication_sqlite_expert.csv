@@ -1,0 +1,229 @@
+rule,idx,project,file,line,verdict,reason,provenance,confidence
+ARR38-C,0,sqlite,ext/expert/sqlite3expert.c,181,FP,idxMalloc memset size nByte guarded by assert(nByte>0) and only run when sqlite3_malloc64 returned non-NULL; bounded,,high
+DCL30-C,1,sqlite,ext/expert/sqlite3expert.c,185,FP,"idxMalloc returns pRet from sqlite3_malloc64 (heap), not a local automatic; analyzer misreads heap ptr",,high
+EXP33-C,2,sqlite,ext/expert/sqlite3expert.c,202,FP,"pNext assigned at top of for-body (pNext=pEntry->pHashNext) before use; standard list-walk, always init on the live path",,high
+EXP34-C,3,sqlite,ext/expert/sqlite3expert.c,220,FP,"z is the hash key string; idxHashString iterates only i<n and reads z[i] under caller-supplied n; callers pass valid key/len, not attacker-unbounded",,high
+INT13-C,4,sqlite,ext/expert/sqlite3expert.c,220,FP,"ret is unsigned int (declared line 217); the shift is on unsigned, message misidentifies signedness",,high
+INT14-C,5,sqlite,ext/expert/sqlite3expert.c,220,FP,"ret unsigned; mixed bitwise/arith is a hash mixing idiom, not a defect",,low
+INT10-C,6,sqlite,ext/expert/sqlite3expert.c,222,FP,modulo operand ret is unsigned int and IDX_HASH_SIZE positive; result well-defined non-negative,,high
+STR34-C,7,sqlite,ext/expert/sqlite3expert.c,236,FP,zKey indexed via STRLEN/idxHashString which casts (unsigned char) at line 220; sign-extension not reachable in hash,,high
+STR34-C,8,sqlite,ext/expert/sqlite3expert.c,237,FP,same idxHashString path casts to unsigned char before use; no sign-extension defect,,high
+STR34-C,9,sqlite,ext/expert/sqlite3expert.c,238,FP,"nVal=STRLEN(zVal) is a length, not a char promotion; STR34 misfire",,high
+STR34-C,10,sqlite,ext/expert/sqlite3expert.c,238,FP,"same as 9; zVal used only for STRLEN/memcpy length, no char sign extension",,high
+EXP34-C,11,sqlite,ext/expert/sqlite3expert.c,242,FP,zKey is required non-NULL by contract (callers pass literal/derived keys); memcmp not reached with NULL on add path,,med
+INT31-C,12,sqlite,ext/expert/sqlite3expert.c,242,FP,nKey=STRLEN(zKey)>=0 always; conversion to size_t in memcmp is safe non-negative,,high
+INT30-C,13,sqlite,ext/expert/sqlite3expert.c,246,FP,"sizeof+(i64)nKey+1+(i64)nVal+1 uses i64 widening; nKey/nVal are bounded string lengths, no wrap reachable",,high
+INT31-C,14,sqlite,ext/expert/sqlite3expert.c,249,FP,nKey is a non-negative STRLEN result; memcpy size safe,,high
+STR34-C,15,sqlite,ext/expert/sqlite3expert.c,251,FP,"zKey is char* copy target; STR34 misfire on memcpy dest, no char-to-int promotion",,high
+STR34-C,16,sqlite,ext/expert/sqlite3expert.c,251,FP,"pEntry->zKey[nKey+1] is address arithmetic for zVal placement, not a sign-extended char read",,high
+INT31-C,17,sqlite,ext/expert/sqlite3expert.c,252,FP,nVal non-negative STRLEN; memcpy size safe,,high
+DCL13-C,18,sqlite,ext/expert/sqlite3expert.c,267,FP,"idxHashFind reads pHash only, but const not added to keep helper signature uniform with idxHashAdd family; low-value style, not a memory defect",,med
+EXP34-C,19,sqlite,ext/expert/sqlite3expert.c,274,FP,zKey contract non-NULL on find callers (idxHashSearch passes through caller key); not reached with NULL,,med
+INT31-C,20,sqlite,ext/expert/sqlite3expert.c,274,FP,nKey non-negative (STRLEN or already-validated arg); memcmp size safe,,high
+DCL30-C,21,sqlite,ext/expert/sqlite3expert.c,275,FP,"returns pEntry which points into pHash->aHash[] linked list (heap), not a local automatic",,high
+STR34-C,22,sqlite,ext/expert/sqlite3expert.c,299,FP,zColl used only via STRLEN length; no char sign-extension,,high
+INT30-C,23,sqlite,ext/expert/sqlite3expert.c,302,FP,"nColl=STRLEN(zColl) of a collation name (>=1, e.g. binary/BINARY); sizeof*nColl over-allocates vs needed sizeof+nColl+1 so write of nColl+1 at offset sizeof is in-bounds; multiplication cannot wrap for short coll names",,high
+INT32-C,24,sqlite,ext/expert/sqlite3expert.c,302,FP,same line 302: +1 cannot overflow; values are tiny collation-name lengths,,high
+INT32-C,25,sqlite,ext/expert/sqlite3expert.c,302,FP,same line 302: sizeof*nColl cannot overflow for collation-name-bounded nColl,,high
+ARR38-C,26,sqlite,ext/expert/sqlite3expert.c,305,TP,"sqc-CAUGHT real bug: idxNewConstraint allocates sizeof(IdxConstraint)*nColl+1 (should be +nColl+1); zColl=&pNew[1] at offset sizeof(IdxConstraint), memcpy nColl+1 bytes -> for nColl<=1 the buffer is undersized (nColl=1: alloc 41 < 42 needed = 1-byte heap OOB write; nColl=0: ~40-byte). nColl=STRLEN(collation name) reachable=1 via a column COLLATE x (1-char) through sqlite3_vtab_collation/aCol.zColl. ARR38 @305 correctly flags the overflowing memcpy",,high
+INT31-C,27,sqlite,ext/expert/sqlite3expert.c,305,FP,nColl non-negative STRLEN; memcpy size safe,,high
+ARR00-C,28,sqlite,ext/expert/sqlite3expert.c,307,FP,pNew is sqlite3_malloc64 heap block via idxMalloc; not a local array,,high
+DCL30-C,29,sqlite,ext/expert/sqlite3expert.c,307,FP,"same; pNew heap-allocated, returned legitimately",,high
+EXP34-C,30,sqlite,ext/expert/sqlite3expert.c,318,FP,*pzErrmsg is a write to caller out-param (assignment of mprintf result); pzErrmsg guaranteed non-NULL by callers (idxDatabaseError always passed &local or valid ptr),,high
+STR34-C,31,sqlite,ext/expert/sqlite3expert.c,318,FP,"*pzErrmsg is char** write target, not a char sign-extension; STR34 misfire",,high
+STR34-C,32,sqlite,ext/expert/sqlite3expert.c,330,FP,zSql passed to sqlite3_prepare_v2 as pointer; not a char promotion,,high
+ARR00-C,33,sqlite,ext/expert/sqlite3expert.c,400,FP,"expertDequote returns zRet from sqlite3_malloc64; heap, not local array",,high
+DCL13-C,34,sqlite,ext/expert/sqlite3expert.c,414,FP,expertConnect signature fixed by sqlite3_module xCreate/xConnect typedef; pAux cannot be const,,high
+STR34-C,35,sqlite,ext/expert/sqlite3expert.c,424,FP,*pzErr is char** assignment target; STR34 misfire,,high
+EXP34-C,36,sqlite,ext/expert/sqlite3expert.c,434,FP,p set by idxMalloc under rc==SQLITE_OK guard at 431-433; deref at 434 only when rc==SQLITE_OK so p non-NULL,,med
+INT32-C,37,sqlite,ext/expert/sqlite3expert.c,501,FP,nOrderBy-1 used as loop start with i>=0 guard; if nOrderBy==0 loop body never runs; no OOB and subtraction of small int cannot overflow,,high
+FLP03-C,38,sqlite,ext/expert/sqlite3expert.c,517,FP,"estimatedCost = 1000000.0/(n+1); n>=0 so divisor>=1, never zero; FP-exception check not applicable to optimizer cost heuristic",,high
+INT32-C,39,sqlite,ext/expert/sqlite3expert.c,517,FP,n+1 where n counts constraints/orderby (bounded by query); no overflow reachable,,high
+DCL13-C,40,sqlite,ext/expert/sqlite3expert.c,522,FP,expertBestIndex signature fixed by sqlite3_module xBestIndex typedef; pVtab cannot be const,,high
+DCL13-C,41,sqlite,ext/expert/sqlite3expert.c,524,FP,expertUpdate signature fixed by xUpdate typedef; azData cannot be const,,high
+DCL13-C,42,sqlite,ext/expert/sqlite3expert.c,525,FP,expertUpdate signature fixed by xUpdate typedef; pRowid cannot be const,,high
+DCL13-C,43,sqlite,ext/expert/sqlite3expert.c,537,FP,expertOpen signature fixed by xOpen typedef; pVTab cannot be const,,high
+DCL13-C,44,sqlite,ext/expert/sqlite3expert.c,562,FP,expertClose signature fixed by xClose typedef; cur cannot be const,,high
+DCL13-C,45,sqlite,ext/expert/sqlite3expert.c,589,FP,expertEof signature fixed by xEof typedef; cur cannot be const,,high
+DCL13-C,46,sqlite,ext/expert/sqlite3expert.c,598,FP,expertColumn signature fixed by xColumn typedef; cur cannot be const,,high
+DCL13-C,47,sqlite,ext/expert/sqlite3expert.c,614,FP,expertFilter signature fixed by xFilter typedef; argv cannot be const,,high
+CON03-C,48,sqlite,ext/expert/sqlite3expert.c,640,FP,expertModule is a static const-data module table initialized once at registration; not a mutated shared variable needing atomics,,high
+EXP34-C,49,sqlite,ext/expert/sqlite3expert.c,668,FP,p (ExpertVtab) is the cursor vtab obtained from valid open cursor; pVtab->pExpert deref reached only with established vtab,,med
+INT30-C,50,sqlite,ext/expert/sqlite3expert.c,711,FP,"sizeof(IdxTable)+nTab uses i64 nByte; nTab=STRLEN(zTab) bounded table-name length, no wrap",,high
+EXP34-C,51,sqlite,ext/expert/sqlite3expert.c,713,FP,"p1 may be 0 but sqlite3_step(NULL) returns SQLITE_MISUSE safely (documented), loop guarded by rc==SQLITE_OK; idxPrintfPrepareStmt sets rc!=OK on failure so loop not entered with bad p1",,high
+INT32-C,52,sqlite,ext/expert/sqlite3expert.c,726,FP,nCol++ counts table columns (PRAGMA table_xinfo rows); cannot reach INT_MAX,,high
+INT32-C,53,sqlite,ext/expert/sqlite3expert.c,727,FP,nPk += bounded by column count; no overflow,,high
+INT30-C,54,sqlite,ext/expert/sqlite3expert.c,732,FP,"sizeof(IdxColumn)*nCol with nByte i64; nCol bounded by column count, no wrap",,high
+EXP34-C,55,sqlite,ext/expert/sqlite3expert.c,737,FP,pNew deref at 737 guarded by rc==SQLITE_OK after idxMalloc (737 is inside if(rc==OK) block at 736),,high
+EXP34-C,56,sqlite,ext/expert/sqlite3expert.c,743,FP,same as 51; sqlite3_step(NULL) safe and loop rc-guarded,,high
+EXP20-C,57,sqlite,ext/expert/sqlite3expert.c,750,FP,column 5 of table_xinfo (pk flag) compared ==1 intentionally to detect single-column rowid pk; semantics require ==1 not !=0,,high
+ARR38-C,58,sqlite,ext/expert/sqlite3expert.c,751,FP,memcpy nCopy=STRLEN(zCol)+1 into pCsr; pNew sized in pass-1 with identical STRLEN(zCol) accumulation so buffer exactly fits,,high
+EXP34-C,59,sqlite,ext/expert/sqlite3expert.c,751,FP,pCsr derived from pNew under rc==SQLITE_OK (set at 739); reached only when pNew non-NULL,,med
+INT31-C,60,sqlite,ext/expert/sqlite3expert.c,751,FP,nCopy=STRLEN()+1 non-negative; memcpy size safe,,high
+ARR37-C,61,sqlite,ext/expert/sqlite3expert.c,752,FP,pCsr is a cursor into the heap blob; += nCopy advances within allocation sized to total of all nCopy in pass 1; in-bounds,,high
+INT31-C,62,sqlite,ext/expert/sqlite3expert.c,752,FP,"pCsr is char*, nCopy int; pointer advance, no narrowing of stored value",,high
+ARR38-C,63,sqlite,ext/expert/sqlite3expert.c,761,FP,memcpy nCopy=STRLEN(zColSeq)+1; pass-1 added identical 1+STRLEN(zColSeq) to nByte; fits,,high
+INT31-C,64,sqlite,ext/expert/sqlite3expert.c,761,FP,nCopy non-negative; size safe,,high
+ARR37-C,65,sqlite,ext/expert/sqlite3expert.c,762,FP,pCsr advance within heap blob; bounded by pass-1 sizing,,high
+INT31-C,66,sqlite,ext/expert/sqlite3expert.c,762,FP,"char* pointer advance, not a value narrowing",,high
+INT32-C,67,sqlite,ext/expert/sqlite3expert.c,765,FP,nCol++ bounded by column count; no overflow,,high
+EXP34-C,68,sqlite,ext/expert/sqlite3expert.c,767,FP,idxFinalize tolerates p1==0 (sqlite3_finalize(NULL) is a documented no-op returning OK),,high
+ARR38-C,69,sqlite,ext/expert/sqlite3expert.c,774,FP,"memcpy zTab into pNew->zName, nTab+1; pass-1 sized nByte with sizeof(IdxTable)+nTab+1, dest fits at end of blob",,high
+INT31-C,70,sqlite,ext/expert/sqlite3expert.c,774,FP,nTab non-negative STRLEN; memcpy size safe,,high
+DCL30-C,71,sqlite,ext/expert/sqlite3expert.c,777,FP,"pNew assigned to *ppOut is sqlite3_malloc64 heap, valid after return; analyzer misreads as local",,high
+EXP34-C,72,sqlite,ext/expert/sqlite3expert.c,804,FP,idxAppendText: zIn may be NULL but memcpy at 804 guarded by if(nIn) (nIn=0 when zIn NULL); not passed NULL to memcpy,,high
+ARR38-C,73,sqlite,ext/expert/sqlite3expert.c,805,FP,"memcpy &zRet[nIn], nAppend+1; zRet sized malloc64(nIn+nAppend+1), exactly fits",,high
+INT32-C,74,sqlite,ext/expert/sqlite3expert.c,805,FP,"nAppend+1 with i64 operands; nAppend=STRLEN(zAppend) of an mprintf result, no overflow reachable",,high
+ARR00-C,75,sqlite,ext/expert/sqlite3expert.c,815,FP,"zRet from sqlite3_malloc64; heap, not local array",,high
+STR34-C,76,sqlite,ext/expert/sqlite3expert.c,824,FP,"STRLEN(zId) is byte-length; signed-char value never affects correctness here, no sign-extension hazard in length/loop",,high
+DCL13-C,77,sqlite,ext/expert/sqlite3expert.c,847,FP,"idxAppendColDefn reads pTab->aCol[...] members; pTab object itself unmodified but const would break call-site mutation patterns, and pTab is dereferenced to mutate accumulated string indirectly; signature stable, low-value misfire",,high
+DCL13-C,78,sqlite,ext/expert/sqlite3expert.c,848,FP,pCons read-only here but DCL13 misfire; const-qualifying would not match the linked-list mutation idiom used elsewhere,,med
+EXP40-C,79,sqlite,ext/expert/sqlite3expert.c,850,FP,"zRet=zIn both char*; idxAppendText returns char*, no const-to-nonconst loss of qualifier in real type flow",,high
+DCL30-C,80,sqlite,ext/expert/sqlite3expert.c,871,FP,"zRet points to sqlite3_mprintf heap buffer (via idxAppendText), not automatic storage; returning it is correct ownership transfer",,high
+DCL13-C,81,sqlite,ext/expert/sqlite3expert.c,885,FP,pScan read-only but DCL13 misfire on linked-list traversal param,,med
+DCL13-C,82,sqlite,ext/expert/sqlite3expert.c,886,FP,pEq read-only here but mutated (bFlag) elsewhere in same logical list; const inappropriate,,med
+DCL13-C,83,sqlite,ext/expert/sqlite3expert.c,887,FP,pTail traversed read-only; DCL13 misfire,,med
+EXP34-C,84,sqlite,ext/expert/sqlite3expert.c,899,FP,sqlite3_step is NULL-safe and loop is rc==OK && step(); on prepare failure rc!=OK so step unreached; SQLite API contract,,high
+EXP34-C,85,sqlite,ext/expert/sqlite3expert.c,910,FP,"same: pInfo 0-init, step guarded by rc==SQLITE_OK; sqlite3_step(NULL) safe per API",,high
+EXP34-C,86,sqlite,ext/expert/sqlite3expert.c,937,FP,idxFinalize wraps sqlite3_finalize which is documented NULL-safe (no-op on NULL),,high
+EXP34-C,87,sqlite,ext/expert/sqlite3expert.c,944,FP,"idxFinalize(NULL) is a no-op; pIdxList 0-init, safe",,high
+DCL13-C,88,sqlite,ext/expert/sqlite3expert.c,954,FP,"countNonzeros pCount cast to int* and written (*((int*)pCount)+=1); object IS modified, const wrong",,high
+DCL13-C,89,sqlite,ext/expert/sqlite3expert.c,955,FP,azResults indexed and dereferenced read-only but this is an sqlite3_exec callback signature fixed by typedef; const not applicable,,high
+DCL13-C,90,sqlite,ext/expert/sqlite3expert.c,955,FP,azColumns param signature fixed by sqlite3_callback typedef; cannot const-qualify,,high
+INT32-C,91,sqlite,ext/expert/sqlite3expert.c,958,FP,"*pCount counts schema-name collisions (0..1 per exec row), bounded tiny; no realistic overflow",,high
+EXP34-C,92,sqlite,ext/expert/sqlite3expert.c,969,FP,p=pScan->pTab path; pScan non-null by caller (idxCreateFromWhere/Candidates iterate live list); guarded,,high
+DCL00-C,93,sqlite,ext/expert/sqlite3expert.c,976,FP,"h is the running hash accumulator (h+=...) at 996; it IS modified, const wrong; likely line-misattribution but not a defect",,low
+STR34-C,94,sqlite,ext/expert/sqlite3expert.c,989,FP,zTable used for STRLEN/mprintf %s; signed-char sign-extension irrelevant to byte length,,high
+EXP34-C,95,sqlite,ext/expert/sqlite3expert.c,995,FP,zCols is product of idxAppendColDefn under rc==OK guard at 986; non-null when looped; array access safe,,high
+INT14-C,96,sqlite,ext/expert/sqlite3expert.c,996,FP,"INT14 readability advisory, not a defect; hash mixing intentional",,high
+INT30-C,97,sqlite,ext/expert/sqlite3expert.c,996,FP,h is unsigned int; wrap is well-defined and intended (hash function),,high
+MEM30-C,98,sqlite,ext/expert/sqlite3expert.c,1004,FP,zName freed at 998 is PREVIOUS iteration alloc; reassigned at 999 before use at 1004; not UAF,,high
+INT32-C,99,sqlite,ext/expert/sqlite3expert.c,1013,FP,collisions bounded by do-while(<50); cannot reach INT_MAX,,high
+MEM30-C,100,sqlite,ext/expert/sqlite3expert.c,1026,FP,zName live (mprintf at 999) when used at 1026; the 998 free targets prior-iter pointer; no UAF,,high
+MEM30-C,101,sqlite,ext/expert/sqlite3expert.c,1034,FP,zName live at 1034 (idxHashAdd copies it); freed only afterward at 1037; no UAF,,high
+MEM30-C,102,sqlite,ext/expert/sqlite3expert.c,1037,FP,sqlite3_free(zName) at 1037 runs once per do-block in else branch; 998 free is for reassigned ptr; no double-free,,high
+MEM31-C,103,sqlite,ext/expert/sqlite3expert.c,1037,FP,same as 102: single free of current zName; analyzer conflated loop-top free of old value,,high
+DCL13-C,104,sqlite,ext/expert/sqlite3expert.c,1051,FP,pList traversed read-only; DCL13 misfire on linked-list param,,med
+DCL13-C,105,sqlite,ext/expert/sqlite3expert.c,1051,FP,"p read-only (reads p->iCol); but const cosmetic; low value, signature idiom",,med
+EXP34-C,106,sqlite,ext/expert/sqlite3expert.c,1085,FP,idxFindConstraint loops pCmp=pList and tolerates NULL list (loop body not entered); NULL-safe,,high
+EXP34-C,107,sqlite,ext/expert/sqlite3expert.c,1102,FP,"p=pScan->pTab dereference; live list iteration, non-null; guarded",,high
+DCL13-C,108,sqlite,ext/expert/sqlite3expert.c,1115,FP,"pConstraint head of free-list, read-only here; DCL13 misfire",,med
+DCL13-C,109,sqlite,ext/expert/sqlite3expert.c,1129,FP,"pScan free-list traversal param, read-only; misfire",,med
+DCL13-C,110,sqlite,ext/expert/sqlite3expert.c,1129,FP,pLast used only as loop terminator comparison; const cosmetic misfire,,med
+DCL13-C,111,sqlite,ext/expert/sqlite3expert.c,1145,FP,pStatement free-list param read-only; misfire,,med
+DCL13-C,112,sqlite,ext/expert/sqlite3expert.c,1145,FP,pLast loop terminator; const cosmetic misfire,,med
+DCL13-C,113,sqlite,ext/expert/sqlite3expert.c,1159,FP,pTab free-list traversal param; misfire,,med
+DCL13-C,114,sqlite,ext/expert/sqlite3expert.c,1171,FP,pTab free-list traversal param; misfire,,med
+EXP34-C,115,sqlite,ext/expert/sqlite3expert.c,1192,FP,"p=pStmt->... ; pStmt from live p->pStatement list, loop guarded; non-null",,high
+ARR00-C,116,sqlite,ext/expert/sqlite3expert.c,1198,FP,"pStmt is a linked-list iterator pointer (IdxStatement*), not an array bound; misread of for-loop",,high
+EXP34-C,117,sqlite,ext/expert/sqlite3expert.c,1205,FP,"sqlite3_step NULL-safe; pExplain 0-init, step guarded by rc==OK after prepare",,high
+ARR38-C,118,sqlite,ext/expert/sqlite3expert.c,1218,FP,memcmp size 13 guarded by i+13<nDetail before the memcmp; bounded read,,high
+INT32-C,119,sqlite,ext/expert/sqlite3expert.c,1219,FP,"i+13 bounded by nDetail (STRLEN of stmt text); i is small loop index, no overflow",,high
+STR34-C,120,sqlite,ext/expert/sqlite3expert.c,1219,FP,zDetail char deref for comparison; sign-extension irrelevant,,high
+STR34-C,121,sqlite,ext/expert/sqlite3expert.c,1219,FP,"same; bounds-guarded char access, no correctness impact",,high
+ARR38-C,122,sqlite,ext/expert/sqlite3expert.c,1221,FP,memcmp size 22 guarded by i+22<nDetail; bounded,,high
+INT32-C,123,sqlite,ext/expert/sqlite3expert.c,1223,FP,i+22 bounded by nDetail; no overflow,,high
+STR34-C,124,sqlite,ext/expert/sqlite3expert.c,1223,FP,char deref sign-extension irrelevant to comparison,,high
+STR34-C,125,sqlite,ext/expert/sqlite3expert.c,1223,FP,bounds-guarded char access; no defect,,high
+DCL02-C,126,sqlite,ext/expert/sqlite3expert.c,1227,FP,DCL02 visual-similarity advisory (nIdx vs hIdx); not a defect,,high
+FLP30-C,127,sqlite,ext/expert/sqlite3expert.c,1245,FP,"pEntry is IdxHashEntry* loop pointer, not floating-point; misread",,high
+EXP34-C,128,sqlite,ext/expert/sqlite3expert.c,1249,FP,idxFinalize(NULL) no-op; pExplain handled safely,,high
+DCL13-C,129,sqlite,ext/expert/sqlite3expert.c,1296,FP,p read-only in this scope; const cosmetic misfire,,low
+DCL13-C,130,sqlite,ext/expert/sqlite3expert.c,1297,FP,pWrite read-only here; misfire,,low
+EXP34-C,131,sqlite,ext/expert/sqlite3expert.c,1313,FP,"p=pWrite->pTab via live p->pWrite list; iteration guarded, non-null",,high
+EXP34-C,132,sqlite,ext/expert/sqlite3expert.c,1314,FP,"sqlite3_step NULL-safe; pSelect 0-init, step guarded by rc==OK",,high
+EXP34-C,133,sqlite,ext/expert/sqlite3expert.c,1319,FP,idxFinalize(NULL) no-op,,high
+EXP34-C,134,sqlite,ext/expert/sqlite3expert.c,1364,FP,idxFinalize(NULL) no-op; pX 0-init,,high
+EXP34-C,135,sqlite,ext/expert/sqlite3expert.c,1381,FP,"p=pWrite list head, guarded loop; non-null in practice",,high
+EXP34-C,136,sqlite,ext/expert/sqlite3expert.c,1385,FP,pIter from pFirst=p->pWrite; loop guarded pIter!=pEnd; non-null,,high
+EXP34-C,137,sqlite,ext/expert/sqlite3expert.c,1416,FP,"sqlite3_step NULL-safe; pSql 0-init, guarded by rc==OK",,high
+STR34-C,138,sqlite,ext/expert/sqlite3expert.c,1444,FP,zErr STRLEN; signed-char sign-extension irrelevant to length,,high
+ARR38-C,139,sqlite,ext/expert/sqlite3expert.c,1445,FP,memcmp size 15 guarded by nErr>=15 before memcmp; bounded,,high
+DCL30-C,140,sqlite,ext/expert/sqlite3expert.c,1452,FP,"zErr assigned to *pzErr is the sqlite3_exec-allocated heap buffer, not a local; ownership transfer is correct",,high
+STR34-C,141,sqlite,ext/expert/sqlite3expert.c,1452,FP,*pzErr char assignment; sign-extension irrelevant,,high
+EXP34-C,142,sqlite,ext/expert/sqlite3expert.c,1465,FP,p=pSchema->... live stmt loop guarded by rc==OK; non-null,,high
+EXP34-C,143,sqlite,ext/expert/sqlite3expert.c,1477,FP,"sqlite3_step NULL-safe; pSchema 0-init, guarded",,high
+EXP34-C,144,sqlite,ext/expert/sqlite3expert.c,1498,FP,pTab from idxGetTableInfo under rc==OK && ALWAYS(pTab!=0) guard at 1494; non-null,,high
+EXP34-C,145,sqlite,ext/expert/sqlite3expert.c,1522,FP,idxFinalize(NULL) no-op,,high
+DCL13-C,146,sqlite,ext/expert/sqlite3expert.c,1536,FP,idxSampleFunc argv is sqlite3 UDF callback signature fixed by typedef; cannot const-qualify,,high
+EXP34-C,147,sqlite,ext/expert/sqlite3expert.c,1543,FP,p=sqlite3_user_data cast; UDF context always set at registration; non-null,,high
+INT33-C,148,sqlite,ext/expert/sqlite3expert.c,1546,FP,p->nRow is double; division guarded by if(p->nRow==0.0) at 1543; INT33 misapplied to FP,,high
+EXP33-C,149,sqlite,ext/expert/sqlite3expert.c,1550,FP,"rnd written by sqlite3_randomness(2,&rnd) at 1549 before use at 1550; not uninitialized",,high
+INT08-C,150,sqlite,ext/expert/sqlite3expert.c,1550,FP,"rnd is unsigned short promoted to int for %100; value 0..65535, no overflow",,high
+INT10-C,151,sqlite,ext/expert/sqlite3expert.c,1550,FP,(int)rnd is non-negative (rnd unsigned 0..65535); %100 result well-defined non-negative,,high
+INT31-C,152,sqlite,ext/expert/sqlite3expert.c,1550,FP,"rnd is unsigned short (max 65535); (int)rnd is well-defined, %100 bounds to 0-99, no truncation/UB",,high
+FLP34-C,153,sqlite,ext/expert/sqlite3expert.c,1556,FP,"(double)bRet where bRet is small int 0/1; exact representation, no range issue",,high
+DCL38-C,154,sqlite,ext/expert/sqlite3expert.c,1561,TP,"DCL38 correct: aSlot[1] is a flexible-array idiom; modern C should use aSlot[] (struct hack), valid style finding",,high
+STR31-C,155,sqlite,ext/expert/sqlite3expert.c,1568,FP,"aSlot[1] is not a string buffer; it is a 1-element trailing struct-hack array, STR31 misclassifies a struct member",,high
+DCL13-C,156,sqlite,ext/expert/sqlite3expert.c,1577,FP,"argv is sqlite3_value** consumed by sqlite3_value_int/type/bytes; signature is fixed by SQLite UDF callback typedef, cannot be const",,high
+EXP34-C,157,sqlite,ext/expert/sqlite3expert.c,1585,FP,"p = sqlite3_user_data(pCtx) is the context registered at create_function; always non-NULL by construction, not attacker-null",,high
+ARR30-C,158,sqlite,ext/expert/sqlite3expert.c,1586,FP,"iSlot from sqlite_expert_rem(%d,..) where %d=internal nCol bounded <nMax+1=nSlot; assert guards debug, values internally generated not attacker-controlled",,high
+ARR38-C,159,sqlite,ext/expert/sqlite3expert.c,1642,FP,"memcpy size nByte<=pSlot->nByte after realloc-to-nByte*2 grow; buffer always >= nByte, bounded by sqlite3_value_bytes(<2^31)",,high
+ARR38-C,160,sqlite,ext/expert/sqlite3expert.c,1645,FP,"same as 159; pSlot->z sized to hold nByte before memcpy, no invalid size",,high
+EXP34-C,161,sqlite,ext/expert/sqlite3expert.c,1645,FP,pData=sqlite3_value_blob guarded by if(pData) before memcpy at 1642; null path skipped,,high
+EXP34-C,162,sqlite,ext/expert/sqlite3expert.c,1664,FP,pMax passed to sqlite3_step only when rc==SQLITE_OK so prepare succeeded; sqlite3_step is NULL-tolerant regardless,,high
+EXP34-C,163,sqlite,ext/expert/sqlite3expert.c,1667,FP,idxFinalize wraps sqlite3_finalize which is NULL-safe; pMax=0 harmless,,high
+EXP34-C,164,sqlite,ext/expert/sqlite3expert.c,1689,FP,"p is sqlite3expert*, caller-allocated handle; assert p->iSample>0, not an attacker-null path",,high
+INT30-C,165,sqlite,ext/expert/sqlite3expert.c,1732,FP,"sizeof(i64)*(nCol+1) where nCol is index column count (small, schema-bounded); idxMalloc uses malloc64, no realistic wrap",,high
+EXP34-C,166,sqlite,ext/expert/sqlite3expert.c,1734,FP,pQuery used in sqlite3_step under rc==SQLITE_OK (prepare succeeded); step is NULL-tolerant anyway,,high
+EXP34-C,167,sqlite,ext/expert/sqlite3expert.c,1737,FP,aStat allocated via idxMalloc under rc==SQLITE_OK guard before the loop dereferences it; non-null on this path,,high
+EXP34-C,168,sqlite,ext/expert/sqlite3expert.c,1738,FP,"same as 166; pQuery non-null on rc==SQLITE_OK, step NULL-safe",,high
+INT32-C,169,sqlite,ext/expert/sqlite3expert.c,1744,FP,i+1 where i<nCol (small index column count); no overflow on realistic schema,,high
+INT33-C,170,sqlite,ext/expert/sqlite3expert.c,1753,FP,"aStat[i] initialized to 1 at line 1737 and only incremented; never zero, no div-by-zero",,high
+EXP34-C,171,sqlite,ext/expert/sqlite3expert.c,1774,FP,idxFinalize/sqlite3_finalize NULL-safe; pQuery=0 harmless,,high
+DCL13-C,172,sqlite,ext/expert/sqlite3expert.c,1779,FP,"p->dbv/db are read but p->iSample, schema mutated via exec; p is the handle, function uses it as mutable context, const inappropriate",,high
+EXP34-C,173,sqlite,ext/expert/sqlite3expert.c,1783,FP,p is caller handle dereferenced for p->dbv after DROP exec; not attacker-null,,high
+EXP34-C,174,sqlite,ext/expert/sqlite3expert.c,1824,FP,"p handle; p->iSample read after guarded allocation, standard handle deref not null",,high
+INT30-C,175,sqlite,ext/expert/sqlite3expert.c,1832,FP,"sizeof(IdxRemCtx)+sizeof(IdxRemSlot)*nMax; nMax=max index seqno+1, schema-bounded small; malloc64 no wrap in practice",,high
+INT30-C,176,sqlite,ext/expert/sqlite3expert.c,1832,FP,"sizeof(IdxRemSlot)*nMax same; nMax bounded by schema index width, no realistic overflow",,high
+EXP34-C,177,sqlite,ext/expert/sqlite3expert.c,1849,FP,pCtx guarded by if(pCtx) at line 1885 before the free loop derefs pCtx->nSlot/aSlot,,high
+EXP34-C,178,sqlite,ext/expert/sqlite3expert.c,1859,FP,pAllIndex stepped under rc==SQLITE_OK; step NULL-tolerant,,high
+FLP03-C,179,sqlite,ext/expert/sqlite3expert.c,1865,FP,"FLP03 (double)p->iSample/100.0 division by constant 100.0; cannot fault, no error-check needed",,high
+FLP34-C,180,sqlite,ext/expert/sqlite3expert.c,1865,FP,"(double)p->iSample where iSample clamped 0-100; exact, no range issue",,high
+EXP34-C,181,sqlite,ext/expert/sqlite3expert.c,1872,FP,"pIndexXInfo passed only under rc==SQLITE_OK (prepared); callee uses it in bind/step, safe",,high
+EXP34-C,182,sqlite,ext/expert/sqlite3expert.c,1872,FP,pWrite passed under rc==SQLITE_OK; prepared statement non-null on this path,,high
+EXP34-C,183,sqlite,ext/expert/sqlite3expert.c,1881,FP,idxFinalize NULL-safe,,high
+EXP34-C,184,sqlite,ext/expert/sqlite3expert.c,1882,FP,idxFinalize NULL-safe,,high
+EXP34-C,185,sqlite,ext/expert/sqlite3expert.c,1883,FP,idxFinalize NULL-safe,,high
+ARR30-C,186,sqlite,ext/expert/sqlite3expert.c,1887,FP,"aSlot[i] with i<pCtx->nSlot=nMax+1; allocation gives 1(in-struct)+nMax=nMax+1 slots, in-bounds",,high
+MEM30-C,187,sqlite,ext/expert/sqlite3expert.c,1887,FP,"the loop frees aSlot[i].z then frees pCtx after; no re-access after free, not use-after-free",,high
+DCL13-C,188,sqlite,ext/expert/sqlite3expert.c,1907,FP,dummyCompare signature fixed by sqlite3_create_collation_v2 xCompare callback typedef; const cannot be added,,high
+DCL03-C,189,sqlite,ext/expert/sqlite3expert.c,1913,FP,"assert(0) is the standard unreachable-assert idiom; static_assert(0) would fail at compile time, inappropriate substitution",,high
+DCL13-C,190,sqlite,ext/expert/sqlite3expert.c,1917,FP,useDummyCS signature fixed by sqlite3_collation_needed callback typedef; const inapplicable,,high
+DCL13-C,191,sqlite,ext/expert/sqlite3expert.c,1927,FP,dummyUDF signature fixed by SQLite scalar-function callback typedef,,high
+DCL13-C,192,sqlite,ext/expert/sqlite3expert.c,1927,FP,dummyUDF up3 fixed by callback typedef (sqlite3_value**),,high
+DCL03-C,193,sqlite,ext/expert/sqlite3expert.c,1931,FP,"assert(0) unreachable idiom, not a constant-truth assertion to convert",,high
+DCL13-C,194,sqlite,ext/expert/sqlite3expert.c,1933,FP,dummyUDFvalue signature fixed by xFinal callback typedef,,high
+DCL03-C,195,sqlite,ext/expert/sqlite3expert.c,1935,FP,assert(0) unreachable idiom,,high
+API00-C,196,sqlite,ext/expert/sqlite3expert.c,1941,FP,"registerUDFs internal helper; dbSrc is pNew->db passed by sqlite3_expert_new, validated upstream; API00 over-broad on internal static-ish func",,high
+EXP33-C,197,sqlite,ext/expert/sqlite3expert.c,1948,FP,pStmt is OUT param of sqlite3_prepare_v2; used only in while under rc==SQLITE_OK so prepare set it; not read uninitialized,,high
+INT13-C,198,sqlite,ext/expert/sqlite3expert.c,1961,FP,"INT13 flags from sqlite3_column_int OR'd with SQLITE_DETERMINISTIC/DIRECTONLY; values are small positive flag bits, no sign issue in practice",,high
+DCL13-C,199,sqlite,ext/expert/sqlite3expert.c,1988,FP,"db param of sqlite3_expert_new becomes pNew->db (stored, used as live handle); cannot be const",,high
+FIO42-C,200,sqlite,ext/expert/sqlite3expert.c,2006,FP,"FIO42 false: 'rc' is an int return code from sqlite3_open("":memory:""), not a file descriptor from open(); no fd leak, sqlite handle closed in destroy",,high
+EXP34-C,201,sqlite,ext/expert/sqlite3expert.c,2035,FP,pSql stepped under rc==SQLITE_OK after idxPrintfPrepareStmt; step NULL-safe,,high
+EXP34-C,202,sqlite,ext/expert/sqlite3expert.c,2044,FP,idxFinalize NULL-safe,,high
+DCL30-C,203,sqlite,ext/expert/sqlite3expert.c,2063,FP,"DCL30 false: returns pNew which is heap from idxMalloc/sqlite3_malloc64, NOT automatic storage; no dangling-stack return",,high
+MEM12-C,204,sqlite,ext/expert/sqlite3expert.c,2063,FP,MEM12 false: on error path sqlite3_expert_destroy(pNew) frees all resources before returning NULL; 'rc' is an int not a resource,,high
+API00-C,205,sqlite,ext/expert/sqlite3expert.c,2069,FP,"sqlite3_expert_config public API; p is user-supplied handle by contract, va_arg path only touches p->iSample; API00 noise, no deref before the switch case that needs it",,high
+EXP34-C,206,sqlite,ext/expert/sqlite3expert.c,2078,FP,p->iSample write in config; p is contract-required non-null handle,,high
+API00-C,207,sqlite,ext/expert/sqlite3expert.c,2093,FP,sqlite3_expert_sql: zSql read in while(zStmt && zStmt[0]) which null-guards zStmt=zSql; API00 noise,,high
+API00-C,208,sqlite,ext/expert/sqlite3expert.c,2093,FP,pzErr passed onward to idxPrepareStmt which null-checks before *pzErr write; not dereferenced unconditionally,,high
+EXP34-C,209,sqlite,ext/expert/sqlite3expert.c,2098,FP,p->bRun/p->pScan accessed; p is contract non-null handle,,high
+ARR38-C,210,sqlite,ext/expert/sqlite3expert.c,2120,FP,"memcpy(pNew->zSql,z,n+1) where pNew allocated sizeof(IdxStatement)+n+1, n=STRLEN(z); exact-fit, safe",,high
+EXP05-C,211,sqlite,ext/expert/sqlite3expert.c,2120,FP,"EXP05 false: n+1 is i64 arithmetic for size, no const cast; misread",,high
+INT32-C,212,sqlite,ext/expert/sqlite3expert.c,2120,FP,"n=STRLEN(sqlite3_sql(pStmt)) bounded by prepared statement text length; n+1 wrap needs ~2^63 SQL string, not reachable",,med
+INT32-C,213,sqlite,ext/expert/sqlite3expert.c,2122,FP,"p->pStatement->iId+1; iId is a small monotonic statement counter, no realistic overflow",,high
+MEM30-C,214,sqlite,ext/expert/sqlite3expert.c,2134,FP,"MEM30 false: pStmtOrig is a saved snapshot pointer; idxStatementFree(p->pStatement,pStmtOrig) frees only nodes added since snapshot, single free per node",,high
+API00-C,215,sqlite,ext/expert/sqlite3expert.c,2142,FP,sqlite3_expert_analyze public API; p contract non-null; API00 noise,,high
+API00-C,216,sqlite,ext/expert/sqlite3expert.c,2142,FP,pzErr forwarded to helpers that null-check; not unconditionally derefed,,high
+STR34-C,217,sqlite,ext/expert/sqlite3expert.c,2154,FP,"STR34 false: *pzErr is char* assignment (mprintf result), not a char value sign-extended; misclassification",,high
+EXP34-C,218,sqlite,ext/expert/sqlite3expert.c,2164,FP,p->hIdx.pFirst loop; p contract non-null handle,,high
+FLP30-C,219,sqlite,ext/expert/sqlite3expert.c,2164,FP,"FLP30 false: pEntry is IdxHashEntry* loop var (pEntry=pEntry->pNext), not a floating-point counter; misread",,high
+API00-C,220,sqlite,ext/expert/sqlite3expert.c,2187,FP,sqlite3_expert_count public API; p contract non-null; API00 noise,,high
+DCL13-C,221,sqlite,ext/expert/sqlite3expert.c,2187,FP,"count reads p->pStatement->iId only, no write; BUT signature is public API ABI-fixed (sqlite3expert*), const change would break declared header signature",,high
+EXP34-C,222,sqlite,ext/expert/sqlite3expert.c,2189,FP,p->pStatement deref; p contract non-null handle,,high
+INT32-C,223,sqlite,ext/expert/sqlite3expert.c,2189,FP,"p->pStatement->iId+1 small counter, no overflow",,high
+DCL13-C,224,sqlite,ext/expert/sqlite3expert.c,2196,FP,sqlite3_expert_report public API signature ABI-fixed; const change breaks header,,high
+EXP34-C,225,sqlite,ext/expert/sqlite3expert.c,2200,FP,p->bRun deref; p contract non-null handle,,high
+API00-C,226,sqlite,ext/expert/sqlite3expert.c,2222,FP,"sqlite3_expert_destroy guards with if(p) at 2223 before any deref; param explicitly null-tolerant, API00 noise",,high
+MEM30-C,227,sqlite,ext/expert/sqlite3expert.c,2230,FP,"MEM30 false: idxHashClear(&p->hIdx) frees hash contents then sqlite3_free(p); p->hIdx accessed before p freed, ordered correctly no UAF",,high

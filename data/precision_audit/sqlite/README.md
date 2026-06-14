@@ -1615,3 +1615,57 @@ holds across 25 audited core/glue files for the *hardened* parts; every confirme
 less-fuzzed untrusted-input decode path. Remaining ~92 in-scope files: ext/expert/sqlite3expert.c (228, the
 largest unaudited — an untrusted-SQL advisor, candidate for a higher-effort pass), then more core/glue filler
 (update done; resolve.c, treeview.c, mem2.c, dbstat.c, vacuum.c, …).
+
+## File-at-a-time — Batch 12 (2026-06-14, run #40, HIGHER-effort untrusted-SQL advisor): ext/expert/sqlite3expert.c
+
+The largest unaudited file (228 findings) and the last big untrusted-input-adjacent target: the "expert"
+extension ingests an arbitrary SQL schema + query workload, parses them, and dynamically builds candidate
+`CREATE INDEX` / what-if-schema SQL. Audited with the untrusted-input framework (attacker-mindset + rigorous
+FN-hunt), 3 reviewers, integrity gate. **228 findings -> 2 TP / 226 FP, 0 FN — and one of the TP is a genuine
+sqc-CAUGHT heap-overflow write.**
+
+| File | findings | TP | FP | FN |
+|------|---------:|---:|---:|---:|
+| ext/expert/sqlite3expert.c | 228 | 2 | 226 | 0 |
+
+### TP — a real sqc-caught heap OOB write (confirmed bug #15), recovered by the integrity gate
+
+`idxNewConstraint` (line 297) allocates `idxMalloc(pRc, sizeof(IdxConstraint) * nColl + 1)` — a **`*` where `+`
+was intended.** The object is the struct followed by a copy of the collation string: `pNew->zColl = &pNew[1]`
+(offset `sizeof(IdxConstraint)` = 40) then `memcpy(pNew->zColl, zColl, nColl+1)` (line 305). Correct size is
+`sizeof(IdxConstraint) + nColl + 1`; the code instead allocates `40*nColl + 1`. That under-allocates exactly
+when `nColl <= 1`: for `nColl==1`, alloc = 41 but the copy needs 42 → **1-byte heap overflow**; for `nColl==0`,
+~40 bytes. `nColl = STRLEN(zColl)` where `zColl` is a collation name from `sqlite3_vtab_collation()` (line 482)
+or the column's stored `aCol[iCol].zColl` (line 504) — both driven by the user's schema, so a column declared
+`COLLATE x` (a one-character collation name) reaches it. **sqc flagged it** with `ARR38-C` at line 305
+("memcpy called with potentially invalid size calculation"). The chunk-0 reviewer initially marked it FP with
+the explicit (wrong) inequality "alloc `sizeof*nColl+1` (nColl>=1) >= `sizeof+nColl+1`" — false for `nColl==1`
+(41 >= 42). The source-verification integrity gate caught the bad arithmetic and the verdict was overridden
+FP->TP. (For typical multi-character collation names `40*nColl+1` wildly over-allocates and is harmless, which
+is why it survives in practice; it is still an ARR38 violation and a real bug for short collation names.) The
+co-located `INT30/INT32` findings at line 302 stay FP — they mischaracterize the same line as arithmetic
+*wrap/overflow* (`40*nColl` never wraps for a string length), which is not the actual failure mode; ARR38 at the
+memcpy is the correct catch. PRIORITY disclosure candidate (sqlite3expert has a public C API, embeddable beyond
+the shell `.expert` command); HEAD-status deferred.
+
+The second TP is `DCL38-C` @1561 — the `aSlot[1]` legacy flexible-array struct-hack (low-severity style).
+
+### FP profile
+
+The other 226 are the established misfire classes, now seen on a string-building extension: a large `EXP34`
+null-deref cluster (prepared-statement pointers 0-initialized, step loops `rc==SQLITE_OK`-guarded, and
+`sqlite3_step`/`sqlite3_finalize` are NULL-tolerant per API contract); `MEM30` UAF on the loop-top
+`sqlite3_free(zName)` that frees the *previous* iteration's mprintf'd buffer before reassignment (not the live
+pointer); `DCL13` on `sqlite3_module` callback signatures fixed by function-pointer typedefs; `DCL30`/`ARR00`
+on heap `sqlite3_malloc64`/`idxMalloc` results and `&pNew[1]` interior pointers misread as automatic storage;
+`STR34` on `char*` pointer stores. The genuine untrusted-input paths were sound: `idxGetTableInfo`'s two-pass
+schema reader accumulates byte sizes in `i64` and the second pass memcpys within the pass-1-sized blob;
+`expertDequote` never writes past `n-2`; identifier building uses `%Q`/`%w` quoting and
+`idxIdentifierRequiresQuotes`; the `idxRemFunc`/`aSlot` realloc grows before the BLOB/TEXT memcpy.
+
+sqlite coverage **128 -> 129/220 (58.6%)**; **15 FNs** (0 new); confirmed real bugs now **15** (the
+sqlite3expert ARR38 overflow). Notably this is the **first sqc-CAUGHT semantic TP since the decoder batches
+(b3-b6)** — and it again lands in a less-fuzzed untrusted-input parser/builder (an SQL advisor), not hardened
+core, consistent with the bifurcation. It also re-underscores the integrity gate's value: the bug was one
+reviewer keystroke away from being filed as a false positive. Remaining ~91 in-scope files are core/glue filler
+(resolve.c, treeview.c, mem2.c, dbstat.c, vacuum.c, …).
